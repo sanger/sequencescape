@@ -1,7 +1,14 @@
-class SetDescriptorsTask < Task # rubocop:todo Style/Documentation
-  # Takes the controller and parameters and handles performing or
-  # rendering the task. This functionality really does not belong
-  # in the controller, so adding this object to help extract it
+# The SetDescriptorsTask presents a series of configured {Descriptor descriptors}
+# to the user, and lets them specify values for them. These values are the record
+# in {LabEvent lab events} created for each {Request}.
+#
+# The per_item attribute, specifies whether the user is presented with a separate
+# set of descriptors for each request, or if they are shared across the {Batch}.
+# In either case, the user can deselect individual requests from a table at the top
+# of the screen, to only apply their attributes to a subset of requests.
+class SetDescriptorsTask < Task
+  # The Setter handles the processing of each task, and actually performs the
+  # actions.
   class DescriptorSetter
     attr_reader :controller, :params, :task
 
@@ -104,7 +111,7 @@ class SetDescriptorsTask < Task # rubocop:todo Style/Documentation
     'set_descriptors'
   end
 
-  def can_process?(batch)
+  def can_process?(batch, from_previous: false) # rubocop:disable Lint/UnusedMethodArgument
     batch.released? ? [true, 'Edit'] : [true, nil]
   end
 

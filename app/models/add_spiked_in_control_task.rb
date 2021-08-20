@@ -9,7 +9,7 @@ class AddSpikedInControlTask < Task
     'add_spiked_in_control'
   end
 
-  def can_process?(batch)
+  def can_process?(batch, from_previous: false) # rubocop:disable Lint/UnusedMethodArgument
     batch.released? ? [true, 'Edit'] : [true, nil]
   end
 

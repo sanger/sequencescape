@@ -114,7 +114,7 @@ class Task < ApplicationRecord
   def partial; end
 
   # By default, most tasks will only support unreleased batches
-  def can_process?(batch)
+  def can_process?(batch, from_previous: false) # rubocop:disable Lint/UnusedMethodArgument
     batch.released? ? [false, 'Disabled on released batches'] : [true, nil]
   end
 

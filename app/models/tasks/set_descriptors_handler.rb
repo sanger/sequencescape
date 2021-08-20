@@ -5,7 +5,5 @@ module Tasks::SetDescriptorsHandler # rubocop:todo Style/Documentation
     @requests = @batch.ordered_requests
     @workflow = Workflow.includes(:tasks).find(params[:workflow_id])
     @task = @workflow.tasks[params[:id].to_i]
-    @stage = params[:id].to_i
-    @values ||= {} # rubocop:disable Naming/MemoizedInstanceVariableName
   end
 end

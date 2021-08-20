@@ -32,8 +32,8 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
 
   # Its not the end of the world if we do end up here, it already redirects to the previous step, but
   # since we've got this functionality, lets use it here as well.
-  def can_process?(_)
-    [false, 'Can only be accessed via the previous step']
+  def can_process?(_, from_previous: false)
+    [from_previous, 'Can only be accessed via the previous step']
   end
 
   # rubocop:todo Metrics/ParameterLists
