@@ -104,40 +104,6 @@ class WorkflowsController < ApplicationController
 
   private
 
-  # Flattens nested hashes down into a single layer in a similar manner
-  # to rails form parameter naming.
-  # @example Flattening a hash multiple levels deep
-  #   flatten_hash(key: 'value', key2: { key2a: 'value2a', key2b: 'value2b', key2c: { nested: 'deep'}})
-  #   # => {"key"=>"value", "key2[key2a]"=>"value2a", "key2[key2b]"=>"value2b", "key2[key2c][nested]"=>"deep"}
-  #
-  # @example Flattening a hash with ancestors
-  #   flatten_hash({key: 'value', key2: { key2a: 'value2a', key2b: 'value2b'}}, [:ancestor])
-  # # => {"ancestor[key]"=>"value", "ancestor[key2][key2a]"=>"value2a", "ancestor[key2][key2b]"=>"value2b"}
-  #
-  # @param hash [Hash] The hash to flatten
-  # @param ancestor_names [Array] Ancestors for all keys in the hash
-  #
-  # @return [type] [description]
-  def flatten_hash(hash = params, ancestor_names = []) # rubocop:todo Metrics/MethodLength
-    flat_hash = {}
-    hash.each do |k, v|
-      names = [*ancestor_names, k]
-      if v.is_a?(Hash)
-        flat_hash.merge!(flatten_hash(v, names))
-      else
-        key = flat_hash_key(names)
-        key += '[]' if v.is_a?(Array)
-        flat_hash[key] = v
-      end
-    end
-
-    flat_hash
-  end
-
-  def flat_hash_key(keys)
-    keys.reduce { |flattened_keys, key| flattened_keys << "[#{key}]" }
-  end
-
   def create_batch_events(batch, task)
     event = batch.lab_events.build(description: 'Complete', user: current_user, batch: batch)
     event.add_descriptor Descriptor.new(name: 'task_id', value: task.id)

@@ -1,4 +1,6 @@
-module Tasks::SetCharacterisationDescriptorsHandler # rubocop:todo Style/Documentation
+# The task associated with this module is no-longer used. I've been working on
+# removing it in another branch.
+module Tasks::SetCharacterisationDescriptorsHandler
   # rubocop:todo Metrics/PerceivedComplexity
   # rubocop:todo Metrics/MethodLength
   # rubocop:todo Metrics/AbcSize
@@ -55,5 +57,44 @@ module Tasks::SetCharacterisationDescriptorsHandler # rubocop:todo Style/Documen
     @task = @workflow.tasks[params[:id].to_i]
     @stage = params[:id].to_i
     @values = params[:values].nil? ? {} : params[:values]
+  end
+
+  private
+
+  # Moved the methods below from the workflows controller as they are now only
+  # used here, and can be safely removed along with the rest of this tasks code.
+
+  # Flattens nested hashes down into a single layer in a similar manner
+  # to rails form parameter naming.
+  # @example Flattening a hash multiple levels deep
+  #   flatten_hash(key: 'value', key2: { key2a: 'value2a', key2b: 'value2b', key2c: { nested: 'deep'}})
+  #   # => {"key"=>"value", "key2[key2a]"=>"value2a", "key2[key2b]"=>"value2b", "key2[key2c][nested]"=>"deep"}
+  #
+  # @example Flattening a hash with ancestors
+  #   flatten_hash({key: 'value', key2: { key2a: 'value2a', key2b: 'value2b'}}, [:ancestor])
+  # # => {"ancestor[key]"=>"value", "ancestor[key2][key2a]"=>"value2a", "ancestor[key2][key2b]"=>"value2b"}
+  #
+  # @param hash [Hash] The hash to flatten
+  # @param ancestor_names [Array] Ancestors for all keys in the hash
+  #
+  # @return [type] [description]
+  def flatten_hash(hash = params, ancestor_names = []) # rubocop:todo Metrics/MethodLength
+    flat_hash = {}
+    hash.each do |k, v|
+      names = [*ancestor_names, k]
+      if v.is_a?(Hash)
+        flat_hash.merge!(flatten_hash(v, names))
+      else
+        key = flat_hash_key(names)
+        key += '[]' if v.is_a?(Array)
+        flat_hash[key] = v
+      end
+    end
+
+    flat_hash
+  end
+
+  def flat_hash_key(keys)
+    keys.reduce { |flattened_keys, key| flattened_keys << "[#{key}]" }
   end
 end
