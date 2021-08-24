@@ -10,11 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 2021_08_17_144508) do
-=======
-ActiveRecord::Schema.define(version: 2021_07_09_193520) do
->>>>>>> 4b0df808e (Remove LibraryCreationPipeline and MultiplexedLibraryCreationPipeline)
 
   create_table "aker_containers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "barcode"
