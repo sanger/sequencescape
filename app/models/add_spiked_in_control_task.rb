@@ -9,7 +9,7 @@ class AddSpikedInControlTask < Task
     'add_spiked_in_control'
   end
 
-  def can_process?(batch, from_previous: false) # rubocop:disable Lint/UnusedMethodArgument
+  def can_process?(batch, from_previous: false)
     batch.released? ? [true, 'Edit'] : [true, nil]
   end
 
@@ -17,19 +17,33 @@ class AddSpikedInControlTask < Task
     controller.do_add_spiked_in_control_task(self, params)
   end
 
-  def add_control(batch, phi_x_tube, request_id_set)
+  def add_control(batch, phi_x_tube, request_id_set, current_user)
     return false unless batch && phi_x_tube
 
     batch.requests.each do |request|
       next unless request_id_set.include? request.id
 
-      lane = request.target_asset.labware
-      next unless lane
-      lane.direct_spiked_in_buffer = nil
-      lane.parents << phi_x_tube
+      process_request(batch, phi_x_tube, request, current_user)
     end
 
     batch.save
-    true
+    batch.requests.all? { |r| r.has_passed(batch, self) }
+  end
+
+  def process_request(batch, phi_x_tube, request, current_user)
+    lane = request.target_asset.labware
+    next unless lane
+    lane.direct_spiked_in_buffer = nil
+    lane.parents << phi_x_tube
+    LabEvent.create!(
+      batch: batch,
+      description: name,
+      descriptors: {
+        'Scanned PhiX' => phi_x_tube.human_barcode,
+        'PhiX Stock Barcode' => phi_x_tube.parent&.human_barcode
+      },
+      user: current_user,
+      eventful: request
+    )
   end
 end

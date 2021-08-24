@@ -79,7 +79,7 @@ class SetDescriptorsTask < Task
     #     "132"=><ActionController::Parameters {"descriptors"=><ActionController::Parameters {"Concentration"=>"2.2"} permitted: true>} permitted: true>
     #  }
     def descriptors(request)
-      (params[:descriptors].presence || params.dig(:requests, request.id.to_s, :descriptors) || {}).to_unsafe_hash
+      (params[:descriptors].presence || params.dig(:requests, request.id.to_s, :descriptors))&.permit!&.to_hash || {}
     end
 
     def checked_requests
@@ -111,7 +111,7 @@ class SetDescriptorsTask < Task
     'set_descriptors'
   end
 
-  def can_process?(batch, from_previous: false) # rubocop:disable Lint/UnusedMethodArgument
+  def can_process?(batch, from_previous: false)
     batch.released? ? [true, 'Edit'] : [true, nil]
   end
 

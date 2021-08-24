@@ -29,6 +29,12 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
 
     click_on 'Next step'
 
+    find('#sample-1-checkbox').uncheck
+
+    fill_in('Barcode', with: spiked_buffer.machine_barcode)
+
+    click_on 'Next step'
+
     fill_in('Barcode', with: spiked_buffer.machine_barcode)
 
     click_on 'Next step'
