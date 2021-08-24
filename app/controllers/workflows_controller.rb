@@ -21,7 +21,6 @@ class WorkflowsController < ApplicationController
 
   # @todo These actions should be extracted from the controller, and instead be handled by an object invoked
   #       by the task
-  include Tasks::AddSpikedInControlHandler
   include Tasks::AssignTagsHandler
   include Tasks::AssignTagsToTubesHandler
   include Tasks::AssignTubesToWellsHandler
@@ -58,7 +57,7 @@ class WorkflowsController < ApplicationController
     # else actually execute the task.
     unless params[:next_stage].nil?
       eager_loading = @task.included_for_do_task
-      @batch ||= Batch.includes(eager_loading).find(params[:batch_id])
+      @batch = Batch.includes(eager_loading).find(params[:batch_id])
 
       editable, message = @task.can_process?(@batch, from_previous: true)
 
@@ -68,13 +67,15 @@ class WorkflowsController < ApplicationController
       end
 
       ActiveRecord::Base.transaction do
-        if @task.do_task(self, params)
+        task_success, task_message = @task.do_task(self, params)
+        if task_success
           # Task completed, start the batch is necessary and display the next one
           do_start_batch_task(@task, params)
           @stage += 1
           params[:id] = @stage
           @task = @workflow.tasks[@stage]
         end
+        flash[task_success ? :notice : :alert] = task_message if task_message
       end
     end
 

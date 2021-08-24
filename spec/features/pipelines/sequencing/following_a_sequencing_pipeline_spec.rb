@@ -30,6 +30,12 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
 
     click_on 'Next step'
 
+    fill_in('PhiX Barcode', with: 'Not a barcode')
+
+    click_on 'Next step'
+
+    expect(page).to have_content("Can't find a spiked hybridization buffer with barcode Not a barcode")
+
     find('#sample-1-checkbox').uncheck
 
     fill_in('PhiX Barcode', with: spiked_buffer.machine_barcode)

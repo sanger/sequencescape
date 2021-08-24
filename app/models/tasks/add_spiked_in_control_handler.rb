@@ -1,40 +1,80 @@
 # Handles the behaviour of {AddSpikedInControlTask} and included in {WorkflowsController}
 # {include:AddSpikedInControlTask}
 module Tasks::AddSpikedInControlHandler
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/CyclomaticComplexity
-  # rubocop:todo Metrics/AbcSize
-  # rubocop:todo Metrics/PerceivedComplexity
-  def do_add_spiked_in_control_task(task, params)
-    batch = @batch || Batch.find(params[:batch_id])
-    phi_x_buffers = SpikedBuffer.with_barcode(params[:barcode].values)
-    phi_x_per_request =
-      params[:barcode].transform_values do |barcode|
-        next if barcode.blank?
-        phi_x_buffers.detect { |tube| tube.any_barcode_matching?(barcode) } ||
-          (
-            flash[:error] = "Can't find a spiked hybridization buffer with barcode #{barcode}"
-            return false
-          )
+  # The handler takes the parameters for the task and
+  # helps add the scanned Spiked PhiX as a parent of each lane
+  class Handler < Tasks::BaseHandler
+    def perform
+      # Rubocop gets in a fight with prettier here.
+      # rubocop:disable Style/IfUnlessModifier
+      if missing_barcodes.present?
+        return false, "Can't find a spiked hybridization buffer with barcode #{missing_barcodes.to_sentence}"
       end
-    request_id_set = params[:request].keys.map(&:to_i)
 
-    # phi_x_per_request.each do |barcode, tube|
-    #   next unless barcode.present? && tube.nil?
-    #   flash[:error] = "Can't find a spiked hybridization buffer with barcode #{barcode}"
-    #   return false
-    # end
+      # rubocop:enable Style/IfUnlessModifier
 
-    Batch.transaction do
-      if task.add_control(batch, phi_x_per_request, request_id_set, current_user)
-        create_batch_events(batch, task)
+      Batch.transaction { add_control ? create_batch_events : false }
+    end
+
+    private
+
+    def phi_x_per_request
+      @phi_x_per_request ||=
+        params[:barcode].transform_values do |barcode|
+          next if barcode.blank?
+          phi_x_buffers.detect { |tube| tube.any_barcode_matching?(barcode) }
+        end
+    end
+
+    def missing_barcodes
+      @missing_barcodes ||=
+        params[:barcode].values.reject do |barcode|
+          barcode.empty? || phi_x_buffers.detect { |tube| tube.any_barcode_matching?(barcode) }
+        end
+    end
+
+    def phi_x_buffers
+      @phi_x_buffers ||= SpikedBuffer.with_barcode(params[:barcode].values)
+    end
+
+    def add_control
+      requests.each do |request|
+        next unless checked_requests.include?(request.id) && request.lane
+        process_request(request)
+      end
+
+      batch.save!
+      batch.requests.all? { |r| r.has_passed(batch, task) }
+    end
+
+    def process_request(request)
+      lane = request.lane
+      phi_x_tube = phi_x_per_request[request.id.to_s] || phi_x_per_request[:all]
+      lane.direct_spiked_in_buffer = nil
+      lane.direct_spiked_in_buffer = phi_x_tube if phi_x_tube
+      LabEvent.create!(
+        batch: batch,
+        description: task.name,
+        descriptors: descriptors_for(phi_x_tube),
+        user: current_user,
+        eventful: request
+      )
+    end
+
+    def descriptors_for(phi_x_tube)
+      if phi_x_tube
+        {
+          'PhiX added' => true,
+          'Scanned PhiX' => phi_x_tube.human_barcode,
+          'PhiX Stock Barcode' => phi_x_tube.parent&.human_barcode
+        }
       else
-        false
+        { 'PhiX added' => false }
       end
     end
+
+    def batch
+      @batch ||= Batch.find(params[:batch_id])
+    end
   end
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/CyclomaticComplexity
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/PerceivedComplexity
 end

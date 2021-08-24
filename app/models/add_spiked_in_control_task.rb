@@ -24,46 +24,8 @@ class AddSpikedInControlTask < Task
     batch.released? ? [true, 'Edit'] : [true, nil]
   end
 
-  def do_task(controller, params)
-    controller.do_add_spiked_in_control_task(self, params)
-  end
-
-  def add_control(batch, phi_x_per_request, request_id_set, current_user)
-    batch.requests.each do |request|
-      next unless request_id_set.include? request.id
-
-      process_request(batch, phi_x_per_request, request, current_user)
-    end
-
-    batch.save!
-    batch.requests.all? { |r| r.has_passed(batch, self) }
-  end
-
-  def process_request(batch, phi_x_per_request, request, current_user)
-    lane = request.target_asset.labware
-    phi_x_tube = phi_x_per_request[request.id.to_s] || phi_x_per_request[:all]
-    return unless lane # JG: I *think* this may be to handle control requests?
-    lane.direct_spiked_in_buffer = nil
-    lane.direct_spiked_in_buffer = phi_x_tube if phi_x_tube
-    LabEvent.create!(
-      batch: batch,
-      description: name,
-      descriptors: descriptors_for(phi_x_tube),
-      user: current_user,
-      eventful: request
-    )
-  end
-
-  def descriptors_for(phi_x_tube)
-    if phi_x_tube
-      {
-        'PhiX added' => true,
-        'Scanned PhiX' => phi_x_tube.human_barcode,
-        'PhiX Stock Barcode' => phi_x_tube.parent&.human_barcode
-      }
-    else
-      { 'PhiX added' => false }
-    end
+  def do_task(workflows_controller, params)
+    Tasks::AddSpikedInControlHandler::Handler.new(controller: workflows_controller, params: params, task: self).perform
   end
 
   def fields_for(requests)
