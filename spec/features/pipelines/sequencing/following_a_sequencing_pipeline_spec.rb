@@ -66,7 +66,7 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
         expect(page).to have_text('1.2')
 
         # Pending question on issue#3225
-        # expect(page).to have_text('James')
+        #
         # expect(page).to have_text('XP')
         # expect(page).to have_text('23')
         expect(page).to have_text('Something else')
@@ -157,7 +157,7 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
         end
         within(all('li').last) do
           expect(page).to have_text('2.2')
-          expect(page).to have_text('James')
+
           expect(page).to have_text('XP')
           expect(page).to have_text('23')
           expect(page).to have_text('Check stored')
@@ -228,14 +228,12 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
       within '#page-content' do
         within(first('li')) do
           expect(page).to have_text('1.5')
-          expect(page).to have_text('James')
           expect(page).to have_text('XP')
           expect(page).to have_text('23')
           expect(page).to have_text('Something else 0')
         end
         within(all('li').last) do
           expect(page).to have_text('3.5')
-          expect(page).to have_text('James')
           expect(page).to have_text('XP')
           expect(page).to have_text('23')
           expect(page).to have_text('Something else 1')
@@ -266,14 +264,14 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
       within '#page-content' do
         within(first('li')) do
           expect(page).to have_text('1.2')
-          expect(page).to have_text('James')
+
           expect(page).to have_text('XP')
           expect(page).to have_text('23')
           expect(page).to have_text('Not that')
         end
         within(all('li').last) do
           expect(page).to have_text('2.2')
-          expect(page).to have_text('James')
+
           expect(page).to have_text('XP')
           expect(page).to have_text('23')
           expect(page).to have_text('Or that either')
