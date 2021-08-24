@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# The tasks are no longer used
 class RemoveUnusedTasks < ActiveRecord::Migration[5.2]
   def up
     Task.where(sti_type: %w[AssignTagsTask SetCharacterisationDescriptorsTask]).each(&:destroy)
@@ -38,5 +41,17 @@ class RemoveUnusedTasks < ActiveRecord::Migration[5.2]
           }
         ]
       )
+    SetCharacterisationDescriptorsTask.each do |task|
+      task.descriptors.create!(
+        { name: 'Batch number of kit used', selection: { '1' => '' }, kind: 'Text', required: false, sorter: 1 },
+        { name: 'Alternative reagents used', selection: { '1' => '' }, kind: 'Text', required: false, sorter: 2 },
+        { name: 'Library storage box', selection: { '1' => '' }, kind: 'Text', required: false, sorter: 3 },
+        { name: 'Library concentration', selection: { '1' => '' }, kind: 'Text', required: false, sorter: 4 },
+        { name: 'Fragment size', selection: { '1' => '' }, kind: 'Text', required: false, sorter: 5 },
+        { name: 'Protocol deviations', selection: { '1' => '' }, kind: 'Text', required: false, sorter: 6 },
+        { name: 'Pooled library concentration', selection: { '1' => '' }, kind: 'Text', required: false, sorter: 6 },
+        { name: 'Comments', selection: { '1' => '' }, kind: 'Text', required: false, sorter: 8 }
+      )
+    end
   end
 end
