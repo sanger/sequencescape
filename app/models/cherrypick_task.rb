@@ -149,7 +149,7 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
     workflow_controller.do_cherrypick_task(self, params)
   rescue Cherrypick::Error => e
     workflow_controller.send(:flash)[:error] = e.message
-    false
+    [false, e.message]
   end
 
   # returns array [ [ request id, source plate barcode, source coordinate ] ]

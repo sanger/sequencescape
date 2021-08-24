@@ -75,7 +75,7 @@ class WorkflowsController < ApplicationController
           params[:id] = @stage
           @task = @workflow.tasks[@stage]
         end
-        flash[task_success ? :notice : :alert] = task_message if task_message
+        flash[task_success ? :notice : :alert] ||= task_message if task_message
       end
     end
 
