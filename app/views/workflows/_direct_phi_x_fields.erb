@@ -1,0 +1,6 @@
+<div class="grid-form">
+  <%= label_tag "barcode_#{direct_phi_x_fields.request&.id || :all}", direct_phi_x_fields.label %>
+  <div class="field">
+    <%= text_field :barcode, direct_phi_x_fields.request&.id || :all, value: direct_phi_x_fields.barcode %>
+  </div>
+</div>

@@ -607,7 +607,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   # rubocop:todo Metrics/MethodLength
   def generate_target_assets_for_requests # rubocop:todo Metrics/AbcSize
-    requests_to_update, asset_links = [], []
+    requests_to_update = []
 
     asset_type = pipeline.asset_type.constantize
     requests.reload.each do |request|
@@ -627,11 +627,8 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
       request.update!(target_asset: target_asset)
 
-      # All links between the two assets as new, so we can bulk create them!
-      asset_links << [request.asset.labware.id, target_asset.labware.id]
+      target_asset.parents << request.asset.labware
     end
-
-    AssetLink::BuilderJob.create(asset_links)
 
     requests_to_update.each { |request, asset| request.update!(asset: asset) }
   end

@@ -72,14 +72,12 @@ class Labware < Asset
   belongs_to :purpose, foreign_key: :plate_purpose_id, optional: true, inverse_of: :labware
 
   has_one :spiked_in_buffer_links,
-          # If we try to use the Rails 6 version, Rails 5 doesn't seem to perform the join
           -> { includes(:ancestor).references(:ancestor).where(labware: { sti_type: 'SpikedBuffer' }).direct },
           class_name: 'AssetLink',
           foreign_key: :descendant_id,
           inverse_of: :descendant
 
   has_one :spiked_in_buffer_most_recent_links,
-          # If we try to use the Rails 6 version, Rails 5 doesn't seem to perform the join
           -> {
             includes(:ancestor)
               .references(:ancestor)

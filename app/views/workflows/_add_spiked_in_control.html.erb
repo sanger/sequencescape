@@ -10,12 +10,7 @@
       Please scan the barcode of the aliquot of spiked hybridization buffer that will be used for the selected lane.
     </p>
 
-    <div class="grid-form">
-      <label for="barcode_">Barcode</label>
-      <div class="field">
-        <%= text_field :barcode , nil %>
-      </div>
-    </div>
+    <%= render @task.fields_for(@batch.requests) %>
   <% end %>
 
   <%= render partial: "next_stage_submit" %>

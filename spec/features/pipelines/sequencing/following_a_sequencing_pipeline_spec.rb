@@ -7,8 +7,7 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
   let(:pipeline) { create(:sequencing_pipeline, :with_workflow) }
 
   let(:spiked_buffer) { create :spiked_buffer, :tube_barcode }
-
-  before do
+  let(:requests) do
     asset = create :multiplexed_library_tube, :scanned_into_lab, sample_count: 2
     create_list :sequencing_request_with_assets,
                 2,
@@ -17,6 +16,8 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
                 target_asset: nil,
                 submission: create(:submission)
   end
+
+  before { requests }
 
   it 'can be processed', warren: true do
     login_user(user)
@@ -31,11 +32,11 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
 
     find('#sample-1-checkbox').uncheck
 
-    fill_in('Barcode', with: spiked_buffer.machine_barcode)
+    fill_in('PhiX Barcode', with: spiked_buffer.machine_barcode)
 
     click_on 'Next step'
 
-    fill_in('Barcode', with: spiked_buffer.machine_barcode)
+    fill_in('Request 1 :', with: spiked_buffer.machine_barcode)
 
     click_on 'Next step'
 
@@ -83,6 +84,94 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
     # and another one on updating the batch state
     expect(Warren.handler.messages_matching("queue_broadcast.messenger.#{flowcell_message.id}")).to be_positive
     batch.requests.each { |request| expect(request.target_asset.spiked_in_buffer).to eq(spiked_buffer) }
+  end
+
+  context 'with one lane of pre-added PhiX' do
+    let(:existing_spiked_buffer) { create :spiked_buffer, :tube_barcode }
+    let(:with_phi_x) do
+      tube = create :multiplexed_library_tube, :scanned_into_lab, sample_count: 2
+      tube.parents << existing_spiked_buffer
+      tube
+    end
+    let(:requests) do
+      no_phi_x = create :multiplexed_library_tube, :scanned_into_lab, sample_count: 2
+      [
+        create(
+          :sequencing_request_with_assets,
+          request_type: pipeline.request_types.first,
+          asset: no_phi_x,
+          target_asset: nil,
+          submission: create(:submission)
+        ),
+        create(
+          :sequencing_request_with_assets,
+          request_type: pipeline.request_types.first,
+          asset: with_phi_x,
+          target_asset: nil,
+          submission: create(:submission)
+        )
+      ]
+    end
+
+    it 'can be processed', warren: true do
+      login_user(user)
+      visit pipeline_path(pipeline)
+      within('#available-requests') { all('input[type=checkbox]', count: 2).each(&:check) }
+      first(:button, 'Submit').click
+      click_on('Specify Dilution Volume')
+
+      all(:field, 'Concentration').each_with_index { |field, index| field.fill_in(with: 1.2 + index) }
+
+      click_on 'Next step'
+
+      expect(page).to have_text("Tube #{with_phi_x.display_name} had PhiX added during library preparation")
+
+      fill_in('PhiX Barcode', with: spiked_buffer.machine_barcode)
+
+      click_on 'Next step'
+
+      find('#sample-1-checkbox').uncheck
+
+      fill_in('Operator', with: 'James')
+      select('XP', from: 'Workflow (Standard or Xp)')
+      fill_in('Lane loading concentration (pM)', with: 23)
+      fill_in('+4 field of weirdness', with: 'Check stored')
+
+      click_on 'Next step'
+
+      find('#sample-2-checkbox').uncheck
+
+      # Pending question on issue#3225 may be populated with previous v
+      fill_in('+4 field of weirdness', with: 'Something else', currently_with: '')
+
+      click_on 'Next step'
+
+      within '#sample' do
+        within(first('li')) do
+          expect(page).to have_text('1.2')
+          expect(page).to have_text(spiked_buffer.human_barcode)
+          expect(page).to have_text('Something else')
+        end
+        within(all('li').last) do
+          expect(page).to have_text('2.2')
+          expect(page).to have_text('James')
+          expect(page).to have_text('XP')
+          expect(page).to have_text('23')
+          expect(page).to have_text('Check stored')
+        end
+      end
+      click_on 'Release this batch'
+      expect(page).to have_content('Batch released')
+
+      batch = Batch.last
+      flowcell_message = batch.messengers.last
+
+      # Really we expect 1 here, but seem to be triggering two copies of the message. I suspect on message creation
+      # and another one on updating the batch state
+      expect(Warren.handler.messages_matching("queue_broadcast.messenger.#{flowcell_message.id}")).to be_positive
+      expect(requests.first.reload.target_asset.spiked_in_buffer).to eq(spiked_buffer)
+      expect(requests.last.reload.target_asset.spiked_in_buffer).to eq(existing_spiked_buffer)
+    end
   end
 
   context 'when a batch has been created' do
@@ -201,7 +290,7 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
       within('#released') { click_link(batch.id.to_s) }
       new_phix = create(:spiked_buffer, :tube_barcode)
       click_on('Add Spiked in control')
-      fill_in('Barcode', with: new_phix.machine_barcode)
+      fill_in('PhiX Barcode', with: new_phix.machine_barcode)
 
       click_on 'Update'
 
