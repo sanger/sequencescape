@@ -216,7 +216,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   def print_labels; end
 
-  def print_plate_labels # rubocop:todo Metrics/MethodLength
+  def print_plate_labels
     @pipeline = @batch.pipeline
     @output_barcodes = []
 
