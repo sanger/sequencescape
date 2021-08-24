@@ -48,7 +48,6 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
 
     find('#sample-1-checkbox').uncheck
 
-    fill_in('Operator', with: 'James')
     select('XP', from: 'Workflow (Standard or Xp)')
     fill_in('Lane loading concentration (pM)', with: 23)
     fill_in('+4 field of weirdness', with: 'Check stored')
@@ -74,7 +73,6 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
       end
       within(all('li').last) do
         expect(page).to have_text('2.2')
-        expect(page).to have_text('James')
         expect(page).to have_text('XP')
         expect(page).to have_text('23')
         expect(page).to have_text('Check stored')
@@ -138,7 +136,6 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
 
       find('#sample-1-checkbox').uncheck
 
-      fill_in('Operator', with: 'James')
       select('XP', from: 'Workflow (Standard or Xp)')
       fill_in('Lane loading concentration (pM)', with: 23)
       fill_in('+4 field of weirdness', with: 'Check stored')
@@ -200,7 +197,6 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
                user: user,
                description: 'Set descriptors',
                descriptors: {
-                 'Operator' => 'James',
                  'Workflow (Standard or Xp)' => 'XP',
                  'Lane loading concentration (pM)' => '23',
                  '+4 field of weirdness' => "Something else #{i}"

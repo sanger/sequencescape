@@ -47,9 +47,9 @@ module Tasks::SetDescriptorsHandler # rubocop:todo Style/Documentation
     # per request (ie. Task#per_item == 1)
     ## Per batch:
     # The fields for a descriptor look like this:
-    #   <input value="testing" id="descriptor_0_" type="text" name="descriptors[Operator]">
+    #   <input value="testing" id="descriptor_0_" type="text" name="descriptors[Comment]">
     # This results in:
-    #   params[:descriptors] => <ActionController::Parameters {"Operator"=>"operator_value", ...} permitted: true>
+    #   params[:descriptors] => <ActionController::Parameters {"Comment"=>"comment_value", ...} permitted: true>
     # which gets reused for each request
     ## Per request:
     # A separate hash is generated per request.

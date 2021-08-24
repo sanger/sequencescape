@@ -134,7 +134,6 @@ FactoryBot.define do
           :set_descriptors_task,
           workflow: workflow,
           descriptor_attributes: [
-            { kind: 'Text', sorter: 2, name: 'Operator' },
             {
               kind: 'Selection',
               sorter: 3,

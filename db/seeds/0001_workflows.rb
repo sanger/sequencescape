@@ -1166,7 +1166,6 @@ SequencingPipeline.create!(name: 'MiSeq sequencing') do |pipeline|
       t2 = SetDescriptorsTask.create!(name: 'Cluster Generation', sorted: 0, workflow: workflow)
       Descriptor.create!(kind: 'Text', sorter: 1, name: 'Chip barcode', task: t2)
       Descriptor.create!(kind: 'Text', sorter: 2, name: 'Cartridge barcode', task: t2)
-      Descriptor.create!(kind: 'Text', sorter: 3, name: 'Operator', task: t2)
       Descriptor.create!(kind: 'Text', sorter: 4, name: 'Machine name', task: t2)
     end
 end.tap do |pipeline|
@@ -1524,7 +1523,6 @@ def build_4000_tasks_for(workflow, paired_only = false) # rubocop:todo Metrics/M
     task.descriptors.build(
       [
         { kind: 'Text', sorter: 1, name: 'Chip Barcode', required: true },
-        { kind: 'Text', sorter: 2, name: 'Operator' },
         { kind: 'Text', sorter: 3, name: 'Pipette Carousel #' },
         { kind: 'Text', sorter: 4, name: 'CBOT' },
         { kind: 'Text', sorter: 5, name: '-20 Temp. Read 1 Cluster Kit (Box 1 of 2) Lot #' },
@@ -1539,7 +1537,6 @@ def build_4000_tasks_for(workflow, paired_only = false) # rubocop:todo Metrics/M
     task.descriptors.build(
       [
         { kind: 'Text', sorter: 1, name: 'Chip Barcode', required: true },
-        { kind: 'Text', sorter: 2, name: 'Operator' },
         { kind: 'Text', sorter: 3, name: 'Pipette Carousel #' },
         { kind: 'Text', sorter: 4, name: 'Sequencing Machine' },
         { kind: 'Text', sorter: 5, name: '-20 SBS Kit lot #' },
@@ -1561,7 +1558,6 @@ def build_4000_tasks_for(workflow, paired_only = false) # rubocop:todo Metrics/M
     if paired_only
       task.descriptors.build(
         [
-          { kind: 'Text', sorter: 1, name: 'Operator' },
           { kind: 'Text', sorter: 2, name: 'Pipette Carousel #' },
           { kind: 'Text', sorter: 3, name: '-20 Temp. Read 2 Cluster Kit (Box 2 of 2) Lot #' },
           { kind: 'Text', sorter: 4, name: '-20 Temp. Read 2 Cluster Kit (Box 2 of 2) RGT #' },
@@ -1578,7 +1574,6 @@ def build_4000_tasks_for(workflow, paired_only = false) # rubocop:todo Metrics/M
     else
       task.descriptors.build(
         [
-          { kind: 'Text', sorter: 1, name: 'Operator' },
           { kind: 'Text', sorter: 2, name: 'Pipette Carousel #' },
           { kind: 'Text', sorter: 3, name: '-20 Temp. Read 1 Cluster Kit Lot #' },
           { kind: 'Text', sorter: 4, name: '-20 Temp. Read 1 Cluster Kit RGT #' },

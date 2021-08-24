@@ -62,7 +62,7 @@ FactoryBot.define do
     lab_activity { true }
     workflow
 
-    transient { descriptor_attributes { [{ kind: 'Text', sorter: 2, name: 'Operator' }] } }
+    transient { descriptor_attributes { [{ kind: 'Text', sorter: 2, name: 'Comment' }] } }
 
     descriptors { instance.descriptors.build(descriptor_attributes) }
   end

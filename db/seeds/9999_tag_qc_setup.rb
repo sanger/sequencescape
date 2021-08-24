@@ -50,7 +50,6 @@ SequencingPipeline.create!(name: 'MiSeq sequencing QC') do |pipeline|
       t2 = SetDescriptorsTask.create!(name: 'Cluster Generation', sorted: 0, workflow: workflow)
       Descriptor.create!(kind: 'Text', sorter: 1, name: 'Chip barcode', task: t2)
       Descriptor.create!(kind: 'Text', sorter: 2, name: 'Cartridge barcode', task: t2)
-      Descriptor.create!(kind: 'Text', sorter: 3, name: 'Operator', task: t2)
       Descriptor.create!(kind: 'Text', sorter: 4, name: 'Machine name', task: t2)
     end
 end.tap do |pipeline|
