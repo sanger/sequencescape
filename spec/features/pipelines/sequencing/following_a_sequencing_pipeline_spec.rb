@@ -310,7 +310,7 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
 
     it 'can have failed items' do
       login_user(user)
-      visit_batch_path(batch)
+      visit batch_path(batch)
       expect(page).to have_content('Fail batch or requests')
       expect(page).not_to have_content('Batches can not be failed when pending')
     end
