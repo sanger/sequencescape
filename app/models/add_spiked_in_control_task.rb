@@ -5,6 +5,11 @@
 # been added to the lane in question.
 # @see Tasks::AddSpikedInControlHandler for behaviour included in the {WorkflowsController}
 class AddSpikedInControlTask < Task
+  # Holds information about a PhiX buffer for a given request in order to render the view.
+  # - If indirect, will inform the user that PhiX has already been added, but will let them
+  # override this with a deliberate click.
+  # - To partial path is used by rails if you do `render object`, this lets us keep the logic
+  #   outside of the views.
   SpikedBufferRecord =
     Struct.new(:barcode, :indirect, :request) do
       def to_partial_path
