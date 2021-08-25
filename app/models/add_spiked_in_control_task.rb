@@ -34,7 +34,11 @@ class AddSpikedInControlTask < Task
   end
 
   def fields_for(requests)
-    per_item_for(requests) ? requests.map { |r| phi_x_for(r.lane, r) } : phi_x_for(requests.first.lane, nil)
+    if per_item_for(requests)
+      requests.map { |request| phi_x_for(request.lane, request) }
+    else
+      phi_x_for(requests.first.lane, nil)
+    end
   end
 
   # Returns true if we should collect descriptors per request.
