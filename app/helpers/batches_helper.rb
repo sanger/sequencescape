@@ -3,18 +3,20 @@ module BatchesHelper # rubocop:todo Style/Documentation
     labware.purpose&.name.presence || 'Unassigned'
   end
 
-  def each_action(batch) # rubocop:todo Metrics/MethodLength
+  def each_action(batch)
     batch.tasks&.each_with_index do |task, index|
       enabled, message = task.can_process?(batch)
-      link =
-        if enabled
-          { controller: :workflows, action: :stage, id: index, batch_id: batch.id, workflow_id: batch.workflow.id }
-        else
-          '#'
-        end
-      yield task.name, link, enabled, message
+      yield task.name, task_link(index, enabled, batch), enabled, message
     end
     yield(*fail_links(batch))
+  end
+
+  def task_link(index, enabled, batch)
+    if enabled
+      { controller: :workflows, action: :stage, id: index, batch_id: batch.id, workflow_id: batch.workflow.id }
+    else
+      '#'
+    end
   end
 
   def fail_links(batch)
