@@ -61,13 +61,13 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
     click_on 'Next step'
 
     within '#sample' do
-      within(first('li')) do
+      within(first('.batch-summary-events .ss-card')) do
         expect(page).to have_text('James')
         expect(page).to have_text('XP')
         expect(page).to have_text('23')
         expect(page).to have_text('Check stored')
       end
-      within(all('li').last) do
+      within(all('.batch-summary-events .ss-card').last) do
         expect(page).to have_text('James')
         expect(page).to have_text('XP')
         expect(page).to have_text('23')

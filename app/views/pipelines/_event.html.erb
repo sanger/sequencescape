@@ -1,17 +1,9 @@
-<table class="table table-dense-information table-batch-summary">
-  <caption><%= event.description %> on <%= time_tag(event.created_at) %> by <%= event.user&.name || 'Unknown' %></h4>
-  <thead>
-    <tr>
-      <% event.descriptors.each do |descriptor| %>
-        <th><%= descriptor.name %></th>
-      <% end %>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <% event.descriptors.each do |descriptor| %>
-        <td><%= descriptor.value %></td>
-      <% end %>
-    </tr>
-  </tbody>
-</table>
+<div class="card event-card">
+  <div class="card-header"><%= event.description %> on <%= time_tag(event.created_at) %> by <%= event.user&.name || 'Unknown' %></div>
+  <dl>
+    <% event.descriptors.each do |descriptor| %>
+      <dt><%= descriptor.name %></dt>
+      <dd><%= descriptor.value %></dd>
+    <% end %>
+  </dl>
+</div>
