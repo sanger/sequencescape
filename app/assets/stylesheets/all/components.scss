@@ -16,9 +16,23 @@ table.table-dense-information {
   @extend .table-sm;
 }
 
-table.table-batch-summary {
-  caption {
-    caption-side: top;
+div.batch-summary-events {
+  .receptacle {
+    @extend .text-muted;
+    @extend .font-weight-light;
+    font-size: 50%;
+  }
+  dl {
+    @extend .card-body;
+    @extend .row;
+    flex: none;
+    dt {
+      @extend .col-5;
+      text-align: right;
+    }
+    dd {
+      @extend .col-5;
+    }
   }
 }
 

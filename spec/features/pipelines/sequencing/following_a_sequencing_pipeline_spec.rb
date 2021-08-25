@@ -64,11 +64,11 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
     click_on 'Next step'
 
     within '#sample' do
-      within(first('li')) do
+      within(first('.batch-summary-events .ss-card')) do
         expect(page).to have_text('1.2')
         expect(page).to have_text('Something else')
       end
-      within(all('li').last) do
+      within(all('.batch-summary-events .ss-card').last) do
         expect(page).to have_text('2.2')
         expect(page).to have_text('XP')
         expect(page).to have_text('23')
@@ -154,12 +154,12 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
       click_on 'Next step'
 
       within '#sample' do
-        within(first('li')) do
+        within(first('.batch-summary-events .ss-card')) do
           expect(page).to have_text('1.2')
           expect(page).to have_text(spiked_buffer.human_barcode)
           expect(page).to have_text('Something else')
         end
-        within(all('li').last) do
+        within(all('.batch-summary-events .ss-card').last) do
           expect(page).to have_text('2.2')
 
           expect(page).to have_text('XP')
@@ -231,13 +231,13 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
       click_link 'View summary'
 
       within '#page-content' do
-        within(first('li')) do
+        within(first('.batch-summary-events .ss-card')) do
           expect(page).to have_text('1.5')
           expect(page).to have_text('XP')
           expect(page).to have_text('23')
           expect(page).to have_text('Something else 0')
         end
-        within(all('li').last) do
+        within(all('.batch-summary-events .ss-card').last) do
           expect(page).to have_text('3.5')
           expect(page).to have_text('XP')
           expect(page).to have_text('23')
@@ -267,14 +267,14 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
       click_link 'View summary'
 
       within '#page-content' do
-        within(first('li')) do
+        within(first('.batch-summary-events .ss-card')) do
           expect(page).to have_text('1.2')
 
           expect(page).to have_text('XP')
           expect(page).to have_text('23')
           expect(page).to have_text('Not that')
         end
-        within(all('li').last) do
+        within(all('.batch-summary-events .ss-card').last) do
           expect(page).to have_text('2.2')
 
           expect(page).to have_text('XP')

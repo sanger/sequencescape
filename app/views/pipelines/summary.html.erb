@@ -5,5 +5,5 @@
 <% end -%>
 <% add :back_menu, "Back to pipeline" => pipeline_path(@batch.pipeline) -%>
 
-<%= page_title 'Batch', 'Summary' %>
+<%= page_title "Batch", @batch.id%>
 <%= render partial: 'event_requests', locals: { batch: @batch } %>
