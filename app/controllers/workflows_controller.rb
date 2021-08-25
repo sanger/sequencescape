@@ -17,7 +17,7 @@ class WorkflowsController < ApplicationController
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
 
-  attr_accessor :plate_purpose_options, :spreadsheet_layout, :batch, :values
+  attr_accessor :plate_purpose_options, :spreadsheet_layout, :batch
 
   # @todo These actions should be extracted from the controller, and instead be handled by an object invoked
   #       by the task
