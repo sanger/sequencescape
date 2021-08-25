@@ -40,7 +40,7 @@ jobs:
       # Actually run our cops with flags to improve the details of lint errors
       # and parallel to try and improve speed
       - name: Run rubocop
-        run: bundle exec rubocop --extra-details --display-style-guide --parallel
+        run: bundle exec rubocop --extra-details --display-style-guide --parallel --format github
   eslint:
     name: EsLint
     runs-on: ubuntu-latest
