@@ -177,6 +177,7 @@ group :test do
 
   # Provides json expectations for rspec. Makes test more readable,
   # and test failures more descriptive.
+  gem 'rspec-github', require: false
   gem 'rspec-json_expectations', require: false
 
   # It is needed to use #assigns(attribute) in controllers tests
@@ -213,6 +214,7 @@ group :test, :cucumber do
 end
 
 group :cucumber do
+  gem 'cucumber_github_formatter'
   gem 'cucumber-rails', require: false
   gem 'mime-types'
   gem 'rubyzip'
