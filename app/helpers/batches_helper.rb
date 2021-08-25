@@ -1,8 +1,23 @@
-module BatchesHelper # rubocop:todo Style/Documentation
+# frozen_string_literal: true
+
+# Helper associated with {Batch batches}
+module BatchesHelper
+  FAIL_LINK = 'Fail batch or requests'
+
   def purpose_for_labware(labware)
     labware.purpose&.name.presence || 'Unassigned'
   end
 
+  # Helps generate links for each action associated with a batch
+  #
+  # @param batch [Batch] The batch to generate links for
+  # @yieldparam [String] name the name of the link to use for the action
+  # @yieldparam [Hash,String] link A Url or hash object to use as the link's destination
+  # @yieldparam [Boolean] enabled True if the link should be enabled
+  # @yieldparam [String] message Message describing the link further, such as why it is disabled
+  #
+  # @return [Void]
+  #
   def each_action(batch)
     batch.tasks&.each_with_index do |task, index|
       enabled, message = task.can_process?(batch)
@@ -11,6 +26,15 @@ module BatchesHelper # rubocop:todo Style/Documentation
     yield(*fail_links(batch))
   end
 
+  #
+  # Generates a link for a given task index. Disabled links will have no explicit target
+  #
+  # @param index [Integer] The index of the {Task} to link to
+  # @param enabled [Boolean] Whether the link is enabled or not
+  # @param batch [Batch] The batch associated with the task
+  #
+  # @return [Hash,String] A hash or string with which to generate the link.
+  #
   def task_link(index, enabled, batch)
     if enabled
       { controller: :workflows, action: :stage, id: index, batch_id: batch.id, workflow_id: batch.workflow.id }
@@ -19,16 +43,18 @@ module BatchesHelper # rubocop:todo Style/Documentation
     end
   end
 
+  #
+  # Generates a link to fail the batch if appropriate
+  #
+  # @param batch [Batch] The batch associated with the task
+  #
+  # @return [Hash,String] A hash or string with which to generate the link.
+  #
   def fail_links(batch)
     if batch.pending?
-      [
-        'Fail batch or requests',
-        '#',
-        false,
-        'Batches can not be failed when pending. Try reset batch under edit instead'
-      ]
+      [FAIL_LINK, '#', false, 'Batches can not be failed when pending. Try reset batch under edit instead']
     else
-      ['Fail batch or requests', { action: :fail, id: batch.id }, true, nil]
+      [FAIL_LINK, { action: :fail, id: batch.id }, true, nil]
     end
   end
 
