@@ -67,10 +67,6 @@ module Presenters
       @pipeline.is_a?(PacBioSequencingPipeline)
     end
 
-    def can_create_stock_assets?
-      @pipeline.can_create_stock_assets?
-    end
-
     def pacbio_sample_pipeline?
       @pipeline.is_a?(PacBioSamplePrepPipeline)
     end
@@ -81,10 +77,6 @@ module Presenters
 
     def plate_labels?
       [cherrypicking?, genotyping?, pacbio?, pacbio_sample_pipeline?].any?
-    end
-
-    def stock_labels?
-      [!sequencing?, can_create_stock_assets?, !multiplexed?].all?
     end
 
     # rubocop:todo Metrics/PerceivedComplexity
@@ -101,11 +93,6 @@ module Presenters
       add_submenu_option 'Print pool label', :print_multiplex_labels if multiplexed?
       add_submenu_option 'Print stock pool label', :print_stock_multiplex_labels if multiplexed?
       add_submenu_option 'Print plate labels', :print_plate_labels if plate_labels?
-      add_submenu_option 'Print stock labels', :print_stock_labels if stock_labels?
-
-      if can_create_stock_assets? && can?(:create_stock_asset)
-        add_submenu_option 'Create stock tubes', new_batch_stock_asset_path(@batch)
-      end
 
       if pacbio_sample_pipeline? && can?(:sample_prep_worksheet)
         add_submenu_option 'Print sample prep worksheet', :sample_prep_worksheet

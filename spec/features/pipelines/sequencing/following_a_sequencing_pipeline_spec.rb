@@ -36,13 +36,15 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
 
     expect(page).to have_content("Can't find a spiked hybridization buffer with barcode Not a barcode")
 
-    find('#sample-1-checkbox').uncheck
+    find('#sample-2-checkbox').uncheck
 
     fill_in('PhiX Barcode', with: spiked_buffer.machine_barcode)
 
     click_on 'Next step'
 
-    fill_in('Request 1 :', with: spiked_buffer.machine_barcode)
+    find('#sample-1-checkbox').uncheck
+
+    expect(page).to have_content('Request 1 :')
 
     click_on 'Next step'
 
@@ -64,11 +66,6 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
     within '#sample' do
       within(first('li')) do
         expect(page).to have_text('1.2')
-
-        # Pending question on issue#3225
-        #
-        # expect(page).to have_text('XP')
-        # expect(page).to have_text('23')
         expect(page).to have_text('Something else')
       end
       within(all('li').last) do
@@ -81,13 +78,20 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
     click_on 'Release this batch'
     expect(page).to have_content('Batch released')
 
+    first(:link, 'Lane').click
+    expect(page).to have_content("Spiked Buffer: #{spiked_buffer.display_name}")
+
+    go_back
+
+    all(:link, 'Lane').last.click
+    expect(page).not_to have_content('Spiked Buffer')
+
     batch = Batch.last
     flowcell_message = batch.messengers.last
 
     # Really we expect 1 here, but seem to be triggering two copies of the message. I suspect on message creation
     # and another one on updating the batch state
     expect(Warren.handler.messages_matching("queue_broadcast.messenger.#{flowcell_message.id}")).to be_positive
-    batch.requests.each { |request| expect(request.target_asset.spiked_in_buffer).to eq(spiked_buffer) }
   end
 
   context 'with one lane of pre-added PhiX' do
@@ -163,6 +167,7 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
           expect(page).to have_text('Check stored')
         end
       end
+
       click_on 'Release this batch'
       expect(page).to have_content('Batch released')
 
@@ -301,6 +306,13 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
 
       expect(Warren.handler.messages_matching("queue_broadcast.messenger.#{flowcell_message.id}")).to eq(1)
       batch.requests.each { |request| expect(request.target_asset.spiked_in_buffer).to eq(new_phix) }
+    end
+
+    it 'can have failed items' do
+      login_user(user)
+      visit batch_path(batch)
+      expect(page).to have_content('Fail batch or requests')
+      expect(page).not_to have_content('Batches can not be failed when pending')
     end
   end
 end

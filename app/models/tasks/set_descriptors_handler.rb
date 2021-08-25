@@ -22,6 +22,10 @@ module Tasks::SetDescriptorsHandler # rubocop:todo Style/Documentation
 
     private
 
+    def params
+      @params.respond_to?(:permit!) ? @params.permit!.to_h : @params
+    end
+
     def process_request(request)
       LabEvent.create!(
         batch: batch,
@@ -61,7 +65,7 @@ module Tasks::SetDescriptorsHandler # rubocop:todo Style/Documentation
     #     "132"=><ActionController::Parameters {"descriptors"=><ActionController::Parameters {"Concentration"=>"2.2"} permitted: true>} permitted: true>
     #  }
     def descriptors(request)
-      (params[:descriptors].presence || params.dig(:requests, request.id.to_s, :descriptors))&.permit!&.to_hash || {}
+      (params[:descriptors].presence || params.dig(:requests, request.id.to_s, :descriptors)) || {}
     end
 
     def batch

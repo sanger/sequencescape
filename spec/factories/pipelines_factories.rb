@@ -164,28 +164,6 @@ FactoryBot.define do
     after(:build) { |pipeline| pipeline.request_types << create(:pac_bio_sequencing_request_type) }
   end
 
-  factory :library_creation_pipeline do
-    name { |_a| FactoryBot.generate :pipeline_name }
-    active { true }
-
-    after(:build) do |pipeline|
-      pipeline.request_types << create(:request_type)
-      pipeline.add_control_request_type
-      pipeline.build_workflow(name: pipeline.name, locale: 'Internal', pipeline: pipeline)
-    end
-  end
-
-  factory :multiplexed_library_creation_pipeline do
-    name { |_a| FactoryBot.generate :pipeline_name }
-    active { true }
-
-    after(:build) do |pipeline|
-      pipeline.request_types << create(:request_type)
-      pipeline.add_control_request_type
-      pipeline.build_workflow(name: pipeline.name, locale: 'Internal', pipeline: pipeline)
-    end
-  end
-
   factory :library_completion, class: 'IlluminaHtp::Requests::LibraryCompletion' do
     request_type do
       create(

@@ -28,6 +28,7 @@ end
 def create_request_for_pipeline(pipeline_name, options = {}) # rubocop:todo Metrics/AbcSize
   pipeline = Pipeline.find_by(name: pipeline_name) or
     raise StandardError, "Cannot find pipeline #{pipeline_name.inspect}"
+
   request_metadata = FactoryBot.create :"request_metadata_for_#{pipeline.request_types.first.key}"
   request_parameters =
     options.merge(
