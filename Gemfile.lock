@@ -373,6 +373,8 @@ GEM
     rspec-expectations (3.10.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
+    rspec-github (2.3.1)
+      rspec-core (~> 3.0)
     rspec-html-matchers (0.9.4)
       nokogiri (~> 1)
       rspec (>= 3.0.0.a, < 4)
@@ -579,6 +581,7 @@ DEPENDENCIES
   rest-client
   roo
   rspec-collection_matchers
+  rspec-github
   rspec-html-matchers
   rspec-json_expectations
   rspec-longrun

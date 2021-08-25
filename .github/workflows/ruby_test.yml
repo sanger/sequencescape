@@ -116,7 +116,7 @@ jobs:
           CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
           CI_NODE_INDEX: ${{ matrix.ci_node_index }}
           DBPORT: ${{ job.services.mysql.ports[3306] }}
-        run: bin/knapsack_pro_rspec
+        run: bin/knapsack_pro_rspec  --format RSpec::Github::Formatter --format progress
       - name: Upload capybara artifacts
         uses: actions/upload-artifact@v2
         if: ${{ failure() }}
@@ -134,7 +134,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RAILS_ENV: cucumber
-      CUCUMBER_FORMAT: pretty
+      CUCUMBER_FORMAT: progress
+      CUCUMBER_PUBLISH_ENABLED: true
       BUNDLE_WITHOUT: "deployment profile development test"
     # Services
     # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idservices
@@ -194,7 +195,7 @@ jobs:
           CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
           CI_NODE_INDEX: ${{ matrix.ci_node_index }}
           DBPORT: ${{ job.services.mysql.ports[3306] }}
-        run: bin/knapsack_pro_cucumber --publish
+        run: bin/knapsack_pro_cucumber
       - name: Upload capybara artifacts
         uses: actions/upload-artifact@v2
         if: ${{ failure() }}

@@ -178,6 +178,7 @@ group :test do
   # Provides json expectations for rspec. Makes test more readable,
   # and test failures more descriptive.
   gem 'rspec-json_expectations', require: false
+  gem 'rspec-github', require: false
 
   # It is needed to use #assigns(attribute) in controllers tests
   gem 'minitest'

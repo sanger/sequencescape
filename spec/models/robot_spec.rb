@@ -12,6 +12,10 @@ describe Robot do
       robot_with_verification_behaviour
     end
 
+    it 'has an intentionally failing test' do
+      expect(true).to be false
+    end
+
     it 'returns only the expected scope' do
       expect(described_class.with_verification_behaviour).to eq [robot_with_verification_behaviour]
     end
