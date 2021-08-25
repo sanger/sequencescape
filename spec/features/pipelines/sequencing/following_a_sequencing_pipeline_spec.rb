@@ -307,5 +307,12 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
       expect(Warren.handler.messages_matching("queue_broadcast.messenger.#{flowcell_message.id}")).to eq(1)
       batch.requests.each { |request| expect(request.target_asset.spiked_in_buffer).to eq(new_phix) }
     end
+
+    it 'can have failed items' do
+      login_user(user)
+      visit_batch_path(batch)
+      expect(page).to have_content('Fail batch or requests')
+      expect(page).not_to have_content('Batches can not be failed when pending')
+    end
   end
 end
