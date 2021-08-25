@@ -14,6 +14,7 @@ Feature: Gel QC
 
   @gel_index
   Scenario: Gel dilution with working dilution and stock plate should display on index
+    Then I should see "A logged github error"
     And a "Working Dilution" plate purpose and of type "WorkingDilutionPlate" with barcode "6250000123818" exists
     And a "Gel Dilution" plate purpose and of type "GelDilutionPlate" with barcode "1930000123708" exists
     And plate "1220000123724" is the parent of plate "6250000123818"

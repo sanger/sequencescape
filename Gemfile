@@ -217,6 +217,7 @@ group :cucumber do
   gem 'cucumber-rails', require: false
   gem 'mime-types'
   gem 'rubyzip'
+  gem 'cucumber_github_formatter'
 end
 
 group :deployment do

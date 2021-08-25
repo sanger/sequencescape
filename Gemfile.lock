@@ -182,6 +182,7 @@ GEM
       cucumber-core (~> 10.0, >= 10.0.1)
       cucumber-cucumber-expressions (~> 12.1, >= 12.1.1)
       cucumber-messages (~> 17.0, >= 17.0.1)
+    cucumber_github_formatter (0.1.0)
     daemons (1.4.0)
     database_cleaner (2.0.1)
       database_cleaner-active_record (~> 2.0.0)
@@ -539,6 +540,7 @@ DEPENDENCIES
   carrierwave
   configatron
   cucumber-rails
+  cucumber_github_formatter
   daemons
   database_cleaner
   delayed_job_active_record
