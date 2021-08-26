@@ -8,6 +8,7 @@ module BatchesHelper
     labware.purpose&.name.presence || 'Unassigned'
   end
 
+  #
   # Helps generate links for each action associated with a batch
   #
   # @param batch [Batch] The batch to generate links for
