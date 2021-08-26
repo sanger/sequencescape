@@ -19,9 +19,31 @@ class Task < ApplicationRecord
 
   def partial; end
 
+  #
+  # Indicates if a task can be performed.
   # By default, most tasks will only support unreleased batches
-  def can_process?(batch, from_previous: false)
+  #
+  # @param batch [Batch] The batch on which the action will be performed
+  #
+  # @return [Array<Bool,String>] Array indicating if the action can be performed.
+  #                              Second element is a message about why the action is prevented
+  #
+  def can_process?(batch)
     batch.released? ? [false, 'Disabled on released batches'] : [true, nil]
+  end
+
+  #
+  # Indicates if a task can be linked to directly from the batch show page
+  # For most tasks this dependent on whether the task can be performed, but some tasks are
+  # dependent on the previous task, or are even directly coupled to it.
+  #
+  # @param batch [Batch] The batch on which the action will be performed
+  #
+  # @return [Array<Bool,String>] Array indicating if the action can be performed.
+  #                              Second element is a message about why the action is prevented
+  #
+  def can_link_directly?(batch)
+    can_process?(batch)
   end
 
   def included_for_do_task

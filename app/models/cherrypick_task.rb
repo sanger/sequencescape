@@ -30,10 +30,16 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
     )
   end
 
-  # Its not the end of the world if we do end up here, it already redirects to the previous step, but
-  # since we've got this functionality, lets use it here as well.
-  def can_process?(_, from_previous: false)
-    [from_previous, 'Can only be accessed via the previous step']
+  #
+  # Cherrypick tasks are directly coupled to the previous task, due to the awkward
+  # way in which the WorkflowsController operates. See issues#2831 for aims to help improve some of this
+  #
+  # @param batch [Batch] The batch on which the action will be performed
+  #
+  # @return [false,'Can only be accessed via the previous step'>] Array indicating this action can't be linked
+  #
+  def can_link_directly?(_batch)
+    [false, 'Can only be accessed via the previous step']
   end
 
   # rubocop:todo Metrics/ParameterLists

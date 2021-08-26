@@ -58,7 +58,7 @@ class WorkflowsController < ApplicationController
       eager_loading = @task.included_for_do_task
       @batch = Batch.includes(eager_loading).find(params[:batch_id])
 
-      editable, message = @task.can_process?(@batch, from_previous: true)
+      editable, message = @task.can_process?(@batch)
 
       unless editable
         redirect_back fallback_location: batch_path(@batch), alert: message

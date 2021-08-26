@@ -25,7 +25,7 @@ class AddSpikedInControlTask < Task
     'add_spiked_in_control'
   end
 
-  def can_process?(batch, from_previous: false)
+  def can_process?(batch)
     batch.released? ? [true, 'Edit'] : [true, nil]
   end
 
