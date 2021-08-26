@@ -23,6 +23,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
       @batch = create :batch
       @workflows_controller.batch = @batch
       @source_plate = create :plate
+      @user = build :user
       @source_plate.wells =
         %w[A1 B1 C1].map do |loc|
           create(:well_with_sample_and_without_plate).tap do |w|
@@ -44,7 +45,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
           @plate_count = Plate.count
           @transferrequest_count = TransferRequest.count
           params = { batch_id: @batch.id }
-          @task.render_task(@workflows_controller, params)
+          @task.render_task(@workflows_controller, params, @user)
         end
 
         should 'change Plate.count by 1' do
@@ -92,8 +93,8 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
         setup do
           @plate_count = Plate.count
           params = { batch_id: @batch.id }
-          @task.render_task(@workflows_controller, params)
-          @task.render_task(@workflows_controller, params)
+          @task.render_task(@workflows_controller, params, @user)
+          @task.render_task(@workflows_controller, params, @user)
         end
 
         should 'change Plate.count by 1' do
@@ -118,7 +119,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
         should 'raise an exception' do
           assert_raise Tasks::PlateTransferHandler::InvalidBatch do
             params = { batch_id: @batch.id }
-            @task.render_task(@workflows_controller, params)
+            @task.render_task(@workflows_controller, params, @user)
           end
         end
       end
@@ -134,8 +135,8 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
         # @workflows_controller.batch = mock("Batch")
 
         params = { batch_id: @batch.id }
-        @task.render_task(@workflows_controller, params)
-        @task.do_task(@workflows_controller, params)
+        @task.render_task(@workflows_controller, params, @user)
+        @task.do_task(@workflows_controller, params, @user)
       end
 
       should 'pass the transfer requests' do
