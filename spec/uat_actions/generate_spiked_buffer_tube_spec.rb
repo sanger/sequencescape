@@ -18,7 +18,7 @@ describe UatActions::GenerateSpikedBufferTube do
     end
 
     context 'when creating multiple tubes' do
-      let(:parameters) { { num_tubes: 4 } }
+      let(:parameters) { { tube_count: 4 } }
 
       it 'can be performed' do
         expect { uat_action.perform }.to change(Tube, :count).by(5) # One parent stock and four child SpikedBuffers
