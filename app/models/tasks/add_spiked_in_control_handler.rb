@@ -39,7 +39,7 @@ module Tasks::AddSpikedInControlHandler
 
     def add_control
       requests.each do |request|
-        next unless checked_requests.include?(request.id) && request.lane
+        next unless selected_requests.include?(request.id) && request.lane
         process_request(request)
       end
 

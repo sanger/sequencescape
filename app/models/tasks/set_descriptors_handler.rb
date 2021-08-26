@@ -7,10 +7,12 @@ module Tasks::SetDescriptorsHandler # rubocop:todo Style/Documentation
     end
 
     def perform
-      # Process each request that has been checked.
-
+      # Process each request that has been selected in the front end
+      # by default all requests are selected, but in rare circumstances the user
+      # can uncheck a request to exclude it from the step
       requests.each do |request|
-        next unless checked_requests.include?(request.id)
+        next unless selected_requests.include?(request.id)
+
         process_request(request)
       end
 

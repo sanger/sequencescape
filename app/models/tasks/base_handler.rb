@@ -31,13 +31,13 @@ module Tasks
       event.save!
     end
 
-    def checked_requests
+    def selected_requests
       # Front end renders checkboxes in the form:
       # <input name="request[20251826]" id="sample 1 checkbox" class="sample_check select_all_target" value="on" type="checkbox" checked="">
       # We don't have hidden input fields of the same name, so params[:request] looks as follows:
       # { '123' => 'on', '124' => 'on' }
       # Unchecked requests are *not* listed in the hash.
-      @checked_requests ||= params.fetch(:request, {}).keys.map(&:to_i)
+      @selected_requests ||= params.fetch(:request, {}).keys.map(&:to_i)
     end
   end
 end
