@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 # Will construct plates with well_count wells filled with samples
-class UatActions::IntergrationSuiteTools < UatActions
-  self.title = 'Intergration suite tools'
+class UatActions::IntegrationSuiteTools < UatActions
+  self.title = 'Integration suite tools'
 
   # The description displays on the list of UAT actions to provide additional information
   self.description =
