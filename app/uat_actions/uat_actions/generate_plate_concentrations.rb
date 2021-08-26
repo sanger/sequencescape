@@ -2,7 +2,7 @@
 
 # Will generate concentrations for a given plate
 class UatActions::GeneratePlateConcentrations < UatActions
-  self.title = 'Generate Concentrations for a Plate'
+  self.title = 'Generate concentrations for a plate'
   self.description = 'Generate a set of randomised concentrations for a plate.'
 
   form_field :plate_barcode,

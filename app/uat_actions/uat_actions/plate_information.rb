@@ -2,7 +2,7 @@
 
 # Will fetch plate information for a plate barcode
 class UatActions::PlateInformation < UatActions
-  self.title = 'Plate Information'
+  self.title = 'Plate information'
   self.description = 'Get plate information for a barcode.'
 
   form_field :plate_barcode, :text_field, label: 'Plate Barcode', help: 'Fetches basic information for a plate barcode.'
