@@ -66,7 +66,7 @@ class WorkflowsController < ApplicationController
       end
 
       ActiveRecord::Base.transaction do
-        task_success, task_message = @task.do_task(self, params)
+        task_success, task_message = @task.do_task(self, params, current_user)
         if task_success
           # Task completed, start the batch is necessary and display the next one
           do_start_batch_task(@task, params)
@@ -87,7 +87,7 @@ class WorkflowsController < ApplicationController
       if @batch.nil? || @task.included_for_render_task != eager_loading
         @batch = Batch.includes(@task.included_for_render_task).find(params[:batch_id])
       end
-      @task.render_task(self, params)
+      @task.render_task(self, params, current_user)
     end
   end
 

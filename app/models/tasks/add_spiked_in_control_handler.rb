@@ -56,7 +56,7 @@ module Tasks::AddSpikedInControlHandler
         batch: batch,
         description: task.name,
         descriptors: descriptors_for(phi_x_tube),
-        user: current_user,
+        user: user,
         eventful: request
       )
     end

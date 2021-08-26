@@ -146,12 +146,12 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
     'cherrypick_batches'
   end
 
-  def render_task(workflow_controller, params)
+  def render_task(workflow_controller, params, _user)
     super
     workflow_controller.render_cherrypick_task(self, params)
   end
 
-  def do_task(workflow_controller, params)
+  def do_task(workflow_controller, params, _user)
     workflow_controller.do_cherrypick_task(self, params)
   rescue Cherrypick::Error => e
     workflow_controller.send(:flash)[:error] = e.message

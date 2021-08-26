@@ -6,8 +6,8 @@
 #
 # @see Tasks::AssignTagsToTubesHandler for behaviour included in the {WorkflowsController}
 class AssignTagsToTubesTask < AssignTagsTask
-  def do_task(workflow, params)
-    workflow.do_assign_tags_to_destination_task(self, params)
+  def do_task(workflows_controller, params, _user)
+    workflows_controller.do_assign_tags_to_destination_task(self, params)
   end
 
   def included_for_render_task

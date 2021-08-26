@@ -15,12 +15,14 @@ class SetDescriptorsTask < Task
     batch.released? ? [true, 'Edit'] : [true, nil]
   end
 
-  def render_task(workflows_controller, params)
-    Tasks::SetDescriptorsHandler::Handler.new(controller: workflows_controller, params: params, task: self).render
+  def render_task(workflows_controller, params, user)
+    Tasks::SetDescriptorsHandler::Handler.new(controller: workflows_controller, params: params, task: self, user: user)
+      .render
   end
 
-  def do_task(workflows_controller, params)
-    Tasks::SetDescriptorsHandler::Handler.new(controller: workflows_controller, params: params, task: self).perform
+  def do_task(workflows_controller, params, user)
+    Tasks::SetDescriptorsHandler::Handler.new(controller: workflows_controller, params: params, task: self, user: user)
+      .perform
   end
 
   #

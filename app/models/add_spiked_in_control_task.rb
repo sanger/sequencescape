@@ -29,8 +29,13 @@ class AddSpikedInControlTask < Task
     batch.released? ? [true, 'Edit'] : [true, nil]
   end
 
-  def do_task(workflows_controller, params)
-    Tasks::AddSpikedInControlHandler::Handler.new(controller: workflows_controller, params: params, task: self).perform
+  def do_task(workflows_controller, params, user)
+    Tasks::AddSpikedInControlHandler::Handler.new(
+      controller: workflows_controller,
+      params: params,
+      task: self,
+      user: user
+    ).perform
   end
 
   def fields_for(requests)

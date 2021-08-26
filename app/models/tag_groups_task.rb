@@ -8,7 +8,7 @@ class TagGroupsTask < Task # rubocop:todo Style/Documentation
     workflow.render_tag_groups_task(self, params)
   end
 
-  def do_task(_workflow, _params)
+  def do_task(_workflow, _params, _user)
     true
   end
 end

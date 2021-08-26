@@ -33,7 +33,7 @@ module Tasks::SetDescriptorsHandler # rubocop:todo Style/Documentation
         batch: batch,
         description: @task.name,
         descriptors: descriptors(request),
-        user: current_user,
+        user: user,
         eventful: request
       )
 

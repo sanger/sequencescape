@@ -54,11 +54,11 @@ class Task < ApplicationRecord
     %i[requests pipeline lab_events]
   end
 
-  def render_task(controller, params)
-    controller.render_task(self, params)
+  def render_task(workflows_controller, params, _user)
+    workflows_controller.render_task(self, params)
   end
 
-  def do_task(_controller, _params)
+  def do_task(_workflows_controller, _params, _user)
     raise NotImplementedError, "Please Implement a do_task for #{self.class.name}"
   end
 

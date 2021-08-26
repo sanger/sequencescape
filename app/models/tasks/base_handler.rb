@@ -7,25 +7,21 @@ module Tasks
   # to the controllers than is ideal, reflecting their previous
   # unity.
   class BaseHandler
-    attr_reader :controller, :params, :task
+    attr_reader :controller, :params, :task, :user
 
     delegate :requests, to: :batch
 
-    def initialize(controller:, params:, task:)
+    def initialize(controller:, params:, task:, user:)
       @controller = controller
       @params = params
       @task = task
+      @user = user
     end
 
     private
 
-    # TODO: Pass this in instead
-    def current_user
-      controller.send(:current_user)
-    end
-
     def create_batch_events
-      event = batch.lab_events.build(description: 'Complete', user: current_user, batch: batch)
+      event = batch.lab_events.build(description: 'Complete', user: user, batch: batch)
       event.add_descriptor Descriptor.new(name: 'task_id', value: task.id)
       event.add_descriptor Descriptor.new(name: 'task', value: task.name)
       event.save!
