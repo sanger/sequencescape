@@ -5,11 +5,11 @@ require 'rails_helper'
 # This is a very tangled test, as I'm hoping to unhook the current dependencies
 # so need to wrap it at its current level of messiness
 RSpec.describe Tasks::SetDescriptorsHandler::Handler, type: :model do
-  subject(:handler) { described_class.new(controller: controller, params: params, task: task) }
+  subject(:handler) { described_class.new(controller: controller, params: params, task: task, user: user) }
 
   let(:batch) { create :batch, request_count: 1 }
   let(:request) { batch.requests.first }
-  let(:controller) { instance_double(WorkflowsController, current_user: user) }
+  let(:controller) { instance_double(WorkflowsController) }
   let(:user) { create :user }
   let(:task) { instance_double(SetDescriptorsTask, name: 'Step 1', id: 1) }
 
