@@ -19,7 +19,7 @@ describe 'Batches controller', js: true do
     request_ids = batch.batch_requests.map(&:request_id)
     login_user user
     visit batch_path(batch)
-    click_link('Fail batch or items')
+    click_link('Fail batch or requests')
     check('Fail request 1')
     check('Fail request 2')
     check('Fail request 3')

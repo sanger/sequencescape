@@ -8,10 +8,9 @@ Feature: Show the date of creation of a batch
     Given I have a batch in "<pipeline>"
       And I am on the last batch show page
     Then I should see "Created at"
-      And I should see "This batch belongs to pipeline: <pipeline>"
+      And I should see "Pipeline <pipeline>"
 
     Examples:
-      | pipeline                       |
-      | Cluster formation PE           |
-      | Cluster formation SE           |
-      | Illumina-C Library preparation |
+      | pipeline             |
+      | Cherrypick           |
+      | MiSeq sequencing     |

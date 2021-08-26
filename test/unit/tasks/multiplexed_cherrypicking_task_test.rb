@@ -29,14 +29,15 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
         @batch = mock('batch')
         @batch.stubs(:requests).returns(@requests)
         @workflows_controller.batch = @batch
+        @user = build :user
       end
 
       should 'return false' do
-        assert_not @task.do_task(@workflows_controller, params)
+        assert_not @task.do_task(@workflows_controller, params, @user)
       end
 
       should 'set a flash[:notice] for failure' do
-        @task.do_task(@workflows_controller, params)
+        @task.do_task(@workflows_controller, params, @user)
         assert_not_nil @workflows_controller.flash[:error]
         assert_equal 'Duplicate tags in G1', @workflows_controller.flash[:error]
       end
@@ -101,7 +102,7 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
         end
 
         should 'set target assets appropriately' do
-          assert @task.do_task(@workflows_controller, params)
+          assert @task.do_task(@workflows_controller, params, @user)
         end
       end
     end
@@ -134,7 +135,7 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
         end
         should 'set target assets appropriately' do
           assert_nil @workflows_controller.flash[:error]
-          assert @task.do_task(@workflows_controller, params), 'Task returned false'
+          assert @task.do_task(@workflows_controller, params, @user), 'Task returned false'
           @requests.each_with_index do |r, _i|
             assert_equal request_location_hash[r.id.to_s], r.target_asset.map_description
             assert_equal @purpose.plates.last, r.target_asset.plate
@@ -142,7 +143,7 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
           end
         end
         should 'set the pick volume on the target_wells' do
-          assert @task.do_task(@workflows_controller, params), 'Task returned false'
+          assert @task.do_task(@workflows_controller, params, @user), 'Task returned false'
           @requests.each { |request| assert_equal 5, request.target_asset.get_picked_volume }
         end
       end
@@ -165,7 +166,7 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
         end
         should 'set target assets appropriately' do
           assert_nil @workflows_controller.flash[:error]
-          assert @task.do_task(@workflows_controller, params), 'Task returned false'
+          assert @task.do_task(@workflows_controller, params, @user), 'Task returned false'
           @requests.each_with_index do |r, _i|
             assert_equal request_location_hash[r.id.to_s], r.target_asset.map_description
             assert_equal @purpose.plates.last, r.target_asset.plate

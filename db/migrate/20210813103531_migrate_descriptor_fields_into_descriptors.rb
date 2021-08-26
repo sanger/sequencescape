@@ -6,6 +6,14 @@
 # - Any keys present in the array, but absent from the hash are recorded
 # - Data missing a + in the hash key is repaired
 class MigrateDescriptorFieldsIntoDescriptors < ActiveRecord::Migration[5.2]
+  # The actual lab event has had the descriptor_fields serializer removed
+  # so we need to add a version to us to use just for this migration
+  class LabEvent < ApplicationRecord
+    self.table_name = 'lab_events'
+    serialize :descriptor_fields
+    serialize :descriptors
+  end
+
   def up
     say 'Updating lab_events...'
     spinner = %w[🕛 🕐 🕑 🕒 🕓 🕔 🕕 🕖 🕗 🕘 🕙 🕚].cycle

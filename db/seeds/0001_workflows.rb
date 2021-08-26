@@ -13,8 +13,6 @@ ProductLine.create(name: 'Illumina-B')
 ProductLine.create(name: 'Illumina-C')
 ProductLine.create(name: 'Illumina-HTP')
 
-# import [ :name ], locations_data, :validate => false
-
 #### RequestInformationTypes
 request_information_types_data = [
   ['Fragment size required (from)', 'fragment_size_required_from', 'Fragment size required (from)', 0],
@@ -41,174 +39,68 @@ end
 # Next-gen sequencing
 ##################################################################################################################
 
-LibraryCreationPipeline.create!(name: 'Illumina-C Library preparation') do |pipeline|
-  pipeline.sorter = 0
-  pipeline.active = true
+RequestType.create!(
+  key: 'library_creation',
+  name: 'Library creation',
+  deprecated: true,
+  billable: true,
+  initial_state: 'pending',
+  asset_type: 'SampleTube',
+  order: 1,
+  multiples_allowed: false,
+  request_class: LibraryCreationRequest
+)
 
-  pipeline.request_types << RequestType.create!(
-    key: 'library_creation',
-    name: 'Library creation',
-    deprecated: true
-  ) do |request_type|
-    request_type.billable = true
-    request_type.initial_state = 'pending'
-    request_type.asset_type = 'SampleTube'
-    request_type.order = 1
-    request_type.multiples_allowed = false
-    request_type.request_class_name = LibraryCreationRequest.name
-  end << RequestType.create!(
-    key: 'illumina_c_library_creation',
-    name: 'Illumina-C Library creation',
-    product_line: ProductLine.find_by(name: 'Illumina-C')
-  ) do |request_type|
-    request_type.billable = true
-    request_type.initial_state = 'pending'
-    request_type.asset_type = 'SampleTube'
-    request_type.order = 1
-    request_type.multiples_allowed = false
-    request_type.request_class_name = LibraryCreationRequest.name
-  end
+RequestType.create!(
+  key: 'illumina_c_library_creation',
+  name: 'Illumina-C Library creation',
+  product_line: ProductLine.find_by(name: 'Illumina-C'),
+  billable: true,
+  initial_state: 'pending',
+  asset_type: 'SampleTube',
+  order: 1,
+  multiples_allowed: false,
+  request_class: LibraryCreationRequest
+)
 
-  pipeline.workflow =
-    Workflow.create!(name: 'Library preparation') { |workflow| workflow.locale = 'External' }.tap do |workflow|
-      [
-        { class: SetDescriptorsTask, name: 'Initial QC', sorted: 1, lab_activity: true },
-        {
-          class: SetDescriptorsTask,
-          name: 'Characterisation',
-          sorted: 3,
-          batched: true,
-          interactive: false,
-          per_item: false,
-          lab_activity: true
-        }
-      ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
-    end
-end.tap do |pipeline|
-  create_request_information_types(pipeline, 'fragment_size_required_from', 'fragment_size_required_to', 'library_type')
-end
+RequestType.create!(
+  key: 'multiplexed_library_creation',
+  name: 'Multiplexed library creation',
+  billable: true,
+  initial_state: 'pending',
+  asset_type: 'SampleTube',
+  order: 1,
+  multiples_allowed: false,
+  request_class: MultiplexedLibraryCreationRequest,
+  for_multiplexing: true
+)
 
-MultiplexedLibraryCreationPipeline.create!(name: 'Illumina-B MX Library Preparation') do |pipeline|
-  pipeline.sorter = 0
-  pipeline.active = true
-  pipeline.multiplexed = true
+RequestType.create!(
+  key: 'illumina_b_multiplexed_library_creation',
+  name: 'Illumina-B Multiplexed Library Creation',
+  product_line: ProductLine.find_by(name: 'Illumina-B'),
+  deprecated: true,
+  billable: true,
+  initial_state: 'pending',
+  asset_type: 'SampleTube',
+  order: 1,
+  multiples_allowed: false,
+  request_class: MultiplexedLibraryCreationRequest,
+  for_multiplexing: true
+)
 
-  pipeline.request_types << RequestType.create!(
-    key: 'multiplexed_library_creation',
-    name: 'Multiplexed library creation'
-  ) do |request_type|
-    request_type.billable = true
-    request_type.initial_state = 'pending'
-    request_type.asset_type = 'SampleTube'
-    request_type.order = 1
-    request_type.multiples_allowed = false
-    request_type.request_class = MultiplexedLibraryCreationRequest
-    request_type.for_multiplexing = true
-  end
-
-  pipeline.request_types << RequestType.create!(
-    key: 'illumina_b_multiplexed_library_creation',
-    name: 'Illumina-B Multiplexed Library Creation',
-    product_line: ProductLine.find_by(name: 'Illumina-B'),
-    deprecated: true
-  ) do |request_type|
-    request_type.billable = true
-    request_type.initial_state = 'pending'
-    request_type.asset_type = 'SampleTube'
-    request_type.order = 1
-    request_type.multiples_allowed = false
-    request_type.request_class = MultiplexedLibraryCreationRequest
-    request_type.for_multiplexing = true
-  end
-
-  pipeline.workflow =
-    Workflow.create!(name: 'Illumina-B MX Library Preparation') do |workflow|
-      workflow.locale = 'External'
-    end.tap do |workflow|
-      [
-        { class: TagGroupsTask, name: 'Tag Groups', sorted: 1, lab_activity: true },
-        { class: AssignTagsTask, name: 'Assign Tags', sorted: 2, lab_activity: true },
-        { class: SetDescriptorsTask, name: 'Initial QC', sorted: 3, batched: false, lab_activity: true },
-        { class: SetDescriptorsTask, name: 'Characterisation', sorted: 5, batched: true, lab_activity: true }
-      ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
-    end
-end.tap do |pipeline|
-  create_request_information_types(
-    pipeline,
-    'fragment_size_required_from',
-    'fragment_size_required_to',
-    'read_length',
-    'library_type'
-  )
-  PipelineRequestInformationType.create!(
-    pipeline: pipeline,
-    request_information_type: RequestInformationType.find_by(label: 'Concentration')
-  )
-end
-
-MultiplexedLibraryCreationPipeline.create!(name: 'Illumina-C MX Library Preparation') do |pipeline|
-  pipeline.sorter = 0
-  pipeline.active = true
-  pipeline.multiplexed = true
-  pipeline.group_name = 'Library creation'
-
-  pipeline.request_types << RequestType.create!(
-    key: 'illumina_c_multiplexed_library_creation',
-    name: 'Illumina-C Multiplexed Library Creation',
-    product_line: ProductLine.find_by(name: 'Illumina-C')
-  ) do |request_type|
-    request_type.billable = true
-    request_type.initial_state = 'pending'
-    request_type.asset_type = 'SampleTube'
-    request_type.order = 1
-    request_type.multiples_allowed = false
-    request_type.request_class = MultiplexedLibraryCreationRequest
-    request_type.for_multiplexing = true
-  end
-
-  pipeline.workflow =
-    Workflow.create!(name: 'Illumina-C MX Library Preparation workflow') do |workflow|
-      workflow.locale = 'External'
-    end.tap do |workflow|
-      {
-        TagGroupsTask => {
-          name: 'Tag Groups',
-          sorted: 1,
-          lab_activity: true
-        },
-        AssignTagsTask => {
-          name: 'Assign Tags',
-          sorted: 2,
-          lab_activity: true
-        },
-        SetDescriptorsTask => {
-          name: 'Initial QC',
-          sorted: 3,
-          batched: false,
-          lab_activity: true
-        },
-        SetDescriptorsTask => {
-          name: 'Characterisation',
-          sorted: 5,
-          batched: true,
-          lab_activity: true
-        }
-      }.each { |klass, details| klass.create!(details.merge(workflow: workflow)) }
-    end
-end.tap do |pipeline|
-  create_request_information_types(
-    pipeline,
-    'fragment_size_required_from',
-    'fragment_size_required_to',
-    'read_length',
-    'library_type'
-  )
-
-  PipelineRequestInformationType.create!(
-    pipeline: pipeline,
-    request_information_type: RequestInformationType.find_by(label: 'Concentration')
-  )
-end
+RequestType.create!(
+  key: 'illumina_c_multiplexed_library_creation',
+  name: 'Illumina-C Multiplexed Library Creation',
+  product_line: ProductLine.find_by(name: 'Illumina-C'),
+  billable: true,
+  initial_state: 'pending',
+  asset_type: 'SampleTube',
+  order: 1,
+  multiples_allowed: false,
+  request_class: MultiplexedLibraryCreationRequest,
+  for_multiplexing: true
+)
 
 cluster_formation_se_request_type =
   %w[a b c].map do |pl|
@@ -1166,7 +1058,6 @@ SequencingPipeline.create!(name: 'MiSeq sequencing') do |pipeline|
       t2 = SetDescriptorsTask.create!(name: 'Cluster Generation', sorted: 0, workflow: workflow)
       Descriptor.create!(kind: 'Text', sorter: 1, name: 'Chip barcode', task: t2)
       Descriptor.create!(kind: 'Text', sorter: 2, name: 'Cartridge barcode', task: t2)
-      Descriptor.create!(kind: 'Text', sorter: 3, name: 'Operator', task: t2)
       Descriptor.create!(kind: 'Text', sorter: 4, name: 'Machine name', task: t2)
     end
 end.tap do |pipeline|
@@ -1524,7 +1415,6 @@ def build_4000_tasks_for(workflow, paired_only = false) # rubocop:todo Metrics/M
     task.descriptors.build(
       [
         { kind: 'Text', sorter: 1, name: 'Chip Barcode', required: true },
-        { kind: 'Text', sorter: 2, name: 'Operator' },
         { kind: 'Text', sorter: 3, name: 'Pipette Carousel #' },
         { kind: 'Text', sorter: 4, name: 'CBOT' },
         { kind: 'Text', sorter: 5, name: '-20 Temp. Read 1 Cluster Kit (Box 1 of 2) Lot #' },
@@ -1539,7 +1429,6 @@ def build_4000_tasks_for(workflow, paired_only = false) # rubocop:todo Metrics/M
     task.descriptors.build(
       [
         { kind: 'Text', sorter: 1, name: 'Chip Barcode', required: true },
-        { kind: 'Text', sorter: 2, name: 'Operator' },
         { kind: 'Text', sorter: 3, name: 'Pipette Carousel #' },
         { kind: 'Text', sorter: 4, name: 'Sequencing Machine' },
         { kind: 'Text', sorter: 5, name: '-20 SBS Kit lot #' },
@@ -1561,7 +1450,6 @@ def build_4000_tasks_for(workflow, paired_only = false) # rubocop:todo Metrics/M
     if paired_only
       task.descriptors.build(
         [
-          { kind: 'Text', sorter: 1, name: 'Operator' },
           { kind: 'Text', sorter: 2, name: 'Pipette Carousel #' },
           { kind: 'Text', sorter: 3, name: '-20 Temp. Read 2 Cluster Kit (Box 2 of 2) Lot #' },
           { kind: 'Text', sorter: 4, name: '-20 Temp. Read 2 Cluster Kit (Box 2 of 2) RGT #' },
@@ -1578,7 +1466,6 @@ def build_4000_tasks_for(workflow, paired_only = false) # rubocop:todo Metrics/M
     else
       task.descriptors.build(
         [
-          { kind: 'Text', sorter: 1, name: 'Operator' },
           { kind: 'Text', sorter: 2, name: 'Pipette Carousel #' },
           { kind: 'Text', sorter: 3, name: '-20 Temp. Read 1 Cluster Kit Lot #' },
           { kind: 'Text', sorter: 4, name: '-20 Temp. Read 1 Cluster Kit RGT #' },

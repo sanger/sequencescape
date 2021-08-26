@@ -30,6 +30,18 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
     )
   end
 
+  #
+  # Cherrypick tasks are directly coupled to the previous task, due to the awkward
+  # way in which the WorkflowsController operates. See issues#2831 for aims to help improve some of this
+  #
+  # @param batch [Batch] The batch on which the action will be performed
+  #
+  # @return [false,'Can only be accessed via the previous step'>] Array indicating this action can't be linked
+  #
+  def can_link_directly?(_batch)
+    [false, 'Can only be accessed via the previous step']
+  end
+
   # rubocop:todo Metrics/ParameterLists
   def pick_new_plate(requests, template, robot, plate_purpose, control_source_plate = nil, workflow_controller = nil)
     target_type = PickTarget.for(plate_purpose)
@@ -134,16 +146,16 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
     'cherrypick_batches'
   end
 
-  def render_task(workflow_controller, params)
+  def render_task(workflow_controller, params, _user)
     super
     workflow_controller.render_cherrypick_task(self, params)
   end
 
-  def do_task(workflow_controller, params)
+  def do_task(workflow_controller, params, _user)
     workflow_controller.do_cherrypick_task(self, params)
   rescue Cherrypick::Error => e
     workflow_controller.send(:flash)[:error] = e.message
-    false
+    [false, e.message]
   end
 
   # returns array [ [ request id, source plate barcode, source coordinate ] ]

@@ -232,7 +232,9 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
       used_requests.map(&:pass!)
       (@batch.requests - used_requests).each(&:recycle_from_batch!)
     end
+
     # rubocop:enable Metrics/BlockLength
+    [true, 'Layout set']
   end
   # rubocop:enable Metrics/AbcSize
   # rubocop:enable Metrics/MethodLength

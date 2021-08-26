@@ -65,7 +65,6 @@ class WorkflowsControllerTest < ActionController::TestCase
         @batch.batch_requests.create!(request: @item2, position: 2)
 
         FactoryBot.create :descriptor, task: @task2, name: 'Chip Barcode', kind: 'ExternalBarcode', selection: {}
-        FactoryBot.create :descriptor, task: @task2, name: 'Operator', kind: 'Barcode', selection: {}
         FactoryBot.create :descriptor, task: @task2, name: 'Comment', kind: 'Text', selection: {}
         FactoryBot.create :descriptor, task: @task2, name: 'Passed?', kind: 'Selection', selection: {}
 
@@ -85,16 +84,9 @@ class WorkflowsControllerTest < ActionController::TestCase
                  :id => 0,
                  :action => 'stage',
                  'next_stage' => 'true',
-                 'fields' => {
-                   '1' => 'Passed?',
-                   '2' => 'Operator',
-                   '3' => 'Chip Barcode',
-                   '4' => 'Comment'
-                 },
                  'descriptors' => {
                    'Comment' => 'Some Comment',
                    'Chip Barcode' => '3290000006714',
-                   'Operator' => '2470000002799',
                    'Passed?' => 'Yes'
                  },
                  :batch_id => @batch.id,

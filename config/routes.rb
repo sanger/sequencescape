@@ -135,7 +135,6 @@ Rails
     resources :batches do
       resources :requests, controller: 'batches/requests'
       resources :comments, controller: 'batches/comments'
-      resources :stock_assets, only: %i[new create]
 
       resources :robots do
         resource :driver_file, only: :show
@@ -143,7 +142,6 @@ Rails
 
       member do
         get :print_labels
-        get :print_stock_labels
         get :print_plate_labels
         get :filtered
         post :swap

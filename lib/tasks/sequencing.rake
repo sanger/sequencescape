@@ -4,6 +4,15 @@ namespace :sequencing do
   desc 'Setting up sequencing pipelines'
   task setup: ['sequencing:novaseq:setup']
 
+  desc 'Run to update descriptors. Can be removed once run'
+  task update_descriptors: :environment do
+    Descriptor.where(name: 'Operator').each(&:destroy)
+    Task
+      .where(workflow: Workflow.where(name: 'NovaSeq 6000 PE'), name: 'Read 1 & 2')
+      .each { |task| task.descriptors.where(name: 'Pipette Carousel').each(&:destroy) }
+  end
+  task 'application:post_deploy' => 'sequencing:update_descriptors'
+
   namespace :novaseq do
     desc 'Setting up NovaSeq 6000 PE pipeline'
     task setup: :environment do
@@ -52,7 +61,6 @@ namespace :sequencing do
                 SetDescriptorsTask.create!(name: 'Loading', sorted: 1, lab_activity: true, workflow: wf) do |task|
                   task.descriptors.build(
                     [
-                      { kind: 'Text', sorter: 2, name: 'Operator' },
                       {
                         kind: 'Selection',
                         sorter: 3,
@@ -77,12 +85,7 @@ namespace :sequencing do
                 end
                 SetDescriptorsTask.create!(name: 'Read 1 & 2', sorted: 2, lab_activity: true, workflow: wf) do |task|
                   task.descriptors.build(
-                    [
-                      { kind: 'Text', sorter: 2, name: 'Operator' },
-                      { kind: 'Text', sorter: 3, name: 'Pipette Carousel' },
-                      { kind: 'Text', sorter: 8, name: 'iPCR batch #' },
-                      { kind: 'Text', sorter: 9, name: 'Comment' }
-                    ]
+                    [{ kind: 'Text', sorter: 8, name: 'iPCR batch #' }, { kind: 'Text', sorter: 9, name: 'Comment' }]
                   )
                 end
               end

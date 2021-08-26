@@ -161,3 +161,7 @@ RSpec/Rails/AvoidSetupHook:
 RSpec/MultipleExpectations:
   Exclude:
     - "spec/features/**/*"
+Lint/UnusedMethodArgument:
+  # Unused keyword arguments are good for maintaining API compatibility, and
+  # applying an underscore before the keyword name breaks that API.
+  AllowUnusedKeywordArguments: true

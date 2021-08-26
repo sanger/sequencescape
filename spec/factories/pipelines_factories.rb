@@ -118,6 +118,39 @@ FactoryBot.define do
       pipeline.add_control_request_type
       #    pipeline.build_workflow(name: pipeline.name, item_limit: 2, locale: 'Internal', pipeline: pipeline) if pipeline.workflow.nil?
     end
+
+    trait :with_workflow do
+      after(:build) do |pipeline|
+        workflow = pipeline.workflow
+        create(
+          :set_descriptors_task,
+          name: 'Specify Dilution Volume',
+          workflow: workflow,
+          per_item: true,
+          descriptor_attributes: [{ kind: 'Text', sorter: 0, name: 'Concentration' }]
+        )
+        create(:add_spiked_in_control_task, workflow: workflow)
+        create(
+          :set_descriptors_task,
+          workflow: workflow,
+          descriptor_attributes: [
+            {
+              kind: 'Selection',
+              sorter: 3,
+              name: 'Workflow (Standard or Xp)',
+              selection: {
+                'Standard' => 'Standard',
+                'XP' => 'XP'
+              },
+              value: 'Standard'
+            },
+            { kind: 'Text', sorter: 4, name: 'Lane loading concentration (pM)' },
+            # We had a bug where the + was being stripped from the beginning of field names
+            { kind: 'Text', sorter: 5, name: '+4 field of weirdness' }
+          ]
+        )
+      end
+    end
   end
 
   factory :pac_bio_sequencing_pipeline do
@@ -129,28 +162,6 @@ FactoryBot.define do
     workflow { build :lab_workflow_for_pipeline }
 
     after(:build) { |pipeline| pipeline.request_types << create(:pac_bio_sequencing_request_type) }
-  end
-
-  factory :library_creation_pipeline do
-    name { |_a| FactoryBot.generate :pipeline_name }
-    active { true }
-
-    after(:build) do |pipeline|
-      pipeline.request_types << create(:request_type)
-      pipeline.add_control_request_type
-      pipeline.build_workflow(name: pipeline.name, locale: 'Internal', pipeline: pipeline)
-    end
-  end
-
-  factory :multiplexed_library_creation_pipeline do
-    name { |_a| FactoryBot.generate :pipeline_name }
-    active { true }
-
-    after(:build) do |pipeline|
-      pipeline.request_types << create(:request_type)
-      pipeline.add_control_request_type
-      pipeline.build_workflow(name: pipeline.name, locale: 'Internal', pipeline: pipeline)
-    end
   end
 
   factory :library_completion, class: 'IlluminaHtp::Requests::LibraryCompletion' do

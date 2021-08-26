@@ -43,6 +43,7 @@ require 'rspec/collection_matchers'
 
 require './lib/plate_map_generation'
 require './lib/capybara_failure_logger'
+require './lib/capybara_timeout_patches'
 require 'pry'
 
 Capybara.register_driver :headless_chrome do |app|

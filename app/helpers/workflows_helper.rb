@@ -2,14 +2,6 @@
 
 # A few helpers used in pipeline workflows
 module WorkflowsHelper
-  # Returns descriptor from params, if it's not there try the @study.
-  # If @study's not set or it doesn't hold the descriptor, return a
-  # blank string...
-  def descriptor_value(descriptor)
-    # Refactored to remove reliance on @values
-    params[:values].try(:[], descriptor.name) || @study.try(:descriptor_value, descriptor.name) || ''
-  end
-
   # Returns a link to any available request comments with "None" as a
   # default value.
   def link_to_comments(request)

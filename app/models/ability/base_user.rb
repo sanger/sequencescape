@@ -47,7 +47,6 @@ class Ability::BaseUser
   # now, but pop them in a separate section so its easy to
   # revisit
   def grant_advanced_batch_operation_privileges
-    can :create_stock_asset, Batch
     can :edit, Batch
     can :print, Batch
     can :sample_prep_worksheet, Batch

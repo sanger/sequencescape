@@ -4,8 +4,6 @@
 #       When the warehouse was switched to a queue based system the same JSON
 #       exposed via the API was used to form the message payload.
 class Api::Base # rubocop:todo Metrics/ClassLength
-  UNSERIALIZED_COLUMNS = [:descriptor_fields].freeze
-
   class_attribute :includes
   self.includes = []
 
@@ -99,7 +97,6 @@ class Api::Base # rubocop:todo Metrics/ClassLength
   class << self
     # The default behaviour for any model I/O is to write out all of the columns as they appear.  Some of
     # the columns are ignored, a few manipulated, but mostly it's a direct copy.
-    # rubocop:todo Metrics/PerceivedComplexity
     # rubocop:todo Metrics/MethodLength
     # rubocop:todo Metrics/AbcSize
     def render_class_for_model(model) # rubocop:todo Metrics/CyclomaticComplexity
@@ -109,9 +106,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
       # within the Class.new block above, so we have to do a separate instance_eval to get it to work.
       render_class.instance_eval do
         self.model_class = model
-        model.column_names.each do |column|
-          map_attribute_to_json_attribute(column, column) unless UNSERIALIZED_COLUMNS.include?(column.to_sym)
-        end
+        model.column_names.each { |column| map_attribute_to_json_attribute(column, column) }
 
         # TODO[xxx]: It's better that some of these are decided at generation, rather than execution, time.
         extra_json_attributes do |object, json_attributes|
@@ -131,7 +126,6 @@ class Api::Base # rubocop:todo Metrics/ClassLength
     end
     # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/MethodLength
-    # rubocop:enable Metrics/PerceivedComplexity
   end
 
   # The model class that our I/O methods are responsible for

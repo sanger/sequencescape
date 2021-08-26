@@ -67,12 +67,12 @@ class PlateTemplateTask < Task
     'plate_template_batches'
   end
 
-  def render_task(workflow, params)
+  def render_task(workflows_controller, params, _user)
     super
-    workflow.render_plate_template_task(self, params)
+    workflows_controller.render_plate_template_task(self, params)
   end
 
-  def do_task(workflows_controller, params) # rubocop:todo Metrics/AbcSize
+  def do_task(workflows_controller, params, _user) # rubocop:todo Metrics/AbcSize
     return true if params[:file].blank?
 
     plate_size =

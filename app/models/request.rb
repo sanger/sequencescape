@@ -454,6 +454,10 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
   end
 
+  def most_recent_event_named(name)
+    lab_events_for_batch(batch).reverse.detect { |e| e.description == name }
+  end
+
   def next_requests
     return [] if submission.nil? || next_request_type_id.nil?
 
