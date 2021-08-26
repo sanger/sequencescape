@@ -28,12 +28,12 @@ class MigrateDescriptorFieldsIntoDescriptors < ActiveRecord::Migration[5.2]
   end
 
   def simplify_event(event)
-    return nil if event.descriptor_fields == event.descriptor_hash.keys
+    return nil if event.descriptor_fields == event.descriptors.keys
 
     say ' - Repairing'
 
     backup = [event.id, event.descriptors_before_type_cast.dup, event.descriptor_fields_before_type_cast.dup]
-    merged_descriptors = merge_descriptors(event.descriptor_fields, event.descriptor_hash)
+    merged_descriptors = merge_descriptors(event.descriptor_fields, event.descriptors)
 
     fix_keys!(merged_descriptors)
 
