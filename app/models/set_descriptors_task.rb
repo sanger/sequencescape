@@ -11,7 +11,7 @@ class SetDescriptorsTask < Task
     'set_descriptors'
   end
 
-  def can_process?(batch, from_previous: false)
+  def can_process?(batch)
     batch.released? ? [true, 'Edit'] : [true, nil]
   end
 
