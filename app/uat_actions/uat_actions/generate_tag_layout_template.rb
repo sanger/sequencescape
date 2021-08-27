@@ -2,7 +2,7 @@
 
 # Will construct a tag layout template from existing tag groups
 class UatActions::GenerateTagLayoutTemplate < UatActions
-  self.title = 'Generate Tag Layout Template'
+  self.title = 'Generate tag layout template'
   self.description = 'Generates a tag layout template from one or two tag groups.'
 
   form_field :name,
