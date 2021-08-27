@@ -71,9 +71,9 @@ module CarrierWave
           @uploader.model.db_files.each(&:delete)
         end
       end
-    end # Database
-  end # Storage
-end # CarrierWave
+    end
+  end
+end
 
 class PolymorphicUploader < CarrierWave::Uploader::Base # rubocop:todo Style/Documentation
   def initialize(*args, &block)

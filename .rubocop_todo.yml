@@ -1320,14 +1320,6 @@ Style/CombinableLoops:
   Exclude:
     - 'db/seeds/0001_workflows.rb'
 
-# Offense count: 5
-# Cop supports --auto-correct.
-Style/CommentedKeyword:
-  Exclude:
-    - 'app/uploaders/polymorphic_uploader.rb'
-    - 'lib/tasks/working_setup.rake'
-    - 'spec/models/tasks/cherrypick_task_spec.rb'
-
 # Offense count: 30
 Style/DocumentDynamicEvalDefinition:
   Exclude:
