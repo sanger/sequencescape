@@ -19,7 +19,8 @@ namespace :limber do
       { name: 'GBS Stock', size: 384 },
       { name: 'GnT Stock', size: 96 },
       { name: 'LTHR RT', size: 96 },
-      { name: 'LTHR-384 RT', size: 384 }
+      { name: 'LTHR-384 RT', size: 384 },
+      { name: 'LCA Blood', size: 96 }
     ]
 
     purposes.each do |purpose|
@@ -247,6 +248,20 @@ namespace :limber do
         asset_shape: AssetShape.find_by(name: 'Standard')
       )
     end
+
+    unless Purpose.where(name: 'LCA Blood').exists?
+      PlatePurpose.create!(
+        name: 'LCA Blood',
+        target_type: 'Plate',
+        stock_plate: true,
+        input_plate: true,
+        default_state: 'pending',
+        barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
+        cherrypickable_target: false,
+        size: 96,
+        asset_shape: AssetShape.find_by(name: 'Standard')
+      )
+    end
   end
 
   desc 'Create the limber request types'
@@ -451,6 +466,12 @@ namespace :limber do
         chromium_library_types.each { |name| rt.library_types << LibraryType.find_or_create_by!(name: name) }
         rt.acceptable_plate_purposes = Purpose.where(name: 'LBC Stock')
       end
+
+      Limber::Helper::RequestTypeConstructor.new(
+        'Cardinal',
+        library_types: ['Cardinal'],
+        default_purposes: ['LCA Blood']
+      ).build!
     end
   end
 
@@ -655,6 +676,9 @@ namespace :limber do
       gbs_catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'GBS')
       Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'GBS', catalogue: gbs_catalogue).build!
 
+      cardinal_catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'Cardinal')
+      Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'Cardinal', catalogue: cardinal_catalogue).build!
+
       catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'Generic')
       Limber::Helper::TemplateConstructor.new(prefix: 'Multiplexing', catalogue: catalogue, sequencing_keys: base_list)
         .build!
@@ -736,6 +760,23 @@ namespace :limber do
         product_line: 'Bespoke',
         catalogue: chromium,
         role: 'Chromium'
+      ).build!
+
+      # TODO: do we need this one given we don't need a library prep AND sequencing submission
+      Limber::Helper::TemplateConstructor.new(
+        prefix: 'Cardinal',
+        name: 'Cardinal',
+        pipeline: 'Limber-Cardinal',
+        product_line: 'Cardinal',
+        catalogue: cardinal_catalogue,
+        sequencing_keys: full_list
+      ).build!
+      Limber::Helper::LibraryOnlyTemplateConstructor.new(
+        prefix: 'Cardinal',
+        name: 'Cardinal',
+        pipeline: 'Limber-Cardinal',
+        product_line: 'Cardinal',
+        catalogue: cardinal_catalogue
       ).build!
 
       ## end ##
