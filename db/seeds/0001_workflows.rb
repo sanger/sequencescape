@@ -1402,9 +1402,7 @@ x10_requests_types =
         end
     pipeline.request_types = v4_requests_types_se
   end
-end
 
-['(spiked in controls)', '(no controls)'].each do |type|
   SequencingPipeline.create!(
     name: "HiSeq X PE #{type}",
     active: true,

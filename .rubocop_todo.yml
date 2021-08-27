@@ -1315,11 +1315,6 @@ Style/ClassVars:
     - 'lib/informatics/lib/informatics/application.rb'
     - 'lib/informatics/lib/informatics/globals.rb'
 
-# Offense count: 1
-Style/CombinableLoops:
-  Exclude:
-    - 'db/seeds/0001_workflows.rb'
-
 # Offense count: 30
 Style/DocumentDynamicEvalDefinition:
   Exclude:
