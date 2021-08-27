@@ -8,8 +8,7 @@ class MigrateSangerBarcodesToNewTables < ActiveRecord::Migration[5.1]
     say 'Migrating Sanger Barcodes'
     Barcode.transaction do
       Asset
-        .where
-        .not(barcode_bkp: nil)
+        .where.not(barcode_bkp: nil)
         .in_batches
         .each_with_index do |batch, i|
           say "Fetching batch #{i}"

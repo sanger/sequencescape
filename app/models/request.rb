@@ -153,8 +153,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
             )
             .group('uuids.external_id')
             .where(pw: { labware_id: plate.id }, requests: { submission_id: submission_ids })
-            .where
-            .not(requests: { state: 'cancelled' })
+            .where.not(requests: { state: 'cancelled' })
         }
 
   scope :for_pre_cap_grouping_of,
@@ -232,16 +231,14 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
           joins(:asset)
             .select('requests.*')
             .select('receptacles.labware_id AS labware_id')
-            .where
-            .not(receptacles: { labware_id: nil })
+            .where.not(receptacles: { labware_id: nil })
         }
   scope :target_asset_on_labware,
         -> {
           joins(:target_asset)
             .select('requests.*')
             .select('receptacles.labware_id AS labware_id')
-            .where
-            .not(receptacles: { labware_id: nil })
+            .where.not(receptacles: { labware_id: nil })
         }
 
   scope :without_asset, -> { where('asset_id is null') }

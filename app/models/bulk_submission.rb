@@ -252,28 +252,39 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
   # rubocop:todo Metrics/MethodLength
   # rubocop:todo Metrics/AbcSize
   def submission_structure # rubocop:todo Metrics/CyclomaticComplexity
-    Hash.new { |h, i| h[i] = Array.new }.tap do |submission|
-      csv_data_rows.each_with_index do |row, index|
-        next if row.all?(&:nil?)
+    Hash
+      .new { |h, i| h[i] = Array.new }
+      .tap do |submission|
+        csv_data_rows.each_with_index do |row, index|
+          next if row.all?(&:nil?)
 
-        details =
-          headers.each_with_index.filter_map { |header, pos| validate_entry(header, pos, row, index + start_row) }.to_h
-            .merge('row' => index + start_row)
-        submission[details['submission name']] << details
-      end
-    end.map do |submission_name, rows|
-      order =
-        rows.group_by { |details| details['asset group name'] }.map do |_group_name, rows|
-          shared_options!(rows).to_h.tap do |details|
-            details['rows'] = rows.comma_separate_field_list_for_display('row')
-            details['asset ids'] = rows.field_list('asset id', 'asset ids')
-            details['asset names'] = rows.field_list('asset name', 'asset names')
-            details['plate well'] = rows.field_list('plate well')
-            details['barcode'] = rows.field_list('barcode')
-          end.delete_if { |_, v| v.blank? }
+          details =
+            headers
+              .each_with_index
+              .filter_map { |header, pos| validate_entry(header, pos, row, index + start_row) }
+              .to_h
+              .merge('row' => index + start_row)
+          submission[details['submission name']] << details
         end
-      { submission_name => order }
-    end
+      end
+      .map do |submission_name, rows|
+        order =
+          rows
+            .group_by { |details| details['asset group name'] }
+            .map do |_group_name, rows|
+              shared_options!(rows)
+                .to_h
+                .tap do |details|
+                  details['rows'] = rows.comma_separate_field_list_for_display('row')
+                  details['asset ids'] = rows.field_list('asset id', 'asset ids')
+                  details['asset names'] = rows.field_list('asset name', 'asset names')
+                  details['plate well'] = rows.field_list('plate well')
+                  details['barcode'] = rows.field_list('barcode')
+                end
+                .delete_if { |_, v| v.blank? }
+            end
+        { submission_name => order }
+      end
   end
 
   # rubocop:enable Metrics/AbcSize

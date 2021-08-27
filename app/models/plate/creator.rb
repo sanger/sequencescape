@@ -266,12 +266,13 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
         end
 
       # We should probably just use a transfer here.
-      child_plate.wells << parent_wells.map do |well|
-        well.dup.tap do |child_well|
-          child_well.aliquots = well.aliquots.map(&:dup)
-          child_well.stock_wells.attach(stock_well_picker.call(well))
+      child_plate.wells <<
+        parent_wells.map do |well|
+          well.dup.tap do |child_well|
+            child_well.aliquots = well.aliquots.map(&:dup)
+            child_well.stock_wells.attach(stock_well_picker.call(well))
+          end
         end
-      end
 
       creator_parameters&.set_plate_parameters(child_plate, plate)
 

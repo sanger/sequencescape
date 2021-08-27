@@ -29,9 +29,10 @@ class LibPoolNormTubeGenerator # rubocop:todo Style/Documentation
 
   def lib_pool_tubes
     @lib_pool_tubes ||=
-      plate.children.select { |c| c.is_a?(StockMultiplexedLibraryTube) }.reject do |tube|
-        tube.state == 'failed' || tube.state == 'qc_complete' || tube.state == 'cancelled'
-      end
+      plate
+        .children
+        .select { |c| c.is_a?(StockMultiplexedLibraryTube) }
+        .reject { |tube| tube.state == 'failed' || tube.state == 'qc_complete' || tube.state == 'cancelled' }
   end
 
   def destination_tubes

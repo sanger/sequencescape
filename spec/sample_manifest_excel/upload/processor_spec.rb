@@ -497,10 +497,14 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           it 'will process a partial upload' do
             processor.update_samples_and_aliquots(nil)
             expect(
-              upload.sample_manifest.samples.map do |sample|
-                sample.reload
-                sample.sample_metadata.concentration.present?
-              end.count(true)
+              upload
+                .sample_manifest
+                .samples
+                .map do |sample|
+                  sample.reload
+                  sample.sample_metadata.concentration.present?
+                end
+                .count(true)
             ).to eq(2)
             processor.update_sample_manifest
             expect(processor).to be_processed
@@ -714,9 +718,11 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           processor.run(nil)
 
           tube_barcodes =
-            mock_microservice_responses.values.first(no_of_racks).map do |scan_result|
-              scan_result['layout'].keys
-            end.flatten
+            mock_microservice_responses
+              .values
+              .first(no_of_racks)
+              .map { |scan_result| scan_result['layout'].keys }
+              .flatten
           tube_barcodes.reject! { |key| ::CsvParserClient.no_read?(key) }
 
           expect(barcodes.size).to eq(no_of_rows)

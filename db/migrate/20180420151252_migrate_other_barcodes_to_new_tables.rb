@@ -7,8 +7,7 @@ class MigrateOtherBarcodesToNewTables < ActiveRecord::Migration[5.1]
     Barcode.transaction do
       say 'Migrating Infinium Barcodes'
       Plate::Metadata
-        .where
-        .not(infinium_barcode: nil)
+        .where.not(infinium_barcode: nil)
         .in_batches
         .each_with_index do |batch, i|
           say "Fetching batch #{i}"
@@ -23,8 +22,7 @@ class MigrateOtherBarcodesToNewTables < ActiveRecord::Migration[5.1]
       say 'Finished migrating Infinium Barcodes'
       say 'Migrating Fluidigm barcodes'
       Plate::Metadata
-        .where
-        .not(fluidigm_barcode: nil)
+        .where.not(fluidigm_barcode: nil)
         .in_batches
         .each_with_index do |batch, i|
           say "Fetching batch #{i}"

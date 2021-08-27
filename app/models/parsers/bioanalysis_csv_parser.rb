@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-class Parsers::BioanalysisCsvParser # rubocop:todo Style/Documentation
+# rubocop:todo Metrics/ClassLength
+class Parsers::BioanalysisCsvParser # rubocop:todo Style/Documentation, Metrics/ClassLength
   class InvalidFile < StandardError
   end
 
@@ -116,10 +117,13 @@ class Parsers::BioanalysisCsvParser # rubocop:todo Style/Documentation
   def parse_samples
     groups = get_groups(/Sample Name/)
 
-    groups.each_with_index.map do |group, pos|
-      next_index = (pos == (groups.length - 1)) ? @content.length - 1 : groups[pos + 1][0] - 1
-      [group[0], next_index]
-    end.reduce({}) { |memo, group| memo.merge(parse_sample group) }
+    groups
+      .each_with_index
+      .map do |group, pos|
+        next_index = (pos == (groups.length - 1)) ? @content.length - 1 : groups[pos + 1][0] - 1
+        [group[0], next_index]
+      end
+      .reduce({}) { |memo, group| memo.merge(parse_sample group) }
   end
 
   def parsed_content
@@ -151,3 +155,4 @@ class Parsers::BioanalysisCsvParser # rubocop:todo Style/Documentation
     content[0..10].detect { |line| /Version Created/ === line[0] && /^B.*/ === line[1] }.present?
   end
 end
+# rubocop:enable Metrics/ClassLength

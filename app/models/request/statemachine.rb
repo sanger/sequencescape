@@ -158,12 +158,13 @@ module Request::Statemachine # rubocop:todo Style/Documentation
   # Aliquots are copied from the source asset to the target and updated with the
   # project and study information from the request itself.
   def transfer_aliquots
-    target_asset.aliquots << asset.aliquots.map do |aliquot|
-      aliquot.dup.tap do |clone|
-        clone.study_id = initial_study_id || aliquot.study_id
-        clone.project_id = initial_project_id || aliquot.project_id
+    target_asset.aliquots <<
+      asset.aliquots.map do |aliquot|
+        aliquot.dup.tap do |clone|
+          clone.study_id = initial_study_id || aliquot.study_id
+          clone.project_id = initial_project_id || aliquot.project_id
+        end
       end
-    end
   end
 
   #

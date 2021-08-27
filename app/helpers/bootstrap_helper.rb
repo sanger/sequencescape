@@ -105,14 +105,15 @@ module BootstrapHelper # rubocop:todo Style/Documentation
       else
         'bg-warning'
       end
-    tag.span(count, style: 'display:none') << tag.div(class: 'progress') do
-      tag.div(
-        "#{count}%",
-        class: ['progress-bar', 'progress-bar-striped', css_class],
-        role: 'progressbar',
-        style: "width: #{count}%;"
-      )
-    end
+    tag.span(count, style: 'display:none') <<
+      tag.div(class: 'progress') do
+        tag.div(
+          "#{count}%",
+          class: ['progress-bar', 'progress-bar-striped', css_class],
+          role: 'progressbar',
+          style: "width: #{count}%;"
+        )
+      end
   end
 
   # <div class="progress">

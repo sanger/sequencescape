@@ -291,9 +291,8 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
           let(:count) { count }
 
           it "create #{count} tubes(s)" do
-            expect { manifest.generate }.to change(SampleTube, :count).by(count).and change {
-                                                      manifest.assets.count
-                                                    }.by(count)
+            expect { manifest.generate }.to change(SampleTube, :count).by(count).and change { manifest.assets.count }
+                                                      .by(count)
             expect(manifest.assets).to eq(SampleTube.with_barcode(manifest.barcodes).map(&:receptacle))
           end
 

@@ -36,10 +36,12 @@ module Submission::LinearRequestGraph
   def build_request_type_multiplier_pairs # rubocop:todo Metrics/AbcSize
     # Ensure that the keys of the multipliers hash are strings, otherwise we get weirdness!
     multipliers =
-      Hash.new { |h, k| h[k] = 1 }.tap do |multipliers|
-        requested_multipliers = request_options.try(:[], :multiplier) || {}
-        requested_multipliers.each { |k, v| multipliers[k.to_s] = v.to_i }
-      end
+      Hash
+        .new { |h, k| h[k] = 1 }
+        .tap do |multipliers|
+          requested_multipliers = request_options.try(:[], :multiplier) || {}
+          requested_multipliers.each { |k, v| multipliers[k.to_s] = v.to_i }
+        end
 
     request_types.dup.map { |request_type_id| [RequestType.find(request_type_id), multipliers[request_type_id.to_s]] }
   end

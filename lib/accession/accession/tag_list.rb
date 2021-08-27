@@ -37,9 +37,9 @@ module Accession
     # each key will be the group and each value will be a new TagList to allow tag list methods
     # to be called.
     def by_group
-      groups.each_with_object({}) { |v, h| h[v] = TagList.new }.tap do |result|
-        tags.values.each { |tag| tag.groups.each { |group| result[group] << tag } }
-      end
+      groups
+        .each_with_object({}) { |v, h| h[v] = TagList.new }
+        .tap { |result| tags.values.each { |tag| tag.groups.each { |group| result[group] << tag } } }
     end
 
     def labels

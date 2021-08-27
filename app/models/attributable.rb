@@ -56,9 +56,8 @@ module Attributable
 
   def required?(field)
     field_details =
-      attribute_details.detect { |attribute| attribute.name == field } || association_details.detect do |association|
-        field == :"#{association.name}_id"
-      end
+      attribute_details.detect { |attribute| attribute.name == field } ||
+        association_details.detect { |association| field == :"#{association.name}_id" }
     field_details.try(:required?)
   end
 

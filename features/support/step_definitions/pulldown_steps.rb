@@ -126,16 +126,26 @@ Then /^all "([^"]+)" requests should have the following details:$/ do |name, tab
   raise StandardError, "No requests of type #{name.inspect}" if request_type.requests.empty?
 
   results =
-    request_type.requests.all.map do |request|
-      table.raw.map do |attribute, _|
-        [attribute, attribute.split('.').inject(request.request_metadata) { |m, s| m.send(s) }]
-      end.to_h
-    end.uniq!
+    request_type
+      .requests
+      .all
+      .map do |request|
+        table
+          .raw
+          .map do |attribute, _|
+            [attribute, attribute.split('.').inject(request.request_metadata) { |m, s| m.send(s) }]
+          end
+          .to_h
+      end
+      .uniq!
   expected =
-    table.raw.map do |attribute, value|
-      value = value.to_i if %w[fragment_size_required_from fragment_size_required_to].include?(attribute)
-      [attribute, value]
-    end.to_h
+    table
+      .raw
+      .map do |attribute, value|
+        value = value.to_i if %w[fragment_size_required_from fragment_size_required_to].include?(attribute)
+        [attribute, value]
+      end
+      .to_h
   assert_equal([expected], results, 'Request details are not identical')
 end
 

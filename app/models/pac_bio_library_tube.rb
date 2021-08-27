@@ -10,9 +10,12 @@ class PacBioLibraryTube < Tube # rubocop:todo Style/Documentation
   end
 
   def protocols_for_select
-    ReferenceGenome.sorted_by_name.map { |x| [x.name, x.id] }.tap do |protocols|
-      reference_genome = primary_aliquot.sample.sample_reference_genome
-      protocols.unshift([reference_genome.name, reference_genome.id]) if reference_genome.present?
-    end
+    ReferenceGenome
+      .sorted_by_name
+      .map { |x| [x.name, x.id] }
+      .tap do |protocols|
+        reference_genome = primary_aliquot.sample.sample_reference_genome
+        protocols.unshift([reference_genome.name, reference_genome.id]) if reference_genome.present?
+      end
   end
 end
