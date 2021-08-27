@@ -12,6 +12,10 @@ class MigrateDescriptorFieldsIntoDescriptors < ActiveRecord::Migration[5.2]
     self.table_name = 'lab_events'
     serialize :descriptor_fields
     serialize :descriptors
+
+    def descriptor_hash
+      read_attribute(:descriptors) || {}
+    end
   end
 
   def up
@@ -28,12 +32,12 @@ class MigrateDescriptorFieldsIntoDescriptors < ActiveRecord::Migration[5.2]
   end
 
   def simplify_event(event)
-    return nil if event.descriptor_fields == event.descriptors.keys
+    return nil if event.descriptor_fields == event.descriptor_hash.keys
 
     say ' - Repairing'
 
     backup = [event.id, event.descriptors_before_type_cast.dup, event.descriptor_fields_before_type_cast.dup]
-    merged_descriptors = merge_descriptors(event.descriptor_fields, event.descriptors)
+    merged_descriptors = merge_descriptors(event.descriptor_fields, event.descriptor_hash)
 
     fix_keys!(merged_descriptors)
 
