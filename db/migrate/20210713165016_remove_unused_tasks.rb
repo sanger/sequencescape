@@ -3,7 +3,8 @@
 # The tasks are no longer used
 class RemoveUnusedTasks < ActiveRecord::Migration[5.2]
   def up
-    Task.where(sti_type: %w[AssignTagsTask SetCharacterisationDescriptorsTask]).each(&:destroy)
+    # We're removed the STI type  so lets destroy without instantiating
+    Task.where(sti_type: %w[AssignTagsTask SetCharacterisationDescriptorsTask]).delete_all
   end
 
   def down
