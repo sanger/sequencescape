@@ -5,5 +5,7 @@
       <%= render partial: 'descriptor', collection: @task.descriptors_for(request), locals: { request: request } %>
     <% end %>
   <% else %>
-    <%= render partial: 'descriptor', collection: @task.descriptors_with_values(params.fetch(:descriptors,{})), locals: { request: nil } %>
+    <% descriptors = params[:descriptors].present? ? @task.descriptors_with_values(params[:descriptors]) :
+                                                     @task.descriptors_for(@batch.requests.first) %>
+    <%= render partial: 'descriptor', collection: descriptors, locals: { request: nil } %>
   <% end %>

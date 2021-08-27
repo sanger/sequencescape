@@ -2,7 +2,7 @@
 
 # Will construct plates with well_count wells filled with samples
 class UatActions::GenerateTagPlates < UatActions
-  self.title = 'Generate Tag Plates'
+  self.title = 'Generate tag plates'
   self.description =
     'Generate available tag plates. All tag plates will be part of a new lot. For generation of plates ' \
       'of pretagged samples see "Generate Tagged Plates".'
