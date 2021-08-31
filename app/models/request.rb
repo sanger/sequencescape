@@ -432,7 +432,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   #
   def lab_events_for_batch(batch)
     if lab_events.loaded?
-      lab_events.select { |le| le.batch_id == batch.id }.sort
+      lab_events.select { |le| le.batch_id == batch&.id }.sort
     else
       lab_events.where(batch_id: batch).order(:created_at, :id)
     end

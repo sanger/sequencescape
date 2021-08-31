@@ -52,6 +52,7 @@ RSpec.describe Api::Messages::FlowcellIO, type: :model do
       before do
         create :lab_event,
                eventful: request_1,
+               batch: request_1.batch,
                descriptors: {
                  'Chip Barcode' => 'new_fcb',
                  'PhiX %' => '1',
