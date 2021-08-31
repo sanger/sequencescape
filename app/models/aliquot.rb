@@ -197,11 +197,15 @@ class Aliquot < ApplicationRecord
     when object.bait_library_id.present? && (bait_library_id != object.bait_library_id)
       false # We have different bait libraries
     when (no_tag1? && object.tag1?) || (no_tag2? && object.tag2?)
+      # rubocop:todo Layout/LineLength
       raise StandardError, 'Tag missing from downstream aliquot' # The downstream aliquot is untagged, but is tagged upstream. Something is wrong!
+      # rubocop:enable Layout/LineLength
     when object.no_tags?
       true # The upstream aliquot was untagged, we don't need to check tags
     else
+      # rubocop:todo Layout/LineLength
       (object.no_tag1? || (tag_id == object.tag_id)) && (object.no_tag2? || (tag2_id == object.tag2_id)) # Both aliquots are tagged, we need to check if they match
+      # rubocop:enable Layout/LineLength
     end
   end
 

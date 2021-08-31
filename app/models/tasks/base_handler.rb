@@ -29,7 +29,9 @@ module Tasks
 
     def selected_requests
       # Front end renders checkboxes in the form:
+      # rubocop:todo Layout/LineLength
       # <input name="request[20251826]" id="sample 1 checkbox" class="sample_check select_all_target" value="on" type="checkbox" checked="">
+      # rubocop:enable Layout/LineLength
       # We don't have hidden input fields of the same name, so params[:request] looks as follows:
       # { '123' => 'on', '124' => 'on' }
       # Unchecked requests are *not* listed in the hash.

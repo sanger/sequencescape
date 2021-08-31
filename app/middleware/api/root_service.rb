@@ -41,7 +41,9 @@ module Api
           end
           # json = Hash[
           #   object.map do |model_in_json,endpoint|
+          # rubocop:todo Layout/LineLength
           #     [model_in_json, endpoint.model_handler.as_json(:response => self, :endpoint => endpoint, :target => endpoint.model_handler)]
+          # rubocop:enable Layout/LineLength
           #   end +
           #   [ [ 'revision', 2 ] ]
           # ]

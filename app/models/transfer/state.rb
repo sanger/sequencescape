@@ -38,11 +38,17 @@ module Transfer::State
               lambda { |states|
                 states = Array(states).map(&:to_s)
 
+                # rubocop:todo Layout/LineLength
                 # If all of the states are present there is no point in actually adding this set of conditions because we're
+                # rubocop:enable Layout/LineLength
                 # basically looking for all of the plates.
                 if states.sort != ALL_STATES.sort
+                  # rubocop:todo Layout/LineLength
                   # Note that 'state IS NULL' is included here for plates that are stock plates, because they will not have any
+                  # rubocop:enable Layout/LineLength
+                  # rubocop:todo Layout/LineLength
                   # transfer requests coming into their wells and so we can assume they are pending (from the perspective of
+                  # rubocop:enable Layout/LineLength
                   # pulldown at least).
                   query_conditions = +'transfer_requests.state IN (?)'
                   if states.include?('pending')
@@ -66,11 +72,15 @@ module Transfer::State
               lambda { |states|
                 states = Array(states).map(&:to_s)
 
+                # rubocop:todo Layout/LineLength
                 # If all of the states are present there is no point in actually adding this set of conditions because we're
+                # rubocop:enable Layout/LineLength
                 # basically looking for all of the plates.
                 if states.sort != ALL_STATES.sort
                   join_options = [
+                    # rubocop:todo Layout/LineLength
                     'LEFT OUTER JOIN `transfer_requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = `assets`.id'
+                    # rubocop:enable Layout/LineLength
                   ]
 
                   joins(join_options).where(transfer_requests_as_target: { state: states })

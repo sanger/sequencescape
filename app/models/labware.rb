@@ -92,7 +92,9 @@ class Labware < Asset
   # The original implementation of spiked_in_buffer only supported direct parent tubes.
   has_one :direct_spiked_in_buffer, through: :spiked_in_buffer_links, source: :ancestor
 
+  # rubocop:todo Layout/LineLength
   # Gets the most recent SpikedBuffer tube ancestor, if it exists, to use if there is no direct parent SpikedBuffer tube.
+  # rubocop:enable Layout/LineLength
   # Added to support PhiX being added during library prep rather than at sequencing time (for Heron).
   has_one :most_recent_spiked_in_buffer, through: :spiked_in_buffer_most_recent_links, source: :ancestor
 

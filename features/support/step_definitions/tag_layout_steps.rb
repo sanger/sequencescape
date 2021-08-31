@@ -140,7 +140,9 @@ Given 'the wells for {plate_name} have been pooled in columns to {plate_name}' d
   pool_by_strategy(source, destination, [8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8])
 end
 
+# rubocop:todo Layout/LineLength
 Given 'the wells for {plate_name} have been pooled to {plate_name} according to the pooling strategy {integer_array}' do |source, destination, pooling_strategy|
+  # rubocop:enable Layout/LineLength
   pool_by_strategy(source, destination, pooling_strategy)
 end
 

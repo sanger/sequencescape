@@ -40,7 +40,11 @@ end
 Then /^the (string |)request options for the order with UUID "([^"]+)" should be:$/ do |_string, uuid, options_table|
   order = Uuid.with_external_id(uuid).first.try(:resource) or
     raise StandardError, "Could not find order with UUID #{uuid.inspect}"
+
+  # rubocop:todo Layout/LineLength
   stringified_options = order.request_options.stringify_keys # Needed because of inconsistencies in keys (symbols & strings)
+
+  # rubocop:enable Layout/LineLength
   options_table.rows_hash.each do |k, v|
     assert_equal(v, stringified_options[k].to_s, "Request option #{k.inspect} is unexpected")
   end

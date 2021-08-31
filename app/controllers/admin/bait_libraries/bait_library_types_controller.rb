@@ -40,7 +40,10 @@ class Admin::BaitLibraries::BaitLibraryTypesController < ApplicationController #
     if @bait_library_type.bait_libraries.visible.count > 0
       respond_to do |format|
         flash[:error] =
+          # rubocop:todo Layout/LineLength
           "Can not delete '#{@bait_library_type.name}', bait library type is in use by #{@bait_library_type.bait_libraries.visible.count} libraries."
+
+        # rubocop:enable Layout/LineLength
         format.html { redirect_to(admin_bait_libraries_path) }
       end
     else

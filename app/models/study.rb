@@ -388,7 +388,9 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def warnings
     # These studies are now invalid, but the warning should remain until existing studies are fixed.
     if study_metadata.managed? && study_metadata.data_access_group.blank?
+      # rubocop:todo Layout/LineLength
       'No user group specified for a managed study. Please specify a valid Unix user group to ensure study data is visible to the correct people.'
+      # rubocop:enable Layout/LineLength
     end
   end
 

@@ -156,7 +156,9 @@ RSpec.describe BroadcastEvent::QcAssay, type: :model, broadcast_event: true do
     end
 
     describe '::generate_events' do
+      # rubocop:todo Layout/LineLength
       # In the event we have two different assay types bundled together, we generate two different events, and separate them
+      # rubocop:enable Layout/LineLength
       # via the properties.
       it 'generates a two events' do
         events = described_class.generate_events(qc_assay)

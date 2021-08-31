@@ -22,7 +22,9 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # States which are still considered to be processable (ie. not failed or cancelled)
   ACTIVE_STATES = %w[pending started passed qc_complete].freeze
 
+  # rubocop:todo Layout/LineLength
   # The assets on a request can be treated as a particular class when being used by certain pieces of code.  For instance,
+  # rubocop:enable Layout/LineLength
   # QC might be performed on a source asset that is a well, in which case we'd like to load it as such.
   belongs_to :target_asset, class_name: 'Receptacle', inverse_of: :transfer_requests_as_source, optional: false
   belongs_to :asset, class_name: 'Receptacle', inverse_of: :transfer_requests_as_target, optional: false

@@ -4,7 +4,9 @@
 # Allows the user to customise the parameters.
 class Search::FindPlates < Search
   def scope(user_criteria) # rubocop:todo Metrics/AbcSize
+    # rubocop:todo Layout/LineLength
     # We find all plates that do not have transfers where they are the source.  Once a plate has been transferred (or marked
+    # rubocop:enable Layout/LineLength
     # for transfer) the destination plate becomes the end of the chain.
     criteria = default_parameters.stringify_keys.merge(user_criteria)
 

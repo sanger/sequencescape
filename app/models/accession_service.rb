@@ -134,11 +134,15 @@ class AccessionService # rubocop:todo Metrics/ClassLength
   # rubocop:enable Metrics/BlockLength
 
   def submit_sample_for_user(sample, user)
+    # rubocop:todo Layout/LineLength
     # raise NumberNotRequired, 'Does not require an accession number' unless sample.studies.first.ena_accession_required?
+    # rubocop:enable Layout/LineLength
 
     ebi_accession_number = sample.sample_metadata.sample_ebi_accession_number
 
+    # rubocop:todo Layout/LineLength
     # raise NumberNotGenerated, 'No need to' if not ebi_accession_number.blank? and not /ERS/.match(ebi_accession_number)
+    # rubocop:enable Layout/LineLength
 
     submit(user, Accessionable::Sample.new(sample))
   end

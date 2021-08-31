@@ -116,7 +116,9 @@ When %r{^I make an authorised (GET|DELETE) (?:(?:for|of) )?the API path "(\/[^"]
   api_request(action, path, nil) { |headers| headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = 'cucumber' }
 end
 
+# rubocop:todo Layout/LineLength
 When %r{^I make an authorised (POST|PUT) with the following JSON to the API path "(\/[^"]*)":$} do |action, path, serialized_json|
+  # rubocop:enable Layout/LineLength
   api_request(action, path, serialized_json) { |headers| headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = 'cucumber' }
 end
 
@@ -264,7 +266,9 @@ Given /^(\d+) samples exist with the core name "([^"]+)" and IDs starting at (\d
   step("#{count} samples exist with names based on \"#{name}\" and IDs starting at #{id}")
 end
 
+# rubocop:todo Layout/LineLength
 Given /^the (library tube|plate) "([^"]+)" is a child of the (sample tube|plate) "([^"]+)"$/ do |child_model, child_name, parent_model, parent_name|
+  # rubocop:enable Layout/LineLength
   parent = parent_model.gsub(/\s+/, '_').classify.constantize.find_by(name: parent_name) or
     raise StandardError, "Cannot find the #{parent_model} #{parent_name.inspect}"
   child = child_model.gsub(/\s+/, '_').classify.constantize.find_by(name: child_name) or

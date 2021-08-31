@@ -160,7 +160,9 @@ class Asset < ApplicationRecord
     class_name = self.class.name
     if stock_message_template.nil?
       raise StandardError,
+            # rubocop:todo Layout/LineLength
             "No stock template configured for #{class_name}. If #{class_name} is a stock, set stock_template on the class."
+      # rubocop:enable Layout/LineLength
     end
 
     Messenger.create!(target: self, template: stock_message_template, root: 'stock_resource')

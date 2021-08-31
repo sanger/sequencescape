@@ -117,7 +117,9 @@ module BootstrapHelper # rubocop:todo Style/Documentation
   end
 
   # <div class="progress">
+  # rubocop:todo Layout/LineLength
   #   <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
+  # rubocop:enable Layout/LineLength
   #     <span class="sr-only">45% Complete</span>
   #   </div>
   # </div>

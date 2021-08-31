@@ -61,8 +61,12 @@ class MoveConsentWithdrawnFromSamplesToSampleMetadata < ActiveRecord::Migration[
       data_in_file = recovery_data
       check_recovery_data!(data_in_file)
 
+      # rubocop:todo Layout/LineLength
       # Consent withdrawn in sample metadata should not be in use at now but if it had any values all of them are reset to false
+      # rubocop:enable Layout/LineLength
+      # rubocop:todo Layout/LineLength
       # The right value for consent withdrawn before this migration is in samples, so the next steps will copy that value
+      # rubocop:enable Layout/LineLength
       Sample::Metadata.where(consent_withdrawn: true).update_all(consent_withdrawn: false)
 
       num_read = 0

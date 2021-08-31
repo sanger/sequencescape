@@ -102,7 +102,9 @@ class Transfer::BetweenPlateAndTubes < Transfer # rubocop:todo Style/Documentati
     true
   end
 
+  # rubocop:todo Layout/LineLength
   # Builds the name for the tube based on the wells that are being transferred from by finding their stock plate wells and
+  # rubocop:enable Layout/LineLength
   # creating an appropriate range.
   def tube_name_for(stock_wells) # rubocop:todo Metrics/AbcSize
     source_wells =

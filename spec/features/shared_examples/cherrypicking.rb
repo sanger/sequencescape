@@ -249,7 +249,9 @@ shared_examples 'a cherrypicking procedure' do
             when 'Hamilton'
               # for Robot::Generator::Hamilton
               # Hamilton files comprise a column headers row plus one row per transfer e.g.
+              # rubocop:todo Layout/LineLength
               # SourcePlateID,SourceWellID,SourcePlateType,SourcePlateVolume,DestinationPlateID,DestinationWellID,DestinationPlateType,DestinationPlateVolume,WaterVolume
+              # rubocop:enable Layout/LineLength
               # DN1000001A,A1,ABgene 0765,15.85,DN20000001B,A1,ABgene 0800,15.85,49.15
               # DownloadHelpers.wait_for_download("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.csv")
               generated_file =

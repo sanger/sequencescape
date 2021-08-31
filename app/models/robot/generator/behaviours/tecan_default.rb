@@ -65,7 +65,9 @@ module Robot::Generator::Behaviours::TecanDefault
       temp =
         [
           "A;#{source_barcode};;#{source_name};#{source_position};;#{tecan_precision_value(mapping['volume'])}",
+          # rubocop:todo Layout/LineLength
           "D;#{dest_plate_barcode};;#{plate_details['name']};#{destination_position};;#{tecan_precision_value(mapping['volume'])}",
+          # rubocop:enable Layout/LineLength
           "W;\n"
         ].join("\n")
       dyn_mappings += temp
@@ -91,7 +93,9 @@ module Robot::Generator::Behaviours::TecanDefault
         Map::Coordinate.description_to_vertical_plate_position(mapping['dst_well'], plate_details['plate_size'])
 
       buffer <<
+        # rubocop:todo Layout/LineLength
         "A;#{buffer_info(vert_map_id)};;#{tecan_precision_value(volume)}\nD;#{dest_plate_barcode};;#{dest_name};#{vert_map_id};;#{tecan_precision_value(volume)}\nW;"
+      # rubocop:enable Layout/LineLength
     end
     buffer.join("\n")
   end

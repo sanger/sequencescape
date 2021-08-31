@@ -8,8 +8,12 @@ describe TagSubstitution, warren: true do
   # in aliquots identified by the library id. We don't need to consider:
   # - Tagged aliquots without a library id (eg. External pipeline apps)
   # - Multiple tags for the same sample/library (Chromium pipelines)
+  # rubocop:todo Layout/LineLength
   # - Introducing invalid state through persisting tag clashes. (Theoretically any pipline, but esp. Generic Lims QC pools)
+  # rubocop:enable Layout/LineLength
+  # rubocop:todo Layout/LineLength
   # Note: The tag swap scenario used here is important, as a naive approach results in a temporary tag clash. If you make
+  # rubocop:enable Layout/LineLength
   # changes to this suite, please ensure this scenario is still tested.
 
   subject { described_class.new({ substitutions: instructions }.merge(additional_parameters)) }

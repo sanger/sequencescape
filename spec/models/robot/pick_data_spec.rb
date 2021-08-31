@@ -66,10 +66,18 @@ RSpec.describe Robot::PickData, robot_verification: true do
       #           'plate_size' => 96,
       #           'control' => false,
       #           'mapping' => [
+      # rubocop:todo Layout/LineLength
       #             { 'src_well' => [source_plate_3.machine_barcode, 'A1'], 'dst_well' => 'A1', 'volume' => nil, 'buffer_volume' => 0.0 },
+      # rubocop:enable Layout/LineLength
+      # rubocop:todo Layout/LineLength
       #             { 'src_well' => [source_plate_2.machine_barcode, 'A1'], 'dst_well' => 'B1', 'volume' => nil, 'buffer_volume' => 0.0 },
+      # rubocop:enable Layout/LineLength
+      # rubocop:todo Layout/LineLength
       #             { 'src_well' => [source_plate_3.machine_barcode, 'B1'], 'dst_well' => 'C1', 'volume' => nil, 'buffer_volume' => 0.0 },
+      # rubocop:enable Layout/LineLength
+      # rubocop:todo Layout/LineLength
       #             { 'src_well' => [source_plate_2.machine_barcode, 'B1'], 'dst_well' => 'F1', 'volume' => nil, 'buffer_volume' => 0.0 }
+      # rubocop:enable Layout/LineLength
       #           ]
       #         }
       #       },
@@ -95,8 +103,12 @@ RSpec.describe Robot::PickData, robot_verification: true do
       #           'plate_size' => 96,
       #           'control' => false,
       #           'mapping' => [
+      # rubocop:todo Layout/LineLength
       #             { 'src_well' => [source_plate_1.machine_barcode, 'B1'], 'dst_well' => 'D1', 'volume' => nil, 'buffer_volume' => 0.0 },
+      # rubocop:enable Layout/LineLength
+      # rubocop:todo Layout/LineLength
       #             { 'src_well' => [source_plate_1.machine_barcode, 'A1'], 'dst_well' => 'A2', 'volume' => nil, 'buffer_volume' => 0.0 }
+      # rubocop:enable Layout/LineLength
       #           ]
       #         }
       #       },

@@ -57,7 +57,11 @@ module Cherrypick::VolumeByNanoGrams # rubocop:todo Style/Documentation
     check_inputs_to_volume_to_cherrypick_by_nano_grams!(minimum_volume, maximum_volume, target_ng, source_well)
 
     source_concentration = source_well.well_attribute.concentration.to_f
+
+    # rubocop:todo Layout/LineLength
     source_volume = source_well.well_attribute.estimated_volume # Current volume, fall back to measured if current not set
+
+    # rubocop:enable Layout/LineLength
     desired_volume = source_volume
     unless source_concentration.zero?
       desired_volume = [(target_ng.to_f / source_concentration), robot_minimum_picking_volume].max

@@ -20,7 +20,9 @@ module SequencescapeExcel
       def update(_attributes = {}) # rubocop:todo Metrics/CyclomaticComplexity
         return unless valid? && foreign_barcode_format.present?
 
+        # rubocop:todo Layout/LineLength
         # if this tube's list of barcodes already contains a foreign barcode with the same format then update the existing one
+        # rubocop:enable Layout/LineLength
         foreign_barcode = asset.barcodes.find { |item| item[:format] == foreign_barcode_format.to_s }
         if foreign_barcode.present?
           if foreign_barcode.barcode != value

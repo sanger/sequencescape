@@ -29,7 +29,10 @@ class TagLayout::WalkWellsByPools < TagLayout::Walker # rubocop:todo Style/Docum
         next unless prior_group[index].last == well_and_pool.last
 
         current_group.push(well_and_pool) # Move the well to the end of the group
+
+        # rubocop:todo Layout/LineLength
         current_group[index] = [nil, well_and_pool.last] # Blank out the well at the current position but maintain the pool
+        # rubocop:enable Layout/LineLength
       end
     end
 

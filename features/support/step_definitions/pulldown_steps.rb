@@ -48,11 +48,15 @@ Given '{well_range} of {plate_name} have been failed' do |range, plate|
     end
 end
 
+# rubocop:todo Layout/LineLength
 Given '{well_range} of {plate_name} have been {submitted_to} with the following request options:' do |range, plate, template, table|
+  # rubocop:enable Layout/LineLength
   create_submission_of_assets(template, plate.wells.select(&range.method(:include?)), table.raw.to_h)
 end
 
+# rubocop:todo Layout/LineLength
 Given '{well_range} of {plate_uuid} have been {submitted_to} with the following request options:' do |range, plate, template, table|
+  # rubocop:enable Layout/LineLength
   create_submission_of_assets(template, plate.wells.select(&range.method(:include?)), table.raw.to_h)
 end
 
@@ -117,7 +121,9 @@ Then 'the state of {asset_name} should be {string}' do |target, state|
   assert_equal(state, target.state, 'State is invalid')
 end
 
+# rubocop:todo Layout/LineLength
 Given 'all of the wells on {plate_name} are in an asset group called {string} owned by {study_name}' do |plate, name, study|
+  # rubocop:enable Layout/LineLength
   AssetGroup.create!(study: study, name: name, assets: plate.wells)
 end
 
@@ -179,7 +185,9 @@ Given '{plate_name} will pool into 1 tube' do |plate|
     end
 end
 
+# rubocop:todo Layout/LineLength
 Then /^the user (should|should not) accept responsibility for pulldown library creation requests from the plate "(.*?)"$/ do |accept, plate_name|
+  # rubocop:enable Layout/LineLength
   Plate
     .find_by(name: plate_name)
     .wells

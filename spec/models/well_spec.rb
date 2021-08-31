@@ -288,11 +288,15 @@ describe Well do
         )
       end
 
+      # rubocop:todo Layout/LineLength
       it "output stock_to_pick #{stock_to_pick} for a target of #{target_ng} with vol #{measured_volume} and conc #{measured_concentration}" do
+        # rubocop:enable Layout/LineLength
         assert_equal stock_to_pick, @target_well.well_attribute.picked_volume
       end
 
+      # rubocop:todo Layout/LineLength
       it "output buffer #{buffer_added} for a target of #{target_ng} with vol #{measured_volume} and conc #{measured_concentration}" do
+        # rubocop:enable Layout/LineLength
         assert_equal buffer_added, @target_well.well_attribute.buffer_volume
       end
     end
@@ -426,7 +430,9 @@ describe Well do
       [120.0, 50.0, 0, 60.0, 5.0, 60.0, 60.0, 'Zero concentration, with less volume than required'],
       [120.0, 50.0, 0, 3.0, 5.0, 3.0, 117.0, 'Zero concentration, with less volume than even the minimum robot pick']
       # rubocop:todo Metrics/ParameterLists
+      # rubocop:todo Layout/LineLength
     ].each do |volume_required, concentration_required, source_concentration, source_volume, robot_minimum_pick_volume, source_volume_obtained, buffer_volume_obtained, scenario|
+      # rubocop:enable Layout/LineLength
       # rubocop:enable Metrics/ParameterLists
       context "when testing #{scenario}" do
         before do

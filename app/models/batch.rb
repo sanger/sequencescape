@@ -459,7 +459,9 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
           event.update!(batch_id: batch_request_left.batch_id) if event.batch_id == batch_request_right.batch_id
         end
 
+      # rubocop:todo Layout/LineLength
       # Swap the two batch requests so that they are correct.  This involves swapping both the batch and the lane but ensuring that the
+      # rubocop:enable Layout/LineLength
       # two requests don't clash on position by removing one of them.
       original_left_batch_id, original_left_position, original_right_request_id =
         batch_request_left.batch_id, batch_request_left.position, batch_request_right.request_id
@@ -476,13 +478,17 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
       batch_request_left.batch.lab_events.create!(
         description: 'Lane swap',
         message:
+          # rubocop:todo Layout/LineLength
           "Lane #{batch_request_right.position} moved to #{batch_request_left.batch_id} lane #{batch_request_left.position}",
+        # rubocop:enable Layout/LineLength
         user_id: current_user.id
       )
       batch_request_right.batch.lab_events.create!(
         description: 'Lane swap',
         message:
+          # rubocop:todo Layout/LineLength
           "Lane #{batch_request_left.position} moved to #{batch_request_right.batch_id} lane #{batch_request_right.position}",
+        # rubocop:enable Layout/LineLength
         user_id: current_user.id
       )
     end

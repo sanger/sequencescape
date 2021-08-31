@@ -22,7 +22,9 @@ class Api::Messages::FlowcellIO < Api::Base
   }
 
   #
+  # rubocop:todo Layout/LineLength
   # The following modules add methods onto the relevant models, which are used below in generation of the flowcell MLWH message.
+  # rubocop:enable Layout/LineLength
   #
 
   # Included in SequencingRequest model
@@ -100,7 +102,9 @@ class Api::Messages::FlowcellIO < Api::Base
         end
 
         def detect_descriptor(name)
+          # rubocop:todo Layout/LineLength
           # Sort here goes by id ascending, so we use a reverse each, in order to find the most recent descriptor with the passed in 'name'
+          # rubocop:enable Layout/LineLength
           # Lazy ensures we stop searching as soon as we find a value
           lab_events.sort.lazy.reverse_each.map { |e| e.descriptor_value_for(name) }.detect(&:present?)
         end
@@ -209,7 +213,9 @@ class Api::Messages::FlowcellIO < Api::Base
   renders_model(::Batch)
 
   #
+  # rubocop:todo Layout/LineLength
   # The following section maps attributes on Sequencescape models to attributes in the json message that is passed to the MLWH.
+  # rubocop:enable Layout/LineLength
   #
 
   # The following methods come from the Batch model or the relevant module above.

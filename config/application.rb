@@ -61,7 +61,9 @@ module Sequencescape
     # no regular words or you'll be exposed to dictionary attacks.
     # config.action_controller.session = {
     #    :key => '_sequencescape_projects_session',
+    # rubocop:todo Layout/LineLength
     #    :secret      => '331126909929cd365e60e61c66e88d260ef609cb813566e03618f6a455dbfc7f50486aa6dc721bcc5fce54455282e3e17bb500f11d8b72bbac369f194c9dae73'
+    # rubocop:enable Layout/LineLength
     #  }
 
     # Enable localisations to be split over multiple paths.

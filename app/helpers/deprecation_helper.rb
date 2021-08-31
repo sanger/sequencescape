@@ -40,7 +40,9 @@ module DeprecationHelper
   #     <p>Old we content</p>
   #  <% end %>
   # @param date [nil,Date] The date at which the section will be hidden.
+  # rubocop:todo Layout/LineLength
   # @param message [String] Body explaining why the feature is being removed, and where the functionality can be found elsewhere.
+  # rubocop:enable Layout/LineLength
   # @param replaced_by [String,nil] URL of the replacement (if applicable).
   # @param custom_title [String] Override the title determined by the level.
   # @param custom_style [String] Overide the styles determined by the level.

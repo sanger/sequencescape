@@ -54,7 +54,9 @@ module StateChanger
     attribute :customer_accepts_responsibility, :boolean, default: false
 
     # Updates the state of the labware to the target state.  The basic implementation does this by updating
+    # rubocop:todo Layout/LineLength
     # all of the TransferRequest instances to the state specified.  If {#contents} is blank then the change is assumed to
+    # rubocop:enable Layout/LineLength
     # relate to all wells of the plate, otherwise only the selected ones are updated.
     # @return [Void]
     def update_labware_state

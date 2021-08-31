@@ -131,7 +131,9 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
             .distinct
         }
 
+  # rubocop:todo Layout/LineLength
   # It feels like we should be able to do this with just includes and order, but oddly this causes more disruption downstream
+  # rubocop:enable Layout/LineLength
   scope :in_column_major_order, -> { joins(:map).order('column_order ASC').select_table.select('column_order') }
   scope :in_row_major_order, -> { joins(:map).order('row_order ASC').select_table.select('row_order') }
   scope :in_inverse_column_major_order,

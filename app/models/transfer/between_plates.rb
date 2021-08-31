@@ -99,7 +99,9 @@ class Transfer::BetweenPlates < Transfer
       if transfer_details.nil?
         errors.add(
           :base,
+          # rubocop:todo Layout/LineLength
           "Could not find appropriate pool for #{sources} to #{dest_loc}. Check you don't have repool submissions on failed wells."
+          # rubocop:enable Layout/LineLength
         )
         raise ActiveRecord::RecordInvalid, self
       end

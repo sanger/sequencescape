@@ -51,7 +51,9 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   belongs_to :initial_study, class_name: 'Study'
   belongs_to :work_order, optional: true
 
+  # rubocop:todo Layout/LineLength
   # The assets on a request can be treated as a particular class when being used by certain pieces of code.  For instance,
+  # rubocop:enable Layout/LineLength
   # QC might be performed on a source asset that is a well, in which case we'd like to load it as such.
   belongs_to :target_asset, class_name: 'Receptacle', inverse_of: :requests_as_target, optional: true
   belongs_to :asset, class_name: 'Receptacle', inverse_of: :requests, optional: true
@@ -177,8 +179,12 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
             .joins(
               add_joins + [
                 'INNER JOIN maps AS pw_location ON pw.map_id = pw_location.id',
+                # rubocop:todo Layout/LineLength
                 'INNER JOIN pre_capture_pool_pooled_requests ON requests.id=pre_capture_pool_pooled_requests.request_id',
+                # rubocop:enable Layout/LineLength
+                # rubocop:todo Layout/LineLength
                 'INNER JOIN uuids ON uuids.resource_id = pre_capture_pool_pooled_requests.pre_capture_pool_id AND uuids.resource_type="PreCapturePool"'
+                # rubocop:enable Layout/LineLength
               ]
             )
             .group('pre_capture_pool_pooled_requests.pre_capture_pool_id')

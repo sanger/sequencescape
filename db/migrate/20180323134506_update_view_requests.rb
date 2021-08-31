@@ -2,6 +2,7 @@
 
 # The requests view had been updated to include request purpose, which is now an enum.
 # This adds the previously untracked request_purpose column to the view in a compatible manner.
+# rubocop:disable Layout/LineLength
 class UpdateViewRequests < ActiveRecord::Migration[5.1] # rubocop:todo Metrics/ClassLength
   def self.up
     ViewsSchema.update_view(
@@ -147,3 +148,4 @@ class UpdateViewRequests < ActiveRecord::Migration[5.1] # rubocop:todo Metrics/C
     )
   end
 end
+# rubocop:enable Layout/LineLength

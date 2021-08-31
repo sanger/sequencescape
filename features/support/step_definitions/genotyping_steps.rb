@@ -13,7 +13,9 @@ Given(
   purpose = FactoryBot.create :plate_purpose
   purpose_name = purpose.name
   step(
+    # rubocop:todo Layout/LineLength
     "I have a \"#{purpose_name}\" plate \"#{plate_barcode}\" in study \"#{study_name}\" with #{number_of_samples} samples in asset group \"#{asset_group_name}\""
+    # rubocop:enable Layout/LineLength
   )
 end
 
@@ -43,7 +45,9 @@ Given(/^I have a cherrypicking batch with (\d+) samples$/) do |number_of_samples
   step('I have a project called "Test project"')
   step('I have an active study called "Test study"')
   step(
+    # rubocop:todo Layout/LineLength
     "I have a plate \"1234567\" in study \"Test study\" with #{number_of_samples} samples in asset group \"Plate asset group\""
+    # rubocop:enable Layout/LineLength
   )
 
   step('I have a Cherrypicking submission for asset group "Plate asset group"')

@@ -88,7 +88,9 @@ describe Pooling, type: :model, poolings: true do
         expect(pooling.standard_mx_tube.aliquots.count).to eq 5
         expect(pooling.message).to eq(
           notice:
+            # rubocop:todo Layout/LineLength
             "Samples were transferred successfully to standard_mx_tube #{Tube.last.human_barcode} and stock_mx_tube #{Tube.last(2).first.human_barcode} "
+          # rubocop:enable Layout/LineLength
         )
       end
 
@@ -129,7 +131,9 @@ describe Pooling, type: :model, poolings: true do
         expect(pooling.print_job_required?).to be true
         expect(pooling.message).to eq(
           notice:
+            # rubocop:todo Layout/LineLength
             "Samples were transferred successfully to standard_mx_tube #{Tube.last.human_barcode} Your 1 label(s) have been sent to printer #{barcode_printer.name}"
+          # rubocop:enable Layout/LineLength
         )
       end
 

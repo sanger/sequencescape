@@ -39,7 +39,10 @@ class Admin::BaitLibraries::BaitLibrarySuppliersController < ApplicationControll
     if @bait_library_supplier.bait_libraries.visible.count > 0
       respond_to do |format|
         flash[:error] =
+          # rubocop:todo Layout/LineLength
           "Can not delete '#{@bait_library_supplier.name}', supplier is in use by #{@bait_library_supplier.bait_libraries.visible.count} libraries.<br/>"
+
+        # rubocop:enable Layout/LineLength
         format.html { redirect_to(admin_bait_libraries_path) }
       end
     else

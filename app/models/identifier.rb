@@ -7,7 +7,11 @@
 # The table remains for reference purposes but shouldn't be involved in any active behaviour
 class Identifier < ApplicationRecord
   validates :resource_name, :identifiable_id, presence: true
+
+  # rubocop:todo Layout/LineLength
   validates :external_id, uniqueness: { scope: %i[identifiable_id resource_name] } # only one external per asset per resource
+
+  # rubocop:enable Layout/LineLength
 
   belongs_to :identifiable, polymorphic: true
   belongs_to :external, polymorphic: true

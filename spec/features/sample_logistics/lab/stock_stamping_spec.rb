@@ -31,7 +31,10 @@ describe 'stamping of stock', js: true do
     click_button 'Check the form'
     expect(
       page
+      # rubocop:todo Layout/LineLength
     ).to have_content 'Required volume exceeds the maximum well volume for well(s) A1. Maximum well volume 800.0 will be used in tecan file'
+
+    # rubocop:enable Layout/LineLength
     expect(page).to have_content 'You can generate the TECAN file and print label now.'
     expect(page).not_to have_content('Plates barcodes are not identical')
     click_button 'Generate TECAN file'

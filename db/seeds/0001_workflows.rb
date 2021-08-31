@@ -941,7 +941,9 @@ CherrypickPipeline.create!(name: 'Cherrypick') do |pipeline|
     Workflow
       .create!(name: 'Cherrypick')
       .tap do |workflow|
+        # rubocop:todo Layout/LineLength
         # NOTE[xxx]: Note that the order here, and 'Set Location' being interactive, do not mimic the behaviour of production
+        # rubocop:enable Layout/LineLength
         [
           { class: PlateTemplateTask, name: 'Select Plate Template', sorted: 1, batched: true, lab_activity: true },
           { class: CherrypickTask, name: 'Approve Plate Layout', sorted: 2, batched: true, lab_activity: true }

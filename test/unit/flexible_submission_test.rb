@@ -96,7 +96,10 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
           @mpx_submission.process!
           @mpx_submission.requests.each do |request|
             assert request.qc_metrics.include?(@metric),
+                   # rubocop:todo Layout/LineLength
                    "Metric not included in #{request.request_type.name}: List #{request.qc_metrics.inspect}, Expected: #{@metric}"
+
+            # rubocop:enable Layout/LineLength
             assert_equal true,
                          request.request_metadata.customer_accepts_responsibility,
                          "Customer doesn't accept responsibility"

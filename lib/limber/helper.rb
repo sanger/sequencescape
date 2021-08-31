@@ -74,7 +74,9 @@ module Limber::Helper
     # Required:
     # @attr [String] prefix The prefix for the given limber pipeline (eg. WGS)
     # @attr [ProductCatalogue] catalogue The product catalogue that matches the submission.
+    # rubocop:todo Layout/LineLength
     #                           Note: Most limber stuff will use a simple SingleProduct catalogue with a product names after the prefix.
+    # rubocop:enable Layout/LineLength
 
     # The following parameters are optional, and usually get calculated from the prefix.
     # @attr_writer [String] name Optional: The library creation portion of the submission template name

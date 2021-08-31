@@ -47,6 +47,7 @@ describe '/api/1/plate-uuid/submission_pools' do
       end
 
       let(:response_body) do
+        # rubocop:todo Layout/LineLength
         "{
             \"actions\": {
               \"read\": \"http://www.example.com/api/1/#{uuid}/submission_pools/1\",
@@ -60,6 +61,7 @@ describe '/api/1/plate-uuid/submission_pools' do
               \"used_tag_layout_templates\":[]
            }]
        }"
+        # rubocop:enable Layout/LineLength
       end
 
       it_behaves_like 'an API/1 GET endpoint'
@@ -108,6 +110,7 @@ describe '/api/1/plate-uuid/submission_pools' do
       end
 
       let(:response_body) do
+        # rubocop:todo Layout/LineLength
         "{
             \"actions\": {
               \"read\": \"http://www.example.com/api/1/#{uuid}/submission_pools/1\",
@@ -121,6 +124,7 @@ describe '/api/1/plate-uuid/submission_pools' do
               \"used_tag_layout_templates\":[{\"uuid\":\"#{tag_layout_template.uuid}\",\"name\":\"#{tag_layout_template.name}\"}]
            }]
        }"
+        # rubocop:enable Layout/LineLength
       end
 
       it_behaves_like 'an API/1 GET endpoint'

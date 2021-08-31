@@ -17,7 +17,9 @@ module IlluminaC::Requests
   # Stage 1:
   # Refactor to allow use of IlluminaC::Requests::LibraryRequest [Done: This commit]
   # Step 2:
+  # rubocop:todo Layout/LineLength
   # Write migration to update existing request types / requests to use IlluminaC::Requests::LibraryRequest [Will be done soon]
+  # rubocop:enable Layout/LineLength
   # Also update the configuration below to ensure the seeds behave correctly
   # Step 3:
   # Remove these classes

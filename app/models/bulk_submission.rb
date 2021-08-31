@@ -116,7 +116,10 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     return true if headers.include? 'submission name'
 
     errors.add :spreadsheet,
+               # rubocop:todo Layout/LineLength
                "You submitted an incompatible spreadsheet. Please ensure your spreadsheet contains the 'submission name' column"
+
+    # rubocop:enable Layout/LineLength
     false
   end
 
@@ -299,7 +302,9 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
         provided_values = option.map { |o| "'#{o}'" }.to_sentence
         errors.add(
           :spreadsheet,
+          # rubocop:todo Layout/LineLength
           "#{field} should be identical for all requests in asset group '#{rows.first['asset group name']}'. Given values were: #{provided_values}."
+          # rubocop:enable Layout/LineLength
         )
       end
       [field, option.first]
@@ -351,7 +356,9 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
 
     # Check the library type matches a value from the table
     if request_options['library_type'].present?
+      # rubocop:todo Layout/LineLength
       # find is case insensitive but we want the correct case sensitive name for requests or we get issues downstream in NPG
+      # rubocop:enable Layout/LineLength
       lt = LibraryType.find_by(name: request_options['library_type'])&.name or
         raise StandardError, "Cannot find library type #{request_options['library_type'].inspect}"
       request_options['library_type'] = lt
@@ -411,7 +418,9 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
       attributes[:assets] = found_assets
     elsif found_assets.present? && found_assets != attributes[:asset_group].assets
       raise StandardError,
+            # rubocop:todo Layout/LineLength
             "Asset Group '#{attributes[:asset_group].name}' contains different assets to those you specified. You may be reusing an asset group name"
+      # rubocop:enable Layout/LineLength
     end
 
     add_study_to_assets(found_assets, study)

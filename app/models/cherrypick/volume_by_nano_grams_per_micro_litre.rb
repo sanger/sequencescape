@@ -91,7 +91,9 @@ module Cherrypick::VolumeByNanoGramsPerMicroLitre
     end
     if source_concentration.blank? || source_concentration.to_f < 0.0
       raise Cherrypick::ConcentrationError,
+            # rubocop:todo Layout/LineLength
             "Source concentration (#{source_concentration.inspect}) is invalid for cherrypick by nano grams per micro litre"
+      # rubocop:enable Layout/LineLength
     end
   end
   # rubocop:enable Metrics/MethodLength
