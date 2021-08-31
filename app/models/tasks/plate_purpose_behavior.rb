@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Tasks
   module PlatePurposeBehavior # rubocop:todo Style/Documentation
     # Returns a list of valid plate purpose types based on the requests in the current batch.

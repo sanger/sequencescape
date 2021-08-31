@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module StudyReport::AssetDetails # rubocop:todo Style/Documentation
   # rubocop:todo Metrics/MethodLength
   def qc_report # rubocop:todo Metrics/AbcSize

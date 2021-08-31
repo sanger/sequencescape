@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # rubocop:todo Metrics/ModuleLength
 module BootstrapHelper # rubocop:todo Style/Documentation
   def panel(type = :default, options = {}, &block)

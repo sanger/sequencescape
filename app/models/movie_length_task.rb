@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class MovieLengthTask < Task # rubocop:todo Style/Documentation
   def partial
     'movie_length_batches'

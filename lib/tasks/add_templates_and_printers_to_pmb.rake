@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require_relative '../label_printer/label_printer'
 require_relative '../../config/config'
 

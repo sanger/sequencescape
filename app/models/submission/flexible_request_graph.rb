@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Submission::FlexibleRequestGraph
   # A doublet couples a source asset to a particular qc metric.
   # This allows us to pass the qc_metric downstream, without relying

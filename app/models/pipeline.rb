@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # A Pipeline acts to associate {Request requests} with a {Workflow}.
 # Visiting a pipeline's page will display an inbox of pending {Batch unbatched}
 # requests, and a summary list of ongoing {Batch batches} for that particular

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rexml/text'
 xml.instruct!
 xml.sample(api_data) do

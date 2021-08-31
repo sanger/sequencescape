@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Property of {Project} set on {Project::Metadata}
 # High level organisational area for funding
 class BudgetDivision < ApplicationRecord

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'net/ldap'
 require 'openssl'
 require 'digest/sha1'

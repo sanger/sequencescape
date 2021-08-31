@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # A receptacle is a container for {Aliquot aliquots}, they are associated with
 # {Labware}, which represents the physical object which moves round the lab.
 # A {Labware} may have a single {Receptacle}, such as in the case of a {Tube}
@@ -66,7 +67,7 @@ class Receptacle < Asset
   end
 
   self.stock_message_template = 'TubeStockResourceIO'
-  self.sample_partial = 'assets/samples_partials/asset_samples'.freeze
+  self.sample_partial = 'assets/samples_partials/asset_samples'
 
   has_many :messengers, as: :target, inverse_of: :target
   delegate :scanned_in_date, to: :labware

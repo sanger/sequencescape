@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Controls API V1 {::Core::Endpoint::Base endpoints} for Searches
 class ::Endpoints::Searches < ::Core::Endpoint::Base
   module SearchActions # rubocop:todo Style/Documentation

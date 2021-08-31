@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require './lib/oligo_enumerator'
 
 # rubocop:disable Rails/RakeEnvironment

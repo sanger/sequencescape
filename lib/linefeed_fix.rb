@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # While the traditional linefeed in window is CR-LF vs LF
 # in unix, excel seems to be generating spreadsheets with
 # CR-CR-LF, which CSV.parse doesn't like.

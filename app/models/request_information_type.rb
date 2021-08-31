@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class RequestInformationType < ApplicationRecord
   has_many :pipeline_request_information_types
   has_many :pipelines, through: :pipeline_request_information_types

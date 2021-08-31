@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # rubocop:todo Metrics/ModuleLength
 module StudyReport::StudyDetails # rubocop:todo Style/Documentation
   BATCH_SIZE = 1000

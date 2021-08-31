@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module BroadcastEvent::SubjectHelpers
   class Subject # rubocop:todo Style/Documentation
     attr_reader :target, :role_type

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Generate a study report. Largely replaced by {QcReport}
 StudyReportJob =
   Struct.new(:study_report_id) do

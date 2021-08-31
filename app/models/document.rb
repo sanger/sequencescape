@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'carrierwave'
 
 class Document < ApplicationRecord # rubocop:todo Style/Documentation

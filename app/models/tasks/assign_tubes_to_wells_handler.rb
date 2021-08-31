@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Handles the behaviour of {AssignTubesToMultiplexedWellsTask}
 # and included in {WorkflowsController}
 # {include:AssignTubesToMultiplexedWellsTask}

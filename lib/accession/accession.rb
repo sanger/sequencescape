@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Accession # rubocop:todo Style/Documentation
   # Handles assigning of accessioning number to a Sequenescape sample.
   # Before accessioning:
@@ -59,7 +60,7 @@ module Accession # rubocop:todo Style/Documentation
 
   String.include CoreExtensions::String
 
-  CENTER_NAME = 'SC'.freeze
+  CENTER_NAME = 'SC'
   XML_NAMESPACE = { 'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance' }.freeze
 
   class << self

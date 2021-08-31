@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Search::FindPlatesForUser < Search # rubocop:todo Style/Documentation
   def scope(user_criteria) # rubocop:todo Metrics/AbcSize
     # We find all plates that do not have transfers where they are the source.  Once a plate has been transferred

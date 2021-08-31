@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Controls API V1 IO for MultiplexedLibraryCreationRequest
 class Io::MultiplexedLibraryCreationRequest < ::Io::LibraryCreationRequest
   set_model_for_input(::MultiplexedLibraryCreationRequest)

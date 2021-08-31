@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require_dependency 'broadcast_event/lab_event'
 
 # Lab events are created as part of the traditional Sequencescape based pipelines

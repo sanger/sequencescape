@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # JG: This is a bit speculative, as all this happened before my time but it matches
 # what I can see in the database. Studies were also marked as being identifiable,
 # but it doesn't appear that this functionality was used.

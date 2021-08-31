@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Factory class primarily used by the API to generate new
 # pieces of {Asset labware}. In addition provides an audit trail to record who
 # created the Asset.

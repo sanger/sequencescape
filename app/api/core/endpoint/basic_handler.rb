@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Core::Endpoint::BasicHandler # rubocop:todo Style/Documentation
   module Json # rubocop:todo Style/Documentation
     def actions(object, options)

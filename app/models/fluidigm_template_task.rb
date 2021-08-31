@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class FluidigmTemplateTask < PlateTemplateTask # rubocop:todo Style/Documentation
   def partial
     'fluidigm_template_batches'

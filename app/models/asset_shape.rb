@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Describes the shape of the plate and its numbering system.
 # The majority of our {Plate plates} have a 3:2 width height ratio:
 # eg. 12*8 or 24*16

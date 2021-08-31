@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Represents a Data Access Committee who co-ordinate access to managed (EGA)
 # {Accessionable::Study studies}. Should ideally be a completely separate record
 # from {Study} but currently just a group of attributes in the {Study::Metadata}

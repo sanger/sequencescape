@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class PacBio::SampleSheet # rubocop:todo Style/Documentation
   def header_metadata(batch)
     [
@@ -98,7 +99,7 @@ class PacBio::SampleSheet # rubocop:todo Style/Documentation
     protocol.gsub(/[^\w]/, '_')
   end
 
-  CONCAT_SEPARATOR = ';'.freeze
+  CONCAT_SEPARATOR = ';'
 
   def concat(list, sym, separator = CONCAT_SEPARATOR)
     list.map(&sym).uniq.join(separator)

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Searching is really a behaviour separate from the thing you are search against.  For instance, with
 # a call to Asset.all you find all assets; except if we removed the asset hierarchy you do not get a search
 # across all of the models that made it up.  Instead you want a SearchForAsset model that does the correct

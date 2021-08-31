@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class StockStamper # rubocop:todo Style/Documentation
   include ActiveModel::Model
 

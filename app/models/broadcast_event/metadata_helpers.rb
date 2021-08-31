@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module BroadcastEvent::MetadataHelpers
   class SimpleMetadataFinder # rubocop:todo Style/Documentation
     attr_reader :name, :method

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 ActiveRecord::SchemaDumper.ignore_tables = %w[
   view_aliquots
   view_asset_links

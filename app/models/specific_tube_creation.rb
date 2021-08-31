@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Allows a different purpose to be set for each of the child tubes.
 class SpecificTubeCreation < TubeCreation
   # Allows a many to many relationship between SpecificTubeCreations and Purposes.

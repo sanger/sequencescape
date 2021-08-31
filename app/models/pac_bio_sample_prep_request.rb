@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class PacBioSamplePrepRequest < CustomerRequest # rubocop:todo Style/Documentation
   delegate :pac_bio_library_tube_metadata, to: :target_tube, allow_nil: true
   delegate :movie_length, to: :pac_bio_library_tube_metadata, allow_nil: true

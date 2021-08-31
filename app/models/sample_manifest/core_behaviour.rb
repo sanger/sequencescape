@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module SampleManifest::CoreBehaviour # rubocop:todo Style/Documentation
   BEHAVIOURS = %w[1dtube plate multiplexed_library library library_plate tube_rack].freeze
 

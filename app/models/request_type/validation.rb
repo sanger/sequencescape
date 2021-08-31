@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This is used when validating request options when the submission is made, and before it is actually built.
 # Unfortunately things have gotten a little tangled around this area, and a heavy refactor is required.
 module RequestType::Validation

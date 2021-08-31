@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Allows the creation of multiple {Transfer::BetweenPlates} for a given array
 # of individual transfers. Designed for use via the API
 #

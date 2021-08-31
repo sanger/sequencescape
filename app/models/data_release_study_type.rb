@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # On {Study} creation the user selects a {DataReleaseStudyType} from a drop down list
 # of pre-registered data release study types. The default option is determined by the
 # {#is_default} flag in the database

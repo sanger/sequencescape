@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # SubmissionPools are designed to view submissions in the context of a particular asset
 class SubmissionPool < ApplicationRecord
   module Association

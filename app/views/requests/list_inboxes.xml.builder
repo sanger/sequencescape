@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 xml.instruct!
 xml.families(api_data) do |families|
   if @tasks.empty?

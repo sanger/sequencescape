@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Base class for API v0.5, now used for Warehouse message rendering, the actual
 # api is no longer exposed.
 # @note Originally the warehouse was built nightly by calls the the v0.5 API.

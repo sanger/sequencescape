@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Batch::PipelineBehaviour # rubocop:todo Style/Documentation
   def self.included(base)
     base.class_eval do

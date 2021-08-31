@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Pre_PCR plates will remain 'started; until the run is complete.
 # Handled finding of plates for the defunct Illumina-B pipelines
 # Can be deprecated.

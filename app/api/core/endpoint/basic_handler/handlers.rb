@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Core::Endpoint::BasicHandler::Handlers # rubocop:todo Style/Documentation
   # Handler that behaves like it never deals with any URLs
   NullHandler =

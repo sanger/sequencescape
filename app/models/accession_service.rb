@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # The EBI operates two key AccessionServices
 # {EnaAccessionService ENA}: Mostly non-human data, provides open access to uploaded data
 # {EgaAccessionService EGA}: Mostly for human data, provides managed access to uploaded data
@@ -29,9 +30,9 @@ class AccessionService # rubocop:todo Metrics/ClassLength
   NumberNotRequired = Class.new(AccessionServiceError)
   NumberNotGenerated = Class.new(AccessionServiceError)
 
-  CenterName = 'SC'.freeze # TODO: [xxx] use confing file
-  Protect = 'protect'.freeze
-  Hold = 'hold'.freeze
+  CenterName = 'SC' # TODO: [xxx] use confing file
+  Protect = 'protect'
+  Hold = 'hold'
 
   def provider; end
 

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 xml.instruct!
 xml.asset(api_data) do
   xml.comment! <<~COMMENT

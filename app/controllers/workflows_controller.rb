@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Controls progress through the {Task tasks} in a {Workflow} as part of
 # taking a {Batch} through a {Pipeline}
 #

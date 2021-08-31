@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 #
 # Add your destination definitions here
 # can also be used to configure filters, and processor groups

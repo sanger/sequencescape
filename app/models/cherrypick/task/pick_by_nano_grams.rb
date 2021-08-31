@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Cherrypick::Task::PickByNanoGrams # rubocop:todo Style/Documentation
   def valid_params_for_nano_grams_pick?(options)
     [options[:minimum_volume], options[:maximum_volume], options[:total_nano_grams]].all?(

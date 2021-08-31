@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 ##
 # Extended validators are used to provide extra validation
 # of submission. They are associated with request types

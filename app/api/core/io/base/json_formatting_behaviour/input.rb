@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module ::Core::Io::Base::JsonFormattingBehaviour::Input # rubocop:todo Style/Documentation
   class ReadOnlyAttribute < ::Core::Service::Error # rubocop:todo Style/Documentation
     def initialize(attribute)

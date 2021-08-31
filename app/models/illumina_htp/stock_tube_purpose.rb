@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Represents a prepared library or multiplexed library which is
 # still undergoing normalization, or is at a higher concentration than is
 # required for {SequencingPipeline}. A stock may be stored to return to later

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module IlluminaC::Helper
   ACCEPTABLE_REQUEST_TYPES = %w[
     illumina_c_pcr
@@ -19,7 +20,7 @@ module IlluminaC::Helper
     illumina_c_hiseq_4000_single_end_sequencing
   ].freeze
 
-  PIPELINE = 'Illumina-C'.freeze
+  PIPELINE = 'Illumina-C'
   class TemplateConstructor # rubocop:todo Style/Documentation
     # Construct submission templates for the generic pipeline
     # opts is a hash

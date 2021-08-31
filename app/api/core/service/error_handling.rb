@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Core::Service::ErrorHandling # rubocop:todo Style/Documentation
   # rubocop:todo Metrics/MethodLength
   def self.registered(app) # rubocop:todo Metrics/AbcSize

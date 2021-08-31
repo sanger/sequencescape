@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # A {Task} used in {PacBioSequencingPipeline}
 # Assigns tagged tube into multiplexed wells on the target plate for pooling.
 #

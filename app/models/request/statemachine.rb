@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This is a module containing the standard statemachine for a request that needs it.
 # It provides various callbacks that can be hooked in to by the derived classes.
 require 'aasm'

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Included in {Well} to provide calculations for cherrypicking
 module Cherrypick::VolumeByNanoGramsPerMicroLitre
   #

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class PooledCherrypickRequest < CustomerRequest # rubocop:todo Style/Documentation
   # Returns a list of attributes that must match for any given pool.
   # We don't want to place any restrictions on Cherrypicking (Yet).

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module SharedBehaviour::Named # rubocop:todo Style/Documentation
   def self.included(base)
     base.class_eval do

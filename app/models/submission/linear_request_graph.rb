@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This module can be included where the {Order} has a linear behaviour,
 # with no branching. Eg. in {LinearSubmission}
 module Submission::LinearRequestGraph

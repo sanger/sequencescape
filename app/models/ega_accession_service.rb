@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class EgaAccessionService < AccessionService # rubocop:todo Style/Documentation
   self.priority = 2
   self.operational = true

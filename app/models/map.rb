@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Map identifies a {Well wells} position on a {Plate}. It is not related to
 # the ruby #map method.
 class Map < ApplicationRecord

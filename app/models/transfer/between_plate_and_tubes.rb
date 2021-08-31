@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Transfer::BetweenPlateAndTubes < Transfer # rubocop:todo Style/Documentation
   DESTINATION_INCLUDES = { destination: %i[uuid_object barcodes] }.freeze
 

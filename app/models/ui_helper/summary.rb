@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Ideally we'd convert this into a scope/association, but its complicated by the need to associate across
 # two models, one of which we're trying to deprecate.
 require 'will_paginate/array'

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Request::ChangeDecision # rubocop:todo Style/Documentation
   include ::Validateable
 

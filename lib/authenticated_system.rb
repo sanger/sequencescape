@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module AuthenticatedSystem # rubocop:todo Style/Documentation
   protected
 

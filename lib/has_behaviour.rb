@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Simple module to provide means of delegating specific behaviours
 # to external objects. Allows the behaviours to be safely specified
 # in the database. Use of constantize can allow for loading of aribtary

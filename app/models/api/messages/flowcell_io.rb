@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Generates warehouse messages describing a flowcell. While flowcells are not
 # modeled directly in Sequencescape they can be approximated by a sequencing
 # {Batch}

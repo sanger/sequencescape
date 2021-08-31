@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class OrdersController < ApplicationController # rubocop:todo Style/Documentation
   def destroy
     # Check for ajax request...

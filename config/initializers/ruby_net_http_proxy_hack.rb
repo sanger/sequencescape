@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Connect based on standard library implimentation (via ruruby)
 #
 # Copyright (c) 1999-2007 Yukihiro Matsumoto

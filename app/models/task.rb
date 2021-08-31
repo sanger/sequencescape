@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # A Task forms part of a {Workflow} which in turn describes the steps that form a
 # {Pipeline}. Most tasks are a subclass of Task
 #

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Pipeline::BatchValidation # rubocop:todo Style/Documentation
   def validation_of_batch(batch)
     # Using throw and catch enables us to skip over the request validation without actually

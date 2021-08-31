@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Everything coming in and going out should be JSON.
 module Core::Service::ContentFiltering
   class InvalidRequestedContentType < ::Core::Service::Error # rubocop:todo Style/Documentation
