@@ -51,10 +51,6 @@ class EventFactory # rubocop:todo Style/Documentation
         of_interest_to: 'administrators'
       )
     event.save
-
-    # rubocop:todo Layout/LineLength
-    # EventfulMailer.deliver_confirm_event(User.all_administrators_emails, event.eventful, event.message, event.content, "No Milestone")
-    # rubocop:enable Layout/LineLength
   end
 
   #################################

@@ -102,9 +102,6 @@ class Request::ChangeDecision # rubocop:todo Style/Documentation
     previous_state = request.target_asset.qc_state
     request.target_asset.set_qc_state(asset_qc_state)
 
-    # rubocop:todo Layout/LineLength
-    # self.request.asset.events << Event.new({:message => "Change qc_state from #{previous_state} to  #{asset_qc_state}", :created_by => self.user.login, :family => self.asset_qc_state})
-    # rubocop:enable Layout/LineLength
     request.target_asset.comments.create!(description: comment, user_id: user.id)
   end
 end

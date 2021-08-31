@@ -216,9 +216,8 @@ class Submission < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def study_names
-    # rubocop:todo Layout/LineLength
-    # TODO: Should probably be re-factored, although we'll only fall back to the intensive code in the case of cross study re-requests
-    # rubocop:enable Layout/LineLength
+    # TODO: Should probably be re-factored, although we'll only fall back to the intensive code in the case of cross
+    # study re-requests
     orders
       .map { |o| o.study.try(:name) || o.assets.map { |a| a.studies.pluck(:name) } }
       .flatten

@@ -100,9 +100,8 @@ module SampleManifestExcel
       def extract_description_info(sheet, start_row)
         # look through each row starting from from under the heading (row 2), to above the start row
         # build a hash of the value in the first column => value in second column
-        # rubocop:todo Layout/LineLength
-        # this was built to extract the tube rack barcodes, and assumes the label is in the first column and the value in the second
-        # rubocop:enable Layout/LineLength
+        # this was built to extract the tube rack barcodes, and assumes the label is in the first column and the value
+        # in the second
         return nil if sheet.nil? || start_row.nil?
 
         output = {}

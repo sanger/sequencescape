@@ -4,17 +4,14 @@ require 'lab_where_client'
 
 # https://github.com/sanger/sequencescape/raw/master/docs/images/plate.jpg
 #
-# rubocop:todo Layout/LineLength
-# A plate is a piece of labware made up of a number of {Well wells}. This class represents the physical piece of plastic.
-# rubocop:enable Layout/LineLength
+# A plate is a piece of labware made up of a number of {Well wells}. This class represents the physical piece of
+# plastic.
 #
-# rubocop:todo Layout/LineLength
-# - {PlatePurpose}: describes the role a plate has in the lab. In some cases a plate's purpose may change as it gets processed.
-# rubocop:enable Layout/LineLength
+# - {PlatePurpose}: describes the role a plate has in the lab. In some cases a plate's purpose may change as it gets
+#                   processed.
 # - {Well}: Plates can have multiple wells (most often 96 or 384) each of which can contain multiple samples.
-# rubocop:todo Layout/LineLength
-# - {PlateType}: Identifies the plates form factor, typically provided to robots to ensure tips are positioned correctly.
-# rubocop:enable Layout/LineLength
+# - {PlateType}: Identifies the plates form factor, typically provided to robots to ensure tips are positioned
+#                correctly.
 #
 class Plate < Labware # rubocop:todo Metrics/ClassLength
   include Api::PlateIO::Extensions

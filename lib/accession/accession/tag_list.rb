@@ -1,11 +1,9 @@
 module Accession
   # Tags details are stored in config/accession/tags.yml
-  # rubocop:todo Layout/LineLength
-  # Standard TagList is created on initialisation from this yaml file and can be reached through Accession.configuration.tags
-  # rubocop:enable Layout/LineLength
-  # rubocop:todo Layout/LineLength
-  # TagList that is specific to a particular sample can be created using #extract method (where 'record' is a Sequencescape Sample::Metadata object)
-  # rubocop:enable Layout/LineLength
+  # Standard TagList is created on initialisation from this yaml file and can be reached through
+  # Accession.configuration.tags
+  # TagList that is specific to a particular sample can be created using #extract method (where 'record' is a
+  # Sequencescape Sample::Metadata object)
   # Tags contain information about a sample, that should be provided to an external service to accession the sample
   # Tags are used to validate a sample and to create a correct xml file for accessioning request.
 

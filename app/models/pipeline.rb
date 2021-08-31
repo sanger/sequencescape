@@ -83,9 +83,8 @@ class Pipeline < ApplicationRecord # rubocop:todo Metrics/ClassLength
         ->(rt) { joins(:pipelines_request_types).where(pipelines_request_types: { request_type_id: rt }) }
 
   def custom_message
-    # rubocop:todo Layout/LineLength
-    # Override this in subclasses if you want to display a custom message in the _pipeline_limit partial (blue box on pipeline show page)
-    # rubocop:enable Layout/LineLength
+    # Override this in subclasses if you want to display a custom message in the _pipeline_limit partial
+    # (blue box on pipeline show page)
     I18n.t('pipelines.show_page_custom_message.default')
   end
 

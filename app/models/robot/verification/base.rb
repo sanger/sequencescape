@@ -50,9 +50,8 @@ class Robot::Verification::Base # rubocop:todo Metrics/ClassLength
   # pick_number is a sequential number, starting at 1
   # layout_data_object is an array of hashes: 1st Element: Hash of destination plate barcodes and their sort position
   #                                           2nd Element: Hash of source plate barcodes and their sort position
-  # rubocop:todo Layout/LineLength
-  #                                           3rd Element: Hash of control plate barcodes and their sort position when appropriate. (nil otherwise)
-  # rubocop:enable Layout/LineLength
+  #                                           3rd Element: Hash of control plate barcodes and their sort position when
+  #                                                        appropriate. (nil otherwise)
   #     @example [{'DN3R'=>1},{'DN1S'=>1, 'DN2T'=>2}, {}]
   # There will only be more than one pick if the number of source plates exceed the max plates allowed on the robot
   # and therefore more than one pick is needed to transfer from all the wells onto the destination plate
@@ -156,9 +155,8 @@ class Robot::Verification::Base # rubocop:todo Metrics/ClassLength
 
   def sort_mapping_by_destination_well(plate_barcode, mapping)
     # query relevant 'map' records based on asset shape id & asset size, then sort by row order
-    # rubocop:todo Layout/LineLength
-    # return the original mapping if the Plate cannot be found using the barcode - for instance, if this is coming from stock_stamper.rb
-    # rubocop:enable Layout/LineLength
+    # return the original mapping if the Plate cannot be found using the barcode - for instance, if this is coming from
+    # stock_stamper.rb
     plate = Plate.find_by_barcode(plate_barcode)
     return mapping if plate.nil?
 

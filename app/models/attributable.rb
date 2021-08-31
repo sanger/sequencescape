@@ -79,9 +79,8 @@ module Attributable
     # @option options [Boolean] :boolean (false) The attribute should be true or false. WARNING! Currently just tests
     #                                            presence of the key, not actual value. Thus false=true.
     # @option options [Array] :in (nil) The attribute is a selection that must be included in the array.
-    # rubocop:todo Layout/LineLength
-    # @option options [Boolean] :selection (false) The attribute is a selection generated dynamically from #validator_for
-    # rubocop:enable Layout/LineLength
+    # @option options [Boolean] :selection (false) The attribute is a selection generated dynamically from
+    #                                              #validator_for
     # @option options [Numeric] :minimum (0) The minimum value for an integer. WARNING! Inconsistently implemented for
     #                                        floats
     # @option options [Regexp] :with (nil) Regexp for validating the attribute

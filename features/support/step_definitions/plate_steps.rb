@@ -149,14 +149,6 @@ Given 'all wells on {plate_name} have unique samples' do |plate|
   plate.wells.each { |well| FactoryBot.create :untagged_aliquot, receptacle: well }
 end
 
-# rubocop:todo Layout/LineLength
-# Given /^([0-9]+) wells on (the plate "[^\"]+"|the last plate|the plate with ID [\d]+) have unique samples$/ do |number, plate|
-# rubocop:enable Layout/LineLength
-#   plate.wells.in_column_major_order[0, number.to_i].each do |well|
-#     FactoryBot.create :untagged_aliquot, receptacle: well
-#   end
-# end
-
 Given '{int} wells on {plate_name} have unique samples' do |number, plate|
   plate.wells.in_column_major_order[0, number].each { |well| FactoryBot.create :untagged_aliquot, receptacle: well }
 end

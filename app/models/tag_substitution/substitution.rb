@@ -119,9 +119,8 @@ class TagSubstitution::Substitution
 
   #
   # Generates a comment to describe the substitutions performed
-  # rubocop:todo Layout/LineLength
-  # The oligo index is passed in as part of a performance optimiztion to avoid repeated hits to the database to fetch oligo sequences
-  # rubocop:enable Layout/LineLength
+  # The oligo index is passed in as part of a performance optimiztion to avoid repeated hits to the database to fetch
+  # oligo sequences
   # @param oligo_index [Hash] A hash of oligo sequences indexed by oligo id.
   #
   # @return [String] A description of the substitution

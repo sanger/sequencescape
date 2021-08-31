@@ -12,9 +12,7 @@
 #
 # @todo #2396 Confirm removal does not affect Limber 'High Throughput PCR Free 96' pipeline, then remove.
 #      - Update any purposes using this class by running `bundle exec rake remove:deprecated_purposes`
-# rubocop:todo Layout/LineLength
-#         Ensure that this class is listed in the reported output before removing this file. You should also be safe to remove this class
-# rubocop:enable Layout/LineLength
-#         from  lib/tasks/remove_deprecated_purposes.rake
+#         Ensure that this class is listed in the reported output before removing this file. You should also be safe to
+#         remove this class from  lib/tasks/remove_deprecated_purposes.rake
 class PlatePurpose::InitialPurpose < PlatePurpose
 end

@@ -220,9 +220,8 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # and gets persisted to the database, and used for the actual construction.
   # TODO: Simplify this
   # - There are a few attributes which all refer to loosely the same thing, a list of request type ids:
-  # rubocop:todo Layout/LineLength
-  #   * request_type_ids_list - Set by submission templates, but also recalculated on the fly and used in various methods
-  # rubocop:enable Layout/LineLength
+  #   * request_type_ids_list - Set by submission templates, but also recalculated on the fly and used in various
+  #                             methods
   #   * request_types_ids - Setter on order subclasses.
   #   * request_types - Serialized version on order, persisted in the database
   # - The request_types on the database should become the authoritative source.

@@ -51,10 +51,8 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   belongs_to :initial_study, class_name: 'Study'
   belongs_to :work_order, optional: true
 
-  # rubocop:todo Layout/LineLength
-  # The assets on a request can be treated as a particular class when being used by certain pieces of code.  For instance,
-  # rubocop:enable Layout/LineLength
-  # QC might be performed on a source asset that is a well, in which case we'd like to load it as such.
+  # The assets on a request can be treated as a particular class when being used by certain pieces of code.
+  # For instance, QC might be performed on a source asset that is a well, in which case we'd like to load it as such.
   belongs_to :target_asset, class_name: 'Receptacle', inverse_of: :requests_as_target, optional: true
   belongs_to :asset, class_name: 'Receptacle', inverse_of: :requests, optional: true
   belongs_to :source_well, class_name: 'Well', foreign_key: :asset_id, optional: true

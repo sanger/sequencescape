@@ -63,12 +63,10 @@ module Tasks::SetDescriptorsHandler # rubocop:todo Style/Documentation
     #   <input value="" id="descriptor_0_123" type="text" name="requests[123][descriptors][Concentration]">
     # Which results in:
     #   params[:requests] =><ActionController::Parameters {
-    # rubocop:todo Layout/LineLength
-    #     "131"=><ActionController::Parameters {"descriptors"=><ActionController::Parameters {"Concentration"=>"1.2"} permitted: true>} permitted: true>,
-    # rubocop:enable Layout/LineLength
-    # rubocop:todo Layout/LineLength
-    #     "132"=><ActionController::Parameters {"descriptors"=><ActionController::Parameters {"Concentration"=>"2.2"} permitted: true>} permitted: true>
-    # rubocop:enable Layout/LineLength
+    #     "131"=><ActionController::Parameters {"descriptors"=><ActionController::Parameters {"Concentration"=>"1.2"}
+    #                                            permitted: true>} permitted: true>,
+    #     "132"=><ActionController::Parameters {"descriptors"=><ActionController::Parameters {"Concentration"=>"2.2"}
+    #                                            permitted: true>} permitted: true>
     #  }
     def descriptors(request)
       (params[:descriptors].presence || params.dig(:requests, request.id.to_s, :descriptors)) || {}

@@ -356,9 +356,8 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
 
     # Check the library type matches a value from the table
     if request_options['library_type'].present?
-      # rubocop:todo Layout/LineLength
-      # find is case insensitive but we want the correct case sensitive name for requests or we get issues downstream in NPG
-      # rubocop:enable Layout/LineLength
+      # find is case insensitive but we want the correct case sensitive name for requests or we get issues downstream in
+      # NPG
       lt = LibraryType.find_by(name: request_options['library_type'])&.name or
         raise StandardError, "Cannot find library type #{request_options['library_type'].inspect}"
       request_options['library_type'] = lt

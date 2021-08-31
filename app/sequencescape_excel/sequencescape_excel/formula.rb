@@ -8,9 +8,8 @@ module SequencescapeExcel
   # - ISTEXT - checks whether each value in the cell for a column is a text value.
   # - ISNUMBER - checks whether each value in the cell for a column is a number.
   # - LEN - checks how long each value in the cell for a column is depending on the operator and operand.
-  # rubocop:todo Layout/LineLength
-  # - ISERROR - check whether each value in the cell for a column is within a range defined by the absolute reference of that range.
-  # rubocop:enable Layout/LineLength
+  # - ISERROR - check whether each value in the cell for a column is within a range defined by the absolute reference of
+  #             that range.
   class Formula
     include Helpers::Attributes
 

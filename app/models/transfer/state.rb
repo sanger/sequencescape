@@ -38,18 +38,12 @@ module Transfer::State
               lambda { |states|
                 states = Array(states).map(&:to_s)
 
-                # rubocop:todo Layout/LineLength
-                # If all of the states are present there is no point in actually adding this set of conditions because we're
-                # rubocop:enable Layout/LineLength
-                # basically looking for all of the plates.
+                # If all of the states are present there is no point in actually adding this set of conditions because
+                # we're basically looking for all of the plates.
                 if states.sort != ALL_STATES.sort
-                  # rubocop:todo Layout/LineLength
-                  # Note that 'state IS NULL' is included here for plates that are stock plates, because they will not have any
-                  # rubocop:enable Layout/LineLength
-                  # rubocop:todo Layout/LineLength
-                  # transfer requests coming into their wells and so we can assume they are pending (from the perspective of
-                  # rubocop:enable Layout/LineLength
-                  # pulldown at least).
+                  # Note that 'state IS NULL' is included here for plates that are stock plates, because they will not
+                  # have any transfer requests coming into their wells and so we can assume they are pending (from the
+                  # perspective of pulldown at least).
                   query_conditions = +'transfer_requests.state IN (?)'
                   if states.include?('pending')
                     query_conditions << ' OR (transfer_requests.state IS NULL AND plate_purposes.stock_plate=TRUE)'
@@ -72,10 +66,8 @@ module Transfer::State
               lambda { |states|
                 states = Array(states).map(&:to_s)
 
-                # rubocop:todo Layout/LineLength
-                # If all of the states are present there is no point in actually adding this set of conditions because we're
-                # rubocop:enable Layout/LineLength
-                # basically looking for all of the plates.
+                # If all of the states are present there is no point in actually adding this set of conditions because
+                # we're basically looking for all of the plates.
                 if states.sort != ALL_STATES.sort
                   join_options = [
                     # rubocop:todo Layout/LineLength

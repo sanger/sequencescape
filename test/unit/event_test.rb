@@ -134,9 +134,8 @@ class EventTest < ActiveSupport::TestCase
       end
 
       # pass message
-      # rubocop:todo Layout/LineLength
-      # { :eventful_id => request_id, :eventful_type => 'Request', :family => "pass", :content => reason, :message => comment, :identifier => batch_id, :descriptor_key => "pass" }
-      # rubocop:enable Layout/LineLength
+      # { :eventful_id => request_id, :eventful_type => 'Request', :family => "pass", :content => reason,
+      #   :message => comment, :identifier => batch_id, :descriptor_key => "pass" }
       context 'a pass message' do
         setup do
           @requests.each do |request|
@@ -209,9 +208,8 @@ class EventTest < ActiveSupport::TestCase
       end
 
       # fail message
-      # rubocop:todo Layout/LineLength
-      # { :eventful_id => request_id, :eventful_type => 'Request', :family => "fail", :content => reason, :message => comment, :identifier => batch_id, :descriptor_key => "failure" }
-      # rubocop:enable Layout/LineLength
+      # { :eventful_id => request_id, :eventful_type => 'Request', :family => "fail", :content => reason,
+      # :message => comment, :identifier => batch_id, :descriptor_key => "failure" }
       context 'fail message' do
         setup do
           @requests.each do |request|
@@ -221,13 +219,6 @@ class EventTest < ActiveSupport::TestCase
 
           @request_for_control.state = 'started'
           @request_with_no_attempts = @requests.first
-
-          # rubocop:todo Layout/LineLength
-          #          @failure_property_def = PropertyDefinition(:name => "Failure", :key => "failure", :relates_to => Request.to_s)
-          # rubocop:enable Layout/LineLength
-          # rubocop:todo Layout/LineLength
-          #          @pass_property_def = PropertyDefinition(:name => "Pass", :key => "pass", :relates_to => Request.to_s)
-          # rubocop:enable Layout/LineLength
 
           @lib_prep_event =
             Event.create(

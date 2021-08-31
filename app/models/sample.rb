@@ -379,11 +379,8 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
           # NOTE: This search is performed in two stages so that we can make best use of our indicies
           # A naive search forces a full table lookup for all queries, ignoring the index in the sample metadata table
           # instead favouring the sample_id index. Rather than trying to bend MySQL to our will, we'll solve the
-          # problem rails side, and perform two queries instead.
-
-          # rubocop:todo Layout/LineLength
-          # Even passing a scope into the query, thus allowing rails to build subquery, results in a sub-optimal execution plan.
-          # rubocop:enable Layout/LineLength
+          # problem rails side, and perform two queries instead. Even passing a scope into the query, thus allowing
+          # rails to build subquery, results in a sub-optimal execution plan.
 
           md =
             Sample::Metadata
@@ -394,10 +391,8 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
               )
               .pluck(:sample_id)
 
-          # rubocop:todo Layout/LineLength
-          # The query id is kept distinct from the metadata retrieved ids, as including a string in what is otherwise an array
-          # rubocop:enable Layout/LineLength
-          # of numbers seems to massively increase the query length.
+          # The query id is kept distinct from the metadata retrieved ids, as including a string in what is otherwise an
+          # array of numbers seems to massively increase the query length.
           where(
             'name LIKE :wild OR id IN (:sm_ids) OR id = :qid',
             wild: "%#{query}%",

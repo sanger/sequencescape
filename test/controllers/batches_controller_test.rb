@@ -438,9 +438,8 @@ class BatchesControllerTest < ActionController::TestCase
             end
 
             # Handful of edge cases that were tested in batch.rb, but the behaviour has moved. Covers:
-            # rubocop:todo Layout/LineLength
-            # - Non 'on' values returned from the front-end (Which indicates something strange has happened with the checkboxes)
-            # rubocop:enable Layout/LineLength
+            # - Non 'on' values returned from the front-end (Which indicates something strange has happened with the
+            #   checkboxes)
             # - Filtering of 'control' ids. (Associated with some old batches)
             context 'odd values' do
               setup do
