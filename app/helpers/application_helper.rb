@@ -214,11 +214,6 @@ module ApplicationHelper # rubocop:todo Style/Documentation
     )
   end
 
-  def display_request_information(request, rit, batch = nil)
-    r = request.value_for(rit.name, batch)
-    r.presence || 'NA'
-  end
-
   def display_boolean_results(result)
     return 'NA' if result.blank?
 
