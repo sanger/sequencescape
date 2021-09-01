@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# A request information type associates a pipline with request information,
+# A request information type associates a pipeline with request information,
 # either via {Request::Metadata} or a {LabEvent}
 class RequestInformationType < ApplicationRecord
   has_many :pipeline_request_information_types
