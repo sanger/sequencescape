@@ -12,7 +12,7 @@ module BroadcastEvent::SubjectHelpers
     end
 
     def as_json(*_args)
-      json_fields.each_with_object({}) { |field, hash| hash[field] = send(field) }
+      json_fields.index_with { |field| send(field) }
     end
 
     def broadcastable?
