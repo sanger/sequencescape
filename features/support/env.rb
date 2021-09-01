@@ -15,6 +15,7 @@ if ENV['RAILS_ENV'] != 'cucumber'
 end
 
 require 'cucumber/rails'
+require_relative 'cucumber_github_formatter'
 require 'factory_bot_rails'
 
 require_relative 'capybara'
