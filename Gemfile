@@ -7,9 +7,9 @@ group :default do
   gem 'bootsnap'
 
   if next_rails
-    gem 'rails', '~> 6.0.0'
+    gem 'rails', '~> 6.1.0'
   else
-    gem 'rails', '~> 5.2.3'
+    gem 'rails', '~> 6.0.0'
   end
 
   # State machine
