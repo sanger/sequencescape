@@ -5,8 +5,6 @@ class GenotypingPipeline < Pipeline # rubocop:todo Style/Documentation
   self.requires_position = false
   self.genotyping = true
 
-  ALWAYS_SHOW_RELEASE_ACTIONS = true
-
   def request_actions
     %i[fail remove]
   end

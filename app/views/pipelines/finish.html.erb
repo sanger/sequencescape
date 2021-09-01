@@ -29,7 +29,7 @@
   <% if @pipeline.summary %>
     <div id="sample">
       <h4>Batch Summary</h4>
-      <%= render partial: 'event_requests'%>
+      <%= render partial: 'event_requests', locals: { batch: @batch }%>
     </div>
   <% end %>
 </div>

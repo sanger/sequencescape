@@ -2,12 +2,9 @@ module PlatesHelper # rubocop:todo Style/Documentation
   class AliquotError < StandardError
   end
 
-  def padded_wells_by_row(plate, overide = nil)
+  def padded_wells_by_row(plate)
     wells = wells_hash(plate)
-    padded_well_name_with_index(plate) do |padded_name, index|
-      index = padded_name == overide ? :overide : index
-      yield(padded_name, *wells[index])
-    end
+    padded_well_name_with_index(plate) { |padded_name, index| yield(padded_name, *wells[index]) }
   end
 
   def valid_options_for_params(val)
@@ -24,8 +21,6 @@ module PlatesHelper # rubocop:todo Style/Documentation
 
   private
 
-  # Remove deprecate use of Well.sample
-  # Github Issue https://github.com/sanger/sequencescape/issues/1908
   def well_properties(well)
     raise AliquotError if well.samples.length > 1
 
@@ -34,10 +29,10 @@ module PlatesHelper # rubocop:todo Style/Documentation
   end
 
   def padded_well_name_with_index(plate)
-    ('A'...('A'.getbyte(0) + (plate.size / 12)).chr).each_with_index do |row, ri|
-      (1..12).each_with_index do |col, ci|
+    ('A'...('A'.getbyte(0) + (plate.size / 12)).chr).each_with_index do |row, row_index|
+      (1..12).each_with_index do |col, column_index|
         padded_name = '%s%02d' % [row, col]
-        index = ci + (ri * 12)
+        index = column_index + (row_index * 12)
         yield(padded_name, index)
       end
     end
@@ -45,7 +40,6 @@ module PlatesHelper # rubocop:todo Style/Documentation
 
   def wells_hash(plate)
     Hash.new { |h, i| h[i] = ['[ Empty ]', '', 'NTC'] }.tap do |wells|
-      wells[:overide] = ['', '', 'NTC']
       plate.wells.each { |well| wells[well.map.row_order] = well_properties(well) }
     end
   end

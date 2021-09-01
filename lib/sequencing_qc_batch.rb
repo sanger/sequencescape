@@ -29,7 +29,7 @@ module SequencingQcBatch
     VALID_QC_STATES
   end
 
-  def qc_previous_state!(current_user) # rubocop:todo Metrics/MethodLength
+  def qc_previous_state!(current_user)
     previous_state = qc_previous_state
     if previous_state
       lab_events.create(

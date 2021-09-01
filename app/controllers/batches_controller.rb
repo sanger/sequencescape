@@ -32,7 +32,6 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
                 ]
   before_action :find_batch_by_batch_id, only: %i[sort print_multiplex_barcodes print_plate_barcodes print_barcodes]
 
-  # rubocop:todo Metrics/MethodLength
   def index # rubocop:todo Metrics/AbcSize
     if logged_in?
       @user = params.fetch(:user, current_user)
@@ -47,8 +46,6 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
       format.json { render json: @batches.to_json.gsub(/null/, '""') }
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   # rubocop:todo Metrics/MethodLength
   def show # rubocop:todo Metrics/AbcSize
@@ -193,7 +190,6 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     @fail_reasons = @batch.workflow.source_is_internal? ? FAILURE_REASONS['internal'] : FAILURE_REASONS['external']
   end
 
-  # rubocop:todo Metrics/MethodLength
   def fail_items # rubocop:todo Metrics/AbcSize
     ActiveRecord::Base.transaction do
       fail_params =
@@ -208,8 +204,6 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
   def sort
     @batch.assign_positions_to_requests!(params['requests_list'].map(&:to_i))
     @batch.rebroadcast
@@ -222,11 +216,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   def print_labels; end
 
-  def print_stock_labels
-    @batch = Batch.find(params[:id])
-  end
-
-  def print_plate_labels # rubocop:todo Metrics/MethodLength
+  def print_plate_labels
     @pipeline = @batch.pipeline
     @output_barcodes = []
 
@@ -300,29 +290,25 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
   end
 
-  # rubocop:todo Metrics/MethodLength
+  # Handles printing of the worksheet
   def print # rubocop:todo Metrics/AbcSize
-    @task = Task.find(params[:task_id]) if params[:task_id]
-    @workflow = @batch.workflow
+    @task = Task.find_by(id: params[:task_id])
     @pipeline = @batch.pipeline
     @comments = @batch.comments
+    template = @pipeline.batch_worksheet
 
-    robot_id = params.fetch(:robot_id, @batch.robot_id)
-
-    @robot = robot_id ? Robot.find(robot_id) : Robot.with_verification_behaviour.first
-
-    # Fall-back
-    @robot ||= Robot.first
-
-    if @pipeline.is_a?(CherrypickingPipeline)
+    if template == 'cherrypick_worksheet'
+      robot_id = params.fetch(:robot_id, @batch.robot_id)
+      @robot = robot_id ? Robot.find(robot_id) : Robot.default_for_verification
       @plates = params[:barcode] ? Plate.with_barcode(params[:barcode]) : @batch.output_plates
     end
 
-    template = @pipeline.batch_worksheet
-    render action: template, layout: false
+    if template
+      render action: template, layout: false
+    else
+      redirect_back fallback_location: batch_path(@batch), alert: "No worksheet for #{@pipeline.name}"
+    end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def verify
     @requests = @batch.ordered_requests
@@ -360,7 +346,6 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   def filtered; end
 
-  # rubocop:todo Metrics/MethodLength
   def swap # rubocop:todo Metrics/AbcSize
     if @batch.swap(
          current_user,
@@ -380,8 +365,6 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
       redirect_to action: :filtered, id: @batch.id
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   # Used in Cherrypicking pipeline to generate the template for CSV driven picks
   def download_spreadsheet
@@ -421,7 +404,6 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   private
 
-  # rubocop:todo Metrics/MethodLength
   def print_handler(print_class) # rubocop:todo Metrics/AbcSize
     print_job =
       LabelPrinter::PrintJob.new(
@@ -439,8 +421,6 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
     redirect_to controller: 'batches', action: 'show', id: @batch.id
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def pipeline_error_on_batch_creation(message)
     respond_to do |format|

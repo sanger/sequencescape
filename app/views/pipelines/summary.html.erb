@@ -1,16 +1,9 @@
 
-<% add :about, "Finished batch" -%>
+<% add :about, 'Displays information about a completed batch' -%>
 <% unless @batch.released? -%>
 <% add :menu, "Release this batch" => release_batch_url(@batch) -%>
 <% end -%>
 <% add :back_menu, "Back to pipeline" => pipeline_path(@batch.pipeline) -%>
 
-<%= page_title 'Batch', 'Summary' %>
-<div class="content">
-  <div class="info">
-  Summary of stored information for Batch <%= @batch.id %>.
-  </div>
-  <div id="sample">
-    <%= render partial: 'event_requests'%>
-  </div>
-</div>
+<%= page_title "Batch", @batch.id%>
+<%= render partial: 'event_requests', locals: { batch: @batch } %>

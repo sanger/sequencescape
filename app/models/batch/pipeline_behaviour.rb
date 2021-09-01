@@ -4,7 +4,7 @@ module Batch::PipelineBehaviour # rubocop:todo Style/Documentation
       # The associations with the pipeline
       belongs_to :pipeline
       delegate :workflow, :item_limit, :multiplexed?, to: :pipeline
-      delegate :tasks, to: :workflow
+      delegate :tasks, to: :workflow, allow_nil: true
 
       # The validations that the pipeline & batch are correct
       validates :pipeline, presence: true
@@ -14,16 +14,7 @@ module Batch::PipelineBehaviour # rubocop:todo Style/Documentation
 
       # The batch requires positions on it's requests if the pipeline does
       delegate :requires_position?, to: :pipeline
-
-      # Ensure that the batch is valid to be marked as completed
-      validate(if: :completed?) { |record| record.pipeline.validation_of_batch_for_completion(record) }
     end
-  end
-
-  def show_actions?
-    return true if pipeline.is_a?(CherrypickForPulldownPipeline)
-
-    !released?
   end
 
   def has_item_limit?

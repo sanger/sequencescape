@@ -21,7 +21,7 @@ require 'eventful_record'
 # - {Receptacle}: Abstract class inherited by any asset which can contain stuff directly
 #
 # Some of the above are further subclasses to handle specific behaviours.
-class Asset < ApplicationRecord # rubocop:todo Metrics/ClassLength
+class Asset < ApplicationRecord
   include Api::Messages::QcResultIO::AssetExtensions
   include Event::PlateEvents
   extend EventfulRecord
@@ -106,29 +106,8 @@ class Asset < ApplicationRecord # rubocop:todo Metrics/ClassLength
     RequestType.where(asset_type: label)
   end
 
-  def external_identifier
-    "#{sti_type}#{id}"
-  end
-
   def details
     nil
-  end
-
-  def assign_relationships(parents, child)
-    parents.each do |parent|
-      parent.children.delete(child)
-      AssetLink.create_edge(parent, self)
-    end
-    AssetLink.create_edge(self, child)
-  end
-
-  def add_parent(parent)
-    return unless parent
-
-    # should be self.parents << parent but that doesn't work
-    save!
-    parent.save!
-    AssetLink.create_edge!(parent, self)
   end
 
   def original_stock_plates

@@ -18,7 +18,6 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
     @studies = Study.alphabetical
   end
 
-  # rubocop:todo Metrics/MethodLength
   def create # rubocop:todo Metrics/AbcSize
     @sample = Sample.new(params[:sample])
 
@@ -42,8 +41,6 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
       end
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def show
     @sample = Sample.includes(:assets, :studies).find(params[:id])
@@ -69,7 +66,6 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
     redirect_to sample_path(@sample)
   end
 
-  # rubocop:todo Metrics/MethodLength
   def edit # rubocop:todo Metrics/AbcSize
     @sample = Sample.find(params[:id])
     authorize! :update, @sample
@@ -86,8 +82,6 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
       format.json { render json: @samples.to_json }
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   # rubocop:todo Metrics/MethodLength
   def update # rubocop:todo Metrics/AbcSize
@@ -202,7 +196,7 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
 
   private
 
-  def default_permitted_metadata_fields # rubocop:todo Metrics/MethodLength
+  def default_permitted_metadata_fields
     {
       sample_metadata_attributes: %i[
         consent_withdrawn

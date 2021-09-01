@@ -5,12 +5,12 @@ class ValidateSampleSheetTask < Task
     'validate_sample_sheet_batches'
   end
 
-  def render_task(workflow, params)
+  def render_task(workflows_controller, params, _user)
     super
-    workflow.render_validate_sample_sheet_task(self, params)
+    workflows_controller.render_validate_sample_sheet_task(self, params)
   end
 
-  def do_task(workflow, params)
-    workflow.do_validate_sample_sheet_task(self, params)
+  def do_task(workflows_controller, params, _user)
+    workflows_controller.do_validate_sample_sheet_task(self, params)
   end
 end

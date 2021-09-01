@@ -21,7 +21,6 @@ class WorkflowsController < ApplicationController
 
   # @todo These actions should be extracted from the controller, and instead be handled by an object invoked
   #       by the task
-  include Tasks::AddSpikedInControlHandler
   include Tasks::AssignTagsHandler
   include Tasks::AssignTagsToTubesHandler
   include Tasks::AssignTubesToWellsHandler
@@ -33,7 +32,6 @@ class WorkflowsController < ApplicationController
   include Tasks::PrepKitBarcodeHandler
   include Tasks::SamplePrepQcHandler
   include Tasks::SetDescriptorsHandler
-  include Tasks::SetCharacterisationDescriptorsHandler
   include Tasks::TagGroupHandler
   include Tasks::ValidateSampleSheetHandler
   include Tasks::StartBatchHandler
@@ -58,34 +56,38 @@ class WorkflowsController < ApplicationController
     # else actually execute the task.
     unless params[:next_stage].nil?
       eager_loading = @task.included_for_do_task
-      @batch ||= Batch.includes(eager_loading).find(params[:batch_id])
+      @batch = Batch.includes(eager_loading).find(params[:batch_id])
 
-      unless @batch.editable?
-        flash[:error] = 'You cannot make changes to a completed batch.'
-        redirect_back fallback_location: root_path
+      editable, message = @task.can_process?(@batch)
+
+      unless editable
+        redirect_back fallback_location: batch_path(@batch), alert: message
         return false
       end
 
       ActiveRecord::Base.transaction do
-        if @task.do_task(self, params)
+        task_success, task_message = @task.do_task(self, params, current_user)
+        if task_success
           # Task completed, start the batch is necessary and display the next one
           do_start_batch_task(@task, params)
           @stage += 1
           params[:id] = @stage
           @task = @workflow.tasks[@stage]
         end
+        flash[task_success ? :notice : :alert] ||= task_message if task_message
       end
     end
 
-    # Is this the last task in the workflow?
-    if @stage >= @workflow.tasks.size
+    if params[:commit] == 'Update'
+      redirect_to batch_path(@batch)
+    elsif @stage >= @workflow.tasks.size
       # All requests have finished all tasks: finish workflow
-      redirect_to finish_batch_url(@batch)
+      redirect_to finish_batch_path(@batch)
     else
       if @batch.nil? || @task.included_for_render_task != eager_loading
         @batch = Batch.includes(@task.included_for_render_task).find(params[:batch_id])
       end
-      @task.render_task(self, params)
+      @task.render_task(self, params, current_user)
     end
   end
 
@@ -104,51 +106,7 @@ class WorkflowsController < ApplicationController
 
   private
 
-  def ordered_fields(fields)
-    response = Array.new
-    fields.keys.sort_by(&:to_i).each { |key| response.push fields[key] }
-    response
-  end
-
-  # Flattens nested hashes down into a single layer in a similar manner
-  # to rails form parameter naming.
-  # @example Flattening a hash multiple levels deep
-  #   flatten_hash(key: 'value', key2: { key2a: 'value2a', key2b: 'value2b', key2c: { nested: 'deep'}})
-  #   # => {"key"=>"value", "key2[key2a]"=>"value2a", "key2[key2b]"=>"value2b", "key2[key2c][nested]"=>"deep"}
-  #
-  # @example Flattening a hash with ancestors
-  #   flatten_hash({key: 'value', key2: { key2a: 'value2a', key2b: 'value2b'}}, [:ancestor])
-  # # => {"ancestor[key]"=>"value", "ancestor[key2][key2a]"=>"value2a", "ancestor[key2][key2b]"=>"value2b"}
-  #
-  # @param hash [Hash] The hash to flatten
-  # @param ancestor_names [Array] Ancestors for all keys in the hash
-  #
-  # @return [type] [description]
-  def flatten_hash(hash = params, ancestor_names = []) # rubocop:todo Metrics/MethodLength
-    flat_hash = {}
-    hash.each do |k, v|
-      names = Array.new(ancestor_names)
-      names << k
-      if v.is_a?(Hash)
-        flat_hash.merge!(flatten_hash(v, names))
-      else
-        key = flat_hash_key(names)
-        key += '[]' if v.is_a?(Array)
-        flat_hash[key] = v
-      end
-    end
-
-    flat_hash
-  end
-
-  def flat_hash_key(names)
-    names = Array.new(names)
-    name = names.shift.to_s.dup
-    names.each { |n| name << "[#{n}]" }
-    name
-  end
-
-  def eventify_batch(batch, task)
+  def create_batch_events(batch, task)
     event = batch.lab_events.build(description: 'Complete', user: current_user, batch: batch)
     event.add_descriptor Descriptor.new(name: 'task_id', value: task.id)
     event.add_descriptor Descriptor.new(name: 'task', value: task.name)

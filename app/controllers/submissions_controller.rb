@@ -24,7 +24,7 @@ class SubmissionsController < ApplicationController
   # New Order is just client side
   # Creates an order, followed by a submission, and then assigns the order to the submission.
   # On subsequent clicks of 'Save Order' we pass in the submission id from the original
-  def create # rubocop:todo Metrics/MethodLength
+  def create
     @presenter = Submission::SubmissionCreator.new(current_user, params[:submission].to_unsafe_h)
 
     if @presenter.save

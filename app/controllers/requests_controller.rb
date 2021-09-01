@@ -14,7 +14,6 @@ class RequestsController < ApplicationController # rubocop:todo Style/Documentat
   # before_action :find_request_from_id, :only => [ :filter_change_decision, :change_decision ]
 
   # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
   # rubocop:todo Metrics/AbcSize
   def index # rubocop:todo Metrics/CyclomaticComplexity
     @study, @item = nil, nil
@@ -46,7 +45,6 @@ class RequestsController < ApplicationController # rubocop:todo Style/Documentat
   end
 
   # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
   # rubocop:enable Metrics/PerceivedComplexity
 
   def edit

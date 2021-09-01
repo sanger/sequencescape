@@ -25,10 +25,10 @@ def pipeline_name_to_asset_type(pipeline_name)
   :library_tube
 end
 
-# rubocop:todo Metrics/MethodLength
 def create_request_for_pipeline(pipeline_name, options = {}) # rubocop:todo Metrics/AbcSize
   pipeline = Pipeline.find_by(name: pipeline_name) or
     raise StandardError, "Cannot find pipeline #{pipeline_name.inspect}"
+
   request_metadata = FactoryBot.create :"request_metadata_for_#{pipeline.request_types.first.key}"
   request_parameters =
     options.merge(
@@ -40,8 +40,6 @@ def create_request_for_pipeline(pipeline_name, options = {}) # rubocop:todo Metr
     .create(:request_with_submission, request_parameters)
     .tap { |request| request.asset.labware.create_scanned_into_lab_event!(content: '2018-01-01') }
 end
-# rubocop:enable Metrics/MethodLength
-
 Given /^I have a request for "([^"]*)"$/ do |pipeline_name|
   create_request_for_pipeline(pipeline_name)
 end

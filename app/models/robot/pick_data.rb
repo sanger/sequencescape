@@ -123,7 +123,6 @@ class Robot::PickData
       ).passed
   end
 
-  # rubocop:todo Metrics/MethodLength
   def populate_data_object!(data_object, request) # rubocop:todo Metrics/AbcSize
     # NOTE: source includes control wells/plates
     source_plate = request.asset.plate
@@ -143,8 +142,6 @@ class Robot::PickData
       'buffer_volume' => target_well.get_buffer_volume
     }
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def plate_information(plate)
     plate_type = (plate.plate_type || default_type).tr('_', "\s")

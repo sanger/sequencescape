@@ -14,8 +14,6 @@
 # @note Cherrypicking is typically processed by an SSR, and the batch worksheet is passed over to the lab.
 #       Actual lab work is tracked via {Robot::Verification::Base} classes through the {RobotVerificationsController}
 class CherrypickPipeline < CherrypickingPipeline
-  ALWAYS_SHOW_RELEASE_ACTIONS = true
-
   def post_finish_batch(batch, user)
     # Nothing, we don't want all the requests to be completed
   end

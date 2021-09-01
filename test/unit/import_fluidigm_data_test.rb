@@ -8,7 +8,7 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
   YY = 'F'
   NC = 'Unknown'
 
-  def create_fluidigm_file # rubocop:todo Metrics/MethodLength
+  def create_fluidigm_file
     @file = File.open("#{Rails.root}/test/data/fluidigm.csv")
     @fluidigm = FluidigmFile.new(@file.read)
     @well_maps = {
@@ -37,7 +37,7 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
            barcode: barcode
   end
 
-  def create_plate_with_fluidigm(_barcode, fluidigm_barcode, stock_plate) # rubocop:todo Metrics/MethodLength
+  def create_plate_with_fluidigm(_barcode, fluidigm_barcode, stock_plate)
     fgp = create :fluidigm_96_purpose
     plate_target =
       create :plate,

@@ -42,7 +42,7 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
     source_plate_scope(tube).map(&:source_plate)
   end
 
-  def source_plate_scope(tube) # rubocop:todo Metrics/MethodLength
+  def source_plate_scope(tube)
     Plate
       .joins(wells: :requests)
       .where(

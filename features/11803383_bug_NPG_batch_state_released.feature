@@ -33,5 +33,5 @@ Feature: The XML for the sequencescape API. If all lanes are passed batch state 
         </asset>
         """
     Given I am on the last batch show page
-    Then I should see "This batch belongs to pipeline: Cluster formation PE"
+    Then I should see "Pipeline Cluster formation PE"
     And batch state should be "released"

@@ -1,4 +1,3 @@
-# rubocop:todo Metrics/ClassLength
 class Metadata::FormBuilder < Metadata::BuilderBase # rubocop:todo Style/Documentation
   def initialize(*args, &block)
     super
@@ -115,7 +114,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase # rubocop:todo Style/Documen
   end
 
   # Renders the Javascript for dealing with showing and hiding the related fields.
-  def finalize_related_fields # rubocop:todo Metrics/MethodLength
+  def finalize_related_fields
     related = @related_fields.compact.uniq.map(&:to_s)
     unless related.empty?
       concat(
@@ -141,4 +140,3 @@ class Metadata::FormBuilder < Metadata::BuilderBase # rubocop:todo Style/Documen
     tag.fieldset(content, div_options)
   end
 end
-# rubocop:enable Metrics/ClassLength

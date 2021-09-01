@@ -8,7 +8,7 @@ module WorkingSetup
   #
   # @author Genome Research Ltd.
   #
-  class StandardSeeder # rubocop:todo Metrics/ClassLength
+  class StandardSeeder
     attr_reader :program
 
     def initialize(purposes = [])
@@ -41,7 +41,6 @@ module WorkingSetup
         .tap { |robot| robot.create_max_plates_property(value: 10) }
     end
 
-    # rubocop:todo Metrics/MethodLength
     def plates_of_purpose(name, number) # rubocop:todo Metrics/AbcSize
       purpose = Purpose.find_by!(name: name)
       number.times do
@@ -57,9 +56,6 @@ module WorkingSetup
       end
     end
 
-    # rubocop:enable Metrics/MethodLength
-
-    # rubocop:todo Metrics/MethodLength
     # rubocop:todo Metrics/AbcSize
     def tag_plates(
       lot_type: 'IDT Tags',
@@ -84,7 +80,6 @@ module WorkingSetup
       end
     end
 
-    # rubocop:enable Metrics/MethodLength
     # rubocop:enable Metrics/AbcSize
 
     def create_purposes
@@ -110,7 +105,7 @@ module WorkingSetup
       @faculty_sponsor ||= UatActions::StaticRecords.faculty_sponsor
     end
 
-    def create_project(name) # rubocop:todo Metrics/MethodLength
+    def create_project(name)
       existing = Project.find_by(name: name)
       return existing if existing
 
@@ -126,7 +121,7 @@ module WorkingSetup
       )
     end
 
-    def create_study(name) # rubocop:todo Metrics/MethodLength
+    def create_study(name)
       existing = Study.find_by(name: name)
       return existing if existing
 
@@ -149,7 +144,7 @@ module WorkingSetup
       end
     end
 
-    def sample_named(name, study) # rubocop:todo Metrics/MethodLength
+    def sample_named(name, study)
       {
         'sample_tube_attributes' => {
           'two_dimensional_barcode' => ''

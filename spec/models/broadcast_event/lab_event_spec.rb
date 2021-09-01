@@ -26,7 +26,6 @@ RSpec.describe BroadcastEvent::LabEvent, type: :model, broadcast_event: true do
              'key_a' => 'value a',
              'key_b' => 'value b'
            },
-           descriptor_fields: %w[key_a key_b],
            eventful: eventful
   end
   let(:user) { create :user }

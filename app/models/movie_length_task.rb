@@ -3,13 +3,13 @@ class MovieLengthTask < Task # rubocop:todo Style/Documentation
     'movie_length_batches'
   end
 
-  def render_task(workflow, params)
+  def render_task(workflows_controller, params, _user)
     super
-    workflow.render_movie_length_task(self, params)
+    workflows_controller.render_movie_length_task(self, params)
   end
 
-  def do_task(workflow, params)
-    workflow.do_movie_length_task(self, params)
+  def do_task(workflows_controller, params, _user)
+    workflows_controller.do_movie_length_task(self, params)
   end
 
   def valid_movie_length?(movie_length)

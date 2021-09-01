@@ -1,7 +1,9 @@
-
-<li><%= event.description %></li>
-<ul>
-  <% event.descriptors.each do |descriptor|%>
-  <li><%= descriptor.name %>: <%= descriptor.value %></li>
-  <% end %>
-</ul>
+<div class="card event-card">
+  <div class="card-header"><%= event.description %> on <%= time_tag(event.created_at) %> by <%= event.user&.name || 'Unknown' %></div>
+  <dl>
+    <% event.descriptors.each do |descriptor| %>
+      <dt><%= descriptor.name %></dt>
+      <dd><%= descriptor.value %></dd>
+    <% end %>
+  </dl>
+</div>

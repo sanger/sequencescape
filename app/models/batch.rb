@@ -110,6 +110,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   delegate :size, to: :requests
   delegate :sequencing?, :generate_target_assets_on_batch_create?, :min_size, to: :pipeline
+  delegate :name, to: :workflow, prefix: true
 
   alias friendly_name id
 
@@ -162,7 +163,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   # Fail specific requests on this batch
-  def fail_requests(requests_to_fail, reason, comment, fail_but_charge = false) # rubocop:todo Metrics/MethodLength
+  def fail_requests(requests_to_fail, reason, comment, fail_but_charge = false)
     ActiveRecord::Base.transaction do
       requests
         .find(requests_to_fail)
@@ -444,7 +445,6 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
       errors.add('Swap: ', 'The second lane cannot be found')
     return unless batch_request_left.present? && batch_request_right.present?
 
-    # rubocop:todo Metrics/BlockLength
     ActiveRecord::Base.transaction do
       # Update the lab events for the request so that they reference the batch that the request is moving to
       batch_request_left
@@ -487,8 +487,6 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
         user_id: current_user.id
       )
     end
-
-    # rubocop:enable Metrics/BlockLength
 
     true
   end
@@ -570,20 +568,12 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
     requests.count
   end
 
-  def show_actions?
-    released? == false or pipeline.class.const_get(:ALWAYS_SHOW_RELEASE_ACTIONS)
-  end
-
   def npg_set_state
     if all_requests_qced?
       self.state = 'released'
       qc_complete
       save!
     end
-  end
-
-  def show_fail_link?
-    released? && sequencing?
   end
 
   def downstream_requests_needing_asset(request)
@@ -617,7 +607,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   # rubocop:todo Metrics/MethodLength
   def generate_target_assets_for_requests # rubocop:todo Metrics/AbcSize
-    requests_to_update, asset_links = [], []
+    requests_to_update = []
 
     asset_type = pipeline.asset_type.constantize
     requests.reload.each do |request|
@@ -637,11 +627,8 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
       request.update!(target_asset: target_asset)
 
-      # All links between the two assets as new, so we can bulk create them!
-      asset_links << [request.asset.labware.id, target_asset.labware.id]
+      target_asset.parents << request.asset.labware
     end
-
-    AssetLink::BuilderJob.create(asset_links)
 
     requests_to_update.each { |request, asset| request.update!(asset: asset) }
   end

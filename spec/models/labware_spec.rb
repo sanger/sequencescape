@@ -6,64 +6,6 @@ require 'support/lab_where_client_helper'
 RSpec.configure { |c| c.include LabWhereClientHelper }
 
 RSpec.describe Labware, type: :model do
-  describe '#assign_relationships' do
-    context 'with the correct arguments' do
-      let(:labware) { create(:labware) }
-      let(:parent_labware_1) { create(:labware) }
-      let(:parent_labware_2) { create(:labware) }
-      let(:parents) { [parent_labware_1, parent_labware_2] }
-      let(:child_labware) { create(:labware) }
-
-      before { labware.assign_relationships(parents, child_labware) }
-
-      it 'adds 2 parents to the labware' do
-        expect(labware.reload.parents.size).to eq(2)
-      end
-
-      it 'adds 1 child to the labware' do
-        expect(labware.reload.children.size).to eq(1)
-      end
-
-      it 'sets the correct child' do
-        expect(child_labware).to eq(labware.reload.children.first)
-      end
-
-      it 'sets the correct parents' do
-        expect(parents).to eq(labware.reload.parents)
-      end
-    end
-
-    context 'with the wrong arguments' do
-      let(:labware) { create(:labware) }
-      let(:parent_labware_1) { create(:labware) }
-      let(:parent_labware_2) { create(:labware) }
-      let(:parents) { [parent_labware_1, parent_labware_2] }
-      let(:child_labware) { create(:labware) }
-
-      before do
-        labware.parents = [parent_labware_1, parent_labware_2]
-        labware.reload
-        labware.assign_relationships(labware.parents, child_labware)
-      end
-
-      it 'adds 2 parents to the labware' do
-        expect(labware.reload.parents.size).to eq(2)
-      end
-
-      it 'adds 1 child to the labware' do
-        expect(labware.reload.children.size).to eq(1)
-      end
-
-      it 'sets the correct child' do
-        expect(child_labware).to eq(labware.reload.children.first)
-      end
-
-      it 'sets the correct parents' do
-        expect(parents).to eq(labware.reload.parents)
-      end
-    end
-  end
-
   context 'when checking scopes' do
     describe '#with_barcode' do
       let!(:ean13_plates_list) { create_list(:plate_with_tagged_wells, 2) }

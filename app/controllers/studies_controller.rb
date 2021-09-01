@@ -13,7 +13,6 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
 
   around_action :rescue_validation, only: %i[close open]
 
-  # rubocop:todo Metrics/MethodLength
   def setup_studies_from_scope(exclude_nested_resource = false) # rubocop:todo Metrics/AbcSize
     if logged_in? && (not exclude_nested_resource)
       @alternatives = [
@@ -37,8 +36,6 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
       @studies = Study.newest_first.with_user_included.with_related_users_included
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def index
     # Please do not user current_user outside this block, you kill the API calls
@@ -64,7 +61,6 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
 
   ## Create the Study from new with the details from its form.
   ## Redirect to the index page with a notice.
-  # rubocop:todo Metrics/MethodLength
   def create # rubocop:todo Metrics/AbcSize
     ActiveRecord::Base.transaction do
       @study = Study.new(params['study'].merge(user: current_user))
@@ -87,8 +83,6 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
       format.json { render json: @study.errors, status: :unprocessable_entity }
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def show
     @study = Study.find(params[:id])

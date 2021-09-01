@@ -15,7 +15,7 @@ module SequencescapeExcel
 
       private
 
-      def create_qc_record # rubocop:todo Metrics/MethodLength
+      def create_qc_record
         ActiveRecord::Base.transaction do
           qc_assay = sample_manifest_asset.sample_manifest.find_or_create_qc_assay!
           asset.qc_results.build(

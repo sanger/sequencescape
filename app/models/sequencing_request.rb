@@ -60,13 +60,14 @@ class SequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
   end
 
   def concentration
-    return ' ' if lab_events_for_batch(batch).empty?
+    event = most_recent_event_named('Specify Dilution Volume')
+    return ' ' if event.nil?
 
-    conc = lab_events_for_batch(batch).first.descriptor_value('Concentration')
-    return "#{conc}μl" if conc.present?
+    concentration = event.descriptor_value('Concentration')
+    return "#{concentration}μl" if concentration.present?
 
-    dna = lab_events_for_batch(batch).first.descriptor_value('DNA Volume')
-    rsb = lab_events_for_batch(batch).first.descriptor_value('RSB Volume')
+    dna = event.descriptor_value('DNA Volume')
+    rsb = event.descriptor_value('RSB Volume')
     "#{dna}μl DNA in #{rsb}μl RSB"
   end
 end

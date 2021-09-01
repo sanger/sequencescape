@@ -5,7 +5,7 @@
 #
 # @author [grl]
 #
-class TagSubstitution::Substitution # rubocop:todo Metrics/ClassLength
+class TagSubstitution::Substitution
   include ActiveModel::Model
 
   attr_accessor :sample_id, :library_id

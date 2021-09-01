@@ -195,6 +195,12 @@ FactoryBot.define do
     after(:build) do |tube, evaluator|
       tube.receptacle.aliquots << build(:phi_x_aliquot, evaluator.aliquot_attributes.merge(library: tube))
     end
+
+    factory :spiked_buffer_with_parent do
+      transient { parent { create :spiked_buffer, :tube_barcode } }
+
+      after(:build) { |tube, evaluator| tube.parents << evaluator.parent }
+    end
   end
 
   factory :phi_x_stock_tube, class: 'LibraryTube', traits: [:tube_barcode] do

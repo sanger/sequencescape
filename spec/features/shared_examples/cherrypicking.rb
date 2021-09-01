@@ -57,7 +57,6 @@ shared_examples 'a cherrypicking procedure' do
             fill_in('Maximum Volume', with: 150)
           end
         end
-
         click_button 'Next step'
       end
 

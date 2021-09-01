@@ -8,8 +8,8 @@
 </head>
 <%= stylesheet_link_tag "print",media: "print" %>
 <body>
-  <% if workflow_name(@batch).present? -%>
-    <div style="font-size:40px;text-align:right;padding-right:20px"><%=workflow_name(@batch)%></div>
+  <% if @batch.workflow_name.present? -%>
+    <div style="font-size:40px;text-align:right;padding-right:20px"><%= @batch.workflow_name %></div>
   <% end -%>
   <div class="page-header"><h1>Batch <%= @batch.id %></h1></div>
   <table width="100%" cellpadding="4" cellspacing="0" border="1">
@@ -38,7 +38,7 @@
           <td><strong><%= h(asset.display_name) %></strong></td>
           <td><%= request.concentration %></td>
           <td><%= asset.library_types.join(',') %></td>
-          <td><%= request.value_for("Read length") unless asset.resource? %></td>
+          <td><%= request.request_metadata.read_length unless asset.resource? %></td>
         </tr>
       <% end %>
     <% end -%>

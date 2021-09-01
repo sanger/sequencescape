@@ -2,7 +2,7 @@
 
 require 'active_support'
 
-def create_submission_of_assets(template, assets, request_options = {}) # rubocop:todo Metrics/MethodLength
+def create_submission_of_assets(template, assets, request_options = {})
   Delayed::Worker.delay_jobs = false
   submission =
     template.create_with_submission!(

@@ -54,6 +54,7 @@ RSpec.describe PlateTemplateTask, type: :model do
   let(:file) { instance_double(ActionDispatch::Http::UploadedFile, 'blank?' => false, :read => payload) }
 
   let(:workflow_controller) { instance_double(WorkflowsController, batch: batch) }
+  let(:user) { build :user }
 
   describe '#render_task' do
     let(:workflow_controller) do
@@ -66,7 +67,7 @@ RSpec.describe PlateTemplateTask, type: :model do
     let(:params) { ActionController::Parameters.new(workflow_id: workflow.id) }
 
     it 'does stuff' do
-      task.render_task(workflow_controller, params)
+      task.render_task(workflow_controller, params, user)
     end
   end
 
@@ -81,7 +82,7 @@ RSpec.describe PlateTemplateTask, type: :model do
 
     it 'does stuff' do
       expect(workflow_controller).to receive(:spreadsheet_layout=).with(spreadsheet_layout)
-      task.do_task(workflow_controller, params)
+      task.do_task(workflow_controller, params, user)
     end
   end
 

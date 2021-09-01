@@ -63,12 +63,12 @@ module Presenters
       @pipeline.is_a?(CherrypickingPipeline)
     end
 
-    def pacbio?
-      @pipeline.is_a?(PacBioSequencingPipeline)
+    def worksheet?
+      @pipeline.batch_worksheet.present?
     end
 
-    def can_create_stock_assets?
-      @pipeline.can_create_stock_assets?
+    def pacbio?
+      @pipeline.is_a?(PacBioSequencingPipeline)
     end
 
     def pacbio_sample_pipeline?
@@ -83,12 +83,7 @@ module Presenters
       [cherrypicking?, genotyping?, pacbio?, pacbio_sample_pipeline?].any?
     end
 
-    def stock_labels?
-      [!sequencing?, can_create_stock_assets?, !multiplexed?].all?
-    end
-
     # rubocop:todo Metrics/PerceivedComplexity
-    # rubocop:todo Metrics/MethodLength
     # rubocop:todo Metrics/AbcSize
     def load_pipeline_options # rubocop:todo Metrics/CyclomaticComplexity
       add_submenu_option 'Edit batch', edit_batch_path(@batch) if can? :edit
@@ -101,28 +96,16 @@ module Presenters
       add_submenu_option 'Print pool label', :print_multiplex_labels if multiplexed?
       add_submenu_option 'Print stock pool label', :print_stock_multiplex_labels if multiplexed?
       add_submenu_option 'Print plate labels', :print_plate_labels if plate_labels?
-      add_submenu_option 'Print stock labels', :print_stock_labels if stock_labels?
-
-      if can_create_stock_assets? && can?(:create_stock_asset)
-        add_submenu_option 'Create stock tubes', new_batch_stock_asset_path(@batch)
-      end
 
       if pacbio_sample_pipeline? && can?(:sample_prep_worksheet)
         add_submenu_option 'Print sample prep worksheet', :sample_prep_worksheet
       end
 
-      if can? :print
-        if @pipeline.prints_a_worksheet_per_task? && !pacbio_sample_pipeline?
-          @tasks.each { |task| add_submenu_option "Print worksheet for #{task.name}", action: :print, task_id: task.id }
-        else
-          add_submenu_option 'Print worksheet', :print
-        end
-      end
+      add_submenu_option 'Print worksheet', :print if worksheet? && can?(:print)
 
       add_submenu_option 'Verify tube layout', :verify if tube_layout_not_verified? && can?(:verify)
     end
     # rubocop:enable Metrics/AbcSize
-    # rubocop:enable Metrics/MethodLength
     # rubocop:enable Metrics/PerceivedComplexity
   end
 end

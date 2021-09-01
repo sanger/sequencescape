@@ -87,7 +87,7 @@ module Metadata # rubocop:todo Style/Documentation
     end
   end
 
-  def construct_metadata_class(table_name, as_class, &block) # rubocop:todo Metrics/MethodLength
+  def construct_metadata_class(table_name, as_class, &block)
     parent_class = self == as_class ? Metadata::Base : as_class::Metadata
     metadata = Class.new(parent_class, &block)
 
@@ -153,7 +153,7 @@ module Metadata # rubocop:todo Style/Documentation
         @loc_sec ||= Hash.new { |h, field| h[field] = localised_sections_generator(field) }
       end
 
-      def localised_sections_generator(field) # rubocop:todo Metrics/MethodLength
+      def localised_sections_generator(field)
         Section.new(
           *(
             SECTION_FIELDS.map do |section|

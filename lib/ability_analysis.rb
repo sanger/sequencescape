@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Tools to assist with analysing permissions
-class AbilityAnalysis # rubocop:todo Metrics/ClassLength
+class AbilityAnalysis
   attr_reader :permissions, :roles, :ability
 
   UserStub = Struct.new(:id, :role_names)

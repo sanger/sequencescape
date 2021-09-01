@@ -14,7 +14,7 @@
 # an untagged well.
 # We have some performance optimizations in place to avoid trying to look up tag -1
 # @see Tag
-class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
+class Aliquot < ApplicationRecord
   include Uuid::Uuidable
   include Api::Messages::FlowcellIO::AliquotExtensions
   include Api::Messages::QcResultIO::AliquotExtensions

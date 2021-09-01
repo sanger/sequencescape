@@ -16,7 +16,6 @@ module SequencescapeExcel
       validate :check_container
 
       # rubocop:todo Metrics/PerceivedComplexity
-      # rubocop:todo Metrics/MethodLength
       # rubocop:todo Metrics/AbcSize
       def update(_attributes = {}) # rubocop:todo Metrics/CyclomaticComplexity
         return unless valid? && foreign_barcode_format.present?
@@ -35,7 +34,6 @@ module SequencescapeExcel
       end
 
       # rubocop:enable Metrics/AbcSize
-      # rubocop:enable Metrics/MethodLength
       # rubocop:enable Metrics/PerceivedComplexity
 
       private

@@ -7,7 +7,7 @@ class UatActions::GenerateTagGroup < UatActions
   self.title = 'Generate tag group'
 
   # The description displays on the list of UAT actions to provide additional information
-  self.description = 'Generates a tag group of the specified size filled with random oligos'
+  self.description = 'Generates a tag group of the specified size filled with random oligos.'
 
   # Form fields
   form_field :name,

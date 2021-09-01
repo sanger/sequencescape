@@ -1,6 +1,5 @@
 require 'aasm'
 
-# rubocop:todo Metrics/ClassLength
 class Project < ApplicationRecord # rubocop:todo Style/Documentation
   # It has to be here, as there are has_many through: :orders associations in modules
   has_many :orders
@@ -147,4 +146,3 @@ class Project < ApplicationRecord # rubocop:todo Style/Documentation
           )
         }
 end
-# rubocop:enable Metrics/ClassLength

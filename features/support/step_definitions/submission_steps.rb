@@ -137,7 +137,6 @@ When /^I select "([^"]+)" from "([^"]+)" for the "([^"]+)" request type$/ do |va
   with_request_type_scope(type) { select(value, from: name) }
 end
 
-# rubocop:todo Metrics/BlockLength
 Given /^I have a "([^"]*)" submission with the following setup:$/ do |template_name, table|
   submission_template = SubmissionTemplate.find_by(name: template_name)
   params = table.rows_hash
@@ -170,8 +169,6 @@ Given /^I have a "([^"]*)" submission with the following setup:$/ do |template_n
 
   # step(%Q{1 pending delayed jobs are processed})
 end
-# rubocop:enable Metrics/BlockLength
-
 Then /^the last submission should have a priority of (\d+)$/ do |priority|
   Submission.last.update!(priority: priority)
 end

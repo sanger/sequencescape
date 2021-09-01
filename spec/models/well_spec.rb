@@ -253,7 +253,6 @@ describe Well do
     end
   end
 
-  # rubocop:todo Metrics/BlockLength
   [
     [1000, 10, 50, 50, 0, nil],
     [1000, 10, 10, 10, 0, nil],
@@ -298,8 +297,6 @@ describe Well do
       end
     end
   end
-
-  # rubocop:enable Metrics/BlockLength
 
   context 'when while cherrypicking by nanograms ' do
     context 'and we want to get less volume than the minimum' do

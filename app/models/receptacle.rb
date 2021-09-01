@@ -3,7 +3,7 @@
 # A {Labware} may have a single {Receptacle}, such as in the case of a {Tube}
 # or multiple, in the case of a {Plate}.
 # Work can be {Request requested} on a particular receptacle.
-class Receptacle < Asset # rubocop:todo Metrics/ClassLength
+class Receptacle < Asset
   include Uuid::Uuidable
   include Commentable
   include Transfer::State
@@ -70,7 +70,7 @@ class Receptacle < Asset # rubocop:todo Metrics/ClassLength
 
   has_many :messengers, as: :target, inverse_of: :target
   delegate :scanned_in_date, to: :labware
-  has_one :spiked_in_buffer, through: :labware
+  delegate :spiked_in_buffer, to: :labware
 
   has_many :transfer_requests_as_source, class_name: 'TransferRequest', foreign_key: :asset_id
   has_many :transfer_requests_as_target, class_name: 'TransferRequest', foreign_key: :target_asset_id

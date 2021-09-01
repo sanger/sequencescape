@@ -10,12 +10,12 @@ class BindingKitBarcodeTask < Task
     'binding_kit_barcode_batches'
   end
 
-  def render_task(workflow, params)
+  def render_task(workflows_controller, params, _user)
     super
-    workflow.render_binding_kit_barcode_task(self, params)
+    workflows_controller.render_binding_kit_barcode_task(self, params)
   end
 
-  def do_task(workflow, params)
-    workflow.do_binding_kit_barcode_task(self, params)
+  def do_task(workflows_controller, params, _user)
+    workflows_controller.do_binding_kit_barcode_task(self, params)
   end
 end

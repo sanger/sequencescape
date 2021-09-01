@@ -18,7 +18,7 @@ class StudyReport < ApplicationRecord
   belongs_to :user
   validates :study, presence: true
 
-  def headers # rubocop:todo Metrics/MethodLength
+  def headers
     [
       'Study',
       'Sample Name',

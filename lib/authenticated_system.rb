@@ -126,7 +126,6 @@ module AuthenticatedSystem # rubocop:todo Style/Documentation
 
   # When called with before_action :login_from_cookie will check for an :auth_token
   # cookie and log the user back in if apropriate
-  # rubocop:todo Metrics/MethodLength
   def login_from_cookie # rubocop:todo Metrics/AbcSize
     return unless cookies[:auth_token] && !logged_in?
 
@@ -141,8 +140,6 @@ module AuthenticatedSystem # rubocop:todo Style/Documentation
       flash[:notice] = 'Logged in successfully'
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   private
 
