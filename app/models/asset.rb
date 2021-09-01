@@ -171,6 +171,6 @@ class Asset < ApplicationRecord
   end
 
   def get_qc_result_value_for(key)
-    last_qc_result_for(key).pluck(:value).first
+    last_qc_result_for(key).pick(:value)
   end
 end
