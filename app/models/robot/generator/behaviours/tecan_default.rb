@@ -44,7 +44,6 @@ module Robot::Generator::Behaviours::TecanDefault
     end
   end
 
-  # rubocop:todo Metrics/MethodLength
   def dyn_mappings(data_object) # rubocop:todo Metrics/AbcSize
     dyn_mappings = +''
     each_mapping(data_object) do |mapping, dest_plate_barcode, dest_plate|
@@ -61,8 +60,6 @@ module Robot::Generator::Behaviours::TecanDefault
     end
     dyn_mappings
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def buffer_seperator
     'C;'
