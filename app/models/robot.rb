@@ -64,6 +64,10 @@ class Robot < ApplicationRecord # rubocop:todo Style/Documentation
     generation_behaviour.new(batch: batch, plate_barcode: plate_barcode, picking_data: picking_data, layout: layout)
   end
 
+  def self.default_for_verification
+    with_verification_behaviour.first || first
+  end
+
   private
 
   def verification_class

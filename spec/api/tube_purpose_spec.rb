@@ -42,13 +42,4 @@ describe '/api/1/tube/purposes' do
     api_request :post, subject, payload
     expect(Tube::Purpose.last.barcode_printer_type).to be_a(BarcodePrinterType1DTube)
   end
-
-  # Move into a helper as this expands
-  def api_request(action, path, body)
-    headers = { 'HTTP_ACCEPT' => 'application/json' }
-    headers['CONTENT_TYPE'] = 'application/json' unless body.nil?
-    headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = authorised_app.key
-    yield(headers) if block_given?
-    send(action.downcase, path, params: body, headers: headers)
-  end
 end

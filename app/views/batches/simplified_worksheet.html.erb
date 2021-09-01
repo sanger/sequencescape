@@ -38,7 +38,7 @@
           <td><strong><%= h(asset.display_name) %></strong></td>
           <td><%= request.concentration %></td>
           <td><%= asset.library_types.join(',') %></td>
-          <td><%= request.value_for("Read length") unless asset.resource? %></td>
+          <td><%= request.request_metadata.read_length unless asset.resource? %></td>
         </tr>
       <% end %>
     <% end -%>

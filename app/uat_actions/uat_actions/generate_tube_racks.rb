@@ -2,7 +2,7 @@
 
 # Will construct tube racks with sample tubes filled with samples
 class UatActions::GenerateTubeRacks < UatActions
-  self.title = 'Generate Tube Rack'
+  self.title = 'Generate tube rack'
   self.description = 'Generate tube racks in the selected study.'
 
   form_field :rack_count,
