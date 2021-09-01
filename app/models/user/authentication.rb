@@ -54,7 +54,7 @@ module User::Authentication # rubocop:todo Style/Documentation
     # rubocop:todo Metrics/MethodLength
     def authenticate_with_ldap(login, password) # rubocop:todo Metrics/AbcSize
       # TODO: - Extract LDAP specifics to configuration
-      username = 'uid=' << login << ',ou=people,dc=sanger,dc=ac,dc=uk'
+      username = "uid=#{login},ou=people,dc=sanger,dc=ac,dc=uk"
       ldap =
         Net::LDAP.new(
           host: configatron.ldap_server,
