@@ -20,11 +20,7 @@ class AssignTubesToMultiplexedWellsTask < Task
     [{ requests: :asset }, :pipeline]
   end
 
-  def render_task(workflow, params)
-    super
-  end
-
-  def do_task(workflow, params)
-    workflow.do_assign_requests_to_multiplexed_wells_task(self, params)
+  def do_task(workflows_controller, params, _user)
+    workflows_controller.do_assign_requests_to_multiplexed_wells_task(self, params)
   end
 end

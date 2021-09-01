@@ -422,7 +422,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
     @well_hash ||= wells.include_map.includes(:well_attribute).index_by(&:map_description)
   end
 
-  def update_qc_values_with_parser(parser) # rubocop:todo Metrics/MethodLength
+  def update_qc_values_with_parser(parser)
     ActiveRecord::Base.transaction do
       qc_assay = QcAssay.new
       parser.each_well_and_parameters do |position, well_updates|
@@ -443,7 +443,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
     true
   end
 
-  def team # rubocop:todo Metrics/MethodLength
+  def team
     ProductLine
       .joins(
         [

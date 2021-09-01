@@ -10,7 +10,7 @@ RSpec.describe SubmissionsController, type: :controller do
   it_behaves_like 'it requires login'
 
   context 'Submissions controller' do
-    setup do
+    before do
       @user = create :user
       @controller = described_class.new
       @request = ActionController::TestRequest.create(@controller)
@@ -40,7 +40,7 @@ RSpec.describe SubmissionsController, type: :controller do
     end
 
     context 'when a submission exists' do
-      setup do
+      before do
         @user.grant_lab_manager
         @submission = Submission.create!(priority: 1, user: @user)
         post :change_priority, params: { id: @submission.id, submission: { priority: 3 } }
@@ -53,7 +53,7 @@ RSpec.describe SubmissionsController, type: :controller do
 
     # Mainly to verify that it isn't the new test that is broken
     context 'by sample name' do
-      setup do
+      before do
         @samples = samples = Well.with_aliquots.each.map { |w| w.aliquots.first.sample.name }
 
         post(
@@ -85,7 +85,7 @@ RSpec.describe SubmissionsController, type: :controller do
       end
 
       context 'with a more recent plate' do
-        setup do
+        before do
           @new_plate = FactoryBot.create :plate, plate_purpose: @plate.purpose
           @well = create :well, map: Map.find_by(description: 'A1'), plate: @new_plate
           create(:aliquot, sample: Sample.find_by(name: @samples.first), receptacle: @well)
@@ -125,7 +125,7 @@ RSpec.describe SubmissionsController, type: :controller do
     end
 
     context 'by sample name and working dilution' do
-      setup do
+      before do
         @order_count = Order.count
         @wd_plate = create :working_dilution_plate, barcode: 123_457
         %w[A1 A2 A3 B1 B2 B3 C1 C2 C3].each do |location|
@@ -170,7 +170,7 @@ RSpec.describe SubmissionsController, type: :controller do
     end
 
     context 'by plate barcode' do
-      setup do
+      before do
         @order_count = Order.count
         post :create, params: plate_submission('DN123456P')
       end
@@ -182,7 +182,7 @@ RSpec.describe SubmissionsController, type: :controller do
     end
 
     context 'by plate barcode with pools' do
-      setup do
+      before do
         @plate.wells.first.aliquots.create!(sample: FactoryBot.create(:sample), tag_id: Tag.first.id)
         post :create, params: plate_submission('DN123456P')
       end
@@ -193,7 +193,7 @@ RSpec.describe SubmissionsController, type: :controller do
     end
 
     context 'it allow submission by plate barcode and wells' do
-      setup { post :create, params: plate_submission('DN123456P:A1,B3,C2') }
+      before { post :create, params: plate_submission('DN123456P:A1,B3,C2') }
 
       it 'create the appropriate orders' do
         assert_equal 3, Order.first.assets.count
@@ -201,7 +201,7 @@ RSpec.describe SubmissionsController, type: :controller do
     end
 
     context 'it allow submission by plate barcode and rows' do
-      setup { post :create, params: plate_submission('DN123456P:B,C') }
+      before { post :create, params: plate_submission('DN123456P:B,C') }
 
       it 'create the appropriate orders' do
         assert_equal 6, Order.first.assets.count
@@ -209,7 +209,7 @@ RSpec.describe SubmissionsController, type: :controller do
     end
 
     context 'it allow submission by plate barcode and columns' do
-      setup { post :create, params: plate_submission('DN123456P:1,2,3') }
+      before { post :create, params: plate_submission('DN123456P:1,2,3') }
 
       it 'create the appropriate orders' do
         assert_equal 9, Order.first.assets.count
@@ -217,7 +217,7 @@ RSpec.describe SubmissionsController, type: :controller do
     end
 
     context 'A submission with clashing orders' do
-      setup do
+      before do
         @shared_template = 'shared_template'
         @sample = create :sample
         @asset_a = create :sample_tube, sample: @sample
@@ -243,7 +243,7 @@ RSpec.describe SubmissionsController, type: :controller do
     end
 
     context 'A submission with not ready samples' do
-      setup do
+      before do
         @shared_template = 'shared_template'
         sample_manifest = create :tube_sample_manifest_with_samples
         @samples_names = sample_manifest.samples.map(&:name).join(', ')
@@ -262,7 +262,7 @@ RSpec.describe SubmissionsController, type: :controller do
     end
 
     context 'A submission without warnings' do
-      setup do
+      before do
         @shared_template = 'shared_template'
         @sample = create :sample
         @asset_a = create :sample_tube, sample: @sample
@@ -277,7 +277,7 @@ RSpec.describe SubmissionsController, type: :controller do
     end
   end
 
-  def plate_submission(text) # rubocop:todo Metrics/MethodLength
+  def plate_submission(text)
     {
       submission: {
         is_a_sequencing_order: 'false',

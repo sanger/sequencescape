@@ -8,7 +8,7 @@ class SessionsControllerTest < ActionController::TestCase
   # Then, you can remove it from this and the units test.
   include AuthenticatedTestHelper
 
-  def setup # rubocop:todo Metrics/MethodLength
+  def setup
     @controller = SessionsController.new
     @request = ActionController::TestRequest.create(@controller)
     @user =

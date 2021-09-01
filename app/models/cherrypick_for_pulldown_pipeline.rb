@@ -4,8 +4,6 @@
 # the users expected, and they stopped using the pipeline.
 # However the {FlexibleCherrypickPipeline} is still active, and is sub-classed from this.
 class CherrypickForPulldownPipeline < CherrypickingPipeline
-  ALWAYS_SHOW_RELEASE_ACTIONS = true
-
   def post_finish_batch(batch, user)
     # Nothing, we don't want all the requests to be completed
   end

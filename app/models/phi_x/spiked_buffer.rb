@@ -87,7 +87,6 @@ class PhiX::SpikedBuffer
   # Creates a qc_result to set the concentration (uses molarity as we're in nM not ng/ul)
   # Creates a qc_result to set the volume
   # Transfers aliquots from the parent
-  # rubocop:todo Metrics/MethodLength
   def generate_spiked_buffers # rubocop:todo Metrics/AbcSize
     Array.new(number.to_i) do |index|
       spiked_buffer =
@@ -103,5 +102,4 @@ class PhiX::SpikedBuffer
       spiked_buffer
     end
   end
-  # rubocop:enable Metrics/MethodLength
 end

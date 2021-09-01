@@ -13,7 +13,6 @@ module SampleManifestExcel
 
       attr_accessor :data,
                     :no_of_rows,
-                    :study,
                     :supplier,
                     :count,
                     :type,
@@ -23,7 +22,7 @@ module SampleManifestExcel
                     :cgap,
                     :num_plates,
                     :num_samples_per_plate
-      attr_reader :dynamic_attributes, :tags
+      attr_reader :dynamic_attributes, :tags, :study
       attr_writer :manifest_type
 
       def initialize(attributes = {}) # rubocop:todo Metrics/MethodLength
@@ -40,9 +39,19 @@ module SampleManifestExcel
           create_tube_requests
         end
         create_styles
-        add_title_and_description(study, supplier, count)
+        add_title_and_description(study.name, supplier, count)
         add_headers
         add_data
+      end
+
+      def study=(new_study)
+        @study =
+          case new_study
+          when String
+            Study.find_by(name: new_study) || FactoryBot.create(:study, name: new_study)
+          else
+            new_study
+          end
       end
 
       def last_row
@@ -73,21 +82,23 @@ module SampleManifestExcel
         @sample_manifest ||= create_sample_manifest
       end
 
-      def create_sample_manifest # rubocop:todo Metrics/MethodLength
-        if %w[plate_default plate_full plate_rnachip].include? manifest_type
+      def create_sample_manifest
+        case manifest_type
+        when /plate/
           FactoryBot.create(
             :pending_plate_sample_manifest,
             num_plates: num_plates,
-            num_samples_per_plate: num_samples_per_plate
+            num_samples_per_plate: num_samples_per_plate,
+            study: study
           )
-        elsif %w[tube_library_with_tag_sequences].include? manifest_type
-          FactoryBot.create(:sample_manifest, asset_type: 'library')
-        elsif %w[tube_multiplexed_library tube_multiplexed_library_with_tag_sequences].include? manifest_type
-          FactoryBot.create(:sample_manifest, asset_type: 'multiplexed_library')
-        elsif %w[tube_rack_default].include? manifest_type
-          FactoryBot.create(:tube_rack_manifest, asset_type: 'tube_rack')
+        when /tube_library/
+          FactoryBot.create(:sample_manifest, asset_type: 'library', study: study)
+        when /tube_multiplexed_library/
+          FactoryBot.create(:sample_manifest, asset_type: 'multiplexed_library', study: study)
+        when /tube_rack/
+          FactoryBot.create(:tube_rack_manifest, asset_type: 'tube_rack', study: study)
         else
-          FactoryBot.create(:sample_manifest, asset_type: '1dtube')
+          FactoryBot.create(:sample_manifest, asset_type: '1dtube', study: study)
         end
       end
 
@@ -244,7 +255,7 @@ module SampleManifestExcel
       # rubocop:enable Metrics/MethodLength
       # rubocop:enable Metrics/PerceivedComplexity
 
-      def build_tube_sample_manifest_asset # rubocop:todo Metrics/MethodLength
+      def build_tube_sample_manifest_asset
         asset =
           if %w[
                tube_multiplexed_library

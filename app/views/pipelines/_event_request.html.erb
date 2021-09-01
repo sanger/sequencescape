@@ -1,5 +1,14 @@
-
-<li><strong><%= event_request.asset ? h(event_request.asset.display_name) : "<nil>" %></strong></li>
-<ul>
-<%= render partial: 'event', collection: event_request.lab_events_for_batch(@batch) %>
-</ul>
+<%= panel_no_body do %>
+  <div class="card-body">
+    <h3 class="card-title">
+      Request <%= event_request.position %>
+      <span class="receptacle">From receptacle <%= event_request.asset ? h(event_request.asset.display_name) : "<nil>" %></span>
+    </h3>
+  </div>
+  <%# I hoped to get something a little more responsive, but think we're waiting on bootstrap 5 %>
+  <% event_request.lab_events_for_batch(@batch).each_slice(3) do |events| %>
+    <div class="card-group">
+      <%= render partial: 'event', collection: events %>
+    </div>
+  <% end %>
+<% end %>

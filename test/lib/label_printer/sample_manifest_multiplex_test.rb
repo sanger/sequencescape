@@ -8,7 +8,6 @@ class SampleManifestMultiplexTest < ActiveSupport::TestCase
 
   attr_reader :only_first_label, :manifest, :tube_label, :tube1, :prefix, :barcode1, :label, :study_abbreviation
 
-  # rubocop:todo Metrics/MethodLength
   def setup # rubocop:todo Metrics/AbcSize
     @manifest = create :sample_manifest, asset_type: 'multiplexed_library', count: 3
 
@@ -31,8 +30,6 @@ class SampleManifestMultiplexTest < ActiveSupport::TestCase
       barcode: tube1.machine_barcode
     }
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   test 'should return correct tubes' do
     assert_equal [tube1], tube_label.assets

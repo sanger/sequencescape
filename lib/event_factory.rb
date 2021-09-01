@@ -6,7 +6,7 @@ class EventFactory # rubocop:todo Style/Documentation
 
   # Creates an event when a new project is created
   # This used to send a notification using EventfulMailer, but it is no longer required
-  def self.new_project(project, user) # rubocop:todo Metrics/MethodLength
+  def self.new_project(project, user)
     content = "Project registered by #{user.login}"
 
     event =
@@ -23,7 +23,7 @@ class EventFactory # rubocop:todo Style/Documentation
 
   # Creates an event or emails when a project is approved
   # This used to send a notification using EventfulMailer, but it is no longer required
-  def self.project_approved(project, user) # rubocop:todo Metrics/MethodLength
+  def self.project_approved(project, user)
     content = "Project approved by #{user.login}"
 
     event =
@@ -38,7 +38,7 @@ class EventFactory # rubocop:todo Style/Documentation
     event.save
   end
 
-  def self.project_refund_request(project, user, reference) # rubocop:todo Metrics/MethodLength
+  def self.project_refund_request(project, user, reference)
     content = "Refund request by #{user.login}. Reference #{reference}"
 
     event =

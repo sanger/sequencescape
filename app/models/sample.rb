@@ -20,6 +20,11 @@ require 'rexml/text'
 # - Heron: Heron samples get registered via the Api::V2::Heron::PlatesController
 # - Special samples: Samples such as {PhiX} are generated internally
 class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
+  # See https://api.rubyonrails.org/classes/ActiveSupport/CurrentAttributes.html
+  class Current < ActiveSupport::CurrentAttributes
+    attribute :processing_manifest
+  end
+
   GC_CONTENTS = ['Neutral', 'High AT', 'High GC'].freeze
   GENDERS = ['Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable'].freeze
   DNA_SOURCES = [
@@ -230,7 +235,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
                 with: /\A[[:ascii:]]+\z/,
                 message: 'only allows ASCII'
               },
-              if: :supplier_name_changed?
+              if: :supplier_name_changed? && :supplier_name?
 
     # here we are aliasing ArrayExpress attribute from normal one
     # This is easier that way so the name is exactly the name of the array-express field
@@ -354,7 +359,11 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   validates_associated(:ena_study, allow_blank: true, on: :accession)
 
   before_destroy :safe_to_destroy
-  after_save :accession
+
+  # processing_manifest is true if we're currently processing a manifest. We
+  # disable accessioning, as we'll perform it explicitly later. This avoids
+  # accidental calls to save triggering duplicate accessions
+  after_save :accession, unless: -> { Sample::Current.processing_manifest }
 
   # NOTE: Samples don't tend to get released through Sequencescape
   # so in reality these methods are usually misleading.

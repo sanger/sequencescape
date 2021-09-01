@@ -13,7 +13,7 @@ RSpec.describe LabSearchesController do
     let!(:batch) { create :batch, user: current_user }
 
     describe '#new' do
-      setup { get :new, params: { q: query }, session: { user: current_user.id } }
+      before { get :new, params: { q: query }, session: { user: current_user.id } }
 
       context 'with an asset name' do
         let(:query) { 'FindMe' }

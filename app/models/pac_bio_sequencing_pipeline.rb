@@ -2,8 +2,6 @@ class PacBioSequencingPipeline < Pipeline # rubocop:todo Style/Documentation
   include Pipeline::InboxGroupedBySubmission
 
   self.inbox_partial = 'pac_bio_sequencing_inbox'
-  ALWAYS_SHOW_RELEASE_ACTIONS = true
-
   self.requires_position = false
 
   def post_release_batch(batch, _user)

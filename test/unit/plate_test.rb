@@ -3,7 +3,7 @@
 require 'test_helper'
 require './spec/lib/mock_parser'
 
-class PlateTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
+class PlateTest < ActiveSupport::TestCase
   def create_plate_with_fluidigm(fluidigm_barcode)
     barcode = '1234567'
     purpose = create :plate_purpose

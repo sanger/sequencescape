@@ -11,7 +11,7 @@ RSpec.describe Plate::QuadCreator, type: :model do
   let(:user) { create :user }
   let(:creation_options) { { parent_barcodes: parent_barcodes_hash, target_purpose: target_purpose, user: user } }
 
-  setup { allow(PlateBarcode).to receive(:create).and_return(build(:plate_barcode, barcode: 1000)) }
+  before { allow(PlateBarcode).to receive(:create).and_return(build(:plate_barcode, barcode: 1000)) }
 
   describe '#target_coordinate_for' do
     [

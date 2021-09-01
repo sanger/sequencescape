@@ -3,12 +3,12 @@ class SamplePrepQcTask < Task # rubocop:todo Style/Documentation
     'sample_prep_qc_batches'
   end
 
-  def render_task(workflow, params)
+  def render_task(workflows_controller, params, _user)
     super
-    workflow.render_sample_prep_qc_task(self, params)
+    workflows_controller.render_sample_prep_qc_task(self, params)
   end
 
-  def do_task(workflow, params)
-    workflow.do_sample_prep_qc_task(self, params)
+  def do_task(workflows_controller, params, _user)
+    workflows_controller.do_sample_prep_qc_task(self, params)
   end
 end

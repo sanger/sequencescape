@@ -13,7 +13,6 @@ class Ability::BaseUser
 
   private
 
-  # rubocop:todo Metrics/MethodLength
   def grant_privileges # rubocop:todo Metrics/AbcSize
     Rails.logger.debug { 'Granting BaseUser privileges' }
 
@@ -41,8 +40,6 @@ class Ability::BaseUser
     grant_advanced_batch_operation_privileges
   end
 
-  # rubocop:enable Metrics/MethodLength
-
   # Before this was granted to anyone, unless they
   # were an owner of anything, in which case they also
   # had to be a manager, possibly of something
@@ -50,7 +47,6 @@ class Ability::BaseUser
   # now, but pop them in a separate section so its easy to
   # revisit
   def grant_advanced_batch_operation_privileges
-    can :create_stock_asset, Batch
     can :edit, Batch
     can :print, Batch
     can :sample_prep_worksheet, Batch

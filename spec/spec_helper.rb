@@ -43,6 +43,7 @@ require 'rspec/collection_matchers'
 
 require './lib/plate_map_generation'
 require './lib/capybara_failure_logger'
+require './lib/capybara_timeout_patches'
 require 'pry'
 
 Capybara.register_driver :headless_chrome do |app|
@@ -149,6 +150,30 @@ RSpec.configure do |config|
     Warren.handler.enable!
     ex.run
     Warren.handler.disable!
+  end
+
+  # Add accessioning_enabled to a spec to automatically:
+  # - Set accession_samples to true before the test, and roll it back afterward
+  # - Configure Accession service with the config defined in spec/data/assession
+  # - Ensure accession service configuration is rolled back afterward
+  #
+  # @example
+  #   context 'when accessioning is enabled', accessioning_enabled: true do
+  #     it 'suppresses accessioning to allow explicit triggering after upload' do
+  #       expect { upload.process(nil) }.not_to change(Delayed::Job, :count)
+  #     end
+  #   end
+  config.around(:each, accessioning_enabled: true) do |ex|
+    original_value = configatron.accession_samples
+    original_config = Accession.configuration
+    Accession.configure do |accession|
+      accession.folder = File.join('spec', 'data', 'accession')
+      accession.load!
+    end
+    configatron.accession_samples = true
+    ex.run
+    configatron.accession_samples = original_value
+    Accession.configuration = original_config
   end
 
   config.before do

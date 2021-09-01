@@ -9,12 +9,10 @@ RSpec.describe Comment, type: :model do
     end
 
     it 'belongs to a user' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(subject).to belong_to :user
     end
 
     it 'can have many comments' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(subject).to have_many :comments
     end
   end
@@ -23,7 +21,7 @@ RSpec.describe Comment, type: :model do
     let(:request) { create :sequencing_request, asset: tube }
     let(:tube) { create :multiplexed_library_tube }
 
-    setup do
+    before do
       create :comment, commentable: tube, description: 'An excellent tube'
       create :comment, commentable: tube.receptacle, description: 'A good receptacle'
       create :comment, commentable: request, description: 'A reasonable request'
@@ -86,20 +84,18 @@ RSpec.describe Comment, type: :model do
       end
 
       it 'always adds comments to the sequencing requests of the submission' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(sequencing_request.comments.length).to eq(3)
         expect(sequencing_request2.comments.length).to eq(1)
       end
 
       it 'includes all the comments in the submission requests comment list' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(submission.requests.map(&:comments).flatten.length).to eq(5)
         expect(order4.submission.requests.map(&:comments).flatten.length).to eq(2)
       end
     end
 
     context 'from a submission' do
-      setup do
+      before do
         submission.add_comment('My comment from submission 1', user)
         submission2.add_comment('My comment from submission 2', user, 'Test')
       end

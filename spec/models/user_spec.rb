@@ -110,6 +110,14 @@ RSpec.describe User, type: :model do
       user.grant_role('owner', study)
       expect(user).to be_an_owner_of, study
     end
+
+    context 'when a role already exists' do
+      before { create(:user).grant_role('owner', study) }
+
+      it "doesn't create a new role" do
+        expect { user.grant_role('owner', study) }.not_to(change { study.roles.reload.count })
+      end
+    end
   end
 
   describe '#remove_role' do

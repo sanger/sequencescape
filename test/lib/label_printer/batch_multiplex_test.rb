@@ -8,7 +8,6 @@ class BatchMultiplexTest < ActiveSupport::TestCase
 
   attr_reader :tube_label, :prefix, :barcode1, :tube1, :label
 
-  # rubocop:todo Metrics/MethodLength
   def setup # rubocop:todo Metrics/AbcSize
     pipeline = create :pipeline, name: 'Test pipeline', workflow: Workflow.create!(item_limit: 8), multiplexed: true
     batch = pipeline.batches.create!
@@ -30,8 +29,6 @@ class BatchMultiplexTest < ActiveSupport::TestCase
       barcode: tube1.machine_barcode
     }
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   test 'should return correct tubes' do
     assert_equal 1, tube_label.tubes.count

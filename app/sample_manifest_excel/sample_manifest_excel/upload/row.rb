@@ -19,8 +19,7 @@ module SampleManifestExcel
       validates :number, presence: true, numericality: true
       validate :sanger_sample_id_exists?, if: :sanger_sample_id
       validates_presence_of :data, :columns
-      validate :check_sample_present
-      validate :sample_can_be_updated
+
       delegate :present?, to: :sample, prefix: true
 
       ##
@@ -89,6 +88,7 @@ module SampleManifestExcel
         else
           update_specialised_fields(tag_group)
           asset.save!
+          update_metadata_fields
           metadata.save!
           sample.updated_by_manifest = true
           sample.empty_supplier_sample_name = false
@@ -141,6 +141,10 @@ module SampleManifestExcel
         @sample_skipped || sample_updated?
       end
 
+      def sample_created?
+        sample_updated? && !reuploaded?
+      end
+
       def aliquot_transferred?
         @aliquot_transferred
       end
@@ -154,6 +158,12 @@ module SampleManifestExcel
 
       def labware
         sample.primary_receptacle.labware
+      end
+
+      def validate_sample
+        check_sample_present
+        sample_can_be_updated
+        errors.empty?
       end
 
       private

@@ -13,21 +13,6 @@ ProductLine.create(name: 'Illumina-B')
 ProductLine.create(name: 'Illumina-C')
 ProductLine.create(name: 'Illumina-HTP')
 
-# Utility method for getting a sequence of Pipeline instances to flow properly.  Call with a Hash mapping the
-# flow from left to right, if you get what I mean!
-# This is pretty much legacy behaviour now. I wouldn't worry too much about this for any new pipelines.
-# Besides, whey are you adding new pipelines to Sequencescape, this interface is incredibly clunky.
-def set_pipeline_flow_to(sequence)
-  sequence.each do |current_name, next_name|
-    current_pipeline, next_pipeline =
-      [current_name, next_name].map { |name| Pipeline.find_by(name: name) or raise "Cannot find pipeline '#{name}'" }
-    current_pipeline.update!(next_pipeline_id: next_pipeline.id)
-    next_pipeline.update!(previous_pipeline_id: current_pipeline.id)
-  end
-end
-
-# import [ :name ], locations_data, :validate => false
-
 #### RequestInformationTypes
 request_information_types_data = [
   ['Fragment size required (from)', 'fragment_size_required_from', 'Fragment size required (from)', 0],
@@ -54,177 +39,68 @@ end
 # Next-gen sequencing
 ##################################################################################################################
 
-LibraryCreationPipeline.create!(name: 'Illumina-C Library preparation') do |pipeline|
-  pipeline.sorter = 0
-  pipeline.automated = false
-  pipeline.active = true
+RequestType.create!(
+  key: 'library_creation',
+  name: 'Library creation',
+  deprecated: true,
+  billable: true,
+  initial_state: 'pending',
+  asset_type: 'SampleTube',
+  order: 1,
+  multiples_allowed: false,
+  request_class: LibraryCreationRequest
+)
 
-  pipeline.request_types << RequestType.create!(
-    key: 'library_creation',
-    name: 'Library creation',
-    deprecated: true
-  ) do |request_type|
-    request_type.billable = true
-    request_type.initial_state = 'pending'
-    request_type.asset_type = 'SampleTube'
-    request_type.order = 1
-    request_type.multiples_allowed = false
-    request_type.request_class_name = LibraryCreationRequest.name
-  end << RequestType.create!(
-    key: 'illumina_c_library_creation',
-    name: 'Illumina-C Library creation',
-    product_line: ProductLine.find_by(name: 'Illumina-C')
-  ) do |request_type|
-    request_type.billable = true
-    request_type.initial_state = 'pending'
-    request_type.asset_type = 'SampleTube'
-    request_type.order = 1
-    request_type.multiples_allowed = false
-    request_type.request_class_name = LibraryCreationRequest.name
-  end
+RequestType.create!(
+  key: 'illumina_c_library_creation',
+  name: 'Illumina-C Library creation',
+  product_line: ProductLine.find_by(name: 'Illumina-C'),
+  billable: true,
+  initial_state: 'pending',
+  asset_type: 'SampleTube',
+  order: 1,
+  multiples_allowed: false,
+  request_class: LibraryCreationRequest
+)
 
-  pipeline.workflow =
-    Workflow.create!(name: 'Library preparation') { |workflow| workflow.locale = 'External' }.tap do |workflow|
-      [
-        { class: SetDescriptorsTask, name: 'Initial QC', sorted: 1, lab_activity: true },
-        {
-          class: SetDescriptorsTask,
-          name: 'Characterisation',
-          sorted: 3,
-          batched: true,
-          interactive: false,
-          per_item: false,
-          lab_activity: true
-        }
-      ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
-    end
-end.tap do |pipeline|
-  create_request_information_types(pipeline, 'fragment_size_required_from', 'fragment_size_required_to', 'library_type')
-end
+RequestType.create!(
+  key: 'multiplexed_library_creation',
+  name: 'Multiplexed library creation',
+  billable: true,
+  initial_state: 'pending',
+  asset_type: 'SampleTube',
+  order: 1,
+  multiples_allowed: false,
+  request_class: MultiplexedLibraryCreationRequest,
+  for_multiplexing: true
+)
 
-MultiplexedLibraryCreationPipeline.create!(name: 'Illumina-B MX Library Preparation') do |pipeline|
-  pipeline.sorter = 0
-  pipeline.automated = false
-  pipeline.active = true
-  pipeline.multiplexed = true
+RequestType.create!(
+  key: 'illumina_b_multiplexed_library_creation',
+  name: 'Illumina-B Multiplexed Library Creation',
+  product_line: ProductLine.find_by(name: 'Illumina-B'),
+  deprecated: true,
+  billable: true,
+  initial_state: 'pending',
+  asset_type: 'SampleTube',
+  order: 1,
+  multiples_allowed: false,
+  request_class: MultiplexedLibraryCreationRequest,
+  for_multiplexing: true
+)
 
-  pipeline.request_types << RequestType.create!(
-    key: 'multiplexed_library_creation',
-    name: 'Multiplexed library creation'
-  ) do |request_type|
-    request_type.billable = true
-    request_type.initial_state = 'pending'
-    request_type.asset_type = 'SampleTube'
-    request_type.order = 1
-    request_type.multiples_allowed = false
-    request_type.request_class = MultiplexedLibraryCreationRequest
-    request_type.for_multiplexing = true
-  end
-
-  pipeline.request_types << RequestType.create!(
-    key: 'illumina_b_multiplexed_library_creation',
-    name: 'Illumina-B Multiplexed Library Creation',
-    product_line: ProductLine.find_by(name: 'Illumina-B'),
-    deprecated: true
-  ) do |request_type|
-    request_type.billable = true
-    request_type.initial_state = 'pending'
-    request_type.asset_type = 'SampleTube'
-    request_type.order = 1
-    request_type.multiples_allowed = false
-    request_type.request_class = MultiplexedLibraryCreationRequest
-    request_type.for_multiplexing = true
-  end
-
-  pipeline.workflow =
-    Workflow.create!(name: 'Illumina-B MX Library Preparation') do |workflow|
-      workflow.locale = 'External'
-    end.tap do |workflow|
-      [
-        { class: TagGroupsTask, name: 'Tag Groups', sorted: 1, lab_activity: true },
-        { class: AssignTagsTask, name: 'Assign Tags', sorted: 2, lab_activity: true },
-        { class: SetDescriptorsTask, name: 'Initial QC', sorted: 3, batched: false, lab_activity: true },
-        { class: SetDescriptorsTask, name: 'Characterisation', sorted: 5, batched: true, lab_activity: true }
-      ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
-    end
-end.tap do |pipeline|
-  create_request_information_types(
-    pipeline,
-    'fragment_size_required_from',
-    'fragment_size_required_to',
-    'read_length',
-    'library_type'
-  )
-  PipelineRequestInformationType.create!(
-    pipeline: pipeline,
-    request_information_type: RequestInformationType.find_by(label: 'Concentration')
-  )
-end
-
-MultiplexedLibraryCreationPipeline.create!(name: 'Illumina-C MX Library Preparation') do |pipeline|
-  pipeline.sorter = 0
-  pipeline.automated = false
-  pipeline.active = true
-  pipeline.multiplexed = true
-  pipeline.group_name = 'Library creation'
-
-  pipeline.request_types << RequestType.create!(
-    key: 'illumina_c_multiplexed_library_creation',
-    name: 'Illumina-C Multiplexed Library Creation',
-    product_line: ProductLine.find_by(name: 'Illumina-C')
-  ) do |request_type|
-    request_type.billable = true
-    request_type.initial_state = 'pending'
-    request_type.asset_type = 'SampleTube'
-    request_type.order = 1
-    request_type.multiples_allowed = false
-    request_type.request_class = MultiplexedLibraryCreationRequest
-    request_type.for_multiplexing = true
-  end
-
-  pipeline.workflow =
-    Workflow.create!(name: 'Illumina-C MX Library Preparation workflow') do |workflow|
-      workflow.locale = 'External'
-    end.tap do |workflow|
-      {
-        TagGroupsTask => {
-          name: 'Tag Groups',
-          sorted: 1,
-          lab_activity: true
-        },
-        AssignTagsTask => {
-          name: 'Assign Tags',
-          sorted: 2,
-          lab_activity: true
-        },
-        SetDescriptorsTask => {
-          name: 'Initial QC',
-          sorted: 3,
-          batched: false,
-          lab_activity: true
-        },
-        SetDescriptorsTask => {
-          name: 'Characterisation',
-          sorted: 5,
-          batched: true,
-          lab_activity: true
-        }
-      }.each { |klass, details| klass.create!(details.merge(workflow: workflow)) }
-    end
-end.tap do |pipeline|
-  create_request_information_types(
-    pipeline,
-    'fragment_size_required_from',
-    'fragment_size_required_to',
-    'read_length',
-    'library_type'
-  )
-
-  PipelineRequestInformationType.create!(
-    pipeline: pipeline,
-    request_information_type: RequestInformationType.find_by(label: 'Concentration')
-  )
-end
+RequestType.create!(
+  key: 'illumina_c_multiplexed_library_creation',
+  name: 'Illumina-C Multiplexed Library Creation',
+  product_line: ProductLine.find_by(name: 'Illumina-C'),
+  billable: true,
+  initial_state: 'pending',
+  asset_type: 'SampleTube',
+  order: 1,
+  multiples_allowed: false,
+  request_class: MultiplexedLibraryCreationRequest,
+  for_multiplexing: true
+)
 
 cluster_formation_se_request_type =
   %w[a b c].map do |pl|
@@ -258,7 +134,6 @@ SequencingPipeline.create!(
   request_types: cluster_formation_se_request_type
 ) do |pipeline|
   pipeline.sorter = 2
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.workflow =
@@ -319,7 +194,6 @@ SequencingPipeline.create!(
   request_types: cluster_formation_se_request_type
 ) do |pipeline|
   pipeline.sorter = 2
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.workflow =
@@ -372,7 +246,6 @@ SequencingPipeline.create!(
   request_types: cluster_formation_se_request_type
 ) do |pipeline|
   pipeline.sorter = 2
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.workflow =
@@ -452,7 +325,6 @@ SequencingPipeline.create!(
   request_types: single_ended_hi_seq_sequencing
 ) do |pipeline|
   pipeline.sorter = 2
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.workflow =
@@ -505,7 +377,6 @@ SequencingPipeline.create!(
   request_types: single_ended_hi_seq_sequencing
 ) do |pipeline|
   pipeline.sorter = 2
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.workflow =
@@ -613,7 +484,6 @@ SequencingPipeline.create!(
   request_types: cluster_formation_pe_request_types
 ) do |pipeline|
   pipeline.sorter = 3
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.workflow =
@@ -674,7 +544,6 @@ SequencingPipeline.create!(
   request_types: cluster_formation_pe_request_types
 ) do |pipeline|
   pipeline.sorter = 8
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.workflow =
@@ -713,7 +582,6 @@ SequencingPipeline.create!(
   request_types: cluster_formation_pe_request_types
 ) do |pipeline|
   pipeline.sorter = 8
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.workflow =
@@ -759,7 +627,6 @@ SequencingPipeline.create!(
   request_types: cluster_formation_pe_request_types
 ) do |pipeline|
   pipeline.sorter = 9
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.workflow =
@@ -806,7 +673,6 @@ SequencingPipeline.create!(
 ) do |pipeline|
   pipeline.sorter = 9
   pipeline.max_size = 2
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.workflow =
@@ -852,7 +718,6 @@ SequencingPipeline.create!(
 ) do |pipeline|
   pipeline.sorter = 9
   pipeline.max_size = 2
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.workflow =
@@ -896,7 +761,6 @@ SequencingPipeline.create!(
   request_types: cluster_formation_pe_request_types
 ) do |pipeline|
   pipeline.sorter = 8
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.workflow =
@@ -931,7 +795,6 @@ end
 # TODO: This pipeline has been cloned from the 'Cluster formation PE (no controls)'.  Needs checking
 SequencingPipeline.create!(name: 'HiSeq Cluster formation PE (no controls)') do |pipeline|
   pipeline.sorter = 8
-  pipeline.automated = false
   pipeline.active = true
 
   %w[a b c].each do |pl|
@@ -1004,7 +867,6 @@ end
 
 CherrypickPipeline.create!(name: 'Cherrypick') do |pipeline|
   pipeline.sorter = 10
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.request_types << RequestType.find_by!(key: 'cherrypick')
@@ -1023,7 +885,6 @@ end
 
 PacBioSamplePrepPipeline.create!(name: 'PacBio Library Prep') do |pipeline|
   pipeline.sorter = 14
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.request_types << RequestType.create!(
@@ -1064,7 +925,6 @@ end.tap { |pipeline| create_request_information_types(pipeline, 'sequencing_type
 
 PacBioSequencingPipeline.create!(name: 'PacBio Sequencing') do |pipeline|
   pipeline.sorter = 14
-  pipeline.automated = false
   pipeline.active = true
   pipeline.max_size = 96
 
@@ -1135,8 +995,6 @@ PacBioSequencingPipeline.create!(name: 'PacBio Sequencing') do |pipeline|
     )
 end.tap { |pipeline| create_request_information_types(pipeline, 'sequencing_type', 'insert_size') }
 
-set_pipeline_flow_to('PacBio Library Prep' => 'PacBio Sequencing')
-
 # Pulldown pipelines
 pulldown_variants = %w[WGS SC ISC]
 ['Pulldown', 'Illumina-A Pulldown'].each do |lab|
@@ -1144,7 +1002,7 @@ pulldown_variants = %w[WGS SC ISC]
     pipeline_name = "#{lab} #{pipeline_type}"
     Pipeline.create!(name: pipeline_name) do |pipeline|
       pipeline.sorter = Pipeline.maximum(:sorter) + 1
-      pipeline.automated = false
+
       pipeline.active = true
       pipeline.externally_managed = true
 
@@ -1167,7 +1025,6 @@ end
 
 SequencingPipeline.create!(name: 'MiSeq sequencing') do |pipeline|
   pipeline.sorter = 2
-  pipeline.automated = false
   pipeline.active = true
 
   pipeline.request_types << RequestType.create!(key: 'miseq_sequencing', name: 'MiSeq sequencing') do |request_type|
@@ -1201,7 +1058,6 @@ SequencingPipeline.create!(name: 'MiSeq sequencing') do |pipeline|
       t2 = SetDescriptorsTask.create!(name: 'Cluster Generation', sorted: 0, workflow: workflow)
       Descriptor.create!(kind: 'Text', sorter: 1, name: 'Chip barcode', task: t2)
       Descriptor.create!(kind: 'Text', sorter: 2, name: 'Cartridge barcode', task: t2)
-      Descriptor.create!(kind: 'Text', sorter: 3, name: 'Operator', task: t2)
       Descriptor.create!(kind: 'Text', sorter: 4, name: 'Machine name', task: t2)
     end
 end.tap do |pipeline|
@@ -1241,7 +1097,6 @@ Workflow
 CherrypickPipeline.create!(
   name: 'Illumina-C Cherrypick',
   active: true,
-  automated: false,
   group_name: 'Illumina-C Library creation',
   max_size: 3000,
   sorter: 10,
@@ -1379,7 +1234,6 @@ x10_requests_types =
 ['(spiked in controls)', '(no controls)'].each do |type|
   SequencingPipeline.create!(
     name: "HiSeq v4 PE #{type}",
-    automated: false,
     active: true,
     sorter: 9,
     max_size: 8,
@@ -1431,7 +1285,6 @@ x10_requests_types =
 
   SequencingPipeline.create!(
     name: "HiSeq v4 SE #{type}",
-    automated: false,
     active: true,
     sorter: 9,
     max_size: 8,
@@ -1476,7 +1329,6 @@ end
 ['(spiked in controls)', '(no controls)'].each do |type|
   SequencingPipeline.create!(
     name: "HiSeq X PE #{type}",
-    automated: false,
     active: true,
     sorter: 9,
     max_size: 8,
@@ -1563,7 +1415,6 @@ def build_4000_tasks_for(workflow, paired_only = false) # rubocop:todo Metrics/M
     task.descriptors.build(
       [
         { kind: 'Text', sorter: 1, name: 'Chip Barcode', required: true },
-        { kind: 'Text', sorter: 2, name: 'Operator' },
         { kind: 'Text', sorter: 3, name: 'Pipette Carousel #' },
         { kind: 'Text', sorter: 4, name: 'CBOT' },
         { kind: 'Text', sorter: 5, name: '-20 Temp. Read 1 Cluster Kit (Box 1 of 2) Lot #' },
@@ -1578,7 +1429,6 @@ def build_4000_tasks_for(workflow, paired_only = false) # rubocop:todo Metrics/M
     task.descriptors.build(
       [
         { kind: 'Text', sorter: 1, name: 'Chip Barcode', required: true },
-        { kind: 'Text', sorter: 2, name: 'Operator' },
         { kind: 'Text', sorter: 3, name: 'Pipette Carousel #' },
         { kind: 'Text', sorter: 4, name: 'Sequencing Machine' },
         { kind: 'Text', sorter: 5, name: '-20 SBS Kit lot #' },
@@ -1600,7 +1450,6 @@ def build_4000_tasks_for(workflow, paired_only = false) # rubocop:todo Metrics/M
     if paired_only
       task.descriptors.build(
         [
-          { kind: 'Text', sorter: 1, name: 'Operator' },
           { kind: 'Text', sorter: 2, name: 'Pipette Carousel #' },
           { kind: 'Text', sorter: 3, name: '-20 Temp. Read 2 Cluster Kit (Box 2 of 2) Lot #' },
           { kind: 'Text', sorter: 4, name: '-20 Temp. Read 2 Cluster Kit (Box 2 of 2) RGT #' },
@@ -1617,7 +1466,6 @@ def build_4000_tasks_for(workflow, paired_only = false) # rubocop:todo Metrics/M
     else
       task.descriptors.build(
         [
-          { kind: 'Text', sorter: 1, name: 'Operator' },
           { kind: 'Text', sorter: 2, name: 'Pipette Carousel #' },
           { kind: 'Text', sorter: 3, name: '-20 Temp. Read 1 Cluster Kit Lot #' },
           { kind: 'Text', sorter: 4, name: '-20 Temp. Read 1 Cluster Kit RGT #' },
@@ -1638,7 +1486,6 @@ end
 
 SequencingPipeline.create!(
   name: 'HiSeq 4000 PE (spiked in controls)',
-  automated: false,
   active: true,
   sorter: 10,
   max_size: 8,
@@ -1653,7 +1500,6 @@ end
 
 SequencingPipeline.create!(
   name: 'HiSeq 4000 SE (spiked in controls)',
-  automated: false,
   active: true,
   sorter: 10,
   max_size: 8,

@@ -18,11 +18,12 @@ class DummyWorkflowController < WorkflowsController
   end
 end
 
-class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
+class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase
   context 'AssignTubesToMultiplexedWellsHandler' do
     setup do
       @workflows_controller = DummyWorkflowController.new
       @task = create :assign_tubes_to_multiplexed_wells_task
+      @user = build :user
       @wells = mock('wells')
       @fake_plate = mock('plate', wells: @wells)
       @workflows_controller.stubs(:find_or_create_plate).returns(@fake_plate)
@@ -74,7 +75,7 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase # rubocop:
           @workflows_controller.batch = @batch
         end
         should 'set target assets appropriately' do
-          assert @task.do_task(@workflows_controller, @params)
+          assert @task.do_task(@workflows_controller, @params, @user)
         end
       end
 
@@ -95,11 +96,11 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase # rubocop:
         end
 
         should 'return false' do
-          assert_not @task.do_task(@workflows_controller, @params)
+          assert_not @task.do_task(@workflows_controller, @params, @user)
         end
 
         should 'set a flash[:notice] for failure' do
-          @task.do_task(@workflows_controller, @params)
+          @task.do_task(@workflows_controller, @params, @user)
           assert_not_nil @workflows_controller.flash[:error]
           assert_equal 'Duplicate tags in G1', @workflows_controller.flash[:error]
         end
@@ -125,11 +126,11 @@ class AssignTubestoMultiplexedWellsTaskTest < ActiveSupport::TestCase # rubocop:
         end
 
         should 'return false' do
-          assert_not @task.do_task(@workflows_controller, @params)
+          assert_not @task.do_task(@workflows_controller, @params, @user)
         end
 
         should 'set a flash[:notice] for failure' do
-          @task.do_task(@workflows_controller, @params)
+          @task.do_task(@workflows_controller, @params, @user)
           assert_not_nil @workflows_controller.flash[:error]
           assert_equal 'Incompatible requests in G1', @workflows_controller.flash[:error]
         end

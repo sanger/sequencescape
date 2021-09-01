@@ -34,7 +34,7 @@ class PlateVolume < ApplicationRecord # rubocop:todo Style/Documentation
     self.barcode = match[1]
   end
 
-  def update_well_volumes # rubocop:todo Metrics/MethodLength
+  def update_well_volumes
     qc_assay = QcAssay.new
     extract_well_volumes do |well_description, volume|
       short_well_description = Map.strip_description(well_description)

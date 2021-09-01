@@ -30,13 +30,18 @@ module SampleManifest::CoreBehaviour # rubocop:todo Style/Documentation
     end
   end
 
-  module StockAssets # rubocop:todo Style/Documentation
+  # The samples get registered in the stock resource table at the end of manifest upload and processing
+  # (It used to happen here)
+  module StockAssets
     def generate_sample_and_aliquot(sanger_sample_id, receptacle)
       create_sample(sanger_sample_id).tap do |sample|
         receptacle.aliquots.create!(sample: sample, study: study)
-        receptacle.register_stock!
         study.samples << sample
       end
+    end
+
+    def stocks?
+      true
     end
   end
 
@@ -46,6 +51,10 @@ module SampleManifest::CoreBehaviour # rubocop:todo Style/Documentation
         receptacle.aliquots.create!(sample: sample, study: study, library: receptacle)
         study.samples << sample
       end
+    end
+
+    def stocks?
+      false
     end
   end
 

@@ -25,7 +25,7 @@ class AuthenticationController < ApplicationController
   end
 end
 
-class AuthenticationControllerTest < ActionController::TestCase # rubocop:todo Metrics/ClassLength
+class AuthenticationControllerTest < ActionController::TestCase
   # def skip_routing
   #   Rails.application.routes.draw do
   #     get 'authentication/open'
@@ -56,7 +56,7 @@ class AuthenticationControllerTest < ActionController::TestCase # rubocop:todo M
         end
         should respond_with :success
         should 'Respond with xml' do
-          assert_equal 'application/xml', @response.content_type
+          assert_equal 'application/xml', @response.media_type
         end
       end
       context 'allow access to open JSON content' do
@@ -66,7 +66,7 @@ class AuthenticationControllerTest < ActionController::TestCase # rubocop:todo M
         end
         should respond_with :success
         should 'Respond with json' do
-          assert_equal 'application/json', @response.content_type
+          assert_equal 'application/json', @response.media_type
         end
       end
       context 'require login to restricted HTML content' do
@@ -81,7 +81,7 @@ class AuthenticationControllerTest < ActionController::TestCase # rubocop:todo M
         end
         should respond_with :success
         should 'Respond with xml' do
-          assert_equal 'application/xml', @response.content_type
+          assert_equal 'application/xml', @response.media_type
         end
       end
       context 'require login to restricted JSON' do
@@ -91,7 +91,7 @@ class AuthenticationControllerTest < ActionController::TestCase # rubocop:todo M
         end
         should respond_with :success
         should 'Respond with json' do
-          assert_equal 'application/json', @response.content_type
+          assert_equal 'application/json', @response.media_type
         end
       end
     end
@@ -131,14 +131,14 @@ class AuthenticationControllerTest < ActionController::TestCase # rubocop:todo M
           setup { get :open }
           should respond_with :success
           should 'Respond with xml' do
-            assert_equal 'application/xml', @response.content_type
+            assert_equal 'application/xml', @response.media_type
           end
         end
         context 'will require login to restricted content' do
           setup { get :restricted }
           should respond_with :unauthorized
           should 'Respond with xml' do
-            assert_equal 'application/xml', @response.content_type
+            assert_equal 'application/xml', @response.media_type
           end
         end
         context 'with valid api_key will not require login to restricted content' do
@@ -148,14 +148,14 @@ class AuthenticationControllerTest < ActionController::TestCase # rubocop:todo M
           end
           should respond_with :success
           should 'Respond with xml' do
-            assert_equal 'application/xml', @response.content_type
+            assert_equal 'application/xml', @response.media_type
           end
         end
         context 'with an invalid api_key will require login to restricted content' do
           setup { get :restricted, params: { api_key: 'fakeapikey' } }
           should respond_with :unauthorized
           should 'Respond with xml' do
-            assert_equal 'application/xml', @response.content_type
+            assert_equal 'application/xml', @response.media_type
           end
         end
       end
@@ -165,14 +165,14 @@ class AuthenticationControllerTest < ActionController::TestCase # rubocop:todo M
           setup { get :open }
           should respond_with :success
           should 'Respond with json' do
-            assert_equal 'application/json', @response.content_type
+            assert_equal 'application/json', @response.media_type
           end
         end
         context 'will require login to restricted content' do
           setup { get :restricted }
           should respond_with :unauthorized
           should 'Respond with json' do
-            assert_equal 'application/json', @response.content_type
+            assert_equal 'application/json', @response.media_type
           end
         end
         context 'with valid api_key will not require login to restricted content' do
@@ -182,14 +182,14 @@ class AuthenticationControllerTest < ActionController::TestCase # rubocop:todo M
           end
           should respond_with :success
           should 'Respond with json' do
-            assert_equal 'application/json', @response.content_type
+            assert_equal 'application/json', @response.media_type
           end
         end
         context 'with an invalid api_key will require login to restricted content' do
           setup { get :restricted, params: { api_key: 'fakeapikey' } }
           should respond_with :unauthorized
           should 'Respond with json' do
-            assert_equal 'application/json', @response.content_type
+            assert_equal 'application/json', @response.media_type
           end
         end
       end

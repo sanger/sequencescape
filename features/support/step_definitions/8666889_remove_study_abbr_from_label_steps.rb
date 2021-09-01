@@ -23,7 +23,6 @@ When /^I print the following labels$/ do |table|
   end
 end
 
-# rubocop:todo Metrics/BlockLength
 Given /^I have a "([^"]*)" submission with (\d+) sample tubes as part of "([^"]*)" and "([^"]*)"$/ do |submission_template_name, number_of_tubes, study_name, project_name|
   project = FactoryBot.create :project, name: project_name
   study = FactoryBot.create :study, name: study_name
@@ -52,10 +51,4 @@ Given /^I have a "([^"]*)" submission with (\d+) sample tubes as part of "([^"]*
     )
   order.submission.built!
   step('1 pending delayed jobs are processed')
-end
-# rubocop:enable Metrics/BlockLength
-
-Given /^the child asset of "([^"]*)" has a sanger_sample_id of "([^"]*)"$/ do |sample_tube_name, sanger_sample_id|
-  sample_tube = SampleTube.find_by(name: sample_tube_name)
-  step("the asset called \"#{sample_tube.child.name}\" has a sanger_sample_id of \"#{sanger_sample_id}\"")
 end

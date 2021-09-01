@@ -122,7 +122,6 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   scope :customer_requests, -> { where(sti_type: [CustomerRequest, *CustomerRequest.descendants].map(&:name)) }
 
-  # rubocop:disable Metrics/BlockLength
   scope :for_pooling_of,
         ->(plate) {
           submission_ids = plate.all_submission_ids
@@ -187,8 +186,6 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
             .where(state: %w[started pending])
             .where(pw: { labware_id: plate })
         }
-
-  # rubocop:enable Metrics/BlockLength
 
   scope :in_order, ->(order) { where(order_id: order) }
 
@@ -264,7 +261,18 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
         -> {
           preload(
             [
-              { submission: { orders: :study }, asset: %i[requests scanned_into_lab_event most_tagged_aliquot] },
+              :upstream_requests,
+              {
+                submission: {
+                  orders: :study
+                },
+                asset: [
+                  :requests_as_target,
+                  :requests,
+                  :most_tagged_aliquot,
+                  { labware: %i[barcodes scanned_into_lab_event] }
+                ]
+              },
               { request_type: :product_line }
             ]
           )
@@ -430,12 +438,24 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
     lab_events_for_batch(batch).any? { |event| event.description == task.name }
   end
 
+  # Returns the lab_events associated with `batch`
+  # While for the most-part each request only belongs to a single batch at any one time,
+  # they may have belonged to other batches historically.
+  #
+  # @param batch [Batch] The batch to filter events by
+  #
+  # @return [Array<LabEvent>,LabEvent::ActiveRecord_Associations_CollectionProxy] Events associated with `batch`
+  #
   def lab_events_for_batch(batch)
-    lab_events.loaded? ? lab_events.select { |le| le.batch_id == batch.id } : lab_events.where(batch_id: batch.id)
+    if lab_events.loaded?
+      lab_events.select { |le| le.batch_id == batch.id }.sort_by(&:created_at)
+    else
+      lab_events.where(batch_id: batch.id).order(:created_at)
+    end
   end
 
-  def event_with_key_value(k, v = nil)
-    v.nil? ? false : lab_events.with_descriptor(k, v).first
+  def most_recent_event_named(name)
+    lab_events_for_batch(batch).reverse.detect { |e| e.description == name }
   end
 
   def next_requests
@@ -471,14 +491,16 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def add_comment(comment, user, title = nil)
-    comments.create(description: comment, user: user, title: title)
+    # Unscope comments to fix Rails 6 deprecation warnings. But I *think* this
+    # essentially models the new behaviour in 6.1 So should be removable then
+    Comment.unscoped { comments.create(description: comment, user: user, title: title) }
   end
 
   def return_pending_to_inbox!
     raise StandardError, "Can only return pending requests, request is #{state}" unless pending?
   end
 
-  def format_qc_information # rubocop:todo Metrics/MethodLength
+  def format_qc_information
     return [] if lab_events.empty?
 
     events.filter_map do |event|

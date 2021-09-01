@@ -268,5 +268,31 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode 'INVALID'
   end
 
+  describe Barcode::FormatHandlers::BrantsBridge do
+    it_has_a_valid_barcode '00000000002107834', number: 2_107_834 # trims off the leading zeros
+    it_has_a_valid_barcode '10877393330000001', number: 10_877_393_330_000_001
+    it_has_an_invalid_barcode '12345678912'
+    it_has_an_invalid_barcode 'AB123456700000001'
+    it_has_an_invalid_barcode '00210783400000001 '
+  end
+
+  describe Barcode::FormatHandlers::LeamingtonSpa do
+    it_has_a_valid_barcode 'CHERY500171', prefix: 'CHERY', number: 500_171
+    it_has_a_valid_barcode 'CHERY123456789', prefix: 'CHERY', number: 123_456_789
+    it_has_an_invalid_barcode '12345678912'
+    it_has_an_invalid_barcode 'AB123456700000001'
+    it_has_an_invalid_barcode '00210783400000001 '
+  end
+
+  describe Barcode::FormatHandlers::Newcastle do
+    it_has_a_valid_barcode 'ICHNE12345c', prefix: 'ICHNE', number: 12_345, suffix: 'c'
+    it_has_a_valid_barcode 'ICHNE12345678d', prefix: 'ICHNE', number: 12_345_678, suffix: 'd'
+    it_has_an_invalid_barcode '12345678912'
+    it_has_an_invalid_barcode 'HEYKD12345678d'
+    it_has_an_invalid_barcode 'HEYKD12345678def'
+    it_has_an_invalid_barcode 'AB123456700000001'
+    it_has_an_invalid_barcode '00210783400000001 '
+  end
+
   # rubocop:enable RSpec/EmptyExampleGroup
 end

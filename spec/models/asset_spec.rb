@@ -8,6 +8,6 @@ RSpec.describe Asset, type: :model do
   # {Receptacle}: Representing something that can contain samples
   # Please add any tests to the corresponding spec while this migration happens.
   it 'is a placeholder spec to avoid confusion' do
-    expect(described_class).to be described_class
+    expect(described_class).to be described_class # rubocop:todo RSpec/IdenticalEqualityAssertion
   end
 end

@@ -28,20 +28,32 @@ class SampleManifest::Uploader
   end
 
   def run!
-    return false unless valid?
+    ActiveRecord::Base.transaction do
+      return false unless valid?
 
-    if upload.process(tag_group)
-      upload.complete
-      upload.broadcast_sample_manifest_updated_event(user)
-      true
-    else
-      extract_errors
-      upload.fail
-      false
+      return true if process_upload_and_callbacks
+
+      # One of our post processing checks failed, something went wrong, so we
+      # roll everything back
+      raise ActiveRecord::Rollback
     end
+
+    extract_errors
+    upload.fail
+    false
   end
 
   private
+
+  def process_upload_and_callbacks
+    return false unless upload.process(tag_group)
+
+    upload.finished!
+    upload.broadcast_sample_manifest_updated_event(user)
+    upload.register_stock_resources
+    upload.trigger_accessioning
+    true
+  end
 
   def create_tag_group
     TagGroup.find_or_create_by!(name: configuration.tag_group) if configuration.tag_group.present?

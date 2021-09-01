@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class BatchTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
+class BatchTest < ActiveSupport::TestCase
   context 'A batch' do
     context 'on its own' do
       setup { @batch = build :batch }
@@ -202,15 +202,7 @@ class BatchTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
 
     should_have_instance_methods :assigned_user, :start, :fail, :workflow, :started?, :released?, :qc_state
 
-    setup do
-      @pipeline_next = create :pipeline, name: 'Next pipeline'
-      @pipeline =
-        create :library_creation_pipeline,
-               name: 'Pipeline for BatchTest',
-               automated: false,
-               next_pipeline_id: @pipeline_next.id
-      @pipeline_qc = create :pipeline, name: 'quality control', automated: true, next_pipeline_id: @pipeline_next.id
-    end
+    setup { @pipeline = create :sequencing_pipeline, name: 'Pipeline for BatchTest' }
 
     context 'create requests' do
       setup do
@@ -450,7 +442,6 @@ class BatchTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
         end
       end
 
-      # rubocop:todo Metrics/BlockLength
       {
         sequencing_pipeline: :sequencing_request_with_assets,
         pipeline: :request
@@ -487,7 +478,6 @@ class BatchTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
           end
         end
       end
-      # rubocop:enable Metrics/BlockLength
     end
 
     context '#qc_previous_state!' do
@@ -506,7 +496,6 @@ class BatchTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
     end
 
     context '#swap' do
-      # rubocop:todo Metrics/BlockLength
       # We must test swapping requests at different and same positions, as well as ones which would clash if not adjusted
       [[3, 4], [4, 4], [2, 1]].each do |left_position, right_position|
         context "when swapping #{left_position} and #{right_position}" do
@@ -551,7 +540,6 @@ class BatchTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
           end
         end
       end
-      # rubocop:enable Metrics/BlockLength
     end
 
     context '#detach_request' do
@@ -640,7 +628,6 @@ class BatchTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
     end
 
     should 'check that with the pipeline that the batch is valid' do
-      @batch.pipeline.expects(:validation_of_batch_for_completion).with(@batch)
       @batch.complete!(@user)
     end
   end

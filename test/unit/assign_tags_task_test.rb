@@ -40,7 +40,7 @@ class AssignTagsTaskTest < TaskTestBase
     context '#render_task' do
       setup do
         params = { workflow_id: @workflow.id, tag_group: @tag_group.id, batch_id: @batch.id }
-        @task.render_task(@controller, params)
+        @task.render_task(@controller, params, @user)
       end
 
       should 'render a specific template' do
@@ -75,7 +75,7 @@ class AssignTagsTaskTest < TaskTestBase
             @mx_request.id.to_s => @tag.id.to_s
           }
         }
-        @task.do_task(@controller, params)
+        @task.do_task(@controller, params, @user)
       end
 
       should 'have requests in batch' do

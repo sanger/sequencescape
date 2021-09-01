@@ -52,7 +52,7 @@ module Aker
       config
     end
 
-    def tokenizer(str) # rubocop:todo Metrics/MethodLength
+    def tokenizer(str)
       list = str.split('=').map { |s| s.gsub(/[<=> ]/, '') }
       ss = list[0]
       aker_name = list[1].to_sym

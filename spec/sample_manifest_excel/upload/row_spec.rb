@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_excel: true, sample_manifest: true do
-  setup do
+  before do
     create(:library_type, name: 'My New Library Type')
     create(:reference_genome, name: 'My reference genome')
   end
@@ -153,27 +153,27 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
 
   it 'is not valid without a primary receptacle or sample' do
     data[1] = 2
-    expect(described_class.new(number: 1, data: data, columns: columns)).not_to be_valid
+    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample).to eq false
     data[1] = 999_999
     row = described_class.new(number: 1, data: data, columns: columns)
-    expect(row).not_to be_valid
+    expect(row.validate_sample).to eq false
     expect(row.errors.full_messages).to include('Row 1 - Sample can\'t be blank.')
   end
 
   it 'is not valid unless all specialised fields are valid' do
-    expect(described_class.new(number: 1, data: data, columns: columns)).to be_valid
+    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample).to eq true
     data[5] = 'Dodgy library type'
-    expect(described_class.new(number: 1, data: data, columns: columns)).not_to be_valid
+    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample).to eq false
     data[5] = 'My New Library Type'
     data[6] = 'one'
-    expect(described_class.new(number: 1, data: data, columns: columns)).not_to be_valid
+    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample).to eq false
   end
 
   it 'is not valid unless metadata is valid' do
     described_class.new(number: 1, data: data, columns: columns)
-    expect(described_class.new(number: 1, data: data, columns: columns)).to be_valid
+    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample).to eq true
     data[16] = 'Cell-line'
-    expect(described_class.new(number: 1, data: data, columns: columns)).not_to be_valid
+    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample).to eq false
   end
 
   it 'updates the aliquot with the specialised fields' do

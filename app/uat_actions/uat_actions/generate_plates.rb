@@ -2,7 +2,7 @@
 
 # Will construct plates with well_count wells filled with samples
 class UatActions::GeneratePlates < UatActions
-  self.title = 'Generate Plate'
+  self.title = 'Generate plate'
   self.description = 'Generate plates in the selected study.'
 
   form_field :plate_purpose_name,
@@ -68,7 +68,7 @@ class UatActions::GeneratePlates < UatActions
     false
   end
 
-  def construct_wells(plate) # rubocop:todo Metrics/MethodLength
+  def construct_wells(plate)
     wells(plate).each do |well|
       sample_name = "sample_#{plate.human_barcode}_#{well.map.description}"
       sample =

@@ -47,7 +47,7 @@ RSpec.describe LinearSubmission do
           ).submission
         end
 
-        setup do
+        before do
           expected_metric
           mpx_submission.built!
         end
@@ -81,7 +81,7 @@ RSpec.describe LinearSubmission do
           ).submission
         end
 
-        setup { mpx_submission.built! }
+        before { mpx_submission.built! }
 
         describe '#process!' do
           context 'when library_creation then sequencing' do
@@ -99,7 +99,6 @@ RSpec.describe LinearSubmission do
             end
 
             it "not save a comment if one isn't supplied" do
-              # rubocop:todo RSpec/AggregateExamples
               expect(mpx_submission.comments).to be_blank
             end
           end
@@ -166,14 +165,13 @@ RSpec.describe LinearSubmission do
         ).submission
       end
 
-      setup { submission.built! }
+      before { submission.built! }
 
       it 'not be a multiplexed submission' do
         expect(submission.multiplexed?).to be false
       end
 
       it 'save request_types as array of Integers' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(submission.orders.first.request_types).to be_a Array
         expect(submission.orders.first.request_types).to eq(request_type_option)
       end
@@ -189,7 +187,8 @@ RSpec.describe LinearSubmission do
         end
 
         context 'when it has been run' do
-          setup { submission.process! }
+          before { submission.process! }
+
           let(:library_request) { submission.requests.find_by!(request_type_id: library_creation_request_type.id) }
           let(:sequencing_request) { submission.requests.find_by!(request_type_id: sequencing_request_type.id) }
 
@@ -208,7 +207,6 @@ RSpec.describe LinearSubmission do
           end
 
           it 'sets metadata on sequencing requests' do
-            # rubocop:todo RSpec/AggregateExamples
             expect(sequencing_request.request_metadata).to have_attributes(
               customer_accepts_responsibility: nil,
               read_length: 108
@@ -271,7 +269,7 @@ RSpec.describe LinearSubmission do
           ).submission
         end
 
-        setup { submission.built! }
+        before { submission.built! }
 
         it 'builds the requests' do
           expect { submission.process! }.to change(Request, :count).by(12) &
@@ -301,7 +299,7 @@ RSpec.describe LinearSubmission do
           ).submission
         end
 
-        setup { submission.built! }
+        before { submission.built! }
 
         it 'builds the requests' do
           expect { submission.process! }.to change(Request, :count).by(7) &

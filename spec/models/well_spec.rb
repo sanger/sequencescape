@@ -67,7 +67,8 @@ describe Well do
 
     let(:qc_result) { build :qc_result, key: key, value: value, units: units, assay_type: 'assay', assay_version: 1 }
 
-    setup { well.update_from_qc(qc_result) }
+    before { well.update_from_qc(qc_result) }
+
     context 'key: concentration with nM' do
       let(:key) { 'concentration' }
       let(:value) { 100 }
@@ -232,10 +233,11 @@ describe Well do
   end
 
   context 'with a plate' do
-    setup do
+    before do
       @plate = create :plate
       well.plate = @plate
     end
+
     it 'have a parent plate' do
       parent = well.plate
       assert parent.is_a?(Plate)
@@ -251,7 +253,6 @@ describe Well do
     end
   end
 
-  # rubocop:todo Metrics/BlockLength
   [
     [1000, 10, 50, 50, 0, nil],
     [1000, 10, 10, 10, 0, nil],
@@ -267,7 +268,7 @@ describe Well do
   ].each do |target_ng, measured_concentration, measured_volume, stock_to_pick, buffer_added, current_volume|
     # rubocop:enable Metrics/ParameterLists
     context 'cherrypick by nano grams' do
-      setup do
+      before do
         @source_well = create :well
         @target_well = create :well
         minimum_volume = 10
@@ -286,6 +287,7 @@ describe Well do
           robot_minimum_picking_volume
         )
       end
+
       it "output stock_to_pick #{stock_to_pick} for a target of #{target_ng} with vol #{measured_volume} and conc #{measured_concentration}" do
         assert_equal stock_to_pick, @target_well.well_attribute.picked_volume
       end
@@ -296,11 +298,9 @@ describe Well do
     end
   end
 
-  # rubocop:enable Metrics/BlockLength
-
   context 'when while cherrypicking by nanograms ' do
     context 'and we want to get less volume than the minimum' do
-      setup do
+      before do
         @source_well = create :well
         @target_well = create :well
 
@@ -310,6 +310,7 @@ describe Well do
         @minimum_volume = 10
         @maximum_volume = 50
       end
+
       it 'get correct volume and buffer volume when there is not robot minimum picking volume' do
         stock_to_pick = 0.1
         buffer_added = 9.9
@@ -428,7 +429,7 @@ describe Well do
     ].each do |volume_required, concentration_required, source_concentration, source_volume, robot_minimum_pick_volume, source_volume_obtained, buffer_volume_obtained, scenario|
       # rubocop:enable Metrics/ParameterLists
       context "when testing #{scenario}" do
-        setup do
+        before do
           @result_volume =
             format(
               '%.1f',
@@ -442,6 +443,7 @@ describe Well do
             ).to_f
           @result_buffer_volume = format('%.1f', well.get_buffer_volume).to_f
         end
+
         it 'gets correct volume quantity' do
           assert_equal source_volume_obtained, @result_volume
         end
@@ -454,7 +456,7 @@ describe Well do
   end
 
   context 'proceed test' do
-    setup do
+    before do
       @our_product_criteria = create :product_criteria
       @other_criteria = create :product_criteria
 

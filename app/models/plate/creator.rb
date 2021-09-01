@@ -145,7 +145,6 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   private
 
-  # rubocop:todo Metrics/MethodLength
   def create_asset_group(created_plates)
     group = nil
     all_wells = created_plates.map { |hash| hash[:destinations].map(&:wells) }.flatten
@@ -164,8 +163,6 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     group
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def find_relevant_study(created_plates)
     # find a relevant study to put the Asset group under

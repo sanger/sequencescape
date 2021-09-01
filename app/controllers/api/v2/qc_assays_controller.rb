@@ -4,7 +4,7 @@ module Api
   module V2
     # QcAssaysController
     class QcAssaysController < JSONAPI::ResourceController
-      def create # rubocop:todo Metrics/MethodLength
+      def create
         @qc_result_factory = QcResultFactory.new(qc_assay_params)
         if @qc_result_factory.valid?
           @qc_result_factory.save

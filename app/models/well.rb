@@ -96,7 +96,7 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
           )
         }
 
-  scope :without_report, ->(product_criteria) { where.not(id: Well.with_report(product_criteria)) }
+  scope :without_report, ->(product_criteria) { where.not(id: with_report(product_criteria)) }
 
   scope :stock_wells_for,
         ->(wells) { joins(:target_well_links).where(well_links: { target_well_id: [wells].flatten.map(&:id) }) }
@@ -272,7 +272,6 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
 
   delegate_to_well_attribute(:gender_markers)
 
-  # rubocop:todo Metrics/MethodLength
   def update_gender_markers!(gender_markers, resource) # rubocop:todo Metrics/AbcSize
     if well_attribute.gender_markers == gender_markers
       gender_marker_event = events.where(family: 'update_gender_markers').order('id desc').first
@@ -287,8 +286,6 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
 
     well_attribute.update!(gender_markers: gender_markers)
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def update_sequenom_count!(sequenom_count, resource)
     events.update_sequenom_count!(resource) unless well_attribute.sequenom_count == sequenom_count

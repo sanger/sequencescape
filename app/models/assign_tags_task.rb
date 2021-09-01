@@ -18,15 +18,15 @@ class AssignTagsTask < Task
     'assign_tags_batches'
   end
 
-  def render_task(workflow, params)
+  def render_task(workflows_controller, params, _user)
     super
-    workflow.render_assign_tags_task(self, params)
+    workflows_controller.render_assign_tags_task(self, params)
   end
 
-  def do_task(workflow, params)
-    workflow.do_assign_tags_task(self, params)
+  def do_task(workflows_controller, params, _user)
+    workflows_controller.do_assign_tags_task(self, params)
   rescue Aliquot::TagClash => e
-    workflow.send(:flash)[:error] = e.message
+    workflows_controller.send(:flash)[:error] = e.message
     raise ActiveRecord::Rollback
   end
 end

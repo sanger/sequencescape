@@ -32,11 +32,10 @@ describe TagLayoutTemplate do
       it { is_expected.to be_a TagLayout }
 
       it 'passes in the correct properties' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(subject.plate).to eq(plate)
         expect(subject.direction).to eq('column')
         expect(subject.walking_by).to eq('wells of plate')
-        expect(tag2_group).to eq(tag2_group)
+        expect(tag2_group).to eq(tag2_group) # rubocop:todo RSpec/IdenticalEqualityAssertion
       end
 
       it 'records itself against the submissions' do
@@ -60,7 +59,6 @@ describe TagLayoutTemplate do
         it { is_expected.to be_a TagLayout }
 
         it 'passes in the correct properties' do
-          # rubocop:todo RSpec/AggregateExamples
           expect(subject.plate).to eq(plate)
           expect(subject.tag2_group).to eq(tag2_group)
         end
@@ -89,7 +87,6 @@ describe TagLayoutTemplate do
         it { is_expected.to be_a TagLayout }
 
         it 'passes in the correct properties' do
-          # rubocop:todo RSpec/AggregateExamples
           expect(subject.plate).to eq(plate)
           expect(subject.tag2_group).to eq(tag2_group)
         end
@@ -117,7 +114,6 @@ describe TagLayoutTemplate do
       it { is_expected.to be_a TagLayout }
 
       it 'passes in the correct properties' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(subject.plate).to eq(plate)
         expect(subject.direction).to eq('row')
         expect(subject.walking_by).to eq('wells in pools')

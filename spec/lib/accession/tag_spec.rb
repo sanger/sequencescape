@@ -30,24 +30,21 @@ RSpec.describe Accession::Tag, type: :model, accession: true do
   end
 
   it 'can have an ebi name' do
-    # rubocop:todo RSpec/AggregateExamples
     expect(described_class.new(ebi_name: :ebi_tag).ebi_name).to eq(:ebi_tag)
   end
 
   it 'has a label' do
-    # rubocop:todo RSpec/AggregateExamples
     expect(described_class.new(name: :tag_1).label).to eq('TAG_1')
     expect(described_class.new(name: :tag_1, ebi_name: :ebi_tag).label).to eq('EBI_TAG')
   end
 
   it 'can have an array express label' do
-    # rubocop:todo RSpec/AggregateExamples
     expect(described_class.new(name: :tag_1).array_express_label).to eq('ArrayExpress-TAG_1')
     expect(described_class.new(name: :tag_1, ebi_name: :ebi_tag).array_express_label).to eq('ArrayExpress-EBI_TAG')
   end
 
   it 'is comparable' do
-    expect(build(:accession_tag)).to eq(build(:accession_tag))
+    expect(build(:accession_tag)).to eq(build(:accession_tag)) # rubocop:todo RSpec/IdenticalEqualityAssertion
     expect(build(:sample_taxon_id_accession_tag)).not_to eq(build(:accession_tag))
   end
 end

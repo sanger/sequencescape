@@ -13,7 +13,7 @@ class Studies::DocumentsController < ApplicationController # rubocop:todo Style/
     @study = Study.find(params[:study_id])
   end
 
-  def create # rubocop:todo Metrics/MethodLength
+  def create
     document_settings = params[:document]
     document_settings[:documentable] = @study
     @document = Document.new(document_settings)

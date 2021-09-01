@@ -1,0 +1,19 @@
+<%= form_for :workflow, url: { action: "stage", id: @stage }, html: { id: "stage_form"} do |form| %>
+
+  <%= panel_no_body do %>
+    <%= render partial: "shared/batch", locals: { requests: @batch.ordered_requests, edit: false, stage: true } %>
+  <% end %>
+
+  <%= panel do %>
+    <h3 class="card-title">Task details</h3>
+    <p class="lead">Required fields are marked with a <%= required_marker %></p>
+
+    <%= render partial: "descriptors" %>
+
+    <%= hidden_field_tag "next_stage", "true" %>
+    <%= hidden_field_tag "workflow_id", @workflow.id %>
+    <%= hidden_field_tag "batch_id", @batch.id %>
+  <% end %>
+
+  <%= render(partial: 'next_stage_submit', locals: { check_selection: true }) %>
+<% end %>

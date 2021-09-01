@@ -29,7 +29,7 @@ module SequencingQcBatch
     VALID_QC_STATES
   end
 
-  def qc_previous_state!(current_user) # rubocop:todo Metrics/MethodLength
+  def qc_previous_state!(current_user)
     previous_state = qc_previous_state
     if previous_state
       lab_events.create(
@@ -85,7 +85,7 @@ module SequencingQcBatch
   private
 
   def qc_pipeline_update
-    self.qc_pipeline = Pipeline.find_by(name: 'quality control', automated: true)
+    self.qc_pipeline = Pipeline.find_by(name: 'quality control')
     self.qc_state = 'qc_pending'
   end
 end

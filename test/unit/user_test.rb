@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class UserTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
+class UserTest < ActiveSupport::TestCase
   context 'A User' do
     context 'authenticate' do
       setup do

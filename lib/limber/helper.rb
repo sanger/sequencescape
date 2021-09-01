@@ -35,7 +35,6 @@ module Limber::Helper
 
     # Builds the corresponding request type, unless it
     # already exists.
-    # rubocop:todo Metrics/MethodLength
     def build! # rubocop:todo Metrics/AbcSize
       rt =
         RequestType
@@ -66,7 +65,6 @@ module Limber::Helper
         valid_options: RequestType::Validator::LibraryTypeValidator.new(rt.id)
       )
     end
-    # rubocop:enable Metrics/MethodLength
   end
 
   # Construct submission templates for the Limber pipeline
@@ -222,7 +220,7 @@ module Limber::Helper
       @cherrypicked ? [true, false] : [false]
     end
 
-    def each_submission_template # rubocop:todo Metrics/MethodLength
+    def each_submission_template
       cherrypick_options.each do |cherrypick|
         sequencing_request_types.each do |sequencing_request_type|
           next if SubmissionTemplate.exists?(name: name_for(cherrypick, sequencing_request_type))

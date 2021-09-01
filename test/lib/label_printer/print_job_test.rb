@@ -5,7 +5,6 @@ require 'test_helper'
 class PrintJobTest < ActiveSupport::TestCase
   attr_reader :print_job, :plates, :plate, :plate_purpose, :barcode_printer, :attributes
 
-  # rubocop:todo Metrics/MethodLength
   def setup # rubocop:todo Metrics/AbcSize
     @barcode_printer = create :barcode_printer
     LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns('data' => [{ 'id' => 15 }])
@@ -39,8 +38,6 @@ class PrintJobTest < ActiveSupport::TestCase
         user_login: 'user'
       )
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   test 'should have attributes' do
     assert print_job.printer_name

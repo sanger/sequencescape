@@ -444,4 +444,29 @@ module Barcode::FormatHandlers
   class UkBiocentreV6 < BaseRegExBarcode
     self.format = /\A(?<prefix>RNAsst)(?<number>\d+)\z/
   end
+
+  # Support for Brants Bridge centre
+  # Expected formats:
+  # nnnnnnnnnnnnnnnnn
+  # where n is a digit
+  class BrantsBridge < BaseRegExBarcode
+    self.format = /\A(?<number>[0-9]{17})\z/
+  end
+
+  # Support for Leamington Spa centre
+  # Expected formats:
+  # CHERYnnnnnn
+  # where n is a digit
+  class LeamingtonSpa < BaseRegExBarcode
+    self.format = /\A(?<prefix>CHERY)(?<number>\d+)\z/
+  end
+
+  # Support for Newcastle centre
+  # Expected formats:
+  # ICHNEnnnnnc
+  # where n is a digit
+  # and c is a letter
+  class Newcastle < BaseRegExBarcode
+    self.format = /\A(?<prefix>ICHNE)(?<number>\d+)(?<suffix>[A-Z|a-z]{1})\z/
+  end
 end

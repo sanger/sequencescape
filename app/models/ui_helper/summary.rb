@@ -42,7 +42,7 @@ module UiHelper
       )
     end
 
-    def load_study(study) # rubocop:todo Metrics/MethodLength
+    def load_study(study)
       study.events.find_each do |event|
         add(
           SummaryItem.new(

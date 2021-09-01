@@ -4,7 +4,6 @@ require 'rails_helper'
 
 # Rubocop doesn't like the .and change {}.by bits and will
 # result in repeatedly indenting them to the level of the last call in the previous chain
-# rubocop:disable Layout/MultilineMethodCallIndentation
 
 RSpec.describe SampleManifest, type: :model, sample_manifest: true do
   let(:user) { create :user }
@@ -23,7 +22,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
     let(:manifest) { create :sample_manifest, study: study, count: count, asset_type: asset_type, purpose: purpose }
     let(:purpose) { nil }
 
-    setup do
+    before do
       barcode = build(:plate_barcode, barcode: 23)
       barcode2 = build(:plate_barcode, barcode: 24)
       allow(PlateBarcode).to receive(:create).and_return(barcode, barcode2)
@@ -32,10 +31,11 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
     context 'when asset_type: plate' do
       let(:asset_type) { 'plate' }
 
-      setup { Delayed::Worker.delay_jobs = false }
+      before { Delayed::Worker.delay_jobs = false }
+
       teardown { Delayed::Worker.delay_jobs = true }
 
-      # rubocop:todo Metrics/BlockLength
+      # rubocop:disable Metrics/BlockLength
       [1, 2].each do |count|
         context "count: #{count}" do
           let(:count) { count }
@@ -53,7 +53,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
           end
 
           context 'when generation has completed' do
-            setup { manifest.generate }
+            before { manifest.generate }
 
             it 'returns the details of the created samples' do
               sample_id = SangerSampleId.order(id: :desc).limit(96 * count).last.id
@@ -68,10 +68,10 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
             it 'create sample and aliquots' do
               sma1 = manifest.sample_manifest_assets.first
               expect { manifest.create_sample_and_aliquot(sma1.sanger_sample_id, sma1.asset) }.to change(Sample, :count)
-                .by(1).and change { study.samples.count }.by(1).and change(Messenger, :count).by(1)
+                .by(1).and change { study.samples.count }.by(1)
               sma2 = manifest.sample_manifest_assets.last
               expect { manifest.create_sample_and_aliquot(sma2.sanger_sample_id, sma2.asset) }.to change(Sample, :count)
-                .by(1).and change { study.samples.count }.by(1).and change(Messenger, :count).by(1)
+                .by(1).and change { study.samples.count }.by(1)
               manifest.samples.reset
               expect(manifest.samples.first.primary_aliquot.study).to eq(study)
             end
@@ -85,7 +85,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
         let(:purpose) { create :plate_purpose, size: 2 }
         let(:count) { 1 }
 
-        setup { manifest.generate }
+        before { manifest.generate }
 
         it 'create a plate of the correct purpose' do
           assert_equal purpose, Plate.last.purpose
@@ -97,7 +97,8 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
       let(:asset_type) { 'library_plate' }
       let(:count) { 1 }
 
-      setup { Delayed::Worker.delay_jobs = false }
+      before { Delayed::Worker.delay_jobs = false }
+
       teardown { Delayed::Worker.delay_jobs = true }
 
       it 'create 1 plate(s), 96 wells' do
@@ -113,7 +114,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
       end
 
       context 'follwing generation' do
-        setup { manifest.generate }
+        before { manifest.generate }
 
         it 'returns the details of the created samples' do
           sample_id = SangerSampleId.order(id: :desc).limit(96 * count).last.id
@@ -139,7 +140,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
         let(:purpose) { create :plate_purpose, size: 2 }
         let(:count) { 1 }
 
-        setup { manifest.generate }
+        before { manifest.generate }
 
         it 'create a plate of the correct purpose' do
           assert_equal purpose, Plate.last.purpose
@@ -161,7 +162,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
     context 'when asset_type: multiplexed_library' do
       let(:asset_type) { 'multiplexed_library' }
 
-      # rubocop:todo Metrics/BlockLength
+      # rubocop:disable Metrics/BlockLength
       [2, 3].each do |count|
         context "#{count} libraries(s)" do
           let(:count) { count }
@@ -179,7 +180,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
           end
 
           context 'after generation' do
-            setup { manifest.generate }
+            before { manifest.generate }
 
             it 'returns the details of the created samples' do
               sample_id = SangerSampleId.order(id: :desc).limit(count).last.id
@@ -207,7 +208,6 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
               end
 
               it 'is a multiplexed library tube' do
-                # rubocop:todo RSpec/AggregateExamples
                 expect(subject.first).to be_a(MultiplexedLibraryTube)
               end
             end
@@ -243,7 +243,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
         end
 
         context 'once generated' do
-          setup { manifest.generate }
+          before { manifest.generate }
 
           it 'returns the details of the created samples' do
             sample_id = SangerSampleId.order(id: :desc).limit(count).last.id
@@ -274,7 +274,6 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
             end
 
             it 'is a library tube' do
-              # rubocop:todo RSpec/AggregateExamples
               expect(labware.first).to be_a(LibraryTube)
             end
           end
@@ -299,12 +298,12 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
           end
 
           context 'when generation has completed' do
-            setup { manifest.generate }
+            before { manifest.generate }
 
             it 'create sample and aliquots' do
               sma = manifest.sample_manifest_assets.last
               expect { manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset) }.to change(Sample, :count)
-                .by(1).and change { study.samples.count }.by(1).and change(Messenger, :count).by(1)
+                .by(1).and change { study.samples.count }.by(1)
               expect(SampleTube.last.aliquots.first.library).to be_nil
               manifest.samples.reset
               expect(manifest.samples.first.primary_aliquot.study).to eq(study)
@@ -326,7 +325,6 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
               end
 
               it 'is a sample tube' do
-                # rubocop:todo RSpec/AggregateExamples
                 expect(labware.first).to be_a(SampleTube)
               end
             end
@@ -356,7 +354,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
     let(:manifest) { create(:sample_manifest, count: 37, asset_type: 'plate') }
     let(:plate_barcodes) { Array.new(37) { |i| build(:plate_barcode, barcode: i + 1) } }
 
-    setup do
+    before do
       allow(PlateBarcode).to receive(:create).and_return(*plate_barcodes)
       manifest.generate
     end
@@ -366,5 +364,3 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
     end
   end
 end
-
-# rubocop:enable Layout/MultilineMethodCallIndentation

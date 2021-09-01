@@ -28,7 +28,9 @@ module SequencescapeExcel
         @tag ||=
           ::Tag
             .where
-            .not(tag_group_id: nil, map_id: nil)
+            .not(tag_group_id: nil)
+            .where
+            .not(map_id: nil)
             .where(tag_group_id: sf_tag2_group.tag2_group_id, map_id: value)
             .take
       end

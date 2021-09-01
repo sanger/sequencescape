@@ -2,7 +2,7 @@
 
 # Labware represents a physical object which moves around the lab.
 # It has one or more receptacles.
-class Labware < Asset # rubocop:todo Metrics/ClassLength
+class Labware < Asset
   include Commentable
   include Uuid::Uuidable
   include AssetLink::Associations
@@ -70,12 +70,32 @@ class Labware < Asset # rubocop:todo Metrics/ClassLength
   has_many :creation_batches, class_name: 'Batch', through: :requests_as_target, source: :batch
 
   belongs_to :purpose, foreign_key: :plate_purpose_id, optional: true, inverse_of: :labware
+
   has_one :spiked_in_buffer_links,
-          -> { joins(:ancestor).where(labware: { sti_type: 'SpikedBuffer' }).direct },
+          -> { includes(:ancestor).references(:ancestor).where(labware: { sti_type: 'SpikedBuffer' }).direct },
           class_name: 'AssetLink',
           foreign_key: :descendant_id,
           inverse_of: :descendant
-  has_one :spiked_in_buffer, through: :spiked_in_buffer_links, source: :ancestor
+
+  has_one :spiked_in_buffer_most_recent_links,
+          -> {
+            includes(:ancestor)
+              .references(:ancestor)
+              .where(labware: { sti_type: 'SpikedBuffer' })
+              .order(ancestor_id: :desc)
+          },
+          class_name: 'AssetLink',
+          foreign_key: :descendant_id,
+          inverse_of: :descendant
+
+  # Gets the SpikedBuffer tube that is a direct parent of this labware, if it exists.
+  # The original implementation of spiked_in_buffer only supported direct parent tubes.
+  has_one :direct_spiked_in_buffer, through: :spiked_in_buffer_links, source: :ancestor
+
+  # Gets the most recent SpikedBuffer tube ancestor, if it exists, to use if there is no direct parent SpikedBuffer tube.
+  # Added to support PhiX being added during library prep rather than at sequencing time (for Heron).
+  has_one :most_recent_spiked_in_buffer, through: :spiked_in_buffer_most_recent_links, source: :ancestor
+
   has_many :asset_audits, foreign_key: :asset_id, dependent: :destroy, inverse_of: :asset
   has_many :volume_updates, foreign_key: :target_id, dependent: :destroy, inverse_of: :target
   has_many :state_changes, foreign_key: :target_id, dependent: :destroy, inverse_of: :target
@@ -138,6 +158,10 @@ class Labware < Asset # rubocop:todo Metrics/ClassLength
 
   delegate :state_changer, to: :purpose, allow_nil: true
 
+  def external_identifier
+    "#{sti_type}#{id}"
+  end
+
   def ancestor_of_purpose(ancestor_purpose_id)
     return self if plate_purpose_id == ancestor_purpose_id
 
@@ -148,6 +172,14 @@ class Labware < Asset # rubocop:todo Metrics/ClassLength
     return [self] if plate_purpose_id == ancestor_purpose_id
 
     ancestors.order(id: :desc).where(plate_purpose_id: ancestor_purpose_id)
+  end
+
+  # Gets the relevant SpikedBuffer tube, if one exists, by using the two associations.
+  # A direct parent SpikedBuffer tube is used if it exists, otherwise the most recent ancestor.
+  # This was necessary to avoid affecting historical data, for which the direct parent should be used,
+  # even though there is another ancestor that was created more recently.
+  def spiked_in_buffer
+    direct_spiked_in_buffer || most_recent_spiked_in_buffer
   end
 
   def human_barcode
@@ -224,7 +256,7 @@ class Labware < Asset # rubocop:todo Metrics/ClassLength
         nil
       elsif /\A[0-9]{1,7}\z/.match?(source_barcode)
         # Just a number
-        joins(:barcodes).where('barcodes.barcode LIKE "__?_"', source_barcode).first # rubocop:disable Rails/FindBy
+        joins(:barcodes).order(:id).find_by('barcodes.barcode LIKE "__?_"', source_barcode)
       else
         find_by_barcode(source_barcode)
       end

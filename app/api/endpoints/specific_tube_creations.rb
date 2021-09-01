@@ -5,7 +5,7 @@ class ::Endpoints::SpecificTubeCreations < ::Core::Endpoint::Base
   instance do
     has_many(:children, json: 'children', to: 'children')
     has_many(:child_purposes, json: 'child_purposes', to: 'child_purposes')
-    belongs_to(:parent, json: 'parent')
+    has_many(:parents, json: 'parents', to: 'parents')
     belongs_to(:user, json: 'user')
   end
 end

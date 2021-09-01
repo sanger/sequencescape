@@ -4,7 +4,7 @@ require 'test_helper'
 
 ActionController::TestCase.include AuthenticatedTestHelper
 
-class WorkflowsControllerTest < ActionController::TestCase # rubocop:todo Metrics/ClassLength
+class WorkflowsControllerTest < ActionController::TestCase
   context 'WorkflowController' do
     setup do
       @controller = WorkflowsController.new
@@ -13,13 +13,6 @@ class WorkflowsControllerTest < ActionController::TestCase # rubocop:todo Metric
       @user = FactoryBot.create :user
       session[:user] = @user.id
       @pipeline_user = FactoryBot.create :pipeline_admin
-    end
-    should_require_login
-
-    context '#index' do
-      setup { get :index }
-
-      should respond_with :success
     end
 
     context '#stage' do
@@ -72,7 +65,6 @@ class WorkflowsControllerTest < ActionController::TestCase # rubocop:todo Metric
         @batch.batch_requests.create!(request: @item2, position: 2)
 
         FactoryBot.create :descriptor, task: @task2, name: 'Chip Barcode', kind: 'ExternalBarcode', selection: {}
-        FactoryBot.create :descriptor, task: @task2, name: 'Operator', kind: 'Barcode', selection: {}
         FactoryBot.create :descriptor, task: @task2, name: 'Comment', kind: 'Text', selection: {}
         FactoryBot.create :descriptor, task: @task2, name: 'Passed?', kind: 'Selection', selection: {}
 
@@ -92,16 +84,9 @@ class WorkflowsControllerTest < ActionController::TestCase # rubocop:todo Metric
                  :id => 0,
                  :action => 'stage',
                  'next_stage' => 'true',
-                 'fields' => {
-                   '1' => 'Passed?',
-                   '2' => 'Operator',
-                   '3' => 'Chip Barcode',
-                   '4' => 'Comment'
-                 },
                  'descriptors' => {
                    'Comment' => 'Some Comment',
                    'Chip Barcode' => '3290000006714',
-                   'Operator' => '2470000002799',
                    'Passed?' => 'Yes'
                  },
                  :batch_id => @batch.id,
@@ -120,17 +105,6 @@ class WorkflowsControllerTest < ActionController::TestCase # rubocop:todo Metric
           assert_equal 'Complete', Batch.find(@batch.id).lab_events.last.description
         end
       end
-    end
-
-    context '#sort' do
-      setup do
-        @workflow = FactoryBot.create(:pipeline).workflow
-
-        # Err. WorkflowsController. Why is this not just id??
-        get :sort, params: { workflow_id: @workflow.id.to_s }
-      end
-
-      should respond_with :success
     end
   end
 end
