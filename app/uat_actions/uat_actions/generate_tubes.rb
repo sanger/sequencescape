@@ -28,7 +28,7 @@ class UatActions::GenerateTubes < UatActions
     new(tube_count: 1, study_name: UatActions::StaticRecords.study.name)
   end
 
-  def perform # rubocop:todo Metrics/AbcSize
+  def perform
     tube_count.to_i.times do |i|
       tube = tube_purpose.create!
 

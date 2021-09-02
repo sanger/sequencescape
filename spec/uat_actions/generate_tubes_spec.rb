@@ -16,7 +16,6 @@ describe UatActions::GenerateTubes do
         # It should include information such as barcodes and identifiers
         { 'tube_0' => 'NT2P' }
       end
-      let(:barcode_1) { build(:sanger_ean13_tube, barcode_number: 2) }
 
       before { allow(AssetBarcode).to receive(:new_barcode).and_return('2') }
 
@@ -36,9 +35,6 @@ describe UatActions::GenerateTubes do
         # It should include information such as barcodes and identifiers
         { 'tube_0' => 'NT3Q', 'tube_1' => 'NT4R', 'tube_2' => 'NT5S' }
       end
-      let(:barcode_1) { build(:sanger_ean13_tube, barcode_number: 3) }
-      let(:barcode_2) { build(:sanger_ean13_tube, barcode_number: 4) }
-      let(:barcode_3) { build(:sanger_ean13_tube, barcode_number: 5) }
 
       before { allow(AssetBarcode).to receive(:new_barcode).and_return('3', '4', '5') }
 
