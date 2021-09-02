@@ -2,9 +2,7 @@
 
 # This may create invalid UUID external_id values but it means that we don't have to conform to the
 # standard in our features.
-# rubocop:todo Metrics/PerceivedComplexity
-# rubocop:todo Metrics/MethodLength
-# rubocop:todo Metrics/AbcSize
+# rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
 def recursive_diff(h1, h2) # rubocop:todo Metrics/CyclomaticComplexity
   if h1.is_a?(Hash) && h2.is_a?(Hash)
     result = {}
@@ -27,9 +25,7 @@ def recursive_diff(h1, h2) # rubocop:todo Metrics/CyclomaticComplexity
   end
   h1
 end
-# rubocop:enable Metrics/AbcSize
-# rubocop:enable Metrics/MethodLength
-# rubocop:enable Metrics/PerceivedComplexity
+# rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
 def assert_hash_equal(h1, h2, *args)
   d1 = recursive_diff(h1, h2)

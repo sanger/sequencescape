@@ -2,7 +2,7 @@
 
 # Move sanger format barcodes to the new tables
 class MigrateSangerBarcodesToNewTables < ActiveRecord::Migration[5.1]
-  def up # rubocop:todo Metrics/AbcSize
+  def up # rubocop:disable Metrics/AbcSize
     say 'Building prefix cache'
     @prefixes = BarcodePrefix.all.pluck(:id, :prefix).to_h
     say 'Migrating Sanger Barcodes'

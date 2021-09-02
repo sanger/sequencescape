@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 # NOTE: The UUIDs for the requests are generated as sequential numbers from the study UUID
-# rubocop:todo Metrics/MethodLength
-# rubocop:todo Metrics/AbcSize
-# rubocop:todo Metrics/ParameterLists
+# rubocop:todo Metrics/MethodLength, Metrics/AbcSize, Metrics/ParameterLists
 def create_request(request_type, study, project, asset, target_asset, additional_options = {})
   # rubocop:enable Metrics/ParameterLists
   request =
@@ -42,8 +40,7 @@ def create_request(request_type, study, project, asset, target_asset, additional
       end
     end
 end
-# rubocop:enable Metrics/AbcSize
-# rubocop:enable Metrics/MethodLength
+# rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
 # rubocop:todo Layout/LineLength
 Given /^the (sample|library) tube "([^"]+)" has been involved in a "([^"]+)" request within the study "([^"]+)" for the project "([^"]+)"$/ do |tube_type, tube_name, request_type_name, study_name, project_name|

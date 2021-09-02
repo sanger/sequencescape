@@ -8,11 +8,12 @@ RSpec.describe Api::Messages::FlowcellIO, type: :model do
   context 'with a batch' do
     let(:sequencing_pipeline) { create :sequencing_pipeline }
 
-    let(:sequencing_batch) { create :sequencing_batch, requests: [request_1], pipeline: sequencing_pipeline }
+    let(:sequencing_batch) { create :sequencing_batch, pipeline: sequencing_pipeline }
 
-    let(:request_1) do
+    let!(:request_1) do
       create :complete_sequencing_request,
              asset: mx_tube1,
+             batch: sequencing_batch,
              target_asset: lane1,
              request_type: request_type,
              event_descriptors: request_data
@@ -51,6 +52,7 @@ RSpec.describe Api::Messages::FlowcellIO, type: :model do
       before do
         create :lab_event,
                eventful: request_1,
+               batch: request_1.batch,
                descriptors: {
                  'Chip Barcode' => 'new_fcb',
                  'PhiX %' => '1',

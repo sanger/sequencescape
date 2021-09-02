@@ -8,6 +8,7 @@ class Timecop # rubocop:todo Style/Documentation
     def freeze_with_warning(_time)
       raise <<~EXCEPTION
 
+
         #{'*' * 90}
 
         Timecop.freeze() interferes with Capybara's javascript timeouts.

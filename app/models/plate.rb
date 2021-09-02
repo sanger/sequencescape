@@ -409,7 +409,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   def stock_wells # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     # Optimisation: if the plate is a stock plate then it's wells are it's stock wells!]
     if stock_plate?
-      wells.with_pool_id.each_with_object({}) { |w, store| store[w] = [w] }
+      wells.with_pool_id.index_with { |w| [w] }
     else
       wells
         .include_stock_wells

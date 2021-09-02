@@ -48,9 +48,7 @@ module DeprecationHelper
   # @yield [Void] Yield to block rendering the contents of the card (ie. the feature to be deprecated)
   #
   # @return [String] The HTML to render
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
-  # rubocop:todo Metrics/ParameterLists
+  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize, Metrics/ParameterLists
   def deprecate_section(date: nil, message: '', replaced_by: nil, custom_title: nil, custom_style: nil, &block)
     # rubocop:enable Metrics/ParameterLists
     # If we're past the date just hide the section
@@ -79,8 +77,7 @@ module DeprecationHelper
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   def _deprecation_level(date)
     if date.nil?

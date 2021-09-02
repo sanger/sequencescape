@@ -2,8 +2,8 @@
 
 # The removal of barcode and the prefix association necessitates
 # updating the views used by reports.
-# rubocop:todo Layout/LineLength
-class UpdateBarcodesInViews < ActiveRecord::Migration[5.1] # rubocop:todo Metrics/ClassLength
+# rubocop:disable Layout/LineLength
+class UpdateBarcodesInViews < ActiveRecord::Migration[5.1] # rubocop:disable Metrics/ClassLength
   def self.up
     # Pulled these from production Sequencescape itself, just in case
     # some modifications have been made without our knowledge.

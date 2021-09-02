@@ -31,9 +31,7 @@ class Studies::InformationController < ApplicationController
     end
   end
 
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def show_summary # rubocop:todo Metrics/CyclomaticComplexity
     page_params = { page: params[:page] || 1, per_page: params[:per_page] || 50 }
 
@@ -86,9 +84,7 @@ class Studies::InformationController < ApplicationController
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   def summary
     s = UiHelper::Summary.new

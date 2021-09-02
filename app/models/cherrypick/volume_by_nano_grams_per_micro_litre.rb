@@ -20,8 +20,7 @@ module Cherrypick::VolumeByNanoGramsPerMicroLitre
   #
   # @return [Float] The total volume that will be picked from the source well
   #
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
   def volume_to_cherrypick_by_nano_grams_per_micro_litre(
     volume_required,
     concentration_required,
@@ -72,8 +71,7 @@ module Cherrypick::VolumeByNanoGramsPerMicroLitre
     volume_to_pick
   end
 
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   private
 

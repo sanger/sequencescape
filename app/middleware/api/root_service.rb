@@ -22,7 +22,7 @@ module Api
       # rubocop:todo Metrics/MethodLength
       def services(services) # rubocop:todo Metrics/AbcSize
         self.object = services
-        def @owner.each(&block) # rubocop:todo Metrics/MethodLength
+        def @owner.each(&block)
           ::Core::Io::Buffer.new(block) do |buffer|
             ::Core::Io::Json::Stream
               .new(buffer)

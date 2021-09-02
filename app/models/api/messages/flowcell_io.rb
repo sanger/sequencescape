@@ -26,8 +26,7 @@ class Api::Messages::FlowcellIO < Api::Base
   # message.
   # Included in SequencingRequest model
   module LaneExtensions
-    # rubocop:todo Metrics/MethodLength
-    def self.included(base) # rubocop:todo Metrics/AbcSize
+    def self.included(base) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
       base.class_eval do
         def mx_library
           asset.external_identifier
@@ -97,16 +96,8 @@ class Api::Messages::FlowcellIO < Api::Base
             nil
           end
         end
-
-        def detect_descriptor(name)
-          # Sort here goes by id ascending, so we use a reverse each, in order to find the most recent descriptor with
-          # the passed in 'name'
-          # Lazy ensures we stop searching as soon as we find a value
-          lab_events.sort.lazy.reverse_each.map { |e| e.descriptor_value_for(name) }.detect(&:present?)
-        end
       end
     end
-    # rubocop:enable Metrics/MethodLength
   end
 
   # Included in ControlRequest model

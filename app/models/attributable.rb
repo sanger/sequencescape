@@ -41,13 +41,13 @@ module Attributable
   # If we've eager loaded metadata, then we may be using the base class, rather than
   # subclass specific forms. We can override the details used here
   def attribute_value_pairs(details = attribute_details)
-    details.each_with_object({}) { |attribute, hash| hash[attribute] = attribute.from(self) }
+    details.index_with { |attribute| attribute.from(self) }
   end
 
   # If we've eager loaded metadata, then we may be using the base class, rather than
   # subclass specific forms. We can override the details used here
   def association_value_pairs(details = association_details)
-    details.each_with_object({}) { |attribute, hash| hash[attribute] = attribute.from(self) }
+    details.index_with { |attribute| attribute.from(self) }
   end
 
   def field_infos

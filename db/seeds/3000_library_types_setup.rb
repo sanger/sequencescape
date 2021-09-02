@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:todo Metrics/ModuleLength
-module SetupLibraryTypes # rubocop:todo Style/Documentation
+module SetupLibraryTypes # rubocop:todo Style/Documentation, Metrics/ModuleLength
   def self.existing_associations_for(request_type)
     {
       'LibraryCreationRequest' => [
@@ -137,7 +136,7 @@ module SetupLibraryTypes # rubocop:todo Style/Documentation
     ]
   end
 end
-# rubocop:enable Metrics/ModuleLength
+
 LibraryType.create!(
   [
     'No PCR',

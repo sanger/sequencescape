@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-class AddLocationReportsTable < ActiveRecord::Migration[5.1] # rubocop:todo Style/Documentation
+# Store information about location reports to allow them to be generated asynchronously
+# and retrieved later
+class AddLocationReportsTable < ActiveRecord::Migration[5.1]
   def change
     create_table :location_reports do |t|
       t.references :user, null: false

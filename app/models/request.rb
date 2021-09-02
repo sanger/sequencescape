@@ -180,8 +180,6 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
                 'INNER JOIN maps AS pw_location ON pw.map_id = pw_location.id',
                 # rubocop:todo Layout/LineLength
                 'INNER JOIN pre_capture_pool_pooled_requests ON requests.id=pre_capture_pool_pooled_requests.request_id',
-                # rubocop:enable Layout/LineLength
-                # rubocop:todo Layout/LineLength
                 'INNER JOIN uuids ON uuids.resource_id = pre_capture_pool_pooled_requests.pre_capture_pool_id AND uuids.resource_type="PreCapturePool"'
                 # rubocop:enable Layout/LineLength
               ]
@@ -413,27 +411,11 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
     { study_id: initial_study_id, project_id: initial_project_id, request_id: id }
   end
 
-  def get_value(request_information_type)
-    return '' unless request_metadata.respond_to?(request_information_type.key)
-
-    value = request_metadata.send(request_information_type.key)
-    return value.to_s if value.blank? || (request_information_type.data_type != 'Date')
-
-    value.to_date.strftime('%d %B %Y')
-  end
-
-  def value_for(name, batch = nil)
-    rit = RequestInformationType.find_by(name: name)
-    rit_value = get_value(rit) if rit.present?
-    return rit_value if rit_value.present?
-
-    event_value_for(name, batch)
-  end
-
-  def event_value_for(name, batch = nil)
-    list = (batch.present? ? lab_events_for_batch(batch) : lab_events)
-    list.each { |event| desc = event.descriptor_value_for(name) and return desc }
-    ''
+  def detect_descriptor(name, descriptor_batch: batch)
+    # Sort in lab_events_for_batch goes by id ascending, so we use a reverse each, in order to find the most recent
+    # descriptor with the passed in 'name'
+    # Lazy ensures we stop searching as soon as we find a value
+    lab_events_for_batch(descriptor_batch).lazy.reverse_each.map { |e| e.descriptor_value_for(name) }.detect(&:present?)
   end
 
   def has_passed(batch, task)
@@ -450,9 +432,9 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   #
   def lab_events_for_batch(batch)
     if lab_events.loaded?
-      lab_events.select { |le| le.batch_id == batch.id }.sort_by(&:created_at)
+      lab_events.select { |le| le.batch_id == batch&.id }.sort
     else
-      lab_events.where(batch_id: batch.id).order(:created_at)
+      lab_events.where(batch_id: batch).order(:created_at, :id)
     end
   end
 

@@ -18,9 +18,7 @@ module SubmissionSerializer # rubocop:todo Style/Documentation
   STRAIGHT_CLONE = %w[name submission_class_name].freeze
   SP_STRAIGHT_CLONE = %i[info_differential asset_input_methods request_options].freeze
 
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def self.serialize(st) # rubocop:todo Metrics/CyclomaticComplexity
     attributes = st.attributes
     new_attributes = {}
@@ -57,13 +55,9 @@ module SubmissionSerializer # rubocop:todo Style/Documentation
     new_attributes
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def self.construct!(hash) # rubocop:todo Metrics/CyclomaticComplexity
     st = {}
 
@@ -99,7 +93,5 @@ module SubmissionSerializer # rubocop:todo Style/Documentation
 
     SubmissionTemplate.create!(st)
   end
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 end

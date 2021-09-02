@@ -184,9 +184,7 @@ class Aliquot < ApplicationRecord
     save!
   end
 
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def matches?(object) # rubocop:todo Metrics/CyclomaticComplexity
     # NOTE: This function is directional, and assumes that the downstream aliquot
     # is checking the upstream aliquot
@@ -210,9 +208,7 @@ class Aliquot < ApplicationRecord
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   # Unlike the above methods, which allow untagged to match with tagged, this looks for exact matches only
   # only id, timestamps and receptacles are excluded

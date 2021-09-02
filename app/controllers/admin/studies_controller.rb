@@ -33,9 +33,7 @@ class Admin::StudiesController < ApplicationController # rubocop:todo Style/Docu
   end
 
   # TODO: remove unneeded code
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def filter # rubocop:todo Metrics/CyclomaticComplexity
     filter_conditions = { approved: false } if params[:filter][:by] == 'not approved' unless params[:filter].nil?
 
@@ -59,9 +57,7 @@ class Admin::StudiesController < ApplicationController # rubocop:todo Style/Docu
     render partial: 'filtered_studies'
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   def managed_update # rubocop:todo Metrics/AbcSize
     @study = Study.find(params[:id])

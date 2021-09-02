@@ -97,8 +97,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   # rubocop:enable Metrics/MethodLength
 
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
   def create_plates_from_tube_racks!(
     tube_racks,
     barcode_printer,
@@ -140,8 +139,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
     true
   end
 
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   private
 

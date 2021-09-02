@@ -63,6 +63,10 @@ module Presenters
       @pipeline.is_a?(CherrypickingPipeline)
     end
 
+    def worksheet?
+      @pipeline.batch_worksheet.present?
+    end
+
     def pacbio?
       @pipeline.is_a?(PacBioSequencingPipeline)
     end
@@ -79,9 +83,7 @@ module Presenters
       [cherrypicking?, genotyping?, pacbio?, pacbio_sample_pipeline?].any?
     end
 
-    # rubocop:todo Metrics/PerceivedComplexity
-    # rubocop:todo Metrics/MethodLength
-    # rubocop:todo Metrics/AbcSize
+    # rubocop:todo Metrics/PerceivedComplexity, Metrics/AbcSize
     def load_pipeline_options # rubocop:todo Metrics/CyclomaticComplexity
       add_submenu_option 'Edit batch', edit_batch_path(@batch) if can? :edit
 
@@ -98,18 +100,10 @@ module Presenters
         add_submenu_option 'Print sample prep worksheet', :sample_prep_worksheet
       end
 
-      if can? :print
-        if @pipeline.prints_a_worksheet_per_task? && !pacbio_sample_pipeline?
-          @tasks.each { |task| add_submenu_option "Print worksheet for #{task.name}", action: :print, task_id: task.id }
-        else
-          add_submenu_option 'Print worksheet', :print
-        end
-      end
+      add_submenu_option 'Print worksheet', :print if worksheet? && can?(:print)
 
       add_submenu_option 'Verify tube layout', :verify if tube_layout_not_verified? && can?(:verify)
     end
-    # rubocop:enable Metrics/AbcSize
-    # rubocop:enable Metrics/MethodLength
-    # rubocop:enable Metrics/PerceivedComplexity
+    # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
   end
 end

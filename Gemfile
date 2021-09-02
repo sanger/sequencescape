@@ -7,9 +7,9 @@ group :default do
   gem 'bootsnap'
 
   if next_rails
-    gem 'rails', '~> 6.0.0'
+    gem 'rails', '~> 6.1.0'
   else
-    gem 'rails', '~> 5.2.3'
+    gem 'rails', '~> 6.0.0'
   end
 
   # State machine
@@ -177,6 +177,7 @@ group :test do
 
   # Provides json expectations for rspec. Makes test more readable,
   # and test failures more descriptive.
+  gem 'rspec-github', require: false
   gem 'rspec-json_expectations', require: false
 
   # It is needed to use #assigns(attribute) in controllers tests
@@ -213,6 +214,7 @@ group :test, :cucumber do
 end
 
 group :cucumber do
+  gem 'cucumber_github_formatter'
   gem 'cucumber-rails', require: false
   gem 'mime-types'
   gem 'rubyzip'

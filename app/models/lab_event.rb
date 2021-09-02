@@ -14,7 +14,7 @@ class LabEvent < ApplicationRecord
 
   belongs_to :batch
   belongs_to :user
-  belongs_to :eventful, polymorphic: true
+  belongs_to :eventful, polymorphic: true, inverse_of: :lab_events
 
   scope :with_descriptor, ->(k, v) { where(['descriptors LIKE ?', "%#{k}: #{v}%"]) }
 
