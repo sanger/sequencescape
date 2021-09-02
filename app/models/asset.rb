@@ -159,8 +159,8 @@ class Asset < ApplicationRecord
   def register_stock!
     class_name = self.class.name
     if stock_message_template.nil?
+      # rubocop:todo Layout/LineLength
       raise StandardError,
-            # rubocop:todo Layout/LineLength
             "No stock template configured for #{class_name}. If #{class_name} is a stock, set stock_template on the class."
       # rubocop:enable Layout/LineLength
     end
