@@ -13,7 +13,6 @@ class PlatePurpose < Purpose
   self.default_prefix = 'DN'
 
   # includes / extends
-  include SharedBehaviour::Named
   include Purpose::Relationship::Associations
 
   self.state_changer = StateChanger::StandardPlate
