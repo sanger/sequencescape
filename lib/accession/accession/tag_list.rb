@@ -40,7 +40,7 @@ module Accession
     # to be called.
     def by_group
       groups
-        .each_with_object({}) { |v, h| h[v] = TagList.new }
+        .index_with { |_v| TagList.new }
         .tap { |result| tags.values.each { |tag| tag.groups.each { |group| result[group] << tag } } }
     end
 

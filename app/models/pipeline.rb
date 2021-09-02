@@ -5,7 +5,7 @@
 # and to from there progress a {Batch} through the associated workflow.
 # @note Generally speaking we are trying to migrate pipelines out of the Sequencescape
 #       core.
-class Pipeline < ApplicationRecord # rubocop:todo Metrics/ClassLength
+class Pipeline < ApplicationRecord
   include Uuid::Uuidable
   include Pipeline::BatchValidation
   include SharedBehaviour::Named
@@ -18,7 +18,6 @@ class Pipeline < ApplicationRecord # rubocop:todo Metrics/ClassLength
                   :requires_position,
                   :inbox_partial,
                   :pulldown,
-                  :prints_a_worksheet_per_task,
                   :genotyping,
                   :sequencing,
                   :purpose_information,
@@ -33,11 +32,10 @@ class Pipeline < ApplicationRecord # rubocop:todo Metrics/ClassLength
                   instance_writer: false
 
   # Pipeline defaults
-  self.batch_worksheet = 'detailed_worksheet'
+  self.batch_worksheet = false
   self.requires_position = true
   self.inbox_partial = 'default_inbox'
   self.pulldown = false
-  self.prints_a_worksheet_per_task = false
   self.genotyping = false
   self.sequencing = false
   self.purpose_information = true

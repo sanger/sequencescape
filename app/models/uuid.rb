@@ -156,7 +156,7 @@ class Uuid < ApplicationRecord
   # @return [String, nil]
   # @raise Response::Exception if system doesn't macth.
   def self.find_id(uuid, resource_type = nil)
-    with_external_id(uuid).limited_to_resource(resource_type).limit(1).pluck(:resource_id).first
+    with_external_id(uuid).limited_to_resource(resource_type).pick(:resource_id)
   end
 
   class << self

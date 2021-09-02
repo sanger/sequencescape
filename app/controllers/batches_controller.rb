@@ -290,25 +290,24 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
   end
 
+  # Handles printing of the worksheet
   def print # rubocop:todo Metrics/AbcSize
-    @task = Task.find(params[:task_id]) if params[:task_id]
-    @workflow = @batch.workflow
+    @task = Task.find_by(id: params[:task_id])
     @pipeline = @batch.pipeline
     @comments = @batch.comments
+    template = @pipeline.batch_worksheet
 
-    robot_id = params.fetch(:robot_id, @batch.robot_id)
-
-    @robot = robot_id ? Robot.find(robot_id) : Robot.with_verification_behaviour.first
-
-    # Fall-back
-    @robot ||= Robot.first
-
-    if @pipeline.is_a?(CherrypickingPipeline)
+    if template == 'cherrypick_worksheet'
+      robot_id = params.fetch(:robot_id, @batch.robot_id)
+      @robot = robot_id ? Robot.find(robot_id) : Robot.default_for_verification
       @plates = params[:barcode] ? Plate.with_barcode(params[:barcode]) : @batch.output_plates
     end
 
-    template = @pipeline.batch_worksheet
-    render action: template, layout: false
+    if template
+      render action: template, layout: false
+    else
+      redirect_back fallback_location: batch_path(@batch), alert: "No worksheet for #{@pipeline.name}"
+    end
   end
 
   def verify

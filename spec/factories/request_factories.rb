@@ -72,7 +72,7 @@ FactoryBot.define do
       association(:target_asset, factory: :lane)
 
       after(:build) do |request, evaluator|
-        request.lab_events << build(:flowcell_event, descriptors: evaluator.event_descriptors)
+        request.lab_events << build(:flowcell_event, descriptors: evaluator.event_descriptors, batch: request.batch)
       end
     end
   end
