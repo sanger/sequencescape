@@ -6,7 +6,10 @@ class UatActions::IntegrationSuiteTools < UatActions
 
   # The description displays on the list of UAT actions to provide additional information
   self.description =
+    # rubocop:todo Layout/LineLength
     'Returns a suite of information for configuring automatic integration tests. Of limited use in UAT but will not cause problems.'
+
+  # rubocop:enable Layout/LineLength
 
   # Form fields
   # We don't actually have any fields

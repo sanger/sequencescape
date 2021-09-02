@@ -34,25 +34,18 @@ class Admin::BaitLibraries::BaitLibraryTypesController < ApplicationController #
     end
   end
 
-  # rubocop:todo Metrics/AbcSize
-  # rubocop:todo Metrics/MethodLength
   def destroy
-    if @bait_library_type.bait_libraries.visible.count > 0
-      respond_to do |format|
-        flash[:error] =
-          "Can not delete '#{@bait_library_type.name}', bait library type is in use by #{@bait_library_type.bait_libraries.visible.count} libraries."
-        format.html { redirect_to(admin_bait_libraries_path) }
-      end
+    usage_count = @bait_library_type.bait_libraries.visible.count
+    if usage_count > 0
+      name = @bait_library_type.name
+      flash[:error] = "Can not delete '#{name}', bait library type is in use by #{usage_count} libraries."
     else
-      respond_to do |format|
-        flash[:notice] = 'Bait Library Type was successfully deleted.' if @bait_library_type.hide
-        format.html { redirect_to(admin_bait_libraries_path) }
-      end
+      @bait_library_type.hide
+      flash[:notice] = 'Bait Library Type was successfully deleted.'
     end
-  end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
+    redirect_to(admin_bait_libraries_path)
+  end
 
   private
 

@@ -257,12 +257,14 @@ RSpec.describe CherrypickTask, type: :model do
     end
 
     context 'with a mix of locations and no locations' do
-      # with a mixture we expect plates woth no locations to be sorted first then those with locations
+      # with a mixture we expect plates with no locations to be sorted first then those with locations
       let(:expected_output) do
         output = []
+
+        # no location, should be first
         requests1.each do |request|
           output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
-        end # no location, should be first
+        end
         requests3.each do |request|
           output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
         end

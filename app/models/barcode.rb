@@ -124,9 +124,8 @@ class Barcode < ApplicationRecord
 
   # Extract barcode from user input
   def self.extract_barcode(barcode)
-    [barcode.to_s].tap do |barcodes|
-      barcodes << SBCF::SangerBarcode.from_user_input(barcode.to_s).human_barcode
-    end.compact.uniq
+    [barcode.to_s].tap { |barcodes| barcodes << SBCF::SangerBarcode.from_user_input(barcode.to_s).human_barcode }
+      .compact.uniq
   end
 
   # Returns the barcode format matching the supplied barcode

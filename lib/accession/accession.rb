@@ -6,10 +6,12 @@ module Accession # rubocop:todo Style/Documentation
   #   configatron.accession url, ega.user, ega.password, ena.user, ena.password
   #   configarton.accession_local_key (authorised user uuid)
   # check that Sequenescape sample sample_metadata meets accessioning requirements
-  # configatron.accession_samples flag should be set to true to automatically accession a sample after save (app/models/sample.rb)
+  # configatron.accession_samples flag should be set to true to automatically accession a sample after save
+  # (app/models/sample.rb)
   #
   # Accessioning steps:
-  #  1. Create new Accession::Sample, with tags hash (Accession.configuration.tags) and a Sequencescape sample as arguments.
+  #  1. Create new Accession::Sample, with tags hash (Accession.configuration.tags) and a Sequencescape sample as
+  #     arguments.
   #  2. Checks if a new accession sample is valid (it will check if Sequencescape sample can be accessioned).
   #  3. Create new Accession::Submission, with authorised user and a valid accession sample as arguments.
   #  4. submission.post will send a post request (using Accession::Request) to an outside service (API).

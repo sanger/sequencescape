@@ -1,9 +1,9 @@
 class Core::Endpoint::BasicHandler # rubocop:todo Style/Documentation
   module Json # rubocop:todo Style/Documentation
     def actions(object, options)
-      @actions.select do |_name, behaviour|
-        accessible_action?(self, behaviour, options[:response].request, object)
-      end.transform_values { |_behaviour| core_path(options) }
+      @actions
+        .select { |_name, behaviour| accessible_action?(self, behaviour, options[:response].request, object) }
+        .transform_values { |_behaviour| core_path(options) }
     end
     private :actions
 

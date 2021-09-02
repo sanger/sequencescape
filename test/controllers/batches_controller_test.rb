@@ -73,7 +73,9 @@ class BatchesControllerTest < ActionController::TestCase
           end
 
           should 'expose the library information correctly' do
+            # rubocop:todo Layout/LineLength
             assert_select "sample[library_id='#{@library.receptacle.id}'][library_name='#{@library.name}'][library_type='Standard']"
+            # rubocop:enable Layout/LineLength
           end
 
           should 'not have information about spiked in buffers' do
@@ -436,7 +438,8 @@ class BatchesControllerTest < ActionController::TestCase
             end
 
             # Handful of edge cases that were tested in batch.rb, but the behaviour has moved. Covers:
-            # - Non 'on' values returned from the front-end (Which indicates something strange has happened with the checkboxes)
+            # - Non 'on' values returned from the front-end (Which indicates something strange has happened with the
+            #   checkboxes)
             # - Filtering of 'control' ids. (Associated with some old batches)
             context 'odd values' do
               setup do

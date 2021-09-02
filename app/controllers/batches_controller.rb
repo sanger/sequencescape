@@ -442,8 +442,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   # This is the expected create behaviour, and is only in a separate
   # method due to the overloading on the create endpoint.
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
   def standard_create(requests) # rubocop:todo Metrics/CyclomaticComplexity
     unless @pipeline.all_requests_from_submissions_selected?(requests)
       return pipeline_error_on_batch_creation('All plates in a submission must be selected')
@@ -456,8 +455,8 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     begin
       ActiveRecord::Base.transaction { @batch = @pipeline.batches.create!(requests: requests, user: current_user) }
     rescue ActiveRecord::RecordNotUnique => e
-      # We don't explicitly check for this on creation of batch_request for performance reasons, and the front end usually
-      # ensures this situation isn't possible. However if the user opens duplicate tabs it is possible.
+      # We don't explicitly check for this on creation of batch_request for performance reasons, and the front end
+      # usually ensures this situation isn't possible. However if the user opens duplicate tabs it is possible.
       # Fortunately we can detect the corresponding exception, and generate a friendly error message.
 
       # If this isn't the exception we're expecting, re-raise it.
@@ -484,8 +483,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   def request_parameters
     params.permit(request: {}, request_group: {}).to_h

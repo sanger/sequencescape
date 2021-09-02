@@ -31,9 +31,7 @@ class Studies::InformationController < ApplicationController
     end
   end
 
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def show_summary # rubocop:todo Metrics/CyclomaticComplexity
     page_params = { page: params[:page] || 1, per_page: params[:per_page] || 50 }
 
@@ -60,16 +58,20 @@ class Studies::InformationController < ApplicationController
         # A request_type key
         @request_type = RequestType.find_by!(key: params[:summary])
 
-        # The include here doesn't load ALL the requests, only those matching the given request type. Ideally we'd just grab the counts,
-        # but unfortunately we need to have at least the request id available for linking to in cases where we have
-        # only one request in a particular state.
+        # The include here doesn't load ALL the requests, only those matching the given request type. Ideally we'd just
+        # grab the counts, but unfortunately we need to have at least the request id available for linking to in cases
+        # where we have only one request in a particular state.
         @assets_to_detail =
           Receptacle.for_study_and_request_type(@study, @request_type).includes(:requests).paginate(page_params)
 
-        # Example group by count which would allow us to do returned_hash[[asset_id,state]] to get the count for a particular asset/state
-        # Unfortunately this doesn't let us grab the request id. We could use some custom SQL to achieve this, but we'll see how
-        # effective the above is before trying that.
-        # Receptacle.for_study_and_request_type(@study,@request_type).where(id:@assets_to_detail.map(&:id)).group('assets.id','requests.state').count
+        # Example group by count which would allow us to do returned_hash[[asset_id,state]] to get the count for a
+        # particular asset/state
+        # Unfortunately this doesn't let us grab the request id. We could use some custom SQL to achieve this, but
+        # we'll see how effective the above is before trying that.
+
+        # Receptacle.for_study_and_request_type(@study,@request_type)
+        #  .where(id:@assets_to_detail.map(&:id)).group('assets.id','requests.state').count
+
         if @assets_to_detail.empty?
           render plain: 'No requests of this type can be found'
         else
@@ -82,9 +84,7 @@ class Studies::InformationController < ApplicationController
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   def summary
     s = UiHelper::Summary.new

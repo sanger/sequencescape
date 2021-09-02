@@ -55,15 +55,6 @@ module Sequencescape
     # Run "rake -D time" for a list of tasks for finding time zone names. Uncomment to use default local time.
     config.time_zone = 'London'
 
-    # Your secret key for verifying cookie session data integrity.
-    # If you change this key, all old sessions will become invalid!
-    # Make sure the secret is at least 30 characters and all random,
-    # no regular words or you'll be exposed to dictionary attacks.
-    # config.action_controller.session = {
-    #    :key => '_sequencescape_projects_session',
-    #    :secret      => '331126909929cd365e60e61c66e88d260ef609cb813566e03618f6a455dbfc7f50486aa6dc721bcc5fce54455282e3e17bb500f11d8b72bbac369f194c9dae73'
-    #  }
-
     # Enable localisations to be split over multiple paths.
     config.i18n.load_path = Dir[File.join(Rails.root, %w[config locales metadata *.{rb,yml}])]
     I18n.enforce_available_locales = false

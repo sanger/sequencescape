@@ -308,7 +308,8 @@ RSpec.describe Study, type: :model do
       let!(:study) { create(:managed_study) }
 
       it 'accept valid data access group names' do
-        # Valid names contain alphanumerics and underscores. They are limited to 32 characters, and cannot begin with a number
+        # Valid names contain alphanumerics and underscores. They are limited to 32 characters, and cannot begin with a
+        # number
         ['goodname', 'g00dname', 'good_name', '_goodname', 'good-name', 'goodname1  goodname2'].each do |name|
           expect(study.study_metadata.update!(data_access_group: name)).to be_truthy
           expect(study.study_metadata.data_access_group).to eq(name)

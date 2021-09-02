@@ -17,7 +17,8 @@ module IlluminaC::Requests
   # Stage 1:
   # Refactor to allow use of IlluminaC::Requests::LibraryRequest [Done: This commit]
   # Step 2:
-  # Write migration to update existing request types / requests to use IlluminaC::Requests::LibraryRequest [Will be done soon]
+  # Write migration to update existing request types / requests to use IlluminaC::Requests::LibraryRequest
+  # [Will be done soon]
   # Also update the configuration below to ensure the seeds behave correctly
   # Step 3:
   # Remove these classes

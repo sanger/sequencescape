@@ -123,7 +123,9 @@ class PacBio::SampleSheet # rubocop:todo Style/Documentation
       first_tube_metadata.binding_kit_barcode,
       nil,
       lookup_collection_protocol(requests.first),
+      # rubocop:disable Layout/LineLength
       "AcquisitionTime=#{first_tube_metadata.movie_length}|InsertSize=#{first_request_metadata.insert_size}|StageHS=True|SizeSelectionEnabled=False|Use2ndLook=False|NumberOfCollections=#{requests.size}",
+      # rubocop:enable Layout/LineLength
       'Default',
       nil,
       nil,

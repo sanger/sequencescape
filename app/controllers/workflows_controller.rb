@@ -44,9 +44,7 @@ class WorkflowsController < ApplicationController
   #    be worth maintaining the behaviour until we solve the problems.
   # 5: We need to improve the repeatability of tasks.
   # 6: GET should be Idempotent. doing a task should be a POST
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def stage # rubocop:todo Metrics/CyclomaticComplexity
     @workflow = Workflow.includes(:tasks).find(params[:workflow_id])
     @stage = params[:id].to_i
@@ -91,9 +89,7 @@ class WorkflowsController < ApplicationController
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   # Default render task activity, eg. from {Task#render_task}
   def render_task(task, params)

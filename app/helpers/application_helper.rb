@@ -75,7 +75,8 @@ module ApplicationHelper # rubocop:todo Style/Documentation
   #   status = batch.size > MAX_SIZE ? 'danger' : 'success'
   #   badge(batch.size, type: 'batch-size', style: status )
   #
-  # @param status [String] The text to display in the badge. Will also be used to set the style if not otherwise specified
+  # @param status [String] The text to display in the badge. Will also be used to set the style if not otherwise
+  #                        specified
   # @param type [String] Optional: Additional css-class applied to the badge (generic-badge by default)
   # @param style [String] Optional: Override the badge-* class otherwise set directly from the status.
   #

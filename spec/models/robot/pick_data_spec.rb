@@ -66,10 +66,14 @@ RSpec.describe Robot::PickData, robot_verification: true do
       #           'plate_size' => 96,
       #           'control' => false,
       #           'mapping' => [
-      #             { 'src_well' => [source_plate_3.machine_barcode, 'A1'], 'dst_well' => 'A1', 'volume' => nil, 'buffer_volume' => 0.0 },
-      #             { 'src_well' => [source_plate_2.machine_barcode, 'A1'], 'dst_well' => 'B1', 'volume' => nil, 'buffer_volume' => 0.0 },
-      #             { 'src_well' => [source_plate_3.machine_barcode, 'B1'], 'dst_well' => 'C1', 'volume' => nil, 'buffer_volume' => 0.0 },
-      #             { 'src_well' => [source_plate_2.machine_barcode, 'B1'], 'dst_well' => 'F1', 'volume' => nil, 'buffer_volume' => 0.0 }
+      #             { 'src_well' => [source_plate_3.machine_barcode, 'A1'], 'dst_well' => 'A1',
+      #               'volume' => nil, 'buffer_volume' => 0.0 },
+      #             { 'src_well' => [source_plate_2.machine_barcode, 'A1'], 'dst_well' => 'B1',
+      #               'volume' => nil, 'buffer_volume' => 0.0 },
+      #             { 'src_well' => [source_plate_3.machine_barcode, 'B1'], 'dst_well' => 'C1',
+      #               'volume' => nil, 'buffer_volume' => 0.0 },
+      #             { 'src_well' => [source_plate_2.machine_barcode, 'B1'], 'dst_well' => 'F1',
+      #               'volume' => nil, 'buffer_volume' => 0.0 }
       #           ]
       #         }
       #       },
@@ -95,8 +99,10 @@ RSpec.describe Robot::PickData, robot_verification: true do
       #           'plate_size' => 96,
       #           'control' => false,
       #           'mapping' => [
-      #             { 'src_well' => [source_plate_1.machine_barcode, 'B1'], 'dst_well' => 'D1', 'volume' => nil, 'buffer_volume' => 0.0 },
-      #             { 'src_well' => [source_plate_1.machine_barcode, 'A1'], 'dst_well' => 'A2', 'volume' => nil, 'buffer_volume' => 0.0 }
+      #             { 'src_well' => [source_plate_1.machine_barcode, 'B1'], 'dst_well' => 'D1',
+      #               'volume' => nil, 'buffer_volume' => 0.0 },
+      #             { 'src_well' => [source_plate_1.machine_barcode, 'A1'], 'dst_well' => 'A2',
+      #               'volume' => nil, 'buffer_volume' => 0.0 }
       #           ]
       #         }
       #       },
@@ -111,7 +117,6 @@ RSpec.describe Robot::PickData, robot_verification: true do
       #       'user' => user.login
       #     }
       #   }
-      # end
       let(:obtained) { pick_data.picking_data_hash(destination_plate.machine_barcode) }
       let(:helper) { PickHashTesterHelper.new(destination_plate, picks, time, user) }
 

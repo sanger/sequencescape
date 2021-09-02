@@ -7,8 +7,7 @@ require_relative 'globals'
 module ApplicationHelper # rubocop:todo Style/Documentation
   include Informatics::Globals
 
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
   def add(type, link, options = nil) # rubocop:todo Metrics/CyclomaticComplexity
     o = Informatics::Support::Options.collect(options)
     l = Informatics::Support::Options.collect(link)
@@ -30,8 +29,7 @@ module ApplicationHelper # rubocop:todo Style/Documentation
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   def logger
     Rails.logger

@@ -57,11 +57,12 @@ class Metadata::FormBuilder < Metadata::BuilderBase # rubocop:todo Style/Documen
     group = html_options.delete(:grouping) || options.delete(:grouping)
     property_field(:radio_field, method, grouping: group) do
       choices.each_with_object(+''.html_safe) do |(label_text, option_value), output|
-        output << tag.div(class: %w[custom-control custom-radio custom-control-inline]) do
-          value = option_value || label_text
-          concat radio_button(method, value, class: 'custom-control-input', required: true)
-          concat label(method, label_text, class: 'custom-control-label', value: value)
-        end
+        output <<
+          tag.div(class: %w[custom-control custom-radio custom-control-inline]) do
+            value = option_value || label_text
+            concat radio_button(method, value, class: 'custom-control-input', required: true)
+            concat label(method, label_text, class: 'custom-control-label', value: value)
+          end
       end
     end
   end

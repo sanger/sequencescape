@@ -128,7 +128,9 @@ describe '/api/1/extraction_attributes' do
         expect(target_plate.wells.located_at('A1').first.samples).to eq(samples_from_second_plate)
       end
 
+      # rubocop:todo Layout/LineLength
       context 'with a tube that reracks to a location that depends on the rerack of another tube that should be moved in the same request' do
+        # rubocop:enable Layout/LineLength
         subject { "/api/1/#{target_plate.uuid}/extraction_attributes" }
 
         let(:target_plate) { create :plate_with_tagged_wells }

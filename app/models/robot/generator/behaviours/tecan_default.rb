@@ -52,6 +52,7 @@ module Robot::Generator::Behaviours::TecanDefault
 
       source_position = description_to_column_index(source_well, source_size)
       destination_position = description_to_column_index(mapping['dst_well'], dest_plate['plate_size'])
+
       dyn_mappings << <<~TECAN
         A;#{source_barcode};;#{source_name};#{source_position};;#{tecan_precision_value(mapping['volume'])}
         D;#{dest_plate_barcode};;#{dest_plate['name']};#{destination_position};;#{tecan_precision_value(mapping['volume'])}
@@ -74,8 +75,11 @@ module Robot::Generator::Behaviours::TecanDefault
       volume = mapping['buffer_volume']
       vert_map_id = description_to_column_index(mapping['dst_well'], plate_details['plate_size'])
 
-      buffer <<
-        "A;#{buffer_info(vert_map_id)};;#{tecan_precision_value(volume)}\nD;#{dest_plate_barcode};;#{dest_name};#{vert_map_id};;#{tecan_precision_value(volume)}\nW;"
+      buffer << <<~TECAN
+        A;#{buffer_info(vert_map_id)};;#{tecan_precision_value(volume)}
+        D;#{dest_plate_barcode};;#{dest_name};#{vert_map_id};;#{tecan_precision_value(volume)}
+        W;
+      TECAN
     end
     buffer.join("\n")
   end

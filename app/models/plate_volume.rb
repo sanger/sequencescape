@@ -94,9 +94,10 @@ class PlateVolume < ApplicationRecord # rubocop:todo Style/Documentation
     end
 
     def find_for_filename(filename)
-      find_by(uploaded_file_name: filename) or lambda do |filename, file|
-        PlateVolume.create!(uploaded_file_name: filename, updated_at: file.stat.mtime, uploaded: file)
-      end
+      find_by(uploaded_file_name: filename) or
+        lambda do |filename, file|
+          PlateVolume.create!(uploaded_file_name: filename, updated_at: file.stat.mtime, uploaded: file)
+        end
     end
   end
 end

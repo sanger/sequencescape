@@ -51,8 +51,6 @@ class EventFactory # rubocop:todo Style/Documentation
         of_interest_to: 'administrators'
       )
     event.save
-
-    # EventfulMailer.deliver_confirm_event(User.all_administrators_emails, event.eventful, event.message, event.content, "No Milestone")
   end
 
   #################################
@@ -63,7 +61,10 @@ class EventFactory # rubocop:todo Style/Documentation
   # rubocop:todo Metrics/MethodLength
   def self.request_update_note_to_manager(request, user, message) # rubocop:todo Metrics/AbcSize
     content =
+      # rubocop:todo Layout/LineLength
       "#{message}\nwhilst an attempt was made to update request #{request.id}\nby user '#{user.login}' on #{Time.zone.now}"
+
+    # rubocop:enable Layout/LineLength
 
     request_event =
       Event.create(

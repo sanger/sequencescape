@@ -22,11 +22,15 @@ class UnsuitableAccessionService < AccessionService
 
   def submit_study_for_user(_study, _user)
     raise StandardError,
+          # rubocop:todo Layout/LineLength
           'UnsuitableAccessionService should only be used for samples. This is a problem with Sequencescape and should be reported.'
+    # rubocop:enable Layout/LineLength
   end
 
   def submit_dac_for_user(_study, _user)
     raise StandardError,
+          # rubocop:todo Layout/LineLength
           'UnsuitableAccessionService should only be used for samples. This is a problem with Sequencescape and should be reported.'
+    # rubocop:enable Layout/LineLength
   end
 end

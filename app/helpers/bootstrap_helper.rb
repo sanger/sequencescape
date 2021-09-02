@@ -105,21 +105,24 @@ module BootstrapHelper # rubocop:todo Style/Documentation
       else
         'bg-warning'
       end
-    tag.span(count, style: 'display:none') << tag.div(class: 'progress') do
-      tag.div(
-        "#{count}%",
-        class: ['progress-bar', 'progress-bar-striped', css_class],
-        role: 'progressbar',
-        style: "width: #{count}%;"
-      )
-    end
+    tag.span(count, style: 'display:none') <<
+      tag.div(class: 'progress') do
+        tag.div(
+          "#{count}%",
+          class: ['progress-bar', 'progress-bar-striped', css_class],
+          role: 'progressbar',
+          style: "width: #{count}%;"
+        )
+      end
   end
 
+  # rubocop:disable Layout/LineLength
   # <div class="progress">
   #   <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100" style="width: 45%">
   #     <span class="sr-only">45% Complete</span>
   #   </div>
   # </div>
+  # rubocop:enable Layout/LineLength
   def loading_bar(id = 'update_loader', show: false, text: 'Loading')
     tag.div(class: 'loading-bar-placeholder') do
       tag.div(id: id, class: 'loading-bar-container', style: show ? '' : 'display: none;') do

@@ -6,9 +6,7 @@ require_dependency 'robot/verification'
 class Robot::Verification::Base # rubocop:todo Metrics/ClassLength
   attr_reader :errors
 
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def validate_barcode_params(barcode_hash) # rubocop:todo Metrics/CyclomaticComplexity
     return yield('No barcodes specified') if barcode_hash.nil?
 
@@ -27,9 +25,7 @@ class Robot::Verification::Base # rubocop:todo Metrics/ClassLength
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   #
   # Returns an array of all pick numbers associated with the corresponding batch and plate_barcode
@@ -50,7 +46,8 @@ class Robot::Verification::Base # rubocop:todo Metrics/ClassLength
   # pick_number is a sequential number, starting at 1
   # layout_data_object is an array of hashes: 1st Element: Hash of destination plate barcodes and their sort position
   #                                           2nd Element: Hash of source plate barcodes and their sort position
-  #                                           3rd Element: Hash of control plate barcodes and their sort position when appropriate. (nil otherwise)
+  #                                           3rd Element: Hash of control plate barcodes and their sort position when
+  #                                                        appropriate. (nil otherwise)
   #     @example [{'DN3R'=>1},{'DN1S'=>1, 'DN2T'=>2}, {}]
   # There will only be more than one pick if the number of source plates exceed the max plates allowed on the robot
   # and therefore more than one pick is needed to transfer from all the wells onto the destination plate
@@ -77,9 +74,7 @@ class Robot::Verification::Base # rubocop:todo Metrics/ClassLength
       end
   end
 
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def valid_submission?(params) # rubocop:todo Metrics/CyclomaticComplexity
     destination_plate_barcode = params[:barcodes][:destination_plate_barcode]
     batch = Batch.find_by(id: params[:batch_id])
@@ -114,9 +109,7 @@ class Robot::Verification::Base # rubocop:todo Metrics/ClassLength
     true
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   def record_plate_types(plate_types_params)
     plate_types_params.each do |plate_barcode, plate_type|
@@ -154,7 +147,8 @@ class Robot::Verification::Base # rubocop:todo Metrics/ClassLength
 
   def sort_mapping_by_destination_well(plate_barcode, mapping)
     # query relevant 'map' records based on asset shape id & asset size, then sort by row order
-    # return the original mapping if the Plate cannot be found using the barcode - for instance, if this is coming from stock_stamper.rb
+    # return the original mapping if the Plate cannot be found using the barcode - for instance, if this is coming from
+    # stock_stamper.rb
     plate = Plate.find_by_barcode(plate_barcode)
     return mapping if plate.nil?
 

@@ -37,9 +37,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
   # in lib/api_tools.rb, as well as in the Api::AssetsController.
   #++
   class << self
-    # rubocop:todo Metrics/PerceivedComplexity
-    # rubocop:todo Metrics/MethodLength
-    # rubocop:todo Metrics/AbcSize
+    # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
     def to_hash(object) # rubocop:todo Metrics/CyclomaticComplexity
       # If the object is nil we get a chance to use the 'default' object that was specified.  By
       # default the "default" object is nil, but you can override it for associations through the
@@ -75,9 +73,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
       json_attributes
     end
 
-    # rubocop:enable Metrics/AbcSize
-    # rubocop:enable Metrics/MethodLength
-    # rubocop:enable Metrics/PerceivedComplexity
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
     def to_hash_for_list(object)
       raise StandardError, 'The object is nil, which is highly unexpected!' if object.nil?
@@ -97,8 +93,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
   class << self
     # The default behaviour for any model I/O is to write out all of the columns as they appear.  Some of
     # the columns are ignored, a few manipulated, but mostly it's a direct copy.
-    # rubocop:todo Metrics/MethodLength
-    # rubocop:todo Metrics/AbcSize
+    # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
     def render_class_for_model(model) # rubocop:todo Metrics/CyclomaticComplexity
       render_class = Class.new(self)
 
@@ -124,8 +119,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
       end
       render_class
     end
-    # rubocop:enable Metrics/AbcSize
-    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
   end
 
   # The model class that our I/O methods are responsible for
@@ -153,8 +147,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
   class_attribute :nested_has_many_associations
   self.nested_has_many_associations = {}
 
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/AbcSize
   def self.newer_than(object, timestamp) # rubocop:todo Metrics/CyclomaticComplexity
     return if object.nil? || timestamp.nil?
 
@@ -169,8 +162,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
     yield(timestamp) if modified
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
 
   # Returns the default object to use (by default this is 'nil') and can be overridden by passing
   # ':if_nil_use => :some_function_that_returns_default_object' to with_association.

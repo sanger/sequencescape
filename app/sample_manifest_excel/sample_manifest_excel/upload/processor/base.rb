@@ -147,8 +147,7 @@ module SampleManifestExcel
         end
 
         # Return the row of the first encountered barcode mismatch
-        # rubocop:todo Metrics/MethodLength
-        # rubocop:todo Metrics/AbcSize
+        # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
         def duplicate_barcodes # rubocop:todo Metrics/CyclomaticComplexity
           return unless upload.respond_to?('rows')
 
@@ -166,8 +165,7 @@ module SampleManifestExcel
           end
           nil
         end
-        # rubocop:enable Metrics/AbcSize
-        # rubocop:enable Metrics/MethodLength
+        # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
       end
     end
   end

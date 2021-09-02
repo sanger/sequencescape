@@ -72,8 +72,11 @@ YAML
 
 ActiveRecord::Base.transaction do
   # A couple of legacy pulldown types
-  PlatePurpose.create!(name: 'SEQCAP WG', cherrypickable_target: false) # Superceded by Pulldown WGS below (here for transition period)
-  PlatePurpose.create!(name: 'SEQCAP SC', cherrypickable_target: false) # Superceded by Pulldown SC/ISC below (here for transition period)
+  # Superceded by Pulldown WGS below (here for transition period)
+  PlatePurpose.create!(name: 'SEQCAP WG', cherrypickable_target: false)
+
+  # Superceded by Pulldown SC/ISC below (here for transition period)
+  PlatePurpose.create!(name: 'SEQCAP SC', cherrypickable_target: false)
 
   PlatePurpose.create!(
     name: 'STA',

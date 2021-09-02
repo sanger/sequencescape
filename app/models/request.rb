@@ -51,8 +51,8 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   belongs_to :initial_study, class_name: 'Study'
   belongs_to :work_order, optional: true
 
-  # The assets on a request can be treated as a particular class when being used by certain pieces of code.  For instance,
-  # QC might be performed on a source asset that is a well, in which case we'd like to load it as such.
+  # The assets on a request can be treated as a particular class when being used by certain pieces of code.
+  # For instance, QC might be performed on a source asset that is a well, in which case we'd like to load it as such.
   belongs_to :target_asset, class_name: 'Receptacle', inverse_of: :requests_as_target, optional: true
   belongs_to :asset, class_name: 'Receptacle', inverse_of: :requests, optional: true
   belongs_to :source_well, class_name: 'Well', foreign_key: :asset_id, optional: true
@@ -153,8 +153,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
             )
             .group('uuids.external_id')
             .where(pw: { labware_id: plate.id }, requests: { submission_id: submission_ids })
-            .where
-            .not(requests: { state: 'cancelled' })
+            .where.not(requests: { state: 'cancelled' })
         }
 
   scope :for_pre_cap_grouping_of,
@@ -178,8 +177,10 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
             .joins(
               add_joins + [
                 'INNER JOIN maps AS pw_location ON pw.map_id = pw_location.id',
+                # rubocop:todo Layout/LineLength
                 'INNER JOIN pre_capture_pool_pooled_requests ON requests.id=pre_capture_pool_pooled_requests.request_id',
                 'INNER JOIN uuids ON uuids.resource_id = pre_capture_pool_pooled_requests.pre_capture_pool_id AND uuids.resource_type="PreCapturePool"'
+                # rubocop:enable Layout/LineLength
               ]
             )
             .group('pre_capture_pool_pooled_requests.pre_capture_pool_id')
@@ -232,16 +233,14 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
           joins(:asset)
             .select('requests.*')
             .select('receptacles.labware_id AS labware_id')
-            .where
-            .not(receptacles: { labware_id: nil })
+            .where.not(receptacles: { labware_id: nil })
         }
   scope :target_asset_on_labware,
         -> {
           joins(:target_asset)
             .select('requests.*')
             .select('receptacles.labware_id AS labware_id')
-            .where
-            .not(receptacles: { labware_id: nil })
+            .where.not(receptacles: { labware_id: nil })
         }
 
   scope :without_asset, -> { where('asset_id is null') }

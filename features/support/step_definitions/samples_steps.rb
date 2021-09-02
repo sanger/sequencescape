@@ -49,7 +49,9 @@ Then /^the reference genome for the sample "([^"]+)" should be "([^"]+)"$/ do |n
   assert_equal(genome, sample.sample_metadata.reference_genome.name)
 end
 
+# rubocop:todo Layout/LineLength
 Then /^the XML root attribute "([^"]+)" sent to the accession service for sample "([^"]+)" should be "(.*?)"$/ do |xml_attr, sample_name, value|
+  # rubocop:enable Layout/LineLength
   sample = Sample.find_by(name: sample_name) or
     raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
   xml = FakeAccessionService.instance.sent.last['SAMPLE'].to_s
@@ -67,14 +69,18 @@ Then /^the XML sent for sample "([^"]+)" validates with the schema "([^"]+)"$/ d
   assert(result.length == 0, result.map(&:message).join(''))
 end
 
+# rubocop:todo Layout/LineLength
 Then /^the XML tag "([^"]+)" sent to the accession service for sample "([^"]+)" should be not present$/ do |xml_attr, sample_name|
+  # rubocop:enable Layout/LineLength
   sample = Sample.find_by(name: sample_name) or
     raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
   xml = FakeAccessionService.instance.sent.last['SAMPLE'].to_s
   assert_equal(true, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/#{xml_attr}").length == 0)
 end
 
+# rubocop:todo Layout/LineLength
 Then /^the XML tag "([^"]+)" sent to the accession service for sample "([^"]+)" should be "(.*?)"$/ do |xml_attr, sample_name, value|
+  # rubocop:enable Layout/LineLength
   sample = Sample.find_by(name: sample_name) or
     raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
   xml = FakeAccessionService.instance.sent.last['SAMPLE'].to_s
@@ -136,7 +142,9 @@ When /^I (create|update) an? accession number for sample "([^"]+)"$/ do |action_
   step("I follow \"#{action_str}\"")
 end
 
+# rubocop:todo Layout/LineLength
 Then /^I (should|should not) have (sent|received) the attribute "([^"]*)" for the sample element (to|from) the accessioning service$/ do |state_action, type_action, attr_name, _dest|
+  # rubocop:enable Layout/LineLength
   xml =
     if type_action == 'sent'
       FakeAccessionService.instance.sent.last['SAMPLE']

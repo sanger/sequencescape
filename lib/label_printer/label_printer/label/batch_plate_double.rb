@@ -23,7 +23,9 @@ module LabelPrinter
         {
           left_text: date_today,
           right_text:
+            # rubocop:todo Layout/LineLength
             "#{@batch.output_plate_role} #{@batch.output_plate_purpose.name} #{plate.barcode_number} #{@batch.studies.first.abbreviation}"
+          # rubocop:enable Layout/LineLength
         }
       end
     end

@@ -3,6 +3,8 @@ module EventfulRecord # rubocop:todo Style/Documentation
     has_many(:events, -> { order(created_at: :asc, id: :asc) }, as: :eventful, dependent: :destroy) do
       def self.event_constructor(name, event_class, event_class_method)
         line = __LINE__ + 1
+
+        # rubocop:todo Layout/LineLength
         class_eval(
           "
           def #{name}(*args)
@@ -12,6 +14,7 @@ module EventfulRecord # rubocop:todo Style/Documentation
           __FILE__,
           line
         )
+        # rubocop:enable Layout/LineLength
       end
 
       class_eval(&block) if block.present?

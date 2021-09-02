@@ -6,12 +6,9 @@ module Tasks::AddSpikedInControlHandler
   class Handler < Tasks::BaseHandler
     def perform
       # Rubocop gets in a fight with prettier here.
-      # rubocop:disable Style/IfUnlessModifier
       if missing_barcodes.present?
         return false, "Can't find a spiked hybridization buffer with barcode #{missing_barcodes.to_sentence}"
       end
-
-      # rubocop:enable Style/IfUnlessModifier
 
       Batch.transaction { add_control ? create_batch_events : false }
     end

@@ -2,7 +2,7 @@
 
 # Duplicated the contents of the assets table into receptacles and labware
 class PopulateLabwareTable < ActiveRecord::Migration[4.2]
-  def up # rubocop:todo Metrics/AbcSize
+  def up # rubocop:disable Metrics/AbcSize
     ActiveRecord::Base.connection.execute('SET autocommit = 0')
     ActiveRecord::Base.connection.execute('SET unique_checks = 0')
     ActiveRecord::Base.connection.execute('SET foreign_key_checks = 0')

@@ -21,14 +21,11 @@ class Api::Messages::FlowcellIO < Api::Base
     ]
   }
 
-  #
-  # The following modules add methods onto the relevant models, which are used below in generation of the flowcell MLWH message.
-  #
-
+  # The following modules add methods onto the relevant models, which are used below in generation of the flowcell MLWH
+  # message.
   # Included in SequencingRequest model
   module LaneExtensions
-    # rubocop:todo Metrics/MethodLength
-    def self.included(base) # rubocop:todo Metrics/AbcSize
+    def self.included(base) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
       base.class_eval do
         def mx_library
           asset.external_identifier
@@ -100,7 +97,6 @@ class Api::Messages::FlowcellIO < Api::Base
         end
       end
     end
-    # rubocop:enable Metrics/MethodLength
   end
 
   # Included in ControlRequest model
@@ -202,10 +198,8 @@ class Api::Messages::FlowcellIO < Api::Base
   # Batch is the main / top-level model that contributes to the message sent to the MLWH.
   renders_model(::Batch)
 
-  #
-  # The following section maps attributes on Sequencescape models to attributes in the json message that is passed to the MLWH.
-  #
-
+  # The following section maps attributes on Sequencescape models to attributes in the json message that is passed to
+  # the MLWH.
   # The following methods come from the Batch model or the relevant module above.
   map_attribute_to_json_attribute(:flowcell_barcode)
   map_attribute_to_json_attribute(:id, 'flowcell_id')

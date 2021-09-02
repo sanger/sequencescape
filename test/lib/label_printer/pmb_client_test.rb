@@ -133,7 +133,10 @@ class PmbClientTest < ActiveSupport::TestCase
 
   test 'should return pretty errors with new json' do
     errors =
+      # rubocop:todo Layout/LineLength
       '{"errors":[{"source":{"pointer":"/data/attributes/printer"},"detail":"does not exist"}, {"source":{"pointer":"/data/attributes/label_template"},"detail":"does not exist"}]}'
+
+    # rubocop:enable Layout/LineLength
     pretty_errors = 'Printer does not exist; Label template does not exist'
     assert_equal pretty_errors, LabelPrinter::PmbClient.pretty_errors(errors)
   end
