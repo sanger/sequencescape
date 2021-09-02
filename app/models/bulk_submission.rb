@@ -115,8 +115,8 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     return false if headers.nil?
     return true if headers.include? 'submission name'
 
+    # rubocop:todo Layout/LineLength
     errors.add :spreadsheet,
-               # rubocop:todo Layout/LineLength
                "You submitted an incompatible spreadsheet. Please ensure your spreadsheet contains the 'submission name' column"
 
     # rubocop:enable Layout/LineLength
@@ -402,8 +402,8 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     if attributes[:asset_group].nil?
       attributes[:assets] = found_assets
     elsif found_assets.present? && found_assets != attributes[:asset_group].assets
+      # rubocop:todo Layout/LineLength
       raise StandardError,
-            # rubocop:todo Layout/LineLength
             "Asset Group '#{attributes[:asset_group].name}' contains different assets to those you specified. You may be reusing an asset group name"
       # rubocop:enable Layout/LineLength
     end
