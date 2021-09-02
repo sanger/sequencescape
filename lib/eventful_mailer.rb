@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class EventfulMailer < ActionMailer::Base # rubocop:todo Style/Documentation
   # rubocop:todo Metrics/ParameterLists
   def confirm_event(receiver, eventful, message, content, _milestone, sent_at = Time.zone.now)

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Messengers handle passing a target into a message template
 # for rendering warehouse messages
 class Messenger < ApplicationRecord

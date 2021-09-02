@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class PlateTransferTask < Task # rubocop:todo Style/Documentation
   belongs_to :purpose
 

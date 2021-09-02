@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # A Well is a {Receptacle} on a {Plate}, it can contain one or more {Aliquot aliquots}.
 # A plate may have multiple wells, with the two most common sizes being 12*8 (96) and
 # 24*26 (384). The wells are differentiated via their {Map} which corresponds to a

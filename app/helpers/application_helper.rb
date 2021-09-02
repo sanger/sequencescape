@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # rubocop:todo Metrics/ModuleLength
 module ApplicationHelper # rubocop:todo Style/Documentation
   # Should return either the custom text or a blank string

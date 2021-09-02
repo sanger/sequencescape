@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Controls API V1 IO for {::Supplier}
 class ::Io::Supplier < ::Core::Io::Base
   # This module adds the behaviour we require from the Supplier module.

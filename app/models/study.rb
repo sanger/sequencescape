@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'aasm'
 
 # A Study is a collection of various {Sample samples} and the work done on them.
@@ -55,29 +56,29 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   # Constants
   STOCK_PLATE_PURPOSES = ['Stock Plate', 'Stock RNA Plate'].freeze
-  YES = 'Yes'.freeze
-  NO = 'No'.freeze
+  YES = 'Yes'
+  NO = 'No'
   YES_OR_NO = [YES, NO].freeze
-  Other_type = 'Other'.freeze
+  Other_type = 'Other'
 
   STUDY_SRA_HOLDS = %w[Hold Public].freeze
 
-  DATA_RELEASE_STRATEGY_OPEN = 'open'.freeze
-  DATA_RELEASE_STRATEGY_MANAGED = 'managed'.freeze
-  DATA_RELEASE_STRATEGY_NOT_APPLICABLE = 'not applicable'.freeze
+  DATA_RELEASE_STRATEGY_OPEN = 'open'
+  DATA_RELEASE_STRATEGY_MANAGED = 'managed'
+  DATA_RELEASE_STRATEGY_NOT_APPLICABLE = 'not applicable'
   DATA_RELEASE_STRATEGIES = [
     DATA_RELEASE_STRATEGY_OPEN,
     DATA_RELEASE_STRATEGY_MANAGED,
     DATA_RELEASE_STRATEGY_NOT_APPLICABLE
   ].freeze
 
-  DATA_RELEASE_TIMING_STANDARD = 'standard'.freeze
-  DATA_RELEASE_TIMING_NEVER = 'never'.freeze
-  DATA_RELEASE_TIMING_DELAYED = 'delayed'.freeze
+  DATA_RELEASE_TIMING_STANDARD = 'standard'
+  DATA_RELEASE_TIMING_NEVER = 'never'
+  DATA_RELEASE_TIMING_DELAYED = 'delayed'
   DATA_RELEASE_TIMINGS = [DATA_RELEASE_TIMING_STANDARD, 'immediate', DATA_RELEASE_TIMING_DELAYED].freeze
   DATA_RELEASE_PREVENTION_REASONS = ['data validity', 'legal', 'replication of data subset'].freeze
 
-  DATA_RELEASE_DELAY_FOR_OTHER = 'other'.freeze
+  DATA_RELEASE_DELAY_FOR_OTHER = 'other'
   DATA_RELEASE_DELAY_REASONS_STANDARD = ['phd study', DATA_RELEASE_DELAY_FOR_OTHER].freeze
   DATA_RELEASE_DELAY_REASONS_ASSAY = ['phd study', 'assay of no other use', DATA_RELEASE_DELAY_FOR_OTHER].freeze
 

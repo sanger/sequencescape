@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Stores the uuids of all out records, associated via a polymorphic association
 # Allows the {file:docs/api_v1 V1 API} to find any record from just a uuid
 class Uuid < ApplicationRecord

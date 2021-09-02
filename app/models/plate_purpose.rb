@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # The standard {Purpose} class for plates. This defines the standard behaviour,
 # and is the class used for the majority of PlatePurposes.
 #

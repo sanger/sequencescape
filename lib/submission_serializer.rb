@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Provides a means of serializing and serializing submission templates.
 # Example serialization:
 # {

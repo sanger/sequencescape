@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Controls API V1 {::Core::Endpoint::Base endpoints} for Plates
 class ::Endpoints::Plates < ::Core::Endpoint::Base
   model {}

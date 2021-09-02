@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # {include:file:docs/api_v1.md}
 module Api
   # Sinatra application which provides routing for the V1 API

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 ##
 # FlexibleSubmissions allow multiplexing based on
 # pooling properties defined on the multiplexed request type

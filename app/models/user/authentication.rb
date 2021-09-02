@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module User::Authentication # rubocop:todo Style/Documentation
   def self.included(base)
     base.class_eval do
@@ -52,7 +53,7 @@ module User::Authentication # rubocop:todo Style/Documentation
   module Ldap # rubocop:todo Style/Documentation
     def authenticate_with_ldap(login, password) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
       # TODO: - Extract LDAP specifics to configuration
-      username = 'uid=' << login << ',ou=people,dc=sanger,dc=ac,dc=uk'
+      username = "uid=#{login},ou=people,dc=sanger,dc=ac,dc=uk"
       ldap =
         Net::LDAP.new(
           host: configatron.ldap_server,

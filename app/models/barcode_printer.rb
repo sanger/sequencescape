@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Represents a barcode printer, where {#name} is the hostname of the printer
 # eg. d304bc
 # BarcodePrinterType records which label type (eg. tube or plate labels) is loaded

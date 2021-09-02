@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Submission::RequestOptionsBehaviour # rubocop:todo Style/Documentation
   # Ensures the hash gets loaded with indifferent access.
   # Note: We can't just specify the class, as otherwise legacy

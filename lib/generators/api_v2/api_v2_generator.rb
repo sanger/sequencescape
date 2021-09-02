@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class ApiV2Generator < Rails::Generators::NamedBase # rubocop:todo Style/Documentation
   source_root File.expand_path('../templates', __FILE__)
 

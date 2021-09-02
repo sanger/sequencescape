@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class QcFilesController < ApplicationController # rubocop:todo Style/Documentation
   def show
     QcFile

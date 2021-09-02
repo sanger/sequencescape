@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rest-client'
 
 module LabelPrinter

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Tasks::SetDescriptorsHandler # rubocop:todo Style/Documentation
   # The Setter handles the processing of each task, and actually performs the
   # actions.

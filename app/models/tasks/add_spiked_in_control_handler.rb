@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Handles the behaviour of {AddSpikedInControlTask} and included in {WorkflowsController}
 # {include:AddSpikedInControlTask}
 module Tasks::AddSpikedInControlHandler

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'eventful_record'
 
 # Asset is a very busy class which combines what should probably be two separate concepts:

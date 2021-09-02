@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Cherrypick::VolumeByNanoGrams # rubocop:todo Style/Documentation
   # rubocop:todo Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/AbcSize, Metrics/PerceivedComplexity
   def check_inputs_to_volume_to_cherrypick_by_nano_grams!(minimum_volume, maximum_volume, target_ng, source_well)

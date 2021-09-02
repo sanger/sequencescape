@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'aasm'
 
 module SampleManifest::StateMachine # rubocop:todo Style/Documentation

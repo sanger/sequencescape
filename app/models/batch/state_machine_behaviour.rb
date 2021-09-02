@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'aasm'
 module Batch::StateMachineBehaviour # rubocop:todo Style/Documentation
   def self.included(base) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength

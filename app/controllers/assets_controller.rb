@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # {Labware} and {Receptacle} used to both be grouped under {Asset} and this
 # controller handled them. Now the majority of the behaviour has moved off into
 # the respective controllers. This remains to handle a few legacy endpoints:

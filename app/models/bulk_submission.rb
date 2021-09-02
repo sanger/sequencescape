@@ -1,4 +1,5 @@
 # Encoding: utf-8
+# frozen_string_literal: true
 
 # Previously this was extending Array globally.
 # https://ruby-doc.org/core-2.4.2/doc/syntax/refinements_rdoc.html
@@ -23,7 +24,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
   using ArrayWithFieldList
 
   # This is the default output from excel
-  DEFAULT_ENCODING = 'Windows-1252'.freeze
+  DEFAULT_ENCODING = 'Windows-1252'
 
   include ActiveModel::AttributeMethods
   include ActiveModel::Validations

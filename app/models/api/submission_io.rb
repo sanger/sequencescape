@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Despite name controls rendering of warehouse messages for {Submission}
 # Historically used to be v0.5 API
 class Api::SubmissionIO < Api::Base

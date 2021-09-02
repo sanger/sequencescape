@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Generates warehouse messages describing a fluidigm plate.
 class Api::Messages::FluidigmPlateIO < Api::Base
   self.includes = [

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 ##
 # A Qcable is an element of a lot which must be approved
 # before it may be used.

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module RequestsHelper #:nodoc: all
   def request_status(request)
     state = request.state.presence || 'unknown'

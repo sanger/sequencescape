@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Accession
   # Tags details are stored in config/accession/tags.yml
   # Standard TagList is created on initialisation from this yaml file and can be reached through

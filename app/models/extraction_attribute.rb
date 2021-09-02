@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class ExtractionAttribute < ApplicationRecord # rubocop:todo Style/Documentation
   include Uuid::Uuidable
 

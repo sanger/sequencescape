@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Handles the behaviour of {AssignTagsToTubesTask} and included in {WorkflowsController}
 # {include:AssignTagsToTubesTask}
 module Tasks::AssignTagsToTubesHandler

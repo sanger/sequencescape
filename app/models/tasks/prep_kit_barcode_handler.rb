@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Tasks::PrepKitBarcodeHandler # rubocop:todo Style/Documentation
   def render_prep_kit_barcode_task(task, params); end
 

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Attributable
   class Association # rubocop:todo Style/Documentation
     module Target # rubocop:todo Style/Documentation

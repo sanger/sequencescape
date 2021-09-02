@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Controls API V1 IO for PlatePurpose
 class Io::PlatePurpose < Core::Io::Base
   set_model_for_input(::PlatePurpose)

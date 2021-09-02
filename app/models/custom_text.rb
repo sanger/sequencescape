@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Used in a handful of places to provide dynamically customizable text in the
 # web interface, such as setting the banner at the top of the page.
 # @see ApplicationHelper::custom_text

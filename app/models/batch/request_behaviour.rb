@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Batch::RequestBehaviour # rubocop:todo Style/Documentation
   def self.included(base) # rubocop:todo Metrics/MethodLength
     base.class_eval do

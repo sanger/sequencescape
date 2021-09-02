@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Picks the specified wells from one plate into the wells of another.  In this case transfers
 # is a hash from source to destination well location and destination is the target plate for
 # the transfers.

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 xml.instruct!
 xml.batch do
   xml.id @batch.id

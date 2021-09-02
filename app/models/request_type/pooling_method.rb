@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class RequestType::PoolingMethod < ApplicationRecord # rubocop:todo Style/Documentation
   has_many :request_types
   validates :pooling_behaviour, presence: true

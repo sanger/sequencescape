@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class BroadcastEvent::SampleManifestCreated < BroadcastEvent
   set_event_type 'sample_manifest.created'
 

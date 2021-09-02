@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module LabelPrinter
   module Label
     class PlateCreator < BasePlate # rubocop:todo Style/Documentation

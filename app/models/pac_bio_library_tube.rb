@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class PacBioLibraryTube < Tube # rubocop:todo Style/Documentation
   include Api::PacBioLibraryTubeIO::Extensions
 

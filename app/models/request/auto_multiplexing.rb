@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # In the Generic Lims, transfer into the Multiplexed library tube is triggered
 # automatically when the plate is passed. However, if multiplexing decisions
 # are made after library creation, this step has already taken place. This

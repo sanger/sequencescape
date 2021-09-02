@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # rubocop:todo Metrics/ClassLength
 class SamplesController < ApplicationController # rubocop:todo Style/Documentation
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.

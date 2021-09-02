@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module IlluminaC::Requests
   class LibraryRequest < Request::LibraryCreation # rubocop:todo Style/Documentation
     def role

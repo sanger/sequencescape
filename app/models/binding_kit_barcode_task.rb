@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # A {Task} used in {PacBioSequencingPipeline}
 # Assigns a binding kit barcode to the {PacBioLibraryTube}
 #

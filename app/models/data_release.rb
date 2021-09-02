@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module DataRelease # rubocop:todo Style/Documentation
   # TODO[xxx]: All of this probably falls into the Study::Metadata class
 

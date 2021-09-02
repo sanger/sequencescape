@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module ControlRequestTypeCreation # rubocop:todo Style/Documentation
   def control_type_name
     key_name.titleize

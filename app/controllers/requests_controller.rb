@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'event_factory'
 # rubocop:todo Metrics/ClassLength
 class RequestsController < ApplicationController # rubocop:todo Style/Documentation

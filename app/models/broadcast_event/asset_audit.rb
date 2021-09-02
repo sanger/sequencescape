@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class BroadcastEvent::AssetAudit < BroadcastEvent # rubocop:todo Style/Documentation
   seed_class AssetAudit
 

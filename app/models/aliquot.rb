@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # An aliquot can be considered to be an amount of a material in a liquid.  The material could be the DNA
 # of a sample, or it might be a library (a combination of the DNA sample and a {Tag tag}).
 

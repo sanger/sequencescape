@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Lays out the tags in the specified tag group in a particular pattern.
 #
 # Applies a single tag 2 to the entire plate

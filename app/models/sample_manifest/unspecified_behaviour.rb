@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Simple core module to handle options when no type has been specified
 # Not valid for actually building manifests, just for rendering forms
 module SampleManifest::UnspecifiedBehaviour

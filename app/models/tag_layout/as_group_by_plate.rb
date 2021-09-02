@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Assigns multiple tags to each well.
 
 class TagLayout::AsGroupByPlate < TagLayout::Walker # rubocop:todo Style/Documentation

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Add and edit {BaitLibrary::Supplier}s
 class Admin::BaitLibraries::BaitLibrarySuppliersController < ApplicationController
   authorize_resource class: BaitLibrary::Supplier

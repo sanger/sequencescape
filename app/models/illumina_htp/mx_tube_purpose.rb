@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require_dependency 'tube/purpose'
 
 # Purposes of this class represent multiplexed library tubes in the high-throughput

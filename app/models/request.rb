@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'aasm'
 
 # A Request represents work which needs to be done, either to fulfil a customers

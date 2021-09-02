@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Submission::ProjectValidation # rubocop:todo Style/Documentation
   def self.included(base) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     base.class_eval do

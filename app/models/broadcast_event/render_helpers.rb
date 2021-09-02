@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module BroadcastEvent::RenderHelpers
   # Controls our render.
   class Render
