@@ -24,6 +24,7 @@
 # @abstract Probably best to avoid using directly.
 class Purpose < ApplicationRecord
   include Relationship::Associations
+  include SharedBehaviour::Named
   include Uuid::Uuidable
 
   self.table_name = 'plate_purposes'
