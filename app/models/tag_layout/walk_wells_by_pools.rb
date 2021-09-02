@@ -1,9 +1,7 @@
 class TagLayout::WalkWellsByPools < TagLayout::Walker # rubocop:todo Style/Documentation
   self.walking_by = 'wells in pools'
 
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def walk_wells # rubocop:todo Metrics/CyclomaticComplexity
     # Adjust each of the groups so that any wells that are in the same pool as those at the same position
     # in the group to the left are moved to a non-clashing position.  Effectively this makes the view of the
@@ -39,7 +37,5 @@ class TagLayout::WalkWellsByPools < TagLayout::Walker # rubocop:todo Style/Docum
     # Now we can walk the wells in the groups, skipping any that have been nil'd by the above code.
     wells_in_groups.each { |group| group.each_with_index { |(well, _), index| yield(well, index) unless well.nil? } }
   end
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 end

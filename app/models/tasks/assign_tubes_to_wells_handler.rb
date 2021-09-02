@@ -45,9 +45,7 @@ module Tasks::AssignTubesToWellsHandler
 
   # Identifies and array of well map descriptions that contain duplicate tags
   # First filters out any equivalent aliquots. (ie. same sample, tag, library_type, etc.)
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def wells_with_duplicates(params) # rubocop:todo Metrics/CyclomaticComplexity
     invalid_wells = []
     @batch
@@ -72,9 +70,7 @@ module Tasks::AssignTubesToWellsHandler
     invalid_wells
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
   private :wells_with_duplicates
 
   def find_incompatible_wells(params)

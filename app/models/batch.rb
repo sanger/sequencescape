@@ -429,9 +429,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
       .find_by(plate_purposes: { name: name })
   end
 
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def swap(current_user, batch_info = {}) # rubocop:todo Metrics/CyclomaticComplexity
     return false if batch_info.empty?
 
@@ -494,9 +492,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
     true
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   def plate_ids_in_study(study)
     Plate.plate_ids_from_requests(requests.for_studies(study))

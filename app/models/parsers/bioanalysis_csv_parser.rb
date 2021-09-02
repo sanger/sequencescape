@@ -53,9 +53,7 @@ class Parsers::BioanalysisCsvParser # rubocop:todo Style/Documentation, Metrics/
   # - regexp -> Regular expression to be matched in the first column as beginning of range
   # - range -> In case it is specified, restricts the searching process to this range of lines
   # instead of using all the content of the CSV file
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def get_groups(regexp, range = nil) # rubocop:todo Metrics/CyclomaticComplexity
     groups = []
     group = []
@@ -79,9 +77,7 @@ class Parsers::BioanalysisCsvParser # rubocop:todo Style/Documentation, Metrics/
     groups
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   def get_group_content(group)
     content.slice(group[0], group[1] - group[0] + 1)

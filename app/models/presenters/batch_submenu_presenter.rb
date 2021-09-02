@@ -79,9 +79,7 @@ module Presenters
       [cherrypicking?, genotyping?, pacbio?, pacbio_sample_pipeline?].any?
     end
 
-    # rubocop:todo Metrics/PerceivedComplexity
-    # rubocop:todo Metrics/MethodLength
-    # rubocop:todo Metrics/AbcSize
+    # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
     def load_pipeline_options # rubocop:todo Metrics/CyclomaticComplexity
       add_submenu_option 'Edit batch', edit_batch_path(@batch) if can? :edit
 
@@ -108,8 +106,6 @@ module Presenters
 
       add_submenu_option 'Verify tube layout', :verify if tube_layout_not_verified? && can?(:verify)
     end
-    # rubocop:enable Metrics/AbcSize
-    # rubocop:enable Metrics/MethodLength
-    # rubocop:enable Metrics/PerceivedComplexity
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
   end
 end

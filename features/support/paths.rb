@@ -165,9 +165,7 @@ module NavigationHelpers # rubocop:todo Style/Documentation
               'Now, go and add a mapping in features/support/paths.rb'
     end
   end
-  # rubocop:enable Metrics/PerceivedComplexity
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/CyclomaticComplexity
 end
 # rubocop:enable Metrics/ModuleLength
 

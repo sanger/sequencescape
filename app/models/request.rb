@@ -179,8 +179,6 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
                 'INNER JOIN maps AS pw_location ON pw.map_id = pw_location.id',
                 # rubocop:todo Layout/LineLength
                 'INNER JOIN pre_capture_pool_pooled_requests ON requests.id=pre_capture_pool_pooled_requests.request_id',
-                # rubocop:enable Layout/LineLength
-                # rubocop:todo Layout/LineLength
                 'INNER JOIN uuids ON uuids.resource_id = pre_capture_pool_pooled_requests.pre_capture_pool_id AND uuids.resource_type="PreCapturePool"'
                 # rubocop:enable Layout/LineLength
               ]

@@ -6,9 +6,7 @@ require_dependency 'robot/verification'
 class Robot::Verification::Base # rubocop:todo Metrics/ClassLength
   attr_reader :errors
 
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def validate_barcode_params(barcode_hash) # rubocop:todo Metrics/CyclomaticComplexity
     return yield('No barcodes specified') if barcode_hash.nil?
 
@@ -27,9 +25,7 @@ class Robot::Verification::Base # rubocop:todo Metrics/ClassLength
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   #
   # Returns an array of all pick numbers associated with the corresponding batch and plate_barcode
@@ -78,9 +74,7 @@ class Robot::Verification::Base # rubocop:todo Metrics/ClassLength
       end
   end
 
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def valid_submission?(params) # rubocop:todo Metrics/CyclomaticComplexity
     destination_plate_barcode = params[:barcodes][:destination_plate_barcode]
     batch = Batch.find_by(id: params[:batch_id])
@@ -115,9 +109,7 @@ class Robot::Verification::Base # rubocop:todo Metrics/ClassLength
     true
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   def record_plate_types(plate_types_params)
     plate_types_params.each do |plate_barcode, plate_type|

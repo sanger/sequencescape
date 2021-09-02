@@ -102,8 +102,7 @@ module Robot::Generator::Behaviours::TecanDefault
 
   # rubocop:enable Metrics/MethodLength
 
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/AbcSize
   def footer # rubocop:todo Metrics/CyclomaticComplexity
     footer = "C;\n"
     source_barcode_index.sort_by { |a| a[1] }.each { |barcode, index| footer += "C; SCRC#{index} = #{barcode}\n" }
@@ -116,6 +115,5 @@ module Robot::Generator::Behaviours::TecanDefault
     footer
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
 end

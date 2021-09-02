@@ -33,8 +33,7 @@ class Admin::BaitLibraries::BaitLibrarySuppliersController < ApplicationControll
     end
   end
 
-  # rubocop:todo Metrics/AbcSize
-  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
   def destroy
     if @bait_library_supplier.bait_libraries.visible.count > 0
       respond_to do |format|
@@ -53,8 +52,7 @@ class Admin::BaitLibraries::BaitLibrarySuppliersController < ApplicationControll
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   private
 

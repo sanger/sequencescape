@@ -72,9 +72,7 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
 
   # rubocop:enable Metrics/ParameterLists
 
-  # rubocop:todo Metrics/CyclomaticComplexity
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/MethodLength
   def perform_pick(requests, robot, control_source_plate, workflow_controller) # rubocop:todo Metrics/AbcSize
     max_plates = robot.max_beds
     raise StandardError, 'The chosen robot has no beds!' if max_plates.zero?
@@ -137,9 +135,7 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
     [destination_plates, source_plates]
   end
 
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
-  # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/MethodLength, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
   private :perform_pick
 
   def partial

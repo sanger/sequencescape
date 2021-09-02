@@ -443,8 +443,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   # This is the expected create behaviour, and is only in a separate
   # method due to the overloading on the create endpoint.
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
   def standard_create(requests) # rubocop:todo Metrics/CyclomaticComplexity
     unless @pipeline.all_requests_from_submissions_selected?(requests)
       return pipeline_error_on_batch_creation('All plates in a submission must be selected')
@@ -485,8 +484,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   def request_parameters
     params.permit(request: {}, request_group: {}).to_h

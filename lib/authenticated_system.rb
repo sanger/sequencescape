@@ -48,9 +48,7 @@ module AuthenticatedSystem # rubocop:todo Style/Documentation
   #
   #   skip_before_action :login_required
   #
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def login_required # rubocop:todo Metrics/CyclomaticComplexity
     username, passwd = get_auth_data
 
@@ -75,9 +73,7 @@ module AuthenticatedSystem # rubocop:todo Style/Documentation
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   def setup_current_user
     username, passwd = get_auth_data

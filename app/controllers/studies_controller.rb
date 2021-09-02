@@ -325,8 +325,7 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
 
   private
 
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
   def studies_from_scope(scope) # rubocop:todo Metrics/CyclomaticComplexity
     studies =
       case scope
@@ -360,8 +359,7 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
     studies.newest_first
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   def rescue_validation
     begin
