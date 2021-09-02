@@ -9,11 +9,7 @@ describe UatActions::GenerateTubes do
 
     context 'when creating a single tube' do
       let(:parameters) do
-        {
-          tube_purpose_name: Tube::Purpose.standard_sample_tube.name,
-          tube_count: 1,
-          study_name: study.name
-        }
+        { tube_purpose_name: Tube::Purpose.standard_sample_tube.name, tube_count: 1, study_name: study.name }
       end
       let(:report) do
         # A report is a hash of key value pairs which get returned to the user.
@@ -33,11 +29,7 @@ describe UatActions::GenerateTubes do
 
     context 'when creating multiple tubes' do
       let(:parameters) do
-        {
-          tube_purpose_name: Tube::Purpose.standard_sample_tube.name,
-          tube_count: 3,
-          study_name: study.name
-        }
+        { tube_purpose_name: Tube::Purpose.standard_sample_tube.name, tube_count: 3, study_name: study.name }
       end
       let(:report) do
         # A report is a hash of key value pairs which get returned to the user.
