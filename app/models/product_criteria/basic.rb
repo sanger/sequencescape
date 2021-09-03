@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # rubocop:todo Metrics/ClassLength
 class ProductCriteria::Basic # rubocop:todo Style/Documentation
   SUPPORTED_WELL_ATTRIBUTES = %i[
@@ -23,8 +24,8 @@ class ProductCriteria::Basic # rubocop:todo Style/Documentation
     concentration_from_normalization
   ].freeze
 
-  PASSSED_STATE = 'passed'.freeze
-  FAILED_STATE = 'failed'.freeze
+  PASSSED_STATE = 'passed'
+  FAILED_STATE = 'failed'
 
   UnknownSpecification = Class.new(StandardError)
 

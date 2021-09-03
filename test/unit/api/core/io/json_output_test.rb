@@ -9,17 +9,21 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
     end
   end
 
-  def encoder_for(mappings)
-    Object.new.tap do |encoder|
-      class << encoder
-        extend BasicMethods
-        extend Core::Io::Base::JsonFormattingBehaviour::Output
+  def encoder_for(mappings) # rubocop:todo Metrics/MethodLength
+    Object
+      .new
+      .tap do |encoder|
+        class << encoder
+          extend BasicMethods
+          extend Core::Io::Base::JsonFormattingBehaviour::Output
 
-        def self.json_root
-          'encoded'
+          def self.json_root
+            'encoded'
+          end
         end
       end
-    end.singleton_class.tap { |encoder| encoder.generate_object_to_json_mapping(mappings) }
+      .singleton_class
+      .tap { |encoder| encoder.generate_object_to_json_mapping(mappings) }
   end
   private :encoder_for
 

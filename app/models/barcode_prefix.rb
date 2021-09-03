@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # A barcode prefix is a two character prefix applied to the front of Sanger format
 # barcodes. Prefixes are set based on the {Purpose} with the most common being:
 #   - DN for most plates

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 Rake::Task['test'].clear
 
 task test: :environment do

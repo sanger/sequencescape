@@ -88,7 +88,9 @@ describe 'Create a study' do
       choose('Yes', allow_label_click: true)
     end
 
+    # rubocop:todo Layout/LineLength
     within_fieldset 'Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?' do
+      # rubocop:enable Layout/LineLength
       choose('No', allow_label_click: true)
     end
 
@@ -96,7 +98,9 @@ describe 'Create a study' do
       choose('No', allow_label_click: true)
     end
 
+    # rubocop:todo Layout/LineLength
     within_fieldset 'Are all the samples to be used in this study commercially available, unlinked anonymised cell-lines?' do
+      # rubocop:enable Layout/LineLength
       choose('Yes', allow_label_click: true)
     end
 

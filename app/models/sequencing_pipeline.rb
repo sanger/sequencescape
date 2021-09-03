@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class SequencingPipeline < Pipeline # rubocop:todo Style/Documentation
   self.batch_worksheet = 'simplified_worksheet'
   self.sequencing = true
@@ -40,7 +41,9 @@ class SequencingPipeline < Pipeline # rubocop:todo Style/Documentation
         request_clone.update!(state: 'pending', target_asset_id: nil, request_metadata_attributes: rma)
         request_clone.comments.create!(
           description:
+            # rubocop:todo Layout/LineLength
             "Automatically created clone of request #{request.id} which was removed from Batch #{batch.id} at #{DateTime.now}"
+          # rubocop:enable Layout/LineLength
         )
         request.comments.create!(
           description: "The request #{request_clone.id} is an automatically created clone of this one"

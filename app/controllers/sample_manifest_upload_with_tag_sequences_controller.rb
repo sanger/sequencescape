@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class SampleManifestUploadWithTagSequencesController < ApplicationController # rubocop:todo Style/Documentation
   before_action :login_required
 

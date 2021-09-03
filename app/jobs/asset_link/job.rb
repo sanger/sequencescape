@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Convenient mechanism for queueing the creation of AssetLink instances where there is
 # singular parent with lots of children.
 class AssetLink::Job < AssetLink::BuilderJob

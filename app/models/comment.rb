@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # A comment can be assigned to any commentable record.
 class Comment < ApplicationRecord
   # include Uuid::Uuidable

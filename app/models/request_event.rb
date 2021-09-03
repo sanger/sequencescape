@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class RequestEvent < ApplicationRecord # rubocop:todo Style/Documentation
   belongs_to :request, inverse_of: :request_events
 

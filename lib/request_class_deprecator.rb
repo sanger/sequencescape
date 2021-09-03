@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Use in migrations to deprecate request classes
 # Usage:
 # include RequestClassDeprecator

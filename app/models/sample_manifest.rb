@@ -135,7 +135,9 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
         -> {
           order('sample_manifests.id DESC')
             .joins(
+              # rubocop:todo Layout/LineLength
               'LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"'
+              # rubocop:enable Layout/LineLength
             )
             .where('documents.id IS NULL')
         }
@@ -144,7 +146,9 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
         -> {
           order('sample_manifests.updated_at DESC')
             .joins(
+              # rubocop:todo Layout/LineLength
               'LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"'
+              # rubocop:enable Layout/LineLength
             )
             .where('documents.id IS NOT NULL')
         }

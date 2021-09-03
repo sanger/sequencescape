@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Included in {Well} to provide calculations for cherrypicking
 module Cherrypick::VolumeByNanoGramsPerMicroLitre
   #
@@ -19,8 +20,7 @@ module Cherrypick::VolumeByNanoGramsPerMicroLitre
   #
   # @return [Float] The total volume that will be picked from the source well
   #
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
   def volume_to_cherrypick_by_nano_grams_per_micro_litre(
     volume_required,
     concentration_required,
@@ -71,8 +71,7 @@ module Cherrypick::VolumeByNanoGramsPerMicroLitre
     volume_to_pick
   end
 
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   private
 
@@ -91,7 +90,9 @@ module Cherrypick::VolumeByNanoGramsPerMicroLitre
     end
     if source_concentration.blank? || source_concentration.to_f < 0.0
       raise Cherrypick::ConcentrationError,
+            # rubocop:todo Layout/LineLength
             "Source concentration (#{source_concentration.inspect}) is invalid for cherrypick by nano grams per micro litre"
+      # rubocop:enable Layout/LineLength
     end
   end
   # rubocop:enable Metrics/MethodLength

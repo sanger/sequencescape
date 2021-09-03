@@ -19,7 +19,10 @@ module SampleManifestExcel
 
       attr_accessor :file, :column_list, :start_row, :override
 
+      # rubocop:todo Layout/LineLength
       attr_reader :spreadsheet, :columns, :sanger_sample_id_column, :rows, :sample_manifest, :data, :processor, :cache # TODO: probably shouldn't add the cache here, do it another way
+
+      # rubocop:enable Layout/LineLength
 
       validates_presence_of :start_row, :sanger_sample_id_column, :sample_manifest
       validate :check_data
@@ -48,7 +51,9 @@ module SampleManifestExcel
       end
 
       def inspect
+        # rubocop:todo Layout/LineLength
         "<#{self.class}: @file=#{file}, @columns=#{columns.inspect}, @start_row=#{start_row}, @sanger_sample_id_column=#{sanger_sample_id_column}, @data=#{data.inspect}>"
+        # rubocop:enable Layout/LineLength
       end
 
       ##

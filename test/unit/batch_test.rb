@@ -496,7 +496,8 @@ class BatchTest < ActiveSupport::TestCase
     end
 
     context '#swap' do
-      # We must test swapping requests at different and same positions, as well as ones which would clash if not adjusted
+      # We must test swapping requests at different and same positions, as well as ones which would clash if not
+      # adjusted
       [[3, 4], [4, 4], [2, 1]].each do |left_position, right_position|
         context "when swapping #{left_position} and #{right_position}" do
           setup do

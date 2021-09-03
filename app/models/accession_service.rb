@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # The EBI operates two key AccessionServices
 # {EnaAccessionService ENA}: Mostly non-human data, provides open access to uploaded data
 # {EgaAccessionService EGA}: Mostly for human data, provides managed access to uploaded data
@@ -29,9 +30,9 @@ class AccessionService # rubocop:todo Metrics/ClassLength
   NumberNotRequired = Class.new(AccessionServiceError)
   NumberNotGenerated = Class.new(AccessionServiceError)
 
-  CenterName = 'SC'.freeze # TODO: [xxx] use confing file
-  Protect = 'protect'.freeze
-  Hold = 'hold'.freeze
+  CenterName = 'SC' # TODO: [xxx] use confing file
+  Protect = 'protect'
+  Hold = 'hold'
 
   def provider; end
 
@@ -55,10 +56,7 @@ class AccessionService # rubocop:todo Metrics/ClassLength
   self.no_study_accession_needed = false
   self.operational = false
 
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
-  # rubocop:todo Metrics/BlockLength
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/BlockLength, Metrics/AbcSize
   def submit(user, *accessionables) # rubocop:todo Metrics/CyclomaticComplexity
     ActiveRecord::Base.transaction do
       submission = Accessionable::Submission.new(self, user, *accessionables)
@@ -128,17 +126,10 @@ class AccessionService # rubocop:todo Metrics/ClassLength
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
-  # rubocop:enable Metrics/BlockLength
+  # rubocop:enable Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/BlockLength, Metrics/AbcSize
 
   def submit_sample_for_user(sample, user)
-    # raise NumberNotRequired, 'Does not require an accession number' unless sample.studies.first.ena_accession_required?
-
     ebi_accession_number = sample.sample_metadata.sample_ebi_accession_number
-
-    # raise NumberNotGenerated, 'No need to' if not ebi_accession_number.blank? and not /ERS/.match(ebi_accession_number)
 
     submit(user, Accessionable::Sample.new(sample))
   end
@@ -246,8 +237,7 @@ class AccessionService # rubocop:todo Metrics/ClassLength
     rest_client_class.new(configatron.accession.url!, accession_options)
   end
 
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
   def post_files(file_params) # rubocop:todo Metrics/CyclomaticComplexity
     rc = rest_client_resource
 
@@ -285,6 +275,5 @@ class AccessionService # rubocop:todo Metrics/ClassLength
   rescue StandardError => e
     raise AccessionServiceError, "Could not get accession number. EBI may be down or invalid data submitted: #{$!}"
   end
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 end

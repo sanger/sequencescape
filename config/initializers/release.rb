@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This contains details of the release of the application
 # to remove hard coding throughout the application
 

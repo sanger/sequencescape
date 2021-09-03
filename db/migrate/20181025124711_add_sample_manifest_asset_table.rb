@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Directly associate manifests with their assets no samples are no longer created upfront
 class AddSampleManifestAssetTable < ActiveRecord::Migration[5.1]
   def change

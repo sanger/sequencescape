@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Submission::RequestOptionsBehaviour # rubocop:todo Style/Documentation
   # Ensures the hash gets loaded with indifferent access.
   # Note: We can't just specify the class, as otherwise legacy
@@ -32,8 +33,7 @@ module Submission::RequestOptionsBehaviour # rubocop:todo Style/Documentation
   end
   private :check_request_options
 
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/AbcSize
   def check_multipliers_are_valid # rubocop:todo Metrics/CyclomaticComplexity
     multipliers = request_options.try(:[], :multiplier)
     return if multipliers.blank? # We're ok with nothing being specified!
@@ -44,7 +44,6 @@ module Submission::RequestOptionsBehaviour # rubocop:todo Style/Documentation
     return false unless errors.empty?
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
   private :check_multipliers_are_valid
 end

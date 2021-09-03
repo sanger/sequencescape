@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Generate CreateAssetRequests for the provided assets, linking them to the study.
 # Currently used in Tube sample manifests.
 # JG: Not entirely sure this is all that useful any more.

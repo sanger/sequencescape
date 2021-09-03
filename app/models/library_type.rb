@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class LibraryType < ApplicationRecord
   validates :name, presence: true
 

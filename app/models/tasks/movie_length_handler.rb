@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Tasks::MovieLengthHandler # rubocop:todo Style/Documentation
   def render_movie_length_task(task, params)
     @valid_movie_lengths = task.descriptors.find_by(name: 'Movie length').selection

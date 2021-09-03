@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class RobotVerificationsController < ApplicationController # rubocop:todo Style/Documentation
   before_action :find_barcodes, only: :submission
 

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Supplier < ApplicationRecord
   include Uuid::Uuidable
   include ::Io::Supplier::ApiIoSupport

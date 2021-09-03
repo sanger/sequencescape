@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # this class it simplified version of Submission which is just a chain of request types
 # without any choices
 class LinearSubmission < Order

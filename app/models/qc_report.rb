@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class QcReport < ApplicationRecord # rubocop:todo Style/Documentation
   # :id => The primary key for internal use only
   # :report_identifier => A unique identifier exposed to customers

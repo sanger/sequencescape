@@ -38,7 +38,9 @@ Given /^a plate with barcode "([^"]*)" exists$/ do |machine_barcode|
   FactoryBot.create :plate, sanger_barcode: { machine_barcode: machine_barcode }
 end
 
+# rubocop:todo Layout/LineLength
 Given /^a "([^"]*)" plate purpose and of type "([^"]*)" with barcode "([^"]*)" exists$/ do |plate_purpose_name, plate_type, machine_barcode|
+  # rubocop:enable Layout/LineLength
   plate_type.constantize.create!(
     sanger_barcode: {
       machine_barcode: machine_barcode
@@ -147,12 +149,6 @@ Given 'all wells on {plate_name} have unique samples' do |plate|
   plate.wells.each { |well| FactoryBot.create :untagged_aliquot, receptacle: well }
 end
 
-# Given /^([0-9]+) wells on (the plate "[^\"]+"|the last plate|the plate with ID [\d]+) have unique samples$/ do |number, plate|
-#   plate.wells.in_column_major_order[0, number.to_i].each do |well|
-#     FactoryBot.create :untagged_aliquot, receptacle: well
-#   end
-# end
-
 Given '{int} wells on {plate_name} have unique samples' do |number, plate|
   plate.wells.in_column_major_order[0, number].each { |well| FactoryBot.create :untagged_aliquot, receptacle: well }
 end
@@ -172,7 +168,9 @@ Given /^the plate "([^"]*)" is (passed|started|pending|failed) by "([^"]*)"$/ do
   StateChange.create!(user: user, target: plate, target_state: state)
 end
 
+# rubocop:todo Layout/LineLength
 Given /^(passed|started|pending|failed) transfer requests exist between (\d+) wells on "([^"]*)" and "([^"]*)"$/ do |state, count, source_name, dest_name|
+  # rubocop:enable Layout/LineLength
   source = Plate.find_by(name: source_name)
   destination = Plate.find_by(name: dest_name)
   count.to_i.times do |i|

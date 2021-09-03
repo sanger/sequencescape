@@ -23,7 +23,9 @@ When /^I print the following labels$/ do |table|
   end
 end
 
+# rubocop:todo Layout/LineLength
 Given /^I have a "([^"]*)" submission with (\d+) sample tubes as part of "([^"]*)" and "([^"]*)"$/ do |submission_template_name, number_of_tubes, study_name, project_name|
+  # rubocop:enable Layout/LineLength
   project = FactoryBot.create :project, name: project_name
   study = FactoryBot.create :study, name: study_name
   sample_tubes = []

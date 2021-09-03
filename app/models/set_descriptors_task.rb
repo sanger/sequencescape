@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # The SetDescriptorsTask presents a series of configured {Descriptor descriptors}
 # to the user, and lets them specify values for them. These values are the record
 # in {LabEvent lab events} created for each {Request}.

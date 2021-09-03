@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Handles the behaviour of {AssignTagsTask} and included in {WorkflowsController}
 # {include:AssignTagsTask}
 module Tasks::AssignTagsHandler

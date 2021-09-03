@@ -19,11 +19,13 @@ RSpec.describe StateChanger::QcableLibraryPlate do
   let(:contents) { [] }
   let(:customer_accepts_responsibility) { false }
   let(:aliquot) do
-    Struct.new(:library, :library_type, :insert_size) do
-      def save!
-        true
+    Struct
+      .new(:library, :library_type, :insert_size) do
+        def save!
+          true
+        end
       end
-    end.new
+      .new
   end
 
   it 'sets library type on aliquots' do

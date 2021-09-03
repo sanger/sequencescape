@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class QcFile < ApplicationRecord # rubocop:todo Style/Documentation
   extend DbFile::Uploader
   include Uuid::Uuidable

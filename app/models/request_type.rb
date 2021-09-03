@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # {Order orders} use RequestTypes as a factory to construct {Request requests}.
 # The list of request types to use is provided by Order#request_types and usually
 # gets populated by the SubmissionTemplate.

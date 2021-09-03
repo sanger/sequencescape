@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class CustomMetadatum < ApplicationRecord # rubocop:todo Style/Documentation
   belongs_to :custom_metadatum_collection
 

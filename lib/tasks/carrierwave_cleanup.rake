@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 namespace :tmp do
   namespace :carrierwave do
     desc 'Remove the past 24h of cached carrierwave files'

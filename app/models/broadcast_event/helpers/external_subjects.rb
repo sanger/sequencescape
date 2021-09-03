@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module BroadcastEvent::Helpers
   # Provides support to define subjects that are referring to data stored
   # externally to Sequencescape. The subjects will be built from the

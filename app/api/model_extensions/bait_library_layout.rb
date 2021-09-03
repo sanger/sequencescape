@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Included in {BaitLibraryLayout} to provide scopes used by the V1 API
 module ModelExtensions::BaitLibraryLayout
   def self.included(base)

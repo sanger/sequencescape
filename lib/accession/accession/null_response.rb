@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Accession
   # A null respons will be returned if accessioning errors.
   class NullResponse

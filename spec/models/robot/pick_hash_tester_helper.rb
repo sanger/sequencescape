@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class PickHashTesterHelper
   def initialize(destination_plate, picks, time, user)
     @destination_plate = destination_plate

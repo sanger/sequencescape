@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 ##
 # A messenger creator acts as a message factory for a given
 # for a given plate. They are currently triggered by:

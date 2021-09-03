@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Causes the locale files to be pre-processed with ERB as we need to perform some substitutions
 module I18n
   module Backend

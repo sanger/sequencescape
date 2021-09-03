@@ -10,7 +10,7 @@ class CherrypickTask::PickTarget
   end
 
   # Base class for different pick target beha
-  class Base
+  class Base # rubocop:todo Metrics/ClassLength
     def initialize(template, asset_shape = nil, partial = nil)
       @wells = []
       @size = template.size
@@ -152,10 +152,12 @@ class CherrypickTask::PickTarget
     # When starting a new plate, it writes all control requests from the beginning of the plate
     def add_any_initial_control_requests(control_posns, batch, control_assets)
       current_well_index = content.length
-      control_posns.select { |c| c <= current_well_index }.each do |control_well_index|
-        control_asset = control_assets[control_posns.find_index(control_well_index)]
-        add_control_request(batch, control_asset)
-      end
+      control_posns
+        .select { |c| c <= current_well_index }
+        .each do |control_well_index|
+          control_asset = control_assets[control_posns.find_index(control_well_index)]
+          add_control_request(batch, control_asset)
+        end
       add_any_consecutive_control_requests(control_posns, batch, control_assets)
     end
   end
@@ -168,9 +170,14 @@ class CherrypickTask::PickTarget
     private :well_position
 
     def completed_view
-      @wells.dup.tap { |wells| complete(wells) }.each_with_index.inject([]) do |wells, (well, index)|
-        wells.tap { wells[@shape.horizontal_to_vertical(index + 1, @size)] = well }
-      end.compact
+      @wells
+        .dup
+        .tap { |wells| complete(wells) }
+        .each_with_index
+        .inject([]) do |wells, (well, index)|
+          wells.tap { wells[@shape.horizontal_to_vertical(index + 1, @size)] = well }
+        end
+        .compact
     end
   end
 
@@ -194,9 +201,14 @@ class CherrypickTask::PickTarget
     private :well_position
 
     def completed_view
-      @wells.dup.tap { |wells| complete(wells) }.each_with_index.inject([]) do |wells, (well, index)|
-        wells.tap { wells[@shape.vertical_to_interlaced_vertical(index + 1, @size)] = well }
-      end.compact
+      @wells
+        .dup
+        .tap { |wells| complete(wells) }
+        .each_with_index
+        .inject([]) do |wells, (well, index)|
+          wells.tap { wells[@shape.vertical_to_interlaced_vertical(index + 1, @size)] = well }
+        end
+        .compact
     end
   end
 end

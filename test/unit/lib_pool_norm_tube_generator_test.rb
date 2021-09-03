@@ -71,7 +71,9 @@ class LibPoolNormTubeGeneratorTest < ActiveSupport::TestCase
       assert generator.transfer_template.present?
     end
 
+    # rubocop:todo Layout/LineLength
     should 'set the state of the lib pool tubes to qc complete, create all of the destination tubes with a state of qc complete, create an asset group which includes all of the destination tubes' do
+      # rubocop:enable Layout/LineLength
       generator.stubs(:lib_pool_tubes).returns(create_list(:lib_pool_tube, 3))
       mock_transfer(generator)
       assert generator.create!

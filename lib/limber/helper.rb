@@ -74,7 +74,8 @@ module Limber::Helper
     # Required:
     # @attr [String] prefix The prefix for the given limber pipeline (eg. WGS)
     # @attr [ProductCatalogue] catalogue The product catalogue that matches the submission.
-    #                           Note: Most limber stuff will use a simple SingleProduct catalogue with a product names after the prefix.
+
+    # @note Most limber stuff will use a simple SingleProduct catalogue with a product names after the prefix.
 
     # The following parameters are optional, and usually get calculated from the prefix.
     # @attr_writer [String] name Optional: The library creation portion of the submission template name

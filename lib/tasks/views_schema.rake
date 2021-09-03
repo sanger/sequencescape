@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 namespace :db do
   namespace :views do
     desc 'Export the views to a schema file'

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # No longer used directly the CherrypickForPulldownPipeline was previously an
 # automated {CherrypickingPipeline} which attempted to automatically lay out
 # target plates. However it proved tricky to model all the variations in the layout

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Core::Endpoint::BasicHandler::Actions::Factory # rubocop:todo Style/Documentation
   class Nested < Core::Endpoint::BasicHandler # rubocop:todo Style/Documentation
     def initialize(name, &block)

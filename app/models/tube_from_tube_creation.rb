@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Creates a single tube with just one parent.
 class TubeFromTubeCreation < AssetCreation
   belongs_to :child, class_name: 'Tube'

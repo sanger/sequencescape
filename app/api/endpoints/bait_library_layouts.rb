@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Controls API V1 {::Core::Endpoint::Base endpoints} for BaitLibraryLayouts
 class ::Endpoints::BaitLibraryLayouts < ::Core::Endpoint::Base
   model do

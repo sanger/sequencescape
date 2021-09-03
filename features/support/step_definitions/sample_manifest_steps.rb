@@ -161,7 +161,9 @@ Then /^the samples should be tagged in library and multiplexed library tubes wit
                  "insert_size_to: #{expected_data[:insert_size_to]} #{lt.aliquots.first.insert_size_to}"
     assert_equal lt.receptacle.id, lt.aliquots.first.library_id, "Library_id hasn't been set"
     assert pooled_aliquots.delete([expected_data[:sanger_sample_id], expected_data[:tag_index].to_i, lt.receptacle.id]),
+           # rubocop:todo Layout/LineLength
            "Couldn't find #{expected_data[:sanger_sample_id]} with tag #{expected_data[:tag_index]} in MX tube. (#{pooled_aliquots.inspect})"
+    # rubocop:enable Layout/LineLength
   end
   assert pooled_aliquots.empty?, "MX tube contains extra samples: #{pooled_aliquots.inspect}"
 end

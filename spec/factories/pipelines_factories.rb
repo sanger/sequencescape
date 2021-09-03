@@ -116,7 +116,6 @@ FactoryBot.define do
     after(:build) do |pipeline|
       pipeline.request_types << create(:sequencing_request_type)
       pipeline.add_control_request_type
-      #    pipeline.build_workflow(name: pipeline.name, item_limit: 2, locale: 'Internal', pipeline: pipeline) if pipeline.workflow.nil?
     end
 
     trait :with_workflow do

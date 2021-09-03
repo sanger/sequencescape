@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # The standard {Purpose} class for plates. This defines the standard behaviour,
 # and is the class used for the majority of PlatePurposes.
 #
@@ -67,7 +68,9 @@ class PlatePurpose < Purpose
   def pool_wells(wells) # rubocop:todo Metrics/MethodLength
     _pool_wells(wells)
       .joins(
+        # rubocop:todo Layout/LineLength
         'LEFT OUTER JOIN uuids AS pool_uuids ON pool_uuids.resource_type="Submission" AND pool_uuids.resource_id=submission_id'
+        # rubocop:enable Layout/LineLength
       )
       .select('pool_uuids.external_id AS pool_uuid')
       .readonly(false)

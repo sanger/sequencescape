@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Controls API V1 IO for Study
 class Io::Study < Core::Io::Base
   set_model_for_input(::Study)

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Endpoints::Submissions < Core::Endpoint::Base # rubocop:todo Style/Documentation
   model do
     action(:create) do |request, _|

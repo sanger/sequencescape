@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # {Labware} and {Receptacle} used to both be grouped under {Asset} and this
 # controller handled them. Now the majority of the behaviour has moved off into
 # the respective controllers. This remains to handle a few legacy endpoints:
@@ -15,8 +16,7 @@
 #         It appears to be supposed to redirect to the labware page, but it blows up for tubes
 #         and shows the qc information for plates.
 class AssetsController < ApplicationController
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/AbcSize
   def show # rubocop:todo Metrics/CyclomaticComplexity
     # LEGACY API FOR CGP to allow switch-over
     # In future they will use the recpetacles/:id/parent
@@ -42,8 +42,7 @@ class AssetsController < ApplicationController
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
 
   # TODO: This is currently used from the PhiX::SpikedBuffersController and
   # PhiX::StocksController show pages. It doesn't really belong here.

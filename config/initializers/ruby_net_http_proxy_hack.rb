@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Connect based on standard library implimentation (via ruruby)
 #
 # Copyright (c) 1999-2007 Yukihiro Matsumoto
@@ -30,9 +31,7 @@ module Net
     end
 
     # Adapted from https://raw.githubusercontent.com/jruby/jruby/9.0.5.0/lib/ruby/stdlib/net/http.rb
-    # rubocop:todo Metrics/PerceivedComplexity
-    # rubocop:todo Metrics/MethodLength
-    # rubocop:todo Metrics/AbcSize
+    # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
     def connect # rubocop:todo Metrics/CyclomaticComplexity
       if proxy?
         conn_address = proxy_address
@@ -106,9 +105,7 @@ module Net
       on_connect
     end
 
-    # rubocop:enable Metrics/AbcSize
-    # rubocop:enable Metrics/MethodLength
-    # rubocop:enable Metrics/PerceivedComplexity
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
     private :connect
   end
 end

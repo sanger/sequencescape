@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require_relative '../../lib/deployment_environment'
 
 class SessionsController < ApplicationController # rubocop:todo Style/Documentation
