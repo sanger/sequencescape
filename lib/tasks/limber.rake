@@ -20,7 +20,7 @@ namespace :limber do
       { name: 'GnT Stock', size: 96 },
       { name: 'LTHR RT', size: 96 },
       { name: 'LTHR-384 RT', size: 384 },
-      { name: 'LCA Blood Plate', size: 96 }
+      { name: 'LCA Blood Array', size: 96 }
     ]
 
     purposes.each do |purpose|
@@ -249,9 +249,9 @@ namespace :limber do
       )
     end
 
-    unless Purpose.where(name: 'LCA Blood Plate').exists?
+    unless Purpose.where(name: 'LCA Blood Array').exists?
       PlatePurpose.create!(
-        name: 'LCA Blood Plate',
+        name: 'LCA Blood Array',
         target_type: 'Plate',
         stock_plate: true,
         input_plate: true,
@@ -470,7 +470,7 @@ namespace :limber do
       Limber::Helper::RequestTypeConstructor.new(
         'Cardinal',
         library_types: ['Cardinal'],
-        default_purposes: ['LCA Blood Plate']
+        default_purposes: ['LCA Blood Array']
       ).build!
     end
   end
