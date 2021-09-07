@@ -183,7 +183,10 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
   end
 
   context 'when a batch has been created' do
-    let(:batch) { create :batch, pipeline: pipeline, requests: pipeline.requests, state: 'released' }
+    let(:batch) do
+      create :batch, pipeline: pipeline, requests: pipeline.requests, state: 'released', updated_at: 1.day.ago
+    end
+
     let!(:flowcell_message) { Messenger.create!(target: batch, template: 'FlowcellIO', root: 'flowcell') }
 
     before do
@@ -246,6 +249,7 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
       end
 
       expect(Warren.handler.messages_matching("queue_broadcast.messenger.#{flowcell_message.id}")).to eq(1)
+      expect(Batch.last.updated_at).to be_today
     end
 
     it 'multiple descriptors can be edited', warren: true do
@@ -284,6 +288,7 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
       end
 
       expect(Warren.handler.messages_matching("queue_broadcast.messenger.#{flowcell_message.id}")).to eq(1)
+      expect(Batch.last.updated_at).to be_today
     end
 
     it 'spiked PhiX can be edited', warren: true do
@@ -306,6 +311,7 @@ RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
 
       expect(Warren.handler.messages_matching("queue_broadcast.messenger.#{flowcell_message.id}")).to eq(1)
       batch.requests.each { |request| expect(request.target_asset.spiked_in_buffer).to eq(new_phix) }
+      expect(Batch.last.updated_at).to be_today
     end
 
     it 'can have failed items' do
