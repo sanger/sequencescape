@@ -472,6 +472,10 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     sample_supplier_name_empty?(supplier_sample_name)
   end
 
+  def supplier
+    sample_manifest ? sample_manifest.supplier.name : nil
+  end
+
   def sample_supplier_name_empty?(supplier_sample_name)
     supplier_sample_name.blank? ||
       ['empty', 'blank', 'water', 'no supplier name available', 'none'].include?(supplier_sample_name.downcase)

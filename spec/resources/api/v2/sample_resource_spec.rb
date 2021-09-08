@@ -11,6 +11,7 @@ RSpec.describe Api::V2::SampleResource, type: :resource do
   it 'works', :aggregate_failures do
     expect(subject).to have_attribute :sanger_sample_id
     expect(subject).to have_attribute :uuid
+    expect(subject).to have_attribute :supplier
   end
 
   it 'has sample metadata information' do
