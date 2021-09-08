@@ -195,8 +195,7 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
         .containing_samples(all_samples)
         .where(template_name: template_name)
         .includes(:submission, assets: :samples)
-        .where
-        .not(orders: { id: id })
+        .where.not(orders: { id: id })
         .where('orders.created_at > ?', Time.current - timespan)
     return false if matching_orders.empty?
 
@@ -221,7 +220,8 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # and gets persisted to the database, and used for the actual construction.
   # TODO: Simplify this
   # - There are a few attributes which all refer to loosely the same thing, a list of request type ids:
-  #   * request_type_ids_list - Set by submission templates, but also recalculated on the fly and used in various methods
+  #   * request_type_ids_list - Set by submission templates, but also recalculated on the fly and used in various
+  #                             methods
   #   * request_types_ids - Setter on order subclasses.
   #   * request_types - Serialized version on order, persisted in the database
   # - The request_types on the database should become the authoritative source.

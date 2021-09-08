@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Stores the uuids of all out records, associated via a polymorphic association
 # Allows the {file:docs/api_v1 V1 API} to find any record from just a uuid
 class Uuid < ApplicationRecord
@@ -156,7 +157,7 @@ class Uuid < ApplicationRecord
   # @return [String, nil]
   # @raise Response::Exception if system doesn't macth.
   def self.find_id(uuid, resource_type = nil)
-    with_external_id(uuid).limited_to_resource(resource_type).limit(1).pluck(:resource_id).first
+    with_external_id(uuid).limited_to_resource(resource_type).pick(:resource_id)
   end
 
   class << self

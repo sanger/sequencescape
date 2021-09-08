@@ -48,11 +48,15 @@ Given '{well_range} of {plate_name} have been failed' do |range, plate|
     end
 end
 
+# rubocop:todo Layout/LineLength
 Given '{well_range} of {plate_name} have been {submitted_to} with the following request options:' do |range, plate, template, table|
+  # rubocop:enable Layout/LineLength
   create_submission_of_assets(template, plate.wells.select(&range.method(:include?)), table.raw.to_h)
 end
 
+# rubocop:todo Layout/LineLength
 Given '{well_range} of {plate_uuid} have been {submitted_to} with the following request options:' do |range, plate, template, table|
+  # rubocop:enable Layout/LineLength
   create_submission_of_assets(template, plate.wells.select(&range.method(:include?)), table.raw.to_h)
 end
 
@@ -68,9 +72,7 @@ Given 'H12 on {asset_name} is empty' do |plate|
   plate.wells.located_at('H12').first.aliquots.clear
 end
 
-# rubocop:todo Metrics/PerceivedComplexity
-# rubocop:todo Metrics/MethodLength
-# rubocop:todo Metrics/AbcSize
+# rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
 def work_pipeline_for(submissions, name, template = nil) # rubocop:todo Metrics/CyclomaticComplexity
   raise StandardError, 'No submissions to process' if submissions.empty?
 
@@ -98,9 +100,7 @@ def work_pipeline_for(submissions, name, template = nil) # rubocop:todo Metrics/
     template.create!(source: source_plate, destination: final_plate, user: FactoryBot.create(:user))
   end
 end
-# rubocop:enable Metrics/AbcSize
-# rubocop:enable Metrics/MethodLength
-# rubocop:enable Metrics/PerceivedComplexity
+# rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
 Given /^(all submissions) have been worked until the last plate of the "Pulldown ISC" pipeline$/ do |submissions|
   work_pipeline_for(submissions, 'ISC cap lib pool')
@@ -117,7 +117,9 @@ Then 'the state of {asset_name} should be {string}' do |target, state|
   assert_equal(state, target.state, 'State is invalid')
 end
 
+# rubocop:todo Layout/LineLength
 Given 'all of the wells on {plate_name} are in an asset group called {string} owned by {study_name}' do |plate, name, study|
+  # rubocop:enable Layout/LineLength
   AssetGroup.create!(study: study, name: name, assets: plate.wells)
 end
 
@@ -126,16 +128,26 @@ Then /^all "([^"]+)" requests should have the following details:$/ do |name, tab
   raise StandardError, "No requests of type #{name.inspect}" if request_type.requests.empty?
 
   results =
-    request_type.requests.all.map do |request|
-      table.raw.map do |attribute, _|
-        [attribute, attribute.split('.').inject(request.request_metadata) { |m, s| m.send(s) }]
-      end.to_h
-    end.uniq!
+    request_type
+      .requests
+      .all
+      .map do |request|
+        table
+          .raw
+          .map do |attribute, _|
+            [attribute, attribute.split('.').inject(request.request_metadata) { |m, s| m.send(s) }]
+          end
+          .to_h
+      end
+      .uniq!
   expected =
-    table.raw.map do |attribute, value|
-      value = value.to_i if %w[fragment_size_required_from fragment_size_required_to].include?(attribute)
-      [attribute, value]
-    end.to_h
+    table
+      .raw
+      .map do |attribute, value|
+        value = value.to_i if %w[fragment_size_required_from fragment_size_required_to].include?(attribute)
+        [attribute, value]
+      end
+      .to_h
   assert_equal([expected], results, 'Request details are not identical')
 end
 
@@ -169,7 +181,9 @@ Given '{plate_name} will pool into 1 tube' do |plate|
     end
 end
 
+# rubocop:todo Layout/LineLength
 Then /^the user (should|should not) accept responsibility for pulldown library creation requests from the plate "(.*?)"$/ do |accept, plate_name|
+  # rubocop:enable Layout/LineLength
   Plate
     .find_by(name: plate_name)
     .wells

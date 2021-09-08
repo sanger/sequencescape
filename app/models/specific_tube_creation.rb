@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Allows a different purpose to be set for each of the child tubes.
 class SpecificTubeCreation < TubeCreation
   # Allows a many to many relationship between SpecificTubeCreations and Purposes.
@@ -16,7 +17,11 @@ class SpecificTubeCreation < TubeCreation
            foreign_key: 'asset_creation_id',
            class_name: 'AssetCreation::ParentAssociation',
            inverse_of: 'asset_creation'
+
+  # rubocop:todo Layout/LineLength
   has_many :parents, through: :parent_associations, class_name: 'Labware' # also has a belongs_to inherited from TubeCreation
+
+  # rubocop:enable Layout/LineLength
 
   # [Array<Hash>] An optional array of hashes which get passed in to the create! action
   #               on tube_purpose.

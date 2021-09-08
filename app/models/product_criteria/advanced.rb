@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Advanced Product Criteria can have 'unprocessable' thresholds
 # as well as fails.
 class ProductCriteria::Advanced < ProductCriteria::Basic
@@ -5,7 +6,7 @@ class ProductCriteria::Advanced < ProductCriteria::Basic
 
   STATE_ORDER = %w[failed unprocessable].freeze
 
-  TARGET_PLATE_PURPOSES = 'target_plate_purposes'.freeze
+  TARGET_PLATE_PURPOSES = 'target_plate_purposes'
 
   CONFIG_KEYS = [TARGET_PLATE_PURPOSES].freeze
 

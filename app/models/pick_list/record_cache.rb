@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # The record cache collects all ids used in the request and optimizes
 # the lookup into a single query, with appropriate eager loading.
 # Built for use with {Api::V2::PickListResource}

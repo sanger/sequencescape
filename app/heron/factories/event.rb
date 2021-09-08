@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Heron
   module Factories
     # Factory class to create Events (for the moment only PlateCherrypicked)

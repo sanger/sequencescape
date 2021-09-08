@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class DbFile < ApplicationRecord # rubocop:todo Style/Documentation
   # This is the model for database storage
 

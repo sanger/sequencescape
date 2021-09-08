@@ -1,6 +1,6 @@
+# frozen_string_literal: true
 module Submission::ProjectValidation # rubocop:todo Style/Documentation
-  # rubocop:todo Metrics/MethodLength
-  def self.included(base) # rubocop:todo Metrics/AbcSize
+  def self.included(base) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     base.class_eval do
       # We probably want to move this validation
       validates_each(:project, if: :checking_project?) do |record, _attr, project|
@@ -21,8 +21,6 @@ module Submission::ProjectValidation # rubocop:todo Style/Documentation
       before_create :confirm_validity!
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def checking_project?
     validating? && project.enforce_quotas?

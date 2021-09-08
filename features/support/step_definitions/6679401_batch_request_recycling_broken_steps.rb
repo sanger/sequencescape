@@ -8,9 +8,8 @@ Given /^study "([^"]+)" has an asset group called "([^"]+)" with (\d+) wells$/ d
     .asset_groups
     .create!(name: group_name)
     .tap do |asset_group|
-      asset_group.assets << (1..count.to_i).map do |index|
-        FactoryBot.create(:well, plate: plate, map: Map.map_96wells[index - 1])
-      end
+      asset_group.assets <<
+        (1..count.to_i).map { |index| FactoryBot.create(:well, plate: plate, map: Map.map_96wells[index - 1]) }
     end
 end
 

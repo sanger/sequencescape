@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class ProjectManager < ApplicationRecord # rubocop:todo Style/Documentation
   extend Attributable::Association::Target
 

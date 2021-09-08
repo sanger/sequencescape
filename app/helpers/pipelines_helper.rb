@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module PipelinesHelper # rubocop:todo Style/Documentation
   def target_purpose_for(request)
     nrs = request.next_requests

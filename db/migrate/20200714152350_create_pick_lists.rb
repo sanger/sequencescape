@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Add the pick-list table
 # Contains just two columns, state and submission_id
 class CreatePickLists < ActiveRecord::Migration[5.2]

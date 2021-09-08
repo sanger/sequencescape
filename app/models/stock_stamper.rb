@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class StockStamper # rubocop:todo Style/Documentation
   include ActiveModel::Model
 
@@ -31,7 +32,9 @@ class StockStamper # rubocop:todo Style/Documentation
     create_asset_audit_event
     if wells_with_excess.present?
       message[:error] =
+        # rubocop:todo Layout/LineLength
         "Required volume exceeds the maximum well volume for well(s) #{wells_with_excess.join(', ')}. Maximum well volume #{plate_type.maximum_volume.to_f} will be used in tecan file"
+      # rubocop:enable Layout/LineLength
     end
     message[:notice] = 'You can generate the TECAN file and print label now.'
   end

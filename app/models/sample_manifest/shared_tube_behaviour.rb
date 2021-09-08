@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module SampleManifest::SharedTubeBehaviour
   class Base # rubocop:todo Style/Documentation
     include SampleManifest::CoreBehaviour::Shared

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Accession
   ##
   # Does what is says on the tin.

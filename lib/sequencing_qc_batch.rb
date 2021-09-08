@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Place to put Illumina QC code to be refactored
 module SequencingQcBatch
   # NOTE: Be careful that the length of these do not exceed 25 characters, otherwise you will have to alter the

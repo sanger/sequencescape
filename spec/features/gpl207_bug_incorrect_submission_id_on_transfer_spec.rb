@@ -191,7 +191,9 @@ RSpec.describe 'Bug research' do
               )
             end
 
+            # rubocop:todo Layout/LineLength
             it 'raises an error when creating the transfer because it does not know which one is the right submission id' do
+              # rubocop:enable Layout/LineLength
               # There are 2 pools with equal configuration, so it does not know which pooling requests we are
               # referring to when creating the transfer requests.
               expect do

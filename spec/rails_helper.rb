@@ -10,10 +10,6 @@ abort('The Rails environment is running in production mode!') if Rails.env.produ
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 
-# Allows us to use transactions for the specs. Which is faster.
-# Worth keeping an eye on this one, as its the kind of thing that might
-# get patched into the Rails main-line
-require 'transactional_capybara/rspec' unless ENV['BUNDLE_GEMFILE']&.end_with?('GemfileNext')
 require 'rspec/json_expectations'
 
 require 'support/api_helper'
@@ -75,7 +71,6 @@ RSpec.configure do |config|
 
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
-  config.include TransactionalCapybara::AjaxHelpers unless ENV['BUNDLE_GEMFILE']&.end_with?('GemfileNext')
   config.include ApiHelper
   config.include TableHelper
 

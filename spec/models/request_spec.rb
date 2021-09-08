@@ -34,7 +34,9 @@ RSpec.describe Request do
       expect(submission.requests.for_order_including_submission_based_requests(order3).length).to eq 1
     end
 
+    # rubocop:todo Layout/LineLength
     it 'when filtering from submission and scoping with an order of another submission, none of the requests are included' do
+      # rubocop:enable Layout/LineLength
       expect(order4.submission.requests.for_order_including_submission_based_requests(order1).length).to eq 0
       expect(order4.submission.requests.for_order_including_submission_based_requests(order2).length).to eq 0
       expect(order4.submission.requests.for_order_including_submission_based_requests(order3).length).to eq 0

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module BroadcastEvent::SubjectHelpers
   class Subject # rubocop:todo Style/Documentation
     attr_reader :target, :role_type
@@ -12,7 +13,7 @@ module BroadcastEvent::SubjectHelpers
     end
 
     def as_json(*_args)
-      json_fields.each_with_object({}) { |field, hash| hash[field] = send(field) }
+      json_fields.index_with { |field| send(field) }
     end
 
     def broadcastable?

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Plate::FluidigmBehaviour # rubocop:todo Style/Documentation
   class FluidigmError < StandardError
   end

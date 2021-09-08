@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Descriptor < ApplicationRecord # rubocop:todo Style/Documentation
   belongs_to :task
   serialize :selection

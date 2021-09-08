@@ -4,6 +4,7 @@ require 'test_helper'
 require 'timecop'
 
 class QcReportPresenterTest < ActiveSupport::TestCase
+  # rubocop:disable Layout/LineLength
   EXPECTED_CSV =
     "Sequencescape QC Report,1.0.0
 This section is for information only and cannot be changed
@@ -19,6 +20,8 @@ Asset ID,Total micrograms,Sanger sample,Comment,Qc Decision,Proceed
 %s,10,EG,X,passed,
 %s,10,EG,X,failed,
 "
+
+  # rubocop:enable Layout/LineLength
 
   context 'A QcReportPresenter' do
     STATE_ARRAY = %w[passed failed].freeze

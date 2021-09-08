@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 namespace :primer_panel_templates do
   desc 'Converts existing templates into those with primer-panels'
   task create: :environment do

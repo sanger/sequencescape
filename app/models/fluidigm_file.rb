@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class FluidigmFile # rubocop:todo Style/Documentation
   module Finder # rubocop:todo Style/Documentation
     class Directory # rubocop:todo Style/Documentation

@@ -1,6 +1,7 @@
+# frozen_string_literal: true
 class Presenters::QcReportPresenter # rubocop:todo Style/Documentation
-  REPORT_IDENTITY = 'Sequencescape QC Report'.freeze
-  VERSION = '1.0.0'.freeze
+  REPORT_IDENTITY = 'Sequencescape QC Report'
+  VERSION = '1.0.0'
   HEADER_FIELDS = {
     'Study' => :study_name,
     'Product' => :product_name,

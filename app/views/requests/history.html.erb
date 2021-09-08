@@ -4,6 +4,12 @@
 
 <%= page_title 'Event History' %>
 
+<div>
+  <%= alert(:warning) do %>
+    From October 2021, the Event History page will no longer receive and display new updates on the status of the run. If this will be a problem for you, please let team PSD know by emailing <%= help_email_link %>
+  <% end %>
+</div>
+
 <div class="help">
   Complete event history for request <%= @request.id %>, in chronological order.
 </div>

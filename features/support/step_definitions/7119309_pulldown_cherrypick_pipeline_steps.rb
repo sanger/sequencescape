@@ -4,7 +4,9 @@ Given(
   /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" exists$/
 ) do |plate_barcode, number_of_samples, study_name|
   step(
+    # rubocop:todo Layout/LineLength
     "I have a plate \"#{plate_barcode}\" in study \"#{study_name}\" with #{number_of_samples} samples in asset group \"Plate asset group #{plate_barcode}\""
+    # rubocop:enable Layout/LineLength
   )
   step("plate \"#{plate_barcode}\" has concentration results")
   step("plate \"#{plate_barcode}\" has measured volume results")

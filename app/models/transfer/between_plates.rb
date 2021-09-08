@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Picks the specified wells from one plate into the wells of another.  In this case transfers
 # is a hash from source to destination well location and destination is the target plate for
 # the transfers.
@@ -99,7 +100,9 @@ class Transfer::BetweenPlates < Transfer
       if transfer_details.nil?
         errors.add(
           :base,
+          # rubocop:todo Layout/LineLength
           "Could not find appropriate pool for #{sources} to #{dest_loc}. Check you don't have repool submissions on failed wells."
+          # rubocop:enable Layout/LineLength
         )
         raise ActiveRecord::RecordInvalid, self
       end

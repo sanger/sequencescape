@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Was used to extend {BarcodePrinter} with methods which were supposed to be specific to the
 # V1 API. Now redundant
 # @note JG: I believe this file can just be deleted. Only reason I'm not doing it now

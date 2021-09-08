@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Metadata::BuilderBase < ActionView::Helpers::FormBuilder # rubocop:todo Style/Documentation
   attr_writer :locals
 

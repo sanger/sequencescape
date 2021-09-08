@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Informatics gem
 # Models, views and controller helpers for Informatics applications.
 

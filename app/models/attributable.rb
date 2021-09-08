@@ -41,13 +41,13 @@ module Attributable
   # If we've eager loaded metadata, then we may be using the base class, rather than
   # subclass specific forms. We can override the details used here
   def attribute_value_pairs(details = attribute_details)
-    details.each_with_object({}) { |attribute, hash| hash[attribute] = attribute.from(self) }
+    details.index_with { |attribute| attribute.from(self) }
   end
 
   # If we've eager loaded metadata, then we may be using the base class, rather than
   # subclass specific forms. We can override the details used here
   def association_value_pairs(details = association_details)
-    details.each_with_object({}) { |attribute, hash| hash[attribute] = attribute.from(self) }
+    details.index_with { |attribute| attribute.from(self) }
   end
 
   def field_infos
@@ -56,9 +56,8 @@ module Attributable
 
   def required?(field)
     field_details =
-      attribute_details.detect { |attribute| attribute.name == field } || association_details.detect do |association|
-        field == :"#{association.name}_id"
-      end
+      attribute_details.detect { |attribute| attribute.name == field } ||
+        association_details.detect { |association| field == :"#{association.name}_id" }
     field_details.try(:required?)
   end
 
@@ -80,7 +79,8 @@ module Attributable
     # @option options [Boolean] :boolean (false) The attribute should be true or false. WARNING! Currently just tests
     #                                            presence of the key, not actual value. Thus false=true.
     # @option options [Array] :in (nil) The attribute is a selection that must be included in the array.
-    # @option options [Boolean] :selection (false) The attribute is a selection generated dynamically from #validator_for
+    # @option options [Boolean] :selection (false) The attribute is a selection generated dynamically from
+    #                                              #validator_for
     # @option options [Numeric] :minimum (0) The minimum value for an integer. WARNING! Inconsistently implemented for
     #                                        floats
     # @option options [Regexp] :with (nil) Regexp for validating the attribute

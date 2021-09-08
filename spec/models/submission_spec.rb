@@ -29,7 +29,9 @@ RSpec.describe Submission, type: :model do
     let!(:request_type_4) { create(:request_type) }
     let!(:request_type_for_multiplexing) { create(:request_type, for_multiplexing: true) }
 
+    # rubocop:todo Layout/LineLength
     it 'are compatible if all request types after multiplexing requests are the same and all read lengths are the same' do
+      # rubocop:enable Layout/LineLength
       request_types = [
         request_type_1.id,
         request_type_2.id,

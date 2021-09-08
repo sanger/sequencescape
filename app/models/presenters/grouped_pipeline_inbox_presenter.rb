@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Presenters
   class GroupedPipelineInboxPresenter # rubocop:todo Style/Documentation
     class << self
@@ -11,7 +12,7 @@ module Presenters
     end
 
     ALL_STATES = %w[pending hold].freeze
-    VISIBLE_STATES = 'pending'.freeze
+    VISIBLE_STATES = 'pending'
 
     # Register our fields and their respective conditions
     add_field 'Internal ID', :internal_id

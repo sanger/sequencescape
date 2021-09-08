@@ -118,7 +118,8 @@ module Aker
       end
     end
 
-    # Given a table name and an attribute name, it returns a list of colums of the table that corresponds to this attribute
+    # Given a table name and an attribute name, it returns a list of colunms of the table that corresponds to this
+    # attribute
     #  Example:
     #    well.name         <= supplier_name
     #    well.supplier_name <= supplier_name

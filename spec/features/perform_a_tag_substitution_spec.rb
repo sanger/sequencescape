@@ -120,6 +120,8 @@ describe 'Perform a tag substitution', js: true do
     expect(page).to have_content 'Your tag substitution could not be performed.'
     expect(
       page
+      # rubocop:todo Layout/LineLength
     ).to have_content "Tag pair #{sample_b_orig_tag.oligo}-#{sample_b_orig_tag2.oligo} features multiple times in the pool."
+    # rubocop:enable Layout/LineLength
   end
 end

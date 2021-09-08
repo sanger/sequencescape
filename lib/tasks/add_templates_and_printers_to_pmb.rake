@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require_relative '../label_printer/label_printer'
 require_relative '../../config/config'
 
@@ -576,9 +577,8 @@ namespace :pmb do
         end
 
         def get_names_and_ids(res)
-          JSON.parse(res)['data'].map do |label_type|
-            [label_type['attributes']['name'].downcase, label_type['id']]
-          end.to_h
+          JSON.parse(res)['data'].map { |label_type| [label_type['attributes']['name'].downcase, label_type['id']] }
+            .to_h
         end
 
         def register_label_template(template)

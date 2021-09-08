@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class StockMultiplexedLibraryTube < Tube # rubocop:todo Style/Documentation
   include Asset::Stock
 

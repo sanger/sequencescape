@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class QcableCreator < ApplicationRecord # rubocop:todo Style/Documentation
   include Uuid::Uuidable
 

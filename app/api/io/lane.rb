@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Controls API V1 IO for {::Lane}
 class Io::Lane < Io::Asset
   set_model_for_input(::Lane)

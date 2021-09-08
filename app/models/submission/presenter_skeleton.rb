@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Submission::PresenterSkeleton # rubocop:todo Style/Documentation
   class_attribute :attributes, instance_writer: false
   self.attributes = Array.new

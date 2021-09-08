@@ -41,7 +41,8 @@ RSpec.describe SequencescapeExcel::ConditionalFormattingList,
     expect(conditional_formatting_list).not_to be_saved
   end
 
-  # TODO: This is in the wrong place. Probably should be tested in conditional formatting. Getting formula from worksheet is ugly.
+  # TODO: This is in the wrong place. Probably should be tested in conditional formatting. Getting formula from
+  # worksheet is ugly.
   it '#update with formula should correctly assign the formula to the worksheet' do
     conditional_formatting_list = described_class.new(rule_1: attributes_for(:conditional_formatting_with_formula))
     conditional_formatting_list.update(options)

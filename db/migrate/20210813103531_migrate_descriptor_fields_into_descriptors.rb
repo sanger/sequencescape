@@ -47,7 +47,7 @@ class MigrateDescriptorFieldsIntoDescriptors < ActiveRecord::Migration[5.2]
   end
 
   def merge_descriptors(fields, descriptors_hash)
-    fields.select(&:present?).map { |k| [k, nil] }.to_h.merge!(descriptors_hash)
+    fields.select(&:present?).index_with { |_k| nil }.merge!(descriptors_hash)
   end
 
   def fix_keys!(merged_descriptors)

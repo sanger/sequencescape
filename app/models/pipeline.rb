@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # A Pipeline acts to associate {Request requests} with a {Workflow}.
 # Visiting a pipeline's page will display an inbox of pending {Batch unbatched}
 # requests, and a summary list of ongoing {Batch batches} for that particular
@@ -81,7 +82,8 @@ class Pipeline < ApplicationRecord
         ->(rt) { joins(:pipelines_request_types).where(pipelines_request_types: { request_type_id: rt }) }
 
   def custom_message
-    # Override this in subclasses if you want to display a custom message in the _pipeline_limit partial (blue box on pipeline show page)
+    # Override this in subclasses if you want to display a custom message in the _pipeline_limit partial
+    # (blue box on pipeline show page)
     I18n.t('pipelines.show_page_custom_message.default')
   end
 

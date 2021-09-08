@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'lab_where_client'
 # A simple class to handle the behaviour from the labwhere reception controller
 class LabwhereReception

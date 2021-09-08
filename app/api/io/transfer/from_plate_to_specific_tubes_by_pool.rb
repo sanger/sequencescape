@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class ::Io::Transfer::FromPlateToSpecificTubesByPool < ::Core::Io::Base # rubocop:todo Style/Documentation
   set_model_for_input(::Transfer::FromPlateToSpecificTubesByPool)
   set_json_root(:transfer)

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This class is due to be removed shortly.
 # All references to it in the code have been removed.
 # At a later date a migration will be written to update the

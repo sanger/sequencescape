@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # The pipelines controller is concerned with {Pipeline pipelines} lab processes
 # that handle the processing of {Request requests}. This controller is concerned
 # with those piplines that are handled internally by Sequencescape directly,
