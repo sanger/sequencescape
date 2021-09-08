@@ -12,6 +12,19 @@ module Parsers
       @content = content
     end
 
+    def csv
+      @csv ||= CSV.parse(content, headers: true)
+    end
+
+    def qc_data
+      @qc_data ||= {}.tap do |qc_data|
+        csv.each do |row|
+          hsh = row.to_h
+          qc_data[hsh['Well Name']] = {viability: Unit.new(hsh['Viability']).scalar, live_cell_count:  Unit.new(hsh['Live Cells/mL'])}
+        end
+      end
+    end
+
   end
   # class InvalidFile < StandardError
   # end

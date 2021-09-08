@@ -33,11 +33,49 @@ RSpec.describe Parsers::CardinalPbmcCountParser, type: :model do
 
     let(:filename) { Rails.root.to_s + '/spec/data/parsers/cardinal_pbmc_count.csv' }
     let(:content) { read_file(filename) }
+    let(:parser) { Parsers::CardinalPbmcCountParser.new(content) }
 
     it 'will have some content' do
-      expect(Parsers::CardinalPbmcCountParser.new(content).content).to eq(content)
+      expect(parser.content).to eq(content)
+    end
+
+    it 'can be parsed to a csv' do
+      csv = parser.csv
+      expect(csv.length).to eq(8)
+
+      row = csv.first.to_h
+      expect(row['Well Name']).to eq('A1')
+      expect(row['Live Cells/mL']).to eq('2030000')
+      expect(row['Viability']).to eq('75.00%')
+
+      row = csv[7].to_h
+      expect(row['Well Name']).to eq('H1')
+      expect(row['Live Cells/mL']).to eq('1940000')
+      expect(row['Viability']).to eq('74.00%')
+    end
+
+    it 'can be formatted into qc data' do
+      qc_data = parser.qc_data
+      expect(qc_data.values.length).to eq(8)
+
+      row = qc_data['A1']
+      expect(row[:live_cell_count]).to eq(2030000)
+      expect(row[:viability]).to eq(75)
+
+      row = qc_data['H1']
+      expect(row[:live_cell_count]).to eq(1940000)
+      expect(row[:viability]).to eq(74)
     end
    
+  end
+
+  context 'update qc results' do
+    let(:plate) { create(:plate_with_empty_wells, well_count: 96)}
+    let(:filename) { Rails.root.to_s + '/spec/data/parsers/cardinal_pbmc_count.csv' }
+    let(:content) { read_file(filename) }
+    let(:parser) { Parsers::CardinalPbmcCountParser.new(content) }
+
+
   end
 end
 
