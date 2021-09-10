@@ -29,7 +29,7 @@ RSpec.describe Parsers::CardinalPbmcCountParser, type: :model do
   end
 
   context 'when a file is parsed' do
-    let(:filename) { Rails.root.join('/spec/data/parsers/cardinal_pbmc_count.csv') }
+    let(:filename) { Rails.root.join('spec/data/parsers/cardinal_pbmc_count.csv') }
     let(:content) { read_file(filename) }
     let(:parser) { described_class.new(content) }
 
@@ -82,7 +82,7 @@ RSpec.describe Parsers::CardinalPbmcCountParser, type: :model do
 
   context 'when updating qc results' do
     let(:plate) { create(:plate_with_empty_wells, well_count: 96) }
-    let(:filename) { Rails.root.join('/spec/data/parsers/cardinal_pbmc_count.csv') }
+    let(:filename) { Rails.root.join('spec/data/parsers/cardinal_pbmc_count.csv') }
     let(:content) { read_file(filename) }
     let(:parser) { described_class.new(content) }
 
