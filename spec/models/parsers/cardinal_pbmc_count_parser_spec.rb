@@ -3,13 +3,14 @@
 require 'rails_helper'
 
 # Well Name	Live Count	Live Cells/mL	Live Mean Size	Viability	Dead Count	Dead Cells/mL	Dead Mean Size	Total Count	Total Cells/mL	Total Mean Size	Note:	Errors:
-# A1	1074	2030000	9.35	75.00%	361	682000	2.36	1435	2710000	9.36		
-# B1	1074	2030000	8.84	76.00%	341	644000	2.34	1415	2670000	9.06		
-# C1	1218	2300000	8.81	75.00%	396	748000	2.21	1614	3050000	8.86		
-# D1	1111	2100000	9.23	75.00%	371	700000	2.38	1482	2800000	9.31		
-# E1	1208	2280000	8.77	75.00%	396	748000	2.3	1604	3030000	8.9		
-# F1	1120	2110000	8.74	75.00%	377	712000	2.34	1497	2820000	8.88		
-# G1	1177	2220000	8.79	76.00%	374	705000	2.14	1551	2930000	8.8		
+
+# A1	1074	2030000	9.35	75.00%	361	682000	2.36	1435	2710000	9.36
+# B1	1074	2030000	8.84	76.00%	341	644000	2.34	1415	2670000	9.06
+# C1	1218	2300000	8.81	75.00%	396	748000	2.21	1614	3050000	8.86
+# D1	1111	2100000	9.23	75.00%	371	700000	2.38	1482	2800000	9.31
+# E1	1208	2280000	8.77	75.00%	396	748000	2.3	1604	3030000	8.9
+# F1	1120	2110000	8.74	75.00%	377	712000	2.34	1497	2820000	8.88
+# G1	1177	2220000	8.79	76.00%	374	705000	2.14	1551	2930000	8.8
 # H1	1029	1940000	8.37	74.00%	357	675000	2.35	1386	2610000	8.57
 
 def read_file(filename)
@@ -19,7 +20,6 @@ def read_file(filename)
 end
 
 RSpec.describe Parsers::CardinalPbmcCountParser, type: :model do
-
   it 'will have an assay type' do
     expect(described_class.assay_type).to eq('Cardinal_PBMC_Count')
   end
@@ -29,7 +29,6 @@ RSpec.describe Parsers::CardinalPbmcCountParser, type: :model do
   end
 
   context 'when a file is parsed' do
-
     let(:filename) { Rails.root.join('/spec/data/parsers/cardinal_pbmc_count.csv') }
     let(:content) { read_file(filename) }
     let(:parser) { described_class.new(content) }
@@ -39,9 +38,8 @@ RSpec.describe Parsers::CardinalPbmcCountParser, type: :model do
     end
 
     context 'when parsing to a csv' do
+      let(:csv) { parser.csv }
 
-      let(:csv) { parser.csv}
-      
       it 'will have the correct number of rows' do
         expect(csv.length).to eq(8)
       end
@@ -62,7 +60,6 @@ RSpec.describe Parsers::CardinalPbmcCountParser, type: :model do
     end
 
     context 'when formatting into qc data' do
-      
       let(:qc_data) { parser.qc_data }
 
       it 'will have the correct number of values' do
@@ -81,20 +78,16 @@ RSpec.describe Parsers::CardinalPbmcCountParser, type: :model do
         expect(row[:viability]).to eq(Unit.new('74.00', '%'))
       end
     end
-   
   end
 
   context 'when updating qc results' do
-    let(:plate) { create(:plate_with_empty_wells, well_count: 96)}
+    let(:plate) { create(:plate_with_empty_wells, well_count: 96) }
     let(:filename) { Rails.root.join('/spec/data/parsers/cardinal_pbmc_count.csv') }
     let(:content) { read_file(filename) }
     let(:parser) { described_class.new(content) }
 
     context 'when creating some qc results' do
-      
-      before do
-        plate.update_qc_values_with_parser(parser)
-      end
+      before { plate.update_qc_values_with_parser(parser) }
 
       it 'will have the correct number of results' do
         expect(QcResult.count).to eq(16)
@@ -103,7 +96,7 @@ RSpec.describe Parsers::CardinalPbmcCountParser, type: :model do
       it 'will create the qc results for well A1' do
         well = plate.wells.find_by(map_id: 1)
         qc_results = QcResult.where(asset_id: well.id)
-        
+
         qc_result = qc_results.find_by(key: 'viability')
 
         expect(qc_result.value).to eq('75')
@@ -134,6 +127,5 @@ RSpec.describe Parsers::CardinalPbmcCountParser, type: :model do
         expect(qc_result.units).to eq('cells/ml')
       end
     end
-
   end
 end
