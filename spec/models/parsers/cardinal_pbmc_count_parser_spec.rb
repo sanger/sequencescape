@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'csv'
 
 # Well Name	Live Count	Live Cells/mL	Live Mean Size	Viability	Dead Count	Dead Cells/mL	Dead Mean Size	Total Count	Total Cells/mL	Total Mean Size	Note:	Errors:
 # A1	1074	2030000	9.35	75.00%	361	682000	2.36	1435	2710000	9.36		
@@ -22,158 +21,119 @@ end
 RSpec.describe Parsers::CardinalPbmcCountParser, type: :model do
 
   it 'will have an assay type' do
-    expect(Parsers::CardinalPbmcCountParser.assay_type).to eq('Cardinal_PBMC_Count')
+    expect(described_class.assay_type).to eq('Cardinal_PBMC_Count')
   end
 
   it 'will have an assay version' do
-    expect(Parsers::CardinalPbmcCountParser.assay_version).to eq('v1.0')
+    expect(described_class.assay_version).to eq('v1.0')
   end
 
-  context 'parse file' do
+  context 'when a file is parsed' do
 
-    let(:filename) { Rails.root.to_s + '/spec/data/parsers/cardinal_pbmc_count.csv' }
+    let(:filename) { Rails.root.join('/spec/data/parsers/cardinal_pbmc_count.csv') }
     let(:content) { read_file(filename) }
-    let(:parser) { Parsers::CardinalPbmcCountParser.new(content) }
+    let(:parser) { described_class.new(content) }
 
     it 'will have some content' do
       expect(parser.content).to eq(content)
     end
 
-    it 'can be parsed to a csv' do
-      csv = parser.csv
-      expect(csv.length).to eq(8)
+    context 'when parsing to a csv' do
 
-      row = csv.first.to_h
-      expect(row['Well Name']).to eq('A1')
-      expect(row['Live Cells/mL']).to eq('2030000')
-      expect(row['Viability']).to eq('75.00%')
+      let(:csv) { parser.csv}
+      
+      it 'will have the correct number of rows' do
+        expect(csv.length).to eq(8)
+      end
 
-      row = csv[7].to_h
-      expect(row['Well Name']).to eq('H1')
-      expect(row['Live Cells/mL']).to eq('1940000')
-      expect(row['Viability']).to eq('74.00%')
+      it 'will have the correct csv for well A1' do
+        row = csv.first.to_h
+        expect(row['Well Name']).to eq('A1')
+        expect(row['Live Cells/mL']).to eq('2030000')
+        expect(row['Viability']).to eq('75.00%')
+      end
+
+      it 'will have the correct csv for well H1' do
+        row = csv[7].to_h
+        expect(row['Well Name']).to eq('H1')
+        expect(row['Live Cells/mL']).to eq('1940000')
+        expect(row['Viability']).to eq('74.00%')
+      end
     end
 
-    it 'can be formatted into qc data' do
-      qc_data = parser.qc_data
-      expect(qc_data.values.length).to eq(8)
+    context 'when formatting into qc data' do
+      
+      let(:qc_data) { parser.qc_data }
 
-      row = qc_data['A1']
-      expect(row[:live_cell_count]).to eq(2030000)
-      expect(row[:viability]).to eq(75)
+      it 'will have the correct number of values' do
+        expect(qc_data.values.length).to eq(8)
+      end
 
-      row = qc_data['H1']
-      expect(row[:live_cell_count]).to eq(1940000)
-      expect(row[:viability]).to eq(74)
+      it 'will have the correct data for well A1' do
+        row = qc_data['A1']
+        expect(row[:live_cell_count]).to eq(Unit.new('2030000', 'cells'))
+        expect(row[:viability]).to eq(Unit.new('75.00', '%'))
+      end
+
+      it 'will have the correct data for well H1' do
+        row = qc_data['H1']
+        expect(row[:live_cell_count]).to eq(Unit.new('1940000', 'cells'))
+        expect(row[:viability]).to eq(Unit.new('74.00', '%'))
+      end
     end
    
   end
 
-  context 'update qc results' do
+  context 'when updating qc results' do
     let(:plate) { create(:plate_with_empty_wells, well_count: 96)}
-    let(:filename) { Rails.root.to_s + '/spec/data/parsers/cardinal_pbmc_count.csv' }
+    let(:filename) { Rails.root.join('/spec/data/parsers/cardinal_pbmc_count.csv') }
     let(:content) { read_file(filename) }
-    let(:parser) { Parsers::CardinalPbmcCountParser.new(content) }
+    let(:parser) { described_class.new(content) }
 
+    context 'when creating some qc results' do
+      
+      before do
+        plate.update_qc_values_with_parser(parser)
+      end
+
+      it 'will have the correct number of results' do
+        expect(QcResult.count).to eq(16)
+      end
+
+      it 'will create the qc results for well A1' do
+        well = plate.wells.find_by(map_id: 1)
+        qc_results = QcResult.where(asset_id: well.id)
+        
+        qc_result = qc_results.find_by(key: 'viability')
+
+        expect(qc_result.value).to eq('75')
+        expect(qc_result.units).to eq('%')
+        expect(qc_result.assay_type).to eq('Cardinal_PBMC_Count')
+        expect(qc_result.assay_version).to eq('v1.0')
+
+        qc_result = qc_results.find_by(key: 'live_cell_count')
+
+        expect(qc_result.value).to eq('2030000')
+        expect(qc_result.units).to eq('cells/ml')
+        expect(qc_result.assay_type).to eq('Cardinal_PBMC_Count')
+        expect(qc_result.assay_version).to eq('v1.0')
+      end
+
+      it 'will create the qc results for well H1' do
+        well = plate.wells.find_by(map_id: 85)
+        qc_results = QcResult.where(asset_id: well.id)
+
+        qc_result = qc_results.find_by(key: 'viability')
+
+        expect(qc_result.value).to eq('74')
+        expect(qc_result.units).to eq('%')
+
+        qc_result = qc_results.find_by(key: 'live_cell_count')
+
+        expect(qc_result.value).to eq('1940000')
+        expect(qc_result.units).to eq('cells/ml')
+      end
+    end
 
   end
 end
-
-
-# class PlateReaderParserTest < ActiveSupport::TestCase
-#   def read_file(filename)
-#     content = nil
-#     File.open(filename, 'r') { |fd| content = fd.read }
-#     content
-#   end
-
-#   context 'Parser' do
-#     context 'With a valid csv file' do
-#       setup do
-#         @filename = Rails.root.to_s + '/test/data/plate_reader_parsing_Zebrafish_example.csv'
-#         @content = read_file @filename
-#         @csv = CSV.parse(@content)
-#       end
-
-#       should 'return a Parsers::PlateReaderParser' do
-#         assert_equal true, !Parsers.parser_for(@filename, nil, @content).nil?
-#       end
-#     end
-
-#     context 'With an unreleated csv file' do
-#       setup do
-#         @filename = Rails.root.to_s + '/test/data/fluidigm.csv'
-#         @content = read_file @filename
-#       end
-
-#       should 'not return a Parsers::PlateReaderParser' do
-#         assert_nil Parsers.parser_for(@filename, nil, @content)
-#       end
-#     end
-
-#     context 'with a non csv file' do
-#       setup do
-#         @filename = Rails.root.to_s + '/test/data/example_file.txt'
-#         @content = read_file @filename
-#       end
-
-#       should 'not return a Parsers::PlateReaderParser' do
-#         assert_nil Parsers.parser_for(@filename, nil, @content)
-#       end
-#     end
-#   end
-
-#   context 'A Parsers::PlateReaderParser parser of CSV' do
-#     context 'with a valid CSV Parsers::PlateReaderParser file' do
-#       setup do
-#         filename = Rails.root.to_s + '/test/data/plate_reader_parsing_Zebrafish_example.csv'
-#         content = read_file filename
-
-#         @parser = Parsers::PlateReaderParser.new(CSV.parse(content))
-#       end
-
-#       should 'return basic metadata' do
-#         assert_equal 'Plate Reader', @parser.assay_type
-#         assert_equal 'v0.1', @parser.assay_version
-#       end
-
-#       should 'parses a CSV example file' do
-#         assert_equal '75.783', @parser.concentration('A1')
-#         assert_equal '70.487', @parser.concentration('B1')
-#       end
-
-#       should 'map by well' do
-#         results = [
-#           ['A1', { 'concentration' => Unit.new('75.783 ng/ul') }],
-#           ['B1', { 'concentration' => Unit.new('70.487 ng/ul') }],
-#           ['C1', { 'concentration' => Unit.new('78.785 ng/ul') }],
-#           ['D1', { 'concentration' => Unit.new('59.62 ng/ul') }],
-#           ['E1', { 'concentration' => Unit.new('38.78 ng/ul') }],
-#           ['F1', { 'concentration' => Unit.new('34.294 ng/ul') }],
-#           ['G1', { 'concentration' => Unit.new('25.496 ng/ul') }],
-#           ['H1', { 'concentration' => Unit.new('32.952 ng/ul') }],
-#           ['A2', { 'concentration' => Unit.new('76.92 ng/ul') }],
-#           ['B2', { 'concentration' => Unit.new('29.055 ng/ul') }],
-#           ['C2', { 'concentration' => Unit.new('76.69 ng/ul') }],
-#           ['D2', { 'concentration' => Unit.new('80.721 ng/ul') }]
-#         ]
-#         @parser.each_well_and_parameters do |*args|
-#           assert results.delete(args).present?, "#{args.inspect} was an unexpected result"
-#         end
-#         assert results.empty?, "Some expected results were not returned: #{results.inspect}"
-#       end
-#     end
-#     context 'with an invalid CSV ISC file' do
-#       setup do
-#         filename = Rails.root.to_s + '/test/data/bioanalysis_qc_results-with-error.csv'
-#         content = read_file filename
-
-#         @parser = Parsers::PlateReaderParser.new(CSV.parse(content))
-#       end
-
-#       should 'raise an exception while accessing any information' do
-#         assert_raises(Parsers::PlateReaderParser::InvalidFile) { @parser.concentration('A1') }
-#       end
-#     end
-#   end
-# end
