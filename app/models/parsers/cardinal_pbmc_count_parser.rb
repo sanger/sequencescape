@@ -4,7 +4,21 @@ module Parsers
   class CardinalPbmcCountParser
     class_attribute :assay_type, :assay_version
 
-    HEADERS = ['Well Name', 'Live Count', 'Live Cells/mL', 'Live Mean Size', 'Viability', 'Dead Count', 'Dead Cells/mL', 'Dead Mean Size', 'Total Count', 'Total Cells/mL', 'Total Mean Size', 'Note:', 'Errors:'].freeze
+    HEADERS = [
+      'Well Name',
+      'Live Count',
+      'Live Cells/mL',
+      'Live Mean Size',
+      'Viability',
+      'Dead Count',
+      'Dead Cells/mL',
+      'Dead Mean Size',
+      'Total Count',
+      'Total Cells/mL',
+      'Total Mean Size',
+      'Note:',
+      'Errors:'
+    ].freeze
 
     self.assay_type = 'Cardinal_PBMC_Count'
     self.assay_version = 'v1.0'
