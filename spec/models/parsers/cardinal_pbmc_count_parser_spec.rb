@@ -2,8 +2,8 @@
 
 require 'rails_helper'
 
-# Well Name	Live Count	Live Cells/mL	Live Mean Size	Viability	Dead Count	
-# Dead Cells/mL	Dead Mean Size	Total Count	Total Cells/mL	
+# Well Name	Live Count	Live Cells/mL	Live Mean Size	Viability	Dead Count
+# Dead Cells/mL	Dead Mean Size	Total Count	Total Cells/mL
 # Total Mean Size	Note:	Errors:
 
 # A1	1074	2030000	9.35	75.00%	361	682000	2.36	1435	2710000	9.36
