@@ -33,6 +33,10 @@ RSpec.describe Parsers::CardinalPbmcCountParser, type: :model do
     let(:content) { read_file(filename) }
     let(:parser) { described_class.new(content) }
 
+    it 'will return the correct parser' do
+      expect(Parsers.parser_for('cardinal_pbmc_count.csv', nil, content)).to be_a(described_class)
+    end
+
     it 'will have some content' do
       expect(parser.content).to eq(content)
     end
