@@ -453,6 +453,17 @@ module Barcode::FormatHandlers
     self.format = /\A(?<number>[0-9]{17})\z/
   end
 
+  # Added to support Brants Bridge centre V2
+  # They have a prefix 'BB', then a number of any length.
+  # Expected formats:
+  # BB-nnnnnnnnn
+  # where n is a digit
+  # See issue: https://github.com/sanger/sequencescape/issues/3329
+  class BrantsBridgeV2 < BaseRegExBarcode
+    self.format = /\A(?<prefix>BB)-(?<number>\d+)\z/
+  end
+
+
   # Support for Leamington Spa centre
   # Expected formats:
   # CHERYnnnnnn

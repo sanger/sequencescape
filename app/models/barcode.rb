@@ -88,7 +88,7 @@ class Barcode < ApplicationRecord
     uk_biocentre_v5
     health_services_laboratories_v1
     uk_biocentre_v6
-    brants_bridge
+    brants_bridge_v2
     leamington_spa
     newcastle
   ].freeze
