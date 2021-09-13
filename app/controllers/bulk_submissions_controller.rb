@@ -1,4 +1,5 @@
 # Encoding: utf-8
+# frozen_string_literal: true
 
 require 'formtastic'
 
@@ -9,7 +10,7 @@ class BulkSubmissionsController < ApplicationController # rubocop:todo Style/Doc
 
   before_action :find_submission_template_groups, only: %i[new create]
 
-  DEFAULT_SUBMISSION_TEMPLATE_GROUP = 'General'.freeze
+  DEFAULT_SUBMISSION_TEMPLATE_GROUP = 'General'
 
   def index
     redirect_to action: 'new'

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # @deprecated This class doesn't appear to have been used. {Equipment} appears to be a better choice.
 # Appears to have been intended to generate barcode for arbitrary instruments, beginning LE.
 # Can't see any entries in the production database, so assume this went unused.

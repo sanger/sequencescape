@@ -29,8 +29,11 @@ class UatActions::PlateInformation < UatActions
   end
 
   def wells_with_aliquots
-    plate.wells_in_column_order.each_with_object([]) do |well, wells_with_aliquots|
-      wells_with_aliquots << well.map_description if well.aliquots.present?
-    end.join(', ')
+    plate
+      .wells_in_column_order
+      .each_with_object([]) do |well, wells_with_aliquots|
+        wells_with_aliquots << well.map_description if well.aliquots.present?
+      end
+      .join(', ')
   end
 end

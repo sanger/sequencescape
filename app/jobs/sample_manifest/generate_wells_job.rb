@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Generates wells for plate sample manifests
 SampleManifest::GenerateWellsJob =
   Struct.new(:sample_manifest_id, :map_ids_to_sample_ids, :plate_id) do

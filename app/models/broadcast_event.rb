@@ -1,8 +1,9 @@
+# frozen_string_literal: true
 # @see https://github.com/sanger/event_warehouse Event Warehouse
 # Abstract class used to generate events; use subclass to specify how your particular event is generated.
 class BroadcastEvent < ApplicationRecord
-  EVENT_JSON_ROOT = 'event'.freeze
-  UNKNOWN_USER_IDENTIFIER = 'UNKNOWN'.freeze
+  EVENT_JSON_ROOT = 'event'
+  UNKNOWN_USER_IDENTIFIER = 'UNKNOWN'
 
   include Uuid::Uuidable
 

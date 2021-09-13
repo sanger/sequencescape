@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Provides an interactive interface for quickly organizing plates into their
 # associated picks.
 class PlatePicksController < ApplicationController

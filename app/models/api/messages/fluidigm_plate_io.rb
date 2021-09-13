@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Generates warehouse messages describing a fluidigm plate.
 class Api::Messages::FluidigmPlateIO < Api::Base
   self.includes = [
@@ -38,7 +39,11 @@ class Api::Messages::FluidigmPlateIO < Api::Base
   map_attribute_to_json_attribute(:fluidigm_barcode, 'plate_barcode')
   map_attribute_to_json_attribute(:uuid, 'plate_uuid_lims')
   map_attribute_to_json_attribute(:size, 'plate_size')
+
+  # rubocop:todo Layout/LineLength
   map_attribute_to_json_attribute(:updated_at, 'last_updated') # We do it for the whole plate to ensure the message has a timestamp
+
+  # rubocop:enable Layout/LineLength
   map_attribute_to_json_attribute(:occupied_well_count, 'plate_size_occupied')
 
   with_nested_has_many_association(:wells_in_row_order, as: :wells) do

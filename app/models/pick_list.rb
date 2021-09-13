@@ -1,10 +1,11 @@
+# frozen_string_literal: true
 # A pick list is a lightweight wrapper to provide a simplified interface
 # for automatically generating {Batch batches} for the {CherrypickPipeline}.
 # It is intended to isolate external applications from the implementation
 # and to provide an interface for eventually building a simplified means
 # for generating cherrypicks
 class PickList < ApplicationRecord
-  REQUEST_TYPE_KEY = 'cherrypick'.freeze
+  REQUEST_TYPE_KEY = 'cherrypick'
 
   after_create :process
 
@@ -35,9 +36,10 @@ class PickList < ApplicationRecord
   # @return [Array<PickList::Pick>] The picks created
   #
   def pick_attributes=(picks)
-    picks.map { |pick| Pick.new(pick) }.group_by(&:order_options).each do |order_options, pick_group|
-      orders << build_order(pick_group, order_options)
-    end
+    picks
+      .map { |pick| Pick.new(pick) }
+      .group_by(&:order_options)
+      .each { |order_options, pick_group| orders << build_order(pick_group, order_options) }
   end
 
   def pick_attributes
@@ -58,8 +60,10 @@ class PickList < ApplicationRecord
   end
 
   def links
-    [{ name: "Pick-list #{id}", url: url_helpers.pick_list_url(self, host: configatron.site_url) }] + batches
-      .map { |batch| { name: "Batch #{batch.id}", url: url_helpers.batch_url(batch, host: configatron.site_url) } }
+    [{ name: "Pick-list #{id}", url: url_helpers.pick_list_url(self, host: configatron.site_url) }] +
+      batches.map do |batch|
+        { name: "Batch #{batch.id}", url: url_helpers.batch_url(batch, host: configatron.site_url) }
+      end
   end
 
   def process_immediately

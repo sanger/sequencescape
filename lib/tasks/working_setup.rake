@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require './lib/oligo_enumerator'
 
 # rubocop:disable Rails/RakeEnvironment
@@ -17,7 +18,11 @@ namespace :working do
 
   task :setup do
     puts '📣 working:setup is no more.'
+
+    # rubocop:todo Layout/LineLength
     puts 'Users, studies, projects, suppliers and printers have all been moved to seeds specific to the development environment.'
+
+    # rubocop:enable Layout/LineLength
     puts 'Tag plates, and various stock plates can all be generated through UAT actions.'
   end
 end

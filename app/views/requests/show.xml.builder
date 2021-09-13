@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 xml.instruct!
 xml.request(api_data) do
   xml.id @request.id

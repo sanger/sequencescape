@@ -41,8 +41,7 @@ module ::Core::Io::Json
       named(attribute) { open(&block) }
     end
 
-    # rubocop:todo Metrics/MethodLength
-    # rubocop:todo Metrics/AbcSize
+    # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
     def encode(object, options = {}) # rubocop:todo Metrics/CyclomaticComplexity
       case object
       when NilClass
@@ -74,8 +73,7 @@ module ::Core::Io::Json
       end
     end
 
-    # rubocop:enable Metrics/AbcSize
-    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     def object_encode(object, options)
       open do

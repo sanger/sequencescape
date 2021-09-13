@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # These are constants that can be used to format the dates outputted
 
 # "11 September 2008"

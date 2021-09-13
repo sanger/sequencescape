@@ -15,9 +15,10 @@ module Heron
         def check_recipient_coordinates
           return unless @params[recipients_key]
 
-          @params[recipients_key].keys.reject { |k| coordinate_valid?(k) }.each do |k|
-            errors.add(:coordinate, "The location \"#{k}\" has an invalid format")
-          end
+          @params[recipients_key]
+            .keys
+            .reject { |k| coordinate_valid?(k) }
+            .each { |k| errors.add(:coordinate, "The location \"#{k}\" has an invalid format") }
         end
       end
     end

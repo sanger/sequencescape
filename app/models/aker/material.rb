@@ -30,8 +30,7 @@ module Aker
     end
 
     # Defines the table related with a model in the config provided
-    # rubocop:todo Metrics/PerceivedComplexity
-    # rubocop:todo Metrics/AbcSize
+    # rubocop:todo Metrics/PerceivedComplexity, Metrics/AbcSize
     def model_for_table(table_name) # rubocop:todo Metrics/CyclomaticComplexity
       return sample if table_name == :sample
       return sample.sample_metadata if table_name == :sample_metadata
@@ -45,8 +44,7 @@ module Aker
       nil
     end
 
-    # rubocop:enable Metrics/AbcSize
-    # rubocop:enable Metrics/PerceivedComplexity
+    # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
 
     def columns_for_table_from_field(table_name, field_name)
       return field_name unless sample

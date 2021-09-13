@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Superclass for all Cherrypicking pipelines. Not used directly
 class CherrypickingPipeline < GenotypingPipeline
   PICKED_STATES = %w[completed released].freeze

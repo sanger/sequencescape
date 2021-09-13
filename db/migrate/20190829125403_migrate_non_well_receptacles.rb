@@ -2,7 +2,7 @@
 
 # All non well Receptacles are just Receptacles
 class MigrateNonWellReceptacles < ActiveRecord::Migration[5.1]
-  def up # rubocop:todo Metrics/AbcSize
+  def up # rubocop:disable Metrics/AbcSize
     ActiveRecord::Base.connection.execute('SET autocommit = 0')
     ActiveRecord::Base.connection.execute('SET unique_checks = 0')
     ActiveRecord::Base.connection.execute('SET foreign_key_checks = 0')

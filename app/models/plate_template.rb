@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Virtual plate used in Cherrypicking and GateKeeper to block out empty wells
 # or layout pre-assigned samples.
 # @see LotType

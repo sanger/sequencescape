@@ -77,17 +77,6 @@ class Core::Io::Json::GrammarTest < ActiveSupport::TestCase
         target = Core::Io::Json::Grammar::Root.new(OpenStruct.new(json_root: :root_json), children)
         target.call(@object, options, stream)
       end
-
-      should 'nest children within a block' do
-        # Nothing needed in here at the moment
-      end
-
-      should 'attempt lookup of action handling' do
-        @object.stubs(:uuid).returns(:object_uuid)
-        # This was refactored and no longer happens. I can't quite track through the changes to work out exactly what was being tested.
-        # I think the behaviour has been pushed off onto encoding of the stream.
-        # @handler.expects(:endpoint_for_object, @object).raises(Core::Endpoint::BasicHandler::EndpointLookup::MissingEndpoint)
-      end
     end
   end
 end

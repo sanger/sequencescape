@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 xml.instruct!
 if @exclude_nested_resource
   xml.samples({ type: 'array' }) { |samples| Sample.all.each { |p| samples.study { |sample| sample.id p.id } } }

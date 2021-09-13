@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'timeout'
 require 'aasm'
 
@@ -407,8 +408,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
       if requests.last.submission_id.present?
         Request
           .where(submission_id: requests.last.submission_id, state: 'pending')
-          .where
-          .not(request_type_id: pipeline.request_type_ids)
+          .where.not(request_type_id: pipeline.request_type_ids)
           .find_each do |request|
             request.asset_id = nil
             request.save!
@@ -430,9 +430,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
       .find_by(plate_purposes: { name: name })
   end
 
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def swap(current_user, batch_info = {}) # rubocop:todo Metrics/CyclomaticComplexity
     return false if batch_info.empty?
 
@@ -460,8 +458,8 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
           event.update!(batch_id: batch_request_left.batch_id) if event.batch_id == batch_request_right.batch_id
         end
 
-      # Swap the two batch requests so that they are correct.  This involves swapping both the batch and the lane but ensuring that the
-      # two requests don't clash on position by removing one of them.
+      # Swap the two batch requests so that they are correct.  This involves swapping both the batch and the lane but
+      # ensuring that the two requests don't clash on position by removing one of them.
       original_left_batch_id, original_left_position, original_right_request_id =
         batch_request_left.batch_id, batch_request_left.position, batch_request_right.request_id
       batch_request_right.destroy
@@ -476,14 +474,18 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
       # Finally record the fact that the batch was swapped
       batch_request_left.batch.lab_events.create!(
         description: 'Lane swap',
+        # rubocop:todo Layout/LineLength
         message:
           "Lane #{batch_request_right.position} moved to #{batch_request_left.batch_id} lane #{batch_request_left.position}",
+        # rubocop:enable Layout/LineLength
         user_id: current_user.id
       )
       batch_request_right.batch.lab_events.create!(
         description: 'Lane swap',
+        # rubocop:todo Layout/LineLength
         message:
           "Lane #{batch_request_left.position} moved to #{batch_request_right.batch_id} lane #{batch_request_right.position}",
+        # rubocop:enable Layout/LineLength
         user_id: current_user.id
       )
     end
@@ -491,9 +493,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
     true
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   def plate_ids_in_study(study)
     Plate.plate_ids_from_requests(requests.for_studies(study))

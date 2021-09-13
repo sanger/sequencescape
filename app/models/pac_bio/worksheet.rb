@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class PacBio::Worksheet # rubocop:todo Style/Documentation
   def initialize; end
 

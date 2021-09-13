@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 ##
 # Aker namespace - This should hold all things Aker.
 module Aker

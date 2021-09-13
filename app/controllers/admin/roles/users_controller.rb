@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Admin::Roles::UsersController < ApplicationController # rubocop:todo Style/Documentation
   def index
     @role_name = params[:role_id]

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Controls API V1 {::Core::Endpoint::Base endpoints} for MultiplexedLibraryTubes
 class ::Endpoints::MultiplexedLibraryTubes < ::Endpoints::LibraryTubes
   instance do

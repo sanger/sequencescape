@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class TagLayout::WalkManualWellsOfPlate < TagLayout::Walker # rubocop:todo Style/Documentation
   self.walking_by = 'wells of plate'
 

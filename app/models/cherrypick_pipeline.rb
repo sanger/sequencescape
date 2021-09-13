@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Processes {CherrypickRequest}
 # Allows material from {Well wells} on one or more source {Plate plates} to be
 # laid out onto either a NEW plate of a specified {PlatePurpose} or onto a plate

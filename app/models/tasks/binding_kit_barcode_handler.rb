@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Handles the behaviour of {BindingKitBarcodeTask} and included in {WorkflowsController}
 # {include:BindingKitBarcodeTask}
 module Tasks::BindingKitBarcodeHandler

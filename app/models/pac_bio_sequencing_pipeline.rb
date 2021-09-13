@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class PacBioSequencingPipeline < Pipeline # rubocop:todo Style/Documentation
   include Pipeline::InboxGroupedBySubmission
 

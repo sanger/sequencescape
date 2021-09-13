@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Requests::CommentsController < ApplicationController # rubocop:todo Style/Documentation
   before_action :discover_request
 

@@ -224,22 +224,9 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
       context 'library tubes' do
         it 'create 1 tube' do
           # We need to create library tubes as we have downstream dependencies that assume a unique library tube
-          expect { manifest.generate }.to change(LibraryTube, :count).by(count).and change(
-                                                     MultiplexedLibraryTube,
-                                                     :count
-                                                   ).by(0).and change(SampleTube, :count).by(0).and change(
-                                                                                                                                         SampleManifestAsset,
-                                                                                                                                         :count
-                                                                                                                                       )
-                                                                                                                                         .by(
-                                                                                                                                         count
-                                                                                                                                       ).and change(
-                                                                                                                                                                                          BroadcastEvent,
-                                                                                                                                                                                          :count
-                                                                                                                                                                                        )
-                                                                                                                                                                                          .by(
-                                                                                                                                                                                          1
-                                                                                                                                                                                        )
+          expect { manifest.generate }.to change(LibraryTube, :count).by(count) &&
+            change(MultiplexedLibraryTube, :count).by(0) && change(SampleTube, :count).by(0) &&
+            change(SampleManifestAsset, :count).by(count) && change(BroadcastEvent, :count).by(1)
         end
 
         context 'once generated' do
@@ -291,9 +278,8 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
           let(:count) { count }
 
           it "create #{count} tubes(s)" do
-            expect { manifest.generate }.to change(SampleTube, :count).by(count).and change {
-                                                      manifest.assets.count
-                                                    }.by(count)
+            expect { manifest.generate }.to change(SampleTube, :count).by(count).and change { manifest.assets.count }
+                                                      .by(count)
             expect(manifest.assets).to eq(SampleTube.with_barcode(manifest.barcodes).map(&:receptacle))
           end
 

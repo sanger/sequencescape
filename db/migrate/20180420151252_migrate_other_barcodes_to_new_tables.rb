@@ -2,13 +2,12 @@
 
 # Move the barcodes from metadata to the new tables.
 class MigrateOtherBarcodesToNewTables < ActiveRecord::Migration[5.1]
-  def up # rubocop:todo Metrics/AbcSize
+  def up # rubocop:disable Metrics/AbcSize
     # rubocop:disable Metrics/BlockLength
     Barcode.transaction do
       say 'Migrating Infinium Barcodes'
       Plate::Metadata
-        .where
-        .not(infinium_barcode: nil)
+        .where.not(infinium_barcode: nil)
         .in_batches
         .each_with_index do |batch, i|
           say "Fetching batch #{i}"
@@ -23,8 +22,7 @@ class MigrateOtherBarcodesToNewTables < ActiveRecord::Migration[5.1]
       say 'Finished migrating Infinium Barcodes'
       say 'Migrating Fluidigm barcodes'
       Plate::Metadata
-        .where
-        .not(fluidigm_barcode: nil)
+        .where.not(fluidigm_barcode: nil)
         .in_batches
         .each_with_index do |batch, i|
           say "Fetching batch #{i}"
@@ -42,7 +40,7 @@ class MigrateOtherBarcodesToNewTables < ActiveRecord::Migration[5.1]
   end
 
   def down
-    # rubocop:todo Rails/PluckInWhere
+    # rubocop:disable Rails/PluckInWhere
     Barcode.where(asset_id: Plate::Metadata.where.not(infinium_barcode: nil).pluck(:plate_id), format: 1).destroy_all
     Barcode.where(asset_id: Plate::Metadata.where.not(fluidigm_barcode: nil).pluck(:plate_id), format: 2).destroy_all
     # rubocop:enable Rails/PluckInWhere

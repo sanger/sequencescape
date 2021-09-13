@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Add and edit {BaitLibrary::Supplier}s
 class Admin::BaitLibraries::BaitLibrarySuppliersController < ApplicationController
   authorize_resource class: BaitLibrary::Supplier
@@ -33,25 +34,18 @@ class Admin::BaitLibraries::BaitLibrarySuppliersController < ApplicationControll
     end
   end
 
-  # rubocop:todo Metrics/AbcSize
-  # rubocop:todo Metrics/MethodLength
   def destroy
-    if @bait_library_supplier.bait_libraries.visible.count > 0
-      respond_to do |format|
-        flash[:error] =
-          "Can not delete '#{@bait_library_supplier.name}', supplier is in use by #{@bait_library_supplier.bait_libraries.visible.count} libraries.<br/>"
-        format.html { redirect_to(admin_bait_libraries_path) }
-      end
+    usage_count = @bait_library_supplier.bait_libraries.visible.count
+    if usage_count > 0
+      name = @bait_library_supplier.name
+      flash[:error] = "Can not delete '#{name}', supplier is in use by #{usage_count} libraries."
     else
-      respond_to do |format|
-        flash[:notice] = 'Supplier was successfully deleted.' if @bait_library_supplier.hide
-        format.html { redirect_to(admin_bait_libraries_path) }
-      end
+      @bait_library_supplier.hide
+      flash[:notice] = 'Supplier was successfully deleted.'
     end
-  end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
+    redirect_to(admin_bait_libraries_path)
+  end
 
   private
 

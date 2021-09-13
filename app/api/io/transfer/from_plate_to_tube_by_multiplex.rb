@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class ::Io::Transfer::FromPlateToTubeByMultiplex < ::Core::Io::Base # rubocop:todo Style/Documentation
   set_model_for_input(::Transfer::FromPlateToTubeByMultiplex)
   set_json_root(:transfer)

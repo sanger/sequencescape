@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Controls API V1 {::Core::Endpoint::Base endpoints} for Tag2LayoutTemplates
 class ::Endpoints::Tag2LayoutTemplates < ::Core::Endpoint::Base
   model {}

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module QcMetric::QcState # rubocop:todo Style/Documentation
   State = Struct.new(:name, :automatic, :passed, :proceedable)
 

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 ##
 # StripTubes can be thought of as long skinny plates.
 # Unlike normal plates they can be kept in a rack.

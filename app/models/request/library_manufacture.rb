@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Any request involved in building a library should include this module that defines some of the
 # most common behaviour, namely the library type and insert size information.
 module Request::LibraryManufacture

@@ -1,8 +1,6 @@
+# frozen_string_literal: true
 module Cherrypick::VolumeByNanoGrams # rubocop:todo Style/Documentation
-  # rubocop:todo Metrics/CyclomaticComplexity
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/AbcSize, Metrics/PerceivedComplexity
   def check_inputs_to_volume_to_cherrypick_by_nano_grams!(minimum_volume, maximum_volume, target_ng, source_well)
     raise 'Source well not found' if source_well.nil?
 
@@ -38,14 +36,10 @@ module Cherrypick::VolumeByNanoGrams # rubocop:todo Style/Documentation
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
-  # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   private :check_inputs_to_volume_to_cherrypick_by_nano_grams!
 
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
   def volume_to_cherrypick_by_nano_grams(
     minimum_volume,
     maximum_volume,
@@ -57,7 +51,10 @@ module Cherrypick::VolumeByNanoGrams # rubocop:todo Style/Documentation
     check_inputs_to_volume_to_cherrypick_by_nano_grams!(minimum_volume, maximum_volume, target_ng, source_well)
 
     source_concentration = source_well.well_attribute.concentration.to_f
-    source_volume = source_well.well_attribute.estimated_volume # Current volume, fall back to measured if current not set
+
+    # Current volume, fall back to measured if current not set
+    source_volume = source_well.well_attribute.estimated_volume
+
     desired_volume = source_volume
     unless source_concentration.zero?
       desired_volume = [(target_ng.to_f / source_concentration), robot_minimum_picking_volume].max
@@ -75,8 +72,7 @@ module Cherrypick::VolumeByNanoGrams # rubocop:todo Style/Documentation
     requested_volume
   end
 
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   private
 

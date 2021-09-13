@@ -46,7 +46,9 @@ class QcReport::File # rubocop:todo Style/Documentation
     unless is_a_report?
       return(
         invalid(
+          # rubocop:todo Layout/LineLength
           "#{filename} does not appear to be a qc report file. Make sure the #{FILE_VERSION_KEY} line has not been removed."
+          # rubocop:enable Layout/LineLength
         )
       )
     end

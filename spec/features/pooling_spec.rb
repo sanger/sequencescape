@@ -32,15 +32,22 @@ describe 'Pooling', js: true, poolings: true do
       expect(page).to have_content 'Source assets with barcode(s) 1234567890123 were not found in Sequencescape'
       expect(
         page
+        # rubocop:todo Layout/LineLength
       ).to have_content "Source assets with barcode(s) #{empty_lb_tube1.ean13_barcode}, #{empty_lb_tube2.ean13_barcode} do not have any aliquots"
+
+      # rubocop:enable Layout/LineLength
       expect(page).to have_content 'i7 - i5 -', normalize_ws: true
       expect(
         page
+        # rubocop:todo Layout/LineLength
       ).to have_content "Sample #{sample1.friendly_name} Library #{untagged_lb_tube1.external_identifier} Scanned Tube #{untagged_lb_tube1.human_barcode}",
+                   # rubocop:enable Layout/LineLength
                    normalize_ws: true
       expect(
         page
+        # rubocop:todo Layout/LineLength
       ).to have_content "Sample #{sample2.friendly_name} Library #{untagged_lb_tube2.external_identifier} Scanned Tube #{untagged_lb_tube2.human_barcode}",
+                   # rubocop:enable Layout/LineLength
                    normalize_ws: true
       first('a', text: 'Remove from list').click
       first('a', text: 'Remove from list').click

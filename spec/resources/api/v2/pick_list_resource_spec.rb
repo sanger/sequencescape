@@ -10,7 +10,6 @@ RSpec.describe Api::V2::PickListResource, type: :resource, pick_list: true do
 
   # Read only attributes (almost certainly id)
   # Once again RSpec/ExampleLength cops war with RSpec/AggregateExamples
-  # rubocop:disable RSpec/ExampleLength
   specify :aggregate_failures do
     expect(resource).to have_attribute(:updated_at)
     expect(resource).to have_attribute(:created_at)
@@ -24,8 +23,6 @@ RSpec.describe Api::V2::PickListResource, type: :resource, pick_list: true do
     expect(resource).to have_creatable_field(:labware_pick_attributes)
     expect(resource).to have_creatable_field(:asynchronous)
   end
-  # rubocop:enable RSpec/ExampleLength
-
   # Updatable fields
   # eg. it { is_expected.to have_updatable_field(:state) }
 

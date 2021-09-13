@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Cherrypicking describes the transfer of selected samples from one or more plate, onto new
 # locations on other plates.
 module Cherrypick

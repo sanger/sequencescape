@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module PlatesHelper # rubocop:todo Style/Documentation
   class AliquotError < StandardError
   end
@@ -39,9 +40,9 @@ module PlatesHelper # rubocop:todo Style/Documentation
   end
 
   def wells_hash(plate)
-    Hash.new { |h, i| h[i] = ['[ Empty ]', '', 'NTC'] }.tap do |wells|
-      plate.wells.each { |well| wells[well.map.row_order] = well_properties(well) }
-    end
+    Hash
+      .new { |h, i| h[i] = ['[ Empty ]', '', 'NTC'] }
+      .tap { |wells| plate.wells.each { |well| wells[well.map.row_order] = well_properties(well) } }
   end
 
   def self.event_family_for_pick(plate_purpose_name)

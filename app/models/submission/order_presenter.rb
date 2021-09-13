@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class OrderPresenter # rubocop:todo Style/Documentation
   attr_accessor :study_id,
                 :project_name,

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Transfer::BetweenTubesBySubmission < Transfer # rubocop:todo Style/Documentation
   include TransfersToKnownDestination
 

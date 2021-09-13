@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Aker
   # Phisical container for the biomaterial
   class Container < ApplicationRecord

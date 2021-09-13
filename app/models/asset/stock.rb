@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Asset::Stock # rubocop:todo Style/Documentation
   # Extending this module will allow an asset to have a stock asset and be able to
   # create it.

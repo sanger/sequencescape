@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require "#{Rails.root}/config/config.rb"
 # Converting config.yml
 #  config = ERB.new((IO.read("#{Rails.root}/config/config.yml"))).result

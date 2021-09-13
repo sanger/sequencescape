@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Transfer::BetweenPlateAndTubes < Transfer # rubocop:todo Style/Documentation
   DESTINATION_INCLUDES = { destination: %i[uuid_object barcodes] }.freeze
 
@@ -102,8 +103,8 @@ class Transfer::BetweenPlateAndTubes < Transfer # rubocop:todo Style/Documentati
     true
   end
 
-  # Builds the name for the tube based on the wells that are being transferred from by finding their stock plate wells and
-  # creating an appropriate range.
+  # Builds the name for the tube based on the wells that are being transferred from by finding their stock plate wells
+  # and creating an appropriate range.
   def tube_name_for(stock_wells) # rubocop:todo Metrics/AbcSize
     source_wells =
       source.plate_purpose.source_wells_for(stock_wells).sort { |w1, w2| w1.map.column_order <=> w2.map.column_order }

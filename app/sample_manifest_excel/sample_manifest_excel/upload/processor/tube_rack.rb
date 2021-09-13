@@ -95,7 +95,10 @@ module SampleManifestExcel
             list_of_invalid_coordinates << list_of_coordinates[index] unless validity
           end
           error_message =
+            # rubocop:todo Layout/LineLength
             "The following coordinates in the scan are not valid for a tube rack of size #{rack_size}: #{list_of_invalid_coordinates}."
+
+          # rubocop:enable Layout/LineLength
           upload.errors.add(:base, error_message)
 
           true

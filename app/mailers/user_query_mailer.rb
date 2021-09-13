@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Used when the user follows the 'Help' button
 class UserQueryMailer < ActionMailer::Base
   def request_for_help(user_query)

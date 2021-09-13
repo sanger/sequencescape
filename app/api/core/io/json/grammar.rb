@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module ::Core::Io::Json::Grammar
   module Intermediate # rubocop:todo Style/Documentation
     attr_reader :children

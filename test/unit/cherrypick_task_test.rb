@@ -22,16 +22,19 @@ class CherrypickTaskTest < ActiveSupport::TestCase
           description_strategy: 'Map::Coordinate'
         )
 
-      ('A'..'C').map { |r| (1..4).map { |c| "#{r}#{c}" } }.flatten.each_with_index do |m, i|
-        Map.create!(
-          description: m,
-          asset_size: 12,
-          asset_shape_id: @asset_shape.id,
-          location_id: i + 1,
-          row_order: i,
-          column_order: ((i / 4) + 3 * (i % 4))
-        )
-      end
+      ('A'..'C')
+        .map { |r| (1..4).map { |c| "#{r}#{c}" } }
+        .flatten
+        .each_with_index do |m, i|
+          Map.create!(
+            description: m,
+            asset_size: 12,
+            asset_shape_id: @asset_shape.id,
+            location_id: i + 1,
+            row_order: i,
+            column_order: ((i / 4) + 3 * (i % 4))
+          )
+        end
 
       @mini_plate_purpose =
         PlatePurpose

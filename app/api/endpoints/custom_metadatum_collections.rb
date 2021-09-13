@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Controls API V1 {::Core::Endpoint::Base endpoints} for CustomMetadatumCollections
 class ::Endpoints::CustomMetadatumCollections < ::Core::Endpoint::Base
   model { action(:create, to: :standard_create!) }

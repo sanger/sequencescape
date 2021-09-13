@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Performs a change of volume on a resource
 # Primarily created on plates via Assets Audits application to indicate reduced
 # volume on, eg. working dilution creation.

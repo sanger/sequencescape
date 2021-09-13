@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 xml.instruct!
 xml.study(api_data) do |study|
   study.id @study.id

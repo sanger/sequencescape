@@ -174,9 +174,7 @@ class Submission < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # @param request [Request] The request to find the next request for
   #
   # @return [Array<Request>] An array of downstream requests
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def next_requests_via_submission(request) # rubocop:todo Metrics/CyclomaticComplexity
     raise "Request #{request.id} is not part of submission #{id}" unless request.submission_id == id
 
@@ -207,19 +205,22 @@ class Submission < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   def name
     super.presence || "##{id} #{study_names.truncate(128)}"
   end
 
   def study_names
-    # TODO: Should probably be re-factored, although we'll only fall back to the intensive code in the case of cross study re-requests
-    orders.map { |o| o.study.try(:name) || o.assets.map { |a| a.studies.pluck(:name) } }.flatten.compact.sort.uniq.join(
-      '|'
-    )
+    # TODO: Should probably be re-factored, although we'll only fall back to the intensive code in the case of cross
+    # study re-requests
+    orders
+      .map { |o| o.study.try(:name) || o.assets.map { |a| a.studies.pluck(:name) } }
+      .flatten
+      .compact
+      .sort
+      .uniq
+      .join('|')
   end
 
   def cross_project?

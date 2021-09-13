@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'aasm'
 
 class Project < ApplicationRecord # rubocop:todo Style/Documentation
@@ -19,7 +20,7 @@ class Project < ApplicationRecord # rubocop:todo Style/Documentation
     Project.aasm.states.map(&:name)
   end
 
-  ACTIVE_STATE = 'active'.freeze
+  ACTIVE_STATE = 'active'
   has_many_events
   has_many_lab_events
 

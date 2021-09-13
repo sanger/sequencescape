@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class PacBioSequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
   self.sequencing = true
 

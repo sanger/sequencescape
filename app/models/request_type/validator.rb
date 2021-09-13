@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 ##
 # A request type validator belongs to a request type, and is responsible for
 # validating a single request option

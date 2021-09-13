@@ -234,9 +234,7 @@ module SampleManifestExcel
         end
       end
 
-      # rubocop:todo Metrics/PerceivedComplexity
-      # rubocop:todo Metrics/MethodLength
-      # rubocop:todo Metrics/AbcSize
+      # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
       def add_cell_data(column, row_num, partial) # rubocop:todo Metrics/CyclomaticComplexity
         if partial && empty_row?(row_num)
           (data[column.name] || dynamic_attributes[row_num][column.name]) unless empty_columns.include?(column.name)
@@ -251,9 +249,7 @@ module SampleManifestExcel
         end
       end
 
-      # rubocop:enable Metrics/AbcSize
-      # rubocop:enable Metrics/MethodLength
-      # rubocop:enable Metrics/PerceivedComplexity
+      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
       def build_tube_sample_manifest_asset
         asset =

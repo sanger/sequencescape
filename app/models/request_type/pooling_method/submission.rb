@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 ##
 # Set on a multiplexed request_type
 # Pools based on the submission.

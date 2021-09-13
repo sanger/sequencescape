@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Handles transfer of 1-4 96 well plates or tube racks onto a single new
 # 384 well plate
 class QuadStampController < ApplicationController

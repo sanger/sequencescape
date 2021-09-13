@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # The Purpose of a piece of {Labware} describes its role in the lab. While
 # most labware will retain a single purpose through their life cycle, it is
 # possible for purpose to be changed. Ideally this should be performed with
@@ -24,6 +25,7 @@
 # @abstract Probably best to avoid using directly.
 class Purpose < ApplicationRecord
   include Relationship::Associations
+  include SharedBehaviour::Named
   include Uuid::Uuidable
 
   self.table_name = 'plate_purposes'
