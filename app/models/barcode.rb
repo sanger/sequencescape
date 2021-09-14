@@ -54,7 +54,8 @@ class Barcode < ApplicationRecord
          uk_biocentre_v6: 33,
          brants_bridge: 34,
          leamington_spa: 35,
-         newcastle: 36
+         newcastle: 36,
+         brants_bridge_v2: 37
        }
 
   # Barcode formats which may be submitted via sample manifests
@@ -88,9 +89,10 @@ class Barcode < ApplicationRecord
     uk_biocentre_v5
     health_services_laboratories_v1
     uk_biocentre_v6
-    brants_bridge_v2
+    brants_bridge
     leamington_spa
     newcastle
+    brants_bridge_v2
   ].freeze
 
   validate :barcode_valid?
