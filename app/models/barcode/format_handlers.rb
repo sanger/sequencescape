@@ -463,7 +463,6 @@ module Barcode::FormatHandlers
     self.format = /\A(?<prefix>BB)-(?<number>\d+)\z/
   end
 
-
   # Support for Leamington Spa centre
   # Expected formats:
   # CHERYnnnnnn

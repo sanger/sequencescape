@@ -277,7 +277,7 @@ describe Barcode::FormatHandlers do
   end
 
   describe Barcode::FormatHandlers::BrantsBridgeV2 do
-    it_has_a_valid_barcode 'BB-12345678', prefix: 'BB', number: 12345678
+    it_has_a_valid_barcode 'BB-12345678', prefix: 'BB', number: 12_345_678
     it_has_an_invalid_barcode '00000000002107834'
     it_has_an_invalid_barcode 'AB123456700000001'
     it_has_an_invalid_barcode 'BBB-12345678'
