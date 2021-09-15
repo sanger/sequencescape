@@ -45,7 +45,13 @@ class UatActions::GenerateSpikedBufferTube < UatActions
   end
 
   def create_phix_stocks(timestamp)
-    phi_x_stock_params = { name: "uat-phix-stock-#{timestamp}", tags: 'Dual', concentration: 10, number: 1 }
+    phi_x_stock_params = {
+      name: "uat-phix-stock-#{timestamp}",
+      tags: 'Dual',
+      concentration: 10,
+      number: 1,
+      study_id: PhiX.default_study_option&.id
+    }
     parent_stock = PhiX::Stock.new(phi_x_stock_params)
     return nil unless parent_stock.save
 

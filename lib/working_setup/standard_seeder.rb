@@ -24,6 +24,10 @@ module WorkingSetup
       @study_b ||= create_study('B study')
     end
 
+    def phi_x_study
+      create_study(PhiX.configuration[:default_study_option])
+    end
+
     def project
       @project ||= create_project('A project')
     end
