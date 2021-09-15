@@ -29,7 +29,7 @@ module Api
       has_many :comments, readonly: true
       has_many :state_changes, readonly: true
 
-      has_one :receptacle, readonly: true
+      has_one :receptacle, readonly: true, foreign_key_on: :related
 
       # Attributes
       attribute :uuid, readonly: true
