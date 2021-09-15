@@ -263,7 +263,7 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def aliquot_attributes(aliquot)
     (outer_request_for(aliquot)&.aliquot_attributes || {}).tap do |aliquot_attrs|
-      aliquot_attrs[:tag_depth] = self.tag_depth unless self.tag_depth.nil?
+      aliquot_attrs[:tag_depth] = tag_depth unless tag_depth.nil?
     end
   end
 
