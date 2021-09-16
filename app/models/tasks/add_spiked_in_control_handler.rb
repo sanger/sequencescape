@@ -41,7 +41,8 @@ module Tasks::AddSpikedInControlHandler
         process_request(request)
       end
 
-      batch.save!
+      # We touch the batch to ensure any flowcell messages have an updated timestamp
+      batch.touch # rubocop:disable Rails/SkipsModelValidations
       batch.requests.all? { |r| r.has_passed(batch, task) }
     end
 

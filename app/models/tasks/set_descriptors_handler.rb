@@ -19,7 +19,9 @@ module Tasks::SetDescriptorsHandler # rubocop:todo Style/Documentation
 
       return false unless all_requests_processed?
       create_batch_events
-      batch.save
+
+      # We touch the batch to ensure any flowcell messages have an updated timestamp
+      batch.touch # rubocop:disable Rails/SkipsModelValidations
       true
     end
 
