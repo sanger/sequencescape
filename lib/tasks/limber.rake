@@ -8,8 +8,8 @@ namespace :limber do
   desc 'Setup all the necessary limber records'
   task setup: %w[limber:create_submission_templates limber:create_searches limber:create_tag_templates]
 
-  desc 'Create the Limber cherrypick plates'
-  task create_plates: :environment do
+  desc 'Create purposes for use in Limber pipelines'
+  task create_purposes: :environment do
     purposes = [
       { name: 'LB Cherrypick', size: 96 },
       { name: 'scRNA Stock', size: 96 },
@@ -265,7 +265,7 @@ namespace :limber do
   end
 
   desc 'Create the limber request types'
-  task create_request_types: %i[environment create_plates] do
+  task create_request_types: %i[environment create_purposes] do
     puts 'Creating request types...'
     ActiveRecord::Base.transaction do
       %w[WGS LCMB].each { |prefix| Limber::Helper::RequestTypeConstructor.new(prefix).build! }
@@ -637,14 +637,6 @@ namespace :limber do
         role: 'LTHR'
       ).build!
 
-      project_heron =
-        if Rails.env.production?
-          Project.find_by!(name: 'Project Heron')
-        else
-          # In development mode or UAT we don't care so much
-          Project.find_by(name: 'Project Heron') || UatActions::StaticRecords.project
-        end
-
       unless SubmissionTemplate.find_by(name: 'Limber - Heron LTHR - Automated')
         SubmissionTemplate.create!(
           name: 'Limber - Heron LTHR - Automated',
@@ -655,7 +647,7 @@ namespace :limber do
               RequestType.where(key: 'limber_multiplexing').pluck(:id),
               RequestType.where(key: 'illumina_htp_novaseq_6000_paired_end_sequencing').pluck(:id)
             ],
-            project_id: project_heron.id
+            project_id: Limber::Helper.find_project('Project Heron').id
           },
           product_line: ProductLine.find_by!(name: 'Illumina-HTP'),
           product_catalogue: ProductCatalogue.find_by!(name: 'Generic')
@@ -676,8 +668,8 @@ namespace :limber do
       gbs_catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'GBS')
       Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'GBS', catalogue: gbs_catalogue).build!
 
-      cardinal_catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'Cardinal')
-      Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'Cardinal', catalogue: cardinal_catalogue).build!
+      cardinal_catalogue =
+        ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'Cardinal')
 
       catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'Generic')
       Limber::Helper::TemplateConstructor.new(prefix: 'Multiplexing', catalogue: catalogue, sequencing_keys: base_list)
@@ -762,22 +754,18 @@ namespace :limber do
         role: 'Chromium'
       ).build!
 
-      # TODO: do we need this one given we don't need a library prep AND sequencing submission
-      Limber::Helper::TemplateConstructor.new(
-        prefix: 'Cardinal',
-        name: 'Cardinal',
-        pipeline: 'Limber-Cardinal',
-        product_line: 'Cardinal',
-        catalogue: cardinal_catalogue,
-        sequencing_keys: full_list
-      ).build!
-      Limber::Helper::LibraryOnlyTemplateConstructor.new(
-        prefix: 'Cardinal',
-        name: 'Cardinal',
-        pipeline: 'Limber-Cardinal',
-        product_line: 'Cardinal',
-        catalogue: cardinal_catalogue
-      ).build!
+      unless SubmissionTemplate.find_by(name: 'Limber - Cardinal')
+        SubmissionTemplate.create!(
+          name: 'Limber - Cardinal',
+          submission_class_name: 'LinearSubmission',
+          submission_parameters: {
+            request_type_ids_list: [RequestType.where(key: 'limber_cardinal').pluck(:id)],
+            project_id: Limber::Helper.find_project('Project Cardinal').id
+          },
+          product_line: ProductLine.find_by!(name: 'Cardinal'),
+          product_catalogue: cardinal_catalogue
+        )
+      end
 
       ## end ##
 
