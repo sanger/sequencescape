@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'shared_contexts/limber_shared_context'
 
-RSpec.describe TransferRequest, type: :model do
+RSpec.describe TransferRequest, type: :model, cardinal: true do
   let(:source) { create :well_with_sample_and_without_plate }
   let(:tag) { create(:tag).tag!(source) }
   let(:destination) { create :well }
@@ -182,6 +182,54 @@ RSpec.describe TransferRequest, type: :model do
           expect(destination.stock_wells).to eq([source])
         end
       end
+    end
+    context 'when building using tag_depth' do
+      context 'when building several transfer requests' do
+        let(:transfer_request) { 
+          described_class.create!(
+            asset: source, target_asset: destination, tag_depth: 1) 
+        }
+        context 'with the same tag depth' do
+          let(:transfer_request2) { 
+            described_class.create!(
+              asset: source, target_asset: destination, tag_depth: 1) 
+          }
+          it 'cannot create several requests into the same destination' do          
+            expect { [transfer_request, transfer_request2]}.to raise_error
+          end
+        end
+        context 'with the different tag depth' do
+          let(:transfer_request2) { 
+            described_class.create!(
+              asset: source, target_asset: destination, tag_depth: 2) 
+          }
+          it 'can create several requests into the same destination, allowing tag clash' do
+            expect { [transfer_request, transfer_request2]}.not_to raise_error
+          end
+        end
+      end
+
+      # context '#aliquot_attributes' do
+      #   let(:transfer_request) { 
+      #     described_class.create!(
+      #       asset: source, target_asset: destination, tag_depth: tag_depth) 
+      #   }
+      #   context 'when tag depth defined' do
+      #     let(:tag_depth) { 1}
+
+      #     it 'returns tag_depth' do
+      #       expect(transfer_request.aliquot_attributes).to have_key(:tag_depth)
+      #       expect(transfer_request.aliquot_attributes[:tag_depth]).to eq(1)
+      #     end
+      #   end
+
+      #   context 'when tag depth not defined' do
+      #     let(:tag_depth) {nil}
+      #     it 'does not return tag_depth' do
+      #       expect(transfer_request.aliquot_attributes).not_to have_key(:tag_depth)
+      #     end
+      #   end
+      # end  
     end
 
     context 'when the destination has equivalent aliquots' do
