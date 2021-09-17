@@ -187,21 +187,21 @@ RSpec.describe TransferRequest, type: :model, cardinal: true do
       context 'when building several transfer requests' do
         let(:transfer_request) { 
           described_class.create!(
-            asset: source, target_asset: destination, tag_depth: 1) 
+            asset: source, target_asset: destination, aliquot_attributes: { tag_depth: 1 }) 
         }
         context 'with the same tag depth' do
           let(:transfer_request2) { 
             described_class.create!(
-              asset: source, target_asset: destination, tag_depth: 1) 
+              asset: source, target_asset: destination, aliquot_attributes: { tag_depth: 1 }) 
           }
           it 'cannot create several requests into the same destination' do          
-            expect { [transfer_request, transfer_request2]}.to raise_error
+            expect { [transfer_request, transfer_request2]}.to raise_error Aliquot::TagClash
           end
         end
         context 'with the different tag depth' do
           let(:transfer_request2) { 
             described_class.create!(
-              asset: source, target_asset: destination, tag_depth: 2) 
+              asset: source, target_asset: destination, aliquot_attributes: { tag_depth: 2 }) 
           }
           it 'can create several requests into the same destination, allowing tag clash' do
             expect { [transfer_request, transfer_request2]}.not_to raise_error
