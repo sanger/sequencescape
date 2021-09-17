@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 # rubocop:todo Metrics/ModuleLength
-module BootstrapHelper # rubocop:todo Style/Documentation
+
+# A collection of view helpers to assist with rendering bootstrap components
+module BootstrapHelper
   def panel(type = :default, options = {}, &block)
     bs_custom_panel(type, :div, { class: 'card-body' }, options, &block)
   end
@@ -19,8 +21,7 @@ module BootstrapHelper # rubocop:todo Style/Documentation
 
   def bs_custom_panel(type, body_type, body_options, options, &block)
     title = options.delete(:title)
-    options[:class] ||= []
-    options[:class] << " ss-card card-style-#{type}"
+    append_class!(options, "ss-card card-style-#{type}")
     tag.div(options) do
       concat tag.h3(title, class: 'card-header-custom') unless title.nil?
       concat content_tag(body_type, body_options, &block)
@@ -31,9 +32,8 @@ module BootstrapHelper # rubocop:todo Style/Documentation
   #  block_content
   # </div>
   def alert(type = :default, options = {}, &block)
-    options[:class] ||= []
     options[:role] ||= 'alert'
-    options[:class] << " alert alert-#{type}"
+    append_class!(options, "alert alert-#{type}")
     tag.div(options, &block)
   end
 
@@ -152,11 +152,26 @@ module BootstrapHelper # rubocop:todo Style/Documentation
   end
 
   def bs_select(*args)
-    hashes = args[-2, 2].count { |arg| arg.respond_to?(:keys) }
+    hashes = args.last(2).count { |arg| arg.respond_to?(:keys) }
     (2 - hashes).times { args << {} }
-    args.last[:class] ||= ''
-    args.last[:class] << ' custom-select'
+    append_class!(args.last, 'custom-select')
     select(*args)
+  end
+
+  #
+  # Mutates the input html_options hash to add klass to the css classes while
+  # maintaining any existing classes
+  #
+  # @param options [Hash] Hash of HTML options for the rails form renderer
+  # @param klass [String] A css class to add to the :class key
+  #
+  # @return [Hash] The HTML options hash.
+  #                @note The original hash is mutated, the return value is provided for method chaining
+  #
+  def append_class!(options, klass)
+    options[:class] = Array(options[:class])
+    options[:class] << klass
+    options
   end
 end
 # rubocop:enable Metrics/ModuleLength
