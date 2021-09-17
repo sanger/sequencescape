@@ -33,19 +33,18 @@ module Parsers
       @content = content
     end
 
-    def csv
-      @csv ||= CSV.parse(content, headers: true)
+    def rows
+      @rows ||= content.drop(1)
     end
 
+    # 0 - well name
+    # 2 - cell count
+    # 4 - viability
     def qc_data
       @qc_data ||=
         {}.tap do |qc_data|
-          csv.each do |row|
-            hsh = row.to_h
-            qc_data[hsh['Well Name']] = {
-              viability: Unit.new(hsh['Viability']),
-              live_cell_count: Unit.new(hsh['Live Cells/mL'], 'cells')
-            }
+          rows.each do |row|
+            qc_data[row[0]] = { viability: Unit.new(row[4]), live_cell_count: Unit.new(row[2], 'cells') }
           end
         end
     end

@@ -18,9 +18,11 @@ RSpec.describe 'QcFiles', type: :request do
         'HTTP_COOKIE' => ''
       }
 
-      post "/api/1/#{plate.uuid}/qc_files", params: { uploaded_data: file.read }, headers: headers
+      post "/api/1/#{plate.uuid}/qc_files", params: file.read, headers: headers
 
       expect(response).to have_http_status(:success)
+
+      expect(QcResult.count).to eq(16)
     end
   end
 end

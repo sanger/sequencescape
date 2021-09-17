@@ -33,35 +33,37 @@ RSpec.describe Parsers::CardinalPbmcCountParser, type: :model do
   context 'when a file is parsed' do
     let(:filename) { Rails.root.join('spec/data/parsers/cardinal_pbmc_count.csv') }
     let(:content) { read_file(filename) }
-    let(:parser) { described_class.new(content) }
+    let(:csv) { CSV.parse(content) }
+    let(:parser) { described_class.new(csv) }
 
     it 'will return the correct parser' do
       expect(Parsers.parser_for('cardinal_pbmc_count.csv', nil, content)).to be_a(described_class)
     end
 
     it 'will have some content' do
-      expect(parser.content).to eq(content)
+      expect(parser.content).to eq(csv)
     end
 
-    context 'when parsing to a csv' do
-      let(:csv) { parser.csv }
+    context 'when parsing rows' do
+      let(:rows) { parser.rows }
 
       it 'will have the correct number of rows' do
-        expect(csv.length).to eq(8)
+        p parser.rows
+        expect(rows.length).to eq(8)
       end
 
       it 'will have the correct csv for well A1' do
-        row = csv.first.to_h
-        expect(row['Well Name']).to eq('A1')
-        expect(row['Live Cells/mL']).to eq('2030000')
-        expect(row['Viability']).to eq('75.00%')
+        row = rows[0]
+        expect(row[0]).to eq('A1')
+        expect(row[2]).to eq('2030000')
+        expect(row[4]).to eq('75.00%')
       end
 
       it 'will have the correct csv for well H1' do
-        row = csv[7].to_h
-        expect(row['Well Name']).to eq('H1')
-        expect(row['Live Cells/mL']).to eq('1940000')
-        expect(row['Viability']).to eq('74.00%')
+        row = rows[7]
+        expect(row[0]).to eq('H1')
+        expect(row[2]).to eq('1940000')
+        expect(row[4]).to eq('74.00%')
       end
     end
 
@@ -90,7 +92,8 @@ RSpec.describe Parsers::CardinalPbmcCountParser, type: :model do
     let(:plate) { create(:plate_with_empty_wells, well_count: 96) }
     let(:filename) { Rails.root.join('spec/data/parsers/cardinal_pbmc_count.csv') }
     let(:content) { read_file(filename) }
-    let(:parser) { described_class.new(content) }
+    let(:csv) { CSV.parse(content) }
+    let(:parser) { described_class.new(csv) }
 
     context 'when creating some qc results' do
       before { plate.update_qc_values_with_parser(parser) }
