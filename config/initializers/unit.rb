@@ -16,3 +16,13 @@ Unit.define('RIN') do |rin|
   rin.aliases = %w[RIN rin] # array of synonyms for the unit
   rin.kind = :rna_integrity
 end
+
+Unit.define('cells') do |cells|
+  cells.scalar = 1
+  cells.display_name = 'cells/ml'
+end
+
+Unit.define('percentage') do |percentage|
+  percentage.scalar = 1
+  percentage.aliases = %w[percentage %]
+end
