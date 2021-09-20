@@ -1,5 +1,5 @@
 
-<table id="study_list" class="sortable">
+<table id="study_list" class="sortable table">
   <thead>
   <tr>
     <th>Name</th>
@@ -22,8 +22,8 @@
       <td><%= pluralize(manifest.count, manifest.asset_type || "plate") %></td>
       <td><%= link_to manifest.study.name, study_path(manifest.study) %></td>
       <td><%= link_to manifest.supplier.name, supplier_path(manifest.supplier) %></td>
-      <td class="strong faint"><span style="display:none"><%= manifest.created_at %></span><%= manifest.created_at.to_formatted_s(:sortable) %></td>
-      <td class="strong faint"><span style="display:none"><%= manifest.updated_at %></span><%= manifest.updated_at.to_formatted_s(:sortable) %></td>
+      <td><%= time_tag(manifest.created_at, format: :sortable) %></td>
+      <td><%= time_tag(manifest.updated_at, format: :sortable) %></td>
       <td>
         <% if manifest.user %>
           <%= link_to manifest.user.login, profile_path(manifest.user) %>
