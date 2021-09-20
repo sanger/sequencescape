@@ -1,0 +1,7 @@
+# Note: Tubes in the cardinal pipeline are under control of Limber. These are
+# the initial tubes that enter via manifest
+---
+LCA Blood Vac:
+  type: Tube::Purpose
+  target_type: SampleTube
+  stock_plate: false
