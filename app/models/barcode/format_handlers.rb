@@ -479,4 +479,24 @@ module Barcode::FormatHandlers
   class Newcastle < BaseRegExBarcode
     self.format = /\A(?<prefix>ICHNE)(?<number>\d+)(?<suffix>[A-Z|a-z]{1})\z/
   end
+
+  # Support for UK Biocentre
+  # As part of the Cardinal pipeline
+  # Expected formats:
+  # 003nnnnnnnnnn
+  # where n is a digit
+  class UkBiocentreV7 < BaseRegExBarcode
+    self.format = /\A(?<prefix>003)(?<number>[0-9]{10})\z/
+  end
+
+  # Support for East London Genes and Health
+  # As part of the Cardinal pipeline
+  # To allow import Cardinal blood vacutainer tubes into Sequencescape
+  # See issue: https://github.com/sanger/limber/issues/822
+  # Expected formats:
+  # S2-046-nnnnnn
+  # where n is a digit
+  class EastLondonGenesAndHealth < BaseRegExBarcode
+    self.format = /\A(?<prefix>S2)-046-(?<number>\d+)\z/
+  end
 end
