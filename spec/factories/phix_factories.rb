@@ -8,6 +8,7 @@ FactoryBot.define do
     tags { 'Dual' }
     concentration { '9.2' }
     number { '1' }
+    study_id { create(:study).id }
   end
 
   factory :phi_x_spiked_buffer, class: 'PhiX::SpikedBuffer' do
