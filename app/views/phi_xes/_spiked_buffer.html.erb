@@ -21,6 +21,16 @@
     </div>
   </div>
   <div class='phi-x-form'>
+    <%= form.label :study_id, 'Study' %>
+    <div class="field">
+      <%= form.select :study_id, @study_names , {prompt: "Same a stock"} %>
+      <div class="form-help">
+        The study with which the PhiX will be associated.
+        Leave as is to use same study as parent
+      </div>
+    </div>
+  </div>
+  <div class='phi-x-form'>
     <%= form.label :concentration %>
     <div class="field">
     <div class="input-group">

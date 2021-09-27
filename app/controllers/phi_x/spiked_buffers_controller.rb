@@ -9,6 +9,7 @@ class PhiX::SpikedBuffersController < ApplicationController
       @spiked_buffers = @spiked_buffer.created_spiked_buffers
       render :show
     else
+      @study_names = PhiX.studies.for_select_association
       render :new
     end
   end
@@ -16,6 +17,8 @@ class PhiX::SpikedBuffersController < ApplicationController
   private
 
   def phi_x_spiked_buffers_params
-    params.require(:phi_x_spiked_buffer).permit(:name, :parent_barcode, :concentration, :buffer, :number, :volume)
+    params
+      .require(:phi_x_spiked_buffer)
+      .permit(:name, :parent_barcode, :concentration, :buffer, :number, :volume, :study_id)
   end
 end

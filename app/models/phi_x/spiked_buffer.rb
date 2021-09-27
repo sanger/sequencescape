@@ -27,6 +27,9 @@ class PhiX::SpikedBuffer
   # @return [Tube] PhiX containing parent tube. If not provided will look up via the parent_barcode
   attr_writer :parent
 
+  # @return [Integer] The id of the {Study} to associate with the {Aliquot}
+  attr_accessor :study_id
+
   validates :name, presence: true
   validates :concentration, numericality: { greater_than: 0, only_integer: false }
   validates :volume, numericality: { greater_than: 0, only_integer: false }
@@ -82,6 +85,10 @@ class PhiX::SpikedBuffer
     @phi_x_sample ||= PhiX.sample
   end
 
+  def aliquot_attributes
+    study_id.present? ? { study_id: study_id } : {}
+  end
+
   # Generates .number PhiX.stock_purpose tubes names
   # with name, followed by '#n' where n is the tube number (starting with 1)
   # Creates a qc_result to set the concentration (uses molarity as we're in nM not ng/ul)
@@ -96,7 +103,11 @@ class PhiX::SpikedBuffer
             receptacle = tube.receptacle
             receptacle.qc_results.build(key: 'molarity', value: concentration, units: 'nM')
             receptacle.qc_results.build(key: 'volume', value: volume, units: 'ul')
-            receptacle.transfer_requests_as_target.build(asset: parent.receptacle, target_asset: receptacle)
+            receptacle.transfer_requests_as_target.build(
+              asset: parent.receptacle,
+              target_asset: receptacle,
+              aliquot_attributes: aliquot_attributes
+            )
           end
       parent.children << spiked_buffer
       spiked_buffer

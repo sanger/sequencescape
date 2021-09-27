@@ -53,6 +53,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   extend EventfulRecord
   extend Metadata
+  extend Attributable::Association::Target
 
   # Constants
   STOCK_PLATE_PURPOSES = ['Stock Plate', 'Stock RNA Plate'].freeze

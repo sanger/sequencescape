@@ -56,7 +56,11 @@ RSpec.describe PhiX::SpikedBuffer, type: :model, phi_x: true do
     context 'with valid data' do
       subject(:save) { phi_x_spiked_buffer.save }
 
-      let(:parent) { create :phi_x_stock_tube }
+      let(:stock_study) { create :study }
+
+      let(:parent) { create :phi_x_stock_tube, study: stock_study }
+
+      let(:study_id) { nil }
       let(:phi_x_spiked_buffer) do
         build :phi_x_spiked_buffer,
               name: 'Example',
@@ -64,7 +68,8 @@ RSpec.describe PhiX::SpikedBuffer, type: :model, phi_x: true do
               parent: nil,
               concentration: '0.8',
               volume: '10',
-              number: 2
+              number: 2,
+              study_id: study_id
       end
 
       before { save }
@@ -105,6 +110,24 @@ RSpec.describe PhiX::SpikedBuffer, type: :model, phi_x: true do
 
       it 'records the parent' do
         phi_x_spiked_buffer.created_spiked_buffers.each { |tube| expect(tube.parents).to all eq parent }
+      end
+
+      context 'when study_id is nil' do
+        it 'uses the same study as the parent' do
+          phi_x_spiked_buffer.created_spiked_buffers.each do |tube|
+            expect(tube.aliquots).to all have_attributes(study_id: stock_study.id)
+          end
+        end
+      end
+
+      context 'when study_id is provided' do
+        let(:study_id) { create(:study).id }
+
+        it 'sets study on the new aliquots' do
+          phi_x_spiked_buffer.created_spiked_buffers.each do |tube|
+            expect(tube.aliquots).to all have_attributes(study_id: study_id)
+          end
+        end
       end
     end
 
