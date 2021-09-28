@@ -85,6 +85,9 @@ class PhiX::SpikedBuffer
     @phi_x_sample ||= PhiX.sample
   end
 
+  # Setting the study for a SpikedBuffer tube is not currently exposed as an option through the /phi_x page
+  # due to concerns that it will be set accidentally
+  # But the option is here in the model to set it via study_id if needed in future
   def aliquot_attributes
     study_id.present? ? { study_id: study_id } : {}
   end

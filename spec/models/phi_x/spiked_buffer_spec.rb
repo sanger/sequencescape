@@ -120,6 +120,9 @@ RSpec.describe PhiX::SpikedBuffer, type: :model, phi_x: true do
         end
       end
 
+      # Setting the study for a SpikedBuffer tube is not currently exposed as an option through the /phi_x page
+      # due to concerns that it will be set accidentally
+      # But the option is here in the model to set it via study_id if needed in future
       context 'when study_id is provided' do
         let(:study_id) { create(:study).id }
 
