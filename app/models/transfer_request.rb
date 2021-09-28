@@ -18,6 +18,7 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Determines if we attempt to filter out {Aliquot#equivalent? equivalent} aliquots
   # before performing transfers.
   attr_accessor :merge_equivalent_aliquots
+  attr_writer :aliquot_attributes
 
   # States which are still considered to be processable (ie. not failed or cancelled)
   ACTIVE_STATES = %w[pending started passed qc_complete].freeze
@@ -262,7 +263,7 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def aliquot_attributes(aliquot)
-    outer_request_for(aliquot)&.aliquot_attributes || {}
+    outer_request_for(aliquot)&.aliquot_attributes || @aliquot_attributes || {}
   end
 
   def outer_request_for(aliquot)

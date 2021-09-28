@@ -91,6 +91,16 @@ module PhiX
     TagGroup.find_or_create_by!(name: configuration[:tag_group_name])
   end
 
+  # Returns the {Study studies} that can be used to register PhiX
+  # @return [Study::ActiveRecord_Relation]
+  def self.studies
+    Study.where(name: configuration[:studies])
+  end
+
+  def self.default_study_option
+    Study.find_by(name: configuration[:default_study_option])
+  end
+
   #
   # Performs a lookup of the tag option matching the given oligo pair.
   # If no option can be found returns:
