@@ -48,7 +48,6 @@ RSpec.describe Parsers::CardinalPbmcCountParser, type: :model do
       let(:rows) { parser.rows }
 
       it 'will have the correct number of rows' do
-        p parser.rows
         expect(rows.length).to eq(8)
       end
 

@@ -53,7 +53,7 @@ module Parsers
     end
 
     def get_well_location(cell)
-      cell.try(:split, ':')[1]
+      cell.split(':')[1]
     end
 
     def each_well_and_parameters(&block)
