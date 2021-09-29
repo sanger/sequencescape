@@ -44,7 +44,10 @@ module Parsers
       @qc_data ||=
         {}.tap do |qc_data|
           rows.each do |row|
-            qc_data[get_well_location(row[0])] = { viability: Unit.new(row[4]), live_cell_count: Unit.new(row[2], 'cells') }
+            qc_data[get_well_location(row[0])] = {
+              viability: Unit.new(row[4]),
+              live_cell_count: Unit.new(row[2], 'cells')
+            }
           end
         end
     end
