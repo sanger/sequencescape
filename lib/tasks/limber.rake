@@ -8,8 +8,8 @@ namespace :limber do
   desc 'Setup all the necessary limber records'
   task setup: %w[limber:create_submission_templates limber:create_searches limber:create_tag_templates]
 
-  desc 'Create the Limber cherrypick plates'
-  task create_plates: :environment do
+  desc 'Create purposes for use in Limber pipelines'
+  task create_purposes: :environment do
     purposes = [
       { name: 'LB Cherrypick', size: 96 },
       { name: 'scRNA Stock', size: 96 },
@@ -247,10 +247,38 @@ namespace :limber do
         asset_shape: AssetShape.find_by(name: 'Standard')
       )
     end
+
+    unless Purpose.where(name: 'LCA Blood Array').exists?
+      PlatePurpose.create!(
+        name: 'LCA Blood Array',
+        target_type: 'Plate',
+        stock_plate: true,
+        input_plate: true,
+        default_state: 'pending',
+        barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
+        cherrypickable_target: false,
+        size: 96,
+        asset_shape: AssetShape.find_by(name: 'Standard')
+      )
+    end
+
+    unless Purpose.where(name: 'LCA Blood Bank').exists?
+      PlatePurpose.create!(
+        name: 'LCA Blood Bank',
+        target_type: 'Plate',
+        stock_plate: true,
+        input_plate: true,
+        default_state: 'pending',
+        barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
+        cherrypickable_target: false,
+        size: 96,
+        asset_shape: AssetShape.find_by(name: 'Standard')
+      )
+    end
   end
 
   desc 'Create the limber request types'
-  task create_request_types: %i[environment create_plates] do
+  task create_request_types: %i[environment create_purposes] do
     puts 'Creating request types...'
     ActiveRecord::Base.transaction do
       %w[WGS LCMB].each { |prefix| Limber::Helper::RequestTypeConstructor.new(prefix).build! }
@@ -451,6 +479,17 @@ namespace :limber do
         chromium_library_types.each { |name| rt.library_types << LibraryType.find_or_create_by!(name: name) }
         rt.acceptable_plate_purposes = Purpose.where(name: 'LBC Stock')
       end
+
+      Limber::Helper::RequestTypeConstructor.new(
+        'Cardinal',
+        library_types: ['Cardinal'],
+        default_purposes: ['LCA Blood Array']
+      ).build!
+      Limber::Helper::RequestTypeConstructor.new(
+        'Cardinal Banking',
+        library_types: ['Cardinal Banking'],
+        default_purposes: ['LCA Blood Bank']
+      ).build!
     end
   end
 
@@ -616,25 +655,17 @@ namespace :limber do
         role: 'LTHR'
       ).build!
 
-      project_heron =
-        if Rails.env.production?
-          Project.find_by!(name: 'Project Heron')
-        else
-          # In development mode or UAT we don't care so much
-          Project.find_by(name: 'Project Heron') || UatActions::StaticRecords.project
-        end
-
       unless SubmissionTemplate.find_by(name: 'Limber - Heron LTHR - Automated')
         SubmissionTemplate.create!(
           name: 'Limber - Heron LTHR - Automated',
           submission_class_name: 'LinearSubmission',
           submission_parameters: {
             request_type_ids_list: [
-              RequestType.where(key: 'limber_heron_lthr').pluck(:id),
-              RequestType.where(key: 'limber_multiplexing').pluck(:id),
-              RequestType.where(key: 'illumina_htp_novaseq_6000_paired_end_sequencing').pluck(:id)
+              RequestType.where(key: 'limber_heron_lthr').ids,
+              RequestType.where(key: 'limber_multiplexing').ids,
+              RequestType.where(key: 'illumina_htp_novaseq_6000_paired_end_sequencing').ids
             ],
-            project_id: project_heron.id
+            project_id: Limber::Helper.find_project('Project Heron').id
           },
           product_line: ProductLine.find_by!(name: 'Illumina-HTP'),
           product_catalogue: ProductCatalogue.find_by!(name: 'Generic')
@@ -654,6 +685,9 @@ namespace :limber do
 
       gbs_catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'GBS')
       Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'GBS', catalogue: gbs_catalogue).build!
+
+      cardinal_catalogue =
+        ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'Cardinal')
 
       catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'Generic')
       Limber::Helper::TemplateConstructor.new(prefix: 'Multiplexing', catalogue: catalogue, sequencing_keys: base_list)
@@ -738,6 +772,32 @@ namespace :limber do
         role: 'Chromium'
       ).build!
 
+      unless SubmissionTemplate.find_by(name: 'Limber - Cardinal')
+        SubmissionTemplate.create!(
+          name: 'Limber - Cardinal',
+          submission_class_name: 'LinearSubmission',
+          submission_parameters: {
+            request_type_ids_list: [RequestType.where(key: 'limber_cardinal').ids],
+            project_id: Limber::Helper.find_project('Project Cardinal').id
+          },
+          product_line: ProductLine.find_or_create_by!(name: 'Cardinal'),
+          product_catalogue: cardinal_catalogue
+        )
+      end
+
+      unless SubmissionTemplate.find_by(name: 'Limber - Cardinal cell banking')
+        SubmissionTemplate.create!(
+          name: 'Limber - Cardinal cell banking',
+          submission_class_name: 'LinearSubmission',
+          submission_parameters: {
+            request_type_ids_list: [RequestType.where(key: 'limber_cardinal_banking').ids],
+            project_id: Limber::Helper.find_project('Project Cardinal').id
+          },
+          product_line: ProductLine.find_or_create_by!(name: 'Cardinal'),
+          product_catalogue: cardinal_catalogue
+        )
+      end
+
       ## end ##
 
       unless SubmissionTemplate.find_by(name: 'MiSeq for GBS')
@@ -745,7 +805,7 @@ namespace :limber do
           name: 'MiSeq for GBS',
           submission_class_name: 'AutomatedOrder',
           submission_parameters: {
-            request_type_ids_list: [RequestType.where(key: 'gbs_miseq_sequencing').pluck(:id)]
+            request_type_ids_list: [RequestType.where(key: 'gbs_miseq_sequencing').ids]
           },
           product_line: ProductLine.find_by!(name: 'Illumina-HTP'),
           product_catalogue: ProductCatalogue.find_by!(name: 'Generic')
@@ -757,7 +817,7 @@ namespace :limber do
           name: 'Limber-Bespoke - Aggregation',
           submission_class_name: 'LinearSubmission',
           submission_parameters: {
-            request_type_ids_list: [RequestType.where(key: 'limber_bespoke_aggregation').pluck(:id)]
+            request_type_ids_list: [RequestType.where(key: 'limber_bespoke_aggregation').ids]
           },
           product_line: ProductLine.find_by!(name: 'Bespoke'),
           product_catalogue: ProductCatalogue.find_by!(name: 'Generic')
@@ -769,7 +829,7 @@ namespace :limber do
           name: 'MiSeq for Heron',
           submission_class_name: 'AutomatedOrder',
           submission_parameters: {
-            request_type_ids_list: [RequestType.where(key: 'heron_miseq_sequencing').pluck(:id)]
+            request_type_ids_list: [RequestType.where(key: 'heron_miseq_sequencing').ids]
           },
           product_line: ProductLine.find_by!(name: 'Illumina-HTP'),
           product_catalogue: ProductCatalogue.find_by!(name: 'Heron')

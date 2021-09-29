@@ -206,13 +206,15 @@ FactoryBot.define do
   factory :phi_x_stock_tube, class: 'LibraryTube', traits: [:tube_barcode] do
     transient do
       tag_option { 'Single' } # The PhiX Tag option to use, eg. Single/Dual
+      study { create :study }
     end
 
     name { generate :asset_name }
     concentration { 12.0 }
 
     after(:build) do |tube, evaluator|
-      tube.receptacle.aliquots << build(:phi_x_aliquot, library: tube, tag_option: evaluator.tag_option)
+      tube.receptacle.aliquots <<
+        build(:phi_x_aliquot, library: tube, tag_option: evaluator.tag_option, study: evaluator.study)
     end
   end
 end

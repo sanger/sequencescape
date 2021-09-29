@@ -4,7 +4,7 @@ require 'linefeed_fix'
 
 module Parsers # rubocop:todo Style/Documentation
   ENCODINGS = %w[Windows-1252 iso-8859-1 utf-8 utf-16].freeze
-  PARSERS = [QuantParser, BioanalysisCsvParser, PlateReaderParser].freeze
+  PARSERS = [QuantParser, BioanalysisCsvParser, PlateReaderParser, CardinalPbmcCountParser].freeze
 
   def self.parser_for(filename, content_type, content)
     return nil unless filename.downcase.end_with?('.csv') || content_type == 'text/csv'

@@ -316,6 +316,12 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
     get_buffer_volume > 0.0
   end
 
+  #
+  # Returns a name for the well in the format HumanBarcode:Location eg. DN12345S:A1
+  # @note Be *very* wary of changing this as we have places in limber
+  #       (https://github.com/sanger/limber/blob/develop/app/helpers/exports_helper.rb)
+  #       where it is assumed to contain the barcode and well location. It is highly likely
+  #       that we aren't the only ones making this assumption.
   def display_name
     source = association_cached?(:plate) ? plate : labware
     plate_name = source.present? ? source.human_barcode : '(not on a plate)'

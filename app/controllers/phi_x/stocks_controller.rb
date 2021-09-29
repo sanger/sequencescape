@@ -11,6 +11,7 @@ class PhiX::StocksController < ApplicationController
     else
       @stocks = []
       @tag_option_names = PhiX.tag_option_names
+      @study_names = PhiX.studies.for_select_association
       render :new
     end
   end
@@ -18,6 +19,6 @@ class PhiX::StocksController < ApplicationController
   private
 
   def phi_x_stock_params
-    params.require(:phi_x_stock).permit(:name, :tags, :concentration, :number)
+    params.require(:phi_x_stock).permit(:name, :tags, :concentration, :number, :study_id)
   end
 end

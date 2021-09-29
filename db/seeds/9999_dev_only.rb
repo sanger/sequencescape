@@ -28,6 +28,7 @@ if Rails.env.development?
   seeder.user
   seeder.study
   seeder.study_b
+  seeder.phi_x_study
   seeder.project
   seeder.supplier
 
