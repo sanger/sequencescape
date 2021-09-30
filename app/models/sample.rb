@@ -50,6 +50,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # rubocop:enable Layout/LineLength
   DOSE_REGEXP = '\d+(?:\.\d+)?\s+\w+(?:\/\w+)?|Not Applicable|N/A|To be provided'
 
+  self.inheritance_column = 'sti_type'
   self.per_page = 500
 
   include ModelExtensions::Sample
