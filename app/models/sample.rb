@@ -275,11 +275,11 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   # Create relationships with samples that contain this Sample via CompoundSample
-  has_many :sample_joins_as_child, foreign_key: :child_id, class_name: 'CompoundSample'
+  has_many :sample_joins_as_child, foreign_key: :child_id, inverse_of: :child, class_name: 'CompoundSample'
   has_many :compound_samples, through: :sample_joins_as_child, source: :parent
 
   # Create relationships with samples that are contained by this Sample via CompoundSample
-  has_many :sample_joins_as_parent, foreign_key: :parent_id, class_name: 'CompoundSample'
+  has_many :sample_joins_as_parent, foreign_key: :parent_id, inverse_of: :parent, class_name: 'CompoundSample'
   has_many :component_samples, through: :sample_joins_as_parent, source: :child
 
   has_many :assets, -> { distinct }, through: :aliquots, source: :receptacle
