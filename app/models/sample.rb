@@ -274,11 +274,13 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
   end
 
-  # Create relationships with samples that contain this Sample via CompoundSample
+  # Create relationships with samples that contain this Sample via CompoundSample.
   has_many :sample_joins_as_child, foreign_key: :child_id, inverse_of: :child, class_name: 'CompoundSample'
   has_many :compound_samples, through: :sample_joins_as_child, source: :parent
 
-  # Create relationships with samples that are contained by this Sample via CompoundSample
+  # Create relationships with samples that are contained by this Sample via CompoundSample.
+  # Samples that are contained by this Sample should not themselves contain more Samples.
+  # This is checked as a validation on this model.
   has_many :sample_joins_as_parent, foreign_key: :parent_id, inverse_of: :parent, class_name: 'CompoundSample'
   has_many :component_samples, through: :sample_joins_as_parent, source: :child
 
@@ -351,7 +353,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
               message: 'should be blank if "control" is set to false'
             }
 
-  # validates :children
+  validate :component_samples_hierarchy_validation
 
   enum control_type: { negative: 0, positive: 1 }
 
@@ -546,6 +548,13 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def name_unchanged
     errors.add(:name, 'cannot be changed') unless can_rename_sample
     can_rename_sample
+  end
+
+  def component_samples_hierarchy_validation
+    single_layer_hierarchy = component_samples.all { |cs| cs.component_samples.empty? }
+
+    errors.add(:component_samples, 'cannot themselves also have component samples') unless single_layer_hierarchy
+    single_layer_hierarchy
   end
 
   # sample can either be registered through sample manifest,
