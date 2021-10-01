@@ -353,7 +353,9 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
               message: 'should be blank if "control" is set to false'
             }
 
-  validate :compound_samples_hierarchy_validation
+  validate :nested_compound_samples_validation
+  validate :nested_component_samples_validation
+  validate :not_both_compound_component_samples_validation
 
   enum control_type: { negative: 0, positive: 1 }
 
@@ -550,16 +552,20 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     can_rename_sample
   end
 
-  def compound_samples_hierarchy_validation
-    no_nested_compounds = compound_samples.flat_map(&:compound_samples).empty?
-    errors.add(:compound_samples, 'cannot themselves have further compound samples') unless no_nested_compounds
+  def nested_compound_samples_validation
+    return if compound_samples.flat_map(&:compound_samples).empty?
+    errors.add(:compound_samples, 'cannot themselves have further compound samples')
+  end
 
-    no_nested_components = component_samples.flat_map(&:component_samples).empty?
-    errors.add(:component_samples, 'cannot themselves have further component samples') unless no_nested_components
+  def nested_component_samples_validation
+    return if component_samples.flat_map(&:component_samples).empty?
+    errors.add(:component_samples, 'cannot themselves have further component samples')
+  end
 
-    not_both_compounds_components = compound_samples.empty? || component_samples.empty?
-    errors.add(:compound_samples, 'cannot exist when component samples also exist') unless not_both_compounds_components
-    errors.add(:component_samples, 'cannot exist when compound samples also exist') unless not_both_compounds_components
+  def not_both_compound_component_samples_validation
+    return if compound_samples.empty? || component_samples.empty?
+    errors.add(:compound_samples, 'cannot exist when component samples also exist')
+    errors.add(:component_samples, 'cannot exist when compound samples also exist')
   end
 
   # sample can either be registered through sample manifest,
