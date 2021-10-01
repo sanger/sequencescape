@@ -353,7 +353,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
               message: 'should be blank if "control" is set to false'
             }
 
-  validate :component_samples_hierarchy_validation
+  validate :compound_samples_hierarchy_validation
 
   enum control_type: { negative: 0, positive: 1 }
 
@@ -550,11 +550,16 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     can_rename_sample
   end
 
-  def component_samples_hierarchy_validation
-    single_layer_hierarchy = component_samples.all { |cs| cs.component_samples.empty? }
+  def compound_samples_hierarchy_validation
+    no_nested_compounds = compound_samples.flat_map(&:compound_samples).empty?
+    errors.add(:compound_samples, 'cannot themselves have further compound samples') unless no_nested_compounds
 
-    errors.add(:component_samples, 'cannot themselves also have component samples') unless single_layer_hierarchy
-    single_layer_hierarchy
+    no_nested_components = component_samples.flat_map(&:component_samples).empty?
+    errors.add(:component_samples, 'cannot themselves have further component samples') unless no_nested_components
+
+    not_both_compounds_components = compound_samples.empty? || component_samples.empty?
+    errors.add(:compound_samples, 'cannot exist when component samples also exist') unless not_both_compounds_components
+    errors.add(:component_samples, 'cannot exist when compound samples also exist') unless not_both_compounds_components
   end
 
   # sample can either be registered through sample manifest,

@@ -153,7 +153,7 @@ RSpec.describe Sample, type: :model, accession: true, aker: true do
   context 'updating supplier name' do
     let(:sample) { create :sample }
 
-    it 'validates that supplier name allows only ASCII characteres' do
+    it 'validates that supplier name allows only ASCII characters' do
       expect(sample.sample_metadata.supplier_name).to be_nil
       sample.sample_metadata.supplier_name = 'भारत'
       expect(sample.sample_metadata.save).to eq false
@@ -165,6 +165,81 @@ RSpec.describe Sample, type: :model, accession: true, aker: true do
       expect(sample.sample_metadata.supplier_name).not_to be_nil
       sample.sample_metadata.update!(supplier_name: nil)
       expect(sample.sample_metadata.supplier_name).to be_nil
+    end
+  end
+
+  context 'compound samples' do
+    let(:child_sample_1) { create(:sample) }
+    let(:child_sample_2) { create(:sample) }
+    let(:parent_sample) { create(:sample) }
+
+    # let variables are lazy loaded and we always want the relationships to exist
+    # even if we don't access the parent sample in the test.
+    before do
+      parent_sample.update(component_samples: [child_sample_1, child_sample_2])
+      child_sample_1.reload
+      child_sample_2.reload
+    end
+
+    it 'parent samples are able to query their component samples (children)' do
+      expect(parent_sample.component_samples).to match_array [child_sample_1, child_sample_2]
+    end
+
+    it 'child samples are able to query their compound samples (parents)' do
+      expect(child_sample_1.compound_samples).to match_array [parent_sample]
+      expect(child_sample_2.compound_samples).to match_array [parent_sample]
+    end
+
+    it 'removing a component sample removes both sides of the relationship' do
+      parent_sample.component_samples.delete(child_sample_2)
+      parent_sample.save
+      child_sample_2.reload
+
+      expect(parent_sample.component_samples).to match_array [child_sample_1]
+      expect(child_sample_1.compound_samples).to match_array [parent_sample]
+      expect(child_sample_2.compound_samples).to be_empty
+    end
+
+    it 'removing a compound sample removes both sides of the relationship' do
+      child_sample_1.compound_samples.delete(parent_sample)
+      parent_sample.reload
+
+      expect(parent_sample.component_samples).to match_array [child_sample_2]
+      expect(child_sample_1.compound_samples).to be_empty
+      expect(child_sample_2.compound_samples).to match_array [parent_sample]
+    end
+
+    it 'component samples can belong to many compound samples' do
+      other_parent = create(:sample, component_samples: [child_sample_1])
+      child_sample_1.reload
+
+      expect(other_parent.component_samples).to match_array [child_sample_1]
+      expect(child_sample_1.compound_samples).to match_array [parent_sample, other_parent]
+      expect(child_sample_2.compound_samples).to match_array [parent_sample]
+    end
+
+    it 'fails validation when a compound sample is assigned a compound sample' do
+      other_sample = create(:sample)
+      parent_sample.compound_samples = [other_sample]
+
+      expect(parent_sample.save).to be_falsey
+      expect(parent_sample.errors[:compound_samples]).to include('cannot exist when component samples also exist')
+      expect(parent_sample.errors[:component_samples]).to include('cannot exist when compound samples also exist')
+
+      expect(child_sample_1.save).to be_falsey
+      expect(child_sample_1.errors[:compound_samples]).to include('cannot themselves have further compound samples')
+    end
+
+    it 'fails validation when a component sample is assigned a component sample' do
+      other_sample = create(:sample)
+      child_sample_1.component_samples = [other_sample]
+
+      expect(child_sample_1.save).to be_falsey
+      expect(child_sample_1.errors[:compound_samples]).to include('cannot exist when component samples also exist')
+      expect(child_sample_1.errors[:component_samples]).to include('cannot exist when compound samples also exist')
+
+      expect(parent_sample.save).to be_falsey
+      expect(parent_sample.errors[:component_samples]).to include('cannot themselves have further component samples')
     end
   end
 end
