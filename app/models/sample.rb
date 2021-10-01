@@ -274,13 +274,13 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
   end
 
-  # Create parent relationships via the join object CompoundSample
-  has_many :parent_samples, foreign_key: :child_id, class_name: 'CompoundSample'
-  has_many :parents, through: :parent_samples, source: :parent
+  # Create relationships with samples that contain this Sample via CompoundSample
+  has_many :sample_joins_as_child, foreign_key: :child_id, class_name: 'CompoundSample'
+  has_many :compound_samples, through: :sample_joins_as_child, source: :parent
 
-  # Create child relationships via the join object CompoundSample
-  has_many :child_samples, foreign_key: :parent_id, class_name: 'CompoundSample'
-  has_many :children, through: :child_samples, source: :child
+  # Create relationships with samples that are contained by this Sample via CompoundSample
+  has_many :sample_joins_as_parent, foreign_key: :parent_id, class_name: 'CompoundSample'
+  has_many :component_samples, through: :sample_joins_as_parent, source: :child
 
   has_many :assets, -> { distinct }, through: :aliquots, source: :receptacle
   deprecate assets: 'use receptacles instead, or labware if needed'
@@ -350,6 +350,8 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
               unless: :control?,
               message: 'should be blank if "control" is set to false'
             }
+
+  # validates :children
 
   enum control_type: { negative: 0, positive: 1 }
 
