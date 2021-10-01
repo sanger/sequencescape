@@ -8,7 +8,7 @@ module Api
 
       has_one :sample_metadata, class_name: 'SampleMetadata', foreign_key_on: :related
 
-      has_many :children
+      has_many :component_samples
 
       attribute :name
       attribute :sanger_sample_id
