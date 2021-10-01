@@ -87,6 +87,27 @@ RSpec.describe Parsers::CardinalPbmcCountParser, type: :model do
     end
   end
 
+  context 'when the file has blank rows' do
+    # this file has 1 row and 23 blank rows
+    let(:filename) { Rails.root.join('spec/data/parsers/cardinal_pbmc_count_blank_rows.csv') }
+    let(:content) { read_file(filename) }
+    let(:csv) { CSV.parse(content) }
+    let(:parser) { described_class.new(csv) }
+
+    it 'will return the correct parser' do
+      expect(Parsers.parser_for('cardinal_pbmc_count.csv', nil, content)).to be_a(described_class)
+    end
+
+    it 'will have some content' do
+      expect(parser.content).to eq(csv)
+    end
+
+    it 'will have some qc data' do
+      expect(parser.qc_data.values.length).to eq(1)
+    end
+
+  end
+
   context 'when updating qc results' do
     let(:plate) { create(:plate_with_empty_wells, well_count: 96) }
     let(:filename) { Rails.root.join('spec/data/parsers/cardinal_pbmc_count.csv') }
