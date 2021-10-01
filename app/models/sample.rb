@@ -274,13 +274,15 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
   end
 
-  # Create parent relationships via the join object CompoundSample
-  has_many :parent_samples, foreign_key: :child_id, class_name: 'CompoundSample'
-  has_many :parents, through: :parent_samples, source: :parent
+  # Create relationships with samples that contain this Sample via CompoundSample.
+  has_many :sample_joins_as_child, foreign_key: :child_id, inverse_of: :child, class_name: 'CompoundSample'
+  has_many :compound_samples, through: :sample_joins_as_child, source: :parent
 
-  # Create child relationships via the join object CompoundSample
-  has_many :child_samples, foreign_key: :parent_id, class_name: 'CompoundSample'
-  has_many :children, through: :child_samples, source: :child
+  # Create relationships with samples that are contained by this Sample via CompoundSample.
+  # Samples that are contained by this Sample should not themselves contain more Samples.
+  # This is checked as a validation on this model.
+  has_many :sample_joins_as_parent, foreign_key: :parent_id, inverse_of: :parent, class_name: 'CompoundSample'
+  has_many :component_samples, through: :sample_joins_as_parent, source: :child
 
   has_many :assets, -> { distinct }, through: :aliquots, source: :receptacle
   deprecate assets: 'use receptacles instead, or labware if needed'
@@ -350,6 +352,8 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
               unless: :control?,
               message: 'should be blank if "control" is set to false'
             }
+
+  validate :component_samples_hierarchy_validation
 
   enum control_type: { negative: 0, positive: 1 }
 
@@ -544,6 +548,13 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def name_unchanged
     errors.add(:name, 'cannot be changed') unless can_rename_sample
     can_rename_sample
+  end
+
+  def component_samples_hierarchy_validation
+    single_layer_hierarchy = component_samples.all { |cs| cs.component_samples.empty? }
+
+    errors.add(:component_samples, 'cannot themselves also have component samples') unless single_layer_hierarchy
+    single_layer_hierarchy
   end
 
   # sample can either be registered through sample manifest,

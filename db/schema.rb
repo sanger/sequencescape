@@ -326,6 +326,8 @@ ActiveRecord::Schema.define(version: 2021_09_30_172204) do
   create_table "compound_samples", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "parent_id", null: false
     t.integer "child_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "container_associations_deprecated", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
