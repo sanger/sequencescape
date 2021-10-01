@@ -105,7 +105,6 @@ RSpec.describe Parsers::CardinalPbmcCountParser, type: :model do
     it 'will have some qc data' do
       expect(parser.qc_data.values.length).to eq(1)
     end
-
   end
 
   context 'when updating qc results' do
