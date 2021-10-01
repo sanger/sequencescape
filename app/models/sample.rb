@@ -275,11 +275,11 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   # Create parent relationships via the join object CompoundSample
-  has_many :parent_samples, foreign_key: :child_id, class_name: "CompoundSample"
+  has_many :parent_samples, foreign_key: :child_id, class_name: 'CompoundSample'
   has_many :parents, through: :parent_samples, source: :parent
 
   # Create child relationships via the join object CompoundSample
-  has_many :child_samples, foreign_key: :parent_id, class_name: "CompoundSample"
+  has_many :child_samples, foreign_key: :parent_id, class_name: 'CompoundSample'
   has_many :children, through: :child_samples, source: :child
 
   has_many :assets, -> { distinct }, through: :aliquots, source: :receptacle
