@@ -6,6 +6,8 @@ class AddSupportForCompoundSamples < ActiveRecord::Migration[6.0]
     create_table 'compound_samples' do |t|
       t.integer 'parent_id', null: false
       t.integer 'child_id', null: false
+
+      t.timestamps
     end
   end
 end
