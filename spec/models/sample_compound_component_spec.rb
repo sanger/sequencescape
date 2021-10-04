@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe SampleCompoundComponent, type: :model, cardinal: true do
-  context 'validation' do
+  describe '#validate' do
     let(:compound_sample) { create(:sample) }
     let(:component_sample) { create(:sample) }
     let(:another_sample) { create(:sample) }
@@ -13,7 +13,7 @@ RSpec.describe SampleCompoundComponent, type: :model, cardinal: true do
       component_sample.reload
     end
 
-    context 'another sample becomes a compound sample of our compound sample' do
+    context 'when another sample becomes a compound sample of our compound sample' do
       it 'fails to validate when the new sample adopts our compound sample as a component' do
         expect { another_sample.component_samples << compound_sample }.to raise_error(
           ActiveRecord::RecordInvalid,
@@ -29,8 +29,8 @@ RSpec.describe SampleCompoundComponent, type: :model, cardinal: true do
       end
     end
 
-    context 'another sample becomes a component sample of our component sample' do
-      it 'fails to validate when the new sample adoptsour component sample as a compound' do
+    context 'when another sample becomes a component sample of our component sample' do
+      it 'fails to validate when the new sample adopts our component sample as a compound' do
         expect { another_sample.compound_samples << component_sample }.to raise_error(
           ActiveRecord::RecordInvalid,
           /Compound sample cannot have further compound samples./
