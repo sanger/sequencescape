@@ -323,13 +323,6 @@ ActiveRecord::Schema.define(version: 2021_09_30_172204) do
     t.index ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type"
   end
 
-  create_table "compound_samples", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "parent_id", null: false
-    t.integer "child_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
   create_table "container_associations_deprecated", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.integer "container_id", null: false
     t.integer "content_id", null: false
@@ -1256,6 +1249,13 @@ ActiveRecord::Schema.define(version: 2021_09_30_172204) do
     t.datetime "updated_at", null: false
     t.index ["role_id"], name: "index_roles_users_on_role_id"
     t.index ["user_id"], name: "index_roles_users_on_user_id"
+  end
+
+  create_table "sample_compounds_components", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "compound_sample_id", null: false
+    t.integer "component_sample_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "sample_jobs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|

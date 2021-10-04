@@ -274,15 +274,25 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
   end
 
-  # Create relationships with samples that contain this Sample via CompoundSample.
-  has_many :sample_joins_as_child, foreign_key: :child_id, inverse_of: :child, class_name: 'CompoundSample'
-  has_many :compound_samples, through: :sample_joins_as_child, source: :parent
+  # Create relationships with samples that contain this Sample via SampleCompoundComponent.
+  has_many(
+    :joins_as_component_sample,
+    foreign_key: :component_sample_id,
+    inverse_of: :component_sample,
+    class_name: 'SampleCompoundComponent'
+  )
+  has_many :compound_samples, through: :joins_as_component_sample, source: :compound_sample
 
-  # Create relationships with samples that are contained by this Sample via CompoundSample.
+  # Create relationships with samples that are contained by this Sample via SampleCompoundComponent.
   # Samples that are contained by this Sample should not themselves contain more Samples.
   # This is checked as a validation on this model.
-  has_many :sample_joins_as_parent, foreign_key: :parent_id, inverse_of: :parent, class_name: 'CompoundSample'
-  has_many :component_samples, through: :sample_joins_as_parent, source: :child
+  has_many(
+    :joins_as_compound_sample,
+    foreign_key: :compound_sample_id,
+    inverse_of: :compound_sample,
+    class_name: 'SampleCompoundComponent'
+  )
+  has_many :component_samples, through: :joins_as_compound_sample, source: :component_sample
 
   has_many :assets, -> { distinct }, through: :aliquots, source: :receptacle
   deprecate assets: 'use receptacles instead, or labware if needed'

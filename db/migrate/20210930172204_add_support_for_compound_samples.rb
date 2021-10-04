@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-# Add a join table to allow samples to be parents and children of each other.
+# Add a join table to allow samples to be compounds made up of component samples.
 class AddSupportForCompoundSamples < ActiveRecord::Migration[6.0]
   def change
-    create_table 'compound_samples' do |t|
-      t.integer 'parent_id', null: false
-      t.integer 'child_id', null: false
+    create_table 'sample_compounds_components' do |t|
+      t.integer 'compound_sample_id', null: false
+      t.integer 'component_sample_id', null: false
 
       t.timestamps
     end
