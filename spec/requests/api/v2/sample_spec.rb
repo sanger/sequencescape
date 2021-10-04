@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-describe 'Samples API', with: :api_v2, cardinaldo: true do
+describe 'Samples API', with: :api_v2, cardinal: true do
   context 'when creating a compound sample' do
     let(:component_samples) { create_list(:sample, 5) }
 
