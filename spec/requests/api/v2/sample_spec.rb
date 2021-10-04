@@ -3,10 +3,10 @@ require 'rails_helper'
 
 describe 'Samples API', with: :api_v2, cardinaldo: true do
   context 'when creating a compound sample' do
-    let(:composed_samples) { create_list(:sample, 5) }
+    let(:component_samples) { create_list(:sample, 5) }
 
     it 'can attach the component samples' do
-      composed_samples_payload = composed_samples.each_with_index.map { |s, _pos| { type: 'samples', id: s.id } }
+      component_samples_payload = component_samples.each_with_index.map { |s, _pos| { type: 'samples', id: s.id } }
 
       api_post '/api/v2/samples', { data: { type: 'samples', attributes: { name: 'compound_sample_1' } } }
 
@@ -15,10 +15,10 @@ describe 'Samples API', with: :api_v2, cardinaldo: true do
       expect(compound_sample).to be_a_kind_of(Sample)
 
       api_post "/api/v2/samples/#{compound_sample.id}/relationships/component_samples",
-               { data: composed_samples_payload }
+               { data: component_samples_payload }
 
       expect(response).to have_http_status(:success)
-      expect(compound_sample.component_samples).to eq(composed_samples)
+      expect(compound_sample.component_samples).to eq(component_samples)
     end
   end
 end
