@@ -9,4 +9,17 @@ class SampleCompoundComponent < ApplicationRecord
 
   belongs_to :compound_sample, class_name: 'Sample'
   belongs_to :component_sample, class_name: 'Sample'
+
+  validate :nested_compound_samples_validation
+  validate :nested_component_samples_validation
+
+  def nested_compound_samples_validation
+    return if compound_sample.compound_samples.empty?
+    errors.add(:compound_sample, 'cannot have further compound samples.')
+  end
+
+  def nested_component_samples_validation
+    return if component_sample.component_samples.empty?
+    errors.add(:component_sample, 'cannot have further component samples.')
+  end
 end

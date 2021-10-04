@@ -4,7 +4,7 @@ require 'rails_helper'
 require 'support/barcode_helper'
 require 'sample_accessioning_job'
 
-RSpec.describe Sample, type: :model, accession: true, aker: true do
+RSpec.describe Sample, type: :model, accession: true, aker: true, cardinal: true do
   include MockAccession
 
   context 'accessioning' do
@@ -168,7 +168,7 @@ RSpec.describe Sample, type: :model, accession: true, aker: true do
     end
   end
 
-  context 'compound samples' do
+  context 'compound samples in Cardinal' do
     let(:compound_sample) { create(:sample) }
     let(:component_sample1) { create(:sample) }
     let(:component_sample2) { create(:sample) }
@@ -216,30 +216,6 @@ RSpec.describe Sample, type: :model, accession: true, aker: true do
       expect(other_compound_sample.component_samples).to match_array [component_sample1]
       expect(component_sample1.compound_samples).to match_array [compound_sample, other_compound_sample]
       expect(component_sample2.compound_samples).to match_array [compound_sample]
-    end
-
-    it 'fails validation when a compound sample is assigned a compound sample' do
-      other_sample = create(:sample)
-      compound_sample.compound_samples = [other_sample]
-
-      expect(compound_sample.save).to be_falsey
-      expect(compound_sample.errors[:compound_samples]).to include('cannot exist when component samples also exist')
-      expect(compound_sample.errors[:component_samples]).to include('cannot exist when compound samples also exist')
-
-      expect(component_sample1.save).to be_falsey
-      expect(component_sample1.errors[:compound_samples]).to include('cannot themselves have further compound samples')
-    end
-
-    it 'fails validation when a component sample is assigned a component sample' do
-      other_sample = create(:sample)
-      component_sample1.component_samples = [other_sample]
-
-      expect(component_sample1.save).to be_falsey
-      expect(component_sample1.errors[:compound_samples]).to include('cannot exist when component samples also exist')
-      expect(component_sample1.errors[:component_samples]).to include('cannot exist when compound samples also exist')
-
-      expect(compound_sample.save).to be_falsey
-      expect(compound_sample.errors[:component_samples]).to include('cannot themselves have further component samples')
     end
   end
 end

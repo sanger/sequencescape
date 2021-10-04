@@ -285,7 +285,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   # Create relationships with samples that are contained by this Sample via SampleCompoundComponent.
   # Samples that are contained by this Sample should not themselves contain more Samples.
-  # This is checked as a validation on this model.
+  # This is validated in the SampleCompoundComponent model.
   has_many(
     :joins_as_compound_sample,
     foreign_key: :compound_sample_id,
@@ -362,10 +362,6 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
               unless: :control?,
               message: 'should be blank if "control" is set to false'
             }
-
-  validate :nested_compound_samples_validation
-  validate :nested_component_samples_validation
-  validate :not_both_compound_component_samples_validation
 
   enum control_type: { negative: 0, positive: 1 }
 
@@ -560,22 +556,6 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def name_unchanged
     errors.add(:name, 'cannot be changed') unless can_rename_sample
     can_rename_sample
-  end
-
-  def nested_compound_samples_validation
-    return if compound_samples.flat_map(&:compound_samples).empty?
-    errors.add(:compound_samples, 'cannot themselves have further compound samples')
-  end
-
-  def nested_component_samples_validation
-    return if component_samples.flat_map(&:component_samples).empty?
-    errors.add(:component_samples, 'cannot themselves have further component samples')
-  end
-
-  def not_both_compound_component_samples_validation
-    return if compound_samples.empty? || component_samples.empty?
-    errors.add(:compound_samples, 'cannot exist when component samples also exist')
-    errors.add(:component_samples, 'cannot exist when compound samples also exist')
   end
 
   # sample can either be registered through sample manifest,
