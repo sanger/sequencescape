@@ -353,7 +353,6 @@ namespace :limber do
           'Ribozero RNA-seq (Bacterial)',
           'Ribozero RNA-seq (HMR)',
           'TraDIS',
-          'Chromium Visium',
           'Hi-C',
           'Haplotagging'
         ],
@@ -372,7 +371,8 @@ namespace :limber do
         'Chromium single cell TCR',
         'Chromium single cell BCR',
         'Chromium single cell HTO',
-        'Chromium single cell surface protein'
+        'Chromium single cell surface protein',
+        'Chromium Visium'
       ]
 
       Limber::Helper::RequestTypeConstructor.new(
