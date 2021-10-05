@@ -1,0 +1,8 @@
+---
+TR Stock 96:
+  stock_plate: true
+  cherrypickable_target: false
+TR Stock 48:
+  stock_plate: true
+  cherrypickable_target: false
+  size: 48

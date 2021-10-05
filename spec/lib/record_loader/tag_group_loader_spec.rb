@@ -32,9 +32,7 @@ RSpec.describe RecordLoader::TagGroupLoader, type: :model, loader: true do
     # copies of existing records.
     it 'is idempotent' do
       record_loader.create!
-      expect { described_class.new(directory: test_directory, files: selected_files).create! }.not_to(
-        change(TagGroup, :count) && change(Tag, :count)
-      )
+      expect { a_new_record_loader.create! }.not_to(change(TagGroup, :count) && change(Tag, :count))
     end
 
     it 'sets attributes on the created records' do
