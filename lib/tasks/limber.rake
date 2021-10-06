@@ -480,6 +480,17 @@ namespace :limber do
         rt.acceptable_plate_purposes = Purpose.where(name: 'LBC Stock')
       end
 
+      RequestType.create!(
+        name: 'Limber Cardinal Sample Aggregation',
+        key: 'limber_cardinal_sample_aggregation',
+        asset_type: 'Well',
+        initial_state: 'pending',
+        billable: false,
+        request_purpose: :standard,
+        order: 1,
+      )
+
+
       Limber::Helper::RequestTypeConstructor.new(
         'Cardinal',
         library_types: ['Cardinal'],
@@ -771,6 +782,20 @@ namespace :limber do
         catalogue: chromium,
         role: 'Chromium'
       ).build!
+
+
+      unless SubmissionTemplate.find_by(name: 'Limber - Cardinal Sample Aggregation')
+        SubmissionTemplate.create!(
+          name: 'Limber - Cardinal Sample Aggregation',
+          submission_class_name: 'LinearSubmission',
+          submission_parameters: {
+            request_type_ids_list: [RequestType.where(key: 'limber_cardinal_sample_aggregation').ids],
+            project_id: Limber::Helper.find_project('Project Cardinal').id
+          },
+          product_line: ProductLine.find_or_create_by!(name: 'Cardinal'),
+          product_catalogue: cardinal_catalogue
+        )
+      end
 
       unless SubmissionTemplate.find_by(name: 'Limber - Cardinal')
         SubmissionTemplate.create!(
