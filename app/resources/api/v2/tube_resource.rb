@@ -26,6 +26,9 @@ module Api
       has_many :parents, readonly: true, polymorphic: true
       has_many :children, readonly: true, polymorphic: true
 
+      has_many :child_plates, readonly: true
+      has_many :child_tubes, readonly: true
+
       has_many :comments, readonly: true
       has_many :state_changes, readonly: true
 
