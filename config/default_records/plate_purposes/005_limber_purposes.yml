@@ -1,4 +1,3 @@
-# In production these should be handled by limber's working:setup task
 # The values here have been extracted from production to help seed the
 # dev environment, such that the limber request types can be registered.
 # For more details of the pipelines these plates are involved in, see
@@ -25,7 +24,7 @@ LDS Stock:
   <<: *limber_input_96
   cherrypickable_target: false
 
-  # 384 well input plates
+# 384 well input plates
 GBS Stock: &limber_input_384
   type: PlatePurpose::Input
   stock_plate: true
