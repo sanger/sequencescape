@@ -481,8 +481,10 @@ namespace :limber do
       end
 
       RequestType.create!(
-        name: 'Limber Cardinal Sample Aggregation',
-        key: 'limber_cardinal_sample_aggregation',
+        # update to compound
+        name: 'Limber Cardinal Sample Compound',
+        request_class_name: 'CustomerRequest',
+        key: 'limber_cardinal_sample_compound',
         asset_type: 'Well',
         initial_state: 'pending',
         billable: false,
@@ -490,11 +492,19 @@ namespace :limber do
         order: 1,
       )
 
+      # In SS
+      # SubmissionTemplate.find_by(name: "Limber - Cardinal")
+      # request_type = RequestType.find(127).plate_purposes
+      # PlatePurpose.find_by(name: "LCA PBMC Pools")
+
+      # *** Below needs to be added to SS seed ***
+      # RequestType::RequestTypePlatePurpose.create(request_type_id: 127, plate_purpose_id: PlatePurpose.find_by(name: "LCA PBMC Pools").id)
+
 
       Limber::Helper::RequestTypeConstructor.new(
         'Cardinal',
         library_types: ['Cardinal'],
-        default_purposes: ['LCA Blood Array']
+        default_purposes: ['LCA Blood Array', 'LCA PBMC Pools']
       ).build!
       Limber::Helper::RequestTypeConstructor.new(
         'Cardinal Banking',
@@ -784,12 +794,12 @@ namespace :limber do
       ).build!
 
 
-      unless SubmissionTemplate.find_by(name: 'Limber - Cardinal Sample Aggregation')
+      unless SubmissionTemplate.find_by(name: 'Limber - Cardinal Sample Compound')
         SubmissionTemplate.create!(
-          name: 'Limber - Cardinal Sample Aggregation',
+          name: 'Limber - Cardinal Sample Compound',
           submission_class_name: 'LinearSubmission',
           submission_parameters: {
-            request_type_ids_list: [RequestType.where(key: 'limber_cardinal_sample_aggregation').ids],
+            request_type_ids_list: [RequestType.where(key: 'limber_cardinal_sample_compound').ids],
             project_id: Limber::Helper.find_project('Project Cardinal').id
           },
           product_line: ProductLine.find_or_create_by!(name: 'Cardinal'),
