@@ -4,6 +4,8 @@ require 'rails_helper'
 
 describe UatActions::GenerateSpikedBufferTube do
   context 'with valid options' do
+    before { create :study, name: PhiX.configuration[:default_study_option] }
+
     let(:uat_action) { described_class.new(parameters) }
 
     context 'when creating a single spiked buffer tube' do

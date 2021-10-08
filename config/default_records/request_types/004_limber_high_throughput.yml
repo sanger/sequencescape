@@ -166,3 +166,4 @@ limber_duplex-seq:
     - LDS Cherrypick
   library_types:
     - Duplex-Seq
+    - Targeted Nanoseq

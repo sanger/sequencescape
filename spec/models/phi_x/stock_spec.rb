@@ -17,6 +17,12 @@ RSpec.describe PhiX::Stock, type: :model, phi_x: true do
     it { is_expected.not_to be_valid }
   end
 
+  context 'with no study' do
+    let(:custom_options) { { study_id: nil } }
+
+    it { is_expected.not_to be_valid }
+  end
+
   context 'with unknown tags option' do
     let(:custom_options) { { tags: 'Do not exist' } }
 
@@ -43,8 +49,12 @@ RSpec.describe PhiX::Stock, type: :model, phi_x: true do
     context 'with valid data' do
       subject(:save) { phi_x_stock.save }
 
-      let(:phi_x_stock) { build :phi_x_stock, number: 2, name: 'Example', concentration: '0.8', tags: tags }
+      let(:phi_x_stock) do
+        build :phi_x_stock, number: 2, name: 'Example', concentration: '0.8', tags: tags, study_id: study_id
+      end
+
       let(:tags) { 'Single' }
+      let(:study_id) { build_stubbed(:study).id }
 
       before { save }
 
@@ -69,6 +79,10 @@ RSpec.describe PhiX::Stock, type: :model, phi_x: true do
 
       it 'generates an aliquot in each tube' do
         phi_x_stock.created_stocks.each { |tube| expect(tube.aliquots).to have(1).items }
+      end
+
+      it 'sets study id the aliquot in each tube' do
+        phi_x_stock.created_stocks.each { |tube| expect(tube.aliquots).to all have_attributes(study_id: study_id) }
       end
 
       it 'generates an aliquot with PhiX sample' do

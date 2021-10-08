@@ -12,6 +12,13 @@
     </div>
   </div>
   <div class='phi-x-form'>
+    <%= form.label :study_id, 'Study' %>
+    <div class="field">
+      <%= form.select :study_id, @study_names  %>
+      <div class="form-help">The study with which the PhiX will be associated.</div>
+    </div>
+  </div>
+  <div class='phi-x-form'>
     <%= form.label :tags %>
     <div class="field">
       <%= form.select :tags, tag_option_names, required: true %>
