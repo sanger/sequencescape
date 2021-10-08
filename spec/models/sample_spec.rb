@@ -4,7 +4,7 @@ require 'rails_helper'
 require 'support/barcode_helper'
 require 'sample_accessioning_job'
 
-RSpec.describe Sample, type: :model, accession: true, aker: true do
+RSpec.describe Sample, type: :model, accession: true, aker: true, cardinal: true do
   include MockAccession
 
   context 'accessioning' do
@@ -168,78 +168,54 @@ RSpec.describe Sample, type: :model, accession: true, aker: true do
     end
   end
 
-  context 'compound samples' do
-    let(:child_sample1) { create(:sample) }
-    let(:child_sample2) { create(:sample) }
-    let(:parent_sample) { create(:sample) }
+  context 'compound samples in Cardinal' do
+    let(:compound_sample) { create(:sample) }
+    let(:component_sample1) { create(:sample) }
+    let(:component_sample2) { create(:sample) }
 
     # let variables are lazy loaded and we always want the relationships to exist
-    # even if we don't access the parent sample in the test.
+    # even if we don't access the compound sample in the test.
     before do
-      parent_sample.update(component_samples: [child_sample1, child_sample2])
-      child_sample1.reload
-      child_sample2.reload
+      compound_sample.update(component_samples: [component_sample1, component_sample2])
+      component_sample1.reload
+      component_sample2.reload
     end
 
-    it 'parent samples are able to query their component samples (children)' do
-      expect(parent_sample.component_samples).to match_array [child_sample1, child_sample2]
+    it 'compound samples are able to query their component samples' do
+      expect(compound_sample.component_samples).to match_array [component_sample1, component_sample2]
     end
 
-    it 'child samples are able to query their compound samples (parents)' do
-      expect(child_sample1.compound_samples).to match_array [parent_sample]
-      expect(child_sample2.compound_samples).to match_array [parent_sample]
+    it 'component samples are able to query their compound samples' do
+      expect(component_sample1.compound_samples).to match_array [compound_sample]
+      expect(component_sample2.compound_samples).to match_array [compound_sample]
     end
 
     it 'removing a component sample removes both sides of the relationship' do
-      parent_sample.component_samples.delete(child_sample2)
-      parent_sample.save
-      child_sample2.reload
+      compound_sample.component_samples.delete(component_sample2)
+      compound_sample.save
+      component_sample2.reload
 
-      expect(parent_sample.component_samples).to match_array [child_sample1]
-      expect(child_sample1.compound_samples).to match_array [parent_sample]
-      expect(child_sample2.compound_samples).to be_empty
+      expect(compound_sample.component_samples).to match_array [component_sample1]
+      expect(component_sample1.compound_samples).to match_array [compound_sample]
+      expect(component_sample2.compound_samples).to be_empty
     end
 
     it 'removing a compound sample removes both sides of the relationship' do
-      child_sample1.compound_samples.delete(parent_sample)
-      parent_sample.reload
+      component_sample1.compound_samples.delete(compound_sample)
+      compound_sample.reload
 
-      expect(parent_sample.component_samples).to match_array [child_sample2]
-      expect(child_sample1.compound_samples).to be_empty
-      expect(child_sample2.compound_samples).to match_array [parent_sample]
+      expect(compound_sample.component_samples).to match_array [component_sample2]
+      expect(component_sample1.compound_samples).to be_empty
+      expect(component_sample2.compound_samples).to match_array [compound_sample]
     end
 
     it 'component samples can belong to many compound samples' do
-      other_parent = create(:sample, component_samples: [child_sample1])
-      child_sample1.reload
+      other_compound_sample = create(:sample, component_samples: [component_sample1])
+      component_sample1.reload
 
-      expect(other_parent.component_samples).to match_array [child_sample1]
-      expect(child_sample1.compound_samples).to match_array [parent_sample, other_parent]
-      expect(child_sample2.compound_samples).to match_array [parent_sample]
-    end
-
-    it 'fails validation when a compound sample is assigned a compound sample' do
-      other_sample = create(:sample)
-      parent_sample.compound_samples = [other_sample]
-
-      expect(parent_sample.save).to be_falsey
-      expect(parent_sample.errors[:compound_samples]).to include('cannot exist when component samples also exist')
-      expect(parent_sample.errors[:component_samples]).to include('cannot exist when compound samples also exist')
-
-      expect(child_sample1.save).to be_falsey
-      expect(child_sample1.errors[:compound_samples]).to include('cannot themselves have further compound samples')
-    end
-
-    it 'fails validation when a component sample is assigned a component sample' do
-      other_sample = create(:sample)
-      child_sample1.component_samples = [other_sample]
-
-      expect(child_sample1.save).to be_falsey
-      expect(child_sample1.errors[:compound_samples]).to include('cannot exist when component samples also exist')
-      expect(child_sample1.errors[:component_samples]).to include('cannot exist when compound samples also exist')
-
-      expect(parent_sample.save).to be_falsey
-      expect(parent_sample.errors[:component_samples]).to include('cannot themselves have further component samples')
+      expect(other_compound_sample.component_samples).to match_array [component_sample1]
+      expect(component_sample1.compound_samples).to match_array [compound_sample, other_compound_sample]
+      expect(component_sample2.compound_samples).to match_array [compound_sample]
     end
   end
 end
