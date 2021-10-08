@@ -17,6 +17,8 @@ module RecordLoader
           add_library_types(request_type, options.fetch('library_types', []))
           add_acceptable_purposes(request_type, options.fetch('acceptable_plate_purposes', []))
         end
+    rescue StandardError => e
+      raise StandardError, "Failed to create #{key} due to: #{e.message}"
     end
 
     private
