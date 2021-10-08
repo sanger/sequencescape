@@ -43,9 +43,7 @@ class Api::SampleIO < Api::Base
   map_attribute_to_json_attribute(:updated_by_manifest)
   map_attribute_to_json_attribute(:consent_withdrawn)
 
-  with_nested_has_many_association(:component_samples) do
-    map_attribute_to_json_attribute(:uuid)
-  end
+  with_nested_has_many_association(:component_samples) { map_attribute_to_json_attribute(:uuid) }
 
   with_association(:sample_metadata) do
     map_attribute_to_json_attribute(:organism)
