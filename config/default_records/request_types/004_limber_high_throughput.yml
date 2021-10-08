@@ -140,6 +140,7 @@ limber_heron:
     - Sanger_artic_v3_96
     - Sanger_artic_v4_96
 limber_heron_lthr:
+  <<: *limber_htp_library
   name: Limber Heron LTHR
   request_class_name: IlluminaHtp::Requests::HeronTailedRequest
   acceptable_plate_purposes:
