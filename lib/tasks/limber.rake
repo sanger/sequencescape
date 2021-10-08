@@ -287,7 +287,7 @@ namespace :limber do
 
       Limber::Helper::RequestTypeConstructor.new(
         'Duplex-Seq',
-        library_types: ['Duplex-Seq'],
+        library_types: ['Duplex-Seq', 'Targeted Nanoseq'],
         default_purposes: ['LDS Stock', 'LDS Cherrypick']
       ).build!
 
