@@ -281,7 +281,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     inverse_of: :component_sample,
     class_name: 'SampleCompoundComponent'
   )
-  has_many :compound_samples, through: :joins_as_component_sample, source: :compound_sample
+  has_many :compound_samples, through: :joins_as_component_sample, dependent: :destroy
 
   # Create relationships with samples that are contained by this Sample via SampleCompoundComponent.
   # Samples that are contained by this Sample should not themselves contain more Samples.
@@ -292,7 +292,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     inverse_of: :compound_sample,
     class_name: 'SampleCompoundComponent'
   )
-  has_many :component_samples, through: :joins_as_compound_sample, source: :component_sample
+  has_many :component_samples, through: :joins_as_compound_sample, dependent: :destroy
 
   has_many :assets, -> { distinct }, through: :aliquots, source: :receptacle
   deprecate assets: 'use receptacles instead, or labware if needed'
