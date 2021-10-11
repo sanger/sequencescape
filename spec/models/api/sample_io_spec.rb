@@ -131,7 +131,7 @@ RSpec.describe Api::SampleIO, type: :model do
       'developmental_stage' => 'thing',
       'donor_id' => '2',
       'reference_genome' => 'ReferenceGenome1',
-      'component_samples' => [{ uuid: comp_sample1.uuid }, { uuid: comp_sample2.uuid }]
+      'component_sample_uuids' => [{ uuid: comp_sample1.uuid }, { uuid: comp_sample2.uuid }]
     }
   end
 
