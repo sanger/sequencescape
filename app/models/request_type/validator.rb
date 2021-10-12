@@ -26,7 +26,7 @@ class RequestType::Validator < ApplicationRecord
     end
 
     def to_a
-      request_type.library_types.map(&:name)
+      request_type.library_types.pluck(:name).sort
     end
     delegate :to_sentence, to: :to_a
   end
