@@ -169,14 +169,13 @@ RSpec.describe Sample, type: :model, accession: true, aker: true, cardinal: true
   end
 
   context 'compound samples in Cardinal' do
-    let(:original_creation_time) { Time.zone.parse('2012-Mar-16 12:06') }
     let!(:compound_sample) { create(:sample) }
     let!(:component_sample1) { create(:sample) }
     let!(:component_sample2) { create(:sample) }
 
     # let variables are lazy loaded and we always want the relationships to exist
     # even if we don't access the compound sample in the test.
-    before(:each) do
+    before do
       compound_sample.update(component_samples: [component_sample1, component_sample2])
       component_sample1.reload
       component_sample2.reload
@@ -222,7 +221,7 @@ RSpec.describe Sample, type: :model, accession: true, aker: true, cardinal: true
     context 'changing associations modifies the updated_at time of affected samples' do
       let!(:initial_updated_at) { Time.zone.parse('2012-Mar-16 12:06') }
 
-      before(:each) do
+      before do
         compound_sample.update(updated_at: initial_updated_at)
         component_sample1.update(updated_at: initial_updated_at)
         component_sample2.update(updated_at: initial_updated_at)
