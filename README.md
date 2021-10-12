@@ -174,12 +174,12 @@ get the container id using `docker ps`, and then:
 
 To start the consumer off listening for messages:
 
-`bundle exec ./bin/amqp_client start`
+`bundle exec warren consumer start`
 
-where `start` instructs it to start. You can also stop a worker by calling `stop`
-or restart it with `restart`.
+The consumer will run in the foreground, logging to the console. You can stop it with Ctrl-C.
 
-Logs can be found in `tmp/pids`.
+For more warren actions, either use `bundle exec warren help` or see the
+[warren documentation](https://rubydoc.info/gems/sanger_warren)
 
 You will also have to change the config in config/warren.yml from `type: log` to `type: broadcast` to get
 it to actually send messages in development mode.

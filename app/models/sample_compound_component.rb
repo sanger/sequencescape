@@ -7,8 +7,8 @@
 class SampleCompoundComponent < ApplicationRecord
   self.table_name = 'sample_compounds_components'
 
-  belongs_to :compound_sample, class_name: 'Sample'
-  belongs_to :component_sample, class_name: 'Sample'
+  belongs_to :compound_sample, class_name: 'Sample', touch: true
+  belongs_to :component_sample, class_name: 'Sample', touch: true
 
   validate :nested_compound_samples_validation
   validate :nested_component_samples_validation
