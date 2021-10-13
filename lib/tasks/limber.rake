@@ -259,7 +259,7 @@ namespace :limber do
 
       Limber::Helper::RequestTypeConstructor.new(
         'Duplex-Seq',
-        library_types: ['Duplex-Seq'],
+        library_types: ['Duplex-Seq', 'Targeted Nanoseq'],
         default_purposes: ['LDS Stock', 'LDS Cherrypick']
       ).build!
 
@@ -355,7 +355,9 @@ namespace :limber do
           'TraDIS',
           'Chromium Visium',
           'Hi-C',
-          'Haplotagging'
+          'Haplotagging',
+          'Chromium single cell HTO',
+          'Chromium single cell surface protein'
         ],
         product_line: 'Bespoke',
         default_purposes: ['LBB Cherrypick'] # It requires default_purpose to accept an array.
@@ -370,9 +372,7 @@ namespace :limber do
         'Chromium single cell 3 prime v3',
         'Chromium single cell 5 prime',
         'Chromium single cell TCR',
-        'Chromium single cell BCR',
-        'Chromium single cell HTO',
-        'Chromium single cell surface protein'
+        'Chromium single cell BCR'
       ]
 
       Limber::Helper::RequestTypeConstructor.new(
