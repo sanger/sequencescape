@@ -24,7 +24,7 @@ module Api
       # Filters
       filter :visible, default: true
       filter :name
-      filter :tag_group_adapter_type_name, apply: -> ( records, value, _options) { records.by_adapter_type(value) }
+      filter :tag_group_adapter_type_name, apply: ->(records, value, _options) { records.by_adapter_type(value) }
 
       # Custom methods
       # These shouldn't be used for business logic, and a more about

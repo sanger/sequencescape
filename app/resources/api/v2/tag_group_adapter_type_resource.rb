@@ -6,6 +6,7 @@ module Api
     # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
     class TagGroupAdapterTypeResource < BaseResource
       model_name 'TagGroup::AdapterType', add_model_hint: false
+
       # Constants...
 
       # immutable # uncomment to make the resource immutable

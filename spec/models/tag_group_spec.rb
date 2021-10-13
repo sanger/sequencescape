@@ -80,6 +80,5 @@ RSpec.describe TagGroup, type: :model do
         expect(described_class.by_adapter_type('another_test_adapter')).not_to include(tag_group)
       end
     end
-
   end
 end
