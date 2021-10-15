@@ -13,9 +13,9 @@ describe 'Samples API', with: :api_v2, cardinaldo: true do
 
     context 'when attaching components to a compound sample' do
       let(:compound_sample) { create :sample }
-      let(:component_samples_payload) {
+      let(:component_samples_payload) do
         component_samples.each_with_index.map { |s, _pos| { type: 'samples', id: s.id } }
-      }
+      end
 
       it 'can attach the component samples using the relation link' do
         api_post "/api/v2/samples/#{compound_sample.id}/relationships/component_samples",
@@ -42,7 +42,7 @@ describe 'Samples API', with: :api_v2, cardinaldo: true do
       context 'when providing sample_compound_component_data' do
         let(:assets) { component_samples.map{ create :well }}
         let(:target_assets) { component_samples.map{ create :well }}
-        let(:sample_compound_component_data_payload) { 
+        let(:sample_compound_component_data_payload) do 
           component_samples.each_with_index.map do |s, pos| 
             {
               asset_id: assets[pos].id,
@@ -50,7 +50,8 @@ describe 'Samples API', with: :api_v2, cardinaldo: true do
               sample_id: s.id 
             }
           end
-        }
+        end
+
         it 'can create the linking beteween assets specified' do
           api_patch "/api/v2/samples/#{compound_sample.id}", { 
             data: { 

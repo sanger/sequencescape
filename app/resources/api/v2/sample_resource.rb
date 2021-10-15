@@ -2,6 +2,7 @@
 
 module Api
   module V2
+    # SampleResource
     class SampleResource < BaseResource
       default_includes :uuid_object
 
@@ -24,7 +25,7 @@ module Api
         ActiveRecord::Base.transaction do 
           linking_data.each do |data|
             SampleCompoundComponent.where(
-              compound_sample_id: self.id, component_sample_id: data[:sample_id]
+              compound_sample_id: id, component_sample_id: data[:sample_id]
             ).each do |sample_compound_component|
               sample_compound_component.update(asset_id: data[:asset_id], target_asset_id: data[:target_asset_id])
               
@@ -36,12 +37,11 @@ module Api
 
       def _pass_sample_compound_request_for_well(data)
         well = Well.find(data[:asset_id])
-        if well
-          req = well.outer_requests.first 
-          if req.request_type.key == 'limber_cardinal_sample_compound'
-            req.update(target_asset_id: data[:target_asset_id])
-            req.pass!
-          end
+        return unless well
+        req = well.outer_requests.first 
+        if req.request_type.key == 'limber_cardinal_sample_compound'
+          req.update(target_asset_id: data[:target_asset_id])
+          req.pass!
         end
       end
 
