@@ -489,7 +489,7 @@ namespace :limber do
         initial_state: 'pending',
         billable: false,
         request_purpose: :standard,
-        order: 1,
+        order: 1
       )
 
       # In SS
@@ -513,7 +513,6 @@ namespace :limber do
           asset_shape: AssetShape.find_by(name: 'Standard')
         )
       end
-  
 
       Limber::Helper::RequestTypeConstructor.new(
         'Cardinal',
@@ -806,7 +805,6 @@ namespace :limber do
         catalogue: chromium,
         role: 'Chromium'
       ).build!
-
 
       unless SubmissionTemplate.find_by(name: 'Limber - Cardinal Sample Compound')
         SubmissionTemplate.create!(
