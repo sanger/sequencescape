@@ -7,7 +7,7 @@ module Api
       attribute :target_asset_id
       attribute :compound_sample_id
       attribute :component_sample_id
-      
+
       filter :target_asset_id
     end
   end

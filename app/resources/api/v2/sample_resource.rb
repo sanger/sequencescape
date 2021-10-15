@@ -23,15 +23,15 @@ module Api
       filter :name
 
       def sample_compound_component_data=(linking_data)
-        ActiveRecord::Base.transaction do 
+        ActiveRecord::Base.transaction do
           linking_data.each do |data|
-            SampleCompoundComponent.where(
-              compound_sample_id: id, component_sample_id: data[:sample_id]
-            ).each do |sample_compound_component|
-              sample_compound_component.update(asset_id: data[:asset_id], target_asset_id: data[:target_asset_id])
-              
-              _pass_sample_compound_request_for_well(data)
-            end
+            SampleCompoundComponent
+              .where(compound_sample_id: id, component_sample_id: data[:sample_id])
+              .each do |sample_compound_component|
+                sample_compound_component.update(asset_id: data[:asset_id], target_asset_id: data[:target_asset_id])
+
+                _pass_sample_compound_request_for_well(data)
+              end
           end
         end
       end
@@ -39,8 +39,8 @@ module Api
       def _pass_sample_compound_request_for_well(data)
         well = Well.find(data[:asset_id])
         return unless well
-        req = well.outer_requests.first 
-        return unless req.request_type.key == 'limber_cardinal_sample_compound'
+        req = well.outer_requests.first
+        return unless req&.request_type&.key == 'limber_cardinal_sample_compound'
         req.update(target_asset_id: data[:target_asset_id])
         req.pass!
       end
