@@ -80,7 +80,7 @@ describe 'Samples API', with: :api_v2, cardinal: true do
                     }
 
           expect(response).to have_http_status(:success)
-          
+
           expect(compound_sample.component_samples).to eq(component_samples)
           sample_compound_component_data_payload.each_with_index do |elem, idx|
             expect(elem[:asset_id]).to eq(compound_sample.joins_as_compound_sample[idx].asset_id)
