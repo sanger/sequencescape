@@ -39,10 +39,9 @@ module Api
         well = Well.find(data[:asset_id])
         return unless well
         req = well.outer_requests.first 
-        if req.request_type.key == 'limber_cardinal_sample_compound'
-          req.update(target_asset_id: data[:target_asset_id])
-          req.pass!
-        end
+        return unless req.request_type.key == 'limber_cardinal_sample_compound'
+        req.update(target_asset_id: data[:target_asset_id])
+        req.pass!
       end
 
       def sample_compound_component_data
