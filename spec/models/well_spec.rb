@@ -555,4 +555,20 @@ describe Well do
       expect(well.qc_result_for('rin')).to eq(6)
     end
   end
+
+  context '(DPL-148) on updating well attribute' do
+    let(:well) { create :well }
+    it 'triggers warehouse update' do
+      Warren.handler.enable!
+      begin
+        expect{
+          # We try a valid update
+          well.well_attribute.update(concentration: 200)
+        }.to change(Warren.handler.messages, :count).from(0)
+      ensure
+        Warren.handler.disable!
+      end
+    end
+  end
+
 end
