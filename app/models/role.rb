@@ -15,7 +15,6 @@ class Role < ApplicationRecord
   scope :named, ->(name) { where(name: name) }
   scope :authorizing, ->(authorizable) { where(authorizable: authorizable) if authorizable }
 
-  after_create :touch_authorizable
   after_destroy :touch_authorizable
 
   broadcasts_associated_with_warren :authorizable
