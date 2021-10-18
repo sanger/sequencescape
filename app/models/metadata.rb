@@ -103,7 +103,8 @@ module Metadata # rubocop:todo Style/Documentation
                         class_name: name,
                         validate: false,
                         autosave: false,
-                        inverse_of: :"#{as_name}_metadata", touch: true
+                        inverse_of: :"#{as_name}_metadata",
+                        touch: true
 
     # Finally give it a name!
     const_set(:Metadata, metadata)

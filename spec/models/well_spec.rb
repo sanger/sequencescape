@@ -571,5 +571,4 @@ describe Well do
       end
     end
   end
-
 end

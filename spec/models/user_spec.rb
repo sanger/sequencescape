@@ -128,11 +128,11 @@ RSpec.describe User, type: :model do
       expect(study.reload.updated_at).to be_within(1.hour).of Time.zone.now
 
       user = study.managers.first
-      
+
       study.update(updated_at: 1.hour.ago)
-      
+
       expect(study.reload.updated_at).not_to be_within(5.minutes).of Time.zone.now
-      user.remove_role('manager', study) 
+      user.remove_role('manager', study)
       expect(study.reload.updated_at).to be_within(5.minutes).of Time.zone.now
     end
 
@@ -147,7 +147,7 @@ RSpec.describe User, type: :model do
       study.update(updated_at: 1.hour.ago)
 
       expect(study.reload.updated_at).not_to be_within(5.minutes).of Time.zone.now
-      user.remove_role('manager', study) 
+      user.remove_role('manager', study)
       expect(study.reload.updated_at).to be_within(5.minutes).of Time.zone.now
     end
   end
