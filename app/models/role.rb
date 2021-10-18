@@ -8,13 +8,14 @@ class Role < ApplicationRecord
   has_many :user_role_bindings, class_name: 'Role::UserRole', dependent: :destroy
   has_many :users, through: :user_role_bindings, source: :user
 
-  belongs_to :authorizable, polymorphic: true
+  belongs_to :authorizable, polymorphic: true, touch: true
 
   validates :name, presence: true
   scope :general_roles, -> { where(authorizable_type: nil) }
   scope :named, ->(name) { where(name: name) }
   scope :authorizing, ->(authorizable) { where(authorizable: authorizable) if authorizable }
 
+  after_create :touch_authorizable
   after_destroy :touch_authorizable
 
   broadcasts_associated_with_warren :authorizable
