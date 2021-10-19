@@ -82,6 +82,7 @@ module StudyReport::StudyDetails # rubocop:todo Style/Documentation
       Well
         .for_study_report
         .where(id: asset_ids)
+        .order(:id)
         .each do |asset|
           asset_progress_data = asset.qc_report
           next if asset_progress_data.nil?
