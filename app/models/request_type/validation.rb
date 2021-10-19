@@ -23,7 +23,10 @@ module RequestType::Validation
 
   def request_type_validator
     request_type = self
-    new_validator = Class.new(RequestTypeValidator) { request_type.request_type_validators.each(&:apply_validator) }
+    new_validator =
+      Class.new(RequestTypeValidator) do
+        request_type.request_type_validators.each { |validator| apply_validator(validator) }
+      end
     new_validator.tap { |sub_class| sub_class.request_type = request_type }
   end
 
