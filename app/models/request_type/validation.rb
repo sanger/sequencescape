@@ -6,12 +6,6 @@ module RequestType::Validation
     DelegateValidation::CompositeValidator.construct(request_class.delegate_validator, request_type_validator)
   end
 
-  def request_type_validator
-    request_type = self
-    new_validator = Class.new(RequestTypeValidator) { request_type.request_type_validators.each(&:apply_validator) }
-    new_validator.tap { |sub_class| sub_class.request_type = request_type }
-  end
-
   def apply_validator(validator)
     message =
       "is '%{value}' should be #{
@@ -25,6 +19,12 @@ module RequestType::Validation
                 if: :"#{validator.request_option}_needs_checking?",
                 message: message
               }
+  end
+
+  def request_type_validator
+    request_type = self
+    new_validator = Class.new(RequestTypeValidator) { request_type.request_type_validators.each(&:apply_validator) }
+    new_validator.tap { |sub_class| sub_class.request_type = request_type }
   end
 
   class RequestTypeValidator < DelegateValidation::Validator # rubocop:todo Style/Documentation
