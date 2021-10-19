@@ -12,7 +12,7 @@ module RequestType::Validation
     Class
       .new(RequestTypeValidator) do
         request_type.request_type_validators.each do |validator|
-          message = "is '%{value}' should be #{validator.valid_options.to_sentence(last_word_connector: ' or ')}"
+          message = "is '%{value}' should be #{validator.valid_options.to_sentence(last_word_connector: ', or ', two_words_connector: ' or ')}"
           vro = :"#{validator.request_option}"
           delegate_attribute(vro, to: :target, default: validator.default, type_cast: validator.type_cast)
           validates vro,
