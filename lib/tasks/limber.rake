@@ -310,7 +310,7 @@ namespace :limber do
       Limber::Helper::RequestTypeConstructor.new(
         'ReISC',
         request_class: 'Pulldown::Requests::ReIscLibraryRequest',
-        library_types: ['Agilent Pulldown', 'Twist Pulldown'],
+        library_types: ['Agilent Pulldown', 'Duplex-Seq', 'Twist Pulldown'],
         default_purposes: ['LB Lib PCR-XP']
       ).build!
 
