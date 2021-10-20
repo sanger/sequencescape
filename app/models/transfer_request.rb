@@ -18,7 +18,7 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Determines if we attempt to filter out {Aliquot#equivalent? equivalent} aliquots
   # before performing transfers.
   attr_accessor :merge_equivalent_aliquots
-  attr_accessor :dont_transfer_anything
+  # attr_accessor :dont_transfer_anything
   attr_writer :aliquot_attributes
 
   # States which are still considered to be processable (ie. not failed or cancelled)
@@ -244,7 +244,7 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # where two plates were subject to separate PCR processes, before being
   # merged together again.
   def aliquots_for_transfer
-    return [] if dont_transfer_anything
+    # return [] if dont_transfer_anything
     merge_equivalent_aliquots ? duplicates_of_distinct_source_aliquots_only : duplicates_of_all_source_aliquots
   end
 
