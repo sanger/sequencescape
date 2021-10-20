@@ -559,16 +559,11 @@ describe Well do
   context '(DPL-148) on updating well attribute' do
     let(:well) { create :well }
 
-    it 'triggers warehouse update' do
-      Warren.handler.enable!
-      begin
-        expect do
-          # We try a valid update
-          well.well_attribute.update(concentration: 200)
-        end.to change(Warren.handler.messages, :count).from(0)
-      ensure
-        Warren.handler.disable!
-      end
+    it 'triggers warehouse update', warren: true do
+      expect do
+        # We try a valid update
+        well.well_attribute.update(concentration: 200)
+      end.to change(Warren.handler.messages, :count).from(0)
     end
   end
 end

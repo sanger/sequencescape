@@ -17,8 +17,6 @@ class Role < ApplicationRecord
 
   after_destroy :touch_authorizable
 
-  broadcasts_associated_with_warren :authorizable
-
   def self.keys
     distinct.pluck(:name)
   end

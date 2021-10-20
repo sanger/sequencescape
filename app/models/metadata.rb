@@ -114,8 +114,6 @@ module Metadata # rubocop:todo Style/Documentation
     # All derived classes have their own table.  We're just here to help with some behaviour
     self.abstract_class = true
 
-    broadcasts_associated_with_warren :owner
-
     # This ensures that the default values are stored within the DB, meaning that this information will be
     # preserved for the future, unlike the original properties information which didn't store values when
     # nil which lead to us having to guess.

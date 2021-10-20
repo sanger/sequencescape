@@ -707,13 +707,8 @@ RSpec.describe Study, type: :model do
     let(:study) { create :study }
     let(:user) { create :user }
 
-    it 'triggers warehouse update' do
-      Warren.handler.enable!
-      begin
-        expect { user.grant_follower(study) }.to change(Warren.handler.messages, :count).from(0)
-      ensure
-        Warren.handler.disable!
-      end
+    it 'triggers warehouse update', warren: true do
+      expect { user.grant_follower(study) }.to change(Warren.handler.messages, :count).from(0)
     end
   end
 end

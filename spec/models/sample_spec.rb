@@ -171,16 +171,11 @@ RSpec.describe Sample, type: :model, accession: true, aker: true do
   context '(DPL-148) on updating sample metadata' do
     let(:sample) { create :sample }
 
-    it 'triggers warehouse update' do
-      Warren.handler.enable!
-      begin
-        expect do
-          # We try with a valid update
-          sample.sample_metadata.update(gender: 'Male')
-        end.to change(Warren.handler.messages, :count).from(0)
-      ensure
-        Warren.handler.disable!
-      end
+    it 'triggers warehouse update', warren: true do
+      expect do
+        # We try with a valid update
+        sample.sample_metadata.update(gender: 'Male')
+      end.to change(Warren.handler.messages, :count).from(0)
     end
   end
 end
