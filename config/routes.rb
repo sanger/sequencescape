@@ -44,7 +44,6 @@ Rails
         jsonapi_resources :request_types
         jsonapi_resources :requests
         jsonapi_resources :samples
-        jsonapi_resources :sample_compound_components
         jsonapi_resources :studies
         jsonapi_resources :submissions
         jsonapi_resources :tag_groups

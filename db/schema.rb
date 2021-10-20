@@ -1252,15 +1252,6 @@ ActiveRecord::Schema.define(version: 2021_10_20_123334) do
     t.index ["user_id"], name: "index_roles_users_on_user_id"
   end
 
-  create_table "sample_compounds_components", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
-    t.integer "compound_sample_id", null: false
-    t.integer "component_sample_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.integer "asset_id"
-    t.integer "target_asset_id"
-  end
-
   create_table "sample_jobs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "sample_id"
     t.bigint "job_id"

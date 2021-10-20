@@ -480,44 +480,10 @@ namespace :limber do
         rt.acceptable_plate_purposes = Purpose.where(name: 'LBC Stock')
       end
 
-      RequestType.create!(
-        # update to compound
-        name: 'Limber Cardinal Sample Compound',
-        request_class_name: 'CustomerRequest',
-        key: 'limber_cardinal_sample_compound',
-        asset_type: 'Well',
-        initial_state: 'pending',
-        billable: false,
-        request_purpose: :standard,
-        order: 1
-      )
-
-      # In SS
-      # SubmissionTemplate.find_by(name: "Limber - Cardinal")
-      # request_type = RequestType.find(127).plate_purposes
-      # PlatePurpose.find_by(name: "LCA PBMC Pools")
-
-      # *** Below needs to be added to SS seed ***
-      # RequestType::RequestTypePlatePurpose.create(request_type_id: 127, plate_purpose_id: PlatePurpose.find_by(name: "LCA PBMC Pools").id)
-
-      # unless Purpose.where(name: 'LCA PBMC Pools').exists?
-      #   PlatePurpose.create!(
-      #     name: 'LCA PBMC Pools',
-      #     target_type: 'Plate',
-      #     stock_plate: true,
-      #     input_plate: true,
-      #     default_state: 'pending',
-      #     barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
-      #     cherrypickable_target: false,
-      #     size: 96,
-      #     asset_shape: AssetShape.find_by(name: 'Standard')
-      #   )
-      # end
-
       Limber::Helper::RequestTypeConstructor.new(
         'Cardinal',
         library_types: ['Cardinal'],
-        default_purposes: ['LCA Blood Array', 'LCA PBMC Pools']
+        default_purposes: ['LCA Blood Array']
       ).build!
       Limber::Helper::RequestTypeConstructor.new(
         'Cardinal Banking',
@@ -805,19 +771,6 @@ namespace :limber do
         catalogue: chromium,
         role: 'Chromium'
       ).build!
-
-      unless SubmissionTemplate.find_by(name: 'Limber - Cardinal Sample Compound')
-        SubmissionTemplate.create!(
-          name: 'Limber - Cardinal Sample Compound',
-          submission_class_name: 'LinearSubmission',
-          submission_parameters: {
-            request_type_ids_list: [RequestType.where(key: 'limber_cardinal_sample_compound').ids],
-            project_id: Limber::Helper.find_project('Project Cardinal').id
-          },
-          product_line: ProductLine.find_or_create_by!(name: 'Cardinal'),
-          product_catalogue: cardinal_catalogue
-        )
-      end
 
       unless SubmissionTemplate.find_by(name: 'Limber - Cardinal')
         SubmissionTemplate.create!(

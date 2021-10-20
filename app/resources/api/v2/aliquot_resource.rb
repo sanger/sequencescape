@@ -7,7 +7,7 @@ module Api
     class AliquotResource < BaseResource
       # Constants...
 
-      # immutable # comment to make the resource mutable
+      immutable # comment to make the resource mutable
 
       default_includes :tag, :tag2
 
@@ -25,9 +25,6 @@ module Api
       attribute :tag2_oligo, readonly: true
       attribute :tag2_index, readonly: true
       attribute :suboptimal, readonly: true
-      attribute :library_type
-      attribute :study_id
-      attribute :project_id
 
       # Filters
 

@@ -12,7 +12,7 @@ module Api
       default_includes :uuid_object, :map, :transfer_requests_as_target, plate: :barcodes
 
       # Associations:
-      has_many :samples #, readonly: true
+      has_many :samples, readonly: true
       has_many :studies, readonly: true
       has_many :projects, readonly: true
       has_many :qc_results, readonly: true
