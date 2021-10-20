@@ -45,7 +45,7 @@ Feature: Creating submissions for pulldown
       """
       {
         "content": {
-          "request_options.read_length": ["is '22' should be 50, 75 or 100"]
+          "request_options.read_length": ["is '22' should be 50, 75, or 100"]
         }
       }
       """
@@ -81,7 +81,7 @@ Feature: Creating submissions for pulldown
       """
       {
         "content": {
-          "orders.request_options.read_length": ["is '0' should be 50, 75 or 100"]
+          "orders.request_options.read_length": ["is '0' should be 50, 75, or 100"]
         }
       }
       """
