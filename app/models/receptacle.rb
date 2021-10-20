@@ -262,7 +262,8 @@ class Receptacle < Asset
   end
 
   def check_aliquots_have_unique_tag_depth
-    raise StandardError, 'Cannot tag multiple samples a without unique tag depth' if aliquots.pluck(:tag_depth).uniq.count != aliquots.size
+    raise StandardError, 
+'Cannot tag multiple samples a without unique tag depth' if aliquots.pluck(:tag_depth).uniq.count != aliquots.size
   end
 
   def attach_tag(tag, tag2 = nil)
