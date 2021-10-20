@@ -169,9 +169,9 @@ RSpec.describe Sample, type: :model, accession: true, aker: true, cardinal: true
   end
 
   context 'compound samples in Cardinal' do
-    let(:compound_sample) { create(:sample) }
-    let(:component_sample1) { create(:sample) }
-    let(:component_sample2) { create(:sample) }
+    let!(:compound_sample) { create(:sample) }
+    let!(:component_sample1) { create(:sample) }
+    let!(:component_sample2) { create(:sample) }
 
     # let variables are lazy loaded and we always want the relationships to exist
     # even if we don't access the compound sample in the test.
@@ -216,6 +216,56 @@ RSpec.describe Sample, type: :model, accession: true, aker: true, cardinal: true
       expect(other_compound_sample.component_samples).to match_array [component_sample1]
       expect(component_sample1.compound_samples).to match_array [compound_sample, other_compound_sample]
       expect(component_sample2.compound_samples).to match_array [compound_sample]
+    end
+
+    context 'changing associations modifies the updated_at time of affected samples' do
+      let!(:initial_updated_at) { Time.zone.parse('2012-Mar-16 12:06') }
+
+      before do
+        compound_sample.update(updated_at: initial_updated_at)
+        component_sample1.update(updated_at: initial_updated_at)
+        component_sample2.update(updated_at: initial_updated_at)
+      end
+
+      it 'applies when the component_samples association is emptied' do
+        compound_sample.component_samples = []
+
+        compound_sample.reload
+        component_sample1.reload
+        component_sample2.reload
+
+        expect(compound_sample.updated_at).not_to eq initial_updated_at
+        expect(component_sample1.updated_at).not_to eq initial_updated_at
+        expect(component_sample2.updated_at).not_to eq initial_updated_at
+      end
+
+      it 'only applies to samples in the modified association' do
+        compound_sample.component_samples = [component_sample2]
+
+        compound_sample.reload
+        component_sample1.reload
+        component_sample2.reload
+
+        expect(compound_sample.updated_at).not_to eq initial_updated_at
+        expect(component_sample1.updated_at).not_to eq initial_updated_at
+
+        # Component sample 2 wasn't modified by the change
+        expect(component_sample2.updated_at).to eq initial_updated_at
+      end
+
+      it 'applies via the compound_samples association' do
+        component_sample2.compound_samples = []
+
+        compound_sample.reload
+        component_sample1.reload
+        component_sample2.reload
+
+        expect(compound_sample.updated_at).not_to eq initial_updated_at
+        expect(component_sample2.updated_at).not_to eq initial_updated_at
+
+        # Component sample 1 wasn't modified by the change
+        expect(component_sample1.updated_at).to eq initial_updated_at
+      end
     end
   end
 end
