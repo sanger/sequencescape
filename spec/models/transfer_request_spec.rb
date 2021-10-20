@@ -184,6 +184,56 @@ RSpec.describe TransferRequest, type: :model do
       end
     end
 
+    context 'when building using tag_depth' do
+      context 'when building several transfer requests' do
+        let(:transfer_request) do
+          described_class.create!(asset: source, target_asset: destination, aliquot_attributes: { tag_depth: 1 })
+        end
+
+        context 'with the same tag depth' do
+          let(:transfer_request2) do
+            described_class.create!(asset: source, target_asset: destination, aliquot_attributes: { tag_depth: 1 })
+          end
+
+          it 'cannot create several requests into the same destination' do
+            expect { [transfer_request, transfer_request2] }.to raise_error Aliquot::TagClash
+          end
+        end
+
+        context 'with the different tag depth' do
+          let(:transfer_request2) do
+            described_class.create!(asset: source, target_asset: destination, aliquot_attributes: { tag_depth: 2 })
+          end
+
+          it 'can create several requests into the same destination, allowing tag clash' do
+            expect { [transfer_request, transfer_request2] }.not_to raise_error
+          end
+        end
+      end
+
+      # context '#aliquot_attributes' do
+      #   let(:transfer_request) {
+      #     described_class.create!(
+      #       asset: source, target_asset: destination, tag_depth: tag_depth)
+      #   }
+      #   context 'when tag depth defined' do
+      #     let(:tag_depth) { 1}
+
+      #     it 'returns tag_depth' do
+      #       expect(transfer_request.aliquot_attributes).to have_key(:tag_depth)
+      #       expect(transfer_request.aliquot_attributes[:tag_depth]).to eq(1)
+      #     end
+      #   end
+
+      #   context 'when tag depth not defined' do
+      #     let(:tag_depth) {nil}
+      #     it 'does not return tag_depth' do
+      #       expect(transfer_request.aliquot_attributes).not_to have_key(:tag_depth)
+      #     end
+      #   end
+      # end
+    end
+
     context 'when the destination has equivalent aliquots' do
       let(:equivalent_aliquot) { source.aliquots.first.dup }
       let(:destination) { create :well, aliquots: [equivalent_aliquot] }
