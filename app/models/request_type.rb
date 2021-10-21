@@ -25,8 +25,8 @@ class RequestType < ApplicationRecord
 
     belongs_to :request_type
     validates :request_type, presence: true
-    belongs_to :plate_purpose
-    validates :plate_purpose, presence: true
+    belongs_to :purpose, foreign_key: 'plate_purpose_id'
+    validates :purpose, presence: true
     validates :plate_purpose_id, uniqueness: { scope: :request_type_id }
   end
 
@@ -60,8 +60,8 @@ class RequestType < ApplicationRecord
 
   # Defines the acceptable plate purposes or the request type.  Essentially this is used to limit the
   # cherrypick plate types when going into pulldown to the correct list.
-  has_many :plate_purposes, class_name: 'RequestType::RequestTypePlatePurpose'
-  has_many :acceptable_plate_purposes, through: :plate_purposes, source: :plate_purpose
+  has_many :purposes, class_name: 'RequestType::RequestTypePlatePurpose'
+  has_many :acceptable_plate_purposes, through: :purposes, source: :purpose
 
   # While a request type describes what a request is, a request purpose describes why it is being done.
   # ie. standard, qc, internal

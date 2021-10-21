@@ -20,9 +20,9 @@ module IlluminaHtp::Requests
 
     validate :valid_purpose?, if: :asset_id_changed?
     def valid_purpose?
-      return true if acceptable_plate_purposes.empty? || acceptable_plate_purposes.include?(asset.plate.purpose)
+      return true if acceptable_plate_purposes.empty? || acceptable_plate_purposes.include?(asset.labware.purpose)
 
-      errors.add(:asset, "#{asset.plate.purpose.name} is not a suitable plate purpose.")
+      errors.add(:asset, "#{asset.labware.purpose.name} is not a suitable plate purpose.")
       false
     end
 
