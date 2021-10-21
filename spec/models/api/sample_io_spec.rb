@@ -129,7 +129,7 @@ RSpec.describe Api::SampleIO, type: :model do
       'consent_withdrawn' => false,
       'developmental_stage' => 'thing',
       'donor_id' => '2',
-      'reference_genome' => 'ReferenceGenome1',
+      'reference_genome' => 'ReferenceGenome1'
     }
   end
 
