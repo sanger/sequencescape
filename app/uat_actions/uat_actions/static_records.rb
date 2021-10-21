@@ -7,6 +7,10 @@ module UatActions::StaticRecords
   # here to allow us to access it in the integration suite tools.
   SWIPECARD_CODE = '__uat_test__'
 
+  def self.supplier
+    Supplier.find_or_create_by!(name: 'UAT Supplier')
+  end
+
   def self.study
     Study
       .create_with(
