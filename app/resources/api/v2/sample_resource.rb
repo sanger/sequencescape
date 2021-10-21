@@ -17,7 +17,6 @@ module Api
       attribute :control
       attribute :control_type
 
-
       filter :uuid
       filter :sanger_sample_id
       filter :name
