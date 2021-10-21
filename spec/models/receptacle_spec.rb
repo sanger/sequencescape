@@ -87,7 +87,7 @@ RSpec.describe Receptacle, type: :model do
       let(:aliquots) { [] }
 
       it 'raises an error' do
-        expect { receptacle.attach_tag(tag1, tag2) }.to raise_error
+        expect { receptacle.attach_tag(tag1, tag2) }.to raise_error(StandardError)
       end
     end
 
@@ -117,7 +117,7 @@ RSpec.describe Receptacle, type: :model do
         let(:al2) { create :aliquot, tag_depth: 1 }
 
         it 'raises an error' do
-          expect { receptacle.attach_tag(tag1, tag2) }.to raise_error
+          expect { receptacle.attach_tag(tag1, tag2) }.to raise_error(StandardError)
         end
       end
 
@@ -126,7 +126,7 @@ RSpec.describe Receptacle, type: :model do
         let(:al2) { create :aliquot }
 
         it 'raises an error' do
-          expect { receptacle.attach_tag(tag1, tag2) }.to raise_error
+          expect { receptacle.attach_tag(tag1, tag2) }.to raise_error(StandardError)
         end
       end
     end
