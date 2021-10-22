@@ -66,12 +66,3 @@ limber_bespoke_aggregation:
   request_class_name: CustomerRequest
   acceptable_plate_purposes:
     - LBC Stock
-  library_types:
-    - Chromium genome
-    - Chromium single cell
-    - Chromium single cell CNV
-    - Chromium single cell 3 prime v2
-    - Chromium single cell 3 prime v3
-    - Chromium single cell 5 prime
-    - Chromium single cell TCR
-    - Chromium single cell BCR
