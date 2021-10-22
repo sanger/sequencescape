@@ -1,7 +1,4 @@
 # Limber tube purposes.
-# Note: unlike the plates file, this one is not flagged as 'dev' as tube
-# construction happens within Sequencescape itself when the MX request
-# is constructed.
 ---
 # Added to ensure purpose exists before creating Limber Multiplexing
 # request type later. Otherwise request type has target purpose nil
