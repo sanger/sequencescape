@@ -158,6 +158,8 @@ LibraryType.create!(
 )
 
 RequestType.find_each do |request_type|
+  next if request_type.key.starts_with? 'limber'
+
   library_types = LibraryType.where(name: SetupLibraryTypes.existing_associations_for(request_type))
 
   if library_types.present?

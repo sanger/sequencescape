@@ -38,6 +38,7 @@ limber_reisc:
   library_types:
     - Agilent Pulldown
     - Twist Pulldown
+    - Duplex-Seq
 limber_pcr_free:
   <<: *limber_htp_library
   name: Limber PCR Free
@@ -75,6 +76,7 @@ limber_scrna:
 limber_gbs:
   <<: *limber_htp_library
   name: Limber GBS
+  for_multiplexing: true
   request_class_name: IlluminaHtp::Requests::GbsRequest
   acceptable_plate_purposes:
     - GBS Stock
