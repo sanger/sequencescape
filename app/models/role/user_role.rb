@@ -11,5 +11,4 @@ class Role::UserRole < ApplicationRecord
 
   delegate :touch_authorizable, :authorizable, to: :role
 
-  broadcasts_associated_with_warren :authorizable
 end
