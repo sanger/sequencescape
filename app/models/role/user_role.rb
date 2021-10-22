@@ -10,5 +10,4 @@ class Role::UserRole < ApplicationRecord
   after_destroy :touch_authorizable
 
   delegate :touch_authorizable, :authorizable, to: :role
-
 end
