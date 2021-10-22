@@ -5,7 +5,7 @@
 # across different environments
 # @see https://rubydoc.info/github/sanger/record_loader/
 module RecordLoader
-  # Creates the specified plate types if they are not present
+  # Creates the specified tube rack purposes if they are not present
   class TubeRackPurposeLoader < ApplicationRecordLoader
     DEFAULT_PRINTER_TYPE = '96 Well Plate'
     DEFAULT_TARGET_TYPE = 'TubeRack'
