@@ -168,7 +168,6 @@ RSpec.describe Sample, type: :model, accession: true, aker: true, cardinal: true
     end
   end
 
-
   context 'compound samples in Cardinal' do
     let!(:compound_sample) { create(:sample) }
     let!(:component_sample1) { create(:sample) }
@@ -269,5 +268,4 @@ RSpec.describe Sample, type: :model, accession: true, aker: true, cardinal: true
       end
     end
   end
-
 end

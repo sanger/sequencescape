@@ -46,4 +46,3 @@ RSpec.describe SampleCompoundComponent, type: :model, cardinal: true do
     end
   end
 end
-
