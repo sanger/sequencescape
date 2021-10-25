@@ -10,9 +10,10 @@ module RecordLoader
     config_folder 'submission_templates'
 
     def create_or_update!(name, options)
-      derived_options = generate_derived_options(options['related_records'])
-      options.delete('related_records')
-      final_options = options.merge(derived_options)
+      options_copy = options.dup
+      derived_options = generate_derived_options(options_copy['related_records'])
+      options_copy.delete('related_records')
+      final_options = options_copy.merge(derived_options)
 
       SubmissionTemplate.create_with(final_options).find_or_create_by!(name: name)
     end

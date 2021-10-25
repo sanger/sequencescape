@@ -1,5 +1,7 @@
 ---
 # This file was automatically generated via `rails g record_loader`
 # You should modify it to match your particular model.
-Unique attribute: {}
-Unique attribute 2: {}
+catalogue1:
+  selection_behaviour: SingleProduct
+catalogue2:
+  selection_behaviour: SingleProduct
