@@ -208,9 +208,6 @@ namespace :limber do
       gbs_catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'GBS')
       Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'GBS', catalogue: gbs_catalogue).build!
 
-      cardinal_catalogue =
-        ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'Cardinal')
-
       catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'Generic')
       Limber::Helper::TemplateConstructor.new(prefix: 'Multiplexing', catalogue: catalogue, sequencing_keys: base_list)
         .build!
@@ -293,32 +290,6 @@ namespace :limber do
         catalogue: chromium,
         role: 'Chromium'
       ).build!
-
-      unless SubmissionTemplate.find_by(name: 'Limber - Cardinal')
-        SubmissionTemplate.create!(
-          name: 'Limber - Cardinal',
-          submission_class_name: 'LinearSubmission',
-          submission_parameters: {
-            request_type_ids_list: [RequestType.where(key: 'limber_cardinal').ids],
-            project_id: Limber::Helper.find_project('Project Cardinal').id
-          },
-          product_line: ProductLine.find_or_create_by!(name: 'Cardinal'),
-          product_catalogue: cardinal_catalogue
-        )
-      end
-
-      unless SubmissionTemplate.find_by(name: 'Limber - Cardinal cell banking')
-        SubmissionTemplate.create!(
-          name: 'Limber - Cardinal cell banking',
-          submission_class_name: 'LinearSubmission',
-          submission_parameters: {
-            request_type_ids_list: [RequestType.where(key: 'limber_cardinal_banking').ids],
-            project_id: Limber::Helper.find_project('Project Cardinal').id
-          },
-          product_line: ProductLine.find_or_create_by!(name: 'Cardinal'),
-          product_catalogue: cardinal_catalogue
-        )
-      end
 
       ## end ##
       unless SubmissionTemplate.find_by(name: 'MiSeq for GBS')
