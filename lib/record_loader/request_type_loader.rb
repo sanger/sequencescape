@@ -34,7 +34,6 @@ module RecordLoader
       add_library_type_validator(request_type)
     end
 
-    # rubocop:disable Style/IfUnlessModifier
     def add_acceptable_purposes(request_type, purposes)
       acceptable_purposes = request_type.acceptable_plate_purposes.pluck(:name)
       purposes.each do |name|
@@ -43,8 +42,6 @@ module RecordLoader
         end
       end
     end
-
-    # rubocop:enable Style/IfUnlessModifier
 
     def add_library_type_validator(request_type)
       RequestType::Validator.create!(

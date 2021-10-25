@@ -13,7 +13,7 @@ namespace :limber do
 
   desc 'Create the limber request types'
   task create_request_types: %i[environment] do
-    puts '📣 limber:create_request_types no longer generates records. These are made automatically when seeding development.'
+    puts '📣 limber:create_request_types no longer generates records. These are made automatically when seeding development.' # rubocop:disable Layout/LineLength
   end
 
   desc 'Create the limber searches'
