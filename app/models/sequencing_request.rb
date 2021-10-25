@@ -19,6 +19,7 @@ class SequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
   end
 
   include Request::CustomerResponsibility
+  include Request::SampleCompoundAliquotTransfer
 
   before_validation :clear_cross_projects
   def clear_cross_projects
@@ -35,7 +36,7 @@ class SequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
 
   def on_started
     super
-    transfer_aliquots
+    compound_samples_needed? ? transfer_aliquots_into_compound_sample_aliquot : transfer_aliquots
   end
 
   def order=(_)
