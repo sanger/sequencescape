@@ -8,6 +8,7 @@ namespace :limber do
   desc 'Setup all the necessary limber records'
   task setup: %w[limber:create_submission_templates limber:create_searches limber:create_tag_templates]
 
+<<<<<<< HEAD
   desc 'Create purposes for use in Limber pipelines'
   task create_purposes: :environment do
     purposes = [
@@ -491,6 +492,15 @@ namespace :limber do
         default_purposes: ['LCA Blood Bank']
       ).build!
     end
+=======
+  task create_plates: :environment do
+    puts '📣 limber:create_plates no longer generates records. These are made automatically when seeding development.'
+  end
+
+  desc 'Create the limber request types'
+  task create_request_types: %i[environment] do
+    puts '📣 limber:create_request_types no longer generates records. These are made automatically when seeding development.'
+>>>>>>> 44cbe9981a139925aef906532c881b52b472ddc3
   end
 
   desc 'Create the limber searches'
@@ -548,7 +558,6 @@ namespace :limber do
   desc 'Create the limber submission templates'
   task create_submission_templates: [
          :environment,
-         :create_request_types,
          'sequencing:novaseq:setup',
          'sequencing:gbs_miseq:setup',
          'sequencing:heron_miseq:setup'
@@ -799,7 +808,6 @@ namespace :limber do
       end
 
       ## end ##
-
       unless SubmissionTemplate.find_by(name: 'MiSeq for GBS')
         SubmissionTemplate.create!(
           name: 'MiSeq for GBS',
