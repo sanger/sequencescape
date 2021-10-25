@@ -138,7 +138,7 @@ RSpec.describe SequencingRequest, type: :model do
   context 'on start' do
 
     let(:samples) { create_list :sample, 2 }
-    let!(:study) { create :study, samples: samples }
+    let(:study) { create :study, samples: samples }
     let(:destination) { create :receptacle }
     let(:source) { create :receptacle, aliquots: [aliquot1, aliquot2] }
     let(:library_tube) { create :library_tube, receptacles: [source] }

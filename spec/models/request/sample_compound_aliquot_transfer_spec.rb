@@ -2,10 +2,12 @@
 
 require 'rails_helper'
 
+# Test for module to provide support to create a compound sample during the
+# sequencing request start from all the samples at source of the request
 RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
 
   let(:samples) { create_list :sample, 2 }
-  let!(:study) { create :study, samples: samples }
+  let(:study) { create :study, samples: samples }
   let(:destination) { create :receptacle }
   let(:source) { create :receptacle, aliquots: [aliquot1, aliquot2] }
   let(:library_tube) { create :library_tube, receptacles: [source] }
