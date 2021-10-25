@@ -2,15 +2,15 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# Note that this schema.rb definition is the authoritative source for your
-# database schema. If you need to create the application database on another
-# system, you should be using db:schema:load, not running all the migrations
-# from scratch. The latter is a flawed and unsustainable approach (the more migrations
-# you'll amass, the slower it'll run and the greater likelihood for issues).
+# This file is the source Rails uses to define your schema when running `rails
+# db:schema:load`. When creating a new database, `rails db:schema:load` tends to
+# be faster and is potentially less error prone than running all of your
+# migrations from scratch. Old migrations may fail to apply correctly if those
+# migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_17_144508) do
+ActiveRecord::Schema.define(version: 2021_09_30_172204) do
 
   create_table "aker_containers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "barcode"
@@ -70,7 +70,7 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
     t.string "name", null: false
     t.string "key", null: false
     t.string "contact", null: false
-    t.text "description", limit: 16777215
+    t.text "description", size: :medium
     t.string "privilege", null: false
     t.index ["key"], name: "index_api_applications_on_key"
   end
@@ -276,16 +276,16 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
 
   create_table "bkp_lab_events", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "id", default: 0, null: false
-    t.text "description", limit: 16777215, collation: "utf8mb4_unicode_ci"
-    t.text "descriptors", limit: 16777215, collation: "utf8mb4_unicode_ci"
-    t.text "descriptor_fields", limit: 16777215, collation: "utf8mb4_unicode_ci"
+    t.text "description", size: :medium, collation: "utf8mb4_unicode_ci"
+    t.text "descriptors", size: :medium, collation: "utf8mb4_unicode_ci"
+    t.text "descriptor_fields", size: :medium, collation: "utf8mb4_unicode_ci"
     t.integer "eventful_id"
     t.string "eventful_type", limit: 50, collation: "utf8mb4_unicode_ci"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "filename", collation: "utf8mb4_unicode_ci"
     t.binary "data"
-    t.text "message", limit: 16777215, collation: "utf8mb4_unicode_ci"
+    t.text "message", size: :medium, collation: "utf8mb4_unicode_ci"
     t.integer "user_id"
     t.integer "batch_id"
   end
@@ -295,7 +295,7 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
     t.string "seed_type"
     t.integer "seed_id"
     t.integer "user_id"
-    t.text "properties", limit: 16777215
+    t.text "properties", size: :medium
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -316,7 +316,7 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
     t.string "title"
     t.string "commentable_type", limit: 50
     t.integer "user_id"
-    t.text "description", limit: 16777215
+    t.text "description", size: :medium
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "commentable_id", null: false
@@ -359,7 +359,7 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
     t.string "identifier"
     t.integer "differential"
     t.string "content_type"
-    t.text "content", limit: 16777215
+    t.text "content", size: :medium
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -374,7 +374,7 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
   end
 
   create_table "db_files", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.binary "data", limit: 4294967295
+    t.binary "data", size: :long
     t.integer "owner_id"
     t.string "owner_type", limit: 25, default: "Document", null: false
     t.string "owner_type_extended"
@@ -384,8 +384,8 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
   create_table "delayed_jobs", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "priority", default: 0
     t.integer "attempts", default: 0
-    t.text "handler", limit: 16777215
-    t.text "last_error", limit: 16777215
+    t.text "handler", size: :medium
+    t.text "last_error", size: :medium
     t.datetime "run_at"
     t.datetime "locked_at"
     t.datetime "failed_at"
@@ -398,7 +398,7 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
   create_table "descriptors", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name"
     t.string "value"
-    t.text "selection", limit: 16777215
+    t.text "selection", size: :medium
     t.integer "task_id"
     t.string "kind"
     t.boolean "required"
@@ -440,7 +440,7 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
     t.string "identifier"
     t.string "location"
     t.boolean "actioned"
-    t.text "content", limit: 16777215
+    t.text "content", size: :medium
     t.string "created_by"
     t.string "of_interest_to"
     t.string "descriptor_key", limit: 50
@@ -451,7 +451,7 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
 
   create_table "extended_validators", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "behaviour", null: false
-    t.text "options", limit: 16777215
+    t.text "options", size: :medium
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -469,7 +469,7 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
   create_table "extraction_attributes", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "target_id"
     t.string "created_by"
-    t.text "attributes_update", limit: 4294967295
+    t.text "attributes_update", size: :long
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -483,11 +483,11 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
   create_table "failures", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "failable_id"
     t.string "failable_type", limit: 50
-    t.text "reason", limit: 16777215
+    t.text "reason", size: :medium
     t.boolean "notify_remote"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text "comment", limit: 16777215
+    t.text "comment", size: :medium
     t.index ["failable_id"], name: "index_failures_on_failable_id"
   end
 
@@ -528,12 +528,12 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
 
   create_table "lab_events", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "description"
-    t.text "descriptors", limit: 16777215
+    t.text "descriptors", size: :medium
     t.integer "eventful_id"
     t.string "eventful_type", limit: 50
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text "message", limit: 16777215
+    t.text "message", size: :medium
     t.integer "user_id"
     t.integer "batch_id"
     t.index ["batch_id"], name: "index_lab_events_on_batch_id"
@@ -587,7 +587,7 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
     t.string "name", null: false
     t.integer "report_type", null: false
     t.string "location_barcode"
-    t.text "barcodes", limit: 16777215
+    t.text "barcodes", size: :medium
     t.string "faculty_sponsor_ids"
     t.bigint "study_id"
     t.string "plate_purpose_ids"
@@ -666,10 +666,10 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
     t.string "state_to_delete", limit: 20
     t.string "message_to_delete"
     t.integer "user_id"
-    t.text "item_options", limit: 16777215
-    t.text "request_types", limit: 16777215
-    t.text "request_options", limit: 16777215
-    t.text "comments", limit: 16777215
+    t.text "item_options", size: :medium
+    t.text "request_types", size: :medium
+    t.text "request_options", size: :medium
+    t.text "comments", size: :medium
     t.integer "project_id"
     t.string "sti_type"
     t.string "template_name"
@@ -769,7 +769,7 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
     t.string "name", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text "valid_options", limit: 16777215
+    t.text "valid_options", size: :medium
     t.index ["name"], name: "index_plate_creators_on_name", unique: true
   end
 
@@ -837,7 +837,7 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
 
   create_table "pooling_methods", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "pooling_behaviour", limit: 50, null: false
-    t.text "pooling_options", limit: 16777215
+    t.text "pooling_options", size: :medium
   end
 
   create_table "pre_capture_pool_pooled_requests", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -856,7 +856,7 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
     t.integer "snp_count", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.text "programs", limit: 16777215
+    t.text "programs", size: :medium
   end
 
   create_table "product_catalogues", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -870,7 +870,7 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
     t.integer "product_id", null: false
     t.string "stage", null: false
     t.string "behaviour", default: "Basic", null: false
-    t.text "configuration", limit: 16777215
+    t.text "configuration", size: :medium
     t.datetime "deprecated_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -982,7 +982,7 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
   create_table "qc_metrics", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "qc_report_id", null: false
     t.integer "asset_id", null: false
-    t.text "metrics", limit: 16777215
+    t.text "metrics", size: :medium
     t.string "qc_decision", null: false
     t.boolean "proceed"
     t.datetime "created_at", null: false
@@ -999,7 +999,7 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
     t.string "state"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.text "plate_purposes", limit: 16777215
+    t.text "plate_purposes", size: :medium
     t.index ["product_criteria_id"], name: "fk_qc_reports_to_product_criteria"
     t.index ["report_identifier"], name: "index_qc_reports_on_report_identifier", unique: true
     t.index ["study_id"], name: "fk_qc_reports_to_studies"
@@ -1143,7 +1143,7 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
   create_table "request_type_validators", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "request_type_id", null: false
     t.string "request_option", null: false
-    t.text "valid_options", limit: 16777215, null: false
+    t.text "valid_options", size: :medium, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -1159,7 +1159,7 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
     t.string "target_asset_type"
     t.boolean "multiples_allowed", default: false
     t.string "request_class_name"
-    t.text "request_parameters", limit: 16777215
+    t.text "request_parameters", size: :medium
     t.integer "morphology", default: 0
     t.boolean "for_multiplexing", default: false
     t.boolean "billable", default: false
@@ -1251,6 +1251,13 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
     t.index ["user_id"], name: "index_roles_users_on_user_id"
   end
 
+  create_table "sample_compounds_components", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "compound_sample_id", null: false
+    t.integer "component_sample_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "sample_jobs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "sample_id"
     t.bigint "job_id"
@@ -1279,9 +1286,9 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
     t.integer "supplier_id"
     t.integer "count"
     t.string "asset_type"
-    t.text "last_errors", limit: 16777215
+    t.text "last_errors", size: :medium
     t.string "state"
-    t.text "barcodes", limit: 16777215
+    t.text "barcodes", size: :medium
     t.integer "user_id"
     t.string "password"
     t.integer "purpose_id"
@@ -1311,7 +1318,7 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
     t.integer "sample_taxon_id"
     t.string "sample_ebi_accession_number"
     t.string "sample_sra_hold"
-    t.text "sample_description", limit: 16777215
+    t.text "sample_description", size: :medium
     t.string "sibling"
     t.boolean "is_resubmitted"
     t.string "date_of_sample_collection"
@@ -1393,7 +1400,7 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "target_model_name"
-    t.text "default_parameters", limit: 16777215
+    t.text "default_parameters", size: :medium
   end
 
   create_table "specific_tube_creation_purposes", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1456,10 +1463,10 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
   create_table "study_metadata", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "study_id"
     t.string "old_sac_sponsor"
-    t.text "study_description", limit: 16777215
+    t.text "study_description", size: :medium
     t.string "contaminated_human_dna"
     t.string "study_project_id"
-    t.text "study_abstract", limit: 16777215
+    t.text "study_abstract", size: :medium
     t.string "study_study_title"
     t.string "study_ebi_accession_number"
     t.string "study_sra_hold"
@@ -1484,7 +1491,7 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
     t.integer "data_release_study_type_id"
     t.integer "reference_genome_id", default: 1
     t.string "array_express_accession_number"
-    t.text "dac_policy", limit: 16777215
+    t.text "dac_policy", size: :medium
     t.string "ega_policy_accession_number"
     t.string "ega_dac_accession_number"
     t.string "commercially_available", default: "No"
@@ -1547,7 +1554,7 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
   create_table "submission_templates", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name"
     t.string "submission_class_name"
-    t.text "submission_parameters", limit: 16777215
+    t.text "submission_parameters", size: :medium
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "product_line_id"
@@ -1564,8 +1571,8 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
     t.string "state", limit: 20
     t.string "message"
     t.integer "user_id"
-    t.text "request_types", limit: 16777215
-    t.text "request_options", limit: 16777215
+    t.text "request_types", size: :medium
+    t.text "request_options", size: :medium
     t.string "name"
     t.integer "priority", limit: 1, default: 0, null: false
     t.index ["name"], name: "index_submissions_on_name"
@@ -1617,7 +1624,7 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "source_id"
-    t.text "target_well_locations", limit: 16777215
+    t.text "target_well_locations", size: :medium
   end
 
   create_table "tag_group_adapter_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1743,7 +1750,7 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
     t.string "sti_type"
     t.integer "source_id"
     t.integer "destination_id"
-    t.text "transfers_hash", limit: 16777215
+    t.text "transfers_hash", size: :medium
     t.integer "bulk_transfer_id"
     t.integer "user_id"
     t.index ["source_id"], name: "source_id_idx"
@@ -1872,7 +1879,7 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
   end
 
   create_table "workflow_samples", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.text "name", limit: 16777215
+    t.text "name", size: :medium
     t.integer "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1887,7 +1894,7 @@ ActiveRecord::Schema.define(version: 2021_08_17_144508) do
   create_table "workflows", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name"
     t.integer "item_limit"
-    t.text "locale", limit: 16777215
+    t.text "locale", size: :medium
     t.integer "pipeline_id"
     t.index ["pipeline_id"], name: "index_workflows_on_pipeline_id"
   end

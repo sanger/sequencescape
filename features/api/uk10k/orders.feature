@@ -364,7 +364,7 @@ And I have a "full" authorised user with the key "cucumber"
       | Library Creation - Paired end sequencing | "read_length": "foo"                        | read_length": ["is '0' should be 37, 54, 76, or 108"]  |
       | Library Creation - Paired end sequencing | "fragment_size_required": { "from": "foo" } | fragment_size_required.from": [ "is not a number" ] |
       | Library Creation - Paired end sequencing | "fragment_size_required": { "to": "foo" }   | fragment_size_required.to": [ "is not a number" ]   |
-      | Library Creation - Paired end sequencing | "library_type": "One with books"            | library_type": ["is 'One with books' should be No PCR, High complexity and double size selected, Illumina cDNA protocol, Agilent Pulldown, Custom, High complexity, ChiP-seq, NlaIII gene expression, Standard, Long range, Small RNA, Double size selected, DpnII gene expression, TraDIS, qPCR only, Pre-quality controlled, DSN_RNAseq, or RNA-seq dUTP"]    |
+      | Library Creation - Paired end sequencing | "library_type": "One with books"            | library_type": ["is 'One with books' should be Agilent Pulldown, ChiP-seq, Custom, DSN_RNAseq, Double size selected, DpnII gene expression, High complexity, High complexity and double size selected, Illumina cDNA protocol, Long range, NlaIII gene expression, No PCR, Pre-quality controlled, RNA-seq dUTP, Small RNA, Standard, TraDIS, or qPCR only"]    |
 
     Scenarios: Where the read length does not match the list for the particular sequencing request
       | template name                                  | invalid options    | errors                                                 |

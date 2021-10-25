@@ -37,6 +37,7 @@ class UatActions::GenerateTubes < UatActions
         sample:
           Sample.create!(
             name: sample_name,
+            sanger_sample_id: sample_name,
             studies: [study],
             sample_metadata_attributes: {
               supplier_name: sample_name
