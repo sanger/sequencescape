@@ -124,20 +124,31 @@ RSpec.describe User, type: :model do
     let(:study) { create :study_with_manager, updated_at: 2.years.ago }
 
     it 'updates the study updated_at timestamp' do
-      # Make sure things are setup correctly first
-      expect(study.reload.updated_at).to be < 1.hour.ago
+      # We make sure that defining a study with a manager triggers study update
+      expect(study.reload.updated_at).to be_within(1.hour).of Time.zone.now
+
       user = study.managers.first
+
+      study.update(updated_at: 1.hour.ago)
+
+      expect(study.reload.updated_at).not_to be_within(5.minutes).of Time.zone.now
       user.remove_role('manager', study)
-      expect(study.reload.updated_at).to be > 1.hour.ago
+      expect(study.reload.updated_at).to be_within(5.minutes).of Time.zone.now
     end
 
     it 'updates the study updated_at timestamp with multiple managers' do
       # Make sure things are setup correctly first
       study.roles.first.users << create(:user)
-      expect(study.reload.updated_at).to be < 1.hour.ago
+
+      # We make sure that defining a study with a manager triggers study update
+      expect(study.reload.updated_at).to be_within(1.hour).of Time.zone.now
+
       user = study.managers.first
+      study.update(updated_at: 1.hour.ago)
+
+      expect(study.reload.updated_at).not_to be_within(5.minutes).of Time.zone.now
       user.remove_role('manager', study)
-      expect(study.reload.updated_at).to be > 1.hour.ago
+      expect(study.reload.updated_at).to be_within(5.minutes).of Time.zone.now
     end
   end
 end

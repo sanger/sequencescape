@@ -702,4 +702,13 @@ RSpec.describe Study, type: :model do
       end
     end
   end
+
+  context '(DPL-148) on updating user roles' do
+    let(:study) { create :study }
+    let(:user) { create :user }
+
+    it 'triggers warehouse update', warren: true do
+      expect { user.grant_follower(study) }.to change(Warren.handler.messages, :count).from(0)
+    end
+  end
 end

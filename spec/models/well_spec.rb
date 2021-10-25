@@ -288,15 +288,11 @@ describe Well do
         )
       end
 
-      # rubocop:todo Layout/LineLength
       it "output stock_to_pick #{stock_to_pick} for a target of #{target_ng} with vol #{measured_volume} and conc #{measured_concentration}" do
-        # rubocop:enable Layout/LineLength
         assert_equal stock_to_pick, @target_well.well_attribute.picked_volume
       end
 
-      # rubocop:todo Layout/LineLength
       it "output buffer #{buffer_added} for a target of #{target_ng} with vol #{measured_volume} and conc #{measured_concentration}" do
-        # rubocop:enable Layout/LineLength
         assert_equal buffer_added, @target_well.well_attribute.buffer_volume
       end
     end
@@ -429,9 +425,9 @@ describe Well do
       [100.0, 50.0, 1.0, 200.0, 5.0, 100.0, 0.0, 'Low concentration, maximum DNA, no buffer'],
       [120.0, 50.0, 0, 60.0, 5.0, 60.0, 60.0, 'Zero concentration, with less volume than required'],
       [120.0, 50.0, 0, 3.0, 5.0, 3.0, 117.0, 'Zero concentration, with less volume than even the minimum robot pick']
-      # rubocop:todo Metrics/ParameterLists, Layout/LineLength
+      # rubocop:todo Metrics/ParameterLists
     ].each do |volume_required, concentration_required, source_concentration, source_volume, robot_minimum_pick_volume, source_volume_obtained, buffer_volume_obtained, scenario|
-      # rubocop:enable Metrics/ParameterLists, Layout/LineLength
+      # rubocop:enable Metrics/ParameterLists
       context "when testing #{scenario}" do
         before do
           @result_volume =
@@ -553,6 +549,17 @@ describe Well do
       qc_result_2 = build(:qc_result_rin, value: '6', created_at: Time.zone.today)
       well = create(:well, qc_results: [qc_result_1, qc_result_2])
       expect(well.qc_result_for('rin')).to eq(6)
+    end
+  end
+
+  context '(DPL-148) on updating well attribute' do
+    let(:well) { create :well }
+
+    it 'triggers warehouse update', warren: true do
+      expect do
+        # We try a valid update
+        well.well_attribute.update(concentration: 200)
+      end.to change(Warren.handler.messages, :count).from(0)
     end
   end
 end

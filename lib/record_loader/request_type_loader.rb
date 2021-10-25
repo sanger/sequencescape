@@ -10,11 +10,52 @@ module RecordLoader
     config_folder 'request_types'
 
     def create_or_update!(key, options)
-      creation_options = default_options.merge(options)
-      acceptable_plate_purpose_names = creation_options.delete('acceptable_plate_purposes')
-      creation_options['acceptable_plate_purposes'] =
-        PlatePurpose.where(name: acceptable_plate_purpose_names) if acceptable_plate_purpose_names
-      RequestType.create_with(creation_options).find_or_create_by!(key: key)
+      RequestType
+        .create_with(filter_options(options))
+        .find_or_create_by!(key: key)
+        .tap do |request_type|
+          add_library_types(request_type, options.fetch('library_types', []))
+          add_acceptable_purposes(request_type, options.fetch('acceptable_plate_purposes', []))
+        end
+    rescue StandardError => e
+      raise StandardError, "Failed to create #{key} due to: #{e.message}"
+    end
+
+    private
+
+    def add_library_types(request_type, library_types)
+      rt_lts = request_type.library_types.pluck(:name)
+      library_types.each do |name|
+        request_type.library_types << LibraryType.find_or_create_by!(name: name) unless rt_lts.include?(name)
+      end
+
+      return if library_types.empty? || request_type.request_type_validators.exists?(request_option: 'library_type')
+
+      add_library_type_validator(request_type)
+    end
+
+    # rubocop:disable Style/IfUnlessModifier
+    def add_acceptable_purposes(request_type, purposes)
+      acceptable_purposes = request_type.acceptable_plate_purposes.pluck(:name)
+      purposes.each do |name|
+        unless acceptable_purposes.include?(name)
+          request_type.acceptable_plate_purposes << PlatePurpose.find_by!(name: name)
+        end
+      end
+    end
+
+    # rubocop:enable Style/IfUnlessModifier
+
+    def add_library_type_validator(request_type)
+      RequestType::Validator.create!(
+        request_type: request_type,
+        request_option: 'library_type',
+        valid_options: RequestType::Validator::LibraryTypeValidator.new(request_type.id)
+      )
+    end
+
+    def filter_options(options)
+      { **default_options, **options.except('acceptable_plate_purposes', 'library_types') }
     end
 
     # Handles the default options not otherwise handled by the database defaults
