@@ -10,3 +10,11 @@ limber_cardinal:
     project_name: "Project Cardinal"
     product_line_name: Cardinal
     product_catalogue_name: Cardinal
+limber_cardinal_banking:
+  name: "Limber - Cardinal cell banking"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_cardinal_banking"]
+    project_name: "Project Cardinal"
+    product_line_name: Cardinal
+    product_catalogue_name: Cardinal
