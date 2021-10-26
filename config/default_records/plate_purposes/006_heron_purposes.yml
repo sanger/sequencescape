@@ -1,0 +1,18 @@
+# These purposes support the heron pipelines, but are not explicitly associated
+# with limber
+---
+# Plates from lighthouse labs registered by the original 'sentinel' process
+# largely replaced by the automated Beckman/Biosero processes
+LHR Stock:
+  stock_plate: true
+  cherrypickable_target: false
+# Target of the Tecan driven sentinel cherrypicking process. Analogous to the
+# HT plates that get registered by the automated Beckman/Biosero processes
+# For picking positive samples from Lighthouse 'LHR Stock' plates into, prior to
+# quad-stamping into an 'LHR-384 RT' plate for reverse transcription.
+# Initially this quad stamp process happened in Sequencescape.
+LHR Cherrypick:
+  stock_plate: true
+Heron Lysed Plate:
+  type: PlatePurpose::Input
+  stock_plate: true
