@@ -55,7 +55,12 @@ class UatActions::GenerateTagGroup < UatActions
 
     adapter_type = TagGroup::AdapterType.find_by(name: adapter_type_name)
 
+    create_tag_group(name, adapter_type)
+  end
+
+  def create_tag_group(name, adapter_type)
     tag_group = TagGroup.create!(name: name, adapter_type_id: adapter_type.id)
+
     tag_group.tags.build(
       OligoEnumerator.new(size.to_i).each_with_index.map { |oligo, map_id| { oligo: oligo, map_id: map_id + 1 } }
     )
