@@ -17,11 +17,11 @@ Feature: Searching sequencescape
     And I should see "<result>"
 
     Examples:
-      |  search |   type  |   result       |
-      | Project | project | This Project   |
-      | Study   | study   | This Study     |
-      | Sample  | sample  | SampleForThis  |
-      | Asset   | labware | This Asset     |
+      |  search      |   type  |   result       |
+      | This Project | project | This Project   |
+      | Study        | study   | This Study     |
+      | Sample       | sample  | SampleForThis  |
+      | Asset        | labware | This Asset     |
 
   Scenario: No matching results
     When I fill in "Search for" with "No way this will ever match anything!"
