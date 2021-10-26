@@ -10,18 +10,16 @@ module RecordLoader
     config_folder 'submission_templates'
 
     def create_or_update!(name, options)
-      options_copy = options.dup
-      derived_options = generate_derived_options(options_copy['related_records'])
-      options_copy.delete('related_records')
-      final_options = options_copy.merge(derived_options)
+      derived_options = generate_derived_options(options['related_records'])
+      final_options = options.except('related_records').merge(derived_options)
 
       SubmissionTemplate.create_with(final_options).find_or_create_by!(name: name)
     end
 
     def generate_derived_options(related_records)
       {
-        product_line: ProductLine.find_or_create_by(name: related_records['product_line_name']),
-        product_catalogue: ProductCatalogue.find_by(name: related_records['product_catalogue_name']),
+        product_line: ProductLine.find_or_create_by!(name: related_records['product_line_name']),
+        product_catalogue: ProductCatalogue.find_by!(name: related_records['product_catalogue_name']),
         submission_parameters: {
           request_type_ids_list: RequestType.where(key: related_records['request_type_keys']).ids,
           project_id: find_project(related_records['project_name']).id
