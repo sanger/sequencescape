@@ -95,15 +95,18 @@ class UatActions::GenerateSampleManifest < UatActions
   end
 
   def create_sample(sample_name, sample_manifest)
-    Sample.create!(name: sample_name, sample_metadata_attributes: { supplier_name: sample_name },
-sample_manifest: sample_manifest)
+    Sample.create!(
+      name: sample_name,
+      sample_metadata_attributes: {
+        supplier_name: sample_name
+      },
+      sample_manifest: sample_manifest
+    )
   end
 
   def print_report(sample_manifest)
     report['manifest'] = sample_manifest.id
 
-    sample_manifest.barcodes.each_with_index do |barcode, index|
-      report["tube_#{index}"] = barcode
-    end
+    sample_manifest.barcodes.each_with_index { |barcode, index| report["tube_#{index}"] = barcode }
   end
 end
