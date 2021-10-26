@@ -20,6 +20,7 @@ module Request::SampleCompoundAliquotTransfer
       .aliquots
       .create(sample: compound_sample)
       .tap do |aliquot|
+        aliquot.library_type = _default_library_type
         aliquot.study_id = _default_compound_study.id
         aliquot.project_id = _default_compound_project_id
         aliquot.save
@@ -45,5 +46,10 @@ module Request::SampleCompoundAliquotTransfer
   # Default project that the new compound sample will use
   def _default_compound_project_id
     asset.aliquots.first.project_id
+  end
+
+  # Default library type value
+  def _default_library_type
+    asset.aliquots.first.library_type
   end
 end
