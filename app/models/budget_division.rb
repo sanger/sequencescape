@@ -5,6 +5,7 @@ class BudgetDivision < ApplicationRecord
   extend Attributable::Association::Target
 
   def self.unallocated
+    puts "*** budget division unallocated ***"
     find_or_create_by!(name: 'Unallocated')
   end
 
@@ -19,6 +20,7 @@ class BudgetDivision < ApplicationRecord
     end
 
     def budget_division
+      puts "*** budget division method ***"
       super || BudgetDivision.unallocated
     end
   end
