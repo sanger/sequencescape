@@ -144,8 +144,8 @@ RSpec.describe SequencingRequest, type: :model do
     let(:sequencing_request) { create(:sequencing_request, asset: source, target_asset: destination) }
 
     context 'when no tag_depth is defined in the source asset aliquots' do
-      let(:aliquot1) { create :aliquot, sample: samples[0], tag_id: 1 }
-      let(:aliquot2) { create :aliquot, sample: samples[1], tag_id: 2 }
+      let(:aliquot1) { create :aliquot, sample: samples[0], tag_id: 1, study: study }
+      let(:aliquot2) { create :aliquot, sample: samples[1], tag_id: 2, study: study }
 
       it 'performs a normal transfer of aliquots' do
         expect(sequencing_request.target_asset.aliquots.count).to eq(0)
@@ -156,8 +156,8 @@ RSpec.describe SequencingRequest, type: :model do
     end
 
     context 'when tag_depth is defined in the source asset aliquots' do
-      let(:aliquot1) { create :aliquot, sample: samples[0], tag_depth: 1 }
-      let(:aliquot2) { create :aliquot, sample: samples[1], tag_depth: 2 }
+      let(:aliquot1) { create :aliquot, sample: samples[0], tag_depth: 1, study: study }
+      let(:aliquot2) { create :aliquot, sample: samples[1], tag_depth: 2, study: study }
 
       it 'creates a compound sample and transfers an aliquot of it' do
         expect(sequencing_request.target_asset.aliquots.count).to eq(0)

@@ -23,8 +23,8 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
     end
 
     context 'when tag_depth defined' do
-      let(:aliquot1) { create :aliquot, sample: samples[0], tag_depth: 1 }
-      let(:aliquot2) { create :aliquot, sample: samples[1], tag_depth: 2 }
+      let(:aliquot1) { create :aliquot, sample: samples[0], tag_depth: 1, study: study }
+      let(:aliquot2) { create :aliquot, sample: samples[1], tag_depth: 2, study: study }
 
       it 'returns true' do
         expect(sequencing_request).to be_compound_samples_needed
@@ -33,8 +33,8 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
   end
 
   describe '#transfer_aliquots_into_compound_sample_aliquot' do
-    let(:aliquot1) { create :aliquot, sample: samples[0], tag_depth: 1 }
-    let(:aliquot2) { create :aliquot, sample: samples[1], tag_depth: 2 }
+    let(:aliquot1) { create :aliquot, sample: samples[0], tag_depth: 1, study: study }
+    let(:aliquot2) { create :aliquot, sample: samples[1], tag_depth: 2, study: study }
 
     it 'creates a compound sample and transfers an aliquot of it' do
       expect(sequencing_request.target_asset.aliquots.count).to eq(0)
