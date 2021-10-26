@@ -5,15 +5,15 @@ class UatActions::GenerateSampleManifest < UatActions
   self.title = 'Generate sample manifest'
   self.description = 'Generate sample manifest with the provided information.'
 
-  form_field :study,
+  form_field :study_name,
              :select,
-             label: 'Study',
+             label: 'Study Name',
              help: 'The study under which samples begin. List includes all active studies.',
              select_options: -> { Study.active.alphabetical.pluck(:name) }
 
-  form_field :supplier,
+  form_field :supplier_name,
              :select,
-             label: 'Supplier',
+             label: 'Supplier Name',
              help: 'The supplier under which samples originated.',
              select_options: -> { Supplier.alphabetical.pluck(:name) }
 
@@ -32,14 +32,21 @@ class UatActions::GenerateSampleManifest < UatActions
                maximum: 96
              }
 
+  form_field :tube_purpose_name,
+             :select,
+             label: 'Tube Purpose',
+             help: 'Select the tube purpose to create',
+             select_options: -> { Tube::Purpose.alphabetical.pluck(:name) }
+
   form_field :with_samples, :check_box, help: 'Create new samples for recipients?', label: 'With Samples?'
 
   def self.default
     new(
-      study: UatActions::StaticRecords.study,
-      supplier: UatActions::StaticRecords.supplier,
+      study_name: UatActions::StaticRecords.study.name,
+      supplier_name: UatActions::StaticRecords.supplier.name,
       asset_type: '1dtube',
-      count: 2
+      count: 2,
+      tube_purpose_name: UatActions::StaticRecords.tube_purpose.name
     )
   end
 
@@ -57,7 +64,7 @@ class UatActions::GenerateSampleManifest < UatActions
     asset.aliquots.create!(sample: sample)
   end
 
-  def print_report
+  def print_report(sample_manifest)
     report['manifest'] = sample_manifest.id
     sample_manifest.assets.each_with_index do |asset, pos|
       create_samples_for_asset(asset, asset_type, UatActions::StaticRecords.study) if with_samples == '1'
@@ -68,14 +75,27 @@ class UatActions::GenerateSampleManifest < UatActions
   def perform
     sample_manifest =
       SampleManifest.create!(
-        study: UatActions::StaticRecords.study,
-        supplier: UatActions::StaticRecords.supplier,
+        study: Study.find_by(name: study_name),
+        supplier: Supplier.find_by(name: supplier_name),
         asset_type: asset_type,
-        count: count
+        count: count,
+        purpose: purpose
       )
+
     sample_manifest.generate
-    print_report
+    print_report(sample_manifest)
+
+    sample_manifest.barcodes.each_with_index do |barcode, index|
+      report["tube_#{index}"] = barcode
+    end
 
     true
   end
+
+  private
+
+  def purpose
+    Purpose.find_by!(name: tube_purpose_name)
+  end
+
 end

@@ -11,6 +11,10 @@ module UatActions::StaticRecords
     Supplier.find_or_create_by!(name: 'UAT Supplier')
   end
 
+  def self.tube_purpose
+    Purpose.find_or_create_by!(name: 'LCA Blood Vac')
+  end
+
   def self.study
     Study
       .create_with(
