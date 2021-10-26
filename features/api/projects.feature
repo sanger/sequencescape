@@ -16,7 +16,7 @@ And I have a "full" authorised user with the key "cucumber"
 
   @read
   Scenario: Reading the JSON for a UUID
-    Given a project called "Testing the API" with ID 1
+    Given a project called "Testing the API" with ID 927493825
     Given the project "Testing the API" a budget division "Human variation"
     And the UUID for the project "Testing the API" is "00000000-1111-2222-3333-444444444444"
 
