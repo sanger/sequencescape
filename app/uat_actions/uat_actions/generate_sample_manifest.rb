@@ -74,10 +74,10 @@ class UatActions::GenerateSampleManifest < UatActions
   end
 
   def create_samples(sample_manifest)
-    sample_manifest.assets.each_with_index do |asset, pos|
+    sample_manifest.assets.each do |asset|
       raise 'Manifest for plates is not supported yet' unless asset_type == '1dtube'
 
-      create_sample("Sample_#{asset.human_barcode}_1", study, sample_manifest).tap do |sample|
+      create_sample("Sample_#{asset.human_barcode}_1", sample_manifest).tap do |sample|
         asset.aliquots.create!(sample: sample, study: study, library: asset)
         study.samples << sample
       end
@@ -94,8 +94,9 @@ class UatActions::GenerateSampleManifest < UatActions
     Study.find_by!(name: study_name)
   end
 
-  def create_sample(sample_name, study, sample_manifest)
-    Sample.create!(name: sample_name, sample_metadata_attributes: { supplier_name: sample_name }, sample_manifest: sample_manifest)
+  def create_sample(sample_name, sample_manifest)
+    Sample.create!(name: sample_name, sample_metadata_attributes: { supplier_name: sample_name },
+sample_manifest: sample_manifest)
   end
 
   def print_report(sample_manifest)

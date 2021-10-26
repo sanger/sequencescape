@@ -14,8 +14,8 @@ module UatActions::StaticRecords
   def self.tube_purpose
     Purpose
       .create_with(
-        target_type: "SampleTube",
-        type: "Tube::Purpose",
+        target_type: 'SampleTube',
+        type: 'Tube::Purpose',
         asset_shape_id: 1,
       )
     .find_or_create_by!(name: 'LCA Blood Vac')
