@@ -11,7 +11,7 @@ module Api
       has_one :sample_metadata, class_name: 'SampleMetadata', foreign_key_on: :related
       has_one :sample_manifest
 
-      # has_many :component_samples
+      has_many :component_samples
 
       attribute :name
       attribute :sanger_sample_id
