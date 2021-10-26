@@ -210,28 +210,6 @@ RSpec.describe TransferRequest, type: :model do
           end
         end
       end
-
-      # context '#aliquot_attributes' do
-      #   let(:transfer_request) {
-      #     described_class.create!(
-      #       asset: source, target_asset: destination, tag_depth: tag_depth)
-      #   }
-      #   context 'when tag depth defined' do
-      #     let(:tag_depth) { 1}
-
-      #     it 'returns tag_depth' do
-      #       expect(transfer_request.aliquot_attributes).to have_key(:tag_depth)
-      #       expect(transfer_request.aliquot_attributes[:tag_depth]).to eq(1)
-      #     end
-      #   end
-
-      #   context 'when tag depth not defined' do
-      #     let(:tag_depth) {nil}
-      #     it 'does not return tag_depth' do
-      #       expect(transfer_request.aliquot_attributes).not_to have_key(:tag_depth)
-      #     end
-      #   end
-      # end
     end
 
     context 'when the destination has equivalent aliquots' do

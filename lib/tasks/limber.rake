@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 # Disabling rubocop temporarily to preserve nice comments format
-# rubocop:disable all
 
 # We'll try and do this through the API with the live version
 namespace :limber do
@@ -14,7 +13,7 @@ namespace :limber do
 
   desc 'Create the limber request types'
   task create_request_types: %i[environment] do
-    puts '📣 limber:create_request_types no longer generates records. These are made automatically when seeding development.'
+    puts '📣 limber:create_request_types no longer generates records. These are made automatically when seeding development.' # rubocop:disable Layout/LineLength
   end
 
   desc 'Create the limber searches'
@@ -360,5 +359,3 @@ namespace :limber do
     end
   end
 end
-
-# rubocop:enable all

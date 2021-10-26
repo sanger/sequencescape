@@ -2,7 +2,7 @@
 
 module Api
   module V2
-    # JSONAPI controller for {SampleManifestsController}
+    # JSONAPI controller for {SampleManifestResource}
     class SampleManifestsController < JSONAPI::ResourceController
     end
   end
