@@ -6,6 +6,7 @@ RSpec.describe Api::SampleIO, type: :model do
   subject do
     create :sample,
            name: 'sample_testing_messages',
+           component_samples: [comp_sample1, comp_sample2],
            updated_by_manifest: true,
            control: true,
            control_type: 'positive',
@@ -129,7 +130,8 @@ RSpec.describe Api::SampleIO, type: :model do
       'consent_withdrawn' => false,
       'developmental_stage' => 'thing',
       'donor_id' => '2',
-      'reference_genome' => 'ReferenceGenome1'
+      'reference_genome' => 'ReferenceGenome1',
+      'component_sample_uuids' => [{ uuid: comp_sample1.uuid }, { uuid: comp_sample2.uuid }]
     }
   end
 

@@ -261,28 +261,14 @@ class Receptacle < Asset
     (ordered_studies + studies).compact.uniq
   end
 
-  def check_aliquots_have_unique_tag_depth
-    return unless aliquots.pluck(:tag_depth).uniq.count != aliquots.size
-    raise StandardError, 'Cannot tag multiple samples a without unique tag depth'
-  end
-
   def attach_tag(tag, tag2 = nil)
     tags = { tag: tag, tag2: tag2 }.compact
     return if tags.empty?
     raise StandardError, 'Cannot tag an empty asset' if aliquots.empty?
 
-    # TODO: Add test
-    # if there is more than one aliquot in a receptacle
-    if aliquots.size > 1
-      # check all the aliquots have a unique tag_depth
-      check_aliquots_have_unique_tag_depth
-
-      # apply the tag to each aliquot in the receptacle
-      aliquots.each { |a| a.update!(tags) }
-    else
-      aliquots.first.update!(tags)
-    end
+    aliquots.each { |a| a.update!(tags) }
   end
+
   alias attach_tags attach_tag
 
   # Contained samples also works on eg. plate
