@@ -12,7 +12,13 @@ module UatActions::StaticRecords
   end
 
   def self.tube_purpose
-    Purpose.find_or_create_by!(name: 'LCA Blood Vac')
+    Purpose
+      .create_with(
+        target_type: "SampleTube",
+        type: "Tube::Purpose",
+        asset_shape_id: 1,
+      )
+    .find_or_create_by!(name: 'LCA Blood Vac')
   end
 
   def self.study

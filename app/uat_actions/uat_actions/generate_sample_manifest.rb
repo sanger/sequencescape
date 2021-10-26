@@ -50,46 +50,38 @@ class UatActions::GenerateSampleManifest < UatActions
     )
   end
 
-  def generate_sample_for_receptacle(asset, _sample_params)
-    asset.aliquots.create!
-  end
-
-  def create_sample(sample_name, study)
-    Sample.create!(name: sample_name, studies: [study], sample_metadata_attributes: { supplier_name: sample_name })
-  end
-
-  def create_samples_for_asset(asset, asset_type, study)
-    raise 'Manifest for plates is not supported yet' unless asset_type == '1dtube'
-    sample = create_sample("Sample_#{asset.human_barcode}_1", study)
-    asset.aliquots.create!(sample: sample)
-  end
-
-  def print_report(sample_manifest)
-    report['manifest'] = sample_manifest.id
-    sample_manifest.assets.each_with_index do |asset, pos|
-      create_samples_for_asset(asset, asset_type, UatActions::StaticRecords.study) if with_samples == '1'
-      report["asset_#{pos}"] = asset.human_barcode
-    end
-  end
-
   def perform
-    sample_manifest =
-      SampleManifest.create!(
-        study: Study.find_by(name: study_name),
-        supplier: Supplier.find_by(name: supplier_name),
-        asset_type: asset_type,
-        count: count,
-        purpose: purpose
-      )
-
-    sample_manifest.generate
+    sample_manifest = create_sample_manifest
+    generate_manifest(sample_manifest)
     print_report(sample_manifest)
 
-    sample_manifest.barcodes.each_with_index do |barcode, index|
-      report["tube_#{index}"] = barcode
-    end
-
     true
+  end
+
+  def create_sample_manifest
+    SampleManifest.create!(
+      study: Study.find_by(name: study_name),
+      supplier: Supplier.find_by(name: supplier_name),
+      asset_type: asset_type,
+      count: count,
+      purpose: purpose
+    )
+  end
+
+  def generate_manifest(sample_manifest)
+    sample_manifest.generate
+    create_samples(sample_manifest) if with_samples == '1'
+  end
+
+  def create_samples(sample_manifest)
+    sample_manifest.assets.each_with_index do |asset, pos|
+      raise 'Manifest for plates is not supported yet' unless asset_type == '1dtube'
+
+      create_sample("Sample_#{asset.human_barcode}_1", study, sample_manifest).tap do |sample|
+        asset.aliquots.create!(sample: sample, study: study, library: asset)
+        study.samples << sample
+      end
+    end
   end
 
   private
@@ -98,4 +90,19 @@ class UatActions::GenerateSampleManifest < UatActions
     Purpose.find_by!(name: tube_purpose_name)
   end
 
+  def study
+    Study.find_by!(name: study_name)
+  end
+
+  def create_sample(sample_name, study, sample_manifest)
+    Sample.create!(name: sample_name, sample_metadata_attributes: { supplier_name: sample_name }, sample_manifest: sample_manifest)
+  end
+
+  def print_report(sample_manifest)
+    report['manifest'] = sample_manifest.id
+
+    sample_manifest.barcodes.each_with_index do |barcode, index|
+      report["tube_#{index}"] = barcode
+    end
+  end
 end

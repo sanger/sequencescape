@@ -7,57 +7,93 @@ describe UatActions::GenerateSampleManifest do
     let(:study) { create(:study, name: 'Test Study') }
     let(:supplier) { create(:supplier, name: 'Test Supplier') }
     let(:uat_action) { described_class.new(parameters) }
-    let(:num_assets) { 2 }
+    let(:count) { 2 }
     let(:asset_type) { '1dtube' }
     let(:with_samples) { '1' }
-    let(:tube_purpose_name) { 'LCA Blood Vac' }
+    let(:purpose) { create(:sample_tube_purpose, name: 'LCA Blood Vac') }
+    let(:parameters) do
+      { study_name: study.name, supplier_name: supplier.name, asset_type: asset_type, count: count, tube_purpose_name: purpose.name, with_samples: with_samples }
+    end
 
-    context 'when generating a sample manfiest for a list of barcodes' do
-      let(:parameters) do
-        { study_name: study.name, supplier_name: supplier.name, asset_type: asset_type, count: num_assets, tube_purpose_name: tube_purpose_name, with_samples: with_samples }
-      end
+    describe '#perform' do
+      context 'when generating a sample manifest for a list of barcodes' do
+        context 'when creating tubes' do
+          context 'when specifying with samples' do
+            let(:with_samples) { '1' }
 
-      context 'when creating tubes' do
-        context 'when specifying with samples' do
-          let(:with_samples) { '1' }
+            it 'generates tubes' do
+              expect { uat_action.perform }.to(change { Tube.all.count }.by(2))
+            end
 
-          it 'generates tubes' do
-            expect { uat_action.perform }.to(change { Tube.all.count }.by(2))
+            it 'generates samples' do
+              expect { uat_action.perform }.to(change { Sample.all.count }.by(2))
+            end
+
+            it 'links to those samples' do
+              uat_action.perform
+              expect(SampleManifest.last.samples.count).to eq count
+            end
           end
 
-          it 'generates samples' do
-            expect { uat_action.perform }.to(change { Sample.all.count }.by(2))
+          context 'when specifying without samples' do
+            let(:with_samples) { '0' }
+
+            it 'generates tubes' do
+              expect { uat_action.perform }.to(change { Tube.all.count }.by(2))
+            end
+
+            it 'does not generate samples' do
+              expect { uat_action.perform }.not_to(change { Sample.all.count })
+            end
           end
         end
 
-        context 'when specifying without samples' do
-          let(:with_samples) { '0' }
+        it 'creates the sample manifest' do
+          expect { uat_action.perform }.to change(SampleManifest, :count).by 1
+          # expect(Tube.find_by_barcode(report['tube_0']).barcode).to eq tube1
+          # expect(Tube.find_by_barcode(report['tube_1']).barcode).to eq tube2
+        end
 
-          it 'generates tubes' do
-            expect { uat_action.perform }.to(change { Tube.all.count }.by(2))
-          end
-
-          it 'does not generate samples' do
-            expect { uat_action.perform }.not_to(change { Sample.all.count })
-          end
+        it 'creates the sample manifest with the correct data' do
+          uat_action.perform
+          expect(SampleManifest.last.study).to eq study
+          expect(SampleManifest.last.supplier).to eq supplier
         end
       end
+    end
 
-      it 'creates the sample manfiest' do
-        expect { uat_action.perform }.to change(SampleManifest, :count).by 1
-        # expect(Tube.find_by_barcode(report['tube_0']).barcode).to eq tube1
-        # expect(Tube.find_by_barcode(report['tube_1']).barcode).to eq tube2
+    describe '#create_sample_manifest' do
+      let(:manifest) { create :sample_manifest, study: study, supplier: supplier, count: count, asset_type: asset_type, purpose: purpose }
+
+      it 'sets the created sample manifest' do
+        allow(SampleManifest).to receive(:create!).and_return(manifest)
+        result = uat_action.create_sample_manifest
+        expect(result).to eq manifest
+      end
+    end
+
+    describe '#generate_manifest' do
+      let(:manifest) { create :sample_manifest, study: study, supplier: supplier, count: count, asset_type: asset_type, purpose: purpose }
+
+      it "create tubes(s)" do
+        expect { uat_action.generate_manifest(manifest) }.to change(SampleTube, :count).by(count).and change { manifest.assets.count }.by(count)
+        expect(manifest.assets).to eq(SampleTube.with_barcode(manifest.barcodes).map(&:receptacle))
       end
 
-      it 'creates the sample manifest with the correct data' do
-        uat_action.perform
-        expect(SampleManifest.last.study).to eq study
-        expect(SampleManifest.last.supplier).to eq supplier
+      it 'create sample and aliquots' do
+        expect { uat_action.generate_manifest(manifest) }.to change(Sample, :count)
+
+        manifest.samples.reset
+        expect(manifest.details_array.length).to eq(count)
+        expect(manifest.samples.count).to eq(count)
+        expect(manifest.samples.first.primary_aliquot.study).to eq(study)
       end
     end
   end
 
-  it 'returns a default' do
-    expect(described_class.default).to be_a described_class
+  describe '#default' do
+    it 'returns a default' do
+      expect(described_class.default).to be_a described_class
+    end
   end
 end
