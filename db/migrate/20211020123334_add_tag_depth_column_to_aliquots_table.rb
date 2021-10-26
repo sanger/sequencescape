@@ -5,7 +5,7 @@
 # tag_depth here is unique within a pool
 class AddTagDepthColumnToAliquotsTable < ActiveRecord::Migration[6.0]
   def up
-    add_column :aliquots, :tag_depth, :integer, null: true, default: nil
+    add_column :aliquots, :tag_depth, :integer, null: true, default: 1
     remove_index :aliquots, name: :aliquot_tags_and_tag2s_are_unique_within_receptacle
 
     # This index has been added to support pipelines, such as Cardinal,

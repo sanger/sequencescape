@@ -56,7 +56,7 @@ ActiveRecord::Schema.define(version: 2021_10_20_123334) do
     t.boolean "suboptimal", default: false, null: false
     t.bigint "primer_panel_id"
     t.integer "request_id"
-    t.integer "tag_depth"
+    t.integer "tag_depth", default: 1
     t.index ["library_id"], name: "index_aliquots_on_library_id"
     t.index ["primer_panel_id"], name: "index_aliquots_on_primer_panel_id"
     t.index ["receptacle_id", "tag_id", "tag2_id", "tag_depth"], name: "aliquot_tag_tag2_and_tag_depth_are_unique_within_receptacle", unique: true
