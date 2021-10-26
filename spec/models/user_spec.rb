@@ -118,6 +118,12 @@ RSpec.describe User, type: :model do
         expect { user.grant_role('owner', study) }.not_to(change { study.roles.reload.count })
       end
     end
+
+    it 'updates the study updated_at timestamp' do
+      study.update(updated_at: 1.year.ago)
+      study.reload
+      expect { user.grant_role('administrator', study) }.to(change { study.reload.updated_at })
+    end
   end
 
   describe '#remove_role' do

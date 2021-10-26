@@ -56,7 +56,7 @@ ActiveRecord::Schema.define(version: 2021_10_20_123334) do
     t.boolean "suboptimal", default: false, null: false
     t.bigint "primer_panel_id"
     t.integer "request_id"
-    t.integer "tag_depth", default: 1, null: false
+    t.integer "tag_depth", default: 1
     t.index ["library_id"], name: "index_aliquots_on_library_id"
     t.index ["primer_panel_id"], name: "index_aliquots_on_primer_panel_id"
     t.index ["receptacle_id", "tag_id", "tag2_id", "tag_depth"], name: "aliquot_tag_tag2_and_tag_depth_are_unique_within_receptacle", unique: true
@@ -275,7 +275,7 @@ ActiveRecord::Schema.define(version: 2021_10_20_123334) do
     t.index ["updated_at"], name: "index_batches_on_updated_at"
   end
 
-  create_table "bkp_lab_events", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+  create_table "bkp_lab_events", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "id", default: 0, null: false
     t.text "description", size: :medium, collation: "utf8mb4_unicode_ci"
     t.text "descriptors", size: :medium, collation: "utf8mb4_unicode_ci"
@@ -705,7 +705,7 @@ ActiveRecord::Schema.define(version: 2021_10_20_123334) do
     t.datetime "updated_at"
   end
 
-  create_table "pick_lists", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+  create_table "pick_lists", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "state", default: 0, null: false
     t.integer "submission_id", null: false
     t.datetime "created_at", null: false
@@ -1040,7 +1040,7 @@ ActiveRecord::Schema.define(version: 2021_10_20_123334) do
     t.index ["lot_id"], name: "index_lot_id"
   end
 
-  create_table "racked_tubes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+  create_table "racked_tubes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "tube_rack_id"
     t.bigint "tube_id"
     t.string "coordinate"
@@ -1250,6 +1250,13 @@ ActiveRecord::Schema.define(version: 2021_10_20_123334) do
     t.datetime "updated_at", null: false
     t.index ["role_id"], name: "index_roles_users_on_role_id"
     t.index ["user_id"], name: "index_roles_users_on_user_id"
+  end
+
+  create_table "sample_compounds_components", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "compound_sample_id", null: false
+    t.integer "component_sample_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "sample_jobs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1757,7 +1764,7 @@ ActiveRecord::Schema.define(version: 2021_10_20_123334) do
     t.integer "tube_id", null: false
   end
 
-  create_table "tube_rack_statuses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+  create_table "tube_rack_statuses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "barcode", null: false
     t.integer "status", null: false
     t.text "messages"
