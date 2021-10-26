@@ -12,8 +12,14 @@ describe UatActions::GenerateSampleManifest do
     let(:with_samples) { '1' }
     let(:purpose) { create(:sample_tube_purpose, name: 'LCA Blood Vac') }
     let(:parameters) do
-      { study_name: study.name, supplier_name: supplier.name, asset_type: asset_type, count: count, 
-tube_purpose_name: purpose.name, with_samples: with_samples }
+      {
+        study_name: study.name,
+        supplier_name: supplier.name,
+        asset_type: asset_type,
+        count: count,
+        tube_purpose_name: purpose.name,
+        with_samples: with_samples
+      }
     end
 
     describe '#perform' do
@@ -65,7 +71,13 @@ tube_purpose_name: purpose.name, with_samples: with_samples }
 
     describe '#create_sample_manifest' do
       let(:manifest) do
- create :sample_manifest, study: study, supplier: supplier, count: count, asset_type: asset_type, purpose: purpose end
+        create :sample_manifest,
+               study: study,
+               supplier: supplier,
+               count: count,
+               asset_type: asset_type,
+               purpose: purpose
+      end
 
       it 'sets the created sample manifest' do
         allow(SampleManifest).to receive(:create!).and_return(manifest)
@@ -76,11 +88,18 @@ tube_purpose_name: purpose.name, with_samples: with_samples }
 
     describe '#generate_manifest' do
       let(:manifest) do
- create :sample_manifest, study: study, supplier: supplier, count: count, asset_type: asset_type, purpose: purpose end
+        create :sample_manifest,
+               study: study,
+               supplier: supplier,
+               count: count,
+               asset_type: asset_type,
+               purpose: purpose
+      end
 
       it 'create tubes(s)' do
         expect { uat_action.generate_manifest(manifest) }.to change(SampleTube, :count).by(count).and change {
- manifest.assets.count }.by(count)
+                                                  manifest.assets.count
+                                                }.by(count)
         expect(manifest.assets).to eq(SampleTube.with_barcode(manifest.barcodes).map(&:receptacle))
       end
 
