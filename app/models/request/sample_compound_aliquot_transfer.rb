@@ -7,7 +7,7 @@
 #  - This module will be included in a Request class
 module Request::SampleCompoundAliquotTransfer
   # Indicates if a compound sample creation is needed, if any of the aliquots
-  # at the source has a differnt tag_depth defined
+  # at the source has a different tag_depth defined
   def compound_samples_needed?
     return false if asset.aliquots.count == 1
     (asset.aliquots.pluck(:tag_depth).uniq.count == asset.aliquots.count)

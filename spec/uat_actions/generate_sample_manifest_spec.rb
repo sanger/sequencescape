@@ -57,8 +57,6 @@ describe UatActions::GenerateSampleManifest do
 
         it 'creates the sample manifest' do
           expect { uat_action.perform }.to change(SampleManifest, :count).by 1
-          # expect(Tube.find_by_barcode(report['tube_0']).barcode).to eq tube1
-          # expect(Tube.find_by_barcode(report['tube_1']).barcode).to eq tube2
         end
 
         it 'creates the sample manifest with the correct data' do
