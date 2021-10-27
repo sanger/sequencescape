@@ -207,18 +207,18 @@ jobs:
           name: codeclimate-${{ github.job }}-${{ matrix.ci_node_index }}
           path: coverage/coverage.json
           retention-days: 1
-  # end_coverage:
-  #   runs-on: ubuntu-latest
-  #   needs: [rake_tests, rspec_tests, cucumber_tests]
-  #   continue-on-error: true
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Fetch coverage results
-  #       uses: actions/download-artifact@v2
-  #       with:
-  #         path: tmp/
-  #     - name: Publish code coverage
-  #       uses: paambaati/codeclimate-action@v2.7.5
-  #       with:
-  #         coverageLocations: |
-  #           ${{github.workspace}}/tmp/codeclimate-*/coverage.json:simplecov
+  end_coverage:
+    runs-on: ubuntu-latest
+    needs: [rake_tests, rspec_tests, cucumber_tests]
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v2
+      - name: Fetch coverage results
+        uses: actions/download-artifact@v2
+        with:
+          path: tmp/
+      - name: Publish code coverage
+        uses: paambaati/codeclimate-action@v2.7.5
+        with:
+          coverageLocations: |
+            ${{github.workspace}}/tmp/codeclimate-*/coverage.json:simplecov
