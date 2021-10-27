@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 # Disabling rubocop temporarily to preserve nice comments format
-# rubocop:disable all
 
 # We'll try and do this through the API with the live version
 namespace :limber do
@@ -14,7 +13,7 @@ namespace :limber do
 
   desc 'Create the limber request types'
   task create_request_types: %i[environment] do
-    puts '📣 limber:create_request_types no longer generates records. These are made automatically when seeding development.'
+    puts '📣 limber:create_request_types no longer generates records. These are made automatically when seeding development.' # rubocop:disable Layout/LineLength
   end
 
   desc 'Create the limber searches'
@@ -178,25 +177,17 @@ namespace :limber do
         role: 'LTHR'
       ).build!
 
-      project_heron =
-        if Rails.env.production?
-          Project.find_by!(name: 'Project Heron')
-        else
-          # In development mode or UAT we don't care so much
-          Project.find_by(name: 'Project Heron') || UatActions::StaticRecords.project
-        end
-
       unless SubmissionTemplate.find_by(name: 'Limber - Heron LTHR - Automated')
         SubmissionTemplate.create!(
           name: 'Limber - Heron LTHR - Automated',
           submission_class_name: 'LinearSubmission',
           submission_parameters: {
             request_type_ids_list: [
-              RequestType.where(key: 'limber_heron_lthr').pluck(:id),
-              RequestType.where(key: 'limber_multiplexing').pluck(:id),
-              RequestType.where(key: 'illumina_htp_novaseq_6000_paired_end_sequencing').pluck(:id)
+              RequestType.where(key: 'limber_heron_lthr').ids,
+              RequestType.where(key: 'limber_multiplexing').ids,
+              RequestType.where(key: 'illumina_htp_novaseq_6000_paired_end_sequencing').ids
             ],
-            project_id: project_heron.id
+            project_id: Limber::Helper.find_project('Project Heron').id
           },
           product_line: ProductLine.find_by!(name: 'Illumina-HTP'),
           product_catalogue: ProductCatalogue.find_by!(name: 'Generic')
@@ -306,7 +297,7 @@ namespace :limber do
           name: 'MiSeq for GBS',
           submission_class_name: 'AutomatedOrder',
           submission_parameters: {
-            request_type_ids_list: [RequestType.where(key: 'gbs_miseq_sequencing').pluck(:id)]
+            request_type_ids_list: [RequestType.where(key: 'gbs_miseq_sequencing').ids]
           },
           product_line: ProductLine.find_by!(name: 'Illumina-HTP'),
           product_catalogue: ProductCatalogue.find_by!(name: 'Generic')
@@ -318,7 +309,7 @@ namespace :limber do
           name: 'Limber-Bespoke - Aggregation',
           submission_class_name: 'LinearSubmission',
           submission_parameters: {
-            request_type_ids_list: [RequestType.where(key: 'limber_bespoke_aggregation').pluck(:id)]
+            request_type_ids_list: [RequestType.where(key: 'limber_bespoke_aggregation').ids]
           },
           product_line: ProductLine.find_by!(name: 'Bespoke'),
           product_catalogue: ProductCatalogue.find_by!(name: 'Generic')
@@ -330,7 +321,7 @@ namespace :limber do
           name: 'MiSeq for Heron',
           submission_class_name: 'AutomatedOrder',
           submission_parameters: {
-            request_type_ids_list: [RequestType.where(key: 'heron_miseq_sequencing').pluck(:id)]
+            request_type_ids_list: [RequestType.where(key: 'heron_miseq_sequencing').ids]
           },
           product_line: ProductLine.find_by!(name: 'Illumina-HTP'),
           product_catalogue: ProductCatalogue.find_by!(name: 'Heron')
@@ -339,5 +330,3 @@ namespace :limber do
     end
   end
 end
-
-# rubocop:enable all

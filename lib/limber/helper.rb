@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Helper templates and methods used in limber.rake
 module Limber::Helper
   PIPELINE = 'Limber-Htp'
   PIPELINE_REGEX = /Illumina-[A-z]+ /.freeze
@@ -225,6 +226,15 @@ module Limber::Helper
       ids << [cherrypick_request_type.id] if cherrypick
       ids << [library_request_type.id]
       ids << [multiplexing_request_type.id] unless library_request_type.for_multiplexing?
+    end
+  end
+
+  def self.find_project(name)
+    if Rails.env.production?
+      Project.find_by!(name: name)
+    else
+      # In development mode or UAT we don't care so much
+      Project.find_by(name: name) || UatActions::StaticRecords.project
     end
   end
 end
