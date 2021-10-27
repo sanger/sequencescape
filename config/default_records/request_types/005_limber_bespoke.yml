@@ -1,0 +1,68 @@
+---
+limber_pcr_bespoke:
+  <<: &limber_bespoke_library
+    asset_type: Well
+    order: 1
+    request_class_name: IlluminaHtp::Requests::StdLibraryRequest
+    billable: true
+    product_line_name: Bespoke
+  name: Limber PCR Bespoke
+  acceptable_plate_purposes:
+    - LBB Cherrypick
+  library_types:
+    - Ribozero RNA depletion
+    - ChIP-Seq Auto
+    - Manual Standard WGS (Plate)
+    - Ribozero RNA-seq (Bacterial)
+    - Ribozero RNA-seq (HMR)
+    - RNA-seq dUTP eukaryotic
+    - RNA-seq dUTP prokaryotic
+    - Small RNA (miRNA)
+    - Standard
+    - TraDIS
+    - TruSeq mRNA (RNA Seq)
+    - Chromium Visium
+    - Hi-C
+    - Hi-C - Arima v2
+    - Hi-C - Qiagen
+    - Hi-C - OmniC
+    - Hi-C - Arima v1
+    - Hi-C - Dovetail
+    - Haplotagging
+    - Chromium single cell HTO
+    - Chromium single cell surface protein
+limber_chromium_bespoke:
+  <<: *limber_bespoke_library
+  name: Limber Chromium Bespoke
+  acceptable_plate_purposes:
+    - LBB Cherrypick
+    - LBC Cherrypick
+  library_types:
+    - Chromium exome
+    - Chromium single cell 3 prime v2
+    - Chromium single cell 3 prime v3
+    - Chromium single cell 5 prime
+    - Chromium single cell TCR
+    - Chromium single cell BCR
+    - Chromium genome
+    - Chromium single cell
+    - Chromium single cell CNV
+    - Chromium single cell ATAC
+limber_pcr_free_bespoke:
+  <<: *limber_bespoke_library
+  name: Limber PCR Free Bespoke
+  acceptable_plate_purposes:
+    - LBB Cherrypick
+  library_types:
+    - DAFT-seq
+    - HiSeqX PCR free
+    - No PCR (Plate)
+    - TruSeq Custom Amplicon
+limber_bespoke_aggregation:
+  <<: *limber_bespoke_library
+  name: Limber Bespoke Aggregation
+  order: 0
+  billable: false
+  request_class_name: CustomerRequest
+  acceptable_plate_purposes:
+    - LBC Stock

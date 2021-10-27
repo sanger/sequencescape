@@ -14,6 +14,11 @@ class TagGroup < ApplicationRecord # rubocop:todo Style/Documentation
 
   scope :chromium, -> { visible.joins(:adapter_type).where(tag_group_adapter_types: { name: CHROMIUM_ADAPTER_TYPE }) }
 
+  scope :by_adapter_type,
+        ->(adapter_type_name) {
+          visible.joins(:adapter_type).where(tag_group_adapter_types: { name: adapter_type_name })
+        }
+
   validates :name, presence: true, uniqueness: { case_sensitive: false }
 
   def tags_sorted_by_map_id

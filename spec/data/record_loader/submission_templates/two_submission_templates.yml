@@ -1,0 +1,17 @@
+---
+test_submission_template_1:
+  name: "Test Submission Template 1"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["my_request_type", "my_request_type2"]
+    project_name: "my project"
+    product_line_name: my_product_line
+    product_catalogue_name: my_product_cat
+test_submission_template_2:
+  name: "Test Submission Template 2"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["my_request_type", "my_request_type2"]
+    project_name: "my project"
+    product_line_name: my_product_line
+    product_catalogue_name: my_product_cat
