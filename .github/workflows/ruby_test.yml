@@ -13,123 +13,123 @@ on:
   - pull_request
 
 jobs:
-  # rake_tests:
-  #   runs-on: ubuntu-latest
-  #   env:
-  #     RAILS_ENV: test
-  #     BUNDLE_WITHOUT: "cucumber deployment profile development"
-  #   # Services
-  #   # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idservices
-  #   services:
-  #     mysql:
-  #       # Use the Mysql docker image https://hub.docker.com/_/mysql
-  #       image: mysql:5.7 # Using 5.7 to map to what is used in production.
-  #       ports:
-  #         - 3306 # Default port mappings
-  #         # Monitor the health of the container to mesaure when it is ready
-  #       options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-  #       env:
-  #         MYSQL_ROOT_PASSWORD: "" # Set root PW to nothing
-  #         MYSQL_ALLOW_EMPTY_PASSWORD: yes
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Set up Ruby
-  #       uses: ruby/setup-ruby@v1
-  #       with:
-  #         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-  #     - name: Setup environment
-  #       env:
-  #         DBPORT: ${{ job.services.mysql.ports[3306] }}
-  #       run: |
-  #         bin/setup
-  #     # Actually run our tests
-  #     - name: Run rake tests
-  #       env:
-  #         DBPORT: ${{ job.services.mysql.ports[3306] }}
-  #       run: bundle exec rake test
-  #     - name: Upload coverage artifact
-  #       uses: actions/upload-artifact@v2
-  #       with:
-  #         name: codeclimate-${{ github.job }}-${{ matrix.ci_node_index }}
-  #         path: coverage/coverage.json
-  #         retention-days: 1
-  # rspec_tests:
-  #   runs-on: ubuntu-latest
-  #   env:
-  #     RAILS_ENV: test
-  #     BUNDLE_WITHOUT: "cucumber deployment profile development"
-  #   # Services
-  #   # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idservices
-  #   services:
-  #     mysql:
-  #       # Use the Mysql docker image https://hub.docker.com/_/mysql
-  #       image: mysql:5.7 # Using 5.7 to map to what is used in production.
-  #       ports:
-  #         - 3306 # Default port mappings
-  #         # Monitor the health of the container to mesaure when it is ready
-  #       options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-  #       env:
-  #         MYSQL_ROOT_PASSWORD: "" # Set root PW to nothing
-  #         MYSQL_ALLOW_EMPTY_PASSWORD: yes
-  #   # Sets up the matrix for knapsack builds
-  #   strategy:
-  #     matrix:
-  #       ci_node_total: [3]
-  #       ci_node_index: [0, 1, 2]
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Set up Ruby
-  #       uses: ruby/setup-ruby@v1
-  #       with:
-  #         bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-  #     # Establish a cache of js modules to improve performance
-  #     - name: Cache js
-  #       uses: actions/cache@v2
-  #       with:
-  #         path: |
-  #           public/assets
-  #           tmp/cache/assets/sprockets
-  #           node_modules
-  #         key: ${{ runner.os }}-tests-${{ hashFiles('yarn.lock') }}
-  #         # If we don't find the specific cache we want, fallback to the last raketests
-  #         # cache, then finally any cache for this repo.
-  #         # Github looks for the newest cache beginning with the first entry, before
-  #         # falling back the the second if none is present.
-  #         restore-keys: |
-  #           ${{ runner.os }}-tests-
-  #           ${{ runner.os }}-
-  #     # Install only the gems needed for testing
-  #     # Keep an eye on https://github.com/rubygems/bundler-features/issues/59
-  #     # in case bundler add an only flag
-  #     # We also set the install path to vendor/bundle to assist with out caching
-  #     # bin/setup handles the rest of the configuration for us.
-  #     - name: Setup environment
-  #       env:
-  #         DBPORT: ${{ job.services.mysql.ports[3306] }}
-  #       run: |
-  #         bin/setup
-  #         bundle exec rails webdrivers:chromedriver:update
-  #         bundle exec rake assets:precompile
-  #     # Actually run our tests
-  #     - name: Run rspec tests
-  #       env:
-  #         CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
-  #         CI_NODE_INDEX: ${{ matrix.ci_node_index }}
-  #         DBPORT: ${{ job.services.mysql.ports[3306] }}
-  #       run: bin/knapsack_pro_rspec
-  #     - name: Upload capybara artifacts
-  #       uses: actions/upload-artifact@v2
-  #       if: ${{ failure() }}
-  #       with:
-  #         name: capybara-${{ github.job }}-${{ matrix.ci_node_index }}
-  #         path: tmp/capybara/
-  #         retention-days: 5
-  #     - name: Upload coverage artifact
-  #       uses: actions/upload-artifact@v2
-  #       with:
-  #         name: codeclimate-${{ github.job }}-${{ matrix.ci_node_index }}
-  #         path: coverage/coverage.json
-  #         retention-days: 1
+  rake_tests:
+    runs-on: ubuntu-latest
+    env:
+      RAILS_ENV: test
+      BUNDLE_WITHOUT: "cucumber deployment profile development"
+    # Services
+    # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idservices
+    services:
+      mysql:
+        # Use the Mysql docker image https://hub.docker.com/_/mysql
+        image: mysql:5.7 # Using 5.7 to map to what is used in production.
+        ports:
+          - 3306 # Default port mappings
+          # Monitor the health of the container to mesaure when it is ready
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        env:
+          MYSQL_ROOT_PASSWORD: "" # Set root PW to nothing
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+      - name: Setup environment
+        env:
+          DBPORT: ${{ job.services.mysql.ports[3306] }}
+        run: |
+          bin/setup
+      # Actually run our tests
+      - name: Run rake tests
+        env:
+          DBPORT: ${{ job.services.mysql.ports[3306] }}
+        run: bundle exec rake test
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: codeclimate-${{ github.job }}-${{ matrix.ci_node_index }}
+          path: coverage/coverage.json
+          retention-days: 1
+  rspec_tests:
+    runs-on: ubuntu-latest
+    env:
+      RAILS_ENV: test
+      BUNDLE_WITHOUT: "cucumber deployment profile development"
+    # Services
+    # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idservices
+    services:
+      mysql:
+        # Use the Mysql docker image https://hub.docker.com/_/mysql
+        image: mysql:5.7 # Using 5.7 to map to what is used in production.
+        ports:
+          - 3306 # Default port mappings
+          # Monitor the health of the container to mesaure when it is ready
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        env:
+          MYSQL_ROOT_PASSWORD: "" # Set root PW to nothing
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+    # Sets up the matrix for knapsack builds
+    strategy:
+      matrix:
+        ci_node_total: [3]
+        ci_node_index: [0, 1, 2]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+      # Establish a cache of js modules to improve performance
+      - name: Cache js
+        uses: actions/cache@v2
+        with:
+          path: |
+            public/assets
+            tmp/cache/assets/sprockets
+            node_modules
+          key: ${{ runner.os }}-tests-${{ hashFiles('yarn.lock') }}
+          # If we don't find the specific cache we want, fallback to the last raketests
+          # cache, then finally any cache for this repo.
+          # Github looks for the newest cache beginning with the first entry, before
+          # falling back the the second if none is present.
+          restore-keys: |
+            ${{ runner.os }}-tests-
+            ${{ runner.os }}-
+      # Install only the gems needed for testing
+      # Keep an eye on https://github.com/rubygems/bundler-features/issues/59
+      # in case bundler add an only flag
+      # We also set the install path to vendor/bundle to assist with out caching
+      # bin/setup handles the rest of the configuration for us.
+      - name: Setup environment
+        env:
+          DBPORT: ${{ job.services.mysql.ports[3306] }}
+        run: |
+          bin/setup
+          bundle exec rails webdrivers:chromedriver:update
+          bundle exec rake assets:precompile
+      # Actually run our tests
+      - name: Run rspec tests
+        env:
+          CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
+          CI_NODE_INDEX: ${{ matrix.ci_node_index }}
+          DBPORT: ${{ job.services.mysql.ports[3306] }}
+        run: bin/knapsack_pro_rspec
+      - name: Upload capybara artifacts
+        uses: actions/upload-artifact@v2
+        if: ${{ failure() }}
+        with:
+          name: capybara-${{ github.job }}-${{ matrix.ci_node_index }}
+          path: tmp/capybara/
+          retention-days: 5
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: codeclimate-${{ github.job }}-${{ matrix.ci_node_index }}
+          path: coverage/coverage.json
+          retention-days: 1
   cucumber_tests:
     runs-on: ubuntu-latest
     env:
@@ -193,7 +193,7 @@ jobs:
           CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
           CI_NODE_INDEX: ${{ matrix.ci_node_index }}
           DBPORT: ${{ job.services.mysql.ports[3306] }}
-        run: bundle exec cucumber features/api/projects.feature
+        run: bin/knapsack_pro_cucumber
       - name: Upload capybara artifacts
         uses: actions/upload-artifact@v2
         if: ${{ failure() }}
