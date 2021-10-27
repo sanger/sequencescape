@@ -193,7 +193,7 @@ jobs:
           CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
           CI_NODE_INDEX: ${{ matrix.ci_node_index }}
           DBPORT: ${{ job.services.mysql.ports[3306] }}
-        run: bundle exec cucumber features/projects/project.feature
+        run: bundle exec cucumber features/api/projects.feature
       - name: Upload capybara artifacts
         uses: actions/upload-artifact@v2
         if: ${{ failure() }}
