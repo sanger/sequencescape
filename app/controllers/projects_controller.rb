@@ -30,7 +30,6 @@ class ProjectsController < ApplicationController # rubocop:todo Style/Documentat
   def new
     @project = Project.new
 
-    puts "*** @project: #{@project.project_metadata.budget_division.inspect}"
     respond_to do |format|
       format.html
       format.xml { render xml: @project }

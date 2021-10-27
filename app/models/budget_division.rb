@@ -5,7 +5,6 @@ class BudgetDivision < ApplicationRecord
   extend Attributable::Association::Target
 
   def self.unallocated
-    puts "*** budget division unallocated ***"
     find_or_create_by!(name: 'Unallocated')
   end
 
@@ -20,7 +19,8 @@ class BudgetDivision < ApplicationRecord
     end
 
     def budget_division
-      puts "*** budget division method ***"
+      # When this is called during initialisation of a Project, it is already set (therefore goes down 'super' route)
+      # - due to the database-level default on projects table (budget_division_id = 1)
       super || BudgetDivision.unallocated
     end
   end
