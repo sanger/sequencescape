@@ -108,7 +108,7 @@ RSpec.describe User, type: :model do
 
     it 'adds an authorized role to a user' do
       user.grant_role('owner', study)
-      expect(user).to be_an_owner_of, study
+      expect(user).to be_an_owner_of study
     end
 
     context 'when a role already exists' do
