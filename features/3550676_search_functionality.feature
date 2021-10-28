@@ -4,7 +4,7 @@ Feature: Searching sequencescape
     Given I am logged in as "user"
     And I am on the search page
 
-    Given a project named "This Project" exists
+    Given a project named "This Rabbit" exists
     And a study named "This Study" exists
     And a sample named "SampleForThis" exists
     And sample "SampleForThis" is in a sample tube named "This Asset"
@@ -18,7 +18,7 @@ Feature: Searching sequencescape
 
     Examples:
       |  search |   type  |   result       |
-      | Project | project | This Project   |
+      | Rabbit  | project | This Rabbit    |
       | Study   | study   | This Study     |
       | Sample  | sample  | SampleForThis  |
       | Asset   | labware | This Asset     |
@@ -35,7 +35,7 @@ Feature: Searching sequencescape
     Then I should be on the search page
     And the search results I should see are:
       | section |   result      |
-      | project | This Project  |
+      | project | This Rabbit  |
       | study   | This Study    |
       | sample  | SampleForThis |
       | labware | This Asset    |

@@ -30,6 +30,7 @@ Feature: Project management
    And I fill in the field labeled "Collaborators" with "no collaborators"
    And I fill in the field labeled "External funding source" with "no funding source"
    And I select "Unallocated" from "Sequencing Project Manager"
+   And I select "Unallocated" from "Sequencing budget division"
    And I select "Internal" from "Project funding model"
    And I press "Create"
    Then I should see "Your project has been created"
