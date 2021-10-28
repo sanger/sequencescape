@@ -39,13 +39,13 @@ class TubeRack < Labware
   end
   alias width number_of_columns
 
-  def self.check_if_coordinates_valid(rack_size, list_coordinates)
+  def self.invalid_coordinates(rack_size, list_coordinates)
     num_rows = LAYOUTS.fetch(rack_size)[:rows]
     num_columns = LAYOUTS.fetch(rack_size)[:columns]
     valid_row_values = generate_valid_row_values(num_rows)
     valid_column_values = (1..num_columns)
 
-    list_coordinates.map do |coordinate|
+    list_coordinates.reject do |coordinate|
       row = coordinate[/[A-Za-z]+/].capitalize
       column = coordinate[/[0-9]+/]
       valid_row_values.include?(row) && valid_column_values.cover?(column.to_i)
