@@ -21,6 +21,9 @@ module Api
       attribute :uuid, readonly: true
       attribute :labware_barcode, readonly: true
       attribute :size
+      attribute :number_of_rows, readonly: true
+      attribute :number_of_columns, readonly: true
+      attribute :name, readonly: true
 
       # Filters
       filter :barcode, apply: ->(records, value, _options) { records.with_barcode(value) }

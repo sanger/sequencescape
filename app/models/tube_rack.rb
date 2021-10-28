@@ -12,18 +12,16 @@ class TubeRack < Labware
   has_many :contained_samples, through: :tubes, source: :samples
 
   # The receptacles within the tubes.
-  # While it may be tempting to just name this association :receptacles it intefers
+  # While it may be tempting to just name this association :receptacles it interferes
   # badly with the association on the parent class. Specifically, it looks like the
   # dependent on that relationship triggers a destroy action on *this* association,
   # which doesn't handle it well. Ironic considering the dependent action in the parent
-  # class is intended to prevent inadvertant destruction of receptacles.
+  # class is intended to prevent inadvertent destruction of receptacles.
   has_many :tube_receptacles, through: :tubes, source: :receptacle
 
-  LAYOUTS = { 48 => { 'rows' => 6, 'columns' => 8 }, 96 => { 'rows' => 8, 'columns' => 12 } }.freeze
+  LAYOUTS = { 48 => { rows: 6, columns: 8 }, 96 => { rows: 8, columns: 12 } }.freeze
 
-  def human_barcode
-    primary_barcode.present? ? primary_barcode.barcode : nil
-  end
+  validates :size, inclusion: { in: LAYOUTS.keys }
 
   # Used to unify interface with TubeRacks. Returns a list of all {Receptacle receptacles}
   # with position information included for aid performance
@@ -31,29 +29,30 @@ class TubeRack < Labware
     tube_receptacles.includes(:racked_tube)
   end
 
-  def self.check_if_coordinates_valid(rack_size, list_coordinates) # rubocop:todo Metrics/MethodLength
-    output = []
+  def number_of_rows
+    LAYOUTS.fetch(size)[:rows]
+  end
+  alias height number_of_rows
 
-    num_rows = LAYOUTS[rack_size]['rows']
-    num_columns = LAYOUTS[rack_size]['columns']
+  def number_of_columns
+    LAYOUTS.fetch(size)[:columns]
+  end
+  alias width number_of_columns
+
+  def self.check_if_coordinates_valid(rack_size, list_coordinates)
+    num_rows = LAYOUTS.fetch(rack_size)[:rows]
+    num_columns = LAYOUTS.fetch(rack_size)[:columns]
     valid_row_values = generate_valid_row_values(num_rows)
-    valid_column_values = (1..num_columns).to_a
+    valid_column_values = (1..num_columns)
 
-    list_coordinates.each do |coordinate|
+    list_coordinates.map do |coordinate|
       row = coordinate[/[A-Za-z]+/].capitalize
       column = coordinate[/[0-9]+/]
-      output << (valid_row_values.include?(row) && valid_column_values.include?(column.to_i))
+      valid_row_values.include?(row) && valid_column_values.cover?(column.to_i)
     end
-    output
   end
 
   def self.generate_valid_row_values(num_rows)
-    output = []
-    count = 1
-    ('A'..'Z').each do |letter|
-      output << letter if count <= num_rows
-      count += 1
-    end
-    output
+    ('A'..).first(num_rows)
   end
 end
