@@ -6,7 +6,7 @@ require './app/resources/api/v2/order_resource'
 RSpec.describe Api::V2::OrderResource, type: :resource do
   subject { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { create :order }
+  let(:resource_model) { build_stubbed :order }
 
   # Test attributes
   it 'works', :aggregate_failures do
