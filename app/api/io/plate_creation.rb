@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Controls API V1 IO for {::PlateCreation}
-class ::Io::PlateCreation < ::Core::Io::Base
+class Io::PlateCreation < ::Core::Io::Base
   set_model_for_input(::PlateCreation)
   set_json_root(:plate_creation)
   set_eager_loading { |model| model.include_parent.include_child }

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module ::Core::Endpoint::BasicHandler::Actions::Guards # rubocop:todo Style/Documentation
+module Core::Endpoint::BasicHandler::Actions::Guards # rubocop:todo Style/Documentation
   class Guard # rubocop:todo Style/Documentation
     def initialize(method = nil, &block) # rubocop:todo Metrics/MethodLength
       if method.present?

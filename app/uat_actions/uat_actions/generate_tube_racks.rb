@@ -67,7 +67,7 @@ class UatActions::GenerateTubeRacks < UatActions
 
   def rack_map
     map = []
-    ('A'..'H').each { |letter| ('1'..'12').each { |number| map << letter + number } }
+    ('A'..'H').each { |letter| ('1'..'12').each { |number| map << (letter + number) } }
     map
   end
 

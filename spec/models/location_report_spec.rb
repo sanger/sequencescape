@@ -465,7 +465,7 @@ RSpec.describe LocationReport, type: :model do
           it_behaves_like 'a successful report'
         end
 
-        describe 'when multiple labwares in different sub-locations ' do
+        describe 'when multiple labwares in different sub-locations' do
           let(:location_barcode) { 'locn-1-at-lvl-1' }
           let(:plt_1_line) do
             # rubocop:todo Layout/LineLength

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Controls API V1 {::Core::Endpoint::Base endpoints} for Tube
-class ::Endpoints::Tube::Purposes < ::Core::Endpoint::Base
+class Endpoints::Tube::Purposes < ::Core::Endpoint::Base
   model { action(:create, to: :standard_create!) }
 
   instance do

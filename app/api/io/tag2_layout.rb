@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Controls API V1 IO for {::Tag2Layout}
-class ::Io::Tag2Layout < ::Core::Io::Base
+class Io::Tag2Layout < ::Core::Io::Base
   set_model_for_input(::Tag2Layout)
   set_json_root(:tag2_layout)
   set_eager_loading { |model| model.include_plate.include_tag }

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-module ::Core::Io::Base::JsonFormattingBehaviour::Output # rubocop:todo Style/Documentation
+
+module Core::Io::Base::JsonFormattingBehaviour::Output # rubocop:todo Style/Documentation
   def json_code_tree
     ::Core::Io::Json::Grammar::Root.new(self)
   end

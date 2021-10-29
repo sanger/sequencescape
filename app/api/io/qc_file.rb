@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Controls API V1 IO for {::QcFile}
-class ::Io::QcFile < ::Core::Io::Base
+class Io::QcFile < ::Core::Io::Base
   set_model_for_input(::QcFile)
   set_json_root(:qc_file)
 

@@ -44,7 +44,7 @@ module SequencescapeExcel
     private
 
     def to_alpha(num)
-      (num - 1) < 26 ? ((num - 1) % 26 + 65).chr : ((num - 1) / 26 + 64).chr + ((num - 1) % 26 + 65).chr
+      (num - 1) < 26 ? (((num - 1) % 26) + 65).chr : (((num - 1) / 26) + 64).chr + (((num - 1) % 26) + 65).chr
     end
   end
 end
