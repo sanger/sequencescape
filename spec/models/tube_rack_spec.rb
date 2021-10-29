@@ -70,4 +70,54 @@ RSpec.describe TubeRack do
       expect(tube_rack.contained_samples.to_a.sort).to eq(tubes.map(&:samples).flatten.sort)
     end
   end
+
+  context 'with a rack with tubes and requests' do
+    let(:tube_rack) { create :tube_rack }
+    let(:tube_a) { create :tube, :in_a_rack, tube_rack: tube_rack, coordinate: 'A1' }
+    let(:tube_b) { create :tube, :in_a_rack, tube_rack: tube_rack, coordinate: 'H12' }
+    let(:aliquot) { create :aliquot, receptacle: tube_a.receptacle, request: create(:request, submission: submission) }
+    let(:outer_request) { create :request, asset: tube_b.receptacle, submission: submission }
+    let(:submission) { create :submission }
+
+    # The comments scope should also retrieve comments associated with tubes, and
+    # their requests
+    describe '#comments' do
+      let!(:rack_comment) { create :comment, commentable: tube_rack, title: 'Rack' }
+      let!(:tube_comment) { create :comment, commentable: tube_a, title: 'Tube' }
+      let!(:request_comment_a) { create :comment, commentable: aliquot.request, title: 'Request(Aliquot)' }
+      let!(:request_comment_b) { create :comment, commentable: outer_request, title: 'Request(Receptacle)' }
+
+      it 'includes all relevant comments' do
+        comments = tube_rack.reload.comments
+
+        aggregate_failures do
+          expect(comments).to include(rack_comment)
+          expect(comments).to include(tube_comment)
+          expect(comments).to include(request_comment_a)
+          expect(comments).to include(request_comment_b)
+        end
+      end
+    end
+
+    # This is called following comment addition
+    describe '#after_comment_addition' do
+      context 'with submissions' do
+        before { outer_request }
+
+        it 'ensures comments are visible on the tubes' do
+          create :comment, commentable: tube_rack
+          expect(tube_b.reload.comments.count).to eq 1
+        end
+      end
+
+      context 'without submissions' do
+        before { tube_b }
+
+        it 'ensures comments are visible on the tubes' do
+          create :comment, commentable: tube_rack
+          expect(tube_b.reload.comments.count).to eq 1
+        end
+      end
+    end
+  end
 end

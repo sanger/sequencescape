@@ -16,6 +16,16 @@ FactoryBot.define do
     sanger_barcode { { prefix: prefix, number: barcode_number } }
   end
 
+  trait :in_a_rack do
+    transient do
+      tube_rack { nil }
+      coordinate { nil }
+    end
+    after(:create) do |tube, evaluator|
+      create(:racked_tube, tube: tube, tube_rack: evaluator.tube_rack, coordinate: evaluator.coordinate)
+    end
+  end
+
   factory :tube, traits: [:tube_barcode] do
     name { generate :asset_name }
     association(:purpose, factory: :tube_purpose)
@@ -57,16 +67,6 @@ FactoryBot.define do
 
     factory :sample_tube_with_sanger_sample_id do
       transient { sample { create(:sample_with_sanger_sample_id) } }
-    end
-
-    trait :in_a_rack do
-      transient do
-        tube_rack { nil }
-        coordinate { nil }
-      end
-      after(:create) do |tube, evaluator|
-        create(:racked_tube, tube: tube, tube_rack: evaluator.tube_rack, coordinate: evaluator.coordinate)
-      end
     end
   end
 
