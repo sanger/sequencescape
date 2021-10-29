@@ -35,10 +35,6 @@ module Api
                )
       filter :purpose_id, apply: ->(records, value, _options) { records.where(plate_purpose_id: value) }
 
-      # Custom methods
-      # These shouldn't be used for business logic, and a more about
-      # I/O and isolating implementation details.
-
       # Class method overrides
 
       # Custom methods
