@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Controls API V1 IO for {::BulkTransfer}
-class ::Io::BulkTransfer < ::Core::Io::Base
+class Io::BulkTransfer < ::Core::Io::Base
   set_model_for_input(::BulkTransfer)
   set_json_root(:bulk_transfer)
 

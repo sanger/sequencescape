@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ::Core::Registry # rubocop:todo Style/Documentation
+class Core::Registry # rubocop:todo Style/Documentation
   include ::Singleton
   include ::Core::Logging
 

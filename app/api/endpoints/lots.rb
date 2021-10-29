@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Controls API V1 {::Core::Endpoint::Base endpoints} for Lots
-class ::Endpoints::Lots < ::Core::Endpoint::Base
+class Endpoints::Lots < ::Core::Endpoint::Base
   model {}
 
   instance do

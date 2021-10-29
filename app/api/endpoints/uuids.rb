@@ -4,7 +4,7 @@
 # so it is going to go.  Rather than pollute the main API code with this rubbish it's here.
 #++
 # Controls API V1 {::Core::Endpoint::Base endpoints} for Uuids
-class ::Endpoints::Uuids < ::Core::Endpoint::Base
+class Endpoints::Uuids < ::Core::Endpoint::Base
   module Response # rubocop:todo Style/Documentation
     def redirect_to(path)
       @owner.request.service.status(301)

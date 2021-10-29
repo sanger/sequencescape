@@ -16,7 +16,7 @@
 #     ")
 #   end
 #
-class ::Core::Io::Base
+class Core::Io::Base
   extend ::Core::Logging
   extend ::Core::Benchmarking
   extend ::Core::Io::Base::EagerLoadingBehaviour

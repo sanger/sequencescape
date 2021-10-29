@@ -54,7 +54,7 @@ class SequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
 
     # It's ready if I don't have any lib creation requests or if all my lib creation requests are closed and
     # at least one of them is in 'passed' status
-    upstream_requests.empty? || upstream_requests.all?(&:closed?) && upstream_requests.any?(&:passed?)
+    upstream_requests.empty? || (upstream_requests.all?(&:closed?) && upstream_requests.any?(&:passed?))
   end
 
   def self.delegate_validator

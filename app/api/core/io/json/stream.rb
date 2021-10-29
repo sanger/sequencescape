@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ::Core::Io::Json
+module Core::Io::Json
   # Custom JSON streaming class to handle streamed serialization of API V1
   # objects
   class Stream # rubocop:todo Metrics/ClassLength

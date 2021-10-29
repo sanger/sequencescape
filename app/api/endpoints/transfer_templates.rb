@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Controls API V1 {::Core::Endpoint::Base endpoints} for TransferTemplates
-class ::Endpoints::TransferTemplates < ::Core::Endpoint::Base
+class Endpoints::TransferTemplates < ::Core::Endpoint::Base
   model {}
 
   instance do

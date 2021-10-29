@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Controls API V1 {::Core::Endpoint::Base endpoints} for Searches
-class ::Endpoints::Searches < ::Core::Endpoint::Base
+class Endpoints::Searches < ::Core::Endpoint::Base
   module SearchActions # rubocop:todo Style/Documentation
     def search_action(name) # rubocop:todo Metrics/AbcSize
       bind_action(:create, to: name.to_s, as: name.to_sym) do |action, request, response|

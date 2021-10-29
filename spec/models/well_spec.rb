@@ -303,7 +303,7 @@ describe Well do
     end
   end
 
-  context 'when while cherrypicking by nanograms ' do
+  context 'when while cherrypicking by nanograms' do
     context 'and we want to get less volume than the minimum' do
       before do
         @source_well = create :well

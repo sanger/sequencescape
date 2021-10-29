@@ -14,7 +14,7 @@ module TagLayout::InInverseColumns
   def self.tag_index(row, column, scale, height, width)
     tag_col = (column / scale)
     tag_row = (row / scale)
-    (height / scale) * (width / scale) - (tag_row + (height / scale * tag_col)) - 1
+    ((height / scale) * (width / scale)) - (tag_row + (height / scale * tag_col)) - 1
   end
 
   def self.tag2_index(row, column, scale, height, width)
