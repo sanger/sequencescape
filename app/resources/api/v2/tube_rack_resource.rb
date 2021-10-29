@@ -40,8 +40,14 @@ module Api
         super - [:tube_locations]
       end
 
+      # Tube locations should be received as:
+      # { A1: { uuid: 'a1_tube_uuid' }, B1: { uuid: 'b1_tube_uuid' }, ... }
       def tube_locations=(tube_locations)
-
+        tube_locations.each do |coordinate, tube|
+          existing_tube = Tube.with_uuid(tube['uuid']).last
+          raise "No tube found for UUID '#{tube['uuid']}'" if existing_tube.nil?
+          RackedTube.create(coordinate: coordinate, tube: existing_tube, tube_rack: @model)
+        end
       end
 
       # Custom methods
