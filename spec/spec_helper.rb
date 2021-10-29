@@ -51,7 +51,7 @@ Capybara.register_driver :headless_chrome do |app|
 end
 
 def enable_chrome_headless_downloads(driver)
-  driver.options[:options].add_preference(:download, default_directory: Capybara.save_path)
+  driver.options[:capabilities].add_preference(:download, default_directory: Capybara.save_path)
   driver.browser.download_path = Capybara.save_path
   driver
 end
