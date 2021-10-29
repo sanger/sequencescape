@@ -20,7 +20,7 @@ module Api
       # Attributes
       attribute :uuid, readonly: true
       attribute :labware_barcode, readonly: true
-      attribute :size
+      attributes :size, :tube_locations
 
       # Filters
       filter :barcode, apply: ->(records, value, _options) { records.with_barcode(value) }
@@ -36,6 +36,13 @@ module Api
       filter :purpose_id, apply: ->(records, value, _options) { records.where(plate_purpose_id: value) }
 
       # Class method overrides
+      def fetchable_fields
+        super - [:tube_locations]
+      end
+
+      def tube_locations=(tube_locations)
+
+      end
 
       # Custom methods
       # These shouldn't be used for business logic, and are more about
