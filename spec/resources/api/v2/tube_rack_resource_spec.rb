@@ -41,7 +41,7 @@ RSpec.describe Api::V2::TubeRackResource, type: :resource do
     end
 
     context 'when passed an empty locations object' do
-      let(:new_locations) { { } }
+      let(:new_locations) { {} }
 
       it 'doesn\'t create any associations' do
         tube_rack.tube_locations = new_locations
@@ -50,14 +50,10 @@ RSpec.describe Api::V2::TubeRackResource, type: :resource do
     end
 
     context 'when given an invalid tube uuid' do
-      before do
-        new_locations[:B1][:uuid] = 'invalid_uuid'
-      end
+      before { new_locations[:B1][:uuid] = 'invalid_uuid' }
 
       it 'raises with a descriptive message' do
-        expect { tube_rack.tube_locations = new_locations }.to(
-          raise_error("No tube found for UUID 'invalid_uuid'")
-        )
+        expect { tube_rack.tube_locations = new_locations }.to(raise_error("No tube found for UUID 'invalid_uuid'"))
       end
     end
   end
