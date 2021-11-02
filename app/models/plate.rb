@@ -324,7 +324,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   def stock_plate?
     return true if plate_purpose.nil?
 
-    plate_purpose.stock_plate? && plate_purpose.attatched?(self)
+    plate_purpose.stock_plate? && plate_purpose.attached?(self)
   end
 
   #
