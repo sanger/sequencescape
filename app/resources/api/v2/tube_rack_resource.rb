@@ -43,11 +43,11 @@ module Api
       # Tube locations should be received as:
       # { A1: { uuid: 'a1_tube_uuid' }, B1: { uuid: 'b1_tube_uuid' }, ... }
       def tube_locations=(tube_locations)
-        all_uuids = tube_locations.values.map { |tube| tube[:uuid] }
+        all_uuids = tube_locations.values.pluck(&:uuid)
         tubes = Tube.with_uuid(all_uuids).index_by(&:uuid)
         tube_locations.each do |coordinate, tube|
           tube_uuid = tube[:uuid]
-          raise "No tube found for UUID '#{tube[:uuid]}'" unless tubes.has_key?(tube_uuid)
+          raise "No tube found for UUID '#{tube[:uuid]}'" unless tubes.key?(tube_uuid)
           RackedTube.create(coordinate: coordinate, tube: tubes[tube_uuid], tube_rack: @model)
         end
       end
