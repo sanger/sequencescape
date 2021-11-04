@@ -76,6 +76,7 @@ module Cherrypick::VolumeByNanoGrams # rubocop:todo Style/Documentation
 
   private
 
+  #                          volume_required, volume_to_pick,  robot_minimum_picking_volume
   def buffer_volume_required(minimum_volume, requested_volume, robot_minimum_picking_volume)
     shortfall = minimum_volume - requested_volume
     return 0 if shortfall <= 0

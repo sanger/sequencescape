@@ -46,13 +46,19 @@ module Cherrypick::VolumeByNanoGramsPerMicroLitre
     #  due to minimum robot picks)
     well_attribute.current_volume = volume_required
 
-    # The minimum picking volume is usually determined by the robot, but if the
-    # source volume is lower than this, we don't want to try to pick more.
-    minimum_picking_volume = [robot_minimum_picking_volume, source_volume].compact.min
+    # The minimum picking volume is determined by the robot.
+    # Even if there is less liquid in the source than the minimum picking volume,
+    # we still give the robot the minimum picking volume as its instruction.
+    # minimum_picking_volume = [robot_minimum_picking_volume, source_volume].compact.min
+    minimum_picking_volume = robot_minimum_picking_volume
 
     # The maximum picking volume is limited by the source volume, and the volume
     # required.
     maximum_picking_volume = [volume_required, source_volume].compact.min
+
+    # If we've managed to set the maximum picking volume to lower than the the min, set them to the same.
+    # This would happen with very low source volumes that are less than the robot_minimum_picking_volume.
+    maximum_picking_volume = minimum_picking_volume if minimum_picking_volume > maximum_picking_volume
 
     volume_needed =
       if source_concentration.zero?
