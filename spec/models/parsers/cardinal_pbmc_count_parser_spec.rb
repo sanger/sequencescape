@@ -107,6 +107,28 @@ RSpec.describe Parsers::CardinalPbmcCountParser, type: :model do
     end
   end
 
+  context 'when a row has no cells' do
+    # this file has 1 normal row, and a couple of rows with 0 live cells, and NaN viability
+    let(:filename) { Rails.root.join('spec/data/parsers/cardinal_pbmc_count_no_cells.csv') }
+    let(:content) { read_file(filename) }
+    let(:csv) { CSV.parse(content) }
+    let(:parser) { described_class.new(csv) }
+
+    it 'will have three qc data entries - one for each row in the file' do
+      expect(parser.qc_data.values.length).to eq(3)
+    end
+
+    it 'will have cell count and viability metrics for the normal row' do
+      expect(parser.qc_data['A4'].keys).to eq(%i[live_cell_count viability])
+    end
+
+    it 'will have just cell count for the rows with 0 cells' do
+      expect(parser.qc_data['A5'].keys).to eq([:live_cell_count])
+      expect(parser.qc_data['E5'].keys).to eq([:live_cell_count])
+      expect(parser.qc_data['E5'][:live_cell_count].zero?).to eq(true)
+    end
+  end
+
   context 'when updating qc results' do
     let(:plate) { create(:plate_with_empty_wells, well_count: 96) }
     let(:filename) { Rails.root.join('spec/data/parsers/cardinal_pbmc_count.csv') }
