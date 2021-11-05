@@ -1,0 +1,9 @@
+Description:
+    Add a new SupportAction, ready to use
+
+Example:
+    rails generate support_action NewAction --description "My action description"
+
+    This will create:
+      app/support_actions/support_actions/new_action.rb
+      spec/support_actions/new_action_spec.rb

@@ -1,0 +1,19 @@
+# frozen_string_literal: true
+
+require 'rails_helper'
+
+describe SupportActions::<%= camelcase %> do
+  context 'valid options' do
+    let(:parameters) { {} }
+    let(:support_action) { described_class.new(parameters) }
+
+    it 'can be performed' do
+      expect(support_action.perform).to eq true
+      expect(support_action.report).to include [:log, 'Message']
+    end
+  end
+
+  it 'returns a default' do
+    expect(described_class.default).to be_a described_class
+  end
+end

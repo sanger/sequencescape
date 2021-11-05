@@ -1,0 +1,43 @@
+# frozen_string_literal: true
+
+# Will construct plates with well_count wells filled with samples
+class SupportActions::<%= camelcase %> < SupportActions
+  self.title = '<%= title %>'
+  # The description displays on the list of support actions to provide additional information
+  self.description = '<%= description %>'
+
+  # Form fields
+  # form_field :resource_id, :select, label: 'Resource', help: 'Select a resource from the list', select_options: -> { Resource.scope.pluck(:name, :id) }
+  # form_field :number_needed, :number_field, label: 'Number needed', help: 'Fill in a number', options: { minimum: 1, maximum: 20 }
+
+  #
+  # Returns a default copy of the SupportAction which will be used to fill in the form
+  #
+  # @return [SupportActions::<%= camelcase %>] A default object for rendering a form
+  def self.default
+    new
+  end
+
+  #
+  # [perform description]
+  #
+  # @return [Boolean] Returns true if the action was successful, false otherwise
+  def perform
+    # Called by the controller once the form is filled in. Add your actual actions here.
+    # All the form fields are accessible as simple attributes.
+    # Return true if everything works
+    true
+  end
+
+  private
+
+  # Any helper methods
+
+  #
+  # Returns the uat user
+  #
+  # @return [User] The UAT user can be used in any places where a user is expected.
+  def user
+    SupportActions::StaticRecords.user
+  end
+end
