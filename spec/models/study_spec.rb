@@ -85,7 +85,7 @@ RSpec.describe Study, type: :model do
     end
   end
 
-  describe '#ethical approval?: ' do
+  describe '#ethical approval?:' do
     let!(:study) { create(:study) }
 
     context 'when contains human DNA' do

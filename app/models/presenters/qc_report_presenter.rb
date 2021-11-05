@@ -85,12 +85,12 @@ class Presenters::QcReportPresenter # rubocop:todo Style/Documentation
 
   # The headers for the qc information table
   def csv_field_headers
-    @csv << ['Asset ID'] + criteria_headers.map { |h| h.to_s.humanize } + ['Qc Decision', 'Proceed']
+    @csv << (['Asset ID'] + criteria_headers.map { |h| h.to_s.humanize } + ['Qc Decision', 'Proceed'])
   end
 
   def csv_body
     qc_report.qc_metrics.each do |m|
-      @csv << [m.asset_id] + criteria_headers.map { |h| m.metrics[h] } + [m.qc_decision, m.human_proceed]
+      @csv << ([m.asset_id] + criteria_headers.map { |h| m.metrics[h] } + [m.qc_decision, m.human_proceed])
     end
   end
 end

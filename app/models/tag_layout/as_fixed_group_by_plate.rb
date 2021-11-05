@@ -13,7 +13,7 @@ class TagLayout::AsFixedGroupByPlate < TagLayout::Walker
   def walk_wells
     wells_in_walking_order.each_with_index do |well, well_index|
       tags_per_well.times do |tag_index|
-        index = well_index * tags_per_well + tag_index
+        index = (well_index * tags_per_well) + tag_index
         yield(well, index) unless well.nil?
       end
     end

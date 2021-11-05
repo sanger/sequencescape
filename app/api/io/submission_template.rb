@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Controls API V1 IO for {::SubmissionTemplate}
-class ::Io::SubmissionTemplate < ::Core::Io::Base
+class Io::SubmissionTemplate < ::Core::Io::Base
   set_model_for_input(::SubmissionTemplate)
   set_json_root(:order_template)
 

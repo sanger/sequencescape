@@ -527,7 +527,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def validate_ena_required_fields!
-    valid?(:accession) && valid?(accession_service.provider) || raise(ActiveRecord::RecordInvalid, self)
+    (valid?(:accession) && valid?(accession_service.provider)) || raise(ActiveRecord::RecordInvalid, self)
   rescue ActiveRecord::RecordInvalid => e
     ena_study.errors.full_messages.each { |message| errors.add(:base, "#{message} on study") } unless ena_study.nil?
     raise e

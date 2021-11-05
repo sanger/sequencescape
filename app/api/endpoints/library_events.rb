@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Controls API V1 {::Core::Endpoint::Base endpoints} for LibraryEvents
-class ::Endpoints::LibraryEvents < ::Core::Endpoint::Base
+class Endpoints::LibraryEvents < ::Core::Endpoint::Base
   model { action(:create, to: :standard_create!) }
 
   instance do

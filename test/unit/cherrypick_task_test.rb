@@ -32,7 +32,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
             asset_shape_id: @asset_shape.id,
             location_id: i + 1,
             row_order: i,
-            column_order: ((i / 4) + 3 * (i % 4))
+            column_order: ((i / 4) + (3 * (i % 4)))
           )
         end
 
