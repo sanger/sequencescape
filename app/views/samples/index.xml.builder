@@ -14,16 +14,13 @@ else
         samples.workflow_sample do |workflow_sample|
           workflow_sample.id ws.id
           workflow_sample.descriptors do |descriptors|
-            ws
-              .sample_metadata
-              .attribute_value_pairs
-              .each do |attribute, value|
-                descriptors.descriptor do |descriptor|
-                  xml.comment! attribute.to_field_info.display_name
-                  descriptor.key attribute.name.to_s
-                  descriptor.value value
-                end
+            ws.sample_metadata.attribute_value_pairs.each do |attribute, value|
+              descriptors.descriptor do |descriptor|
+                xml.comment! attribute.to_field_info.display_name
+                descriptor.key attribute.name.to_s
+                descriptor.value value
               end
+            end
           end
         end
       end
