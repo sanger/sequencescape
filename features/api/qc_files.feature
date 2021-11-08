@@ -2,8 +2,8 @@
 Feature: Access plate QC Information through the api
   In order to actually be able to do anything useful
   As an authenticated user of the API
-  I want to be able to attatch an arbitary number of QC files to plates
-  And I should be able to retrieve a list of attatched QC files
+  I want to be able to attach an arbitary number of QC files to plates
+  And I should be able to retrieve a list of attached QC files
   AND I should be able to retrieve individual QC files
 
   Background:
@@ -22,7 +22,7 @@ Feature: Access plate QC Information through the api
 
   @read @authorised
   Scenario: Reading the JSON for a UUID
-    Given the plate with ID 1 has attatched QC data with a UUID of "11111111-2222-3333-4444-666666666666"
+    Given the plate with ID 1 has attached QC data with a UUID of "11111111-2222-3333-4444-666666666666"
 
     When I make an authorised GET the API path "/00000000-1111-2222-3333-444444444444"
     Then the HTTP response should be "200 OK"
@@ -101,11 +101,11 @@ Feature: Access plate QC Information through the api
           }
       }
       """
-    And the plate with ID 1 should have attatched QC data
+    And the plate with ID 1 should have attached QC data
 
   @read @authorised
   Scenario: Other resources respond correctly
-  Given the plate with ID 1 has attatched QC data with a UUID of "11111111-2222-3333-4444-666666666666"
+  Given the plate with ID 1 has attached QC data with a UUID of "11111111-2222-3333-4444-666666666666"
     When I GET the "sequencescape/qc_file" from the API path "/00000000-1111-2222-3333-444444444444"
     Then the HTTP response should be "406 Failure"
 

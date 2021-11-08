@@ -85,7 +85,7 @@ RSpec.describe Study, type: :model do
     end
   end
 
-  describe '#ethical approval?: ' do
+  describe '#ethical approval?:' do
     let!(:study) { create(:study) }
 
     context 'when contains human DNA' do
@@ -700,6 +700,15 @@ RSpec.describe Study, type: :model do
           metadata[:data_release_prevention_reason_comment]
         )
       end
+    end
+  end
+
+  context '(DPL-148) on updating user roles' do
+    let(:study) { create :study }
+    let(:user) { create :user }
+
+    it 'triggers warehouse update', warren: true do
+      expect { user.grant_follower(study) }.to change(Warren.handler.messages, :count).from(0)
     end
   end
 end

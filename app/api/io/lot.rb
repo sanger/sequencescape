@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Controls API V1 IO for {::Lot}
-class ::Io::Lot < ::Core::Io::Base
+class Io::Lot < ::Core::Io::Base
   set_model_for_input(::Lot)
   set_json_root(:lot)
 

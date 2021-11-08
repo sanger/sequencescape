@@ -4,7 +4,7 @@ module I18n
   module Backend
     module Base # rubocop:todo Style/Documentation
       def load_yml(filename)
-        YAML.load(ERB.new(IO.read(filename)).result)
+        YAML.load(ERB.new(File.read(filename)).result)
       end
     end
   end

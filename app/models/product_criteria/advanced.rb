@@ -18,7 +18,7 @@ class ProductCriteria::Advanced < ProductCriteria::Basic
 
   def invalid(attribute, message, decision)
     @qc_decision = decision
-    @comment << message % attribute.to_s.humanize
+    @comment << (message % attribute.to_s.humanize)
     @comment.uniq!
   end
 

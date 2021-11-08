@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Controls API V1 IO for {::SpecificTubeCreation}
-class ::Io::SpecificTubeCreation < ::Core::Io::Base
+class Io::SpecificTubeCreation < ::Core::Io::Base
   set_model_for_input(::SpecificTubeCreation)
   set_json_root(:specific_tube_creation)
   set_eager_loading(&:include_parent)

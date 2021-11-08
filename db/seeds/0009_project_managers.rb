@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-ProjectManager.create! name: 'Unallocated'
+ProjectManager.find_or_create_by! name: 'Unallocated'

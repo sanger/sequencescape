@@ -1,0 +1,20 @@
+---
+# This file was automatically generated via `rails g record_loader`
+# You should modify it to match your particular model.
+example_type:
+  name: "Example type"
+  asset_type: "Tube"
+  order: 1
+  request_class_name: "SequencingRequest"
+example_type_2:
+  name: "Example type 2"
+  asset_type: "Well"
+  order: 2
+  target_asset_type: "Well"
+  request_class_name: "CherrypickForPulldownRequest"
+  acceptable_plate_purposes:
+    - Example purpose 2
+  library_types:
+    - Standard
+    - Chromium single cell CNV
+    - Added library type

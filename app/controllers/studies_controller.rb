@@ -280,14 +280,14 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
   end
 
   # rubocop:todo Metrics/MethodLength
-  def self.role_helper(name, success_action, error_action, &block) # rubocop:todo Metrics/AbcSize
+  def self.role_helper(name, success_action, error_action) # rubocop:todo Metrics/AbcSize
     define_method("#{name}_role") do
       ActiveRecord::Base.transaction do
         @study = Study.find(params[:id])
         @user = User.find(params.require(:role).fetch(:user))
 
         if request.xhr?
-          block.call(@user, @study, params[:role][:authorizable_type].to_s)
+          yield(@user, @study, params[:role][:authorizable_type].to_s)
           status, flash.now[:notice] = 200, "Role #{success_action}"
         else
           status, flash.now[:error] = 401, "A problem occurred while #{error_action} the role"

@@ -10,7 +10,7 @@ class DbFile < ApplicationRecord # rubocop:todo Style/Documentation
   # This module will set up all required associations and allow mounting "polymorphic uploaders"
   module Uploader
     def self.extended(base)
-      base.has_many :db_files, as: :owner, dependent: :destroy
+      base.has_many :db_files, as: :owner, dependent: :destroy # rubocop:todo Rails/HasManyOrHasOneDependent
     end
 
     # Mount an uploader on the specified 'data' column

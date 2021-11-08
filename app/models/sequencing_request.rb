@@ -19,6 +19,7 @@ class SequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
   end
 
   include Request::CustomerResponsibility
+  include Request::SampleCompoundAliquotTransfer
 
   before_validation :clear_cross_projects
   def clear_cross_projects
@@ -35,7 +36,7 @@ class SequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
 
   def on_started
     super
-    transfer_aliquots
+    compound_samples_needed? ? transfer_aliquots_into_compound_sample_aliquot : transfer_aliquots
   end
 
   def order=(_)
@@ -53,7 +54,7 @@ class SequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
 
     # It's ready if I don't have any lib creation requests or if all my lib creation requests are closed and
     # at least one of them is in 'passed' status
-    upstream_requests.empty? || upstream_requests.all?(&:closed?) && upstream_requests.any?(&:passed?)
+    upstream_requests.empty? || (upstream_requests.all?(&:closed?) && upstream_requests.any?(&:passed?))
   end
 
   def self.delegate_validator

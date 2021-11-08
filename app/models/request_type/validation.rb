@@ -6,24 +6,28 @@ module RequestType::Validation
     DelegateValidation::CompositeValidator.construct(request_class.delegate_validator, request_type_validator)
   end
 
+  def create_validator(request_type)
+    Class.new(RequestTypeValidator) do
+      request_type.request_type_validators.each do |validator|
+        message =
+          "is '%{value}' should be #{
+            validator.valid_options.to_sentence(last_word_connector: ', or ', two_words_connector: ' or ')
+          }"
+        vro = :"#{validator.request_option}"
+        delegate_attribute(vro, to: :target, default: validator.default, type_cast: validator.type_cast)
+        validates vro,
+                  inclusion: {
+                    in: validator.valid_options,
+                    if: :"#{validator.request_option}_needs_checking?",
+                    message: message
+                  }
+      end
+    end
+  end
+
   def request_type_validator
     request_type = self
-
-    Class
-      .new(RequestTypeValidator) do
-        request_type.request_type_validators.each do |validator|
-          message = "is '%{value}' should be #{validator.valid_options.to_sentence(last_word_connector: ' or ')}"
-          vro = :"#{validator.request_option}"
-          delegate_attribute(vro, to: :target, default: validator.default, type_cast: validator.type_cast)
-          validates vro,
-                    inclusion: {
-                      in: validator.valid_options,
-                      if: :"#{validator.request_option}_needs_checking?",
-                      message: message
-                    }
-        end
-      end
-      .tap { |sub_class| sub_class.request_type = request_type }
+    create_validator(request_type).tap { |sub_class| sub_class.request_type = request_type }
   end
 
   class RequestTypeValidator < DelegateValidation::Validator # rubocop:todo Style/Documentation

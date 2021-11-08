@@ -142,32 +142,24 @@ LibraryType.create!(
     'No PCR',
     'High complexity and double size selected',
     'Illumina cDNA protocol',
-    'Agilent Pulldown',
     'Custom',
     'High complexity',
     'ChiP-seq',
     'NlaIII gene expression',
-    'Standard',
     'Long range',
     'Small RNA',
     'Double size selected',
     'DpnII gene expression',
-    'TraDIS',
     'qPCR only',
     'Pre-quality controlled',
     'DSN_RNAseq',
-    'RNA-seq dUTP',
-    'Manual Standard WGS (Plate)',
-    'ChIP-Seq Auto',
-    'TruSeq mRNA (RNA Seq)',
-    'Small RNA (miRNA)',
-    'RNA-seq dUTP eukaryotic',
-    'RNA-seq dUTP prokaryotic',
-    'No PCR (Plate)'
+    'RNA-seq dUTP'
   ].map { |name| { name: name } }
 )
 
 RequestType.find_each do |request_type|
+  next if request_type.key.starts_with? 'limber'
+
   library_types = LibraryType.where(name: SetupLibraryTypes.existing_associations_for(request_type))
 
   if library_types.present?
@@ -247,7 +239,7 @@ library_types =
 end
 
 libs_ribozero =
-  ['Ribozero RNA-seq (Bacterial)', 'Ribozero RNA-seq (HMR)'].map { |name| LibraryType.create!(name: name) }
+  ['Ribozero RNA-seq (Bacterial)', 'Ribozero RNA-seq (HMR)'].map { |name| LibraryType.find_or_create_by!(name: name) }
 
 libs_ribozero.each do |lib|
   %i[illumina_c_pcr illumina_c_pcr_no_pool].each do |request_class_symbol|
@@ -257,7 +249,7 @@ libs_ribozero.each do |lib|
 end
 
 RequestType.find_by(key: 'illumina_c_chromium_library').library_types =
-  LibraryType.create!(['Chromium genome', 'Chromium exome', 'Chromium single cell'].map { |name| { name: name } })
+  LibraryType.where(name: ['Chromium genome', 'Chromium exome', 'Chromium single cell'])
 RequestType::Validator.create!(
   request_type: RequestType.find_by(key: 'illumina_c_chromium_library'),
   request_option: 'library_type',

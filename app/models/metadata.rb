@@ -30,7 +30,7 @@ module Metadata # rubocop:todo Style/Documentation
       inverse_of: :owner,
       foreign_key: "#{as_name}_id"
     }
-    has_one association_name, default_options.merge(options)
+    has_one association_name, default_options.merge(options) # rubocop:todo Rails/HasManyOrHasOneDependent
     accepts_nested_attributes_for(association_name, update_only: true)
 
     unless respond_to?(:"include_#{association_name}")
@@ -103,7 +103,8 @@ module Metadata # rubocop:todo Style/Documentation
                         class_name: name,
                         validate: false,
                         autosave: false,
-                        inverse_of: :"#{as_name}_metadata"
+                        inverse_of: :"#{as_name}_metadata",
+                        touch: true
 
     # Finally give it a name!
     const_set(:Metadata, metadata)
@@ -112,8 +113,6 @@ module Metadata # rubocop:todo Style/Documentation
   class Base < ApplicationRecord # rubocop:todo Style/Documentation
     # All derived classes have their own table.  We're just here to help with some behaviour
     self.abstract_class = true
-
-    broadcasts_associated_with_warren :owner
 
     # This ensures that the default values are stored within the DB, meaning that this information will be
     # preserved for the future, unlike the original properties information which didn't store values when

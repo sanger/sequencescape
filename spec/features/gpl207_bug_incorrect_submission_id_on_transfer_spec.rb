@@ -4,10 +4,8 @@ require 'rails_helper'
 
 RSpec.describe 'Bug research' do
   context 'with GPL-207' do
-    context '
-       Incorrect submission ids recorded in transfer requests when other plates with
-      the same samples have library requests under different submission ids still in progress
-    ' do
+    context 'Incorrect submission ids recorded in transfer requests when other plates with
+ the same samples have library requests under different submission ids still in progress' do
       def create_pool_requests(plate, pool_defs, pool_instances, submission_ids)
         pool_defs.each_with_index do |well_locs, index|
           plate
@@ -41,14 +39,12 @@ RSpec.describe 'Bug research' do
         end.flatten
       end
 
-      context '
-        We have a Stock plate with 9 samples, from it, we create 2 new plates (plates 1 and 2) and we
-        cherrypick the wells from the Stock plate into the plates 1 and 2 going A1=> A1, B1=> B1, etc...
-        We perform this cherypick by creating a cherrypick request between Stock plate and LB PCR xp plates
+      context 'We have a Stock plate with 9 samples, from it, we create 2 new plates (plates 1 and 2) and we
+ cherrypick the wells from the Stock plate into the plates 1 and 2 going A1=> A1, B1=> B1, etc...
+ We perform this cherypick by creating a cherrypick request between Stock plate and LB PCR xp plates
 
-        These cherrypick requests will create a transfer request between the wells, all the requests belonging
-        to the same submission id.
-        ' do
+ These cherrypick requests will create a transfer request between the wells, all the requests belonging
+ to the same submission id.' do
         let(:stock_plate_purpose) { create :stock_plate_purpose }
         let(:stock_plate) do
           create :plate, :with_wells, sample_count: 9, plate_purpose: stock_plate_purpose, well_factory: :tagged_well
@@ -78,9 +74,8 @@ RSpec.describe 'Bug research' do
           )
         end
 
-        context '
-          when I create a LB Lib Prepool plate
-            and I create 1 Repooling ISC request for each well in the Lib PCR-XP plate' do
+        context 'when I create a LB Lib Prepool plate
+ and I create 1 Repooling ISC request for each well in the Lib PCR-XP plate' do
           let(:prepool_purpose) { create :plate_purpose, name: 'LB Lib Prepool' }
           let(:prepool_plate) { create :plate, :with_wells, sample_count: 9, plate_purpose: prepool_purpose }
 

@@ -113,7 +113,7 @@ class PlatePurpose < Purpose
     cherrypick_direction == 'row'
   end
 
-  def attatched?(_plate)
+  def attached?(_plate)
     true
   end
 

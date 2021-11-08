@@ -265,10 +265,10 @@ class Receptacle < Asset
     tags = { tag: tag, tag2: tag2 }.compact
     return if tags.empty?
     raise StandardError, 'Cannot tag an empty asset' if aliquots.empty?
-    raise StandardError, 'Cannot tag multiple samples' if aliquots.size > 1
 
-    aliquots.first.update!(tags)
+    aliquots.each { |a| a.update!(tags) }
   end
+
   alias attach_tags attach_tag
 
   # Contained samples also works on eg. plate

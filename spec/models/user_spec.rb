@@ -108,7 +108,7 @@ RSpec.describe User, type: :model do
 
     it 'adds an authorized role to a user' do
       user.grant_role('owner', study)
-      expect(user).to be_an_owner_of, study
+      expect(user).to be_an_owner_of study
     end
 
     context 'when a role already exists' do
@@ -118,26 +118,43 @@ RSpec.describe User, type: :model do
         expect { user.grant_role('owner', study) }.not_to(change { study.roles.reload.count })
       end
     end
+
+    it 'updates the study updated_at timestamp' do
+      study.update(updated_at: 1.year.ago)
+      study.reload
+      expect { user.grant_role('administrator', study) }.to(change { study.reload.updated_at })
+    end
   end
 
   describe '#remove_role' do
     let(:study) { create :study_with_manager, updated_at: 2.years.ago }
 
     it 'updates the study updated_at timestamp' do
-      # Make sure things are setup correctly first
-      expect(study.reload.updated_at).to be < 1.hour.ago
+      # We make sure that defining a study with a manager triggers study update
+      expect(study.reload.updated_at).to be_within(1.hour).of Time.zone.now
+
       user = study.managers.first
+
+      study.update(updated_at: 1.hour.ago)
+
+      expect(study.reload.updated_at).not_to be_within(5.minutes).of Time.zone.now
       user.remove_role('manager', study)
-      expect(study.reload.updated_at).to be > 1.hour.ago
+      expect(study.reload.updated_at).to be_within(5.minutes).of Time.zone.now
     end
 
     it 'updates the study updated_at timestamp with multiple managers' do
       # Make sure things are setup correctly first
       study.roles.first.users << create(:user)
-      expect(study.reload.updated_at).to be < 1.hour.ago
+
+      # We make sure that defining a study with a manager triggers study update
+      expect(study.reload.updated_at).to be_within(1.hour).of Time.zone.now
+
       user = study.managers.first
+      study.update(updated_at: 1.hour.ago)
+
+      expect(study.reload.updated_at).not_to be_within(5.minutes).of Time.zone.now
       user.remove_role('manager', study)
-      expect(study.reload.updated_at).to be > 1.hour.ago
+      expect(study.reload.updated_at).to be_within(5.minutes).of Time.zone.now
     end
   end
 end

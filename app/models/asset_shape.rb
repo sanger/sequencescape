@@ -94,7 +94,7 @@ class AssetShape < ApplicationRecord
 
   def interlace(i, size)
     m, d = (i - 1).divmod(size / 2)
-    2 * d + 1 + m
+    (2 * d) + 1 + m
   end
 
   def location_from_index(index, size = 96)

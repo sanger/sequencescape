@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Controls API V1 IO for {::CustomMetadatumCollection}
-class ::Io::CustomMetadatumCollection < ::Core::Io::Base
+class Io::CustomMetadatumCollection < ::Core::Io::Base
   set_model_for_input(::CustomMetadatumCollection)
   set_json_root(:custom_metadatum_collection)
 

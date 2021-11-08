@@ -1,0 +1,8 @@
+# Limber tube purposes.
+---
+# Added to ensure purpose exists before creating Limber Multiplexing
+# request type later. Otherwise request type has target purpose nil
+# and Limber Submissions fail to create final tubes for pipelines.
+LB Lib Pool Norm:
+  type: IlluminaHtp::MxTubePurpose
+  target_type: MultiplexedLibraryTube

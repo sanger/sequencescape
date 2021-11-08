@@ -20,10 +20,6 @@ module Api
 
       # Filters
 
-      # Custom methods
-      # These shouldn't be used for business logic, and a more about
-      # I/O and isolating implementation details.
-
       # Class method overrides
 
       # Custom methods

@@ -21,6 +21,6 @@ module TagLayout::InColumnsThenRows
   end
 
   def self.tag2_index(row, column, scale, _height, _width)
-    column % scale + (row % scale) * scale
+    (column % scale) + ((row % scale) * scale)
   end
 end
