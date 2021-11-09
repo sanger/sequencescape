@@ -38,7 +38,7 @@ module RecordLoader
       acceptable_purposes = request_type.acceptable_plate_purposes.pluck(:name)
       purposes.each do |name|
         unless acceptable_purposes.include?(name)
-          request_type.acceptable_plate_purposes << PlatePurpose.find_by!(name: name)
+          request_type.acceptable_plate_purposes << Purpose.find_by!(name: name)
         end
       end
     end
