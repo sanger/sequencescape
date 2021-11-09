@@ -6,7 +6,3 @@ LCA Blood Array:
   type: PlatePurpose::Input
   stock_plate: true
   cherrypickable_target: false
-LCA Blood Bank:
-  type: PlatePurpose::Input
-  stock_plate: true
-  cherrypickable_target: false
