@@ -2,16 +2,14 @@
 # They are in a separate file to allow us to soft-release them before
 # the real release.
 ---
-limber_cardinal:
-  name: "Limber - Cardinal"
+Limber - Cardinal:
   submission_class_name: "LinearSubmission"
   related_records:
     request_type_keys: ["limber_cardinal"]
     project_name: "Project Cardinal"
     product_line_name: Cardinal
     product_catalogue_name: Cardinal
-limber_cardinal_banking:
-  name: "Limber - Cardinal cell banking"
+Limber - Cardinal cell banking:
   submission_class_name: "LinearSubmission"
   related_records:
     request_type_keys: ["limber_cardinal_banking"]
