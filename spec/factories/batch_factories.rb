@@ -56,16 +56,13 @@ FactoryBot.define do
     association(:pipeline, factory: :pac_bio_sequencing_pipeline)
 
     after(:build) do |batch, evaluator|
-      evaluator
-        .assets
-        .each_with_index
-        .map do |asset, index|
-          create :pac_bio_sequencing_request,
-                 asset: asset,
-                 target_asset: evaluator.target_plate.wells[index],
-                 request_type: batch.pipeline.request_types.first,
-                 batch: batch
-        end
+      evaluator.assets.each_with_index.map do |asset, index|
+        create :pac_bio_sequencing_request,
+               asset: asset,
+               target_asset: evaluator.target_plate.wells[index],
+               request_type: batch.pipeline.request_types.first,
+               batch: batch
+      end
     end
   end
 end

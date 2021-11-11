@@ -89,9 +89,9 @@ RSpec.describe LinearSubmission do
 
             it 'create requests but not comments' do
               expect { mpx_submission.process! }.to change(Request, :count).by(mx_asset_count + 1).and change(
-                                                                 Comment,
-                                                                 :count
-                                                               ).by(0)
+                                                                   Comment,
+                                                                   :count
+                                                                 ).by(0)
             end
 
             it 'be a multiplexed submission' do
@@ -111,9 +111,9 @@ RSpec.describe LinearSubmission do
 
             it 'create requests but not comments' do
               expect { mpx_submission.process! }.to change(Request, :count).by(mx_asset_count + 2).and change(
-                                                                 Comment,
-                                                                 :count
-                                                               ).by(0)
+                                                                   Comment,
+                                                                   :count
+                                                                 ).by(0)
             end
           end
         end
@@ -183,7 +183,7 @@ RSpec.describe LinearSubmission do
       describe '#process!' do
         it 'create requests but not comments' do
           expect { submission.process! }.to change(Request, :count).by(sx_asset_count * 2).and change(Comment, :count)
-                                                             .by(sx_asset_count * 2)
+                                                               .by(sx_asset_count * 2)
         end
 
         context 'when it has been run' do
