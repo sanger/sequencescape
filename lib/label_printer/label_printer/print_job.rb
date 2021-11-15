@@ -32,10 +32,10 @@ module LabelPrinter
 
     def body
       @body ||= {
-          "printer_name": printer_name,
-          "label_template_name": label_template_name,
-          "labels": [labels_attribute],
-          "label_name": "main_label"
+          printer_name: printer_name,
+          label_template_name: label_template_name,
+          labels: [labels_attribute],
+          label_name: 'main_label'
       }
     end
 

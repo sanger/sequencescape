@@ -6,7 +6,7 @@ module LabelPrinter
 
       def to_h
         # { labels: labels }
-        { labels: create_labels, label_name: "main_label" }
+        { labels: create_labels, label_name: 'main_label' }
       end
 
       def labels

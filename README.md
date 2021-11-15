@@ -199,6 +199,10 @@ Testing is done in one of three ways; using rspec, via rails tests or with cucum
    ```shell
    bundle exec rake test -f
    ```
+   For a single file:
+   ```shell
+   bundle exec ruby -Itest test/lib/label_printer/print_job_test.rb
+   ```
 
 1. To run cucumber tests (found in `features/` dir.) first ensure you have a `sequencescape_test_cuke` database configured by running:
 
