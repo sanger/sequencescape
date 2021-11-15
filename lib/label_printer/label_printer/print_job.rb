@@ -31,12 +31,13 @@ module LabelPrinter
     end
 
     def build_attributes
-      @build_attributes ||= {
+      @build_attributes ||=
+        {
           printer_name: printer_name,
           label_template_name: label_template_name,
           labels: [labels_attribute],
           label_name: 'main_label'
-      }
+        }
     end
 
     def labels_attribute
@@ -49,7 +50,6 @@ module LabelPrinter
       printer = find_printer
       printer.barcode_printer_type.label_template_name
     end
-
 
     def find_printer
       BarcodePrinter.find_by(name: printer_name) or
