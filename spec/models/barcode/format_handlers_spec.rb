@@ -292,6 +292,14 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode '00210783400000001 '
   end
 
+  describe Barcode::FormatHandlers::LemingtonSpaV2 do
+    it_has_a_valid_barcode 'RFLCP12340965', prefix: 'RFLCP', number: 123_409_65
+    it_has_an_invalid_barcode 'RFLCP500171'
+    it_has_an_invalid_barcode '12345678912'
+    it_has_an_invalid_barcode 'AB123456700000001'
+    it_has_an_invalid_barcode '00210783400000001 '
+  end
+
   describe Barcode::FormatHandlers::Newcastle do
     it_has_a_valid_barcode 'ICHNE12345c', prefix: 'ICHNE', number: 12_345, suffix: 'c'
     it_has_a_valid_barcode 'ICHNE12345678d', prefix: 'ICHNE', number: 12_345_678, suffix: 'd'
