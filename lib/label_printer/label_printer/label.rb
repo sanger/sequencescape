@@ -5,7 +5,8 @@ module LabelPrinter
       attr_accessor :count
 
       def to_h
-        { labels: labels }
+        # { labels: labels }
+        { labels: create_labels, label_name: "main_label" }
       end
 
       def labels

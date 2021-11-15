@@ -30,7 +30,7 @@ module LabelPrinter
     end
 
     def self.print(attributes)
-      RestClient.post print_job_url, { 'data' => { 'attributes' => attributes } }.to_json, headers
+      RestClient.post print_job_url, { 'print_job' => attributes }.to_json, headers
     rescue RestClient::UnprocessableEntity => e
       raise PmbException.new(e), pretty_errors(e.response)
     rescue RestClient::InternalServerError => e

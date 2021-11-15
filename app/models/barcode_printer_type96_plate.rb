@@ -6,6 +6,7 @@ class BarcodePrinterType96Plate < BarcodePrinterType
     super ||
       BarcodePrinterType96Plate.create!(
         name: '96 Well Plate',
+        # Update this?
         label_template_name: 'sqsc_96plate_label_template_code39'
       )
   end
