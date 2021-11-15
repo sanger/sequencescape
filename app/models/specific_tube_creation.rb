@@ -64,13 +64,44 @@ class SpecificTubeCreation < TubeCreation
   end
   private :connect_parent_and_children
 
+  def determine_foreign_barcode_format(foreign_barcode)
+    Barcode.matching_barcode_format(foreign_barcode)
+  end
+
+  def check_foreign_barcode_unique(foreign_barcode_format, foreign_barcode)
+    return unless Barcode.exists_for_format?(foreign_barcode_format, foreign_barcode)
+
+    raise "Foreign Barcode: #{foreign_barcode} is already in use!"
+  end
+
+  def add_foreign_barcode_to_tube(tube, foreign_barcode)
+    # determine the format of the foreign barcode
+    foreign_barcode_format = determine_foreign_barcode_format(foreign_barcode)
+
+    raise "Cannot determine format for foreign barcode #{foreign_barcode}" if foreign_barcode_format.blank?
+
+    # check for uniqueness
+    check_foreign_barcode_unique(foreign_barcode_format, foreign_barcode)
+
+    # add the foreign barcode to the tube (will be the primary barcode)
+    tube.barcodes << Barcode.new(format: foreign_barcode_format, barcode: foreign_barcode)
+  end
+
   def create_children!
     self.children =
       child_purposes.each_with_index.map do |child_purpose, index|
         # For each tube purpose listed in the child_purposes array
         # create a tube via the tube purpose factory, passing in our
         # custom attributes.
-        child_purpose.create!(tube_attributes[index])
+        tube_detail = tube_attributes[index].symbolize_keys
+
+        # extract foreign barcode for use after the create if one has been set
+        foreign_barcode = tube_detail.delete(:foreign_barcode)
+
+        child_purpose.create!(tube_detail) do |tube|
+          # process foreign barcode if passed in
+          add_foreign_barcode_to_tube(tube, foreign_barcode) if foreign_barcode.present?
+        end
       end
   end
 end
