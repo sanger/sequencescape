@@ -31,7 +31,7 @@ module LabelPrinter
     end
 
     def build_attributes
-      @body ||= {
+      @build_attributes ||= {
           printer_name: printer_name,
           label_template_name: label_template_name,
           labels: [labels_attribute],
@@ -62,7 +62,6 @@ module LabelPrinter
 
     def number_of_labels
       labels[:labels].count
-      # labels[:labels][:body] ? labels[:labels][:body].count : 0
     end
   end
 end
