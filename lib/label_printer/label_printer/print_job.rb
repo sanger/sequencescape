@@ -15,7 +15,7 @@ module LabelPrinter
 
     def execute # rubocop:todo Metrics/MethodLength
       begin
-        LabelPrinter::PmbClient.print(body)
+        LabelPrinter::PmbClient.print(build_attributes)
       rescue LabelPrinter::PmbException => e
         errors.add(:printmybarcode, e)
         return false
@@ -30,7 +30,7 @@ module LabelPrinter
       true
     end
 
-    def body
+    def build_attributes
       @body ||= {
           printer_name: printer_name,
           label_template_name: label_template_name,

@@ -5,10 +5,12 @@ module LabelPrinter
       attr_accessor :count
 
       def to_h
-        # { labels: labels }
+        return [] unless assets
+
         { labels: create_labels, label_name: 'main_label' }
       end
 
+      # Is this still used?
       def labels
         return [] unless assets
 

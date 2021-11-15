@@ -5,7 +5,7 @@ require 'rails_helper'
 shared_examples 'a correct single label printer' do
   it 'produces the correct label' do
     expected_label = {
-      label_name: "main_label",
+      label_name: 'main_label',
       labels: [
         {
           main_label: {
@@ -26,7 +26,7 @@ end
 shared_examples 'a correct double label printer' do
   it 'produces the correct label' do
     expected_label = {
-      label_name: "main_label",
+      label_name: 'main_label',
       labels: [
         {
           main_label: {
