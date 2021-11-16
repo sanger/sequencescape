@@ -7,7 +7,7 @@ shared_examples_for 'asset labels creator' do
 
   let(:date) { Time.zone.today.strftime('%e-%^b-%Y').to_s }
 
-  let(:labels) { { labels: { body: body } } }
+  let(:labels) { { labels: body, label_name: 'main_label' } }
 
   it 'prints the correct labels' do
     expect(subject.to_h).to eq(labels)
