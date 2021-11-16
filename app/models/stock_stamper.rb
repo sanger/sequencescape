@@ -45,7 +45,6 @@ class StockStamper # rubocop:todo Style/Documentation
     @file_content = Robot::Generator::Tecan.new(picking_data: picking_data, layout: layout, total_volume: 0).as_text
   end
 
-  # rubocop:todo Metrics/MethodLength
   def generate_tecan_data # rubocop:todo Metrics/AbcSize
     source_barcode = "#{plate.machine_barcode}_s"
     destination_barcode = "#{plate.machine_barcode}_d"
@@ -66,23 +65,18 @@ class StockStamper # rubocop:todo Style/Documentation
         }
       }
     }
-    plate
-      .wells
-      .without_blank_samples
-      .each do |well|
-        next unless well.get_current_volume
+    plate.wells.without_blank_samples.each do |well|
+      next unless well.get_current_volume
 
-        data_object['destination'][destination_barcode]['mapping'] << {
-          'src_well' => [source_barcode, well.map.description],
-          'dst_well' => well.map.description,
-          'volume' => volume(well),
-          'buffer_volume' => well.get_buffer_volume
-        }
-      end
+      data_object['destination'][destination_barcode]['mapping'] << {
+        'src_well' => [source_barcode, well.map.description],
+        'dst_well' => well.map.description,
+        'volume' => volume(well),
+        'buffer_volume' => well.get_buffer_volume
+      }
+    end
     data_object
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def create_asset_audit_event
     AssetAudit.create(
