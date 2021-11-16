@@ -59,9 +59,11 @@ module Api
       end
 
       def options
-        _model.example_request.request_metadata.attributes.reject do |key, value|
-          IGNORED_METADATA_FIELDS.include?(key) || value.blank?
-        end
+        _model
+          .example_request
+          .request_metadata
+          .attributes
+          .reject { |key, value| IGNORED_METADATA_FIELDS.include?(key) || value.blank? }
       end
     end
   end

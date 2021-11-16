@@ -128,12 +128,15 @@ module SampleManifest::PlateBehaviour
       plates.each do |plate|
         sanger_sample_ids = generate_sanger_ids(plate.size)
 
-        plate.maps.in_column_major_order.each do |well_map|
-          sanger_sample_id = sanger_sample_ids.shift
-          generated_sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study_abbreviation, sanger_sample_id)
+        plate
+          .maps
+          .in_column_major_order
+          .each do |well_map|
+            sanger_sample_id = sanger_sample_ids.shift
+            generated_sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study_abbreviation, sanger_sample_id)
 
-          well_data << [well_map, generated_sanger_sample_id]
-        end
+            well_data << [well_map, generated_sanger_sample_id]
+          end
       end
 
       generate_wells(well_data, plates)

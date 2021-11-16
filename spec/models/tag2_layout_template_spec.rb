@@ -12,18 +12,24 @@ RSpec.describe Tag2LayoutTemplate, type: :model do
 
   it 'applies its tag to every well of the plate' do
     expect(subject.plate.wells).to be_present
-    subject.plate.wells.each do |well|
-      expect(well.aliquots).to be_present
-      well.aliquots.each { |aliquot| expect(aliquot.reload.tag2).to eq(tag) }
-    end
+    subject
+      .plate
+      .wells
+      .each do |well|
+        expect(well.aliquots).to be_present
+        well.aliquots.each { |aliquot| expect(aliquot.reload.tag2).to eq(tag) }
+      end
   end
 
   it 'sets a library on every well of the plate' do
     expect(subject.plate.wells).to be_present
-    subject.plate.wells.each do |well|
-      expect(well.aliquots).to be_present
-      well.aliquots.each { |aliquot| expect(aliquot.reload.library_id).to eq(well.id) }
-    end
+    subject
+      .plate
+      .wells
+      .each do |well|
+        expect(well.aliquots).to be_present
+        well.aliquots.each { |aliquot| expect(aliquot.reload.library_id).to eq(well.id) }
+      end
   end
 
   it 'records itself against the submissions' do

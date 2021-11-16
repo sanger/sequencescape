@@ -123,9 +123,10 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
     end
 
     it 'adds standard headings to worksheet' do
-      worksheet.columns.headings.each_with_index do |heading, i|
-        expect(spreadsheet.sheet(0).cell(9, i + 1)).to eq(heading)
-      end
+      worksheet
+        .columns
+        .headings
+        .each_with_index { |heading, i| expect(spreadsheet.sheet(0).cell(9, i + 1)).to eq(heading) }
     end
 
     it 'unlock cells for all columns which are unlocked' do
@@ -319,9 +320,10 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
       end
 
       it 'adds standard headings to worksheet' do
-        worksheet.columns.headings.each_with_index do |heading, i|
-          expect(spreadsheet.sheet(0).cell(9, i + 1)).to eq(heading)
-        end
+        worksheet
+          .columns
+          .headings
+          .each_with_index { |heading, i| expect(spreadsheet.sheet(0).cell(9, i + 1)).to eq(heading) }
       end
 
       it 'adds the data' do

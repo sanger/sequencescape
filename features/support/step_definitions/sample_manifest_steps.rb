@@ -30,9 +30,10 @@ Then /^I should see the manifest table:$/ do |expected_results_table|
 end
 
 def sequence_sanger_sample_ids_for(plate)
-  plate.wells.in_column_major_order.each_with_index do |well, index|
-    well.primary_aliquot&.sample&.update!(sanger_sample_id: yield(index))
-  end
+  plate
+    .wells
+    .in_column_major_order
+    .each_with_index { |well, index| well.primary_aliquot&.sample&.update!(sanger_sample_id: yield(index)) }
 end
 
 Given /^I reset all of the sanger sample ids to a known number sequence$/ do
