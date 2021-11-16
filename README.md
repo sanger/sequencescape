@@ -199,7 +199,9 @@ Testing is done in one of three ways; using rspec, via rails tests or with cucum
    ```shell
    bundle exec rake test -f
    ```
+
    For a single file:
+
    ```shell
    bundle exec ruby -Itest test/lib/label_printer/print_job_test.rb
    ```
