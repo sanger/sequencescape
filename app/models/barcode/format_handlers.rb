@@ -471,7 +471,8 @@ module Barcode::FormatHandlers
     self.format = /\A(?<prefix>CHERY)(?<number>\d+)\z/
   end
 
-# Support for Lemington Spa centre
+  # Support for Lemington Spa centre
+
   # Expected formats:
   # RFLCPnnnnnnnn
   # where n is a digit
