@@ -218,11 +218,11 @@ Testing is done in one of three ways; using rspec, via rails tests or with cucum
    bundle exec cucumber
    ```
 
-  For a single file:
+For a single file:
 
-   ```shell
-   bundle exec cucumber features/create_plates.feature
-   ```
+```shell
+bundle exec cucumber features/create_plates.feature
+```
 
 ## Linting and formatting
 
