@@ -34,10 +34,13 @@ class WorkCompletionsTest < ActionDispatch::PerformanceTest
              state: 'started'
     end
     submission_request_types[1..].each do |downstream_type|
-      input_plate.wells.count.times do
-        create :multiplex_request, request_type: downstream_type, submission: @target_submission
-        create :multiplex_request, request_type: downstream_type, submission: decoy_submission
-      end
+      input_plate
+        .wells
+        .count
+        .times do
+          create :multiplex_request, request_type: downstream_type, submission: @target_submission
+          create :multiplex_request, request_type: downstream_type, submission: decoy_submission
+        end
     end
   end
 

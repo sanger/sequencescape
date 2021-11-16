@@ -37,12 +37,15 @@ class CherrypickTaskTest < ActiveSupport::TestCase
         end
 
       @mini_plate_purpose =
-        PlatePurpose.stock_plate_purpose.clone.tap do |pp|
-          pp.size = 12
-          pp.name = 'Clonepp'
-          pp.asset_shape = @asset_shape
-          pp.save!
-        end
+        PlatePurpose
+          .stock_plate_purpose
+          .clone
+          .tap do |pp|
+            pp.size = 12
+            pp.name = 'Clonepp'
+            pp.asset_shape = @asset_shape
+            pp.save!
+          end
 
       @task = build :cherrypick_task
 

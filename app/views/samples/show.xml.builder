@@ -16,25 +16,31 @@ xml.sample(api_data) do
   # Descriptors
 
   xml.properties do
-    @sample.sample_metadata.attribute_value_pairs.each do |attribute, value|
-      # puts attribute.name.to_s
-      xml.property do
-        # NOTE: The display text is targeted at HTML, so contains escaped entities, which we must unescape for XML.
-        xml.name(REXML::Text.unnormalize(attribute.to_field_info.display_name))
-        xml.value(value)
-      end
-    end
-    @sample.sample_metadata.association_value_pairs.each do |attribute, value|
-      xml.property do
-        # NOTE: The display text is targeted at HTML, so contains escaped entities, which we must unescape for XML.
-        xml.name(REXML::Text.unnormalize(attribute.to_field_info.display_name))
-        if (attribute.to_field_info.display_name == 'Reference Genome') && (value.blank?)
-          xml.value(nil)
-        else
+    @sample
+      .sample_metadata
+      .attribute_value_pairs
+      .each do |attribute, value|
+        # puts attribute.name.to_s
+        xml.property do
+          # NOTE: The display text is targeted at HTML, so contains escaped entities, which we must unescape for XML.
+          xml.name(REXML::Text.unnormalize(attribute.to_field_info.display_name))
           xml.value(value)
         end
       end
-    end
+    @sample
+      .sample_metadata
+      .association_value_pairs
+      .each do |attribute, value|
+        xml.property do
+          # NOTE: The display text is targeted at HTML, so contains escaped entities, which we must unescape for XML.
+          xml.name(REXML::Text.unnormalize(attribute.to_field_info.display_name))
+          if (attribute.to_field_info.display_name == 'Reference Genome') && (value.blank?)
+            xml.value(nil)
+          else
+            xml.value(value)
+          end
+        end
+      end
   end
 
   if study_id

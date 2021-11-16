@@ -12,12 +12,15 @@ xml.request(api_data) do
   xml.state @request.state
 
   xml.properties do
-    @request.request_metadata.attribute_value_pairs.each do |attribute, value|
-      xml.property do
-        xml.name(attribute.to_field_info.display_name)
-        xml.value(value)
+    @request
+      .request_metadata
+      .attribute_value_pairs
+      .each do |attribute, value|
+        xml.property do
+          xml.name(attribute.to_field_info.display_name)
+          xml.value(value)
+        end
       end
-    end
   end
 
   # Events
