@@ -23,14 +23,12 @@ class ExampleLabelTest < ActiveSupport::TestCase
     @plate4 = create :plate, name: 'Plate 4', barcode: '4444'
     @label = { left: 'Plate 1', right: 'DN', barcode: '1111' }
 
-    @labels = {
-      body: [
-        { main_label: { left: 'Plate 1', right: 'DN', barcode: '1111' } },
-        { main_label: { left: 'Plate 2', right: 'DN', barcode: '2222' } },
-        { main_label: { left: 'Plate 3', right: 'DN', barcode: '3333' } },
-        { main_label: { left: 'Plate 4', right: 'DN', barcode: '4444' } }
-      ]
-    }
+    @labels = [
+      { main_label: { left: 'Plate 1', right: 'DN', barcode: '1111' } },
+      { main_label: { left: 'Plate 2', right: 'DN', barcode: '2222' } },
+      { main_label: { left: 'Plate 3', right: 'DN', barcode: '3333' } },
+      { main_label: { left: 'Plate 4', right: 'DN', barcode: '4444' } }
+    ]
   end
 
   test 'should return the right label' do
@@ -38,16 +36,15 @@ class ExampleLabelTest < ActiveSupport::TestCase
   end
 
   test 'should return the right labels' do
-    assert_equal [], example_label.labels
+    assert_equal [], example_label.to_h
     example_label.assets = [plate1, plate2, plate3, plate4]
-    assert_equal labels, example_label.labels
-    assert_equal ({ labels: labels }), example_label.to_h
+    assert_equal ({ labels: labels, label_name: 'main_label' }), example_label.to_h
   end
 
   test 'should return the right labels if count changes' do
     example_label.assets = [plate1]
     example_label.count = 3
-    labels = { body: [{ main_label: label }, { main_label: label }, { main_label: label }] }
-    assert_equal labels, example_label.labels
+    labels = { labels: [{ main_label: label }, { main_label: label }, { main_label: label }], label_name: 'main_label' }
+    assert_equal labels, example_label.to_h
   end
 end

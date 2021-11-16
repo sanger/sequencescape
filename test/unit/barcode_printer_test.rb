@@ -22,7 +22,7 @@ class BarcodePrinterTest < ActiveSupport::TestCase
     RestClient
       .expects(:get)
       .with(
-        'http://localhost:9292/v1/printers?filter[name]=test_printer',
+        "#{configatron.pmb_api}/printers?filter[name]=test_printer",
         content_type: 'application/vnd.api+json',
         accept: 'application/vnd.api+json'
       )
@@ -30,7 +30,7 @@ class BarcodePrinterTest < ActiveSupport::TestCase
     RestClient
       .expects(:post)
       .with(
-        'http://localhost:9292/v1/printers',
+        "#{configatron.pmb_api}/printers",
         { 'data' => { 'attributes' => { 'name' => 'test_printer' } } }.to_json,
         content_type: 'application/vnd.api+json',
         accept: 'application/vnd.api+json'

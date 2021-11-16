@@ -10,13 +10,6 @@ module LabelPrinter
         { labels: create_labels, label_name: 'main_label' }
       end
 
-      # Is this still used?
-      def labels
-        return [] unless assets
-
-        { body: create_labels }
-      end
-
       def create_labels
         [].tap do |l|
           assets.each do |asset|
