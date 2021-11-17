@@ -87,13 +87,10 @@ def work_pipeline_for(submissions, name, template = nil) # rubocop:todo Metrics/
 
   source_plate = source_plates.first
 
-  source_plate
-    .wells
-    .with_aliquots
-    .each do |w|
-      FactoryBot.create(:tag).tag!(w) if w.primary_aliquot.tag.blank? # Ensure wells are tagged
-      w.requests_as_source.first.start! # Ensure request is considered started
-    end
+  source_plate.wells.with_aliquots.each do |w|
+    FactoryBot.create(:tag).tag!(w) if w.primary_aliquot.tag.blank? # Ensure wells are tagged
+    w.requests_as_source.first.start! # Ensure request is considered started
+  end
 
   final_plate_type.create!.tap do |final_plate|
     AssetLink.create!(ancestor: source_plate, descendant: final_plate)

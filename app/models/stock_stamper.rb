@@ -65,19 +65,16 @@ class StockStamper # rubocop:todo Style/Documentation
         }
       }
     }
-    plate
-      .wells
-      .without_blank_samples
-      .each do |well|
-        next unless well.get_current_volume
+    plate.wells.without_blank_samples.each do |well|
+      next unless well.get_current_volume
 
-        data_object['destination'][destination_barcode]['mapping'] << {
-          'src_well' => [source_barcode, well.map.description],
-          'dst_well' => well.map.description,
-          'volume' => volume(well),
-          'buffer_volume' => well.get_buffer_volume
-        }
-      end
+      data_object['destination'][destination_barcode]['mapping'] << {
+        'src_well' => [source_barcode, well.map.description],
+        'dst_well' => well.map.description,
+        'volume' => volume(well),
+        'buffer_volume' => well.get_buffer_volume
+      }
+    end
     data_object
   end
 

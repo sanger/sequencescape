@@ -48,13 +48,10 @@ describe 'Retrospective failure' do
       create :transfer_request, asset: target_well, target_asset: child_well_1
 
       # Apply tags to make sure that gets handled correctly
-      child_well_1
-        .aliquots
-        .first
-        .tap do |aliquot|
-          aliquot.tag = tag
-          aliquot.save!
-        end
+      child_well_1.aliquots.first.tap do |aliquot|
+        aliquot.tag = tag
+        aliquot.save!
+      end
       create :transfer_request, asset: child_well_1, target_asset: child_well_2
 
       # Just double check that the setup has worked as intended

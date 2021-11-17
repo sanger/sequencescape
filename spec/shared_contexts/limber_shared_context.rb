@@ -56,16 +56,10 @@ shared_context 'a limber target plate with submissions' do |library_state = 'sta
   before do
     build_library_requests
     submission_request_types[1..].each do |downstream_type|
-      input_plate
-        .wells
-        .count
-        .times do
-          create_list :multiplex_request,
-                      requests_per_well,
-                      request_type: downstream_type,
-                      submission: target_submission
-          create :multiplex_request, request_type: downstream_type, submission: decoy_submission
-        end
+      input_plate.wells.count.times do
+        create_list :multiplex_request, requests_per_well, request_type: downstream_type, submission: target_submission
+        create :multiplex_request, request_type: downstream_type, submission: decoy_submission
+      end
     end
   end
 end
