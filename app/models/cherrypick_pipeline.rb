@@ -27,10 +27,9 @@ class CherrypickPipeline < CherrypickingPipeline
       .requests
       .select(&:passed?)
       .each do |request|
-        request
-          .asset
-          .stock_wells
-          .each { |stock| EventSender.send_pick_event(stock, target_purpose, "Pickup well #{request.asset.id}") }
+        request.asset.stock_wells.each do |stock|
+          EventSender.send_pick_event(stock, target_purpose, "Pickup well #{request.asset.id}")
+        end
       end
     batch.release_pending_requests
     batch.output_plates.each(&:cherrypick_completed)

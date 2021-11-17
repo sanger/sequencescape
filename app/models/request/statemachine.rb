@@ -22,15 +22,12 @@ module Request::Statemachine # rubocop:todo Style/Documentation
       # Destroy all evidence of the statemachine we've inherited!  Ugly, but it works!
       old_machine = AASM::StateMachineStore.fetch(self) && AASM::StateMachineStore.fetch(self).machine(:default)
       if old_machine
-        old_machine
-          .events
-          .keys
-          .each do |event|
-            undef_method(event)
-            undef_method(:"#{event}!")
-            undef_method(:"#{event}_without_validation!")
-            undef_method(:"may_#{event}?")
-          end
+        old_machine.events.keys.each do |event|
+          undef_method(event)
+          undef_method(:"#{event}!")
+          undef_method(:"#{event}_without_validation!")
+          undef_method(:"may_#{event}?")
+        end
         old_machine.states.each { |state| undef_method(:"#{state}?") }
       end
 

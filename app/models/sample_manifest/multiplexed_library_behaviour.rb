@@ -18,12 +18,9 @@ module SampleManifest::MultiplexedLibraryBehaviour
     end
 
     def generate_mx_library
-      Tube::Purpose
-        .standard_mx_tube
-        .create!
-        .tap do |mx_tube|
-          RequestFactory.create_external_multiplexed_library_creation_requests(@library_tubes, mx_tube, study)
-        end
+      Tube::Purpose.standard_mx_tube.create!.tap do |mx_tube|
+        RequestFactory.create_external_multiplexed_library_creation_requests(@library_tubes, mx_tube, study)
+      end
     end
 
     def io_samples
