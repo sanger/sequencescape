@@ -14,14 +14,10 @@ module LabelPrinter
       def create_labels
         [].tap do |l|
           assets.each do |asset|
-            label = label(asset)
+            label = create_label(asset)
             count.times { l.push(label) }
           end
         end
-      end
-
-      def label(asset)
-        create_label(asset)
       end
 
       def count

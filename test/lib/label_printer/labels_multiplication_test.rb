@@ -32,7 +32,7 @@ class ExampleLabelTest < ActiveSupport::TestCase
   end
 
   test 'should return the right label' do
-    assert_equal label, example_label.label(plate1)
+    assert_equal label, example_label.create_label(plate1)
   end
 
   test 'should return the right labels' do

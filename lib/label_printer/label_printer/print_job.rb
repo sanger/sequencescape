@@ -39,8 +39,6 @@ module LabelPrinter
         }
     end
 
-    # TODO
-    # change name of to_h to to_a
     # returns: a list of labels
     def labels_attribute
       printer = find_printer
