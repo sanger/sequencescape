@@ -471,6 +471,15 @@ module Barcode::FormatHandlers
     self.format = /\A(?<prefix>CHERY)(?<number>\d+)\z/
   end
 
+  # Support for Leamington Spa centre
+
+  # Expected formats:
+  # RFLCPnnnnnnnn
+  # where n is a digit
+  class LeamingtonSpaV2 < BaseRegExBarcode
+    self.format = /\A(?<prefix>RFLCP)(?<number>\d{8})\z/
+  end
+
   # Support for Newcastle centre
   # Expected formats:
   # ICHNEnnnnnc
