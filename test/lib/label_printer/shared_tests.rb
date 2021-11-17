@@ -14,7 +14,7 @@ module LabelPrinterTests
 
         test 'should return the correct label' do
           assert_equal label, tube_label.create_label(tube1)
-          assert_equal ({ main_label: label }), tube_label.label(tube1)
+          assert_equal label, tube_label.label(tube1)
         end
       end
     end
@@ -31,7 +31,7 @@ module LabelPrinterTests
 
         test 'should return the correct label' do
           assert_equal label, plate_label.create_label(plate1)
-          assert_equal ({ main_label: label }), plate_label.label(plate1)
+          assert_equal label, plate_label.label(plate1)
         end
       end
     end
