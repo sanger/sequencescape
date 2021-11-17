@@ -150,12 +150,9 @@ FactoryBot.define do
 
       after(:create) do |plate, evaluator|
         plate.wells =
-          evaluator
-            .occupied_map_locations
-            .map
-            .with_index do |map, i|
-              create(:well_for_location_report, map: map, study: evaluator.studies[i], project: nil)
-            end
+          evaluator.occupied_map_locations.map.with_index do |map, i|
+            create(:well_for_location_report, map: map, study: evaluator.studies[i], project: nil)
+          end
       end
     end
 
