@@ -13,7 +13,7 @@ module LabelPrinter
         [label(asset), extra_label(asset)]
       end
 
-      # TODO remove
+      # TODO: remove
       def extra_label(asset)
         create_extra_label(asset)
       end
