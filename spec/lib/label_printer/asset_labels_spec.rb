@@ -10,7 +10,7 @@ shared_examples_for 'asset labels creator' do
   let(:labels) { body }
 
   it 'prints the correct labels' do
-    expect(subject.to_h).to eq(labels)
+    expect(subject.labels).to eq(labels)
   end
 
   it 'returns the correct assets' do

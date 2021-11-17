@@ -5,7 +5,7 @@ module LabelPrinter
       attr_accessor :count
 
       # TODO: rename
-      def to_h
+      def labels
         return [] unless assets
 
         create_labels

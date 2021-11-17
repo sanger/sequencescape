@@ -45,7 +45,7 @@ module LabelPrinter
     def labels_attribute
       printer = find_printer
       printer_type_class = { printer_type_class: printer.barcode_printer_type.class }
-      @labels = label_class.new(options.merge(printer_type_class)).to_h
+      @labels = label_class.new(options.merge(printer_type_class)).labels
     end
 
     def label_template_name

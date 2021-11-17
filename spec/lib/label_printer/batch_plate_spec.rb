@@ -4,7 +4,7 @@ require 'rails_helper'
 
 shared_examples 'a correct single label printer' do
   it 'produces the correct label' do
-    expected_label = [
+    expected_labels = [
       {
         barcode: plate1.machine_barcode,
         bottom_left: plate1.human_barcode,
@@ -15,13 +15,13 @@ shared_examples 'a correct single label printer' do
         label_name: 'main_label'
       }
     ]
-    expect(subject.to_h).to eq(expected_label)
+    expect(subject.labels).to eq(expected_labels)
   end
 end
 
 shared_examples 'a correct double label printer' do
   it 'produces the correct label' do
-    expected_label = [
+    expected_labels = [
       {
         left_text: plate1.human_barcode.to_s,
         right_text: plate1.barcode_number.to_s,
@@ -37,7 +37,7 @@ shared_examples 'a correct double label printer' do
         label_name: 'extra_label'
       }
     ]
-    expect(subject.to_h).to eq(expected_label)
+    expect(subject.labels).to eq(expected_labels)
   end
 end
 
