@@ -65,8 +65,7 @@ class SampleManifestPlateTest < ActiveSupport::TestCase
     end
 
     should 'should return the correct label' do
-      assert_equal label, plate_label.create_label(plate1)
-      assert_equal label, plate_label.label(plate1)
+      assert_equal label, plate_label.build_label(plate1)
     end
   end
 

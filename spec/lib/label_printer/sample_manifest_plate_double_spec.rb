@@ -27,7 +27,7 @@ describe LabelPrinter::Label::SampleManifestPlateDouble, sample_manifest: true d
           label_name: 'extra_label'
         }
       ]
-      expect(subject.to_h).to eq(expected_labels)
+      expect(subject.labels).to eq(expected_labels)
     end
   end
 

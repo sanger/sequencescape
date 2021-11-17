@@ -24,7 +24,7 @@ module LabelPrinter
         }
       end
 
-      def create_extra_label(plate)
+      def build_extra_label(plate)
         {
           left_text: date_today,
           right_text:

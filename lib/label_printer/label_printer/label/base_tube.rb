@@ -4,7 +4,7 @@ module LabelPrinter
     class BaseTube # rubocop:todo Style/Documentation
       include Label::MultipleLabels
 
-      def create_label(tube)
+      def build_label(tube)
         {
           top_line: top_line(tube),
           middle_line: middle_line(tube),

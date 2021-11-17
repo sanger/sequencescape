@@ -7,7 +7,7 @@ class ExampleLabel
 
   attr_accessor :assets
 
-  def create_label(asset)
+  def build_label(asset)
     { left: asset.name, right: asset.prefix, barcode: asset.barcode_number, label_name: 'main_label' }
   end
 end
@@ -32,19 +32,19 @@ class ExampleLabelTest < ActiveSupport::TestCase
   end
 
   test 'should return the right label' do
-    assert_equal label, example_label.label(plate1)
+    assert_equal label, example_label.build_label(plate1)
   end
 
   test 'should return the right labels' do
-    assert_equal [], example_label.to_h
+    assert_equal [], example_label.labels
     example_label.assets = [plate1, plate2, plate3, plate4]
-    assert_equal labels, example_label.to_h
+    assert_equal labels, example_label.labels
   end
 
   test 'should return the right labels if count changes' do
     example_label.assets = [plate1]
     example_label.count = 3
     labels = [label, label, label]
-    assert_equal labels, example_label.to_h
+    assert_equal labels, example_label.labels
   end
 end

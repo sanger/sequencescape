@@ -5,7 +5,7 @@ module LabelPrinter
       attr_accessor :count
 
       # TODO: rename
-      def to_h
+      def labels
         return [] unless assets
 
         create_labels
@@ -14,14 +14,10 @@ module LabelPrinter
       def create_labels
         [].tap do |l|
           assets.each do |asset|
-            label = label(asset)
+            label = build_label(asset)
             count.times { l.push(label) }
           end
         end
-      end
-
-      def label(asset)
-        create_label(asset)
       end
 
       def count
