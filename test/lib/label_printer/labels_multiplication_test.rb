@@ -21,7 +21,7 @@ class ExampleLabelTest < ActiveSupport::TestCase
     @plate2 = create :plate, name: 'Plate 2', barcode: '2222'
     @plate3 = create :plate, name: 'Plate 3', barcode: '3333'
     @plate4 = create :plate, name: 'Plate 4', barcode: '4444'
-    @label = { left: 'Plate 1', right: 'DN', barcode: '1111' }
+    @label = { left: 'Plate 1', right: 'DN', barcode: '1111', label_name: 'main_label' }
 
     @labels = [
       { left: 'Plate 1', right: 'DN', barcode: '1111', label_name: 'main_label' },

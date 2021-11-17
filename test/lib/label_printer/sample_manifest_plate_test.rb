@@ -37,7 +37,8 @@ class SampleManifestPlateTest < ActiveSupport::TestCase
         top_right: purpose.name,
         bottom_right: "#{study_abbreviation} #{barcode1}",
         top_far_right: nil,
-        barcode: (plate1.machine_barcode).to_s
+        barcode: (plate1.machine_barcode).to_s,
+        label_name: 'main_label'
       }
     end
 
@@ -65,7 +66,7 @@ class SampleManifestPlateTest < ActiveSupport::TestCase
 
     should 'should return the correct label' do
       assert_equal label, plate_label.create_label(plate1)
-      assert_equal ({ main_label: label }), plate_label.label(plate1)
+      assert_equal label, plate_label.label(plate1)
     end
   end
 
