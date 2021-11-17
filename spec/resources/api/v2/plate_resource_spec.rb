@@ -6,7 +6,7 @@ require './app/resources/api/v2/plate_resource'
 RSpec.describe Api::V2::PlateResource, type: :resource do
   subject(:resource) { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { create :plate, barcode: 11, well_count: 3 }
+  let(:resource_model) { build_stubbed :plate, barcode: 11, well_count: 3 }
 
   shared_examples 'a plate resource' do
     # Test attributes

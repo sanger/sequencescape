@@ -4,7 +4,7 @@ require 'rails_helper'
 require './app/resources/api/v2/<%= underscore %>_resource'
 
 RSpec.describe Api::V2::<%= camelcase %>Resource, type: :resource do
-  let(:resource_model) { create :<%= underscore %> }
+  let(:resource_model) { build_stubbed :<%= underscore %> }
   subject { described_class.new(resource_model, {}) }
 
   # Test attributes

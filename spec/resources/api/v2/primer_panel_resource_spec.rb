@@ -6,7 +6,7 @@ require './app/resources/api/v2/primer_panel_resource'
 RSpec.describe Api::V2::PrimerPanelResource, type: :resource do
   subject { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { create :primer_panel }
+  let(:resource_model) { build_stubbed :primer_panel }
 
   # Test attributes
   it 'works', :aggregate_failures do
