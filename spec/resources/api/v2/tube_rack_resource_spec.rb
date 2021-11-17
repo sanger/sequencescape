@@ -6,25 +6,38 @@ require './app/resources/api/v2/tube_rack_resource'
 RSpec.describe Api::V2::TubeRackResource, type: :resource do
   subject(:tube_rack) { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { create :tube_rack }
+  let(:resource_model) { build_stubbed :tube_rack }
 
-  it { is_expected.to have_attribute :uuid }
-  it { is_expected.to have_attribute :labware_barcode }
-  it { is_expected.to have_attribute :size }
+  # Test attributes
+  it 'has attributes', :aggregate_failures do
+    expect(tube_rack).to have_attribute :uuid
+    expect(tube_rack).to have_attribute :size
+    expect(tube_rack).to have_attribute :name
+    expect(tube_rack).to have_attribute :number_of_rows
+    expect(tube_rack).to have_attribute :number_of_columns
+    expect(tube_rack).to have_attribute :labware_barcode
+    expect(tube_rack).to have_attribute :created_at
+    expect(tube_rack).to have_attribute :updated_at
+    expect(tube_rack).not_to have_updatable_field(:id)
+    expect(tube_rack).not_to have_updatable_field(:uuid)
+  end
 
-  it { is_expected.not_to have_updatable_field(:uuid) }
-  it { is_expected.not_to have_updatable_field(:labware_barcode) }
+  # Updatable fields
+  # eg. it { is_expected.to have_updatable_field(:state) }
 
-  it { is_expected.to have_updatable_field(:size) }
-  it { is_expected.to have_updatable_field(:tube_locations) }
+  # Filters
+  # eg. it { is_expected.to filter(:order_type) }
 
-  it { is_expected.to filter(:barcode) }
-  it { is_expected.to filter(:uuid) }
-  it { is_expected.to filter(:purpose_name) }
-  it { is_expected.to filter(:purpose_id) }
+  # Associations
+  # eg. it { is_expected.to have_many(:samples).with_class_name('Sample') }
+  it 'exposes associations', :aggregate_failures do
+    expect(tube_rack).to have_many(:racked_tubes).with_class_name('RackedTube')
+    expect(tube_rack).to have_one(:purpose).with_class_name('Purpose')
+    expect(tube_rack).to have_one(:comments).with_class_name('Comment')
+  end
 
-  it { is_expected.to have_one(:purpose).with_class_name('Purpose') }
-  it { is_expected.to have_many(:racked_tubes).with_class_name('RackedTube') }
+  # Custom method tests
+  # Add tests for any custom methods you've added.
 
   describe 'tube_locations=' do
     let(:a1_tube) { create :tube }

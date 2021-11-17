@@ -693,6 +693,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           expect(processor).to be_valid
           processor.run(nil)
 
+          expect(processor.errors.messages).to be_empty
+
           aggregate_failures 'update samples' do
             expect(processor).to be_samples_updated
             expect(upload.rows).to be_all(&:sample_updated?)
@@ -966,6 +968,11 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           expect(errors).to include(
             'The following coordinates in the scan are not valid for a tube rack of size 48: ["e14"].'
           )
+        end
+
+        it 'will not process' do
+          processor.run(nil)
+          expect(processor).not_to be_processed
         end
       end
 
