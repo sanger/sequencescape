@@ -20,7 +20,7 @@ When /^I print the following labels in the asset group$/ do |table|
     times: 1
   ) do |req|
     h_body = JSON.parse(req.body)
-    all_label_bitmaps = h_body['print_job']['labels']['labels'].first['main_label']
+    all_label_bitmaps = h_body['print_job']['labels'].first
     label_bitmaps.all? { |k, v| v.match all_label_bitmaps[k] }
   end
 end
