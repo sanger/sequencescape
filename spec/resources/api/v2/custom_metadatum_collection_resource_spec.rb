@@ -6,7 +6,7 @@ require './app/resources/api/v2/custom_metadatum_collection_resource'
 RSpec.describe Api::V2::CustomMetadatumCollectionResource, type: :resource do
   subject { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { create :custom_metadatum_collection }
+  let(:resource_model) { build_stubbed :custom_metadatum_collection }
 
   # Test attributes
   it 'works', :aggregate_failures do

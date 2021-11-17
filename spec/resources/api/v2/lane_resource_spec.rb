@@ -6,7 +6,7 @@ require './app/resources/api/v2/lane_resource'
 RSpec.describe Api::V2::LaneResource, type: :resource do
   subject { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { create :lane }
+  let(:resource_model) { build_stubbed :lane }
 
   # Test attributes
   it 'works', :aggregate_failures do

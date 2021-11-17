@@ -21,12 +21,19 @@ module Api
 
       # Associations:
       has_many :racked_tubes
+      has_many :comments, readonly: true
       has_one :purpose, foreign_key: :plate_purpose_id
 
       # Attributes
       attribute :uuid, readonly: true
+      attribute :created_at, readonly: true
+      attribute :updated_at, readonly: true
       attribute :labware_barcode, readonly: true
-      attributes :size, :tube_locations
+      attribute :size
+      attribute :number_of_rows, readonly: true
+      attribute :number_of_columns, readonly: true
+      attribute :name, readonly: true
+      attribute :tube_locations
 
       # Filters
       filter :barcode, apply: ->(records, value, _options) { records.with_barcode(value) }

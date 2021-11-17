@@ -6,7 +6,7 @@ require './app/resources/api/v2/aliquot_resource'
 RSpec.describe Api::V2::AliquotResource, type: :resource do
   subject { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { create :aliquot }
+  let(:resource_model) { build_stubbed :aliquot }
 
   # Test attributes
   it 'works', :aggregate_failures do
