@@ -14,7 +14,7 @@ module LabelPrinter
       def create_labels
         [].tap do |l|
           assets.each do |asset|
-            label = create_label(asset)
+            label = build_label(asset)
             count.times { l.push(label) }
           end
         end

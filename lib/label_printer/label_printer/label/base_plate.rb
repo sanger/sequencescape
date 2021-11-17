@@ -4,7 +4,7 @@ module LabelPrinter
     class BasePlate # rubocop:todo Style/Documentation
       include Label::MultipleLabels
 
-      def create_label(plate)
+      def build_label(plate)
         {
           top_left: top_left,
           bottom_left: bottom_left(plate),

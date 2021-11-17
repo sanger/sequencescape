@@ -7,7 +7,7 @@ class ExampleLabel
 
   attr_accessor :assets
 
-  def create_label(asset)
+  def build_label(asset)
     { left: asset.name, right: asset.prefix, barcode: asset.barcode_number, label_name: 'main_label' }
   end
 end
@@ -32,7 +32,7 @@ class ExampleLabelTest < ActiveSupport::TestCase
   end
 
   test 'should return the right label' do
-    assert_equal label, example_label.create_label(plate1)
+    assert_equal label, example_label.build_label(plate1)
   end
 
   test 'should return the right labels' do
