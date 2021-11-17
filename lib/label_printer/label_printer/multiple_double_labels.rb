@@ -10,7 +10,7 @@ module LabelPrinter
       end
 
       def double_label(asset)
-        [label(asset), build_extra_label(asset)]
+        [build_label(asset), build_extra_label(asset)]
       end
     end
   end
