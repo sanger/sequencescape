@@ -15,7 +15,7 @@ module LabelPrinter
         @batch = options[:batch]
       end
 
-      def create_label(plate)
+      def build_label(plate)
         {
           left_text: plate.human_barcode.to_s,
           right_text: plate.barcode_number.to_s,
