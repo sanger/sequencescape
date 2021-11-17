@@ -45,7 +45,7 @@ class StockStamper # rubocop:todo Style/Documentation
     @file_content = Robot::Generator::Tecan.new(picking_data: picking_data, layout: layout, total_volume: 0).as_text
   end
 
-  def generate_tecan_data # rubocop:todo Metrics/AbcSize
+  def generate_tecan_data # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     source_barcode = "#{plate.machine_barcode}_s"
     destination_barcode = "#{plate.machine_barcode}_d"
     data_object = {
