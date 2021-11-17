@@ -11,7 +11,8 @@ module LabelPrinter
           bottom_line: bottom_line(tube),
           round_label_top_line: round_label_top_line(tube),
           round_label_bottom_line: round_label_bottom_line(tube),
-          barcode: barcode(tube)
+          barcode: barcode(tube),
+          label_name: 'main_label'
         }
       end
 

@@ -7,7 +7,7 @@ module LabelPrinter
       def to_h
         return [] unless assets
 
-        { labels: create_labels, label_name: 'main_label' }
+        create_labels
       end
 
       def create_labels
@@ -20,7 +20,7 @@ module LabelPrinter
       end
 
       def label(asset)
-        { main_label: create_label(asset) }
+        create_label(asset)
       end
 
       def count
