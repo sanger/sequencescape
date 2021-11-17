@@ -292,7 +292,7 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode '00210783400000001 '
   end
 
-  describe Barcode::FormatHandlers::LemingtonSpaV2 do
+  describe Barcode::FormatHandlers::LeamingtonSpaV2 do
     it_has_a_valid_barcode 'RFLCP12340965', prefix: 'RFLCP', number: 123_409_65
     it_has_an_invalid_barcode 'RFLCP500171'
     it_has_an_invalid_barcode '12345678912'
