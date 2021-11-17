@@ -14,31 +14,23 @@ class PrintJobTest < ActiveSupport::TestCase
 
   def setup # rubocop:todo Metrics/AbcSize
     @barcode_printer = create :barcode_printer
-    LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns('data' => [{ 'id' => 15 }])
     @plates = create_list :plate, 1, well_count: 1, well_factory: :untagged_well
     @plate = plates[0]
     @plate_purpose = plate.plate_purpose
     @label_template_name = barcode_printer.barcode_printer_type.label_template_name
-    @labels_attributes = {
-      labels: [
-        {
-          main_label: {
-            top_left: (Date.today.strftime('%e-%^b-%Y')).to_s,
-            bottom_left: plate.human_barcode.to_s,
-            top_right: plate_purpose.name.to_s,
-            bottom_right: 'user WTCCC',
-            top_far_right: plate.parent.try(:barcode_number).to_s,
-            barcode: plate.machine_barcode
-          }
-        }
-      ],
+    @labels_attributes = [{
+      top_left: (Date.today.strftime('%e-%^b-%Y')).to_s,
+      bottom_left: plate.human_barcode.to_s,
+      top_right: plate_purpose.name.to_s,
+      bottom_right: 'user WTCCC',
+      top_far_right: plate.parent.try(:barcode_number).to_s,
+      barcode: plate.machine_barcode,
       label_name: 'main_label'
-    }
+    }]
     @attributes = {
       printer_name: barcode_printer.name,
       label_template_name: label_template_name,
-      labels: [labels_attributes],
-      label_name: 'main_label'
+      labels: labels_attributes
     }
     @print_job =
       LabelPrinter::PrintJob.new(

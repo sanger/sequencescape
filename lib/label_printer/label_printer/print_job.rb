@@ -35,11 +35,13 @@ module LabelPrinter
         {
           printer_name: printer_name,
           label_template_name: label_template_name,
-          labels: [labels_attribute],
-          label_name: 'main_label'
+          labels: labels_attribute
         }
     end
 
+    # TODO
+    # change name of to_h to to_a
+    # returns: a list of labels
     def labels_attribute
       printer = find_printer
       printer_type_class = { printer_type_class: printer.barcode_printer_type.class }
@@ -61,7 +63,7 @@ module LabelPrinter
     end
 
     def number_of_labels
-      labels[:labels].count
+      labels.count
     end
   end
 end

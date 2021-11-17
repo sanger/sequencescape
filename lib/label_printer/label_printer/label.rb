@@ -4,6 +4,7 @@ module LabelPrinter
     module MultipleLabels # rubocop:todo Style/Documentation
       attr_accessor :count
 
+      # TODO rename
       def to_h
         return [] unless assets
 
