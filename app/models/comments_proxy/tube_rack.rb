@@ -5,13 +5,16 @@
 class CommentsProxy::TubeRack < CommentsProxy::Base
   def add_comment_to_tubes(comment)
     comment_records =
-      @commentable.tubes.ids.map do |tube_id|
-        {
-          commentable_type: 'Labware',
-          commentable_id: tube_id,
-          **comment.attributes.except('id', 'commentable_type', 'commentable_id')
-        }
-      end
+      @commentable
+        .tubes
+        .ids
+        .map do |tube_id|
+          {
+            commentable_type: 'Labware',
+            commentable_id: tube_id,
+            **comment.attributes.except('id', 'commentable_type', 'commentable_id')
+          }
+        end
 
     # NOTE: We use import here to bypass the after_create
     # callbacks on Comment, as the rack has already handled that.
