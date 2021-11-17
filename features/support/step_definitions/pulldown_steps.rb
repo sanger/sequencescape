@@ -72,7 +72,7 @@ Given 'H12 on {asset_name} is empty' do |plate|
   plate.wells.located_at('H12').first.aliquots.clear
 end
 
-# rubocop:todo Metrics/PerceivedComplexity, Metrics/AbcSize, Metrics/MethodLength
+# rubocop:todo Metrics/PerceivedComplexity, Metrics/AbcSize
 def work_pipeline_for(submissions, name, template = nil) # rubocop:todo Metrics/CyclomaticComplexity
   raise StandardError, 'No submissions to process' if submissions.empty?
 
@@ -97,7 +97,7 @@ def work_pipeline_for(submissions, name, template = nil) # rubocop:todo Metrics/
     template.create!(source: source_plate, destination: final_plate, user: FactoryBot.create(:user))
   end
 end
-# rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity, Metrics/MethodLength
+# rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
 
 Given /^(all submissions) have been worked until the last plate of the "Pulldown ISC" pipeline$/ do |submissions|
   work_pipeline_for(submissions, 'ISC cap lib pool')
