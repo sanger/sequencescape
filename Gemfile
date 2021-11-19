@@ -138,7 +138,6 @@ group :development, :linting do
   gem 'rubocop-performance', require: false
   gem 'rubocop-rails', require: false
   gem 'rubocop-rspec', require: false
-  gem 'yard-activerecord', '~> 0.0.16'
 end
 
 group :linting, :test do
@@ -224,4 +223,5 @@ group :deployment do
   gem 'exception_notification'
   gem 'slack-notifier'
   gem 'whenever', require: false
+  gem 'yard-activerecord', '~> 0.0.16'
 end
