@@ -148,7 +148,6 @@ end
 group :development, :test, :cucumber do
   gem 'pry-byebug'
   gem 'pry-rails'
-  gem 'pry-stack_explorer'
 
   # Asset compilation, js and style libraries
   gem 'bootstrap', '~>4.0' # Pinned as v5 has significant changes
