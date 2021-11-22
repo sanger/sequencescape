@@ -31,6 +31,19 @@ class Pooling::TagClashReport < SimpleDelegator
 
   private
 
+  # Returns a hash, where:
+  #    the key is an array of attributes, which together must be unique
+  #    the value is an array of aliquots
+  # For example (where tag 1 and tag 2 oligo sequences make up the key):
+  #
+  # {
+  #   ["T", "C"]=>[
+  #     #<Aliquot id: 87 ...>,
+  #     #<Aliquot id: 90 ...>,
+  #     ...
+  #   ],
+  #   ...
+  # }
   def grouped_aliquots
     aliquots.group_by(&:tags_combination)
   end
