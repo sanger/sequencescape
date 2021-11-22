@@ -1082,12 +1082,12 @@
   resolved "https://registry.yarnpkg.com/@miragejs/pretender-node-polyfill/-/pretender-node-polyfill-0.1.2.tgz#d26b6b7483fb70cd62189d05c95d2f67153e43f2"
   integrity sha512-M/BexG/p05C5lFfMunxo/QcgIJnMT2vDVCd00wNqK2ImZONIlEETZwWJu1QtLxtmYlSHlCFl3JNzp0tLe7OJ5g==
 
-"@prettier/plugin-ruby@^1.5.5":
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/@prettier/plugin-ruby/-/plugin-ruby-1.6.1.tgz#14489985513a72e052b57c1cf9beae288880faa8"
-  integrity sha512-PGDCATgVTQz0s/NB9nStiXVCIr+hG/XnKeAO/kguaHrNf8VwCpP5Ul+/KQao0z0QFBy2PDY8kWptfDQCa7WMXg==
+"@prettier/plugin-ruby@^2.0.0":
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/@prettier/plugin-ruby/-/plugin-ruby-2.0.0.tgz#a9f2d4183b56a9db9f80bbc685832a3b78685793"
+  integrity sha512-pA0rjTi5J7cT86XPNhXp7CpdV2Tlyj5oqDIsnQRxMu2P7LY2KJI/pyOSM8pzTH8BgRyQfe1P1NPCcTwxUnUWtQ==
   dependencies:
-    prettier ">=1.10"
+    prettier ">=2.3.0"
 
 "@rails/webpacker@^5.1.1":
   version "5.1.1"
@@ -7970,10 +7970,10 @@ pretender@^3.4.3:
     fake-xml-http-request "^2.1.1"
     route-recognizer "^0.3.3"
 
-prettier@>=1.10, prettier@^2.3.0:
-  version "2.3.2"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.3.2.tgz#ef280a05ec253712e486233db5c6f23441e7342d"
-  integrity sha512-lnJzDfJ66zkMy58OL5/NY5zp70S7Nz6KqcKkXYzn2tMVrNxvbqaBpg7H3qHaLxCJ5lNMsGuM8+ohS7cZrthdLQ==
+prettier@>=2.3.0, prettier@^2.3.0:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.4.1.tgz#671e11c89c14a4cfc876ce564106c4a6726c9f5c"
+  integrity sha512-9fbDAXSBcc6Bs1mZrDYb3XKzDLm4EXXL9sC1LqKP5rZkT6KRr/rf9amVUcODVXgguK/isJz0d0hP72WeaKWsvA==
 
 prettier@^1.18.2:
   version "1.19.1"

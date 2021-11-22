@@ -16,7 +16,7 @@
     "whatwg-fetch": "^3.3.1"
   },
   "devDependencies": {
-    "@prettier/plugin-ruby": "^1.5.5",
+    "@prettier/plugin-ruby": "^2.0.0",
     "@testing-library/jest-dom": "^5.11.2",
     "@vue/test-utils": "^1.0.3",
     "babel-core": "^7.0.0-bridge.0",

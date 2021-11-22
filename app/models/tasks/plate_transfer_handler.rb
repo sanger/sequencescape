@@ -20,26 +20,23 @@ module Tasks::PlateTransferHandler # rubocop:todo Style/Documentation
     source_wells = batch_requests.map(&:asset)
     raise InvalidBatch if unsuitable_wells?(source_wells)
 
-    task
-      .purpose
-      .create!
-      .tap do |target|
-        well_map = target.wells.index_by { |well| well.map_id }
+    task.purpose.create!.tap do |target|
+      well_map = target.wells.index_by { |well| well.map_id }
 
-        batch_requests.each do |outer_request|
-          source = outer_request.asset
-          TransferRequest.create!(
-            asset: source,
-            target_asset: well_map[source.map_id],
-            submission_id: outer_request.submission_id
-          )
-          TransferRequest.create!(
-            asset: well_map[source.map_id],
-            target_asset: outer_request.target_asset,
-            submission_id: outer_request.submission_id
-          )
-        end
+      batch_requests.each do |outer_request|
+        source = outer_request.asset
+        TransferRequest.create!(
+          asset: source,
+          target_asset: well_map[source.map_id],
+          submission_id: outer_request.submission_id
+        )
+        TransferRequest.create!(
+          asset: well_map[source.map_id],
+          target_asset: outer_request.target_asset,
+          submission_id: outer_request.submission_id
+        )
       end
+    end
   end
 
   # rubocop:enable Metrics/MethodLength

@@ -30,16 +30,13 @@ xml.asset(api_data) do
         xml.request do
           xml.id asset_request.id
           xml.properties do
-            asset_request
-              .request_metadata
-              .attribute_value_pairs
-              .each do |attribute, value|
-                xml.property do
-                  xml.key attribute.name.to_s
-                  xml.name attribute.to_field_info.display_name
-                  xml.value value
-                end
+            asset_request.request_metadata.attribute_value_pairs.each do |attribute, value|
+              xml.property do
+                xml.key attribute.name.to_s
+                xml.name attribute.to_field_info.display_name
+                xml.value value
               end
+            end
           end
         end
       end

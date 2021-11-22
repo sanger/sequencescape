@@ -6,7 +6,7 @@ require './app/resources/api/v2/request_type_resource'
 RSpec.describe Api::V2::RequestTypeResource, type: :resource do
   subject { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { create :request_type }
+  let(:resource_model) { build_stubbed :request_type }
 
   # Test attributes
   it 'works', :aggregate_failures do

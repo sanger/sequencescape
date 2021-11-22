@@ -16,10 +16,9 @@ module DelegateValidation
     validates_each(*args) do |record, _attr, value|
       validator = record.send(:"#{delegation_target}_delegate_validator").new(value)
       validator.valid?.tap do
-        validator
-          .errors
-          .messages
-          .each { |attrib, message| record.errors.add("#{attribute_tag}.#{attrib}", message.join('; ')) }
+        validator.errors.messages.each do |attrib, message|
+          record.errors.add("#{attribute_tag}.#{attrib}", message.join('; '))
+        end
       end
     end
   end

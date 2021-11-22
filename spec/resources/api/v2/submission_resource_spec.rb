@@ -6,7 +6,7 @@ require './app/resources/api/v2/submission_resource'
 RSpec.describe Api::V2::SubmissionResource, type: :resource do
   subject { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { create :submission }
+  let(:resource_model) { build_stubbed :submission }
 
   # Test attributes
   it 'works', :aggregate_failures do

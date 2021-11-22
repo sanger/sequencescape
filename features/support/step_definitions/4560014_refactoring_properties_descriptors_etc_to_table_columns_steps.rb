@@ -12,13 +12,7 @@ def create_request(request_type, study, project, asset, target_asset, additional
         project: project,
         asset: asset,
         target_asset: target_asset,
-        request_type: request_type,
-        request_metadata_attributes: {
-          fragment_size_required_to: 1,
-          fragment_size_required_from: 999,
-          library_type: 'Standard',
-          read_length: (request_type.request_class == HiSeqSequencingRequest ? 50 : 76)
-        }
+        request_type: request_type
       )
     )
   request.id = additional_options[:id] if additional_options.key?(:id) # Force ID hack!

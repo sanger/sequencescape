@@ -54,8 +54,6 @@ group :default do
   # Locked for ruby version
   gem 'delayed_job_active_record'
 
-  gem 'irods_reader', '>=0.0.2', github: 'sanger/irods_reader'
-
   # For the API level
   gem 'json'
   gem 'multi_json'
@@ -148,7 +146,6 @@ end
 group :development, :test, :cucumber do
   gem 'pry-byebug'
   gem 'pry-rails'
-  gem 'pry-stack_explorer'
 
   # Asset compilation, js and style libraries
   gem 'bootstrap', '~>4.0' # Pinned as v5 has significant changes
