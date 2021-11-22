@@ -7,7 +7,7 @@ class Pooling::TagClashReport < SimpleDelegator
   include SampleManifestExcel::Tags::ClashesFinder
 
   # An oligo pair which clashes and details about the clashes causing the problem
-  Clash = Struct.new(:i7_oligo, :i5_oligo, :clashes)
+  Clash = Struct.new(:i7_oligo, :i5_oligo, :tag_depth, :clashes)
   ClashInfo = Struct.new(:sample, :library, :asset)
   UNTAGGED = '-'
 
@@ -20,10 +20,11 @@ class Pooling::TagClashReport < SimpleDelegator
   end
 
   def clashes
-    duplicates.map do |oligos, clashes|
+    duplicates.map do |unique_key, clashes|
       Clash.new(
-        oligos.first || UNTAGGED,
-        oligos.last || UNTAGGED,
+        unique_key[0] || UNTAGGED,
+        unique_key[1] || UNTAGGED,
+        unique_key[2],
         clashes.map { |clashed_aliquot| clash_info(clashed_aliquot) }
       )
     end
