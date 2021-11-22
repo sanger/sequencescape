@@ -16,7 +16,7 @@ class Pooling::TagClashReport < SimpleDelegator
   end
 
   def duplicates
-    @duplicates ||= grouped_aliquots.select { |_oligos, clashes| clashes.length > 1 }
+    @duplicates ||= grouped_aliquots.select { |_unique_key, aliquot_group| aliquot_group.length > 1 }
   end
 
   def clashes
