@@ -45,7 +45,7 @@ class Pooling::TagClashReport < SimpleDelegator
   #   ...
   # }
   def grouped_aliquots
-    aliquots.group_by(&:tags_combination)
+    aliquots.group_by(&:tags_and_tag_depth_combination)
   end
 
   def aliquots
