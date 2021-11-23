@@ -105,7 +105,6 @@ class TagSubstitution
     end
     true
   rescue ActiveRecord::RecordNotUnique => e
-    
     # We'll specifically handle tag clashes here so that we can produce more informative messages
     # TODO: Feature Cardinal support - REPLACE THIS:
     #

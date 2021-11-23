@@ -38,6 +38,7 @@ class SequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
 
   def on_started
     super
+
     # TODO: Feature Cardinal support - REPLACE THIS:
     #
     # transfer_aliquots
