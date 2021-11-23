@@ -105,8 +105,17 @@ class TagSubstitution
     end
     true
   rescue ActiveRecord::RecordNotUnique => e
+    
     # We'll specifically handle tag clashes here so that we can produce more informative messages
-    raise e unless /aliquot_tag_tag2_and_tag_depth_are_unique_within_receptacle/.match?(e.message)
+    # TODO: Feature Cardinal support - REPLACE THIS:
+    #
+    # raise e unless /aliquot_tags_and_tag2s_are_unique_within_receptacle/.match?(e.message)
+    #
+    # WITH THIS:
+    #
+    # raise e unless /aliquot_tag_tag2_and_tag_depth_are_unique_within_receptacle/.match?(e.message)
+    #
+    raise e unless /aliquot_tags_and_tag2s_are_unique_within_receptacle/.match?(e.message)
 
     errors.add(:base, 'A tag clash was detected while performing the substitutions. No changes have been made.')
     false
