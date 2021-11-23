@@ -538,14 +538,10 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             it 'will process a partial upload' do
               processor.update_samples_and_aliquots(nil)
               expect(
-                upload
-                  .sample_manifest
-                  .samples
-                  .reload
-                  .count do |sample|
-                    sample.reload
-                    sample.sample_metadata.concentration.present?
-                  end
+                upload.sample_manifest.samples.reload.count do |sample|
+                  sample.reload
+                  sample.sample_metadata.concentration.present?
+                end
               ).to eq(2)
               processor.update_sample_manifest
               expect(processor).to be_processed
@@ -693,6 +689,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           expect(processor).to be_valid
           processor.run(nil)
 
+          expect(processor.errors.messages).to be_empty
+
           aggregate_failures 'update samples' do
             expect(processor).to be_samples_updated
             expect(upload.rows).to be_all(&:sample_updated?)
@@ -833,8 +831,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           RSpec::Matchers.define_negated_matcher :not_change, :change
 
           expect { processor.run(nil) }.to not_change { TubeRack.count }.and not_change {
-                           RackedTube.count
-                         }.and not_change { Barcode.count }
+                                              RackedTube.count
+                                            }.and not_change { Barcode.count }
         end
       end
 
@@ -851,8 +849,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           RSpec::Matchers.define_negated_matcher :not_change, :change
 
           expect { processor.run(nil) }.to not_change { TubeRack.count }.and not_change {
-                           RackedTube.count
-                         }.and not_change { Barcode.count }
+                                              RackedTube.count
+                                            }.and not_change { Barcode.count }
         end
 
         it 'will have errors' do
@@ -966,6 +964,11 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           expect(errors).to include(
             'The following coordinates in the scan are not valid for a tube rack of size 48: ["e14"].'
           )
+        end
+
+        it 'will not process' do
+          processor.run(nil)
+          expect(processor).not_to be_processed
         end
       end
 

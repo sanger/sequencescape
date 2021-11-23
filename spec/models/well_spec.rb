@@ -303,7 +303,7 @@ describe Well do
     end
   end
 
-  context 'when while cherrypicking by nanograms ' do
+  context 'when while cherrypicking by nanograms' do
     context 'and we want to get less volume than the minimum' do
       before do
         @source_well = create :well
@@ -426,12 +426,12 @@ describe Well do
       [100.0, 5.0, 100.0, 2.0, nil, 2.0, 98.0, 'As above, just more extreme'],
       [100.0, 5.0, 100.0, 5.0, 5.0, 5.0, 95.0, 'High concentration, minimum robot volume increases source pick'],
       [100.0, 50.0, 52.0, 200.0, 5.0, 96.2, 5.0, 'Lowish concentration, non zero, but less than robot buffer required'],
-      [100.0, 5.0, 100.0, 2.0, 5.0, 2.0, 98.0, 'Less DNA than robot minimum pick, fall back to DNA'],
+      [100.0, 5.0, 100.0, 2.0, 5.0, 5.0, 98.0, 'Less DNA than robot minimum pick'],
       [100.0, 50.0, 1.0, 200.0, 5.0, 100.0, 0.0, 'Low concentration, maximum DNA, no buffer'],
       [120.0, 50.0, 0, 60.0, 5.0, 60.0, 60.0, 'Zero concentration, with less volume than required'],
-      [120.0, 50.0, 0, 3.0, 5.0, 3.0, 117.0, 'Zero concentration, with less volume than even the minimum robot pick']
+      [120.0, 50.0, 0, 3.0, 5.0, 5.0, 117.0, 'Zero concentration, with less volume than even the minimum robot pick']
       # rubocop:todo Metrics/ParameterLists,Layout/LineLength
-    ].each do |volume_required, concentration_required, source_concentration, source_volume, robot_minimum_pick_volume, source_volume_obtained, buffer_volume_obtained, scenario|
+    ].each do |final_volume_desired, final_conc_desired, source_concentration, source_volume, robot_minimum_pick_volume, source_volume_obtained, buffer_volume_obtained, scenario|
       # rubocop:enable Metrics/ParameterLists,Layout/LineLength
       context "when testing #{scenario}" do
         before do
@@ -439,8 +439,8 @@ describe Well do
             format(
               '%.1f',
               well.volume_to_cherrypick_by_nano_grams_per_micro_litre(
-                volume_required,
-                concentration_required,
+                final_volume_desired,
+                final_conc_desired,
                 source_concentration,
                 source_volume,
                 robot_minimum_pick_volume

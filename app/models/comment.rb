@@ -52,6 +52,6 @@ class Comment < ApplicationRecord
   # getting created here. We should consider either storing comments on submissions, orders,
   # or having a many-to-many relationship.
   def trigger_commentable_callback
-    commentable.after_comment_addition(self)
+    commentable.try(:after_comment_addition, self)
   end
 end

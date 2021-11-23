@@ -5,7 +5,10 @@
 # across two.
 module Pipeline::InboxGroupedBySubmission
   def self.included(base)
+    # rubocop:todo Rails/HasManyOrHasOneDependent
     base.has_many :inbox, class_name: 'Request', extend: [Pipeline::RequestsInStorage]
+
+    # rubocop:enable Rails/HasManyOrHasOneDependent
     base.group_by_submission = true
     base.request_sort_order = { submission_id: :desc, id: :asc }.freeze
   end

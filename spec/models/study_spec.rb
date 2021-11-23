@@ -85,7 +85,7 @@ RSpec.describe Study, type: :model do
     end
   end
 
-  describe '#ethical approval?: ' do
+  describe '#ethical approval?:' do
     let!(:study) { create(:study) }
 
     context 'when contains human DNA' do
@@ -243,13 +243,10 @@ RSpec.describe Study, type: :model do
       before do
         2.times do
           r = create(:passed_request, request_type: request_type, initial_study_id: study.id)
-          r
-            .asset
-            .aliquots
-            .each do |al|
-              al.study = study
-              al.save!
-            end
+          r.asset.aliquots.each do |al|
+            al.study = study
+            al.save!
+          end
         end
 
         create_list(:order, 2, study: study)

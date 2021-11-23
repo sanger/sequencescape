@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Controls API V1 IO for {::TagGroup}
-class ::Io::TagGroup < ::Core::Io::Base
+class Io::TagGroup < ::Core::Io::Base
   set_model_for_input(::TagGroup)
   set_json_root(:tag_group)
 

@@ -20,6 +20,9 @@ class SequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
 
   include Request::CustomerResponsibility
 
+  # TODO: Feature Cardinal support - UNCOMMENT TO ENABLE AGAIN
+  # include Request::SampleCompoundAliquotTransfer
+
   before_validation :clear_cross_projects
   def clear_cross_projects
     self.initial_project = nil if submission.try(:cross_project?)
@@ -35,6 +38,15 @@ class SequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
 
   def on_started
     super
+
+    # TODO: Feature Cardinal support - REPLACE THIS:
+    #
+    # transfer_aliquots
+    #
+    # WITH THIS:
+    #
+    # compound_samples_needed? ? transfer_aliquots_into_compound_sample_aliquot : transfer_aliquots
+    #
     transfer_aliquots
   end
 
@@ -53,7 +65,7 @@ class SequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
 
     # It's ready if I don't have any lib creation requests or if all my lib creation requests are closed and
     # at least one of them is in 'passed' status
-    upstream_requests.empty? || upstream_requests.all?(&:closed?) && upstream_requests.any?(&:passed?)
+    upstream_requests.empty? || (upstream_requests.all?(&:closed?) && upstream_requests.any?(&:passed?))
   end
 
   def self.delegate_validator

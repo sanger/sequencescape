@@ -16,7 +16,7 @@ group :default do
   gem 'aasm'
 
   # Required by AASM
-  gem 'after_commit_everywhere', '~> 0.1', '>= 0.1.5'
+  gem 'after_commit_everywhere', '~> 1.0'
   gem 'configatron'
   gem 'formtastic'
   gem 'rest-client' # curb substitute.
@@ -53,8 +53,6 @@ group :default do
   # For background processing
   # Locked for ruby version
   gem 'delayed_job_active_record'
-
-  gem 'irods_reader', '>=0.0.2', github: 'sanger/irods_reader'
 
   # For the API level
   gem 'json'
@@ -148,7 +146,6 @@ end
 group :development, :test, :cucumber do
   gem 'pry-byebug'
   gem 'pry-rails'
-  gem 'pry-stack_explorer'
 
   # Asset compilation, js and style libraries
   gem 'bootstrap', '~>4.0' # Pinned as v5 has significant changes

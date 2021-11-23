@@ -148,7 +148,7 @@ class ProductCriteria::Basic # rubocop:todo Style/Documentation
 
   def invalid(attribute, message)
     @passed = false
-    @comment << message % attribute.to_s.humanize
+    @comment << (message % attribute.to_s.humanize)
     @comment.uniq!
   end
 

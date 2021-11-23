@@ -71,13 +71,13 @@ class Labware < Asset
 
   belongs_to :purpose, foreign_key: :plate_purpose_id, optional: true, inverse_of: :labware
 
-  has_one :spiked_in_buffer_links,
+  has_one :spiked_in_buffer_links, # rubocop:todo Rails/HasManyOrHasOneDependent
           -> { includes(:ancestor).references(:ancestor).where(labware: { sti_type: 'SpikedBuffer' }).direct },
           class_name: 'AssetLink',
           foreign_key: :descendant_id,
           inverse_of: :descendant
 
-  has_one :spiked_in_buffer_most_recent_links,
+  has_one :spiked_in_buffer_most_recent_links, # rubocop:todo Rails/HasManyOrHasOneDependent
           -> {
             includes(:ancestor)
               .references(:ancestor)

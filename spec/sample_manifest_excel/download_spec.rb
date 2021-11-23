@@ -188,7 +188,7 @@ RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_exce
     end
   end
 
-  context 'Saphyr tube ' do
+  context 'Saphyr tube' do
     before do
       create(:saphyr_tube_purpose)
 
@@ -218,7 +218,7 @@ RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_exce
     end
   end
 
-  context 'Long read tube ' do
+  context 'Long read tube' do
     before do
       create(:long_read_tube_purpose)
 

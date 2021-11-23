@@ -18,7 +18,7 @@ shared_examples 'a mapping between an Aker model and Sequencescape', aker: true 
           ).to eq(gender: 'Male')
         end
 
-        it 'translates the valid attribute to the SS nomenclature using the config ' do
+        it 'translates the valid attribute to the SS nomenclature using the config' do
           expect(mapping.send(:mapped_setting_attributes_for_table, :well_attribute, gender: 'Male', volume: 33)).to eq(
             measured_volume: 33
           )
@@ -26,7 +26,7 @@ shared_examples 'a mapping between an Aker model and Sequencescape', aker: true 
       end
 
       describe '#columns_for_table_from_field' do
-        it 'translates the valid attribute to the SS nomenclature using the config ' do
+        it 'translates the valid attribute to the SS nomenclature using the config' do
           expect(mapping.send(:columns_for_table_from_field, :well_attribute, :volume)).to eq([:measured_volume])
         end
 

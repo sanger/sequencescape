@@ -22,7 +22,7 @@ module SequencescapeExcel
       # Adds row to a worksheet with particular value, style and type for each cell
 
       def add_row(values = [], style = nil, types = nil)
-        axlsx_worksheet.add_row values, types: types || [:string] * values.length, style: style
+        axlsx_worksheet.add_row values, types: types || ([:string] * values.length), style: style
       end
 
       # Adds n empty rows

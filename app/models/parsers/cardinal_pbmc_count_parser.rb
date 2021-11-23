@@ -45,10 +45,9 @@ module Parsers
         {}.tap do |qc_data|
           rows.each do |row|
             next if empty_row?(row)
-            qc_data[get_well_location(row[0])] = {
-              viability: Unit.new(row[4]),
-              live_cell_count: Unit.new(row[2], 'cells')
-            }
+
+            well = get_well_location(row[0])
+            qc_data[well] = qc_metrics_hash(row)
           end
         end
     end
@@ -63,6 +62,14 @@ module Parsers
 
     def each_well_and_parameters(&block)
       qc_data.each(&block)
+    end
+
+    def qc_metrics_hash(row)
+      {}.tap do |hash|
+        hash[:live_cell_count] = Unit.new(row[2], 'cells')
+        viability = row[4]
+        hash[:viability] = Unit.new(viability) unless viability == 'NaN'
+      end
     end
   end
 end

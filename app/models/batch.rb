@@ -445,18 +445,12 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     ActiveRecord::Base.transaction do
       # Update the lab events for the request so that they reference the batch that the request is moving to
-      batch_request_left
-        .request
-        .lab_events
-        .each do |event|
-          event.update!(batch_id: batch_request_right.batch_id) if event.batch_id == batch_request_left.batch_id
-        end
-      batch_request_right
-        .request
-        .lab_events
-        .each do |event|
-          event.update!(batch_id: batch_request_left.batch_id) if event.batch_id == batch_request_right.batch_id
-        end
+      batch_request_left.request.lab_events.each do |event|
+        event.update!(batch_id: batch_request_right.batch_id) if event.batch_id == batch_request_left.batch_id
+      end
+      batch_request_right.request.lab_events.each do |event|
+        event.update!(batch_id: batch_request_left.batch_id) if event.batch_id == batch_request_right.batch_id
+      end
 
       # Swap the two batch requests so that they are correct.  This involves swapping both the batch and the lane but
       # ensuring that the two requests don't clash on position by removing one of them.

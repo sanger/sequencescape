@@ -99,7 +99,7 @@ module SampleManifestExcel
       # rubocop:enable Metrics/MethodLength
 
       def changed?
-        @sample_updated && sample.previous_changes.present? || metadata.previous_changes.present? ||
+        (@sample_updated && sample.previous_changes.present?) || metadata.previous_changes.present? ||
           aliquot.previous_changes.present?
       end
 

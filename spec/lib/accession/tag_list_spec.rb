@@ -48,7 +48,7 @@ RSpec.describe Accession::TagList, type: :model, accession: true do
     expect(extract.find(:sample_common_name).value).to eq('A common name')
   end
 
-  it '#extract should create a taglist that has groups ' do
+  it '#extract should create a taglist that has groups' do
     extract = tag_list.extract(create(:minimal_sample_metadata_for_accessioning))
     expect(extract.groups).to include(:sample_name, :sample_attributes, :array_express)
   end

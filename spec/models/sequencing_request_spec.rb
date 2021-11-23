@@ -134,4 +134,40 @@ RSpec.describe SequencingRequest, type: :model do
       it { is_expected.to eq 20.0 }
     end
   end
+
+  # TODO: Feature Cardinal - Uncomment following:
+  # BEGIN: FEATURE CARDINAL
+  # context 'on start' do
+  #   let(:samples) { create_list :sample, 2 }
+  #   let(:study) { create :study, samples: samples }
+  #   let(:destination) { create :receptacle }
+  #   let(:source) { create :receptacle, aliquots: [aliquot1, aliquot2] }
+  #   let(:library_tube) { create :library_tube, receptacles: [source] }
+  #   let(:sequencing_request) { create(:sequencing_request, asset: source, target_asset: destination) }
+
+  #   context 'when no tag_depth is defined in the source asset aliquots' do
+  #     let(:aliquot1) { create :aliquot, sample: samples[0], tag_id: 1, study: study }
+  #     let(:aliquot2) { create :aliquot, sample: samples[1], tag_id: 2, study: study }
+
+  #     it 'performs a normal transfer of aliquots' do
+  #       expect(sequencing_request.target_asset.aliquots.count).to eq(0)
+  #       sequencing_request.start!
+  #       expect(sequencing_request.target_asset.aliquots.count).to eq(source.aliquots.count)
+  #       expect(sequencing_request.target_asset.samples.order(:id)).to eq(samples.sort)
+  #     end
+  #   end
+
+  #   context 'when tag_depth is defined in the source asset aliquots' do
+  #     let(:aliquot1) { create :aliquot, sample: samples[0], tag_depth: 1, study: study }
+  #     let(:aliquot2) { create :aliquot, sample: samples[1], tag_depth: 2, study: study }
+
+  #     it 'creates a compound sample and transfers an aliquot of it' do
+  #       expect(sequencing_request.target_asset.aliquots.count).to eq(0)
+  #       sequencing_request.start!
+  #       expect(sequencing_request.target_asset.aliquots.count).to eq(1)
+  #       expect(sequencing_request.target_asset.samples.first.component_samples.order(:id)).to eq(samples.sort)
+  #     end
+  #   end
+  # end
+  # END: FEATURE CARDINAL
 end

@@ -72,7 +72,7 @@ Given 'H12 on {asset_name} is empty' do |plate|
   plate.wells.located_at('H12').first.aliquots.clear
 end
 
-# rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
+# rubocop:todo Metrics/PerceivedComplexity, Metrics/AbcSize
 def work_pipeline_for(submissions, name, template = nil) # rubocop:todo Metrics/CyclomaticComplexity
   raise StandardError, 'No submissions to process' if submissions.empty?
 
@@ -87,20 +87,17 @@ def work_pipeline_for(submissions, name, template = nil) # rubocop:todo Metrics/
 
   source_plate = source_plates.first
 
-  source_plate
-    .wells
-    .with_aliquots
-    .each do |w|
-      FactoryBot.create(:tag).tag!(w) if w.primary_aliquot.tag.blank? # Ensure wells are tagged
-      w.requests_as_source.first.start! # Ensure request is considered started
-    end
+  source_plate.wells.with_aliquots.each do |w|
+    FactoryBot.create(:tag).tag!(w) if w.primary_aliquot.tag.blank? # Ensure wells are tagged
+    w.requests_as_source.first.start! # Ensure request is considered started
+  end
 
   final_plate_type.create!.tap do |final_plate|
     AssetLink.create!(ancestor: source_plate, descendant: final_plate)
     template.create!(source: source_plate, destination: final_plate, user: FactoryBot.create(:user))
   end
 end
-# rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
+# rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
 
 Given /^(all submissions) have been worked until the last plate of the "Pulldown ISC" pipeline$/ do |submissions|
   work_pipeline_for(submissions, 'ISC cap lib pool')
