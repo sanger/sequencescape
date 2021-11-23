@@ -184,7 +184,7 @@ RSpec.describe TransferRequest, type: :model do
       end
     end
 
-    # TODO: Feature Cardinal - Uncomment following: 
+    # TODO: Feature Cardinal - Uncomment following:
     # BEGIN FEATURE CARDINAL
     # context 'when building using tag_depth' do
     #   context 'when building several transfer requests' do

@@ -76,9 +76,9 @@ RSpec.describe Receptacle, type: :model do
     it { expect(receptacle.diluent_volume).to eq 40 }
   end
 
-  # TODO: Feature Cardinal - Uncomment following: 
+  # TODO: Feature Cardinal - Uncomment following:
   #
-  # BEGIN: FEATURE CARDINAL 
+  # BEGIN: FEATURE CARDINAL
   # describe '#attach_tag' do
   #   let(:tag1) { create :tag }
   #   let(:tag2) { create :tag }
@@ -134,5 +134,5 @@ RSpec.describe Receptacle, type: :model do
   #     end
   #   end
   # end
-  # END: FEATURE CARDINAL 
+  # END: FEATURE CARDINAL
 end

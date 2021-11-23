@@ -135,8 +135,8 @@ RSpec.describe SequencingRequest, type: :model do
     end
   end
 
-  # TODO: Feature Cardinal - Uncomment following:   
-  # BEGIN: FEATURE CARDINAL 
+  # TODO: Feature Cardinal - Uncomment following:
+  # BEGIN: FEATURE CARDINAL
   # context 'on start' do
   #   let(:samples) { create_list :sample, 2 }
   #   let(:study) { create :study, samples: samples }
@@ -169,5 +169,5 @@ RSpec.describe SequencingRequest, type: :model do
   #     end
   #   end
   # end
-  # END: FEATURE CARDINAL 
+  # END: FEATURE CARDINAL
 end
