@@ -184,33 +184,36 @@ RSpec.describe TransferRequest, type: :model do
       end
     end
 
-    context 'when building using tag_depth' do
-      context 'when building several transfer requests' do
-        let(:transfer_request) do
-          described_class.create!(asset: source, target_asset: destination, aliquot_attributes: { tag_depth: 1 })
-        end
+    # TODO: Feature Cardinal - Uncomment following: 
+    # BEGIN FEATURE CARDINAL
+    # context 'when building using tag_depth' do
+    #   context 'when building several transfer requests' do
+    #     let(:transfer_request) do
+    #       described_class.create!(asset: source, target_asset: destination, aliquot_attributes: { tag_depth: 1 })
+    #     end
 
-        context 'with the same tag depth' do
-          let(:transfer_request2) do
-            described_class.create!(asset: source, target_asset: destination, aliquot_attributes: { tag_depth: 1 })
-          end
+    #     context 'with the same tag depth' do
+    #       let(:transfer_request2) do
+    #         described_class.create!(asset: source, target_asset: destination, aliquot_attributes: { tag_depth: 1 })
+    #       end
 
-          it 'cannot create several requests into the same destination' do
-            expect { [transfer_request, transfer_request2] }.to raise_error Aliquot::TagClash
-          end
-        end
+    #       it 'cannot create several requests into the same destination' do
+    #         expect { [transfer_request, transfer_request2] }.to raise_error Aliquot::TagClash
+    #       end
+    #     end
 
-        context 'with the different tag depth' do
-          let(:transfer_request2) do
-            described_class.create!(asset: source, target_asset: destination, aliquot_attributes: { tag_depth: 2 })
-          end
+    #     context 'with the different tag depth' do
+    #       let(:transfer_request2) do
+    #         described_class.create!(asset: source, target_asset: destination, aliquot_attributes: { tag_depth: 2 })
+    #       end
 
-          it 'can create several requests into the same destination, allowing tag clash' do
-            expect { [transfer_request, transfer_request2] }.not_to raise_error
-          end
-        end
-      end
-    end
+    #       it 'can create several requests into the same destination, allowing tag clash' do
+    #         expect { [transfer_request, transfer_request2] }.not_to raise_error
+    #       end
+    #     end
+    #   end
+    # end
+    # END FEATURE CARDINAL
 
     context 'when the destination has equivalent aliquots' do
       let(:equivalent_aliquot) { source.aliquots.first.dup }
