@@ -19,25 +19,8 @@ class FluidigmFile # rubocop:todo Style/Documentation
       end
     end
 
-    class Irods # rubocop:todo Style/Documentation
-      def initialize(barcode)
-        @data =
-          IrodsReader::DataObj.find('seq', 'dcterms:audience' => configatron.irods_audience, :fluidigm_plate => barcode)
-      end
-
-      def empty?
-        @data.empty?
-      end
-
-      def content(index = nil)
-        raise StandardError, 'Multiple files found' if data.size > 1 && index.nil?
-
-        @data[index || 0].retrive
-      end
-    end
-
     def self.default
-      { 'irods' => Irods, 'directory' => Directory }.fetch(configatron.fluidigm_data.source)
+      { 'directory' => Directory }.fetch(configatron.fluidigm_data.source)
     end
 
     def self.find(barcode)
