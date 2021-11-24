@@ -154,10 +154,6 @@ class Aliquot < ApplicationRecord
     [tag.try(:oligo), tag2.try(:oligo)]
   end
 
-  def tags_and_tag_depth_combination
-    [tag.try(:oligo), tag2.try(:oligo), tag_depth]
-  end
-
   def tag_count_name
     TAG_COUNT_NAMES[tag_count]
   end
