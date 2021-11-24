@@ -19,9 +19,7 @@ class SequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
   end
 
   include Request::CustomerResponsibility
-
-  # TODO: Feature Cardinal support - UNCOMMENT TO ENABLE AGAIN
-  # include Request::SampleCompoundAliquotTransfer
+  include Request::SampleCompoundAliquotTransfer
 
   before_validation :clear_cross_projects
   def clear_cross_projects
@@ -38,16 +36,7 @@ class SequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
 
   def on_started
     super
-
-    # TODO: Feature Cardinal support - REPLACE THIS:
-    #
-    # transfer_aliquots
-    #
-    # WITH THIS:
-    #
-    # compound_samples_needed? ? transfer_aliquots_into_compound_sample_aliquot : transfer_aliquots
-    #
-    transfer_aliquots
+    compound_samples_needed? ? transfer_aliquots_into_compound_sample_aliquot : transfer_aliquots
   end
 
   def order=(_)
