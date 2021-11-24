@@ -12,5 +12,5 @@ lca_seq_dna_rna:
   product_line_name: Illumina-Htp
   #library_types:
   #  - Cardinal
-  acceptable_plate_purposes:
-    - Lysate LCA
+  #acceptable_plate_purposes:
+  #  - Lysate LCA
