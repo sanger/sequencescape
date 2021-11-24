@@ -11,6 +11,10 @@
     <%= f.check_box :active %>
   </p>
   <p>
+    <%= f.label :printer_type %><br />
+    <%= f.radion_button ["squix", "toshiba"] %>
+  </p>
+  <p>
     <label for="barcode_printer_type_id" >Barcode printer type</label><br />
     <%= select_tag 'barcode_printer_type_id',options_from_collection_for_select(BarcodePrinterType.all, 'id', 'name') %>
   </p>

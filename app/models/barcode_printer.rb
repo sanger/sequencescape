@@ -12,7 +12,7 @@ class BarcodePrinter < ApplicationRecord
   #   @return [String] The hostname of the printer, eg. d304bc
 
   belongs_to :barcode_printer_type
-  validates :barcode_printer_type, :print_service, presence: true
+  validates :barcode_printer_type, :print_service, :printer_type, presence: true
   scope :include_barcode_printer_type, -> { includes(:barcode_printer_type) }
   scope :alphabetical, -> { order(:name) }
 
@@ -24,6 +24,9 @@ class BarcodePrinter < ApplicationRecord
   delegate :printer_type_id, to: :barcode_printer_type
 
   enum print_service: { 'PMB' => 0, 'SPrint' => 1 }
+
+  # it would possibly make more sense to have squix as 0 but this fits with PMB but creates no dependency
+  enum printer_type: { toshiba: 0, squix: 1 }
 
   def plate384_printer?
     barcode_printer_type.name == '384 Well Plate'
