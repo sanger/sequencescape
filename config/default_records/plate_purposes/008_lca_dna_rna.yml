@@ -1,0 +1,5 @@
+---
+Lysate LCA:
+  type: PlatePurpose::Input
+  stock_plate: true
+  cherrypickable_target: false

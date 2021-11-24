@@ -10,7 +10,7 @@ lca_seq_dna_rna:
   for_multiplexing: false
   billable: true
   product_line_name: Illumina-Htp
-  #library_types:
-  #  - Cardinal
-  #acceptable_plate_purposes:
-  #  - Lysate LCA
+  library_types:
+    - Cardinal
+  acceptable_plate_purposes:
+    - Lysate LCA
