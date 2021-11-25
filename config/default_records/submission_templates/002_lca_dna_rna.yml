@@ -1,0 +1,12 @@
+# These submission templates are associated with the Limber Cardinal pipeline.
+# They are in a separate file to allow us to soft-release them before
+# the real release.
+---
+LCA DNA RNA:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["lca_seq_dna_rna"]
+    # TODO: Do we need Project, product line, product catalogue
+    product_line_name: Cardinal
+    product_catalogue_name: LCA DNA RNA
+
