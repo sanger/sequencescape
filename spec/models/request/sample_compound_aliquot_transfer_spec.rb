@@ -51,7 +51,7 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
     end
   end
 
-  describe '#transfer_aliquots_into_compound_sample_aliquot' do
+  describe '#transfer_aliquots_into_compound_sample_aliquots' do
     let(:aliquot1) do
       create :aliquot, sample: samples[0], tag_depth: 1, study: study, project: project, library_type: 'Standard'
     end
@@ -61,7 +61,7 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
 
     it 'creates a compound sample and transfers an aliquot of it' do
       expect(sequencing_request.target_asset.aliquots.count).to eq(0)
-      sequencing_request.transfer_aliquots_into_compound_sample_aliquot
+      sequencing_request.transfer_aliquots_into_compound_sample_aliquots
       expect(sequencing_request.target_asset.aliquots.count).to eq(1)
       expect(sequencing_request.target_asset.aliquots.first.library_type).to eq('Standard')
       expect(sequencing_request.target_asset.aliquots.first.study).to eq(study)

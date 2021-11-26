@@ -16,34 +16,42 @@ module Request::SampleCompoundAliquotTransfer
 
   # Creates a sample in a single aliquot at destination as a compound sample
   # where the component samples are all samples at source
-  def transfer_aliquots_into_compound_sample_aliquot
+  def transfer_aliquots_into_compound_sample_aliquots
     _aliquots_by_tags_combination.each do |_tags_combo, aliquot_list|
-      samples = aliquot_list.map(&:sample)
-
-      if aliquot_list.pluck(:tag_depth).uniq.count != aliquot_list.size
-        raise "Cannot create a compound sample from the following samples, because there would be a duplicate 'tag depth': #{samples.map(&name)}"
-      end
-
-      compound_sample = _create_compound_sample(_default_compound_study, samples)
-
-      target_asset
-        .aliquots
-        .create(sample: compound_sample)
-        .tap do |aliquot|
-          aliquot.tag_id = aliquot_list.first.tag_id
-          aliquot.tag2_id = aliquot_list.first.tag2_id
-          aliquot.library_type = _default_library_type
-          aliquot.study_id = _default_compound_study.id
-          aliquot.project_id = _default_compound_project_id
-          aliquot.save
-        end
+      transfer_into_compound_sample_aliquot(aliquot_list)
     end
   end
 
   private
 
+  def transfer_into_compound_sample_aliquot(source_aliquots)
+    samples = source_aliquots.map(&:sample)
+
+    if source_aliquots.pluck(:tag_depth).uniq.count != source_aliquots.size
+      raise "Cannot create compound sample from following samples due to duplicate 'tag depth': #{samples.map(&:name)}"
+    end
+
+    compound_sample = _create_compound_sample(_default_compound_study, samples)
+
+    add_aliquot(compound_sample, source_aliquots.first.tag_id, source_aliquots.first.tag2_id)
+  end
+
+  def add_aliquot(sample, tag_id, tag2_id)
+    target_asset
+      .aliquots
+      .create(sample: sample)
+      .tap do |aliquot|
+        aliquot.tag_id = tag_id
+        aliquot.tag2_id = tag2_id
+        aliquot.library_type = _default_library_type
+        aliquot.study_id = _default_compound_study.id
+        aliquot.project_id = _default_compound_project_id
+        aliquot.save
+      end
+  end
+
   def _tag_clash?
-    _aliquots_by_tags_combination.any?{ |_tags_combo, aliquot_list| aliquot_list.size > 1 }
+    _aliquots_by_tags_combination.any? { |_tags_combo, aliquot_list| aliquot_list.size > 1 }
   end
 
   def _aliquots_by_tags_combination
