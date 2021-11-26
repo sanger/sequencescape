@@ -25,10 +25,13 @@ module Request::SampleCompoundAliquotTransfer
       end
 
       compound_sample = _create_compound_sample(_default_compound_study, samples)
+
       target_asset
         .aliquots
         .create(sample: compound_sample)
         .tap do |aliquot|
+          aliquot.tag_id = aliquot_list.first.tag_id
+          aliquot.tag2_id = aliquot_list.first.tag2_id
           aliquot.library_type = _default_library_type
           aliquot.study_id = _default_compound_study.id
           aliquot.project_id = _default_compound_project_id
@@ -40,7 +43,7 @@ module Request::SampleCompoundAliquotTransfer
   private
 
   def _tag_clash?
-    _aliquots_by_tags_combination.any{ |_tags_combo, aliquot_list| aliquot_list.size > 1 }
+    _aliquots_by_tags_combination.any?{ |_tags_combo, aliquot_list| aliquot_list.size > 1 }
   end
 
   def _aliquots_by_tags_combination
