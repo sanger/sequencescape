@@ -10,25 +10,42 @@ module Request::SampleCompoundAliquotTransfer
   # at the source has a different tag_depth defined
   def compound_samples_needed?
     return false if asset.aliquots.count == 1
-    (asset.aliquots.pluck(:tag_depth).uniq.count == asset.aliquots.count)
+
+    _tag_clash?
   end
 
   # Creates a sample in a single aliquot at destination as a compound sample
   # where the component samples are all samples at source
   def transfer_aliquots_into_compound_sample_aliquot
-    compound_sample = _create_compound_sample(_default_compound_study, asset.samples)
-    target_asset
-      .aliquots
-      .create(sample: compound_sample)
-      .tap do |aliquot|
-        aliquot.library_type = _default_library_type
-        aliquot.study_id = _default_compound_study.id
-        aliquot.project_id = _default_compound_project_id
-        aliquot.save
+    _aliquots_by_tags_combination.each do |_tags_combo, aliquot_list|
+      samples = aliquot_list.map(&:sample)
+
+      if aliquot_list.pluck(:tag_depth).uniq.count != aliquot_list.size
+        raise "Cannot create a compound sample from the following samples, because there would be a duplicate 'tag depth': #{samples.map(&name)}"
       end
+
+      compound_sample = _create_compound_sample(_default_compound_study, samples)
+      target_asset
+        .aliquots
+        .create(sample: compound_sample)
+        .tap do |aliquot|
+          aliquot.library_type = _default_library_type
+          aliquot.study_id = _default_compound_study.id
+          aliquot.project_id = _default_compound_project_id
+          aliquot.save
+        end
+    end
   end
 
   private
+
+  def _tag_clash?
+    _aliquots_by_tags_combination.any{ |_tags_combo, aliquot_list| aliquot_list.size > 1 }
+  end
+
+  def _aliquots_by_tags_combination
+    asset.aliquots.group_by(&:tags_combination)
+  end
 
   # Private method to generate a compound sample in a study from a list of
   # component samples
