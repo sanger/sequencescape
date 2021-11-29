@@ -32,13 +32,13 @@ module Request::SampleCompoundAliquotTransfer
   # For each of these groups, create a compound sample.
   def transfer_aliquots_into_compound_sample_aliquots
     _aliquots_by_tags_combination.each do |_tags_combo, aliquot_list|
-      transfer_into_compound_sample_aliquot(aliquot_list)
+      _transfer_into_compound_sample_aliquot(aliquot_list)
     end
   end
 
   private
 
-  def transfer_into_compound_sample_aliquot(source_aliquots)
+  def _transfer_into_compound_sample_aliquot(source_aliquots)
     samples = source_aliquots.map(&:sample)
 
     # Check that the component samples in the compound sample will be able to be distinguished -
@@ -49,10 +49,10 @@ module Request::SampleCompoundAliquotTransfer
 
     compound_sample = _create_compound_sample(_default_compound_study, samples)
 
-    add_aliquot(compound_sample, source_aliquots.first.tag_id, source_aliquots.first.tag2_id)
+    _add_aliquot(compound_sample, source_aliquots.first.tag_id, source_aliquots.first.tag2_id)
   end
 
-  def add_aliquot(sample, tag_id, tag2_id)
+  def _add_aliquot(sample, tag_id, tag2_id)
     target_asset
       .aliquots
       .create(sample: sample)
