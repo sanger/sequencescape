@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class AddPrinterTypeToBarcodePrinter < ActiveRecord::Migration[6.0]
   def up
     add_column :barcode_printers, :printer_type, :integer, null: true, default: 1
