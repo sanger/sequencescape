@@ -16,8 +16,8 @@ describe BarcodePrinter do
   it 'should register in PMB after create' do
     configatron.register_printers_automatically = true
     allow(RestClient).to receive(:get).with('http://localhost:9292/v2/printers?filter[name]=test_printer', content_type: 'application/vnd.api+json', accept: 'application/vnd.api+json').and_return('{"data":[]}')
-    allow(RestClient).to receive(:post).with('http://localhost:9292/v2/printers', { 'data' => { 'attributes' => { 'name' => 'test_printer' } } }.to_json, content_type: 'application/vnd.api+json', accept: 'application/vnd.api+json').and_return(201)
-    barcode_printer = create(:barcode_printer, name: 'test_printer')
+    allow(RestClient).to receive(:post).with('http://localhost:9292/v2/printers', { 'data' => { 'attributes' => { 'name' => 'test_printer', printer_type: 'squix' } } }.to_json, content_type: 'application/vnd.api+json', accept: 'application/vnd.api+json').and_return(201)
+    barcode_printer = create(:barcode_printer, name: 'test_printer', printer_type: 'squix')
     expect(barcode_printer).to be_persisted
     configatron.register_printers_automatically = false
   end
