@@ -26,14 +26,14 @@ class BarcodePrinter < ApplicationRecord
   enum print_service: { 'PMB' => 0, 'SPrint' => 1 }
 
   # it would possibly make more sense to have squix as 0 but this fits with PMB but creates no dependency
-  enum printer_type: { toshiba: 0, squix: 1 }
+  enum printer_type: { squix: 1, toshiba: 0 }
 
   def plate384_printer?
     barcode_printer_type.name == '384 Well Plate'
   end
 
   def register_printer_in_pmb
-    LabelPrinter::PmbClient.register_printer(name)
+    LabelPrinter::PmbClient.register_printer(name, printer_type)
   end
 
   delegate :register_printers_automatically, to: :configatron

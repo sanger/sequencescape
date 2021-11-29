@@ -53,9 +53,9 @@ module LabelPrinter
       raise PmbException.new(e), 'service is down'
     end
 
-    def self.register_printer(name)
+    def self.register_printer(name, printer_type)
       unless printer_exists?(name)
-        RestClient.post printers_url, { 'data' => { 'attributes' => { 'name' => name } } }.to_json, headers
+        RestClient.post printers_url, { 'data' => { 'attributes' => { 'name' => name, 'printer_type' => printer_type } } }.to_json, headers
       end
     end
 

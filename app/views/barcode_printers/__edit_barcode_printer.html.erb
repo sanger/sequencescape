@@ -1,7 +1,6 @@
 
 <%= form_for(@barcode_printer) do |f| %>
   <%= f.error_messages %>
-
   <p>
     <%= f.label :name %><br />
     <%= f.text_field :name %>
@@ -12,13 +11,15 @@
   </p>
   <p>
     <%= f.label :printer_type %><br />
-    <%= f.radion_button ["squix", "toshiba"] %>
+    <% BarcodePrinter.printer_types.each_with_index do |(k, v), index| %>
+      <%= label_tag "barcode_printer_printer_type_#{k}", k %>
+      <%= f.radio_button :printer_type, k, checked: index == 0 %>
+    <% end %>
   </p>
   <p>
     <label for="barcode_printer_type_id" >Barcode printer type</label><br />
     <%= select_tag 'barcode_printer_type_id',options_from_collection_for_select(BarcodePrinterType.all, 'id', 'name') %>
   </p>
-
   <p>
     <%= f.submit "Submit" %>
   </p>
