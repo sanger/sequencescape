@@ -4,9 +4,9 @@ require 'rails_helper'
 
 describe 'Create printers' do
   let(:user) { create(:admin, email: 'login@example.com') }
-  let!(:barcode_printer_type) { create(:barcode_printer_type) }
 
   it 'can create a new printer' do
+    create(:barcode_printer_type)
     configatron.register_printers_automatically = true
     allow(RestClient).to receive(:get)
       .with(

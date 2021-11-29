@@ -3,17 +3,17 @@
 require 'rails_helper'
 
 describe BarcodePrinter do
-  let!(:barcode_printer_plate_96) do
+  let!(:barcode_printer_plate96) do
     create(:barcode_printer, name: 'test_printer', barcode_printer_type: create(:plate_barcode_printer_type))
   end
-  let!(:barcode_printer_type_plate_384) do
+  let!(:barcode_printer_type_plate384) do
     BarcodePrinterType.find_by(name: '384 Well Plate') || create(:barcode_printer_type, name: '384 Well Plate')
   end
-  let!(:barcode_printer_plate_384) { create(:barcode_printer, barcode_printer_type: barcode_printer_type_plate_384) }
+  let!(:barcode_printer_plate384) { create(:barcode_printer, barcode_printer_type: barcode_printer_type_plate384) }
 
   it 'knows if it can print on plates with 384 wells' do
-    expect(barcode_printer_plate_96).not_to be_plate384_printer
-    expect(barcode_printer_plate_384).to be_plate384_printer
+    expect(barcode_printer_plate96).not_to be_plate384_printer
+    expect(barcode_printer_plate384).to be_plate384_printer
   end
 
   it 'registers in PMB after create' do
