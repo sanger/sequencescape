@@ -19,5 +19,4 @@ describe 'Add a printer' do
     # click_on 'Create'
     # expect(page).to have_content("Created 'My Primer panel'")
   end
-
 end
