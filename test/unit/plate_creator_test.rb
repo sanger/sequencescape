@@ -15,7 +15,6 @@ class CreatorTest < ActiveSupport::TestCase
     barcode = create(:barcode)
     PlateBarcode.stubs(:create).returns(barcode)
 
-    LabelPrinter::PmbClient.expects(:get_label_template_by_name).returns('data' => [{ 'id' => 15 }])
     scanned_user = create :user
     create_asset_group = 'No'
 
