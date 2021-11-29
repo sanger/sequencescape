@@ -41,6 +41,8 @@ module Request::SampleCompoundAliquotTransfer
   def transfer_into_compound_sample_aliquot(source_aliquots)
     samples = source_aliquots.map(&:sample)
 
+    # Check that the component samples in the compound sample will be able to be distinguished -
+    # this is represented by them all having a unique 'tag_depth'
     if source_aliquots.pluck(:tag_depth).uniq.count != source_aliquots.size
       raise "Cannot create compound sample from following samples due to duplicate 'tag depth': #{samples.map(&:name)}"
     end
