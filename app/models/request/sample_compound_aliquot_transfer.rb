@@ -1,21 +1,23 @@
 # frozen_string_literal: true
 
-# Module to provide support to handle creation of a compound sample
+# Module to provide support to handle creation of compound samples
 # from the list of samples at the source.
 #
 # Assumptions:
 #  - This module will be included in a Request class
 module Request::SampleCompoundAliquotTransfer
-  # Indicates if a compound sample creation is needed, if any of the aliquots
-  # at the source has a different tag_depth defined
+  # Indicates if a compound sample creation is needed:
+  # If any of the source aliquots share the same tag1 and tag2, but have distinct tag_depths
   def compound_samples_needed?
     return false if asset.aliquots.count == 1
 
     _tag_clash?
   end
 
-  # Creates a sample in a single aliquot at destination as a compound sample
-  # where the component samples are all samples at source
+  # Groups the source aliquots by their tag1 and tag2 combination
+  # For each of these groups, create a compound sample,
+  # to hide the fact from Illumina deplexing NPG software that there are
+  # actually multiple samples with this combination.
   def transfer_aliquots_into_compound_sample_aliquots
     _aliquots_by_tags_combination.each do |_tags_combo, aliquot_list|
       transfer_into_compound_sample_aliquot(aliquot_list)
