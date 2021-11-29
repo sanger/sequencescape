@@ -76,59 +76,63 @@ RSpec.describe Receptacle, type: :model do
     it { expect(receptacle.diluent_volume).to eq 40 }
   end
 
-  describe '#attach_tag' do
-    let(:tag1) { create :tag }
-    let(:tag2) { create :tag }
-    let(:receptacle) { create :receptacle }
+  # TODO: Feature Cardinal - Uncomment following:
+  #
+  # BEGIN: FEATURE CARDINAL
+  # describe '#attach_tag' do
+  #   let(:tag1) { create :tag }
+  #   let(:tag2) { create :tag }
+  #   let(:receptacle) { create :receptacle }
 
-    before { receptacle.update(aliquots: aliquots) }
+  #   before { receptacle.update(aliquots: aliquots) }
 
-    context 'when the receptacle has no aliquots' do
-      let(:aliquots) { [] }
+  #   context 'when the receptacle has no aliquots' do
+  #     let(:aliquots) { [] }
 
-      it 'raises an error' do
-        expect { receptacle.attach_tag(tag1, tag2) }.to raise_error(StandardError)
-      end
-    end
+  #     it 'raises an error' do
+  #       expect { receptacle.attach_tag(tag1, tag2) }.to raise_error(StandardError)
+  #     end
+  #   end
 
-    context 'when the receptacle has one aliquot' do
-      let(:aliquots) { [al1] }
-      let(:al1) { create :aliquot }
+  #   context 'when the receptacle has one aliquot' do
+  #     let(:aliquots) { [al1] }
+  #     let(:al1) { create :aliquot }
 
-      it 'can attach a tag to an aliquot' do
-        receptacle.attach_tag(tag1, tag2)
-      end
-    end
+  #     it 'can attach a tag to an aliquot' do
+  #       receptacle.attach_tag(tag1, tag2)
+  #     end
+  #   end
 
-    context 'when the receptacle has many aliquots' do
-      let(:aliquots) { [al1, al2] }
+  #   context 'when the receptacle has many aliquots' do
+  #     let(:aliquots) { [al1, al2] }
 
-      context 'when every aliquot has a different tag_depth' do
-        let(:al1) { create :aliquot, tag_depth: 1 }
-        let(:al2) { create :aliquot, tag_depth: 2 }
+  #     context 'when every aliquot has a different tag_depth' do
+  #       let(:al1) { create :aliquot, tag_depth: 1 }
+  #       let(:al2) { create :aliquot, tag_depth: 2 }
 
-        it 'can attach a tag to every aliquot' do
-          receptacle.attach_tag(tag1, tag2)
-        end
-      end
+  #       it 'can attach a tag to every aliquot' do
+  #         receptacle.attach_tag(tag1, tag2)
+  #       end
+  #     end
 
-      context 'when there is duplication in tag_depths' do
-        let(:al1) { create :aliquot, tag_depth: 1 }
-        let(:al2) { create :aliquot, tag_depth: 1 }
+  #     context 'when there is duplication in tag_depths' do
+  #       let(:al1) { create :aliquot, tag_depth: 1 }
+  #       let(:al2) { create :aliquot, tag_depth: 1 }
 
-        it 'raises an error' do
-          expect { receptacle.attach_tag(tag1, tag2) }.to raise_error(StandardError)
-        end
-      end
+  #       it 'raises an error' do
+  #         expect { receptacle.attach_tag(tag1, tag2) }.to raise_error(StandardError)
+  #       end
+  #     end
 
-      context 'when there is no tag_depth' do
-        let(:al1) { create :aliquot }
-        let(:al2) { create :aliquot }
+  #     context 'when there is no tag_depth' do
+  #       let(:al1) { create :aliquot }
+  #       let(:al2) { create :aliquot }
 
-        it 'raises an error' do
-          expect { receptacle.attach_tag(tag1, tag2) }.to raise_error(StandardError)
-        end
-      end
-    end
-  end
+  #       it 'raises an error' do
+  #         expect { receptacle.attach_tag(tag1, tag2) }.to raise_error(StandardError)
+  #       end
+  #     end
+  #   end
+  # end
+  # END: FEATURE CARDINAL
 end

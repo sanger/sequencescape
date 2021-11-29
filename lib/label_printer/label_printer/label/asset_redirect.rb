@@ -9,12 +9,12 @@ module LabelPrinter
         @printer_type_class = options[:printer_type_class]
       end
 
-      def to_h
+      def labels
         case assets.first
         when Plate
-          @printer_type_class.double_label? ? AssetPlateDouble.new(assets).to_h : AssetPlate.new(assets).to_h
+          @printer_type_class.double_label? ? AssetPlateDouble.new(assets).labels : AssetPlate.new(assets).labels
         when Tube
-          AssetTube.new(assets).to_h
+          AssetTube.new(assets).labels
         end
       end
 
