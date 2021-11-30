@@ -28,7 +28,7 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
   private :encoder_for
 
   def object_to_encode(attributes)
-    OpenStruct.new(attributes.reverse_merge(created_at: 'created_at_now', updated_at: 'updated_at_now')) # rubocop:todo Metrics/OpenStructUse
+    OpenStruct.new(attributes.reverse_merge(created_at: 'created_at_now', updated_at: 'updated_at_now')) # rubocop:todo Style/OpenStructUse
   end
   private :object_to_encode
 
@@ -149,7 +149,7 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
         context 'simple values' do
           teardown do
             encoder_for('level1.attribute' => 'json').object_json(
-              object_to_encode(level1: OpenStruct.new(attribute: @value)), # rubocop:todo Metrics/OpenStructUse
+              object_to_encode(level1: OpenStruct.new(attribute: @value)), # rubocop:todo Style/OpenStructUse
               @options
             )
 
@@ -170,8 +170,8 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
         should 'output multiple values' do
           encoder_for('level1.attribute1' => 'nested.json1', 'level2.attribute2' => 'nested.json2').object_json(
             object_to_encode(
-              level1: OpenStruct.new(attribute1: 'value1'), # rubocop:todo Metrics/OpenStructUse
-              level2: OpenStruct.new(attribute2: 'value2') # rubocop:todo Metrics/OpenStructUse
+              level1: OpenStruct.new(attribute1: 'value1'), # rubocop:todo Style/OpenStructUse
+              level2: OpenStruct.new(attribute2: 'value2') # rubocop:todo Style/OpenStructUse
             ),
             @options
           )
@@ -182,8 +182,8 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
         should 'output multiple ungrouped values' do
           encoder_for('level1.attribute1' => 'nested1.json1', 'level2.attribute2' => 'nested2.json2').object_json(
             object_to_encode(
-              level1: OpenStruct.new(attribute1: 'value1'), # rubocop:todo Metrics/OpenStructUse
-              level2: OpenStruct.new(attribute2: 'value2') # rubocop:todo Metrics/OpenStructUse
+              level1: OpenStruct.new(attribute1: 'value1'), # rubocop:todo Style/OpenStructUse
+              level2: OpenStruct.new(attribute2: 'value2') # rubocop:todo Style/OpenStructUse
             ),
             @options
           )
