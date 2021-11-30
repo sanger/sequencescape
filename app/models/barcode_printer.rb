@@ -23,6 +23,7 @@ class BarcodePrinter < ApplicationRecord
 
   delegate :printer_type_id, to: :barcode_printer_type
 
+  # this is for Limber. Moving it over to pmb v2 would allow this to be removed.
   enum print_service: { 'PMB' => 0, 'SPrint' => 1 }
 
   # it would possibly make more sense to have squix as 0 but this fits with PMB but creates no dependency
