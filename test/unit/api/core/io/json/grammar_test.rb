@@ -17,7 +17,7 @@ class Core::Io::Json::GrammarTest < ActiveSupport::TestCase
       end
 
       should 'stream nested attribute value' do
-        @object.expects(:root).returns(OpenStruct.new(leaf: 'value'))
+        @object.expects(:root).returns(OpenStruct.new(leaf: 'value')) # rubocop:todo Metrics/OpenStructUse
         @stream.expects(:attribute).with(:attribute_name, 'value', :options)
       end
     end
@@ -26,7 +26,7 @@ class Core::Io::Json::GrammarTest < ActiveSupport::TestCase
       target = Core::Io::Json::Grammar::Leaf.new(:attribute_name, ['leaf'])
       stream = mock('Stream')
       stream.expects(:attribute).with(:attribute_name, 'value', :options)
-      target.call(OpenStruct.new(leaf: 'value'), :options, stream)
+      target.call(OpenStruct.new(leaf: 'value'), :options, stream) # rubocop:todo Metrics/OpenStructUse
     end
   end
 
@@ -57,7 +57,7 @@ class Core::Io::Json::GrammarTest < ActiveSupport::TestCase
 
     context 'with object' do
       setup do
-        @object = OpenStruct.new(created_at: 'now', updated_at: 'tomorrow')
+        @object = OpenStruct.new(created_at: 'now', updated_at: 'tomorrow') # rubocop:todo Metrics/OpenStructUse
         @handler = mock('Handler')
       end
 
@@ -74,7 +74,7 @@ class Core::Io::Json::GrammarTest < ActiveSupport::TestCase
             child = mock(name).tap { |child| child.expects(:call).with(@object, options, nested_stream) }
             [name, child]
           end.to_h
-        target = Core::Io::Json::Grammar::Root.new(OpenStruct.new(json_root: :root_json), children)
+        target = Core::Io::Json::Grammar::Root.new(OpenStruct.new(json_root: :root_json), children) # rubocop:todo Metrics/OpenStructUse
         target.call(@object, options, stream)
       end
     end
