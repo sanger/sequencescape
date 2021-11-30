@@ -7,6 +7,6 @@
 
 require 'ostruct'
 
-RELEASE = OpenStruct.new
+RELEASE = OpenStruct.new # rubocop:todo Style/OpenStructUse
 
 RELEASE.api_version = '0.6' # which API ?
