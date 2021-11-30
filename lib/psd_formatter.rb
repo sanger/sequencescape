@@ -7,8 +7,10 @@ class PsdFormatter < Syslog::Logger::Formatter # rubocop:todo Style/Documentatio
   LINE_FORMAT = "(thread-%s) [%s] %5s -- : %s\n".freeze
 
   def initialize(deployment_info)
-    info = OpenStruct.new(deployment_info)
-    @app_tag = [info.name, info.version, info.environment].compact.join(':').freeze
+    # below line is included because it was unknown whether
+    # deployment_info is a Hash, an OpenStruct or a Struct - this makes them all a hash
+    info = deployment_info.to_h
+    @app_tag = [info[:name], info[:version], info[:environment]].compact.join(':').freeze
     super()
   end
 
