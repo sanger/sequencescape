@@ -44,7 +44,8 @@ class PlateCreatorTest < ActiveSupport::TestCase
       top_right: (purpose_name).to_s,
       bottom_right: "#{user} #{study_abbreviation}",
       top_far_right: (parent_barcode).to_s,
-      barcode: plate1.machine_barcode
+      barcode: plate1.machine_barcode,
+      label_name: 'main_label'
     }
   end
 
