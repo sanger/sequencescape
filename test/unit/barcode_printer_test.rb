@@ -31,7 +31,7 @@ class BarcodePrinterTest < ActiveSupport::TestCase
       .expects(:post)
       .with(
         "#{configatron.pmb_api}/printers",
-        { 'data' => { 'attributes' => { 'name' => 'test_printer' } } }.to_json,
+        { 'data' => { 'attributes' => { 'name' => 'test_printer', 'printer_type' => 'squix' } } }.to_json,
         content_type: 'application/vnd.api+json',
         accept: 'application/vnd.api+json'
       )

@@ -113,12 +113,12 @@ class PmbClientTest < ActiveSupport::TestCase
       .expects(:post)
       .with(
         'http://localhost:9292/v2/printers',
-        { 'data' => { 'attributes' => { 'name' => 'test_printer' } } }.to_json,
+        { 'data' => { 'attributes' => { 'name' => 'test_printer', 'printer_type' => 'squix' } } }.to_json,
         content_type: 'application/vnd.api+json',
         accept: 'application/vnd.api+json'
       )
       .returns(201)
-    assert_equal 201, LabelPrinter::PmbClient.register_printer('test_printer')
+    assert_equal 201, LabelPrinter::PmbClient.register_printer('test_printer', 'squix')
 
     RestClient
       .expects(:get)
@@ -128,7 +128,7 @@ class PmbClientTest < ActiveSupport::TestCase
         accept: 'application/vnd.api+json'
       )
       .returns('{"data":[{"id":"49","type":"printers","attributes":{"name":"test_printer","protocol":"LPD"}}]}')
-    assert_not LabelPrinter::PmbClient.register_printer('test_printer')
+    assert_not LabelPrinter::PmbClient.register_printer('test_printer', 'squix')
   end
 
   test 'should return pretty errors with new json' do
