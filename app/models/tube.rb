@@ -86,6 +86,8 @@ class Tube < Labware
     barcodes << Barcode.new(format: barcode_format, barcode: barcode)
   end
 
+  # necessary to control the order of barcode creation
+  # foreign barcode should be created last, so it is the primary one
   def new_barcodes=(attributes)
     self.sanger_barcode = attributes[:sanger_barcode] if attributes[:sanger_barcode]
     self.foreign_barcode = attributes[:foreign_barcode] if attributes[:foreign_barcode]
