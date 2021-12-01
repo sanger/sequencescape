@@ -20,7 +20,7 @@ jobs:
       # Establish a cache of rubocop cache to improve performance
       # ${{ env.RUBOCOP_CACHE_ROOT }}
       - name: Set up yarn
-        uses: actions/setup-node@v2
+      - uses: actions/setup-node@v2
         with:
           node-version: '12'
         run: yarn
