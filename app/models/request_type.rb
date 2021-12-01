@@ -2,7 +2,7 @@
 # {Order orders} use RequestTypes as a factory to construct {Request requests}.
 # The list of request types to use is provided by Order#request_types and usually
 # gets populated by the SubmissionTemplate.
-# Once the request it built, request type identifies the type of {Request} and
+# Once the request is built, request type identifies the type of {Request} and
 # associates it with a particular {Pipeline}.
 # In the case of external pipelines, such as Limber, other properties of {Request}
 # such as its {LibraryType} may also be considered.
