@@ -60,9 +60,8 @@ RSpec.describe SubmissionsController, type: :controller do
         post :cancel, params: { id: @submission.id }
       end
 
-      it 'should be able to cancel' do
-        # assert_equal @submission.reload.state, 'cancelled'
-        expect(@submission.reload.state).to eq("cancelled")
+      it 'allow admin to cancel' do
+        expect(@submission.reload.state).to eq('cancelled')
       end
     end
 
@@ -74,8 +73,8 @@ RSpec.describe SubmissionsController, type: :controller do
         post :cancel, params: { id: @submission.id }
       end
 
-      it 'others should not be able to cancel' do
-        expect(@submission.reload.state).not_to eq("cancelled")
+      it 'do not allow other users to cancel' do
+        expect(@submission.reload.state).not_to eq('cancelled')
       end
     end
 
