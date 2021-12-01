@@ -36,7 +36,7 @@ class SequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
 
   def on_started
     super
-    compound_samples_needed? ? transfer_aliquots_into_compound_sample_aliquot : transfer_aliquots
+    compound_samples_needed? ? transfer_aliquots_into_compound_sample_aliquots : transfer_aliquots
   end
 
   def order=(_)
