@@ -75,6 +75,22 @@ class Tube < Labware
     barcodes << Barcode.build_sanger_ean13(attributes)
   end
 
+  # barcode: String e.g. "FD00000001"
+  def foreign_barcode=(barcode)
+    barcode_format = Barcode.matching_barcode_format(barcode)
+
+    raise "Cannot determine format for foreign barcode #{barcode}" if barcode_format.blank?
+
+    raise "Foreign Barcode: #{barcode} is already in use!" if Barcode.exists_for_format?(barcode_format, barcode)
+
+    barcodes << Barcode.new(format: barcode_format, barcode: barcode)
+  end
+
+  def new_barcodes=(attributes)
+    self.sanger_barcode = attributes[:sanger_barcode] if attributes[:sanger_barcode]
+    self.foreign_barcode = attributes[:foreign_barcode] if attributes[:foreign_barcode]
+  end
+
   def details
     purpose.try(:name) || 'Tube'
   end
@@ -85,16 +101,32 @@ class Tube < Labware
 
   def self.create_with_barcode!(*args, &block)
     attributes = args.extract_options!
-    barcode = args.first || attributes.delete(:barcode)
-    prefix = attributes.delete(:barcode_prefix)&.prefix || default_prefix
-    if barcode.present?
-      human = SBCF::SangerBarcode.new(prefix: prefix, number: barcode).human_barcode
-      raise "Barcode: #{barcode} already used!" if Barcode.exists?(barcode: human)
-    end
+
+    barcode, prefix = extract_barcode(args, attributes)
+    validate_barcode(barcode, prefix) if barcode.present?
     barcode ||= AssetBarcode.new_barcode
-    primary_barcode = { prefix: prefix, number: barcode }
-    create!(attributes.merge(sanger_barcode: primary_barcode), &block)
+
+    barcode_hash = {
+      sanger_barcode: {
+        prefix: prefix,
+        number: barcode
+      },
+      foreign_barcode: attributes.delete(:foreign_barcode)
+    }
+
+    create!(attributes.merge(new_barcodes: barcode_hash), &block)
   end
+end
+
+def extract_barcode(args, attributes)
+  barcode = args.first || attributes.delete(:barcode)
+  prefix = attributes.delete(:barcode_prefix)&.prefix || default_prefix
+  [barcode, prefix]
+end
+
+def validate_barcode(barcode, prefix)
+  human = SBCF::SangerBarcode.new(prefix: prefix, number: barcode).human_barcode
+  raise "Barcode: #{barcode} already used!" if Barcode.exists?(barcode: human)
 end
 
 require_dependency 'sample_tube'
