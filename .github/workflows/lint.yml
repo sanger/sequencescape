@@ -22,7 +22,7 @@ jobs:
       - name: Install node
         uses: actions/setup-node@v2
         with:
-          node-version: '12'
+          node-version: "12"
       - name: Set up yarn
         run: yarn
       - name: Cache cops
