@@ -3,7 +3,6 @@
 # the real release.
 ---
 Limber - Cardinal:
-  name: "limber_cardinal"
   submission_class_name: "LinearSubmission"
   related_records:
     request_type_keys: ["limber_cardinal"]
@@ -11,7 +10,6 @@ Limber - Cardinal:
     product_line_name: Cardinal
     product_catalogue_name: Cardinal
 Limber - Cardinal cell banking:
-  name: "limber_cardinal_banking"
   submission_class_name: "LinearSubmission"
   related_records:
     request_type_keys: ["limber_cardinal_banking"]
