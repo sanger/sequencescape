@@ -51,6 +51,34 @@ RSpec.describe SubmissionsController, type: :controller do
       end
     end
 
+    context 'when a submission exists allow admin to cancel' do
+      before do
+        @user.grant_administrator
+        @submission = Submission.create!(priority: 1, user: @user)
+        @submission.state='pending'
+        @submission.save
+        post :cancel, params: { id: @submission.id }
+      end
+
+      it 'should be able to cancel' do
+        # assert_equal @submission.reload.state, 'cancelled'
+        expect(@submission.reload.state).to eq("cancelled")
+      end
+    end
+
+    context 'when a submission exists do not allow others to cancel' do
+      before do
+        @submission = Submission.create!(priority: 1, user: @user)
+        @submission.state='pending'
+        @submission.save
+        post :cancel, params: { id: @submission.id }
+      end
+
+      it 'others should not be able to cancel' do
+        expect(@submission.reload.state).not_to eq("cancelled")
+      end
+    end
+
     # Mainly to verify that it isn't the new test that is broken
     context 'by sample name' do
       before do
