@@ -75,12 +75,10 @@ class SpecificTubeCreation < TubeCreation
   end
 
   def add_foreign_barcode_to_tube(tube, foreign_barcode)
-    # determine the format of the foreign barcode
     foreign_barcode_format = determine_foreign_barcode_format(foreign_barcode)
 
     raise "Cannot determine format for foreign barcode #{foreign_barcode}" if foreign_barcode_format.blank?
 
-    # check for uniqueness
     check_foreign_barcode_unique(foreign_barcode_format, foreign_barcode)
 
     # add the foreign barcode to the tube (will be the primary barcode)
@@ -99,7 +97,6 @@ class SpecificTubeCreation < TubeCreation
         foreign_barcode = tube_detail.delete(:foreign_barcode)
 
         child_purpose.create!(tube_detail) do |tube|
-          # process foreign barcode if passed in
           add_foreign_barcode_to_tube(tube, foreign_barcode) if foreign_barcode.present?
         end
       end
