@@ -12,7 +12,7 @@ limber_cardinal:
   product_line_name: Cardinal
   library_types:
     - Cardinal
-  acceptable_plate_purposes:
+  acceptable_purposes:
     - LCA Blood Vac
 limber_cardinal_banking:
   name: Cardinal Banking
@@ -22,5 +22,5 @@ limber_cardinal_banking:
   for_multiplexing: false
   billable: true
   product_line_name: Cardinal
-  acceptable_plate_purposes:
+  acceptable_purposes:
     - LCA Blood Vac

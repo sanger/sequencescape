@@ -58,10 +58,10 @@ class RequestType < ApplicationRecord
   # ...so only valid for ControlRequest producing RequestTypes...
   has_many :control_pipelines, class_name: 'Pipeline', foreign_key: :control_request_type_id
 
-  # Defines the acceptable plate purposes or the request type.  Essentially this is used to limit the
+  # Defines the acceptable purposes or the request type.  Essentially this is used to limit the
   # cherrypick plate types when going into pulldown to the correct list.
-  has_many :purposes, class_name: 'RequestType::RequestTypePlatePurpose'
-  has_many :acceptable_plate_purposes, through: :purposes, source: :purpose
+  has_many :request_type_purposes, class_name: 'RequestType::RequestTypePlatePurpose'
+  has_many :acceptable_purposes, through: :request_type_purposes, source: :purpose
 
   # While a request type describes what a request is, a request purpose describes why it is being done.
   # ie. standard, qc, internal

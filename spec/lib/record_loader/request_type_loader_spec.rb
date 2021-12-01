@@ -53,7 +53,7 @@ RSpec.describe RecordLoader::RequestTypeLoader, type: :model, loader: true do
       end
 
       it 'sets acceptable purposes' do
-        expect(RequestType.last.acceptable_plate_purposes).to contain_exactly(have_attributes(name: 'Example purpose'))
+        expect(RequestType.last.acceptable_purposes).to contain_exactly(have_attributes(name: 'Example purpose'))
       end
 
       it 'sets library types' do
@@ -86,7 +86,7 @@ RSpec.describe RecordLoader::RequestTypeLoader, type: :model, loader: true do
     end
 
     it 'adds new purposes to the list' do
-      expect(RequestType.last.acceptable_plate_purposes).to contain_exactly(
+      expect(RequestType.last.acceptable_purposes).to contain_exactly(
         have_attributes(name: 'Example purpose'),
         have_attributes(name: 'Example purpose 2')
       )
