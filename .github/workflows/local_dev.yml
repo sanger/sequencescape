@@ -1,7 +1,6 @@
 name: Build image for local development environment
 
 on:
-  - push
   - pull_request
 
 env:
