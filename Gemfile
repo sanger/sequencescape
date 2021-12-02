@@ -121,7 +121,7 @@ group :development do
   gem 'traceroute'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  gem 'mini_racer'
+  gem 'mini_racer', '= 0.4.0'
 
   # Pat of the JS assets pipleine
   gem 'uglifier', '>= 1.0.3'
