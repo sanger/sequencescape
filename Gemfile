@@ -121,6 +121,7 @@ group :development do
   gem 'traceroute'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
+  # Locked at 0.4.0 temporarily due to issue with bundle install, on upgrade to 0.5.0
   gem 'mini_racer', '0.4.0'
 
   # Pat of the JS assets pipleine
