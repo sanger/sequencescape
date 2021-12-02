@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - develop
+      - mini_racer_update_fix_attempt
 
 jobs:
   build-and-release:
@@ -19,6 +20,10 @@ jobs:
         with:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
 
+      - name: Set up node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "12"
       # Establish a cache of js modules to improve performance
       - name: Cache js
         uses: actions/cache@v2
