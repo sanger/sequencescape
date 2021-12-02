@@ -75,24 +75,6 @@ class Tube < Labware
     barcodes << Barcode.build_sanger_ean13(attributes)
   end
 
-  # barcode: String e.g. "FD00000001"
-  def foreign_barcode=(barcode)
-    barcode_format = Barcode.matching_barcode_format(barcode)
-
-    raise "Cannot determine format for foreign barcode #{barcode}" if barcode_format.blank?
-
-    raise "Foreign Barcode: #{barcode} is already in use!" if Barcode.exists_for_format?(barcode_format, barcode)
-
-    barcodes << Barcode.new(format: barcode_format, barcode: barcode)
-  end
-
-  # necessary to control the order of barcode creation
-  # foreign barcode should be created last, so it is the primary one
-  def new_barcodes=(attributes)
-    self.sanger_barcode = attributes[:sanger_barcode] if attributes[:sanger_barcode]
-    self.foreign_barcode = attributes[:foreign_barcode] if attributes[:foreign_barcode]
-  end
-
   def details
     purpose.try(:name) || 'Tube'
   end
@@ -108,15 +90,12 @@ class Tube < Labware
     validate_barcode(barcode, prefix) if barcode.present?
     barcode ||= AssetBarcode.new_barcode
 
-    barcode_hash = {
-      sanger_barcode: {
-        prefix: prefix,
-        number: barcode
-      },
-      foreign_barcode: attributes.delete(:foreign_barcode)
-    }
+    foreign_barcode = attributes.delete(:foreign_barcode)
 
-    create!(attributes.merge(new_barcodes: barcode_hash), &block)
+    tube = create!(attributes.merge(sanger_barcode: { prefix: prefix, number: barcode }), &block)
+
+    tube.foreign_barcode = foreign_barcode if foreign_barcode
+    tube.reload
   end
 end
 
