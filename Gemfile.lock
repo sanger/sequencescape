@@ -251,7 +251,7 @@ GEM
       rake
     launchy (2.5.0)
       addressable (~> 2.7)
-    libv8-node (16.10.0.0)
+    libv8-node (15.14.0.1)
     listen (3.7.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -269,8 +269,8 @@ GEM
     mini_magick (4.11.0)
     mini_mime (1.1.2)
     mini_portile2 (2.6.1)
-    mini_racer (0.5.0)
-      libv8-node (~> 16.10.0.0)
+    mini_racer (0.4.0)
+      libv8-node (~> 15.14.0.0)
     minitest (5.14.4)
     minitest-profiler (0.0.2)
       activesupport (>= 4.1.0)
@@ -565,7 +565,7 @@ DEPENDENCIES
   launchy
   listen
   mime-types
-  mini_racer
+  mini_racer (= 0.4.0)
   minitest
   minitest-profiler
   mocha
