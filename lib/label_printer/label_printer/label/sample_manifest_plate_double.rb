@@ -12,16 +12,17 @@ module LabelPrinter
         @only_first_label = options[:only_first_label]
       end
 
-      def create_label(plate)
+      def build_label(plate)
         {
           left_text: plate.human_barcode,
           right_text: "#{sample_manifest.study.abbreviation} #{plate.barcode_number}",
-          barcode: barcode(plate)
+          barcode: barcode(plate),
+          label_name: 'main_label'
         }
       end
 
-      def create_extra_label(_plate)
-        { left_text: date_today, right_text: @sample_manifest.purpose.name }
+      def build_extra_label(_plate)
+        { left_text: date_today, right_text: @sample_manifest.purpose.name, label_name: 'extra_label' }
       end
 
       def plates

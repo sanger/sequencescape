@@ -41,7 +41,6 @@ describe 'stamping of stock', js: true do
     expect(page).to have_content('Stamping of stock')
 
     select((barcode_printer.name).to_s, from: 'barcode_printer_list')
-    expect(RestClient).to receive(:get).and_raise(Errno::ECONNREFUSED)
     click_button 'Print label'
     expect(page).to have_content('Printmybarcode service is down')
 
