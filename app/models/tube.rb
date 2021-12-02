@@ -84,7 +84,7 @@ class Tube < Labware
   end
 
   def self.create_with_barcode!(*args, &block)
-    attributes = args.extract_options!
+    attributes = args.extract_options!.symbolize_keys
 
     barcode, prefix = extract_barcode(args, attributes)
     validate_barcode(barcode, prefix) if barcode.present?
