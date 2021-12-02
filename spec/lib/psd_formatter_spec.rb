@@ -4,7 +4,7 @@ require 'rails_helper'
 require 'ostruct'
 
 describe PsdFormatter do
-  let(:deployment_info) { OpenStruct.new(name: application_name, version: '10.3.0', environment: 'test') }
+  let(:deployment_info) { OpenStruct.new(name: application_name, version: '10.3.0', environment: 'test') } # rubocop:todo Style/OpenStructUse
 
   let(:log) { StringIO.new }
 
