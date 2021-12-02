@@ -81,6 +81,30 @@ The following tools are required for development:
   Sequencescape (currently 5.7) use [this](https://gist.github.com/operatino/392614486ce4421063b9dece4dfe6c21)
   helpful link.
 
+## Setting up local development environment with Docker
+
+If you don't have Docker installed, then go to the setup for next section (Getting started).
+
+To set up a local development environment in Docker, first you have to create a Docker image with:
+
+```
+docker build .
+```
+
+After it has finished building the Sequencescape docker image, you can start a container and run 
+a shell inside it with:
+
+```
+docker run --env-file .env -p 3000:3000 -v $(pwd):/code -it --entrypoint bash sequencescape:develop
+```
+
+With this you will be in the bash of the container. Make sure you have MySQL running, and 
+you can now start the application with:
+
+```
+bundle exec rails s -b 0.0.0.0
+```
+
 ## Getting started
 
 ### Installing ruby

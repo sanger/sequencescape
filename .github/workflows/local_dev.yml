@@ -1,0 +1,44 @@
+name: Build image for local development environment
+
+on:
+  - push
+  - pull_request
+
+env:
+  IMAGE_NAME: ${{ github.repository }}/${{ github.event.repository.name }}  
+
+jobs:
+  build:
+    name: Test
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: nelonoel/branch-name@v1.0.1
+
+      - name: Build and tag the image for testing and release
+        run: >-
+          docker build .
+          --file Dockerfile
+          --tag docker.pkg.github.com/${IMAGE_NAME}:${BRANCH_NAME}
+
+      - name: Set release tag
+        # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-environment-variable
+        run: echo "RELEASE_VERSION=$(printf -- '%s%s\n' $(cat .release-version) $([ ${BRANCH_NAME} = "develop" ] && printf -- '-%s-develop' ${GITHUB_RUN_ID} || echo ""))" >> $GITHUB_ENV
+
+      - name: Login to registry
+        run: >-
+          docker login
+          -u ${{ github.actor }}
+          -p ${{ secrets.GITHUB_TOKEN }}
+          docker.pkg.github.com
+
+      - name: Tag image with release version
+        run: >-
+          docker tag
+          docker.pkg.github.com/${IMAGE_NAME}:${BRANCH_NAME}
+          docker.pkg.github.com/${IMAGE_NAME}:${{ env.RELEASE_VERSION }}
+
+      - name: Push release tag image to registry
+        run: >-
+          docker push docker.pkg.github.com/${IMAGE_NAME}:${{ env.RELEASE_VERSION }}

@@ -19,7 +19,7 @@ mysql: &MYSQL
   pool: 5
   timeout: 5000
   reaping_frequency: 600
-  host: 127.0.0.1
+  host: <%= ENV.fetch('DBHOST', '127.0.0.1') %>
   port: <%= ENV.fetch('DBPORT','3306') %>
   variables:
     sql_mode: TRADITIONAL
