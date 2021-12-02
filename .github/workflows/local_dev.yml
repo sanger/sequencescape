@@ -1,7 +1,10 @@
 name: Build image for local development environment
 
 on:
-  - pull_request
+  push:
+    branches:
+      - master
+      - develop
 
 env:
   IMAGE_NAME: ${{ github.repository }}/${{ github.event.repository.name }}  
