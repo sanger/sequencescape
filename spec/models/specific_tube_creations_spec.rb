@@ -13,9 +13,8 @@ RSpec.describe SpecificTubeCreation, type: :model do
 
   shared_context 'with common test setup' do
     before do
-      expect(specific_tube_creation.save).to (be true), -> {
-        "Failed to save: #{specific_tube_creation.errors.full_messages}"
-      }
+      expect(specific_tube_creation.save).to (be true),
+      -> { "Failed to save: #{specific_tube_creation.errors.full_messages}" }
     end
 
     let(:first_child) { specific_tube_creation.children.first }
@@ -120,9 +119,7 @@ RSpec.describe SpecificTubeCreation, type: :model do
       let(:existing_tube) { create(:sample_tube, barcodes: [existing_barcode]) }
       let(:expected_error_msg) { "Foreign Barcode: #{foreign_barcode} is already in use!" }
 
-      before do
-        existing_tube
-      end
+      before { existing_tube }
 
       it 'rejects the save if the barcode format is not recognised' do
         expect { specific_tube_creation.save }.to raise_error(RuntimeError, expected_error_msg)
