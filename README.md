@@ -88,14 +88,14 @@ If you don't have Docker installed, then go to the setup for next section (Getti
 To set up a local development environment in Docker, first you have to create a Docker image with:
 
 ```
-docker build .
+docker build . -t sequencescape:localdev
 ```
 
 After it has finished building the Sequencescape docker image, you can start a container and run 
 a shell inside it with:
 
 ```
-docker run --env-file .env -p 3000:3000 -v $(pwd):/code -it --entrypoint bash sequencescape:develop
+docker run --env-file .env -p 3000:3000 -v $(pwd):/code -it --entrypoint bash sequencescape:localdev
 ```
 
 With this you will be in the bash of the container. Make sure you have MySQL running, and 
