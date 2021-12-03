@@ -35,7 +35,6 @@ describe 'Creating a quad stamp' do
     select barcode_printer.name, from: 'Barcode printer'
 
     # We stub the printing
-    expect(LabelPrinter::PmbClient).to receive(:get_label_template_by_name).and_return('data' => [{ 'id' => 15 }])
     expect(RestClient).to receive(:post)
 
     # We submit the form to create the plate and print the barcode
