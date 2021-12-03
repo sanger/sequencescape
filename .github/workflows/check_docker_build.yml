@@ -20,10 +20,7 @@ jobs:
       - name: Start stack and wait for all healthy
         run: >-
           docker-compose up -d
-          while docker-compose ps -q | xargs docker inspect --format '{{ .State.Health.Status }}' | grep -v '^healthy$'; do 
-            sleep 10
-            echo "Waiting for healthy containers"
-          done
+          while docker-compose ps -q | xargs docker inspect --format '{{ .State.Health.Status }}' | grep -v '^healthy$'; do sleep 10; echo "Waiting for healthy containers"; done
         timeout-minutes: 5
 
       - name: Stop stack
