@@ -17,11 +17,13 @@ jobs:
         run: >-
           docker-compose build
 
-      # Test that the stack wil start all required services and wait until the specified string is
-      # displayed returning success, or wait until 5 minutes has passed and fail
-      - name: Start stack and check correct start
+      - name: Start stack and wait for all healthy
         run: >-
-          docker-compose up | grep -q "Listening on http://0.0.0.0"
+          docker-compose up -d
+          while docker-compose ps -q | xargs docker inspect --format '{{ .State.Health.Status }}' | grep 'unhealthy'; do 
+            sleep 1
+            echo "Waiting for healthy containers"
+          done
         timeout-minutes: 5
 
       - name: Stop stack
