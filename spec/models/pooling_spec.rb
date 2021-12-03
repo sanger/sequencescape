@@ -138,7 +138,6 @@ describe Pooling, type: :model, poolings: true do
       end
 
       it 'returns correct message if something is wrong with pmb' do
-        expect(RestClient).to receive(:get).and_raise(Errno::ECONNREFUSED)
         expect(pooling.execute).to be true
         expect(pooling.message).to eq(
           error: 'Printmybarcode service is down',
