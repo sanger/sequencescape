@@ -27,6 +27,10 @@ services:
     volumes:
       - ".:/code"
     entrypoint: "bash -c 'bundle exec rake jobs:work'"
+    healthcheck:
+      test: "ps -ef | grep -q jobs"
+      interval: 10s
+      retries: 5
 
   mysql_server:
     image: mysql:5.7
@@ -34,3 +38,7 @@ services:
         - ./dockermysql:/var/lib/mysql
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD="yes"
+    healthcheck:
+      test: "/etc/init.d/mysql status"
+      interval: 1s
+      retries: 120
