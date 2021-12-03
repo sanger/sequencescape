@@ -22,7 +22,7 @@ jobs:
       # the command and return error
       - name: Start stack and check correct start
         run: >-
-          time docker-compose up | tee /dev/tty | timeout 120s grep -q "Listening on http://0.0.0.0"
+          time docker-compose up | timeout 120s grep -q "Listening on http://0.0.0.0"
 
       - name: Stop stack
         run: >-
