@@ -9,11 +9,15 @@ services:
       - "3000:3000"
     environment:
       - DBHOST=mysql_server
-      - RESET_DATABASE=$RESET_DATABASE}
+      - RESET_DATABASE=$RESET_DATABASE
     volumes:
       - ".:/code"
     entrypoint: "bash -c ./entrypoint.sh"
-  
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 4
   sequencescape_worker:
     image: sequencescape_local_image
     depends_on: 
