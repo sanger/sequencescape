@@ -55,7 +55,7 @@ RSpec.describe SubmissionsController, type: :controller do
       before do
         @user.grant_administrator
         @submission = Submission.create!(priority: 1, user: @user)
-        @submission.state='pending'
+        @submission.state = 'pending'
         @submission.save
         post :cancel, params: { id: @submission.id }
       end
@@ -68,7 +68,7 @@ RSpec.describe SubmissionsController, type: :controller do
     context 'when a submission exists do not allow others to cancel' do
       before do
         @submission = Submission.create!(priority: 1, user: @user)
-        @submission.state='pending'
+        @submission.state = 'pending'
         @submission.save
         post :cancel, params: { id: @submission.id }
       end
