@@ -84,26 +84,16 @@ The following tools are required for development:
 
 ## Getting started (using Docker)
 
-If you have Docker installed, we have included all configuration needed to set up a 
-local development and testing environment for Sequencescape using Docker scripts that
-facilitates the installation process.
+To set up a local development environment in Docker, you have to start a stack of services
+that include a mysql database, and reset this database contents. You can do all together
+by running the following command:
 
-To set up a local development environment in Docker, first you have to build the Docker image
-for running Sequencescape in local. You have to run the next command from the folder where you
-downloaded Sequencescape codebase:
-
-```
-docker-compose build
-```
-
-After it, the first time you run Docker stack you have to run the following command, to 
-reset the database:
 ```
 RESET_DATABASE="true" docker-compose up
 ```
 
-Optionally, if you don't want to reset the database on start, you can run it without the 
-RESET_DATABASE declaration:
+Optionally, if this is not ther first time you start the app, you may not want to reset the
+database, and you can run this command instead:
 
 ```
 docker-compose up
@@ -115,8 +105,8 @@ username and password admin/admin.
 
 ## Getting started (using native installation)
 
-If you don't have Docker installed or if you prefer a native installation of Sequencescape, follow
-this instructions:
+This section only applies if you don't have Docker installed or if you prefer a native installation 
+of Sequencescape.
 
 ### Installing ruby
 

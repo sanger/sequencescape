@@ -14,6 +14,3 @@ ADD . /code/
 RUN npm install --global yarn
 RUN gem install bundler
 RUN bundle install
-
-EXPOSE 3000
-
