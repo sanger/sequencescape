@@ -1,0 +1,32 @@
+version: "3.3"
+services:
+  sequencescape_server:
+    build: .
+    image: sequencescape_local_image
+    depends_on: 
+      - mysql
+    ports:
+      - "3000:3000"
+    environment:
+      - DBHOST=mysql
+      - RESET_DATABASE=${RESET_DATABASE}
+    volumes:
+      - ".:/code"
+    entrypoint: "bash -c ./entrypoint.sh"
+  
+  sequencescape_worker:
+    image: sequencescape_local_image
+    depends_on: 
+      - sequencescape_server
+    environment:
+      - DBHOST=mysql
+    volumes:
+      - ".:/code"
+    entrypoint: "bash -c 'bundle exec rake jobs:work'"
+
+  mysql:
+    image: mysql:5.7
+    volumes:
+        - ./dockermysql:/var/lib/mysql
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD="yes"

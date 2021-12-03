@@ -81,31 +81,42 @@ The following tools are required for development:
   Sequencescape (currently 5.7) use [this](https://gist.github.com/operatino/392614486ce4421063b9dece4dfe6c21)
   helpful link.
 
-## Setting up local development environment with Docker
 
-If you don't have Docker installed, then go to the setup for next section (Getting started).
+## Getting started (using Docker)
 
-To set up a local development environment in Docker, first you have to create a Docker image with:
+If you have Docker installed, we have included all configuration needed to set up a 
+local development and testing environment for Sequencescape using Docker scripts that
+facilitates the installation process.
 
-```
-docker build . -t sequencescape:localdev
-```
-
-After it has finished building the Sequencescape docker image, you can start a container and run 
-a shell inside it with:
+To set up a local development environment in Docker, first you have to build the Docker image
+for running Sequencescape in local. You have to run the next command from the folder where you
+downloaded Sequencescape codebase:
 
 ```
-docker run --env-file .env -p 3000:3000 -v $(pwd):/code -it --entrypoint bash sequencescape:localdev
+docker-compose build
 ```
 
-With this you will be in the bash of the container. Make sure you have MySQL running, and 
-you can now start the application with:
+After it, the first time you run Docker stack you have to run the following command, to 
+reset the database:
+```
+RESET_DATABASE="true" docker-compose up
+```
+
+Optionally, if you don't want to reset the database on start, you can run it without the 
+RESET_DATABASE declaration:
 
 ```
-bundle exec rails s -b 0.0.0.0
+docker-compose up
 ```
 
-## Getting started
+With this we should have started Sequencescape server and all required services. You should be 
+able to access Sequencescape by going to <http://localhost:3000> and log in with 
+username and password admin/admin.
+
+## Getting started (using native installation)
+
+If you don't have Docker installed or if you prefer a native installation of Sequencescape, follow
+this instructions:
 
 ### Installing ruby
 
