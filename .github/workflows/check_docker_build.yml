@@ -15,15 +15,15 @@ jobs:
 
       - name: Build image
         run: >-
-          time docker-compose build
+          docker-compose build
 
       # Test that the stack wil start all required services and wait until the specified string is
-      # displayed returning success, or wait until 120 seconds has passed, when it will kill 
-      # the command and return error
+      # displayed returning success, or wait until 5 minutes has passed and fail
       - name: Start stack and check correct start
         run: >-
-          time docker-compose up | timeout 120s grep -q "Listening on http://0.0.0.0"
+          docker-compose up | grep -q "Listening on http://0.0.0.0"
+        timeout-minutes: 5
 
       - name: Stop stack
         run: >-
-          time docker-compose down
+          docker-compose down
