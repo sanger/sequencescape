@@ -4,12 +4,12 @@ services:
     build: .
     image: sequencescape_local_image
     depends_on: 
-      - mysql
+      - mysql_server
     ports:
       - "3000:3000"
     environment:
-      - DBHOST=mysql
-      - RESET_DATABASE=${RESET_DATABASE}
+      - DBHOST=mysql_server
+      - RESET_DATABASE=$RESET_DATABASE}
     volumes:
       - ".:/code"
     entrypoint: "bash -c ./entrypoint.sh"
@@ -19,12 +19,12 @@ services:
     depends_on: 
       - sequencescape_server
     environment:
-      - DBHOST=mysql
+      - DBHOST=mysql_server
     volumes:
       - ".:/code"
     entrypoint: "bash -c 'bundle exec rake jobs:work'"
 
-  mysql:
+  mysql_server:
     image: mysql:5.7
     volumes:
         - ./dockermysql:/var/lib/mysql

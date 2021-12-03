@@ -1,0 +1,29 @@
+name: Check docker image building process
+
+on:
+  pull_request:
+
+env:
+  IMAGE_NAME: ${{ github.repository }}/${{ github.event.repository.name }}  
+
+jobs:
+  build:
+    name: Check docker image building process
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build image
+        run: >-
+          time docker-compose build
+
+      # Test that the stack wil start all required services and wait until the specified string is
+      # displayed returning success, or wait until 120 seconds has passed, when it will kill 
+      # the command and return error
+      - name: Start stack and check correct start
+        run: >-
+          time docker-compose up | tee /dev/tty | timeout 120s grep -q "Listening on http://0.0.0.0"
+
+      - name: Stop stack
+        run: >-
+          time docker-compose down

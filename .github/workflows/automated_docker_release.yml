@@ -1,4 +1,4 @@
-name: Build image for local development environment
+name: Release image for local development environment
 
 on:
   push:

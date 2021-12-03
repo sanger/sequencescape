@@ -1,5 +1,11 @@
-#!/bin/bash
-if [ "$RESET_DATABASE" = "true" ]; then
+#!/usr/bin/env bash
+
+set -o errexit
+set -o pipefail
+set -o nounset
+#set -o xtrace
+
+if [ "${RESET_DATABASE:-}" = "true" ]; then
   echo "Resetting database"
   bundle exec rake db:reset
 fi
