@@ -18,6 +18,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 4
+
   sequencescape_worker:
     image: sequencescape_local_image
     depends_on: 
@@ -40,5 +41,29 @@ services:
       - MYSQL_ALLOW_EMPTY_PASSWORD="yes"
     healthcheck:
       test: "/etc/init.d/mysql status"
-      interval: 1s
+      interval: 30s
       retries: 120
+
+  rabbitmq_server:
+    image: rabbitmq:3-management
+    ports: 
+      - "15672:15672"
+    healthcheck:
+      test: "rabbitmq-diagnostics -q ping"
+      interval: 30s
+      retries: 120
+
+  sequencescape_consumer:
+    image: sequencescape_local_image
+    depends_on: 
+      - rabbitmq_server
+      - mysql_server
+    environment:
+      - DBHOST=mysql_server
+    volumes:
+      - ".:/code"
+    entrypoint: "bash -c 'bundle exec warren consumer start'"
+    healthcheck:
+      test: "ps -ef | grep -q warren"
+      interval: 10s
+      retries: 5
