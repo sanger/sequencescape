@@ -21,7 +21,7 @@ jobs:
         run: |
           docker-compose up -d
           while docker-compose ps -q | xargs docker inspect --format '{{ .State.Health.Status }}' | grep -v '^healthy$' ; do 
-            sleep 10
+            sleep 30
             echo "Waiting for healthy containers"
           done
         timeout-minutes: 5

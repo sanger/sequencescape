@@ -60,6 +60,8 @@ services:
       - mysql_server
     environment:
       - DBHOST=mysql_server
+      - RMQHOST=rabbitmq_server
+      - WARREN_TYPE=broadcast
     volumes:
       - ".:/code"
     entrypoint: "bash -c 'bundle exec warren consumer start'"

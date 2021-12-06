@@ -11,7 +11,7 @@ COPY Gemfile.lock /code
 
 ADD . /code/
 
-COPY config/aker.yml.example /code/config/aker.yml
+RUN cp /code/config/aker.yml.example /code/config/aker.yml
 
 RUN npm install --global yarn
 RUN gem install bundler

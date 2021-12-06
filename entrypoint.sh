@@ -11,4 +11,4 @@ if [ "${RESET_DATABASE:-}" = "true" ]; then
 fi
 
 echo "Starting service"
-bundle exec rails s -b 0.0.0.0
+exec bundle exec rails s -b 0.0.0.0
