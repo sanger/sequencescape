@@ -5,13 +5,9 @@ services:
     image: sequencescape_local_image
     depends_on: 
       - mysql_server
-    ports:
-      - "3000:3000"
     environment:
       - DBHOST=mysql_server
       - RESET_DATABASE=$RESET_DATABASE
-    volumes:
-      - ".:/code"
     entrypoint: "bash -c ./entrypoint.sh"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
@@ -25,8 +21,6 @@ services:
       - sequencescape_server
     environment:
       - DBHOST=mysql_server
-    volumes:
-      - ".:/code"
     entrypoint: "bash -c 'bundle exec rake jobs:work'"
     healthcheck:
       test: "ps -ef | grep -q jobs"
@@ -35,8 +29,6 @@ services:
 
   mysql_server:
     image: mysql:5.7
-    volumes:
-        - ./dockermysql:/var/lib/mysql
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD="yes"
     healthcheck:
@@ -46,8 +38,6 @@ services:
 
   rabbitmq_server:
     image: rabbitmq:3-management
-    ports: 
-      - "15672:15672"
     healthcheck:
       test: "rabbitmq-diagnostics -q ping"
       interval: 30s
@@ -62,8 +52,6 @@ services:
       - DBHOST=mysql_server
       - RMQHOST=rabbitmq_server
       - WARREN_TYPE=broadcast
-    volumes:
-      - ".:/code"
     entrypoint: "bash -c 'bundle exec warren consumer start'"
     healthcheck:
       test: "ps -ef | grep -q warren"
