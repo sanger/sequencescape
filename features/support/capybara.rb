@@ -19,11 +19,11 @@ end
 
 def configure_window_size(driver)
   # links in header disappear if window is too small, then capybara can't click on them
-  driver.options[:capabilities].add_argument('--window-size=1600,3200')
+  driver.options[:options].add_argument('--window-size=1600,3200')
 end
 
 def enable_chrome_headless_downloads(driver)
-  driver.options[:capabilities].add_preference(:download, default_directory: Capybara.save_path)
+  driver.options[:options].add_preference(:download, default_directory: Capybara.save_path)
   driver.browser.download_path = Capybara.save_path
   driver
 end
