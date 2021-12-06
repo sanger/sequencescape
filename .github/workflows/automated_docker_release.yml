@@ -44,3 +44,8 @@ jobs:
       - name: Push release tag image to registry
         run: >-
           docker push docker.pkg.github.com/${IMAGE_NAME}:${{ env.RELEASE_VERSION }}
+
+      - name: Remove the oldest package
+        uses: actions/delete-package-versions@v1
+        with:
+          package-name: "${{ github.event.repository.name }}"
