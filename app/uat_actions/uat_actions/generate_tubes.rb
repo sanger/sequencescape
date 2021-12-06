@@ -51,18 +51,7 @@ class UatActions::GenerateTubes < UatActions
         study: study
       )
 
-      # Add a foreign barcode if selected
-      if foreign_barcode_type == 'FluidX'
-        foreign_barcode_format = 'fluidx_barcode'
-
-        # using a set prefix and a subset of the machine barcode
-        prefix = 'SA'
-        suffix = tube.machine_barcode[-8..]
-
-        foreign_barcode = prefix + suffix
-
-        tube.barcodes << Barcode.new(format: foreign_barcode_format, barcode: foreign_barcode)
-      end
+      add_foreign_barcode_if_selected(tube)
 
       # set the tube primary barcode on the report
       report["tube_#{i}"] = tube.human_barcode
@@ -71,6 +60,20 @@ class UatActions::GenerateTubes < UatActions
   end
 
   private
+
+  def add_foreign_barcode_if_selected(tube)
+    return unless foreign_barcode_type == 'FluidX'
+
+    foreign_barcode_format = 'fluidx_barcode'
+
+    # using a set prefix and a subset of the machine barcode
+    prefix = 'SA'
+    suffix = tube.machine_barcode[-8..]
+
+    foreign_barcode = prefix + suffix
+
+    tube.barcodes << Barcode.new(format: foreign_barcode_format, barcode: foreign_barcode)
+  end
 
   def study
     @study ||= Study.find_by!(name: study_name)
