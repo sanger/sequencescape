@@ -45,6 +45,29 @@ describe UatActions::GenerateTubes do
         expect(uat_action.report['tube_2']).to eq report['tube_2']
       end
     end
+
+    context 'when creating the tube with a fluidx foreign barcode' do
+      let(:parameters) do
+        {
+          tube_purpose_name: Tube::Purpose.standard_sample_tube.name,
+          tube_count: 1,
+          study_name: study.name,
+          foreign_barcode_type: 'FluidX'
+        }
+      end
+      let(:report) do
+        # Tube NT6T created with foreign barcode based on machine barcode
+        { 'tube_0' => 'SA00006844' }
+      end
+
+      before { allow(AssetBarcode).to receive(:new_barcode).and_return('6') }
+
+      it 'can be performed' do
+        expect(uat_action.perform).to eq true
+        expect(uat_action.report['tube_0']).to eq report['tube_0']
+        expect(Tube.find_by_barcode(report['tube_0']).aliquots.first.study).to eq study
+      end
+    end
   end
 
   it 'returns a default' do

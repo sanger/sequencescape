@@ -16,13 +16,13 @@ module IlluminaHtp::Requests
       pool_information[:for_multiplexing] = request_type.for_multiplexing?
     end
 
-    delegate :acceptable_plate_purposes, to: :request_type
+    delegate :acceptable_purposes, to: :request_type
 
     validate :valid_purpose?, if: :asset_id_changed?
     def valid_purpose?
-      return true if acceptable_plate_purposes.empty? || acceptable_plate_purposes.include?(asset.plate.purpose)
+      return true if acceptable_purposes.empty? || acceptable_purposes.include?(asset.labware.purpose)
 
-      errors.add(:asset, "#{asset.plate.purpose.name} is not a suitable plate purpose.")
+      errors.add(:asset, "#{asset.labware.purpose.name} is not a suitable purpose.")
       false
     end
 
