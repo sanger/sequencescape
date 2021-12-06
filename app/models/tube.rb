@@ -101,6 +101,9 @@ class Tube < Labware
   end
 end
 
+private
+
+# mutates 'attributes'
 def extract_barcode(args, attributes)
   barcode = args.first || attributes.delete(:barcode)
   prefix = attributes.delete(:barcode_prefix)&.prefix || default_prefix
