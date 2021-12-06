@@ -90,6 +90,8 @@ class Tube < Labware
     validate_barcode(barcode, prefix) if barcode.present?
     barcode ||= AssetBarcode.new_barcode
 
+    # remove this so it's not passed in on creation, and set it explicitly afterwards
+    # this is to control the order of barcode addition so that it gets set as the 'primary' barcode
     foreign_barcode = attributes.delete(:foreign_barcode)
 
     tube = create!(attributes.merge(sanger_barcode: { prefix: prefix, number: barcode }), &block)
