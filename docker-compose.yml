@@ -6,10 +6,11 @@ services:
   sequencescape_server:
     build: .
     image: sequencescape_local_image
-    depends_on: 
+    depends_on:
       - mysql_server
     environment:
       - DBHOST=mysql_server
+      - DBPORT=3306
       - RESET_DATABASE=$RESET_DATABASE
     entrypoint: "bash -c ./entrypoint.sh"
     healthcheck:
@@ -20,10 +21,11 @@ services:
 
   sequencescape_worker:
     image: sequencescape_local_image
-    depends_on: 
+    depends_on:
       - sequencescape_server
     environment:
       - DBHOST=mysql_server
+      - DBPORT=3306
     entrypoint: "bash -c 'bundle exec rake jobs:work'"
     healthcheck:
       test: "ps -ef | grep -q jobs"
@@ -48,11 +50,12 @@ services:
 
   sequencescape_consumer:
     image: sequencescape_local_image
-    depends_on: 
+    depends_on:
       - rabbitmq_server
       - mysql_server
     environment:
       - DBHOST=mysql_server
+      - DBPORT=3306
       - RMQHOST=rabbitmq_server
       - WARREN_TYPE=broadcast
     entrypoint: "bash -c 'bundle exec warren consumer start'"

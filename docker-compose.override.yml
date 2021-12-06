@@ -1,6 +1,6 @@
 #
 # Extension of the stack for Local Dev environment running.
-# Provides mounting code from the current folder path and 
+# Provides mounting code from the current folder path and
 # connect to web and rabbitmq UI
 version: "3.3"
 services:
@@ -16,10 +16,10 @@ services:
 
   mysql_server:
     volumes:
-        - ./dockermysql:/var/lib/mysql
+      - ./dockermysql:/var/lib/mysql
 
   rabbitmq_server:
-    ports: 
+    ports:
       - "15672:15672"
 
   sequencescape_consumer:

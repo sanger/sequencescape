@@ -4,7 +4,7 @@ on:
   pull_request:
 
 env:
-  IMAGE_NAME: ${{ github.repository }}/${{ github.event.repository.name }}  
+  IMAGE_NAME: ${{ github.repository }}/${{ github.event.repository.name }}
 
 jobs:
   build:

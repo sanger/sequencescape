@@ -81,11 +81,10 @@ The following tools are required for development:
   Sequencescape (currently 5.7) use [this](https://gist.github.com/operatino/392614486ce4421063b9dece4dfe6c21)
   helpful link.
 
-
 ## Getting started (using Docker)
 
-To set up a local development environment in Docker, you have to build a new Docker image for 
-Sequencescapek. start a stack of services that include a mysql database, and reset 
+To set up a local development environment in Docker, you have to build a new Docker image for
+Sequencescapek. start a stack of services that include a mysql database, and reset
 this database contents. You can do all together by running the command:
 
 ```
@@ -99,8 +98,8 @@ database, and you can run this command instead:
 docker-compose up
 ```
 
-With this we should have started Sequencescape server and all required services. You should be 
-able to access Sequencescape by going to <http://localhost:3000> and log in with 
+With this we should have started Sequencescape server and all required services. You should be
+able to access Sequencescape by going to <http://localhost:3000> and log in with
 username and password admin/admin.
 
 **NOTE** If you ever need to recreate the image built on first start (because you made modifications
@@ -112,7 +111,7 @@ docker-compose build
 
 ## Getting started (using native installation)
 
-This section only applies if you don't have Docker installed or if you prefer a native installation 
+This section only applies if you don't have Docker installed or if you prefer a native installation
 of Sequencescape.
 
 ### Installing ruby
