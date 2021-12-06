@@ -7,7 +7,7 @@ FROM ruby:2.7.5-slim
 #  - netcat: for wait for connection to database
 #  - nodejs, yarn, git, default-libmysqlclient-dev and graphviz are rails gems dependencies
 RUN apt-get update && apt-get install -y \
-  net-tools build-essential curl netcat \
+  net-tools build-essential curl netcat wget vim \
   nodejs yarn git default-libmysqlclient-dev npm graphviz
 
 WORKDIR /code
@@ -20,6 +20,12 @@ ADD . /code/
 # TODO: We should get rid of this file if is not needed anymore
 RUN cp /code/config/aker.yml.example /code/config/aker.yml
 
+# Install Chrome for being able to run tests
+RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+RUN apt install -y ./google-chrome-stable_current_amd64.deb
+RUN rm ./google-chrome-stable_current_amd64.deb
+
+# Rails installation
 RUN npm install --global yarn
 RUN gem install bundler
 RUN bundle install
