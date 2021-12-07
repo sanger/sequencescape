@@ -30,7 +30,6 @@ class UatActions::GenerateTagGroup < UatActions
                include_blank: 'No Adapter Type'
              }
 
-
   validates :size,
             numericality: {
               less_than_or_equal_to: ->(record) { record.existing_tags },
