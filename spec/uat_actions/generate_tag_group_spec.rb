@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe UatActions::GenerateTagGroup do
-  context 'with valid options' do
+  context 'when valid options' do
     let(:parameters) { { name: 'Test group', size: '3' } }
     let(:uat_action) { described_class.new(parameters) }
     let(:report) do
@@ -19,7 +19,7 @@ describe UatActions::GenerateTagGroup do
       expect(TagGroup.find_by(name: 'Test group').adapter_type_id).to be_nil
     end
 
-    context 'including an adapter type' do
+    context 'with an adapter type' do
       let(:adapter_type) { create(:adapter_type) }
       let(:parameters) { { name: 'Test group', size: '3', adapter_type_name: adapter_type.name } }
 
