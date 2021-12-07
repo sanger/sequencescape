@@ -10,9 +10,20 @@ limber_pcr_bespoke:
   acceptable_plate_purposes:
     - LBB Cherrypick
   library_types:
-    - Ribozero RNA depletion
     - ChIP-Seq Auto
+    - Chromium single cell HTO
+    - Chromium single cell surface protein
+    - Chromium Visium
+    - emSEQ
+    - Haplotagging
+    - Hi-C
+    - Hi-C - Arima v1
+    - Hi-C - Arima v2
+    - Hi-C - Dovetail
+    - Hi-C - OmniC
+    - Hi-C - Qiagen
     - Manual Standard WGS (Plate)
+    - Ribozero RNA depletion
     - Ribozero RNA-seq (Bacterial)
     - Ribozero RNA-seq (HMR)
     - RNA-seq dUTP eukaryotic
@@ -21,16 +32,6 @@ limber_pcr_bespoke:
     - Standard
     - TraDIS
     - TruSeq mRNA (RNA Seq)
-    - Chromium Visium
-    - Hi-C
-    - Hi-C - Arima v2
-    - Hi-C - Qiagen
-    - Hi-C - OmniC
-    - Hi-C - Arima v1
-    - Hi-C - Dovetail
-    - Haplotagging
-    - Chromium single cell HTO
-    - Chromium single cell surface protein
 limber_chromium_bespoke:
   <<: *limber_bespoke_library
   name: Limber Chromium Bespoke
