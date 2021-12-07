@@ -5,6 +5,7 @@ class AddLibraryTypeEmseq < ActiveRecord::Migration[6.0]
   def self.REQUEST_TYPES
     %w[limber_chromium_bespoke limber_pcr_bespoke].map { |rt_key| RequestType.find_by(key: rt_key) }
   end
+
   def self.up
     ActiveRecord::Base.transaction do |_t|
       lt = LibraryType.find_or_create_by!(name: 'emSEQ')
