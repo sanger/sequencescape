@@ -18,7 +18,7 @@ When /^I print the following labels$/ do |table|
     times: 1
   ) do |req|
     h_body = JSON.parse(req.body)
-    all_label_bitmaps = h_body['data']['attributes']['labels']['body'].first['main_label']
+    all_label_bitmaps = h_body['data']['attributes']['labels'].first
     label_bitmaps.all? { |k, v| v.match all_label_bitmaps[k] }
   end
 end

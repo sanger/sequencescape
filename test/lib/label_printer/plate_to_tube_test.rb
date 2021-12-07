@@ -23,7 +23,8 @@ class PlateToTubesTest < ActiveSupport::TestCase
       bottom_line: (Date.today.strftime('%e-%^b-%Y')).to_s,
       round_label_top_line: prefix,
       round_label_bottom_line: barcode1,
-      barcode: tube1.machine_barcode
+      barcode: tube1.machine_barcode,
+      label_name: 'main_label'
     }
   end
 
