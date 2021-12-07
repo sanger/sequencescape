@@ -1,0 +1,39 @@
+#
+# This compose file only starts the server and jobs worker and will
+# use the local mysql database, which is the default configuration for development
+# in PSD.
+#
+version: "3.3"
+services:
+  sequencescape_server:
+    build: .
+    image: sequencescape_local_image
+    environment:
+      - DBHOST=host.docker.internal
+      - DBPORT=3306
+      - RESET_DATABASE=$RESET_DATABASE
+    entrypoint: "bash -c ./entrypoint.sh"
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 4
+    volumes:
+      - ".:/code"
+
+  sequencescape_worker:
+    image: sequencescape_local_image
+    depends_on:
+      - sequencescape_server
+    environment:
+      - DBHOST=host.docker.internal
+      - DBPORT=3306
+    entrypoint: "bash -c 'bundle exec rake jobs:work'"
+    healthcheck:
+      test: "ps -ef | grep -q jobs"
+      interval: 10s
+      retries: 5
+    volumes:
+      - ".:/code"
