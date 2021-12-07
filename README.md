@@ -84,17 +84,17 @@ The following tools are required for development:
 ## Getting started (using Docker)
 
 To set up a local development environment in Docker, you have to build a new Docker image for
-Sequencescapek. start a stack of services that include a mysql database, and reset
+Sequencescape. start a stack of services that include a mysql database, and reset
 this database contents. You can do all together by running the command:
 
-```
-RESET_DATABASE="true" docker-compose up
+```shell
+RESET_DATABASE=true docker-compose up
 ```
 
-Optionally, if this is not ther first time you start the app, you may not want to reset the
+Optionally, if this is not the first time you start the app, you may not want to reset the
 database, and you can run this command instead:
 
-```
+```shell
 docker-compose up
 ```
 
@@ -105,7 +105,7 @@ username and password admin/admin.
 **NOTE** If you ever need to recreate the image built on first start (because you made modifications
 to the Dockerfile file) you can run a building process with:
 
-```
+```shell
 docker-compose build
 ```
 
