@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Add new library type emSEQ for bespoke pcr submission templates
 #
