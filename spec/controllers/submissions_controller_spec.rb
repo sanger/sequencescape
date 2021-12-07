@@ -65,7 +65,7 @@ RSpec.describe SubmissionsController, type: :controller do
       end
     end
 
-    context 'when a submission exists do not allow others to cancel' do
+    context 'do not allow users other than administrator, lab manager or slf manager to cancel submission' do
       before do
         @submission = Submission.create!(priority: 1, user: @user)
         @submission.state = 'pending'
@@ -75,6 +75,34 @@ RSpec.describe SubmissionsController, type: :controller do
 
       it 'do not allow other users to cancel' do
         expect(@submission.reload.state).not_to eq('cancelled')
+      end
+    end
+
+    context 'when a submission exists allow lab manager to cancel' do
+      before do
+        @user.grant_lab_manager
+        @submission = Submission.create!(priority: 1, user: @user)
+        @submission.state = 'pending'
+        @submission.save
+        post :cancel, params: { id: @submission.id }
+      end
+
+      it 'allow lab manager to cancel' do
+        expect(@submission.reload.state).to eq('cancelled')
+      end
+    end
+
+    context 'when a submission exists allow sample management manager to cancel' do
+      before do
+        @user.grant_slf_manager
+        @submission = Submission.create!(priority: 1, user: @user)
+        @submission.state = 'pending'
+        @submission.save
+        post :cancel, params: { id: @submission.id }
+      end
+
+      it 'allow sample management manager to cancel' do
+        expect(@submission.reload.state).to eq('cancelled')
       end
     end
 

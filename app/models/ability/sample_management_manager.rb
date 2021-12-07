@@ -21,5 +21,6 @@ class Ability::SampleManagementManager
     can :create, Supplier
     can :manage, PlateTemplate
     can :convert_to_tube, Plate
+    can :cancel, Submission
   end
 end
