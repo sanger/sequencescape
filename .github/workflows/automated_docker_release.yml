@@ -11,7 +11,7 @@ env:
 
 jobs:
   build:
-    name: Test
+    name: Automated release fo Docker image
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2

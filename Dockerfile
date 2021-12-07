@@ -7,8 +7,18 @@ FROM ruby:2.7.5-slim
 #  - netcat: for wait for connection to database
 #  - nodejs, yarn, git, default-libmysqlclient-dev and graphviz are rails gems dependencies
 RUN apt-get update && apt-get install -y \
-  net-tools build-essential curl netcat wget vim \
-  nodejs yarn git default-libmysqlclient-dev npm graphviz
+build-essential \
+curl \
+default-libmysqlclient-dev \
+git \
+graphviz \
+net-tools \
+netcat \
+nodejs \
+npm \
+vim \
+wget \
+yarn
 
 WORKDIR /code
 
