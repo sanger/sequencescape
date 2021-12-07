@@ -62,7 +62,7 @@ ActiveRecord::Base.transaction do
       key: 'illumina_a_shared',
       name: 'Illumina-A Shared Library Creation',
       request_class_name: 'IlluminaHtp::Requests::SharedLibraryPrep',
-      acceptable_plate_purposes: [Purpose.find_by(name: 'Cherrypicked')],
+      acceptable_purposes: [Purpose.find_by(name: 'Cherrypicked')],
       for_multiplexing: false,
       no_target_asset: false
     },
@@ -78,7 +78,7 @@ ActiveRecord::Base.transaction do
       key: 'illumina_a_isc',
       name: 'Illumina-A ISC',
       request_class_name: 'Pulldown::Requests::IscLibraryRequestPart',
-      acceptable_plate_purposes: [Purpose.find_by(name: 'Lib PCR-XP')],
+      acceptable_purposes: [Purpose.find_by(name: 'Lib PCR-XP')],
       for_multiplexing: true,
       no_target_asset: false,
       target_purpose: Purpose.find_by(name: 'Cap Lib Pool Norm')
@@ -191,7 +191,7 @@ ActiveRecord::Base.transaction do
       end
   end
 
-  RequestType.find_by(key: 'illumina_b_shared').acceptable_plate_purposes << Purpose.find_by(name: 'Cherrypicked')
+  RequestType.find_by(key: 'illumina_b_shared').acceptable_purposes << Purpose.find_by(name: 'Cherrypicked')
   RequestType.create!(
     key: 'illumina_a_re_isc',
     name: 'Illumina-A ReISC',
@@ -203,7 +203,7 @@ ActiveRecord::Base.transaction do
     product_line: ProductLine.find_by(name: 'Illumina-A'),
     target_purpose: Purpose.find_by(name: 'Standard MX')
   ) do |rt|
-    rt.acceptable_plate_purposes << Purpose.find_by!(name: 'Lib PCR-XP')
+    rt.acceptable_purposes << Purpose.find_by!(name: 'Lib PCR-XP')
     RequestType::Validator.create!(
       request_type: rt,
       request_option: 'library_type',
@@ -226,7 +226,7 @@ ActiveRecord::Base.transaction do
   ) do |rt|
     rt.pooling_method =
       RequestType::PoolingMethod.create!(pooling_behaviour: 'PlateRow', pooling_options: { pool_count: 8 })
-    rt.acceptable_plate_purposes << Purpose.find_by!(name: 'PF Cherrypicked')
+    rt.acceptable_purposes << Purpose.find_by!(name: 'PF Cherrypicked')
     RequestType::Validator.create!(
       request_type: rt,
       request_option: 'library_type',
@@ -250,9 +250,9 @@ ActiveRecord::Base.transaction do
     request_purpose: :standard,
     request_class_name: 'IlluminaHtp::Requests::StdLibraryRequest',
     product_line: ProductLine.find_by!(name: 'Illumina-HTP')
-  ) { |rt| rt.acceptable_plate_purposes << Purpose.find_by!(name: 'PF Cherrypicked') }
+  ) { |rt| rt.acceptable_purposes << Purpose.find_by!(name: 'PF Cherrypicked') }
 
-  RequestType.find_by!(key: 'illumina_b_hiseq_x_paired_end_sequencing').acceptable_plate_purposes <<
+  RequestType.find_by!(key: 'illumina_b_hiseq_x_paired_end_sequencing').acceptable_purposes <<
     PlatePurpose.create!(
       name: 'Strip Tube Purpose',
       target_type: 'StripTube',
