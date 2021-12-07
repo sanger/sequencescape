@@ -102,8 +102,8 @@ With this we should have started Sequencescape server and all required services.
 able to access Sequencescape by going to <http://localhost:3000> and log in with
 username and password admin/admin.
 
-**ABOUT LOCAL DEVELOPMENT SETUP** You may want to start only the required services for Sequencescape (server and jobs worker) and use your local version of Mysql 
-instead of the Docker version, in that case you can start this setup with the 
+**ABOUT LOCAL DEVELOPMENT SETUP** You may want to start only the required services for Sequencescape (server and jobs worker) and use your local version of Mysql
+instead of the Docker version, in that case you can start this setup with the
 command:
 
 ```shell
