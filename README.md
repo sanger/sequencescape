@@ -102,7 +102,15 @@ With this we should have started Sequencescape server and all required services.
 able to access Sequencescape by going to <http://localhost:3000> and log in with
 username and password admin/admin.
 
-**NOTE** If you ever need to recreate the image built on first start (because you made modifications
+**ABOUT LOCAL DEVELOPMENT SETUP** You may want to start only the required services for Sequencescape (server and jobs worker) and use your local version of Mysql 
+instead of the Docker version, in that case you can start this setup with the 
+command:
+
+```shell
+docker-compose -f docker-compose-dev.yml up
+```
+
+**ABOUT RECREATE DOCKER IMAGE** If you ever need to recreate the image built on first start (because you made modifications
 to the Dockerfile file) you can run a building process with:
 
 ```shell
