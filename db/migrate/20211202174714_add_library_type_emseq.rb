@@ -3,16 +3,12 @@
 #
 class AddLibraryTypeEmseq < ActiveRecord::Migration[6.0]
   def self.REQUEST_TYPES
-    ['limber_chromium_bespoke','limber_pcr_bespoke'].map do |rt_key|
-      RequestType.find_by(key: rt_key)
-    end
+    %w[limber_chromium_bespoke limber_pcr_bespoke].map { |rt_key| RequestType.find_by(key: rt_key) }
   end
   def self.up
     ActiveRecord::Base.transaction do |_t|
       lt = LibraryType.find_or_create_by!(name: 'emSEQ')
-      self.REQUEST_TYPES.each do |rt|
-        rt.library_types << lt
-      end
+      self.REQUEST_TYPES.each { |rt| rt.library_types << lt }
     end
   end
 
@@ -24,5 +20,4 @@ class AddLibraryTypeEmseq < ActiveRecord::Migration[6.0]
       end
     end
   end
-
 end
