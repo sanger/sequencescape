@@ -146,4 +146,35 @@ describe Pooling, type: :model, poolings: true do
       end
     end
   end
+
+  context 'when samples have the same tags' do
+    let(:barcodes) { [tagged_lb_tube1.machine_barcode, tagged_lb_tube2.machine_barcode] }
+
+    before do
+      # set the tags in the second tube to be the same as the first, to create a tag clash
+      tag1 = tagged_lb_tube1.aliquots.first.tag
+      tag2 = tagged_lb_tube1.aliquots.first.tag2
+      tagged_lb_tube2.aliquots.first.update!(tag: tag1, tag2: tag2)
+    end
+
+    it 'is not valid due to the tag clash' do
+      expect(pooling).not_to be_valid
+    end
+
+    # Tag depth is an identifier added to each aliquot in a receptacle
+    #   to indicate that they can be distinguished, despite having the same tags.
+    # It was introduced for the Cardinal pipeline, where they can be distinguished
+    #   due to having been previously sequenced.
+    # Therefore, if the tag depths are different, there should be no 'tag clash'.
+    context 'when samples have same tags but different tag depths' do
+      before do
+        tagged_lb_tube1.aliquots.first.update!(tag_depth: 2)
+        tagged_lb_tube2.aliquots.first.update!(tag_depth: 3)
+      end
+
+      it 'is valid because the tag depths are different' do
+        expect(pooling).to be_valid
+      end
+    end
+  end
 end

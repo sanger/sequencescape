@@ -10,7 +10,7 @@ illumina_c_pcr:
   billable: true
   product_line_name: Illumina-C
   target_purpose_name: ILC Lib Pool Norm
-  acceptable_plate_purposes:
+  acceptable_purposes:
     - ILC Stock
 illumina_c_nopcr:
   name: Illumina-C Library Creation No PCR
@@ -21,7 +21,7 @@ illumina_c_nopcr:
   billable: true
   product_line_name: Illumina-C
   target_purpose_name: ILC Lib Pool Norm
-  acceptable_plate_purposes:
+  acceptable_purposes:
     - ILC Stock
 illumina_c_pcr_no_pool:
   name: Illumina-C Library Creation PCR No Pooling
@@ -31,7 +31,7 @@ illumina_c_pcr_no_pool:
   for_multiplexing: false
   billable: true
   product_line_name: Illumina-C
-  acceptable_plate_purposes:
+  acceptable_purposes:
     - ILC Stock
 illumina_c_no_pcr_no_pool:
   name: Illumina-C Library Creation No PCR No Pooling
@@ -41,7 +41,7 @@ illumina_c_no_pcr_no_pool:
   for_multiplexing: false
   billable: true
   product_line_name: Illumina-C
-  acceptable_plate_purposes:
+  acceptable_purposes:
     - ILC Stock
 illumina_c_chromium_library:
   name: Illumina-C Chromium library creation
@@ -52,7 +52,7 @@ illumina_c_chromium_library:
   billable: true
   product_line_name: Illumina-C
   target_purpose_name: ILC Lib Pool Norm
-  acceptable_plate_purposes:
+  acceptable_purposes:
     - ILC Stock
 illumina_c_multiplexing:
   name: Illumina-C Multiplexing

@@ -1195,7 +1195,7 @@ RequestType
       request_class_name: 'CherrypickForPulldownRequest'
     )
   )
-  .tap { |rt| rt.acceptable_plate_purposes << Purpose.find_by!(name: 'Working Dilution') }
+  .tap { |rt| rt.acceptable_purposes << Purpose.find_by!(name: 'Working Dilution') }
 RequestType
   .create!(
     shared_options.merge(
@@ -1205,7 +1205,7 @@ RequestType
       request_class_name: 'CherrypickForPulldownRequest'
     )
   )
-  .tap { |rt| rt.acceptable_plate_purposes << Purpose.find_by!(name: 'STA') }
+  .tap { |rt| rt.acceptable_purposes << Purpose.find_by!(name: 'STA') }
 RequestType
   .create!(
     shared_options.merge(
@@ -1215,7 +1215,7 @@ RequestType
       request_class_name: 'CherrypickForFluidigmRequest'
     )
   )
-  .tap { |rt| rt.acceptable_plate_purposes << Purpose.find_by!(name: 'STA2') }
+  .tap { |rt| rt.acceptable_purposes << Purpose.find_by!(name: 'STA2') }
 RequestType
   .create!(
     asset_type: 'Well',
@@ -1226,7 +1226,7 @@ RequestType
     order: 3,
     request_class_name: 'CherrypickForPulldownRequest'
   )
-  .tap { |rt| rt.acceptable_plate_purposes << Purpose.find_by!(name: 'SNP Type') }
+  .tap { |rt| rt.acceptable_purposes << Purpose.find_by!(name: 'SNP Type') }
 
 liw = Workflow.create!(name: 'Cherrypick for Fluidigm')
 

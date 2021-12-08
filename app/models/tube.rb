@@ -84,17 +84,35 @@ class Tube < Labware
   end
 
   def self.create_with_barcode!(*args, &block)
-    attributes = args.extract_options!
-    barcode = args.first || attributes.delete(:barcode)
-    prefix = attributes.delete(:barcode_prefix)&.prefix || default_prefix
-    if barcode.present?
-      human = SBCF::SangerBarcode.new(prefix: prefix, number: barcode).human_barcode
-      raise "Barcode: #{barcode} already used!" if Barcode.exists?(barcode: human)
-    end
+    attributes = args.extract_options!.symbolize_keys
+
+    barcode, prefix = extract_barcode(args, attributes)
+    validate_barcode(barcode, prefix) if barcode.present?
     barcode ||= AssetBarcode.new_barcode
-    primary_barcode = { prefix: prefix, number: barcode }
-    create!(attributes.merge(sanger_barcode: primary_barcode), &block)
+
+    # remove this so it's not passed in on creation, and set it explicitly afterwards
+    # this is to control the order of barcode addition so that it gets set as the 'primary' barcode
+    foreign_barcode = attributes.delete(:foreign_barcode)
+
+    tube = create!(attributes.merge(sanger_barcode: { prefix: prefix, number: barcode }), &block)
+
+    tube.foreign_barcode = foreign_barcode if foreign_barcode
+    tube.reload
   end
+end
+
+private
+
+# mutates 'attributes'
+def extract_barcode(args, attributes)
+  barcode = args.first || attributes.delete(:barcode)
+  prefix = attributes.delete(:barcode_prefix)&.prefix || default_prefix
+  [barcode, prefix]
+end
+
+def validate_barcode(barcode, prefix)
+  human = SBCF::SangerBarcode.new(prefix: prefix, number: barcode).human_barcode
+  raise "Barcode: #{barcode} already used!" if Barcode.exists?(barcode: human)
 end
 
 require_dependency 'sample_tube'
