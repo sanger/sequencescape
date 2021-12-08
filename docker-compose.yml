@@ -1,0 +1,65 @@
+#
+# Basic version of stack, for Github
+#
+version: "3.3"
+services:
+  sequencescape_server:
+    build: .
+    image: sequencescape_local_image
+    depends_on:
+      - mysql_server
+    environment:
+      - DBHOST=mysql_server
+      - DBPORT=3306
+      - RESET_DATABASE=$RESET_DATABASE
+    entrypoint: "bash -c ./entrypoint.sh"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 4
+
+  sequencescape_worker:
+    image: sequencescape_local_image
+    depends_on:
+      - sequencescape_server
+    environment:
+      - DBHOST=mysql_server
+      - DBPORT=3306
+    entrypoint: "bash -c 'bundle exec rake jobs:work'"
+    healthcheck:
+      test: "ps -ef | grep -q jobs"
+      interval: 10s
+      retries: 5
+
+  mysql_server:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD="yes"
+    healthcheck:
+      test: "/etc/init.d/mysql status"
+      interval: 30s
+      retries: 120
+
+  rabbitmq_server:
+    image: rabbitmq:3-management
+    healthcheck:
+      test: "rabbitmq-diagnostics -q ping"
+      interval: 30s
+      retries: 120
+
+  sequencescape_consumer:
+    image: sequencescape_local_image
+    depends_on:
+      - rabbitmq_server
+      - mysql_server
+    environment:
+      - DBHOST=mysql_server
+      - DBPORT=3306
+      - RMQHOST=rabbitmq_server
+      - WARREN_TYPE=broadcast
+    entrypoint: "bash -c 'bundle exec warren consumer start'"
+    healthcheck:
+      test: "ps -ef | grep -q warren"
+      interval: 10s
+      retries: 5
