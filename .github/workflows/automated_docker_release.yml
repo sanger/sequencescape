@@ -46,6 +46,9 @@ jobs:
           docker push docker.pkg.github.com/${IMAGE_NAME}:${{ env.RELEASE_VERSION }}
 
       - name: Remove the oldest package
+        # The delete-package-versions action has become broken and the fix doesn't look imminent.
+        # Re-enable this later if a fix comes out! https://github.com/actions/delete-package-versions/issues/28
+        if: false
         uses: actions/delete-package-versions@v1
         with:
           package-name: "${{ github.event.repository.name }}"
