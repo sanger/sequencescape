@@ -4,25 +4,23 @@
 ---
 limber_cardinal:
   name: Cardinal
-  asset_type: Well
+  asset_type: SampleTube
   order: 1
   request_class_name: IlluminaHtp::Requests::StdLibraryRequest
   for_multiplexing: false
   billable: true
-  product_line_name: Illumina-Htp
+  product_line_name: Cardinal
   library_types:
     - Cardinal
-  acceptable_plate_purposes:
-    - LCA Blood Array
+  acceptable_purposes:
+    - LCA Blood Vac
 limber_cardinal_banking:
-  name: Cardinal
-  asset_type: Well
+  name: Cardinal Banking
+  asset_type: SampleTube
   order: 1
-  request_class_name: IlluminaHtp::Requests::StdLibraryRequest
+  request_class_name: CustomerRequest
   for_multiplexing: false
   billable: true
-  product_line_name: Illumina-Htp
-  library_types:
-    - Cardinal Banking
-  acceptable_plate_purposes:
-    - LCA Blood Bank
+  product_line_name: Cardinal
+  acceptable_purposes:
+    - LCA Blood Vac

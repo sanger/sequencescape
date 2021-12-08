@@ -6,6 +6,8 @@
 class Tube::Purpose < ::Purpose
   self.default_prefix = 'NT'
 
+  self.state_changer = StateChanger::StockTube
+
   # TODO: change to purpose_id
   has_many :tubes, foreign_key: :plate_purpose_id
 

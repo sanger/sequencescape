@@ -20,7 +20,8 @@ module Api
       attribute :control
       attribute :control_type
 
-      filter :uuid
+      # Filters
+      filter :uuid, apply: ->(records, value, _options) { records.with_uuid(value) }
       filter :sanger_sample_id
       filter :name
     end
