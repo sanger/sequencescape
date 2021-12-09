@@ -97,7 +97,7 @@ class SubmissionTemplate < ApplicationRecord
   end
 
   def input_plate_purposes
-    sorted_request_types.first.acceptable_plate_purposes
+    sorted_request_types.first.acceptable_purposes
   end
 
   private

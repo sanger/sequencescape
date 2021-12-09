@@ -2,6 +2,7 @@
 *.log.[0-9]
 *.log
 tmp/*
+dockermysql/*
 .DS_Store
 public/doc/*
 db/*.sql
