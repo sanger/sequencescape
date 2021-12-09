@@ -16,7 +16,7 @@
               {
                 left_text: user_login,
                 barcode: swipecard,
-                label_name: 'main'
+                label_name: "main",
               },
             ],
           },
