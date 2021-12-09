@@ -4,22 +4,20 @@
     $("#print-btn").click(function () {
       var swipecard = $("#swipecard").val().trim();
       var printer_name = $("#barcode-printer-list").find(":selected").val();
-      var label_template_id = $("#pmb-data").data("pmb-template");
       var user_login = $("#usr-data").data("usr-login");
       var pmb_url = $("#pmb-data").data("pmb-api") + "/print_jobs";
+      var swipecard_pmb_template_name = $("#pmb-data").data("swipecard_pmb_template");
       var print_job = {
-        data: {
-          attributes: {
-            printer_name: printer_name,
-            label_template_id: label_template_id,
-            labels: [
-              {
-                left_text: user_login,
-                barcode: swipecard,
-                label_name: "main",
-              },
-            ],
-          },
+        print_job: {
+          printer_name: printer_name,
+          label_template_name: swipecard_pmb_template_name,
+          labels: [
+            {
+              left_text: user_login,
+              barcode: swipecard,
+              label_name: "main",
+            },
+          ],
         },
       };
       if (swipecard) {
