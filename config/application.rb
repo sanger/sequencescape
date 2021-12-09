@@ -67,7 +67,6 @@ module Sequencescape
     # See issue #3134 Leave wells D3/H10 free
     config.plate_default_control_wells_to_leave_free = [19, 79].freeze
 
-    config.aker = config_for(:aker).with_indifferent_access
     config.phi_x = config_for(:phi_x).with_indifferent_access
 
     config.generators do |g|

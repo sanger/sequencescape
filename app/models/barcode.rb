@@ -22,6 +22,7 @@ class Barcode < ApplicationRecord
          infinium: 1,
          fluidigm: 2,
          external: 3,
+         # gone. Don't do this.
          aker_barcode: 4,
          cgap: 5,
          sanger_code39: 6,
