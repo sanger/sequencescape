@@ -12,16 +12,13 @@
           attributes: {
             printer_name: printer_name,
             label_template_id: label_template_id,
-            labels: {
-              body: [
-                {
-                  main: {
-                    left_text: user_login,
-                    barcode: swipecard,
-                  },
-                },
-              ],
-            },
+            labels: [
+              {
+                left_text: user_login,
+                barcode: swipecard,
+                label_name: 'main'
+              },
+            ],
           },
         },
       };
