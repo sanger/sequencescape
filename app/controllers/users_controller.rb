@@ -8,18 +8,6 @@ class UsersController < ApplicationController # rubocop:todo Style/Documentation
 
   def show # rubocop:todo Metrics/AbcSize
     @printer_list = BarcodePrinter.alphabetical.where(barcode_printer_type: BarcodePrinterType96Plate.all)
-
-    begin
-      label_template =
-        LabelPrinter::PmbClient.get_label_template_by_name(configatron.swipecard_pmb_template).fetch('data').first
-      @label_template_id ||= label_template['id']
-    rescue LabelPrinter::PmbException => e
-      @label_template_id = nil
-      flash.now[:error] = "Print My Barcode: #{e}"
-    rescue NoMethodError
-      @label_template_id = nil
-      flash.now[:error] = 'Wrong PMB Label Template'
-    end
   end
 
   def edit; end
