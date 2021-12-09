@@ -6,7 +6,7 @@
       var printer_name = $("#barcode-printer-list").find(":selected").val();
       var user_login = $("#usr-data").data("usr-login");
       var pmb_url = $("#pmb-data").data("pmb-api") + "/print_jobs";
-      var swipecard_pmb_template_name = $("#pmb-data").data("swipecard_pmb_template");
+      var swipecard_pmb_template_name = $("#pmb-data").data("swipecard-pmb-template");
       var print_job = {
         print_job: {
           printer_name: printer_name,
