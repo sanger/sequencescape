@@ -6,7 +6,7 @@ class UsersController < ApplicationController # rubocop:todo Style/Documentation
   before_action :find_user
   authorize_resource
 
-  def show # rubocop:todo Metrics/AbcSize
+  def show
     @printer_list = BarcodePrinter.alphabetical.where(barcode_printer_type: BarcodePrinterType96Plate.all)
   end
 
