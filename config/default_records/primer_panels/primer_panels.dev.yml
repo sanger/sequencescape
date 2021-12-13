@@ -23,3 +23,12 @@ nCoV-2019/V3/B:
     pcr 2:
       name:
       duration: "60"
+nCoV-2019/V4:
+  snp_count: 98
+  programs:
+    pcr 1:
+      name:
+      duration: "60"
+    pcr 2:
+      name:
+      duration: "60"
