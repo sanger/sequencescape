@@ -56,7 +56,8 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
              tag_depth: 1,
              study: study,
              project: project,
-             library_type: 'Standard'
+             library_type: 'Standard',
+             library_id: 54
     end
     let(:aliquot2) do
       create :aliquot,
@@ -66,7 +67,8 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
              tag_depth: 2,
              study: study,
              project: project,
-             library_type: 'Standard'
+             library_type: 'Standard',
+             library_id: 54
     end
 
     it 'creates a compound sample and transfers an aliquot of it' do
@@ -76,7 +78,20 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
       expect(sequencing_request.target_asset.aliquots.first.library_type).to eq('Standard')
       expect(sequencing_request.target_asset.aliquots.first.study).to eq(study)
       expect(sequencing_request.target_asset.aliquots.first.project).to eq(project)
+      expect(sequencing_request.target_asset.aliquots.first.library_id).to eq(54)
       expect(sequencing_request.target_asset.samples.first.component_samples.order(:id)).to eq(samples.sort)
+    end
+
+    # How the library_id should be set if the source aliquots have different library_ids is not defined
+    # Therefore, set it to null for now, until we have a real requirement
+    context 'with conflicting library_ids' do
+      before { aliquot1.update!(library_id: 82) }
+
+      it 'creates a compound sample with a blank library id' do
+        sequencing_request.transfer_aliquots_into_compound_sample_aliquots
+        expect(sequencing_request.target_asset.aliquots.count).to eq(1)
+        expect(sequencing_request.target_asset.aliquots.first.library_id).to be_nil
+      end
     end
   end
 end
