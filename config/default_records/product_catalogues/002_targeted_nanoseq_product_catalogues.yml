@@ -1,0 +1,6 @@
+# This product catalogue is associated with the Limber Cardinal pipeline.
+# It is in a separate file to allow us to soft-release them before
+# the real release.
+---
+Targeted-NanoSeq:
+  selection_behaviour: SingleProduct
