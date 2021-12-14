@@ -22,10 +22,7 @@ class WorkflowsController < ApplicationController
 
   # @todo These actions should be extracted from the controller, and instead be handled by an object invoked
   #       by the task
-  include Tasks::AssignTagsHandler
-  include Tasks::AssignTagsToTubesHandler
   include Tasks::AssignTubesToWellsHandler
-  include Tasks::BindingKitBarcodeHandler
   include Tasks::CherrypickHandler
   include Tasks::MovieLengthHandler
   include Tasks::PlateTemplateHandler
@@ -34,7 +31,6 @@ class WorkflowsController < ApplicationController
   include Tasks::SamplePrepQcHandler
   include Tasks::SetDescriptorsHandler
   include Tasks::TagGroupHandler
-  include Tasks::ValidateSampleSheetHandler
   include Tasks::StartBatchHandler
 
   # TODO: This needs to be made RESTful.

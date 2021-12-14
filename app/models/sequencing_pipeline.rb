@@ -6,6 +6,7 @@ class SequencingPipeline < Pipeline # rubocop:todo Style/Documentation
   self.inbox_eager_loading = :loaded_for_sequencing_inbox_display
   self.generate_target_assets_on_batch_create = true
   self.asset_type = 'Lane::Labware'
+  self.requires_position = true
 
   def request_actions
     [:remove]

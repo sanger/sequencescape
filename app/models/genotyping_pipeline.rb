@@ -1,18 +1,8 @@
 # frozen_string_literal: true
-class GenotypingPipeline < Pipeline # rubocop:todo Style/Documentation
-  include Pipeline::InboxGroupedBySubmission
-  include Pipeline::GroupByParent
 
-  self.requires_position = false
-  self.genotyping = true
-
-  def request_actions
-    %i[fail remove]
-  end
-
-  private
-
-  def grouping_parser
-    Pipeline::GrouperByParentAndSubmission.new(self)
-  end
+# Disused genotyping pipeline
+# This class can be removed completely once migration:
+# db/migrate/20211214094820_migrate_removed_pipelines_to_legacy_class.rb
+# has been run.
+class GenotypingPipeline < LegacyPipeline
 end

@@ -18,15 +18,12 @@ class Pipeline < ApplicationRecord
   class_attribute :batch_worksheet,
                   :requires_position,
                   :inbox_partial,
-                  :pulldown,
-                  :genotyping,
                   :sequencing,
                   :purpose_information,
                   :inbox_eager_loading,
                   :group_by_submission,
                   :group_by_parent,
                   :generate_target_assets_on_batch_create,
-                  :pick_to,
                   :asset_type,
                   :request_sort_order,
                   :pick_data,
@@ -34,13 +31,10 @@ class Pipeline < ApplicationRecord
 
   # Pipeline defaults
   self.batch_worksheet = false
-  self.requires_position = true
+  self.requires_position = false
   self.inbox_partial = 'default_inbox'
-  self.pulldown = false
-  self.genotyping = false
   self.sequencing = false
   self.purpose_information = true
-  self.pick_to = true
   self.inbox_eager_loading = :loaded_for_inbox_display
   self.group_by_submission = false
   self.group_by_parent = false
@@ -146,10 +140,6 @@ class Pipeline < ApplicationRecord
 
   def request_actions
     [:fail]
-  end
-
-  def allow_tag_collision_on_tagging_task?
-    true
   end
 
   def robot_verified!(batch)

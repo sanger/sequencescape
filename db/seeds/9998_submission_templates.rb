@@ -114,16 +114,6 @@ BOTH_DEV_AND_CUKES = [
       info_differential: 5,
       request_types: %w[illumina_c_multiplexed_library_creation illumina_c_hiseq_2500_paired_end_sequencing]
     }
-  },
-  {
-    name: 'PacBio',
-    submission_class_name: 'LinearSubmission',
-    product_catalogue: 'Generic',
-    submission_parameters: {
-      info_differential: 5,
-      asset_input_methods: ['select an asset group', 'enter a list of sample names'],
-      request_types: %w[pacbio_sample_prep pacbio_sequencing]
-    }
   }
 ].freeze
 

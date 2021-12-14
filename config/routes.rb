@@ -144,7 +144,6 @@ Rails.application.routes.draw do
       post :reset_batch
       get :download_spreadsheet
       get :fail
-      get :pacbio_sample_sheet
       get :print
       post :print_multiplex_barcodes
       get :print_multiplex_labels

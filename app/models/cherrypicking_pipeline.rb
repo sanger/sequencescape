@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 # Superclass for all Cherrypicking pipelines. Not used directly
-class CherrypickingPipeline < GenotypingPipeline
+class CherrypickingPipeline < Pipeline
+  include Pipeline::InboxGroupedBySubmission
+  include Pipeline::GroupByParent
+
   PICKED_STATES = %w[completed released].freeze
 
   self.batch_worksheet = 'cherrypick_worksheet'
@@ -18,5 +21,15 @@ class CherrypickingPipeline < GenotypingPipeline
 
   def update_detached_request(batch, request)
     batch.remove_link(request)
+  end
+
+  def request_actions
+    %i[fail remove]
+  end
+
+  private
+
+  def grouping_parser
+    Pipeline::GrouperByParentAndSubmission.new(self)
   end
 end

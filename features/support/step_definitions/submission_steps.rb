@@ -119,9 +119,7 @@ SENSIBLE_DEFAULTS_FOR_REQUEST_TYPE = {
   'Illumina-B Paired end sequencing' => SENSIBLE_DEFAULTS_FOR_SEQUENCING,
   # HiSeq defaults
   'Illumina-B Single ended hi seq sequencing' => SENSIBLE_DEFAULTS_HISEQ,
-  'Illumina-B HiSeq Paired end sequencing' => SENSIBLE_DEFAULTS_HISEQ,
-  # PacBio defaults
-  'PacBio Library Prep' => {}
+  'Illumina-B HiSeq Paired end sequencing' => SENSIBLE_DEFAULTS_HISEQ
 }.freeze
 
 def with_request_type_scope(name, &block)

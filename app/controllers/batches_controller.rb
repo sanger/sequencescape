@@ -27,8 +27,6 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
                   filtered
                   swap
                   download_spreadsheet
-                  pacbio_sample_sheet
-                  sample_prep_worksheet
                 ]
   before_action :find_batch_by_batch_id, only: %i[sort print_multiplex_barcodes print_plate_barcodes print_barcodes]
 
@@ -378,16 +376,6 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   def find_batch_by_batch_id
     @batch = Batch.find(params[:batch_id])
-  end
-
-  def pacbio_sample_sheet
-    csv_string = PacBio::SampleSheet.new.create_csv_from_batch(@batch)
-    send_data csv_string, type: 'text/plain', filename: "batch_#{@batch.id}_sample_sheet.csv", disposition: 'attachment'
-  end
-
-  def sample_prep_worksheet
-    csv_string = PacBio::Worksheet.new.create_csv_from_batch(@batch)
-    send_data csv_string, type: 'text/plain', filename: "batch_#{@batch.id}_worksheet.csv", disposition: 'attachment'
   end
 
   def find_batch_by_barcode

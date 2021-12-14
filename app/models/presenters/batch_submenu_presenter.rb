@@ -15,7 +15,7 @@ module Presenters
     include ActionView::Helpers::TextHelper
 
     delegate :multiplexed?, to: :batch
-    delegate :genotyping?, :sequencing?, to: :pipeline
+    delegate :sequencing?, to: :pipeline
 
     def initialize(current_user, batch)
       @current_user = current_user
@@ -67,20 +67,12 @@ module Presenters
       @pipeline.batch_worksheet.present?
     end
 
-    def pacbio?
-      @pipeline.is_a?(PacBioSequencingPipeline)
-    end
-
-    def pacbio_sample_pipeline?
-      @pipeline.is_a?(PacBioSamplePrepPipeline)
-    end
-
     def tube_layout_not_verified?
       @batch.has_limit? and !@batch.has_event('Tube layout verified')
     end
 
     def plate_labels?
-      [cherrypicking?, genotyping?, pacbio?, pacbio_sample_pipeline?].any?
+      cherrypicking?
     end
 
     # rubocop:todo Metrics/PerceivedComplexity, Metrics/AbcSize
@@ -95,10 +87,6 @@ module Presenters
       add_submenu_option 'Print pool label', :print_multiplex_labels if multiplexed?
       add_submenu_option 'Print stock pool label', :print_stock_multiplex_labels if multiplexed?
       add_submenu_option 'Print plate labels', :print_plate_labels if plate_labels?
-
-      if pacbio_sample_pipeline? && can?(:sample_prep_worksheet)
-        add_submenu_option 'Print sample prep worksheet', :sample_prep_worksheet
-      end
 
       add_submenu_option 'Print worksheet', :print if worksheet? && can?(:print)
 
