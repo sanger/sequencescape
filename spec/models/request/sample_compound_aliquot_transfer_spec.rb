@@ -83,7 +83,7 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
     end
 
     # How the library_id should be set if the source aliquots have different library_ids is not defined
-    # Therefore, set it to null for now, until we have a real requirement
+    # Therefore, set it to nil for now, until we have a real requirement
     context 'with conflicting library_ids' do
       before { aliquot1.update!(library_id: 82) }
 

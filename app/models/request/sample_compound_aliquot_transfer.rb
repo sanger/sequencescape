@@ -71,6 +71,9 @@ module Request::SampleCompoundAliquotTransfer
     aliquot.library_id = _copy_library_id(source_aliquots)
   end
 
+  # If the library_id is the same on all source aliquots, we can confidently transfer it to the target aliquot
+  # How the library_id should be set if the source aliquots have different library_ids is not defined
+  # Therefore, set it to nil for now, until we have a real requirement
   def _copy_library_id(source_aliquots)
     library_ids = source_aliquots.map(&:library_id).uniq
     library_ids.size == 1 ? library_ids.first : nil
