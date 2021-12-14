@@ -54,10 +54,6 @@ Rails.application.routes.draw do
       jsonapi_resources :wells
       jsonapi_resources :work_orders
 
-      namespace :aker do
-        resources :jobs, only: [:create]
-      end
-
       namespace :heron do
         resources :tube_rack_statuses, only: [:create]
         resources :tube_racks, only: [:create]
@@ -572,16 +568,6 @@ Rails.application.routes.draw do
   post 'get_your_qc_completed_tubes_here' => 'get_your_qc_completed_tubes_here#create',
        :as => :get_your_qc_completed_tubes_here
   resources :sample_manifest_upload_with_tag_sequences, only: %i[new create]
-
-  namespace :aker do
-    resources :jobs, only: %i[index show] do
-      member do
-        put 'start'
-        put 'complete'
-        put 'cancel'
-      end
-    end
-  end
 
   resources :uat_actions
 

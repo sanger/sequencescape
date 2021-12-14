@@ -33,9 +33,6 @@ FileUtils.chdir APP_ROOT do
   # Install JavaScript dependencies if using Yarn
   system('bin/yarn')
 
-  puts "\n== Copying example files =="
-  ['config/aker.yml'].each { |base| FileUtils.cp "#{base}.example", base unless File.exist?(base) }
-
   puts "\n== Preparing database =="
   system 'bin/rails db:setup'
 

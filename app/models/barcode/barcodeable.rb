@@ -86,14 +86,6 @@ module Barcode::Barcodeable
     barcodes.external.first_or_initialize.barcode = barcode
   end
 
-  def aker_barcode
-    barcodes.detect(&:aker_barcode?)&.machine_barcode
-  end
-
-  def aker_barcode=(barcode)
-    barcodes.aker_barcode.first_or_initialize.barcode = barcode
-  end
-
   # Detects the format of the foreign barcode string passed in
   # Adds it to the list of barcodes, making it the primary (most recent) barcode
   # Throws exceptions if there are validation issues
