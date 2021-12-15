@@ -13,11 +13,21 @@ module SequencescapeExcel
 
       validates :well_index, presence: { message: 'is not valid' }
       validates :tags, length: { is: TAGS_PER_WELL, message: 'does not have associated tags' }, if: :well_index
+      validates :aliquot_count, inclusion: { in: [1, TAGS_PER_WELL], message: 'is unexpected' }
 
       def update(_attributes = {})
         return unless valid?
 
-        tags.each { |tag| tag.multitag!(asset) }
+        if asset.aliquots.one?
+          tags.each { |tag| tag.multitag!(asset) }
+        elsif aliquot_count == TAGS_PER_WELL
+          tags.zip(aliquots).each { |tag, aliquot| aliquot.update(tag: tag) }
+        else
+          # We should never end up here, as our validation should handle this
+          # However if that fails, something has gone wrong, and we shouldn't proceed
+          # Fail noisily
+          raise StandardError, 'Tag aliquot mismatch'
+        end
       end
 
       def link(other_fields)
@@ -25,6 +35,10 @@ module SequencescapeExcel
       end
 
       private
+
+      def aliquot_count
+        asset.aliquots.length
+      end
 
       def well_index
         @well_index = Map::Coordinate.description_to_vertical_plate_position(value, 96)

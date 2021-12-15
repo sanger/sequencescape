@@ -21,6 +21,7 @@ module SampleManifestExcel
       validates_presence_of :data, :columns
 
       delegate :present?, to: :sample, prefix: true
+      delegate :aliquots, :asset, to: :manifest_asset
 
       ##
       # Finds a sample based on the sanger_sample_id column. Must exist for row to be valid.
@@ -58,10 +59,7 @@ module SampleManifestExcel
       def aliquot
         @aliquot ||= manifest_asset.aliquot
       end
-
-      def asset
-        @asset ||= manifest_asset.asset
-      end
+      deprecate aliquot: 'Chromium manifests may have multiple aliquots. Please use aliquots instead.'
 
       def metadata
         @metadata ||= sample.sample_metadata
@@ -104,7 +102,7 @@ module SampleManifestExcel
       end
 
       def update_specialised_fields(tag_group)
-        specialised_fields.each { |specialised_field| specialised_field.update(aliquot: aliquot, tag_group: tag_group) }
+        specialised_fields.each { |specialised_field| specialised_field.update(tag_group: tag_group) }
       end
 
       def update_metadata_fields

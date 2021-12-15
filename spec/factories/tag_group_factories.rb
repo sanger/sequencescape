@@ -16,7 +16,12 @@ FactoryBot.define do
   factory :tag_group do
     sequence(:name) { |n| "Tag Group #{n}" }
 
-    transient { tag_count { 0 } }
+    transient do
+      tag_count { 0 }
+      adapter_type_name { nil }
+    end
+
+    adapter_type { build(:adapter_type, name: adapter_type_name) if adapter_type_name }
 
     after(:build) do |tag_group, evaluator|
       evaluator.tag_count.times { |i| tag_group.tags << create(:tag, map_id: i + 1, tag_group: tag_group) }

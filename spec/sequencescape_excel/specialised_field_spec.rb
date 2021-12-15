@@ -630,6 +630,15 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
           sf_tag_well.update(aliquot: aliquot, tag_group: nil)
           expect(asset.aliquots.map { |a| a.tag.map_id }).to contain_exactly(1, 2, 3, 4)
         end
+
+        context 'when applied to a re-upload' do
+          let(:asset) { create(:tagged_well, map: map, aliquot_count: 4) }
+
+          it 'will apply the four tags associated with the map_id' do
+            sf_tag_well.update(aliquot: aliquot, tag_group: nil)
+            expect(asset.aliquots.map { |a| a.tag.map_id }).to contain_exactly(1, 2, 3, 4)
+          end
+        end
       end
     end
   end

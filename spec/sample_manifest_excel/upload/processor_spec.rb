@@ -29,6 +29,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
     let(:upload) { SampleManifestExcel::Upload::Base.new(file: test_file, column_list: column_list, start_row: 9) }
     let(:processor) { described_class.new(upload) }
     let(:test_file_name) { 'test_file.xlsx' }
+    let(:new_test_file_name) { 'new_test_file.xlsx' }
     let(:test_file) { Rack::Test::UploadedFile.new(Rails.root.join(test_file_name), '') }
     let(:tag_group) { create(:tag_group) }
 
@@ -54,8 +55,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           )
         processor = described_class.new(reupload2)
         processor.update_samples_and_aliquots(tag_group)
-        expect(processor.substitutions[1]).to include('insert_size_from' => 100)
-        expect(processor.substitutions[2]).to include('insert_size_to' => 1000)
+        expect(processor.substitutions[0]).to include('insert_size_from' => 100)
+        expect(processor.substitutions[1]).to include('insert_size_to' => 1000)
         expect(processor).to be_downstream_aliquots_updated
       end
 
@@ -113,6 +114,46 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
       end
     end
 
+    shared_examples 'it updates chromium aliquots' do |rows, columns|
+      it 'will update the aliquots downstream if aliquots data has changed and override is set to true' do
+        cell(rows.first, columns[:insert_size_from]).value = '100'
+        cell(rows.last, columns[:insert_size_to]).value = '1000'
+        download.save(new_test_file_name)
+        reupload2 =
+          SampleManifestExcel::Upload::Base.new(
+            file: new_test_file,
+            column_list: column_list,
+            start_row: 9,
+            override: true
+          )
+        processor = described_class.new(reupload2)
+        processor.update_samples_and_aliquots(tag_group)
+
+        expect(processor.substitutions[0, 4]).to all include('insert_size_from' => 100)
+        expect(processor.substitutions[4, 4]).to all include('insert_size_to' => 1000)
+        expect(processor).to be_downstream_aliquots_updated
+      end
+
+      it 'will update the aliquots downstream if tags were swapped and override is set to true' do
+        chromium_tag1 = cell(rows.first, columns[:chromium_tag_well]).value
+        chromium_tag2 = cell(rows.last, columns[:chromium_tag_well]).value
+        cell(rows.first, columns[:chromium_tag_well]).value = chromium_tag2
+        cell(rows.last, columns[:chromium_tag_well]).value = chromium_tag1
+        download.save(new_test_file_name)
+        reupload2 =
+          SampleManifestExcel::Upload::Base.new(
+            file: new_test_file,
+            column_list: column_list,
+            start_row: 9,
+            override: true
+          )
+        processor = described_class.new(reupload2)
+        processor.update_samples_and_aliquots(tag_group)
+        expect(processor.substitutions.compact.length).to eq(8)
+        expect(processor).to be_downstream_aliquots_updated
+      end
+    end
+
     describe SampleManifestExcel::Upload::Processor::OneDTube do
       let(:column_list) { configuration.columns.tube_library_with_tag_sequences }
 
@@ -150,7 +191,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         let(:download) do
           build(:test_download_tubes, columns: column_list, manifest_type: 'tube_library_with_tag_sequences')
         end
-        let(:new_test_file_name) { 'new_test_file.xlsx' }
+
         let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
 
         before do
@@ -220,6 +261,27 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             expect(s1.sample_metadata.gender).to eq('Unknown')
           end
         end
+      end
+
+      context 'with chromium tag-columns' do
+        let(:column_list) { configuration.columns.tube_chromium_library }
+        let(:download) { build(:test_download_tubes, columns: column_list, manifest_type: 'tube_chromium_library') }
+
+        let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
+
+        before do
+          upload.process(tag_group) || raise("Process error: #{upload.errors.full_messages}")
+          upload.finished!
+        end
+
+        after { File.delete(new_test_file) if File.exist?(new_test_file_name) }
+
+        it_behaves_like 'it updates chromium aliquots',
+                        [10, 11],
+                        insert_size_from: 7,
+                        insert_size_to: 8,
+                        chromium_tag_group: 3,
+                        chromium_tag_well: 4
       end
     end
 
@@ -295,7 +357,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
               columns: column_list
             )
           end
-          let(:new_test_file_name) { 'new_test_file.xlsx' }
+
           let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
 
           before do
@@ -378,7 +440,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           let(:download) do
             build(:test_download_tubes, manifest_type: 'tube_multiplexed_library', columns: column_list)
           end
-          let(:new_test_file_name) { 'new_test_file.xlsx' }
+
           let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
 
           before do
@@ -401,8 +463,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
               )
             processor = described_class.new(reupload)
             processor.update_samples_and_aliquots(nil)
-            expect(processor.substitutions[1]).to include('insert_size_from' => 100)
-            expect(processor.substitutions[2]).to include('insert_size_to' => 1000)
+            expect(processor.substitutions[0]).to include('insert_size_from' => 100)
+            expect(processor.substitutions[1]).to include('insert_size_to' => 1000)
             expect(processor).to be_downstream_aliquots_updated
           end
 
@@ -551,7 +613,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
         context 'when manifest reuploaded and overriden' do
           let(:download) { build(:test_download_plates, columns: column_list) }
-          let(:new_test_file_name) { 'new_test_file.xlsx' }
+
           let(:new_test_file) do
             cell(10, 6).value = '50'
             cell(10, 7).value = 'Female'
@@ -598,7 +660,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
       context 'when invalid' do
         context 'when using foreign barcodes' do
           let(:download) { build(:test_download_plates_cgap, columns: column_list) }
-          let(:new_test_file_name) { 'new_test_file.xlsx' }
+
           let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
 
           before do
