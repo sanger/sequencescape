@@ -206,42 +206,40 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
   end
 
   describe SequencescapeExcel::SpecialisedField::SangerPlateId do
-    let!(:sample_1) { create(:sample_with_well) }
-    let!(:sample_1_plate) { sample_1.wells.first.plate }
-    let(:sample_manifest_asset_1) { create :sample_manifest_asset, asset: sample_1.primary_receptacle }
+    let!(:sample1) { create(:sample_with_well) }
+    let!(:sample1_plate) { sample1.wells.first.plate }
+    let(:sample_manifest_asset1) { create :sample_manifest_asset, asset: sample1.primary_receptacle }
 
     it 'will be valid if the value matches the sanger human barcode' do
       expect(
-        described_class.new(value: sample_1_plate.human_barcode, sample_manifest_asset: sample_manifest_asset_1)
+        described_class.new(value: sample1_plate.human_barcode, sample_manifest_asset: sample_manifest_asset1)
       ).to be_valid
-      expect(described_class.new(value: '1234', sample_manifest_asset: sample_manifest_asset_1)).not_to be_valid
+      expect(described_class.new(value: '1234', sample_manifest_asset: sample_manifest_asset1)).not_to be_valid
     end
 
     describe 'with foreign barcodes' do
-      let!(:sample_2) { create(:sample_with_well) }
-      let(:sample_manifest_asset_2) { create :sample_manifest_asset, asset: sample_2.primary_receptacle }
+      let!(:sample2) { create(:sample_with_well) }
+      let(:sample_manifest_asset2) { create :sample_manifest_asset, asset: sample2.primary_receptacle }
 
       it 'will be valid if the value matches an unused cgap foreign barcode' do
-        expect(described_class.new(value: 'CGAP-ABC001', sample_manifest_asset: sample_manifest_asset_1)).to be_valid
+        expect(described_class.new(value: 'CGAP-ABC001', sample_manifest_asset: sample_manifest_asset1)).to be_valid
       end
 
       it 'will not be valid if the value matches an already used cgap foreign barcode' do
-        sample_1_plate.barcodes << Barcode.new(format: :cgap, barcode: 'CGAP-ABC011')
-        expect(
-          described_class.new(value: 'CGAP-ABC011', sample_manifest_asset: sample_manifest_asset_2)
-        ).not_to be_valid
+        sample1_plate.barcodes << Barcode.new(format: :cgap, barcode: 'CGAP-ABC011')
+        expect(described_class.new(value: 'CGAP-ABC011', sample_manifest_asset: sample_manifest_asset2)).not_to be_valid
       end
 
       it 'will be valid to overwrite a foreign barcode with a new foreign barcode of the same format' do
-        sample_1_plate.barcodes << Barcode.new(format: :cgap, barcode: 'CGAP-ABC011')
-        field = described_class.new(value: 'CGAP-ABC022', sample_manifest_asset: sample_manifest_asset_1)
+        sample1_plate.barcodes << Barcode.new(format: :cgap, barcode: 'CGAP-ABC011')
+        field = described_class.new(value: 'CGAP-ABC022', sample_manifest_asset: sample_manifest_asset1)
         expect(field).to be_valid
 
-        field.update(aliquot: sample_1.wells.first.aliquots.first)
+        field.update(aliquot: sample1.wells.first.aliquots.first)
 
-        sample_1_plate.reload
-        expect(sample_1_plate.barcodes.find { |item| item[:barcode] == 'CGAP-ABC011' }).to be_nil
-        expect(sample_1_plate.barcodes.find { |item| item[:barcode] == 'CGAP-ABC022' }).not_to be_nil
+        sample1_plate.reload
+        expect(sample1_plate.barcodes.find { |item| item[:barcode] == 'CGAP-ABC011' }).to be_nil
+        expect(sample1_plate.barcodes.find { |item| item[:barcode] == 'CGAP-ABC022' }).not_to be_nil
       end
     end
   end
@@ -253,40 +251,40 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
   end
 
   describe SequencescapeExcel::SpecialisedField::SangerTubeId do
-    let!(:sample_1) { create(:sample) }
-    let!(:sample_1_tube) { create(:sample_tube_with_sanger_sample_id, sample: sample_1) }
+    let!(:sample1) { create(:sample) }
+    let!(:sample1_tube) { create(:sample_tube_with_sanger_sample_id, sample: sample1) }
 
-    let(:manifest_asset) { create :sample_manifest_asset, asset: sample_1_tube }
+    let(:manifest_asset) { create :sample_manifest_asset, asset: sample1_tube }
 
     it 'will be valid if the value matches the sanger human barcode' do
-      expect(described_class.new(value: sample_1_tube.human_barcode, sample_manifest_asset: manifest_asset)).to be_valid
+      expect(described_class.new(value: sample1_tube.human_barcode, sample_manifest_asset: manifest_asset)).to be_valid
       expect(described_class.new(value: '1234', sample_manifest_asset: manifest_asset)).not_to be_valid
     end
 
     describe 'with foreign barcodes' do
-      let!(:sample_2) { create(:sample) }
-      let!(:sample_2_tube) { create(:sample_tube_with_sanger_sample_id, sample: sample_2) }
-      let(:manifest_asset2) { create :sample_manifest_asset, asset: sample_2_tube }
+      let!(:sample2) { create(:sample) }
+      let!(:sample2_tube) { create(:sample_tube_with_sanger_sample_id, sample: sample2) }
+      let(:manifest_asset2) { create :sample_manifest_asset, asset: sample2_tube }
 
       it 'will be valid if the value matches an unused cgap foreign barcode' do
         expect(described_class.new(value: 'CGAP-ABC001', sample_manifest_asset: manifest_asset)).to be_valid
       end
 
       it 'will not be valid if the value matches an already used cgap foreign barcode' do
-        sample_1_tube.barcodes << Barcode.new(format: :cgap, barcode: 'CGAP-ABC011')
+        sample1_tube.barcodes << Barcode.new(format: :cgap, barcode: 'CGAP-ABC011')
         expect(described_class.new(value: 'CGAP-ABC011', sample_manifest_asset: manifest_asset2)).not_to be_valid
       end
 
       it 'will be valid to overwrite a foreign barcode with a new foreign barcode of the same format' do
-        sample_1_tube.barcodes << Barcode.new(format: :cgap, barcode: 'CGAP-ABC011')
+        sample1_tube.barcodes << Barcode.new(format: :cgap, barcode: 'CGAP-ABC011')
         field = described_class.new(value: 'CGAP-ABC022', sample_manifest_asset: manifest_asset)
         expect(field).to be_valid
 
-        field.update(aliquot: sample_1_tube.aliquots.first)
+        field.update(aliquot: sample1_tube.aliquots.first)
 
-        sample_1_tube.reload
-        expect(sample_1_tube.barcodes.find { |item| item[:barcode] == 'CGAP-ABC011' }).to be_nil
-        expect(sample_1_tube.barcodes.find { |item| item[:barcode] == 'CGAP-ABC022' }).not_to be_nil
+        sample1_tube.reload
+        expect(sample1_tube.barcodes.find { |item| item[:barcode] == 'CGAP-ABC011' }).to be_nil
+        expect(sample1_tube.barcodes.find { |item| item[:barcode] == 'CGAP-ABC022' }).not_to be_nil
       end
     end
   end
