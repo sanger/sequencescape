@@ -14,7 +14,6 @@ module Presenters
     include Rails.application.routes.url_helpers
     include ActionView::Helpers::TextHelper
 
-    delegate :multiplexed?, to: :batch
     delegate :sequencing?, to: :pipeline
 
     def initialize(current_user, batch)
@@ -75,23 +74,16 @@ module Presenters
       cherrypicking?
     end
 
-    # rubocop:todo Metrics/PerceivedComplexity, Metrics/AbcSize
-    def load_pipeline_options # rubocop:todo Metrics/CyclomaticComplexity
+        def load_pipeline_options
       add_submenu_option 'Edit batch', edit_batch_path(@batch) if can? :edit
 
       # Printing of labels is enabled for anybody
-      add_submenu_option 'Print labels', :print_labels # The test for this was ridiculously slow,
-
-      # and would be always true anyway. I've removed the conditional to give a quick performance boost, with no
-      # changes in behaviour. This whole section needs refactoring anyway.
-      add_submenu_option 'Print pool label', :print_multiplex_labels if multiplexed?
-      add_submenu_option 'Print stock pool label', :print_stock_multiplex_labels if multiplexed?
+      add_submenu_option 'Print labels', :print_labels
       add_submenu_option 'Print plate labels', :print_plate_labels if plate_labels?
 
       add_submenu_option 'Print worksheet', :print if worksheet? && can?(:print)
 
       add_submenu_option 'Verify tube layout', :verify if tube_layout_not_verified? && can?(:verify)
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
-  end
+      end
 end

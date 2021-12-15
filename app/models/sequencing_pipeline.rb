@@ -1,5 +1,8 @@
 # frozen_string_literal: true
-class SequencingPipeline < Pipeline # rubocop:todo Style/Documentation
+
+# SequencingPipeline represents the loading of multiplexed library tubes onto
+# lanes of flowcells for running on the Sequencing machines.
+class SequencingPipeline < Pipeline
   self.batch_worksheet = 'simplified_worksheet'
   self.sequencing = true
   self.purpose_information = false

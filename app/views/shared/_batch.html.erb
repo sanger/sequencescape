@@ -14,9 +14,6 @@
         <th>Source barcode</th>
         <th>Target Type</th>
         <th>Target barcode</th>
-        <% if @batch.display_tags? %>
-          <th>Tag #</th>
-        <% end %>
         <% @rits.each do |rit| %>
           <th><%= rit.label %></th>
         <% end %>
@@ -56,14 +53,6 @@
             <td></td>
             <td ></td>
             <td></td>
-          <% end %>
-          <% if @batch.display_tags? -%>
-            <% tag = request.target_asset.primary_aliquot.try(:tag) %>
-            <% unless tag.blank? %>
-              <td><%= link_to tag.map_id, tag_group_path(tag.tag_group) %></td>
-            <% else %>
-              <td> - </td>
-            <% end %>
           <% end %>
 
           <% @rits.each do |rit| %>

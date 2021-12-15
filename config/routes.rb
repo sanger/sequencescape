@@ -145,9 +145,6 @@ Rails.application.routes.draw do
       get :download_spreadsheet
       get :fail
       get :print
-      post :print_multiplex_barcodes
-      get :print_multiplex_labels
-      get :print_stock_multiplex_labels
       get :verify
       post :verify_tube_layout
       get :previous_qc_state
@@ -159,7 +156,6 @@ Rails.application.routes.draw do
     collection do
       post :print_barcodes
       post :print_plate_barcodes
-      post :print_multiplex_barcodes
       post :sort
       get 'find_batch_by_barcode/:id', action: 'find_batch_by_barcode'
     end

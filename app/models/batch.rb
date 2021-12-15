@@ -295,23 +295,8 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
     barcode.presence || requests.first.target_asset.plate.human_barcode
   end
 
-  def mpx_library_name
-    return '' unless multiplexed? && requests.any?
-
-    mpx_library_tube = requests.first.target_asset.children.first
-    mpx_library_tube&.name || ''
-  end
-
-  def display_tags?
-    multiplexed?
-  end
-
   def id_dup
     id
-  end
-
-  def multiplexed_items_with_unique_library_ids
-    requests.map { |r| r.target_asset.children }.flatten.uniq
   end
 
   # Source Labware returns the physical pieces of labware (ie. a plate for wells, but tubes for tubes)
