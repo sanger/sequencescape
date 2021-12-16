@@ -98,7 +98,7 @@ module SampleManifestExcel
 
       def changed?
         (@sample_updated && sample.previous_changes.present?) || metadata.previous_changes.present? ||
-          aliquot.previous_changes.present?
+          aliquots.any? { |a| a.previous_changes.present? }
       end
 
       def update_specialised_fields(tag_group)

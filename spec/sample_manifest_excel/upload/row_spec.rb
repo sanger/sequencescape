@@ -181,7 +181,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
     row = described_class.new(number: 1, data: data, columns: columns)
     row.sample
     row.update_specialised_fields(tag_group)
-    aliquot = row.aliquot
+    aliquot = row.aliquots.first
     expect(Sample.count - sample_count).to eq(1)
     expect(aliquot.tag.oligo).to eq('AA')
     expect(aliquot.tag2).to be nil
