@@ -109,7 +109,7 @@ module SampleManifestExcel
         def update_downstream_aliquots
           substituter =
             TagSubstitution.new(
-              substitutions: substitutions.compact,
+              substitutions: substitutions,
               comment: 'Manifest updated',
               disable_clash_detection: true,
               disable_match_expectation: disable_match_expectation
@@ -119,7 +119,7 @@ module SampleManifestExcel
         end
 
         def no_substitutions?
-          substitutions.compact.all?(&:blank?)
+          substitutions.all?(&:blank?)
         end
 
         # Log post processing checks and fail

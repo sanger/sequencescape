@@ -153,6 +153,34 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         expect(processor.substitutions.compact.length).to eq(8)
         expect(processor).to be_downstream_aliquots_updated
       end
+
+      # This test may seem a little paranoid, but I actually observed this behaviour
+      # when testing. Somewhat lucky, as I only triggered it by accident!
+      it 'will update the aliquots downstream if both tags and library types have changed' do
+        new_lt = create :library_type
+        chromium_tag1 = cell(rows.first, columns[:chromium_tag_well]).value
+        chromium_tag2 = cell(rows.last, columns[:chromium_tag_well]).value
+        cell(rows.first, columns[:chromium_tag_well]).value = chromium_tag2
+        cell(rows.first, columns[:library_type]).value = new_lt.name
+        cell(rows.last, columns[:chromium_tag_well]).value = chromium_tag1
+        download.save(new_test_file_name)
+        reupload2 =
+          SampleManifestExcel::Upload::Base.new(
+            file: new_test_file,
+            column_list: column_list,
+            start_row: 9,
+            override: true
+          )
+        processor = described_class.new(reupload2)
+
+        processor.update_samples_and_aliquots(tag_group)
+
+        expect(processor.substitutions.compact.length).to eq(8)
+        expect(processor.substitutions[0, 4]).to all include('library_type' => new_lt.name)
+        expect(processor.substitutions.map(&:keys)).to all include(:original_tag_id)
+        expect(processor.substitutions.map(&:keys)).to all include(:substitute_tag_id)
+        expect(processor).to be_downstream_aliquots_updated
+      end
     end
 
     describe SampleManifestExcel::Upload::Processor::OneDTube do
@@ -278,7 +306,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
                         insert_size_from: 7,
                         insert_size_to: 8,
                         chromium_tag_group: 3,
-                        chromium_tag_well: 4
+                        chromium_tag_well: 4,
+                        library_type: 6
       end
     end
 
