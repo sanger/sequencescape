@@ -275,12 +275,10 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
   def verify_tube_layout # rubocop:todo Metrics/AbcSize
     tube_barcodes = Array.new(@batch.requests.count) { |i| params["barcode_#{i}"] }
 
-    results = @batch.verify_tube_layout(tube_barcodes, current_user)
-
-    if results
+    if @batch.verify_tube_layout(tube_barcodes, current_user)
       flash[:notice] = 'All of the tubes are in their correct positions.'
       redirect_to batch_path(@batch)
-    elsif !results
+    else
       flash[:error] = @batch.errors.full_messages.sort
       redirect_to action: :verify, id: @batch.id
     end
