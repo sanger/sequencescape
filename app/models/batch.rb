@@ -376,17 +376,13 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
   end
 
-  def remove_link(request)
-    request.batch = nil
-  end
-
   # rubocop:todo Metrics/MethodLength
   def reset!(current_user) # rubocop:todo Metrics/AbcSize
     ActiveRecord::Base.transaction do
       discard!
 
       requests.each do |request|
-        remove_link(request) # Remove link in all types of pipelines
+        request.batch = nil
         return_request_to_inbox(request, current_user)
       end
 
@@ -403,17 +399,6 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   # rubocop:enable Metrics/MethodLength
-
-  def parent_of_purpose(name)
-    return nil if requests.empty?
-
-    requests
-      .first
-      .asset
-      .ancestors
-      .joins("INNER JOIN plate_purposes ON #{Plate.table_name}.plate_purpose_id = plate_purposes.id")
-      .find_by(plate_purposes: { name: name })
-  end
 
   # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def swap(current_user, batch_info = {}) # rubocop:todo Metrics/CyclomaticComplexity

@@ -74,7 +74,7 @@ module Presenters
       cherrypicking?
     end
 
-        def load_pipeline_options
+    def load_pipeline_options
       add_submenu_option 'Edit batch', edit_batch_path(@batch) if can? :edit
 
       # Printing of labels is enabled for anybody
@@ -85,5 +85,5 @@ module Presenters
 
       add_submenu_option 'Verify tube layout', :verify if tube_layout_not_verified? && can?(:verify)
     end
-      end
+  end
 end

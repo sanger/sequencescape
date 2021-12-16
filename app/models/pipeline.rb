@@ -90,13 +90,13 @@ class Pipeline < ApplicationRecord
   end
 
   # This is the old behaviour for every other pipeline.
-  def detach_request_from_batch(batch, request)
+  def detach_request_from_batch(_batch, request)
     request.return_for_inbox!
-    update_detached_request(batch, request)
+    update_detached_request(request)
     request.save!
   end
 
-  def update_detached_request(_batch, _request); end
+  def update_detached_request(_request); end
 
   # Overridden in group-by parent pipelines to display input plates
   def input_labware(_requests)

@@ -19,8 +19,8 @@ class CherrypickingPipeline < Pipeline
     PICKED_STATES.include?(batch.state)
   end
 
-  def update_detached_request(batch, request)
-    batch.remove_link(request)
+  def update_detached_request(request)
+    request.batch = nil
   end
 
   def request_actions
