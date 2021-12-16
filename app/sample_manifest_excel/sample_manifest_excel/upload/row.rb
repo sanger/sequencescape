@@ -22,6 +22,7 @@ module SampleManifestExcel
 
       delegate :present?, to: :sample, prefix: true
       delegate :aliquots, :asset, to: :manifest_asset
+      delegate :labware, to: :asset
 
       ##
       # Finds a sample based on the sanger_sample_id column. Must exist for row to be valid.
@@ -152,10 +153,6 @@ module SampleManifestExcel
         return true unless columns.present? && columns.valid? && columns.names.include?(primary_column)
 
         value(primary_column).blank?
-      end
-
-      def labware
-        sample.primary_receptacle.labware
       end
 
       def validate_sample

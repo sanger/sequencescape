@@ -51,7 +51,7 @@ module SampleManifest::LibraryTubeBehaviour
     end
 
     def included_resources
-      [{ sample: :sample_metadata, asset: %i[barcodes aliquots] }]
+      [{ sample: :sample_metadata, asset: %i[barcodes aliquots labware] }]
     end
   end
 end

@@ -74,7 +74,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
     end
 
     def included_resources
-      [{ sample: :sample_metadata, asset: [:barcodes, :aliquots, { requests: :target_asset }] }]
+      [{ sample: :sample_metadata, asset: [:barcodes, :aliquots, :labware, { requests: :target_asset }] }]
     end
   end
 end
