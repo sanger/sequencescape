@@ -98,9 +98,6 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
           )
         }
 
-  scope :from_labware_barcodes,
-        ->(barcodes) { joins(input_labware: :barcodes).where(barcodes: { barcode: barcodes }).distinct }
-
   scope :latest_first, -> { order(created_at: :desc) }
   scope :most_recent, ->(number) { latest_first.limit(number) }
 
@@ -351,7 +348,6 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
       update_batch_state(reason, comment)
     end
   end
-  alias recycle_request_ids remove_request_ids
 
   # Remove a request from the batch and reset it to a point where it can be put back into
   # the pending queue.
@@ -461,10 +457,6 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def plate_ids_in_study(study)
     Plate.plate_ids_from_requests(requests.for_studies(study))
-  end
-
-  def space_left
-    [item_limit - batch_requests.count, 0].max
   end
 
   def total_volume_to_cherrypick
