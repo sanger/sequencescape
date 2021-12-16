@@ -4,6 +4,5 @@ Limber-Htp - Targeted NanoSeq:
   submission_class_name: "LinearSubmission"
   related_records:
     request_type_keys: ["limber_targeted_nanoseq"]
-    project_name: "UAT Project"
     product_line_name: Targeted-NanoSeq
     product_catalogue_name: Targeted-NanoSeq
