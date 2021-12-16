@@ -49,7 +49,7 @@ module SequencescapeExcel
       end
 
       def tags
-        Tag.where(tag_group_id: sf_tag_group.tag_group_id, map_id: map_ids) if sf_tag_group&.tag_group_id
+        sf_tag_group.tag_group&.tags&.select { |tag| map_ids.include?(tag.map_id) }
       end
     end
   end

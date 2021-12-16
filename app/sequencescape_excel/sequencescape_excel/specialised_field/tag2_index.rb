@@ -25,12 +25,8 @@ module SequencescapeExcel
       private
 
       def tag
-        @tag ||=
-          ::Tag
-            .where.not(tag_group_id: nil)
-            .where.not(map_id: nil)
-            .where(tag_group_id: sf_tag2_group.tag2_group_id, map_id: value)
-            .take
+        return unless sf_tag2_group.tag2_group && value.present?
+        @tag ||= sf_tag2_group.tag2_group.tags.detect { |tag| tag.map_id == value }
       end
 
       # check the index exists within the group exists here, check the group/index combination later

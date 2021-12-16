@@ -23,7 +23,7 @@ module SequencescapeExcel
       end
 
       def primer_panel
-        @primer_panel ||= ::PrimerPanel.find_by(name: value) if value?
+        @primer_panel ||= cache.fetch(:primer_panel, value) { ::PrimerPanel.find_by(name: value) } if value?
       end
 
       def check_primer_panel_exists

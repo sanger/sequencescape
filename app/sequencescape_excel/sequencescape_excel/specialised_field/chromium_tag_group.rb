@@ -10,7 +10,11 @@ module SequencescapeExcel
       validate :check_tag_group
 
       def tag_group_id
-        @tag_group_id ||= ::TagGroup.chromium.find_by(name: value)&.id
+        @tag_group_id ||= tag_group&.id
+      end
+
+      def tag_group
+        cache.fetch(:chromium_tag_group, value) { ::TagGroup.chromium.find_by(name: value) }
       end
 
       private

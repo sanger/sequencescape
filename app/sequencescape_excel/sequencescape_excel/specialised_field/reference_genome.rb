@@ -17,7 +17,7 @@ module SequencescapeExcel
       end
 
       def reference_genome
-        @reference_genome ||= ::ReferenceGenome.find_by(name: value)
+        @reference_genome ||= cache.fetch(:reference_genome, value) { ::ReferenceGenome.find_by(name: value) }
       end
 
       private

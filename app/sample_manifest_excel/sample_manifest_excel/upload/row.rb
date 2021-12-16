@@ -28,7 +28,7 @@ module SampleManifestExcel
       # Creates the specialised fields for updating the sample based on the passed columns
       def initialize(attributes = {})
         super
-        @cache ||= SampleManifestAsset
+        @cache ||= SampleManifestExcel::Upload::Cache.new
         @sanger_sample_id ||= value(:sanger_sample_id).presence if columns.present? && data.present?
       end
 
@@ -215,14 +215,18 @@ module SampleManifestExcel
       end
 
       def create_specialised_fields
-        return [] unless columns.present? && data.present? && sanger_sample_id.present?
+        return [] unless specialised_fields_required?
 
-        specialised_fields =
-          columns.with_specialised_fields.map do |column|
-            column.specialised_field.new(value: at(column.number), sample_manifest_asset: manifest_asset)
+        columns
+          .with_specialised_fields
+          .map do |column|
+            column.specialised_field.new(value: at(column.number), sample_manifest_asset: manifest_asset, cache: cache)
           end
+          .tap { |fields| link_tag_groups_and_indexes(fields) }
+      end
 
-        specialised_fields.tap { |fields| link_tag_groups_and_indexes(fields) }
+      def specialised_fields_required?
+        columns.present? && data.present? && sanger_sample_id.present?
       end
 
       # link fields together for tag groups and indexes
