@@ -368,7 +368,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   def pipeline_error_on_batch_creation(message)
     respond_to do |format|
-      flash[:error] = message
+      flash[:error] = truncate_flash(message)
       format.html { redirect_to pipeline_url(@pipeline) }
     end
     nil
@@ -409,14 +409,10 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
       # Find the requests which caused the clash.
       batched_requests = BatchRequest.where(request_id: requests.map(&:id)).pluck(:request_id)
 
-      # Limit the length of the error message, otherwise big batches may generate errors which are too
-      # big to pass back in the flash.
-      listed_requests = batched_requests.join(', ').truncate(200, separator: ' ')
-
       # And finally report the error
       return(
         pipeline_error_on_batch_creation(
-          "Could not create batch as requests were already in a batch: #{listed_requests}"
+          "Could not create batch as requests were already in a batch: #{batched_requests.to_sentence}"
         )
       )
     end
