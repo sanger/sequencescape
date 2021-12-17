@@ -15,12 +15,6 @@ class CherrypickingPipeline < Pipeline
     batch.requests.each { |request| request.reduce_source_volume if request.respond_to?(:reduce_source_volume) }
   end
 
-  def detach_request_from_batch(_batch, request)
-    request.return_for_inbox!
-    request.batch = nil
-    request.save!
-  end
-
   def pick_information?(batch)
     PICKED_STATES.include?(batch.state)
   end

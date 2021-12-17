@@ -84,8 +84,10 @@ class Pipeline < ApplicationRecord
   end
 
   # This is the old behaviour for every other pipeline.
-  def detach_request_from_batch(_batch, _request)
-    raise 'Not implemented on base class'
+  def detach_request_from_batch(_batch, request)
+    request.return_for_inbox!
+    request.batch = nil
+    request.save!
   end
 
   # Overridden in group-by parent pipelines to display input plates
