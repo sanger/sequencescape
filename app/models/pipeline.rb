@@ -84,13 +84,9 @@ class Pipeline < ApplicationRecord
   end
 
   # This is the old behaviour for every other pipeline.
-  def detach_request_from_batch(_batch, request)
-    request.return_for_inbox!
-    update_detached_request(request)
-    request.save!
+  def detach_request_from_batch(_batch, _request)
+    raise 'Not implemented on base class'
   end
-
-  def update_detached_request(_request); end
 
   # Overridden in group-by parent pipelines to display input plates
   def input_labware(_requests)
@@ -114,10 +110,6 @@ class Pipeline < ApplicationRecord
 
   def post_release_batch(batch, user)
     # Do Nothing
-  end
-
-  def has_controls?
-    !controls.empty?
   end
 
   # Extracts the request ids from the selected requests. Overidden in pipleines
