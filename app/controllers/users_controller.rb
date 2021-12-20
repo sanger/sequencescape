@@ -48,7 +48,7 @@ class UsersController < ApplicationController # rubocop:todo Style/Documentation
   def find_user
     @user = User.find(params[:id])
   end
-  
+
   def print_swipecard_with_pmb(swipecard, printer)
     print_job =
       LabelPrinter::PrintJob.new(
