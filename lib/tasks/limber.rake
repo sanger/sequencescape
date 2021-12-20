@@ -183,8 +183,7 @@ namespace :limber do
           submission_class_name: 'LinearSubmission',
           submission_parameters: {
             request_type_ids_list: [
-              RequestType.where(key: 'limber_heron_lthr').ids,
-              RequestType.where(key: 'limber_multiplexing').ids,
+              RequestType.where(key: 'limber_heron_lthr_v2').ids,
               RequestType.where(key: 'illumina_htp_novaseq_6000_paired_end_sequencing').ids
             ],
             project_id: Limber::Helper.find_project('Project Heron').id

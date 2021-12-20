@@ -156,6 +156,20 @@ limber_heron_lthr:
     - Sanger_tailed_artic_v1_384
     - PCR amplicon tailed adapters 96
     - PCR amplicon tailed adapters 384
+limber_heron_lthr_v2:
+  <<: *limber_htp_library
+  name: Limber Heron LTHR V2
+  request_class_name: IlluminaHtp::Requests::HeronTailedRequest
+  for_multiplexing: true
+  acceptable_purposes:
+    - LTHR RT
+    - LTHR-384 RT
+    - LTHR Cherrypick
+  library_types:
+    - Sanger_tailed_artic_v1_96
+    - Sanger_tailed_artic_v1_384
+    - PCR amplicon tailed adapters 96
+    - PCR amplicon tailed adapters 384
 limber_pwgs-384:
   <<: *limber_htp_library
   name: Limber pWGS-384
