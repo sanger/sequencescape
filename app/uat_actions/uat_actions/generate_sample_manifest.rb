@@ -78,7 +78,7 @@ class UatActions::GenerateSampleManifest < UatActions
       raise 'Manifest for plates is not supported yet' unless asset_type == '1dtube'
 
       create_sample("Sample_#{asset.human_barcode}_1", sample_manifest).tap do |sample|
-        asset.aliquots.create!(sample: sample, study: study, library: asset)
+        asset.aliquots.create!(sample: sample, study: study)
         study.samples << sample
       end
     end
