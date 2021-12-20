@@ -38,7 +38,7 @@ end %>
 
 <div class="card-default">
 <%= panel(:default, title: 'Print Swipecard Barcode') do %>
-  <%= form_tag(@user.id.to_s + '/print_swipecard') do %>
+  <%= form_tag(print_swipecard_profile_path) do %>
     <table>
       <tr>
         <th><%= label_tag 'Swipe card' %></th>

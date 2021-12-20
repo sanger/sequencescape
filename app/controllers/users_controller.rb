@@ -7,7 +7,7 @@ class UsersController < ApplicationController # rubocop:todo Style/Documentation
   authorize_resource
 
   def show
-    @printer_list = BarcodePrinter.alphabetical.where(barcode_printer_type: BarcodePrinterType96Plate.all).map(&:name)
+    @printer_list = BarcodePrinter.alphabetical.where(barcode_printer_type: BarcodePrinterType96Plate.all).pluck(:name)
   end
 
   def edit; end
@@ -50,19 +50,18 @@ class UsersController < ApplicationController # rubocop:todo Style/Documentation
   end
   
   def print_swipecard_with_pmb(swipecard, printer)
-    LabelPrinter::PmbClient.print({ 
-      printer_name: printer,
-      label_template_name: configatron.swipecard_pmb_template,
-      labels: [ 
-        left_text: @user.login.truncate(10, omission: '..'),
-        barcode: swipecard,
-        label_name: 'main'
-      ]
-    })
-    rescue StandardError => e
-      flash[:error] = "There has been an error printing your swipecard: #{e}"
+    print_job =
+      LabelPrinter::PrintJob.new(
+        printer,
+        LabelPrinter::Label::Swipecard,
+        user_login: @user.login.truncate(10, omission: '..'),
+        swipecard: swipecard
+      )
+    if print_job.execute
+      flash[:notice] = print_job.success
     else
-      flash[:notice] = "Swipecard has been sent to print at #{printer}"
+      flash[:error] = print_job.errors.full_messages.join('; ')
+    end
   end
 
   rescue_from CanCan::AccessDenied do |exception|
