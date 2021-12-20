@@ -26,7 +26,7 @@ RSpec.describe 'Users', type: :request do
   end
 
   describe 'GET study_reports' do
-    it 'shows the profile edit page', :aggregate_failures do
+    it 'shows the users study reports', :aggregate_failures do
       get "/profile/#{user.id}/study_reports"
       expect(response).to render_template(:study_reports)
       expect(response).to have_http_status(:success)
@@ -34,7 +34,7 @@ RSpec.describe 'Users', type: :request do
   end
 
   describe 'GET projects' do
-    it 'shows the profile edit page', :aggregate_failures do
+    it 'shows the users projects', :aggregate_failures do
       get "/profile/#{user.id}/projects"
       expect(response).to render_template(:projects)
       expect(response).to have_http_status(:success)
@@ -50,7 +50,7 @@ RSpec.describe 'Users', type: :request do
   end
 
   describe 'POST print_swipecard' do
-    it 'shows the users profile', :aggregate_failures do
+    it 'finds the endpoint and redirects to users profile', :aggregate_failures do
       post "/profile/#{user.id}/print_swipecard", params: { swipecard: 'test-swipecard', printer: 'test-printer' }
       expect(response).to redirect_to("/profile/#{user.id}")
       expect(response).to have_http_status(:found)
