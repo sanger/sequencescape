@@ -161,6 +161,7 @@ limber_heron_lthr_v2:
   name: Limber Heron LTHR V2
   request_class_name: IlluminaHtp::Requests::HeronTailedRequest
   for_multiplexing: true
+  target_purpose_name: LB Lib Pool Norm
   acceptable_purposes:
     - LTHR RT
     - LTHR-384 RT
