@@ -20,10 +20,12 @@ RSpec.describe Api::V2::AliquotResource, type: :resource do
     expect(subject).to have_attribute :tag_index
     expect(subject).to have_attribute :tag2_index
     expect(subject).to have_attribute :suboptimal
+    expect(subject).to have_attribute :library_type
     expect(subject).not_to have_updatable_field(:id)
     expect(subject).not_to have_updatable_field(:tag_oligo)
     expect(subject).not_to have_updatable_field(:tag2_oligo)
     expect(subject).not_to have_updatable_field(:suboptimal)
+    expect(subject).not_to have_updatable_field(:library_type)
     expect(subject).to have_one(:sample).with_class_name('Sample')
   end
 

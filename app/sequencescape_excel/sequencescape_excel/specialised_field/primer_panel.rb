@@ -10,8 +10,8 @@ module SequencescapeExcel
 
       validate :check_primer_panel_exists, if: :value?
 
-      def update(attributes = {})
-        return unless valid? && attributes[:aliquot].present?
+      def update(_attributes = {})
+        return unless valid? && aliquots.present?
 
         aliquots.each { |aliquot| aliquot.primer_panel = primer_panel }
       end

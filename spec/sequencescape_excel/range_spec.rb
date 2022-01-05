@@ -79,7 +79,8 @@ RSpec.describe SequencescapeExcel::Range, type: :model, sample_manifest_excel: t
 
   context 'with dynamic options' do
     # Ensure we have at least one option.
-    let!(:library_type) { create :library_type }
+    before { create :library_type }
+
     let!(:original_option_size) { LibraryType.count }
     let(:attributes) { { name: 'library_type', identifier: :name, scope: :alphabetical, first_row: 4 } }
     let(:range) { described_class.new(attributes) }

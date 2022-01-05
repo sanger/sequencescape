@@ -15,6 +15,7 @@ RSpec.describe SequencescapeExcel::Worksheet, type: :model, sample_manifest_exce
     @spreadsheet = Roo::Spreadsheet.open(test_file)
   end
 
+  # We aren't actually creating records here
   before(:all) do
     SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
@@ -25,8 +26,7 @@ RSpec.describe SequencescapeExcel::Worksheet, type: :model, sample_manifest_exce
   before do
     create :tag_group, adapter_type: (create :adapter_type, name: 'chromium')
     create :primer_panel
-    barcode = double('barcode')
-    allow(barcode).to receive(:barcode).and_return(23)
+    barcode = build :plate_barcode, barcode: 23
     allow(PlateBarcode).to receive(:create).and_return(barcode)
 
     @sample_manifest = create :sample_manifest
@@ -37,7 +37,7 @@ RSpec.describe SequencescapeExcel::Worksheet, type: :model, sample_manifest_exce
 
   after { File.delete(test_file) if File.exist?(test_file) }
 
-  context 'validations ranges worksheet' do
+  describe 'validations ranges worksheet' do
     let!(:range_list) { SampleManifestExcel.configuration.ranges.dup }
     let!(:worksheet) { SequencescapeExcel::Worksheet::RangesWorksheet.new(workbook: workbook, ranges: range_list) }
 
@@ -56,7 +56,7 @@ RSpec.describe SequencescapeExcel::Worksheet, type: :model, sample_manifest_exce
     it 'set absolute references in ranges' do
       range = range_list.ranges.values.first
       expect(range.absolute_reference).to eq("Ranges!#{range.fixed_reference}")
-      expect(range_list).to be_all { |_k, rng| rng.absolute_reference.present? }
+      expect(range_list).to(be_all { |_k, rng| rng.absolute_reference.present? })
     end
   end
 end

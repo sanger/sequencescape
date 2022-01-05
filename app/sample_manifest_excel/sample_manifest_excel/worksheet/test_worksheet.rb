@@ -91,7 +91,7 @@ module SampleManifestExcel
             num_samples_per_plate: num_samples_per_plate,
             study: study
           )
-        when /tube_library/
+        when /tube_library/, /tube_chromium_library/
           FactoryBot.create(:sample_manifest, asset_type: 'library', study: study)
         when /tube_multiplexed_library/
           FactoryBot.create(:sample_manifest, asset_type: 'multiplexed_library', study: study)
@@ -291,23 +291,40 @@ module SampleManifestExcel
         ReferenceGenome.where(name: data[:reference_genome]).first_or_create
       end
 
-      # rubocop:todo Metrics/MethodLength
-      def create_tags # rubocop:todo Metrics/AbcSize
-        if %w[tube_multiplexed_library_with_tag_sequences tube_library_with_tag_sequences].include? manifest_type
-          oligos = Tags::ExampleData.new.take(computed_first_row, last_row, validation_errors.include?(:tags))
-          dynamic_attributes.each { |k, _v| dynamic_attributes[k].merge!(oligos[k]) }
-        elsif %w[tube_multiplexed_library].include? manifest_type
-          groups_and_indexes =
-            Tags::ExampleData.new.take_as_groups_and_indexes(
-              computed_first_row,
-              last_row,
-              validation_errors.include?(:tags)
-            )
-          dynamic_attributes.each { |k, _v| dynamic_attributes[k].merge!(groups_and_indexes[k]) }
+      def create_tags
+        case manifest_type
+        when 'tube_multiplexed_library_with_tag_sequences', 'tube_library_with_tag_sequences'
+          tags_by_sequences
+        when 'tube_multiplexed_library'
+          tags_by_group
+        when 'tube_chromium_library'
+          chromium_tags
         end
       end
 
-      # rubocop:enable Metrics/MethodLength
+      def tags_by_sequences
+        oligos = Tags::ExampleData.new.take(computed_first_row, last_row, validation_errors.include?(:tags))
+        dynamic_attributes.each { |k, v| v.merge!(oligos[k]) }
+      end
+
+      def tags_by_group
+        groups_and_indexes =
+          Tags::ExampleData.new.take_as_groups_and_indexes(
+            computed_first_row,
+            last_row,
+            validation_errors.include?(:tags)
+          )
+        dynamic_attributes.each { |k, v| v.merge!(groups_and_indexes[k]) }
+      end
+
+      def chromium_tags
+        tag_group = FactoryBot.create(:tag_group, tag_count: 96 * 4, adapter_type_name: 'Chromium')
+        wells = ('A'..'H').flat_map { |row| (1..12).map { |col| "#{row}#{col}" } }
+
+        dynamic_attributes.values.each_with_index do |attributes, index|
+          attributes.merge!(chromium_tag_well: wells[index], chromium_tag_group: tag_group.name)
+        end
+      end
 
       def computed_first_row
         type == 'Tube Racks' ? first_row + count + 1 : first_row
