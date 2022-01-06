@@ -22,7 +22,7 @@ context 'printing different asset types' do
   end
 
   shared_examples 'a correct plate renderer' do
-    subject { described_class.new(options).to_h[:labels][:body].count }
+    subject { described_class.new(options).labels.count }
 
     context 'printing single label' do
       let(:options) { { printables: asset1, printer_type_class: BarcodePrinterType } }
@@ -38,7 +38,7 @@ context 'printing different asset types' do
   end
 
   shared_examples 'a correct tube renderer' do
-    subject { described_class.new(options).to_h[:labels][:body].first[:main_label] }
+    subject { described_class.new(options).labels.first }
 
     context 'printing tube' do
       let(:options) { { printables: asset1 } }

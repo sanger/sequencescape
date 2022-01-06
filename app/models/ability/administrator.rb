@@ -85,6 +85,7 @@ class Ability::Administrator
 
     # Edit and delete submissions
     can :manage, Submission
+    can :cancel, Submission
   end
   # rubocop:enable Metrics/MethodLength
 end

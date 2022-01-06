@@ -326,11 +326,6 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_many_lab_events
   broadcast_with_warren
 
-  # Aker
-  has_many :sample_jobs
-  has_many :jobs, class_name: 'Aker::Job', through: :sample_jobs
-  belongs_to :container, class_name: 'Aker::Container'
-
   validates :name, presence: true
   validates :name,
             format: {

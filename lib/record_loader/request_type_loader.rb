@@ -15,7 +15,7 @@ module RecordLoader
         .find_or_create_by!(key: key)
         .tap do |request_type|
           add_library_types(request_type, options.fetch('library_types', []))
-          add_acceptable_purposes(request_type, options.fetch('acceptable_plate_purposes', []))
+          add_acceptable_purposes(request_type, options.fetch('acceptable_purposes', []))
         end
     rescue StandardError => e
       raise StandardError, "Failed to create #{key} due to: #{e.message}"
@@ -35,11 +35,11 @@ module RecordLoader
     end
 
     def add_acceptable_purposes(request_type, purposes)
-      acceptable_purposes = request_type.acceptable_plate_purposes.pluck(:name)
+      acceptable_purposes = request_type.acceptable_purposes.pluck(:name)
       purposes.each do |name|
-        unless acceptable_purposes.include?(name)
-          request_type.acceptable_plate_purposes << PlatePurpose.find_by!(name: name)
-        end
+        next if acceptable_purposes.include?(name)
+
+        request_type.acceptable_purposes << Purpose.find_by!(name: name)
       end
     end
 
@@ -52,7 +52,7 @@ module RecordLoader
     end
 
     def filter_options(options)
-      { **default_options, **options.except('acceptable_plate_purposes', 'library_types') }
+      { **default_options, **options.except('acceptable_purposes', 'library_types') }
     end
 
     # Handles the default options not otherwise handled by the database defaults

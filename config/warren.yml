@@ -13,7 +13,7 @@ development:
   # use the WARREN_CONNECTION_URI environmental variable
   config:
     server:
-      host: localhost
+      host: <%= ENV.fetch('RMQHOST', 'localhost') %>
       port: 5672
       username: guest
       password: guest

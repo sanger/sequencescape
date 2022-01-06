@@ -10,12 +10,15 @@ module Barcode::Barcodeable
     end
   end
 
-  def any_barcode_matching?(other_barcode)
-    barcodes.any? { |barcode| barcode =~ other_barcode }
-  end
-
+  # Assumes presence of a method called `sanger_barcode=` on the class this is included within.
+  # It's not implemented on TubeRack!
   def generate_barcode
     self.sanger_barcode = { prefix: default_prefix, number: AssetBarcode.new_barcode } unless primary_barcode
+  end
+
+  # ***** Read-only utility methods *****
+  def any_barcode_matching?(other_barcode)
+    barcodes.any? { |barcode| barcode =~ other_barcode }
   end
 
   def barcode_number
@@ -48,6 +51,9 @@ module Barcode::Barcodeable
     barcodes.loaded? ? barcodes.max_by(&:id) : barcodes.last
   end
 
+  # ***** End read-only utility methods *****
+
+  # ***** Getter and setter methods for foreign barcodes *****
   def infinium_barcode
     barcodes.detect(&:infinium?)&.machine_barcode
   end
@@ -80,14 +86,22 @@ module Barcode::Barcodeable
     barcodes.external.first_or_initialize.barcode = barcode
   end
 
-  def aker_barcode
-    barcodes.detect(&:aker_barcode?)&.machine_barcode
+  # Detects the format of the foreign barcode string passed in
+  # Adds it to the list of barcodes, making it the primary (most recent) barcode
+  # Throws exceptions if there are validation issues
+  def foreign_barcode=(barcode)
+    barcode_format = Barcode.matching_barcode_format(barcode)
+
+    raise "Cannot determine format for foreign barcode #{barcode}" if barcode_format.blank?
+
+    raise "Foreign Barcode: #{barcode} is already in use!" if Barcode.exists_for_format?(barcode_format, barcode)
+
+    barcodes << Barcode.new(format: barcode_format, barcode: barcode)
   end
 
-  def aker_barcode=(barcode)
-    barcodes.aker_barcode.first_or_initialize.barcode = barcode
-  end
+  # ***** End getter and setter methods for foreign barcodes *****
 
+  # ***** Deprecated methods *****
   deprecate def barcode!
     barcode
   end
@@ -101,6 +115,8 @@ module Barcode::Barcodeable
     @barcode_prefix ||= barcode_prefix.prefix
     build_barcode_when_complete
   end
+
+  # ***** End deprecated methods *****
 
   private
 

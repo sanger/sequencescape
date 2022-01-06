@@ -15,7 +15,7 @@ limber_wgs:
     billable: true
     product_line_name: Illumina-HTP
   name: Limber WGS
-  acceptable_plate_purposes:
+  acceptable_purposes:
     - LB Cherrypick
   library_types:
     - Standard
@@ -24,16 +24,18 @@ limber_isc:
   <<: *limber_htp_library
   name: Limber ISC
   request_class_name: Pulldown::Requests::IscLibraryRequest
-  acceptable_plate_purposes:
+  acceptable_purposes:
     - LB Cherrypick
   library_types:
     - Agilent Pulldown
     - Twist Pulldown
+    - Targeted NanoSeq Pulldown Twist
+    - Targeted NanoSeq Pulldown Agilent
 limber_reisc:
   <<: *limber_htp_library
   name: Limber ReISC
   request_class_name: Pulldown::Requests::ReIscLibraryRequest
-  acceptable_plate_purposes:
+  acceptable_purposes:
     - LB Lib PCR-XP
   library_types:
     - Agilent Pulldown
@@ -42,7 +44,7 @@ limber_reisc:
 limber_pcr_free:
   <<: *limber_htp_library
   name: Limber PCR Free
-  acceptable_plate_purposes:
+  acceptable_purposes:
     - PF Cherrypicked
   library_types:
     - HiSeqX PCR free
@@ -52,7 +54,7 @@ limber_pcr_free:
 limber_lcmb:
   <<: *limber_htp_library
   name: Limber LCMB
-  acceptable_plate_purposes:
+  acceptable_purposes:
     - LB Cherrypick
   library_types:
     - Standard
@@ -60,14 +62,14 @@ limber_lcmb:
 limber_rnaa:
   <<: *limber_htp_library
   name: Limber RNAA
-  acceptable_plate_purposes:
+  acceptable_purposes:
     - LBR Cherrypick
   library_types:
     - RNA PolyA
 limber_scrna:
   <<: *limber_htp_library
   name: Limber scRNA
-  acceptable_plate_purposes:
+  acceptable_purposes:
     - scRNA Stock
     - GnT Stock
   library_types:
@@ -78,7 +80,7 @@ limber_gbs:
   name: Limber GBS
   for_multiplexing: true
   request_class_name: IlluminaHtp::Requests::GbsRequest
-  acceptable_plate_purposes:
+  acceptable_purposes:
     - GBS Stock
     - GBS-96 Stock
   library_types:
@@ -87,14 +89,14 @@ limber_gbs:
 limber_rnaag:
   <<: *limber_htp_library
   name: Limber RNAAG
-  acceptable_plate_purposes:
+  acceptable_purposes:
     - LBR Cherrypick
   library_types:
     - RNA Poly A Globin
 limber_scrna-384:
   <<: *limber_htp_library
   name: Limber scRNA-384
-  acceptable_plate_purposes:
+  acceptable_purposes:
     - scRNA-384 Stock
   library_types:
     - scRNA 384
@@ -102,28 +104,28 @@ limber_scrna-384:
 limber_rnar:
   <<: *limber_htp_library
   name: Limber RNAR
-  acceptable_plate_purposes:
+  acceptable_purposes:
     - LBR Cherrypick
   library_types:
     - RNA Ribo
 limber_rnarg:
   <<: *limber_htp_library
   name: Limber RNARG
-  acceptable_plate_purposes:
+  acceptable_purposes:
     - LBR Cherrypick
   library_types:
     - RNA Ribo Globin
 limber_gnt_picoplex:
   <<: *limber_htp_library
   name: Limber GnT Picoplex
-  acceptable_plate_purposes:
+  acceptable_purposes:
     - GnT Stock
   library_types:
     - GnT Picoplex
 limber_gnt_mda:
   <<: *limber_htp_library
   name: Limber GnT MDA
-  acceptable_plate_purposes:
+  acceptable_purposes:
     - GnT Stock
   library_types:
     - GnT MDA
@@ -131,7 +133,7 @@ limber_heron:
   <<: *limber_htp_library
   name: Limber Heron
   request_class_name: IlluminaHtp::Requests::HeronRequest
-  acceptable_plate_purposes:
+  acceptable_purposes:
     - LHR RT
     - LHR-384 RT
   library_types:
@@ -145,7 +147,22 @@ limber_heron_lthr:
   <<: *limber_htp_library
   name: Limber Heron LTHR
   request_class_name: IlluminaHtp::Requests::HeronTailedRequest
-  acceptable_plate_purposes:
+  acceptable_purposes:
+    - LTHR RT
+    - LTHR-384 RT
+    - LTHR Cherrypick
+  library_types:
+    - Sanger_tailed_artic_v1_96
+    - Sanger_tailed_artic_v1_384
+    - PCR amplicon tailed adapters 96
+    - PCR amplicon tailed adapters 384
+limber_heron_lthr_v2:
+  <<: *limber_htp_library
+  name: Limber Heron LTHR V2
+  request_class_name: IlluminaHtp::Requests::HeronTailedRequest
+  for_multiplexing: true
+  target_purpose_name: LB Lib Pool Norm
+  acceptable_purposes:
     - LTHR RT
     - LTHR-384 RT
     - LTHR Cherrypick
@@ -157,16 +174,25 @@ limber_heron_lthr:
 limber_pwgs-384:
   <<: *limber_htp_library
   name: Limber pWGS-384
-  acceptable_plate_purposes:
+  acceptable_purposes:
     - LB Cherrypick
   library_types:
     - pWGS-384
 limber_duplex-seq:
   <<: *limber_htp_library
   name: Limber Duplex-Seq
-  acceptable_plate_purposes:
+  acceptable_purposes:
     - LDS Stock
     - LDS Cherrypick
   library_types:
     - Duplex-Seq
     - Targeted Nanoseq
+limber_targeted_nanoseq:
+  <<: *limber_htp_library
+  name: Limber Targeted NanoSeq
+  acceptable_purposes:
+    - LTN Stock
+    - LTN Cherrypick
+  library_types:
+    - Targeted NanoSeq Pulldown Twist
+    - Targeted NanoSeq Pulldown Agilent

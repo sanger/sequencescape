@@ -13,7 +13,7 @@ ActiveRecord::Base.transaction do
     pipeline_name = /^([^\s]+)/.match(stock_plate_purpose.name)[1] # Hack but works!
     request_type = RequestType.find_by(name: "Illumina-A Pulldown #{pipeline_name}") or
       raise StandardError, "Cannot find pulldown pipeline for #{pipeline_name}"
-    request_type.acceptable_plate_purposes << stock_plate_purpose
+    request_type.acceptable_purposes << stock_plate_purpose
 
     # Now we can build from the stock plate through to the end
     PlatePurpose.create!(name: flow.shift, cherrypickable_target: false)

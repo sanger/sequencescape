@@ -33,7 +33,9 @@ module Submission::LinearRequestGraph
 
   private
 
-  # Generates a list of RequestType and multiplier pairs for the instance.
+  # Returns an array of arrays.
+  # The inner array has two elements: a RequestType instance, and an integer (the "multiplier").
+  # e.g. [ [ RequestType instance 1, 1 ], [ RequestType instance 2, 1 ] ]
   def build_request_type_multiplier_pairs # rubocop:todo Metrics/AbcSize
     # Ensure that the keys of the multipliers hash are strings, otherwise we get weirdness!
     multipliers =
