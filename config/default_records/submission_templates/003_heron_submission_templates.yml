@@ -1,0 +1,74 @@
+# These submission templates are the latest associated with the Heron
+# pipeline as of 06/01/2021.
+# The older ones are in limber.rake at time of writing.
+---
+Limber - Heron LTHR V2 - Automated:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_heron_lthr_v2", "illumina_htp_novaseq_6000_paired_end_sequencing"]
+    project_name: "Project Heron"
+    product_line_name: Illumina-HTP
+    product_catalogue_name: Generic
+Limber-Htp - Heron LTHR V2 - HiSeq 2500 Paired end sequencing:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_heron_lthr_v2", "illumina_b_hiseq_2500_paired_end_sequencing"]
+    project_name: "Project Heron"
+    product_line_name: Illumina-HTP
+    product_catalogue_name: Heron LTHR
+Limber-Htp - Heron LTHR V2 - HiSeq 2500 Single end sequencing:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_heron_lthr_v2", "illumina_b_hiseq_2500_single_end_sequencing"]
+    project_name: "Project Heron"
+    product_line_name: Illumina-HTP
+    product_catalogue_name: Heron LTHR
+Limber-Htp - Heron LTHR V2 - MiSeq sequencing:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_heron_lthr_v2", "illumina_b_miseq_sequencing"]
+    project_name: "Project Heron"
+    product_line_name: Illumina-HTP
+    product_catalogue_name: Heron LTHR
+Limber-Htp - Heron LTHR V2 - HiSeq V4 Paired end sequencing:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_heron_lthr_v2", "illumina_b_hiseq_v4_paired_end_sequencing"]
+    project_name: "Project Heron"
+    product_line_name: Illumina-HTP
+    product_catalogue_name: Heron LTHR
+Limber-Htp - Heron LTHR V2 - HiSeq X Paired end sequencing:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_heron_lthr_v2", "illumina_b_hiseq_x_paired_end_sequencing"]
+    project_name: "Project Heron"
+    product_line_name: Illumina-HTP
+    product_catalogue_name: Heron LTHR
+Limber-Htp - Heron LTHR V2 - HiSeq 4000 Paired end sequencing:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_heron_lthr_v2", "illumina_htp_hiseq_4000_paired_end_sequencing"]
+    project_name: "Project Heron"
+    product_line_name: Illumina-HTP
+    product_catalogue_name: Heron LTHR
+Limber-Htp - Heron LTHR V2 - HiSeq 4000 Single end sequencing:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_heron_lthr_v2", "illumina_htp_hiseq_4000_single_end_sequencing"]
+    project_name: "Project Heron"
+    product_line_name: Illumina-HTP
+    product_catalogue_name: Heron LTHR
+Limber-Htp - Heron LTHR V2 - NovaSeq 6000 Paired end sequencing:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_heron_lthr_v2", "illumina_htp_novaseq_6000_paired_end_sequencing"]
+    project_name: "Project Heron"
+    product_line_name: Illumina-HTP
+    product_catalogue_name: Heron LTHR
+Limber-Htp - Heron LTHR V2:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_heron_lthr_v2"]
+    project_name: "Project Heron"
+    product_line_name: Illumina-HTP
+    product_catalogue_name: Heron LTHR

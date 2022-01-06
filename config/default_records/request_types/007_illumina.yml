@@ -1,0 +1,65 @@
+# These request types were are used for illumina sequencing
+---
+illumina_b_hiseq_2500_paired_end_sequencing:
+  name: Illumina-B HiSeq 2500 Paired end sequencing
+  asset_type: LibraryTube
+  order: 2
+  request_class_name: HiSeqSequencingRequest
+  for_multiplexing: false
+  billable: false
+  product_line_name: Illumina-B
+illumina_b_hiseq_2500_single_end_sequencing:
+  name: Illumina-B HiSeq 2500 Single end sequencing
+  asset_type: LibraryTube
+  order: 2
+  request_class_name: HiSeqSequencingRequest
+  for_multiplexing: false
+  billable: false
+  product_line_name: Illumina-B
+illumina_b_miseq_sequencing:
+  name: Illumina-B MiSeq sequencing
+  asset_type: LibraryTube
+  order: 1
+  request_class_name: MiSeqSequencingRequest
+  for_multiplexing: false
+  billable: false
+illumina_b_hiseq_v4_paired_end_sequencing:
+  name: Illumina-B HiSeq V4 Paired end sequencing
+  asset_type: LibraryTube
+  order: 2
+  request_class_name: HiSeqSequencingRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: Illumina-B
+illumina_b_hiseq_x_paired_end_sequencing:
+  name: Illumina-B HiSeq X Paired end sequencing
+  asset_type: LibraryTube
+  order: 2
+  request_class_name: HiSeqSequencingRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: Illumina-B
+illumina_htp_hiseq_4000_paired_end_sequencing:
+  name: Illumina-HTP HiSeq 4000 Paired end sequencing
+  asset_type: LibraryTube
+  order: 2
+  request_class_name: HiSeqSequencingRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: Illumina-HTP
+illumina_htp_hiseq_4000_single_end_sequencing:
+  name: Illumina-HTP HiSeq 4000 Single end sequencing
+  asset_type: LibraryTube
+  order: 2
+  request_class_name: HiSeqSequencingRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: Illumina-HTP
+illumina_htp_novaseq_6000_paired_end_sequencing:
+  name: Illumina-HTP NovaSeq 6000 Paired end sequencing
+  asset_type: LibraryTube
+  order: 2
+  request_class_name: HiSeqSequencingRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: Illumina-HTP

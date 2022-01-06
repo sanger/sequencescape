@@ -1,0 +1,8 @@
+# Default Product Catalogue records
+---
+Generic:
+  selection_behaviour: SingleProduct
+Targeted-NanoSeq:
+  selection_behaviour: SingleProduct
+Heron LTHR:
+  selection_behaviour: SingleProduct
