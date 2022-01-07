@@ -150,7 +150,6 @@ group :development, :test, :cucumber do
   gem 'jquery-rails'
   gem 'jquery-ui-rails'
   gem 'knapsack_pro'
-  gem 'sassc', '2.1.0'
   gem 'sass-rails'
   gem 'select2-rails'
   gem 'webmock'
