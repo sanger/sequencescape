@@ -16,7 +16,7 @@
   <% end %>
 <% else -%>
   <%= panel_no_body do %>
-    <div class="card-body"><p>Click on a request's position column and drag it to re-order. Then click 'Finish Editing' when done.</p></div>
+    <div class="card-body"><p>Click on a request's position column and drag it to re-order. Then click 'Save' when done.</p></div>
     <%= render partial: "shared/batch", locals: { requests: @requests, edit: true, stage: false  } %>
   <% end %>
 <%- end -%>
@@ -51,22 +51,5 @@
     <%= form_tag(controller: :batches, action: :previous_qc_state, id: @batch.id) do -%>
       <%= submit_tag "Move to previous state", confirm: 'Do you really want to do this?', class: 'btn-block' %>
     <% end %>
-  <% end %>
-<% end %>
-
-<% if false %>
-  <%= javascript_tag nonce: true do %>
-
-    (function() {
-      function batchListPostParametersFromSortable(node) {
-        return $(node).sortable('toArray').map(function(s) {return s.replace(/request_/,'requests_list[]=');}).join('&');
-      }
-      $( "#requests_list" ).sortable({
-        update: function(event, elem) {
-          $.post('/batches/sort?batch_id=' + <%= @batch.id %>, batchListPostParametersFromSortable(event.target));
-        }
-      });
-    }());
-
   <% end %>
 <% end %>
