@@ -3,10 +3,11 @@
 require 'rails_helper'
 require 'pry'
 
-describe 'Batches controller', js: true do
+describe 'Batches controller', js: true, warren: true do
   let(:request_count) { 3 }
-  let(:batch) { create :batch, request_count: request_count }
+  let(:batch) { create :sequencing_batch, request_count: request_count, created_at: 1.day.ago, updated_at: 1.day.ago }
   let(:user) { create :admin }
+  let!(:flowcell_message) { create :flowcell_messenger, target: batch }
 
   it 'reordering requests' do
     requests_ids = batch.batch_requests.map(&:request_id)
@@ -25,9 +26,13 @@ describe 'Batches controller', js: true do
     expect(request_list.all('tr').first).to eq(third_request)
 
     post_drag = [requests_ids[2], requests_ids[0], requests_ids[1]]
+    Warren.handler.clear_messages
     click_button('Save')
     request_list
       .all('tr')
       .each_with_index { |request, index| expect(request.text).to include((index + 1).to_s, (post_drag[index]).to_s) }
+
+    expect(Warren.handler.messages_matching("queue_broadcast.messenger.#{flowcell_message.id}")).to be 1
+    expect(flowcell_message.as_json.dig('flowcell', 'updated_at')).to be > 5.minutes.ago
   end
 end
