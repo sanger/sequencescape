@@ -21,10 +21,11 @@ describe 'Batches controller', js: true do
     # JG: Oddly prior to the Rails 5.2 update this was the other way round.
     # Suspect this is due to the quite specific locations at which the rows can be dropped.
     third_request.drag_to first_request
+
     expect(request_list.all('tr').first).to eq(third_request)
 
     post_drag = [requests_ids[2], requests_ids[0], requests_ids[1]]
-    click_link('Finish editing')
+    click_button('Save')
     request_list
       .all('tr')
       .each_with_index { |request, index| expect(request.text).to include((index + 1).to_s, (post_drag[index]).to_s) }

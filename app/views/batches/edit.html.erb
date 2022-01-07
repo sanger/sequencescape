@@ -1,71 +1,72 @@
-
-
-<% add :menu, "Finish editing" => batch_path(@batch) -%>
 <% add :menu, "Swap lanes editing" => filtered_batch_path(@batch) -%>
 <% add :back_menu, "View all batches" => batch_path(@batch) -%>
 
 <%= page_title('Batch', @batch.id) %>
 
-<div class="info">
-  This batch belongs to pipeline: <%= @batch.pipeline.name %>
-</div>
+<%= panel do %>
+  <dl class="descriptive-list-inline">
+    <dt>Created</dt> <dd><%= time_tag( @batch.created_at) %></dd>
+    <dt>Pipeline</dt> <dd><%= @batch.pipeline.name %></dd>
+  </dl>
+<% end %>
 
 <% if @requests.empty? -%>
-  <div id="empty_filter">
-    No items found. <%= link_to "Create the first one", action: "new" %>
-  </div>
+  <%= panel do %>
+    This batch is empty.
+  <% end %>
 <% else -%>
-  <%= render partial: "shared/batch", locals: { requests: @requests, edit: true, stage: false  } %>
+  <%= panel_no_body do %>
+    <div class="card-body"><p>Click on a request's position column and drag it to re-order. Then click 'Finish Editing' when done.</p></div>
+    <%= render partial: "shared/batch", locals: { requests: @requests, edit: true, stage: false  } %>
+  <% end %>
 <%- end -%>
 
-<h2>Assign Batch to User</h2>
-<div class="content">
-  <div class="info">
-  Assign this batch to another user
-  </div>
+<%= panel :info, title: 'Assign Batch to User' do %>
+  <p class="lead">Assign this batch to another user</p>
   <div>
-    <%= form_for @batch do |form| -%>
-      <table width="100%" cellspacing="0" cellpadding="0">
-        <tr>
-          <td width="45%" class="item"><%= select :assignee_id, @users.pluck(:login,:id), selected: @batch.assignee_id||current_user.id %></td>
-          <td width="55%"><%= submit_tag :pipeline, value: "Assign" %></td>
-        </tr>
-      </table>
+    <%= form_for @batch, html: { class: 'form-inline' } do |form| -%>
+      <%= form.select :assignee_id, @users.pluck(:login,:id), { selected: @batch.assignee_id||current_user.id }, { class: 'select2' } %>
+      <%= form.submit "Assign", data: { disable_with: 'Assigning' } %>
     <% end -%>
   </div>
-</div>
-  <% if @batch.pending? %>
-  <h2>Reset Batch</h2>
-  <div class="content">
-    <div class="info">
-      This will release all requests in the batch back into the inbox. The batch itself will be destroyed, target assets, such as lanes, will be removed.
-    </div>
+<% end %>
+
+<% if @batch.pending? %>
+  <%= panel title: 'Reset Batch' do %>
+    <p class="lead">
+      This will release all requests in the batch back into the inbox. The batch itself will be destroyed,
+      target assets, such as lanes, will be removed.
+    </p>
     <div>
       <%= form_tag(controller: :batches, action: :reset_batch, id: @batch.id) do -%>
-        <table width="100%" cellspacing="0" cellpadding="0">
-          <tr>
-            <td width="45%" class="item"><%= submit_tag "Reset", confirm: 'Do you really want to do this?' %></td><td width="55%"></td>
-          </tr>
-        </table>
+        <%= submit_tag "Reset", confirm: 'Do you really want to do this?', class: 'btn-block' %>
       <% end %>
     </div>
-  </div>
   <% end %>
+<% end %>
 
-  <% if can? :rollback, @batch -%>
-    <h2>ROLLBACK QC</h2>
-    <div class="content">
-      <div class="info">
-        This will move the batch to it's previous QC state.
-      </div>
-      <div>
-        <%= form_tag(controller: :batches, action: :previous_qc_state, id: @batch.id) do -%>
-          <table width="100%" cellspacing="0" cellpadding="0">
-            <tr>
-              <td width="45%" class="item"><%= submit_tag "Move to previous state", confirm: 'Do you really want to do this?' %></td><td width="55%"></td>
-            </tr>
-          </table>
-        <% end %>
-      </div>
-    </div>
+<% if can? :rollback, @batch -%>
+  <%= panel :info, title: 'Rollback QC' do %>
+    <p class="lead">This will move the batch to it's previous QC state.</p>
+    <%= form_tag(controller: :batches, action: :previous_qc_state, id: @batch.id) do -%>
+      <%= submit_tag "Move to previous state", confirm: 'Do you really want to do this?', class: 'btn-block' %>
+    <% end %>
   <% end %>
+<% end %>
+
+<% if false %>
+  <%= javascript_tag nonce: true do %>
+
+    (function() {
+      function batchListPostParametersFromSortable(node) {
+        return $(node).sortable('toArray').map(function(s) {return s.replace(/request_/,'requests_list[]=');}).join('&');
+      }
+      $( "#requests_list" ).sortable({
+        update: function(event, elem) {
+          $.post('/batches/sort?batch_id=' + <%= @batch.id %>, batchListPostParametersFromSortable(event.target));
+        }
+      });
+    }());
+
+  <% end %>
+<% end %>

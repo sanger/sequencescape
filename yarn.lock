@@ -3294,6 +3294,23 @@ datatables.net-rowgroup@1.1.2:
     datatables.net "^1.10.15"
     jquery ">=1.7"
 
+datatables.net-rowreorder-bs4@^1.2.8:
+  version "1.2.8"
+  resolved "https://registry.yarnpkg.com/datatables.net-rowreorder-bs4/-/datatables.net-rowreorder-bs4-1.2.8.tgz#a87d1a033579ac3f02b7521beb26077c53d4d251"
+  integrity sha512-9J36fc/Ywdy9o5SkX+ZLMXYwcKGC+wa1RAiNRFywxT3u5nBrLvcDlOnYLBNae5XO1wBr/3jbj9ka/ZWyd9hnVg==
+  dependencies:
+    datatables.net-bs4 "^1.10.15"
+    datatables.net-rowreorder "1.2.8"
+    jquery ">=1.7"
+
+datatables.net-rowreorder@1.2.8:
+  version "1.2.8"
+  resolved "https://registry.yarnpkg.com/datatables.net-rowreorder/-/datatables.net-rowreorder-1.2.8.tgz#2509fe798a64a52d84c43e335eccff326c3389bc"
+  integrity sha512-gFNKMa5DtigbjhSs96ZKT3uICC1z87EuLUIYLVPEXHc7v/WVOiQ3AaRvIQtExORPi/jQzxEoO5wO9UGZ0ldsUQ==
+  dependencies:
+    datatables.net "^1.10.15"
+    jquery ">=1.7"
+
 datatables.net@1.10.21, datatables.net@^1.10.15:
   version "1.10.21"
   resolved "https://registry.yarnpkg.com/datatables.net/-/datatables.net-1.10.21.tgz#f1d35c8e5c3eb7f5caef39e80cd5b836a8c77103"
