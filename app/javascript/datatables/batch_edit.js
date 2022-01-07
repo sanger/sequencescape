@@ -1,3 +1,11 @@
+/*
+ * Applies a data-table to the batch edit table (batches/:id/edit) with the
+ * following features:
+ * - Rows are draggable to allow batch re-ordering
+ * - A save button submits an AJAX request to update the batch order
+ * - Sorting is limited to the position column, to avoid confusion
+ */
+
 import $ from "jquery";
 import { defaults } from "./config";
 
