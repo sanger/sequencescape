@@ -12,11 +12,5 @@ namespace :record_loader do
   end
 end
 
-# In Sanger PSD we have the ansible deployment project configured to run `rake application:post_deploy` after migrations
-# for selected applications.
-# Uncomment the following to automatically trigger record loader on running the application:post_deploy task.
-# You may need to set `post_deploy: true` in the ansible configuration for your application.
-task 'application:post_deploy' => 'record_loader:all'
-
 # Automatically run record loader before seeds
 task 'db:seed' => 'record_loader:all_except_in_test'
