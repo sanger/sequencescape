@@ -78,7 +78,7 @@ div.batch-summary-events {
 }
 
 // Apply basic button formatting to all buttons
-// |Specific styles will overdie the default due to CSS specificity rules
+// Specific styles will override the default due to CSS specificity rules
 input[type="submit"] {
   @extend .btn-primary;
   @extend .btn;
