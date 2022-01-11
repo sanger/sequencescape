@@ -12,8 +12,8 @@ module SequencescapeExcel
 
       validates_numericality_of :value, greater_than: 0, message: "'insert size to' must be greater than 0"
 
-      def update(attributes = {})
-        return unless valid? && attributes[:aliquot].present?
+      def update(_attributes = {})
+        return unless valid? && aliquots.present?
 
         aliquots.each { |aliquot| aliquot.insert_size_to = value }
       end

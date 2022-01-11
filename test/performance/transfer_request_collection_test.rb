@@ -42,6 +42,5 @@ class TransferRequestCollectionTest < ActionDispatch::PerformanceTest
            'HTTP_X_SEQUENCESCAPE_CLIENT_ID' => @api_key
          },
          as: :json
-    p response.body
   end
 end

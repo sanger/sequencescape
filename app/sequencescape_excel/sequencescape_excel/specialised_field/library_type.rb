@@ -11,8 +11,8 @@ module SequencescapeExcel
 
       validate :check_library_type_exists
 
-      def update(attributes = {})
-        return unless valid? && attributes[:aliquot].present?
+      def update(_attributes = {})
+        return unless valid? && aliquots.present?
 
         aliquots.each { |aliquot| aliquot.library_type = value }
       end

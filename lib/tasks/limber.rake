@@ -177,6 +177,19 @@ namespace :limber do
         role: 'LTHR'
       ).build!
 
+      # DPL-188 TODO - broken atm due to dependency on Request Type added by Record Loader
+      # heron_lthr_catalogue = ProductCatalogue.find_or_create_by!(name: 'Heron LTHR')
+      # Limber::Helper::TemplateConstructor.new(
+      #   prefix: 'Heron LTHR V2',
+      #   catalogue: heron_lthr_catalogue,
+      #   sequencing_keys: base_list,
+      #   role: 'LTHR'
+      # ).build!
+      # Limber::Helper::LibraryOnlyTemplateConstructor.new(
+      #   prefix: 'Heron LTHR V2',
+      #   catalogue: heron_lthr_catalogue,
+      #   role: 'LTHR'
+      # ).build!
       unless SubmissionTemplate.find_by(name: 'Limber - Heron LTHR - Automated')
         SubmissionTemplate.create!(
           name: 'Limber - Heron LTHR - Automated',
@@ -194,6 +207,22 @@ namespace :limber do
         )
       end
 
+      # DPL-188 TODO - broken atm due to dependency on Request Type added by Record Loader
+      # unless SubmissionTemplate.find_by(name: 'Limber - Heron LTHR V2 - Automated')
+      #   SubmissionTemplate.create!(
+      #     name: 'Limber - Heron LTHR V2 - Automated',
+      #     submission_class_name: 'LinearSubmission',
+      #     submission_parameters: {
+      #       request_type_ids_list: [
+      #         RequestType.where(key: 'limber_heron_lthr_v2').ids,
+      #         RequestType.where(key: 'illumina_htp_novaseq_6000_paired_end_sequencing').ids
+      #       ],
+      #       project_id: Limber::Helper.find_project('Project Heron').id
+      #     },
+      #     product_line: ProductLine.find_by!(name: 'Illumina-HTP'),
+      #     product_catalogue: ProductCatalogue.find_by!(name: 'Generic')
+      #   )
+      # end
       lcbm_catalogue =
         ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'LCMB')
       Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'LCMB', catalogue: lcbm_catalogue).build!

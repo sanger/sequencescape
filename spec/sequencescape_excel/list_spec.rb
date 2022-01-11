@@ -24,16 +24,17 @@ RSpec.describe SequencescapeExcel::List, type: :model, sample_manifest_excel: tr
     list_for :list_items, keys: %i[attr_a attr_b attr_c]
   end
 
-  let(:item_1) { ListItem.new('a', 'b', 'c', 'd') }
-  let(:item_2) { ListItem.new('e', 'f', 'g', 'h') }
-  let(:item_3) { ListItem.new('i', 'j', 'k', 'l') }
-  let(:item_4) { ListItem.new('m', 'n', 'o', 'p', false) }
+  let(:item1) { ListItem.new('a', 'b', 'c', 'd') }
+  let(:item2) { ListItem.new('e', 'f', 'g', 'h') }
+  let(:item3) { ListItem.new('i', 'j', 'k', 'l') }
+  let(:item4) { ListItem.new('m', 'n', 'o', 'p', false) }
+
   let(:my_list) do
     MyList.new do |list|
-      list.add item_1
-      list.add item_2
-      list.add item_3
-      list.add item_4
+      list.add item1
+      list.add item2
+      list.add item3
+      list.add item4
     end
   end
 
@@ -49,17 +50,17 @@ RSpec.describe SequencescapeExcel::List, type: :model, sample_manifest_excel: tr
   end
 
   it 'is possible to find an item by a defined key' do
-    expect(my_list.find_by(:attr_a, 'a')).to eq(item_1)
-    expect(my_list.find_by(:attr_b, 'f')).to eq(item_2)
-    expect(my_list.find_by(:attr_b, :f)).to eq(item_2)
-    expect(my_list.find_by(:attr_c, 'k')).to eq(item_3)
+    expect(my_list.find_by(:attr_a, 'a')).to eq(item1)
+    expect(my_list.find_by(:attr_b, 'f')).to eq(item2)
+    expect(my_list.find_by(:attr_b, :f)).to eq(item2)
+    expect(my_list.find_by(:attr_c, 'k')).to eq(item3)
   end
 
   it 'is possible to find an attribute using any key' do
-    expect(my_list.find('a')).to eq(item_1)
-    expect(my_list.find('f')).to eq(item_2)
-    expect(my_list.find(:f)).to eq(item_2)
-    expect(my_list.find('k')).to eq(item_3)
+    expect(my_list.find('a')).to eq(item1)
+    expect(my_list.find('f')).to eq(item2)
+    expect(my_list.find(:f)).to eq(item2)
+    expect(my_list.find('k')).to eq(item3)
     expect(my_list.find('z')).to be_nil
   end
 
@@ -88,10 +89,10 @@ RSpec.describe SequencescapeExcel::List, type: :model, sample_manifest_excel: tr
   it 'is comparable' do
     expect(my_list).not_to be_nil
     other_list = MyList.new
-    other_list.add item_1
-    other_list.add item_2
-    other_list.add item_3
-    other_list.add item_4
+    other_list.add item1
+    other_list.add item2
+    other_list.add item3
+    other_list.add item4
     expect(other_list).to eq(my_list)
   end
 end

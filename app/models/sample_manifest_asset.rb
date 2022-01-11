@@ -25,6 +25,14 @@ class SampleManifestAsset < ApplicationRecord
   def aliquot
     asset.aliquots.detect { |a| a.sample_id == sample.id }
   end
+  deprecate aliquot: 'Chromium manifests may have multiple aliquots. Please use aliquots instead.'
+
+  def aliquots
+    # JG: I'm afraid I'm not entirely sure why we're expecting aliquots of multiple samples in here
+    # as multiplexed libraries still link to the 'library tube'. However I've decided to preserve
+    # the behaviour of the original :aliquot implementation.
+    asset.aliquots.select { |a| a.sample_id == sample.id }
+  end
 
   private
 

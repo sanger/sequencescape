@@ -14,6 +14,7 @@ GBS-96 Stock: *limber_input_96
 LBB Cherrypick: *limber_input_96
 LBC Stock: *limber_input_96
 LDS Cherrypick: *limber_input_96
+LTN Cherrypick: *limber_input_96
 LHR RT: *limber_input_96
 LTHR RT: *limber_input_96
 LTHR Cherrypick: *limber_input_96
@@ -21,6 +22,9 @@ PF Cherrypicked:
   <<: *limber_input_96
   default_state: passed
 LDS Stock:
+  <<: *limber_input_96
+  cherrypickable_target: false
+LTN Stock:
   <<: *limber_input_96
   cherrypickable_target: false
 
