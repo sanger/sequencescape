@@ -16,7 +16,6 @@ Lint/AmbiguousBlockAssociation:
     - 'spec/features/studies/accession_all_samples_spec.rb'
     - 'spec/lib/accession/study_spec.rb'
     - 'spec/lib/accession/submission_spec.rb'
-    - 'spec/sample_manifest_excel/upload/processor_spec.rb'
     - 'spec/sample_manifest_excel/worksheet_spec.rb'
     - 'spec/sequencescape_excel/column_list_spec.rb'
     - 'spec/sequencescape_excel/column_spec.rb'
@@ -164,7 +163,6 @@ Lint/IneffectiveAccessModifier:
 Lint/MissingSuper:
   Exclude:
     - 'app/api/core/endpoint/basic_handler/actions/guards.rb'
-    - 'app/models/aker/material.rb'
     - 'app/models/delegate_validation.rb'
     - 'app/models/no_accession_service.rb'
     - 'app/models/request/change_decision.rb'
@@ -427,7 +425,6 @@ Naming/VariableNumber:
     - 'config/application.rb'
     - 'db/seeds/0015_transfer_templates.rb'
     - 'features/support/step_definitions/9314145_pacbio_submission_steps.rb'
-    - 'spec/aker/requests/studies_spec.rb'
     - 'spec/api/asset_audit_spec.rb'
     - 'spec/controllers/api/v2/heron/tube_racks_controller_spec.rb'
     - 'spec/controllers/labwhere_receptions_controller_spec.rb'
@@ -469,7 +466,6 @@ Naming/VariableNumber:
     - 'spec/requests/api/v2/qc_results_spec.rb'
     - 'spec/sequencescape_excel/conditional_formatting_list_spec.rb'
     - 'spec/sequencescape_excel/list_spec.rb'
-    - 'spec/sequencescape_excel/specialised_field_spec.rb'
     - 'spec/uat_actions/generate_plates_spec.rb'
     - 'spec/uat_actions/generate_tagged_plates_spec.rb'
     - 'test/controllers/projects_controller_test.rb'
@@ -537,8 +533,6 @@ RSpec/BeforeAfterAll:
 # Prefixes: when, with, without
 RSpec/ContextWording:
   Exclude:
-    - 'spec/aker/features/jobs_spec.rb'
-    - 'spec/aker/models/material_spec.rb'
     - 'spec/api/extraction_attributes_spec.rb'
     - 'spec/api/plate_purpose_spec.rb'
     - 'spec/api/submission_pool_spec.rb'
@@ -629,7 +623,6 @@ RSpec/ExpectActual:
 # Offense count: 15
 RSpec/ExpectInHook:
   Exclude:
-    - 'spec/aker/factories/job_spec.rb'
     - 'spec/features/admin/changing_user_roles_spec.rb'
     - 'spec/features/retrospective_failure_spec.rb'
     - 'spec/features/submissions/bulk_submissions_spec.rb'
@@ -643,13 +636,6 @@ RSpec/ExpectInHook:
 # Include: **/*_spec*rb*, **/spec/**/*
 RSpec/FilePath:
   Exclude:
-    - 'spec/aker/models/config_parser_spec.rb'
-    - 'spec/aker/models/container_spec.rb'
-    - 'spec/aker/models/job_spec.rb'
-    - 'spec/aker/models/mapping_spec.rb'
-    - 'spec/aker/models/material_spec.rb'
-    - 'spec/aker/requests/jobs_spec.rb'
-    - 'spec/aker/requests/studies_spec.rb'
     - 'spec/bulk_submission_excel/data_worksheet_spec.rb'
     - 'spec/lib/accession/configuration_spec.rb'
     - 'spec/lib/label_printer/sample_manifest_plate_double_spec.rb'
@@ -669,8 +655,6 @@ RSpec/FilePath:
 # Configuration parameters: AssignmentOnly.
 RSpec/InstanceVariable:
   Exclude:
-    - 'spec/aker/factories/job_spec.rb'
-    - 'spec/aker/models/material_spec.rb'
     - 'spec/api/extraction_attributes_spec.rb'
     - 'spec/controllers/studies_controller_spec.rb'
     - 'spec/controllers/submissions_controller_spec.rb'
@@ -712,7 +696,6 @@ RSpec/LeakyConstantDeclaration:
 # Offense count: 42
 RSpec/LetSetup:
   Exclude:
-    - 'spec/aker/requests/studies_spec.rb'
     - 'spec/controllers/searches_controller_spec.rb'
     - 'spec/features/assets/asset_submission_spec.rb'
     - 'spec/features/location_reports/location_reports_spec.rb'
@@ -857,8 +840,6 @@ RSpec/RepeatedExampleGroupDescription:
 # Cop supports --auto-correct.
 RSpec/ScatteredLet:
   Exclude:
-    - 'spec/aker/factories/job_spec.rb'
-    - 'spec/aker/models/material_spec.rb'
     - 'spec/api/plate_spec.rb'
     - 'spec/api/submission_pool_spec.rb'
     - 'spec/features/submissions/bulk_submissions_spec.rb'
@@ -890,8 +871,6 @@ RSpec/StubbedMock:
 # Configuration parameters: IgnoreNameless, IgnoreSymbolicNames.
 RSpec/VerifiedDoubles:
   Exclude:
-    - 'spec/aker/models/mapping_spec.rb'
-    - 'spec/aker/models/material_spec.rb'
     - 'spec/models/sample_manifest/generator_spec.rb'
     - 'spec/sample_manifest_excel/download_spec.rb'
     - 'spec/sample_manifest_excel/worksheet_spec.rb'
@@ -1111,7 +1090,6 @@ Rails/RakeEnvironment:
 # Include: app/models/**/*.rb
 Rails/UniqueValidationWithoutIndex:
   Exclude:
-    - 'app/models/aker/container.rb'
     - 'app/models/asset_group.rb'
     - 'app/models/bait_library.rb'
     - 'app/models/barcode.rb'
@@ -1362,7 +1340,6 @@ Style/GuardClause:
     - 'app/controllers/plates_controller.rb'
     - 'app/controllers/poolings_controller.rb'
     - 'app/controllers/quad_stamp_controller.rb'
-    - 'app/models/aker/config_parser.rb'
     - 'app/models/batch.rb'
     - 'app/models/broadcast_event/helpers/external_subjects.rb'
     - 'app/models/bulk_submission.rb'

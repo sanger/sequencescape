@@ -49,21 +49,34 @@ module Request::SampleCompoundAliquotTransfer
 
     compound_sample = _create_compound_sample(_default_compound_study, samples)
 
-    _add_aliquot(compound_sample, source_aliquots.first.tag_id, source_aliquots.first.tag2_id)
+    _add_aliquot(compound_sample, source_aliquots)
   end
 
-  def _add_aliquot(sample, tag_id, tag2_id)
+  def _add_aliquot(sample, source_aliquots)
     target_asset
       .aliquots
       .create(sample: sample)
       .tap do |aliquot|
-        aliquot.tag_id = tag_id
-        aliquot.tag2_id = tag2_id
-        aliquot.library_type = _default_library_type
-        aliquot.study_id = _default_compound_study.id
-        aliquot.project_id = _default_compound_project_id
+        _set_aliquot_attributes(aliquot, source_aliquots)
         aliquot.save
       end
+  end
+
+  def _set_aliquot_attributes(aliquot, source_aliquots)
+    aliquot.tag_id = source_aliquots.first.tag_id
+    aliquot.tag2_id = source_aliquots.first.tag2_id
+    aliquot.library_type = _default_library_type
+    aliquot.study_id = _default_compound_study.id
+    aliquot.project_id = _default_compound_project_id
+    aliquot.library_id = _copy_library_id(source_aliquots)
+  end
+
+  # If the library_id is the same on all source aliquots, we can confidently transfer it to the target aliquot
+  # How the library_id should be set if the source aliquots have different library_ids is not defined
+  # Therefore, set it to nil for now, until we have a real requirement
+  def _copy_library_id(source_aliquots)
+    library_ids = source_aliquots.map(&:library_id).uniq
+    library_ids.size == 1 ? library_ids.first : nil
   end
 
   def _any_aliquots_share_tag_combination?

@@ -46,7 +46,8 @@ module SampleManifest::CoreBehaviour # rubocop:todo Style/Documentation
     end
   end
 
-  module LibraryAssets # rubocop:todo Style/Documentation
+  # Used for read-made libraries. Ensures that the library_id gets set
+  module LibraryAssets
     def generate_sample_and_aliquot(sanger_sample_id, receptacle)
       create_sample(sanger_sample_id).tap do |sample|
         receptacle.aliquots.create!(sample: sample, study: study, library: receptacle)

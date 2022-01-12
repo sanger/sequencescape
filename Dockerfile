@@ -27,9 +27,6 @@ COPY Gemfile.lock /code
 
 ADD . /code/
 
-# TODO: We should get rid of this file if is not needed anymore
-RUN cp /code/config/aker.yml.example /code/config/aker.yml
-
 # Install Chrome for being able to run tests
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 RUN apt install -y ./google-chrome-stable_current_amd64.deb

@@ -1,0 +1,4 @@
+# This product catalogue is associated with the Limber Targeted Nanoseq pipeline.
+---
+Targeted-NanoSeq:
+  selection_behaviour: SingleProduct

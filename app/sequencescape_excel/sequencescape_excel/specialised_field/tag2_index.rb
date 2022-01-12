@@ -12,10 +12,10 @@ module SequencescapeExcel
 
       validate :check_tag2_index
 
-      def update(attributes = {})
+      def update(_attributes = {})
         return unless valid?
 
-        attributes[:aliquot].tag2 = tag if tag.present? && tag.oligo.present?
+        aliquots.each { |aliquot| aliquot.tag2 = tag } if tag.present? && tag.oligo.present?
       end
 
       def link(other_fields)

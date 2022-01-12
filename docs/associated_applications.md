@@ -67,14 +67,6 @@ are not expected to have any active users. However there may still be supporting
 code within Sequencescape. Generally speaking, while behaviour associated with
 these apps can be stripped out, the _data_ should remain intact.
 
-## Aker
-
-Intended as a customer facing replacement to the Manifests and Submission components
-of Sequencescape. Allowing a shared front-end for multiple LIMS. Actually comprised
-a suite of applications.
-
-[Github](https://github.com/sanger?utf8=✓&q=aker&type=&language=)
-
 ## Generic Lims
 
 Library pipeline application for Bespoke (then Illumina-C). Now part of Limber,

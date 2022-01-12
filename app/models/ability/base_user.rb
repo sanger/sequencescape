@@ -34,7 +34,7 @@ class Ability::BaseUser
     can :print_asset_group_labels, Study, managers: { id: user.id }
     can %i[read create update edit], Submission
     can :read, [TagGroup, TagLayoutTemplate]
-    can %i[read update], User, { id: user.id }
+    can %i[read update print_swipecard], User, { id: user.id }
     can %i[projects study_reports], User
 
     grant_advanced_batch_operation_privileges
