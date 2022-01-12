@@ -29,8 +29,6 @@ limber_isc:
   library_types:
     - Agilent Pulldown
     - Twist Pulldown
-    - Targeted NanoSeq Pulldown Twist
-    - Targeted NanoSeq Pulldown Agilent
 limber_reisc:
   <<: *limber_htp_library
   name: Limber ReISC
@@ -41,6 +39,8 @@ limber_reisc:
     - Agilent Pulldown
     - Twist Pulldown
     - Duplex-Seq
+    - Targeted NanoSeq Pulldown Twist
+    - Targeted NanoSeq Pulldown Agilent
 limber_pcr_free:
   <<: *limber_htp_library
   name: Limber PCR Free
@@ -194,5 +194,4 @@ limber_targeted_nanoseq:
     - LTN Stock
     - LTN Cherrypick
   library_types:
-    - Targeted NanoSeq Pulldown Twist
-    - Targeted NanoSeq Pulldown Agilent
+    - Targeted NanoSeq
