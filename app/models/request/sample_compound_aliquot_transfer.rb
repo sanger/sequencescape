@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 # Module to provide support to handle creation of compound samples
-# from the list of samples at the source.
+# from the list of samples at the source. A compound sample is a
+# sample that represents a combination of other samples.
 #
 # The reason for this is to ensure that when the data gets to the MLWH,
 # each row has a unique combination of tag1 and tag2 -
