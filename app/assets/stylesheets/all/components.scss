@@ -78,10 +78,10 @@ div.batch-summary-events {
 }
 
 // Apply basic button formatting to all buttons
-// Exclude any where a specific class has been applied
-input[type="submit"]:not(.btn) {
-  @extend .btn;
+// Specific styles will override the default due to CSS specificity rules
+input[type="submit"] {
   @extend .btn-primary;
+  @extend .btn;
 }
 
 .link-panel {
