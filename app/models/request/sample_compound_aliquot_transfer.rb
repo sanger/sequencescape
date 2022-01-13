@@ -21,6 +21,10 @@
 # Assumptions:
 #  - This module will be included in a Request class
 module Request::SampleCompoundAliquotTransfer
+  DUPLICATE_TAG_DEPTH_ERROR_MSG = "Cannot create compound sample from following samples due to duplicate 'tag depth'"
+  MULTIPLE_STUDIES_ERROR_MSG =
+    'Cannot create compound sample due to the component samples being under different studies.'
+
   # Indicates if a compound sample creation is needed, by checking
   # if any of the source aliquots share the same tag1 and tag2
   def compound_samples_needed?
@@ -45,8 +49,10 @@ module Request::SampleCompoundAliquotTransfer
     # Check that the component samples in the compound sample will be able to be distinguished -
     # this is represented by them all having a unique 'tag_depth'
     if source_aliquots.pluck(:tag_depth).uniq.count != source_aliquots.size
-      raise "Cannot create compound sample from following samples due to duplicate 'tag depth': #{samples.map(&:name)}"
+      raise "#{DUPLICATE_TAG_DEPTH_ERROR_MSG}: #{samples.map(&:name)}"
     end
+
+    raise MULTIPLE_STUDIES_ERROR_MSG if _studies.count > 1
 
     compound_sample = _create_compound_sample(_default_compound_study, samples)
 
@@ -88,6 +94,10 @@ module Request::SampleCompoundAliquotTransfer
     asset.aliquots.group_by(&:tags_combination)
   end
 
+  def _studies
+    @studies ||= asset.aliquots.map(&:study).uniq
+  end
+
   # Private method to generate a compound sample in a study from a list of
   # component samples
   def _create_compound_sample(study, component_samples)
@@ -99,7 +109,7 @@ module Request::SampleCompoundAliquotTransfer
 
   # Default study that the new compound sample will use
   def _default_compound_study
-    asset.samples.first.studies.first
+    _studies.first
   end
 
   # Default project that the new compound sample will use
