@@ -6,6 +6,8 @@
 class Tube::Purpose < ::Purpose
   self.default_prefix = 'NT'
 
+  self.state_changer = StateChanger::StockTube
+
   # TODO: change to purpose_id
   has_many :tubes, foreign_key: :plate_purpose_id
 
@@ -67,5 +69,6 @@ end
 require_dependency 'qcable_tube_purpose'
 require_dependency 'illumina_htp/mx_tube_purpose'
 require_dependency 'illumina_htp/stock_tube_purpose'
+require_dependency 'illumina_htp/initial_stock_tube_purpose'
 require_dependency 'tube/standard_mx'
 require_dependency 'tube/stock_mx'

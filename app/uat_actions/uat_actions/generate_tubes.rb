@@ -23,6 +23,11 @@ class UatActions::GenerateTubes < UatActions
              label: 'Study',
              help: 'The study under which samples are created. List includes all active studies.',
              select_options: -> { Study.active.alphabetical.pluck(:name) }
+  form_field :foreign_barcode_type,
+             :select,
+             label: 'Foreign Barcode Type',
+             help: 'The foreign barcode type to apply (optional).',
+             select_options: %w[None FluidX]
 
   def self.default
     new(tube_count: 1, study_name: UatActions::StaticRecords.study.name)
@@ -46,12 +51,29 @@ class UatActions::GenerateTubes < UatActions
         study: study
       )
 
+      add_foreign_barcode_if_selected(tube)
+
+      # set the tube primary barcode on the report
       report["tube_#{i}"] = tube.human_barcode
     end
     true
   end
 
   private
+
+  def add_foreign_barcode_if_selected(tube)
+    return unless foreign_barcode_type == 'FluidX'
+
+    foreign_barcode_format = 'fluidx_barcode'
+
+    # using a set prefix and a subset of the machine barcode
+    prefix = 'SA'
+    suffix = tube.machine_barcode[-8..]
+
+    foreign_barcode = prefix + suffix
+
+    tube.barcodes << Barcode.new(format: foreign_barcode_format, barcode: foreign_barcode)
+  end
 
   def study
     @study ||= Study.find_by!(name: study_name)

@@ -81,7 +81,46 @@ The following tools are required for development:
   Sequencescape (currently 5.7) use [this](https://gist.github.com/operatino/392614486ce4421063b9dece4dfe6c21)
   helpful link.
 
-## Getting started
+## Getting started (using Docker)
+
+To set up a local development environment in Docker, you have to build a new Docker image for
+Sequencescape. start a stack of services that include a mysql database, and reset
+this database contents. You can do all together by running the command:
+
+```shell
+RESET_DATABASE=true docker-compose up
+```
+
+Optionally, if this is not the first time you start the app, you may not want to reset the
+database, and you can run this command instead:
+
+```shell
+docker-compose up
+```
+
+With this we should have started Sequencescape server and all required services. You should be
+able to access Sequencescape by going to <http://localhost:3000> and log in with
+username and password admin/admin.
+
+**ABOUT LOCAL DEVELOPMENT SETUP** You may want to start only the required services for Sequencescape (server and jobs worker) and use your local version of Mysql
+instead of the Docker version, in that case you can start this setup with the
+command:
+
+```shell
+docker-compose -f docker-compose-dev.yml up
+```
+
+**ABOUT RECREATE DOCKER IMAGE** If you ever need to recreate the image built on first start (because you made modifications
+to the Dockerfile file) you can run a building process with:
+
+```shell
+docker-compose build
+```
+
+## Getting started (using native installation)
+
+This section only applies if you don't have Docker installed or if you prefer a native installation
+of Sequencescape.
 
 ### Installing ruby
 
@@ -118,8 +157,6 @@ bundle install
 ```
 
 #### Adjusting config
-
-Copy the `config/aker.yml.example` file to `config/aker.yml`.
 
 The `config/database.yml` file saves the list of databases.
 
@@ -200,6 +237,12 @@ Testing is done in one of three ways; using rspec, via rails tests or with cucum
    bundle exec rake test -f
    ```
 
+   For a single file:
+
+   ```shell
+   bundle exec ruby -Itest test/lib/label_printer/print_job_test.rb
+   ```
+
 1. To run cucumber tests (found in `features/` dir.) first ensure you have a `sequencescape_test_cuke` database configured by running:
 
    ```shell
@@ -211,6 +254,12 @@ Testing is done in one of three ways; using rspec, via rails tests or with cucum
    ```shell
    bundle exec cucumber
    ```
+
+For a single file:
+
+```shell
+bundle exec cucumber features/create_plates.feature
+```
 
 ## Linting and formatting
 

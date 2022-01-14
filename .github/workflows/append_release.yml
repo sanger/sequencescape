@@ -14,6 +14,10 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
 
       # Establish a cache of js modules to improve performance
       - name: Cache js

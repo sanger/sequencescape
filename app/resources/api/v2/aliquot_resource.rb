@@ -25,6 +25,7 @@ module Api
       attribute :tag2_oligo, readonly: true
       attribute :tag2_index, readonly: true
       attribute :suboptimal, readonly: true
+      attribute :library_type, readonly: true
 
       # Filters
 

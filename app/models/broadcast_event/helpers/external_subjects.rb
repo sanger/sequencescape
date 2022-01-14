@@ -12,7 +12,7 @@ module BroadcastEvent::Helpers
 
     def build_subjects
       properties[:subjects].map do |prop|
-        obj = OpenStruct.new(prop)
+        obj = OpenStruct.new(prop) # rubocop:todo Style/OpenStructUse
         BroadcastEvent::SubjectHelpers::Subject.new(obj.role_type, obj)
       end
     end

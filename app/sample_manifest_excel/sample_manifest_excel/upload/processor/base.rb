@@ -57,7 +57,7 @@ module SampleManifestExcel
         def update_samples_and_aliquots(tag_group)
           upload.rows.each do |row|
             row.update_sample(tag_group, upload.override)
-            substitutions << row.aliquot.substitution_hash if row.reuploaded?
+            substitutions.concat(row.aliquots.filter_map(&:substitution_hash)) if row.reuploaded?
           end
           update_downstream_aliquots unless no_substitutions?
         end
@@ -109,17 +109,17 @@ module SampleManifestExcel
         def update_downstream_aliquots
           substituter =
             TagSubstitution.new(
-              substitutions: substitutions.compact,
+              substitutions: substitutions,
               comment: 'Manifest updated',
               disable_clash_detection: true,
               disable_match_expectation: disable_match_expectation
             )
           @downstream_aliquots_updated =
-            substituter.save ? true : log_error_and_return_false(substituter.errors.full_messages.join('; '))
+            substituter.save || log_error_and_return_false(substituter.errors.full_messages.join('; '))
         end
 
         def no_substitutions?
-          substitutions.compact.all?(&:blank?)
+          substitutions.all?(&:blank?)
         end
 
         # Log post processing checks and fail

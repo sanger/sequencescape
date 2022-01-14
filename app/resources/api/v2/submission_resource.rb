@@ -28,6 +28,7 @@ module Api
       attribute :used_tags, readonly: true
 
       # Filters
+      filter :uuid, apply: ->(records, value, _options) { records.with_uuid(value) }
 
       # Custom methods
       # These shouldn't be used for business logic, and a more about

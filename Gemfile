@@ -120,9 +120,6 @@ group :development do
   # find unused routes and controller actions by runnung `rake traceroute` from CL
   gem 'traceroute'
 
-  # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  gem 'mini_racer'
-
   # Pat of the JS assets pipleine
   gem 'uglifier', '>= 1.0.3'
 
@@ -153,7 +150,6 @@ group :development, :test, :cucumber do
   gem 'jquery-rails'
   gem 'jquery-ui-rails'
   gem 'knapsack_pro'
-  gem 'sassc', '2.1.0'
   gem 'sass-rails'
   gem 'select2-rails'
   gem 'webmock'

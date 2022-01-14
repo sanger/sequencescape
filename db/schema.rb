@@ -10,24 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_30_172204) do
-
-  create_table "aker_containers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.string "barcode"
-    t.string "address"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "asset_id"
-  end
-
-  create_table "aker_jobs", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.integer "aker_job_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "aker_job_url", default: "", null: false
-    t.string "job_uuid"
-    t.index ["job_uuid"], name: "index_aker_jobs_on_job_uuid", unique: true
-  end
+ActiveRecord::Schema.define(version: 2021_12_09_085100) do
 
   create_table "aliquot_indices", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "aliquot_id", null: false
@@ -56,9 +39,10 @@ ActiveRecord::Schema.define(version: 2021_09_30_172204) do
     t.boolean "suboptimal", default: false, null: false
     t.bigint "primer_panel_id"
     t.integer "request_id"
+    t.integer "tag_depth", default: 1
     t.index ["library_id"], name: "index_aliquots_on_library_id"
     t.index ["primer_panel_id"], name: "index_aliquots_on_primer_panel_id"
-    t.index ["receptacle_id", "tag_id", "tag2_id"], name: "aliquot_tags_and_tag2s_are_unique_within_receptacle", unique: true
+    t.index ["receptacle_id", "tag_id", "tag2_id", "tag_depth"], name: "aliquot_tag_tag2_and_tag_depth_are_unique_within_receptacle", unique: true
     t.index ["request_id"], name: "fk_rails_37734e1810"
     t.index ["sample_id"], name: "index_aliquots_on_sample_id"
     t.index ["study_id", "receptacle_id"], name: "index_aliquots_on_study_id_and_receptacle_id"
@@ -236,6 +220,7 @@ ActiveRecord::Schema.define(version: 2021_09_30_172204) do
     t.datetime "updated_at"
     t.integer "barcode_printer_type_id"
     t.integer "print_service", default: 0
+    t.integer "printer_type", default: 1
   end
 
   create_table "barcodes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1256,15 +1241,6 @@ ActiveRecord::Schema.define(version: 2021_09_30_172204) do
     t.integer "component_sample_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-  end
-
-  create_table "sample_jobs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.bigint "sample_id"
-    t.bigint "job_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["job_id"], name: "index_sample_jobs_on_job_id"
-    t.index ["sample_id"], name: "index_sample_jobs_on_sample_id"
   end
 
   create_table "sample_manifest_assets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|

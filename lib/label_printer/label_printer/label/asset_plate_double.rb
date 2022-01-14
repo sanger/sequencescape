@@ -11,16 +11,17 @@ module LabelPrinter
         @plates = plates
       end
 
-      def create_label(plate)
+      def build_label(plate)
         {
           left_text: plate.human_barcode,
           right_text: "#{plate.prefix} #{plate.barcode_number}",
-          barcode: barcode(plate)
+          barcode: barcode(plate),
+          label_name: 'main_label'
         }
       end
 
-      def create_extra_label(plate)
-        { left_text: date_today, right_text: plate.purpose.name }
+      def build_extra_label(plate)
+        { left_text: date_today, right_text: plate.purpose.name, label_name: 'extra_label' }
       end
     end
   end

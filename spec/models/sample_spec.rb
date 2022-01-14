@@ -4,7 +4,7 @@ require 'rails_helper'
 require 'support/barcode_helper'
 require 'sample_accessioning_job'
 
-RSpec.describe Sample, type: :model, accession: true, aker: true, cardinal: true do
+RSpec.describe Sample, type: :model, accession: true, cardinal: true do
   include MockAccession
 
   context 'accessioning' do
@@ -69,21 +69,6 @@ RSpec.describe Sample, type: :model, accession: true, aker: true, cardinal: true
     it 'knows when it can be included in submission if it was not registered through manifest' do
       sample = create :sample
       expect(sample).to be_can_be_included_in_submission
-    end
-  end
-
-  context 'Aker' do
-    include BarcodeHelper
-    before { mock_plate_barcode_service }
-
-    it 'can have many work orders' do
-      job = create(:aker_job)
-      expect(create(:sample, jobs: [job]).jobs).to include(job)
-    end
-
-    it 'can belong to a container' do
-      container = create(:container)
-      expect(create(:sample, container: container).container).to eq(container)
     end
   end
 

@@ -6,20 +6,8 @@ class UsersController < ApplicationController # rubocop:todo Style/Documentation
   before_action :find_user
   authorize_resource
 
-  def show # rubocop:todo Metrics/AbcSize
-    @printer_list = BarcodePrinter.alphabetical.where(barcode_printer_type: BarcodePrinterType96Plate.all)
-
-    begin
-      label_template =
-        LabelPrinter::PmbClient.get_label_template_by_name(configatron.swipecard_pmb_template).fetch('data').first
-      @label_template_id ||= label_template['id']
-    rescue LabelPrinter::PmbException => e
-      @label_template_id = nil
-      flash.now[:error] = "Print My Barcode: #{e}"
-    rescue NoMethodError
-      @label_template_id = nil
-      flash.now[:error] = 'Wrong PMB Label Template'
-    end
+  def show
+    @printer_list = BarcodePrinter.alphabetical.where(barcode_printer_type: BarcodePrinterType96Plate.all).pluck(:name)
   end
 
   def edit; end
@@ -44,10 +32,36 @@ class UsersController < ApplicationController # rubocop:todo Style/Documentation
     @study_reports = StudyReport.for_user(@user).page(params[:page]).order(id: :desc)
   end
 
+  def print_swipecard
+    swipecard = params[:swipecard]
+    printer = params[:printer]
+    if swipecard.strip.present?
+      print_swipecard_with_pmb(swipecard, printer)
+    else
+      flash[:error] = 'Cannot print empty swipecard'
+    end
+    redirect_to action: :show, id: @user.id
+  end
+
   private
 
   def find_user
     @user = User.find(params[:id])
+  end
+
+  def print_swipecard_with_pmb(swipecard, printer)
+    print_job =
+      LabelPrinter::PrintJob.new(
+        printer,
+        LabelPrinter::Label::Swipecard,
+        user_login: @user.login.truncate(10, omission: '..'),
+        swipecard: swipecard
+      )
+    if print_job.execute
+      flash[:notice] = print_job.success
+    else
+      flash[:error] = print_job.errors.full_messages.join('; ')
+    end
   end
 
   rescue_from CanCan::AccessDenied do |exception|

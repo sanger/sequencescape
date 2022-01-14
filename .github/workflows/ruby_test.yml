@@ -83,6 +83,10 @@ jobs:
         with:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
       # Establish a cache of js modules to improve performance
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
       - name: Cache js
         uses: actions/cache@v2
         with:
@@ -160,6 +164,10 @@ jobs:
         with:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
       # Establish a cache of js modules to improve performance
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
       - name: Cache js
         uses: actions/cache@v2
         with:
