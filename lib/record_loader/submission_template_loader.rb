@@ -29,6 +29,7 @@ module RecordLoader
       params[:request_type_ids_list] =
         RequestType.where(key: related_records['request_type_keys']).ids if related_records['request_type_keys']
       params[:project_id] = find_project(related_records['project_name']).id if related_records['project_name']
+      params[:study_id] = find_study(related_records['study_name']).id if related_records['study_name']
       params
     end
 
@@ -38,6 +39,15 @@ module RecordLoader
       else
         # In development mode or UAT we don't care so much
         Project.find_by(name: name) || UatActions::StaticRecords.project
+      end
+    end
+
+    def find_study(name)
+      if Rails.env.production?
+        Study.find_by!(name: name)
+      else
+        # In development mode or UAT we don't care so much
+        Study.find_by(name: name) || UatActions::StaticRecords.study
       end
     end
   end

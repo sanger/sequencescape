@@ -93,5 +93,19 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
         expect(sequencing_request.target_asset.aliquots.first.library_id).to be_nil
       end
     end
+
+    # If the component samples are under different studies, this is a potential data governance issue
+    # since the study controls data access. Error in this case.
+    context 'with conflicting study_ids' do
+      let(:study2) { create :study }
+
+      before { aliquot1.update!(study: study2) }
+
+      it 'throws an exception' do
+        expect { sequencing_request.transfer_aliquots_into_compound_sample_aliquots }.to raise_error(
+          Request::SampleCompoundAliquotTransfer::MULTIPLE_STUDIES_ERROR_MSG
+        )
+      end
+    end
   end
 end
