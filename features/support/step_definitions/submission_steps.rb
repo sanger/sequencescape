@@ -53,6 +53,23 @@ Then /^I have a WGS submission template$/ do
   end
 end
 
+Then /^I have a Tube submission template$/ do
+  rt = FactoryBot.create :library_creation_request_type
+  submission_parameters = {
+    name: 'Example tube template',
+    submission_class_name: 'LinearSubmission',
+    product_catalogue: 'Generic',
+    submission_parameters: {
+      info_differential: 5,
+      request_types: [rt.key],
+      order_role: 'ILB PATH'
+    }
+  }
+  unless SubmissionTemplate.find_by(name: 'Example tube template')
+    SubmissionSerializer.construct!(submission_parameters)
+  end
+end
+
 Then /^the submission with UUID "([^"]+)" is ready$/ do |uuid|
   submission = Uuid.with_external_id(uuid).first.try(:resource) or
     raise StandardError, "Could not find submission with UUID #{uuid.inspect}"
