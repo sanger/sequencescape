@@ -223,9 +223,9 @@ namespace :limber do
         )
       end
 
-      lcbm_catalogue =
+      lcmb_catalogue =
         ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'LCMB')
-      Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'LCMB', catalogue: lcbm_catalogue).build!
+      Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'LCMB', catalogue: lcmb_catalogue).build!
 
       duplex_seq_catalogue =
         ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'Duplex-Seq')

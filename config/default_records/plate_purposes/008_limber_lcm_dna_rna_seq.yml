@@ -1,5 +1,5 @@
 ---
-LLCM Lysate:
+CLCM Lysate:
   type: PlatePurpose::Input
   stock_plate: true
   cherrypickable_target: false

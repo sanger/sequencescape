@@ -3,7 +3,7 @@
 # the real release.
 ---
 lcm_dna_rna_seq:
-  name: LCA DNA RNA seq
+  name: LCM DNA RNA seq
   asset_type: Well
   order: 1
   request_class_name: IlluminaHtp::Requests::StdLibraryRequest
@@ -14,4 +14,4 @@ lcm_dna_rna_seq:
     - Combined LCM DNA
     - Combined LCM RNA
   acceptable_purposes:
-    - LLCM Lysate
+    - CLCM Lysate
