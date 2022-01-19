@@ -2,8 +2,8 @@
 # They are in a separate file to allow us to soft-release them before
 # the real release.
 ---
-lca_seq_dna_rna:
-  name: LCA seq DNA RNA
+lcm_dna_rna_seq:
+  name: LCA DNA RNA seq
   asset_type: Well
   order: 1
   request_class_name: IlluminaHtp::Requests::StdLibraryRequest
@@ -11,6 +11,7 @@ lca_seq_dna_rna:
   billable: true
   product_line_name: Illumina-Htp
   library_types:
-    - Cardinal
-  acceptable_plate_purposes:
-    - Lysate LCA
+    - Combined LCM DNA
+    - Combined LCM RNA
+  acceptable_purposes:
+    - LLCM Lysate

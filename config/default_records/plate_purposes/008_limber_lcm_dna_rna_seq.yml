@@ -1,5 +1,5 @@
 ---
-Lysate LCA:
+LLCM Lysate:
   type: PlatePurpose::Input
   stock_plate: true
   cherrypickable_target: false

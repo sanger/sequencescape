@@ -1,6 +1,6 @@
-# This product catalogue is associated with the Limber Cardinal pipeline.
+# This product catalogue is associated with the Limber LCM DNA RNA Seq pipeline.
 # It is in a separate file to allow us to soft-release them before
 # the real release.
 ---
-LCA DNA RNA:
+LCM DNA RNA Seq:
   selection_behaviour: SingleProduct
