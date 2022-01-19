@@ -14,9 +14,6 @@
       <th>Source barcode</th>
       <th>Target Type</th>
       <th>Target barcode</th>
-      <% if @batch.display_tags? %>
-        <th>Tag #</th>
-      <% end %>
       <% @rits.each do |rit| %>
         <th><%= rit.label %></th>
       <% end %>
