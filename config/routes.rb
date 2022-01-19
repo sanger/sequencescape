@@ -358,6 +358,7 @@ Rails.application.routes.draw do
     member do
       get :study_reports
       get :projects
+      post :print_swipecard
     end
   end
 

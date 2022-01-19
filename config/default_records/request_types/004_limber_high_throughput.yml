@@ -39,6 +39,8 @@ limber_reisc:
     - Agilent Pulldown
     - Twist Pulldown
     - Duplex-Seq
+    - Targeted NanoSeq Pulldown Twist
+    - Targeted NanoSeq Pulldown Agilent
 limber_pcr_free:
   <<: *limber_htp_library
   name: Limber PCR Free
@@ -154,6 +156,21 @@ limber_heron_lthr:
     - Sanger_tailed_artic_v1_384
     - PCR amplicon tailed adapters 96
     - PCR amplicon tailed adapters 384
+limber_heron_lthr_v2:
+  <<: *limber_htp_library
+  name: Limber Heron LTHR V2
+  request_class_name: IlluminaHtp::Requests::HeronTailedRequest
+  for_multiplexing: true
+  target_purpose_name: LB Lib Pool Norm
+  acceptable_purposes:
+    - LTHR RT
+    - LTHR-384 RT
+    - LTHR Cherrypick
+  library_types:
+    - Sanger_tailed_artic_v1_96
+    - Sanger_tailed_artic_v1_384
+    - PCR amplicon tailed adapters 96
+    - PCR amplicon tailed adapters 384
 limber_pwgs-384:
   <<: *limber_htp_library
   name: Limber pWGS-384
@@ -169,4 +186,12 @@ limber_duplex-seq:
     - LDS Cherrypick
   library_types:
     - Duplex-Seq
+    - Targeted Nanoseq
+limber_targeted_nanoseq:
+  <<: *limber_htp_library
+  name: Limber Targeted NanoSeq
+  acceptable_purposes:
+    - LTN Stock
+    - LTN Cherrypick
+  library_types:
     - Targeted Nanoseq

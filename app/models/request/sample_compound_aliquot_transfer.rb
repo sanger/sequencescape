@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 # Module to provide support to handle creation of compound samples
-# from the list of samples at the source.
+# from the list of samples at the source. A compound sample is a
+# sample that represents a combination of other samples.
 #
 # The reason for this is to ensure that when the data gets to the MLWH,
 # each row has a unique combination of tag1 and tag2 -
@@ -20,6 +21,10 @@
 # Assumptions:
 #  - This module will be included in a Request class
 module Request::SampleCompoundAliquotTransfer
+  DUPLICATE_TAG_DEPTH_ERROR_MSG = "Cannot create compound sample from following samples due to duplicate 'tag depth'"
+  MULTIPLE_STUDIES_ERROR_MSG =
+    'Cannot create compound sample due to the component samples being under different studies.'
+
   # Indicates if a compound sample creation is needed, by checking
   # if any of the source aliquots share the same tag1 and tag2
   def compound_samples_needed?
@@ -44,26 +49,41 @@ module Request::SampleCompoundAliquotTransfer
     # Check that the component samples in the compound sample will be able to be distinguished -
     # this is represented by them all having a unique 'tag_depth'
     if source_aliquots.pluck(:tag_depth).uniq.count != source_aliquots.size
-      raise "Cannot create compound sample from following samples due to duplicate 'tag depth': #{samples.map(&:name)}"
+      raise "#{DUPLICATE_TAG_DEPTH_ERROR_MSG}: #{samples.map(&:name)}"
     end
+
+    raise MULTIPLE_STUDIES_ERROR_MSG if _studies.count > 1
 
     compound_sample = _create_compound_sample(_default_compound_study, samples)
 
-    _add_aliquot(compound_sample, source_aliquots.first.tag_id, source_aliquots.first.tag2_id)
+    _add_aliquot(compound_sample, source_aliquots)
   end
 
-  def _add_aliquot(sample, tag_id, tag2_id)
+  def _add_aliquot(sample, source_aliquots)
     target_asset
       .aliquots
       .create(sample: sample)
       .tap do |aliquot|
-        aliquot.tag_id = tag_id
-        aliquot.tag2_id = tag2_id
-        aliquot.library_type = _default_library_type
-        aliquot.study_id = _default_compound_study.id
-        aliquot.project_id = _default_compound_project_id
+        _set_aliquot_attributes(aliquot, source_aliquots)
         aliquot.save
       end
+  end
+
+  def _set_aliquot_attributes(aliquot, source_aliquots)
+    aliquot.tag_id = source_aliquots.first.tag_id
+    aliquot.tag2_id = source_aliquots.first.tag2_id
+    aliquot.library_type = _default_library_type
+    aliquot.study_id = _default_compound_study.id
+    aliquot.project_id = _default_compound_project_id
+    aliquot.library_id = _copy_library_id(source_aliquots)
+  end
+
+  # If the library_id is the same on all source aliquots, we can confidently transfer it to the target aliquot
+  # How the library_id should be set if the source aliquots have different library_ids is not defined
+  # Therefore, set it to nil for now, until we have a real requirement
+  def _copy_library_id(source_aliquots)
+    library_ids = source_aliquots.map(&:library_id).uniq
+    library_ids.size == 1 ? library_ids.first : nil
   end
 
   def _any_aliquots_share_tag_combination?
@@ -72,6 +92,10 @@ module Request::SampleCompoundAliquotTransfer
 
   def _aliquots_by_tags_combination
     asset.aliquots.group_by(&:tags_combination)
+  end
+
+  def _studies
+    @studies ||= asset.aliquots.map(&:study).uniq
   end
 
   # Private method to generate a compound sample in a study from a list of
@@ -85,7 +109,7 @@ module Request::SampleCompoundAliquotTransfer
 
   # Default study that the new compound sample will use
   def _default_compound_study
-    asset.samples.first.studies.first
+    _studies.first
   end
 
   # Default project that the new compound sample will use

@@ -59,13 +59,7 @@ class UatActions::GenerateSampleManifest < UatActions
   end
 
   def create_sample_manifest
-    SampleManifest.create!(
-      study: Study.find_by(name: study_name),
-      supplier: Supplier.find_by(name: supplier_name),
-      asset_type: asset_type,
-      count: count,
-      purpose: purpose
-    )
+    SampleManifest.create!(study: study, supplier: supplier, asset_type: asset_type, count: count, purpose: purpose)
   end
 
   def generate_manifest(sample_manifest)
@@ -78,7 +72,7 @@ class UatActions::GenerateSampleManifest < UatActions
       raise 'Manifest for plates is not supported yet' unless asset_type == '1dtube'
 
       create_sample("Sample_#{asset.human_barcode}_1", sample_manifest).tap do |sample|
-        asset.aliquots.create!(sample: sample, study: study, library: asset)
+        asset.aliquots.create!(sample: sample, study: study)
         study.samples << sample
       end
     end
@@ -91,7 +85,27 @@ class UatActions::GenerateSampleManifest < UatActions
   end
 
   def study
-    Study.find_by!(name: study_name)
+    @study ||=
+      Study
+        .create_with(
+          state: 'active',
+          study_metadata_attributes: {
+            data_access_group: 'dag',
+            study_type: UatActions::StaticRecords.study_type,
+            faculty_sponsor: UatActions::StaticRecords.faculty_sponsor,
+            data_release_study_type: UatActions::StaticRecords.data_release_study_type,
+            study_description: 'A study generated for UAT',
+            contaminated_human_dna: 'No',
+            contains_human_dna: 'No',
+            commercially_available: 'No',
+            program: UatActions::StaticRecords.program
+          }
+        )
+        .find_or_create_by!(name: study_name)
+  end
+
+  def supplier
+    @supplier ||= Supplier.find_or_create_by!(name: supplier_name)
   end
 
   def create_sample(sample_name, sample_manifest)

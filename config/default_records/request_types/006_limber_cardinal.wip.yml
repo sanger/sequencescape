@@ -11,7 +11,7 @@ limber_cardinal:
   billable: true
   product_line_name: Cardinal
   library_types:
-    - Cardinal
+    - Chromium single cell 3 prime v3
   acceptable_purposes:
     - LCA Blood Vac
 limber_cardinal_banking:

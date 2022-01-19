@@ -203,7 +203,9 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   def sort
     @batch.assign_positions_to_requests!(params['requests_list'].map(&:to_i))
-    @batch.rebroadcast
+
+    # Touch the batch to update its timestamp and trigger re-broadcast
+    @batch.touch # rubocop:disable Rails/SkipsModelValidations
     head :ok
   end
 

@@ -28,7 +28,7 @@ module SampleManifestExcel
           upload.rows.each do |row|
             row.update_sample(tag_group, upload.override)
             row.transfer_aliquot # Requests are smart enough to only transfer once
-            substitutions << row.aliquot.substitution_hash if row.reuploaded?
+            substitutions.concat(row.aliquots.filter_map(&:substitution_hash)) if row.reuploaded?
           end
           update_downstream_aliquots unless no_substitutions?
         end

@@ -86,7 +86,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v2
         with:
-          node-version: "12"
+          node-version: "16"
       - name: Cache js
         uses: actions/cache@v2
         with:
@@ -167,7 +167,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v2
         with:
-          node-version: "12"
+          node-version: "16"
       - name: Cache js
         uses: actions/cache@v2
         with:
