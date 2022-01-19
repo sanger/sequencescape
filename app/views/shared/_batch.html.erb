@@ -1,78 +1,99 @@
 
-<table  id="batch-<%= edit ? 'edit' : 'show' %>"
-        class="table"
-        data-batch-id="<%= @batch&.id %>">
-  <thead>
-    <tr>
-      <% if stage %>
-        <th class="nosort" width="7%"><input type='checkbox' class='select_all'></th>
-      <% end -%>
-      <th>Position</th>
-      <th>Sample</th>
-      <th>Request</th>
-      <th>Source</th>
-      <th>Source barcode</th>
-      <th>Target Type</th>
-      <th>Target barcode</th>
-      <% if @batch.display_tags? %>
-        <th>Tag #</th>
-      <% end %>
-      <% @rits.each do |rit| %>
-        <th><%= rit.label %></th>
-      <% end %>
-      <th>State</th>
-      <th>Comments</th>
-    </tr>
-  </thead>
-  <tbody id="requests_list">
-    <% requests.each_with_index do |request, i| -%>
-      <tr id="request_<%= request.id %>" class="row<%= i %>" data-request-id="<%= request.id %>">
-
-        <% if stage %>
-            <td><input name='request[<%= request.id %>]' id="sample-<%= i+1  %>-checkbox" class='sample_check select_all_target' value="on" type='checkbox' checked></td>
+  <table class="sortable table">
+    <thead>
+      <tr>
+        <% if edit -%>
+          <th width="3%">Drag</th>
+        <% elsif stage %>
+          <th class="nosort" width="7%"><input type='checkbox' class='select_all'></th>
         <% end -%>
-
-        <td><%= request.position %></td>
-        <td><%= request.asset&.display_name %></td>
-        <td><%= link_to request.id, request_url(request) %></td>
-
-        <% if request.asset  %>
-          <td><%= link_to request.asset.sti_type, receptacle_path(request.asset) %></td>
-          <td><%= request.asset.try(:human_barcode) %></td>
-        <% else %>
-          <td></td>
-          <td></td>
+        <th>Position</th>
+        <th>Sample</th>
+        <th>Request</th>
+        <th>Source</th>
+        <th>Source barcode</th>
+        <th>Target Type</th>
+        <th>Target barcode</th>
+        <% if @batch.display_tags? %>
+          <th>Tag #</th>
         <% end %>
-
-        <% if request.target_asset %>
-          <td><%= link_to request.target_asset.sti_type, receptacle_path(request.target_asset) %></td>
-          <td><%= request.target_asset.try(:human_barcode) %></td>
-        <% else %>
-          <td></td>
-          <td></td>
-        <% end %>
-
-        <% if @batch.display_tags? -%>
-          <% tag = request.target_asset.primary_aliquot.try(:tag) %>
-          <% unless tag.blank? %>
-            <td><%= link_to tag.map_id, tag_group_path(tag.tag_group) %></td>
-          <% else %>
-            <td> - </td>
-          <% end %>
-        <% end %>
-
         <% @rits.each do |rit| %>
-          <td><%= rit.value_for(request, @batch) %></td>
+          <th><%= rit.label %></th>
         <% end %>
-
-        <td><%= request.state.humanize %></td>
-
-        <% if request.comments.present? -%>
-          <td><%= link_to (pluralize request.comments.size, 'comment'),  request_comments_url(request) %></td>
-        <% else -%>
-          <td>None</td>
-        <% end -%>
+        <th>State</th>
+        <th>Comments</th>
       </tr>
-    <% end -%>
-  </tbody>
-</table>
+    </thead>
+    <tbody id="requests_list">
+      <% requests.each_with_index do |request, i| -%>
+        <tr id="request_<%= request.id %>" class="row<%= i %>">
+          <% if edit -%>
+            <td class="center" style="cursor:move;"><%= icon('fas', 'arrows-alt-v ') %></td>
+          <% elsif stage %>
+              <td><input name='request[<%= request.id %>]' id="sample-<%= i+1  %>-checkbox" class='sample_check select_all_target' value="on" type='checkbox' checked></td>
+          <% end -%>
+          <td><%= request.position %></td>
+
+          <% if request.asset %>
+            <td><%= h(request.asset.display_name) %></td>
+          <% else %>
+            <td></td>
+          <% end %>
+
+          <td><%= link_to request.id, request_url(request) %></td>
+          <% if request.asset  %>
+            <td><%= link_to request.asset.sti_type, receptacle_path(request.asset) %></td>
+            <td><%= request.asset.try(:human_barcode) %></td>
+            <% if request.target_asset %>
+              <td><%= link_to request.target_asset.sti_type, receptacle_path(request.target_asset) %></td>
+              <td><%= request.target_asset.try(:human_barcode) %></td>
+            <% else %>
+              <td></td>
+              <td></td>
+            <% end %>
+          <% else %>
+            <td></td>
+            <td></td>
+            <td ></td>
+            <td></td>
+          <% end %>
+          <% if @batch.display_tags? -%>
+            <% tag = request.target_asset.primary_aliquot.try(:tag) %>
+            <% unless tag.blank? %>
+              <td><%= link_to tag.map_id, tag_group_path(tag.tag_group) %></td>
+            <% else %>
+              <td> - </td>
+            <% end %>
+          <% end %>
+
+          <% @rits.each do |rit| %>
+            <td><%= rit.value_for(request, @batch) %></td>
+          <% end %>
+          <td><%= request.state.humanize %></td>
+          <% unless request.comments.blank? -%>
+          <td><%= link_to (pluralize request.comments.size, 'comment'),  request_comments_url(request) %></td>
+          <% else -%>
+          <td>None</td>
+          <% end -%>
+        </tr>
+      <% end -%>
+    </tbody>
+  </table>
+
+<% if edit %>
+  <%= javascript_tag nonce: true do %>
+
+    (function() {
+      function batchListPostParametersFromSortable(node) {
+        return $(node).sortable('toArray').map(function(s) {return s.replace(/request_/,'requests_list[]=');}).join('&');
+      }
+      $( "#requests_list" ).sortable({
+        update: function(event, elem) {
+          $.post('/batches/sort?batch_id=' + <%= @batch.id %>, batchListPostParametersFromSortable(event.target));
+        }
+      });
+      $( "#requests_list" ).disableSelection();
+    }());
+
+<% end %>
+<% end %>
