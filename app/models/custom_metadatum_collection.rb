@@ -6,7 +6,6 @@ class CustomMetadatumCollection < ApplicationRecord # rubocop:todo Style/Documen
   belongs_to :asset, class_name: 'Labware' # Labware (Used on plates and allowed on tubes but not used)
   has_many :custom_metadata, dependent: :destroy
 
-
   def metadata
     custom_metadata.collect(&:to_h).inject(:merge!) || {}
   end

@@ -6,7 +6,6 @@ class QcableCreator < ApplicationRecord # rubocop:todo Style/Documentation
   belongs_to :lot
   has_many :qcables
 
-
   attr_accessor :count, :barcodes
 
   after_create :make_qcables!

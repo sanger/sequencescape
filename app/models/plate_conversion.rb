@@ -10,7 +10,6 @@ class PlateConversion < ApplicationRecord
 
   belongs_to :parent, class_name: 'Plate'
 
-
   after_create :convert_target
 
   private

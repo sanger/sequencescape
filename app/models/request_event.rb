@@ -2,7 +2,6 @@
 class RequestEvent < ApplicationRecord # rubocop:todo Style/Documentation
   belongs_to :request, inverse_of: :request_events
 
-
   validates :event_name, inclusion: { in: %w[created state_changed destroyed] }
 
   scope :current, -> { where(current_to: nil) }

@@ -22,7 +22,6 @@ class Qcable < ApplicationRecord # rubocop:todo Style/Documentation
   has_one :stamp_qcable, inverse_of: :qcable, class_name: 'Stamp::StampQcable'
   has_one :stamp, through: :stamp_qcable
 
-
   before_validation :create_asset!, on: :create
 
   delegate :bed, :order, to: :stamp_qcable, allow_nil: true

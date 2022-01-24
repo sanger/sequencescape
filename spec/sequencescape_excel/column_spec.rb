@@ -4,12 +4,7 @@ require 'rails_helper'
 
 RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: true, sample_manifest: true do
   let(:range_list) do
-    build(
-      :range_list,
-      ranges_data: {
-        attributes_for(:validation)[:range_name] => attributes_for(:range)
-      }
-    )
+    build(:range_list, ranges_data: { attributes_for(:validation)[:range_name] => attributes_for(:range) })
   end
   let(:worksheet) { Axlsx::Workbook.new.add_worksheet }
   let(:options) do
