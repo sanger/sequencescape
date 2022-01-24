@@ -6,8 +6,6 @@ class QcableCreator < ApplicationRecord # rubocop:todo Style/Documentation
   belongs_to :lot
   has_many :qcables
 
-  validates :user, presence: true
-  validates :lot, presence: true
 
   attr_accessor :count, :barcodes
 

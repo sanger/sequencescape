@@ -6,10 +6,8 @@ class Transfer::BetweenPlateAndTubes < Transfer # rubocop:todo Style/Documentati
     self.table_name = ('well_to_tube_transfers')
 
     belongs_to :transfer, class_name: 'Transfer::BetweenPlateAndTubes'
-    validates :transfer, presence: true
 
     belongs_to :destination, class_name: 'Tube'
-    validates :destination, presence: true
 
     validates :source, presence: true
 

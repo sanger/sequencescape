@@ -10,7 +10,6 @@ class VolumeUpdate < ApplicationRecord
 
   # This is the target asset for which to update the state
   belongs_to :target, class_name: 'Labware'
-  validates :target, presence: true
 
   validates :volume_change, presence: true
 

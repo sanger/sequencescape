@@ -12,7 +12,6 @@ class ProductCriteria < ApplicationRecord # rubocop:todo Style/Documentation
   has_behaviour Basic, behaviour_name: 'Basic'
 
   belongs_to :product
-  validates :product, :stage, :behaviour, presence: true
 
   validates :stage, uniqueness: { scope: %i[product_id deprecated_at], case_sensitive: false }
   validates :behaviour, inclusion: { in: registered_behaviours }

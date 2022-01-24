@@ -137,7 +137,6 @@ class QcReport < ApplicationRecord # rubocop:todo Style/Documentation
 
   scope :for_report_page, ->(conditions) { order('id desc').where(conditions).joins(:product_criteria) }
 
-  validates :product_criteria, :study, :state, presence: true
 
   validates :exclude_existing, inclusion: { in: [true, false], message: 'should be true or false.' }
 

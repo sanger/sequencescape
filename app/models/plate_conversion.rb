@@ -10,9 +10,6 @@ class PlateConversion < ApplicationRecord
 
   belongs_to :parent, class_name: 'Plate'
 
-  validates :target, presence: true
-  validates :purpose, presence: true
-  validates :user, presence: true
 
   after_create :convert_target
 

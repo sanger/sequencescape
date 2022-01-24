@@ -12,8 +12,6 @@ class Stamp < ApplicationRecord # rubocop:todo Style/Documentation
 
     belongs_to :stamp, inverse_of: :stamp_qcables
     belongs_to :qcable, inverse_of: :stamp_qcable
-    validates :stamp, presence: true
-    validates :qcable, presence: true
     validates :bed, presence: true
     validates :order, presence: true
   end
@@ -25,9 +23,6 @@ class Stamp < ApplicationRecord # rubocop:todo Style/Documentation
   has_many :stamp_qcables, inverse_of: :stamp, class_name: 'Stamp::StampQcable'
   has_many :qcables, through: :stamp_qcables
 
-  validates :lot, presence: true
-  validates :user, presence: true
-  validates :robot, presence: true
   validates :tip_lot, presence: true
 
   after_create :stamp!

@@ -468,12 +468,12 @@ describe Well do
       @old_report =
         create :qc_report,
                product_criteria: @our_product_criteria,
-               created_at: Time.zone.now - 1.day,
+               created_at: 1.day.ago,
                report_identifier: "A#{Time.zone.now}"
       @current_report =
         create :qc_report,
                product_criteria: @our_product_criteria,
-               created_at: Time.zone.now - 1.hour,
+               created_at: 1.hour.ago,
                report_identifier: "B#{Time.zone.now}"
       @unrelated_report =
         create :qc_report,

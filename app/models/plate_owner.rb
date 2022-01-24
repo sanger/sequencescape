@@ -4,5 +4,4 @@ class PlateOwner < ApplicationRecord
   belongs_to :plate
   belongs_to :eventable, polymorphic: true
 
-  validates :eventable, presence: true
 end

@@ -7,7 +7,7 @@ RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: 
     build(
       :range_list,
       ranges_data: {
-        FactoryBot.attributes_for(:validation)[:range_name] => FactoryBot.attributes_for(:range)
+        attributes_for(:validation)[:range_name] => attributes_for(:range)
       }
     )
   end
@@ -20,10 +20,10 @@ RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: 
       value: 10,
       number: 125,
       attribute: :barcode,
-      validation: FactoryBot.attributes_for(:validation),
+      validation: attributes_for(:validation),
       conditional_formattings: {
-        simple: FactoryBot.attributes_for(:conditional_formatting),
-        complex: FactoryBot.attributes_for(:conditional_formatting_with_formula)
+        simple: attributes_for(:conditional_formatting),
+        complex: attributes_for(:conditional_formatting_with_formula)
       }
     }
   end

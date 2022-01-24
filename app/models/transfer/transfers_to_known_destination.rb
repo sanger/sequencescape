@@ -5,7 +5,6 @@ module Transfer::TransfersToKnownDestination
   def self.included(base)
     base.class_eval do
       belongs_to :destination, class_name: 'Labware'
-      validates :destination, presence: true
       validates :destination_id,
                 uniqueness: {
                   scope: :source_id,

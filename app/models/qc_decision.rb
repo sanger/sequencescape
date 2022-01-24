@@ -8,8 +8,6 @@ class QcDecision < ApplicationRecord # rubocop:todo Style/Documentation
     belongs_to :qcable
     belongs_to :qc_decision, inverse_of: :qc_decision_qcables
 
-    validates :qcable, presence: true
-    validates :qc_decision, presence: true
     validates :decision, presence: true
 
     validates :decision, inclusion: { in: Qcable.aasm.state_machine.events.map { |i, _j| i.to_s } }
@@ -29,7 +27,6 @@ class QcDecision < ApplicationRecord # rubocop:todo Style/Documentation
   has_many :qc_decision_qcables, class_name: 'QcDecision::QcDecisionQcable', inverse_of: :qc_decision
   has_many :qcables, through: :qc_decision_qcables
 
-  validates :user, presence: true
   validate :user_has_permission, if: :user
 
   def decisions=(decisions)

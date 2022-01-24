@@ -14,7 +14,7 @@ Given /^I have an order created with the following details based on the template
         when 'asset_group_name'
           v
         when 'request_options'
-          v.split(',').map { |p| p.split(':').map(&:strip) }.to_h
+          v.split(',').to_h { |p| p.split(':').map(&:strip) }
         when 'assets'
           Uuid.lookup_many_uuids(v.split(',').map(&:strip)).map(&:resource)
         when 'pre_cap_group'

@@ -13,7 +13,6 @@ class BroadcastEvent < ApplicationRecord
 
   belongs_to :seed, polymorphic: true
   belongs_to :user
-  validates :seed, presence: true
 
   # Recommended way of preventing the base class from being instantiated
   # https://api.rubyonrails.org/classes/ActiveRecord/Inheritance/ClassMethods.html
@@ -38,7 +37,7 @@ class BroadcastEvent < ApplicationRecord
 
   # Returns a hash of all metadata
   def metadata
-    self.class.metadata_finders.map { |mf| mf.for(seed, self) }.to_h
+    self.class.metadata_finders.to_h { |mf| mf.for(seed, self) }
   end
 
   # Routing key generated for the broadcasted event.

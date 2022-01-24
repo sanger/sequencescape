@@ -19,7 +19,7 @@ class MoveConsentWithdrawnFromSamplesToSampleMetadata < ActiveRecord::Migration[
     [true, false].include? val
   end
 
-  def create_recovery_file! # rubocop:disable Metrics/AbcSize
+  def create_recovery_file!
     say "recovery file: #{backup_file_path}"
     backup_data = []
     sample_id_and_consent_withdrawn.each do |sample|
@@ -29,7 +29,7 @@ class MoveConsentWithdrawnFromSamplesToSampleMetadata < ActiveRecord::Migration[
 
       backup_data.push(tuple)
     end
-    File.open(backup_file_path, 'w') { |file| file.write(backup_data.to_json) }
+    File.write(backup_file_path, backup_data.to_json)
   end
 
   def recovery_data

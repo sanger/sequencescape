@@ -15,7 +15,6 @@ class AssetGroup < ApplicationRecord
   has_many :samples, through: :assets, source: :samples
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }
-  validates :study, presence: true
 
   scope :for_search_query, ->(query) { where(['name LIKE ?', "%#{query}%"]) }
 

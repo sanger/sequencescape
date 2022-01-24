@@ -35,6 +35,6 @@ class TagGroup < ApplicationRecord # rubocop:todo Style/Documentation
 
   # Returns a Hash that maps from the tag index in the group to the oligo sequence for the tag
   def indexed_tags
-    tags.map { |tag| [tag.map_id, tag.oligo] }.to_h
+    tags.to_h { |tag| [tag.map_id, tag.oligo] }
   end
 end

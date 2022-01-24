@@ -33,7 +33,6 @@ class BaitLibrary < ApplicationRecord
 
   # All bait libraries belong to a supplier
   belongs_to :bait_library_supplier, class_name: 'BaitLibrary::Supplier'
-  validates :bait_library_supplier, presence: true
 
   # Within a supplier we have a unique identifier for each bait library.  Custom bait libraries
   # do not have this identifier, so nil is permitted.

@@ -11,8 +11,6 @@ class AliquotIndex < ApplicationRecord
   belongs_to :aliquot
   belongs_to :lane
 
-  validates :aliquot, presence: true
-  validates :lane, presence: true
   validates :aliquot_index,
             numericality: {
               only_integer: true,

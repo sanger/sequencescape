@@ -8,7 +8,6 @@ module Batch::PipelineBehaviour # rubocop:todo Style/Documentation
       delegate :tasks, to: :workflow, allow_nil: true
 
       # The validations that the pipeline & batch are correct
-      validates :pipeline, presence: true
 
       # Validation of some of the batch information is left to the pipeline that it belongs to
       validate { |record| record.pipeline.validation_of_batch(record) if record.pipeline.present? }
