@@ -1,6 +1,4 @@
-# This product catalogue is associated with the Limber LCM DNA RNA Seq pipeline.
-# It is in a separate file to allow us to soft-release them before
-# the real release.
+# This product catalogue is associated with the Limber Combined LCM DNA and RNAseq pipeline.
 ---
-LCM DNA RNA Seq:
+CLCM DNA and RNAseq:
   selection_behaviour: SingleProduct
