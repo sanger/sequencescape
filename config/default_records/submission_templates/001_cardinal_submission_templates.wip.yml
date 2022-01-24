@@ -7,6 +7,7 @@ Limber - Cardinal:
   related_records:
     request_type_keys: ["limber_cardinal"]
     project_name: "Project Cardinal"
+    study_name: "Project Cardinal Combined"
     product_line_name: Cardinal
     product_catalogue_name: Cardinal
 Limber - Cardinal cell banking:
@@ -14,5 +15,6 @@ Limber - Cardinal cell banking:
   related_records:
     request_type_keys: ["limber_cardinal_banking"]
     project_name: "Project Cardinal"
+    study_name: "Project Cardinal Combined"
     product_line_name: Cardinal
     product_catalogue_name: Cardinal
