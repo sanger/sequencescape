@@ -11,10 +11,12 @@ class Transfer < ApplicationRecord
 
   # So we can track who is requesting the transfer
   belongs_to :user
+  validates :user, presence: true
 
   # The source plate and the destination asset (which varies between different types of transfers)
   # You can only transfer from one plate to another once, anything else is an error.
   belongs_to :source, class_name: 'Plate'
+  validates :source, presence: true
   scope :include_source, -> { includes(source: ModelExtensions::Plate::PLATE_INCLUDES) }
 
   belongs_to :destination, class_name: 'Labware'
