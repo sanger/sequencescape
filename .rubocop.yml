@@ -168,4 +168,4 @@ Lint/UnusedMethodArgument:
 
 # This seems to be causing all sorts of issues with failing tests
 Rails/RedundantPresenceValidationOnBelongsTo:
-  enabled: false
+  Enabled: false
