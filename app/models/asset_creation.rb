@@ -21,7 +21,7 @@ class AssetCreation < ApplicationRecord
   private :parent_nil?
 
   belongs_to :child_purpose, class_name: 'Purpose'
-  validates :child_purpose, unless: :multiple_purposes
+  validates :child_purpose, presence: true, unless: :multiple_purposes
 
   before_create :process_children
   def process_children
