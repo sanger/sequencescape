@@ -5,9 +5,11 @@ class BaitLibraryLayout < ApplicationRecord # rubocop:todo Style/Documentation
 
   # So we can track who is requesting the layout of the bait libraries
   belongs_to :user
+  validates :user, presence: true
 
   # Bait libraries are laid out on a specific plate only once.
   belongs_to :plate
+  validates :plate, presence: true
   validates :plate_id, uniqueness: true
 
   # The layout of the bait libraries is recorded so that we can see what happened.  It is serialized in a compact

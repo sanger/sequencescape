@@ -15,6 +15,7 @@ class Tag2Layout < ApplicationRecord
   class TemplateSubmission < ApplicationRecord
     belongs_to :submission
     belongs_to :tag2_layout_template
+    validates :tag2_layout_template_id, :submission_id, presence: true
     validates :tag2_layout_template_id, uniqueness: { scope: :submission_id }
   end
 
@@ -27,6 +28,7 @@ class Tag2Layout < ApplicationRecord
   serialize :substitutions
 
   belongs_to :plate
+  validates :plate, presence: true
 
   belongs_to :source, class_name: 'Labware'
 

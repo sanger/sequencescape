@@ -3,6 +3,7 @@
 # for rendering warehouse messages
 class Messenger < ApplicationRecord
   belongs_to :target, ->(messenger) { includes(messenger.render_class.includes) }, polymorphic: true
+  validates :target, :root, :template, presence: true
   broadcast_with_warren
 
   def render_class

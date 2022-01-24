@@ -33,6 +33,7 @@ class BulkTransfer < ApplicationRecord
   has_many :transfers
 
   belongs_to :user
+  validates :user, presence: true
 
   after_create :build_transfers!
 

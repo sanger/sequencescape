@@ -6,6 +6,8 @@ class ExtractionAttribute < ApplicationRecord # rubocop:todo Style/Documentation
 
   belongs_to :target, class_name: 'Labware'
 
+  validates :target, presence: true
+
   validates :attributes_update, presence: true
 
   serialize :attributes_update

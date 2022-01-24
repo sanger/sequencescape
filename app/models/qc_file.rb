@@ -24,6 +24,7 @@ class QcFile < ApplicationRecord # rubocop:todo Style/Documentation
   end
 
   belongs_to :asset, class_name: 'Labware'
+  validates :asset, presence: true
 
   # Handle some of the metadata with this callback
   before_save :update_document_attributes

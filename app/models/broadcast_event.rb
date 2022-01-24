@@ -13,6 +13,7 @@ class BroadcastEvent < ApplicationRecord
 
   belongs_to :seed, polymorphic: true
   belongs_to :user
+  validates :seed, presence: true
 
   # Recommended way of preventing the base class from being instantiated
   # https://api.rubyonrails.org/classes/ActiveRecord/Inheritance/ClassMethods.html

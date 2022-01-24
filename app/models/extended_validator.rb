@@ -13,6 +13,8 @@ class ExtendedValidator < ApplicationRecord # rubocop:todo Style/Documentation
 
     belongs_to :extended_validator
     belongs_to :request_type
+    validates :extended_validator, presence: true
+    validates :request_type, presence: true
   end
 
   after_initialize :import_behaviour

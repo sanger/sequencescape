@@ -22,6 +22,7 @@ class QcMetric < ApplicationRecord # rubocop:todo Style/Documentation
   belongs_to :asset, class_name: 'Receptacle'
   belongs_to :qc_report
   has_one :product_criteria, through: :qc_report
+  validates :asset, :qc_report, presence: true
   validates :qc_decision, inclusion: { in: QcMetric.valid_states }
 
   serialize :metrics

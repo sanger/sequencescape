@@ -24,7 +24,9 @@ class RequestType < ApplicationRecord
     self.table_name = ('request_type_plate_purposes')
 
     belongs_to :request_type
+    validates :request_type, presence: true
     belongs_to :purpose, foreign_key: 'plate_purpose_id'
+    validates :purpose, presence: true
     validates :plate_purpose_id, uniqueness: { scope: :request_type_id }
   end
 

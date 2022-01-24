@@ -19,6 +19,7 @@ class SubmissionTemplate < ApplicationRecord
 
   belongs_to :product_catalogue, inverse_of: :submission_templates
   delegate :product_for, to: :product_catalogue
+  validates :product_catalogue, presence: true
 
   has_many :products, through: :product_catalogue
 

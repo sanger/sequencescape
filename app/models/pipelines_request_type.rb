@@ -6,4 +6,5 @@ class PipelinesRequestType < ApplicationRecord
   belongs_to :request_type, inverse_of: :pipelines_request_types
 
   validates :request_type_id, uniqueness: { scope: :pipeline_id }
+  validates :request_type, :pipeline, presence: true
 end

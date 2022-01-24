@@ -10,6 +10,7 @@ class AssetAudit < ApplicationRecord
 
   self.per_page = 500
 
+  validates :asset, :key, presence: true
   validates :key, format: { with: /\A[\w_]+\z/i, message: I18n.t('asset_audit.key_format'), on: :create }
 
   after_create :broadcast_event

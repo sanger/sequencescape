@@ -12,6 +12,7 @@ class BarcodePrinter < ApplicationRecord
   #   @return [String] The hostname of the printer, eg. d304bc
 
   belongs_to :barcode_printer_type
+  validates :barcode_printer_type, :print_service, :printer_type, presence: true
   scope :include_barcode_printer_type, -> { includes(:barcode_printer_type) }
   scope :alphabetical, -> { order(:name) }
 

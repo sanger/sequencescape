@@ -73,6 +73,7 @@ class RequestType::Validator < ApplicationRecord
   end
 
   belongs_to :request_type
+  validates :request_type, :request_option, :valid_options, presence: true
   serialize :valid_options
 
   delegate :include?, to: :valid_options
