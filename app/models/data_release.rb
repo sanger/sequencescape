@@ -10,7 +10,7 @@ module DataRelease # rubocop:todo Style/Documentation
     true
   end
 
-  def ena_accession_required?
+  def accession_required?
     return false unless enforce_accessioning
     return true unless valid_data_release_properties?
 
