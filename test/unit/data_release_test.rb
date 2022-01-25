@@ -46,7 +46,7 @@ class DataReleaseTest < ActiveSupport::TestCase
       end
     end
 
-    context '#ena_accession_required?' do
+    context '#accession_required?' do
       setup {}
       context 'with accessioning turned off' do
         setup do
@@ -54,7 +54,7 @@ class DataReleaseTest < ActiveSupport::TestCase
           @study.save!
         end
         should 'return false' do
-          assert_not @study.ena_accession_required?
+          assert_not @study.accession_required?
         end
       end
 
@@ -70,12 +70,12 @@ class DataReleaseTest < ActiveSupport::TestCase
 
         should 'return true when data release timing is standard' do
           @study.study_metadata.data_release_timing = 'standard'
-          assert @study.ena_accession_required?
+          assert @study.accession_required?
         end
 
         should 'return true when data release timing is immediate' do
           @study.study_metadata.data_release_timing = 'immediate'
-          assert @study.ena_accession_required?
+          assert @study.accession_required?
         end
       end
 
@@ -106,7 +106,7 @@ class DataReleaseTest < ActiveSupport::TestCase
                   end
 
                   should 'not required ena accession number' do
-                    assert_not @study.ena_accession_required?
+                    assert_not @study.accession_required?
                   end
                 end
               end
@@ -128,7 +128,7 @@ class DataReleaseTest < ActiveSupport::TestCase
                   end
 
                   should 'should require ena accession number' do
-                    assert @study.ena_accession_required?
+                    assert @study.accession_required?
                   end
                 end
               end
