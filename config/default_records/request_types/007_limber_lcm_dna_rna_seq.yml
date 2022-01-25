@@ -12,4 +12,4 @@ clcm_dna_rna_seq:
     - Combined LCM DNA
     - Combined LCM RNA
   acceptable_purposes:
-    - CLCM Lysate
+    - CLCM Stock

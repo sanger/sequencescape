@@ -6,7 +6,6 @@ Limber-Htp - Combined LCM DNA and RNA Seq:
   submission_class_name: "LinearSubmission"
   related_records:
     request_type_keys: ["clcm_dna_rna_seq"]
-    # TODO: Do we need Project, product line, product catalogue
     product_line_name: Illumina-Htp
     product_catalogue_name: CLCM DNA and RNAseq
 
