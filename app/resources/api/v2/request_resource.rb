@@ -30,6 +30,7 @@ module Api
       attribute :state, readonly: true
       attribute :priority, readonly: true
       attribute :options
+      attribute :library_type, readonly: true
 
       # Filters
 
