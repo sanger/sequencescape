@@ -316,6 +316,12 @@ Then /^the faculty sponsor index page should look like:$/ do |expected_results_t
   expected_results_table.diff!(table(fetch_table('table#faculty_sponsor_list')))
 end
 
+Then /^the faculty sponsor index page should include:$/ do |expected_results_table|
+  # This version of `diff!` doesn't see additional rows in the 'actual table' as an issue
+  # Necessary because our Record Loader adds extra data that the original Cucumber test doesn't expect
+  expected_results_table.diff!(table(fetch_table('table#faculty_sponsor_list')), surplus_row: false)
+end
+
 When /^I have an? (managed|open) study without a data release group called "(.*?)"$/ do |managed, study_name|
   Study.create!(
     name: study_name,
