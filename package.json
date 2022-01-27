@@ -34,8 +34,7 @@
     "vite": "^2.7.7",
     "vite-plugin-ruby": "^3.0.5",
     "vite-plugin-vue2": "^1.9.3",
-    "vue-jest": "^3.0.6",
-    "webpack-dev-server": "^3.11.0"
+    "vue-jest": "^3.0.6"
   },
   "scripts": {
     "test": "jest",
