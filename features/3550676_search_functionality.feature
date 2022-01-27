@@ -5,7 +5,7 @@ Feature: Searching sequencescape
     And I am on the search page
 
     Given a project named "This Rabbit" exists
-    And a study named "This Study" exists
+    And a study named "This Hedgehog" exists
     And a sample named "SampleForThis" exists
     And sample "SampleForThis" is in a sample tube named "This Asset"
 
@@ -17,11 +17,11 @@ Feature: Searching sequencescape
     And I should see "<result>"
 
     Examples:
-      |  search |   type  |   result       |
-      | Rabbit  | project | This Rabbit    |
-      | Study   | study   | This Study     |
-      | Sample  | sample  | SampleForThis  |
-      | Asset   | labware | This Asset     |
+      |  search   |   type  |   result       |
+      | Rabbit    | project | This Rabbit    |
+      | Hedgehog  | study   | This Hedgehog  |
+      | Sample    | sample  | SampleForThis  |
+      | Asset     | labware | This Asset     |
 
   Scenario: No matching results
     When I fill in "Search for" with "No way this will ever match anything!"
@@ -35,7 +35,7 @@ Feature: Searching sequencescape
     Then I should be on the search page
     And the search results I should see are:
       | section |   result      |
-      | project | This Rabbit  |
-      | study   | This Study    |
+      | project | This Rabbit   |
+      | study   | This Hedgehog |
       | sample  | SampleForThis |
       | labware | This Asset    |

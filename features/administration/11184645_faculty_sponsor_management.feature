@@ -31,7 +31,7 @@ Feature: Manage a list of faculty sponsors
       And a faculty sponsor called "Conor Cone" exists
       And I am a "administrator" user logged in as "user"
       And I am on the faculty sponsor homepage
-    Then the faculty sponsor index page should look like:
+    Then the faculty sponsor index page should include:
       | Name       | Number of Studies |
       | Adam Apple | 0                 |
       | Barry Ball | 0                 |
