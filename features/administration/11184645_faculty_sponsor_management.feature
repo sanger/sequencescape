@@ -41,7 +41,7 @@ Feature: Manage a list of faculty sponsors
       And I create study "Another Big study" with faculty sponsor "Barry Ball"
       And I create study "Small study" with faculty sponsor "Conor Cone"
       And I am on the faculty sponsor homepage
-    Then the faculty sponsor index page should look like:
+    Then the faculty sponsor index page should include:
       | Name       | Number of Studies |
       | Adam Apple | 0                 |
       | Barry Ball | 2                 |
