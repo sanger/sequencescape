@@ -194,4 +194,4 @@ limber_targeted_nanoseq:
     - LTN Stock
     - LTN Cherrypick
   library_types:
-    - Targeted NanoSeq
+    - Targeted Nanoseq

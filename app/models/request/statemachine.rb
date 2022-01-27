@@ -192,11 +192,11 @@ module Request::Statemachine # rubocop:todo Style/Documentation
   def on_hold; end
 
   def failed_upstream!
-    # Don't transition it again if it's already failed
-    return if failed?
+    # Don't transition it again if it's already reached an end state
+    return if terminated?
 
-    # Only transition it if *all* upstream requests are failed, not just the one we came from.
-    return unless upstream_requests.all?(&:failed?)
+    # Only transition it if *all* upstream requests are failed or cancelled, not just the one we came from.
+    return unless upstream_requests.all?(&:terminated?)
 
     fail_from_upstream!
   end

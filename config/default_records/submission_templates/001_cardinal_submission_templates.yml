@@ -6,13 +6,15 @@ Limber - Cardinal:
   submission_class_name: "LinearSubmission"
   related_records:
     request_type_keys: ["limber_cardinal"]
-    project_name: "Project Cardinal"
+    project_name: "Project Cardinal Combined"
+    study_name: "Project Cardinal Combined"
     product_line_name: Cardinal
     product_catalogue_name: Cardinal
 Limber - Cardinal cell banking:
   submission_class_name: "LinearSubmission"
   related_records:
     request_type_keys: ["limber_cardinal_banking"]
-    project_name: "Project Cardinal"
+    project_name: "Project Cardinal Combined"
+    study_name: "Project Cardinal Combined"
     product_line_name: Cardinal
     product_catalogue_name: Cardinal
