@@ -16,7 +16,7 @@
 class LibraryType < ApplicationRecord
   include SharedBehaviour::Named
 
-  scope :long_read, -> { alphabetical.where(name: records_in('001_long_read')) }
+  scope :from_record_loaders, ->(loader) { alphabetical.where(name: records_in(loader)) }
 
   has_many :library_types_request_types, inverse_of: :library_type, dependent: :destroy
   has_many :request_types, through: :library_types_request_types
