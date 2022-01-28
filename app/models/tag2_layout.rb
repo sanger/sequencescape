@@ -21,9 +21,11 @@ class Tag2Layout < ApplicationRecord
 
   # The user performing the layout
   belongs_to :user
+  validates :user, presence: true
 
   # The tag group to layout on the plate, along with the substitutions that should be made
   belongs_to :tag
+  validates :tag, presence: true
 
   serialize :substitutions
 
