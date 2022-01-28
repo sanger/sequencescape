@@ -27,7 +27,7 @@ FactoryBot.define do
     factory(:full_transfer_between_plates) do
       association(:source, factory: :full_plate)
       association(:destination, factory: :full_plate)
-      transfers { ('A'..'H').map { |r| (1..12).map { |c| "#{r}#{c}" } }.flatten.map { |w| [w, w] }.to_h }
+      transfers { ('A'..'H').map { |r| (1..12).map { |c| "#{r}#{c}" } }.flatten.to_h { |w| [w, w] } }
     end
   end
 

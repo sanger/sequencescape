@@ -10,11 +10,10 @@ module Api
     ALL_SERVICES_AVAILABLE =
       Dir
         .glob(File.join(Rails.root, %w[app api endpoints ** *.rb]))
-        .map do |file|
+        .to_h do |file|
           handler = file.gsub(%r{^.+/(endpoints/.+).rb$}, '\1').camelize.constantize
           [handler.root.tr('/', '_'), handler]
         end
-        .to_h
 
     use Api::EndpointHandler
 

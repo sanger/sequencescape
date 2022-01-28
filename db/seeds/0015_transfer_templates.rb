@@ -18,7 +18,7 @@ ActiveRecord::Base.transaction do
     TransferTemplate.create!(
       name: "Transfer columns #{range.first}-#{range.last}",
       transfer_class_name: Transfer::BetweenPlates.name,
-      transfers: locations_for(('A'..'H'), range).map { |location| [location, location] }.to_h
+      transfers: locations_for(('A'..'H'), range).to_h { |location| [location, location] }
     )
   end
   TransferTemplate.create!(
