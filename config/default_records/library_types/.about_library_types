@@ -1,0 +1,4 @@
+Note:
+Library types may also be registered by the request-type record loader.
+This record loader exists to also allow the creation of library types
+with no associated request type.

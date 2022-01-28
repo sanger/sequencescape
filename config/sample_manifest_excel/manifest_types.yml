@@ -623,8 +623,24 @@ long_read:
     - :sample_ebi_accession_number
     - :donor_id
     - :genome_size
-    - :saphyr
-    - :pacbio
+    - :library_type_long_read
+long_read_plate:
+  heading: "Long Read Plate"
+  asset_type: "plate"
+  columns:
+    - :sanger_plate_id
+    - :well
+    - :sanger_sample_id
+    - :supplier_name
+    - :volume
+    - :concentration
+    - :sample_public_name
+    - :sample_taxon_id
+    - :sample_common_name
+    - :sample_ebi_accession_number
+    - :donor_id
+    - :genome_size
+    - :library_type_long_read
 heron:
   heading: "Heron"
   asset_type: "plate"

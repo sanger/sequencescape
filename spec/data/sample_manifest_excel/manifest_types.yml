@@ -573,8 +573,7 @@ long_read:
     - :sample_ebi_accession_number
     - :donor_id
     - :genome_size
-    - :saphyr
-    - :pacbio
+    - :library_type
 heron:
   heading: "Heron"
   asset_type: "plate"
