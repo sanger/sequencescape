@@ -52,8 +52,6 @@ module Request::SampleCompoundAliquotTransfer
       raise "#{DUPLICATE_TAG_DEPTH_ERROR_MSG}: #{samples.map(&:name)}"
     end
 
-    raise MULTIPLE_STUDIES_ERROR_MSG if _studies.count > 1
-
     compound_sample = _create_compound_sample(_default_compound_study, samples)
 
     _add_aliquot(compound_sample, source_aliquots)
@@ -108,13 +106,28 @@ module Request::SampleCompoundAliquotTransfer
   end
 
   # Default study that the new compound sample will use
+  # Uses the one from the request if it's present,
+  # otherwise, the one from the source aliquots if it's consistent.
   def _default_compound_study
-    _studies.first
+    _initial_study ||
+      begin
+        raise MULTIPLE_STUDIES_ERROR_MSG if _studies.count > 1
+
+        _studies.first
+      end
+  end
+
+  def _initial_study
+    return nil unless initial_study_id
+
+    Study.find(initial_study_id)
   end
 
   # Default project that the new compound sample will use
+  # Uses the one from the request if it's present,
+  # otherwise, one grabbed from a source aliquot.
   def _default_compound_project_id
-    asset.aliquots.first.project_id
+    initial_project_id || asset.aliquots.first.project_id
   end
 
   # Default library type value

@@ -6,12 +6,15 @@ require 'rails_helper'
 # sequencing request start from all the samples at source of the request
 RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
   let(:samples) { create_list :sample, 2 }
-  let(:study) { create :study, samples: samples }
+  let(:study1) { create :study }
+  let(:study2) { create :study }
   let(:project) { create :project }
   let(:destination) { create :receptacle }
   let(:source) { create :receptacle, aliquots: [aliquot1, aliquot2] }
   let(:library_tube) { create :library_tube, receptacles: [source] }
-  let(:sequencing_request) { create(:sequencing_request, asset: source, target_asset: destination) }
+  let(:sequencing_request) do
+    create(:sequencing_request, asset: source, target_asset: destination, initial_study_id: study1.id)
+  end
   let(:tags) { create_list :tag, 3 }
 
   describe '#compound_samples_needed?' do
@@ -54,7 +57,7 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
              tag_id: tags[0].id,
              tag2_id: tags[1].id,
              tag_depth: 1,
-             study: study,
+             study: study1,
              project: project,
              library_type: 'Standard',
              library_id: 54
@@ -65,7 +68,7 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
              tag_id: tags[0].id,
              tag2_id: tags[1].id,
              tag_depth: 2,
-             study: study,
+             study: study1,
              project: project,
              library_type: 'Standard',
              library_id: 54
@@ -76,7 +79,7 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
       sequencing_request.transfer_aliquots_into_compound_sample_aliquots
       expect(sequencing_request.target_asset.aliquots.count).to eq(1)
       expect(sequencing_request.target_asset.aliquots.first.library_type).to eq('Standard')
-      expect(sequencing_request.target_asset.aliquots.first.study).to eq(study)
+      expect(sequencing_request.target_asset.aliquots.first.study).to eq(study1)
       expect(sequencing_request.target_asset.aliquots.first.project).to eq(project)
       expect(sequencing_request.target_asset.aliquots.first.library_id).to eq(54)
       expect(sequencing_request.target_asset.samples.first.component_samples.order(:id)).to eq(samples.sort)
@@ -94,17 +97,33 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
       end
     end
 
-    # If the component samples are under different studies, this is a potential data governance issue
-    # since the study controls data access. Error in this case.
-    context 'with conflicting study_ids' do
-      let(:study2) { create :study }
+    context 'with a different study specified on the sequencing request to on the source aliquots' do
+      before { sequencing_request.update!(initial_study_id: study2.id) }
 
-      before { aliquot1.update!(study: study2) }
+      it 'uses the study from the request' do
+        sequencing_request.transfer_aliquots_into_compound_sample_aliquots
+        expect(sequencing_request.target_asset.aliquots.first.study).to eq(study2)
+      end
+    end
 
-      it 'throws an exception' do
-        expect { sequencing_request.transfer_aliquots_into_compound_sample_aliquots }.to raise_error(
-          Request::SampleCompoundAliquotTransfer::MULTIPLE_STUDIES_ERROR_MSG
-        )
+    context 'with no study specified on the sequencing request' do
+      before { sequencing_request.update!(initial_study_id: nil) }
+
+      it 'uses the study from the source aliquots' do
+        sequencing_request.transfer_aliquots_into_compound_sample_aliquots
+        expect(sequencing_request.target_asset.aliquots.first.study).to eq(study1)
+      end
+
+      # If the component samples are under different studies, this is a potential data governance issue
+      # since the study controls data access. Error in this case.
+      context 'with conflicting study_ids' do
+        before { aliquot1.update!(study: study2) }
+
+        it 'throws an exception' do
+          expect { sequencing_request.transfer_aliquots_into_compound_sample_aliquots }.to raise_error(
+            Request::SampleCompoundAliquotTransfer::MULTIPLE_STUDIES_ERROR_MSG
+          )
+        end
       end
     end
   end
