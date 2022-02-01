@@ -102,18 +102,12 @@ module Request::SampleCompoundAliquotTransfer
   # Uses the one from the request if it's present,
   # otherwise, the one from the source aliquots if it's consistent.
   def _default_compound_study(source_aliquots)
-    _initial_study ||
+    initial_study ||
       begin
         raise MULTIPLE_STUDIES_ERROR_MSG if _studies(source_aliquots).count > 1
 
         _studies(source_aliquots).first
       end
-  end
-
-  def _initial_study
-    return nil unless initial_study_id
-
-    Study.find(initial_study_id)
   end
 
   def _studies(source_aliquots)
