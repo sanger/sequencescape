@@ -43,6 +43,14 @@ module Request::SampleCompoundAliquotTransfer
 
   private
 
+  def _any_aliquots_share_tag_combination?
+    _aliquots_by_tags_combination.any? { |_tags_combo, aliquot_list| aliquot_list.size > 1 }
+  end
+
+  def _aliquots_by_tags_combination
+    asset.aliquots.group_by(&:tags_combination)
+  end
+
   def _transfer_into_compound_sample_aliquot(source_aliquots)
     samples = source_aliquots.map(&:sample)
 
@@ -55,6 +63,15 @@ module Request::SampleCompoundAliquotTransfer
     compound_sample = _create_compound_sample(_default_compound_study, samples)
 
     _add_aliquot(compound_sample, source_aliquots)
+  end
+
+  # Private method to generate a compound sample in a study from a list of
+  # component samples
+  def _create_compound_sample(study, component_samples)
+    study.samples.create!(
+      name: SangerSampleId.generate_sanger_sample_id!(study.abbreviation),
+      component_samples: component_samples
+    )
   end
 
   def _add_aliquot(sample, source_aliquots)
@@ -76,33 +93,9 @@ module Request::SampleCompoundAliquotTransfer
     aliquot.library_id = _copy_library_id(source_aliquots)
   end
 
-  # If the library_id is the same on all source aliquots, we can confidently transfer it to the target aliquot
-  # How the library_id should be set if the source aliquots have different library_ids is not defined
-  # Therefore, set it to nil for now, until we have a real requirement
-  def _copy_library_id(source_aliquots)
-    library_ids = source_aliquots.map(&:library_id).uniq
-    library_ids.size == 1 ? library_ids.first : nil
-  end
-
-  def _any_aliquots_share_tag_combination?
-    _aliquots_by_tags_combination.any? { |_tags_combo, aliquot_list| aliquot_list.size > 1 }
-  end
-
-  def _aliquots_by_tags_combination
-    asset.aliquots.group_by(&:tags_combination)
-  end
-
-  def _studies
-    @studies ||= asset.aliquots.map(&:study).uniq
-  end
-
-  # Private method to generate a compound sample in a study from a list of
-  # component samples
-  def _create_compound_sample(study, component_samples)
-    study.samples.create!(
-      name: SangerSampleId.generate_sanger_sample_id!(study.abbreviation),
-      component_samples: component_samples
-    )
+  # Default library type value
+  def _default_library_type
+    asset.aliquots.first.library_type
   end
 
   # Default study that the new compound sample will use
@@ -123,6 +116,10 @@ module Request::SampleCompoundAliquotTransfer
     Study.find(initial_study_id)
   end
 
+  def _studies
+    @studies ||= asset.aliquots.map(&:study).uniq
+  end
+
   # Default project that the new compound sample will use
   # Uses the one from the request if it's present,
   # otherwise, one grabbed from a source aliquot.
@@ -130,8 +127,11 @@ module Request::SampleCompoundAliquotTransfer
     initial_project_id || asset.aliquots.first.project_id
   end
 
-  # Default library type value
-  def _default_library_type
-    asset.aliquots.first.library_type
+  # If the library_id is the same on all source aliquots, we can confidently transfer it to the target aliquot
+  # How the library_id should be set if the source aliquots have different library_ids is not defined
+  # Therefore, set it to nil for now, until we have a real requirement
+  def _copy_library_id(source_aliquots)
+    library_ids = source_aliquots.map(&:library_id).uniq
+    library_ids.size == 1 ? library_ids.first : nil
   end
 end
