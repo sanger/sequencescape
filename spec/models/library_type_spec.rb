@@ -45,7 +45,7 @@ RSpec.describe LibraryType do
     end
   end
 
-  describe '::long_read' do
+  describe '::from_record_loaders' do
     let(:record_loader) { RecordLoader::LibraryTypeLoader.new(files: ['001_long_read']) }
     let(:expected_library_types) do
       %w[
@@ -65,7 +65,7 @@ RSpec.describe LibraryType do
     end
 
     it 'returns long_read library types only' do
-      expect(described_class.long_read.pluck(:name)).to eq(expected_library_types)
+      expect(described_class.from_record_loaders('001_long_read').pluck(:name)).to eq(expected_library_types)
     end
   end
 end

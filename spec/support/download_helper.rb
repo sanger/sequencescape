@@ -11,7 +11,9 @@ module DownloadHelpers
 
   def self.downloaded_file(file, timeout: TIMEOUT)
     wait_for_download(file, timeout)
-    File.read(path_to(file)).tap { |_| remove_downloads }
+    File.read(path_to(file))
+  ensure
+    remove_downloads
   end
 
   def self.path_to(file)

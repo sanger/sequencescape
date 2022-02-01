@@ -8,7 +8,13 @@ describe Submission::SubmissionCreator do
     let(:creator) { described_class.new(user, template_id: template.id) }
 
     context 'a full template' do
-      let(:template) { create :libray_and_sequencing_template }
+      let(:library_type) { create :library_type }
+      let(:library_creation_request_type) do
+        create(:library_request_type, :with_library_types, library_type: library_type)
+      end
+      let(:template) do
+        create :submission_template, request_types: [library_creation_request_type, create(:sequencing_request_type)]
+      end
 
       it 'finds the appropriate order fields' do
         expect(creator.order_fields.length).to eq 5
@@ -24,11 +30,11 @@ describe Submission::SubmissionCreator do
         )
         expect(creator.order_fields).to include(
           FieldInfo.new(
-            default_value: 'Standard',
+            default_value: library_type.name,
             display_name: 'Library type',
             key: :library_type,
             kind: 'Selection',
-            selection: ['Standard']
+            selection: [library_type.name]
           )
         )
         expect(creator.order_fields).to include(
