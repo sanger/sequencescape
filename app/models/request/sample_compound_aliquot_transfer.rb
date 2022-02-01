@@ -60,7 +60,7 @@ module Request::SampleCompoundAliquotTransfer
       raise "#{DUPLICATE_TAG_DEPTH_ERROR_MSG}: #{samples.map(&:name)}"
     end
 
-    compound_sample = _create_compound_sample(_default_compound_study, samples)
+    compound_sample = _create_compound_sample(_default_compound_study(source_aliquots), samples)
 
     _add_aliquot(compound_sample, source_aliquots)
   end
@@ -87,26 +87,26 @@ module Request::SampleCompoundAliquotTransfer
   def _set_aliquot_attributes(aliquot, source_aliquots)
     aliquot.tag_id = source_aliquots.first.tag_id
     aliquot.tag2_id = source_aliquots.first.tag2_id
-    aliquot.library_type = _default_library_type
-    aliquot.study_id = _default_compound_study.id
-    aliquot.project_id = _default_compound_project_id
+    aliquot.library_type = _default_library_type(source_aliquots)
+    aliquot.study_id = _default_compound_study(source_aliquots).id
+    aliquot.project_id = _default_compound_project_id(source_aliquots)
     aliquot.library_id = _copy_library_id(source_aliquots)
   end
 
   # Default library type value
-  def _default_library_type
-    asset.aliquots.first.library_type
+  def _default_library_type(source_aliquots)
+    source_aliquots.first.library_type
   end
 
   # Default study that the new compound sample will use
   # Uses the one from the request if it's present,
   # otherwise, the one from the source aliquots if it's consistent.
-  def _default_compound_study
+  def _default_compound_study(source_aliquots)
     _initial_study ||
       begin
-        raise MULTIPLE_STUDIES_ERROR_MSG if _studies.count > 1
+        raise MULTIPLE_STUDIES_ERROR_MSG if _studies(source_aliquots).count > 1
 
-        _studies.first
+        _studies(source_aliquots).first
       end
   end
 
@@ -116,15 +116,15 @@ module Request::SampleCompoundAliquotTransfer
     Study.find(initial_study_id)
   end
 
-  def _studies
-    @studies ||= asset.aliquots.map(&:study).uniq
+  def _studies(source_aliquots)
+    source_aliquots.map(&:study).uniq
   end
 
   # Default project that the new compound sample will use
   # Uses the one from the request if it's present,
   # otherwise, one grabbed from a source aliquot.
-  def _default_compound_project_id
-    initial_project_id || asset.aliquots.first.project_id
+  def _default_compound_project_id(source_aliquots)
+    initial_project_id || source_aliquots.first.project_id
   end
 
   # If the library_id is the same on all source aliquots, we can confidently transfer it to the target aliquot
