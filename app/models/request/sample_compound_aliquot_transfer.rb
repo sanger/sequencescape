@@ -52,80 +52,42 @@ module Request::SampleCompoundAliquotTransfer
   end
 
   def _transfer_into_compound_sample_aliquot(source_aliquots)
-    samples = source_aliquots.map(&:sample)
+    compound_aliquot = CompoundAliquot.new(request: self, source_aliquots: source_aliquots)
 
-    # Check that the component samples in the compound sample will be able to be distinguished -
-    # this is represented by them all having a unique 'tag_depth'
-    if source_aliquots.pluck(:tag_depth).uniq.count != source_aliquots.size
-      raise "#{DUPLICATE_TAG_DEPTH_ERROR_MSG}: #{samples.map(&:name)}"
-    end
+    raise compound_aliquot.errors unless compound_aliquot.valid?
 
-    compound_sample = _create_compound_sample(_default_compound_study(source_aliquots), samples)
+    compound_sample = _create_compound_sample(compound_aliquot)
 
-    _add_aliquot(compound_sample, source_aliquots)
+    _add_aliquot(compound_sample, compound_aliquot)
   end
 
   # Private method to generate a compound sample in a study from a list of
   # component samples
-  def _create_compound_sample(study, component_samples)
+  def _create_compound_sample(compound_aliquot)
+    study = compound_aliquot.default_compound_study
+
     study.samples.create!(
       name: SangerSampleId.generate_sanger_sample_id!(study.abbreviation),
-      component_samples: component_samples
+      component_samples: compound_aliquot.component_samples
     )
   end
 
-  def _add_aliquot(sample, source_aliquots)
+  def _add_aliquot(sample, compound_aliquot)
     target_asset
       .aliquots
       .create(sample: sample)
       .tap do |aliquot|
-        _set_aliquot_attributes(aliquot, source_aliquots)
+        _set_aliquot_attributes(aliquot, compound_aliquot)
         aliquot.save
       end
   end
 
-  def _set_aliquot_attributes(aliquot, source_aliquots)
-    aliquot.tag_id = source_aliquots.first.tag_id
-    aliquot.tag2_id = source_aliquots.first.tag2_id
-    aliquot.library_type = _default_library_type(source_aliquots)
-    aliquot.study_id = _default_compound_study(source_aliquots).id
-    aliquot.project_id = _default_compound_project_id(source_aliquots)
-    aliquot.library_id = _copy_library_id(source_aliquots)
-  end
-
-  # Default library type value
-  def _default_library_type(source_aliquots)
-    source_aliquots.first.library_type
-  end
-
-  # Default study that the new compound sample will use
-  # Uses the one from the request if it's present,
-  # otherwise, the one from the source aliquots if it's consistent.
-  def _default_compound_study(source_aliquots)
-    initial_study ||
-      begin
-        raise MULTIPLE_STUDIES_ERROR_MSG if _studies(source_aliquots).count > 1
-
-        _studies(source_aliquots).first
-      end
-  end
-
-  def _studies(source_aliquots)
-    source_aliquots.map(&:study).uniq
-  end
-
-  # Default project that the new compound sample will use
-  # Uses the one from the request if it's present,
-  # otherwise, one grabbed from a source aliquot.
-  def _default_compound_project_id(source_aliquots)
-    initial_project_id || source_aliquots.first.project_id
-  end
-
-  # If the library_id is the same on all source aliquots, we can confidently transfer it to the target aliquot
-  # How the library_id should be set if the source aliquots have different library_ids is not defined
-  # Therefore, set it to nil for now, until we have a real requirement
-  def _copy_library_id(source_aliquots)
-    library_ids = source_aliquots.map(&:library_id).uniq
-    library_ids.size == 1 ? library_ids.first : nil
+  def _set_aliquot_attributes(aliquot, compound_aliquot)
+    aliquot.tag_id = compound_aliquot.tag_id
+    aliquot.tag2_id = compound_aliquot.tag2_id
+    aliquot.library_type = compound_aliquot.default_library_type
+    aliquot.study_id = compound_aliquot.default_compound_study.id
+    aliquot.project_id = compound_aliquot.default_compound_project_id
+    aliquot.library_id = compound_aliquot.copy_library_id
   end
 end
