@@ -126,5 +126,52 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
         end
       end
     end
+
+    context 'when there are two compound samples' do
+      let(:samples_extra) { create_list :sample, 2 }
+      let(:aliquot3) do
+        create :aliquot,
+               sample: samples_extra[0],
+               tag_id: tags_extra[0].id,
+               tag2_id: tags_extra[1].id,
+               tag_depth: 1,
+               study: study2,
+               project: project2,
+               library_type: 'Standard',
+               library_id: 55
+      end
+      let(:aliquot4) do
+        create :aliquot,
+               sample: samples_extra[1],
+               tag_id: tags_extra[0].id,
+               tag2_id: tags_extra[1].id,
+               tag_depth: 2,
+               study: study2,
+               project: project2,
+               library_type: 'Standard',
+               library_id: 55
+      end
+      let(:tags_extra) { create_list :tag, 2 }
+      let(:project2) { create :project }
+      let(:source) { create :receptacle, aliquots: [aliquot1, aliquot2, aliquot3, aliquot4] }
+
+      before { sequencing_request.update!(initial_study_id: nil) }
+
+      it 'creates 2 compound samples and transfers an aliquot of each' do
+        expect(sequencing_request.target_asset.aliquots.count).to eq(0)
+        sequencing_request.transfer_aliquots_into_compound_sample_aliquots
+        expect(sequencing_request.target_asset.aliquots.count).to eq(2)
+        expect(sequencing_request.target_asset.aliquots[0].library_type).to eq('Standard')
+        expect(sequencing_request.target_asset.aliquots[1].library_type).to eq('Standard')
+        expect(sequencing_request.target_asset.aliquots[0].study).to eq(study1)
+        expect(sequencing_request.target_asset.aliquots[1].study).to eq(study2)
+        expect(sequencing_request.target_asset.aliquots[0].project).to eq(project)
+        expect(sequencing_request.target_asset.aliquots[1].project).to eq(project2)
+        expect(sequencing_request.target_asset.aliquots[0].library_id).to eq(54)
+        expect(sequencing_request.target_asset.aliquots[1].library_id).to eq(55)
+        expect(sequencing_request.target_asset.samples[0].component_samples.order(:id)).to eq(samples.sort)
+        expect(sequencing_request.target_asset.samples[1].component_samples.order(:id)).to eq(samples_extra.sort)
+      end
+    end
   end
 end
