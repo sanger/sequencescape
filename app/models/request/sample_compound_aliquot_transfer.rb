@@ -56,27 +56,8 @@ module Request::SampleCompoundAliquotTransfer
 
     raise compound_aliquot.errors unless compound_aliquot.valid?
 
-    compound_sample = compound_aliquot.create_compound_sample
+    compound_aliquot.create_compound_sample
 
-    _add_aliquot(compound_sample, compound_aliquot)
-  end
-
-  def _add_aliquot(sample, compound_aliquot)
-    target_asset
-      .aliquots
-      .create(sample: sample)
-      .tap do |aliquot|
-        _set_aliquot_attributes(aliquot, compound_aliquot)
-        aliquot.save
-      end
-  end
-
-  def _set_aliquot_attributes(aliquot, compound_aliquot)
-    aliquot.tag_id = compound_aliquot.tag_id
-    aliquot.tag2_id = compound_aliquot.tag2_id
-    aliquot.library_type = compound_aliquot.default_library_type
-    aliquot.study_id = compound_aliquot.default_compound_study.id
-    aliquot.project_id = compound_aliquot.default_compound_project_id
-    aliquot.library_id = compound_aliquot.copy_library_id
+    target_asset.aliquots.create(compound_aliquot.aliquot_attributes)
   end
 end

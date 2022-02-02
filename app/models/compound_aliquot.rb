@@ -9,7 +9,7 @@ class CompoundAliquot # rubocop:todo Style/Documentation
 
   attr_accessor :request, :source_aliquots
 
-  attr_reader :component_samples
+  attr_reader :component_samples, :compound_sample
 
   validate :tag_depth_is_unique
 
@@ -33,10 +33,23 @@ class CompoundAliquot # rubocop:todo Style/Documentation
 
   # Generates the compound sample, under the default study, using the component samples
   def create_compound_sample
-    default_compound_study.samples.create!(
-      name: SangerSampleId.generate_sanger_sample_id!(default_compound_study.abbreviation),
-      component_samples: component_samples
-    )
+    @compound_sample =
+      default_compound_study.samples.create!(
+        name: SangerSampleId.generate_sanger_sample_id!(default_compound_study.abbreviation),
+        component_samples: component_samples
+      )
+  end
+
+  def aliquot_attributes
+    {
+      tag_id: tag_id,
+      tag2_id: tag2_id,
+      library_type: default_library_type,
+      study_id: default_compound_study.id,
+      project_id: default_compound_project_id,
+      library_id: copy_library_id,
+      sample: compound_sample
+    }
   end
 
   # Default study that the new compound sample will use
