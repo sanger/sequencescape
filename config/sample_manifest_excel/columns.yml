@@ -179,6 +179,27 @@ library_type:
   conditional_formattings:
     empty_cell:
     is_error:
+library_type_long_read:
+  name: library_type
+  heading: LIBRARY TYPE
+  unlocked: true
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: false
+      showDropDown: false
+      showInputMessage: true
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Library type"
+      error: "You must enter a Library type from the list provided."
+      promptTitle: "Library type"
+      prompt: "Provide a library type from the approved list"
+    range_name: :library_type_long_read
+  conditional_formattings:
+    empty_cell:
+    is_error:
 reference_genome:
   heading: REFERENCE GENOME
   unlocked: true

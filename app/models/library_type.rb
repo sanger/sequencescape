@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require './lib/record_loader/library_type_loader'
+
 # A library type is an identifier which describes how a library has been produced
 # Whereas {RequestType} is largely internal to sequencescape, a library type directly
 # reflects the science, and thus has a many to many relationship with request type.
