@@ -31,6 +31,14 @@ class CompoundAliquot # rubocop:todo Style/Documentation
     source_aliquots.first.library_type
   end
 
+  # Generates the compound sample, under the default study, using the component samples
+  def create_compound_sample
+    default_compound_study.samples.create!(
+      name: SangerSampleId.generate_sanger_sample_id!(default_compound_study.abbreviation),
+      component_samples: component_samples
+    )
+  end
+
   # Default study that the new compound sample will use
   # Uses the one from the request if it's present,
   # otherwise, the one from the source aliquots if it's consistent.

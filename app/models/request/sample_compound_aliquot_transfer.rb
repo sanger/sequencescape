@@ -56,20 +56,9 @@ module Request::SampleCompoundAliquotTransfer
 
     raise compound_aliquot.errors unless compound_aliquot.valid?
 
-    compound_sample = _create_compound_sample(compound_aliquot)
+    compound_sample = compound_aliquot.create_compound_sample
 
     _add_aliquot(compound_sample, compound_aliquot)
-  end
-
-  # Private method to generate a compound sample in a study from a list of
-  # component samples
-  def _create_compound_sample(compound_aliquot)
-    study = compound_aliquot.default_compound_study
-
-    study.samples.create!(
-      name: SangerSampleId.generate_sanger_sample_id!(study.abbreviation),
-      component_samples: compound_aliquot.component_samples
-    )
   end
 
   def _add_aliquot(sample, compound_aliquot)
