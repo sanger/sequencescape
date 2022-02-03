@@ -2,7 +2,7 @@
 <%= page_title 'Faculty Sponsor', 'Edit' %>
 
 <%= form_for([:admin,@faculty_sponsor]) do |f| %>
-  <%= f.error_messages %>
+  <%= error_messages_for(f.object) %>
 
   <p>
     <%= f.label :name %><br />

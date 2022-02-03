@@ -4,7 +4,7 @@ require_dependency 'attributable'
 module Metadata # rubocop:todo Style/Documentation
   # @!macro [attach] has_metadata
   #   @!parse class Metadata < Metadata::Base; end
-  def has_metadata(options = {}, &block)
+  def has_metadata(**options, &block)
     as_class = options.delete(:as) || self
     table_name = options.delete(:table_name) || "#{as_class.name.demodulize.underscore}_metadata"
     construct_metadata_class(table_name, as_class, &block)
@@ -30,7 +30,8 @@ module Metadata # rubocop:todo Style/Documentation
       inverse_of: :owner,
       foreign_key: "#{as_name}_id"
     }
-    has_one association_name, default_options.merge(options) # rubocop:todo Rails/HasManyOrHasOneDependent
+
+    has_one(association_name, **default_options.merge(options))
     accepts_nested_attributes_for(association_name, update_only: true)
 
     unless respond_to?(:"include_#{association_name}")

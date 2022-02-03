@@ -2,7 +2,7 @@
 <div class="page-header"><h1>New well</h1></div>
 
 <%= form_for(@well) do |f| %>
-  <%= f.error_messages %>
+  <%= error_messages_for(f.object) %>
   <p>
     <%= f.submit "Create" %>
   </p>

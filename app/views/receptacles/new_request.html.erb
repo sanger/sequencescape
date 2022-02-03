@@ -2,7 +2,7 @@
 <%= page_title "New request", "#{@asset.label} - #{@asset.display_name}" %>
 <% can_edit = can? :edit_additional, Request %>
 <%= form_for(@asset, url: create_request_receptacle_url(@asset), html: {method: :post}) do |f| %>
-  <%= f.error_messages %>
+  <%= error_messages_for(f.object) %>
 
   <fieldset id="details">
     <h3>Submission Options</h3>

@@ -2,7 +2,7 @@
 <%= page_title 'Bait Library', 'Edit' %>
 
 <%= form_for([:admin,@bait_library]) do |f| %>
-  <%= f.error_messages %>
+  <%= error_messages_for(f.object) %>
 
   <%= render partial: "edit_form", locals: {f: f } %>
   <p>

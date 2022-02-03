@@ -2,7 +2,7 @@
 <div class="page-header"><h1>Editing asset group</h1></div>
 
 <%= form_for [@study,@asset_group], method: :put do |f| %>
-  <%= f.error_messages %>
+  <%= error_messages_for(f.object) %>
 
   <p>
     Name: <%= f.text_field :name %>

@@ -2,7 +2,7 @@
 <div class="page-header"><h1>New Tag Group</h1></div>
 
 <%= form_for(@form_object) do |f| %>
-  <%= f.error_messages %>
+  <%= error_messages_for(f.object) %>
   <div class='form-group'>
     <%= f.label :name, 'Tag Group name' %><br>
     <%= f.text_field :name, class: 'form-control' %>

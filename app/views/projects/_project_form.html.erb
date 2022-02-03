@@ -1,6 +1,6 @@
 
 <%= form_for(@project) do |f| %>
-  <%= f.error_messages %>
+  <%= error_messages_for(f.object) %>
 
   <%= form_collection(f.label(:name, nil, class: 'required'), f.text_field(:name, class: 'form-control' ) ) %>
 

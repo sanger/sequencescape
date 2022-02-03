@@ -7,7 +7,7 @@
 <% end %>
 
 <%= form_for([:admin, @primer_panel]) do |f| %>
-  <%= f.error_messages %>
+  <%= error_messages_for(f.object) %>
 
   <%= render partial: "edit_form", locals: {f: f } %>
   <p>

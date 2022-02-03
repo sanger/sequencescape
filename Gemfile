@@ -39,9 +39,6 @@ group :default do
   # Will paginate clashes awkwardly with bootstrap
   gem 'will_paginate-bootstrap'
 
-  # Provides eg. error_messages_for previously in rails 2, now deprecated.
-  gem 'dynamic_form'
-
   gem 'daemons'
   gem 'puma'
 

@@ -2,7 +2,7 @@
 <div class="page-header"><h1>New asset group</h1></div>
 
 <%= form_for @asset_group,  url: study_asset_groups_path(@study) do |f| %>
-  <%= f.error_messages %>
+  <%= error_messages_for(f.object) %>
 
   <p><%= f.label(:name, 'Name') %>: <%= f.text_field :name %></p>
   <p><%= f.submit "Create" %></p>

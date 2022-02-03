@@ -179,6 +179,20 @@ module ApplicationHelper # rubocop:todo Style/Documentation
     end
   end
 
+  def error_messages_for(object) # rubocop:todo Metrics/AbcSize
+    error_count = object.errors.size
+    return if error_count.zero?
+
+    model_name = object.model_name.human
+    tag.div class: 'errorExplanation' do
+      concat icon('fas', 'exclamation-circle', "Could not save #{model_name}")
+      concat tag.p "#{pluralize(error_count, 'error')} prevented the record saving", class: 'lead'
+      concat tag.ul do
+        object.errors.full_messages.each { |error| concat tag.li error }
+      end
+    end
+  end
+
   # <li class="nav-item">
   #   <a class="nav-link <active>" id="name-tab" data-toggle="tab" href="#name"
   #    role="tab" aria-controls="name" aria-selected="true">name</a>

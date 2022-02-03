@@ -152,6 +152,6 @@ class Metadata::FormBuilder < Metadata::BuilderBase # rubocop:todo Style/Documen
 
     div_options = { id: field.to_s }
     div_options[:class] = 'field_with_errors' if @object.errors[field].present?
-    tag.fieldset(content, div_options)
+    tag.fieldset(content, **div_options)
   end
 end
