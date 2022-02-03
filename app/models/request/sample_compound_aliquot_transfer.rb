@@ -21,37 +21,33 @@
 # Assumptions:
 #  - This module will be included in a Request class
 module Request::SampleCompoundAliquotTransfer
-  DUPLICATE_TAG_DEPTH_ERROR_MSG = "Cannot create compound sample from following samples due to duplicate 'tag depth'"
-  MULTIPLE_STUDIES_ERROR_MSG =
-    'Cannot create compound sample due to the component samples being under different studies.'
-
   # Indicates if a compound sample creation is needed, by checking
   # if any of the source aliquots share the same tag1 and tag2
   def compound_samples_needed?
     return false if asset.aliquots.count == 1
 
-    _any_aliquots_share_tag_combination?
+    any_aliquots_share_tag_combination?
   end
 
   # Groups the source aliquots by their tag1 and tag2 combination
   # For each of these groups, create a compound sample.
   def transfer_aliquots_into_compound_sample_aliquots
-    _aliquots_by_tags_combination.each do |_tags_combo, aliquot_list|
-      _transfer_into_compound_sample_aliquot(aliquot_list)
+    aliquots_by_tags_combination.each do |_tags_combo, aliquot_list|
+      transfer_into_compound_sample_aliquot(aliquot_list)
     end
   end
 
   private
 
-  def _any_aliquots_share_tag_combination?
-    _aliquots_by_tags_combination.any? { |_tags_combo, aliquot_list| aliquot_list.size > 1 }
+  def any_aliquots_share_tag_combination?
+    aliquots_by_tags_combination.any? { |_tags_combo, aliquot_list| aliquot_list.size > 1 }
   end
 
-  def _aliquots_by_tags_combination
+  def aliquots_by_tags_combination
     asset.aliquots.group_by(&:tags_combination)
   end
 
-  def _transfer_into_compound_sample_aliquot(source_aliquots)
+  def transfer_into_compound_sample_aliquot(source_aliquots)
     compound_aliquot = CompoundAliquot.new(request: self, source_aliquots: source_aliquots)
 
     raise compound_aliquot.errors unless compound_aliquot.valid?

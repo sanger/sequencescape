@@ -121,7 +121,7 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
 
         it 'throws an exception' do
           expect { sequencing_request.transfer_aliquots_into_compound_sample_aliquots }.to raise_error(
-            Request::SampleCompoundAliquotTransfer::MULTIPLE_STUDIES_ERROR_MSG
+            CompoundAliquot::MULTIPLE_STUDIES_ERROR_MSG
           )
         end
       end

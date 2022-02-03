@@ -1,6 +1,17 @@
 # frozen_string_literal: true
 
-class CompoundAliquot # rubocop:todo Style/Documentation
+# Factory class for creating Aliquots with compound samples in them.
+# At time of writing, called from Request::SampleCompoundAliquotTransfer, in the context of a Request.
+#
+# The inputs are:
+#   request           A Request for transferring source_aliquots into a target receptacle.
+#                     At time of writing, only used for a SequencingRequest, from a multiplex tube into a lane.
+#   source_aliquots   A list of Aliquots that should be transferred into a single Aliquot in a target Receptacle,
+#                     that containes  contain a single compound sample.
+#                     The list of component samples is derived from source_aliquots.
+#                     Some attributes are transferred from the source aliquots onto the compound aliquot.
+#
+class CompoundAliquot
   include ActiveModel::Model
 
   DUPLICATE_TAG_DEPTH_ERROR_MSG = "Cannot create compound sample from following samples due to duplicate 'tag depth'"
