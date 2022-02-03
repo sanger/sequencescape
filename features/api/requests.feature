@@ -19,7 +19,7 @@ And I have a "full" authorised user with the key "cucumber"
 
     Given I have an active study called "Testing the requests API"
     And the UUID for the study "Testing the requests API" is "11111111-2222-3333-4444-000000000000"
-    And I have a library tube called "tube_1"
+    And I have an empty library tube called "tube_1"
     And the UUID for the library tube "tube_1" is "11111111-3333-4444-5555-666666666666"
 
   @paging

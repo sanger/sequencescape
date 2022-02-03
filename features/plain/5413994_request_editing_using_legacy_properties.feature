@@ -5,7 +5,7 @@ Feature: Editing a request as an administrator
     Given I am an "administrator" user logged in as "John Smith"
 
     Given I have an active study called "Testing editing a request"
-    And I have a library tube called "tube_1"
+    And I have an empty library tube called "tube_1"
     And I have already made a request for library tube "tube_1" within the study "Testing editing a request"
 
   Scenario: Editing a request
