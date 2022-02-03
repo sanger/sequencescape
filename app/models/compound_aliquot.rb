@@ -58,7 +58,7 @@ class CompoundAliquot
       library_type: default_library_type,
       study_id: default_compound_study.id,
       project_id: default_compound_project_id,
-      library_id: copy_library_id,
+      library_id: default_library_id,
       sample: compound_sample
     }
   end
@@ -89,7 +89,7 @@ class CompoundAliquot
   # If the library_id is the same on all source aliquots, we can confidently transfer it to the target aliquot
   # How the library_id should be set if the source aliquots have different library_ids is not defined
   # Therefore, set it to nil for now, until we have a real requirement
-  def copy_library_id
+  def default_library_id
     library_ids = source_aliquots.map(&:library_id).uniq
     library_ids.size == 1 ? library_ids.first : nil
   end
