@@ -17,12 +17,16 @@ class CompoundAliquot
   DUPLICATE_TAG_DEPTH_ERROR_MSG = "Cannot create compound sample from following samples due to duplicate 'tag depth'"
   MULTIPLE_STUDIES_ERROR_MSG =
     'Cannot create compound sample due to the component samples being under different studies.'
+  MULTIPLE_PROJECTS_ERROR_MSG =
+    'Cannot create compound sample due to the component samples being under different projects.'
 
   attr_accessor :request, :source_aliquots
 
   attr_reader :component_samples, :compound_sample
 
   validate :tag_depth_is_unique
+  validate :source_aliquots_have_same_study
+  validate :source_aliquots_have_same_project
 
   def initialize(attributes)
     super
@@ -35,11 +39,19 @@ class CompoundAliquot
   def tag_depth_is_unique
     return unless source_aliquots.pluck(:tag_depth).uniq!
 
-    errors.add("#{DUPLICATE_TAG_DEPTH_ERROR_MSG}: #{component_samples.map(&:name)}")
+    errors.add(:base, "#{DUPLICATE_TAG_DEPTH_ERROR_MSG}: #{component_samples.map(&:name)}")
   end
 
-  def default_library_type
-    source_aliquots.first.library_type
+  def source_aliquots_have_same_study
+    return if request.initial_study || source_aliquots.map(&:study_id).uniq.count == 1
+
+    errors.add(:base, "#{MULTIPLE_STUDIES_ERROR_MSG}: #{component_samples.map(&:name)}")
+  end
+
+  def source_aliquots_have_same_project
+    return if request.initial_project || source_aliquots.map(&:project_id).uniq.count == 1
+
+    errors.add(:base, "#{MULTIPLE_PROJECTS_ERROR_MSG}: #{component_samples.map(&:name)}")
   end
 
   # Generates the compound sample, under the default study, using the component samples
@@ -63,37 +75,35 @@ class CompoundAliquot
     }
   end
 
-  # Default study that the new compound sample will use
-  # Uses the one from the request if it's present,
-  # otherwise, the one from the source aliquots if it's consistent.
+  # Study & Project:
+  # Use the one from the request if present,
+  # Otherwise use the one from the source aliquots if it's consistent
+  # Error if inconsistent (see validation)
   def default_compound_study
-    request.initial_study ||
-      begin
-        raise MULTIPLE_STUDIES_ERROR_MSG if studies.count > 1
-
-        studies.first
-      end
+    request.initial_study || source_aliquots.first.study
   end
 
-  def studies
-    source_aliquots.map(&:study).uniq
-  end
-
-  # Default project that the new compound sample will use
-  # Uses the one from the request if it's present,
-  # otherwise, one grabbed from a source aliquot.
   def default_compound_project_id
     request.initial_project_id || source_aliquots.first.project_id
   end
 
-  # If the library_id is the same on all source aliquots, we can confidently transfer it to the target aliquot
-  # How the library_id should be set if the source aliquots have different library_ids is not defined
-  # Therefore, set it to nil for now, until we have a real requirement
+  # Less dangerous attributes:
+  # Use the one from the source aliquots if it's consistent
+  # Otherwise, set it to nil for now, as the behaviour hasn't been specified if it's inconsistent
+  def default_library_type
+    library_types = source_aliquots.map(&:library_type).uniq
+    library_types.size == 1 ? library_types.first : nil
+  end
+
   def default_library_id
     library_ids = source_aliquots.map(&:library_id).uniq
     library_ids.size == 1 ? library_ids.first : nil
   end
 
+  # Tags:
+  # We can assume that the tags will be the same for all source aliquots,
+  # as that's essentially the definition of a compound sample - they all have the same
+  # tag1 and tag2 but different tag_depths.
   def tag_id
     source_aliquots.first.tag_id
   end

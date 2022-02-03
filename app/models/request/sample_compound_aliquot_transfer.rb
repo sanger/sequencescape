@@ -21,6 +21,9 @@
 # Assumptions:
 #  - This module will be included in a Request class
 module Request::SampleCompoundAliquotTransfer
+  class Error < StandardError
+  end
+
   # Indicates if a compound sample creation is needed, by checking
   # if any of the source aliquots share the same tag1 and tag2
   def compound_samples_needed?
@@ -49,8 +52,9 @@ module Request::SampleCompoundAliquotTransfer
 
   def transfer_into_compound_sample_aliquot(source_aliquots)
     compound_aliquot = CompoundAliquot.new(request: self, source_aliquots: source_aliquots)
-
-    raise compound_aliquot.errors unless compound_aliquot.valid?
+    unless compound_aliquot.valid?
+      raise Request::SampleCompoundAliquotTransfer::Error, compound_aliquot.errors.full_messages
+    end
 
     compound_aliquot.create_compound_sample
 
