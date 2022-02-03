@@ -10,14 +10,23 @@ import "jszip";
 
 import dt from "datatables.net-bs4";
 $.fn.DataTable = dt;
-import "datatables.net-buttons-bs4";
-import "datatables.net-buttons/js/buttons.colVis";
-import "datatables.net-buttons/js/buttons.html5";
-import "datatables.net-fixedcolumns-bs4";
-import "datatables.net-fixedheader-bs4";
-import "datatables.net-responsive-bs4";
-import "datatables.net-rowgroup-bs4";
-import "datatables.net-rowreorder-bs4";
+dt();
+import dtButtons from "datatables.net-buttons-bs4";
+dtButtons();
+import dtButtonsColVis from "datatables.net-buttons/js/buttons.colVis";
+dtButtonsColVis();
+import dtButtonsHtml5 from "datatables.net-buttons/js/buttons.html5";
+dtButtonsHtml5();
+import dtFixedColumn from "datatables.net-fixedcolumns-bs4";
+dtFixedColumn();
+import dtFixedHeader from "datatables.net-fixedheader-bs4";
+dtFixedHeader();
+import dtResponsive from "datatables.net-responsive-bs4";
+dtResponsive();
+import dtRowGroup from "datatables.net-rowgroup-bs4";
+dtRowGroup();
+import dtRowOrder from "datatables.net-rowreorder-bs4";
+dtRowOrder();
 
 // We won't import the CSS automatically, so do it here.
 // I couldn't import the non minified version here. While vite
@@ -32,5 +41,5 @@ import "datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css";
 import "datatables.net-rowreorder-bs4/css/rowReorder.bootstrap4.min.css";
 
 // Load individual datatables implementations
-import "./batchEdit";
 import "./tableSortable";
+import "./tableBatchEdit";

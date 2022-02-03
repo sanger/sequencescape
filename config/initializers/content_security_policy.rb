@@ -30,7 +30,7 @@ Rails.application.config.content_security_policy do |policy|
 
   #   policy.style_src   :self, :https
   # Allow @vite/client to hot reload style changes in development
-  policy.style_src(*policy.style_src, :unsafe_inline) if Rails.env.development?
+  policy.style_src(:self, :https, :unsafe_inline) if Rails.env.development?
 
   # Allow @vite/client to hot reload changes in development
   policy.connect_src(:self, "ws://#{ViteRuby.config.host_with_port}") if Rails.env.development?
@@ -41,6 +41,7 @@ end
 
 # If you are using UJS then enable automatic nonce generation
 Rails.application.config.content_security_policy_nonce_generator = ->(_request) { SecureRandom.base64(16) }
+Rails.application.config.content_security_policy_nonce_directives = %w[script-src]
 
 # Set the nonce only to specific directives
 # Rails.application.config.content_security_policy_nonce_directives = %w(script-src)
