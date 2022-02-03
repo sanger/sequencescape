@@ -33,7 +33,7 @@ class CompoundAliquot
   # Check that the component samples in the compound sample will be able to be distinguished -
   # this is represented by them all having a unique 'tag_depth'
   def tag_depth_is_unique
-    return unless source_aliquots.pluck(:tag_depth).uniq.count != source_aliquots.size
+    return unless source_aliquots.pluck(:tag_depth).uniq!
 
     errors.add("#{DUPLICATE_TAG_DEPTH_ERROR_MSG}: #{component_samples.map(&:name)}")
   end
