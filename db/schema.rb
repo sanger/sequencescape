@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_28_112324) do
+ActiveRecord::Schema.define(version: 2022_02_04_154227) do
 
   create_table "aliquot_indices", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "aliquot_id", null: false
@@ -1329,8 +1329,6 @@ ActiveRecord::Schema.define(version: 2022_01_28_112324) do
     t.datetime "updated_at"
     t.string "donor_id"
     t.integer "genome_size"
-    t.string "saphyr"
-    t.string "pacbio"
     t.datetime "date_of_consent_withdrawn"
     t.integer "user_id_of_consent_withdrawn"
     t.boolean "consent_withdrawn", default: false, null: false

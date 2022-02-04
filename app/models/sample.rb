@@ -141,8 +141,6 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     custom_attribute(:disease)
 
     custom_attribute(:genome_size)
-    custom_attribute(:saphyr)
-    custom_attribute(:pacbio)
 
     # Consent withdrawn
     custom_attribute(:consent_withdrawn)
