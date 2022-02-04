@@ -67,6 +67,10 @@ module Api
         _model.pooled_request&.pre_capture_pool_id
       end
 
+      def library_type
+        _model.respond_to?(:library_type) ? _model.library_type : nil
+      end
+
       # Class method overrides
     end
   end
