@@ -686,3 +686,11 @@ cardinal:
     - :sanger_sample_id
     - :supplier_name
     - :volume
+tube_controls:
+  heading: "Control tubes"
+  asset_type: "1dtube"
+  columns:
+    - :sanger_tube_id
+    - :sanger_sample_id
+    - :supplier_name
+    - :control_type
