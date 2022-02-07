@@ -38,7 +38,7 @@ class BroadcastEvent < ApplicationRecord
 
   # Returns a hash of all metadata
   def metadata
-    self.class.metadata_finders.map { |mf| mf.for(seed, self) }.to_h
+    self.class.metadata_finders.to_h { |mf| mf.for(seed, self) }
   end
 
   # Routing key generated for the broadcasted event.

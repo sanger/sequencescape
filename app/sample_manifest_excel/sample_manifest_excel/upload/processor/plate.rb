@@ -21,7 +21,7 @@ module SampleManifestExcel
         # Return the row of the first encountered barcode mismatch
         # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
         def duplicate_barcodes # rubocop:todo Metrics/CyclomaticComplexity
-          return nil, nil unless upload.respond_to?('rows')
+          return nil, nil unless upload.respond_to?(:rows)
 
           unique_bcs = {}
           unique_plates = {}

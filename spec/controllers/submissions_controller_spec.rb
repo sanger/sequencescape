@@ -141,7 +141,7 @@ RSpec.describe SubmissionsController, type: :controller do
 
       context 'with a more recent plate' do
         before do
-          @new_plate = FactoryBot.create :plate, plate_purpose: @plate.purpose
+          @new_plate = create :plate, plate_purpose: @plate.purpose
           @well = create :well, map: Map.find_by(description: 'A1'), plate: @new_plate
           create(:aliquot, sample: Sample.find_by(name: @samples.first), receptacle: @well)
           post(
@@ -238,7 +238,7 @@ RSpec.describe SubmissionsController, type: :controller do
 
     context 'by plate barcode with pools' do
       before do
-        @plate.wells.first.aliquots.create!(sample: FactoryBot.create(:sample), tag_id: Tag.first.id)
+        @plate.wells.first.aliquots.create!(sample: create(:sample), tag_id: Tag.first.id)
         post :create, params: plate_submission('DN123456P')
       end
 

@@ -40,10 +40,10 @@ class Core::Io::Json::GrammarTest < ActiveSupport::TestCase
       stream.expects(:block).with(:attribute_name).yields(nested_stream)
 
       children =
-        ['Child 1', 'Child 2'].map do |name|
+        ['Child 1', 'Child 2'].to_h do |name|
           child = mock(name).tap { |child| child.expects(:call).with(:object, :options, nested_stream) }
           [name, child]
-        end.to_h
+        end
 
       target = Core::Io::Json::Grammar::Node.new(:attribute_name, children)
       target.call(:object, :options, stream)
@@ -70,10 +70,10 @@ class Core::Io::Json::GrammarTest < ActiveSupport::TestCase
         options = { handled_by: @handler }
 
         children =
-          ['Child 1', 'Child 2'].map do |name|
+          ['Child 1', 'Child 2'].to_h do |name|
             child = mock(name).tap { |child| child.expects(:call).with(@object, options, nested_stream) }
             [name, child]
-          end.to_h
+          end
         target = Core::Io::Json::Grammar::Root.new(OpenStruct.new(json_root: :root_json), children) # rubocop:todo Style/OpenStructUse
         target.call(@object, options, stream)
       end
