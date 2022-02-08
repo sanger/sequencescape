@@ -179,6 +179,27 @@ library_type:
   conditional_formattings:
     empty_cell:
     is_error:
+library_type_long_read:
+  name: library_type
+  heading: LIBRARY TYPE
+  unlocked: true
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: false
+      showDropDown: false
+      showInputMessage: true
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Library type"
+      error: "You must enter a Library type from the list provided."
+      promptTitle: "Library type"
+      prompt: "Provide a library type from the approved list"
+    range_name: :library_type_long_read
+  conditional_formattings:
+    empty_cell:
+    is_error:
 reference_genome:
   heading: REFERENCE GENOME
   unlocked: true
@@ -790,46 +811,6 @@ genome_size:
     empty_cell:
     number_greater_than_zero:
     is_text:
-saphyr:
-  heading: SAPHYR?
-  unlocked: true
-  validation:
-    options:
-      type: :list
-      formula1: "$A$1:$A$2"
-      allowBlank: false
-      showDropDown: false
-      showInputMessage: true
-      promptTitle: "Will this sample be sequenced on Saphyr?"
-      prompt: "Please Enter Y or N."
-      showErrorMessage: true
-      errorStyle: :stop
-      errorTitle: "Will this sample be sequenced on Saphyr?"
-      error: "You must enter either Y or N."
-    range_name: :yes_no
-  conditional_formattings:
-    empty_cell:
-    is_error:
-pacbio:
-  heading: PACBIO?
-  unlocked: true
-  validation:
-    options:
-      type: :list
-      formula1: "$A$1:$A$2"
-      allowBlank: false
-      showDropDown: false
-      showInputMessage: true
-      promptTitle: "Will this sample be sequenced on Pacbio?"
-      prompt: "Please Enter Y or N."
-      showErrorMessage: true
-      errorStyle: :stop
-      errorTitle: "Will this sample be sequenced on Pacbio?"
-      error: "You must enter either Y or N."
-    range_name: :yes_no
-  conditional_formattings:
-    empty_cell:
-    is_error:
 primer_panel:
   heading: PRIMER PANEL
   unlocked: true

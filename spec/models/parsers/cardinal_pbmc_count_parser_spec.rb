@@ -16,9 +16,7 @@ require 'rails_helper'
 # DN871908M:H1	1029	1940000	8.37	74.00%	357	675000	2.35	1386	2610000	8.57
 
 def read_file(filename)
-  content = nil
-  File.open(filename, 'r') { |fd| content = fd.read }
-  content
+  File.read(filename)
 end
 
 RSpec.describe Parsers::CardinalPbmcCountParser, type: :model do
@@ -144,7 +142,7 @@ RSpec.describe Parsers::CardinalPbmcCountParser, type: :model do
       end
 
       it 'will create the qc results for well A1' do
-        well = plate.wells.find_by(map_id: 1)
+        well = plate.wells.located_at('A1').first
         qc_results = QcResult.where(asset_id: well.id)
 
         qc_result = qc_results.find_by(key: 'viability')
@@ -163,7 +161,7 @@ RSpec.describe Parsers::CardinalPbmcCountParser, type: :model do
       end
 
       it 'will create the qc results for well H1' do
-        well = plate.wells.find_by(map_id: 85)
+        well = plate.wells.located_at('H1').first
         qc_results = QcResult.where(asset_id: well.id)
 
         qc_result = qc_results.find_by(key: 'viability')

@@ -18,6 +18,7 @@ describe 'Bulk submission', js: false do
     create :asset_group, name: 'assetgroup123', study: study, asset_count: 2
     visit bulk_submissions_path
     expect(page).to have_content('Bulk Submission New')
+    create :library_type, name: 'Standard'
   end
 
   shared_examples 'bulk submission file upload' do

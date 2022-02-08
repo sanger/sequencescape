@@ -31,7 +31,8 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
 
     context 'without input_field_infos' do
       setup do
-        @test_request_typ_b = create :library_creation_request_type
+        @library_type = create :library_type
+        @test_request_typ_b = create :library_creation_request_type, :with_library_types, library_type: @library_type
         @test_request_type = create :sequencing_request_type
         @order.request_types = [@test_request_typ_b, @test_request_type]
         @order.request_type_ids_list = [[@test_request_typ_b.id], [@test_request_type.id]]
@@ -41,8 +42,8 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
         assert_equal 6, @order.input_field_infos.size
         assert_equal [37, 54, 76, 108], field('Read length').selection
         assert_equal 54, field('Read length').default_value
-        assert_equal ['Standard'], field('Library type').selection
-        assert_equal 'Standard', field('Library type').default_value
+        assert_equal [@library_type.name], field('Library type').selection
+        assert_equal @library_type.name, field('Library type').default_value
       end
     end
   end
