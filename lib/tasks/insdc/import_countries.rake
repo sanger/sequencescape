@@ -19,15 +19,15 @@ INSDC_COUNTRIES_PRIORITIES = {
 namespace :insdc do
   namespace :countries do
     desc 'Download the sample sheet with the accession number specified by [sample_checklist] ' \
-           "(#{DEFAULTS[:sample_checklist]} by default)"
-    task :download, %i[ean_root sample_checklist] => :environment do |_t, args|
+           "(#{INSDC_COUNTRIES_DEFAULTS[:sample_checklist]} by default)"
+    task :download, %i[sample_checklist ean_root] => :environment do |_t, args|
       args.with_defaults(INSDC_COUNTRIES_DEFAULTS)
       Insdc::ImportCountries.new(**args.to_h, priorities: INSDC_COUNTRIES_PRIORITIES).download
     end
 
     desc 'Download and import countries from the sample sheet with the accession number specified by ' \
-           "[sample_checklist] (#{DEFAULTS[:sample_checklist]} by default)"
-    task :import, %i[ean_root sample_checklist] => :download do |_t, args|
+           "[sample_checklist] (#{INSDC_COUNTRIES_DEFAULTS[:sample_checklist]} by default)"
+    task :import, %i[sample_checklist ean_root] => :download do |_t, args|
       args.with_defaults(INSDC_COUNTRIES_DEFAULTS)
       Insdc::ImportCountries.new(**args.to_h, priorities: INSDC_COUNTRIES_PRIORITIES).import
     end

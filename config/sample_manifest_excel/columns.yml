@@ -349,17 +349,17 @@ country_of_origin:
   unlocked: true
   validation:
     options:
-      type: :textLength
-      operator: :lessThanOrEqual
-      formula1: "30"
+      type: :list
+      formula1: "$A$1:$A$2"
       allowBlank: false
       showInputMessage: true
       promptTitle: "Country Of Origin"
-      prompt: "Please add a description up to a maximum of 30 uppercase letters."
+      prompt: "The geographic origin of the sample, defined by Country or Sea. Country names are provided by the INSDC country list. See https://ena-docs.readthedocs.io/en/latest/submit/samples/missing-values.html if you can't provide a value."
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Country Of Origin"
-      error: "30 uppercase characters, maximum"
+      error: "Is a controlled vocabulary, and must be on the list"
+    range_name: :insdc_country
   conditional_formattings:
     empty_cell:
     len:

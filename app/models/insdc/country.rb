@@ -9,7 +9,11 @@ module Insdc
   # EBI checklist may be found here: https://www.ebi.ac.uk/ena/browser/view/ERC000011
   #
   # The list can be populated via the rake:task
-  # `bundle exec rake insdc:import_countries`
+  # `bundle exec rake insdc:countries:import`
+  #
+  # To import from an alternative sample sheet, use
+  # `bundle exec rake insdc:countries:import[other_accession]`
+  # @note be aware you may need to escape the square brackets if using zsh
   class Country < ApplicationRecord
     include SharedBehaviour::Named
 
