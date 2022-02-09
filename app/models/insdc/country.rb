@@ -32,6 +32,18 @@ module Insdc
     validates :sort_priority, presence: true
     validates :validation_state, presence: true
 
+    # Sorts countries in priority order, with those with the highest priority appearing
+    # at the front of the list.
+    scope :prioritized, -> { order(sort_priority: :desc) }
+
+    # Filters all valid countries, sorted with higher priority options towards the top,
+    # with the remaining entries alphabetical.
+    scope :sorted_for_select, -> { valid_state.prioritized.alphabetical }
+
+    def self.options
+      sorted_for_select.pluck(:name)
+    end
+
     def invalid!
       update!(validation_state: :invalid)
     end
