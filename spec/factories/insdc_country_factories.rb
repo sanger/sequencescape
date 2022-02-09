@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-
-
   factory :insdc_country, class: 'Insdc::Country' do
-    sequence(:name) { |i| "Country #{i}"}
+    sequence(:name) { |i| "Country #{i}" }
 
     trait :high_priority do
       sort_priority { 2 }
