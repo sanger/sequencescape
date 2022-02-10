@@ -17,3 +17,10 @@
 //= require bootstrap
 //= require select2
 //= require_tree ./sequencescape
+
+/**
+ * This file contains the legacy javascript, previously managed by sprockets
+ */
+
+import "./ajax_form_handling";
+import "./ajax_link_handling";

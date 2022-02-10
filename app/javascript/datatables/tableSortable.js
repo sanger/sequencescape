@@ -22,9 +22,8 @@ $(function () {
     $(this).DataTable(defaults);
   });
 
-  // Bit grim. We register the callback with the legacy jQuery
-  // until we can migrate everything across.
-  window.jQuery(document.body).on("ajaxDomUpdate", function (event, target) {
+  // If we update the DOM via ajax we want to mount the included components
+  $(document.body).on("ajaxDomUpdate", function (_event, target) {
     $(target).find("table.sortable").DataTable(defaults);
   });
 });

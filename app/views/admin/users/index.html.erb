@@ -3,7 +3,7 @@
 
 <div class="page-header"><h1>User management</h1></div>
 
-<%= form_tag(filter_admin_users_url, remote: true, data: { update: "#users", throbber: '#update_loader' }, id: 'filter_form', class: 'remote-form observed') do %>
+<%= form_tag(filter_admin_users_url, data: { update: "#users", throbber: '#update_loader', remote: true }, id: 'filter_form', class: 'remote-form observed') do %>
 <div class="callout_filter">
   <table width="100%">
     <tr>

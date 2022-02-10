@@ -15,31 +15,28 @@
 // Triggers an ajaxDomUpdate event to allow other libraries to attach their hooks
 // to the new DOM objects
 //
-// Dependent on: jquery, jquery-ujs
-(function ($, undefined) {
-  "use strict";
+// Dependent on: jquery, @rails/ujs
 
-  var attachEvents;
+import $ from "jquery";
 
-  attachEvents = function () {
-    $("a[data-remote=true]")
-      .on("ajax:beforeSend", function () {
-        $(this.dataset.throbber || "#update_loader").show();
-        $(this.dataset.update).html("");
-      })
-      .on("ajax:complete", function () {
-        $(this.dataset.throbber || "#update_loader").hide();
-      })
-      .on("ajax:success", function (xhr, data, status) {
-        var target = this.dataset.success || this.dataset.update;
-        $(target).html(data);
-        $(document.body).trigger("ajaxDomUpdate", target);
-      })
-      .on("ajax:error", function (xhr, data, status) {
-        var target = this.dataset.failure || this.dataset.update;
-        $(target).html(data);
-      });
-  };
+const attachEvents = () => {
+  $("a[data-remote=true]")
+    .on("ajax:beforeSend", function () {
+      $(this.dataset.throbber || "#update_loader").show();
+      $(this.dataset.update).html("");
+    })
+    .on("ajax:complete", function () {
+      $(this.dataset.throbber || "#update_loader").hide();
+    })
+    .on("ajax:success", function ({ detail: [, , xhr] }) {
+      const target = this.dataset.success || this.dataset.update;
+      $(target).html(xhr.responseText);
+      $(document.body).trigger("ajaxDomUpdate", target);
+    })
+    .on("ajax:error", function ({ detail: [, , xhr] }) {
+      const target = this.dataset.failure || this.dataset.update;
+      $(target).html(xhr.responseText);
+    });
+};
 
-  $(attachEvents);
-})(jQuery);
+$(attachEvents);

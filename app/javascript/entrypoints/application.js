@@ -26,4 +26,8 @@
 // Example: Import a stylesheet in app/frontend/index.css
 // import '~/index.css'
 
+import Rails from "@rails/ujs";
+Rails.start();
+
 import "../datatables";
+import "../legacy";
