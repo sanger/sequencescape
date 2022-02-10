@@ -183,10 +183,10 @@ module ApplicationHelper # rubocop:todo Style/Documentation
     error_count = object.errors.size
     return if error_count.zero?
 
-    model_name = object.model_name.human
+    model_name = object.model_name.human.downcase
     tag.div class: 'errorExplanation' do
       concat icon('fas', 'exclamation-circle', "Could not save #{model_name}")
-      concat tag.p "#{pluralize(error_count, 'error')} prevented the record saving", class: 'lead'
+      concat tag.p "#{pluralize(error_count, 'error')} prevented the #{model_name} from being saved", class: 'lead'
       concat tag.ul do
         object.errors.full_messages.each { |error| concat tag.li error }
       end

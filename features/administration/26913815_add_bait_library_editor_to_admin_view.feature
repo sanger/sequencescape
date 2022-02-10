@@ -69,7 +69,7 @@ Feature: Manage a list of bait libraries
       And I follow "New Bait Library"
       And I fill in "Name" with ""
       And I press "Create"
-    Then I should see "2 errors prohibited this bait library from being saved"
+    Then I should see "2 errors prevented the bait library from being saved"
       And I should see "Name can't be blank"
       And I should see "Target species can't be blank"
     When I go to the bait library management page
@@ -77,7 +77,7 @@ Feature: Manage a list of bait libraries
       And I fill in "Name" with ""
       And I select "Custom - Pipeline" from "Bait library type"
       And I press "Update"
-    Then I should see "1 error prohibited this bait library from being saved"
+    Then I should see "1 error prevented the bait library from being saved"
       And I should see "Name can't be blank"
     When I go to the bait library management page
       Then I should be on the bait library management page

@@ -63,7 +63,7 @@ describe 'Create a new tag layout template' do
       click_on 'Create tag layout template'
     end
 
-    expect(page).to have_content 'error prohibited this tag layout template from being saved'
+    expect(page).to have_content 'error prevented the tag layout template from being saved'
     expect(page).to have_content 'Tag group must exist'
   end
 end
