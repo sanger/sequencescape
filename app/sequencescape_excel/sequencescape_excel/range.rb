@@ -150,7 +150,7 @@ module SequencescapeExcel
     end
 
     def create_dynamic_options
-      klass.public_send(@scope).pluck(@identifier)
+      klass.public_send(*Array(@scope)).pluck(@identifier)
     end
 
     def klass

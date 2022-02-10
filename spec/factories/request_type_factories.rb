@@ -8,6 +8,16 @@ FactoryBot.define do
     end
   end
 
+  trait :with_library_types do
+    transient { library_type { build :library_type } }
+
+    after(:build) do |request_type, evaluator|
+      request_type.library_types_request_types <<
+        create(:library_types_request_type, library_type: evaluator.library_type, request_type: request_type)
+      request_type.request_type_validators << create(:library_request_type_validator, request_type: request_type)
+    end
+  end
+
   factory :request_type do
     name { generate :request_type_name }
     key { generate :request_type_key }
@@ -35,7 +45,6 @@ FactoryBot.define do
       factory :library_request_type do
         request_class { IlluminaHtp::Requests::StdLibraryRequest }
         billable { true }
-        library_request_validators
 
         factory :gbs_request_type do
           request_class { IlluminaHtp::Requests::GbsRequest }
@@ -55,16 +64,8 @@ FactoryBot.define do
     end
 
     factory :library_creation_request_type do
-      transient { library_type { build :library_type } }
-
       target_asset_type { 'LibraryTube' }
       request_class { LibraryCreationRequest }
-
-      after(:build) do |request_type, evaluator|
-        request_type.library_types_request_types <<
-          create(:library_types_request_type, library_type: evaluator.library_type, request_type: request_type)
-        request_type.request_type_validators << create(:library_request_type_validator, request_type: request_type)
-      end
 
       factory :isc_library_request_type do
         asset_type { 'Well' }
@@ -202,6 +203,10 @@ FactoryBot.define do
   end
 
   factory :library_type do
-    name { 'Standard' }
+    sequence(:name) { |i| "Library Type #{i}" }
+
+    factory :library_type_standard do
+      name { 'Standard' }
+    end
   end
 end

@@ -17,6 +17,10 @@ module SampleManifest::LibraryTubeBehaviour
       @tubes = []
     end
 
+    def generate
+      @tubes = generate_tubes(Tube::Purpose.standard_library_tube)
+    end
+
     def io_samples
       samples.map do |sample|
         {
@@ -27,10 +31,6 @@ module SampleManifest::LibraryTubeBehaviour
           library_information: sample.primary_receptacle.library_information
         }
       end
-    end
-
-    def generate
-      @tubes = generate_tubes(Tube::Purpose.standard_library_tube)
     end
 
     def labware_from_samples

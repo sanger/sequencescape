@@ -20,7 +20,7 @@ RSpec.describe LinearSubmission do
     context 'when a multiplexed submission' do
       describe 'Customer decision propagation' do
         let(:library_creation_request_type) do
-          create :well_request_type, target_purpose: purpose, for_multiplexing: true
+          create :well_request_type, :with_library_types, target_purpose: purpose, for_multiplexing: true
         end
         let(:product_criteria) { create :product_criteria }
         let(:current_report) { create :qc_report, product_criteria: product_criteria }
@@ -121,8 +121,8 @@ RSpec.describe LinearSubmission do
     end
 
     context 'with two stages of library creation' do
-      let(:library_creation_stage1) { create :library_request_type }
-      let(:library_creation_stage2) { create :library_request_type }
+      let(:library_creation_stage1) { create :library_request_type, :with_library_types }
+      let(:library_creation_stage2) { create :library_request_type, :with_library_types }
       let(:mx_request_type) { create :multiplex_request_type }
       let(:request_type_option) do
         [library_creation_stage1.id, library_creation_stage2.id, mx_request_type.id, sequencing_request_type.id]
@@ -150,7 +150,7 @@ RSpec.describe LinearSubmission do
 
     context 'when a single-plex submission' do
       let(:assets) { (1..sx_asset_count).map { |i| create(:sample_tube, name: "Asset#{i}") } }
-      let(:library_creation_request_type) { create :library_creation_request_type }
+      let(:library_creation_request_type) { create :library_creation_request_type, :with_library_types }
       let(:request_type_option) { [library_creation_request_type.id, sequencing_request_type.id] }
       let(:submission) do
         create(
@@ -230,6 +230,7 @@ RSpec.describe LinearSubmission do
     end
     let(:lib_request_type) do
       create :library_creation_request_type,
+             :with_library_types,
              asset_type: 'SampleTube',
              target_asset_type: 'LibraryTube',
              initial_state: 'pending',
