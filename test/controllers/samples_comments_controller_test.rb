@@ -12,7 +12,7 @@ module Samples
 
       should_require_login(:index, resource: 'comment', parent: 'sample')
 
-      resource_test(
+      test_unit_class.resource_test(
         'comment',
         actions: ['index'],
         ignore_actions: %w[destroy create edit new show update],

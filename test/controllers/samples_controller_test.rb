@@ -14,7 +14,7 @@ class SamplesControllerTest < ActionController::TestCase
 
     should_require_login
 
-    resource_test(
+    test_unit_class.resource_test(
       'sample',
       defaults: {
         name: 'Sample22',

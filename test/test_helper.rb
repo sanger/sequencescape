@@ -21,19 +21,10 @@ rescue LoadError
   # No pry? That's okay, we're probably on the CI server
 end
 
-Dir
-  .glob(File.expand_path(File.join(Rails.root, %w[spec factories ** *.rb])))
-  .sort
-  .each { |factory_filename| require factory_filename }
+Rails.root.join('spec/factories/').glob('**/*.rb').each { |factory_filename| require factory_filename }
+Rails.root.join('test/shoulda_macros/').glob('*.rb').each { |factory_filename| require factory_filename }
 
-Dir
-  .glob(File.expand_path(File.join(Rails.root, %w[test shoulda_macros *.rb])))
-  .sort
-  .each { |macro_filename| require macro_filename }
-
-require "#{Rails.root}/test/unit/task_test_base"
-
-# Rails.application.load_seed
+require './test/unit/task_test_base'
 
 PlateMapGeneration.generate!
 

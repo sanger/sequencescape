@@ -10,7 +10,7 @@ class StudiesControllerTest < ActionController::TestCase
       @request = ActionController::TestRequest.create(@controller)
     end
 
-    resource_test(
+    test_unit_class.resource_test(
       'study',
       defaults: {
         name: 'study name'

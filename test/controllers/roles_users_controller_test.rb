@@ -14,7 +14,7 @@ module Admin
 
         should_require_login(:index, resource: 'user', parent: 'role')
 
-        resource_test(
+        test_unit_class.resource_test(
           'user',
           parent: 'role',
           actions: ['index'],

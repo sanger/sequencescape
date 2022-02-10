@@ -15,7 +15,13 @@ module Studies
 
       should_require_login(:index, resource: 'sample', parent: 'study')
 
-      resource_test('sample', parent: 'study', actions: ['index'], ignore_actions: ['show'], formats: ['html'])
+      test_unit_class.resource_test(
+        'sample',
+        parent: 'study',
+        actions: ['index'],
+        ignore_actions: ['show'],
+        formats: ['html']
+      )
     end
   end
 end

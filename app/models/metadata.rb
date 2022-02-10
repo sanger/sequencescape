@@ -4,11 +4,10 @@ require_dependency 'attributable'
 module Metadata # rubocop:todo Style/Documentation
   # @!macro [attach] has_metadata
   #   @!parse class Metadata < Metadata::Base; end
-  def has_metadata(**options, &block)
-    as_class = options.delete(:as) || self
-    table_name = options.delete(:table_name) || "#{as_class.name.demodulize.underscore}_metadata"
-    construct_metadata_class(table_name, as_class, &block)
-    build_association(as_class, options)
+  def has_metadata(as: self, &block)
+    owner = as.name.demodulize.underscore
+    construct_metadata_class(as, &block)
+    build_association(owner)
   end
 
   SECTION_FIELDS = %i[edit_info help label unspecified].freeze
@@ -16,26 +15,22 @@ module Metadata # rubocop:todo Style/Documentation
 
   private
 
-  def build_association(as_class, options) # rubocop:todo Metrics/MethodLength
+  def build_association(owner) # rubocop:todo Metrics/MethodLength
     # First we build the association into the current ActiveRecord::Base class
-    as_name = as_class.name.demodulize.underscore
-    association_name = "#{as_name}_metadata".underscore.to_sym
-    class_name = "#{name}::Metadata"
+    association_name = "#{owner}_metadata".to_sym
 
-    default_options = {
-      class_name: class_name,
-      dependent: :destroy,
-      validate: true,
-      autosave: true,
-      inverse_of: :owner,
-      foreign_key: "#{as_name}_id"
-    }
+    has_one association_name,
+            class_name: "#{name}::Metadata",
+            dependent: :destroy,
+            validate: true,
+            autosave: true,
+            inverse_of: :owner,
+            foreign_key: "#{owner}_id"
 
-    has_one(association_name, **default_options.merge(options))
     accepts_nested_attributes_for(association_name, update_only: true)
 
     unless respond_to?(:"include_#{association_name}")
-      scope :"include_#{association_name}", lambda { includes(association_name) }
+      scope :"include_#{association_name}", -> { includes(association_name) }
     end
 
     # We now ensure that, if the metadata is not already created, that a blank instance is built.  We cannot
@@ -89,11 +84,12 @@ module Metadata # rubocop:todo Style/Documentation
     end
   end
 
-  def construct_metadata_class(table_name, as_class, &block)
+  def construct_metadata_class(as_class, &block)
     parent_class = self == as_class ? Metadata::Base : as_class::Metadata
     metadata = Class.new(parent_class, &block)
 
     as_name = as_class.name.demodulize.underscore
+    table_name = "#{as_name}_metadata"
 
     # Ensure that it is correctly associated back to the owner model and that the table name
     # is correctly set.

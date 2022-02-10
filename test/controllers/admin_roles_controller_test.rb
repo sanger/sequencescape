@@ -15,7 +15,7 @@ module Admin
       context 'with user' do
         setup { session[:user] = @user = create :admin }
 
-        resource_test(
+        test_unit_class.resource_test(
           'role',
           with_prefix: 'admin_',
           ignore_actions: %w[create destroy update edit],

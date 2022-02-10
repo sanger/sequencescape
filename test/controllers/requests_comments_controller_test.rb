@@ -14,7 +14,7 @@ module Requests
 
       should_require_login(:index, resource: 'comment', parent: 'request')
 
-      resource_test(
+      test_unit_class.resource_test(
         'comment',
         actions: ['index'],
         ignore_actions: %w[new edit update show destroy create],

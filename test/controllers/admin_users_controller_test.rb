@@ -13,7 +13,7 @@ module Admin
 
       should_require_login
 
-      resource_test(
+      test_unit_class.resource_test(
         'user',
         ignore_actions: ['update'],
         actions: %w[show edit index],
