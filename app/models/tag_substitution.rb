@@ -78,7 +78,7 @@ class TagSubstitution
     @substitutions.reduce(true) do |valid, sub|
       next valid if sub.valid?
 
-      errors.add(:substitution, sub.errors.full_messages)
+      sub.errors.full_messages.each { |message| errors.add(:substitution, message) }
       valid && false
     end
   end
