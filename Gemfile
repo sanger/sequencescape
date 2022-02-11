@@ -79,7 +79,7 @@ group :default do
   # Future releases SHOULD contain the changes made in our fork, and should be adopted as soon as
   # reasonable once they are available. The next version looks like it may be v3.0.0, so be
   # aware of possible breaking changes.
-  gem 'axlsx', github: 'sanger/axlsx', branch: 'v2.0.2sgr'
+  gem 'caxlsx'
 
   # Excel file reading
   gem 'roo'
