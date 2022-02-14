@@ -68,7 +68,7 @@ module Api
       end
 
       def library_type
-        _model.respond_to?(:library_type) ? _model.library_type : nil
+        _model.try(:library_type)
       end
 
       # Class method overrides

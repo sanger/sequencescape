@@ -128,15 +128,6 @@ BOTH_DEV_AND_CUKES = [
 ].freeze
 
 DEV_ONLY = [
-  # {
-  #   name: 'LCA DNA RNA seq test',
-  #   submission_class_name: 'LinearSubmission',
-  #   #product_line: 'Illumina-C',
-  #   product_catalogue: 'Generic',
-  #   submission_parameters: {
-  #     request_types: %w[lca_seq_dna_rna]
-  #   }
-  # },
   {
     name: 'Illumina-C - Cherrypick Internally',
     submission_class_name: 'LinearSubmission',
