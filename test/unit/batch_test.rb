@@ -37,7 +37,7 @@ class BatchTest < ActiveSupport::TestCase
       should 'move the requests to different positions' do
         @batch.assign_positions_to_requests!(@requests.reverse.map(&:id))
 
-        expected = @requests.reverse.each_with_index.map { |request, index| [request.id, index + 1] }.to_h
+        expected = @requests.reverse.each_with_index.to_h { |request, index| [request.id, index + 1] }
         actual =
           @batch
             .batch_requests

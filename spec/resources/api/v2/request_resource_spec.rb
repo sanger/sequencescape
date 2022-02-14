@@ -38,7 +38,7 @@ RSpec.describe Api::V2::RequestResource, type: :resource do
     let(:bait_library) { create :bait_library }
     let(:expected_metadata) do
       {
-        'library_type' => 'Standard',
+        'library_type' => 'Agilent Pulldown',
         'fragment_size_required_to' => '400',
         'fragment_size_required_from' => '100',
         'bait_library' => bait_library.name,

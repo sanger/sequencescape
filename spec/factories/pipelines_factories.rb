@@ -196,7 +196,7 @@ FactoryBot.define do
     locale { 'Internal' }
 
     # Bit grim. Otherwise pipeline behaves a little weird and tries to build a second workflow.
-    pipeline { |workflow| workflow.association(:pipeline, workflow: workflow.instance_variable_get('@instance')) }
+    pipeline { |workflow| workflow.association(:pipeline, workflow: workflow.instance_variable_get(:@instance)) }
   end
 
   factory :lab_workflow_for_pipeline, class: 'Workflow' do

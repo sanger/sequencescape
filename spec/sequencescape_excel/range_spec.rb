@@ -143,9 +143,21 @@ RSpec.describe SequencescapeExcel::Range, type: :model, sample_manifest_excel: t
 
     it 'adjusts to changes in option number' do
       previous_last_cell = range.last_cell.column
-      create :library_type
+      create :library_type, name: 'Other'
       assert_equal original_option_size + 1, range.last_column
       assert_equal previous_last_cell.next, range.last_cell.column
+    end
+  end
+
+  context 'with dynamic options and parameters' do
+    let(:attributes) do
+      { name: 'library_type', identifier: :name, scope: [:from_record_loaders, '001_long_read'], first_row: 4 }
+    end
+    let(:range) { described_class.new(attributes) }
+
+    it 'passes the options to the scope' do
+      allow(LibraryType).to receive(:from_record_loaders).with('001_long_read').and_return(LibraryType.all)
+      range.options
     end
   end
 

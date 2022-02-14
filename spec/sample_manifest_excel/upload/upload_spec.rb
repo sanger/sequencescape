@@ -148,25 +148,6 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
       end
     end
 
-    context 'saphyr' do
-      let!(:columns) { SampleManifestExcel.configuration.columns.saphyr.dup }
-      let!(:download) { build(:test_download_tubes, columns: columns, manifest_type: 'saphyr') }
-
-      before { download.save(test_file_name) }
-
-      it 'has the correct processor' do
-        upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: columns, start_row: 9)
-        expect(upload.processor).not_to be_nil
-        expect(upload.processor).to be_one_d_tube
-      end
-
-      it 'updates all of the data' do
-        upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: columns, start_row: 9)
-        upload.process(tag_group)
-        expect(upload).to be_processed
-      end
-    end
-
     context 'library tube with tag sequences' do
       let!(:columns) { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
       let!(:download) do

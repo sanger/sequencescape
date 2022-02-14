@@ -165,3 +165,7 @@ Lint/UnusedMethodArgument:
   # Unused keyword arguments are good for maintaining API compatibility, and
   # applying an underscore before the keyword name breaks that API.
   AllowUnusedKeywordArguments: true
+
+# This seems to be causing all sorts of issues with failing tests
+Rails/RedundantPresenceValidationOnBelongsTo:
+  Enabled: false

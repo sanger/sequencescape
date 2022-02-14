@@ -70,10 +70,14 @@ class RequestType::Validator < ApplicationRecord
     def default
       nil
     end
+
+    def valid_options
+      []
+    end
   end
 
-  belongs_to :request_type
-  validates :request_type, :request_option, :valid_options, presence: true
+  belongs_to :request_type, optional: false
+  validates :request_option, :valid_options, presence: true
   serialize :valid_options
 
   delegate :include?, to: :valid_options

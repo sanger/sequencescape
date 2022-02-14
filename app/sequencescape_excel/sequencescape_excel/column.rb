@@ -91,6 +91,7 @@ module SequencescapeExcel
     end
 
     def specialised_field?
+      # We can't use const_defined? here as we want to make sure we trigger rails class loading
       specialised_field.present?
     end
 

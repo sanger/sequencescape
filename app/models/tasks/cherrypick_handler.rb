@@ -140,7 +140,7 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
       # whole load of wells so that they can be retrieved quickly and easily.
       wells = Well.includes(:well_attribute).find(@batch.requests.map(&:target_asset_id)).index_by(&:id)
       request_and_well =
-        @batch.requests.includes(:request_metadata).map { |r| [r.id.to_i, [r, wells[r.target_asset_id]]] }.to_h
+        @batch.requests.includes(:request_metadata).to_h { |r| [r.id.to_i, [r, wells[r.target_asset_id]]] }
       used_requests = []
       plates_and_wells = Hash.new { |h, k| h[k] = [] }
       plate_and_requests = Hash.new { |h, k| h[k] = [] }
