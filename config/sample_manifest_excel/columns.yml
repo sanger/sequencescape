@@ -438,7 +438,7 @@ date_of_sample_collection:
   validation:
     options:
       type: :custom
-      formula1: 'AND((_xlfn.NUMBERVALUE(LEFT(A1,4))>0),OR(LEN(A1)=4,EXACT(MID(A1,5,1),"-")),OR(LEN(A1)<=7,EXACT(MID(A1,8,1),"-")),AND((_xlfn.NUMBERVALUE(MID(A1,6,2))>=0),(_xlfn.NUMBERVALUE(MID(A1,6,2))<=12)),AND((_xlfn.NUMBERVALUE(MID(A1,9,2))>=0),(_xlfn.NUMBERVALUE(MID(A1,9,2))<=31)))'
+      formula1: 'IF(OR(EXACT(A1,"not collected"),EXACT(A1,"not provided"),EXACT(A1,"restricted access")), TRUE, AND((_xlfn.NUMBERVALUE(LEFT(A1,4))>0),OR(LEN(A1)=4,EXACT(MID(A1,5,1),"-")),OR(LEN(A1)<=7,EXACT(MID(A1,8,1),"-")),AND((_xlfn.NUMBERVALUE(MID(A1,6,2))>=0),(_xlfn.NUMBERVALUE(MID(A1,6,2))<=12)),AND((_xlfn.NUMBERVALUE(MID(A1,9,2))>=0),(_xlfn.NUMBERVALUE(MID(A1,9,2))<=31))))'
       allowBlank: false
       showInputMessage: true
       promptTitle: "Sample Collection Date"
@@ -449,7 +449,6 @@ date_of_sample_collection:
       error: "Date should be in the format YYYY-MM-DD, Partial dates are supported. eg. YYYY or YYY-MM"
   conditional_formattings:
     empty_cell:
-    is_error:
 date_of_sample_extraction:
   heading: DATE OF DNA EXTRACTION (MM/YY or YYYY only)
   unlocked: true
