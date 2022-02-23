@@ -18,7 +18,7 @@ class Insdc::ImportCountries
     return unless force || file_missing?
 
     payload = RestClient.get(url).body
-    File.write(file_name, payload)
+    File.write(file_name, payload, mode: 'w')
   end
 
   def import
