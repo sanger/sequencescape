@@ -679,7 +679,6 @@ heron:
     - :subject
     - :disease
     - :sample_ebi_accession_number
-    - :donor_id2
     - :control_type
     - :priority
 cardinal:

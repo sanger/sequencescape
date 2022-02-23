@@ -97,7 +97,7 @@ module SequencescapeExcel
     end
 
     def specialised_field
-      @specialised_field ||= SequencescapeExcel.const_get(classify_name, false)
+      @specialised_field ||= SequencescapeExcel::SpecialisedField.const_get(classify_name, false)
     rescue NameError
       nil
     end
@@ -144,7 +144,7 @@ module SequencescapeExcel
       attr_reader :arguments
 
       def initialize(args, key, default_conditional_formattings)
-        @arguments = args.reverse_merge(name: key)
+        @arguments = args.merge(name: key)
         combine_conditional_formattings(default_conditional_formattings)
       end
 
@@ -153,7 +153,7 @@ module SequencescapeExcel
       end
 
       def inspect
-        "<#{self.class}: @name=#{name}, @heading=#{heading}, @number=#{number}, @type=#{type}, " \
+        "<#{self.class}: @name=#{name}, @updates=#{updates}, @heading=#{heading}, @number=#{number}, @type=#{type}, " \
           "@validation#{validation}, @value=#{value}, @unlocked=#{unlocked}, " \
           "@conditional_formattings=#{conditional_formattings}, @attribute=#{attribute}, @range=#{range}>"
       end
@@ -174,7 +174,7 @@ module SequencescapeExcel
     attr_reader :attribute
 
     def classify_name
-      "SpecialisedField::#{updates.to_s.delete('?').classify}"
+      updates.to_s.delete('?').classify
     end
   end
 end
