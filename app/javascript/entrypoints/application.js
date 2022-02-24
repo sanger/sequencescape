@@ -29,5 +29,11 @@
 import Rails from "@rails/ujs";
 Rails.start();
 
+// Bootstrap
+// We import the bundled version, as it automatically includes popper et al for us
+// If we don't use the bundled version, we don't get automatic mounting of
+// behaviour according to data attributes
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
+
 import "../datatables";
 import "../legacy";

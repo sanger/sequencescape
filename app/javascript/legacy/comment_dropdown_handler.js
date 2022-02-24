@@ -8,19 +8,15 @@
 //                     to show/hide
 //
 // Dependent on: jquery
-(function ($, undefined) {
-  "use strict";
+import $ from "jquery";
 
-  var attachEvents;
+const attachEvents = function () {
+  $(".show-comment").on("click", function () {
+    $(this.dataset.commentField).slideDown();
+  });
+  $(".hide-comment").on("click", function () {
+    $(this.dataset.commentField).slideUp();
+  });
+};
 
-  attachEvents = function () {
-    $(".show-comment").on("click", function () {
-      $(this.dataset.commentField).slideDown();
-    });
-    $(".hide-comment").on("click", function () {
-      $(this.dataset.commentField).slideUp();
-    });
-  };
-
-  $(document).ready(attachEvents);
-})(jQuery);
+$(attachEvents);
