@@ -141,7 +141,7 @@ module SequencescapeExcel
     # Find by key and attribute.
     # If it doesn't exist it won't blow up but will return nil
     def find_by(key, value)
-      items.fetch(key).fetch(value.to_s.squish, nil)
+      items.dig(key, value.to_s.squish)
     end
 
     def find(value)

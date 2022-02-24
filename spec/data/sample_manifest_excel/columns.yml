@@ -741,8 +741,8 @@ disease:
   unlocked: true
   conditional_formattings:
     empty_cell:
-donor_id2:
-  name: :donor_id
+legacy_donor_id:
+  updates: :donor_id
   heading: DONOR ID (required for cancer samples)
   unlocked: true
   conditional_formattings:

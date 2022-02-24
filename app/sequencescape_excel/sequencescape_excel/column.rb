@@ -10,6 +10,7 @@ module SequencescapeExcel
     include Helpers::Attributes
 
     setup_attributes :name,
+                     :updates,
                      :heading,
                      :number,
                      :type,
@@ -39,6 +40,7 @@ module SequencescapeExcel
 
     def initialize(attributes = {})
       super(default_attributes.merge(attributes))
+      self.updates ||= name
     end
 
     ##
@@ -46,7 +48,6 @@ module SequencescapeExcel
     # create a new validation object
     def validation=(validation)
       return if validation.nil?
-
       @validation = validation.is_a?(Hash) ? Validation.new(validation) : validation.dup
     end
 
@@ -79,11 +80,11 @@ module SequencescapeExcel
     end
 
     def metadata_field?
-      @metadata_field ||= Column.sample_metadata_model.respond_to?(name) unless specialised_field?
+      @metadata_field ||= Column.sample_metadata_model.respond_to?(updates) unless specialised_field?
     end
 
     def update_metadata(metadata, value)
-      metadata.send("#{name}=", value) if metadata_field?
+      metadata.send("#{updates}=", value) if metadata_field?
     end
 
     def attribute_value(detail)
@@ -96,7 +97,7 @@ module SequencescapeExcel
     end
 
     def specialised_field
-      @specialised_field ||= SequencescapeExcel.const_get(classify_name, false)
+      @specialised_field ||= SequencescapeExcel::SpecialisedField.const_get(classify_name, false)
     rescue NameError
       nil
     end
@@ -143,7 +144,7 @@ module SequencescapeExcel
       attr_reader :arguments
 
       def initialize(args, key, default_conditional_formattings)
-        @arguments = args.reverse_merge(name: key)
+        @arguments = args.merge(name: key)
         combine_conditional_formattings(default_conditional_formattings)
       end
 
@@ -152,7 +153,7 @@ module SequencescapeExcel
       end
 
       def inspect
-        "<#{self.class}: @name=#{name}, @heading=#{heading}, @number=#{number}, @type=#{type}, " \
+        "<#{self.class}: @name=#{name}, @updates=#{updates}, @heading=#{heading}, @number=#{number}, @type=#{type}, " \
           "@validation#{validation}, @value=#{value}, @unlocked=#{unlocked}, " \
           "@conditional_formattings=#{conditional_formattings}, @attribute=#{attribute}, @range=#{range}>"
       end
@@ -173,7 +174,7 @@ module SequencescapeExcel
     attr_reader :attribute
 
     def classify_name
-      "SpecialisedField::#{name.to_s.delete('?').classify}"
+      updates.to_s.delete('?').classify
     end
   end
 end
