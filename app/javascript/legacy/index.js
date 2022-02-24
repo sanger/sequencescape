@@ -22,5 +22,5 @@
  * This file contains the legacy javascript, previously managed by sprockets
  */
 
-import "./ajax_form_handling";
-import "./ajax_link_handling";
+import "./ajax_handling";
+import "./select_2_handling";

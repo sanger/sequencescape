@@ -3,17 +3,9 @@
 
 <div class="page-header"><h1>User management</h1></div>
 
-<%= form_tag(filter_admin_users_url, data: { update: "#users", throbber: '#update_loader', remote: true }, id: 'filter_form', class: 'remote-form observed') do %>
 <div class="callout_filter">
-  <table width="100%">
-    <tr>
-      <td>Registered users: <strong><%=h @users.size %></strong></td>
-      <td style="text-align: right;">
-        <%= image_tag "ajax-loader.gif", size: "10x10", id: "update_loader", style: "display: none;"%>Filter users: <input type="search" placeholder="search" name="q" id="q" />
-      </td>
-    </tr>
-  </table>
-<% end %>
+  Registered users: <strong><%=h @users.size %></strong>
+</div>
 <div id='users'>
   <%= render partial: 'users', locals: { users: @users } %>
 </div>
