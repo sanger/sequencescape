@@ -856,3 +856,6 @@ legacy_donor_id:
   conditional_formattings:
     empty_cell:
   attribute: :sample_id
+legacy_date_of_sample_collection:
+  heading: DATE OF SAMPLE COLLECTION (MM/YY or YYYY only)
+  updates: date_of_sample_collection
