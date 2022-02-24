@@ -784,13 +784,6 @@ disease:
   unlocked: true
   conditional_formattings:
     empty_cell:
-legacy_donor_id:
-  updates: :donor_id
-  heading: DONOR ID (required for cancer samples)
-  unlocked: true
-  conditional_formattings:
-    empty_cell:
-  attribute: :sample_id
 genome_size:
   heading: GENOME SIZE
   unlocked: true
@@ -857,3 +850,14 @@ priority:
   conditional_formattings:
     empty_cell:
     is_number:
+# LEGACY COLUMNS
+# If a column heading changes, we still need to map historical manifests back
+# to the correct entry, as manifests may be uploaded, or re-uploaded a long time
+# after originally generated.
+legacy_donor_id:
+  updates: :donor_id
+  heading: DONOR ID (required for cancer samples)
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+  attribute: :sample_id
