@@ -85,7 +85,7 @@ plate_full:
     - :subject
     - :disease
     - :sample_ebi_accession_number
-    - :donor_id2
+    - :donor_id
     - :control_type
 plate_rnachip:
   heading: "RNA/ChIP Plate"
@@ -113,7 +113,7 @@ plate_rnachip:
     - :immunoprecipitate
     - :organism_part
     - :sample_ebi_accession_number
-    - :donor_id2
+    - :donor_id
 plate_chromium_library:
   heading: "Chromium Library Plate"
   asset_type: "library_plate"
@@ -255,7 +255,7 @@ tube_full:
     - :subject
     - :disease
     - :sample_ebi_accession_number
-    - :donor_id2
+    - :donor_id
 tube_rnachip:
   heading: "RNA/ChIP Tube"
   asset_type: "1dtube"
@@ -281,7 +281,7 @@ tube_rnachip:
     - :immunoprecipitate
     - :organism_part
     - :sample_ebi_accession_number
-    - :donor_id2
+    - :donor_id
 tube_multiplexed_library:
   heading: "Multiplexed Library Tube"
   asset_type: "multiplexed_library"
@@ -610,6 +610,5 @@ heron:
     - :subject
     - :disease
     - :sample_ebi_accession_number
-    - :donor_id2
     - :control_type
     - :priority
