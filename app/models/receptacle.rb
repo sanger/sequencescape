@@ -180,6 +180,9 @@ class Receptacle < Asset
 
   delegate :tag_count_name, to: :most_tagged_aliquot, allow_nil: true
 
+  # def map_description
+  delegate :description, to: :map, prefix: true, allow_nil: true
+
   def total_comment_count
     comments.size + labware_comment_count
   end
