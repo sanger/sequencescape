@@ -16,7 +16,7 @@ Feature: Update the data release fields for creating a study
       OR
 
       This data has been described in the following article [doi or ref] and its further analysis can be freely submitted for publication. For information on the proper use of data shared by the Wellcome Trust Sanger Institute (including information on acknowledgement), please see http://www.sanger.ac.uk/datasharing/
-      If applicable, include a brief description of any restrictions on data usage, e.g. 'For AIDS-releated research only'
+      If applicable, include a brief description of any restrictions on data usage, e.g. 'For AIDS-related research only'
       """
 
   Scenario Outline: Add help text opposite delay drop down (4044305)
