@@ -1,6 +1,7 @@
 
 <% add :menu, "Sample Management homepage" => lab_sample_logistics_path %>
 <%= page_title 'Plates', 'New' %>
+<%= vite_javascript_tag 'plates_new' %>
 
 <%= render(partial: 'plates/creator/printed_barcodes') %>
 
@@ -14,7 +15,7 @@
   <% end %>
   <%= panel do %>
     <%= form.inputs name: "With Options" do %>
-      <%= form.input :creator_id, as: :select, collection: @plate_creators, label: 'Plate purpose', input_html: { class: 'form-control select2'} %>
+      <%= form.input :creator_id, as: :select, collection: plate_creator_options(@plate_creators), label: 'Plate purpose', input_html: { class: 'form-control select2'} %>
       <%= form.input :dilution_factor, as: :select, label: 'Dilution factor', input_html: { class: 'form-control select2'} %>
       <%= form.input :barcode_printer, as: :select, collection: @barcode_printers, input_html: { class: 'form-control select2'} %>
       <%= form.input :create_asset_group, as: :select, collection: ['Yes', 'No'], label: 'Group results for reprinting barcodes?', input_html: { class: 'form-control select2'} %>
@@ -22,42 +23,4 @@
     <% end %>
   <% end %>
   </div>
-<% end %>
-
-<%= javascript_tag nonce: true do %>
-(function($) {
-  const defaultOption = ["1.0"]
-  const plate_creator_parameters = <%= raw json_escape(plate_creator_parameters_json(@plate_creators)) %>
-
-  const validDilutionFactorsForName = (name) => {
-    return (plate_creator_parameters[name] || {}).valid_dilution_factors || defaultOption
-  }
-
-  const dataForName = (name) => {
-    return $.map(validDilutionFactorsForName(name), (val)=>{
-      return {id: val, text: val}
-    })
-  }
-
-  const updateFactorsFor = function(name) {
-    $('#plates_dilution_factor')[0].options.length = 0
-    $('#plates_dilution_factor').select2(
-      { data: dataForName(name) }
-    );
-  }
-
-  $(document).ready(function () {
-    const dilutionFactorSelect = $('#plates_dilution_factor')
-    const creatorSelect = $("#plates_creator_id")
-
-    dilutionFactorSelect.select2({
-      theme: "bootstrap",
-      minimumResultsForSearch: -1})
-
-    creatorSelect.change(function() {
-      updateFactorsFor($('option:selected', creatorSelect).text())
-    })
-    creatorSelect.change()
-  })
-})(jQuery)
 <% end %>
