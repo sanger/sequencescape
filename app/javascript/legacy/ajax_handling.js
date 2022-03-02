@@ -73,7 +73,9 @@ const attachEvents = () => {
   $(".observed").on("keyup", throttledUpdate).on("change", throttledUpdate);
 
   // Trigger automatic loading if already flagged as active
-  Rails.fire($("a[data-remote=true].active")[0], "click");
+  document.querySelectorAll("a[data-remote=true].active").forEach((element) => {
+    Rails.fire(element, "click");
+  });
 };
 
 $(attachEvents);
