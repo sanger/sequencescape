@@ -33,5 +33,3 @@ namespace :insdc do
     end
   end
 end
-
-task 'db:seed' => 'insdc:countries:import'
