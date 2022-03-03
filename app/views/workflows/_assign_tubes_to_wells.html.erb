@@ -1,5 +1,5 @@
 
-<%= javascript_include_tag "assign-tubes-to-wells-task" %>
+<%= vite_javascript_tag "assign-tubes-to-wells-task" %>
 <div id='error_messages'></div>
 <%= form_for @workflow, url: { action: "stage", id: @stage, workflow_id: @workflow.id, batch_id: @batch.id, next_stage: true }, html: { id: "stage_form", multipart: true} do |form| %>
   <h2>Tubes</h2>

@@ -1,7 +1,7 @@
 
-<%= javascript_include_tag "assign-tubes-to-wells-task" %>
+<%= vite_javascript_tag "assign-tubes-to-wells-task" %>
 <div id='error_messages'></div>
-<%= javascript_tag nonce: true do %>
+<%= legacy_javascript_tag do %>
 
   (function(window, $, undefined){
     "use strict";

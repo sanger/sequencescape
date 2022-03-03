@@ -42,7 +42,7 @@
   <% end %>
 </div>
 
-<%= javascript_tag nonce: true do %>
+<%= legacy_javascript_tag do %>
 
 (function($, undefined) {
  $(document).on('dom:loaded', function() {

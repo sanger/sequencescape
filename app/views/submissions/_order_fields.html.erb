@@ -14,7 +14,7 @@
   </div>
   <% end -%>
 
-  <%= javascript_tag nonce: true do %>
+  <%= legacy_javascript_tag do %>
 
   (function(window,$,undefined) {
     SCAPE.submission.is_a_sequencing_order  = <%= @presenter.order.sequencing_order? %>;

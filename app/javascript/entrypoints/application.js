@@ -36,4 +36,9 @@ Rails.start();
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 import "../datatables";
+import "../barcodeRendering";
 import "../legacy";
+
+// Export jquery for some legacy scripts
+import jQuery from "jquery";
+window.jQuery = jQuery;

@@ -9,7 +9,7 @@
 
 <%= render partial: 'orders' %>
 
-<%= javascript_tag nonce: true do %>
+<%= legacy_javascript_tag do %>
 
   (function(window, $, undefined){
     "use strict";

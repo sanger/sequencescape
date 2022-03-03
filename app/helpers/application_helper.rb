@@ -287,6 +287,26 @@ module ApplicationHelper # rubocop:todo Style/Documentation
     end
   end
 
+  #
+  # Ideally we don't want inline script tags, however there is a fair chunk of
+  # legacy code, some of which isn't trivial to migrate, as it uses erb to
+  # generate javascript, rather than using data-attributes.
+  #
+  # This tag:
+  # - Ensures we add a nonce for security
+  # - Delays script execution until DOMContentLoaded to ensure that the
+  #   modern JS has had a chance to export jQuery
+  #
+  # @return [String] Script tag
+  #
+  def legacy_javascript_tag
+    javascript_tag nonce: true do
+      concat "window.addEventListener('DOMContentLoaded', function() {".html_safe
+      yield
+      concat '})'
+    end
+  end
+
   # rubocop:enable Metrics/MethodLength
 
   # Used in _header.html.erb. Can be removed after users have been given a time period to switch over.

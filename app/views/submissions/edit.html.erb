@@ -6,7 +6,7 @@
 <div class="page-header"><h1>Edit Submission</h1></div>
 <%= render partial: 'orders' %>
 
-<%= javascript_tag nonce: true do %>
+<%= legacy_javascript_tag do %>
 
   (function(window, $, undefined) {
    "use strict";

@@ -6,9 +6,10 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <%= stylesheet_link_tag "print" %>
   <%= stylesheet_link_tag "print",media: "print" %>
+  <%= vite_javascript_tag "worksheet", media: "print" %>
   <title>Batch <%= @batch.id %></title>
 </head>
-<body>
+<body data-enable-printing="<%= ["cucumber", "test"].exclude?(Rails.env) %>">
 
  <div id="header">
       <div class="page-header"><h1>Batch <%= @batch.id %></h1></div>
@@ -20,8 +21,5 @@
 
   <div id="footer">Created: <%= @batch.updated_at.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= @batch.user.login if @batch.user %> -
   Printed: <%= Time.now.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= current_user.login if current_user %></div>
-  <%= javascript_tag nonce: true do %>
-     window.print();
-  <% end %>
 </body>
 </html>

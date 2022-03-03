@@ -69,7 +69,7 @@
 <% end %>
 
 
-<%= javascript_tag nonce: true do %>
+<%= legacy_javascript_tag do %>
   $(function() {
     var tagGroupsList = <%= tags_in_groups.to_json.html_safe %>;
 

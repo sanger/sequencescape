@@ -5,9 +5,10 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <title>Batch <%= @batch.id %></title>
+  <%= stylesheet_link_tag "print",media: "print" %>
+  <%= vite_javascript_tag "worksheet", media: "print" %>
 </head>
-<%= stylesheet_link_tag "print",media: "print" %>
-<body>
+<body data-enable-printing="<%= ["cucumber", "test"].exclude?(Rails.env) %>">
   <% if @batch.workflow_name.present? -%>
     <div style="font-size:40px;text-align:right;padding-right:20px"><%= @batch.workflow_name %></div>
   <% end -%>
@@ -64,9 +65,5 @@
   <div style="border-top: 1px solid black; border-left: none; border-right: none; border-bottom: none">
   Printed at <%= Time.now.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= current_user.login %>
   </div>
-
-  <%= javascript_tag nonce: true do %>
-    window.print();
-  <% end %>
 </body>
 </html>
