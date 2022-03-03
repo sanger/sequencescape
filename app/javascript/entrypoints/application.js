@@ -27,8 +27,12 @@
 // import '~/index.css'
 
 import Rails from "@rails/ujs";
-Rails.start();
 
+try {
+  Rails.start();
+} catch {
+  // Nothing
+}
 // Bootstrap
 // We import the bundled version, as it automatically includes popper et al for us
 // If we don't use the bundled version, we don't get automatic mounting of
