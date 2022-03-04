@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_04_154227) do
+ActiveRecord::Schema.define(version: 2022_02_08_145114) do
 
   create_table "aliquot_indices", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "aliquot_id", null: false
@@ -493,6 +493,17 @@ ActiveRecord::Schema.define(version: 2022_02_04_154227) do
     t.string "name"
     t.string "barcode"
     t.string "equipment_type"
+  end
+
+  create_table "isndc_countries", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "sort_priority", default: 0, null: false
+    t.integer "validation_state", default: 0, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["name"], name: "index_isndc_countries_on_name", unique: true
+    t.index ["sort_priority"], name: "index_isndc_countries_on_sort_priority"
+    t.index ["validation_state"], name: "index_isndc_countries_on_validation_state"
   end
 
   create_table "items", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|

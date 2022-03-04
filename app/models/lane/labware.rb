@@ -20,4 +20,8 @@ class Lane::Labware < Labware
   def human_barcode
     source_request.try(:flowcell_barcode)
   end
+
+  def generate_barcode
+    # NOOP
+  end
 end

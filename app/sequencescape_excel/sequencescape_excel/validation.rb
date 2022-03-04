@@ -23,22 +23,18 @@ module SequencescapeExcel
     # If a worksheet is passed then the data validation is added using the reference is passed
     # and the options for the validation.
     def update(attributes = {})
-      options[:formula1] = attributes[:range].absolute_reference if range_required?
       return if attributes[:worksheet].blank?
 
-      @worksheet_validation = attributes[:worksheet].add_data_validation(attributes[:reference], options)
+      @reference = attributes[:reference]
+      @range = attributes[:range]
+
+      @worksheet_validation = attributes[:worksheet].add_data_validation(attributes[:reference], sanitized_options)
     end
 
     ##
     # If the range name is present then a range is required for the validation
     def range_required?
       range_name.present?
-    end
-
-    ##
-    # formula1 is defined within the options
-    def formula1
-      options[:formula1]
     end
 
     ##
@@ -67,6 +63,29 @@ module SequencescapeExcel
 
     def inspect
       "<#{self.class}: @options=#{options}, @range_name=#{range_name}>"
+    end
+
+    ##
+    # formula1 is defined within the options, however it needs to be updated
+    # with:
+    # 1) A provided rage in the case of lists
+    # 2) Proper cell names in the case of custom formulas
+    # 3) AXLSX doesn't escape text fields for us, so we do that ourselves
+    def formula1
+      return @range.absolute_reference if range_required?
+      return if options[:formula1].nil?
+
+      options[:formula1].gsub('A1', reference_start).encode(xml: :text)
+    end
+
+    private
+
+    def reference_start
+      @reference ? @reference.split(':').first : 'A1'
+    end
+
+    def sanitized_options
+      options.merge(formula1: formula1)
     end
   end
 end
