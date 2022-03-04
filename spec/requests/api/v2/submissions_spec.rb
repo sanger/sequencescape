@@ -26,7 +26,7 @@ describe 'Submissions API', with: :api_v2 do
       api_get "/api/v2/submissions/#{resource_model.id}?fields[submissions]"
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('submissions')
-      expect(json.dig('data', 'attributes', 'used_tags')).to eq(nil)
+      expect(json.dig('data', 'attributes', 'used_tags')).to be_nil
     end
 
     it 'sends an individual submission without tags' do
