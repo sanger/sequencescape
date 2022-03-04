@@ -11,11 +11,11 @@
   (function(window, $, undefined) {
    "use strict";
 
-   // Check for the SCAPE namespace object.
+   // Check for thewindow.SCAPE namespace object.
    if (window.SCAPE == undefined) window.SCAPE = {};
 
    // Used for redirecting if we delete the last order on the submission.
-   SCAPE.submissions_inbox_url = <%= submissions_url.inspect %>;
+  window.SCAPE.submissions_inbox_url = <%= submissions_url.inspect %>;
 
    })(window, jQuery);
 

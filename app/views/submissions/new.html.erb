@@ -14,12 +14,12 @@
   (function(window, $, undefined){
     "use strict";
 
-    // Check for the SCAPE object.  This is the only place in the global
+    // Check for thewindow.SCAPE object.  This is the only place in the global
     // namespace we should be storing things.
     if (window.SCAPE == undefined) window.SCAPE = {};
 
     <% if @presenter.study_id.present? -%>
-      SCAPE.submission.study_id = <%= @presenter.study_id %>;
+     window.SCAPE.submission.study_id = <%= @presenter.study_id %>;
     <% end -%>
   })(window, jQuery);
 

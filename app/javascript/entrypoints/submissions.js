@@ -1,17 +1,17 @@
 // Submission workflow jQuery Plugin...
-(function (window, $, undefined) {
+(function (window, $) {
   "use strict";
 
   var methods = {
-    init: function (options) {
+    init: function (_options) {
       return this;
     },
 
     // Returns true if the input fields in a pane have a value
-    allFieldsComplete: function (pane) {
+    allFieldsComplete: function (_pane) {
       // This is not very pretty but it is IE safe...
       var validationResult = true;
-      this.find("input.required").each(function (element) {
+      this.find("input.required").each(function (_element) {
         if (!$(this).val().match(/^\d+$/)) {
           validationResult = false;
         }
@@ -77,22 +77,22 @@
   $.fn.submission = function (method) {
     if (methods[method]) {
       return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
-    } else if (typeof method === "Object" || !method) {
+    } else if (typeof method === "object" || !method) {
       return methods.init.apply(this, arguments);
     } else {
       return $.error("Method " + method + " does not exist on jQuery.submission");
     }
   };
-})(window, jQuery);
+})(window, window.jQuery);
 
 // Submission page code...
-(function (window, $, undefined) {
+(function (window, $) {
   "use strict";
   // Name spacing stuff...
   if (window.SCAPE === undefined) window.SCAPE = {};
 
-  if (SCAPE.submission === undefined) {
-    SCAPE.submission = {
+  if (window.SCAPE.submission === undefined) {
+    window.SCAPE.submission = {
       order_params: {},
     };
   }
@@ -100,17 +100,17 @@
   var templateChangeHandler = function (event) {
     var currentPane = $(event.currentTarget).submission("currentPane");
 
-    delete SCAPE.submission.template_id;
+    delete window.SCAPE.submission.template_id;
 
     $("#order-parameters").slideUp(100, function () {
       $(this).html("");
       currentPane.submission("markPaneIncomplete");
 
       if ($(event.currentTarget).val()) {
-        SCAPE.submission.template_id = $(event.currentTarget).val();
+        window.SCAPE.submission.template_id = $(event.currentTarget).val();
 
         // Load the parameters for the new order
-        $.get("/submissions/order_fields", { submission: SCAPE.submission }, function (data) {
+        $.get("/submissions/order_fields", { submission: window.SCAPE.submission }, function (data) {
           $("#order-parameters").html(data);
 
           currentPane.submission("allFieldsComplete")
@@ -130,11 +130,11 @@
 
     currentPane.submission("markPaneIncomplete");
 
-    SCAPE.submission.study_id = $(event.target).val();
+    window.SCAPE.submission.study_id = $(event.target).val();
 
     if ($(event.target).val().length > 0) {
       // Load asset groups for the selected study
-      currentPane.submission("loadStudyAssets", SCAPE.submission);
+      currentPane.submission("loadStudyAssets", window.SCAPE.submission);
     } else {
       // The study selector has been reset so fade out and reset the field.
       currentPane.find(".study-assets").fadeOut(function () {
@@ -143,30 +143,30 @@
     }
   };
 
-  var saveOrderHandler = function (event) {
+  var saveOrderHandler = function (_event) {
     var currentPane = $(this).submission("currentPane");
     // refactor this little lot!
-    SCAPE.submission.project_name = currentPane.find(".submission_project_name").val();
-    SCAPE.submission.asset_group_id = currentPane.find(".submission_asset_group_id").val();
-    SCAPE.submission.sample_names_text = currentPane.find(".submission_sample_names_text").val();
-    SCAPE.submission.barcodes_wells_text = currentPane.find(".submission_barcodes_wells_text").val();
-    SCAPE.submission.plate_purpose_id = currentPane.find(".submission_plate_purpose_id").val();
-    SCAPE.submission.comments = currentPane.find(".submission_comments").val();
-    SCAPE.submission.lanes_of_sequencing_required = currentPane.find(".lanes_of_sequencing").val();
-    SCAPE.submission.order_params.gigabases_expected = currentPane.find(".gigabases_expected").val();
-    SCAPE.submission.order_params.pre_capture_plex_level = currentPane.find(".pre_capture_plex_level").val();
-    SCAPE.submission.pre_capture_plex_group = currentPane.find(".pre_capture_plex_group").val();
+    window.SCAPE.submission.project_name = currentPane.find(".submission_project_name").val();
+    window.SCAPE.submission.asset_group_id = currentPane.find(".submission_asset_group_id").val();
+    window.SCAPE.submission.sample_names_text = currentPane.find(".submission_sample_names_text").val();
+    window.SCAPE.submission.barcodes_wells_text = currentPane.find(".submission_barcodes_wells_text").val();
+    window.SCAPE.submission.plate_purpose_id = currentPane.find(".submission_plate_purpose_id").val();
+    window.SCAPE.submission.comments = currentPane.find(".submission_comments").val();
+    window.SCAPE.submission.lanes_of_sequencing_required = currentPane.find(".lanes_of_sequencing").val();
+    window.SCAPE.submission.order_params.gigabases_expected = currentPane.find(".gigabases_expected").val();
+    window.SCAPE.submission.order_params.pre_capture_plex_level = currentPane.find(".pre_capture_plex_level").val();
+    window.SCAPE.submission.pre_capture_plex_group = currentPane.find(".pre_capture_plex_group").val();
 
-    SCAPE.submission.priority = $("#submission_priority").val();
+    window.SCAPE.submission.priority = $("#submission_priority").val();
 
-    $.post("/submissions", { submission: SCAPE.submission }, function (data) {
+    $.post("/submissions", { submission: window.SCAPE.submission }, function (data) {
       currentPane.fadeOut(function () {
         currentPane.detach().html(data).submission("markPaneComplete").removeClass("order-active invalid");
 
         $("#order-controls").before(currentPane);
         currentPane.fadeIn();
 
-        $("#build-form").attr("action", "/submissions/" + SCAPE.submission.id);
+        $("#build-form").attr("action", "/submissions/" + window.SCAPE.submission.id);
         $("#start-submission").removeAttr("disabled");
 
         $(".pane").not("#blank-order").addClass("order-active");
@@ -212,12 +212,12 @@
     return $(param).attr("id").replace("submission_order_params_", "");
   };
 
-  var addOrderHandler = function (event) {
-    // Loads this order's parameters into the SCAPE.submission object...
+  var addOrderHandler = function (_event) {
+    // Loads this order's parameters into thewindow.SCAPE.submission object...
     $("#order-parameters")
       .find("select, input")
       .each(function () {
-        SCAPE.submission.order_params[getParamName(this)] = $(this).val();
+        window.SCAPE.submission.order_params[getParamName(this)] = $(this).val();
       });
 
     // Mask out the order template parameters so that they can't be
@@ -244,7 +244,7 @@
       .prop("disabled", false);
 
     // Enable the cross study/project buttons if appropriate
-    if (SCAPE.submission.cross_compatible === false) {
+    if (window.SCAPE.submission.cross_compatible === false) {
       newOrder.find(".cross-compatible").remove();
     }
 
@@ -260,34 +260,34 @@
       validateOrder(e);
     });
     // if this is not a sequencing order remove the lanes_of_sequencing_required stuff
-    if (SCAPE.submission.is_a_sequencing_order === false) {
+    if (window.SCAPE.submission.is_a_sequencing_order === false) {
       newOrder.find(".lanes-of-sequencing").remove();
     }
 
     // we only need this box if we're pre-cap pooling
-    if (SCAPE.submission.pre_capture_plex_level === null) {
+    if (window.SCAPE.submission.pre_capture_plex_level === null) {
       newOrder.find(".pre-capture-plex-level").remove();
       newOrder.find(".pre-capture-plex-group").remove();
     } else {
-      newOrder.find(".pre_capture_plex_level").value = SCAPE.submission.pre_capture_plex_level;
-      newOrder.find(".pre_capture_plex_level").value = SCAPE.submission.pre_capture_plex_group;
+      newOrder.find(".pre_capture_plex_level").value = window.SCAPE.submission.pre_capture_plex_level;
+      newOrder.find(".pre_capture_plex_level").value = window.SCAPE.submission.pre_capture_plex_group;
     }
 
     newOrder.find(".submission_project_name").autocomplete({
-      source: SCAPE.user_project_names,
+      source: window.SCAPE.user_project_names,
       minLength: 3,
     });
 
     // And gigabase stuff is only for library creation
-    if (SCAPE.submission.show_gigabses_expected === false) {
+    if (window.SCAPE.submission.show_gigabses_expected === false) {
       newOrder.find(".gigabases-expected").remove();
     }
 
     // If we already have a study id set then load the asset_group for it.
     // e.g. someone coming to the page directly from a study page rather than
     // the submission inbox.
-    if (SCAPE.submission.study_id) {
-      newOrder.submission("loadStudyAssets", SCAPE.submission);
+    if (window.SCAPE.submission.study_id) {
+      newOrder.submission("loadStudyAssets", window.SCAPE.submission);
     }
 
     $("#blank-order").before(newOrder);
@@ -326,7 +326,7 @@
         _method: "delete",
         id: currentPane.find(".order-id").val(),
       },
-      function (response) {
+      function (_response) {
         currentPane.slideUp(function () {
           currentPane.remove();
           $("#add-order").removeAttr("disabled");
@@ -336,10 +336,10 @@
             // then the submission has also been deleted so redirect them to
             // the submission inbox.
             if (window.location.pathname.match(/\/submissions\/\d+\/edit/)) {
-              window.location.replace(SCAPE.submissions_inbox_url);
+              window.location.replace(window.SCAPE.submissions_inbox_url);
             }
 
-            delete SCAPE.submission.id;
+            delete window.SCAPE.submission.id;
 
             $("#order-template").addClass("order-active").find("select, input").removeAttr("disabled");
 
@@ -351,21 +351,6 @@
 
     // don't forget to stop the form submitting...
     return false;
-  };
-
-  // Toggle the asset selector panels.
-  // TODO: replace this with a jQuery UI tabview.  Needs the order IDs
-  // sorting out for that though....
-  var assetSelectorToggle = function (event) {
-    var currentAssetsPanel = $(event.currentTarget).closest(".assets");
-
-    var nextAssetPanelClass = $(event.currentTarget).data("selector");
-    var nextAssetPanel = currentAssetsPanel.siblings(nextAssetPanelClass).first();
-
-    currentAssetsPanel.fadeOut(function () {
-      nextAssetPanel.find("input, textarea, select").val("");
-      nextAssetPanel.fadeIn();
-    });
   };
 
   // Document Ready stuff...
@@ -405,6 +390,5 @@
       .on("click", ".cancel-order", cancelOrderHandler)
       .on("click", ".save-order", saveOrderHandler)
       .on("click", ".delete-order", deleteOrderHandler);
-    //on('click',  '.assets a',     assetSelectorToggle);
   });
-})(window, jQuery);
+})(window, window.jQuery);
