@@ -6,12 +6,8 @@ module Barcode::Barcodeable
     base.class_eval do
       # Default prefix is the fallback prefix if no purpose is available.
       class_attribute :default_prefix
-      delegate :ean13_barcode, :machine_barcode, to: :primary_barcode, allow_nil: true
+      delegate :ean13_barcode, :machine_barcode, :human_barcode, to: :primary_barcode, allow_nil: true
     end
-  end
-
-  def human_barcode
-    primary_barcode&.human_barcode || 'UNKNOWN'
   end
 
   # Assumes presence of a method called `sanger_barcode=` on the class this is included within.

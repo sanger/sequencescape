@@ -22,6 +22,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   include Plate::FluidigmBehaviour
   include SubmissionPool::Association::Plate
   include PlateCreation::CreationChild
+  include Barcode::Barcodeable
 
   extend QcFile::Associations
 

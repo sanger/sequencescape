@@ -7,7 +7,6 @@ class Labware < Asset
   include Uuid::Uuidable
   include AssetLink::Associations
   include SharedBehaviour::Named
-  include Barcode::Barcodeable
 
   attr_reader :storage_location_service
 

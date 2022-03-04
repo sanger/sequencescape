@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 # A Tube is a piece of {Labware}
 class Tube < Labware
+  include Barcode::Barcodeable
   include ModelExtensions::Tube
   include Tag::Associations
   include Asset::Ownership::Unowned
