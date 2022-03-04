@@ -741,8 +741,8 @@ disease:
   unlocked: true
   conditional_formattings:
     empty_cell:
-donor_id2:
-  name: :donor_id
+legacy_donor_id:
+  updates: :donor_id
   heading: DONOR ID (required for cancer samples)
   unlocked: true
   conditional_formattings:
@@ -768,46 +768,6 @@ genome_size:
     empty_cell:
     number_greater_than_zero:
     is_text:
-saphyr:
-  heading: SAPHYR?
-  unlocked: true
-  validation:
-    options:
-      type: :list
-      formula1: "$A$1:$A$2"
-      allowBlank: false
-      showDropDown: false
-      showInputMessage: true
-      promptTitle: "Will this sample be sequenced on Saphyr?"
-      prompt: "Please Enter Y or N."
-      showErrorMessage: true
-      errorStyle: :stop
-      errorTitle: "Will this sample be sequenced on Saphyr?"
-      error: "You must enter either Y or N."
-    range_name: :yes_no
-  conditional_formattings:
-    empty_cell:
-    is_error:
-pacbio:
-  heading: PACBIO?
-  unlocked: true
-  validation:
-    options:
-      type: :list
-      formula1: "$A$1:$A$2"
-      allowBlank: false
-      showDropDown: false
-      showInputMessage: true
-      promptTitle: "Will this sample be sequenced on Pacbio?"
-      prompt: "Please Enter Y or N."
-      showErrorMessage: true
-      errorStyle: :stop
-      errorTitle: "Will this sample be sequenced on Pacbio?"
-      error: "You must enter either Y or N."
-    range_name: :yes_no
-  conditional_formattings:
-    empty_cell:
-    is_error:
 primer_panel:
   heading: PRIMER PANEL
   unlocked: true

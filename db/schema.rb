@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_14_094820) do
+ActiveRecord::Schema.define(version: 2022_02_04_154227) do
 
   create_table "aliquot_indices", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "aliquot_id", null: false
@@ -555,6 +555,7 @@ ActiveRecord::Schema.define(version: 2021_12_14_094820) do
     t.string "name", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["name"], name: "index_library_types_on_name", unique: true
   end
 
   create_table "library_types_request_types", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1328,8 +1329,6 @@ ActiveRecord::Schema.define(version: 2021_12_14_094820) do
     t.datetime "updated_at"
     t.string "donor_id"
     t.integer "genome_size"
-    t.string "saphyr"
-    t.string "pacbio"
     t.datetime "date_of_consent_withdrawn"
     t.integer "user_id_of_consent_withdrawn"
     t.boolean "consent_withdrawn", default: false, null: false

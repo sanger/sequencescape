@@ -27,7 +27,7 @@ FactoryBot.define do
     factory(:full_transfer_between_plates) do
       association(:source, factory: :full_plate)
       association(:destination, factory: :full_plate)
-      transfers { ('A'..'H').map { |r| (1..12).map { |c| "#{r}#{c}" } }.flatten.map { |w| [w, w] }.to_h }
+      transfers { ('A'..'H').map { |r| (1..12).map { |c| "#{r}#{c}" } }.flatten.to_h { |w| [w, w] } }
     end
   end
 
@@ -169,20 +169,23 @@ FactoryBot.define do
         fragment_size_required_from: 100,
         fragment_size_required_to: 400,
         bait_library: bait_library,
-        library_type: create(:library_type).name
+        library_type: 'Agilent Pulldown'
       }
     end
   end
 
   factory(:re_isc_request, class: 'Pulldown::Requests::ReIscLibraryRequest') do
     association(:request_type, factory: :library_request_type)
-    asset { |target| target.association(:well_with_sample_and_plate) }
-    target_asset { |target| target.association(:empty_well) }
+    association(:asset, factory: :well_with_sample_and_plate)
+    association(:target_asset, factory: :empty_well)
     request_purpose { :standard }
-    after(:build) do |request|
-      request.request_metadata.fragment_size_required_from = 100
-      request.request_metadata.fragment_size_required_to = 400
-      request.request_metadata.bait_library = BaitLibrary.first || create(:bait_library)
+    request_metadata_attributes do
+      {
+        fragment_size_required_from: 100,
+        fragment_size_required_to: 400,
+        bait_library: BaitLibrary.first || create(:bait_library),
+        library_type: 'Agilent Pulldown'
+      }
     end
   end
 

@@ -135,7 +135,7 @@ class AccessionService # rubocop:todo Metrics/ClassLength
   end
 
   def submit_study_for_user(study, user)
-    raise NumberNotRequired, 'An accession number is not required for this study' unless study.ena_accession_required?
+    raise NumberNotRequired, 'An accession number is not required for this study' unless study.accession_required?
 
     # TODO: check error
     # raise AccessionServiceError, "Cannot generate accession number: #{ sampledata[:error] }" if sampledata[:error]

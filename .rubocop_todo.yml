@@ -926,7 +926,6 @@ Rails/FilePath:
     - 'lib/accession/accession.rb'
     - 'lib/tasks/cucumber.rake'
     - 'lib/tasks/sample_manifest_excel_tests.rake'
-    - 'lib/tasks/test.rake'
     - 'test/test_helper.rb'
     - 'test/unit/fluidigm_file_test.rb'
     - 'test/unit/import_fluidigm_data_test.rb'

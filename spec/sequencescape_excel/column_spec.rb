@@ -4,12 +4,7 @@ require 'rails_helper'
 
 RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: true, sample_manifest: true do
   let(:range_list) do
-    build(
-      :range_list,
-      ranges_data: {
-        FactoryBot.attributes_for(:validation)[:range_name] => FactoryBot.attributes_for(:range)
-      }
-    )
+    build(:range_list, ranges_data: { attributes_for(:validation)[:range_name] => attributes_for(:range) })
   end
   let(:worksheet) { Axlsx::Workbook.new.add_worksheet }
   let(:options) do
@@ -20,10 +15,10 @@ RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: 
       value: 10,
       number: 125,
       attribute: :barcode,
-      validation: FactoryBot.attributes_for(:validation),
+      validation: attributes_for(:validation),
       conditional_formattings: {
-        simple: FactoryBot.attributes_for(:conditional_formatting),
-        complex: FactoryBot.attributes_for(:conditional_formatting_with_formula)
+        simple: attributes_for(:conditional_formatting),
+        complex: attributes_for(:conditional_formatting_with_formula)
       }
     }
   end
@@ -88,6 +83,13 @@ RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: 
 
   it 'can update the sample metadata if it is a sample metadata field' do
     column = described_class.new(options.merge(heading: 'DONOR ID', name: :donor_id))
+    metadata = Sample::Metadata.new
+    column.update_metadata(metadata, '1234')
+    expect(metadata.donor_id).to eq('1234')
+  end
+
+  it 'can update the field targets by :updates' do
+    column = described_class.new(options.merge(heading: 'DONOR ID', name: :legacy_donor_id, updates: :donor_id))
     metadata = Sample::Metadata.new
     column.update_metadata(metadata, '1234')
     expect(metadata.donor_id).to eq('1234')

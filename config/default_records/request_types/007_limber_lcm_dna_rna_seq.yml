@@ -1,0 +1,15 @@
+# These request types are associated with the Combined LCM DNA and RNAseq pipeline.
+---
+clcm_dna_rna_seq:
+  name: CLCM DNA and RNAseq
+  asset_type: Well
+  order: 1
+  request_class_name: IlluminaHtp::Requests::StdLibraryRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: Illumina-Htp
+  library_types:
+    - Combined LCM DNA
+    - Combined LCM RNA
+  acceptable_purposes:
+    - CLCM Stock

@@ -11,7 +11,17 @@ import $ from "jquery";
 import { defaults } from "./config";
 
 $(function () {
-  $("table.sortable,table#batch-show").DataTable(defaults);
+  // Looping through and applying DataTable separately to each.
+  // The alternative, $( "table.sortable,table#batch-show" ).DataTable, caused issue
+  // on pages that had multiple .sortable tables:
+  // the search box was duplicated and pagination settings ignored,
+  // and tables with no rows had the following error in the js console:
+  // "Uncaught TypeError: Cannot set properties of undefined (setting '_DT_CellIndex')""
+  // Looping through like this seems to solve these issues.
+  $("table.sortable,table#batch-show").each(function (_index) {
+    $(this).DataTable(defaults);
+  });
+
   // Bit grim. We register the callback with the legacy jQuery
   // until we can migrate everything across.
   window.jQuery(document.body).on("ajaxDomUpdate", function (event, target) {

@@ -59,7 +59,7 @@ RSpec.describe PlateTemplateTask, type: :model do
   describe '#render_task' do
     let(:workflow_controller) do
       wc = WorkflowsController.new
-      wc.instance_variable_set('@batch', batch)
+      wc.instance_variable_set(:@batch, batch)
       wc.request = request
       wc
     end
