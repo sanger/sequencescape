@@ -188,36 +188,6 @@ RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_exce
     end
   end
 
-  context 'Saphyr tube' do
-    before do
-      create(:saphyr_tube_purpose)
-
-      # asset_type might be changed, based on how upload would work
-      sample_manifest = create(:tube_sample_manifest_with_samples, asset_type: '1dtube')
-      sample_manifest.generate
-      @download =
-        described_class.new(
-          sample_manifest,
-          SampleManifestExcel.configuration.columns.saphyr.dup,
-          SampleManifestExcel.configuration.ranges.dup
-        )
-      save_file
-    end
-
-    it 'create an excel file' do
-      expect(File).to be_file('test.xlsx')
-    end
-
-    it 'create the two different types of worksheet' do
-      expect(spreadsheet.sheets.first).to eq('DNA Collections Form')
-      expect(spreadsheet.sheets.last).to eq('Ranges')
-    end
-
-    it 'have the correct number of columns' do
-      expect(download.column_list.count).to eq(SampleManifestExcel.configuration.columns.saphyr.count)
-    end
-  end
-
   context 'Long read tube' do
     before do
       create(:long_read_tube_purpose)

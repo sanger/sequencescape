@@ -91,12 +91,6 @@ FactoryBot.define do
       value { "DONOR ID #{number}" }
     end
 
-    factory :donor_id2_column do
-      name { :donor_id2 }
-      heading { 'DONOR ID (required for cancer samples)' }
-      value { "DONOR ID2 #{number}" }
-    end
-
     skip_create
   end
 end

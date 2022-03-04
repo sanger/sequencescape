@@ -558,20 +558,6 @@ tube_multiplexed_chromium_library:
     - :sample_ebi_accession_number
     - :donor_id
     - :phenotype
-saphyr:
-  heading: "Saphyr"
-  asset_type: "1dtube"
-  columns:
-    - :sanger_tube_id
-    - :sanger_sample_id
-    - :supplier_name
-    - :volume
-    - :concentration
-    - :sample_public_name
-    - :sample_taxon_id
-    - :sample_common_name
-    - :sample_ebi_accession_number
-    - :donor_id
 tube_rack_default:
   heading: "Default Tube Rack"
   asset_type: "tube_rack"
@@ -621,10 +607,28 @@ long_read:
     - :sample_taxon_id
     - :sample_common_name
     - :sample_ebi_accession_number
+    - :phenotype
     - :donor_id
     - :genome_size
-    - :saphyr
-    - :pacbio
+    - :library_type_long_read
+long_read_plate:
+  heading: "Long Read Plate"
+  asset_type: "plate"
+  columns:
+    - :sanger_plate_id
+    - :well
+    - :sanger_sample_id
+    - :supplier_name
+    - :volume
+    - :concentration
+    - :sample_public_name
+    - :sample_taxon_id
+    - :sample_common_name
+    - :sample_ebi_accession_number
+    - :phenotype
+    - :donor_id
+    - :genome_size
+    - :library_type_long_read
 heron:
   heading: "Heron"
   asset_type: "plate"
@@ -675,7 +679,6 @@ heron:
     - :subject
     - :disease
     - :sample_ebi_accession_number
-    - :donor_id2
     - :control_type
     - :priority
 cardinal:
@@ -686,3 +689,11 @@ cardinal:
     - :sanger_sample_id
     - :supplier_name
     - :volume
+tube_controls:
+  heading: "Control tubes"
+  asset_type: "1dtube"
+  columns:
+    - :sanger_tube_id
+    - :sanger_sample_id
+    - :supplier_name
+    - :control_type

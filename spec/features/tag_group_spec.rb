@@ -7,7 +7,7 @@ describe 'Create a new tag group' do
 
   before { create :adapter_type, name: 'My type' }
 
-  it 'view tag groups and create a new valid one', js: true do
+  it 'view tag groups and create a new valid one' do
     login_user user
     visit tag_groups_path
     expect(page).to have_content 'Listing Tag Groups'
@@ -24,7 +24,7 @@ describe 'Create a new tag group' do
     expect(page).to have_content 'Create a new tag layout template from this tag group'
   end
 
-  it 'view tag groups and attempt to create a new one with invalid oligos', js: true do
+  it 'view tag groups and attempt to create a new one with invalid oligos' do
     login_user user
     visit tag_groups_path
     expect(page).to have_content 'Listing Tag Groups'

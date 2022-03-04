@@ -88,6 +88,13 @@ RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: 
     expect(metadata.donor_id).to eq('1234')
   end
 
+  it 'can update the field targets by :updates' do
+    column = described_class.new(options.merge(heading: 'DONOR ID', name: :legacy_donor_id, updates: :donor_id))
+    metadata = Sample::Metadata.new
+    column.update_metadata(metadata, '1234')
+    expect(metadata.donor_id).to eq('1234')
+  end
+
   context 'with no validation' do
     let(:column) { described_class.new(options.except(:validation)) }
 

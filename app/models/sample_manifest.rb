@@ -15,7 +15,7 @@
 # All {Sample samples} in a given manifest will initially belong to a single
 # {Study}, although it is possible for them to become associated with additional
 # studies over time.
-class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
+class SampleManifest < ApplicationRecord
   include Uuid::Uuidable
   include ModelExtensions::SampleManifest
   include SampleManifest::BarcodePrinterBehaviour
@@ -60,8 +60,8 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def template; end
 
-  belongs_to :supplier
-  belongs_to :study
+  belongs_to :supplier, optional: false
+  belongs_to :study, optional: false
   belongs_to :project
   belongs_to :user
   belongs_to :purpose
@@ -75,8 +75,6 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   serialize :last_errors
   serialize :barcodes
 
-  validates :supplier, presence: true
-  validates :study, presence: true
   validates :count, numericality: { only_integer: true, greater_than: 0, allow_blank: false }
   validates :asset_type, presence: true, inclusion: { in: SampleManifest::CoreBehaviour::BEHAVIOURS }
 
@@ -130,27 +128,17 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
     "#{study_id}stdy_manifest_#{id}_#{created_at.to_formatted_s(:dmy)}"
   end
 
-  # TODO[xxx] Consider index to make it faster
   scope :pending_manifests,
         -> {
-          order('sample_manifests.id DESC')
-            .joins(
-              # rubocop:todo Layout/LineLength
-              'LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"'
-              # rubocop:enable Layout/LineLength
-            )
-            .where('documents.id IS NULL')
+          order(id: :desc).includes(:uploaded_document).references(:uploaded_document).where(documents: { id: nil })
         }
 
   scope :completed_manifests,
         -> {
-          order('sample_manifests.updated_at DESC')
-            .joins(
-              # rubocop:todo Layout/LineLength
-              'LEFT OUTER JOIN documents ON documentable_type="SampleManifest" AND documentable_id=sample_manifests.id AND documentable_extended="uploaded"'
-              # rubocop:enable Layout/LineLength
-            )
-            .where('documents.id IS NOT NULL')
+          order(updated_at: :desc)
+            .includes(:uploaded_document)
+            .references(:uploaded_document)
+            .where.not(documents: { id: nil })
         }
 
   def generate
