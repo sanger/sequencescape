@@ -1,6 +1,4 @@
-var scannedBarcode, updateCounter;
-
-scannedBarcode = function (barcode_source, list, model) {
+const scannedBarcode = function (barcode_source, list, model) {
   var barcode, new_item;
   barcode = barcode_source.value.trim();
   if (barcode != "") {
@@ -58,6 +56,8 @@ scannedBarcode.prototype = {
 
 var counter = document.getElementById("scanned");
 
-updateCounter = function (counter, list) {
+const updateCounter = function (counter, list) {
   counter.innerText = "Scanned: " + list.getElementsByTagName("li").length;
 };
+
+export { scannedBarcode, updateCounter };

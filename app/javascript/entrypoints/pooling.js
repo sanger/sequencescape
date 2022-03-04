@@ -1,3 +1,5 @@
+import { scannedBarcode, updateCounter } from "@/shared/scanned_barcode";
+
 (function (window, $, undefined) {
   "use strict";
 

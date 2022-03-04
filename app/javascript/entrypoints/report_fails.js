@@ -1,4 +1,5 @@
 // Copied from from labware_reception.js since similar functionality is required
+import { scannedBarcode } from "@/shared/scanned_barcode";
 
 (function (window, $, undefined) {
   "use strict";

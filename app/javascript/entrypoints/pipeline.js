@@ -13,7 +13,7 @@ function select_requests_by_group(elementId, size, value) {
 
 function showElement(elementId, size) {
   for (var i = 0; i < size + 1; i++) {
-    element = document.getElementById(elementId + "_" + i);
+    let element = document.getElementById(elementId + "_" + i);
     if (element && element.style) {
       if (element.style.display == "") element.style.display = "none";
       else element.style.display = "";
@@ -21,7 +21,7 @@ function showElement(elementId, size) {
   }
 }
 
-(function ($, undefined) {
+(function ($) {
   // Whenever someone clicks on a priority flag we need to change the request priority.  For the multiplexed requests
   // this will trigger all of them to be updated.
   var inbox = $("#pipeline_inbox");

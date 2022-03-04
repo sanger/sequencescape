@@ -1,4 +1,4 @@
-(function (window, $, undefined) {
+(function (window, $) {
   "use strict";
 
   $(function () {
@@ -12,4 +12,4 @@
       $(target).attr("checked", this.checked);
     });
   });
-})(window, jQuery);
+})(window, window.jQuery);

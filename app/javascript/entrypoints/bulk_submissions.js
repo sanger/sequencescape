@@ -1,5 +1,5 @@
 // Submission workflow jQuery Plugin...
-(function (window, $, undefined) {
+(function (window, $) {
   "use strict";
 
   var templateChangeHandler = function (event) {
@@ -19,4 +19,4 @@
   $(function () {
     $("#bulk_submission_excel_download_submission_template_id").on("change", templateChangeHandler);
   });
-})(window, jQuery);
+})(window, window.jQuery);

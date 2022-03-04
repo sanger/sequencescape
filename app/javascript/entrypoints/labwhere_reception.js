@@ -1,4 +1,6 @@
-(function (window, $, undefined) {
+import { scannedBarcode } from "@/shared/scanned_barcode";
+
+(function (window, $) {
   "use strict";
 
   // Trim polyfill courtesy of MDN (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trim)
@@ -59,4 +61,4 @@
       }
     });
   });
-})(window, jQuery);
+})(window, window.jQuery);
