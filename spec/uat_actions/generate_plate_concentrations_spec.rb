@@ -23,7 +23,7 @@ describe UatActions::GeneratePlateConcentrations do
       end
 
       it 'can be performed' do
-        expect(uat_action.perform).to eq true
+        expect(uat_action.perform).to be true
         expect(uat_action.report).to eq report
         expect(plate.wells.map(&:qc_results).size).to eq 3
         expect(plate.wells.first.qc_results.first.assay_type).to eq 'UAT_Testing'
@@ -41,7 +41,7 @@ describe UatActions::GeneratePlateConcentrations do
       end
 
       it 'can be performed' do
-        expect(uat_action.perform).to eq true
+        expect(uat_action.perform).to be true
         expect(uat_action.report).to eq report
         expect(plate.wells.map(&:qc_results).size).to eq 3
         expect(plate.wells.first.qc_results.first.assay_type).to eq 'UAT_Testing'
