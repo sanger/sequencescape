@@ -83,11 +83,9 @@ module SampleManifestExcel
       def create_row(detail)
         axlsx_worksheet.add_row do |row|
           columns.each do |column|
-            if column.unlocked?
-              row.add_cell column.attribute_value(detail), type: column.type, style: styles[:unlocked].reference
-            else
-              row.add_cell column.attribute_value(detail), type: column.type
-            end
+            style = column.unlocked? ? styles[:unlocked].reference : nil
+
+            row.add_cell column.attribute_value(detail), type: column.type, style: style
           end
         end
       end

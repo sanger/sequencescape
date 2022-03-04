@@ -41,6 +41,10 @@ require 'jsonapi/resources/matchers'
 require 'aasm/rspec'
 require 'rspec/collection_matchers'
 
+# Appear to have to require this explicitly as otherwise receive
+# uninitialized constant RSpec::Support::Differ
+require 'rspec/support/differ'
+
 require './lib/plate_map_generation'
 require './lib/capybara_failure_logger'
 require './lib/capybara_timeout_patches'

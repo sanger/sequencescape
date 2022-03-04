@@ -11,7 +11,8 @@ module SequencescapeExcel
           border: {
             style: :thin,
             color: '00'
-          }
+          },
+          format_code: '@'
         },
         unlocked_no_border: {
           locked: false
