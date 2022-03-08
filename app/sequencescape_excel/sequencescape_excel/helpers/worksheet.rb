@@ -11,8 +11,7 @@ module SequencescapeExcel
           border: {
             style: :thin,
             color: '00'
-          },
-          format_code: '@'
+          }
         },
         unlocked_no_border: {
           locked: false
@@ -28,6 +27,12 @@ module SequencescapeExcel
             color: '00',
             edges: %i[left right top bottom]
           }
+        },
+        string: {
+          format_code: '@'
+        },
+        integer: {
+          format_code: '#'
         }
       }.freeze
 
@@ -44,8 +49,26 @@ module SequencescapeExcel
         @styles ||= {}
       end
 
+      def find_or_create_style(components)
+        case components
+        when Symbol
+          styles[components]
+        when nil
+          nil
+        else
+          styles[components] ||= generate_style(components)
+        end
+      end
+
       def create_styles
         styles.tap { |s| STYLES.each { |k, style| s[k] = Style.new(workbook, style) } }
+      end
+
+      private
+
+      def generate_style(components)
+        style = components.reduce({}) { |store, component| store.merge!(STYLES.fetch(component, {})) }
+        Style.new(workbook, style)
       end
 
       ##

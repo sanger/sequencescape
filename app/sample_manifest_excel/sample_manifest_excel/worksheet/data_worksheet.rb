@@ -83,7 +83,7 @@ module SampleManifestExcel
       def create_row(detail)
         axlsx_worksheet.add_row do |row|
           columns.each do |column|
-            style = column.unlocked? ? styles[:unlocked].reference : nil
+            style = find_or_create_style(column.style)&.reference
 
             row.add_cell column.attribute_value(detail), type: column.type, style: style
           end

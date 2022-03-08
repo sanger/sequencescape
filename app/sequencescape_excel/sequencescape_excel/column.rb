@@ -79,6 +79,10 @@ module SequencescapeExcel
       unlocked
     end
 
+    def style
+      [unlocked? ? :unlocked : :locked, type]
+    end
+
     def metadata_field?
       @metadata_field ||= Column.sample_metadata_model.respond_to?(updates) unless specialised_field?
     end

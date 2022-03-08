@@ -71,6 +71,7 @@ tag_group:
 tag_index:
   heading: TAG INDEX
   unlocked: true
+  type: :integer
   validation:
     options:
       type: :whole
@@ -105,6 +106,7 @@ tag2_group:
 tag2_index:
   heading: TAG2 INDEX (Fill in for dual Index Only)
   unlocked: true
+  type: :integer
   validation:
     options:
       type: :whole
@@ -223,6 +225,7 @@ reference_genome:
 insert_size_from:
   heading: INSERT SIZE FROM
   unlocked: true
+  type: :integer
   validation:
     options:
       type: :whole
@@ -239,6 +242,7 @@ insert_size_from:
 insert_size_to:
   heading: INSERT SIZE TO
   unlocked: true
+  type: :integer
   validation:
     options:
       type: :whole
@@ -287,6 +291,7 @@ cohort:
 volume:
   heading: VOLUME (ul)
   unlocked: true
+  type: :float
   validation:
     options:
       type: :decimal
@@ -307,6 +312,7 @@ volume:
 concentration:
   heading: CONC. (ng/ul)
   unlocked: true
+  type: :float
   validation:
     options:
       type: :decimal
@@ -653,6 +659,7 @@ sample_public_name:
 sample_taxon_id:
   heading: TAXON ID
   unlocked: true
+  type: :integer
   validation:
     options:
       type: :whole
@@ -782,6 +789,7 @@ disease:
 genome_size:
   heading: GENOME SIZE
   unlocked: true
+  type: :float
   validation:
     options:
       type: :decimal

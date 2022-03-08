@@ -159,6 +159,22 @@ RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: 
     end
   end
 
+  describe '#style' do
+    subject { described_class.new({ **options, unlocked: unlocked }).style }
+
+    context 'when locked' do
+      let(:unlocked) { false }
+
+      it { is_expected.to eq %i[locked string] }
+    end
+
+    context 'when unlocked' do
+      let(:unlocked) { true }
+
+      it { is_expected.to eq %i[unlocked string] }
+    end
+  end
+
   # TODO: Need to improve way keys are found to reduce brittleness of tests.
   # would break if column names changed.
   context 'argument builder' do
