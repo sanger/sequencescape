@@ -50,14 +50,7 @@ module SequencescapeExcel
       end
 
       def find_or_create_style(components)
-        case components
-        when Symbol
-          styles[components]
-        when nil
-          nil
-        else
-          styles[components] ||= generate_style(components)
-        end
+        styles[components] ||= generate_style(components)
       end
 
       def create_styles
