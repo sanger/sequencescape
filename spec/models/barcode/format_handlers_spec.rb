@@ -331,5 +331,19 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode 'S2-046-_123456  '
     it_has_an_invalid_barcode " 1234567890NBC\na"
   end
+
+  describe Barcode::FormatHandlers::EastLondonGenesAndHealthV2 do
+    it_has_a_valid_barcode 'S2-046-12345', prefix: 'S2', number: 12_345, suffix: nil
+    it_has_a_valid_barcode 'S2-999-123456', prefix: 'S2', number: 123_456, suffix: nil
+    it_has_a_valid_barcode 'S2-044-123456', prefix: 'S2', number: 123_456, suffix: nil
+    it_has_an_invalid_barcode 'S2-123456'
+    it_has_an_invalid_barcode 'S2-046-_123456'
+    it_has_an_invalid_barcode 'INVALID'
+    it_has_an_invalid_barcode '123456789PLY-046-'
+    it_has_an_invalid_barcode 'S2_1234'
+    it_has_an_invalid_barcode ' S2-046-_123456'
+    it_has_an_invalid_barcode 'S2-046-_123456  '
+    it_has_an_invalid_barcode " 1234567890NBC\na"
+  end
   # rubocop:enable RSpec/EmptyExampleGroup
 end
