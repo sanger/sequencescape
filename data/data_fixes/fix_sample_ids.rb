@@ -14,17 +14,17 @@ data.each_with_index do |row, index|
     samples = Sample::Metadata.where("sample_description" => row["original_root_sample_id"])
     if samples != []
         samples.each do |sample|
-            puts "updating: #{sample.sample_description}"
+            logger.debug("updating row with ID: #{id}, sample ID: #{sample.sample_id}, root_sample ID: #{sample.sample_description}")
             sample.sample_description = row["root_sample_id"]
             saved = sample.save
             if saved
-                success_ids << row["original_root_sample_id"]
+                success_ids << "Successfully saved new Root Sample ID for row with ID: #{sample.sample_id}"
             else
-                failed_ids << row["original_root_sample_id"]
+                failed_ids << "Could not save new Root Sample ID for row with ID: #{sample.id}"
             end
         end
     else
-        failed_ids << row["original_root_sample_id"]
+        failed_ids << "No matching result for Root Sample ID: #{row["original_root_sample_id"]}"
     end
 end
 
