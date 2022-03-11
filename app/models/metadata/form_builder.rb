@@ -48,7 +48,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase # rubocop:todo Style/Documen
 
   def select(method, choices, options = {}, html_options = {}, &block)
     group = html_options.delete(:grouping) || options.delete(:grouping)
-    append_class!(html_options, 'custom-select')
+    append_class!(html_options, 'custom-select select2')
     property_field(:field, method, grouping: group) { super(method, choices, options, html_options, &block) }
   end
 

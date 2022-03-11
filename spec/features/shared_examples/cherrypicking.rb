@@ -4,7 +4,7 @@ shared_examples 'a cherrypicking procedure' do
   attr_reader :batch_id
   attr_reader :batch_barcode
 
-  scenario 'running the cherrypicking pipeline' do
+  it 'running the cherrypicking pipeline' do
     step 'Setting up the batch' do
       step 'Access the Cherrypicking pipeline' do
         login_user(user)

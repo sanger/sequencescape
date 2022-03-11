@@ -17,7 +17,7 @@ RSpec.describe SampleManifestExcel::Configuration, type: :model, sample_manifest
   end
 
   it 'is able to set and get a tag group' do
-    expect(configuration.tag_group).to be nil
+    expect(configuration.tag_group).to be_nil
     configuration.tag_group = 'Main test group'
     expect(configuration.tag_group).to eq('Main test group')
   end

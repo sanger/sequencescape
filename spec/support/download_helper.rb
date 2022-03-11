@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+# Contains methods to assist with managing downloads via capybara and chrome
+# BUG: Intermittent, seemingly non deterministic reversion of downloads directory
+#      from Capybara.save_path (./tmp/capybara) to project root. See:
+#      https://github.com/sanger/sequencescape/issues/3511
 module DownloadHelpers
   TIMEOUT = 5
   PATH = Capybara.save_path
@@ -11,7 +15,9 @@ module DownloadHelpers
 
   def self.downloaded_file(file, timeout: TIMEOUT)
     wait_for_download(file, timeout)
-    File.read(path_to(file)).tap { |_| remove_downloads }
+    File.read(path_to(file))
+  ensure
+    remove_downloads
   end
 
   def self.path_to(file)
@@ -21,7 +27,7 @@ module DownloadHelpers
   def self.wait_for_download(file, timeout = TIMEOUT)
     Timeout.timeout(timeout) { sleep 0.1 until downloaded?(file) }
   rescue Timeout::Error
-    raise StandardError, "Could not open #{file} after #{timeout} seconds"
+    raise StandardError, "Could not open #{file} in #{PATH} after #{timeout} seconds"
   end
 
   def self.downloaded?(file)

@@ -4,7 +4,7 @@ require 'rails_helper'
 
 describe RequestType::Validator::LibraryTypeValidator, type: :model do
   let(:library_type) { create :library_type, name: 'MyLibraryType' }
-  let(:request_type) { create :library_creation_request_type, library_type: library_type }
+  let(:request_type) { create :library_creation_request_type, :with_library_types, library_type: library_type }
   let(:validator) { described_class.new(request_type.id) }
 
   context 'when initialising' do
@@ -16,19 +16,19 @@ describe RequestType::Validator::LibraryTypeValidator, type: :model do
   context 'when validating library type' do
     context 'when exists and case matches' do
       it 'returns true' do
-        expect(validator.include?('MyLibraryType')).to eq(true)
+        expect(validator.include?('MyLibraryType')).to be(true)
       end
     end
 
     context 'when exists and case does not match' do
       it 'returns false' do
-        expect(validator.include?('mylibrarytype')).to eq(false)
+        expect(validator.include?('mylibrarytype')).to be(false)
       end
     end
 
     context 'when is not recognised' do
       it 'returns false' do
-        expect(validator.include?('unknown')).to eq(false)
+        expect(validator.include?('unknown')).to be(false)
       end
     end
   end

@@ -138,7 +138,7 @@ RSpec.describe PhiX::SpikedBuffer, type: :model, phi_x: true do
       let(:phi_x_spiked_buffer) { build :phi_x_spiked_buffer, number: -2 }
 
       it 'returns false' do
-        expect(phi_x_spiked_buffer.save).to eq false
+        expect(phi_x_spiked_buffer.save).to be false
       end
     end
   end

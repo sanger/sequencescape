@@ -27,6 +27,10 @@ Given /^(?:I have )?a (sample|library) tube called "([^"]+)"$/ do |tube_type, na
   FactoryBot.create(:"#{tube_type}_tube", name: name)
 end
 
+Given 'I have an empty library tube called {string}' do |name|
+  FactoryBot.create(:empty_library_tube, name: name)
+end
+
 Then 'the name of {uuid} should be {string}' do |asset, name|
   assert_equal(name, asset.name)
 end

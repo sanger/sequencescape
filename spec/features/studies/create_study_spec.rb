@@ -112,6 +112,6 @@ describe 'Create a study' do
     study = Study.last
     expect(page).to have_current_path("/studies/#{study.id}/information")
     expect(study.abbreviation).to eq 'CCC3'
-    expect(study.study_metadata.bam).to eq false
+    expect(study.study_metadata.bam).to be false
   end
 end

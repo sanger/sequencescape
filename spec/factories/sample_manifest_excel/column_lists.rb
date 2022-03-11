@@ -26,7 +26,7 @@ FactoryBot.define do
           build_list(:column, 5)
             .push(build(:sanger_sample_id_column))
             .push(build(:sanger_tube_id_column))
-            .push(build(:donor_id2_column))
+            .push(build(:donor_id_column))
         )
       end
     end

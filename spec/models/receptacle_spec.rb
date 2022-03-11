@@ -55,7 +55,7 @@ RSpec.describe Receptacle, type: :model do
   describe '#submit_for_sequencing' do
     let(:receptacle) { create :receptacle, submit_for_sequencing: true }
 
-    it { expect(receptacle.submit_for_sequencing).to eq true }
+    it { expect(receptacle.submit_for_sequencing).to be true }
   end
 
   describe '#sub_pool' do

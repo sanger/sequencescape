@@ -17,7 +17,7 @@ describe UatActions::TestSubmission do
     end
 
     it 'can be performed' do
-      expect(uat_action.perform).to eq true
+      expect(uat_action.perform).to be true
       expect(uat_action.report['plate_barcode_0']).to eq report['plate_barcode_0']
       expect(uat_action.report['submission_id']).to be_a Integer
     end
@@ -31,7 +31,7 @@ describe UatActions::TestSubmission do
       end
 
       it 'can be performed' do
-        expect(uat_action.perform).to eq true
+        expect(uat_action.perform).to be true
         expect(uat_action.report['plate_barcode_0']).to eq report['plate_barcode_0']
         expect(uat_action.report['submission_id']).to be_a Integer
       end
@@ -41,7 +41,7 @@ describe UatActions::TestSubmission do
       let(:parameters) { { submission_template_name: submission_template.name, library_type_name: 'Standard' } }
 
       it 'can be performed' do
-        expect(uat_action.perform).to eq true
+        expect(uat_action.perform).to be true
         expect(uat_action.report['plate_barcode_0']).to eq report['plate_barcode_0']
         expect(uat_action.report['submission_id']).to be_a Integer
         expect(uat_action.report['library_type']).to eq 'Standard'
@@ -58,7 +58,7 @@ describe UatActions::TestSubmission do
       end
 
       it 'can be performed' do
-        expect(uat_action.perform).to eq true
+        expect(uat_action.perform).to be true
         expect(uat_action.report['plate_barcode_0']).to eq report['plate_barcode_0']
         expect(uat_action.report['submission_id']).to be_a Integer
         expect(uat_action.report['library_type']).to eq 'Standard'
@@ -70,7 +70,7 @@ describe UatActions::TestSubmission do
       let(:parameters) { { submission_template_name: submission_template.name, number_of_wells_with_samples: '2' } }
 
       it 'can be performed' do
-        expect(uat_action.perform).to eq true
+        expect(uat_action.perform).to be true
         expect(uat_action.report['plate_barcode_0']).to eq report['plate_barcode_0']
         expect(uat_action.report['submission_id']).to be_a Integer
         expect(uat_action.report['number_of_wells_with_samples']).to be_a Integer
@@ -81,7 +81,7 @@ describe UatActions::TestSubmission do
       let(:parameters) { { submission_template_name: submission_template.name, number_of_wells_to_submit: '2' } }
 
       it 'can be performed' do
-        expect(uat_action.perform).to eq true
+        expect(uat_action.perform).to be true
         expect(uat_action.report['plate_barcode_0']).to eq report['plate_barcode_0']
         expect(uat_action.report['number_of_wells_to_submit']).to be_a Integer
       end

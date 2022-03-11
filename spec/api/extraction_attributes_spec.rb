@@ -74,7 +74,7 @@ describe '/api/1/extraction_attributes' do
         it 'does not rack with error a tube into a well that already has a sample in it' do
           authorized_api_request :post, subject, payload
           expect(taget_well_a1.samples.count).to eq(1)
-          expect(taget_well_a1.samples.include?(sample_tube.samples.first)).to eq(false)
+          expect(taget_well_a1.samples.include?(sample_tube.samples.first)).to be(false)
         end
 
         context 'when tubes contain the same samples as the wells' do
@@ -85,7 +85,7 @@ describe '/api/1/extraction_attributes' do
             authorized_api_request :post, subject, payload
             expect(status).to eq(response_code)
             expect(taget_well_a1.samples.count).to eq(1)
-            expect(taget_well_a1.samples.include?(sample_tube.samples.first)).to eq(true)
+            expect(taget_well_a1.samples.include?(sample_tube.samples.first)).to be(true)
           end
         end
       end
@@ -305,8 +305,8 @@ describe '/api/1/extraction_attributes' do
               expect(status).to eq(response_code)
               expect(second_plate.wells.located_at('A1').first).to eq(well1)
               expect(second_plate.wells.located_at('B1').first).to eq(well2)
-              expect(first_plate.wells.located_at('A1').first.nil?).to eq(true)
-              expect(first_plate.wells.located_at('B1').first.nil?).to eq(true)
+              expect(first_plate.wells.located_at('A1').first.nil?).to be(true)
+              expect(first_plate.wells.located_at('B1').first.nil?).to be(true)
               authorized_api_request :post, first_plate_subject, payload_rack
               expect(response).to have_http_status(:error)
             end
@@ -320,15 +320,15 @@ describe '/api/1/extraction_attributes' do
             [well_at_a1, well_at_b1].each(&:reload)
             expect(second_plate.wells.located_at('A1').first).to eq(well1)
             expect(second_plate.wells.located_at('B1').first).to eq(well2)
-            expect(first_plate.wells.located_at('A1').first.nil?).to eq(true)
-            expect(first_plate.wells.located_at('B1').first.nil?).to eq(true)
+            expect(first_plate.wells.located_at('A1').first.nil?).to be(true)
+            expect(first_plate.wells.located_at('B1').first.nil?).to be(true)
             authorized_api_request :post, first_plate_subject, payload_rerack
             expect(status).to eq(response_code)
             [well_at_a1, well_at_b1].each(&:reload)
             expect(first_plate.wells.located_at('A1').first).to eq(well1)
             expect(first_plate.wells.located_at('B1').first).to eq(well2)
-            expect(second_plate.wells.located_at('A1').first.nil?).to eq(true)
-            expect(second_plate.wells.located_at('B1').first.nil?).to eq(true)
+            expect(second_plate.wells.located_at('A1').first.nil?).to be(true)
+            expect(second_plate.wells.located_at('B1').first.nil?).to be(true)
           end
         end
 
@@ -342,8 +342,8 @@ describe '/api/1/extraction_attributes' do
             expect(first_plate.wells.located_at('B1').first.samples).to eq(sample_tube2.samples)
             authorized_api_request :post, second_plate_subject, payload_rerack
             expect(status).to eq(response_code)
-            expect(first_plate.wells.located_at('A1').first.nil?).to eq(true)
-            expect(first_plate.wells.located_at('B1').first.nil?).to eq(true)
+            expect(first_plate.wells.located_at('A1').first.nil?).to be(true)
+            expect(first_plate.wells.located_at('B1').first.nil?).to be(true)
             expect(second_plate.wells.located_at('A1').first.samples).to eq(sample_tube.samples)
             expect(second_plate.wells.located_at('B1').first.samples).to eq(sample_tube2.samples)
           end

@@ -25,7 +25,7 @@ describe UatActions::GenerateQcResults do
       end
 
       it 'can be performed' do
-        expect(uat_action.perform).to eq true
+        expect(uat_action.perform).to be true
         expect(uat_action.report).to eq report
         expect(plate.wells.flat_map(&:qc_results).size).to eq 3
         expect(plate.wells.first.qc_results.first.assay_type).to eq 'UAT_Testing'
@@ -48,7 +48,7 @@ describe UatActions::GenerateQcResults do
       end
 
       it 'can be performed' do
-        expect(uat_action.perform).to eq true
+        expect(uat_action.perform).to be true
         expect(uat_action.report).to eq report
         expect(tube.receptacles.flat_map(&:qc_results).size).to eq 1
         expect(tube.receptacles.first.qc_results.first.assay_type).to eq 'UAT_Testing'
@@ -61,7 +61,7 @@ describe UatActions::GenerateQcResults do
       end
 
       it 'can be performed' do
-        expect(uat_action.perform).to eq true
+        expect(uat_action.perform).to be true
         expect(uat_action.report).to eq report
         expect(plate.wells.map(&:qc_results).size).to eq 3
         expect(plate.wells.first.qc_results.first.assay_type).to eq 'UAT_Testing'

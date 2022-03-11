@@ -41,19 +41,24 @@ require 'jsonapi/resources/matchers'
 require 'aasm/rspec'
 require 'rspec/collection_matchers'
 
+# Appear to have to require this explicitly as otherwise receive
+# uninitialized constant RSpec::Support::Differ
+require 'rspec/support/differ'
+
 require './lib/plate_map_generation'
 require './lib/capybara_failure_logger'
 require './lib/capybara_timeout_patches'
 require 'pry'
 
+# BUG: Intermittent, seemingly non deterministic reversion of downloads directory
+#      from Capybara.save_path (./tmp/capybara) to project root. See:
+#      https://github.com/sanger/sequencescape/issues/3511
 Capybara.register_driver :headless_chrome do |app|
-  enable_chrome_headless_downloads(Capybara.drivers[:selenium_chrome_headless].call(app))
+  Capybara.drivers[:selenium_chrome_headless].call(app).tap { |driver| enable_chrome_headless_downloads(driver) }
 end
 
 def enable_chrome_headless_downloads(driver)
   driver.options[:options].add_preference(:download, default_directory: Capybara.save_path)
-  driver.browser.download_path = Capybara.save_path
-  driver
 end
 
 Capybara.javascript_driver = ENV.fetch('JS_DRIVER', 'headless_chrome').to_sym

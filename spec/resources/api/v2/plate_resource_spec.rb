@@ -41,6 +41,16 @@ RSpec.describe Api::V2::PlateResource, type: :resource do
     it { is_expected.to have_one(:purpose).with_class_name('Purpose') }
 
     it { is_expected.to have_many(:wells).with_class_name('Well') }
+
+    # If we are using api/v2/labware to pull back a list of labware, we may expect
+    # a mix of plates and tubes. If we want to eager load their contents we use the
+    # generic 'receptacles' association. However, if this association doesn't also
+    # exist on plate (and tube), the records won't be included (ie. we won't populate
+    # wells instead). In addition, this makes consuption of returned resources easier,
+    # as the interface for plates and tubes remains the same. Even though not
+    # strictly speaking inheritance, I think the Liskov Substitution Principle
+    # applies here
+    it { is_expected.to have_many(:receptacles) }
     it { is_expected.to have_many(:projects).with_class_name('Project') }
     it { is_expected.to have_many(:studies).with_class_name('Study') }
     it { is_expected.to have_many(:comments).with_class_name('Comment') }

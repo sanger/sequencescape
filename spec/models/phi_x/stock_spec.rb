@@ -121,7 +121,7 @@ RSpec.describe PhiX::Stock, type: :model, phi_x: true do
       let(:phi_x_stock) { build :phi_x_stock, number: -2 }
 
       it 'returns false' do
-        expect(phi_x_stock.save).to eq false
+        expect(phi_x_stock.save).to be false
       end
     end
   end

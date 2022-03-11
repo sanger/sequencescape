@@ -77,7 +77,7 @@ describe Well do
         let(:units) { 'nM' }
 
         it 'works', :aggregate_failures do
-          expect(well.get_concentration).to eq(nil)
+          expect(well.get_concentration).to be_nil
           expect(well.get_molarity).to eq(100)
         end
       end
@@ -87,7 +87,7 @@ describe Well do
 
         it 'works', :aggregate_failures do
           expect(well.get_concentration).to eq(100)
-          expect(well.get_molarity).to eq(nil)
+          expect(well.get_molarity).to be_nil
         end
       end
     end
