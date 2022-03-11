@@ -29,10 +29,10 @@ module SequencescapeExcel
           }
         },
         string: {
-          format_code: '@'
+          format_code: '@' # Text field
         },
         integer: {
-          format_code: '#'
+          format_code: '#' # Numeric field (Integer)
         }
       }.freeze
 
