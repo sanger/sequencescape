@@ -98,7 +98,7 @@ group :default do
   gem 'rainbow'
 
   # Compile js
-  gem 'webpacker'
+  gem 'vite_rails'
 
   # Authorization
   gem 'cancancan'

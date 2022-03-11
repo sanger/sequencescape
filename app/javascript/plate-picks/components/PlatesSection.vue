@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import PlatesSectionPlate from "./PlatesSectionPlate";
+import PlatesSectionPlate from "./PlatesSectionPlate.vue";
 
 export default {
   components: {
