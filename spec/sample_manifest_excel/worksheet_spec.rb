@@ -135,10 +135,10 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
         .select(&:unlocked?)
         .each do |column|
           expect(worksheet.axlsx_worksheet[column.range.first_cell.reference].style).to eq(
-            worksheet.styles[:unlocked].reference
+            worksheet.styles[column.style].reference
           )
           expect(worksheet.axlsx_worksheet[column.range.last_cell.reference].style).to eq(
-            worksheet.styles[:unlocked].reference
+            worksheet.styles[column.style].reference
           )
         end
     end
