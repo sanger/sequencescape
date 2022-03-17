@@ -102,6 +102,8 @@ plate_rnachip:
     - :volume
     - :concentration
     - :gender
+    - :country_of_origin
+    - :date_of_sample_collection
     - :dna_source
     - :gc_content
     - :sample_public_name
@@ -331,6 +333,8 @@ tube_rnachip:
     - :volume
     - :concentration
     - :gender
+    - :country_of_origin
+    - :date_of_sample_collection
     - :dna_source
     - :gc_content
     - :sample_public_name
@@ -611,6 +615,8 @@ long_read:
     - :donor_id
     - :genome_size
     - :library_type_long_read
+    - :country_of_origin
+    - :date_of_sample_collection
 long_read_plate:
   heading: "Long Read Plate"
   asset_type: "plate"
@@ -629,6 +635,8 @@ long_read_plate:
     - :donor_id
     - :genome_size
     - :library_type_long_read
+    - :country_of_origin
+    - :date_of_sample_collection
 heron:
   heading: "Heron"
   asset_type: "plate"
