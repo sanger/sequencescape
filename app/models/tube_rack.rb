@@ -3,9 +3,9 @@
 # A rack that holds tubes
 # Tubes are linked via the RackedTubes association
 class TubeRack < Labware
-  self.sample_partial = 'assets/samples_partials/tube_rack_samples'
-
   include Barcode::Barcodeable
+
+  self.sample_partial = 'assets/samples_partials/tube_rack_samples'
 
   has_many :racked_tubes, dependent: :destroy, inverse_of: :tube_rack
   has_many :tubes, through: :racked_tubes

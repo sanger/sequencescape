@@ -125,7 +125,7 @@ RSpec.describe Robot::Verification::SourceDestControlBeds, robot_verification: t
       it_behaves_like 'it generates layout information'
 
       it 'is is a valid submission' do
-        expect(verifier.valid_submission?(params)).to eq true
+        expect(verifier.valid_submission?(params)).to be true
       end
     end
 
@@ -208,7 +208,7 @@ RSpec.describe Robot::Verification::SourceDestControlBeds, robot_verification: t
       it_behaves_like 'it generates layout information'
 
       it 'is is a valid submission' do
-        expect(verifier.valid_submission?(params)).to eq true
+        expect(verifier.valid_submission?(params)).to be true
       end
     end
 
@@ -282,7 +282,7 @@ RSpec.describe Robot::Verification::SourceDestControlBeds, robot_verification: t
       it_behaves_like 'it generates layout information'
 
       it 'is is a valid submission' do
-        expect(verifier.valid_submission?(params)).to eq true
+        expect(verifier.valid_submission?(params)).to be true
       end
     end
   end

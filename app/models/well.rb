@@ -300,9 +300,6 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
     markers.is_a?(Array) ? markers.join : markers
   end
 
-  # def map_description
-  delegate :description, to: :map, prefix: true, allow_nil: true
-
   # Returns the name of the position (eg. A1) of the well
   def absolute_position_name
     map_description

@@ -27,7 +27,7 @@ describe UatActions::GeneratePlates do
       before { allow(PlateBarcode).to receive(:create).and_return(barcode_1) }
 
       it 'can be performed' do
-        expect(uat_action.perform).to eq true
+        expect(uat_action.perform).to be true
         expect(uat_action.report['plate_0']).to eq report['plate_0']
         expect(Plate.find_by_barcode(report['plate_0']).wells.first.aliquots.first.study).to eq study
       end
@@ -55,7 +55,7 @@ describe UatActions::GeneratePlates do
       before { allow(PlateBarcode).to receive(:create).and_return(barcode_1, barcode_2, barcode_3) }
 
       it 'can be performed' do
-        expect(uat_action.perform).to eq true
+        expect(uat_action.perform).to be true
         expect(uat_action.report['plate_0']).to eq report['plate_0']
         expect(uat_action.report['plate_1']).to eq report['plate_1']
         expect(uat_action.report['plate_2']).to eq report['plate_2']

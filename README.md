@@ -171,7 +171,7 @@ The `config/database.yml` file saves the list of databases.
 2. Install webpacker and the required JS libraries
 
    ```shell
-   bundle exec rails webpacker:install
+   yarn
    ```
 
 ### Starting rails

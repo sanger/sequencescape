@@ -32,6 +32,10 @@ RSpec.describe Api::V2::LabwareResource, type: :resource do
     it { is_expected.to have_many(:ancestors) }
     it { is_expected.to have_many(:state_changes) }
 
+    # If we're using the labware endpoint, we need the generic receptacles
+    # association if we are to eager load the contents of returned labware
+    it { is_expected.to have_many(:receptacles) }
+
     # Custom method tests
     # Add tests for any custom methods you've added.
   end

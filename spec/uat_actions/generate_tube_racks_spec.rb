@@ -10,7 +10,7 @@ describe UatActions::GenerateTubeRacks do
 
     context 'when creating a single tube rack' do
       it 'can be performed' do
-        expect(uat_action.perform).to eq true
+        expect(uat_action.perform).to be true
         expect(uat_action.report['rack_0']).to be_present
         expect(
           TubeRack.find_by_barcode(uat_action.report['rack_0']).tube_receptacles.first.aliquots.first.study
@@ -22,7 +22,7 @@ describe UatActions::GenerateTubeRacks do
       let(:parameters) { { rack_count: 3, study_name: study.name } }
 
       it 'can be performed' do
-        expect(uat_action.perform).to eq true
+        expect(uat_action.perform).to be true
         expect(uat_action.report['rack_0']).to be_present
         expect(uat_action.report['rack_1']).to be_present
         expect(uat_action.report['rack_2']).to be_present

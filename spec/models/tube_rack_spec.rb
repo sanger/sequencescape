@@ -6,7 +6,7 @@ RSpec.describe TubeRack do
     it 'can be created' do
       tube_rack = create :tube_rack
 
-      expect(described_class.exists?(tube_rack.id)).to eq(true)
+      expect(described_class.exists?(tube_rack.id)).to be(true)
     end
 
     it 'can contain racked_tubes' do
@@ -41,7 +41,7 @@ RSpec.describe TubeRack do
     it 'can be destroyed' do
       tube_rack.destroy
 
-      expect(described_class.exists?(tube_rack.id)).to eq(false)
+      expect(described_class.exists?(tube_rack.id)).to be(false)
     end
 
     it 'destroys the RackedTubes when destroyed' do
@@ -50,8 +50,8 @@ RSpec.describe TubeRack do
 
       tube_rack.destroy
 
-      expect(RackedTube.exists?(racked_tube.id)).to eq(false)
-      expect(Tube.exists?(tube.id)).to eq(true)
+      expect(RackedTube.exists?(racked_tube.id)).to be(false)
+      expect(Tube.exists?(tube.id)).to be(true)
     end
   end
 

@@ -36,4 +36,4 @@ RUN rm ./google-chrome-stable_current_amd64.deb
 RUN npm install --global yarn
 RUN gem install bundler
 RUN bundle install
-RUN bundle exec rails webpacker:install
+RUN yarn --install

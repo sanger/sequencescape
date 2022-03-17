@@ -16,19 +16,19 @@ describe RequestType::Validator::LibraryTypeValidator, type: :model do
   context 'when validating library type' do
     context 'when exists and case matches' do
       it 'returns true' do
-        expect(validator.include?('MyLibraryType')).to eq(true)
+        expect(validator.include?('MyLibraryType')).to be(true)
       end
     end
 
     context 'when exists and case does not match' do
       it 'returns false' do
-        expect(validator.include?('mylibrarytype')).to eq(false)
+        expect(validator.include?('mylibrarytype')).to be(false)
       end
     end
 
     context 'when is not recognised' do
       it 'returns false' do
-        expect(validator.include?('unknown')).to eq(false)
+        expect(validator.include?('unknown')).to be(false)
       end
     end
   end

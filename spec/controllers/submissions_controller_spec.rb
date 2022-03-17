@@ -220,7 +220,7 @@ RSpec.describe SubmissionsController, type: :controller do
         wells = Order.last.assets
 
         expect(wells.size).to eq(4)
-        wells.each { |well| expect(@wd_plate.wells.include?(well)).to eq(true) }
+        wells.each { |well| expect(@wd_plate.wells.include?(well)).to be(true) }
       end
     end
 

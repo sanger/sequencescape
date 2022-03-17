@@ -115,7 +115,7 @@ RSpec.describe SequencingRequest, type: :model do
       # We don't convert, as a wrong unit shows a deviation from SOP, and possibly
       # indicated that the user has input the WRONG concentration
 
-      it { is_expected.to eq nil }
+      it { is_expected.to be_nil }
     end
 
     context 'with unpredictable information' do
@@ -123,7 +123,7 @@ RSpec.describe SequencingRequest, type: :model do
 
       # Have some ranges in the database.
 
-      it { is_expected.to eq nil }
+      it { is_expected.to be_nil }
     end
 
     context 'with lots of whitespace' do

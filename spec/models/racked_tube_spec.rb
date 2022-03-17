@@ -43,8 +43,8 @@ RSpec.describe RackedTube do
     it 'can be destroyed without affecting the tube or tube rack' do
       racked_tube.destroy
 
-      expect(Tube.exists?(tube.id)).to eq(true)
-      expect(TubeRack.exists?(tube_rack.id)).to eq(true)
+      expect(Tube.exists?(tube.id)).to be(true)
+      expect(TubeRack.exists?(tube_rack.id)).to be(true)
     end
   end
 
