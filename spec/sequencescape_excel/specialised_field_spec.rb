@@ -404,9 +404,9 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
 
       it 'responds to update method but does nothing to tag on aliquot' do
         sf_tag_group = described_class.new(value: tag_group_name, sample_manifest_asset: sample_manifest_asset)
-        expect(sf_tag_group.update(aliquot: aliquot, tag_group: nil)).to eq(nil)
+        expect(sf_tag_group.update(aliquot: aliquot, tag_group: nil)).to be_nil
         aliquot.save
-        expect(aliquot.tag).to eq(nil)
+        expect(aliquot.tag).to be_nil
       end
     end
 
@@ -456,7 +456,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
           expect(tag).to be_present
           tag.oligo = nil
           tag.save
-          expect(tag.oligo).to eq(nil)
+          expect(tag.oligo).to be_nil
           sf_tag_index.update(aliquot: aliquot, tag_group: nil)
           aliquot.save
           expect(aliquot.tag_id).to eq(-1)
@@ -480,9 +480,9 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
 
       it 'responds to update method but does nothing to tag2 on aliquot' do
         sf_tag2_group = described_class.new(value: tag2_group_name, sample_manifest_asset: sample_manifest_asset)
-        expect(sf_tag2_group.update(aliquot: aliquot, tag_group: nil)).to eq(nil)
+        expect(sf_tag2_group.update(aliquot: aliquot, tag_group: nil)).to be_nil
         aliquot.save
-        expect(aliquot.tag2).to eq(nil)
+        expect(aliquot.tag2).to be_nil
       end
     end
 
@@ -548,7 +548,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
           expect(tag2).to be_present
           tag2.oligo = nil
           tag2.save
-          expect(tag2.oligo).to eq(nil)
+          expect(tag2.oligo).to be_nil
           sf_tag2_index.update(aliquot: aliquot, tag_group: nil)
           aliquot.save
           expect(aliquot.tag2_id).to eq(-1)
@@ -585,9 +585,9 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
 
       it 'responds to update method but does nothing to tag on aliquot' do
         sf_tag_group = described_class.new(value: tag_group_name, sample_manifest_asset: sample_manifest_asset)
-        expect(sf_tag_group.update(aliquot: aliquot, tag_group: nil)).to eq(nil)
+        expect(sf_tag_group.update(aliquot: aliquot, tag_group: nil)).to be_nil
         aliquot.save
-        expect(aliquot.tag).to eq(nil)
+        expect(aliquot.tag).to be_nil
       end
     end
 
@@ -720,7 +720,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
       specialised_field = described_class.new(value: 'positive', sample_manifest_asset: sample_manifest_asset)
       specialised_field.update(aliquot: aliquot)
       aliquot.save
-      expect(sample_manifest_asset.sample.control).to eq(true)
+      expect(sample_manifest_asset.sample.control).to be(true)
       expect(sample_manifest_asset.sample.control_type).to eq('positive')
     end
 
@@ -732,8 +732,8 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
       specialised_field = described_class.new(value: '', sample_manifest_asset: sample_manifest_asset)
       specialised_field.update(aliquot: aliquot)
       aliquot.save
-      expect(sample_manifest_asset.sample.control).to eq(false)
-      expect(sample_manifest_asset.sample.control_type).to eq(nil)
+      expect(sample_manifest_asset.sample.control).to be(false)
+      expect(sample_manifest_asset.sample.control_type).to be_nil
     end
   end
 end

@@ -91,7 +91,7 @@ describe Barcode, type: :model do
     describe '#code39_barcode' do
       subject { barcode.code39_barcode }
 
-      it { is_expected.to eq nil }
+      it { is_expected.to be_nil }
     end
   end
 

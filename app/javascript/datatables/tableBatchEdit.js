@@ -47,6 +47,7 @@ $(function () {
     ...defaults,
     rowReorder: { selector: "tr" },
     order: [[0, "asc"]],
+    searching: false,
     columnDefs: [
       { orderable: true, className: "reorder", targets: 0 },
       { orderable: false, targets: "_all" },

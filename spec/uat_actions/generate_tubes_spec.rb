@@ -20,7 +20,7 @@ describe UatActions::GenerateTubes do
       before { allow(AssetBarcode).to receive(:new_barcode).and_return('2') }
 
       it 'can be performed' do
-        expect(uat_action.perform).to eq true
+        expect(uat_action.perform).to be true
         expect(uat_action.report['tube_0']).to eq report['tube_0']
         expect(Tube.find_by_barcode(report['tube_0']).aliquots.first.study).to eq study
       end
@@ -39,7 +39,7 @@ describe UatActions::GenerateTubes do
       before { allow(AssetBarcode).to receive(:new_barcode).and_return('3', '4', '5') }
 
       it 'can be performed' do
-        expect(uat_action.perform).to eq true
+        expect(uat_action.perform).to be true
         expect(uat_action.report['tube_0']).to eq report['tube_0']
         expect(uat_action.report['tube_1']).to eq report['tube_1']
         expect(uat_action.report['tube_2']).to eq report['tube_2']
@@ -63,7 +63,7 @@ describe UatActions::GenerateTubes do
       before { allow(AssetBarcode).to receive(:new_barcode).and_return('6') }
 
       it 'can be performed' do
-        expect(uat_action.perform).to eq true
+        expect(uat_action.perform).to be true
         expect(uat_action.report['tube_0']).to eq report['tube_0']
         expect(Tube.find_by_barcode(report['tube_0']).aliquots.first.study).to eq study
       end

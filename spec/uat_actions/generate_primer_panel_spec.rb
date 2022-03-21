@@ -22,7 +22,7 @@ describe UatActions::GeneratePrimerPanel do
     end
 
     it 'can be performed' do
-      expect(uat_action.perform).to eq true
+      expect(uat_action.perform).to be true
       expect(uat_action.report).to eq report
       expect(PrimerPanel.find_by(name: 'Test primer panel').snp_count).to eq 24
     end

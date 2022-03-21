@@ -292,10 +292,10 @@ module ApplicationHelper # rubocop:todo Style/Documentation
   # Used in _header.html.erb. Can be removed after users have been given a time period to switch over.
   def old_url
     permitted_urls = %w[
-      http://sequencescape.psd.sanger.ac.uk
-      http://uat.sequencescape.psd.sanger.ac.uk
-      http://uat2.sequencescape.psd.sanger.ac.uk
-      http://training.sequencescape.psd.sanger.ac.uk
+      https://sequencescape.psd.sanger.ac.uk
+      https://uat.sequencescape.psd.sanger.ac.uk
+      https://uat2.sequencescape.psd.sanger.ac.uk
+      https://training.sequencescape.psd.sanger.ac.uk
     ]
     return true unless permitted_urls.include?(request.base_url)
   end

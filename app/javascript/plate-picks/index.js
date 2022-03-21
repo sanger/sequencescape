@@ -4,7 +4,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import App from "./app.vue";
 import storeConfig from "./store";
-import BaseRadio from "@sharedComponents/BaseRadio";
+import BaseRadio from "@sharedComponents/BaseRadio.vue";
 
 Vue.component("BaseRadio", BaseRadio);
 

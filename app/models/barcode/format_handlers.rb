@@ -503,4 +503,15 @@ module Barcode::FormatHandlers
   class EastLondonGenesAndHealth < BaseRegExBarcode
     self.format = /\A(?<prefix>S2)-046-(?<number>\d+)\z/
   end
+
+  # Support for East London Genes and Health
+  # As part of the Cardinal pipeline, as above
+  # Expected formats:
+  # S2-nnn-nnnnnn
+  # where n is a digit
+  # This is needed in addition to the above because the middle section represents the study
+  # in ELGH's system, and some participants come in under a different primary study.
+  class EastLondonGenesAndHealthV2 < BaseRegExBarcode
+    self.format = /\A(?<prefix>S2)-\d+-(?<number>\d+)\z/
+  end
 end

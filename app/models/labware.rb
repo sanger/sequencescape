@@ -161,6 +161,11 @@ class Labware < Asset
 
   delegate :state_changer, to: :purpose, allow_nil: true
 
+  # Provided for API compatibility
+  def state
+    nil
+  end
+
   def external_identifier
     "#{sti_type}#{id}"
   end
@@ -183,10 +188,6 @@ class Labware < Asset
   # even though there is another ancestor that was created more recently.
   def spiked_in_buffer
     direct_spiked_in_buffer || most_recent_spiked_in_buffer
-  end
-
-  def human_barcode
-    'UNKNOWN'
   end
 
   def role

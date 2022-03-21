@@ -13,7 +13,7 @@ describe UatActions::GenerateSpikedBufferTube do
 
       it 'can be performed' do
         expect { uat_action.perform }.to change(Tube, :count).by(2) # One parent stock and one child SpikedBuffer
-        expect(uat_action.perform).to eq true
+        expect(uat_action.perform).to be true
         expect(uat_action.report['tube_0']).to eq SpikedBuffer.last.human_barcode
         expect(SpikedBuffer.last.receptacles.first.aliquots.first.sample).to eq PhiX.sample
       end
@@ -24,7 +24,7 @@ describe UatActions::GenerateSpikedBufferTube do
 
       it 'can be performed' do
         expect { uat_action.perform }.to change(Tube, :count).by(5) # One parent stock and four child SpikedBuffers
-        expect(uat_action.perform).to eq true
+        expect(uat_action.perform).to be true
         expect(uat_action.report.size).to eq 4
       end
     end

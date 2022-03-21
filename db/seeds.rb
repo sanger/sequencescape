@@ -33,6 +33,9 @@ if Rails.env.test?
 end
 
 ActiveRecord::Base.transaction do
+  Rake::Task['insdc:countries:import'].invoke
+  Rake::Task['record_loader:all'].invoke
+
   # Here is a proc that will do the seeding.
   handler =
     lambda do |seed_data_file|

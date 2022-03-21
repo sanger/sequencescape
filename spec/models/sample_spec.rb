@@ -141,7 +141,7 @@ RSpec.describe Sample, type: :model, accession: true, cardinal: true do
     it 'validates that supplier name allows only ASCII characters' do
       expect(sample.sample_metadata.supplier_name).to be_nil
       sample.sample_metadata.supplier_name = 'भारत'
-      expect(sample.sample_metadata.save).to eq false
+      expect(sample.sample_metadata.save).to be false
     end
 
     it 'can have the supplier name blanked' do
