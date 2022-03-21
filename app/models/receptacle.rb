@@ -330,7 +330,7 @@ class Receptacle < Asset
   end
 
   def most_recent_active_requests_as_target_group_by_same_source
-    requests_as_target.where(state: ['started']).group(:asset_id).having('created_at=max(created_at)')
+    requests_as_target.where(state: 'started').group(:asset_id).order(created_at: :desc).limit(1)
   end
 
   private
