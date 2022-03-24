@@ -329,6 +329,10 @@ class Receptacle < Asset
     (requests_as_source.first || aliquot_requests.first).role
   end
 
+  def most_recent_active_requests_as_target_group_by_same_source
+    requests_as_target.group(:asset_id).order(created_at: :desc).limit(1)
+  end
+
   private
 
   def set_external_release(state) # rubocop:todo Metrics/MethodLength
