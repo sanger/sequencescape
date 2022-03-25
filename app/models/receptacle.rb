@@ -330,7 +330,7 @@ class Receptacle < Asset
   end
 
   def most_recent_active_requests_as_target_group_by_same_source
-    requests_as_target.order(id: asc).index_by(&:asset_id).values
+    requests_as_target.order(id: :asc).index_by(&:asset_id).values
   end
 
   private
