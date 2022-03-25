@@ -331,6 +331,8 @@ class Receptacle < Asset
 
   # Groups the requests as target by the same source and returns the most recent request
   # for each source
+  #
+  # @return [Array<Request>] List of requests as target that pass the condition for the current receptacle
   def most_recent_requests_as_target_group_by_same_source
     # Sorts all requests by id, and then index_by will create an object
     # that will store for every asset_id only the last request (request with higher id),
