@@ -11,6 +11,24 @@ RSpec.describe Receptacle, type: :model do
     expect(receptacle).to be_a described_class
   end
 
+  describe '#most_recent_requests_as_target_group_by_same_source' do
+    let(:source) { create :receptacle }
+    let(:source2) { create :receptacle }
+    let(:requests_source_1) { 
+      create_list :request, 3, {asset: source}
+    }
+    let(:requests_source_2) { 
+      create_list :request, 2, {asset: source2}
+    }
+    let(:requests) { [requests_source_1, requests_source_2].flatten }
+    let(:expected) {  [requests_source_1.last, requests_source_2.last].flatten }
+    before { receptacle.requests_as_target << requests }
+    
+    it 'returns the most recent active request as target' do
+      expect(receptacle.most_recent_requests_as_target_group_by_same_source).to eq(expected)
+    end
+  end
+
   describe '#update_from_qc' do
     let(:qc_result) { build :qc_result, key: key, value: value, units: units, assay_type: 'assay', assay_version: 1 }
 
