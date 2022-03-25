@@ -329,7 +329,13 @@ class Receptacle < Asset
     (requests_as_source.first || aliquot_requests.first).role
   end
 
+  # Groups the requests as target by the same source and returns the most recent request
+  # for each source
   def most_recent_requests_as_target_group_by_same_source
+    # Sorts all requests by id, and then index_by will create an object
+    # that will store for every asset_id only the last request (request with higher id),
+    # ignoring any other request for the same asset_id.
+    # From this object we return the list of values, which is an already flattened list
     requests_as_target.order(id: :asc).index_by(&:asset_id).values
   end
 
