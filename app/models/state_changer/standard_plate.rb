@@ -61,6 +61,7 @@ module StateChanger
 
       associated_requests.each do |request|
         request.customer_accepts_responsibility! if customer_accepts_responsibility
+
         # skip state update if request already in that state
         next if request.state == associated_request_target_state
         request.transition_to(associated_request_target_state)
