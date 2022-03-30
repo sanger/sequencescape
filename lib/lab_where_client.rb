@@ -192,7 +192,7 @@ module LabWhereClient
 
     def self.labwares(barcode)
       return [] if barcode.blank?
-      
+
       endpoint_name "locations/#{barcode}"
 
       attrs = LabWhere.new.get(self, 'labwares')
