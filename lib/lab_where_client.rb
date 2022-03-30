@@ -182,7 +182,9 @@ module LabWhereClient
     def self.children(barcode)
       return [] if barcode.blank?
 
-      attrs = LabWhere.new.get(self, "#{barcode}/children")
+      endpoint_name "locations/#{barcode}"
+
+      attrs = LabWhere.new.get(self, 'children')
       return [] if attrs.nil?
 
       attrs.map { |locn_params| new(locn_params) }
@@ -190,8 +192,10 @@ module LabWhereClient
 
     def self.labwares(barcode)
       return [] if barcode.blank?
+      
+      endpoint_name "locations/#{barcode}"
 
-      attrs = LabWhere.new.get(self, "#{barcode}/labwares")
+      attrs = LabWhere.new.get(self, 'labwares')
       return [] if attrs.nil?
 
       attrs.map { |labware_params| Labware.new(labware_params) }
