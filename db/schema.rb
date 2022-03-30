@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_02_08_145114) do
+ActiveRecord::Schema.define(version: 2022_03_29_100144) do
 
   create_table "aliquot_indices", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "aliquot_id", null: false
@@ -259,7 +259,7 @@ ActiveRecord::Schema.define(version: 2022_02_08_145114) do
     t.index ["updated_at"], name: "index_batches_on_updated_at"
   end
 
-  create_table "bkp_lab_events", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "bkp_lab_events", id: false, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.integer "id", default: 0, null: false
     t.text "description", size: :medium, collation: "utf8mb4_unicode_ci"
     t.text "descriptors", size: :medium, collation: "utf8mb4_unicode_ci"
@@ -495,7 +495,7 @@ ActiveRecord::Schema.define(version: 2022_02_08_145114) do
     t.string "equipment_type"
   end
 
-  create_table "isndc_countries", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "isndc_countries", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.string "name", null: false
     t.integer "sort_priority", default: 0, null: false
     t.integer "validation_state", default: 0, null: false
@@ -701,7 +701,7 @@ ActiveRecord::Schema.define(version: 2022_02_08_145114) do
     t.datetime "updated_at"
   end
 
-  create_table "pick_lists", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "pick_lists", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.integer "state", default: 0, null: false
     t.integer "submission_id", null: false
     t.datetime "created_at", null: false
@@ -1036,7 +1036,7 @@ ActiveRecord::Schema.define(version: 2022_02_08_145114) do
     t.index ["lot_id"], name: "index_lot_id"
   end
 
-  create_table "racked_tubes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "racked_tubes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.bigint "tube_rack_id"
     t.bigint "tube_id"
     t.string "coordinate"
@@ -1248,7 +1248,7 @@ ActiveRecord::Schema.define(version: 2022_02_08_145114) do
     t.index ["user_id"], name: "index_roles_users_on_user_id"
   end
 
-  create_table "sample_compounds_components", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "sample_compounds_components", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.integer "compound_sample_id", null: false
     t.integer "component_sample_id", null: false
     t.datetime "created_at", precision: 6, null: false
@@ -1422,7 +1422,7 @@ ActiveRecord::Schema.define(version: 2022_02_08_145114) do
   create_table "state_changes", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "user_id"
     t.integer "target_id"
-    t.string "contents", limit: 1024
+    t.string "contents", limit: 4096
     t.string "previous_state"
     t.string "target_state"
     t.datetime "created_at"
@@ -1749,7 +1749,7 @@ ActiveRecord::Schema.define(version: 2022_02_08_145114) do
     t.integer "tube_id", null: false
   end
 
-  create_table "tube_rack_statuses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "tube_rack_statuses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.string "barcode", null: false
     t.integer "status", null: false
     t.text "messages"
