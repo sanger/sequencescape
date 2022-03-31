@@ -64,6 +64,8 @@ if Rails.env.development? || Rails.env.profile?
 
   configatron.pipelines_url = 'http://localhost:3000'
 
+  configatron.labwhere_api = 'localhost:3200/api'
+
   configatron.plate_barcode_service = 'http://localhost:3011'
   configatron.plate_volume_files = "#{Rails.root}/data/plate_volume/"
 
