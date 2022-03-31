@@ -1422,7 +1422,7 @@ ActiveRecord::Schema.define(version: 2022_03_31_093754) do
   create_table "state_changes", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "user_id"
     t.integer "target_id"
-    t.string "contents", limit: 1024
+    t.string "contents", limit: 4096
     t.string "previous_state"
     t.string "target_state"
     t.datetime "created_at"
