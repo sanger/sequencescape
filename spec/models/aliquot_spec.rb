@@ -133,7 +133,7 @@ RSpec.describe Aliquot, type: :model do
     it 'generates correct substitution hash' do
       aliquot = create :aliquot
       tag_id = aliquot.tag_id
-      expect(aliquot.substitution_hash).to be nil
+      expect(aliquot.substitution_hash).to be_nil
       aliquot.update!(tag_id: 42, insert_size_from: 5, insert_size_to: 15)
       expect(aliquot.other_attributes_for_substitution).to eq('insert_size_from' => 5, 'insert_size_to' => 15)
       expect(aliquot.substitution_hash).to eq(

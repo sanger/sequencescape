@@ -6,12 +6,12 @@ shared_examples 'an automated order' do
 
     it 'does not set study' do
       subject.valid?
-      expect(subject.study).to be nil
+      expect(subject.study).to be_nil
     end
 
     it 'does not set project' do
       subject.valid?
-      expect(subject.project).to be nil
+      expect(subject.project).to be_nil
     end
   end
 

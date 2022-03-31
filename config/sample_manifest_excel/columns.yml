@@ -71,6 +71,7 @@ tag_group:
 tag_index:
   heading: TAG INDEX
   unlocked: true
+  type: :integer
   validation:
     options:
       type: :whole
@@ -105,6 +106,7 @@ tag2_group:
 tag2_index:
   heading: TAG2 INDEX (Fill in for dual Index Only)
   unlocked: true
+  type: :integer
   validation:
     options:
       type: :whole
@@ -223,6 +225,7 @@ reference_genome:
 insert_size_from:
   heading: INSERT SIZE FROM
   unlocked: true
+  type: :integer
   validation:
     options:
       type: :whole
@@ -239,6 +242,7 @@ insert_size_from:
 insert_size_to:
   heading: INSERT SIZE TO
   unlocked: true
+  type: :integer
   validation:
     options:
       type: :whole
@@ -287,6 +291,7 @@ cohort:
 volume:
   heading: VOLUME (ul)
   unlocked: true
+  type: :float
   validation:
     options:
       type: :decimal
@@ -307,6 +312,7 @@ volume:
 concentration:
   heading: CONC. (ng/ul)
   unlocked: true
+  type: :float
   validation:
     options:
       type: :decimal
@@ -349,17 +355,17 @@ country_of_origin:
   unlocked: true
   validation:
     options:
-      type: :textLength
-      operator: :lessThanOrEqual
-      formula1: "30"
+      type: :list
+      formula1: "$A$1:$A$2"
       allowBlank: false
       showInputMessage: true
       promptTitle: "Country Of Origin"
-      prompt: "Please add a description up to a maximum of 30 uppercase letters."
+      prompt: "The geographic origin of the sample, defined by Country or Sea. Country names are provided by the INSDC country list. See https://ena-docs.readthedocs.io/en/latest/submit/samples/missing-values.html if you can't provide a value."
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Country Of Origin"
-      error: "30 uppercase characters, maximum"
+      error: "Is a controlled vocabulary, and must be on the list"
+    range_name: :insdc_country
   conditional_formattings:
     empty_cell:
     len:
@@ -433,27 +439,22 @@ dna_source:
     empty_cell:
     is_error:
 date_of_sample_collection:
-  heading: DATE OF SAMPLE COLLECTION (MM/YY or YYYY only)
+  heading: DATE OF SAMPLE COLLECTION (YYY-MM-DD)
   unlocked: true
   validation:
     options:
-      type: :textLength
-      operator: :lessThanOrEqual
-      formula1: "5"
+      type: :custom
+      formula1: 'IF(OR(EXACT(A1,"not collected"),EXACT(A1,"not provided"),EXACT(A1,"restricted access")), TRUE, AND((_xlfn.NUMBERVALUE(LEFT(A1,4))>0),OR(LEN(A1)=4,EXACT(MID(A1,5,1),"-")),OR(LEN(A1)<=7,EXACT(MID(A1,8,1),"-")),AND((_xlfn.NUMBERVALUE(MID(A1,6,2))>=0),(_xlfn.NUMBERVALUE(MID(A1,6,2))<=12)),AND((_xlfn.NUMBERVALUE(MID(A1,9,2))>=0),(_xlfn.NUMBERVALUE(MID(A1,9,2))<=31))))'
       allowBlank: false
       showInputMessage: true
       promptTitle: "Sample Collection Date"
-      prompt: "Please Enter either a Month and Year or a complete Year e.g. 04/05 or 2004."
+      prompt: "Date should be in the format YYYY-MM-DD, Partial dates are supported. eg. YYYY or YYY-MM"
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Sample Collection Date"
-      error: "This must be either a combination of month and year, or a whole year, with no spaces."
+      error: "Date should be in the format YYYY-MM-DD, Partial dates are supported. eg. YYYY or YYY-MM"
   conditional_formattings:
     empty_cell:
-    len:
-      formula:
-        operator: ">"
-        operand: 5
 date_of_sample_extraction:
   heading: DATE OF DNA EXTRACTION (MM/YY or YYYY only)
   unlocked: true
@@ -658,6 +659,7 @@ sample_public_name:
 sample_taxon_id:
   heading: TAXON ID
   unlocked: true
+  type: :integer
   validation:
     options:
       type: :whole
@@ -787,6 +789,7 @@ disease:
 genome_size:
   heading: GENOME SIZE
   unlocked: true
+  type: :float
   validation:
     options:
       type: :decimal
@@ -861,3 +864,6 @@ legacy_donor_id:
   conditional_formattings:
     empty_cell:
   attribute: :sample_id
+legacy_date_of_sample_collection:
+  heading: DATE OF SAMPLE COLLECTION (MM/YY or YYYY only)
+  updates: date_of_sample_collection

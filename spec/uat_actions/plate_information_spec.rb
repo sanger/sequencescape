@@ -15,7 +15,7 @@ describe UatActions::PlateInformation do
     before { create :plate_with_untagged_wells, sample_count: 3, barcode: '1' }
 
     it 'can be performed' do
-      expect(uat_action.perform).to eq true
+      expect(uat_action.perform).to be true
       expect(uat_action.report).to eq report
     end
   end
@@ -32,7 +32,7 @@ describe UatActions::PlateInformation do
     before { create :plate_with_empty_wells, well_count: 3, barcode: '2' }
 
     it 'can be performed' do
-      expect(uat_action.perform).to eq true
+      expect(uat_action.perform).to be true
       expect(uat_action.report).to eq report
     end
   end
@@ -47,7 +47,7 @@ describe UatActions::PlateInformation do
     end
 
     it 'cannot be performed' do
-      expect(uat_action.perform).to eq false
+      expect(uat_action.perform).to be false
       expect(uat_action.report).to eq report
     end
   end

@@ -18,11 +18,11 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   include ModelExtensions::Plate
   include Transfer::Associations
   include Transfer::State::PlateState
-  include Barcode::Barcodeable
   include Asset::Ownership::Owned
   include Plate::FluidigmBehaviour
   include SubmissionPool::Association::Plate
   include PlateCreation::CreationChild
+  include Barcode::Barcodeable
 
   extend QcFile::Associations
 

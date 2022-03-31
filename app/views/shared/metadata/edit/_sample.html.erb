@@ -8,7 +8,7 @@
     <%# Fields for 'Microarray genotyping' %>
     <%= metadata_fields.text_field(:cohort) %>
     <%= metadata_fields.select(:gender, Sample::GENDERS,include_blank: true) %>
-    <%= metadata_fields.text_field(:country_of_origin) %>
+    <%= metadata_fields.select(:country_of_origin, Insdc::Country.options) %>
     <%= metadata_fields.text_field(:geographical_region) %>
     <%= metadata_fields.text_field(:ethnicity) %>
     <%= metadata_fields.select(:dna_source, Sample::DNA_SOURCES,include_blank: true) %>

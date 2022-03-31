@@ -25,7 +25,7 @@ describe UatActions::GenerateTagLayoutTemplate do
 
     context 'with both tag groups' do
       it 'can be performed' do
-        expect(uat_action.perform).to eq true
+        expect(uat_action.perform).to be true
         expect(uat_action.report).to eq report
       end
     end
@@ -41,7 +41,7 @@ describe UatActions::GenerateTagLayoutTemplate do
       end
 
       it 'can be performed' do
-        expect(uat_action.perform).to eq true
+        expect(uat_action.perform).to be true
         expect(uat_action.report).to eq report
       end
     end

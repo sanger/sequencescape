@@ -6,11 +6,4 @@
 namespace :record_loader do
   desc 'Automatically runs all record loader tasks'
   task all: :environment
-
-  task all_except_in_test: :environment do
-    Rake::Task['record_loader:all'].invoke unless Rails.env.test?
-  end
 end
-
-# Automatically run record loader before seeds
-task 'db:seed' => 'record_loader:all_except_in_test'

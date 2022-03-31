@@ -9,7 +9,7 @@ describe UatActions::IntegrationSuiteTools do
     let(:report) { { user_swipecard: '__uat_test__', user_login: '__uat_test__' } }
 
     it 'can be performed' do
-      expect(uat_action.perform).to eq true
+      expect(uat_action.perform).to be true
       expect(uat_action.report).to eq report
     end
   end
