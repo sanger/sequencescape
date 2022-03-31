@@ -71,11 +71,15 @@ const attachEvents = () => {
     .on("ajax:error", updateDomError);
 
   $(".observed").on("keyup", throttledUpdate).on("change", throttledUpdate);
+};
 
+$(() => {
+  attachEvents();
   // Trigger automatic loading if already flagged as active
   document.querySelectorAll("a[data-remote=true].active").forEach((element) => {
     Rails.fire(element, "click");
   });
-};
+});
 
-$(attachEvents);
+// If we update the DOM via ajax we want to mount the included components
+$(document.body).on("ajaxDomUpdate", attachEvents);
