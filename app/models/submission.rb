@@ -118,7 +118,7 @@ class Submission < ApplicationRecord # rubocop:todo Metrics/ClassLength
   alias_attribute :friendly_name, :name
 
   def multiplexed?
-    orders.any? { |o| RequestType.find(o.request_types).any?(&:for_multiplexing?) }
+    orders.any?(&:multiplexed?)
   end
 
   # Attempts to find the multiplexed asset (usually a multiplexed library tube) associated

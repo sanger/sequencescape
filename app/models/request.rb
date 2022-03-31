@@ -210,7 +210,6 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
         }
 
   scope :with_request_type_id, ->(id) { where(request_type_id: id) }
-  scope :for_pacbio_sample_sheet, -> { includes([{ target_asset: :map }, :request_metadata]) }
 
   scope :into_by_id, ->(target_ids) { where(target_asset_id: target_ids) }
 
@@ -279,7 +278,6 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
         }
   scope :loaded_for_grouped_inbox_display,
         -> { preload([{ submission: :orders, asset: { labware: %i[purpose barcodes] } }, :target_asset, :order]) }
-  scope :loaded_for_pacbio_inbox_display, -> { preload(:submission) }
 
   scope :for_submission_id, ->(id) { where(submission_id: id) }
   scope :for_asset_id, ->(id) { where(asset_id: id) }

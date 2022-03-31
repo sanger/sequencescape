@@ -7,35 +7,19 @@
 <div class="content">
   <div class="info">
     <form action='/batches/print_barcodes' method='POST'>
+      <%= render partial: "shared/print" %>
       <table width="100%" cellspacing="0" cellpadding="0">
-        <% if @batch.multiplexed? %>
-        <tr>
-          <td>Labels for requests and tag numbers </td>
-        </tr>
-        <% end %>
-        </table>
-        <%= render partial: "shared/print" %>
-        <table width="100%" cellspacing="0" cellpadding="0">
         <tr>
           <td width="35%" class="item">Number of copies:</td>
           <td width="65%"><input name="count" size="10" value="1" /></td>
         </tr>
-        <% if @batch.multiplexed? %>
-          <% @batch.requests.each do |request| -%>
-          <% next unless request.target_asset.respond_to?(:human_barcode) %>
-            <tr>
-              <td width="35%" class="item"><%= request.target_asset.human_barcode %> - Tag <%= request.tag_number %></td>
-              <td width="65%"><input type='checkbox' checked='on' name='printable[<%= request.id %>]'></td>
-            </tr>
-          <% end -%>
-        <% else %>
-          <% @batch.requests.index_by(&:target_asset).each do |target_asset, request| -%>
-            <% next unless target_asset.respond_to?(:human_barcode) %>
-            <tr>
-              <td width="35%" class="item"><label for="printable[<%= request.id %>]">Tube <%= target_asset.human_barcode %></label></td>
-              <td width="65%"><input type='checkbox' checked='on' value='on' name='printable[<%= request.id %>]' id='printable[<%= request.id %>]' ></td>
-            </tr>
-          <% end -%>
+
+        <% @batch.requests.index_by(&:target_asset).each do |target_asset, request| -%>
+          <% next unless target_asset.respond_to?(:human_barcode) %>
+          <tr>
+            <td width="35%" class="item"><label for="printable[<%= request.id %>]">Tube <%= target_asset.human_barcode %></label></td>
+            <td width="65%"><input type='checkbox' checked='on' value='on' name='printable[<%= request.id %>]' id='printable[<%= request.id %>]' ></td>
+          </tr>
         <% end %>
         <tr>
           <td width="35%" class="item">&nbsp;</td>
