@@ -1,6 +1,6 @@
 const scannedBarcode = function (barcode_source, list, model) {
-  var barcode, new_item;
-  barcode = barcode_source.value.trim();
+  const barcode = barcode_source.value.trim();
+
   if (barcode != "") {
     this.barcode = barcode;
     this.list = list;
@@ -38,9 +38,7 @@ scannedBarcode.prototype = {
 
     removeLink = document.createElement("a");
     removeLink.appendChild(document.createTextNode("Remove from list"));
-    $(removeLink).bind("click", function () {
-      scanned_barcode.destroy();
-    });
+    removeLink.addEventListener("click", () => scanned_barcode.destroy());
 
     hiddenField = document.createElement("input");
     hiddenField.setAttribute("type", "hidden");
