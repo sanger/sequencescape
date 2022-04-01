@@ -5,18 +5,18 @@
       var hideSectionAndDisableInputs = function(elements) {
         // disable inputs when hidden so they don't fire validation
         elements.each(function() {
-          $(this).hide().find('input').attr('disabled','disabled');
+          jQuery(this).hide().find('input').attr('disabled','disabled');
         });
       };
 
       var showSectionAndEnableInputsIfVisible = function(elements) {
         elements.each(function() {
-          $(this).show();
+          jQuery(this).show();
 
-          $(this).find('input').each(function() {
+          jQuery(this).find('input').each(function() {
             // only enable input if it's not hidden - could be beneath a hidden element in the DOM
-            if(!$(this).is(':visible')) return;
-            $(this).attr('disabled', null);
+            if(!jQuery(this).is(':visible')) return;
+            jQuery(this).attr('disabled', null);
           });
         });
       };
@@ -33,7 +33,7 @@
 
       var getElementByFieldName = function(fieldName) {
         return  document.getElementById('<%= root %>_' + fieldName) ||
-                $("input[name='study[study_metadata_attributes]["+fieldName+"]']:checked")[0] ||
+                jQuery("input[name='study[study_metadata_attributes]["+fieldName+"]']:checked")[0] ||
                 document.getElementById('<%= root %>_' + fieldName + '_id');
       };
 
