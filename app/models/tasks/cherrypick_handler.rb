@@ -157,8 +157,7 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
         # be needing to create a new one.
         plate = partial_plate
         if plate.nil?
-          barcode_number = PlateBarcode.create.barcode
-          barcode = { prefix: plate_purpose.prefix, number: barcode_number }
+          barcode = PlateBarcode.create_barcode
           plate =
             plate_purpose.create!(
               :do_not_create_wells,

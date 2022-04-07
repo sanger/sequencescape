@@ -350,17 +350,8 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
 
   def self.create_with_barcode!(*args, &block)
     attributes = args.extract_options!
-    attributes[:sanger_barcode] = safe_sanger_barcode(attributes[:sanger_barcode] || {})
+    attributes[:sanger_barcode] = PlateBarcode.create_barcode
     create!(attributes, &block)
-  end
-
-  def self.safe_sanger_barcode(sanger_barcode)
-    if sanger_barcode[:number].blank? ||
-         Barcode.sanger_barcode(sanger_barcode[:prefix], sanger_barcode[:number]).exists?
-      { number: PlateBarcode.create.barcode, prefix: sanger_barcode[:prefix] }
-    else
-      sanger_barcode
-    end
   end
 
   def number_of_blank_samples
@@ -484,7 +475,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   end
 
   def sanger_barcode=(attributes)
-    barcodes << Barcode.build_sanger_code39(attributes)
+    barcodes << Barcode.build_sanger_sequencescape22(attributes)
   end
 
   def after_comment_addition(comment)

@@ -60,7 +60,8 @@ class Barcode < ApplicationRecord
          uk_biocentre_v7: 38,
          east_london_genes_and_health: 39,
          leamington_spa_v2: 40,
-         east_london_genes_and_health_v2: 41
+         east_london_genes_and_health_v2: 41,
+         sanger_sequencescape22: 42
        }
 
   # Barcode formats which may be submitted via sample manifests
@@ -107,13 +108,6 @@ class Barcode < ApplicationRecord
   validate :barcode_valid?
   validates :barcode, uniqueness: { scope: :format, case_sensitive: false }
 
-  scope(
-    :sanger_barcode,
-    lambda do |prefix, number|
-      human_barcode = SBCF::SangerBarcode.from_prefix_and_number(prefix, number).human_barcode
-      where(format: %i[sanger_ean13 sanger_code39], barcode: human_barcode)
-    end
-  )
   scope :for_search_query, ->(*input) { where(barcode: Barcode.extract_barcodes(input)).includes(:asset) }
 
   delegate :=~, to: :handler
@@ -125,6 +119,10 @@ class Barcode < ApplicationRecord
 
   def self.build_sanger_code39(attributes)
     build_sanger_barcode(attributes, format: :sanger_code39)
+  end
+
+  def self.build_sanger_sequencescape22(barcode)
+    new(format: :sanger_sequencescape22, barcode: barcode)
   end
 
   def self.build_sanger_barcode(attributes, format:)
@@ -176,7 +174,7 @@ class Barcode < ApplicationRecord
   end
 
   def sanger_barcode?
-    sanger_ean13? || sanger_code39?
+    sanger_ean13? || sanger_code39? || sanger_code22?
   end
 
   private

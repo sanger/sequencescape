@@ -15,6 +15,69 @@ module Barcode::FormatHandlers
   end
 
   #
+  # New barcode format as of 2022 move to baracoda
+  #
+  # @author [bt8]
+  #
+  class SangerSequencescape22
+    attr_reader :barcode
+
+    def initialize(barcode)
+      @barcode = barcode
+    end
+
+    def machine_barcode
+      barcode
+    end
+  
+    def human_barcode
+      barcode
+    end
+
+    def ean13_barcode
+      nil
+    end
+
+    def ean13_barcode?
+      false
+    end
+
+    def code39_barcode?
+      false
+    end
+    
+    def sequencescape22_barcode?
+      true
+    end
+
+    def code128_barcode?
+      false
+    end
+
+    def number
+      # Takes the number as the second part of the barcode: SQPP-(12345)
+      barcode.split("-").second
+    end
+  
+    def barcode_prefix
+      # Takes the prefix as the first part of the barcode: (SQPP)-12345
+      barcode.split("-").first
+    end
+
+    def valid?
+      true
+    end
+
+    def next_child_barcode
+      Barcode.where(barcode: barcode)
+    end
+
+    alias code128_barcode machine_barcode
+    alias code39_barcode machine_barcode
+    alias serialize_barcode human_barcode
+  end
+
+  #
   # Base Sequencescape barcode
   # This class mostly wraps the SBCF Gem
   #
