@@ -13,7 +13,7 @@ class PlateBarcode < ActiveResource::Base # rubocop:todo Style/Documentation
       begin
         response = Net::HTTP.post(uri, "")
         if response.code === "201"
-          barcode = JSON.parse(response.body)["barcode"]
+          barcode = JSON.parse(response.body)
           retries = 3
         end
         retries += 1
@@ -26,11 +26,11 @@ class PlateBarcode < ActiveResource::Base # rubocop:todo Style/Documentation
   end
 
   if Rails.env.development?
-    MockBarcode = Struct.new(:barcode)
+    # If we don't want a test dependency on baracoda we need to mock a barcode
 
-    def self.create
-      @barcode ||= Barcode.sanger_code39.where('barcode LIKE "DN%"').order(barcode: :desc).first&.number || 9_000_000
-      MockBarcode.new(@barcode += 1)
+    def self.create_barcode
+      current_num = Barcode.sequencescape22.order(barcode: :desc).first&.number || 1
+      { barcode: "#{self.prefix}-#{current_num + 1}" }
     end
   end
 end

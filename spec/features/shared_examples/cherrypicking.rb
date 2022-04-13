@@ -14,6 +14,7 @@ shared_examples 'a cherrypicking procedure' do
 
       step 'Create a batch for cherrypicking' do
         plates.each do |plate|
+          debugger
           expect(page).to have_content(plate.human_barcode)
           check("Select #{plate.human_barcode} for batch")
         end

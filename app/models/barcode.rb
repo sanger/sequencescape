@@ -61,7 +61,7 @@ class Barcode < ApplicationRecord
          east_london_genes_and_health: 39,
          leamington_spa_v2: 40,
          east_london_genes_and_health_v2: 41,
-         sanger_sequencescape22: 42
+         sequencescape22: 42
        }
 
   # Barcode formats which may be submitted via sample manifests
@@ -121,8 +121,8 @@ class Barcode < ApplicationRecord
     build_sanger_barcode(attributes, format: :sanger_code39)
   end
 
-  def self.build_sanger_sequencescape22(barcode)
-    new(format: :sanger_sequencescape22, barcode: barcode)
+  def self.build_sequencescape22(attributes)
+    new(format: :sequencescape22, barcode: attributes[:barcode])
   end
 
   def self.build_sanger_barcode(attributes, format:)
@@ -174,7 +174,7 @@ class Barcode < ApplicationRecord
   end
 
   def sanger_barcode?
-    sanger_ean13? || sanger_code39? || sanger_code22?
+    sanger_ean13? || sanger_code39?
   end
 
   private

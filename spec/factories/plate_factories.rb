@@ -55,11 +55,7 @@ FactoryBot.define do
   end
 
   trait :plate_barcode do
-    transient do
-      barcode { generate :barcode_number }
-      prefix { 'DN' }
-    end
-    sanger_barcode { { prefix: prefix, number: barcode } }
+    sanger_barcode { build :plate_barcode } 
   end
 
   factory :plate, traits: %i[plate_barcode with_wells] do

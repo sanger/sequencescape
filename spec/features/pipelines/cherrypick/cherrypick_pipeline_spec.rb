@@ -26,16 +26,12 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
   let(:submission) { create :submission }
   let(:plate_template) { create :plate_template }
   let(:plate_type) { create :plate_type, name: 'ABgene_0765', maximum_volume: 800 }
-  let(:_destination_plate_barcode) { create(:plate_barcode) }
-  let(:destination_plate_barcode) { _destination_plate_barcode.barcode }
-  let(:_destination_plate_barcode_2) { create(:plate_barcode) }
-  let(:destination_plate_barcode_2) { _destination_plate_barcode_2.barcode }
-  let(:destination_plate_human_barcode_2) do
-    SBCF::SangerBarcode.new(prefix: 'DN', number: destination_plate_barcode_2).human_barcode
-  end
-  let(:destination_plate_human_barcode) do
-    SBCF::SangerBarcode.new(prefix: 'DN', number: destination_plate_barcode).human_barcode
-  end
+  let(:_destination_plate_barcode) { build(:plate_barcode) }
+  let(:destination_plate_barcode) { _destination_plate_barcode[:barcode] }
+  let(:_destination_plate_barcode_2) { build(:plate_barcode) }
+  let(:destination_plate_barcode_2) { _destination_plate_barcode_2[:barcode] }
+  let(:destination_plate_human_barcode_2) { destination_plate_barcode_2 }
+  let(:destination_plate_human_barcode) { destination_plate_barcode }
   let(:target_purpose) { create :plate_purpose }
   let(:control_plate) { nil }
   let(:concentrations_required) { false }
@@ -79,7 +75,7 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
 
     initialize_plates(plates)
 
-    allow(PlateBarcode).to receive(:create).and_return(_destination_plate_barcode, _destination_plate_barcode_2)
+    allow(PlateBarcode).to receive(:create_barcode).and_return(_destination_plate_barcode, _destination_plate_barcode_2)
 
     stub_const('NUM_HAMILTON_HEADER_LINES', 1)
     stub_const('NUM_TECAN_HEADER_LINES', 2)
@@ -88,6 +84,7 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
 
   describe 'when creating batches' do
     it 'requests leave the inbox once a batch has been created' do
+      debugger
       login_user(user)
       visit pipeline_path(pipeline)
       expect(page).to have_content("Pipeline #{pipeline_name}")

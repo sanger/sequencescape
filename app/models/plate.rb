@@ -475,7 +475,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   end
 
   def sanger_barcode=(attributes)
-    barcodes << Barcode.build_sanger_sequencescape22(attributes)
+    barcodes << Barcode.build_sequencescape22(attributes)
   end
 
   def after_comment_addition(comment)

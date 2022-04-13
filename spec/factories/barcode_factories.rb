@@ -34,6 +34,11 @@ FactoryBot.define do
       end
     end
 
+    factory :sequencescape22 do
+      format { 'sequencescape22' }
+      barcode
+    end
+
     factory :infinium do
       transient do
         prefix { 'WG' }
