@@ -25,7 +25,7 @@ class PlateBarcode < ActiveResource::Base # rubocop:todo Style/Documentation
     Barcode.build_sequencescape22(barcode)
   end
 
-  if Rails.env.development?
+  if Rails.env.development? || Rails.env.cucumber?
     # If we don't want a test dependency on baracoda we need to mock a barcode
 
     def self.create_barcode
