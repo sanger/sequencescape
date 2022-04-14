@@ -10,11 +10,10 @@ describe 'cherrypick for fluidigm pipeline - micro litre', js: true do
   let(:pipeline_name) { pipeline.name }
   let(:pipeline) { create :fluidigm_pipeline }
   let(:submission) { create :submission }
-  let(:plate1) { create :plate_with_untagged_wells, sample_count: 2, barcode: '1' }
-  let(:plate2) { create :plate_with_untagged_wells, sample_count: 2, barcode: '10' }
-  let(:plate3) { create :plate_with_untagged_wells, sample_count: 2, barcode: '5' }
+  let(:plate1) { create :plate_with_untagged_wells, sample_count: 2, barcode: 'SQPD-1' }
+  let(:plate2) { create :plate_with_untagged_wells, sample_count: 2, barcode: 'SQPD-10' }
+  let(:plate3) { create :plate_with_untagged_wells, sample_count: 2, barcode: 'SQPD-5' }
   let(:plates) { [plate1, plate2, plate3] }
-  let(:barcode) { 99_999 }
   let(:robot) { create :robot, barcode: '444' }
   let!(:plate_template) { create :plate_template }
   let(:request_types) { pipeline.request_types.map(&:key) }
@@ -34,12 +33,7 @@ describe 'cherrypick for fluidigm pipeline - micro litre', js: true do
              project: project
     end
 
-    stub_request(:post, "#{configatron.plate_barcode_service}plate_barcodes.xml").to_return(
-      headers: {
-        'Content-Type' => 'text/xml'
-      },
-      body: "<plate_barcode><id>42</id><name>Barcode #{barcode}</name><barcode>#{barcode}</barcode></plate_barcode>"
-    )
+    expect(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode, barcode: 'SQPD-2'))
 
     robot.robot_properties.create(key: 'max_plates', value: '21')
     robot.robot_properties.create(key: 'SCRC1', value: '1')
@@ -56,9 +50,9 @@ describe 'cherrypick for fluidigm pipeline - micro litre', js: true do
     first(:button, 'Deselect all').click
     find_all(:checkbox).each { |checkbox| expect(checkbox).not_to be_checked }
 
-    check('Select DN1S for batch')
-    check('Select DN10I for batch')
-    check('Select DN5W for batch')
+    check('Select SQPD-1 for batch')
+    check('Select SQPD-10 for batch')
+    check('Select SQPD-5 for batch')
     first(:select, 'action_on_requests').select('Create Batch')
     first(:button, 'Submit').click
     click_link 'Select Plate Template'

@@ -7,7 +7,7 @@ describe Robot::Generator::Hamilton, type: :model do
 
   let(:expected_output) { expected_file.read }
 
-  before { create(:stock_plate, barcode: 12_345) }
+  # Should update these tests to use SQPD? You can still use DN plates so think this is fine
 
   shared_examples 'a hamilton file generation' do
     context 'when mapping wells from 1 96 well source plate to 1 96 well destination plate' do

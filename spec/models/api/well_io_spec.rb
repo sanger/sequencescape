@@ -6,14 +6,14 @@ RSpec.describe Api::WellIO, type: :model do
   context 'with one sample' do
     subject { create :well_with_sample_and_without_plate, map: Map.find_by(description: 'A1'), plate: plate }
 
-    let(:plate) { create :plate, barcode: 1 }
+    let(:plate) { create :plate, barcode: 'SQPD-1' }
     let(:sample) { subject.samples.first }
 
     let(:expected_json) do
       {
         'uuid' => subject.uuid,
         'internal_id' => subject.id,
-        'display_name' => 'DN1S:A1',
+        'display_name' => 'SQPD-1:A1',
         'gel_pass' => nil,
         'concentration' => 23.2,
         'current_volume' => 15.0,
@@ -25,9 +25,7 @@ RSpec.describe Api::WellIO, type: :model do
         'sequenom_count' => nil,
         'gender_markers' => nil,
         'map' => 'A1',
-        'plate_barcode' => '1',
         'plate_uuid' => plate.uuid,
-        'plate_barcode_prefix' => 'DN',
         'sample_uuid' => sample.uuid,
         'sample_internal_id' => sample.id,
         'sample_name' => sample.name
@@ -42,7 +40,7 @@ RSpec.describe Api::WellIO, type: :model do
       create :well_with_sample_and_without_plate, map: Map.find_by(description: 'A1'), plate: plate, aliquot_count: 2
     end
 
-    let(:plate) { create :plate, barcode: 1 }
+    let(:plate) { create :plate, barcode: 'SQPD-1' }
     let(:sample) { subject.samples.first }
 
     # We only send samples in the event we have just one
@@ -50,7 +48,7 @@ RSpec.describe Api::WellIO, type: :model do
       {
         'uuid' => subject.uuid,
         'internal_id' => subject.id,
-        'display_name' => 'DN1S:A1',
+        'display_name' => 'SQPD-1:A1',
         'gel_pass' => nil,
         'concentration' => 23.2,
         'current_volume' => 15.0,
@@ -62,9 +60,7 @@ RSpec.describe Api::WellIO, type: :model do
         'sequenom_count' => nil,
         'gender_markers' => nil,
         'map' => 'A1',
-        'plate_barcode' => '1',
         'plate_uuid' => plate.uuid,
-        'plate_barcode_prefix' => 'DN'
       }
     end
 

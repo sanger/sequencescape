@@ -3,19 +3,15 @@
 require 'rails_helper'
 
 RSpec.describe Api::PlateIO, type: :model do
-  subject { create :plate, plate_purpose: purpose, barcode: barcode, prefix: prefix }
+  subject { create :plate, plate_purpose: purpose }
 
   let(:purpose) { create :plate_purpose }
-  let(:barcode) { '12345' }
-  let(:prefix) { 'DN' }
 
   let(:expected_json) do
     {
       'uuid' => subject.uuid,
       'id' => subject.id,
       'name' => subject.name,
-      'barcode' => barcode,
-      'barcode_prefix' => prefix,
       'size' => 96,
       'plate_purpose_name' => purpose.name,
       'plate_purpose_internal_id' => purpose.id,
@@ -27,7 +23,7 @@ RSpec.describe Api::PlateIO, type: :model do
 
   context 'with an infinium barcode' do
     subject do
-      create :plate, plate_purpose: purpose, barcode: barcode, prefix: prefix, infinium_barcode: 'WG1234567-DNA'
+      create :plate, plate_purpose: purpose, infinium_barcode: 'WG1234567-DNA'
     end
 
     let(:expected_json) do
@@ -35,8 +31,6 @@ RSpec.describe Api::PlateIO, type: :model do
         'uuid' => subject.uuid,
         'id' => subject.id,
         'name' => subject.name,
-        'barcode' => barcode,
-        'barcode_prefix' => prefix,
         'infinium_barcode' => 'WG1234567-DNA'
       }
     end
@@ -45,15 +39,13 @@ RSpec.describe Api::PlateIO, type: :model do
   end
 
   context 'with an fluidigm barcode' do
-    subject { create :plate, plate_purpose: purpose, barcode: barcode, prefix: prefix, fluidigm_barcode: '1234567890' }
+    subject { create :plate, plate_purpose: purpose, fluidigm_barcode: '1234567890' }
 
     let(:expected_json) do
       {
         'uuid' => subject.uuid,
         'id' => subject.id,
         'name' => subject.name,
-        'barcode' => barcode,
-        'barcode_prefix' => prefix,
         'fluidigm_barcode' => '1234567890'
       }
     end

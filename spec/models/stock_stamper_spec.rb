@@ -5,7 +5,7 @@ require 'pry'
 require 'timecop'
 
 describe StockStamper do
-  let(:plate) { create :plate_with_3_wells, barcode: 1 }
+  let(:plate) { create :plate_with_3_wells }
   let!(:user) { create :user, login: 'abc', barcode: 'ID41440E' }
 
   before do

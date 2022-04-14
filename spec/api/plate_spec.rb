@@ -9,7 +9,7 @@ describe '/api/1/plate-uuid' do
   let(:authorised_app) { create :api_application }
   let(:uuid) { plate.uuid }
 
-  let(:plate) { create :plate, barcode: '1' }
+  let(:plate) { create :plate, barcode: 'SQPD-1' }
 
   before { custom_metadata_collection }
 
@@ -52,9 +52,8 @@ describe '/api/1/plate-uuid' do
 
 
         \"barcode\": {
-          \"prefix\": \"DN\",
+          \"prefix\": \"SQPD\",
           \"number\": \"1\",
-          \"ean13\": \"1220000001831\",
           \"type\": 1
         },
 
@@ -111,19 +110,17 @@ describe '/api/1/plate-uuid' do
 
 
           \"barcode\": {
-            \"prefix\": \"DN\",
+            \"prefix\": \"SQPD\",
             \"number\": \"1\",
-            \"ean13\": \"1220000001831\",
             \"type\": 1,
-            \"machine\": \"DN1S\"
+            \"machine\": \"SQPD-1\"
           },
 
           \"stock_plate\": {
             \"barcode\": {
               \"number\":\"2\",
-              \"prefix\":\"DN\",
-              \"ean13\":\"1220000002845\",
-              \"machine\":\"DN2T\"
+              \"prefix\":\"SQPD\",
+              \"machine\":\"SQPD-2\"
             },
             \"uuid\":\"#{stock_plate&.uuid}\"
           },
@@ -133,8 +130,8 @@ describe '/api/1/plate-uuid' do
       }"
     end
 
-    let(:stock_plate) { create(:full_stock_plate, barcode: 2) }
-    let(:plate) { create :plate, parents: [stock_plate], barcode: 1 }
+    let(:stock_plate) { create(:full_stock_plate, barcode: 'SQPD-2') }
+    let(:plate) { create :plate, parents: [stock_plate], barcode: 'SQPD-1' }
     let(:response_code) { 200 }
 
     it 'supports resource reading' do
