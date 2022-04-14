@@ -215,7 +215,8 @@ Then /^the last created sample manifest should be:$/ do |table|
   end
 
   table.rows.each_with_index do |row, index|
-    expected = [Barcode.barcode_to_human(Barcode.calculate_barcode(Plate.default_prefix, row[0].to_i)), row[1]]
+    #expected = [Barcode.barcode_to_human(Barcode.calculate_barcode(Plate.default_prefix, row[0].to_i)), row[1]]
+    expected = row
     got = [@worksheet.cell(offset + index + 1, 1), @worksheet.cell(offset + index + 1, 2)]
     assert_equal(expected, got, "Unexpected manifest row #{index}")
   end

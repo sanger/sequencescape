@@ -28,7 +28,7 @@ Feature: Full sample manifest
       | Contains | Study      | Supplier           | Manifest       | Upload              | Errors | State   | Created by |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest  |        | Completed | john       |
     When I follow "Manifest for Test study"
-    Then I should see "DN1234567T"
+    Then I should see "SQPD-1234567"
 
     Then the samples table should look like:
       | sanger_sample_id | supplier_name | sample_absent | sample_taxon_id | cell_type  |

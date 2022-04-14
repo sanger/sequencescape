@@ -57,7 +57,7 @@ Given /^I have a PacBio Library Prep batch$/ do
   step('I have a sample tube "222" in study "Test study" in asset group "Test study group"')
   step('I have a PacBio submission')
   step('I am on the show page for pipeline "PacBio Library Prep"')
-  step('I check "Select DN1234567T for batch"')
+  step('I check "Select SQPD-1234567 for batch"')
   step('I press the first "Submit"')
   step('Well "DN1234567":"A1" has a PacBioLibraryTube "NT333U"')
   step('Well "DN1234567":"B1" has a PacBioLibraryTube "NT444D"')

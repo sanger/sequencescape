@@ -23,10 +23,10 @@ Feature: Push samples through the PacBio pipeline with javascript
        | multiplier#2    | 22               |
     Given 1 pending delayed jobs are processed
     Given I am on the show page for pipeline "PacBio Library Prep"
-    When I check "Select DN1234567T for batch"
+    When I check "Select SQPD-1234567 for batch"
     When I press the first "Submit"
     When I follow "DNA Template Prep Kit Box Barcode"
-    Given Well "DN1234567T":"A1" has a PacBioLibraryTube "NT333U"
+    Given Well "SQPD-1234567":"A1" has a PacBioLibraryTube "NT333U"
     When I fill in "DNA Template Prep Kit Box Barcode" with "999"
     And I press "Next step"
     And I press "Next step"
@@ -48,7 +48,7 @@ Feature: Push samples through the PacBio pipeline with javascript
     And I press "Next step"
     Then the PacBio manifest for the last batch should look like:
       | Well No. | Sample Name   | CP Parameters                                                                                                          |
-      | A01      | DN1234567T-A1 | AcquisitionTime=30\|InsertSize=2000\|StageHS=True\|SizeSelectionEnabled=False\|Use2ndLook=False\|NumberOfCollections=1 |
+      | A01      | SQPD-1234567-A1 | AcquisitionTime=30\|InsertSize=2000\|StageHS=True\|SizeSelectionEnabled=False\|Use2ndLook=False\|NumberOfCollections=1 |
     When I press "Release this batch"
     Then I should see "Batch released!"
     When I follow "Print plate labels"
