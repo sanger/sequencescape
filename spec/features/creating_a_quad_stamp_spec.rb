@@ -38,7 +38,7 @@ describe 'Creating a quad stamp' do
 
     # We submit the form to create the plate and print the barcode
     click_on 'Submit'
-    expect(page).to have_content new_barcode[:barcode]
+    expect(page).to have_content new_barcode.barcode
   end
 
   it 'handles incorrect input' do

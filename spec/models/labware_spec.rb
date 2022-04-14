@@ -73,7 +73,7 @@ RSpec.describe Labware, type: :model do
     describe '#labwhere_location' do
       subject { plate.labwhere_location }
 
-      let(:plate) { create :plate, barcode: 1 }
+      let(:plate) { create :plate }
       let(:parentage) { 'Sanger / Ogilvie / AA316' }
       let(:location) { 'Shelf 1' }
 
@@ -96,8 +96,8 @@ RSpec.describe Labware, type: :model do
     describe '#labwhere_locations' do
       subject { described_class.labwhere_locations(barcodes) }
 
-      let(:plate_1) { create :plate, barcode: 1 }
-      let(:plate_2) { create :plate, barcode: 2 }
+      let(:plate_1) { create :plate }
+      let(:plate_2) { create :plate }
       let(:barcodes) { [plate_1.human_barcode, plate_2.human_barcode] }
       let(:parentage_1) { 'Sanger / Ogilvie / AA316' }
       let(:parentage_2) { 'Sanger / Ogilvie / AA317' }
@@ -130,7 +130,7 @@ RSpec.describe Labware, type: :model do
         'Timed out reading data from server'
       )
 
-      plate = create(:plate, barcode: 1)
+      plate = create(:plate)
       expect(plate.storage_location).to eq('Not found - There is a problem with Labwhere')
     end
   end

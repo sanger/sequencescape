@@ -55,12 +55,20 @@ FactoryBot.define do
   end
 
   trait :plate_barcode do
-    sanger_barcode { build :plate_barcode } 
+    transient do
+      barcode { nil }
+    end
+    # May be a nicer way of doing this?
+    sanger_barcode { barcode.nil? ? build(:plate_barcode) : build(:plate_barcode, barcode: barcode) }
   end
 
   factory :plate, traits: %i[plate_barcode with_wells] do
     plate_purpose
     size { 96 }
+
+    transient do
+      barcode { nil }
+    end
 
     factory :input_plate do
       association(:plate_purpose, factory: :input_plate_purpose)

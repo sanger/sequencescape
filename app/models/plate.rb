@@ -29,7 +29,6 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   class_attribute :default_plate_size
 
   # Shouldn't actually be falling back to this, but its here just in case
-  self.default_prefix = 'DN'
   self.sample_partial = 'assets/samples_partials/plate_samples'
   self.per_page = 50
   self.default_plate_size = 96
@@ -474,8 +473,8 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
           "#generate_barcode has been called on plate, which wasn't supposed to happen, and probably indicates a bug."
   end
 
-  def sanger_barcode=(attributes)
-    barcodes << Barcode.build_sequencescape22(attributes)
+  def sanger_barcode=(barcode)
+    barcodes << barcode
   end
 
   def after_comment_addition(comment)

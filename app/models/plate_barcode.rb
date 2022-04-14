@@ -22,15 +22,16 @@ class PlateBarcode < ActiveResource::Base # rubocop:todo Style/Documentation
       end
     end
 
-    barcode
+    Barcode.build_sequencescape22(barcode)
   end
 
   if Rails.env.development?
     # If we don't want a test dependency on baracoda we need to mock a barcode
 
     def self.create_barcode
-      current_num = Barcode.sequencescape22.order(barcode: :desc).first&.number || 1
-      { barcode: "#{self.prefix}-#{current_num + 1}" }
+      # We should use a different prefix for local so that you can switch between using baracoda locally and there will not be clashes
+      current_num = Barcode.sequencescape22.order(id: :desc).first&.number || 9000
+      Barcode.build_sequencescape22({ barcode: "#{self.prefix}-#{current_num + 1}" })
     end
   end
 end

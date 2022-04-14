@@ -11,10 +11,11 @@ RSpec.describe Api::Messages::WellStockResourceIO, type: :model do
   after { Timecop.return }
 
   let(:sample) { create :sample }
+  let(:plate_barcode) { build(:plate_barcode) }
   let(:well) do
     create :well,
            map: Map.find_by!(description: 'A1'),
-           plate: create(:plate, barcode: '12345'),
+           plate: create(:plate, barcode: plate_barcode.barcode),
            well_attribute: create(:complete_well_attribute)
   end
   let(:study) { create :study }
@@ -29,8 +30,8 @@ RSpec.describe Api::Messages::WellStockResourceIO, type: :model do
       'samples' => [{ 'sample_uuid' => sample.uuid, 'study_uuid' => study.uuid }],
       'stock_resource_id' => well.id,
       'stock_resource_uuid' => well.uuid,
-      'machine_barcode' => 'DN12345U',
-      'human_barcode' => 'DN12345U',
+      'machine_barcode' => plate_barcode.barcode,
+      'human_barcode' => plate_barcode.barcode,
       'labware_coordinate' => 'A1',
       'current_volume' => 15.0,
       'initial_volume' => nil,
