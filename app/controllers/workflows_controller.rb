@@ -22,20 +22,11 @@ class WorkflowsController < ApplicationController
 
   # @todo These actions should be extracted from the controller, and instead be handled by an object invoked
   #       by the task
-  include Tasks::AssignTagsHandler
-  include Tasks::AssignTagsToTubesHandler
   include Tasks::AssignTubesToWellsHandler
-  include Tasks::BindingKitBarcodeHandler
   include Tasks::CherrypickHandler
-  include Tasks::MovieLengthHandler
   include Tasks::PlateTemplateHandler
   include Tasks::PlateTransferHandler
-  include Tasks::PrepKitBarcodeHandler
-  include Tasks::SamplePrepQcHandler
   include Tasks::SetDescriptorsHandler
-  include Tasks::TagGroupHandler
-  include Tasks::ValidateSampleSheetHandler
-  include Tasks::StartBatchHandler
 
   # TODO: This needs to be made RESTful.
   # 1: Routes need to be refactored to provide more sensible urls
@@ -68,7 +59,7 @@ class WorkflowsController < ApplicationController
         task_success, task_message = @task.do_task(self, params, current_user)
         if task_success
           # Task completed, start the batch is necessary and display the next one
-          do_start_batch_task(@task, params)
+          start_batch
           @stage += 1
           params[:id] = @stage
           @task = @workflow.tasks[@stage]
@@ -108,5 +99,11 @@ class WorkflowsController < ApplicationController
     event.add_descriptor Descriptor.new(name: 'task_id', value: task.id)
     event.add_descriptor Descriptor.new(name: 'task', value: task.name)
     event.save!
+  end
+
+  def start_batch
+    return unless @task.lab_activity?
+
+    @batch.start!(current_user) if @batch.may_start?
   end
 end

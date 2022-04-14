@@ -14,8 +14,7 @@ module Presenters
     include Rails.application.routes.url_helpers
     include ActionView::Helpers::TextHelper
 
-    delegate :multiplexed?, to: :batch
-    delegate :genotyping?, :sequencing?, to: :pipeline
+    delegate :sequencing?, to: :pipeline
 
     def initialize(current_user, batch)
       @current_user = current_user
@@ -67,43 +66,24 @@ module Presenters
       @pipeline.batch_worksheet.present?
     end
 
-    def pacbio?
-      @pipeline.is_a?(PacBioSequencingPipeline)
-    end
-
-    def pacbio_sample_pipeline?
-      @pipeline.is_a?(PacBioSamplePrepPipeline)
-    end
-
     def tube_layout_not_verified?
       @batch.has_limit? and !@batch.has_event('Tube layout verified')
     end
 
     def plate_labels?
-      [cherrypicking?, genotyping?, pacbio?, pacbio_sample_pipeline?].any?
+      cherrypicking?
     end
 
-    # rubocop:todo Metrics/PerceivedComplexity, Metrics/AbcSize
-    def load_pipeline_options # rubocop:todo Metrics/CyclomaticComplexity
+    def load_pipeline_options
       add_submenu_option 'Edit batch', edit_batch_path(@batch) if can? :edit
 
       # Printing of labels is enabled for anybody
-      add_submenu_option 'Print labels', :print_labels # The test for this was ridiculously slow,
-
-      # and would be always true anyway. I've removed the conditional to give a quick performance boost, with no
-      # changes in behaviour. This whole section needs refactoring anyway.
-      add_submenu_option 'Print pool label', :print_multiplex_labels if multiplexed?
-      add_submenu_option 'Print stock pool label', :print_stock_multiplex_labels if multiplexed?
+      add_submenu_option 'Print labels', :print_labels
       add_submenu_option 'Print plate labels', :print_plate_labels if plate_labels?
-
-      if pacbio_sample_pipeline? && can?(:sample_prep_worksheet)
-        add_submenu_option 'Print sample prep worksheet', :sample_prep_worksheet
-      end
 
       add_submenu_option 'Print worksheet', :print if worksheet? && can?(:print)
 
       add_submenu_option 'Verify tube layout', :verify if tube_layout_not_verified? && can?(:verify)
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
   end
 end

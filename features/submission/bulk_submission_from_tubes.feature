@@ -9,6 +9,7 @@ Feature: Bulk Submission
   Background:
     Given I am logged in as "user"
     And I am using "local" to authenticate
+    And I have a Tube submission template
     And I have administrative role
     And I have an "active" study called "abc123_study"
     And I have a project called "Test project"
@@ -30,4 +31,3 @@ Feature: Bulk Submission
     When I upload a file with valid data for 1 tube submissions
     Then I should not see "Your bulk submission has been processed"
     And I should see "Asset Group 'novel_asset_group' contains different assets to those you specified. You may be reusing an asset group name"
-
