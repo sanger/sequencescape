@@ -4,13 +4,10 @@ require 'rails_helper'
 
 RSpec.describe NpgActions::AssetsController, type: :controller do
   let(:user) { create :user }
-
-  before { session[:user] = user.id }
-
-  let(:lane) { create :lane_with_stock_plate }
+  let(:lane) { create :lane_with_stock_plate, name: 'NPG_Action_Lane_Test', qc_state: 'passed', external_release: 1 }
   let(:study) { create :study }
-  let(:batch) { create :sequencing_batch, state: 'started' }
-  let(:validSeqRequest) do
+  let(:batch) { create :sequencing_batch, state: 'started', qc_state: 'qc_manual' }
+  let(:valid_seq_request) do
     create :sequencing_request_with_assets,
     batch: batch,
     request_type: batch.pipeline.request_types.first,
@@ -18,7 +15,7 @@ RSpec.describe NpgActions::AssetsController, type: :controller do
     target_asset: lane,
     state: 'passed'
   end
-  let(:cancelledSeqRequest) do
+  let(:cancelled_seq_request) do
     create :sequencing_request_with_assets,
     batch: batch,
     request_type: batch.pipeline.request_types.first,
@@ -26,7 +23,7 @@ RSpec.describe NpgActions::AssetsController, type: :controller do
     target_asset: lane,
     state: 'cancelled'
   end
-  let(:failedSeqRequest) do
+  let(:failed_seq_request) do
     create :sequencing_request_with_assets,
     batch: batch,
     request_type: batch.pipeline.request_types.first,
@@ -35,8 +32,12 @@ RSpec.describe NpgActions::AssetsController, type: :controller do
     state: 'failed'
   end
 
+  before { session[:user] = user.id }
+
+
   shared_examples 'a passed state change' do
     it 'renders and creates events', aggregate_failures: true do
+      expect(response).to have_http_status(:ok)
       expect(response).to render_template :'assets/show.xml.builder'
 
       # Lane QC event
@@ -82,8 +83,9 @@ RSpec.describe NpgActions::AssetsController, type: :controller do
   describe '#pass' do
     context 'with valid parameters' do
       before do
-        validSeqRequest
-        post :pass, params: { asset_id: lane.id, qc_information: { message: 'qc passed ok'} }, session: { user: user.id }
+        valid_seq_request
+        post :pass, params: { asset_id: lane.id, qc_information: { message: 'qc passed ok'} },
+session: { user: user.id }
       end
 
       it_behaves_like 'a passed state change'
@@ -91,52 +93,105 @@ RSpec.describe NpgActions::AssetsController, type: :controller do
 
     context 'with no valid requests' do
       before do
-        post :pass, params: { asset_id: lane.id, qc_information: { message: 'qc passed ok'} }, session: { user: user.id }
+        post :pass, params: { asset_id: lane.id, qc_information: { message: 'qc passed ok'} },
+session: { user: user.id }
       end
 
       it 'renders the exception page' do
         regexp =
           Regexp.new(
-            "<error><message>Unable to identify a suitable single active request for Asset: #{lane.id}</message></error>",
+            [
+              '<error><message>',
+              "Unable to identify a suitable single active request for Asset: #{lane.id}",
+              '</message></error>'
+            ].join,
             Regexp::MULTILINE
           )
-        expect(response).to have_http_status(404)
+        expect(response).to have_http_status(:not_found)
         expect(response.body).to match(regexp)
       end
     end
 
     context 'with a single cancelled request' do
       before do
-        cancelledSeqRequest
-        post :pass, params: { asset_id: lane.id, qc_information: { message: 'qc passed ok'} }, session: { user: user.id }
+        cancelled_seq_request
+        post :pass, params: { asset_id: lane.id, qc_information: { message: 'qc passed ok'} },
+session: { user: user.id }
       end
 
       it 'renders the exception page' do
         regexp =
           Regexp.new(
-            "<error><message>Unable to identify a suitable single active request for Asset: #{lane.id}</message></error>",
+            [
+              '<error><message>',
+              "Unable to identify a suitable single active request for Asset: #{lane.id}",
+              '</message></error>'
+            ].join,
             Regexp::MULTILINE
           )
-        expect(response).to have_http_status(404)
+        expect(response).to have_http_status(:not_found)
         expect(response.body).to match(regexp)
       end
     end
 
-    context 'with both a valid and an additional cancelled request' do
+    context 'with both an active and an additional cancelled request' do
       before do
-        validSeqRequest
-        cancelledSeqRequest
-        post :pass, params: { asset_id: lane.id, qc_information: { message: 'qc passed ok'} }, session: { user: user.id }
+        valid_seq_request
+        cancelled_seq_request
+        post :pass, params: { asset_id: lane.id, qc_information: { message: 'qc passed ok'} },
+session: { user: user.id }
       end
 
       it_behaves_like 'a passed state change'
     end
+
+    context 'with two active requests' do
+      before do
+        valid_seq_request
+        failed_seq_request
+        post :pass, params: { asset_id: lane.id, qc_information: { message: 'qc passed ok'} },
+session: { user: user.id }
+      end
+
+      it 'renders the exception page' do
+        regexp =
+          Regexp.new(
+            [
+              '<error><message>',
+              "Unable to identify a suitable single active request for Asset: #{lane.id}",
+              '</message></error>'
+            ].join,
+            Regexp::MULTILINE
+          )
+        expect(response).to have_http_status(:not_found)
+        expect(response.body).to match(regexp)
+      end
+    end
+
+    context 'with an unrecognised lane' do
+      let(:lane_id) { 999999999 }
+
+      before do
+        post :pass, params: { asset_id: lane_id, qc_information: { message: 'qc passed ok'} },
+session: { user: user.id }
+      end
+
+      it 'renders the exception page' do
+        regexp =
+          Regexp.new(
+            "<error><message>Couldn't find Lane with 'id'=#{lane_id}.*</message></error>",
+            Regexp::MULTILINE
+          )
+        expect(response).to have_http_status(:not_found)
+        expect(response.body).to match(regexp)
+      end
+    end
   end
 
-  describe "#fail" do
+  describe '#fail' do
     context 'with valid parameters' do
       before do
-        failedSeqRequest
+        failed_seq_request
         post :fail, params: { asset_id: lane.id, qc_information: { message: 'failed qc'} }, session: { user: user.id }
       end
 
@@ -145,8 +200,8 @@ RSpec.describe NpgActions::AssetsController, type: :controller do
 
     context 'with both a valid and an additional cancelled request' do
       before do
-        failedSeqRequest
-        cancelledSeqRequest
+        failed_seq_request
+        cancelled_seq_request
         post :fail, params: { asset_id: lane.id, qc_information: { message: 'failed qc'} }, session: { user: user.id }
       end
 
