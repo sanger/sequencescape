@@ -2,7 +2,7 @@
 # A {Task} used in {PacBioSequencingPipeline}
 # Assigns tagged tube into multiplexed wells on the target plate for pooling.
 #
-# @note At time of writing (3/4/2019) this is due for removal.
+# @note At time of writing (14/4/2022) this is due for removal.
 #
 # @see Tasks::AssignTubesToWellsHandler for behaviour included in the {WorkflowsController}
 class AssignTubesToMultiplexedWellsTask < Task
