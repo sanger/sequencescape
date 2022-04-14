@@ -40,9 +40,9 @@ describe 'Starting transfers on repools starts repools' do
   let(:library_creation_request_b1) { create :library_creation_request, asset: source_b1 }
 
   before do
-    allow(PlateBarcode).to receive(:create).and_return(
-      build(:plate_barcode, barcode: 1000),
-      build(:plate_barcode, barcode: 1001)
+    allow(PlateBarcode).to receive(:create_barcode).and_return(
+      build(:plate_barcode),
+      build(:plate_barcode)
     )
     TransferRequestCollection.create!(
       user: user,

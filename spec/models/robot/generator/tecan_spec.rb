@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Robot::Generator::Tecan, type: :model do
-  before { create(:full_plate, barcode: 12_345) }
+  before { create(:full_plate) }
 
   shared_examples 'a generator' do
     describe '.as_text' do

@@ -26,8 +26,7 @@ RSpec.describe SequencescapeExcel::Worksheet, type: :model, sample_manifest_exce
   before do
     create :tag_group, adapter_type: (create :adapter_type, name: 'chromium')
     create :primer_panel
-    barcode = build :plate_barcode, barcode: 23
-    allow(PlateBarcode).to receive(:create).and_return(barcode)
+    allow(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode))
 
     @sample_manifest = create :sample_manifest
     sample_manifest.generate

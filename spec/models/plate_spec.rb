@@ -82,20 +82,21 @@ describe Plate do
   context 'barcodes' do
     # Maintaining existing barcode behaviour
     context 'sanger barcodes' do
-      let(:prefix) { 'DN' }
-      let(:barcode_prefix) { create :barcode_prefix, prefix: prefix }
-      let(:plate) { create :plate, prefix: prefix, barcode: '12345' }
+      let(:plate) { create :plate  }
 
       describe '#human_barcode' do
         subject { plate.human_barcode }
 
-        it { is_expected.to eq 'DN12345U' }
+        it { is_expected.to eq 'SQPD-1' }
       end
 
+      # On the sequencescape22 barcode format we dont support ean13
       describe '#ean13_barcode' do
         subject { plate.ean13_barcode }
 
-        it { is_expected.to eq '1220012345855' }
+        it { 
+          is_expected.to eq nil 
+        }
       end
     end
   end

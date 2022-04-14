@@ -17,7 +17,6 @@ describe 'track SampleManifest updates', sample_manifest: true do
   let(:user) { create :user, login: 'john' }
   let(:new_user) { create :user, login: 'jane' }
   let!(:printer) { create :barcode_printer }
-  let(:barcode) { 1_234_567 }
   let!(:supplier) { create :supplier }
   let!(:study) { create :study }
 
@@ -34,7 +33,7 @@ describe 'track SampleManifest updates', sample_manifest: true do
     broadcast_events_count = BroadcastEvent.count
     expect(page).to have_content('Create manifest for plates')
 
-    expect(PlateBarcode).to receive(:create).and_return(build(:plate_barcode, barcode: barcode))
+    expect(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode))
     sample_manifest = create :sample_manifest, study: study, supplier: supplier, user: user
     sample_manifest.generate
 

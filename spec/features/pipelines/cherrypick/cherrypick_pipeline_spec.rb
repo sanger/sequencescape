@@ -27,9 +27,9 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
   let(:plate_template) { create :plate_template }
   let(:plate_type) { create :plate_type, name: 'ABgene_0765', maximum_volume: 800 }
   let(:_destination_plate_barcode) { build(:plate_barcode) }
-  let(:destination_plate_barcode) { _destination_plate_barcode[:barcode] }
+  let(:destination_plate_barcode) { _destination_plate_barcode.barcode }
   let(:_destination_plate_barcode_2) { build(:plate_barcode) }
-  let(:destination_plate_barcode_2) { _destination_plate_barcode_2[:barcode] }
+  let(:destination_plate_barcode_2) { _destination_plate_barcode_2.barcode }
   let(:destination_plate_human_barcode_2) { destination_plate_barcode_2 }
   let(:destination_plate_human_barcode) { destination_plate_barcode }
   let(:target_purpose) { create :plate_purpose }
@@ -84,7 +84,6 @@ describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true
 
   describe 'when creating batches' do
     it 'requests leave the inbox once a batch has been created' do
-      debugger
       login_user(user)
       visit pipeline_path(pipeline)
       expect(page).to have_content("Pipeline #{pipeline_name}")

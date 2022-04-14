@@ -8,6 +8,9 @@ describe UatActions::GenerateTaggedPlates do
     let(:tag_group) { create(:tag_group, tag_count: 2) }
     let(:tag_group2) { create(:tag_group, tag_count: 2) }
     let(:uat_action) { described_class.new(parameters) }
+    let(:plate_barcode_1) { build(:plate_barcode) }
+    let(:plate_barcode_2) { build(:plate_barcode) }
+    let(:plate_barcode_3) { build(:plate_barcode) }
 
     context 'when creating a single plate' do
       let(:parameters) do
@@ -27,12 +30,10 @@ describe UatActions::GenerateTaggedPlates do
       let(:report) do
         # A report is a hash of key value pairs which get returned to the user.
         # It should include information such as barcodes and identifiers
-        { 'plate_0' => 'DN2T' }
+        { 'plate_0' => plate_barcode_1[:barcode] }
       end
 
-      let(:barcode_1) { build(:plate_barcode, barcode: 2) }
-
-      before { allow(PlateBarcode).to receive(:create).and_return(barcode_1) }
+      before { allow(PlateBarcode).to receive(:create_barcode).and_return(plate_barcode_1) }
 
       it 'can be performed' do
         expect(uat_action.perform).to be true
@@ -63,13 +64,10 @@ describe UatActions::GenerateTaggedPlates do
       let(:report) do
         # A report is a hash of key value pairs which get returned to the user.
         # It should include information such as barcodes and identifiers
-        { 'plate_0' => 'DN3U', 'plate_1' => 'DN4V', 'plate_2' => 'DN5W' }
+        { 'plate_0' => plate_barcode_1[:barcode], 'plate_1' => plate_barcode_2[:barcode], 'plate_2' => plate_barcode_3[:barcode] }
       end
-      let(:barcode_1) { build(:plate_barcode, barcode: 3) }
-      let(:barcode_2) { build(:plate_barcode, barcode: 4) }
-      let(:barcode_3) { build(:plate_barcode, barcode: 5) }
 
-      before { allow(PlateBarcode).to receive(:create).and_return(barcode_1, barcode_2, barcode_3) }
+      before { allow(PlateBarcode).to receive(:create_barcode).and_return(plate_barcode_1, plate_barcode_2, plate_barcode_3) }
 
       it 'can be performed' do
         expect(uat_action.perform).to be true
