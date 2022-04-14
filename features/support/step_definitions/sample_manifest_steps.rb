@@ -215,10 +215,9 @@ Then /^the last created sample manifest should be:$/ do |table|
   end
 
   table.rows.each_with_index do |row, index|
-    #expected = [Barcode.barcode_to_human(Barcode.calculate_barcode(Plate.default_prefix, row[0].to_i)), row[1]]
-    expected = row
+    # NOTE: Before we were re-generating the barcodes from the number, but now we receive the barcode itself
     got = [@worksheet.cell(offset + index + 1, 1), @worksheet.cell(offset + index + 1, 2)]
-    assert_equal(expected, got, "Unexpected manifest row #{index}")
+    assert_equal(row, got, "Unexpected manifest row #{index}")
   end
 end
 
