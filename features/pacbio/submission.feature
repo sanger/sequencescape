@@ -5,7 +5,7 @@ Feature: Create a submission for the pacbio pipeline
     Given I am a "manager" user logged in as "user"
     Given I have a project called "Test project"
     Given I have an active study called "Test study"
-    Given the plate barcode webservice returns "99999"
+    Given the plate barcode webservice returns "SQPD-99999"
 
   Scenario: No kit number entered
     Given I have a PacBio Library Prep batch

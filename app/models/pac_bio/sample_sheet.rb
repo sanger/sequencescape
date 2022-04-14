@@ -135,7 +135,7 @@ class PacBio::SampleSheet # rubocop:todo Style/Documentation
       well.uuid,
       concat(library_tubes, :uuid),
       batch.uuid,
-      well.plate.barcode_number,
+      well.plate.barcode_for_pac_bio_manifest,
       concat(requests, :uuid),
       nil,
       nil

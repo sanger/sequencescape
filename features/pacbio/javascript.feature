@@ -7,8 +7,8 @@ Feature: Push samples through the PacBio pipeline with javascript
     Given I have an active study called "Test study"
     Given the "1D Tube" barcode printer "xyz" exists
     Given the "96 Well Plate" barcode printer "abc" exists
-    And the plate barcode webservice returns "99998"
-    And the plate barcode webservice returns "99999"
+    And the plate barcode webservice returns "SQPD-99998"
+    And the plate barcode webservice returns "SQPD-99999"
     And the reference genome "Mouse" exists
     Given the study "Test study" has a reference genome of "Mouse"
 

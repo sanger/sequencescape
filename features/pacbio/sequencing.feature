@@ -7,7 +7,9 @@ Feature: Push samples through the PacBio pipeline for sequencing
 
     Given I have an active study called "Test study"
     Given I am on the show page for study "Test study"
-    And the plate barcode webservice returns "99997..99999"
+    And the plate barcode webservice returns "SQPD-99997"
+    And the plate barcode webservice returns "SQPD-99998"
+    And the plate barcode webservice returns "SQPD-99999"
     And the reference genome "Mouse" exists
     Given the study "Test study" has a reference genome of "Mouse"
 
@@ -49,16 +51,16 @@ Feature: Push samples through the PacBio pipeline for sequencing
    And I press "Next step"
 
    Given the UUID for the last batch is "00000000-1111-2222-3333-444444444445"
-   And the UUID for well "A1" on plate "DN99999" is "00000000-1111-2222-3333-444444444441"
-   And the UUID for well "B1" on plate "DN99999" is "00000000-1111-2222-3333-444444444442"
+   And the UUID for well "A1" on plate "SQPD-99999" is "00000000-1111-2222-3333-444444444441"
+   And the UUID for well "B1" on plate "SQPD-99999" is "00000000-1111-2222-3333-444444444442"
    And the UUID for Library "NT333U" is "00000000-1111-2222-3333-444444444443"
    And the UUID for Library "NT444D" is "00000000-1111-2222-3333-444444444444"
    And all requests have sequential UUIDs based on "00000000-1111-2222-3333"
 
    Then the PacBio manifest for the last batch should look like:
      | Well No. | Sample Name | DNA Template Prep Kit Box Barcode | Binding Kit Box Barcode | Binding Kit Parameters | Collection Protocol   | CP Parameters                                             | Basecaller | User Field 1                         | User Field 2                         | User Field 3                         | User Field 4 | User Field 5                         |
-     | A01      | SQPD-1234567-A1  | 999                               | 777                     |                        | Standard Seq v3 | AcquisitionTime=30\|InsertSize=500\|StageHS=True\|SizeSelectionEnabled=False\|Use2ndLook=False\|NumberOfCollections=1 | Default    | 00000000-1111-2222-3333-444444444441 | 00000000-1111-2222-3333-444444444443 | 00000000-1111-2222-3333-444444444445 | 99999        | 00000000-1111-2222-3333-000000000003 |
-     | B01      | SQPD-1234567-B1  | 999                               | 777                     |                        | Standard Seq v3 | AcquisitionTime=60\|InsertSize=500\|StageHS=True\|SizeSelectionEnabled=False\|Use2ndLook=False\|NumberOfCollections=1 | Default    | 00000000-1111-2222-3333-444444444442 | 00000000-1111-2222-3333-444444444444 | 00000000-1111-2222-3333-444444444445 | 99999        | 00000000-1111-2222-3333-000000000004 |
+     | A01      | SQPD-1234567-A1  | 999                               | 777                     |                        | Standard Seq v3 | AcquisitionTime=30\|InsertSize=500\|StageHS=True\|SizeSelectionEnabled=False\|Use2ndLook=False\|NumberOfCollections=1 | Default    | 00000000-1111-2222-3333-444444444441 | 00000000-1111-2222-3333-444444444443 | 00000000-1111-2222-3333-444444444445 | SQPD-99999        | 00000000-1111-2222-3333-000000000003 |
+     | B01      | SQPD-1234567-B1  | 999                               | 777                     |                        | Standard Seq v3 | AcquisitionTime=60\|InsertSize=500\|StageHS=True\|SizeSelectionEnabled=False\|Use2ndLook=False\|NumberOfCollections=1 | Default    | 00000000-1111-2222-3333-444444444442 | 00000000-1111-2222-3333-444444444444 | 00000000-1111-2222-3333-444444444445 | SQPD-99999        | 00000000-1111-2222-3333-000000000004 |
    When I press "Release this batch"
    Then I should see "Batch released!"
 
@@ -77,8 +79,8 @@ Feature: Push samples through the PacBio pipeline for sequencing
      When I press "Next step"
 
      Given the UUID for the last batch is "00000000-1111-2222-3333-444444444445"
-     And the UUID for well "A1" on plate "DN99999" is "00000000-1111-2222-3333-444444444441"
-     And the UUID for well "B1" on plate "DN99999" is "00000000-1111-2222-3333-444444444442"
+     And the UUID for well "A1" on plate "SQPD-99999" is "00000000-1111-2222-3333-444444444441"
+     And the UUID for well "B1" on plate "SQPD-99999" is "00000000-1111-2222-3333-444444444442"
      And the UUID for Library "NT333U" is "00000000-1111-2222-3333-444444444443"
      And the UUID for Library "NT444D" is "00000000-1111-2222-3333-444444444444"
      And all requests have sequential UUIDs based on "00000000-1111-2222-3333"
@@ -88,8 +90,8 @@ Feature: Push samples through the PacBio pipeline for sequencing
      When I follow "Download Sample Sheet"
      Then the PacBio manifest should be:
        | Well No. | Sample Name | DNA Template Prep Kit Box Barcode | Prep Kit Parameters | Binding Kit Box Barcode | Binding Kit Parameters | Collection Protocol   | CP Parameters                                                                                                         | Basecaller | Basecaller Parameters | Secondary Analysis Protocol | Secondary Analysis Parameters | Sample Comments | User Field 1                         | User Field 2                         | User Field 3                         | User Field 4 | User Field 5                         | User Field 6 | Results Data Output Path |
-       | A01      | SQPD-1234567-A1  | 999                               |                     | 777                     |                        | Standard Seq v3 | AcquisitionTime=30\|InsertSize=500\|StageHS=True\|SizeSelectionEnabled=False\|Use2ndLook=False\|NumberOfCollections=1 | Default    |                       |                             |                               |                 | 00000000-1111-2222-3333-444444444441 | 00000000-1111-2222-3333-444444444443 | 00000000-1111-2222-3333-444444444445 | 99999        | 00000000-1111-2222-3333-000000000003 |              |                          |
-       | B01      | SQPD-1234567-B1  | 999                               |                     | 777                     |                        | Standard Seq v3 | AcquisitionTime=60\|InsertSize=500\|StageHS=True\|SizeSelectionEnabled=False\|Use2ndLook=False\|NumberOfCollections=1 | Default    |                       |                             |                               |                 | 00000000-1111-2222-3333-444444444442 | 00000000-1111-2222-3333-444444444444 | 00000000-1111-2222-3333-444444444445 | 99999        | 00000000-1111-2222-3333-000000000004 |              |                          |
+       | A01      | SQPD-1234567-A1  | 999                               |                     | 777                     |                        | Standard Seq v3 | AcquisitionTime=30\|InsertSize=500\|StageHS=True\|SizeSelectionEnabled=False\|Use2ndLook=False\|NumberOfCollections=1 | Default    |                       |                             |                               |                 | 00000000-1111-2222-3333-444444444441 | 00000000-1111-2222-3333-444444444443 | 00000000-1111-2222-3333-444444444445 | SQPD-99999        | 00000000-1111-2222-3333-000000000003 |              |                          |
+       | B01      | SQPD-1234567-B1  | 999                               |                     | 777                     |                        | Standard Seq v3 | AcquisitionTime=60\|InsertSize=500\|StageHS=True\|SizeSelectionEnabled=False\|Use2ndLook=False\|NumberOfCollections=1 | Default    |                       |                             |                               |                 | 00000000-1111-2222-3333-444444444442 | 00000000-1111-2222-3333-444444444444 | 00000000-1111-2222-3333-444444444445 | SQPD-99999        | 00000000-1111-2222-3333-000000000004 |              |                          |
 
 
   Scenario: Alter tube layout on the plate (And flip the order as well!)
