@@ -7,7 +7,7 @@ Feature: Illumina-b stock DNA plate state varies based on the presence of submis
     Given I am using the latest version of the API
 And I have a "full" authorised user with the key "cucumber"
 
-    Given the plate barcode webservice returns "1000001"
+    Given the plate barcode webservice returns "SQPD-1000001"
       And a "ILB_STD_INPUT" plate called "Testing the API" exists
       And the UUID for the plate "Testing the API" is "00000000-1111-2222-3333-000000000001"
 

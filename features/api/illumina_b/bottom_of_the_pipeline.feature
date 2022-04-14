@@ -14,8 +14,8 @@ Feature: The bottom of the illumina_b pipeline
 
     Given a user with UUID "99999999-8888-7777-6666-555555555555" exists
 
-    Given the plate barcode webservice returns "1000001"
-      And the plate barcode webservice returns "1000002"
+    Given the plate barcode webservice returns "SQPD-1000001"
+      And the plate barcode webservice returns "SQPD-1000002"
 
     Given the UUID for the plate purpose "ILB_STD_INPUT" is "11111111-2222-3333-4444-000000000001"
       And the UUID for the purpose "ILB_STD_STOCK" is "88888888-1111-2222-3333-000000000001"

@@ -22,8 +22,8 @@ And I have a "full" authorised user with the key "cucumber"
     | 1234567890 | Test Lot Type | 2014-02-01  | Test tag layout |
     And the UUID for the lot with lot number "1234567890" is "00000000-1111-2222-3333-444444444444"
 
-     Given the plate barcode webservice returns "1000001"
-     And the plate barcode webservice returns "1000002"
+     Given the plate barcode webservice returns "SQPD-1000001"
+     And the plate barcode webservice returns "SQPD-1000002"
 
      And lot "1234567890" has 2 created qcables
      And all qcables in lot "1234567890" are "pending"
