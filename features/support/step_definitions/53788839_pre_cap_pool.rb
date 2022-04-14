@@ -15,10 +15,10 @@ Then /^the wells should be pooled in column order for 53788839$/ do
 end
 
 def pooled(plate, well, wells) # rubocop:todo Metrics/AbcSize
-  initial_request = Plate.find_from_barcode('DN' + plate).wells.located_at(well).first.requests.first
+  initial_request = Plate.find_from_barcode(plate).wells.located_at(well).first.requests.first
   group = initial_request.next_requests.first.pre_capture_pool
   wells.each do |w|
-    other_request = Plate.find_from_barcode('DN' + plate).wells.located_at(w).first.requests.first
+    other_request = Plate.find_from_barcode(plate).wells.located_at(w).first.requests.first
     group_b = other_request.next_requests.first.pre_capture_pool
     assert_equal group, group_b
   end

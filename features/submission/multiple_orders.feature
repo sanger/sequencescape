@@ -14,11 +14,11 @@ And I have a "full" authorised user with the key "cucumber"
     Given I have an "active" study called "Study B"
     And the UUID for the study "Study B" is "22222222-3333-4444-5555-111111111111"
 
-    Given plate "1234567" with 3 samples in study "Study A" exists
-    Given plate "1234567" has nonzero concentration results
+    Given plate "SQPD-1234567" with 3 samples in study "Study A" exists
+    Given plate "SQPD-1234567" has nonzero concentration results
 
-    Given plate "2345678" with 3 samples in study "Study B" exists
-    Given plate "2345678" has nonzero concentration results
+    Given plate "SQPD-2345678" with 3 samples in study "Study B" exists
+    Given plate "SQPD-2345678" has nonzero concentration results
 
     Given I have a project called "Project A"
     And the UUID for the project "Project A" is "22222222-3333-4444-5555-000000000001"
