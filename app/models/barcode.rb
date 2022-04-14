@@ -159,6 +159,10 @@ class Barcode < ApplicationRecord
       end
   end
 
+  def sequencescape22?
+    format == "sequencescape22"
+  end
+
   def handler
     @handler ||= handler_class.new(barcode)
   end

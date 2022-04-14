@@ -20,7 +20,7 @@ Feature: Access sample manifests through the API
     And the UUID for the supplier "John's Genes" is "33333333-1111-2222-3333-444444444444"
 
     Given the "96 Well Plate" barcode printer "d999bc" exists
-    And the plate barcode webservice returns "1234567"
+    And the plate barcode webservice returns "SQPD-1234567"
 
   @read
   Scenario: Reading the JSON for a UUID

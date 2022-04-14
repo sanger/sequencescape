@@ -107,7 +107,7 @@ Given /^well "([^"]*)" is holded by plate "([^"]*)"$/ do |well_uuid, plate_uuid|
 end
 
 Then /^plate "([^"]*)" should have a purpose of "([^"]*)"$/ do |plate_barcode, plate_purpose_name|
-  assert_equal plate_purpose_name, Plate.find_from_barcode("DN#{plate_barcode}").plate_purpose.name
+  assert_equal plate_purpose_name, Plate.find_from_barcode(plate_barcode).plate_purpose.name
 end
 
 Given /^a "([^"]+)" plate called "([^"]+)" exists$/ do |name, plate_name|

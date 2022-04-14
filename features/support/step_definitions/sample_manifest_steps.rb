@@ -199,7 +199,7 @@ When /^I visit the sample manifest new page without an asset type$/ do
 end
 
 Given /^plate "([^"]*)" has samples with known sanger_sample_ids$/ do |plate_barcode|
-  sequence_sanger_sample_ids_for(Plate.find_from_barcode('DN' + plate_barcode)) { |index| "ABC_#{index}" }
+  sequence_sanger_sample_ids_for(Plate.find_from_barcode(plate_barcode)) { |index| "ABC_#{index}" }
 end
 
 Then /^the last created sample manifest should be:$/ do |table|

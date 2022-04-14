@@ -4,7 +4,15 @@ Given /^the plate barcode webservice returns "([1-9][0-9]*)"$/ do |barcode|
   FakeBarcodeService.instance.barcode(barcode)
 end
 
+Given /^the plate barcode webservice returns "(SQPD-[1-9][0-9]*)"$/ do |barcode|
+  FakeBarcodeService.instance.barcode(barcode)
+end
+
 Given /^a plate barcode webservice is available and returns "(\d+)"$/ do |barcode|
+  step("the plate barcode webservice returns \"#{barcode}\"")
+end
+
+Given /^a plate barcode webservice is available and returns "(SQPD-\d+)"$/ do |barcode|
   step("the plate barcode webservice returns \"#{barcode}\"")
 end
 

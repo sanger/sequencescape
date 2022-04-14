@@ -8,7 +8,7 @@ Feature: Full sample manifest
     Given I am an "External" user logged in as "john"
     And the configuration exists for creating sample manifest Excel spreadsheets
     And the "96 Well Plate" barcode printer "xyz" exists
-    And the plate barcode webservice returns "1234567"
+    And the plate barcode webservice returns "SQPD-1234567"
     Given a supplier called "Test supplier name" exists
     And I have an active study called "Test study"
     Given the study "Test study" has a abbreviation
