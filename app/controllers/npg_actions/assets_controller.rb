@@ -64,9 +64,13 @@ class NpgActions::AssetsController < ApplicationController
   end
 
   def find_request
-    requests = @asset.requests_as_target
-    raise ActiveRecord::RecordNotFound, "Unable to find a request for Asset: #{params[:id]}" unless requests.one?
+    # select any non-cancelled requests
+    requests = @asset.requests_as_target.not_cancelled
 
+    # throw exception if no valid requests found
+    raise ActiveRecord::RecordNotFound, "Unable to identify a suitable single active request for Asset: #{params[:asset_id]}" if requests.empty?
+
+    # eager load the request to include the batch and all requests in the batch
     @request = requests.includes(batch: { requests: :asset }).first
   end
 
