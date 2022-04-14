@@ -24,7 +24,7 @@ Given /^I have a PacBio submission$/ do
       study: study,
       project: project,
       user: User.last,
-      assets: Plate.find_from_barcode('DN1234567').wells.all,
+      assets: Plate.find_from_barcode('SQPD-1234567').wells.all,
       submission: FactoryBot.build(:submission),
       request_options: {
         :multiplier => {
@@ -40,7 +40,7 @@ Given /^I have a PacBio submission$/ do
 end
 
 Given /^I have a plate for PacBio$/ do
-  plate = FactoryBot.create(:plate, well_count: 2, barcode: 1_234_567)
+  plate = FactoryBot.create(:plate, well_count: 2, barcode: 'SQPD-1234567')
   plate.wells.each do |well|
     sample = FactoryBot.create(:sample, name: "Sample_#{well.map_description}")
     well.aliquots << FactoryBot.create(:untagged_aliquot, sample: sample)
@@ -49,7 +49,7 @@ Given /^I have a plate for PacBio$/ do
 end
 
 Given(/^I have a plate for PacBio in study "([^"]*)"$/) do |study_name|
-  plate = FactoryBot.create :plate_with_untagged_wells, sample_count: 1, barcode: '1234567'
+  plate = FactoryBot.create :plate_with_untagged_wells, sample_count: 1, barcode: 'SQPD-1234567'
   AssetGroup.create!(name: 'PacBio group', study: Study.find_by(name: study_name)).assets << plate.wells
 end
 
@@ -57,10 +57,10 @@ Given /^I have a PacBio Library Prep batch$/ do
   step('I have a sample tube "222" in study "Test study" in asset group "Test study group"')
   step('I have a PacBio submission')
   step('I am on the show page for pipeline "PacBio Library Prep"')
-  step('I check "Select DN1234567T for batch"')
+  step('I check "Select SQPD-1234567 for batch"')
   step('I press the first "Submit"')
-  step('Well "DN1234567":"A1" has a PacBioLibraryTube "NT333U"')
-  step('Well "DN1234567":"B1" has a PacBioLibraryTube "NT444D"')
+  step('Well "SQPD-1234567":"A1" has a PacBioLibraryTube "NT333U"')
+  step('Well "SQPD-1234567":"B1" has a PacBioLibraryTube "NT444D"')
 end
 
 Given /^Well "([^"]*)":"([^"]*)" has a PacBioLibraryTube "([^"]*)"$/ do |plate_barcode, well, library_tube_barcode|

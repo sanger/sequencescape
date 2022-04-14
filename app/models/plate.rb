@@ -500,9 +500,17 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
     false
   end
 
-  def barcode_for_study_report
+  def _barcode_for_display
     return human_barcode if primary_barcode.sequencescape22?
     barcode_number    
+  end
+
+  def barcode_for_study_report
+    _barcode_for_display
+  end
+
+  def barcode_for_pac_bio_manifest
+    _barcode_for_display
   end
 
   private

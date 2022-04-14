@@ -5,7 +5,7 @@ Feature: Create a submission for the pacbio pipeline
     Given I am a "manager" user logged in as "user"
     Given I have a project called "Test project"
     Given I have an active study called "Test study"
-    Given the plate barcode webservice returns "99999"
+    Given the plate barcode webservice returns "SQPD-99999"
 
   Scenario: No kit number entered
     Given I have a PacBio Library Prep batch
@@ -21,8 +21,8 @@ Feature: Create a submission for the pacbio pipeline
     When I follow "Print sample prep worksheet"
     Then the PacBio sample prep worksheet should look like:
        | Well          | Name       | Required size | Complete? | Repaired? | Adapter ligated? | Clean up complete? | Exonnuclease cleanup | ng/ul | Fragment size | Volume |
-       | DN1234567T:A1 | Sample_A1 | 500           |           |           |                  |                    |                      |       |               |        |
-       | DN1234567T:B1 | Sample_B1 | 500           |           |           |                  |                    |                      |       |               |        |
+       | SQPD-1234567:A1 | Sample_A1 | 500           |           |           |                  |                    |                      |       |               |        |
+       | SQPD-1234567:B1 | Sample_B1 | 500           |           |           |                  |                    |                      |       |               |        |
 
 
   Scenario: When a sample fails dont enter number of SMRTcells and cancel sequencing request
@@ -40,7 +40,7 @@ Feature: Create a submission for the pacbio pipeline
     When I press "Release this batch"
     Then I should see "Batch released!"
     Then 1 PacBioSequencingRequests for "NT333" should be "cancelled"
-    And the PacBioSamplePrepRequests for "DN1234567T:A1" should be "failed"
+    And the PacBioSamplePrepRequests for "SQPD-1234567:A1" should be "failed"
 
 
 

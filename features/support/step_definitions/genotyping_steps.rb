@@ -53,7 +53,7 @@ Given(/^I have a cherrypicking batch with (\d+) samples$/) do |number_of_samples
   step('I have a Cherrypicking submission for asset group "Plate asset group"')
   step('I am on the show page for pipeline "Cherrypick"')
 
-  step('I check "Select DN1234567T for batch"')
+  step('I check "Select SQPD-1234567 for batch"')
   step('I select "Create Batch" from the first "action_on_requests"')
   step('I press the first "Submit"')
 end
@@ -80,7 +80,7 @@ Given(
 ) do |plate_barcode, plate_purpose_name|
   step('I have a Cherrypicking submission for asset group "Plate asset group"')
   step('I am on the show page for pipeline "Cherrypick"')
-  step('I check "Select DN1234567T for batch"')
+  step('I check "Select SQPD-1234567 for batch"')
   step('I select "Create Batch" from the first "action_on_requests"')
   step('I press the first "Submit"')
   step("a plate barcode webservice is available and returns \"#{plate_barcode}\"")
