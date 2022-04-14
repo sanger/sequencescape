@@ -3,13 +3,7 @@
 <% add :menu, "View all batches" => batches_path %>
 <% add :menu, "Edit batch" => edit_batch_path(@batch) %>
 <% add :menu, "Print worksheet" => url_for(controller: :batches, action: :print, id: @batch.id) %>
-<% if @batch.multiplexed? -%>
-  <% add :menu, "Print pool label" => url_for(controller: :batches, action: :print_multiplex_labels, id: @batch.id) -%>
-  <% add :menu, "Print stock pool label" => url_for(controller: :batches, action: :print_stock_multiplex_labels, id: @batch.id) -%>
-  <% add :menu, "Print labels" => url_for(controller: :batches, action: :print_labels, id: @batch.id) -%>
-<% else -%>
-  <% add :menu, "Print labels" => url_for(controller: :batches, action: :print_labels, id: @batch.id) -%>
-<% end -%>
+<% add :menu, "Print labels" => url_for(controller: :batches, action: :print_labels, id: @batch.id) -%>
 
 <% add :menu, "Vol' & Conc'" => labware_find_by_barcode_path -%>
 <% add :menu, "Fail batch" => url_for(controller: :batches, action: :fail, id: @batch.id) %>

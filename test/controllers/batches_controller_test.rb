@@ -590,23 +590,6 @@ class BatchesControllerTest < ActionController::TestCase
                batch_id: @batch.id.to_s
              }
       end
-
-      should '#print_multiplex_barcodes should send print request' do
-        pipeline = create :pipeline, name: 'Test pipeline', workflow: Workflow.create!(item_limit: 8), multiplexed: true
-        batch = pipeline.batches.create!
-        library_tube = create :library_tube, barcode: '111'
-        printable = { library_tube.id => 'on' }
-
-        RestClient.expects(:post)
-
-        post :print_multiplex_barcodes,
-             params: {
-               printer: barcode_printer.name,
-               count: '3',
-               printable: printable,
-               batch_id: batch.id.to_s
-             }
-      end
     end
   end
 end

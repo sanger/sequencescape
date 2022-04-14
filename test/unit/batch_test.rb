@@ -74,10 +74,11 @@ class BatchTest < ActiveSupport::TestCase
             @batch_requests_count = @batch.requests.count
             @batch.remove_request_ids([@request2.id], 'Reason', 'Comment')
           end
-          should 'leave 2 requests behind' do
-            assert_not_nil @batch.requests.find(@request2.id)
-            assert_not_nil @batch.requests.find(@request1.id)
-            assert_equal @batch_requests_count, @batch.requests.count
+          should 'leave 1 requests behind' do
+            @batch.requests.reload
+            assert @batch.requests.include?(@request1)
+            assert @batch.requests.exclude?(@request2)
+            assert_equal @batch_requests_count - 1, @batch.requests.count
           end
         end
       end

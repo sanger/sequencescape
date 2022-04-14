@@ -1,11 +1,15 @@
 # frozen_string_literal: true
-class SequencingPipeline < Pipeline # rubocop:todo Style/Documentation
+
+# SequencingPipeline represents the loading of multiplexed library tubes onto
+# lanes of flowcells for running on the Sequencing machines.
+class SequencingPipeline < Pipeline
   self.batch_worksheet = 'simplified_worksheet'
   self.sequencing = true
   self.purpose_information = false
   self.inbox_eager_loading = :loaded_for_sequencing_inbox_display
   self.generate_target_assets_on_batch_create = true
   self.asset_type = 'Lane::Labware'
+  self.requires_position = true
 
   def request_actions
     [:remove]

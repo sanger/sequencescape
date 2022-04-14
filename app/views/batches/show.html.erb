@@ -8,9 +8,6 @@
 <%= page_title 'Batch', @batch.id %>
 <p class="lead">
   <%= badge(@batch.displayed_status, type: 'batch-state') -%>
-  <% if @batch.multiplexed? %>
-    <%= badge('Multiplexed', type: 'batch-mx', style: 'primary') %>
-  <% end %>
 </p>
 
 <%= panel do %>

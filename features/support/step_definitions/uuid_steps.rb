@@ -269,8 +269,3 @@ Given /^plate "([^"]*)" is a source plate of "([^"]*)"$/ do |source_plate_uuid, 
   destination_plate = Plate.find(Uuid.find_id(destination_plate_uuid))
   source_plate.children << destination_plate
 end
-
-Given /^the UUID for well (\d+) on plate "(.*?)" is "(.*?)"$/ do |well_id, plate_name, uuid|
-  plate = Plate.find_by(name: plate_name) || Plate.find_from_barcode(plate_name)
-  set_uuid_for(plate.wells[well_id.to_i - 1], uuid)
-end

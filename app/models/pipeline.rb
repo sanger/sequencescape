@@ -18,15 +18,12 @@ class Pipeline < ApplicationRecord
   class_attribute :batch_worksheet,
                   :requires_position,
                   :inbox_partial,
-                  :pulldown,
-                  :genotyping,
                   :sequencing,
                   :purpose_information,
                   :inbox_eager_loading,
                   :group_by_submission,
                   :group_by_parent,
                   :generate_target_assets_on_batch_create,
-                  :pick_to,
                   :asset_type,
                   :request_sort_order,
                   :pick_data,
@@ -34,13 +31,10 @@ class Pipeline < ApplicationRecord
 
   # Pipeline defaults
   self.batch_worksheet = false
-  self.requires_position = true
+  self.requires_position = false
   self.inbox_partial = 'default_inbox'
-  self.pulldown = false
-  self.genotyping = false
   self.sequencing = false
   self.purpose_information = true
-  self.pick_to = true
   self.inbox_eager_loading = :loaded_for_inbox_display
   self.group_by_submission = false
   self.group_by_parent = false
@@ -81,12 +75,6 @@ class Pipeline < ApplicationRecord
   scope :for_request_type,
         ->(rt) { joins(:pipelines_request_types).where(pipelines_request_types: { request_type_id: rt }) }
 
-  def custom_message
-    # Override this in subclasses if you want to display a custom message in the _pipeline_limit partial
-    # (blue box on pipeline show page)
-    I18n.t('pipelines.show_page_custom_message.default')
-  end
-
   def request_types_including_controls
     [control_request_type].compact + request_types
   end
@@ -96,13 +84,11 @@ class Pipeline < ApplicationRecord
   end
 
   # This is the old behaviour for every other pipeline.
-  def detach_request_from_batch(batch, request)
+  def detach_request_from_batch(_batch, request)
     request.return_for_inbox!
-    update_detached_request(batch, request)
+    request.batch = nil
     request.save!
   end
-
-  def update_detached_request(_batch, _request); end
 
   # Overridden in group-by parent pipelines to display input plates
   def input_labware(_requests)
@@ -128,10 +114,6 @@ class Pipeline < ApplicationRecord
     # Do Nothing
   end
 
-  def has_controls?
-    !controls.empty?
-  end
-
   # Extracts the request ids from the selected requests. Overidden in pipleines
   # which group by parent, as requests are grouped together by eg. submission id and labware id
   # and the individual request ids are unavailable
@@ -146,10 +128,6 @@ class Pipeline < ApplicationRecord
 
   def request_actions
     [:fail]
-  end
-
-  def allow_tag_collision_on_tagging_task?
-    true
   end
 
   def robot_verified!(batch)

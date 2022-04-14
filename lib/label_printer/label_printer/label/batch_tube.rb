@@ -12,57 +12,19 @@ module LabelPrinter
       end
 
       def top_line(tube)
-        if stock.present?
-          tube.name
-        elsif batch.multiplexed?
-          tag_range = tube.receptacle.tag_range
-          tag_range.nil? ? tube.name : "(#{tag_range}) #{tube.id}"
-        elsif tube.is_a? PacBioLibraryTube
-          source_plate_barcode(tube)
-        else
-          tube.name_for_label
-        end
+        stock.present? ? tube.name : tube.name_for_label
       end
 
-      def middle_line(tube)
-        tube.is_a?(PacBioLibraryTube) ? source_well_position(tube) : super
-      end
-
-      def round_label_top_line(tube)
-        tube.is_a?(PacBioLibraryTube) ? source_well_position(tube) : super
-      end
-
-      def round_label_bottom_line(tube)
-        if tube.is_a?(PacBioLibraryTube)
-          source_plate = source_plate_barcode(tube)
-
-          # Return the last 4 characters. The fallback handles scenarios where
-          # we have fewer than 4 characters in the string, as:
-          #     'abc'[-4..] # => nil
-          source_plate[-4..] || source_plate
-        else
-          super
-        end
-      end
-
-      # rubocop:todo Metrics/PerceivedComplexity
-      def tubes # rubocop:todo Metrics/AbcSize
+      def tubes
         @tubes ||=
           if stock.present?
-            if batch.multiplexed?
-              # all info on a label including barcode is about target_asset first child
-              requests.map { |request| request.target_labware.children.first }
-            else
-              # all info on a label including barcode is about target_asset stock asset
-              requests.map { |request| request.target_labware.stock_asset }
-            end
+            # all info on a label including barcode is about target_asset stock asset
+            requests.map { |request| request.target_labware.stock_asset }
           else
             # all info on a label including barcode is about target_asset
             requests.map(&:target_labware)
           end
       end
-
-      # rubocop:enable Metrics/PerceivedComplexity
 
       private
 
