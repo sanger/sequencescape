@@ -17,6 +17,7 @@ module Api
 
       # Attributes
       attribute :uuid, readonly: true
+      attribute :request_options, readonly: true
 
       # Filters
 
