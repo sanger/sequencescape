@@ -237,11 +237,6 @@ en:
       tag_group_form_invalid: "The tag group form object was invalid, please check oligos and tag group name."
       failed_to_save_tag_group: "The tag group was not saved successfully."
 
-  pipelines:
-    show_page_custom_message:
-      default: ""
-      pacbio_sample_prep: "You can only batch together wells from the same plate."
-
   unauthorized:
     manage:
       all: "Sorry, you are not authorized to %{action} this %{subject}"

@@ -101,10 +101,6 @@ module Request::Statemachine # rubocop:todo Style/Documentation
         transitions to: :cancelled, from: %i[failed passed]
       end
 
-      event :cancel_from_upstream, manual_only?: true do
-        transitions to: :cancelled, from: [:pending]
-      end
-
       event :cancel_before_started do
         transitions to: :cancelled, from: %i[pending hold]
       end

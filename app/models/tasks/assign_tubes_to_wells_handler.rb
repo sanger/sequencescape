@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 # Handles the behaviour of {AssignTubesToMultiplexedWellsTask}
 # and included in {WorkflowsController}
+# Also used by {MultiplexedCherrypickingTask}
 # {include:AssignTubesToMultiplexedWellsTask}
 module Tasks::AssignTubesToWellsHandler
   # Plate is an option parameter for a target plate. Used in multiplexed

@@ -4,9 +4,10 @@ require 'rails_helper'
 require './app/resources/api/v2/submission_resource'
 
 RSpec.describe Api::V2::SubmissionResource, type: :resource do
-  subject { described_class.new(resource_model, {}) }
+  subject(:resource) { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { build_stubbed :submission }
+  let(:sequencing_requests) { build_stubbed_list(:sequencing_request, 3) }
+  let(:resource_model) { build_stubbed :submission, sequencing_requests: sequencing_requests }
 
   # Test attributes
   it 'works', :aggregate_failures do
@@ -16,6 +17,7 @@ RSpec.describe Api::V2::SubmissionResource, type: :resource do
     expect(subject).to have_attribute :state
     expect(subject).to have_attribute :created_at
     expect(subject).to have_attribute :updated_at
+    expect(subject).to have_attribute :lanes_of_sequencing
     expect(subject).not_to have_updatable_field(:id)
     expect(subject).not_to have_updatable_field(:uuid)
     expect(subject).not_to have_updatable_field(:state)
@@ -35,4 +37,9 @@ RSpec.describe Api::V2::SubmissionResource, type: :resource do
 
   # Custom method tests
   # Add tests for any custom methods you've added.
+  describe '#lanes_of_sequencing' do
+    it 'returns the number of sequencing requests in the submission' do
+      expect(resource.lanes_of_sequencing).to eq 3
+    end
+  end
 end

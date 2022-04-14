@@ -233,10 +233,6 @@ Then /^the HTTP "([^"]+)" should be "([^"]+)"$/ do |header, value|
   assert_equal(value, page.driver.response_headers[header])
 end
 
-Then /^the HTTP response body should be empty$/ do
-  assert(page.source.blank?, 'The response body is not blank')
-end
-
 Then /^the JSON should not contain "([^"]+)" within any element of "([^"]+)"$/ do |name, path|
   json = decode_json(page.source, 'Received')
   target = path.split('.').inject(json) { |s, p| s.try(:[], p) } or

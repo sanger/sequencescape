@@ -98,9 +98,6 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
           )
         }
 
-  scope :from_labware_barcodes,
-        ->(barcodes) { joins(input_labware: :barcodes).where(barcodes: { barcode: barcodes }).distinct }
-
   scope :latest_first, -> { order(created_at: :desc) }
   scope :most_recent, ->(number) { latest_first.limit(number) }
 
@@ -295,23 +292,8 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
     barcode.presence || requests.first.target_asset.plate.human_barcode
   end
 
-  def mpx_library_name
-    return '' unless multiplexed? && requests.any?
-
-    mpx_library_tube = requests.first.target_asset.children.first
-    mpx_library_tube&.name || ''
-  end
-
-  def display_tags?
-    multiplexed?
-  end
-
   def id_dup
     id
-  end
-
-  def multiplexed_items_with_unique_library_ids
-    requests.map { |r| r.target_asset.children }.flatten.uniq
   end
 
   # Source Labware returns the physical pieces of labware (ie. a plate for wells, but tubes for tubes)
@@ -366,7 +348,6 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
       update_batch_state(reason, comment)
     end
   end
-  alias recycle_request_ids remove_request_ids
 
   # Remove a request from the batch and reset it to a point where it can be put back into
   # the pending queue.
@@ -391,17 +372,13 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
   end
 
-  def remove_link(request)
-    request.batch = nil
-  end
-
   # rubocop:todo Metrics/MethodLength
   def reset!(current_user) # rubocop:todo Metrics/AbcSize
     ActiveRecord::Base.transaction do
       discard!
 
       requests.each do |request|
-        remove_link(request) # Remove link in all types of pipelines
+        request.batch = nil
         return_request_to_inbox(request, current_user)
       end
 
@@ -418,17 +395,6 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   # rubocop:enable Metrics/MethodLength
-
-  def parent_of_purpose(name)
-    return nil if requests.empty?
-
-    requests
-      .first
-      .asset
-      .ancestors
-      .joins("INNER JOIN plate_purposes ON #{Plate.table_name}.plate_purpose_id = plate_purposes.id")
-      .find_by(plate_purposes: { name: name })
-  end
 
   # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def swap(current_user, batch_info = {}) # rubocop:todo Metrics/CyclomaticComplexity
@@ -491,10 +457,6 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def plate_ids_in_study(study)
     Plate.plate_ids_from_requests(requests.for_studies(study))
-  end
-
-  def space_left
-    [item_limit - batch_requests.count, 0].max
   end
 
   def total_volume_to_cherrypick
