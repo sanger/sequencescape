@@ -13,7 +13,7 @@ class PlateBarcode < ActiveResource::Base # rubocop:todo Style/Documentation
       begin
         response = Net::HTTP.post(uri, "")
         if response.code === "201"
-          barcode = JSON.parse(response.body)
+          barcode = JSON.parse(response.body, symbolize_names: true)
           retries = 3
         end
         retries += 1
@@ -25,7 +25,7 @@ class PlateBarcode < ActiveResource::Base # rubocop:todo Style/Documentation
     barcode
   end
 
-  if Rails.env.development? || Rails.env.cucumber?
+  if Rails.env.development?
     # If we don't want a test dependency on baracoda we need to mock a barcode
 
     def self.create_barcode
