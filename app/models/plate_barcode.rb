@@ -34,4 +34,15 @@ class PlateBarcode < ActiveResource::Base # rubocop:todo Style/Documentation
       Barcode.build_sequencescape22({ barcode: "#{self.prefix}-#{current_num + 1}" })
     end
   end
+
+  if Rails.env.cucumber?
+    def self.create_barcode()
+      uri = URI("#{site}/barcodes/#{prefix}/new")
+      response = Net::HTTP.post(uri, "")
+      if response.code === "201"
+        barcode = JSON.parse(response.body, symbolize_names: true)
+      end
+      Barcode.build_sanger_code39(prefix: 'DN', number: barcode[:barcode])
+    end
+  end
 end
