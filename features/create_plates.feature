@@ -2,7 +2,7 @@
 Feature: Printing new plate barcodes
   Background:
     Given I am logged in as "user"
-    And the plate barcode webservice returns "SQPD-1234569"
+    And the Baracoda barcode service returns "SQPD-1234569"
     And the "96 Well Plate" barcode printer "xyz" exists
     Given user "jack" exists with barcode "ID100I"
 
@@ -45,7 +45,7 @@ Feature: Printing new plate barcodes
 
   Scenario Outline: Creating plates
     Given I am on the new plate page
-    And the plate barcode webservice returns "SQPD-1234570"
+    And the Baracoda barcode service returns "SQPD-1234570"
     When I select "<plate_purpose>" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
     And I select "xyz" from "Barcode printer"
@@ -66,7 +66,7 @@ Feature: Printing new plate barcodes
 
   Scenario Outline: Create plates only from the proper parent plate or from scratch
     Given a plate with purpose "<parent_plate_purpose>" and barcode "1221234567841" exists
-    And the plate barcode webservice returns "SQPD-1234570"
+    And the Baracoda barcode service returns "SQPD-1234570"
     And a plate with purpose "Cherrypicked" and barcode "1220001454858" exists
     And I am on the new plate page
     Then I should see "Create Plates"
@@ -110,7 +110,7 @@ Feature: Printing new plate barcodes
     And I press "Submit"
     Then I should see "Created plates successfully"
 
-    And the plate barcode webservice returns "SQPD-77777"
+    And the Baracoda barcode service returns "SQPD-77777"
     When I fill in the field labeled "Source plates" with "1220001454858"
     When I select "Stock Plate" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
@@ -120,7 +120,7 @@ Feature: Printing new plate barcodes
     And I press "Submit"
     Then I should see "Created plates successfully"
 
-    And the plate barcode webservice returns "SQPD-77777"
+    And the Baracoda barcode service returns "SQPD-77777"
     When I fill in the field labeled "Source plates" with "1221234567841"
     When I select "Working dilution" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
@@ -130,7 +130,7 @@ Feature: Printing new plate barcodes
     And I press "Submit"
     Then I should see "Created plates successfully"
 
-    And the plate barcode webservice returns "SQPD-77777"
+    And the Baracoda barcode service returns "SQPD-77777"
     When I fill in the field labeled "Source plates" with "6251234567836"
     When I select "Pico dilution" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
@@ -140,7 +140,7 @@ Feature: Printing new plate barcodes
     And I press "Submit"
     Then I should see "Created plates successfully"
 
-    And the plate barcode webservice returns "SQPD-77777"
+    And the Baracoda barcode service returns "SQPD-77777"
     When I fill in the field labeled "Source plates" with "4361234567667"
     When I select "Pico Assay Plates" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
@@ -150,7 +150,7 @@ Feature: Printing new plate barcodes
     And I press "Submit"
     Then I should see "Created plates successfully"
 
-    And the plate barcode webservice returns "SQPD-77777"
+    And the Baracoda barcode service returns "SQPD-77777"
     When I fill in the field labeled "Source plates" with "6251234567836"
     When I select "Gel Dilution Plates" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"

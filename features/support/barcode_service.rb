@@ -12,13 +12,13 @@ class FakeBarcodeService # rubocop:todo Style/Documentation
         plate_barcode_url = configatron.baracoda_api
         Rails.logger.debug("Mocking barcode service #{plate_barcode_url}/barcodes/SQPD/new")
         stub_request(:post, "#{plate_barcode_url}/barcodes/SQPD/new").to_return do
-          barcode = FakeBarcodeService.instance.next_barcode!
+          barcode_record = FakeBarcodeService.instance.next_barcode!
           {
             headers: {
               'Content-Type' => 'text/json'
             },
             status: 201,
-            body: {"barcode": barcode}.to_json
+            body: barcode_record.to_json
           }
         end
       end
@@ -35,8 +35,8 @@ class FakeBarcodeService # rubocop:todo Style/Documentation
     @barcodes = []
   end
 
-  def barcode(barcode)
-    barcodes.push(barcode)
+  def barcode(barcode, format=nil)
+    barcodes.push({barcode: barcode, format: format})
   end
 
   def next_barcode!

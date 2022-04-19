@@ -12,7 +12,7 @@ Feature: Sample manifest
     And the configuration exists for creating sample manifest Excel spreadsheets
     And the Saphyr tube purpose exists
     And the "1D Tube" barcode printer "xyz1d" exists
-    And the plate barcode webservice returns "SQPD-1234567"
+    And the Baracoda barcode service returns "SQPD-1234567"
     Given a supplier called "Test supplier name" exists
     And I have an active study called "Test study"
     Given the study "Test study" has a abbreviation

@@ -18,8 +18,8 @@ Feature: Access tag layout templates through the API
 
   @tag_layout @create @barcode-service
   Scenario: Creating a tag layout from a tag layout template
-    Given the plate barcode webservice returns "SQPD-1000001"
-    Given the plate barcode webservice returns "SQPD-1000002"
+    Given the Baracoda barcode service returns "SQPD-1000001"
+    Given the Baracoda barcode service returns "SQPD-1000002"
 
     Given the tag layout template "Test tag layout" exists
       And the UUID for the tag layout template "Test tag layout" is "00000000-1111-2222-3333-444444444444"
@@ -98,8 +98,8 @@ Feature: Access tag layout templates through the API
 
   @tag_layout @create @barcode-service
   Scenario: Creating a tag layout from an inverted tag layout template
-    Given the plate barcode webservice returns "SQPD-1000001"
-    Given the plate barcode webservice returns "SQPD-1000002"
+    Given the Baracoda barcode service returns "SQPD-1000001"
+    Given the Baracoda barcode service returns "SQPD-1000002"
 
     Given the inverted tag layout template "Test inverted tag layout" exists
       And the UUID for the tag layout template "Test inverted tag layout" is "00000000-1111-2222-3333-444444444444"
@@ -179,8 +179,8 @@ Feature: Access tag layout templates through the API
 
   @tag_layout @create @barcode-service
   Scenario: Creating a tag layout from a tag layout template where wells have been failed
-    Given the plate barcode webservice returns "SQPD-1000001"
-    Given the plate barcode webservice returns "SQPD-1000002"
+    Given the Baracoda barcode service returns "SQPD-1000001"
+    Given the Baracoda barcode service returns "SQPD-1000002"
 
     Given the tag layout template "Test tag layout" exists
       And the UUID for the tag layout template "Test tag layout" is "00000000-1111-2222-3333-444444444444"
@@ -438,8 +438,8 @@ Feature: Access tag layout templates through the API
 
   @tag_layout @create @barcode-service
   Scenario: Creating a tag layout with substitutions from a tag layout template
-    Given the plate barcode webservice returns "SQPD-1000001"
-    Given the plate barcode webservice returns "SQPD-1000002"
+    Given the Baracoda barcode service returns "SQPD-1000001"
+    Given the Baracoda barcode service returns "SQPD-1000002"
 
     Given the tag layout template "Test tag layout" exists
       And the UUID for the tag layout template "Test tag layout" is "00000000-1111-2222-3333-444444444444"
@@ -526,8 +526,8 @@ Feature: Access tag layout templates through the API
 
   @tag_layout @create @barcode-service
   Scenario: Creating a tag layout where the pools are factors of the number of rows on the plate
-    Given the plate barcode webservice returns "SQPD-1000001"
-    Given the plate barcode webservice returns "SQPD-1000002"
+    Given the Baracoda barcode service returns "SQPD-1000001"
+    Given the Baracoda barcode service returns "SQPD-1000002"
 
     Given the tag layout template "Test tag layout" exists
       And the UUID for the tag layout template "Test tag layout" is "00000000-1111-2222-3333-444444444444"
@@ -609,8 +609,8 @@ Feature: Access tag layout templates through the API
 
   @tag_layout @create @barcode-service
   Scenario: Creating a tag layout where the pools are awkwardly sized and cause overlaps
-    Given the plate barcode webservice returns "SQPD-1000001"
-    Given the plate barcode webservice returns "SQPD-1000002"
+    Given the Baracoda barcode service returns "SQPD-1000001"
+    Given the Baracoda barcode service returns "SQPD-1000002"
 
     Given the tag layout template "Test tag layout" exists
       And the UUID for the tag layout template "Test tag layout" is "00000000-1111-2222-3333-444444444444"
@@ -693,8 +693,8 @@ Feature: Access tag layout templates through the API
 
   @tag_layout @create @barcode-service
   Scenario: Creating a tag layout of an entire plate using 96 tags
-    Given the plate barcode webservice returns "SQPD-1000001"
-    Given the plate barcode webservice returns "SQPD-1000002"
+    Given the Baracoda barcode service returns "SQPD-1000001"
+    Given the Baracoda barcode service returns "SQPD-1000002"
 
     Given the tag layout template "Test tag layout" exists
       And the UUID for the tag layout template "Test tag layout" is "00000000-1111-2222-3333-444444444444"
@@ -733,8 +733,8 @@ Feature: Access tag layout templates through the API
 
   @tag_layout @create @barcode-service
   Scenario: Creating a tag layout where one of the wells is empty
-    Given the plate barcode webservice returns "SQPD-1000001"
-    Given the plate barcode webservice returns "SQPD-1000002"
+    Given the Baracoda barcode service returns "SQPD-1000001"
+    Given the Baracoda barcode service returns "SQPD-1000002"
 
     Given the tag layout template "Test tag layout" exists
       And the UUID for the tag layout template "Test tag layout" is "00000000-1111-2222-3333-444444444444"

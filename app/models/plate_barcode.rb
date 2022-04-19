@@ -40,9 +40,13 @@ class PlateBarcode < ActiveResource::Base # rubocop:todo Style/Documentation
       uri = URI("#{site}/barcodes/#{prefix}/new")
       response = Net::HTTP.post(uri, "")
       if response.code === "201"
-        barcode = JSON.parse(response.body, symbolize_names: true)
+        barcode_record = JSON.parse(response.body, symbolize_names: true)
       end
-      Barcode.build_sanger_code39(prefix: 'DN', number: barcode[:barcode])
+      if barcode_record[:format] == 'DN'
+        Barcode.build_sanger_code39(prefix: 'DN', number: barcode_record[:barcode])
+      else
+        Barcode.build_sequencescape22(barcode_record)
+      end
     end
   end
 end

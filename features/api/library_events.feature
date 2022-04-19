@@ -12,8 +12,8 @@ Feature: Create library event through the API
     And I have a "full" authorised user with the key "cucumber"
     And a user with UUID "99999999-8888-7777-6666-555555555555" exists
 
-    Given the plate barcode webservice returns "SQPD-1000001"
-    Given the plate barcode webservice returns "SQPD-1000002"
+    Given the Baracoda barcode service returns "SQPD-1000001"
+    Given the Baracoda barcode service returns "SQPD-1000002"
     And a "Cherrypicked" plate called "Testing the API" exists
     And the UUID for the plate "Testing the API" is "00000000-1111-2222-3333-000000000001"
 

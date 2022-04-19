@@ -6,9 +6,9 @@ Also print out the barcodes in the same order as they appear in the manifest
     Given I am an "External" user logged in as "john"
     And the configuration exists for creating sample manifest Excel spreadsheets
     And the "96 Well Plate" barcode printer "xyz" exists
-      And the plate barcode webservice returns "SQPD-666"
-      And the plate barcode webservice returns "SQPD-222"
-      And the plate barcode webservice returns "SQPD-555"
+      And the Baracoda barcode service returns "SQPD-666"
+      And the Baracoda barcode service returns "SQPD-222"
+      And the Baracoda barcode service returns "SQPD-555"
 
     Given a supplier called "Test supplier name" exists
     And I have an active study called "Test study"
