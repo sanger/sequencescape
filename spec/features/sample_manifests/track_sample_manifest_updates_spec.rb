@@ -33,7 +33,7 @@ describe 'track SampleManifest updates', sample_manifest: true do
     broadcast_events_count = BroadcastEvent.count
     expect(page).to have_content('Create manifest for plates')
 
-    expect(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode))
+    expect(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode, barcode: 'SQPD-1234567'))
     sample_manifest = create :sample_manifest, study: study, supplier: supplier, user: user
     sample_manifest.generate
 
@@ -133,7 +133,7 @@ describe 'track SampleManifest updates', sample_manifest: true do
     ]
 
     expect(fetch_table('table#events')).to eq(table)
-    asset = Labware.find_by_barcode('1221234567841')
+    asset = Labware.find_by_barcode('SQPD-1234567')
     visit(history_labware_path(asset))
     table = [
       ['Message', 'Content', 'Created at', 'Created by'],

@@ -65,7 +65,7 @@ describe BulkSubmission, with: :uploader do
 
   context 'an asset driven submission' do
     let(:spreadsheet_filename) { 'template_for_bulk_submission.csv' }
-    let!(:asset) { create :plate, barcode: '111111', well_count: 1, well_factory: :untagged_well }
+    let!(:asset) { create :plate, barcode: 'SQPD-1', well_count: 1, well_factory: :untagged_well }
     let(:submission_template_hash) do
       {
         name: 'Example Template',
