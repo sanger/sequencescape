@@ -1,18 +1,18 @@
 # frozen_string_literal: true
 
-Given /^the plate barcode webservice returns "([1-9][0-9]*)"$/ do |barcode|
+#Given /^the plate barcode webservice returns "([1-9][0-9]*)"$/ do |barcode|
+#  FakeBarcodeService.instance.barcode(barcode)
+#end
+
+Given /^the plate barcode webservice returns "([\w-]+)"$/ do |barcode|
   FakeBarcodeService.instance.barcode(barcode)
 end
 
-Given /^the plate barcode webservice returns "(SQPD-[1-9][0-9]*)"$/ do |barcode|
-  FakeBarcodeService.instance.barcode(barcode)
-end
+#Given /^a plate barcode webservice is available and returns "(\d+)"$/ do |barcode|
+#  step("the plate barcode webservice returns \"#{barcode}\"")
+#end
 
-Given /^a plate barcode webservice is available and returns "(\d+)"$/ do |barcode|
-  step("the plate barcode webservice returns \"#{barcode}\"")
-end
-
-Given /^a plate barcode webservice is available and returns "(SQPD-\d+)"$/ do |barcode|
+Given /^a plate barcode webservice is available and returns "([\w-]+)"$/ do |barcode|
   step("the plate barcode webservice returns \"#{barcode}\"")
 end
 

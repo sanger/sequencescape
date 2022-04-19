@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Given /^plate "([^"]*)" has "([^"]*)" wells$/ do |plate_barcode, number_of_wells|
-  plate = Plate.find_from_barcode('DN' + plate_barcode)
+  plate = Plate.find_from_barcode(plate_barcode)
   1.upto(number_of_wells.to_i) { |i| Well.create!(plate: plate, map_id: i) }
 end
 
@@ -25,7 +25,7 @@ Given /^plate "([^"]*)" has low concentration and volume results$/ do |plate_bar
 end
 
 Given /^plate with barcode "([^"]*)" has a well$/ do |plate_barcode|
-  plate = Plate.find_from_barcode('DN' + plate_barcode)
+  plate = Plate.find_from_barcode(plate_barcode)
   map = plate.maps.first
   FactoryBot.create(:untagged_well, plate: plate, map: map)
 end
@@ -158,7 +158,7 @@ Given '{int} wells on {plate_id} have unique samples' do |number, plate|
 end
 
 Given /^plate "([^"]*)" has "([^"]*)" wells with aliquots$/ do |plate_barcode, number_of_wells|
-  plate = Plate.find_from_barcode('DN' + plate_barcode)
+  plate = Plate.find_from_barcode(plate_barcode)
   plate.wells = Array.new(number_of_wells.to_i) { |i| FactoryBot.build :untagged_well, map_id: i + 1 }
 end
 
@@ -190,7 +190,7 @@ Given /^(passed|started|pending|failed) transfer requests exist between (\d+) we
 end
 
 Then /^the plate with the barcode "(.*?)" should have a label of "(.*?)"$/ do |barcode, label|
-  plate = Plate.find_from_barcode('DN' + barcode)
+  plate = Plate.find_from_barcode(barcode)
   assert_equal label, plate.role
 end
 

@@ -11,7 +11,7 @@ Feature: Submission templates should set order roles
     Given I have an "active" study called "Study A"
     And the UUID for the study "Study A" is "22222222-3333-4444-5555-000000000000"
 
-    Given there is a 96 well "Cherrypicked" plate with a barcode of "1220012345855"
+    Given there is a 96 well "Cherrypicked" plate with a barcode of "SQPD-12345"
 
     Given I have a project called "Project A"
     And the UUID for the project "Project A" is "22222222-3333-4444-5555-000000000001"
@@ -50,4 +50,4 @@ Feature: Submission templates should set order roles
       }
       """
     Given all pending delayed jobs are processed
-    Then the plate with the barcode "12345" should have a label of "ILB PATH"
+    Then the plate with the barcode "SQPD-12345" should have a label of "ILB PATH"

@@ -14,8 +14,8 @@ Feature: The bottom of the pulldown pipeline
 
     Given a user with UUID "99999999-8888-7777-6666-555555555555" exists
 
-    Given the plate barcode webservice returns "1000001"
-      And the plate barcode webservice returns "1000002"
+    Given the plate barcode webservice returns "SQPD-1000001"
+      And the plate barcode webservice returns "SQPD-1000002"
 
     And I have an ISC submission template
 
