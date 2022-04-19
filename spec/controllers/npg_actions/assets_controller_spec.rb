@@ -9,31 +9,30 @@ RSpec.describe NpgActions::AssetsController, type: :controller do
   let(:batch) { create :sequencing_batch, state: 'started', qc_state: 'qc_manual' }
   let(:valid_seq_request) do
     create :sequencing_request_with_assets,
-    batch: batch,
-    request_type: batch.pipeline.request_types.first,
-    study: study,
-    target_asset: lane,
-    state: 'passed'
+           batch: batch,
+           request_type: batch.pipeline.request_types.first,
+           study: study,
+           target_asset: lane,
+           state: 'passed'
   end
   let(:cancelled_seq_request) do
     create :sequencing_request_with_assets,
-    batch: batch,
-    request_type: batch.pipeline.request_types.first,
-    study: study,
-    target_asset: lane,
-    state: 'cancelled'
+           batch: batch,
+           request_type: batch.pipeline.request_types.first,
+           study: study,
+           target_asset: lane,
+           state: 'cancelled'
   end
   let(:failed_seq_request) do
     create :sequencing_request_with_assets,
-    batch: batch,
-    request_type: batch.pipeline.request_types.first,
-    study: study,
-    target_asset: lane,
-    state: 'failed'
+           batch: batch,
+           request_type: batch.pipeline.request_types.first,
+           study: study,
+           target_asset: lane,
+           state: 'failed'
   end
 
   before { session[:user] = user.id }
-
 
   shared_examples 'a passed state change' do
     it 'renders and creates events', aggregate_failures: true do
@@ -84,8 +83,16 @@ RSpec.describe NpgActions::AssetsController, type: :controller do
     context 'with valid parameters' do
       before do
         valid_seq_request
-        post :pass, params: { asset_id: lane.id, qc_information: { message: 'qc passed ok'} },
-session: { user: user.id }
+        post :pass,
+             params: {
+               asset_id: lane.id,
+               qc_information: {
+                 message: 'qc passed ok'
+               }
+             },
+             session: {
+               user: user.id
+             }
       end
 
       it_behaves_like 'a passed state change'
@@ -93,8 +100,16 @@ session: { user: user.id }
 
     context 'with no valid requests' do
       before do
-        post :pass, params: { asset_id: lane.id, qc_information: { message: 'qc passed ok'} },
-session: { user: user.id }
+        post :pass,
+             params: {
+               asset_id: lane.id,
+               qc_information: {
+                 message: 'qc passed ok'
+               }
+             },
+             session: {
+               user: user.id
+             }
       end
 
       it 'renders the exception page' do
@@ -115,8 +130,16 @@ session: { user: user.id }
     context 'with a single cancelled request' do
       before do
         cancelled_seq_request
-        post :pass, params: { asset_id: lane.id, qc_information: { message: 'qc passed ok'} },
-session: { user: user.id }
+        post :pass,
+             params: {
+               asset_id: lane.id,
+               qc_information: {
+                 message: 'qc passed ok'
+               }
+             },
+             session: {
+               user: user.id
+             }
       end
 
       it 'renders the exception page' do
@@ -138,8 +161,16 @@ session: { user: user.id }
       before do
         valid_seq_request
         cancelled_seq_request
-        post :pass, params: { asset_id: lane.id, qc_information: { message: 'qc passed ok'} },
-session: { user: user.id }
+        post :pass,
+             params: {
+               asset_id: lane.id,
+               qc_information: {
+                 message: 'qc passed ok'
+               }
+             },
+             session: {
+               user: user.id
+             }
       end
 
       it_behaves_like 'a passed state change'
@@ -149,8 +180,16 @@ session: { user: user.id }
       before do
         valid_seq_request
         failed_seq_request
-        post :pass, params: { asset_id: lane.id, qc_information: { message: 'qc passed ok'} },
-session: { user: user.id }
+        post :pass,
+             params: {
+               asset_id: lane.id,
+               qc_information: {
+                 message: 'qc passed ok'
+               }
+             },
+             session: {
+               user: user.id
+             }
       end
 
       it 'renders the exception page' do
@@ -169,19 +208,24 @@ session: { user: user.id }
     end
 
     context 'with an unrecognised lane' do
-      let(:lane_id) { 999999999 }
+      let(:lane_id) { 999_999_999 }
 
       before do
-        post :pass, params: { asset_id: lane_id, qc_information: { message: 'qc passed ok'} },
-session: { user: user.id }
+        post :pass,
+             params: {
+               asset_id: lane_id,
+               qc_information: {
+                 message: 'qc passed ok'
+               }
+             },
+             session: {
+               user: user.id
+             }
       end
 
       it 'renders the exception page' do
         regexp =
-          Regexp.new(
-            "<error><message>Couldn't find Lane with 'id'=#{lane_id}.*</message></error>",
-            Regexp::MULTILINE
-          )
+          Regexp.new("<error><message>Couldn't find Lane with 'id'=#{lane_id}.*</message></error>", Regexp::MULTILINE)
         expect(response).to have_http_status(:not_found)
         expect(response.body).to match(regexp)
       end
@@ -192,7 +236,7 @@ session: { user: user.id }
     context 'with valid parameters' do
       before do
         failed_seq_request
-        post :fail, params: { asset_id: lane.id, qc_information: { message: 'failed qc'} }, session: { user: user.id }
+        post :fail, params: { asset_id: lane.id, qc_information: { message: 'failed qc' } }, session: { user: user.id }
       end
 
       it_behaves_like 'a failed state change'
@@ -202,11 +246,10 @@ session: { user: user.id }
       before do
         failed_seq_request
         cancelled_seq_request
-        post :fail, params: { asset_id: lane.id, qc_information: { message: 'failed qc'} }, session: { user: user.id }
+        post :fail, params: { asset_id: lane.id, qc_information: { message: 'failed qc' } }, session: { user: user.id }
       end
 
       it_behaves_like 'a failed state change'
     end
   end
 end
-
