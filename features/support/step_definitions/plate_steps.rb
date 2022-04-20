@@ -2,7 +2,6 @@
 
 Given /^plate "([^"]*)" has "([^"]*)" wells$/ do |plate_barcode, number_of_wells|
   plate = Plate.find_from_barcode(plate_barcode)
-  binding.pry
   1.upto(number_of_wells.to_i) { |i| Well.create!(plate: plate, map_id: i) }
 end
 
@@ -36,15 +35,14 @@ Given 'a tube named {string} with barcode {string} exists' do |name, machine_bar
 end
 
 Given /^a plate with barcode "([^"]*)" exists$/ do |machine_barcode|
-  FactoryBot.create :plate, sanger_barcode: Barcode.build_sanger_code39({machine_barcode: machine_barcode})
+  FactoryBot.create :plate, sanger_barcode: Barcode.build_sanger_code39({machine_barcode: machine_barcode, format: 'DN'})
 end
 
 # rubocop:todo Layout/LineLength
 Given /^a "([^"]*)" plate purpose and of type "([^"]*)" with barcode "([^"]*)" exists$/ do |plate_purpose_name, plate_type, machine_barcode|
   # rubocop:enable Layout/LineLength
-  
   plate_type.constantize.create!(
-    sanger_barcode: Barcode.build_sanger_code39({machine_barcode: machine_barcode}),
+    sanger_barcode: Barcode.build_sanger_code39({machine_barcode: machine_barcode, format: 'DN'}),
     plate_purpose: PlatePurpose.find_by(name: plate_purpose_name),
     name: machine_barcode
   )

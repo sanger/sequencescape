@@ -29,9 +29,9 @@ Feature: RobotVerification
     Then I should see "Scan Robot Beds And Plates"
     And the source plates should be sorted by bed:
     | Bed    | Plate ID      |
-    | SCRC 1 | DN1S |
-    | SCRC 2 | DN10I |
-    | SCRC 3 | DN5W |
+    | SCRC 1 | SQPD-1 |
+    | SCRC 2 | SQPD-10 |
+    | SCRC 3 | SQPD-5 |
     | DEST 1 | DN99999F |
 
 
@@ -40,9 +40,9 @@ Feature: RobotVerification
     4880000001780
 
     """
-    When I fill in "DN1S" with multiline text
+    When I fill in "SQPD-1" with multiline text
     """
-    DN1S
+    SQPD-1
 
     """
     When I fill in "SCRC 2" with multiline text
@@ -50,9 +50,9 @@ Feature: RobotVerification
     4880000002794
 
     """
-    When I fill in "DN5W" with multiline text
+    When I fill in "SQPD-5" with multiline text
     """
-    DN5W
+    SQPD-5
 
     """
     When I fill in "SCRC 3" with multiline text
@@ -60,9 +60,9 @@ Feature: RobotVerification
     4880000003807
 
     """
-    When I fill in "DN10I" with multiline text
+    When I fill in "SQPD-10" with multiline text
     """
-    DN10I
+    SQPD-10
 
     """
     When I fill in "DEST 1" with multiline text
@@ -100,28 +100,28 @@ A;BUFF;;96-TROUGH;6;;9.8
 D;DN99999F;;ABgene 0800;6;;9.8
 W;
 C;
-A;DN1S;;ABgene 0765;1;;3.2
+A;SQPD-1;;ABgene 0765;1;;3.2
 D;DN99999F;;ABgene 0800;1;;3.2
 W;
-A;DN1S;;ABgene 0765;9;;3.2
+A;SQPD-1;;ABgene 0765;9;;3.2
 D;DN99999F;;ABgene 0800;2;;3.2
 W;
-A;DN10I;;ABgene 0765;1;;3.2
+A;SQPD-10;;ABgene 0765;1;;3.2
 D;DN99999F;;ABgene 0800;3;;3.2
 W;
-A;DN10I;;ABgene 0765;9;;3.2
+A;SQPD-10;;ABgene 0765;9;;3.2
 D;DN99999F;;ABgene 0800;4;;3.2
 W;
-A;DN5W;;ABgene 0765;1;;3.2
+A;SQPD-5;;ABgene 0765;1;;3.2
 D;DN99999F;;ABgene 0800;5;;3.2
 W;
-A;DN5W;;ABgene 0765;9;;3.2
+A;SQPD-5;;ABgene 0765;9;;3.2
 D;DN99999F;;ABgene 0800;6;;3.2
 W;
 C;
-C; SCRC1 = DN1S
-C; SCRC2 = DN10I
-C; SCRC3 = DN5W
+C; SCRC1 = SQPD-1
+C; SCRC2 = SQPD-10
+C; SCRC3 = SQPD-5
 C;
 C; DEST1 = DN99999F
     """
