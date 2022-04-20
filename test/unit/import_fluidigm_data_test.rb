@@ -65,7 +65,7 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
     setup do
       @fluidigm_request_type = create :request_type, key: 'pick_to_fluidigm'
       @fluidigm_file = create_fluidigm_file
-      @stock_plate = create_stock_plate('8765432')
+      @stock_plate = create_stock_plate('SQPD-8765432')
       @plate1 = create_plate_with_fluidigm('1234567', '1381832088', @stock_plate)
       @plate2 = create_plate_with_fluidigm('1234568', '1234567891', @stock_plate)
     end

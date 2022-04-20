@@ -175,7 +175,10 @@ FactoryBot.define do
     size { 96 }
     plate_purpose
 
-    transient { well_count { 96 } }
+    transient { 
+      well_count { 96 } 
+      barcode { nil }
+    }
 
     # A plate that has exactly the right number of wells!
     factory :pooling_plate do

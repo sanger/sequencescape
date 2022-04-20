@@ -18,11 +18,11 @@ class PlateCreatorTest < ActiveSupport::TestCase
               :purpose_name
 
   def setup # rubocop:todo Metrics/AbcSize
-    @parent_barcode = '1234'
+    @parent_barcode = 'SQPD-1234'
     @studies = create_list :study, 1
     parent = create :source_plate, barcode: parent_barcode, studies: @studies
     well = create :well_with_sample_and_plate, plate: parent
-    @barcode1 = '1111'
+    @barcode1 = 'SQPD-1111'
     @purpose_name = 'test purpose'
     plate_purpose = create :plate_purpose, name: purpose_name
     @plate1 =

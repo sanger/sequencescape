@@ -4,14 +4,13 @@ require 'test_helper'
 require './spec/lib/mock_parser'
 
 class PlateTest < ActiveSupport::TestCase
-  def create_plate_with_fluidigm(fluidigm_barcode)
-    barcode = '1234567'
+  def create_plate_with_fluidigm(plate_barcode, fluidigm_barcode)
     purpose = create :plate_purpose
     purpose.create!(
       :do_not_create_wells,
-      name: "Cherrypicked #{barcode}",
+      name: "Cherrypicked #{plate_barcode}",
       size: 192,
-      barcode: barcode,
+      barcode: plate_barcode,
       fluidigm_barcode: fluidigm_barcode
     )
   end
@@ -29,11 +28,16 @@ class PlateTest < ActiveSupport::TestCase
     end
 
     context '#fluidigm_barcode' do
+      setup do
+        @plate_barcode = build(:plate_barcode)
+        PlateBarcode.stubs(:create_barcode).returns(@plate_barcode)
+      end
+
       should 'check that I cannot create a plate with a fluidigm barcode different from 10 characters' do
-        assert_raises(ActiveRecord::RecordInvalid) { create_plate_with_fluidigm('12345678') }
+        assert_raises(ActiveRecord::RecordInvalid) { create_plate_with_fluidigm(@plate_barcode.barcode, '12345678') }
       end
       should 'check that I can create a plate with a fluidigm barcode equal to 10 characters' do
-        assert_nothing_raised { create_plate_with_fluidigm('1234567890') }
+        assert_nothing_raised { create_plate_with_fluidigm(@plate_barcode.barcode, '1234567890') }
       end
     end
   end
