@@ -36,8 +36,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
 
     context '#render_plate_transfer_task' do
       setup do
-        plate_barcode = create(:plate_barcode, barcode: 1_234_567)
-        PlateBarcode.stubs(:create).returns(plate_barcode)
+        PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode))
       end
 
       context 'when used for the first time' do
@@ -128,8 +127,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
 
     context '#do_plate_transfer_task' do
       setup do
-        plate_barcode = create(:plate_barcode, barcode: 1_234_567)
-        PlateBarcode.stubs(:create).returns(plate_barcode)
+        PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode))
 
         params = { plate_transfer_task: {}, batch_id: @batch.id }
 

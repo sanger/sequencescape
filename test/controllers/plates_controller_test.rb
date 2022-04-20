@@ -5,7 +5,6 @@ require 'test_helper'
 class PlatesControllerTest < ActionController::TestCase
   context 'Plate' do
     setup do
-      @prefix = 'DN'
       @controller = PlatesController.new
       @request = ActionController::TestRequest.create(@controller)
 
@@ -18,14 +17,14 @@ class PlatesControllerTest < ActionController::TestCase
       @barcode_printer = create :barcode_printer
 
       PlateBarcode
-        .stubs(:create)
+        .stubs(:create_barcode)
         .returns(
-          stub(barcode: 1_234_567),
-          stub(barcode: 1_234_568),
-          stub(barcode: 1_234_569),
-          stub(barcode: 1_234_570),
-          stub(barcode: 1_234_571),
-          stub(barcode: 1_234_572)
+          build(:plate_barcode, barcode: 'SQPD-1234567'),
+          build(:plate_barcode, barcode: 'SQPD-1234568'),
+          build(:plate_barcode, barcode: 'SQPD-1234569'),
+          build(:plate_barcode, barcode: 'SQPD-1234570'),
+          build(:plate_barcode, barcode: 'SQPD-1234571'),
+          build(:plate_barcode, barcode: 'SQPD-1234572'),
         )
       LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns('data' => [{ 'id' => 15 }])
       LabelPrinter::PmbClient.stubs(:print).returns(200)
@@ -37,9 +36,9 @@ class PlatesControllerTest < ActionController::TestCase
         @user.grant_administrator
         session[:user] = @user.id
 
-        @parent_plate = FactoryBot.create :plate, barcode: '5678'
-        @parent_plate2 = FactoryBot.create :plate, barcode: '1234'
-        @parent_plate3 = FactoryBot.create :plate, barcode: '987'
+        @parent_plate = FactoryBot.create :plate
+        @parent_plate2 = FactoryBot.create :plate
+        @parent_plate3 = FactoryBot.create :plate
       end
 
       context '#new' do

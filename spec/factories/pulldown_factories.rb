@@ -117,7 +117,7 @@ FactoryBot.define do
     after(:build) do |tube_creation|
       mock_request_type = create(:library_creation_request_type)
 
-      stock_plate = create :full_stock_plate, well_count: 2, barcode: '999999'
+      stock_plate = create :full_stock_plate, well_count: 2
       stock_wells = stock_plate.wells
 
       AssetLink.create!(ancestor: stock_plate, descendant: tube_creation.parent)
