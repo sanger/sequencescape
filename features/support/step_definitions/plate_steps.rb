@@ -35,7 +35,7 @@ Given 'a tube named {string} with barcode {string} exists' do |name, machine_bar
 end
 
 Given /^a plate with barcode "([^"]*)" exists$/ do |machine_barcode|
-  FactoryBot.create :plate, sanger_barcode: { machine_barcode: machine_barcode }
+  FactoryBot.create :plate, sanger_barcode: { machine_barcode: machine_barcode, format: :sanger_code39 }
 end
 
 # rubocop:todo Layout/LineLength
