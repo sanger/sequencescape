@@ -2,8 +2,9 @@
 
 require 'rails_helper'
 
-RSpec.describe NpgActions::AssetsController, type: :controller do
-  let(:user) { create :user }
+RSpec.describe NpgActions::AssetsController, type: :request do
+  let(:user) { create :user, password: 'password' }
+
   let(:lane) { create :lane_with_stock_plate, name: 'NPG_Action_Lane_Test', qc_state: 'passed', external_release: 1 }
   let(:study) { create :study }
   let(:batch) { create :sequencing_batch, state: 'started', qc_state: 'qc_manual' }
@@ -32,12 +33,14 @@ RSpec.describe NpgActions::AssetsController, type: :controller do
            state: 'failed'
   end
 
-  before { session[:user] = user.id }
+  before { post '/login', params: { login: user.login, password: 'password' } }
 
   shared_examples 'a passed state change' do
     it 'renders and creates events', aggregate_failures: true do
+      # Response
       expect(response).to have_http_status(:ok)
       expect(response).to render_template :'assets/show.xml.builder'
+      expect(response.body).to match(expected_response_content)
 
       # Lane QC event
       expect(lane.events.last).to be_a Event::AssetSetQcStateEvent
@@ -59,7 +62,9 @@ RSpec.describe NpgActions::AssetsController, type: :controller do
 
   shared_examples 'a failed state change' do
     it 'renders and creates events', aggregate_failures: true do
+      # Response
       expect(response).to render_template :'assets/show.xml.builder'
+      expect(response.body).to match(expected_response_content)
 
       # Lane QC event
       expect(lane.events.last).to be_a Event::AssetSetQcStateEvent
@@ -80,18 +85,40 @@ RSpec.describe NpgActions::AssetsController, type: :controller do
   end
 
   describe '#pass' do
+    let(:expected_response_content) do
+      Regexp.new(
+        [
+          '^(<asset api_version="0\.6">)(\n.*)*(<id>',
+          lane.id.to_s,
+          '<\/id>)\n.*(<type>Lane<\/type>)',
+          '(\n.*<name>NPG_Action_Lane_Test<\/name>)',
+          '(\n.*<public_name/>)',
+          '(\n.*<qc_state>passed<\/qc_state>)',
+          '(\n.*<sample_id\/>)',
+          '(\n.*<children>)',
+          '(\n.*</children>)',
+          '(\n.*<parents>)',
+          '(\n.*<id>',
+          lane.parents.first.id,
+          '<\/id>)',
+          '(\n.*<\/parents>)',
+          '(\n.*<requests>)',
+          '(\n.*<\/requests>)',
+          '(\n.*<\/asset>)$'
+        ].join,
+        Regexp::MULTILINE
+      )
+    end
+
     context 'with valid parameters' do
       before do
         valid_seq_request
-        post :pass,
+        post "/npg_actions/assets/#{lane.id}/pass_qc_state",
              params: {
                asset_id: lane.id,
                qc_information: {
                  message: 'qc passed ok'
                }
-             },
-             session: {
-               user: user.id
              }
       end
 
@@ -100,15 +127,12 @@ RSpec.describe NpgActions::AssetsController, type: :controller do
 
     context 'with no valid requests' do
       before do
-        post :pass,
+        post "/npg_actions/assets/#{lane.id}/pass_qc_state",
              params: {
                asset_id: lane.id,
                qc_information: {
                  message: 'qc passed ok'
                }
-             },
-             session: {
-               user: user.id
              }
       end
 
@@ -130,15 +154,12 @@ RSpec.describe NpgActions::AssetsController, type: :controller do
     context 'with a single cancelled request' do
       before do
         cancelled_seq_request
-        post :pass,
+        post "/npg_actions/assets/#{lane.id}/pass_qc_state",
              params: {
                asset_id: lane.id,
                qc_information: {
                  message: 'qc passed ok'
                }
-             },
-             session: {
-               user: user.id
              }
       end
 
@@ -161,15 +182,12 @@ RSpec.describe NpgActions::AssetsController, type: :controller do
       before do
         valid_seq_request
         cancelled_seq_request
-        post :pass,
+        post "/npg_actions/assets/#{lane.id}/pass_qc_state",
              params: {
                asset_id: lane.id,
                qc_information: {
                  message: 'qc passed ok'
                }
-             },
-             session: {
-               user: user.id
              }
       end
 
@@ -180,15 +198,12 @@ RSpec.describe NpgActions::AssetsController, type: :controller do
       before do
         valid_seq_request
         failed_seq_request
-        post :pass,
+        post "/npg_actions/assets/#{lane.id}/pass_qc_state",
              params: {
                asset_id: lane.id,
                qc_information: {
                  message: 'qc passed ok'
                }
-             },
-             session: {
-               user: user.id
              }
       end
 
@@ -208,24 +223,24 @@ RSpec.describe NpgActions::AssetsController, type: :controller do
     end
 
     context 'with an unrecognised lane' do
-      let(:lane_id) { 999_999_999 }
+      let(:invalid_lane_id) { 999_999_999 }
 
       before do
-        post :pass,
+        post "/npg_actions/assets/#{invalid_lane_id}/pass_qc_state",
              params: {
-               asset_id: lane_id,
+               asset_id: invalid_lane_id,
                qc_information: {
                  message: 'qc passed ok'
                }
-             },
-             session: {
-               user: user.id
              }
       end
 
       it 'renders the exception page' do
         regexp =
-          Regexp.new("<error><message>Couldn't find Lane with 'id'=#{lane_id}.*</message></error>", Regexp::MULTILINE)
+          Regexp.new(
+            "<error><message>Couldn't find Lane with 'id'=#{invalid_lane_id}.*</message></error>",
+            Regexp::MULTILINE
+          )
         expect(response).to have_http_status(:not_found)
         expect(response.body).to match(regexp)
       end
@@ -233,10 +248,41 @@ RSpec.describe NpgActions::AssetsController, type: :controller do
   end
 
   describe '#fail' do
+    let(:expected_response_content) do
+      Regexp.new(
+        [
+          '^(<asset api_version="0\.6">)(\n.*)*(<id>',
+          lane.id.to_s,
+          '<\/id>)\n.*(<type>Lane<\/type>)',
+          '(\n.*<name>NPG_Action_Lane_Test<\/name>)',
+          '(\n.*<public_name/>)',
+          '(\n.*<qc_state>failed<\/qc_state>)',
+          '(\n.*<sample_id\/>)',
+          '(\n.*<children>)',
+          '(\n.*</children>)',
+          '(\n.*<parents>)',
+          '(\n.*<id>',
+          lane.parents.first.id,
+          '<\/id>)',
+          '(\n.*<\/parents>)',
+          '(\n.*<requests>)',
+          '(\n.*<\/requests>)',
+          '(\n.*<\/asset>)$'
+        ].join,
+        Regexp::MULTILINE
+      )
+    end
+
     context 'with valid parameters' do
       before do
         failed_seq_request
-        post :fail, params: { asset_id: lane.id, qc_information: { message: 'failed qc' } }, session: { user: user.id }
+        post "/npg_actions/assets/#{lane.id}/fail_qc_state",
+             params: {
+               asset_id: lane.id,
+               qc_information: {
+                 message: 'failed qc'
+               }
+             }
       end
 
       it_behaves_like 'a failed state change'
@@ -246,7 +292,13 @@ RSpec.describe NpgActions::AssetsController, type: :controller do
       before do
         failed_seq_request
         cancelled_seq_request
-        post :fail, params: { asset_id: lane.id, qc_information: { message: 'failed qc' } }, session: { user: user.id }
+        post "/npg_actions/assets/#{lane.id}/fail_qc_state",
+             params: {
+               asset_id: lane.id,
+               qc_information: {
+                 message: 'failed qc'
+               }
+             }
       end
 
       it_behaves_like 'a failed state change'
