@@ -11,7 +11,7 @@ And I have a "full" authorised user with the key "cucumber"
     Given I have an "active" study called "Study A"
     And the UUID for the study "Study A" is "22222222-3333-4444-5555-000000000000"
 
-    Given there is a 96 well "Cherrypicked" plate with a barcode of "SQDP-12345"
+    Given there is a 96 well "Cherrypicked" plate with a barcode of "1220012345855"
 
     Given I have a project called "Project A"
     And the UUID for the project "Project A" is "22222222-3333-4444-5555-000000000001"

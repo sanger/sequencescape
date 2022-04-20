@@ -5,7 +5,7 @@ Given /^there is a (\d+) well "([^"]*)" plate with a barcode of "([^"]*)"$/ do |
   # rubocop:enable Layout/LineLength
   new_plate =
     FactoryBot.create :plate,
-                      barcode: plate_barcode,
+                      sanger_barcode: Barcode.build_sanger_code39({machine_barcode: machine_barcode }),
                       plate_purpose: PlatePurpose.find_by(name: plate_purpose_name)
 
   sample = FactoryBot.create :sample_with_gender, name: "#{plate_barcode}_x"
