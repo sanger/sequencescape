@@ -25,6 +25,28 @@ class PlateBarcode < ActiveResource::Base # rubocop:todo Style/Documentation
     Barcode.build_sequencescape22(barcode)
   end
 
+  def self.create_child_barcodes(parent_barcode, count=1)
+    retries = 0
+    uri = URI("#{site}/child-barcodes/new")
+    http = Net::HTTP.new(uri.host, uri.port)
+    req  = Net::HTTP::Post.new(uri.path, initheader = {'Content-Type' =>'application/json'})
+    req.body = { barcode: parent_barcode, count: count }.to_json
+    # Baracoda has a drop out bug, until this is fixed we need to retry a few times
+    while retries < 3 do
+      begin
+        response = http.request(req)
+        if response.code === "201"
+          response = JSON.parse(response.body, symbolize_names: true)
+          retries = 3
+        end
+        retries += 1
+      rescue Errno::ECONNREFUSED
+        retries += 1
+      end
+    end
+    response[:barcodes].map! { |barcode| Barcode.build_sequencescape22({barcode: barcode}) }
+  end
+
   if Rails.env.development?
     # If we don't want a test dependency on baracoda we need to mock a barcode
 
@@ -32,6 +54,17 @@ class PlateBarcode < ActiveResource::Base # rubocop:todo Style/Documentation
       # We should use a different prefix for local so that you can switch between using baracoda locally and there will not be clashes
       current_num = Barcode.sequencescape22.order(id: :desc).first&.number || 9000
       Barcode.build_sequencescape22({ barcode: "#{self.prefix}-#{current_num + 1}" })
+    end
+
+    def self.create_child_barcodes(parent_barcode, count=1)
+      child_barcodes = []
+      current_child = Barcode.find_by_barcode(parent_barcode).child_barcodes.order(id: :desc).first
+      new_barcode = current_child.barcode.split("-")
+      (1..count).each do |num|
+        new_barcode[-1] = (new_barcode[-1].to_i + 1).to_s
+        child_barcodes << Barcode.build_sequencescape22({barcode: new_barcode.join("-")})
+      end
+      child_barcodes
     end
   end
 
