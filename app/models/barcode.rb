@@ -181,6 +181,10 @@ class Barcode < ApplicationRecord
     sanger_ean13? || sanger_code39?
   end
 
+  def child_barcodes
+    Barcode.where('barcode LIKE ?', "#{self.barcode}-%")
+  end
+
   private
 
   def barcode_valid?

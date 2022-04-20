@@ -155,7 +155,7 @@ module Barcode::FormatHandlers
   # <prefix>-nnn... where n is a digit.
   # prefix is dependent on plate_barcode_prefix environment variable
   class Sequencescape22 < BaseRegExBarcode
-    self.format = /\A(?<prefix>#{configatron.plate_barcode_prefix})-(?<number>[0-9]+)\z/
+    self.format = /\A(?<prefix>#{configatron.plate_barcode_prefix})-(?<number>[0-9]+)(-[0-9]+)?\z/
   end
 
   # Infinium barcodes are externally generated barcodes on Illumina Infinium chips

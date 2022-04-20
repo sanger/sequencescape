@@ -473,8 +473,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
           "#generate_barcode has been called on plate, which wasn't supposed to happen, and probably indicates a bug."
   end
 
-  def sanger_barcode=(args)
-    barcode = Barcode.new(args) unless args.kind_of?(Barcode)
+  def sanger_barcode=(barcode)
     barcodes << barcode
   end
 

@@ -248,13 +248,8 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
     stock_well_picker = plate.plate_purpose.stock_plate? ? ->(w) { [w] } : ->(w) { w.stock_wells }
     parent_wells = plate.wells
 
-    # We don't want to use externally managed barcodes to generate child barcodes as:
-    # 1) I'm not 100% certain what assumptions other teams sharing the concurrency safe counter
-    #    are making. There is a small risk that if they are using the same prefixes, we could
-    #    have clashes. (Although I doubt they've leapt to code39)
-    # 2) Number is hugely variable, and could easily be out of the 7 digit range we understand.
-    #
-    # For sanger barcodes this lets DN123 => WD123, which improves tracking.
+    # We now use baracoda to grab the child plate barcode
+    # call create_child_barcodes from PlateBarcode
     parent_barcode = plate.sanger_barcode&.number
 
     plate_purposes.map do |target_plate_purpose|
