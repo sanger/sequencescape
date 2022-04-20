@@ -57,8 +57,8 @@ Feature: Access tag layouts through the API
 
   @tag_layout @create @barcode-service
   Scenario: Creating a tag layout of an entire plate using 96 tags by pools
-    Given the plate barcode webservice returns "SQPD-1000001"
-    Given the plate barcode webservice returns "SQPD-1000002"
+    Given the Baracoda barcode service returns "SQPD-1000001"
+    Given the Baracoda barcode service returns "SQPD-1000002"
     Given the tag group "Example Tag Group" exists
       And the UUID for the tag group "Example Tag Group" is "00000000-1111-2222-3333-444444444444"
       And the tag group "Example Tag Group" has 20 tags
@@ -98,8 +98,8 @@ Feature: Access tag layouts through the API
 
   @tag_layout @create @barcode-service
   Scenario: Creating a tag layout of an entire plate using 96 tags by pools
-    Given the plate barcode webservice returns "SQPD-1000001"
-    Given the plate barcode webservice returns "SQPD-1000002"
+    Given the Baracoda barcode service returns "SQPD-1000001"
+    Given the Baracoda barcode service returns "SQPD-1000002"
 
     Given the tag group "Example Tag Group" exists
       And the UUID for the tag group "Example Tag Group" is "00000000-1111-2222-3333-444444444444"
@@ -139,8 +139,8 @@ Feature: Access tag layouts through the API
 
   @tag_layout @create @barcode-service
   Scenario: Creating a tag layout of an entire plate using 96 tags by pools with empty wells
-    Given the plate barcode webservice returns "SQPD-1000001"
-    Given the plate barcode webservice returns "SQPD-1000002"
+    Given the Baracoda barcode service returns "SQPD-1000001"
+    Given the Baracoda barcode service returns "SQPD-1000002"
     Given the tag group "Example Tag Group" exists
       And the UUID for the tag group "Example Tag Group" is "00000000-1111-2222-3333-444444444444"
       And the tag group "Example Tag Group" has 96 tags
@@ -181,8 +181,8 @@ Feature: Access tag layouts through the API
 
   @tag_layout @create @barcode-service
   Scenario: Creating a tag layout of an entire plate using 96 tags by pools with an offset
-    Given the plate barcode webservice returns "SQPD-1000001"
-    Given the plate barcode webservice returns "SQPD-1000002"
+    Given the Baracoda barcode service returns "SQPD-1000001"
+    Given the Baracoda barcode service returns "SQPD-1000002"
     Given the tag group "Example Tag Group" exists
       And the UUID for the tag group "Example Tag Group" is "00000000-1111-2222-3333-444444444444"
       And the tag group "Example Tag Group" has 30 tags
@@ -222,8 +222,8 @@ Feature: Access tag layouts through the API
 
   @tag_layout @create @barcode-service
   Scenario: Creating a tag layout of an entire plate using 96 tags by pools with an offset
-    Given the plate barcode webservice returns "SQPD-1000001"
-    Given the plate barcode webservice returns "SQPD-1000002"
+    Given the Baracoda barcode service returns "SQPD-1000001"
+    Given the Baracoda barcode service returns "SQPD-1000002"
     Given the tag group "Example Tag Group" exists
       And the UUID for the tag group "Example Tag Group" is "00000000-1111-2222-3333-444444444444"
       And the tag group "Example Tag Group" has 106 tags

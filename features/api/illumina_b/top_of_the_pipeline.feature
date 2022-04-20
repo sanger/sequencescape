@@ -15,7 +15,7 @@ Feature: The top of the Illumina-B pipeline
 
     Given a user with UUID "99999999-8888-7777-6666-555555555555" exists
 
-    Given the plate barcode webservice returns "SQPD-1000002"
+    Given the Baracoda barcode service returns "SQPD-1000002"
 
       And the UUID for the transfer template "Transfer columns 1-12" is "22222222-3333-4444-5555-000000000001"
       And the UUID for the search "Find assets by barcode" is "33333333-4444-5555-6666-000000000001"
