@@ -48,7 +48,7 @@ class PlateBarcode < ActiveResource::Base # rubocop:todo Style/Documentation
   end
 
   if Rails.env.development?
-    # If we don't want a test dependency on baracoda we need to mock a barcode
+    # If we don't want a test dependency on baracoda we need to mock barcodes and child barcodes
 
     def self.create_barcode
       # We should use a different prefix for local so that you can switch between using baracoda locally and there will not be clashes
@@ -58,12 +58,18 @@ class PlateBarcode < ActiveResource::Base # rubocop:todo Style/Documentation
 
     def self.create_child_barcodes(parent_barcode, count=1)
       child_barcodes = []
+
       current_child = Barcode.find_by_barcode(parent_barcode).child_barcodes.order(id: :desc).first
-      new_barcode = current_child.barcode.split("-")
+      
+      # gets the 'child count' section of the barcode SQPD-12345-(1) as an int
+      # if its the first child then current_child is blank and we set the count to 0
+      current_child_count = current_child.blank? ? 0 : current_child.barcode.split("-").last.to_i
+
+      # creates new child barcodes based on existing ones
       (1..count).each do |num|
-        new_barcode[-1] = (new_barcode[-1].to_i + 1).to_s
-        child_barcodes << Barcode.build_sequencescape22({barcode: new_barcode.join("-")})
+        child_barcodes << Barcode.build_sequencescape22({barcode: "#{parent_barcode}-#{current_child_count + num}"})
       end
+
       child_barcodes
     end
   end

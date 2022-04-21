@@ -205,6 +205,14 @@ describe Barcode, type: :model do
         expect(barcode).not_to be_valid
       end
     end
+
+    context 'with an baracoda child barcode format' do
+      let(:barcode_value) { 'SQPD-12345-5' }
+
+      it 'is not valid' do
+        expect(barcode).to be_valid
+      end
+    end
   end
 
   context 'infinium' do

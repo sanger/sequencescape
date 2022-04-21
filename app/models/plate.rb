@@ -349,7 +349,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
 
   def self.create_with_barcode!(*args, &block)
     attributes = args.extract_options!
-    attributes[:sanger_barcode] ||= PlateBarcode.create_barcode unless attributes[:barcode]
+    attributes[:sanger_barcode] ||= PlateBarcode.create_barcode
     create!(attributes, &block)
   end
 
