@@ -238,10 +238,74 @@ RSpec.describe NpgActions::AssetsController, type: :request do
       it 'renders the exception page' do
         regexp =
           Regexp.new(
-            "<error><message>Couldn't find Lane with 'id'=#{invalid_lane_id}.*</message></error>",
+            ['<error><message>', "Couldn't find Lane with 'id'=#{invalid_lane_id}", '.*</message></error>'].join,
             Regexp::MULTILINE
           )
         expect(response).to have_http_status(:not_found)
+        expect(response.body).to match(regexp)
+      end
+    end
+
+    context 'when changing qc state on an asset after NPG did the same action before' do
+      # create a pass event for the lane source request
+      let(:lane_receptacle) { Labware.find_by!(name: 'NPG_Action_Lane_Test').receptacle }
+      let(:lane_source_request) { lane_receptacle.source_request }
+      let(:prev_event) { create(:event, family: 'pass', created_by: 'npg', eventful: lane_source_request) }
+
+      before do
+        lane
+        valid_seq_request
+        prev_event
+        post "/npg_actions/assets/#{lane.id}/pass_qc_state",
+             params: {
+               asset_id: lane.id,
+               qc_information: {
+                 message: 'qc passed ok'
+               }
+             }
+        lane.reload
+      end
+
+      it 'renders and but does not recreate the events', aggregate_failures: true do
+        # Response
+        expect(response).to have_http_status(:ok)
+        expect(response).to render_template :'assets/show.xml.builder'
+        expect(response.body).to match(expected_response_content)
+
+        # Lane QC event
+        expect(lane.events.last).to be_nil
+      end
+    end
+
+    context 'when posting invalid XML to change qc state on an asset. NPG did the same action before' do
+      # create a pass event for the lane source request
+      let(:lane_receptacle) { Labware.find_by!(name: 'NPG_Action_Lane_Test').receptacle }
+      let(:lane_source_request) { lane_receptacle.source_request }
+      let(:prev_event) { create(:event, family: 'pass', created_by: 'npg', eventful: lane_source_request) }
+
+      before do
+        lane
+        valid_seq_request
+        prev_event
+        post "/npg_actions/assets/#{lane.id}/pass_qc_state",
+             params: {
+               asset_id: lane.id,
+               unknown_attribute: {
+                 qc_information: {
+                   message: 'qc passed ok'
+                 }
+               }
+             }
+        lane.reload
+      end
+
+      it 'renders the exception page' do
+        regexp =
+          Regexp.new(
+            ['<error><message>', 'param is missing or the value is empty: qc_information', '</message></error>'].join,
+            Regexp::MULTILINE
+          )
+        expect(response).to have_http_status(:bad_request)
         expect(response.body).to match(regexp)
       end
     end
@@ -302,6 +366,36 @@ RSpec.describe NpgActions::AssetsController, type: :request do
       end
 
       it_behaves_like 'a failed state change'
+    end
+
+    context 'when changing qc state on an asset when NPG did a different action before' do
+      # create a pass event for the lane source request
+      let(:lane_receptacle) { Labware.find_by!(name: 'NPG_Action_Lane_Test').receptacle }
+      let(:lane_source_request) { lane_receptacle.source_request }
+      let(:prev_event) { create(:event, family: 'pass', created_by: 'npg', eventful: lane_source_request) }
+
+      before do
+        lane
+        failed_seq_request
+        prev_event
+        post "/npg_actions/assets/#{lane.id}/fail_qc_state",
+             params: {
+               asset_id: lane.id,
+               qc_information: {
+                 message: 'failed qc'
+               }
+             }
+      end
+
+      it 'returns a warning' do
+        regexp =
+          Regexp.new(
+            ['<error><message>', 'NPG user run this action. Please, contact USG', '</message></error>'].join,
+            Regexp::MULTILINE
+          )
+        expect(response).to have_http_status(:bad_request)
+        expect(response.body).to match(regexp)
+      end
     end
   end
 end
