@@ -136,6 +136,7 @@ module Request::Statemachine # rubocop:todo Style/Documentation
     scope :pending, -> { where(state: %w[pending blocked]) } # block is a kind of substate of pending }
     scope :opened, -> { where(state: OPENED_STATE) }
     scope :closed, -> { where(state: %w[passed failed cancelled]) }
+    scope :not_cancelled, -> { where.not(state: 'cancelled') }
   end
 
   #--
