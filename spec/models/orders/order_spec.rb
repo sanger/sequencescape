@@ -94,7 +94,7 @@ RSpec.describe Order, type: :model do
       end
     end
 
-    %w[SequencingRequest PacBioSequencingRequest].each do |request_class|
+    %w[SequencingRequest].each do |request_class|
       context "with #{request_class}" do
         before do
           @sequencing_request_type = create :request_type, request_class_name: request_class

@@ -29,9 +29,6 @@ FactoryBot.define do
     lab_activity { true }
   end
 
-  factory :assign_tubes_to_multiplexed_wells_task do
-  end
-
   factory :multiplexed_cherrypicking_task do
   end
 

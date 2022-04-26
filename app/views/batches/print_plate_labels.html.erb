@@ -7,27 +7,19 @@
 <div class="content">
   <div class="info">
     <form action='/batches/print_plate_barcodes' method='POST'>
-      <table width="100%" cellspacing="0" cellpadding="0" id="labels-list">
-        <% if @batch.multiplexed? %>
-        <tr>
-          <td>Labels for requests and tag numbers </td>
-        </tr>
-        <% end %>
-        </table>
-
-        <%= render partial: "shared/plate_print" %>
-        <table width="100%" cellspacing="0" cellpadding="0">
+      <%= render partial: "shared/plate_print" %>
+      <table width="100%" cellspacing="0" cellpadding="0">
         <tr>
           <td width="35%" class="item">Number of copies:</td>
           <td width="65%"><input name="count" size="10" value="1" /></td>
         </tr>
 
-          <% @output_barcodes.each do |plate| -%>
-            <tr>
-              <td width="35%" class="item"><label for="plate_<%= plate %>"><%= plate %></label></td>
-              <td width="65%"><input id="plate_<%= plate  %>" type='checkbox' checked='on' name='printable[<%= plate  %>]'></td>
-            </tr>
-          <% end -%>
+        <% @output_barcodes.each do |plate| -%>
+          <tr>
+            <td width="35%" class="item"><label for="plate_<%= plate %>"><%= plate %></label></td>
+            <td width="65%"><input id="plate_<%= plate  %>" type='checkbox' checked='on' name='printable[<%= plate  %>]'></td>
+          </tr>
+        <% end -%>
         <tr>
           <td width="35%" class="item">&nbsp;</td>
           <td width="65%"><input type='submit' value='Print labels' class="print-button"> or <%= link_to 'cancel', controller: 'batches', action: 'show', id: @batch.id %></td>

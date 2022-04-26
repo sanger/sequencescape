@@ -62,12 +62,4 @@ class Task < ApplicationRecord
   def do_task(_workflows_controller, _params, _user)
     raise NotImplementedError, "Please Implement a do_task for #{self.class.name}"
   end
-
-  def find_batch(batch_id)
-    Batch.includes(:requests, :pipeline, :lab_events).find(batch_id)
-  end
-
-  def find_batch_requests(batch_id)
-    find_batch(batch_id).ordered_requests
-  end
 end
