@@ -32,22 +32,22 @@ end
 
 Given '{asset_id} has a barcode of {string}' do |barcoded, barcode|
   bc = SBCF::SangerBarcode.from_machine(barcode).human_barcode
-  barcoded.primary_barcode.update(barcode: bc)
+  barcoded.primary_barcode.update(barcode: bc, format: :sanger_code39)
 end
 
 Given '{asset_name} has a barcode of {string}' do |barcoded, barcode|
   bc = SBCF::SangerBarcode.from_machine(barcode).human_barcode
-  barcoded.primary_barcode.update(barcode: bc)
+  barcoded.primary_barcode.update(barcode: bc, format: :sanger_code39)
 end
 
 Given '{batch} has a barcode of {string}' do |barcoded, barcode|
-  barcoded.update!(barcode: Barcode.number_to_human(barcode.to_i))
+  barcoded.update!(barcode: Barcode.number_to_human(barcode.to_i), format: :sanger_code39)
 end
 
 Given /^the barcode of the last sample tube is "([^"]+)"$/ do |barcode|
   bc = SBCF::SangerBarcode.new(prefix: 'NT', number: barcode).human_barcode
   tube = SampleTube.last or raise StandardError, 'There appear to be no sample tubes'
-  tube.primary_barcode.update!(barcode: bc)
+  tube.primary_barcode.update!(barcode: bc, format: :sanger_code39)
 end
 
 Given /^sample tubes are barcoded sequentially from (\d+)$/ do |initial|

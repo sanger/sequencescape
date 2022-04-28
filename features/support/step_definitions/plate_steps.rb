@@ -131,6 +131,7 @@ end
 
 Given /^a "([^"]+)" plate called "([^"]+)" exists with barcode "([^"]+)"$/ do |name, plate_name, barcode|
   plate_purpose = PlatePurpose.find_by!(name: name)
+  step("the Baracoda barcode service returns \"#{barcode}\"")
   plate_purpose.create!(name: plate_name, barcode: barcode)
 end
 
