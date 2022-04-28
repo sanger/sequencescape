@@ -18,9 +18,9 @@
         <% current_well = plate[col*plate_rows + row]  %>
 
         <% if current_well[0] == 0 -%>
-          <td class="empty"><%= current_well[1] %></td>
+          <td class="empty" draggable="true"><%= current_well[1] %></td>
         <% else -%>
-          <td id="well_<%= current_well[0] %>" class="<%= plate_class[current_well[1]] %>" ><%= current_well[1] %><br /><%= current_well[2] %></td>
+          <td id="well_<%= current_well[0] %>" draggable="true" class="<%= plate_class[current_well[1]] %>" ><%= current_well[1] %><br /><%= current_well[2] %></td>
         <% end -%>
       <% end %>
     </tr>

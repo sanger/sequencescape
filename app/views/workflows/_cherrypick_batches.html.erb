@@ -23,13 +23,7 @@
   <%= render partial: "scratch_pad", locals: {plate_cols: @plate_cols, plate_rows: @plate_rows,plate_class: plate_class, plate_ids: plate_ids } %>
 
 <% if @plate.nil? -%>
-  <%= legacy_javascript_tag do %>
-
-    (function($, undefined) {
-      $('table.plate tbody tr').sortable({appendTo:document.body,items:'td',placeholder:'placehold',connectWith:'table.plate tbody tr'});
-    })(jQuery);
-
-<% end %>
+  <%= vite_javascript_tag 'cherrypick' %>
 <% end -%>
 
   <%= hidden_field_tag 'nano_grams[total_nano_grams]', @nano_grams_total_nano_grams  %>
