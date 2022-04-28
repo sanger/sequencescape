@@ -14,7 +14,7 @@ Given /^I have an order created with the following details based on the template
         when 'asset_group_name'
           v
         when 'request_options'
-          v.split(',').map { |p| p.split(':').map(&:strip) }.to_h
+          v.split(',').to_h { |p| p.split(':').map(&:strip) }
         when 'assets'
           Uuid.lookup_many_uuids(v.split(',').map(&:strip)).map(&:resource)
         when 'pre_cap_group'
@@ -40,7 +40,11 @@ end
 Then /^the (string |)request options for the order with UUID "([^"]+)" should be:$/ do |_string, uuid, options_table|
   order = Uuid.with_external_id(uuid).first.try(:resource) or
     raise StandardError, "Could not find order with UUID #{uuid.inspect}"
+
+  # rubocop:todo Layout/LineLength
   stringified_options = order.request_options.stringify_keys # Needed because of inconsistencies in keys (symbols & strings)
+
+  # rubocop:enable Layout/LineLength
   options_table.rows_hash.each do |k, v|
     assert_equal(v, stringified_options[k].to_s, "Request option #{k.inspect} is unexpected")
   end

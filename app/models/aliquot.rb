@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # An aliquot can be considered to be an amount of a material in a liquid.  The material could be the DNA
 # of a sample, or it might be a library (a combination of the DNA sample and a {Tag tag}).
 
@@ -14,7 +15,7 @@
 # an untagged well.
 # We have some performance optimizations in place to avoid trying to look up tag -1
 # @see Tag
-class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
+class Aliquot < ApplicationRecord
   include Uuid::Uuidable
   include Api::Messages::FlowcellIO::AliquotExtensions
   include Api::Messages::QcResultIO::AliquotExtensions
@@ -73,8 +74,8 @@ class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   convert_labware_to_receptacle_for :library, :receptacle
 
-  before_validation { |record| record.tag_id ||= UNASSIGNED_TAG unless tag }
-  before_validation { |record| record.tag2_id ||= UNASSIGNED_TAG unless tag2 }
+  before_validation { |aliquot| aliquot.tag_id ||= UNASSIGNED_TAG unless aliquot.tag_id? || tag }
+  before_validation { |aliquot| aliquot.tag2_id ||= UNASSIGNED_TAG unless aliquot.tag2_id? || tag2 }
 
   broadcast_with_warren
 
@@ -87,7 +88,7 @@ class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
           ).order('tag1s.map_id ASC, tag2s.map_id ASC')
         }
   scope :untagged, -> { where(tag_id: UNASSIGNED_TAG, tag2_id: UNASSIGNED_TAG) }
-  scope :any_tags, -> { where.not(tag_id: UNASSIGNED_TAG, tag2_id: UNASSIGNED_TAG) }
+  scope :any_tags, -> { where.not(tag_id: UNASSIGNED_TAG).or(where.not(tag2_id: UNASSIGNED_TAG)) }
 
   delegate :library_name, to: :library, allow_nil: true
 
@@ -126,7 +127,7 @@ class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # This essentially meant that tag clashes would result in sample dropouts.
   # (presumably because << triggers save not save!)
   def no_tag1?
-    tag_id == UNASSIGNED_TAG || tag.nil?
+    tag_id == UNASSIGNED_TAG || (tag_id.nil? && tag.nil?)
   end
 
   def tag1?
@@ -134,7 +135,7 @@ class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def no_tag2?
-    tag2_id == UNASSIGNED_TAG || tag2.nil?
+    tag2_id == UNASSIGNED_TAG || (tag2_id.nil? && tag2.nil?)
   end
 
   def tag2?
@@ -151,6 +152,10 @@ class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def tags_combination
     [tag.try(:oligo), tag2.try(:oligo)]
+  end
+
+  def tags_and_tag_depth_combination
+    [tag.try(:oligo), tag2.try(:oligo), tag_depth]
   end
 
   def tag_count_name
@@ -183,9 +188,7 @@ class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
     save!
   end
 
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def matches?(object) # rubocop:todo Metrics/CyclomaticComplexity
     # NOTE: This function is directional, and assumes that the downstream aliquot
     # is checking the upstream aliquot
@@ -197,17 +200,19 @@ class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
     when object.bait_library_id.present? && (bait_library_id != object.bait_library_id)
       false # We have different bait libraries
     when (no_tag1? && object.tag1?) || (no_tag2? && object.tag2?)
+      # rubocop:todo Layout/LineLength
       raise StandardError, 'Tag missing from downstream aliquot' # The downstream aliquot is untagged, but is tagged upstream. Something is wrong!
+      # rubocop:enable Layout/LineLength
     when object.no_tags?
       true # The upstream aliquot was untagged, we don't need to check tags
     else
+      # rubocop:todo Layout/LineLength
       (object.no_tag1? || (tag_id == object.tag_id)) && (object.no_tag2? || (tag2_id == object.tag2_id)) # Both aliquots are tagged, we need to check if they match
+      # rubocop:enable Layout/LineLength
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   # Unlike the above methods, which allow untagged to match with tagged, this looks for exact matches only
   # only id, timestamps and receptacles are excluded

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rest-client'
 
 module LabWhereClient
@@ -11,7 +12,8 @@ module LabWhereClient
     def path_to(instance, target)
       raise LabwhereException, 'LabWhere service URL not set' if base_url.nil?
 
-      [base_url, instance.endpoint, target].compact.join('/')
+      encoded_target = ERB::Util.url_encode(target)
+      [base_url, instance.endpoint, encoded_target].compact.join('/')
     end
 
     def parse_json(str)
@@ -180,7 +182,9 @@ module LabWhereClient
     def self.children(barcode)
       return [] if barcode.blank?
 
-      attrs = LabWhere.new.get(self, "#{barcode}/children")
+      endpoint_name "locations/#{barcode}"
+
+      attrs = LabWhere.new.get(self, 'children')
       return [] if attrs.nil?
 
       attrs.map { |locn_params| new(locn_params) }
@@ -189,7 +193,9 @@ module LabWhereClient
     def self.labwares(barcode)
       return [] if barcode.blank?
 
-      attrs = LabWhere.new.get(self, "#{barcode}/labwares")
+      endpoint_name "locations/#{barcode}"
+
+      attrs = LabWhere.new.get(self, 'labwares')
       return [] if attrs.nil?
 
       attrs.map { |labware_params| Labware.new(labware_params) }

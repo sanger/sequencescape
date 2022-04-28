@@ -30,9 +30,11 @@ class TestSampleEndpoint < ::Core::Endpoint::Base
   end
 end
 
-module ::Core::Endpoint::BasicHandler::EndpointLookup # rubocop:todo Style/Documentation
+module Core::Endpoint::BasicHandler::EndpointLookup # rubocop:todo Style/Documentation
   %i[object class].each do |name|
     line = __LINE__ + 1
+
+    # rubocop:todo Layout/LineLength
     module_eval(
       "
       def endpoint_for_#{name}_with_object_service(target, *args, &block)
@@ -42,6 +44,7 @@ module ::Core::Endpoint::BasicHandler::EndpointLookup # rubocop:todo Style/Docum
       alias_method(:endpoint_for_#{name}_without_object_service, :endpoint_for_#{name})
       alias_method(:endpoint_for_#{name}, :endpoint_for_#{name}_with_object_service)
     ",
+      # rubocop:enable Layout/LineLength
       __FILE__,
       line
     )

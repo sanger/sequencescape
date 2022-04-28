@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Generates warehouse messages describing a PacBio run.
 # PacBio runs are approximated by {Batch batches}
 class Api::Messages::PacBioRunIO < Api::Base
@@ -17,7 +18,7 @@ class Api::Messages::PacBioRunIO < Api::Base
       map_attribute_to_json_attribute(:map_description, 'well_label')
       map_attribute_to_json_attribute(:uuid, 'well_uuid_lims')
 
-      with_nested_has_many_association(:requests_as_target, as: 'samples') do
+      with_nested_has_many_association(:most_recent_requests_as_target_group_by_same_source, as: 'samples') do
         with_association(:initial_project) { map_attribute_to_json_attribute(:project_cost_code_for_uwh, 'cost_code') }
 
         with_association(:initial_study) { map_attribute_to_json_attribute(:uuid, 'study_uuid') }

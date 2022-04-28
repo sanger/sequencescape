@@ -1,4 +1,4 @@
-# rubocop:todo Metrics/ClassLength
+# frozen_string_literal: true
 class Metadata::FormBuilder < Metadata::BuilderBase # rubocop:todo Style/Documentation
   def initialize(*args, &block)
     super
@@ -25,7 +25,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase # rubocop:todo Style/Documen
   end
 
   def select_by_association(association, options = {}, html_options = {})
-    html_options[:class] ||= 'select2'
+    append_class!(options, 'select2')
     association_target = association.to_s.classify.constantize
     if @object.send(association).nil? && association_target.default.present?
       options[:selected] = association_target.default.for_select_dropdown.last
@@ -37,8 +37,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase # rubocop:todo Style/Documen
     class_eval <<-END_OF_METHOD
       def #{field}_with_bootstrap(*args, &block)
         options    = args.extract_options!
-        options[:class] ||= ''
-        options[:class] << ' form-control'
+        append_class!(options, 'form-control')
         args.push(options)
         #{field}_without_bootstrap(*args, &block)
       end
@@ -49,8 +48,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase # rubocop:todo Style/Documen
 
   def select(method, choices, options = {}, html_options = {}, &block)
     group = html_options.delete(:grouping) || options.delete(:grouping)
-    html_options[:class] ||= ''
-    html_options[:class] << ' custom-select'
+    append_class!(html_options, 'custom-select select2')
     property_field(:field, method, grouping: group) { super(method, choices, options, html_options, &block) }
   end
 
@@ -58,11 +56,12 @@ class Metadata::FormBuilder < Metadata::BuilderBase # rubocop:todo Style/Documen
     group = html_options.delete(:grouping) || options.delete(:grouping)
     property_field(:radio_field, method, grouping: group) do
       choices.each_with_object(+''.html_safe) do |(label_text, option_value), output|
-        output << tag.div(class: %w[custom-control custom-radio custom-control-inline]) do
-          value = option_value || label_text
-          concat radio_button(method, value, class: 'custom-control-input', required: true)
-          concat label(method, label_text, class: 'custom-control-label', value: value)
-        end
+        output <<
+          tag.div(class: %w[custom-control custom-radio custom-control-inline]) do
+            value = option_value || label_text
+            concat radio_button(method, value, class: 'custom-control-input', required: true)
+            concat label(method, label_text, class: 'custom-control-label', value: value)
+          end
       end
     end
   end
@@ -74,13 +73,28 @@ class Metadata::FormBuilder < Metadata::BuilderBase # rubocop:todo Style/Documen
     class_eval do
       define_method field do |method, *args, &block|
         options = args.extract_options!
-        options[:class] ||= []
-        options[:class] << ' form-control'
+        append_class!(options, 'form-control')
         field_args = options.slice(:grouping)
         args.push(options.slice!(:grouping))
         property_field(:field, method, field_args) { super(method, *args, &block) }
       end
     end
+  end
+
+  #
+  # Mutates the input html_options hash to add klass to the css classes while
+  # maintaining any existing classes
+  #
+  # @param options [Hash] Hash of HTML options for the rails form renderer
+  # @param klass [String] A css class to add to the :class key
+  #
+  # @return [Hash] The HTML options hash.
+  #                @note The original hash is mutated, the return value is provided for method chaining
+  #
+  def append_class!(options, klass)
+    options[:class] = Array(options[:class])
+    options[:class] << klass
+    options
   end
 
   def header(field, options = {})
@@ -115,7 +129,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase # rubocop:todo Style/Documen
   end
 
   # Renders the Javascript for dealing with showing and hiding the related fields.
-  def finalize_related_fields # rubocop:todo Metrics/MethodLength
+  def finalize_related_fields
     related = @related_fields.compact.uniq.map(&:to_s)
     unless related.empty?
       concat(
@@ -141,4 +155,3 @@ class Metadata::FormBuilder < Metadata::BuilderBase # rubocop:todo Style/Documen
     tag.fieldset(content, div_options)
   end
 end
-# rubocop:enable Metrics/ClassLength

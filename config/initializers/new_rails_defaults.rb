@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # These settings were added to ease the migration from Rails 2 to Rails 3.
 # An earlier comment implied they should be the rails 3 defaults, however
 # as of Rails 5 the remaining settings don't seem to match defaults so have

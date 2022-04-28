@@ -5,7 +5,7 @@
 # to remove dependency on the database.
 # This assumes the shapes will not change
 class PlateMapGeneration
-  def self.maps # rubocop:todo Metrics/MethodLength
+  def self.maps
     [
       {
         name: 'Standard',
@@ -39,7 +39,7 @@ class PlateMapGeneration
     @description_strategy = "Map::#{description_strategy.camelcase}"
   end
 
-  def save! # rubocop:todo Metrics/MethodLength
+  def save!
     @shape =
       AssetShape
         .create_with(

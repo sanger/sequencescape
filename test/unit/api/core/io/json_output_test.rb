@@ -2,29 +2,33 @@
 
 require 'test_helper'
 
-class Core::Io::JsonOutputTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
+class Core::Io::JsonOutputTest < ActiveSupport::TestCase
   module BasicMethods
     def object_json(_object, options)
       options[:stream]
     end
   end
 
-  def encoder_for(mappings)
-    Object.new.tap do |encoder|
-      class << encoder
-        extend BasicMethods
-        extend Core::Io::Base::JsonFormattingBehaviour::Output
+  def encoder_for(mappings) # rubocop:todo Metrics/MethodLength
+    Object
+      .new
+      .tap do |encoder|
+        class << encoder
+          extend BasicMethods
+          extend Core::Io::Base::JsonFormattingBehaviour::Output
 
-        def self.json_root
-          'encoded'
+          def self.json_root
+            'encoded'
+          end
         end
       end
-    end.singleton_class.tap { |encoder| encoder.generate_object_to_json_mapping(mappings) }
+      .singleton_class
+      .tap { |encoder| encoder.generate_object_to_json_mapping(mappings) }
   end
   private :encoder_for
 
   def object_to_encode(attributes)
-    OpenStruct.new(attributes.reverse_merge(created_at: 'created_at_now', updated_at: 'updated_at_now'))
+    OpenStruct.new(attributes.reverse_merge(created_at: 'created_at_now', updated_at: 'updated_at_now')) # rubocop:todo Style/OpenStructUse
   end
   private :object_to_encode
 
@@ -145,7 +149,7 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase # rubocop:todo Metrics/
         context 'simple values' do
           teardown do
             encoder_for('level1.attribute' => 'json').object_json(
-              object_to_encode(level1: OpenStruct.new(attribute: @value)),
+              object_to_encode(level1: OpenStruct.new(attribute: @value)), # rubocop:todo Style/OpenStructUse
               @options
             )
 
@@ -166,8 +170,8 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase # rubocop:todo Metrics/
         should 'output multiple values' do
           encoder_for('level1.attribute1' => 'nested.json1', 'level2.attribute2' => 'nested.json2').object_json(
             object_to_encode(
-              level1: OpenStruct.new(attribute1: 'value1'),
-              level2: OpenStruct.new(attribute2: 'value2')
+              level1: OpenStruct.new(attribute1: 'value1'), # rubocop:todo Style/OpenStructUse
+              level2: OpenStruct.new(attribute2: 'value2') # rubocop:todo Style/OpenStructUse
             ),
             @options
           )
@@ -178,8 +182,8 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase # rubocop:todo Metrics/
         should 'output multiple ungrouped values' do
           encoder_for('level1.attribute1' => 'nested1.json1', 'level2.attribute2' => 'nested2.json2').object_json(
             object_to_encode(
-              level1: OpenStruct.new(attribute1: 'value1'),
-              level2: OpenStruct.new(attribute2: 'value2')
+              level1: OpenStruct.new(attribute1: 'value1'), # rubocop:todo Style/OpenStructUse
+              level2: OpenStruct.new(attribute2: 'value2') # rubocop:todo Style/OpenStructUse
             ),
             @options
           )

@@ -3,7 +3,7 @@
 require 'test_helper'
 
 module Studies
-  class AssetGroupsControllerTest < ActionController::TestCase # rubocop:todo Metrics/ClassLength
+  class AssetGroupsControllerTest < ActionController::TestCase
     @assetgroup_count = AssetGroup.count
     @study_count = Study.count
 
@@ -128,7 +128,6 @@ module Studies
           @controller.stubs(:current_user).returns(@user)
           @asset = create :child_plate
           barcode_printer = create :barcode_printer
-          LabelPrinter::PmbClient.expects(:get_label_template_by_name).returns('data' => [{ 'id' => 15 }])
 
           RestClient.expects(:post)
 

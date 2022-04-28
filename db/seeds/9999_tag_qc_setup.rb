@@ -34,35 +34,37 @@ ActiveRecord::Base.transaction do
   purpose_order.each { |child_settings| child_settings.delete(:class).create(child_settings.merge(shared)) }
 end
 
-SequencingPipeline.create!(name: 'MiSeq sequencing QC') do |pipeline|
-  pipeline.sorter = 2
-  pipeline.automated = false
-  pipeline.active = true
+SequencingPipeline
+  .create!(name: 'MiSeq sequencing QC') do |pipeline|
+    pipeline.sorter = 2
+    pipeline.active = true
 
-  pipeline.request_types << rt
+    pipeline.request_types << rt
 
-  pipeline.workflow =
-    Workflow.create!(name: 'MiSeq sequencing QC') do |workflow|
-      workflow.locale = 'External'
-      workflow.item_limit = 1
-    end.tap do |workflow|
-      t1 = SetDescriptorsTask.create!(name: 'Specify Dilution Volume', sorted: 0, workflow: workflow)
-      Descriptor.create!(kind: 'Text', sorter: 1, name: 'Concentration', task: t1)
-      t2 = SetDescriptorsTask.create!(name: 'Cluster Generation', sorted: 0, workflow: workflow)
-      Descriptor.create!(kind: 'Text', sorter: 1, name: 'Chip barcode', task: t2)
-      Descriptor.create!(kind: 'Text', sorter: 2, name: 'Cartridge barcode', task: t2)
-      Descriptor.create!(kind: 'Text', sorter: 3, name: 'Operator', task: t2)
-      Descriptor.create!(kind: 'Text', sorter: 4, name: 'Machine name', task: t2)
-    end
-end.tap do |pipeline|
-  create_request_information_types(
-    pipeline,
-    'fragment_size_required_from',
-    'fragment_size_required_to',
-    'library_type',
-    'read_length'
-  )
-end
+    pipeline.workflow =
+      Workflow
+        .create!(name: 'MiSeq sequencing QC') do |workflow|
+          workflow.locale = 'External'
+          workflow.item_limit = 1
+        end
+        .tap do |workflow|
+          t1 = SetDescriptorsTask.create!(name: 'Specify Dilution Volume', sorted: 0, workflow: workflow)
+          Descriptor.create!(kind: 'Text', sorter: 1, name: 'Concentration', task: t1)
+          t2 = SetDescriptorsTask.create!(name: 'Cluster Generation', sorted: 0, workflow: workflow)
+          Descriptor.create!(kind: 'Text', sorter: 1, name: 'Chip barcode', task: t2)
+          Descriptor.create!(kind: 'Text', sorter: 2, name: 'Cartridge barcode', task: t2)
+          Descriptor.create!(kind: 'Text', sorter: 4, name: 'Machine name', task: t2)
+        end
+  end
+  .tap do |pipeline|
+    create_request_information_types(
+      pipeline,
+      'fragment_size_required_from',
+      'fragment_size_required_to',
+      'library_type',
+      'read_length'
+    )
+  end
 
 SubmissionTemplate.create!(
   name: 'MiSeq for TagQC',

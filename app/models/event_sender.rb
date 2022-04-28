@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class EventSender # rubocop:todo Style/Documentation
   def self.send_fail_event(request, reason, comment, batch_id)
     send_state_event('fail', request, reason, comment, batch_id)

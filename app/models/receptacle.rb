@@ -1,9 +1,10 @@
+# frozen_string_literal: true
 # A receptacle is a container for {Aliquot aliquots}, they are associated with
 # {Labware}, which represents the physical object which moves round the lab.
 # A {Labware} may have a single {Receptacle}, such as in the case of a {Tube}
 # or multiple, in the case of a {Plate}.
 # Work can be {Request requested} on a particular receptacle.
-class Receptacle < Asset # rubocop:todo Metrics/ClassLength
+class Receptacle < Asset
   include Uuid::Uuidable
   include Commentable
   include Transfer::State
@@ -66,11 +67,11 @@ class Receptacle < Asset # rubocop:todo Metrics/ClassLength
   end
 
   self.stock_message_template = 'TubeStockResourceIO'
-  self.sample_partial = 'assets/samples_partials/asset_samples'.freeze
+  self.sample_partial = 'assets/samples_partials/asset_samples'
 
   has_many :messengers, as: :target, inverse_of: :target
   delegate :scanned_in_date, to: :labware
-  has_one :spiked_in_buffer, through: :labware
+  delegate :spiked_in_buffer, to: :labware
 
   has_many :transfer_requests_as_source, class_name: 'TransferRequest', foreign_key: :asset_id
   has_many :transfer_requests_as_target, class_name: 'TransferRequest', foreign_key: :target_asset_id
@@ -179,6 +180,9 @@ class Receptacle < Asset # rubocop:todo Metrics/ClassLength
 
   delegate :tag_count_name, to: :most_tagged_aliquot, allow_nil: true
 
+  # def map_description
+  delegate :description, to: :map, prefix: true, allow_nil: true
+
   def total_comment_count
     comments.size + labware_comment_count
   end
@@ -264,10 +268,10 @@ class Receptacle < Asset # rubocop:todo Metrics/ClassLength
     tags = { tag: tag, tag2: tag2 }.compact
     return if tags.empty?
     raise StandardError, 'Cannot tag an empty asset' if aliquots.empty?
-    raise StandardError, 'Cannot tag multiple samples' if aliquots.size > 1
 
-    aliquots.first.update!(tags)
+    aliquots.each { |a| a.update!(tags) }
   end
+
   alias attach_tags attach_tag
 
   # Contained samples also works on eg. plate
@@ -323,6 +327,18 @@ class Receptacle < Asset # rubocop:todo Metrics/ClassLength
 
   def role
     (requests_as_source.first || aliquot_requests.first).role
+  end
+
+  # Groups the requests as target by the same source and returns the most recent request
+  # for each source
+  #
+  # @return [Array<Request>] List of requests as target that pass the condition for the current receptacle
+  def most_recent_requests_as_target_group_by_same_source
+    # Sorts all requests by id, and then index_by will create an object
+    # that will store for every asset_id only the last request (request with higher id),
+    # ignoring any other request for the same asset_id.
+    # From this object we return the list of values, which is an already flattened list
+    requests_as_target.order(id: :asc).index_by(&:asset_id).values
   end
 
   private

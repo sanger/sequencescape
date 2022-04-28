@@ -1,5 +1,6 @@
+# frozen_string_literal: true
 # Controls API V1 {::Core::Endpoint::Base endpoints} for QcableCreators
-class ::Endpoints::QcableCreators < ::Core::Endpoint::Base
+class Endpoints::QcableCreators < ::Core::Endpoint::Base
   model { action(:create, to: :standard_create!) }
 
   instance do

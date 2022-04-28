@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Property of {Project} set on {Project::Metadata}
 # High level organisational area for funding
 class BudgetDivision < ApplicationRecord
@@ -18,6 +19,8 @@ class BudgetDivision < ApplicationRecord
     end
 
     def budget_division
+      # When this is called during initialisation of a Project, it is already set (therefore goes down 'super' route)
+      # - due to the database-level default on projects table (budget_division_id = 1)
       super || BudgetDivision.unallocated
     end
   end

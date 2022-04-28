@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Base class to control generating XML for accessioning with the ENA or EGA
 # @see AccessionService
 class Accessionable::Base

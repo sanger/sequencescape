@@ -2,9 +2,7 @@
 
 # This may create invalid UUID external_id values but it means that we don't have to conform to the
 # standard in our features.
-# rubocop:todo Metrics/PerceivedComplexity
-# rubocop:todo Metrics/MethodLength
-# rubocop:todo Metrics/AbcSize
+# rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
 def recursive_diff(h1, h2) # rubocop:todo Metrics/CyclomaticComplexity
   if h1.is_a?(Hash) && h2.is_a?(Hash)
     result = {}
@@ -27,9 +25,7 @@ def recursive_diff(h1, h2) # rubocop:todo Metrics/CyclomaticComplexity
   end
   h1
 end
-# rubocop:enable Metrics/AbcSize
-# rubocop:enable Metrics/MethodLength
-# rubocop:enable Metrics/PerceivedComplexity
+# rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
 def assert_hash_equal(h1, h2, *args)
   d1 = recursive_diff(h1, h2)
@@ -116,7 +112,9 @@ When %r{^I make an authorised (GET|DELETE) (?:(?:for|of) )?the API path "(\/[^"]
   api_request(action, path, nil) { |headers| headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = 'cucumber' }
 end
 
+# rubocop:todo Layout/LineLength
 When %r{^I make an authorised (POST|PUT) with the following JSON to the API path "(\/[^"]*)":$} do |action, path, serialized_json|
+  # rubocop:enable Layout/LineLength
   api_request(action, path, serialized_json) { |headers| headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = 'cucumber' }
 end
 
@@ -235,10 +233,6 @@ Then /^the HTTP "([^"]+)" should be "([^"]+)"$/ do |header, value|
   assert_equal(value, page.driver.response_headers[header])
 end
 
-Then /^the HTTP response body should be empty$/ do
-  assert(page.source.blank?, 'The response body is not blank')
-end
-
 Then /^the JSON should not contain "([^"]+)" within any element of "([^"]+)"$/ do |name, path|
   json = decode_json(page.source, 'Received')
   target = path.split('.').inject(json) { |s, p| s.try(:[], p) } or
@@ -264,7 +258,9 @@ Given /^(\d+) samples exist with the core name "([^"]+)" and IDs starting at (\d
   step("#{count} samples exist with names based on \"#{name}\" and IDs starting at #{id}")
 end
 
+# rubocop:todo Layout/LineLength
 Given /^the (library tube|plate) "([^"]+)" is a child of the (sample tube|plate) "([^"]+)"$/ do |child_model, child_name, parent_model, parent_name|
+  # rubocop:enable Layout/LineLength
   parent = parent_model.gsub(/\s+/, '_').classify.constantize.find_by(name: parent_name) or
     raise StandardError, "Cannot find the #{parent_model} #{parent_name.inspect}"
   child = child_model.gsub(/\s+/, '_').classify.constantize.find_by(name: child_name) or

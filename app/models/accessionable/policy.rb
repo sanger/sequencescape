@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Represents policy information about who will have access to information associatied
 # with manages (EGA) {Accessionable::Study studies}
 # Comprised of a {Accessionable::Dac DAC} and a URL.

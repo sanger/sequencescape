@@ -4,12 +4,7 @@ require 'rails_helper'
 
 RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: true, sample_manifest: true do
   let(:range_list) do
-    build(
-      :range_list,
-      ranges_data: {
-        FactoryBot.attributes_for(:validation)[:range_name] => FactoryBot.attributes_for(:range)
-      }
-    )
+    build(:range_list, ranges_data: { attributes_for(:validation)[:range_name] => attributes_for(:range) })
   end
   let(:worksheet) { Axlsx::Workbook.new.add_worksheet }
   let(:options) do
@@ -20,10 +15,10 @@ RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: 
       value: 10,
       number: 125,
       attribute: :barcode,
-      validation: FactoryBot.attributes_for(:validation),
+      validation: attributes_for(:validation),
       conditional_formattings: {
-        simple: FactoryBot.attributes_for(:conditional_formatting),
-        complex: FactoryBot.attributes_for(:conditional_formatting_with_formula)
+        simple: attributes_for(:conditional_formatting),
+        complex: attributes_for(:conditional_formatting_with_formula)
       }
     }
   end
@@ -37,7 +32,6 @@ RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: 
   end
 
   it 'must have a name' do
-    # rubocop:todo RSpec/AggregateExamples
     expect(described_class.new(options).name).to eq(options[:name])
   end
 
@@ -46,18 +40,19 @@ RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: 
   end
 
   it 'has a type' do
-    # rubocop:todo RSpec/AggregateExamples
     expect(described_class.new(options).type).to eq(options[:type])
   end
 
   it 'has a value' do
-    # rubocop:todo RSpec/AggregateExamples
     expect(described_class.new(options).value).to eq(options[:value])
     expect(described_class.new(options.except(:value)).value).to be_nil
   end
 
   it 'is comparable' do
+    # rubocop:todo RSpec/IdenticalEqualityAssertion
     expect(described_class.new(options)).to eq(described_class.new(options))
+
+    # rubocop:enable RSpec/IdenticalEqualityAssertion
     expect(described_class.new(options.merge(heading: 'SOME OTHER NAME'))).not_to eq(described_class.new(options))
   end
 
@@ -69,7 +64,6 @@ RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: 
   end
 
   it 'has a number' do
-    # rubocop:todo RSpec/AggregateExamples
     expect(described_class.new(options).number).to eq(options[:number])
   end
 
@@ -94,6 +88,13 @@ RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: 
     expect(metadata.donor_id).to eq('1234')
   end
 
+  it 'can update the field targets by :updates' do
+    column = described_class.new(options.merge(heading: 'DONOR ID', name: :legacy_donor_id, updates: :donor_id))
+    metadata = Sample::Metadata.new
+    column.update_metadata(metadata, '1234')
+    expect(metadata.donor_id).to eq('1234')
+  end
+
   context 'with no validation' do
     let(:column) { described_class.new(options.except(:validation)) }
 
@@ -102,7 +103,6 @@ RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: 
     end
 
     it 'will have a range name' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(column.range_name).to be_present
     end
 
@@ -135,19 +135,16 @@ RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: 
     end
 
     it 'sets the reference' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(column.range).to eq(range)
     end
 
     it 'modifies the validation' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(column.validation.formula1).to eq(range_list.find_by(column.range_name).absolute_reference)
       expect(worksheet.data_validation_rules).to be_all { |rule| rule.sqref == column.range.reference }
       expect(column.validation).to be_saved
     end
 
     it 'modifies the conditional formatting' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(column.conditional_formattings.count).to eq(options[:conditional_formattings].length)
       expect(column.conditional_formattings).to be_saved
     end
@@ -159,6 +156,22 @@ RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: 
       expect(dupped.range).not_to eq(range)
       expect(dupped.validation).not_to be_saved
       expect(dupped.conditional_formattings).not_to be_saved
+    end
+  end
+
+  describe '#style' do
+    subject { described_class.new({ **options, unlocked: unlocked }).style }
+
+    context 'when locked' do
+      let(:unlocked) { false }
+
+      it { is_expected.to eq %i[locked string] }
+    end
+
+    context 'when unlocked' do
+      let(:unlocked) { true }
+
+      it { is_expected.to eq %i[unlocked string] }
     end
   end
 

@@ -17,7 +17,7 @@ class Core::Io::Json::GrammarTest < ActiveSupport::TestCase
       end
 
       should 'stream nested attribute value' do
-        @object.expects(:root).returns(OpenStruct.new(leaf: 'value'))
+        @object.expects(:root).returns(OpenStruct.new(leaf: 'value')) # rubocop:todo Style/OpenStructUse
         @stream.expects(:attribute).with(:attribute_name, 'value', :options)
       end
     end
@@ -26,7 +26,7 @@ class Core::Io::Json::GrammarTest < ActiveSupport::TestCase
       target = Core::Io::Json::Grammar::Leaf.new(:attribute_name, ['leaf'])
       stream = mock('Stream')
       stream.expects(:attribute).with(:attribute_name, 'value', :options)
-      target.call(OpenStruct.new(leaf: 'value'), :options, stream)
+      target.call(OpenStruct.new(leaf: 'value'), :options, stream) # rubocop:todo Style/OpenStructUse
     end
   end
 
@@ -40,10 +40,10 @@ class Core::Io::Json::GrammarTest < ActiveSupport::TestCase
       stream.expects(:block).with(:attribute_name).yields(nested_stream)
 
       children =
-        ['Child 1', 'Child 2'].map do |name|
+        ['Child 1', 'Child 2'].to_h do |name|
           child = mock(name).tap { |child| child.expects(:call).with(:object, :options, nested_stream) }
           [name, child]
-        end.to_h
+        end
 
       target = Core::Io::Json::Grammar::Node.new(:attribute_name, children)
       target.call(:object, :options, stream)
@@ -57,7 +57,7 @@ class Core::Io::Json::GrammarTest < ActiveSupport::TestCase
 
     context 'with object' do
       setup do
-        @object = OpenStruct.new(created_at: 'now', updated_at: 'tomorrow')
+        @object = OpenStruct.new(created_at: 'now', updated_at: 'tomorrow') # rubocop:todo Style/OpenStructUse
         @handler = mock('Handler')
       end
 
@@ -70,23 +70,12 @@ class Core::Io::Json::GrammarTest < ActiveSupport::TestCase
         options = { handled_by: @handler }
 
         children =
-          ['Child 1', 'Child 2'].map do |name|
+          ['Child 1', 'Child 2'].to_h do |name|
             child = mock(name).tap { |child| child.expects(:call).with(@object, options, nested_stream) }
             [name, child]
-          end.to_h
-        target = Core::Io::Json::Grammar::Root.new(OpenStruct.new(json_root: :root_json), children)
+          end
+        target = Core::Io::Json::Grammar::Root.new(OpenStruct.new(json_root: :root_json), children) # rubocop:todo Style/OpenStructUse
         target.call(@object, options, stream)
-      end
-
-      should 'nest children within a block' do
-        # Nothing needed in here at the moment
-      end
-
-      should 'attempt lookup of action handling' do
-        @object.stubs(:uuid).returns(:object_uuid)
-        # This was refactored and no longer happens. I can't quite track through the changes to work out exactly what was being tested.
-        # I think the behaviour has been pushed off onto encoding of the stream.
-        # @handler.expects(:endpoint_for_object, @object).raises(Core::Endpoint::BasicHandler::EndpointLookup::MissingEndpoint)
       end
     end
   end

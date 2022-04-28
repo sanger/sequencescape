@@ -55,7 +55,7 @@ class QcResultFactory
 
     validate :check_asset_identifier, :check_asset, :check_qc_result
 
-    def initialize(attributes = {}) # rubocop:todo Metrics/MethodLength
+    def initialize(attributes = {})
       super(attributes)
 
       @asset = build_asset

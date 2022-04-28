@@ -10,7 +10,7 @@ Given /^I finish the last started batch$/ do
   visit finish_batch_path(batch)
 end
 
-When /^I get the XML for the last batch$/ do ||
+When /^I get the XML for the last batch$/ do
   batch = Batch.last
   visit(batch_path(batch, format: :xml))
 end

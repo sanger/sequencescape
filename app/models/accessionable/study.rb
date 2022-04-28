@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Handles submission of {Study} information to the EGA or ENA
 # A study gathers together multiple {Accessionable::Sample samples} and essentially
 # describes why they are being sequenced. It should have a 1 to 1 mapping with Sequencescape

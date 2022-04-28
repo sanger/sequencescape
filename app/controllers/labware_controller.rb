@@ -5,8 +5,7 @@
 class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLength
   before_action :discover_asset, only: %i[show edit update summary print_assets print history]
 
-  # rubocop:todo Metrics/MethodLength
-  def index # rubocop:todo Metrics/AbcSize
+  def index # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     if params[:study_id]
       @study = Study.find(params[:study_id])
       @assets = @study.assets_through_aliquots.order(:name).page(params[:page])
@@ -29,8 +28,6 @@ class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
   def show
     @source_plates = @asset.source_plates
     respond_to do |format|
@@ -52,7 +49,6 @@ class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
   end
 
-  # rubocop:todo Metrics/MethodLength
   def update # rubocop:todo Metrics/AbcSize
     respond_to do |format|
       if @asset.update(labware_params.merge(params.to_unsafe_h.fetch(:lane, {})))
@@ -69,8 +65,6 @@ class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLeng
       end
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def destroy
     @asset.destroy
@@ -122,7 +116,6 @@ class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLeng
     @asset = Plate.find(params[:id])
   end
 
-  # rubocop:todo Metrics/MethodLength
   def lookup # rubocop:todo Metrics/AbcSize
     return unless params[:asset] && params[:asset][:barcode]
 
@@ -143,8 +136,6 @@ class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLeng
       end
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def find_by_barcode; end
 

@@ -15,7 +15,6 @@ class CreatorTest < ActiveSupport::TestCase
     barcode = create(:barcode)
     PlateBarcode.stubs(:create).returns(barcode)
 
-    LabelPrinter::PmbClient.expects(:get_label_template_by_name).returns('data' => [{ 'id' => 15 }])
     scanned_user = create :user
     create_asset_group = 'No'
 
@@ -56,7 +55,9 @@ class CreatorTest < ActiveSupport::TestCase
     parent.wells.each_with_index do |well, i|
       matching_aliquots = well.aliquots.first.matches?(child.wells[i].aliquots.first)
       assert matching_aliquots,
+             # rubocop:todo Layout/LineLength
              "Aliquots do not match in #{well.map_description}: #{well.aliquots.first} !~= #{child.wells[i].aliquots.first}"
+      # rubocop:enable Layout/LineLength
     end
   end
 

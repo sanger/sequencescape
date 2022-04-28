@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This contains details of the release of the application
 # to remove hard coding throughout the application
 
@@ -6,6 +7,6 @@
 
 require 'ostruct'
 
-RELEASE = OpenStruct.new
+RELEASE = OpenStruct.new # rubocop:todo Style/OpenStructUse
 
 RELEASE.api_version = '0.6' # which API ?

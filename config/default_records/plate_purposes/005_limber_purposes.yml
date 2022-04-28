@@ -1,0 +1,49 @@
+# The values here have been extracted from production to help seed the
+# dev environment, such that the limber request types can be registered.
+# For more details of the pipelines these plates are involved in, see
+# Limber
+---
+# 96 well input plates
+LB Cherrypick: &limber_input_96
+  type: PlatePurpose::Input
+  stock_plate: true
+LBR Cherrypick: *limber_input_96
+scRNA Stock: *limber_input_96
+GnT Stock: *limber_input_96
+GBS-96 Stock: *limber_input_96
+LBB Cherrypick: *limber_input_96
+LBC Stock: *limber_input_96
+LDS Cherrypick: *limber_input_96
+LTN Cherrypick: *limber_input_96
+LHR RT: *limber_input_96
+LTHR RT: *limber_input_96
+LTHR Cherrypick: *limber_input_96
+PF Cherrypicked:
+  <<: *limber_input_96
+  default_state: passed
+LDS Stock:
+  <<: *limber_input_96
+  cherrypickable_target: false
+LTN Stock:
+  <<: *limber_input_96
+  cherrypickable_target: false
+
+# 384 well input plates
+GBS Stock: &limber_input_384
+  type: PlatePurpose::Input
+  stock_plate: true
+  size: 384
+scRNA-384 Stock: *limber_input_384
+LTHR-384 RT: *limber_input_384
+LHR-384 RT:
+  <<: *limber_input_384
+  barcode_printer_type: "384 Well Plate"
+
+# Cherrypicked in the limber pipelines, rather than on the Tecans. Forms the basis
+# for the chromium bespoke pipeline.
+LBC Cherrypick:
+  cherrypickable_target: false
+# Towards the end of the WGS process, forms the attachment point for the multiplexing
+# requests
+LB Lib PCR-XP:
+  stock_plate: false

@@ -38,9 +38,9 @@ describe Tube, type: :model do
       tube.receptacles.destroy_all
       tube.destroy
 
-      expect(described_class.exists?(tube.id)).to eq(false)
-      expect(RackedTube.exists?(racked_tube.id)).to eq(false)
-      expect(TubeRack.exists?(tube_rack.id)).to eq(true)
+      expect(described_class.exists?(tube.id)).to be(false)
+      expect(RackedTube.exists?(racked_tube.id)).to be(false)
+      expect(TubeRack.exists?(tube_rack.id)).to be(true)
     end
   end
 
@@ -48,7 +48,7 @@ describe Tube, type: :model do
     let(:scanned_in_asset) { create(:tube) }
     let(:unscanned_in_asset) { create(:tube) }
 
-    setup do
+    before do
       create(
         :event,
         content: Time.zone.today.to_s,
@@ -63,7 +63,6 @@ describe Tube, type: :model do
     end
 
     it "returns nothing if it hasn't been scanned in" do
-      # rubocop:todo RSpec/AggregateExamples
       expect(unscanned_in_asset.scanned_in_date).to be_blank
     end
   end

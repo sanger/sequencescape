@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Groups a set of {Receptacle receptacles} together
 # Primarily used to group together receptacles as part of an {Order order}.
 class AssetGroup < ApplicationRecord

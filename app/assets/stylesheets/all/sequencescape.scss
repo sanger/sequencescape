@@ -1364,39 +1364,6 @@ td.orange {
   border: 0;
 }
 
-div.characterisation {
-  clear: both;
-  padding: 0 15px 8px 15px;
-  margin: 0 10px 20px 10px;
-  display: inline-block;
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  border: 1px solid #c0c0c0;
-  background: #ebf4ff;
-  background-image: -moz-linear-gradient(top, #dfe7ef, #f1f8ff, #dfe7ef);
-  color: #3f3f3f;
-}
-
-div.characterisation h2 {
-  color: #222;
-}
-
-div.characterisation fieldset {
-  -moz-border-radius: 3px;
-  -webkit-border-radius: 3px;
-  border-radius: 3px;
-  border: 1px solid #c0c0c0;
-}
-
-div.characterisation dl dt,
-div.characterisation dl dd {
-  display: inline-block;
-}
-div.characterisation dl dt:after {
-  content: ":";
-}
-
 #activity-logging {
   width: 100%;
   border: none;

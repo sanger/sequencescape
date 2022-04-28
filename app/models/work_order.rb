@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # A work order groups requests together based on submission and asset
 # providing a unified interface for external applications.
 # It is likely that its behaviour will be extended in future

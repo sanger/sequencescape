@@ -33,12 +33,16 @@ RSpec.describe 'samples/index.html.erb', type: :view do
       it 'renders the withdrawn message for each sample' do
         regexp =
           Regexp.new(
+            # rubocop:todo Layout/LineLength
             "Patient consent has been withdrawn for this sample.*by user.*#{current_user.login}.*at .*#{time.to_formatted_s(:db)}.*",
+            # rubocop:enable Layout/LineLength
             Regexp::MULTILINE
           )
         regexp2 =
           Regexp.new(
+            # rubocop:todo Layout/LineLength
             "Patient consent has been withdrawn for this sample.*by user.*#{current_user.login}.*at .*#{time2.to_formatted_s(:db)}.*",
+            # rubocop:enable Layout/LineLength
             Regexp::MULTILINE
           )
         render
@@ -68,12 +72,16 @@ RSpec.describe 'samples/index.html.erb', type: :view do
       it 'does not render the withdrawn message for each sample' do
         regexp =
           Regexp.new(
+            # rubocop:todo Layout/LineLength
             "Patient consent has been withdrawn for this sample.*by user.*#{current_user.login}.*at .*#{time.to_formatted_s(:db)}.*",
+            # rubocop:enable Layout/LineLength
             Regexp::MULTILINE
           )
         regexp2 =
           Regexp.new(
+            # rubocop:todo Layout/LineLength
             "Patient consent has been withdrawn for this sample.*by user.*#{current_user.login}.*at .*#{time2.to_formatted_s(:db)}.*",
+            # rubocop:enable Layout/LineLength
             Regexp::MULTILINE
           )
         render

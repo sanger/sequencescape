@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class StudyReportsController < ApplicationController # rubocop:todo Style/Documentation
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -14,7 +15,6 @@ class StudyReportsController < ApplicationController # rubocop:todo Style/Docume
     create
   end
 
-  # rubocop:todo Metrics/MethodLength
   def create # rubocop:todo Metrics/AbcSize
     study = Study.find_by(id: params[:study_report][:study])
     study_report = StudyReport.create!(study: study, user: @current_user)
@@ -35,8 +35,6 @@ class StudyReportsController < ApplicationController # rubocop:todo Style/Docume
       end
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def show
     study_report = StudyReport.find(params[:id])

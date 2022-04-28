@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class EventTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
+class EventTest < ActiveSupport::TestCase
   context 'An Event' do
     setup { Study.destroy_all }
     should belong_to :eventful
@@ -134,7 +134,8 @@ class EventTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
       end
 
       # pass message
-      # { :eventful_id => request_id, :eventful_type => 'Request', :family => "pass", :content => reason, :message => comment, :identifier => batch_id, :descriptor_key => "pass" }
+      # { :eventful_id => request_id, :eventful_type => 'Request', :family => "pass", :content => reason,
+      #   :message => comment, :identifier => batch_id, :descriptor_key => "pass" }
       context 'a pass message' do
         setup do
           @requests.each do |request|
@@ -207,7 +208,8 @@ class EventTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
       end
 
       # fail message
-      # { :eventful_id => request_id, :eventful_type => 'Request', :family => "fail", :content => reason, :message => comment, :identifier => batch_id, :descriptor_key => "failure" }
+      # { :eventful_id => request_id, :eventful_type => 'Request', :family => "fail", :content => reason,
+      # :message => comment, :identifier => batch_id, :descriptor_key => "failure" }
       context 'fail message' do
         setup do
           @requests.each do |request|
@@ -217,9 +219,6 @@ class EventTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
 
           @request_for_control.state = 'started'
           @request_with_no_attempts = @requests.first
-
-          #          @failure_property_def = PropertyDefinition(:name => "Failure", :key => "failure", :relates_to => Request.to_s)
-          #          @pass_property_def = PropertyDefinition(:name => "Pass", :key => "pass", :relates_to => Request.to_s)
 
           @lib_prep_event =
             Event.create(

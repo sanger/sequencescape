@@ -295,10 +295,14 @@ Given /^I create study "([^"]*)" with faculty sponsor "([^"]*)"$/ do |study_name
   step("I select \"#{faculty_sponsor}\" from \"Faculty Sponsor\"")
   step('I choose "Yes" from "Do any of the samples in this study contain human DNA?"')
   step(
+    # rubocop:todo Layout/LineLength
     'I choose "No" from "Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?"'
+    # rubocop:enable Layout/LineLength
   )
   step(
+    # rubocop:todo Layout/LineLength
     'I choose "Yes" from "Are all the samples to be used in this study commercially available, unlinked anonymised cell-lines?"'
+    # rubocop:enable Layout/LineLength
   )
   step('I choose "Open (ENA)" from "What is the data release strategy for this study?"')
   step('I press "Create"')
@@ -310,6 +314,12 @@ end
 
 Then /^the faculty sponsor index page should look like:$/ do |expected_results_table|
   expected_results_table.diff!(table(fetch_table('table#faculty_sponsor_list')))
+end
+
+Then /^the faculty sponsor index page should include:$/ do |expected_results_table|
+  # This version of `diff!` doesn't see additional rows in the 'actual table' as an issue
+  # Necessary because our Record Loader adds extra data that the original Cucumber test doesn't expect
+  expected_results_table.diff!(table(fetch_table('table#faculty_sponsor_list')), surplus_row: false)
 end
 
 When /^I have an? (managed|open) study without a data release group called "(.*?)"$/ do |managed, study_name|

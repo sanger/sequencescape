@@ -6,7 +6,17 @@ class Timecop # rubocop:todo Style/Documentation
   class << self
     # Block the use of Timecop.freeze as it upsets the Capybara...
     def freeze_with_warning(_time)
-      raise "\n\n#{'*' * 90}\nTimecop.freeze() interferes with Capybara's javascript timeouts.\nCould you either use Timecop.travel instead or not use JavaScript in this scenario?  \n\n#{'*' * 90}\n\n"
+      raise <<~EXCEPTION
+
+
+        #{'*' * 90}
+
+        Timecop.freeze() interferes with Capybara's javascript timeouts.
+        Could you either use Timecop.travel instead or not use JavaScript in this scenario?
+
+        #{'*' * 90}
+
+      EXCEPTION
     end
   end
 end

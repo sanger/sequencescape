@@ -19,7 +19,7 @@ class MoveConsentWithdrawnFromSamplesToSampleMetadata < ActiveRecord::Migration[
     [true, false].include? val
   end
 
-  def create_recovery_file! # rubocop:todo Metrics/AbcSize
+  def create_recovery_file!
     say "recovery file: #{backup_file_path}"
     backup_data = []
     sample_id_and_consent_withdrawn.each do |sample|
@@ -29,7 +29,7 @@ class MoveConsentWithdrawnFromSamplesToSampleMetadata < ActiveRecord::Migration[
 
       backup_data.push(tuple)
     end
-    File.open(backup_file_path, 'w') { |file| file.write(backup_data.to_json) }
+    File.write(backup_file_path, backup_data.to_json)
   end
 
   def recovery_data
@@ -38,7 +38,7 @@ class MoveConsentWithdrawnFromSamplesToSampleMetadata < ActiveRecord::Migration[
     data_in_file
   end
 
-  def check_recovery_data!(data_in_file) # rubocop:todo Metrics/CyclomaticComplexity
+  def check_recovery_data!(data_in_file) # rubocop:disable Metrics/CyclomaticComplexity
     raise 'Nothing read' if data_in_file.nil?
     raise 'Not a list' unless data_in_file.is_a?(Array)
     raise 'Empty list' if data_in_file.empty?
@@ -52,7 +52,7 @@ class MoveConsentWithdrawnFromSamplesToSampleMetadata < ActiveRecord::Migration[
     end
   end
 
-  def up # rubocop:todo Metrics/AbcSize
+  def up # rubocop:disable Metrics/AbcSize
     ActiveRecord::Base.transaction do
       Sample.reset_column_information
       Sample::Metadata.reset_column_information
@@ -61,8 +61,10 @@ class MoveConsentWithdrawnFromSamplesToSampleMetadata < ActiveRecord::Migration[
       data_in_file = recovery_data
       check_recovery_data!(data_in_file)
 
-      # Consent withdrawn in sample metadata should not be in use at now but if it had any values all of them are reset to false
-      # The right value for consent withdrawn before this migration is in samples, so the next steps will copy that value
+      # Consent withdrawn in sample metadata should not be in use at now but if it had any values all of them are reset
+      # to false
+      # The right value for consent withdrawn before this migration is in samples, so the next steps will copy that
+      # value
       Sample::Metadata.where(consent_withdrawn: true).update_all(consent_withdrawn: false)
 
       num_read = 0

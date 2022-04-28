@@ -3,7 +3,7 @@
 require './test/test_helper'
 require 'csv'
 
-class QuantParserTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
+class QuantParserTest < ActiveSupport::TestCase
   def read_file(filename)
     content = nil
     File.open(filename, 'r') { |fd| content = fd.read }

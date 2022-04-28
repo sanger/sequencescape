@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class SampleManifestUploadWithTagSequencesController < ApplicationController # rubocop:todo Style/Documentation
   before_action :login_required
 
@@ -5,45 +6,38 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController # r
     prepare_manifest_pagination
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def create # rubocop:todo Metrics/AbcSize
+  def create
     if params[:upload].present?
-      @uploader =
-        SampleManifest::Uploader.new(
-          params[:upload],
-          SampleManifestExcel.configuration,
-          current_user,
-          params[:override]
-        )
-      if @uploader.valid?
-        if @uploader.run!
-          flash[:notice] = 'Sample manifest successfully uploaded.'
-          redirect_target =
-            # rubocop:todo Metrics/BlockNesting
-            (@uploader.study.present? ? sample_manifests_study_path(@uploader.study) : sample_manifests_path)
+      @uploader = create_uploader
 
-          # rubocop:enable Metrics/BlockNesting
-          redirect_to redirect_target
-        else
-          flash.now[:error] = 'Your sample manifest couldn\'t be uploaded.'
-          prepare_manifest_pagination
-          render :new
-        end
+      if @uploader.run!
+        success('Sample manifest successfully uploaded.')
       else
-        flash.now[:error] = 'Your sample manifest couldn\'t be uploaded. See errors below.'
-        prepare_manifest_pagination
-        render :new
+        error('Your sample manifest couldn\'t be uploaded.')
       end
     else
-      flash.now[:error] = 'No file attached'
-      prepare_manifest_pagination
-      render :new
+      error('No file attached')
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
+  def create_uploader
+    SampleManifest::Uploader.new(params[:upload], SampleManifestExcel.configuration, current_user, params[:override])
+  end
 
-  def prepare_manifest_pagination # rubocop:todo Metrics/MethodLength
+  def success(message)
+    flash[:notice] = message
+    redirect_target = (@uploader.study.present? ? sample_manifests_study_path(@uploader.study) : sample_manifests_path)
+
+    redirect_to redirect_target
+  end
+
+  def error(message)
+    flash.now[:error] = message
+    prepare_manifest_pagination
+    render :new
+  end
+
+  def prepare_manifest_pagination
     pending_sample_manifests =
       SampleManifest
         .pending_manifests

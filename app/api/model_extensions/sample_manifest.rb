@@ -1,7 +1,8 @@
+# frozen_string_literal: true
 # Included in {SampleManifest}
 # The intent of this file was to provide methods specific to the V1 API
 module ModelExtensions::SampleManifest
-  def self.included(base) # rubocop:todo Metrics/MethodLength
+  def self.included(base)
     base.class_eval do
       scope :include_samples,
             -> {

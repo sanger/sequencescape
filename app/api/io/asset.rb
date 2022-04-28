@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Controls API V1 IO for {::Asset}
 # @note {Asset} is deprecated and has now been split into {Labware} and {Receptacle}
 class Io::Asset < Core::Io::Base

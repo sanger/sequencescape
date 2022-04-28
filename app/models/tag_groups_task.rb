@@ -1,14 +1,6 @@
-class TagGroupsTask < Task # rubocop:todo Style/Documentation
-  def partial
-    'tag_groups_batches'
-  end
+# frozen_string_literal: true
 
-  def render_task(workflow, params)
-    super
-    workflow.render_tag_groups_task(self, params)
-  end
-
-  def do_task(_workflow, _params)
-    true
-  end
+# Task used in defunct library prep pipelines, can be removed once the associated
+# tasks are disabled
+class TagGroupsTask < Task
 end

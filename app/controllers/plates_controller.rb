@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class PlatesController < ApplicationController # rubocop:todo Style/Documentation
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -85,7 +86,6 @@ class PlatesController < ApplicationController # rubocop:todo Style/Documentatio
     @studies = Study.alphabetical
   end
 
-  # rubocop:todo Metrics/MethodLength
   def create_sample_tubes # rubocop:todo Metrics/AbcSize
     barcode_printer = BarcodePrinter.find(params[:plates][:barcode_printer])
     barcode_array = params[:plates][:source_plates].scan(/\w+/)
@@ -110,8 +110,6 @@ class PlatesController < ApplicationController # rubocop:todo Style/Documentatio
       end
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def fluidigm_file
     if logged_in?

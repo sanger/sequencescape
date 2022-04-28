@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # @note This is not namespaced to assist with exposure via the API
 class LibraryEvent < BroadcastEvent
   def event_type

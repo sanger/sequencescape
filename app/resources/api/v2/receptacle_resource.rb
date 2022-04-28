@@ -5,35 +5,18 @@ module Api
     # Provides a JSON API representation of a receptacle
     # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
     class ReceptacleResource < BaseResource
+      # We import most receptacle shared behaviour, this includes associations,
+      # attributes and filters. By adding behaviour here we ensure that it
+      # is automatically available on well.
+      include Api::V2::SharedBehaviour::Receptacle
+
       # immutable # uncomment to make the resource immutable
 
       default_includes :uuid_object
 
-      ::Tube.descendants.each { |subclass| model_hint model: subclass, resource: :tube }
-
       # Associations:
-      has_many :samples
-      has_many :studies
-      has_many :projects
-
-      has_many :requests_as_source, readonly: true, class_name: 'Request'
-      has_many :requests_as_target, readonly: true, class_name: 'Request'
-      has_many :aliquots, readonly: true
-
-      has_many :downstream_assets, readonly: true, polymorphic: true, class_name: 'Receptacle'
-      has_many :downstream_wells, readonly: true, class_name: 'Well'
-      has_many :downstream_plates, readonly: true, class_name: 'Plate'
-      has_many :downstream_tubes, readonly: true, class_name: 'Tube'
-
-      has_many :upstream_assets, readonly: true, polymorphic: true, class_name: 'Receptacle'
-      has_many :upstream_wells, readonly: true, class_name: 'Well'
-      has_many :upstream_plates, readonly: true, class_name: 'Plate'
-      has_many :upstream_tubes, readonly: true, class_name: 'Tube'
 
       # Attributes
-      attribute :uuid, readonly: true
-      attribute :name, delegate: :display_name, readonly: true
-      attributes :pcr_cycles, :submit_for_sequencing, :sub_pool, :coverage, :diluent_volume
 
       # Filters
 

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Handles the submission of {Sample} information to the ENA or EGA
 # It should have a 1 to 1 mapping with Sequencescape {Sample samples}.
 module Accessionable
@@ -24,8 +25,7 @@ module Accessionable
 
     attr_reader :common_name, :taxon_id, :links, :tags
 
-    # rubocop:todo Metrics/MethodLength
-    # rubocop:todo Metrics/AbcSize
+    # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
     def initialize(sample) # rubocop:todo Metrics/CyclomaticComplexity
       @sample = sample
       super(sample.ebi_accession_number)
@@ -58,8 +58,7 @@ module Accessionable
       @hold = sample_hold.presence || 'hold'
     end
 
-    # rubocop:enable Metrics/AbcSize
-    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     def accessionable_id
       @sample.id

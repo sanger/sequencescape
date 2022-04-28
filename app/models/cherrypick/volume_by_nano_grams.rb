@@ -1,8 +1,6 @@
+# frozen_string_literal: true
 module Cherrypick::VolumeByNanoGrams # rubocop:todo Style/Documentation
-  # rubocop:todo Metrics/CyclomaticComplexity
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/AbcSize, Metrics/PerceivedComplexity
   def check_inputs_to_volume_to_cherrypick_by_nano_grams!(minimum_volume, maximum_volume, target_ng, source_well)
     raise 'Source well not found' if source_well.nil?
 
@@ -38,14 +36,10 @@ module Cherrypick::VolumeByNanoGrams # rubocop:todo Style/Documentation
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
-  # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
   private :check_inputs_to_volume_to_cherrypick_by_nano_grams!
 
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
   def volume_to_cherrypick_by_nano_grams(
     minimum_volume,
     maximum_volume,
@@ -57,13 +51,16 @@ module Cherrypick::VolumeByNanoGrams # rubocop:todo Style/Documentation
     check_inputs_to_volume_to_cherrypick_by_nano_grams!(minimum_volume, maximum_volume, target_ng, source_well)
 
     source_concentration = source_well.well_attribute.concentration.to_f
-    source_volume = source_well.well_attribute.estimated_volume # Current volume, fall back to measured if current not set
+
+    # Current volume, fall back to measured if current not set
+    source_volume = source_well.well_attribute.estimated_volume
+
     desired_volume = source_volume
     unless source_concentration.zero?
       desired_volume = [(target_ng.to_f / source_concentration), robot_minimum_picking_volume].max
     end
     requested_volume = [source_volume, desired_volume].min
-    buffer_volume = buffer_volume_required(minimum_volume, requested_volume, robot_minimum_picking_volume)
+    buffer_volume = calculate_buffer_volume(minimum_volume, requested_volume, robot_minimum_picking_volume)
     requested_volume = maximum_volume if requested_volume > maximum_volume
 
     well_attribute.current_volume = minimum_volume
@@ -75,16 +72,15 @@ module Cherrypick::VolumeByNanoGrams # rubocop:todo Style/Documentation
     requested_volume
   end
 
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   private
 
-  def buffer_volume_required(minimum_volume, requested_volume, robot_minimum_picking_volume)
-    shortfall = minimum_volume - requested_volume
-    return 0 if shortfall <= 0
+  def calculate_buffer_volume(final_volume_desired, volume_so_far, robot_minimum_picking_volume)
+    buffer_to_add = final_volume_desired - volume_so_far
+    return 0 if buffer_to_add <= 0
 
     # If we're adding buffer, it needs to be at least the robot_minimum_picking_volume
-    shortfall.clamp(robot_minimum_picking_volume..)
+    buffer_to_add.clamp(robot_minimum_picking_volume..)
   end
 end

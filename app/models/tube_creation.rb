@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Create one tube per pool for the provided parent
 class TubeCreation < AssetCreation
   class ChildTube < ApplicationRecord # rubocop:todo Style/Documentation

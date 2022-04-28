@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Core::Endpoint::BasicHandler::Handlers # rubocop:todo Style/Documentation
   # Handler that behaves like it never deals with any URLs
   NullHandler =
@@ -17,11 +18,10 @@ module Core::Endpoint::BasicHandler::Handlers # rubocop:todo Style/Documentation
   end
 
   def actions(object, options)
-    @handlers.select do |_name, handler|
-      handler.is_a?(Core::Endpoint::BasicHandler::Actions::InnerAction)
-    end.map { |_name, handler| handler.send(:actions, object, options) }.inject(super) do |actions, subactions|
-      actions.merge(subactions)
-    end
+    @handlers
+      .select { |_name, handler| handler.is_a?(Core::Endpoint::BasicHandler::Actions::InnerAction) }
+      .map { |_name, handler| handler.send(:actions, object, options) }
+      .inject(super) { |actions, subactions| actions.merge(subactions) }
   end
 
   def register_handler(segment, handler)

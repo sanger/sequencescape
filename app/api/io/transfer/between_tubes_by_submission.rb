@@ -1,4 +1,5 @@
-class ::Io::Transfer::BetweenTubesBySubmission < ::Core::Io::Base
+# frozen_string_literal: true
+class Io::Transfer::BetweenTubesBySubmission < ::Core::Io::Base
   set_model_for_input(::Transfer::BetweenTubesBySubmission)
   set_json_root(:transfer)
 

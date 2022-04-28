@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # A Pipeline acts to associate {Request requests} with a {Workflow}.
 # Visiting a pipeline's page will display an inbox of pending {Batch unbatched}
 # requests, and a summary list of ongoing {Batch batches} for that particular
@@ -5,12 +6,10 @@
 # and to from there progress a {Batch} through the associated workflow.
 # @note Generally speaking we are trying to migrate pipelines out of the Sequencescape
 #       core.
-class Pipeline < ApplicationRecord # rubocop:todo Metrics/ClassLength
+class Pipeline < ApplicationRecord
   include Uuid::Uuidable
   include Pipeline::BatchValidation
   include SharedBehaviour::Named
-
-  ALWAYS_SHOW_RELEASE_ACTIONS = false # Override this in subclasses if you want to display action links for released batches
 
   # Rails class attributes
   self.inheritance_column = 'sti_type'
@@ -19,35 +18,23 @@ class Pipeline < ApplicationRecord # rubocop:todo Metrics/ClassLength
   class_attribute :batch_worksheet,
                   :requires_position,
                   :inbox_partial,
-                  :library_creation,
-                  :pulldown,
-                  :prints_a_worksheet_per_task,
-                  :genotyping,
                   :sequencing,
                   :purpose_information,
-                  :can_create_stock_assets,
                   :inbox_eager_loading,
                   :group_by_submission,
                   :group_by_parent,
                   :generate_target_assets_on_batch_create,
-                  :pick_to,
                   :asset_type,
                   :request_sort_order,
                   :pick_data,
                   instance_writer: false
 
   # Pipeline defaults
-  self.batch_worksheet = 'detailed_worksheet'
-  self.requires_position = true
+  self.batch_worksheet = false
+  self.requires_position = false
   self.inbox_partial = 'default_inbox'
-  self.library_creation = false
-  self.pulldown = false
-  self.prints_a_worksheet_per_task = false
-  self.genotyping = false
   self.sequencing = false
   self.purpose_information = true
-  self.pick_to = true
-  self.can_create_stock_assets = false
   self.inbox_eager_loading = :loaded_for_inbox_display
   self.group_by_submission = false
   self.group_by_parent = false
@@ -58,8 +45,6 @@ class Pipeline < ApplicationRecord # rubocop:todo Metrics/ClassLength
   delegate :item_limit, :batch_limit?, to: :workflow
 
   belongs_to :control_request_type, class_name: 'RequestType'
-  belongs_to :next_pipeline, class_name: 'Pipeline'
-  belongs_to :previous_pipeline, class_name: 'Pipeline'
 
   has_one :workflow, class_name: 'Workflow', inverse_of: :pipeline, required: true
 
@@ -90,11 +75,6 @@ class Pipeline < ApplicationRecord # rubocop:todo Metrics/ClassLength
   scope :for_request_type,
         ->(rt) { joins(:pipelines_request_types).where(pipelines_request_types: { request_type_id: rt }) }
 
-  def custom_message
-    # Override this in subclasses if you want to display a custom message in the _pipeline_limit partial (blue box on pipeline show page)
-    I18n.t('pipelines.show_page_custom_message.default')
-  end
-
   def request_types_including_controls
     [control_request_type].compact + request_types
   end
@@ -104,13 +84,11 @@ class Pipeline < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   # This is the old behaviour for every other pipeline.
-  def detach_request_from_batch(batch, request)
+  def detach_request_from_batch(_batch, request)
     request.return_for_inbox!
-    update_detached_request(batch, request)
+    request.batch = nil
     request.save!
   end
-
-  def update_detached_request(_batch, _request); end
 
   # Overridden in group-by parent pipelines to display input plates
   def input_labware(_requests)
@@ -125,14 +103,7 @@ class Pipeline < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def post_finish_batch(batch, user); end
 
   def completed_request_as_part_of_release_batch(request)
-    if library_creation?
-      unless request.failed?
-        EventSender.send_pass_event(request, '', "Passed #{name}.", id)
-        EventSender.send_request_update(request, 'complete', "Completed pipeline: #{name}")
-      end
-    else
-      EventSender.send_request_update(request, 'complete', "Completed pipeline: #{name}")
-    end
+    EventSender.send_request_update(request, 'complete', "Completed pipeline: #{name}")
   end
 
   def on_start_batch(batch, user)
@@ -141,10 +112,6 @@ class Pipeline < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def post_release_batch(batch, user)
     # Do Nothing
-  end
-
-  def has_controls?
-    !controls.empty?
   end
 
   # Extracts the request ids from the selected requests. Overidden in pipleines
@@ -161,10 +128,6 @@ class Pipeline < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def request_actions
     [:fail]
-  end
-
-  def allow_tag_collision_on_tagging_task?
-    true
   end
 
   def robot_verified!(batch)

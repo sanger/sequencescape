@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../Gemfile', __dir__)
 
 require 'bundler/setup' # Set up gems listed in the Gemfile.
@@ -16,7 +17,7 @@ begin
   # If our file was created more than 30 days ago.
   # Note: ActiveSupport isn't loaded yet, so we can't just do 1.month.ago
   # We also avoid using a constant here, as we're in the global namespace
-  if time < (Time.now - 60 * 60 * 24 * 30)
+  if time < (Time.now - (60 * 60 * 24 * 30))
     print 'Purging old bootsnap cache...'
     FileUtils.remove_dir('tmp/cache/bootsnap-compile-cache')
     FileUtils.remove_file('tmp/cache/bootsnap-load-path-cache')

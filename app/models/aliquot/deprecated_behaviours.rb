@@ -24,26 +24,5 @@ module Aliquot::DeprecatedBehaviours
 
     delegate :tags, to: :asset
     deprecate :tags
-
-    # ---
-
-    def sample_name(default = nil)
-      # return the name of the underlying samples
-      # used mainly for compatibility with the old codebase
-      # # default is used if no smaple
-      # # block is used to aggregate the samples
-      case
-      when samples.size == 0
-        default
-      when samples.size == 1
-        samples.first.name
-      when block_given?
-        yield(samples)
-      else
-        samples.map(&:name).join(' | ')
-      end
-    end
-    deprecate :sample_name
-    # Logged calls from: _app_views_workflows__set_characterisation_descriptors_html_erb
   end
 end

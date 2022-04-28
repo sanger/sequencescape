@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # A spreadsheet summarising the QC information about a study.
 # Generally replaced by {QcReport} which adds support for pass/fail criteria,
 # automatic decisions and customer decisions.
@@ -18,7 +19,7 @@ class StudyReport < ApplicationRecord
   belongs_to :user
   validates :study, presence: true
 
-  def headers # rubocop:todo Metrics/MethodLength
+  def headers
     [
       'Study',
       'Sample Name',

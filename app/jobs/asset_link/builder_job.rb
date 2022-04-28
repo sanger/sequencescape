@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Enables the bulk creation of the asset links defined by the pairs passed as edges.
 require_dependency 'asset_link'
 

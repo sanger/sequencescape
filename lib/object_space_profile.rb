@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # ObjectSpaceProfile provides a tool for assessing how many Ruby objects are in
 # memory. By taking measures over time you can watch the change in the number of
 # objects, and identify situations in which we're holding on to more objects

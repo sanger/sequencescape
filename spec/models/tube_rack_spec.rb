@@ -6,7 +6,7 @@ RSpec.describe TubeRack do
     it 'can be created' do
       tube_rack = create :tube_rack
 
-      expect(described_class.exists?(tube_rack.id)).to eq(true)
+      expect(described_class.exists?(tube_rack.id)).to be(true)
     end
 
     it 'can contain racked_tubes' do
@@ -41,7 +41,7 @@ RSpec.describe TubeRack do
     it 'can be destroyed' do
       tube_rack.destroy
 
-      expect(described_class.exists?(tube_rack.id)).to eq(false)
+      expect(described_class.exists?(tube_rack.id)).to be(false)
     end
 
     it 'destroys the RackedTubes when destroyed' do
@@ -50,8 +50,8 @@ RSpec.describe TubeRack do
 
       tube_rack.destroy
 
-      expect(RackedTube.exists?(racked_tube.id)).to eq(false)
-      expect(Tube.exists?(tube.id)).to eq(true)
+      expect(RackedTube.exists?(racked_tube.id)).to be(false)
+      expect(Tube.exists?(tube.id)).to be(true)
     end
   end
 
@@ -68,6 +68,56 @@ RSpec.describe TubeRack do
 
     it 'returns the samples of the tubes contained in the rack' do
       expect(tube_rack.contained_samples.to_a.sort).to eq(tubes.map(&:samples).flatten.sort)
+    end
+  end
+
+  context 'with a rack with tubes and requests' do
+    let(:tube_rack) { create :tube_rack }
+    let(:tube_a) { create :tube, :in_a_rack, tube_rack: tube_rack, coordinate: 'A1' }
+    let(:tube_b) { create :tube, :in_a_rack, tube_rack: tube_rack, coordinate: 'H12' }
+    let(:aliquot) { create :aliquot, receptacle: tube_a.receptacle, request: create(:request, submission: submission) }
+    let(:outer_request) { create :request, asset: tube_b.receptacle, submission: submission }
+    let(:submission) { create :submission }
+
+    # The comments scope should also retrieve comments associated with tubes, and
+    # their requests
+    describe '#comments' do
+      let!(:rack_comment) { create :comment, commentable: tube_rack, title: 'Rack' }
+      let!(:tube_comment) { create :comment, commentable: tube_a, title: 'Tube' }
+      let!(:request_comment_a) { create :comment, commentable: aliquot.request, title: 'Request(Aliquot)' }
+      let!(:request_comment_b) { create :comment, commentable: outer_request, title: 'Request(Receptacle)' }
+
+      it 'includes all relevant comments' do
+        comments = tube_rack.reload.comments
+
+        aggregate_failures do
+          expect(comments).to include(rack_comment)
+          expect(comments).to include(tube_comment)
+          expect(comments).to include(request_comment_a)
+          expect(comments).to include(request_comment_b)
+        end
+      end
+    end
+
+    # This is called following comment addition
+    describe '#after_comment_addition' do
+      context 'with submissions' do
+        before { outer_request }
+
+        it 'ensures comments are visible on the tubes' do
+          create :comment, commentable: tube_rack
+          expect(tube_b.reload.comments.count).to eq 1
+        end
+      end
+
+      context 'without submissions' do
+        before { tube_b }
+
+        it 'ensures comments are visible on the tubes' do
+          create :comment, commentable: tube_rack
+          expect(tube_b.reload.comments.count).to eq 1
+        end
+      end
     end
   end
 end

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # {include:file:docs/api_v1.md}
 module Api
   # Sinatra application which provides routing for the V1 API
@@ -7,10 +8,12 @@ module Api
   class RootService < ::Core::Service
     # @note This is partly a hack but it suffices to keep the dynamic ability to write endpoints.
     ALL_SERVICES_AVAILABLE =
-      Dir.glob(File.join(Rails.root, %w[app api endpoints ** *.rb])).map do |file|
-        handler = file.gsub(%r{^.+/(endpoints/.+).rb$}, '\1').camelize.constantize
-        [handler.root.tr('/', '_'), handler]
-      end.to_h
+      Dir
+        .glob(File.join(Rails.root, %w[app api endpoints ** *.rb]))
+        .to_h do |file|
+          handler = file.gsub(%r{^.+/(endpoints/.+).rb$}, '\1').camelize.constantize
+          [handler.root.tr('/', '_'), handler]
+        end
 
     use Api::EndpointHandler
 
@@ -18,7 +21,7 @@ module Api
       # rubocop:todo Metrics/MethodLength
       def services(services) # rubocop:todo Metrics/AbcSize
         self.object = services
-        def @owner.each(&block) # rubocop:todo Metrics/MethodLength
+        def @owner.each(&block)
           ::Core::Io::Buffer.new(block) do |buffer|
             ::Core::Io::Json::Stream
               .new(buffer)
@@ -36,14 +39,6 @@ module Api
                 end
               end
           end
-          # json = Hash[
-          #   object.map do |model_in_json,endpoint|
-          #     [model_in_json, endpoint.model_handler.as_json(:response => self, :endpoint => endpoint, :target => endpoint.model_handler)]
-          #   end +
-          #   [ [ 'revision', 2 ] ]
-          # ]
-          # #Yajl::Encoder.new.encode(json, &block)
-          # yield JSON.generate(json)
         end
       end
       # rubocop:enable Metrics/MethodLength
@@ -54,15 +49,17 @@ module Api
     get(%r{/?}) do
       result =
         report('root') do
-          ::Core::Service::Request.new(request.fullpath) do |request|
-            request.service = self
-            request.path = '/'
-          end.response do |response|
-            class << response
-              include RootResponse
+          ::Core::Service::Request
+            .new(request.fullpath) do |request|
+              request.service = self
+              request.path = '/'
             end
-            response.services(ALL_SERVICES_AVAILABLE)
-          end
+            .response do |response|
+              class << response
+                include RootResponse
+              end
+              response.services(ALL_SERVICES_AVAILABLE)
+            end
         end
 
       body(result)

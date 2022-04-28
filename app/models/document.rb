@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'carrierwave'
 
 class Document < ApplicationRecord # rubocop:todo Style/Documentation
@@ -10,11 +11,12 @@ class Document < ApplicationRecord # rubocop:todo Style/Documentation
       # Options
       #  differentiator - this is a string used to separate multiple documents related to your model
       #     for example, you can have both a "generated" and an "uploaded" document in one Sample Manifest
-
       line = __LINE__ + 1
       class_eval(
         "
-        has_one(:#{field}_document, ->(){ where(:documentable_extended => differentiator) }, :class_name => \"Document\", :as => :documentable, :dependent => :destroy
+        has_one(
+          :#{field}_document, ->(){ where(documentable_extended: differentiator) },
+          class_name: \"Document\", as: :documentable, dependent: :destroy
           )
 
         def #{field}

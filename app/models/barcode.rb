@@ -6,7 +6,7 @@
 #
 # @author [grl]
 #
-class Barcode < ApplicationRecord # rubocop:todo Metrics/ClassLength
+class Barcode < ApplicationRecord
   require 'sanger_barcode_format'
   require 'sanger_barcode_format/legacy_methods'
   extend SBCF::LegacyMethods
@@ -22,6 +22,7 @@ class Barcode < ApplicationRecord # rubocop:todo Metrics/ClassLength
          infinium: 1,
          fluidigm: 2,
          external: 3,
+         # gone. Don't do this.
          aker_barcode: 4,
          cgap: 5,
          sanger_code39: 6,
@@ -51,7 +52,15 @@ class Barcode < ApplicationRecord # rubocop:todo Metrics/ClassLength
          glasgow_v3: 30,
          uk_biocentre_v5: 31,
          health_services_laboratories_v1: 32,
-         uk_biocentre_v6: 33
+         uk_biocentre_v6: 33,
+         brants_bridge: 34,
+         leamington_spa: 35,
+         newcastle: 36,
+         brants_bridge_v2: 37,
+         uk_biocentre_v7: 38,
+         east_london_genes_and_health: 39,
+         leamington_spa_v2: 40,
+         east_london_genes_and_health_v2: 41
        }
 
   # Barcode formats which may be submitted via sample manifests
@@ -85,6 +94,14 @@ class Barcode < ApplicationRecord # rubocop:todo Metrics/ClassLength
     uk_biocentre_v5
     health_services_laboratories_v1
     uk_biocentre_v6
+    brants_bridge
+    leamington_spa
+    newcastle
+    brants_bridge_v2
+    uk_biocentre_v7
+    east_london_genes_and_health
+    leamington_spa_v2
+    east_london_genes_and_health_v2
   ].freeze
 
   validate :barcode_valid?
@@ -118,9 +135,8 @@ class Barcode < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   # Extract barcode from user input
   def self.extract_barcode(barcode)
-    [barcode.to_s].tap do |barcodes|
-      barcodes << SBCF::SangerBarcode.from_user_input(barcode.to_s).human_barcode
-    end.compact.uniq
+    [barcode.to_s].tap { |barcodes| barcodes << SBCF::SangerBarcode.from_user_input(barcode.to_s).human_barcode }
+      .compact.uniq
   end
 
   # Returns the barcode format matching the supplied barcode

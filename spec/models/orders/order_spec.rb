@@ -57,7 +57,7 @@ RSpec.describe Order, type: :model do
     end
 
     context 'with the same asset in a different order' do
-      setup { create :order, assets: [asset_a], template_name: 'other_template' }
+      before { create :order, assets: [asset_a], template_name: 'other_template' }
 
       it 'not detect duplicates' do
         expect(order.duplicates_within(1.month)).not_to be_truthy
@@ -65,12 +65,13 @@ RSpec.describe Order, type: :model do
     end
 
     context 'with the same sample in a similar order' do
-      setup do
+      before do
         @asset_b = create :sample_tube, sample: asset_a.samples.first
         @secondary_submission = create :submission
         @secondary_order =
           create :order, assets: [@asset_b], template_name: shared_template, submission: @secondary_submission
       end
+
       it 'detect duplicates' do
         assert order.duplicates_within(1.month)
       end
@@ -93,12 +94,13 @@ RSpec.describe Order, type: :model do
       end
     end
 
-    %w[SequencingRequest PacBioSequencingRequest].each do |request_class|
+    %w[SequencingRequest].each do |request_class|
       context "with #{request_class}" do
-        setup do
+        before do
           @sequencing_request_type = create :request_type, request_class_name: request_class
           order.request_types << @sequencing_request_type.id
         end
+
         it 'be a sequencing order' do
           expect(order.sequencing_order?).to be true
         end

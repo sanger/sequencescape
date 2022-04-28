@@ -10,7 +10,7 @@ class DummyWorkflowController < WorkflowsController
   end
 end
 
-class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
+class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
   MockBc = Struct.new(:barcode)
 
   # rubocop:todo Metrics/MethodLength
@@ -29,14 +29,15 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase # rubocop:todo 
         @batch = mock('batch')
         @batch.stubs(:requests).returns(@requests)
         @workflows_controller.batch = @batch
+        @user = build :user
       end
 
       should 'return false' do
-        assert_not @task.do_task(@workflows_controller, params)
+        assert_not @task.do_task(@workflows_controller, params, @user)
       end
 
       should 'set a flash[:notice] for failure' do
-        @task.do_task(@workflows_controller, params)
+        @task.do_task(@workflows_controller, params, @user)
         assert_not_nil @workflows_controller.flash[:error]
         assert_equal 'Duplicate tags in G1', @workflows_controller.flash[:error]
       end
@@ -47,11 +48,11 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase # rubocop:todo 
 
   # Generate the request mapping according to the well array
   def request_location_hash
-    @requests.each_with_index.map { |request, index| [request.id.to_s, @well_array[index]] }.to_h
+    @requests.each_with_index.to_h { |request, index| [request.id.to_s, @well_array[index]] }
   end
 
   # Generate the parameters
-  def params # rubocop:todo Metrics/MethodLength
+  def params
     {
       request_locations: request_location_hash,
       commit: 'Next step',
@@ -101,7 +102,7 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase # rubocop:todo 
         end
 
         should 'set target assets appropriately' do
-          assert @task.do_task(@workflows_controller, params)
+          assert @task.do_task(@workflows_controller, params, @user)
         end
       end
     end
@@ -134,7 +135,7 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase # rubocop:todo 
         end
         should 'set target assets appropriately' do
           assert_nil @workflows_controller.flash[:error]
-          assert @task.do_task(@workflows_controller, params), 'Task returned false'
+          assert @task.do_task(@workflows_controller, params, @user), 'Task returned false'
           @requests.each_with_index do |r, _i|
             assert_equal request_location_hash[r.id.to_s], r.target_asset.map_description
             assert_equal @purpose.plates.last, r.target_asset.plate
@@ -142,7 +143,7 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase # rubocop:todo 
           end
         end
         should 'set the pick volume on the target_wells' do
-          assert @task.do_task(@workflows_controller, params), 'Task returned false'
+          assert @task.do_task(@workflows_controller, params, @user), 'Task returned false'
           @requests.each { |request| assert_equal 5, request.target_asset.get_picked_volume }
         end
       end
@@ -165,7 +166,7 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase # rubocop:todo 
         end
         should 'set target assets appropriately' do
           assert_nil @workflows_controller.flash[:error]
-          assert @task.do_task(@workflows_controller, params), 'Task returned false'
+          assert @task.do_task(@workflows_controller, params, @user), 'Task returned false'
           @requests.each_with_index do |r, _i|
             assert_equal request_location_hash[r.id.to_s], r.target_asset.map_description
             assert_equal @purpose.plates.last, r.target_asset.plate

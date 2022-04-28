@@ -8,7 +8,9 @@ Given /^all wells on plate "([^"]*)" have non-empty sample names$/ do |plate_bar
   end
 end
 
+# rubocop:todo Layout/LineLength
 Given /^well "([^"]*)" on plate "([^"]*)" has a sample name of "([^"]*)"$/ do |well_position, plate_barcode, sample_name|
+  # rubocop:enable Layout/LineLength
   plate = Plate.find_from_barcode(plate_barcode)
   well = plate.find_well_by_name(well_position)
   well.aliquots.clear

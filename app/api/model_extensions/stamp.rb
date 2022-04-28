@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Included in {Stamp}
 # Handles the translation of V1 API input to more standard rails attributes
 module ModelExtensions::Stamp

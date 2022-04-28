@@ -8,7 +8,7 @@ module Api
         before_action :login_required, except: [:create]
         skip_before_action :verify_authenticity_token
 
-        def create # rubocop:todo Metrics/MethodLength
+        def create
           factory = ::Heron::Factories::Plate.new(params_for_plate)
           if factory.valid? && factory.save
             render json: {

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module ::Core::Io::Json
+module Core::Io::Json
   # Custom JSON streaming class to handle streamed serialization of API V1
   # objects
   class Stream # rubocop:todo Metrics/ClassLength
@@ -41,8 +41,7 @@ module ::Core::Io::Json
       named(attribute) { open(&block) }
     end
 
-    # rubocop:todo Metrics/MethodLength
-    # rubocop:todo Metrics/AbcSize
+    # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
     def encode(object, options = {}) # rubocop:todo Metrics/CyclomaticComplexity
       case object
       when NilClass
@@ -74,8 +73,7 @@ module ::Core::Io::Json
       end
     end
 
-    # rubocop:enable Metrics/AbcSize
-    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
     def object_encode(object, options)
       open do

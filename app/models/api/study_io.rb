@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Despite name controls rendering of warehouse messages for {Study}
 # Historically used to be v0.5 API
 class Api::StudyIO < Api::Base
@@ -8,7 +9,7 @@ class Api::StudyIO < Api::Base
       end
     end
 
-    def self.included(base) # rubocop:todo Metrics/MethodLength
+    def self.included(base)
       base.class_eval do
         extend ClassMethods
 
@@ -46,13 +47,16 @@ class Api::StudyIO < Api::Base
     json_attributes['abbreviation'] = object.abbreviation
 
     object.roles.each do |role|
-      json_attributes[role.name.downcase.gsub(/\s+/, '_')] =
-        role.user_role_bindings.map do |user_role|
-          { login: user_role.user.login, email: user_role.user.email, name: user_role.user.name }.tap do
-            json_attributes['updated_at'] ||= user_role.updated_at
-            json_attributes['updated_at'] = user_role.updated_at if json_attributes['updated_at'] < user_role.updated_at
-          end
-        end
+      role_key = role.name.downcase.gsub(/\s+/, '_')
+      json_attributes[role_key] ||= []
+      role.user_role_bindings.each do |user_role|
+        json_attributes[role_key] << {
+          login: user_role.user.login,
+          email: user_role.user.email,
+          name: user_role.user.name
+        }
+        json_attributes['updated_at'] = [json_attributes['updated_at'], user_role.updated_at].compact.max
+      end
     end
   end
 

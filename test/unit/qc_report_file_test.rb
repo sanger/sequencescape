@@ -4,7 +4,7 @@ require 'test_helper'
 require 'timecop'
 require 'csv'
 
-class QcReport::FileTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
+class QcReport::FileTest < ActiveSupport::TestCase
   include ActionDispatch::TestProcess
 
   context 'QcReport File' do
@@ -31,7 +31,9 @@ class QcReport::FileTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassL
       should 'fail processing' do
         assert_equal false, @qcr_file.process, 'Non-compatible file processed unexpectedly'
         assert_equal [
+                       # rubocop:todo Layout/LineLength
                        'fluidigm.csv does not appear to be a qc report file. Make sure the Sequencescape QC Report line has not been removed.'
+                       # rubocop:enable Layout/LineLength
                      ],
                      @qcr_file.errors
       end
@@ -48,7 +50,9 @@ class QcReport::FileTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassL
       should 'fail processing' do
         assert_equal false, @qcr_file.process, 'File with no report processed unexpectedly'
         assert_equal [
+                       # rubocop:todo Layout/LineLength
                        "Couldn't find the report wtccc_demo_product_20150101000000. Check that the report identifier has not been modified."
+                       # rubocop:enable Layout/LineLength
                      ],
                      @qcr_file.errors
       end

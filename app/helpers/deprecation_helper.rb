@@ -40,18 +40,16 @@ module DeprecationHelper
   #     <p>Old we content</p>
   #  <% end %>
   # @param date [nil,Date] The date at which the section will be hidden.
-  # @param message [String] Body explaining why the feature is being removed, and where the functionality can be found elsewhere.
+  # @param message [String] Body explaining why the feature is being removed, and where the functionality can be found
+  #                         elsewhere.
   # @param replaced_by [String,nil] URL of the replacement (if applicable).
   # @param custom_title [String] Override the title determined by the level.
   # @param custom_style [String] Overide the styles determined by the level.
   # @yield [Void] Yield to block rendering the contents of the card (ie. the feature to be deprecated)
   #
   # @return [String] The HTML to render
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
-  # rubocop:todo Metrics/ParameterLists
+  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
   def deprecate_section(date: nil, message: '', replaced_by: nil, custom_title: nil, custom_style: nil, &block)
-    # rubocop:enable Metrics/ParameterLists
     # If we're past the date just hide the section
     if date && Date.current > date
       Rails.logger.warn "Deprecated section past deadline: #{Kernel.caller.first}"
@@ -78,8 +76,7 @@ module DeprecationHelper
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   def _deprecation_level(date)
     if date.nil?

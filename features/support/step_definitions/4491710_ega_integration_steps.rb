@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
+# rubocop:todo Layout/LineLength
 Given /^an accessioning webservice exists which returns a (study|sample|dac|policy) accession number "([^"]*)"$/ do |type, accession_number|
+  # rubocop:enable Layout/LineLength
   FakeAccessionService.instance.success(type, accession_number)
 end
 

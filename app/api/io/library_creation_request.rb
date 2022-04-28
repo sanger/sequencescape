@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Controls API V1 IO for {::LibraryCreationRequest}
 class Io::LibraryCreationRequest < ::Io::Request
   set_model_for_input(::LibraryCreationRequest)

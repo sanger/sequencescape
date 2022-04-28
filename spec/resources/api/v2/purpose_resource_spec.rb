@@ -6,14 +6,18 @@ require './app/resources/api/v2/purpose_resource'
 RSpec.describe Api::V2::PurposeResource, type: :resource do
   subject { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { create :purpose }
+  let(:resource_model) { build_stubbed :purpose }
 
   # Test attributes
   it 'works', :aggregate_failures do
     expect(subject).to have_attribute :uuid
     expect(subject).to have_attribute :name
+    expect(subject).to have_attribute :size
+    expect(subject).to have_attribute :lifespan
     expect(subject).not_to have_updatable_field(:id)
     expect(subject).not_to have_updatable_field(:uuid)
+    expect(subject).not_to have_updatable_field(:size)
+    expect(subject).not_to have_updatable_field(:lifespan)
   end
 
   # Updatable fields

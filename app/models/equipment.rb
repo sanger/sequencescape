@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # A table allowing for the generation of unique equipment barcodes.
 # Seems to perform an almost identical function to the unused {Implement}.
 # No dependencies in the rest of the code, and mainly just used to ensure uniqueness of

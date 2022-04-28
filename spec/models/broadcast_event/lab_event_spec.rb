@@ -26,7 +26,6 @@ RSpec.describe BroadcastEvent::LabEvent, type: :model, broadcast_event: true do
              'key_a' => 'value a',
              'key_b' => 'value b'
            },
-           descriptor_fields: %w[key_a key_b],
            eventful: eventful
   end
   let(:user) { create :user }
@@ -36,12 +35,10 @@ RSpec.describe BroadcastEvent::LabEvent, type: :model, broadcast_event: true do
   end
 
   it 'sets the event type based on the lab event' do
-    # rubocop:todo RSpec/AggregateExamples
     expect(json).to include_json('event' => { 'event_type' => 'read_1_lin_block_hyb_load' })
   end
 
   it 'grabs the metadata verbatim from the descriptors hash' do
-    # rubocop:todo RSpec/AggregateExamples
     expect(json).to include_json('event' => { 'metadata' => { 'key_a' => 'value a', 'key_b' => 'value b' } })
   end
 

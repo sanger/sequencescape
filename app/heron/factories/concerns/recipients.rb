@@ -36,11 +36,9 @@ module Heron
           return if errors.count.positive?
 
           @recipients ||=
-            params_for_recipient
-              .keys
-              .each_with_object({}) do |coordinate, memo|
-                memo[coordinate] = recipient_factory.new(params_for_recipient[coordinate])
-              end
+            params_for_recipient.keys.index_with do |coordinate|
+              recipient_factory.new(params_for_recipient[coordinate])
+            end
         end
 
         def check_recipients

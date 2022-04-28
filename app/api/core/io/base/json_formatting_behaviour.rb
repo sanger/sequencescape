@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Core::Io::Base::JsonFormattingBehaviour # rubocop:todo Style/Documentation
   def self.extended(base)
     base.class_eval do

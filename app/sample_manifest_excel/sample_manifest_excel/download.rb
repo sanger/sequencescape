@@ -11,7 +11,7 @@ module SampleManifestExcel
 
     attr_reader :sample_manifest, :data_worksheet, :range_list, :ranges_worksheet, :column_list
 
-    def initialize(sample_manifest, column_list, range_list) # rubocop:todo Metrics/MethodLength
+    def initialize(sample_manifest, column_list, range_list)
       @sample_manifest = sample_manifest
       @range_list = range_list
       @column_list = column_list

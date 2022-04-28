@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Submission::AssetSubmissionFinder # rubocop:todo Style/Documentation
   def is_plate?(details)
     details['barcode'].present? && details['plate well'].present?

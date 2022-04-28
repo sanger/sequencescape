@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # A Well is a {Receptacle} on a {Plate}, it can contain one or more {Aliquot aliquots}.
 # A plate may have multiple wells, with the two most common sizes being 12*8 (96) and
 # 24*26 (384). The wells are differentiated via their {Map} which corresponds to a
@@ -96,7 +97,7 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
           )
         }
 
-  scope :without_report, ->(product_criteria) { where.not(id: Well.with_report(product_criteria)) }
+  scope :without_report, ->(product_criteria) { where.not(id: with_report(product_criteria)) }
 
   scope :stock_wells_for,
         ->(wells) { joins(:target_well_links).where(well_links: { target_well_id: [wells].flatten.map(&:id) }) }
@@ -131,7 +132,8 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
             .distinct
         }
 
-  # It feels like we should be able to do this with just includes and order, but oddly this causes more disruption downstream
+  # It feels like we should be able to do this with just includes and order, but oddly this causes more disruption
+  # downstream
   scope :in_column_major_order, -> { joins(:map).order('column_order ASC').select_table.select('column_order') }
   scope :in_row_major_order, -> { joins(:map).order('row_order ASC').select_table.select('row_order') }
   scope :in_inverse_column_major_order,
@@ -272,7 +274,6 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
 
   delegate_to_well_attribute(:gender_markers)
 
-  # rubocop:todo Metrics/MethodLength
   def update_gender_markers!(gender_markers, resource) # rubocop:todo Metrics/AbcSize
     if well_attribute.gender_markers == gender_markers
       gender_marker_event = events.where(family: 'update_gender_markers').order('id desc').first
@@ -288,8 +289,6 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
     well_attribute.update!(gender_markers: gender_markers)
   end
 
-  # rubocop:enable Metrics/MethodLength
-
   def update_sequenom_count!(sequenom_count, resource)
     events.update_sequenom_count!(resource) unless well_attribute.sequenom_count == sequenom_count
     well_attribute.update!(sequenom_count: sequenom_count)
@@ -300,9 +299,6 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
     markers = well_attribute.gender_markers
     markers.is_a?(Array) ? markers.join : markers
   end
-
-  # def map_description
-  delegate :description, to: :map, prefix: true, allow_nil: true
 
   # Returns the name of the position (eg. A1) of the well
   def absolute_position_name
@@ -317,6 +313,12 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
     get_buffer_volume > 0.0
   end
 
+  #
+  # Returns a name for the well in the format HumanBarcode:Location eg. DN12345S:A1
+  # @note Be *very* wary of changing this as we have places in limber
+  #       (https://github.com/sanger/limber/blob/develop/app/helpers/exports_helper.rb)
+  #       where it is assumed to contain the barcode and well location. It is highly likely
+  #       that we aren't the only ones making this assumption.
   def display_name
     source = association_cached?(:plate) ? plate : labware
     plate_name = source.present? ? source.human_barcode : '(not on a plate)'

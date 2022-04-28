@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Messengers handle passing a target into a message template
 # for rendering warehouse messages
 class Messenger < ApplicationRecord
@@ -17,11 +18,7 @@ class Messenger < ApplicationRecord
     { root => render_class.to_hash(target), 'lims' => configatron.amqp.lims_id! }
   end
 
-  def queue_for_broadcast
-    add_to_transaction
-  end
-
   def resend
-    broadcast
+    Warren.handler << Warren::Message::Short.new(self)
   end
 end

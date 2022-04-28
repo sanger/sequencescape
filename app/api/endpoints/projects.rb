@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Endpoints::Projects < Core::Endpoint::Base # rubocop:todo Style/Documentation
   model {}
 

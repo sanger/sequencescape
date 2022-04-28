@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 # NOTE: The UUIDs for the requests are generated as sequential numbers from the study UUID
-# rubocop:todo Metrics/MethodLength
-# rubocop:todo Metrics/AbcSize
-# rubocop:todo Metrics/ParameterLists
+# rubocop:todo Metrics/MethodLength, Metrics/AbcSize, Metrics/ParameterLists
 def create_request(request_type, study, project, asset, target_asset, additional_options = {})
   # rubocop:enable Metrics/ParameterLists
   request =
@@ -14,13 +12,7 @@ def create_request(request_type, study, project, asset, target_asset, additional
         project: project,
         asset: asset,
         target_asset: target_asset,
-        request_type: request_type,
-        request_metadata_attributes: {
-          fragment_size_required_to: 1,
-          fragment_size_required_from: 999,
-          library_type: 'Standard',
-          read_length: (request_type.request_class == HiSeqSequencingRequest ? 50 : 76)
-        }
+        request_type: request_type
       )
     )
   request.id = additional_options[:id] if additional_options.key?(:id) # Force ID hack!
@@ -42,10 +34,11 @@ def create_request(request_type, study, project, asset, target_asset, additional
       end
     end
 end
-# rubocop:enable Metrics/AbcSize
-# rubocop:enable Metrics/MethodLength
+# rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
+# rubocop:todo Layout/LineLength
 Given /^the (sample|library) tube "([^"]+)" has been involved in a "([^"]+)" request within the study "([^"]+)" for the project "([^"]+)"$/ do |tube_type, tube_name, request_type_name, study_name, project_name|
+  # rubocop:enable  Layout/LineLength
   study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study named #{study_name.inspect}"
   project = Project.find_by(name: project_name) or
     raise StandardError, "Cannot find the project named #{project_name.inspect}"
@@ -58,7 +51,9 @@ Given /^the (sample|library) tube "([^"]+)" has been involved in a "([^"]+)" req
   create_request(request_type, study, project, asset, target_asset)
 end
 
+# rubocop:todo Layout/LineLength
 Given /^I have already made a "([^"]+)" request within the study "([^"]+)" for the project "([^"]+)"$/ do |type, study_name, project_name|
+  # rubocop:enable Layout/LineLength
   study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study named #{study_name.inspect}"
   project = Project.find_by(name: project_name) or
     raise StandardError, "Cannot find the project named #{project_name.inspect}"
@@ -69,7 +64,9 @@ Given /^I have already made a "([^"]+)" request within the study "([^"]+)" for t
   create_request(request_type, study, project, asset, target_asset)
 end
 
+# rubocop:todo Layout/LineLength
 Given /^I have already made (\d+) "([^"]+)" requests? with IDs starting at (\d+) within the study "([^"]+)" for the project "([^"]+)"$/ do |count, type, id, study_name, project_name|
+  # rubocop:enable Layout/LineLength
   study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study named #{study_name.inspect}"
   project = Project.find_by(name: project_name) or
     raise StandardError, "Cannot find the project named #{project_name.inspect}"
@@ -83,9 +80,13 @@ Given /^I have already made (\d+) "([^"]+)" requests? with IDs starting at (\d+)
   end
 end
 
+# rubocop:todo Layout/LineLength
 Given /^I have already made a "([^"]+)" request with ID (\d+) within the study "([^"]+)" for the project "([^"]+)"$/ do |type, id, study_name, project_name|
+  # rubocop:enable Layout/LineLength
   step(
+    # rubocop:todo Layout/LineLength
     "I have already made 1 \"#{type}\" request with IDs starting at #{id} within the study \"#{study_name}\" for the project \"#{project_name}\""
+    # rubocop:enable Layout/LineLength
   )
 end
 
@@ -102,6 +103,6 @@ end
 Then /^I should see the following request information:$/ do |expected|
   # The request info is actually a series of tables. fetch_table just grabs the first.
   # This is silly, but attempting to fix it is probably more hassle than its worth.
-  actual = page.all('.property_group_general tr').map { |row| row.all('td').map(&:text) }.to_h
+  actual = page.all('.property_group_general tr').to_h { |row| row.all('td').map(&:text) }
   assert_equal expected.rows_hash, actual
 end

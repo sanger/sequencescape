@@ -1,4 +1,7 @@
-class PacBioLibraryTube < Tube # rubocop:todo Style/Documentation
+# frozen_string_literal: true
+
+# Library tubes in legacy Sequencescape Pacbio pipelines
+class PacBioLibraryTube < Tube
   include Api::PacBioLibraryTubeIO::Extensions
 
   extend Metadata
@@ -7,12 +10,5 @@ class PacBioLibraryTube < Tube # rubocop:todo Style/Documentation
     custom_attribute(:binding_kit_barcode)
     custom_attribute(:smrt_cells_available)
     custom_attribute(:movie_length)
-  end
-
-  def protocols_for_select
-    ReferenceGenome.sorted_by_name.map { |x| [x.name, x.id] }.tap do |protocols|
-      reference_genome = primary_aliquot.sample.sample_reference_genome
-      protocols.unshift([reference_genome.name, reference_genome.id]) if reference_genome.present?
-    end
   end
 end

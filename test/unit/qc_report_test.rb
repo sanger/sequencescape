@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class QcReportTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
+class QcReportTest < ActiveSupport::TestCase
   context 'QcReport' do
     should belong_to :study
     should belong_to :product_criteria

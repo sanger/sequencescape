@@ -1,7 +1,14 @@
+# frozen_string_literal: true
 # Factory class primarily used by the API to generate new
 # pieces of {Asset labware}. In addition provides an audit trail to record who
 # created the Asset.
 class AssetCreation < ApplicationRecord
+  class ParentAssociation < ApplicationRecord # rubocop:todo Style/Documentation
+    self.table_name = ('asset_creation_parents')
+    belongs_to :asset_creation
+    belongs_to :parent, class_name: 'Labware'
+  end
+
   include Uuid::Uuidable
   include Asset::Ownership::ChangesOwner
   extend ModelExtensions::Plate::NamedScopeHelpers

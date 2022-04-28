@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Represents dilution plates such as
 #
 # - Working Dilution

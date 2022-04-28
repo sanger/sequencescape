@@ -6,26 +6,6 @@ Feature: Creating Spiked phiX
     Given I have a phiX tube called "Stock of phiX"
       And the "volume" of the asset called "Stock of phiX" is "200.0"
 
-  Scenario: The cluster formation team member create a batch that will use spiked in controls.
-    Given I have a batch with 8 requests for the "Cluster formation PE (spiked in controls)" pipeline
-    And  I have a hybridization spiked buffer called "Aliquot #1"
-    And the barcode for the asset "Aliquot #1" is "NP1G"
-
-    When I on batch page
-    And I follow "Add Spiked in Control"
-    And I fill in "Barcode" with the human barcode "NP1G"
-    And I check "sample 1 checkbox"
-    And I check "sample 2 checkbox"
-    And I check "sample 3 checkbox"
-    And I check "sample 4 checkbox"
-    And I check "sample 5 checkbox"
-    And I check "sample 6 checkbox"
-    And I check "sample 7 checkbox"
-    And I check "sample 8 checkbox"
-    And I press "Next step"
-    When I follow "Lane" within ".row0"
-    Then I should see "Spiked Buffer: Aliquot #1"
-
   # TODO: use factories for controls and batch
   @npg @xml
   Scenario: Create a batch and check the xml
@@ -36,14 +16,15 @@ Feature: Creating Spiked phiX
     When I on batch page
     And I follow "Add Spiked in Control"
     And I fill in "Barcode" with the human barcode "NP1G"
-    And I uncheck "sample 1 checkbox"
-    And I check "sample 2 checkbox"
-    And I uncheck "sample 3 checkbox"
-    And I uncheck "sample 4 checkbox"
-    And I uncheck "sample 5 checkbox"
-    And I uncheck "sample 6 checkbox"
-    And I uncheck "sample 7 checkbox"
-    And I uncheck "sample 8 checkbox"
+    And I uncheck "sample-1-checkbox"
+    And I check "sample-2-checkbox"
+    And I uncheck "sample-3-checkbox"
+    And I uncheck "sample-4-checkbox"
+    And I uncheck "sample-5-checkbox"
+    And I uncheck "sample-6-checkbox"
+    And I uncheck "sample-7-checkbox"
+    And I uncheck "sample-8-checkbox"
+    And I press "Next step"
     And I press "Next step"
 
     When I get the XML for the last batch

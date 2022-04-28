@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require_dependency 'tube/purpose'
 
 # Purposes of this class represent multiplexed library tubes in the high-throughput
@@ -42,7 +43,7 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
     source_plate_scope(tube).map(&:source_plate)
   end
 
-  def source_plate_scope(tube) # rubocop:todo Metrics/MethodLength
+  def source_plate_scope(tube)
     Plate
       .joins(wells: :requests)
       .where(

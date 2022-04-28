@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 namespace :product_heron do
   desc 'Modifying product criteria'
   task add: [:environment] do

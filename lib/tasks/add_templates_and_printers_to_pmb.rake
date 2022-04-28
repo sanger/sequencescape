@@ -1,9 +1,9 @@
+# frozen_string_literal: true
 require_relative '../label_printer/label_printer'
 require_relative '../../config/config'
 
 namespace :pmb do
   task add_label_templates: :environment do
-    # rubocop:todo Metrics/ClassLength
     class LabelTemplateCreator # rubocop:todo Style/Documentation
       attr_accessor :label_types
 
@@ -18,7 +18,7 @@ namespace :pmb do
 
         attr_reader :label_types
 
-        def label_type_params(label_type_name) # rubocop:todo Metrics/MethodLength
+        def label_type_params(label_type_name)
           label_params = {
             plate: {
               data: {
@@ -73,7 +73,7 @@ namespace :pmb do
           JSON.parse(res)['data']['id']
         end
 
-        def sqsc_96plate_label_template # rubocop:todo Metrics/MethodLength
+        def sqsc_96plate_label_template
           label_type_id = get_label_type_id('Plate')
           {
             'data' => {
@@ -177,7 +177,7 @@ namespace :pmb do
           }
         end
 
-        def sqsc_96plate_label_template_code39 # rubocop:todo Metrics/MethodLength
+        def sqsc_96plate_label_template_code39
           label_type_id = get_label_type_id('Plate')
           {
             'data' => {
@@ -286,7 +286,7 @@ namespace :pmb do
           }
         end
 
-        def sqsc_384plate_label_template # rubocop:todo Metrics/MethodLength
+        def sqsc_384plate_label_template
           label_type_id = get_label_type_id('Plate')
           {
             'data' => {
@@ -360,7 +360,7 @@ namespace :pmb do
           }
         end
 
-        def sqsc_1dtube_label_template # rubocop:todo Metrics/MethodLength
+        def sqsc_1dtube_label_template
           label_type_id = get_label_type_id('Tube')
           {
             'data' => {
@@ -444,7 +444,7 @@ namespace :pmb do
           }
         end
 
-        def swipecard_barcode_template # rubocop:todo Metrics/MethodLength
+        def swipecard_barcode_template
           {
             data: {
               attributes: {
@@ -487,7 +487,7 @@ namespace :pmb do
           }
         end
 
-        def plate_6mm_double # rubocop:todo Metrics/MethodLength
+        def plate_6mm_double
           {
             data: {
               attributes: {
@@ -577,9 +577,7 @@ namespace :pmb do
         end
 
         def get_names_and_ids(res)
-          JSON.parse(res)['data'].map do |label_type|
-            [label_type['attributes']['name'].downcase, label_type['id']]
-          end.to_h
+          JSON.parse(res)['data'].to_h { |label_type| [label_type['attributes']['name'].downcase, label_type['id']] }
         end
 
         def register_label_template(template)
@@ -591,7 +589,7 @@ namespace :pmb do
           end
         end
 
-        def execute # rubocop:todo Metrics/MethodLength
+        def execute
           unregistered_templates = [
             { name: 'sqsc_96plate_label_template', type: BarcodePrinterType96Plate },
             { name: 'sqsc_96plate_label_template_code39', type: BarcodePrinterType96Plate },
@@ -611,8 +609,6 @@ namespace :pmb do
         end
       end
     end
-
-    # rubocop:enable Metrics/ClassLength
 
     LabelTemplateCreator.execute
   end

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require File.dirname(__FILE__) + '/globals'
 require File.dirname(__FILE__) + '/support/options'
 

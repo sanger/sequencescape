@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Robot < ApplicationRecord # rubocop:todo Style/Documentation
   include Uuid::Uuidable
   include ModelExtensions::Robot
@@ -62,6 +63,10 @@ class Robot < ApplicationRecord # rubocop:todo Style/Documentation
     picking_data = Robot::PickData.new(batch, max_beds: max_beds).picking_data_hash(plate_barcode)[pick_number]
     layout = verification_behaviour.layout_data_object(picking_data)
     generation_behaviour.new(batch: batch, plate_barcode: plate_barcode, picking_data: picking_data, layout: layout)
+  end
+
+  def self.default_for_verification
+    with_verification_behaviour.first || first
   end
 
   private

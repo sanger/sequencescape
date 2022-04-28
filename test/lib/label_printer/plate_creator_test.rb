@@ -17,7 +17,6 @@ class PlateCreatorTest < ActiveSupport::TestCase
               :study_abbreviation,
               :purpose_name
 
-  # rubocop:todo Metrics/MethodLength
   def setup # rubocop:todo Metrics/AbcSize
     @parent_barcode = '1234'
     @studies = create_list :study, 1
@@ -45,11 +44,10 @@ class PlateCreatorTest < ActiveSupport::TestCase
       top_right: (purpose_name).to_s,
       bottom_right: "#{user} #{study_abbreviation}",
       top_far_right: (parent_barcode).to_s,
-      barcode: plate1.machine_barcode
+      barcode: plate1.machine_barcode,
+      label_name: 'main_label'
     }
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   test 'should have plates' do
     assert_equal plates, plate_label.assets

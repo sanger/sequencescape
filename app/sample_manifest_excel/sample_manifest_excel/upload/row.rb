@@ -19,9 +19,9 @@ module SampleManifestExcel
       validates :number, presence: true, numericality: true
       validate :sanger_sample_id_exists?, if: :sanger_sample_id
       validates_presence_of :data, :columns
-      validate :check_sample_present
-      validate :sample_can_be_updated
+
       delegate :present?, to: :sample, prefix: true
+      delegate :aliquots, :asset, to: :manifest_asset
 
       ##
       # Finds a sample based on the sanger_sample_id column. Must exist for row to be valid.
@@ -59,10 +59,7 @@ module SampleManifestExcel
       def aliquot
         @aliquot ||= manifest_asset.aliquot
       end
-
-      def asset
-        @asset ||= manifest_asset.asset
-      end
+      deprecate aliquot: 'Chromium manifests may have multiple aliquots. Please use aliquots instead.'
 
       def metadata
         @metadata ||= sample.sample_metadata
@@ -89,6 +86,7 @@ module SampleManifestExcel
         else
           update_specialised_fields(tag_group)
           asset.save!
+          update_metadata_fields
           metadata.save!
           sample.updated_by_manifest = true
           sample.empty_supplier_sample_name = false
@@ -99,12 +97,12 @@ module SampleManifestExcel
       # rubocop:enable Metrics/MethodLength
 
       def changed?
-        @sample_updated && sample.previous_changes.present? || metadata.previous_changes.present? ||
-          aliquot.previous_changes.present?
+        (@sample_updated && sample.previous_changes.present?) || metadata.previous_changes.present? ||
+          aliquots.any? { |a| a.previous_changes.present? }
       end
 
       def update_specialised_fields(tag_group)
-        specialised_fields.each { |specialised_field| specialised_field.update(aliquot: aliquot, tag_group: tag_group) }
+        specialised_fields.each { |specialised_field| specialised_field.update(tag_group: tag_group) }
       end
 
       def update_metadata_fields
@@ -141,6 +139,10 @@ module SampleManifestExcel
         @sample_skipped || sample_updated?
       end
 
+      def sample_created?
+        sample_updated? && !reuploaded?
+      end
+
       def aliquot_transferred?
         @aliquot_transferred
       end
@@ -154,6 +156,12 @@ module SampleManifestExcel
 
       def labware
         sample.primary_receptacle.labware
+      end
+
+      def validate_sample
+        check_sample_present
+        sample_can_be_updated
+        errors.empty?
       end
 
       private

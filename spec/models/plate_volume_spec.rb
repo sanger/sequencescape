@@ -70,7 +70,7 @@ describe PlateVolume do
       }
     end
 
-    setup do
+    before do
       plate_with_barcodes_in_csv
       plate_without_barcodes_in_csv
       described_class.process_all_volume_check_files(Rails.root.join('test/data/plate_volume'))

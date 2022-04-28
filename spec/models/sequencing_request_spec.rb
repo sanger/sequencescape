@@ -10,7 +10,7 @@ RSpec.describe SequencingRequest, type: :model do
     subject { sequencing_request.ready? }
 
     context 'with a reception event' do
-      setup { library_tube.create_scanned_into_lab_event!(content: '2018-01-01') }
+      before { library_tube.create_scanned_into_lab_event!(content: '2018-01-01') }
 
       context 'with no upstream requests as target' do
         it { is_expected.to be true }
@@ -115,7 +115,7 @@ RSpec.describe SequencingRequest, type: :model do
       # We don't convert, as a wrong unit shows a deviation from SOP, and possibly
       # indicated that the user has input the WRONG concentration
 
-      it { is_expected.to eq nil }
+      it { is_expected.to be_nil }
     end
 
     context 'with unpredictable information' do
@@ -123,7 +123,7 @@ RSpec.describe SequencingRequest, type: :model do
 
       # Have some ranges in the database.
 
-      it { is_expected.to eq nil }
+      it { is_expected.to be_nil }
     end
 
     context 'with lots of whitespace' do
@@ -132,6 +132,93 @@ RSpec.describe SequencingRequest, type: :model do
       # Have some ranges in the database.
 
       it { is_expected.to eq 20.0 }
+    end
+  end
+
+  context 'on start' do
+    let(:samples) { create_list :sample, 2 }
+    let(:study) { create :study, samples: samples }
+    let(:project) { create :project }
+    let(:destination) { create :receptacle }
+    let(:aliquots) { [aliquot1, aliquot2] }
+    let(:source) { create :receptacle, aliquots: aliquots }
+    let(:library_tube) { create :library_tube, receptacles: [source] }
+    let(:sequencing_request) do
+      create(
+        :sequencing_request,
+        asset: source,
+        target_asset: destination,
+        initial_study: study,
+        initial_project: project
+      )
+    end
+    let(:tags) { create_list :tag, 4 }
+
+    context 'when compound samples are not necessary because each aliquot has a unique tag combination' do
+      let(:aliquot1) { create :aliquot, sample: samples[0], tag_id: tags[0].id, tag2_id: tags[1].id, study: study }
+      let(:aliquot2) { create :aliquot, sample: samples[1], tag_id: tags[0].id, tag2_id: tags[2].id, study: study }
+
+      it 'performs a normal transfer of aliquots' do
+        expect(sequencing_request.target_asset.aliquots.count).to eq(0)
+        sequencing_request.start!
+        expect(sequencing_request.target_asset.aliquots.count).to eq(source.aliquots.count)
+        expect(sequencing_request.target_asset.samples.order(:id)).to eq(samples.sort)
+      end
+    end
+
+    context 'when compound samples are necessary because each aliquot does not have a unique tag combination' do
+      context 'when there is one tag combination' do
+        let(:aliquot1) do
+          create :aliquot,
+                 sample: samples[0],
+                 tag_id: tags[0].id,
+                 tag2_id: tags[1].id,
+                 tag_depth: 1,
+                 study: study,
+                 project: project
+        end
+        let(:aliquot2) do
+          create :aliquot,
+                 sample: samples[1],
+                 tag_id: tags[0].id,
+                 tag2_id: tags[1].id,
+                 tag_depth: 2,
+                 study: study,
+                 project: project
+        end
+
+        it 'creates a compound sample and transfers an aliquot of it' do
+          expect(sequencing_request.target_asset.aliquots.count).to eq(0)
+          sequencing_request.start!
+          expect(sequencing_request.target_asset.aliquots.count).to eq(1)
+          expect(sequencing_request.target_asset.samples.first.component_samples.order(:id)).to eq(samples.sort)
+        end
+      end
+
+      context 'when there are two tag combinations' do
+        let(:samples) { create_list :sample, 4 }
+        let(:aliquot1) do
+          create :aliquot, sample: samples[0], tag_id: tags[0].id, tag2_id: tags[1].id, tag_depth: 1, study: study
+        end
+        let(:aliquot2) do
+          create :aliquot, sample: samples[1], tag_id: tags[0].id, tag2_id: tags[1].id, tag_depth: 2, study: study
+        end
+        let(:aliquot3) do
+          create :aliquot, sample: samples[2], tag_id: tags[2].id, tag2_id: tags[3].id, tag_depth: 1, study: study
+        end
+        let(:aliquot4) do
+          create :aliquot, sample: samples[3], tag_id: tags[2].id, tag2_id: tags[3].id, tag_depth: 2, study: study
+        end
+        let(:aliquots) { [aliquot1, aliquot2, aliquot3, aliquot4] }
+
+        it 'creates two compound samples and transfers an aliquot of each' do
+          expect(sequencing_request.target_asset.aliquots.count).to eq(0)
+          sequencing_request.start!
+          expect(sequencing_request.target_asset.aliquots.count).to eq(2)
+          expect(sequencing_request.target_asset.samples.first.component_samples.order(:id)).to eq(samples[0..1].sort)
+          expect(sequencing_request.target_asset.samples.last.component_samples.order(:id)).to eq(samples[2..3].sort)
+        end
+      end
     end
   end
 end

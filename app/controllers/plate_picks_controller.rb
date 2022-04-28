@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Provides an interactive interface for quickly organizing plates into their
 # associated picks.
 class PlatePicksController < ApplicationController
@@ -42,7 +43,6 @@ class PlatePicksController < ApplicationController
 
   # rubocop:enable Metrics/MethodLength
 
-  # rubocop:todo Metrics/MethodLength
   def batches # rubocop:todo Metrics/AbcSize
     batch = Batch.find(params[:id])
 
@@ -74,5 +74,4 @@ class PlatePicksController < ApplicationController
   rescue ActiveRecord::RecordNotFound
     render json: { errors: 'Could not find batch in Sequencescape' }, status: 404
   end
-  # rubocop:enable Metrics/MethodLength
 end

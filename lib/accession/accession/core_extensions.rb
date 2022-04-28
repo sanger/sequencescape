@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Accession
   ##
   # Core Extensions provide extensions to standard classes

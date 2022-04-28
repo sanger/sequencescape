@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # A Type of robot
 
 # This class of verification is for robots where the source plates and control

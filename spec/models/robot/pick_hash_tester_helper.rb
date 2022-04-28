@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class PickHashTesterHelper
   def initialize(destination_plate, picks, time, user)
     @destination_plate = destination_plate
@@ -6,7 +7,7 @@ class PickHashTesterHelper
     @user = user
   end
 
-  def pickings_for(locations) # rubocop:todo Metrics/MethodLength
+  def pickings_for(locations)
     {
       'destination' => {
         @destination_plate.machine_barcode => {

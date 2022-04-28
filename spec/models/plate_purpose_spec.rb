@@ -7,7 +7,10 @@ describe PlatePurpose, type: :model do
   let(:plate_purpose) { create :plate_purpose, prefix: barcode_prefix, target_type: target_type, size: size }
 
   shared_examples 'a plate factory' do
-    setup { expect(PlateBarcode).to receive(:create).and_return(build(:plate_barcode, barcode: 1000)) }
+    # rubocop:todo RSpec/ExpectInHook
+    before { expect(PlateBarcode).to receive(:create).and_return(build(:plate_barcode, barcode: 1000)) }
+
+    # rubocop:enable RSpec/ExpectInHook
 
     describe '#create!' do
       subject { plate_purpose.create! }
@@ -21,17 +24,14 @@ describe PlatePurpose, type: :model do
       end
 
       it 'builds a plate of the correct size' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(subject.size).to eq size
       end
 
       it 'sets itself as the purpose' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(subject.purpose).to eq(plate_purpose)
       end
 
       it 'creates wells' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(subject.wells.count).to eq size
       end
     end

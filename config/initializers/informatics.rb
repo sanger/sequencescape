@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Initialisation for the Rails plugin
 
 require Rails.root.to_s + '/lib/informatics/lib/platform'

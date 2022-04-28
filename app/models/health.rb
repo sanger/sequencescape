@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Health # rubocop:todo Style/Documentation
   attr_reader :status, :message, :details
 

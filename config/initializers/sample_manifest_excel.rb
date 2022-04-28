@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require File.join(Rails.root, 'app', 'sample_manifest_excel', 'sample_manifest_excel')
 
 unless Rails.env.test?

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:todo Metrics/ClassLength
-class Parsers::BioanalysisCsvParser # rubocop:todo Style/Documentation
+class Parsers::BioanalysisCsvParser # rubocop:todo Style/Documentation, Metrics/ClassLength
   class InvalidFile < StandardError
   end
 
@@ -53,9 +52,7 @@ class Parsers::BioanalysisCsvParser # rubocop:todo Style/Documentation
   # - regexp -> Regular expression to be matched in the first column as beginning of range
   # - range -> In case it is specified, restricts the searching process to this range of lines
   # instead of using all the content of the CSV file
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def get_groups(regexp, range = nil) # rubocop:todo Metrics/CyclomaticComplexity
     groups = []
     group = []
@@ -79,9 +76,7 @@ class Parsers::BioanalysisCsvParser # rubocop:todo Style/Documentation
     groups
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   def get_group_content(group)
     content.slice(group[0], group[1] - group[0] + 1)
@@ -117,10 +112,13 @@ class Parsers::BioanalysisCsvParser # rubocop:todo Style/Documentation
   def parse_samples
     groups = get_groups(/Sample Name/)
 
-    groups.each_with_index.map do |group, pos|
-      next_index = (pos == (groups.length - 1)) ? @content.length - 1 : groups[pos + 1][0] - 1
-      [group[0], next_index]
-    end.reduce({}) { |memo, group| memo.merge(parse_sample group) }
+    groups
+      .each_with_index
+      .map do |group, pos|
+        next_index = (pos == (groups.length - 1)) ? @content.length - 1 : groups[pos + 1][0] - 1
+        [group[0], next_index]
+      end
+      .reduce({}) { |memo, group| memo.merge(parse_sample group) }
   end
 
   def parsed_content
@@ -152,4 +150,3 @@ class Parsers::BioanalysisCsvParser # rubocop:todo Style/Documentation
     content[0..10].detect { |line| /Version Created/ === line[0] && /^B.*/ === line[1] }.present?
   end
 end
-# rubocop:enable Metrics/ClassLength

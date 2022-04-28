@@ -1,5 +1,6 @@
+# frozen_string_literal: true
 # Controls API V1 IO for {::AssetGroup}
-class ::Io::AssetGroup < ::Core::Io::Base
+class Io::AssetGroup < ::Core::Io::Base
   set_model_for_input(::AssetGroup)
   set_json_root(:asset_group)
   set_eager_loading { |model| model.include_study.include_assets }

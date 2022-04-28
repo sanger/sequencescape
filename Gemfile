@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+next_rails = ENV['BUNDLE_GEMFILE']&.end_with?('GemfileNext')
 
 source 'https://rubygems.org'
 
@@ -6,11 +7,18 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 group :default do
   gem 'bootsnap'
-  gem 'rails', '~> 5.2.3'
+
+  if next_rails
+    gem 'rails', '~> 6.1.0'
+  else
+    gem 'rails', '~> 6.0.0'
+  end
 
   # State machine
   gem 'aasm'
-  gem 'after_commit_everywhere', '~> 0.1', '>= 0.1.5' # aasm requirement
+
+  # Required by AASM
+  gem 'after_commit_everywhere', '~> 1.0'
   gem 'configatron'
   gem 'formtastic'
   gem 'rest-client' # curb substitute.
@@ -48,8 +56,6 @@ group :default do
   # Locked for ruby version
   gem 'delayed_job_active_record'
 
-  gem 'irods_reader', '>=0.0.2', github: 'sanger/irods_reader'
-
   # For the API level
   gem 'json'
   gem 'multi_json'
@@ -72,7 +78,7 @@ group :default do
   # Future releases SHOULD contain the changes made in our fork, and should be adopted as soon as
   # reasonable once they are available. The next version looks like it may be v3.0.0, so be
   # aware of possible breaking changes.
-  gem 'axlsx', github: 'sanger/axlsx', branch: 'v2.0.2sgr'
+  gem 'caxlsx'
 
   # Excel file reading
   gem 'roo'
@@ -91,7 +97,7 @@ group :default do
   gem 'rainbow'
 
   # Compile js
-  gem 'webpacker'
+  gem 'vite_rails'
 
   # Authorization
   gem 'cancancan'
@@ -113,11 +119,11 @@ group :development do
   # find unused routes and controller actions by runnung `rake traceroute` from CL
   gem 'traceroute'
 
-  # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  gem 'mini_racer'
-
   # Pat of the JS assets pipleine
   gem 'uglifier', '>= 1.0.3'
+
+  # Rails 6 adds listen to assist with reloading
+  gem 'listen'
 end
 
 group :development, :linting do
@@ -136,7 +142,6 @@ end
 group :development, :test, :cucumber do
   gem 'pry-byebug'
   gem 'pry-rails'
-  gem 'pry-stack_explorer'
 
   # Asset compilation, js and style libraries
   gem 'bootstrap', '~>4.0' # Pinned as v5 has significant changes
@@ -144,7 +149,6 @@ group :development, :test, :cucumber do
   gem 'jquery-rails'
   gem 'jquery-ui-rails'
   gem 'knapsack_pro'
-  gem 'sassc', '2.1.0'
   gem 'sass-rails'
   gem 'select2-rails'
   gem 'webmock'
@@ -165,6 +169,7 @@ group :test do
 
   # Provides json expectations for rspec. Makes test more readable,
   # and test failures more descriptive.
+  gem 'rspec-github', require: false
   gem 'rspec-json_expectations', require: false
 
   # It is needed to use #assigns(attribute) in controllers tests
@@ -175,7 +180,6 @@ end
 
 group :test, :cucumber do
   gem 'capybara'
-  gem 'capybara-selenium'
   gem 'database_cleaner'
   gem 'factory_bot_rails', require: false
 
@@ -197,6 +201,8 @@ group :test, :cucumber do
   # Essentially does two things:
   # - Patches rails to share a database connection between threads while Testing
   # - Pathes rspec to ensure capybara has done its stuff before killing the connection
+  # Causing problems in Rails 6. Remove from Rspec, left in place for cucumber, but can
+  # probably be remove there as well.
   gem 'transactional_capybara'
 
   # Keep webdriver in sync with chrome to prevent frustrating CI failures
@@ -204,6 +210,7 @@ group :test, :cucumber do
 end
 
 group :cucumber do
+  gem 'cucumber_github_formatter'
   gem 'cucumber-rails', require: false
   gem 'mime-types'
   gem 'rubyzip'

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Request::CustomerResponsibility # rubocop:todo Style/Documentation
   def self.included(base)
     base::Metadata.class_eval do

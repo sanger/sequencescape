@@ -1,24 +1,11 @@
 
-<table width="100%" cellspacing="0" cellpadding="0">
-  <% if @task.per_item %>
-    <% @batch.requests.sort_by{|r| r.batch_request.position}.each do |request| %>
-    <tr>
-      <td width='35%' class='item'>Name: </td>
-      <td width='65%'>
-        <strong>Asset:</strong>   <%= request.asset.name -%></br>
-      </td>
-    </tr>
-      <%= render partial: 'descriptor', collection: @task.descriptors, locals: {request: request } %>
+  <% if @task.per_item_for(@batch.requests) %>
+    <% @batch.requests.sort_by(&:position).each do |request| %>
+      <h4>Request <%= request.position %>: <%= request.asset.display_name -%></h4>
+      <%= render partial: 'descriptor', collection: @task.descriptors_for(request), locals: { request: request } %>
     <% end %>
   <% else %>
-    <% if @task.descriptors.empty? or  @task.descriptors.first.name == "" %>
-      <tr>
-      <td colspan="2">No additional information required: this space left intentionally blank.</td>
-      </tr>
-    <% else %>
-      <%= render partial: 'descriptor', collection: @task.descriptors, locals: {request: nil } %>
-    <% end %>
+    <% descriptors = params[:descriptors].present? ? @task.descriptors_with_values(params[:descriptors]) :
+                                                     @task.descriptors_for(@batch.requests.first) %>
+    <%= render partial: 'descriptor', collection: descriptors, locals: { request: nil } %>
   <% end %>
-</table>
-
-

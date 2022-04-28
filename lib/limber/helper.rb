@@ -1,73 +1,10 @@
 # frozen_string_literal: true
 
+# Helper templates and methods used in limber.rake
 module Limber::Helper
   PIPELINE = 'Limber-Htp'
   PIPELINE_REGEX = /Illumina-[A-z]+ /.freeze
   PRODUCTLINE = 'Illumina-Htp'
-  DEFAULT_REQUEST_CLASS = 'IlluminaHtp::Requests::StdLibraryRequest'
-  DEFAULT_LIBRARY_TYPES = ['Standard'].freeze
-  DEFAULT_PURPOSES = ['LB Cherrypick'].freeze
-
-  # Build a Limber library creation request type
-  class RequestTypeConstructor
-    # rubocop:todo Metrics/ParameterLists
-    def initialize(
-      prefix,
-      request_class: DEFAULT_REQUEST_CLASS,
-      library_types: DEFAULT_LIBRARY_TYPES,
-      default_purposes: DEFAULT_PURPOSES,
-      for_multiplexing: false,
-      product_line: PRODUCTLINE
-    )
-      @prefix = prefix
-      @request_class = request_class
-      @library_types = library_types
-      @default_purposes = default_purposes
-      @for_multiplexing = for_multiplexing
-      @product_line = product_line
-    end
-
-    # rubocop:enable Metrics/ParameterLists
-
-    def key
-      "limber_#{@prefix.downcase.tr(' ', '_')}"
-    end
-
-    # Builds the corresponding request type, unless it
-    # already exists.
-    # rubocop:todo Metrics/MethodLength
-    def build! # rubocop:todo Metrics/AbcSize
-      rt =
-        RequestType
-          .create_with(
-            name: "Limber #{@prefix}",
-            request_class_name: @request_class,
-            asset_type: 'Well',
-            order: 1,
-            initial_state: 'pending',
-            billable: true,
-            product_line: ProductLine.find_or_create_by!(name: @product_line),
-            request_purpose: :standard,
-            for_multiplexing: @for_multiplexing
-          )
-          .find_or_create_by!(key: key)
-
-      rt.acceptable_plate_purposes = Purpose.where(name: @default_purposes)
-      rt_lts = rt.library_types.pluck(:name)
-      @library_types.each do |name|
-        rt.library_types << LibraryType.find_or_create_by!(name: name) unless rt_lts.include?(name)
-      end
-
-      return true if rt.request_type_validators.exists?(request_option: 'library_type')
-
-      RequestType::Validator.create!(
-        request_type: rt,
-        request_option: 'library_type',
-        valid_options: RequestType::Validator::LibraryTypeValidator.new(rt.id)
-      )
-    end
-    # rubocop:enable Metrics/MethodLength
-  end
 
   # Construct submission templates for the Limber pipeline
   class TemplateConstructor
@@ -76,7 +13,8 @@ module Limber::Helper
     # Required:
     # @attr [String] prefix The prefix for the given limber pipeline (eg. WGS)
     # @attr [ProductCatalogue] catalogue The product catalogue that matches the submission.
-    #                           Note: Most limber stuff will use a simple SingleProduct catalogue with a product names after the prefix.
+
+    # @note Most limber stuff will use a simple SingleProduct catalogue with a product names after the prefix.
 
     # The following parameters are optional, and usually get calculated from the prefix.
     # @attr_writer [String] name Optional: The library creation portion of the submission template name
@@ -222,7 +160,7 @@ module Limber::Helper
       @cherrypicked ? [true, false] : [false]
     end
 
-    def each_submission_template # rubocop:todo Metrics/MethodLength
+    def each_submission_template
       cherrypick_options.each do |cherrypick|
         sequencing_request_types.each do |sequencing_request_type|
           next if SubmissionTemplate.exists?(name: name_for(cherrypick, sequencing_request_type))
@@ -288,6 +226,15 @@ module Limber::Helper
       ids << [cherrypick_request_type.id] if cherrypick
       ids << [library_request_type.id]
       ids << [multiplexing_request_type.id] unless library_request_type.for_multiplexing?
+    end
+  end
+
+  def self.find_project(name)
+    if Rails.env.production?
+      Project.find_by!(name: name)
+    else
+      # In development mode or UAT we don't care so much
+      Project.find_by(name: name) || UatActions::StaticRecords.project
     end
   end
 end

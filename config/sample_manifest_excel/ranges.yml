@@ -45,6 +45,12 @@ dna_storage_conditions:
 library_type:
   identifier: :name
   scope: :alphabetical
+library_type_long_read:
+  identifier: :name
+  scope:
+    - :from_record_loaders
+    - 001_long_read
+  scope_on: LibraryType
 primer_panel:
   identifier: :name
   scope: :alphabetical
@@ -64,3 +70,7 @@ control_type:
   options:
     - "positive"
     - "negative"
+insdc_country:
+  identifier: :name
+  scope: :sorted_for_select
+  scope_on: Insdc::Country

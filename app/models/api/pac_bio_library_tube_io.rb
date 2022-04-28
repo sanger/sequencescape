@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Despite name controls rendering of warehouse messages for {PacBioLibraryTube}
 # Historically used to be v0.5 API
 class Api::PacBioLibraryTubeIO < Api::Base

@@ -1,9 +1,10 @@
+# frozen_string_literal: true
 class Parsers::QuantParser # rubocop:todo Style/Documentation
   class InvalidFile < StandardError
   end
 
-  HEADER_IDENTIFIER = 'Headers'.freeze
-  LOCATION_HEADER = 'Well Location'.freeze
+  HEADER_IDENTIFIER = 'Headers'
+  LOCATION_HEADER = 'Well Location'
   COLUMN_MAPS = {
     'concentration' => %w[concentration ng/ul],
     'molarity' => %w[molarity nmol/l],

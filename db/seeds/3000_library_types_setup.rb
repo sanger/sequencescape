@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
-# rubocop:todo Metrics/ModuleLength
-module SetupLibraryTypes # rubocop:todo Style/Documentation
-  def self.existing_associations_for(request_type) # rubocop:todo Metrics/MethodLength
+module SetupLibraryTypes # rubocop:todo Style/Documentation, Metrics/ModuleLength
+  def self.existing_associations_for(request_type)
     {
       'LibraryCreationRequest' => [
         'No PCR',
@@ -119,7 +118,7 @@ module SetupLibraryTypes # rubocop:todo Style/Documentation
     ]
   end
 
-  def self.existing_defaults_for(request_type) # rubocop:todo Metrics/MethodLength
+  def self.existing_defaults_for(request_type)
     {
       'LibraryCreationRequest' => 'Standard',
       'MultiplexedLibraryCreationRequest' => 'Standard',
@@ -137,38 +136,30 @@ module SetupLibraryTypes # rubocop:todo Style/Documentation
     ]
   end
 end
-# rubocop:enable Metrics/ModuleLength
+
 LibraryType.create!(
   [
     'No PCR',
     'High complexity and double size selected',
     'Illumina cDNA protocol',
-    'Agilent Pulldown',
     'Custom',
     'High complexity',
     'ChiP-seq',
     'NlaIII gene expression',
-    'Standard',
     'Long range',
     'Small RNA',
     'Double size selected',
     'DpnII gene expression',
-    'TraDIS',
     'qPCR only',
     'Pre-quality controlled',
     'DSN_RNAseq',
-    'RNA-seq dUTP',
-    'Manual Standard WGS (Plate)',
-    'ChIP-Seq Auto',
-    'TruSeq mRNA (RNA Seq)',
-    'Small RNA (miRNA)',
-    'RNA-seq dUTP eukaryotic',
-    'RNA-seq dUTP prokaryotic',
-    'No PCR (Plate)'
+    'RNA-seq dUTP'
   ].map { |name| { name: name } }
 )
 
 RequestType.find_each do |request_type|
+  next if request_type.key.starts_with? 'limber'
+
   library_types = LibraryType.where(name: SetupLibraryTypes.existing_associations_for(request_type))
 
   if library_types.present?
@@ -241,14 +232,14 @@ library_types =
   )
 
 %i[illumina_c_multiplexed_library_creation illumina_c_library_creation].each do |request_class_symbol|
-  request_type = RequestType.find_by(key: request_class_symbol.to_s)
+  request_type = RequestType.find_by!(key: request_class_symbol.to_s)
   library_types.each do |library_type|
     LibraryTypesRequestType.create!(request_type: request_type, library_type: library_type, is_default: false)
   end
 end
 
 libs_ribozero =
-  ['Ribozero RNA-seq (Bacterial)', 'Ribozero RNA-seq (HMR)'].map { |name| LibraryType.create!(name: name) }
+  ['Ribozero RNA-seq (Bacterial)', 'Ribozero RNA-seq (HMR)'].map { |name| LibraryType.find_or_create_by!(name: name) }
 
 libs_ribozero.each do |lib|
   %i[illumina_c_pcr illumina_c_pcr_no_pool].each do |request_class_symbol|
@@ -258,7 +249,7 @@ libs_ribozero.each do |lib|
 end
 
 RequestType.find_by(key: 'illumina_c_chromium_library').library_types =
-  LibraryType.create!(['Chromium genome', 'Chromium exome', 'Chromium single cell'].map { |name| { name: name } })
+  LibraryType.where(name: ['Chromium genome', 'Chromium exome', 'Chromium single cell'])
 RequestType::Validator.create!(
   request_type: RequestType.find_by(key: 'illumina_c_chromium_library'),
   request_option: 'library_type',

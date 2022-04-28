@@ -24,12 +24,10 @@ RSpec.describe QcResult, type: :model, qc_result: true do
   end
 
   it 'can have an assay type' do
-    # rubocop:todo RSpec/AggregateExamples
     expect(build(:qc_result).assay_type).to be_present
   end
 
   it 'can have an assay version' do
-    # rubocop:todo RSpec/AggregateExamples
     expect(build(:qc_result).assay_version).to be_present
   end
 
@@ -65,7 +63,8 @@ end
 describe QcResult, warren: true do
   let(:warren) { Warren.handler }
 
-  setup { warren.clear_messages }
+  before { warren.clear_messages }
+
   let(:resource) { build :qc_result }
   let(:routing_key) { 'message.qc_result.' }
 

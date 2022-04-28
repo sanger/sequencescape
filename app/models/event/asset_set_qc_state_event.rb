@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Event::AssetSetQcStateEvent < Event # rubocop:todo Style/Documentation
   class << self
     def create_updated!(asset, reason)

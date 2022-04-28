@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # {include:file:docs/api_v1.md}
 module Api
   # Sinatra application which provides routing for the V1 API
@@ -14,7 +15,7 @@ module Api
         condition { request.acceptable_media_types.prioritize(registered_mimetypes).present? == bool }
       end
 
-      def file_attatched(bool)
+      def file_attached(bool)
         condition { registered_mimetypes.include?(request.content_type) == bool }
       end
 
@@ -23,7 +24,7 @@ module Api
         send(
           http_method,
           %r{/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?},
-          file_attatched: true
+          file_attached: true
         ) do
           if request.acceptable_media_types.prioritize(registered_mimetypes).present?
             raise Core::Service::ContentFiltering::InvalidRequestedContentTypeOnFile
@@ -59,7 +60,7 @@ module Api
 
       # rubocop:todo Metrics/MethodLength
       def file_model_addition(action, http_method) # rubocop:todo Metrics/AbcSize
-        send(http_method, %r{/([^\d/][^/]+(?:/[^/]+){0,2})}, file_attatched: true) do
+        send(http_method, %r{/([^\d/][^/]+(?:/[^/]+){0,2})}, file_attached: true) do
           if request.acceptable_media_types.prioritize(registered_mimetypes).present?
             raise Core::Service::ContentFiltering::InvalidRequestedContentType
           end
@@ -96,7 +97,6 @@ module Api
         end
       end
 
-      # rubocop:todo Metrics/MethodLength
       def file_action(action, http_method) # rubocop:todo Metrics/AbcSize
         send(
           http_method,
@@ -117,14 +117,11 @@ module Api
         end
       end
 
-      # rubocop:enable Metrics/MethodLength
-
-      # rubocop:todo Metrics/MethodLength
       def instance_action(action, http_method) # rubocop:todo Metrics/AbcSize
         send(
           http_method,
           %r{/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?},
-          file_attatched: false,
+          file_attached: false,
           file_requested: false
         ) do
           report('instance') do
@@ -138,10 +135,8 @@ module Api
         end
       end
 
-      # rubocop:enable Metrics/MethodLength
-
       def model_action(action, http_method)
-        send(http_method, %r{/([^\d/][^/]+(?:/[^/]+){0,2})}, file_attatched: false, file_requested: false) do
+        send(http_method, %r{/([^\d/][^/]+(?:/[^/]+){0,2})}, file_attached: false, file_requested: false) do
           report('model') do
             determine_model_from_parts(*params[:captures].join.split('/')) do |model, parts|
               handle_request(:model, request, action, parts) do |request|

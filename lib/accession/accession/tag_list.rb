@@ -1,7 +1,10 @@
+# frozen_string_literal: true
 module Accession
   # Tags details are stored in config/accession/tags.yml
-  # Standard TagList is created on initialisation from this yaml file and can be reached through Accession.configuration.tags
-  # TagList that is specific to a particular sample can be created using #extract method (where 'record' is a Sequencescape Sample::Metadata object)
+  # Standard TagList is created on initialisation from this yaml file and can be reached through
+  # Accession.configuration.tags
+  # TagList that is specific to a particular sample can be created using #extract method (where 'record' is a
+  # Sequencescape Sample::Metadata object)
   # Tags contain information about a sample, that should be provided to an external service to accession the sample
   # Tags are used to validate a sample and to create a correct xml file for accessioning request.
 
@@ -37,9 +40,9 @@ module Accession
     # each key will be the group and each value will be a new TagList to allow tag list methods
     # to be called.
     def by_group
-      groups.each_with_object({}) { |v, h| h[v] = TagList.new }.tap do |result|
-        tags.values.each { |tag| tag.groups.each { |group| result[group] << tag } }
-      end
+      groups
+        .index_with { |_v| TagList.new }
+        .tap { |result| tags.values.each { |tag| tag.groups.each { |group| result[group] << tag } } }
     end
 
     def labels

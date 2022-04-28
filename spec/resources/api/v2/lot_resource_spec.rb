@@ -6,7 +6,7 @@ require './app/resources/api/v2/lot_resource'
 RSpec.describe Api::V2::LotResource, type: :resource do
   subject { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { create :lot }
+  let(:resource_model) { build_stubbed :lot }
 
   # Test attributes
   it 'has attributes', :aggregate_failures do

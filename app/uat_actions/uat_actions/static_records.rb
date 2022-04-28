@@ -7,7 +7,17 @@ module UatActions::StaticRecords
   # here to allow us to access it in the integration suite tools.
   SWIPECARD_CODE = '__uat_test__'
 
-  def self.study # rubocop:todo Metrics/MethodLength
+  def self.supplier
+    Supplier.find_or_create_by!(name: 'UAT Supplier')
+  end
+
+  def self.tube_purpose
+    Purpose
+      .create_with(target_type: 'SampleTube', type: 'Tube::Purpose', asset_shape_id: 1)
+      .find_or_create_by!(name: 'LCA Blood Vac')
+  end
+
+  def self.study
     Study
       .create_with(
         state: 'active',
@@ -34,7 +44,7 @@ module UatActions::StaticRecords
     DataReleaseStudyType.default || DataReleaseStudyType.find_or_create_by(name: 'UAT')
   end
 
-  def self.project # rubocop:todo Metrics/MethodLength
+  def self.project
     Project
       .create_with(
         approved: true,

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class RequestFactory # rubocop:todo Style/Documentation
   def self.copy_request(request)
     ActiveRecord::Base.transaction do

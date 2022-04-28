@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Some {Pipeline pipelines} group requests together in the inbox, such that all requests
 # in a plate MUST be selected together.
 # This takes the selected checkboxes and splits the information back out to the

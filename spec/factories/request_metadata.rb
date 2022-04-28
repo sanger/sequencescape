@@ -44,6 +44,10 @@ FactoryBot.define do
     factory :request_metadata_for_single_ended_hi_seq_sequencing
   end
 
+  factory :request_metadata_for_miseq_sequencing, parent: :request_metadata do
+    read_length { 25 }
+  end
+
   factory :hiseq_x_request_metadata, parent: :request_metadata do
     fragment_size_required_from { 1 }
     fragment_size_required_to { 21 }

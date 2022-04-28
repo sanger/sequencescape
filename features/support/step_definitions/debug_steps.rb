@@ -5,7 +5,7 @@ Then /^log "([^"]+)" for debugging$/ do |message|
 end
 
 Then /^launch the debugger$/ do
-  binding.pry
+  binding.pry # rubocop:disable Lint/Debugger
   puts
 end
 

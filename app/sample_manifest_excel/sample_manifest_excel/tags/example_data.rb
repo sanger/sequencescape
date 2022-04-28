@@ -32,7 +32,6 @@ module SampleManifestExcel
       # multiplex tube manifest uploads.
       # If duplicate is set to true the tag groups and indexes will be invalid for a
       # multiplexed library tube.
-      # rubocop:todo Metrics/MethodLength
       def take_as_groups_and_indexes(first, last, duplicate = false) # rubocop:todo Metrics/AbcSize
         tag_groups = FactoryBot.create_list(:tag_group, 2, tag_count: (last - first) + 1)
 
@@ -48,8 +47,6 @@ module SampleManifestExcel
           hsh[last] = hsh[first] if duplicate
         end
       end
-
-      # rubocop:enable Metrics/MethodLength
 
       private
 

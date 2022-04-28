@@ -1,6 +1,6 @@
+# frozen_string_literal: true
 require 'aasm'
 
-# rubocop:todo Metrics/ClassLength
 class Project < ApplicationRecord # rubocop:todo Style/Documentation
   # It has to be here, as there are has_many through: :orders associations in modules
   has_many :orders
@@ -20,7 +20,7 @@ class Project < ApplicationRecord # rubocop:todo Style/Documentation
     Project.aasm.states.map(&:name)
   end
 
-  ACTIVE_STATE = 'active'.freeze
+  ACTIVE_STATE = 'active'
   has_many_events
   has_many_lab_events
 
@@ -147,4 +147,3 @@ class Project < ApplicationRecord # rubocop:todo Style/Documentation
           )
         }
 end
-# rubocop:enable Metrics/ClassLength

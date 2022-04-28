@@ -94,7 +94,9 @@ Given /^user "([^"]*)" has a user barcode of "([^"]*)"$/ do |login, user_barcode
   user.update!(barcode: user_barcode)
 end
 
+# rubocop:todo Layout/LineLength
 Then /^the downloaded robot file for batch "([^"]*)" and plate "([^"]*)" is$/ do |batch_barcode, plate_barcode, tecan_file|
+  # rubocop:enable Layout/LineLength
   batch = Batch.find_by_barcode(batch_barcode) or
     raise StandardError, "Cannot find batch with barcode #{batch_barcode.inspect}"
 

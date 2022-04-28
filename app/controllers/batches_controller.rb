@@ -18,7 +18,6 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
                   fail
                   print_labels
                   print_plate_labels
-                  print_multiplex_labels
                   print
                   verify
                   verify_tube_layout
@@ -27,12 +26,9 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
                   filtered
                   swap
                   download_spreadsheet
-                  pacbio_sample_sheet
-                  sample_prep_worksheet
                 ]
-  before_action :find_batch_by_batch_id, only: %i[sort print_multiplex_barcodes print_plate_barcodes print_barcodes]
+  before_action :find_batch_by_batch_id, only: %i[sort print_plate_barcodes print_barcodes]
 
-  # rubocop:todo Metrics/MethodLength
   def index # rubocop:todo Metrics/AbcSize
     if logged_in?
       @user = params.fetch(:user, current_user)
@@ -47,8 +43,6 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
       format.json { render json: @batches.to_json.gsub(/null/, '""') }
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   # rubocop:todo Metrics/MethodLength
   def show # rubocop:todo Metrics/AbcSize
@@ -193,7 +187,6 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     @fail_reasons = @batch.workflow.source_is_internal? ? FAILURE_REASONS['internal'] : FAILURE_REASONS['external']
   end
 
-  # rubocop:todo Metrics/MethodLength
   def fail_items # rubocop:todo Metrics/AbcSize
     ActiveRecord::Base.transaction do
       fail_params =
@@ -208,11 +201,11 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
   def sort
     @batch.assign_positions_to_requests!(params['requests_list'].map(&:to_i))
-    @batch.rebroadcast
+
+    # Touch the batch to update its timestamp and trigger re-broadcast
+    @batch.touch # rubocop:disable Rails/SkipsModelValidations
     head :ok
   end
 
@@ -222,11 +215,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   def print_labels; end
 
-  def print_stock_labels
-    @batch = Batch.find(params[:id])
-  end
-
-  def print_plate_labels # rubocop:todo Metrics/MethodLength
+  def print_plate_labels
     @pipeline = @batch.pipeline
     @output_barcodes = []
 
@@ -246,47 +235,6 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     redirect_to controller: 'batches', action: 'show', id: @batch.id
   end
 
-  def print_multiplex_labels # rubocop:todo Metrics/AbcSize
-    request = @batch.requests.first
-    if request.tag_number.nil?
-      flash[:error] = 'No tags have been assigned.'
-    elsif request.target_asset.present? && request.target_asset.children.present?
-      # We are trying to find the MX library tube or the stock MX library
-      # tube. I've added a filter so it doesn't pick up Lanes.
-      children = request.target_asset.children.last.children.select { |a| a.is_a?(Tube) }
-      @asset = children.empty? ? request.target_asset.children.last : request.target_asset.children.last.children.last
-    else
-      flash[:notice] = 'There is no multiplexed library available.'
-    end
-  end
-
-  # rubocop:todo Metrics/MethodLength
-  def print_stock_multiplex_labels # rubocop:todo Metrics/AbcSize
-    @batch = Batch.find(params[:id])
-    request = @batch.requests.first
-    pooled_library = request.target_asset.children.first
-    stock_multiplexed_tube = nil
-
-    if pooled_library.is_a_stock_asset?
-      stock_multiplexed_tube = pooled_library
-    elsif pooled_library.has_stock_asset?
-      stock_multiplexed_tube = pooled_library.stock_asset
-    end
-
-    if stock_multiplexed_tube.nil?
-      flash[:notice] = 'There is no stock multiplexed library available.'
-      redirect_to controller: 'batches', action: 'show', id: @batch.id
-    else
-      @asset = stock_multiplexed_tube
-    end
-  end
-
-  # rubocop:enable Metrics/MethodLength
-
-  def print_multiplex_barcodes
-    print_handler(LabelPrinter::Label::BatchMultiplex)
-  end
-
   def print_plate_barcodes
     print_handler(LabelPrinter::Label::BatchRedirect)
   end
@@ -300,29 +248,25 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
   end
 
-  # rubocop:todo Metrics/MethodLength
+  # Handles printing of the worksheet
   def print # rubocop:todo Metrics/AbcSize
-    @task = Task.find(params[:task_id]) if params[:task_id]
-    @workflow = @batch.workflow
+    @task = Task.find_by(id: params[:task_id])
     @pipeline = @batch.pipeline
     @comments = @batch.comments
+    template = @pipeline.batch_worksheet
 
-    robot_id = params.fetch(:robot_id, @batch.robot_id)
-
-    @robot = robot_id ? Robot.find(robot_id) : Robot.with_verification_behaviour.first
-
-    # Fall-back
-    @robot ||= Robot.first
-
-    if @pipeline.is_a?(CherrypickingPipeline)
+    if template == 'cherrypick_worksheet'
+      robot_id = params.fetch(:robot_id, @batch.robot_id)
+      @robot = robot_id ? Robot.find(robot_id) : Robot.default_for_verification
       @plates = params[:barcode] ? Plate.with_barcode(params[:barcode]) : @batch.output_plates
     end
 
-    template = @pipeline.batch_worksheet
-    render action: template, layout: false
+    if template
+      render action: template, layout: false
+    else
+      redirect_back fallback_location: batch_path(@batch), alert: "No worksheet for #{@pipeline.name}"
+    end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def verify
     @requests = @batch.ordered_requests
@@ -333,12 +277,10 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
   def verify_tube_layout # rubocop:todo Metrics/AbcSize
     tube_barcodes = Array.new(@batch.requests.count) { |i| params["barcode_#{i}"] }
 
-    results = @batch.verify_tube_layout(tube_barcodes, current_user)
-
-    if results
+    if @batch.verify_tube_layout(tube_barcodes, current_user)
       flash[:notice] = 'All of the tubes are in their correct positions.'
       redirect_to batch_path(@batch)
-    elsif !results
+    else
       flash[:error] = @batch.errors.full_messages.sort
       redirect_to action: :verify, id: @batch.id
     end
@@ -360,7 +302,6 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   def filtered; end
 
-  # rubocop:todo Metrics/MethodLength
   def swap # rubocop:todo Metrics/AbcSize
     if @batch.swap(
          current_user,
@@ -381,8 +322,6 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
   # Used in Cherrypicking pipeline to generate the template for CSV driven picks
   def download_spreadsheet
     csv_string = Tasks::PlateTemplateHandler.generate_spreadsheet(@batch)
@@ -395,16 +334,6 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   def find_batch_by_batch_id
     @batch = Batch.find(params[:batch_id])
-  end
-
-  def pacbio_sample_sheet
-    csv_string = PacBio::SampleSheet.new.create_csv_from_batch(@batch)
-    send_data csv_string, type: 'text/plain', filename: "batch_#{@batch.id}_sample_sheet.csv", disposition: 'attachment'
-  end
-
-  def sample_prep_worksheet
-    csv_string = PacBio::Worksheet.new.create_csv_from_batch(@batch)
-    send_data csv_string, type: 'text/plain', filename: "batch_#{@batch.id}_worksheet.csv", disposition: 'attachment'
   end
 
   def find_batch_by_barcode
@@ -421,7 +350,6 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   private
 
-  # rubocop:todo Metrics/MethodLength
   def print_handler(print_class) # rubocop:todo Metrics/AbcSize
     print_job =
       LabelPrinter::PrintJob.new(
@@ -440,11 +368,9 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     redirect_to controller: 'batches', action: 'show', id: @batch.id
   end
 
-  # rubocop:enable Metrics/MethodLength
-
   def pipeline_error_on_batch_creation(message)
     respond_to do |format|
-      flash[:error] = message
+      flash[:error] = truncate_flash(message)
       format.html { redirect_to pipeline_url(@pipeline) }
     end
     nil
@@ -462,8 +388,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   # This is the expected create behaviour, and is only in a separate
   # method due to the overloading on the create endpoint.
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
   def standard_create(requests) # rubocop:todo Metrics/CyclomaticComplexity
     unless @pipeline.all_requests_from_submissions_selected?(requests)
       return pipeline_error_on_batch_creation('All plates in a submission must be selected')
@@ -476,8 +401,8 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     begin
       ActiveRecord::Base.transaction { @batch = @pipeline.batches.create!(requests: requests, user: current_user) }
     rescue ActiveRecord::RecordNotUnique => e
-      # We don't explicitly check for this on creation of batch_request for performance reasons, and the front end usually
-      # ensures this situation isn't possible. However if the user opens duplicate tabs it is possible.
+      # We don't explicitly check for this on creation of batch_request for performance reasons, and the front end
+      # usually ensures this situation isn't possible. However if the user opens duplicate tabs it is possible.
       # Fortunately we can detect the corresponding exception, and generate a friendly error message.
 
       # If this isn't the exception we're expecting, re-raise it.
@@ -486,14 +411,10 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
       # Find the requests which caused the clash.
       batched_requests = BatchRequest.where(request_id: requests.map(&:id)).pluck(:request_id)
 
-      # Limit the length of the error message, otherwise big batches may generate errors which are too
-      # big to pass back in the flash.
-      listed_requests = batched_requests.join(', ').truncate(200, separator: ' ')
-
       # And finally report the error
       return(
         pipeline_error_on_batch_creation(
-          "Could not create batch as requests were already in a batch: #{listed_requests}"
+          "Could not create batch as requests were already in a batch: #{batched_requests.to_sentence}"
         )
       )
     end
@@ -504,8 +425,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   def request_parameters
     params.permit(request: {}, request_group: {}).to_h

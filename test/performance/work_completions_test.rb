@@ -6,7 +6,6 @@ require 'rails/performance_test_help'
 class WorkCompletionsTest < ActionDispatch::PerformanceTest
   self.profile_options = { runs: 1, metrics: %i[wall_time memory], formats: [:flat] }
 
-  # rubocop:todo Metrics/MethodLength
   def setup # rubocop:todo Metrics/AbcSize
     @user = create :user
 
@@ -35,17 +34,12 @@ class WorkCompletionsTest < ActionDispatch::PerformanceTest
              state: 'started'
     end
     submission_request_types[1..].each do |downstream_type|
-      input_plate
-        .wells
-        .count
-        .times do
-          create :multiplex_request, request_type: downstream_type, submission: @target_submission
-          create :multiplex_request, request_type: downstream_type, submission: decoy_submission
-        end
+      input_plate.wells.count.times do
+        create :multiplex_request, request_type: downstream_type, submission: @target_submission
+        create :multiplex_request, request_type: downstream_type, submission: decoy_submission
+      end
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   test 'WorkCompletion.create performance' do
     ActiveRecord::Base.transaction do

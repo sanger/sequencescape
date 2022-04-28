@@ -9,18 +9,35 @@ module CsvParserClient
     endpoint = configatron.tube_rack_scans_microservice_url
     response = Net::HTTP.get_response(URI(endpoint + tube_rack_barcode))
 
+    if response.body.nil?
+      error_message =
+        # rubocop:todo Layout/LineLength
+        "Scan could not be retrieved for tube rack with barcode #{tube_rack_barcode}. Service responded with status code #{response.code}"
+
+      # rubocop:enable Layout/LineLength
+      error_message += " and message #{response.message}."
+      object_to_add_errors_to.errors.add(:base, error_message)
+      return nil
+    end
+
     begin
       scan_results = JSON.parse(response.body)
     rescue JSON::JSONError => e
       error_message =
+        # rubocop:todo Layout/LineLength
         "Response when trying to retrieve scan (tube rack with barcode #{tube_rack_barcode}) was not valid JSON so could not be understood. Error message: #{e.message}"
+
+      # rubocop:enable Layout/LineLength
       object_to_add_errors_to.errors.add(:base, error_message)
       return nil
     end
 
     unless response.code == '200'
       error_message =
+        # rubocop:todo Layout/LineLength
         "Scan could not be retrieved for tube rack with barcode #{tube_rack_barcode}. Service responded with status code #{response.code}"
+
+      # rubocop:enable Layout/LineLength
       error_message += " and the following message: #{scan_results['error']}"
       object_to_add_errors_to.errors.add(:base, error_message)
       return nil

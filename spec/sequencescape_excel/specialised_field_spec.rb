@@ -206,39 +206,40 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
   end
 
   describe SequencescapeExcel::SpecialisedField::SangerPlateId do
-    let!(:sample_1) { create(:sample_with_well) }
-    let!(:sample_1_plate) { sample_1.wells.first.plate }
-    let(:sample_manifest_asset_1) { create :sample_manifest_asset, asset: sample_1.primary_receptacle }
+    let!(:sample1) { create(:sample_with_well) }
+    let!(:sample1_plate) { sample1.wells.first.plate }
+    let(:sample_manifest_asset1) { create :sample_manifest_asset, asset: sample1.primary_receptacle }
 
     it 'will be valid if the value matches the sanger human barcode' do
       expect(
-        described_class.new(value: sample_1_plate.human_barcode, sample_manifest_asset: sample_manifest_asset_1)
+        described_class.new(value: sample1_plate.human_barcode, sample_manifest_asset: sample_manifest_asset1)
       ).to be_valid
-      expect(described_class.new(value: '1234', sample_manifest_asset: sample_manifest_asset_1)).not_to be_valid
+      expect(described_class.new(value: '1234', sample_manifest_asset: sample_manifest_asset1)).not_to be_valid
     end
 
     describe 'with foreign barcodes' do
-      let!(:sample_2) { create(:sample_with_well) }
-      let(:sample_manifest_asset_2) { create :sample_manifest_asset, asset: sample_2.primary_receptacle }
+      let!(:sample2) { create(:sample_with_well) }
+      let(:sample_manifest_asset2) { create :sample_manifest_asset, asset: sample2.primary_receptacle }
 
       it 'will be valid if the value matches an unused cgap foreign barcode' do
-        expect(described_class.new(value: 'CGAP-ABC001', sample_manifest_asset: sample_manifest_asset_1)).to be_valid
+        expect(described_class.new(value: 'CGAP-ABC001', sample_manifest_asset: sample_manifest_asset1)).to be_valid
       end
 
       it 'will not be valid if the value matches an already used cgap foreign barcode' do
-        sample_1_plate.barcodes << Barcode.new(format: :cgap, barcode: 'CGAP-ABC011')
-        expect(
-          described_class.new(value: 'CGAP-ABC011', sample_manifest_asset: sample_manifest_asset_2)
-        ).not_to be_valid
+        sample1_plate.barcodes << Barcode.new(format: :cgap, barcode: 'CGAP-ABC011')
+        expect(described_class.new(value: 'CGAP-ABC011', sample_manifest_asset: sample_manifest_asset2)).not_to be_valid
       end
 
       it 'will be valid to overwrite a foreign barcode with a new foreign barcode of the same format' do
-        sample_1_plate.barcodes << Barcode.new(format: :cgap, barcode: 'CGAP-ABC011')
-        field = described_class.new(value: 'CGAP-ABC022', sample_manifest_asset: sample_manifest_asset_1)
+        sample1_plate.barcodes << Barcode.new(format: :cgap, barcode: 'CGAP-ABC011')
+        field = described_class.new(value: 'CGAP-ABC022', sample_manifest_asset: sample_manifest_asset1)
         expect(field).to be_valid
-        field.update(aliquot: sample_1.wells.first.aliquots.first)
-        expect(sample_1_plate.barcodes.find { |item| item[:barcode] == 'CGAP-ABC011' }).to be_nil
-        expect(sample_1_plate.barcodes.find { |item| item[:barcode] == 'CGAP-ABC022' }).not_to be_nil
+
+        field.update(aliquot: sample1.wells.first.aliquots.first)
+
+        sample1_plate.reload
+        expect(sample1_plate.barcodes.find { |item| item[:barcode] == 'CGAP-ABC011' }).to be_nil
+        expect(sample1_plate.barcodes.find { |item| item[:barcode] == 'CGAP-ABC022' }).not_to be_nil
       end
     end
   end
@@ -250,38 +251,40 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
   end
 
   describe SequencescapeExcel::SpecialisedField::SangerTubeId do
-    let!(:sample_1) { create(:sample) }
-    let!(:sample_1_tube) { create(:sample_tube_with_sanger_sample_id, sample: sample_1) }
+    let!(:sample1) { create(:sample) }
+    let!(:sample1_tube) { create(:sample_tube_with_sanger_sample_id, sample: sample1) }
 
-    let(:manifest_asset) { create :sample_manifest_asset, asset: sample_1_tube }
+    let(:manifest_asset) { create :sample_manifest_asset, asset: sample1_tube }
 
     it 'will be valid if the value matches the sanger human barcode' do
-      expect(described_class.new(value: sample_1_tube.human_barcode, sample_manifest_asset: manifest_asset)).to be_valid
+      expect(described_class.new(value: sample1_tube.human_barcode, sample_manifest_asset: manifest_asset)).to be_valid
       expect(described_class.new(value: '1234', sample_manifest_asset: manifest_asset)).not_to be_valid
     end
 
     describe 'with foreign barcodes' do
-      let!(:sample_2) { create(:sample) }
-      let!(:sample_2_tube) { create(:sample_tube_with_sanger_sample_id, sample: sample_2) }
-      let(:manifest_asset2) { create :sample_manifest_asset, asset: sample_2_tube }
+      let!(:sample2) { create(:sample) }
+      let!(:sample2_tube) { create(:sample_tube_with_sanger_sample_id, sample: sample2) }
+      let(:manifest_asset2) { create :sample_manifest_asset, asset: sample2_tube }
 
       it 'will be valid if the value matches an unused cgap foreign barcode' do
         expect(described_class.new(value: 'CGAP-ABC001', sample_manifest_asset: manifest_asset)).to be_valid
       end
 
       it 'will not be valid if the value matches an already used cgap foreign barcode' do
-        sample_1_tube.barcodes << Barcode.new(format: :cgap, barcode: 'CGAP-ABC011')
+        sample1_tube.barcodes << Barcode.new(format: :cgap, barcode: 'CGAP-ABC011')
         expect(described_class.new(value: 'CGAP-ABC011', sample_manifest_asset: manifest_asset2)).not_to be_valid
       end
 
       it 'will be valid to overwrite a foreign barcode with a new foreign barcode of the same format' do
-        sample_1_tube.barcodes << Barcode.new(format: :cgap, barcode: 'CGAP-ABC011')
+        sample1_tube.barcodes << Barcode.new(format: :cgap, barcode: 'CGAP-ABC011')
         field = described_class.new(value: 'CGAP-ABC022', sample_manifest_asset: manifest_asset)
         expect(field).to be_valid
-        field.update(aliquot: sample_1_tube.aliquots.first)
-        sample_1_tube.reload
-        expect(sample_1_tube.barcodes.find { |item| item[:barcode] == 'CGAP-ABC011' }).to be_nil
-        expect(sample_1_tube.barcodes.find { |item| item[:barcode] == 'CGAP-ABC022' }).not_to be_nil
+
+        field.update(aliquot: sample1_tube.aliquots.first)
+
+        sample1_tube.reload
+        expect(sample1_tube.barcodes.find { |item| item[:barcode] == 'CGAP-ABC011' }).to be_nil
+        expect(sample1_tube.barcodes.find { |item| item[:barcode] == 'CGAP-ABC022' }).not_to be_nil
       end
     end
   end
@@ -401,9 +404,9 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
 
       it 'responds to update method but does nothing to tag on aliquot' do
         sf_tag_group = described_class.new(value: tag_group_name, sample_manifest_asset: sample_manifest_asset)
-        expect(sf_tag_group.update(aliquot: aliquot, tag_group: nil)).to eq(nil)
+        expect(sf_tag_group.update(aliquot: aliquot, tag_group: nil)).to be_nil
         aliquot.save
-        expect(aliquot.tag).to eq(nil)
+        expect(aliquot.tag).to be_nil
       end
     end
 
@@ -453,7 +456,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
           expect(tag).to be_present
           tag.oligo = nil
           tag.save
-          expect(tag.oligo).to eq(nil)
+          expect(tag.oligo).to be_nil
           sf_tag_index.update(aliquot: aliquot, tag_group: nil)
           aliquot.save
           expect(aliquot.tag_id).to eq(-1)
@@ -477,9 +480,9 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
 
       it 'responds to update method but does nothing to tag2 on aliquot' do
         sf_tag2_group = described_class.new(value: tag2_group_name, sample_manifest_asset: sample_manifest_asset)
-        expect(sf_tag2_group.update(aliquot: aliquot, tag_group: nil)).to eq(nil)
+        expect(sf_tag2_group.update(aliquot: aliquot, tag_group: nil)).to be_nil
         aliquot.save
-        expect(aliquot.tag2).to eq(nil)
+        expect(aliquot.tag2).to be_nil
       end
     end
 
@@ -545,7 +548,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
           expect(tag2).to be_present
           tag2.oligo = nil
           tag2.save
-          expect(tag2.oligo).to eq(nil)
+          expect(tag2.oligo).to be_nil
           sf_tag2_index.update(aliquot: aliquot, tag_group: nil)
           aliquot.save
           expect(aliquot.tag2_id).to eq(-1)
@@ -582,9 +585,9 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
 
       it 'responds to update method but does nothing to tag on aliquot' do
         sf_tag_group = described_class.new(value: tag_group_name, sample_manifest_asset: sample_manifest_asset)
-        expect(sf_tag_group.update(aliquot: aliquot, tag_group: nil)).to eq(nil)
+        expect(sf_tag_group.update(aliquot: aliquot, tag_group: nil)).to be_nil
         aliquot.save
-        expect(aliquot.tag).to eq(nil)
+        expect(aliquot.tag).to be_nil
       end
     end
 
@@ -624,6 +627,15 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
         it 'will apply the four tags associated with the map_id' do
           sf_tag_well.update(aliquot: aliquot, tag_group: nil)
           expect(asset.aliquots.map { |a| a.tag.map_id }).to contain_exactly(1, 2, 3, 4)
+        end
+
+        context 'when applied to a re-upload' do
+          let(:asset) { create(:tagged_well, map: map, aliquot_count: 4) }
+
+          it 'will apply the four tags associated with the map_id' do
+            sf_tag_well.update(aliquot: aliquot, tag_group: nil)
+            expect(asset.aliquots.map { |a| a.tag.map_id }).to contain_exactly(1, 2, 3, 4)
+          end
         end
       end
     end
@@ -708,7 +720,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
       specialised_field = described_class.new(value: 'positive', sample_manifest_asset: sample_manifest_asset)
       specialised_field.update(aliquot: aliquot)
       aliquot.save
-      expect(sample_manifest_asset.sample.control).to eq(true)
+      expect(sample_manifest_asset.sample.control).to be(true)
       expect(sample_manifest_asset.sample.control_type).to eq('positive')
     end
 
@@ -720,8 +732,8 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
       specialised_field = described_class.new(value: '', sample_manifest_asset: sample_manifest_asset)
       specialised_field.update(aliquot: aliquot)
       aliquot.save
-      expect(sample_manifest_asset.sample.control).to eq(false)
-      expect(sample_manifest_asset.sample.control_type).to eq(nil)
+      expect(sample_manifest_asset.sample.control).to be(false)
+      expect(sample_manifest_asset.sample.control_type).to be_nil
     end
   end
 end

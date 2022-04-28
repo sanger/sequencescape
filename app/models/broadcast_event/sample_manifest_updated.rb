@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class BroadcastEvent::SampleManifestUpdated < BroadcastEvent # rubocop:todo Style/Documentation
   set_event_type 'sample_manifest.updated'
 

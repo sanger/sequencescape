@@ -6,16 +6,17 @@ require:
   - rubocop-performance
   - rubocop-rails
   - rubocop-rspec
+
 RSpec/AggregateExamples:
-  AddAggregateFailuresMetadata: false
+  # Aggregate examples can be useful, but the cop gets into nasty battles with
+  # other Spec cops, and is only really of value in expensive tests.
+  Enabled: false
 # Added exclude because api and feature specs do not have a specific class.
 RSpec/DescribeClass:
   Exclude:
     - "spec/requests/**/*.rb"
     - "spec/api/**/*.rb"
     - "spec/features/**/*.rb"
-    - "spec/lib/warren/*.rb"
-    - "spec/models/billing/*.rb"
 AllCops:
   NewCops: enable
   Exclude:
@@ -47,12 +48,6 @@ Rails:
 Lint/AmbiguousRegexpLiteral:
   Exclude:
     - features/support/step_definitions/**/*
-# These steps are explicitly designed for debugging. In general usage, they wont
-# be used.
-Lint/Debugger:
-  Exclude:
-    - "features/support/step_definitions/debug_steps.rb"
-    - "features/support/developing.rb"
 # Enforces 1234565789 as 123_456_789: While nice when dealing with actual big
 # numbers, we're more likely to see it shout at us about barcodes.
 Style/NumericLiterals:
@@ -69,6 +64,10 @@ Metrics/BlockLength:
     - Gemfile
     - "db/seeds/**/*"
     - "**/*.builder"
+  CountAsOne:
+    - array
+    - hash
+    - heredoc
   IgnoredMethods:
     - describe
     - context
@@ -101,39 +100,28 @@ Metrics/BlockLength:
     - redefine_aasm
     - model
     - step
-    # Less sure that these should be excluded.
-    # Lots of code in them is bad, however we also have things like
-    # expected outputs, which can be large
-    - setup
-    - test
-    - before
-    - should
 # We have a few custom find_by methods which we maintain.
 # At least for now. find_by_id_or_name is a bit clunky.
 Rails/DynamicFindBy:
   Exclude:
     - "app/sample_manifest_excel/**/*"
     - "test/app/sample_manifest_excel/**/*"
-  Whitelist:
+  AllowedMethods:
     - find_by_sql
     - find_by_id_or_name
     - find_by_id_or_name!
     - find_by_barcode
-    - find_by_or_null
 # Method length limits make little sense when you are describing a table schema
 # or a view.
 Metrics/MethodLength:
   Exclude:
     - "db/migrate/*"
-    - "db/migrate_asset_refactor/*"
-Layout/FirstArrayElementIndentation:
-  EnforcedStyle: consistent
+  CountAsOne:
+    - array
+    - hash
+    - heredoc
 Style/ClassAndModuleChildren:
   Enabled: false
-# This should be the rubocop defaults, not sure why its kicking up a fuss.
-Layout/SpaceBeforeBlockBraces:
-  EnforcedStyle: space
-  EnforcedStyleForEmptyBraces: space
 Rails/UnknownEnv:
   Environments:
     - production
@@ -146,6 +134,38 @@ RSpec/ExampleLength:
   inherit_mode:
     merge:
       - Exclude
+  CountAsOne:
+    - array
+    - hash
+    - heredoc
   # Disable for features, as we might want to step through long processes
   Exclude:
     - "spec/features/**/*"
+
+Metrics/ClassLength:
+  inherit_mode:
+    merge:
+      - Exclude
+  CountAsOne:
+    - array
+    - hash
+    - heredoc
+  # Disable for features and tests, we want lots of tests
+  Exclude:
+    - "spec/**/*"
+    - "test/**/*"
+RSpec/Rails/AvoidSetupHook:
+  Exclude:
+    - "test/**/*"
+
+RSpec/MultipleExpectations:
+  Exclude:
+    - "spec/features/**/*"
+Lint/UnusedMethodArgument:
+  # Unused keyword arguments are good for maintaining API compatibility, and
+  # applying an underscore before the keyword name breaks that API.
+  AllowUnusedKeywordArguments: true
+
+# This seems to be causing all sorts of issues with failing tests
+Rails/RedundantPresenceValidationOnBelongsTo:
+  Enabled: false

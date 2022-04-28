@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module PlatePicks
   # Translate the pick information into a format more useful for plate picks
   class BatchesJson

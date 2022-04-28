@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Extends ApplicationRecord and provides squishify configuration
 # to remove duplicated whitespace from strings
 module Squishify

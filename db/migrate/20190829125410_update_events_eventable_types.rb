@@ -2,7 +2,7 @@
 
 # Ensure events point at the appropriate class
 class UpdateEventsEventableTypes < ActiveRecord::Migration[5.1]
-  def up # rubocop:todo Metrics/AbcSize
+  def up # rubocop:disable Metrics/AbcSize
     Event.where(family: 'scanned_into_lab').update_all(eventful_type: 'Labware')
     Event::PlateCreationEvent.update_all(eventful_type: 'Labware')
     Event::SampleManifestEvent.where(eventful_type: 'Asset').update_all(eventful_type: 'Labware')

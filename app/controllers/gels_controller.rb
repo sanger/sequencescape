@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class GelsController < ApplicationController # rubocop:todo Style/Documentation
   # JG 29/03/2019
   # The GelQC process is no longer actively performed, although we should be careful

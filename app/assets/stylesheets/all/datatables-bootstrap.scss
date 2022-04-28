@@ -11,6 +11,7 @@
     // similar effect, but also adds unnecessary bottom padding which looks a
     // little clunky
     @extend .mr-3;
+    @extend .mt-3;
   }
 
   .dataTables_info {

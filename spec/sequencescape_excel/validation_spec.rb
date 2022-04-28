@@ -3,15 +3,21 @@
 require 'rails_helper'
 
 RSpec.describe SequencescapeExcel::Validation, type: :model, sample_manifest_excel: true, sample_manifest: true do
-  let(:options) { { option1: 'value1', option2: 'value2', type: :whole, formula1: 'smth' } }
+  let(:options) { { option1: 'value1', option2: 'value2', type: :whole, formula1: 'smth' }.freeze }
   let(:range) { build(:range) }
+  let(:worksheet) { instance_double(Axlsx::Worksheet, add_data_validation: true) }
 
   it 'is not valid without options' do
     expect(described_class.new).not_to be_valid
   end
 
   it 'is comparable' do
+    # We are explicitly checking that comparable non-identical object show equality
+    # rubocop:disable RSpec/IdenticalEqualityAssertion
     expect(described_class.new(options: options)).to eq(described_class.new(options: options))
+
+    # rubocop:enable RSpec/IdenticalEqualityAssertion
+
     expect(described_class.new(options: options.except(:formula1))).not_to eq(described_class.new(options: options))
   end
 
@@ -23,13 +29,12 @@ RSpec.describe SequencescapeExcel::Validation, type: :model, sample_manifest_exc
     end
 
     it 'will not have a range name' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(validation.range_name).to be_nil
     end
 
-    it 'does not add a range' do
-      validation.update(range: range)
-      expect(validation.formula1).not_to eq(range.absolute_reference)
+    it '#does not add a range' do
+      expect(worksheet).to receive(:add_data_validation).with('N10:N30', **options)
+      validation.update(range: range, worksheet: worksheet, reference: 'N10:N30')
     end
   end
 
@@ -41,15 +46,22 @@ RSpec.describe SequencescapeExcel::Validation, type: :model, sample_manifest_exc
     end
 
     it '#update will set formula1' do
-      validation.update(range: range)
-      expect(validation.formula1).to eq(range.absolute_reference)
+      expect(worksheet).to receive(:add_data_validation).with('N10:N30', **options, formula1: range.absolute_reference)
+      validation.update(range: range, worksheet: worksheet, reference: 'N10:N30')
     end
+  end
 
-    it 'will be duplicated correctly' do
-      dupped = validation.dup
-      validation.update(range: range)
-      expect(dupped.options).not_to eq(validation.options)
-      expect(dupped).not_to be_saved
+  context 'with a custom formula' do
+    let(:options) { { type: :custom, formula1: 'AND(A1>5,A1<10)' } }
+    let(:validation) { described_class.new(options: options) }
+
+    it 'sends and escaped formula to the worksheet' do
+      expect(worksheet).to receive(:add_data_validation).with(
+        'N10:N30',
+        type: :custom,
+        formula1: 'AND(N10&gt;5,N10&lt;10)'
+      )
+      validation.update(reference: 'N10:N30', worksheet: worksheet)
     end
   end
 

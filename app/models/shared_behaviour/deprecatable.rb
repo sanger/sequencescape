@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module SharedBehaviour::Deprecatable # rubocop:todo Style/Documentation
   def self.included(base)
     base.class_eval { scope :active, -> { where(deprecated_at: nil) } }

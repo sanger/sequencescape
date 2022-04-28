@@ -27,6 +27,9 @@ class PhiX::SpikedBuffer
   # @return [Tube] PhiX containing parent tube. If not provided will look up via the parent_barcode
   attr_writer :parent
 
+  # @return [Integer] The id of the {Study} to associate with the {Aliquot}
+  attr_accessor :study_id
+
   validates :name, presence: true
   validates :concentration, numericality: { greater_than: 0, only_integer: false }
   validates :volume, numericality: { greater_than: 0, only_integer: false }
@@ -82,12 +85,18 @@ class PhiX::SpikedBuffer
     @phi_x_sample ||= PhiX.sample
   end
 
+  # Setting the study for a SpikedBuffer tube is not currently exposed as an option through the /phi_x page
+  # due to concerns that it will be set accidentally
+  # But the option is here in the model to set it via study_id if needed in future
+  def aliquot_attributes
+    study_id.present? ? { study_id: study_id } : {}
+  end
+
   # Generates .number PhiX.stock_purpose tubes names
   # with name, followed by '#n' where n is the tube number (starting with 1)
   # Creates a qc_result to set the concentration (uses molarity as we're in nM not ng/ul)
   # Creates a qc_result to set the volume
   # Transfers aliquots from the parent
-  # rubocop:todo Metrics/MethodLength
   def generate_spiked_buffers # rubocop:todo Metrics/AbcSize
     Array.new(number.to_i) do |index|
       spiked_buffer =
@@ -97,11 +106,14 @@ class PhiX::SpikedBuffer
             receptacle = tube.receptacle
             receptacle.qc_results.build(key: 'molarity', value: concentration, units: 'nM')
             receptacle.qc_results.build(key: 'volume', value: volume, units: 'ul')
-            receptacle.transfer_requests_as_target.build(asset: parent.receptacle, target_asset: receptacle)
+            receptacle.transfer_requests_as_target.build(
+              asset: parent.receptacle,
+              target_asset: receptacle,
+              aliquot_attributes: aliquot_attributes
+            )
           end
       parent.children << spiked_buffer
       spiked_buffer
     end
   end
-  # rubocop:enable Metrics/MethodLength
 end

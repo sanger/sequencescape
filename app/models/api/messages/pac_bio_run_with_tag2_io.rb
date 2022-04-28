@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Generates warehouse messages describing a PacBio run.
 # PacBio runs are approximated by {Batch batches}
 class Api::Messages::PacBioRunWithTag2IO < Api::Base

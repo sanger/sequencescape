@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Validateable # rubocop:todo Style/Documentation
   %i[save save! update_attribute].each { |attr| define_method(attr) {} }
 

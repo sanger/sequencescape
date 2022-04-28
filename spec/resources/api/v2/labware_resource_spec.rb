@@ -6,7 +6,7 @@ require './app/resources/api/v2/labware_resource'
 RSpec.describe Api::V2::LabwareResource, type: :resource do
   subject(:resource) { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { create :labware }
+  let(:resource_model) { build_stubbed :labware }
 
   shared_examples 'a labware resource' do
     # Test attributes
@@ -31,6 +31,10 @@ RSpec.describe Api::V2::LabwareResource, type: :resource do
     it { is_expected.to have_one(:purpose).with_class_name('Purpose') }
     it { is_expected.to have_many(:ancestors) }
     it { is_expected.to have_many(:state_changes) }
+
+    # If we're using the labware endpoint, we need the generic receptacles
+    # association if we are to eager load the contents of returned labware
+    it { is_expected.to have_many(:receptacles) }
 
     # Custom method tests
     # Add tests for any custom methods you've added.

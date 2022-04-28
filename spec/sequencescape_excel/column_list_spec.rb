@@ -25,7 +25,6 @@ RSpec.describe SequencescapeExcel::ColumnList, type: :model, sample_manifest_exc
   end
 
   it 'has some conditional formattings' do
-    # rubocop:todo RSpec/AggregateExamples
     expect(column_list.find_by(:name, :gender).conditional_formattings.count).to eq(
       yaml[:gender][:conditional_formattings].length
     )
@@ -35,7 +34,6 @@ RSpec.describe SequencescapeExcel::ColumnList, type: :model, sample_manifest_exc
   end
 
   it '#headings returns list of headings' do
-    # rubocop:todo RSpec/AggregateExamples
     expect(column_list.headings).to eq(yaml.values.pluck(:heading))
   end
 
@@ -105,7 +103,6 @@ RSpec.describe SequencescapeExcel::ColumnList, type: :model, sample_manifest_exc
   end
 
   it '#find_column_or_null returns a null object if none exists for key and value' do
-    # rubocop:todo RSpec/AggregateExamples
     expect(column_list.find_column_or_null(:name, :bad_value).number).to eq(-1)
   end
 

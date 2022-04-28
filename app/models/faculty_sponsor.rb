@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class FacultySponsor < ApplicationRecord # rubocop:todo Style/Documentation
   include SharedBehaviour::Named
   extend Attributable::Association::Target

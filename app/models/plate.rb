@@ -4,22 +4,25 @@ require 'lab_where_client'
 
 # https://github.com/sanger/sequencescape/raw/master/docs/images/plate.jpg
 #
-# A plate is a piece of labware made up of a number of {Well wells}. This class represents the physical piece of plastic.
+# A plate is a piece of labware made up of a number of {Well wells}. This class represents the physical piece of
+# plastic.
 #
-# - {PlatePurpose}: describes the role a plate has in the lab. In some cases a plate's purpose may change as it gets processed.
+# - {PlatePurpose}: describes the role a plate has in the lab. In some cases a plate's purpose may change as it gets
+#                   processed.
 # - {Well}: Plates can have multiple wells (most often 96 or 384) each of which can contain multiple samples.
-# - {PlateType}: Identifies the plates form factor, typically provided to robots to ensure tips are positioned correctly.
+# - {PlateType}: Identifies the plates form factor, typically provided to robots to ensure tips are positioned
+#                correctly.
 #
 class Plate < Labware # rubocop:todo Metrics/ClassLength
   include Api::PlateIO::Extensions
   include ModelExtensions::Plate
   include Transfer::Associations
   include Transfer::State::PlateState
-  include Barcode::Barcodeable
   include Asset::Ownership::Owned
   include Plate::FluidigmBehaviour
   include SubmissionPool::Association::Plate
   include PlateCreation::CreationChild
+  include Barcode::Barcodeable
 
   extend QcFile::Associations
 
@@ -41,23 +44,28 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
     def construct! # rubocop:todo Metrics/AbcSize
       transaction do
         plate = proxy_association.owner
-        plate.maps.in_row_major_order.ids.map { |location_id| { map_id: location_id } }.tap do |wells|
-          plate.wells.import(wells)
-          ids = plate.wells.ids
-          well_type = Well.base_class.name
+        plate
+          .maps
+          .in_row_major_order
+          .ids
+          .map { |location_id| { map_id: location_id } }
+          .tap do |wells|
+            plate.wells.import(wells)
+            ids = plate.wells.ids
+            well_type = Well.base_class.name
 
-          # These would usually be handled in after create callbacks, however
-          # import does not fire these, and we want to create them in bulk anyway
-          WellAttribute.import(ids.map { |well| { well_id: well } })
-          Uuid.import(
-            ids.map { |well| { resource_id: well, resource_type: well_type, external_id: Uuid.generate_uuid } }
-          )
+            # These would usually be handled in after create callbacks, however
+            # import does not fire these, and we want to create them in bulk anyway
+            WellAttribute.import(ids.map { |well| { well_id: well } })
+            Uuid.import(
+              ids.map { |well| { resource_id: well, resource_type: well_type, external_id: Uuid.generate_uuid } }
+            )
 
-          # Warren::Message::Short keeps track of the class (Well) and id, and gets sent after
-          # the transaction completes. This avoids us needing to instantiate wells, keeping the memory footprint
-          # down.
-          ids.each { |id| Warren::Message::Short.new(class_name: 'Well', id: id).queue(Warren.handler) }
-        end
+            # Warren::Message::Short keeps track of the class (Well) and id, and gets sent after
+            # the transaction completes. This avoids us needing to instantiate wells, keeping the memory footprint
+            # down.
+            ids.each { |id| Warren::Message::Short.new(class_name: 'Well', id: id).queue(Warren.handler) }
+          end
       end
     end
 
@@ -316,7 +324,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   def stock_plate?
     return true if plate_purpose.nil?
 
-    plate_purpose.stock_plate? && plate_purpose.attatched?(self)
+    plate_purpose.stock_plate? && plate_purpose.attached?(self)
   end
 
   #
@@ -398,15 +406,19 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   end
 
   # This method returns a map from the wells on the plate to their stock well.
-  def stock_wells # rubocop:todo Metrics/AbcSize
+  def stock_wells # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     # Optimisation: if the plate is a stock plate then it's wells are it's stock wells!]
     if stock_plate?
-      wells.with_pool_id.each_with_object({}) { |w, store| store[w] = [w] }
+      wells.with_pool_id.index_with { |w| [w] }
     else
-      wells.include_stock_wells.with_pool_id.each_with_object({}) do |w, store|
-        storted_stock_wells = w.stock_wells.sort_by { |sw| sw.map.column_order }
-        store[w] = storted_stock_wells unless storted_stock_wells.empty?
-      end.tap { |stock_wells_hash| raise "No stock plate associated with #{id}" if stock_wells_hash.empty? }
+      wells
+        .include_stock_wells
+        .with_pool_id
+        .each_with_object({}) do |w, store|
+          storted_stock_wells = w.stock_wells.sort_by { |sw| sw.map.column_order }
+          store[w] = storted_stock_wells unless storted_stock_wells.empty?
+        end
+        .tap { |stock_wells_hash| raise "No stock plate associated with #{id}" if stock_wells_hash.empty? }
     end
   end
 
@@ -422,7 +434,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
     @well_hash ||= wells.include_map.includes(:well_attribute).index_by(&:map_description)
   end
 
-  def update_qc_values_with_parser(parser) # rubocop:todo Metrics/MethodLength
+  def update_qc_values_with_parser(parser)
     ActiveRecord::Base.transaction do
       qc_assay = QcAssay.new
       parser.each_well_and_parameters do |position, well_updates|
@@ -443,7 +455,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
     true
   end
 
-  def team # rubocop:todo Metrics/MethodLength
+  def team
     ProductLine
       .joins(
         [

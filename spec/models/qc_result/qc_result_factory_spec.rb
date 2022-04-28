@@ -92,7 +92,6 @@ RSpec.describe QcResultFactory, type: :model, qc_result: true do
       end
 
       it 'will save all of the assets with valid wells' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(factory.save).to be_truthy
         expect(QcResult.all.count).to eq(2)
       end

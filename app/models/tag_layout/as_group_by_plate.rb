@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Assigns multiple tags to each well.
 
 class TagLayout::AsGroupByPlate < TagLayout::Walker # rubocop:todo Style/Documentation
@@ -12,7 +13,7 @@ class TagLayout::AsGroupByPlate < TagLayout::Walker # rubocop:todo Style/Documen
   def walk_wells
     wells_in_walking_order.with_aliquots.each_with_index do |well, well_index|
       tags_per_well.times do |tag_index|
-        index = well_index * tags_per_well + tag_index
+        index = (well_index * tags_per_well) + tag_index
         yield(well, index) unless well.nil?
       end
     end

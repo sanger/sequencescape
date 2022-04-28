@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require_relative 'label_printer/label'
 require_relative 'label_printer/label/base_plate'
 require_relative 'label_printer/label/base_tube'

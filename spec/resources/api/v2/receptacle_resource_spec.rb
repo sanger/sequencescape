@@ -6,7 +6,7 @@ require './app/resources/api/v2/receptacle_resource'
 RSpec.describe Api::V2::ReceptacleResource, type: :resource do
   subject(:resource) { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { create :receptacle }
+  let(:resource_model) { build_stubbed :receptacle }
 
   # Test attributes
   it 'works', :aggregate_failures do
@@ -28,6 +28,7 @@ RSpec.describe Api::V2::ReceptacleResource, type: :resource do
     expect(subject).to have_updatable_field(:coverage)
     expect(subject).to have_updatable_field(:diluent_volume)
 
+    expect(subject).to have_many(:qc_results).with_class_name('QcResult')
     expect(subject).to have_many(:samples).with_class_name('Sample')
     expect(subject).to have_many(:projects).with_class_name('Project')
     expect(subject).to have_many(:studies).with_class_name('Study')

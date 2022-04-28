@@ -16,6 +16,26 @@ table.table-dense-information {
   @extend .table-sm;
 }
 
+div.batch-summary-events {
+  .receptacle {
+    @extend .text-muted;
+    @extend .font-weight-light;
+    font-size: 50%;
+  }
+  dl {
+    @extend .card-body;
+    @extend .row;
+    flex: none;
+    dt {
+      @extend .col-5;
+      text-align: right;
+    }
+    dd {
+      @extend .col-5;
+    }
+  }
+}
+
 /* main-row encompasses the bulk of the application */
 .main-row {
   margin-bottom: 10px;
@@ -58,10 +78,10 @@ table.table-dense-information {
 }
 
 // Apply basic button formatting to all buttons
-// Exclude any where a specific class has been applied
-input[type="submit"]:not(.btn) {
-  @extend .btn;
+// Specific styles will override the default due to CSS specificity rules
+input[type="submit"] {
   @extend .btn-primary;
+  @extend .btn;
 }
 
 .link-panel {
@@ -69,6 +89,7 @@ input[type="submit"]:not(.btn) {
   @extend .list-group-flush;
   a {
     @extend .list-group-item;
+    @extend .list-group-item-action;
   }
 }
 
@@ -164,6 +185,17 @@ dl.order-summary {
   }
   dd {
     @extend .col-10;
+  }
+}
+
+dl.descriptive-list-inline {
+  dt {
+    display: inline;
+    margin-right: 0.5em;
+  }
+  dd {
+    display: inline;
+    margin-right: 1em;
   }
 }
 

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Core::Endpoint::BasicHandler::Paged # rubocop:todo Style/Documentation
   def self.page_accessor(action, will_paginate_method, default_value = nil)
     lambda do |object|

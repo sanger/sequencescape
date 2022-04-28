@@ -157,16 +157,24 @@ RSpec.describe LocationReport, type: :model do
         let(:report_type) { :type_selection }
 
         let(:plt_1_line) do
+          # rubocop:todo Layout/LineLength
           "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{locn_prefix} - Shelf 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
+          # rubocop:enable Layout/LineLength
         end
         let(:plt_2_line_1) do
+          # rubocop:todo Layout/LineLength
           "#{plate_2.machine_barcode},#{plate_2.human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 2,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
+          # rubocop:enable Layout/LineLength
         end
         let(:plt_2_line_2) do
+          # rubocop:todo Layout/LineLength
           "#{plate_2.machine_barcode},#{plate_2.human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 2,LabWhere,#{study_2.name},#{study_2.id},#{study_2_sponsor.name}"
+          # rubocop:enable Layout/LineLength
         end
         let(:plt_3_line) do
+          # rubocop:todo Layout/LineLength
           "#{plate_3.machine_barcode},#{plate_3.human_barcode},#{plt_3_purpose},#{plt_3_created},#{locn_prefix} - Shelf 3,LabWhere,#{study_2.name},#{study_2.id},#{study_2_sponsor.name}"
+          # rubocop:enable Layout/LineLength
         end
 
         before do
@@ -290,7 +298,9 @@ RSpec.describe LocationReport, type: :model do
           let(:end_date) { '2017-03-01 00:00:00' }
           let(:plt_4_created) { plate_4.created_at.strftime('%Y-%m-%d %H:%M:%S') }
           let(:plt_4_line) do
+            # rubocop:todo Layout/LineLength
             "#{plate_4.machine_barcode},#{plate_4.human_barcode},Unknown,#{plt_4_created},#{locn_prefix} - Shelf 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
+            # rubocop:enable Layout/LineLength
           end
           let(:expected_lines) { [headers_line, plt_4_line] }
 
@@ -376,7 +386,9 @@ RSpec.describe LocationReport, type: :model do
         describe 'when a single labware in the location' do
           let(:location_barcode) { 'locn-1-at-lvl-1' }
           let(:plt_1_line) do
+            # rubocop:todo Layout/LineLength
             "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{locn_prefix} - Shelf 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
+            # rubocop:enable Layout/LineLength
           end
           let(:expected_lines) { [headers_line, plt_1_line] }
 
@@ -399,13 +411,19 @@ RSpec.describe LocationReport, type: :model do
         describe 'when multiple labwares in same sub-location' do
           let(:location_barcode) { 'locn-1-at-lvl-1' }
           let(:plt_1_line) do
+            # rubocop:todo Layout/LineLength
             "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{locn_prefix} - Shelf 1 - Box 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
+            # rubocop:enable Layout/LineLength
           end
           let(:plt_2_line_1) do
+            # rubocop:todo Layout/LineLength
             "#{plate_2.machine_barcode},#{plate_2.human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 1 - Box 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
+            # rubocop:enable Layout/LineLength
           end
           let(:plt_2_line_2) do
+            # rubocop:todo Layout/LineLength
             "#{plate_2.machine_barcode},#{plate_2.human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 1 - Box 1,LabWhere,#{study_2.name},#{study_2.id},#{study_2_sponsor.name}"
+            # rubocop:enable Layout/LineLength
           end
           let(:expected_lines) { [headers_line, plt_1_line, plt_2_line_1, plt_2_line_2] }
 
@@ -447,16 +465,22 @@ RSpec.describe LocationReport, type: :model do
           it_behaves_like 'a successful report'
         end
 
-        describe 'when multiple labwares in different sub-locations ' do
+        describe 'when multiple labwares in different sub-locations' do
           let(:location_barcode) { 'locn-1-at-lvl-1' }
           let(:plt_1_line) do
+            # rubocop:todo Layout/LineLength
             "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{locn_prefix} - Shelf 1 - Box 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
+            # rubocop:enable Layout/LineLength
           end
           let(:plt_2_line_1) do
+            # rubocop:todo Layout/LineLength
             "#{plate_2.machine_barcode},#{plate_2.human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 1 - Box 2,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
+            # rubocop:enable Layout/LineLength
           end
           let(:plt_2_line_2) do
+            # rubocop:todo Layout/LineLength
             "#{plate_2.machine_barcode},#{plate_2.human_barcode},#{plt_2_purpose},#{plt_2_created},#{locn_prefix} - Shelf 1 - Box 2,LabWhere,#{study_2.name},#{study_2.id},#{study_2_sponsor.name}"
+            # rubocop:enable Layout/LineLength
           end
           let(:expected_lines) { [headers_line, plt_1_line, plt_2_line_1, plt_2_line_2] }
 
@@ -508,6 +532,8 @@ RSpec.describe LocationReport, type: :model do
 
         describe 'when multiple labwares at different levels' do
           let(:location_barcode) { 'locn-1-at-lvl-1' }
+
+          # rubocop:todo Layout/LineLength
           let(:plt_1_line) do
             "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{locn_prefix} - Shelf 1,LabWhere,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
           end
@@ -520,6 +546,8 @@ RSpec.describe LocationReport, type: :model do
           let(:plt_3_line) do
             "#{plate_3.machine_barcode},#{plate_3.human_barcode},#{plt_3_purpose},#{plt_3_created},#{locn_prefix} - Shelf 1 - Tray 1 - Box 1,LabWhere,#{study_2.name},#{study_2.id},#{study_2_sponsor.name}"
           end
+
+          # rubocop:enable Layout/LineLength
           let(:expected_lines) { [headers_line, plt_1_line, plt_2_line_1, plt_2_line_2, plt_3_line] }
 
           before do

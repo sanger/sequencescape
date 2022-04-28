@@ -1,0 +1,59 @@
+name: Automatic appending of build product to releases
+
+on:
+  release:
+    types: published
+
+jobs:
+  build-and-append-to-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+
+      # Establish a cache of js modules to improve performance
+      - name: Cache js
+        uses: actions/cache@v2
+        with:
+          path: |
+            public/assets
+            tmp/cache/assets/sprockets
+            node_modules
+          key: ${{ runner.os }}-build-${{ hashFiles('yarn.lock') }}
+          # If we don't find the specific cache we want, fallback to the last build
+          # cache, then finally any cache for this repo.
+          # Github looks for the newest cache beginning with the first entry, before
+          # falling back the the second if none is present.
+          restore-keys: |
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      # Install only the gems needed for testing
+      # Keep an eye on https://github.com/rubygems/bundler-features/issues/59
+      # in case bundler add an only flag
+      # We also set the install path to vendor/bundle to assist with out caching
+      - name: Setup environment
+        env:
+          DBPORT: ${{ job.services.mysql.ports[3306] }}
+        run: |
+          bundle config path vendor/bundle
+          bin/setup
+
+      # Actually run our build
+      - name: Compile Build
+        run: ./compile-build
+
+      # Upload the release asset as an artifact to the existing release
+      - uses: shogo82148/actions-upload-release-asset@v1.3.1
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
+          asset_path: release.tar.gz
+          asset_content_type: application/gzip

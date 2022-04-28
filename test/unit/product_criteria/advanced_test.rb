@@ -32,7 +32,7 @@ class ProductCriteriaAdvancedTest < ActiveSupport::TestCase
         @well = create :well, well_attribute: @well_attribute
 
         @target_wells = create_list :well, 7
-        @target_wells[4].well_attribute.update(concentration: 30, updated_at: Time.current + 1.hour)
+        @target_wells[4].well_attribute.update(concentration: 30, updated_at: 1.hour.from_now)
         @criteria = ProductCriteria::Advanced.new(@params, @well, @target_wells)
       end
       should 'get the most recent target well from the supplied list' do

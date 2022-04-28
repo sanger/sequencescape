@@ -134,7 +134,9 @@ describe 'Location reports' do
       click_button('Create report from selection')
       expect(
         page
+        # rubocop:todo Layout/LineLength
       ).to have_content 'Failed to create report: Start date Both start and end date are required if either one is used.'
+      # rubocop:enable Layout/LineLength
     end
 
     it 'with a single valid barcode' do
@@ -211,7 +213,9 @@ describe 'Location reports' do
       click_button('Create report from labwhere')
       expect(
         page
+        # rubocop:todo Layout/LineLength
       ).to have_content 'Failed to create report: LabWhere location not found, please scan or enter a valid location barcode.'
+      # rubocop:enable Layout/LineLength
     end
   end
 end

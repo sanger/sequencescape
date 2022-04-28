@@ -29,39 +29,39 @@ module CapybaraFailureLogger
 
     page.save_screenshot("#{name}.png")
     filename = "#{Capybara.save_path}/#{name}.png"
-    block.call "📸 Screenshot saved to #{filename}"
+    yield "📸 Screenshot saved to #{filename}"
     output_image(filename, &block)
   rescue Capybara::NotSupportedByDriverError
-    block.call 'Could not save screenshot - Unsupported by this webdriver'
+    yield 'Could not save screenshot - Unsupported by this webdriver'
   end
 
-  def self.log_html(name, page, &block)
+  def self.log_html(name, page)
     return unless page.respond_to?(:save_page)
 
     page.save_page("#{name}.html")
-    block.call "📐 HTML saved to #{Capybara.save_path}/#{name}.html"
+    yield "📐 HTML saved to #{Capybara.save_path}/#{name}.html"
   end
 
-  def self.log_js(_name, page, &block)
+  def self.log_js(_name, page)
     return unless page.driver.browser.respond_to?(:manage)
 
     errors = page.driver.browser.manage.logs.get(:browser)
-    block.call '== JS errors ============'
-    errors.each { |jserror| block.call jserror.message }
-    block.call '========================='
+    yield '== JS errors ============'
+    errors.each { |jserror| yield jserror.message }
+    yield '========================='
   end
 
-  def self.output_image(filename, &block)
-    return unless ENV['TERM_PROGRAM'] == 'iTerm.app' # rubocop:todo Rails/EnvironmentVariableAccess
+  def self.output_image(filename)
+    return unless ENV['TERM_PROGRAM'] == 'iTerm.app'
 
-    case ENV['INLINE_ERROR_SCREENSHOTS'] # rubocop:todo Rails/EnvironmentVariableAccess
+    case ENV['INLINE_ERROR_SCREENSHOTS']
     when 'enabled'
       encoded_image = Base64.encode64(File.read(filename))
       name = Base64.encode64(filename)
-      block.call "\e]1337;File=inline=1;name=#{name}:#{encoded_image}\a"
+      yield "\e]1337;File=inline=1;name=#{name}:#{encoded_image}\a"
     when nil
-      block.call 'Want inline images? Set the env INLINE_ERROR_SCREENSHOTS to enabled,'
-      block.call 'or set INLINE_ERROR_SCREENSHOTS to anything else to disable this message.'
+      yield 'Want inline images? Set the env INLINE_ERROR_SCREENSHOTS to enabled,'
+      yield 'or set INLINE_ERROR_SCREENSHOTS to anything else to disable this message.'
     end
   end
 end

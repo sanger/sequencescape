@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # An instance of this class is responsible for dealing with a particular named action on a
 # resource.  It is as though this instance is actually part of the instance that it was
 # registered within.

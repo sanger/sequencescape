@@ -13,12 +13,8 @@ module Sanger
           end
         end
 
-        # rubocop:todo Metrics/PerceivedComplexity
-        # rubocop:todo Metrics/MethodLength
-        # rubocop:todo Metrics/AbcSize
-        # rubocop:todo Metrics/BlockLength
-        # rubocop:todo Metrics/CyclomaticComplexity
-        def should_require_login(*actions)
+        # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/BlockLength
+        def should_require_login(*actions) # rubocop:todo Metrics/CyclomaticComplexity, Metrics/AbcSize
           params = (actions.pop if actions.last.is_a?(Hash)) || {}
           actions << :index if actions.empty?
           actions.each do |action|
@@ -67,11 +63,7 @@ module Sanger
             end
           end
         end
-        # rubocop:enable Metrics/AbcSize
-        # rubocop:enable Metrics/MethodLength
-        # rubocop:enable Metrics/PerceivedComplexity
-        # rubocop:enable Metrics/BlockLength
-        # rubocop:enable Metrics/CyclomaticComplexity
+        # rubocop:enable Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/BlockLength
       end
     end
   end

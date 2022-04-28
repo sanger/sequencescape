@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Admin::RobotsController < ApplicationController # rubocop:todo Style/Documentation
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -32,7 +33,6 @@ class Admin::RobotsController < ApplicationController # rubocop:todo Style/Docum
 
   def edit; end
 
-  # rubocop:todo Metrics/MethodLength
   def create # rubocop:todo Metrics/AbcSize
     @robot = Robot.new(params[:robot])
 
@@ -47,8 +47,6 @@ class Admin::RobotsController < ApplicationController # rubocop:todo Style/Docum
       end
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def update
     respond_to do |format|

@@ -1,4 +1,5 @@
 # Encoding: utf-8
+# frozen_string_literal: true
 
 # Previously this was extending Array globally.
 # https://ruby-doc.org/core-2.4.2/doc/syntax/refinements_rdoc.html
@@ -23,7 +24,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
   using ArrayWithFieldList
 
   # This is the default output from excel
-  DEFAULT_ENCODING = 'Windows-1252'.freeze
+  DEFAULT_ENCODING = 'Windows-1252'
 
   include ActiveModel::AttributeMethods
   include ActiveModel::Validations
@@ -115,8 +116,11 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     return false if headers.nil?
     return true if headers.include? 'submission name'
 
+    # rubocop:todo Layout/LineLength
     errors.add :spreadsheet,
                "You submitted an incompatible spreadsheet. Please ensure your spreadsheet contains the 'submission name' column"
+
+    # rubocop:enable Layout/LineLength
     false
   end
 
@@ -134,9 +138,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
   end
   private :spreadsheet_valid?
 
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def process # rubocop:todo Metrics/CyclomaticComplexity
     # Store the details of the successful submissions so the user can be presented with a summary
     @submission_ids = []
@@ -198,9 +200,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   COMMON_FIELDS = [
     # Needed to construct the submission ...
@@ -248,37 +248,44 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
   #  this creates an array containing a hash for each distinct "submission name"
   #    "submission name" => array of orders
   #    where each order is a hash of headers to values (grouped by "asset group name")
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def submission_structure # rubocop:todo Metrics/CyclomaticComplexity
-    Hash.new { |h, i| h[i] = Array.new }.tap do |submission|
-      csv_data_rows.each_with_index do |row, index|
-        next if row.all?(&:nil?)
+    Hash
+      .new { |h, i| h[i] = Array.new }
+      .tap do |submission|
+        csv_data_rows.each_with_index do |row, index|
+          next if row.all?(&:nil?)
 
-        details =
-          headers.each_with_index.filter_map { |header, pos| validate_entry(header, pos, row, index + start_row) }.to_h
-            .merge('row' => index + start_row)
-        submission[details['submission name']] << details
-      end
-    end.map do |submission_name, rows|
-      order =
-        rows.group_by { |details| details['asset group name'] }.map do |_group_name, rows|
-          shared_options!(rows).to_h.tap do |details|
-            details['rows'] = rows.comma_separate_field_list_for_display('row')
-            details['asset ids'] = rows.field_list('asset id', 'asset ids')
-            details['asset names'] = rows.field_list('asset name', 'asset names')
-            details['plate well'] = rows.field_list('plate well')
-            details['barcode'] = rows.field_list('barcode')
-          end.delete_if { |_, v| v.blank? }
+          details =
+            headers
+              .each_with_index
+              .filter_map { |header, pos| validate_entry(header, pos, row, index + start_row) }
+              .to_h
+              .merge('row' => index + start_row)
+          submission[details['submission name']] << details
         end
-      { submission_name => order }
-    end
+      end
+      .map do |submission_name, rows|
+        order =
+          rows
+            .group_by { |details| details['asset group name'] }
+            .map do |_group_name, rows|
+              shared_options!(rows)
+                .to_h
+                .tap do |details|
+                  details['rows'] = rows.comma_separate_field_list_for_display('row')
+                  details['asset ids'] = rows.field_list('asset id', 'asset ids')
+                  details['asset names'] = rows.field_list('asset name', 'asset names')
+                  details['plate well'] = rows.field_list('plate well')
+                  details['barcode'] = rows.field_list('barcode')
+                end
+                .delete_if { |_, v| v.blank? }
+            end
+        { submission_name => order }
+      end
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   def shared_options!(rows) # rubocop:todo Metrics/MethodLength
     # Builds an array of the common fields. Raises and exception if the fields are inconsistent
@@ -288,7 +295,9 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
         provided_values = option.map { |o| "'#{o}'" }.to_sentence
         errors.add(
           :spreadsheet,
+          # rubocop:todo Layout/LineLength
           "#{field} should be identical for all requests in asset group '#{rows.first['asset group name']}'. Given values were: #{provided_values}."
+          # rubocop:enable Layout/LineLength
         )
       end
       [field, option.first]
@@ -299,9 +308,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     assets.map(&:samples).flatten.uniq.each { |sample| sample.studies << study unless sample.studies.include?(study) }
   end
 
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def extract_request_options(details) # rubocop:todo Metrics/CyclomaticComplexity
     { read_length: details['read length'], multiplier: {} }.tap do |request_options|
       request_options['library_type'] = details['library type'] if details['library type'].present?
@@ -320,14 +327,10 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   # Returns an order for the given details
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def prepare_order(details) # rubocop:todo Metrics/CyclomaticComplexity
     # Retrieve common attributes
     study = Study.find_by_id_or_name!(details['study id'], details['study name'])
@@ -340,7 +343,8 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
 
     # Check the library type matches a value from the table
     if request_options['library_type'].present?
-      # find is case insensitive but we want the correct case sensitive name for requests or we get issues downstream in NPG
+      # find is case insensitive but we want the correct case sensitive name for requests or we get issues downstream in
+      # NPG
       lt = LibraryType.find_by(name: request_options['library_type'])&.name or
         raise StandardError, "Cannot find library type #{request_options['library_type'].inspect}"
       request_options['library_type'] = lt
@@ -399,8 +403,10 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     if attributes[:asset_group].nil?
       attributes[:assets] = found_assets
     elsif found_assets.present? && found_assets != attributes[:asset_group].assets
+      # rubocop:todo Layout/LineLength
       raise StandardError,
             "Asset Group '#{attributes[:asset_group].name}' contains different assets to those you specified. You may be reusing an asset group name"
+      # rubocop:enable Layout/LineLength
     end
 
     add_study_to_assets(found_assets, study)
@@ -421,9 +427,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     nil
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   # Returns the SubmissionTemplate and checks that it is valid
   def find_template(template_name)

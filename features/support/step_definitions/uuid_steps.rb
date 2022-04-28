@@ -54,7 +54,9 @@ PLURAL_MODELS_BASED_ON_NAME_REGEXP = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAM
 
 # This may create invalid UUID external_id values but it means that we don't have to conform to the
 # standard in our features.
+# rubocop:todo Layout/LineLength
 Given /^the UUID for the (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) "([^"]+)" is "([^"]+)"$/o do |model, name, uuid_value|
+  # rubocop:enable Layout/LineLength
   object = model.gsub(/\s+/, '_').classify.constantize.find_by(name: name) or
     raise "Cannot find #{model} #{name.inspect}"
   set_uuid_for(object, uuid_value)
@@ -62,13 +64,17 @@ end
 
 # This may create invalid UUID external_id values but it means that we don't have to conform to the
 # standard in our features.
+# rubocop:todo Layout/LineLength
 Given /^the UUID for the receptacle in (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) "([^"]+)" is "([^"]+)"$/o do |model, name, uuid_value|
+  # rubocop:enable Layout/LineLength
   object = model.gsub(/\s+/, '_').classify.constantize.find_by(name: name) or
     raise "Cannot find #{model} #{name.inspect}"
   set_uuid_for(object.receptacle, uuid_value)
 end
 
+# rubocop:todo Layout/LineLength
 Given /^an? (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) called "([^"]+)" with UUID "([^"]+)"$/o do |model, name, uuid_value|
+  # rubocop:enable Layout/LineLength
   set_uuid_for(FactoryBot.create(model.gsub(/\s+/, '_').to_sym, name: name), uuid_value)
 end
 
@@ -80,7 +86,9 @@ Given /^an? (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) called "([^"]+)" with ID (
   FactoryBot.create(model.gsub(/\s+/, '_').to_sym, name: name, id: id)
 end
 
+# rubocop:todo Layout/LineLength
 Given /^(\d+) (#{PLURAL_MODELS_BASED_ON_NAME_REGEXP}) exist with names based on "([^"]+)" and IDs starting at (\d+)$/o do |count, model, name, id|
+  # rubocop:enable Layout/LineLength
   (0...count.to_i).each do |index|
     step("a #{model.singularize} called \"#{name}-#{index + 1}\" with ID #{id.to_i + index}")
   end
@@ -142,19 +150,27 @@ ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID = [
 SINGULAR_MODELS_BASED_ON_ID_REGEXP = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID.join('|')
 PLURAL_MODELS_BASED_ON_ID_REGEXP = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_ID.map(&:pluralize).join('|')
 
+# rubocop:todo Layout/LineLength
 Given /^a (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}|#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) with UUID "([^"]*)" exists$/o do |model, uuid_value|
+  # rubocop:enable Layout/LineLength
   set_uuid_for(FactoryBot.create(model.gsub(/\s+/, '_').to_sym), uuid_value)
 end
 
+# rubocop:todo Layout/LineLength
 Given /^the UUID for the last (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}|#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) is "([^"]+)"$/o do |model, uuid_value|
+  # rubocop:enable Layout/LineLength
   set_uuid_for(model.gsub(/\s+/, '_').camelize.constantize.last, uuid_value)
 end
 
+# rubocop:todo Layout/LineLength
 Given /^the UUID for the (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) with ID (\d+) is "([^"]+)"$/o do |model, id, uuid_value|
+  # rubocop:enable Layout/LineLength
   set_uuid_for(model.gsub(/\s+/, '_').camelize.constantize.find(id), uuid_value)
 end
 
+# rubocop:todo Layout/LineLength
 Given /^all (#{PLURAL_MODELS_BASED_ON_NAME_REGEXP}|#{PLURAL_MODELS_BASED_ON_ID_REGEXP}) have sequential UUIDs based on "([^"]+)"$/o do |model, core_uuid|
+  # rubocop:enable Layout/LineLength
   core_uuid = core_uuid.dup # Oh the irony of modifying a string that then alters Cucumber output!
   core_uuid << '-' if core_uuid.length == 23
   core_uuid << "%0#{36 - core_uuid.length}d"
@@ -212,13 +228,17 @@ Given /^the (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) exists with ID (\d+)$/o do |
   FactoryBot.create(model.gsub(/\s+/, '_').to_sym, id: id)
 end
 
+# rubocop:todo Layout/LineLength
 Given /^the (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) exists with ID (\d+) and the following attributes:$/o do |model, id, table|
+  # rubocop:enable Layout/LineLength
   attributes = table.hashes.inject({}) { |h, att| h.update(att['name'] => att['value']) }
   attributes[:id] ||= id
   FactoryBot.create(model.gsub(/\s+/, '_').to_sym, attributes)
 end
 
+# rubocop:todo Layout/LineLength
 Given /^a asset_link with uuid "([^"]*)" exists and connects "([^"]*)" and "([^"]*)"$/ do |uuid_value, uuid_plate, uuid_well|
+  # rubocop:enable Layout/LineLength
   plate = Plate.find(Uuid.find_id(uuid_plate))
   well = Well.find(Uuid.find_id(uuid_well))
   set_uuid_for(AssetLink.create!(ancestor: plate, descendant: well), uuid_value)
@@ -248,9 +268,4 @@ Given /^plate "([^"]*)" is a source plate of "([^"]*)"$/ do |source_plate_uuid, 
   source_plate = Plate.find(Uuid.find_id(source_plate_uuid))
   destination_plate = Plate.find(Uuid.find_id(destination_plate_uuid))
   source_plate.children << destination_plate
-end
-
-Given /^the UUID for well (\d+) on plate "(.*?)" is "(.*?)"$/ do |well_id, plate_name, uuid|
-  plate = Plate.find_by(name: plate_name) || Plate.find_from_barcode(plate_name)
-  set_uuid_for(plate.wells[well_id.to_i - 1], uuid)
 end

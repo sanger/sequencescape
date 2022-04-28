@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Used to broadcast stock tubes to the UWH.
 # Wells have a separate template, as the information
 # is mapped slightly differently.

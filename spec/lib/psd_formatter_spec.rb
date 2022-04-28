@@ -4,11 +4,11 @@ require 'rails_helper'
 require 'ostruct'
 
 describe PsdFormatter do
-  let(:deployment_info) { OpenStruct.new(name: application_name, version: '10.3.0', environment: 'test') }
+  let(:deployment_info) { OpenStruct.new(name: application_name, version: '10.3.0', environment: 'test') } # rubocop:todo Style/OpenStructUse
 
   let(:log) { StringIO.new }
 
-  setup do
+  before do
     Rails.logger = Logger.new(log)
     Rails.logger.formatter = described_class.new(deployment_info)
   end
@@ -24,7 +24,9 @@ describe PsdFormatter do
       Rails.logger.info 'info message'
       log.rewind
       expect(log.read).to match(
+        # rubocop:todo Layout/LineLength
         /\A\(thread-#{Thread.current.object_id}\) \[#{application_name}:#{deployment_info.version}:#{deployment_info.environment}\]  INFO -- : info message/
+        # rubocop:enable Layout/LineLength
       )
     end
   end
@@ -36,7 +38,9 @@ describe PsdFormatter do
       Rails.logger.info 'info message'
       log.rewind
       expect(log.read).to match(
+        # rubocop:todo Layout/LineLength
         /\A\(thread-#{Thread.current.object_id}\) \[#{deployment_info.version}:#{deployment_info.environment}\]  INFO -- : info message/
+        # rubocop:enable Layout/LineLength
       )
     end
   end

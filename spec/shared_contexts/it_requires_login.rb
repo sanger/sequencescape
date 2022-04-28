@@ -8,7 +8,7 @@ shared_examples 'it requires login' do |*actions|
   actions.each do |action|
     describe action.to_s do
       context 'when logged in' do
-        setup do
+        before do
           session[:user] = create(:user)
           if params[:resource].present?
             resource = params.delete(:resource)
@@ -28,13 +28,14 @@ shared_examples 'it requires login' do |*actions|
             flunk "Missing template for #{action} action"
           end
         end
+
         it 'does not redirect' do
           expect(@response.code).not_to be_in(300..307)
         end
       end
 
       context 'when not logged in' do
-        setup do
+        before do
           session[:user] = nil
           if params[:resource].present?
             resource = params.delete(:resource)
@@ -50,6 +51,7 @@ shared_examples 'it requires login' do |*actions|
             flunk "Testing for an unknown action: #{action}"
           end
         end
+
         it { is_expected.to redirect_to login_path }
       end
     end

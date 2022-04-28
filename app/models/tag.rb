@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # A Tag is a short, know sequence of DNA which gets applied to a sample.
 # The tag remains attached through subsequent processing, and means that it is
 # possible to identify the origin of a sample if multiple samples are subsequently
@@ -36,7 +37,7 @@ class Tag < ApplicationRecord
   end
 
   # Allows the application of multiple tags to an aliquot
-  def multitag!(asset) # rubocop:todo Metrics/MethodLength
+  def multitag!(asset)
     raise StandardError, 'Cannot tag an empty asset' if asset.aliquots.empty?
 
     asset

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Created by external applications (especially asset audits) to represent
 # work done.
 # @see https://github.com/sanger/asset_audits AssetAudits, also known as process tracker and lab activity

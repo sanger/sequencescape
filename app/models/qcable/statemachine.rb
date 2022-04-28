@@ -1,5 +1,5 @@
+# frozen_string_literal: true
 module Qcable::Statemachine # rubocop:todo Style/Documentation
-  # rubocop:todo Metrics/MethodLength
   def self.included(base) # rubocop:todo Metrics/AbcSize
     base.class_eval do
       ## State machine
@@ -52,8 +52,6 @@ module Qcable::Statemachine # rubocop:todo Style/Documentation
       scope :unavailable, -> { where(state: %i[created pending failed passed destroyed qc_in_progress exhausted]) }
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   #--
   # These are the callbacks that will be made on entry to a given state.  This allows

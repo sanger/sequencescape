@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 namespace :benchmark do
   task plate_creation: :environment do
     $stdout.puts 'Warming up...'

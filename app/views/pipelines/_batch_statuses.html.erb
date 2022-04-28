@@ -8,7 +8,7 @@
       <% end -%>
     </ul>
   </div>
-  <div class="tab-content card-body" id="myTabContent">
+  <div class="tab-content" id="myTabContent">
     <%= tab_pane('pending', active: true) do %>
       <%= render partial: "shared/batches", locals: { batches: @pending_batches, in_progress: false, showing_all: false, batch_state: 'pending' } %>
     <% end %>

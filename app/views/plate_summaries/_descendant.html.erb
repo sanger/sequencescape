@@ -21,11 +21,12 @@
   <% descendant.state_changes.each do |state_change| %>
     <tr>
       <th>
-        <%= state_change.target_state %>
+        <%= state_change.previous_state %> → <%= state_change.target_state %>
       </th>
       <td>
           <%= state_change.created_at %>
-          <%= state_change.user.try(:name) %>
+          <%= state_change.user.try(:name) %></br>
+          <%= state_change.reason %>
       </td>
     </tr>
   <% end %>

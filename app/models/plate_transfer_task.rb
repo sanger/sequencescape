@@ -1,12 +1,13 @@
+# frozen_string_literal: true
 class PlateTransferTask < Task # rubocop:todo Style/Documentation
   belongs_to :purpose
 
-  def render_task(workflow, params)
-    ActiveRecord::Base.transaction { workflow.render_plate_transfer_task(self, params) }
+  def render_task(workflows_controller, params, _user)
+    ActiveRecord::Base.transaction { workflows_controller.render_plate_transfer_task(self, params) }
   end
 
-  def do_task(workflow, params)
-    workflow.do_plate_transfer_task(self, params)
+  def do_task(workflows_controller, params, _user)
+    workflows_controller.do_plate_transfer_task(self, params)
   end
 
   def partial

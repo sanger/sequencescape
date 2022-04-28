@@ -97,8 +97,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   # rubocop:enable Metrics/MethodLength
 
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
   def create_plates_from_tube_racks!(
     tube_racks,
     barcode_printer,
@@ -140,12 +139,10 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
     true
   end
 
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   private
 
-  # rubocop:todo Metrics/MethodLength
   def create_asset_group(created_plates)
     group = nil
     all_wells = created_plates.map { |hash| hash[:destinations].map(&:wells) }.flatten
@@ -164,8 +161,6 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     group
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def find_relevant_study(created_plates)
     # find a relevant study to put the Asset group under
@@ -269,12 +264,13 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
         end
 
       # We should probably just use a transfer here.
-      child_plate.wells << parent_wells.map do |well|
-        well.dup.tap do |child_well|
-          child_well.aliquots = well.aliquots.map(&:dup)
-          child_well.stock_wells.attach(stock_well_picker.call(well))
+      child_plate.wells <<
+        parent_wells.map do |well|
+          well.dup.tap do |child_well|
+            child_well.aliquots = well.aliquots.map(&:dup)
+            child_well.stock_wells.attach(stock_well_picker.call(well))
+          end
         end
-      end
 
       creator_parameters&.set_plate_parameters(child_plate, plate)
 

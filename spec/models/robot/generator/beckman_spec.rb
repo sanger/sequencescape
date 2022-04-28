@@ -7,7 +7,7 @@ describe Robot::Generator::Beckman, type: :model do
 
   let(:expected_output) { expected_file.read }
 
-  setup { create(:stock_plate, barcode: 12_345) }
+  before { create(:stock_plate, barcode: 12_345) }
 
   shared_examples 'a beckman file generation' do
     context 'when mapping wells from 1 96 well source plate to 1 96 well destination plate' do
@@ -20,19 +20,28 @@ describe Robot::Generator::Beckman, type: :model do
       end
 
       it 'contains column headers' do
+        # rubocop:todo Layout/LineLength
         regex = /^SourcePlateID,SourceWellID,SourcePlateType,SourcePlateVolume,DestinationPlateID,DestinationWellID,DestinationPlateType,DestinationPlateVolume,WaterVolume/
+
+        # rubocop:enable Layout/LineLength
 
         assert_match(regex, generator.mapping)
       end
 
       it 'contains source control plate rows' do
+        # rubocop:todo Layout/LineLength
         regex = /(?:DN626424D,[A-P]\d*,ABgene_0800,[0-9]*+(\.[0-9]*),DN12345U,[A-P]\d*,Eppendorf Twin.Tec,[0-9]*+(\.[0-9]*),[0-9]*+(\.[0-9]*))/
+
+        # rubocop:enable Layout/LineLength
 
         assert_match(regex, generator.mapping)
       end
 
       it 'contains source plate rows' do
+        # rubocop:todo Layout/LineLength
         regex = /(?:10001,[A-P]\d*,KingFisher 96 2ml,[0-9]*+(\.[0-9]*),DN12345U,[A-P]\d*,Eppendorf Twin.Tec,[0-9]*+(\.[0-9]*),[0-9]*+(\.[0-9]*))/
+
+        # rubocop:enable Layout/LineLength
 
         assert_match(regex, generator.mapping)
       end

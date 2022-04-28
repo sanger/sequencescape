@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class PlateBarcode < ActiveResource::Base # rubocop:todo Style/Documentation
   self.site = configatron.plate_barcode_service
   self.format = ActiveResource::Formats::XmlFormat

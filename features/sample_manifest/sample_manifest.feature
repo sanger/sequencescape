@@ -388,7 +388,7 @@ Feature: Sample manifest
     Examples:
       | initial                           | update                            | state     | message                                                           |
       | sample_manifest_a_accessions.csv  | sample_manifest_no_accessions.csv | Completed | Sample manifest successfully uploaded                             |
-      | sample_manifest_a_accessions.csv  | sample_manifest_b_accessions.csv  | Completed | The accession number does not match the existing accession number |
+      | sample_manifest_a_accessions.csv  | sample_manifest_b_accessions.csv  | Failed    | The accession number does not match the existing accession number |
       | sample_manifest_no_accessions.csv | sample_manifest_a_accessions.csv  | Completed | Sample manifest successfully uploaded                             |
 
 @override

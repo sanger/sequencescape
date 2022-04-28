@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # We'll try and do this through the API with the live version
 
 namespace :traction do
@@ -5,7 +6,6 @@ namespace :traction do
   task create_request_types: [:environment] do
     puts 'Creating request types...'
 
-    # rubocop:todo Metrics/BlockLength
     ActiveRecord::Base.transaction do
       unless RequestType.exists?(key: 'traction_grid_ion')
         RequestType.create!(
@@ -45,7 +45,6 @@ namespace :traction do
         end
       end
     end
-    # rubocop:enable Metrics/BlockLength
   end
 
   desc 'Create the traction submission templates'

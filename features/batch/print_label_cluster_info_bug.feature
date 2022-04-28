@@ -14,7 +14,4 @@ Feature: Change the side links in a batch depending on the pipeline
 
     Examples:
       | pipeline                          | stock labels   | stock tubes    |
-      | Cluster formation PE              | should not see | should not see |
-      | Cluster formation SE              | should not see | should not see |
-      | Illumina-C Library preparation    | should see     | should see     |
       | Cherrypick                        | should not see | should not see |

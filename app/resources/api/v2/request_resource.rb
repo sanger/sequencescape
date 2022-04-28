@@ -30,6 +30,7 @@ module Api
       attribute :state, readonly: true
       attribute :priority, readonly: true
       attribute :options
+      attribute :library_type, readonly: true
 
       # Filters
 
@@ -64,6 +65,10 @@ module Api
 
       def pre_capture_pool_id
         _model.pooled_request&.pre_capture_pool_id
+      end
+
+      def library_type
+        _model.try(:library_type)
       end
 
       # Class method overrides

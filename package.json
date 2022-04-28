@@ -1,15 +1,17 @@
 {
   "dependencies": {
-    "@rails/webpacker": "^5.1.1",
-    "datatables.net-bs4": "^1.10.19",
-    "datatables.net-buttons-bs4": "^1.5.6",
-    "datatables.net-fixedcolumns-bs4": "^3.2.6",
-    "datatables.net-fixedheader-bs4": "^3.1.5",
-    "datatables.net-responsive-bs4": "^2.2.3",
-    "datatables.net-rowgroup-bs4": "^1.1.0",
+    "datatables.net-bs4": "^1.11.3",
+    "datatables.net-buttons-bs4": "^2.1.1",
+    "datatables.net-fixedcolumns-bs4": "^4.0.1",
+    "datatables.net-fixedheader-bs4": "^3.2.1",
+    "datatables.net-responsive-bs4": "^2.2.9",
+    "datatables.net-rowgroup-bs4": "^1.1.4",
+    "datatables.net-rowreorder-bs4": "^1.2.8",
     "jquery": "^3.5.0",
-    "jszip": "^3.2.2",
-    "pdfmake": "^0.1.59",
+    "jszip": "^3.7.0",
+    "postcss-flexbugs-fixes": "^5.0.2",
+    "postcss-import": "^14.0.2",
+    "postcss-preset-env": "^7.2.3",
     "vue": "^2.6.11",
     "vue-loader": "^15.9.3",
     "vue-template-compiler": "^2.6.11",
@@ -17,8 +19,10 @@
     "whatwg-fetch": "^3.3.1"
   },
   "devDependencies": {
-    "@prettier/plugin-ruby": "^1.5.5",
+    "@babel/preset-env": "^7.16.11",
+    "@prettier/plugin-ruby": "^2.0.0",
     "@testing-library/jest-dom": "^5.11.2",
+    "@vitejs/plugin-legacy": "^1.6.4",
     "@vue/test-utils": "^1.0.3",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
@@ -28,11 +32,12 @@
     "eslint-plugin-jest": "^23.20.0",
     "eslint-plugin-vue": "^6.2.2",
     "jest": "^26.2.2",
-    "markdown-toc": "^1.2.0",
     "miragejs": "^0.1.40",
     "prettier": "^2.3.0",
-    "vue-jest": "^3.0.6",
-    "webpack-dev-server": "^3.11.0"
+    "vite": "^2.7.7",
+    "vite-plugin-ruby": "^3.0.5",
+    "vite-plugin-vue2": "^1.9.3",
+    "vue-jest": "^3.0.6"
   },
   "scripts": {
     "test": "jest",
@@ -49,8 +54,8 @@
       "vue"
     ],
     "transform": {
-      ".*\\.(vue)$": "vue-jest",
-      "^.+\\.js$": "<rootDir>/node_modules/babel-jest"
+      "^.+\\.(vue)$": "vue-jest",
+      "^.+\\.js$": "babel-jest"
     }
   }
 }

@@ -18,6 +18,7 @@ describe 'Bulk submission', js: false do
     create :asset_group, name: 'assetgroup123', study: study, asset_count: 2
     visit bulk_submissions_path
     expect(page).to have_content('Bulk Submission New')
+    create :library_type, name: 'Standard'
   end
 
   shared_examples 'bulk submission file upload' do
@@ -110,7 +111,9 @@ describe 'Bulk submission', js: false do
         let(:deprecated) { true }
         let(:file_name) { '1_deprecated_rows.csv' }
         let(:expected_content) do
+          # rubocop:todo Layout/LineLength
           "Template: 'Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing' is deprecated and no longer in use."
+          # rubocop:enable Layout/LineLength
         end
 
         it_behaves_like 'bulk submission file upload'

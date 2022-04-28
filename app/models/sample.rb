@@ -20,6 +20,11 @@ require 'rexml/text'
 # - Heron: Heron samples get registered via the Api::V2::Heron::PlatesController
 # - Special samples: Samples such as {PhiX} are generated internally
 class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
+  # See https://api.rubyonrails.org/classes/ActiveSupport/CurrentAttributes.html
+  class Current < ActiveSupport::CurrentAttributes
+    attribute :processing_manifest
+  end
+
   GC_CONTENTS = ['Neutral', 'High AT', 'High GC'].freeze
   GENDERS = ['Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable'].freeze
   DNA_SOURCES = [
@@ -39,7 +44,10 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   ].freeze
   SRA_HOLD_VALUES = %w[Hold Public Protect].freeze
   AGE_REGEXP =
+    # rubocop:todo Layout/LineLength
     '\d+(?:\.\d+|\-\d+|\.\d+\-\d+\.\d+|\.\d+\-\d+\.\d+)?\s+(?:second|minute|day|week|month|year)s?|Not Applicable|N/A|To be provided'
+
+  # rubocop:enable Layout/LineLength
   DOSE_REGEXP = '\d+(?:\.\d+)?\s+\w+(?:\/\w+)?|Not Applicable|N/A|To be provided'
 
   self.per_page = 500
@@ -133,8 +141,6 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     custom_attribute(:disease)
 
     custom_attribute(:genome_size)
-    custom_attribute(:saphyr)
-    custom_attribute(:pacbio)
 
     # Consent withdrawn
     custom_attribute(:consent_withdrawn)
@@ -230,7 +236,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
                 with: /\A[[:ascii:]]+\z/,
                 message: 'only allows ASCII'
               },
-              if: :supplier_name_changed?
+              if: :supplier_name_changed? && :supplier_name?
 
     # here we are aliasing ArrayExpress attribute from normal one
     # This is easier that way so the name is exactly the name of the array-express field
@@ -266,6 +272,26 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
   end
 
+  # Create relationships with samples that contain this Sample via SampleCompoundComponent.
+  has_many(
+    :joins_as_component_sample,
+    foreign_key: :component_sample_id,
+    inverse_of: :component_sample,
+    class_name: 'SampleCompoundComponent'
+  )
+  has_many :compound_samples, through: :joins_as_component_sample, dependent: :destroy
+
+  # Create relationships with samples that are contained by this Sample via SampleCompoundComponent.
+  # Samples that are contained by this Sample should not themselves contain more Samples.
+  # This is validated in the SampleCompoundComponent model.
+  has_many(
+    :joins_as_compound_sample,
+    foreign_key: :compound_sample_id,
+    inverse_of: :compound_sample,
+    class_name: 'SampleCompoundComponent'
+  )
+  has_many :component_samples, through: :joins_as_compound_sample, dependent: :destroy
+
   has_many :assets, -> { distinct }, through: :aliquots, source: :receptacle
   deprecate assets: 'use receptacles instead, or labware if needed'
 
@@ -297,11 +323,6 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   has_many_lab_events
   broadcast_with_warren
-
-  # Aker
-  has_many :sample_jobs
-  has_many :jobs, class_name: 'Aker::Job', through: :sample_jobs
-  belongs_to :container, class_name: 'Aker::Container'
 
   validates :name, presence: true
   validates :name,
@@ -354,7 +375,11 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   validates_associated(:ena_study, allow_blank: true, on: :accession)
 
   before_destroy :safe_to_destroy
-  after_save :accession
+
+  # processing_manifest is true if we're currently processing a manifest. We
+  # disable accessioning, as we'll perform it explicitly later. This avoids
+  # accidental calls to save triggering duplicate accessions
+  after_save :accession, unless: -> { Sample::Current.processing_manifest }
 
   # NOTE: Samples don't tend to get released through Sequencescape
   # so in reality these methods are usually misleading.
@@ -367,9 +392,8 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
           # NOTE: This search is performed in two stages so that we can make best use of our indicies
           # A naive search forces a full table lookup for all queries, ignoring the index in the sample metadata table
           # instead favouring the sample_id index. Rather than trying to bend MySQL to our will, we'll solve the
-          # problem rails side, and perform two queries instead.
-
-          # Even passing a scope into the query, thus allowing rails to build subquery, results in a sub-optimal execution plan.
+          # problem rails side, and perform two queries instead. Even passing a scope into the query, thus allowing
+          # rails to build subquery, results in a sub-optimal execution plan.
 
           md =
             Sample::Metadata
@@ -380,8 +404,8 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
               )
               .pluck(:sample_id)
 
-          # The query id is kept distinct from the metadata retrieved ids, as including a string in what is otherwise an array
-          # of numbers seems to massively increase the query length.
+          # The query id is kept distinct from the metadata retrieved ids, as including a string in what is otherwise an
+          # array of numbers seems to massively increase the query length.
           where(
             'name LIKE :wild OR id IN (:sm_ids) OR id = :qid',
             wild: "%#{query}%",
@@ -496,7 +520,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def validate_ena_required_fields!
-    valid?(:accession) && valid?(accession_service.provider) || raise(ActiveRecord::RecordInvalid, self)
+    (valid?(:accession) && valid?(accession_service.provider)) || raise(ActiveRecord::RecordInvalid, self)
   rescue ActiveRecord::RecordInvalid => e
     ena_study.errors.full_messages.each { |message| errors.add(:base, "#{message} on study") } unless ena_study.nil?
     raise e

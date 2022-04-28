@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 xml.instruct!
 xml.requests(api_data) do
   if @requests.empty?

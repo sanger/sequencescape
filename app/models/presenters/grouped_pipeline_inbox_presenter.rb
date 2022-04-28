@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Presenters
   class GroupedPipelineInboxPresenter # rubocop:todo Style/Documentation
     class << self
@@ -11,14 +12,14 @@ module Presenters
     end
 
     ALL_STATES = %w[pending hold].freeze
-    VISIBLE_STATES = 'pending'.freeze
+    VISIBLE_STATES = 'pending'
 
     # Register our fields and their respective conditions
     add_field 'Internal ID', :internal_id
     add_field 'Barcode', :barcode
     add_field 'Wells', :well_count, if: :purpose_important?
     add_field 'Plate Purpose', :plate_purpose, if: :purpose_important?
-    add_field 'Pick To', :pick_to, if: :pick_to?
+    add_field 'Pick To', :pick_to
     add_field 'Submission', :submission_id, if: :group_by_submission?
     add_field 'Study', :study, if: :group_by_submission?
     add_field 'Stock Barcode', :stock_barcode, if: :show_stock?
@@ -27,7 +28,7 @@ module Presenters
 
     attr_reader :pipeline, :user
 
-    delegate :group_by_parent?, :group_by_submission?, :purpose_information?, :pick_to?, to: :pipeline
+    delegate :group_by_parent?, :group_by_submission?, :purpose_information?, to: :pipeline
 
     def initialize(pipeline, user, show_held_requests = false)
       @pipeline = pipeline

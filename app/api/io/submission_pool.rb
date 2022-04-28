@@ -1,5 +1,6 @@
+# frozen_string_literal: true
 # Controls API V1 IO for {::SubmissionPool}
-class ::Io::SubmissionPool < ::Core::Io::Base
+class Io::SubmissionPool < ::Core::Io::Base
   set_model_for_input(::SubmissionPool)
   set_json_root(:submission_pool)
   set_eager_loading { |model| model }

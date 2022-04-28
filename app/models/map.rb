@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Map identifies a {Well wells} position on a {Plate}. It is not related to
 # the ruby #map method.
 class Map < ApplicationRecord
@@ -129,7 +130,7 @@ class Map < ApplicationRecord
   module Sequential # rubocop:todo Style/Documentation
     def self.location_from_row_and_column(row, column, width, size)
       digit_count = Math.log10(size + 1).ceil
-      "S%0#{digit_count}d" % [(row) * width + column]
+      "S%0#{digit_count}d" % [((row) * width) + column]
     end
 
     def self.location_from_index(index, size)

@@ -13,7 +13,7 @@
   <% end %>
 <% else %>
   <%= alert(:warning) do %>
-    Your profile not complete!
+    Your profile is not complete!
   <% end %>
 <% end %>
 <div class="card-columns">
@@ -35,32 +35,21 @@ end %>
   <% end %>
 <% end %>
 </div>
+
 <div class="card-default">
 <%= panel(:default, title: 'Print Swipecard Barcode') do %>
-  <form onkeypress="return event.keyCode != 13;">
+  <%= form_tag(print_swipecard_profile_path) do %>
     <table>
       <tr>
-        <th><label for="swipecard">Swipecard</label></th>
-        <th><label for="barcode-printer-list">Printer</label></th>
-        <th></th>
+        <th><%= label_tag 'Swipe card' %></th>
+        <th><%= label_tag 'Printer' %></th>
       </tr>
       <tr>
-        <td><input type="password" id="swipecard" /></td>
-        <td>
-          <select name="printer" id="barcode-printer-list", class="form-control select2">
-            <% @printer_list.each do |printer| %>
-              <option value="<%= printer.name %>"><%= printer.name %></option>
-            <% end %>
-          </select>
-        </td>
-        <td>
-          <input type="button" value="Print Barcode" id="print-btn" class="btn btn-success" <% if @label_template_id.nil? %>disabled<% end %> />
-        </td>
+        <td><%= password_field_tag 'swipecard' %></td>
+        <td><%= select_tag 'printer', options_for_select(@printer_list), class: 'form-control select2'%></td>
+        <td><%= button_tag 'Print Swipecard', :class => 'btn btn-success' %></td>
       </tr>
     </table>
-    <div id="pmb-data" data-pmb-api="<%= configatron.pmb_api %>" data-pmb-template="<%= @label_template_id || 0 %>"></div>
-    <div id="usr-data" data-usr-login="<%= @user.login.truncate(10, omission: '..') %>"></div>
-  <%= javascript_include_tag 'print_swipecard.js' %>
-  </form>
+  <% end %>
 <% end %>
 </div>

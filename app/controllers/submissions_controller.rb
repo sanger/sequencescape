@@ -24,7 +24,7 @@ class SubmissionsController < ApplicationController
   # New Order is just client side
   # Creates an order, followed by a submission, and then assigns the order to the submission.
   # On subsequent clicks of 'Save Order' we pass in the submission id from the original
-  def create # rubocop:todo Metrics/MethodLength
+  def create
     @presenter = Submission::SubmissionCreator.new(current_user, params[:submission].to_unsafe_h)
 
     if @presenter.save
@@ -64,8 +64,8 @@ class SubmissionsController < ApplicationController
 
   #
   # Displays a list of submissions for the current user.
-  # building => Submissions which haven't yet been queued for building and may still be edited. Submissions begin in this state, and leave when the used clicks
-  #             'Build Submission'
+  # building => Submissions which haven't yet been queued for building and may still be edited. Submissions begin in
+  # this state, and leave when the user clicks 'Build Submission'
   # pending  => Submissions which the user has finished setting up, and has queued for processing by the delayed job
   # ready    => Submissions which the delayed job has finished processing. The final state of a submission.
   def index # rubocop:todo Metrics/AbcSize

@@ -48,8 +48,7 @@ def assert_label_exists(label_text, required = false)
   )
 end
 
-# rubocop:todo Metrics/MethodLength
-# rubocop:todo Metrics/AbcSize
+# rubocop:todo Metrics/MethodLength, Metrics/AbcSize
 def locate_labeled_field_type(label_text, field_type) # rubocop:todo Metrics/CyclomaticComplexity
   field = page.find_field(label_text) or raise Capybara::ElementNotFound, "Could not find #{label_text.inspect}"
   case field_type
@@ -65,15 +64,16 @@ def locate_labeled_field_type(label_text, field_type) # rubocop:todo Metrics/Cyc
   end
   field
 end
-# rubocop:enable Metrics/AbcSize
-# rubocop:enable Metrics/MethodLength
+# rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
 Then /^I should see the (required )?(text|select|textarea) field "([^"]+)"$/ do |required, type, field|
   assert_label_exists(field, required)
   locate_labeled_field_type(field, type)
 end
 
+# rubocop:todo Layout/LineLength
 Then %r{^I should see the (required )?select field "([^"]+)" with options "([^"]+(?:\/[^"]+)+)"$} do |required, field, options|
+  # rubocop:enable Layout/LineLength
   assert_label_exists(field, required)
   element = locate_labeled_field_type(field, 'select')
   options

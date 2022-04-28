@@ -5,8 +5,8 @@ Feature: Order a table with tablesorter plugin.
     And I am an administrator
 
     Scenario: Order the table clicking "Name" column
-      Given I have five requests for "Illumina-C Library preparation"
-      Given I am on the "Illumina-C Library preparation" pipeline page
+      Given I have five requests for "MiSeq sequencing"
+      Given I am on the "MiSeq sequencing" pipeline page
       When I click the header "Name"
       Then the table of requests should be:
         | Name         |

@@ -71,7 +71,6 @@ RSpec.describe Study, type: :model do
     end
 
     it 'deals with managers' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(study.managers).not_to be_empty
       expect(study.managers).not_to include(user1)
       expect(study.managers).to include(user2)
@@ -79,7 +78,6 @@ RSpec.describe Study, type: :model do
     end
 
     it 'deals with owners' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(study.owners).not_to be_empty
       expect(study.owners).to include(user1)
       expect(study.owners).not_to include(user2)
@@ -87,7 +85,7 @@ RSpec.describe Study, type: :model do
     end
   end
 
-  describe '#ethical approval?: ' do
+  describe '#ethical approval?:' do
     let!(:study) { create(:study) }
 
     context 'when contains human DNA' do
@@ -245,13 +243,10 @@ RSpec.describe Study, type: :model do
       before do
         2.times do
           r = create(:passed_request, request_type: request_type, initial_study_id: study.id)
-          r
-            .asset
-            .aliquots
-            .each do |al|
-              al.study = study
-              al.save!
-            end
+          r.asset.aliquots.each do |al|
+            al.study = study
+            al.save!
+          end
         end
 
         create_list(:order, 2, study: study)
@@ -267,7 +262,6 @@ RSpec.describe Study, type: :model do
       end
 
       it 'not cancel any associated requests' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.requests).to be_all(&:passed?)
       end
     end
@@ -311,7 +305,8 @@ RSpec.describe Study, type: :model do
       let!(:study) { create(:managed_study) }
 
       it 'accept valid data access group names' do
-        # Valid names contain alphanumerics and underscores. They are limited to 32 characters, and cannot begin with a number
+        # Valid names contain alphanumerics and underscores. They are limited to 32 characters, and cannot begin with a
+        # number
         ['goodname', 'g00dname', 'good_name', '_goodname', 'good-name', 'goodname1  goodname2'].each do |name|
           expect(study.study_metadata.update!(data_access_group: name)).to be_truthy
           expect(study.study_metadata.data_access_group).to eq(name)
@@ -495,152 +490,122 @@ RSpec.describe Study, type: :model do
       end
 
       it 'will have a study_description' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.study_description).to eq(metadata[:study_description])
       end
 
       it 'will have a contaminated_human_dna' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.contaminated_human_dna).to eq(metadata[:contaminated_human_dna])
       end
 
       it 'will have a remove_x_and_autosomes' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.remove_x_and_autosomes).to eq(metadata[:remove_x_and_autosomes])
       end
 
       it 'will have a separate_y_chromosome_data' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.separate_y_chromosome_data).to eq(metadata[:separate_y_chromosome_data])
       end
 
       it 'will have a study_project_id' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.study_project_id).to eq(metadata[:study_project_id])
       end
 
       it 'will have a study_abstract' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.study_abstract).to eq(metadata[:study_abstract])
       end
 
       it 'will have a study_study_title' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.study_study_title).to eq(metadata[:study_study_title])
       end
 
       it 'will have a study_ebi_accession_number' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.study_ebi_accession_number).to eq(metadata[:study_ebi_accession_number])
       end
 
       it 'will have a study_sra_hold' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.study_sra_hold).to eq(metadata[:study_sra_hold])
       end
 
       it 'will have a contains_human_dna' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.contains_human_dna).to eq(metadata[:contains_human_dna])
       end
 
       it 'will have a commercially_available' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.commercially_available).to eq(metadata[:commercially_available])
       end
 
       it 'will have a study_name_abbreviation' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.study_name_abbreviation).to eq(metadata[:study_name_abbreviation])
       end
 
       it 'will have a data_release_strategy' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.data_release_strategy).to eq(metadata[:data_release_strategy])
       end
 
       it 'will have a data_release_timing' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.data_release_timing).to eq(metadata[:data_release_timing])
       end
 
       it 'will have a bam' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.bam).to eq(metadata[:bam])
       end
 
       it 'will have a ega_dac_accession_number' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.ega_dac_accession_number).to eq(metadata[:ega_dac_accession_number])
       end
 
       it 'will have a ega_policy_accession_number' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.ega_policy_accession_number).to eq(metadata[:ega_policy_accession_number])
       end
 
       it 'will have a array_express_accession_number' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.array_express_accession_number).to eq(metadata[:array_express_accession_number])
       end
 
       it 'will have a data_access_group' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.data_access_group).to eq(metadata[:data_access_group])
       end
 
       it 'will have a snp_study_id' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.snp_study_id).to eq(metadata[:snp_study_id])
       end
 
       it 'will have a snp_parent_study_id' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.snp_parent_study_id).to eq(metadata[:snp_parent_study_id])
       end
 
       it 'will have a number_of_gigabases_per_sample' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.number_of_gigabases_per_sample).to eq(metadata[:number_of_gigabases_per_sample])
       end
 
       it 'will have a hmdmc_approval_number' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.hmdmc_approval_number).to eq(metadata[:hmdmc_approval_number])
       end
 
       it 'will have a s3_email_list' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.s3_email_list).to eq(metadata[:s3_email_list])
       end
 
       it 'will have a data_deletion_period' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.data_deletion_period).to eq(metadata[:data_deletion_period])
       end
 
       it 'must have a study type' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.study_type).not_to be_nil
       end
 
       it 'must have a data release study type' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.data_release_study_type).not_to be_nil
       end
 
       it 'must have a reference genome' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.reference_genome).not_to be_nil
       end
 
       it 'must have a faculty sponsor' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.faculty_sponsor).not_to be_nil
       end
 
       it 'must have a program' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.program).not_to be_nil
       end
     end
@@ -655,7 +620,6 @@ RSpec.describe Study, type: :model do
       end
 
       it 'will have a data_release_delay_period' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.data_release_delay_period).to eq(metadata[:data_release_delay_period])
       end
     end
@@ -670,12 +634,10 @@ RSpec.describe Study, type: :model do
       end
 
       it 'will have a dac_policy' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.dac_policy).to eq(metadata[:dac_policy])
       end
 
       it 'will have a dac_policy_title' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.dac_policy_title).to eq(metadata[:dac_policy_title])
       end
     end
@@ -694,7 +656,6 @@ RSpec.describe Study, type: :model do
       end
 
       it 'will have a data_release_delay_reason_comment' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.data_release_delay_reason_comment).to eq(
           metadata[:data_release_delay_reason_comment]
         )
@@ -728,16 +689,23 @@ RSpec.describe Study, type: :model do
       end
 
       it 'will have a data_release_prevention_approval' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.data_release_prevention_approval).to eq(metadata[:data_release_prevention_approval])
       end
 
       it 'will have a data_release_prevention_reason_comment' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(study.study_metadata.data_release_prevention_reason_comment).to eq(
           metadata[:data_release_prevention_reason_comment]
         )
       end
+    end
+  end
+
+  context '(DPL-148) on updating user roles' do
+    let(:study) { create :study }
+    let(:user) { create :user }
+
+    it 'triggers warehouse update', warren: true do
+      expect { user.grant_follower(study) }.to change(Warren.handler.messages, :count).from(0)
     end
   end
 end

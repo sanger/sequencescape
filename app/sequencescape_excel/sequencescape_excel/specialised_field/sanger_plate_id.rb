@@ -15,34 +15,25 @@ module SequencescapeExcel
 
       validate :check_container
 
-      # rubocop:todo Metrics/PerceivedComplexity
-      # rubocop:todo Metrics/MethodLength
-      # rubocop:todo Metrics/AbcSize
-      def update(attributes = {}) # rubocop:todo Metrics/CyclomaticComplexity
-        return unless valid? && attributes[:aliquot].present? && foreign_barcode_format.present?
+      # rubocop:todo Metrics/PerceivedComplexity, Metrics/AbcSize
+      def update(_attributes = {}) # rubocop:todo Metrics/CyclomaticComplexity
+        return unless valid? && foreign_barcode_format.present?
 
         # checking if the plate this well belongs to already has this foreign barcode set in its list of barcodes.
         # or if it contains a foreign barcode with the same format, then update that existing one
-        foreign_barcode =
-          attributes[:aliquot].receptacle.plate.barcodes.find { |item| item[:format] == foreign_barcode_format.to_s }
+        foreign_barcode = asset.plate.barcodes.find { |item| item[:format] == foreign_barcode_format.to_s }
         if foreign_barcode.present?
           if foreign_barcode.barcode != value
             foreign_barcode.update(barcode: value)
-            if attributes[:aliquot].sample.sample_manifest.present?
-              attributes[:aliquot].sample.sample_manifest.update_barcodes
-            end
+            sample_manifest.update_barcodes if sample_manifest.present?
           end
         else
-          attributes[:aliquot].receptacle.plate.barcodes << Barcode.new(format: foreign_barcode_format, barcode: value)
-          if attributes[:aliquot].sample.sample_manifest.present?
-            attributes[:aliquot].sample.sample_manifest.update_barcodes
-          end
+          asset.plate.barcodes << Barcode.new(format: foreign_barcode_format, barcode: value)
+          sample_manifest.update_barcodes if sample_manifest.present?
         end
       end
 
-      # rubocop:enable Metrics/AbcSize
-      # rubocop:enable Metrics/MethodLength
-      # rubocop:enable Metrics/PerceivedComplexity
+      # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
 
       private
 

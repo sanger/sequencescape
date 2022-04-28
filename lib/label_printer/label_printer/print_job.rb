@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # require 'pmb_client'
 
 module LabelPrinter
@@ -14,8 +15,7 @@ module LabelPrinter
 
     def execute # rubocop:todo Metrics/MethodLength
       begin
-        attributes = build_attributes
-        LabelPrinter::PmbClient.print(attributes)
+        LabelPrinter::PmbClient.print(build_attributes)
       rescue LabelPrinter::PmbException => e
         errors.add(:printmybarcode, e)
         return false
@@ -31,27 +31,20 @@ module LabelPrinter
     end
 
     def build_attributes
-      printer_name_attribute.merge(label_template_id_attribute).merge(labels_attribute)
+      @build_attributes ||=
+        { printer_name: printer_name, label_template_name: label_template_name, labels: labels_attribute }
     end
 
+    # returns: a list of labels
     def labels_attribute
       printer = find_printer
       printer_type_class = { printer_type_class: printer.barcode_printer_type.class }
-      @labels = label_class.new(options.merge(printer_type_class)).to_h
+      @labels = label_class.new(options.merge(printer_type_class)).labels
     end
 
-    def printer_name_attribute
-      { printer_name: printer_name }
-    end
-
-    def label_template_id_attribute
-      { label_template_id: label_template_id }
-    end
-
-    def label_template_id
+    def label_template_name
       printer = find_printer
-      name = printer.barcode_printer_type.label_template_name
-      LabelPrinter::PmbClient.get_label_template_by_name(name).fetch('data').first['id']
+      printer.barcode_printer_type.label_template_name
     end
 
     def find_printer
@@ -64,7 +57,7 @@ module LabelPrinter
     end
 
     def number_of_labels
-      labels[:labels][:body] ? labels[:labels][:body].count : 0
+      labels.count
     end
   end
 end

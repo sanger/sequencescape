@@ -13,7 +13,7 @@ RSpec.describe ReceptaclesController do
   it_behaves_like 'it requires login'
 
   describe '#index' do
-    setup { get :index, params: params, session: { user: current_user.id } }
+    before { get :index, params: params, session: { user: current_user.id } }
 
     context 'when no parameters are specified' do
       let(:params) { {} }

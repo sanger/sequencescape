@@ -5,12 +5,13 @@ require 'rails_helper'
 describe 'Create a study' do
   let(:user) { create :admin }
 
-  setup do
+  before do
     create :faculty_sponsor, name: 'Jack Sponsor'
     create :data_release_study_type, name: 'genomic sequencing'
     create :study_type
     create :program
   end
+
   it 'displays the expected fields' do
     login_user user
     visit root_path
@@ -87,7 +88,9 @@ describe 'Create a study' do
       choose('Yes', allow_label_click: true)
     end
 
+    # rubocop:todo Layout/LineLength
     within_fieldset 'Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?' do
+      # rubocop:enable Layout/LineLength
       choose('No', allow_label_click: true)
     end
 
@@ -95,7 +98,9 @@ describe 'Create a study' do
       choose('No', allow_label_click: true)
     end
 
+    # rubocop:todo Layout/LineLength
     within_fieldset 'Are all the samples to be used in this study commercially available, unlinked anonymised cell-lines?' do
+      # rubocop:enable Layout/LineLength
       choose('Yes', allow_label_click: true)
     end
 
@@ -107,6 +112,6 @@ describe 'Create a study' do
     study = Study.last
     expect(page).to have_current_path("/studies/#{study.id}/information")
     expect(study.abbreviation).to eq 'CCC3'
-    expect(study.study_metadata.bam).to eq false
+    expect(study.study_metadata.bam).to be false
   end
 end

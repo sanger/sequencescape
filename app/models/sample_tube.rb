@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class SampleTube < Tube # rubocop:todo Style/Documentation
   include Api::SampleTubeIO::Extensions
   include ModelExtensions::SampleTube

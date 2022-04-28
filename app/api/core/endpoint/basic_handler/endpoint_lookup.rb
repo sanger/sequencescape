@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Core::Endpoint::BasicHandler::EndpointLookup # rubocop:todo Style/Documentation
   EndpointError = Class.new(StandardError)
   MissingEndpoint = Class.new(EndpointError)

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Represents a Data Access Committee who co-ordinate access to managed (EGA)
 # {Accessionable::Study studies}. Should ideally be a completely separate record
 # from {Study} but currently just a group of attributes in the {Study::Metadata}
@@ -19,7 +20,7 @@ class Accessionable::Dac < Accessionable::Base
     [].tap { |errors| errors << 'Data Access Contacts Empty. Please add a contact' if @contacts.empty? }
   end
 
-  def xml # rubocop:todo Metrics/MethodLength
+  def xml
     xml = Builder::XmlMarkup.new
     xml.instruct!
     xml.DAC_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') do

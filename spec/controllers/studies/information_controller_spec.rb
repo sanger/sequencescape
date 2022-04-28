@@ -6,12 +6,12 @@ RSpec.describe Studies::InformationController do
   let(:study) { create :study }
   let(:user) { create(:user) }
 
+  before { session[:user] = user.id }
+
   it_behaves_like 'it requires login', 'show', parent: :study
 
-  setup { session[:user] = user.id }
-
   describe '#show' do
-    setup { get :show, params: { id: 'unused', study_id: study.id } }
+    before { get :show, params: { id: 'unused', study_id: study.id } }
 
     it 'renders a successful show template', :aggregate_failures do
       expect(subject).to respond_with :success
@@ -25,7 +25,7 @@ RSpec.describe Studies::InformationController do
     let(:request_type3) { create :request_type }
     let(:well) { create :untagged_well, study: study }
 
-    setup do
+    before do
       request_type3
       create_list(:request, 2, request_type: request_type1, initial_study: study, asset: well)
       create_list(:request, 3, request_type: request_type2, initial_study: study, asset: well)

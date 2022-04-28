@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This is a layout template for tags.  Think of it as a partially created TagLayout, defining only the tag
 # group that will be used and the actual TagLayout implementation that will do the work.
 class TagLayoutTemplate < ApplicationRecord

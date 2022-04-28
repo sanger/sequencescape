@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class BaitLibraryLayout < ApplicationRecord # rubocop:todo Style/Documentation
   include Uuid::Uuidable
   include ModelExtensions::BaitLibraryLayout
@@ -51,9 +52,9 @@ class BaitLibraryLayout < ApplicationRecord # rubocop:todo Style/Documentation
   def each_bait_library_assignment # rubocop:todo Metrics/AbcSize
     plate.stock_wells.each do |well, stock_wells|
       bait_library =
-        stock_wells.filter_map { |w| w.requests_as_source.for_submission_id(well.pool_id).first }.map(
-            &:request_metadata
-          )
+        stock_wells
+          .filter_map { |w| w.requests_as_source.for_submission_id(well.pool_id).first }
+          .map(&:request_metadata)
           .map(&:bait_library)
           .uniq
       if bait_library.size > 1

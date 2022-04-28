@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
+# rubocop:todo Layout/LineLength
 Given /^there is a (\d+) well "([^"]*)" plate with a barcode of "([^"]*)"$/ do |number_of_wells, plate_purpose_name, plate_barcode|
+  # rubocop:enable Layout/LineLength
   new_plate =
     FactoryBot.create :plate,
                       sanger_barcode: {

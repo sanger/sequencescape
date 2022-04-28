@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Delegate validation is all about enabling one class to validate the information within an instance of
 # another class.  The case driving this is the ability for a Submission to validate that the request options
 # provided by the user are valid for the RequestType instances that the submission is going to use.  In that
@@ -15,10 +16,9 @@ module DelegateValidation
     validates_each(*args) do |record, _attr, value|
       validator = record.send(:"#{delegation_target}_delegate_validator").new(value)
       validator.valid?.tap do
-        validator
-          .errors
-          .messages
-          .each { |attrib, message| record.errors.add("#{attribute_tag}.#{attrib}", message.join('; ')) }
+        validator.errors.messages.each do |attrib, message|
+          record.errors.add("#{attribute_tag}.#{attrib}", message.join('; '))
+        end
       end
     end
   end

@@ -6,7 +6,7 @@ class UatActions::GenerateTaggedPlates < UatActions::GeneratePlates
   # not make sense here.
   EXCLUDED_WALKING = ['wells in pools', 'manual by pool'].freeze
 
-  self.title = 'Generate Tagged Plates'
+  self.title = 'Generate tagged plates'
 
   # The description displays on the list of UAT actions to provide additional information
   self.description =

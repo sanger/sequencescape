@@ -1,5 +1,6 @@
+# frozen_string_literal: true
 # Controls API V1 IO for {::BarcodePrinter}
-class ::Io::BarcodePrinter < ::Core::Io::Base
+class Io::BarcodePrinter < ::Core::Io::Base
   set_model_for_input(::BarcodePrinter)
   set_json_root(:barcode_printer)
   set_eager_loading(&:include_barcode_printer_type)

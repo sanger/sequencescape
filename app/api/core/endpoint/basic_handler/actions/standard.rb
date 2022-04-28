@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Core::Endpoint::BasicHandler::Actions::Standard # rubocop:todo Style/Documentation
   def self.extended(base)
     base.class_eval do
@@ -10,7 +11,7 @@ module Core::Endpoint::BasicHandler::Actions::Standard # rubocop:todo Style/Docu
 
   def standard_action(*names)
     self.standard_actions = {} if standard_actions.empty?
-    standard_actions.merge!(names.map { |a| [a.to_sym, a.to_sym] }.to_h)
+    standard_actions.merge!(names.to_h { |a| [a.to_sym, a.to_sym] })
   end
 
   module InstanceMethods # rubocop:todo Style/Documentation

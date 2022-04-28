@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This is a module containing the standard statemachine for a request that needs it.
 # It provides various callbacks that can be hooked in to by the derived classes.
 require 'aasm'
@@ -21,15 +22,12 @@ module Request::Statemachine # rubocop:todo Style/Documentation
       # Destroy all evidence of the statemachine we've inherited!  Ugly, but it works!
       old_machine = AASM::StateMachineStore.fetch(self) && AASM::StateMachineStore.fetch(self).machine(:default)
       if old_machine
-        old_machine
-          .events
-          .keys
-          .each do |event|
-            undef_method(event)
-            undef_method(:"#{event}!")
-            undef_method(:"#{event}_without_validation!")
-            undef_method(:"may_#{event}?")
-          end
+        old_machine.events.keys.each do |event|
+          undef_method(event)
+          undef_method(:"#{event}!")
+          undef_method(:"#{event}_without_validation!")
+          undef_method(:"may_#{event}?")
+        end
         old_machine.states.each { |state| undef_method(:"#{state}?") }
       end
 
@@ -103,10 +101,6 @@ module Request::Statemachine # rubocop:todo Style/Documentation
         transitions to: :cancelled, from: %i[failed passed]
       end
 
-      event :cancel_from_upstream, manual_only?: true do
-        transitions to: :cancelled, from: [:pending]
-      end
-
       event :cancel_before_started do
         transitions to: :cancelled, from: %i[pending hold]
       end
@@ -142,6 +136,7 @@ module Request::Statemachine # rubocop:todo Style/Documentation
     scope :pending, -> { where(state: %w[pending blocked]) } # block is a kind of substate of pending }
     scope :opened, -> { where(state: OPENED_STATE) }
     scope :closed, -> { where(state: %w[passed failed cancelled]) }
+    scope :not_cancelled, -> { where.not(state: 'cancelled') }
   end
 
   #--
@@ -158,12 +153,13 @@ module Request::Statemachine # rubocop:todo Style/Documentation
   # Aliquots are copied from the source asset to the target and updated with the
   # project and study information from the request itself.
   def transfer_aliquots
-    target_asset.aliquots << asset.aliquots.map do |aliquot|
-      aliquot.dup.tap do |clone|
-        clone.study_id = initial_study_id || aliquot.study_id
-        clone.project_id = initial_project_id || aliquot.project_id
+    target_asset.aliquots <<
+      asset.aliquots.map do |aliquot|
+        aliquot.dup.tap do |clone|
+          clone.study_id = initial_study_id || aliquot.study_id
+          clone.project_id = initial_project_id || aliquot.project_id
+        end
       end
-    end
   end
 
   #
@@ -193,7 +189,13 @@ module Request::Statemachine # rubocop:todo Style/Documentation
   def on_hold; end
 
   def failed_upstream!
-    fail_from_upstream! unless failed?
+    # Don't transition it again if it's already reached an end state
+    return if terminated?
+
+    # Only transition it if *all* upstream requests are failed or cancelled, not just the one we came from.
+    return unless upstream_requests.all?(&:terminated?)
+
+    fail_from_upstream!
   end
 
   def failed_downstream!

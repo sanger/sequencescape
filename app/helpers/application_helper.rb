@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # rubocop:todo Metrics/ModuleLength
 module ApplicationHelper # rubocop:todo Style/Documentation
   # Should return either the custom text or a blank string
@@ -75,7 +76,8 @@ module ApplicationHelper # rubocop:todo Style/Documentation
   #   status = batch.size > MAX_SIZE ? 'danger' : 'success'
   #   badge(batch.size, type: 'batch-size', style: status )
   #
-  # @param status [String] The text to display in the badge. Will also be used to set the style if not otherwise specified
+  # @param status [String] The text to display in the badge. Will also be used to set the style if not otherwise
+  #                        specified
   # @param type [String] Optional: Additional css-class applied to the badge (generic-badge by default)
   # @param style [String] Optional: Override the badge-* class otherwise set directly from the status.
   #
@@ -162,7 +164,6 @@ module ApplicationHelper # rubocop:todo Style/Documentation
     add :about, title
   end
 
-  # rubocop:todo Metrics/MethodLength
   def tabulated_error_messages_for(*params) # rubocop:todo Metrics/AbcSize
     options = params.last.is_a?(Hash) ? params.pop.symbolize_keys : {}
     objects = params.filter_map { |object_name| instance_variable_get("@#{object_name}") }
@@ -178,13 +179,11 @@ module ApplicationHelper # rubocop:todo Style/Documentation
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
   # <li class="nav-item">
   #   <a class="nav-link <active>" id="name-tab" data-toggle="tab" href="#name"
   #    role="tab" aria-controls="name" aria-selected="true">name</a>
   # </li>
-  def tab(name, target: nil, active: false, id: nil) # rubocop:todo Metrics/MethodLength
+  def tab(name, target: nil, active: false, id: nil)
     target ||= name.parameterize
     active_class = active ? 'active' : ''
     id ||= "#{name}-tab".parameterize
@@ -215,11 +214,6 @@ module ApplicationHelper # rubocop:todo Style/Documentation
       aria_labelledby: tab_id,
       &block
     )
-  end
-
-  def display_request_information(request, rit, batch = nil)
-    r = request.value_for(rit.name, batch)
-    r.presence || 'NA'
   end
 
   def display_boolean_results(result)
@@ -298,10 +292,10 @@ module ApplicationHelper # rubocop:todo Style/Documentation
   # Used in _header.html.erb. Can be removed after users have been given a time period to switch over.
   def old_url
     permitted_urls = %w[
-      http://sequencescape.psd.sanger.ac.uk
-      http://uat.sequencescape.psd.sanger.ac.uk
-      http://uat2.sequencescape.psd.sanger.ac.uk
-      http://training.sequencescape.psd.sanger.ac.uk
+      https://sequencescape.psd.sanger.ac.uk
+      https://uat.sequencescape.psd.sanger.ac.uk
+      https://uat2.sequencescape.psd.sanger.ac.uk
+      https://training.sequencescape.psd.sanger.ac.uk
     ]
     return true unless permitted_urls.include?(request.base_url)
   end

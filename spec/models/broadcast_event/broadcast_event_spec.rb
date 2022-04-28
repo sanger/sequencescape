@@ -32,7 +32,7 @@ class TestSeed
     'test_seed'
   end
 
-  def attributes # rubocop:todo Metrics/MethodLength
+  def attributes
     {
       'uuid' => @uuid,
       'friendly_name' => @friendly_name,

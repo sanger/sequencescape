@@ -102,7 +102,7 @@ RSpec.describe CherrypickTask::ControlLocator, type: :model do
         it_behaves_like 'a generator of valid positions', (0...96)
       end
 
-      context "when batch is #{batch_id}  and we have a 96 well plate with 8 wells free" do
+      context "when batch is #{batch_id} and we have a 96 well plate with 8 wells free" do
         let(:batch_id) { batch_id }
         let(:total_wells) { 96 }
         let(:num_control_wells) { 2 }
@@ -111,7 +111,7 @@ RSpec.describe CherrypickTask::ControlLocator, type: :model do
         it_behaves_like 'a generator of valid positions', (8...96)
       end
 
-      context "when batch is #{batch_id}  and we have a 96 well plate with arbitary wells free" do
+      context "when batch is #{batch_id} and we have a 96 well plate with arbitary wells free" do
         let(:batch_id) { batch_id }
         let(:total_wells) { 96 }
         let(:num_control_wells) { 2 }

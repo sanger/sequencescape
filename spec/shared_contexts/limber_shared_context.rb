@@ -2,8 +2,8 @@
 
 shared_context 'a limber target plate with submissions' do |library_state = 'started'|
   # A note on improving speed: before(:context) could be used instead of before(:each) to ensure these elements only get
-  # built once. This will speed things up, but is discouraged. You can't use let in a before(:context) so instance variables
-  # would need to be set instead.
+  # built once. This will speed things up, but is discouraged. You can't use let in a before(:context) so instance
+  # variables would need to be set instead.
   # The input plate represents the plate going into the pipeline
   # from which the requests will be made.
   let(:tested_wells) { 3 }
@@ -56,16 +56,10 @@ shared_context 'a limber target plate with submissions' do |library_state = 'sta
   before do
     build_library_requests
     submission_request_types[1..].each do |downstream_type|
-      input_plate
-        .wells
-        .count
-        .times do
-          create_list :multiplex_request,
-                      requests_per_well,
-                      request_type: downstream_type,
-                      submission: target_submission
-          create :multiplex_request, request_type: downstream_type, submission: decoy_submission
-        end
+      input_plate.wells.count.times do
+        create_list :multiplex_request, requests_per_well, request_type: downstream_type, submission: target_submission
+        create :multiplex_request, request_type: downstream_type, submission: decoy_submission
+      end
     end
   end
 end

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module FieldInfosHelper # rubocop:todo Style/Documentation
   def field_info_id(path, field)
     path = path.clone

@@ -25,7 +25,7 @@
 
 <script>
 // Imports
-import PicksSectionBatchPick from "./PicksSectionBatchPick";
+import PicksSectionBatchPick from "./PicksSectionBatchPick.vue";
 // Component
 export default {
   name: "PicksSectionBatch",

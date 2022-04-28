@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Admin::PlatePurposesController < ApplicationController # rubocop:todo Style/Documentation
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -33,7 +34,6 @@ class Admin::PlatePurposesController < ApplicationController # rubocop:todo Styl
 
   def edit; end
 
-  # rubocop:todo Metrics/MethodLength
   def create # rubocop:todo Metrics/AbcSize
     @plate_purpose = PlatePurpose.new(params[:plate_purpose])
 
@@ -48,8 +48,6 @@ class Admin::PlatePurposesController < ApplicationController # rubocop:todo Styl
       end
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def update
     respond_to do |format|

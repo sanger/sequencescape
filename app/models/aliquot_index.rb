@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # An AliquotIndex is generated for all {Aliquot aliquots} in a {Lane} when the
 # {Batch} is released. It gives each aliquot in the {Lane} a unique index which
 # can get presented to NPG.

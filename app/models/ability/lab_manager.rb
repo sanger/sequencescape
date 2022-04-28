@@ -25,5 +25,6 @@ class Ability::LabManager
 
     # Whether the inbox shows if a request is previously failed
     can :see_previously_failed, Request
+    can :cancel, Submission
   end
 end

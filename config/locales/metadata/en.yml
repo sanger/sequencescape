@@ -141,6 +141,7 @@ en:
 
         country_of_origin:
           label: Country of origin
+          help: The geographic origin of the sample, as defined by the <a href="http://insdc.org/country.html">INSDC list of countries and seas</a>. May also be 'not provided', 'not applicable', 'not collected' or 'restricted access'. Please see <a href="https://ena-docs.readthedocs.io/en/latest/submit/samples/missing-values.html">the missing value documentation</a> before providing one of these values.
 
         geographical_region:
           label: Geographical region
@@ -211,6 +212,7 @@ en:
 
         date_of_sample_collection:
           label: Date of sample collection
+          help: Dates should be in the format YYYY-MM-DDTHH:MM:SS (eg. '2020-01-25T12:59:59') with each additional level of precision being optional. May also be 'not provided', 'not collected' or 'restricted access'. Please see <a href="https://ena-docs.readthedocs.io/en/latest/submit/samples/missing-values.html">the missing value documentation</a> before providing one of these values.
 
         date_of_sample_extraction:
           label: Date of sample extraction
@@ -307,10 +309,6 @@ en:
           edit_info: "EGA"
         genome_size:
           label: Genome Size
-        saphyr:
-          label: Saphyr
-        pacbio:
-          label: Pacbio
 
     study:
       metadata:
@@ -335,7 +333,7 @@ en:
         study_description:
           label: Study description
           edit_info: "ENA requirement"
-          help: Please choose one of the following 2 standard statements to be included with your data submissions (one or the other, depending on the study). <b>If you use the second statement, replace [doi or ref] by a reference or doi for your publication:</b><br /><br />This data is part of a pre-publication release. For information on the proper use of pre-publication data shared by the Wellcome Trust Sanger Institute (including details of any publication moratoria), please see http://www.sanger.ac.uk/datasharing/<br /><br />OR<br /><br />This data has been described in the following article [doi or ref] and its further analysis can be freely submitted for publication. For information on the proper use of data shared by the Wellcome Trust Sanger Institute (including information on acknowledgement), please see http://www.sanger.ac.uk/datasharing/<br/><p>If applicable, include a brief description of any restrictions on data usage, e.g. 'For AIDS-releated research only'</p>
+          help: Please choose one of the following 2 standard statements to be included with your data submissions (one or the other, depending on the study). <b>If you use the second statement, replace [doi or ref] by a reference or doi for your publication:</b><br /><br />This data is part of a pre-publication release. For information on the proper use of pre-publication data shared by the Wellcome Trust Sanger Institute (including details of any publication moratoria), please see http://www.sanger.ac.uk/datasharing/<br /><br />OR<br /><br />This data has been described in the following article [doi or ref] and its further analysis can be freely submitted for publication. For information on the proper use of data shared by the Wellcome Trust Sanger Institute (including information on acknowledgement), please see http://www.sanger.ac.uk/datasharing/<br/><p>If applicable, include a brief description of any restrictions on data usage, e.g. 'For AIDS-related research only'</p>
 
         contaminated_human_dna:
           label: Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?
@@ -418,7 +416,7 @@ en:
 
         data_release_timing:
           label: How is the data release to be timed?
-          help: "Choose from:<p><strong>Immediate:</strong> To be released as soon as possible.</p><p><strong>Standard:</strong> To be released:<ul><li>For managed (EGA) studies: 6 months</li><li>For open (ENA) studies: 12 months</li><li>Transcriptomics studies: on request only</li></ul></p><p><strong>Delayed:</strong><ul><li>For managed (EGA) studies: 6 months plus delay for period</li><li>For open (ENA) stduies: 12 months plus delay for period.</li></ul></p><p><strong>Never:</strong> This option is only availiable if the data release strategy is set to 'Not applicable.'</p>"
+          help: "Choose from:<p><strong>Immediate:</strong> To be released as soon as possible.</p><p><strong>Standard:</strong> To be released:<ul><li>For managed (EGA) studies: 6 months</li><li>For open (ENA) studies: 12 months</li><li>Transcriptomics studies: on request only</li></ul></p><p><strong>Delayed:</strong><ul><li>For managed (EGA) studies: 6 months plus delay for period</li><li>For open (ENA) studies: 12 months plus delay for period.</li></ul></p><p><strong>Never:</strong> This option is only available if the data release strategy is set to 'Not applicable.'</p>"
 
         data_release_prevention_reason:
           label: What is the reason for preventing data release?

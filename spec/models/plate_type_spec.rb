@@ -20,12 +20,10 @@ describe PlateType do
   end
 
   it 'knows cherrypickable default type' do
-    # rubocop:todo RSpec/AggregateExamples
     expect(described_class.cherrypickable_default_type).to eq 'ABgene_0800'
   end
 
   it 'knows plate types names and maximum volumes' do
-    # rubocop:todo RSpec/AggregateExamples
     expect(
       described_class.names_and_maximum_volumes
     ).to eq 'ABgene_0765: 800, ABgene_0800: 180, FluidX075: 500, FluidX03: 280'

@@ -40,16 +40,20 @@ module Deployed # rubocop:todo Style/Documentation
       @minor ||= version(:minor)
     end
 
+    def patch
+      @patch ||= version(:patch)
+    end
+
     def extra
       @extra ||= version(:extra)
     end
 
     def version_hash
-      @version_hash ||= /\Arelease-(?<major>\d+)\.(?<minor>\d+)\.?(?<extra>\S*)\z/.match(label)
+      @version_hash ||= /\Av(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)(?<extra>\S*)/.match(label)
     end
 
     def version_label
-      major == 0 && minor == 0 && extra == 0 ? 'WIP' : "#{major}.#{minor}.#{extra}"
+      major == 0 && minor == 0 && patch == 0 ? 'WIP' : "#{major}.#{minor}.#{patch}"
     end
 
     private
@@ -97,6 +101,7 @@ module Deployed # rubocop:todo Style/Documentation
 
   MAJOR = REPO_DATA.major
   MINOR = REPO_DATA.minor
+  PATCH = REPO_DATA.patch
   EXTRA = REPO_DATA.extra
   BRANCH = REPO_DATA.label.presence || 'unknown_branch'
   COMMIT = REPO_DATA.revision.presence || 'unknown_revision'
@@ -108,5 +113,6 @@ module Deployed # rubocop:todo Style/Documentation
   HOSTNAME = Socket.gethostname
 
   require 'ostruct'
-  DETAILS = OpenStruct.new(name: nil, version: VERSION_ID, environment: ENVIRONMENT)
+
+  DETAILS = OpenStruct.new(name: nil, version: VERSION_ID, environment: ENVIRONMENT) # rubocop:todo Style/OpenStructUse
 end

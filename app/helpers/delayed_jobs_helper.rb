@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module DelayedJobsHelper # rubocop:todo Style/Documentation
   def job_type(job)
     case job.name

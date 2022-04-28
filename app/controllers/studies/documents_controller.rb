@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Studies::DocumentsController < ApplicationController # rubocop:todo Style/Documentation
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -13,7 +14,7 @@ class Studies::DocumentsController < ApplicationController # rubocop:todo Style/
     @study = Study.find(params[:study_id])
   end
 
-  def create # rubocop:todo Metrics/MethodLength
+  def create
     document_settings = params[:document]
     document_settings[:documentable] = @study
     @document = Document.new(document_settings)

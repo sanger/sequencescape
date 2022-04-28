@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Controls API V1 IO for {::DilutionPlatePurpose}
 class Io::DilutionPlatePurpose < Io::PlatePurpose
   set_model_for_input(::DilutionPlatePurpose)

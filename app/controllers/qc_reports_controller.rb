@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class QcReportsController < ApplicationController # rubocop:todo Style/Documentation
   before_action :login_required
   before_action :check_required, only: :create
@@ -16,7 +17,6 @@ class QcReportsController < ApplicationController # rubocop:todo Style/Documenta
     @plate_purposes = PlatePurpose.pluck(:name).sort
   end
 
-  # rubocop:todo Metrics/MethodLength
   def create # rubocop:todo Metrics/AbcSize
     study = Study.find_by(id: params[:qc_report][:study_id])
     exclude_existing = params[:qc_report][:exclude_existing] == '1'
@@ -38,8 +38,6 @@ class QcReportsController < ApplicationController # rubocop:todo Style/Documenta
       redirect_back fallback_location: root_path
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   # On form submit of a qc_file. Strictly speaking this should be an update action
   # on the qc_report itself. However we don't want to force the user to extract

@@ -15,19 +15,21 @@ class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
   # (Such as following the introduction of a QC tube). Given that this will require knowledge of
   # the pipeline though, this logic is best shifted out into Limber.
   # TODO: Make tis decision in Limber, then strip out this code.
-  # rubocop:todo Metrics/MethodLength
   def sibling_tubes(tube) # rubocop:todo Metrics/AbcSize
     return [] if tube.submission.nil?
 
     # Find all requests that are being pooled together
     sibling_requests = tube.submission.requests.multiplexed.opened.ids
 
+    # rubocop:todo Layout/LineLength
     sibling_tubes =
       Tube.joins(:transfer_requests_as_target).includes(:transfer_requests_as_source) # Outer join, as we don't want these
         .where(transfer_requests: { submission_id: tube.submission }) # find out tubes via transfer requests
         .where("transfer_requests_as_sources_#{Tube.table_name}": { id: nil }) # Make sure we have no transfers out of the tube
         .where.not(transfer_requests: { state: 'cancelled' }) # Filter out any cancelled tubes
         .includes(:uuid_object, :barcodes, :aliquots) # Load the stuff we need for the hash
+
+    # rubocop:enable Layout/LineLength
 
     # Find all requests in the tubes we've found
     found_requests = sibling_tubes.flat_map { |sibling| sibling.aliquots.map(&:request_id) }
@@ -40,5 +42,4 @@ class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
     tube_array << :no_tube if pending_requests
     tube_array
   end
-  # rubocop:enable Metrics/MethodLength
 end

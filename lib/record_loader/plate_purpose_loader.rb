@@ -1,8 +1,9 @@
+# frozen_string_literal: true
 module RecordLoader
   class PlatePurposeLoader < ApplicationRecordLoader # rubocop:todo Style/Documentation
     config_folder 'plate_purposes'
 
-    DEFAULT_PRINTER_TYPE = '96 Well Plate'.freeze
+    DEFAULT_PRINTER_TYPE = '96 Well Plate'
 
     def create_or_update!(name, options)
       return if existing_purposes.include?(name)

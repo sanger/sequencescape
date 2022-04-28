@@ -16,6 +16,16 @@ FactoryBot.define do
     sanger_barcode { { prefix: prefix, number: barcode_number } }
   end
 
+  trait :in_a_rack do
+    transient do
+      tube_rack { nil }
+      coordinate { nil }
+    end
+    after(:create) do |tube, evaluator|
+      create(:racked_tube, tube: tube, tube_rack: evaluator.tube_rack, coordinate: evaluator.coordinate)
+    end
+  end
+
   factory :tube, traits: [:tube_barcode] do
     name { generate :asset_name }
     association(:purpose, factory: :tube_purpose)
@@ -57,16 +67,6 @@ FactoryBot.define do
 
     factory :sample_tube_with_sanger_sample_id do
       transient { sample { create(:sample_with_sanger_sample_id) } }
-    end
-
-    trait :in_a_rack do
-      transient do
-        tube_rack { nil }
-        coordinate { nil }
-      end
-      after(:create) do |tube, evaluator|
-        create(:racked_tube, tube: tube, tube_rack: evaluator.tube_rack, coordinate: evaluator.coordinate)
-      end
     end
   end
 
@@ -195,18 +195,26 @@ FactoryBot.define do
     after(:build) do |tube, evaluator|
       tube.receptacle.aliquots << build(:phi_x_aliquot, evaluator.aliquot_attributes.merge(library: tube))
     end
+
+    factory :spiked_buffer_with_parent do
+      transient { parent { create :spiked_buffer, :tube_barcode } }
+
+      after(:build) { |tube, evaluator| tube.parents << evaluator.parent }
+    end
   end
 
   factory :phi_x_stock_tube, class: 'LibraryTube', traits: [:tube_barcode] do
     transient do
       tag_option { 'Single' } # The PhiX Tag option to use, eg. Single/Dual
+      study { create :study }
     end
 
     name { generate :asset_name }
     concentration { 12.0 }
 
     after(:build) do |tube, evaluator|
-      tube.receptacle.aliquots << build(:phi_x_aliquot, library: tube, tag_option: evaluator.tag_option)
+      tube.receptacle.aliquots <<
+        build(:phi_x_aliquot, library: tube, tag_option: evaluator.tag_option, study: evaluator.study)
     end
   end
 end

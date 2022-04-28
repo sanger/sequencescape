@@ -105,12 +105,10 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
     end
 
     it 'last row should be correct' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(worksheet.last_row).to eq(spreadsheet.sheet(0).last_row)
     end
 
     it 'computed first row should be correct' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(worksheet.computed_first_row).to eq(worksheet.first_row)
     end
 
@@ -125,10 +123,9 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
     end
 
     it 'adds standard headings to worksheet' do
-      worksheet
-        .columns
-        .headings
-        .each_with_index { |heading, i| expect(spreadsheet.sheet(0).cell(9, i + 1)).to eq(heading) }
+      worksheet.columns.headings.each_with_index do |heading, i|
+        expect(spreadsheet.sheet(0).cell(9, i + 1)).to eq(heading)
+      end
     end
 
     it 'unlock cells for all columns which are unlocked' do
@@ -138,16 +135,15 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
         .select(&:unlocked?)
         .each do |column|
           expect(worksheet.axlsx_worksheet[column.range.first_cell.reference].style).to eq(
-            worksheet.styles[:unlocked].reference
+            worksheet.styles[column.style].reference
           )
           expect(worksheet.axlsx_worksheet[column.range.last_cell.reference].style).to eq(
-            worksheet.styles[:unlocked].reference
+            worksheet.styles[column.style].reference
           )
         end
     end
 
     it 'adds all of the details' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(spreadsheet.sheet(0).last_row).to eq(sample_manifest.details_array.count + 9)
     end
 
@@ -162,19 +158,16 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
     end
 
     it 'updates all of the columns' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(worksheet.columns.values).to be_all(&:updated?)
     end
 
     it 'panes should be frozen correctly' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(worksheet.axlsx_worksheet.sheet_view.pane.x_split).to eq(worksheet.freeze_after_column(:sanger_sample_id))
       expect(worksheet.axlsx_worksheet.sheet_view.pane.y_split).to eq(worksheet.first_row - 1)
       expect(worksheet.axlsx_worksheet.sheet_view.pane.state).to eq('frozen')
     end
 
     it 'worksheet is protected with password but columns and rows format can be changed' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(worksheet.axlsx_worksheet.sheet_protection.password).to be_present
       expect(worksheet.axlsx_worksheet.sheet_protection.format_columns).to be_falsey
       expect(worksheet.axlsx_worksheet.sheet_protection.format_rows).to be_falsey
@@ -214,7 +207,6 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
       end
 
       it 'computed first row should be correct' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(worksheet.computed_first_row).to eq(worksheet.first_row + 2)
       end
     end
@@ -241,7 +233,6 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
       end
 
       it 'computed first row should be correct' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(worksheet.computed_first_row).to eq(worksheet.first_row + 4)
       end
     end
@@ -314,7 +305,6 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
       end
 
       it 'last row should be correct' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(worksheet.last_row).to eq(worksheet.first_row + 5)
       end
 
@@ -329,10 +319,9 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
       end
 
       it 'adds standard headings to worksheet' do
-        worksheet
-          .columns
-          .headings
-          .each_with_index { |heading, i| expect(spreadsheet.sheet(0).cell(9, i + 1)).to eq(heading) }
+        worksheet.columns.headings.each_with_index do |heading, i|
+          expect(spreadsheet.sheet(0).cell(9, i + 1)).to eq(heading)
+        end
       end
 
       it 'adds the data' do
@@ -569,7 +558,6 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
       end
 
       it 'last row should be correct' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(worksheet.last_row).to eq(
           worksheet.first_row + (attributes[:num_plates] * attributes[:num_samples_per_plate]) - 1
         )

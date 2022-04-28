@@ -14,12 +14,15 @@ module SampleManifestExcel
     # *Retrieve the sample manifest
     # *Create a processor based on the sample manifest
     # The Upload is only valid if the file, columns, sample manifest and processor are valid.
-    class Base # rubocop:todo Metrics/ClassLength
+    class Base
       include ActiveModel::Model
 
       attr_accessor :file, :column_list, :start_row, :override
 
+      # rubocop:todo Layout/LineLength
       attr_reader :spreadsheet, :columns, :sanger_sample_id_column, :rows, :sample_manifest, :data, :processor, :cache # TODO: probably shouldn't add the cache here, do it another way
+
+      # rubocop:enable Layout/LineLength
 
       validates_presence_of :start_row, :sanger_sample_id_column, :sample_manifest
       validate :check_data
@@ -30,6 +33,7 @@ module SampleManifestExcel
       validate :check_processor, if: :processor?
 
       delegate :processed?, to: :processor
+      delegate :finished!, to: :sample_manifest
       delegate :data_at, to: :rows
       delegate :study, to: :sample_manifest, allow_nil: true
 
@@ -47,7 +51,9 @@ module SampleManifestExcel
       end
 
       def inspect
+        # rubocop:todo Layout/LineLength
         "<#{self.class}: @file=#{file}, @columns=#{columns.inspect}, @start_row=#{start_row}, @sanger_sample_id_column=#{sanger_sample_id_column}, @data=#{data.inspect}>"
+        # rubocop:enable Layout/LineLength
       end
 
       ##
@@ -66,17 +72,18 @@ module SampleManifestExcel
       # An upload can only be processed if the upload is valid.
       # Processing involves updating the sample manifest and all of its associated samples.
       def process(tag_group)
-        ActiveRecord::Base.transaction do
-          sample_manifest.last_errors = nil
-          sample_manifest.start!
-          @cache.populate!
-          processor.run(tag_group)
-          return true if processed?
+        # Temporarily disable accessioning until we invoke it explicitly
+        # If we don't do this, then any accidental triggering of sample
+        # saves will result in duplicate accessions
+        Sample::Current.processing_manifest = true
+        sample_manifest.last_errors = nil
+        sample_manifest.start!
+        @cache.populate!
+        processor.run(tag_group)
 
-          # One of out post processing checks failed, something went wrong, so we
-          # roll everything back
-          raise ActiveRecord::Rollback
-        end
+        processed?
+      ensure
+        Sample::Current.processing_manifest = false
       end
 
       def data_at(column_name)
@@ -86,18 +93,23 @@ module SampleManifestExcel
 
       def broadcast_sample_manifest_updated_event(user)
         # Send to event warehouse
-        sample_manifest.updated_broadcast_event(user, samples_to_be_broadcasted.map(&:id))
+        sample_manifest.updated_broadcast_event(user, changed_samples.map(&:id))
 
         # Log legacy events: Show on history page, and may be used by reports.
         # We can get rid of these when:
-        # - History page is updates with event warehouse viewer
+        # - History page is updated with event warehouse viewer
         # - We've confirmed that no external reports use these events
-        samples_to_be_broadcasted.each { |sample| sample.handle_update_event(user) }
-        labware_to_be_broadcasted.each { |labware| labware.events.updated_using_sample_manifest!(user) }
+        changed_samples.each { |sample| sample.handle_update_event(user) }
+        changed_labware.each { |labware| labware.events.updated_using_sample_manifest!(user) }
       end
 
-      def complete
-        sample_manifest.finished!
+      def trigger_accessioning
+        changed_samples.each(&:accession)
+      end
+
+      # If samples have been created, and it's not a library plate/tube, register a stock_resource record in the MLWH
+      def register_stock_resources
+        stock_receptacles_to_be_registered.each(&:register_stock!)
       end
 
       def fail
@@ -156,12 +168,18 @@ module SampleManifestExcel
         processor.present?
       end
 
-      def samples_to_be_broadcasted
-        @samples_to_be_broadcasted ||= rows.select(&:changed?).map(&:sample)
+      def changed_samples
+        @changed_samples ||= rows.select(&:changed?).map(&:sample)
       end
 
-      def labware_to_be_broadcasted
-        @labware_to_be_broadcasted ||= rows.select(&:changed?).reduce(Set.new) { |set, row| set << row.labware }
+      def changed_labware
+        @changed_labware ||= rows.select(&:changed?).reduce(Set.new) { |set, row| set << row.labware }
+      end
+
+      def stock_receptacles_to_be_registered
+        return [] unless sample_manifest.core_behaviour.stocks?
+
+        @stock_receptacles_to_be_registered ||= rows.select(&:sample_created?).map(&:asset)
       end
     end
   end

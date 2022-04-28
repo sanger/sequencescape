@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Accession
   # Made up of a sample, user and service
   # Used by Request to extract relevant information to send to appropriate accessioning service
@@ -25,7 +26,6 @@ module Accession
       end
     end
 
-    # rubocop:todo Metrics/MethodLength
     def to_xml # rubocop:todo Metrics/AbcSize
       xml = Builder::XmlMarkup.new
       xml.instruct!
@@ -45,8 +45,6 @@ module Accession
       end
       xml.target!
     end
-
-    # rubocop:enable Metrics/MethodLength
 
     def post
       @response = Accession::Request.post(self) if valid?

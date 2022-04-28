@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Submission::FlexibleRequestGraph
   # A doublet couples a source asset to a particular qc metric.
   # This allows us to pass the qc_metric downstream, without relying
@@ -63,10 +64,12 @@ module Submission::FlexibleRequestGraph
 
     def multipliers
       @multipliers ||=
-        Hash.new { |h, k| h[k] = 1 }.tap do |multipliers|
-          requested_multipliers = order.request_options.try(:[], :multiplier) || {}
-          requested_multipliers.each { |k, v| multipliers[k.to_s] = v.to_i }
-        end
+        Hash
+          .new { |h, k| h[k] = 1 }
+          .tap do |multipliers|
+            requested_multipliers = order.request_options.try(:[], :multiplier) || {}
+            requested_multipliers.each { |k, v| multipliers[k.to_s] = v.to_i }
+          end
     end
   end
 
@@ -211,12 +214,12 @@ module Submission::FlexibleRequestGraph
     end
 
     def generate_target_assets
-      source_assets_qc_metrics.map do |doublet|
-        Doublet.new(create_target_asset(doublet.asset), doublet.qc_metric)
-      end.tap do |new_target_assets|
-        @target_assets_qc_metrics ||= []
-        @target_assets_qc_metrics.concat(new_target_assets)
-      end
+      source_assets_qc_metrics
+        .map { |doublet| Doublet.new(create_target_asset(doublet.asset), doublet.qc_metric) }
+        .tap do |new_target_assets|
+          @target_assets_qc_metrics ||= []
+          @target_assets_qc_metrics.concat(new_target_assets)
+        end
     end
 
     def source_assets_doublet_with_index

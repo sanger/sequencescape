@@ -4,49 +4,40 @@ require 'rails_helper'
 
 shared_examples 'a correct single label printer' do
   it 'produces the correct label' do
-    expected_label = {
-      labels: {
-        body: [
-          {
-            main_label: {
-              barcode: plate1.machine_barcode,
-              bottom_left: plate1.human_barcode,
-              bottom_right: "#{batch.output_plate_role} #{batch.output_plate_purpose.name} #{plate1.barcode_number}",
-              top_far_right: nil,
-              top_left: date_today,
-              top_right: batch.studies.first.abbreviation
-            }
-          }
-        ]
+    expected_labels = [
+      {
+        barcode: plate1.machine_barcode,
+        bottom_left: plate1.human_barcode,
+        bottom_right: "#{batch.output_plate_role} #{batch.output_plate_purpose.name} #{plate1.barcode_number}",
+        top_far_right: nil,
+        top_left: date_today,
+        top_right: batch.studies.first.abbreviation,
+        label_name: 'main_label'
       }
-    }
-    expect(subject.to_h).to eq(expected_label)
+    ]
+    expect(subject.labels).to eq(expected_labels)
   end
 end
 
 shared_examples 'a correct double label printer' do
   it 'produces the correct label' do
-    expected_label = {
-      labels: {
-        body: [
-          {
-            main_label: {
-              left_text: plate1.human_barcode.to_s,
-              right_text: plate1.barcode_number.to_s,
-              barcode: plate1.machine_barcode
-            }
-          },
-          {
-            extra_label: {
-              left_text: date_today,
-              right_text:
-                "#{batch.output_plate_role} #{batch.output_plate_purpose.name} #{plate1.barcode_number} #{batch.studies.first.abbreviation}"
-            }
-          }
-        ]
+    expected_labels = [
+      {
+        left_text: plate1.human_barcode.to_s,
+        right_text: plate1.barcode_number.to_s,
+        barcode: plate1.machine_barcode,
+        label_name: 'main_label'
+      },
+      {
+        left_text: date_today,
+        right_text:
+          # rubocop:todo Layout/LineLength
+          "#{batch.output_plate_role} #{batch.output_plate_purpose.name} #{plate1.barcode_number} #{batch.studies.first.abbreviation}",
+        # rubocop:enable Layout/LineLength,
+        label_name: 'extra_label'
       }
-    }
-    expect(subject.to_h).to eq(expected_label)
+    ]
+    expect(subject.labels).to eq(expected_labels)
   end
 end
 
@@ -98,7 +89,7 @@ context 'printing labels' do
   let(:printables) { { plate1.human_barcode => 'on' } }
   let(:options) { { count: count, printable: printables, batch: batch } }
 
-  setup do
+  before do
     batch.requests << request1
     batch.requests << request2
   end

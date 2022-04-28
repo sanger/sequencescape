@@ -55,24 +55,12 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
     expect(upload).not_to be_valid
   end
 
-  it 'is not valid unless all of the rows are valid - library_type' do
+  it 'is not valid unless all of the rows are valid - sanger_sample_id_invalid' do
     download =
       build(
         :test_download_tubes,
         columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup,
-        validation_errors: [:library_type]
-      )
-    download.save(test_file_name)
-    upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: columns, start_row: 9)
-    expect(upload).not_to be_valid
-  end
-
-  it 'is not valid unless all of the rows are valid - insert-size' do
-    download =
-      build(
-        :test_download_tubes,
-        columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup,
-        validation_errors: [:insert_size_from]
+        validation_errors: [:sanger_sample_id_invalid]
       )
     download.save(test_file_name)
     upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: columns, start_row: 9)
@@ -102,7 +90,7 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
     upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: columns, start_row: 9)
     expect(upload.sample_manifest.state).to eq 'pending'
     upload.process(tag_group)
-    upload.complete
+    upload.finished!
     expect(upload.sample_manifest.state).to eq 'completed'
   end
 
@@ -146,36 +134,15 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
     context '1dtube' do
       let!(:columns) { SampleManifestExcel.configuration.columns.tube_full.dup }
       let!(:download) { build(:test_download_tubes, columns: columns) }
+      let(:upload) { SampleManifestExcel::Upload::Base.new(file: test_file, column_list: columns, start_row: 9) }
 
       before { download.save(test_file_name) }
 
       it 'has the correct processor' do
-        upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: columns, start_row: 9)
-        expect(upload.processor).not_to be_nil
         expect(upload.processor).to be_one_d_tube
       end
 
       it 'updates all of the data' do
-        upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: columns, start_row: 9)
-        upload.process(tag_group)
-        expect(upload).to be_processed
-      end
-    end
-
-    context 'saphyr' do
-      let!(:columns) { SampleManifestExcel.configuration.columns.saphyr.dup }
-      let!(:download) { build(:test_download_tubes, columns: columns, manifest_type: 'saphyr') }
-
-      before { download.save(test_file_name) }
-
-      it 'has the correct processor' do
-        upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: columns, start_row: 9)
-        expect(upload.processor).not_to be_nil
-        expect(upload.processor).to be_one_d_tube
-      end
-
-      it 'updates all of the data' do
-        upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: columns, start_row: 9)
         upload.process(tag_group)
         expect(upload).to be_processed
       end
@@ -344,20 +311,25 @@ RSpec.describe SampleManifestExcel::Upload, type: :model, sample_manifest_excel:
 
     context 'plate' do
       let!(:plate_columns) { SampleManifestExcel.configuration.columns.plate_full.dup }
-      let!(:download) { build(:test_download_plates, columns: plate_columns) }
+      let(:download) { build(:test_download_plates, columns: plate_columns, study: study) }
+      let(:study) { create(:open_study, accession_number: 'acc') }
+      let(:upload) { SampleManifestExcel::Upload::Base.new(file: test_file, column_list: plate_columns, start_row: 9) }
 
       before { download.save(test_file_name) }
 
       it 'has the correct processor' do
-        upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: plate_columns, start_row: 9)
-        expect(upload.processor).not_to be_nil
         expect(upload.processor).to be_plate
       end
 
       it 'updates all of the data' do
-        upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: plate_columns, start_row: 9)
         upload.process(nil)
         expect(upload).to be_processed
+      end
+
+      context 'when accessioning is enabled', accessioning_enabled: true do
+        it 'suppresses accessioning to allow explicit triggering after upload' do
+          expect { upload.process(nil) }.not_to change(Delayed::Job, :count)
+        end
       end
     end
   end

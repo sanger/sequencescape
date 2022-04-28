@@ -18,12 +18,13 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Determines if we attempt to filter out {Aliquot#equivalent? equivalent} aliquots
   # before performing transfers.
   attr_accessor :merge_equivalent_aliquots
+  attr_writer :aliquot_attributes
 
   # States which are still considered to be processable (ie. not failed or cancelled)
   ACTIVE_STATES = %w[pending started passed qc_complete].freeze
 
-  # The assets on a request can be treated as a particular class when being used by certain pieces of code.  For instance,
-  # QC might be performed on a source asset that is a well, in which case we'd like to load it as such.
+  # The assets on a request can be treated as a particular class when being used by certain pieces of code.
+  #  For instance, QC might be performed on a source asset that is a well, in which case we'd like to load it as such.
   belongs_to :target_asset, class_name: 'Receptacle', inverse_of: :transfer_requests_as_source, optional: false
   belongs_to :asset, class_name: 'Receptacle', inverse_of: :transfer_requests_as_target, optional: false
   has_one :target_labware, through: :target_asset, source: :labware
@@ -224,7 +225,7 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
     target_asset.aliquots << aliquots_for_transfer
   rescue ActiveRecord::RecordNotUnique => e
     # We'll specifically handle tag clashes here so that we can produce more informative messages
-    raise e unless /aliquot_tags_and_tag2s_are_unique_within_receptacle/.match?(e.message)
+    raise e unless /aliquot_tag_tag2_and_tag_depth_are_unique_within_receptacle/.match?(e.message)
 
     message = "#{asset.display_name} contains aliquots which can't be transferred due to tag clash"
     errors.add(:asset, message)
@@ -262,7 +263,7 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def aliquot_attributes(aliquot)
-    outer_request_for(aliquot)&.aliquot_attributes || {}
+    outer_request_for(aliquot)&.aliquot_attributes || @aliquot_attributes || {}
   end
 
   def outer_request_for(aliquot)

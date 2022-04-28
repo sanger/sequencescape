@@ -32,18 +32,12 @@ FactoryBot.define do
   factory :request_base, class: 'Request' do
     request_type
     request_purpose { :standard }
-
-    # Ensure that the request metadata is correctly setup based on the request type
-    after(:build) do |request|
-      next if request.request_type.nil?
-
-      # This is all a bit 'clever' and should be simplified
-      # We could use the request class is removing it completely is tricky
-      metadata_factory = :"request_metadata_for_#{request.request_type.name.downcase.gsub(/[^a-z]+/, '_')}"
-      request.request_metadata_attributes = attributes_for(metadata_factory) if request.request_metadata.new_record? &&
-        FactoryBot.factories.registered?(metadata_factory)
-      request.sti_type = request.request_type.request_class_name
+    sti_type { request_type.request_class_name }
+    request_metadata_attributes do
+      FactoryBot.factories.registered?(metadata_factory) ? attributes_for(metadata_factory) : {}
     end
+
+    transient { metadata_factory { :"request_metadata_for_#{request_type.name.downcase.gsub(/[^a-z]+/, '_')}" } }
 
     factory :customer_request, class: 'CustomerRequest' do
       sti_type { 'CustomerRequest' } # Oddly, this seems to be necessary!
@@ -72,7 +66,7 @@ FactoryBot.define do
       association(:target_asset, factory: :lane)
 
       after(:build) do |request, evaluator|
-        request.lab_events << build(:flowcell_event, descriptors: evaluator.event_descriptors)
+        request.lab_events << build(:flowcell_event, descriptors: evaluator.event_descriptors, batch: request.batch)
       end
     end
   end

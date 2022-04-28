@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Core::Service::Authentication # rubocop:todo Style/Documentation
   class UnauthenticatedError < Core::Service::Error # rubocop:todo Style/Documentation
     def self.no_cookie!

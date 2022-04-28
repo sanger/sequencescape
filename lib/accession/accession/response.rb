@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Accession
   # Sucks the neccessary attributes from a RestClient response
   class Response

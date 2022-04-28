@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Closely related to {CherrypickRequest} is additionally able to track which
 # {PlatePurpose plate purpose} is going to be picked on to.
 # Fluidigm is a genotyping process, which is represented in Sequencescape as

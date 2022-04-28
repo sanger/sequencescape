@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rexml/document'
 
 # rubocop:todo Metrics/ClassLength
@@ -13,7 +14,6 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
 
   around_action :rescue_validation, only: %i[close open]
 
-  # rubocop:todo Metrics/MethodLength
   def setup_studies_from_scope(exclude_nested_resource = false) # rubocop:todo Metrics/AbcSize
     if logged_in? && (not exclude_nested_resource)
       @alternatives = [
@@ -37,8 +37,6 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
       @studies = Study.newest_first.with_user_included.with_related_users_included
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def index
     # Please do not user current_user outside this block, you kill the API calls
@@ -64,7 +62,6 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
 
   ## Create the Study from new with the details from its form.
   ## Redirect to the index page with a notice.
-  # rubocop:todo Metrics/MethodLength
   def create # rubocop:todo Metrics/AbcSize
     ActiveRecord::Base.transaction do
       @study = Study.new(params['study'].merge(user: current_user))
@@ -87,8 +84,6 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
       format.json { render json: @study.errors, status: :unprocessable_entity }
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def show
     @study = Study.find(params[:id])
@@ -285,14 +280,14 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
   end
 
   # rubocop:todo Metrics/MethodLength
-  def self.role_helper(name, success_action, error_action, &block) # rubocop:todo Metrics/AbcSize
+  def self.role_helper(name, success_action, error_action) # rubocop:todo Metrics/AbcSize
     define_method("#{name}_role") do
       ActiveRecord::Base.transaction do
         @study = Study.find(params[:id])
         @user = User.find(params.require(:role).fetch(:user))
 
         if request.xhr?
-          block.call(@user, @study, params[:role][:authorizable_type].to_s)
+          yield(@user, @study, params[:role][:authorizable_type].to_s)
           status, flash.now[:notice] = 200, "Role #{success_action}"
         else
           status, flash.now[:error] = 401, "A problem occurred while #{error_action} the role"
@@ -331,8 +326,7 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
 
   private
 
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
   def studies_from_scope(scope) # rubocop:todo Metrics/CyclomaticComplexity
     studies =
       case scope
@@ -366,8 +360,7 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
     studies.newest_first
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   def rescue_validation
     begin

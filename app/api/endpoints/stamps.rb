@@ -1,5 +1,6 @@
+# frozen_string_literal: true
 # Controls API V1 {::Core::Endpoint::Base endpoints} for Stamps
-class ::Endpoints::Stamps < ::Core::Endpoint::Base
+class Endpoints::Stamps < ::Core::Endpoint::Base
   model { action(:create, to: :standard_create!) }
 
   instance do

@@ -77,17 +77,16 @@ describe 'Wells API', with: :api_v2 do
 
       it 'returns correct updated attributes' do
         expect(json.dig('data', 'attributes', 'pcr_cycles')).to eq(11)
-        expect(json.dig('data', 'attributes', 'submit_for_sequencing')).to eq(false)
+        expect(json.dig('data', 'attributes', 'submit_for_sequencing')).to be(false)
         expect(json.dig('data', 'attributes', 'sub_pool')).to eq(2)
         expect(json.dig('data', 'attributes', 'coverage')).to eq(50)
         expect(json.dig('data', 'attributes', 'diluent_volume')).to eq('34.0')
       end
 
       it 'updates the well' do
-        # rubocop:todo RSpec/ExampleLength
         updated_model = Well.find(well.id)
         expect(updated_model.pcr_cycles).to eq 11
-        expect(updated_model.submit_for_sequencing).to eq false
+        expect(updated_model.submit_for_sequencing).to be false
         expect(updated_model.sub_pool).to eq 2
         expect(updated_model.coverage).to eq 50
         expect(updated_model.diluent_volume).to eq 34.0
@@ -109,7 +108,7 @@ describe 'Wells API', with: :api_v2 do
       it 'returns a null request data attribute for aliquots', aggregate_failures: true do
         aliquot = json['included'].find { |r| r['type'] == 'aliquots' }
         expect(aliquot.dig('relationships', 'request')).to have_key('data')
-        expect(aliquot.dig('relationships', 'request', 'data')).to eq(nil)
+        expect(aliquot.dig('relationships', 'request', 'data')).to be_nil
       end
     end
   end

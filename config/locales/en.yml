@@ -25,6 +25,7 @@ en:
       default: "%a, %d %b %Y %H:%M:%S %z"
       short: "%d %b %H:%M"
       long: "%B %d, %Y %H:%M"
+      sortable: "%Y-%m-%d"
     am: "am"
     pm: "pm"
 
@@ -235,11 +236,6 @@ en:
       no_valid_oligos_found: "No correctly formatted oligos were found, please enter oligos as sequences of ATGC characters and separate oligos with spaces or commas."
       tag_group_form_invalid: "The tag group form object was invalid, please check oligos and tag group name."
       failed_to_save_tag_group: "The tag group was not saved successfully."
-
-  pipelines:
-    show_page_custom_message:
-      default: ""
-      pacbio_sample_prep: "You can only batch together wells from the same plate."
 
   unauthorized:
     manage:

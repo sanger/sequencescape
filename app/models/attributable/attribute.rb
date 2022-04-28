@@ -78,9 +78,7 @@ module Attributable
       valid_format
     end
 
-    # rubocop:todo Metrics/PerceivedComplexity
-    # rubocop:todo Metrics/MethodLength
-    # rubocop:todo Metrics/AbcSize
+    # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
     def configure(model) # rubocop:todo Metrics/CyclomaticComplexity
       conditions = @options.slice(:if, :on)
       save_blank_value = @options.delete(:save_blank)
@@ -123,9 +121,7 @@ module Attributable
       )
     end
 
-    # rubocop:enable Metrics/AbcSize
-    # rubocop:enable Metrics/MethodLength
-    # rubocop:enable Metrics/PerceivedComplexity
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
     def self.find_display_name(klass, name)
       translation = I18n.t("metadata.#{klass.name.underscore.tr('/', '.')}.#{name}")
@@ -175,7 +171,7 @@ module Attributable
       selection_values || selection_from_metadata(validator_source) || []
     end
 
-    def to_field_info(validator_source = nil) # rubocop:todo Metrics/MethodLength
+    def to_field_info(validator_source = nil)
       options = {
         # TODO[xxx]: currently only working for metadata, the only place attributes are used
         display_name: display_name,

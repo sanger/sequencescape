@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class AliquotIndexerTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
+class AliquotIndexerTest < ActiveSupport::TestCase
   context 'when given a sensible number of aliquots' do
     context 'which are dual indexed' do
       setup do

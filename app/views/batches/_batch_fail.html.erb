@@ -48,7 +48,7 @@
             <td><%= request.position %></td>
             <td><%= request.request_metadata.fragment_size_required_from %></td>
             <td><%= request.request_metadata.fragment_size_required_to %></td>
-            <td><%= request.event_value_for("Concentration", @batch) %></td>
+            <td><%= request.detect_descriptor("Concentration", descriptor_batch: @batch) %></td>
 
             <% if request.failures.empty? -%>
               <% if request.asset && request.asset.resource? -%>

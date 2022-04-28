@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Despite name controls rendering of warehouse messages for {BatchRequest}
 # Historically used to be v0.5 API
 class Api::BatchRequestIO < Api::Base
@@ -8,7 +9,7 @@ class Api::BatchRequestIO < Api::Base
       end
     end
 
-    def self.included(base) # rubocop:todo Metrics/MethodLength
+    def self.included(base)
       base.class_eval do
         extend ClassMethods
 

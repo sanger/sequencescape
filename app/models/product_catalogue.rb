@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Product catalogues provide a means of associating products with a submission
 # template. selection_behaviour can allow a submission template to
 # select an appropriate product.

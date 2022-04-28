@@ -27,8 +27,7 @@ class Asset::Finder
     end
   end
 
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
   def find_wells_in_array(plate, well_array) # rubocop:todo Metrics/CyclomaticComplexity
     return plate.wells.in_column_major_order.with_aliquots.distinct if well_array.empty?
 
@@ -54,8 +53,7 @@ class Asset::Finder
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   def barcodes
     barcodes_wells.map(&:first).uniq

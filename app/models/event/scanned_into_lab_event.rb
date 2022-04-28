@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Event::ScannedIntoLabEvent < Event # rubocop:todo Style/Documentation
   after_create :set_qc_state_pending, if: :qc_state_not_final?
   alias asset eventful

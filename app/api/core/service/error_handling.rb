@@ -1,6 +1,6 @@
+# frozen_string_literal: true
 module Core::Service::ErrorHandling # rubocop:todo Style/Documentation
-  # rubocop:todo Metrics/MethodLength
-  def self.registered(app) # rubocop:todo Metrics/AbcSize
+  def self.registered(app) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     app.instance_eval do
       helpers Helpers
 
@@ -22,8 +22,6 @@ module Core::Service::ErrorHandling # rubocop:todo Style/Documentation
       end
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   module Helpers # rubocop:todo Style/Documentation
     class JsonError # rubocop:todo Style/Documentation
@@ -72,7 +70,7 @@ class ActiveRecord::RecordInvalid # rubocop:todo Style/Documentation
   end
 
   def errors_grouped_by_attribute
-    record.errors.map { |k, v| [yield(k), [v].flatten.uniq] }.to_h
+    record.errors.to_h { |k, v| [yield(k), [v].flatten.uniq] }
   end
   private :errors_grouped_by_attribute
 end
@@ -84,7 +82,7 @@ class ActiveModel::ValidationError # rubocop:todo Style/Documentation
   end
 
   def errors_grouped_by_attribute
-    model.errors.map { |k, v| [yield(k), [v].flatten.uniq] }.to_h
+    model.errors.to_h { |k, v| [yield(k), [v].flatten.uniq] }
   end
   private :errors_grouped_by_attribute
 end

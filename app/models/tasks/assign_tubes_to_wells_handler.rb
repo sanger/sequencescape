@@ -1,5 +1,7 @@
+# frozen_string_literal: true
 # Handles the behaviour of {AssignTubesToMultiplexedWellsTask}
 # and included in {WorkflowsController}
+# Also used by {MultiplexedCherrypickingTask}
 # {include:AssignTubesToMultiplexedWellsTask}
 module Tasks::AssignTubesToWellsHandler
   # Plate is an option parameter for a target plate. Used in multiplexed
@@ -45,42 +47,44 @@ module Tasks::AssignTubesToWellsHandler
 
   # Identifies and array of well map descriptions that contain duplicate tags
   # First filters out any equivalent aliquots. (ie. same sample, tag, library_type, etc.)
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def wells_with_duplicates(params) # rubocop:todo Metrics/CyclomaticComplexity
     invalid_wells = []
-    @batch.requests.group_by { |request| params[:request_locations][request.id.to_s] }.each do |well, requests|
-      all_aliquots = requests.reduce([]) { |array, r| array.concat(r.asset.aliquots) }
+    @batch
+      .requests
+      .group_by { |request| params[:request_locations][request.id.to_s] }
+      .each do |well, requests|
+        all_aliquots = requests.reduce([]) { |array, r| array.concat(r.asset.aliquots) }
 
-      # Push each aliquot onto an array as long as it doesn't match an aliquot already on the array
-      unique_aliquots =
-        all_aliquots.each_with_object([]) do |candidate, selected_aliquots|
-          unless selected_aliquots.any? { |existing_aliquot| existing_aliquot.equivalent?(candidate) }
-            selected_aliquots << candidate
+        # Push each aliquot onto an array as long as it doesn't match an aliquot already on the array
+        unique_aliquots =
+          all_aliquots.each_with_object([]) do |candidate, selected_aliquots|
+            unless selected_aliquots.any? { |existing_aliquot| existing_aliquot.equivalent?(candidate) }
+              selected_aliquots << candidate
+            end
           end
-        end
 
-      # uniq! returns any duplicates, or nil if there are none
-      next if unique_aliquots.map(&:tag_id).uniq!.nil?
+        # uniq! returns any duplicates, or nil if there are none
+        next if unique_aliquots.map(&:tag_id).uniq!.nil?
 
-      invalid_wells << well
-    end
+        invalid_wells << well
+      end
     invalid_wells
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
   private :wells_with_duplicates
 
   def find_incompatible_wells(params)
     invalid_wells = []
-    @batch.requests.group_by { |request| params[:request_locations][request.id.to_s] }.each do |well, requests|
-      next if requests.map(&:shared_attributes).uniq.count <= 1
+    @batch
+      .requests
+      .group_by { |request| params[:request_locations][request.id.to_s] }
+      .each do |well, requests|
+        next if requests.map(&:shared_attributes).uniq.count <= 1
 
-      invalid_wells << well
-    end
+        invalid_wells << well
+      end
     invalid_wells
   end
   private :find_incompatible_wells

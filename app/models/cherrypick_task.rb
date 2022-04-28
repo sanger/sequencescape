@@ -30,6 +30,18 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
     )
   end
 
+  #
+  # Cherrypick tasks are directly coupled to the previous task, due to the awkward
+  # way in which the WorkflowsController operates. See issues#2831 for aims to help improve some of this
+  #
+  # @param batch [Batch] The batch on which the action will be performed
+  #
+  # @return [false,'Can only be accessed via the previous step'>] Array indicating this action can't be linked
+  #
+  def can_link_directly?(_batch)
+    [false, 'Can only be accessed via the previous step']
+  end
+
   # rubocop:todo Metrics/ParameterLists
   def pick_new_plate(requests, template, robot, plate_purpose, control_source_plate = nil, workflow_controller = nil)
     target_type = PickTarget.for(plate_purpose)
@@ -60,9 +72,7 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
 
   # rubocop:enable Metrics/ParameterLists
 
-  # rubocop:todo Metrics/CyclomaticComplexity
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/MethodLength
   def perform_pick(requests, robot, control_source_plate, workflow_controller) # rubocop:todo Metrics/AbcSize
     max_plates = robot.max_beds
     raise StandardError, 'The chosen robot has no beds!' if max_plates.zero?
@@ -125,25 +135,23 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
     [destination_plates, source_plates]
   end
 
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
-  # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/MethodLength, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
   private :perform_pick
 
   def partial
     'cherrypick_batches'
   end
 
-  def render_task(workflow_controller, params)
+  def render_task(workflow_controller, params, _user)
     super
     workflow_controller.render_cherrypick_task(self, params)
   end
 
-  def do_task(workflow_controller, params)
+  def do_task(workflow_controller, params, _user)
     workflow_controller.do_cherrypick_task(self, params)
   rescue Cherrypick::Error => e
     workflow_controller.send(:flash)[:error] = e.message
-    false
+    [false, e.message]
   end
 
   # returns array [ [ request id, source plate barcode, source coordinate ] ]

@@ -1,7 +1,8 @@
+# frozen_string_literal: true
 # {Order orders} use RequestTypes as a factory to construct {Request requests}.
 # The list of request types to use is provided by Order#request_types and usually
 # gets populated by the SubmissionTemplate.
-# Once the request it built, request type identifies the type of {Request} and
+# Once the request is built, request type identifies the type of {Request} and
 # associates it with a particular {Pipeline}.
 # In the case of external pipelines, such as Limber, other properties of {Request}
 # such as its {LibraryType} may also be considered.
@@ -13,7 +14,7 @@
 # {ProductLine team (product line)} however this may belong better on request itself, and
 # could be set either on the basis of the submission template used, or by a new 'team' option
 # on the submission itself.
-class RequestType < ApplicationRecord # rubocop:todo Metrics/ClassLength
+class RequestType < ApplicationRecord
   include RequestType::Validation
 
   class DeprecatedError < RuntimeError
@@ -24,8 +25,8 @@ class RequestType < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     belongs_to :request_type
     validates :request_type, presence: true
-    belongs_to :plate_purpose
-    validates :plate_purpose, presence: true
+    belongs_to :purpose, foreign_key: 'plate_purpose_id'
+    validates :purpose, presence: true
     validates :plate_purpose_id, uniqueness: { scope: :request_type_id }
   end
 
@@ -57,10 +58,10 @@ class RequestType < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # ...so only valid for ControlRequest producing RequestTypes...
   has_many :control_pipelines, class_name: 'Pipeline', foreign_key: :control_request_type_id
 
-  # Defines the acceptable plate purposes or the request type.  Essentially this is used to limit the
+  # Defines the acceptable purposes or the request type.  Essentially this is used to limit the
   # cherrypick plate types when going into pulldown to the correct list.
-  has_many :plate_purposes, class_name: 'RequestType::RequestTypePlatePurpose'
-  has_many :acceptable_plate_purposes, through: :plate_purposes, source: :plate_purpose
+  has_many :request_type_purposes, class_name: 'RequestType::RequestTypePlatePurpose'
+  has_many :acceptable_purposes, through: :request_type_purposes, source: :purpose
 
   # While a request type describes what a request is, a request purpose describes why it is being done.
   # ie. standard, qc, internal

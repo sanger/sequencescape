@@ -2,7 +2,7 @@
 
 # Will generate concentrations for a given plate
 class UatActions::GeneratePlateConcentrations < UatActions
-  self.title = 'Generate Concentrations for a Plate'
+  self.title = 'Generate concentrations for a plate'
   self.description = 'Generate a set of randomised concentrations for a plate.'
 
   form_field :plate_barcode,
@@ -93,7 +93,7 @@ class UatActions::GeneratePlateConcentrations < UatActions
     format('%.3f', value)
   end
 
-  def construct_qc_assay # rubocop:todo Metrics/MethodLength
+  def construct_qc_assay
     qc_assay = QcAssay.new
     num_wells_written = 0
 

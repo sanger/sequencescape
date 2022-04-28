@@ -2,7 +2,7 @@
 
 # Will construct a tag layout template from existing tag groups
 class UatActions::GenerateTagLayoutTemplate < UatActions
-  self.title = 'Generate Tag Layout Template'
+  self.title = 'Generate tag layout template'
   self.description = 'Generates a tag layout template from one or two tag groups.'
 
   form_field :name,
@@ -38,7 +38,7 @@ class UatActions::GenerateTagLayoutTemplate < UatActions
   validates :tag_group_name, presence: { message: 'needs a choice' }
   validates :direction_algorithm, presence: { message: 'needs a choice' }
 
-  def perform # rubocop:todo Metrics/MethodLength
+  def perform
     report[:name] = name
     return true if existing_tag_layout_template
 

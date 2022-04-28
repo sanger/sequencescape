@@ -16,7 +16,9 @@ Given /^the transfer (between plates|from plate to tube) exists with ID (\d+)$/ 
   FactoryBot.create(:"transfer_#{name.gsub(/\s+/, '_')}", id: id)
 end
 
+# rubocop:todo Layout/LineLength
 Given /^the UUID for the (source|destination) of the transfer (#{TRANSFER_TYPES_REGEXP}) with ID (\d+) is "([^"]+)"$/o do |target, model, id, uuid_value|
+  # rubocop:enable Layout/LineLength
   set_uuid_for(transfer_model(model).find(id).send(target), uuid_value)
 end
 
@@ -51,15 +53,16 @@ Given /^the plate "(.*?)" has additional wells$/ do |name|
   Plate
     .find_by(name: name)
     .tap do |plate|
-      plate.wells << %w[C1 D1].map do |location|
-        map =
-          Map
-            .where_description(location)
-            .where_plate_size(plate.size)
-            .where_plate_shape(AssetShape.find_by(name: 'Standard'))
-            .first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
-        FactoryBot.create(:tagged_well, map: map)
-      end
+      plate.wells <<
+        %w[C1 D1].map do |location|
+          map =
+            Map
+              .where_description(location)
+              .where_plate_size(plate.size)
+              .where_plate_shape(AssetShape.find_by(name: 'Standard'))
+              .first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
+          FactoryBot.create(:tagged_well, map: map)
+        end
     end
 end
 
@@ -73,7 +76,9 @@ Given(/^a transfer plate called "([^"]*)" exists as a child of plate (\d+)$/) do
   AssetLink.create!(ancestor: parent_plate, descendant: FactoryBot.create(:transfer_plate, name: name))
 end
 
+# rubocop:todo Layout/LineLength
 Given /^the "([^"]+)" transfer template has been used between "([^"]+)" and "([^"]+)"$/ do |template_name, source_name, destination_name|
+  # rubocop:enable Layout/LineLength
   template = TransferTemplate.find_by(name: template_name) or
     raise StandardError, "Could not find transfer template #{template_name.inspect}"
   source = Plate.find_by(name: source_name) or raise StandardError, "Could not find source plate #{source_name.inspect}"
@@ -98,17 +103,23 @@ def change_request_state(state, targets, direction, request_class)
     .update_all(state: state)
 end
 
+# rubocop:todo Layout/LineLength
 Then 'the state of all the {request_class} requests {direction} {uuid} should be {string}' do |request_class, direction, target, state|
+  # rubocop:enable Layout/LineLength
   request_holder = target.try(:receptacles) || target
   assert_request_state(state, request_holder, direction, request_class)
 end
 
+# rubocop:todo Layout/LineLength
 Then 'the state of all the {request_class} requests {direction} {asset_name} should be {string}' do |request_class, direction, target, state|
+  # rubocop:enable Layout/LineLength
   request_holder = target.respond_to?(:wells) ? target.wells : target
   assert_request_state(state, request_holder, direction, request_class)
 end
 
+# rubocop:todo Layout/LineLength
 Given 'the state of all the {request_class} requests {direction} {uuid} is {string}' do |request_class, direction, target, state|
+  # rubocop:enable Layout/LineLength
   request_holder = target.respond_to?(:wells) ? target.wells : target
   change_request_state(state, request_holder, direction, request_class)
 end
@@ -125,14 +136,18 @@ Then 'the state of all the transfer requests from {uuid} should be {string}' do 
   assert_equal target.transfer_requests_as_source.distinct.pluck(:state), [state]
 end
 
+# rubocop:todo Layout/LineLength
 Then 'the state of transfer requests {direction} {well_range} on {plate_name} should be {string}' do |direction, range, plate, state|
+  # rubocop:enable Layout/LineLength
   plate
     .wells
     .select(&range.method(:include?))
     .each { |well| assert_request_state(state, well, direction, TransferRequest) }
 end
 
+# rubocop:todo Layout/LineLength
 Then 'the state of {request_class} requests {direction} {well_range} on {plate_name} should be {string}' do |request_class, direction, range, plate, state|
+  # rubocop:enable Layout/LineLength
   plate
     .wells
     .select(&range.method(:include?))

@@ -14,7 +14,7 @@ class Robot::Generator::Hamilton < Robot::Generator::Base
   end
 
   def as_text
-    mapping(picking_data)
+    mapping
   end
 
   include Robot::Generator::Behaviours::HamiltonDefault

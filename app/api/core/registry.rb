@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ::Core::Registry # rubocop:todo Style/Documentation
+class Core::Registry # rubocop:todo Style/Documentation
   include ::Singleton
   include ::Core::Logging
 
@@ -41,7 +41,7 @@ class ::Core::Registry # rubocop:todo Style/Documentation
   end
 
   def inspect
-    @model_class_to_target.map { |k, v| [k.to_s, v.to_s] }.to_h.inspect
+    @model_class_to_target.to_h { |k, v| [k.to_s, v.to_s] }.inspect
   end
 
   def is_already_registered?(model_class)

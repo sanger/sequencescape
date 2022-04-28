@@ -9,7 +9,6 @@ class ReceptaclesController < ApplicationController # rubocop:todo Metrics/Class
   before_action :find_receptacle_with_includes, only: %i[show edit update summary close print_assets print history]
   before_action :find_receptacle_only, only: %i[new_request create_request]
 
-  # rubocop:todo Metrics/MethodLength
   def index # rubocop:todo Metrics/AbcSize
     if params[:study_id]
       @study = Study.find(params[:study_id])
@@ -28,8 +27,6 @@ class ReceptaclesController < ApplicationController # rubocop:todo Metrics/Class
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
   def show
     @source_plates = @asset.source_plates
     respond_to do |format|
@@ -47,7 +44,6 @@ class ReceptaclesController < ApplicationController # rubocop:todo Metrics/Class
     respond_to { |format| format.html }
   end
 
-  # rubocop:todo Metrics/MethodLength
   def update # rubocop:todo Metrics/AbcSize
     respond_to do |format|
       if @asset.update(asset_params.merge(params.to_unsafe_h.fetch(:lane, {})))
@@ -64,8 +60,6 @@ class ReceptaclesController < ApplicationController # rubocop:todo Metrics/Class
       end
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def summary
     @summary = UiHelper::Summary.new(per_page: 25, page: params[:page])
@@ -175,7 +169,6 @@ class ReceptaclesController < ApplicationController # rubocop:todo Metrics/Class
 
   # rubocop:enable Metrics/MethodLength
 
-  # rubocop:todo Metrics/MethodLength
   def lookup # rubocop:todo Metrics/AbcSize
     return unless params[:asset] && params[:asset][:barcode]
 
@@ -196,8 +189,6 @@ class ReceptaclesController < ApplicationController # rubocop:todo Metrics/Class
       end
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   private
 

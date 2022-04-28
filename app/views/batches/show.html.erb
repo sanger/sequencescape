@@ -6,16 +6,15 @@
 <% add :back_menu, "Back to pipeline" => pipeline_path(@pipeline) -%>
 
 <%= page_title 'Batch', @batch.id %>
-<h2>
+<p class="lead">
   <%= badge(@batch.displayed_status, type: 'batch-state') -%>
-  <% if @batch.multiplexed? %>
-    <%= badge('Multiplexed', type: 'batch-mx', style: 'primary') %>
-  <% end %>
-</h2>
+</p>
 
-<%= alert(:info) do %>
-  Created at: <%= time_tag( @batch.created_at) %><br />
-  This batch belongs to pipeline: <%= @pipeline.name %>
+<%= panel do %>
+  <dl class="descriptive-list-inline">
+    <dt>Created</dt> <dd><%= time_tag( @batch.created_at) %></dd>
+    <dt>Pipeline</dt> <dd><%= @pipeline.name %></dd>
+  </dl>
 <% end %>
 
 <% if @pipeline.group_by_parent %>
@@ -30,17 +29,14 @@
   <%end %>
   <br/>
 <% else %>
-  <%= render partial: "shared/batch", locals: { requests: @batch.ordered_requests.include_for_batch_view, edit: false, stage: false } %>
+  <%= panel_no_body do %>
+    <%= render partial: "shared/batch", locals: { requests: @batch.ordered_requests.include_for_batch_view, edit: false, stage: false } %>
+  <% end %>
 <% end %>
 
 <%= panel_no_body :default, title: 'Events' do %>
   <%= render partial: "events", locals: { events: @batch.lab_events.includes(:user) } %>
 <% end %>
 
-<% if @batch.show_actions?  %>
-  <%= render partial: "shared/actions", locals: { batch: @batch } %>
-<% elsif @batch.show_fail_link? %>
-  <ul>
-    <li><%= link_to "Fail batch or items", action: "fail", id: @batch.id %></li>
-  </ul>
-<% end %>
+
+<%= render partial: "shared/actions", locals: { batch: @batch } %>

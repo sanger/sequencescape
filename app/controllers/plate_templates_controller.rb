@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class PlateTemplatesController < ApplicationController # rubocop:todo Style/Documentation
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -19,7 +20,6 @@ class PlateTemplatesController < ApplicationController # rubocop:todo Style/Docu
     end
   end
 
-  # rubocop:todo Metrics/MethodLength
   def create # rubocop:todo Metrics/AbcSize
     if params[:name].blank?
       flash[:error] = 'Please enter a name'
@@ -38,8 +38,6 @@ class PlateTemplatesController < ApplicationController # rubocop:todo Style/Docu
     flash[:notice] = 'Template saved'
     redirect_to plate_templates_path
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def edit
     @pattern = PlateTemplate.find(params[:id])

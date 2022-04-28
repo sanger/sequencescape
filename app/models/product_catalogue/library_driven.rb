@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class ProductCatalogue::LibraryDriven # rubocop:todo Style/Documentation
   attr_reader :product
 

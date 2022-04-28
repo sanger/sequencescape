@@ -1,4 +1,6 @@
-module ::Core::Io::Base::JsonFormattingBehaviour::Input # rubocop:todo Style/Documentation
+# frozen_string_literal: true
+
+module Core::Io::Base::JsonFormattingBehaviour::Input # rubocop:todo Style/Documentation
   class ReadOnlyAttribute < ::Core::Service::Error # rubocop:todo Style/Documentation
     def initialize(attribute)
       super('is read-only')
@@ -23,9 +25,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input # rubocop:todo Style/Doc
     self.model_for_input = model
   end
 
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def generate_json_to_object_mapping(json_to_attribute) # rubocop:todo Metrics/CyclomaticComplexity
     code = []
 
@@ -121,9 +121,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input # rubocop:todo Style/Doc
     )
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
   private :generate_json_to_object_mapping
 
   # If the specified path is present all of the way to the end then the value at the
@@ -176,9 +174,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input # rubocop:todo Style/Doc
     end
     private :load_uuid_resource
 
-    # rubocop:todo Metrics/PerceivedComplexity
-    # rubocop:todo Metrics/MethodLength
-    # rubocop:todo Metrics/AbcSize
+    # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
     def handle_has_many(attributes, attribute, json, object) # rubocop:todo Metrics/CyclomaticComplexity
       if json.first.is_a?(Hash)
         uuids = Uuid.include_resource.lookup_many_uuids(json.filter_map { |j| j['uuid'] })
@@ -208,9 +204,7 @@ module ::Core::Io::Base::JsonFormattingBehaviour::Input # rubocop:todo Style/Doc
       end
     end
 
-    # rubocop:enable Metrics/AbcSize
-    # rubocop:enable Metrics/MethodLength
-    # rubocop:enable Metrics/PerceivedComplexity
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
     private :handle_has_many
   end
 end

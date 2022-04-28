@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require_relative 'view/menu/item'
 require_relative 'view/menu/list'
 require_relative 'view/tabs/item'
@@ -7,8 +8,7 @@ require_relative 'globals'
 module ApplicationHelper # rubocop:todo Style/Documentation
   include Informatics::Globals
 
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
   def add(type, link, options = nil) # rubocop:todo Metrics/CyclomaticComplexity
     o = Informatics::Support::Options.collect(options)
     l = Informatics::Support::Options.collect(link)
@@ -30,8 +30,7 @@ module ApplicationHelper # rubocop:todo Style/Documentation
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   def logger
     Rails.logger
@@ -39,7 +38,7 @@ module ApplicationHelper # rubocop:todo Style/Documentation
 
   private
 
-  def add_link(menu, l, o, options) # rubocop:todo Metrics/MethodLength
+  def add_link(menu, l, o, options)
     menu ||= Informatics::View::Menu::List.new
     if options.nil?
       menu.add_item text: l.first_key, link: l.first_value

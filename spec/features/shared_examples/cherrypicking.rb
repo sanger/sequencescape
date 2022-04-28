@@ -4,7 +4,7 @@ shared_examples 'a cherrypicking procedure' do
   attr_reader :batch_id
   attr_reader :batch_barcode
 
-  it 'can run the cherrypicking pipeline' do
+  it 'running the cherrypicking pipeline' do
     step 'Setting up the batch' do
       step 'Access the Cherrypicking pipeline' do
         login_user(user)
@@ -57,7 +57,6 @@ shared_examples 'a cherrypicking procedure' do
             fill_in('Maximum Volume', with: 150)
           end
         end
-
         click_button 'Next step'
       end
 
@@ -108,15 +107,18 @@ shared_examples 'a cherrypicking procedure' do
           end
 
           step 'check the worksheets' do
-            visit batch_path(batch_id)
-
-            within('#output_assets table tbody') do
-              row = page.all('tr', text: /#{destination_barcode}/).first
-              within(row) { click_link 'Print worksheet' }
+            step 'visit the page' do
+              visit batch_path(batch_id)
             end
 
-            expect(page).to have_content('This worksheet was generated')
+            step 'get the file' do
+              within('#output_assets table tbody') do
+                row = page.all('tr', text: /#{destination_barcode}/).first
+                within(row) { click_link 'Print worksheet' }
+              end
 
+              expect(page).to have_content('This worksheet was generated')
+            end
             (1..expected_plates.size).each do |pick_number_index|
               within("#worksheet_plate_#{destination_barcode}_pick_#{pick_number_index}") do
                 within('#source_plates') do
@@ -127,7 +129,6 @@ shared_examples 'a cherrypicking procedure' do
 
                 control_plate = expected_plates[pick_number_index][:control]
                 within('#control_plates') { expect(page).to have_content(control_plate.human_barcode) } if control_plate
-
                 within('#destination_plate') { expect(page).to have_content(destination_barcode) }
 
                 # check barcode
@@ -137,13 +138,14 @@ shared_examples 'a cherrypicking procedure' do
 
                 # check wells
                 within('#plate_layouts') do
-                  cells_with_content = page.all('td', text: /.+v13.0 b0.0/)
+                  cells_with_content = page.all('td', text: /.+v[\d.]+ b[\d.]+/, wait: 0)
+                  expect(cells_with_content).not_to be_empty
+                  barcode_numbers = expected_plates[pick_number_index][:sources].map(&:barcode_number)
+                  barcode_numbers << control_plate.barcode_number if control_plate
 
                   # check that the number each cell contains is in the expected list of plate barcodes
                   # N.B. this doesn't actually check the correct picks are going to correct wells at sample level
                   cells_with_content.each do |cell|
-                    barcode_numbers = expected_plates[pick_number_index][:sources].map(&:barcode_number)
-                    barcode_numbers << control_plate.barcode_number if control_plate
                     number_in_cell = cell.text.split(' ')[1]
 
                     expect(barcode_numbers).to include(number_in_cell)
@@ -247,9 +249,10 @@ shared_examples 'a cherrypicking procedure' do
             when 'Hamilton'
               # for Robot::Generator::Hamilton
               # Hamilton files comprise a column headers row plus one row per transfer e.g.
+              # rubocop:disable Layout/LineLength
               # SourcePlateID,SourceWellID,SourcePlateType,SourcePlateVolume,DestinationPlateID,DestinationWellID,DestinationPlateType,DestinationPlateVolume,WaterVolume
               # DN1000001A,A1,ABgene 0765,15.85,DN20000001B,A1,ABgene 0800,15.85,49.15
-              # DownloadHelpers.wait_for_download("#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.csv")
+              # rubocop:enable Layout/LineLength
               generated_file =
                 DownloadHelpers.downloaded_file(
                   "#{batch_id}_batch_#{destination_barcode}_#{pick_number_index}.csv",

@@ -7,9 +7,7 @@ class WorkCompletionTubesTest < ActionDispatch::PerformanceTest
   self.profile_options = { runs: 1, metrics: %i[wall_time memory], formats: [:flat] }
 
   # THis setup mimic the end of the GBS pipeline.
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/AbcSize
   def setup # rubocop:todo Metrics/CyclomaticComplexity
     @user = create :user
 
@@ -112,9 +110,7 @@ class WorkCompletionTubesTest < ActionDispatch::PerformanceTest
     thirds.each { |third| create :transfer_request, asset: third, target_asset: @target_tube }
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
 
   test 'WorkCompletion.create performance with tubes' do
     Rails.logger.level = 0

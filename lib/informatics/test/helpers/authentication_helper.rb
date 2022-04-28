@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module AuthenticatedTestHelper # rubocop:todo Style/Documentation
   # Sets the current user in the session from the user fixtures.
   def login_as(user)

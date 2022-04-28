@@ -2,24 +2,23 @@
 
 # Include in assets that can act as sources/destinations for transfers
 module Transfer::Associations
-  # rubocop:todo Metrics/MethodLength
   def self.included(base) # rubocop:todo Metrics/AbcSize
     base.class_eval do
       include Transfer::State
 
-      has_many :transfers_as_source,
+      has_many :transfers_as_source, # rubocop:todo Rails/HasManyOrHasOneDependent
                -> { order(created_at: :asc) },
                class_name: 'Transfer',
                foreign_key: :source_id,
                inverse_of: :source
 
-      has_many :transfers_to_tubes,
+      has_many :transfers_to_tubes, # rubocop:todo Rails/HasManyOrHasOneDependent
                -> { order(created_at: :asc) },
                class_name: 'Transfer::BetweenPlateAndTubes',
                foreign_key: :source_id,
                inverse_of: :source
 
-      has_many :transfers_as_destination,
+      has_many :transfers_as_destination, # rubocop:todo Rails/HasManyOrHasOneDependent
                -> { order(id: :asc) },
                class_name: 'Transfer',
                foreign_key: :destination_id,
@@ -30,11 +29,12 @@ module Transfer::Associations
             lambda {
               select("DISTINCT #{base.quoted_table_name}.*")
                 .joins(
+                  # rubocop:todo Layout/LineLength
                   "LEFT OUTER JOIN `transfers` outgoing_transfers ON outgoing_transfers.`source_id`=#{base.quoted_table_name}.`id`"
+                  # rubocop:enable Layout/LineLength
                 )
                 .where('outgoing_transfers.source_id IS NULL')
             }
     end
   end
-  # rubocop:enable Metrics/MethodLength
 end

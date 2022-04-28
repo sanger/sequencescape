@@ -1,10 +1,11 @@
+# frozen_string_literal: true
 class TagGroup < ApplicationRecord # rubocop:todo Style/Documentation
-  CHROMIUM_ADAPTER_TYPE = 'Chromium'.freeze
+  CHROMIUM_ADAPTER_TYPE = 'Chromium'
 
   include Uuid::Uuidable
   include SharedBehaviour::Named
 
-  has_many :tags, -> { order('map_id ASC') }
+  has_many :tags, -> { order('map_id ASC') } # rubocop:todo Rails/HasManyOrHasOneDependent
   belongs_to :adapter_type, class_name: 'TagGroup::AdapterType', optional: true
 
   scope :include_tags, -> { includes(:tags) }
@@ -12,6 +13,11 @@ class TagGroup < ApplicationRecord # rubocop:todo Style/Documentation
   scope :visible, -> { where(visible: true) }
 
   scope :chromium, -> { visible.joins(:adapter_type).where(tag_group_adapter_types: { name: CHROMIUM_ADAPTER_TYPE }) }
+
+  scope :by_adapter_type,
+        ->(adapter_type_name) {
+          visible.joins(:adapter_type).where(tag_group_adapter_types: { name: adapter_type_name })
+        }
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }
 
@@ -29,6 +35,6 @@ class TagGroup < ApplicationRecord # rubocop:todo Style/Documentation
 
   # Returns a Hash that maps from the tag index in the group to the oligo sequence for the tag
   def indexed_tags
-    tags.map { |tag| [tag.map_id, tag.oligo] }.to_h
+    tags.to_h { |tag| [tag.map_id, tag.oligo] }
   end
 end

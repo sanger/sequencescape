@@ -12,7 +12,9 @@ describe '/api/1/qcable_creators' do
 
   describe '#post' do
     let(:payload) do
+      # rubocop:todo Layout/LineLength
       "{\"qcable_creator\":{ \"user\": \"#{user.uuid}\", \"lot\": \"#{lot.uuid}\", \"barcodes\": \"#{barcodes.join(',')}\"}}"
+      # rubocop:enable Layout/LineLength
     end
 
     let(:response_body) do

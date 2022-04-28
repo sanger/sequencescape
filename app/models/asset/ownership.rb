@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Asset::Ownership
   module ChangesOwner # rubocop:todo Style/Documentation
     # Included in events which change ownership of plates

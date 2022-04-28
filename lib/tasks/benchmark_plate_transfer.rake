@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 namespace :benchmark do
   task plate_transfer: :environment do
     $stdout.puts 'Preparing'
@@ -15,7 +16,7 @@ namespace :benchmark do
     end
     puts ''
 
-    all_wells = ('A'..'H').map { |r| (1..12).map { |c| "#{r}#{c}" } }.flatten.map { |w| [w, w] }.to_h
+    all_wells = ('A'..'H').map { |r| (1..12).map { |c| "#{r}#{c}" } }.flatten.to_h { |w| [w, w] }
 
     $stdout.puts 'Warming up...'
     15.times do

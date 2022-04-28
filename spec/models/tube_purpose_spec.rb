@@ -12,12 +12,10 @@ describe Tube::Purpose, type: :model do
       it { is_expected.to be_a expected_tube_class }
 
       it 'set an appropriate barcode prefix' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(subject.primary_barcode.prefix.human).to eq barcode_prefix
       end
 
       it 'sets itself as the purpose' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(subject.purpose).to eq(tube_purpose)
       end
     end

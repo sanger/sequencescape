@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Metadata::ViewBuilder < Metadata::BuilderBase # rubocop:todo Style/Documentation
   def initialize(*args, &block)
     super

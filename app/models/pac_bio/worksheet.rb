@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class PacBio::Worksheet # rubocop:todo Style/Documentation
   def initialize; end
 
@@ -16,7 +17,7 @@ class PacBio::Worksheet # rubocop:todo Style/Documentation
     [["Batch #{batch.id}"], ['Sample', '', 'Fragmentation', '', 'End repair and ligation', '', '', '', 'QC', '', '']]
   end
 
-  def column_headers # rubocop:todo Metrics/MethodLength
+  def column_headers
     [
       'Well',
       'Name',
@@ -32,7 +33,7 @@ class PacBio::Worksheet # rubocop:todo Style/Documentation
     ]
   end
 
-  def row(request) # rubocop:todo Metrics/MethodLength
+  def row(request)
     [
       request.asset.display_name,
       request.asset.primary_aliquot.sample.name,

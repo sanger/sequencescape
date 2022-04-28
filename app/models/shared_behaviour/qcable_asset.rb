@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module SharedBehaviour
   # Include in classes which have an associated
   # qcable which handles their QC state.

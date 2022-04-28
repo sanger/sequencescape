@@ -4,6 +4,12 @@
 
 <%= page_title 'Event History' %>
 
+<div>
+  <%= alert(:warning) do %>
+    As of October 2021, the Event History page no longer receives and displays new updates on the status of the run.
+  <% end %>
+</div>
+
 <div class="help">
   Complete event history for request <%= @request.id %>, in chronological order.
 </div>

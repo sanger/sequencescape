@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Lays out the tags in the specified tag group in a particular pattern.
 #
 # In pulldown they use only one set of tags and put them into wells in a particular pattern: by columns, or

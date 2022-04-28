@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rest-client'
 
 module LabelPrinter
@@ -29,7 +30,7 @@ module LabelPrinter
     end
 
     def self.print(attributes)
-      RestClient.post print_job_url, { 'data' => { 'attributes' => attributes } }.to_json, headers
+      RestClient.post print_job_url, { 'print_job' => attributes }.to_json, headers
     rescue RestClient::UnprocessableEntity => e
       raise PmbException.new(e), pretty_errors(e.response)
     rescue RestClient::InternalServerError => e
@@ -52,9 +53,11 @@ module LabelPrinter
       raise PmbException.new(e), 'service is down'
     end
 
-    def self.register_printer(name)
+    def self.register_printer(name, printer_type)
       unless printer_exists?(name)
-        RestClient.post printers_url, { 'data' => { 'attributes' => { 'name' => name } } }.to_json, headers
+        RestClient.post printers_url,
+                        { 'data' => { 'attributes' => { 'name' => name, 'printer_type' => printer_type } } }.to_json,
+                        headers
       end
     end
 
@@ -79,7 +82,7 @@ module LabelPrinter
       [].tap do |error_list|
         errors.each do |error|
           attribute = error['source']['pointer'].split('/').last.humanize
-          error_list << '%{attribute} %{message}' % { attribute: attribute, message: error['detail'] }
+          error_list << ('%{attribute} %{message}' % { attribute: attribute, message: error['detail'] })
         end
       end.join('; ')
     end
@@ -87,7 +90,7 @@ module LabelPrinter
     def self.prettify_old_errors(errors)
       [].tap do |error_list|
         errors.each do |k, v|
-          error_list << '%{attribute} %{message}' % { attribute: k.capitalize + ':', message: v.join(', ') }
+          error_list << ('%{attribute} %{message}' % { attribute: k.capitalize + ':', message: v.join(', ') })
         end
       end.join('; ')
     end

@@ -11,9 +11,9 @@ describe 'Viewing an asset' do
 
   let(:user) { create :user }
 
-  setup do
-    expect(Labware).to receive(:find_by).with(id: '1').and_return(labware)
-    expect(Receptacle).to receive(:find_by).with(id: '1').and_return(receptacle)
+  before do
+    expect(Labware).to receive(:find_by).with(id: '1').and_return(labware) # rubocop:todo RSpec/ExpectInHook
+    expect(Receptacle).to receive(:find_by).with(id: '1').and_return(receptacle) # rubocop:todo RSpec/ExpectInHook
     login_user user
     visit asset_path(id: 1)
   end

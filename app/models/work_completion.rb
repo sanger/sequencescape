@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # A WorkCompletion can be used to pass library creation
 # requests. It will also link the requests onto the correct
 # wells of the target plate. It takes the following:

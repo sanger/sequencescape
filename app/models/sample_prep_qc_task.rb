@@ -1,14 +1,6 @@
-class SamplePrepQcTask < Task # rubocop:todo Style/Documentation
-  def partial
-    'sample_prep_qc_batches'
-  end
+# frozen_string_literal: true
 
-  def render_task(workflow, params)
-    super
-    workflow.render_sample_prep_qc_task(self, params)
-  end
-
-  def do_task(workflow, params)
-    workflow.do_sample_prep_qc_task(self, params)
-  end
+# Defunct task previously associated with pacbio pipeline. Can be removed once tasks themselves
+# are disabled.
+class SamplePrepQcTask < Task
 end

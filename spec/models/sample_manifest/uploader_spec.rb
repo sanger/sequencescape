@@ -147,7 +147,6 @@ RSpec.describe SampleManifest::Uploader, type: :model, sample_manifest_excel: tr
     end
 
     it 'will upload a valid plate sample manifest' do
-      broadcast_events_count = BroadcastEvent.count
       download =
         build(
           :test_download_plates,
@@ -157,10 +156,26 @@ RSpec.describe SampleManifest::Uploader, type: :model, sample_manifest_excel: tr
       download.save(test_file_name)
       Delayed::Worker.delay_jobs = false
       uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
-      uploader.run!
+      expect { uploader.run! }.to change(BroadcastEvent, :count).by(1)
       expect(uploader).to be_processed
-      expect(BroadcastEvent.count).to eq broadcast_events_count + 1
       expect(uploader.upload.sample_manifest).to be_completed
+    end
+
+    it 'will generate sample accessions', accessioning_enabled: true do
+      number_of_plates = 2
+      samples_per_plate = 2
+      download =
+        build(
+          :test_download_plates,
+          num_plates: number_of_plates,
+          num_samples_per_plate: samples_per_plate,
+          manifest_type: 'plate_full',
+          columns: SampleManifestExcel.configuration.columns.plate_full.dup,
+          study: create(:open_study, accession_number: 'acc')
+        )
+      download.save(test_file_name)
+      uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
+      expect { uploader.run! }.to change(Delayed::Job, :count).by(number_of_plates * samples_per_plate)
     end
 
     it 'will not upload an invalid 1d tube sample manifest' do
@@ -181,7 +196,7 @@ RSpec.describe SampleManifest::Uploader, type: :model, sample_manifest_excel: tr
           :test_download_tubes,
           manifest_type: 'tube_library_with_tag_sequences',
           columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup,
-          validation_errors: [:insert_size_from]
+          validation_errors: [:sanger_sample_id_invalid]
         )
       download.save(test_file_name)
       expect(described_class.new(test_file, SampleManifestExcel.configuration, user, false)).not_to be_valid
@@ -193,7 +208,7 @@ RSpec.describe SampleManifest::Uploader, type: :model, sample_manifest_excel: tr
           :test_download_tubes,
           manifest_type: 'tube_multiplexed_library_with_tag_sequences',
           columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup,
-          validation_errors: [:insert_size_from]
+          validation_errors: [:sanger_sample_id_invalid]
         )
       download.save(test_file_name)
       expect(described_class.new(test_file, SampleManifestExcel.configuration, user, false)).not_to be_valid
@@ -205,7 +220,7 @@ RSpec.describe SampleManifest::Uploader, type: :model, sample_manifest_excel: tr
           :test_download_tubes,
           manifest_type: 'tube_multiplexed_library',
           columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup,
-          validation_errors: [:insert_size_from]
+          validation_errors: [:sanger_sample_id_invalid]
         )
       download.save(test_file_name)
       expect(described_class.new(test_file, SampleManifestExcel.configuration, user, false)).not_to be_valid

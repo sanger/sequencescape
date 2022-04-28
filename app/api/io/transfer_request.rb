@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Io
   # Controls API V1 IO for {::TransferRequest}
   class TransferRequest < ::Core::Io::Base

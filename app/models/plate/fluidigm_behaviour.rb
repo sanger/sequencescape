@@ -1,8 +1,9 @@
+# frozen_string_literal: true
 module Plate::FluidigmBehaviour # rubocop:todo Style/Documentation
   class FluidigmError < StandardError
   end
 
-  def self.included(base) # rubocop:todo Metrics/MethodLength
+  def self.included(base)
     base.class_eval do
       scope :requiring_fluidigm_data,
             -> {
@@ -40,7 +41,7 @@ module Plate::FluidigmBehaviour # rubocop:todo Style/Documentation
     qc_assay = QcAssay.new
     raise FluidigmError, 'File does not match plate' unless fluidigm_file.for_plate?(fluidigm_barcode)
 
-    wells # rubocop:todo Metrics/BlockLength
+    wells
       .located_at(fluidigm_file.well_locations)
       .include_stock_wells
       .each do |well|

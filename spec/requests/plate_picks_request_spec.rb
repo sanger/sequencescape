@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'rails_helper'
 
 RSpec.describe 'PlatePicks', type: :request do
@@ -55,14 +56,14 @@ RSpec.describe 'PlatePicks', type: :request do
 
     it 'returns the plate', :aggregate_failures do
       get "/plate_picks/plates/#{plate.machine_barcode}", headers: headers
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to have_http_status(:success)
       expect(JSON.parse(response.body)).to eq(found_plate)
     end
 
     it 'returns 404 if the plate is missing', :aggregate_failures do
       get '/plate_picks/plates/not_a_barcode', headers: headers
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to have_http_status(:not_found)
       expect(response.body).to eq(missing_plate)
     end
@@ -78,21 +79,21 @@ RSpec.describe 'PlatePicks', type: :request do
 
     it 'returns the batch', :aggregate_failures do
       get "/plate_picks/batches/#{released_cherrypick_batch.id}", headers: headers
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to have_http_status(:success)
       expect(JSON.parse(response.body)).to eq(found_batch)
     end
 
     it 'returns an error if the batch has no pick info', :aggregate_failures do
       get "/plate_picks/batches/#{pending_cherrypick_batch.id}", headers: headers
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to have_http_status(:conflict)
       expect(response.body).to eq(not_suitable)
     end
 
     it 'returns 404 if the batch is missing', :aggregate_failures do
       get '/plate_picks/batches/not_a_barcode', headers: headers
-      expect(response.content_type).to eq('application/json')
+      expect(response.media_type).to eq('application/json')
       expect(response).to have_http_status(:not_found)
       expect(response.body).to eq(missing_batch)
     end

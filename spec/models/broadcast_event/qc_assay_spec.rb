@@ -41,12 +41,10 @@ RSpec.describe BroadcastEvent::QcAssay, type: :model, broadcast_event: true do
       end
 
       it 'sets the event type based on the qc_assay' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(json).to include_json('event' => { 'event_type' => 'quant_example_assay' })
       end
 
       it 'sends the lot number as metadata' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(json).to include_json(
           'event' => {
             'metadata' => {
@@ -116,12 +114,10 @@ RSpec.describe BroadcastEvent::QcAssay, type: :model, broadcast_event: true do
       end
 
       it 'sets the event type based on the qc_assay' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(json).to include_json('event' => { 'event_type' => 'quant_example_assay' })
       end
 
       it 'sends the lot number as metadata' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(json).to include_json(
           'event' => {
             'metadata' => {
@@ -160,8 +156,8 @@ RSpec.describe BroadcastEvent::QcAssay, type: :model, broadcast_event: true do
     end
 
     describe '::generate_events' do
-      # In the event we have two different assay types bundled together, we generate two different events, and separate them
-      # via the properties.
+      # In the event we have two different assay types bundled together, we generate two different events, and separate
+      # them via the properties.
       it 'generates a two events' do
         events = described_class.generate_events(qc_assay)
         expect(events.length).to eq(2)

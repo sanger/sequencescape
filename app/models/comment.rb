@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # A comment can be assigned to any commentable record.
 class Comment < ApplicationRecord
   # include Uuid::Uuidable
@@ -51,6 +52,6 @@ class Comment < ApplicationRecord
   # getting created here. We should consider either storing comments on submissions, orders,
   # or having a many-to-many relationship.
   def trigger_commentable_callback
-    commentable.after_comment_addition(self)
+    commentable.try(:after_comment_addition, self)
   end
 end

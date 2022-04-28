@@ -9,6 +9,11 @@ default: &DEFAULT
       i7_oligo: TGTGCAGC
       i5_oligo: ACTGATGT
   default_tag_option: Dual
+  studies:
+    - Illumina Controls
+    - Heron PhiX
+  default_study_option: Illumina Controls
+
 development:
   <<: *DEFAULT
 next_release:

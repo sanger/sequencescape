@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Describes the shape of the plate and its numbering system.
 # The majority of our {Plate plates} have a 3:2 width height ratio:
 # eg. 12*8 or 24*16
@@ -51,7 +52,7 @@ class AssetShape < ApplicationRecord
     interlace(well_position, plate_size)
   end
 
-  def generate_map(size) # rubocop:todo Metrics/MethodLength
+  def generate_map(size)
     raise StandardError, 'Map already exists' if Map.find_by(asset_size: size, asset_shape_id: id).present?
 
     ActiveRecord::Base.transaction do
@@ -93,7 +94,7 @@ class AssetShape < ApplicationRecord
 
   def interlace(i, size)
     m, d = (i - 1).divmod(size / 2)
-    2 * d + 1 + m
+    (2 * d) + 1 + m
   end
 
   def location_from_index(index, size = 96)

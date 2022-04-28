@@ -1,0 +1,21 @@
+
+<% add :about, "Processing batch" %>
+<% add :menu, "View all batches" => batches_path %>
+<% add :menu, "Edit batch" => edit_batch_path(@batch) %>
+<% add :menu, "Print worksheet" => url_for(controller: :batches, action: :print, id: @batch.id) %>
+<% add :menu, "Print labels" => url_for(controller: :batches, action: :print_labels, id: @batch.id) -%>
+
+<% add :menu, "Vol' & Conc'" => labware_find_by_barcode_path -%>
+<% add :menu, "Fail batch" => url_for(controller: :batches, action: :fail, id: @batch.id) %>
+
+<% if @batch.workflow.locale == "Internal" && ! @batch.pipeline.sequencing? %>
+  <% add :menu, "Release" => release_batch_url(@batch) %>
+<% end %>
+<% if @batch.has_limit? %>
+  <% unless @batch.has_event("Tube layout verified") %>
+    <% add :menu, "Verify tube layout" => url_for(controller: :batches, action: :verify, id: @batch.id) -%>
+  <% end %>
+<% end %>
+<% add :menu, "View summary" => url_for(controller: :pipelines, action: :summary, id: @batch.id) -%>
+<% add :menu, (pluralize @batch.comments.size, "comment") => batch_comments_path(@batch) -%>
+<% add :back_menu, "Back to pipeline" => pipeline_path(@batch.pipeline) %>

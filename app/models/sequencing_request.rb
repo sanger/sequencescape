@@ -1,4 +1,5 @@
 # encoding: utf-8
+# frozen_string_literal: true
 
 class SequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
   extend Request::AccessioningRequired
@@ -18,6 +19,7 @@ class SequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
   end
 
   include Request::CustomerResponsibility
+  include Request::SampleCompoundAliquotTransfer
 
   before_validation :clear_cross_projects
   def clear_cross_projects
@@ -34,14 +36,14 @@ class SequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
 
   def on_started
     super
-    transfer_aliquots
+    compound_samples_needed? ? transfer_aliquots_into_compound_sample_aliquots : transfer_aliquots
   end
 
   def order=(_)
     # Do nothing
   end
 
-  # Returns true if a request is read for batching
+  # Returns true if a request is ready for batching
   def ready? # rubocop:todo Metrics/CyclomaticComplexity
     # Reject any requests with missing or empty assets.
     # We use most tagged aliquot here, as its already loaded.
@@ -52,7 +54,7 @@ class SequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
 
     # It's ready if I don't have any lib creation requests or if all my lib creation requests are closed and
     # at least one of them is in 'passed' status
-    upstream_requests.empty? || upstream_requests.all?(&:closed?) && upstream_requests.any?(&:passed?)
+    upstream_requests.empty? || (upstream_requests.all?(&:closed?) && upstream_requests.any?(&:passed?))
   end
 
   def self.delegate_validator
@@ -60,13 +62,14 @@ class SequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
   end
 
   def concentration
-    return ' ' if lab_events_for_batch(batch).empty?
+    event = most_recent_event_named('Specify Dilution Volume')
+    return ' ' if event.nil?
 
-    conc = lab_events_for_batch(batch).first.descriptor_value('Concentration')
-    return "#{conc}μl" if conc.present?
+    concentration = event.descriptor_value('Concentration')
+    return "#{concentration}μl" if concentration.present?
 
-    dna = lab_events_for_batch(batch).first.descriptor_value('DNA Volume')
-    rsb = lab_events_for_batch(batch).first.descriptor_value('RSB Volume')
+    dna = event.descriptor_value('DNA Volume')
+    rsb = event.descriptor_value('RSB Volume')
     "#{dna}μl DNA in #{rsb}μl RSB"
   end
 end

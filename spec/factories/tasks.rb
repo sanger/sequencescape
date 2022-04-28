@@ -1,6 +1,15 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
+  factory :task do
+    name { 'New task' }
+    association(:workflow, factory: :lab_workflow)
+    sorted { nil }
+    batched { nil }
+    location { '' }
+    interactive { nil }
+  end
+
   factory :plate_template_task do
     name { 'Select Plate Template' }
     association(:workflow, factory: :cherrypick_pipeline_workflow)
@@ -20,9 +29,6 @@ FactoryBot.define do
     lab_activity { true }
   end
 
-  factory :assign_tubes_to_multiplexed_wells_task do
-  end
-
   factory :multiplexed_cherrypicking_task do
   end
 
@@ -38,5 +44,23 @@ FactoryBot.define do
     pipeline_workflow_id { |workflow| workflow.association(:lab_workflow) }
     location { '' }
     sorted { 2 }
+  end
+
+  factory :add_spiked_in_control_task do
+    name { 'Add Spiked in control' }
+    sorted { 1 }
+    lab_activity { true }
+    workflow
+  end
+
+  factory :set_descriptors_task do
+    name { 'Set descriptors' }
+    sorted { 1 }
+    lab_activity { true }
+    workflow
+
+    transient { descriptor_attributes { [{ kind: 'Text', sorter: 2, name: 'Comment' }] } }
+
+    descriptors { instance.descriptors.build(descriptor_attributes) }
   end
 end

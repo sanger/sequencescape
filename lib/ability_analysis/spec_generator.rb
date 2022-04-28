@@ -2,7 +2,7 @@
 
 # Originally used to generate an overwhelmingly
 # large spec file. Kept primarily for reference
-class AbilityAnalysis::SpecGenerator # rubocop:todo Metrics/ClassLength
+class AbilityAnalysis::SpecGenerator
   attr_reader :ability_analysis
 
   def initialize(ability_analysis, output: $stdout)
@@ -120,7 +120,7 @@ class AbilityAnalysis::SpecGenerator # rubocop:todo Metrics/ClassLength
       end
   end
 
-  def generate_tests(user, role: nil) # rubocop:todo Metrics/MethodLength
+  def generate_tests(user, role: nil)
     ability = abilities_for(user)
     granted = permissions_for(ability)
     generate_permissions_list('granted_permissions', granted, indent: 4)

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This module can be included where the {Order} has a linear behaviour,
 # with no branching. Eg. in {LinearSubmission}
 module Submission::LinearRequestGraph
@@ -32,14 +33,18 @@ module Submission::LinearRequestGraph
 
   private
 
-  # Generates a list of RequestType and multiplier pairs for the instance.
+  # Returns an array of arrays.
+  # The inner array has two elements: a RequestType instance, and an integer (the "multiplier").
+  # e.g. [ [ RequestType instance 1, 1 ], [ RequestType instance 2, 1 ] ]
   def build_request_type_multiplier_pairs # rubocop:todo Metrics/AbcSize
     # Ensure that the keys of the multipliers hash are strings, otherwise we get weirdness!
     multipliers =
-      Hash.new { |h, k| h[k] = 1 }.tap do |multipliers|
-        requested_multipliers = request_options.try(:[], :multiplier) || {}
-        requested_multipliers.each { |k, v| multipliers[k.to_s] = v.to_i }
-      end
+      Hash
+        .new { |h, k| h[k] = 1 }
+        .tap do |multipliers|
+          requested_multipliers = request_options.try(:[], :multiplier) || {}
+          requested_multipliers.each { |k, v| multipliers[k.to_s] = v.to_i }
+        end
 
     request_types.dup.map { |request_type_id| [RequestType.find(request_type_id), multipliers[request_type_id.to_s]] }
   end
@@ -56,9 +61,7 @@ module Submission::LinearRequestGraph
   # that need creating.
   # @yieldreturn [Array<Asset>] For orders with multiplexed request types, yields the target asset of
   #                             the multiplexing, such as a {MultiplexedLibraryTube}.
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def create_request_chain!(request_type_and_multiplier_pairs, source_data_set, multiplexing_assets, &block) # rubocop:todo Metrics/CyclomaticComplexity
     raise StandardError, 'No request types specified!' if request_type_and_multiplier_pairs.empty?
 
@@ -129,9 +132,7 @@ module Submission::LinearRequestGraph
     # rubocop:enable Metrics/BlockLength
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   def associate_built_requests(assets) # rubocop:todo Metrics/AbcSize
     assets

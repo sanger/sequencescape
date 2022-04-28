@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'aasm'
 
 # Contains qc information regarding a well, in addition to volume information to
@@ -7,14 +8,12 @@ require 'aasm'
 class WellAttribute < ApplicationRecord
   include AASM
 
-  belongs_to :well, inverse_of: :well_attribute
+  belongs_to :well, inverse_of: :well_attribute, touch: true
 
   serialize :gender_markers
   def gender_markers_string
     gender_markers.try(:to_s)
   end
-
-  broadcasts_associated_with_warren :well
 
   aasm column: :pico_pass, whiny_persistence: true do
     state :ungraded, initial: true

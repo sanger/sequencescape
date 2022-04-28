@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Product < ApplicationRecord # rubocop:todo Style/Documentation
   include SharedBehaviour::Indestructable
   include SharedBehaviour::Deprecatable

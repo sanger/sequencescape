@@ -1,7 +1,7 @@
+# frozen_string_literal: true
 require 'aasm'
 module Batch::StateMachineBehaviour # rubocop:todo Style/Documentation
-  # rubocop:todo Metrics/MethodLength
-  def self.included(base) # rubocop:todo Metrics/AbcSize
+  def self.included(base) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     base.class_eval do
       include AASM
       aasm column: :state, whiny_persistence: true do
@@ -40,8 +40,6 @@ module Batch::StateMachineBehaviour # rubocop:todo Style/Documentation
       alias_method(:release!, :release_with_user!)
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def finished?
     completed? or released?

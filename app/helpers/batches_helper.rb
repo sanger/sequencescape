@@ -1,10 +1,65 @@
-module BatchesHelper # rubocop:todo Style/Documentation
+# frozen_string_literal: true
+
+# Helper associated with {Batch batches}
+module BatchesHelper
+  FAIL_LINK = 'Fail batch or requests'
+
   def purpose_for_labware(labware)
     labware.purpose&.name.presence || 'Unassigned'
   end
 
+  #
+  # Helps generate links for each action associated with a batch
+  #
+  # @param batch [Batch] The batch to generate links for
+  # @yieldparam [String] name the name of the link to use for the action
+  # @yieldparam [Hash,String] link A Url or hash object to use as the link's destination
+  # @yieldparam [Boolean] enabled True if the link should be enabled
+  # @yieldparam [String] message Message describing the link further, such as why it is disabled
+  #
+  # @return [Void]
+  #
+  def each_action(batch)
+    batch.tasks&.each_with_index do |task, index|
+      enabled, message = task.can_process?(batch)
+      yield task.name, task_link(index, enabled, batch), enabled, message
+    end
+    yield(*fail_links(batch))
+  end
+
+  #
+  # Generates a link for a given task index. Disabled links will have no explicit target
+  #
+  # @param index [Integer] The index of the {Task} to link to
+  # @param enabled [Boolean] Whether the link is enabled or not
+  # @param batch [Batch] The batch associated with the task
+  #
+  # @return [Hash,String] A hash or string with which to generate the link.
+  #
+  def task_link(index, enabled, batch)
+    if enabled
+      { controller: :workflows, action: :stage, id: index, batch_id: batch.id, workflow_id: batch.workflow.id }
+    else
+      '#'
+    end
+  end
+
+  #
+  # Generates a link to fail the batch if appropriate
+  #
+  # @param batch [Batch] The batch associated with the task
+  #
+  # @return [Hash,String] A hash or string with which to generate the link.
+  #
+  def fail_links(batch)
+    if batch.pending?
+      [FAIL_LINK, '#', false, 'Batches can not be failed when pending. Try reset batch under edit instead']
+    else
+      [FAIL_LINK, { action: :fail, id: batch.id }, true, nil]
+    end
+  end
+
   # Used by both assets/show.xml.builder and batches/show.xml.builder
-  # rubocop:todo Metrics/MethodLength
   def output_aliquot(xml, aliquot) # rubocop:todo Metrics/AbcSize
     xml.sample(
       sample_id: aliquot.sample_id,
@@ -35,14 +90,6 @@ module BatchesHelper # rubocop:todo Style/Documentation
 
       xml.insert_size(from: aliquot.insert_size.from, to: aliquot.insert_size.to) if aliquot.insert_size.present?
     end
-  end
-
-  # rubocop:enable Metrics/MethodLength
-
-  def workflow_name(batch)
-    return unless batch && batch.workflow
-
-    batch.workflow.name.gsub(/Cluster formation | \([^)]*\)/, '')
   end
 
   def batch_link(batch, options)

@@ -1,5 +1,6 @@
+# frozen_string_literal: true
 # Controls API V1 IO for {::PooledPlateCreation}
-class ::Io::PooledPlateCreation < ::Core::Io::Base
+class Io::PooledPlateCreation < ::Core::Io::Base
   set_model_for_input(::PooledPlateCreation)
   set_json_root(:pooled_plate_creation)
 

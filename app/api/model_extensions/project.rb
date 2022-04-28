@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Included in {Project}
 # The intent of this file was to provide methods specific to the V1 API
 module ModelExtensions::Project
@@ -9,8 +10,8 @@ module ModelExtensions::Project
   end
 
   def roles_as_json
-    roles.map do |role|
+    roles.to_h do |role|
       [role.name.underscore, role.users.map { |user| { login: user.login, email: user.email, name: user.name } }]
-    end.to_h
+    end
   end
 end

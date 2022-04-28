@@ -1,4 +1,5 @@
-class ::Io::ActiveRecord::Relation # rubocop:todo Style/Documentation
+# frozen_string_literal: true
+class Io::ActiveRecord::Relation # rubocop:todo Style/Documentation
   extend ::Core::Io::Collection
 
   class << self

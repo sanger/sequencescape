@@ -1,13 +1,8 @@
-class PacBioSequencingPipeline < Pipeline # rubocop:todo Style/Documentation
-  include Pipeline::InboxGroupedBySubmission
+# frozen_string_literal: true
 
-  self.inbox_partial = 'pac_bio_sequencing_inbox'
-  ALWAYS_SHOW_RELEASE_ACTIONS = true
-
-  self.requires_position = false
-
-  def post_release_batch(batch, _user)
-    batch.requests.each(&:transfer_aliquots)
-    Messenger.create!(target: batch, template: 'PacBioRunIO', root: 'pac_bio_run')
-  end
+# This class used to handle the Pacbio pipelines, which have since transitioned
+# to traction. This class can be removed completely once migration:
+# db/migrate/20211214094820_migrate_removed_pipelines_to_legacy_class.rb
+# has been run.
+class PacBioSequencingPipeline < LegacyPipeline
 end

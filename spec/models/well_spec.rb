@@ -67,7 +67,8 @@ describe Well do
 
     let(:qc_result) { build :qc_result, key: key, value: value, units: units, assay_type: 'assay', assay_version: 1 }
 
-    setup { well.update_from_qc(qc_result) }
+    before { well.update_from_qc(qc_result) }
+
     context 'key: concentration with nM' do
       let(:key) { 'concentration' }
       let(:value) { 100 }
@@ -76,7 +77,7 @@ describe Well do
         let(:units) { 'nM' }
 
         it 'works', :aggregate_failures do
-          expect(well.get_concentration).to eq(nil)
+          expect(well.get_concentration).to be_nil
           expect(well.get_molarity).to eq(100)
         end
       end
@@ -86,7 +87,7 @@ describe Well do
 
         it 'works', :aggregate_failures do
           expect(well.get_concentration).to eq(100)
-          expect(well.get_molarity).to eq(nil)
+          expect(well.get_molarity).to be_nil
         end
       end
     end
@@ -232,10 +233,11 @@ describe Well do
   end
 
   context 'with a plate' do
-    setup do
+    before do
       @plate = create :plate
       well.plate = @plate
     end
+
     it 'have a parent plate' do
       parent = well.plate
       assert parent.is_a?(Plate)
@@ -251,7 +253,6 @@ describe Well do
     end
   end
 
-  # rubocop:todo Metrics/BlockLength
   [
     [1000, 10, 50, 50, 0, nil],
     [1000, 10, 10, 10, 0, nil],
@@ -267,7 +268,7 @@ describe Well do
   ].each do |target_ng, measured_concentration, measured_volume, stock_to_pick, buffer_added, current_volume|
     # rubocop:enable Metrics/ParameterLists
     context 'cherrypick by nano grams' do
-      setup do
+      before do
         @source_well = create :well
         @target_well = create :well
         minimum_volume = 10
@@ -286,21 +287,25 @@ describe Well do
           robot_minimum_picking_volume
         )
       end
+
+      # rubocop:disable Layout/LineLength
       it "output stock_to_pick #{stock_to_pick} for a target of #{target_ng} with vol #{measured_volume} and conc #{measured_concentration}" do
         assert_equal stock_to_pick, @target_well.well_attribute.picked_volume
       end
 
+      # rubocop:enable Layout/LineLength
+
+      # rubocop:disable Layout/LineLength
       it "output buffer #{buffer_added} for a target of #{target_ng} with vol #{measured_volume} and conc #{measured_concentration}" do
         assert_equal buffer_added, @target_well.well_attribute.buffer_volume
       end
+      # rubocop:enable Layout/LineLength
     end
   end
 
-  # rubocop:enable Metrics/BlockLength
-
-  context 'when while cherrypicking by nanograms ' do
+  context 'when while cherrypicking by nanograms' do
     context 'and we want to get less volume than the minimum' do
-      setup do
+      before do
         @source_well = create :well
         @target_well = create :well
 
@@ -310,6 +315,7 @@ describe Well do
         @minimum_volume = 10
         @maximum_volume = 50
       end
+
       it 'get correct volume and buffer volume when there is not robot minimum picking volume' do
         stock_to_pick = 0.1
         buffer_added = 9.9
@@ -420,21 +426,21 @@ describe Well do
       [100.0, 5.0, 100.0, 2.0, nil, 2.0, 98.0, 'As above, just more extreme'],
       [100.0, 5.0, 100.0, 5.0, 5.0, 5.0, 95.0, 'High concentration, minimum robot volume increases source pick'],
       [100.0, 50.0, 52.0, 200.0, 5.0, 96.2, 5.0, 'Lowish concentration, non zero, but less than robot buffer required'],
-      [100.0, 5.0, 100.0, 2.0, 5.0, 2.0, 98.0, 'Less DNA than robot minimum pick, fall back to DNA'],
+      [100.0, 5.0, 100.0, 2.0, 5.0, 5.0, 98.0, 'Less DNA than robot minimum pick'],
       [100.0, 50.0, 1.0, 200.0, 5.0, 100.0, 0.0, 'Low concentration, maximum DNA, no buffer'],
       [120.0, 50.0, 0, 60.0, 5.0, 60.0, 60.0, 'Zero concentration, with less volume than required'],
-      [120.0, 50.0, 0, 3.0, 5.0, 3.0, 117.0, 'Zero concentration, with less volume than even the minimum robot pick']
-      # rubocop:todo Metrics/ParameterLists
-    ].each do |volume_required, concentration_required, source_concentration, source_volume, robot_minimum_pick_volume, source_volume_obtained, buffer_volume_obtained, scenario|
-      # rubocop:enable Metrics/ParameterLists
+      [120.0, 50.0, 0, 3.0, 5.0, 5.0, 117.0, 'Zero concentration, with less volume than even the minimum robot pick']
+      # rubocop:todo Metrics/ParameterLists,Layout/LineLength
+    ].each do |final_volume_desired, final_conc_desired, source_concentration, source_volume, robot_minimum_pick_volume, source_volume_obtained, buffer_volume_obtained, scenario|
+      # rubocop:enable Metrics/ParameterLists,Layout/LineLength
       context "when testing #{scenario}" do
-        setup do
+        before do
           @result_volume =
             format(
               '%.1f',
               well.volume_to_cherrypick_by_nano_grams_per_micro_litre(
-                volume_required,
-                concentration_required,
+                final_volume_desired,
+                final_conc_desired,
                 source_concentration,
                 source_volume,
                 robot_minimum_pick_volume
@@ -442,6 +448,7 @@ describe Well do
             ).to_f
           @result_buffer_volume = format('%.1f', well.get_buffer_volume).to_f
         end
+
         it 'gets correct volume quantity' do
           assert_equal source_volume_obtained, @result_volume
         end
@@ -454,19 +461,19 @@ describe Well do
   end
 
   context 'proceed test' do
-    setup do
+    before do
       @our_product_criteria = create :product_criteria
       @other_criteria = create :product_criteria
 
       @old_report =
         create :qc_report,
                product_criteria: @our_product_criteria,
-               created_at: Time.zone.now - 1.day,
+               created_at: 1.day.ago,
                report_identifier: "A#{Time.zone.now}"
       @current_report =
         create :qc_report,
                product_criteria: @our_product_criteria,
-               created_at: Time.zone.now - 1.hour,
+               created_at: 1.hour.ago,
                report_identifier: "B#{Time.zone.now}"
       @unrelated_report =
         create :qc_report,
@@ -547,6 +554,17 @@ describe Well do
       qc_result_2 = build(:qc_result_rin, value: '6', created_at: Time.zone.today)
       well = create(:well, qc_results: [qc_result_1, qc_result_2])
       expect(well.qc_result_for('rin')).to eq(6)
+    end
+  end
+
+  context '(DPL-148) on updating well attribute' do
+    let(:well) { create :well }
+
+    it 'triggers warehouse update', warren: true do
+      expect do
+        # We try a valid update
+        well.well_attribute.update(concentration: 200)
+      end.to change(Warren.handler.messages, :count).from(0)
     end
   end
 end

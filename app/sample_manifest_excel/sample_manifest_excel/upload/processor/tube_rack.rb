@@ -87,18 +87,19 @@ module SampleManifestExcel
         end
 
         def validate_coordinates(rack_size, rack_barcode_to_scan_results)
-          list_of_coordinates = rack_barcode_to_scan_results.values.map(&:values).flatten
-          list_of_validity = ::TubeRack.check_if_coordinates_valid(rack_size, list_of_coordinates)
-          list_of_invalid_coordinates = []
+          coordinates = rack_barcode_to_scan_results.values.map(&:values).flatten
+          invalid_coordinates = ::TubeRack.invalid_coordinates(rack_size, coordinates)
 
-          list_of_validity.each_with_index do |validity, index|
-            list_of_invalid_coordinates << list_of_coordinates[index] unless validity
-          end
+          return true if invalid_coordinates.empty?
+
           error_message =
-            "The following coordinates in the scan are not valid for a tube rack of size #{rack_size}: #{list_of_invalid_coordinates}."
+            # rubocop:todo Layout/LineLength
+            "The following coordinates in the scan are not valid for a tube rack of size #{rack_size}: #{invalid_coordinates}."
+
+          # rubocop:enable Layout/LineLength
           upload.errors.add(:base, error_message)
 
-          true
+          false
         end
 
         def create_tube_racks_and_link_tubes
@@ -124,7 +125,7 @@ module SampleManifestExcel
           rack_barcode_to_tube_rack
         end
 
-        def create_tube_rack_if_not_existing(tube_rack_barcode) # rubocop:todo Metrics/MethodLength
+        def create_tube_rack_if_not_existing(tube_rack_barcode)
           barcode = Barcode.includes(:asset).find_by(asset_id: tube_rack_barcode)
 
           if barcode.nil?

@@ -3,7 +3,6 @@
 # Generate a bulk submission excel template
 # from basic user provided data
 class BulkSubmissionExcel::DownloadsController < ApplicationController
-  # rubocop:todo Metrics/MethodLength
   def create # rubocop:todo Metrics/AbcSize
     finder = Asset::Finder.new(submission_parameters.fetch(:asset_barcodes, '').split(/\s+/))
     download =
@@ -24,8 +23,6 @@ class BulkSubmissionExcel::DownloadsController < ApplicationController
   ensure
     file&.close
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def new
     @submission_template = SubmissionTemplate.find_by(id: params[:submission_template_id])

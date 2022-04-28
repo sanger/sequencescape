@@ -5,7 +5,7 @@
 #
 # @author [grl]
 #
-class TagSubstitution::Substitution # rubocop:todo Metrics/ClassLength
+class TagSubstitution::Substitution
   include ActiveModel::Model
 
   attr_accessor :sample_id, :library_id
@@ -19,7 +19,7 @@ class TagSubstitution::Substitution # rubocop:todo Metrics/ClassLength
   delegate :disable_match_expectation, to: :tag_substituter, allow_nil: true
 
   delegate :friendly_name, to: :sample, prefix: true
-  validates :sample_id, :library_id, presence: true
+  validates :sample_id, presence: true
   validates :original_tag_id, presence: { if: :substitute_tag_id }
   validates :original_tag2_id, presence: { if: :substitute_tag2_id }
   validates :matching_aliquots, presence: { message: 'could not be found' }, unless: :disable_match_expectation
@@ -119,7 +119,8 @@ class TagSubstitution::Substitution # rubocop:todo Metrics/ClassLength
 
   #
   # Generates a comment to describe the substitutions performed
-  # The oligo index is passed in as part of a performance optimiztion to avoid repeated hits to the database to fetch oligo sequences
+  # The oligo index is passed in as part of a performance optimiztion to avoid repeated hits to the database to fetch
+  # oligo sequences
   # @param oligo_index [Hash] A hash of oligo sequences indexed by oligo id.
   #
   # @return [String] A description of the substitution
@@ -157,11 +158,11 @@ class TagSubstitution::Substitution # rubocop:todo Metrics/ClassLength
     original_tag_id || original_tag2_id
   end
 
-  private
-
   def updated?
     substitute_tag? || substitute_tag2? || @other_attributes.present?
   end
+
+  private
 
   def substitute_tag?
     original_tag_id && original_tag_id != substitute_tag_id
@@ -175,6 +176,6 @@ class TagSubstitution::Substitution # rubocop:todo Metrics/ClassLength
     attributes = { sample_id: sample_id, library_id: library_id }
     attributes[:tag_id] = original_tag_id if original_tag_id
     attributes[:tag2_id] = original_tag2_id if original_tag2_id
-    Aliquot.where(attributes).pluck(:id)
+    Aliquot.where(attributes).ids
   end
 end

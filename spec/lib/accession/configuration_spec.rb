@@ -36,12 +36,10 @@ RSpec.describe Accession::Accessionable, type: :model, accession: true do
     end
 
     it 'loads the tag list' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(configuration.tags).to eq(Accession::TagList.new(configuration.load_file(folder, 'tags')))
     end
 
     it 'freezes all of the configuration options' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(configuration.tags).to be_frozen
     end
   end

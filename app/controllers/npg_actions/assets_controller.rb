@@ -26,7 +26,7 @@ class NpgActions::AssetsController < ApplicationController
 
   private
 
-  def action_for_qc_state(state) # rubocop:todo Metrics/MethodLength
+  def action_for_qc_state(state)
     ActiveRecord::Base.transaction do
       if @last_event.present?
         # If we already have an event we check to see its state. If it matches,
@@ -64,9 +64,16 @@ class NpgActions::AssetsController < ApplicationController
   end
 
   def find_request
-    requests = @asset.requests_as_target
-    raise ActiveRecord::RecordNotFound, "Unable to find a request for Asset: #{params[:id]}" unless requests.one?
+    # select any non-cancelled requests
+    requests = @asset.requests_as_target.not_cancelled
 
+    # throw exception if no valid requests found
+    unless requests.one?
+      raise ActiveRecord::RecordNotFound,
+            "Unable to identify a suitable single active request for Asset: #{params[:asset_id]}"
+    end
+
+    # eager load the request to include the batch and all requests in the batch
     @request = requests.includes(batch: { requests: :asset }).first
   end
 

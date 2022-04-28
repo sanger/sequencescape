@@ -3,7 +3,6 @@
 require 'cancan/matchers'
 # Disable the aggregate example cop as these tests are fast, and it doesn't
 # especially help readability
-# rubocop:disable RSpec/AggregateExamples
 RSpec.describe Ability do
   subject(:ability) { described_class.new(user) }
 
@@ -19,7 +18,7 @@ RSpec.describe Ability do
       BaitLibrary::Supplier => %i[create edit read delete],
       BaitLibraryType => %i[create edit read delete],
       BarcodePrinter => %i[create edit read delete],
-      Batch => %i[rollback edit create_stock_asset sample_prep_worksheet print verify],
+      Batch => %i[rollback edit sample_prep_worksheet print verify],
       Comment => %i[create delete new],
       CustomText => %i[create edit read delete],
       Delayed::Job => %i[read],
@@ -97,7 +96,7 @@ RSpec.describe Ability do
       Submission => %i[create read update new order_fields study_assets edit],
       TagGroup => %i[read],
       TagLayoutTemplate => %i[read],
-      User => %i[edit read projects study_reports]
+      User => %i[edit read projects study_reports print_swipecard]
     }
   end
 
@@ -465,4 +464,3 @@ RSpec.describe Ability do
     it_behaves_like 'it grants only granted_permissions'
   end
 end
-# rubocop:enable RSpec/AggregateExamples

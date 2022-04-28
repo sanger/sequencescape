@@ -13,7 +13,6 @@ module SampleManifestExcel
 
       attr_accessor :data,
                     :no_of_rows,
-                    :study,
                     :supplier,
                     :count,
                     :type,
@@ -23,7 +22,7 @@ module SampleManifestExcel
                     :cgap,
                     :num_plates,
                     :num_samples_per_plate
-      attr_reader :dynamic_attributes, :tags
+      attr_reader :dynamic_attributes, :tags, :study
       attr_writer :manifest_type
 
       def initialize(attributes = {}) # rubocop:todo Metrics/MethodLength
@@ -40,9 +39,19 @@ module SampleManifestExcel
           create_tube_requests
         end
         create_styles
-        add_title_and_description(study, supplier, count)
+        add_title_and_description(study.name, supplier, count)
         add_headers
         add_data
+      end
+
+      def study=(new_study)
+        @study =
+          case new_study
+          when String
+            Study.find_by(name: new_study) || FactoryBot.create(:study, name: new_study)
+          else
+            new_study
+          end
       end
 
       def last_row
@@ -73,21 +82,23 @@ module SampleManifestExcel
         @sample_manifest ||= create_sample_manifest
       end
 
-      def create_sample_manifest # rubocop:todo Metrics/MethodLength
-        if %w[plate_default plate_full plate_rnachip].include? manifest_type
+      def create_sample_manifest
+        case manifest_type
+        when /plate/
           FactoryBot.create(
             :pending_plate_sample_manifest,
             num_plates: num_plates,
-            num_samples_per_plate: num_samples_per_plate
+            num_samples_per_plate: num_samples_per_plate,
+            study: study
           )
-        elsif %w[tube_library_with_tag_sequences].include? manifest_type
-          FactoryBot.create(:sample_manifest, asset_type: 'library')
-        elsif %w[tube_multiplexed_library tube_multiplexed_library_with_tag_sequences].include? manifest_type
-          FactoryBot.create(:sample_manifest, asset_type: 'multiplexed_library')
-        elsif %w[tube_rack_default].include? manifest_type
-          FactoryBot.create(:tube_rack_manifest, asset_type: 'tube_rack')
+        when /tube_library/, /tube_chromium_library/
+          FactoryBot.create(:sample_manifest, asset_type: 'library', study: study)
+        when /tube_multiplexed_library/
+          FactoryBot.create(:sample_manifest, asset_type: 'multiplexed_library', study: study)
+        when /tube_rack/
+          FactoryBot.create(:tube_rack_manifest, asset_type: 'tube_rack', study: study)
         else
-          FactoryBot.create(:sample_manifest, asset_type: '1dtube')
+          FactoryBot.create(:sample_manifest, asset_type: '1dtube', study: study)
         end
       end
 
@@ -223,9 +234,7 @@ module SampleManifestExcel
         end
       end
 
-      # rubocop:todo Metrics/PerceivedComplexity
-      # rubocop:todo Metrics/MethodLength
-      # rubocop:todo Metrics/AbcSize
+      # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
       def add_cell_data(column, row_num, partial) # rubocop:todo Metrics/CyclomaticComplexity
         if partial && empty_row?(row_num)
           (data[column.name] || dynamic_attributes[row_num][column.name]) unless empty_columns.include?(column.name)
@@ -240,11 +249,9 @@ module SampleManifestExcel
         end
       end
 
-      # rubocop:enable Metrics/AbcSize
-      # rubocop:enable Metrics/MethodLength
-      # rubocop:enable Metrics/PerceivedComplexity
+      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
-      def build_tube_sample_manifest_asset # rubocop:todo Metrics/MethodLength
+      def build_tube_sample_manifest_asset
         asset =
           if %w[
                tube_multiplexed_library
@@ -284,23 +291,40 @@ module SampleManifestExcel
         ReferenceGenome.where(name: data[:reference_genome]).first_or_create
       end
 
-      # rubocop:todo Metrics/MethodLength
-      def create_tags # rubocop:todo Metrics/AbcSize
-        if %w[tube_multiplexed_library_with_tag_sequences tube_library_with_tag_sequences].include? manifest_type
-          oligos = Tags::ExampleData.new.take(computed_first_row, last_row, validation_errors.include?(:tags))
-          dynamic_attributes.each { |k, _v| dynamic_attributes[k].merge!(oligos[k]) }
-        elsif %w[tube_multiplexed_library].include? manifest_type
-          groups_and_indexes =
-            Tags::ExampleData.new.take_as_groups_and_indexes(
-              computed_first_row,
-              last_row,
-              validation_errors.include?(:tags)
-            )
-          dynamic_attributes.each { |k, _v| dynamic_attributes[k].merge!(groups_and_indexes[k]) }
+      def create_tags
+        case manifest_type
+        when 'tube_multiplexed_library_with_tag_sequences', 'tube_library_with_tag_sequences'
+          tags_by_sequences
+        when 'tube_multiplexed_library'
+          tags_by_group
+        when 'tube_chromium_library'
+          chromium_tags
         end
       end
 
-      # rubocop:enable Metrics/MethodLength
+      def tags_by_sequences
+        oligos = Tags::ExampleData.new.take(computed_first_row, last_row, validation_errors.include?(:tags))
+        dynamic_attributes.each { |k, v| v.merge!(oligos[k]) }
+      end
+
+      def tags_by_group
+        groups_and_indexes =
+          Tags::ExampleData.new.take_as_groups_and_indexes(
+            computed_first_row,
+            last_row,
+            validation_errors.include?(:tags)
+          )
+        dynamic_attributes.each { |k, v| v.merge!(groups_and_indexes[k]) }
+      end
+
+      def chromium_tags
+        tag_group = FactoryBot.create(:tag_group, tag_count: 96 * 4, adapter_type_name: 'Chromium')
+        wells = ('A'..'H').flat_map { |row| (1..12).map { |col| "#{row}#{col}" } }
+
+        dynamic_attributes.values.each_with_index do |attributes, index|
+          attributes.merge!(chromium_tag_well: wells[index], chromium_tag_group: tag_group.name)
+        end
+      end
 
       def computed_first_row
         type == 'Tube Racks' ? first_row + count + 1 : first_row

@@ -19,7 +19,6 @@ RSpec.describe SequencescapeExcel::ConditionalFormattingList,
   end
 
   it '#options provides a list of conditional formatting options' do
-    # rubocop:todo RSpec/AggregateExamples
     expect(conditional_formatting_list.options.count).to eq(rules.length)
     expect(rules.values).to be_all { |rule| conditional_formatting_list.options.include? rule['options'] }
   end
@@ -42,8 +41,8 @@ RSpec.describe SequencescapeExcel::ConditionalFormattingList,
     expect(conditional_formatting_list).not_to be_saved
   end
 
-  # TODO: This is in the wrong place. Probably should be tested in conditional formatting. Getting formula from worksheet is ugly.
-  # rubocop:todo Layout/LineLength
+  # TODO: This is in the wrong place. Probably should be tested in conditional formatting. Getting formula from
+  # worksheet is ugly.
   it '#update with formula should correctly assign the formula to the worksheet' do
     conditional_formatting_list = described_class.new(rule_1: attributes_for(:conditional_formatting_with_formula))
     conditional_formatting_list.update(options)
@@ -55,8 +54,6 @@ RSpec.describe SequencescapeExcel::ConditionalFormattingList,
       )
     )
   end
-
-  # rubocop:enable Layout/LineLength
 
   it 'is comparable' do
     expect(described_class.new(rules)).to eq(conditional_formatting_list)

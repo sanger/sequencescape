@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class BroadcastEvent::LabwareReceived < BroadcastEvent # rubocop:todo Style/Documentation
   set_event_type 'labware.received'
 

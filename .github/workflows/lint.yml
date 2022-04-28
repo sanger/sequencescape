@@ -19,6 +19,10 @@ jobs:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
       # Establish a cache of rubocop cache to improve performance
       # ${{ env.RUBOCOP_CACHE_ROOT }}
+      - name: Set up node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
       - name: Set up yarn
         run: yarn
       - name: Cache cops
@@ -40,16 +44,16 @@ jobs:
       # Actually run our cops with flags to improve the details of lint errors
       # and parallel to try and improve speed
       - name: Run rubocop
-        run: bundle exec rubocop --extra-details --display-style-guide --parallel
+        run: bundle exec rubocop --extra-details --display-style-guide --parallel --format github --format progress
   eslint:
     name: EsLint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Setup node
+      - name: Set up node
         uses: actions/setup-node@v2
         with:
-          node-version: "14"
+          node-version: "16"
       - name: Install
         run: yarn install
       - name: Run yarn test

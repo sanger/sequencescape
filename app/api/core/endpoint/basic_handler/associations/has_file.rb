@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Core::Endpoint::BasicHandler::Associations::HasFile # rubocop:todo Style/Documentation
   def has_file(options)
     ::Api::EndpointHandler.register_mimetype(options[:content_type])

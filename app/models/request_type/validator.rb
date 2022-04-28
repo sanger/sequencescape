@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 ##
 # A request type validator belongs to a request type, and is responsible for
 # validating a single request option
@@ -25,7 +26,7 @@ class RequestType::Validator < ApplicationRecord
     end
 
     def to_a
-      request_type.library_types.map(&:name)
+      request_type.library_types.pluck(:name).sort
     end
     delegate :to_sentence, to: :to_a
   end
@@ -69,10 +70,14 @@ class RequestType::Validator < ApplicationRecord
     def default
       nil
     end
+
+    def valid_options
+      []
+    end
   end
 
-  belongs_to :request_type
-  validates :request_type, :request_option, :valid_options, presence: true
+  belongs_to :request_type, optional: false
+  validates :request_option, :valid_options, presence: true
   serialize :valid_options
 
   delegate :include?, to: :valid_options

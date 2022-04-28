@@ -1,5 +1,6 @@
+# frozen_string_literal: true
 # Controls API V1 IO for {::Submission}
-class ::Io::Submission < ::Core::Io::Base
+class Io::Submission < ::Core::Io::Base
   set_model_for_input(::Submission)
   set_json_root(:submission)
   set_eager_loading(&:include_orders)

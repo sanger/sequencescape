@@ -114,7 +114,9 @@ describe StockStamper do
       expect(@stock_stamper.message).to eq(
         notice: 'You can generate the TECAN file and print label now.',
         error:
+          # rubocop:todo Layout/LineLength
           'Required volume exceeds the maximum well volume for well(s) A1, B2, E6. Maximum well volume 180.0 will be used in tecan file'
+        # rubocop:enable Layout/LineLength
       )
     end
   end

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # A ControlPlate is a {Plate} containing control samples
 # Often these controls may be used multiple times as part of Pipeline QC.
 # A {Sample} with control set to true, does not necessarily enter the pipleine

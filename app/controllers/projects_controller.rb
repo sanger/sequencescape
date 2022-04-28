@@ -1,5 +1,5 @@
+# frozen_string_literal: true
 require 'event_factory'
-# rubocop:todo Metrics/ClassLength
 class ProjectsController < ApplicationController # rubocop:todo Style/Documentation
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -42,7 +42,6 @@ class ProjectsController < ApplicationController # rubocop:todo Style/Documentat
     @users = User.all
   end
 
-  # rubocop:todo Metrics/MethodLength
   def create # rubocop:todo Metrics/AbcSize
     # TODO[5002667]: All of this code should be in a before_create/after_create callback in the Project model ...
     @project = Project.new(params[:project])
@@ -69,8 +68,6 @@ class ProjectsController < ApplicationController # rubocop:todo Style/Documentat
       format.json { render json: @project.errors, status: :unprocessable_entity }
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def update
     respond_to do |format|
@@ -181,4 +178,3 @@ class ProjectsController < ApplicationController # rubocop:todo Style/Documentat
     @project = Project.find(params[:id])
   end
 end
-# rubocop:enable Metrics/ClassLength

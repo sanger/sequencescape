@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class ReferenceGenome < ApplicationRecord # rubocop:todo Style/Documentation
   extend Attributable::Association::Target
   include Api::ReferenceGenomeIO::Extensions

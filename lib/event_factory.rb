@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'eventful_mailer'
 class EventFactory # rubocop:todo Style/Documentation
   #################################
@@ -6,7 +7,7 @@ class EventFactory # rubocop:todo Style/Documentation
 
   # Creates an event when a new project is created
   # This used to send a notification using EventfulMailer, but it is no longer required
-  def self.new_project(project, user) # rubocop:todo Metrics/MethodLength
+  def self.new_project(project, user)
     content = "Project registered by #{user.login}"
 
     event =
@@ -23,7 +24,7 @@ class EventFactory # rubocop:todo Style/Documentation
 
   # Creates an event or emails when a project is approved
   # This used to send a notification using EventfulMailer, but it is no longer required
-  def self.project_approved(project, user) # rubocop:todo Metrics/MethodLength
+  def self.project_approved(project, user)
     content = "Project approved by #{user.login}"
 
     event =
@@ -38,7 +39,7 @@ class EventFactory # rubocop:todo Style/Documentation
     event.save
   end
 
-  def self.project_refund_request(project, user, reference) # rubocop:todo Metrics/MethodLength
+  def self.project_refund_request(project, user, reference)
     content = "Refund request by #{user.login}. Reference #{reference}"
 
     event =
@@ -51,8 +52,6 @@ class EventFactory # rubocop:todo Style/Documentation
         of_interest_to: 'administrators'
       )
     event.save
-
-    # EventfulMailer.deliver_confirm_event(User.all_administrators_emails, event.eventful, event.message, event.content, "No Milestone")
   end
 
   #################################
@@ -63,7 +62,10 @@ class EventFactory # rubocop:todo Style/Documentation
   # rubocop:todo Metrics/MethodLength
   def self.request_update_note_to_manager(request, user, message) # rubocop:todo Metrics/AbcSize
     content =
+      # rubocop:todo Layout/LineLength
       "#{message}\nwhilst an attempt was made to update request #{request.id}\nby user '#{user.login}' on #{Time.zone.now}"
+
+    # rubocop:enable Layout/LineLength
 
     request_event =
       Event.create(

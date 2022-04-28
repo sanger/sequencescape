@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module ApiTools # rubocop:todo Style/Documentation
   def self.included(base)
     base.extend(ClassMethods)

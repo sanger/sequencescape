@@ -254,7 +254,7 @@
   "spec/resources/api/v2/user_resource_spec.rb": 0.007020235061645508,
   "spec/requests/api/v2/lots_spec.rb": 0.6619267463684082,
   "spec/requests/api/v2/tubes_spec.rb": 0.3098578453063965,
-  "spec/uat_actions/intergration_suite_tools_spec.rb": 0.00563812255859375,
+  "spec/uat_actions/integration_suite_tools_spec.rb": 0.00563812255859375,
   "spec/sequencescape_excel/formula_spec.rb": 0.0018832683563232422,
   "spec/features/studies/view_study_request_links_spec.rb": 3.947901487350464,
   "spec/features/billing_report_spec.rb": 5.762065887451172,

@@ -189,7 +189,6 @@ RSpec.describe Heron::Factories::Sample, type: :model, lighthouse: true, heron: 
         end
 
         it 'sets the id provided as name' do
-          # rubocop:todo RSpec/AggregateExamples
           expect(factory.create.name).to eq(name)
         end
 
@@ -244,7 +243,7 @@ RSpec.describe Heron::Factories::Sample, type: :model, lighthouse: true, heron: 
         it 'updates other sample attributes' do
           factory = described_class.new(study: study, control: true)
           sample = factory.create
-          expect(sample.control).to eq(true)
+          expect(sample.control).to be(true)
         end
 
         it 'updates other sample_metadata attributes' do

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Pipeline::BatchValidation # rubocop:todo Style/Documentation
   def validation_of_batch(batch)
     # Using throw and catch enables us to skip over the request validation without actually
@@ -14,8 +15,4 @@ module Pipeline::BatchValidation # rubocop:todo Style/Documentation
     yield('has incorrect type') unless requests.all? { |r| approved_request_types.include?(r.request_type_id) }
   end
   private :validation_of_requests
-
-  # Overridden by pipeline implementations to ensure that the batch is valid for completion.  By
-  # default this does nothing.
-  def validation_of_batch_for_completion(batch); end
 end

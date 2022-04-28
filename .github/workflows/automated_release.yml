@@ -1,0 +1,74 @@
+name: Automated build of project and release creation
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: nelonoel/branch-name@v1.0.1
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+      # Establish a cache of js modules to improve performance
+      - name: Cache js
+        uses: actions/cache@v2
+        with:
+          path: |
+            public/assets
+            tmp/cache/assets/sprockets
+            node_modules
+          key: ${{ runner.os }}-build-${{ hashFiles('yarn.lock') }}
+          # If we don't find the specific cache we want, fallback to the last build
+          # cache, then finally any cache for this repo.
+          # Github looks for the newest cache beginning with the first entry, before
+          # falling back the the second if none is present.
+          restore-keys: |
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      # Install only the gems needed for testing
+      # Keep an eye on https://github.com/rubygems/bundler-features/issues/59
+      # in case bundler add an only flag
+      # We also set the install path to vendor/bundle to assist with out caching
+      - name: Setup environment
+        env:
+          DBPORT: ${{ job.services.mysql.ports[3306] }}
+        run: |
+          bundle config path vendor/bundle
+          bin/setup
+
+      # Actually run our build
+      - name: Compile Build
+        run: ./compile-build
+
+      # Create a release tag based on the branch name and .release-version file
+      - name: Set release tag
+        # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-environment-variable
+        # On the develop branch this might create RELEASE_VERSION=2.4.6-987654321-develop
+        # On the master branch this would then only create RELEASE_VERSION=2.4.6
+        run: echo "RELEASE_VERSION=$(printf -- '%s%s\n' $(cat .release-version) $([ ${BRANCH_NAME} = "develop" ] && printf -- '-%s-develop' ${GITHUB_RUN_ID} || echo ""))" >> $GITHUB_ENV
+
+      # Create a GitHub release with the release asset as an artifact
+      - name: Create release and upload release.tar.gz
+        uses: ncipollo/release-action@v1.8.8
+        with:
+          name: ${{ env.RELEASE_VERSION }}
+          tag: v${{ env.RELEASE_VERSION }}
+          prerelease: ${{ !(github.ref == 'refs/heads/master') }}
+          commit: ${{ github.sha }}
+          artifacts: release.tar.gz
+          artifactErrorsFailBuild: true

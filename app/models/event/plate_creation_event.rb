@@ -1,5 +1,6 @@
+# frozen_string_literal: true
 class Event::PlateCreationEvent < Event # rubocop:todo Style/Documentation
-  def self.create_for_asset!(asset, plate_purpose, child_plate, user) # rubocop:todo Metrics/MethodLength
+  def self.create_for_asset!(asset, plate_purpose, child_plate, user)
     create!(
       eventful: asset,
       message: "Created child #{plate_purpose.name} plate",

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # A Tube that passes through the Gatekeeper QC process
 # State changes are delegated to the {Qcable}, not the transfer request.
 # @note JG 2019-10-01: Currently only used for 'Tag 2 Tube'

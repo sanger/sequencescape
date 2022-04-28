@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module User::Authentication # rubocop:todo Style/Documentation
   def self.included(base)
     base.class_eval do
@@ -26,7 +27,9 @@ module User::Authentication # rubocop:todo Style/Documentation
     end
     save if changed?
   rescue StandardError => e
+    # rubocop:todo Layout/LineLength
     logger.error "Profile failed for user #{login}: result code #{ldap.get_operation_result.code} message #{ldap.get_operation_result.message} - #{e}"
+    # rubocop:enable Layout/LineLength
   end
   private :update_profile_via_ldap
 
@@ -48,10 +51,9 @@ module User::Authentication # rubocop:todo Style/Documentation
   end
 
   module Ldap # rubocop:todo Style/Documentation
-    # rubocop:todo Metrics/MethodLength
-    def authenticate_with_ldap(login, password) # rubocop:todo Metrics/AbcSize
+    def authenticate_with_ldap(login, password) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
       # TODO: - Extract LDAP specifics to configuration
-      username = 'uid=' << login << ',ou=people,dc=sanger,dc=ac,dc=uk'
+      username = "uid=#{login},ou=people,dc=sanger,dc=ac,dc=uk"
       ldap =
         Net::LDAP.new(
           host: configatron.ldap_server,
@@ -73,12 +75,12 @@ module User::Authentication # rubocop:todo Style/Documentation
         logger.info 'Authentication succeeded'
         true
       else
-        logger.warn "Authentication failed for user #{login}: result code #{ldap.get_operation_result.code} message #{ldap.get_operation_result.message}"
+        code = ldap.get_operation_result.code
+        message = ldap.get_operation_result.message
+        logger.warn "Authentication failed for user #{login}: result code #{code} message #{message}"
         false
       end
     end
-
-    # rubocop:enable Metrics/MethodLength
 
     def register_or_update_via_ldap(login)
       u = find_or_create_by(login: login)

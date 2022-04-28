@@ -1,7 +1,8 @@
+# frozen_string_literal: true
 # Included in {Order}
 # The intent of this file was to provide methods specific to the V1 API
 module ModelExtensions::Order
-  class RequestOptionForValidation < OpenStruct
+  class RequestOptionForValidation < OpenStruct # rubocop:todo Style/OpenStructUse
     delegate :errors, :include_unset_values?, to: :owner
   end
 
@@ -137,23 +138,26 @@ module ModelExtensions::Order
 
   # rubocop:todo Metrics/MethodLength
   def request_options_structured # rubocop:todo Metrics/AbcSize
-    NonNilHash.new(:stringify_keys).tap do |json|
-      NonNilHash
-        .new
-        .deep_merge(request_options)
-        .tap do |attributes|
-          json['read_length'] = attributes[:read_length].try(:to_i)
-          json['library_type'] = attributes[:library_type]
-          json['fragment_size_required', 'from'] = attributes[:fragment_size_required_from].try(:to_i)
-          json['fragment_size_required', 'to'] = attributes[:fragment_size_required_to].try(:to_i)
-          json['pcr_cycles'] = attributes[:pcr_cycles].try(:to_i)
-          json['bait_library'] = attributes[:bait_library_name]
-          json['primer_panel_name'] = attributes[:primer_panel_name]
-          json['sequencing_type'] = attributes[:sequencing_type]
-          json['insert_size'] = attributes[:insert_size].try(:to_i)
-          request_type_multiplier { |id| json['number_of_lanes'] = attributes[:multiplier, id] }
-        end
-    end.to_hash
+    NonNilHash
+      .new(:stringify_keys)
+      .tap do |json|
+        NonNilHash
+          .new
+          .deep_merge(request_options)
+          .tap do |attributes|
+            json['read_length'] = attributes[:read_length].try(:to_i)
+            json['library_type'] = attributes[:library_type]
+            json['fragment_size_required', 'from'] = attributes[:fragment_size_required_from].try(:to_i)
+            json['fragment_size_required', 'to'] = attributes[:fragment_size_required_to].try(:to_i)
+            json['pcr_cycles'] = attributes[:pcr_cycles].try(:to_i)
+            json['bait_library'] = attributes[:bait_library_name]
+            json['primer_panel_name'] = attributes[:primer_panel_name]
+            json['sequencing_type'] = attributes[:sequencing_type]
+            json['insert_size'] = attributes[:insert_size].try(:to_i)
+            request_type_multiplier { |id| json['number_of_lanes'] = attributes[:multiplier, id] }
+          end
+      end
+      .to_hash
   end
 
   # rubocop:enable Metrics/MethodLength
@@ -161,27 +165,30 @@ module ModelExtensions::Order
   # rubocop:todo Metrics/MethodLength
   def request_options_structured=(values) # rubocop:todo Metrics/AbcSize
     @request_options_structured =
-      NonNilHash.new.tap do |attributes|
-        NonNilHash
-          .new(:stringify_keys)
-          .deep_merge(values)
-          .tap do |json|
-            # NOTE: Be careful with the names here to ensure that they match up, exactly with what is in a template.
-            # If the template uses symbol names then these need to be symbols too.
-            attributes[:read_length] = json['read_length']
-            attributes['library_type'] = json['library_type']
-            attributes['fragment_size_required_from'] =
-              json['fragment_size_required', 'from'] || json['fragment_size_required_from']
-            attributes['fragment_size_required_to'] =
-              json['fragment_size_required', 'to'] || json['fragment_size_required_to']
-            attributes['pcr_cycles'] = json['pcr_cycles']
-            attributes[:bait_library_name] = json['bait_library']
-            attributes[:primer_panel_name] = json['primer_panel_name']
-            attributes[:sequencing_type] = json['sequencing_type']
-            attributes[:insert_size] = json['insert_size']
-            request_type_multiplier { |id| attributes[:multiplier, id] = json['number_of_lanes'] }
-          end
-      end.to_hash
+      NonNilHash
+        .new
+        .tap do |attributes|
+          NonNilHash
+            .new(:stringify_keys)
+            .deep_merge(values)
+            .tap do |json|
+              # NOTE: Be careful with the names here to ensure that they match up, exactly with what is in a template.
+              # If the template uses symbol names then these need to be symbols too.
+              attributes[:read_length] = json['read_length']
+              attributes['library_type'] = json['library_type']
+              attributes['fragment_size_required_from'] =
+                json['fragment_size_required', 'from'] || json['fragment_size_required_from']
+              attributes['fragment_size_required_to'] =
+                json['fragment_size_required', 'to'] || json['fragment_size_required_to']
+              attributes['pcr_cycles'] = json['pcr_cycles']
+              attributes[:bait_library_name] = json['bait_library']
+              attributes[:primer_panel_name] = json['primer_panel_name']
+              attributes[:sequencing_type] = json['sequencing_type']
+              attributes[:insert_size] = json['insert_size']
+              request_type_multiplier { |id| attributes[:multiplier, id] = json['number_of_lanes'] }
+            end
+        end
+        .to_hash
   end
 
   # rubocop:enable Metrics/MethodLength

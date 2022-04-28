@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # A Lane is a section of a Flowcell which is capable of containing one or more
 # {Sample samples} for sequencing. Samples are represented by {Aliquot aliquots}
 # which are distinguished by their distinct {Tag tags}.

@@ -1,11 +1,10 @@
+# frozen_string_literal: true
 # Base class for API v0.5, now used for Warehouse message rendering, the actual
 # api is no longer exposed.
 # @note Originally the warehouse was built nightly by calls the the v0.5 API.
 #       When the warehouse was switched to a queue based system the same JSON
 #       exposed via the API was used to form the message payload.
 class Api::Base # rubocop:todo Metrics/ClassLength
-  UNSERIALIZED_COLUMNS = [:descriptor_fields].freeze
-
   class_attribute :includes
   self.includes = []
 
@@ -39,9 +38,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
   # in lib/api_tools.rb, as well as in the Api::AssetsController.
   #++
   class << self
-    # rubocop:todo Metrics/PerceivedComplexity
-    # rubocop:todo Metrics/MethodLength
-    # rubocop:todo Metrics/AbcSize
+    # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
     def to_hash(object) # rubocop:todo Metrics/CyclomaticComplexity
       # If the object is nil we get a chance to use the 'default' object that was specified.  By
       # default the "default" object is nil, but you can override it for associations through the
@@ -77,9 +74,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
       json_attributes
     end
 
-    # rubocop:enable Metrics/AbcSize
-    # rubocop:enable Metrics/MethodLength
-    # rubocop:enable Metrics/PerceivedComplexity
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
     def to_hash_for_list(object)
       raise StandardError, 'The object is nil, which is highly unexpected!' if object.nil?
@@ -99,9 +94,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
   class << self
     # The default behaviour for any model I/O is to write out all of the columns as they appear.  Some of
     # the columns are ignored, a few manipulated, but mostly it's a direct copy.
-    # rubocop:todo Metrics/PerceivedComplexity
-    # rubocop:todo Metrics/MethodLength
-    # rubocop:todo Metrics/AbcSize
+    # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
     def render_class_for_model(model) # rubocop:todo Metrics/CyclomaticComplexity
       render_class = Class.new(self)
 
@@ -109,9 +102,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
       # within the Class.new block above, so we have to do a separate instance_eval to get it to work.
       render_class.instance_eval do
         self.model_class = model
-        model.column_names.each do |column|
-          map_attribute_to_json_attribute(column, column) unless UNSERIALIZED_COLUMNS.include?(column.to_sym)
-        end
+        model.column_names.each { |column| map_attribute_to_json_attribute(column, column) }
 
         # TODO[xxx]: It's better that some of these are decided at generation, rather than execution, time.
         extra_json_attributes do |object, json_attributes|
@@ -129,9 +120,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
       end
       render_class
     end
-    # rubocop:enable Metrics/AbcSize
-    # rubocop:enable Metrics/MethodLength
-    # rubocop:enable Metrics/PerceivedComplexity
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
   end
 
   # The model class that our I/O methods are responsible for
@@ -159,8 +148,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
   class_attribute :nested_has_many_associations
   self.nested_has_many_associations = {}
 
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/AbcSize
   def self.newer_than(object, timestamp) # rubocop:todo Metrics/CyclomaticComplexity
     return if object.nil? || timestamp.nil?
 
@@ -175,8 +163,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
     yield(timestamp) if modified
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
 
   # Returns the default object to use (by default this is 'nil') and can be overridden by passing
   # ':if_nil_use => :some_function_that_returns_default_object' to with_association.

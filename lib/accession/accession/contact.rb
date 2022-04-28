@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Accession
   # The contact will be the person who will be informed if accessioning errors
   # or if the status needs to be checked.

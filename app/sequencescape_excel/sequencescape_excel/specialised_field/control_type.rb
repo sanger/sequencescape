@@ -19,7 +19,6 @@ module SequencescapeExcel
           sample.control = false
           sample.control_type = nil
         end
-        sample.save
       end
 
       def check_control_type_matches_enum

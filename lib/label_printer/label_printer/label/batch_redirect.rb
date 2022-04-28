@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module LabelPrinter
   module Label
     class BatchRedirect # rubocop:todo Style/Documentation
@@ -8,8 +9,8 @@ module LabelPrinter
         @options = options
       end
 
-      def to_h
-        @printer_type_class.double_label? ? BatchPlateDouble.new(options).to_h : BatchPlate.new(options).to_h
+      def labels
+        @printer_type_class.double_label? ? BatchPlateDouble.new(options).labels : BatchPlate.new(options).labels
       end
     end
   end

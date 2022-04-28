@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Metadata::BuilderBase < ActionView::Helpers::FormBuilder # rubocop:todo Style/Documentation
   attr_writer :locals
 
@@ -27,7 +28,7 @@ class Metadata::BuilderBase < ActionView::Helpers::FormBuilder # rubocop:todo St
     sections
   end
 
-  def render_view(type, field, options = {}) # rubocop:todo Metrics/MethodLength
+  def render_view(type, field, options = {})
     view = @views.fetch(type.to_sym)
 
     locals =

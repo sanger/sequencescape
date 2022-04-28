@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This file contains content previously in the working:setup task
 # which is useful in development environments for easy debugging.
 # It has been moved into seeds to streamline the process.
@@ -27,6 +28,7 @@ if Rails.env.development?
   seeder.user
   seeder.study
   seeder.study_b
+  seeder.phi_x_study
   seeder.project
   seeder.supplier
 

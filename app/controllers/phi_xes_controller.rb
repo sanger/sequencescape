@@ -16,8 +16,9 @@
 # {PhiX::Stock} and {PhiX::SpikedBuffer} act as factories
 class PhiXesController < ApplicationController
   def show
-    @stock = PhiX::Stock.new(number: 1, tags: PhiX.default_tag_option)
+    @stock = PhiX::Stock.new(number: 1, tags: PhiX.default_tag_option, study_id: PhiX.default_study_option&.id)
     @spiked_buffer = PhiX::SpikedBuffer.new(number: 1)
-    @tag_option_names = PhiX.tag_option_names
+    @tag_option_names = PhiX.tag_option_names.map(&:to_s)
+    @study_names = PhiX.studies.for_select_association
   end
 end

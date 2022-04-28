@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Links a {Sample} to a {Study}
 # @note This association is probably a little unreliable, and should not be relied upon for
 # critical behaviour.

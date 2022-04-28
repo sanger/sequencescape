@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Sdb::SuppliersController < Sdb::BaseController # rubocop:todo Style/Documentation
   # Show all suppliers
   def index

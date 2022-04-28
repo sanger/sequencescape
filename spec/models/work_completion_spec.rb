@@ -59,12 +59,10 @@ describe WorkCompletion do
       end
 
       it 'passes the library requests' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(all_library_requests).to all(be_passed)
       end
 
       it 'does not pass the decoy submission' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(decoy_submission_requests).to all(be_started)
       end
 
@@ -86,12 +84,10 @@ describe WorkCompletion do
       end
 
       it 'does not pass the multiplex requests' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(multiplex_requests).to all(be_pending)
       end
 
       it 'does not pass the decoy requests' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(decoy_requests).to all(be_started)
       end
     end
@@ -111,17 +107,14 @@ describe WorkCompletion do
       end
 
       it 'passes the library requests' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(library_requests).to all(be_passed)
       end
 
       it 'does not pass the multiplex requests' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(multiplex_requests).to all(be_pending)
       end
 
       it 'does not pass the decoy submission' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(decoy_submission_requests).to all(be_started)
       end
 
@@ -134,7 +127,6 @@ describe WorkCompletion do
       end
 
       it 'joins up the multiplex requests' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(multiplex_requests.map(&:asset).uniq.size).to eq(tested_wells)
       end
 

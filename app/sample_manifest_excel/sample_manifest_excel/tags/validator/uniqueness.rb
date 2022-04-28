@@ -11,9 +11,7 @@ module SampleManifestExcel
 
         included { validate :check_tags }
 
-        # rubocop:todo Metrics/PerceivedComplexity
-        # rubocop:todo Metrics/MethodLength
-        # rubocop:todo Metrics/AbcSize
+        # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
         def check_tags # rubocop:todo Metrics/CyclomaticComplexity
           i7s = upload.data_at(:i7)
           i5s = upload.data_at(:i5)
@@ -34,15 +32,11 @@ module SampleManifestExcel
           errors.add(:tags_clash, create_tags_clashes_message(duplicates, FIRST_ROW)) unless duplicates.empty?
         end
 
-        # rubocop:enable Metrics/AbcSize
-        # rubocop:enable Metrics/MethodLength
-        # rubocop:enable Metrics/PerceivedComplexity
+        # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
         private
 
-        # rubocop:todo Metrics/CyclomaticComplexity
-        # rubocop:todo Metrics/PerceivedComplexity
-        # rubocop:todo Metrics/AbcSize
+        # rubocop:todo Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize
         def check_tag_groups_and_indexes(tag_groups, tag_indexes, tag2_groups, tag2_indexes)
           i7s = []
           i5s = []
@@ -54,9 +48,7 @@ module SampleManifestExcel
           end
           find_tags_clash(i7s.zip(i5s))
         end
-        # rubocop:enable Metrics/AbcSize
-        # rubocop:enable Metrics/PerceivedComplexity
-        # rubocop:enable Metrics/CyclomaticComplexity
+        # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
       end
     end
   end

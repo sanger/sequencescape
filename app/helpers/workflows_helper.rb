@@ -2,14 +2,6 @@
 
 # A few helpers used in pipeline workflows
 module WorkflowsHelper
-  # Returns descriptor from params, if it's not there try the @study.
-  # If @study's not set or it doesn't hold the descriptor, return a
-  # blank string...
-  def descriptor_value(descriptor)
-    # Refactored to remove reliance on @values
-    params[:values].try(:[], descriptor.name) || @study.try(:descriptor_value, descriptor.name) || ''
-  end
-
   # Returns a link to any available request comments with "None" as a
   # default value.
   def link_to_comments(request)
@@ -41,7 +33,7 @@ module WorkflowsHelper
     )
   end
 
-  def gel_qc_select_box(request, status, html_options = {}) # rubocop:todo Metrics/MethodLength
+  def gel_qc_select_box(request, status, html_options = {})
     html_options.delete(:generate_blank)
     status = 'OK' if status.blank? || status == 'Pass'
     select_tag(

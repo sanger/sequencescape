@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-class CherrypickTaskTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
+class CherrypickTaskTest < ActiveSupport::TestCase
   # Pads the cherrypicked view of a plate with empty wells
   def pad_expected_plate_with_empty_wells(template, plate)
     plate.concat([CherrypickTask::EMPTY_WELL] * (template.size - plate.size))
@@ -22,27 +22,27 @@ class CherrypickTaskTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassL
           description_strategy: 'Map::Coordinate'
         )
 
-      ('A'..'C').map { |r| (1..4).map { |c| "#{r}#{c}" } }.flatten.each_with_index do |m, i|
-        Map.create!(
-          description: m,
-          asset_size: 12,
-          asset_shape_id: @asset_shape.id,
-          location_id: i + 1,
-          row_order: i,
-          column_order: ((i / 4) + 3 * (i % 4))
-        )
-      end
+      ('A'..'C')
+        .map { |r| (1..4).map { |c| "#{r}#{c}" } }
+        .flatten
+        .each_with_index do |m, i|
+          Map.create!(
+            description: m,
+            asset_size: 12,
+            asset_shape_id: @asset_shape.id,
+            location_id: i + 1,
+            row_order: i,
+            column_order: ((i / 4) + (3 * (i % 4)))
+          )
+        end
 
       @mini_plate_purpose =
-        PlatePurpose
-          .stock_plate_purpose
-          .clone
-          .tap do |pp|
-            pp.size = 12
-            pp.name = 'Clonepp'
-            pp.asset_shape = @asset_shape
-            pp.save!
-          end
+        PlatePurpose.stock_plate_purpose.clone.tap do |pp|
+          pp.size = 12
+          pp.name = 'Clonepp'
+          pp.asset_shape = @asset_shape
+          pp.save!
+        end
 
       @task = build :cherrypick_task
 

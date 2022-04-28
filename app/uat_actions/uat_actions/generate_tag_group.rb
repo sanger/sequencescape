@@ -7,7 +7,7 @@ class UatActions::GenerateTagGroup < UatActions
   self.title = 'Generate tag group'
 
   # The description displays on the list of UAT actions to provide additional information
-  self.description = 'Generates a tag group of the specified size filled with random oligos'
+  self.description = 'Generates a tag group of the specified size filled with random oligos.'
 
   # Form fields
   form_field :name,
@@ -20,6 +20,14 @@ class UatActions::GenerateTagGroup < UatActions
              help: 'The number of tags that will be generated',
              options: {
                minimum: 1
+             }
+  form_field :adapter_type_name,
+             :select,
+             label: 'Adapter Type Name',
+             help: 'The name of the adapter type for the tag group.',
+             select_options: -> { TagGroup::AdapterType.order(:name).pluck(:name) },
+             options: {
+               include_blank: 'No Adapter Type'
              }
 
   validates :size,
@@ -48,7 +56,14 @@ class UatActions::GenerateTagGroup < UatActions
     report[:name] = name
     return true if existing_tag_group
 
-    tag_group = TagGroup.create!(name: name)
+    adapter_type = TagGroup::AdapterType.find_by(name: adapter_type_name)
+
+    create_tag_group(name, adapter_type)
+  end
+
+  def create_tag_group(name, adapter_type)
+    tag_group = TagGroup.create!(name: name, adapter_type_id: adapter_type&.id)
+
     tag_group.tags.build(
       OligoEnumerator.new(size.to_i).each_with_index.map { |oligo, map_id| { oligo: oligo, map_id: map_id + 1 } }
     )

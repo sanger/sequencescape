@@ -52,40 +52,40 @@ def plate_view_of_oligos(label, mapping) # rubocop:todo Metrics/AbcSize
   plate_layout.map(&:inspect).map(&$stderr.method(:puts))
 end
 
-# rubocop:todo Metrics/MethodLength
-def check_tag_layout(name, well_range, expected_wells_to_oligos)
+def check_tag_layout(name, well_range, expected_wells_to_oligos) # rubocop:todo Metrics/MethodLength
   plate = Plate.find_by(name: name) or raise StandardError, "Cannot find plate #{name.inspect}"
   wells_to_oligos =
-    plate.wells.filter_map do |w|
-      next unless well_range.include?(w)
+    plate
+      .wells
+      .filter_map do |w|
+        next unless well_range.include?(w)
 
-      [w.map.description, w.primary_aliquot.try(:tag).try(:oligo) || '']
-    end.to_h
+        [w.map.description, w.primary_aliquot.try(:tag).try(:oligo) || '']
+      end
+      .to_h
   if expected_wells_to_oligos != wells_to_oligos
     plate_view_of_oligos('Expected', expected_wells_to_oligos)
     plate_view_of_oligos('Got', wells_to_oligos)
     assert(false, 'Tag assignment appears to be invalid')
   end
 end
-# rubocop:enable Metrics/MethodLength
-
-# rubocop:todo Metrics/MethodLength
-def check_tag2_layout(name, well_range, expected_wells_to_oligos)
+def check_tag2_layout(name, well_range, expected_wells_to_oligos) # rubocop:todo Metrics/MethodLength
   plate = Plate.find_by(name: name) or raise StandardError, "Cannot find plate #{name.inspect}"
   wells_to_oligos =
-    plate.wells.filter_map do |w|
-      next unless well_range.include?(w)
+    plate
+      .wells
+      .filter_map do |w|
+        next unless well_range.include?(w)
 
-      [w.map.description, w.primary_aliquot.try(:tag2).try(:oligo) || '']
-    end.to_h
+        [w.map.description, w.primary_aliquot.try(:tag2).try(:oligo) || '']
+      end
+      .to_h
   if expected_wells_to_oligos != wells_to_oligos
     plate_view_of_oligos('Expected', expected_wells_to_oligos)
     plate_view_of_oligos('Got', wells_to_oligos)
     assert(false, 'Tag 2 assignment appears to be invalid')
   end
 end
-# rubocop:enable Metrics/MethodLength
-
 Then /^the tag layout on the plate "([^"]+)" should be:$/ do |name, table|
   check_tag_layout(
     name,
@@ -112,7 +112,6 @@ Given /^the UUID for the plate associated with the tag layout with ID (\d+) is "
   set_uuid_for(TagLayout.find(id).plate, uuid_value)
 end
 
-# rubocop:todo Metrics/MethodLength
 def pool_by_strategy(source, destination, pooling_strategy) # rubocop:todo Metrics/AbcSize
   unless pooling_strategy.sum == source.size
     Rails.logger.info("Pooling strategy does not fit plate size #{source.size}: #{pooling_strategy.inspect}")
@@ -134,8 +133,6 @@ def pool_by_strategy(source, destination, pooling_strategy) # rubocop:todo Metri
       end
   end
 end
-# rubocop:enable Metrics/MethodLength
-
 # This fakes out the transfers so that they look like they came from different submissions, effectively meaning
 # that the source plate is pooled in columns to the destination plate (it's not actually pooled, it's just the
 # indication of what pools will occur).
@@ -143,7 +140,9 @@ Given 'the wells for {plate_name} have been pooled in columns to {plate_name}' d
   pool_by_strategy(source, destination, [8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8])
 end
 
+# rubocop:todo Layout/LineLength
 Given 'the wells for {plate_name} have been pooled to {plate_name} according to the pooling strategy {integer_array}' do |source, destination, pooling_strategy|
+  # rubocop:enable Layout/LineLength
   pool_by_strategy(source, destination, pooling_strategy)
 end
 

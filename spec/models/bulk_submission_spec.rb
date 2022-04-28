@@ -46,7 +46,7 @@ describe BulkSubmission, with: :uploader do
     end
     let(:spreadsheet_filename) { '1_valid_rows.csv' }
 
-    setup { SubmissionSerializer.construct!(submission_template_hash) }
+    before { SubmissionSerializer.construct!(submission_template_hash) }
 
     it 'is valid' do
       expect(subject).to be_valid
@@ -81,7 +81,8 @@ describe BulkSubmission, with: :uploader do
       }
     end
 
-    setup { SubmissionSerializer.construct!(submission_template_hash) }
+    before { SubmissionSerializer.construct!(submission_template_hash) }
+
     it { is_expected.to be_valid }
 
     it 'links the samples to the study' do

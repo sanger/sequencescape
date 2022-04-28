@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Event::PlateEvents # rubocop:todo Style/Documentation
   def gel_qc_date
     event_date('gel_analysed')

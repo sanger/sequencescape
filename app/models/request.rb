@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'aasm'
 
 # A Request represents work which needs to be done, either to fulfil a customers
@@ -51,8 +52,8 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   belongs_to :initial_study, class_name: 'Study'
   belongs_to :work_order, optional: true
 
-  # The assets on a request can be treated as a particular class when being used by certain pieces of code.  For instance,
-  # QC might be performed on a source asset that is a well, in which case we'd like to load it as such.
+  # The assets on a request can be treated as a particular class when being used by certain pieces of code.
+  # For instance, QC might be performed on a source asset that is a well, in which case we'd like to load it as such.
   belongs_to :target_asset, class_name: 'Receptacle', inverse_of: :requests_as_target, optional: true
   belongs_to :asset, class_name: 'Receptacle', inverse_of: :requests, optional: true
   belongs_to :source_well, class_name: 'Well', foreign_key: :asset_id, optional: true
@@ -122,7 +123,6 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   scope :customer_requests, -> { where(sti_type: [CustomerRequest, *CustomerRequest.descendants].map(&:name)) }
 
-  # rubocop:disable Metrics/BlockLength
   scope :for_pooling_of,
         ->(plate) {
           submission_ids = plate.all_submission_ids
@@ -154,8 +154,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
             )
             .group('uuids.external_id')
             .where(pw: { labware_id: plate.id }, requests: { submission_id: submission_ids })
-            .where
-            .not(requests: { state: 'cancelled' })
+            .where.not(requests: { state: 'cancelled' })
         }
 
   scope :for_pre_cap_grouping_of,
@@ -179,16 +178,16 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
             .joins(
               add_joins + [
                 'INNER JOIN maps AS pw_location ON pw.map_id = pw_location.id',
+                # rubocop:todo Layout/LineLength
                 'INNER JOIN pre_capture_pool_pooled_requests ON requests.id=pre_capture_pool_pooled_requests.request_id',
                 'INNER JOIN uuids ON uuids.resource_id = pre_capture_pool_pooled_requests.pre_capture_pool_id AND uuids.resource_type="PreCapturePool"'
+                # rubocop:enable Layout/LineLength
               ]
             )
             .group('pre_capture_pool_pooled_requests.pre_capture_pool_id')
             .where(state: %w[started pending])
             .where(pw: { labware_id: plate })
         }
-
-  # rubocop:enable Metrics/BlockLength
 
   scope :in_order, ->(order) { where(order_id: order) }
 
@@ -211,7 +210,6 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
         }
 
   scope :with_request_type_id, ->(id) { where(request_type_id: id) }
-  scope :for_pacbio_sample_sheet, -> { includes([{ target_asset: :map }, :request_metadata]) }
 
   scope :into_by_id, ->(target_ids) { where(target_asset_id: target_ids) }
 
@@ -235,16 +233,14 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
           joins(:asset)
             .select('requests.*')
             .select('receptacles.labware_id AS labware_id')
-            .where
-            .not(receptacles: { labware_id: nil })
+            .where.not(receptacles: { labware_id: nil })
         }
   scope :target_asset_on_labware,
         -> {
           joins(:target_asset)
             .select('requests.*')
             .select('receptacles.labware_id AS labware_id')
-            .where
-            .not(receptacles: { labware_id: nil })
+            .where.not(receptacles: { labware_id: nil })
         }
 
   scope :without_asset, -> { where('asset_id is null') }
@@ -264,14 +260,24 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
         -> {
           preload(
             [
-              { submission: { orders: :study }, asset: %i[requests scanned_into_lab_event most_tagged_aliquot] },
+              :upstream_requests,
+              {
+                submission: {
+                  orders: :study
+                },
+                asset: [
+                  :requests_as_target,
+                  :requests,
+                  :most_tagged_aliquot,
+                  { labware: %i[barcodes scanned_into_lab_event] }
+                ]
+              },
               { request_type: :product_line }
             ]
           )
         }
   scope :loaded_for_grouped_inbox_display,
         -> { preload([{ submission: :orders, asset: { labware: %i[purpose barcodes] } }, :target_asset, :order]) }
-  scope :loaded_for_pacbio_inbox_display, -> { preload(:submission) }
 
   scope :for_submission_id, ->(id) { where(submission_id: id) }
   scope :for_asset_id, ->(id) { where(asset_id: id) }
@@ -403,39 +409,35 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
     { study_id: initial_study_id, project_id: initial_project_id, request_id: id }
   end
 
-  def get_value(request_information_type)
-    return '' unless request_metadata.respond_to?(request_information_type.key)
-
-    value = request_metadata.send(request_information_type.key)
-    return value.to_s if value.blank? || (request_information_type.data_type != 'Date')
-
-    value.to_date.strftime('%d %B %Y')
-  end
-
-  def value_for(name, batch = nil)
-    rit = RequestInformationType.find_by(name: name)
-    rit_value = get_value(rit) if rit.present?
-    return rit_value if rit_value.present?
-
-    event_value_for(name, batch)
-  end
-
-  def event_value_for(name, batch = nil)
-    list = (batch.present? ? lab_events_for_batch(batch) : lab_events)
-    list.each { |event| desc = event.descriptor_value_for(name) and return desc }
-    ''
+  def detect_descriptor(name, descriptor_batch: batch)
+    # Sort in lab_events_for_batch goes by id ascending, so we use a reverse each, in order to find the most recent
+    # descriptor with the passed in 'name'
+    # Lazy ensures we stop searching as soon as we find a value
+    lab_events_for_batch(descriptor_batch).lazy.reverse_each.map { |e| e.descriptor_value_for(name) }.detect(&:present?)
   end
 
   def has_passed(batch, task)
     lab_events_for_batch(batch).any? { |event| event.description == task.name }
   end
 
+  # Returns the lab_events associated with `batch`
+  # While for the most-part each request only belongs to a single batch at any one time,
+  # they may have belonged to other batches historically.
+  #
+  # @param batch [Batch] The batch to filter events by
+  #
+  # @return [Array<LabEvent>,LabEvent::ActiveRecord_Associations_CollectionProxy] Events associated with `batch`
+  #
   def lab_events_for_batch(batch)
-    lab_events.loaded? ? lab_events.select { |le| le.batch_id == batch.id } : lab_events.where(batch_id: batch.id)
+    if lab_events.loaded?
+      lab_events.select { |le| le.batch_id == batch&.id }.sort
+    else
+      lab_events.where(batch_id: batch).order(:created_at, :id)
+    end
   end
 
-  def event_with_key_value(k, v = nil)
-    v.nil? ? false : lab_events.with_descriptor(k, v).first
+  def most_recent_event_named(name)
+    lab_events_for_batch(batch).reverse.detect { |e| e.description == name }
   end
 
   def next_requests
@@ -471,14 +473,16 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def add_comment(comment, user, title = nil)
-    comments.create(description: comment, user: user, title: title)
+    # Unscope comments to fix Rails 6 deprecation warnings. But I *think* this
+    # essentially models the new behaviour in 6.1 So should be removable then
+    Comment.unscoped { comments.create(description: comment, user: user, title: title) }
   end
 
   def return_pending_to_inbox!
     raise StandardError, "Can only return pending requests, request is #{state}" unless pending?
   end
 
-  def format_qc_information # rubocop:todo Metrics/MethodLength
+  def format_qc_information
     return [] if lab_events.empty?
 
     events.filter_map do |event|

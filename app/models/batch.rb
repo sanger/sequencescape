@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'timeout'
 require 'aasm'
 
@@ -97,9 +98,6 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
           )
         }
 
-  scope :from_labware_barcodes,
-        ->(barcodes) { joins(input_labware: :barcodes).where(barcodes: { barcode: barcodes }).distinct }
-
   scope :latest_first, -> { order(created_at: :desc) }
   scope :most_recent, ->(number) { latest_first.limit(number) }
 
@@ -110,6 +108,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   delegate :size, to: :requests
   delegate :sequencing?, :generate_target_assets_on_batch_create?, :min_size, to: :pipeline
+  delegate :name, to: :workflow, prefix: true
 
   alias friendly_name id
 
@@ -162,7 +161,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   # Fail specific requests on this batch
-  def fail_requests(requests_to_fail, reason, comment, fail_but_charge = false) # rubocop:todo Metrics/MethodLength
+  def fail_requests(requests_to_fail, reason, comment, fail_but_charge = false)
     ActiveRecord::Base.transaction do
       requests
         .find(requests_to_fail)
@@ -293,23 +292,8 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
     barcode.presence || requests.first.target_asset.plate.human_barcode
   end
 
-  def mpx_library_name
-    return '' unless multiplexed? && requests.any?
-
-    mpx_library_tube = requests.first.target_asset.children.first
-    mpx_library_tube&.name || ''
-  end
-
-  def display_tags?
-    multiplexed?
-  end
-
   def id_dup
     id
-  end
-
-  def multiplexed_items_with_unique_library_ids
-    requests.map { |r| r.target_asset.children }.flatten.uniq
   end
 
   # Source Labware returns the physical pieces of labware (ie. a plate for wells, but tubes for tubes)
@@ -364,7 +348,6 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
       update_batch_state(reason, comment)
     end
   end
-  alias recycle_request_ids remove_request_ids
 
   # Remove a request from the batch and reset it to a point where it can be put back into
   # the pending queue.
@@ -389,25 +372,20 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
   end
 
-  def remove_link(request)
-    request.batch = nil
-  end
-
   # rubocop:todo Metrics/MethodLength
   def reset!(current_user) # rubocop:todo Metrics/AbcSize
     ActiveRecord::Base.transaction do
       discard!
 
       requests.each do |request|
-        remove_link(request) # Remove link in all types of pipelines
+        request.batch = nil
         return_request_to_inbox(request, current_user)
       end
 
       if requests.last.submission_id.present?
         Request
           .where(submission_id: requests.last.submission_id, state: 'pending')
-          .where
-          .not(request_type_id: pipeline.request_type_ids)
+          .where.not(request_type_id: pipeline.request_type_ids)
           .find_each do |request|
             request.asset_id = nil
             request.save!
@@ -418,20 +396,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   # rubocop:enable Metrics/MethodLength
 
-  def parent_of_purpose(name)
-    return nil if requests.empty?
-
-    requests
-      .first
-      .asset
-      .ancestors
-      .joins("INNER JOIN plate_purposes ON #{Plate.table_name}.plate_purpose_id = plate_purposes.id")
-      .find_by(plate_purposes: { name: name })
-  end
-
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def swap(current_user, batch_info = {}) # rubocop:todo Metrics/CyclomaticComplexity
     return false if batch_info.empty?
 
@@ -444,24 +409,17 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
       errors.add('Swap: ', 'The second lane cannot be found')
     return unless batch_request_left.present? && batch_request_right.present?
 
-    # rubocop:todo Metrics/BlockLength
     ActiveRecord::Base.transaction do
       # Update the lab events for the request so that they reference the batch that the request is moving to
-      batch_request_left
-        .request
-        .lab_events
-        .each do |event|
-          event.update!(batch_id: batch_request_right.batch_id) if event.batch_id == batch_request_left.batch_id
-        end
-      batch_request_right
-        .request
-        .lab_events
-        .each do |event|
-          event.update!(batch_id: batch_request_left.batch_id) if event.batch_id == batch_request_right.batch_id
-        end
+      batch_request_left.request.lab_events.each do |event|
+        event.update!(batch_id: batch_request_right.batch_id) if event.batch_id == batch_request_left.batch_id
+      end
+      batch_request_right.request.lab_events.each do |event|
+        event.update!(batch_id: batch_request_left.batch_id) if event.batch_id == batch_request_right.batch_id
+      end
 
-      # Swap the two batch requests so that they are correct.  This involves swapping both the batch and the lane but ensuring that the
-      # two requests don't clash on position by removing one of them.
+      # Swap the two batch requests so that they are correct.  This involves swapping both the batch and the lane but
+      # ensuring that the two requests don't clash on position by removing one of them.
       original_left_batch_id, original_left_position, original_right_request_id =
         batch_request_left.batch_id, batch_request_left.position, batch_request_right.request_id
       batch_request_right.destroy
@@ -476,33 +434,29 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
       # Finally record the fact that the batch was swapped
       batch_request_left.batch.lab_events.create!(
         description: 'Lane swap',
+        # rubocop:todo Layout/LineLength
         message:
           "Lane #{batch_request_right.position} moved to #{batch_request_left.batch_id} lane #{batch_request_left.position}",
+        # rubocop:enable Layout/LineLength
         user_id: current_user.id
       )
       batch_request_right.batch.lab_events.create!(
         description: 'Lane swap',
+        # rubocop:todo Layout/LineLength
         message:
           "Lane #{batch_request_left.position} moved to #{batch_request_right.batch_id} lane #{batch_request_right.position}",
+        # rubocop:enable Layout/LineLength
         user_id: current_user.id
       )
     end
 
-    # rubocop:enable Metrics/BlockLength
-
     true
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   def plate_ids_in_study(study)
     Plate.plate_ids_from_requests(requests.for_studies(study))
-  end
-
-  def space_left
-    [item_limit - batch_requests.count, 0].max
   end
 
   def total_volume_to_cherrypick
@@ -570,10 +524,6 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
     requests.count
   end
 
-  def show_actions?
-    released? == false or pipeline.class.const_get(:ALWAYS_SHOW_RELEASE_ACTIONS)
-  end
-
   def npg_set_state
     if all_requests_qced?
       self.state = 'released'
@@ -582,17 +532,13 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
   end
 
-  def show_fail_link?
-    released? && sequencing?
-  end
-
   def downstream_requests_needing_asset(request)
     next_requests_needing_asset = request.next_requests.select { |r| r.asset_id.blank? }
     yield(next_requests_needing_asset) if next_requests_needing_asset.present?
   end
 
   def rebroadcast
-    messengers.each(&:queue_for_broadcast)
+    messengers.each(&:resend)
   end
 
   def pick_information?
@@ -617,7 +563,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   # rubocop:todo Metrics/MethodLength
   def generate_target_assets_for_requests # rubocop:todo Metrics/AbcSize
-    requests_to_update, asset_links = [], []
+    requests_to_update = []
 
     asset_type = pipeline.asset_type.constantize
     requests.reload.each do |request|
@@ -637,11 +583,8 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
       request.update!(target_asset: target_asset)
 
-      # All links between the two assets as new, so we can bulk create them!
-      asset_links << [request.asset.labware.id, target_asset.labware.id]
+      target_asset.parents << request.asset.labware
     end
-
-    AssetLink::BuilderJob.create(asset_links)
 
     requests_to_update.each { |request, asset| request.update!(asset: asset) }
   end

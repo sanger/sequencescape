@@ -34,7 +34,7 @@ class CherrypickTask::PickTarget
     end
 
     # Creates control requests for the control assets provided and adds them to the batch
-    def create_control_requests!(batch, control_assets) # rubocop:todo Metrics/MethodLength
+    def create_control_requests!(batch, control_assets)
       control_requests =
         control_assets.map do |control_asset|
           CherrypickRequest.create(
@@ -152,10 +152,12 @@ class CherrypickTask::PickTarget
     # When starting a new plate, it writes all control requests from the beginning of the plate
     def add_any_initial_control_requests(control_posns, batch, control_assets)
       current_well_index = content.length
-      control_posns.select { |c| c <= current_well_index }.each do |control_well_index|
-        control_asset = control_assets[control_posns.find_index(control_well_index)]
-        add_control_request(batch, control_asset)
-      end
+      control_posns
+        .select { |c| c <= current_well_index }
+        .each do |control_well_index|
+          control_asset = control_assets[control_posns.find_index(control_well_index)]
+          add_control_request(batch, control_asset)
+        end
       add_any_consecutive_control_requests(control_posns, batch, control_assets)
     end
   end
@@ -167,13 +169,16 @@ class CherrypickTask::PickTarget
     end
     private :well_position
 
-    # rubocop:todo Style/MultilineBlockChain
     def completed_view
-      @wells.dup.tap { |wells| complete(wells) }.each_with_index.inject([]) do |wells, (well, index)|
-        wells.tap { wells[@shape.horizontal_to_vertical(index + 1, @size)] = well }
-      end.compact
+      @wells
+        .dup
+        .tap { |wells| complete(wells) }
+        .each_with_index
+        .inject([]) do |wells, (well, index)|
+          wells.tap { wells[@shape.horizontal_to_vertical(index + 1, @size)] = well }
+        end
+        .compact
     end
-    # rubocop:enable Style/MultilineBlockChain
   end
 
   # Deals with generating the pick plate by travelling in a column direction, so A1, B1, C1 ...
@@ -195,12 +200,15 @@ class CherrypickTask::PickTarget
     end
     private :well_position
 
-    # rubocop:todo Style/MultilineBlockChain
     def completed_view
-      @wells.dup.tap { |wells| complete(wells) }.each_with_index.inject([]) do |wells, (well, index)|
-        wells.tap { wells[@shape.vertical_to_interlaced_vertical(index + 1, @size)] = well }
-      end.compact
+      @wells
+        .dup
+        .tap { |wells| complete(wells) }
+        .each_with_index
+        .inject([]) do |wells, (well, index)|
+          wells.tap { wells[@shape.vertical_to_interlaced_vertical(index + 1, @size)] = well }
+        end
+        .compact
     end
-    # rubocop:enable Style/MultilineBlockChain
   end
 end

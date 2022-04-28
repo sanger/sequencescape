@@ -1,4 +1,5 @@
-module ::Core::Io::Collection # rubocop:todo Style/Documentation
+# frozen_string_literal: true
+module Core::Io::Collection # rubocop:todo Style/Documentation
   def as_json(options = {})
     results, base_stream = options[:object], options[:stream]
 

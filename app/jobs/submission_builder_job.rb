@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Triggers the building of the submission
 SubmissionBuilderJob =
   Struct.new(:submission_id) do

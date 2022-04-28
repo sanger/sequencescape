@@ -1,5 +1,6 @@
+# frozen_string_literal: true
 # Controls API V1 IO for {::Tag2LayoutTemplate}
-class ::Io::Tag2LayoutTemplate < ::Core::Io::Base
+class Io::Tag2LayoutTemplate < ::Core::Io::Base
   set_model_for_input(::Tag2LayoutTemplate)
   set_json_root(:tag2_layout_template)
   set_eager_loading(&:include_tag) # TODO: uncomment and add any named_scopes that do includes you need

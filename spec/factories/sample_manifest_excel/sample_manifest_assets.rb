@@ -5,5 +5,10 @@ FactoryBot.define do
     sanger_sample_id
     sample_manifest
     association(:asset, factory: :receptacle)
+
+    after(:build) do |sma|
+      sma.sample_manifest.labware = [sma.asset.labware] if sma.sample_manifest &&
+        sma.sample_manifest.core_behaviour.respond_to?(:labware=) && sma.asset
+    end
   end
 end

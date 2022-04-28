@@ -8,7 +8,6 @@ class SampleManifestTubeTest < ActiveSupport::TestCase
 
   attr_reader :manifest, :tube_label, :tube1, :tube2, :tube3, :tubes, :prefix, :barcode1, :label
 
-  # rubocop:todo Metrics/MethodLength
   def setup # rubocop:todo Metrics/AbcSize
     @manifest = create :sample_manifest, asset_type: '1dtube', purpose: Tube::Purpose.standard_sample_tube, count: 3
     @manifest.generate
@@ -28,11 +27,10 @@ class SampleManifestTubeTest < ActiveSupport::TestCase
       bottom_line: (Date.today.strftime('%e-%^b-%Y')).to_s,
       round_label_top_line: prefix,
       round_label_bottom_line: barcode1,
-      barcode: tube1.machine_barcode
+      barcode: tube1.machine_barcode,
+      label_name: 'main_label'
     }
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   test 'should return the right list of tubes' do
     assert_equal 3, tube_label.tubes.count

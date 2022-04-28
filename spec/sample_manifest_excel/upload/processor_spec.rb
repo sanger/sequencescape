@@ -25,10 +25,12 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         config.load!
       end
     end
+    let(:column_list) { configuration.columns.send(manifest_type) }
 
     let(:upload) { SampleManifestExcel::Upload::Base.new(file: test_file, column_list: column_list, start_row: 9) }
     let(:processor) { described_class.new(upload) }
     let(:test_file_name) { 'test_file.xlsx' }
+    let(:new_test_file_name) { 'new_test_file.xlsx' }
     let(:test_file) { Rack::Test::UploadedFile.new(Rails.root.join(test_file_name), '') }
     let(:tag_group) { create(:tag_group) }
 
@@ -54,8 +56,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           )
         processor = described_class.new(reupload2)
         processor.update_samples_and_aliquots(tag_group)
-        expect(processor.substitutions[1]).to include('insert_size_from' => 100)
-        expect(processor.substitutions[2]).to include('insert_size_to' => 1000)
+        expect(processor.substitutions[0]).to include('insert_size_from' => 100)
+        expect(processor.substitutions[1]).to include('insert_size_to' => 1000)
         expect(processor).to be_downstream_aliquots_updated
       end
 
@@ -77,7 +79,9 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         expect(processor).to be_downstream_aliquots_updated
       end
 
+      # rubocop:todo Layout/LineLength
       it 'will update the aliquots downstream in dual index cases where the substituted tags alone look like a tag clash' do
+        # rubocop:enable Layout/LineLength
         # We already have distinct tag2s, so by setting these to the same, we aren't creating a tag clash.
         cell(rows.first, columns[:i7]).value = 'ATAGATAGATAG'
         cell(rows.last, columns[:i7]).value = 'ATAGATAGATAG'
@@ -111,16 +115,85 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
       end
     end
 
+    shared_examples 'it updates chromium aliquots' do |rows, columns|
+      it 'will update the aliquots downstream if aliquots data has changed and override is set to true' do
+        cell(rows.first, columns[:insert_size_from]).value = '100'
+        cell(rows.last, columns[:insert_size_to]).value = '1000'
+        download.save(new_test_file_name)
+        reupload2 =
+          SampleManifestExcel::Upload::Base.new(
+            file: new_test_file,
+            column_list: column_list,
+            start_row: 9,
+            override: true
+          )
+        processor = described_class.new(reupload2)
+        processor.update_samples_and_aliquots(tag_group)
+
+        expect(processor.substitutions[0, 4]).to all include('insert_size_from' => 100)
+        expect(processor.substitutions[4, 4]).to all include('insert_size_to' => 1000)
+        expect(processor).to be_downstream_aliquots_updated
+      end
+
+      it 'will update the aliquots downstream if tags were swapped and override is set to true' do
+        chromium_tag1 = cell(rows.first, columns[:chromium_tag_well]).value
+        chromium_tag2 = cell(rows.last, columns[:chromium_tag_well]).value
+        cell(rows.first, columns[:chromium_tag_well]).value = chromium_tag2
+        cell(rows.last, columns[:chromium_tag_well]).value = chromium_tag1
+        download.save(new_test_file_name)
+        reupload2 =
+          SampleManifestExcel::Upload::Base.new(
+            file: new_test_file,
+            column_list: column_list,
+            start_row: 9,
+            override: true
+          )
+        processor = described_class.new(reupload2)
+        processor.update_samples_and_aliquots(tag_group)
+        expect(processor.substitutions.compact.length).to eq(8)
+        expect(processor).to be_downstream_aliquots_updated
+      end
+
+      # This test may seem a little paranoid, but I actually observed this behaviour
+      # when testing. Somewhat lucky, as I only triggered it by accident!
+      it 'will update the aliquots downstream if both tags and library types have changed' do
+        new_lt = create :library_type
+        chromium_tag1 = cell(rows.first, columns[:chromium_tag_well]).value
+        chromium_tag2 = cell(rows.last, columns[:chromium_tag_well]).value
+        cell(rows.first, columns[:chromium_tag_well]).value = chromium_tag2
+        cell(rows.first, columns[:library_type]).value = new_lt.name
+        cell(rows.last, columns[:chromium_tag_well]).value = chromium_tag1
+        download.save(new_test_file_name)
+        reupload2 =
+          SampleManifestExcel::Upload::Base.new(
+            file: new_test_file,
+            column_list: column_list,
+            start_row: 9,
+            override: true
+          )
+        processor = described_class.new(reupload2)
+
+        processor.update_samples_and_aliquots(tag_group)
+
+        expect(processor.substitutions.compact.length).to eq(8)
+        expect(processor.substitutions[0, 4]).to all include('library_type' => new_lt.name)
+        expect(processor.substitutions.map(&:keys)).to all include(:original_tag_id)
+        expect(processor.substitutions.map(&:keys)).to all include(:substitute_tag_id)
+        expect(processor).to be_downstream_aliquots_updated
+      end
+    end
+
     describe SampleManifestExcel::Upload::Processor::OneDTube do
-      let(:column_list) { configuration.columns.tube_library_with_tag_sequences }
+      let(:manifest_type) { 'tube_library_with_tag_sequences' }
+      let(:download) { build(:test_download_tubes, columns: column_list, manifest_type: manifest_type) }
 
       context 'when valid' do
-        let(:download) do
-          build(:test_download_tubes, columns: column_list, manifest_type: 'tube_library_with_tag_sequences')
+        it 'will not generate samples on initialisation' do
+          expect { upload }.not_to change(Sample, :count)
         end
 
-        it 'will not generate samples prior to processing' do
-          expect { upload }.not_to change(Sample, :count)
+        it 'will not generate samples on validation' do
+          expect { upload.valid? }.not_to change(Sample, :count)
         end
 
         it 'will process', :aggregate_failures do
@@ -141,15 +214,11 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
       end
 
       context 'when the manifest is re-uploaded and overridden' do
-        let(:download) do
-          build(:test_download_tubes, columns: column_list, manifest_type: 'tube_library_with_tag_sequences')
-        end
-        let(:new_test_file_name) { 'new_test_file.xlsx' }
         let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
 
         before do
           upload.process(tag_group) || raise("Process error: #{upload.errors.full_messages}")
-          upload.complete
+          upload.finished!
         end
 
         after { File.delete(new_test_file) if File.exist?(new_test_file_name) }
@@ -217,21 +286,43 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
       end
     end
 
-    describe SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube do
-      context 'when using tag sequences' do
-        let(:column_list) { configuration.columns.tube_multiplexed_library_with_tag_sequences }
+    describe SampleManifestExcel::Upload::Processor::LibraryTube do
+      let(:download) { build(:test_download_tubes, columns: column_list, manifest_type: manifest_type) }
 
+      context 'with chromium tag-columns' do
+        let(:manifest_type) { 'tube_chromium_library' }
+
+        let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
+
+        before do
+          upload.process(tag_group) || raise("Process error: #{upload.errors.full_messages}")
+          upload.finished!
+        end
+
+        after { File.delete(new_test_file) if File.exist?(new_test_file_name) }
+
+        it_behaves_like 'it updates chromium aliquots',
+                        [10, 11],
+                        insert_size_from: 7,
+                        insert_size_to: 8,
+                        chromium_tag_group: 3,
+                        chromium_tag_well: 4,
+                        library_type: 6
+      end
+    end
+
+    describe SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube do
+      let(:manifest_type) { 'tube_multiplexed_library_with_tag_sequences' }
+      let(:download) { build(:test_download_tubes, columns: column_list, manifest_type: manifest_type) }
+
+      context 'when using tag sequences' do
         context 'when valid' do
-          let(:download) do
-            build(
-              :test_download_tubes,
-              manifest_type: 'tube_multiplexed_library_with_tag_sequences',
-              columns: column_list
-            )
+          it 'will not generate samples on initialization' do
+            expect { upload }.not_to change(Sample, :count)
           end
 
-          it 'will not generate samples prior to processing' do
-            expect { upload }.not_to change(Sample, :count)
+          it 'will not generate samples on validation' do
+            expect { upload.valid? }.not_to change(Sample, :count)
           end
 
           it 'will transfer the aliquots to the multiplexed library tube' do
@@ -258,13 +349,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         end
 
         context 'with a partial manifest' do
-          let(:download) do
-            build(
-              :test_download_tubes_partial,
-              manifest_type: 'tube_multiplexed_library_with_tag_sequences',
-              columns: column_list
-            )
-          end
+          let(:download) { build(:test_download_tubes_partial, manifest_type: manifest_type, columns: column_list) }
 
           it 'will process partial upload and cancel unprocessed requests' do
             expect(upload.sample_manifest.pending_external_library_creation_requests.count).to eq 6
@@ -278,19 +363,11 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         end
 
         context 'when manifest re-uploaded and overridden' do
-          let(:download) do
-            build(
-              :test_download_tubes,
-              manifest_type: 'tube_multiplexed_library_with_tag_sequences',
-              columns: column_list
-            )
-          end
-          let(:new_test_file_name) { 'new_test_file.xlsx' }
           let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
 
           before do
             upload.process(tag_group)
-            upload.complete
+            upload.finished!
           end
 
           after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
@@ -300,12 +377,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
         context 'with mismatched tags' do
           let(:download) do
-            build(
-              :test_download_tubes,
-              manifest_type: 'tube_multiplexed_library_with_tag_sequences',
-              columns: column_list,
-              validation_errors: [:tags]
-            )
+            build(:test_download_tubes, manifest_type: manifest_type, columns: column_list, validation_errors: [:tags])
           end
 
           it 'will not be valid' do
@@ -317,12 +389,10 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
       end
 
       context 'when Multiplexed Library Tubes with Tag Groups and Indexes' do
-        let(:column_list) { configuration.columns.tube_multiplexed_library }
+        let(:manifest_type) { 'tube_multiplexed_library' }
 
         context 'when valid' do
-          let(:download) do
-            build(:test_download_tubes, manifest_type: 'tube_multiplexed_library', columns: column_list)
-          end
+          let(:download) { build(:test_download_tubes, manifest_type: manifest_type, columns: column_list) }
 
           it 'will process', :aggregate_failures do
             processor.run(nil)
@@ -348,9 +418,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         end
 
         context 'when partially filled in' do
-          let(:download) do
-            build(:test_download_tubes_partial, manifest_type: 'tube_multiplexed_library', columns: column_list)
-          end
+          let(:download) { build(:test_download_tubes_partial, manifest_type: manifest_type, columns: column_list) }
 
           it 'will process partial upload and cancel unprocessed requests' do
             processor = described_class.new(upload)
@@ -365,15 +433,13 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         end
 
         context 'when manifest is reuploaded and overriden' do
-          let(:download) do
-            build(:test_download_tubes, manifest_type: 'tube_multiplexed_library', columns: column_list)
-          end
-          let(:new_test_file_name) { 'new_test_file.xlsx' }
+          let(:download) { build(:test_download_tubes, manifest_type: manifest_type, columns: column_list) }
+
           let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
 
           before do
             upload.process(nil)
-            upload.complete
+            upload.finished!
           end
 
           after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
@@ -391,8 +457,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
               )
             processor = described_class.new(reupload)
             processor.update_samples_and_aliquots(nil)
-            expect(processor.substitutions[1]).to include('insert_size_from' => 100)
-            expect(processor.substitutions[2]).to include('insert_size_to' => 1000)
+            expect(processor.substitutions[0]).to include('insert_size_from' => 100)
+            expect(processor.substitutions[1]).to include('insert_size_to' => 1000)
             expect(processor).to be_downstream_aliquots_updated
           end
 
@@ -436,12 +502,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
         context 'when tags are mismatched' do
           let(:download) do
-            build(
-              :test_download_tubes,
-              manifest_type: 'tube_multiplexed_library',
-              columns: column_list,
-              validation_errors: [:tags]
-            )
+            build(:test_download_tubes, manifest_type: manifest_type, columns: column_list, validation_errors: [:tags])
           end
 
           it 'will not be valid' do
@@ -459,8 +520,12 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
       context 'when valid' do
         let(:download) { build(:test_download_plates, columns: column_list) }
 
-        it 'will not generate samples prior to processing' do
+        it 'will not generate samples on initialization' do
           expect { processor }.not_to change(Sample, :count)
+        end
+
+        it 'will not generate samples on validation' do
+          expect { processor.valid? }.not_to change(Sample, :count)
         end
 
         it 'will process', :aggregate_failures do
@@ -485,10 +550,14 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           it 'will process a partial upload' do
             processor.update_samples_and_aliquots(nil)
             expect(
-              upload.sample_manifest.samples.map do |sample|
-                sample.reload
-                sample.sample_metadata.concentration.present?
-              end.count(true)
+              upload
+                .sample_manifest
+                .samples
+                .map do |sample|
+                  sample.reload
+                  sample.sample_metadata.concentration.present?
+                end
+                .count(true)
             ).to eq(2)
             processor.update_sample_manifest
             expect(processor).to be_processed
@@ -520,14 +589,10 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             it 'will process a partial upload' do
               processor.update_samples_and_aliquots(nil)
               expect(
-                upload
-                  .sample_manifest
-                  .samples
-                  .reload
-                  .count do |sample|
-                    sample.reload
-                    sample.sample_metadata.concentration.present?
-                  end
+                upload.sample_manifest.samples.reload.count do |sample|
+                  sample.reload
+                  sample.sample_metadata.concentration.present?
+                end
               ).to eq(2)
               processor.update_sample_manifest
               expect(processor).to be_processed
@@ -537,7 +602,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
         context 'when manifest reuploaded and overriden' do
           let(:download) { build(:test_download_plates, columns: column_list) }
-          let(:new_test_file_name) { 'new_test_file.xlsx' }
+
           let(:new_test_file) do
             cell(10, 6).value = '50'
             cell(10, 7).value = 'Female'
@@ -547,7 +612,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
           before do
             upload.process(nil)
-            upload.complete
+            upload.finished!
           end
 
           after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
@@ -584,12 +649,12 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
       context 'when invalid' do
         context 'when using foreign barcodes' do
           let(:download) { build(:test_download_plates_cgap, columns: column_list) }
-          let(:new_test_file_name) { 'new_test_file.xlsx' }
+
           let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
 
           before do
             upload.process(nil)
-            upload.complete
+            upload.finished!
           end
 
           after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
@@ -663,13 +728,19 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
       end
 
       shared_examples_for 'tube rack manifest upload success case' do
-        it 'will not generate samples prior to processing' do
+        it 'will not generate samples on intitialization' do
           expect { upload }.not_to change(Sample, :count)
+        end
+
+        it 'will not generate samples on validation' do
+          expect { upload.valid? }.not_to change(Sample, :count)
         end
 
         it 'will process', :aggregate_failures do
           expect(processor).to be_valid
           processor.run(nil)
+
+          expect(processor.errors.messages).to be_empty
 
           aggregate_failures 'update samples' do
             expect(processor).to be_samples_updated
@@ -698,9 +769,11 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           processor.run(nil)
 
           tube_barcodes =
-            mock_microservice_responses.values.first(no_of_racks).map do |scan_result|
-              scan_result['layout'].keys
-            end.flatten
+            mock_microservice_responses
+              .values
+              .first(no_of_racks)
+              .map { |scan_result| scan_result['layout'].keys }
+              .flatten
           tube_barcodes.reject! { |key| ::CsvParserClient.no_read?(key) }
 
           expect(barcodes.size).to eq(no_of_rows)
@@ -808,9 +881,10 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         it 'will not create any data' do
           RSpec::Matchers.define_negated_matcher :not_change, :change
 
-          expect { processor.run(nil) }.to not_change { TubeRack.count }.and not_change {
-                           RackedTube.count
-                         }.and not_change { Barcode.count }
+          expect { processor.run(nil) }.to not_change(TubeRack, :count).and not_change(
+                                             RackedTube,
+                                             :count
+                                           ).and not_change(Barcode, :count)
         end
       end
 
@@ -826,9 +900,10 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         it 'will not create any data' do
           RSpec::Matchers.define_negated_matcher :not_change, :change
 
-          expect { processor.run(nil) }.to not_change { TubeRack.count }.and not_change {
-                           RackedTube.count
-                         }.and not_change { Barcode.count }
+          expect { processor.run(nil) }.to not_change(TubeRack, :count).and not_change(
+                                             RackedTube,
+                                             :count
+                                           ).and not_change(Barcode, :count)
         end
 
         it 'will have errors' do
@@ -850,7 +925,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           errors = upload.errors.full_messages
           expect(errors).not_to be_empty
           expect(errors).to include(
-            'Scan could not be retrieved for tube rack with barcode RK11111110. Service responded with status code 404 and the following message: File not found'
+            'Scan could not be retrieved for tube rack with barcode RK11111110. ' \
+              'Service responded with status code 404 and the following message: File not found'
           )
         end
       end
@@ -866,7 +942,9 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           errors = upload.errors.full_messages
           expect(errors).not_to be_empty
           expect(errors).to include(
+            # rubocop:todo Layout/LineLength
             'Scan could not be retrieved for tube rack with barcode RK11111110. Service responded with status code 500 and the following message: Server error'
+            # rubocop:enable Layout/LineLength
           )
         end
       end
@@ -892,7 +970,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           errors = upload.errors.full_messages
           expect(errors).not_to be_empty
           expect(errors[0]).to start_with(
-            'Response when trying to retrieve scan (tube rack with barcode RK11111110) was not valid JSON so could not be understood. Error message:'
+            'Response when trying to retrieve scan (tube rack with barcode RK11111110) ' \
+              'was not valid JSON so could not be understood. Error message:'
           )
         end
       end
@@ -936,6 +1015,11 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           expect(errors).to include(
             'The following coordinates in the scan are not valid for a tube rack of size 48: ["e14"].'
           )
+        end
+
+        it 'will not process' do
+          processor.run(nil)
+          expect(processor).not_to be_processed
         end
       end
 

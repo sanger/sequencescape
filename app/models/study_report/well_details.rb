@@ -1,5 +1,6 @@
+# frozen_string_literal: true
 module StudyReport::WellDetails # rubocop:todo Style/Documentation
-  def self.included(base) # rubocop:todo Metrics/MethodLength
+  def self.included(base)
     base.class_eval do
       scope :for_study_report,
             -> {
@@ -24,7 +25,6 @@ module StudyReport::WellDetails # rubocop:todo Style/Documentation
   #   primary_aliquot.present? ? primary_aliquot.sample.genotyping_done : ''
   # end
 
-  # rubocop:todo Metrics/MethodLength
   def qc_report # rubocop:todo Metrics/AbcSize
     # well must be from a stock plate
     return {} unless plate.try(:stock_plate?)
@@ -51,5 +51,4 @@ module StudyReport::WellDetails # rubocop:todo Style/Documentation
     )
     qc_data
   end
-  # rubocop:enable Metrics/MethodLength
 end

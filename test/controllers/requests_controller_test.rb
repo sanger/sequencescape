@@ -3,7 +3,7 @@
 require 'test_helper'
 require 'requests_controller'
 
-class RequestsControllerTest < ActionController::TestCase # rubocop:todo Metrics/ClassLength
+class RequestsControllerTest < ActionController::TestCase
   context 'Request controller' do
     setup do
       @controller = RequestsController.new

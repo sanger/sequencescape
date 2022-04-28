@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Failure < ApplicationRecord # rubocop:todo Style/Documentation
   belongs_to :failable, polymorphic: true
   after_create :notify_remote

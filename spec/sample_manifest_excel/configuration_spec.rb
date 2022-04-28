@@ -17,7 +17,7 @@ RSpec.describe SampleManifestExcel::Configuration, type: :model, sample_manifest
   end
 
   it 'is able to set and get a tag group' do
-    expect(configuration.tag_group).to be nil
+    expect(configuration.tag_group).to be_nil
     configuration.tag_group = 'Main test group'
     expect(configuration.tag_group).to eq('Main test group')
   end
@@ -57,7 +57,6 @@ RSpec.describe SampleManifestExcel::Configuration, type: :model, sample_manifest
     end
 
     it 'load the conditional formattings' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(configuration.conditional_formattings).to eq(
         SequencescapeExcel::ConditionalFormattingDefaultList.new(
           configuration.load_file(folder, 'conditional_formattings')
@@ -66,14 +65,12 @@ RSpec.describe SampleManifestExcel::Configuration, type: :model, sample_manifest
     end
 
     it 'load the manifest types' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(configuration.manifest_types).to eq(
         SampleManifestExcel::ManifestTypeList.new(configuration.load_file(folder, 'manifest_types'))
       )
     end
 
     it 'load the ranges' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(configuration.ranges).to eq(SequencescapeExcel::RangeList.new(configuration.load_file(folder, 'ranges')))
     end
 
@@ -87,7 +84,6 @@ RSpec.describe SampleManifestExcel::Configuration, type: :model, sample_manifest
     end
 
     it 'has a tag group' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(configuration.tag_group).to eq('My Magic Tag Group')
     end
   end

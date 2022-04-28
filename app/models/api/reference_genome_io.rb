@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Despite name controls rendering of warehouse messages for {ReferenceGenome}
 # Historically used to be v0.5 API
 class Api::ReferenceGenomeIO < Api::Base

@@ -3,7 +3,7 @@
 require 'test_helper'
 require 'batches_controller'
 
-class BatchesControllerTest < ActionController::TestCase # rubocop:todo Metrics/ClassLength
+class BatchesControllerTest < ActionController::TestCase
   context 'BatchesController' do
     setup do
       @controller = BatchesController.new
@@ -33,7 +33,12 @@ class BatchesControllerTest < ActionController::TestCase # rubocop:todo Metrics/
                 library_type: 'Standard'
               )
             end
+
+          @phix = create :spiked_buffer, :tube_barcode
+
           @lane = create(:empty_lane, qc_state: 'failed')
+          @lane.labware.parents << @library
+
           @request_one =
             pipeline.request_types.first.create!(
               asset: @library,
@@ -48,26 +53,88 @@ class BatchesControllerTest < ActionController::TestCase # rubocop:todo Metrics/
               }
             )
 
-          batch = create :batch, pipeline: pipeline
-          batch.batch_requests.create!(request: @request_one, position: 1)
-          batch.reload
-          batch.start!(create(:user))
-
-          get :show, params: { id: batch.id, format: :xml }
+          @batch = create :batch, pipeline: pipeline
+          @batch.batch_requests.create!(request: @request_one, position: 1)
+          @batch.reload
+          @batch.start!(create(:user))
         end
 
-        should 'Respond with xml' do
-          assert_equal 'application/xml', @response.content_type
+        context 'when there is no PhiX' do
+          setup { get :show, params: { id: @batch.id, format: :xml } }
+
+          should 'Respond with xml' do
+            assert_equal 'application/xml', @response.media_type
+          end
+
+          should 'have api version attribute on root object' do
+            assert_response :success
+            assert_select "lane[position='1'][id='#{@lane.id}'][priority='3']"
+            assert_select "library[request_id='#{@request_one.id}'][qc_state='fail']"
+          end
+
+          should 'expose the library information correctly' do
+            # rubocop:todo Layout/LineLength
+            assert_select "sample[library_id='#{@library.receptacle.id}'][library_name='#{@library.name}'][library_type='Standard']"
+            # rubocop:enable Layout/LineLength
+          end
+
+          should 'not have information about spiked in buffers' do
+            assert_select 'hyb_buffer', 0
+          end
         end
 
-        should 'have api version attribute on root object' do
-          assert_response :success
-          assert_select "lane[position='1'][id='#{@lane.id}'][priority='3']"
-          assert_select "library[request_id='#{@request_one.id}'][qc_state='fail']"
+        context 'when PhiX is spiked in at sequencing stage' do
+          setup do
+            @lane.labware.parents << @phix
+
+            get :show, params: { id: @batch.id, format: :xml }
+          end
+
+          should 'have information about spiked in buffers' do
+            assert_select 'hyb_buffer', 1
+            assert_select "sample[library_id='#{@phix.aliquots.first.library_id}']", 1
+            assert_select "tag[tag_id='#{@phix.aliquots.first.tag_id}']", 1
+            assert_select 'index', @phix.aliquots.first.tag.map_id.to_s, 1
+            assert_select 'expected_sequence', @phix.aliquots.first.tag.oligo.to_s, 1
+            assert_select 'tag_group_id', @phix.aliquots.first.tag.tag_group_id.to_s, 1
+          end
         end
 
-        should 'expose the library information correctly' do
-          assert_select "sample[library_id='#{@library.receptacle.id}'][library_name='#{@library.name}'][library_type='Standard']"
+        context 'when PhiX is spiked in during library prep' do
+          context 'when the lane has a single SpikedBuffer ancestor' do
+            setup do
+              @library.parents << @phix
+
+              get :show, params: { id: @batch.id, format: :xml }
+            end
+
+            should 'have information about spiked in buffers' do
+              assert_select 'hyb_buffer', 1
+              assert_select "sample[library_id='#{@phix.aliquots.first.library_id}']", 1
+              assert_select "tag[tag_id='#{@phix.aliquots.first.tag_id}']", 1
+              assert_select 'index', @phix.aliquots.first.tag.map_id.to_s, 1
+              assert_select 'expected_sequence', @phix.aliquots.first.tag.oligo.to_s, 1
+              assert_select 'tag_group_id', @phix.aliquots.first.tag.tag_group_id.to_s, 1
+            end
+          end
+
+          context 'when the lane has multiple SpikedBuffer ancestors' do
+            setup do
+              @phix_with_parent = create :spiked_buffer_with_parent, :tube_barcode
+              @library.parents << @phix_with_parent
+
+              get :show, params: { id: @batch.id, format: :xml }
+            end
+
+            should 'have information about spiked in buffers' do
+              assert_select 'hyb_buffer', 1
+              assert_select "sample[library_id='#{@phix_with_parent.aliquots.first.library_id}']", 1
+              assert_select "tag[tag_id='#{@phix_with_parent.aliquots.first.tag_id}']", 1
+              assert_select 'index', @phix_with_parent.aliquots.first.tag.map_id.to_s, 1
+              assert_select 'expected_sequence', @phix_with_parent.aliquots.first.tag.oligo.to_s, 1
+              assert_select 'tag_group_id', @phix_with_parent.aliquots.first.tag.tag_group_id.to_s, 1
+            end
+          end
         end
       end
     end
@@ -174,11 +241,9 @@ class BatchesControllerTest < ActionController::TestCase # rubocop:todo Metrics/
       context 'actions' do
         setup do
           @pipeline_next = create :pipeline, name: 'Next pipeline'
-          @pipeline = create :pipeline, name: 'New Pipeline', automated: false, next_pipeline_id: @pipeline_next.id
-          @pipeline_qc_manual =
-            create :pipeline, name: 'Manual quality control', automated: false, next_pipeline_id: @pipeline_next.id
-          @pipeline_qc =
-            create :pipeline, name: 'quality control', automated: true, next_pipeline_id: @pipeline_qc_manual.id
+          @pipeline = create :pipeline, name: 'New Pipeline'
+          @pipeline_qc_manual = create :pipeline, name: 'Manual quality control'
+          @pipeline_qc = create :pipeline, name: 'quality control'
 
           @ws = @pipeline.workflow # :name => 'A New workflow', :item_limit => 2
           @ws_two = @pipeline_qc.workflow # :name => 'Another workflow', :item_limit => 2
@@ -373,7 +438,8 @@ class BatchesControllerTest < ActionController::TestCase # rubocop:todo Metrics/
             end
 
             # Handful of edge cases that were tested in batch.rb, but the behaviour has moved. Covers:
-            # - Non 'on' values returned from the front-end (Which indicates something strange has happened with the checkboxes)
+            # - Non 'on' values returned from the front-end (Which indicates something strange has happened with the
+            #   checkboxes)
             # - Filtering of 'control' ids. (Associated with some old batches)
             context 'odd values' do
               setup do
@@ -453,7 +519,7 @@ class BatchesControllerTest < ActionController::TestCase # rubocop:todo Metrics/
       end
       should 'show batch' do
         assert_response :success
-        assert_equal 'application/xml', @response.content_type
+        assert_equal 'application/xml', @response.media_type
         assert_template 'batches/show'
       end
     end
@@ -466,7 +532,7 @@ class BatchesControllerTest < ActionController::TestCase # rubocop:todo Metrics/
       should 'show error' do
         # this is the wrong response!
         assert_response :success
-        assert_equal 'application/xml', @response.content_type
+        assert_equal 'application/xml', @response.media_type
         assert_template 'batches/batch_error'
       end
     end
@@ -478,7 +544,6 @@ class BatchesControllerTest < ActionController::TestCase # rubocop:todo Metrics/
         @user = create :user
         @controller.stubs(:current_user).returns(@user)
         @barcode_printer = create :barcode_printer
-        LabelPrinter::PmbClient.expects(:get_label_template_by_name).returns('data' => [{ 'id' => 15 }])
       end
 
       should '#print_plate_barcodes should send print request' do
@@ -523,23 +588,6 @@ class BatchesControllerTest < ActionController::TestCase # rubocop:todo Metrics/
                count: '3',
                printable: printable,
                batch_id: @batch.id.to_s
-             }
-      end
-
-      should '#print_multiplex_barcodes should send print request' do
-        pipeline = create :pipeline, name: 'Test pipeline', workflow: Workflow.create!(item_limit: 8), multiplexed: true
-        batch = pipeline.batches.create!
-        library_tube = create :library_tube, barcode: '111'
-        printable = { library_tube.id => 'on' }
-
-        RestClient.expects(:post)
-
-        post :print_multiplex_barcodes,
-             params: {
-               printer: barcode_printer.name,
-               count: '3',
-               printable: printable,
-               batch_id: batch.id.to_s
              }
       end
     end

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 xml.instruct!
 xml.studies(api_data) do
   @studies
@@ -27,15 +28,12 @@ xml.studies(api_data) do
         xml.created_at study.created_at
         xml.updated_at study.updated_at
         xml.descriptors do
-          study
-            .study_metadata
-            .attribute_value_pairs
-            .each do |attribute, _name|
-              xml.descriptor do
-                xml.name attribute.to_field_info.display_name
-                xml.value value
-              end
+          study.study_metadata.attribute_value_pairs.each do |attribute, _name|
+            xml.descriptor do
+              xml.name attribute.to_field_info.display_name
+              xml.value value
             end
+          end
         end
       end
     end

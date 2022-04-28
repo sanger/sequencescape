@@ -12,10 +12,10 @@ module SequencescapeExcel
 
       validate :check_tag_index
 
-      def update(attributes = {})
+      def update(_attributes = {})
         return unless valid?
 
-        attributes[:aliquot].tag = tag if tag.present? && tag.oligo.present?
+        aliquots.each { |aliquot| aliquot.tag = tag } if tag.present? && tag.oligo.present?
       end
 
       def link(other_fields)
@@ -27,8 +27,8 @@ module SequencescapeExcel
       def tag
         @tag ||=
           ::Tag
-            .where
-            .not(tag_group_id: nil, map_id: nil)
+            .where.not(tag_group_id: nil)
+            .where.not(map_id: nil)
             .where(tag_group_id: sf_tag_group.tag_group_id, map_id: value)
             .take
       end

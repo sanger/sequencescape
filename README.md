@@ -65,8 +65,9 @@ In addition to the [externally hosted YARD docs](https://www.rubydoc.info/github
 yard server -r --gems -m sequencescape .
 ```
 
-You can then access the Sequencescape documentation through: http://localhost:8808/docs/sequencescape
-Yard will also try and document the installed gems: http://localhost:8808/docs
+You can then access the Sequencescape documentation through: [http://localhost:8808/docs/sequencescape](http://localhost:8808/docs/sequencescape)
+
+Yard will also try and document the installed gems: [http://localhost:8808/docs](http://localhost:8808/docs)
 
 ## Requirements
 
@@ -80,7 +81,46 @@ The following tools are required for development:
   Sequencescape (currently 5.7) use [this](https://gist.github.com/operatino/392614486ce4421063b9dece4dfe6c21)
   helpful link.
 
-## Getting started
+## Getting started (using Docker)
+
+To set up a local development environment in Docker, you have to build a new Docker image for
+Sequencescape. start a stack of services that include a mysql database, and reset
+this database contents. You can do all together by running the command:
+
+```shell
+RESET_DATABASE=true docker-compose up
+```
+
+Optionally, if this is not the first time you start the app, you may not want to reset the
+database, and you can run this command instead:
+
+```shell
+docker-compose up
+```
+
+With this we should have started Sequencescape server and all required services. You should be
+able to access Sequencescape by going to <http://localhost:3000> and log in with
+username and password admin/admin.
+
+**ABOUT LOCAL DEVELOPMENT SETUP** You may want to start only the required services for Sequencescape (server and jobs worker) and use your local version of Mysql
+instead of the Docker version, in that case you can start this setup with the
+command:
+
+```shell
+docker-compose -f docker-compose-dev.yml up
+```
+
+**ABOUT RECREATE DOCKER IMAGE** If you ever need to recreate the image built on first start (because you made modifications
+to the Dockerfile file) you can run a building process with:
+
+```shell
+docker-compose build
+```
+
+## Getting started (using native installation)
+
+This section only applies if you don't have Docker installed or if you prefer a native installation
+of Sequencescape.
 
 ### Installing ruby
 
@@ -118,8 +158,6 @@ bundle install
 
 #### Adjusting config
 
-Copy the `config/aker.example.yml` file to `config/aker.example.yml`.
-
 The `config/database.yml` file saves the list of databases.
 
 #### Default setup
@@ -133,10 +171,10 @@ The `config/database.yml` file saves the list of databases.
 2. Install webpacker and the required JS libraries
 
    ```shell
-   bundle exec rails webpacker:install
+   yarn
    ```
 
-### Starting services
+#### Starting services
 
 You can quickly spin up all required services if you use foreman
 
@@ -174,7 +212,7 @@ bundle exec ./script/delayed_job start
 ### Message broker
 
 Sequencescape has its own message broker and consumer. To develop this or run it locally, you
-must have RabbitMQ installed. It may be easiest to use the docker image (https://hub.docker.com/_/rabbitmq).
+must have RabbitMQ installed. It may be easiest to use the docker image [https://hub.docker.com/\_/rabbitmq](https://hub.docker.com/_/rabbitmq).
 
 `docker run -d --hostname my-rabbit --name some-rabbit -p 8080:15672 -p 5672:5672 rabbitmq:3-management`
 
@@ -185,19 +223,19 @@ get the container id using `docker ps`, and then:
 
 To start the consumer off listening for messages:
 
-`bundle exec ./bin/amqp_client start`
+`bundle exec warren consumer start`
 
-where `start` instructs it to start. You can also stop a worker by calling `stop`
-or restart it with `restart`.
+The consumer will run in the foreground, logging to the console. You can stop it with Ctrl-C.
 
-Logs can be found in `tmp/pids`.
+For more warren actions, either use `bundle exec warren help` or see the
+[warren documentation](https://rubydoc.info/gems/sanger_warren)
 
 You will also have to change the config in config/warren.yml from `type: log` to `type: broadcast` to get
 it to actually send messages in development mode.
 
 ## Testing
 
-Testing is done in three ways; using rspec, rails test and feature tests.
+Testing is done in one of three ways; using rspec, via rails tests or with cucumber.
 
 1. To run the rspec tests (found in `rspec/` dir.):
 
@@ -210,6 +248,30 @@ Testing is done in three ways; using rspec, rails test and feature tests.
    ```shell
    bundle exec rake test -f
    ```
+
+   For a single file:
+
+   ```shell
+   bundle exec ruby -Itest test/lib/label_printer/print_job_test.rb
+   ```
+
+1. To run cucumber tests (found in `features/` dir.) first ensure you have a `sequencescape_test_cuke` database configured by running:
+
+   ```shell
+   RAILS_ENV=cucumber bundle exec rake db:setup
+   ```
+
+   then run cucumber itself:
+
+   ```shell
+   bundle exec cucumber
+   ```
+
+For a single file:
+
+```shell
+bundle exec cucumber features/create_plates.feature
+```
 
 ## Linting and formatting
 
@@ -310,7 +372,7 @@ node module. To install it, make sure you have install the dev dependencies from
 the table of contents, run:
 
 ```shell
-yarn markdown-toc -i README.md --bullets "*"
+npx markdown-toc -i README.md --bullets "*"
 ```
 
 ### CI

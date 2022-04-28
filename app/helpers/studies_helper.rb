@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module StudiesHelper # rubocop:todo Style/Documentation
   def status_link_title(study)
     study.inactive? || study.pending? ? 'Open' : 'Close'
@@ -15,7 +16,7 @@ module StudiesHelper # rubocop:todo Style/Documentation
 
   public
 
-  def display_file_icon(document) # rubocop:todo Metrics/MethodLength
+  def display_file_icon(document)
     return icon('fas', 'exclamation-circle', class: 'text-danger') unless document
 
     case document.content_type

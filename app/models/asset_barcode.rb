@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # This class only a concurrency safe counter to generate asset barcode
 # Used for {Tube tubes}
 # @see PlateBarcode for the equivalent in {Plate plates}

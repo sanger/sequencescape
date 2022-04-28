@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Core::Endpoint::BasicHandler::Associations::HasMany # rubocop:todo Style/Documentation
   #
   # Defines a has_many relationship which will be exposed via the v1 api

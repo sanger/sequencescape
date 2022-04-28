@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 #
 # Bait libraries come in two types, custom and standard, which can affect costs.
 #

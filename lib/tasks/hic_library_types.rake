@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Create hic library types for ToL
 
 namespace :hic_library_types do

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require File.join(Rails.root, 'lib', 'accession', 'accession')
 
 unless Rails.env.test?

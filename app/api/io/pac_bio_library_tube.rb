@@ -1,4 +1,5 @@
-class ::Io::PacBioLibraryTube < ::Io::Asset
+# frozen_string_literal: true
+class Io::PacBioLibraryTube < ::Io::Asset
   set_model_for_input(::PacBioLibraryTube)
   set_json_root(:pac_bio_library_tube)
 

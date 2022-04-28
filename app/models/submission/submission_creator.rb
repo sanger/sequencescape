@@ -217,7 +217,6 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton # rubocop:to
 
   private
 
-  # rubocop:todo Metrics/MethodLength
   def create_order # rubocop:todo Metrics/AbcSize
     order_role = OrderRole.find_by(role: order_params.delete('order_role')) if order_params.present?
     new_order =
@@ -238,8 +237,6 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton # rubocop:to
 
     new_order
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   # Returns Samples based on Sample name or Sanger ID
   # This is a legacy of the old controller...

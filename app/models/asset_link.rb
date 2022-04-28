@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # AssetLink is powered by acts-as-dag
 # @see https://github.com/resgraph/acts-as-dag
 #

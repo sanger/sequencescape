@@ -20,7 +20,6 @@ class Ability::Manager
 
   private
 
-  # rubocop:todo Metrics/MethodLength
   def grant_privileges # rubocop:todo Metrics/AbcSize
     Rails.logger.debug { 'Granting Manager privileges' }
 
@@ -50,5 +49,4 @@ class Ability::Manager
     can :create, AssetGroup, study: { managers: { id: user.id } }
     can :create, Order, study: { managers: { id: user.id } }
   end
-  # rubocop:enable Metrics/MethodLength
 end

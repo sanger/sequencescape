@@ -41,7 +41,7 @@ RSpec.describe Api::V2::Heron::PlatesController, type: :request, heron: true do
     end
     let!(:before_plate_count) { Plate.count }
 
-    setup { post api_v2_heron_plates_path, params: params }
+    before { post api_v2_heron_plates_path, params: params }
 
     it 'creates a new plate successfully' do
       expect(response).to have_http_status(:created)

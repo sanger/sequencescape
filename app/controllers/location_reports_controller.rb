@@ -27,7 +27,6 @@ class LocationReportsController < ApplicationController
     )
   end
 
-  # rubocop:todo Metrics/MethodLength
   def create # rubocop:todo Metrics/AbcSize
     @location_report_form = LocationReport::LocationReportForm.new(location_report_params)
     @location_report_form.user = @current_user
@@ -44,8 +43,6 @@ class LocationReportsController < ApplicationController
       end
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   #######
 

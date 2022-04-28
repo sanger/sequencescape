@@ -6,7 +6,7 @@ require './app/resources/api/v2/transfer_request_resource'
 RSpec.describe Api::V2::TransferRequestResource, type: :resource do
   subject(:transfer_request) { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { create :transfer_request }
+  let(:resource_model) { build_stubbed :transfer_request }
 
   it 'exposes attributes', :aggregate_failures do
     # Test attributes
@@ -16,7 +16,6 @@ RSpec.describe Api::V2::TransferRequestResource, type: :resource do
   end
 
   it 'exposes non-updateable fields', :aggregate_failures do
-    # rubocop:todo RSpec/AggregateExamples
     # Read only attributes
     expect(transfer_request).not_to have_updatable_field(:id)
     expect(transfer_request).not_to have_updatable_field(:uuid)
@@ -30,7 +29,6 @@ RSpec.describe Api::V2::TransferRequestResource, type: :resource do
   # eg. expect(transfer_request).to filter(:order_type)
 
   it 'exposes associations', :aggregate_failures do
-    # rubocop:todo RSpec/AggregateExamples
     # Associations
     expect(transfer_request).to have_one(:target_asset).with_class_name('Receptacle')
     expect(transfer_request).to have_one(:source_asset).with_class_name('Receptacle')

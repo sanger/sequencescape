@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Processes {CherrypickRequest}
 # Allows material from {Well wells} on one or more source {Plate plates} to be
 # laid out onto either a NEW plate of a specified {PlatePurpose} or onto a plate
@@ -14,8 +15,6 @@
 # @note Cherrypicking is typically processed by an SSR, and the batch worksheet is passed over to the lab.
 #       Actual lab work is tracked via {Robot::Verification::Base} classes through the {RobotVerificationsController}
 class CherrypickPipeline < CherrypickingPipeline
-  ALWAYS_SHOW_RELEASE_ACTIONS = true
-
   def post_finish_batch(batch, user)
     # Nothing, we don't want all the requests to be completed
   end
@@ -28,10 +27,9 @@ class CherrypickPipeline < CherrypickingPipeline
       .requests
       .select(&:passed?)
       .each do |request|
-        request
-          .asset
-          .stock_wells
-          .each { |stock| EventSender.send_pick_event(stock, target_purpose, "Pickup well #{request.asset.id}") }
+        request.asset.stock_wells.each do |stock|
+          EventSender.send_pick_event(stock, target_purpose, "Pickup well #{request.asset.id}")
+        end
       end
     batch.release_pending_requests
     batch.output_plates.each(&:cherrypick_completed)

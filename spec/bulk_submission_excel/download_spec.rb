@@ -75,7 +75,6 @@ RSpec.describe BulkSubmissionExcel::Download, type: :model, bulk_submission_exce
     end
 
     it 'have the correct number of columns' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(download.column_list.count).to eq(configuration.columns.all.count)
     end
   end

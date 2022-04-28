@@ -8,7 +8,6 @@ class PlateToTubesTest < ActiveSupport::TestCase
 
   attr_reader :tube_label, :sample_tubes, :prefix, :barcode1, :tube1, :label, :asset_name
 
-  # rubocop:todo Metrics/MethodLength
   def setup # rubocop:todo Metrics/AbcSize
     @prefix = 'NT'
     @barcode1 = '1111'
@@ -24,11 +23,10 @@ class PlateToTubesTest < ActiveSupport::TestCase
       bottom_line: (Date.today.strftime('%e-%^b-%Y')).to_s,
       round_label_top_line: prefix,
       round_label_bottom_line: barcode1,
-      barcode: tube1.machine_barcode
+      barcode: tube1.machine_barcode,
+      label_name: 'main_label'
     }
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   test 'should have tubes' do
     assert_equal 5, tube_label.tubes.count

@@ -56,7 +56,11 @@ RSpec.describe PhiX::SpikedBuffer, type: :model, phi_x: true do
     context 'with valid data' do
       subject(:save) { phi_x_spiked_buffer.save }
 
-      let(:parent) { create :phi_x_stock_tube }
+      let(:stock_study) { create :study }
+
+      let(:parent) { create :phi_x_stock_tube, study: stock_study }
+
+      let(:study_id) { nil }
       let(:phi_x_spiked_buffer) do
         build :phi_x_spiked_buffer,
               name: 'Example',
@@ -64,7 +68,8 @@ RSpec.describe PhiX::SpikedBuffer, type: :model, phi_x: true do
               parent: nil,
               concentration: '0.8',
               volume: '10',
-              number: 2
+              number: 2,
+              study_id: study_id
       end
 
       before { save }
@@ -72,25 +77,21 @@ RSpec.describe PhiX::SpikedBuffer, type: :model, phi_x: true do
       it { is_expected.to be true }
 
       it 'generates tubes according to the number supplied' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(phi_x_spiked_buffer.created_spiked_buffers).to have(2).items
       end
 
       it 'generates PhiX SpikedBuffer tubes' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(phi_x_spiked_buffer.created_spiked_buffers).to all be_a SpikedBuffer
         expect(phi_x_spiked_buffer.created_spiked_buffers).to all have_attributes(purpose: PhiX.spiked_buffer_purpose)
       end
 
       it 'names tubes appropriately' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(phi_x_spiked_buffer.created_spiked_buffers).to all have_attributes(
               name: a_string_starting_with('Example #')
             )
       end
 
       it 'sets the concentration and volume' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(phi_x_spiked_buffer.created_spiked_buffers).to all have_attributes(concentration: 0.8, volume: 10)
       end
 
@@ -110,13 +111,34 @@ RSpec.describe PhiX::SpikedBuffer, type: :model, phi_x: true do
       it 'records the parent' do
         phi_x_spiked_buffer.created_spiked_buffers.each { |tube| expect(tube.parents).to all eq parent }
       end
+
+      context 'when study_id is nil' do
+        it 'uses the same study as the parent' do
+          phi_x_spiked_buffer.created_spiked_buffers.each do |tube|
+            expect(tube.aliquots).to all have_attributes(study_id: stock_study.id)
+          end
+        end
+      end
+
+      # Setting the study for a SpikedBuffer tube is not currently exposed as an option through the /phi_x page
+      # due to concerns that it will be set accidentally
+      # But the option is here in the model to set it via study_id if needed in future
+      context 'when study_id is provided' do
+        let(:study_id) { create(:study).id }
+
+        it 'sets study on the new aliquots' do
+          phi_x_spiked_buffer.created_spiked_buffers.each do |tube|
+            expect(tube.aliquots).to all have_attributes(study_id: study_id)
+          end
+        end
+      end
     end
 
     context 'with invalid data' do
       let(:phi_x_spiked_buffer) { build :phi_x_spiked_buffer, number: -2 }
 
       it 'returns false' do
-        expect(phi_x_spiked_buffer.save).to eq false
+        expect(phi_x_spiked_buffer.save).to be false
       end
     end
   end

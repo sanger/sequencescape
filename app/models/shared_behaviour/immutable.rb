@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module SharedBehaviour::Immutable # rubocop:todo Style/Documentation
   MUTABLE = %w[deprecated_at updated_at].freeze
 

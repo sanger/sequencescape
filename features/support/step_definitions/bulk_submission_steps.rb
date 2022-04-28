@@ -14,7 +14,9 @@ def upload_custom_row_submission
   click_button 'Create Bulk submission'
 end
 
+# rubocop:todo Layout/LineLength
 When /^I have a plate '(.*)' that has a well in location 'A1' that contains the sample '(.*)'$/ do |asset_name, sample_name|
+  # rubocop:enable Layout/LineLength
   sample = Sample.find_by(name: sample_name)
   plate = FactoryBot.create :plate, name: asset_name
   plate.wells.construct!
@@ -33,7 +35,9 @@ When /^the sample '(.*)' belongs to study '(.*)'$/ do |sample_name, study_name|
   sample.studies << study
 end
 
+# rubocop:todo Layout/LineLength
 When /^I upload a file with a plate 'AssetTest' with a well in location 'A1' that contains the sample 'SampleTest' for study 'StudyB'$/ do
+  # rubocop:enable Layout/LineLength
   upload_custom_row_submission
 end
 

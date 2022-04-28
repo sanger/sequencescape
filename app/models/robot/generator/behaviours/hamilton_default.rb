@@ -41,9 +41,11 @@ module Robot::Generator::Behaviours::HamiltonDefault
         mapping_by_well[destination_position] << mapping
       end
 
-      mapping_by_well.sort_by { |a| a[0] }.each do |_dest_position, mappings|
-        mappings.each { |mapping| yield(mapping, dest_plate_barcode, plate_details) }
-      end
+      mapping_by_well
+        .sort_by { |a| a[0] }
+        .each do |_dest_position, mappings|
+          mappings.each { |mapping| yield(mapping, dest_plate_barcode, plate_details) }
+        end
     end
   end
 

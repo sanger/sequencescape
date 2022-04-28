@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module BroadcastEvent::Helpers
   # Provides support to define subjects that are referring to data stored
   # externally to Sequencescape. The subjects will be built from the
@@ -11,7 +12,7 @@ module BroadcastEvent::Helpers
 
     def build_subjects
       properties[:subjects].map do |prop|
-        obj = OpenStruct.new(prop)
+        obj = OpenStruct.new(prop) # rubocop:todo Style/OpenStructUse
         BroadcastEvent::SubjectHelpers::Subject.new(obj.role_type, obj)
       end
     end

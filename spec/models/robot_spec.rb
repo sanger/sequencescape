@@ -7,7 +7,7 @@ describe Robot do
     let(:robot_standard) { create(:robot, name: 'robot 1') }
     let(:robot_with_verification_behaviour) { create(:robot_with_verification_behaviour, name: 'robot 2') }
 
-    setup do
+    before do
       robot_standard
       robot_with_verification_behaviour
     end

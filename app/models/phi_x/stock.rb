@@ -21,10 +21,14 @@ class PhiX::Stock
   # @return [Integer] The number of {LibraryTube library tubes} to create
   attr_accessor :number
 
+  # @return [Integer] The id of the {Study} to associate with the {Aliquot}
+  attr_accessor :study_id
+
   validates :name, presence: true
-  validates :tags, inclusion: { in: PhiX.tag_option_names }
+  validates :tags, inclusion: { in: PhiX.tag_option_names.map(&:to_s) }
   validates :concentration, numericality: { greater_than: 0, only_integer: false }
   validates :number, numericality: { greater_than: 0, only_integer: true }
+  validates :study_id, presence: true
 
   #
   # Generates stocks if the factory is valid, otherwise returns false and does nothing
@@ -58,7 +62,13 @@ class PhiX::Stock
         .stock_purpose
         .create!(name: "#{name} ##{index + 1}") do |tube|
           tube.receptacle.qc_results.build(key: 'molarity', value: concentration, units: 'nM')
-          tube.receptacle.aliquots.build(sample: phi_x_sample, tag: i7_tag, tag2: i5_tag, library: tube)
+          tube.receptacle.aliquots.build(
+            sample: phi_x_sample,
+            tag: i7_tag,
+            tag2: i5_tag,
+            library: tube,
+            study_id: study_id
+          )
         end
     end
   end

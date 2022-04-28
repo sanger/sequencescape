@@ -4,12 +4,10 @@
 class Role::UserRole < ApplicationRecord
   self.table_name = 'roles_users'
 
-  belongs_to :role
+  belongs_to :role, touch: true
   belongs_to :user
 
   after_destroy :touch_authorizable
 
   delegate :touch_authorizable, :authorizable, to: :role
-
-  broadcasts_associated_with_warren :authorizable
 end

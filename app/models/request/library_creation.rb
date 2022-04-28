@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Request::LibraryCreation < CustomerRequest # rubocop:todo Style/Documentation
   self.library_creation = true
 

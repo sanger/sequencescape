@@ -17,6 +17,12 @@ RSpec.describe PhiX::Stock, type: :model, phi_x: true do
     it { is_expected.not_to be_valid }
   end
 
+  context 'with no study' do
+    let(:custom_options) { { study_id: nil } }
+
+    it { is_expected.not_to be_valid }
+  end
+
   context 'with unknown tags option' do
     let(:custom_options) { { tags: 'Do not exist' } }
 
@@ -43,36 +49,40 @@ RSpec.describe PhiX::Stock, type: :model, phi_x: true do
     context 'with valid data' do
       subject(:save) { phi_x_stock.save }
 
-      let(:phi_x_stock) { build :phi_x_stock, number: 2, name: 'Example', concentration: '0.8', tags: tags }
+      let(:phi_x_stock) do
+        build :phi_x_stock, number: 2, name: 'Example', concentration: '0.8', tags: tags, study_id: study_id
+      end
+
       let(:tags) { 'Single' }
+      let(:study_id) { build_stubbed(:study).id }
 
       before { save }
 
       it { is_expected.to be true }
 
       it 'generates tubes according to the number supplied' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(phi_x_stock.created_stocks).to have(2).items
       end
 
       it 'generates PhiX Stock tubes' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(phi_x_stock.created_stocks).to all be_a LibraryTube
         expect(phi_x_stock.created_stocks).to all have_attributes(purpose: PhiX.stock_purpose)
       end
 
       it 'names tubes appropriately' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(phi_x_stock.created_stocks).to all have_attributes(name: a_string_starting_with('Example #'))
       end
 
       it 'sets the concentration' do
-        # rubocop:todo RSpec/AggregateExamples
         expect(phi_x_stock.created_stocks).to all have_attributes(concentration: 0.8)
       end
 
       it 'generates an aliquot in each tube' do
         phi_x_stock.created_stocks.each { |tube| expect(tube.aliquots).to have(1).items }
+      end
+
+      it 'sets study id the aliquot in each tube' do
+        phi_x_stock.created_stocks.each { |tube| expect(tube.aliquots).to all have_attributes(study_id: study_id) }
       end
 
       it 'generates an aliquot with PhiX sample' do
@@ -111,7 +121,7 @@ RSpec.describe PhiX::Stock, type: :model, phi_x: true do
       let(:phi_x_stock) { build :phi_x_stock, number: -2 }
 
       it 'returns false' do
-        expect(phi_x_stock.save).to eq false
+        expect(phi_x_stock.save).to be false
       end
     end
   end

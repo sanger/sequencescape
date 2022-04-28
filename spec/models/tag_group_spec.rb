@@ -45,7 +45,6 @@ RSpec.describe TagGroup, type: :model do
     end
 
     it 'remaining tag groups should be selectable by the visible scope' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(described_class.visible).to include(tag_group_1, tag_group_3)
     end
   end
@@ -65,6 +64,21 @@ RSpec.describe TagGroup, type: :model do
       let(:adapter_type) { nil }
 
       it { is_expected.to eq 'Unspecified' }
+    end
+  end
+
+  describe '#by_adaptor_type' do
+    let!(:adapter_type) { create(:adapter_type, name: 'test_adapter') }
+    let!(:tag_group) { create(:tag_group, adapter_type: adapter_type) }
+
+    context 'a tag group' do
+      it 'is selected when the scope adapter name matches' do
+        expect(described_class.by_adapter_type('test_adapter')).to include(tag_group)
+      end
+
+      it 'is not selected when the scope adaptor name does not match' do
+        expect(described_class.by_adapter_type('another_test_adapter')).not_to include(tag_group)
+      end
     end
   end
 end

@@ -1,10 +1,15 @@
-class SequencingPipeline < Pipeline # rubocop:todo Style/Documentation
+# frozen_string_literal: true
+
+# SequencingPipeline represents the loading of multiplexed library tubes onto
+# lanes of flowcells for running on the Sequencing machines.
+class SequencingPipeline < Pipeline
   self.batch_worksheet = 'simplified_worksheet'
   self.sequencing = true
   self.purpose_information = false
   self.inbox_eager_loading = :loaded_for_sequencing_inbox_display
   self.generate_target_assets_on_batch_create = true
   self.asset_type = 'Lane::Labware'
+  self.requires_position = true
 
   def request_actions
     [:remove]
@@ -30,7 +35,7 @@ class SequencingPipeline < Pipeline # rubocop:todo Style/Documentation
   # The guys in sequencing want to be able to re-run a request in another batch.  What we've agreed is that
   # the request will be failed and then an identical request will be resubmitted to their inbox.  The
   # "failed" request should not be charged for.
-  def detach_request_from_batch(batch, request) # rubocop:todo Metrics/MethodLength
+  def detach_request_from_batch(batch, request)
     request.fail!
 
     # Note that the request metadata also needs to be cloned for this to work.
@@ -40,7 +45,9 @@ class SequencingPipeline < Pipeline # rubocop:todo Style/Documentation
         request_clone.update!(state: 'pending', target_asset_id: nil, request_metadata_attributes: rma)
         request_clone.comments.create!(
           description:
+            # rubocop:todo Layout/LineLength
             "Automatically created clone of request #{request.id} which was removed from Batch #{batch.id} at #{DateTime.now}"
+          # rubocop:enable Layout/LineLength
         )
         request.comments.create!(
           description: "The request #{request_clone.id} is an automatically created clone of this one"

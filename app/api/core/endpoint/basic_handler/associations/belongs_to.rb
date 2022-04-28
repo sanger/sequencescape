@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Core::Endpoint::BasicHandler::Associations::BelongsTo # rubocop:todo Style/Documentation
   class Handler # rubocop:todo Style/Documentation
     include Core::Endpoint::BasicHandler::EndpointLookup

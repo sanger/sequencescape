@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # A class for requests that have some business meaning outside of Sequencescape
 class CustomerRequest < Request
   self.customer_request = true

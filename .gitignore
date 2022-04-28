@@ -2,6 +2,7 @@
 *.log.[0-9]
 *.log
 tmp/*
+dockermysql/*
 .DS_Store
 public/doc/*
 db/*.sql
@@ -30,7 +31,6 @@ spec/examples.txt
 public/public
 doc/*
 .yardoc/*
-config/aker.yml
 test_file.xlsx
 new_test_file.xlsx
 node_modules
@@ -43,3 +43,14 @@ sbin
 yarn-debug.log*
 .yarn-integrity
 /vendor
+.talismanrc
+
+# Vite Ruby
+/public/vite
+/public/vite-dev
+/public/vite-test
+node_modules
+# Vite uses dotenv and suggests to ignore local-only env files. See
+# https://vitejs.dev/guide/env-and-mode.html#env-files
+*.local
+

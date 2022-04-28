@@ -1,0 +1,21 @@
+
+<p class="lead">
+  <% if indirect_phi_x_fields.request %>
+    Tube <%= indirect_phi_x_fields.request.asset.display_name %>
+  <% else %>
+    All tubes
+  <% end %>
+  had PhiX added during library preparation, futher PhiX is not required.
+</p>
+<button class="btn btn-primary"
+        type="button"
+        data-toggle="collapse"
+        data-target="#phiX_fields_<%= indirect_phi_x_fields.request&.id %>"
+        aria-expanded="false"
+        aria-controls="phiX_fields_<%= indirect_phi_x_fields.request&.id %>">Add PhiX Anyway</button>
+<div class="grid-form collapse" id="phiX_fields_<%= indirect_phi_x_fields.request&.id %>">
+  <%= label_tag "barcode_#{indirect_phi_x_fields.request&.id || :all}", indirect_phi_x_fields.label %>
+  <div class="field">
+    <%= text_field :barcode, indirect_phi_x_fields.request&.id || :all %>
+  </div>
+</div>

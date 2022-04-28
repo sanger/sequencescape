@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Controls progress through the {Task tasks} in a {Workflow} as part of
 # taking a {Batch} through a {Pipeline}
 #
@@ -12,76 +13,20 @@
 #
 # @note A large amount of the task processing actually occurs within the controller.
 #       These methods are included via the various Handler modules.
-class WorkflowsController < ApplicationController # rubocop:todo Metrics/ClassLength
+class WorkflowsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
-  before_action :find_workflow_by_id, only: %i[show batches]
 
   attr_accessor :plate_purpose_options, :spreadsheet_layout, :batch
 
-  include Tasks::AddSpikedInControlHandler
-  include Tasks::AssignTagsHandler
-  include Tasks::AssignTagsToTubesHandler
+  # @todo These actions should be extracted from the controller, and instead be handled by an object invoked
+  #       by the task
   include Tasks::AssignTubesToWellsHandler
-  include Tasks::BindingKitBarcodeHandler
   include Tasks::CherrypickHandler
-  include Tasks::MovieLengthHandler
   include Tasks::PlateTemplateHandler
   include Tasks::PlateTransferHandler
-  include Tasks::PrepKitBarcodeHandler
-  include Tasks::SamplePrepQcHandler
   include Tasks::SetDescriptorsHandler
-  include Tasks::SetCharacterisationDescriptorsHandler
-  include Tasks::TagGroupHandler
-  include Tasks::ValidateSampleSheetHandler
-  include Tasks::StartBatchHandler
-
-  # Lists all the workflows
-  # @note JG: While this works, I don't think it is used.
-  # @todo Remove (Including route)
-  def index
-    @workflows = Workflow.all
-
-    respond_to do |format|
-      format.html
-      format.xml { render xml: @workflows.to_xml }
-    end
-  end
-
-  # Shows a summary of the steps within a workflow
-  # @note JG: This is a remnant from when workflows were user editable. I don't believe it is used
-  #       and while it doesn't throw exceptions, its output is likely misleading for many pipelines.
-  # @todo Remove (Including route)
-  def show
-    respond_to do |format|
-      format.html
-      format.xml { render xml: @workflow.to_xml }
-    end
-  end
-
-  # Presumably used to list all batches associated with a workflow
-  # Not listed in routes
-  # @todo Remove
-  def batches
-    @workflow = Workflow.find(params[:id])
-
-    # TODO: association broken here - something to do with the attachables polymorph?
-    @batches = Batch.where(workflow_id: @workflow.id).sort_by(&:id).reverse
-  end
-
-  # Appears to be remnant of workflow editing? Shouldn't be in use any more.
-  # @todo Remove (Including route, which doesn't even seem to match up properly).
-  #       Also tested in workflows_controller_test.rb, but that test can be removed.
-  def sort
-    @workflow = Workflow.find(params[:workflow_id])
-    @task_list = @workflow.tasks
-    @task_list.each do |task|
-      task.sorted = params['task_list'].index(task.id.to_s) + 1
-      task.save
-    end
-    head :ok
-  end
 
   # TODO: This needs to be made RESTful.
   # 1: Routes need to be refactored to provide more sensible urls
@@ -91,9 +36,7 @@ class WorkflowsController < ApplicationController # rubocop:todo Metrics/ClassLe
   #    be worth maintaining the behaviour until we solve the problems.
   # 5: We need to improve the repeatability of tasks.
   # 6: GET should be Idempotent. doing a task should be a POST
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def stage # rubocop:todo Metrics/CyclomaticComplexity
     @workflow = Workflow.includes(:tasks).find(params[:workflow_id])
     @stage = params[:id].to_i
@@ -103,40 +46,42 @@ class WorkflowsController < ApplicationController # rubocop:todo Metrics/ClassLe
     # else actually execute the task.
     unless params[:next_stage].nil?
       eager_loading = @task.included_for_do_task
-      @batch ||= Batch.includes(eager_loading).find(params[:batch_id])
+      @batch = Batch.includes(eager_loading).find(params[:batch_id])
 
-      unless @batch.editable?
-        flash[:error] = 'You cannot make changes to a completed batch.'
-        redirect_back fallback_location: root_path
+      editable, message = @task.can_process?(@batch)
+
+      unless editable
+        redirect_back fallback_location: batch_path(@batch), alert: message
         return false
       end
 
       ActiveRecord::Base.transaction do
-        if @task.do_task(self, params)
+        task_success, task_message = @task.do_task(self, params, current_user)
+        if task_success
           # Task completed, start the batch is necessary and display the next one
-          do_start_batch_task(@task, params)
+          start_batch
           @stage += 1
           params[:id] = @stage
           @task = @workflow.tasks[@stage]
         end
+        flash[task_success ? :notice : :alert] ||= task_message if task_message
       end
     end
 
-    # Is this the last task in the workflow?
-    if @stage >= @workflow.tasks.size
+    if params[:commit] == 'Update'
+      redirect_to batch_path(@batch)
+    elsif @stage >= @workflow.tasks.size
       # All requests have finished all tasks: finish workflow
-      redirect_to finish_batch_url(@batch)
+      redirect_to finish_batch_path(@batch)
     else
       if @batch.nil? || @task.included_for_render_task != eager_loading
         @batch = Batch.includes(@task.included_for_render_task).find(params[:batch_id])
       end
-      @task.render_task(self, params)
+      @task.render_task(self, params, current_user)
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   # Default render task activity, eg. from {Task#render_task}
   def render_task(task, params)
@@ -149,58 +94,16 @@ class WorkflowsController < ApplicationController # rubocop:todo Metrics/ClassLe
 
   private
 
-  def ordered_fields(fields)
-    response = Array.new
-    fields.keys.sort_by(&:to_i).each { |key| response.push fields[key] }
-    response
-  end
-
-  # Flattens nested hashes down into a single layer in a similar manner
-  # to rails form parameter naming.
-  # @example Flattening a hash multiple levels deep
-  #   flatten_hash(key: 'value', key2: { key2a: 'value2a', key2b: 'value2b', key2c: { nested: 'deep'}})
-  #   # => {"key"=>"value", "key2[key2a]"=>"value2a", "key2[key2b]"=>"value2b", "key2[key2c][nested]"=>"deep"}
-  #
-  # @example Flattening a hash with ancestors
-  #   flatten_hash({key: 'value', key2: { key2a: 'value2a', key2b: 'value2b'}}, [:ancestor])
-  # # => {"ancestor[key]"=>"value", "ancestor[key2][key2a]"=>"value2a", "ancestor[key2][key2b]"=>"value2b"}
-  #
-  # @param hash [Hash] The hash to flatten
-  # @param ancestor_names [Array] Ancestors for all keys in the hash
-  #
-  # @return [type] [description]
-  def flatten_hash(hash = params, ancestor_names = []) # rubocop:todo Metrics/MethodLength
-    flat_hash = {}
-    hash.each do |k, v|
-      names = Array.new(ancestor_names)
-      names << k
-      if v.is_a?(Hash)
-        flat_hash.merge!(flatten_hash(v, names))
-      else
-        key = flat_hash_key(names)
-        key += '[]' if v.is_a?(Array)
-        flat_hash[key] = v
-      end
-    end
-
-    flat_hash
-  end
-
-  def flat_hash_key(names)
-    names = Array.new(names)
-    name = names.shift.to_s.dup
-    names.each { |n| name << "[#{n}]" }
-    name
-  end
-
-  def find_workflow_by_id
-    @workflow = Workflow.find(params[:id])
-  end
-
-  def eventify_batch(batch, task)
+  def create_batch_events(batch, task)
     event = batch.lab_events.build(description: 'Complete', user: current_user, batch: batch)
     event.add_descriptor Descriptor.new(name: 'task_id', value: task.id)
     event.add_descriptor Descriptor.new(name: 'task', value: task.name)
     event.save!
+  end
+
+  def start_batch
+    return unless @task.lab_activity?
+
+    @batch.start!(current_user) if @batch.may_start?
   end
 end

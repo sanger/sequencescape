@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 
 ENV['APP_ROOT'] ||= File.expand_path(File.join(File.dirname(__FILE__), '..'))
 APP_ROOT = ENV['APP_ROOT']
@@ -19,15 +20,16 @@ options = {
   log_output: true
 }
 
-options[:app_name] = if ENV.has_key?('Rails.env')
-                       "#{ENV['Rails.env']}-qc_evaluations-mini_poller"
-                     else
-                       'development-qc_evaluations-mini_poller'
-                     end
+options[:app_name] =
+  if ENV.has_key?('Rails.env')
+    "#{ENV['Rails.env']}-qc_evaluations-mini_poller"
+  else
+    'development-qc_evaluations-mini_poller'
+  end
 
 ARGV.each do |arg|
   if arg.include?('=')
-    (k, v) = arg.split('=', 2)
+    k, v = arg.split('=', 2)
     options[:"#{k}"] = v
   end
 end

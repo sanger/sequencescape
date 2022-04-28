@@ -34,8 +34,7 @@ class Robot::PickData
   # - First group them by destination plate
   # - Second, inside that group sort them putting the controls (ie. those from the control plate) in the front
   # - Third, with the remaining requests, sort them in column order for that plate
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/AbcSize
   def sorted_requests_for_destination_plate(requests_to_sort) # rubocop:todo Metrics/CyclomaticComplexity
     requests_to_sort.sort_by do |req|
       if req.target_asset&.map&.column_order
@@ -46,8 +45,7 @@ class Robot::PickData
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
 
   # processes cherrypicking requests for a single batch and destination plate
   # if there are more source plates than the maximum capacity for the robot, splits it out into multiple picks
@@ -63,10 +61,7 @@ class Robot::PickData
   #   2 => { etc. }
   # }
   # see pick_data_spec.rb for the more detailed structure
-  # rubocop:todo Metrics/CyclomaticComplexity
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize, Metrics/MethodLength
   def generate_picking_data_hash(target_barcode, requests: requests_for_destination_plate)
     data_objects = {}
     source_barcode_to_pick_number = {}
@@ -108,10 +103,7 @@ class Robot::PickData
     data_objects
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
-  # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize, Metrics/MethodLength
 
   def requests_for_destination_plate
     @requests_for_destination_plate ||=
@@ -123,7 +115,6 @@ class Robot::PickData
       ).passed
   end
 
-  # rubocop:todo Metrics/MethodLength
   def populate_data_object!(data_object, request) # rubocop:todo Metrics/AbcSize
     # NOTE: source includes control wells/plates
     source_plate = request.asset.plate
@@ -143,8 +134,6 @@ class Robot::PickData
       'buffer_volume' => target_well.get_buffer_volume
     }
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def plate_information(plate)
     plate_type = (plate.plate_type || default_type).tr('_', "\s")

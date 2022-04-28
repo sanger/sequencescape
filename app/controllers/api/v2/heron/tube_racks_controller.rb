@@ -8,7 +8,7 @@ module Api
         before_action :login_required, except: [:create]
         skip_before_action :verify_authenticity_token
 
-        def create # rubocop:todo Metrics/MethodLength
+        def create
           rack_factory = ::Heron::Factories::TubeRack.new(params_for_tube_rack)
           if rack_factory.valid? && rack_factory.save
             render json: {

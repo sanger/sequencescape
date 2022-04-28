@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class AdminController < ApplicationController # rubocop:todo Style/Documentation
   authorize_resource :sequencescape, parent: true, parent_action: :administer
 

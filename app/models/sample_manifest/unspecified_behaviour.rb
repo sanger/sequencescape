@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Simple core module to handle options when no type has been specified
 # Not valid for actually building manifests, just for rendering forms
 module SampleManifest::UnspecifiedBehaviour
@@ -20,7 +21,9 @@ module SampleManifest::UnspecifiedBehaviour
 
     def generate_sample_and_aliquot(sanger_sample_id, asset)
       raise StandardError,
+            # rubocop:todo Layout/LineLength
             "UnspecifiedBehaviour can not be used to create Sample: #{sanger_sample_id}, for Asset: #{asset.display_name}."
+      # rubocop:enable Layout/LineLength
     end
   end
 end

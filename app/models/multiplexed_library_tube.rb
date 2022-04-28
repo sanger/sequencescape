@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require_dependency 'tube/purpose'
 
 class MultiplexedLibraryTube < Tube # rubocop:todo Style/Documentation

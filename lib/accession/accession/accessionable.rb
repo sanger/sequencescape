@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Accession
   # Standard methods used by things that can be accesioned e.g sample
   module Accessionable

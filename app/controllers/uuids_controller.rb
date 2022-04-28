@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class UuidsController < ApplicationController # rubocop:todo Style/Documentation
   def show
     uuid = Uuid.find_by!(external_id: params[:id])

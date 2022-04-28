@@ -1,0 +1,14 @@
+---
+# DO NOT RENAME THIS FILE
+# These library types are associated with the long-read pipeline
+# This file is also used directly to populate the LongRead manifest
+# Note: There is some redundancy with the corresponding data in
+# Traction. However it was felt this was preferable to introducing
+# a downstream dependency on traction
+Pacbio_HiFi: {}
+Pacbio_HiFi_mplx: {}
+Pacbio_Microbial_mplx: {}
+Pacbio_IsoSeq: {}
+PacBio_IsoSeq_mplx: {}
+PacBio_Ultra_Low_Input: {}
+PacBio_Ultra_Low_Input_mplx: {}

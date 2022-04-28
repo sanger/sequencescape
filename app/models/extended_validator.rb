@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 ##
 # Extended validators are used to provide extra validation
 # of submission. They are associated with request types
@@ -36,7 +37,9 @@ class ExtendedValidator < ApplicationRecord # rubocop:todo Style/Documentation
   scope :for_submission,
         ->(submission) {
           joins(
+            # rubocop:todo Layout/LineLength
             'INNER JOIN request_types_extended_validators ON request_types_extended_validators.extended_validator_id = extended_validators.id'
+            # rubocop:enable Layout/LineLength
           ).where(request_types_extended_validators: { request_type_id: submission.request_types })
         }
 end

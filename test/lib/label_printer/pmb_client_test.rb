@@ -2,10 +2,10 @@
 
 require 'test_helper'
 
-class PmbClientTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
+class PmbClientTest < ActiveSupport::TestCase
   attr_reader :labels
 
-  def setup # rubocop:todo Metrics/MethodLength
+  def setup
     @labels = {
       'header' => {
         'header_text_1' => 'header_text_1',
@@ -32,8 +32,8 @@ class PmbClientTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
     RestClient
       .expects(:post)
       .with(
-        'http://localhost:9292/v1/print_jobs',
-        { 'data' => { 'attributes' => attributes } }.to_json,
+        'http://localhost:9292/v2/print_jobs',
+        { 'print_job' => attributes }.to_json,
         content_type: 'application/vnd.api+json',
         accept: 'application/vnd.api+json'
       )
@@ -67,7 +67,7 @@ class PmbClientTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
     RestClient
       .expects(:get)
       .with(
-        'http://localhost:9292/v1/label_templates?filter[name]=test_template',
+        'http://localhost:9292/v2/label_templates?filter[name]=test_template',
         content_type: 'application/vnd.api+json',
         accept: 'application/vnd.api+json'
       )
@@ -104,7 +104,7 @@ class PmbClientTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
     RestClient
       .expects(:get)
       .with(
-        'http://localhost:9292/v1/printers?filter[name]=test_printer',
+        'http://localhost:9292/v2/printers?filter[name]=test_printer',
         content_type: 'application/vnd.api+json',
         accept: 'application/vnd.api+json'
       )
@@ -112,28 +112,31 @@ class PmbClientTest < ActiveSupport::TestCase # rubocop:todo Metrics/ClassLength
     RestClient
       .expects(:post)
       .with(
-        'http://localhost:9292/v1/printers',
-        { 'data' => { 'attributes' => { 'name' => 'test_printer' } } }.to_json,
+        'http://localhost:9292/v2/printers',
+        { 'data' => { 'attributes' => { 'name' => 'test_printer', 'printer_type' => 'squix' } } }.to_json,
         content_type: 'application/vnd.api+json',
         accept: 'application/vnd.api+json'
       )
       .returns(201)
-    assert_equal 201, LabelPrinter::PmbClient.register_printer('test_printer')
+    assert_equal 201, LabelPrinter::PmbClient.register_printer('test_printer', 'squix')
 
     RestClient
       .expects(:get)
       .with(
-        'http://localhost:9292/v1/printers?filter[name]=test_printer',
+        'http://localhost:9292/v2/printers?filter[name]=test_printer',
         content_type: 'application/vnd.api+json',
         accept: 'application/vnd.api+json'
       )
       .returns('{"data":[{"id":"49","type":"printers","attributes":{"name":"test_printer","protocol":"LPD"}}]}')
-    assert_not LabelPrinter::PmbClient.register_printer('test_printer')
+    assert_not LabelPrinter::PmbClient.register_printer('test_printer', 'squix')
   end
 
   test 'should return pretty errors with new json' do
     errors =
+      # rubocop:todo Layout/LineLength
       '{"errors":[{"source":{"pointer":"/data/attributes/printer"},"detail":"does not exist"}, {"source":{"pointer":"/data/attributes/label_template"},"detail":"does not exist"}]}'
+
+    # rubocop:enable Layout/LineLength
     pretty_errors = 'Printer does not exist; Label template does not exist'
     assert_equal pretty_errors, LabelPrinter::PmbClient.pretty_errors(errors)
   end

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class QcMetric < ApplicationRecord # rubocop:todo Style/Documentation
   extend QcMetric::QcState
 

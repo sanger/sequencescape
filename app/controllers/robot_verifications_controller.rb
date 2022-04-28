@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class RobotVerificationsController < ApplicationController # rubocop:todo Style/Documentation
   before_action :find_barcodes, only: :submission
 
@@ -32,7 +33,6 @@ class RobotVerificationsController < ApplicationController # rubocop:todo Style/
   # Step 3: Receives the submission form and checks if it is valid. In the event it is valid
   #         provides a link to download the gwl/csv driver file for the robot. Otherwise
   #         redirects the user back to step 1 with an error message.
-  # rubocop:todo Metrics/MethodLength
   def download # rubocop:todo Metrics/AbcSize
     @robot = Robot.find(params[:robot_id])
     @robot_verification = @robot.verification_behaviour
@@ -48,8 +48,6 @@ class RobotVerificationsController < ApplicationController # rubocop:todo Style/
       redirect_to action: :index
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def find_barcodes
     @robot = Robot.find_from_barcode(barcode_hash[:robot_barcode])

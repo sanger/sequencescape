@@ -7,9 +7,7 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
     base.class_eval { include Cherrypick::Task::PickHelpers }
   end
 
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def render_cherrypick_task(_task, params) # rubocop:todo Metrics/CyclomaticComplexity
     if flash[:error].present?
       redirect_to action: 'stage', batch_id: @batch.id, workflow_id: @workflow.id, id: (@stage - 1).to_s
@@ -70,9 +68,7 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
     @plate_rows = @plate.try(:height) || @plate_purpose.plate_height
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   # rubocop:todo Metrics/MethodLength
   def setup_input_params_for_pass_through # rubocop:todo Metrics/AbcSize
@@ -99,9 +95,7 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
 
   # rubocop:enable Metrics/MethodLength
 
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def do_cherrypick_task(_task, params) # rubocop:todo Metrics/CyclomaticComplexity
     plates = params[:plate]
     size = params[:plate_size]
@@ -146,7 +140,7 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
       # whole load of wells so that they can be retrieved quickly and easily.
       wells = Well.includes(:well_attribute).find(@batch.requests.map(&:target_asset_id)).index_by(&:id)
       request_and_well =
-        @batch.requests.includes(:request_metadata).map { |r| [r.id.to_i, [r, wells[r.target_asset_id]]] }.to_h
+        @batch.requests.includes(:request_metadata).to_h { |r| [r.id.to_i, [r, wells[r.target_asset_id]]] }
       used_requests = []
       plates_and_wells = Hash.new { |h, k| h[k] = [] }
       plate_and_requests = Hash.new { |h, k| h[k] = [] }
@@ -232,9 +226,9 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
       used_requests.map(&:pass!)
       (@batch.requests - used_requests).each(&:recycle_from_batch!)
     end
+
     # rubocop:enable Metrics/BlockLength
+    [true, 'Layout set']
   end
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 end

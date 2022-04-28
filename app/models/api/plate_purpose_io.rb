@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Despite name controls rendering of warehouse messages for {PlatePurpose}
 # Historically used to be v0.5 API
 class Api::PlatePurposeIO < Api::Base

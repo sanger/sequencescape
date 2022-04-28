@@ -15,11 +15,11 @@ module CommentsProxy
     # - Finds any comments associated with the asset
     # - OR with any requests returned by request_ids
     # - Then group them together to perform de-duplication
-    def comment_assn # rubocop:todo Metrics/MethodLength
+    def comment_assn
       @comment_assn ||=
         Comment
           .where(commentable_type: 'Request', commentable_id: request_ids)
-          .or(Comment.where(commentable: @commentable))
+          .or(labware_query)
           .create_with(commentable: @commentable)
           .select(
             # We need to describe how we select values which aren't included in the group by
@@ -52,6 +52,10 @@ module CommentsProxy
         .find_each { |submission| submission.add_comment(comment.description, comment.user, comment.title) }
     end
 
+    def labware_query
+      Comment.where(commentable: @commentable)
+    end
+
     private
 
     def submission_ids
@@ -59,7 +63,7 @@ module CommentsProxy
     end
 
     def request_ids
-      raise 'Must be implimented on subclass'
+      raise 'Must be implemented on subclass'
     end
   end
 end

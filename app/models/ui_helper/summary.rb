@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Ideally we'd convert this into a scope/association, but its complicated by the need to associate across
 # two models, one of which we're trying to deprecate.
 require 'will_paginate/array'
@@ -42,7 +43,7 @@ module UiHelper
       )
     end
 
-    def load_study(study) # rubocop:todo Metrics/MethodLength
+    def load_study(study)
       study.events.find_each do |event|
         add(
           SummaryItem.new(

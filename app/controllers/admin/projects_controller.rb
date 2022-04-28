@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'event_factory'
 class Admin::ProjectsController < ApplicationController # rubocop:todo Style/Documentation
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.

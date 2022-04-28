@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # A template is effectively a partially constructed Transfer instance, containing only the
 # transfers that should be made and the final Transfer class that should be constructed.
 #

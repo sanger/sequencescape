@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Accession
   # A tag relates to a sample attribute.
   # It provides all of the relevant information for that attribute

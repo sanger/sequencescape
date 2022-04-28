@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module AuthenticatedSystem # rubocop:todo Style/Documentation
   protected
 
@@ -48,9 +49,7 @@ module AuthenticatedSystem # rubocop:todo Style/Documentation
   #
   #   skip_before_action :login_required
   #
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def login_required # rubocop:todo Metrics/CyclomaticComplexity
     username, passwd = get_auth_data
 
@@ -75,9 +74,7 @@ module AuthenticatedSystem # rubocop:todo Style/Documentation
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   def setup_current_user
     username, passwd = get_auth_data
@@ -126,7 +123,6 @@ module AuthenticatedSystem # rubocop:todo Style/Documentation
 
   # When called with before_action :login_from_cookie will check for an :auth_token
   # cookie and log the user back in if apropriate
-  # rubocop:todo Metrics/MethodLength
   def login_from_cookie # rubocop:todo Metrics/AbcSize
     return unless cookies[:auth_token] && !logged_in?
 
@@ -141,8 +137,6 @@ module AuthenticatedSystem # rubocop:todo Style/Documentation
       flash[:notice] = 'Logged in successfully'
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   private
 

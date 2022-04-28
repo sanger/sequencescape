@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # It associates a name to a pre-filled submission (subclass) and a serialized set of attributes
 # We could have use a Prototype Factory , and so just associate a name to existing submission
 # but that doesn't work because the submission prototype doesn't pass the validation stage.
@@ -96,7 +97,7 @@ class SubmissionTemplate < ApplicationRecord
   end
 
   def input_plate_purposes
-    sorted_request_types.first.acceptable_plate_purposes
+    sorted_request_types.first.acceptable_purposes
   end
 
   private

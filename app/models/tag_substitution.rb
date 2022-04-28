@@ -25,7 +25,7 @@
 #      }
 #    ]
 #  ).save #=> true
-class TagSubstitution # rubocop:todo Metrics/ClassLength
+class TagSubstitution
   include ActiveModel::Model
 
   # The user performing the substitution, gets recorded on the generated comments [optional]
@@ -87,6 +87,10 @@ class TagSubstitution # rubocop:todo Metrics/ClassLength
     @substitutions = substitutions.map { |attrs| Substitution.new(attrs.dup, self) }
   end
 
+  def updated_substitutions
+    @updated_substitutions ||= @substitutions.select(&:updated?)
+  end
+
   # Perform the substitution, add comments to all tubes and lanes and rebroadcast all flowcells
   # @return [Boolean] returns true if the operation was successful, false otherwise
   def save # rubocop:todo Metrics/MethodLength
@@ -94,15 +98,15 @@ class TagSubstitution # rubocop:todo Metrics/ClassLength
 
     # First set all tags to null to avoid the issue of tag clashes
     ActiveRecord::Base.transaction do
-      @substitutions.each(&:nullify_tags)
-      @substitutions.each(&:substitute_tags)
+      updated_substitutions.each(&:nullify_tags)
+      updated_substitutions.each(&:substitute_tags)
       apply_comments
+      rebroadcast_flowcells
     end
-    rebroadcast_flowcells
     true
   rescue ActiveRecord::RecordNotUnique => e
     # We'll specifically handle tag clashes here so that we can produce more informative messages
-    raise e unless /aliquot_tags_and_tag2s_are_unique_within_receptacle/.match?(e.message)
+    raise e unless /aliquot_tag_tag2_and_tag_depth_are_unique_within_receptacle/.match?(e.message)
 
     errors.add(:base, 'A tag clash was detected while performing the substitutions. No changes have been made.')
     false
@@ -150,7 +154,7 @@ class TagSubstitution # rubocop:todo Metrics/ClassLength
 
   def comment_text
     @comment_text ||=
-      @substitutions.each_with_object(comment_header) do |substitution, comment|
+      updated_substitutions.each_with_object(comment_header) do |substitution, comment|
         substitution_comment = substitution.comment(oligo_index)
         comment << substitution_comment << "\n" if substitution_comment.present?
       end
@@ -160,7 +164,7 @@ class TagSubstitution # rubocop:todo Metrics/ClassLength
     @commented_assets ||= (Receptacle.on_a(Tube).with_required_aliquots(all_aliquots).pluck(:id) + lane_ids).uniq
   end
 
-  def apply_comments # rubocop:todo Metrics/MethodLength
+  def apply_comments
     commentable_type = Receptacle.base_class.name
     Comment.import(
       commented_assets.map do |asset_id|

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Included in {Plate}
 # The intent of this file was to provide methods specific to the V1 API
 module ModelExtensions::Plate

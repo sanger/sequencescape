@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module SampleManifest::SharedTubeBehaviour
   class Base # rubocop:todo Style/Documentation
     include SampleManifest::CoreBehaviour::Shared
@@ -16,7 +17,6 @@ module SampleManifest::SharedTubeBehaviour
 
     private
 
-    # rubocop:todo Metrics/MethodLength
     def generate_tubes(tube_purpose, number_of_tubes = count) # rubocop:todo Metrics/AbcSize
       sanger_ids = generate_sanger_ids(number_of_tubes)
       study_abbreviation = study.abbreviation
@@ -38,8 +38,6 @@ module SampleManifest::SharedTubeBehaviour
       delayed_generate_asset_requests(tubes.map { |tube| tube.receptacle.id }, study.id)
       tubes
     end
-
-    # rubocop:enable Metrics/MethodLength
 
     def delayed_generate_asset_requests(asset_ids, study_id)
       Delayed::Job.enqueue GenerateCreateAssetRequestsJob.new(asset_ids, study_id)

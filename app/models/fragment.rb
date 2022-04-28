@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Fragments were used to represent DNA isolated on an agarose gel
 # Whey are no-longer actively created, but persist to preserve legacy
 # information.

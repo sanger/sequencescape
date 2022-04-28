@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module SampleManifest::SampleTubeBehaviour
   class Core < SampleManifest::SharedTubeBehaviour::Base # rubocop:todo Style/Documentation
     include SampleManifest::CoreBehaviour::NoSpecializedValidation

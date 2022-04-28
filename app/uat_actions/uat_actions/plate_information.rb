@@ -2,7 +2,7 @@
 
 # Will fetch plate information for a plate barcode
 class UatActions::PlateInformation < UatActions
-  self.title = 'Plate Information'
+  self.title = 'Plate information'
   self.description = 'Get plate information for a barcode.'
 
   form_field :plate_barcode, :text_field, label: 'Plate Barcode', help: 'Fetches basic information for a plate barcode.'
@@ -29,8 +29,11 @@ class UatActions::PlateInformation < UatActions
   end
 
   def wells_with_aliquots
-    plate.wells_in_column_order.each_with_object([]) do |well, wells_with_aliquots|
-      wells_with_aliquots << well.map_description if well.aliquots.present?
-    end.join(', ')
+    plate
+      .wells_in_column_order
+      .each_with_object([]) do |well, wells_with_aliquots|
+        wells_with_aliquots << well.map_description if well.aliquots.present?
+      end
+      .join(', ')
   end
 end

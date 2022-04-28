@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class StockStampersController < ApplicationController # rubocop:todo Style/Documentation
   def new
     @stock_stamper = StockStamper.new

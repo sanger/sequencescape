@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-Given /^the plate with ID (\d+) has attatched QC data with a UUID of "(.*?)"$/ do |id, uuid|
+Given /^the plate with ID (\d+) has attached QC data with a UUID of "(.*?)"$/ do |id, uuid|
   filename = File.expand_path(File.join(Rails.root, %w[test data example_file.txt]))
   File.open(filename) { |file| Plate.find(id).add_qc_file(file) }
   set_uuid_for(Plate.find(id).qc_files.last, uuid)
@@ -19,7 +19,7 @@ When /^I make an authorised POST with the QC file to the API path "(.*?)"$/ do |
   end
 end
 
-Then /^the plate with ID (\d+) should have attatched QC data$/ do |id|
+Then /^the plate with ID (\d+) should have attached QC data$/ do |id|
   filename = File.expand_path(File.join(Rails.root, %w[test data example_file.txt]))
   assert_equal(1, Plate.find(id).qc_files.count)
   new_data = Plate.find(id).qc_files.first.current_data

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Core::Io::List # rubocop:todo Style/Documentation
   include Core::Benchmarking
 

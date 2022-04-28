@@ -55,7 +55,7 @@ module PhiX
   # Returns the names of valid tag options for creation of PhiX libraries.
   # @return [Array] Valid tag options
   def self.tag_option_names
-    tag_options.keys
+    tag_options.keys.map(&:to_s)
   end
 
   # Returns the default tag option which will be automatically selected when
@@ -91,6 +91,16 @@ module PhiX
     TagGroup.find_or_create_by!(name: configuration[:tag_group_name])
   end
 
+  # Returns the {Study studies} that can be used to register PhiX
+  # @return [Study::ActiveRecord_Relation]
+  def self.studies
+    Study.where(name: configuration[:studies])
+  end
+
+  def self.default_study_option
+    Study.find_by(name: configuration[:default_study_option])
+  end
+
   #
   # Performs a lookup of the tag option matching the given oligo pair.
   # If no option can be found returns:
@@ -100,7 +110,7 @@ module PhiX
   #
   # @return [String] The named tag option.
   def self.tag_option_for(i7_oligo:, i5_oligo:)
-    tag_options.key('i7_oligo' => i7_oligo, 'i5_oligo' => i5_oligo) ||
+    tag_options.deep_symbolize_keys.key(i7_oligo: i7_oligo, i5_oligo: i5_oligo)&.to_s ||
       "UNKNOWN i7:#{i7_oligo || '-'} i5:#{i5_oligo || '-'}"
   end
 
@@ -111,7 +121,7 @@ module PhiX
   #
   # @return [Tag, nil] The tag to apply, or nil if it is to be untagged
   def self.find_tag(tag_option, tag_type)
-    oligo = tag_options.dig(tag_option, tag_type)
+    oligo = tag_options.dig(tag_option.to_sym, tag_type)
     return nil if oligo.nil?
 
     tag_group.tags.create_with(map_id: configuration[:tag_map_id]).find_or_create_by!(oligo: oligo)

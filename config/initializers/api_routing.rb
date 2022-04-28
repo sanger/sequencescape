@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # TODO: Fix these
 module ApiRouting # rubocop:todo Style/Documentation
   # Assets have a couple of extra actions that are always present: namely 'parents' and 'children'

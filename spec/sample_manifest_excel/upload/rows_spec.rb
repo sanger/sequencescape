@@ -29,7 +29,7 @@ RSpec.describe SampleManifestExcel::Upload::Rows, type: :model, sample_manifest_
   end
 
   it 'is not valid unless all of the rows are valid' do
-    download = build(:test_download_tubes, columns: columns, validation_errors: [:insert_size_from])
+    download = build(:test_download_tubes, columns: columns, validation_errors: [:sanger_sample_id_invalid])
     download.save(test_file_name)
     expect(described_class.new(SampleManifestExcel::Upload::Data.new(test_file), columns)).not_to be_valid
   end

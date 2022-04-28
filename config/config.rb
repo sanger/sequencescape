@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'configatron'
 
 configatron.amqp.lims_id = 'SQSCP'
@@ -21,14 +22,13 @@ configatron.ssr_emails = ['ssr@example.com']
 
 configatron.authentication = ENV.fetch('AUTH', 'local')
 
-configatron.pmb_api = 'http://localhost:9292/v1'
+configatron.pmb_api = 'http://localhost:9292/v2'
 configatron.register_printers_automatically = true
 
 configatron.default_policy_text = 'https://www.example.com/'
 configatron.default_policy_title = 'Default Policy Title'
 configatron.fluidigm_data.source = 'directory'
 configatron.fluidigm_data.directory = "#{Rails.root}/data/fluidigm"
-configatron.irods_audience = 'http://localhost:3000'
 configatron.mail_prefix = '[DEVELOPMENT]'
 configatron.phix_tag.tag_map_id = 888
 configatron.r_and_d_division = 'RandD'
@@ -63,6 +63,8 @@ if Rails.env.development? || Rails.env.profile?
   configatron.ldap_server = 'localhost'
 
   configatron.pipelines_url = 'http://localhost:3000'
+
+  configatron.labwhere_api = 'localhost:3200/api'
 
   configatron.plate_barcode_service = 'http://localhost:3011'
   configatron.plate_volume_files = "#{Rails.root}/data/plate_volume/"

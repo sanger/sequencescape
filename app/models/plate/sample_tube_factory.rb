@@ -7,10 +7,9 @@ class Plate::SampleTubeFactory < SimpleDelegator
   end
 
   def create_child_sample_tube(well)
-    Tube::Purpose
-      .standard_sample_tube
-      .create!
-      .tap { |sample_tube| sample_tube.receptacle.transfer_requests_as_target.create!(asset: well) }
+    Tube::Purpose.standard_sample_tube.create!.tap do |sample_tube|
+      sample_tube.receptacle.transfer_requests_as_target.create!(asset: well)
+    end
   end
 
   def create_sample_tubes_and_print_barcodes(barcode_printer)
@@ -22,8 +21,7 @@ class Plate::SampleTubeFactory < SimpleDelegator
     sample_tubes
   end
 
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
   def self.create_sample_tubes_asset_group_and_print_barcodes(plates, barcode_printer, study)
     return nil if plates.empty?
 
@@ -46,6 +44,5 @@ class Plate::SampleTubeFactory < SimpleDelegator
 
     asset_group
   end
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 end

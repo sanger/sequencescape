@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Sdb::SampleManifestsController < Sdb::BaseController # rubocop:todo Style/Documentation
   before_action :set_sample_manifest_id, only: %i[show generated print_labels]
   before_action :validate_type, only: %i[new create]
@@ -54,13 +55,15 @@ class Sdb::SampleManifestsController < Sdb::BaseController # rubocop:todo Style/
   end
 
   def index
-    pending_sample_manifests = SampleManifest.pending_manifests.paginate(page: params[:page])
-    completed_sample_manifests = SampleManifest.completed_manifests.paginate(page: params[:page])
+    pending_sample_manifests =
+      SampleManifest.pending_manifests.includes(:study, :supplier, :user).paginate(page: params[:page])
+    completed_sample_manifests =
+      SampleManifest.completed_manifests.includes(:study, :supplier, :user).paginate(page: params[:page])
     @display_manifests = pending_sample_manifests | completed_sample_manifests
     @sample_manifests = SampleManifest.paginate(page: params[:page])
   end
 
-  def print_labels # rubocop:todo Metrics/MethodLength
+  def print_labels
     print_job =
       LabelPrinter::PrintJob.new(
         params[:printer],

@@ -89,8 +89,7 @@ module SubmissionsHelper # rubocop:todo Metrics/ModuleLength
     )
   end
 
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
   def submission_status_message(submission) # rubocop:todo Metrics/CyclomaticComplexity
     case submission.state
     when 'building'
@@ -101,14 +100,18 @@ module SubmissionsHelper # rubocop:todo Metrics/ModuleLength
     when 'pending'
       display_user_guide('Your submission is currently pending.') +
         tag.p(
+          # rubocop:todo Layout/LineLength
           'It should be processed approximately 10 minutes after you have submitted it, however sometimes this may take longer.'
+          # rubocop:enable Layout/LineLength
         )
     when 'processing'
       display_user_guide('Your submission is currently being processed.  This should take no longer than five minutes.')
     when 'failed'
       display_user_error(
         raw(
+          # rubocop:todo Layout/LineLength
           "<h3>Your submission has failed:</h3><p> #{h((submission.message || 'No failure reason recorded').lines.first)} </p>"
+          # rubocop:enable Layout/LineLength
         )
       )
     when 'ready'
@@ -120,8 +123,7 @@ module SubmissionsHelper # rubocop:todo Metrics/ModuleLength
     end
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   def order_sample_names(order)
     order.assets.map(&:aliquots).flatten.map(&:sample).map(&:name).join(', ')

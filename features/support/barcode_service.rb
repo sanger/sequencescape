@@ -6,7 +6,7 @@ class FakeBarcodeService # rubocop:todo Style/Documentation
 
   # Ensure that the configuration is maintained, otherwise things start behaving badly
   # when it comes to the features.
-  def self.install_hooks(target, tags) # rubocop:todo Metrics/MethodLength
+  def self.install_hooks(target, tags)
     target.instance_eval do
       Before(tags) do |_scenario|
         plate_barcode_url = configatron.plate_barcode_service

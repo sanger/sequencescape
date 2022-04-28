@@ -1,5 +1,6 @@
+# frozen_string_literal: true
 # Controls API V1 IO for {::RequestType}
-class ::Io::RequestType < ::Core::Io::Base
+class Io::RequestType < ::Core::Io::Base
   set_model_for_input(::RequestType)
   set_json_root(:request_type)
 

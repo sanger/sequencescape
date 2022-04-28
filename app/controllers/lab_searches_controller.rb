@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class LabSearchesController < ApplicationController # rubocop:todo Style/Documentation
   include SearchBehaviour
   alias new search

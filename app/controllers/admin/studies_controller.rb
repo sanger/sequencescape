@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Admin::StudiesController < ApplicationController # rubocop:todo Style/Documentation
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -32,9 +33,7 @@ class Admin::StudiesController < ApplicationController # rubocop:todo Style/Docu
   end
 
   # TODO: remove unneeded code
-  # rubocop:todo Metrics/PerceivedComplexity
-  # rubocop:todo Metrics/MethodLength
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def filter # rubocop:todo Metrics/CyclomaticComplexity
     filter_conditions = { approved: false } if params[:filter][:by] == 'not approved' unless params[:filter].nil?
 
@@ -58,11 +57,8 @@ class Admin::StudiesController < ApplicationController # rubocop:todo Style/Docu
     render partial: 'filtered_studies'
   end
 
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
-  # rubocop:todo Metrics/MethodLength
   def managed_update # rubocop:todo Metrics/AbcSize
     @study = Study.find(params[:id])
 
@@ -78,12 +74,11 @@ class Admin::StudiesController < ApplicationController # rubocop:todo Style/Docu
       redirect_to controller: 'admin/studies', action: 'update', id: @study.id
     end
   rescue ActiveRecord::RecordInvalid => e
-    logger.warn "Failed to update attributes: #{@study.errors.map(&:to_s)}}"
+    errors = @study.errors.full_messages
+    logger.warn "Failed to update attributes: #{errors}}"
     flash[:error] = 'Failed to update attributes for study!'
     render action: :show, id: @study.id and return
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def sort
     @studies = Study.all.sort_by(&:name)

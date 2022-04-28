@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Event::RequestDescriptorUpdateEvent # rubocop:todo Style/Documentation
   def self.included(base)
     base.after_create(

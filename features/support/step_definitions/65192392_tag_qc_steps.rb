@@ -98,7 +98,6 @@ Given /^I have a robot for testing called "(.*?)"$/ do |name|
   end
 end
 
-# rubocop:disable Metrics/BlockLength
 Given /^I have a qc library created$/ do
   lot = Lot.find_by(lot_number: '1234567890')
   lot_b = Lot.find_by(lot_number: '1234567891')
@@ -132,8 +131,6 @@ Given /^I have a qc library created$/ do
   FactoryBot.create :request_without_submission, asset: stc.children.first, batch: batch
   # Batch.find(12345).batch_requests.create!(:request=>Request.create!(:asset=>stc.children.first),:position=>1)
 end
-# rubocop:enable Metrics/BlockLength
-
 Given /^the library is testing a reporter$/ do
   lot = Lot.find_by(lot_number: '1234567890')
   lot_b = Lot.find_by(lot_number: '1234567891')

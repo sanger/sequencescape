@@ -17,7 +17,7 @@ RSpec.describe BulkSubmissionExcel::Configuration, type: :model, bulk_submission
   end
 
   it 'is able to set and get a tag group' do
-    expect(configuration.tag_group).to be nil
+    expect(configuration.tag_group).to be_nil
     configuration.tag_group = 'Main test group'
     expect(configuration.tag_group).to eq('Main test group')
   end
@@ -51,7 +51,6 @@ RSpec.describe BulkSubmissionExcel::Configuration, type: :model, bulk_submission
     end
 
     it 'load the conditional formattings' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(configuration.conditional_formattings).to eq(
         SequencescapeExcel::ConditionalFormattingDefaultList.new(
           configuration.load_file(folder, 'conditional_formattings')
@@ -60,12 +59,10 @@ RSpec.describe BulkSubmissionExcel::Configuration, type: :model, bulk_submission
     end
 
     it 'load the ranges' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(configuration.ranges).to eq(SequencescapeExcel::RangeList.new(configuration.load_file(folder, 'ranges')))
     end
 
     it 'freeze all of the configuration options' do
-      # rubocop:todo RSpec/AggregateExamples
       expect(configuration.conditional_formattings).to be_frozen
       expect(configuration.ranges).to be_frozen
       expect(configuration.columns).to be_frozen

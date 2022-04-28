@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Request::Statistics # rubocop:todo Style/Documentation
   class Counter # rubocop:todo Style/Documentation
     def initialize(statistics = {})

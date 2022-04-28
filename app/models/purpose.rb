@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # The Purpose of a piece of {Labware} describes its role in the lab. While
 # most labware will retain a single purpose through their life cycle, it is
 # possible for purpose to be changed. Ideally this should be performed with
@@ -24,6 +25,7 @@
 # @abstract Probably best to avoid using directly.
 class Purpose < ApplicationRecord
   include Relationship::Associations
+  include SharedBehaviour::Named
   include Uuid::Uuidable
 
   self.table_name = 'plate_purposes'
@@ -59,7 +61,7 @@ class Purpose < ApplicationRecord
     ActiveSupport::Deprecation.silence do
       # Rails 6 lets us do this:
       # ActiveSupport::Deprecation.allow(:stock_plate) do
-      source_purpose_id.present? ? labware.ancestor_of_purpose(source_purpose_id) : labware.stock_plate
+      source_purpose_id.present? ? labware.ancestor_of_purpose(source_purpose_id) : labware.try(:stock_plate)
     end
   end
 
@@ -69,7 +71,7 @@ class Purpose < ApplicationRecord
     ActiveSupport::Deprecation.silence do
       # Rails 6 lets us do this:
       # ActiveSupport::Deprecation.allow(:stock_plate) do
-      source_purpose_id.present? ? labware.ancestors_of_purpose(source_purpose_id) : [labware.stock_plate].compact
+      source_purpose_id.present? ? labware.ancestors_of_purpose(source_purpose_id) : [labware.try(:stock_plate)].compact
     end
   end
 

@@ -6,7 +6,7 @@ require './app/resources/api/v2/request_resource'
 RSpec.describe Api::V2::RequestResource, type: :resource do
   subject { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { create :request }
+  let(:resource_model) { build_stubbed :request }
 
   # Test attributes
   let(:expected_metadata) { { 'customer_accepts_responsibility' => false } }
@@ -30,16 +30,15 @@ RSpec.describe Api::V2::RequestResource, type: :resource do
   # Custom method tests
   # Add tests for any custom methods you've added.
   it 'renders relevant metadata' do
-    # rubocop:todo RSpec/AggregateExamples
     expect(subject.options).to eq(expected_metadata)
   end
 
   context 'isc request' do
-    let(:resource_model) { create :isc_request, bait_library: bait_library }
+    let(:resource_model) { build_stubbed :isc_request, bait_library: bait_library }
     let(:bait_library) { create :bait_library }
     let(:expected_metadata) do
       {
-        'library_type' => 'Standard',
+        'library_type' => 'Agilent Pulldown',
         'fragment_size_required_to' => '400',
         'fragment_size_required_from' => '100',
         'bait_library' => bait_library.name,

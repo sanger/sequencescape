@@ -268,5 +268,82 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode 'INVALID'
   end
 
+  describe Barcode::FormatHandlers::BrantsBridge do
+    it_has_a_valid_barcode '00000000002107834', number: 2_107_834 # trims off the leading zeros
+    it_has_a_valid_barcode '10877393330000001', number: 10_877_393_330_000_001
+    it_has_an_invalid_barcode '12345678912'
+    it_has_an_invalid_barcode 'AB123456700000001'
+    it_has_an_invalid_barcode '00210783400000001 '
+  end
+
+  describe Barcode::FormatHandlers::BrantsBridgeV2 do
+    it_has_a_valid_barcode 'BB-12345678', prefix: 'BB', number: 12_345_678
+    it_has_an_invalid_barcode '00000000002107834'
+    it_has_an_invalid_barcode 'AB123456700000001'
+    it_has_an_invalid_barcode 'BBB-12345678'
+    it_has_an_invalid_barcode 'BB_12345678'
+  end
+
+  describe Barcode::FormatHandlers::LeamingtonSpa do
+    it_has_a_valid_barcode 'CHERY500171', prefix: 'CHERY', number: 500_171
+    it_has_a_valid_barcode 'CHERY123456789', prefix: 'CHERY', number: 123_456_789
+    it_has_an_invalid_barcode '12345678912'
+    it_has_an_invalid_barcode 'AB123456700000001'
+    it_has_an_invalid_barcode '00210783400000001 '
+  end
+
+  describe Barcode::FormatHandlers::LeamingtonSpaV2 do
+    it_has_a_valid_barcode 'RFLCP12340965', prefix: 'RFLCP', number: 123_409_65
+    it_has_an_invalid_barcode 'RFLCP500171'
+    it_has_an_invalid_barcode '12345678912'
+    it_has_an_invalid_barcode 'AB123456700000001'
+    it_has_an_invalid_barcode '00210783400000001 '
+  end
+
+  describe Barcode::FormatHandlers::Newcastle do
+    it_has_a_valid_barcode 'ICHNE12345c', prefix: 'ICHNE', number: 12_345, suffix: 'c'
+    it_has_a_valid_barcode 'ICHNE12345678d', prefix: 'ICHNE', number: 12_345_678, suffix: 'd'
+    it_has_an_invalid_barcode '12345678912'
+    it_has_an_invalid_barcode 'HEYKD12345678d'
+    it_has_an_invalid_barcode 'HEYKD12345678def'
+    it_has_an_invalid_barcode 'AB123456700000001'
+    it_has_an_invalid_barcode '00210783400000001 '
+  end
+
+  describe Barcode::FormatHandlers::UkBiocentreV7 do
+    it_has_a_valid_barcode '0030000010088', prefix: '003', number: 10_088, suffix: nil
+    it_has_a_valid_barcode '0030000539473', prefix: '003', number: 539_473, suffix: nil
+    it_has_an_invalid_barcode '00310088'
+    it_has_an_invalid_barcode '00310088888888'
+    it_has_an_invalid_barcode '0040000010088'
+    it_has_an_invalid_barcode 'INVALID'
+  end
+
+  describe Barcode::FormatHandlers::EastLondonGenesAndHealth do
+    it_has_a_valid_barcode 'S2-046-12345', prefix: 'S2', number: 12_345, suffix: nil
+    it_has_a_valid_barcode 'S2-046-123456', prefix: 'S2', number: 123_456, suffix: nil
+    it_has_an_invalid_barcode 'S2-123456'
+    it_has_an_invalid_barcode 'S2-046-_123456'
+    it_has_an_invalid_barcode 'INVALID'
+    it_has_an_invalid_barcode '123456789PLY-046-'
+    it_has_an_invalid_barcode 'S2_1234'
+    it_has_an_invalid_barcode ' S2-046-_123456'
+    it_has_an_invalid_barcode 'S2-046-_123456  '
+    it_has_an_invalid_barcode " 1234567890NBC\na"
+  end
+
+  describe Barcode::FormatHandlers::EastLondonGenesAndHealthV2 do
+    it_has_a_valid_barcode 'S2-046-12345', prefix: 'S2', number: 12_345, suffix: nil
+    it_has_a_valid_barcode 'S2-999-123456', prefix: 'S2', number: 123_456, suffix: nil
+    it_has_a_valid_barcode 'S2-044-123456', prefix: 'S2', number: 123_456, suffix: nil
+    it_has_an_invalid_barcode 'S2-123456'
+    it_has_an_invalid_barcode 'S2-046-_123456'
+    it_has_an_invalid_barcode 'INVALID'
+    it_has_an_invalid_barcode '123456789PLY-046-'
+    it_has_an_invalid_barcode 'S2_1234'
+    it_has_an_invalid_barcode ' S2-046-_123456'
+    it_has_an_invalid_barcode 'S2-046-_123456  '
+    it_has_an_invalid_barcode " 1234567890NBC\na"
+  end
   # rubocop:enable RSpec/EmptyExampleGroup
 end
