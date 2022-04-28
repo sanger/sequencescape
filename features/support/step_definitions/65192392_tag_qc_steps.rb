@@ -53,7 +53,7 @@ Given /^I am set up for testing qcable ordering$/ do
   lot = Lot.find_by(lot_number: '1234567890')
   user = User.last
   9.times do |pos|
-    step 'the Baracoda barcode service returns "SQPD-100000#{pos}"'
+    step "the Baracoda barcode service returns \"SQPD-100000#{pos+1}\""
   end
   step 'a robot exists'
   qccreate = QcableCreator.create!(lot: lot, user: user, count: 6)

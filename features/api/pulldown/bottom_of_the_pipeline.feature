@@ -44,7 +44,7 @@ Feature: The bottom of the pulldown pipeline
       """
       {
         "search": {
-          "barcode": "1221000002781"
+          "barcode": "SQPD-1000002"
         }
       }
       """
@@ -53,7 +53,7 @@ Feature: The bottom of the pulldown pipeline
       """
       {
         "plate": {
-          "name": "Plate DN1000002N",
+          "name": "Plate SQPD-1000002",
           "uuid": "00000000-1111-2222-3333-000000000002"
         }
       }
