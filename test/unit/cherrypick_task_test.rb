@@ -14,6 +14,17 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
   context CherrypickTask do
     setup do
+      PlateBarcode
+        .stubs(:create_child_barcodes)
+        .returns(
+          [build(:child_plate_barcode)]
+        )
+      PlateBarcode
+        .stubs(:create_barcode)
+        .returns(
+          build(:plate_barcode)
+        )
+
       @asset_shape =
         AssetShape.create!(
           name: 'mini',

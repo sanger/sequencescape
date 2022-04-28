@@ -107,7 +107,13 @@ class Barcode < ApplicationRecord
 
   validate :barcode_valid?
   validates :barcode, uniqueness: { scope: :format, case_sensitive: false }
-
+  scope(
+    :sanger_barcode,
+    lambda do |prefix, number|
+      human_barcode = SBCF::SangerBarcode.from_prefix_and_number(prefix, number).human_barcode
+      where(format: %i[sanger_ean13 sanger_code39], barcode: human_barcode)
+    end
+  )
   scope :for_search_query, ->(*input) { where(barcode: Barcode.extract_barcodes(input)).includes(:asset) }
 
   delegate :=~, to: :handler

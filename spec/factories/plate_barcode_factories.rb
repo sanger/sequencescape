@@ -6,6 +6,15 @@ FactoryBot.define do
     barcode { "#{configatron.plate_barcode_prefix}-#{generate(:barcode_number)}" }
   end
 
+  factory :child_plate_barcode, class: 'Barcode'  do
+    transient do
+      sequence(:child_num) { |i| i }
+      parent_barcode { "#{configatron.plate_barcode_prefix}-#{generate(:barcode_number)}" }
+    end
+    format { "sequencescape22" }
+    barcode { "#{parent_barcode}-#{child_num}" }
+  end
+
   factory :barcode_printer_type do
     sequence(:name) { |i| "Printer Type #{i}" }
   end

@@ -229,7 +229,6 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
             "Scanned plate #{scanned} has a purpose #{plate.purpose.name} not valid for creating [#{target_purposes}]"
           )
         end
-
         create_child_plates_from(plate, current_user, creator_parameters).tap do |destinations|
           add_created_plates(plate, destinations)
         end
@@ -247,14 +246,15 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def create_child_plates_from(plate, current_user, creator_parameters) # rubocop:todo Metrics/AbcSize
     stock_well_picker = plate.plate_purpose.stock_plate? ? ->(w) { [w] } : ->(w) { w.stock_wells }
     parent_wells = plate.wells
+ 
+    parent_barcode = plate.human_barcode
 
-    # We now use baracoda to grab the child plate barcode
-    # call create_child_barcodes from PlateBarcode
-    parent_barcode = plate.sanger_barcode&.number
+    # Do we only want to do this for new (SQPD) plate barcodes and still use WD12345 for DN plates?
+    child_plate_barcode = PlateBarcode.create_child_barcodes(parent_barcode, 1)[0]
 
     plate_purposes.map do |target_plate_purpose|
       child_plate =
-        target_plate_purpose.create!(:without_wells, barcode: parent_barcode, size: plate.size) do |child|
+        target_plate_purpose.create!(:without_wells, sanger_barcode: child_plate_barcode, size: plate.size) do |child|
           child.name = "#{target_plate_purpose.name} #{child.human_barcode}"
         end
 

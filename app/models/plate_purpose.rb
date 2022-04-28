@@ -104,8 +104,8 @@ class PlatePurpose < Purpose
     # 
     # 2022-04-20 10:04 - These attributes (barcode) are needed when the test creates a plate with a specific
     # barcode (and we dont want to access Baracoda in that case)
-    #attributes.delete(:barcode)
-    #attributes.delete(:barcode_prefix)
+    attributes.delete(:barcode)
+    attributes.delete(:barcode_prefix)
     target_class
       .create_with_barcode!(attributes, &block)
       .tap { |plate| plate.wells.construct! unless do_not_create_wells }

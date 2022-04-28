@@ -35,7 +35,9 @@ class CreatorTest < ActiveSupport::TestCase
   end
 
   test 'should properly create plates' do
-    PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode))
+    barcode = "SQPD-12345"
+    PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode, barcode: "SQPD-12345"))
+    PlateBarcode.stubs(:create_child_barcodes).returns(build(:child_plate_barcode, parent_barcode: barcode))
 
     LabelPrinter::PrintJob.any_instance.stubs(:execute).returns(true)
 
