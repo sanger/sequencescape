@@ -46,11 +46,11 @@ RSpec.describe Api::V2::TubeRackResource, type: :resource do
 
     it 'adds associations for the two tubes' do
       tube_rack.tube_locations = new_locations
-      expect(tube_rack.racked_tubes.count).to eq(2)
-      expect(tube_rack.racked_tubes[0].coordinate).to eq('A1')
-      expect(tube_rack.racked_tubes[0].tube.uuid).to eq(a1_tube.uuid)
-      expect(tube_rack.racked_tubes[1].coordinate).to eq('B1')
-      expect(tube_rack.racked_tubes[1].tube.uuid).to eq(b1_tube.uuid)
+      expect(resource_model.racked_tubes.count).to eq(2)
+      expect(resource_model.racked_tubes[0].coordinate).to eq('A1')
+      expect(resource_model.racked_tubes[0].tube.uuid).to eq(a1_tube.uuid)
+      expect(resource_model.racked_tubes[1].coordinate).to eq('B1')
+      expect(resource_model.racked_tubes[1].tube.uuid).to eq(b1_tube.uuid)
     end
 
     context 'when passed an empty locations object' do
@@ -58,7 +58,7 @@ RSpec.describe Api::V2::TubeRackResource, type: :resource do
 
       it 'doesn\'t create any associations' do
         tube_rack.tube_locations = new_locations
-        expect(tube_rack.racked_tubes).to be_empty
+        expect(resource_model.racked_tubes).to be_empty
       end
     end
 
