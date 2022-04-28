@@ -3,13 +3,11 @@
  * Note we don't use wild-cards/globbing to ensure we can control load order and to avoid importing
  * eg .orig files
  */
-@import "jquery-ui";
 @import "font-awesome";
 @import "all/bootstrap_variables";
 @import "all/datatables-bootstrap";
 @import "bootstrap";
 @import "formtastic";
-@import "select2";
 @import "all/sequencescape";
 @import "all/colours";
 @import "all/header";
@@ -25,4 +23,3 @@
 @import "all/comments_box";
 @import "all/tag-substitutions";
 @import "all/asset_audits";
-@import "lib/select2-bootstrap4";
