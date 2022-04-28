@@ -29,9 +29,6 @@ FactoryBot.define do
     lab_activity { true }
   end
 
-  factory :multiplexed_cherrypicking_task do
-  end
-
   factory :tag_groups_task do
   end
 
