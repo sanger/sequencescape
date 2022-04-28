@@ -120,9 +120,6 @@ group :development do
   # find unused routes and controller actions by runnung `rake traceroute` from CL
   gem 'traceroute'
 
-  # Pat of the JS assets pipleine
-  gem 'uglifier', '>= 1.0.3'
-
   # Rails 6 adds listen to assist with reloading
   gem 'listen'
 end
@@ -147,11 +144,8 @@ group :development, :test, :cucumber do
   # Asset compilation, js and style libraries
   gem 'bootstrap', '~>4.0' # Pinned as v5 has significant changes
   gem 'font-awesome-sass'
-  gem 'jquery-rails'
-  gem 'jquery-ui-rails'
   gem 'knapsack_pro'
   gem 'sass-rails'
-  gem 'select2-rails'
   gem 'webmock'
 end
 
