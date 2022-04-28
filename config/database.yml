@@ -13,9 +13,10 @@ mysql: &MYSQL
   adapter: mysql2
   username: <%= ENV.fetch('DBUSERNAME','root') %>
   password: <%= ENV['DBPASSWORD'] %>
-  encoding: utf8
+  encoding: utf8mb4
+  collation: utf8mb4_unicode_ci
   properties:
-    characterSetResults: utf8
+    characterSetResults: utf8mb4
   pool: 5
   timeout: 5000
   reaping_frequency: 600

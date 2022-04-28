@@ -11,7 +11,7 @@ module Api
 
       # model_name / model_hint if required
 
-      default_includes :uuid_object
+      default_includes :uuid_object, :sequencing_requests
 
       # Associations:
 
@@ -26,6 +26,7 @@ module Api
       attribute :created_at, readonly: true
       attribute :updated_at, readonly: true
       attribute :used_tags, readonly: true
+      attribute :lanes_of_sequencing, readonly: true
 
       # Filters
       filter :uuid, apply: ->(records, value, _options) { records.with_uuid(value) }
@@ -33,6 +34,9 @@ module Api
       # Custom methods
       # These shouldn't be used for business logic, and a more about
       # I/O and isolating implementation details.
+      def lanes_of_sequencing
+        _model.sequencing_requests.size
+      end
 
       # Class method overrides
     end

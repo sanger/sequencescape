@@ -31,6 +31,7 @@ class Submission < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Once a submission has requests we REALLY shouldn't be destroying it.
   has_many :requests, inverse_of: :submission, dependent: :restrict_with_exception
   has_many :aliquots, through: :requests, source: :related_aliquots
+  has_many :sequencing_requests, inverse_of: :submission, dependent: :restrict_with_exception
 
   # Items are a legacy item that used to represent libraries which had yet to be made.
   # JG: I don't think we have any behaviour that depends on them. They can probably be removed.

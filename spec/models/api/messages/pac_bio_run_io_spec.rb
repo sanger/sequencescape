@@ -16,8 +16,8 @@ RSpec.describe Api::Messages::PacBioRunIO, type: :model do
   let(:pac_bio_batch) do
     batch = create :pac_bio_sequencing_batch, assets: [library_tube_1, library_tube_2], target_plate: plate
 
-    # Historically transfer was handled by the pipeline. Bit now we're keeping this for update of
-    # legacy batches only.
+    # Historically transfer was handled by the pipeline. But now we're keeping
+    # this for update of legacy batches only.
     batch.reload.requests.each(&:transfer_aliquots)
     batch
   end
