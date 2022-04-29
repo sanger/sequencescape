@@ -87,9 +87,9 @@ Feature: The bottom of the pulldown pipeline
       """
 
     Then the aliquots of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be the same as the wells "A1-D1" of the plate "Testing the API"
-     And the name of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "DN1000001M A1:D1"
+     And the name of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "SQPD-1000001 A1:D1"
      And the aliquots of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000002" should be the same as the wells "E1-H1" of the plate "Testing the API"
-     And the name of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000002" should be "DN1000001M E1:H1"
+     And the name of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000002" should be "SQPD-1000001 E1:H1"
 
     # Change the state of one tube to ensure it doesn't affect the other
     Then log "Change the state of one tube to ensure it doesn't affect the other" for debugging

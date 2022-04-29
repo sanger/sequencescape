@@ -18,7 +18,8 @@ end
 #end
 
 Given /^a plate barcode webservice is available and returns "([\w-]+)"$/ do |barcode|
-  step("the plate barcode webservice returns \"#{barcode}\"")
+  step("the Baracoda barcode service returns \"#{barcode}\"")
+  #step("the plate barcode webservice returns \"#{barcode}\"")
 end
 
 Given /^the plate barcode webservice returns "([1-9][0-9]*)\.\.([1-9][0-9]*)"$/ do |start, finish|
@@ -41,7 +42,7 @@ Given '{asset_name} has a barcode of {string}' do |barcoded, barcode|
 end
 
 Given '{batch} has a barcode of {string}' do |barcoded, barcode|
-  barcoded.update!(barcode: Barcode.number_to_human(barcode.to_i), format: :sanger_code39)
+  barcoded.update!(barcode: Barcode.number_to_human(barcode.to_i))
 end
 
 Given /^the barcode of the last sample tube is "([^"]+)"$/ do |barcode|
