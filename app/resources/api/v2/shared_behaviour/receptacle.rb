@@ -22,12 +22,12 @@ module Api::V2::SharedBehaviour::Receptacle
     has_many :qc_results, readonly: true
     has_many :aliquots, readonly: true
 
-    has_many :downstream_assets, readonly: true, polymorphic: true, class_name: 'Receptacle'
+    has_many :downstream_assets, readonly: true, class_name: 'Receptacle'
     has_many :downstream_wells, readonly: true, class_name: 'Well'
     has_many :downstream_plates, readonly: true, class_name: 'Plate'
     has_many :downstream_tubes, readonly: true, class_name: 'Tube'
 
-    has_many :upstream_assets, readonly: true, polymorphic: true, class_name: 'Receptacle'
+    has_many :upstream_assets, readonly: true, class_name: 'Receptacle'
     has_many :upstream_wells, readonly: true, class_name: 'Well'
     has_many :upstream_plates, readonly: true, class_name: 'Plate'
     has_many :upstream_tubes, readonly: true, class_name: 'Tube'

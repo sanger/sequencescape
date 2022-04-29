@@ -23,11 +23,11 @@ module Api::V2::SharedBehaviour::Labware
     # If we are using api/v2/labware to pull back a list of labware, we may
     # expect a mix of plates and tubes. If we want to eager load their
     # contents we use the generic 'receptacles' association.
-    has_many :receptacles, readonly: true, polymorphic: true
-    has_many :ancestors, readonly: true, polymorphic: true, class_name: 'Labware'
-    has_many :descendants, readonly: true, polymorphic: true, class_name: 'Labware'
-    has_many :parents, readonly: true, polymorphic: true, class_name: 'Labware'
-    has_many :children, readonly: true, polymorphic: true, class_name: 'Labware'
+    has_many :receptacles, readonly: true
+    has_many :ancestors, readonly: true, class_name: 'Labware'
+    has_many :descendants, readonly: true, class_name: 'Labware'
+    has_many :parents, readonly: true, class_name: 'Labware'
+    has_many :children, readonly: true, class_name: 'Labware'
     has_many :child_plates, readonly: true, class_name: 'Plate'
     has_many :child_tubes, readonly: true, class_name: 'Tube'
     has_many :direct_submissions, readonly: true, class_name: 'Submission'
