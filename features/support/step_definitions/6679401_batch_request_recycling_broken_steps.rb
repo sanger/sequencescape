@@ -58,7 +58,6 @@ def build_batch_for(name, count) # rubocop:todo Metrics/AbcSize
   submission_details = yield(pipeline)
 
   user = FactoryBot.create(:user)
-
   assets =
     Array.new(count.to_i) do
       asset_attributes = {}
@@ -68,7 +67,6 @@ def build_batch_for(name, count) # rubocop:todo Metrics/AbcSize
       end
       FactoryBot.create(submission_details[:asset_type], :scanned_into_lab, asset_attributes)
     end
-
   rt_id = pipeline.request_types.active.first!.id
 
   # Build a submission that should end up in the appropriate inbox, once all of the assets have been
@@ -163,6 +161,7 @@ LIBRARY_CREATION_PIPELINES =
   ].map(&Regexp.method(:escape)).join('|')
 
 Given /^I have a batch with (\d+) requests? for the "(#{LIBRARY_CREATION_PIPELINES})" pipeline$/o do |count, name|
+  binding.pry
   build_batch_for(name, count.to_i) do |_pipeline|
     {
       asset_type: :sample_tube,

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'singleton'
+
 class FakeBarcodeService # rubocop:todo Style/Documentation
   include Singleton
 
@@ -41,6 +42,28 @@ class FakeBarcodeService # rubocop:todo Style/Documentation
 
   def next_barcode!
     barcodes.shift or raise StandardError, 'No more values set!'
+  end
+
+  def child_barcode_records(parent_barcode, count)
+    (1..count).to_a.map do |value| 
+      { barcode: "#{parent_barcode}-#{value}" }
+    end
+  end
+
+  def mock_child_barcodes(parent_barcode, count)
+    plate_barcode_url = configatron.baracoda_api
+    Rails.logger.debug("Mocking child barcode service #{plate_barcode_url}/child-barcodes/new")
+    WebMock.stub_request(:post, "#{plate_barcode_url}/child-barcodes/new").with(body: {
+      barcode: parent_barcode, count: count
+    }).to_return do
+      {
+        headers: {
+          'Content-Type' => 'text/json'
+        },
+        status: 201,
+        body: { barcodes: child_barcode_records(parent_barcode, count) }.to_json
+      }
+    end
   end
 end
 

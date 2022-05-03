@@ -257,7 +257,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
         target_plate_purpose.create!(:without_wells, sanger_barcode: child_plate_barcode, size: plate.size) do |child|
           child.name = "#{target_plate_purpose.name} #{child.human_barcode}"
         end
-
+      
       # We should probably just use a transfer here.
       child_plate.wells <<
         parent_wells.map do |well|

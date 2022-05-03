@@ -44,7 +44,7 @@ class PlateBarcode < ActiveResource::Base # rubocop:todo Style/Documentation
         retries += 1
       end
     end
-    response[:barcodes].map! { |barcode| Barcode.build_sequencescape22({barcode: barcode}) }
+    response[:barcodes].map! { |barcode| Barcode.build_sequencescape22(barcode) }
   end
 
   if Rails.env.development?

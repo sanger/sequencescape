@@ -110,7 +110,8 @@ Feature: Printing new plate barcodes
     And I press "Submit"
     Then I should see "Created plates successfully"
 
-    And the Baracoda barcode service returns "SQPD-77777"
+    #And the Baracoda barcode service returns "SQPD-77777"
+    And the Baracoda children barcode service for parent barcode "DN1454U" returns 1 barcode
     When I fill in the field labeled "Source plates" with "1220001454858"
     When I select "Stock Plate" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
@@ -120,7 +121,8 @@ Feature: Printing new plate barcodes
     And I press "Submit"
     Then I should see "Created plates successfully"
 
-    And the Baracoda barcode service returns "SQPD-77777"
+    #And the Baracoda barcode service returns "SQPD-77777"
+    And the Baracoda children barcode service for parent barcode "DN1234567T" returns 1 barcode
     When I fill in the field labeled "Source plates" with "1221234567841"
     When I select "Working dilution" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
@@ -130,7 +132,8 @@ Feature: Printing new plate barcodes
     And I press "Submit"
     Then I should see "Created plates successfully"
 
-    And the Baracoda barcode service returns "SQPD-77777"
+    #And the Baracoda barcode service returns "SQPD-77777"
+    And the Baracoda children barcode service for parent barcode "6251234567836" returns 1 barcode
     When I fill in the field labeled "Source plates" with "6251234567836"
     When I select "Pico dilution" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
@@ -140,7 +143,8 @@ Feature: Printing new plate barcodes
     And I press "Submit"
     Then I should see "Created plates successfully"
 
-    And the Baracoda barcode service returns "SQPD-77777"
+    #And the Baracoda barcode service returns "SQPD-77777"
+    And the Baracoda children barcode service for parent barcode "4361234567667" returns 1 barcode
     When I fill in the field labeled "Source plates" with "4361234567667"
     When I select "Pico Assay Plates" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
@@ -150,7 +154,8 @@ Feature: Printing new plate barcodes
     And I press "Submit"
     Then I should see "Created plates successfully"
 
-    And the Baracoda barcode service returns "SQPD-77777"
+    #And the Baracoda barcode service returns "SQPD-77777"
+    And the Baracoda children barcode service for parent barcode "6251234567836" returns 1 barcode
     When I fill in the field labeled "Source plates" with "6251234567836"
     When I select "Gel Dilution Plates" from "Plate purpose"
     And I fill in "User barcode" with "2470000100730"
