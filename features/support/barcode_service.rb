@@ -44,9 +44,24 @@ class FakeBarcodeService # rubocop:todo Style/Documentation
     barcodes.shift or raise StandardError, 'No more values set!'
   end
 
+  def next_matching_barcode_start(barcode, count)
+    # Find the most recent similar barcode
+    plate_barcode = Barcode.where("barcode like '#{barcode}%'").order(:id).last.barcode
+    # match the barcode found and return the next valid value
+    matching = plate_barcode.match(/([^-]*-[^-]*)-(\d*)/)
+    [matching[1], (matching[2].to_i + 1),  (matching[2].to_i + count)]
+  end
+
+  def parent_barcode_start(parent_barcode, count)
+    matching = parent_barcode.match(/([^-]*-[^-]*)-(\d*)/)
+    return next_matching_barcode_start(matching[1], count) if matching
+    [parent_barcode, 1, count]
+  end
+
   def child_barcode_records(parent_barcode, count)
-    (1..count).to_a.map do |value| 
-      { barcode: "#{parent_barcode}-#{value}" }
+    barcode, start, finish = parent_barcode_start(parent_barcode, count)
+    (start..finish).to_a.map do |value| 
+      { barcode: "#{barcode}-#{value}" }
     end
   end
 

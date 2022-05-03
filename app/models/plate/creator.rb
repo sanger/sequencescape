@@ -250,9 +250,10 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
     parent_barcode = plate.human_barcode
 
     # Do we only want to do this for new (SQPD) plate barcodes and still use WD12345 for DN plates?
-    child_plate_barcode = PlateBarcode.create_child_barcodes(parent_barcode, 1)[0]
+    children_plate_barcodes = PlateBarcode.create_child_barcodes(parent_barcode, plate_purposes.count)
 
-    plate_purposes.map do |target_plate_purpose|
+
+    plate_purposes.zip(children_plate_barcodes).map do |target_plate_purpose, child_plate_barcode|
       child_plate =
         target_plate_purpose.create!(:without_wells, sanger_barcode: child_plate_barcode, size: plate.size) do |child|
           child.name = "#{target_plate_purpose.name} #{child.human_barcode}"

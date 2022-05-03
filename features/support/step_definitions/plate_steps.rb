@@ -35,7 +35,11 @@ Given 'a tube named {string} with barcode {string} exists' do |name, machine_bar
 end
 
 Given /^a plate with barcode "([^"]*)" exists$/ do |machine_barcode|
-  FactoryBot.create :plate, sanger_barcode: Barcode.build_sanger_code39({machine_barcode: machine_barcode, format: 'DN'})
+  if machine_barcode.start_with?('SQPD')
+    FactoryBot.create :plate, sanger_barcode: Barcode.build_sequencescape22({barcode: machine_barcode})
+  else
+    FactoryBot.create :plate, sanger_barcode: Barcode.build_sanger_code39({machine_barcode: machine_barcode, format: 'DN'})
+  end
 end
 
 # rubocop:todo Layout/LineLength
@@ -59,12 +63,21 @@ end
 
 Given /^a plate with purpose "([^"]*)" and barcode "([^"]*)" exists$/ do |plate_purpose_name, machine_barcode|
   #FactoryBot.create :plate, sanger_barcode: Barcode.build_sanger_code39({machine_barcode: machine_barcode})
-  FactoryBot.create(
-    :plate,
-    sanger_barcode: Barcode.build_sanger_code39({machine_barcode: machine_barcode}),
-    well_count: 8,
-    plate_purpose: Purpose.find_by(name: plate_purpose_name)
-  )
+  if machine_barcode.start_with?('SQPD')
+    FactoryBot.create(
+      :plate,
+      sanger_barcode: Barcode.build_sequencescape22({barcode: machine_barcode}),
+      well_count: 8,
+      plate_purpose: Purpose.find_by(name: plate_purpose_name)
+    )
+  else
+    FactoryBot.create(
+      :plate,
+      sanger_barcode: Barcode.build_sanger_code39({machine_barcode: machine_barcode}),
+      well_count: 8,
+      plate_purpose: Purpose.find_by(name: plate_purpose_name)
+    )
+  end
 end
 
 Given /^a stock plate with barcode "([^"]*)" exists$/ do |machine_barcode|
