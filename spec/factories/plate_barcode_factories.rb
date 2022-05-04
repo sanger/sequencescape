@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :plate_barcode, class: 'Barcode'  do
-    format { "sequencescape22" }
+    format { 'sequencescape22' }
     barcode { "#{configatron.plate_barcode_prefix}-#{generate(:barcode_number)}" }
   end
 
@@ -11,7 +11,7 @@ FactoryBot.define do
       sequence(:child_num) { |i| i }
       parent_barcode { "#{configatron.plate_barcode_prefix}-#{generate(:barcode_number)}" }
     end
-    format { "sequencescape22" }
+    format { 'sequencescape22' }
     barcode { "#{parent_barcode}-#{child_num}" }
   end
 

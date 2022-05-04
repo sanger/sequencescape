@@ -22,7 +22,8 @@ RSpec.describe RobotVerificationsController, type: :controller do
   end
 
   describe '#download' do
-    let(:expected_layout) { [{ 'SQPD-142334' => 1 }, { 'SQPD-127168' => 3, 'SQPD-134443' => 4, 'SQPD-127162' => 1, 'SQPD-127167' => 2 }] }
+    let(:expected_layout) do
+ [{ 'SQPD-142334' => 1 }, { 'SQPD-127168' => 3, 'SQPD-134443' => 4, 'SQPD-127162' => 1, 'SQPD-127167' => 2 }] end
     let!(:before_event_count) { Event.count }
     let(:plate_types) do
       {
@@ -37,7 +38,8 @@ RSpec.describe RobotVerificationsController, type: :controller do
       { '1' => '580000001806', '2' => '580000002810', '3' => '580000003824', '4' => '580000004838' }
     end
     let(:plate_barcodes) do
-      { 'SQPD-127162' => 'SQDP-127162', 'SQPD-127167' => 'SQDP-127167', 'SQPD-127168' => 'SQPD-127168', 'SQPD-134443' => 'DN134443T' }
+      { 'SQPD-127162' => 'SQDP-127162', 'SQPD-127167' => 'SQDP-127167', 'SQPD-127168' => 'SQPD-127168', 
+'SQPD-134443' => 'DN134443T' }
     end
     let(:destination_bed_barcodes) { { '1' => '580000005842' } }
     let(:destination_plate_barcodes) { { plate.machine_barcode => plate.machine_barcode } }

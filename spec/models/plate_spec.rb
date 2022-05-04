@@ -95,7 +95,7 @@ describe Plate do
         subject { plate.ean13_barcode }
 
         it { 
-          is_expected.to eq nil 
+          expect(subject).to be_nil 
         }
       end
     end

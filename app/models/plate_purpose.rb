@@ -94,7 +94,7 @@ class PlatePurpose < Purpose
     super || 96
   end
 
-  def create!(*args, &block) # rubocop:todo Metrics/AbcSize
+  def create!(*args, &block)
     attributes = args.extract_options!
     do_not_create_wells = args.first.present?
     attributes[:size] ||= size

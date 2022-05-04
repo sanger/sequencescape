@@ -11,7 +11,7 @@ class FakeBarcodeService # rubocop:todo Style/Documentation
     target.instance_eval do
       Before(tags) do |_scenario|
         plate_barcode_url = configatron.baracoda_api
-        Rails.logger.debug("Mocking barcode service #{plate_barcode_url}/barcodes/SQPD/new")
+        Rails.logger.debug { "Mocking barcode service #{plate_barcode_url}/barcodes/SQPD/new" }
         stub_request(:post, "#{plate_barcode_url}/barcodes/SQPD/new").to_return do
           barcode_record = FakeBarcodeService.instance.next_barcode!
           {
@@ -67,7 +67,7 @@ class FakeBarcodeService # rubocop:todo Style/Documentation
 
   def mock_child_barcodes(parent_barcode, count)
     plate_barcode_url = configatron.baracoda_api
-    Rails.logger.debug("Mocking child barcode service #{plate_barcode_url}/child-barcodes/new")
+    Rails.logger.debug { "Mocking child barcode service #{plate_barcode_url}/child-barcodes/new" }
     WebMock.stub_request(:post, "#{plate_barcode_url}/child-barcodes/new").with(body: {
       barcode: parent_barcode, count: count
     }).to_return do

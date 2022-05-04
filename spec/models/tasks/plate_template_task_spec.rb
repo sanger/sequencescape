@@ -20,8 +20,10 @@ RSpec.describe PlateTemplateTask, type: :model do
   end
   let(:plate_a_barcode_number) { '1' }
   let(:plate_b_barcode_number) { '2' }
-  let(:plate_a) { create :plate, barcode: "SQPD-#{plate_a_barcode_number}", well_count: 4, well_factory: :untagged_well }
-  let(:plate_b) { create :plate, barcode: "SQPD-#{plate_b_barcode_number}", well_count: 4, well_factory: :untagged_well }
+  let(:plate_a) do
+ create :plate, barcode: "SQPD-#{plate_a_barcode_number}", well_count: 4, well_factory: :untagged_well end
+  let(:plate_b) do
+ create :plate, barcode: "SQPD-#{plate_b_barcode_number}", well_count: 4, well_factory: :untagged_well end
 
   let(:batch) { create :batch, requests: requests, pipeline: pipeline }
   let(:request) { instance_double(ActionDispatch::Request, parameters: params) }

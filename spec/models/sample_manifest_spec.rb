@@ -119,7 +119,8 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
         it 'returns the details of the created samples' do
           sample_id = SangerSampleId.order(id: :desc).limit(96 * count).last.id
           expect(manifest.details_array.length).to eq(96 * count)
-          expect(manifest.details_array.first).to eq(barcode: plate_barcode_1[:barcode], position: 'A1', sample_id: "WTCCC#{sample_id}")
+          expect(manifest.details_array.first).to eq(barcode: plate_barcode_1[:barcode], position: 'A1', 
+sample_id: "WTCCC#{sample_id}")
         end
 
         it 'create sample and aliquots' do

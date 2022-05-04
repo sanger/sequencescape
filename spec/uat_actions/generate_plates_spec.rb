@@ -48,10 +48,12 @@ describe UatActions::GeneratePlates do
       let(:report) do
         # A report is a hash of key value pairs which get returned to the user.
         # It should include information such as barcodes and identifiers
-        { 'plate_0' => plate_barcode_1[:barcode], 'plate_1' => plate_barcode_2[:barcode], 'plate_2' => plate_barcode_3[:barcode] }
+        { 'plate_0' => plate_barcode_1[:barcode], 'plate_1' => plate_barcode_2[:barcode], 
+'plate_2' => plate_barcode_3[:barcode] }
       end
 
-      before { allow(PlateBarcode).to receive(:create_barcode).and_return(plate_barcode_1, plate_barcode_2, plate_barcode_3)}
+      before do
+ allow(PlateBarcode).to receive(:create_barcode).and_return(plate_barcode_1, plate_barcode_2, plate_barcode_3) end
 
       it 'can be performed' do
         expect(uat_action.perform).to be true

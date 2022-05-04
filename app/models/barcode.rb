@@ -166,7 +166,7 @@ class Barcode < ApplicationRecord
   end
 
   def sequencescape22?
-    format == "sequencescape22"
+    format == 'sequencescape22'
   end
 
   def handler
@@ -188,7 +188,7 @@ class Barcode < ApplicationRecord
   end
 
   def child_barcodes
-    Barcode.where('barcode LIKE ?', "#{self.barcode}-%")
+    Barcode.where('barcode LIKE ?', "#{barcode}-%")
   end
 
   private

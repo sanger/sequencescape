@@ -5,7 +5,7 @@
 #end
 
 Given /^the plate barcode webservice returns "([\w-]+)"$/ do |barcode|
-  FakeBarcodeService.instance.barcode(barcode, "DN")
+  FakeBarcodeService.instance.barcode(barcode, 'DN')
 end
 
 Given /^the Baracoda barcode service returns "([\w-]+)"$/ do |barcode|

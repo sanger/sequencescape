@@ -38,7 +38,8 @@ Given /^a plate with barcode "([^"]*)" exists$/ do |machine_barcode|
   if machine_barcode.start_with?('SQPD')
     FactoryBot.create :plate, sanger_barcode: Barcode.build_sequencescape22({barcode: machine_barcode})
   else
-    FactoryBot.create :plate, sanger_barcode: Barcode.build_sanger_code39({machine_barcode: machine_barcode, format: 'DN'})
+    FactoryBot.create :plate, 
+sanger_barcode: Barcode.build_sanger_code39({machine_barcode: machine_barcode, format: 'DN'})
   end
 end
 
