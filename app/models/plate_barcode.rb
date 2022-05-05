@@ -2,7 +2,6 @@
 
 # Class that handles the access to Baracoda to obtain new barcodes
 class PlateBarcode
-
   def self.site
     configatron.baracoda_api
   end
@@ -15,9 +14,8 @@ class PlateBarcode
   # Returns:
   # - Barcode instance, using Sequencescape22 format
   def self.create_barcode
-    uri = URI("#{site}/barcodes/#{prefix}/new")
-    http_connection = Net::HTTP.new(uri.host, uri.port)
-    Barcode.build_sequencescape22(fetch_response(http_connection))
+    response = fetch_response("#{site}/barcodes/#{prefix}/new")
+    Barcode.build_sequencescape22(response)
   end
 
   # Creates a new group of child barcodes from a parent barcode.
@@ -27,12 +25,7 @@ class PlateBarcode
   # Returns:
   # - Barcode instance, using Sequencescape22 format
   def self.create_child_barcodes(parent_barcode, count = 1)
-    uri = URI("#{site}/child-barcodes/new")
-    http_connection = Net::HTTP.new(uri.host, uri.port)
-    initheader = { 'Content-Type' => 'application/json' }
-    request = Net::HTTP::Post.new(uri.path, initheader)
-    request.body = { barcode: parent_barcode, count: count }.to_json
-    response = fetch_response(http_connection, request)
+    response = fetch_response("#{site}/child-barcodes/new", { barcode: parent_barcode, count: count })
     response[:barcodes].map! { |barcode| Barcode.build_sequencescape22(barcode) }
   end
 
@@ -48,19 +41,51 @@ class PlateBarcode
   # Returns:
   # - Json parsed hash with the response from Baracoda
   # - If no answers is obtained, it raises an exception
-  def self.fetch_response(http_connection, request = nil, retries = 3, wait_timeout = 0.1)
-    # Baracoda has a drop out bug, until this is fixed we need to retry a few times
-    while retries.positive?
-      begin
+  def self.fetch_response(url, data = nil, retries = 3, wait_timeout = 0.1)
+    _connection_scope(url, data) do |http_connection, request|
+      # Baracoda has a drop out bug, until this is fixed we need to retry a few times
+      _retries_scope(retries, wait_timeout) do
         response = http_connection.request(request)
         return JSON.parse(response.body, symbolize_names: true) if response.code == '201'
+      end
+    end
+    raise 'Could not obtain a barcode from Baracoda'
+  end
+
+  # Retries the number of times specified before calling the block. It
+  # sleeps wait_timeout in between calls except with the last call.
+  # Args:
+  # - retries - int, Number of times it will retry to use the block
+  # - wait_timeout - float. Time sleep in between calls to baracoda when connection
+  #   is refused
+  # Yields: Nothing
+  def self._retries_scope(retries, wait_timeout)
+    while retries.positive?
+      begin
+        yield
       rescue Errno::ECONNREFUSED
         Rails.logger.error('Failed connection to Baracoda')
       end
       sleep(wait_timeout) if retries >= 1
       retries -= 1
     end
-    raise 'Could not obtain a barcode from Baracoda'
+  end
+
+  # Creates required objects to perform a call to the server so they can be reused
+  # inside the scope.
+  # Args:
+  # - url: string that contains the url to connect
+  # - data: object that we will POST to the url. If not defined it will be an empty POST.
+  # Yields:
+  # - http_connection - Net::HTTP instance to connect to the host/port
+  # - request - Net::HTTP::Post object that contains the params for the request like the body, headers, etc
+  def self._connection_scope(url, data = nil)
+    uri = URI(url)
+    http_connection = Net::HTTP.new(uri.host, uri.port)
+    initheader = { 'Content-Type' => 'application/json' }
+    request = Net::HTTP::Post.new(uri.path, initheader)
+    request.body = data.to_json if data
+    yield http_connection, request
   end
 
   if Rails.env.development?
@@ -93,9 +118,7 @@ class PlateBarcode
 
   if Rails.env.cucumber?
     def self.create_barcode
-      uri = URI("#{site}/barcodes/#{prefix}/new")
-      http_connection = Net::HTTP.new(uri.host, uri.port)
-      barcode_record = fetch_barcode(http_connection)
+      barcode_record = fetch_response("#{site}/barcodes/#{prefix}/new")
       if barcode_record[:format] == 'DN'
         Barcode.build_sanger_code39(prefix: 'DN', number: barcode_record[:barcode])
       else
