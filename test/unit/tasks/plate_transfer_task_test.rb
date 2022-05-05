@@ -35,9 +35,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
     end
 
     context '#render_plate_transfer_task' do
-      setup do
-        PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode))
-      end
+      setup { PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode)) }
 
       context 'when used for the first time' do
         setup do

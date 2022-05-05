@@ -24,7 +24,7 @@ Given(
 ) do |purpose_name, plate_barcode, study_name, number_of_samples, asset_group_name|
   study = Study.find_by(name: study_name)
   purpose = Purpose.find_by(name: purpose_name)
-  sanger_barcode = Barcode.build_sequencescape22({barcode: plate_barcode})
+  sanger_barcode = Barcode.build_sequencescape22({ barcode: plate_barcode })
   plate = FactoryBot.create(:plate, purpose: purpose, sanger_barcode: sanger_barcode)
 
   asset_group = study.asset_groups.find_by(name: asset_group_name) || study.asset_groups.create!(name: asset_group_name)

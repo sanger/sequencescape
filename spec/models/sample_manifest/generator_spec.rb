@@ -15,7 +15,7 @@ RSpec.describe SampleManifest::Generator, type: :model, sample_manifest_excel: t
       build(:plate_barcode),
       build(:plate_barcode),
       build(:plate_barcode),
-      build(:plate_barcode),
+      build(:plate_barcode)
     )
   end
 

@@ -179,7 +179,7 @@ describe Barcode, type: :model do
     let(:barcode) { build :sequencescape22, barcode: barcode_value, format: barcode_format }
     let(:barcode_value) { 'SQPD-12345' }
     let(:barcode_format) { 'sequencescape22' }
-    let(:number) { 12345 }
+    let(:number) { 12_345 }
     let(:barcode_prefix) { 'SQPD' }
     let(:human_barcode) { 'SQPD-12345' }
     let(:machine_barcode) { 'SQPD-12345' }

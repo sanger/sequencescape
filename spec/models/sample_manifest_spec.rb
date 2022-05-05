@@ -24,9 +24,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
     let(:first_plate_barcode) { build(:plate_barcode) }
     let(:second_plate_barcode) { build(:plate_barcode) }
 
-    before do
-      allow(PlateBarcode).to receive(:create_barcode).and_return(first_plate_barcode, second_plate_barcode)
-    end
+    before { allow(PlateBarcode).to receive(:create_barcode).and_return(first_plate_barcode, second_plate_barcode) }
 
     context 'when asset_type: plate' do
       let(:asset_type) { 'plate' }
@@ -119,8 +117,11 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
         it 'returns the details of the created samples' do
           sample_id = SangerSampleId.order(id: :desc).limit(96 * count).last.id
           expect(manifest.details_array.length).to eq(96 * count)
-          expect(manifest.details_array.first).to eq(barcode: first_plate_barcode[:barcode], position: 'A1', 
-sample_id: "WTCCC#{sample_id}")
+          expect(manifest.details_array.first).to eq(
+            barcode: first_plate_barcode[:barcode],
+            position: 'A1',
+            sample_id: "WTCCC#{sample_id}"
+          )
         end
 
         it 'create sample and aliquots' do
@@ -339,7 +340,7 @@ sample_id: "WTCCC#{sample_id}")
   # because the last parameter was being dropped.  Good thing the plate IDs were last, right!?!!
   context 'when creating extremely large manifests' do
     let(:manifest) { create(:sample_manifest, count: 37, asset_type: 'plate') }
-    let(:plate_barcodes) {  build_list(:plate_barcode, 37) }
+    let(:plate_barcodes) { build_list(:plate_barcode, 37) }
 
     before do
       allow(PlateBarcode).to receive(:create_barcode).and_return(*plate_barcodes)

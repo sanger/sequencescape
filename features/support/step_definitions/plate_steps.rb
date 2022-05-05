@@ -36,10 +36,10 @@ end
 
 Given /^a plate with barcode "([^"]*)" exists$/ do |machine_barcode|
   if machine_barcode.start_with?('SQPD')
-    FactoryBot.create :plate, sanger_barcode: Barcode.build_sequencescape22({barcode: machine_barcode})
+    FactoryBot.create :plate, sanger_barcode: Barcode.build_sequencescape22({ barcode: machine_barcode })
   else
-    FactoryBot.create :plate, 
-sanger_barcode: Barcode.build_sanger_code39({machine_barcode: machine_barcode, format: 'DN'})
+    FactoryBot.create :plate,
+                      sanger_barcode: Barcode.build_sanger_code39({ machine_barcode: machine_barcode, format: 'DN' })
   end
 end
 
@@ -47,7 +47,7 @@ end
 Given /^a "([^"]*)" plate purpose and of type "([^"]*)" with barcode "([^"]*)" exists$/ do |plate_purpose_name, plate_type, machine_barcode|
   # rubocop:enable Layout/LineLength
   plate_type.constantize.create!(
-    sanger_barcode: Barcode.build_sanger_code39({machine_barcode: machine_barcode, format: 'DN'}),
+    sanger_barcode: Barcode.build_sanger_code39({ machine_barcode: machine_barcode, format: 'DN' }),
     plate_purpose: PlatePurpose.find_by(name: plate_purpose_name),
     name: machine_barcode
   )
@@ -67,14 +67,14 @@ Given /^a plate with purpose "([^"]*)" and barcode "([^"]*)" exists$/ do |plate_
   if machine_barcode.start_with?('SQPD')
     FactoryBot.create(
       :plate,
-      sanger_barcode: Barcode.build_sequencescape22({barcode: machine_barcode}),
+      sanger_barcode: Barcode.build_sequencescape22({ barcode: machine_barcode }),
       well_count: 8,
       plate_purpose: Purpose.find_by(name: plate_purpose_name)
     )
   else
     FactoryBot.create(
       :plate,
-      sanger_barcode: Barcode.build_sanger_code39({machine_barcode: machine_barcode}),
+      sanger_barcode: Barcode.build_sanger_code39({ machine_barcode: machine_barcode }),
       well_count: 8,
       plate_purpose: Purpose.find_by(name: plate_purpose_name)
     )
@@ -87,7 +87,7 @@ Given /^a stock plate with barcode "([^"]*)" exists$/ do |machine_barcode|
       :plate,
       name: 'A_TEST_STOCK_PLATE',
       well_count: 8,
-      sanger_barcode: Barcode.build_sanger_code39({machine_barcode: machine_barcode}),
+      sanger_barcode: Barcode.build_sanger_code39({ machine_barcode: machine_barcode }),
       plate_purpose: PlatePurpose.find_by(name: 'Stock Plate')
     )
 end

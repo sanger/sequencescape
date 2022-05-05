@@ -502,7 +502,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
 
   def _barcode_for_display
     return human_barcode if primary_barcode.sequencescape22?
-    barcode_number    
+    barcode_number
   end
 
   def barcode_for_study_report
@@ -524,5 +524,4 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
     self.name = "Plate #{human_barcode}" if name.blank?
     self.size = default_plate_size if size.nil?
   end
-
 end

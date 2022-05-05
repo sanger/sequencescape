@@ -128,7 +128,7 @@ RSpec.describe LocationReport::LocationReportForm, type: :model do
 
       it 'is valid to use human readable barcodes missing the final check digit character' do
         # When barcode is DN this feature should still exist
-        plate_1.barcodes = [Barcode.build_sanger_code39({prefix: 'DN', number: '1234'})]
+        plate_1.barcodes = [Barcode.build_sanger_code39({ prefix: 'DN', number: '1234' })]
         location_report_form.barcodes_text = plate_1.human_barcode.to_s[0...-1]
         expect(location_report_form).to be_valid
       end

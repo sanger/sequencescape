@@ -22,17 +22,10 @@ RSpec.describe Api::PlateIO, type: :model do
   it_behaves_like('an IO object')
 
   context 'with an infinium barcode' do
-    subject do
-      create :plate, plate_purpose: purpose, infinium_barcode: 'WG1234567-DNA'
-    end
+    subject { create :plate, plate_purpose: purpose, infinium_barcode: 'WG1234567-DNA' }
 
     let(:expected_json) do
-      {
-        'uuid' => subject.uuid,
-        'id' => subject.id,
-        'name' => subject.name,
-        'infinium_barcode' => 'WG1234567-DNA'
-      }
+      { 'uuid' => subject.uuid, 'id' => subject.id, 'name' => subject.name, 'infinium_barcode' => 'WG1234567-DNA' }
     end
 
     it_behaves_like('an IO object')
@@ -42,12 +35,7 @@ RSpec.describe Api::PlateIO, type: :model do
     subject { create :plate, plate_purpose: purpose, fluidigm_barcode: '1234567890' }
 
     let(:expected_json) do
-      {
-        'uuid' => subject.uuid,
-        'id' => subject.id,
-        'name' => subject.name,
-        'fluidigm_barcode' => '1234567890'
-      }
+      { 'uuid' => subject.uuid, 'id' => subject.id, 'name' => subject.name, 'fluidigm_barcode' => '1234567890' }
     end
 
     it_behaves_like('an IO object')

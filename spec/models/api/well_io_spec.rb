@@ -60,7 +60,7 @@ RSpec.describe Api::WellIO, type: :model do
         'sequenom_count' => nil,
         'gender_markers' => nil,
         'map' => 'A1',
-        'plate_uuid' => plate.uuid,
+        'plate_uuid' => plate.uuid
       }
     end
 

@@ -13,11 +13,8 @@ Given /^the Baracoda barcode service returns "([\w-]+)"$/ do |barcode|
 end
 
 Given(
-    /^the Baracoda children barcode service for parent barcode "([\w-]+)" returns (\d+) barcodes?$/
-  ) do |parent_barcode, count|
-  FakeBarcodeService.instance.mock_child_barcodes(parent_barcode, count)
-end
-
+  /^the Baracoda children barcode service for parent barcode "([\w-]+)" returns (\d+) barcodes?$/
+) { |parent_barcode, count| FakeBarcodeService.instance.mock_child_barcodes(parent_barcode, count) }
 
 #Given /^a plate barcode webservice is available and returns "(\d+)"$/ do |barcode|
 #  step("the plate barcode webservice returns \"#{barcode}\"")

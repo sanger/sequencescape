@@ -19,9 +19,7 @@ RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_exce
     end
   end
 
-  before do
-    allow(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode))
-  end
+  before { allow(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode)) }
 
   after(:all) { SampleManifestExcel.reset! }
 

@@ -13,13 +13,7 @@ class FakeBarcodeService # rubocop:todo Style/Documentation
         plate_barcode_url = configatron.baracoda_api
         stub_request(:post, "#{plate_barcode_url}/barcodes/SQPD/new").to_return do
           barcode_record = FakeBarcodeService.instance.next_barcode!
-          {
-            headers: {
-              'Content-Type' => 'text/json'
-            },
-            status: 201,
-            body: barcode_record.to_json
-          }
+          { headers: { 'Content-Type' => 'text/json' }, status: 201, body: barcode_record.to_json }
         end
       end
 
@@ -35,8 +29,8 @@ class FakeBarcodeService # rubocop:todo Style/Documentation
     @barcodes = []
   end
 
-  def barcode(barcode, format=nil)
-    barcodes.push({barcode: barcode, format: format})
+  def barcode(barcode, format = nil)
+    barcodes.push({ barcode: barcode, format: format })
   end
 
   def next_barcode!
@@ -46,9 +40,10 @@ class FakeBarcodeService # rubocop:todo Style/Documentation
   def next_matching_barcode_start(barcode, count)
     # Find the most recent similar barcode
     plate_barcode = Barcode.where("barcode like '#{barcode}%'").order(:id).last.barcode
+
     # match the barcode found and return the next valid value
     matching = plate_barcode.match(/([^-]*-[^-]*)-(\d*)/)
-    [matching[1], (matching[2].to_i + 1),  (matching[2].to_i + count)]
+    [matching[1], (matching[2].to_i + 1), (matching[2].to_i + count)]
   end
 
   def parent_barcode_start(parent_barcode, count)
@@ -59,25 +54,24 @@ class FakeBarcodeService # rubocop:todo Style/Documentation
 
   def child_barcode_records(parent_barcode, count)
     barcode, start, finish = parent_barcode_start(parent_barcode, count)
-    (start..finish).to_a.map do |value| 
-      { barcode: "#{barcode}-#{value}" }
-    end
+    (start..finish).to_a.map { |value| { barcode: "#{barcode}-#{value}" } }
   end
 
   def mock_child_barcodes(parent_barcode, count)
     plate_barcode_url = configatron.baracoda_api
     Rails.logger.debug { "Mocking child barcode service #{plate_barcode_url}/child-barcodes/new" }
-    WebMock.stub_request(:post, "#{plate_barcode_url}/child-barcodes/new").with(body: {
-      barcode: parent_barcode, count: count
-    }).to_return do
-      {
-        headers: {
-          'Content-Type' => 'text/json'
-        },
-        status: 201,
-        body: { barcodes: child_barcode_records(parent_barcode, count) }.to_json
-      }
-    end
+    WebMock
+      .stub_request(:post, "#{plate_barcode_url}/child-barcodes/new")
+      .with(body: { barcode: parent_barcode, count: count })
+      .to_return do
+        {
+          headers: {
+            'Content-Type' => 'text/json'
+          },
+          status: 201,
+          body: { barcodes: child_barcode_records(parent_barcode, count) }.to_json
+        }
+      end
   end
 end
 

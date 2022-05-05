@@ -33,6 +33,7 @@ namespace :test do
         DatabaseCleaner.cleaning do
           PlateMapGeneration.generate!
           puts 'Linting factories.'
+
           # FactoryBot.lint verbose: true
           puts 'Linted'
         end

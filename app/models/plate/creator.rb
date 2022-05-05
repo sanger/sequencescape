@@ -246,34 +246,38 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def create_child_plates_from(plate, current_user, creator_parameters) # rubocop:todo Metrics/AbcSize
     stock_well_picker = plate.plate_purpose.stock_plate? ? ->(w) { [w] } : ->(w) { w.stock_wells }
     parent_wells = plate.wells
- 
+
     parent_barcode = plate.human_barcode
 
     # Do we only want to do this for new (SQPD) plate barcodes and still use WD12345 for DN plates?
     children_plate_barcodes = PlateBarcode.create_child_barcodes(parent_barcode, plate_purposes.count)
 
-    plate_purposes.zip(children_plate_barcodes).map do |target_plate_purpose, child_plate_barcode|
-      child_plate =
-        target_plate_purpose.create!(:without_wells, sanger_barcode: child_plate_barcode, size: plate.size) do |child|
-          child.name = "#{target_plate_purpose.name} #{child.human_barcode}"
-        end
-      
-      # We should probably just use a transfer here.
-      child_plate.wells <<
-        parent_wells.map do |well|
-          well.dup.tap do |child_well|
-            child_well.aliquots = well.aliquots.map(&:dup)
-            child_well.stock_wells.attach(stock_well_picker.call(well))
+    plate_purposes
+      .zip(children_plate_barcodes)
+      .map do |target_plate_purpose, child_plate_barcode|
+        child_plate =
+          target_plate_purpose.create!(
+            :without_wells,
+            sanger_barcode: child_plate_barcode,
+            size: plate.size
+          ) { |child| child.name = "#{target_plate_purpose.name} #{child.human_barcode}" }
+
+        # We should probably just use a transfer here.
+        child_plate.wells <<
+          parent_wells.map do |well|
+            well.dup.tap do |child_well|
+              child_well.aliquots = well.aliquots.map(&:dup)
+              child_well.stock_wells.attach(stock_well_picker.call(well))
+            end
           end
-        end
 
-      creator_parameters&.set_plate_parameters(child_plate, plate)
+        creator_parameters&.set_plate_parameters(child_plate, plate)
 
-      AssetLink.create_edge!(plate, child_plate)
-      plate.events.create_plate!(target_plate_purpose, child_plate, current_user)
+        AssetLink.create_edge!(plate, child_plate)
+        plate.events.create_plate!(target_plate_purpose, child_plate, current_user)
 
-      child_plate
-    end
+        child_plate
+      end
   end
   # rubocop:enable Metrics/MethodLength
 end

@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :plate_barcode, class: 'Barcode'  do
+  factory :plate_barcode, class: 'Barcode' do
     format { 'sequencescape22' }
     barcode { "#{configatron.plate_barcode_prefix}-#{generate(:barcode_number)}" }
   end
 
-  factory :child_plate_barcode, class: 'Barcode'  do
+  factory :child_plate_barcode, class: 'Barcode' do
     transient do
       sequence(:child_num) { |i| i }
       parent_barcode { "#{configatron.plate_barcode_prefix}-#{generate(:barcode_number)}" }

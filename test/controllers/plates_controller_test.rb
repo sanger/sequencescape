@@ -24,13 +24,9 @@ class PlatesControllerTest < ActionController::TestCase
           build(:plate_barcode, barcode: 'SQPD-1234569'),
           build(:plate_barcode, barcode: 'SQPD-1234570'),
           build(:plate_barcode, barcode: 'SQPD-1234571'),
-          build(:plate_barcode, barcode: 'SQPD-1234572'),
+          build(:plate_barcode, barcode: 'SQPD-1234572')
         )
-      PlateBarcode
-        .stubs(:create_child_barcodes)
-        .returns(
-          [build(:child_plate_barcode)]
-        )
+      PlateBarcode.stubs(:create_child_barcodes).returns([build(:child_plate_barcode)])
       LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns('data' => [{ 'id' => 15 }])
       LabelPrinter::PmbClient.stubs(:print).returns(200)
     end

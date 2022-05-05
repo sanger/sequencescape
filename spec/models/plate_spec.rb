@@ -82,7 +82,7 @@ describe Plate do
   context 'barcodes' do
     # Maintaining existing barcode behaviour
     context 'sanger barcodes' do
-      let(:plate) { create :plate  }
+      let(:plate) { create :plate }
 
       describe '#human_barcode' do
         subject { plate.human_barcode }
@@ -94,9 +94,7 @@ describe Plate do
       describe '#ean13_barcode' do
         subject(:plate_barcode) { plate.ean13_barcode }
 
-        it { 
-          expect(plate_barcode).to be_nil 
-        }
+        it { expect(plate_barcode).to be_nil }
       end
     end
   end

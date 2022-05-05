@@ -109,7 +109,7 @@ class MultiplexedCherrypickingTaskTest < ActiveSupport::TestCase
 
     context '#do_assign_requests_to_multiplexed_wells_task with new plate' do
       setup do
-        PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode, barcode:'SQPD-12345'))
+        PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode, barcode: 'SQPD-12345'))
         @purpose = create :plate_purpose
         @purpose_id = @purpose.id.to_s
         @well_array = %w[A1 B1 C1 D1 E1 F1 G1 G1]
