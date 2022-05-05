@@ -32,7 +32,7 @@ context 'printing plates' do
           bottom_left: asset.human_barcode.to_s,
           top_right: asset.plate_purpose.name.to_s,
           bottom_right: asset.studies.first&.abbreviation,
-          top_far_right: asset.parent.try(:barcode_number).to_s,
+          top_far_right: asset.parent.try(:human_barcode).to_s,
           barcode: asset.machine_barcode.to_s,
           label_name: 'main_label'
         }
