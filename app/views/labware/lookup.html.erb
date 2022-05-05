@@ -16,7 +16,7 @@
           <%= text_field :asset, :barcode, { class: 'big' } %>
         </div>
       <% end %>
-      <div id='loading' style='display: none;'>Loading <%= image_tag 'ajax-loader.gif', size: "10x10", alt: "Ajax Loader" %></div>
+      <div id='loading' style='display: none;'>Loading <div class="spinner-border" role="status" id="update_loader"></div></div>
       <div id='response'>
       </div>
       <br />

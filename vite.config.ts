@@ -9,8 +9,9 @@ export default defineConfig({
   plugins: [RubyPlugin(), createVuePlugin(), legacy({ targets: ["defaults"] })],
   resolve: {
     alias: {
-      "@": resolve(join(projectRoot, "app/javascript")),
-      "@sharedComponents": resolve(join(projectRoot, "app/javascript/shared/components")),
+      "@": resolve(join(projectRoot, "app/frontend")),
+      "@sharedComponents": resolve(join(projectRoot, "app/frontend/shared/components")),
+      "@images": resolve(join(projectRoot, "app/frontend/images")),
     },
   },
 });

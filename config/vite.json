@@ -1,7 +1,6 @@
 {
   "all": {
-    "sourceCodeDir": "app/javascript",
-    "watchAdditionalPaths": []
+    "sourceCodeDir": "app/frontend"
   },
   "development": {
     "autoBuild": true,
