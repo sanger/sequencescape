@@ -70,7 +70,9 @@ RSpec.describe Plate::QuadCreator, type: :model do
 
       it 'produces a useful error' do
         quad_creator.valid?
-        expect(quad_creator.errors.full_messages).to include("Parent barcodes Quad 1 (#{plate.machine_barcode}) is the wrong size")
+        expect(quad_creator.errors.full_messages).to include(
+          "Parent barcodes Quad 1 (#{plate.machine_barcode}) is the wrong size"
+        )
       end
     end
   end

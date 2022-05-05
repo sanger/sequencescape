@@ -161,7 +161,6 @@ LIBRARY_CREATION_PIPELINES =
   ].map(&Regexp.method(:escape)).join('|')
 
 Given /^I have a batch with (\d+) requests? for the "(#{LIBRARY_CREATION_PIPELINES})" pipeline$/o do |count, name|
-  binding.pry
   build_batch_for(name, count.to_i) do |_pipeline|
     {
       asset_type: :sample_tube,

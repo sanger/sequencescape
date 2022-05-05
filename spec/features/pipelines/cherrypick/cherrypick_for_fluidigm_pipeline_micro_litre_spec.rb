@@ -33,7 +33,7 @@ describe 'cherrypick for fluidigm pipeline - micro litre', js: true do
              project: project
     end
 
-    expect(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode, barcode: 'SQPD-2'))
+    allow(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode, barcode: 'SQPD-2'))
 
     robot.robot_properties.create(key: 'max_plates', value: '21')
     robot.robot_properties.create(key: 'SCRC1', value: '1')

@@ -11,7 +11,6 @@ class FakeBarcodeService # rubocop:todo Style/Documentation
     target.instance_eval do
       Before(tags) do |_scenario|
         plate_barcode_url = configatron.baracoda_api
-        Rails.logger.debug { "Mocking barcode service #{plate_barcode_url}/barcodes/SQPD/new" }
         stub_request(:post, "#{plate_barcode_url}/barcodes/SQPD/new").to_return do
           barcode_record = FakeBarcodeService.instance.next_barcode!
           {

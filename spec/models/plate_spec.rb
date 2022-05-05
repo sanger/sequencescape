@@ -92,10 +92,10 @@ describe Plate do
 
       # On the sequencescape22 barcode format we dont support ean13
       describe '#ean13_barcode' do
-        subject { plate.ean13_barcode }
+        subject(:plate_barcode) { plate.ean13_barcode }
 
         it { 
-          expect(subject).to be_nil 
+          expect(plate_barcode).to be_nil 
         }
       end
     end

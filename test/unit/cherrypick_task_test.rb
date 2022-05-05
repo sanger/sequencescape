@@ -64,8 +64,8 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
     context '#pick_onto_partial_plate' do
       setup do
-        plate = @mini_plate_purpose.create! do |plate|
-          plate.barcodes = [build(:plate_barcode)]
+        plate = @mini_plate_purpose.create! do |created_plate|
+          created_plate.barcodes = [build(:plate_barcode)]
         end
 
         # TODO: This is very slow, and could do with improvements
@@ -185,8 +185,8 @@ class CherrypickTaskTest < ActiveSupport::TestCase
         end
 
         should 'not pick on top of any wells that are already present' do
-          plate = @mini_plate_purpose.create! do |plate|
-            plate.barcodes = [build(:plate_barcode)]
+          plate = @mini_plate_purpose.create! do |created_plate|
+            created_plate.barcodes = [build(:plate_barcode)]
           end
           requests = plate.wells.in_column_major_order.map { |w| create(:well_request, asset: w) }
 
@@ -214,8 +214,8 @@ class CherrypickTaskTest < ActiveSupport::TestCase
     context '#pick_new_plate' do
       context 'with a plate purpose' do
         setup do
-          plate = @mini_plate_purpose.create! do |plate|
-            plate.barcodes = [build(:plate_barcode)]
+          plate = @mini_plate_purpose.create! do |created_plate|
+            created_plate.barcodes = [build(:plate_barcode)]
           end
           @requests = plate.wells.in_column_major_order.map { |w| create(:well_request, asset: w) }
 

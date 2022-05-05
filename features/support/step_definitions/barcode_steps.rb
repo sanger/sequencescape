@@ -12,7 +12,9 @@ Given /^the Baracoda barcode service returns "([\w-]+)"$/ do |barcode|
   FakeBarcodeService.instance.barcode(barcode)
 end
 
-Given /^the Baracoda children barcode service for parent barcode "([\w-]+)" returns (\d+) barcodes?$/ do |parent_barcode, count|
+Given(
+    /^the Baracoda children barcode service for parent barcode "([\w-]+)" returns (\d+) barcodes?$/
+  ) do |parent_barcode, count|
   FakeBarcodeService.instance.mock_child_barcodes(parent_barcode, count)
 end
 

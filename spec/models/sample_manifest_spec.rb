@@ -21,11 +21,11 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
   describe '#generate' do
     let(:manifest) { create :sample_manifest, study: study, count: count, asset_type: asset_type, purpose: purpose }
     let(:purpose) { nil }
-    let(:plate_barcode_1) { build(:plate_barcode) }
-    let(:plate_barcode_2) { build(:plate_barcode) }
+    let(:first_plate_barcode) { build(:plate_barcode) }
+    let(:second_plate_barcode) { build(:plate_barcode) }
 
     before do
-      allow(PlateBarcode).to receive(:create_barcode).and_return(plate_barcode_1, plate_barcode_2)
+      allow(PlateBarcode).to receive(:create_barcode).and_return(first_plate_barcode, second_plate_barcode)
     end
 
     context 'when asset_type: plate' do
@@ -59,7 +59,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
               sample_id = SangerSampleId.order(id: :desc).limit(96 * count).last.id
               expect(manifest.details_array.length).to eq(96 * count)
               expect(manifest.details_array.first).to eq(
-                barcode: plate_barcode_1[:barcode],
+                barcode: first_plate_barcode[:barcode],
                 position: 'A1',
                 sample_id: "WTCCC#{sample_id}"
               )
@@ -119,7 +119,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
         it 'returns the details of the created samples' do
           sample_id = SangerSampleId.order(id: :desc).limit(96 * count).last.id
           expect(manifest.details_array.length).to eq(96 * count)
-          expect(manifest.details_array.first).to eq(barcode: plate_barcode_1[:barcode], position: 'A1', 
+          expect(manifest.details_array.first).to eq(barcode: first_plate_barcode[:barcode], position: 'A1', 
 sample_id: "WTCCC#{sample_id}")
         end
 
