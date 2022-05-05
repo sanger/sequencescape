@@ -2,11 +2,13 @@
 
 # Class that handles the access to Baracoda to obtain new barcodes
 class PlateBarcode
-  self.site = configatron.baracoda_api
-  self.prefix = configatron.plate_barcode_prefix
 
-  def self.site=(site)
-    self.site = site
+  def self.site
+    configatron.baracoda_api
+  end
+
+  def self.prefix
+    configatron.plate_barcode_prefix
   end
 
   # Creates a new single barcode in baracoda
@@ -15,7 +17,7 @@ class PlateBarcode
   def self.create_barcode
     uri = URI("#{site}/barcodes/#{prefix}/new")
     http_connection = Net::HTTP.new(uri.host, uri.port)
-    Barcode.build_sequencescape22(fetch_barcode(http_connection))
+    Barcode.build_sequencescape22(fetch_response(http_connection))
   end
 
   # Creates a new group of child barcodes from a parent barcode.
