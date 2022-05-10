@@ -58,9 +58,9 @@ FactoryBot.define do
     transient { barcode { nil } }
 
     # May be a nicer way of doing this?
-    sanger_barcode {
+    sanger_barcode do
       barcode.nil? ? build(:plate_barcode) : build(:plate_barcode, barcode: barcode) 
-    }
+    end
   end
 
   factory :plate, traits: %i[plate_barcode with_wells] do

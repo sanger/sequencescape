@@ -34,14 +34,14 @@ namespace :test do
           PlateMapGeneration.generate!
           puts 'Individual linting'
           FactoryBot.factories.each do |factory|
-            begin
+            
               puts "Processing factory #{factory.name}"
               FactoryBot.lint([factory])
-            rescue FactoryBot::InvalidFactoryError => e
-              puts "Retrying that thing!"
+            rescue FactoryBot::InvalidFactoryError
+              puts 'Retrying that thing!'
               FactoryBot.lint([factory])
-              puts "It worked!!"
-            end
+              puts 'It worked!!'
+            
           end
           puts 'Linted'
         end
