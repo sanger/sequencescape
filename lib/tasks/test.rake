@@ -32,9 +32,17 @@ namespace :test do
         DatabaseCleaner.strategy = :transaction
         DatabaseCleaner.cleaning do
           PlateMapGeneration.generate!
-          puts 'Linting factories.'
-
-          # FactoryBot.lint verbose: true
+          puts 'Individual linting'
+          FactoryBot.factories.each do |factory|
+            begin
+              puts "Processing factory #{factory.name}"
+              FactoryBot.lint([factory])
+            rescue FactoryBot::InvalidFactoryError => e
+              puts "Retrying that thing!"
+              FactoryBot.lint([factory])
+              puts "It worked!!"
+            end
+          end
           puts 'Linted'
         end
       else

@@ -88,7 +88,7 @@ class PlateBarcode
     yield http_connection, request
   end
 
-  if Rails.env.development?
+  if Rails.env.development? || Rails.env.test?
     # If we don't want a test dependency on baracoda we need to mock barcodes and child barcodes
 
     def self.create_barcode

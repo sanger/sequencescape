@@ -35,8 +35,8 @@ FactoryBot.define do
     end
 
     factory :sequencescape22 do
-      format { 'sequencescape22' }
-      barcode
+      sequence(:barcode) {|barcode_number| "SQPD-#{barcode_number}" }
+      initialize_with { new(format: 'sequencescape22')}
     end
 
     factory :infinium do

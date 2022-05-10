@@ -103,6 +103,7 @@ class Barcode < ApplicationRecord
     east_london_genes_and_health
     leamington_spa_v2
     east_london_genes_and_health_v2
+    sequencescape22
   ].freeze
 
   validate :barcode_valid?
