@@ -90,8 +90,7 @@ module Sequencescape
       g.fixture_replacement :factory_bot, dir: 'spec/factories'
     end
 
-    config.ets_enabled = false
-    config.disable_animations = false
+    config.disable_animations = ENV.fetch('DISABLE_ANIMATIONS', false).present?
 
     # Rails 5
 

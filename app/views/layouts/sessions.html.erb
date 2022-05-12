@@ -5,16 +5,16 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <%= stylesheet_link_tag "application", media: "all" %>
+  <%= vite_stylesheet_tag "application.scss", media: "all" %>
   <title>Sequencescape : <%= I18n.t('global_links.login') %></title>
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
   <link rel="icon" href="/favicon.ico" type="image/x-icon" />
   <link rel="apple-touch-icon-precomposed" href="/apple-icon.png" type="image/png" />
   <% if Rails.application.config.disable_animations %>
-    <%= stylesheet_link_tag 'disable_animations' %>
+    <%= vite_stylesheet_tag 'disable_animations' %>
 
     <!-- Turn off animations in jQuery -->
-    <%= legacy_javascript_tag do %>
+    <%= legacy_javascript_tag do %>s
       $.fx.off = true;
     <% end %>
   <% end %>

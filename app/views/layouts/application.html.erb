@@ -24,7 +24,7 @@
     <%= vite_javascript_tag 'application' %>
 
     <% if Rails.application.config.disable_animations %>
-      <%= stylesheet_link_tag 'disable_animations' %>
+      <%= vite_stylesheet_tag 'disable_animations' %>
 
       <!-- Turn off animations in jQuery -->
       <%= legacy_javascript_tag do %>

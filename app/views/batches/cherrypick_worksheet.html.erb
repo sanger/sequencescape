@@ -4,9 +4,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-  <%= stylesheet_link_tag "print" %>
-  <%= stylesheet_link_tag "print", media: "print" %>
-  <%= vite_javascript_tag "worksheet", media: "print" %>
+  <%= vite_stylesheet_tag "print", media: "all" %>
+  <%= vite_javascript_tag "worksheet" %>
   <title>Batch <%= @batch.id %></title>
 </head>
 <body data-enable-printing="<%= ["cucumber", "test"].exclude?(Rails.env) %>">

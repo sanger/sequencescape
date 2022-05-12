@@ -92,7 +92,6 @@ jobs:
         with:
           path: |
             public/assets
-            tmp/cache/assets/sprockets
             node_modules
           key: ${{ runner.os }}-tests-${{ hashFiles('yarn.lock') }}
           # If we don't find the specific cache we want, fallback to the last raketests
@@ -173,7 +172,6 @@ jobs:
         with:
           path: |
             public/assets
-            tmp/cache/assets/sprockets
             node_modules
           key: ${{ runner.os }}-tests-${{ hashFiles('yarn.lock') }}
           # If we don't find the specific cache we want, fallback to the last raketests
