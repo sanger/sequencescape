@@ -11,7 +11,7 @@ class FakeBarcodeService # rubocop:todo Style/Documentation
     target.instance_eval do
       Before(tags) do |_scenario|
         plate_barcode_url = configatron.baracoda_api
-        stub_request(:post, "#{plate_barcode_url}/barcodes/SQPD/new").to_return do
+        stub_request(:post, "#{plate_barcode_url}/barcodes/#{configatron.plate_barcode_prefix}/new").to_return do
           barcode_record = FakeBarcodeService.instance.next_barcode!
           { headers: { 'Content-Type' => 'text/json' }, status: 201, body: barcode_record.to_json }
         end
@@ -54,14 +54,15 @@ class FakeBarcodeService # rubocop:todo Style/Documentation
 
   def child_barcode_records(parent_barcode, count)
     barcode, start, finish = parent_barcode_start(parent_barcode, count)
-    (start..finish).to_a.map { |value| { barcode: "#{barcode}-#{value}" } }
+    (start..finish).to_a.map { |value| "#{barcode}-#{value}" }
   end
 
   def mock_child_barcodes(parent_barcode, count)
     plate_barcode_url = configatron.baracoda_api
-    Rails.logger.debug { "Mocking child barcode service #{plate_barcode_url}/child-barcodes/new" }
+    Rails.logger.debug do
+ "Mocking child barcode service #{plate_barcode_url}/child-barcodes/#{configatron.plate_barcode_prefix}/new" end
     WebMock
-      .stub_request(:post, "#{plate_barcode_url}/child-barcodes/new")
+      .stub_request(:post, "#{plate_barcode_url}/child-barcodes/#{configatron.plate_barcode_prefix}/new")
       .with(body: { barcode: parent_barcode, count: count })
       .to_return do
         {
@@ -69,7 +70,7 @@ class FakeBarcodeService # rubocop:todo Style/Documentation
             'Content-Type' => 'text/json'
           },
           status: 201,
-          body: { barcodes: child_barcode_records(parent_barcode, count) }.to_json
+          body: { barcodes_group: { barcodes: child_barcode_records(parent_barcode, count) } }.to_json
         }
       end
   end
