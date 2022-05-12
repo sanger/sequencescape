@@ -47,12 +47,12 @@
   },
   "scripts": {
     "test": "jest",
-    "lint": "eslint --ext .js --ext .vue app/javascript",
+    "lint": "eslint --ext .js --ext .vue app/frontend",
     "lintOnly": "eslint --ext .js --ext .vue"
   },
   "jest": {
     "roots": [
-      "app/javascript"
+      "app/frontend"
     ],
     "moduleFileExtensions": [
       "js",
