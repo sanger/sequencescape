@@ -1,0 +1,69 @@
+// Controls the page header
+// Note: Some components MAY be elsewhere
+
+.main-nav {
+  @extend .navbar;
+  @extend .navbar-dark;
+  @extend .bg-danger;
+  @extend .navbar-expand-lg;
+
+  #logo_container {
+    @extend .navbar-brand;
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 3px;
+    img {
+      vertical-align: top;
+    }
+  }
+}
+
+body.production {
+  .main-nav {
+    @extend .bg-primary;
+  }
+}
+
+#app_name {
+  padding: 0;
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-shadow: 0 -1px 1px #00131c;
+  width: 100%;
+  text-align: center;
+}
+
+#app_name a,
+#app_name a:link,
+#app_name a:visited #app_name a:hover {
+  text-decoration: none;
+  color: #fff;
+}
+
+#main-nav-items {
+  @extend .navbar-collapse;
+  @extend .justify-content-between;
+
+  ul {
+    @extend .navbar-nav;
+    li {
+      @extend .nav-item;
+      a {
+        @extend .nav-link;
+      }
+    }
+  }
+
+  form {
+    @extend .form-inline;
+    input {
+      @extend .form-control;
+    }
+    select {
+      @extend .custom-select;
+    }
+  }
+}
+
+#main-nav-items {
+  @extend .collapse;
+}

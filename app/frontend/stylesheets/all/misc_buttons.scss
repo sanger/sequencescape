@@ -1,0 +1,14 @@
+.select-all-behaviour {
+  @extend .btn;
+  @extend .btn-success;
+}
+
+.deselect-all-behaviour {
+  @extend .btn;
+  @extend .btn-danger;
+}
+
+.print-button {
+  @extend .btn;
+  @extend .btn-success;
+}

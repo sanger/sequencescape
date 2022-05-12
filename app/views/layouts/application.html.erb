@@ -19,8 +19,8 @@
       Sequencescape : <%= controller.controller_name.capitalize %> - <%= @page_name || controller.action_name %>
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <%= stylesheet_link_tag "application", media: "all" %>
     <%= vite_client_tag %>
+    <%= vite_stylesheet_tag 'application.scss' %>
     <%= vite_javascript_tag 'application' %>
 
     <% if Rails.application.config.disable_animations %>

@@ -1,0 +1,21 @@
+.uat-action {
+  .uat-form-group {
+    @extend .form-group;
+  }
+  .form-help {
+    @extend .form-text;
+    @extend .text-muted;
+  }
+
+  input {
+    @extend .form-control;
+  }
+  select {
+    @extend .custom-select;
+  }
+  input[type="submit"] {
+    @extend .btn;
+    @extend .btn-lg;
+    @extend .btn-success;
+  }
+}

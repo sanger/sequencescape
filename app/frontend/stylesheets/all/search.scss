@@ -1,0 +1,29 @@
+.search-form {
+  @extend .form-inline;
+  label {
+    @extend .mr-3;
+  }
+  input[type="checkbox"] {
+    @extend .btn;
+  }
+  input[type="search"] {
+    @extend .form-control;
+  }
+  select {
+    @extend .form-control;
+    @extend .custom-select;
+    @extend .col-2;
+  }
+  @extend .mb-3;
+}
+
+.response-timers {
+  font-size: 0.8rem;
+  dl {
+    @extend .row;
+  }
+  dt,
+  dd {
+    @extend .col-sm-1;
+  }
+}

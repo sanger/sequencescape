@@ -1,0 +1,16 @@
+.comment-box {
+  @extend .row;
+
+  .comment {
+    @extend .col-md-9;
+  }
+
+  .comment-description {
+    white-space: pre-wrap;
+  }
+
+  .comment-metadata {
+    @extend .col-md-3;
+    text-align: right;
+  }
+}
