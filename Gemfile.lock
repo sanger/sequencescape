@@ -94,14 +94,8 @@ GEM
       activesupport
     amq-protocol (2.3.2)
     ast (2.4.2)
-    autoprefixer-rails (10.4.2.0)
-      execjs (~> 2)
     bootsnap (1.11.1)
       msgpack (~> 1.2)
-    bootstrap (4.6.1)
-      autoprefixer-rails (>= 9.1.0)
-      popper_js (>= 1.14.3, < 2)
-      sassc-rails (>= 2.0.0)
     builder (3.2.4)
     bullet (7.0.1)
       activesupport (>= 3.0.0)
@@ -204,15 +198,12 @@ GEM
     exception_notification (4.5.0)
       actionmailer (>= 5.2, < 8)
       activesupport (>= 5.2, < 8)
-    execjs (2.8.1)
     factory_bot (6.2.0)
       activesupport (>= 5.0.0)
     factory_bot_rails (6.2.0)
       factory_bot (~> 6.2.0)
       railties (>= 5.0.0)
     ffi (1.15.5)
-    font-awesome-sass (6.0.0)
-      sassc (>= 2.0)
     formtastic (4.0.0)
       actionpack (>= 5.2.0)
     globalid (1.0.0)
@@ -275,7 +266,6 @@ GEM
     parallel (1.21.0)
     parser (3.1.1.0)
       ast (~> 2.4.1)
-    popper_js (1.16.0)
     pry (0.13.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -419,16 +409,6 @@ GEM
       connection_pool (~> 2.2)
       multi_json (~> 1.0)
       thor (~> 1.1)
-    sass-rails (6.0.0)
-      sassc-rails (~> 2.1, >= 2.1.1)
-    sassc (2.4.0)
-      ffi (~> 1.9)
-    sassc-rails (2.1.2)
-      railties (>= 4.0.0)
-      sassc (>= 2.0)
-      sprockets (> 3.0)
-      sprockets-rails
-      tilt
     selenium-webdriver (4.1.0)
       childprocess (>= 0.5, < 5.0)
       rexml (~> 3.2, >= 3.2.5)
@@ -525,7 +505,6 @@ DEPENDENCIES
   acts-as-dag!
   after_commit_everywhere (~> 1.0)
   bootsnap
-  bootstrap (~> 4.0)
   builder
   bullet
   cancancan
@@ -541,7 +520,6 @@ DEPENDENCIES
   dynamic_form
   exception_notification
   factory_bot_rails
-  font-awesome-sass
   formtastic
   json
   jsonapi-resources (= 0.9.0)
@@ -586,7 +564,6 @@ DEPENDENCIES
   rubyzip
   sanger_barcode_format!
   sanger_warren
-  sass-rails
   shoulda
   simplecov
   sinatra

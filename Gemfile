@@ -138,14 +138,9 @@ group :linting, :test do
 end
 
 group :development, :test, :cucumber do
+  gem 'knapsack_pro'
   gem 'pry-byebug'
   gem 'pry-rails'
-
-  # Asset compilation, js and style libraries
-  gem 'bootstrap', '~>4.0' # Pinned as v5 has significant changes
-  gem 'font-awesome-sass'
-  gem 'knapsack_pro'
-  gem 'sass-rails'
   gem 'webmock'
 end
 
