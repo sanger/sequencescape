@@ -60,35 +60,4 @@ class CreatorTest < ActiveSupport::TestCase
       # rubocop:enable Layout/LineLength
     end
   end
-
-  # Not too sure if these tests are still needed?
-  #
-  # test 'should maintain barcode number for different prefixes with sanger barcodes' do
-  #   LabelPrinter::PrintJob.any_instance.stubs(:execute).returns(true)
-
-  #   parent = create :plate_with_untagged_wells, sanger_barcode: { prefix: 'AA', number: '123000' }
-  #   user = create :user
-  #   create_asset_group = 'No'
-
-  #   @creator.execute(parent.machine_barcode, barcode_printer, user, create_asset_group)
-  #   child = parent.reload.children.first
-
-  #   assert_equal child.human_barcode, 'DN123000K'
-  # end
-
-  # test 'should change barcode number for different prefixes with non-sanger barcodes' do
-  #   LabelPrinter::PrintJob.any_instance.stubs(:execute).returns(true)
-  #   barcode = create(:plate_barcode)
-  #   PlateBarcode.stubs(:create).returns(barcode)
-
-  #   parent = create :plate_with_untagged_wells, barcodes: create_list(:heron_tailed, 1, number: 123_000)
-  #   user = create :user
-  #   create_asset_group = 'No'
-
-  #   @creator.execute(parent.machine_barcode, barcode_printer, user, create_asset_group)
-  #   child = parent.reload.children.first
-
-  #   # We expect it to generate a new barcode"
-  #   assert_equal SBCF::SangerBarcode.new(prefix: 'DN', number: barcode.barcode).human_barcode, child.human_barcode
-  # end
 end

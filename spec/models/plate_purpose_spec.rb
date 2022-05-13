@@ -51,7 +51,6 @@ describe PlatePurpose, type: :model do
     it_behaves_like 'a plate factory'
   end
 
-  # Will need to look at WD plates
   context 'with a subclass' do
     let(:target_type) { 'WorkingDilutionPlate' }
     let(:expected_plate_class) { WorkingDilutionPlate }

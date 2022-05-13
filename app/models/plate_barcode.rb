@@ -36,7 +36,7 @@ class PlateBarcode
   # - request - Net::HTTP::Post object that contains the params for the request like the body, headers, etc
   # - retries - int, defaults to 3. Number of times it will retry to call baracoda. After that time period it
   #   will raise exception
-  # - wait_timeout - floate, defaults to 0.1 (100 ms). Time sleep in between calls to baracoda when connection
+  # - wait_timeout - float, defaults to 0.1 (100 ms). Time sleep in between calls to baracoda when connection
   #   is refused
   # Returns:
   # - Json parsed hash with the response from Baracoda
