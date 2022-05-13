@@ -114,7 +114,7 @@ FactoryBot.define do
     user
     association(:parent, factory: :full_plate, well_count: 2)
     association(:child_purpose, factory: :child_tube_purpose)
-    
+
     after(:build) do |tube_creation|
       mock_request_type = create(:library_creation_request_type)
 

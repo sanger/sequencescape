@@ -60,7 +60,8 @@ class FakeBarcodeService # rubocop:todo Style/Documentation
   def mock_child_barcodes(parent_barcode, count)
     plate_barcode_url = configatron.baracoda_api
     Rails.logger.debug do
- "Mocking child barcode service #{plate_barcode_url}/child-barcodes/#{configatron.plate_barcode_prefix}/new" end
+      "Mocking child barcode service #{plate_barcode_url}/child-barcodes/#{configatron.plate_barcode_prefix}/new"
+    end
     WebMock
       .stub_request(:post, "#{plate_barcode_url}/child-barcodes/#{configatron.plate_barcode_prefix}/new")
       .with(body: { barcode: parent_barcode, count: count })

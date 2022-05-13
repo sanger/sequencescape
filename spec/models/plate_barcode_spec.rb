@@ -14,12 +14,11 @@ RSpec.describe PlateBarcode do
   end
 
   describe '#create_child_barcodes' do
-    before do allow(plate_barcode).to receive(:fetch_response).and_return(
-        barcodes_group: { barcodes: barcode_records }
-      )
+    before do
+      allow(plate_barcode).to receive(:fetch_response).and_return(barcodes_group: { barcodes: barcode_records })
     end
 
-    let(:barcode_records) { ['SQPD-12345-1', 'SQPD-12345-2' ] }
+    let(:barcode_records) { %w[SQPD-12345-1 SQPD-12345-2] }
 
     it 'creates a new barcode' do
       obtained = plate_barcode.create_child_barcodes('SQPD-12345', 2)
