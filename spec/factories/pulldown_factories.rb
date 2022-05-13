@@ -107,7 +107,11 @@ FactoryBot.define do
     barcode { create(:sequencescape22).barcode }
     association(:parent, factory: :full_plate, well_count: 2)
     association(:child_purpose, factory: :plate_purpose)
-    skip_create
+
+    # PlateCreation inherits from AssetCreation that will try to call
+    # Baracoda to obtain a new barcode. As this is not needed for the
+    # tests we disable it, however is needed for some cucumber tests
+    skip_create if Rails.env.test?
   end
 
   factory(:tube_creation) do
