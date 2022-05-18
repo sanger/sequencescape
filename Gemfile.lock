@@ -560,7 +560,6 @@ DEPENDENCIES
   knapsack_pro
   launchy
   listen
-  mime-types
   minitest
   minitest-profiler
   mocha
@@ -594,7 +593,6 @@ DEPENDENCIES
   rubocop-rspec
   ruby-prof
   ruby-units
-  rubyzip
   sanger_barcode_format!
   sanger_warren
   sass-rails
