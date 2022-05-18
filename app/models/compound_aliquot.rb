@@ -20,9 +20,9 @@ class CompoundAliquot
   MULTIPLE_PROJECTS_ERROR_MSG =
     'Cannot create compound sample due to the component samples being under different projects.'
 
-  attr_accessor :request, :source_aliquots
+  attr_accessor :request, :source_aliquots, :compound_sample
 
-  attr_reader :component_samples, :compound_sample
+  attr_reader :component_samples
 
   validate :tag_depth_is_unique
   validate :source_aliquots_have_same_study

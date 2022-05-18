@@ -33,7 +33,7 @@ module Request::SampleCompoundAliquotTransfer
   end
 
   # Groups the source aliquots by their tag1 and tag2 combination
-  # For each of these groups, create a compound sample.
+  # For each of these groups, find or create a compound sample.
   def transfer_aliquots_into_compound_sample_aliquots
     aliquots_by_tags_combination.each do |_tags_combo, aliquot_list|
       transfer_into_compound_sample_aliquot(aliquot_list)
@@ -50,14 +50,47 @@ module Request::SampleCompoundAliquotTransfer
     asset.aliquots.group_by(&:tags_combination)
   end
 
+  # For a group of source aliquots, find or create a compound sample containing the component samples
+  # Assign the compound sample to the target asset
   def transfer_into_compound_sample_aliquot(source_aliquots)
     compound_aliquot = CompoundAliquot.new(request: self, source_aliquots: source_aliquots)
-    unless compound_aliquot.valid?
-      raise Request::SampleCompoundAliquotTransfer::Error, compound_aliquot.errors.full_messages
+
+    # Check if a compound sample already exists with the source_aliquot samples
+    existing_compound_sample = find_compound_sample_for_components_samples(source_aliquots)
+    if existing_compound_sample
+      compound_aliquot.compound_sample = existing_compound_sample
+    else
+      unless compound_aliquot.valid?
+        raise Request::SampleCompoundAliquotTransfer::Error, compound_aliquot.errors.full_messages
+      end
+
+      compound_aliquot.create_compound_sample
+    end
+    target_asset.aliquots.create(compound_aliquot.aliquot_attributes)
+  end
+
+  def find_compound_sample_for_components_samples(source_aliquots)
+    # Get all the component samples
+    component_samples = source_aliquots.map(&:sample)
+
+    # Get all the compound samples the first component sample
+    compound_samples = component_samples[0].compound_samples
+
+    # Due to previous implementation, there may be multiple compound samples
+    # with the provided component samples.
+    found_compound_samples = []
+    compound_samples.each do |compound_sample|
+      if (compound_sample.component_samples == component_samples)
+        found_compound_samples << compound_sample
+      else
+        return nil
+      end
     end
 
-    compound_aliquot.create_compound_sample
-
-    target_asset.aliquots.create(compound_aliquot.aliquot_attributes)
+    # If there is only 1 compound sample, return it
+    # Otherwise, return the last created compound sample
+    # NPG have confirmed we do not need to fix the data where there are
+    # multiple compound samples with the same component samples
+    found_compound_samples.count == 1 ? found_compound_samples[0] : found_compound_samples.last
   end
 end

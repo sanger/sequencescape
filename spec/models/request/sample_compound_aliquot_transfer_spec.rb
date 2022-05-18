@@ -75,15 +75,67 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
              library_id: 54
     end
 
-    it 'creates a compound sample and transfers an aliquot of it' do
-      expect(sequencing_request.target_asset.aliquots.count).to eq(0)
-      sequencing_request.transfer_aliquots_into_compound_sample_aliquots
-      expect(sequencing_request.target_asset.aliquots.count).to eq(1)
-      expect(sequencing_request.target_asset.aliquots.first.library_type).to eq('Standard')
-      expect(sequencing_request.target_asset.aliquots.first.study).to eq(study1)
-      expect(sequencing_request.target_asset.aliquots.first.project).to eq(project1)
-      expect(sequencing_request.target_asset.aliquots.first.library_id).to eq(54)
-      expect(sequencing_request.target_asset.samples.first.component_samples.order(:id)).to eq(samples.sort)
+    context 'when no compound sample exists with the component samples' do
+      it 'creates a compound sample and transfers an aliquot to it' do
+        expect(sequencing_request.target_asset.aliquots.count).to eq(0)
+        expect(sequencing_request).to receive(:find_compound_sample_for_components_samples).and_return nil
+        sequencing_request.transfer_aliquots_into_compound_sample_aliquots
+        expect(sequencing_request.target_asset.aliquots.count).to eq(1)
+        expect(sequencing_request.target_asset.aliquots.first.library_type).to eq('Standard')
+        expect(sequencing_request.target_asset.aliquots.first.study).to eq(study1)
+        expect(sequencing_request.target_asset.aliquots.first.project).to eq(project1)
+        expect(sequencing_request.target_asset.aliquots.first.library_id).to eq(54)
+        expect(sequencing_request.target_asset.samples.first.component_samples.order(:id)).to eq(samples.sort)
+      end
+    end
+
+    context 'when a compound sample exists with the component samples' do
+      let(:compound_sample) { create(:sample, name: 'compound_sample_1') }
+      before do
+        compound_sample.update(component_samples: [samples[0], samples[1]])
+        samples[0].reload
+        samples[1].reload
+      end
+
+      it 'gets the existing compound sample and transfers an aliquot to it' do
+        expect(sequencing_request.target_asset.aliquots.count).to eq(0)
+        expect(sequencing_request).to receive(:find_compound_sample_for_components_samples).and_return compound_sample
+        sequencing_request.transfer_aliquots_into_compound_sample_aliquots
+        expect(sequencing_request.target_asset.aliquots.count).to eq(1)
+        expect(sequencing_request.target_asset.samples.first).to eq(compound_sample)
+        expect(sequencing_request.target_asset.aliquots.first.sample).to eq(compound_sample)
+        expect(sequencing_request.target_asset.samples.first.component_samples).to eq([samples[0], samples[1]])
+        expect(sequencing_request.target_asset.aliquots.first.library_type).to eq('Standard')
+        expect(sequencing_request.target_asset.aliquots.first.study).to eq(study1)
+        expect(sequencing_request.target_asset.aliquots.first.project).to eq(project1)
+        expect(sequencing_request.target_asset.aliquots.first.library_id).to eq(54)
+      end
+    end
+
+    context 'when multiple compound samples exists with the component samples' do
+      let(:compound_sample1) { create(:sample) }
+      let(:compound_sample2) { create(:sample) }
+
+      before do
+        compound_sample1.update(component_samples: [samples[0], samples[1]])
+        compound_sample2.update(component_samples: [samples[0], samples[1]])
+        samples[0].reload
+        samples[1].reload
+      end
+
+      it 'gets the latest compound sample and transfers an aliquot to it' do
+        expect(sequencing_request.target_asset.aliquots.count).to eq(0)
+        expect(sequencing_request).to receive(:find_compound_sample_for_components_samples).and_return compound_sample2
+        sequencing_request.transfer_aliquots_into_compound_sample_aliquots
+        expect(sequencing_request.target_asset.aliquots.count).to eq(1)
+        expect(sequencing_request.target_asset.samples.first).to eq(compound_sample2)
+        expect(sequencing_request.target_asset.aliquots.first.sample).to eq(compound_sample2)
+        expect(sequencing_request.target_asset.samples.first.component_samples).to eq([samples[0], samples[1]])
+        expect(sequencing_request.target_asset.aliquots.first.library_type).to eq('Standard')
+        expect(sequencing_request.target_asset.aliquots.first.study).to eq(study1)
+        expect(sequencing_request.target_asset.aliquots.first.project).to eq(project1)
+        expect(sequencing_request.target_asset.aliquots.first.library_id).to eq(54)
+      end
     end
 
     # How the library_id should be set if the source aliquots have different library_ids is not defined
