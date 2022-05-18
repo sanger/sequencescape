@@ -192,15 +192,6 @@ group :test, :cucumber do
   gem 'simplecov', require: false
   gem 'timecop', require: false
 
-  # Simplifies shared transactions between server and test threads
-  # See: http://technotes.iangreenleaf.com/posts/the-one-true-guide-to-database-transactions-with-capybara.html
-  # Essentially does two things:
-  # - Patches rails to share a database connection between threads while Testing
-  # - Pathes rspec to ensure capybara has done its stuff before killing the connection
-  # Causing problems in Rails 6. Remove from Rspec, left in place for cucumber, but can
-  # probably be remove there as well.
-  gem 'transactional_capybara'
-
   # Keep webdriver in sync with chrome to prevent frustrating CI failures
   gem 'webdrivers'
 end

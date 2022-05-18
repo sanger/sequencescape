@@ -479,8 +479,6 @@ GEM
     timecop (0.9.5)
     traceroute (0.8.1)
       rails (>= 3.0.0)
-    transactional_capybara (0.2.0)
-      capybara
     tzinfo (1.2.9)
       thread_safe (~> 0.1)
     uglifier (4.2.0)
@@ -604,7 +602,6 @@ DEPENDENCIES
   test-prof
   timecop
   traceroute
-  transactional_capybara
   uglifier (>= 1.0.3)
   uuidtools
   vite_rails
