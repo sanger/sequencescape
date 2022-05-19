@@ -31,7 +31,8 @@ module ViewsSchema
   VIEW_STATEMENT = '%{action} ALGORITHM=%<algorithm>s SQL SECURITY %<security>s VIEW `%<name>s` AS %<statement>s'
 
   # rubocop:todo Layout/LineLength
-  REGEXP = /\ACREATE ALGORITHM=(?<algorithm>\w*) DEFINER=`[^`]*`@`[^`]*` SQL SECURITY (?<security>\w*) VIEW `[^`]+` AS (?<statement>.*)\z/i.freeze
+  REGEXP = /\ACREATE ALGORITHM=(?<algorithm>\w*) DEFINER=`[^`]*`@`[^`]*` SQL SECURITY (?<security>\w*) VIEW `[^`]+` AS (?<statement>.*)\z/i
+    .freeze
 
   # rubocop:enable Layout/LineLength
 
