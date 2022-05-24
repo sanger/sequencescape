@@ -38,7 +38,7 @@ module StudyReport::WellDetails # rubocop:todo Style/Documentation
       pico: well_attribute.pico_pass,
       is_in_fluidigm: fluidigm_stamp_date,
       gel: well_attribute.gel_pass,
-      plate_barcode: plate.barcode_for_study_report,
+      plate_barcode: plate.human_barcode,
       measured_volume: well_attribute.measured_volume,
       current_volume: well_attribute.current_volume,
       gel_qc_date: gel_qc_date,
