@@ -78,7 +78,7 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
     context 'when no compound sample exists with the component samples' do
       it 'creates a compound sample and transfers an aliquot to it' do
         expect(sequencing_request.target_asset.aliquots.count).to eq(0)
-        expect(sequencing_request).to receive(:find_compound_sample_for_components_samples).and_return nil
+        allow(sequencing_request).to receive(:find_compound_sample_for_components_samples).and_return nil
         sequencing_request.transfer_aliquots_into_compound_sample_aliquots
         expect(sequencing_request.target_asset.aliquots.count).to eq(1)
         expect(sequencing_request.target_asset.aliquots.first.library_type).to eq('Standard')
@@ -91,6 +91,7 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
 
     context 'when a compound sample exists with the component samples' do
       let(:compound_sample) { create(:sample, name: 'compound_sample_1') }
+
       before do
         compound_sample.update(component_samples: [samples[0], samples[1]])
         samples[0].reload
@@ -99,7 +100,7 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
 
       it 'gets the existing compound sample and transfers an aliquot to it' do
         expect(sequencing_request.target_asset.aliquots.count).to eq(0)
-        expect(sequencing_request).to receive(:find_compound_sample_for_components_samples).and_return compound_sample
+        allow(sequencing_request).to receive(:find_compound_sample_for_components_samples).and_return compound_sample
         sequencing_request.transfer_aliquots_into_compound_sample_aliquots
         expect(sequencing_request.target_asset.aliquots.count).to eq(1)
         expect(sequencing_request.target_asset.samples.first).to eq(compound_sample)
@@ -125,7 +126,7 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
 
       it 'gets the latest compound sample and transfers an aliquot to it' do
         expect(sequencing_request.target_asset.aliquots.count).to eq(0)
-        expect(sequencing_request).to receive(:find_compound_sample_for_components_samples).and_return compound_sample2
+        allow(sequencing_request).to receive(:find_compound_sample_for_components_samples).and_return compound_sample2
         sequencing_request.transfer_aliquots_into_compound_sample_aliquots
         expect(sequencing_request.target_asset.aliquots.count).to eq(1)
         expect(sequencing_request.target_asset.samples.first).to eq(compound_sample2)
