@@ -81,11 +81,12 @@ class PlateBarcode
   # - request - Net::HTTP::Post object that contains the params for the request like the body, headers, etc
   def self._connection_scope(url, data = nil)
     uri = URI(url)
-    http_connection = Net::HTTP.new(uri.host, uri.port)
     initheader = { 'Content-Type' => 'application/json' }
     request = Net::HTTP::Post.new(uri.path, initheader)
     request.body = data.to_json if data
-    yield http_connection, request
+    Net::HTTP.start(uri.hostname, uri.port, use_ssl: uri.scheme == 'https') do |http_connection|
+      yield http_connection, request
+    end
   end
 
   if Rails.env.development?
