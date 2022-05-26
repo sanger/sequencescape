@@ -81,12 +81,14 @@ module Heron
         def _factories_for_location(location, samples_params)
           samples_params.each_with_index.map do |sample_params, pos|
             sample_params = sample_params.merge(study_uuid: study_uuid) if study_uuid
-            factory = content_factory.new(sample_params)
-            unless factory.valid?
-              label = label_for_error_message(location, pos, samples_params)
-              errors.add(label, factory.errors.full_messages)
-            end
-            factory
+            content_factory
+              .new(sample_params)
+              .tap do |factory|
+                next if factory.valid?
+
+                label = label_for_error_message(location, pos, samples_params)
+                factory.errors.full_messages.each { |message| errors.add(label, message) }
+              end
           end
         end
 
