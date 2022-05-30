@@ -1,7 +1,9 @@
 # frozen_string_literal: true
-# TODO: change the contents of this class - to be fired at 'charge and pass' stage instead.
-class BroadcastEvent::LibraryComplete < BroadcastEvent # rubocop:todo Style/Documentation
-  set_event_type 'library_complete'
+# At time of creation, this event type is fired when multiplexed library tubes are passed.
+# BroadcastEvent::LibraryComplete events used to be fired at this time point, however they were
+# redefined to be fired at the 'charge and pass' stage, because that made more sense to the users.
+class BroadcastEvent::PoolReleased < BroadcastEvent
+  set_event_type 'pool_released'
 
   # Properties takes :order_id
 
