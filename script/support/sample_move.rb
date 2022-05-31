@@ -225,15 +225,13 @@ def new_move_samples(sample_names, study_from_id, study_to_id, user_login, rt_ti
       sample_manifests << sample.sample_manifest
 
       sample.study_samples.find_each do |study_sample|
-        
-          study_sample.update!(study_id: study_to_id)
-        rescue ActiveRecord::RecordInvalid => e
-          study_links = StudySample.where(sample_id: study_sample.sample_id, study_id: study_from_id)
-          study_links.each do |link|
-            puts "Sample already associated with #{study_to_id} => Destroying #{link.inspect}\n"
-            link.destroy
-          end
-        
+        study_sample.update!(study_id: study_to_id)
+      rescue ActiveRecord::RecordInvalid => e
+        study_links = StudySample.where(sample_id: study_sample.sample_id, study_id: study_from_id)
+        study_links.each do |link|
+          puts "Sample already associated with #{study_to_id} => Destroying #{link.inspect}\n"
+          link.destroy
+        end
       end
       puts 'Finished saving study_sample'
     end
