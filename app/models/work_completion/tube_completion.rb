@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# Class WorkCompletion::PlateCompletion provides the business logic
-# for passing plates, especially in the Limber pipelines. This has
+# Class WorkCompletion::TubeCompletion provides the business logic
+# for passing tubes, especially in the Limber pipelines. This has
 # been pulled out of WorkCompletion itself to allow for separate behaviour
 # for plates and tubes.
 #
