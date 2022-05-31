@@ -76,15 +76,14 @@ module Request::SampleCompoundAliquotTransfer
     # Get all the compound samples the first component sample
     compound_samples = component_samples[0].compound_samples
 
-    # Due to previous implementation, there may be multiple compound samples with the provided component samples.
-    found_compound_samples = []
-    compound_samples.each do |compound_sample|
-      return found_compound_samples << compound_sample if compound_sample.component_samples == component_samples
-    end
-
     # If there is only 1 compound sample, return it. Otherwise, return the last created compound sample
     # NPG have confirmed we do not need to fix the data where there are multiple compound samples with
     # the same component samples
-    found_compound_samples.count == 1 ? found_compound_samples[0] : found_compound_samples.last
+    compound_samples.count == 1 ? compound_samples[0] : get_last_compound_sample(compound_samples, component_samples)
+  end
+
+  # Due to previous implementation, there may be multiple compound samples with the provided component samples.
+  def get_last_compound_sample(compound_samples, component_samples)
+    compound_samples.reverse.find { |compound_sample| compound_sample.component_samples == component_samples }
   end
 end
