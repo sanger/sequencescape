@@ -59,16 +59,6 @@ class PipelinesController < ApplicationController
       # We use the inbox presenter
       @inbox_presenter = Presenters::GroupedPipelineInboxPresenter.new(@pipeline, current_user, @show_held_requests)
       @requests_waiting = @inbox_presenter.requests_waiting
-    elsif @pipeline.group_by_submission?
-      Rails.logger.info('Pipeline grouped by submission')
-
-      # Convert to an array now as otherwise the comments counter attempts to be too clever
-      # and treats the requests like a scope. Not only does this result in a more complicated
-      # query, but also an invalid one
-      @requests_waiting = @pipeline.request_count_in_inbox(@show_held_requests)
-      requests = @pipeline.requests_in_inbox(@show_held_requests).to_a
-      @grouped_requests = requests.group_by(&:submission_id)
-      @requests_comment_count = Comment.counts_for_requests(requests)
     else
       Rails.logger.info('Pipeline fallback behaviour')
       @requests_waiting = @pipeline.request_count_in_inbox(@show_held_requests)

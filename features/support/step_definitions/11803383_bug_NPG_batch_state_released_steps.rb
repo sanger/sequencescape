@@ -15,6 +15,11 @@ Given /^sequencescape is setup for 11803383$/ do
   FactoryBot.create :batch_request, request: request, batch: batch, position: 1
 end
 
+When /^I (POST|PUT) following XML to pass QC state on the last asset:$/ do |action, xml|
+  lane = Lane.last
+  step "I #{action} the following XML to \"/npg_actions/assets/#{lane.id}/pass_qc_state\":", xml
+end
+
 Then /^batch state should be "([^"]*)"$/ do |state|
   batch = Batch.last
   assert_equal batch.state, state

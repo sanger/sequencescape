@@ -11,13 +11,3 @@ Given /^plate "([^"]*)" is part of study "([^"]*)"$/ do |plate_barcode, study_na
   study = Study.find_by(name: study_name)
   RequestFactory.create_assets_requests(plate.wells, study)
 end
-
-Then /^the plate "([^"]*)" should have a 'pico_analysed' event$/ do |plate_barcode|
-  plate = Plate.find_from_barcode(plate_barcode)
-  assert_not_nil plate.events.find_by(family: 'pico_analysed')
-end
-
-Then /^well "([^"]*)" on plate "([^"]*)" should have a 'pico_analysed' event$/ do |well_description, plate_barcode|
-  plate = Plate.find_from_barcode(plate_barcode)
-  assert_not_nil plate.find_well_by_name(well_description).events.find_by(family: 'pico_analysed')
-end
