@@ -7,7 +7,7 @@
 #   request           A Request for transferring source_aliquots into a target receptacle.
 #                     At time of writing, only used for a SequencingRequest, from a multiplex tube into a lane.
 #   source_aliquots   A list of Aliquots that should be transferred into a single Aliquot in a target Receptacle,
-#                     that containes  contain a single compound sample.
+#                     that contains a single compound sample.
 #                     The list of component samples is derived from source_aliquots.
 #                     Some attributes are transferred from the source aliquots onto the compound aliquot.
 #

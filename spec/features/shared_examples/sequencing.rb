@@ -40,7 +40,7 @@ shared_examples 'a sequencing procedure' do
 
     find('#sample-2-checkbox').uncheck
 
-    # Pending question on issue#3225 may be populated with previous v
+    # Pending question on issue#3225 may be populated with previous value
     fill_in('+4 field of weirdness', with: 'Something else', currently_with: '')
 
     click_on 'Next step'

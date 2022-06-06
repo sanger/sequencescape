@@ -54,36 +54,32 @@ module Request::SampleCompoundAliquotTransfer
   # Assign the compound sample to the target asset
   def transfer_into_compound_sample_aliquot(source_aliquots)
     compound_aliquot = CompoundAliquot.new(request: self, source_aliquots: source_aliquots)
+    unless compound_aliquot.valid?
+      raise Request::SampleCompoundAliquotTransfer::Error, compound_aliquot.errors.full_messages
+    end
 
     # Check if a compound sample already exists with the source_aliquot samples
-    existing_compound_sample = find_compound_sample_for_components_samples(source_aliquots)
+    existing_compound_sample = find_compound_sample_for_component_samples(source_aliquots)
+
     if existing_compound_sample
       compound_aliquot.compound_sample = existing_compound_sample
     else
-      unless compound_aliquot.valid?
-        raise Request::SampleCompoundAliquotTransfer::Error, compound_aliquot.errors.full_messages
-      end
-
       compound_aliquot.create_compound_sample
     end
     target_asset.aliquots.create(compound_aliquot.aliquot_attributes)
   end
 
-  def find_compound_sample_for_components_samples(source_aliquots)
+  # Due to previous implementation, there may be multiple compound samples with the provided component samples.
+  # NPG have confirmed we do not need to fix the data where there are multiple compound samples with
+  # the same component samples
+  def find_compound_sample_for_component_samples(source_aliquots)
     # Get all the component samples
     component_samples = source_aliquots.map(&:sample)
 
-    # Get all the compound samples the first component sample
-    compound_samples = component_samples[0].compound_samples
+    # Get all the compound samples of the first component sample
+    compound_samples = component_samples[0].compound_samples.order(:id)
 
-    # If there is only 1 compound sample, return it. Otherwise, return the last created compound sample
-    # NPG have confirmed we do not need to fix the data where there are multiple compound samples with
-    # the same component samples
-    compound_samples.count == 1 ? compound_samples[0] : get_last_compound_sample(compound_samples, component_samples)
-  end
-
-  # Due to previous implementation, there may be multiple compound samples with the provided component samples.
-  def get_last_compound_sample(compound_samples, component_samples)
+    # Find the latest compound sample with contains the given component samples
     compound_samples.reverse.find { |compound_sample| compound_sample.component_samples == component_samples }
   end
 end
