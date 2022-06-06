@@ -5,16 +5,14 @@ class BroadcastEvent::LibraryComplete < BroadcastEvent # rubocop:todo Style/Docu
 
   # Properties takes :order_id
 
-  seed_class MultiplexedLibraryTube
+  seed_class Labware
 
   has_subject(:order) { |_, e| e.order }
   has_subject(:study) { |_, e| e.order.study }
   has_subject(:project) { |_, e| e.order.project }
   has_subject(:submission) { |_, e| e.order.submission }
 
-  has_subjects(:library_source_labware, :library_source_plates)
-
-  has_subject(:multiplexed_library) { |tube, _e| tube.receptacle }
+  has_subject(:library_source_labware, :source_plate)
 
   has_subjects(:stock_plate, :original_stock_plates)
   has_subjects(:sample) do |tube, e|

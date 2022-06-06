@@ -8,16 +8,18 @@
 # @author Genome Research Ltd.
 #
 class WorkCompletion::PlateCompletion
-  attr_reader :target_plate, :submission_ids
+  attr_reader :target_plate, :submission_ids, :user
 
-  def initialize(plate, submission_ids)
+  def initialize(plate, submission_ids, user)
     @target_plate = plate
     @submission_ids = submission_ids
+    @user = user
   end
 
   def process
     connect_requests
     update_stock_wells
+    fire_events
   end
 
   def connect_requests
@@ -64,5 +66,19 @@ class WorkCompletion::PlateCompletion
         .includes(aliquots: { request: WorkCompletion::REQUEST_INCLUDES })
         .include_stock_wells_for_modification
         .where(requests: { submission_id: submission_ids })
+  end
+
+  def fire_events
+    order_ids.each do |order_id|
+      BroadcastEvent::LibraryComplete.create!(seed: target_plate, user: user, properties: { order_id: order_id })
+    end
+  end
+
+  def order_ids
+    output = []
+    target_wells.each do |target_well|
+      detect_upstream_requests(target_well).each { |upstream| output << upstream.order_id }
+    end
+    output.uniq
   end
 end

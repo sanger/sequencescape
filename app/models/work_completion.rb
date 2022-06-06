@@ -43,9 +43,9 @@ class WorkCompletion < ApplicationRecord
 
   def pass_and_attach_requests
     if target.respond_to?(:wells)
-      PlateCompletion.new(target, submission_ids).process
+      PlateCompletion.new(target, submission_ids, user).process
     else
-      TubeCompletion.new(target, submission_ids).process
+      TubeCompletion.new(target, submission_ids, user).process
     end
   end
 end

@@ -8,15 +8,17 @@
 # @author Genome Research Ltd.
 #
 class WorkCompletion::TubeCompletion
-  attr_reader :target_tube, :submission_ids
+  attr_reader :target_tube, :submission_ids, :user
 
-  def initialize(tube, submission_ids)
+  def initialize(tube, submission_ids, user)
     @target_tube = tube
     @submission_ids = submission_ids
+    @user = user
   end
 
   def process
     connect_requests
+    fire_events
   end
 
   def connect_requests
@@ -44,5 +46,17 @@ class WorkCompletion::TubeCompletion
 
   def detect_upstream_requests
     CustomerRequest.includes(WorkCompletion::REQUEST_INCLUDES).where(id: target_tube.aliquots.pluck(:request_id))
+  end
+
+  def fire_events
+    order_ids.each do |order_id|
+      BroadcastEvent::LibraryComplete.create!(seed: target_tube, user: user, properties: { order_id: order_id })
+    end
+  end
+
+  def order_ids
+    output = []
+    detect_upstream_requests.each { |upstream| output << upstream.order_id }
+    output.uniq
   end
 end
