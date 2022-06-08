@@ -8,25 +8,31 @@
 # @author Genome Research Ltd.
 #
 class WorkCompletion::TubeCompletion
-  attr_reader :target_tube, :submission_ids, :user
+  attr_reader :target_tube, :submission_ids, :order_ids
 
-  def initialize(tube, submission_ids, user)
+  def initialize(tube, submission_ids)
     @target_tube = tube
     @submission_ids = submission_ids
-    @user = user
   end
 
   def process
     connect_requests
-    fire_events
   end
 
+  # Updates the source receptacle (asset) of the downstream requests (e.g. sequencing requests).
+  # Passes the requests coming into this labware's receptacles (library requests).
+  # Collects order_ids, as the WorkCompletion class needs these to fire events.
+  #
   def connect_requests
-    # Upstream requests our on our stock wells.
+    # Upstream requests out of our stock wells.
     detect_upstream_requests.each do |upstream|
+      @order_ids << upstream.order_id
+
       # We need to find the downstream requests BEFORE connecting the upstream
       # This is because submission.next_requests tries to take a shortcut through
       # the target_asset if it is defined.
+
+      # Works, event though 'asset' expects a receptacle, and it is being passed a labware.
       upstream.next_requests.each { |ds| ds.update!(asset: target_tube) }
 
       # In some cases, such as the Illumina-C pipelines, requests might be
@@ -42,21 +48,10 @@ class WorkCompletion::TubeCompletion
       upstream.pass if upstream.may_pass?
       upstream.save!
     end
+    @order_ids.uniq!
   end
 
   def detect_upstream_requests
     CustomerRequest.includes(WorkCompletion::REQUEST_INCLUDES).where(id: target_tube.aliquots.pluck(:request_id))
-  end
-
-  def fire_events
-    order_ids.each do |order_id|
-      BroadcastEvent::LibraryComplete.create!(seed: target_tube, user: user, properties: { order_id: order_id })
-    end
-  end
-
-  def order_ids
-    output = []
-    detect_upstream_requests.each { |upstream| output << upstream.order_id }
-    output.uniq
   end
 end

@@ -8,23 +8,27 @@
 # @author Genome Research Ltd.
 #
 class WorkCompletion::PlateCompletion
-  attr_reader :target_plate, :submission_ids, :user
+  attr_reader :target_plate, :submission_ids, :order_ids
 
-  def initialize(plate, submission_ids, user)
+  def initialize(plate, submission_ids)
     @target_plate = plate
     @submission_ids = submission_ids
-    @user = user
   end
 
   def process
     connect_requests
     update_stock_wells
-    fire_events
   end
 
+  # Updates the source receptacle (asset) of the downstream requests (e.g. sequencing requests).
+  # Passes the requests coming into this labware's receptacles (library requests).
+  # Collects order_ids, as the WorkCompletion class needs these to fire events.
+  #
   def connect_requests
     target_wells.each do |target_well|
       detect_upstream_requests(target_well).each do |upstream|
+        @order_ids << upstream.order_id
+
         # We need to find the downstream requests BEFORE connecting the upstream
         # This is because submission.next_requests tries to take a shortcut through
         # the target_asset if it is defined.
@@ -44,19 +48,7 @@ class WorkCompletion::PlateCompletion
         upstream.save!
       end
     end
-  end
-
-  def detect_upstream_requests(target_well)
-    target_well.aliquots.map(&:request)
-  end
-
-  def suitable_request?(request)
-    submission_ids.include?(request.submission_id)
-  end
-
-  def update_stock_wells
-    Well::Link.stock.where(target_well_id: target_wells.map(&:id)).delete_all
-    Well::Link.stock.import(target_wells.map { |well| { source_well_id: well.id, target_well_id: well.id } })
+    @order_ids.uniq!
   end
 
   def target_wells
@@ -68,17 +60,13 @@ class WorkCompletion::PlateCompletion
         .where(requests: { submission_id: submission_ids })
   end
 
-  def fire_events
-    order_ids.each do |order_id|
-      BroadcastEvent::LibraryComplete.create!(seed: target_plate, user: user, properties: { order_id: order_id })
-    end
+  def detect_upstream_requests(target_well)
+    target_well.aliquots.map(&:request)
   end
 
-  def order_ids
-    output = []
-    target_wells.each do |target_well|
-      detect_upstream_requests(target_well).each { |upstream| output << upstream.order_id }
-    end
-    output.uniq
+  # The wells on this plate are now considered the 'stock wells' of any downstream of them.
+  def update_stock_wells
+    Well::Link.stock.where(target_well_id: target_wells.map(&:id)).delete_all
+    Well::Link.stock.import(target_wells.map { |well| { source_well_id: well.id, target_well_id: well.id } })
   end
 end
