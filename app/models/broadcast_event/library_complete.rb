@@ -1,6 +1,10 @@
 # frozen_string_literal: true
-# TODO: change the contents of this class - to be fired at 'charge and pass' stage instead.
-class BroadcastEvent::LibraryComplete < BroadcastEvent # rubocop:todo Style/Documentation
+
+# Event that indicates library prep is complete.
+# It used to be fired (with slightly different data attached) when the multiplexed library tube was passed.
+# It was moved to be fired earlier, when the 'charge and pass' button was hit in Limber, as that was felt
+# to be more representative of when library prep was complete (DPL-377).
+class BroadcastEvent::LibraryComplete < BroadcastEvent
   set_event_type 'library_complete'
 
   # Properties takes :order_id
