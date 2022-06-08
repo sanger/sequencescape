@@ -82,10 +82,12 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
         expect { sequencing_request.transfer_aliquots_into_compound_sample_aliquots }.to change(Sample, :count).by(1)
 
         expect(sequencing_request.target_asset.aliquots.count).to eq(1)
-        expect(sequencing_request.target_asset.aliquots.first.library_type).to eq('Standard')
-        expect(sequencing_request.target_asset.aliquots.first.study).to eq(study1)
-        expect(sequencing_request.target_asset.aliquots.first.project).to eq(project1)
-        expect(sequencing_request.target_asset.aliquots.first.library_id).to eq(54)
+        expect(sequencing_request.target_asset.aliquots.first).to have_attributes(
+          library_type: 'Standard',
+          study: study1,
+          project: project1,
+          library_id: 54
+        )
         expect(sequencing_request.target_asset.samples.first.component_samples.count).to eq 2
         expect(sequencing_request.target_asset.samples.first.component_samples[0]).to eq samples[0]
         expect(sequencing_request.target_asset.samples.first.component_samples[1]).to eq samples[1]
@@ -93,24 +95,20 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
     end
 
     context 'when a compound sample exists with different component samples' do
-      let(:compound_sample) { create(:sample, name: 'compound_sample_1') }
+      it 'creates a new compound sample and transfers an aliquot to it' do
+        create(:sample, name: 'compound_sample_1', component_samples: [samples[0], samples[2]])
 
-      before do
-        compound_sample.update(component_samples: [samples[0], samples[2]])
-        samples[0].reload
-        samples[2].reload
-      end
-
-      it 'creates a compound sample and transfers an aliquot to it' do
         expect(sequencing_request.target_asset.aliquots.count).to eq(0)
 
         expect { sequencing_request.transfer_aliquots_into_compound_sample_aliquots }.to change(Sample, :count).by(1)
 
         expect(sequencing_request.target_asset.aliquots.count).to eq(1)
-        expect(sequencing_request.target_asset.aliquots.first.library_type).to eq('Standard')
-        expect(sequencing_request.target_asset.aliquots.first.study).to eq(study1)
-        expect(sequencing_request.target_asset.aliquots.first.project).to eq(project1)
-        expect(sequencing_request.target_asset.aliquots.first.library_id).to eq(54)
+        expect(sequencing_request.target_asset.aliquots.first).to have_attributes(
+          library_type: 'Standard',
+          study: study1,
+          project: project1,
+          library_id: 54
+        )
         expect(sequencing_request.target_asset.samples.first.component_samples.count).to eq 2
         expect(sequencing_request.target_asset.samples.first.component_samples[0]).to eq samples[0]
         expect(sequencing_request.target_asset.samples.first.component_samples[1]).to eq samples[1]
@@ -118,15 +116,8 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
     end
 
     context 'when a compound sample exists with the component samples' do
-      let(:compound_sample) { create(:sample, name: 'compound_sample_1') }
-
-      before do
-        compound_sample.update(component_samples: [samples[0], samples[1]])
-        samples[0].reload
-        samples[1].reload
-      end
-
       it 'gets the existing compound sample and transfers an aliquot to it' do
+        compound_sample = create(:sample, name: 'compound_sample_1', component_samples: [samples[0], samples[1]])
         expect(sequencing_request.target_asset.aliquots.count).to eq(0)
 
         expect { sequencing_request.transfer_aliquots_into_compound_sample_aliquots }.to change(Sample, :count).by(0)
@@ -135,37 +126,36 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
         expect(sequencing_request.target_asset.samples.first).to eq(compound_sample)
         expect(sequencing_request.target_asset.aliquots.first.sample).to eq(compound_sample)
         expect(sequencing_request.target_asset.samples.first.component_samples).to eq([samples[0], samples[1]])
-        expect(sequencing_request.target_asset.aliquots.first.library_type).to eq('Standard')
-        expect(sequencing_request.target_asset.aliquots.first.study).to eq(study1)
-        expect(sequencing_request.target_asset.aliquots.first.project).to eq(project1)
-        expect(sequencing_request.target_asset.aliquots.first.library_id).to eq(54)
+        expect(sequencing_request.target_asset.aliquots.first).to have_attributes(
+          library_type: 'Standard',
+          study: study1,
+          project: project1,
+          library_id: 54
+        )
       end
     end
 
     context 'when multiple compound samples exists with the component samples' do
-      let(:compound_sample1) { create(:sample) }
-      let(:compound_sample2) { create(:sample) }
-
-      before do
-        compound_sample1.update(component_samples: [samples[0], samples[1]])
-        compound_sample2.update(component_samples: [samples[0], samples[1]])
-        samples[0].reload
-        samples[1].reload
-      end
-
       it 'gets the latest compound sample and transfers an aliquot to it' do
+        compound_sample1 = create(:sample, name: 'compound_sample_1', component_samples: [samples[0], samples[1]])
+        compound_sample2 = create(:sample, name: 'compound_sample_2', component_samples: [samples[0], samples[1]])
+
         expect(sequencing_request.target_asset.aliquots.count).to eq(0)
 
         expect { sequencing_request.transfer_aliquots_into_compound_sample_aliquots }.to change(Sample, :count).by(0)
 
         expect(sequencing_request.target_asset.aliquots.count).to eq(1)
+        expect(sequencing_request.target_asset.samples.first).not_to eq(compound_sample1)
+        expect(sequencing_request.target_asset.aliquots.first.sample).not_to eq(compound_sample1)
         expect(sequencing_request.target_asset.samples.first).to eq(compound_sample2)
         expect(sequencing_request.target_asset.aliquots.first.sample).to eq(compound_sample2)
         expect(sequencing_request.target_asset.samples.first.component_samples).to eq([samples[0], samples[1]])
-        expect(sequencing_request.target_asset.aliquots.first.library_type).to eq('Standard')
-        expect(sequencing_request.target_asset.aliquots.first.study).to eq(study1)
-        expect(sequencing_request.target_asset.aliquots.first.project).to eq(project1)
-        expect(sequencing_request.target_asset.aliquots.first.library_id).to eq(54)
+        expect(sequencing_request.target_asset.aliquots.first).to have_attributes(
+          library_type: 'Standard',
+          study: study1,
+          project: project1,
+          library_id: 54
+        )
       end
     end
 
