@@ -1,5 +1,6 @@
 # frozen_string_literal: true
-# At time of creation, this event type is fired when multiplexed library tubes are passed.
+
+# At time of writing, this event type is fired when multiplexed library tubes are passed.
 # BroadcastEvent::LibraryComplete events used to be fired at this time point, however they were
 # redefined to be fired at the 'charge and pass' stage, because that made more sense to the users.
 class BroadcastEvent::PoolReleased < BroadcastEvent

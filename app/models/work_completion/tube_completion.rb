@@ -33,7 +33,7 @@ class WorkCompletion::TubeCompletion
       # This is because submission.next_requests tries to take a shortcut through
       # the target_asset if it is defined.
 
-      # Works, event though 'asset' expects a receptacle, and it is being passed a labware.
+      # Works, even though 'asset' expects a receptacle, and it is being passed a labware.
       upstream.next_requests.each { |ds| ds.update!(asset: target_tube) }
 
       # In some cases, such as the Illumina-C pipelines, requests might be
