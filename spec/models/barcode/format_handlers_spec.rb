@@ -347,6 +347,8 @@ describe Barcode::FormatHandlers do
   end
 
   describe Barcode::FormatHandlers::Sequencescape22 do
+    it_has_a_valid_barcode 'SQPD-1234', prefix: 'SQPD', number: 1234
+    it_has_a_valid_barcode 'SQPD-1234-567', prefix: 'SQPD', number: 1234, child: 567
     it_has_a_valid_barcode 'SQPD-1234-R', prefix: 'SQPD', number: 1234, suffix: 'R'
     it_has_a_valid_barcode 'SQPD-12345678-234233890-W',
                            prefix: 'SQPD',
@@ -356,11 +358,9 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode 'SQPD-12345678-234233890-WD'
     it_has_an_invalid_barcode 'SQPD-12345678-234233890-12341234-WD'
     it_has_an_invalid_barcode 'SQPD12345678912W'
-    it_has_an_invalid_barcode 'SQPD-1234'
     it_has_an_invalid_barcode 'SQPD-1234--W'
     it_has_an_invalid_barcode 'SQPD-1234W'
     it_has_an_invalid_barcode 'SQPD-1234-23-0'
-    it_has_an_invalid_barcode 'SQPD-1234-0'
   end
 
   # rubocop:enable RSpec/EmptyExampleGroup
