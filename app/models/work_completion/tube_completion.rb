@@ -13,6 +13,7 @@ class WorkCompletion::TubeCompletion
   def initialize(tube, submission_ids)
     @target_tube = tube
     @submission_ids = submission_ids
+    @order_ids = []
   end
 
   def process

@@ -50,6 +50,6 @@ class WorkCompletion < ApplicationRecord
   end
 
   def fire_event(order_id)
-    BroadcastEvent::LibraryComplete.create!(seed: target, user: user, properties: { order_id: order_id })
+    BroadcastEvent::LibraryComplete.create!(seed: self, user: user, properties: { order_id: order_id })
   end
 end

@@ -9,18 +9,19 @@ class BroadcastEvent::LibraryComplete < BroadcastEvent
 
   # Properties takes :order_id
 
-  seed_class Labware
+  seed_class WorkCompletion
 
   has_subject(:order) { |_, e| e.order }
   has_subject(:study) { |_, e| e.order.study }
   has_subject(:project) { |_, e| e.order.project }
   has_subject(:submission) { |_, e| e.order.submission }
 
-  has_subject(:library_source_labware, :source_plate)
+  has_subject(:library_source_labware) { |work_completion, _e| work_completion.target.source_plate }
 
-  has_subjects(:stock_plate, :original_stock_plates)
-  has_subjects(:sample) do |tube, e|
-    tube
+  has_subjects(:stock_plate) { |work_completion, _e| work_completion.target.original_stock_plates }
+  has_subjects(:sample) do |work_completion, e|
+    work_completion
+      .target
       .requests_as_target
       .for_event_notification_by_order(e.order)
       .including_samples_from_source
@@ -40,5 +41,5 @@ class BroadcastEvent::LibraryComplete < BroadcastEvent
   has_metadata(:order_type) { |_, e| e.order.order_role.try(:role) || 'UNKNOWN' }
   has_metadata(:submission_template) { |_, e| e.order.template_name }
 
-  has_metadata(:team) { |tube, _e| tube.team || 'UNKNOWN' }
+  has_metadata(:team) { |_, e| RequestType.find(e.order.request_types.try(:first))&.product_line&.name || 'UNKNOWN' }
 end

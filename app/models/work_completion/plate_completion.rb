@@ -13,6 +13,7 @@ class WorkCompletion::PlateCompletion
   def initialize(plate, submission_ids)
     @target_plate = plate
     @submission_ids = submission_ids
+    @order_ids = []
   end
 
   def process
