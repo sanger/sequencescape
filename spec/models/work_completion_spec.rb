@@ -77,7 +77,7 @@ describe WorkCompletion do
       it 'creates a library_complete event per Order' do
         expect(BroadcastEvent::LibraryComplete.count).not_to eq(0)
         expect(BroadcastEvent::LibraryComplete.count).to eq(all_library_requests.map(&:order_id).uniq.count)
-        expect(BroadcastEvent::LibraryComplete).to all(
+        expect(BroadcastEvent::LibraryComplete.all).to all(
           have_attributes(seed_type: described_class.name, seed: work_completion, user: work_completion.user)
         )
         order_ids = Set.new(BroadcastEvent::LibraryComplete.all.map { |ev| ev.properties[:order_id] })

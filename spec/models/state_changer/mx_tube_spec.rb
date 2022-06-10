@@ -356,7 +356,7 @@ RSpec.describe StateChanger::MxTube do
 
         it 'fires an event per order' do
           expect(BroadcastEvent::PoolReleased.count).to eq(2)
-          expect(BroadcastEvent::PoolReleased).to all(
+          expect(BroadcastEvent::PoolReleased.all).to all(
             have_attributes(seed_type: Labware.name, seed: labware, user_id: user.id)
           )
           order_ids = Set.new(BroadcastEvent::PoolReleased.all.map { |ev| ev.properties[:order_id] })
