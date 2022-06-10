@@ -15,7 +15,7 @@ RSpec.describe StateChanger::MxTube do
 
   let(:user) { build_stubbed :user }
   let(:customer_accepts_responsibility) { false }
-  let(:labware) { create :tube }
+  let(:labware) { create :multiplexed_library_tube }
   let(:transfer_request) { create :transfer_request, target_asset: labware.receptacle, state: transfer_request_state }
   let(:request) { create :request, target_asset: labware.receptacle, state: request_state, order: order }
   let(:requests) { [request] }
@@ -341,6 +341,12 @@ RSpec.describe StateChanger::MxTube do
 
       it 'fires an event' do
         expect(BroadcastEvent::PoolReleased.count).to eq(1)
+        expect(BroadcastEvent::PoolReleased.last).to have_attributes(
+          seed_type: Labware.name,
+          seed: labware,
+          user_id: user.id
+        )
+        expect(BroadcastEvent::PoolReleased.last.properties).to eq({ order_id: order.id })
       end
 
       context 'when there are multiple orders' do
@@ -350,6 +356,11 @@ RSpec.describe StateChanger::MxTube do
 
         it 'fires an event per order' do
           expect(BroadcastEvent::PoolReleased.count).to eq(2)
+          expect(BroadcastEvent::PoolReleased).to all(
+            have_attributes(seed_type: Labware.name, seed: labware, user_id: user.id)
+          )
+          order_ids = Set.new(BroadcastEvent::PoolReleased.all.map { |ev| ev.properties[:order_id] })
+          expect(order_ids).to eq(Set[order.id, order2.id])
         end
       end
     end
