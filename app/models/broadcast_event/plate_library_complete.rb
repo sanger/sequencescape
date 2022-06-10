@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-# TODO: is this event type actually fired anywhere?
-# BroadcastEvent::PlateLibraryComplete records are present 2015-2017 only
+
+# Probably unused - BroadcastEvent::PlateLibraryComplete records are present 2015-2017 only
 class BroadcastEvent::PlateLibraryComplete < BroadcastEvent
   set_event_type 'library_complete'
 
