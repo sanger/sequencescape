@@ -13,7 +13,6 @@ RSpec.describe BroadcastEvent::LibraryComplete, type: :model, broadcast_event: t
   let(:metadata) { event.as_json['event'][:metadata] }
 
   it 'generates a json' do
-    puts event.to_json
     expect(event.to_json).not_to be_nil
   end
 
