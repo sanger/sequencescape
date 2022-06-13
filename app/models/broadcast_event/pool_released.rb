@@ -20,6 +20,8 @@ class BroadcastEvent::PoolReleased < BroadcastEvent
   has_subject(:multiplexed_library) { |tube, _e| tube.receptacle }
 
   has_subjects(:stock_plate, :original_stock_plates)
+
+  # finds relevant requests into this tube, and grabs the samples from their source aliquots
   has_subjects(:sample) do |tube, e|
     tube
       .requests_as_target
