@@ -20,9 +20,9 @@ class CompoundAliquot
   MULTIPLE_PROJECTS_ERROR_MSG =
     'Cannot create compound sample due to the component samples being under different projects.'
 
-  attr_accessor :request, :source_aliquots, :compound_sample
+  attr_accessor :request, :source_aliquots
 
-  attr_reader :component_samples
+  attr_reader :component_samples, :compound_sample
 
   validate :tag_depth_is_unique
   validate :source_aliquots_have_same_study
@@ -54,9 +54,9 @@ class CompoundAliquot
     errors.add(:base, "#{MULTIPLE_PROJECTS_ERROR_MSG}: #{component_samples.map(&:name)}")
   end
 
-  def find_or_create_compound_sample(source_aliquots)
+  def find_or_create_compound_sample
     #  Check if a compound sample already exists with the source_aliquot samples
-    existing_compound_sample = find_compound_sample_for_component_samples(source_aliquots)
+    existing_compound_sample = find_compound_sample_for_component_samples
 
     @compound_sample = existing_compound_sample || create_compound_sample
   end
@@ -64,7 +64,7 @@ class CompoundAliquot
   # Due to previous implementation, there may be multiple compound samples with the provided component samples.
   # NPG have confirmed we do not need to fix the data where there are multiple compound samples with
   # the same component samples
-  def find_compound_sample_for_component_samples(source_aliquots)
+  def find_compound_sample_for_component_samples
     # Get all the component samples
     component_samples = source_aliquots.map(&:sample)
 
@@ -72,7 +72,7 @@ class CompoundAliquot
     # .includes eager loads the component_samples upfront, otherwise you risk lots of hits to the database.
     compound_samples = component_samples[0].compound_samples.includes(:component_samples).order(id: :desc)
 
-    # Find the latest compound sample with contains the given component samples
+    # Find the latest compound sample which contains the given component samples
     compound_samples.find { |compound_sample| compound_sample.component_samples == component_samples }
   end
 
