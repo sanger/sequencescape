@@ -65,9 +65,6 @@ class CompoundAliquot
   # NPG have confirmed we do not need to fix the data where there are multiple compound samples with
   # the same component samples
   def find_compound_sample_for_component_samples
-    # Get all the component samples
-    component_samples = source_aliquots.map(&:sample)
-
     # Get all the compound samples of the first component sample
     # .includes eager loads the component_samples upfront, otherwise you risk lots of hits to the database.
     compound_samples = component_samples[0].compound_samples.includes(:component_samples).order(id: :desc)
