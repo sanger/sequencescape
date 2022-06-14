@@ -19,8 +19,8 @@ class PlateToTubesTest < ActiveSupport::TestCase
     @tube_label = LabelPrinter::Label::PlateToTubes.new(options)
     @label = {
       first_line: (asset_name).to_s,
-      middle_line: barcode1,
-      bottom_line: (Date.today.strftime('%e-%^b-%Y')).to_s,
+      second_line: barcode1,
+      third_line: (Date.today.strftime('%e-%^b-%Y')).to_s,
       round_label_top_line: prefix,
       round_label_bottom_line: barcode1,
       barcode: tube1.machine_barcode,
