@@ -33,7 +33,7 @@ module Request::SampleCompoundAliquotTransfer
   end
 
   # Groups the source aliquots by their tag1 and tag2 combination
-  # For each of these groups, create a compound sample.
+  # For each of these groups, find or create a compound sample.
   def transfer_aliquots_into_compound_sample_aliquots
     aliquots_by_tags_combination.each do |_tags_combo, aliquot_list|
       transfer_into_compound_sample_aliquot(aliquot_list)
@@ -50,13 +50,15 @@ module Request::SampleCompoundAliquotTransfer
     asset.aliquots.group_by(&:tags_combination)
   end
 
+  # For a group of source aliquots, find or create a compound sample containing the component samples
+  # Assign the compound sample to the target asset
   def transfer_into_compound_sample_aliquot(source_aliquots)
     compound_aliquot = CompoundAliquot.new(request: self, source_aliquots: source_aliquots)
     unless compound_aliquot.valid?
       raise Request::SampleCompoundAliquotTransfer::Error, compound_aliquot.errors.full_messages
     end
 
-    compound_aliquot.create_compound_sample
+    compound_aliquot.find_or_create_compound_sample
 
     target_asset.aliquots.create(compound_aliquot.aliquot_attributes)
   end
