@@ -360,12 +360,12 @@ namespace :pmb do
           }
         end
 
-        def sqsc_1dtube_label_template
+        def tube_label_template_1d.yml
           label_type_id = get_label_type_id('Tube')
           {
             'data' => {
               'attributes' => {
-                'name' => 'sqsc_1dtube_label_template',
+                'name' => 'tube_label_template_1d.yml',
                 'label_type_id' => label_type_id,
                 'labels_attributes' => [
                   {
@@ -593,7 +593,7 @@ namespace :pmb do
           unregistered_templates = [
             { name: 'sqsc_96plate_label_template', type: BarcodePrinterType96Plate },
             { name: 'sqsc_96plate_label_template_code39', type: BarcodePrinterType96Plate },
-            { name: 'sqsc_1dtube_label_template', type: BarcodePrinterType1DTube },
+            { name: 'tube_label_template_1d', type: BarcodePrinterType1DTube },
             { name: 'sqsc_384plate_label_template', type: BarcodePrinterType384Plate },
             { name: 'plate_6mm_double', type: BarcodePrinterType384DoublePlate },
             { name: 'swipecard_barcode_template', type: nil }

@@ -8,7 +8,7 @@ module LabelPrinter
         @tubes = options[:sample_tubes]
       end
 
-      def top_line(tube)
+      def first_line(tube)
         tube.name_for_label
       end
     end

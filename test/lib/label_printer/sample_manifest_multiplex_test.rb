@@ -22,7 +22,7 @@ class SampleManifestMultiplexTest < ActiveSupport::TestCase
     @tube_label = LabelPrinter::Label::SampleManifestMultiplex.new(options)
 
     @label = {
-      top_line: (study_abbreviation).to_s,
+      first_line: (study_abbreviation).to_s,
       middle_line: barcode1,
       bottom_line: (Date.today.strftime('%e-%^b-%Y')).to_s,
       round_label_top_line: prefix,
@@ -37,6 +37,6 @@ class SampleManifestMultiplexTest < ActiveSupport::TestCase
   end
 
   test 'should return correct top line' do
-    assert_equal study_abbreviation, tube_label.top_line
+    assert_equal study_abbreviation, tube_label.first_line
   end
 end

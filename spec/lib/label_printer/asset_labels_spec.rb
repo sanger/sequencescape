@@ -70,9 +70,9 @@ context 'printing tubes' do
     let(:body) do
       assets.map do |asset|
         {
-          top_line: asset.name,
-          middle_line: asset.barcode_number,
-          bottom_line: date,
+          first_line: asset.name,
+          second_line: asset.barcode_number,
+          third_line: date,
           round_label_top_line: asset.prefix,
           round_label_bottom_line: asset.barcode_number,
           barcode: asset.machine_barcode,

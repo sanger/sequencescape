@@ -46,6 +46,6 @@ class SampleManifestTubeTest < ActiveSupport::TestCase
   end
 
   test 'should return correct top line' do
-    assert_equal manifest.study.abbreviation, tube_label.top_line
+    assert_equal manifest.study.abbreviation, tube_label.first_line
   end
 end
