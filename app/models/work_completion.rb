@@ -44,12 +44,6 @@ class WorkCompletion < ApplicationRecord
 
   def pass_and_attach_requests
     processing_class = target.respond_to?(:wells) ? PlateCompletion : TubeCompletion
-    processor = processing_class.new(target, submission_ids)
-    processor.process
-    processor.order_ids.each { |order_id| fire_event(order_id) }
-  end
-
-  def fire_event(order_id)
-    BroadcastEvent::LibraryComplete.create!(seed: self, user: user, properties: { order_id: order_id })
+    processing_class.new(target, submission_ids, self).process
   end
 end

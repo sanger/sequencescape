@@ -7,54 +7,22 @@
 #
 # @author Genome Research Ltd.
 #
-class WorkCompletion::PlateCompletion
-  attr_reader :target_plate, :submission_ids, :order_ids
-
-  def initialize(plate, submission_ids)
-    @target_plate = plate
-    @submission_ids = submission_ids
-    @order_ids = []
-  end
-
+class WorkCompletion::PlateCompletion < WorkCompletion::LabwareCompletion
   def process
-    connect_requests
+    super
     update_stock_wells
   end
 
-  # Updates the source receptacle (asset) of the downstream requests (e.g. sequencing requests).
-  # Passes the requests coming into this labware's receptacles (library requests).
-  # Collects order_ids, as the WorkCompletion class needs these to fire events.
-  #
   def connect_requests
     target_wells.each do |target_well|
-      detect_upstream_requests(target_well).each do |upstream|
-        @order_ids << upstream.order_id
-
-        # We need to find the downstream requests BEFORE connecting the upstream
-        # This is because submission.next_requests tries to take a shortcut through
-        # the target_asset if it is defined.
-        upstream.next_requests.each { |ds| ds.update!(asset: target_well) }
-
-        # In some cases, such as the Illumina-C pipelines, requests might be
-        # connected upfront. We don't want to touch these.
-        upstream.target_asset ||= target_well
-
-        # We don't try and pass failed requests.
-        # I'm not 100% convinced this decision belongs here, and instead
-        # we may want to let the client specify wells to pass, and perform
-        # validation to ensure this is correct. However this increases
-        # the complexity of both the code and the interface, with only
-        # marginal system simplification.
-        upstream.pass if upstream.may_pass?
-        upstream.save!
-      end
+      detect_upstream_requests(target_well).each { |upstream| pass_and_link_up_requests(target_well, upstream) }
     end
     @order_ids.uniq!
   end
 
   def target_wells
     @target_wells ||=
-      target_plate
+      target_labware
         .wells
         .includes(aliquots: { request: WorkCompletion::REQUEST_INCLUDES })
         .include_stock_wells_for_modification
