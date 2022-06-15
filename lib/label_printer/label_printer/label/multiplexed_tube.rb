@@ -16,6 +16,10 @@ module LabelPrinter
       def second_line(tube)
         tube.human_barcode
       end
+
+      # REMOVE AFTER DPL-364 IS DONE
+      alias_method :top_line, :first_line
+      alias_method :middle_line, :second_line
     end
   end
 end

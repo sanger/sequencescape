@@ -12,7 +12,12 @@ module LabelPrinter
           round_label_top_line: round_label_top_line(tube),
           round_label_bottom_line: round_label_bottom_line(tube),
           barcode: barcode(tube),
-          label_name: 'main_label'
+          label_name: 'main_label',
+
+          # REMOVE AFTER DPL-364 IS DONE
+          top_line: top_line(tube),
+          middle_line: middle_line(tube),
+          bottom_line: bottom_line(tube)
         }
       end
 
@@ -25,6 +30,11 @@ module LabelPrinter
       def third_line(_tube)
         date_today
       end
+
+      # REMOVE AFTER DPL-364 IS DONE
+      alias_method :top_line, :first_line
+      alias_method :middle_line, :second_line
+      alias_method :bottom_line, :third_line
 
       def round_label_top_line(tube)
         tube.prefix

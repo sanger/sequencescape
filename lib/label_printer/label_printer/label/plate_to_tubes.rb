@@ -11,6 +11,9 @@ module LabelPrinter
       def first_line(tube)
         tube.name_for_label
       end
+
+      # REMOVE AFTER DPL-364 IS DONE
+      alias_method :top_line, :first_line
     end
   end
 end
