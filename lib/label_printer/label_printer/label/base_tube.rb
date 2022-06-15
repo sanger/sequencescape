@@ -32,9 +32,9 @@ module LabelPrinter
       end
 
       # REMOVE AFTER DPL-364 IS DONE
-      alias_method :top_line, :first_line
-      alias_method :middle_line, :second_line
-      alias_method :bottom_line, :third_line
+      alias top_line first_line
+      alias middle_line second_line
+      alias bottom_line third_line
 
       def round_label_top_line(tube)
         tube.prefix

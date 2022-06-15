@@ -14,7 +14,7 @@ module LabelPrinter
       end
 
       # REMOVE AFTER DPL-364 IS DONE
-      alias_method :top_line, :first_line
+      alias top_line first_line
 
       def tubes
         return [sample_manifest.printables.first] if only_first_label
