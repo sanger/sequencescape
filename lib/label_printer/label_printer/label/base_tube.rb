@@ -13,7 +13,6 @@ module LabelPrinter
           round_label_bottom_line: round_label_bottom_line(tube),
           barcode: barcode(tube),
           label_name: 'main_label',
-
           # REMOVE AFTER DPL-364 IS DONE
           top_line: top_line(tube),
           middle_line: middle_line(tube),
