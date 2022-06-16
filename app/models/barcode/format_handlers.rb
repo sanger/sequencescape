@@ -122,6 +122,10 @@ module Barcode::FormatHandlers
       @matches[:suffix] if @matches&.names&.include?('suffix')
     end
 
+    def child
+      @matches[:child].to_i if @matches&.names&.include?('child') && !@matches[:child].nil?
+    end
+
     def code128_barcode?
       /\A[[:ascii:]]+\z/.match?(@human_barcode)
     end
@@ -148,6 +152,15 @@ module Barcode::FormatHandlers
 
     alias machine_barcode human_barcode
     alias serialize_barcode human_barcode
+  end
+
+  # Added to support plate barcodes from baracoda
+  # Expected formats:
+  # <prefix>-nnn... where n is a digit.
+  # prefix is dependent on plate_barcode_prefix environment variable
+  class Sequencescape22 < BaseRegExBarcode
+    prefix = configatron.plate_barcode_prefix
+    self.format = /\A(?<prefix>#{prefix})-(?<number>[0-9]+)(-(?<child>[0-9]+))?(-(?<suffix>[A-Z]))?\z/
   end
 
   # Infinium barcodes are externally generated barcodes on Illumina Infinium chips

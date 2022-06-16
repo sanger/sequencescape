@@ -50,16 +50,16 @@ jobs:
           bundle config path vendor/bundle
           bin/setup
 
-      # Actually run our build
-      - name: Compile Build
-        run: ./compile-build
-
       # Create a release tag based on the branch name and .release-version file
       - name: Set release tag
         # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-environment-variable
         # On the develop branch this might create RELEASE_VERSION=2.4.6-987654321-develop
         # On the master branch this would then only create RELEASE_VERSION=2.4.6
         run: echo "RELEASE_VERSION=$(printf -- '%s%s\n' $(cat .release-version) $([ ${BRANCH_NAME} = "develop" ] && printf -- '-%s-develop' ${GITHUB_RUN_ID} || echo ""))" >> $GITHUB_ENV
+
+      # Actually run our build
+      - name: Compile Build
+        run: ./compile-build '' v${{ env.RELEASE_VERSION }} ${BRANCH_NAME}
 
       # Create a GitHub release with the release asset as an artifact
       - name: Create release and upload release.tar.gz

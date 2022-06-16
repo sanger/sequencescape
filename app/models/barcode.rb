@@ -60,7 +60,8 @@ class Barcode < ApplicationRecord
          uk_biocentre_v7: 38,
          east_london_genes_and_health: 39,
          leamington_spa_v2: 40,
-         east_london_genes_and_health_v2: 41
+         east_london_genes_and_health_v2: 41,
+         sequencescape22: 42
        }
 
   # Barcode formats which may be submitted via sample manifests
@@ -102,11 +103,11 @@ class Barcode < ApplicationRecord
     east_london_genes_and_health
     leamington_spa_v2
     east_london_genes_and_health_v2
+    sequencescape22
   ].freeze
 
   validate :barcode_valid?
   validates :barcode, uniqueness: { scope: :format, case_sensitive: false }
-
   scope(
     :sanger_barcode,
     lambda do |prefix, number|
@@ -125,6 +126,10 @@ class Barcode < ApplicationRecord
 
   def self.build_sanger_code39(attributes)
     build_sanger_barcode(attributes, format: :sanger_code39)
+  end
+
+  def self.build_sequencescape22(attributes)
+    new(format: :sequencescape22, barcode: attributes[:barcode])
   end
 
   def self.build_sanger_barcode(attributes, format:)
@@ -161,6 +166,10 @@ class Barcode < ApplicationRecord
       end
   end
 
+  def sequencescape22?
+    format == 'sequencescape22'
+  end
+
   def handler
     @handler ||= handler_class.new(barcode)
   end
@@ -177,6 +186,10 @@ class Barcode < ApplicationRecord
 
   def sanger_barcode?
     sanger_ean13? || sanger_code39?
+  end
+
+  def child_barcodes
+    Barcode.where('barcode LIKE ?', "#{barcode}-%")
   end
 
   private
