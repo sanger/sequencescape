@@ -402,6 +402,8 @@ Rails.application.routes.draw do
   resources :lab_searches
   resources :events
 
+  get 'advanced_search' => 'advanced_search#index'
+
   resources :workflows, only: [] do
     member do
       # Yes, this is every bit as horrible as it looks.

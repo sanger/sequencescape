@@ -76,6 +76,7 @@ en:
       labwhere_reception: "Labwhere Reception"
       labsearch: "Lab search"
       labview: "Lab View"
+      advancedsearch: "Search"
       report_fails: "Report Fails"
 
   errors:
