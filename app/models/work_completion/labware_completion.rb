@@ -19,6 +19,14 @@ class WorkCompletion::LabwareCompletion
     fire_events
   end
 
+  # Must be implemented by any subclass.
+  # Finds the relevant target receptacle(s) and the requests coming into them.
+  # Calls pass_and_link_up_requests for each of them.
+  # Implemented differently for Plates and Tubes.
+  def connect_requests
+    raise NotImplementedError, 'abstract method'
+  end
+
   # Updates the source receptacle (asset) of the downstream (normally sequencing) requests.
   # Passes the requests coming into this labware's receptacles (library requests).
   # Collects order_ids, as these are needed to fire events.
