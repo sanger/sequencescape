@@ -16,7 +16,6 @@ module LabelPrinter
       def tubes
         [sample_manifest.printables]
       end
-
     end
   end
 end

@@ -16,7 +16,6 @@ module LabelPrinter
       def second_line(tube)
         tube.human_barcode
       end
-
     end
   end
 end

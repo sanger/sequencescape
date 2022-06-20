@@ -11,7 +11,6 @@ module LabelPrinter
       def first_line(tube)
         tube.name_for_label
       end
-
     end
   end
 end
