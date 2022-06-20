@@ -1,5 +1,7 @@
 # frozen_string_literal: true
-class BroadcastEvent::PlateLibraryComplete < BroadcastEvent # rubocop:todo Style/Documentation
+
+# Probably unused - BroadcastEvent::PlateLibraryComplete records are present 2015-2017 only
+class BroadcastEvent::PlateLibraryComplete < BroadcastEvent
   set_event_type 'library_complete'
 
   # Properties takes :order_id

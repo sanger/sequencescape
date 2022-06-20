@@ -8,7 +8,9 @@ describe WorkCompletion do
 
   describe '::create' do
     context 'with a cross-submission tube' do
-      before { described_class.create!(user: create(:user), target: target_tube) }
+      before { work_completion.save! }
+
+      let(:work_completion) { described_class.new(user: create(:user), target: target_tube) }
 
       let(:submission_request_types) { [library_request_type] }
 
@@ -40,12 +42,14 @@ describe WorkCompletion do
                       request_type: library_request_type,
                       asset: well,
                       submission: target_submission2,
-                      state: 'started'
+                      state: 'started',
+                      order: order2
         end
       end
       let(:target_submission2) do
         create :library_submission, assets: input_plate2.wells, request_types: submission_request_types
       end
+      let(:order2) { target_submission2.orders.first }
 
       let(:library_requests_submission2) { target_submission2.requests.where(request_type_id: library_request_type.id) }
 
@@ -69,12 +73,25 @@ describe WorkCompletion do
       it 'joins up the library requests' do
         library_requests.each { |request| expect(request.target_asset).to eq(target_tube.receptacle) }
       end
+
+      it 'creates a library_complete event per Order' do
+        expect(BroadcastEvent::LibraryComplete.count).not_to eq(0)
+        expect(BroadcastEvent::LibraryComplete.count).to eq(all_library_requests.map(&:order_id).uniq.count)
+        expect(BroadcastEvent::LibraryComplete.all).to all(
+          have_attributes(seed_type: described_class.name, seed: work_completion, user: work_completion.user)
+        )
+        order_ids = Set.new(BroadcastEvent::LibraryComplete.all.map { |ev| ev.properties[:order_id] })
+        expect(order_ids).to eq(Set[order.id, order2.id])
+      end
     end
 
     context 'with additional requests' do
       let(:requests_per_well) { 2 }
+      let(:work_completion) do
+        described_class.new(user: create(:user), target: target_plate, submissions: [target_submission])
+      end
 
-      before { described_class.create!(user: create(:user), target: target_plate, submissions: [target_submission]) }
+      before { work_completion.save! }
 
       let(:decoy_requests) { input_plate.wells.flat_map { |w| w.requests[1, 2].map(&:reload) } }
       let(:library_requests) { input_plate.wells.map { |w| w.requests.first.reload } }
@@ -89,6 +106,16 @@ describe WorkCompletion do
 
       it 'does not pass the decoy requests' do
         expect(decoy_requests).to all(be_started)
+      end
+
+      it 'creates a library_complete event' do
+        expect(BroadcastEvent::LibraryComplete.count).to eq(1)
+        expect(BroadcastEvent::LibraryComplete.last).to have_attributes(
+          seed_type: described_class.name,
+          seed: work_completion,
+          user: work_completion.user
+        )
+        expect(BroadcastEvent::LibraryComplete.last.properties).to eq({ order_id: order.id })
       end
     end
 
@@ -146,11 +173,16 @@ describe WorkCompletion do
       end
     end
 
-    context 'when no submission is included' do
+    # The behaviour is different if the target is a tube, not a plate - presume not intentional
+    context 'when no submission is included, and the target is a plate' do
       before { described_class.create!(user: create(:user), target: target_plate, submissions: []) }
 
       it "doesn't pass the request" do
         expect(library_requests.first).to be_started
+      end
+
+      it "doesn't create a library_complete event" do
+        expect(BroadcastEvent::LibraryComplete.count).to eq(0)
       end
     end
   end

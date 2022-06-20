@@ -56,6 +56,10 @@ FactoryBot.define do
     end
   end
 
+  factory :order_role do
+    role { 'test_role' }
+  end
+
   factory :linear_submission do
     study
     project
@@ -67,7 +71,16 @@ FactoryBot.define do
     factory :library_order do
       assets { create_list :untagged_well, 1 }
       request_types { [create(:library_request_type).id] }
-      request_options { { fragment_size_required_from: 100, fragment_size_required_to: 200, library_type: 'Standard' } }
+      request_options do
+        {
+          fragment_size_required_from: 100,
+          fragment_size_required_to: 200,
+          library_type: 'Standard',
+          bait_library_name: 'Bait'
+        }
+      end
+      template_name { 'test_template_name' }
+      order_role { create :order_role }
     end
   end
 

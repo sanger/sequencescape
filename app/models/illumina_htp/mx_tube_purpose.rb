@@ -48,7 +48,7 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
       .joins(wells: :requests)
       .where(
         requests: {
-          target_asset_id: tube.id,
+          target_asset_id: tube.receptacle.id,
           sti_type:
             [
               Request::Multiplexing,
