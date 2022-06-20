@@ -17,8 +17,6 @@ module LabelPrinter
         [sample_manifest.printables]
       end
 
-      # REMOVE AFTER DPL-364 IS DONE
-      alias top_line first_line
     end
   end
 end

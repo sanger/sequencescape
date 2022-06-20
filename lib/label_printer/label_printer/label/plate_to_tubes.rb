@@ -12,8 +12,6 @@ module LabelPrinter
         tube.name_for_label
       end
 
-      # REMOVE AFTER DPL-364 IS DONE
-      alias top_line first_line
     end
   end
 end

@@ -14,9 +14,9 @@ module LabelPrinter
           barcode: barcode(tube),
           label_name: 'main_label',
           # REMOVE AFTER DPL-364 IS DONE
-          top_line: top_line(tube),
-          middle_line: middle_line(tube),
-          bottom_line: bottom_line(tube)
+          top_line: first_line(tube),
+          middle_line: second_line(tube),
+          bottom_line: third_line(tube)
         }
       end
 
@@ -29,11 +29,6 @@ module LabelPrinter
       def third_line(_tube)
         date_today
       end
-
-      # REMOVE AFTER DPL-364 IS DONE
-      alias top_line first_line
-      alias middle_line second_line
-      alias bottom_line third_line
 
       def round_label_top_line(tube)
         tube.prefix
@@ -58,6 +53,10 @@ module LabelPrinter
       def date_today
         Date.today.strftime('%e-%^b-%Y')
       end
+
+      # def old_build_label
+
+      # end
     end
   end
 end

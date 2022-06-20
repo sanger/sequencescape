@@ -15,9 +15,6 @@ module LabelPrinter
         stock.present? ? tube.name : tube.name_for_label
       end
 
-      # REMOVE AFTER DPL-364 IS DONE
-      alias top_line first_line
-
       def tubes
         @tubes ||=
           if stock.present?

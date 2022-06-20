@@ -17,9 +17,6 @@ module LabelPrinter
         tube.human_barcode
       end
 
-      # REMOVE AFTER DPL-364 IS DONE
-      alias top_line first_line
-      alias middle_line second_line
     end
   end
 end
