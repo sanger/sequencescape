@@ -19,16 +19,16 @@
       <table class="table">
         <thead>
             <tr>
-              <th>Labware ID</th>
-              <th>Labware barcode</th>
-              <th>Labware created date</th>
+              <th>Name</th>
+              <th>Barcode</th>
+              <th>Created</th>
             </tr>
         </thead>
         <tbody>
           <% @results.each do |result| %>
-            <td> <%= result.custom_metadatum_collection.asset_id %> </td>
+            <td> <%= link_to(h(result.custom_metadatum_collection.asset.display_name), labware_path(result.custom_metadatum_collection.asset)) -%> </td>
             <td> <%= result.custom_metadatum_collection.asset.human_barcode %> </td>
-            <td> <%= result.custom_metadatum_collection.asset.created_at %> </td>
+            <td> <%= result.custom_metadatum_collection.asset.created_at.strftime("%d/%m/%Y %T") %> </td>
           <% end %>
         </tbody>
       </table>
