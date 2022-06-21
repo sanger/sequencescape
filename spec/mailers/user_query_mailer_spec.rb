@@ -24,7 +24,7 @@ describe UserQueryMailer, type: :mailer do
           <p>What has happened: it did not work.</p>
           <p>What user expected to happen: it to work.</p>
 
-        Please, respond asap
+        Thank you
       HEREDOC
 
     it 'renders the headers' do

@@ -45,6 +45,7 @@ FactoryBot.define do
       factory :library_request_type do
         request_class { IlluminaHtp::Requests::StdLibraryRequest }
         billable { true }
+        product_line { ProductLine.create!(name: 'test_product_line') }
 
         factory :gbs_request_type do
           request_class { IlluminaHtp::Requests::GbsRequest }

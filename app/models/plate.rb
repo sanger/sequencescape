@@ -445,6 +445,8 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
     true
   end
 
+  # Finds the product line (= team) of the requests coming out of this plate's 'stock plate'.
+  # Written at a time when requests weren't recorded on the aliquot, so could be re-written in a less convoluted way.
   def team
     ProductLine
       .joins(
