@@ -403,6 +403,7 @@ Rails.application.routes.draw do
   resources :events
 
   get 'advanced_search' => 'advanced_search#index'
+  post 'advanced_search/search' => 'advanced_search#search'
 
   resources :workflows, only: [] do
     member do
