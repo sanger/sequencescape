@@ -2,6 +2,7 @@
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
+  user_is_admin = ->(req) { User.find_by(id: req.session[:user]).administrator? }
   root to: 'homes#show'
   resource :health, only: [:show]
   resource :home, only: [:show]
@@ -590,4 +591,6 @@ Rails.application.routes.draw do
       get 'batches/:id', to: 'plate_picks#batches'
     end
   end
+
+  mount Flipper::UI.app(Flipper) => '/flipper', :constraints => user_is_admin
 end
