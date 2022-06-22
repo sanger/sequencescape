@@ -2,7 +2,8 @@
 
 # Controller for the Advanced Search page.
 # This was initially made to handle searches for Custom Metadata,
-# but the ambition is to consolidate all Sequencescape search functionality into this one page.
+# but the ambition is to consolidate some other search functionality
+# (Lab View, Lab Search) into this page.
 class AdvancedSearchController < ApplicationController
   def index
     @searched = false
