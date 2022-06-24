@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# And Order is used as the main means of requesting work in Sequencescape. Its
+# An Order is used as the main means of requesting work in Sequencescape. Its
 # key components are:
 # Assets/AssetGroup: The assets on which the work will be conducted
 # Study: The study for which work is being undertaken

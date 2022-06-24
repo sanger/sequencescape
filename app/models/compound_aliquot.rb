@@ -7,7 +7,7 @@
 #   request           A Request for transferring source_aliquots into a target receptacle.
 #                     At time of writing, only used for a SequencingRequest, from a multiplex tube into a lane.
 #   source_aliquots   A list of Aliquots that should be transferred into a single Aliquot in a target Receptacle,
-#                     that containes  contain a single compound sample.
+#                     that contains a single compound sample.
 #                     The list of component samples is derived from source_aliquots.
 #                     Some attributes are transferred from the source aliquots onto the compound aliquot.
 #
@@ -54,13 +54,31 @@ class CompoundAliquot
     errors.add(:base, "#{MULTIPLE_PROJECTS_ERROR_MSG}: #{component_samples.map(&:name)}")
   end
 
+  def find_or_create_compound_sample
+    #  Check if a compound sample already exists with the source_aliquot samples
+    existing_compound_sample = find_compound_sample_for_component_samples
+
+    @compound_sample = existing_compound_sample || create_compound_sample
+  end
+
+  # Due to previous implementation, there may be multiple compound samples with the provided component samples.
+  # NPG have confirmed we do not need to fix the data where there are multiple compound samples with
+  # the same component samples
+  def find_compound_sample_for_component_samples
+    # Get all the compound samples of the first component sample
+    # .includes eager loads the component_samples upfront, otherwise you risk lots of hits to the database.
+    compound_samples = component_samples[0].compound_samples.includes(:component_samples).order(id: :desc)
+
+    # Find the latest compound sample which contains the given component samples
+    compound_samples.find { |compound_sample| compound_sample.component_samples == component_samples }
+  end
+
   # Generates the compound sample, under the default study, using the component samples
   def create_compound_sample
-    @compound_sample =
-      default_compound_study.samples.create!(
-        name: SangerSampleId.generate_sanger_sample_id!(default_compound_study.abbreviation),
-        component_samples: component_samples
-      )
+    default_compound_study.samples.create!(
+      name: SangerSampleId.generate_sanger_sample_id!(default_compound_study.abbreviation),
+      component_samples: component_samples
+    )
   end
 
   def aliquot_attributes
