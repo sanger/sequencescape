@@ -4,12 +4,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-  <%= stylesheet_link_tag "print" %>
-  <%= stylesheet_link_tag "print",media: "print" %>
-  <%= javascript_include_tag "JsBarcode.all.min.js", media: "print" %>
+  <%= vite_stylesheet_tag "print", media: "all" %>
+  <%= vite_javascript_tag "worksheet" %>
   <title>Batch <%= @batch.id %></title>
 </head>
-<body>
+<body data-enable-printing="<%= ["cucumber", "test"].exclude?(Rails.env) %>">
   <% @plates.each do |plate| %>
     <% pick_to_layout = @robot.pick_number_to_expected_layout(@batch, plate.human_barcode) %>
     <% pick_to_layout.each do |pick_number, robot_plate_layout| %>
@@ -18,12 +17,6 @@
         <hr>
       </div>
     <% end%>
-  <% end %>
-  <% unless ["cucumber", "test"].include?(Rails.env) %>
-    <!-- window.print open a popup window that we can't control with capybara -->
-    <%= javascript_tag nonce: true do %>
-      window.print();
-    <% end %>
   <% end %>
 </body>
 </html>

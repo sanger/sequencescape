@@ -8,7 +8,7 @@
 
 <%= render partial: @pipeline.inbox_partial, locals: { pipeline: @pipeline } %>
 
-<%= javascript_tag nonce: true do %>
+<%= legacy_javascript_tag do %>
   /*
    * When someone clicks on a request group checkbox we ensure that the count of the number of requests selected is
    * updated and, if the pipeline has a limit, that any group requests that would take us over that limit are disabled.
@@ -26,26 +26,26 @@
 
     $('.action_on_request').bind('change',function(){$('.action_on_request').val(this.value)});
 
-<% if (batch_size = @pipeline.item_limit || @pipeline.max_size).present? %>
-    /* Handle disabling the inappropriate grouped requests */
-    var maximum_batch_size       = <%= @pipeline.item_limit || @pipeline.max_size %>;
-    var updateSelectableRequests = function(event) {
-      var remaining = maximum_batch_size - batch_size;
-      $('.grouped_checkbox:not(:checked)').each(function(index, value) {
-        var checkbox = $(value);
-        var parent   = checkbox.parents('tr');
-        if (parseInt(checkbox.attr('data-count')) > remaining) {
-          checkbox.attr('disabled', 'disabled');
-          parent.fadeTo(150, 0.25);
-        } else {
-          checkbox.removeAttr('disabled');
-          parent.fadeTo(150, 1);
-        }
-      });
-    }
+  <% if (batch_size = @pipeline.item_limit || @pipeline.max_size).present? %>
+      /* Handle disabling the inappropriate grouped requests */
+      var maximum_batch_size       = <%= @pipeline.item_limit || @pipeline.max_size %>;
+      var updateSelectableRequests = function(event) {
+        var remaining = maximum_batch_size - batch_size;
+        $('.grouped_checkbox:not(:checked)').each(function(index, value) {
+          var checkbox = $(value);
+          var parent   = checkbox.parents('tr');
+          if (parseInt(checkbox.attr('data-count')) > remaining) {
+            checkbox.attr('disabled', 'disabled');
+            parent.fadeTo(150, 0.25);
+          } else {
+            checkbox.removeAttr('disabled');
+            parent.fadeTo(150, 1);
+          }
+        });
+      }
 
-    top_of_the_inbox.delegate('.grouped_checkbox', 'change', updateSelectableRequests);
-    updateSelectableRequests();
-<% end %>
-  })(jQuery);
+      top_of_the_inbox.delegate('.grouped_checkbox', 'change', updateSelectableRequests);
+      updateSelectableRequests();
+  <% end %>
+  })(window.jQuery);
 <% end %>

@@ -8,16 +8,8 @@ module PlatesHelper # rubocop:todo Style/Documentation
     padded_well_name_with_index(plate) { |padded_name, index| yield(padded_name, *wells[index]) }
   end
 
-  def valid_options_for_params(val)
-    return {} unless val.valid_options
-
-    val.valid_options.merge(valid_dilution_factors: val.valid_options[:valid_dilution_factors].map(&:to_s))
-  end
-
-  def plate_creator_parameters_json(plate_creators)
-    return {}.to_json unless plate_creators
-
-    plate_creators.each_with_object({}) { |val, memo| memo[val.name] = valid_options_for_params(val) }.to_json
+  def plate_creator_options(plate_creators)
+    plate_creators.pluck(:name, :id, :valid_options).map { |name, id, options| [name, id, { data: options }] }
   end
 
   private

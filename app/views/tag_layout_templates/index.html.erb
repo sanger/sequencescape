@@ -24,7 +24,7 @@
   </tbody>
 </table>
 
-<%= javascript_tag nonce: true do %>
+<%= legacy_javascript_tag do %>
 $('table tbody > tr:nth-child(even)').addClass('roweven');
 <% end %>
 

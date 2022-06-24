@@ -14,11 +14,11 @@
     <tbody>
       <tr>
          <td><%=f.label :user_barcode, 'Scan user ID' %></td>
-         <td><%= f.text_field :user_barcode, :onkeypress => "return disable_cr_and_change_focus(event,'stock_stamper_source_plate_barcode')" %></td>
+         <td><%= f.text_field :user_barcode, :'data-tab-target' => '#stock_stamper_source_plate_barcode' %></td>
       </tr>
       <tr>
          <td><%= f.label :source_plate_barcode, 'Scan source plate' %></td>
-         <td><%= f.text_field :source_plate_barcode, :onkeypress => "return disable_cr_and_change_focus(event,'stock_stamper_destination_plate_barcode')" %></td>
+         <td><%= f.text_field :source_plate_barcode, :'data-tab-target' => '#stock_stamper_destination_plate_barcode' %></td>
       </tr>
       <tr>
          <td><%= f.label :destination_plate_barcode, 'Scan destination plate' %></td>

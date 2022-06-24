@@ -1,14 +1,9 @@
 #!/bin/bash
 set -e # Exit immediately if something fails
 export NODE_ENV=production
-export RAILS_ENV=development
-export VITE_RUBY_PUBLIC_OUTPUT_DIR='vite'
-echo 'Updating yarn'
-bundle exec yarn
-echo 'Cleaning up'
-bundle exec rake assets:clobber
+export RAILS_ENV=production
 echo 'Compiling assets'
-bundle exec rake assets:precompile
+bundle exec rake vite:build
 echo 'Generating sha'
 echo ${1:-$(git rev-parse HEAD)} > REVISION
 echo ${2:-$(git tag -l --points-at HEAD --sort -version:refname | head -1)} > TAG

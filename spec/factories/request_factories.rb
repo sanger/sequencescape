@@ -187,12 +187,6 @@ FactoryBot.define do
     target_asset { |asset| asset.association(:empty_library_tube) }
   end
 
-  factory :pooled_cherrypick_request do
-    asset { |asset| asset.association(:well_with_sample_and_without_plate) }
-    request_purpose { :standard }
-    association(:request_type, factory: :well_request_type)
-  end
-
   factory :lib_pcr_xp_request, parent: :request_without_assets do
     request_type { |rt| rt.association(:lib_pcr_xp_request_type) }
     asset { |asset| asset.association(:well) }

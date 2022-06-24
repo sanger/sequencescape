@@ -5,7 +5,7 @@ require 'rails_helper'
 require './app/helpers/deprecation_helper'
 
 describe DeprecationHelper do
-  include FontAwesome::Sass::Rails::ViewHelpers
+  include FontawesomeHelper
 
   describe '#deprecate_section' do
     subject(:returned_html) { deprecate_section(params) { '<p>Deprecated content</p>' } }

@@ -40,11 +40,7 @@ When /^I drag (\d+) wells to the scratch pad$/ do |count|
     src_well = first('#plate_1 td.colour0') or raise StandardError, "Could not find the #{index} well in the plate"
     src_id = src_well[:id]
     src_well.drag_to(dest_pad)
-
-    # Ugh. While find is supposed to wait for an element, it doesn't appear to
-    # We still need to sleep.
-    sleep(1)
-    find("#scratch_pad ##{src_id}")
+    within('#scratch_pad') { find("##{src_id}") }
   end
 end
 

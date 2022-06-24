@@ -298,7 +298,9 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   scope :for_studies, ->(*studies) { where(initial_study_id: studies) }
 
   scope :with_assets_for_starting_requests,
-        -> { includes([:request_metadata, :request_events, { asset: :aliquots, target_asset: :aliquots }]) }
+        -> {
+          includes([:request_metadata, :request_type, :request_events, { asset: :aliquots, target_asset: :aliquots }])
+        }
   scope :not_failed, -> { where(['state != ?', 'failed']) }
 
   scope :multiplexed, -> { joins(:request_type).where(request_types: { for_multiplexing: true }) }

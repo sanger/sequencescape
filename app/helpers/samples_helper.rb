@@ -4,6 +4,6 @@ module SamplesHelper # rubocop:todo Style/Documentation
   # behaviour.  Attach 'data-organism' attribute to the 'common name' and 'taxon ID' fields
   # to get them updated.
   def organism_validation_javascript
-    javascript_include_tag('organism_validation')
+    vite_javascript_tag('organism_validation')
   end
 end

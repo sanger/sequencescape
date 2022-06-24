@@ -30,12 +30,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
+          cache: "yarn"
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         env:
           BUNDLE_WITHOUT: "cucumber deployment profile development default test"
         with:
           bundler-cache: true
+      - run: yarn install
       - name: Update Rubocop
         run: |
           bundle config --local deployment false

@@ -22,7 +22,6 @@ class WorkflowsController < ApplicationController
 
   # @todo These actions should be extracted from the controller, and instead be handled by an object invoked
   #       by the task
-  include Tasks::AssignTubesToWellsHandler
   include Tasks::CherrypickHandler
   include Tasks::PlateTemplateHandler
   include Tasks::PlateTransferHandler

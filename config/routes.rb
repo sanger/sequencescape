@@ -374,8 +374,6 @@ Rails.application.routes.draw do
     member { get :show }
   end
 
-  resources :machine_barcodes, only: [:show]
-
   resources :pipelines, except: [:delete] do
     collection { post :update_priority }
     member do
