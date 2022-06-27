@@ -8,6 +8,7 @@
 <% add(:tab, I18n.t('navigation.tabs.labwhere_reception')   => labwhere_receptions_path) -%>
 <% add(:tab, I18n.t('navigation.tabs.labview')              => lab_view_path) -%>
 <% add(:tab, I18n.t('navigation.tabs.labsearch')            => new_lab_search_path) -%>
+<% add(:tab, I18n.t('navigation.tabs.advancedsearch')       => advanced_search_path) if Flipper.enabled?(:dpl_395_2_enable_advanced_search_tab) -%>
 <% add(:tab, I18n.t('navigation.tabs.report_fails')         => report_fails_path) if configatron.enable_report_fails -%>
 
 <!DOCTYPE html>

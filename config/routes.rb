@@ -2,6 +2,7 @@
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
+  user_is_admin = ->(req) { User.find_by(id: req.session[:user]).administrator? }
   root to: 'homes#show'
   resource :health, only: [:show]
   resource :home, only: [:show]
@@ -400,6 +401,9 @@ Rails.application.routes.draw do
   resources :lab_searches
   resources :events
 
+  get 'advanced_search' => 'advanced_search#index'
+  post 'advanced_search/search' => 'advanced_search#search'
+
   resources :workflows, only: [] do
     member do
       # Yes, this is every bit as horrible as it looks.
@@ -585,4 +589,6 @@ Rails.application.routes.draw do
       get 'batches/:id', to: 'plate_picks#batches'
     end
   end
+
+  mount Flipper::UI.app(Flipper) => '/flipper', :constraints => user_is_admin
 end
