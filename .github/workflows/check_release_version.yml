@@ -21,10 +21,7 @@ jobs:
           
       - name: Run step looking for change in the release version
         run: >-
-          if [ "${{ github.event.pull_request.draft}}" == 'true' || "${{ github.event.pull_request.prerelease }}" == 'true' ] == 'false'; then
-            if [ "${{ steps.changed-files-specific.outputs.any_changed }}" ==  'false' ]; then
-              echo "Please change the release version number"
-              exit 1;
-            fi
+          if ! "${{ steps.changed-files-specific.outputs.any_changed }}"; then
+            echo "Please change the release version number"
+            exit 1;
           fi
-          
