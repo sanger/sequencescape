@@ -149,17 +149,6 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
     wells.with_contents.count
   end
 
-  def summary_hash
-    {
-      asset_id: id,
-      barcode: {
-        ean13_barcode: ean13_barcode,
-        human_readable: human_barcode
-      },
-      occupied_wells: wells.with_aliquots.include_map.map(&:map_description)
-    }
-  end
-
   #
   # Called when cherrypicking is completed to allow the plate to trigger any callbacks,
   # such as broadcasting Fluidigm plates to the warehouse.
@@ -455,6 +444,8 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
     true
   end
 
+  # Finds the product line (= team) of the requests coming out of this plate's 'stock plate'.
+  # Written at a time when requests weren't recorded on the aliquot, so could be re-written in a less convoluted way.
   def team
     ProductLine
       .joins(

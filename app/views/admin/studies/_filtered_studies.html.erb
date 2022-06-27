@@ -1,7 +1,7 @@
 
 <% unless @studies.empty? %>
   <div id='study_list'>
-    <%= form_tag(edit_admin_studies_path, remote: true, id: "study_form", class: 'remote-form observed', data: {update: "#study_editor", throbber: '#update_loader' }) do %>
+    <%= form_tag(edit_admin_studies_path, id: "study_form", class: 'remote-form observed', data: {update: "#study_editor", throbber: '#update_loader', remote: true }) do %>
       <p>Found <%= pluralize @studies.size, "study" %></p>
       <%= select_tag :id, options_from_collection_for_select(@studies, :id, :name), prompt: 'Select a study...', class: 'select2' %>
     <% end %>

@@ -1,7 +1,6 @@
 {
   "all": {
-    "sourceCodeDir": "app/javascript",
-    "watchAdditionalPaths": []
+    "sourceCodeDir": "app/frontend"
   },
   "development": {
     "autoBuild": true,
@@ -11,6 +10,11 @@
   "test": {
     "autoBuild": true,
     "publicOutputDir": "vite-test",
+    "port": 3037
+  },
+  "cucumber": {
+    "autoBuild": true,
+    "publicOutputDir": "vite-cucumber",
     "port": 3037
   }
 }

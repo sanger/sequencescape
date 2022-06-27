@@ -1,8 +1,9 @@
 # rubocop:disable all
-# Temporary import of fontawesome helpers while we're stuck on the metal and can't compile sassc on the server.
+# We've switched to the npm package for most out requirements, but still need the helpers at runtime
+# We import them here to allow us to remove font-awesome-sass as a dependency
 # Imported from https://github.com/FortAwesome/font-awesome-sass
-# Orignal source: https://github.com/FortAwesome/font-awesome-sass/blob/master/lib/font_awesome/sass/rails/helpers.rb
-# Reporduced under original license: https://github.com/FortAwesome/font-awesome-sass/blob/master/LICENSE.txt
+# Original source: https://github.com/FortAwesome/font-awesome-sass/blob/master/lib/font_awesome/sass/rails/helpers.rb
+# Reproduced under original license: https://github.com/FortAwesome/font-awesome-sass/blob/master/LICENSE.txt
 
 # Move fontawesomeinto default gemset and remove once off metal
 module FontawesomeHelper

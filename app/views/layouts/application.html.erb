@@ -20,17 +20,16 @@
       Sequencescape : <%= controller.controller_name.capitalize %> - <%= @page_name || controller.action_name %>
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <%= stylesheet_link_tag "application", media: "all" %>
-    <%= javascript_include_tag "application" %>
     <%= vite_client_tag %>
+    <%= vite_stylesheet_tag 'application.scss' %>
     <%= vite_javascript_tag 'application' %>
 
     <% if Rails.application.config.disable_animations %>
-      <%= stylesheet_link_tag 'disable_animations' %>
+      <%= vite_stylesheet_tag 'disable_animations' %>
 
       <!-- Turn off animations in jQuery -->
-      <%= javascript_tag nonce: true do %>
-        $.fx.off = true;
+      <%= legacy_javascript_tag do %>
+        jQuery.fx.off = true;
       <% end %>
     <% end %>
     <%= csrf_meta_tags %>

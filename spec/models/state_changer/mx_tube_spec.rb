@@ -15,11 +15,21 @@ RSpec.describe StateChanger::MxTube do
 
   let(:user) { build_stubbed :user }
   let(:customer_accepts_responsibility) { false }
-  let(:labware) { create :tube }
-  let!(:transfer_request) { create :transfer_request, target_asset: labware.receptacle, state: transfer_request_state }
-  let!(:request) { create :request, target_asset: labware.receptacle, state: request_state }
+  let(:labware) { create :multiplexed_library_tube }
+  let(:transfer_request) { create :transfer_request, target_asset: labware.receptacle, state: transfer_request_state }
+  let(:request) { create :request, target_asset: labware.receptacle, state: request_state, order: order }
+  let(:requests) { [request] }
+  let(:order) { create :order }
 
-  before { state_changer.update_labware_state }
+  def create_requests_and_transfers
+    transfer_request
+    requests
+  end
+
+  before do
+    create_requests_and_transfers
+    state_changer.update_labware_state
+  end
 
   context 'when the tube is: "pending"' do
     let(:transfer_request_state) { 'pending' }
@@ -318,6 +328,67 @@ RSpec.describe StateChanger::MxTube do
       it 'updates the tube to "cancelled" with "started" requests', aggregate_failures: true do
         expect(transfer_request.reload.state).to eq('cancelled')
         expect(request.reload.state).to eq('started')
+      end
+    end
+  end
+
+  describe 'events' do
+    let(:transfer_request_state) { 'started' }
+
+    context 'when the target state is passed, and the requests are in opened state' do
+      let(:target_state) { 'passed' }
+      let(:request_state) { 'started' }
+
+      it 'fires an event' do
+        expect(BroadcastEvent::PoolReleased.count).to eq(1)
+        expect(BroadcastEvent::PoolReleased.last).to have_attributes(
+          seed_type: Labware.name,
+          seed: labware,
+          user_id: user.id
+        )
+        expect(BroadcastEvent::PoolReleased.last.properties).to eq({ order_id: order.id })
+      end
+
+      context 'when there are multiple orders' do
+        let(:request2) { create :request, target_asset: labware.receptacle, state: request_state, order: order2 }
+        let(:requests) { [request, request2] }
+        let(:order2) { create :order }
+
+        it 'fires an event per order' do
+          expect(BroadcastEvent::PoolReleased.count).to eq(2)
+          expect(BroadcastEvent::PoolReleased.all).to all(
+            have_attributes(seed_type: Labware.name, seed: labware, user_id: user.id)
+          )
+          order_ids = Set.new(BroadcastEvent::PoolReleased.all.map { |ev| ev.properties[:order_id] })
+          expect(order_ids).to eq(Set[order.id, order2.id])
+        end
+      end
+    end
+
+    context 'when the target state is passed, and the requests are not in opened state' do
+      let(:target_state) { 'passed' }
+      let(:request_state) { 'failed' }
+
+      it 'does not fire an event' do
+        expect(BroadcastEvent::PoolReleased.count).to eq(0)
+      end
+    end
+
+    context 'when the target state is not passed, and the requests are in opened state' do
+      let(:target_state) { 'failed' }
+      let(:request_state) { 'started' }
+
+      it 'does not fire an event' do
+        expect(BroadcastEvent::PoolReleased.count).to eq(0)
+      end
+    end
+
+    context 'when the target state is not passed, and the requests are not in opened state' do
+      let(:target_state) { 'failed' }
+      let(:request_state) { 'failed' }
+
+      it 'does not fire an event' do
+        expect(BroadcastEvent::PoolReleased.count).to eq(0)
       end
     end
   end
