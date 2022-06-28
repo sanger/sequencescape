@@ -18,7 +18,7 @@ jobs:
         with:
           files: |
             .release-version
-          
+
       - name: Run step looking for change in the release version
         run: >-
           if ! "${{ steps.changed-files-specific.outputs.any_changed }}"; then
