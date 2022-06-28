@@ -12,16 +12,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Get the latest release
-        id: last_release
-        uses: pozetroninc/github-action-get-latest-release@v0.5.0
+      - name: Get specific changed files
+        id: changed-files-specific
+        uses: tj-actions/changed-files@v23
         with:
-          owner: Sanger
-          repo: SequenceScape
-          excludes: prerelease, draft
+          files: |
+            .release-version
 
-      - name: Compare releases
+      - name: Run step looking for change in the release version
         run: >-
-          if [ "${{ steps.last_release.outputs.release }}" = "$(printf 'v%s\n' $(cat .release-version))" ]; then
+          if ! "${{ steps.changed-files-specific.outputs.any_changed }}"; then
+            echo "Please change the release version number"
             exit 1;
           fi
