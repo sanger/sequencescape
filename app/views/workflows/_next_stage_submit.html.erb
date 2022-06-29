@@ -11,7 +11,7 @@
 </div>
 
 <% if (check_selection ||= false) %>
-<%= javascript_tag nonce: true do %>
+<%= legacy_javascript_tag do %>
 
   (function($,undefined) {
     $('#stage_form').bind('submit', function() {

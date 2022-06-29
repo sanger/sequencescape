@@ -22,14 +22,14 @@
     <% @source_plates.sort_by(&:last).each_with_index do |(plate_label, bed_label), index| %>
       <tr>
         <td><label for="bed_barcodes_<%= bed_label %>" >SCRC <%= bed_label %></label></td>
-        <td><%= text_field_tag "bed_barcodes[#{bed_label}]", params.dig(:bed_barcodes, bed_label), tabindex: 1, onkeypress: "return disable_cr_and_change_focus(event,'plate_barcodes_#{plate_label}')" %></td>
+        <td><%= text_field_tag "bed_barcodes[#{bed_label}]", params.dig(:bed_barcodes, bed_label), tabindex: 1, :'data-tab-target' => "#plate_barcodes_#{plate_label}" %></td>
         <td><label for="plate_barcodes_<%= plate_label %>"><%= plate_label %></label></td>
         <% if index + 1 >= @source_plates.size %>
           <%   next_field = @ctrl_plates.blank? ? "destination_bed_barcodes_1" : "control_bed_barcodes_1" %>
         <% else %>
          <%   next_field = "bed_barcodes_#{bed_label.to_i + 1}" %>
         <% end %>
-        <td><%= text_field_tag "plate_barcodes[#{plate_label}]", params.dig(:plate_barcodes, plate_label), tabindex: 1, :onkeypress => "return disable_cr_and_change_focus(event,'#{next_field}')" %></td>
+        <td><%= text_field_tag "plate_barcodes[#{plate_label}]", params.dig(:plate_barcodes, plate_label), tabindex: 1, :'data-tab-target' => "##{next_field}" %></td>
         <td><%= select_tag("plate_types[#{plate_label}]", options_for_select(plate_types), tabindex: 0) %></td>
       </tr>
     <% end %>
@@ -40,14 +40,14 @@
     <% @ctrl_plates.sort_by(&:last).each_with_index do |(plate_label, bed_label), index| %>
       <tr class="control">
         <td><label for="control_bed_barcodes_<%= bed_label %>" >CTRL <%= bed_label %></label></td>
-        <td><%= text_field_tag "control_bed_barcodes[#{bed_label}]", params.dig(:bed_barcodes, bed_label), tabindex: 1, onkeypress: "return disable_cr_and_change_focus(event,'plate_barcodes_#{plate_label}')" %></td>
+        <td><%= text_field_tag "control_bed_barcodes[#{bed_label}]", params.dig(:bed_barcodes, bed_label), tabindex: 1, :'data-tab-target' => "plate_barcodes_#{plate_label}" %></td>
         <td><label for="control_plate_barcodes_<%= plate_label %>"><%= plate_label %></label></td>
         <% if index + 1 >= @ctrl_plates.size %>
           <%   next_field = "destination_bed_barcodes_1" %>
         <% else %>
          <%   next_field = "bed_barcodes_#{bed_label.to_i + 1}" %>
         <% end %>
-        <td><%= text_field_tag "control_plate_barcodes[#{plate_label}]", params.dig(:plate_barcodes, plate_label), tabindex: 1, :onkeypress => "return disable_cr_and_change_focus(event,'#{next_field}')" %></td>
+        <td><%= text_field_tag "control_plate_barcodes[#{plate_label}]", params.dig(:plate_barcodes, plate_label), tabindex: 1, :'data-tab-target' => "#{next_field}" %></td>
         <td><%= select_tag("plate_types[#{plate_label}]", options_for_select(plate_types), tabindex: 0) %></td>
       </tr>
     <% end %>
@@ -58,14 +58,14 @@
     <% @dest_plates.sort_by(&:last).each_with_index do |(destination_label, bed_label), index| %>
     <tr class="destination">
       <td><label for="destination_bed_barcodes_<%= bed_label %>" >DEST <%=bed_label%></label></td>
-      <td><%= text_field_tag "destination_bed_barcodes[#{bed_label}]", params.dig(:destination_bed_barcodes, bed_label), tabindex: 1, onkeypress: "return disable_cr_and_change_focus(event,'destination_plate_barcodes_#{destination_label}')" %></td>
+      <td><%= text_field_tag "destination_bed_barcodes[#{bed_label}]", params.dig(:destination_bed_barcodes, bed_label), tabindex: 1, :'data-tab-target' => "destination_plate_barcodes_#{destination_label}" %></td>
       <td><label for="destination_plate_barcodes_<%= destination_label %>" ><%=destination_label%></label></td>
       <% if index + 1 >= @dest_plates.size %>
         <%   next_field = "verify_button" %>
       <% else %>
        <%   next_field = "destination_bed_barcodes_#{bed_label.to_i +1 }" %>
       <% end %>
-      <td><%= text_field_tag "destination_plate_barcodes[#{destination_label}]", params.dig(:destination_plate_barcodes, destination_label), tabindex: 1, :onkeypress => "return disable_cr_and_change_focus(event,'#{next_field}')" %></td>
+      <td><%= text_field_tag "destination_plate_barcodes[#{destination_label}]", params.dig(:destination_plate_barcodes, destination_label), tabindex: 1, :'data-tab-target' => "#{next_field}" %></td>
       <td><%= select_tag("plate_types[#{destination_label}]", options_for_select(plate_types, PlateType.cherrypickable_default_type), tabindex: 0) %></td>
     </tr>
     <% end %>

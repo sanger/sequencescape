@@ -9,7 +9,8 @@ class Admin::ProjectsController < ApplicationController # rubocop:todo Style/Doc
   BY_SCOPES = {
     'not approved' => :unapproved,
     'unallocated division' => :with_unallocated_budget_division,
-    'unallocated manager' => :with_unallocated_manager
+    'unallocated manager' => :with_unallocated_manager,
+    'all' => :all
   }.freeze
 
   def index
@@ -39,7 +40,7 @@ class Admin::ProjectsController < ApplicationController # rubocop:todo Style/Doc
   def filter # rubocop:todo Metrics/AbcSize
     filters = params[:filter] || {}
 
-    by_scope = BY_SCOPES.fetch(filters[:by], :scoped)
+    by_scope = BY_SCOPES.fetch(filters[:by], :all)
 
     base_scope = Project.send(by_scope).in_state(filters[:status]).alphabetical
 
@@ -50,6 +51,10 @@ class Admin::ProjectsController < ApplicationController # rubocop:todo Style/Doc
     @projects = scope
 
     render partial: 'filtered_projects'
+  end
+
+  helper_method def project_scopes
+    BY_SCOPES.keys
   end
 
   # rubocop:todo Metrics/MethodLength

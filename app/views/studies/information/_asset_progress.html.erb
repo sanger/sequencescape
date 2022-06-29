@@ -1,7 +1,10 @@
 
-<%= form_tag show_summary_study_information_path(@study), method: :get, remote: true, class: 'remote-form observed', data: {update: "#everything", throbber: '#loading' } do %>
+<%= form_tag show_summary_study_information_path(@study),
+             method: :get,
+             class: 'remote-form observed',
+             data: { update: "#everything", throbber: '#loading', remote: true } do %>
   <%= label_tag(:labware_type, 'Filter by') %>
-  <%= select_tag(:labware_type, options_for_select(labware_types_for_select, @labware_type), class: 'form-control') %>
+  <%= select_tag(:labware_type, options_for_select(labware_types_for_select, @labware_type), class: 'form-control observed') %>
 <% end %>
 
 <span class="filter_options">Currently showing <strong><%= @labware_type_name %></strong></span>

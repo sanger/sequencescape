@@ -49,7 +49,7 @@
   <%= submit_tag "Save" %>
 <% end %>
 
-<%= javascript_tag nonce: true do %>
+<%= legacy_javascript_tag do %>
   function empty_well(well,row,col,plate_width) {
     if($(well).className == 'empty') {
       $(well).removeClassName('empty');

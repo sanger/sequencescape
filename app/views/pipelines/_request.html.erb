@@ -7,7 +7,7 @@
     <%= check_box :request, request.id, value: request.id, class: 'grouped_checkbox request_checkbox', :'data-count' => 1 %>
   </td>
   <td data-order="<%= request.priority %>">
-    <%= image_tag "icon_#{request.priority}_flag.png", 'alt' => request.priority, size: '16x16', class: "flag_image #{can?(:change_priority, request) ? 'as_manager' : ''}", "data-priority" => request.priority, 'data-request-id' => request.id %>
+    <%= vite_image_tag "images/icon_#{request.priority}_flag.png", 'alt' => request.priority, size: '16x16', class: "flag_image #{can?(:change_priority, request) ? 'as_manager' : ''}", "data-priority" => request.priority, 'data-request-id' => request.id %>
   </td>
   <% if can? :see_previously_failed, request %>
     <td><%= render partial: "previous_failed_requests", locals: { request: request } %></td>

@@ -27,9 +27,4 @@ class PacBioSequencingRequest < CustomerRequest # rubocop:todo Style/Documentati
   def source_tube
     asset&.labware
   end
-
-  # Returns a list of attributes that must match for any given pool
-  def shared_attributes
-    "MovieLength:#{movie_length};InsertSize:#{insert_size};SequencingType:#{sequencing_type};"
-  end
 end

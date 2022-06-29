@@ -3,7 +3,7 @@
   <thead>
     <tr>
       <th>&nbsp;</th>
-      <th id="priority_flag"><a><%= image_tag("icon_0_flag.png", size: "16x16") %></a></th>
+      <th id="priority_flag"><a><%= vite_image_tag("images/icon_0_flag.png", size: "16x16") %></a></th>
 
       <% @inbox_presenter.each_field_header do |field_name| %>
         <th><a><%= field_name %></a></th>
@@ -30,7 +30,7 @@
           </td>
           <td  style='text-align: center'>
             <!-- TODO: Restore priority toggle for grouped submissions -->
-            <%= image_tag "icon_#{line.priority}_flag.png", 'alt' => line.priority, size: '16x16', class: "flag_image", "data-priority" => line.priority %>
+            <%= vite_image_tag "images/icon_#{line.priority}_flag.png", 'alt' => line.priority, size: '16x16', class: "flag_image", "data-priority" => line.priority %>
           </td>
 
           <!-- Custom fields -->

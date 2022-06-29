@@ -148,17 +148,6 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
     wells.with_contents.count
   end
 
-  def summary_hash
-    {
-      asset_id: id,
-      barcode: {
-        ean13_barcode: ean13_barcode,
-        human_readable: human_barcode
-      },
-      occupied_wells: wells.with_aliquots.include_map.map(&:map_description)
-    }
-  end
-
   #
   # Called when cherrypicking is completed to allow the plate to trigger any callbacks,
   # such as broadcasting Fluidigm plates to the warehouse.
