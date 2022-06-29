@@ -132,9 +132,7 @@ shared_examples 'a cherrypicking procedure' do
                 within('#destination_plate') { expect(page).to have_content(destination_barcode) }
 
                 # check barcode
-                within("#batchbarcode_#{destination_barcode}-#{pick_number_index}") do
-                  expect(page).to have_content("#{batch_barcode}-#{pick_number_index}")
-                end
+                within('svg.barcode') { expect(page).to have_content("#{batch_barcode}-#{pick_number_index}") }
 
                 # check wells
                 within('#plate_layouts') do

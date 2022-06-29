@@ -14,19 +14,4 @@
   <%= form.actions do %>
     <%= form.action(:submit, button_html: { class:'btn btn-success btn-lg', data: { disable_with: 'Processing' }}) %>
   <% end %>
-  <div id="being_created" style="display: none;">
-    <p>Your spreadsheet is being processed...</p>
-    <%= loading_bar %>
-  </div>
-<% end %>
-<%= javascript_tag nonce: true do %>
-(function($, undefined) {
-  $(document).on('dom:loaded', function() {
-    $('#new_bulk_submission').on('submit', function() {
-      $('#bulk_submission_submit').hide();
-      $('#being_created').show();
-      $('#loading').show();
-    });
-  });
-})(jQuery);
 <% end %>

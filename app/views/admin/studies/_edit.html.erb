@@ -1,5 +1,7 @@
 
-<%= form_for :study, url: managed_update_admin_study_path(study), html: { id: "update_form", method: "put", multipart: true, class: 'form-horizontal' }, update: "editor_update", loading: "show_update_loader();", complete: "hide_update_loader();" do |form| %>
+<%= form_for :study,
+             url: managed_update_admin_study_path(study),
+             html: { id: "update_form", method: "put", multipart: true, class: 'form-horizontal' } do |form| %>
   <% if study %>
     <h2>Study : <%= link_to study.name, study_path(study) %></h2>
     <div class="subtitle">

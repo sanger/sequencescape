@@ -19,10 +19,11 @@ jobs:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
       # Establish a cache of rubocop cache to improve performance
       # ${{ env.RUBOCOP_CACHE_ROOT }}
-      - name: Set up node
-        uses: actions/setup-node@v2
+      - name: Setup node
+        uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version-file: ".nvmrc"
+          cache: "yarn"
       - name: Set up yarn
         run: yarn
       - name: Cache cops
@@ -50,10 +51,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Set up node
-        uses: actions/setup-node@v2
+      - name: Setup node
+        uses: actions/setup-node@v3
         with:
-          node-version: "16"
+          node-version-file: ".nvmrc"
+          cache: "yarn"
       - name: Install
         run: yarn install
       - name: Run yarn test

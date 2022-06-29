@@ -1,16 +1,2 @@
-
-<%= javascript_tag nonce: true do %>
-  (function($){
-    $(function(){
-      // Set the activity monitors iframe to fill the yield window
-      $('#yield').height(800);
-      $('#activity-logging').height(800);
-
-    });
-  })(jQuery);
-<% end %>
-
-<%- add :about, "Activity Logging" %>
-<iframe id="activity-logging" src="<%= configatron.asset_audits_url  %>">
-</iframe>
-<%= help_link 'Adding processes to asset audits', 'Adding processes to asset audits' %>
+<%- add :about, (help_link 'Adding processes to asset audits', 'Adding processes to asset audits') %>
+<iframe id="activity-logging" src="<%= configatron.asset_audits_url  %>"></iframe>

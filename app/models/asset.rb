@@ -81,10 +81,6 @@ class Asset < ApplicationRecord
   # a bit more smart about what we load if necessary (Ie. different stuff for plates)
   scope :include_for_show, -> { includes(:studies) }
 
-  def summary_hash
-    { asset_id: id }
-  end
-
   # Returns the type of asset that can be considered appropriate for request types.
   def asset_type_for_request_types
     self.class

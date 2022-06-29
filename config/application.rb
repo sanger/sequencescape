@@ -1,6 +1,21 @@
 # frozen_string_literal: true
 require_relative 'boot'
-require 'rails/all'
+# We don't use:
+# require 'rails/all'
+# Instead we only load the components we need. When updating rails versions you can
+# checkout the contents of https://github.com/rails/rails/blob/main/railties/lib/rails/all.rb
+# to find out what's included by default.
+require 'active_record/railtie'
+require 'active_storage/engine'
+require 'action_controller/railtie'
+require 'action_view/railtie'
+require 'action_mailer/railtie'
+require 'active_job/railtie'
+require 'action_cable/engine'
+require 'action_mailbox/engine'
+require 'action_text/engine'
+require 'rails/test_unit/railtie'
+# require 'sprockets/railtie'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -33,11 +48,6 @@ module Sequencescape
     config.active_support.escape_html_entities_in_json = true
 
     config.filter_parameters += %i[password credential_1 uploaded_data]
-
-    config.assets.prefix = '/public'
-
-    # Version of your assets, change this if you want to expire all your assets
-    config.assets.version = '1.0'
 
     # Settings in config/environments/* take precedence over those specified here.
 
@@ -80,8 +90,7 @@ module Sequencescape
       g.fixture_replacement :factory_bot, dir: 'spec/factories'
     end
 
-    config.ets_enabled = false
-    config.disable_animations = false
+    config.disable_animations = ENV.fetch('DISABLE_ANIMATIONS', false).present?
 
     # Rails 5
 
