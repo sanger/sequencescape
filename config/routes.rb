@@ -21,6 +21,7 @@ Rails.application.routes.draw do
       jsonapi_resources :pick_lists
       jsonapi_resources :aliquots
       jsonapi_resources :assets
+      jsonapi_resources :bait_libraries
       jsonapi_resources :comments
       jsonapi_resources :custom_metadatum_collections
       jsonapi_resources :labware
