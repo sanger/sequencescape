@@ -1,0 +1,16 @@
+# These submission templates are associated with the Limber Duplex Seq and Targeted NanoSeq pipelines.
+# These are for the middle portion of the pipeline, after the library prep submission but before the sequencing submission.
+# They are used to make automatic submissions of selected samples for the steps between the Al Lib Dil and Lib PCR XP plates.
+---
+Limber-Htp - Duplex Seq Dilution and Cleanup - Automated:
+  submission_class_name: "LinearSubmission" # AutoSubmission?
+  related_records:
+    request_type_keys: ["limber_duplex_seq_dilution_and_cleanup"]
+    product_line_name: Targeted-NanoSeq
+    product_catalogue_name: Targeted-NanoSeq
+Limber-Htp - Targeted NanoSeq Dilution and Cleanup - Automated:
+  submission_class_name: "LinearSubmission" # AutoSubmission?
+  related_records:
+    request_type_keys: ["limber_targeted_nanoseq_dilution_and_cleanup"]
+    product_line_name: Targeted-NanoSeq
+    product_catalogue_name: Targeted-NanoSeq

@@ -195,3 +195,17 @@ limber_targeted_nanoseq:
     - LTN Cherrypick
   library_types:
     - Targeted Nanoseq
+limber_duplex_seq_dilution_and_cleanup:
+  <<: *limber_htp_library
+  name: Limber Duplex-Seq Dilution and Cleanup
+  acceptable_purposes:
+    - LDS AL Lib Dil
+  library_types:
+    - Duplex-Seq
+limber_targeted_nanoseq_dilution_and_cleanup:
+  <<: *limber_htp_library
+  name: Limber Targeted NanoSeq Dilution and Cleanup
+  acceptable_purposes:
+    - LTN Al Lib Dil
+  library_types:
+    - Targeted Nanoseq

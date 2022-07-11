@@ -27,6 +27,10 @@ LDS Stock:
 LTN Stock:
   <<: *limber_input_96
   cherrypickable_target: false
+LDS AL Lib Dil:
+  stock_plate: false
+LTN AL Lib Dil:
+  stock_plate: false
 
 # 384 well input plates
 GBS Stock: &limber_input_384
