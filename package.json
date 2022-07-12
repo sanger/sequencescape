@@ -1,5 +1,9 @@
 {
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.1.1",
+    "@rails/ujs": "^7.0.2",
+    "@ttskch/select2-bootstrap4-theme": "^1.5.2",
+    "bootstrap": "^4.6.0",
     "datatables.net-bs4": "^1.11.3",
     "datatables.net-buttons-bs4": "^2.1.1",
     "datatables.net-fixedcolumns-bs4": "^4.0.1",
@@ -8,10 +12,14 @@
     "datatables.net-rowgroup-bs4": "^1.1.4",
     "datatables.net-rowreorder-bs4": "^1.2.8",
     "jquery": "^3.5.0",
+    "jsbarcode": "^3.11.5",
     "jszip": "^3.7.0",
     "postcss-flexbugs-fixes": "^5.0.2",
     "postcss-import": "^14.0.2",
     "postcss-preset-env": "^7.2.3",
+    "sass": "^1.51.0",
+    "select2": "^4.1.0-rc.0",
+    "sortablejs": "^1.15.0",
     "vue": "^2.6.11",
     "vue-loader": "^15.9.3",
     "vue-template-compiler": "^2.6.11",
@@ -41,12 +49,12 @@
   },
   "scripts": {
     "test": "jest",
-    "lint": "eslint --ext .js --ext .vue app/javascript",
+    "lint": "eslint --ext .js --ext .vue app/frontend",
     "lintOnly": "eslint --ext .js --ext .vue"
   },
   "jest": {
     "roots": [
-      "app/javascript"
+      "app/frontend"
     ],
     "moduleFileExtensions": [
       "js",

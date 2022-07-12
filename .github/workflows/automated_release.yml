@@ -20,25 +20,10 @@ jobs:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
 
       - name: Setup node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: "16"
-      # Establish a cache of js modules to improve performance
-      - name: Cache js
-        uses: actions/cache@v2
-        with:
-          path: |
-            public/assets
-            tmp/cache/assets/sprockets
-            node_modules
-          key: ${{ runner.os }}-build-${{ hashFiles('yarn.lock') }}
-          # If we don't find the specific cache we want, fallback to the last build
-          # cache, then finally any cache for this repo.
-          # Github looks for the newest cache beginning with the first entry, before
-          # falling back the the second if none is present.
-          restore-keys: |
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+          node-version-file: ".nvmrc"
+          cache: "yarn"
 
       # Install only the gems needed for testing
       # Keep an eye on https://github.com/rubygems/bundler-features/issues/59
