@@ -134,7 +134,7 @@ describe 'CustomMetadatumCollections API', with: :api_v2 do
         expect(json.dig('data', 'attributes', 'uuid')).to be_present
       end
 
-      it 'does not create a custom_metadatum_collection when missing attribues' do
+      it 'does not create a custom_metadatum_collection when missing attributes' do
         api_post '/api/v2/custom_metadatum_collections', invalid_payload
         expect(response).to have_http_status(:unprocessable_entity)
         expect(json['errors'][0]['detail']).to eq("asset_id - can't be blank")
