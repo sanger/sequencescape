@@ -42,7 +42,7 @@ describe 'CustomMetadatumCollections API', with: :api_v2 do
             'id' => resource_model.id,
             'type' => 'custom_metadatum_collections',
             'attributes' => {
-              'metadata': {
+              metadata: {
                 'Key 1': 'Some updated metadata',
                 'New key': 'New key also gets added'
               }
@@ -56,7 +56,7 @@ describe 'CustomMetadatumCollections API', with: :api_v2 do
           'data' => {
             'id' => resource_model.id,
             'attributes' => {
-              'metadata': {
+              metadata: {
                 'Key 1': 'Some updated metadata',
                 'New key': 'New key also gets added'
               }
@@ -87,8 +87,8 @@ describe 'CustomMetadatumCollections API', with: :api_v2 do
         expect(resource_model.metadata.length).to eq 5
 
         api_patch "/api/v2/custom_metadatum_collections/#{resource_model.id}", invalid_patch_payload
-        expect(response).to have_http_status(400)
-        expect(json.dig('errors')[0].dig('title')).to eq('Missing Parameter')
+        expect(response).to have_http_status(:bad_request)
+        expect(json['errors'][0]['title']).to eq('Missing Parameter')
         resource_model.reload
         expect(resource_model.metadata.length).to eq 5
       end
@@ -100,9 +100,9 @@ describe 'CustomMetadatumCollections API', with: :api_v2 do
           'data' => {
             'type' => 'custom_metadatum_collections',
             'attributes' => {
-              'user_id': '1',
-              'asset_id': '1',
-              'metadata': {
+              user_id: '1',
+              asset_id: '1',
+              metadata: {
                 'a metadata key': 'a value'
               }
             }
@@ -115,14 +115,15 @@ describe 'CustomMetadatumCollections API', with: :api_v2 do
           'data' => {
             'type' => 'custom_metadatum_collections',
             'attributes' => {
-              'user_id': '1',
-              'metadata': {
+              user_id: '1',
+              metadata: {
                 'a metadata key': 'a value'
               }
             }
           }
         }
       end
+
       it 'successfully allows creation of a custom_metadatum_collection' do
         api_post '/api/v2/custom_metadatum_collections', payload
         expect(response).to have_http_status(:success), response.body
@@ -135,8 +136,8 @@ describe 'CustomMetadatumCollections API', with: :api_v2 do
 
       it 'does not create a custom_metadatum_collection when missing attribues' do
         api_post '/api/v2/custom_metadatum_collections', invalid_payload
-        expect(response).to have_http_status(422)
-        expect(json.dig('errors')[0].dig('detail')).to eq("asset_id - can't be blank")
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(json['errors'][0]['detail']).to eq("asset_id - can't be blank")
       end
     end
   end
