@@ -186,7 +186,6 @@ limber_duplex-seq:
     - LDS Cherrypick
   library_types:
     - Duplex-Seq
-    - Targeted Nanoseq
 limber_targeted_nanoseq:
   <<: *limber_htp_library
   name: Limber Targeted NanoSeq
@@ -199,13 +198,13 @@ limber_duplex_seq_dilution_and_cleanup:
   <<: *limber_htp_library
   name: Limber Duplex-Seq Dilution and Cleanup
   acceptable_purposes:
-    - LDS AL Lib Dil
+    - LDS AL Lib
   library_types:
     - Duplex-Seq
 limber_targeted_nanoseq_dilution_and_cleanup:
   <<: *limber_htp_library
   name: Limber Targeted NanoSeq Dilution and Cleanup
   acceptable_purposes:
-    - LTN Al Lib Dil
+    - LTN Al Lib
   library_types:
     - Targeted Nanoseq
