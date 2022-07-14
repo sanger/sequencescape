@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_22_124646) do
+ActiveRecord::Schema.define(version: 2022_07_13_144729) do
 
   create_table "aliquot_indices", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "aliquot_id", null: false
@@ -330,6 +330,7 @@ ActiveRecord::Schema.define(version: 2022_06_22_124646) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["custom_metadatum_collection_id"], name: "index_custom_metadata_on_custom_metadatum_collection_id"
+    t.index ["key", "value"], name: "index_custom_metadata_on_key_and_value"
   end
 
   create_table "custom_metadatum_collections", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|

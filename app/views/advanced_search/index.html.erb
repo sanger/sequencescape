@@ -26,9 +26,11 @@
         </thead>
         <tbody>
           <% @results.each do |result| %>
-            <td> <%= link_to(h(result.custom_metadatum_collection.asset.display_name), labware_path(result.custom_metadatum_collection.asset)) -%> </td>
-            <td> <%= result.custom_metadatum_collection.asset.human_barcode %> </td>
-            <td> <%= result.custom_metadatum_collection.asset.created_at.strftime("%d/%m/%Y %T") %> </td>
+            <tr>
+              <td> <%= link_to(h(result.custom_metadatum_collection.asset.display_name), labware_path(result.custom_metadatum_collection.asset)) -%> </td>
+              <td> <%= result.custom_metadatum_collection.asset.human_barcode %> </td>
+              <td> <%= result.custom_metadatum_collection.asset.created_at.strftime("%d/%m/%Y %T") %> </td>
+            </tr>
           <% end %>
         </tbody>
       </table>
