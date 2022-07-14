@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_22_124646) do
+ActiveRecord::Schema.define(version: 2022_07_14_095306) do
 
   create_table "aliquot_indices", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "aliquot_id", null: false
@@ -1079,6 +1079,7 @@ ActiveRecord::Schema.define(version: 2022_06_22_124646) do
     t.integer "sub_pool"
     t.integer "coverage"
     t.decimal "diluent_volume", precision: 10, scale: 2
+    t.string "hyb_panel"
     t.index ["labware_id"], name: "fk_rails_2201f76983"
     t.index ["sti_type", "updated_at"], name: "index_receptacles_on_sti_type_and_updated_at"
     t.index ["updated_at"], name: "index_receptacles_on_updated_at"

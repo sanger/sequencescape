@@ -34,6 +34,7 @@ describe 'Receptacles API', with: :api_v2 do
     let(:sub_pool) { 5 }
     let(:coverage) { 100 }
     let(:diluent_volume) { 50.0 }
+    let(:hyb_panel) { 'Hyb Panel 1' }
 
     let(:receptacle) do
       create :receptacle,
@@ -41,7 +42,8 @@ describe 'Receptacles API', with: :api_v2 do
              submit_for_sequencing: submit_for_sequencing,
              sub_pool: sub_pool,
              coverage: coverage,
-             diluent_volume: diluent_volume
+             diluent_volume: diluent_volume,
+             hyb_panel: hyb_panel
     end
 
     before { api_get "/api/v2/receptacles/#{receptacle.id}" }
@@ -58,6 +60,7 @@ describe 'Receptacles API', with: :api_v2 do
         expect(json.dig('data', 'attributes', 'sub_pool')).to eq sub_pool
         expect(json.dig('data', 'attributes', 'coverage')).to eq coverage
         expect(json.dig('data', 'attributes', 'diluent_volume')).to eq diluent_volume.to_s
+        expect(json.dig('data', 'attributes', 'hyb_panel')).to eq hyb_panel.to_s
       end
     end
 

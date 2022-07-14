@@ -38,7 +38,7 @@ module Api::V2::SharedBehaviour::Receptacle
     # Attributes
     attribute :uuid, readonly: true
     attribute :name, delegate: :display_name, readonly: true
-    attributes :pcr_cycles, :submit_for_sequencing, :sub_pool, :coverage, :diluent_volume
+    attributes :pcr_cycles, :submit_for_sequencing, :sub_pool, :coverage, :diluent_volume, :hyb_panel
     attribute :state, readonly: true
 
     # Filters
