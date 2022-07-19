@@ -17,6 +17,7 @@ RSpec.describe Api::V2::ReceptacleResource, type: :resource do
     expect(subject).to have_attribute :sub_pool
     expect(subject).to have_attribute :coverage
     expect(subject).to have_attribute :diluent_volume
+    expect(subject).to have_attribute :hyb_panel
 
     expect(subject).not_to have_updatable_field(:id)
     expect(subject).not_to have_updatable_field(:uuid)
@@ -27,17 +28,11 @@ RSpec.describe Api::V2::ReceptacleResource, type: :resource do
     expect(subject).to have_updatable_field(:sub_pool)
     expect(subject).to have_updatable_field(:coverage)
     expect(subject).to have_updatable_field(:diluent_volume)
+    expect(subject).to have_updatable_field(:hyb_panel)
 
     expect(subject).to have_many(:qc_results).with_class_name('QcResult')
     expect(subject).to have_many(:samples).with_class_name('Sample')
     expect(subject).to have_many(:projects).with_class_name('Project')
     expect(subject).to have_many(:studies).with_class_name('Study')
   end
-
-  # Custom method tests
-  # Add tests for any custom methods you've added.
-  # describe '#labware_barcode' do
-  #   subject { resource.labware_barcode }
-  #   it { is_expected.to eq('ean13_barcode' => '', 'human_barcode' => '') }
-  # end
 end

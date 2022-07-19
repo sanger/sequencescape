@@ -91,6 +91,12 @@ RSpec.describe Receptacle, type: :model do
     it { expect(receptacle.diluent_volume).to eq 40 }
   end
 
+  describe '#hyb_panel' do
+    let(:receptacle) { create :receptacle, hyb_panel: 'Hyb Panel 1' }
+
+    it { expect(receptacle.hyb_panel).to eq 'Hyb Panel 1' }
+  end
+
   describe '#attach_tag' do
     let(:tag1) { create :tag }
     let(:tag2) { create :tag }
