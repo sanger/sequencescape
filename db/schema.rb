@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_22_124646) do
+ActiveRecord::Schema.define(version: 2022_07_22_064646) do
 
   create_table "aliquot_indices", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "aliquot_id", null: false
@@ -490,6 +490,10 @@ ActiveRecord::Schema.define(version: 2022_06_22_124646) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["feature_key", "key", "value"], name: "index_flipper_gates_on_feature_key_and_key_and_value", unique: true
+  end
+
+  create_table "flowcell_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+    t.string "requested_flowcell_type"
   end
 
   create_table "identifiers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1144,6 +1148,8 @@ ActiveRecord::Schema.define(version: 2022_06_22_124646) do
     t.integer "pcr_cycles"
     t.string "data_type"
     t.integer "primer_panel_id"
+    t.integer "reverse_read_length"
+    t.string "requested_flowcell_type"
     t.index ["request_id"], name: "index_request_metadata_on_request_id"
   end
 
