@@ -47,6 +47,31 @@ FactoryBot.define do
     factory :create_asset_request do
       sti_type { 'CreateAssetRequest' } # Oddly, this seems to be necessary!
     end
+
+    factory :dilution_and_cleanup_request, class: 'DilutionAndCleanupRequest' do
+      sti_type { 'DilutionAndCleanupRequest' } # Oddly, this seems to be necessary!
+      association(:request_type, factory: :dilution_and_cleanup_request_type)
+
+      transient do
+        bait_library_id { BaitLibrary.first.id || create(:bait_library).id }
+        pcr_cyles { 15 }
+        submit_for_sequencing { 'Y' }
+        sub_pool { 2 }
+        coverage { 5 }
+        diluent_volume { 25.364 }
+      end
+
+      request_metadata_attributes do
+        {
+          bait_library_id: bait_library_id,
+          pcr_cycles: pcr_cyles,
+          submit_for_sequencing: submit_for_sequencing,
+          sub_pool: sub_pool,
+          coverage: coverage,
+          diluent_volume: diluent_volume
+        }
+      end
+    end
   end
 
   factory :sequencing_request, class: 'SequencingRequest' do

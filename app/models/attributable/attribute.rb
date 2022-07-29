@@ -22,7 +22,7 @@ module Attributable
     end
 
     def from(record)
-      record[name]
+      record[name] || record.send(name)
     end
 
     def default_from(origin = nil)

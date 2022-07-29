@@ -493,4 +493,20 @@ RSpec.describe Request do
       expect(subject[request_type2].started).to eq(1)
     end
   end
+
+  describe '#stored_metadata' do
+    before do
+      @request = create :library_creation_request
+      @request.state = 'started'
+    end
+
+    it 'update when request is started' do
+      @request.request_metadata.update!(submit_for_sequencing: 'Y', sub_pool: 2, coverage: 5, diluent_volume: 25.364)
+
+      expect(@request.request_metadata.submit_for_sequencing).to eq('Y')
+      expect(@request.request_metadata.sub_pool).to eq(2)
+      expect(@request.request_metadata.coverage).to eq(5)
+      expect(@request.request_metadata.diluent_volume).to eq(25.364)
+    end
+  end
 end

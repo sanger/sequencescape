@@ -32,6 +32,10 @@ FactoryBot.define do
       request_class { CustomerRequest }
     end
 
+    factory :dilution_and_cleanup_request_type do
+      request_class { DilutionAndCleanupRequest }
+    end
+
     factory :cherrypick_request_type do
       request_class { CherrypickRequest }
       asset_type { 'Well' }

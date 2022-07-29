@@ -27,7 +27,6 @@ RSpec.describe Api::V2::WellResource, type: :resource do
     it { is_expected.to have_updatable_field(:sub_pool) }
     it { is_expected.to have_updatable_field(:coverage) }
     it { is_expected.to have_updatable_field(:diluent_volume) }
-    it { is_expected.to have_updatable_field(:hyb_panel) }
 
     # Filters
     # eg. it { is_expected.to filter(:order_type) }

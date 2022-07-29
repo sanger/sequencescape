@@ -52,4 +52,23 @@ RSpec.describe Api::V2::RequestResource, type: :resource do
       expect(subject.options).to eq(expected_metadata)
     end
   end
+
+  context 'dilution and cleanup request' do
+    let(:bait_library) { create :bait_library }
+    let(:resource_model) { build_stubbed :dilution_and_cleanup_request, bait_library_id: bait_library.id }
+    let(:expected_metadata) do
+      {
+        'bait_library_id' => bait_library.id,
+        'submit_for_sequencing' => 'Y',
+        'sub_pool' => 2,
+        'coverage' => 5,
+        'diluent_volume' => 25.364,
+        'pcr_cycles' => 15
+      }
+    end
+
+    it 'renders relevant metadata' do
+      expect(subject.options).to eq(expected_metadata)
+    end
+  end
 end
