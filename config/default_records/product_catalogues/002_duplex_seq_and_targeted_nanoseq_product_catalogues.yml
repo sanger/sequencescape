@@ -1,0 +1,6 @@
+# These product catalogues are associated with the Limber Duplex-Seq and Targeted Nanoseq pipelines.
+---
+Duplex-Seq:
+  selection_behaviour: SingleProduct
+Targeted-NanoSeq:
+  selection_behaviour: SingleProduct
