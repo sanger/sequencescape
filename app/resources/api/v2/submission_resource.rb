@@ -27,6 +27,7 @@ module Api
       attribute :updated_at, readonly: true
       attribute :used_tags, readonly: true
       attribute :lanes_of_sequencing, readonly: true
+      attribute :message, readonly: true # holds any error message
 
       # Filters
       filter :uuid, apply: ->(records, value, _options) { records.with_uuid(value) }
