@@ -14,8 +14,8 @@ And I have a "full" authorised user with the key "cucumber"
 
     Given the UUID for the search "Find assets by barcode" is "33333333-4444-5555-6666-000000000001"
 
-    Given the plate barcode webservice returns "1000001"
-      And the plate barcode webservice returns "1000002"
+    Given the Baracoda barcode service returns "SQPD-1000001"
+      And the Baracoda barcode service returns "SQPD-1000002"
 
     # Setup the plates so that they flow appropriately.  This is a bit of a cheat in that it's only
     # a direct link and that we're faking out the pipeline work but it suffices.

@@ -6,6 +6,10 @@
 # Historically these were converted to numbers when generating ean13 for printing
 # barcodes, but now we use Code39 to encode the human-readable format directly.
 # @see https://github.com/sanger/sanger_barcode_format
+
+#
+# TODO: This class will be deprecated as Baracoda will take control on barcode
+# generation
 class BarcodePrefix < ApplicationRecord
   has_many :assets
 end

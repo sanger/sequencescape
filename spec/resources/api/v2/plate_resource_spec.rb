@@ -6,7 +6,7 @@ require './app/resources/api/v2/plate_resource'
 RSpec.describe Api::V2::PlateResource, type: :resource do
   subject(:resource) { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { build_stubbed :plate, barcode: 11, well_count: 3 }
+  let(:resource_model) { build_stubbed :plate, barcode: 'SQPD-1', well_count: 3 }
 
   shared_examples 'a plate resource' do
     # Test attributes
@@ -73,7 +73,7 @@ RSpec.describe Api::V2::PlateResource, type: :resource do
 
   context 'on a plate' do
     let(:expected_barcode_hash) do
-      { 'ean13_barcode' => '1220000011748', 'machine_barcode' => 'DN11J', 'human_barcode' => 'DN11J' }
+      { 'ean13_barcode' => nil, 'machine_barcode' => 'SQPD-1', 'human_barcode' => 'SQPD-1' }
     end
 
     it_behaves_like 'a plate resource'

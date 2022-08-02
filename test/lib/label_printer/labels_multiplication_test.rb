@@ -17,17 +17,17 @@ class ExampleLabelTest < ActiveSupport::TestCase
 
   def setup
     @example_label = ExampleLabel.new
-    @plate1 = create :plate, name: 'Plate 1', barcode: '1111'
-    @plate2 = create :plate, name: 'Plate 2', barcode: '2222'
-    @plate3 = create :plate, name: 'Plate 3', barcode: '3333'
-    @plate4 = create :plate, name: 'Plate 4', barcode: '4444'
-    @label = { left: 'Plate 1', right: 'DN', barcode: '1111', label_name: 'main_label' }
+    @plate1 = create :plate, name: 'Plate 1', barcode: 'SQPD-1111'
+    @plate2 = create :plate, name: 'Plate 2', barcode: 'SQPD-2222'
+    @plate3 = create :plate, name: 'Plate 3', barcode: 'SQPD-3333'
+    @plate4 = create :plate, name: 'Plate 4', barcode: 'SQPD-4444'
+    @label = { left: 'Plate 1', right: 'SQPD', barcode: '1111', label_name: 'main_label' }
 
     @labels = [
-      { left: 'Plate 1', right: 'DN', barcode: '1111', label_name: 'main_label' },
-      { left: 'Plate 2', right: 'DN', barcode: '2222', label_name: 'main_label' },
-      { left: 'Plate 3', right: 'DN', barcode: '3333', label_name: 'main_label' },
-      { left: 'Plate 4', right: 'DN', barcode: '4444', label_name: 'main_label' }
+      { left: 'Plate 1', right: 'SQPD', barcode: '1111', label_name: 'main_label' },
+      { left: 'Plate 2', right: 'SQPD', barcode: '2222', label_name: 'main_label' },
+      { left: 'Plate 3', right: 'SQPD', barcode: '3333', label_name: 'main_label' },
+      { left: 'Plate 4', right: 'SQPD', barcode: '4444', label_name: 'main_label' }
     ]
   end
 

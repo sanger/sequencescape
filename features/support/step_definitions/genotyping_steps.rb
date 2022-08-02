@@ -24,7 +24,8 @@ Given(
 ) do |purpose_name, plate_barcode, study_name, number_of_samples, asset_group_name|
   study = Study.find_by(name: study_name)
   purpose = Purpose.find_by(name: purpose_name)
-  plate = FactoryBot.create(:plate, purpose: purpose, barcode: plate_barcode)
+  sanger_barcode = Barcode.build_sequencescape22({ barcode: plate_barcode })
+  plate = FactoryBot.create(:plate, purpose: purpose, sanger_barcode: sanger_barcode)
 
   asset_group = study.asset_groups.find_by(name: asset_group_name) || study.asset_groups.create!(name: asset_group_name)
   asset_group.assets <<
@@ -46,14 +47,14 @@ Given(/^I have a cherrypicking batch with (\d+) samples$/) do |number_of_samples
   step('I have an active study called "Test study"')
   step(
     # rubocop:todo Layout/LineLength
-    "I have a plate \"1234567\" in study \"Test study\" with #{number_of_samples} samples in asset group \"Plate asset group\""
+    "I have a plate \"SQPD-1234567\" in study \"Test study\" with #{number_of_samples} samples in asset group \"Plate asset group\""
     # rubocop:enable Layout/LineLength
   )
 
   step('I have a Cherrypicking submission for asset group "Plate asset group"')
   step('I am on the show page for pipeline "Cherrypick"')
 
-  step('I check "Select DN1234567T for batch"')
+  step('I check "Select SQPD-1234567 for batch"')
   step('I select "Create Batch" from the first "action_on_requests"')
   step('I press the first "Submit"')
 end
@@ -80,7 +81,7 @@ Given(
 ) do |plate_barcode, plate_purpose_name|
   step('I have a Cherrypicking submission for asset group "Plate asset group"')
   step('I am on the show page for pipeline "Cherrypick"')
-  step('I check "Select DN1234567T for batch"')
+  step('I check "Select SQPD-1234567 for batch"')
   step('I select "Create Batch" from the first "action_on_requests"')
   step('I press the first "Submit"')
   step("a plate barcode webservice is available and returns \"#{plate_barcode}\"")

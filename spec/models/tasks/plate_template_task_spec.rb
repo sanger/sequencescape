@@ -20,8 +20,12 @@ RSpec.describe PlateTemplateTask, type: :model do
   end
   let(:plate_a_barcode_number) { '1' }
   let(:plate_b_barcode_number) { '2' }
-  let(:plate_a) { create :plate, barcode: plate_a_barcode_number, well_count: 4, well_factory: :untagged_well }
-  let(:plate_b) { create :plate, barcode: plate_b_barcode_number, well_count: 4, well_factory: :untagged_well }
+  let(:plate_a) do
+    create :plate, barcode: "SQPD-#{plate_a_barcode_number}", well_count: 4, well_factory: :untagged_well
+  end
+  let(:plate_b) do
+    create :plate, barcode: "SQPD-#{plate_b_barcode_number}", well_count: 4, well_factory: :untagged_well
+  end
 
   let(:batch) { create :batch, requests: requests, pipeline: pipeline }
   let(:request) { instance_double(ActionDispatch::Request, parameters: params) }
@@ -37,14 +41,14 @@ RSpec.describe PlateTemplateTask, type: :model do
     [
       [
         [
-          [requests[0].id, plate_a_barcode_number, 'DN1S:A1'],
-          [requests[1].id, plate_a_barcode_number, 'DN1S:B1'],
-          [requests[2].id, plate_a_barcode_number, 'DN1S:C1'],
-          [requests[3].id, plate_a_barcode_number, 'DN1S:D1'],
-          [requests[4].id, plate_b_barcode_number, 'DN2T:A1'],
-          [requests[5].id, plate_b_barcode_number, 'DN2T:B1'],
-          [requests[6].id, plate_b_barcode_number, 'DN2T:C1'],
-          [requests[7].id, plate_b_barcode_number, 'DN2T:D1']
+          [requests[0].id, plate_a_barcode_number, 'SQPD-1:A1'],
+          [requests[1].id, plate_a_barcode_number, 'SQPD-1:B1'],
+          [requests[2].id, plate_a_barcode_number, 'SQPD-1:C1'],
+          [requests[3].id, plate_a_barcode_number, 'SQPD-1:D1'],
+          [requests[4].id, plate_b_barcode_number, 'SQPD-2:A1'],
+          [requests[5].id, plate_b_barcode_number, 'SQPD-2:B1'],
+          [requests[6].id, plate_b_barcode_number, 'SQPD-2:C1'],
+          [requests[7].id, plate_b_barcode_number, 'SQPD-2:D1']
         ].concat(Array.new(96 - 8, [0, 'Empty', '']))
       ],
       %w[1 2]
@@ -93,14 +97,14 @@ RSpec.describe PlateTemplateTask, type: :model do
       let(:output) do
         CSV.generate(row_sep: "\r\n") do |csv|
           csv << ['Request ID', 'Sample Name', 'Source Plate', 'Source Well', 'Plate', 'Destination Well']
-          csv << [requests[0].id, requests[0].asset.samples.first.name, 'DN1S', 'A1', '', '']
-          csv << [requests[1].id, requests[1].asset.samples.first.name, 'DN1S', 'B1', '', '']
-          csv << [requests[2].id, requests[2].asset.samples.first.name, 'DN1S', 'C1', '', '']
-          csv << [requests[3].id, requests[3].asset.samples.first.name, 'DN1S', 'D1', '', '']
-          csv << [requests[4].id, requests[4].asset.samples.first.name, 'DN2T', 'A1', '', '']
-          csv << [requests[5].id, requests[5].asset.samples.first.name, 'DN2T', 'B1', '', '']
-          csv << [requests[6].id, requests[6].asset.samples.first.name, 'DN2T', 'C1', '', '']
-          csv << [requests[7].id, requests[7].asset.samples.first.name, 'DN2T', 'D1', '', '']
+          csv << [requests[0].id, requests[0].asset.samples.first.name, 'SQPD-1', 'A1', '', '']
+          csv << [requests[1].id, requests[1].asset.samples.first.name, 'SQPD-1', 'B1', '', '']
+          csv << [requests[2].id, requests[2].asset.samples.first.name, 'SQPD-1', 'C1', '', '']
+          csv << [requests[3].id, requests[3].asset.samples.first.name, 'SQPD-1', 'D1', '', '']
+          csv << [requests[4].id, requests[4].asset.samples.first.name, 'SQPD-2', 'A1', '', '']
+          csv << [requests[5].id, requests[5].asset.samples.first.name, 'SQPD-2', 'B1', '', '']
+          csv << [requests[6].id, requests[6].asset.samples.first.name, 'SQPD-2', 'C1', '', '']
+          csv << [requests[7].id, requests[7].asset.samples.first.name, 'SQPD-2', 'D1', '', '']
         end
       end
 

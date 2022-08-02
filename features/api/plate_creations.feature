@@ -16,8 +16,8 @@ And I have a "full" authorised user with the key "cucumber"
 
     Given a user with UUID "99999999-8888-7777-6666-555555555555" exists
 
-    Given the plate barcode webservice returns "1000001"
-      And the plate barcode webservice returns "1000002"
+    Given the Baracoda barcode service returns "SQPD-1000001"
+      And the Baracoda barcode service returns "SQPD-1000002"
 
     Given a plate purpose called "Parent plate purpose" with UUID "11111111-2222-3333-4444-000000000001"
       And a plate purpose called "Child plate purpose" with UUID "11111111-2222-3333-4444-000000000002"

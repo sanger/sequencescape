@@ -9,7 +9,7 @@ FactoryBot.define do
     "Asset #{n}"
   end
 
-  sequence(:sanger_barcode) { "DN#{generate(:barcode_number)}" }
+  sequence(:sanger_barcode) { "SQPD-#{generate(:barcode_number)}" }
 
   sequence(:barcode) { generate(:barcode_number).to_s }
 

@@ -53,6 +53,20 @@ describe Barcode, type: :model do
     end
   end
 
+  shared_examples 'not an ean13 barcode' do
+    describe '#ean13_barcode?' do
+      subject { barcode.ean13_barcode? }
+
+      it { is_expected.to be false }
+    end
+
+    describe '#ean13_barcode' do
+      subject { barcode.ean13_barcode }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   shared_examples 'a code128 barcode' do
     describe '#code128_barcode?' do
       subject { barcode.code128_barcode? }
@@ -90,20 +104,6 @@ describe Barcode, type: :model do
 
     describe '#code39_barcode' do
       subject { barcode.code39_barcode }
-
-      it { is_expected.to be_nil }
-    end
-  end
-
-  shared_examples 'not an ean13 barcode' do
-    describe '#ean13_barcode?' do
-      subject { barcode.ean13_barcode? }
-
-      it { is_expected.to be false }
-    end
-
-    describe '#ean13_barcode' do
-      subject { barcode.ean13_barcode }
 
       it { is_expected.to be_nil }
     end
@@ -171,6 +171,46 @@ describe Barcode, type: :model do
 
       it 'is not valid' do
         expect(barcode).not_to be_valid
+      end
+    end
+  end
+
+  context 'sequencescape22' do
+    let(:barcode) { build :sequencescape22, barcode: barcode_value, format: barcode_format }
+    let(:barcode_value) { 'SQPD-12345' }
+    let(:barcode_format) { 'sequencescape22' }
+    let(:number) { 12_345 }
+    let(:barcode_prefix) { 'SQPD' }
+    let(:human_barcode) { 'SQPD-12345' }
+    let(:machine_barcode) { 'SQPD-12345' }
+    let(:ean13_barcode) { nil }
+    let(:code128_barcode) { 'SQPD-12345' }
+    let(:code39_barcode) { 'SQPD-12345' }
+    let(:sequencescape22_barcode) { 'SQPD-12345' }
+
+    it_behaves_like 'a basic barcode'
+    it_behaves_like 'a composable barcode'
+    it_behaves_like 'not an ean13 barcode'
+    it_behaves_like 'a code128 barcode'
+    it_behaves_like 'a code39 barcode'
+
+    it 'is valid' do
+      expect(barcode).to be_valid
+    end
+
+    context 'with an incompatible format' do
+      let(:barcode_value) { 'INVALID-123' }
+
+      it 'is not valid' do
+        expect(barcode).not_to be_valid
+      end
+    end
+
+    context 'with an baracoda child barcode format' do
+      let(:barcode_value) { 'SQPD-12345-5' }
+
+      it 'is not valid' do
+        expect(barcode).to be_valid
       end
     end
   end
