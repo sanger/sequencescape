@@ -86,12 +86,6 @@ describe 'Plates API', with: :api_v2, tags: :lighthouse do
       expect(json.dig('data', 'type')).to eq('plates')
     end
 
-    it 'filters by barcode' do
-      api_get "/api/v2/plates?filter[barcode]=#{resource_model.ean13_barcode}"
-      expect(response).to have_http_status(:success), response.body
-      expect(json['data'].length).to eq(1)
-    end
-
     it 'filtering by human barcode' do
       api_get "/api/v2/plates?filter[barcode]=#{resource_model.human_barcode}"
       expect(response).to have_http_status(:success), response.body

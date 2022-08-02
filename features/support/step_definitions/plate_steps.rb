@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Given /^plate "([^"]*)" has "([^"]*)" wells$/ do |plate_barcode, number_of_wells|
-  plate = Plate.find_from_barcode('DN' + plate_barcode)
+  plate = Plate.find_from_barcode(plate_barcode)
   1.upto(number_of_wells.to_i) { |i| Well.create!(plate: plate, map_id: i) }
 end
 
@@ -25,7 +25,7 @@ Given /^plate "([^"]*)" has low concentration and volume results$/ do |plate_bar
 end
 
 Given /^plate with barcode "([^"]*)" has a well$/ do |plate_barcode|
-  plate = Plate.find_from_barcode('DN' + plate_barcode)
+  plate = Plate.find_from_barcode(plate_barcode)
   map = plate.maps.first
   FactoryBot.create(:untagged_well, plate: plate, map: map)
 end
@@ -35,16 +35,19 @@ Given 'a tube named {string} with barcode {string} exists' do |name, machine_bar
 end
 
 Given /^a plate with barcode "([^"]*)" exists$/ do |machine_barcode|
-  FactoryBot.create :plate, sanger_barcode: { machine_barcode: machine_barcode }
+  if machine_barcode.start_with?('SQPD')
+    FactoryBot.create :plate, sanger_barcode: Barcode.build_sequencescape22({ barcode: machine_barcode })
+  else
+    FactoryBot.create :plate,
+                      sanger_barcode: Barcode.build_sanger_code39({ machine_barcode: machine_barcode, format: 'DN' })
+  end
 end
 
 # rubocop:todo Layout/LineLength
 Given /^a "([^"]*)" plate purpose and of type "([^"]*)" with barcode "([^"]*)" exists$/ do |plate_purpose_name, plate_type, machine_barcode|
   # rubocop:enable Layout/LineLength
   plate_type.constantize.create!(
-    sanger_barcode: {
-      machine_barcode: machine_barcode
-    },
+    sanger_barcode: Barcode.build_sanger_code39({ machine_barcode: machine_barcode, format: 'DN' }),
     plate_purpose: PlatePurpose.find_by(name: plate_purpose_name),
     name: machine_barcode
   )
@@ -60,14 +63,22 @@ Given /^the plate with ID (\d+) has a plate purpose of "([^"]+)"$/ do |id, name|
 end
 
 Given /^a plate with purpose "([^"]*)" and barcode "([^"]*)" exists$/ do |plate_purpose_name, machine_barcode|
-  FactoryBot.create(
-    :plate,
-    sanger_barcode: {
-      machine_barcode: machine_barcode
-    },
-    well_count: 8,
-    plate_purpose: Purpose.find_by(name: plate_purpose_name)
-  )
+  #FactoryBot.create :plate, sanger_barcode: Barcode.build_sanger_code39({machine_barcode: machine_barcode})
+  if machine_barcode.start_with?('SQPD')
+    FactoryBot.create(
+      :plate,
+      sanger_barcode: Barcode.build_sequencescape22({ barcode: machine_barcode }),
+      well_count: 8,
+      plate_purpose: Purpose.find_by(name: plate_purpose_name)
+    )
+  else
+    FactoryBot.create(
+      :plate,
+      sanger_barcode: Barcode.build_sanger_code39({ machine_barcode: machine_barcode }),
+      well_count: 8,
+      plate_purpose: Purpose.find_by(name: plate_purpose_name)
+    )
+  end
 end
 
 Given /^a stock plate with barcode "([^"]*)" exists$/ do |machine_barcode|
@@ -76,9 +87,7 @@ Given /^a stock plate with barcode "([^"]*)" exists$/ do |machine_barcode|
       :plate,
       name: 'A_TEST_STOCK_PLATE',
       well_count: 8,
-      sanger_barcode: {
-        machine_barcode: machine_barcode
-      },
+      sanger_barcode: Barcode.build_sanger_code39({ machine_barcode: machine_barcode }),
       plate_purpose: PlatePurpose.find_by(name: 'Stock Plate')
     )
 end
@@ -107,7 +116,7 @@ Given /^well "([^"]*)" is holded by plate "([^"]*)"$/ do |well_uuid, plate_uuid|
 end
 
 Then /^plate "([^"]*)" should have a purpose of "([^"]*)"$/ do |plate_barcode, plate_purpose_name|
-  assert_equal plate_purpose_name, Plate.find_from_barcode("DN#{plate_barcode}").plate_purpose.name
+  assert_equal plate_purpose_name, Plate.find_from_barcode(plate_barcode).plate_purpose.name
 end
 
 Given /^a "([^"]+)" plate called "([^"]+)" exists$/ do |name, plate_name|
@@ -136,6 +145,7 @@ end
 
 Given /^a "([^"]+)" plate called "([^"]+)" exists with barcode "([^"]+)"$/ do |name, plate_name, barcode|
   plate_purpose = PlatePurpose.find_by!(name: name)
+  step("the Baracoda barcode service returns \"#{barcode}\"")
   plate_purpose.create!(name: plate_name, barcode: barcode)
 end
 
@@ -158,7 +168,7 @@ Given '{int} wells on {plate_id} have unique samples' do |number, plate|
 end
 
 Given /^plate "([^"]*)" has "([^"]*)" wells with aliquots$/ do |plate_barcode, number_of_wells|
-  plate = Plate.find_from_barcode('DN' + plate_barcode)
+  plate = Plate.find_from_barcode(plate_barcode)
   plate.wells = Array.new(number_of_wells.to_i) { |i| FactoryBot.build :untagged_well, map_id: i + 1 }
 end
 
@@ -190,7 +200,7 @@ Given /^(passed|started|pending|failed) transfer requests exist between (\d+) we
 end
 
 Then /^the plate with the barcode "(.*?)" should have a label of "(.*?)"$/ do |barcode, label|
-  plate = Plate.find_from_barcode('DN' + barcode)
+  plate = Plate.find_from_barcode(barcode)
   assert_equal label, plate.role
 end
 

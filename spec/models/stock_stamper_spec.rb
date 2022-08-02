@@ -5,10 +5,12 @@ require 'pry'
 require 'timecop'
 
 describe StockStamper do
-  let(:plate) { create :plate_with_3_wells, barcode: 1 }
+  let(:plate) { create :plate_with_3_wells }
   let!(:user) { create :user, login: 'abc', barcode: 'ID41440E' }
 
   before do
+    # Set the plate barcode to be a DN barcode
+    plate.barcodes = [Barcode.build_sanger_code39({ prefix: 'DN', number: '1' })]
     create :plate_type, name: 'ABgene_0765', maximum_volume: 800
     create :plate_type, name: 'ABgene_0800', maximum_volume: 180
     create :plate_type, name: 'FluidX075', maximum_volume: 500

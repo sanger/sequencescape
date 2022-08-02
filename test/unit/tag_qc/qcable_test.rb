@@ -5,7 +5,7 @@ require 'unit/tag_qc/qcable_statemachine_checks'
 
 class QcableTest < ActiveSupport::TestCase
   context 'A Qcable' do
-    setup { PlateBarcode.stubs(:create).returns(create(:plate_barcode)) }
+    setup { PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode)) }
 
     should belong_to :lot
     should belong_to :asset

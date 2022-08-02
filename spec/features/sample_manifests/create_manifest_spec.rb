@@ -14,13 +14,13 @@ describe 'SampleManifest controller', sample_manifest: true do
   let!(:printer) { create :barcode_printer }
   let!(:supplier) { create :supplier }
   let!(:study) { create :study }
-  let(:barcode) { 1000 }
-  let(:created_plate) { Plate.with_barcode(SBCF::SangerBarcode.new(prefix: 'DN', number: barcode).human_barcode).first }
+  let(:plate_barcode) { build(:plate_barcode) }
+  let(:created_plate) { Plate.with_barcode(plate_barcode.barcode).first }
 
   shared_examples 'a plate manifest' do
     it 'creating manifests' do
       click_link('Create manifest for plates')
-      expect(PlateBarcode).to receive(:create).and_return(build(:plate_barcode, barcode: barcode))
+      expect(PlateBarcode).to receive(:create_barcode).and_return(plate_barcode)
       select(study.name, from: 'Study')
       select(supplier.name, from: 'Supplier')
       within('#sample_manifest_template') do

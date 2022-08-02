@@ -15,7 +15,8 @@ class CustomMetadatumCollection < ApplicationRecord # rubocop:todo Style/Documen
   def metadata=(attributes)
     ActiveRecord::Base.transaction do
       custom_metadata.clear
-      attributes.map { |k, v| custom_metadata.build(key: k, value: v) }
+
+      attributes.each { |k, v| custom_metadata.build(key: k, value: v) }
     end
   end
 end

@@ -12,7 +12,7 @@ Feature: Sample manifest
     And the configuration exists for creating sample manifest Excel spreadsheets
     And the Saphyr tube purpose exists
     And the "1D Tube" barcode printer "xyz1d" exists
-    And the plate barcode webservice returns "1234567"
+    And the Baracoda barcode service returns "SQPD-1234567"
     Given a supplier called "Test supplier name" exists
     And I have an active study called "Test study"
     Given the study "Test study" has a abbreviation
@@ -84,7 +84,7 @@ Feature: Sample manifest
   @stock_plate
   Scenario: A plate should have a purpose of stock
     Given a manifest has been created for "Test study"
-    Then plate "1234567" should have a purpose of "Stock Plate"
+    Then plate "SQPD-1234567" should have a purpose of "Stock Plate"
 
   Scenario: Upload a manifest that has mismatched welle
     Given a manifest has been created for "Test study"
@@ -125,7 +125,7 @@ Feature: Sample manifest
       | sample_10        | ffffff        | false         | 9615            | 12345    |
       | sample_11        | None          | false         | 9616            | 12345    |
       | sample_12        | gggg          | false         | 9617            | 12345    |
-    Given plate "1234567" has samples with known sanger_sample_ids
+    Given plate "SQPD-1234567" has samples with known sanger_sample_ids
     Given I am on the Qc reports homepage
     Then I should see "New report for"
     When I select "Test study" from "Study"
@@ -142,102 +142,102 @@ Feature: Sample manifest
     Then I follow "Download report for Test study"
     Then I should see the report for "Test study":
      | Supplier Sample Name |  Sanger Sample Name | Plate   | Well |
-     |                      |                     | 1234567 | A1   |
-     | aaaa                 |  ABC_1              | 1234567 | B1   |
-     | bbbb                 |  ABC_2              | 1234567 | C1   |
-     | Water                |  ABC_3              | 1234567 | D1   |
-     | cccc                 |  ABC_4              | 1234567 | E1   |
-     | Blank                |  ABC_5              | 1234567 | F1   |
-     | dddd                 |  ABC_6              | 1234567 | G1   |
-     |                      |                     | 1234567 | H1   |
-     | eeee                 |  ABC_8              | 1234567 | A2   |
-     | EMPTY                |  ABC_9              | 1234567 | B2   |
-     | ffffff               |  ABC_10             | 1234567 | C2   |
-     | None                 |  ABC_11             | 1234567 | D2   |
-     | gggg                 |  ABC_12             | 1234567 | E2   |
-     |                      |                     | 1234567 | F2   |
-     |                      |                     | 1234567 | G2   |
-     |                      |                     | 1234567 | H2   |
-     |                      |                     | 1234567 | A3   |
-     |                      |                     | 1234567 | B3   |
-     |                      |                     | 1234567 | C3   |
-     |                      |                     | 1234567 | D3   |
-     |                      |                     | 1234567 | E3   |
-     |                      |                     | 1234567 | F3   |
-     |                      |                     | 1234567 | G3   |
-     |                      |                     | 1234567 | H3   |
-     |                      |                     | 1234567 | A4   |
-     |                      |                     | 1234567 | B4   |
-     |                      |                     | 1234567 | C4   |
-     |                      |                     | 1234567 | D4   |
-     |                      |                     | 1234567 | E4   |
-     |                      |                     | 1234567 | F4   |
-     |                      |                     | 1234567 | G4   |
-     |                      |                     | 1234567 | H4   |
-     |                      |                     | 1234567 | A5   |
-     |                      |                     | 1234567 | B5   |
-     |                      |                     | 1234567 | C5   |
-     |                      |                     | 1234567 | D5   |
-     |                      |                     | 1234567 | E5   |
-     |                      |                     | 1234567 | F5   |
-     |                      |                     | 1234567 | G5   |
-     |                      |                     | 1234567 | H5   |
-     |                      |                     | 1234567 | A6   |
-     |                      |                     | 1234567 | B6   |
-     |                      |                     | 1234567 | C6   |
-     |                      |                     | 1234567 | D6   |
-     |                      |                     | 1234567 | E6   |
-     |                      |                     | 1234567 | F6   |
-     |                      |                     | 1234567 | G6   |
-     |                      |                     | 1234567 | H6   |
-     |                      |                     | 1234567 | A7   |
-     |                      |                     | 1234567 | B7   |
-     |                      |                     | 1234567 | C7   |
-     |                      |                     | 1234567 | D7   |
-     |                      |                     | 1234567 | E7   |
-     |                      |                     | 1234567 | F7   |
-     |                      |                     | 1234567 | G7   |
-     |                      |                     | 1234567 | H7   |
-     |                      |                     | 1234567 | A8   |
-     |                      |                     | 1234567 | B8   |
-     |                      |                     | 1234567 | C8   |
-     |                      |                     | 1234567 | D8   |
-     |                      |                     | 1234567 | E8   |
-     |                      |                     | 1234567 | F8   |
-     |                      |                     | 1234567 | G8   |
-     |                      |                     | 1234567 | H8   |
-     |                      |                     | 1234567 | A9   |
-     |                      |                     | 1234567 | B9   |
-     |                      |                     | 1234567 | C9   |
-     |                      |                     | 1234567 | D9   |
-     |                      |                     | 1234567 | E9   |
-     |                      |                     | 1234567 | F9   |
-     |                      |                     | 1234567 | G9   |
-     |                      |                     | 1234567 | H9   |
-     |                      |                     | 1234567 | A10  |
-     |                      |                     | 1234567 | B10  |
-     |                      |                     | 1234567 | C10  |
-     |                      |                     | 1234567 | D10  |
-     |                      |                     | 1234567 | E10  |
-     |                      |                     | 1234567 | F10  |
-     |                      |                     | 1234567 | G10  |
-     |                      |                     | 1234567 | H10  |
-     |                      |                     | 1234567 | A11  |
-     |                      |                     | 1234567 | B11  |
-     |                      |                     | 1234567 | C11  |
-     |                      |                     | 1234567 | D11  |
-     |                      |                     | 1234567 | E11  |
-     |                      |                     | 1234567 | F11  |
-     |                      |                     | 1234567 | G11  |
-     |                      |                     | 1234567 | H11  |
-     |                      |                     | 1234567 | A12  |
-     |                      |                     | 1234567 | B12  |
-     |                      |                     | 1234567 | C12  |
-     |                      |                     | 1234567 | D12  |
-     |                      |                     | 1234567 | E12  |
-     |                      |                     | 1234567 | F12  |
-     |                      |                     | 1234567 | G12  |
-     |                      |                     | 1234567 | H12  |
+     |                      |                     | SQPD-1234567 | A1   |
+     | aaaa                 |  ABC_1              | SQPD-1234567 | B1   |
+     | bbbb                 |  ABC_2              | SQPD-1234567 | C1   |
+     | Water                |  ABC_3              | SQPD-1234567 | D1   |
+     | cccc                 |  ABC_4              | SQPD-1234567 | E1   |
+     | Blank                |  ABC_5              | SQPD-1234567 | F1   |
+     | dddd                 |  ABC_6              | SQPD-1234567 | G1   |
+     |                      |                     | SQPD-1234567 | H1   |
+     | eeee                 |  ABC_8              | SQPD-1234567 | A2   |
+     | EMPTY                |  ABC_9              | SQPD-1234567 | B2   |
+     | ffffff               |  ABC_10             | SQPD-1234567 | C2   |
+     | None                 |  ABC_11             | SQPD-1234567 | D2   |
+     | gggg                 |  ABC_12             | SQPD-1234567 | E2   |
+     |                      |                     | SQPD-1234567 | F2   |
+     |                      |                     | SQPD-1234567 | G2   |
+     |                      |                     | SQPD-1234567 | H2   |
+     |                      |                     | SQPD-1234567 | A3   |
+     |                      |                     | SQPD-1234567 | B3   |
+     |                      |                     | SQPD-1234567 | C3   |
+     |                      |                     | SQPD-1234567 | D3   |
+     |                      |                     | SQPD-1234567 | E3   |
+     |                      |                     | SQPD-1234567 | F3   |
+     |                      |                     | SQPD-1234567 | G3   |
+     |                      |                     | SQPD-1234567 | H3   |
+     |                      |                     | SQPD-1234567 | A4   |
+     |                      |                     | SQPD-1234567 | B4   |
+     |                      |                     | SQPD-1234567 | C4   |
+     |                      |                     | SQPD-1234567 | D4   |
+     |                      |                     | SQPD-1234567 | E4   |
+     |                      |                     | SQPD-1234567 | F4   |
+     |                      |                     | SQPD-1234567 | G4   |
+     |                      |                     | SQPD-1234567 | H4   |
+     |                      |                     | SQPD-1234567 | A5   |
+     |                      |                     | SQPD-1234567 | B5   |
+     |                      |                     | SQPD-1234567 | C5   |
+     |                      |                     | SQPD-1234567 | D5   |
+     |                      |                     | SQPD-1234567 | E5   |
+     |                      |                     | SQPD-1234567 | F5   |
+     |                      |                     | SQPD-1234567 | G5   |
+     |                      |                     | SQPD-1234567 | H5   |
+     |                      |                     | SQPD-1234567 | A6   |
+     |                      |                     | SQPD-1234567 | B6   |
+     |                      |                     | SQPD-1234567 | C6   |
+     |                      |                     | SQPD-1234567 | D6   |
+     |                      |                     | SQPD-1234567 | E6   |
+     |                      |                     | SQPD-1234567 | F6   |
+     |                      |                     | SQPD-1234567 | G6   |
+     |                      |                     | SQPD-1234567 | H6   |
+     |                      |                     | SQPD-1234567 | A7   |
+     |                      |                     | SQPD-1234567 | B7   |
+     |                      |                     | SQPD-1234567 | C7   |
+     |                      |                     | SQPD-1234567 | D7   |
+     |                      |                     | SQPD-1234567 | E7   |
+     |                      |                     | SQPD-1234567 | F7   |
+     |                      |                     | SQPD-1234567 | G7   |
+     |                      |                     | SQPD-1234567 | H7   |
+     |                      |                     | SQPD-1234567 | A8   |
+     |                      |                     | SQPD-1234567 | B8   |
+     |                      |                     | SQPD-1234567 | C8   |
+     |                      |                     | SQPD-1234567 | D8   |
+     |                      |                     | SQPD-1234567 | E8   |
+     |                      |                     | SQPD-1234567 | F8   |
+     |                      |                     | SQPD-1234567 | G8   |
+     |                      |                     | SQPD-1234567 | H8   |
+     |                      |                     | SQPD-1234567 | A9   |
+     |                      |                     | SQPD-1234567 | B9   |
+     |                      |                     | SQPD-1234567 | C9   |
+     |                      |                     | SQPD-1234567 | D9   |
+     |                      |                     | SQPD-1234567 | E9   |
+     |                      |                     | SQPD-1234567 | F9   |
+     |                      |                     | SQPD-1234567 | G9   |
+     |                      |                     | SQPD-1234567 | H9   |
+     |                      |                     | SQPD-1234567 | A10  |
+     |                      |                     | SQPD-1234567 | B10  |
+     |                      |                     | SQPD-1234567 | C10  |
+     |                      |                     | SQPD-1234567 | D10  |
+     |                      |                     | SQPD-1234567 | E10  |
+     |                      |                     | SQPD-1234567 | F10  |
+     |                      |                     | SQPD-1234567 | G10  |
+     |                      |                     | SQPD-1234567 | H10  |
+     |                      |                     | SQPD-1234567 | A11  |
+     |                      |                     | SQPD-1234567 | B11  |
+     |                      |                     | SQPD-1234567 | C11  |
+     |                      |                     | SQPD-1234567 | D11  |
+     |                      |                     | SQPD-1234567 | E11  |
+     |                      |                     | SQPD-1234567 | F11  |
+     |                      |                     | SQPD-1234567 | G11  |
+     |                      |                     | SQPD-1234567 | H11  |
+     |                      |                     | SQPD-1234567 | A12  |
+     |                      |                     | SQPD-1234567 | B12  |
+     |                      |                     | SQPD-1234567 | C12  |
+     |                      |                     | SQPD-1234567 | D12  |
+     |                      |                     | SQPD-1234567 | E12  |
+     |                      |                     | SQPD-1234567 | F12  |
+     |                      |                     | SQPD-1234567 | G12  |
+     |                      |                     | SQPD-1234567 | H12  |
 
   @cell_line
   Scenario: Upload a manifest with invalid cell line

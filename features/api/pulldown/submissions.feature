@@ -15,7 +15,7 @@ Feature: Creating submissions for pulldown
     Given I have a project called "Testing submission creation"
       And the UUID for the project "Testing submission creation" is "22222222-3333-4444-5555-000000000001"
 
-    Given the plate barcode webservice returns "1000001"
+    Given the Baracoda barcode service returns "SQPD-1000001"
 
     Given a "WGS stock DNA" plate called "Testing the pulldown submissions" exists
       And all of the wells on the plate "Testing the pulldown submissions" are in an asset group called "Testing the pulldown submissions" owned by the study "Testing submission creation"

@@ -14,8 +14,8 @@ describe 'Labwhere reception', js: true do
     click_on 'Update locations'
     expect(page).to have_content "Asset barcodes can't be blank"
     within('#new_labwhere_reception') do
-      fill_in('asset_scan', with: plate.ean13_barcode).send_keys(:return)
-      expect(find('.barcode_list')).to have_content plate.ean13_barcode
+      fill_in('asset_scan', with: plate.human_barcode).send_keys(:return)
+      expect(find('.barcode_list')).to have_content plate.human_barcode
       expect(page).to have_content 'Scanned: 1'
       fill_in('asset_scan', with: 'TEST222').send_keys(:return)
       fill_in('asset_scan', with: 'TEST333').send_keys(:return)
@@ -26,7 +26,7 @@ describe 'Labwhere reception', js: true do
       first('a', text: 'Remove from list').click
       expect(page).to have_content 'Scanned: 1'
       first('a', text: 'Remove from list').click
-      fill_in('asset_scan', with: plate.ean13_barcode).send_keys(:return)
+      fill_in('asset_scan', with: plate.human_barcode).send_keys(:return)
       click_on 'Update locations'
     end
     expect(page).to have_content plate.human_barcode

@@ -45,40 +45,40 @@ And I have a "full" authorised user with the key "cucumber"
         "qcables": [
           {
             "updated_at": "2010-10-23 23:00:00 +0100",
-            "barcode": {"number": "1000001", "prefix": "DN"},
+            "barcode": {"machine": "SQPD-1000001"},
             "state": "pending",
             "stamp_index": 0,
             "stamp_bed": "1"
           },
           {
-            "barcode": {"number": "1000002", "prefix": "DN"},
+            "barcode": {"machine": "SQPD-1000002"},
             "state": "created",
             "stamp_index": null,
             "stamp_bed": null
           },
           {
             "updated_at": "2010-10-23 23:20:00 +0100",
-            "barcode": {"number": "1000003", "prefix": "DN"},
+            "barcode": {"machine": "SQPD-1000003"},
             "state": "pending",
             "stamp_index": 3,
             "stamp_bed": "3"
           },
           {
             "updated_at": "2010-10-23 23:20:00 +0100",
-            "barcode": {"number": "1000004", "prefix": "DN"},
+            "barcode": {"machine": "SQPD-1000004"},
             "state": "pending",
             "stamp_index": 2,
             "stamp_bed": "5"
           },
           {
             "updated_at": "2010-10-23 23:00:00 +0100",
-            "barcode": {"number": "1000005", "prefix": "DN"},
+            "barcode": {"machine": "SQPD-1000005"},
             "state": "pending",
             "stamp_index": 1,
             "stamp_bed": "2"
           },
           {
-            "barcode": {"number": "1000006", "prefix": "DN"},
+            "barcode": {"machine": "SQPD-1000006"},
             "state": "created",
             "stamp_index": null,
             "stamp_bed": null

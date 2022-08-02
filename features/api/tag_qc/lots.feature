@@ -71,7 +71,7 @@ And I have a "full" authorised user with the key "cucumber"
     And the UUID of the next qcable creator created will be "55555555-6666-7777-8888-000000000002"
     And a user with UUID "99999999-8888-7777-6666-555555555555" exists
 
-    Given the plate barcode webservice returns "1000001"
+    Given the Baracoda barcode service returns "SQPD-1000001"
 
     When I make an authorised POST with the following JSON to the API path "/qcable_creators":
       """

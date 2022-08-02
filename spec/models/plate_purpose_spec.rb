@@ -4,11 +4,11 @@ require 'rails_helper'
 require 'shared_contexts/limber_shared_context'
 
 describe PlatePurpose, type: :model do
-  let(:plate_purpose) { create :plate_purpose, prefix: barcode_prefix, target_type: target_type, size: size }
+  let(:plate_purpose) { create :plate_purpose, target_type: target_type, size: size }
 
   shared_examples 'a plate factory' do
     # rubocop:todo RSpec/ExpectInHook
-    before { expect(PlateBarcode).to receive(:create).and_return(build(:plate_barcode, barcode: 1000)) }
+    before { expect(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode)) }
 
     # rubocop:enable RSpec/ExpectInHook
 
@@ -16,12 +16,6 @@ describe PlatePurpose, type: :model do
       subject { plate_purpose.create! }
 
       it { is_expected.to be_a expected_plate_class }
-
-      it 'set an appropriate barcode prefix' do
-        human_barcode = subject.human_barcode
-        matched = SBCF::HUMAN_BARCODE_FORMAT.match(human_barcode)
-        expect(matched[:prefix]).to eq barcode_prefix
-      end
 
       it 'builds a plate of the correct size' do
         expect(subject.size).to eq size
@@ -50,7 +44,6 @@ describe PlatePurpose, type: :model do
   end
 
   context 'with a base class' do
-    let(:barcode_prefix) { 'DN' }
     let(:target_type) { 'Plate' }
     let(:expected_plate_class) { Plate }
     let(:size) { 96 }
@@ -59,7 +52,6 @@ describe PlatePurpose, type: :model do
   end
 
   context 'with a subclass' do
-    let(:barcode_prefix) { 'WD' }
     let(:target_type) { 'WorkingDilutionPlate' }
     let(:expected_plate_class) { WorkingDilutionPlate }
     let(:size) { 384 }
