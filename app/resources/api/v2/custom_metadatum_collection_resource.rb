@@ -17,7 +17,11 @@ module Api
 
       # Attributes
       attribute :uuid, readonly: true
-      attribute :metadata, readonly: true
+      attribute :metadata
+
+      # This is required for POST
+      attribute :user_id
+      attribute :asset_id
 
       # Filters
 
