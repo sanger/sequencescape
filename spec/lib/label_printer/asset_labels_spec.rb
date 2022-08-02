@@ -19,9 +19,9 @@ shared_examples_for 'asset labels creator' do
 end
 
 context 'printing plates' do
-  let(:asset1) { create :child_plate, barcode: '11111', name: 'Plate Name' }
-  let(:asset2) { create :child_plate, barcode: '22222', name: 'Plate Name' }
-  let(:asset3) { create :child_plate, barcode: '33333' }
+  let(:asset1) { create :child_plate, name: 'Plate Name' }
+  let(:asset2) { create :child_plate, name: 'Plate Name' }
+  let(:asset3) { create :child_plate }
   let(:assets) { [asset1, asset2, asset3] }
 
   describe LabelPrinter::Label::AssetPlate do
@@ -32,7 +32,7 @@ context 'printing plates' do
           bottom_left: asset.human_barcode.to_s,
           top_right: asset.plate_purpose.name.to_s,
           bottom_right: asset.studies.first&.abbreviation,
-          top_far_right: asset.parent.try(:barcode_number).to_s,
+          top_far_right: asset.parent.try(:human_barcode).to_s,
           barcode: asset.machine_barcode.to_s,
           label_name: 'main_label'
         }

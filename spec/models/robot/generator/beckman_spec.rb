@@ -7,8 +7,6 @@ describe Robot::Generator::Beckman, type: :model do
 
   let(:expected_output) { expected_file.read }
 
-  before { create(:stock_plate, barcode: 12_345) }
-
   shared_examples 'a beckman file generation' do
     context 'when mapping wells from 1 96 well source plate to 1 96 well destination plate' do
       it 'returns a String object' do

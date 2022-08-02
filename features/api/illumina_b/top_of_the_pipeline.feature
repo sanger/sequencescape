@@ -15,7 +15,7 @@ Feature: The top of the Illumina-B pipeline
 
     Given a user with UUID "99999999-8888-7777-6666-555555555555" exists
 
-    Given the plate barcode webservice returns "1000002"
+    Given the Baracoda barcode service returns "SQPD-1000002"
 
       And the UUID for the transfer template "Transfer columns 1-12" is "22222222-3333-4444-5555-000000000001"
       And the UUID for the search "Find assets by barcode" is "33333333-4444-5555-6666-000000000001"
@@ -25,7 +25,7 @@ Feature: The top of the Illumina-B pipeline
   @authorised
   Scenario: Dealing with the initial plate in the pipeline
     Given the UUID for the plate purpose "ILB_STD_INPUT" is "11111111-2222-3333-4444-000000000001"
-      And a full plate called "Testing the API" exists with purpose "ILB_STD_INPUT" and barcode "1000001"
+      And a full plate called "Testing the API" exists with purpose "ILB_STD_INPUT" and barcode "SQPD-1000001"
       # And a "ILB_STD_INPUT" plate called "Testing the API" exists
       And the UUID for the plate "Testing the API" is "00000000-1111-2222-3333-000000000001"
       # And all wells on the plate "Testing the API" have unique samples
@@ -40,7 +40,7 @@ Feature: The top of the Illumina-B pipeline
       """
       {
         "search": {
-          "barcode": "1221000001777"
+          "barcode": "SQPD-1000001"
         }
       }
       """
@@ -152,7 +152,7 @@ Feature: The top of the Illumina-B pipeline
       """
       {
         "search": {
-          "barcode": "1221000002781"
+          "barcode": "SQPD-1000002"
         }
       }
       """
@@ -161,7 +161,7 @@ Feature: The top of the Illumina-B pipeline
       """
       {
         "plate": {
-          "name": "Plate DN1000002N",
+          "name": "Plate SQPD-1000002",
           "uuid": "00000000-1111-2222-3333-000000000002"
         }
       }

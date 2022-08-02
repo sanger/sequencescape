@@ -21,7 +21,7 @@ class LotTest < ActiveSupport::TestCase
 
     context '#lot' do
       setup do
-        PlateBarcode.stubs(:create).returns(create(:plate_barcode))
+        PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode))
         @lot = create :lot
         @mock_asset = Labware.new
         @mock_asset.stubs(:save!).returns(true)

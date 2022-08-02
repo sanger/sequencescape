@@ -132,7 +132,7 @@ module NavigationHelpers # rubocop:todo Style/Documentation
       # Add more page name => path mappings here
     when /the request page for the last request/
       request_path(Request.last!)
-    when /the events page for asset with barcode "(\d+)"/
+    when /the events page for asset with barcode "([^"]+)"/
       asset = Labware.find_from_barcode($1)
       history_labware_path(asset)
     when /the sample move using spreadsheet page/

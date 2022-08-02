@@ -66,6 +66,9 @@ if Rails.env.development? || Rails.env.profile?
 
   configatron.labwhere_api = 'localhost:3200/api'
 
+  configatron.baracoda_api = 'http://localhost:8000'
+  configatron.plate_barcode_prefix = 'SQPD'
+
   configatron.plate_barcode_service = 'http://localhost:3011'
   configatron.plate_volume_files = "#{Rails.root}/data/plate_volume/"
 
@@ -109,7 +112,9 @@ if Rails.env.test? || Rails.env.cucumber?
   configatron.ldap_secure_port = 636
   configatron.ldap_server = 'ldap.internal.sanger.ac.uk'
 
-  configatron.plate_barcode_service = 'http://localhost:9998/plate_barcode_service/'
+  configatron.baracoda_api = 'http://localhost:8000'
+  configatron.plate_barcode_prefix = 'SQPD'
+
   configatron.plate_volume_files = "#{Rails.root}/test/data/plate_volume/"
 
   configatron.taxon_lookup_url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/'

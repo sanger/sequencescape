@@ -11,7 +11,7 @@ RSpec.describe Plate::QuadCreator, type: :model do
   let(:user) { create :user }
   let(:creation_options) { { parent_barcodes: parent_barcodes_hash, target_purpose: target_purpose, user: user } }
 
-  before { allow(PlateBarcode).to receive(:create).and_return(build(:plate_barcode, barcode: 1000)) }
+  before { allow(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode)) }
 
   describe '#target_coordinate_for' do
     [
@@ -61,7 +61,7 @@ RSpec.describe Plate::QuadCreator, type: :model do
     end
 
     context 'when a parent is the wrong size' do
-      let(:plate) { create :plate, size: 384, barcode: 1 }
+      let(:plate) { create :plate, size: 384 }
 
       # this should pass in the plate, not the barcode
       let(:parent_barcodes_hash) { { 'quad_1' => plate.machine_barcode } }
@@ -70,7 +70,9 @@ RSpec.describe Plate::QuadCreator, type: :model do
 
       it 'produces a useful error' do
         quad_creator.valid?
-        expect(quad_creator.errors.full_messages).to include('Parent barcodes Quad 1 (DN1S) is the wrong size')
+        expect(quad_creator.errors.full_messages).to include(
+          "Parent barcodes Quad 1 (#{plate.machine_barcode}) is the wrong size"
+        )
       end
     end
   end

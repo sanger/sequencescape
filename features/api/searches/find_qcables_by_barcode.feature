@@ -26,7 +26,7 @@ And I have a "full" authorised user with the key "cucumber"
       """
       {
         "search": {
-          "barcode": "1221000001777"
+          "barcode": "SQPD-1000001"
         }
       }
       """
@@ -37,7 +37,7 @@ And I have a "full" authorised user with the key "cucumber"
           "qcable":{
             "state": "created",
             "barcode" : {
-              "ean13" : "1221000001777"
+              "machine" : "SQPD-1000001"
             }
           }
         }
@@ -50,7 +50,7 @@ And I have a "full" authorised user with the key "cucumber"
       """
       {
         "search": {
-          "barcode": ["1221000001777","1221000002781"]
+          "barcode": ["SQPD-1000001","SQPD-1000002"]
         }
       }
       """
@@ -62,13 +62,13 @@ And I have a "full" authorised user with the key "cucumber"
           {
             "state": "created",
             "barcode" : {
-              "ean13" : "1221000001777"
+              "machine" : "SQPD-1000001"
             }
           },
           {
             "state": "created",
             "barcode" : {
-              "ean13" : "1221000002781"
+              "machine" : "SQPD-1000002"
             }
           }
           ]

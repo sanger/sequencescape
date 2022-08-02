@@ -17,7 +17,7 @@ RSpec.describe SubmissionsController, type: :controller do
 
       session[:user] = @user
 
-      @plate = build :plate, barcode: 123_456
+      @plate = build :plate, barcode: 'SQPD-123456'
       %w[A1 A2 A3 B1 B2 B3 C1 C2 C3].each do |location|
         well = build :well_with_sample_and_without_plate, map: Map.find_by(description: location)
         @plate.wells << well
@@ -182,7 +182,7 @@ RSpec.describe SubmissionsController, type: :controller do
     context 'by sample name and working dilution' do
       before do
         @order_count = Order.count
-        @wd_plate = create :working_dilution_plate, barcode: 123_457
+        @wd_plate = create :working_dilution_plate
         %w[A1 A2 A3 B1 B2 B3 C1 C2 C3].each do |location|
           well = create :empty_well, map: Map.find_by(description: location)
           well.aliquots.create(sample: @plate.wells.located_at(location).first.aliquots.first.sample)
@@ -227,7 +227,7 @@ RSpec.describe SubmissionsController, type: :controller do
     context 'by plate barcode' do
       before do
         @order_count = Order.count
-        post :create, params: plate_submission('DN123456P')
+        post :create, params: plate_submission('SQPD-123456')
       end
 
       it 'create the appropriate orders' do
@@ -239,7 +239,7 @@ RSpec.describe SubmissionsController, type: :controller do
     context 'by plate barcode with pools' do
       before do
         @plate.wells.first.aliquots.create!(sample: create(:sample), tag_id: Tag.first.id)
-        post :create, params: plate_submission('DN123456P')
+        post :create, params: plate_submission('SQPD-123456')
       end
 
       it 'create the appropriate orders' do
@@ -248,7 +248,7 @@ RSpec.describe SubmissionsController, type: :controller do
     end
 
     context 'it allow submission by plate barcode and wells' do
-      before { post :create, params: plate_submission('DN123456P:A1,B3,C2') }
+      before { post :create, params: plate_submission('SQPD-123456:A1,B3,C2') }
 
       it 'create the appropriate orders' do
         assert_equal 3, Order.first.assets.count
@@ -256,7 +256,7 @@ RSpec.describe SubmissionsController, type: :controller do
     end
 
     context 'it allow submission by plate barcode and rows' do
-      before { post :create, params: plate_submission('DN123456P:B,C') }
+      before { post :create, params: plate_submission('SQPD-123456:B,C') }
 
       it 'create the appropriate orders' do
         assert_equal 6, Order.first.assets.count
@@ -264,7 +264,7 @@ RSpec.describe SubmissionsController, type: :controller do
     end
 
     context 'it allow submission by plate barcode and columns' do
-      before { post :create, params: plate_submission('DN123456P:1,2,3') }
+      before { post :create, params: plate_submission('SQPD-123456:1,2,3') }
 
       it 'create the appropriate orders' do
         assert_equal 9, Order.first.assets.count

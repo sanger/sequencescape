@@ -57,7 +57,7 @@ describe '/api/1/plate-purpose-uuid' do
       end
 
       it 'supports resource creation' do
-        expect(PlateBarcode).to receive(:create).and_return(build(:plate_barcode, barcode: 1000))
+        expect(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode))
         api_request :post, url, payload
         expect(JSON.parse(response.body)).to include_json(JSON.parse(response_body))
         expect(status).to eq(response_code)

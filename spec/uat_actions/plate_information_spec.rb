@@ -4,15 +4,15 @@ require 'rails_helper'
 
 describe UatActions::PlateInformation do
   context 'when the plate has aliquots' do
-    let(:parameters) { { plate_barcode: 'DN1S' } }
+    let(:parameters) { { plate_barcode: 'SQPD-1' } }
     let(:uat_action) { described_class.new(parameters) }
     let(:report) do
       # A report is a hash of key value pairs which get returned to the user.
       # It should include information such as barcodes and identifiers
-      { plate_barcode: 'DN1S', wells_with_aliquots: 'A1, B1, C1' }
+      { plate_barcode: 'SQPD-1', wells_with_aliquots: 'A1, B1, C1' }
     end
 
-    before { create :plate_with_untagged_wells, sample_count: 3, barcode: '1' }
+    before { create :plate_with_untagged_wells, sample_count: 3, barcode: 'SQPD-1' }
 
     it 'can be performed' do
       expect(uat_action.perform).to be true
@@ -21,15 +21,15 @@ describe UatActions::PlateInformation do
   end
 
   context 'when the plate is without aliquots' do
-    let(:parameters) { { plate_barcode: 'DN2T' } }
+    let(:parameters) { { plate_barcode: 'SQPD-2' } }
     let(:uat_action) { described_class.new(parameters) }
     let(:report) do
       # A report is a hash of key value pairs which get returned to the user.
       # It should include information such as barcodes and identifiers
-      { plate_barcode: 'DN2T', wells_with_aliquots: '' }
+      { plate_barcode: 'SQPD-2', wells_with_aliquots: '' }
     end
 
-    before { create :plate_with_empty_wells, well_count: 3, barcode: '2' }
+    before { create :plate_with_empty_wells, well_count: 3, barcode: 'SQPD-2' }
 
     it 'can be performed' do
       expect(uat_action.perform).to be true

@@ -52,7 +52,7 @@ end
 Given /^I am set up for testing qcable ordering$/ do
   lot = Lot.find_by(lot_number: '1234567890')
   user = User.last
-  step 'the plate barcode webservice returns "1000001..1000009"'
+  9.times { |pos| step "the Baracoda barcode service returns \"SQPD-100000#{pos + 1}\"" }
   step 'a robot exists'
   qccreate = QcableCreator.create!(lot: lot, user: user, count: 6)
 
@@ -73,15 +73,15 @@ Given /^I have a qcable$/ do
   lot = Lot.find_by(lot_number: '1234567890')
   user = User.last
   step 'the UUID of the next plate created will be "55555555-6666-7777-8888-000000000004"'
-  step 'the plate barcode webservice returns "1000001"'
+  step 'the Baracoda barcode service returns "SQPD-1000001"'
   QcableCreator.create!(lot: lot, user: user, count: 1)
 end
 
 Given /^I have two qcables$/ do
   lot = Lot.find_by(lot_number: '1234567890')
   user = User.last
-  step 'the plate barcode webservice returns "1000001"'
-  step 'the plate barcode webservice returns "1000002"'
+  step 'the Baracoda barcode service returns "SQPD-1000001"'
+  step 'the Baracoda barcode service returns "SQPD-1000002"'
   QcableCreator.create!(lot: lot, user: user, count: 2)
 end
 
@@ -102,8 +102,8 @@ Given /^I have a qc library created$/ do
   lot = Lot.find_by(lot_number: '1234567890')
   lot_b = Lot.find_by(lot_number: '1234567891')
   user = User.last
-  step 'the plate barcode webservice returns "1000001"'
-  step 'the plate barcode webservice returns "1000002"'
+  step 'the Baracoda barcode service returns "SQPD-1000001"'
+  step 'the Baracoda barcode service returns "SQPD-1000002"'
   qca = QcableCreator.create!(lot: lot, user: user, count: 1)
   qcb = QcableCreator.create!(lot: lot_b, user: user, count: 1)
 
