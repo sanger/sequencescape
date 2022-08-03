@@ -9,10 +9,6 @@
   <td data-order="<%= request.priority %>">
     <%= vite_image_tag "images/icon_#{request.priority}_flag.png", 'alt' => request.priority, size: '16x16', class: "flag_image #{can?(:change_priority, request) ? 'as_manager' : ''}", "data-priority" => request.priority, 'data-request-id' => request.id %>
   </td>
-  <% if can? :see_previously_failed, request %>
-    <td><%= render partial: "previous_failed_requests", locals: { request: request } %></td>
-  <% end %>
-  <td><%= request.request_type.product_line.try(:name) %></td>
   <td><%= link_to request.submission_id, submission_path(request.submission) %></td>
   <td><%= link_to request.id, request_path(request) %></td>
   <td><%= link_to request.asset.try(:name), receptacle_path(request.asset) %></td>
@@ -27,7 +23,6 @@
     <td><%= request_samples_count %></td>
     <td><%= request.asset.concentration %></td>
     <td><%= request.asset.scanned_in_date %></td>
-    <td><%= request.submitted_at %></td>
     <td><%= request.asset.tag_count_name %></td>
   <% else %>
     <td></td>

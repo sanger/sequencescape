@@ -31,6 +31,35 @@ class RequestType::Validator < ApplicationRecord
     delegate :to_sentence, to: :to_a
   end
 
+  class FlowcellTypeValidator # rubocop:todo Style/Documentation
+    attr_reader :request_type_id
+
+    def initialize(request_type_id)
+      @request_type_id = request_type_id
+    end
+
+    def request_type
+      RequestType.find(request_type_id)
+    end
+
+    def include?(option)
+      request_type
+        .flowcell_types
+        .where(requested_flowcell_type: option)
+        .pluck(:requested_flowcell_type)
+        .include?(option)
+    end
+
+    def default
+      request_type.default_flowcell_type.try(:requested_flowcell_type)
+    end
+
+    def to_a
+      request_type.flowcell_types.pluck(:requested_flowcell_type).sort
+    end
+    delegate :to_sentence, to: :to_a
+  end
+
   ##
   # Array class that lets you set a default value
   # If first argument is an array, second argument is assumed to be default
