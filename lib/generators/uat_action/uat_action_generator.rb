@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-# Easily build new support actions
-# `rails generate support_action` for more information
-class SupportActionGenerator < Rails::Generators::NamedBase
+# Easily build new uat actions
+# `rails generate uat_action` for more information
+class UatActionGenerator < Rails::Generators::NamedBase
   source_root File.expand_path('templates', __dir__)
 
   class_option :description, type: :string, default: ''
