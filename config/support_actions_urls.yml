@@ -1,0 +1,21 @@
+shared:
+  rt:
+    name: "RT ticket"
+    params:
+      - rt_number
+    url_template: "https://rt.sanger.ac.uk/Ticket/Display.html?id=%{rt_number}"
+    name_template: "RT#%{rt_number}"
+  github:
+    name: "Github issue"
+    params:
+      - repo
+      - issue_number
+    url_template: "https://www.github.com/sanger/%{repo}/issues/%{issue}"
+    name_template: "Github %{repo}#%{issue}"
+  other:
+    name: Other
+    params:
+      - url
+      - name
+    url_template: "%{url}"
+    name_template: "%{name}"

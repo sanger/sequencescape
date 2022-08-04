@@ -1604,6 +1604,28 @@ ActiveRecord::Schema.define(version: 2022_07_13_144729) do
     t.index ["name"], name: "index_suppliers_on_name"
   end
 
+  create_table "support_actions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "action", null: false
+    t.string "version", null: false
+    t.text "logs"
+    t.json "urls"
+    t.json "options"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_support_actions_on_user_id"
+  end
+
+  create_table "support_actions_resources", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+    t.bigint "support_action_id", null: false
+    t.string "resource_type", null: false
+    t.bigint "resource_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["resource_type", "resource_id"], name: "idx_support_resources"
+    t.index ["support_action_id"], name: "idx_support_action"
+  end
+
   create_table "tag2_layout_template_submissions", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "submission_id", null: false
     t.integer "tag2_layout_template_id", null: false

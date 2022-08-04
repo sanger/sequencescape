@@ -43,6 +43,7 @@ module FormActions
       # Register the form_fields of the parent class
       other.form_fields.concat(form_fields)
       inherited_actions[other.id] = other
+      super
     end
 
     def id

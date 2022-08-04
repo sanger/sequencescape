@@ -1,0 +1,11 @@
+<% url_type = url_field.first %>
+<% params = url_field.last[:params] %>
+<div class="input-group">
+  <span class="input-group-text col-1"><%= url_type %></span>
+  <%= f.fields_for url_type do |url| %>
+    <% params.each do |param| %>
+      <%= url.text_field param, placeholder: param, value: '' %>
+    <% end %>
+  <% end %>
+</div>
+<p class="form-help small"><%= url_field.last[:url_template] %></p>

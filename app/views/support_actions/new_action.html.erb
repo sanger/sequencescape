@@ -1,0 +1,27 @@
+<%= page_title('Support action', @support_action.title, badges: ['New']) %>
+<p class="lead"><%= @support_action.description %></p>
+
+<% if @support_action.errors.present? %>
+  <%= alert(:danger) do %>
+    <strong>Sorry!</strong>
+    <p>We couldn't complete that action.</p>
+    <ul><% @support_action.errors.full_messages.each do |message| %>
+      <li><%= message %></li>
+    <% end %></ul>
+  <% end %>
+<% end %>
+<div class="uat-action">
+  <%= form_with(model: @support_action) do |f| %>
+    <%= f.hidden_field :action %>
+    <%= panel do %>
+      <p class="lead">Provide any URLs associated with the work</p>
+      <%= f.fields_for :url_values do |url_fields| %>
+        <%= render partial: 'url_field', collection: @url_helpers, locals: { f: url_fields } %>
+      <% end %>
+    <% end %>
+    <%= f.fields_for :options, @support_action.options do |optform| %>
+      <%= render partial: @support_action.form_fields, locals: { f: optform } %>
+    <% end %>
+    <%= f.submit %>
+  <% end %>
+</div>

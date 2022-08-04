@@ -569,6 +569,10 @@ Rails.application.routes.draw do
 
   resources :uat_actions
 
+  resources :support_actions do
+    get ':action_id', on: :new, action: 'new_action'
+  end
+
   resources :location_reports, only: %i[index show create]
 
   # this is for test only test/functional/authentication_controller_test.rb

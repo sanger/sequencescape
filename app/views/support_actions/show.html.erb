@@ -1,0 +1,21 @@
+<%= page_title('Support action', @support_action.title, badges: [@support_action.id]) %>
+<dl class="descriptive-list-inline">
+  <dt>Performed at<dt><dd><%= time_tag(@support_action.created_at) %></dd>
+  <dt>By<dt><dd><%= @support_action.user&.name_and_login || "Deleted user #{@support_action.user_id}" %></dd>
+  <dt>Version<dt><dd><%= @support_action.version %></dd>
+</dl>
+<%= panel :info, title: 'Links' do %>
+  <% @support_action.urls.each do |url| %>
+    <%= link_to url['name'], url['url'] %>
+  <% end %>
+<% end %>
+<%= panel :info, title: 'Options'  do %>
+  <dl>
+  <% @support_action.options&.each do |k, v| %>
+    <dt><%= k %></dt><dd><%= v %></dd>
+  <% end %>
+  </dl>
+<% end %>
+<%= panel :info, title: 'Logs'  do %>
+  <%= @support_action.logs %>
+<% end %>

@@ -1,0 +1,4 @@
+<%= panel do %>
+  <h4 class="card-title"><%= link_to entry.title, "#{new_support_action_path}/#{entry.id}" %></h4>
+  <%= entry.description %>
+<% end %>

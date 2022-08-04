@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Will construct plates with well_count wells filled with samples
+# Handles a support action to <%= description %>
 class SupportActions::<%= camelcase %> < SupportActions
   self.title = '<%= title %>'
   # The description displays on the list of support actions to provide additional information
@@ -32,12 +32,4 @@ class SupportActions::<%= camelcase %> < SupportActions
   private
 
   # Any helper methods
-
-  #
-  # Returns the uat user
-  #
-  # @return [User] The UAT user can be used in any places where a user is expected.
-  def user
-    SupportActions::StaticRecords.user
-  end
 end
