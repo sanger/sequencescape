@@ -13,7 +13,9 @@ limber_pcr_bespoke:
     - ChIP-Seq Auto
     - Chromium single cell HTO
     - Chromium single cell surface protein
+    - Chromium single cell surface protein HT
     - Chromium Visium
+    - Chromium Visium FFPE
     - Manual Chromium single cell 3 prime v3
     - Manual Chromium single cell 3 prime HT v3
     - Manual Chromium single cell 5 prime v2
@@ -23,8 +25,6 @@ limber_pcr_bespoke:
     - Manual Chromium single cell BCR HT
     - Manual Chromium single cell TCR HT
     - Manual Chromium single cell ATAC
-    - Manual Chromium single cell surface protein (CITE-seq) HT
-    - Manual Chromium Visium FFPE
     - emSEQ
     - Haplotagging
     - Hi-C
