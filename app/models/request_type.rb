@@ -187,10 +187,6 @@ class RequestType < ApplicationRecord
     library_types.find_by(library_types_request_types: { is_default: true })
   end
 
-  def default_flowcell_type
-    flowcell_types.find_by(flowcell_types_request_types: { is_default: true })
-  end
-
   # Returns the validator for a given option.
   def validator_for(request_option)
     if request_type_validators.loaded?
