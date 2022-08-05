@@ -24,7 +24,6 @@ limber_pcr_bespoke:
     - Manual Chromium single cell BCR
     - Manual Chromium single cell BCR HT
     - Manual Chromium single cell TCR HT
-    - Manual Chromium single cell ATAC
     - emSEQ
     - Haplotagging
     - Hi-C
