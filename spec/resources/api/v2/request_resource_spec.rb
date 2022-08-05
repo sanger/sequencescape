@@ -59,7 +59,7 @@ RSpec.describe Api::V2::RequestResource, type: :resource do
     let(:expected_metadata) do
       {
         'bait_library_id' => bait_library.id,
-        'submit_for_sequencing' => 'Y',
+        'submit_for_sequencing' => true,
         'sub_pool' => 2,
         'coverage' => 5,
         'diluent_volume' => 25.364,
