@@ -5,8 +5,8 @@ require 'rails_helper'
 describe LabwhereReceptionsController do
   context 'Sample Reception' do
     let(:user) { create :user, barcode: 'ID48601I', swipecard_code: '02face' }
-    let(:plate) { create :plate, barcode: 1 }
-    let(:plate_2) { create :plate, barcode: 2 }
+    let(:plate) { create :plate }
+    let(:plate_2) { create :plate }
     let(:sample_tube) { create :sample_tube, barcode: 1 }
 
     shared_examples 'a reception' do

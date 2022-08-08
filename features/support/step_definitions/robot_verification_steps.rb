@@ -6,10 +6,10 @@ Given(
   /^I have a released cherrypicking batch with (\d+) samples and the minimum robot pick is "([^"]*)"$/
 ) do |number_of_samples, minimum_robot_pick|
   step("I have a cherrypicking batch with #{number_of_samples} samples")
-  step('a plate barcode webservice is available and returns "99999"')
+  step('a plate barcode webservice is available and returns "SQPD-99999"')
   step('a plate template exists')
   step('a robot exists with barcode "444"')
-  step('plate "1221234567841" has concentration and volume results')
+  step('plate "SQPD-1234567" has concentration and volume results')
   step('I follow "Select Plate Template"')
   step('I select "testtemplate" from "Plate Template"')
   step('I select "Infinium 670k" from "Output plate purpose"')
@@ -26,10 +26,10 @@ Given(
   /^I have a released low concentration cherrypicking batch with (\d+) samples and the minimum robot pick is "([^"]*)"$/
 ) do |number_of_samples, minimum_robot_pick|
   step("I have a cherrypicking batch with #{number_of_samples} samples")
-  step('a plate barcode webservice is available and returns "99999"')
+  step('a plate barcode webservice is available and returns "SQPD-99999"')
   step('a plate template exists')
   step('a robot exists with barcode "444"')
-  step('plate "1221234567841" has low concentration and volume results')
+  step('plate "SQPD-1234567" has low concentration and volume results')
   step('I follow "Select Plate Template"')
   step('I select "testtemplate" from "Plate Template"')
   step('I select "Infinium 670k" from "Output plate purpose"')
@@ -49,26 +49,26 @@ Given(
   step('I am a "administrator" user logged in as "user"')
   step('I have a project called "Test project"')
   step('I have an active study called "Test study"')
-  step('I have a plate "1" in study "Test study" with 2 samples in asset group "Plate asset group"')
-  step('I have a plate "10" in study "Test study" with 2 samples in asset group "Plate asset group"')
-  step('I have a plate "5" in study "Test study" with 2 samples in asset group "Plate asset group"')
+  step('I have a plate "SQPD-1" in study "Test study" with 2 samples in asset group "Plate asset group"')
+  step('I have a plate "SQPD-10" in study "Test study" with 2 samples in asset group "Plate asset group"')
+  step('I have a plate "SQPD-5" in study "Test study" with 2 samples in asset group "Plate asset group"')
 
   step('I have a Cherrypicking submission for asset group "Plate asset group"')
   step('I am on the show page for pipeline "Cherrypick"')
 
-  step('I check "Select DN1S for batch"')
-  step('I check "Select DN10I for batch"')
-  step('I check "Select DN5W for batch"')
+  step('I check "Select SQPD-1 for batch"')
+  step('I check "Select SQPD-10 for batch"')
+  step('I check "Select SQPD-5 for batch"')
   step('I select "Create Batch" from the first "action_on_requests"')
   step('I press the first "Submit"')
 
   # must use @javascript
-  step('a plate barcode webservice is available and returns "99999"')
+  step('a plate barcode webservice is available and returns "SQPD-99999"')
   step('a plate template exists')
   step('a robot exists with barcode "444"')
-  step('plate "DN10I" has concentration and volume results')
-  step('plate "DN1S" has concentration and volume results')
-  step('plate "DN5W" has concentration and volume results')
+  step('plate "SQPD-10" has concentration and volume results')
+  step('plate "SQPD-1" has concentration and volume results')
+  step('plate "SQPD-5" has concentration and volume results')
 
   step('I follow "Select Plate Template"')
   step('I select "testtemplate" from "Plate Template"')

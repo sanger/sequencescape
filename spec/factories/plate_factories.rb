@@ -55,16 +55,17 @@ FactoryBot.define do
   end
 
   trait :plate_barcode do
-    transient do
-      barcode { generate :barcode_number }
-      prefix { 'DN' }
-    end
-    sanger_barcode { { prefix: prefix, number: barcode } }
+    transient { barcode { nil } }
+
+    # May be a nicer way of doing this?
+    sanger_barcode { barcode.nil? ? build(:plate_barcode) : build(:plate_barcode, barcode: barcode) }
   end
 
   factory :plate, traits: %i[plate_barcode with_wells] do
     plate_purpose
     size { 96 }
+
+    transient { barcode { nil } }
 
     factory :input_plate do
       association(:plate_purpose, factory: :input_plate_purpose)
@@ -171,7 +172,10 @@ FactoryBot.define do
     size { 96 }
     plate_purpose
 
-    transient { well_count { 96 } }
+    transient do
+      well_count { 96 }
+      barcode { nil }
+    end
 
     # A plate that has exactly the right number of wells!
     factory :pooling_plate do

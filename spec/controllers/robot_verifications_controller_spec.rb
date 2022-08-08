@@ -8,7 +8,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
   let(:robot) do
     create :robot_with_verification_behaviour, barcode: '1', number_of_sources: 4, number_of_destinations: 1
   end
-  let(:plate) { create :plate, barcode: 142_334 }
+  let(:plate) { create :plate, barcode: 'SQPD-142334' }
 
   before { session[:user] = user.id }
 
@@ -22,14 +22,16 @@ RSpec.describe RobotVerificationsController, type: :controller do
   end
 
   describe '#download' do
-    let(:expected_layout) { [{ '142334' => 1 }, { '127168' => 3, '134443' => 4, '127162' => 1, '127167' => 2 }] }
+    let(:expected_layout) do
+      [{ 'SQPD-142334' => 1 }, { 'SQPD-127168' => 3, 'SQPD-134443' => 4, 'SQPD-127162' => 1, 'SQPD-127167' => 2 }]
+    end
     let!(:before_event_count) { Event.count }
     let(:plate_types) do
       {
-        'DN127162U' => 'ABgene_0765',
-        'DN127167C' => 'ABgene_0765',
-        'DN127168D' => 'ABgene_0765',
-        'DN134443T' => 'ABgene_0765'
+        'SQPD-127162' => 'ABgene_0765',
+        'SQPD-127167' => 'ABgene_0765',
+        'SQPD-127168' => 'ABgene_0765',
+        'SQPD-134443' => 'ABgene_0765'
       }
     end
     let(:barcodes) { { destination_plate_barcode: plate.machine_barcode } }
@@ -37,7 +39,12 @@ RSpec.describe RobotVerificationsController, type: :controller do
       { '1' => '580000001806', '2' => '580000002810', '3' => '580000003824', '4' => '580000004838' }
     end
     let(:plate_barcodes) do
-      { 'DN127162U' => 'DN127162U', 'DN127167C' => 'DN127167C', 'DN127168D' => 'DN127168D', 'DN134443T' => 'DN134443T' }
+      {
+        'SQPD-127162' => 'SQDP-127162',
+        'SQPD-127167' => 'SQDP-127167',
+        'SQPD-127168' => 'SQPD-127168',
+        'SQPD-134443' => 'DN134443T'
+      }
     end
     let(:destination_bed_barcodes) { { '1' => '580000005842' } }
     let(:destination_plate_barcodes) { { plate.machine_barcode => plate.machine_barcode } }
@@ -80,7 +87,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
     context 'with invalid inputs' do
       context 'when nothing is scanned' do
         let(:bed_barcodes) { { '1' => '', '2' => '', '3' => '', '4' => '' } }
-        let(:plate_barcodes) { { 'DN127162U' => '', 'DN127167C' => '', 'DN127168D' => '', 'DN134443T' => '' } }
+        let(:plate_barcodes) { { 'SQPD-127162' => '', 'SQPD-127167' => '', 'SQPD-127168' => '', 'SQPD-134443' => '' } }
         let(:destination_bed_barcodes) { { '1' => '' } }
         let(:destination_plate_barcodes) { { plate.machine_barcode => '' } }
 
@@ -94,7 +101,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
       end
 
       context 'when the source plates are missing' do
-        let(:plate_barcodes) { { 'DN127162U' => '', 'DN127167C' => '', 'DN127168D' => '', 'DN134443T' => '' } }
+        let(:plate_barcodes) { { 'SQPD-127162' => '', 'SQPD-127167' => '', 'SQPD-127168' => '', 'SQPD-134443' => '' } }
 
         before { post :download, params: download_params }
 
@@ -120,10 +127,10 @@ RSpec.describe RobotVerificationsController, type: :controller do
       context 'when the source plates are mixed up' do
         let(:plate_barcodes) do
           {
-            'DN127167C' => 'DN127162U',
-            'DN127162U' => 'DN127167C',
-            'DN134443T' => 'DN127168D',
-            'DN127168D' => 'DN134443T'
+            'SQPD-127167' => 'SQPD-127162',
+            'SQPD-127162' => 'SQPD-127167',
+            'SQPD-134443' => 'SQPD-127168',
+            'SQPD-127168' => 'SQPD-134443'
           }
         end
 
@@ -152,14 +159,14 @@ RSpec.describe RobotVerificationsController, type: :controller do
 
       context 'when 2 source beds and plates are mixed up' do
         let(:bed_barcodes) do
-          { '1' => 'DN127162U', '2' => '580000002810', '3' => '580000003824', '4' => '580000004838' }
+          { '1' => 'SQPD-127162', '2' => '580000002810', '3' => '580000003824', '4' => '580000004838' }
         end
         let(:plate_barcodes) do
           {
-            'DN127162U' => '580000001806',
-            'DN127167C' => 'DN127167C',
-            'DN127168D' => 'DN127168D',
-            'DN134443T' => 'DN134443T'
+            'SQPD-127162' => '580000001806',
+            'SQPD-127167' => 'SQPD-127167',
+            'SQPD-127168' => 'SQPD-127168',
+            'SQPD-134443' => 'SQPD-134443'
           }
         end
 
@@ -215,10 +222,10 @@ RSpec.describe RobotVerificationsController, type: :controller do
         end
         let(:plate_barcodes) do
           {
-            'DN127162U' => 'DN127162U     ',
-            'DN127167C' => 'DN127167C ',
-            'DN127168D' => 'DN127168D',
-            'DN134443T' => 'DN134443T'
+            'SQPD-127162' => 'SQPD-127162     ',
+            'SQPD-127167' => 'SQPD-127167 ',
+            'SQPD-127168' => 'SQPD-127168',
+            'SQPD-134443' => 'SQPD-134443'
           }
         end
 
@@ -234,7 +241,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
     describe '#submission' do
       let(:well) { create :well, plate: plate }
       let(:well_request) { create :request, state: 'passed' }
-      let(:source_plate) { create :plate, barcode: '1234' }
+      let(:source_plate) { create :plate, barcode: 'SQPD-1234' }
       let(:target_well) { create :well, plate: source_plate }
 
       before do

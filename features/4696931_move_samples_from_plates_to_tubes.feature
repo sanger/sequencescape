@@ -11,7 +11,7 @@ Feature: Creating sample tubes from a plate, add to asset group, and print barco
 
   Scenario: plate barcode scanned and plate exists
     Given a plate with barcode "1220128459804" exists
-    And plate with barcode "128459" has a well
+    And plate with barcode "1220128459804" has a well
     When I fill in the field labeled "Source plates" with "1220128459804"
     And I select "Study 4696931" from "Study"
     And I select "xyz" from "Barcode printer"
@@ -21,7 +21,7 @@ Feature: Creating sample tubes from a plate, add to asset group, and print barco
 
   Scenario: plate ID typed in
     Given a plate with barcode "1220128459804" exists
-    And plate with barcode "128459" has a well
+    And plate with barcode "1220128459804" has a well
     When I fill in the field labeled "Source plates" with "DN128459"
     And I select "Study 4696931" from "Study"
     And I select "xyz" from "Barcode printer"

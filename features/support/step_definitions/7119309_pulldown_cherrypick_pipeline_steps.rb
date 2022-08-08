@@ -13,21 +13,21 @@ Given(
 end
 
 Given(/^plate "([^"]*)" has concentration results$/) do |plate_barcode|
-  plate = Plate.find_from_barcode('DN' + plate_barcode)
+  plate = Plate.find_from_barcode(plate_barcode)
   plate.wells.each_with_index { |well, index| well.well_attribute.update!(concentration: index * 40) }
 end
 
 Given(/^plate "([^"]*)" has nonzero concentration results$/) do |plate_barcode|
   step("plate \"#{plate_barcode}\" has concentration results")
 
-  plate = Plate.find_from_barcode('DN' + plate_barcode)
+  plate = Plate.find_from_barcode(plate_barcode)
   plate.wells.each_with_index do |well, _index|
     well.well_attribute.update!(concentration: 1) if well.well_attribute.concentration == 0.0
   end
 end
 
 Given(/^plate "([^"]*)" has measured volume results$/) do |plate_barcode|
-  plate = Plate.find_from_barcode('DN' + plate_barcode)
+  plate = Plate.find_from_barcode(plate_barcode)
   plate.wells.each_with_index { |well, index| well.well_attribute.update!(measured_volume: index * 11) }
 end
 

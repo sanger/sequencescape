@@ -9,10 +9,9 @@ describe 'Creating a quad stamp' do
   let(:quad_2) { create :plate_with_untagged_wells, well_count: 2 }
   let!(:plate_purpose) { create :plate_purpose, size: 384, stock_plate: true }
   let(:new_barcode) { build(:plate_barcode) }
-  let(:new_barcode_formatted) { SBCF::SangerBarcode.new(prefix: 'DN', number: new_barcode.barcode).human_barcode }
   let!(:barcode_printer) { create :barcode_printer }
 
-  before { allow(PlateBarcode).to receive(:create).and_return(new_barcode) }
+  before { allow(PlateBarcode).to receive(:create_barcode).and_return(new_barcode) }
 
   it 'handles correct input' do
     login_user user
@@ -39,7 +38,7 @@ describe 'Creating a quad stamp' do
 
     # We submit the form to create the plate and print the barcode
     click_on 'Submit'
-    expect(page).to have_content new_barcode_formatted
+    expect(page).to have_content new_barcode.barcode
   end
 
   it 'handles incorrect input' do

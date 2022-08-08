@@ -45,7 +45,7 @@ Feature: Access tag 2 layout templates through the API
 
   @tag_layout @create @barcode-service
   Scenario: Creating a tag layout from a tag 2 layout template
-    Given the plate barcode webservice returns "1000001"
+    Given the Baracoda barcode service returns "SQPD-1000001"
 
     Given the UUID of the next tag 2 layout created will be "00000000-1111-2222-3333-000000000002"
 

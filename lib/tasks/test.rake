@@ -32,8 +32,7 @@ namespace :test do
         DatabaseCleaner.strategy = :transaction
         DatabaseCleaner.cleaning do
           PlateMapGeneration.generate!
-          puts 'Linting factories.'
-          FactoryBot.lint verbose: true
+          FactoryBot.lint
           puts 'Linted'
         end
       else
