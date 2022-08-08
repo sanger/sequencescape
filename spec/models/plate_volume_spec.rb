@@ -5,11 +5,11 @@ require 'rails_helper'
 describe PlateVolume do
   let(:plate_with_barcodes_in_csv) do
     # This plate has a CSV file in which the barcode is listed in the column
-    create :plate, barcode: '1234567', well_count: 24, well_factory: :untagged_well, well_order: :row_order
+    create :plate, barcode: 'SQPD-1234567', well_count: 24, well_factory: :untagged_well, well_order: :row_order
   end
   let(:plate_without_barcodes_in_csv) do
     # This plate barcode is only used to name the volume check file
-    create :plate, barcode: '111', well_count: 24, well_factory: :untagged_well, well_order: :row_order
+    create :plate, barcode: 'SQPD-111', well_count: 24, well_factory: :untagged_well, well_order: :row_order
   end
 
   describe '::process_all_volume_check_files' do

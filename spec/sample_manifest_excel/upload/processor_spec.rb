@@ -35,8 +35,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
     let(:tag_group) { create(:tag_group) }
 
     before do
-      barcode = build(:plate_barcode, barcode: 23)
-      allow(PlateBarcode).to receive(:create).and_return(barcode)
+      allow(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode))
       download.save(test_file_name)
     end
 

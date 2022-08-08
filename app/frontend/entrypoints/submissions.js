@@ -194,9 +194,6 @@
 
     var studyId = currentPane.find(".study_id").val() || currentPane.find(".cross_study").attr("checked");
 
-    // TODO This should validate that the project name is in the list but the
-    // autocomplete callback doesn't seem to fire properly so this is a bit of
-    // a kludge around that.
     var projectName =
       currentPane.find(".submission_project_name").val() || currentPane.find(".cross_project").attr("checked");
     var hasAssets = currentPane.submission("hasAssets");
@@ -272,11 +269,6 @@
       newOrder.find(".pre_capture_plex_level").value = window.SCAPE.submission.pre_capture_plex_level;
       newOrder.find(".pre_capture_plex_level").value = window.SCAPE.submission.pre_capture_plex_group;
     }
-
-    newOrder.find(".submission_project_name").autocomplete({
-      source: window.SCAPE.user_project_names,
-      minLength: 3,
-    });
 
     // And gigabase stuff is only for library creation
     if (window.SCAPE.submission.show_gigabses_expected === false) {
@@ -383,8 +375,6 @@
       .delegate("li.order select", "change", validateOrder);
 
     // Most of the event handlers can be hung from the orders list...
-    // NB. If we upgrade from jQuery 1.6.x to >= 1.7 then we may want to swap
-    // out .delegate() to use the .on() function instead.
     $("ul#orders")
       .on("change", ".study_id", studySelectHandler)
       .on("click", ".cancel-order", cancelOrderHandler)

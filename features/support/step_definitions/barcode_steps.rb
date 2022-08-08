@@ -1,11 +1,28 @@
 # frozen_string_literal: true
 
-Given /^the plate barcode webservice returns "([1-9][0-9]*)"$/ do |barcode|
+#Given /^the plate barcode webservice returns "([1-9][0-9]*)"$/ do |barcode|
+#  FakeBarcodeService.instance.barcode(barcode)
+#end
+
+Given /^the plate barcode webservice returns "([\w-]+)"$/ do |barcode|
+  FakeBarcodeService.instance.barcode(barcode, 'DN')
+end
+
+Given /^the Baracoda barcode service returns "([\w-]+)"$/ do |barcode|
   FakeBarcodeService.instance.barcode(barcode)
 end
 
-Given /^a plate barcode webservice is available and returns "(\d+)"$/ do |barcode|
-  step("the plate barcode webservice returns \"#{barcode}\"")
+Given(
+  /^the Baracoda children barcode service for parent barcode "([\w-]+)" returns (\d+) barcodes?$/
+) { |parent_barcode, count| FakeBarcodeService.instance.mock_child_barcodes(parent_barcode, count) }
+
+#Given /^a plate barcode webservice is available and returns "(\d+)"$/ do |barcode|
+#  step("the plate barcode webservice returns \"#{barcode}\"")
+#end
+
+Given /^a plate barcode webservice is available and returns "([\w-]+)"$/ do |barcode|
+  step("the Baracoda barcode service returns \"#{barcode}\"")
+  #step("the plate barcode webservice returns \"#{barcode}\"")
 end
 
 Given /^the plate barcode webservice returns "([1-9][0-9]*)\.\.([1-9][0-9]*)"$/ do |start, finish|
@@ -19,12 +36,12 @@ end
 
 Given '{asset_id} has a barcode of {string}' do |barcoded, barcode|
   bc = SBCF::SangerBarcode.from_machine(barcode).human_barcode
-  barcoded.primary_barcode.update(barcode: bc)
+  barcoded.primary_barcode.update(barcode: bc, format: :sanger_code39)
 end
 
 Given '{asset_name} has a barcode of {string}' do |barcoded, barcode|
   bc = SBCF::SangerBarcode.from_machine(barcode).human_barcode
-  barcoded.primary_barcode.update(barcode: bc)
+  barcoded.primary_barcode.update(barcode: bc, format: :sanger_code39)
 end
 
 Given '{batch} has a barcode of {string}' do |barcoded, barcode|
@@ -34,7 +51,7 @@ end
 Given /^the barcode of the last sample tube is "([^"]+)"$/ do |barcode|
   bc = SBCF::SangerBarcode.new(prefix: 'NT', number: barcode).human_barcode
   tube = SampleTube.last or raise StandardError, 'There appear to be no sample tubes'
-  tube.primary_barcode.update!(barcode: bc)
+  tube.primary_barcode.update!(barcode: bc, format: :sanger_code39)
 end
 
 Given /^sample tubes are barcoded sequentially from (\d+)$/ do |initial|

@@ -1,2 +1,2 @@
 User Login,template name,project name,study name,submission name,plate barcode,plate well,asset ids,asset names,asset group name,fragment size from,fragment size to,library type,read length,comments
-user,Example Template,Test project,abc123_study,submission-27,DN111111D,A1,,AssetTest,assetgroup456,,,Standard,100,
+user,Example Template,Test project,abc123_study,submission-27,SQPD-1,A1,,AssetTest,assetgroup456,,,Standard,100,

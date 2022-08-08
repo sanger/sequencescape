@@ -199,7 +199,7 @@ When /^I visit the sample manifest new page without an asset type$/ do
 end
 
 Given /^plate "([^"]*)" has samples with known sanger_sample_ids$/ do |plate_barcode|
-  sequence_sanger_sample_ids_for(Plate.find_from_barcode('DN' + plate_barcode)) { |index| "ABC_#{index}" }
+  sequence_sanger_sample_ids_for(Plate.find_from_barcode(plate_barcode)) { |index| "ABC_#{index}" }
 end
 
 Then /^the last created sample manifest should be:$/ do |table|
@@ -215,9 +215,9 @@ Then /^the last created sample manifest should be:$/ do |table|
   end
 
   table.rows.each_with_index do |row, index|
-    expected = [Barcode.barcode_to_human(Barcode.calculate_barcode(Plate.default_prefix, row[0].to_i)), row[1]]
+    # NOTE: Before we were re-generating the barcodes from the number, but now we receive the barcode itself
     got = [@worksheet.cell(offset + index + 1, 1), @worksheet.cell(offset + index + 1, 2)]
-    assert_equal(expected, got, "Unexpected manifest row #{index}")
+    assert_equal(row, got, "Unexpected manifest row #{index}")
   end
 end
 

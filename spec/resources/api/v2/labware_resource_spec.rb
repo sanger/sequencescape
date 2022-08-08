@@ -29,6 +29,8 @@ RSpec.describe Api::V2::LabwareResource, type: :resource do
 
     # Associations
     it { is_expected.to have_one(:purpose).with_class_name('Purpose') }
+    it { is_expected.to have_one(:custom_metadatum_collection).with_class_name('CustomMetadatumCollection') }
+
     it { is_expected.to have_many(:ancestors) }
     it { is_expected.to have_many(:state_changes) }
 
