@@ -53,9 +53,9 @@ FactoryBot.define do
       association(:request_type, factory: :dilution_and_cleanup_request_type)
 
       transient do
-        bait_library_id { BaitLibrary.first.id || create(:bait_library).id }
+        bait_library { BaitLibrary.first || create(:bait_library) }
         pcr_cyles { 15 }
-        submit_for_sequencing { 'Y' }
+        submit_for_sequencing { true }
         sub_pool { 2 }
         coverage { 5 }
         diluent_volume { 25.364 }
@@ -63,7 +63,7 @@ FactoryBot.define do
 
       request_metadata_attributes do
         {
-          bait_library_id: bait_library_id,
+          bait_library: bait_library,
           pcr_cycles: pcr_cyles,
           submit_for_sequencing: submit_for_sequencing,
           sub_pool: sub_pool,

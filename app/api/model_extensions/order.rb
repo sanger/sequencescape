@@ -199,6 +199,7 @@ module ModelExtensions::Order
         end
         .to_hash
   end
+
   # rubocop:enable Metrics/MethodLength
 
   def merge_in_structured_request_options

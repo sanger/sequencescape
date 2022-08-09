@@ -55,10 +55,10 @@ RSpec.describe Api::V2::RequestResource, type: :resource do
 
   context 'dilution and cleanup request' do
     let(:bait_library) { create :bait_library }
-    let(:resource_model) { build_stubbed :dilution_and_cleanup_request, bait_library_id: bait_library.id }
+    let(:resource_model) { build_stubbed :dilution_and_cleanup_request, bait_library: bait_library }
     let(:expected_metadata) do
       {
-        'bait_library_id' => bait_library.id,
+        'bait_library' => bait_library.name,
         'submit_for_sequencing' => true,
         'sub_pool' => 2,
         'coverage' => 5,
