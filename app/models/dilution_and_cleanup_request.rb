@@ -5,6 +5,7 @@ class DilutionAndCleanupRequest < CustomerRequest
     include Pulldown::Requests::BaitLibraryRequest::BaitMetadata
 
     custom_attribute(:pcr_cycles, integer: true, minimum: 0, required: false, validator: true)
+
     # These 4 fields are inside the json field stored_metadata
     custom_attribute(:submit_for_sequencing, boolean: true, required: false, validator: true)
     custom_attribute(:sub_pool, integer: true, minimum: 0, required: false, validator: true)

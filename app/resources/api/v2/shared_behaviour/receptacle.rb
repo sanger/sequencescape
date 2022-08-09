@@ -38,6 +38,7 @@ module Api::V2::SharedBehaviour::Receptacle
     # Attributes
     attribute :uuid, readonly: true
     attribute :name, delegate: :display_name, readonly: true
+
     # TODO: these can be removed later, moved onto request_metadata
     attributes :pcr_cycles, :submit_for_sequencing, :sub_pool, :coverage, :diluent_volume
     attribute :state, readonly: true

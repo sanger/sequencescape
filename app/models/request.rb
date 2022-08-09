@@ -309,6 +309,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_metadata do
     belongs_to :primer_panel
     belongs_to :bait_library
+
     # fields used by duplex seq and targeted nanoseq pipelines
     store_accessor :stored_metadata, :submit_for_sequencing # Y/N string
     store_accessor :stored_metadata, :sub_pool # integer

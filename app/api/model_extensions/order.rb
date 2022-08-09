@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 # Included in {Order}
 # The intent of this file was to provide methods specific to the V1 API
+# rubocop:disable Metrics/ModuleLength
 module ModelExtensions::Order
   class RequestOptionForValidation < OpenStruct # rubocop:todo Style/OpenStructUse
     delegate :errors, :include_unset_values?, to: :owner
@@ -198,7 +199,6 @@ module ModelExtensions::Order
         end
         .to_hash
   end
-
   # rubocop:enable Metrics/MethodLength
 
   def merge_in_structured_request_options
@@ -213,3 +213,4 @@ module ModelExtensions::Order
     ::RequestType.find(request_types)
   end
 end
+# rubocop:enable Metrics/ModuleLength
