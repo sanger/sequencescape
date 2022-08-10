@@ -17,9 +17,6 @@ def update_fluidigm_plates(fluidigm_plates)
   fluidigm_plates.each do |plate_id|
     puts "Updating Fluidigm plate: #{plate_id}"
     plate = Plate.find_by id: plate_id
-
-    # rubocop:disable Rails/SkipsModelValidations
-    # correct behaviour
     plate.touch
     plate.save!
     message = Messenger.find_by(target_id: plate_id)
@@ -39,11 +36,6 @@ def find_asset_groups(sample_names)
   hash
 end
 
-# rubocop:disable Metrics/PerceivedComplexity
-# rubocop:disable Metrics/MethodLength
-# rubocop:disable Metrics/AbcSize
-# rubocop:disable Metrics/CyclomaticComplexity
-# rubocop:disable Layout/LineLength
 def find_whole_and_split_asset_groups(asset_group_sample_hash, sample_names)
   # determine which orders are split if any
   whole_asset_groups = []
@@ -161,9 +153,7 @@ def update_seq_requests(requests)
   end
 end
 
-# rubocop:disable Metrics/ParameterLists
 def new_move_samples(sample_names, study_from_id, study_to_id, user_login, rt_ticket, mode)
-  # rubocop:disable Metrics/BlockLength
   ActiveRecord::Base.transaction do
     fluidigm_plates = []
     lane_ids = []
@@ -286,11 +276,3 @@ def new_move_samples(sample_names, study_from_id, study_to_id, user_login, rt_ti
     end
   end
 end
-# rubocop:enable Rails/SkipsModelValidations
-# rubocop:enable Metrics/PerceivedComplexity
-# rubocop:enable Metrics/MethodLength
-# rubocop:enable Metrics/AbcSize
-# rubocop:enable Metrics/CyclomaticComplexity
-# rubocop:enable Layout/LineLength
-# rubocop:enable Metrics/ParameterLists
-# rubocop:enable Metrics/BlockLength
