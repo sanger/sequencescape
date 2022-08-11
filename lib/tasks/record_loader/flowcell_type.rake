@@ -2,7 +2,7 @@
 
 # This file was automatically generated via `rails g record_loader`
 namespace :record_loader do
-  desc 'Automatically generate FlowcellType through FlowcellTypeLoader'
+  desc 'Automatically generate FlowcellTypes through FlowcellTypesLoader'
   task flowcell_type: :environment do
     RecordLoader::FlowcellTypeLoader.new.create!
   end

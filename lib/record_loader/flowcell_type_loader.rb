@@ -12,9 +12,5 @@ module RecordLoader
     def create_or_update!(requested_flowcell_type, options)
       FlowcellType.create_with(options).find_or_create_by!(requested_flowcell_type: requested_flowcell_type)
     end
-
-    def requested_flowcell_type
-      @config.keys
-    end
   end
 end
