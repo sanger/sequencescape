@@ -22,6 +22,8 @@ module Attributable
     end
 
     def from(record)
+      # the [] notation doesn't work with 'store' fields, hence the need for the dot notation
+      # see https://stackoverflow.com/questions/40765114/activerecord-accessor-dot-vs-bracket
       record[name] || record.send(name)
     end
 
