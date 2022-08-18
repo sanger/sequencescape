@@ -14,7 +14,9 @@ module RecordLoader
       ft = FlowcellType.find_by(requested_flowcell_type: requested_flowcell_type)
       request_type_key = options.delete('request_type_key')
       rt = RequestType.find_by(key: request_type_key)
-      FlowcellTypesRequestType.create_with(options.merge(flowcell_types_id: ft.id, request_types_id: rt.id)).find_or_create_by!(flowcell_types_id: ft.id)
+      FlowcellTypesRequestType
+        .create_with(options.merge(flowcell_types_id: ft.id, request_types_id: rt.id))
+        .find_or_create_by!(flowcell_types_id: ft.id)
     end
   end
 end

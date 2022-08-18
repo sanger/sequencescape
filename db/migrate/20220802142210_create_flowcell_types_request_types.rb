@@ -4,9 +4,9 @@
 class CreateFlowcellTypesRequestTypes < ActiveRecord::Migration[6.0]
   def change
     create_table :flowcell_types_request_types do |t|
-      t.references :flowcell_types, null: false, foreign_key: true, type: :integer
+      t.references :flowcell_types, null: false, foreign_key: true, type: :bigint
       t.references :request_types, null: false, foreign_key: true, type: :integer
-      t.integer :is_default
+
       t.timestamps
     end
   end

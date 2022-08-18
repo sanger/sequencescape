@@ -4,7 +4,7 @@
 class CreateFlowcellTypes < ActiveRecord::Migration[6.0]
   def change
     create_table :flowcell_types do |t|
-      t.string :requested_flowcell_type
+      t.string :requested_flowcell_type, unique: true
       t.timestamps
     end
   end

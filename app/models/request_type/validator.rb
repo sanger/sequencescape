@@ -43,9 +43,7 @@ class RequestType::Validator < ApplicationRecord
     end
 
     def include?(option)
-      request_type
-        .flowcell_types
-        .exists?(requested_flowcell_type: option)
+      request_type.flowcell_types.exists?(requested_flowcell_type: option)
     end
 
     def to_a

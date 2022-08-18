@@ -5,9 +5,7 @@ require 'record_loader/request_type_validators_loader'
 
 # This file was initially generated via `rails g record_loader`
 RSpec.describe RecordLoader::RequestTypeValidatorsLoader, type: :model, loader: true do
-  subject(:record_loader) do
-    described_class.new(directory: test_directory, files: selected_files)
-  end
+  subject(:record_loader) { described_class.new(directory: test_directory, files: selected_files) }
 
   # Tests use a separate directory to avoid coupling your specs to the data
   let(:test_directory) { Rails.root.join('spec/data/record_loader/request_type_validators') }

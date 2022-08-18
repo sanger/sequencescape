@@ -9,5 +9,5 @@ class FlowcellType < ApplicationRecord
   has_many :flowcell_types_request_types, inverse_of: :flowcell_type, dependent: :destroy
   has_many :request_types, through: :flowcell_types_request_types
 
-  validates :requested_flowcell_type, presence: true
+  validates :requested_flowcell_type, presence: true, uniqueness: { case_sensitive: false }
 end
