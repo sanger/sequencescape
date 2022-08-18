@@ -55,20 +55,22 @@ FactoryBot.define do
       transient do
         bait_library { BaitLibrary.first || create(:bait_library) }
         pcr_cyles { 15 }
+        input_amount_desired { 17.235 }
+        diluent_volume { 25.364 }
         submit_for_sequencing { true }
         sub_pool { 2 }
         coverage { 5 }
-        diluent_volume { 25.364 }
       end
 
       request_metadata_attributes do
         {
           bait_library: bait_library,
           pcr_cycles: pcr_cyles,
+          input_amount_desired: input_amount_desired,
+          diluent_volume: diluent_volume,
           submit_for_sequencing: submit_for_sequencing,
           sub_pool: sub_pool,
-          coverage: coverage,
-          diluent_volume: diluent_volume
+          coverage: coverage
         }
       end
     end

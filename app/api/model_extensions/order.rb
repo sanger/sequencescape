@@ -155,10 +155,11 @@ module ModelExtensions::Order
             json['primer_panel_name'] = attributes[:primer_panel_name]
             json['sequencing_type'] = attributes[:sequencing_type]
             json['insert_size'] = attributes[:insert_size].try(:to_i)
+            json['input_amount_desired'] = attributes[:input_amount_desired].try(:to_f)
+            json['diluent_volume'] = attributes[:diluent_volume].try(:to_f)
             json['submit_for_sequencing'] = attributes[:submit_for_sequencing]
             json['coverage'] = attributes[:coverage].try(:to_i)
             json['sub_pool'] = attributes[:sub_pool].try(:to_i)
-            json['diluent_volume'] = attributes[:diluent_volume].try(:to_f)
             request_type_multiplier { |id| json['number_of_lanes'] = attributes[:multiplier, id] }
           end
       end
@@ -190,10 +191,11 @@ module ModelExtensions::Order
               attributes[:primer_panel_name] = json['primer_panel_name']
               attributes[:sequencing_type] = json['sequencing_type']
               attributes[:insert_size] = json['insert_size']
+              attributes[:input_amount_desired] = json['input_amount_desired']
+              attributes[:diluent_volume] = json['diluent_volume']
               attributes[:submit_for_sequencing] = json['submit_for_sequencing']
               attributes[:coverage] = json['coverage']
               attributes[:sub_pool] = json['sub_pool']
-              attributes[:diluent_volume] = json['diluent_volume']
               request_type_multiplier { |id| attributes[:multiplier, id] = json['number_of_lanes'] }
             end
         end

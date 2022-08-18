@@ -58,12 +58,13 @@ RSpec.describe Api::V2::RequestResource, type: :resource do
     let(:resource_model) { build_stubbed :dilution_and_cleanup_request, bait_library: bait_library }
     let(:expected_metadata) do
       {
-        'bait_library' => bait_library.name,
+        'input_amount_desired' => 17.235,
+        'diluent_volume' => 25.364,
         'submit_for_sequencing' => true,
         'sub_pool' => 2,
         'coverage' => 5,
-        'diluent_volume' => 25.364,
-        'pcr_cycles' => 15
+        'pcr_cycles' => 15,
+        'bait_library' => bait_library.name
       }
     end
 
