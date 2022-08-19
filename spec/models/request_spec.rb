@@ -501,7 +501,13 @@ RSpec.describe Request do
     end
 
     it 'update when request is started' do
-      @request.request_metadata.update!(input_amount_desired: 17.235, diluent_volume: 25.364, submit_for_sequencing: 'Y', sub_pool: 2, coverage: 5)
+      @request.request_metadata.update!(
+        input_amount_desired: 17.235,
+        diluent_volume: 25.364,
+        submit_for_sequencing: 'Y',
+        sub_pool: 2,
+        coverage: 5
+      )
 
       expect(@request.request_metadata.input_amount_desired).to eq(17.235)
       expect(@request.request_metadata.diluent_volume).to eq(25.364)
