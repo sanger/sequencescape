@@ -9,11 +9,22 @@ limber_pcr_bespoke:
   name: Limber PCR Bespoke
   acceptable_purposes:
     - LBB Cherrypick
+    - LBC Cherrypick
   library_types:
     - ChIP-Seq Auto
     - Chromium single cell HTO
     - Chromium single cell surface protein
+    - Chromium single cell surface protein HT
     - Chromium Visium
+    - Chromium Visium FFPE
+    - Manual Chromium single cell 3 prime v3
+    - Manual Chromium single cell 3 prime HT v3
+    - Manual Chromium single cell 5 prime v2
+    - Manual Chromium single cell 5 prime HT v2
+    - Manual Chromium single cell TCR
+    - Manual Chromium single cell BCR
+    - Manual Chromium single cell BCR HT
+    - Manual Chromium single cell TCR HT
     - emSEQ
     - Haplotagging
     - Hi-C
