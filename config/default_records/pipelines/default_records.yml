@@ -9,8 +9,14 @@
 #   other_attribute: 'Value'
 # <%= record_key %> B:
 #   other_attribute: 'Value'
-FlowcellRequested:
-  request_type_key: illumina_htp_novaseq_6000_paired_end_sequencing
-  request_option: requested_flowcell_type
-  valid_options: !ruby/object:RequestType::Validator::FlowcellTypeValidator
-    request_type_key: illumina_htp_novaseq_6000_paired_end_sequencing
+NovaSeq 6000 PE:
+  name: NovaSeq 6000 PE
+  active: 1
+  sti_type: SequencingPipeline
+  sorter: 10
+  max_size: 4
+  summary: 1
+  externally_managed: 0
+  group_name: Sequencing
+  control_request_type_id: 0
+  min_size: 1

@@ -32,14 +32,14 @@ class RequestType::Validator < ApplicationRecord
   end
 
   class FlowcellTypeValidator # rubocop:todo Style/Documentation
-    attr_reader :request_type_id
+    attr_reader :request_type_key
 
-    def initialize(request_type_id)
-      @request_type_id = request_type_id
+    def initialize(request_type_key)
+      @request_type_key = request_type_key
     end
 
     def request_type
-      RequestType.find(request_type_id)
+      RequestType.find_by(key: request_type_key)
     end
 
     def include?(option)
