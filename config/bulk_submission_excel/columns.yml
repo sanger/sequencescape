@@ -251,6 +251,7 @@ gigabases_expected:
     number_greater_than_zero:
 requested_flowcell_type:
   heading: Flowcell Type
+  attribute: :requested_flowcell_type
   unlocked: true
   validation:
     options:

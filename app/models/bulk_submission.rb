@@ -170,7 +170,6 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
               )
               next
             end
-
             begin
               orders_processed = orders.map(&method(:prepare_order)).compact
 
@@ -227,7 +226,8 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     'pre-capture plex level',
     'pre-capture group',
     'gigabases expected',
-    'priority'
+    'priority',
+    'flowcell type'
   ].freeze
 
   ALIAS_FIELDS = { 'plate barcode' => 'barcode', 'tube barcode' => 'barcode' }.freeze
@@ -324,6 +324,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
       end
       request_options['gigabases_expected'] = details['gigabases expected'] if details['gigabases expected'].present?
       request_options['primer_panel_name'] = details['primer panel'] if details['primer panel'].present?
+      request_options['requested_flowcell_type'] = details['flowcell type'] if details['flowcell type'].present?
     end
   end
 
