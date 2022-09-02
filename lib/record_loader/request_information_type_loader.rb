@@ -9,8 +9,8 @@ module RecordLoader
   class RequestInformationTypeLoader < ApplicationRecordLoader
     config_folder 'request_information_types'
 
-    def create_or_update!(name, options)
-      RequestInformationType.create_with(options).find_or_create_by!(name: name)
+    def create_or_update!(key, options)
+      RequestInformationType.create_with(options).find_or_create_by!(key: key)
     end
   end
 end

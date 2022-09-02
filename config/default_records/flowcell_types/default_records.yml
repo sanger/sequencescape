@@ -10,8 +10,8 @@
 # <%= record_key %> B:
 #   other_attribute: 'Value'
 SP:
-  requested_flowcell_type: SP
+  name: SP
 S4:
-  requested_flowcell_type: S4
+  name: S4
 S2:
-  requested_flowcell_type: S2
+  name: S2

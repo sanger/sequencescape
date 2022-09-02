@@ -9,9 +9,9 @@
 #   other_attribute: 'Value'
 # <%= record_key %> B:
 #   other_attribute: 'Value'
-Flowcell Requested:
+requested_flowcell_type:
   name: Flowcell Requested
-  key: flowcell_requested
+  key: requested_flowcell_type
   label: Flowcell Requested
   width: 5
   hide_in_inbox: 0

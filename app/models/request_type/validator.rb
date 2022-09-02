@@ -43,11 +43,11 @@ class RequestType::Validator < ApplicationRecord
     end
 
     def include?(option)
-      request_type.flowcell_types.exists?(requested_flowcell_type: option)
+      request_type.flowcell_types.exists?(name: option)
     end
 
     def to_a
-      request_type.flowcell_types.pluck(:requested_flowcell_type).sort
+      request_type.flowcell_types.pluck(:name).sort
     end
     delegate :to_sentence, to: :to_a
   end

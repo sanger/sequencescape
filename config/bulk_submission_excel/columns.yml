@@ -264,7 +264,7 @@ requested_flowcell_type:
       error: "You must enter a flowcell type from the list provided."
       promptTitle: "Flowcell Type"
       prompt: "Select a flowcell type from the approved list"
-    range_name: :requested_flowcell_type
+    range_name: :flowcell_type
   conditional_formattings:
     empty_cell:
     is_error:

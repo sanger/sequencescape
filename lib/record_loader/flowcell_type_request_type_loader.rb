@@ -10,8 +10,8 @@ module RecordLoader
     config_folder 'flowcell_types_request_types'
 
     def create_or_update!(name, options)
-      requested_flowcell_type = options.delete('requested_flowcell_type')
-      ft = FlowcellType.find_by(requested_flowcell_type: requested_flowcell_type)
+      flowcell_type_name = options.delete('flowcell_type_name')
+      ft = FlowcellType.find_by(name: flowcell_type_name)
       request_type_key = options.delete('request_type_key')
       rt = RequestType.find_by(key: request_type_key)
       FlowcellTypesRequestType

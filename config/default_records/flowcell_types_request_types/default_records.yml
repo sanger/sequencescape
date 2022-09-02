@@ -10,11 +10,11 @@
 # <%= record_key %> B:
 #   other_attribute: 'Value'
 SP:
-  requested_flowcell_type: SP
+  flowcell_type_name: SP
   request_type_key: illumina_htp_novaseq_6000_paired_end_sequencing
 S4:
-  requested_flowcell_type: S4
+  flowcell_type_name: S4
   request_type_key: illumina_htp_novaseq_6000_paired_end_sequencing
 S2:
-  requested_flowcell_type: S2
+  flowcell_type_name: S2
   request_type_key: illumina_htp_novaseq_6000_paired_end_sequencing

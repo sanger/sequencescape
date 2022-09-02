@@ -9,8 +9,8 @@ module RecordLoader
   class FlowcellTypeLoader < ApplicationRecordLoader
     config_folder 'flowcell_types'
 
-    def create_or_update!(requested_flowcell_type, options)
-      FlowcellType.create_with(options).find_or_create_by!(requested_flowcell_type: requested_flowcell_type)
+    def create_or_update!(name, options)
+      FlowcellType.create_with(options).find_or_create_by!(name: name)
     end
   end
 end
