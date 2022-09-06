@@ -16,7 +16,7 @@ class SequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
     custom_attribute(:fragment_size_required_to, integer: true, minimum: 1)
 
     custom_attribute(:read_length, integer: true, validator: true, required: true, selection: true)
-    custom_attribute(:requested_flowcell_type, required: true, validator: true, selection: true, on: :create)
+    custom_attribute(:requested_flowcell_type, required: false, validator: true, selection: true, on: :create)
     #custom_attribute(:requested_flowcell_type, string: true, required: false, validator: true)
   end
 

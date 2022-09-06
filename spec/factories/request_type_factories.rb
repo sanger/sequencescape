@@ -211,7 +211,4 @@ FactoryBot.define do
     end
   end
 
-  factory :flowcell_type do
-    sequence(:requested_flowcell_type) { |i| "Flowcell Type #{i}" }
-  end
 end
