@@ -210,5 +210,4 @@ FactoryBot.define do
       name { 'Standard' }
     end
   end
-
 end
