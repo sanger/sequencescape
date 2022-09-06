@@ -210,4 +210,7 @@ FactoryBot.define do
       name { 'Standard' }
     end
   end
+
+  factory :flowcell_type do
+  end
 end
