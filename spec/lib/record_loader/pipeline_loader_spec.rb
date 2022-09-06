@@ -16,14 +16,14 @@ RSpec.describe RecordLoader::PipelineLoader, type: :model, loader: true do
     let(:selected_files) { 'two_entry_example' }
 
     it 'creates two records' do
-      expect { record_loader.create! }.to change { Pipeline.count }.by(2)
+      expect { record_loader.create! }.to change(Pipeline, :count).by(2)
     end
 
     # It is important that multiple runs of a RecordLoader do not create additional
     # copies of existing records.
     it 'is idempotent' do
       record_loader.create!
-      expect { record_loader.create! }.not_to change { Pipeline.count }
+      expect { record_loader.create! }.not_to change(Pipeline, :count)
     end
 
     it 'sets attributes on the created records'

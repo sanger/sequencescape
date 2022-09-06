@@ -9,10 +9,14 @@ module RecordLoader
   class PipelineRequestInformationTypeLoader < ApplicationRecordLoader
     config_folder 'pipeline_request_information_types'
 
-    def create_or_update!(name, options)
+    def create_or_update!(_name, options)
       pipeline = Pipeline.find_by!(name: options['pipeline_name'])
       req_inf_type = RequestInformationType.find_by!(key: options['request_information_type_key'])
-      PipelineRequestInformationType.create_with(pipeline: pipeline, request_information_type: req_inf_type).find_or_create_by!(pipeline: pipeline, request_information_type: req_inf_type)
+      PipelineRequestInformationType.create_with(
+        pipeline: pipeline, request_information_type: req_inf_type
+      ).find_or_create_by!(
+        pipeline: pipeline, request_information_type: req_inf_type
+      )
     end
   end
 end
