@@ -3,32 +3,32 @@
 require 'rails_helper'
 
 RSpec.describe FlowcellType do
-  subject { described_class.new(requested_flowcell_type: requested_flowcell_type) }
+  subject { described_class.new(name: name) }
 
-  context 'without a requested_flowcell_type' do
-    let(:requested_flowcell_type) { '' }
+  context 'without a name' do
+    let(:name) { '' }
 
     it { is_expected.not_to be_valid }
   end
 
-  context 'with a unique requested_flowcell_type' do
-    let(:requested_flowcell_type) { 'Unique' }
+  context 'with a unique name' do
+    let(:name) { 'Unique' }
 
     it { is_expected.to be_valid }
   end
 
-  context 'with a shared requested_flowcell_type' do
-    before { create :flowcell_type, requested_flowcell_type: 'Shared' }
+  context 'with a shared name' do
+    before { create :flowcell_type, name: 'Shared' }
 
-    let(:requested_flowcell_type) { 'Shared' }
+    let(:name) { 'Shared' }
 
     it { is_expected.not_to be_valid }
   end
 
-  context 'with a shared requested_flowcell_type (case-insensitive)' do
-    before { create :flowcell_type, requested_flowcell_type: 'Shared' }
+  context 'with a shared name (case-insensitive)' do
+    before { create :flowcell_type, name: 'Shared' }
 
-    let(:requested_flowcell_type) { 'shared' }
+    let(:name) { 'shared' }
 
     it { is_expected.not_to be_valid }
   end
