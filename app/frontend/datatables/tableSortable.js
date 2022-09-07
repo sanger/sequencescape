@@ -8,7 +8,7 @@
  */
 
 import $ from "jquery";
-import { defaults } from "./config";
+import { defaults, cssSelectors } from "./config";
 
 $(function () {
   // Looping through and applying DataTable separately to each.
@@ -18,12 +18,12 @@ $(function () {
   // and tables with no rows had the following error in the js console:
   // "Uncaught TypeError: Cannot set properties of undefined (setting '_DT_CellIndex')""
   // Looping through like this seems to solve these issues.
-  $("table.sortable,table#batch-show").each(function (_index) {
+  $(cssSelectors.DefaultConfig).each(function (_index) {
     $(this).DataTable(defaults);
   });
 
   // If we update the DOM via ajax we want to mount the included components
   $(document.body).on("ajaxDomUpdate", function (_event, target) {
-    $(target).find("table.sortable").DataTable(defaults);
+    $(target).find(cssSelectors.AjaxConfig).DataTable(defaults);
   });
 });

@@ -1,15 +1,19 @@
 import $ from "jquery";
-import { defaults } from "./config";
+import { cssSelectors, defaults } from "./config";
 
 $(document).ready(function () {
-  $("table#pipeline_inbox").DataTable({
+  $(cssSelectors.PipelineInboxConfig).DataTable({
     ...defaults,
     initComplete: function () {
       this.api()
         .columns([2, 3])
         .every(function () {
           var column = this;
-          var select = $('<select><option value=""></option></select>')
+          // Dont add the control if there isnt anything to filter
+          if (column.data().length == 0) {
+            return;
+          }
+          var select = $('<select><option value=""> No filter </option></select>')
             .appendTo($(column.footer()).empty())
             .on("change", function () {
               var val = $.fn.dataTable.util.escapeRegex($(this).val());

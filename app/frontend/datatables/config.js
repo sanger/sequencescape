@@ -4,4 +4,10 @@ const dom =
 
 const defaults = { paging: false, order: [], buttons: [], dom, fixedHeader: true };
 
-export { dom, defaults };
+const cssSelectors = {
+  DefaultConfig: "table.sortable:not(#pipeline_inbox),table#batch-show",
+  BatchEditConfig: "table#batch-edit",
+  PipelineInboxConfig: "table#pipeline_inbox",
+  AjaxConfig: "table.sortable"
+}
+export { dom, defaults, cssSelectors };

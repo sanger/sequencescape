@@ -7,7 +7,7 @@
  */
 
 import $ from "jquery";
-import { defaults } from "./config";
+import { cssSelectors, defaults } from "./config";
 
 const extractIds = (dataTable) =>
   dataTable
@@ -43,7 +43,7 @@ const saveButton = {
 
 $(function () {
   // Batches page, allows re-ordering
-  $("table#batch-edit").DataTable({
+  $(cssSelectors.BatchEditConfig).DataTable({
     ...defaults,
     rowReorder: { selector: "tr" },
     order: [[0, "asc"]],

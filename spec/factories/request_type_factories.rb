@@ -211,6 +211,5 @@ FactoryBot.define do
     end
   end
 
-  factory :flowcell_type do
-  end
+  factory :flowcell_type
 end
