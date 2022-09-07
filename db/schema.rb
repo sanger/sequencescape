@@ -477,14 +477,14 @@ ActiveRecord::Schema.define(version: 2022_09_06_110436) do
     t.index ["failable_id"], name: "index_failures_on_failable_id"
   end
 
-  create_table "flipper_features", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "flipper_features", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "key", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["key"], name: "index_flipper_features_on_key", unique: true
   end
 
-  create_table "flipper_gates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "flipper_gates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "feature_key", null: false
     t.string "key", null: false
     t.string "value"
@@ -1161,7 +1161,6 @@ ActiveRecord::Schema.define(version: 2022_09_06_110436) do
     t.integer "pcr_cycles"
     t.string "data_type"
     t.integer "primer_panel_id"
-    t.integer "reverse_read_length"
     t.string "requested_flowcell_type"
     t.index ["request_id"], name: "index_request_metadata_on_request_id"
   end
@@ -1179,6 +1178,7 @@ ActiveRecord::Schema.define(version: 2022_09_06_110436) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "key"
+    t.index ["key"], name: "index_request_type_validators_on_key", unique: true
   end
 
   create_table "request_types", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
