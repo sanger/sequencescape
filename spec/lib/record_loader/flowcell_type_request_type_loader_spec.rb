@@ -13,7 +13,7 @@ RSpec.describe RecordLoader::FlowcellTypeRequestTypeLoader, type: :model, loader
   context 'with two_entry_example selected' do
     let(:selected_files) { 'two_entry_example' }
 
-    before do 
+    before do
       create(:flowcell_type, name: 'SP')
       create(:flowcell_type, name: 'SP2')
       create(:request_type, key: 'illumina_htp_novaseq_6000_paired_end_sequencing')
