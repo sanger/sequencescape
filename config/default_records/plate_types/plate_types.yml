@@ -13,3 +13,5 @@ Optical96 and Base:
   maximum_volume: 250
 Bio-Rad_96PCR:
   maximum_volume: 200
+4titude 96:
+  maximum_volume: 180
