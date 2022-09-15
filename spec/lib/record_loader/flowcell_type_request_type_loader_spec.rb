@@ -12,12 +12,10 @@ RSpec.describe RecordLoader::FlowcellTypeRequestTypeLoader, type: :model, loader
 
   context 'with two_entry_example selected' do
     let(:selected_files) { 'two_entry_example' }
+    let!(:flowcell) { create(:flowcell_type, name: 'SP') }
+    let!(:request_type) { create(:request_type, key: 'illumina_htp_novaseq_6000_paired_end_sequencing') }
 
-    before do
-      create(:flowcell_type, name: 'SP')
-      create(:flowcell_type, name: 'SP2')
-      create(:request_type, key: 'illumina_htp_novaseq_6000_paired_end_sequencing')
-    end
+    before { create(:flowcell_type, name: 'SP2') }
 
     it 'creates two records' do
       expect { record_loader.create! }.to change(FlowcellTypesRequestType, :count).by(2)
