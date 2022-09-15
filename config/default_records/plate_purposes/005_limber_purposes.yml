@@ -43,10 +43,13 @@ LHR-384 RT:
   <<: *limber_input_384
   barcode_printer_type: "384 Well Plate"
 
-# Cherrypicked in the limber pipelines, rather than on the Tecans. Forms the basis
+# Initially cherrypicked in the limber pipelines, rather than on the Tecans. Forms the basis
 # for the chromium bespoke pipeline.
+# Later, included as an alternative entry point to the Limber Bespoke PCR pipeline, and made
+# a cherrypickable_target to add flexibility.
 LBC Cherrypick:
-  cherrypickable_target: false
+  type: PlatePurpose::Input
+  cherrypickable_target: true
 # Towards the end of the WGS process, forms the attachment point for the multiplexing
 # requests
 LB Lib PCR-XP:
