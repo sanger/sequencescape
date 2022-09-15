@@ -24,14 +24,14 @@ $(document).ready(function () {
             .data()
             .unique()
             .sort()
-            .each(function (d, j) {
-              if (d.indexOf("<a") >= 0) {
-                var indexFrom = d.indexOf(">");
-                var indexTo = d.indexOf("<", indexFrom);
-                var anchorText = d.substring(indexFrom + 1, indexTo);
+            .each(function (value) {
+              if (value.indexOf("<a") >= 0) {
+                var indexFrom = value.indexOf(">");
+                var indexTo = value.indexOf("<", indexFrom);
+                var anchorText = value.substring(indexFrom + 1, indexTo);
                 select.append('<option value="' + anchorText + '">' + anchorText + "</option>");
               } else {
-                select.append('<option value="' + d + '">' + d + "</option>");
+                select.append('<option value="' + value + '">' + value + "</option>");
               }
             });
         });
