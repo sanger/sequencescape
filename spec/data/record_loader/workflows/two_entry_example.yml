@@ -1,9 +1,0 @@
----
-# This file was automatically generated via `rails g record_loader`
-# You should modify it to match your particular model.
-Workflow 1: 
-  name: Workflow 1
-  item_limit: 4
-Workflow 2: 
-  name: Workflow 2
-  item_limit: 8

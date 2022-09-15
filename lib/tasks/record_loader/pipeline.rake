@@ -3,7 +3,7 @@
 # This file was automatically generated via `rails g record_loader`
 namespace :record_loader do
   desc 'Automatically generate Pipeline through PipelineLoader'
-  task pipeline: [:environment, 'record_loader:request_type', 'record_loader:workflow'] do
+  task pipeline: [:environment, 'record_loader:request_type'] do
     RecordLoader::PipelineLoader.new.create!
   end
 end
