@@ -11,19 +11,24 @@ RSpec.describe RecordLoader::PipelineLoader, type: :model, loader: true do
   let(:test_directory) { Rails.root.join('spec/data/record_loader/pipelines') }
 
   context 'with two_entry_example selected' do
+    let!(:request_type) { create(:request_type, key: 'illumina_htp_novaseq_6000_paired_end_sequencing') }
     let(:selected_files) { 'two_entry_example' }
 
-    xit 'creates two records' do
+    it 'creates two records' do
       expect { record_loader.create! }.to change(Pipeline, :count).by(2)
     end
 
     # It is important that multiple runs of a RecordLoader do not create additional
     # copies of existing records.
-    xit 'is idempotent' do
+    it 'is idempotent' do
       record_loader.create!
       expect { record_loader.create! }.not_to change(Pipeline, :count)
     end
 
-    xit 'sets attributes on the created records'
+    it 'sets attributes on the created records' do
+      record_loader.create!
+      expect(Pipeline.first.request_types.first.key).to eq('illumina_htp_novaseq_6000_paired_end_sequencing')
+      expect(Pipeline.first.workflow.name).to eq('NovaSeq 6001 PE')
+    end
   end
 end

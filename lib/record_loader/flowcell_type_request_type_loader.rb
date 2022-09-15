@@ -9,14 +9,24 @@ module RecordLoader
   class FlowcellTypeRequestTypeLoader < ApplicationRecordLoader
     config_folder 'flowcell_types_request_types'
 
+    def flowcell_type(flowcell_type_name)
+      raise 'Flowcell type name not defined' if flowcell_type_name.nil?
+      FlowcellType.find_by(name: flowcell_type_name)
+    end
+
+    def request_type(request_type_key)
+      raise 'RequestType key not defined' if request_type_key.nil?
+      RequestType.find_by(key: request_type_key)
+    end
+
     def create_or_update!(_name, options)
-      flowcell_type_name = options.delete('flowcell_type_name')
-      ft = FlowcellType.find_by(name: flowcell_type_name)
-      request_type_key = options.delete('request_type_key')
-      rt = RequestType.find_by(key: request_type_key)
+      obj = options.dup
+      ft = flowcell_type(obj.delete('flowcell_type_name'))
+      rt = request_type(obj.delete('request_type_key'))
+
       return unless ft&.id && rt&.id
       FlowcellTypesRequestType
-        .create_with(options.merge(flowcell_type_id: ft&.id, request_type_id: rt&.id))
+        .create_with(obj.merge(flowcell_type_id: ft&.id, request_type_id: rt&.id))
         .find_or_create_by!(flowcell_type_id: ft&.id)
     end
   end
