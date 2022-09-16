@@ -27,7 +27,7 @@ RSpec.describe RecordLoader::PipelineLoader, type: :model, loader: true do
 
     it 'sets attributes on the created records' do
       record_loader.create!
-      expect(Pipeline.first.request_types.first.key).to eq('illumina_htp_novaseq_6000_paired_end_sequencing')
+      expect(Pipeline.first.request_types.first.key).to eq(request_type.key)
       expect(Pipeline.first.workflow.name).to eq('NovaSeq 6001 PE')
     end
   end
