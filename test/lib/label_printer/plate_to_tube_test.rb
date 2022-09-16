@@ -18,9 +18,9 @@ class PlateToTubesTest < ActiveSupport::TestCase
     options = { sample_tubes: sample_tubes }
     @tube_label = LabelPrinter::Label::PlateToTubes.new(options)
     @label = {
-      top_line: (asset_name).to_s,
-      middle_line: barcode1,
-      bottom_line: (Date.today.strftime('%e-%^b-%Y')).to_s,
+      first_line: (asset_name).to_s,
+      second_line: barcode1,
+      fourth_line: (Date.today.strftime('%e-%^b-%Y')).to_s,
       round_label_top_line: prefix,
       round_label_bottom_line: barcode1,
       barcode: tube1.machine_barcode,
@@ -33,6 +33,6 @@ class PlateToTubesTest < ActiveSupport::TestCase
   end
 
   test 'should return correct top line' do
-    assert_equal asset_name, tube_label.top_line(sample_tubes.first)
+    assert_equal asset_name, tube_label.first_line(sample_tubes.first)
   end
 end

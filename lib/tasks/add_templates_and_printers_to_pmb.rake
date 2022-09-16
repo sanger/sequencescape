@@ -360,6 +360,90 @@ namespace :pmb do
           }
         end
 
+        def tube_label_template_v2
+          label_type_id = get_label_type_id('Tube')
+          {
+            'data' => {
+              'attributes' => {
+                'name' => 'tube_label_template_v2',
+                'label_type_id' => label_type_id,
+                'labels_attributes' => [
+                  {
+                    'name' => 'main_label',
+                    'bitmaps_attributes' => [
+                      {
+                        'x_origin' => '0038',
+                        'y_origin' => '0210',
+                        'field_name' => 'fourth_line',
+                        'horizontal_magnification' => '05',
+                        'vertical_magnification' => '05',
+                        'font' => 'H',
+                        'space_adjustment' => '03',
+                        'rotational_angles' => '11'
+                      },
+                      {
+                        'x_origin' => '0070',
+                        'y_origin' => '0210',
+                        'field_name' => 'second_line',
+                        'horizontal_magnification' => '05',
+                        'vertical_magnification' => '05',
+                        'font' => 'H',
+                        'space_adjustment' => '02',
+                        'rotational_angles' => '11'
+                      },
+                      {
+                        'x_origin' => '0120',
+                        'y_origin' => '0210',
+                        'field_name' => 'first_line',
+                        'horizontal_magnification' => '05',
+                        'vertical_magnification' => '05',
+                        'font' => 'H',
+                        'space_adjustment' => '02',
+                        'rotational_angles' => '11'
+                      },
+                      {
+                        'x_origin' => '0240',
+                        'y_origin' => '0165',
+                        'field_name' => 'round_label_top_line',
+                        'horizontal_magnification' => '05',
+                        'vertical_magnification' => '1',
+                        'font' => 'G',
+                        'space_adjustment' => '00',
+                        'rotational_angles' => '00'
+                      },
+                      {
+                        'x_origin' => '0220',
+                        'y_origin' => '0193',
+                        'field_name' => 'round_label_bottom_line',
+                        'horizontal_magnification' => '05',
+                        'vertical_magnification' => '1',
+                        'font' => 'G',
+                        'space_adjustment' => '00',
+                        'rotational_angles' => '00'
+                      }
+                    ],
+                    'barcodes_attributes' => [
+                      {
+                        'x_origin' => '0043',
+                        'y_origin' => '0100',
+                        'field_name' => 'barcode',
+                        'barcode_type' => '5',
+                        'one_module_width' => '01',
+                        'height' => '0100',
+                        'rotational_angle' => nil,
+                        'one_cell_width' => nil,
+                        'type_of_check_digit' => '2',
+                        'bar_height' => nil,
+                        'no_of_columns' => nil
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        end
+
         def sqsc_1dtube_label_template
           label_type_id = get_label_type_id('Tube')
           {
@@ -593,7 +677,7 @@ namespace :pmb do
           unregistered_templates = [
             { name: 'sqsc_96plate_label_template', type: BarcodePrinterType96Plate },
             { name: 'sqsc_96plate_label_template_code39', type: BarcodePrinterType96Plate },
-            { name: 'sqsc_1dtube_label_template', type: BarcodePrinterType1DTube },
+            { name: 'tube_label_template_v2', type: BarcodePrinterType1DTube },
             { name: 'sqsc_384plate_label_template', type: BarcodePrinterType384Plate },
             { name: 'plate_6mm_double', type: BarcodePrinterType384DoublePlate },
             { name: 'swipecard_barcode_template', type: nil }

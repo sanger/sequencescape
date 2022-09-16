@@ -148,7 +148,7 @@ Then /^Pmb is down$/ do
   stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_96plate_label_template_code39")
     .with(headers: LabelPrinter::PmbClient.headers)
     .to_raise(Errno::ECONNREFUSED)
-  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_1dtube_label_template")
+  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}tube_label_template_v2")
     .with(headers: LabelPrinter::PmbClient.headers)
     .to_raise(Errno::ECONNREFUSED)
   stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_384plate_label_template")
@@ -163,7 +163,7 @@ Then /^Pmb has the required label templates$/ do
     .with(headers: LabelPrinter::PmbClient.headers)
     .to_return(status: 200, body: body)
 
-  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_1dtube_label_template")
+  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}tube_label_template_v2")
     .with(headers: LabelPrinter::PmbClient.headers)
     .to_return(status: 200, body: body)
 
