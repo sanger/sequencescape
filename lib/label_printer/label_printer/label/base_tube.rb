@@ -9,11 +9,14 @@ module LabelPrinter
           first_line: first_line(tube),
           second_line: second_line(tube),
           third_line: third_line(tube),
-          fourth_line: fourth_line(tube),
           round_label_top_line: round_label_top_line(tube),
           round_label_bottom_line: round_label_bottom_line(tube),
           barcode: barcode(tube),
-          label_name: 'main_label'
+          label_name: 'main_label',
+          # REMOVE AFTER DPL-364 IS DONE
+          top_line: first_line(tube),
+          middle_line: second_line(tube),
+          bottom_line: third_line(tube)
         }
       end
 
@@ -23,9 +26,7 @@ module LabelPrinter
         tube.barcode_number
       end
 
-      def third_line(tube); end
-
-      def fourth_line(_tube)
+      def third_line(_tube)
         date_today
       end
 

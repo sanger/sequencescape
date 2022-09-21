@@ -4,6 +4,6 @@
 #
 class BarcodePrinterType1DTube < BarcodePrinterType
   def self.first
-    super || BarcodePrinterType1DTube.create!(name: '1D Tube', label_template_name: 'tube_label_template_v2')
+    super || BarcodePrinterType1DTube.create!(name: '1D Tube', label_template_name: 'tube_label_template_1d')
   end
 end
