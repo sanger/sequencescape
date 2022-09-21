@@ -9,6 +9,7 @@ class Io::Submission < ::Core::Io::Base
     '
      state  => state
     orders <=> orders
+    orders_attributes <= orders_attributes
 
       user <=  user
   '

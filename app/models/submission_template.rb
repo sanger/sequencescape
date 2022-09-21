@@ -12,6 +12,7 @@ class SubmissionTemplate < ApplicationRecord
   serialize :submission_parameters
 
   has_many :orders
+  accepts_nested_attributes_for :orders
   belongs_to :product_line
 
   has_many :supercedes, class_name: 'SubmissionTemplate', foreign_key: :superceded_by_id

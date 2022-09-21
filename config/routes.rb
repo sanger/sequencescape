@@ -46,6 +46,7 @@ Rails.application.routes.draw do
       jsonapi_resources :sample_manifests
       jsonapi_resources :studies
       jsonapi_resources :submissions
+      jsonapi_resources :submission_templates
       jsonapi_resources :tag_groups
       jsonapi_resources :tag_layout_templates
       jsonapi_resources :transfer_requests

@@ -15,6 +15,7 @@ class Endpoints::Submissions < Core::Endpoint::Base # rubocop:todo Style/Documen
     action(:update, to: :standard_update!, if: :building?)
 
     bind_action(:create, as: :submit, to: 'submit', if: :building?) do |_, request, response|
+      #binding.pry
       ActiveRecord::Base.transaction do
         request.target.tap do |submission|
           submission.built!

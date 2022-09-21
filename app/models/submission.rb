@@ -60,7 +60,7 @@ class Submission < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # We gate submission destruction. Should probably just prevent this.
   before_destroy :prevent_destruction_unless_building?
 
-  accepts_nested_attributes_for :orders, update_only: true
+  accepts_nested_attributes_for :orders #, update_only: true
   broadcast_with_warren
 
   # Used in the v1 API
