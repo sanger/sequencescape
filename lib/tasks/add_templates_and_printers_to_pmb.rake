@@ -593,7 +593,7 @@ namespace :pmb do
           unregistered_templates = [
             { name: 'sqsc_96plate_label_template', type: BarcodePrinterType96Plate },
             { name: 'sqsc_96plate_label_template_code39', type: BarcodePrinterType96Plate },
-            { name: 'tube_label_template_v2', type: BarcodePrinterType1DTube },
+            { name: 'tube_label_template_1d', type: BarcodePrinterType1DTube },
             { name: 'sqsc_384plate_label_template', type: BarcodePrinterType384Plate },
             { name: 'plate_6mm_double', type: BarcodePrinterType384DoublePlate },
             { name: 'swipecard_barcode_template', type: nil }
