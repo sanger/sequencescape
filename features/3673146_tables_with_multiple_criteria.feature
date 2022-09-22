@@ -8,7 +8,6 @@ Feature: Order a table with tablesorter plugin.
       Given I have five requests for "MiSeq sequencing"
       Given I am on the "MiSeq sequencing" pipeline page
       When I click the header "Name"
-      Then show me the page
       Then the table of requests should be:
         | Name         |
         | Test Asset 0 |

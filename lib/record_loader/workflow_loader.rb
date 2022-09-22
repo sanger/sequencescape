@@ -5,7 +5,7 @@
 # across different environments
 # @see https://rubydoc.info/github/sanger/record_loader/
 module RecordLoader
-  # Creates the specified plate types if they are not present
+  # Creates the specified workflows if they are not present
   class WorkflowLoader < ApplicationRecordLoader
     config_folder 'workflows'
 

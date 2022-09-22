@@ -31,7 +31,9 @@ class RequestType::Validator < ApplicationRecord
     delegate :to_sentence, to: :to_a
   end
 
-  class FlowcellTypeValidator # rubocop:todo Style/Documentation
+  # Validates that the request type provided has a relation with a provided
+  # flowcell type name
+  class FlowcellTypeValidator
     attr_reader :request_type_key
 
     def initialize(request_type_key)

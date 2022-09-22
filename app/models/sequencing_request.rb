@@ -17,7 +17,6 @@ class SequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
 
     custom_attribute(:read_length, integer: true, validator: true, required: true, selection: true)
     custom_attribute(:requested_flowcell_type, required: false, validator: true, selection: true, on: :create)
-    #custom_attribute(:requested_flowcell_type, string: true, required: false, validator: true)
   end
 
   include Request::CustomerResponsibility

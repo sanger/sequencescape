@@ -5,7 +5,8 @@
 # across different environments
 # @see https://rubydoc.info/github/sanger/record_loader/
 module RecordLoader
-  # Creates the specified plate types if they are not present
+  # Creates the specified pipelines if they are not present.
+  # They require a list of request_type_keys to be present
   class PipelineLoader < ApplicationRecordLoader
     config_folder 'pipelines'
 

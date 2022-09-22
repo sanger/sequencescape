@@ -5,7 +5,7 @@
 # across different environments
 # @see https://rubydoc.info/github/sanger/record_loader/
 module RecordLoader
-  # Creates the specified plate types if they are not present
+  # Creates the specified request type validators if they are not present
   class RequestTypeValidatorsLoader < ApplicationRecordLoader
     config_folder 'request_type_validators'
 

@@ -9,9 +9,6 @@ RSpec.describe BulkSubmissionExcel::DownloadsController, type: :controller do
       config.folder = File.join('config', 'bulk_submission_excel')
       config.load!
     end
-
-    #allow(BulkSubmissionExcel.configuration).to receive(:columns).and_return([])
-    #allow(BulkSubmissionExcel.configuration).to receive(:ranges).and_return([])
   end
 
   context 'when receiving a create request' do

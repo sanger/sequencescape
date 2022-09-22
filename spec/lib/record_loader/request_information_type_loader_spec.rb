@@ -23,7 +23,5 @@ RSpec.describe RecordLoader::RequestInformationTypeLoader, type: :model, loader:
       record_loader.create!
       expect { record_loader.create! }.not_to change(RequestInformationType, :count)
     end
-
-    it 'sets attributes on the created records'
   end
 end

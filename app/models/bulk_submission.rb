@@ -308,29 +308,30 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     assets.map(&:samples).flatten.uniq.each { |sample| sample.studies << study unless sample.studies.include?(study) }
   end
 
-  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
-  def extract_request_options(details) # rubocop:todo Metrics/CyclomaticComplexity
+  def assign_value_if_source_present(source_obj, source_key, target_obj, target_key)
+    target_obj[target_key] = source_obj[source_key] if source_obj[source_key].present?
+  end
+
+    def extract_request_options(details)
     { read_length: details['read length'], multiplier: {} }.tap do |request_options|
-      request_options['library_type'] = details['library type'] if details['library type'].present?
-      if details['fragment size from'].present?
-        request_options['fragment_size_required_from'] = details['fragment size from']
+      [
+        ['library type', 'library_type'],
+        ['fragment size from', 'fragment_size_required_from'],
+        ['fragment size to', 'fragment_size_required_to'],
+        ['pcr cycles', 'pcr_cycles'],
+        ['bait library name', :bait_library_name],
+        ['bait library', :bait_library_name],
+        ['pre-capture plex level', 'pre_capture_plex_level'],
+        ['gigabases expected', 'gigabases_expected'],
+        ['primer panel', 'primer_panel_name'],
+        ['flowcell type', 'requested_flowcell_type']
+      ].each do |source_key, target_key|
+        assign_value_if_source_present(details, source_key, request_options, target_key)
       end
-      request_options['fragment_size_required_to'] = details['fragment size to'] if details['fragment size to'].present?
-      request_options['pcr_cycles'] = details['pcr cycles'] if details['pcr cycles'].present?
-      request_options[:bait_library_name] = details['bait library name'] if details['bait library name'].present?
-      request_options[:bait_library_name] ||= details['bait library'] if details['bait library'].present?
-      if details['pre-capture plex level'].present?
-        request_options['pre_capture_plex_level'] = details['pre-capture plex level']
-      end
-      request_options['gigabases_expected'] = details['gigabases expected'] if details['gigabases expected'].present?
-      request_options['primer_panel_name'] = details['primer panel'] if details['primer panel'].present?
-      request_options['requested_flowcell_type'] = details['flowcell type'] if details['flowcell type'].present?
     end
   end
 
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
-
-  # Returns an order for the given details
+    # Returns an order for the given details
   # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def prepare_order(details) # rubocop:todo Metrics/CyclomaticComplexity
     # Retrieve common attributes

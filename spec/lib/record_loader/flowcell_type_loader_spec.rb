@@ -23,7 +23,5 @@ RSpec.describe RecordLoader::FlowcellTypeLoader, type: :model, loader: true do
       record_loader.create!
       expect { record_loader.create! }.not_to change(FlowcellType, :count)
     end
-
-    it 'sets attributes on the created records'
   end
 end
