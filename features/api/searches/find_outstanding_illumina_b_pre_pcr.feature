@@ -1,4 +1,4 @@
-@api @json @asset @search @single-sign-on @new-api @barcode_search
+@api @json @asset @search @single-sign-on @new-api @barcode_search @barcode-service
 Feature: The search interface should return outstanding Pre-PCR plates
   Background:
     Given all of this is happening at exactly "12-Jun-2012 23:00:00+01:00"
@@ -10,12 +10,12 @@ And I have a "full" authorised user with the key "cucumber"
 
     Given the UUID for the search "Find outstanding Illumina-B pre-PCR plates" is "00000000-1111-2222-3333-444444444444"
 
-    Given a "Stock Plate" plate called "stock plate" exists with barcode "1000001"
-    And a "ILB_STD_PREPCR" plate called "Pending PrePCR" exists with barcode "1000002"
+    Given a "Stock Plate" plate called "stock plate" exists with barcode "SQPD-1000001"
+    And a "ILB_STD_PREPCR" plate called "Pending PrePCR" exists with barcode "SQPD-1000002"
     And the UUID for the plate "Pending PrePCR" is "00000000-1111-2222-3333-000000000001"
-    And a "ILB_STD_PREPCR" plate called "Started PrePCR" exists with barcode "1000003"
+    And a "ILB_STD_PREPCR" plate called "Started PrePCR" exists with barcode "SQPD-1000003"
     And the UUID for the plate "Started PrePCR" is "00000000-1111-2222-3333-000000000002"
-    And a "ILB_STD_PREPCR" plate called "Passed PrePCR" exists with barcode "1000004"
+    And a "ILB_STD_PREPCR" plate called "Passed PrePCR" exists with barcode "SQPD-1000004"
     And the UUID for the plate "Passed PrePCR" is "00000000-1111-2222-3333-000000000003"
     And pending transfer requests exist between 1 wells on "stock plate" and "Pending PrePCR"
     And started transfer requests exist between 1 wells on "stock plate" and "Started PrePCR"

@@ -6,13 +6,13 @@ describe Barcode::FormatHandlers do
   # Set up the expectations for a valid barcode
   # @example
   #  it_has_a_valid_barcode 'DN12345S', number: 12345, prefix: 'DN', suffix: 'S'
-  def self.it_has_a_valid_barcode(barcode, number: nil, prefix: nil, suffix: nil)
+  def self.it_has_a_valid_barcode(barcode, number: nil, prefix: nil, suffix: nil, child: nil)
     context "with the barcode #{barcode}" do
       subject(:format_handler) { described_class.new(barcode) }
 
       it 'parses the barcode correctly', :aggregate_failures do
         expect(format_handler).to be_valid
-        expect(format_handler).to have_attributes(number: number, barcode_prefix: prefix, suffix: suffix)
+        expect(format_handler).to have_attributes(number: number, barcode_prefix: prefix, suffix: suffix, child: child)
       end
     end
   end
@@ -345,5 +345,23 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode 'S2-046-_123456  '
     it_has_an_invalid_barcode " 1234567890NBC\na"
   end
+
+  describe Barcode::FormatHandlers::Sequencescape22 do
+    it_has_a_valid_barcode 'SQPD-1234', prefix: 'SQPD', number: 1234
+    it_has_a_valid_barcode 'SQPD-1234-567', prefix: 'SQPD', number: 1234, child: 567
+    it_has_a_valid_barcode 'SQPD-1234-R', prefix: 'SQPD', number: 1234, suffix: 'R'
+    it_has_a_valid_barcode 'SQPD-12345678-234233890-W',
+                           prefix: 'SQPD',
+                           number: 12_345_678,
+                           child: 234_233_890,
+                           suffix: 'W'
+    it_has_an_invalid_barcode 'SQPD-12345678-234233890-WD'
+    it_has_an_invalid_barcode 'SQPD-12345678-234233890-12341234-WD'
+    it_has_an_invalid_barcode 'SQPD12345678912W'
+    it_has_an_invalid_barcode 'SQPD-1234--W'
+    it_has_an_invalid_barcode 'SQPD-1234W'
+    it_has_an_invalid_barcode 'SQPD-1234-23-0'
+  end
+
   # rubocop:enable RSpec/EmptyExampleGroup
 end

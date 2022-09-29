@@ -12,15 +12,15 @@
     <tbody>
       <tr>
          <td><label for="barcodes_user_barcode">Scan user ID</label></td>
-         <td><%= text_field :barcodes, "user_barcode", onkeypress: "return disable_cr_and_change_focus(event,'barcodes_robot_barcode')" %></td>
+         <td><%= text_field :barcodes, "user_barcode", :'data-tab-target' => '#barcodes_robot_barcode' %></td>
       </tr>
       <tr>
          <td><label for="barcodes_robot_barcode">Scan robot</label></td>
-         <td><%= text_field :barcodes, "robot_barcode", onkeypress: "return disable_cr_and_change_focus(event,'barcodes_batch_barcode')" %></td>
+         <td><%= text_field :barcodes, "robot_barcode", :'data-tab-target' => '#barcodes_batch_barcode' %></td>
       </tr>
       <tr>
          <td><label for="barcodes_batch_barcode">Scan worksheet</label></td>
-         <td><%= text_field :barcodes, "batch_barcode", onkeypress: "return disable_cr_and_change_focus(event,'barcodes_destination_plate_barcode')" %></td>
+         <td><%= text_field :barcodes, "batch_barcode", :'data-tab-target' => '#barcodes_destination_plate_barcode' %></td>
       </tr>
       <tr>
          <td><label for="barcodes_destination_plate_barcode">Scan destination plate</label></td>

@@ -85,9 +85,11 @@
     </div>
   <% end -%>
 
-<%= javascript_tag nonce: true do %>
-
-  SCAPE.submission.id = <%= presenter.submission.id %>;
-
-<% end %>
+  <%# We care about order of execution, so don't use type module here as that
+  ensures this fires *before* the order callback that updates the form action.
+  This is quite brittle, and more modern solutions should be considered, but
+  this will require a near complete rewrite of the submission front end. %>
+  <%= javascript_tag nonce: true do %>
+    window.SCAPE.submission.id = <%= presenter.submission.id %>;
+  <% end %>
 <% end %>

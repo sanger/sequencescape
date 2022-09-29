@@ -1,23 +1,27 @@
 # frozen_string_literal: true
-class BroadcastEvent::LibraryComplete < BroadcastEvent # rubocop:todo Style/Documentation
+
+# Event that indicates library prep is complete.
+# It used to be fired (with slightly different data attached) when the multiplexed library tube was passed.
+# It was moved to be fired earlier, when the 'charge and pass' button was hit in Limber, as that was felt
+# to be more representative of when library prep was complete (DPL-377).
+class BroadcastEvent::LibraryComplete < BroadcastEvent
   set_event_type 'library_complete'
 
   # Properties takes :order_id
 
-  seed_class MultiplexedLibraryTube
+  seed_class WorkCompletion
 
   has_subject(:order) { |_, e| e.order }
   has_subject(:study) { |_, e| e.order.study }
   has_subject(:project) { |_, e| e.order.project }
   has_subject(:submission) { |_, e| e.order.submission }
 
-  has_subjects(:library_source_labware, :library_source_plates)
+  has_subject(:library_source_labware) { |work_completion, _e| work_completion.target.source_plate }
 
-  has_subject(:multiplexed_library) { |tube, _e| tube.receptacle }
-
-  has_subjects(:stock_plate, :original_stock_plates)
-  has_subjects(:sample) do |tube, e|
-    tube
+  has_subjects(:stock_plate) { |work_completion, _e| work_completion.target.original_stock_plates }
+  has_subjects(:sample) do |work_completion, e|
+    work_completion
+      .target
       .requests_as_target
       .for_event_notification_by_order(e.order)
       .including_samples_from_source
@@ -37,5 +41,5 @@ class BroadcastEvent::LibraryComplete < BroadcastEvent # rubocop:todo Style/Docu
   has_metadata(:order_type) { |_, e| e.order.order_role.try(:role) || 'UNKNOWN' }
   has_metadata(:submission_template) { |_, e| e.order.template_name }
 
-  has_metadata(:team) { |tube, _e| tube.team || 'UNKNOWN' }
+  has_metadata(:team) { |_, e| RequestType.find(e.order.request_types.try(:first))&.product_line&.name || 'UNKNOWN' }
 end

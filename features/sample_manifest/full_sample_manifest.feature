@@ -8,7 +8,7 @@ Feature: Full sample manifest
     Given I am an "External" user logged in as "john"
     And the configuration exists for creating sample manifest Excel spreadsheets
     And the "96 Well Plate" barcode printer "xyz" exists
-    And the plate barcode webservice returns "1234567"
+    And the Baracoda barcode service returns "SQPD-1234567"
     Given a supplier called "Test supplier name" exists
     And I have an active study called "Test study"
     Given the study "Test study" has a abbreviation
@@ -28,7 +28,7 @@ Feature: Full sample manifest
       | Contains | Study      | Supplier           | Manifest       | Upload              | Errors | State   | Created by |
       | 1 plate  | Test study | Test supplier name | Blank manifest | Completed manifest  |        | Completed | john       |
     When I follow "Manifest for Test study"
-    Then I should see "DN1234567T"
+    Then I should see "SQPD-1234567"
 
     Then the samples table should look like:
       | sanger_sample_id | supplier_name | sample_absent | sample_taxon_id | cell_type  |

@@ -23,8 +23,8 @@ And I have a "full" authorised user with the key "cucumber"
     And the UUID for the lot with lot number "1234567890" is "00000000-1111-2222-3333-444444444444"
 
 
-     Given the plate barcode webservice returns "1000001"
-     And the plate barcode webservice returns "1000002"
+     Given the Baracoda barcode service returns "SQPD-1000001"
+     And the Baracoda barcode service returns "SQPD-1000002"
 
      And lot "1234567890" has 2 created qcables
      And all qcables have sequential UUIDs based on "55555555-6666-7777-8888-00000000001"

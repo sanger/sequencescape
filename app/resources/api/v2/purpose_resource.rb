@@ -19,6 +19,7 @@ module Api
       attribute :uuid, readonly: true
       attribute :name, readonly: true
       attribute :size, readonly: true
+      attribute :lifespan, readonly: true
 
       # Filters
       filter :name

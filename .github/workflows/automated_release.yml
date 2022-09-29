@@ -20,25 +20,10 @@ jobs:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
 
       - name: Setup node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: "16"
-      # Establish a cache of js modules to improve performance
-      - name: Cache js
-        uses: actions/cache@v2
-        with:
-          path: |
-            public/assets
-            tmp/cache/assets/sprockets
-            node_modules
-          key: ${{ runner.os }}-build-${{ hashFiles('yarn.lock') }}
-          # If we don't find the specific cache we want, fallback to the last build
-          # cache, then finally any cache for this repo.
-          # Github looks for the newest cache beginning with the first entry, before
-          # falling back the the second if none is present.
-          restore-keys: |
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+          node-version-file: ".nvmrc"
+          cache: "yarn"
 
       # Install only the gems needed for testing
       # Keep an eye on https://github.com/rubygems/bundler-features/issues/59
@@ -51,16 +36,16 @@ jobs:
           bundle config path vendor/bundle
           bin/setup
 
-      # Actually run our build
-      - name: Compile Build
-        run: ./compile-build
-
       # Create a release tag based on the branch name and .release-version file
       - name: Set release tag
         # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-environment-variable
         # On the develop branch this might create RELEASE_VERSION=2.4.6-987654321-develop
         # On the master branch this would then only create RELEASE_VERSION=2.4.6
         run: echo "RELEASE_VERSION=$(printf -- '%s%s\n' $(cat .release-version) $([ ${BRANCH_NAME} = "develop" ] && printf -- '-%s-develop' ${GITHUB_RUN_ID} || echo ""))" >> $GITHUB_ENV
+
+      # Actually run our build
+      - name: Compile Build
+        run: ./compile-build '' v${{ env.RELEASE_VERSION }} ${BRANCH_NAME}
 
       # Create a GitHub release with the release asset as an artifact
       - name: Create release and upload release.tar.gz

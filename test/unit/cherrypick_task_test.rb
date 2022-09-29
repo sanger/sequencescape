@@ -14,6 +14,10 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
   context CherrypickTask do
     setup do
+      PlateBarcode.stubs(:create_child_barcodes).returns([build(:child_plate_barcode)])
+
+      PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode))
+
       @asset_shape =
         AssetShape.create!(
           name: 'mini',
@@ -46,8 +50,6 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
       @task = build :cherrypick_task
 
-      @barcode = 10_000
-
       @robot = mock('robot')
       @robot.stubs(:max_beds).returns(2)
 
@@ -60,7 +62,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
     context '#pick_onto_partial_plate' do
       setup do
-        plate = @mini_plate_purpose.create!(barcode: (@barcode += 1))
+        plate = @mini_plate_purpose.create! { |created_plate| created_plate.barcodes = [build(:plate_barcode)] }
 
         # TODO: This is very slow, and could do with improvements
         @requests = plate.wells.sort_by { |w| w.map.column_order }.map { |w| create(:well_request, asset: w) }
@@ -71,7 +73,8 @@ class CherrypickTaskTest < ActiveSupport::TestCase
         robot.stubs(:max_beds).returns(0)
 
         partial =
-          @mini_plate_purpose.create!(:without_wells, barcode: (@barcode += 1)) do |plate|
+          @mini_plate_purpose.create!(:without_wells) do |plate|
+            plate.barcodes = [build(:plate_barcode)]
             plate.wells.build(maps_for(6).map { |m| { map: m } })
           end
 
@@ -83,7 +86,8 @@ class CherrypickTaskTest < ActiveSupport::TestCase
           plate_purpose = @mini_plate_purpose
           plate_purpose.update!(cherrypick_direction: 'column')
           @partial =
-            plate_purpose.create!(:without_wells, barcode: (@barcode += 1)) do |partial|
+            plate_purpose.create!(:without_wells) do |partial|
+              partial.barcodes = [build(:plate_barcode)]
               partial.wells.build(maps_for(6).map { |m| { map: m } })
             end
           @expected_partial = [CherrypickTask::TEMPLATE_EMPTY_WELL] * @partial.wells.size
@@ -120,7 +124,8 @@ class CherrypickTaskTest < ActiveSupport::TestCase
           plate_purpose = @mini_plate_purpose
           plate_purpose.update!(cherrypick_direction: 'row')
           @partial =
-            plate_purpose.create!(:without_wells, barcode: (@barcode += 1)) do |partial|
+            plate_purpose.create!(:without_wells) do |partial|
+              partial.barcodes = [build(:plate_barcode)]
               partial.wells.build(maps_for(4, 0, 'row').map { |m| { map: m } })
             end
         end
@@ -157,7 +162,8 @@ class CherrypickTaskTest < ActiveSupport::TestCase
       context 'with left & right columns filled' do
         setup do
           @partial =
-            @mini_plate_purpose.create!(:without_wells, barcode: (@barcode += 1)) do |partial|
+            @mini_plate_purpose.create!(:without_wells) do |partial|
+              partial.barcodes = [build(:plate_barcode)]
               ms = maps_for(3, 0, 'column').map { |m| { map: m } }
               ms.concat(maps_for(12, 9, 'column').map { |m| { map: m } })
               partial.wells.build(ms)
@@ -175,7 +181,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
         end
 
         should 'not pick on top of any wells that are already present' do
-          plate = @mini_plate_purpose.create!(barcode: (@barcode += 1))
+          plate = @mini_plate_purpose.create! { |created_plate| created_plate.barcodes = [build(:plate_barcode)] }
           requests = plate.wells.in_column_major_order.map { |w| create(:well_request, asset: w) }
 
           expected_partial = []
@@ -202,7 +208,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
     context '#pick_new_plate' do
       context 'with a plate purpose' do
         setup do
-          plate = @mini_plate_purpose.create!(barcode: (@barcode += 1))
+          plate = @mini_plate_purpose.create! { |created_plate| created_plate.barcodes = [build(:plate_barcode)] }
           @requests = plate.wells.in_column_major_order.map { |w| create(:well_request, asset: w) }
 
           @target_purpose = @mini_plate_purpose

@@ -1,15 +1,16 @@
 # frozen_string_literal: true
+
 # A WorkCompletion can be used to pass library creation
-# requests. It will also link the requests onto the correct
-# wells of the target plate. It takes the following:
-# target: The plate on which the library has been completed.
-# user: the user performing tha action
-# submissions: an array of submissions which will be passed.
-# Requirements:
-# The wells of the target plate are expected to have stock
-# well_links to the plate on which the orignal library_creation
-# requests were made. This provides a means of finding the library
-# creation requests.
+# requests. It will also link the upstream and downstream requests to the correct receptacles.
+# It takes the following:
+#
+# target: The labware on which the library has been completed.
+#
+# user: the user performing the action
+#
+# submissions: an array of submissions which will be passed (although this
+# is done through the request ids on the aliquots, not directly through the submissions).
+#
 class WorkCompletion < ApplicationRecord
   include Uuid::Uuidable
 
@@ -26,7 +27,7 @@ class WorkCompletion < ApplicationRecord
   # The user who performed the state change
   belongs_to :user, optional: false
 
-  # The plate on which requests were completed
+  # The labware on which requests were completed
   belongs_to :target, class_name: 'Labware', optional: false
 
   # The submissions which were passed. Mainly kept for auditing
@@ -42,10 +43,7 @@ class WorkCompletion < ApplicationRecord
   private
 
   def pass_and_attach_requests
-    if target.respond_to?(:wells)
-      PlateCompletion.new(target, submission_ids).process
-    else
-      TubeCompletion.new(target, submission_ids).process
-    end
+    processing_class = target.respond_to?(:wells) ? PlateCompletion : TubeCompletion
+    processing_class.new(target, submission_ids, self).process
   end
 end

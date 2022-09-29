@@ -14,8 +14,8 @@ Feature: The bottom of the pulldown pipeline
 
     Given a user with UUID "99999999-8888-7777-6666-555555555555" exists
 
-    Given the plate barcode webservice returns "1000001"
-      And the plate barcode webservice returns "1000002"
+    Given the Baracoda barcode service returns "SQPD-1000001"
+      And the Baracoda barcode service returns "SQPD-1000002"
 
     And I have an ISC submission template
 
@@ -44,7 +44,7 @@ Feature: The bottom of the pulldown pipeline
       """
       {
         "search": {
-          "barcode": "1221000002781"
+          "barcode": "SQPD-1000002"
         }
       }
       """
@@ -53,7 +53,7 @@ Feature: The bottom of the pulldown pipeline
       """
       {
         "plate": {
-          "name": "Plate DN1000002N",
+          "name": "Plate SQPD-1000002",
           "uuid": "00000000-1111-2222-3333-000000000002"
         }
       }
@@ -87,9 +87,9 @@ Feature: The bottom of the pulldown pipeline
       """
 
     Then the aliquots of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be the same as the wells "A1-D1" of the plate "Testing the API"
-     And the name of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "DN1000001M A1:D1"
+     And the name of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000001" should be "SQPD-1000001 A1:D1"
      And the aliquots of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000002" should be the same as the wells "E1-H1" of the plate "Testing the API"
-     And the name of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000002" should be "DN1000001M E1:H1"
+     And the name of the multiplexed library tube with UUID "00000000-1111-2222-3333-999900000002" should be "SQPD-1000001 E1:H1"
 
     # Change the state of one tube to ensure it doesn't affect the other
     Then log "Change the state of one tube to ensure it doesn't affect the other" for debugging

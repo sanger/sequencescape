@@ -20,33 +20,4 @@
 <% end %>
 
  <div class="form-group"><%= link_to 'Show', action: :show, id: @asset.id %></div>
-
-<%= javascript_tag nonce: true do %>
-(function($, undefined) {
-  $(document).on('dom:loaded', function() {
-
-   $('input[type=checkbox]').each(function(checkbox) {
-     var field = $(checkbox.attr('data-field'));
-     field.disabled = true;
-
-     checkbox.on('click', function() {
-      asset_qc_state = $('qc_state_value').value
-      // TODO : REMOVE EVAL()
-      external_release = eval($('external_release_value').value)
-      checkbox_status = this.checked
-
-      if (((asset_qc_state =="passed") && (!checkbox_status) && (external_release)) || ((asset_qc_state =="failed") && (checkbox_status) && (!external_release)))
-      {
-        field.disabled = false;
-      }
-      else
-      {
-        field.disabled = true;
-        field[0].selected = true;
-      }
-
-     });
-   });
- });
-})(jQuery);
-<% end %>
+<%= vite_javascript_tag 'lane_edit' %>

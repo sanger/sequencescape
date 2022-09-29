@@ -40,11 +40,7 @@ When /^I drag (\d+) wells to the scratch pad$/ do |count|
     src_well = first('#plate_1 td.colour0') or raise StandardError, "Could not find the #{index} well in the plate"
     src_id = src_well[:id]
     src_well.drag_to(dest_pad)
-
-    # Ugh. While find is supposed to wait for an element, it doesn't appear to
-    # We still need to sleep.
-    sleep(1)
-    find("#scratch_pad ##{src_id}")
+    within('#scratch_pad') { find("##{src_id}") }
   end
 end
 
@@ -58,7 +54,6 @@ def build_batch_for(name, count) # rubocop:todo Metrics/AbcSize
   submission_details = yield(pipeline)
 
   user = FactoryBot.create(:user)
-
   assets =
     Array.new(count.to_i) do
       asset_attributes = {}
@@ -68,7 +63,6 @@ def build_batch_for(name, count) # rubocop:todo Metrics/AbcSize
       end
       FactoryBot.create(submission_details[:asset_type], :scanned_into_lab, asset_attributes)
     end
-
   rt_id = pipeline.request_types.active.first!.id
 
   # Build a submission that should end up in the appropriate inbox, once all of the assets have been

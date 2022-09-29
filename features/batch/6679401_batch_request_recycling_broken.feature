@@ -32,7 +32,7 @@ Feature: Recycling requests in the Cherrypicking pipeline
   Scenario Outline: Approving the plate layout
     Given a robot exists
     Given the plate template "My plate template" exists
-    Given a plate barcode webservice is available and returns "1234567"
+    Given the Baracoda barcode service returns "SQPD-1234567"
 
     Given I am on the "Cherrypick" pipeline page
     When I follow "In progress"

@@ -55,7 +55,7 @@ Feature: create a report on the current state of a study going through QC
       | Study A | 2010-07-12 | user       | Processing |       |
 
   Scenario: Generate a new report from the Qc reports homepage
-    Given study "Study B" has a plate "1234567"
+    Given study "Study B" has a plate "SQPD-1234567"
     Given I am on the Qc reports homepage
     Then I should see "New report for"
     When I select "Study B" from "Study"
@@ -73,14 +73,14 @@ Feature: create a report on the current state of a study going through QC
     Then I follow "Download report for Study B"
     Then I should see the report for "Study B":
     | Study   |  Plate   |  Concentration | Sequenome Count | Sequenome Gender | Pico | Gel  | Supplier Sample Name | Well | Total Micrograms | Initial Volume |
-    | Study B |  1234567 |  1.0           | 29/30           | FFFF             | Pass | Pass | Sample_1234567_1     | A1   | 0.5              | 500.0          |
-    | Study B |  1234567 |  1.0           | 29/30           | FFFF             | Pass | Pass | Sample_1234567_2     | A2   | 0.5              | 500.0          |
-    | Study B |  1234567 |  1.0           | 29/30           | FFFF             | Pass | Pass | Sample_1234567_3     | A3   | 0.5              | 500.0          |
+    | Study B |  SQPD-1234567 |  1.0           | 29/30           | FFFF             | Pass | Pass | Sample_SQPD-1234567_1     | A1   | 0.5              | 500.0          |
+    | Study B |  SQPD-1234567 |  1.0           | 29/30           | FFFF             | Pass | Pass | Sample_SQPD-1234567_2     | A2   | 0.5              | 500.0          |
+    | Study B |  SQPD-1234567 |  1.0           | 29/30           | FFFF             | Pass | Pass | Sample_SQPD-1234567_3     | A3   | 0.5              | 500.0          |
 
   @delayed_job @admin
   Scenario: Create a study report and check it appears in on the list
     Given I am a "administrator" user logged in as "admin"
-    Given study "Study B" has a plate "1234567"
+    Given study "Study B" has a plate "SQPD-1234567"
     Given I am on the Qc reports homepage
     Then I should see "New report for"
     When I select "Study B" from "Study"
@@ -93,33 +93,33 @@ Feature: create a report on the current state of a study going through QC
     Then I should not see "generate study report"
 
   Scenario: The wells have child sample tubes
-    Given study "Study B" has a plate "1234567"
+    Given study "Study B" has a plate "SQPD-1234567"
     Given each well in "Study B" has a child sample tube
     Given a study report is generated for study "Study B"
     Then the last report for "Study B" should be:
       | Study   | Plate   | Well |
-      | Study B | 1234567 | A1   |
-      | Study B | 1234567 | A2   |
-      | Study B | 1234567 | A3   |
+      | Study B | SQPD-1234567 | A1   |
+      | Study B | SQPD-1234567 | A2   |
+      | Study B | SQPD-1234567 | A3   |
 
   @manifest
   Scenario: Samples have been created by have no manifest uploaded
-    Given study "Study B" has a plate "1234567"
+    Given study "Study B" has a plate "SQPD-1234567"
     Given a study report is generated for study "Study B"
     Then the last report for "Study B" should be:
       | Study   | Plate   | Well | Status            |
-      | Study B | 1234567 | A1   | Awaiting manifest |
-      | Study B | 1234567 | A2   | Awaiting manifest |
-      | Study B | 1234567 | A3   | Awaiting manifest |
+      | Study B | SQPD-1234567 | A1   | Awaiting manifest |
+      | Study B | SQPD-1234567 | A2   | Awaiting manifest |
+      | Study B | SQPD-1234567 | A3   | Awaiting manifest |
 
   @manifest
   Scenario: Samples have been created by have no manifest uploaded
-    Given study "Study B" has a plate "1234567"
+    Given study "Study B" has a plate "SQPD-1234567"
     Given each sample was updated by a sample manifest
     Given a study report is generated for study "Study B"
     Then the last report for "Study B" should be:
       | Study   | Plate   | Well | Status              |
-      | Study B | 1234567 | A1   | Updated by manifest |
-      | Study B | 1234567 | A2   | Updated by manifest |
-      | Study B | 1234567 | A3   | Updated by manifest |
+      | Study B | SQPD-1234567 | A1   | Updated by manifest |
+      | Study B | SQPD-1234567 | A2   | Updated by manifest |
+      | Study B | SQPD-1234567 | A3   | Updated by manifest |
 

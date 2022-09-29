@@ -29,7 +29,6 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   class_attribute :default_plate_size
 
   # Shouldn't actually be falling back to this, but its here just in case
-  self.default_prefix = 'DN'
   self.sample_partial = 'assets/samples_partials/plate_samples'
   self.per_page = 50
   self.default_plate_size = 96
@@ -147,17 +146,6 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   # @return [Integer] The number of wells with samples
   def occupied_well_count
     wells.with_contents.count
-  end
-
-  def summary_hash
-    {
-      asset_id: id,
-      barcode: {
-        ean13_barcode: ean13_barcode,
-        human_readable: human_barcode
-      },
-      occupied_wells: wells.with_aliquots.include_map.map(&:map_description)
-    }
   end
 
   #
@@ -350,17 +338,8 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
 
   def self.create_with_barcode!(*args, &block)
     attributes = args.extract_options!
-    attributes[:sanger_barcode] = safe_sanger_barcode(attributes[:sanger_barcode] || {})
+    attributes[:sanger_barcode] ||= PlateBarcode.create_barcode
     create!(attributes, &block)
-  end
-
-  def self.safe_sanger_barcode(sanger_barcode)
-    if sanger_barcode[:number].blank? ||
-         Barcode.sanger_barcode(sanger_barcode[:prefix], sanger_barcode[:number]).exists?
-      { number: PlateBarcode.create.barcode, prefix: sanger_barcode[:prefix] }
-    else
-      sanger_barcode
-    end
   end
 
   def number_of_blank_samples
@@ -455,6 +434,8 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
     true
   end
 
+  # Finds the product line (= team) of the requests coming out of this plate's 'stock plate'.
+  # Written at a time when requests weren't recorded on the aliquot, so could be re-written in a less convoluted way.
   def team
     ProductLine
       .joins(
@@ -483,8 +464,8 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
           "#generate_barcode has been called on plate, which wasn't supposed to happen, and probably indicates a bug."
   end
 
-  def sanger_barcode=(attributes)
-    barcodes << Barcode.build_sanger_code39(attributes)
+  def sanger_barcode=(barcode)
+    barcodes << barcode
   end
 
   def after_comment_addition(comment)

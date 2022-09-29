@@ -50,4 +50,4 @@ Feature: Submission templates should set order roles
       }
       """
     Given all pending delayed jobs are processed
-    Then the plate with the barcode "12345" should have a label of "ILB PATH"
+    Then the plate with the barcode "1220012345855" should have a label of "ILB PATH"

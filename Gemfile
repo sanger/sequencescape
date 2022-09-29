@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-next_rails = ENV['BUNDLE_GEMFILE']&.end_with?('GemfileNext')
+next_rails = ENV.fetch('BUNDLE_GEMFILE', 'Gemfile')&.end_with?('GemfileNext')
 
 source 'https://rubygems.org'
 
@@ -102,6 +102,11 @@ group :default do
 
   # Authorization
   gem 'cancancan'
+
+  # Feature flags
+  gem 'flipper', '~> 0.25.0'
+  gem 'flipper-active_record', '~> 0.25.0'
+  gem 'flipper-ui', '~> 0.25.0'
 end
 
 group :development do
@@ -112,16 +117,14 @@ group :development do
 
   # Automatically generate documentation
   gem 'yard', require: false
+  gem 'yard-activerecord', '~> 0.0.16'
 
   # MiniProfiler allows you to see the speed of a request conveniently on the page.
   # It also shows the SQL queries performed and allows you to profile a specific block of code.
   gem 'rack-mini-profiler'
 
-  # find unused routes and controller actions by runnung `rake traceroute` from CL
+  # find unused routes and controller actions by running `rake traceroute` from CL
   gem 'traceroute'
-
-  # Pat of the JS assets pipleine
-  gem 'uglifier', '>= 1.0.3'
 
   # Rails 6 adds listen to assist with reloading
   gem 'listen'
@@ -133,7 +136,6 @@ group :development, :linting do
   gem 'rubocop-performance', require: false
   gem 'rubocop-rails', require: false
   gem 'rubocop-rspec', require: false
-  gem 'yard-activerecord', '~> 0.0.16'
 end
 
 group :linting, :test do
@@ -141,17 +143,9 @@ group :linting, :test do
 end
 
 group :development, :test, :cucumber do
+  gem 'knapsack_pro'
   gem 'pry-byebug'
   gem 'pry-rails'
-
-  # Asset compilation, js and style libraries
-  gem 'bootstrap', '~>4.0' # Pinned as v5 has significant changes
-  gem 'font-awesome-sass'
-  gem 'jquery-rails'
-  gem 'jquery-ui-rails'
-  gem 'knapsack_pro'
-  gem 'sass-rails'
-  gem 'select2-rails'
   gem 'webmock'
 end
 
@@ -192,15 +186,6 @@ group :test, :cucumber do
   gem 'simplecov', require: false
   gem 'timecop', require: false
 
-  # Simplifies shared transactions between server and test threads
-  # See: http://technotes.iangreenleaf.com/posts/the-one-true-guide-to-database-transactions-with-capybara.html
-  # Essentially does two things:
-  # - Patches rails to share a database connection between threads while Testing
-  # - Pathes rspec to ensure capybara has done its stuff before killing the connection
-  # Causing problems in Rails 6. Remove from Rspec, left in place for cucumber, but can
-  # probably be remove there as well.
-  gem 'transactional_capybara'
-
   # Keep webdriver in sync with chrome to prevent frustrating CI failures
   gem 'webdrivers'
 end
@@ -208,8 +193,6 @@ end
 group :cucumber do
   gem 'cucumber_github_formatter'
   gem 'cucumber-rails', require: false
-  gem 'mime-types'
-  gem 'rubyzip'
 end
 
 group :deployment do

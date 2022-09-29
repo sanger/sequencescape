@@ -5,16 +5,16 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <%= stylesheet_link_tag "application", media: "all" %>
+  <%= vite_stylesheet_tag "application.scss", media: "all" %>
   <title>Sequencescape : <%= I18n.t('global_links.login') %></title>
   <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
   <link rel="icon" href="/favicon.ico" type="image/x-icon" />
   <link rel="apple-touch-icon-precomposed" href="/apple-icon.png" type="image/png" />
   <% if Rails.application.config.disable_animations %>
-    <%= stylesheet_link_tag 'disable_animations' %>
+    <%= vite_stylesheet_tag 'disable_animations' %>
 
     <!-- Turn off animations in jQuery -->
-    <%= javascript_tag nonce: true do %>
+    <%= legacy_javascript_tag do %>s
       $.fx.off = true;
     <% end %>
   <% end %>
@@ -23,7 +23,7 @@
 <body>
   <div class="container d-flex justify-content-center">
     <div id="login-panel">
-      <%= image_tag "scape-large-dark.jpg", size: "600x229", class: "card-img-top",  alt: "Two white lines twirl round each other, separating blue and green fields." %>
+      <%= vite_image_tag "images/scape-large-dark.jpg", size: "600x229", class: "card-img-top",  alt: "Two white lines twirl round each other, separating blue and green fields." %>
       <%= yield %>
     </div>
   </div>

@@ -4,7 +4,11 @@ require 'test_helper'
 
 class FluidigmPlateTest < ActiveSupport::TestCase
   context 'A 96:96 Fluidigm Plate' do
-    setup { @plate = create(:fluidigm_96_purpose).create!(barcode: generate(:barcode_number)) }
+    setup do
+      barcode = build(:plate_barcode)
+      PlateBarcode.stubs(:create_barcode).returns(barcode)
+      @plate = create(:fluidigm_96_purpose).create!(barcode: barcode)
+    end
 
     should 'have 96 wells' do
       assert_equal 96, @plate.wells.count
@@ -21,7 +25,11 @@ class FluidigmPlateTest < ActiveSupport::TestCase
   end
 
   context 'A 192:24 Fluidigm Plate' do
-    setup { @plate = create(:fluidigm_192_purpose).create!(barcode: generate(:barcode_number)) }
+    setup do
+      barcode = build(:plate_barcode)
+      PlateBarcode.stubs(:create_barcode).returns(barcode)
+      @plate = create(:fluidigm_192_purpose).create!(barcode: barcode)
+    end
 
     should 'have 192 wells' do
       assert_equal 192, @plate.wells.count

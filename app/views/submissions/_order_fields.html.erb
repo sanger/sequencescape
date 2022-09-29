@@ -14,15 +14,14 @@
   </div>
   <% end -%>
 
-  <%= javascript_tag nonce: true do %>
-
+  <%= javascript_tag nonce: true, type: 'module' do %>
   (function(window,$,undefined) {
-    SCAPE.submission.is_a_sequencing_order  = <%= @presenter.order.sequencing_order? %>;
-    SCAPE.submission.pre_capture_plex_level = <%= @presenter.pre_capture_plex_level || 'null' %>;
-    SCAPE.submission.pre_capture_plex_group = null;
-    SCAPE.submission.show_gigabses_expected = <%= @presenter.order.collect_gigabases_expected? %>;
+   window.SCAPE.submission.is_a_sequencing_order  = <%= @presenter.order.sequencing_order? %>;
+   window.SCAPE.submission.pre_capture_plex_level = <%= @presenter.pre_capture_plex_level || 'null' %>;
+   window.SCAPE.submission.pre_capture_plex_group = null;
+   window.SCAPE.submission.show_gigabses_expected = <%= @presenter.order.collect_gigabases_expected? %>;
 
-    SCAPE.submission.cross_compatible = <%= @presenter.cross_compatible? %>;
+   window.SCAPE.submission.cross_compatible = <%= @presenter.cross_compatible? %>;
 
     <% unless @presenter.order.new_record? -%>
       $(function(){

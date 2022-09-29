@@ -4,8 +4,8 @@ require 'rails_helper'
 
 RSpec.describe ReportFail, type: :model do
   let!(:user) { create(:user, swipecard_code: '12345') }
-  let(:plate_1) { create(:plate, barcode: 1) }
-  let(:plate_2) { create(:plate, barcode: 2) }
+  let(:plate_1) { create(:plate) }
+  let(:plate_2) { create(:plate) }
 
   it 'records an event' do
     report_fail = described_class.new('12345', '1', [plate_1.human_barcode])

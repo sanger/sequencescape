@@ -7,10 +7,10 @@ require 'simplecov'
 # instead of editing this one. Cucumber will automatically load all features/**/*.rb
 # files.
 
-ENV['RAILS_ENV'] ||= 'cucumber'
+selected_env = ENV['RAILS_ENV'] ||= 'cucumber'
 
-if ENV['RAILS_ENV'] != 'cucumber'
-  puts "You are running the cucumber specs with the #{ENV['RAILS_ENV']} environment."
+if selected_env != 'cucumber'
+  puts "You are running the cucumber specs with the #{selected_env} environment."
   puts "This can cause problems with gem loading. Please use 'cucumber' instead."
 end
 
@@ -55,19 +55,10 @@ end
 # Possible values are :truncation and :transaction
 # The :transaction strategy is faster, but might give you threading problems.
 # See https://github.com/cucumber/cucumber-rails/blob/master/features/choose_javascript_database_strategy.feature
-# We're using a gem to try and improve the robustness of this
-# https://github.com/iangreenleaf/transactional_capybara
 Cucumber::Rails::Database.javascript_strategy = :transaction
-require 'transactional_capybara'
-TransactionalCapybara.share_connection
 
 World(MultiTest::MinitestWorld)
 MultiTest.disable_autorun
-
-After('@javascript') do
-  # See https://github.com/iangreenleaf/transactional_capybara
-  TransactionalCapybara::AjaxHelpers.wait_for_ajax(page)
-end
 
 After() do |scenario|
   if scenario.failed?

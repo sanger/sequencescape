@@ -30,7 +30,6 @@ module StudyReport::WellDetails # rubocop:todo Style/Documentation
     return {} unless plate.try(:stock_plate?)
 
     qc_data = super
-
     qc_data.merge!(
       well: map.description,
       concentration: well_attribute.concentration,
@@ -39,7 +38,7 @@ module StudyReport::WellDetails # rubocop:todo Style/Documentation
       pico: well_attribute.pico_pass,
       is_in_fluidigm: fluidigm_stamp_date,
       gel: well_attribute.gel_pass,
-      plate_barcode: plate.barcode_number,
+      plate_barcode: plate.human_barcode,
       measured_volume: well_attribute.measured_volume,
       current_volume: well_attribute.current_volume,
       gel_qc_date: gel_qc_date,

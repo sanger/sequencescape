@@ -17,7 +17,7 @@ module LabelPrinter
       end
 
       def top_far_right(plate)
-        plate.parent.try(:barcode_number).to_s
+        plate.parent.try(:human_barcode).to_s
       end
     end
   end

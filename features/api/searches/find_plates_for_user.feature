@@ -1,4 +1,4 @@
-@api @json @asset @search @single-sign-on @new-api @barcode_search
+@api @json @asset @search @single-sign-on @new-api @barcode_search @barcode-service
 Feature: Searching for assets by barcode
   Background:
     Given all of this is happening at exactly "12-Jun-2012 23:00:00+01:00"
@@ -10,18 +10,18 @@ Feature: Searching for assets by barcode
 
     Given the UUID for the search "Find Illumina-C plates for user" is "00000000-1111-2222-3333-444444444446"
 
-      Given a "Stock Plate" plate called "stock plate" exists with barcode "1000001"
-      And a "ILC Stock" plate called "Testing the API A" exists with barcode "1000002"
+      Given a "Stock Plate" plate called "stock plate" exists with barcode "SQPD-1000001"
+      And a "ILC Stock" plate called "Testing the API A" exists with barcode "SQPD-1000002"
       And the UUID for the plate "Testing the API A" is "00000000-1111-2222-3333-000000000001"
       And all wells on the plate "Testing the API A" have unique samples
       And passed transfer requests exist between 1 wells on "stock plate" and "Testing the API A"
-      And a "ILC AL Libs" plate called "Testing the API B" exists with barcode "1000003"
+      And a "ILC AL Libs" plate called "Testing the API B" exists with barcode "SQPD-1000003"
       And the UUID for the plate "Testing the API B" is "00000000-1111-2222-3333-000000000002"
-      And a "ILC Lib PCR" plate called "Testing the API C" exists with barcode "1000004"
+      And a "ILC Lib PCR" plate called "Testing the API C" exists with barcode "SQPD-1000004"
       And the UUID for the plate "Testing the API C" is "00000000-1111-2222-3333-000000000003"
-      And a "ILC Lib PCR-XP" plate called "Testing the API D" exists with barcode "1000005"
+      And a "ILC Lib PCR-XP" plate called "Testing the API D" exists with barcode "SQPD-1000005"
       And the UUID for the plate "Testing the API D" is "00000000-1111-2222-3333-000000000004"
-      And a "Cherrypicked" plate called "Testing the API E" exists with barcode "1000006"
+      And a "Cherrypicked" plate called "Testing the API E" exists with barcode "SQPD-1000006"
       And the UUID for the plate "Testing the API D" is "00000000-1111-2222-3333-000000000005"
       And pending transfer requests exist between 1 wells on "stock plate" and "Testing the API B"
       And pending transfer requests exist between 1 wells on "stock plate" and "Testing the API C"

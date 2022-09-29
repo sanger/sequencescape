@@ -34,6 +34,11 @@ FactoryBot.define do
       end
     end
 
+    factory :sequencescape22 do
+      sequence(:barcode) { |barcode_number| "SQPD-#{barcode_number}" }
+      initialize_with { new(format: 'sequencescape22') }
+    end
+
     factory :infinium do
       transient do
         prefix { 'WG' }

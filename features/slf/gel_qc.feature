@@ -7,7 +7,7 @@ Feature: Gel QC
   Background:
     Given I am an "slf_gel" user logged in as "john"
     And a "Stock Plate" plate purpose and of type "Plate" with barcode "1220000123724" exists
-    And plate "123" has "3" wells
+    And plate "DN123" has "3" wells
     And I am on the gel QC page
     Then I should see "Find gel plate"
     Given all of this is happening at exactly "14-Feb-2011 23:00:00+01:00"
@@ -85,7 +85,7 @@ Feature: Gel QC
 
   Scenario: Lookup plate where all wells have completed sample names
     Given all wells on plate "1220000123724" have non-empty sample names
-    When I fill in "barcode" with "123"
+    When I fill in "barcode" with "DN123"
     When I press "Update gel values"
     Then I should see "Plate DN123H"
     When I select "No Band" from "A1"
@@ -95,7 +95,7 @@ Feature: Gel QC
 
   Scenario: Set degraded on well
     Given all wells on plate "1220000123724" have non-empty sample names
-    When I fill in "barcode" with "123"
+    When I fill in "barcode" with "DN123"
     When I press "Update gel values"
     Then I should see "Plate DN123H"
     When I select "Degraded" from "A1"
@@ -105,7 +105,7 @@ Feature: Gel QC
 
 
   Scenario: Lookup plate where all wells have no samples
-    When I fill in "barcode" with "123"
+    When I fill in "barcode" with "DN123"
     When I press "Update gel values"
     Then I should see "Plate DN123H"
     And I should not see "No Band"
@@ -113,7 +113,7 @@ Feature: Gel QC
   Scenario Outline: Lookup plate where some wells have blank sample names from SNP
     Given all wells on plate "1220000123724" have non-empty sample names
     Given well "A2" on plate "1220000123724" has a sample name of "<empty_sample_name>"
-    When I fill in "barcode" with "123"
+    When I fill in "barcode" with "DN123"
     When I press "Update gel values"
     Then I should see "Plate DN123H"
     Then I should not see "Well A2"
@@ -134,7 +134,7 @@ Feature: Gel QC
   Scenario: Lookup plate where some wells have blank sample names from an uploaded manifest
     Given all wells on plate "1220000123724" have non-empty sample names
     Given well "A2" on plate "1220000123724" has an empty supplier sample name
-    When I fill in "barcode" with "123"
+    When I fill in "barcode" with "DN123"
     When I press "Update gel values"
     Then I should see "Plate DN123H"
     Then I should not see "Well A2"

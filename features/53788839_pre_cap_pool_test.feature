@@ -72,6 +72,6 @@ And I have a "full" authorised user with the key "cucumber"
       """
     Given all pending delayed jobs are processed
     Then there should be 7 pre capture pools
-    And the wells should be pooled in column order for 53788839
+    And the wells from plate with barcode "1220012345855" should be pooled in column order for 53788839
 
 
