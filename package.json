@@ -42,7 +42,7 @@
     "jest": "^26.2.2",
     "miragejs": "^0.1.40",
     "prettier": "^2.3.0",
-    "vite": "^2.7.7",
+    "vite": "^2.9.13",
     "vite-plugin-ruby": "^3.0.5",
     "vite-plugin-vue2": "^1.9.3",
     "vue-jest": "^3.0.6"
