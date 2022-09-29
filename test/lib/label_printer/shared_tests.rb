@@ -19,7 +19,7 @@ module LabelPrinterTests
         end
 
         test 'should return the correct label' do
-          assert_equal build_label(label), tube_label.build_label(tube1)
+          assert_equal label, tube_label.build_label(tube1)
         end
       end
     end

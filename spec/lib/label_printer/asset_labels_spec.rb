@@ -76,11 +76,11 @@ context 'printing tubes' do
           round_label_top_line: asset.prefix,
           round_label_bottom_line: asset.barcode_number,
           barcode: asset.machine_barcode,
-          label_name: 'main_label',
+          label_name: 'main_label'
           # REMOVE AFTER DPL-364 IS DONE
-          top_line: asset.name,
-          middle_line: asset.barcode_number,
-          bottom_line: date
+          # top_line: asset.name,
+          # middle_line: asset.barcode_number,
+          # bottom_line: date
         }
       end
     end
