@@ -15,7 +15,7 @@ $(document).ready(function () {
   // Builds the cell value as an option in the select control
   function addOptionValueToSelect(value, select) {
     let displayedOption = getDisplayedOption(value);
-    let option = $("option");
+    let option = $("<option></option>");
     option.value = displayedOption;
     option.html(displayedOption);
     select.append(option);

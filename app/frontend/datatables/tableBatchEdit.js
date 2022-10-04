@@ -40,7 +40,6 @@ const saveButton = {
   },
   text: "Save",
 };
-
 $(function () {
   // Batches page, allows re-ordering
   $(cssSelectors.BatchEditConfig).DataTable({

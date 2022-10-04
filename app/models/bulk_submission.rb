@@ -312,7 +312,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     target_obj[target_key] = source_obj[source_key] if source_obj[source_key].present?
   end
 
-    def extract_request_options(details)
+  def extract_request_options(details)
     { read_length: details['read length'], multiplier: {} }.tap do |request_options|
       [
         ['library type', 'library_type'],
@@ -331,7 +331,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     end
   end
 
-    # Returns an order for the given details
+  # Returns an order for the given details
   # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def prepare_order(details) # rubocop:todo Metrics/CyclomaticComplexity
     # Retrieve common attributes
