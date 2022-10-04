@@ -4,11 +4,6 @@ module LabelPrinterTests
   module SharedTubeTests
     # rubocop:todo Metrics/MethodLength
 
-    # REMOVE AFTER DPL-364 IS DONE
-    def build_label(label)
-      label.merge(top_line: label[:first_line], middle_line: label[:second_line], bottom_line: label[:third_line])
-    end
-
     def self.included(base) # rubocop:todo Metrics/AbcSize
       base.class_eval do
         test 'should return the correct values' do
