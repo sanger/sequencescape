@@ -46,6 +46,7 @@ FactoryBot.define do
       time_point { 'time_point' }
       disease { 'disease' }
       subject { 'subject' }
+      collected_by { 'collected_by' }
 
       consent_withdrawn { false }
 

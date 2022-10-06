@@ -1,4 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead
+2# This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_13_144729) do
+ActiveRecord::Schema.define(version: 2022_10_05_133322) do
 
   create_table "aliquot_indices", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "aliquot_id", null: false
@@ -1360,6 +1360,7 @@ ActiveRecord::Schema.define(version: 2022_07_13_144729) do
     t.datetime "date_of_consent_withdrawn"
     t.integer "user_id_of_consent_withdrawn"
     t.boolean "consent_withdrawn", default: false, null: false
+    t.string "collected_by"
     t.index ["sample_ebi_accession_number"], name: "index_sample_metadata_on_sample_ebi_accession_number"
     t.index ["sample_id"], name: "index_sample_metadata_on_sample_id"
     t.index ["supplier_name"], name: "index_sample_metadata_on_supplier_name"

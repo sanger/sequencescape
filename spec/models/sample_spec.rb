@@ -88,6 +88,13 @@ RSpec.describe Sample, type: :model, accession: true, cardinal: true do
     end
   end
 
+  context 'collected by' do
+    it 'can be added to a sample' do
+      sample = create(:sample, sample_metadata_attributes: { collected_by: 'A Collection Site' })
+      expect(sample.sample_metadata.collected_by).to eq('A Collection Site')
+    end
+  end
+
   context 'genome size' do
     it 'can be added to a sample' do
       sample = create(:sample, sample_metadata_attributes: { genome_size: 1000 })
