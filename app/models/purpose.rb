@@ -44,12 +44,9 @@ class Purpose < ApplicationRecord
 
   before_validation :set_default_barcode_prefix
 
-  # rubocop:todo Rails/UniqueValidationWithoutIndex
-  validates :name, format: { with: /\A\w[\s\w.\-]+\w\z/i }, presence: true, uniqueness: { case_sensitive: false }
+    validates :name, format: { with: /\A\w[\s\w.\-]+\w\z/i }, presence: true, uniqueness: { case_sensitive: false }
 
-  # rubocop:enable Rails/UniqueValidationWithoutIndex
-
-  # NOTE: We should validate against valid asset subclasses, but running into some issues with
+    # NOTE: We should validate against valid asset subclasses, but running into some issues with
   # subclass loading while seeding.
   validates :target_type, presence: true
 
