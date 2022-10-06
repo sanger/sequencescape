@@ -55,6 +55,9 @@ en:
         pcr_cycles:
           label: PCR Cycles
 
+        requested_flowcell_type:
+          label: Flowcell type
+
     library_creation_request:
       <<: *REQUEST
     sequencing_request:

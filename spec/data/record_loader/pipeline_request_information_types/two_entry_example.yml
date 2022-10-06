@@ -1,0 +1,9 @@
+---
+# This file was automatically generated via `rails g record_loader`
+# You should modify it to match your particular model.
+Unique attribute:
+  pipeline_name: "Pipeline 1"
+  request_information_type_key: "key"
+Unique attribute 2:
+  pipeline_name: "Pipeline 1"
+  request_information_type_key: "key2"
