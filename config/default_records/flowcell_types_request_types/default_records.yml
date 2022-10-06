@@ -1,0 +1,20 @@
+---
+# Add entries to this file to generate them automatically upon running
+# rake record_loader:all or rake record_loader:<%= underscore %>
+# If you want entries which are only created in development mode then simply
+# create a file in this directory ending in '.dev.yml'
+# You can add as many additional .yml files to this directory as you wish.
+# Example:
+# <%= record_key %> A:
+#   other_attribute: 'Value'
+# <%= record_key %> B:
+#   other_attribute: 'Value'
+SP:
+  flowcell_type_name: SP
+  request_type_key: illumina_htp_novaseq_6000_paired_end_sequencing
+S4:
+  flowcell_type_name: S4
+  request_type_key: illumina_htp_novaseq_6000_paired_end_sequencing
+S2:
+  flowcell_type_name: S2
+  request_type_key: illumina_htp_novaseq_6000_paired_end_sequencing

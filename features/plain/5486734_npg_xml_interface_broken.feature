@@ -52,6 +52,10 @@ Feature: NPG XML interface
                 <value>false</value>
               </property>
               <property>
+                <key>requested_flowcell_type</key>
+                <name>Flowcell type</name>
+              </property>              
+              <property>
                 <key>read_length</key>
                 <name>Read length</name>
                 <value>76</value>

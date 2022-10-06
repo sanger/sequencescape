@@ -210,4 +210,8 @@ FactoryBot.define do
       name { 'Standard' }
     end
   end
+
+  factory :flowcell_type do
+    sequence(:name) { |i| "Flowcell #{i}" }
+  end
 end

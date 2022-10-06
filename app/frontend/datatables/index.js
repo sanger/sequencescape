@@ -43,3 +43,4 @@ import "datatables.net-rowreorder-bs4/css/rowReorder.bootstrap4.min.css";
 // Load individual datatables implementations
 import "./tableSortable";
 import "./tableBatchEdit";
+import "./tablePipelineInboxColumnSearch";
