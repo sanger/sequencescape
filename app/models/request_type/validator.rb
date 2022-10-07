@@ -31,6 +31,29 @@ class RequestType::Validator < ApplicationRecord
     delegate :to_sentence, to: :to_a
   end
 
+  # Validates that the request type provided has a relation with a provided
+  # flowcell type name
+  class FlowcellTypeValidator
+    attr_reader :request_type_key
+
+    def initialize(request_type_key)
+      @request_type_key = request_type_key
+    end
+
+    def request_type
+      RequestType.find_by(key: request_type_key)
+    end
+
+    def include?(option)
+      request_type.flowcell_types.exists?(name: option)
+    end
+
+    def to_a
+      request_type.flowcell_types.pluck(:name).sort
+    end
+    delegate :to_sentence, to: :to_a
+  end
+
   ##
   # Array class that lets you set a default value
   # If first argument is an array, second argument is assumed to be default

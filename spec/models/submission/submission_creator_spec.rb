@@ -17,7 +17,7 @@ describe Submission::SubmissionCreator do
       end
 
       it 'finds the appropriate order fields' do
-        expect(creator.order_fields.length).to eq 5
+        expect(creator.order_fields.length).to eq 6
         expect(creator.order_fields).to include(
           FieldInfo.new(
             display_name: 'Fragment size required (from)',
