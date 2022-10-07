@@ -67,6 +67,7 @@ Feature: The XML interface to the samples
           <property><name>Organism Part</name><value></value></property>
           <property><name>Time Point</name><value></value></property>
           <property><name>Donor Id</name><value></value></property>
+          <property><name>Collected By</name><value/></property>
         </properties>
       </sample>
       """
