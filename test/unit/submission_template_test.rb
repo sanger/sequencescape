@@ -39,7 +39,7 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
       end
 
       should 'load the parameters properly' do
-        assert_equal 6, @order.input_field_infos.size
+        assert_equal 7, @order.input_field_infos.size
         assert_equal [37, 54, 76, 108], field('Read length').selection
         assert_equal 54, field('Read length').default_value
         assert_equal [@library_type.name], field('Library type').selection

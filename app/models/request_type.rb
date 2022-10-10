@@ -48,6 +48,8 @@ class RequestType < ApplicationRecord
   has_many :pipelines, through: :pipelines_request_types
   has_many :library_types_request_types, inverse_of: :request_type, dependent: :destroy
   has_many :library_types, through: :library_types_request_types
+  has_many :flowcell_types_request_types, inverse_of: :request_type, dependent: :destroy
+  has_many :flowcell_types, through: :flowcell_types_request_types
   has_many :request_type_validators, class_name: 'RequestType::Validator', dependent: :destroy
 
   belongs_to :pooling_method, class_name: 'RequestType::PoolingMethod'

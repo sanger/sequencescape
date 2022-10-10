@@ -77,5 +77,11 @@ RSpec.describe BulkSubmissionExcel::Download, type: :model, bulk_submission_exce
     it 'have the correct number of columns' do
       expect(download.column_list.count).to eq(configuration.columns.all.count)
     end
+
+    describe 'with requested_flowcell_type column' do
+      it 'includes requested_flowcell_type' do
+        expect(download.column_list.map(&:name)).to include('requested_flowcell_type')
+      end
+    end
   end
 end
