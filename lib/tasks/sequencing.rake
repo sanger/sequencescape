@@ -34,7 +34,7 @@ namespace :sequencing do
               RequestType::Validator.create!(
                 request_type: rt,
                 request_option: 'read_length',
-                valid_options: [150, 50, 75, 100]
+                valid_options: [50, 75, 100, 150]
               )
             end
         end
