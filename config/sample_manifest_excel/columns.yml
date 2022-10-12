@@ -853,8 +853,9 @@ priority:
   conditional_formattings:
     empty_cell:
     is_number:
-collected_by:
+collected_by_for_cardinal:
   heading: COLLECTED BY
+  updates: :collected_by
   unlocked: true
   validation:
     options:
@@ -869,7 +870,27 @@ collected_by:
       errorStyle: :stop
       errorTitle: "Collected By"
       error: "You must enter a collection site from the list provided."
-    range_name: :collected_by
+    range_name: :collected_by_for_cardinal
+  conditional_formattings:
+    empty_cell:
+collected_by_for_controls:
+  heading: COLLECTED BY
+  updates: :collected_by
+  unlocked: true
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: false
+      showDropDown: false
+      showInputMessage: true
+      promptTitle: "Collected By"
+      prompt: "Please enter a collection site from the provided list."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Collected By"
+      error: "You must enter a collection site from the list provided."
+    range_name: :collected_by_for_controls
   conditional_formattings:
     empty_cell:
 # LEGACY COLUMNS

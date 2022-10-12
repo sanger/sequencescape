@@ -64,3 +64,14 @@ control_type:
   options:
     - "positive"
     - "negative"
+collected_by_for_cardinal:
+  options:
+    - ELGH_Bradford_21034
+    - ELGH_London_21032
+    - UKB_Bristol_11028
+    - UKB_Newcastle_11027
+    - UKB_Reading_11026
+    - UKB_Stockport_11025
+collected_by_for_controls:
+  options:
+    - Control_Collection_Site

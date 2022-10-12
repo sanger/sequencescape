@@ -36,4 +36,18 @@ RSpec.describe SequencescapeExcel::RangeList, type: :model, sample_manifest_exce
   it 'will be comparable' do
     expect(described_class.new(ranges)).to eq(range_list)
   end
+
+  it 'has collected_by_for_cardinal ranges' do
+    static_range = range_list.find_by('collected_by_for_cardinal')
+    assert static_range.static?
+    expect(static_range.name).to eq 'collected_by_for_cardinal'
+    expect(static_range.options.count).to eq 6
+  end
+
+  it 'has collected_by_for_controls ranges' do
+    static_range = range_list.find_by('collected_by_for_controls')
+    assert static_range.static?
+    expect(static_range.name).to eq 'collected_by_for_controls'
+    expect(static_range.options.count).to eq 1
+  end
 end

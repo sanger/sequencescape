@@ -74,11 +74,14 @@ insdc_country:
   identifier: :name
   scope: :sorted_for_select
   scope_on: Insdc::Country
-collected_by:
+collected_by_for_cardinal:
   options:
-    - UKB_Reading_11026
-    - UKB_Newcastle_11027
-    - UKB_Stockport_11025
-    - UKB_Bristol_11028
-    - ELGH_London_21032
     - ELGH_Bradford_21034
+    - ELGH_London_21032
+    - UKB_Bristol_11028
+    - UKB_Newcastle_11027
+    - UKB_Reading_11026
+    - UKB_Stockport_11025
+collected_by_for_controls:
+  options:
+    - Control_Collection_Site
