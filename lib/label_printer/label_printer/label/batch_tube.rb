@@ -11,7 +11,7 @@ module LabelPrinter
         @stock = options[:stock]
       end
 
-      def top_line(tube)
+      def first_line(tube)
         stock.present? ? tube.name : tube.name_for_label
       end
 
