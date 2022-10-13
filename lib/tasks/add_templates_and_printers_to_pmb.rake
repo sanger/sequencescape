@@ -4,16 +4,19 @@ require_relative '../../config/config'
 
 namespace :pmb do
   task add_label_templates: :environment do
+    
+    pmbclient_v2 = LabelPrinter::PmbClient.base_url.gsub('v1','v2')
+
     class LabelTemplateCreator # rubocop:todo Style/Documentation
       attr_accessor :label_types
 
       class << self
         def label_template_url
-          "#{LabelPrinter::PmbClient.base_url}/label_templates"
+          "#{pmbclient_v2}/label_templates"
         end
 
         def label_type_url
-          "#{LabelPrinter::PmbClient.base_url}/label_types"
+          "#{pmbclient_v2}/label_types"
         end
 
         attr_reader :label_types
@@ -360,12 +363,12 @@ namespace :pmb do
           }
         end
 
-        def tube_label_template_1d
+        def sqsc_1dtube_label_template
           label_type_id = get_label_type_id('Tube')
           {
             'data' => {
               'attributes' => {
-                'name' => 'tube_label_template_1d',
+                'name' => 'sqsc_1dtube_label_template',
                 'label_type_id' => label_type_id,
                 'labels_attributes' => [
                   {
@@ -374,7 +377,7 @@ namespace :pmb do
                       {
                         'x_origin' => '0038',
                         'y_origin' => '0210',
-                        'field_name' => 'third_line',
+                        'field_name' => 'bottom_line',
                         'horizontal_magnification' => '05',
                         'vertical_magnification' => '05',
                         'font' => 'H',
@@ -384,7 +387,7 @@ namespace :pmb do
                       {
                         'x_origin' => '0070',
                         'y_origin' => '0210',
-                        'field_name' => 'second_line',
+                        'field_name' => 'middle_line',
                         'horizontal_magnification' => '05',
                         'vertical_magnification' => '05',
                         'font' => 'H',
@@ -394,7 +397,7 @@ namespace :pmb do
                       {
                         'x_origin' => '0120',
                         'y_origin' => '0210',
-                        'field_name' => 'first_line',
+                        'field_name' => 'top_line',
                         'horizontal_magnification' => '05',
                         'vertical_magnification' => '05',
                         'font' => 'H',
@@ -593,7 +596,7 @@ namespace :pmb do
           unregistered_templates = [
             { name: 'sqsc_96plate_label_template', type: BarcodePrinterType96Plate },
             { name: 'sqsc_96plate_label_template_code39', type: BarcodePrinterType96Plate },
-            { name: 'tube_label_template_1d', type: BarcodePrinterType1DTube },
+            { name: 'sqsc_1dtube_label_template', type: BarcodePrinterType1DTube },
             { name: 'sqsc_384plate_label_template', type: BarcodePrinterType384Plate },
             { name: 'plate_6mm_double', type: BarcodePrinterType384DoublePlate },
             { name: 'swipecard_barcode_template', type: nil }
@@ -628,7 +631,7 @@ namespace :pmb do
     end
 
     def printer_url
-      "#{LabelPrinter::PmbClient.base_url}/printers"
+      "#{pmbclient_v2}/printers"
     end
 
     def add_printers
