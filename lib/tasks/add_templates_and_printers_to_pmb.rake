@@ -4,19 +4,16 @@ require_relative '../../config/config'
 
 namespace :pmb do
   task add_label_templates: :environment do
-    
-    pmbclient_v2 = LabelPrinter::PmbClient.base_url.gsub('v1','v2')
-
     class LabelTemplateCreator # rubocop:todo Style/Documentation
       attr_accessor :label_types
 
       class << self
         def label_template_url
-          "#{pmbclient_v2}/label_templates"
+          "#{LabelPrinter::PmbClient.base_url}}/label_templates"
         end
 
         def label_type_url
-          "#{pmbclient_v2}/label_types"
+          "#{LabelPrinter::PmbClient.base_url_v1}/label_types"
         end
 
         attr_reader :label_types

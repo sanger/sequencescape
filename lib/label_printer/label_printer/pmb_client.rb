@@ -9,6 +9,10 @@ module LabelPrinter
       configatron.pmb_api
     end
 
+    def self.base_url_v1
+      configatron.pmb_api_v1
+    end
+
     def self.print_job_url
       "#{base_url}/print_jobs"
     end
