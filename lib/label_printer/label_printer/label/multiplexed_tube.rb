@@ -9,11 +9,11 @@ module LabelPrinter
         @count = options[:count]
       end
 
-      def top_line(tube)
+      def first_line(tube)
         tube.name_for_label.to_s
       end
 
-      def middle_line(tube)
+      def second_line(tube)
         tube.human_barcode
       end
     end
