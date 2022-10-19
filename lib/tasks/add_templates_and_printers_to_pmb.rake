@@ -9,7 +9,7 @@ namespace :pmb do
 
       class << self
         def label_template_url
-          "#{LabelPrinter::PmbClient.base_url}/label_templates"
+          "#{LabelPrinter::PmbClient.base_url_v1}/label_templates"
         end
 
         def label_type_url
@@ -628,7 +628,7 @@ namespace :pmb do
     end
 
     def printer_url
-      "#{LabelPrinter::PmbClient.base_url}/printers"
+      "#{LabelPrinter::PmbClient.base_url_v1}/printers"
     end
 
     def add_printers
