@@ -873,6 +873,7 @@ collected_by_for_cardinal:
     range_name: :collected_by_for_cardinal
   conditional_formattings:
     empty_cell:
+    is_error:
 collected_by_for_controls:
   heading: COLLECTED BY
   updates: :collected_by
@@ -893,6 +894,7 @@ collected_by_for_controls:
     range_name: :collected_by_for_controls
   conditional_formattings:
     empty_cell:
+    is_error:
 # LEGACY COLUMNS
 # If a column heading changes, we still need to map historical manifests back
 # to the correct entry, as manifests may be uploaded, or re-uploaded a long time
