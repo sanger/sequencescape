@@ -29,6 +29,10 @@ module LabelPrinter
       "#{base_url}/printers?filter[name]="
     end
 
+    def self.headers_v1
+      { content_type: 'application/json', accept: 'application/json' }
+    end
+
     def self.headers
       { content_type: 'application/vnd.api+json', accept: 'application/vnd.api+json' }
     end
