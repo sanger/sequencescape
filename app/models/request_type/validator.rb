@@ -45,6 +45,7 @@ class RequestType::Validator < ApplicationRecord
     end
 
     def include?(option)
+      return true if option.nil?
       request_type.flowcell_types.exists?(name: option)
     end
 
