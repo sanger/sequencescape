@@ -45,6 +45,7 @@ class RequestType::Validator < ApplicationRecord
     end
 
     def include?(option)
+      return true if option.nil?
       request_type.flowcell_types.exists?(name: option)
     end
 
@@ -52,6 +53,10 @@ class RequestType::Validator < ApplicationRecord
       request_type.flowcell_types.pluck(:name).sort
     end
     delegate :to_sentence, to: :to_a
+
+    def allow_blank?
+      true
+    end
   end
 
   ##
@@ -119,5 +124,10 @@ class RequestType::Validator < ApplicationRecord
 
   def type_cast
     { 'read_length' => :to_i, 'insert_size' => :to_i }[request_option]
+  end
+
+  def allow_blank?
+    return false unless valid_options.respond_to? :allow_blank?
+    valid_options.allow_blank?
   end
 end
