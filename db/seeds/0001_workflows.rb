@@ -1479,7 +1479,7 @@ RequestType.find_each do |request_type|
   read_lengths =
     {
       # By request class
-      'HiSeqSequencingRequest' => [50, 75, 100],
+      'HiSeqSequencingRequest' => [50, 75, 100, 150],
       'MiSeqSequencingRequest' => [25, 50, 130, 150, 250, 300],
       'SequencingRequest' => [37, 54, 76, 108]
     }[
