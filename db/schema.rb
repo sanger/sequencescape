@@ -1379,6 +1379,7 @@ ActiveRecord::Schema.define(version: 2022_10_13_132248) do
     t.datetime "date_of_consent_withdrawn"
     t.integer "user_id_of_consent_withdrawn"
     t.boolean "consent_withdrawn", default: false, null: false
+    t.string "collected_by", comment: "Name of persons or institute who collected the specimen"
     t.index ["sample_ebi_accession_number"], name: "index_sample_metadata_on_sample_ebi_accession_number"
     t.index ["sample_id"], name: "index_sample_metadata_on_sample_id"
     t.index ["supplier_name"], name: "index_sample_metadata_on_supplier_name"
