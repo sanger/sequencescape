@@ -118,6 +118,9 @@ en:
 
     sample:
       metadata:
+        collected_by:
+          label: Collected By
+
         organism:
           label: Organism
           edit_info: "Array Express"

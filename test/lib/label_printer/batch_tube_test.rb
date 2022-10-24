@@ -21,7 +21,7 @@ class BatchTubeTest < ActiveSupport::TestCase
 
       assert_equal 1, tube_label.tubes.count
       tube = tube_label.tubes.first
-      assert_equal request.target_asset.labware.stock_asset.name, tube_label.top_line(tube)
+      assert_equal request.target_asset.labware.stock_asset.name, tube_label.first_line(tube)
     end
   end
 
@@ -37,7 +37,7 @@ class BatchTubeTest < ActiveSupport::TestCase
 
       assert_equal 1, tube_label.tubes.count
       tube = tube_label.tubes.first
-      assert_equal request.target_asset.labware.name_for_label, tube_label.top_line(tube)
+      assert_equal request.target_asset.labware.name_for_label, tube_label.first_line(tube)
     end
   end
 end

@@ -697,6 +697,7 @@ cardinal:
     - :sanger_sample_id
     - :supplier_name
     - :volume
+    - :collected_by_for_cardinal
 tube_controls:
   heading: "Control tubes"
   asset_type: "1dtube"
@@ -705,3 +706,4 @@ tube_controls:
     - :sanger_sample_id
     - :supplier_name
     - :control_type
+    - :collected_by_for_controls

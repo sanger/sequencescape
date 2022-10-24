@@ -109,6 +109,13 @@ describe UatActions::GenerateSampleManifest do
         expect(manifest.samples.count).to eq(count)
         expect(manifest.samples.first.primary_aliquot.study).to eq(study)
       end
+
+      it 'creates sample with sample metatdata' do
+        uat_action.generate_manifest(manifest)
+        manifest.samples.reset
+        expect(manifest.samples.first.sample_metadata).to be_present
+        expect(manifest.samples.first.sample_metadata.collected_by).to eq 'Sanger'
+      end
     end
   end
 
