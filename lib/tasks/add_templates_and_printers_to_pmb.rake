@@ -9,11 +9,11 @@ namespace :pmb do
 
       class << self
         def label_template_url
-          "#{LabelPrinter::PmbClient.base_url}/label_templates"
+          "#{LabelPrinter::PmbClient.base_url_v1}/label_templates"
         end
 
         def label_type_url
-          "#{LabelPrinter::PmbClient.base_url}/label_types"
+          "#{LabelPrinter::PmbClient.base_url_v1}/label_types"
         end
 
         attr_reader :label_types
@@ -61,15 +61,15 @@ namespace :pmb do
         end
 
         def get_label_types
-          res = RestClient.get(label_type_url, LabelPrinter::PmbClient.headers)
+          res = RestClient.get(label_type_url, LabelPrinter::PmbClient.headers_v1)
           @label_types = get_names_and_ids(res)
         end
 
         def get_label_type_id(name)
-          return label_types[name] if label_types.include? name.downcase
+          return label_types[name.downcase] if label_types.include? name.downcase
 
           label_type = label_type_params(name)
-          res = RestClient.post(label_type_url, label_type.to_json, LabelPrinter::PmbClient.headers)
+          res = RestClient.post(label_type_url, label_type.to_json, LabelPrinter::PmbClient.headers_v1)
           JSON.parse(res)['data']['id']
         end
 
@@ -566,14 +566,14 @@ namespace :pmb do
         end
 
         def get_label_templates
-          res = RestClient.get(label_template_url, LabelPrinter::PmbClient.headers)
+          res = RestClient.get(label_template_url, LabelPrinter::PmbClient.headers_v1)
           get_names_and_ids(res)
         end
 
         def create_label_template(name)
           puts "Creating template: #{name}"
           label_template = eval name
-          RestClient.post(label_template_url, label_template.to_json, LabelPrinter::PmbClient.headers)
+          RestClient.post(label_template_url, label_template.to_json, LabelPrinter::PmbClient.headers_v1)
         end
 
         def get_names_and_ids(res)
@@ -618,17 +618,17 @@ namespace :pmb do
       RestClient.post(
         printer_url,
         { 'data' => { 'attributes' => { 'name' => name } } },
-        LabelPrinter::PmbClient.headers
+        LabelPrinter::PmbClient.headers_v1
       )
     end
 
     def get_pmb_printers_names
-      res = RestClient.get(printer_url, LabelPrinter::PmbClient.headers)
+      res = RestClient.get(printer_url, LabelPrinter::PmbClient.headers_v1)
       JSON.parse(res)['data'].map { |printer| printer['attributes']['name'] }
     end
 
     def printer_url
-      "#{LabelPrinter::PmbClient.base_url}/printers"
+      "#{LabelPrinter::PmbClient.base_url_v1}/printers"
     end
 
     def add_printers
