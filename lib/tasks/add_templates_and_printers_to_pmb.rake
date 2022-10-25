@@ -66,7 +66,7 @@ namespace :pmb do
         end
 
         def get_label_type_id(name)
-          return label_types[name] if label_types.include? name.downcase
+          return label_types[name.downcase] if label_types.include? name.downcase
 
           label_type = label_type_params(name)
           res = RestClient.post(label_type_url, label_type.to_json, LabelPrinter::PmbClient.headers_v1)
