@@ -572,10 +572,7 @@ namespace :pmb do
 
         def create_label_template(name)
           puts "Creating template: #{name}"
-          puts "Headers: #{label_template_url}"
-          puts "URL: #{LabelPrinter::PmbClient.headers_v1}"
           label_template = eval name
-          puts "JSON: #{label_template.to_json}"
           RestClient.post(label_template_url, label_template.to_json, LabelPrinter::PmbClient.headers_v1)
         end
 
