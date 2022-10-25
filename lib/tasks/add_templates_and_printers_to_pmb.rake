@@ -9,11 +9,11 @@ namespace :pmb do
 
       class << self
         def label_template_url
-          "#{LabelPrinter::PmbClient.base_url}/label_templates"
+          "#{LabelPrinter::PmbClient.base_url_v1}/label_templates"
         end
 
         def label_type_url
-          "#{LabelPrinter::PmbClient.base_url}/label_types"
+          "#{LabelPrinter::PmbClient.base_url_v1}/label_types"
         end
 
         attr_reader :label_types
@@ -61,15 +61,15 @@ namespace :pmb do
         end
 
         def get_label_types
-          res = RestClient.get(label_type_url, LabelPrinter::PmbClient.headers)
+          res = RestClient.get(label_type_url, LabelPrinter::PmbClient.headers_v1)
           @label_types = get_names_and_ids(res)
         end
 
         def get_label_type_id(name)
-          return label_types[name] if label_types.include? name.downcase
+          return label_types[name.downcase] if label_types.include? name.downcase
 
           label_type = label_type_params(name)
-          res = RestClient.post(label_type_url, label_type.to_json, LabelPrinter::PmbClient.headers)
+          res = RestClient.post(label_type_url, label_type.to_json, LabelPrinter::PmbClient.headers_v1)
           JSON.parse(res)['data']['id']
         end
 
@@ -360,12 +360,12 @@ namespace :pmb do
           }
         end
 
-        def sqsc_1dtube_label_template
+        def tube_label_template_1d
           label_type_id = get_label_type_id('Tube')
           {
             'data' => {
               'attributes' => {
-                'name' => 'sqsc_1dtube_label_template',
+                'name' => 'tube_label_template_1d',
                 'label_type_id' => label_type_id,
                 'labels_attributes' => [
                   {
@@ -374,7 +374,7 @@ namespace :pmb do
                       {
                         'x_origin' => '0038',
                         'y_origin' => '0210',
-                        'field_name' => 'bottom_line',
+                        'field_name' => 'third_line',
                         'horizontal_magnification' => '05',
                         'vertical_magnification' => '05',
                         'font' => 'H',
@@ -384,7 +384,7 @@ namespace :pmb do
                       {
                         'x_origin' => '0070',
                         'y_origin' => '0210',
-                        'field_name' => 'middle_line',
+                        'field_name' => 'second_line',
                         'horizontal_magnification' => '05',
                         'vertical_magnification' => '05',
                         'font' => 'H',
@@ -394,7 +394,7 @@ namespace :pmb do
                       {
                         'x_origin' => '0120',
                         'y_origin' => '0210',
-                        'field_name' => 'top_line',
+                        'field_name' => 'first_line',
                         'horizontal_magnification' => '05',
                         'vertical_magnification' => '05',
                         'font' => 'H',
@@ -566,14 +566,14 @@ namespace :pmb do
         end
 
         def get_label_templates
-          res = RestClient.get(label_template_url, LabelPrinter::PmbClient.headers)
+          res = RestClient.get(label_template_url, LabelPrinter::PmbClient.headers_v1)
           get_names_and_ids(res)
         end
 
         def create_label_template(name)
           puts "Creating template: #{name}"
           label_template = eval name
-          RestClient.post(label_template_url, label_template.to_json, LabelPrinter::PmbClient.headers)
+          RestClient.post(label_template_url, label_template.to_json, LabelPrinter::PmbClient.headers_v1)
         end
 
         def get_names_and_ids(res)
@@ -593,7 +593,7 @@ namespace :pmb do
           unregistered_templates = [
             { name: 'sqsc_96plate_label_template', type: BarcodePrinterType96Plate },
             { name: 'sqsc_96plate_label_template_code39', type: BarcodePrinterType96Plate },
-            { name: 'sqsc_1dtube_label_template', type: BarcodePrinterType1DTube },
+            { name: 'tube_label_template_1d', type: BarcodePrinterType1DTube },
             { name: 'sqsc_384plate_label_template', type: BarcodePrinterType384Plate },
             { name: 'plate_6mm_double', type: BarcodePrinterType384DoublePlate },
             { name: 'swipecard_barcode_template', type: nil }
@@ -618,17 +618,17 @@ namespace :pmb do
       RestClient.post(
         printer_url,
         { 'data' => { 'attributes' => { 'name' => name } } },
-        LabelPrinter::PmbClient.headers
+        LabelPrinter::PmbClient.headers_v1
       )
     end
 
     def get_pmb_printers_names
-      res = RestClient.get(printer_url, LabelPrinter::PmbClient.headers)
+      res = RestClient.get(printer_url, LabelPrinter::PmbClient.headers_v1)
       JSON.parse(res)['data'].map { |printer| printer['attributes']['name'] }
     end
 
     def printer_url
-      "#{LabelPrinter::PmbClient.base_url}/printers"
+      "#{LabelPrinter::PmbClient.base_url_v1}/printers"
     end
 
     def add_printers

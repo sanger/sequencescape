@@ -100,7 +100,6 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     custom_attribute(:sample_ebi_accession_number)
     custom_attribute(:sample_description)
     custom_attribute(:sample_sra_hold, in: Sample::SRA_HOLD_VALUES)
-
     custom_attribute(:sibling)
     custom_attribute(:is_resubmitted) # TODO[xxx]: selection of yes/no?
     custom_attribute(:date_of_sample_collection) # TODO[xxx]: Date field?
@@ -112,6 +111,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     custom_attribute(:concentration_determined_by)
     custom_attribute(:sample_type)
     custom_attribute(:sample_storage_conditions)
+    custom_attribute(:collected_by)
 
     # Array Express
     custom_attribute(:genotype)

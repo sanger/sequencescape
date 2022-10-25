@@ -9,7 +9,7 @@ module LabelPrinter
         @only_first_label = options[:only_first_label]
       end
 
-      def top_line(_tube = nil)
+      def first_line(_tube = nil)
         sample_manifest.study.abbreviation
       end
 

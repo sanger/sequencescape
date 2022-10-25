@@ -4,7 +4,7 @@
 1D Tube:
   printer_type_id: 2
   type: BarcodePrinterType1DTube
-  label_template_name: sqsc_1dtube_label_template
+  label_template_name: tube_label_template_1d
 96 Well Plate:
   printer_type_id: 1
   type: BarcodePrinterType96Plate

@@ -15,8 +15,8 @@ Feature: Print truncated sanger sample id on sample tube barcode
     When Pmb has the required label templates
     And I print the following labels in the asset group
       | Field                 | Value   |
-      |top_line               |         |
-      |middle_line            | 17      |
+      |first_line               |         |
+      |second_line            | 17      |
       |round_label_top_line   | NT      |
       |round_label_bottom_line| 17      |
     Then I should see "Your 1 label(s) have been sent to printer xyz"
@@ -26,8 +26,8 @@ Feature: Print truncated sanger sample id on sample tube barcode
     When Pmb has the required label templates
     And I print the following labels in the asset group
       | Field                 | Value            |
-      |top_line               | Test Sample Tube |
-      |middle_line            | 17               |
+      |first_line               | Test Sample Tube |
+      |second_line            | 17               |
       |round_label_top_line   | NT               |
       |round_label_bottom_line| 17               |
     Then I should see "Your 1 label(s) have been sent to printer xyz"
@@ -38,8 +38,8 @@ Feature: Print truncated sanger sample id on sample tube barcode
     When Pmb has the required label templates
     And I print the following labels in the asset group
       | Field                 | Value            |
-      |top_line               | Test Sample Tube |
-      |middle_line            | 17               |
+      |first_line               | Test Sample Tube |
+      |second_line            | 17               |
       |round_label_top_line   | NT               |
       |round_label_bottom_line| 17               |
     Then I should see "Your 1 label(s) have been sent to printer xyz"
@@ -50,8 +50,8 @@ Feature: Print truncated sanger sample id on sample tube barcode
     When Pmb has the required label templates
     And I print the following labels in the asset group
       | Field                 | Value            |
-      |top_line               | TW123456         |
-      |middle_line            | 17               |
+      |first_line               | TW123456         |
+      |second_line            | 17               |
       |round_label_top_line   | NT               |
       |round_label_bottom_line| 17               |
     Then I should see "Your 1 label(s) have been sent to printer xyz"
@@ -62,8 +62,8 @@ Feature: Print truncated sanger sample id on sample tube barcode
     When Pmb has the required label templates
     And I print the following labels in the asset group
       | Field                 | Value            |
-      |top_line               | 1234567          |
-      |middle_line            | 17               |
+      |first_line               | 1234567          |
+      |second_line            | 17               |
       |round_label_top_line   | NT               |
       |round_label_bottom_line| 17               |
     Then I should see "Your 1 label(s) have been sent to printer xyz"
