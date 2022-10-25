@@ -341,6 +341,13 @@ class Receptacle < Asset
     requests_as_target.order(id: :asc).index_by(&:asset_id).values
   end
 
+  def allow_to_remove_downstream_aliquots?
+    # DPL-451:
+    # If the labware has descendants that are involved in a sequencing batch that has
+    # been released, do not remove any data from downstream aliquots, or from the MLWH.
+    downstream_assets.map(&:creation_batches).flatten.all? { |batch| !batch.released? }
+  end
+
   private
 
   def set_external_release(state) # rubocop:todo Metrics/MethodLength
@@ -366,12 +373,5 @@ class Receptacle < Asset
     yield
     save!
     events.create_external_release!(!external_release_nil_before) unless external_release.nil?
-  end
-
-  def allow_to_remove_downstream_aliquots?
-    # DPL-451:
-    # If the labware has descendants that are involved in a sequencing batch that has
-    # been released, do not remove any data from downstream aliquots, or from the MLWH.
-    downstream_assets.map(&:creation_batches).flatten.all? { |batch| !batch.released? }
   end
 end
