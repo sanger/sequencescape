@@ -34,9 +34,19 @@ class UatActions::GenerateTagLayoutTemplate < UatActions
                include_blank: 'Select a direction...'
              }
 
+  form_field :walking_by_algorithm,
+             :select,
+             label: 'Walking By',
+             help: 'Walking by algorithms',
+             select_options: -> { TagLayoutTemplatesController::WALKING_ALGORITHMS },
+             options: {
+               include_blank: 'Select a walking by...'
+             }
+
   validates :name, presence: { message: 'needs a name' }
   validates :tag_group_name, presence: { message: 'needs a choice' }
   validates :direction_algorithm, presence: { message: 'needs a choice' }
+  validates :walking_by_algorithm, presence: { message: 'needs a choice' }
 
   def perform
     report[:name] = name
@@ -47,7 +57,7 @@ class UatActions::GenerateTagLayoutTemplate < UatActions
       tag_group_id: tag_group.id,
       tag2_group_id: tag2_group&.id,
       direction_algorithm: direction_algorithm,
-      walking_algorithm: 'TagLayout::WalkWellsOfPlate'
+      walking_algorithm: walking_by_algorithm
     }
 
     tlt = TagLayoutTemplate.create!(tlt_parameters)
