@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 # Lays out the tags so that they are column then row ordered.
-module TagLayout::InColumnsThenRows
+# This version has a variation of the tag 2 order.
+module TagLayout::InColumnsThenRowsAlternate
   def self.direction
-    'column then row'
+    'column then row alternate'
   end
 
   # We don't rely on well sorting, so lets not
@@ -21,8 +22,9 @@ module TagLayout::InColumnsThenRows
   end
 
   # Returns the tag index for the secondary tag
-  # e.g. 4 tags in group, A1 = 1, B1 = 3, A2 = 2, B2 = 4
+  # e.g. 4 tags in group, A1 = 1, B1 = 2, A2 = 3, B2 = 4
+  # This is the alternate arrangement
   def self.tag2_index(row, column, scale, _height, _width)
-    (column % scale) + ((row % scale) * scale)
+    (column % scale) * scale + (row % scale)
   end
 end
