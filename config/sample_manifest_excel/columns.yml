@@ -895,6 +895,27 @@ collected_by_for_controls:
   conditional_formattings:
     empty_cell:
     is_error:
+retention_instruction:
+  heading: RETENTION INSTRUCTION
+  updates: retention_instruction
+  unlocked: true
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: false
+      showDropDown: false
+      showInputMessage: true
+      promptTitle: "Retention Instruction"
+      prompt: "Please select a retention instruction for the plate from the provided list."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Retention Instruction"
+      error: "You must enter a retention instruction from the list provided."
+    range_name: :retention_instruction_options
+  conditional_formattings:
+    empty_cell:
+    is_error:
 # LEGACY COLUMNS
 # If a column heading changes, we still need to map historical manifests back
 # to the correct entry, as manifests may be uploaded, or re-uploaded a long time
