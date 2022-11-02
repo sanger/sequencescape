@@ -736,4 +736,91 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
       expect(sample_manifest_asset.sample.control_type).to be_nil
     end
   end
+
+  describe SequencescapeExcel::SpecialisedField::RetentionInstruction do
+    let(:asset_plate) { create :plate_with_untagged_wells, sample_count: 1 }
+    let(:asset) { asset_plate.wells.first }
+    let(:user) { create :user }
+
+    it 'will be invalid if the value is not set' do
+      sf = described_class.new(value: nil, sample_manifest_asset: sample_manifest_asset)
+
+      expect(sf).not_to be_valid
+      expect(sf.errors.full_messages).to include('Retention instruction can\'t be blank')
+    end
+
+    it 'will be valid if the value matches one of the expected values' do
+      expect(described_class.new(value: 'Long term storage', sample_manifest_asset: sample_manifest_asset)).to be_valid
+    end
+
+    it 'will be invalid if the value does not match one of the expected values' do
+      sf = described_class.new(value: 'unknown', sample_manifest_asset: sample_manifest_asset)
+
+      expect(sf).not_to be_valid
+      expect(sf.errors.full_messages).to include('the retention instruction value unknown was not recognised.')
+    end
+
+    it 'will create plate custom metadata on the plate and set the retention instruction choice' do
+      sf = described_class.new(value: 'Long term storage', sample_manifest_asset: sample_manifest_asset)
+      sf.update
+
+      expect(sf.asset.plate.custom_metadatum_collection.metadata.values.count).to eq(1)
+      expect(sf.asset.plate.custom_metadatum_collection.metadata.values).to include('Long term storage')
+    end
+
+    it 'will update any existing plate custom metadata on the plate to add the retention instruction choice' do
+      cm =
+        CustomMetadatumCollection.new(
+          user: sample_manifest.user,
+          asset: asset.plate,
+          metadata: {
+            'some_existing_metadata' => 'some_value'
+          }
+        )
+      asset.plate.custom_metadatum_collection = cm
+      cm.save
+
+      sf = described_class.new(value: 'Long term storage', sample_manifest_asset: sample_manifest_asset)
+      sf.update
+
+      expect(sf.asset.plate.custom_metadatum_collection.metadata.values.count).to eq(2)
+      expect(sf.asset.plate.custom_metadatum_collection.metadata.values).to include('Long term storage')
+    end
+
+    it 'will be valid if the plate already contains a matching retention instruction metadata' do
+      cm =
+        CustomMetadatumCollection.new(
+          user: sample_manifest.user,
+          asset: asset.plate,
+          metadata: {
+            'retention_instructions' => 'Long term storage'
+          }
+        )
+      asset.plate.custom_metadatum_collection = cm
+      cm.save
+
+      sf = described_class.new(value: 'Long term storage', sample_manifest_asset: sample_manifest_asset)
+      sf.update
+    end
+
+    it 'will be invalid if the plate contains a non-matching retention instruction value' do
+      cm =
+        CustomMetadatumCollection.new(
+          user: sample_manifest.user,
+          asset: asset.plate,
+          metadata: {
+            'retention_instruction' => 'Destroy after 2 years'
+          }
+        )
+      asset.plate.custom_metadatum_collection = cm
+      cm.save
+
+      sf = described_class.new(value: 'Long term storage', sample_manifest_asset: sample_manifest_asset)
+
+      expect(sf).not_to be_valid
+      expect(sf.errors.full_messages).to include(
+        'the retention instruction value Long term storage must match for all wells on the same plate.'
+      )
+    end
+  end
 end
