@@ -14,11 +14,12 @@ module SequencescapeExcel
         return unless valid?
 
         # do nothing unless we can access the plate (assuming asset will be a well receptacle)
-        return if asset.plate.blank?
+        asset_plate = asset.plate
+        return if asset_plate.blank?
 
         # most likely as we process the sample rows for a plate that a previous row will have
         # already created the retention instructions field in the plate metadata
-        if asset.plate.custom_metadatum_collection.present?
+        if asset_plate.custom_metadatum_collection.present?
           check_and_update_existing_custom_metadatum_collection
         else
           create_custom_metadatum_collection
@@ -27,11 +28,16 @@ module SequencescapeExcel
 
       def check_retention_instruction_matches_existing
         current_collection = asset.plate.custom_metadatum_collection
+
+        # ok if no custom metadata stored yet
         return if current_collection.blank?
 
         current_metadata = current_collection.metadata.symbolize_keys
+
+        # ok if we have other metadata with different keys
         return unless current_metadata.key?(:retention_instruction)
 
+        # ok if the already stored metadata value matches (set by another well already)
         return if current_metadata[:retention_instruction] == value
 
         errors.add(:base, "the retention instruction value #{value} must match for all wells on the same plate.")
