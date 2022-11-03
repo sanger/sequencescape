@@ -3,7 +3,7 @@
 module SequencescapeExcel
   module SpecialisedField
     ##
-    # Sets Retention Instruction on the plate
+    # Sets Retention Instruction on the plate custom metadata
     class RetentionInstruction
       include Base
       include ValueRequired
@@ -40,12 +40,13 @@ module SequencescapeExcel
       end
 
       def check_retention_instruction_matches_existing
-        cmc = asset.plate.custom_metadatum_collection
-        return if cmc.blank?
+        current_collection = asset.plate.custom_metadatum_collection
+        return if current_collection.blank?
 
-        return unless cmc.metadata.symbolize_keys.key?(:retention_instruction)
+        current_metadata = current_collection.metadata.symbolize_keys
+        return unless current_metadata.key?(:retention_instruction)
 
-        return if cmc.metadata.symbolize_keys[:retention_instruction] == value
+        return if current_metadata[:retention_instruction] == value
 
         errors.add(:base, "the retention instruction value #{value} must match for all wells on the same plate.")
       end
@@ -53,20 +54,22 @@ module SequencescapeExcel
       private
 
       def create_custom_metadatum_collection
+        current_plate = asset.plate
         cm =
           CustomMetadatumCollection.new(
             user: sample_manifest.user,
-            asset: asset.plate,
+            asset: current_plate,
             metadata: {
               retention_instruction: value
             }
           )
-        asset.plate.custom_metadatum_collection = cm
+        current_plate.custom_metadatum_collection = cm
         cm.save!
       end
 
       def check_and_update_existing_custom_metadatum_collection
-        current_metadata = asset.plate.custom_metadatum_collection.metadata.symbolize_keys
+        current_collection = asset.plate.custom_metadatum_collection
+        current_metadata = current_collection.metadata.symbolize_keys
 
         # if the custom metadata already contains a retention instructions key (set by a
         # previous sample row) then the validation has checked it matches so there is nothing
@@ -74,9 +77,7 @@ module SequencescapeExcel
         return if current_metadata.key?(:retention_instruction)
 
         # otherwise we need add the retention instructions metadata field to the existing collection
-        asset.plate.custom_metadatum_collection.update!(
-          metadata: current_metadata.merge({ retention_instruction: value })
-        )
+        current_collection.update!(metadata: current_metadata.merge({ retention_instruction: value }))
       end
     end
   end
