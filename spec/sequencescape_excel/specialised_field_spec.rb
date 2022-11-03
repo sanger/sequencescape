@@ -753,13 +753,6 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
       expect(described_class.new(value: 'Long term storage', sample_manifest_asset: sample_manifest_asset)).to be_valid
     end
 
-    it 'will be invalid if the value does not match one of the expected values' do
-      sf = described_class.new(value: 'unknown', sample_manifest_asset: sample_manifest_asset)
-
-      expect(sf).not_to be_valid
-      expect(sf.errors.full_messages).to include('the retention instruction value unknown was not recognised.')
-    end
-
     it 'will create plate custom metadata on the plate and set the retention instruction choice' do
       sf = described_class.new(value: 'Long term storage', sample_manifest_asset: sample_manifest_asset)
       sf.update

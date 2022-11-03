@@ -8,14 +8,6 @@ module SequencescapeExcel
       include Base
       include ValueRequired
 
-      # TODO: is there a way to get this list from the sample excel ranges?
-      RETENTION_INSTRUCTION_OPTIONS = [
-        'Destroy after 2 years',
-        'Return to customer after 2 years',
-        'Long term storage'
-      ].freeze
-
-      validate :check_retention_instruction_matches_expected, if: :value_present?
       validate :check_retention_instruction_matches_existing, if: :value_present?
 
       def update(_attributes = {})
@@ -31,12 +23,6 @@ module SequencescapeExcel
         else
           create_custom_metadatum_collection
         end
-      end
-
-      def check_retention_instruction_matches_expected
-        return if RETENTION_INSTRUCTION_OPTIONS.include?(value)
-
-        errors.add(:base, "the retention instruction value #{value} was not recognised.")
       end
 
       def check_retention_instruction_matches_existing
