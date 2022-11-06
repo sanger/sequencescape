@@ -231,21 +231,21 @@ supplier_name:
     options:
       type: :textLength
       operator: :lessThanOrEqual
-      formula1: "20"
+      formula1: "40"
       allowBlank: false
       showInputMessage: true
       promptTitle: "Supplier Sample Name"
-      prompt: "Please enter a sample name up to a maximum of 20 characters in length. Only include characters A-Z, 0-9 and underscores."
+      prompt: "Please enter a sample name up to a maximum of 40 characters in length. Only include characters A-Z, 0-9 and underscores."
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Supplier Sample Name"
-      error: "Name must be a maximum of 20 characters in length."
+      error: "Name must be a maximum of 40 characters in length."
   conditional_formattings:
     empty_cell:
     len:
       formula:
         operator: ">"
-        operand: 20
+        operand: 40
 cohort:
   heading: COHORT
   unlocked: true
