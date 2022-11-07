@@ -636,13 +636,8 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
     end
 
     context 'supplier sample name' do
-      let(:data1) do
-        hash = {supplier_name: 'N' * 40, mother: 'M' * 40, father: 'F' * 40, sibling: 'S' * 40}
-        data.merge(hash)
-      end
-      let(:attributes1) do
-        attributes.merge(data:data1)
-      end
+      let(:data1) { data.merge({ supplier_name: 'N' * 40, mother: 'M' * 40, father: 'F' * 40, sibling: 'S' * 40 }) }
+      let(:attributes1) { attributes.merge(data: data1) }
 
       it 'allows supplier sample name upto 40 characters' do
         worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes1)
