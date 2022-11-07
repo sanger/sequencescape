@@ -180,7 +180,6 @@ plate_library:
     - :sample_ebi_accession_number
     - :donor_id
     - :primer_panel
-    - :retention_instruction
 plate_chromium_library:
   heading: "Chromium Library Plate"
   asset_type: "library_plate"
@@ -238,7 +237,6 @@ plate_chromium_library:
     - :disease
     - :sample_ebi_accession_number
     - :donor_id
-    - :retention_instruction
 tube_default:
   heading: "Default Tube"
   asset_type: "1dtube"
