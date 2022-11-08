@@ -105,7 +105,7 @@ describe 'Create a study' do
     end
 
     choose('Open (ENA)', allow_label_click: true)
-    expect(page).not_to have_content('HuMFre approval number')
+    expect(page).to have_content('HuMFre approval number')
     click_button 'Create'
     expect(page).to have_content('Your study has been created')
 
