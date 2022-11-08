@@ -64,9 +64,9 @@ describe 'Create a study' do
     click_link 'Create Study'
     expect(page).to have_content('Study Create')
     choose('Managed (EGA)', allow_label_click: true)
-    expect(page).to have_content('HMDMC approval number')
+    expect(page).to have_content('HuMFre approval number')
     click_button 'Create'
-    expect(page).not_to have_content "Study metadata hmdmc approval number can't be blank"
+    expect(page).not_to have_content "Study metadata HuMFre approval number can't be blank"
   end
 
   it 'create open study', js: true do
@@ -105,7 +105,7 @@ describe 'Create a study' do
     end
 
     choose('Open (ENA)', allow_label_click: true)
-    expect(page).not_to have_content('HMDMC approval number')
+    expect(page).not_to have_content('HuMFre approval number')
     click_button 'Create'
     expect(page).to have_content('Your study has been created')
 

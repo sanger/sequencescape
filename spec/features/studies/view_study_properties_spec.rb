@@ -12,7 +12,7 @@ describe 'View study properties' do
     visit study_path(study)
     click_link 'Study details'
     expect(page).to have_content('Alignments in BAM: true')
-    expect(page).not_to have_content('HMDMC approval number: ')
+    expect(page).not_to have_content('HuMFre approval number: ')
     expect(page).to have_content("Prelim ID: #{prelim_id}")
   end
 
@@ -24,6 +24,6 @@ describe 'View study properties' do
     login_user(user)
     visit study_path(study)
     click_link 'Study details'
-    expect(page).to have_content('HMDMC approval number: 12345')
+    expect(page).to have_content('HuMFre approval number: 12345')
   end
 end
