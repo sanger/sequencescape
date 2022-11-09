@@ -342,6 +342,9 @@ class Receptacle < Asset
     requests_as_target.order(id: :asc).index_by(&:asset_id).values
   end
 
+  
+  private
+
   def set_external_release(state) # rubocop:todo Metrics/MethodLength
     update_external_release do
       if state == 'failed'
