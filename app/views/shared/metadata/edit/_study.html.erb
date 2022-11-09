@@ -46,9 +46,10 @@
         <%= metadata_fields.text_field(:ega_dac_accession_number) %>
         <%= metadata_fields.text_field(:ega_policy_accession_number) %>
         <%= metadata_fields.text_field(:array_express_accession_number) if study.for_array_express? %>
+        <%= metadata_fields.text_field :hmdmc_approval_number unless study.new_record?%>
       <% end %>
 
-      <%= metadata_fields.text_field :hmdmc_approval_number %>
+      <%= metadata_fields.text_field :hmdmc_approval_number if study.new_record?%>
 
       <%= metadata_fields.select(:data_release_timing, Study::DATA_RELEASE_TIMINGS + [ Study::DATA_RELEASE_TIMING_NEVER ]) %>
       <%
