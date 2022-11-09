@@ -634,5 +634,56 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
         expect(SampleManifestAsset.find_by(sanger_sample_id: missing_ss_id)).to be_nil
       end
     end
+
+    context 'supplier sample name' do
+      let(:data1) { data.merge({ supplier_name: 'N' * 40, mother: 'M' * 40, father: 'F' * 40, sibling: 'S' * 40 }) }
+      let(:attributes1) { attributes.merge(data: data1) }
+
+      it 'allows supplier sample name upto 40 characters' do
+        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes1)
+        save_file
+        column = worksheet.columns.find_by(:name, :supplier_name)
+        options = column.validation.options
+        expect(options[:type]).to eq(:textLength)
+        expect(options[:formula1]).to eq('40')
+        expect(options[:prompt]).to include('sample name up to a maximum of 40 characters')
+        expect(options[:error]).to include('must be a maximum of 40 characters')
+        expect(spreadsheet.sheet(0).cell(worksheet.first_row, column.number)).to eq(data1[:supplier_name])
+      end
+
+      it 'allows mother reference to an existing supplier sample name upto 40 characters' do
+        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes1)
+        save_file
+        column = worksheet.columns.find_by(:name, :mother)
+        options = column.validation.options
+        expect(options[:type]).to eq(:textLength)
+        expect(options[:formula1]).to eq('40')
+        expect(options[:prompt]).to include('existing supplier sample name')
+        expect(options[:error]).to include('must be a maximum of 40 characters')
+        expect(spreadsheet.sheet(0).cell(worksheet.first_row, column.number)).to eq(data1[:mother])
+      end
+
+      it 'allows father reference to an existing supplier sample name upto 40 characters' do
+        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes1)
+        save_file
+        column = worksheet.columns.find_by(:name, :father)
+        options = column.validation.options
+        expect(options[:formula1]).to eq('40')
+        expect(options[:prompt]).to include('existing supplier sample name')
+        expect(options[:error]).to include('must be a maximum of 40 characters')
+        expect(spreadsheet.sheet(0).cell(worksheet.first_row, column.number)).to eq(data1[:father])
+      end
+
+      it 'allows sibling reference to an existing supplier sample name upto 40 characters' do
+        worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes1)
+        save_file
+        column = worksheet.columns.find_by(:name, :sibling)
+        options = column.validation.options
+        expect(options[:formula1]).to eq('40')
+        expect(options[:prompt]).to include('existing supplier sample name')
+        expect(options[:error]).to include('must be a maximum of 40 characters')
+        expect(spreadsheet.sheet(0).cell(worksheet.first_row, column.number)).to eq(data1[:sibling])
+      end
+    end
   end
 end
