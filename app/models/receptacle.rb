@@ -10,6 +10,7 @@ class Receptacle < Asset
   include Transfer::State
   include Aliquot::Remover
   include StudyReport::AssetDetails
+  include Receptacle::DownstreamAliquotsRemoval::Mixin
 
   QC_STATE_ALIASES = { 'passed' => 'pass', 'failed' => 'fail' }.freeze
 
@@ -340,17 +341,6 @@ class Receptacle < Asset
     # From this object we return the list of values, which is an already flattened list
     requests_as_target.order(id: :asc).index_by(&:asset_id).values
   end
-
-  def allow_to_remove_downstream_aliquots?
-    # DPL-451:
-    # If the labware has descendants that are involved in a sequencing batch that has
-    # been released or pending, do not remove any data from downstream aliquots, or from the MLWH.
-    submissions_for_requests = aliquot_requests.map(&:submission)&.flatten&.uniq
-    batches = submissions_for_requests&.first&.multiplexed_labware&.children&.map(&:creation_batches)
-    batches.nil? || batches.flatten.uniq.length.zero?
-  end
-
-  private
 
   def set_external_release(state) # rubocop:todo Metrics/MethodLength
     update_external_release do

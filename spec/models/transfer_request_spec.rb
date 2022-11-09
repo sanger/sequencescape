@@ -356,15 +356,14 @@ RSpec.describe TransferRequest, type: :model do
   end
 
   context 'when failing a transfer request with downstream assets' do
-
-    # First we build a chain of transfer requests
-    let(:original_plate) { create(:plate_with_untagged_wells, well_count: 1)}
+    # Labware
+    let(:original_plate) { create(:plate_with_untagged_wells, well_count: 1) }
     let(:original_well) { original_plate.wells.first }
-    let(:plates) { create_list(:plate, 3, well_count: 1)}
-    let(:wells) do 
-     plates.map(&:wells).flatten
-    end
+    let(:plates) { create_list(:plate, 3, well_count: 1) }
+    let(:wells) { plates.map(&:wells).flatten }
     let(:assets) { [original_well, wells].flatten }
+
+    # Requests
     let!(:outer_requests_graph) do
       [
         create(:library_creation_request, asset: original_well, target_asset: wells[0]),
@@ -372,8 +371,6 @@ RSpec.describe TransferRequest, type: :model do
         create(:sequencing_request, asset: wells[1], target_asset: wells[2])
       ]
     end
-    let!(:submission) { create(:submission, requests: outer_requests_graph) }
-    
     let!(:transfer_requests) do
       [
         create(:transfer_request, asset: original_well, target_asset: wells[0]),
@@ -383,35 +380,35 @@ RSpec.describe TransferRequest, type: :model do
     end
 
     before do
+      # We build the submission and add the requests to it
+      create(:submission, requests: outer_requests_graph)
+
+      # We modify the receptacles so the reference the right outer request in each step of the path
       original_well.aliquots.first&.update(request: outer_requests_graph[0])
       wells[0].aliquots.first&.update(request: outer_requests_graph[1])
       wells[1].aliquots.first&.update(request: outer_requests_graph[2])
 
+      # We create an asset link between the multiplexing and the start of sequencing
       create(:asset_link, ancestor: wells[1].plate, descendant: wells[2].plate)
     end
 
     context 'when any of the downstream assets have a batch' do
-      # A sequencing batch will be identified by the outer request that ends up on it
-      let(:batch) do
-        create(:sequencing_batch, request_count: 1)
-      end
+      let(:batch) { create(:sequencing_batch, request_count: 1) }
 
-      before do
-        outer_requests_graph[2].update(batch: batch)
-      end
-  
+      before { outer_requests_graph[2].update(batch: batch) }
+
       it 'does not remove the downstream aliquots' do
-        expect do
-          transfer_requests.first.fail!
-        end.not_to change{assets[2..].map{|a| a.aliquots.count}.uniq}.from([1])
+        expect { transfer_requests.first.fail! }.not_to change { assets[2..].map { |a| a.aliquots.count }.uniq }.from(
+          [1]
+        )
       end
     end
 
     context 'when none of the downstream assets have a batch' do
       it 'removes the downstream aliquots' do
-        expect do
-          transfer_requests.first.fail!
-        end.to change{assets[2..].map{|a| a.aliquots.count}.uniq}.from([1]).to([0])
+        expect { transfer_requests.first.fail! }.to change { assets[2..].map { |a| a.aliquots.count }.uniq }
+          .from([1])
+          .to([0])
       end
     end
   end
