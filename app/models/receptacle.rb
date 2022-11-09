@@ -345,7 +345,9 @@ class Receptacle < Asset
     # DPL-451:
     # If the labware has descendants that are involved in a sequencing batch that has
     # been released or pending, do not remove any data from downstream aliquots, or from the MLWH.
-    downstream_assets.map(&:creation_batches).flatten.all? { |batch| !(batch.released? || batch.pending?) }
+    submissions_for_requests = aliquot_requests.map(&:submission)&.flatten&.uniq
+    batches = submissions_for_requests&.first&.multiplexed_labware&.children&.map(&:creation_batches)
+    batches.nil? || batches.flatten.uniq.length.zero?
   end
 
   private
