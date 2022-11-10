@@ -115,7 +115,7 @@ describe 'Create a study' do
     expect(study.study_metadata.bam).to be false
   end
 
-  context 'choose data release strategy' do
+  context 'with data release strategy' do
     before do
       login_user user
       visit root_path
