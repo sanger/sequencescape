@@ -121,7 +121,7 @@ describe 'Create a study' do
       visit root_path
       click_link 'Create Study'
     end
-    
+
     it 'displays HuMFre approval number when Open (ENA) is clicked' do
       choose('Open (ENA)', allow_label_click: true)
       expect(page).to have_field('HuMFre approval number', type: :text)
