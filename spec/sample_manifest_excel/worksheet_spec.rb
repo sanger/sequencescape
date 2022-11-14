@@ -525,7 +525,8 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
         sample_public_name: 'SCG--1222_A0',
         sample_taxon_id: 9606,
         sample_common_name: 'Homo sapiens',
-        phenotype: 'Unknown'
+        phenotype: 'Unknown',
+        retention_instruction: 'Long term storage'
       }.with_indifferent_access
     end
 
