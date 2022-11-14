@@ -10,7 +10,7 @@ module SampleManifestExcel
       include ActiveModel::Model
       include Enumerable
 
-      attr_reader :items, :data, :columns
+      attr_reader :items, :data, :columns, :plate_metadata
 
       validates_presence_of :data, :columns
       validate :check_rows

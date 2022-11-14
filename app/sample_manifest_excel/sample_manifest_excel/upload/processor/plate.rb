@@ -8,6 +8,9 @@ module SampleManifestExcel
       ##
       # Processor to handle plate manifest uploads.
       class Plate < SampleManifestExcel::Upload::Processor::Base
+
+        validate :check_for_retention_instruction_by_plate
+
         # For plate manifests the barcodes (sanger plate id column) should be the same for each well from the same
         # plate, and different for each plate.
         # Uniqueness of foreign barcodes in the database is checked in the specialised field sanger_plate_id.
@@ -59,6 +62,51 @@ module SampleManifestExcel
         def find_plate_id_for_sample_id(sample_id)
           sample_manifest_asset = SampleManifestAsset.find_by(sanger_sample_id: sample_id)
           sample_manifest_asset.labware&.id
+        end
+
+        # A subset of the plate manifests (stock plates not library plates) are required to have
+        # a retention instruction column to describe how they should be disposed of. The column should
+        # have the same value for all manifest rows for the same plate.
+        def check_for_retention_instruction_by_plate
+          retention_error_row, err_msg = non_matching_retention_instructions_for_plates
+          return if retention_error_row.nil?
+
+          errors.add(:base, "Retention instruction checks failed at row: #{retention_error_row.number}. #{err_msg}")
+        end
+
+        def non_matching_retention_instructions_for_plates
+          return nil, nil unless upload.respond_to?(:rows)
+
+          retention_instructions_for_plates = {}
+
+          upload.rows.each do |row|
+            # ignore empty rows and skip if the retention column is not present
+            next if row.columns.blank? || row.data.blank? || row.columns.extract(['retention_instruction']).count.zero?
+
+            plate_barcode = row.value('sanger_plate_id')
+            sample_id = row.value('sanger_sample_id')
+
+            # ignore rows where primary sample fields not filled in
+            next if plate_barcode.nil? || sample_id.nil?
+
+            sample_retention_instruction = row.value('retention_instruction')
+
+            if sample_retention_instruction.nil? || sample_retention_instruction === 'Unknown'
+              err_msg = "Value cannot be blank."
+              return row, err_msg
+            end
+
+            # Check that a plate has only one retention instruction value
+            if retention_instructions_for_plates.key?(plate_barcode)
+              if retention_instructions_for_plates[plate_barcode] != sample_retention_instruction
+                err_msg = "Plate (#{plate_barcode}) cannot have different retention instruction values."
+                return row, err_msg
+              end
+            else
+              retention_instructions_for_plates[plate_barcode] = sample_retention_instruction
+            end
+          end
+          [nil, nil]
         end
       end
     end
