@@ -6,7 +6,6 @@ RSpec.describe 'Receptacle::DownstreamAliquotsRemovalSpec::Mixin' do
     let(:original_well) { original_plate.wells.first }
     let(:plates) { create_list(:plate, 3, well_count: 1) }
     let(:wells) { plates.map(&:wells).flatten }
-    let(:assets) { [original_well, wells].flatten }
 
     # Requests
     let!(:outer_requests_graph) do

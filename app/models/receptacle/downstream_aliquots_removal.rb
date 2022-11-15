@@ -3,7 +3,7 @@
 # DPL-451: Added functonality to not remove aliquots when failing plates that have a sequencing batch
 # downstream
 module Receptacle::DownstreamAliquotsRemoval
-  # Public interface for the downstream aliquots removal functionality
+  # Public interface for the downstream aliquots removal functionality, part of the Receptacle interface
   module Mixin
     # Returns a boolean that indicates if it is valid to remove downstream aliquots starting from this one.
     # Current condition (DPL-451) estimates that if the labware has descendants that are involved
@@ -20,9 +20,11 @@ module Receptacle::DownstreamAliquotsRemoval
   module PrivateMethods
     # Gets the submissions of all outer requests that wrap this well
     #
+    # @param instance [Receptacle] The well we want to obtain submissions from
+    #
     # @return [Array[Submission]] List of submissions
     def self.submissions_for_requests(instance)
-      instance.aliquot_requests.map(&:submission)&.flatten&.uniq
+      instance.aliquot_requests.map(&:submission)&.flatten&.uniq || []
     end
 
     # Get the sequencing creations batches by following the outer requests graph.
@@ -36,9 +38,13 @@ module Receptacle::DownstreamAliquotsRemoval
     # 4) For this labware, it access to the creation batches (groups of sequencing requests that will go into
     #    a flowcell)
     #
+    # @param instance [Receptacle] The well we want to obtain creation batche from
+    #
     # @return [Array[Batch]] List of batches
     def self.creation_batches_for_requests(instance)
-      PrivateMethods.submissions_for_requests(instance)&.first&.multiplexed_labware&.children&.map(&:creation_batches)
+      PrivateMethods.submissions_for_requests(instance).map do |submission|
+        submission&.multiplexed_labware&.children&.map(&:creation_batches)
+      end.flatten.compact
     end
   end
 end
