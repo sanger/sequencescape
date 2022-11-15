@@ -31,20 +31,23 @@ module Receptacle::DownstreamAliquotsRemoval
     # Supposing this outer requests graph:
     # Library Creation ---> Multiplexing --> Sequencing
     # The path to solve the creation batches is as follows:
-    # 1) Get the submission from the outer requests that wrap this current node
-    # 2) From the first submission, get the multiplexed labware, which is the labware
+    # 1) Get the submissions from the outer requests that wrap this current node
+    # 2) From each submission, get the multiplexed labware, which is the labware
     #    that is the target of a multiplexed request (outer request before sequencing)
     # 3) From this multiplexed labware, it goes to the next labware created from it (sequencing tube).
     # 4) For this labware, it access to the creation batches (groups of sequencing requests that will go into
     #    a flowcell)
+    # 5) It returns the aggregation of all creation batches from all submissions
     #
     # @param instance [Receptacle] The well we want to obtain creation batche from
     #
     # @return [Array[Batch]] List of batches
     def self.creation_batches_for_requests(instance)
-      PrivateMethods.submissions_for_requests(instance).map do |submission|
-        submission&.multiplexed_labware&.children&.map(&:creation_batches)
-      end.flatten.compact
+      PrivateMethods
+        .submissions_for_requests(instance)
+        .map { |submission| submission&.multiplexed_labware&.children&.map(&:creation_batches) }
+        .flatten
+        .compact
     end
   end
 end
