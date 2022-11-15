@@ -36,7 +36,8 @@ module SequencescapeExcel
       private
 
       def create_custom_metadatum_collection
-        cmc = CustomMetadatumCollection.new(
+        cmc =
+          CustomMetadatumCollection.new(
             user: sample_manifest.user,
             asset: asset.plate,
             metadata: {

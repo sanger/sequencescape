@@ -8,7 +8,6 @@ module SampleManifestExcel
       ##
       # Processor to handle plate manifest uploads.
       class Plate < SampleManifestExcel::Upload::Processor::Base
-
         validate :check_for_retention_instruction_by_plate
 
         # For plate manifests the barcodes (sanger plate id column) should be the same for each well from the same
@@ -74,39 +73,49 @@ module SampleManifestExcel
           errors.add(:base, "Retention instruction checks failed at row: #{retention_error_row.number}. #{err_msg}")
         end
 
+        # rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
         def non_matching_retention_instructions_for_plates
           return nil, nil unless upload.respond_to?(:rows)
 
-          retention_instructions_for_plates = {}
-
-          upload.rows.each do |row|
-            # ignore empty rows and skip if the retention column is not present
-            next if row.columns.blank? || row.data.blank? || row.columns.extract(['retention_instruction']).count.zero?
-
-            plate_barcode = row.value('sanger_plate_id')
-            sample_id = row.value('sanger_sample_id')
-
-            # ignore rows where primary sample fields not filled in
-            next if plate_barcode.nil? || sample_id.nil?
-
-            sample_retention_instruction = row.value('retention_instruction')
-
-            if sample_retention_instruction.nil? || sample_retention_instruction === 'Unknown'
-              err_msg = "Value cannot be blank."
-              return row, err_msg
-            end
-
-            # Check that a plate has only one retention instruction value
-            if retention_instructions_for_plates.key?(plate_barcode)
-              if retention_instructions_for_plates[plate_barcode] != sample_retention_instruction
-                err_msg = "Plate (#{plate_barcode}) cannot have different retention instruction values."
-                return row, err_msg
+          upload
+            .rows
+            .each_with_object({}) do |row, plate_retentions|
+              # ignore empty rows and skip if the retention column is not present
+              if row.columns.blank? || row.data.blank? || row.columns.extract(['retention_instruction']).count.zero?
+                next
               end
-            else
-              retention_instructions_for_plates[plate_barcode] = sample_retention_instruction
+
+              plate_barcode = row.value('sanger_plate_id')
+              sample_id = row.value('sanger_sample_id')
+
+              # ignore rows where primary sample fields have not been filled in
+              next if plate_barcode.nil? || sample_id.nil?
+
+              # check the row retention instruction is valid
+              err_msg = check_row_retention_value(row, plate_barcode, plate_retentions)
+              return row, err_msg unless err_msg.nil?
             end
-          end
           [nil, nil]
+        end
+
+        # rubocop:enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
+
+        private
+
+        def check_row_retention_value(row, plate_barcode, plate_retentions)
+          # if present the column is mandatory
+          return 'Value cannot be blank.' if row.value('retention_instruction').nil?
+
+          # Check that a plate has only one retention instruction value
+          if plate_retentions.key?(plate_barcode)
+            if plate_retentions[plate_barcode] != row.value('retention_instruction')
+              return "Plate (#{plate_barcode}) cannot have different retention instruction values."
+            end
+          else
+            # first time we are seeing this plate, add it to plate retentions hash
+            plate_retentions[plate_barcode] = row.value('retention_instruction')
+          end
+          nil
         end
       end
     end

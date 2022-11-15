@@ -702,7 +702,9 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             processor = described_class.new(reupload)
             processor.update_samples_and_aliquots(nil)
             expect(processor).not_to be_valid
-            expect(processor.errors.full_messages).to include('Retention instruction checks failed at row: 10. Value cannot be blank.')
+            expect(processor.errors.full_messages).to include(
+              'Retention instruction checks failed at row: 10. Value cannot be blank.'
+            )
           end
 
           it 'cannot have different retention instructions for the same plate' do
@@ -714,7 +716,10 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             processor = described_class.new(reupload)
             processor.update_samples_and_aliquots(nil)
             expect(processor).not_to be_valid
-            expect(processor.errors.full_messages).to include('Retention instruction checks failed at row: 11. Plate (SQPD-2) cannot have different retention instruction values.')
+            expect(processor.errors.full_messages).to include(
+              'Retention instruction checks failed at row: 11. ' \
+                'Plate (SQPD-2) cannot have different retention instruction values.'
+            )
           end
         end
       end

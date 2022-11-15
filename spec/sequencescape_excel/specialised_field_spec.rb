@@ -796,7 +796,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
       cm.save
 
       sf = described_class.new(value: 'Destroy after 2 years', sample_manifest_asset: sample_manifest_asset)
-      expect(sf.valid?).to be_truthy
+      expect(sf).to be_valid
       sf.update
 
       expect(cm.metadata['retention_instruction']).to eq('Destroy after 2 years')
