@@ -8,8 +8,6 @@ module SequencescapeExcel
       include Base
       include ValueRequired
 
-      # validate :check_retention_instruction_matches_existing, if: :value_present?
-
       def update(_attributes = {})
         return unless valid?
 
