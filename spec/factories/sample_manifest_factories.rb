@@ -6,6 +6,7 @@ FactoryBot.define do
     supplier
     asset_type { 'plate' }
     count { 1 }
+    user
 
     factory :sample_manifest_with_samples do
       samples { create_list(:sample_with_well, 5) }

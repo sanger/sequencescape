@@ -681,6 +681,47 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             expect(processor).not_to be_valid
           end
         end
+
+        context 'when using retention instructions' do
+          let(:download) { build(:test_download_plates, columns: column_list) }
+
+          let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
+
+          before do
+            upload.process(nil)
+            upload.finished!
+          end
+
+          after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
+
+          it 'the retention instructions cannot be left blank' do
+            cell(9, 33).value = nil
+            download.save(new_test_file_name)
+            reupload =
+              SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list, start_row: 9)
+            processor = described_class.new(reupload)
+            processor.update_samples_and_aliquots(nil)
+            expect(processor).not_to be_valid
+            expect(processor.errors.full_messages).to include(
+              'Retention instruction checks failed at row: 10. Value cannot be blank.'
+            )
+          end
+
+          it 'cannot have different retention instructions for the same plate' do
+            cell(9, 33).value = 'Destroy after 2 years'
+            cell(10, 33).value = 'Long term storage'
+            download.save(new_test_file_name)
+            reupload =
+              SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list, start_row: 9)
+            processor = described_class.new(reupload)
+            processor.update_samples_and_aliquots(nil)
+            expect(processor).not_to be_valid
+            expect(processor.errors.full_messages).to include(
+              'Retention instruction checks failed at row: 11. ' \
+                'Plate (SQPD-2) cannot have different retention instruction values.'
+            )
+          end
+        end
       end
     end
 

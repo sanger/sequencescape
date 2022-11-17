@@ -35,6 +35,7 @@ plate_default:
     - :donor_id
     - :phenotype
     - :control_type
+    - :retention_instruction
 plate_full:
   heading: "Full Plate"
   asset_type: "plate"
@@ -87,6 +88,7 @@ plate_full:
     - :sample_ebi_accession_number
     - :donor_id
     - :control_type
+    - :retention_instruction
 plate_rnachip:
   heading: "RNA/ChIP Plate"
   asset_type: "plate"
@@ -114,6 +116,7 @@ plate_rnachip:
     - :organism_part
     - :sample_ebi_accession_number
     - :donor_id
+    - :retention_instruction
 plate_chromium_library:
   heading: "Chromium Library Plate"
   asset_type: "library_plate"
@@ -508,6 +511,7 @@ test:
     - :sample_taxon_id
     - :sibling
     - :donor_id
+    - :retention_instruction
 tube_rack_default:
   heading: "Default Tube Rack"
   asset_type: "tube_rack"
@@ -612,6 +616,7 @@ heron:
     - :sample_ebi_accession_number
     - :control_type
     - :priority
+    - :retention_instruction
 cardinal:
   heading: "Cardinal"
   asset_type: "1dtube"
