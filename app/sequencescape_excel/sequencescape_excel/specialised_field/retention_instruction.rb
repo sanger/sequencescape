@@ -14,7 +14,7 @@ module SequencescapeExcel
         # do nothing unless we can access the labware (assuming asset will be a well or tube receptacle)
         return if asset.labware.blank?
 
-        # it is most likely that as we process the sample rows for a labware, that a previous row
+        # NB. it is most likely that as we process the sample rows for a plate labware, that a previous row
         # will have already created the retention instructions field in the labware metadata
         if labware_metadatum_collection.present?
           check_and_update_existing_custom_metadatum_collection
