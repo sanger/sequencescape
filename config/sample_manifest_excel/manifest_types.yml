@@ -712,3 +712,40 @@ tube_controls:
     - :supplier_name
     - :control_type
     - :collected_by_for_controls
+tube_extraction:
+  heading: "Extraction Tube"
+  asset_type: "1dtube"
+  columns:
+    - :sanger_tube_id
+    - :sanger_sample_id
+    - :supplier_name
+    - :reference_genome
+    - :cohort
+    - :volume
+    - :concentration
+    - :gender
+    - :country_of_origin
+    - :geographical_region
+    - :ethnicity
+    - :dna_source
+    - :date_of_sample_collection
+    - :date_of_sample_extraction
+    - :sample_extraction_method
+    - :sample_purified
+    - :purification_method
+    - :concentration_determined_by
+    - :sample_storage_conditions
+    - :mother
+    - :father
+    - :sibling
+    - :gc_content
+    - :sample_public_name
+    - :sample_taxon_id
+    - :sample_common_name
+    - :sample_description
+    - :sample_strain_att
+    - :sample_type
+    - :sample_ebi_accession_number
+    - :donor_id
+    - :phenotype
+    - :retention_instruction
