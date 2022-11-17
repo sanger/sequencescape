@@ -89,18 +89,16 @@ module SampleManifestExcel
               sample_id = row.value('sanger_sample_id')
 
               # ignore rows where primary sample fields have not been filled in
-              next if plate_barcode.nil? || sample_id.nil?
+              next unless plate_barcode.present? && sample_id.present?
 
               # check the row retention instruction is valid
               err_msg = check_row_retention_value(row, plate_barcode, plate_retentions)
-              return row, err_msg unless err_msg.nil?
+              return row, err_msg if err_msg.present?
             end
           [nil, nil]
         end
 
         # rubocop:enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
-
-        private
 
         def check_row_retention_value(row, plate_barcode, plate_retentions)
           # if present the column is mandatory
