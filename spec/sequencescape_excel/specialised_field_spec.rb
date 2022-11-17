@@ -738,68 +738,83 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
   end
 
   describe SequencescapeExcel::SpecialisedField::RetentionInstruction do
-    let(:asset_plate) { create :plate_with_untagged_wells, sample_count: 1 }
-    let(:asset) { asset_plate.wells.first }
     let(:user) { create :user }
 
-    it 'will be invalid if the value is not set' do
-      sf = described_class.new(value: nil, sample_manifest_asset: sample_manifest_asset)
+    shared_examples 'a retention instruction labware' do
+      it 'will be invalid if the value is not set' do
+        sf = described_class.new(value: nil, sample_manifest_asset: sample_manifest_asset)
 
-      expect(sf).not_to be_valid
-      expect(sf.errors.full_messages).to include('Retention instruction can\'t be blank')
+        expect(sf).not_to be_valid
+        expect(sf.errors.full_messages).to include('Retention instruction can\'t be blank')
+      end
+
+      it 'will be valid if the value matches one of the expected values' do
+        expect(
+          described_class.new(value: 'Long term storage', sample_manifest_asset: sample_manifest_asset)
+        ).to be_valid
+      end
+
+      it 'will create labware custom metadata on the labware and set the retention instruction choice' do
+        sf = described_class.new(value: 'Long term storage', sample_manifest_asset: sample_manifest_asset)
+        sf.update
+
+        expect(sf.asset.labware.custom_metadatum_collection&.metadata&.values&.count).to eq(1)
+        expect(sf.asset.labware.custom_metadatum_collection&.metadata&.values).to include('Long term storage')
+      end
+
+      it 'will update any existing labware custom metadata on the labware to add the retention instruction choice' do
+        cm =
+          CustomMetadatumCollection.new(
+            user: sample_manifest.user,
+            asset: asset.labware,
+            metadata: {
+              'some_existing_metadata' => 'some_value'
+            }
+          )
+        asset.labware.custom_metadatum_collection = cm
+        cm.save
+
+        sf = described_class.new(value: 'Long term storage', sample_manifest_asset: sample_manifest_asset)
+        sf.update
+
+        expect(sf.asset.labware.custom_metadatum_collection.metadata.values.count).to eq(2)
+        expect(sf.asset.labware.custom_metadatum_collection.metadata.values).to include('Long term storage')
+      end
+
+      # It is valid for this special field to update the labware metadata and change it to a new value.
+      # As long as the validation on the manifest re-upload passes (and for a plate that all wells for a labware
+      # have the same retention instruction value, it is valid to update.
+      it 'will be valid to update if the labware already contains a retention instruction metadata' do
+        cm =
+          CustomMetadatumCollection.new(
+            user: sample_manifest.user,
+            asset: asset.labware,
+            metadata: {
+              'retention_instruction' => 'Long term storage'
+            }
+          )
+        asset.labware.custom_metadatum_collection = cm
+        cm.save
+
+        sf = described_class.new(value: 'Destroy after 2 years', sample_manifest_asset: sample_manifest_asset)
+        expect(sf).to be_valid
+        sf.update
+
+        expect(cm.metadata['retention_instruction']).to eq('Destroy after 2 years')
+      end
     end
 
-    it 'will be valid if the value matches one of the expected values' do
-      expect(described_class.new(value: 'Long term storage', sample_manifest_asset: sample_manifest_asset)).to be_valid
+    context 'when processing plate wells' do
+      let(:asset_plate) { create :plate_with_untagged_wells, sample_count: 1 }
+      let(:asset) { asset_plate.wells.first }
+
+      it_behaves_like 'a retention instruction labware'
     end
 
-    it 'will create plate custom metadata on the plate and set the retention instruction choice' do
-      sf = described_class.new(value: 'Long term storage', sample_manifest_asset: sample_manifest_asset)
-      sf.update
+    context 'when processing tubes' do
+      let(:asset) { create :sample_tube }
 
-      expect(sf.asset.plate.custom_metadatum_collection&.metadata&.values&.count).to eq(1)
-      expect(sf.asset.plate.custom_metadatum_collection&.metadata&.values).to include('Long term storage')
-    end
-
-    it 'will update any existing plate custom metadata on the plate to add the retention instruction choice' do
-      cm =
-        CustomMetadatumCollection.new(
-          user: sample_manifest.user,
-          asset: asset.plate,
-          metadata: {
-            'some_existing_metadata' => 'some_value'
-          }
-        )
-      asset.plate.custom_metadatum_collection = cm
-      cm.save
-
-      sf = described_class.new(value: 'Long term storage', sample_manifest_asset: sample_manifest_asset)
-      sf.update
-
-      expect(sf.asset.plate.custom_metadatum_collection.metadata.values.count).to eq(2)
-      expect(sf.asset.plate.custom_metadatum_collection.metadata.values).to include('Long term storage')
-    end
-
-    # It is valid for this special field to update the plate metadata and change it to a new value.
-    # As long as the validation on the manifest re-upload passes and all wells for a plate have the
-    # same retention instruction value, it is valid to update.
-    it 'will be valid to update if the plate already contains a retention instruction metadata' do
-      cm =
-        CustomMetadatumCollection.new(
-          user: sample_manifest.user,
-          asset: asset.plate,
-          metadata: {
-            'retention_instruction' => 'Long term storage'
-          }
-        )
-      asset.plate.custom_metadatum_collection = cm
-      cm.save
-
-      sf = described_class.new(value: 'Destroy after 2 years', sample_manifest_asset: sample_manifest_asset)
-      expect(sf).to be_valid
-      sf.update
-
-      expect(cm.metadata['retention_instruction']).to eq('Destroy after 2 years')
+      it_behaves_like 'a retention instruction labware'
     end
   end
 end
