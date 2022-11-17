@@ -866,7 +866,7 @@ retention_instruction:
       showDropDown: false
       showInputMessage: true
       promptTitle: "Retention Instruction"
-      prompt: "Please select a retention instruction for the plate from the provided list."
+      prompt: "Please select a retention instruction for the labware from the provided list."
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Retention Instruction"
