@@ -54,6 +54,16 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
       expect(worksheet.type).to eq('Tubes')
     end
 
+    it 'be Tubes for extraction tube manifest' do
+      sample_manifest = create(:tube_sample_manifest, asset_type: '1dtube')
+      column_list = SampleManifestExcel.configuration.columns.tube_extraction.dup
+      worksheet =
+        SampleManifestExcel::Worksheet::DataWorksheet.new(
+          options.merge(columns: column_list, sample_manifest: sample_manifest)
+        )
+      expect(worksheet.type).to eq('Tubes')
+    end
+
     it 'be Tubes for a library tube based manifest' do
       sample_manifest = create(:tube_sample_manifest, asset_type: 'library')
       column_list = SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup

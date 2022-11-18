@@ -213,4 +213,27 @@ RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_exce
       expect(download.column_list.count).to eq(SampleManifestExcel.configuration.columns.long_read.count)
     end
   end
+
+  context 'Extraction tube' do
+    before do
+      sample_manifest = create(:tube_sample_manifest, asset_type: '1dtube')
+      sample_manifest.generate
+      @download =
+        described_class.new(
+          sample_manifest,
+          SampleManifestExcel.configuration.columns.tube_extraction.dup,
+          SampleManifestExcel.configuration.ranges.dup
+        )
+      save_file
+    end
+
+    it 'creates an excel file' do
+      expect(File.file?(test_file))
+    end
+
+    it 'has the correct number of columns' do
+      expect(download.column_list.count).to eq(SampleManifestExcel.configuration.columns.tube_extraction.count)
+      p download
+    end
+  end
 end
