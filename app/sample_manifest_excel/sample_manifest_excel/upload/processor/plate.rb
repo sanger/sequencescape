@@ -102,16 +102,17 @@ module SampleManifestExcel
 
         def check_row_retention_value(row, plate_barcode, plate_retentions)
           # if present the column is mandatory
-          return 'Value cannot be blank.' if row.value('retention_instruction').nil?
+          row_retention_value = row.value('retention_instruction')
+          return 'Value cannot be blank.' if row_retention_value.nil?
 
           # Check that a plate has only one retention instruction value
           if plate_retentions.key?(plate_barcode)
-            if plate_retentions[plate_barcode] != row.value('retention_instruction')
+            if plate_retentions[plate_barcode] != row_retention_value
               return "Plate (#{plate_barcode}) cannot have different retention instruction values."
             end
           else
             # first time we are seeing this plate, add it to plate retentions hash
-            plate_retentions[plate_barcode] = row.value('retention_instruction')
+            plate_retentions[plate_barcode] = row_retention_value
           end
           nil
         end
