@@ -303,7 +303,6 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           processor.run(nil)
           expected = "Row #{row_no} - Retention instruction can't be blank"
           expect(reupload.errors.full_messages).to include(expected)
-          pry
         end
       end
     end
