@@ -283,6 +283,29 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           end
         end
       end
+
+      context 'when using extraction tube' do
+        let(:column_list) { configuration.columns.tube_extraction.dup }
+        let(:manifest_type) { 'tube_extraction' }
+        let(:download) { build(:test_download_tubes, columns: column_list, manifest_type: manifest_type) }
+        let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
+
+        after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
+
+        it 'cannot have blank retention instruction' do
+          column = download.worksheet.columns.find_by(:name, :retention_instruction)
+          row_no = download.worksheet.first_row
+          column_no = column.number
+          cell(row_no - 1, column_no - 1).value = nil # zero-based indexing
+          download.save(new_test_file_name)
+          reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list)
+          processor = described_class.new(reupload)
+          processor.run(nil)
+          expected = "Row #{row_no} - Retention instruction can't be blank"
+          expect(reupload.errors.full_messages).to include(expected)
+          pry
+        end
+      end
     end
 
     describe SampleManifestExcel::Upload::Processor::LibraryTube do

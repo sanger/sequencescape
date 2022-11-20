@@ -566,8 +566,6 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
       expect(options[:error]).to include('You must enter a retention instruction')
       expect(spreadsheet.sheet(0).cell(worksheet.first_row, column.number)).to eq(data1[:retention_instruction])
     end
-
-    it ''
   end
 
   context 'test worksheet for plates' do
