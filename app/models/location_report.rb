@@ -80,7 +80,7 @@ class LocationReport < ApplicationRecord # rubocop:todo Style/Documentation
   end
 
   def column_headers
-    %w[ScannedBarcode HumanBarcode Type Created Location Service StudyName StudyId FacultySponsor]
+    %w[ScannedBarcode HumanBarcode Type Created Location Service RetentionInstructions StudyName StudyId FacultySponsor]
   end
 
   def generate!
@@ -148,6 +148,7 @@ class LocationReport < ApplicationRecord # rubocop:todo Style/Documentation
     cols << cur_plate.created_at.strftime('%Y-%m-%d %H:%M:%S')
     cols << cur_plate.storage_location
     cols << cur_plate.storage_location_service
+    cols << (cur_plate.retention_instructions || 'Unknown')
   end
 
   def generate_study_cols_for_row(cur_study)
