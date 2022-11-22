@@ -719,6 +719,7 @@ tube_extraction:
     - :sanger_tube_id
     - :sanger_sample_id
     - :supplier_name
+    - :retention_instruction
     - :reference_genome
     - :cohort
     - :volume
@@ -748,4 +749,3 @@ tube_extraction:
     - :sample_ebi_accession_number
     - :donor_id
     - :phenotype
-    - :retention_instruction

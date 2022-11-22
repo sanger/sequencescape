@@ -233,7 +233,6 @@ RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_exce
 
     it 'has the correct number of columns' do
       expect(download.column_list.count).to eq(SampleManifestExcel.configuration.columns.tube_extraction.count)
-      p download
     end
   end
 end
