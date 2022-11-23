@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 ActiveRecord::Base.transaction do
-  RecordLoader::TubePurposeLoader.new(files: ['005_pulldown_legacy_purposes']).create!
+  RecordLoader::PlatePurposeLoader.new(files: ['005_pulldown_legacy_purposes']).create!
   PlatePurpose.create!(
     name: 'Pre-capture stock',
     target_type: 'Plate',
