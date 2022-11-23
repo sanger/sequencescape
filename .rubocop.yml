@@ -169,3 +169,6 @@ Lint/UnusedMethodArgument:
 # This seems to be causing all sorts of issues with failing tests
 Rails/RedundantPresenceValidationOnBelongsTo:
   Enabled: false
+
+Rails/UniqueValidationWithoutIndex:
+  Enabled: false

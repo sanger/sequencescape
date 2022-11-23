@@ -95,6 +95,26 @@ RSpec.describe SequencescapeExcel::Column, type: :model, sample_manifest_excel: 
     expect(metadata.donor_id).to eq('1234')
   end
 
+  it 'can update the field targets by :updates, for collected_by_for_cardinal' do
+    column =
+      described_class.new(
+        options.merge(heading: 'COLLECTED BY', name: :collected_by_for_cardinal, updates: :collected_by)
+      )
+    metadata = Sample::Metadata.new
+    column.update_metadata(metadata, 'Collection Site A')
+    expect(metadata.collected_by).to eq('Collection Site A')
+  end
+
+  it 'can update the field targets by :updates, for collected_by_for_controls' do
+    column =
+      described_class.new(
+        options.merge(heading: 'COLLECTED BY', name: :collected_by_for_controls, updates: :collected_by)
+      )
+    metadata = Sample::Metadata.new
+    column.update_metadata(metadata, 'Collection Site B')
+    expect(metadata.collected_by).to eq('Collection Site B')
+  end
+
   context 'with no validation' do
     let(:column) { described_class.new(options.except(:validation)) }
 

@@ -1,10 +1,6 @@
 <tr>
   <th data-orderable="false"></th>
   <th id="priority_flag"  style='text-align: center'><%= vite_image_tag("images/icon_0_flag.png", size: "16x16") %></th>
-  <% if can? :see_previously_failed, Request %>
-    <th>Previous requests</th>
-  <% end %>
-  <th>Product Line</th>
   <th>Submission ID</th>
   <th>Request ID</th>
   <th>Name</th>
@@ -13,7 +9,6 @@
   <th>Num. Samples</th>
   <th>Conc</th>
   <th>Scanned in (Y-M-D)</th>
-  <th>Submitted at (Y-M-D)</th>
   <th>Dual Index?</th>
   <% @information_types.each do |information_type| %>
     <th><%= information_type.label %></th>

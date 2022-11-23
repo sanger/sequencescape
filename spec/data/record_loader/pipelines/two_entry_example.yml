@@ -1,0 +1,35 @@
+---
+# This file was automatically generated via `rails g record_loader`
+# You should modify it to match your particular model.
+Unique attribute:
+  name: NovaSeq 6001 PE
+  active: 1
+  sti_type: SequencingPipeline
+  sorter: 10
+  max_size: 4
+  summary: 1
+  externally_managed: 0
+  group_name: Sequencing
+  control_request_type_id: 0
+  min_size: 1
+  request_type_keys:
+    - illumina_htp_novaseq_6000_paired_end_sequencing
+  workflow:
+    name: NovaSeq 6001 PE
+    item_limit: 4
+Unique attribute 2:
+  name: NovaSeq 6002 PE
+  active: 1
+  sti_type: SequencingPipeline
+  sorter: 10
+  max_size: 4
+  summary: 1
+  externally_managed: 0
+  group_name: Sequencing
+  control_request_type_id: 0
+  min_size: 1
+  request_type_keys:
+    - illumina_htp_novaseq_6000_paired_end_sequencing
+  workflow:
+    name: NovaSeq 6002 PE
+    item_limit: 4

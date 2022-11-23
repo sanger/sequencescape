@@ -31,6 +31,34 @@ class RequestType::Validator < ApplicationRecord
     delegate :to_sentence, to: :to_a
   end
 
+  # Validates that the request type provided has a relation with a provided
+  # flowcell type name
+  class FlowcellTypeValidator
+    attr_reader :request_type_key
+
+    def initialize(request_type_key)
+      @request_type_key = request_type_key
+    end
+
+    def request_type
+      RequestType.find_by(key: request_type_key)
+    end
+
+    def include?(option)
+      return true if option.nil?
+      request_type.flowcell_types.exists?(name: option)
+    end
+
+    def to_a
+      request_type.flowcell_types.pluck(:name).sort
+    end
+    delegate :to_sentence, to: :to_a
+
+    def allow_blank?
+      true
+    end
+  end
+
   ##
   # Array class that lets you set a default value
   # If first argument is an array, second argument is assumed to be default
@@ -96,5 +124,10 @@ class RequestType::Validator < ApplicationRecord
 
   def type_cast
     { 'read_length' => :to_i, 'insert_size' => :to_i }[request_option]
+  end
+
+  def allow_blank?
+    return false unless valid_options.respond_to? :allow_blank?
+    valid_options.allow_blank?
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_13_144729) do
+ActiveRecord::Schema.define(version: 2022_10_13_132248) do
 
   create_table "aliquot_indices", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "aliquot_id", null: false
@@ -477,20 +477,36 @@ ActiveRecord::Schema.define(version: 2022_07_13_144729) do
     t.index ["failable_id"], name: "index_failures_on_failable_id"
   end
 
-  create_table "flipper_features", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "flipper_features", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "key", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["key"], name: "index_flipper_features_on_key", unique: true
   end
 
-  create_table "flipper_gates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "flipper_gates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "feature_key", null: false
     t.string "key", null: false
     t.string "value"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["feature_key", "key", "value"], name: "index_flipper_gates_on_feature_key_and_key_and_value", unique: true
+  end
+
+  create_table "flowcell_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["name"], name: "index_flowcell_types_on_name", unique: true
+  end
+
+  create_table "flowcell_types_request_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+    t.bigint "flowcell_type_id", null: false
+    t.integer "request_type_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["flowcell_type_id"], name: "index_flowcell_types_request_types_on_flowcell_type_id"
+    t.index ["request_type_id"], name: "index_flowcell_types_request_types_on_request_type_id"
   end
 
   create_table "identifiers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1145,6 +1161,7 @@ ActiveRecord::Schema.define(version: 2022_07_13_144729) do
     t.integer "pcr_cycles"
     t.string "data_type"
     t.integer "primer_panel_id"
+    t.string "requested_flowcell_type"
     t.index ["request_id"], name: "index_request_metadata_on_request_id"
   end
 
@@ -1160,6 +1177,8 @@ ActiveRecord::Schema.define(version: 2022_07_13_144729) do
     t.text "valid_options", size: :medium, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string "key"
+    t.index ["key"], name: "index_request_type_validators_on_key", unique: true
   end
 
   create_table "request_types", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1360,6 +1379,7 @@ ActiveRecord::Schema.define(version: 2022_07_13_144729) do
     t.datetime "date_of_consent_withdrawn"
     t.integer "user_id_of_consent_withdrawn"
     t.boolean "consent_withdrawn", default: false, null: false
+    t.string "collected_by", comment: "Name of persons or institute who collected the specimen"
     t.index ["sample_ebi_accession_number"], name: "index_sample_metadata_on_sample_ebi_accession_number"
     t.index ["sample_id"], name: "index_sample_metadata_on_sample_id"
     t.index ["supplier_name"], name: "index_sample_metadata_on_supplier_name"
@@ -1908,6 +1928,8 @@ ActiveRecord::Schema.define(version: 2022_07_13_144729) do
   add_foreign_key "aliquots", "requests"
   add_foreign_key "assets_deprecated", "plate_types", column: "labware_type_id"
   add_foreign_key "barcodes", "labware", column: "asset_id"
+  add_foreign_key "flowcell_types_request_types", "flowcell_types"
+  add_foreign_key "flowcell_types_request_types", "request_types"
   add_foreign_key "labware", "plate_purposes"
   add_foreign_key "labware", "plate_types", column: "labware_type_id"
   add_foreign_key "library_types_request_types", "library_types", name: "fk_library_types_request_types_to_library_types"

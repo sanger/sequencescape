@@ -612,3 +612,21 @@ heron:
     - :sample_ebi_accession_number
     - :control_type
     - :priority
+cardinal:
+  heading: "Cardinal"
+  asset_type: "1dtube"
+  columns:
+    - :sanger_tube_id
+    - :sanger_sample_id
+    - :supplier_name
+    - :volume
+    - :collected_by_for_cardinal
+tube_controls:
+  heading: "Control tubes"
+  asset_type: "1dtube"
+  columns:
+    - :sanger_tube_id
+    - :sanger_sample_id
+    - :supplier_name
+    - :control_type
+    - :collected_by_for_controls
