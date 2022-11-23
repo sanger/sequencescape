@@ -625,8 +625,11 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           let(:download) { build(:test_download_plates, columns: column_list) }
 
           let(:new_test_file) do
-            cell(10, 6).value = '50'
-            cell(10, 7).value = 'Female'
+            col1 = download.worksheet.columns.find_by(:name, :concentration).number - 1
+            col2 = download.worksheet.columns.find_by(:name, :gender).number - 1
+            row1 = download.worksheet.first_row - 1
+            cell(row1, col1).value = '50'
+            cell(row1, col2).value = 'Female'
             download.save(new_test_file_name)
             Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '')
           end
@@ -649,7 +652,9 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             processor = described_class.new(reupload)
             processor.update_samples_and_aliquots(nil)
             expect(reupload.rows).to be_all(&:sample_updated?)
-            s1 = Sample.find_by(sanger_sample_id: cell(10, 2).value)
+            row1 = download.worksheet.first_row - 1
+            col1 = download.worksheet.columns.find_by(:name, :sanger_sample_id).number - 1
+            s1 = Sample.find_by(sanger_sample_id: cell(row1, col1).value)
             expect(s1.sample_metadata.concentration).to eq('50')
             expect(s1.sample_metadata.gender).to eq('Female')
           end
@@ -660,7 +665,9 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             processor = described_class.new(reupload)
             processor.update_samples_and_aliquots(nil)
             expect(reupload.rows).not_to be_all(&:sample_updated?)
-            s1 = Sample.find_by(sanger_sample_id: cell(10, 2).value)
+            row1 = download.worksheet.first_row - 1
+            col1 = download.worksheet.columns.find_by(:name, :sanger_sample_id).number - 1
+            s1 = Sample.find_by(sanger_sample_id: cell(row1, col1).value)
             expect(s1.sample_metadata.concentration).to eq('1')
             expect(s1.sample_metadata.gender).to eq('Unknown')
           end
@@ -717,7 +724,9 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
 
           it 'the retention instructions cannot be left blank' do
-            cell(9, 33).value = nil
+            col1 = download.worksheet.columns.find_by(:name, :retention_instruction).number - 1
+            row1 = download.worksheet.first_row - 1
+            cell(row1, col1).value = nil
             download.save(new_test_file_name)
             reupload =
               SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list, start_row: 9)
@@ -730,8 +739,11 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           end
 
           it 'cannot have different retention instructions for the same plate' do
-            cell(9, 33).value = 'Destroy after 2 years'
-            cell(10, 33).value = 'Long term storage'
+            col1 = download.worksheet.columns.find_by(:name, :retention_instruction).number - 1
+            row1 = download.worksheet.first_row - 1
+            row2 = row1 + 1
+            cell(row1, col1).value = 'Destroy after 2 years'
+            cell(row2, col1).value = 'Long term storage'
             download.save(new_test_file_name)
             reupload =
               SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list, start_row: 9)
