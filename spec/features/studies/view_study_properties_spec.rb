@@ -28,7 +28,6 @@ describe 'View study properties' do
   end
 
   context 'with data release strategy' do
-
     it 'displays HuMFre approval number for Open(ENA) data release strategy' do
       study.study_metadata.data_release_strategy = Study::DATA_RELEASE_STRATEGY_OPEN
       study.study_metadata.hmdmc_approval_number = '12345'
