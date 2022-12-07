@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_13_132248) do
+ActiveRecord::Schema.define(version: 2022_12_07_143522) do
 
   create_table "aliquot_indices", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "aliquot_id", null: false
@@ -1685,6 +1685,7 @@ ActiveRecord::Schema.define(version: 2022_10_13_132248) do
     t.datetime "updated_at"
     t.string "walking_algorithm", default: "TagLayout::WalkWellsByPools"
     t.integer "tag2_group_id"
+    t.boolean "enabled", default: true, null: false
     t.index ["tag2_group_id"], name: "fk_rails_1c2c01e708"
   end
 
