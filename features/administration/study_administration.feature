@@ -18,11 +18,11 @@ Feature: Study administration
     When I follow "Manage"
     Then I should see "Manage Study Study B"
     And the field labeled "HMDMC approved" should be disabled
-    And the field labeled "HMDMC approval number" should contain ""
-    When I fill in "HMDMC approval number" with "XX/XXX"
+    And the field labeled "HuMFre approval number" should contain ""
+    When I fill in "HuMFre approval number" with "XX/XXX"
     And I press "Update"
     Then I should see "Your study has been updated"
-    And the field labeled "HMDMC approval number" should contain "XX/XXX"
+    And the field labeled "HuMFre approval number" should contain "XX/XXX"
     When I press "Update"
     Then I should see "Your study has been updated"
 
