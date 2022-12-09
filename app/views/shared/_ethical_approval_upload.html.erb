@@ -6,13 +6,6 @@
     <td width="60%"><%= form.check_box :ethically_approved, disabled: !can?(:change_ethically_approved, @study) %></td>
   </tr>
 </table>
-<!--
-<%= fields_for(@study) do |f| %>
-  <%= f.fields_for(:study_metadata, builder: Metadata::FormBuilder) do |metadata_fields| %>
-    <%= metadata_fields.text_field :hmdmc_approval_number %>
-  <% end %>
-<% end %>
--->
 <table width="100%" cellspacing="0" cellpadding="0">
   <% unless study.documents.empty? %>
     <tr>
