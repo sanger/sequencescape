@@ -187,7 +187,7 @@ Feature: The XML for the sequencescape API
             <value></value>
           </descriptor>
           <descriptor>
-            <name>HMDMC approval number</name>
+            <name>HuMFre approval number</name>
             <value></value>
           </descriptor>
           <descriptor>
