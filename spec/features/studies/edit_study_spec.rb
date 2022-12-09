@@ -51,4 +51,27 @@ describe 'Edit a study' do
       expect(page).to have_content('Your study has been updated')
     end
   end
+
+  context 'with data release strategy' do
+    before do
+      login_user user
+      visit study_path study
+      click_link 'Edit'
+    end
+
+    it 'displays HuMFre approval number when Open (ENA) is clicked' do
+      choose('Open (ENA)', allow_label_click: true)
+      expect(page).to have_field('HuMFre approval number', type: :text)
+    end
+
+    it 'displays HuMFre approval number when Managed (EGA) is clicked' do
+      choose('Managed (EGA)', allow_label_click: true)
+      expect(page).to have_field('HuMFre approval number', type: :text)
+    end
+
+    it 'displays HuMFre approval number when Not Applicable (Contact Datasharing) is clicked' do
+      choose('Not Applicable (Contact Datasharing)', allow_label_click: true)
+      expect(page).to have_field('HuMFre approval number', type: :text)
+    end
+  end
 end

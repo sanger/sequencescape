@@ -1,4 +1,4 @@
-FROM ruby:2.7.6-slim
+FROM ruby:2.7.7-slim
 
 # Install required software:
 #  - net-tools: to run ping and other networking tools
