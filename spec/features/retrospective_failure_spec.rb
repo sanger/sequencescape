@@ -60,7 +60,7 @@ describe 'Retrospective failure' do
 
     it 'fail removed downstream aliquots' do
       target_request.fail!
-      successes, failures = Delayed::Worker.new.work_off
+      Delayed::Worker.new.work_off
 
       # We don't remove the aliquot from the failed well itself
       expect(target_well.aliquots.count).to eq(1)
@@ -90,7 +90,7 @@ describe 'Retrospective failure' do
 
     it 'fail removed downstream aliquots' do
       target_request.fail!
-      successes, failures = Delayed::Worker.new.work_off
+      Delayed::Worker.new.work_off
 
       # We don't remove the aliquot from the failed well itself
       expect(target_well.aliquots.count).to eq(1)

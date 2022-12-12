@@ -398,21 +398,19 @@ RSpec.describe TransferRequest, type: :model do
       before { outer_requests_graph[2].update(batch: batch) }
 
       it 'does not remove the downstream aliquots' do
-        expect { transfer_requests.first.fail! }.not_to change { 
-          successes, failures = Delayed::Worker.new.work_off
-          assets[2..].map { |a| a.aliquots.count }.uniq 
-        }.from(
-          [1]
-        )
+        expect { transfer_requests.first.fail! }.not_to change {
+          Delayed::Worker.new.work_off
+          assets[2..].map { |a| a.aliquots.count }.uniq
+        }.from([1])
       end
     end
 
     context 'when none of the downstream assets have a batch' do
       it 'removes the downstream aliquots' do
-        expect { transfer_requests.first.fail! }.to change { 
-          successes, failures = Delayed::Worker.new.work_off
-          assets[2..].map { |a| a.aliquots.count }.uniq 
-        }
+        expect { transfer_requests.first.fail! }.to change {
+            Delayed::Worker.new.work_off
+            assets[2..].map { |a| a.aliquots.count }.uniq
+          }
           .from([1])
           .to([0])
       end
