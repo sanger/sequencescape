@@ -3,7 +3,6 @@ if Rails.env.development?
   benchmarking_classes = [
     # Add here any classes you want to benchmark in local
     # Note: Remember to start the process with the env var RAILS_LOG_TO_FILE set to true
-    Plate
   ]
 
   if benchmarking_classes.length.positive?
