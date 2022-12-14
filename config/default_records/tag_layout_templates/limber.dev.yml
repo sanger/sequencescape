@@ -146,3 +146,23 @@ TSsc384-PCR2-nCoV-2019/V3/B:
   :tag2_group_name: TS_sc384_i5
   :direction_algorithm: TagLayout::InColumns
   :walking_algorithm: TagLayout::WalkWellsOfPlate
+TSsc384-PCR1-nCoV-2019/V4/B:
+  :tag_group_name: sc384tempi7
+  :tag2_group_name: sc384tempi5
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
+TSsc384-PCR2-nCoV-2019/V4/B:
+  :tag_group_name: sc384tempi7
+  :tag2_group_name: sc384tempi5
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
+TSsc384-PCR1-nCoV-2019/V5/B:
+  :tag_group_name: sc384tempi7
+  :tag2_group_name: sc384tempi5
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
+TSsc384-PCR2-nCoV-2019/V5/B:
+  :tag_group_name: sc384tempi7
+  :tag2_group_name: sc384tempi5
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate

@@ -23,6 +23,7 @@ module Api
       attribute :walking_by, readonly: true
 
       # Filters
+      filter :enabled, default: true
 
       # Custom methods
       # These shouldn't be used for business logic, and a more about

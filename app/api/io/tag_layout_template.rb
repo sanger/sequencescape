@@ -3,7 +3,7 @@
 class Io::TagLayoutTemplate < ::Core::Io::Base
   set_model_for_input(::TagLayoutTemplate)
   set_json_root(:tag_layout_template)
-  set_eager_loading(&:include_tags) # TODO: uncomment and add any named_scopes that do includes you need
+  set_eager_loading { |model| model.include_tags.enabled_only }
 
   define_attribute_and_json_mapping(
     '
