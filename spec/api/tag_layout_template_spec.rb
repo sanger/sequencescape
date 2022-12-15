@@ -12,52 +12,84 @@ describe '/api/1/tag_layout_templates' do
   let(:user) { create :user }
 
   describe '#get' do
-    let(:response_body) do
-      "
-        {
-          \"actions\":{
-            \"read\":\"http://www.example.com/api/1/tag_layout_templates/1\",
-            \"first\":\"http://www.example.com/api/1/tag_layout_templates/1\",
-            \"last\":\"http://www.example.com/api/1/tag_layout_templates/1\"
-          },
-          \"size\":#{TagLayoutTemplate.count},
-          \"tag_layout_templates\":[
-            {
-              \"actions\":{
-                \"read\":\"http://www.example.com/api/1/#{example_template_uuid}\",
-                \"create\":\"http://www.example.com/api/1/#{example_template_uuid}\"
-              },
-              \"uuid\":\"#{example_template_uuid}\",
-              \"direction\":\"column\",
-              \"name\":\"#{example_template.name}\",
-              \"tag_group\":{
+    describe 'with valid tag layout template' do
+      let(:response_body) do
+        "
+          {
+            \"actions\":{
+              \"read\":\"http://www.example.com/api/1/tag_layout_templates/1\",
+              \"first\":\"http://www.example.com/api/1/tag_layout_templates/1\",
+              \"last\":\"http://www.example.com/api/1/tag_layout_templates/1\"
+            },
+            \"size\":#{TagLayoutTemplate.count},
+            \"tag_layout_templates\":[
+              {
                 \"actions\":{
-                  \"read\":\"http://www.example.com/api/1/#{tag_group_uuid}\"
+                  \"read\":\"http://www.example.com/api/1/#{example_template_uuid}\",
+                  \"create\":\"http://www.example.com/api/1/#{example_template_uuid}\"
                 },
-                \"uuid\":\"#{tag_group_uuid}\",
-                \"name\":\"#{example_group.name}\",
-                \"tags\":{\"1\":\"\",\"2\":\"\"}
-              },
-              \"tag2_group\": null,
-              \"walking_by\":\"wells in pools\"
-            }
-          ]
-        }
-      "
+                \"uuid\":\"#{example_template_uuid}\",
+                \"direction\":\"column\",
+                \"name\":\"#{example_template.name}\",
+                \"tag_group\":{
+                  \"actions\":{
+                    \"read\":\"http://www.example.com/api/1/#{tag_group_uuid}\"
+                  },
+                  \"uuid\":\"#{tag_group_uuid}\",
+                  \"name\":\"#{example_group.name}\",
+                  \"tags\":{\"1\":\"\",\"2\":\"\"}
+                },
+                \"tag2_group\": null,
+                \"walking_by\":\"wells in pools\"
+              }
+            ]
+          }
+        "
+      end
+      let(:response_code) { 200 }
+
+      let!(:example_template) { create :tag_layout_template, tags: ['', ''] }
+
+      let(:example_template_uuid) { example_template.uuid }
+      let(:example_group) { example_template.tag_group }
+      let(:tag_group_uuid) { example_template.tag_group.uuid }
+
+      it 'returns an index' do
+        example_template
+        api_request :get, subject
+        expect(JSON.parse(response.body)).to include_json(JSON.parse(response_body))
+        expect(status).to eq(response_code)
+      end
     end
-    let(:response_code) { 200 }
 
-    let!(:example_template) { create :tag_layout_template, tags: ['', ''] }
+    describe 'with disabled tag layout template' do
+      let(:response_body) do
+        "
+          {
+            \"actions\":{
+              \"read\":\"http://www.example.com/api/1/tag_layout_templates/1\",
+              \"first\":\"http://www.example.com/api/1/tag_layout_templates/1\",
+              \"last\":\"http://www.example.com/api/1/tag_layout_templates/1\"
+            },
+            \"size\":0,
+            \"tag_layout_templates\":[]
+          }
+        "
+      end
+      let(:response_code) { 200 }
 
-    let(:example_template_uuid) { example_template.uuid }
-    let(:example_group) { example_template.tag_group }
-    let(:tag_group_uuid) { example_template.tag_group.uuid }
+      let!(:example_template) { create :tag_layout_template, tags: ['', ''] }
 
-    it 'returns an index' do
-      example_template
-      api_request :get, subject
-      expect(JSON.parse(response.body)).to include_json(JSON.parse(response_body))
-      expect(status).to eq(response_code)
+      before do
+        example_template.enabled = false
+        example_template.save!
+      end
+
+      it 'returns no items' do
+        api_request :get, subject
+        expect(JSON.parse(response.body)).to include_json(JSON.parse(response_body))
+        expect(status).to eq(response_code)
+      end
     end
   end
 

@@ -17,6 +17,7 @@ class TagLayoutTemplate < ApplicationRecord
   delegate :walking_by, to: :walking_algorithm_class
 
   scope :include_tags, -> { includes(tag_group: :tags, tag2_group: :tags) }
+  scope :enabled_only, -> { where('enabled = true') }
 
   def stamp_to(_)
     # Do Nothing
