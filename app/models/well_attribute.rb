@@ -10,6 +10,8 @@ class WellAttribute < ApplicationRecord
 
   belongs_to :well, inverse_of: :well_attribute, touch: true
 
+  after_update :broadcast_warehouse_message
+
   serialize :gender_markers
   def gender_markers_string
     gender_markers.try(:to_s)
@@ -73,5 +75,14 @@ class WellAttribute < ApplicationRecord
   def current_volume=(current_volume)
     current_volume = 0.0 if current_volume.to_f < 0
     super
+  end
+
+  def broadcast_warehouse_message
+    message = Messenger.find_by(target_id: well_id)
+    if message.present?
+      message.resend
+    else
+      Messenger.new(target: self, template: 'WellStockResourceIO', root: 'stock_resource').broadcast
+    end
   end
 end
