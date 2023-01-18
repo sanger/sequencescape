@@ -79,10 +79,6 @@ class WellAttribute < ApplicationRecord
 
   def broadcast_warehouse_message
     message = Messenger.find_by(target_id: well_id)
-    if message.present?
-      message.resend
-    else
-      Messenger.new(target: self, template: 'WellStockResourceIO', root: 'stock_resource').broadcast
-    end
+    message.resend if message.present?
   end
 end
