@@ -1,0 +1,5 @@
+# Limber Bioscan tube purposes.
+---
+LBSN-384 PCR 2 Pool:
+  type: IlluminaHtp::MxTubePurpose
+  target_type: MultiplexedLibraryTube

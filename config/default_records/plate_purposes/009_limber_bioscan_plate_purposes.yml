@@ -1,0 +1,5 @@
+---
+LBSN-384 PCR 1:
+  type: PlatePurpose::Input
+  stock_plate: true
+  size: 384

@@ -1,0 +1,15 @@
+# These request types are associated with the Bioscan pipeline.
+---
+bioscan_test_request_type:
+  asset_type: Well
+  order: 1
+  request_class_name: IlluminaHtp::Requests::StdLibraryRequest
+  billable: true
+  product_line_name: Illumina-HTP
+  name: Biocscan Test Request Type
+  for_multiplexing: true
+  target_purpose_name: LBSN-384 PCR 2 Pool
+  acceptable_purposes:
+    - LBSN-384 PCR 1
+  library_types:
+    - bioscan_test_library_type
