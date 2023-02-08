@@ -21,6 +21,10 @@ class UatActions::GenerateTagGroup < UatActions
              options: {
                minimum: 1
              }
+  form_field :tag_generator_offset,
+             :number_field,
+             label: 'Offset for tag generator',
+             help: 'Allows you to create a number of tag groups with different tag sequences'
   form_field :adapter_type_name,
              :select,
              label: 'Adapter Type Name',
@@ -36,6 +40,14 @@ class UatActions::GenerateTagGroup < UatActions
               message: 'is larger than the tag group with this name which already exists (%{count})'
             },
             if: :existing_tag_group
+
+  validates :tag_generator_offset,
+            numericality: {
+              only_integer: true,
+              greater_than_or_equal_to: 0,
+              allow_blank: true,
+              message: ->(object, _data) { 'must be an integer and cannot be negative' % object }
+            }
 
   #
   # Returns a default copy of the UatAction which will be used to fill in the form
@@ -64,9 +76,13 @@ class UatActions::GenerateTagGroup < UatActions
   def create_tag_group(name, adapter_type)
     tag_group = TagGroup.create!(name: name, adapter_type_id: adapter_type&.id)
 
+    # use an offset when generating the tag sequences if one is provided
+    offset = tag_generator_offset || 0
+
     tag_group.tags.build(
-      OligoEnumerator.new(size.to_i).each_with_index.map { |oligo, map_id| { oligo: oligo, map_id: map_id + 1 } }
+      OligoEnumerator.new(size.to_i, offset.to_i).each_with_index.map { |oligo, map_id| { oligo: oligo, map_id: map_id + 1 } }
     )
+
     tag_group.save
   end
 
