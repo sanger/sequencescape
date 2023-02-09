@@ -46,7 +46,7 @@ class UatActions::GenerateTagGroup < UatActions
               only_integer: true,
               greater_than_or_equal_to: 0,
               allow_blank: true,
-              message: ->(object, _data) { 'must be an integer and cannot be negative' % object }
+              message: 'must be an integer and cannot be negative'
             }
 
   #
@@ -80,7 +80,8 @@ class UatActions::GenerateTagGroup < UatActions
     offset = tag_generator_offset || 0
 
     tag_group.tags.build(
-      OligoEnumerator.new(size.to_i, offset.to_i).each_with_index.map { |oligo, map_id| { oligo: oligo, map_id: map_id + 1 } }
+      OligoEnumerator.new(size.to_i, offset.to_i).each_with_index.map do |oligo, map_id|
+ { oligo: oligo, map_id: map_id + 1 } end
     )
 
     tag_group.save
