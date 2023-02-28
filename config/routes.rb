@@ -60,6 +60,8 @@ Rails.application.routes.draw do
         resources :tube_racks, only: [:create]
         resources :plates, only: [:create]
       end
+
+      resources :bioscan_jobs, only: [:create]
     end
   end
 
