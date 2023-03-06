@@ -35,4 +35,13 @@ describe 'Batches controller', js: true, warren: true do
     expect(Warren.handler.messages_matching("queue_broadcast.messenger.#{flowcell_message.id}")).to be 1
     expect(flowcell_message.as_json.dig('flowcell', 'updated_at')).to be > 5.minutes.ago
   end
+
+  it 'request zero comments link' do
+    requests_ids = batch.batch_requests.map(&:request_id)
+    login_user user
+    visit batch_path(batch)
+    request_list = find('#requests_list')
+    td = request_list.first('tr').all('td').last
+    expect(td).to have_link('0 comments')
+  end
 end
