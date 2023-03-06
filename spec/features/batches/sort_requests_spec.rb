@@ -37,7 +37,6 @@ describe 'Batches controller', js: true, warren: true do
   end
 
   it 'request zero comments link' do
-    requests_ids = batch.batch_requests.map(&:request_id)
     login_user user
     visit batch_path(batch)
     request_list = find('#requests_list')
