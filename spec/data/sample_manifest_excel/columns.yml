@@ -246,6 +246,28 @@ supplier_name:
       formula:
         operator: ">"
         operand: 40
+bioscan_supplier_name:
+  heading: SUPPLIER SAMPLE NAME
+  unlocked: true
+  validation:
+    options:
+      type: :textLength
+      operator: :lessThanOrEqual
+      formula1: "40"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Supplier Sample Name"
+      prompt: "Please enter a sample name up to a maximum of 40 characters in length. Only include characters A-Z, 0-9 and underscores."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Supplier Sample Name"
+      error: "Name must be a maximum of 40 characters in length."
+  conditional_formattings:
+    empty_cell:
+    len:
+      formula:
+        operator: ">"
+        operand: 40
 cohort:
   heading: COHORT
   unlocked: true
@@ -805,6 +827,26 @@ control_type:
       errorTitle: "What Type of Control is it?"
       error: "Select from the list provided if the sample is a control."
     range_name: :control_type
+  conditional_formattings:
+    empty_cell:
+    is_error:
+bioscan_control_type:
+  heading: CONTROL TYPE
+  unlocked: true
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: true
+      showDropDown: false
+      showInputMessage: true
+      promptTitle: "What Type of Control is it?"
+      prompt: "Select from the list provided if the sample is a control."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "What Type of Control is it?"
+      error: "Select from the list provided if the sample is a control."
+    range_name: :bioscan_control_type
   conditional_formattings:
     empty_cell:
     is_error:
