@@ -1,0 +1,10 @@
+# This submission template is associated with the Limber Targeted NanoSeq pipeline.
+---
+Limber-Htp - Bioscan Lysate Prep:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_bioscan_lysate_prep"]
+    # project_name: TBC
+    # study_name: TBC
+    product_line_name: Bioscan
+    product_catalogue_name: Bioscan
