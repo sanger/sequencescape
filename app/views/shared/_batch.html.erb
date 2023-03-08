@@ -55,11 +55,8 @@
 
         <td><%= request.state.humanize %></td>
 
-        <% if request.comments.present? -%>
-          <td><%= link_to (pluralize request.comments.size, 'comment'),  request_comments_url(request) %></td>
-        <% else -%>
-          <td>None</td>
-        <% end -%>
+        <td><%= link_to (pluralize request.comments.size, 'comment'),  request_comments_url(request) %></td>
+
       </tr>
     <% end -%>
   </tbody>
