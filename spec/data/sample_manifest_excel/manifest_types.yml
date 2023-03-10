@@ -171,6 +171,44 @@ plate_chromium_library:
     - :disease
     - :sample_ebi_accession_number
     - :donor_id
+plate_bioscan:
+  heading: "Bioscan Plate"
+  asset_type: "plate"
+  columns:
+    - :sanger_plate_id
+    - :well
+    - :sanger_sample_id
+    - :bioscan_supplier_name
+    - :reference_genome
+    - :cohort
+    - :volume
+    - :concentration
+    - :gender
+    - :country_of_origin
+    - :geographical_region
+    - :ethnicity
+    - :dna_source
+    - :date_of_sample_collection
+    - :date_of_sample_extraction
+    - :sample_extraction_method
+    - :sample_purified
+    - :purification_method
+    - :concentration_determined_by
+    - :sample_storage_conditions
+    - :mother
+    - :father
+    - :sibling
+    - :gc_content
+    - :sample_public_name
+    - :sample_taxon_id
+    - :sample_common_name
+    - :sample_description
+    - :sample_strain_att
+    - :sample_type
+    - :sample_ebi_accession_number
+    - :donor_id
+    - :phenotype
+    - :bioscan_control_type
 tube_default:
   heading: "Default Tube"
   asset_type: "1dtube"

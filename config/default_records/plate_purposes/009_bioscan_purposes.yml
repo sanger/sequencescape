@@ -1,0 +1,21 @@
+# These purposes support the Bioscan Lysis and Library prep pipelines
+# There are two entry points for sample manifests:
+# - Insect plate for the Lysis pipeline
+# - Lysed material plate for the library prep pipeline
+# Initially samples have already been lysed by faculty and are arriving at the start
+# of the Library prep pipeline. Once the Beckman automation for the lysis step is in
+# place the entry point moves back to the insect plate at the start of the Lysis pipeline.
+---
+# This is the insects in ethanol plate for the start of the Lysate pipeline
+# It is the original source plate that has come in from the suppliers around the UK.
+LILYS-96 Stock:
+  type: PlatePurpose::Input
+  stock_plate: true
+  cherrypickable_target: false
+# This is the manually created version of the lysed material plate, ready for the Library
+# prep pipeline. These plates have been prepared by the faculty team.
+# They include controls.
+LBSN-96 Lysate Stock:
+  type: PlatePurpose::Input
+  stock_plate: true
+  cherrypickable_target: false

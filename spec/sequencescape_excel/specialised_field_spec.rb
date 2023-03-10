@@ -736,4 +736,83 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
       expect(sample_manifest_asset.sample.control_type).to be_nil
     end
   end
+
+  # This section for the Bioscan specific control type field
+  describe SequencescapeExcel::SpecialisedField::BioscanControlType do
+    let(:sample_supplier_name) { 'CONTROL_test_01' }
+    let!(:bs_supplier_name) do
+      SequencescapeExcel::SpecialisedField::BioscanSupplierName.new(
+        value: sample_supplier_name,
+        sample_manifest_asset: sample_manifest_asset
+      )
+    end
+
+    # test value matches to the enum in the sample model
+    # for Bioscan we have three types of control
+    it 'will be valid if value matches enum' do
+      sf_pcr_pos = described_class.new(value: 'pcr positive', sample_manifest_asset: sample_manifest_asset)
+      sf_pcr_pos.supplier_name = bs_supplier_name
+      expect(sf_pcr_pos).to be_valid
+
+      sf_pcr_neg = described_class.new(value: 'pcr negative', sample_manifest_asset: sample_manifest_asset)
+      sf_pcr_neg.supplier_name = bs_supplier_name
+      expect(sf_pcr_neg).to be_valid
+
+      sf_lysate_neg = described_class.new(value: 'lysate negative', sample_manifest_asset: sample_manifest_asset)
+      sf_lysate_neg.supplier_name = bs_supplier_name
+      expect(sf_lysate_neg).to be_valid
+    end
+
+    # test field is not valid if value does not match to the enum in the sample model
+    it 'will not be valid if value does not match enum' do
+      sf = described_class.new(value: 'rubbish', sample_manifest_asset: sample_manifest_asset)
+      sf.supplier_name = bs_supplier_name
+
+      expect(sf).not_to be_valid
+      expect(sf.errors.full_messages).to include('the control type rubbish was not recognised.')
+    end
+
+    # test control flag and type are set on sample
+    it 'will update the control and control type on the sample when present' do
+      sf = described_class.new(value: 'pcr positive', sample_manifest_asset: sample_manifest_asset)
+      sf.supplier_name = bs_supplier_name
+      sf.update(aliquot: aliquot)
+      aliquot.save
+      expect(sample_manifest_asset.sample.control).to be(true)
+      expect(sample_manifest_asset.sample.control_type).to eq('pcr positive')
+    end
+
+    # test to allow a re-upload to correct a previously set control to not a control
+    it 'will update the control and control type on the sample when blank' do
+      sample_manifest_asset.sample.control = true
+      sample_manifest_asset.sample.control_type = 'pcr positive'
+      sample_manifest_asset.sample.save
+      sf = described_class.new(value: '', sample_manifest_asset: sample_manifest_asset)
+      sf.supplier_name = bs_supplier_name
+      sf.update(aliquot: aliquot)
+      aliquot.save
+      expect(sample_manifest_asset.sample.control).to be(false)
+      expect(sample_manifest_asset.sample.control_type).to be_nil
+    end
+  end
+
+  # This section for the Bioscan specific supplier name field
+  # This specialised field is very simple, a string. We need it for validation
+  # checks when a Bioscan control type has been selected (must start CONTROL_).
+  # That validation is tested in the BioscanControlType tests above.
+  describe SequencescapeExcel::SpecialisedField::BioscanSupplierName do
+    let(:sample_supplier_name) { 'test_name' }
+
+    # supplier name is a primary field and must be present in the manifest rows
+    it 'will not be valid if blank' do
+      expect(described_class.new(value: '', sample_manifest_asset: sample_manifest_asset)).not_to be_valid
+    end
+
+    # test supplier name is stored in the sample metadata on update
+    it 'will add supplier name to sample_metadata' do
+      sf = described_class.new(value: sample_supplier_name, sample_manifest_asset: sample_manifest_asset)
+      sf.update
+      expect(sample_manifest_asset.sample.sample_metadata.supplier_name).to eq(sample_supplier_name)
+    end
+  end
 end
