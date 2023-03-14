@@ -24,7 +24,7 @@ Feature: Update the data release fields for creating a study
     When I select "delayed" from "How is the data release to be timed?"
     Then the help text for "Reason for delaying release" should contain:
       """
-      To apply for a delay, please contact foo
+      To apply for a delay, please contact datasharing@example.com
       """
 
     Examples:
