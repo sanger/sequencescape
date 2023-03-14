@@ -436,7 +436,7 @@ en:
 
         data_release_delay_reason:
           label: Reason for delaying release
-          help: "To apply for a delay, please contact <%= configatron.data_sharing_contact.name %> (<%= configatron.data_sharing_contact.email %>)"
+          help: "To apply for a delay, please contact <%= configatron.data_sharing_contact.email %>"
 
         data_release_delay_other_comment:
           label: Please explain the reason for delaying release
