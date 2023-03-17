@@ -33,11 +33,10 @@ class UatActions::GenerateTagLayoutTemplate < UatActions
              options: {
                include_blank: 'Select a direction...'
              }
-
   form_field :walking_by_algorithm,
              :select,
              label: 'Walking By',
-             help: 'Walking by algorithms',
+             help: 'Walking by algorithms, will default to TagLayout::WalkWellsOfPlate if left blank',
              select_options: -> { TagLayoutTemplatesController::WALKING_ALGORITHMS },
              options: {
                include_blank: 'Select a walking by...'
@@ -46,18 +45,19 @@ class UatActions::GenerateTagLayoutTemplate < UatActions
   validates :name, presence: { message: 'needs a name' }
   validates :tag_group_name, presence: { message: 'needs a choice' }
   validates :direction_algorithm, presence: { message: 'needs a choice' }
-  validates :walking_by_algorithm, presence: { message: 'needs a choice' }
 
   def perform
     report[:name] = name
     return true if existing_tag_layout_template
+
+    walk_algorithm = walking_by_algorithm.present? ? walking_by_algorithm : 'TagLayout::WalkWellsOfPlate'
 
     tlt_parameters = {
       name: name,
       tag_group_id: tag_group.id,
       tag2_group_id: tag2_group&.id,
       direction_algorithm: direction_algorithm,
-      walking_algorithm: walking_by_algorithm
+      walking_algorithm: walk_algorithm
     }
 
     tlt = TagLayoutTemplate.create!(tlt_parameters)
