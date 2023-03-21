@@ -10,6 +10,7 @@ class Receptacle < Asset
   include Transfer::State
   include Aliquot::Remover
   include StudyReport::AssetDetails
+  include Receptacle::DownstreamAliquotsRemoval::Mixin
 
   QC_STATE_ALIASES = { 'passed' => 'pass', 'failed' => 'fail' }.freeze
 

@@ -284,7 +284,8 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def on_failed
-    target_asset&.remove_downstream_aliquots
+    return unless target_asset
+    target_asset.delay.remove_downstream_aliquots if target_asset.allow_to_remove_downstream_aliquots?
   end
   alias on_cancelled on_failed
 end

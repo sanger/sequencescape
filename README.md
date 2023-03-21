@@ -85,9 +85,10 @@ The following tools are required for development:
 
 To set up a local development environment in Docker, you have to build a new Docker image for
 Sequencescape. start a stack of services that include a mysql database, and reset
-this database contents. You can do all together by running the command:
+this database contents. You can do all together by running the commands:
 
 ```shell
+docker-compose build
 RESET_DATABASE=true docker-compose up
 ```
 
@@ -111,7 +112,7 @@ docker-compose -f docker-compose-dev.yml up
 ```
 
 **ABOUT RECREATE DOCKER IMAGE** If you ever need to recreate the image built on first start (because you made modifications
-to the Dockerfile file) you can run a building process with:
+to the Dockerfile file) you can run the building process again with:
 
 ```shell
 docker-compose build

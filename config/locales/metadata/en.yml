@@ -496,7 +496,7 @@ en:
           ebi_db: ENA-STUDY
 
         hmdmc_approval_number:
-          label: HMDMC approval number
+          label: HuMFre approval number
 
         s3_email_list:
           label: S3 email list
