@@ -2,7 +2,7 @@
 
 # Lays out the tags so that they are column then row ordered.
 # This version has a variation of the tag 2 order.
-module TagLayout::InColumnsThenRowsAlternate
+module TagLayout::InColumnThenRowAlternates
   def self.direction
     'column then row alternate'
   end
