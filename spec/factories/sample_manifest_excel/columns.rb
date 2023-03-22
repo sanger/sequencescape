@@ -91,6 +91,12 @@ FactoryBot.define do
       value { "DONOR ID #{number}" }
     end
 
+    factory :retention_instruction_column do
+      name { :retention_instruction }
+      heading { 'RETENTION INSTRUCTION' }
+      value { 'Long term storage' }
+    end
+
     skip_create
   end
 end
