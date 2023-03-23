@@ -54,6 +54,16 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
       expect(worksheet.type).to eq('Tubes')
     end
 
+    it 'be Tubes for extraction tube manifest' do
+      sample_manifest = create(:tube_sample_manifest, asset_type: '1dtube')
+      column_list = SampleManifestExcel.configuration.columns.tube_extraction.dup
+      worksheet =
+        SampleManifestExcel::Worksheet::DataWorksheet.new(
+          options.merge(columns: column_list, sample_manifest: sample_manifest)
+        )
+      expect(worksheet.type).to eq('Tubes')
+    end
+
     it 'be Tubes for a library tube based manifest' do
       sample_manifest = create(:tube_sample_manifest, asset_type: 'library')
       column_list = SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup
@@ -511,6 +521,53 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
     end
   end
 
+  context 'worksheet for extraction tube' do
+    let(:data) do
+      {
+        supplier_name: 'SCG--1222_A0',
+        volume: 1,
+        concentration: 1,
+        gender: 'Unknown',
+        dna_source: 'Cell Line',
+        date_of_sample_collection: 'Nov-16',
+        date_of_sample_extraction: 'Nov-16',
+        sample_purified: 'No',
+        sample_public_name: 'SCG--1222_A0',
+        sample_taxon_id: 9606,
+        sample_common_name: 'Homo sapiens',
+        phenotype: 'Unknown',
+        retention_instruction: 'Long term storage'
+      }.with_indifferent_access
+    end
+    let(:attributes) do
+      {
+        workbook: workbook,
+        columns: SampleManifestExcel.configuration.columns.tube_extraction.dup,
+        data: data,
+        no_of_rows: 5,
+        study: 'WTCCC',
+        supplier: 'Test supplier',
+        count: 1,
+        manifest_type: 'tube_extraction'
+      }
+    end
+
+    it 'has the retention instruction column' do
+      data1 = data.merge({ retention_instruction: 'Destroy after 2 years' })
+      attributes1 = attributes.merge({ data: data1 })
+      worksheet = SampleManifestExcel::Worksheet::TestWorksheet.new(attributes1)
+      save_file
+      column = worksheet.columns.find_by(:name, :retention_instruction)
+      expect(column.heading).to eq('RETENTION INSTRUCTION')
+      options = column.validation.options
+      expect(options[:type]).to eq(:list)
+      expect(options[:formula1]).to eq('$A$1:$A$2')
+      expect(options[:prompt]).to include('Please select a retention instruction')
+      expect(options[:error]).to include('You must enter a retention instruction')
+      expect(spreadsheet.sheet(0).cell(worksheet.first_row, column.number)).to eq(data1[:retention_instruction])
+    end
+  end
+
   context 'test worksheet for plates' do
     let(:data) do
       {
@@ -525,7 +582,8 @@ RSpec.describe SampleManifestExcel::Worksheet, type: :model, sample_manifest_exc
         sample_public_name: 'SCG--1222_A0',
         sample_taxon_id: 9606,
         sample_common_name: 'Homo sapiens',
-        phenotype: 'Unknown'
+        phenotype: 'Unknown',
+        retention_instruction: 'Long term storage'
       }.with_indifferent_access
     end
 
