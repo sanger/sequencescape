@@ -22,9 +22,10 @@ Feature: Update the data release fields for creating a study
   Scenario Outline: Add help text opposite delay drop down (4044305)
     When I choose "<release strategy>" from "What is the data release strategy for this study?"
     When I select "delayed" from "How is the data release to be timed?"
+    When I select "other" from "Reason for delaying release"
     Then the help text for "Reason for delaying release" should contain:
       """
-      To apply for a delay, please contact datasharing@example.com
+      To apply for a delay which is not associated with a PhD study, please contact datasharing@example.com
       """
 
     Examples:
