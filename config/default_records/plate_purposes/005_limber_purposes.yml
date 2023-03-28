@@ -18,9 +18,6 @@ LTN Cherrypick: *limber_input_96
 LHR RT: *limber_input_96
 LTHR RT: *limber_input_96
 LTHR Cherrypick: *limber_input_96
-PF Cherrypicked:
-  <<: *limber_input_96
-  default_state: passed
 LDS Stock:
   <<: *limber_input_96
   cherrypickable_target: false
