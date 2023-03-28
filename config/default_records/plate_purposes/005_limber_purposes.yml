@@ -18,9 +18,6 @@ LTN Cherrypick: *limber_input_96
 LHR RT: *limber_input_96
 LTHR RT: *limber_input_96
 LTHR Cherrypick: *limber_input_96
-PF Cherrypicked:
-  <<: *limber_input_96
-  default_state: passed
 LDS Stock:
   <<: *limber_input_96
   cherrypickable_target: false
@@ -50,3 +47,13 @@ LBC Cherrypick:
 # requests
 LB Lib PCR-XP:
   stock_plate: false
+
+# During research, the below can be created from
+# Sequencescape directly. TODO: create the purpose
+# from Limber, using this config.
+# Assume need to add asset_shape to SS io etc
+# Plate-007-C:
+#   asset_shape: ChromiumChip
+#   cherrypickable_target: false
+#   asset_type: plate
+#   size: 16

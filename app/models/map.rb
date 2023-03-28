@@ -18,7 +18,7 @@ class Map < ApplicationRecord
     # TODO: These methods are only valid for standard plates. Moved them here to make that more explicit
     # (even if its not strictly appropriate) They could do with refactoring/removing.
 
-    PLATE_DIMENSIONS = Hash.new { |_h, _k| [] }.merge(96 => [12, 8], 384 => [24, 16])
+    PLATE_DIMENSIONS = Hash.new { |_h, _k| [] }.merge(96 => [12, 8], 384 => [24, 16], 16 => [8,2])
 
     # Seems to expect row to be zero-indexed but column to be 1 indexed
     def self.location_from_row_and_column(row, column, _ = nil, __ = nil)
