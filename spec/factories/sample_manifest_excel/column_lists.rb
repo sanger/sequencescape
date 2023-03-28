@@ -16,6 +16,7 @@ FactoryBot.define do
             .push(build(:sanger_plate_id_column))
             .push(build(:well_column))
             .push(build(:donor_id_column))
+            .push(build(:retention_instruction_column))
         )
       end
     end

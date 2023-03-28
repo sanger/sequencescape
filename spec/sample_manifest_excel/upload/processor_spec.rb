@@ -283,6 +283,47 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           end
         end
       end
+
+      context 'when using extraction tube' do
+        let(:column_list) { configuration.columns.tube_extraction.dup }
+        let(:manifest_type) { 'tube_extraction' }
+        let(:download) { build(:test_download_tubes, columns: column_list, manifest_type: manifest_type) }
+        let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
+
+        after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
+
+        it 'cannot have blank retention instruction' do
+          column = download.worksheet.columns.find_by(:name, :retention_instruction)
+          row_no = download.worksheet.first_row
+          column_no = column.number
+          cell(row_no - 1, column_no - 1).value = nil # zero-based index
+          download.save(new_test_file_name)
+          upload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list)
+          processor = described_class.new(upload)
+          processor.run(nil)
+          expected = "Retention instruction checks failed at row: #{row_no}. Value cannot be blank."
+          expect(processor.errors.full_messages).to include(expected)
+        end
+
+        it 'must have the same retention instructions for all extraction tubes in the manifest' do
+          col1 = download.worksheet.columns.find_by(:name, :retention_instruction).number - 1 # zero-based index
+          row1 = download.worksheet.first_row - 1 # zero-based index
+          rown = download.worksheet.last_row - 1
+          (row1..rown).each { |x| cell(x, col1).value = 'Destroy after 2 years' } # Set all the same
+          cell(rown, col1).value = 'Long term storage' # Set one of them different
+          download.save(new_test_file_name)
+          upload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list)
+          processor = described_class.new(upload)
+          processor.run(nil)
+          col1 = download.worksheet.columns.find_by(:name, :sanger_tube_id).number - 1
+          barcode = cell(rown, col1).value
+          row = rown + 1
+          msg =
+            "Retention instruction checks failed at row: #{row}. " \
+              "Tube (#{barcode}) cannot have different retention instruction value."
+          expect(processor.errors.full_messages).to include(msg)
+        end
+      end
     end
 
     describe SampleManifestExcel::Upload::Processor::LibraryTube do
@@ -603,8 +644,11 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           let(:download) { build(:test_download_plates, columns: column_list) }
 
           let(:new_test_file) do
-            cell(10, 6).value = '50'
-            cell(10, 7).value = 'Female'
+            col1 = download.worksheet.columns.find_by(:name, :concentration).number - 1
+            col2 = download.worksheet.columns.find_by(:name, :gender).number - 1
+            row1 = download.worksheet.first_row - 1
+            cell(row1, col1).value = '50'
+            cell(row1, col2).value = 'Female'
             download.save(new_test_file_name)
             Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '')
           end
@@ -627,7 +671,9 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             processor = described_class.new(reupload)
             processor.update_samples_and_aliquots(nil)
             expect(reupload.rows).to be_all(&:sample_updated?)
-            s1 = Sample.find_by(sanger_sample_id: cell(10, 2).value)
+            row1 = download.worksheet.first_row - 1
+            col1 = download.worksheet.columns.find_by(:name, :sanger_sample_id).number - 1
+            s1 = Sample.find_by(sanger_sample_id: cell(row1, col1).value)
             expect(s1.sample_metadata.concentration).to eq('50')
             expect(s1.sample_metadata.gender).to eq('Female')
           end
@@ -638,7 +684,9 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             processor = described_class.new(reupload)
             processor.update_samples_and_aliquots(nil)
             expect(reupload.rows).not_to be_all(&:sample_updated?)
-            s1 = Sample.find_by(sanger_sample_id: cell(10, 2).value)
+            row1 = download.worksheet.first_row - 1
+            col1 = download.worksheet.columns.find_by(:name, :sanger_sample_id).number - 1
+            s1 = Sample.find_by(sanger_sample_id: cell(row1, col1).value)
             expect(s1.sample_metadata.concentration).to eq('1')
             expect(s1.sample_metadata.gender).to eq('Unknown')
           end
@@ -679,6 +727,52 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             processor = described_class.new(reupload)
             processor.update_samples_and_aliquots(nil)
             expect(processor).not_to be_valid
+          end
+        end
+
+        context 'when using retention instructions' do
+          let(:download) { build(:test_download_plates, columns: column_list) }
+
+          let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
+
+          before do
+            upload.process(nil)
+            upload.finished!
+          end
+
+          after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
+
+          it 'the retention instructions cannot be left blank' do
+            col1 = download.worksheet.columns.find_by(:name, :retention_instruction).number - 1
+            row1 = download.worksheet.first_row - 1
+            cell(row1, col1).value = nil
+            download.save(new_test_file_name)
+            reupload =
+              SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list, start_row: 9)
+            processor = described_class.new(reupload)
+            processor.update_samples_and_aliquots(nil)
+            expect(processor).not_to be_valid
+            expect(processor.errors.full_messages).to include(
+              'Retention instruction checks failed at row: 10. Value cannot be blank.'
+            )
+          end
+
+          it 'cannot have different retention instructions for the same plate' do
+            col1 = download.worksheet.columns.find_by(:name, :retention_instruction).number - 1
+            row1 = download.worksheet.first_row - 1
+            row2 = row1 + 1
+            cell(row1, col1).value = 'Destroy after 2 years'
+            cell(row2, col1).value = 'Long term storage'
+            download.save(new_test_file_name)
+            reupload =
+              SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list, start_row: 9)
+            processor = described_class.new(reupload)
+            processor.update_samples_and_aliquots(nil)
+            expect(processor).not_to be_valid
+            expect(processor.errors.full_messages).to include(
+              'Retention instruction checks failed at row: 11. ' \
+                'Plate (SQPD-2) cannot have different retention instruction values.'
+            )
           end
         end
       end
