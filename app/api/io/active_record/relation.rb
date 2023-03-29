@@ -12,7 +12,7 @@ class Io::ActiveRecord::Relation # rubocop:todo Style/Documentation
     end
 
     def size_for(results)
-      results.total_entries
+      results.count
     end
     private :size_for
   end

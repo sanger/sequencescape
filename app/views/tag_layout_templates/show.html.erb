@@ -2,6 +2,12 @@
 <% add :menu, "All Tag Layout Templates" => tag_layout_templates_path(@asset) %>
 
 <p>
+  <% unless @tag_layout_template.enabled %>
+  <b><span style="background-color: #dc3545; color: white; padding: 2px;">DISABLED</span></b> this tag layout template is not enabled.
+  <% end %>
+</p>
+
+<p>
   <b>Name:</b>
   <%=h @tag_layout_template.name %>
 </p>

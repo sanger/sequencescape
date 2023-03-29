@@ -17,9 +17,9 @@
     <%= metadata_fields.plain_value(:contains_human_dna) %>
     <%= metadata_fields.plain_value(:contaminated_human_dna) %>
     <%= metadata_fields.plain_value(:commercially_available) %>
-    <% if study.ethical_approval_required? %>
-      <%= metadata_fields.plain_value(:hmdmc_approval_number) %>
-    <% end %>
+    
+    <%= metadata_fields.plain_value(:hmdmc_approval_number) %>
+
     <%= metadata_fields.plain_value(:remove_x_and_autosomes) %>
     <%= metadata_fields.plain_value(:separate_y_chromosome_data) %>
 
