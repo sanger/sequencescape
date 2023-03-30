@@ -22,17 +22,10 @@ Feature: Update the data release fields for creating a study
   Scenario Outline: Add help text opposite delay drop down (4044305)
     When I choose "<release strategy>" from "What is the data release strategy for this study?"
     When I select "delayed" from "How is the data release to be timed?"
+    When I select "other" from "Reason for delaying release"
     Then the help text for "Reason for delaying release" should contain:
       """
-      To apply for a delay, please send the following information to John Doe (foo):
-      SAC sponsor
-      Study title and, where available, data set(s) ID
-      Study description (should describe the data types that will be produced)
-      Data sharing plan (to include the following):
-      - Which repository/repositories will be used
-      - If data will be made available under a managed access mechanism
-      - When data will be shared
-      Reason(s) for delaying data release
+      To apply for a delay which is not associated with a PhD study, please contact datasharing@example.com
       """
 
     Examples:
@@ -57,11 +50,11 @@ Feature: Update the data release fields for creating a study
     And I should exactly see "Comment regarding data release timing and approval"
 
     When I fill in the following:
-  	    | Study name                                         | new study       |
-  	    | Study description                                  | writing cukes   |
-  	    | Please explain the reason for delaying release     | some comment    |
-  	    | Comment regarding data release timing and approval | another comment |
-  	And I select "Jack Sponsor" from "Faculty Sponsor"
+      | Study name                                         | new study       |
+      | Study description                                  | writing cukes   |
+      | Please explain the reason for delaying release     | some comment    |
+      | Comment regarding data release timing and approval | another comment |
+    And I select "Jack Sponsor" from "Faculty Sponsor"
     And I choose "Yes" from "Do any of the samples in this study contain human DNA?"
     And I choose "No" from "Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?"
     And I choose "Yes" from "Are all the samples to be used in this study commercially available, unlinked anonymised cell-lines?"
