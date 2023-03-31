@@ -90,3 +90,8 @@ collected_by_for_cardinal:
 collected_by_for_controls:
   options:
     - Sanger Institute
+retention_instructions:
+  options:
+    - Destroy after 2 years
+    - Return to customer after 2 years
+    - Long term storage

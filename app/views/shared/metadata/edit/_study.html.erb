@@ -91,5 +91,8 @@
     <%= metadata_fields.select(:data_deletion_period, ['','3 months']) %>
 
     <% metadata_fields.finalize_related_fields %>
+
+    <% metadata_fields.show_form_text_for(:data_release_delay_reason, when: Study::DATA_RELEASE_DELAY_FOR_OTHER) %>
+    <% metadata_fields.finalize_form_texts %>
   <% end %>
 <% end %>

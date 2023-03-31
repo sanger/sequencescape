@@ -26,6 +26,8 @@ RSpec.describe Api::V2::LabwareResource, type: :resource do
     it { is_expected.to filter(:purpose_id) }
     it { is_expected.to filter(:without_children) }
     it { is_expected.to filter(:created_at_gt) }
+    it { is_expected.to filter(:updated_at_gt) }
+    it { is_expected.to filter(:include_used) }
 
     # Associations
     it { is_expected.to have_one(:purpose).with_class_name('Purpose') }

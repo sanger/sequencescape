@@ -2,6 +2,7 @@
 
 # Labware represents a physical object which moves around the lab.
 # It has one or more receptacles.
+# rubocop:disable Metrics/ClassLength
 class Labware < Asset
   include Commentable
   include Uuid::Uuidable
@@ -230,6 +231,10 @@ class Labware < Asset
     scanned_into_lab_event.try(:content) || ''
   end
 
+  def retention_instructions
+    @retention_instructions ||= obtain_retention_instructions
+  end
+
   # Class methods
   class << self
     # Bulk retrieves locations for multiple labwares at once
@@ -292,6 +297,12 @@ class Labware < Asset
     end
   end
 
+  def obtain_retention_instructions
+    return if metadata.blank?
+
+    metadata.symbolize_keys[:retention_instruction]
+  end
+
   def lookup_labwhere_location
     lookup_labwhere(machine_barcode) || lookup_labwhere(human_barcode)
   end
@@ -307,3 +318,4 @@ class Labware < Asset
     info_from_labwhere.location.location_info if info_from_labwhere.present? && info_from_labwhere.location.present?
   end
 end
+# rubocop:enable Metrics/ClassLength
