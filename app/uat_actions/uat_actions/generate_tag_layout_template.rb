@@ -50,7 +50,7 @@ class UatActions::GenerateTagLayoutTemplate < UatActions
     report[:name] = name
     return true if existing_tag_layout_template
 
-    walk_algorithm = walking_by_algorithm.present? ? walking_by_algorithm : 'TagLayout::WalkWellsOfPlate'
+    walk_algorithm = walking_by_algorithm.presence || 'TagLayout::WalkWellsOfPlate'
 
     tlt_parameters = {
       name: name,

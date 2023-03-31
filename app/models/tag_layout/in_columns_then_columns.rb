@@ -25,6 +25,6 @@ module TagLayout::InColumnsThenColumns
   # e.g. 4 tags in group, A1 = 1, B1 = 2, A2 = 3, B2 = 4
   # This is the arrangement with tag 2 organised by column
   def self.tag2_index(row, column, scale, _height, _width)
-    (column % scale) * scale + (row % scale)
+    ((column % scale) * scale) + (row % scale)
   end
 end
