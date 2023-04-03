@@ -15,7 +15,7 @@ LILYS-96 Stock:
 # This is the manually created version of the lysed material plate, ready for the Library
 # prep pipeline. These plates have been prepared by the faculty team.
 # They include controls.
-LBSN-96 Lysate Stock:
-  type: PlatePurpose::Input
+LBSN-96 Lysate:
+  type: PlatePurpose
   stock_plate: true
   cherrypickable_target: false

@@ -21,5 +21,4 @@ limber_bioscan_library_prep:
   library_types:
     - Bioscan
   acceptable_purposes:
-    - LBSN-96 Lysate Stock
     - LBSN-96 Lysate
