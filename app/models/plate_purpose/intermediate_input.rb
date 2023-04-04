@@ -17,7 +17,7 @@ class PlatePurpose::IntermediateInput < PlatePurpose
     plate.wells.with_contents.all? do |w| 
       return false if w.requests.empty?
       w.requests.all? do |r| 
-        r.kind_of?(Request::LibraryCreation)
+        r.kind_of?(Request::LibraryCreation) || r.kind_of?(LibraryCreationRequest)
       end
     end
   end
