@@ -21,16 +21,19 @@ describe PlatePurpose::IntermediateInput do
     context 'with ancestors' do 
       let(:parent_plate) { create :plate }
       let(:plate) {  create(:target_plate, parent: parent_plate, purpose: plate_purpose_input) }
+
       context 'with no library requests' do
         it 'is pending' do
           expect(state_of).to eq('pending')
         end
       end
+
       context 'with library requests' do
         before do
           create(:library_creation_request, asset: plate.wells[0])
           create(:library_creation_request, asset: plate.wells[1])
         end
+
         it 'is pending' do
           expect(state_of).to eq('pending')
         end  
@@ -51,6 +54,7 @@ describe PlatePurpose::IntermediateInput do
           create(:library_creation_request, asset: plate.wells[0])
           create(:library_creation_request, asset: plate.wells[1])
         end
+
         it 'is passed' do
           expect(state_of).to eq('passed')
         end

@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+#
+# Class to support a different state machine for inputs added
+# in the middle of a workflow
 class PlatePurpose::IntermediateInput < PlatePurpose
   READY_STATE = 'passed'
   def state_of(plate)
@@ -7,17 +11,17 @@ class PlatePurpose::IntermediateInput < PlatePurpose
 
   def valid_intermediate_input?(plate)
     [
-      (plate.ancestors.count == 0),
-      has_library_creation?(plate)
+      plate.ancestors.count.zero?,
+      library_creation?(plate)
     ].all?
   end
 
-  def has_library_creation?(plate)
+  def library_creation?(plate)
     return false if plate.wells.with_contents.empty?
     plate.wells.with_contents.all? do |w| 
       return false if w.requests.empty?
       w.requests.all? do |r| 
-        r.kind_of?(Request::LibraryCreation) || r.kind_of?(LibraryCreationRequest)
+        r.is_a?(Request::LibraryCreation) || r.is_a?(LibraryCreationRequest)
       end
     end
   end
