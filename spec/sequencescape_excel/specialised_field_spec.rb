@@ -814,6 +814,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
       sf.update
       expect(sample_manifest_asset.sample.sample_metadata.supplier_name).to eq(sample_supplier_name)
     end
+  end
 
   # This section is for the Retention instruction field added as part of the Labware Destruction work
   describe SequencescapeExcel::SpecialisedField::RetentionInstruction do

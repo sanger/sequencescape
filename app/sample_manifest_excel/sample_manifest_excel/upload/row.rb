@@ -156,12 +156,13 @@ module SampleManifestExcel
         primary_column_names = %w[supplier_name bioscan_supplier_name]
 
         # check the columns exist, are valid, and at least one of the primary column options are present
-        unless columns.present? && columns.valid? && (primary_column_names.any? { |s| columns.names.include? s })
+        unless columns.present? && columns.valid? &&
+                 (primary_column_names.any? { |column_name| columns.names.include? column_name })
           return true
         end
 
         # it is mandatory to have a value in the primary column
-        return true if primary_column_names.all? { |s| value(s).blank? }
+        return true if primary_column_names.all? { |column_name| value(column_name).blank? }
         false
       end
 
