@@ -17,7 +17,7 @@ FactoryBot.define do
     end
 
     factory(:purpose_intermediate_input, class: 'PlatePurpose::IntermediateInput') do
-      target_type {'Plate'}
+      target_type { 'Plate' }
       size { '96' }
     end
   end

@@ -10,19 +10,14 @@ class PlatePurpose::IntermediateInput < PlatePurpose
   end
 
   def valid_intermediate_input?(plate)
-    [
-      plate.ancestors.count.zero?,
-      library_creation?(plate)
-    ].all?
+    [plate.ancestors.count.zero?, library_creation?(plate)].all?
   end
 
   def library_creation?(plate)
     return false if plate.wells.with_contents.empty?
-    plate.wells.with_contents.all? do |w| 
+    plate.wells.with_contents.all? do |w|
       return false if w.requests.empty?
-      w.requests.all? do |r| 
-        r.is_a?(Request::LibraryCreation) || r.is_a?(LibraryCreationRequest)
-      end
+      w.requests.all? { |r| r.is_a?(Request::LibraryCreation) || r.is_a?(LibraryCreationRequest) }
     end
   end
 end

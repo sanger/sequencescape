@@ -18,9 +18,9 @@ describe PlatePurpose::IntermediateInput do
       end
     end
 
-    context 'with ancestors' do 
+    context 'with ancestors' do
       let(:parent_plate) { create :plate }
-      let(:plate) {  create(:target_plate, parent: parent_plate, purpose: plate_purpose_input) }
+      let(:plate) { create(:target_plate, parent: parent_plate, purpose: plate_purpose_input) }
 
       context 'with no library requests' do
         it 'is pending' do
@@ -36,7 +36,7 @@ describe PlatePurpose::IntermediateInput do
 
         it 'is pending' do
           expect(state_of).to eq('pending')
-        end  
+        end
       end
     end
 
