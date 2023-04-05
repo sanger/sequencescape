@@ -11,9 +11,8 @@ class TagLayoutTemplatesController < ApplicationController
     'InRows (A1,A2,A3...)': 'TagLayout::InRows',
     'InInverseColumns (H12,G12,F12...)': 'TagLayout::InInverseColumns',
     'InInverseRows (H12,H11,H10...)': 'TagLayout::InInverseRows',
-    'InColumnsThenRows': 'TagLayout::InColumnsThenRows',
-    'InColumnsThenColumns': 'TagLayout::InColumnsThenColumns',
-    'ComboByRows': 'TagLayout::CombByRows'
+    'InColumnsThenRows (A1,A2,B1,B2...)': 'TagLayout::InColumnsThenRows',
+    'InColumnsThenColumns (A1,B1,A2,B2...)': 'TagLayout::InColumnsThenColumns'
   }.freeze
 
   authorize_resource
