@@ -27,7 +27,7 @@ describe 'Create a new tag layout template' do
     expect(page).to have_content 'Name: Test tag layout template'
     expect(page).to have_content "Tag Group: #{tag_group_1.name}"
     expect(page).to have_content 'Tag2 Group: na'
-    expect(page).to have_content 'Direction the tags are laid out by: column'
+    expect(page).to have_content 'Direction the tags are laid out by: row'
     expect(page).to have_content 'Walking by: wells of plate'
     expect(page).to have_content 'To tag layout templates list'
   end
@@ -47,7 +47,7 @@ describe 'Create a new tag layout template' do
     expect(page).to have_content 'Name: Test tag layout template'
     expect(page).to have_content "Tag Group: #{tag_group_1.name}"
     expect(page).to have_content "Tag2 Group: #{tag_group_2.name}"
-    expect(page).to have_content 'Direction the tags are laid out by: column'
+    expect(page).to have_content 'Direction the tags are laid out by: row'
     expect(page).to have_content 'Walking by: wells of plate'
     expect(page).to have_content 'To tag layout templates list'
   end
