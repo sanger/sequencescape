@@ -11,20 +11,9 @@ class TagLayoutTemplatesController < ApplicationController
     'InRows (A1,A2,A3...)': 'TagLayout::InRows',
     'InInverseColumns (H12,G12,F12...)': 'TagLayout::InInverseColumns',
     'InInverseRows (H12,H11,H10...)': 'TagLayout::InInverseRows',
-    InColumnsThenRows: 'TagLayout::InColumnsThenRows',
-    InColumnsThenColumns: 'TagLayout::InColumnsThenColumns',
-    ComboByRows: 'TagLayout::CombByRows'
-  }.freeze
-
-  WALKING_ALGORITHMS = {
-    WalkWellsOfPlate: 'TagLayout::WalkWellsOfPlate',
-    WalkWellsByPools: 'TagLayout::WalkWellsByPools',
-    WalkManualWellsByPools: 'TagLayout::WalkManualWellsByPools',
-    AsGroupByPlate: 'TagLayout::AsGroupByPlate',
-    WalkManualWellsOfPlate: 'TagLayout::WalkManualWellsOfPlate',
-    Quadrants: 'TagLayout::Quadrants',
-    AsFixedGroupByPlate: 'TagLayout::AsFixedGroupByPlate',
-    CombinatorialSequential: 'TagLayout::CombinatorialSequential'
+    'InColumnsThenRows': 'TagLayout::InColumnsThenRows',
+    'InColumnsThenColumns': 'TagLayout::InColumnsThenColumns',
+    'ComboByRows': 'TagLayout::CombByRows'
   }.freeze
 
   authorize_resource
