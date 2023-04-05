@@ -32,8 +32,7 @@ class UatActions::GenerateTagGroup < UatActions
   form_field :tag_sequence_offset,
              :number_field,
              label: 'Tag Sequence Offset',
-             help:
-               'The offset for tag sequence generation, to allow creation of distinct tag groups. Defaults to 0.',
+             help: 'The offset for tag sequence generation, to allow creation of distinct tag groups. Defaults to 0.',
              options: {
                minimum: 0
              }
