@@ -15,6 +15,11 @@ FactoryBot.define do
 
       factory :illumina_htp_initial_stock_tube_purpose, class: 'IlluminaHtp::InitialStockTubePurpose'
     end
+
+    factory(:purpose_intermediate_input, class: 'PlatePurpose::IntermediateInput') do
+      target_type { 'Plate' }
+      size { '96' }
+    end
   end
 
   factory :strip_tube_purpose, class: 'PlatePurpose' do

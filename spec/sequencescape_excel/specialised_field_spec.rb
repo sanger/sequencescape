@@ -816,6 +816,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
     end
   end
 
+  # This section is for the Retention instruction field added as part of the Labware Destruction work
   describe SequencescapeExcel::SpecialisedField::RetentionInstruction do
     let(:user) { create :user }
 
