@@ -45,7 +45,7 @@ module SampleManifestExcel
       def value(key)
         column_number = columns.find_column_or_null(:name, key).number
 
-        # column_number is -1 if no column found by this name
+        # column_number is -1 if no column found by this name (returns NullColumn object from find)
         return nil if column_number.negative?
         at(column_number)
       end
