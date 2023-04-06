@@ -1,0 +1,4 @@
+# This product catalogue is associated with the Limber Bioscan pipelines.
+---
+Bioscan:
+  selection_behaviour: SingleProduct
