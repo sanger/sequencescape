@@ -4,8 +4,12 @@ require 'rails_helper'
 
 # This behaviour is in use for defining inputs that can be added in
 # the middle of a workflow
-describe PlatePurpose::IntermediateInput do
-  let(:plate_purpose_input) { create(:purpose_intermediate_input) }
+describe PlatePurpose::AdditionalInput do
+  let(:plate_purpose_input) { create(:purpose_additional_input) }
+
+  it 'does not have any errors' do
+    expect(plate_purpose_input.errors.messages.to_a).to eq([])
+  end
 
   describe '#state_of' do
     subject(:state_of) { plate_purpose_input.state_of(plate) }
@@ -14,6 +18,8 @@ describe PlatePurpose::IntermediateInput do
 
     context 'with no requests' do
       it 'is pending' do
+        plate_purpose_input.validate
+        expect(plate_purpose_input.errors.messages.to_a).to eq([])
         expect(state_of).to eq('pending')
       end
     end
@@ -24,6 +30,8 @@ describe PlatePurpose::IntermediateInput do
 
       context 'with no library requests' do
         it 'is pending' do
+          plate_purpose_input.validate
+          expect(plate_purpose_input.errors.messages.to_a).to eq([])
           expect(state_of).to eq('pending')
         end
       end
@@ -35,6 +43,8 @@ describe PlatePurpose::IntermediateInput do
         end
 
         it 'is pending' do
+          plate_purpose_input.validate
+          expect(plate_purpose_input.errors.messages.to_a).to eq([])
           expect(state_of).to eq('pending')
         end
       end
@@ -45,6 +55,8 @@ describe PlatePurpose::IntermediateInput do
 
       context 'with no library requests' do
         it 'is pending' do
+          plate_purpose_input.validate
+          expect(plate_purpose_input.errors.messages.to_a).to eq([])
           expect(state_of).to eq('pending')
         end
       end
@@ -56,6 +68,8 @@ describe PlatePurpose::IntermediateInput do
         end
 
         it 'is passed' do
+          plate_purpose_input.validate
+          expect(plate_purpose_input.errors.messages.to_a).to eq([])
           expect(state_of).to eq('passed')
         end
       end
