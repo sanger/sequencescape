@@ -17,6 +17,6 @@ LILYS-96 Stock:
 # from the LILYS-96 Stock parent.
 # These plates include controls.
 LBSN-96 Lysate:
-  type: PlatePurpose::IntermediateInput
+  type: PlatePurpose::AdditionalInput
   stock_plate: true
   cherrypickable_target: false
