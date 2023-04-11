@@ -5,7 +5,7 @@ require 'rails_helper'
 # This behaviour is in use for defining inputs that can be added in
 # the middle of a workflow
 describe PlatePurpose::IntermediateInput do
-  let(:plate_purpose_input) { described_class.create(name: 'test-inter') }
+  let(:plate_purpose_input) { described_class.create(name: generate(:purpose_name)) }
 
   describe '#state_of' do
     subject(:state_of) { plate_purpose_input.state_of(plate) }
