@@ -7,6 +7,10 @@ require 'rails_helper'
 describe PlatePurpose::IntermediateInput do
   let(:plate_purpose_input) { create(:purpose_intermediate_input) }
 
+  it 'does not have any errors' do
+    expect(plate_purpose_input.errors.messages.to_a).to eq([])
+  end
+
   describe '#state_of' do
     subject(:state_of) { plate_purpose_input.state_of(plate) }
 
