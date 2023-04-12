@@ -5,7 +5,7 @@ require 'rails_helper'
 # This behaviour is in use for defining inputs that can be added in
 # the middle of a workflow
 describe PlatePurpose::IntermediateInput do
-  let(:plate_purpose_input) { described_class.create(name: generate(:purpose_name)) }
+  let(:plate_purpose_input) { described_class.new(name: generate(:purpose_name)) }
 
   describe '#state_of' do
     subject(:state_of) { plate_purpose_input.state_of(plate) }
@@ -14,6 +14,7 @@ describe PlatePurpose::IntermediateInput do
 
     context 'with no requests' do
       it 'is pending' do
+        binding.pry
         expect(state_of).to eq('pending')
       end
     end
