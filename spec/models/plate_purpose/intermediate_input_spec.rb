@@ -56,7 +56,8 @@ describe PlatePurpose::IntermediateInput do
         end
 
         it 'is passed' do
-          expect(state_of).to eq('passed')
+          input = described_class.create(name: generate(:purpose_name))
+          expect(input.state_of(plate)).to eq('passed')
         end
       end
     end
