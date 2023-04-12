@@ -2,7 +2,7 @@
 #
 # Class to support a different state machine for inputs added
 # in the middle of a workflow
-class PlatePurpose::IntermediateInput < PlatePurpose
+class PlatePurpose::ImtermediateInput < PlatePurpose
   READY_STATE = 'passed'
   self.state_changer = StateChanger::InputPlate
   def state_of(plate)
