@@ -8,7 +8,7 @@ describe PlatePurpose::AdditionalInput do
   let(:plate_purpose_input) { create(:purpose_additional_input) }
 
   it 'does not have any errors' do
-    expect(plate_purpose_input.errors.messages.to_a).to eq([])
+    expect(plate_purpose_input).to be_valid
   end
 
   describe '#state_of' do
@@ -18,8 +18,6 @@ describe PlatePurpose::AdditionalInput do
 
     context 'with no requests' do
       it 'is pending' do
-        plate_purpose_input.validate
-        expect(plate_purpose_input.errors.messages.to_a).to eq([])
         expect(state_of).to eq('pending')
       end
     end
@@ -30,8 +28,6 @@ describe PlatePurpose::AdditionalInput do
 
       context 'with no library requests' do
         it 'is pending' do
-          plate_purpose_input.validate
-          expect(plate_purpose_input.errors.messages.to_a).to eq([])
           expect(state_of).to eq('pending')
         end
       end
@@ -43,8 +39,6 @@ describe PlatePurpose::AdditionalInput do
         end
 
         it 'is pending' do
-          plate_purpose_input.validate
-          expect(plate_purpose_input.errors.messages.to_a).to eq([])
           expect(state_of).to eq('pending')
         end
       end
@@ -55,8 +49,6 @@ describe PlatePurpose::AdditionalInput do
 
       context 'with no library requests' do
         it 'is pending' do
-          plate_purpose_input.validate
-          expect(plate_purpose_input.errors.messages.to_a).to eq([])
           expect(state_of).to eq('pending')
         end
       end
@@ -68,8 +60,6 @@ describe PlatePurpose::AdditionalInput do
         end
 
         it 'is passed' do
-          plate_purpose_input.validate
-          expect(plate_purpose_input.errors.messages.to_a).to eq([])
           expect(state_of).to eq('passed')
         end
       end
