@@ -14,7 +14,6 @@ describe PlatePurpose::IntermediateInput do
 
     context 'with no requests' do
       it 'is pending' do
-        binding.pry
         expect(state_of).to eq('pending')
       end
     end
