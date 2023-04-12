@@ -17,7 +17,7 @@ FactoryBot.define do
     end
   end
 
-  factory(:purpose_imtermediate_input, class: 'PlatePurpose::ImtermediateInput') do
+  factory(:purpose_additional_input, class: 'PlatePurpose::AdditionalInput') do
     name { generate(:purpose_name) + rand(9999).to_s }
     target_type { 'Plate' }
     size { '96' }

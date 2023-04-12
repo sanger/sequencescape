@@ -4,8 +4,8 @@ require 'rails_helper'
 
 # This behaviour is in use for defining inputs that can be added in
 # the middle of a workflow
-describe PlatePurpose::ImtermediateInput do
-  let(:plate_purpose_input) { create(:purpose_imtermediate_input) }
+describe PlatePurpose::AdditionalInput do
+  let(:plate_purpose_input) { create(:purpose_additional_input) }
 
   it 'does not have any errors' do
     expect(plate_purpose_input.errors.messages.to_a).to eq([])
