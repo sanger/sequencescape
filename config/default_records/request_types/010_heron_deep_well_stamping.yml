@@ -1,0 +1,12 @@
+# Request type for stamping from deep well plates
+---
+deep_well_plate_stamping:
+  name: Deep Well Plate Stamping
+  asset_type: Well
+  order: 1
+  request_class_name: CustomerRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: Deep Well Plate Stamping
+  acceptable_purposes:
+    - LTRVI-DW-96 Stock
