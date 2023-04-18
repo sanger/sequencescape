@@ -4,7 +4,6 @@
 # in the middle of a workflow
 class PlatePurpose::AdditionalInput < PlatePurpose
   READY_STATE = 'passed'
-  self.state_changer = StateChanger::InputPlate
   def state_of(plate)
     return READY_STATE if valid_intermediate_input?(plate)
     super(plate)

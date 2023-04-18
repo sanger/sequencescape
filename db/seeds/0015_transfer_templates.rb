@@ -59,6 +59,12 @@ ActiveRecord::Base.transaction do
     transfers: locations_for(('A'..'H'), (1..12))
   )
 
+  TransferTemplate.create!(
+    name: '384 plate to tube',
+    transfer_class_name: 'Transfer::FromPlateToTube',
+    transfers: locations_for(('A'..'P'), (1..24))
+  )
+
   wells = locations_for(('A'..'H'), (1..12))
 
   TransferTemplate.create!(
