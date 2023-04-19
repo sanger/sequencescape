@@ -1,5 +1,5 @@
 ---
-LTRVI-DW-96 Stock:
+DW-96 Stock:
   type: PlatePurpose::Input
   stock_plate: true
   cherrypickable_target: false
