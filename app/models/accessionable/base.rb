@@ -79,14 +79,59 @@ class Accessionable::Base
   class Tag # rubocop:todo Style/Documentation
     attr_reader :value
 
+    class FieldSerializer
+      def value_for(value)
+        return value
+      end
+      def applies_to?(name)
+        return true
+      end
+      def incorrect_format_value
+        return 'not collected'
+      end
+    end
+
+    class FieldCountryOfOrigin < FieldSerializer
+      def value_for(value)
+        return incorrect_format_value unless Insdc::Country.find_by(name: value)
+        return value
+      end
+
+      def applies_to?(name)
+        return name == :country_of_origin
+      end
+    end
+
+    class FieldCollectionDate < FieldSerializer
+      REGEXP = /1234/
+      def value_for(value)
+        return incorrect_format_value unless REGEXP.match?(value)
+        return value
+      end
+
+      def applies_to?(name)
+        return name == :collection_date
+      end
+    end
+
+    SERIALIZERS = [
+      FieldCountryOfOrigin.new,
+      FieldCollectionDate.new,
+      FieldSerializer.new
+    ]
+
     def initialize(label_scope, name, value, downcase = false)
       @name = name
-      @value = downcase && value ? value.downcase : value
+      @value = field_serializer_for(name).value_for(downcase && value ? value.downcase : value)
       @scope = label_scope
     end
 
     def label
       I18n.t("#{@scope}.#{@name}.label").tr(' ', '_').downcase
+    end
+
+    def field_serializer_for(name)
+      SERIALIZERS.detect{|s| s.applies_to?(name)}
     end
 
     def build(xml)

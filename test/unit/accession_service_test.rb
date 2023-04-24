@@ -51,4 +51,30 @@ class AccessionServiceTest < ActiveSupport::TestCase
       assert_tag('subject_id', '123456789')
     end
   end
+
+  context 'A sample with a country_of_origin' do
+    setup do
+      @study = create :managed_study, accession_number: 'accss'
+      @sample = create :sample, studies: [@study]
+    end
+
+    context 'with wrong country' do
+      setup do
+        @sample.sample_metadata.country_of_origin = 'Pepe'
+      end
+      should 'send the default error value' do
+        assert_tag('geographic_location_(country_and/or_sea)', 'not collected')
+      end
+    end
+
+    context 'with right country' do
+      setup do
+        @sample.sample_metadata.country_of_origin = 'Spain'
+      end
+      should 'send the default error value' do
+        assert_tag('geographic_location_(country_and/or_sea)', 'not collected')
+      end      
+    end
+  end
+
 end

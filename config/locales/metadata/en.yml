@@ -145,9 +145,17 @@ en:
           label: Gender
           edit_info: "Array Express"
 
-        country_of_origin:
+        country_of_origin_before_15_may:
           label: Country of origin
           help: The geographic origin of the sample, as defined by the <a href="http://insdc.org/country.html">INSDC list of countries and seas</a>. May also be 'not provided', 'not applicable', 'not collected' or 'restricted access'. Please see <a href="https://ena-docs.readthedocs.io/en/latest/submit/samples/missing-values.html">the missing value documentation</a> before providing one of these values.
+
+        country_of_origin:
+          label: geographic location (country and/or sea)
+          help: The geographic origin of the sample, as defined by the <a href="http://insdc.org/country.html">INSDC list of countries and seas</a>. May also be 'not provided', 'not applicable', 'not collected' or 'restricted access'. Please see <a href="https://ena-docs.readthedocs.io/en/latest/submit/samples/missing-values.html">the missing value documentation</a> before providing one of these values.
+        
+        collection_date:
+          label: collection_date
+          help: Collection date
 
         geographical_region:
           label: Geographical region
