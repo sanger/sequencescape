@@ -216,8 +216,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include_tag(:sample_description)
 
   include_tag(:country_of_origin)
-  include_tag(:collection_date)
-
+  include_tag(:date_of_sample_collection)
 
   include_tag(:gender, services: :EGA, downcase: true)
   include_tag(:phenotype, services: :EGA)

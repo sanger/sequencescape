@@ -364,10 +364,10 @@ country_of_origin:
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Country Of Origin"
-      error: "Is a controlled vocabulary, and must be on the list"
+      error: "Is a controlled vocabulary, and must be on the list."
     range_name: :insdc_country
   conditional_formattings:
-    empty_cell:
+    empty_mandatory_cell:
     len:
       formula:
         operator: ">"
@@ -448,13 +448,13 @@ date_of_sample_collection:
       allowBlank: false
       showInputMessage: true
       promptTitle: "Sample Collection Date"
-      prompt: "Date should be in the format YYYY-MM-DD, Partial dates are supported. eg. YYYY or YYY-MM"
+      prompt: "Date should be in the format YYYY-MM-DD, Partial dates are supported. eg. YYYY or YYY-MM. See https://ena-docs.readthedocs.io/en/latest/submit/samples/missing-values.html if you can't provide a value."
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Sample Collection Date"
-      error: "Date should be in the format YYYY-MM-DD, Partial dates are supported. eg. YYYY or YYY-MM"
+      error: "Date should be in the format YYYY-MM-DD, Partial dates are supported. eg. YYYY or YYY-MM. See https://ena-docs.readthedocs.io/en/latest/submit/samples/missing-values.html if you can't provide a value."
   conditional_formattings:
-    empty_cell:
+    empty_mandatory_cell:
 date_of_sample_extraction:
   heading: DATE OF DNA EXTRACTION (MM/YY or YYYY only)
   unlocked: true
