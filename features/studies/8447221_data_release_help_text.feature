@@ -25,7 +25,7 @@ Feature: Update the data release fields for creating a study
     When I select "other" from "Reason for delaying release"
     Then the help text for "Reason for delaying release" should contain:
       """
-      To apply for a delay, please send the following information to Datasharing (datasharing@sanger.ac.uk):
+      To apply for a delay, please send the following information to Datasharing (datasharing@example.com):
       SAC sponsor
       Study title and, where available, data set(s) ID
       Study description (should describe the data types that will be produced)
