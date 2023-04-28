@@ -2,12 +2,12 @@
 
 COLUMN_RANGES = [(1..1), (1..2), (1..3), (1..4), (1..6), (1..12)].freeze
 
-locations_96_wells = locations_for(('A'..'H'), (1..12))
-locations_384_wells = locations_for(('A'..'P'), (1..24))
-
 def locations_for(row_range, column_range)
   row_range.map { |row| column_range.map { |column| "#{row}#{column}" } }.flatten
 end
+
+locations_96_wells = locations_for(('A'..'H'), (1..12))
+locations_384_wells = locations_for(('A'..'P'), (1..24))
 
 def pooling_row_to_first_column_transfer_layout_96
   layout = {}
