@@ -2,6 +2,9 @@
 
 COLUMN_RANGES = [(1..1), (1..2), (1..3), (1..4), (1..6), (1..12)].freeze
 
+locations_96_wells = locations_for(('A'..'H'), (1..12))
+locations_384_wells = locations_for(('A'..'P'), (1..24))
+
 def locations_for(row_range, column_range)
   row_range.map { |row| column_range.map { |column| "#{row}#{column}" } }.flatten
 end
@@ -56,16 +59,14 @@ ActiveRecord::Base.transaction do
   TransferTemplate.create!(
     name: 'Whole plate to tube',
     transfer_class_name: 'Transfer::FromPlateToTube',
-    transfers: locations_for(('A'..'H'), (1..12))
+    transfers: locations_96_wells
   )
 
   TransferTemplate.create!(
     name: '384 plate to tube',
     transfer_class_name: 'Transfer::FromPlateToTube',
-    transfers: locations_for(('A'..'P'), (1..24))
+    transfers: locations_384_wells
   )
-
-  wells = locations_for(('A'..'H'), (1..12))
 
   TransferTemplate.create!(
     name: 'Flip Plate',
