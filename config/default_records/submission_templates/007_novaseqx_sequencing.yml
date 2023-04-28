@@ -1,0 +1,7 @@
+Limber-Htp - WGS - NovaSeqX paired end sequencing:
+  name: "Limber-Htp - WGS - NovaSeqX paired end sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Illumina-HTP
+    product_catalogue_name: WGS
+    request_type_keys: ["limber_wgs", "limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"]

@@ -18,3 +18,6 @@ S4:
 S2:
   flowcell_type_name: S2
   request_type_key: illumina_htp_novaseq_6000_paired_end_sequencing
+# 10B:
+#   flowcell_type_name: 10B
+#   request_type_key: illumina_htp_novaseqx_paired_end_sequencing

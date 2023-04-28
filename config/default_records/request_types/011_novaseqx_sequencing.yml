@@ -1,0 +1,12 @@
+#Request type for NovaSeqX
+---
+illumina_htp_novaseqx_paired_end_sequencing:
+  # key: illumina_htp_novaseqx_paired_end_sequencing
+  name: Illumina-HTP NovaSeqX paired end sequencing
+  asset_type: LibraryTube
+  order: 2
+  initial_state: pending
+  request_class_name: HiSeqSequencingRequest
+  billable: true
+  product_line_name: Illumina-Htp
+  request_purpose: standard
