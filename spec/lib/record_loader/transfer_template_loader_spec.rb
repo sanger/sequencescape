@@ -38,7 +38,7 @@ RSpec.describe RecordLoader::TransferTemplateLoader, type: :model, loader: true 
       def locations_for(row_range, column_range)
         row_range.map { |row| column_range.map { |column| "#{row}#{column}" } }.flatten
       end
-      
+
       wells_384_locations = locations_for(('A'..'P'), (1..24))
 
       expect(record).to have_attributes(
