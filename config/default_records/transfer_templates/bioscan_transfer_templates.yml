@@ -33,7 +33,6 @@ Transfer columns 1-12:
 Pool wells based on submission:
   name: Pool wells based on submission
   transfer_class_name: Transfer::BetweenPlatesBySubmission
-  transfers: NULL
 
 Custom pooling:
   name: Custom pooling
