@@ -9,7 +9,7 @@ RSpec.describe RecordLoader::TransferTemplateLoader, type: :model, loader: true 
   let(:test_directory) { Rails.root.join('spec/data/record_loader/transfer_templates') }
 
   context 'with bioscan_transfer_templates' do
-    let(:selected_files) { 'bioscan_transfer_templates' }
+    let(:selected_files) { 'one_transfer_template.yml' }
 
     it 'creates records' do
       expect { record_loader.create! }.to change(TransferTemplate, :count).by(1)
@@ -21,19 +21,14 @@ RSpec.describe RecordLoader::TransferTemplateLoader, type: :model, loader: true 
     end
 
     it 'sets attributes' do
-      def locations_for(row_range, column_range)
-        row_range.map { |row| column_range.map { |column| "#{row}#{column}" } }.flatten
-      end
-      wells_384_locations = locations_for(('A'..'P'), (1..24))
-
       record_loader.create!
 
       record = TransferTemplate.first
 
       expect(record).to have_attributes(
-        name: '384 plate to tube',
+        name: 'plate to tube',
         transfer_class_name: 'Transfer::FromPlateToTube',
-        transfers: wells_384_locations
+        transfers: ['A1', 'A2', 'A3']
       )
     end
   end

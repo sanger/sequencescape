@@ -1,0 +1,8 @@
+---
+plate to tube:
+  name: plate to tube
+  transfer_class_name: Transfer::FromPlateToTube
+  transfers:
+    - A1
+    - A2
+    - A3
