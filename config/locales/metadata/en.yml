@@ -436,7 +436,7 @@ en:
 
         data_release_delay_reason:
           label: Reason for delaying release
-          help: "To apply for a delay, please send the following information to <%= configatron.data_sharing_contact.name %> (<%= configatron.data_sharing_contact.email %>):<ul><li>SAC sponsor</li><li>Study title and, where available, data set(s) ID</li><li>Study description (should describe the data types that will be produced)</li><li>Data sharing plan (to include the following):<ul><li>- Which repository/repositories will be used</li><li>- If data will be made available under a managed access mechanism</li><li>- When data will be shared</li></ul></li><li>Reason(s) for delaying data release</li></ul>"
+          help: 'To apply for a delay, please contact <a title="<%= configatron.data_sharing_contact.name %>" href="mailto:<%= configatron.data_sharing_contact.email %>"><%= configatron.data_sharing_contact.email %></a>'
 
         data_release_delay_other_comment:
           label: Please explain the reason for delaying release
