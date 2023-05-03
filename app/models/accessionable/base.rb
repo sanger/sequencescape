@@ -111,6 +111,7 @@ class Accessionable::Base
       end
 
       def applies_to?(name)
+        return false unless Flipper.enabled?(:dpl211)
         name == :country_of_origin
       end
     end
@@ -133,6 +134,7 @@ class Accessionable::Base
       end
 
       def applies_to?(name)
+        return false unless Flipper.enabled?(:dpl211)
         name == :date_of_sample_collection
       end
     end
@@ -146,8 +148,10 @@ class Accessionable::Base
     end
 
     def label
-      accessioning_tag = I18n.exists?("#{@scope}.#{@name}.accessioning_tag")
-      return I18n.t("#{@scope}.#{@name}.accessioning_tag").tr(' ', '_').downcase if accessioning_tag
+      if Flipper.enabled?(:dpl211)
+        accessioning_tag = I18n.exists?("#{@scope}.#{@name}.accessioning_tag")
+        return I18n.t("#{@scope}.#{@name}.accessioning_tag").tr(' ', '_').downcase if accessioning_tag
+      end
       I18n.t("#{@scope}.#{@name}.label").tr(' ', '_').downcase
     end
 
