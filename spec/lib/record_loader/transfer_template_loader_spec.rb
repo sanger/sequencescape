@@ -9,7 +9,7 @@ RSpec.describe RecordLoader::TransferTemplateLoader, type: :model, loader: true 
   let(:test_directory) { Rails.root.join('spec/data/record_loader/transfer_templates') }
 
   context 'with bioscan_transfer_templates' do
-    let(:selected_files) { 'one_transfer_template.yml' }
+    let(:selected_files) { 'example_transfer_templates.yml' }
 
     it 'creates records' do
       expect { record_loader.create! }.to change(TransferTemplate, :count).by(3)
