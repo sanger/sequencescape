@@ -23,12 +23,12 @@ RSpec.describe RecordLoader::TransferTemplateLoader, type: :model, loader: true 
     it 'sets attributes' do
       record_loader.create!
 
-      record = TransferTemplate.first
+      record = TransferTemplate.last
 
       expect(record).to have_attributes(
         name: 'plate to tube',
         transfer_class_name: 'Transfer::FromPlateToTube',
-        transfers: ['A1', 'A2', 'A3']
+        transfers: %w[A1 A2 A3]
       )
     end
   end
