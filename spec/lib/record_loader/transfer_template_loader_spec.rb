@@ -36,15 +36,15 @@ RSpec.describe RecordLoader::TransferTemplateLoader, type: :model, loader: true 
       record = TransferTemplate.find_by(name: '384 plate to tube')
 
       def locations_for(row_range, column_range)
-        row_range.map { |row| column_range.map { |column| "- #{row}#{column}\n" } }.flatten
+        row_range.map { |row| column_range.map { |column| "#{row}#{column}" } }.flatten
       end
-
-      locations = "---\n#{locations_for(('A'..'P'), (1..24)).join}"
+      
+      wells_384_locations = locations_for(('A'..'P'), (1..24))
 
       expect(record).to have_attributes(
         name: '384 plate to tube',
         transfer_class_name: 'Transfer::FromPlateToTube',
-        transfers: locations
+        transfers: wells_384_locations.to_yaml
       )
     end
 
