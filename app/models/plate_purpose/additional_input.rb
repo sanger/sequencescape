@@ -15,9 +15,9 @@ class PlatePurpose::AdditionalInput < PlatePurpose
 
   def library_creation?(plate)
     return false if plate.wells.with_contents.empty?
-    plate.wells.with_contents.all? do |w|
-      return false if w.requests.empty?
-      w.requests.all? { |r| r.is_a?(Request::LibraryCreation) || r.is_a?(LibraryCreationRequest) }
+    plate.wells.with_contents.all? do |well|
+      return false if well.requests.empty?
+      well.requests.all? { |request| request.is_a?(Request::LibraryCreation) || request.is_a?(LibraryCreationRequest) }
     end
   end
 end

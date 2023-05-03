@@ -1,0 +1,10 @@
+# Associated with the Limber pipeline for stamping deep well plates to shallow well plates.
+---
+Limber-Htp - Deep Well Plate Stamping:
+  submission_class_name: LinearSubmission
+  related_records:
+    request_type_keys: ["deep_well_plate_stamping"]
+    project_name: Respiratory Virus and Microbiome Initiative
+    study_name: RVI Programme – Plate Reception
+    product_line_name: Deep Well Plate Stamping
+    product_catalogue_name: Deep Well Plate Stamping
