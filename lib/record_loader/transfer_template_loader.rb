@@ -9,7 +9,13 @@ module RecordLoader
     config_folder 'transfer_templates'
 
     def create_or_update!(name, options)
-      TransferTemplate.create_with(options).find_or_create_by!(name: name)
+      # We do not use the following because it creates a new record only.
+      # TransferTemplate.create_with(options).find_or_create_by!(name: name)
+
+      # We use the following because it creates a new record or updates existing.
+      transfer_template = TransferTemplate.find_or_initialize_by(name: name)
+      transfer_template.update(options)
+      transfer_template.save!
     end
   end
 end

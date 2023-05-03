@@ -8,7 +8,7 @@ RSpec.describe RecordLoader::TransferTemplateLoader, type: :model, loader: true 
 
   let(:test_directory) { Rails.root.join('spec/data/record_loader/transfer_templates') }
 
-  context 'with bioscan_transfer_templates' do
+  context 'with example_transfer_templates' do
     let(:selected_files) { 'example_transfer_templates.yml' }
 
     it 'creates records' do
@@ -40,7 +40,11 @@ RSpec.describe RecordLoader::TransferTemplateLoader, type: :model, loader: true 
       expect(record).to have_attributes(
         name: 'plate to plate',
         transfer_class_name: 'Transfer::BetweenPlates',
-        transfers: {"A1" => "H12", "A2" => "H11", "A3" => "H10"}  # mapping of locations
+        transfers: {
+          'A1' => 'H12',
+          'A2' => 'H11',
+          'A3' => 'H10'
+        } # mapping of locations
       )
     end
 
@@ -52,7 +56,7 @@ RSpec.describe RecordLoader::TransferTemplateLoader, type: :model, loader: true 
       expect(record).to have_attributes(
         name: 'no locations',
         transfer_class_name: 'Transfer::BetweenPlates',
-        transfers: nil  # not given
+        transfers: nil # not given
       )
     end
   end
