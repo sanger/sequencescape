@@ -1,0 +1,17 @@
+
+---
+# Plate-to-plate transfers
+Transfer columns 1-1:
+  name: Transfer columns 1-1
+  transfer_class_name: Transfer::BetweenPlates
+  transfers: "---\nA1: A1\nB1: B1\nC1: C1\nD1: D1\nE1: E1\nF1: F1\nG1: G1\nH1: H1\n"
+
+# Plate-to-tube transfers
+Transfer wells to specific tubes defined by submission:
+  name: Transfer wells to specific tubes defined by submission
+  transfer_class_name: Transfer::FromPlateToSpecificTubesByPool
+
+384 plate to tube:
+  name: 384 plate to tube
+  transfer_class_name: Transfer::FromPlateToTube
+  transfers: "---\n- A1\n- A2\n- A3\n- A4\n- A5\n- A6\n- A7\n- A8\n- A9\n- A10\n- A11\n- A12\n- A13\n- A14\n- A15\n- A16\n- A17\n- A18\n- A19\n- A20\n- A21\n- A22\n- A23\n- A24\n- B1\n- B2\n- B3\n- B4\n- B5\n- B6\n- B7\n- B8\n- B9\n- B10\n- B11\n- B12\n- B13\n- B14\n- B15\n- B16\n- B17\n- B18\n- B19\n- B20\n- B21\n- B22\n- B23\n- B24\n- C1\n- C2\n- C3\n- C4\n- C5\n- C6\n- C7\n- C8\n- C9\n- C10\n- C11\n- C12\n- C13\n- C14\n- C15\n- C16\n- C17\n- C18\n- C19\n- C20\n- C21\n- C22\n- C23\n- C24\n- D1\n- D2\n- D3\n- D4\n- D5\n- D6\n- D7\n- D8\n- D9\n- D10\n- D11\n- D12\n- D13\n- D14\n- D15\n- D16\n- D17\n- D18\n- D19\n- D20\n- D21\n- D22\n- D23\n- D24\n- E1\n- E2\n- E3\n- E4\n- E5\n- E6\n- E7\n- E8\n- E9\n- E10\n- E11\n- E12\n- E13\n- E14\n- E15\n- E16\n- E17\n- E18\n- E19\n- E20\n- E21\n- E22\n- E23\n- E24\n- F1\n- F2\n- F3\n- F4\n- F5\n- F6\n- F7\n- F8\n- F9\n- F10\n- F11\n- F12\n- F13\n- F14\n- F15\n- F16\n- F17\n- F18\n- F19\n- F20\n- F21\n- F22\n- F23\n- F24\n- G1\n- G2\n- G3\n- G4\n- G5\n- G6\n- G7\n- G8\n- G9\n- G10\n- G11\n- G12\n- G13\n- G14\n- G15\n- G16\n- G17\n- G18\n- G19\n- G20\n- G21\n- G22\n- G23\n- G24\n- H1\n- H2\n- H3\n- H4\n- H5\n- H6\n- H7\n- H8\n- H9\n- H10\n- H11\n- H12\n- H13\n- H14\n- H15\n- H16\n- H17\n- H18\n- H19\n- H20\n- H21\n- H22\n- H23\n- H24\n- I1\n- I2\n- I3\n- I4\n- I5\n- I6\n- I7\n- I8\n- I9\n- I10\n- I11\n- I12\n- I13\n- I14\n- I15\n- I16\n- I17\n- I18\n- I19\n- I20\n- I21\n- I22\n- I23\n- I24\n- J1\n- J2\n- J3\n- J4\n- J5\n- J6\n- J7\n- J8\n- J9\n- J10\n- J11\n- J12\n- J13\n- J14\n- J15\n- J16\n- J17\n- J18\n- J19\n- J20\n- J21\n- J22\n- J23\n- J24\n- K1\n- K2\n- K3\n- K4\n- K5\n- K6\n- K7\n- K8\n- K9\n- K10\n- K11\n- K12\n- K13\n- K14\n- K15\n- K16\n- K17\n- K18\n- K19\n- K20\n- K21\n- K22\n- K23\n- K24\n- L1\n- L2\n- L3\n- L4\n- L5\n- L6\n- L7\n- L8\n- L9\n- L10\n- L11\n- L12\n- L13\n- L14\n- L15\n- L16\n- L17\n- L18\n- L19\n- L20\n- L21\n- L22\n- L23\n- L24\n- M1\n- M2\n- M3\n- M4\n- M5\n- M6\n- M7\n- M8\n- M9\n- M10\n- M11\n- M12\n- M13\n- M14\n- M15\n- M16\n- M17\n- M18\n- M19\n- M20\n- M21\n- M22\n- M23\n- M24\n- N1\n- N2\n- N3\n- N4\n- N5\n- N6\n- N7\n- N8\n- N9\n- N10\n- N11\n- N12\n- N13\n- N14\n- N15\n- N16\n- N17\n- N18\n- N19\n- N20\n- N21\n- N22\n- N23\n- N24\n- O1\n- O2\n- O3\n- O4\n- O5\n- O6\n- O7\n- O8\n- O9\n- O10\n- O11\n- O12\n- O13\n- O14\n- O15\n- O16\n- O17\n- O18\n- O19\n- O20\n- O21\n- O22\n- O23\n- O24\n- P1\n- P2\n- P3\n- P4\n- P5\n- P6\n- P7\n- P8\n- P9\n- P10\n- P11\n- P12\n- P13\n- P14\n- P15\n- P16\n- P17\n- P18\n- P19\n- P20\n- P21\n- P22\n- P23\n- P24\n"
