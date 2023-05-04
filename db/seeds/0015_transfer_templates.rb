@@ -63,12 +63,6 @@ ActiveRecord::Base.transaction do
   )
 
   TransferTemplate.create!(
-    name: '384 plate to tube',
-    transfer_class_name: 'Transfer::FromPlateToTube',
-    transfers: wells_384_locations
-  )
-
-  TransferTemplate.create!(
     name: 'Flip Plate',
     transfer_class_name: 'Transfer::BetweenPlates',
     transfers: wells_96_locations.zip(wells_96_locations.reverse).to_h

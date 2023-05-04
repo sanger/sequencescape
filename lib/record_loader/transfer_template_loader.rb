@@ -14,8 +14,7 @@ module RecordLoader
 
       # We use the following because it creates a new record or updates existing.
       transfer_template = TransferTemplate.find_or_initialize_by(name: name)
-      transfer_template.update(options)
-      transfer_template.save!
+      transfer_template.update!(options) # assign_attributes and save!
     end
   end
 end
