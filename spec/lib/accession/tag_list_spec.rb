@@ -37,7 +37,7 @@ RSpec.describe Accession::TagList, type: :model, accession: true do
     groups = extract.by_group
     expect(groups.count).to eq(3)
     expect(groups[:sample_name].count).to eq(2)
-    expect(groups[:sample_attributes].count).to eq(0)
+    expect(groups[:sample_attributes].count).to eq(2)
     expect(groups[:array_express].count).to eq(1)
   end
 
