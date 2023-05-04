@@ -67,7 +67,7 @@ module Accession
     def extract(record)
       TagList.new do |tag_list|
         tags.keys.each do |key|
-          value = record.send(key)
+          value = tags[key].value_for(record, key)
           tag_list.add(tags[key].dup.add_value(value)) if value.present?
         end
         tag_list.groups = groups
@@ -90,7 +90,15 @@ module Accession
     private
 
     def add_tags(tags)
-      tags.each { |k, tag| add(tag.instance_of?(Accession::Tag) ? add(tag) : Accession::Tag.new(tag.merge(name: k))) }
+      tags.each { |k, tag| add(tag.is_a?(Accession::Tag) ? add(tag) : build_tag(tag, k)) }
+    end
+
+    def factory_class_for(tag_yaml)
+      tag_yaml[:class_name].constantize || Accession::Tag
+    end
+
+    def build_tag(tag_yaml, key)
+      (factory_class_for(tag_yaml)).new(tag_yaml.merge(name: key))
     end
   end
 end

@@ -10,6 +10,8 @@ FactoryBot.define do
     growth_condition { 'No' }
     sample_public_name { 'Sample 666' }
     disease_state { 'Awful' }
+    country_of_origin { 'Australia' }
+    date_of_sample_collection { '2000-01-01T00:00' }
 
     factory :sample_metadata_with_accession_number do
       sample_ebi_accession_number { 'EBI1234' }

@@ -215,15 +215,6 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include_tag(:sample_strain_att)
   include_tag(:sample_description)
 
-  # TODO: Uncomment before deploying DPL-211
-  # Unfortunately at this time the database connection is not established, so
-  # we cannot use Flipper.enabled? as normal
-  # We will need to uncomment this before new deployment unless we find a better solution
-  # if Flipper.enabled?(:dpl211)
-  #   include_tag(:country_of_origin)
-  #   include_tag(:date_of_sample_collection)
-  # end
-
   include_tag(:gender, services: :EGA, downcase: true)
   include_tag(:phenotype, services: :EGA)
   include_tag(:donor_id, services: :EGA, as: 'subject_id')
