@@ -20,15 +20,15 @@ RSpec.describe Accession::TagList, type: :model, accession: true do
   end
 
   it 'picks out tags which are required for each service' do
-    expect(tag_list.required_for(build(:ena_service)).count).to eq(2)
-    expect(tag_list.required_for(build(:ega_service)).count).to eq(5)
+    expect(tag_list.required_for(build(:ena_service)).count).to eq(4)
+    expect(tag_list.required_for(build(:ega_service)).count).to eq(7)
   end
 
   it 'groups the tags' do
     tags = tag_list.by_group
     expect(tags.count).to eq(3)
     expect(tags[:sample_name].count).to eq(2)
-    expect(tags[:sample_attributes].count).to eq(3)
+    expect(tags[:sample_attributes].count).to eq(5)
     expect(tags[:array_express].count).to eq(6)
   end
 
