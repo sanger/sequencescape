@@ -8,7 +8,7 @@ module Accession
     include ActiveModel::Model
     include Accession::Equality
 
-    attr_accessor :services, :value, :name, :groups, :ebi_name
+    attr_accessor :services, :value, :name, :groups, :ebi_name, :class_name
 
     validates_presence_of :name, :groups
 
@@ -57,6 +57,54 @@ module Accession
 
     def attributes
       %i[services value name groups ebi_name]
+    end
+
+    # Some helper methods for displaying information from tags
+    module HelperTagValue
+      NOT_COLLECTED = 'not collected'
+      NOT_PROVIDED = 'not provided'
+      RESTRICTED_ACCESS = 'restricted access'
+      OTHER_DEFAULT_SETTINGS = [NOT_COLLECTED, NOT_PROVIDED, RESTRICTED_ACCESS].freeze
+
+      def incorrect_format_value
+        NOT_COLLECTED
+      end
+
+      def value_for(record, key)
+        record.send(key)
+      end
+    end
+    include HelperTagValue
+  end
+
+  # Value serialization for country of origin in accessioning XML generation
+  # It will return a valid country of origin or 'not collected' if nothing provided or invalid
+  # It also allow other config settings for the XML service like the list defined inside OTHER_DEFAULT_SETTINGS
+  class TagCountryOfOrigin < Tag
+    def value_for(record, key)
+      val = record.send(key)
+      return val if OTHER_DEFAULT_SETTINGS.include?(val)
+      return incorrect_format_value unless Insdc::Country.find_by(name: val)
+      val
+    end
+  end
+
+  # Value serialization for collection date in accessioning XML generation
+  # It will return a valid collection date or 'not collected' if nothing provided or invalid
+  # It also allow other config settings for the XML service like the list defined inside OTHER_DEFAULT_SETTINGS
+  # NB: this regexp is defined in <https://www.ebi.ac.uk/ena/browser/api/xml/ERC000011>
+  class TagCollectionDate < Tag
+    # rubocop:disable Layout/LineLength
+    REGEXP = %r{(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)}
+      .freeze
+
+    # rubocop:enable Layout/LineLength
+
+    def value_for(record, key)
+      val = record.send(key)
+      return val if OTHER_DEFAULT_SETTINGS.include?(val)
+      return incorrect_format_value unless REGEXP.match?(val)
+      val
     end
   end
 end
