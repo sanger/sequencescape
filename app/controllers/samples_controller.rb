@@ -134,7 +134,7 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
   def show_accession
     @sample = Sample.find(params[:id])
     respond_to do |format|
-      xml_text = @sample.accession_service.accession_sample_xml(@sample)
+      xml_text = @sample.accession_service.accession_sample_xml(@sample, current_user)
       format.xml { render(text: xml_text) }
     end
   end
@@ -158,6 +158,9 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
     redirect_to(sample_path(@sample))
   rescue AccessionService::AccessionServiceError => e
     flash[:error] = e.message
+    redirect_to(sample_path(@sample))
+  rescue StandardError => e
+    flash[:error] = "There was an error: #{e.message}"
     redirect_to(sample_path(@sample))
   end
 

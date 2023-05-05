@@ -131,7 +131,14 @@ class AccessionService # rubocop:todo Metrics/ClassLength
   def submit_sample_for_user(sample, user)
     ebi_accession_number = sample.sample_metadata.sample_ebi_accession_number
 
-    submit(user, Accessionable::Sample.new(sample))
+    accessionable = sample_accessionable(sample)
+    submission = Accession::Submission.new(user, accessionable)
+    submission.post
+    raise StandardError, submission.errors unless submission.valid?
+
+    # update_accession_number returns true if an accession has been supplied, and the sample has been saved.
+    # If this returns false, then we fail the job. This should catch any failure situations
+    submission.update_accession_number || raise(StandardError)
   end
 
   def submit_study_for_user(study, user)
@@ -156,7 +163,11 @@ class AccessionService # rubocop:todo Metrics/ClassLength
   end
 
   def accession_sample_xml(sample)
-    Accessionable::Sample.new(sample).xml
+    sample_accessionable(sample).to_xml
+  end
+
+  def sample_accessionable
+    Accession::Sample.new(Accession.configuration.tags, sample)
   end
 
   def accession_policy_xml(study)
