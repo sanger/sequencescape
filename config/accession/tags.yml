@@ -16,7 +16,6 @@ country_of_origin:
   class_name: "::Accession::TagCountryOfOrigin"
   services:
     - :ENA
-    - :EGA
   groups:
     - :sample_attributes
   ebi_name: :geographic_location_(country_and/or_sea)
@@ -24,7 +23,6 @@ date_of_sample_collection:
   class_name: "::Accession::TagCollectionDate"
   services:
     - :ENA
-    - :EGA
   groups:
     - :sample_attributes
   ebi_name: :collection_date
