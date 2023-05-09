@@ -166,7 +166,7 @@ class AccessionService # rubocop:todo Metrics/ClassLength
     sample_accessionable(sample).to_xml
   end
 
-  def sample_accessionable
+  def sample_accessionable(sample)
     Accession::Sample.new(Accession.configuration.tags, sample)
   end
 
