@@ -45,6 +45,6 @@ class UatActions::GenerateStudy < UatActions
   private
 
   def print_report(study)
-    report['study id'] = study.id
+    report['study_id'] = study.id
   end
 end
