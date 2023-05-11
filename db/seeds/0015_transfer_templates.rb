@@ -7,7 +7,6 @@ def locations_for(row_range, column_range)
 end
 
 wells_96_locations = locations_for(('A'..'H'), (1..12))
-wells_384_locations = locations_for(('A'..'P'), (1..24))
 
 def pooling_row_to_first_column_transfer_layout_96
   layout = {}
@@ -60,12 +59,6 @@ ActiveRecord::Base.transaction do
     name: 'Whole plate to tube',
     transfer_class_name: 'Transfer::FromPlateToTube',
     transfers: wells_96_locations
-  )
-
-  TransferTemplate.create!(
-    name: '384 plate to tube',
-    transfer_class_name: 'Transfer::FromPlateToTube',
-    transfers: wells_384_locations
   )
 
   TransferTemplate.create!(
