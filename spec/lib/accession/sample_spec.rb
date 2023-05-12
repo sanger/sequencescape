@@ -224,6 +224,14 @@ RSpec.describe Accession::Sample, type: :model, accession: true do
         expect(sample.to_xml).to include(COLLECTION_DATE_TAG)
         expect(find_value_at_tag(sample.to_xml, COLLECTION_DATE_TAG)).to eq('not collected')
       end
+
+      it 'displays missing when collection date is specified as missing' do
+        smpl = create(:sample_for_accessioning_with_open_study)
+        smpl.sample_metadata.update(date_of_sample_collection: 'missing: human-identifiable')
+        sample = described_class.new(tag_list, smpl)
+        expect(sample.to_xml).to include(COLLECTION_DATE_TAG)
+        expect(find_value_at_tag(sample.to_xml, COLLECTION_DATE_TAG)).to eq('missing: human-identifiable')
+      end
     end
   end
 end
