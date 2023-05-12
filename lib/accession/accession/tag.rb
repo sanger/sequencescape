@@ -68,7 +68,7 @@ module Accession
       NOT_APPLICABLE_SAMPLE_GROUP = 'not applicable: sample group'
       MISSING_SYNTHETIC_CONSTRUCT = 'missing: synthetic construct'
       MISSING_LAB_STOCK = 'missing: lab stock'
-      MISINNG_THIRD_PARTY_DATA = 'missing: third party data'
+      MISING_THIRD_PARTY_DATA = 'missing: third party data'
       MISSING_DATA_AGGREEMENT_PRE2023 = 'missing: data agreement established pre-2023'
       MISSING_ENDANGERED_SPECIES = 'missing: endangered species'
       MISSING_HUMAN_IDENTIFIABLE = 'missing: human-identifiable'
@@ -81,7 +81,7 @@ module Accession
         NOT_APPLICABLE_SAMPLE_GROUP,
         MISSING_SYNTHETIC_CONSTRUCT,
         MISSING_LAB_STOCK,
-        MISINNG_THIRD_PARTY_DATA,
+        MISING_THIRD_PARTY_DATA,
         MISSING_DATA_AGGREEMENT_PRE2023,
         MISSING_ENDANGERED_SPECIES,
         MISSING_HUMAN_IDENTIFIABLE
