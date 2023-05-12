@@ -1,0 +1,20 @@
+---
+plate to tube:
+  name: plate to tube
+  transfer_class_name: Transfer::FromPlateToTube
+  transfers:
+    - A1
+    - A2
+    - A3
+
+plate to plate:
+  name: plate to plate
+  transfer_class_name: Transfer::BetweenPlates
+  transfers:
+    A1: H12
+    A2: H11
+    A3: H10
+
+no locations:
+  name: no locations
+  transfer_class_name: Transfer::BetweenPlates
