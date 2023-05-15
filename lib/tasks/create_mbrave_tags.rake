@@ -79,7 +79,17 @@ namespace :mbrave do
 
       def reset_yaml
         puts "Generating file #{yaml_filename}"
-        File.write(yaml_filename, [].to_yaml)
+        File.write(yaml_filename, {}.to_yaml)
+      end
+
+      def set_yaml_for_all_environments
+        contents = YAML.safe_load(File.read(yaml_filename))
+        new_contents = {}
+        new_contents['development'] = contents
+        new_contents['test'] = contents
+        new_contents['staging'] = contents
+        new_contents['production'] = contents
+        File.write(yaml_filename, new_contents.to_yaml)
       end
 
       def create_1_tag_group_forward
@@ -155,12 +165,14 @@ namespace :mbrave do
 
       def _add_to_yaml(yaml_filename, tag_group_name, mbrave_tags, version)
         {}.tap do |obj|
-          obj['name'] = tag_group_name
-          obj['version'] = version
-          obj['tags'] = mbrave_tags
+          record = {}
+          record['name'] = tag_group_name
+          record['version'] = version
+          record['tags'] = mbrave_tags
 
           contents = YAML.safe_load(File.read(yaml_filename))
-          contents.push(obj)
+          contents[tag_group_name] = record
+          #contents.push(obj)
           File.write(yaml_filename, contents.to_yaml)
         end
       end
@@ -191,6 +203,8 @@ namespace :mbrave do
       mbrave_tags_creator.create_1_tag_group_forward
       mbrave_tags_creator.create_24_tag_groups_reverse
       mbrave_tags_creator.create_tag_layout_templates
+      mbrave_tags_creator.set_yaml_for_all_environments
+      
     end
 
     # rubocop:enable Lint/ConstantDefinitionInBlock
