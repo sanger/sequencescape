@@ -86,8 +86,28 @@ class Accessionable::Base
       NOT_COLLECTED = 'not collected'
       NOT_PROVIDED = 'not provided'
       RESTRICTED_ACCESS = 'restricted access'
+      NOT_APPLICABLE_CONTROL_SAMPLE = 'not applicable: control sample'
+      NOT_APPLICABLE_SAMPLE_GROUP = 'not applicable: sample group'
+      MISSING_SYNTHETIC_CONSTRUCT = 'missing: synthetic construct'
+      MISSING_LAB_STOCK = 'missing: lab stock'
+      MISING_THIRD_PARTY_DATA = 'missing: third party data'
+      MISSING_DATA_AGGREEMENT_PRE2023 = 'missing: data agreement established pre-2023'
+      MISSING_ENDANGERED_SPECIES = 'missing: endangered species'
+      MISSING_HUMAN_IDENTIFIABLE = 'missing: human-identifiable'
 
-      OTHER_DEFAULT_SETTINGS = [NOT_COLLECTED, NOT_PROVIDED, RESTRICTED_ACCESS].freeze
+      OTHER_DEFAULT_SETTINGS = [
+        NOT_COLLECTED,
+        NOT_PROVIDED,
+        RESTRICTED_ACCESS,
+        NOT_APPLICABLE_CONTROL_SAMPLE,
+        NOT_APPLICABLE_SAMPLE_GROUP,
+        MISSING_SYNTHETIC_CONSTRUCT,
+        MISSING_LAB_STOCK,
+        MISING_THIRD_PARTY_DATA,
+        MISSING_DATA_AGGREEMENT_PRE2023,
+        MISSING_ENDANGERED_SPECIES,
+        MISSING_HUMAN_IDENTIFIABLE
+      ].freeze
 
       def value_for(value)
         value

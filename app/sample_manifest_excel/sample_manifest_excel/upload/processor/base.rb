@@ -3,9 +3,12 @@
 module SampleManifestExcel
   module Upload
     module Processor
+      # rubocop:disable Metrics/ClassLength
       ##
       # Uploads will be processed slightly differently based on the manifest type.
       class Base
+        MANDATORY_FIELDS = %w[country_of_origin date_of_sample_collection].freeze
+
         include ActiveModel::Model
         include SequencescapeExcel::SubclassChecker
 
@@ -16,6 +19,7 @@ module SampleManifestExcel
         validates_presence_of :upload
         validate :check_upload_type
         validate :check_for_barcodes_unique
+        validate :check_mandatory_fields
 
         def initialize(upload)
           @upload = upload
@@ -146,6 +150,22 @@ module SampleManifestExcel
           )
         end
 
+        def check_mandatory_fields
+          MANDATORY_FIELDS.each { |mandatory_field| _check_mandatory_field(mandatory_field) }
+        end
+
+        def _check_mandatory_field(mandatory_field) # rubocop:todo Metrics/CyclomaticComplexity, Metrics/AbcSize
+          return unless upload.respond_to?(:rows)
+          upload.rows.each do |row|
+            next if row.columns.blank? || row.data.blank?
+            col_num = row.columns.find_column_or_null(:name, mandatory_field).number
+            next unless col_num.present? && col_num.positive?
+
+            value = row.at(col_num)
+            errors.add(:base, "You must set a value for #{mandatory_field} at row: #{row.number}") if value.blank?
+          end
+        end
+
         # Return the row of the first encountered barcode mismatch
         # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
         def duplicate_barcodes # rubocop:todo Metrics/CyclomaticComplexity
@@ -165,7 +185,7 @@ module SampleManifestExcel
           end
           nil
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+        # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/ClassLength
       end
     end
   end
