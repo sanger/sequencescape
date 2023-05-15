@@ -155,9 +155,9 @@ namespace :mbrave do
 
       def _add_to_yaml(yaml_filename, tag_group_name, mbrave_tags, version)
         {}.tap do |obj|
-          obj[:name] = tag_group_name
-          obj[:version] = version
-          obj[:tags] = mbrave_tags
+          obj['name'] = tag_group_name
+          obj['version'] = version
+          obj['tags'] = mbrave_tags
 
           contents = YAML.safe_load(File.read(yaml_filename))
           contents.push(obj)
