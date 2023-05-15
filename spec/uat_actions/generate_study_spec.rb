@@ -6,11 +6,7 @@ describe UatActions::GenerateStudy do
   context 'with valid options' do
     let(:uat_action) { described_class.new(parameters) }
     let(:study_name) { 'Test Study' }
-    let(:parameters) do
-      {
-        study_name: study_name
-      }
-    end
+    let(:parameters) { { study_name: study_name } }
 
     describe '#perform' do
       context 'when generating a study' do

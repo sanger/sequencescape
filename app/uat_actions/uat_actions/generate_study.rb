@@ -5,15 +5,10 @@ class UatActions::GenerateStudy < UatActions
   self.title = 'Generate study'
   self.description = 'Generate a simple study with the provided name.'
 
-  form_field :study_name,
-             :text_field,
-             label: 'Study Name',
-             help: 'The name of the study.'
+  form_field :study_name, :text_field, label: 'Study Name', help: 'The name of the study.'
 
   def self.default
-    new(
-      study_name: UatActions::StaticRecords.study.name,
-    )
+    new(study_name: UatActions::StaticRecords.study.name)
   end
 
   def perform
