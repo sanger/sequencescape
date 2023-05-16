@@ -2,56 +2,69 @@
 require 'csv'
 require 'yaml'
 
+TAG_IDENTIFIER = 'Bioscan_384_template'
+
 namespace :mbrave do
   desc 'Modifying tag groups'
 
   #
   # How to use it:
-  # bundle exec rake mbrave:create_tag_plates <tag_layout_template> <login> <num_plates>
+  # bundle exec rake 'mbrave:create_tag_plates[<login>,<version>]'
   #
   # Example:
-  # bundle exec rake mbrave:create_tag_plates Bioscan_384_template_1_v3 admin 5
-  task :create_tag_plates, %i[arg1 arg2] => :environment do |_t, _args|
+  # bundle exec rake 'mbrave:create_tag_plates[admin,v1]'
+  task :create_tag_plates, %i[login version] => :environment do |_t, args|
     ActiveRecord::Base.logger.level = 2
 
-    puts 'Creating tag plates for MBRAVE...'
-    if ARGV.length != 4
-      puts 'Arguments: <tag_layout_template_name> <login> <num_plates> '
-      exit
-    end
+    # rubocop:todo Metrics/AbcSize
+    def create_tag_plates(tag_layout_templates, user)
+      ActiveRecord::Base.transaction do
+        lot_type = LotType.find_by!(name: 'Pre Stamped Tags - 384')
+        tag_layout_templates.each do |tag_layout_template|
+          lot =
+            lot_type.lots.create!(
+              lot_number: "PSD_#{Time.current.to_f}",
+              template: tag_layout_template,
+              user: user,
+              received_at: Time.current
+            )
 
-    _name, tag_layout_template_name, login, num_plates_str = ARGV
-
-    num_plates = num_plates_str.to_i
-
-    ActiveRecord::Base.transaction do
-      user = User.find_by!(login: login)
-      tag_layout_template = TagLayoutTemplate.find_by!(name: tag_layout_template_name)
-      lot_type = LotType.find_by!(name: 'Pre Stamped Tags - 384')
-      lot =
-        lot_type.lots.create!(
-          lot_number: "PSD_#{Time.current.to_f}",
-          template: tag_layout_template,
-          user: user,
-          received_at: Time.current
-        )
-
-      qcc = QcableCreator.create!(lot: lot, user: user, count: num_plates)
-      qcc.qcables.each_with_index do |qcable, _index|
-        qcable.update!(state: 'available')
-        puts " - #{qcable.asset.machine_barcode}"
+          qcc = QcableCreator.create!(lot: lot, user: user, count: 1)
+          qcc.qcables.each_with_index do |qcable, _index|
+            qcable.update!(state: 'available')
+            puts "#{tag_layout_template.name}:"
+            puts " - #{qcable.asset.machine_barcode}"
+          end
+        end
       end
     end
-    exit
+
+    # rubocop:enable Metrics/AbcSize
+
+    puts 'Creating tag plates for MBRAVE...'
+    if args.to_hash.keys.length != 2
+      puts 'Arguments: <login> <version> '
+      next
+    end
+
+    user = User.find_by!(login: args[:login])
+    version = args[:version]
+
+    tag_layout_templates =
+      TagLayoutTemplate.all.select do |template|
+        template.name.match(Regexp.new("^#{TAG_IDENTIFIER}_(\\d+)_#{version}$"))
+      end
+
+    create_tag_plates(tag_layout_templates, user)
   end
 
   #
   # How to use it:
-  # bundle exec rake mbrave:create_tag_groups <forward_file> <reverse> <version>
+  # bundle exec rake 'mbrave:create_tag_groups[<forward_tags.csv>,<reverse_tags.csv>,<version>]'
   #
   # Example:
-  # bundle exec rake mbrave:create_tag_groups ./forward.csv ./reverse.csv v3
-  task :create_tag_groups, %i[arg1 arg2] => :environment do |_t, _args|
+  # bundle exec rake 'mbrave:create_tag_groups[./forward.csv,./reverse.csv,v3]'
+  task :create_tag_groups, %i[forward_file reverse_file version] => :environment do |_t, args|
     # rubocop:todo Lint/ConstantDefinitionInBlock
     # rubocop:todo Metrics/AbcSize
     # rubocop:todo Metrics/MethodLength
@@ -108,6 +121,7 @@ namespace :mbrave do
         group = 1
         puts "Creating reverse tags from: #{reverse_filename}"
         CSV.foreach(reverse_filename, headers: true) do |row|
+          _validate_reverse_row(row)
           map_id = row['Reverse Index Number'].to_i
           pos = ((map_id - 1) % 4)
           tag = Tag.new(map_id: pos, oligo: row['R index sequence'])
@@ -154,6 +168,12 @@ namespace :mbrave do
 
       private
 
+      def _validate_reverse_row(row)
+        ['Reverse Index Number', 'R index sequence', 'Reverse Oligo Label'].each do |header|
+          raise "Could not find header #{header}" unless row.include?(header)
+        end
+      end
+
       def _create_tag_group(tag_group_name, tags)
         raise "TagGroup #{tag_group_name} already exists" if TagGroup.find_by(name: tag_group_name)
         TagGroup.create(name: tag_group_name, tags: tags)
@@ -173,21 +193,21 @@ namespace :mbrave do
     ActiveRecord::Base.logger.level = 2
 
     puts 'Creating tags for MBRAVE...'
-    if ARGV.length != 4
-      puts 'Arguments: <forward_tags.csv> <reverse_tags.csv> <version>'
-      exit
+    if args.to_hash.keys.length != 3
+      puts 'Invalid arguments. Call should be:'
+      puts 'rake \'mbrave:create_tag_groups[<forward_tags.csv>,<reverse_tags.csv>,<version>]\''
+      next
     end
 
     ActiveRecord::Base.transaction do
-      TAG_IDENTIFIER = 'Bioscan_384_template'
       YAML_FILENAME = 'mbrave.yml'
-      _name, forward_filename, reverse_filename, version = ARGV
+
       mbrave_tags_creator =
         MbraveTagsCreator.new(
-          forward_filename: forward_filename,
-          reverse_filename: reverse_filename,
+          forward_filename: args[:forward_file],
+          reverse_filename: args[:reverse_file],
           tag_identifier: TAG_IDENTIFIER,
-          version: version,
+          version: args[:version],
           yaml_filename: YAML_FILENAME
         )
 
@@ -200,6 +220,6 @@ namespace :mbrave do
     # rubocop:enable Lint/ConstantDefinitionInBlock
     # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/MethodLength
-    exit
+    next
   end
 end
