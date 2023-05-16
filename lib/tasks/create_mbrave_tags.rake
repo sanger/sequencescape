@@ -75,20 +75,16 @@ namespace :mbrave do
         @yaml_filename = params[:yaml_filename]
         @forward_group = nil
         @reverse_groups = []
+        @yaml_contents = {}
       end
 
-      def reset_yaml
+      def write_yaml(yaml_filename)
         puts "Generating file #{yaml_filename}"
-        File.write(yaml_filename, {}.to_yaml)
-      end
-
-      def set_yaml_for_all_environments
-        contents = YAML.safe_load(File.read(yaml_filename))
         new_contents = {}
-        new_contents['development'] = contents
-        new_contents['test'] = contents
-        new_contents['staging'] = contents
-        new_contents['production'] = contents
+        new_contents['development'] = @yaml_contents
+        new_contents['test'] = @yaml_contents
+        new_contents['staging'] = @yaml_contents
+        new_contents['production'] = @yaml_contents
         File.write(yaml_filename, new_contents.to_yaml)
       end
 
@@ -103,7 +99,7 @@ namespace :mbrave do
         end
         puts " - #{forward_tag_group_name}"
         @forward_group = _create_tag_group(forward_tag_group_name, tags)
-        _add_to_yaml(yaml_filename, forward_tag_group_name, mbrave_tags, version)
+        _add_to_yaml(yaml_filename, forward_tag_group_name, mbrave_tags, version, 1)
       end
 
       def create_24_tag_groups_reverse
@@ -121,7 +117,7 @@ namespace :mbrave do
           if pos == 3
             puts " - #{reverse_tag_group_name(group)}"
             @reverse_groups.push(_create_tag_group(reverse_tag_group_name(group), tags))
-            _add_to_yaml(yaml_filename, reverse_tag_group_name(group), mbrave_tags, version)
+            _add_to_yaml(yaml_filename, reverse_tag_group_name(group), mbrave_tags, version, group)
             group += 1
             tags = []
             mbrave_tags = []
@@ -163,18 +159,14 @@ namespace :mbrave do
         TagGroup.create(name: tag_group_name, tags: tags)
       end
 
-      def _add_to_yaml(yaml_filename, tag_group_name, mbrave_tags, version)
-        {}.tap do |obj|
-          record = {}
-          record['name'] = tag_group_name
-          record['version'] = version
-          record['tags'] = mbrave_tags
+      def _add_to_yaml(_yaml_filename, tag_group_name, mbrave_tags, version, num_plate)
+        record = {}
+        record['name'] = tag_group_name
+        record['version'] = version
+        record['num_plate'] = num_plate
+        record['tags'] = mbrave_tags
 
-          contents = YAML.safe_load(File.read(yaml_filename))
-          contents[tag_group_name] = record
-          #contents.push(obj)
-          File.write(yaml_filename, contents.to_yaml)
-        end
+        @yaml_contents[tag_group_name] = record
       end
     end
 
@@ -199,12 +191,10 @@ namespace :mbrave do
           yaml_filename: YAML_FILENAME
         )
 
-      mbrave_tags_creator.reset_yaml
       mbrave_tags_creator.create_1_tag_group_forward
       mbrave_tags_creator.create_24_tag_groups_reverse
       mbrave_tags_creator.create_tag_layout_templates
-      mbrave_tags_creator.set_yaml_for_all_environments
-      
+      mbrave_tags_creator.write_yaml(YAML_FILENAME)
     end
 
     # rubocop:enable Lint/ConstantDefinitionInBlock
