@@ -277,7 +277,7 @@ supplier_name:
       errorTitle: "Supplier Sample Name"
       error: "Name must be a maximum of 40 characters in length."
   conditional_formattings:
-    empty_cell:
+    empty_mandatory_cell:
     len:
       formula:
         operator: ">"
@@ -696,12 +696,12 @@ sample_taxon_id:
       errorTitle: "Taxon ID"
       error: "Taxon ID must a number."
   conditional_formattings:
-    empty_cell:
+    empty_mandatory_cell:
 sample_common_name:
   heading: COMMON NAME
   unlocked: true
   conditional_formattings:
-    empty_cell:
+    empty_mandatory_cell:
 sample_description:
   heading: SAMPLE DESCRIPTION
   unlocked: true
@@ -956,7 +956,7 @@ retention_instruction:
       error: "You must enter a retention instruction from the list provided."
     range_name: :retention_instructions
   conditional_formattings:
-    empty_cell:
+    empty_mandatory_cell:
     is_error:
 # LEGACY COLUMNS
 # If a column heading changes, we still need to map historical manifests back
