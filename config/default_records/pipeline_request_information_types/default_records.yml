@@ -12,3 +12,6 @@
 FlowcellRequestedInformationTypeForNovaseq:
   pipeline_name: NovaSeq 6000 PE
   request_information_type_key: requested_flowcell_type
+FlowcellRequestedInformationTypeForNovaseqX:
+  pipeline_name: NovaSeqX PE
+  request_information_type_key: requested_flowcell_type
