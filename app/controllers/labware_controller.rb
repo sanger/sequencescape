@@ -30,6 +30,7 @@ class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   def show
     @source_plates = @asset.source_plates
+    @aliquots = @asset.aliquots.include_summary.paginate(page: params[:page], per_page: 384)
     respond_to do |format|
       format.html
       format.xml
