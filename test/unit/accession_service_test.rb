@@ -79,10 +79,17 @@ class AccessionServiceTest < ActiveSupport::TestCase
       end
     end
 
-    context 'with other defined values for date_of_sample_collection' do
+    context 'with other defined values for country_of_origin' do
       setup { @sample.sample_metadata.country_of_origin = 'not provided' }
       should 'send the collection date' do
         assert_tag('geographic_location_(country_and/or_sea)', 'not provided')
+      end
+    end
+
+    context 'with missing for country_of_origin' do
+      setup { @sample.sample_metadata.country_of_origin = 'missing: endangered species' }
+      should 'send the collection date' do
+        assert_tag('geographic_location_(country_and/or_sea)', 'missing: endangered species')
       end
     end
   end
@@ -117,6 +124,13 @@ class AccessionServiceTest < ActiveSupport::TestCase
       setup { @sample.sample_metadata.date_of_sample_collection = 'not provided' }
       should 'send the collection date' do
         assert_tag('collection_date', 'not provided')
+      end
+    end
+
+    context 'with missing for date_of_sample_collection' do
+      setup { @sample.sample_metadata.date_of_sample_collection = 'missing: endangered species' }
+      should 'send the collection date' do
+        assert_tag('collection_date', 'missing: endangered species')
       end
     end
   end
