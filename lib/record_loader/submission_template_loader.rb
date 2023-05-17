@@ -30,7 +30,6 @@ module RecordLoader
         'request_type_keys'
       ]
 
-      # RequestType.where(key: related_records['request_type_keys']).ids if related_records['request_type_keys']
       params[:project_id] = find_project(related_records['project_name']).id if related_records['project_name']
       params[:study_id] = find_study(related_records['study_name']).id if related_records['study_name']
       params
