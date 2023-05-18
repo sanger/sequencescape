@@ -8,9 +8,6 @@ class Metadata::FormBuilder < Metadata::BuilderBase # rubocop:todo Style/Documen
     view_for(:document, 'shared/metadata/edit_document_field')
 
     @related_fields, @changing = [], []
-
-    # [[field, values], ...] is for showing the form-text of a field for values
-    @showing_form_texts = []
   end
 
   # Creates a file upload field that will be properly handled by Document instances.  It's a bit of
@@ -142,35 +139,6 @@ class Metadata::FormBuilder < Metadata::BuilderBase # rubocop:todo Style/Documen
             root: sanitized_object_name,
             related: related,
             changing_fields: @changing
-          }
-        )
-      )
-    end
-  end
-
-  # Shows form text for a field if that field has a certain value.
-  # You can use `when` for a single value when the form text should be shown
-  # and `:in` for a group of values, and `:not` for excluding a group of values.
-  # You *must* call finalize_form_texts at the end of your view to get the
-  # appropriate behaviour.
-  def show_form_text_for(field, options)
-    options.symbolize_keys!
-    values =
-      (options.fetch(:in, Array(options[:when])) - Array(options[:not])).map do |value|
-        value.to_s.downcase.gsub(/[^a-z0-9]+/, '_')
-      end
-    @showing_form_texts.push([field, values])
-  end
-
-  def finalize_form_texts
-    form_texts = @showing_form_texts.compact
-    unless form_texts.empty?
-      concat(
-        render(
-          partial: 'shared/metadata/showing_form_texts',
-          locals: {
-            root: sanitized_object_name,
-            form_texts: form_texts
           }
         )
       )
