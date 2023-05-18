@@ -5,7 +5,7 @@ require 'yaml'
 TAG_IDENTIFIER = 'Bioscan_384_template'
 
 namespace :mbrave do
-  desc 'Modifying tag groups'
+  desc 'MBRAVE generation related tasks'
 
   #
   # How to use it:
@@ -68,7 +68,7 @@ namespace :mbrave do
     # rubocop:todo Lint/ConstantDefinitionInBlock
     # rubocop:todo Metrics/AbcSize
     # rubocop:todo Metrics/MethodLength
-    # Class to support creation of tag groups, tag layou templates and generation of the
+    # Class to support creation of tag groups, tag layout templates and generation of the
     # mbrave.yml config needed by limber to be able to generate the mbrave UMI file at the
     # end of the bioscan process.
     class MbraveTagsCreator
