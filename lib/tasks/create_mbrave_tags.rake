@@ -2,7 +2,7 @@
 require 'csv'
 require 'yaml'
 
-TAG_IDENTIFIER = 'Bioscan_384_template'
+TAG_IDENTIFIER = 'Bioscan'
 
 namespace :mbrave do
   desc 'MBRAVE generation related tasks'
@@ -52,7 +52,7 @@ namespace :mbrave do
 
     tag_layout_templates =
       TagLayoutTemplate.all.select do |template|
-        template.name.match(Regexp.new("^#{TAG_IDENTIFIER}_(\\d+)_#{version}$"))
+        template.name.match(Regexp.new("^Bioscan_384_template_(\\d+)_#{version}$"))
       end
 
     create_tag_plates(tag_layout_templates, user)
@@ -97,6 +97,7 @@ namespace :mbrave do
         new_contents['development'] = @yaml_contents
         new_contents['test'] = @yaml_contents
         new_contents['staging'] = @yaml_contents
+        new_contents['training'] = @yaml_contents
         new_contents['production'] = @yaml_contents
         File.write(yaml_filename, new_contents.to_yaml)
       end
@@ -155,15 +156,15 @@ namespace :mbrave do
       end
 
       def tag_layout_template_name(group)
-        "#{tag_identifier}_#{group + 1}_#{version}"
+        "#{tag_identifier}_384_template_#{group + 1}_#{version}"
       end
 
       def forward_tag_group_name
-        "#{tag_identifier}_forward_#{version}"
+        "#{tag_identifier}_forward_96_#{version}"
       end
 
       def reverse_tag_group_name(group)
-        "#{tag_identifier}_reverse_#{group}_#{version}"
+        "#{tag_identifier}_reverse_4_#{group}_#{version}"
       end
 
       private
