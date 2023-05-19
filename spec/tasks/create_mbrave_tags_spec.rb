@@ -2,20 +2,20 @@
 require 'spec_helper'
 require 'rake'
 
+# rubocop:todo RSpec/DescribeClass
 describe 'mbrave tasks' do
-  let(:queue_mode_setup) {
-    if ENV.has_key?('KNAPSACK_PRO_FIXED_QUEUE_SPLIT')
-      ['mbrave:create_tag_plates', 'mbrave:create_tag_groups'].each do |task_name|
-        if Rake::Task.task_defined?(task_name)
-          Rake::Task[task_name].clear 
-        end
+  let(:queue_mode_setup) do
+    if ENV.key?('KNAPSACK_PRO_FIXED_QUEUE_SPLIT')
+      %w[mbrave:create_tag_plates mbrave:create_tag_groups].each do |task_name|
+        Rake::Task[task_name].clear if Rake::Task.task_defined?(task_name)
       end
     end
-  }
+  end
+
   describe 'mbrave:create_tag_plates' do
     before do
       queue_mode_setup
-      
+
       Rake.application.rake_require 'tasks/create_mbrave_tags'
       Rake::Task.define_task(:environment)
     end
@@ -29,10 +29,10 @@ describe 'mbrave tasks' do
         end
 
         context 'when receiving the right arguments' do
-          let(:tag_group_1) { create(:tag_group) }
+          let(:tag_group_one) { create(:tag_group) }
           let(:tag_purpose) { create(:plate_purpose, name: 'Tag Plate') }
           let(:run_action) { Rake::Task['mbrave:create_tag_plates'].execute(login: 'test', version: 'v1') }
-          let(:tag_group_2) { create(:tag_group) }
+          let(:tag_group_two) { create(:tag_group) }
 
           before do
             create(:user, login: 'test')
@@ -43,19 +43,34 @@ describe 'mbrave tasks' do
               target_purpose: tag_purpose
             )
 
-            create(:tag_layout_template, name: 'Bioscan_384_template_1_v1', tag_group: tag_group_1, 
-tag2_group: tag_group_2)
-            create(:tag_layout_template, name: 'bubidi_2_v1', tag_group: tag_group_1, tag2_group: tag_group_2)
-            create(:tag_layout_template, name: 'Bioscan_384_template_3_v1', tag_group: tag_group_1, 
-tag2_group: tag_group_2)
-            create(:tag_layout_template, name: 'Bioscan_384_template_4_v14', tag_group: tag_group_1, 
-tag2_group: tag_group_2)
-            create(:tag_layout_template, name: 'Bioscan_384_template_5_v1', tag_group: tag_group_1, 
-tag2_group: tag_group_2)
+            create(
+              :tag_layout_template,
+              name: 'Bioscan_384_template_1_v1',
+              tag_group: tag_group_one,
+              tag2_group: tag_group_two
+            )
+            create(:tag_layout_template, name: 'bubidi_2_v1', tag_group: tag_group_one, tag2_group: tag_group_two)
+            create(
+              :tag_layout_template,
+              name: 'Bioscan_384_template_3_v1',
+              tag_group: tag_group_one,
+              tag2_group: tag_group_two
+            )
+            create(
+              :tag_layout_template,
+              name: 'Bioscan_384_template_4_v14',
+              tag_group: tag_group_one,
+              tag2_group: tag_group_two
+            )
+            create(
+              :tag_layout_template,
+              name: 'Bioscan_384_template_5_v1',
+              tag_group: tag_group_one,
+              tag2_group: tag_group_two
+            )
 
             allow(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode))
           end
-
 
           it 'creates tag plates' do
             expect { run_action }.to change(Plate, :count).by(3)
@@ -160,3 +175,4 @@ tag2_group: tag_group_2)
     end
   end
 end
+# rubocop:enable RSpec/DescribeClass
