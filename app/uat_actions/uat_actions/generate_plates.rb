@@ -78,8 +78,8 @@ class UatActions::GeneratePlates < UatActions
           studies: [study],
           sample_metadata_attributes: {
             supplier_name: sample_name,
-            cohort: "Cohort for #{plate.human_barcode}",
-            sample_description: "Description for #{plate.human_barcode}"
+            cohort: "Cohort#{plate.human_barcode}",
+            sample_description: "Description#{plate.human_barcode}"
           }
         )
       sample.save!(validate: false)
