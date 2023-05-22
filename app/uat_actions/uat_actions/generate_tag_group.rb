@@ -29,6 +29,13 @@ class UatActions::GenerateTagGroup < UatActions
              options: {
                include_blank: 'No Adapter Type'
              }
+  form_field :tag_sequence_offset,
+             :number_field,
+             label: 'Tag Sequence Offset',
+             help: 'The offset for tag sequence generation, to allow creation of distinct tag groups. Defaults to 0.',
+             options: {
+               minimum: 0
+             }
 
   validates :size,
             numericality: {
@@ -65,7 +72,10 @@ class UatActions::GenerateTagGroup < UatActions
     tag_group = TagGroup.create!(name: name, adapter_type_id: adapter_type&.id)
 
     tag_group.tags.build(
-      OligoEnumerator.new(size.to_i).each_with_index.map { |oligo, map_id| { oligo: oligo, map_id: map_id + 1 } }
+      OligoEnumerator
+        .new(size.to_i, tag_sequence_offset.to_i)
+        .each_with_index
+        .map { |oligo, map_id| { oligo: oligo, map_id: map_id + 1 } }
     )
     tag_group.save
   end
