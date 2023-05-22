@@ -29,6 +29,12 @@ class ReceptaclesController < ApplicationController # rubocop:todo Metrics/Class
 
   def show
     @source_plates = @asset.source_plates
+    @aliquots =
+      if @asset.is_a?(AliquotIndexer::Indexable)
+        @asset.aliquots.include_summary # NPG Aliquot Indexing
+      else
+        @asset.aliquots.include_summary.paginate(page: params[:page], per_page: 384)
+      end
     respond_to do |format|
       format.html
       format.xml
