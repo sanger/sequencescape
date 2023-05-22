@@ -1,0 +1,134 @@
+# These submission templates are associated with the Limber NovaSeqX pipeline.
+Limber-Htp - WGS - NovaSeqX paired end sequencing:
+  name: "Limber-Htp - WGS - NovaSeqX paired end sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Illumina-HTP
+    product_catalogue_name: WGS
+    request_type_keys: ["limber_wgs", "limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"]
+Limber-Htp - ISC - NovaSeqX paired end sequencing:
+  name: "Limber-Htp - ISC - NovaSeqX paired end sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Illumina-HTP
+    product_catalogue_name: ISC
+    request_type_keys: ["limber_isc", "limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"]
+Limber-Htp - ReISC - NovaSeqX paired end sequencing:
+  name: "Limber-Htp - ReISC - NovaSeqX paired end sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Illumina-HTP
+    product_catalogue_name: ReISC
+    request_type_keys: ["limber_reisc", "limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"]
+Limber-Htp - scRNA - NovaSeqX paired end sequencing:
+  name: "Limber-Htp - scRNA - NovaSeqX paired end sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Illumina-HTP
+    product_catalogue_name: scRNA
+    request_type_keys: ["limber_scrna", "limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"]
+Limber-Htp - scRNA-384 - NovaSeqX paired end sequencing:
+  name: "Limber-Htp - scRNA-384 - NovaSeqX paired end sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Illumina-HTP
+    product_catalogue_name: scRNA-384
+    request_type_keys: ["limber_scrna-384", "limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"]
+Limber-Htp - RNAA - NovaSeqX paired end sequencing:
+  name: "Limber-Htp - RNAA - NovaSeqX paired end sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Illumina-HTP
+    product_catalogue_name: RNAA
+    request_type_keys: ["limber_rnaa", "limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"]
+Limber-Htp - RNAR - NovaSeqX paired end sequencing:
+  name: "Limber-Htp - RNAR - NovaSeqX paired end sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Illumina-HTP
+    product_catalogue_name: RNAR
+    request_type_keys: ["limber_rnar", "limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"]
+Limber-Htp - RNAAG - NovaSeqX paired end sequencing:
+  name: "Limber-Htp - RNAAG - NovaSeqX paired end sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Illumina-HTP
+    product_catalogue_name: RNAAG
+    request_type_keys: ["limber_rnaag", "limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"]
+Limber-Htp - RNARG - NovaSeqX paired end sequencing:
+  name: "Limber-Htp - RNARG - NovaSeqX paired end sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Illumina-HTP
+    product_catalogue_name: RNARG
+    request_type_keys: ["limber_rnarg", "limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"]
+Limber-Htp - PCR Free - NovaSeqX paired end sequencing:
+  name: "Limber-Htp - PCR Free - NovaSeqX paired end sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Illumina-HTP
+    product_catalogue_name: PFHSqX
+    request_type_keys: ["limber_pcr_free", "limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"]
+Limber-Htp - GnT Picoplex - NovaSeqX paired end sequencing:
+  name: "Limber-Htp - GnT Picoplex - NovaSeqX paired end sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Illumina-HTP
+    product_catalogue_name: GnT Picoplex
+    request_type_keys: ["limber_gnt_picoplex", "limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"]
+Limber-Htp - pWGS-384 - NovaSeqX paired end sequencing:
+  name: "Limber-Htp - pWGS-384 - NovaSeqX paired end sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Illumina-HTP
+    product_catalogue_name: pWGS-384
+    request_type_keys: ["limber_pwgs-384", "limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"]
+Limber-Htp - Heron - NovaSeqX paired end sequencing:
+  name: "Limber-Htp - Heron - NovaSeqX paired end sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Illumina-HTP
+    product_catalogue_name: Heron
+    request_type_keys: ["limber_heron", "limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"]
+Limber-Htp - Heron LTHR - NovaSeqX paired end sequencing:
+  name: "Limber-Htp - Heron LTHR - NovaSeqX paired end sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Illumina-HTP
+    product_catalogue_name: Heron LTHR
+    request_type_keys: ["limber_heron_lthr", "limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"]
+Limber-Htp - Heron LTHR V2 - NovaSeqX paired end sequencing:
+  name: "Limber-Htp - Heron LTHR V2 - NovaSeqX paired end sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Illumina-HTP
+    product_catalogue_name: Heron LTHR
+    request_type_keys: ["limber_heron_lthr_v2", "illumina_htp_novaseqx_paired_end_sequencing"]
+Limber-Htp - Multiplexing - NovaSeqX paired end sequencing:
+  name: "Limber-Htp - Multiplexing - NovaSeqX paired end sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Illumina-HTP
+    product_catalogue_name: Generic
+    request_type_keys: ["limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"]
+Limber-Bespoke - PCR - NovaSeqX paired end sequencing:
+  name: "Limber-Bespoke - PCR - NovaSeqX paired end sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Bespoke
+    product_catalogue_name: GenericPCR
+    request_type_keys: ["limber_pcr_bespoke", "limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"]
+Limber-Bespoke - PCR Free - NovaSeqX paired end sequencing:
+  name: "Limber-Bespoke - PCR Free - NovaSeqX paired end sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Bespoke
+    product_catalogue_name: GenericNoPCR
+    request_type_keys: ["limber_pcr_free_bespoke", "limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"]
+Limber-Bespoke - Chromium - NovaSeqX paired end sequencing:
+  name: "Limber-Bespoke - Chromium - NovaSeqX paired end sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Bespoke
+    product_catalogue_name: Chromium
+    request_type_keys: ["limber_chromium_bespoke", "limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"]
