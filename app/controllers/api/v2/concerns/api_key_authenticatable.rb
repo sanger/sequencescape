@@ -23,11 +23,23 @@ module Api
         begin
           api_application = ApiApplication.find_by!(key: api_key)
         rescue ActiveRecord::RecordNotFound => exception
-          render_unauthorized
+          render_unauthorized api_key
         end
       end
 
-      def render_unauthorized
+      def render_unauthorized(api_key)
+        request_log = {
+          utc_time: Time.now.utc.strftime('%Y-%m-%d %H:%M:%S.%L'),
+          remote_ip: request.remote_ip,
+          user_agent: request.env['HTTP_USER_AGENT'],
+          api_key: api_key,
+          origin: request.env['HTTP_ORIGIN'],
+          original_url: request.original_url,
+          request_method: request.request_method
+        }
+
+        Rails.logger.info("Request made with invalid API key: #{request_log}")
+
         render status: :unauthorized,
                json: {
                  errors: [
@@ -42,7 +54,16 @@ module Api
       end
 
       def log_request_without_key
-        puts 'No API key given'
+        request_log = {
+          utc_time: Time.now.utc.strftime('%Y-%m-%d %H:%M:%S.%L'),
+          remote_ip: request.remote_ip,
+          user_agent: request.env['HTTP_USER_AGENT'],
+          origin: request.env['HTTP_ORIGIN'],
+          original_url: request.original_url,
+          request_method: request.request_method
+        }
+
+        Rails.logger.info("Request made without an API key: #{request_log}")
       end
     end
   end
