@@ -5,7 +5,7 @@ module Api
     # Provides a JSON API controller for SampleMetadata
     # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
     class SampleMetadataController < JSONAPI::ResourceController
-      include Api::V2::ApiKeyAuthenticatable
+      include Api::V2::Concerns::ApiKeyAuthenticatable
 
       # By default JSONAPI::ResourceController provides most the standard
       # behaviour, and in many cases this file may be left empty.

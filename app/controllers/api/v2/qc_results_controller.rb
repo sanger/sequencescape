@@ -5,7 +5,7 @@ module Api
     # QcResultsController
     # create needs some specific code as it is not standard JSON API behaviour
     class QcResultsController < JSONAPI::ResourceController
-      include Api::V2::ApiKeyAuthenticatable
+      include Api::V2::Concerns::ApiKeyAuthenticatable
 
       def create
         @qc_result_factory = QcResultFactory.new(qc_results_params)

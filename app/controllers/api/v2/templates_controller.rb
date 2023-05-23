@@ -5,7 +5,7 @@ module Api
     # This stub class is here to appease a problem with JSONAPI v0.9
     # and polymorphic relationships. Also stubbing the TemplateResource.
     class TemplatesController < JSONAPI::ResourceController
-      include Api::V2::ApiKeyAuthenticatable
+      include Api::V2::Concerns::ApiKeyAuthenticatable
     end
   end
 end
