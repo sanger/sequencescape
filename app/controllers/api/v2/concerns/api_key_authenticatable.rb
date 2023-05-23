@@ -5,7 +5,7 @@ module Api
       # Provides the tools needed to confirm that a valid API key was provided for the header X-Sequencescape-Client-Id.
       # - Where the API key is in the request and exists in among ApiApplication, allow the request to be served.
       # - Where the API key is in the request but does not exist, log the attempt and render an unauthorized response.
-      # - Where the API ket is not in the request, allow the response (for now) and log the system that made the request.
+      # - Where the API key is not in the request, respond normally (for now) and log the system that made the request.
       module ApiKeyAuthenticatable
         extend ActiveSupport::Concern
 
