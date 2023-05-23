@@ -4,6 +4,9 @@ module Api
   module V2
     # QcAssaysController
     class QcAssaysController < JSONAPI::ResourceController
+      include Api::V2::ApiKeyAuthenticatable
+      prepend_before_action :authenticate_with_api_key
+
       def create
         @qc_result_factory = QcResultFactory.new(qc_assay_params)
         if @qc_result_factory.valid?
