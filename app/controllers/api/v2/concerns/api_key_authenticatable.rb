@@ -8,6 +8,8 @@ module Api
     module ApiKeyAuthenticatable
       extend ActiveSupport::Concern
 
+      included { prepend_before_action :authenticate_with_api_key }
+
       def authenticate_with_api_key
         http_env_api_key = 'HTTP_X_SEQUENCESCAPE_CLIENT_ID'
 

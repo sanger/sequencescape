@@ -6,7 +6,6 @@ module Api
     # and polymorphic relationships. Also stubbing the TemplateResource.
     class TemplatesController < JSONAPI::ResourceController
       include Api::V2::ApiKeyAuthenticatable
-      prepend_before_action :authenticate_with_api_key
     end
   end
 end
