@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
 
 RSpec.describe Api::V2::QcAssaysController, with: :api_v2, type: :request, qc_result: true do
   let(:asset_1) { attributes_for(:qc_result).merge(uuid: create(:receptacle).uuid) }
@@ -8,6 +9,8 @@ RSpec.describe Api::V2::QcAssaysController, with: :api_v2, type: :request, qc_re
   let(:asset_3) { attributes_for(:qc_result).merge(uuid: create(:receptacle).uuid) }
   let(:asset_invalid) { attributes_for(:qc_result) }
   let(:base_endpoint) { '/api/v2/qc_assays' }
+
+  it_behaves_like 'ApiKeyAuthenticatable'
 
   it 'is true' do
     expect(true).to be_truthy

@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
 
 describe 'Qcables API', with: :api_v2 do
   let(:base_endpoint) { '/api/v2/qcables' }
+
+  it_behaves_like 'ApiKeyAuthenticatable'
 
   context 'with multiple Qcables' do
     before { create_list(:qcable, 5) }

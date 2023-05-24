@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
 
 describe 'WorkOrders API', with: :api_v2 do
   let(:base_endpoint) { '/api/v2/work_orders' }
+
+  it_behaves_like 'ApiKeyAuthenticatable'
 
   context 'with multiple requests' do
     let(:our_request_type) { create :request_type }
