@@ -35,7 +35,7 @@ NovaSeqX PE:
   externally_managed: 0
   group_name: Sequencing
   control_request_type_id: 0
-  min_size: 1
+  min_size: 8
   request_type_keys:
     - illumina_htp_novaseqx_paired_end_sequencing
   workflow:

@@ -15,3 +15,6 @@ FlowcellRequestedInformationTypeForNovaseq:
 FlowcellRequestedInformationTypeForNovaseqX:
   pipeline_name: NovaSeqX PE
   request_information_type_key: requested_flowcell_type
+ReadLengthRequestedInformationTypeForNovaseqX:
+  pipeline_name: NovaSeqX PE
+  request_information_type_key: read_length

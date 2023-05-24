@@ -15,6 +15,27 @@ module RecordLoader
       Workflow.create_with(options['workflow']).find_or_create_by!(name: options['workflow']['name'])
     end
 
+    def add_spiked_in_control_event(workflow)
+      AddSpikedInControlTask.create!(name: 'Add Spiked in control', sorted: 0, lab_activity: true, workflow: workflow)
+    end
+
+    def add_loading_event(workflow)
+      SetDescriptorsTask.create!(name: 'Loading', sorted: 1, lab_activity: true, workflow: workflow) do |task|
+        task.descriptors.build(
+          [
+            { kind: 'Text', sorter: 4, name: 'Pre-Load Buffer lot #' },
+            { kind: 'Text', sorter: 5, name: 'Pre-Load Buffer RGT #' },
+            { kind: 'Text', sorter: 6, name: 'Pipette Carousel' },
+            { kind: 'Text', sorter: 7, name: 'PhiX lot #' },
+            { kind: 'Text', sorter: 8, name: 'PhiX %' },
+            { kind: 'Text', sorter: 9, name: 'Lane loading concentration (pM)' },
+            { kind: 'Text', sorter: 9, name: 'iPCR batch #' },
+            { kind: 'Text', sorter: 10, name: 'Comment' }
+          ]
+        )
+      end
+    end
+
     def create_or_update!(name, options)
       obj = options.dup
       wf = workflow(obj)
@@ -22,6 +43,11 @@ module RecordLoader
       raise 'Request type keys not found' if request_type_keys.blank?
       request_types = RequestType.where(key: request_type_keys)
       Pipeline.create_with(obj.merge(workflow: wf, request_types: request_types)).find_or_create_by!(name: name)
+
+      if name == 'NovaSeqX PE'
+        add_spiked_in_control_event(wf)
+        add_loading_event(wf)
+      end
     end
   end
 end
