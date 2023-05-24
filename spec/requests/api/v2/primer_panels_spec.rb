@@ -3,11 +3,13 @@
 require 'rails_helper'
 
 describe 'PrimerPanels API', with: :api_v2 do
+  let(:base_endpoint) { '/api/v2/primer_panels' }
+
   context 'with multiple primer_panels' do
     before { create_list(:primer_panel, 5) }
 
     it 'sends a list of primer_panels' do
-      api_get '/api/v2/primer_panels'
+      api_get base_endpoint
 
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
@@ -35,14 +37,14 @@ describe 'PrimerPanels API', with: :api_v2 do
     end
 
     it 'sends an individual primer_panel' do
-      api_get "/api/v2/primer_panels/#{resource_model.id}"
+      api_get "#{base_endpoint}/#{resource_model.id}"
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('primer_panels')
     end
 
     # Remove if immutable
     it 'allows update of a primer_panel' do
-      api_patch "/api/v2/primer_panels/#{resource_model.id}", payload
+      api_patch "#{base_endpoint}/#{resource_model.id}", payload
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('primer_panels')
       # Double check at least one of the attributes

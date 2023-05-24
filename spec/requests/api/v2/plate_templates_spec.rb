@@ -3,11 +3,13 @@
 require 'rails_helper'
 
 describe 'PlateTemplates API', with: :api_v2 do
+  let(:base_endpoint) { '/api/v2/plate_templates' }
+
   context 'with multiple PlateTemplates' do
     before { create_list(:plate_template, 5) }
 
     it 'sends a list of plate_templates' do
-      api_get '/api/v2/plate_templates'
+      api_get base_endpoint
 
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
@@ -35,14 +37,14 @@ describe 'PlateTemplates API', with: :api_v2 do
     end
 
     it 'sends an individual PlateTemplate' do
-      api_get "/api/v2/plate_templates/#{resource_model.id}"
+      api_get "#{base_endpoint}/#{resource_model.id}"
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('plate_templates')
     end
 
     # Remove if immutable
     it 'allows update of a PlateTemplate' do
-      api_patch "/api/v2/plate_templates/#{resource_model.id}", payload
+      api_patch "#{base_endpoint}/#{resource_model.id}", payload
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('plate_templates')
       # Double check at least one of the attributes

@@ -3,11 +3,13 @@
 require 'rails_helper'
 
 describe 'TubeRacks API', with: :api_v2 do
+  let(:base_endpoint) { '/api/v2/tube_racks' }
+
   context 'with multiple TubeRacks' do
     before { create_list(:tube_rack, 5) }
 
     it 'sends a list of tube_racks' do
-      api_get '/api/v2/tube_racks'
+      api_get base_endpoint
 
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
@@ -35,14 +37,14 @@ describe 'TubeRacks API', with: :api_v2 do
     end
 
     it 'sends an individual TubeRack' do
-      api_get "/api/v2/tube_racks/#{resource_model.id}"
+      api_get "#{base_endpoint}/#{resource_model.id}"
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('tube_racks')
     end
 
     # Remove if immutable
     it 'allows update of a TubeRack' do
-      api_patch "/api/v2/tube_racks/#{resource_model.id}", payload
+      api_patch "#{base_endpoint}/#{resource_model.id}", payload
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('tube_racks')
       # Double check at least one of the attributes

@@ -3,11 +3,13 @@
 require 'rails_helper'
 
 describe 'LotTypes API', with: :api_v2 do
+  let(:base_endpoint) { '/api/v2/lot_types' }
+
   context 'with multiple LotTypes' do
     before { create_list(:lot_type, 5) }
 
     it 'sends a list of lot_types' do
-      api_get '/api/v2/lot_types'
+      api_get base_endpoint
 
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
@@ -35,7 +37,7 @@ describe 'LotTypes API', with: :api_v2 do
     end
 
     it 'sends an individual LotType' do
-      api_get "/api/v2/lot_types/#{resource_model.id}"
+      api_get "#{base_endpoint}/#{resource_model.id}"
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('lot_types')
     end

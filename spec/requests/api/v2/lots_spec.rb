@@ -3,11 +3,13 @@
 require 'rails_helper'
 
 describe 'Lots API', with: :api_v2 do
+  let(:base_endpoint) { '/api/v2/lots' }
+
   context 'with multiple Lots' do
     before { create_list(:lot, 5) }
 
     it 'sends a list of lots' do
-      api_get '/api/v2/lots'
+      api_get base_endpoint
 
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
@@ -35,14 +37,14 @@ describe 'Lots API', with: :api_v2 do
     end
 
     it 'sends an individual Lot' do
-      api_get "/api/v2/lots/#{resource_model.id}"
+      api_get "#{base_endpoint}/#{resource_model.id}"
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('lots')
     end
 
     # Remove if immutable
     it 'allows update of a Lot' do
-      api_patch "/api/v2/lots/#{resource_model.id}", payload
+      api_patch "#{base_endpoint}/#{resource_model.id}", payload
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('lots')
       # Double check at least one of the attributes

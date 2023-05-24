@@ -3,11 +3,13 @@
 require 'rails_helper'
 
 describe 'Comments API', with: :api_v2 do
+  let(:base_endpoint) { '/api/v2/comments' }
+
   context 'with multiple Comments' do
     before { create_list(:comment, 5) }
 
     it 'sends a list of comments' do
-      api_get '/api/v2/comments'
+      api_get base_endpoint
 
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
@@ -35,14 +37,14 @@ describe 'Comments API', with: :api_v2 do
     end
 
     it 'sends an individual Comment' do
-      api_get "/api/v2/comments/#{resource_model.id}"
+      api_get "#{base_endpoint}/#{resource_model.id}"
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('comments')
     end
 
     # Remove if immutable
     it 'allows update of a Comment' do
-      api_patch "/api/v2/comments/#{resource_model.id}", payload
+      api_patch "#{base_endpoint}/#{resource_model.id}", payload
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('comments')
       # Double check at least one of the attributes
@@ -76,7 +78,7 @@ describe 'Comments API', with: :api_v2 do
 
     # Remove if immutable
     it 'allows creation of a Comment' do
-      api_post '/api/v2/comments', payload
+      api_post base_endpoint, payload
       expect(response).to have_http_status(:success), response.body
       expect(json.dig('data', 'type')).to eq('comments')
       expect(json.dig('data', 'attributes', 'description')).to eq('This plate is pretty')

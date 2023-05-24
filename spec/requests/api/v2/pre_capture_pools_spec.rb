@@ -3,11 +3,13 @@
 require 'rails_helper'
 
 describe 'PreCapturePools API', with: :api_v2 do
+  let(:base_endpoint) { '/api/v2/pre_capture_pools' }
+
   context 'with multiple pre_capture_pools' do
     before { create_list(:pre_capture_pool, 5) }
 
     it 'sends a list of pre_capture_pools' do
-      api_get '/api/v2/pre_capture_pools'
+      api_get base_endpoint
 
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
@@ -35,14 +37,14 @@ describe 'PreCapturePools API', with: :api_v2 do
     end
 
     it 'sends an individual pre_capture_pool' do
-      api_get "/api/v2/pre_capture_pools/#{resource_model.id}"
+      api_get "#{base_endpoint}/#{resource_model.id}"
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('pre_capture_pools')
     end
 
     # Remove if immutable
     it 'allows update of a pre_capture_pool' do
-      api_patch "/api/v2/pre_capture_pools/#{resource_model.id}", payload
+      api_patch "#{base_endpoint}/#{resource_model.id}", payload
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('pre_capture_pools')
       # Double check at least one of the attributes

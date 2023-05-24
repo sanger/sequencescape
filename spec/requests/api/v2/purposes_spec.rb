@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 describe 'Purposes API', with: :api_v2 do
+  let(:base_endpoint) { '/api/v2/purposes' }
+
   context 'with multiple purposes' do
     let!(:plate_purpose) { create(:plate_purpose) }
 
@@ -12,7 +14,7 @@ describe 'Purposes API', with: :api_v2 do
     end
 
     it 'sends a list of purposes' do
-      api_get '/api/v2/purposes'
+      api_get base_endpoint
 
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
@@ -23,7 +25,7 @@ describe 'Purposes API', with: :api_v2 do
 
     # Check filters, ESPECIALLY if they aren't simple attribute filters
     it 'filters purposes by name' do
-      api_get '/api/v2/purposes?filter[name]="' + plate_purpose.name + '"'
+      api_get "#{base_endpoint}?filter[name]=\"" + plate_purpose.name + '"'
       expect(response).to have_http_status(:success)
       expect(json['data'].length).to eq(1)
       expect(json['data'][0]['attributes']['uuid']).to eq(plate_purpose.uuid)
@@ -34,7 +36,7 @@ describe 'Purposes API', with: :api_v2 do
     let(:resource_model) { create :purpose }
 
     it 'sends an individual purpose' do
-      api_get "/api/v2/purposes/#{resource_model.id}"
+      api_get "#{base_endpoint}/#{resource_model.id}"
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('purposes')
     end

@@ -3,11 +3,13 @@
 require 'rails_helper'
 
 describe 'TagLayoutTemplates API', with: :api_v2 do
+  let(:base_endpoint) { '/api/v2/tag_layout_templates' }
+
   context 'with multiple TagLayoutTemplates' do
     before { create_list(:tag_layout_template, 5) }
 
     it 'sends a list of tag_layout_templates' do
-      api_get '/api/v2/tag_layout_templates'
+      api_get base_endpoint
 
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
@@ -35,14 +37,14 @@ describe 'TagLayoutTemplates API', with: :api_v2 do
     end
 
     it 'sends an individual TagLayoutTemplate' do
-      api_get "/api/v2/tag_layout_templates/#{resource_model.id}"
+      api_get "#{base_endpoint}/#{resource_model.id}"
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('tag_layout_templates')
     end
 
     # Remove if immutable
     it 'allows update of a TagLayoutTemplate' do
-      api_patch "/api/v2/tag_layout_templates/#{resource_model.id}", payload
+      api_patch "#{base_endpoint}/#{resource_model.id}", payload
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('tag_layout_templates')
       # Double check at least one of the attributes

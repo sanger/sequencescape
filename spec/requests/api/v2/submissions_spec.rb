@@ -3,11 +3,13 @@
 require 'rails_helper'
 
 describe 'Submissions API', with: :api_v2 do
+  let(:base_endpoint) { '/api/v2/submissions' }
+
   context 'with multiple submissions' do
     before { create_list(:submission, 5) }
 
     it 'sends a list of submissions' do
-      api_get '/api/v2/submissions'
+      api_get base_endpoint
 
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
@@ -23,14 +25,14 @@ describe 'Submissions API', with: :api_v2 do
     let(:resource_model) { create :submission }
 
     it 'sends an individual submission without tags' do
-      api_get "/api/v2/submissions/#{resource_model.id}?fields[submissions]"
+      api_get "#{base_endpoint}/#{resource_model.id}?fields[submissions]"
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('submissions')
       expect(json.dig('data', 'attributes', 'used_tags')).to be_nil
     end
 
     it 'sends an individual submission without tags' do
-      api_get "/api/v2/submissions/#{resource_model.id}?fields[submissions]=used_tags,name"
+      api_get "#{base_endpoint}/#{resource_model.id}?fields[submissions]=used_tags,name"
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('submissions')
       expect(json.dig('data', 'attributes', 'used_tags')).to eq(resource_model.used_tags)

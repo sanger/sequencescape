@@ -2,11 +2,12 @@
 
 require 'rails_helper'
 
-RSpec.describe Api::V2::QcAssaysController, type: :request, qc_result: true do
+RSpec.describe Api::V2::QcAssaysController, with: :api_v2, type: :request, qc_result: true do
   let(:asset_1) { attributes_for(:qc_result).merge(uuid: create(:receptacle).uuid) }
   let(:asset_2) { attributes_for(:qc_result).merge(uuid: create(:receptacle).uuid) }
   let(:asset_3) { attributes_for(:qc_result).merge(uuid: create(:receptacle).uuid) }
   let(:asset_invalid) { attributes_for(:qc_result) }
+  let(:base_endpoint) { '/api/v2/qc_assays' }
 
   it 'is true' do
     expect(true).to be_truthy
@@ -14,7 +15,7 @@ RSpec.describe Api::V2::QcAssaysController, type: :request, qc_result: true do
 
   it 'creates a new qc assay' do
     params = { data: { attributes: { qc_results: [asset_1, asset_2, asset_3], lot_number: 'LN1234567' } } }
-    post api_v2_qc_assays_path, params: params
+    api_post base_endpoint, params
     expect(QcResult.count).to eq(3)
     expect(QcAssay.count).to eq(1)
     expect(response).to have_http_status(:created)
@@ -25,15 +26,15 @@ RSpec.describe Api::V2::QcAssaysController, type: :request, qc_result: true do
 
   it 'returns an error if someone tries to create an invalid qc assay' do
     expect do
-      post api_v2_qc_assays_path,
-           params: {
-             data: {
-               attributes: {
-                 qc_results: [asset_1, asset_2, asset_3, asset_invalid],
-                 lot_number: 'LN1234567'
+      api_post base_endpoint,
+               {
+                 data: {
+                   attributes: {
+                     qc_results: [asset_1, asset_2, asset_3, asset_invalid],
+                     lot_number: 'LN1234567'
+                   }
+                 }
                }
-             }
-           }
     end.not_to change(QcAssay, :count)
     expect(response).to have_http_status(:unprocessable_entity)
     json = ActiveSupport::JSON.decode(response.body)

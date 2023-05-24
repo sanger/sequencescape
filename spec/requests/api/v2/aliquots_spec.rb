@@ -3,11 +3,13 @@
 require 'rails_helper'
 
 describe 'Aliquots API', with: :api_v2 do
+  let(:base_endpoint) { '/api/v2/aliquots' }
+
   context 'with multiple aliquots' do
     before { create_list(:aliquot, 5) }
 
     it 'sends a list of aliquots' do
-      api_get '/api/v2/aliquots'
+      api_get base_endpoint
 
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
@@ -23,7 +25,7 @@ describe 'Aliquots API', with: :api_v2 do
     let(:resource_model) { create :aliquot }
 
     it 'sends an individual aliquot' do
-      api_get "/api/v2/aliquots/#{resource_model.id}"
+      api_get "#{base_endpoint}/#{resource_model.id}"
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('aliquots')
     end

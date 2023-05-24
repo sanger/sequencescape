@@ -3,11 +3,13 @@
 require 'rails_helper'
 
 describe 'PickLists API', with: :api_v2, pick_list: true do
+  let(:base_endpoint) { '/api/v2/pick_lists' }
+
   context 'with multiple PickLists' do
     before { create_list(:pick_list, 5) }
 
     it 'sends a list of pick_lists' do
-      api_get '/api/v2/pick_lists'
+      api_get base_endpoint
 
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
@@ -34,14 +36,14 @@ describe 'PickLists API', with: :api_v2, pick_list: true do
     end
 
     it 'sends an individual PickList' do
-      api_get "/api/v2/pick_lists/#{resource_model.id}"
+      api_get "#{base_endpoint}/#{resource_model.id}"
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('pick_lists')
     end
 
     # Remove if immutable
     it 'allows update of a PickList' do
-      api_patch "/api/v2/pick_lists/#{resource_model.id}", payload
+      api_patch "#{base_endpoint}/#{resource_model.id}", payload
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('pick_lists')
       # Double check at least one of the attributes
@@ -71,7 +73,7 @@ describe 'PickLists API', with: :api_v2, pick_list: true do
       end
 
       it 'allows creation of a PickList', :aggregate_failures do
-        api_post '/api/v2/pick_lists', payload
+        api_post base_endpoint, payload
 
         expect(response).to have_http_status(:created)
         expect(json.dig('data', 'type')).to eq('pick_lists')
@@ -99,7 +101,7 @@ describe 'PickLists API', with: :api_v2, pick_list: true do
       end
 
       it 'allows creation of a PickList', :aggregate_failures do
-        api_post '/api/v2/pick_lists', payload
+        api_post base_endpoint, payload
 
         expect(response).to have_http_status(:created)
         expect(json.dig('data', 'type')).to eq('pick_lists')
