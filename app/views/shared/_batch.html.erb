@@ -13,11 +13,16 @@
       <th>Source</th>
       <th>Source barcode</th>
       <th>Target Type</th>
+
+      <% if @batch.pipeline.name !== 'NovaSeqX PE' %>
       <th>Target barcode</th>
+      <% end -%>
       <% @rits.each do |rit| %>
         <th><%= rit.label %></th>
       <% end %>
+      <% if @batch.pipeline.name !== 'NovaSeqX PE' %>
       <th>State</th>
+      <% end -%>
       <th>Comments</th>
     </tr>
   </thead>

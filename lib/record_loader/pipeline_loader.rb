@@ -44,10 +44,10 @@ module RecordLoader
       request_types = RequestType.where(key: request_type_keys)
       Pipeline.create_with(obj.merge(workflow: wf, request_types: request_types)).find_or_create_by!(name: name)
 
-      if name == 'NovaSeqX PE'
-        add_spiked_in_control_event(wf)
-        add_loading_event(wf)
-      end
+      return unless name == 'NovaSeqX PE'
+
+      add_spiked_in_control_event(wf)
+      add_loading_event(wf)
     end
   end
 end
