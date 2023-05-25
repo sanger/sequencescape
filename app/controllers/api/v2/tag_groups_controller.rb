@@ -5,8 +5,6 @@ module Api
     # Provides a JSON API controller for TagGroup
     # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
     class TagGroupsController < JSONAPI::ResourceController
-      include Api::V2::Concerns::ApiKeyAuthenticatable
-
       # By default JSONAPI::ResourceController provides most the standard
       # behaviour, and in many cases this file may be left empty.
     end

@@ -5,8 +5,6 @@ module Api
     # Provides a JSON API controller for custom_metadatum_collection
     # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
     class CustomMetadatumCollectionsController < JSONAPI::ResourceController
-      include Api::V2::Concerns::ApiKeyAuthenticatable
-
       # By default JSONAPI::ResourceController provides most the standard
       # behaviour, and in many cases this file may be left empty.
     end

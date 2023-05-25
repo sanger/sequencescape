@@ -5,8 +5,6 @@ module Api
     # Provides a JSON API controller for TransferRequest
     # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
     class TransferRequestsController < JSONAPI::ResourceController
-      include Api::V2::Concerns::ApiKeyAuthenticatable
-
       # By default JSONAPI::ResourceController provides most the standard
       # behaviour, and in many cases this file may be left empty.
     end
