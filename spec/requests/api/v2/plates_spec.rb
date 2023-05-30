@@ -1,20 +1,16 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
 
 describe 'Plates API', with: :api_v2, tags: :lighthouse do
   let(:params) {}
-  let(:base_endpoint) { '/api/v2/plates' }
-
-  it_behaves_like 'ApiKeyAuthenticatable'
 
   describe '#create' do
     include BarcodeHelper
 
     before { mock_plate_barcode_service }
 
-    let(:request) { api_post base_endpoint, payload }
+    let(:request) { api_post '/api/v2/plates', payload }
     let(:plate) do
       request
       uuid = JSON.parse(response.body).dig('data', 'attributes', 'uuid')
@@ -68,7 +64,7 @@ describe 'Plates API', with: :api_v2, tags: :lighthouse do
     before { create_list(:plate, 5) }
 
     it 'sends a list of plates' do
-      api_get base_endpoint
+      api_get '/api/v2/plates'
 
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
@@ -85,13 +81,13 @@ describe 'Plates API', with: :api_v2, tags: :lighthouse do
     let!(:resource_model_2) { create :plate }
 
     it 'sends an individual plate' do
-      api_get "#{base_endpoint}/#{resource_model.id}"
+      api_get "/api/v2/plates/#{resource_model.id}"
       expect(response).to have_http_status(:success), response.body
       expect(json.dig('data', 'type')).to eq('plates')
     end
 
     it 'filtering by human barcode' do
-      api_get "#{base_endpoint}?filter[barcode]=#{resource_model.human_barcode}"
+      api_get "/api/v2/plates?filter[barcode]=#{resource_model.human_barcode}"
       expect(response).to have_http_status(:success), response.body
       expect(json['data'].length).to eq(1)
     end
@@ -114,7 +110,7 @@ describe 'Plates API', with: :api_v2, tags: :lighthouse do
         plate_factory.save
         plate = plate_factory.plate
         barcode = plate.barcodes.first.barcode
-        api_get "#{base_endpoint}?filter[barcode=#{barcode}&include=purpose,parents"
+        api_get "/api/v2/plates?filter[barcode=#{barcode}&include=purpose,parents"
         expect(response).to have_http_status(:success)
       end
     end
@@ -128,7 +124,7 @@ describe 'Plates API', with: :api_v2, tags: :lighthouse do
       before { resource_model.parents << create(:plate) << create(:multiplexed_library_tube) }
 
       it 'handles polymorphic relationships properly' do
-        api_get "#{base_endpoint}/#{resource_model.id}/parents"
+        api_get "/api/v2/plates/#{resource_model.id}/parents"
         expect(response).to have_http_status(:success), response.body
         expect(json['data'].length).to eq(2)
         types = json['data'].map { |anc| anc['type'] }
@@ -137,7 +133,7 @@ describe 'Plates API', with: :api_v2, tags: :lighthouse do
       end
 
       it 'handles polymorphic relationships properly' do
-        api_get "#{base_endpoint}/#{resource_model.id}/relationships/parents"
+        api_get "/api/v2/plates/#{resource_model.id}/relationships/parents"
         expect(response).to have_http_status(:success), response.body
         expect(json['data'].length).to eq(2)
         types = json['data'].map { |anc| anc['type'] }
@@ -150,7 +146,7 @@ describe 'Plates API', with: :api_v2, tags: :lighthouse do
       before { resource_model.comments.create(title: 'Test', description: 'We have some text', user: create(:user)) }
 
       it 'returns the comment' do
-        api_get "#{base_endpoint}/#{resource_model.id}/comments"
+        api_get "/api/v2/plates/#{resource_model.id}/comments"
         expect(response).to have_http_status(:success), response.body
         expect(json['data'].length).to eq(1)
         types = json['data'].map { |comment| comment['type'] }

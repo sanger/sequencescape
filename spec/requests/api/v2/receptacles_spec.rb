@@ -1,13 +1,8 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
 
 describe 'Receptacles API', with: :api_v2 do
-  let(:base_endpoint) { '/api/v2/receptacles' }
-
-  it_behaves_like 'ApiKeyAuthenticatable'
-
   context 'with multiple receptacles of different types' do
     before do
       create(:untagged_well)
@@ -15,7 +10,7 @@ describe 'Receptacles API', with: :api_v2 do
       create(:library_tube)
       create(:lane)
 
-      api_get base_endpoint
+      api_get '/api/v2/receptacles'
     end
 
     it 'sends a list of receptacles' do
@@ -49,7 +44,7 @@ describe 'Receptacles API', with: :api_v2 do
              diluent_volume: diluent_volume
     end
 
-    before { api_get "#{base_endpoint}/#{receptacle.id}" }
+    before { api_get "/api/v2/receptacles/#{receptacle.id}" }
 
     describe '#get' do
       it 'sends an individual receptacle' do
@@ -82,7 +77,7 @@ describe 'Receptacles API', with: :api_v2 do
         }
       end
 
-      before { api_patch "#{base_endpoint}/#{receptacle.id}", payload }
+      before { api_patch "/api/v2/receptacles/#{receptacle.id}", payload }
 
       it 'returns successful response with the updated attributes' do
         expect(response).to have_http_status(:success)

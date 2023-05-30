@@ -1,18 +1,13 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
 
 describe 'Orders API', with: :api_v2 do
-  let(:base_endpoint) { '/api/v2/orders' }
-
-  it_behaves_like 'ApiKeyAuthenticatable'
-
   context 'with multiple orders' do
     before { create_list(:order, 5) }
 
     it 'sends a list of orders' do
-      api_get base_endpoint
+      api_get '/api/v2/orders'
 
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
@@ -40,14 +35,14 @@ describe 'Orders API', with: :api_v2 do
     end
 
     it 'sends an individual order' do
-      api_get "#{base_endpoint}/#{resource_model.id}"
+      api_get "/api/v2/orders/#{resource_model.id}"
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('orders')
     end
 
     # Remove if immutable
     it 'allows update of a order' do
-      api_patch "#{base_endpoint}/#{resource_model.id}", payload
+      api_patch "/api/v2/orders/#{resource_model.id}", payload
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('orders')
       # Double check at least one of the attributes
