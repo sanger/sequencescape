@@ -64,11 +64,6 @@ control_type:
   options:
     - "positive"
     - "negative"
-bioscan_control_type:
-  options:
-    - "pcr positive"
-    - "pcr negative"
-    - "lysate negative"
 collected_by_for_cardinal:
   options:
     - ELGH_Bradford_21034

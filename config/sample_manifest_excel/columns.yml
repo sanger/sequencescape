@@ -277,28 +277,6 @@ supplier_name:
       errorTitle: "Supplier Sample Name"
       error: "Name must be a maximum of 40 characters in length."
   conditional_formattings:
-    empty_mandatory_cell:
-    len:
-      formula:
-        operator: ">"
-        operand: 40
-bioscan_supplier_name:
-  heading: SUPPLIER SAMPLE NAME
-  unlocked: true
-  validation:
-    options:
-      type: :textLength
-      operator: :lessThanOrEqual
-      formula1: "40"
-      allowBlank: false
-      showInputMessage: true
-      promptTitle: "Supplier Sample Name"
-      prompt: "Please enter a sample name up to a maximum of 40 characters in length. Only include characters A-Z, 0-9 and underscores."
-      showErrorMessage: true
-      errorStyle: :stop
-      errorTitle: "Supplier Sample Name"
-      error: "Name must be a maximum of 40 characters in length."
-  conditional_formattings:
     empty_cell:
     len:
       formula:
@@ -386,10 +364,10 @@ country_of_origin:
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Country Of Origin"
-      error: "Is a controlled vocabulary, and must be on the list."
+      error: "Is a controlled vocabulary, and must be on the list"
     range_name: :insdc_country
   conditional_formattings:
-    empty_mandatory_cell:
+    empty_cell:
     len:
       formula:
         operator: ">"
@@ -470,13 +448,13 @@ date_of_sample_collection:
       allowBlank: false
       showInputMessage: true
       promptTitle: "Sample Collection Date"
-      prompt: "Date should be in the format YYYY-MM-DD, Partial dates are supported. eg. YYYY or YYY-MM. See https://ena-docs.readthedocs.io/en/latest/submit/samples/missing-values.html if you can't provide a value."
+      prompt: "Date should be in the format YYYY-MM-DD, Partial dates are supported. eg. YYYY or YYY-MM"
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Sample Collection Date"
-      error: "Date should be in the format YYYY-MM-DD, Partial dates are supported. eg. YYYY or YYY-MM. See https://ena-docs.readthedocs.io/en/latest/submit/samples/missing-values.html if you can't provide a value."
+      error: "Date should be in the format YYYY-MM-DD, Partial dates are supported. eg. YYYY or YYY-MM"
   conditional_formattings:
-    empty_mandatory_cell:
+    empty_cell:
 date_of_sample_extraction:
   heading: DATE OF DNA EXTRACTION (MM/YY or YYYY only)
   unlocked: true
@@ -696,12 +674,12 @@ sample_taxon_id:
       errorTitle: "Taxon ID"
       error: "Taxon ID must a number."
   conditional_formattings:
-    empty_mandatory_cell:
+    empty_cell:
 sample_common_name:
   heading: COMMON NAME
   unlocked: true
   conditional_formattings:
-    empty_mandatory_cell:
+    empty_cell:
 sample_description:
   heading: SAMPLE DESCRIPTION
   unlocked: true
@@ -869,26 +847,6 @@ control_type:
   conditional_formattings:
     empty_cell:
     is_error:
-bioscan_control_type:
-  heading: CONTROL TYPE
-  unlocked: true
-  validation:
-    options:
-      type: :list
-      formula1: "$A$1:$A$2"
-      allowBlank: true
-      showDropDown: false
-      showInputMessage: true
-      promptTitle: "What Type of Control is it?"
-      prompt: "Select from the list provided if the sample is a control."
-      showErrorMessage: true
-      errorStyle: :stop
-      errorTitle: "What Type of Control is it?"
-      error: "Select from the list provided if the sample is a control."
-    range_name: :bioscan_control_type
-  conditional_formattings:
-    empty_cell:
-    is_error:
 priority:
   heading: PRIORITY
   unlocked: true
@@ -956,7 +914,7 @@ retention_instruction:
       error: "You must enter a retention instruction from the list provided."
     range_name: :retention_instructions
   conditional_formattings:
-    empty_mandatory_cell:
+    empty_cell:
     is_error:
 # LEGACY COLUMNS
 # If a column heading changes, we still need to map historical manifests back

@@ -7,8 +7,6 @@ module Api
       attribute :sample_common_name
       attribute :supplier_name
       attribute :collected_by
-      attribute :cohort
-      attribute :sample_description
       model_name 'Sample::Metadata', add_model_hint: false
     end
   end

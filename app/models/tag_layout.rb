@@ -21,7 +21,6 @@ class TagLayout < ApplicationRecord
     'inverse column' => 'TagLayout::InInverseColumns',
     'inverse row' => 'TagLayout::InInverseRows',
     'column then row' => 'TagLayout::InColumnsThenRows',
-    'column then column' => 'TagLayout::InColumnsThenColumns',
     'combinatorial by row' => 'TagLayout::CombByRows'
   }.freeze
 

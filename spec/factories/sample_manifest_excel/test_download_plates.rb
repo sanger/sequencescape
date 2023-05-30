@@ -17,7 +17,6 @@ FactoryBot.define do
         supplier_name: 'SCG--1222_A0',
         volume: 1,
         concentration: 1,
-        country_of_origin: 'United Kingdom',
         gender: 'Unknown',
         dna_source: 'Cell Line',
         date_of_sample_collection: 'Nov-16',
