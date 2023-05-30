@@ -19,9 +19,6 @@ module Api
       has_one :sample
       has_one :request
 
-      has_one :tag
-      has_one :tag2
-
       # Attributes
       attribute :tag_oligo, readonly: true
       attribute :tag_index, readonly: true

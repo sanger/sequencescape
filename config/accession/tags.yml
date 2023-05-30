@@ -12,20 +12,6 @@ sample_common_name:
   groups:
     - :sample_name
   ebi_name: :common_name
-country_of_origin:
-  class_name: "::Accession::TagCountryOfOrigin"
-  services:
-    - :ENA
-  groups:
-    - :sample_attributes
-  ebi_name: :geographic_location_(country_and/or_sea)
-date_of_sample_collection:
-  class_name: "::Accession::TagCollectionDate"
-  services:
-    - :ENA
-  groups:
-    - :sample_attributes
-  ebi_name: :collection_date
 donor_id:
   services:
     - :EGA

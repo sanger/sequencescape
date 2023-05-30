@@ -27,8 +27,6 @@ RSpec.describe Api::V2::AliquotResource, type: :resource do
     expect(subject).not_to have_updatable_field(:suboptimal)
     expect(subject).not_to have_updatable_field(:library_type)
     expect(subject).to have_one(:sample).with_class_name('Sample')
-    expect(subject).to have_one(:tag).with_class_name('Tag')
-    expect(subject).to have_one(:tag2).with_class_name('Tag')
   end
 
   # Custom method tests

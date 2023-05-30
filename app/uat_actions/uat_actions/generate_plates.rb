@@ -77,9 +77,7 @@ class UatActions::GeneratePlates < UatActions
           sanger_sample_id: sample_name,
           studies: [study],
           sample_metadata_attributes: {
-            supplier_name: sample_name,
-            cohort: "Cohort for #{plate.human_barcode}",
-            sample_description: "Description for #{plate.human_barcode}"
+            supplier_name: sample_name
           }
         )
       sample.save!(validate: false)

@@ -11,8 +11,6 @@ FactoryBot.define do
         [
           build(:sample_taxon_id_accession_tag),
           build(:sample_common_name_accession_tag),
-          build(:country_of_origin_accession_tag),
-          build(:collection_date_accession_tag),
           build(:gender_accession_tag),
           build(:phenotype_accession_tag),
           build(:donor_id_accession_tag),

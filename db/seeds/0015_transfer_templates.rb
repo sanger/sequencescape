@@ -6,8 +6,6 @@ def locations_for(row_range, column_range)
   row_range.map { |row| column_range.map { |column| "#{row}#{column}" } }.flatten
 end
 
-wells_96_locations = locations_for(('A'..'H'), (1..12))
-
 def pooling_row_to_first_column_transfer_layout_96
   layout = {}
   ('A'..'H').each { |row| (1..12).each { |column| layout["#{row}#{column}"] = "#{row}1" } }
@@ -58,13 +56,15 @@ ActiveRecord::Base.transaction do
   TransferTemplate.create!(
     name: 'Whole plate to tube',
     transfer_class_name: 'Transfer::FromPlateToTube',
-    transfers: wells_96_locations
+    transfers: locations_for(('A'..'H'), (1..12))
   )
+
+  wells = locations_for(('A'..'H'), (1..12))
 
   TransferTemplate.create!(
     name: 'Flip Plate',
     transfer_class_name: 'Transfer::BetweenPlates',
-    transfers: wells_96_locations.zip(wells_96_locations.reverse).to_h
+    transfers: wells.zip(wells.reverse).to_h
   )
 
   TransferTemplate.create!(

@@ -43,11 +43,7 @@ module SampleManifestExcel
       ##
       # Find a value based on a column name
       def value(key)
-        column_number = columns.find_column_or_null(:name, key).number
-
-        # column_number is -1 if no column found by this name (returns NullColumn object from find)
-        return nil if column_number.negative?
-        at(column_number)
+        at(columns.find_column_or_null(:name, key).number)
       end
 
       def first?
@@ -152,18 +148,10 @@ module SampleManifestExcel
       end
 
       def empty?
-        # a row must have one of the primary column options
-        primary_column_names = %w[supplier_name bioscan_supplier_name]
+        primary_column = 'supplier_name'
+        return true unless columns.present? && columns.valid? && columns.names.include?(primary_column)
 
-        # check the columns exist, are valid, and at least one of the primary column options are present
-        unless columns.present? && columns.valid? &&
-                 (primary_column_names.any? { |column_name| columns.names.include? column_name })
-          return true
-        end
-
-        # it is mandatory to have a value in the primary column
-        return true if primary_column_names.all? { |column_name| value(column_name).blank? }
-        false
+        value(primary_column).blank?
       end
 
       def labware

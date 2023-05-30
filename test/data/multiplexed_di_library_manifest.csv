@@ -7,11 +7,11 @@ Supplier:,Test supplier name,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,Spectroph
 No. Tubes Sent:,5,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,Other,OTHER,-40C,Whole Genome Amplified,WHOLE GENOME AMPLIFIED,,,Ethanol,ETHANOL
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,Other,OTHER
 SANGER TUBE ID,SANGER SAMPLE ID,TAG GROUP,TAG INDEX,TAG2 GROUP (Fill in for dual Index Only),TAG2 INDEX (Fill in for dual Index Only),LIBRARY TYPE,INSERT SIZE FROM,INSERT SIZE TO,SUPPLIER SAMPLE NAME,COHORT,VOLUME (ul),CONC. (ng/ul),GENDER,COUNTRY OF ORIGIN,GEOGRAPHICAL REGION,ETHNICITY,DNA SOURCE,DATE OF SAMPLE COLLECTION (MM/YY or YYYY only),DATE OF   DNA EXTRACTION (MM/YY or YYYY only),DNA EXTRACTION METHOD,SAMPLE PURIFIED?,PURIFICATION METHOD,CONCENTRATION DETERMINED BY,DNA STORAGE CONDITIONS,MOTHER (optional),FATHER (optional),SIBLING (optional),GC CONTENT,PUBLIC NAME,TAXON ID,COMMON NAME,SAMPLE DESCRIPTION,STRAIN,SAMPLE TYPE,SAMPLE ACCESSION NUMBER (optional),,,,,,,,,,,,,,,,,
-NT81M,sample_0,test tag group,1,test tag group2,1,Standard,100,200,aaaa,,50,100,Male,United Kingdom,,,,2022-12-01,,,,,,,,,,,,9606,Homo Sapien,,,,,,,,,,,,,,,,,,,,,
-NT82N,sample_1,test tag group,2,test tag group2,1,Standard,100,200,bbbb,,50,100,Male,United Kingdom,,,,2022-12-02,,,,,,,,,,,,9606,Homo Sapien,,,,,,,,,,,,Any incomplete areas will be,,,,,,,,,
-NT83O,sample_2,test tag group,3,test tag group2,1,Standard,100,200,cccc,,50,100,Female,United Kingdom,,,,2022-12-03,,,,,,,,,,,,9606,Homo Sapien,,,,,,,,,,,,shaded in blue - ,,,,,,,,,
-NT84P,sample_3,test tag group3,1,test tag group2,1,Standard,100,200,dddd,,50,100,Female,United Kingdom,,,,2022-12-04,,,,,,,,,,,,9606,Homo Sapien,,,,,,,,,,,,,,,,,,,,,
-NT85Q,sample_4,test tag group3,2,test tag group2,1,Standard,100,200,eeee,,50,100,Female,United Kingdom,,,,2022-12-05,,,,,,,,,,,,9606,Homo Sapien,,,,,,,,,,,,Any incorrect data entries will,,,,,,,,,
+NT81M,sample_0,test tag group,1,test tag group2,1,Standard,100,200,aaaa,,50,100,Male,,,,,,,,,,,,,,,,,9606,Homo Sapien,,,,,,,,,,,,,,,,,,,,,
+NT82N,sample_1,test tag group,2,test tag group2,1,Standard,100,200,bbbb,,50,100,Male,,,,,,,,,,,,,,,,,9606,Homo Sapien,,,,,,,,,,,,Any incomplete areas will be,,,,,,,,,
+NT83O,sample_2,test tag group,3,test tag group2,1,Standard,100,200,cccc,,50,100,Female,,,,,,,,,,,,,,,,,9606,Homo Sapien,,,,,,,,,,,,shaded in blue - ,,,,,,,,,
+NT84P,sample_3,test tag group3,1,test tag group2,1,Standard,100,200,dddd,,50,100,Female,,,,,,,,,,,,,,,,,9606,Homo Sapien,,,,,,,,,,,,,,,,,,,,,
+NT85Q,sample_4,test tag group3,2,test tag group2,1,Standard,100,200,eeee,,50,100,Female,,,,,,,,,,,,,,,,,9606,Homo Sapien,,,,,,,,,,,,Any incorrect data entries will,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,be shaded in red - ,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
