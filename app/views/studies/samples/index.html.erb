@@ -7,7 +7,15 @@
   Study <%= @study.id %> &middot; Created on <%= @study.created_at.to_formatted_s(:long) %> &middot; <%= @study.state.capitalize %>
 </div>
 
+
+
 <% if @samples.size > 0 %>
+  <header>
+    <h3>Samples
+      <%= counter_badge @samples.study.samples.count %>
+    </h3>
+  </header>
+  <%= pagination @samples %>
   <table cellpadding="4" cellspacing="0" width="100%" class="sortable">
     <thead>
       <tr>
@@ -24,6 +32,7 @@
     <% end %>
     </tbody>
   </table>
+  <%= pagination @samples %>
 <% else %>
   <% if can? :create, SampleManifest -%>
     <%= display_user_guide(I18n.t('studies.samples.no_samples_registered'), sample_manifests_study_path(@study)) %>

@@ -3,7 +3,7 @@
   <header>
     <a href='#asset-samples-table-collapser' role="button" data-toggle='collapse'>
     <h3>Samples
-      <%= counter_badge @asset.aliquots.count %>
+      <%= counter_badge @samples[0].study.samples.count %>
       <small class='show-hide'>Click to toggle</small>
     </h3>
     </a>
