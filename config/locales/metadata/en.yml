@@ -148,6 +148,7 @@ en:
         country_of_origin:
           label: Country of origin
           help: The geographic origin of the sample, as defined by the <a href="http://insdc.org/country.html">INSDC list of countries and seas</a>. May also be 'not provided', 'not applicable', 'not collected' or 'restricted access'. Please see <a href="https://ena-docs.readthedocs.io/en/latest/submit/samples/missing-values.html">the missing value documentation</a> before providing one of these values.
+          accessioning_tag: geographic location (country and/or sea)
 
         geographical_region:
           label: Geographical region
@@ -219,6 +220,7 @@ en:
         date_of_sample_collection:
           label: Date of sample collection
           help: Dates should be in the format YYYY-MM-DDTHH:MM:SS (eg. '2020-01-25T12:59:59') with each additional level of precision being optional. May also be 'not provided', 'not collected' or 'restricted access'. Please see <a href="https://ena-docs.readthedocs.io/en/latest/submit/samples/missing-values.html">the missing value documentation</a> before providing one of these values.
+          accessioning_tag: collection_date
 
         date_of_sample_extraction:
           label: Date of sample extraction
@@ -436,7 +438,7 @@ en:
 
         data_release_delay_reason:
           label: Reason for delaying release
-          help: 'To apply for a delay, please contact <a title="<%= configatron.data_sharing_contact.name %>" href="mailto:<%= configatron.data_sharing_contact.email %>"><%= configatron.data_sharing_contact.email %></a>'
+          help: 'To apply for a delay which is not associated with a study, please contact <a title="<%= configatron.data_sharing_contact.name %>" href="mailto:<%= configatron.data_sharing_contact.email %>"><%= configatron.data_sharing_contact.email %></a>'
 
         data_release_delay_other_comment:
           label: Please explain the reason for delaying release
