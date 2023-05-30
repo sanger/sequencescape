@@ -17,6 +17,22 @@ FactoryBot.define do
       ebi_name { :taxon_id }
     end
 
+    factory :country_of_origin_accession_tag, class: '::Accession::TagCountryOfOrigin' do
+      class_name { '::Accession::TagCountryOfOrigin' }
+      name { :country_of_origin }
+      services { %i[ENA EGA] }
+      groups { [:sample_attributes] }
+      ebi_name { :'geographic_location_(country_and/or_sea)' }
+    end
+
+    factory :collection_date_accession_tag, class: '::Accession::TagCollectionDate' do
+      class_name { '::Accession::TagCollectionDate' }
+      name { :date_of_sample_collection }
+      services { %i[ENA EGA] }
+      groups { [:sample_attributes] }
+      ebi_name { :collection_date }
+    end
+
     factory :sample_common_name_accession_tag do
       name { :sample_common_name }
       services { %i[ENA EGA] }
