@@ -24,7 +24,7 @@ describe 'SampleManifest controller', sample_manifest: true do
       select(study.name, from: 'Study')
       select(supplier.name, from: 'Supplier')
       within('#sample_manifest_template') do
-        expect(page).to have_selector('option', count: 6)
+        expect(page).to have_selector('option', count: 7)
         expect(page).not_to have_selector('option', text: 'Default Tube')
       end
       select('Default Plate', from: 'Template')
@@ -66,7 +66,7 @@ describe 'SampleManifest controller', sample_manifest: true do
 
     it 'indicate the purpose field is used for plates only' do
       visit(new_sample_manifest_path)
-      within('#sample_manifest_template') { expect(page).to have_selector('option', count: 20) }
+      within('#sample_manifest_template') { expect(page).to have_selector('option', count: 21) }
       select(created_purpose.name, from: 'Purpose')
       expect(page).to have_text('Used for plate manifests only')
     end

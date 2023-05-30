@@ -14,6 +14,7 @@ FactoryBot.define do
     manifest_type { 'tube_full' }
     data do
       {
+        country_of_origin: 'United Kingdom',
         library_type: 'My personal library type',
         reference_genome: 'My reference genome',
         insert_size_from: 200,
