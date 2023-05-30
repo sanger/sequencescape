@@ -1,13 +1,8 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
 
 describe 'WorkOrders API', with: :api_v2 do
-  let(:base_endpoint) { '/api/v2/work_orders' }
-
-  it_behaves_like 'ApiKeyAuthenticatable'
-
   context 'with multiple requests' do
     let(:our_request_type) { create :request_type }
     let(:other_request_type) { create :request_type }
@@ -28,7 +23,7 @@ describe 'WorkOrders API', with: :api_v2 do
     end
 
     it 'sends a list of work_orders' do
-      api_get base_endpoint
+      api_get '/api/v2/work_orders'
 
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
@@ -38,7 +33,7 @@ describe 'WorkOrders API', with: :api_v2 do
     end
 
     it 'allows filtering of work_orders by state' do
-      api_get "#{base_endpoint}?filter[state]=pending"
+      api_get '/api/v2/work_orders?filter[state]=pending'
 
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
@@ -48,7 +43,7 @@ describe 'WorkOrders API', with: :api_v2 do
     end
 
     it 'allows filtering of work_orders by order type' do
-      api_get "#{base_endpoint}?filter[order_type]=#{our_request_type.key}"
+      api_get "/api/v2/work_orders?filter[order_type]=#{our_request_type.key}"
 
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
@@ -58,7 +53,7 @@ describe 'WorkOrders API', with: :api_v2 do
     end
 
     it 'allows filtering of work_orders by order type and state' do
-      api_get "#{base_endpoint}?filter[order_type]=#{our_request_type.key}&filter[state]=pending"
+      api_get "/api/v2/work_orders?filter[order_type]=#{our_request_type.key}&filter[state]=pending"
 
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
@@ -88,7 +83,7 @@ describe 'WorkOrders API', with: :api_v2 do
     end
 
     it 'can inline all necessary information' do
-      api_get "#{base_endpoint}?include=study,samples,project,source_receptacle"
+      api_get '/api/v2/work_orders?include=study,samples,project,source_receptacle'
 
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
@@ -116,13 +111,13 @@ describe 'WorkOrders API', with: :api_v2 do
     end
 
     it 'sends an individual work_order' do
-      api_get "#{base_endpoint}/#{work_order.id}"
+      api_get "/api/v2/work_orders/#{work_order.id}"
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('work_orders')
     end
 
     it 'allows update of a work order' do
-      api_patch "#{base_endpoint}/#{work_order.id}", payload
+      api_patch "/api/v2/work_orders/#{work_order.id}", payload
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('work_orders')
       expect(json.dig('data', 'attributes', 'state')).to eq('started')

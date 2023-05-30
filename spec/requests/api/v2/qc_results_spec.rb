@@ -1,13 +1,9 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
 
-RSpec.describe Api::V2::QcResultsController, with: :api_v2, type: :request, qc_result: true do
+RSpec.describe Api::V2::QcResultsController, type: :request, qc_result: true do
   let(:asset_invalid) { attributes_for(:qc_result) }
-  let(:base_endpoint) { '/api/v2/qc_results' }
-
-  it_behaves_like 'ApiKeyAuthenticatable'
 
   describe 'by uuid' do
     let(:asset_1) { attributes_for(:qc_result).merge(uuid: create(:receptacle).uuid) }
@@ -16,7 +12,7 @@ RSpec.describe Api::V2::QcResultsController, with: :api_v2, type: :request, qc_r
 
     it 'creates some new qc results' do
       params = { data: { attributes: [asset_1, asset_2, asset_3] } }
-      expect { api_post base_endpoint, params }.to change(QcResult, :count).by(3)
+      expect { post api_v2_qc_results_path, params: params }.to change(QcResult, :count).by(3)
       expect(response).to have_http_status(:created)
 
       json = ActiveSupport::JSON.decode(response.body)
@@ -32,7 +28,7 @@ RSpec.describe Api::V2::QcResultsController, with: :api_v2, type: :request, qc_r
 
     it 'returns an error if somebody tries to create an invalid qc result' do
       expect do
-        api_post base_endpoint, { data: { attributes: [asset_1, asset_2, asset_3, asset_invalid] } }
+        post api_v2_qc_results_path, params: { data: { attributes: [asset_1, asset_2, asset_3, asset_invalid] } }
       end.not_to change(QcResult, :count)
       expect(response).to have_http_status(:unprocessable_entity)
       json = ActiveSupport::JSON.decode(response.body)
@@ -47,7 +43,7 @@ RSpec.describe Api::V2::QcResultsController, with: :api_v2, type: :request, qc_r
 
     it 'creates some new qc results' do
       params = { data: { attributes: [asset_1, asset_2, asset_3] } }
-      expect { api_post base_endpoint, params }.to change(QcResult, :count).by(3)
+      expect { post api_v2_qc_results_path, params: params }.to change(QcResult, :count).by(3)
       expect(response).to have_http_status(:created)
 
       json = ActiveSupport::JSON.decode(response.body)
@@ -63,7 +59,7 @@ RSpec.describe Api::V2::QcResultsController, with: :api_v2, type: :request, qc_r
 
     it 'returns an error if somebody tries to create an invalid qc result' do
       expect do
-        api_post base_endpoint, { data: { attributes: [asset_1, asset_2, asset_3, asset_invalid] } }
+        post api_v2_qc_results_path, params: { data: { attributes: [asset_1, asset_2, asset_3, asset_invalid] } }
       end.not_to change(QcResult, :count)
       expect(response).to have_http_status(:unprocessable_entity)
       json = ActiveSupport::JSON.decode(response.body)

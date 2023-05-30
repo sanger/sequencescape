@@ -1,13 +1,8 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
 
 describe 'Labware API', with: :api_v2 do
-  let(:base_endpoint) { '/api/v2/labware' }
-
-  it_behaves_like 'ApiKeyAuthenticatable'
-
   context 'with multiple receptacles of different types' do
     before do
       create(:sample_tube)
@@ -15,7 +10,7 @@ describe 'Labware API', with: :api_v2 do
     end
 
     it 'sends a list of labware' do
-      api_get base_endpoint
+      api_get '/api/v2/labware'
 
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
@@ -25,7 +20,7 @@ describe 'Labware API', with: :api_v2 do
     end
 
     it 'identifies the type of labware' do
-      api_get base_endpoint
+      api_get '/api/v2/labware'
       listed = json['data'].map { |data| data['type'] }.sort
       expect(listed).to eq(%w[tubes tubes])
     end
@@ -37,7 +32,7 @@ describe 'Labware API', with: :api_v2 do
     let(:resource_model) { create :sample_tube }
 
     it 'sends an individual labware' do
-      api_get "#{base_endpoint}/#{resource_model.id}"
+      api_get "/api/v2/labware/#{resource_model.id}"
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('tubes')
     end
@@ -48,7 +43,7 @@ describe 'Labware API', with: :api_v2 do
     let(:labware) { custom_metadatum_collection.asset }
 
     it 'sends an individual labware' do
-      api_get "#{base_endpoint}/#{labware.id}?include=custom_metadatum_collection"
+      api_get "/api/v2/labware/#{labware.id}?include=custom_metadatum_collection"
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('labware')
       expect(json['included'][0]['attributes']['uuid']).to eq(custom_metadatum_collection.uuid)

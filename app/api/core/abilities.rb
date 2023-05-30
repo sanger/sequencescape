@@ -161,7 +161,7 @@ module Core::Abilities
       )
     end
 
-    # Registered applications can manage all objects that allow it and can have unauthenticated users.
+    # Registered applications can manage all objects that allow it and can have unauthenicated users.
     full do
       can(:manage, :all)
       can(:authenticate, :all)
