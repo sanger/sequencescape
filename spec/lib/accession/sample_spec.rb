@@ -2,8 +2,23 @@
 
 require 'rails_helper'
 
+COUNTRY_TAG = 'GEOGRAPHIC_LOCATION_(COUNTRY_AND/OR_SEA)'
+COLLECTION_DATE_TAG = 'COLLECTION_DATE'
+
+def find_value_at_tag(xml_received, tag_name)
+  xml = Nokogiri::XML::Document.parse(xml_received)
+  xml
+    .at('SAMPLE_ATTRIBUTES')
+    .children
+    .each do |elem|
+      return elem.search('VALUE').collect(&:text).first if elem.search('TAG').collect(&:text).first == tag_name
+    end
+end
+
 RSpec.describe Accession::Sample, type: :model, accession: true do
   let(:tag_list) { build(:standard_accession_tag_list) }
+
+  before { @country = create :insdc_country, name: 'Australia' }
 
   it 'is not sent for accessioning if the sample has already been accessioned' do
     sample =
@@ -144,5 +159,87 @@ RSpec.describe Accession::Sample, type: :model, accession: true do
     sample = described_class.new(tag_list, create(:sample_for_accessioning_with_open_study))
     expect(sample.update_accession_number('ENA1234')).to be_truthy
     expect(sample.ebi_accession_number).to eq('ENA1234')
+  end
+
+  describe '#to_xml' do
+    context 'with country of origin' do
+      it 'includes country of origin' do
+        sample = described_class.new(tag_list, create(:sample_for_accessioning_with_open_study))
+        expect(sample.to_xml).to include(COUNTRY_TAG)
+        expect(find_value_at_tag(sample.to_xml, COUNTRY_TAG)).to eq('Australia')
+      end
+
+      it 'displays not provided when country is empty' do
+        smpl = create(:sample_for_accessioning_with_open_study)
+        smpl.sample_metadata.update(country_of_origin: nil)
+        sample = described_class.new(tag_list, smpl)
+        expect(sample.to_xml).to include(COUNTRY_TAG)
+        expect(find_value_at_tag(sample.to_xml, COUNTRY_TAG)).to eq('not provided')
+      end
+
+      it 'displays not provided when country value is not provided' do
+        smpl = create(:sample_for_accessioning_with_open_study)
+        smpl.sample_metadata.update(country_of_origin: 'not provided')
+        sample = described_class.new(tag_list, smpl)
+        expect(sample.to_xml).to include(COUNTRY_TAG)
+        expect(find_value_at_tag(sample.to_xml, COUNTRY_TAG)).to eq('not provided')
+      end
+
+      it 'displays not provided when country value is wrong' do
+        smpl = create(:sample_for_accessioning_with_open_study)
+        smpl.sample_metadata.update(country_of_origin: 'Freedonia')
+        sample = described_class.new(tag_list, smpl)
+        expect(sample.to_xml).to include(COUNTRY_TAG)
+        expect(find_value_at_tag(sample.to_xml, COUNTRY_TAG)).to eq('not provided')
+      end
+
+      it 'displays missing when country of origin is specified as missing' do
+        smpl = create(:sample_for_accessioning_with_open_study)
+        smpl.sample_metadata.update(country_of_origin: 'missing: human-identifiable')
+        sample = described_class.new(tag_list, smpl)
+        expect(sample.to_xml).to include(COUNTRY_TAG)
+        expect(find_value_at_tag(sample.to_xml, COUNTRY_TAG)).to eq('missing: human-identifiable')
+      end
+    end
+
+    context 'with collection date' do
+      it 'includes collection date' do
+        sample = described_class.new(tag_list, create(:sample_for_accessioning_with_open_study))
+        expect(sample.to_xml).to include(COLLECTION_DATE_TAG)
+        expect(find_value_at_tag(sample.to_xml, COLLECTION_DATE_TAG)).to eq('2000-01-01T00:00')
+      end
+
+      it 'displays not provided when collection date is empty' do
+        smpl = create(:sample_for_accessioning_with_open_study)
+        smpl.sample_metadata.update(date_of_sample_collection: nil)
+        sample = described_class.new(tag_list, smpl)
+        expect(sample.to_xml).to include(COLLECTION_DATE_TAG)
+        expect(find_value_at_tag(sample.to_xml, COLLECTION_DATE_TAG)).to eq('not provided')
+      end
+
+      it 'displays not provided when collection date is not provided' do
+        smpl = create(:sample_for_accessioning_with_open_study)
+        smpl.sample_metadata.update(date_of_sample_collection: 'not provided')
+        sample = described_class.new(tag_list, smpl)
+        expect(sample.to_xml).to include(COLLECTION_DATE_TAG)
+        expect(find_value_at_tag(sample.to_xml, COLLECTION_DATE_TAG)).to eq('not provided')
+      end
+
+      it 'displays not provided when collection date is wrong' do
+        smpl = create(:sample_for_accessioning_with_open_study)
+        smpl.sample_metadata.update(date_of_sample_collection: '2000-99-01T00:00')
+        sample = described_class.new(tag_list, smpl)
+        expect(sample.to_xml).to include(COLLECTION_DATE_TAG)
+        expect(find_value_at_tag(sample.to_xml, COLLECTION_DATE_TAG)).to eq('not provided')
+      end
+
+      it 'displays missing when collection date is specified as missing' do
+        smpl = create(:sample_for_accessioning_with_open_study)
+        smpl.sample_metadata.update(date_of_sample_collection: 'missing: human-identifiable')
+        sample = described_class.new(tag_list, smpl)
+        expect(sample.to_xml).to include(COLLECTION_DATE_TAG)
+        expect(find_value_at_tag(sample.to_xml, COLLECTION_DATE_TAG)).to eq('missing: human-identifiable')
+      end
+    end
   end
 end
