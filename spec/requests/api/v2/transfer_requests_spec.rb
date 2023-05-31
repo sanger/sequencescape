@@ -1,13 +1,18 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
 
 describe 'TransferRequests API', with: :api_v2 do
+  let(:base_endpoint) { '/api/v2/transfer_requests' }
+
+  it_behaves_like 'ApiKeyAuthenticatable'
+
   context 'with multiple TransferRequests' do
     before { create_list(:transfer_request, 5) }
 
     it 'sends a list of transfer_requests' do
-      api_get '/api/v2/transfer_requests'
+      api_get base_endpoint
 
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
@@ -35,7 +40,7 @@ describe 'TransferRequests API', with: :api_v2 do
     end
 
     it 'sends an individual TransferRequest' do
-      api_get "/api/v2/transfer_requests/#{resource_model.id}"
+      api_get "#{base_endpoint}/#{resource_model.id}"
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('transfer_requests')
     end
