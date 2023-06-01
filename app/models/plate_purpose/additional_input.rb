@@ -17,7 +17,10 @@ class PlatePurpose::AdditionalInput < PlatePurpose
     return false if plate.wells.with_contents.empty?
     plate.wells.with_contents.all? do |well|
       return false if well.requests.empty?
-      well.requests.all? { |request| request.is_a?(Request::LibraryCreation) || request.is_a?(LibraryCreationRequest) }
+      well
+        .requests
+        .filter { |a| !a.is_a?(CreateAssetRequest) }
+        .all? { |request| request.is_a?(Request::LibraryCreation) || request.is_a?(LibraryCreationRequest) }
     end
   end
 end
