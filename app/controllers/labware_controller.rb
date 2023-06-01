@@ -2,7 +2,7 @@
 
 # Handles viewing {Labware} information
 # @see Labware
-class LabwareController < ApplicationController
+class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLength
   before_action :discover_asset, only: %i[show edit update summary print_assets print history]
 
   def index # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
@@ -32,7 +32,7 @@ class LabwareController < ApplicationController
     @source_plates = @asset.source_plates
     respond_to do |format|
       format.html { @aliquots = @asset.aliquots.include_summary.paginate(page: params[:page], per_page: 384) }
-      format.xml { render xml: @asset }
+      format.xml
       format.json { render json: @asset }
     end
   end
