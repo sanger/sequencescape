@@ -2,8 +2,11 @@
 
 module Api
   module V2
-    # JSONAPI controller for {SampleManifestResource}
+    # Provides a JSON API controller for SampleManifests
+    # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
     class SampleManifestsController < JSONAPI::ResourceController
+      # By default JSONAPI::ResourceController provides most the standard
+      # behaviour, and in many cases this file may be left empty.
     end
   end
 end
