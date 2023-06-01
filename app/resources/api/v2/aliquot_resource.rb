@@ -5,19 +5,18 @@ module Api
     # Provides a JSON API representation of aliquot
     # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
     class AliquotResource < BaseResource
-      # Constants...
-
-      immutable # comment to make the resource mutable
+      # immutable # comment to make the resource mutable
 
       default_includes :tag, :tag2
 
-      # model_name / model_hint if required
-
-      # Associations:
+      # Associations
       has_one :study
       has_one :project
       has_one :sample
       has_one :request
+      has_one :receptacle
+      has_one :tag
+      has_one :tag2
 
       # Attributes
       attribute :tag_oligo, readonly: true
