@@ -2,7 +2,7 @@
 
 # Handles viewing {Labware} information
 # @see Labware
-class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLength
+class LabwareController < ApplicationController
   before_action :discover_asset, only: %i[show edit update summary print_assets print history]
 
   def index # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
