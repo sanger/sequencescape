@@ -38,7 +38,7 @@ class ReceptaclesController < ApplicationController # rubocop:todo Metrics/Class
             @asset.aliquots.include_summary.paginate(page: params[:page], per_page: 384)
           end
       end
-      format.xml { render xml: @asset }
+      format.xml
       format.json { render json: @asset }
     end
   end

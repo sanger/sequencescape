@@ -32,8 +32,8 @@ class LabwareController < ApplicationController
     @source_plates = @asset.source_plates
     respond_to do |format|
       format.html { @aliquots = @asset.aliquots.include_summary.paginate(page: params[:page], per_page: 384) }
-      format.xml { render xml: @asset.to_xml }
-      format.json { render json: @asset.to_json }
+      format.xml { render xml: @asset }
+      format.json { render json: @asset }
     end
   end
 
