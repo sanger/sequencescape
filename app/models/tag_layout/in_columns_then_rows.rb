@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Lays out the tags so that they are column then row ordered.
+# Lays out the tags so that they are column ordered.
 module TagLayout::InColumnsThenRows
   def self.direction
     'column then row'
@@ -20,8 +20,6 @@ module TagLayout::InColumnsThenRows
     tag_row + (height / scale * tag_col)
   end
 
-  # Returns the tag index for the secondary tag
-  # e.g. 4 tags in group, A1 = 1, B1 = 3, A2 = 2, B2 = 4
   def self.tag2_index(row, column, scale, _height, _width)
     (column % scale) + ((row % scale) * scale)
   end

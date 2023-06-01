@@ -54,6 +54,7 @@ Feature: Update the data release fields for creating a study
       | Study description                                  | writing cukes   |
       | Please explain the reason for delaying release     | some comment    |
       | Comment regarding data release timing and approval | another comment |
+
     And I select "Jack Sponsor" from "Faculty Sponsor"
     And I choose "Yes" from "Do any of the samples in this study contain human DNA?"
     And I choose "No" from "Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?"

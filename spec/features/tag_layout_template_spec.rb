@@ -20,7 +20,7 @@ describe 'Create a new tag layout template' do
     expect(page).to have_content 'Tag Layout Template New'
     within('#new_tag_layout_template') do
       fill_in('tag_layout_template_name', with: 'Test tag layout template')
-      select('InColumns (A1,B1,C1...)', from: 'tag_layout_template_direction_algorithm')
+      select('InColumns', from: 'tag_layout_template_direction_algorithm')
       click_on 'Create tag layout template'
     end
     expect(page).to have_content 'The Tag Layout Template has been successfully created.'
@@ -40,7 +40,7 @@ describe 'Create a new tag layout template' do
       fill_in('tag_layout_template_name', with: 'Test tag layout template')
       select(tag_group_1.name, from: 'tag_layout_template_tag_group_id')
       select(tag_group_2.name, from: 'tag_layout_template_tag2_group_id')
-      select('InColumns (A1,B1,C1...)', from: 'tag_layout_template_direction_algorithm')
+      select('InColumns', from: 'tag_layout_template_direction_algorithm')
       click_on 'Create tag layout template'
     end
     expect(page).to have_content 'The Tag Layout Template has been successfully created.'
@@ -59,7 +59,7 @@ describe 'Create a new tag layout template' do
 
     within('#new_tag_layout_template') do
       fill_in('tag_layout_template_name', with: 'Test tag layout template')
-      select('InColumns (A1,B1,C1...)', from: 'tag_layout_template_direction_algorithm')
+      select('InColumns', from: 'tag_layout_template_direction_algorithm')
       click_on 'Create tag layout template'
     end
 
