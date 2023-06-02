@@ -132,6 +132,7 @@ describe 'mbrave tasks' do
           reverse
         end
         let(:run_task) do
+          Rake::Task['mbrave:create_tag_plates'].reenable
           Rake::Task['mbrave:create_tag_groups'].execute(
             forward_file: forward_file.path,
             reverse_file: reverse_file.path,
