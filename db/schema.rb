@@ -1765,7 +1765,7 @@ ActiveRecord::Schema.define(version: 2023_05_12_102847) do
     t.datetime "updated_at"
     t.string "name"
     t.string "transfer_class_name"
-    t.string "transfers", limit: 1024
+    t.string "transfers", limit: 10240
   end
 
   create_table "transfers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
