@@ -18,6 +18,7 @@ describe 'mbrave tasks' do
 
       Rake.application.rake_require 'tasks/create_mbrave_tags'
       Rake::Task.define_task(:environment)
+      Rake::Task['mbrave:create_tag_plates'].reenable
     end
 
     context 'with mbrave:create_tag_plates' do
