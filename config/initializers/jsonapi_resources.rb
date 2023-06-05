@@ -9,8 +9,3 @@ JSONAPI.configure do |config|
   config.json_key_format = :underscored_key
   config.route_format = :underscored_route
 end
-
-# Monkey patch the ApiKeyAuthenticatable concern into all JSONAPI::ResourceControllers
-class JSONAPI::ResourceController
-  include Api::V2::Concerns::ApiKeyAuthenticatable
-end

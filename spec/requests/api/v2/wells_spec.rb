@@ -1,17 +1,12 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
 
 describe 'Wells API', with: :api_v2 do
-  let(:base_endpoint) { '/api/v2/wells' }
-
-  it_behaves_like 'ApiKeyAuthenticatable'
-
   context 'with multiple wells' do
     before do
       create_list(:well, 5)
-      api_get base_endpoint
+      api_get '/api/v2/wells'
     end
 
     it 'sends a list of wells' do
@@ -41,7 +36,7 @@ describe 'Wells API', with: :api_v2 do
     end
 
     describe '#get' do
-      before { api_get "#{base_endpoint}/#{well.id}" }
+      before { api_get "/api/v2/wells/#{well.id}" }
 
       it 'sends an individual well' do
         expect(response).to have_http_status(:success)
@@ -74,7 +69,7 @@ describe 'Wells API', with: :api_v2 do
         }
       end
 
-      before { api_patch "#{base_endpoint}/#{well.id}", payload }
+      before { api_patch "/api/v2/wells/#{well.id}", payload }
 
       it 'returns successful response' do
         expect(response).to have_http_status(:success)
