@@ -8,10 +8,11 @@
     </h3>
     </a>
   </header>
+  <div id="asset-samples-table-collapser" class="collapse in show">
   <div class="card-body">
     If the tags below are not correct, you may wish to <%= link_to 'perform tag substitution', new_receptacle_tag_substitution_path(@asset.receptacle) %>.
   </div>
-  <div id="asset-samples-table-collapser" class="collapse in show">
+    <%= pagination @aliquots %>
     <table id="asset-samples-table" class="sortable table table-striped">
       <colgroup>
         <col class="npg_aliquot_index">
@@ -26,7 +27,7 @@
         </tr>
       </thead>
       <tbody>
-       <% @asset.aliquots.include_summary.each_with_index do |aliquot,i| %>
+       <% @aliquots.each_with_index do |aliquot, i| %>
        <tr>
          <td><strong><%= link_to(aliquot.sample.name, sample_url(aliquot.sample)) -%></strong></td>
          <td><%= aliquot.sample.sanger_sample_id %></td>
@@ -37,5 +38,6 @@
        <% end %>
       </tbody>
     </table>
+    <%= pagination @aliquots %>
   </div>
 </section>

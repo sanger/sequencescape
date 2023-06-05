@@ -70,6 +70,7 @@ RSpec.describe 'labware/show.html.erb', type: :view do
 
     before do
       assign(:asset, tube) # sets @widget = Widget.new in the view template
+      assign(:aliquots, tube.aliquots.paginate(page: 1))
     end
 
     context 'when the tube is inside a rack' do
