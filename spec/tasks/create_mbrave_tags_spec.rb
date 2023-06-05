@@ -34,7 +34,7 @@ describe 'mbrave tasks' do
           let(:tag_purpose) { create(:plate_purpose, name: 'Tag Plate') }
           let(:run_action) do
             Rake::Task['mbrave:create_tag_plates'].reenable
-            Rake::Task['mbrave:create_tag_plates'].execute(login: 'test', version: 'v1') 
+            Rake::Task['mbrave:create_tag_plates'].execute(login: 'test', version: 'v1')
           end
           let(:tag_group_two) { create(:tag_group) }
 
@@ -137,11 +137,7 @@ describe 'mbrave tasks' do
         end
         let(:run_task) do
           Rake::Task['mbrave:create_tag_groups'].reenable
-          Rake::Task['mbrave:create_tag_groups'].execute(
-            forward_file: forward_file.path,
-            reverse_file: reverse_file.path,
-            version: 'v1'
-          )
+          Rake.application.invoke_task "mbrave:create_tag_groups[#{forward_file.path}, #{reverse_file.path}, v1]"
         end
 
         it 'creates the expected tag layout templates' do
