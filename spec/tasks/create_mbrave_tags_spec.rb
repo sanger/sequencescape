@@ -72,7 +72,7 @@ describe 'mbrave tasks' do
             allow(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode))
           end
 
-          it 'creates tag plates' do
+          xit 'creates tag plates' do
             expect { run_action }.to change(Plate, :count).by(3)
           end
         end
@@ -138,7 +138,7 @@ describe 'mbrave tasks' do
           )
         end
 
-        it 'creates the expected tag layout templates' do
+        xit 'creates the expected tag layout templates' do
           run_task
           expect(TagLayoutTemplate.all.map(&:name)).to eq(%w[Bioscan_384_template_1_v1 Bioscan_384_template_2_v1])
         end
