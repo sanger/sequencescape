@@ -15,3 +15,9 @@ requested_flowcell_type:
   label: Flowcell Requested
   width: 5
   hide_in_inbox: 0
+read_length:
+  name: Read length
+  key: read_length
+  label: Read length
+  width: 5
+  hide_in_inbox: 0
