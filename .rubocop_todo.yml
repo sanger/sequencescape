@@ -706,8 +706,6 @@ RSpec/LetSetup:
 # SupportedStyles: have_received, receive
 RSpec/MessageSpies:
   EnforcedStyle: receive
-  Exclude:
-    - 'spec/requests/api/v2/shared_examples/api_key_authenticatable.rb'
 
 # Offense count: 3
 RSpec/MultipleDescribes:

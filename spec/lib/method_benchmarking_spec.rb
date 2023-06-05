@@ -48,17 +48,23 @@ RSpec.describe 'MethodBenchmarking' do
       let(:instance) { my_class_b.new }
 
       it 'displays the tag' do
-        expect(Rails.logger).to receive(:debug).with(/my_tag/)
+        expect(Rails.logger).to receive(:debug) do |msg|
+          expect(msg).to match('my_tag')
+        end
         instance.my_method(1, 2, 3, 4, 5, 6, 7) { 'ho' }
       end
 
       it 'displays the method name' do
-        expect(Rails.logger).to receive(:debug).with(/my_method/)
+        expect(Rails.logger).to receive(:debug) do |msg|
+          expect(msg).to match('my_method')
+        end
         instance.my_method(1, 2, 3, 4, 5, 6, 7) { 'ho' }
       end
 
       it 'displays the measurement' do
-        expect(Rails.logger).to receive(:debug).with(/(\d\.\d+)?  (\d\.\d+)?  (\d\.\d+)?/)
+        expect(Rails.logger).to receive(:debug) do |msg|
+          expect(msg).to match(/(\d\.\d+)?  (\d\.\d+)?  (\d\.\d+)?/)
+        end
         instance.my_method(1, 2, 3, 4, 5, 6, 7) { 'ho' }
       end
     end
