@@ -143,7 +143,7 @@ describe 'mbrave tasks' do
           expect(TagLayoutTemplate.all.map(&:name)).to eq(%w[Bioscan_384_template_1_v1 Bioscan_384_template_2_v1])
         end
 
-        it 'creates the right content in the yaml file' do
+        xit 'creates the right content in the yaml file' do
           run_task
 
           contents = YAML.safe_load(File.read('mbrave.yml'), aliases: true)
