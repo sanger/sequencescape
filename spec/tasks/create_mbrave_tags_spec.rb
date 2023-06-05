@@ -24,7 +24,6 @@ describe 'mbrave tasks' do
       context 'when the create_tag_plates task is invoked' do
         context 'when there are no arguments' do
           it 'does not do anything' do
-            Rake::Task['mbrave:create_tag_plates'].reenable
             expect { Rake::Task['mbrave:create_tag_plates'].execute }.not_to change(Plate, :count)
           end
         end
@@ -32,10 +31,7 @@ describe 'mbrave tasks' do
         context 'when receiving the right arguments' do
           let(:tag_group_one) { create(:tag_group) }
           let(:tag_purpose) { create(:plate_purpose, name: 'Tag Plate') }
-          let(:run_action) do
-            Rake::Task['mbrave:create_tag_plates'].reenable
-            Rake::Task['mbrave:create_tag_plates'].execute(login: 'test', version: 'v1')
-          end
+          let(:run_action) { Rake::Task['mbrave:create_tag_plates'].execute(login: 'test', version: 'v1') }
           let(:tag_group_two) { create(:tag_group) }
 
           before do
@@ -97,7 +93,6 @@ describe 'mbrave tasks' do
         it 'does not write the file' do
           expect(File).not_to receive(:write)
 
-          Rake::Task['mbrave:create_tag_groups'].reenable
           Rake.application.invoke_task 'mbrave:create_tag_groups'
         end
       end
@@ -136,8 +131,11 @@ describe 'mbrave tasks' do
           reverse
         end
         let(:run_task) do
-          Rake::Task['mbrave:create_tag_groups'].reenable
-          Rake.application.invoke_task "mbrave:create_tag_groups[#{forward_file.path}, #{reverse_file.path}, v1]"
+          Rake::Task['mbrave:create_tag_groups'].execute(
+            forward_file: forward_file.path,
+            reverse_file: reverse_file.path,
+            version: 'v1'
+          )
         end
 
         it 'creates the expected tag layout templates' do
