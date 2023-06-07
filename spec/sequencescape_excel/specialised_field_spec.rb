@@ -820,6 +820,26 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
     end
   end
 
+  describe SequencescapeExcel::SpecialisedField::BioscanWell do
+    it 'will not be valid if pcr positive in H12' do
+      sample_manifest_asset.sample.control = true
+      sample_manifest_asset.sample.control_type = 'pcr positive'
+      expect(described_class.new(value: 'H12', sample_manifest_asset: sample_manifest_asset)).not_to be_valid
+    end
+
+    it 'will not be valid if pcr negative in H12' do
+      sample_manifest_asset.sample.control = true
+      sample_manifest_asset.sample.control_type = 'pcr negative'
+      expect(described_class.new(value: 'H12', sample_manifest_asset: sample_manifest_asset)).not_to be_valid
+    end
+
+    it 'will not be valid if lysate negative in A1' do
+      sample_manifest_asset.sample.control = true
+      sample_manifest_asset.sample.control_type = 'lysate negative'
+      expect(described_class.new(value: 'A1', sample_manifest_asset: sample_manifest_asset)).not_to be_valid
+    end
+  end
+
   # This section is for the Retention instruction field added as part of the Labware Destruction work
   describe SequencescapeExcel::SpecialisedField::RetentionInstruction do
     let(:user) { create :user }
