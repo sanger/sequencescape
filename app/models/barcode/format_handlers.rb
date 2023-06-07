@@ -160,7 +160,7 @@ module Barcode::FormatHandlers
   # prefix is dependent on plate_barcode_prefix environment variable
   class Sequencescape22 < BaseRegExBarcode
     prefix = configatron.plate_barcode_prefix
-    self.format = /\A(?<prefix>#{prefix})-(?<number>[0-9]+)(-(?<child>[0-9]+))?(-(?<suffix>[A-Z]))?\z/
+    self.format = /\A(?<prefix>#{prefix})(-[A-Z0-9]{1,3})?-(?<number>[0-9]+)(-(?<child>[0-9]+))?(-(?<suffix>[A-Z]))?\z/
   end
 
   # Infinium barcodes are externally generated barcodes on Illumina Infinium chips

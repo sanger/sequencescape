@@ -19,8 +19,8 @@ namespace :mbrave do
     # rubocop:todo Metrics/AbcSize
     def create_tag_plates(tag_layout_templates, user)
       ActiveRecord::Base.transaction do
-        lot_type = LotType.find_by!(name: 'Pre Stamped Tags - 384')
-        tag_layout_templates.each do |tag_layout_template|
+        lot_type = LotType.find_by!(name: 'Pre Stamped Tags')
+        tag_layout_templates.each_with_index do |tag_layout_template, index|
           lot =
             lot_type.lots.create!(
               lot_number: "PSD_#{Time.current.to_f}",
@@ -28,12 +28,12 @@ namespace :mbrave do
               user: user,
               received_at: Time.current
             )
-
-          qcc = QcableCreator.create!(lot: lot, user: user, count: 1)
+          barcode = PlateBarcode.create_barcode_with_text("T#{index+1}").barcode
+          qcc = QcableCreator.create!(lot: lot, user: user, barcodes: barcode)
           qcc.qcables.each_with_index do |qcable, _index|
             qcable.update!(state: 'available')
             puts "#{tag_layout_template.name}:"
-            puts " - #{qcable.asset.machine_barcode}"
+            puts " - #{barcode}"
           end
         end
       end
