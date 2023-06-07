@@ -4,6 +4,9 @@ sanger_plate_id:
 well:
   heading: WELL
   attribute: :position
+bioscan_well:
+  heading: WELL
+  attribute: :position
 sanger_tube_id:
   heading: SANGER TUBE ID
   attribute: :barcode
