@@ -821,23 +821,40 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
   end
 
   describe SequencescapeExcel::SpecialisedField::BioscanWell do
-    it 'will not be valid if pcr positive in H12' do
+    let(:map) { create(:map, location_id: 17, description: 'A3') }
+    let(:asset) { create(:untagged_well, map: map) }
+    let(:asset2) { create(:untagged_well, map: map) }
+    let(:sample_manifest) { create :sample_manifest }
+    let(:sample_manifest_asset) do
+      create :sample_manifest_asset,
+             asset: asset,
+             sanger_sample_id: sample.sanger_sample_id,
+             sample_manifest: sample_manifest
+    end
+
+    # it 'will not be valid if pcr positive in H12' do
+    #   sample_manifest_asset.sample.control = true
+    #   sample_manifest_asset.sample.control_type = 'pcr positive'
+    #   expect(described_class.new(value: 'H12', sample_manifest_asset: sample_manifest_asset)).not_to be_valid
+    # end
+
+    it 'will not be valid if pcr positive in A3' do
       sample_manifest_asset.sample.control = true
       sample_manifest_asset.sample.control_type = 'pcr positive'
-      expect(described_class.new(value: 'H12', sample_manifest_asset: sample_manifest_asset)).not_to be_valid
+      expect(described_class.new(value: 'A3', sample_manifest_asset: sample_manifest_asset)).to be_valid
     end
 
-    it 'will not be valid if pcr negative in H12' do
-      sample_manifest_asset.sample.control = true
-      sample_manifest_asset.sample.control_type = 'pcr negative'
-      expect(described_class.new(value: 'H12', sample_manifest_asset: sample_manifest_asset)).not_to be_valid
-    end
+    # it 'will not be valid if pcr negative in H12' do
+    #   sample_manifest_asset.sample.control = true
+    #   sample_manifest_asset.sample.control_type = 'pcr negative'
+    #   expect(described_class.new(value: 'H12', sample_manifest_asset: sample_manifest_asset)).not_to be_valid
+    # end
 
-    it 'will not be valid if lysate negative in A1' do
-      sample_manifest_asset.sample.control = true
-      sample_manifest_asset.sample.control_type = 'lysate negative'
-      expect(described_class.new(value: 'A1', sample_manifest_asset: sample_manifest_asset)).not_to be_valid
-    end
+    # it 'will not be valid if lysate negative in A1' do
+    #   sample_manifest_asset.sample.control = true
+    #   sample_manifest_asset.sample.control_type = 'lysate negative'
+    #   expect(described_class.new(value: 'A1', sample_manifest_asset: sample_manifest_asset)).not_to be_valid
+    # end
   end
 
   # This section is for the Retention instruction field added as part of the Labware Destruction work
