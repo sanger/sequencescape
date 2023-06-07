@@ -746,6 +746,9 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
         sample_manifest_asset: sample_manifest_asset
       )
     end
+    let!(:bs_well) do
+      SequencescapeExcel::SpecialisedField::BioscanWell.new(value: 'H12', sample_manifest_asset: sample_manifest_asset)
+    end
 
     # test value matches to the enum in the sample model
     # for Bioscan we have three types of control
@@ -760,6 +763,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
 
       sf_lysate_neg = described_class.new(value: 'lysate negative', sample_manifest_asset: sample_manifest_asset)
       sf_lysate_neg.supplier_name = bs_supplier_name
+      sf_lysate_neg.well = bs_well
       expect(sf_lysate_neg).to be_valid
     end
 
