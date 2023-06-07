@@ -83,6 +83,10 @@ class Pipeline < ApplicationRecord
     true
   end
 
+  def is_flowcell_type_consistent_for_batch?(_batch)
+    true
+  end
+
   # This is the old behaviour for every other pipeline.
   def detach_request_from_batch(_batch, request)
     request.return_for_inbox!
