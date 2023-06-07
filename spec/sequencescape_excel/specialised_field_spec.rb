@@ -798,6 +798,64 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
       expect(sample_manifest_asset.sample.control).to be(false)
       expect(sample_manifest_asset.sample.control_type).to be_nil
     end
+
+    context 'when pcr positive in H12' do
+      let!(:bs_well) do
+        SequencescapeExcel::SpecialisedField::BioscanWell.new(
+          value: 'H12',
+          sample_manifest_asset: sample_manifest_asset
+        )
+      end
+
+      it 'will be invalid' do
+        control_type_sf = described_class.new(value: 'pcr positive', sample_manifest_asset: sample_manifest_asset)
+        control_type_sf.supplier_name = bs_supplier_name
+        control_type_sf.well = bs_well
+        expect(control_type_sf).not_to be_valid
+      end
+    end
+
+    context 'when pcr positive not in H12' do
+      let!(:bs_well) do
+        SequencescapeExcel::SpecialisedField::BioscanWell.new(value: 'A1', sample_manifest_asset: sample_manifest_asset)
+      end
+
+      it 'will be valid' do
+        control_type_sf = described_class.new(value: 'pcr positive', sample_manifest_asset: sample_manifest_asset)
+        control_type_sf.supplier_name = bs_supplier_name
+        control_type_sf.well = bs_well
+        expect(control_type_sf).to be_valid
+      end
+    end
+
+    context 'when lysate negative in H12' do
+      let!(:bs_well) do
+        SequencescapeExcel::SpecialisedField::BioscanWell.new(
+          value: 'H12',
+          sample_manifest_asset: sample_manifest_asset
+        )
+      end
+
+      it 'will be valid' do
+        control_type_sf = described_class.new(value: 'lysate negative', sample_manifest_asset: sample_manifest_asset)
+        control_type_sf.supplier_name = bs_supplier_name
+        control_type_sf.well = bs_well
+        expect(control_type_sf).to be_valid
+      end
+    end
+
+    context 'when lysate negative not in H12' do
+      let!(:bs_well) do
+        SequencescapeExcel::SpecialisedField::BioscanWell.new(value: 'A1', sample_manifest_asset: sample_manifest_asset)
+      end
+
+      it 'will be invalid' do
+        control_type_sf = described_class.new(value: 'lysate negative', sample_manifest_asset: sample_manifest_asset)
+        control_type_sf.supplier_name = bs_supplier_name
+        control_type_sf.well = bs_well
+        expect(control_type_sf).not_to be_valid
+      end
+    end
   end
 
   # This section for the Bioscan specific supplier name field
@@ -821,40 +879,16 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
   end
 
   describe SequencescapeExcel::SpecialisedField::BioscanWell do
-    let(:map) { create(:map, location_id: 17, description: 'A3') }
-    let(:asset) { create(:untagged_well, map: map) }
-    let(:asset2) { create(:untagged_well, map: map) }
-    let(:sample_manifest) { create :sample_manifest }
-    let(:sample_manifest_asset) do
-      create :sample_manifest_asset,
-             asset: asset,
-             sanger_sample_id: sample.sanger_sample_id,
-             sample_manifest: sample_manifest
+     it 'will not be valid unless the value matches the well description' do
+      expect(described_class.new(value: 'well', sample_manifest_asset: sample_manifest_asset)).not_to be_valid
+      expect(
+        described_class.new(
+          value: sample_manifest_asset.asset.map_description,
+          sample_manifest_asset: sample_manifest_asset
+        )
+      ).to be_valid
     end
-
-    # it 'will not be valid if pcr positive in H12' do
-    #   sample_manifest_asset.sample.control = true
-    #   sample_manifest_asset.sample.control_type = 'pcr positive'
-    #   expect(described_class.new(value: 'H12', sample_manifest_asset: sample_manifest_asset)).not_to be_valid
-    # end
-
-    it 'will not be valid if pcr positive in A3' do
-      sample_manifest_asset.sample.control = true
-      sample_manifest_asset.sample.control_type = 'pcr positive'
-      expect(described_class.new(value: 'A3', sample_manifest_asset: sample_manifest_asset)).to be_valid
-    end
-
-    # it 'will not be valid if pcr negative in H12' do
-    #   sample_manifest_asset.sample.control = true
-    #   sample_manifest_asset.sample.control_type = 'pcr negative'
-    #   expect(described_class.new(value: 'H12', sample_manifest_asset: sample_manifest_asset)).not_to be_valid
-    # end
-
-    # it 'will not be valid if lysate negative in A1' do
-    #   sample_manifest_asset.sample.control = true
-    #   sample_manifest_asset.sample.control_type = 'lysate negative'
-    #   expect(described_class.new(value: 'A1', sample_manifest_asset: sample_manifest_asset)).not_to be_valid
-    # end
+   
   end
 
   # This section is for the Retention instruction field added as part of the Labware Destruction work
