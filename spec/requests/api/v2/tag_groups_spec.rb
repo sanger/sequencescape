@@ -1,8 +1,13 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
 
 describe 'TagGroups API', with: :api_v2 do
+  let(:base_endpoint) { '/api/v2/tag_groups' }
+
+  it_behaves_like 'ApiKeyAuthenticatable'
+
   context 'with multiple TagGroups' do
     before do
       create_list(:tag_group, 5)
@@ -12,7 +17,7 @@ describe 'TagGroups API', with: :api_v2 do
     end
 
     it 'sends a list of tag_groups' do
-      api_get '/api/v2/tag_groups'
+      api_get base_endpoint
 
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
@@ -24,7 +29,7 @@ describe 'TagGroups API', with: :api_v2 do
     # Check filters, ESPECIALLY if they aren't simple attribute filters
 
     it 'filters tag_groups by name' do
-      api_get "/api/v2/tag_groups?filter[name]=#{TagGroup.first.name}"
+      api_get "#{base_endpoint}?filter[name]=#{TagGroup.first.name}"
       expect(response).to have_http_status(:success)
 
       # check to make sure the right tag group is returned
@@ -49,7 +54,7 @@ describe 'TagGroups API', with: :api_v2 do
     end
 
     it 'sends an individual TagGroup' do
-      api_get "/api/v2/tag_groups/#{resource_model.id}"
+      api_get "#{base_endpoint}/#{resource_model.id}"
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('tag_groups')
     end
