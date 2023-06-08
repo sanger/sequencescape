@@ -24,7 +24,7 @@ namespace :mbrave do
     # rubocop:todo Metrics/AbcSize
     def create_tag_plates(tag_layout_templates, user)
       ActiveRecord::Base.transaction do
-        lot_type = LotType.find_by!(name: 'Pre Stamped Tags')
+        lot_type = LotType.find_by!(name: 'Pre Stamped Tags - 384')
         tag_layout_templates.each_with_index do |tag_layout_template, _index|
           lot =
             lot_type.lots.create!(
