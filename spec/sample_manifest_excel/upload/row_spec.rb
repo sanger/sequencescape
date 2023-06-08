@@ -333,12 +333,12 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
 
     it 'links up specialised fields' do
       row = described_class.new(number: 1, data: data, columns: columns)
-      bioscan_well = row.specialised_fields.detect { |f| f.is_a?(SequencescapeExcel::SpecialisedField::BioscanWell) }
+      bs_well = row.specialised_fields.detect { |f| f.is_a?(SequencescapeExcel::SpecialisedField::Well) }
       bioscan_supplier_name =
         row.specialised_fields.detect { |f| f.is_a?(SequencescapeExcel::SpecialisedField::BioscanSupplierName) }
       bioscan_control_type =
         row.specialised_fields.detect { |f| f.is_a?(SequencescapeExcel::SpecialisedField::BioscanControlType) }
-      expect(bioscan_control_type.well).to eq bioscan_well
+      expect(bioscan_control_type.well).to eq bs_well
       expect(bioscan_control_type.supplier_name).to eq bioscan_supplier_name
     end
   end

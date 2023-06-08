@@ -746,8 +746,8 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
         sample_manifest_asset: sample_manifest_asset
       )
     end
-    let!(:bs_well) do
-      SequencescapeExcel::SpecialisedField::BioscanWell.new(value: 'H12', sample_manifest_asset: sample_manifest_asset)
+    let!(:sf_well) do
+      SequencescapeExcel::SpecialisedField::Well.new(value: 'H12', sample_manifest_asset: sample_manifest_asset)
     end
 
     # test value matches to the enum in the sample model
@@ -763,7 +763,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
 
       sf_lysate_neg = described_class.new(value: 'lysate negative', sample_manifest_asset: sample_manifest_asset)
       sf_lysate_neg.supplier_name = bs_supplier_name
-      sf_lysate_neg.well = bs_well
+      sf_lysate_neg.well = sf_well
       expect(sf_lysate_neg).to be_valid
     end
 
@@ -801,10 +801,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
 
     context 'when pcr positive in H12' do
       let!(:bs_well) do
-        SequencescapeExcel::SpecialisedField::BioscanWell.new(
-          value: 'H12',
-          sample_manifest_asset: sample_manifest_asset
-        )
+        SequencescapeExcel::SpecialisedField::Well.new(value: 'H12', sample_manifest_asset: sample_manifest_asset)
       end
 
       it 'will be invalid' do
@@ -817,7 +814,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
 
     context 'when pcr positive not in H12' do
       let!(:bs_well) do
-        SequencescapeExcel::SpecialisedField::BioscanWell.new(value: 'A1', sample_manifest_asset: sample_manifest_asset)
+        SequencescapeExcel::SpecialisedField::Well.new(value: 'A1', sample_manifest_asset: sample_manifest_asset)
       end
 
       it 'will be valid' do
@@ -830,10 +827,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
 
     context 'when lysate negative in H12' do
       let!(:bs_well) do
-        SequencescapeExcel::SpecialisedField::BioscanWell.new(
-          value: 'H12',
-          sample_manifest_asset: sample_manifest_asset
-        )
+        SequencescapeExcel::SpecialisedField::Well.new(value: 'H12', sample_manifest_asset: sample_manifest_asset)
       end
 
       it 'will be valid' do
@@ -846,7 +840,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
 
     context 'when lysate negative not in H12' do
       let!(:bs_well) do
-        SequencescapeExcel::SpecialisedField::BioscanWell.new(value: 'A1', sample_manifest_asset: sample_manifest_asset)
+        SequencescapeExcel::SpecialisedField::Well.new(value: 'A1', sample_manifest_asset: sample_manifest_asset)
       end
 
       it 'will be invalid' do
@@ -875,18 +869,6 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
       sf = described_class.new(value: sample_supplier_name, sample_manifest_asset: sample_manifest_asset)
       sf.update
       expect(sample_manifest_asset.sample.sample_metadata.supplier_name).to eq(sample_supplier_name)
-    end
-  end
-
-  describe SequencescapeExcel::SpecialisedField::BioscanWell do
-    it 'will not be valid unless the value matches the well description' do
-      expect(described_class.new(value: 'well', sample_manifest_asset: sample_manifest_asset)).not_to be_valid
-      expect(
-        described_class.new(
-          value: sample_manifest_asset.asset.map_description,
-          sample_manifest_asset: sample_manifest_asset
-        )
-      ).to be_valid
     end
   end
 

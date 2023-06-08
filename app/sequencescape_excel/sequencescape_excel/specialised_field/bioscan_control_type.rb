@@ -18,7 +18,7 @@ module SequencescapeExcel
 
       def link(other_fields)
         self.supplier_name = other_fields[SequencescapeExcel::SpecialisedField::BioscanSupplierName]
-        self.well = other_fields[SequencescapeExcel::SpecialisedField::BioscanWell]
+        self.well = other_fields[SequencescapeExcel::SpecialisedField::Well]
       end
 
       private

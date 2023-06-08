@@ -179,7 +179,7 @@ plate_bioscan:
   asset_type: "plate"
   columns:
     - :sanger_plate_id
-    - :bioscan_well
+    - :well
     - :sanger_sample_id
     - :bioscan_supplier_name
     - :reference_genome
