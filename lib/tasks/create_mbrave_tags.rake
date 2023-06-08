@@ -16,11 +16,16 @@ namespace :mbrave do
   task :create_tag_plates, %i[login version] => :environment do |_t, args|
     ActiveRecord::Base.logger.level = 2
 
+    def text_code_for_tag_layout(tag_layout_template)
+      mreg = tag_layout_template.name.match(Regexp.new('^Bioscan_384_template_(\\d+)_'))
+      "T#{mreg[1]}"
+    end
+
     # rubocop:todo Metrics/AbcSize
     def create_tag_plates(tag_layout_templates, user)
       ActiveRecord::Base.transaction do
         lot_type = LotType.find_by!(name: 'Pre Stamped Tags')
-        tag_layout_templates.each_with_index do |tag_layout_template, index|
+        tag_layout_templates.each_with_index do |tag_layout_template, _index|
           lot =
             lot_type.lots.create!(
               lot_number: "PSD_#{Time.current.to_f}",
@@ -28,7 +33,8 @@ namespace :mbrave do
               user: user,
               received_at: Time.current
             )
-          barcode = PlateBarcode.create_barcode_with_text("T#{index + 1}").barcode
+          text_code = text_code_for_tag_layout(tag_layout_template)
+          barcode = PlateBarcode.create_barcode_with_text(text_code).barcode
           qcc = QcableCreator.create!(lot: lot, user: user, barcodes: barcode)
           qcc.qcables.each_with_index do |qcable, _index|
             qcable.update!(state: 'available')
