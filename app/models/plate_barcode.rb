@@ -18,6 +18,17 @@ class PlateBarcode
     Barcode.build_sequencescape22(response)
   end
 
+  # Creates a new single barcode with a code text in baracoda
+  # Arguments:
+  # text - str with the code of up to 3 characters that will be appended
+  # after the prefix
+  # Returns:
+  # - Barcode instance, using Sequencescape22 format
+  def self.create_barcode_with_text(text)
+    response = fetch_response("#{site}/barcodes/#{prefix}/new", { text: text })
+    Barcode.build_sequencescape22(response)
+  end
+
   # Creates a new group of child barcodes from a parent barcode.
   # Args:
   # - parent_barcode - String with the barcode we want to create children from
