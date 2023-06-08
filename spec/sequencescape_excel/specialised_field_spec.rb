@@ -746,6 +746,9 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
         sample_manifest_asset: sample_manifest_asset
       )
     end
+    let!(:sf_well) do
+      SequencescapeExcel::SpecialisedField::Well.new(value: 'H12', sample_manifest_asset: sample_manifest_asset)
+    end
 
     # test value matches to the enum in the sample model
     # for Bioscan we have three types of control
@@ -760,6 +763,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
 
       sf_lysate_neg = described_class.new(value: 'lysate negative', sample_manifest_asset: sample_manifest_asset)
       sf_lysate_neg.supplier_name = bs_supplier_name
+      sf_lysate_neg.well = sf_well
       expect(sf_lysate_neg).to be_valid
     end
 
@@ -793,6 +797,58 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
       aliquot.save
       expect(sample_manifest_asset.sample.control).to be(false)
       expect(sample_manifest_asset.sample.control_type).to be_nil
+    end
+
+    context 'when pcr positive in H12' do
+      let!(:bs_well) do
+        SequencescapeExcel::SpecialisedField::Well.new(value: 'H12', sample_manifest_asset: sample_manifest_asset)
+      end
+
+      it 'will be invalid' do
+        control_type_sf = described_class.new(value: 'pcr positive', sample_manifest_asset: sample_manifest_asset)
+        control_type_sf.supplier_name = bs_supplier_name
+        control_type_sf.well = bs_well
+        expect(control_type_sf).not_to be_valid
+      end
+    end
+
+    context 'when pcr positive not in H12' do
+      let!(:bs_well) do
+        SequencescapeExcel::SpecialisedField::Well.new(value: 'A1', sample_manifest_asset: sample_manifest_asset)
+      end
+
+      it 'will be valid' do
+        control_type_sf = described_class.new(value: 'pcr positive', sample_manifest_asset: sample_manifest_asset)
+        control_type_sf.supplier_name = bs_supplier_name
+        control_type_sf.well = bs_well
+        expect(control_type_sf).to be_valid
+      end
+    end
+
+    context 'when lysate negative in H12' do
+      let!(:bs_well) do
+        SequencescapeExcel::SpecialisedField::Well.new(value: 'H12', sample_manifest_asset: sample_manifest_asset)
+      end
+
+      it 'will be valid' do
+        control_type_sf = described_class.new(value: 'lysate negative', sample_manifest_asset: sample_manifest_asset)
+        control_type_sf.supplier_name = bs_supplier_name
+        control_type_sf.well = bs_well
+        expect(control_type_sf).to be_valid
+      end
+    end
+
+    context 'when lysate negative not in H12' do
+      let!(:bs_well) do
+        SequencescapeExcel::SpecialisedField::Well.new(value: 'A1', sample_manifest_asset: sample_manifest_asset)
+      end
+
+      it 'will be invalid' do
+        control_type_sf = described_class.new(value: 'lysate negative', sample_manifest_asset: sample_manifest_asset)
+        control_type_sf.supplier_name = bs_supplier_name
+        control_type_sf.well = bs_well
+        expect(control_type_sf).not_to be_valid
+      end
     end
   end
 
