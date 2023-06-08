@@ -22,7 +22,7 @@ class PlateBarcode
   # Returns:
   # - Barcode instance, using Sequencescape22 format
   def self.create_barcode_with_text(text)
-    response = fetch_response("#{site}/barcodes/#{prefix}/new", {text: text})
+    response = fetch_response("#{site}/barcodes/#{prefix}/new", { text: text })
     Barcode.build_sequencescape22(response)
   end
 

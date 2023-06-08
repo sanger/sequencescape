@@ -28,7 +28,7 @@ namespace :mbrave do
               user: user,
               received_at: Time.current
             )
-          barcode = PlateBarcode.create_barcode_with_text("T#{index+1}").barcode
+          barcode = PlateBarcode.create_barcode_with_text("T#{index + 1}").barcode
           qcc = QcableCreator.create!(lot: lot, user: user, barcodes: barcode)
           qcc.qcables.each_with_index do |qcable, _index|
             qcable.update!(state: 'available')
