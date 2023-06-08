@@ -879,7 +879,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
   end
 
   describe SequencescapeExcel::SpecialisedField::BioscanWell do
-     it 'will not be valid unless the value matches the well description' do
+    it 'will not be valid unless the value matches the well description' do
       expect(described_class.new(value: 'well', sample_manifest_asset: sample_manifest_asset)).not_to be_valid
       expect(
         described_class.new(
@@ -888,7 +888,6 @@ RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manife
         )
       ).to be_valid
     end
-   
   end
 
   # This section is for the Retention instruction field added as part of the Labware Destruction work
