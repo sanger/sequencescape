@@ -32,6 +32,23 @@ class SequencingPipeline < Pipeline
     (read_length_list.uniq.size == 1)
   end
 
+  def is_flowcell_type_consistent_for_batch?(batch) # rubocop:todo Metrics/AbcSize
+    if (batch.requests.size == 0) || (batch.requests.first.request_metadata.nil?)
+      # No requests selected or the pipeline doesn't contain metadata to check
+      return true
+    end
+
+    flowcell_type_list = batch.requests.filter_map { |request| request.request_metadata.requested_flowcell_type }
+
+    # The pipeline doen't contain the requested_flowcell_type attribute
+    return true if flowcell_type_list.size == 0
+
+    # There are some requests that don't have the requested_flowcell_type
+    return false if flowcell_type_list.size != batch.requests.size
+
+    (flowcell_type_list.uniq.size == 1)
+  end
+
   # The guys in sequencing want to be able to re-run a request in another batch.  What we've agreed is that
   # the request will be failed and then an identical request will be resubmitted to their inbox.  The
   # "failed" request should not be charged for.

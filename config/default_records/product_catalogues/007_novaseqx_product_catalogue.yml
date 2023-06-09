@@ -1,0 +1,38 @@
+# This product catalogue is associated with the Limber NovaSeqX pipeline.
+---
+WGS:
+  selection_behaviour: SingleProduct
+ISC:
+  selection_behaviour: SingleProduct
+ReISC:
+  selection_behaviour: SingleProduct
+scRNA:
+  selection_behaviour: SingleProduct
+scRNA-384:
+  selection_behaviour: SingleProduct
+RNAA:
+  selection_behaviour: SingleProduct
+RNAR:
+  selection_behaviour: SingleProduct
+RNAAG:
+  selection_behaviour: SingleProduct
+RNARG:
+  selection_behaviour: SingleProduct
+PFHSqX:
+  selection_behaviour: SingleProduct
+GnT Picoplex:
+  selection_behaviour: SingleProduct
+pWGS-384:
+  selection_behaviour: SingleProduct
+Heron:
+  selection_behaviour: SingleProduct
+Heron LTHR:
+  selection_behaviour: SingleProduct
+Generic:
+  selection_behaviour: SingleProduct
+GenericPCR:
+  selection_behaviour: LibraryDriven
+GenericNoPCR:
+  selection_behaviour: LibraryDriven
+Chromium:
+  selection_behaviour: SingleProduct

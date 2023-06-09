@@ -57,6 +57,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   broadcast_with_warren
 
   validate :requests_have_same_read_length,
+           :requests_have_same_flowcell_type,
            :batch_meets_minimum_size,
            :all_requests_are_ready?,
            on: :create,
@@ -139,6 +140,12 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def requests_have_same_read_length
     unless pipeline.is_read_length_consistent_for_batch?(self)
       errors.add :base, "The selected requests must have the same values in their 'Read length' field."
+    end
+  end
+
+  def requests_have_same_flowcell_type
+    unless pipeline.is_flowcell_type_consistent_for_batch?(self)
+      errors.add :base, "The selected requests must have the same values in their 'Flowcell Requested' field."
     end
   end
 
