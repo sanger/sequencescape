@@ -241,7 +241,7 @@ supplier_name:
       errorTitle: "Supplier Sample Name"
       error: "Name must be a maximum of 40 characters in length."
   conditional_formattings:
-    empty_mandatory_cell:
+    empty_cell:
     len:
       formula:
         operator: ">"
@@ -263,7 +263,7 @@ bioscan_supplier_name:
       errorTitle: "Supplier Sample Name"
       error: "Name must be a maximum of 40 characters in length."
   conditional_formattings:
-    empty_mandatory_cell:
+    empty_cell:
     len:
       formula:
         operator: ">"
