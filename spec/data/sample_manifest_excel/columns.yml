@@ -241,7 +241,7 @@ supplier_name:
       errorTitle: "Supplier Sample Name"
       error: "Name must be a maximum of 40 characters in length."
   conditional_formattings:
-    empty_cell:
+    empty_mandatory_cell:
     len:
       formula:
         operator: ">"
@@ -257,13 +257,13 @@ bioscan_supplier_name:
       allowBlank: false
       showInputMessage: true
       promptTitle: "Supplier Sample Name"
-      prompt: "Please enter a sample name up to a maximum of 40 characters in length. Only include characters A-Z, 0-9 and underscores."
+      prompt: "Please enter a sample name up to a maximum of 40 characters in length to allow you to identify your sample. Only include characters A-Z, 0-9 and underscores."
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Supplier Sample Name"
       error: "Name must be a maximum of 40 characters in length."
   conditional_formattings:
-    empty_cell:
+    empty_mandatory_cell:
     len:
       formula:
         operator: ">"

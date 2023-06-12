@@ -24,7 +24,7 @@ supplier_name:
       errorTitle: "Supplier Sample Name"
       error: "Name must be a maximum of 40 characters in length."
   conditional_formattings:
-    empty_cell:
+    empty_mandatory_cell:
     len:
       formula:
         operator: ">"
