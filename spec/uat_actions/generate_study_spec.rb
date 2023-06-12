@@ -16,7 +16,7 @@ describe UatActions::GenerateStudy do
 
         it 'creates the study with the correct data' do
           uat_action.perform
-          expect(Study.last.study.name).to eq study_name
+          expect(Study.last.name).to eq study_name
         end
       end
     end
