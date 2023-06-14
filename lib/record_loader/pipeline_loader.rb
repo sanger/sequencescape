@@ -16,11 +16,13 @@ module RecordLoader
     end
 
     def add_spiked_in_control_event(workflow)
-      AddSpikedInControlTask.create!(name: 'Add Spiked in control', sorted: 0, lab_activity: true, workflow: workflow)
+      AddSpikedInControlTask.create_with(name: 'Add Spiked in control', sorted: 0, lab_activity: true, 
+        workflow: workflow).find_or_create_by!(pipeline_workflow_id: workflow.pipeline_id)
     end
 
     def add_loading_event(workflow)
-      SetDescriptorsTask.create!(name: 'Loading', sorted: 1, lab_activity: true, workflow: workflow) do |task|
+      SetDescriptorsTask.create_with(name: 'Loading', sorted: 1, lab_activity: true, 
+        workflow: workflow).find_or_create_by!(pipeline_workflow_id: workflow.pipeline_id) do |task|
         task.descriptors.build(
           [
             { kind: 'Text', sorter: 4, name: 'Pre-Load Buffer lot #' },
