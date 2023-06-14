@@ -22,7 +22,14 @@ class UatActions::GenerateProject < UatActions
 
   def create_project
     Project
-      .create_with(project_metadata_attributes: { project_cost_code: project_cost_code })
+      .create_with(
+        approved: true,
+        state: 'active',
+        project_metadata_attributes: {
+          project_cost_code: project_cost_code,
+          project_funding_model: 'Internal'
+        }
+      )
       .find_or_create_by!(name: project_name)
   end
 
