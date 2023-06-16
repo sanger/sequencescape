@@ -9,6 +9,9 @@ on:
 env:
   IMAGE_NAME: ${{ github.repository }}/${{ github.event.repository.name }}
 
+permissions:
+  packages: write
+
 jobs:
   build:
     name: Automated release fo Docker image
@@ -45,17 +48,14 @@ jobs:
         run: >-
           docker push docker.pkg.github.com/${IMAGE_NAME}:${{ env.RELEASE_VERSION }}
 
-      - name: Remove the oldest package
-        # The delete-package-versions action has become broken and the fix doesn't look imminent.
-        # Re-enable this later if a fix comes out! https://github.com/actions/delete-package-versions/issues/28
-        # if: false
-        # uses: actions/delete-package-versions@v1
-        # with:
-        #   package-name: "${{ github.event.repository.name }}"
-
-        uses: actions/delete-package-versions@v4
+      - name: Remove old releases
+        uses: snok/container-retention-policy@v2
         with:
-          package-name: "${{ github.event.repository.name }}"
-          package-type: 'container'
-          min-versions-to-keep: 100
-          delete-only-pre-release-versions: "true"
+          image-names: ${{ github.event.repository.name }}/*
+          cut-off: Ten months ago UTC
+          timestamp-to-use: updated_at
+          account-type: org
+          org-name: sanger
+          keep-at-least: 5
+          skip-tags: latest
+          token: ${{ secrets.REMOVE_OLD_IMAGES }}
