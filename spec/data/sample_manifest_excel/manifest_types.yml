@@ -182,9 +182,12 @@ plate_bioscan:
     - :well
     - :sanger_sample_id
     - :bioscan_supplier_name
+    - :retention_instruction
     - :cohort
     - :country_of_origin
     - :date_of_sample_collection
+    - :sample_taxon_id
+    - :sample_common_name
     - :bioscan_sample_description
     - :sample_type_mandatory
     - :donor_id
