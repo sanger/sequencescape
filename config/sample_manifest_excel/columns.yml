@@ -901,7 +901,6 @@ control_type:
     is_error:
 bioscan_control_type:
   heading: CONTROL TYPE
-  updates: control_type
   unlocked: true
   validation:
     options:
