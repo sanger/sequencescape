@@ -9,7 +9,7 @@ class QcableCreator < ApplicationRecord # rubocop:todo Style/Documentation
   validates :user, presence: true
   validates :lot, presence: true
 
-  attr_accessor :count, :barcodes
+  attr_accessor :count, :barcodes, :use_supplied_barcode
 
   after_create :make_qcables!
 
@@ -18,6 +18,8 @@ class QcableCreator < ApplicationRecord # rubocop:todo Style/Documentation
     qcables_by_barcode! if barcodes.present?
   end
 
+  def self.create_with_supplied_barcode; end
+
   private
 
   def qcables_by_count!
@@ -25,6 +27,6 @@ class QcableCreator < ApplicationRecord # rubocop:todo Style/Documentation
   end
 
   def qcables_by_barcode!
-    barcodes.split(',').collect { |barcode| lot.qcables.create!(qcable_creator: self, barcode: barcode) }
+    barcodes.split(',').collect { |barcode| lot.qcables.create!(qcable_creator: self, barcode: barcode, use_supplied_barcode:) }
   end
 end
