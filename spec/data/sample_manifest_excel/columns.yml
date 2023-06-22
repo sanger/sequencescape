@@ -662,6 +662,30 @@ sample_description:
   unlocked: true
   conditional_formattings:
     empty_cell:
+bioscan_sample_description:
+  heading: SAMPLE DESCRIPTION
+  updates: sample_description
+  unlocked: true
+  validation:
+    options:
+      type: :textLength
+      operator: :lessThanOrEqual
+      formula1: "20"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Sample Description - Specimen Plate Barcode"
+      prompt: "Please enter the specimen plate barcode (NB. should be the same for all wells on the input plate)."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Sample Description - Specimen Plate Barcode"
+      error: "Barcode must be a maximum of 20 characters in length."
+  conditional_formattings:
+    empty_mandatory_cell:
+    len:
+      formula:
+        operator: ">"
+        operand: 20
+    is_number:
 sample_strain_att:
   heading: STRAIN
   unlocked: true
@@ -672,6 +696,12 @@ sample_type:
   unlocked: true
   conditional_formattings:
     empty_cell:
+sample_type_mandatory:
+  heading: SAMPLE TYPE
+  updates: sample_type
+  unlocked: true
+  conditional_formattings:
+    empty_mandatory_cell:
 sample_ebi_accession_number:
   heading: SAMPLE ACCESSION NUMBER (optional)
   unlocked: true
