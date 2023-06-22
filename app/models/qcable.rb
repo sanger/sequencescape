@@ -71,11 +71,16 @@ class Qcable < ApplicationRecord # rubocop:todo Style/Documentation
 
   def create_asset!
     return true if lot.nil?
-    if use_supplied_barcode
-      self.asset ||= barcode.present? ? asset_purpose.create!(sanger_barcode: barcode) : asset_purpose.create!
-    else
-      self.asset ||= barcode.present? ? asset_purpose.create!(external_barcode: barcode) : asset_purpose.create!
+
+    attributes = {}
+    if barcode.present?
+      if use_supplied_barcode
+        attributes[:sanger_barcode] = barcode
+      else
+        attributes[:external_barcode] = barcode
+      end
     end
+    self.asset ||= asset_purpose.create!(attributes)
   end
 
   def primary_barcode

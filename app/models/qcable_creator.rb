@@ -18,15 +18,15 @@ class QcableCreator < ApplicationRecord # rubocop:todo Style/Documentation
     qcables_by_barcode! if barcodes.present?
   end
 
-  def self.create_with_supplied_barcode; end
-
-  private
-
   def qcables_by_count!
     lot.qcables.build([{ qcable_creator: self }] * count).tap { |_| lot.save! }
   end
 
   def qcables_by_barcode!
-    barcodes.split(',').collect { |barcode| lot.qcables.create!(qcable_creator: self, barcode: barcode, use_supplied_barcode:) }
+    barcodes
+      .split(',')
+      .collect do |barcode|
+        lot.qcables.create!(qcable_creator: self, barcode: barcode, use_supplied_barcode: use_supplied_barcode)
+      end
   end
 end

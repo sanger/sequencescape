@@ -36,8 +36,7 @@ namespace :mbrave do
           text_code = text_code_for_tag_layout(tag_layout_template)
           barcode = PlateBarcode.create_barcode_with_text(text_code).barcode
 
-          # qcc = QcableCreator.create!(lot: lot, user: user, barcodes: barcode)
-          qcc = QcableCreator.create_with_supplied_barcode!(lot: lot, user: user, barcodes: barcode)
+          qcc = QcableCreator.create!(lot: lot, user: user, barcodes: barcode, use_supplied_barcode: true)
           qcc.qcables.each_with_index do |qcable, _index|
             qcable.update!(state: 'available')
             puts "#{tag_layout_template.name}:"
