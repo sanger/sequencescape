@@ -73,6 +73,7 @@ class Qcable < ApplicationRecord # rubocop:todo Style/Documentation
     return true if lot.nil?
     self.asset ||=
       if supplied_barcode.present?
+        # Create using the supplied plate barcode
         asset_purpose.create!(sanger_barcode: supplied_barcode)
       elsif barcode.present?
         asset_purpose.create!(external_barcode: barcode)

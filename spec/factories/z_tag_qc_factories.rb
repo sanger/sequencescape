@@ -9,6 +9,12 @@ FactoryBot.define do
     factory :tag2_lot_type do
       template_class { 'Tag2LayoutTemplate' }
     end
+
+    factory :tag_layout_lot_type do
+      name { 'Pre Stamped Tags - 384' }
+      template_class { 'TagLayoutTemplate' }
+      target_purpose { create(:tag_layout_qcable_plate_purpose) }
+    end
   end
 
   factory :pending_purpose, parent: :tube_purpose do
@@ -38,6 +44,11 @@ FactoryBot.define do
       association(:lot_type, factory: :tag2_lot_type)
       association(:template, factory: :tag2_layout_template)
     end
+
+    factory :tag_layout_lot do
+      association(:lot_type, factory: :tag_layout_lot_type)
+      association(:template, factory: :tag_layout_template)
+    end
   end
 
   factory :stamp do
@@ -66,5 +77,10 @@ FactoryBot.define do
     sequence(:name) { |n| "testtemplate#{n}" }
     size { 96 }
     wells { [create(:well_with_sample_and_without_plate, map: create(:map))] }
+  end
+
+  factory :tag_layout_qcable_plate_purpose, class: 'QcablePlatePurpose' do
+    name { 'Tag Plate - 384' }
+    target_type { 'Plate' }
   end
 end
