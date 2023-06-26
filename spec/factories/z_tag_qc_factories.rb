@@ -11,7 +11,7 @@ FactoryBot.define do
     end
 
     factory :tag_layout_lot_type do
-      name { 'Pre Stamped Tags - 384' }
+      sequence(:name) { |n| "'Pre Stamped Tags - 384 - #{n}" }
       template_class { 'TagLayoutTemplate' }
       target_purpose { create(:tag_layout_qcable_plate_purpose) }
     end
@@ -80,7 +80,7 @@ FactoryBot.define do
   end
 
   factory :tag_layout_qcable_plate_purpose, class: 'QcablePlatePurpose' do
-    name { 'Tag Plate - 384' }
+    sequence(:name) { |n| "Tag Plate - 384 - #{n}" }
     target_type { 'Plate' }
   end
 end
