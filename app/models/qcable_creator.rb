@@ -14,9 +14,9 @@ class QcableCreator < ApplicationRecord # rubocop:todo Style/Documentation
   after_create :make_qcables!
 
   def make_qcables!
+    return qcables_by_supplied_barcode! if supplied_barcode.present?
     qcables_by_count! if count.present?
     qcables_by_barcode! if barcodes.present?
-    qcables_by_supplied_barcode! if supplied_barcode.present?
   end
 
   def qcables_by_count!
