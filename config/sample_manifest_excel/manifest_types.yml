@@ -252,7 +252,7 @@ plate_bioscan:
     - :sample_taxon_id
     - :sample_common_name
     - :bioscan_sample_description
-    - :sample_type_mandatory
+    - :sample_type
     - :donor_id
     - :bioscan_control_type
 tube_default:

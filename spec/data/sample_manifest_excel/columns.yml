@@ -696,12 +696,6 @@ sample_type:
   unlocked: true
   conditional_formattings:
     empty_cell:
-sample_type_mandatory:
-  heading: SAMPLE TYPE
-  updates: sample_type
-  unlocked: true
-  conditional_formattings:
-    empty_mandatory_cell:
 sample_ebi_accession_number:
   heading: SAMPLE ACCESSION NUMBER (optional)
   unlocked: true
