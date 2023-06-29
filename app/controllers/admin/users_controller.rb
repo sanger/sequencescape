@@ -10,6 +10,7 @@ class Admin::UsersController < ApplicationController # rubocop:todo Style/Docume
     @users = User.order(:login)
   end
 
+  def show; end
   def edit
     @all_roles = Role.keys
     @users_roles = @user.study_and_project_roles.order(name: :asc)
@@ -22,7 +23,6 @@ class Admin::UsersController < ApplicationController # rubocop:todo Style/Docume
     end
   end
 
-  def show; end
 
   def switch
     session[:user] = params[:id]
@@ -60,11 +60,11 @@ class Admin::UsersController < ApplicationController # rubocop:todo Style/Docume
         @user.grant_role(params[:role][:authorizable_name].to_s, authorizable_object)
         @users_roles = @user.study_and_project_roles.order(name: :asc)
 
-        flash[:notice] = 'Role added'
+        flash.now[:notice] = 'Role added'
         render partial: 'roles', status: 200
       else
         @users_roles = @user.study_and_project_roles.order(name: :asc)
-        flash[:error] = 'A problem occurred while adding the role'
+        flash.now[:error] = 'A problem occurred while adding the role'
         render partial: 'roles', status: 500
       end
     else
@@ -88,11 +88,11 @@ class Admin::UsersController < ApplicationController # rubocop:todo Style/Docume
         @user.remove_role(params[:role][:authorizable_name].to_s, authorizable_object)
         @users_roles = @user.study_and_project_roles.order(name: :asc)
 
-        flash[:error] = 'Role was removed'
+        flash.now[:error] = 'Role was removed'
         render partial: 'roles', status: 200
       else
         @users_roles = @user.study_and_project_roles.order(name: :asc)
-        flash[:error] = 'A problem occurred while removing the role'
+        flash.now[:error] = 'A problem occurred while removing the role'
         render partial: 'roles', status: 500
       end
     else

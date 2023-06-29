@@ -14,11 +14,37 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
     end
   end
 
+  def show
+    @sample = Sample.includes(:assets, :studies).find(params[:id])
+    @studies = Study.where(state: %w[pending active]).alphabetical
+
+    respond_to do |format|
+      format.html
+      format.xml { render layout: false }
+      format.json { render json: @sample.to_json }
+    end
+  end
   def new
     @sample = Sample.new
     @studies = Study.alphabetical
   end
 
+  def edit # rubocop:todo Metrics/AbcSize
+    @sample = Sample.find(params[:id])
+    authorize! :update, @sample
+
+    if @sample.released? && cannot?(:update_released, @sample)
+      flash.now[:error] = 'Cannot edit publicly released sample'
+      redirect_to sample_path(@sample)
+      return
+    end
+
+    respond_to do |format|
+      format.html
+      format.xml { render xml: @samples.to_xml }
+      format.json { render json: @samples.to_json }
+    end
+  end
   def create # rubocop:todo Metrics/AbcSize
     @sample = Sample.new(params[:sample])
 
@@ -43,16 +69,6 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
     end
   end
 
-  def show
-    @sample = Sample.includes(:assets, :studies).find(params[:id])
-    @studies = Study.where(state: %w[pending active]).alphabetical
-
-    respond_to do |format|
-      format.html
-      format.xml { render layout: false }
-      format.json { render json: @sample.to_json }
-    end
-  end
 
   def release
     @sample = Sample.find(params[:id])
@@ -67,22 +83,6 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
     redirect_to sample_path(@sample)
   end
 
-  def edit # rubocop:todo Metrics/AbcSize
-    @sample = Sample.find(params[:id])
-    authorize! :update, @sample
-
-    if @sample.released? && cannot?(:update_released, @sample)
-      flash[:error] = 'Cannot edit publicly released sample'
-      redirect_to sample_path(@sample)
-      return
-    end
-
-    respond_to do |format|
-      format.html
-      format.xml { render xml: @samples.to_xml }
-      format.json { render json: @samples.to_json }
-    end
-  end
 
   # rubocop:todo Metrics/MethodLength
   def update # rubocop:todo Metrics/AbcSize

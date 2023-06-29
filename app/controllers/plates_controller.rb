@@ -8,6 +8,9 @@ class PlatesController < ApplicationController # rubocop:todo Style/Documentatio
   before_action :set_plate_creators, only: %i[new create]
   before_action :set_barcode_printers, only: %i[new create]
 
+  def show
+    @plate = Plate.find(params[:id])
+  end
   def new
     respond_to do |format|
       format.html
@@ -16,9 +19,6 @@ class PlatesController < ApplicationController # rubocop:todo Style/Documentatio
     end
   end
 
-  def show
-    @plate = Plate.find(params[:id])
-  end
 
   # rubocop:todo Metrics/MethodLength
   def create # rubocop:todo Metrics/AbcSize
@@ -31,7 +31,7 @@ class PlatesController < ApplicationController # rubocop:todo Style/Documentatio
 
     respond_to do |format|
       if scanned_user.nil?
-        flash[:error] = 'Please scan your user barcode'
+        flash.now[:error] = 'Please scan your user barcode'
       elsif tube_rack_sources?
         plate_creator.create_plates_from_tube_racks!(tube_racks, barcode_printer, scanned_user, create_asset_group)
       else
@@ -43,13 +43,13 @@ class PlatesController < ApplicationController # rubocop:todo Style/Documentatio
           Plate::CreatorParameters.new(params[:plates])
         )
       end
-      flash[:notice] = 'Created plates successfully'
-      flash[:warning] = plate_creator.warnings if plate_creator.warnings.present?
+      flash.now[:notice] = 'Created plates successfully'
+      flash.now[:warning] = plate_creator.warnings if plate_creator.warnings.present?
       format.html { render(new_plate_path) }
     end
   rescue StandardError => e
     respond_to do |format|
-      flash[:error] = e.message
+      flash.now[:error] = e.message
       format.html { render(new_plate_path) }
     end
   end

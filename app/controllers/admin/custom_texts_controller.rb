@@ -26,6 +26,10 @@ class Admin::CustomTextsController < ApplicationController # rubocop:todo Style/
     @custom_text = CustomText.new
   end
 
+  def edit
+    @custom_text = CustomText.find(params[:id])
+    respond_to { |format| format.html }
+  end
   def create
     @custom_text = CustomText.new(params[:custom_text])
     respond_to do |format|
@@ -39,10 +43,6 @@ class Admin::CustomTextsController < ApplicationController # rubocop:todo Style/
     end
   end
 
-  def edit
-    @custom_text = CustomText.find(params[:id])
-    respond_to { |format| format.html }
-  end
 
   def update
     @custom_text = CustomText.find(params[:id])

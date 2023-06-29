@@ -46,6 +46,16 @@ class RequestsController < ApplicationController # rubocop:todo Style/Documentat
 
   # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
 
+  def show
+    @request = Request.find(params[:id])
+    @user = User.find(@request.user_id) if @request.user_id.present?
+
+    respond_to do |format|
+      format.html
+      format.xml
+    end
+  end
+
   def edit
     @request = Request.find(params[:id])
     authorize! :update, @request
@@ -69,31 +79,21 @@ class RequestsController < ApplicationController # rubocop:todo Style/Documentat
 
     begin
       if @request.update(parameters)
-        flash[:notice] = 'Request details have been updated'
+        flash.now[:notice] = 'Request details have been updated'
         redirect_to request_path(@request)
       else
-        flash[:error] = 'Request was not updated. No change specified ?'
+        flash.now[:error] = 'Request was not updated. No change specified ?'
         render action: 'edit', id: @request.id
       end
     rescue => e
       error_message = "An error has occurred, category:'#{e.class}'\ndescription:'#{e.message}'"
       EventFactory.request_update_note_to_manager(@request, current_user, error_message)
-      flash[:error] = 'Failed to update request. ' << error_message
+      flash.now[:error] = 'Failed to update request. ' << error_message
       render action: 'edit', id: @request.id
     end
   end
 
   # rubocop:enable Metrics/MethodLength
-
-  def show
-    @request = Request.find(params[:id])
-    @user = User.find(@request.user_id) if @request.user_id.present?
-
-    respond_to do |format|
-      format.html
-      format.xml
-    end
-  end
 
   def additional
     @request = Request.find(params[:id])
@@ -177,7 +177,7 @@ class RequestsController < ApplicationController # rubocop:todo Style/Documentat
     flash[:notice] = 'Update. Below you find the new situation.'
     redirect_to filter_change_decision_request_path(params[:id])
   rescue Request::ChangeDecision::InvalidDecision => e
-    flash[:error] = 'Failed! Please, read the list of problem below.'
+    flash.now[:error] = 'Failed! Please, read the list of problem below.'
     @change_decision = e.object
     render(action: :filter_change_decision)
   end

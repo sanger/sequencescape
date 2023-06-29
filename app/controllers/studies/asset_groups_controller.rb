@@ -92,7 +92,7 @@ class Studies::AssetGroupsController < ApplicationController # rubocop:todo Styl
     if query.blank? || (query.length < 2)
       # We should not blame the user, we should instead help.
       # - By returning the X most recent ones together with an explanation.
-      flash[:error] = 'Search too wide. Please make your query more specific.'
+      flash.now[:error] = 'Search too wide. Please make your query more specific.'
       redirect_to study_asset_groups_path(@study)
       return
     else

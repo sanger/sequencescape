@@ -10,6 +10,15 @@ class StudyReportsController < ApplicationController # rubocop:todo Style/Docume
     @studies = Study.alphabetical
   end
 
+  def show
+    study_report = StudyReport.find(params[:id])
+    send_data(
+      study_report.report.read,
+      type: 'text/plain',
+      filename: "#{study_report.study.dehumanise_abbreviated_name}_progress_report.csv",
+      disposition: 'attachment'
+    )
+  end
   def new
     params[:study_report] = { study: params[:study] }
     create
@@ -36,13 +45,4 @@ class StudyReportsController < ApplicationController # rubocop:todo Style/Docume
     end
   end
 
-  def show
-    study_report = StudyReport.find(params[:id])
-    send_data(
-      study_report.report.read,
-      type: 'text/plain',
-      filename: "#{study_report.study.dehumanise_abbreviated_name}_progress_report.csv",
-      disposition: 'attachment'
-    )
-  end
 end

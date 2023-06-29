@@ -26,6 +26,9 @@ class Admin::RobotPropertiesController < ApplicationController # rubocop:todo St
     @robot_property = @robot.robot_properties.build
   end
 
+  def edit
+    @robot_property = @robot.robot_properties.find(params[:id])
+  end
   def create
     @robot_property = @robot.robot_properties.build(params[:robot_property])
     if @robot_property.save
@@ -35,9 +38,6 @@ class Admin::RobotPropertiesController < ApplicationController # rubocop:todo St
     end
   end
 
-  def edit
-    @robot_property = @robot.robot_properties.find(params[:id])
-  end
 
   def update
     @robot_property = RobotProperty.find(params[:id])

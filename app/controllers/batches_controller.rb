@@ -79,33 +79,6 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
   end
 
   # rubocop:todo Metrics/MethodLength
-  def update # rubocop:todo Metrics/AbcSize
-    if batch_parameters[:assignee_id]
-      user = User.find(batch_parameters[:assignee_id])
-      assigned_message = "Assigned to #{user.name} (#{user.login})."
-    else
-      assigned_message = ''
-    end
-
-    respond_to do |format|
-      if @batch.update(batch_parameters)
-        flash[:notice] = "Batch was successfully updated. #{assigned_message}"
-        format.html { redirect_to batch_url(@batch) }
-        format.xml { head :ok }
-      else
-        format.html { render action: 'edit' }
-        format.xml { render xml: @batch.errors.to_xml }
-      end
-    end
-  end
-
-  # rubocop:enable Metrics/MethodLength
-
-  def batch_parameters
-    @batch_parameters ||= params.require(:batch).permit(:assignee_id)
-  end
-
-  # rubocop:todo Metrics/MethodLength
   def create # rubocop:todo Metrics/AbcSize
     @pipeline = Pipeline.find(params[:id])
 
@@ -133,7 +106,35 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   # rubocop:enable Metrics/MethodLength
 
-  def pipeline
+  # rubocop:todo Metrics/MethodLength
+  def update # rubocop:todo Metrics/AbcSize
+    if batch_parameters[:assignee_id]
+      user = User.find(batch_parameters[:assignee_id])
+      assigned_message = "Assigned to #{user.name} (#{user.login})."
+    else
+      assigned_message = ''
+    end
+
+    respond_to do |format|
+      if @batch.update(batch_parameters)
+        flash[:notice] = "Batch was successfully updated. #{assigned_message}"
+        format.html { redirect_to batch_url(@batch) }
+        format.xml { head :ok }
+      else
+        format.html { render action: 'edit' }
+        format.xml { render xml: @batch.errors.to_xml }
+      end
+    end
+  end
+
+  # rubocop:enable Metrics/MethodLength
+
+  def batch_parameters
+    @batch_parameters ||= params.require(:batch).permit(:assignee_id)
+  end
+
+
+    def pipeline
     # All pipeline batches routes should just direct to batches#index with pipeline and state as filter parameters
     @batches =
       Batch

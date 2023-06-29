@@ -55,11 +55,25 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
     render partial: 'study_list', locals: { studies: @studies.with_related_owners_included }
   end
 
+  def show
+    @study = Study.find(params[:id])
+    flash.keep
+    respond_to do |format|
+      format.html { redirect_to study_information_path(@study) }
+      format.xml { render layout: false }
+      format.json { render json: @study.to_json }
+    end
+  end
   def new
     @study = Study.new
     respond_to { |format| format.html }
   end
 
+  def edit
+    @study = Study.find(params[:id])
+    flash.now[:warning] = @study.warnings if @study.warnings.present?
+    @users = User.all
+  end
   ## Create the Study from new with the details from its form.
   ## Redirect to the index page with a notice.
   def create # rubocop:todo Metrics/AbcSize
@@ -70,7 +84,7 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
       User.find(params[:study_owner_id]).grant_owner(@study) if params[:study_owner_id].present?
     end
 
-    flash[:notice] = 'Your study has been created'
+    flash.now[:notice] = 'Your study has been created'
     respond_to do |format|
       format.html { redirect_to study_path(@study) }
       format.xml { render xml: @study, status: :created, location: @study }
@@ -85,21 +99,7 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
     end
   end
 
-  def show
-    @study = Study.find(params[:id])
-    flash.keep
-    respond_to do |format|
-      format.html { redirect_to study_information_path(@study) }
-      format.xml { render layout: false }
-      format.json { render json: @study.to_json }
-    end
-  end
 
-  def edit
-    @study = Study.find(params[:id])
-    flash.now[:warning] = @study.warnings if @study.warnings.present?
-    @users = User.all
-  end
 
   # rubocop:todo Metrics/MethodLength
   def update # rubocop:todo Metrics/AbcSize
@@ -218,7 +218,7 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
   def rescue_accession_errors # rubocop:todo Metrics/AbcSize
     yield
   rescue ActiveRecord::RecordInvalid => e
-    flash[:error] = 'Please fill in the required fields'
+    flash.now[:error] = 'Please fill in the required fields'
     render(action: :edit)
   rescue AccessionService::NumberNotRequired => e
     flash[:warning] = e.message || 'An accession number is not required for this study'
@@ -367,7 +367,7 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
       yield
     rescue ActiveRecord::RecordInvalid
       Rails.logger.warn "Failed to update attributes: #{@study.errors.map(&:to_s)}"
-      flash[:error] = 'Failed to update attributes for study!'
+      flash.now[:error] = 'Failed to update attributes for study!'
       render action: 'edit', id: @study.id
     end
   end

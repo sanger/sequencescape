@@ -20,6 +20,11 @@ class PlateTemplatesController < ApplicationController # rubocop:todo Style/Docu
     end
   end
 
+  def edit
+    @pattern = PlateTemplate.find(params[:id])
+    @plate_rows = Map::Coordinate.plate_length(@pattern.size)
+    @plate_cols = Map::Coordinate.plate_width(@pattern.size)
+  end
   def create # rubocop:todo Metrics/AbcSize
     if params[:name].blank?
       flash[:error] = 'Please enter a name'
@@ -39,11 +44,6 @@ class PlateTemplatesController < ApplicationController # rubocop:todo Style/Docu
     redirect_to plate_templates_path
   end
 
-  def edit
-    @pattern = PlateTemplate.find(params[:id])
-    @plate_rows = Map::Coordinate.plate_length(@pattern.size)
-    @plate_cols = Map::Coordinate.plate_width(@pattern.size)
-  end
 
   def update # rubocop:todo Metrics/AbcSize
     pattern = PlateTemplate.find(params[:id])

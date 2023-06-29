@@ -5,11 +5,18 @@ class Sdb::SuppliersController < Sdb::BaseController # rubocop:todo Style/Docume
     @suppliers = Supplier.all
   end
 
+  # Show a supplier
+  def show
+    @supplier = Supplier.find(params[:id])
+  end
   # Create a supplier
   def new
     @supplier = Supplier.new
   end
 
+  def edit
+    @supplier = Supplier.find(params[:id])
+  end
   # Create a supplier
   def create
     @supplier = Supplier.new(params[:supplier])
@@ -24,9 +31,6 @@ class Sdb::SuppliersController < Sdb::BaseController # rubocop:todo Style/Docume
     end
   end
 
-  def edit
-    @supplier = Supplier.find(params[:id])
-  end
 
   # Update a supplier
   def update
@@ -42,10 +46,6 @@ class Sdb::SuppliersController < Sdb::BaseController # rubocop:todo Style/Docume
     end
   end
 
-  # Show a supplier
-  def show
-    @supplier = Supplier.find(params[:id])
-  end
 
   def sample_manifests
     @supplier = Supplier.find(params[:id])

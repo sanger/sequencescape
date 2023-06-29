@@ -10,6 +10,10 @@ class Studies::DocumentsController < ApplicationController # rubocop:todo Style/
     @documents = @study.documents
   end
 
+  def show
+    @document = Document.find(params[:id])
+    send_data @document.current_data, filename: @document.filename, type: @document.content_type, disposition: 'inline'
+  end
   def new
     @study = Study.find(params[:study_id])
   end
@@ -31,10 +35,6 @@ class Studies::DocumentsController < ApplicationController # rubocop:todo Style/
     end
   end
 
-  def show
-    @document = Document.find(params[:id])
-    send_data @document.current_data, filename: @document.filename, type: @document.content_type, disposition: 'inline'
-  end
 
   def destroy
     @document = Document.find(params[:id])
