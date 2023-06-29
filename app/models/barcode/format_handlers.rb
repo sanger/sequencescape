@@ -502,10 +502,10 @@ module Barcode::FormatHandlers
   # samples to Sanger.
   #
   # Expected formats:
-  # LML_ELUTEnnnnnnnn
+  # ELUTEnnnnnnnn
   # where n is a digit
   class LeamingtonSpaV3 < BaseRegExBarcode
-    self.format = /\A(?<prefix>LML_ELUTE)(?<number>\d{8})\z/
+    self.format = /\A(?<prefix>ELUTE)(?<number>\d{8})\z/
   end
 
   # Support for Newcastle centre

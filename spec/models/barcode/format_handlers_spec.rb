@@ -316,15 +316,14 @@ describe Barcode::FormatHandlers do
   end
 
   describe Barcode::FormatHandlers::LeamingtonSpaV3 do
-    it_has_a_valid_barcode 'LML_ELUTE12345678', prefix: 'LML_ELUTE', number: 12_345_678, suffix: nil
-    it_has_a_valid_barcode 'LML_ELUTE00001234', prefix: 'LML_ELUTE', number: 1_234, suffix: nil
-    it_has_an_invalid_barcode 'LML_ELUTE000001234'
-    it_has_an_invalid_barcode 'LML_ELUTE0001234'
-    it_has_an_invalid_barcode 'MLM_ELUTE00001234'
-    it_has_an_invalid_barcode 'LML_ETULE00001234'
-    it_has_an_invalid_barcode "LML_ETULE\n00001234"
-    it_has_an_invalid_barcode 'LML_ETULE00001234  '
-    it_has_an_invalid_barcode '  LML_ETULE00001234'
+    it_has_a_valid_barcode 'ELUTE12345678', prefix: 'ELUTE', number: 12_345_678, suffix: nil
+    it_has_a_valid_barcode 'ELUTE00001234', prefix: 'ELUTE', number: 1_234, suffix: nil
+    it_has_an_invalid_barcode 'ELUTE000001234'
+    it_has_an_invalid_barcode 'ELUTE0001234'
+    it_has_an_invalid_barcode 'ETULE00001234'
+    it_has_an_invalid_barcode "ELUTE\n00001234"
+    it_has_an_invalid_barcode 'ELUTE00001234  '
+    it_has_an_invalid_barcode '  ELUTE00001234'
     it_has_an_invalid_barcode 'INVALID'
   end
 
