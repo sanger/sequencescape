@@ -45,10 +45,14 @@ jobs:
         run: >-
           docker push docker.pkg.github.com/${IMAGE_NAME}:${{ env.RELEASE_VERSION }}
 
-      - name: Remove the oldest package
-        # The delete-package-versions action has become broken and the fix doesn't look imminent.
-        # Re-enable this later if a fix comes out! https://github.com/actions/delete-package-versions/issues/28
-        if: false
-        uses: actions/delete-package-versions@v1
+      - name: Remove old releases
+        uses: snok/container-retention-policy@v2
         with:
-          package-name: "${{ github.event.repository.name }}"
+          image-names: ${{ github.event.repository.name }}/*
+          cut-off: Four months ago UTC
+          timestamp-to-use: updated_at
+          account-type: org
+          org-name: sanger
+          keep-at-least: 5
+          skip-tags: latest
+          token: ${{ secrets.REMOVE_OLD_IMAGES }}
