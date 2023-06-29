@@ -25,3 +25,19 @@ NovaSeq 6000 PE:
   workflow:
     name: NovaSeq 6000 PE
     item_limit: 4
+NovaSeqX PE:
+  name: NovaSeqX PE
+  active: 1
+  sti_type: SequencingPipeline
+  sorter: 10
+  max_size: 8
+  summary: 1
+  externally_managed: 0
+  group_name: Sequencing
+  control_request_type_id: 0
+  min_size: 8
+  request_type_keys:
+    - illumina_htp_novaseqx_paired_end_sequencing
+  workflow:
+    name: NovaSeqX PE
+    item_limit: 8

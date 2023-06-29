@@ -187,7 +187,7 @@ group :test, :cucumber do
   gem 'timecop', require: false
 
   # Keep webdriver in sync with chrome to prevent frustrating CI failures
-  gem 'webdrivers'
+  gem 'webdrivers', '>= 5.2.0'
 end
 
 group :cucumber do

@@ -354,6 +354,23 @@ cluster formation batch which represents a flowcell.
 
 If you are using homebrew with rbenv and run into errors relating to SSL, have a look [here](https://github.com/brianmario/mysql2/issues/795#issuecomment-433219176)
 
+### API V2 Authentication
+
+The V2 API has had authentication checks added to it so that other applications calling the API should provide a valid key.
+The key is passed by the client application via the `X-Sequencescape-Client-Id` header.
+Keys can be generated via the Rail Console by creating new `ApiApplication` records and observing the `key` attribute on them.
+As of the time of writing, there are three outcomes to a request made, with respect to API key submission:
+
+- The client calls an API V2 endpoint with a valid API key in the header of the request.
+  - The response given has a valid status code and the body contains the requested information/confirmation.
+- The client calls an API V2 endpoint with an invalid API key in the header of the request.
+  - The response given has status code 401 Unauthorized and contains a JSON body explaining that a valid API key must be provided for the header.
+  - The request is logged with the prefix "Request made with invalid API key" including information about the client and the API key used.
+- The client calls an API V2 endpoint without the API key header in the request.
+  - The response is given as if a valid API key was provided.
+  - The request is logged with the prefix "Request made without an API key" including information about the client.
+  - The client application should be updated to use a valid API key in future.
+
 ### Updating the table of contents
 
 To update the table of contents after adding things to this README you can use the [markdown-toc](https://github.com/jonschlinkert/markdown-toc)

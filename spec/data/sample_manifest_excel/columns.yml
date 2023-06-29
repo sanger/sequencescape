@@ -235,7 +235,7 @@ supplier_name:
       allowBlank: false
       showInputMessage: true
       promptTitle: "Supplier Sample Name"
-      prompt: "Please enter a sample name up to a maximum of 40 characters in length. Only include characters A-Z, 0-9 and underscores."
+      prompt: "Please enter a sample name up to a maximum of 40 characters in length to allow you to identify your sample. Only include characters A-Z, 0-9 and underscores."
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Supplier Sample Name"

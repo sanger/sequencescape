@@ -81,8 +81,8 @@ if Rails.env.development? || Rails.env.profile?
   configatron.beckman_precision = 2
   configatron.hamilton_precision = 2
 
-  configatron.data_sharing_contact.name = 'John Doe'
-  configatron.data_sharing_contact.email = 'foo'
+  configatron.data_sharing_contact.name = 'Datasharing'
+  configatron.data_sharing_contact.email = 'datasharing@example.com'
   configatron.accession_local_key = 'abc'
   configatron.sequencescape_email = 'sequencescape@example.com'
   configatron.default_email_domain = 'example.com'
@@ -124,8 +124,8 @@ if Rails.env.test? || Rails.env.cucumber?
   configatron.beckman_precision = 2
   configatron.hamilton_precision = 2
 
-  configatron.data_sharing_contact.name = 'John Doe'
-  configatron.data_sharing_contact.email = 'foo'
+  configatron.data_sharing_contact.name = 'Datasharing'
+  configatron.data_sharing_contact.email = 'datasharing@example.com'
   configatron.accession_local_key = 'abc'
   configatron.sequencescape_email = 'sequencescape@example.com'
   configatron.default_email_domain = 'example.com'
