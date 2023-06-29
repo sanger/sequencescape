@@ -261,6 +261,21 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode " 1234567890NBC\na"
   end
 
+  describe Barcode::FormatHandlers::PlymouthV2 do
+    it_has_a_valid_barcode 'B012345RNAEXT', prefix: 'B', number: 12_345, suffix: 'RNAEXT'
+    it_has_a_valid_barcode 'B123456RNAEXT', prefix: 'B', number: 123_456, suffix: 'RNAEXT'
+    it_has_an_invalid_barcode 'C012345RNAEXT'
+    it_has_an_invalid_barcode 'B1234RNAEXT'
+    it_has_an_invalid_barcode 'B012345DNAEXT'
+    it_has_an_invalid_barcode 'BB012345RNAEXT'
+    it_has_an_invalid_barcode '012345RNAEXT'
+    it_has_an_invalid_barcode "B012345RNA\nEXT"
+    it_has_an_invalid_barcode 'B-012345-RNAEXT'
+    it_has_an_invalid_barcode '  B012345RNAEXT'
+    it_has_an_invalid_barcode 'B012345RNAEXT  '
+    it_has_an_invalid_barcode 'INVALID'
+  end
+
   describe Barcode::FormatHandlers::UkBiocentreV6 do
     it_has_a_valid_barcode 'RNAsst10088', prefix: 'RNAsst', number: 10_088, suffix: nil
     it_has_a_valid_barcode 'RNAsst0539473', prefix: 'RNAsst', number: 539_473, suffix: nil
@@ -298,6 +313,19 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode '12345678912'
     it_has_an_invalid_barcode 'AB123456700000001'
     it_has_an_invalid_barcode '00210783400000001 '
+  end
+
+  describe Barcode::FormatHandlers::LeamingtonSpaV3 do
+    it_has_a_valid_barcode 'LML_ELUTE12345678', prefix: 'LML_ELUTE', number: 12_345_678, suffix: nil
+    it_has_a_valid_barcode 'LML_ELUTE00001234', prefix: 'LML_ELUTE', number: 1_234, suffix: nil
+    it_has_an_invalid_barcode 'LML_ELUTE000001234'
+    it_has_an_invalid_barcode 'LML_ELUTE0001234'
+    it_has_an_invalid_barcode 'MLM_ELUTE00001234'
+    it_has_an_invalid_barcode 'LML_ETULE00001234'
+    it_has_an_invalid_barcode "LML_ETULE\n00001234"
+    it_has_an_invalid_barcode 'LML_ETULE00001234  '
+    it_has_an_invalid_barcode '  LML_ETULE00001234'
+    it_has_an_invalid_barcode 'INVALID'
   end
 
   describe Barcode::FormatHandlers::Newcastle do
