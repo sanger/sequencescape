@@ -68,7 +68,7 @@ Metrics/BlockLength:
     - array
     - hash
     - heredoc
-  IgnoredMethods:
+  AllowedMethods:
     - describe
     - context
     - background
