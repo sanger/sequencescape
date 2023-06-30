@@ -132,7 +132,7 @@ namespace :mbrave do
           _validate_reverse_row(row)
           map_id = row['Reverse Index Number'].to_i
           pos = ((map_id - 1) % 4)
-          tag = Tag.new(map_id: pos, oligo: row['R index sequence'])
+          tag = Tag.new(map_id: map_id, oligo: row['R index sequence'])
           tags.push(tag)
           mbrave_tags.push(row['Reverse Oligo Label'])
 
