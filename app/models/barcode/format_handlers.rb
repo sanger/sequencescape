@@ -438,10 +438,20 @@ module Barcode::FormatHandlers
   end
 
   # Expected formats:
-  # PLY-chp-nnnnnnn.csv
+  # PLY-chp-nnnnnnn
   # where n is a digit
   class PlymouthV1 < BaseRegExBarcode
     self.format = /\A(?<prefix>PLY)-chp-(?<number>\d+)\z/
+  end
+
+  # This format was used by the Plymouth LHL for sending non-cherrypicked
+  # samples to Sanger.
+  #
+  # Expected formats:
+  # BnnnnnnRNAEXT
+  # where n is a digit
+  class PlymouthV2 < BaseRegExBarcode
+    self.format = /\A(?<prefix>B)(?<number>\d{6})(?<suffix>RNAEXT)\z/
   end
 
   # Added to support 3 ad hoc plates from UK Biocentre
@@ -486,6 +496,16 @@ module Barcode::FormatHandlers
   # where n is a digit
   class LeamingtonSpaV2 < BaseRegExBarcode
     self.format = /\A(?<prefix>RFLCP)(?<number>\d{8})\z/
+  end
+
+  # This format was used by the Leamington Spa LHL for sending non-cherrypicked
+  # samples to Sanger.
+  #
+  # Expected formats:
+  # ELUTEnnnnnnnn
+  # where n is a digit
+  class LeamingtonSpaV3 < BaseRegExBarcode
+    self.format = /\A(?<prefix>ELUTE)(?<number>\d{8})\z/
   end
 
   # Support for Newcastle centre

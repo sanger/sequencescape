@@ -16,24 +16,28 @@ module RecordLoader
     end
 
     def add_spiked_in_control_event(workflow)
-      AddSpikedInControlTask.create!(name: 'Add Spiked in control', sorted: 0, lab_activity: true, workflow: workflow)
+      AddSpikedInControlTask
+        .create_with(name: 'Add Spiked in control', sorted: 0, lab_activity: true, workflow: workflow)
+        .find_or_create_by!(pipeline_workflow_id: workflow.pipeline_id)
     end
 
     def add_loading_event(workflow)
-      SetDescriptorsTask.create!(name: 'Loading', sorted: 1, lab_activity: true, workflow: workflow) do |task|
-        task.descriptors.build(
-          [
-            { kind: 'Text', sorter: 4, name: 'Pre-Load Buffer lot #' },
-            { kind: 'Text', sorter: 5, name: 'Pre-Load Buffer RGT #' },
-            { kind: 'Text', sorter: 6, name: 'Pipette Carousel' },
-            { kind: 'Text', sorter: 7, name: 'PhiX lot #' },
-            { kind: 'Text', sorter: 8, name: 'PhiX %' },
-            { kind: 'Text', sorter: 9, name: 'Lane loading concentration (pM)' },
-            { kind: 'Text', sorter: 9, name: 'iPCR batch #' },
-            { kind: 'Text', sorter: 10, name: 'Comment' }
-          ]
-        )
-      end
+      SetDescriptorsTask
+        .create_with(name: 'Loading', sorted: 1, lab_activity: true, workflow: workflow)
+        .find_or_create_by!(pipeline_workflow_id: workflow.pipeline_id) do |task|
+          task.descriptors.build(
+            [
+              { kind: 'Text', sorter: 4, name: 'Pre-Load Buffer lot #' },
+              { kind: 'Text', sorter: 5, name: 'Pre-Load Buffer RGT #' },
+              { kind: 'Text', sorter: 6, name: 'Pipette Carousel' },
+              { kind: 'Text', sorter: 7, name: 'PhiX lot #' },
+              { kind: 'Text', sorter: 8, name: 'PhiX %' },
+              { kind: 'Text', sorter: 9, name: 'Lane loading concentration (pM)' },
+              { kind: 'Text', sorter: 10, name: 'iPCR batch #' },
+              { kind: 'Text', sorter: 11, name: 'Comment' }
+            ]
+          )
+        end
     end
 
     def create_or_update!(name, options)
