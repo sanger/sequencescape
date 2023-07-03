@@ -172,3 +172,6 @@ Rails/RedundantPresenceValidationOnBelongsTo:
 
 Rails/UniqueValidationWithoutIndex:
   Enabled: false
+
+RSpec/FactoryBot/ConsistentParenthesesStyle:
+  Enabled: false
