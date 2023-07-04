@@ -263,7 +263,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
     expect(empty_row.empty?).to be true
   end
 
-  context 'when there are columns to link' do
+  context 'when there are tag columns to link' do
     let(:columns) { configuration.columns.tube_multiplexed_library.dup }
 
     it 'links up specialised fields' do
@@ -285,6 +285,61 @@ RSpec.describe SampleManifestExcel::Upload::Row, type: :model, sample_manifest_e
       tag_well = row.specialised_fields.detect { |f| f.is_a?(SequencescapeExcel::SpecialisedField::ChromiumTagWell) }
       tag_group = row.specialised_fields.detect { |f| f.is_a?(SequencescapeExcel::SpecialisedField::ChromiumTagGroup) }
       expect(tag_well.sf_tag_group).to eq tag_group
+    end
+  end
+
+  context 'when there are bioscan columns to link' do
+    let(:columns) { configuration.columns.plate_bioscan.dup }
+    let(:sample_manifest) { create(:plate_sample_manifest_with_manifest_assets) }
+    let(:plate) { sample_manifest.labware.first }
+    let(:data) do
+      [
+        plate.human_barcode,
+        'A1',
+        sample_manifest.sample_manifest_assets.first.sanger_sample_id,
+        'CONTROL_1',
+        'My reference genome',
+        'My expt grouping',
+        20,
+        50,
+        '',
+        '',
+        '',
+        '',
+        '',
+        'Nov-16',
+        'Nov-16',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        'BC12345678',
+        '',
+        'Control',
+        '',
+        '',
+        '',
+        'pcr positive'
+      ]
+    end
+
+    it 'links up specialised fields' do
+      row = described_class.new(number: 1, data: data, columns: columns)
+      bs_well = row.specialised_fields.detect { |f| f.is_a?(SequencescapeExcel::SpecialisedField::Well) }
+      bioscan_supplier_name =
+        row.specialised_fields.detect { |f| f.is_a?(SequencescapeExcel::SpecialisedField::BioscanSupplierName) }
+      bioscan_control_type =
+        row.specialised_fields.detect { |f| f.is_a?(SequencescapeExcel::SpecialisedField::BioscanControlType) }
+      expect(bioscan_control_type.well).to eq bs_well
+      expect(bioscan_control_type.supplier_name).to eq bioscan_supplier_name
     end
   end
 

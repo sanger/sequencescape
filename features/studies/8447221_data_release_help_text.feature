@@ -25,7 +25,7 @@ Feature: Update the data release fields for creating a study
     When I select "other" from "Reason for delaying release"
     Then the help text for "Reason for delaying release" should contain:
       """
-      To apply for a delay which is not associated with a study, please contact datasharing@example.com
+      To apply for a delay, please contact datasharing@example.com
       """
 
     Examples:

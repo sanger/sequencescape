@@ -13,7 +13,7 @@ class Qcable < ApplicationRecord # rubocop:todo Style/Documentation
   include AASM::Extensions
   include Qcable::Statemachine
 
-  attr_accessor :barcode
+  attr_accessor :barcode, :supplied_barcode
 
   belongs_to :lot, inverse_of: :qcables
   belongs_to :asset, class_name: 'Labware'
@@ -71,8 +71,15 @@ class Qcable < ApplicationRecord # rubocop:todo Style/Documentation
 
   def create_asset!
     return true if lot.nil?
-
-    self.asset ||= barcode.present? ? asset_purpose.create!(external_barcode: barcode) : asset_purpose.create!
+    self.asset ||=
+      if supplied_barcode.present?
+        # Create using the supplied plate barcode
+        asset_purpose.create!(sanger_barcode: supplied_barcode)
+      elsif barcode.present?
+        asset_purpose.create!(external_barcode: barcode)
+      else
+        asset_purpose.create!
+      end
   end
 
   def primary_barcode

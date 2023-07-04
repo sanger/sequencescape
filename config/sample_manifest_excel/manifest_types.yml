@@ -237,6 +237,24 @@ plate_chromium_library:
     - :disease
     - :sample_ebi_accession_number
     - :donor_id
+plate_bioscan:
+  heading: "Bioscan Plate"
+  asset_type: "plate"
+  columns:
+    - :sanger_plate_id
+    - :well
+    - :sanger_sample_id
+    - :bioscan_supplier_name
+    - :retention_instruction
+    - :cohort
+    - :country_of_origin
+    - :date_of_sample_collection
+    - :sample_taxon_id
+    - :sample_common_name
+    - :bioscan_sample_description
+    - :sample_type
+    - :donor_id
+    - :bioscan_control_type
 tube_default:
   heading: "Default Tube"
   asset_type: "1dtube"

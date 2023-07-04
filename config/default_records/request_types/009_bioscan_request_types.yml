@@ -1,0 +1,24 @@
+#Request types for Bioscan
+---
+limber_bioscan_lysate_prep:
+  name: Bioscan Lysate Preparation
+  asset_type: Well
+  order: 1
+  request_class_name: CustomerRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: Bioscan
+  acceptable_purposes:
+    - LILYS-96 Stock
+limber_bioscan_library_prep:
+  name: Bioscan Library Preparation
+  asset_type: Well
+  order: 1
+  # TODO: is this correct request class?
+  request_class_name: IlluminaHtp::Requests::StdLibraryRequest
+  billable: true
+  product_line_name: Illumina-HTP
+  library_types:
+    - Bioscan
+  acceptable_purposes:
+    - LBSN-96 Lysate

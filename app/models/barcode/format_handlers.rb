@@ -156,11 +156,15 @@ module Barcode::FormatHandlers
 
   # Added to support plate barcodes from baracoda
   # Expected formats:
-  # <prefix>-nnn... where n is a digit.
+  # <prefix>-<text>-nnn-<suffix>... where n is a digit.
   # prefix is dependent on plate_barcode_prefix environment variable
+  # Examples: SQPP-T23-2343-Q, SQPP-2343-R, SQPP-2343
   class Sequencescape22 < BaseRegExBarcode
     prefix = configatron.plate_barcode_prefix
-    self.format = /\A(?<prefix>#{prefix})-(?<number>[0-9]+)(-(?<child>[0-9]+))?(-(?<suffix>[A-Z]))?\z/
+
+    # rubocop:todo Layout/LineLength
+    self.format = /\A(?<prefix>#{prefix})(-[a-zA-Z0-9_]{1,3})?-(?<number>[0-9]+)(-(?<child>[0-9]+))?(-(?<suffix>[A-Z]))?\z/
+    # rubocop:enable Layout/LineLength
   end
 
   # Infinium barcodes are externally generated barcodes on Illumina Infinium chips
