@@ -33,8 +33,8 @@ module RecordLoader
               { kind: 'Text', sorter: 7, name: 'PhiX lot #' },
               { kind: 'Text', sorter: 8, name: 'PhiX %' },
               { kind: 'Text', sorter: 9, name: 'Lane loading concentration (pM)' },
-              { kind: 'Text', sorter: 9, name: 'iPCR batch #' },
-              { kind: 'Text', sorter: 10, name: 'Comment' }
+              { kind: 'Text', sorter: 10, name: 'iPCR batch #' },
+              { kind: 'Text', sorter: 11, name: 'Comment' }
             ]
           )
         end

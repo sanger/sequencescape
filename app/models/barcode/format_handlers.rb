@@ -156,11 +156,15 @@ module Barcode::FormatHandlers
 
   # Added to support plate barcodes from baracoda
   # Expected formats:
-  # <prefix>-nnn... where n is a digit.
+  # <prefix>-<text>-nnn-<suffix>... where n is a digit.
   # prefix is dependent on plate_barcode_prefix environment variable
+  # Examples: SQPP-T23-2343-Q, SQPP-2343-R, SQPP-2343
   class Sequencescape22 < BaseRegExBarcode
     prefix = configatron.plate_barcode_prefix
-    self.format = /\A(?<prefix>#{prefix})-(?<number>[0-9]+)(-(?<child>[0-9]+))?(-(?<suffix>[A-Z]))?\z/
+
+    # rubocop:todo Layout/LineLength
+    self.format = /\A(?<prefix>#{prefix})(-[a-zA-Z0-9_]{1,3})?-(?<number>[0-9]+)(-(?<child>[0-9]+))?(-(?<suffix>[A-Z]))?\z/
+    # rubocop:enable Layout/LineLength
   end
 
   # Infinium barcodes are externally generated barcodes on Illumina Infinium chips
@@ -438,10 +442,20 @@ module Barcode::FormatHandlers
   end
 
   # Expected formats:
-  # PLY-chp-nnnnnnn.csv
+  # PLY-chp-nnnnnnn
   # where n is a digit
   class PlymouthV1 < BaseRegExBarcode
     self.format = /\A(?<prefix>PLY)-chp-(?<number>\d+)\z/
+  end
+
+  # This format was used by the Plymouth LHL for sending non-cherrypicked
+  # samples to Sanger.
+  #
+  # Expected formats:
+  # BnnnnnnRNAEXT
+  # where n is a digit
+  class PlymouthV2 < BaseRegExBarcode
+    self.format = /\A(?<prefix>B)(?<number>\d{6})(?<suffix>RNAEXT)\z/
   end
 
   # Added to support 3 ad hoc plates from UK Biocentre
@@ -486,6 +500,16 @@ module Barcode::FormatHandlers
   # where n is a digit
   class LeamingtonSpaV2 < BaseRegExBarcode
     self.format = /\A(?<prefix>RFLCP)(?<number>\d{8})\z/
+  end
+
+  # This format was used by the Leamington Spa LHL for sending non-cherrypicked
+  # samples to Sanger.
+  #
+  # Expected formats:
+  # ELUTEnnnnnnnn
+  # where n is a digit
+  class LeamingtonSpaV3 < BaseRegExBarcode
+    self.format = /\A(?<prefix>ELUTE)(?<number>\d{8})\z/
   end
 
   # Support for Newcastle centre

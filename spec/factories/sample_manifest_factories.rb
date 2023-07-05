@@ -12,6 +12,31 @@ FactoryBot.define do
       samples { create_list(:sample_with_well, 5) }
     end
 
+    factory :plate_sample_manifest_with_manifest_assets do
+      transient do
+        num_plates { 1 }
+        num_samples_per_plate { 1 }
+        plates { create_list :plate, num_plates, well_factory: :empty_well, well_count: num_samples_per_plate }
+      end
+
+      barcodes { plates.map(&:human_barcode) }
+
+      after(:build) do |sample_manifest, evaluator|
+        evaluator
+          .plates
+          .flat_map(&:wells)
+          .each do |well|
+            create(
+              :sample_manifest_asset,
+              sanger_sample_id: generate(:sanger_sample_id),
+              asset: well,
+              sample_manifest: sample_manifest
+            )
+          end
+        sample_manifest.barcodes = sample_manifest.labware.map(&:human_barcode)
+      end
+    end
+
     factory :tube_sample_manifest do
       asset_type { '1dtube' }
 

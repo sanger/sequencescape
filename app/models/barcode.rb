@@ -61,7 +61,9 @@ class Barcode < ApplicationRecord
          east_london_genes_and_health: 39,
          leamington_spa_v2: 40,
          east_london_genes_and_health_v2: 41,
-         sequencescape22: 42
+         sequencescape22: 42,
+         plymouth_v2: 43,
+         leamington_spa_v3: 44
        }
 
   # Barcode formats which may be submitted via sample manifests
@@ -104,6 +106,8 @@ class Barcode < ApplicationRecord
     leamington_spa_v2
     east_london_genes_and_health_v2
     sequencescape22
+    plymouth_v2
+    leamington_spa_v3
   ].freeze
 
   validate :barcode_valid?

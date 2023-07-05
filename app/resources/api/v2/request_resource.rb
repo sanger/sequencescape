@@ -7,7 +7,7 @@ module Api
     class RequestResource < BaseResource
       # Constants...
 
-      immutable # comment to make the resource mutable
+      # immutable # comment to make the resource mutable
 
       # model_name / model_hint if required
 
@@ -27,7 +27,7 @@ module Api
       # Attributes
       attribute :uuid, readonly: true
       attribute :role, readonly: true
-      attribute :state, readonly: true
+      attribute :state
       attribute :priority, readonly: true
       attribute :options
       attribute :library_type, readonly: true

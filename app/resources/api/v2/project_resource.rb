@@ -10,6 +10,9 @@ module Api
       attribute :name
       attribute :cost_code, delegate: :project_cost_code
       attribute :uuid, readonly: true
+
+      # Filters
+      filter :name
     end
   end
 end
