@@ -7,7 +7,15 @@ module Api
       attribute :sample_common_name
       attribute :supplier_name
       attribute :collected_by
-      model_name 'Sample::Metadata', add_model_hint: false
+      attribute :cohort
+      attribute :sample_description
+
+      # set add_model_hint true to allow updates from Limber, otherwise get a
+      # 500 error as it looks for resource Api::V2::MetadatumResource
+      model_name 'Sample::Metadata', add_model_hint: true
+
+      # Filters
+      filter :sample_id
     end
   end
 end

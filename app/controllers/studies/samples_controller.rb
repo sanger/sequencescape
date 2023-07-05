@@ -9,7 +9,7 @@ class Studies::SamplesController < ApplicationController # rubocop:todo Style/Do
     @samples = @study.samples.order(:created_at)
 
     respond_to do |format|
-      format.html
+      format.html { @samples = @samples.paginate(page: params[:page], per_page: 384) }
       format.json { render json: @samples.to_json }
       format.xml { render xml: @samples.to_xml }
     end
