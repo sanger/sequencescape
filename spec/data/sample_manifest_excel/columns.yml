@@ -156,7 +156,7 @@ library_type:
       type: :list
       formula1: "$A$1:$A$2"
       allowBlank: false
-      showDropDown: false
+      hideDropDown: false
       showInputMessage: true
       showErrorMessage: true
       errorStyle: :stop
@@ -176,7 +176,7 @@ reference_genome:
       type: :list
       formula1: "$A$1:$A$2"
       allowBlank: false
-      showDropDown: false
+      hideDropDown: false
       showInputMessage: true
       showErrorMessage: true
       errorStyle: :stop
@@ -339,7 +339,7 @@ gender:
       type: :list
       formula1: "A1:A2"
       allowBlank: false
-      showDropDown: false
+      hideDropDown: false
       showInputMessage: true
       promptTitle: "Gender"
       prompt: "Please enter gender"
@@ -427,7 +427,7 @@ dna_source:
       type: :list
       formula1: "$A$1:$A$2"
       allowBlank: false
-      showDropDown: false
+      hideDropDown: false
       showInputMessage: true
       promptTitle: "DNA Source"
       prompt: "Please enter a Source from the Provided List."
@@ -496,7 +496,7 @@ sample_purified:
       type: :list
       formula1: "$A$1:$A$2"
       allowBlank: false
-      showDropDown: false
+      hideDropDown: false
       showInputMessage: true
       promptTitle: "Has the Sample Been Purified?"
       prompt: "Please Enter Y or N."
@@ -516,7 +516,7 @@ purification_method:
       type: :list
       formula1: "$A$1:$A$2"
       allowBlank: false
-      showDropDown: false
+      hideDropDown: false
       showInputMessage: true
       promptTitle: "Purification Method"
       prompt: "Please enter a Method from the Provided List."
@@ -536,7 +536,7 @@ concentration_determined_by:
       type: :list
       formula1: "$A$1:$A$2"
       allowBlank: false
-      showDropDown: false
+      hideDropDown: false
       showInputMessage: true
       promptTitle: "Concentration Determined By"
       prompt: "Please enter a Method from the Provided List."
@@ -556,7 +556,7 @@ sample_storage_conditions:
       type: :list
       formula1: "$A$1:$A$2"
       allowBlank: false
-      showDropDown: false
+      hideDropDown: false
       showInputMessage: true
       promptTitle: "DNA Storage Conditions"
       prompt: "Please enter a Temperature from the Provided List."
@@ -822,7 +822,7 @@ primer_panel:
       type: :list
       formula1: "$A$1:$A$2"
       allowBlank: true
-      showDropDown: false
+      hideDropDown: false
       showInputMessage: true
       showErrorMessage: true
       errorStyle: :stop
@@ -842,7 +842,7 @@ control_type:
       type: :list
       formula1: "$A$1:$A$2"
       allowBlank: true
-      showDropDown: false
+      hideDropDown: false
       showInputMessage: true
       promptTitle: "What Type of Control is it?"
       prompt: "Select from the list provided if the sample is a control."
@@ -862,7 +862,7 @@ bioscan_control_type:
       type: :list
       formula1: "$A$1:$A$2"
       allowBlank: true
-      showDropDown: false
+      hideDropDown: false
       showInputMessage: true
       promptTitle: "What Type of Control is it?"
       prompt: "Select from the list provided if the sample is a control."
@@ -889,7 +889,7 @@ collected_by_for_cardinal:
       type: :list
       formula1: "$A$1:$A$2"
       allowBlank: false
-      showDropDown: false
+      hideDropDown: false
       showInputMessage: true
       promptTitle: "Collected By"
       prompt: "Please enter a collection site from the provided list."
@@ -909,7 +909,7 @@ collected_by_for_controls:
       type: :list
       formula1: "$A$1:$A$2"
       allowBlank: false
-      showDropDown: false
+      hideDropDown: false
       showInputMessage: true
       promptTitle: "Collected By"
       prompt: "Please enter a collection site from the provided list."
@@ -929,7 +929,7 @@ retention_instruction:
       type: :list
       formula1: "$A$1:$A$2"
       allowBlank: false
-      showDropDown: false
+      hideDropDown: false
       showInputMessage: true
       promptTitle: "Retention Instruction"
       prompt: "Please select a retention instruction for the labware from the provided list."
