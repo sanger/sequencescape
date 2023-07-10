@@ -84,7 +84,7 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
       User.find(params[:study_owner_id]).grant_owner(@study) if params[:study_owner_id].present?
     end
 
-    flash.now[:notice] = 'Your study has been created'
+    flash[:notice] = 'Your study has been created' # rubocop:disable Rails/ActionControllerFlashBeforeRender
     respond_to do |format|
       format.html { redirect_to study_path(@study) }
       format.xml { render xml: @study, status: :created, location: @study }
@@ -366,7 +366,7 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
     begin
       yield
     rescue ActiveRecord::RecordInvalid
-      Rails.logger.warn "Failed to update attributes: #{@study.errors.map(&:to_s)}"
+      Rails.logger.warn "Failed to update attributes: #{@study.errors.map { |error| error.to_s }}" # rubocop:disable Style/SymbolProc
       flash.now[:error] = 'Failed to update attributes for study!'
       render action: 'edit', id: @study.id
     end

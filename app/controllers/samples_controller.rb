@@ -34,7 +34,7 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
     authorize! :update, @sample
 
     if @sample.released? && cannot?(:update_released, @sample)
-      flash.now[:error] = 'Cannot edit publicly released sample'
+      flash[:error] = 'Cannot edit publicly released sample' # rubocop:disable Rails/ActionControllerFlashBeforeRender
       redirect_to sample_path(@sample)
       return
     end
