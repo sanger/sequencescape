@@ -100,5 +100,13 @@ module Sequencescape
         resource '*', headers: :any, methods: %i[get post options patch], credentials: false
       end
     end
+
+    # end Rails 5 #
+
+    # Fix for Psych::DisallowedClass: Tried to load unspecified class
+    # this has to be in "after_initialize" because we need custom classes to be loaded already
+    config.after_initialize do
+      ActiveRecord::Base.yaml_column_permitted_classes = [Symbol, RequestType::Validator::ArrayWithDefault, RequestType::Validator::LibraryTypeValidator]
+    end
   end
 end
