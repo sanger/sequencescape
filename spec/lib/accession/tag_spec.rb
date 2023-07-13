@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Accession::Tag, type: :model, accession: true do
+RSpec.describe Accession::Tag, accession: true, type: :model do
   it 'onlies be valid with a name and groups' do
     expect(described_class.new(name: :tag_1, groups: :a)).to be_valid
     expect(described_class.new(name: :tag_1)).not_to be_valid

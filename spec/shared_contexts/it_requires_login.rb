@@ -4,8 +4,7 @@ shared_examples 'it requires login' do |*actions|
   params = (actions.pop if actions.last.is_a?(Hash)) || {}
   actions << :index if actions.empty?
 
-  # rubocop:todo Metrics/BlockLength
-  actions.each do |action|
+    actions.each do |action|
     describe action.to_s do
       context 'when logged in' do
         before do
@@ -56,5 +55,4 @@ shared_examples 'it requires login' do |*actions|
       end
     end
   end
-  # rubocop:enable Metrics/BlockLength
-end
+  end

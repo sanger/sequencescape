@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe BulkSubmissionExcel, type: :model, bulk_submission_excel: true do
+RSpec.describe BulkSubmissionExcel, bulk_submission_excel: true, type: :model do
   before do
     described_class.configure do |config|
       config.folder = File.join('spec', 'data', 'bulk_submission_excel')

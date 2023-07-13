@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'support/barcode_helper'
 
-RSpec.describe 'TubeRacks Heron API', with: :api_v2, lighthouse: true, heron: true do
+RSpec.describe 'TubeRacks Heron API', heron: true, lighthouse: true, with: :api_v2 do
   let(:size) { 96 }
   let(:purpose) { create(:purpose, type: 'TubeRack::Purpose', target_type: 'TubeRack', size: 96) }
 

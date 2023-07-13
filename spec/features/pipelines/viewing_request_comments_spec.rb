@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'Viewing request comments', type: :feature, js: true do
+describe 'Viewing request comments', js: true, type: :feature do
   let(:user) { create :user }
   let(:pipeline) { create :sequencing_pipeline }
   let(:pipeline_name) { pipeline.name }

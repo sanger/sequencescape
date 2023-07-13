@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe QcResult, type: :model, qc_result: true do
+RSpec.describe QcResult, qc_result: true, type: :model do
   it 'is not valid without a key' do
     expect(build(:qc_result, key: nil)).not_to be_valid
   end

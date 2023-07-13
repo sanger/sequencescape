@@ -10,7 +10,7 @@ describe Robot::Generator::Beckman, type: :model do
   shared_examples 'a beckman file generation' do
     context 'when mapping wells from 1 96 well source plate to 1 96 well destination plate' do
       it 'returns a String object' do
-        expect(generator.mapping).to be_a_kind_of(String)
+        expect(generator.mapping).to be_a(String)
       end
 
       it 'generates the expected output' do

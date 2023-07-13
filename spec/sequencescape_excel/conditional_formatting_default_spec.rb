@@ -3,9 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe SequencescapeExcel::ConditionalFormattingDefault,
-               type: :model,
-               sample_manifest_excel: true,
-               sample_manifest: true do
+               sample_manifest: true, sample_manifest_excel: true, type: :model do
   context 'basic' do
     let(:options) do
       {

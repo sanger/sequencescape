@@ -5,7 +5,7 @@ require 'rails_helper'
 # Rubocop doesn't like the .and change {}.by bits and will
 # result in repeatedly indenting them to the level of the last call in the previous chain
 
-RSpec.describe SampleManifest, type: :model, sample_manifest: true do
+RSpec.describe SampleManifest, sample_manifest: true, type: :model do
   let(:user) { create :user }
   let(:study) { create :study }
 
@@ -33,8 +33,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
 
       teardown { Delayed::Worker.delay_jobs = true }
 
-      # rubocop:disable Metrics/BlockLength
-      [1, 2].each do |count|
+            [1, 2].each do |count|
         context "count: #{count}" do
           let(:count) { count }
 
@@ -77,9 +76,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
         end
       end
 
-      # rubocop:enable Metrics/BlockLength
-
-      context 'with a custom purpose' do
+            context 'with a custom purpose' do
         let(:purpose) { create :plate_purpose, size: 2 }
         let(:count) { 1 }
 
@@ -164,8 +161,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
     context 'when asset_type: multiplexed_library' do
       let(:asset_type) { 'multiplexed_library' }
 
-      # rubocop:disable Metrics/BlockLength
-      [2, 3].each do |count|
+            [2, 3].each do |count|
         context "#{count} libraries(s)" do
           let(:count) { count }
 
@@ -216,8 +212,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
           end
         end
       end
-      # rubocop:enable Metrics/BlockLength
-    end
+          end
 
     context 'when asset_type: library' do
       let(:asset_type) { 'library' }
@@ -274,8 +269,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
       let(:asset_type) { '1dtube' }
       let(:purpose) { Tube::Purpose.standard_sample_tube }
 
-      # rubocop:todo Metrics/BlockLength
-      [1, 2].each do |count|
+            [1, 2].each do |count|
         context "#{count} tubes(s)" do
           let(:count) { count }
 
@@ -319,8 +313,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
           end
         end
       end
-      # rubocop:enable Metrics/BlockLength
-    end
+          end
   end
 
   describe '#updated_by!' do

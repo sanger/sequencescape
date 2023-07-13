@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe PhiX::SpikedBuffer, type: :model, phi_x: true do
+RSpec.describe PhiX::SpikedBuffer, phi_x: true, type: :model do
   subject { build :phi_x_spiked_buffer, custom_options }
 
   context 'with suitable options' do

@@ -171,8 +171,7 @@ class Aliquot < ApplicationRecord
     super unless tag2_id == UNASSIGNED_TAG
   end
 
-  # Cop disabled as this isn't a setter
-  def set_library(force: false) # rubocop:disable Naming/AccessorMethodName
+  def set_library(force: false)
     self.library = receptacle if library.nil? || force
   end
 

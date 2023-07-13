@@ -175,3 +175,6 @@ Rails/UniqueValidationWithoutIndex:
 
 RSpec/FactoryBot/ConsistentParenthesesStyle:
   Enabled: false
+
+Rails/I18nLocaleTexts: # new in 2.14
+  Enabled: false

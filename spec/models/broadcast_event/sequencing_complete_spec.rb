@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe BroadcastEvent::SequencingComplete, type: :model, broadcast_event: true do
+RSpec.describe BroadcastEvent::SequencingComplete, broadcast_event: true, type: :model do
   let(:user) { create(:user) }
   let(:study) { create(:study) }
   let(:project) { create(:project) }
@@ -60,24 +60,24 @@ RSpec.describe BroadcastEvent::SequencingComplete, type: :model, broadcast_event
 
   it 'has the correct subjects' do
     lane.aliquots << aliquot
-    subject_role_types = json['event']['subjects'].collect { |subject| subject['role_type'] }
+    subject_role_types = json['event']['subjects'].pluck('role_type')
     expect(subject_role_types).to include('sequencing_source_labware')
     expect(subject_role_types).to include('project')
     expect(subject_role_types).to include('study')
   end
 
   it 'can have a stock plate' do
-    expect(json['event']['subjects'].collect { |subject| subject['role_type'] }).to include('stock_plate')
+    expect(json['event']['subjects'].pluck('role_type')).to include('stock_plate')
   end
 
   it 'can have library source labware' do
     allow(lane.source_labwares.first).to receive(:library_source_plates).and_return(create(:plate))
-    expect(json['event']['subjects'].collect { |subject| subject['role_type'] }).to include('library_source_labware')
+    expect(json['event']['subjects'].pluck('role_type')).to include('library_source_labware')
   end
 
   it 'has some samples' do
     allow(lane).to receive(:samples).and_return([create(:sample)])
-    expect(json['event']['subjects'].collect { |subject| subject['role_type'] }).to include('sample')
+    expect(json['event']['subjects'].pluck('role_type')).to include('sample')
   end
 
   it 'stores the result as metadata' do
