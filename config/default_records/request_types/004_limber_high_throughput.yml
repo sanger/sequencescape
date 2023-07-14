@@ -55,10 +55,9 @@ limber_lcmb:
   <<: *limber_htp_library
   name: Limber LCMB
   acceptable_purposes:
-    - LB Cherrypick
+    - LCMB Cherrypick
   library_types:
-    - Standard
-    - Chromium single cell CNV
+    - LCMB
 limber_rnaa:
   <<: *limber_htp_library
   name: Limber RNAA
