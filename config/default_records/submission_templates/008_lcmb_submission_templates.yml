@@ -1,0 +1,8 @@
+# This submission template is associated with the Limber LCMB pipeline.
+---
+Limber-Htp - LCMB:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_lcmb"]
+    product_line_name: LCMB
+    product_catalogue_name: LCMB
