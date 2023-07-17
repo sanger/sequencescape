@@ -4,7 +4,7 @@ require 'rails_helper'
 require 'support/barcode_helper'
 require 'sample_accessioning_job'
 
-RSpec.describe Sample, accession: true, cardinal: true, type: :model do
+RSpec.describe Sample, accession: true, cardinal: true do
   include MockAccession
 
   context 'accessioning' do

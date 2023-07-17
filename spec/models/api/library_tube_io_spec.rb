@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Api::LibraryTubeIO, type: :model do
+RSpec.describe Api::LibraryTubeIO do
   subject do
     create :empty_library_tube, public_name: 'ABC', closed: false, aliquots: aliquots, volume: 12.0, concentration: 8.0
   end

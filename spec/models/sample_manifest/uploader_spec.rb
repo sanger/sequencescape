@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'pry'
 
-RSpec.describe SampleManifest::Uploader, sample_manifest: true, sample_manifest_excel: true, type: :model do
+RSpec.describe SampleManifest::Uploader, sample_manifest: true, sample_manifest_excel: true do
   before(:all) do
     SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')

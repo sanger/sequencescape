@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe PickList, pick_list: true, type: :model do
+RSpec.describe PickList, pick_list: true do
   subject(:pick_list) { described_class.new(pick_attributes: picks, asynchronous: asynchronous) }
 
   let(:wells) { create_list :untagged_well, 2 }

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe RobotVerificationsController, type: :controller do
+RSpec.describe RobotVerificationsController do
   let(:user) { create :user, barcode: 'ID41440E', swipecard_code: '1234567' }
   let(:batch) { create :batch, barcode: '6262' }
   let(:robot) do

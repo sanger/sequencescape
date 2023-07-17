@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe Robot::Generator::Hamilton, type: :model do
+describe Robot::Generator::Hamilton do
   subject(:generator) { described_class.new(picking_data: data_object) }
 
   let(:expected_output) { expected_file.read }

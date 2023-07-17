@@ -3,7 +3,7 @@
 require 'rails_helper'
 require './spec/features/shared_examples/sequencing'
 
-RSpec.describe 'Following a Sequencing Pipeline', js: true, type: :feature do
+RSpec.describe 'Following a Sequencing Pipeline', js: true do
   let(:user) { create :user }
   let(:pipeline) { create(:sequencing_pipeline, :with_workflow) }
 

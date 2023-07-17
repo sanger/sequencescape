@@ -5,7 +5,7 @@ require 'rails_helper'
 # Rubocop doesn't like the .and change {}.by bits and will
 # result in repeatedly indenting them to the level of the last call in the previous chain
 
-RSpec.describe SampleManifest, sample_manifest: true, type: :model do
+RSpec.describe SampleManifest, sample_manifest: true do
   let(:user) { create :user }
   let(:study) { create :study }
 

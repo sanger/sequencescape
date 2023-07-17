@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe 'QcFiles', type: :request do
+RSpec.describe 'QcFiles' do
   let(:authorised_app) { create :api_application }
 
   describe 'create qc file' do

@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'timecop'
 
-RSpec.describe Api::Messages::WellStockResourceIO, type: :model do
+RSpec.describe Api::Messages::WellStockResourceIO do
   subject { described_class.to_hash(well) }
 
   before { Timecop.freeze(Time.zone.parse('2012-03-11 10:22:42')) } # rubocop:todo RSpec/ScatteredSetup

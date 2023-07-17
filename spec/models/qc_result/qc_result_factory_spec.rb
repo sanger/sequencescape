@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe QcResultFactory, qc_result: true, type: :model do
+RSpec.describe QcResultFactory, qc_result: true do
   describe 'multiple resources' do
     let(:asset_1) { attributes_for(:qc_result).merge(uuid: create(:receptacle).uuid) }
     let(:asset_2) { attributes_for(:qc_result).merge(uuid: create(:receptacle).uuid) }

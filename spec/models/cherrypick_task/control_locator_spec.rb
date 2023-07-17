@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe CherrypickTask::ControlLocator, type: :model do
+RSpec.describe CherrypickTask::ControlLocator do
   let(:instance) do
     described_class.new(
       batch_id: batch_id,

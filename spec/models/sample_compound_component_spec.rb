@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe SampleCompoundComponent, cardinal: true, type: :model do
+RSpec.describe SampleCompoundComponent, cardinal: true do
   describe '#validate' do
     let(:compound_sample) { create(:sample) }
     let(:component_sample) { create(:sample) }
