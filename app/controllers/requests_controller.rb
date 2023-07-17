@@ -15,7 +15,8 @@ class RequestsController < ApplicationController # rubocop:todo Style/Documentat
   # before_action :find_request_from_id, :only => [ :filter_change_decision, :change_decision ]
 
   # rubocop:todo Metrics/PerceivedComplexity, Metrics/AbcSize
-  def index # rubocop:todo Metrics/CyclomaticComplexity
+  # rubocop:todo Metrics/MethodLength
+  def index # rubocop:todo Metrics/CyclomaticComplexity, Metrics/MethodLength
     @study, @item = nil, nil
 
     # Ok, here we pick the initial source for the Requests.  They either come from Request (as in all Requests), or they
@@ -43,6 +44,7 @@ class RequestsController < ApplicationController # rubocop:todo Style/Documentat
 
     respond_to { |format| format.html }
   end
+  # rubocop:enable Metrics/MethodLength
 
   # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
 

@@ -42,7 +42,7 @@ class QcReportsController < ApplicationController # rubocop:todo Style/Documenta
 
   # rubocop:enable Metrics/MethodLength
 
-  def create # rubocop:todo Metrics/AbcSize
+  def create # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     study = Study.find_by(id: params[:qc_report][:study_id])
     exclude_existing = params[:qc_report][:exclude_existing] == '1'
     qc_report =

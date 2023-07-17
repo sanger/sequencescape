@@ -125,7 +125,7 @@ module SampleManifestExcel
           rack_barcode_to_tube_rack
         end
 
-        def create_tube_rack_if_not_existing(tube_rack_barcode)
+        def create_tube_rack_if_not_existing(tube_rack_barcode) # rubocop:todo Metrics/MethodLength
           barcode = Barcode.includes(:asset).find_by(asset_id: tube_rack_barcode)
 
           if barcode.nil?

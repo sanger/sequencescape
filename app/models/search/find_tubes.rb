@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class Search::FindTubes < Search # rubocop:todo Style/Documentation
-  def scope(user_criteria) # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength
+  def scope(user_criteria) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     criteria = default_parameters.stringify_keys.merge(user_criteria)
 
     purpose_ids =
@@ -19,4 +20,5 @@ class Search::FindTubes < Search # rubocop:todo Style/Documentation
       .limit(criteria['limit'])
       .order(id: :desc)
   end
+  # rubocop:enable Metrics/MethodLength
 end

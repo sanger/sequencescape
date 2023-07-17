@@ -97,7 +97,8 @@ module Api
         end
       end
 
-      def file_action(action, http_method) # rubocop:todo Metrics/AbcSize
+      # rubocop:todo Metrics/MethodLength
+      def file_action(action, http_method) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
         send(
           http_method,
           %r{/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?},
@@ -116,8 +117,10 @@ module Api
           end
         end
       end
+      # rubocop:enable Metrics/MethodLength
 
-      def instance_action(action, http_method) # rubocop:todo Metrics/AbcSize
+      # rubocop:todo Metrics/MethodLength
+      def instance_action(action, http_method) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
         send(
           http_method,
           %r{/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?},
@@ -134,6 +137,7 @@ module Api
           end
         end
       end
+      # rubocop:enable Metrics/MethodLength
 
       def model_action(action, http_method)
         send(http_method, %r{/([^\d/][^/]+(?:/[^/]+){0,2})}, file_attached: false, file_requested: false) do

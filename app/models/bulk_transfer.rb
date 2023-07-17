@@ -54,7 +54,8 @@ class BulkTransfer < ApplicationRecord
   end
   private :build_transfers!
 
-  def each_transfer # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength
+  def each_transfer # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     well_transfers
       .group_by { |tf| [tf['source_uuid'], tf['destination_uuid']] }
       .each do |source_dest, all_transfers|
@@ -70,5 +71,6 @@ class BulkTransfer < ApplicationRecord
         yield(source, destination, transfers)
       end
   end
+  # rubocop:enable Metrics/MethodLength
   private :each_transfer
 end

@@ -76,7 +76,7 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
   end
   ## Create the Study from new with the details from its form.
   ## Redirect to the index page with a notice.
-  def create # rubocop:todo Metrics/AbcSize
+  def create # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     ActiveRecord::Base.transaction do
       @study = Study.new(params['study'].merge(user: current_user))
       @study.save!

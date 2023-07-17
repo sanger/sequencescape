@@ -17,7 +17,8 @@ class Endpoints::Searches < ::Core::Endpoint::Base
       end
     end
 
-    def singular_search_action(name) # rubocop:todo Metrics/AbcSize
+    # rubocop:todo Metrics/MethodLength
+    def singular_search_action(name) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
       bind_action(:create, to: name.to_s, as: name.to_sym) do |_action, request, response|
         record = request.target.scope(request.json['search']).send(name.to_sym)
         raise ActiveRecord::RecordNotFound, 'no resources found with that search criteria' if record.nil?
@@ -31,6 +32,7 @@ class Endpoints::Searches < ::Core::Endpoint::Base
           .tap { |_result| response.redirect_to(record.uuid) }
       end
     end
+    # rubocop:enable Metrics/MethodLength
   end
 
   model {}

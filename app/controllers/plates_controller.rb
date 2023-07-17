@@ -86,7 +86,8 @@ class PlatesController < ApplicationController # rubocop:todo Style/Documentatio
     @studies = Study.alphabetical
   end
 
-  def create_sample_tubes # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength
+  def create_sample_tubes # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     barcode_printer = BarcodePrinter.find(params[:plates][:barcode_printer])
     barcode_array = params[:plates][:source_plates].scan(/\w+/)
     plates = Plate.with_barcode(barcode_array)
@@ -110,6 +111,7 @@ class PlatesController < ApplicationController # rubocop:todo Style/Documentatio
       end
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   def fluidigm_file
     if logged_in?

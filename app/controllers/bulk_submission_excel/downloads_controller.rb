@@ -9,7 +9,7 @@ class BulkSubmissionExcel::DownloadsController < ApplicationController
     @input_field_infos.reject! { |k| k.key == :customer_accepts_responsibility }
     render 'new', layout: !request.xhr?
   end
-  def create # rubocop:todo Metrics/AbcSize
+  def create # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     finder = Asset::Finder.new(submission_parameters.fetch(:asset_barcodes, '').split(/\s+/))
     download =
       BulkSubmissionExcel::Download.new(

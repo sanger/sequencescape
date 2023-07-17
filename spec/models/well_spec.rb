@@ -25,7 +25,9 @@ describe Well do
       it 'only 1 event if nothings changed for the same resource' do
         expect { well.update_gender_markers!(%w[M F F], 'SNP') }.to change { well.events.count }.by 1
         expect(well.events.reload.last.content).to eq 'SNP'
+        # rubocop:todo Lint/AmbiguousBlockAssociation
         expect { well.update_gender_markers!(%w[M F F], 'SNP') }.not_to change { well.events.count }
+        # rubocop:enable Lint/AmbiguousBlockAssociation
         expect(well.events.reload.last.content).to eq 'SNP'
       end
     end
@@ -47,7 +49,9 @@ describe Well do
       it 'does not add an event if the value is the same' do
         expect { well.update_sequenom_count!(10, 'MSPEC') }.to change { well.events.count }.by 1
         expect(well.events.reload.last.content).to eq 'MSPEC'
+        # rubocop:todo Lint/AmbiguousBlockAssociation
         expect { well.update_sequenom_count!(10, 'SNP') }.not_to change { well.events.count }
+        # rubocop:enable Lint/AmbiguousBlockAssociation
         expect(well.events.reload.last.content).to eq 'MSPEC'
       end
     end
@@ -76,7 +80,7 @@ describe Well do
       context 'units: nM' do
         let(:units) { 'nM' }
 
-        it 'works', :aggregate_failures do
+        it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
           expect(well.get_concentration).to be_nil
           expect(well.get_molarity).to eq(100)
         end
@@ -85,7 +89,7 @@ describe Well do
       context 'units: ng/ul' do
         let(:units) { 'ng/ul' }
 
-        it 'works', :aggregate_failures do
+        it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
           expect(well.get_concentration).to eq(100)
           expect(well.get_molarity).to be_nil
         end
@@ -113,7 +117,7 @@ describe Well do
       let(:units) { 'bases' }
       let(:value) { 100 }
 
-      it 'works', :aggregate_failures do
+      it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
         expect(well.get_sequenom_count).to eq(100)
         expect(well.events.reload.last.content).to eq 'assay 1'
       end
@@ -124,7 +128,7 @@ describe Well do
       let(:units) { 'bases' }
       let(:value) { 100 }
 
-      it 'works', :aggregate_failures do
+      it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
         expect(well.get_sequenom_count).to eq(100)
         expect(well.events.reload.last.content).to eq 'assay 1'
       end
@@ -135,7 +139,7 @@ describe Well do
       let(:units) { 'bases' }
       let(:value) { 'MFU' }
 
-      it 'works', :aggregate_failures do
+      it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
         expect(well.get_gender_markers).to eq(%w[M F Unknown])
         expect(well.events.reload.last.content).to eq 'assay 1'
       end

@@ -63,7 +63,7 @@ class QcReportTest < ActiveSupport::TestCase
     end
 
     context 'excluding existing' do
-      setup do
+      setup do # rubocop:todo Metrics/BlockLength
         @study = create :study
         @stock_plate = create :plate, purpose: PlatePurpose.find_or_create_by(name: 'Stock plate')
 

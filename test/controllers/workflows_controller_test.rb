@@ -16,7 +16,7 @@ class WorkflowsControllerTest < ActionController::TestCase
     end
 
     context '#stage' do
-      setup do
+      setup do # rubocop:todo Metrics/BlockLength
         @pipeline = FactoryBot.create :pipeline, name: 'Generic workflow'
         @ws1 = @pipeline.workflow # :item_limit => 5
 

@@ -8,7 +8,8 @@ class WorkCompletionTubesTest < ActionDispatch::PerformanceTest
 
   # THis setup mimic the end of the GBS pipeline.
   # rubocop:todo Metrics/PerceivedComplexity, Metrics/AbcSize
-  def setup # rubocop:todo Metrics/CyclomaticComplexity
+  # rubocop:todo Metrics/MethodLength
+  def setup # rubocop:todo Metrics/CyclomaticComplexity, Metrics/MethodLength
     @user = create :user
 
     tested_wells = 2
@@ -109,6 +110,7 @@ class WorkCompletionTubesTest < ActionDispatch::PerformanceTest
     @target_tube = create :multiplexed_library_tube, parents: thirds
     thirds.each { |third| create :transfer_request, asset: third, target_asset: @target_tube }
   end
+  # rubocop:enable Metrics/MethodLength
 
   # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
 

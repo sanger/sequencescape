@@ -499,7 +499,7 @@ class BatchTest < ActiveSupport::TestCase
     context '#swap' do
       # We must test swapping requests at different and same positions, as well as ones which would clash if not
       # adjusted
-      [[3, 4], [4, 4], [2, 1]].each do |left_position, right_position|
+      [[3, 4], [4, 4], [2, 1]].each do |left_position, right_position| # rubocop:todo Metrics/BlockLength
         context "when swapping #{left_position} and #{right_position}" do
           setup do
             # Create a batch with a couple of requests positioned appropriately

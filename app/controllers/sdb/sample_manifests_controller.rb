@@ -63,7 +63,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController # rubocop:todo Style/
 
 
 
-  def print_labels
+  def print_labels # rubocop:todo Metrics/MethodLength
     print_job =
       LabelPrinter::PrintJob.new(
         params[:printer],

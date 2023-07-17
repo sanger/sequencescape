@@ -60,7 +60,8 @@ module BatchesHelper
   end
 
   # Used by both assets/show.xml.builder and batches/show.xml.builder
-  def output_aliquot(xml, aliquot) # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength
+  def output_aliquot(xml, aliquot) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     xml.sample(
       sample_id: aliquot.sample_id,
       library_id: aliquot.library_id,
@@ -91,6 +92,7 @@ module BatchesHelper
       xml.insert_size(from: aliquot.insert_size.from, to: aliquot.insert_size.to) if aliquot.insert_size.present?
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   def batch_link(batch, options)
     link_text =

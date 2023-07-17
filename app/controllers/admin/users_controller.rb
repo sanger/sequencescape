@@ -76,7 +76,8 @@ class Admin::UsersController < ApplicationController # rubocop:todo Style/Docume
 
   # rubocop:enable Metrics/MethodLength
 
-  def remove_user_role # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength
+  def remove_user_role # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     if request.xhr?
       if params[:role]
         authorizable_object =
@@ -101,6 +102,7 @@ class Admin::UsersController < ApplicationController # rubocop:todo Style/Docume
       render partial: 'roles', status: 401
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   def filter
     if params[:q]

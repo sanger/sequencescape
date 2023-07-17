@@ -59,7 +59,8 @@ class Admin::StudiesController < ApplicationController # rubocop:todo Style/Docu
 
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
-  def managed_update # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength
+  def managed_update # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     @study = Study.find(params[:id])
 
     if params[:study][:uploaded_data].present?
@@ -79,6 +80,7 @@ class Admin::StudiesController < ApplicationController # rubocop:todo Style/Docu
     flash.now[:error] = 'Failed to update attributes for study!'
     render action: :show, id: @study.id and return
   end
+  # rubocop:enable Metrics/MethodLength
 
   def sort
     @studies = Study.all.sort_by(&:name)

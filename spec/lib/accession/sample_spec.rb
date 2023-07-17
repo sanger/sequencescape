@@ -41,7 +41,7 @@ RSpec.describe Accession::Sample, accession: true, type: :model do
     expect(described_class.new(tag_list, sample)).not_to be_valid
   end
 
-  it "is not sent for accessioning if the sample doesn't have the required fields" do
+  it "is not sent for accessioning if the sample doesn't have the required fields" do # rubocop:todo RSpec/ExampleLength
     sample =
       create(
         :sample_for_accessioning_with_open_study,

@@ -29,7 +29,7 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
     @studies = Study.alphabetical
   end
 
-  def edit # rubocop:todo Metrics/AbcSize
+  def edit # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     @sample = Sample.find(params[:id])
     authorize! :update, @sample
 
@@ -45,7 +45,7 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
       format.json { render json: @samples.to_json }
     end
   end
-  def create # rubocop:todo Metrics/AbcSize
+  def create # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     @sample = Sample.new(params[:sample])
 
     study_id = params[:study_id]

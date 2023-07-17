@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:todo Metrics/ClassLength
 class Studies::AssetGroupsController < ApplicationController # rubocop:todo Style/Documentation
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -39,7 +40,7 @@ class Studies::AssetGroupsController < ApplicationController # rubocop:todo Styl
     @study = Study.find(params[:study_id])
   end
 
-  def create # rubocop:todo Metrics/AbcSize
+  def create # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     @study = Study.find(params[:study_id])
     @asset_group = AssetGroup.new(params[:asset_group])
     @asset_group.study = @study
@@ -58,7 +59,7 @@ class Studies::AssetGroupsController < ApplicationController # rubocop:todo Styl
     end
   end
 
-  def update # rubocop:todo Metrics/AbcSize
+  def update # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     @asset_group = AssetGroup.find(params[:id])
     @study = Study.find(params[:study_id])
 
@@ -107,7 +108,7 @@ class Studies::AssetGroupsController < ApplicationController # rubocop:todo Styl
 
   # rubocop:enable Metrics/MethodLength
 
-  def add # rubocop:todo Metrics/AbcSize
+  def add # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     @asset_group = AssetGroup.find(params[:id])
     @study = Study.find(params[:study_id])
     if params[:asset]
@@ -135,7 +136,8 @@ class Studies::AssetGroupsController < ApplicationController # rubocop:todo Styl
     @labware = @asset_group.labware.select { |asset| asset.is_a?(Barcode::Barcodeable) }
   end
 
-  def print_labels # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength
+  def print_labels # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     @asset_group = AssetGroup.find(params[:id])
     @study = Study.find(params[:study_id])
 
@@ -149,4 +151,6 @@ class Studies::AssetGroupsController < ApplicationController # rubocop:todo Styl
       redirect_to print_study_asset_group_path(@study, @asset_group)
     end
   end
+  # rubocop:enable Metrics/MethodLength
 end
+# rubocop:enable Metrics/ClassLength

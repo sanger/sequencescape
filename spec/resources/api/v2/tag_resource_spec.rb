@@ -9,7 +9,7 @@ RSpec.describe Api::V2::TagResource, type: :resource do
   let(:resource_model) { build_stubbed :tag }
 
   # Test attributes
-  it 'works', :aggregate_failures do
+  it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
     expect(tag_resource).to have_attribute :oligo
     expect(tag_resource).to have_attribute :map_id
 

@@ -29,7 +29,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
                 ]
   before_action :find_batch_by_batch_id, only: %i[sort print_plate_barcodes print_barcodes]
 
-  def index # rubocop:todo Metrics/AbcSize
+  def index # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     if logged_in?
       @user = params.fetch(:user, current_user)
       @batches = Batch.for_user(@user).order(id: :desc).includes(:user, :assignee, :pipeline).page(params[:page])
@@ -188,7 +188,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     @fail_reasons = @batch.workflow.source_is_internal? ? FAILURE_REASONS['internal'] : FAILURE_REASONS['external']
   end
 
-  def fail_items # rubocop:todo Metrics/AbcSize
+  def fail_items # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     ActiveRecord::Base.transaction do
       fail_params =
         params.permit(:id, requested_fail: {}, requested_remove: {}, failure: %i[reason comment fail_but_charge])
@@ -216,7 +216,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   def print_labels; end
 
-  def print_plate_labels
+  def print_plate_labels # rubocop:todo Metrics/MethodLength
     @pipeline = @batch.pipeline
     @output_barcodes = []
 
@@ -250,7 +250,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
   end
 
   # Handles printing of the worksheet
-  def print # rubocop:todo Metrics/AbcSize
+  def print # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     @task = Task.find_by(id: params[:task_id])
     @pipeline = @batch.pipeline
     @comments = @batch.comments
@@ -351,7 +351,8 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   private
 
-  def print_handler(print_class) # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength
+  def print_handler(print_class) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     print_job =
       LabelPrinter::PrintJob.new(
         params[:printer],
@@ -368,6 +369,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
     redirect_to controller: 'batches', action: 'show', id: @batch.id
   end
+  # rubocop:enable Metrics/MethodLength
 
   def pipeline_error_on_batch_creation(message)
     respond_to do |format|

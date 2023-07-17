@@ -137,7 +137,7 @@ namespace :limber do
       }
     }
 
-    ActiveRecord::Base.transaction do
+    ActiveRecord::Base.transaction do # rubocop:todo Metrics/BlockLength
       st_params.each do |prefix, params|
         catalogue_name = (params[:catalogue_name] || prefix)
         catalogue =

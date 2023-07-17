@@ -282,7 +282,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
 
         before { post :submission, params: submission_params }
 
-        it 'works', :aggregate_failures do
+        it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
           expect(response).to redirect_to(robot_verifications_path)
           expect(flash[:error]).to include('Worksheet barcode invalid')
         end
@@ -302,7 +302,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
 
         before { post :submission, params: submission_params }
 
-        it 'works', :aggregate_failures do
+        it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
           expect(response).to redirect_to(robot_verifications_path)
           expect(flash[:error]).to include('Could not find robot 111111111111')
         end
@@ -322,7 +322,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
 
         before { post :submission, params: submission_params }
 
-        it 'works', :aggregate_failures do
+        it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
           expect(response).to redirect_to(robot_verifications_path)
           expect(flash[:error]).to include('Destination plate barcode invalid')
         end
@@ -342,7 +342,7 @@ RSpec.describe RobotVerificationsController, type: :controller do
 
         before { post :submission, params: submission_params }
 
-        it 'works', :aggregate_failures do
+        it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
           expect(response).to redirect_to(robot_verifications_path)
           expect(flash[:error]).to include('User barcode invalid')
         end
