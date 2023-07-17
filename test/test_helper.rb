@@ -22,12 +22,12 @@ rescue LoadError
 end
 
 Dir
-  .glob(File.expand_path(File.join(Rails.root, %w[spec factories ** *.rb])))
+  .glob(Rails.root.join(%w[spec factories ** *.rb]).expand_path)
   .sort
   .each { |factory_filename| require factory_filename }
 
 Dir
-  .glob(File.expand_path(File.join(Rails.root, %w[test shoulda_macros *.rb])))
+  .glob(Rails.root.join(%w[test shoulda_macros *.rb]).expand_path)
   .sort
   .each { |macro_filename| require macro_filename }
 

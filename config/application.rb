@@ -67,7 +67,7 @@ module Sequencescape
     config.time_zone = 'London'
 
     # Enable localisations to be split over multiple paths.
-    config.i18n.load_path = Dir[File.join(Rails.root, %w[config locales metadata *.{rb,yml}])]
+    config.i18n.load_path = Dir[Rails.root.join(%w[config locales metadata *.{rb,yml}])]
     I18n.enforce_available_locales = false
 
     config.cherrypickable_default_type = 'ABgene_0800'

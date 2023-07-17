@@ -5,7 +5,7 @@ RSpec.describe 'QcFiles' do
   let(:authorised_app) { create :api_application }
 
   describe 'create qc file' do
-    let(:filename) { File.expand_path(Rails.root.join('spec/data/parsers/cardinal_pbmc_count.csv')) }
+    let(:filename) { Rails.root.join('spec/data/parsers/cardinal_pbmc_count.csv').expand_path }
     let(:file) { File.open(filename) }
     let(:plate) { create(:plate_with_empty_wells, well_count: 96) }
 

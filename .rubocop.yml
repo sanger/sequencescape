@@ -173,8 +173,21 @@ Rails/RedundantPresenceValidationOnBelongsTo:
 Rails/UniqueValidationWithoutIndex:
   Enabled: false
 
+# Disabling newly introduced cops until we have time to sort out the offenses
 RSpec/FactoryBot/ConsistentParenthesesStyle:
   Enabled: false
 
 Rails/I18nLocaleTexts: # new in 2.14
+  Enabled: false
+
+RSpec/Rails/InferredSpecType: # new in 2.14
+  Enabled: false
+
+Lint/NonAtomicFileOperation: # new in 1.31
+  Enabled: false
+
+Rails/ActionControllerTestCase: # new in 2.14
+  Enabled: false
+
+RSpec/NoExpectationExample: # new in 2.13
   Enabled: false
