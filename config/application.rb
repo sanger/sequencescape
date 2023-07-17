@@ -111,7 +111,10 @@ module Sequencescape
         ActiveSupport::HashWithIndifferentAccess,
         RequestType::Validator::ArrayWithDefault,
         RequestType::Validator::LibraryTypeValidator,
-        RequestType::Validator::FlowcellTypeValidator
+        RequestType::Validator::FlowcellTypeValidator,
+        ActionController::Parameters,
+        Set,
+        Range
       ]
     end
   end
