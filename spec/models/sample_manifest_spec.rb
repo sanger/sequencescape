@@ -221,9 +221,11 @@ RSpec.describe SampleManifest, sample_manifest: true do
       context 'library tubes' do
         it 'create 1 tube' do
           # We need to create library tubes as we have downstream dependencies that assume a unique library tube
-          expect { manifest.generate }.to change(LibraryTube, :count).by(count) &&
-            change(MultiplexedLibraryTube, :count).by(0) && change(SampleTube, :count).by(0) &&
-            change(SampleManifestAsset, :count).by(count) && change(BroadcastEvent, :count).by(1)
+          expect { manifest.generate }.to change(LibraryTube, :count).by(count)
+          expect { manifest.generate }.not_to change(MultiplexedLibraryTube, :count)
+          expect { manifest.generate }.not_to change(SampleTube, :count)
+          expect { manifest.generate }.to change(SampleManifestAsset, :count).by(count)
+          expect { manifest.generate }.to change(BroadcastEvent, :count).by(1)
         end
 
         context 'once generated' do

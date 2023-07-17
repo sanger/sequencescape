@@ -30,6 +30,7 @@ AllCops:
     - bin/*
     - sbin/*
     - node_modules/**/*
+    - tmp/**/*
 
 Rails/SkipsModelValidations:
   Exclude:
