@@ -151,7 +151,7 @@ RSpec.describe SampleManifest, sample_manifest: true do
       let(:manifest) { create :sample_manifest, study: study }
 
       it 'adds created broadcast event when sample manifest is created' do
-        expect { manifest.generate }.to change { BroadcastEvent::SampleManifestCreated.count }.by(1)
+        expect { manifest.generate }.to change(BroadcastEvent::SampleManifestCreated, :count).by(1)
         broadcast_event = BroadcastEvent::SampleManifestCreated.last
         expect(broadcast_event.subjects.count).to eq 2
         expect(broadcast_event.to_json).to be_a String

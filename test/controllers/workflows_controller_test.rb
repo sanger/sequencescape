@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-ActionController::TestCase.include AuthenticatedTestHelper
+ActionController::TestCase.include AuthenticatedTestHelper # rubocop:todo Rails/ActiveSupportOnLoad
 
 class WorkflowsControllerTest < ActionController::TestCase
   context 'WorkflowController' do

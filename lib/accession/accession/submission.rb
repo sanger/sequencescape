@@ -82,7 +82,7 @@ module Accession
       end
 
       def close!
-        files.values.each(&:close!)
+        files.values.each(&:close!) # rubocop:todo Style/HashEachMethods
       end
     end
 

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 class PacBio::Worksheet # rubocop:todo Style/Documentation
-  def initialize; end
-
   def create_csv_from_batch(batch)
     csv_string =
       CSV.generate(row_sep: "\r\n") do |csv|

@@ -17,6 +17,7 @@ RSpec/DescribeClass:
     - "spec/requests/**/*.rb"
     - "spec/api/**/*.rb"
     - "spec/features/**/*.rb"
+    - "spec/views/**/*.rb"
 AllCops:
   NewCops: enable
   Exclude:
