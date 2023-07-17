@@ -44,5 +44,4 @@ class StudyReportsController < ApplicationController # rubocop:todo Style/Docume
       end
     end
   end
-
 end

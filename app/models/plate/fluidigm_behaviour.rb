@@ -29,8 +29,10 @@ module Plate::FluidigmBehaviour # rubocop:todo Style/Documentation
   def retrieve_fluidigm_data
     ActiveRecord::Base.transaction do
       fluidigm_data = FluidigmFile::Finder.find(fluidigm_barcode)
+
       # rubocop:todo Rails/TransactionExitStatement
       return false if fluidigm_data.empty? # Return false if we have no data
+
       # rubocop:enable Rails/TransactionExitStatement
 
       apply_fluidigm_data(FluidigmFile.new(fluidigm_data.content))

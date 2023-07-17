@@ -36,7 +36,6 @@ class Admin::ProjectsController < ApplicationController # rubocop:todo Style/Doc
     render partial: 'manage_single_project'
   end
 
-
   def filter # rubocop:todo Metrics/AbcSize
     filters = params[:filter] || {}
 

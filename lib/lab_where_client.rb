@@ -54,7 +54,7 @@ module LabWhereClient
       attr_reader :endpoint
     end
 
-    def initialize(params); end  # rubocop:todo Style/RedundantInitialize
+    def initialize(params); end # rubocop:todo Style/RedundantInitialize
   end
 
   module EndpointCreateActions # rubocop:todo Style/Documentation

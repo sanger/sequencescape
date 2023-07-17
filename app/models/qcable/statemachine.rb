@@ -53,6 +53,7 @@ module Qcable::Statemachine # rubocop:todo Style/Documentation
       scope :unavailable, -> { where(state: %i[created pending failed passed destroyed qc_in_progress exhausted]) }
     end
   end
+
   # rubocop:enable Metrics/MethodLength
 
   #--

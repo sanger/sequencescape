@@ -69,7 +69,6 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
     end
   end
 
-
   def release
     @sample = Sample.find(params[:id])
     authorize! :release, @sample
@@ -82,7 +81,6 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
     end
     redirect_to sample_path(@sample)
   end
-
 
   # rubocop:todo Metrics/MethodLength
   def update # rubocop:todo Metrics/AbcSize

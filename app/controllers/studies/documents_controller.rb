@@ -35,7 +35,6 @@ class Studies::DocumentsController < ApplicationController # rubocop:todo Style/
     end
   end
 
-
   def destroy
     @document = Document.find(params[:id])
     if @document.destroy

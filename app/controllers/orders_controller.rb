@@ -13,5 +13,4 @@ class OrdersController < ApplicationController # rubocop:todo Style/Documentatio
       head :accepted
     end
   end
-
 end

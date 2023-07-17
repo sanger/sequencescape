@@ -28,11 +28,13 @@ class SubmissionsController < ApplicationController
     @pending = Submission.pending.order(created_at: :desc).where(user_id: current_user.id)
     @ready = Submission.ready.order(created_at: :desc).limit(10).where(user_id: current_user.id)
   end
+
   # Show a submission. Read-only page, but provides a link to the edit page for submissions which
   # haven't yet left state building
   def show
     @presenter = Submission::SubmissionPresenter.new(current_user, id: params[:id])
   end
+
   # The main landing page for creating a new submission. Lots of ajax action!
   def new
     expires_now
@@ -42,6 +44,7 @@ class SubmissionsController < ApplicationController
   def edit
     @presenter = Submission::SubmissionCreator.new(current_user, id: params[:id])
   end
+
   # Triggered when someone clicks 'Save Order' in the submission creator
   # New Order is just client side
   # Creates an order, followed by a submission, and then assigns the order to the submission.
@@ -62,7 +65,6 @@ class SubmissionsController < ApplicationController
     end
   end
 
-
   # This method will build a submission then redirect to the submission on completion
   def update
     @presenter = Submission::SubmissionCreator.new(current_user, id: params[:id])
@@ -80,7 +82,6 @@ class SubmissionsController < ApplicationController
     Submission.find(params[:id]).update!(priority: params[:submission][:priority])
     redirect_to action: :show, id: params[:id]
   end
-
 
   # Cancels the selected submission, and returns the user to the submission show page.
   # Cancelled submissions in turn cancel all their requests.
@@ -104,7 +105,6 @@ class SubmissionsController < ApplicationController
       redirect_to action: :index
     end
   end
-
 
   # An index page for study submissions.
   # Bit unconventional URL eg:

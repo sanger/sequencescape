@@ -33,6 +33,7 @@ module SequencescapeExcel
           sample_manifest.update_barcodes if sample_manifest.present?
         end
       end
+
       # rubocop:enable Metrics/MethodLength
 
       # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity

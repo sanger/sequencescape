@@ -38,7 +38,6 @@ class Admin::RobotPropertiesController < ApplicationController # rubocop:todo St
     end
   end
 
-
   def update
     @robot_property = RobotProperty.find(params[:id])
     if @robot_property.update(params[:robot_property])

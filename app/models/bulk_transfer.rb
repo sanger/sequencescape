@@ -71,6 +71,7 @@ class BulkTransfer < ApplicationRecord
         yield(source, destination, transfers)
       end
   end
+
   # rubocop:enable Metrics/MethodLength
   private :each_transfer
 end

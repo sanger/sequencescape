@@ -84,6 +84,7 @@ module BootstrapHelper
       end
     end
   end
+
   # rubocop:enable Metrics/MethodLength
 
   def pagination(collection)

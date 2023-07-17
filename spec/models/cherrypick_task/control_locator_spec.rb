@@ -129,7 +129,7 @@ RSpec.describe CherrypickTask::ControlLocator do
       end
     end
 
-        context 'when over a range of batches' do
+    context 'when over a range of batches' do
       let(:range) { (1...1000) }
       let(:control_positions) do
         range.map do |batch_id|

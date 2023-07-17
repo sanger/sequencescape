@@ -21,6 +21,7 @@ module Aliquot::Aliquotable
       scope :contained_in, ->(receptacles) { joins(:receptacles).where(receptacles: { id: receptacles }) }
     end
   end
+
   # rubocop:enable Metrics/MethodLength
 
   module ClassMethods # rubocop:todo Style/Documentation

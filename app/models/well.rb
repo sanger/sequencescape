@@ -289,6 +289,7 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
 
     well_attribute.update!(gender_markers: gender_markers)
   end
+
   # rubocop:enable Metrics/MethodLength
 
   def update_sequenom_count!(sequenom_count, resource)

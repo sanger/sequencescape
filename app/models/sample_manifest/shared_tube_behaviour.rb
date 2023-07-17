@@ -39,6 +39,7 @@ module SampleManifest::SharedTubeBehaviour
       delayed_generate_asset_requests(tubes.map { |tube| tube.receptacle.id }, study.id)
       tubes
     end
+
     # rubocop:enable Metrics/MethodLength
 
     def delayed_generate_asset_requests(asset_ids, study_id)

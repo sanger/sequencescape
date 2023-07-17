@@ -23,7 +23,6 @@ class Admin::UsersController < ApplicationController # rubocop:todo Style/Docume
     end
   end
 
-
   def switch
     session[:user] = params[:id]
     redirect_to studies_url
@@ -102,6 +101,7 @@ class Admin::UsersController < ApplicationController # rubocop:todo Style/Docume
       render partial: 'roles', status: 401
     end
   end
+
   # rubocop:enable Metrics/MethodLength
 
   def filter

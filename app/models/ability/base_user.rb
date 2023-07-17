@@ -40,6 +40,7 @@ class Ability::BaseUser
 
     grant_advanced_batch_operation_privileges
   end
+
   # rubocop:enable Metrics/MethodLength
 
   # Before this was granted to anyone, unless they

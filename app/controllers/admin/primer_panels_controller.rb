@@ -13,7 +13,6 @@ class Admin::PrimerPanelsController < ApplicationController # rubocop:todo Style
     @primer_panel = PrimerPanel.new(programs: default_programs)
   end
 
-
   def edit; end
 
   def create

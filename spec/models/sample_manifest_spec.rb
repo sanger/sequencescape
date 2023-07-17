@@ -33,7 +33,7 @@ RSpec.describe SampleManifest, sample_manifest: true do
 
       teardown { Delayed::Worker.delay_jobs = true }
 
-            [1, 2].each do |count|
+      [1, 2].each do |count|
         context "count: #{count}" do
           let(:count) { count }
 
@@ -76,7 +76,7 @@ RSpec.describe SampleManifest, sample_manifest: true do
         end
       end
 
-            context 'with a custom purpose' do
+      context 'with a custom purpose' do
         let(:purpose) { create :plate_purpose, size: 2 }
         let(:count) { 1 }
 
@@ -161,7 +161,7 @@ RSpec.describe SampleManifest, sample_manifest: true do
     context 'when asset_type: multiplexed_library' do
       let(:asset_type) { 'multiplexed_library' }
 
-            [2, 3].each do |count|
+      [2, 3].each do |count|
         context "#{count} libraries(s)" do
           let(:count) { count }
 
@@ -212,7 +212,7 @@ RSpec.describe SampleManifest, sample_manifest: true do
           end
         end
       end
-          end
+    end
 
     context 'when asset_type: library' do
       let(:asset_type) { 'library' }
@@ -271,7 +271,7 @@ RSpec.describe SampleManifest, sample_manifest: true do
       let(:asset_type) { '1dtube' }
       let(:purpose) { Tube::Purpose.standard_sample_tube }
 
-            [1, 2].each do |count|
+      [1, 2].each do |count|
         context "#{count} tubes(s)" do
           let(:count) { count }
 
@@ -315,7 +315,7 @@ RSpec.describe SampleManifest, sample_manifest: true do
           end
         end
       end
-          end
+    end
   end
 
   describe '#updated_by!' do

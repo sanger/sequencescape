@@ -43,7 +43,6 @@ class Admin::CustomTextsController < ApplicationController # rubocop:todo Style/
     end
   end
 
-
   def update
     @custom_text = CustomText.find(params[:id])
     if @custom_text.update(params[:custom_text])

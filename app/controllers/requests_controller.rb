@@ -44,6 +44,7 @@ class RequestsController < ApplicationController # rubocop:todo Style/Documentat
 
     respond_to { |format| format.html }
   end
+
   # rubocop:enable Metrics/MethodLength
 
   # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity

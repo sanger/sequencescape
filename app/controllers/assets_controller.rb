@@ -42,6 +42,7 @@ class AssetsController < ApplicationController
       render :show, status: :multiple_choices
     end
   end
+
   # rubocop:enable Metrics/MethodLength
 
   # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity

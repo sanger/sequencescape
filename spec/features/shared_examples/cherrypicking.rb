@@ -152,10 +152,10 @@ shared_examples 'a cherrypicking procedure' do
             end
           end
         end
-              end
+      end
     end
 
-        step 'Perform the bed verifications and check picking files' do
+    step 'Perform the bed verifications and check picking files' do
       # for each destination plate...
       expected_plates_by_destination_plate.each do |(destination_barcode, current_expected_plates)|
         # for each pick...
@@ -384,5 +384,5 @@ shared_examples 'a cherrypicking procedure' do
         end
       end
     end
-      end
+  end
 end

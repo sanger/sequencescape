@@ -74,6 +74,7 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
     flash.now[:warning] = @study.warnings if @study.warnings.present?
     @users = User.all
   end
+
   ## Create the Study from new with the details from its form.
   ## Redirect to the index page with a notice.
   def create # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
@@ -98,8 +99,6 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
       format.json { render json: @study.errors, status: :unprocessable_entity }
     end
   end
-
-
 
   # rubocop:todo Metrics/MethodLength
   def update # rubocop:todo Metrics/AbcSize

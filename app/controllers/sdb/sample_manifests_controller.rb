@@ -31,6 +31,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController # rubocop:todo Style/
     @display_manifests = pending_sample_manifests | completed_sample_manifests
     @sample_manifests = SampleManifest.paginate(page: params[:page])
   end
+
   # Show the manifest
   def show
     @study_id = @sample_manifest.study_id
@@ -60,8 +61,6 @@ class Sdb::SampleManifestsController < Sdb::BaseController # rubocop:todo Style/
       redirect_to new_sample_manifest_path
     end
   end
-
-
 
   def print_labels # rubocop:todo Metrics/MethodLength
     print_job =

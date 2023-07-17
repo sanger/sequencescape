@@ -133,8 +133,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     @batch_parameters ||= params.require(:batch).permit(:assignee_id)
   end
 
-
-    def pipeline
+  def pipeline
     # All pipeline batches routes should just direct to batches#index with pipeline and state as filter parameters
     @batches =
       Batch
@@ -369,6 +368,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
     redirect_to controller: 'batches', action: 'show', id: @batch.id
   end
+
   # rubocop:enable Metrics/MethodLength
 
   def pipeline_error_on_batch_creation(message)

@@ -31,7 +31,6 @@ class Admin::StudiesController < ApplicationController # rubocop:todo Style/Docu
     render partial: 'manage_single_study'
   end
 
-
   # TODO: remove unneeded code
   # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def filter # rubocop:todo Metrics/CyclomaticComplexity
@@ -80,6 +79,7 @@ class Admin::StudiesController < ApplicationController # rubocop:todo Style/Docu
     flash.now[:error] = 'Failed to update attributes for study!'
     render action: :show, id: @study.id and return
   end
+
   # rubocop:enable Metrics/MethodLength
 
   def sort

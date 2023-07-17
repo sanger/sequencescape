@@ -30,7 +30,6 @@ class BulkSubmissionExcel::DownloadsController < ApplicationController
     file&.close
   end
 
-
   def submission_parameters
     params.require(:bulk_submission_excel_download).permit(:asset_barcodes)
   end

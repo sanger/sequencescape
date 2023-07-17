@@ -19,7 +19,6 @@ class PlatesController < ApplicationController # rubocop:todo Style/Documentatio
     end
   end
 
-
   # rubocop:todo Metrics/MethodLength
   def create # rubocop:todo Metrics/AbcSize
     @creator = plate_creator = Plate::Creator.find(params[:plates][:creator_id])
@@ -111,6 +110,7 @@ class PlatesController < ApplicationController # rubocop:todo Style/Documentatio
       end
     end
   end
+
   # rubocop:enable Metrics/MethodLength
 
   def fluidigm_file

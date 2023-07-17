@@ -205,6 +205,7 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
     yield matching_samples, matching_orders, matching_submissions if block_given?
     true
   end
+
   # rubocop:enable Metrics/MethodLength
 
   def request_type_ids_list

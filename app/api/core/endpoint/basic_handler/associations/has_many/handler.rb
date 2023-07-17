@@ -82,6 +82,7 @@ class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpo
         end
       end
   end
+
   # rubocop:enable Metrics/MethodLength
 
   def core_path(*args)

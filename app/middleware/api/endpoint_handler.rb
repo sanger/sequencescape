@@ -117,6 +117,7 @@ module Api
           end
         end
       end
+
       # rubocop:enable Metrics/MethodLength
 
       # rubocop:todo Metrics/MethodLength
@@ -137,6 +138,7 @@ module Api
           end
         end
       end
+
       # rubocop:enable Metrics/MethodLength
 
       def model_action(action, http_method)

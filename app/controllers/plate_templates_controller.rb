@@ -44,7 +44,6 @@ class PlateTemplatesController < ApplicationController # rubocop:todo Style/Docu
     redirect_to plate_templates_path
   end
 
-
   def update # rubocop:todo Metrics/AbcSize
     pattern = PlateTemplate.find(params[:id])
     pattern.update_params!(

@@ -61,8 +61,8 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton # rubocop:to
 
   def order_params
     @order_params = @order_params.to_hash if @order_params.instance_of?(ActiveSupport::HashWithIndifferentAccess)
-    @order_params[:multiplier] = 
-ActiveSupport::HashWithIndifferentAccess.new if @order_params && @order_params[:multiplier].nil?
+    @order_params[:multiplier] = ActiveSupport::HashWithIndifferentAccess.new if @order_params &&
+      @order_params[:multiplier].nil?
     @order_params
   end
 

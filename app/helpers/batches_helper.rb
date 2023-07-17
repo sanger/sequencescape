@@ -92,6 +92,7 @@ module BatchesHelper
       xml.insert_size(from: aliquot.insert_size.from, to: aliquot.insert_size.to) if aliquot.insert_size.present?
     end
   end
+
   # rubocop:enable Metrics/MethodLength
 
   def batch_link(batch, options)

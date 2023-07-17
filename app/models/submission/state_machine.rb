@@ -116,6 +116,7 @@ module Submission::StateMachine
       end
     end
   end
+
   # rubocop:enable Metrics/MethodLength
 
   private :configure_state_machine
