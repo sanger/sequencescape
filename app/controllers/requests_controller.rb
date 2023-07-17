@@ -81,16 +81,16 @@ class RequestsController < ApplicationController # rubocop:todo Style/Documentat
 
     begin
       if @request.update(parameters)
-        flash.now[:notice] = 'Request details have been updated'
+        flash[:notice] = 'Request details have been updated' # rubocop:disable Rails/ActionControllerFlashBeforeRender
         redirect_to request_path(@request)
       else
-        flash.now[:error] = 'Request was not updated. No change specified ?'
+        flash[:error] = 'Request was not updated. No change specified ?' # rubocop:disable Rails/ActionControllerFlashBeforeRender
         render action: 'edit', id: @request.id
       end
     rescue => e
       error_message = "An error has occurred, category:'#{e.class}'\ndescription:'#{e.message}'"
       EventFactory.request_update_note_to_manager(@request, current_user, error_message)
-      flash.now[:error] = 'Failed to update request. ' << error_message
+      flash[:error] = 'Failed to update request. ' << error_message # rubocop:disable Rails/ActionControllerFlashBeforeRender
       render action: 'edit', id: @request.id
     end
   end
@@ -179,7 +179,7 @@ class RequestsController < ApplicationController # rubocop:todo Style/Documentat
     flash[:notice] = 'Update. Below you find the new situation.'
     redirect_to filter_change_decision_request_path(params[:id])
   rescue Request::ChangeDecision::InvalidDecision => e
-    flash.now[:error] = 'Failed! Please, read the list of problem below.'
+    flash[:error] = 'Failed! Please, read the list of problem below.' # rubocop:disable Rails/ActionControllerFlashBeforeRender
     @change_decision = e.object
     render(action: :filter_change_decision)
   end
