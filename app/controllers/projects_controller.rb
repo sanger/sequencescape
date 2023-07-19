@@ -178,4 +178,3 @@ class ProjectsController < ApplicationController # rubocop:todo Style/Documentat
     @project = Project.find(params[:id])
   end
 end
-

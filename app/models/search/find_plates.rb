@@ -3,7 +3,6 @@
 # General purpose flexible search. Can eventually replace a number of existing searches.
 # Allows the user to customise the parameters.
 class Search::FindPlates < Search
-  # rubocop:todo Metrics/MethodLength
   def scope(user_criteria) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     # We find all plates that do not have transfers where they are the source.  Once a plate has been transferred
     # (or marked for transfer) the destination plate becomes the end of the chain.
@@ -23,5 +22,4 @@ class Search::FindPlates < Search
       .per_page(criteria['limit'])
       .order(id: :desc)
   end
-  # rubocop:enable Metrics/MethodLength
 end
