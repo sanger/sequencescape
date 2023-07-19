@@ -17,7 +17,6 @@
 #         and shows the qc information for plates.
 class AssetsController < ApplicationController
   # rubocop:todo Metrics/PerceivedComplexity, Metrics/AbcSize
-  # rubocop:todo Metrics/MethodLength
   def show # rubocop:todo Metrics/CyclomaticComplexity, Metrics/MethodLength
     # LEGACY API FOR CGP to allow switch-over
     # In future they will use the recpetacles/:id/parent
@@ -42,8 +41,6 @@ class AssetsController < ApplicationController
       render :show, status: :multiple_choices
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
 

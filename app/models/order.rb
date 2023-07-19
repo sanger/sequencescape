@@ -189,7 +189,6 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   # rubocop:enable Metrics/MethodLength
 
-  # rubocop:todo Metrics/MethodLength
   def duplicates_within(timespan) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     matching_orders =
       Order
@@ -205,8 +204,6 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
     yield matching_samples, matching_orders, matching_submissions if block_given?
     true
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def request_type_ids_list
     @request_type_ids_list ||= [[]]

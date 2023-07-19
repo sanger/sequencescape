@@ -13,7 +13,6 @@ class Ability::BaseUser
 
   private
 
-  # rubocop:todo Metrics/MethodLength
   def grant_privileges # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     Rails.logger.debug { 'Granting BaseUser privileges' }
 
@@ -40,8 +39,6 @@ class Ability::BaseUser
 
     grant_advanced_batch_operation_privileges
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   # Before this was granted to anyone, unless they
   # were an owner of anything, in which case they also

@@ -136,7 +136,6 @@ class Studies::AssetGroupsController < ApplicationController # rubocop:todo Styl
     @labware = @asset_group.labware.select { |asset| asset.is_a?(Barcode::Barcodeable) }
   end
 
-  # rubocop:todo Metrics/MethodLength
   def print_labels # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     @asset_group = AssetGroup.find(params[:id])
     @study = Study.find(params[:study_id])
@@ -151,6 +150,5 @@ class Studies::AssetGroupsController < ApplicationController # rubocop:todo Styl
       redirect_to print_study_asset_group_path(@study, @asset_group)
     end
   end
-  # rubocop:enable Metrics/MethodLength
 end
 # rubocop:enable Metrics/ClassLength

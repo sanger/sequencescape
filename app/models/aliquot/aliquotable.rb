@@ -2,7 +2,6 @@
 
 # Something that is aliquotable can be part of an aliquot.  So sample and tag are both examples.
 module Aliquot::Aliquotable
-  # rubocop:todo Metrics/MethodLength
   def self.included(base) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     base.class_eval do
       extend ClassMethods
@@ -21,8 +20,6 @@ module Aliquot::Aliquotable
       scope :contained_in, ->(receptacles) { joins(:receptacles).where(receptacles: { id: receptacles }) }
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   module ClassMethods # rubocop:todo Style/Documentation
     def receptacle_alias(name, options = {}, &block)

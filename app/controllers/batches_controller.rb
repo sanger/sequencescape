@@ -350,7 +350,6 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   private
 
-  # rubocop:todo Metrics/MethodLength
   def print_handler(print_class) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     print_job =
       LabelPrinter::PrintJob.new(
@@ -368,8 +367,6 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
     redirect_to controller: 'batches', action: 'show', id: @batch.id
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def pipeline_error_on_batch_creation(message)
     respond_to do |format|

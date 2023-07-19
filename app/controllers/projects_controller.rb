@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 require 'event_factory'
-# rubocop:todo Metrics/ClassLength
 class ProjectsController < ApplicationController # rubocop:todo Style/Documentation, Metrics/ClassLength
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -179,4 +178,4 @@ class ProjectsController < ApplicationController # rubocop:todo Style/Documentat
     @project = Project.find(params[:id])
   end
 end
-# rubocop:enable Metrics/ClassLength
+

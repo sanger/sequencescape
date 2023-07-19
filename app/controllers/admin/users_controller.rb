@@ -28,8 +28,7 @@ class Admin::UsersController < ApplicationController # rubocop:todo Style/Docume
     redirect_to studies_url
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def update # rubocop:todo Metrics/AbcSize
+  def update # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     @user = User.find(params[:id])
     Role.general_roles.each do |role|
       params[:role] && params[:role][role.name] ? @user.grant_role(role.name) : @user.remove_role(role.name)
@@ -44,10 +43,7 @@ class Admin::UsersController < ApplicationController # rubocop:todo Style/Docume
     redirect_to profile_path(@user)
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  # rubocop:todo Metrics/MethodLength
-  def grant_user_role # rubocop:todo Metrics/AbcSize
+  def grant_user_role # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     if request.xhr?
       if params[:role]
         authorizable_object =
@@ -73,9 +69,6 @@ class Admin::UsersController < ApplicationController # rubocop:todo Style/Docume
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  # rubocop:todo Metrics/MethodLength
   def remove_user_role # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     if request.xhr?
       if params[:role]
@@ -101,8 +94,6 @@ class Admin::UsersController < ApplicationController # rubocop:todo Style/Docume
       render partial: 'roles', status: 401
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def filter
     if params[:q]
