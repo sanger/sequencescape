@@ -30,7 +30,7 @@ class PlatesController < ApplicationController # rubocop:todo Style/Documentatio
 
     respond_to do |format|
       if scanned_user.nil?
-        flash[:error] = 'Please scan your user barcode'
+        flash[:error] = 'Please scan your user barcode' # rubobop:disable Rails/ActionControllerFlashBeforeRender
       elsif tube_rack_sources?
         plate_creator.create_plates_from_tube_racks!(tube_racks, barcode_printer, scanned_user, create_asset_group)
       else
@@ -42,13 +42,13 @@ class PlatesController < ApplicationController # rubocop:todo Style/Documentatio
           Plate::CreatorParameters.new(params[:plates])
         )
       end
-      flash[:notice] = 'Created plates successfully'
-      flash[:warning] = plate_creator.warnings if plate_creator.warnings.present?
+      flash[:notice] = 'Created plates successfully' # rubobop:disable Rails/ActionControllerFlashBeforeRender
+      flash[:warning] = plate_creator.warnings if plate_creator.warnings.present? # rubobop:disable Rails/ActionControllerFlashBeforeRender
       format.html { render(new_plate_path) }
     end
   rescue StandardError => e
     respond_to do |format|
-      flash[:error] = e.message
+      flash[:error] = e.message # rubobop:disable Rails/ActionControllerFlashBeforeRender
       format.html { render(new_plate_path) }
     end
   end
