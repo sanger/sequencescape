@@ -247,7 +247,7 @@ supplier_name:
         operator: ">"
         operand: 40
 bioscan_supplier_name:
-  heading: SUPPLIER SAMPLE NAME
+  heading: BIOSCAN SUPPLIER SAMPLE NAME
   unlocked: true
   validation:
     options:
@@ -855,7 +855,7 @@ control_type:
     empty_cell:
     is_error:
 bioscan_control_type:
-  heading: CONTROL TYPE
+  heading: BIOSCAN CONTROL TYPE
   unlocked: true
   validation:
     options:
