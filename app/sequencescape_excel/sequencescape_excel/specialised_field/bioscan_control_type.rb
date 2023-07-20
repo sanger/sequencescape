@@ -13,31 +13,31 @@ module SequencescapeExcel
     class BioscanControlType < ControlType
       include Base
 
-      # attr_accessor :supplier_name, :well
+      attr_accessor :supplier_name, :well
 
-      # validate :check_supplier_name
-      # validate :check_well_position
+      validate :check_supplier_name
+      validate :check_well_position
 
-      # def link(other_fields)
-      #   self.supplier_name = other_fields[SequencescapeExcel::SpecialisedField::BioscanSupplierName]
-      #   self.well = other_fields[SequencescapeExcel::SpecialisedField::Well]
-      # end
+      def link(other_fields)
+        self.supplier_name = other_fields[SequencescapeExcel::SpecialisedField::BioscanSupplierName]
+        self.well = other_fields[SequencescapeExcel::SpecialisedField::Well]
+      end
 
-      # private
+      private
 
-      # def check_supplier_name
-      #   return if value.blank? || supplier_name&.value&.match?(/^CONTROL_\S+/)
+      def check_supplier_name
+        return if value.blank? || supplier_name&.value&.match?(/^CONTROL_\S+/)
 
-      #   errors.add(:base, 'a control should have a supplier name beginning with CONTROL_.')
-      # end
+        errors.add(:base, 'a control should have a supplier name beginning with CONTROL_.')
+      end
 
-      # def check_well_position
-      #   if (['pcr positive', 'pcr negative'].include? value) && (well&.value == 'H12')
-      #     errors.add(:base, 'pcr positive or pcr negative controls cannot be in H12.')
-      #   elsif value == 'lysate negative' && well&.value != 'H12'
-      #     errors.add(:base, 'lysate negative control (if present) must be in H12.')
-      #   end
-      # end
+      def check_well_position
+        if (['pcr positive', 'pcr negative'].include? value) && (well&.value == 'H12')
+          errors.add(:base, 'pcr positive or pcr negative controls cannot be in H12.')
+        elsif value == 'lysate negative' && well&.value != 'H12'
+          errors.add(:base, 'lysate negative control (if present) must be in H12.')
+        end
+      end
     end
   end
 end
