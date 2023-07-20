@@ -11,31 +11,33 @@ module SequencescapeExcel
     # 'pcr positive' or 'pcr negative' cannot be in H12
     # 'lysate negative' control (if present) can only be in H12
     class BioscanControlType < ControlType
-      attr_accessor :supplier_name, :well
+      include Base
 
-      validate :check_supplier_name
-      validate :check_well_position
+      # attr_accessor :supplier_name, :well
 
-      def link(other_fields)
-        self.supplier_name = other_fields[SequencescapeExcel::SpecialisedField::BioscanSupplierName]
-        self.well = other_fields[SequencescapeExcel::SpecialisedField::Well]
-      end
+      # validate :check_supplier_name
+      # validate :check_well_position
 
-      private
+      # def link(other_fields)
+      #   self.supplier_name = other_fields[SequencescapeExcel::SpecialisedField::BioscanSupplierName]
+      #   self.well = other_fields[SequencescapeExcel::SpecialisedField::Well]
+      # end
 
-      def check_supplier_name
-        return if value.blank? || supplier_name&.value&.match?(/^CONTROL_\S+/)
+      # private
 
-        errors.add(:base, 'a control should have a supplier name beginning with CONTROL_.')
-      end
+      # def check_supplier_name
+      #   return if value.blank? || supplier_name&.value&.match?(/^CONTROL_\S+/)
 
-      def check_well_position
-        if (['pcr positive', 'pcr negative'].include? value) && (well&.value == 'H12')
-          errors.add(:base, 'pcr positive or pcr negative controls cannot be in H12.')
-        elsif value == 'lysate negative' && well&.value != 'H12'
-          errors.add(:base, 'lysate negative control (if present) must be in H12.')
-        end
-      end
+      #   errors.add(:base, 'a control should have a supplier name beginning with CONTROL_.')
+      # end
+
+      # def check_well_position
+      #   if (['pcr positive', 'pcr negative'].include? value) && (well&.value == 'H12')
+      #     errors.add(:base, 'pcr positive or pcr negative controls cannot be in H12.')
+      #   elsif value == 'lysate negative' && well&.value != 'H12'
+      #     errors.add(:base, 'lysate negative control (if present) must be in H12.')
+      #   end
+      # end
     end
   end
 end
