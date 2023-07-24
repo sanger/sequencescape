@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Batch do
+RSpec.describe Batch, type: :model do
   describe '::barcode_without_pick_number' do
     subject { described_class.barcode_without_pick_number(barcode_to_split) }
 

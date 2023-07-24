@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SequencescapeExcel::Range, sample_manifest: true, sample_manifest_excel: true, type: :model do
+RSpec.describe SequencescapeExcel::Range, type: :model, sample_manifest_excel: true, sample_manifest: true do
   let(:options) { %w[option1 option2 option3] }
 
   it 'is comparable' do

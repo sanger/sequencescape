@@ -36,7 +36,7 @@ class PreCapturePool < ApplicationRecord
 
     def build!
       ActiveRecord::Base.transaction do
-        return unless poolable? # rubocop:todo Rails/TransactionExitStatement
+        return unless poolable?
 
         # We find the library creation requests sorted in column order
         # and then walk downstream until we get to the poolable requests.

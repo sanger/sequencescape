@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe BroadcastEvent::PoolReleased, broadcast_event: true do
+RSpec.describe BroadcastEvent::PoolReleased, type: :model, broadcast_event: true do
   let(:source_plate) do
     pl = create :full_stock_plate
     pl.wells.first.aliquots << (create :aliquot, sample: tube.samples.first)

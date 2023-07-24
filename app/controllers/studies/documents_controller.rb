@@ -10,15 +10,11 @@ class Studies::DocumentsController < ApplicationController # rubocop:todo Style/
     @documents = @study.documents
   end
 
-  def show
-    @document = Document.find(params[:id])
-    send_data @document.current_data, filename: @document.filename, type: @document.content_type, disposition: 'inline'
-  end
   def new
     @study = Study.find(params[:study_id])
   end
 
-  def create # rubocop:todo Metrics/MethodLength
+  def create
     document_settings = params[:document]
     document_settings[:documentable] = @study
     @document = Document.new(document_settings)
@@ -33,6 +29,11 @@ class Studies::DocumentsController < ApplicationController # rubocop:todo Style/
       flash[:error] = 'Something bad happened. Perhaps karma has caught up with you?'
       redirect_to [:admin, @study], status: 303
     end
+  end
+
+  def show
+    @document = Document.find(params[:id])
+    send_data @document.current_data, filename: @document.filename, type: @document.content_type, disposition: 'inline'
   end
 
   def destroy

@@ -8,7 +8,7 @@ RSpec.describe Api::V2::SampleResource, type: :resource do
 
   let(:sample) { create :sample }
 
-  it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
+  it 'works', :aggregate_failures do
     expect(subject).to have_attribute :sanger_sample_id
     expect(subject).to have_attribute :uuid
   end

@@ -67,7 +67,7 @@ module Sequencescape
     config.time_zone = 'London'
 
     # Enable localisations to be split over multiple paths.
-    config.i18n.load_path = Dir[File.join(Rails.root, %w[config locales metadata *.{rb,yml}])] # rubocop:disable Rails/RootPathnameMethods
+    config.i18n.load_path = Dir[File.join(Rails.root, %w[config locales metadata *.{rb,yml}])]
     I18n.enforce_available_locales = false
 
     config.cherrypickable_default_type = 'ABgene_0800'
@@ -99,23 +99,6 @@ module Sequencescape
         origins '*'
         resource '*', headers: :any, methods: %i[get post options patch], credentials: false
       end
-    end
-
-    # end Rails 5 #
-
-    # Fix for Psych::DisallowedClass: Tried to load unspecified class
-    # this has to be in "after_initialize" because we need custom classes to be loaded already
-    config.after_initialize do
-      ActiveRecord::Base.yaml_column_permitted_classes = [
-        Symbol,
-        ActiveSupport::HashWithIndifferentAccess,
-        RequestType::Validator::ArrayWithDefault,
-        RequestType::Validator::LibraryTypeValidator,
-        RequestType::Validator::FlowcellTypeValidator,
-        ActionController::Parameters,
-        Set,
-        Range
-      ]
     end
   end
 end

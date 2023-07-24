@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Accession::Service, accession: true, type: :model do
+RSpec.describe Accession::Service, type: :model, accession: true do
   it 'can have a provider' do
     service = described_class.new('open')
     expect(service.provider).to eq(:ENA)

@@ -32,7 +32,7 @@ class Admin::RolesController < ApplicationController # rubocop:todo Style/Docume
     end
   end
 
-  def create # rubocop:todo Metrics/MethodLength
+  def create
     @role = Role.new(params[:role])
 
     respond_to do |format|

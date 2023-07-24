@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe Barcode do
+describe Barcode, type: :model do
   shared_examples 'a basic barcode' do
     describe '#human_barcode' do
       subject { barcode.human_barcode }

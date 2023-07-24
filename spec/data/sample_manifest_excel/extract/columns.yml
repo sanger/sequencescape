@@ -80,7 +80,7 @@ gender:
       type: :list
       formula1: "A1:A2"
       allowBlank: false
-      hideDropDown: false
+      showDropDown: false
       showInputMessage: true
       promptTitle: "Gender"
       prompt: "Please enter gender"

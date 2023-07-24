@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'record_loader/transfer_template_loader'
 
-RSpec.describe RecordLoader::TransferTemplateLoader, loader: true, type: :model do
+RSpec.describe RecordLoader::TransferTemplateLoader, type: :model, loader: true do
   subject(:record_loader) { described_class.new(directory: test_directory, files: selected_files) }
 
   let(:test_directory) { Rails.root.join('spec/data/record_loader/transfer_templates') }

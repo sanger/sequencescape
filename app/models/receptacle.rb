@@ -4,7 +4,7 @@
 # A {Labware} may have a single {Receptacle}, such as in the case of a {Tube}
 # or multiple, in the case of a {Plate}.
 # Work can be {Request requested} on a particular receptacle.
-class Receptacle < Asset # rubocop:todo Metrics/ClassLength
+class Receptacle < Asset
   include Uuid::Uuidable
   include Commentable
   include Transfer::State
@@ -164,12 +164,12 @@ class Receptacle < Asset # rubocop:todo Metrics/ClassLength
         }
 
   # This is a lambda as otherwise the scope selects Receptacles
-  scope :with_aliquots, -> { joins(:aliquots) } # rubocop:todo Rails/DuplicateScope
+  scope :with_aliquots, -> { joins(:aliquots) }
 
   # Provide some named scopes that will fit with what we've used in the past
   scope :with_sample_id, ->(id) { where(aliquots: { sample_id: Array(id) }).joins(:aliquots) }
   scope :with_sample, ->(sample) { where(aliquots: { sample_id: Array(sample) }).joins(:aliquots) }
-  scope :with_contents, -> { joins(:aliquots) } # rubocop:todo Rails/DuplicateScope
+  scope :with_contents, -> { joins(:aliquots) }
 
   # Scope for caching the samples of the receptacle
   scope :for_bulk_submission, -> { includes(samples: :studies) }

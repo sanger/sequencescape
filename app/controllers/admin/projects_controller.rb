@@ -22,6 +22,12 @@ class Admin::ProjectsController < ApplicationController # rubocop:todo Style/Doc
     @project = Project.find(params[:id])
   end
 
+  def update
+    @project = Project.find(params[:id])
+    flash[:notice] = 'Your project has been updated'
+    render partial: 'manage_single_project'
+  end
+
   def edit
     if params[:id] == '0'
       render nothing: true
@@ -29,11 +35,6 @@ class Admin::ProjectsController < ApplicationController # rubocop:todo Style/Doc
       @project = Project.find(params[:id])
       render partial: 'edit', locals: { project: @project }
     end
-  end
-  def update
-    @project = Project.find(params[:id])
-    flash.now[:notice] = 'Your project has been updated'
-    render partial: 'manage_single_project'
   end
 
   def filter # rubocop:todo Metrics/AbcSize

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Accession::Response, accession: true, type: :model do
+RSpec.describe Accession::Response, type: :model, accession: true do
   include MockAccession
 
   it 'is successful if the status code is in the correct range' do

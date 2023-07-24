@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SequencescapeExcel::List, sample_manifest: true, sample_manifest_excel: true, type: :model do
+RSpec.describe SequencescapeExcel::List, type: :model, sample_manifest_excel: true, sample_manifest: true do
   class ListItem
     attr_reader :attr_a, :attr_b, :attr_c, :attr_d
 

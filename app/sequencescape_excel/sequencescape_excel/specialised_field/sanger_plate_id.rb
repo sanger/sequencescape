@@ -16,7 +16,7 @@ module SequencescapeExcel
       validate :check_container
 
       # rubocop:todo Metrics/PerceivedComplexity, Metrics/AbcSize
-      def update(_attributes = {}) # rubocop:todo Metrics/CyclomaticComplexity, Metrics/MethodLength
+      def update(_attributes = {}) # rubocop:todo Metrics/CyclomaticComplexity
         return unless valid? && foreign_barcode_format.present?
 
         # checking if the plate this well belongs to already has this foreign barcode set in its list of barcodes.

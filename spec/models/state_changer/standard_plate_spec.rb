@@ -36,7 +36,7 @@ RSpec.describe StateChanger::StandardPlate do
       let(:target_state) { 'started' }
 
       it 'starts the requests', :aggregate_failures do
-        expect { state_changer.update_labware_state }.not_to change(BroadcastEvent::LibraryStart, :count)
+        expect { state_changer.update_labware_state }.to change(BroadcastEvent::LibraryStart, :count).by(0)
       end
     end
 
@@ -46,7 +46,7 @@ RSpec.describe StateChanger::StandardPlate do
       let(:target_state) { 'cancelled' }
 
       it 'does not cancel the requests', :aggregate_failures do
-        expect { state_changer.update_labware_state }.not_to change(BroadcastEvent::LibraryStart, :count)
+        expect { state_changer.update_labware_state }.to change(BroadcastEvent::LibraryStart, :count).by(0)
         expect(library_requests.each(&:reload)).to all(be_passed)
       end
     end
@@ -57,7 +57,7 @@ RSpec.describe StateChanger::StandardPlate do
       let(:target_state) { 'failed' }
 
       it 'does allow failure of the requests', :aggregate_failures do
-        expect { state_changer.update_labware_state }.not_to change(BroadcastEvent::LibraryStart, :count)
+        expect { state_changer.update_labware_state }.to change(BroadcastEvent::LibraryStart, :count).by(0)
         expect(library_requests.each(&:reload)).to all(be_failed)
       end
     end
@@ -67,7 +67,7 @@ RSpec.describe StateChanger::StandardPlate do
       let(:target_state) { 'failed' }
 
       it 'does allow failure of the requests', :aggregate_failures do
-        expect { state_changer.update_labware_state }.not_to change(BroadcastEvent::LibraryStart, :count)
+        expect { state_changer.update_labware_state }.to change(BroadcastEvent::LibraryStart, :count).by(0)
         expect(library_requests.each(&:reload)).to all(be_failed)
       end
     end
@@ -78,7 +78,7 @@ RSpec.describe StateChanger::StandardPlate do
       let(:customer_accepts_responsibility) { true }
 
       it 'does allow failure of the requests', :aggregate_failures do
-        expect { state_changer.update_labware_state }.not_to change(BroadcastEvent::LibraryStart, :count)
+        expect { state_changer.update_labware_state }.to change(BroadcastEvent::LibraryStart, :count).by(0)
         reloaded_library_requests = library_requests.each(&:reload)
         expect(reloaded_library_requests).to all(be_failed)
         expect(reloaded_library_requests).to all(be_customer_accepts_responsibility)

@@ -4,7 +4,7 @@ require 'rails_helper'
 require 'record_loader/tube_rack_purpose_loader'
 
 # This file was initially generated via `rails g record_loader`
-RSpec.describe RecordLoader::TubeRackPurposeLoader, loader: true, type: :model do
+RSpec.describe RecordLoader::TubeRackPurposeLoader, type: :model, loader: true do
   subject(:record_loader) { described_class.new(directory: test_directory, files: selected_files) }
 
   # Tests use a separate directory to avoid coupling your specs to the data

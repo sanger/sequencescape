@@ -5,7 +5,7 @@ require 'support/lab_where_client_helper'
 
 RSpec.configure { |c| c.include LabWhereClientHelper }
 
-RSpec.describe Labware do
+RSpec.describe Labware, type: :model do
   context 'when checking scopes' do
     describe '#with_barcode' do
       let!(:ean13_plates_list) { create_list(:plate_with_tagged_wells, 2) }

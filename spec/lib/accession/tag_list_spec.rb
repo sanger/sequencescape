@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Accession::TagList, accession: true, type: :model do
+RSpec.describe Accession::TagList, type: :model, accession: true do
   include Accession::Helpers
 
   let(:folder) { File.join('spec', 'data', 'accession') }

@@ -85,6 +85,7 @@ shared_examples 'a cherrypicking procedure' do
       end
 
       step 'Print and check the worksheet for each output destination plate' do
+        # rubocop:todo Metrics/BlockLength
         expected_plates_by_destination_plate.each do |(destination_barcode, expected_plates)|
           step 'check the show plate screen' do
             visit batch_path(batch_id)
@@ -152,9 +153,11 @@ shared_examples 'a cherrypicking procedure' do
             end
           end
         end
+        # rubocop:enable Metrics/BlockLength
       end
     end
 
+    # rubocop:disable Metrics/BlockLength
     step 'Perform the bed verifications and check picking files' do
       # for each destination plate...
       expected_plates_by_destination_plate.each do |(destination_barcode, current_expected_plates)|
@@ -384,5 +387,6 @@ shared_examples 'a cherrypicking procedure' do
         end
       end
     end
+    # rubocop:enable Metrics/BlockLength
   end
 end

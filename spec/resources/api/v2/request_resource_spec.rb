@@ -11,7 +11,7 @@ RSpec.describe Api::V2::RequestResource, type: :resource do
   # Test attributes
   let(:expected_metadata) { { 'customer_accepts_responsibility' => false } }
 
-  it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
+  it 'works', :aggregate_failures do
     expect(subject).to have_attribute :uuid
     expect(subject).to have_attribute :state
     expect(subject).to have_attribute :priority

@@ -50,16 +50,15 @@ require './lib/capybara_failure_logger'
 require './lib/capybara_timeout_patches'
 require 'pry'
 
+# BUG: Intermittent, seemingly non deterministic reversion of downloads directory
+#      from Capybara.save_path (./tmp/capybara) to project root. See:
+#      https://github.com/sanger/sequencescape/issues/3511
 Capybara.register_driver :headless_chrome do |app|
-  options = Selenium::WebDriver::Chrome::Options.new
+  Capybara.drivers[:selenium_chrome_headless].call(app).tap { |driver| enable_chrome_headless_downloads(driver) }
+end
 
-  options.add_argument('--headless')
-  options.add_preference('download.default_directory', DownloadHelpers::PATH)
-  the_driver = Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
-
-  # copied the following over from features/support/capybara.rb because I expect it is also relevant here
-  the_driver.browser.download_path = DownloadHelpers::PATH.to_s
-  the_driver
+def enable_chrome_headless_downloads(driver)
+  driver.options[:options].add_preference(:download, default_directory: Capybara.save_path)
 end
 
 Capybara.javascript_driver = ENV.fetch('JS_DRIVER', 'headless_chrome').to_sym

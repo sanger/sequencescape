@@ -120,7 +120,7 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
         compound_sample = create(:sample, name: 'compound_sample_1', component_samples: [samples[0], samples[1]])
         expect(sequencing_request.target_asset.aliquots.count).to eq(0)
 
-        expect { sequencing_request.transfer_aliquots_into_compound_sample_aliquots }.not_to change(Sample, :count)
+        expect { sequencing_request.transfer_aliquots_into_compound_sample_aliquots }.to change(Sample, :count).by(0)
 
         expect(sequencing_request.target_asset.aliquots.count).to eq(1)
         expect(sequencing_request.target_asset.samples.first).to eq(compound_sample)
@@ -142,7 +142,7 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
 
         expect(sequencing_request.target_asset.aliquots.count).to eq(0)
 
-        expect { sequencing_request.transfer_aliquots_into_compound_sample_aliquots }.not_to change(Sample, :count)
+        expect { sequencing_request.transfer_aliquots_into_compound_sample_aliquots }.to change(Sample, :count).by(0)
 
         expect(sequencing_request.target_asset.aliquots.count).to eq(1)
         expect(sequencing_request.target_asset.samples.first).not_to eq(compound_sample1)

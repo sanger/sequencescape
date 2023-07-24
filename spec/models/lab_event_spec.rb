@@ -6,7 +6,7 @@ require 'broadcast_event/lab_event'
 RSpec.describe LabEvent do
   subject { build :lab_event, user: build(:user) }
 
-  it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
+  it 'works', :aggregate_failures do
     expect(subject).to respond_to :eventful
     expect(subject).to respond_to :user
   end

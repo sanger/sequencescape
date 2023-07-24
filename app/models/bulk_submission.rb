@@ -1,4 +1,4 @@
-# encoding: utf-8
+# Encoding: utf-8
 # frozen_string_literal: true
 
 # Previously this was extending Array globally.
@@ -290,7 +290,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
   def shared_options!(rows) # rubocop:todo Metrics/MethodLength
     # Builds an array of the common fields. Raises and exception if the fields are inconsistent
     COMMON_FIELDS.map do |field|
-      option = rows.pluck(field).uniq
+      option = rows.map { |r| r[field] }.uniq
       if option.count > 1
         provided_values = option.map { |o| "'#{o}'" }.to_sentence
         errors.add(

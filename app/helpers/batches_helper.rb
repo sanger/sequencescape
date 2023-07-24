@@ -60,7 +60,7 @@ module BatchesHelper
   end
 
   # Used by both assets/show.xml.builder and batches/show.xml.builder
-  def output_aliquot(xml, aliquot) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def output_aliquot(xml, aliquot) # rubocop:todo Metrics/AbcSize
     xml.sample(
       sample_id: aliquot.sample_id,
       library_id: aliquot.library_id,

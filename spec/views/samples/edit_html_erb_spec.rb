@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'samples/edit.html.erb' do
+RSpec.describe 'samples/edit.html.erb', type: :view do
   include AuthenticatedSystem
   include RSpecHtmlMatchers
   let(:user) { create :user }

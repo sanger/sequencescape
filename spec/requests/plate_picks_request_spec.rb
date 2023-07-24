@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe 'PlatePicks' do
+RSpec.describe 'PlatePicks', type: :request do
   let(:user) { create :user, password: 'password' }
   let(:headers) { { 'ACCEPT' => 'application/json' } }
   let(:plate) { create :plate, well_count: 1 }

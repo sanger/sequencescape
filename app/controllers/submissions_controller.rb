@@ -14,35 +14,10 @@ class SubmissionsController < ApplicationController
 
   after_action :set_cache_disabled!, only: %i[new index]
 
-  #
-  # Displays a list of submissions for the current user.
-  # building => Submissions which haven't yet been queued for building and may still be edited. Submissions begin in
-  # this state, and leave when the user clicks 'Build Submission'
-  # pending  => Submissions which the user has finished setting up, and has queued for processing by the delayed job
-  # ready    => Submissions which the delayed job has finished processing. The final state of a submission.
-  def index # rubocop:todo Metrics/AbcSize
-    # Disable cache of this page
-    expires_now
-
-    @building = Submission.building.order(created_at: :desc).where(user_id: current_user.id)
-    @pending = Submission.pending.order(created_at: :desc).where(user_id: current_user.id)
-    @ready = Submission.ready.order(created_at: :desc).limit(10).where(user_id: current_user.id)
-  end
-
-  # Show a submission. Read-only page, but provides a link to the edit page for submissions which
-  # haven't yet left state building
-  def show
-    @presenter = Submission::SubmissionPresenter.new(current_user, id: params[:id])
-  end
-
   # The main landing page for creating a new submission. Lots of ajax action!
   def new
     expires_now
     @presenter = Submission::SubmissionCreator.new(current_user, study_id: params[:study_id])
-  end
-
-  def edit
-    @presenter = Submission::SubmissionCreator.new(current_user, id: params[:id])
   end
 
   # Triggered when someone clicks 'Save Order' in the submission creator
@@ -65,6 +40,10 @@ class SubmissionsController < ApplicationController
     end
   end
 
+  def edit
+    @presenter = Submission::SubmissionCreator.new(current_user, id: params[:id])
+  end
+
   # This method will build a submission then redirect to the submission on completion
   def update
     @presenter = Submission::SubmissionCreator.new(current_user, id: params[:id])
@@ -81,6 +60,21 @@ class SubmissionsController < ApplicationController
   def change_priority
     Submission.find(params[:id]).update!(priority: params[:submission][:priority])
     redirect_to action: :show, id: params[:id]
+  end
+
+  #
+  # Displays a list of submissions for the current user.
+  # building => Submissions which haven't yet been queued for building and may still be edited. Submissions begin in
+  # this state, and leave when the user clicks 'Build Submission'
+  # pending  => Submissions which the user has finished setting up, and has queued for processing by the delayed job
+  # ready    => Submissions which the delayed job has finished processing. The final state of a submission.
+  def index # rubocop:todo Metrics/AbcSize
+    # Disable cache of this page
+    expires_now
+
+    @building = Submission.building.order(created_at: :desc).where(user_id: current_user.id)
+    @pending = Submission.pending.order(created_at: :desc).where(user_id: current_user.id)
+    @ready = Submission.ready.order(created_at: :desc).limit(10).where(user_id: current_user.id)
   end
 
   # Cancels the selected submission, and returns the user to the submission show page.
@@ -104,6 +98,12 @@ class SubmissionsController < ApplicationController
       end
       redirect_to action: :index
     end
+  end
+
+  # Show a submission. Read-only page, but provides a link to the edit page for submissions which
+  # haven't yet left state building
+  def show
+    @presenter = Submission::SubmissionPresenter.new(current_user, id: params[:id])
   end
 
   # An index page for study submissions.

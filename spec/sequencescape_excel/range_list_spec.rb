@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SequencescapeExcel::RangeList, sample_manifest: true, sample_manifest_excel: true, type: :model do
+RSpec.describe SequencescapeExcel::RangeList, type: :model, sample_manifest_excel: true, sample_manifest: true do
   include SequencescapeExcel::Helpers
 
   let(:folder) { File.join('spec', 'data', 'sample_manifest_excel') }

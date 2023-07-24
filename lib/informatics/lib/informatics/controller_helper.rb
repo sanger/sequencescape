@@ -38,7 +38,7 @@ module ApplicationHelper # rubocop:todo Style/Documentation
 
   private
 
-  def add_link(menu, l, o, options) # rubocop:todo Metrics/MethodLength
+  def add_link(menu, l, o, options)
     menu ||= Informatics::View::Menu::List.new
     if options.nil?
       menu.add_item text: l.first_key, link: l.first_value

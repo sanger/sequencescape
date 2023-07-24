@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'labware/show.html.erb' do # rubocop:todo RSpec/DescribeClass
+RSpec.describe 'labware/show.html.erb', type: :view do
   include AuthenticatedSystem
   let(:user) { create :user }
 

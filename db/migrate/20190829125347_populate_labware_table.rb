@@ -28,6 +28,6 @@ class PopulateLabwareTable < ActiveRecord::Migration[4.2]
   def down
     raise ActiveRecord::IrreversibleMigration if ENV['LAST_ASSET'].blank?
 
-    Labware.where(['id < ?', ENV.fetch('LAST_ASSET', nil)]).delete_all
+    Labware.where(['id < ?', ENV['LAST_ASSET']]).delete_all
   end
 end

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Api::RequestIO do
+RSpec.describe Api::RequestIO, type: :model do
   subject { create :request, asset: source_asset, target_asset: target_asset }
 
   context 'between tubes' do

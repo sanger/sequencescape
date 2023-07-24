@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe PrimerPanel do
+RSpec.describe PrimerPanel, type: :model do
   let(:primer_panel) { create :primer_panel }
 
   it 'validates a valid primer panel' do

@@ -4,7 +4,7 @@ require 'rails_helper'
 
 # This is a very tangled test, as I'm hoping to unhook the current dependencies
 # so need to wrap it at its current level of messiness
-RSpec.describe Tasks::SetDescriptorsHandler::Handler do
+RSpec.describe Tasks::SetDescriptorsHandler::Handler, type: :model do
   subject(:handler) { described_class.new(controller: controller, params: params, task: task, user: user) }
 
   let(:batch) { create :batch, request_count: 1 }

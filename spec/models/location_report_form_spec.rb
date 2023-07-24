@@ -5,7 +5,7 @@ require 'support/lab_where_client_helper'
 
 RSpec.configure { |c| c.include LabWhereClientHelper }
 
-RSpec.describe LocationReport::LocationReportForm do
+RSpec.describe LocationReport::LocationReportForm, type: :model do
   let(:studies) { create_list(:study, 2) }
 
   let(:study_1) { studies[0] }

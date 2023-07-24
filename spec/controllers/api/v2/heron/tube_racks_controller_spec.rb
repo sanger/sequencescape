@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'support/barcode_helper'
 
-RSpec.describe Api::V2::Heron::TubeRacksController, heron: true, type: :request do
+RSpec.describe Api::V2::Heron::TubeRacksController, type: :request, heron: true do
   include BarcodeHelper
 
   let!(:purpose_96) { create(:tube_rack_purpose, target_type: 'TubeRack', size: 96) }

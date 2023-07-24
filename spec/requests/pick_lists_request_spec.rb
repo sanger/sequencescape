@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe 'PickLists' do
+RSpec.describe 'PickLists', type: :request do
   let(:user) { create :user, password: 'password' }
 
   before { post '/login', params: { login: user.login, password: 'password' } }

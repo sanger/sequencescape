@@ -14,6 +14,13 @@ class Admin::StudiesController < ApplicationController # rubocop:todo Style/Docu
     flash.now[:warning] = @study.warnings if @study.warnings.present?
   end
 
+  def update
+    @study = Study.find(params[:id])
+    flash.now[:warning] = @study.warnings if @study.warnings.present?
+    flash[:notice] = 'Your study has been updated'
+    render partial: 'manage_single_study'
+  end
+
   def edit
     @request_types = RequestType.order(name: :asc)
     if params[:id] != '0'
@@ -23,12 +30,6 @@ class Admin::StudiesController < ApplicationController # rubocop:todo Style/Docu
     else
       render nothing: true
     end
-  end
-  def update
-    @study = Study.find(params[:id])
-    flash.now[:warning] = @study.warnings if @study.warnings.present?
-    flash.now[:notice] = 'Your study has been updated'
-    render partial: 'manage_single_study'
   end
 
   # TODO: remove unneeded code
@@ -58,7 +59,7 @@ class Admin::StudiesController < ApplicationController # rubocop:todo Style/Docu
 
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
-  def managed_update # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def managed_update # rubocop:todo Metrics/AbcSize
     @study = Study.find(params[:id])
 
     if params[:study][:uploaded_data].present?
@@ -75,7 +76,7 @@ class Admin::StudiesController < ApplicationController # rubocop:todo Style/Docu
   rescue ActiveRecord::RecordInvalid => e
     errors = @study.errors.full_messages
     logger.warn "Failed to update attributes: #{errors}}"
-    flash.now[:error] = 'Failed to update attributes for study!'
+    flash[:error] = 'Failed to update attributes for study!'
     render action: :show, id: @study.id and return
   end
 

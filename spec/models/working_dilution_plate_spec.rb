@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'lib/mock_parser'
 
-RSpec.describe WorkingDilutionPlate do
+RSpec.describe WorkingDilutionPlate, type: :model do
   describe 'update_qc_values_with_parser' do
     let(:readings) do
       {

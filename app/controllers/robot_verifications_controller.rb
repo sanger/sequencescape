@@ -33,7 +33,7 @@ class RobotVerificationsController < ApplicationController # rubocop:todo Style/
   # Step 3: Receives the submission form and checks if it is valid. In the event it is valid
   #         provides a link to download the gwl/csv driver file for the robot. Otherwise
   #         redirects the user back to step 1 with an error message.
-  def download # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def download # rubocop:todo Metrics/AbcSize
     @robot = Robot.find(params[:robot_id])
     @robot_verification = @robot.verification_behaviour
 

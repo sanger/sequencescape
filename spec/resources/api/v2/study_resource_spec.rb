@@ -8,7 +8,7 @@ RSpec.describe Api::V2::StudyResource, type: :resource do
 
   let(:study) { create :study }
 
-  it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
+  it 'works', :aggregate_failures do
     expect(subject).to have_attribute :name
     expect(subject).to have_attribute :uuid
   end

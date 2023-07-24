@@ -54,7 +54,7 @@ module CapybaraFailureLogger
   def self.output_image(filename)
     return unless ENV['TERM_PROGRAM'] == 'iTerm.app'
 
-    case ENV.fetch('INLINE_ERROR_SCREENSHOTS', nil)
+    case ENV['INLINE_ERROR_SCREENSHOTS']
     when 'enabled'
       encoded_image = Base64.encode64(File.read(filename))
       name = Base64.encode64(filename)

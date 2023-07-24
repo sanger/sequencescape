@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Api::Messages::PacBioRunWithTag2IO do
+RSpec.describe Api::Messages::PacBioRunWithTag2IO, type: :model do
   let(:message) { described_class.to_hash(pac_bio_batch) }
 
   let(:plate) { create(:plate_with_tagged_wells, sample_count: 2) }

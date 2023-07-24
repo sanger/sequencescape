@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Heron::Factories::Plate, heron: true, heron_events: true, lighthouse: true, type: :model do
+RSpec.describe Heron::Factories::Plate, type: :model, lighthouse: true, heron: true, heron_events: true do
   let(:purpose) { create(:plate_purpose, target_type: 'Plate', name: 'Stock Plate', size: '96') }
   let(:study) { create(:study) }
   let(:barcode) { '0000000001' }

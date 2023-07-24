@@ -2,7 +2,7 @@
 
 # Will construct submissions
 # Currently VERY basic
-class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
+class UatActions::TestSubmission < UatActions
   self.title = 'Test submission'
 
   # The description displays on the list of UAT actions to provide additional information
