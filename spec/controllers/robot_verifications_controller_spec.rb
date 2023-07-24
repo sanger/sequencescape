@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe RobotVerificationsController do
+RSpec.describe RobotVerificationsController, type: :controller do
   let(:user) { create :user, barcode: 'ID41440E', swipecard_code: '1234567' }
   let(:batch) { create :batch, barcode: '6262' }
   let(:robot) do
@@ -282,7 +282,7 @@ RSpec.describe RobotVerificationsController do
 
         before { post :submission, params: submission_params }
 
-        it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
+        it 'works', :aggregate_failures do
           expect(response).to redirect_to(robot_verifications_path)
           expect(flash[:error]).to include('Worksheet barcode invalid')
         end
@@ -302,7 +302,7 @@ RSpec.describe RobotVerificationsController do
 
         before { post :submission, params: submission_params }
 
-        it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
+        it 'works', :aggregate_failures do
           expect(response).to redirect_to(robot_verifications_path)
           expect(flash[:error]).to include('Could not find robot 111111111111')
         end
@@ -322,7 +322,7 @@ RSpec.describe RobotVerificationsController do
 
         before { post :submission, params: submission_params }
 
-        it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
+        it 'works', :aggregate_failures do
           expect(response).to redirect_to(robot_verifications_path)
           expect(flash[:error]).to include('Destination plate barcode invalid')
         end
@@ -342,7 +342,7 @@ RSpec.describe RobotVerificationsController do
 
         before { post :submission, params: submission_params }
 
-        it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
+        it 'works', :aggregate_failures do
           expect(response).to redirect_to(robot_verifications_path)
           expect(flash[:error]).to include('User barcode invalid')
         end

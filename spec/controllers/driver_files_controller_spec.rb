@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe DriverFilesController do
+RSpec.describe DriverFilesController, type: :controller do
   let(:current_user) { create :user }
 
   describe '#show' do

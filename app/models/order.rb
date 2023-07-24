@@ -189,7 +189,7 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   # rubocop:enable Metrics/MethodLength
 
-  def duplicates_within(timespan) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def duplicates_within(timespan) # rubocop:todo Metrics/AbcSize
     matching_orders =
       Order
         .containing_samples(all_samples)

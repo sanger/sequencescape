@@ -10,7 +10,6 @@ class Admin::UsersController < ApplicationController # rubocop:todo Style/Docume
     @users = User.order(:login)
   end
 
-  def show; end
   def edit
     @all_roles = Role.keys
     @users_roles = @user.study_and_project_roles.order(name: :asc)
@@ -23,12 +22,15 @@ class Admin::UsersController < ApplicationController # rubocop:todo Style/Docume
     end
   end
 
+  def show; end
+
   def switch
     session[:user] = params[:id]
     redirect_to studies_url
   end
 
-  def update # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  # rubocop:todo Metrics/MethodLength
+  def update # rubocop:todo Metrics/AbcSize
     @user = User.find(params[:id])
     Role.general_roles.each do |role|
       params[:role] && params[:role][role.name] ? @user.grant_role(role.name) : @user.remove_role(role.name)
@@ -43,7 +45,10 @@ class Admin::UsersController < ApplicationController # rubocop:todo Style/Docume
     redirect_to profile_path(@user)
   end
 
-  def grant_user_role # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  # rubocop:enable Metrics/MethodLength
+
+  # rubocop:todo Metrics/MethodLength
+  def grant_user_role # rubocop:todo Metrics/AbcSize
     if request.xhr?
       if params[:role]
         authorizable_object =
@@ -55,11 +60,11 @@ class Admin::UsersController < ApplicationController # rubocop:todo Style/Docume
         @user.grant_role(params[:role][:authorizable_name].to_s, authorizable_object)
         @users_roles = @user.study_and_project_roles.order(name: :asc)
 
-        flash[:notice] = 'Role added' # rubocop:disable Rails/ActionControllerFlashBeforeRender
+        flash[:notice] = 'Role added'
         render partial: 'roles', status: 200
       else
         @users_roles = @user.study_and_project_roles.order(name: :asc)
-        flash[:error] = 'A problem occurred while adding the role' # rubocop:disable Rails/ActionControllerFlashBeforeRender
+        flash[:error] = 'A problem occurred while adding the role'
         render partial: 'roles', status: 500
       end
     else
@@ -69,7 +74,9 @@ class Admin::UsersController < ApplicationController # rubocop:todo Style/Docume
     end
   end
 
-  def remove_user_role # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  # rubocop:enable Metrics/MethodLength
+
+  def remove_user_role # rubocop:todo Metrics/AbcSize
     if request.xhr?
       if params[:role]
         authorizable_object =
@@ -81,11 +88,11 @@ class Admin::UsersController < ApplicationController # rubocop:todo Style/Docume
         @user.remove_role(params[:role][:authorizable_name].to_s, authorizable_object)
         @users_roles = @user.study_and_project_roles.order(name: :asc)
 
-        flash[:error] = 'Role was removed' # rubocop:disable Rails/ActionControllerFlashBeforeRender
+        flash[:error] = 'Role was removed'
         render partial: 'roles', status: 200
       else
         @users_roles = @user.study_and_project_roles.order(name: :asc)
-        flash[:error] = 'A problem occurred while removing the role' # rubocop:disable Rails/ActionControllerFlashBeforeRender
+        flash[:error] = 'A problem occurred while removing the role'
         render partial: 'roles', status: 500
       end
     else

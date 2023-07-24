@@ -84,7 +84,7 @@ module Deployed # rubocop:todo Style/Documentation
     end
 
     def read_file(filename)
-      Rails.root.join(filename).open('r', &:readline)
+      File.open(Rails.root.join(filename), 'r', &:readline)
     rescue Errno::ENOENT, EOFError
       ''
     end

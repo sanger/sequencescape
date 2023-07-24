@@ -3,7 +3,7 @@ module Plate::FluidigmBehaviour # rubocop:todo Style/Documentation
   class FluidigmError < StandardError
   end
 
-  def self.included(base) # rubocop:todo Metrics/MethodLength
+  def self.included(base)
     base.class_eval do
       scope :requiring_fluidigm_data,
             -> {
@@ -29,14 +29,10 @@ module Plate::FluidigmBehaviour # rubocop:todo Style/Documentation
   def retrieve_fluidigm_data
     ActiveRecord::Base.transaction do
       fluidigm_data = FluidigmFile::Finder.find(fluidigm_barcode)
-
-      # rubocop:todo Rails/TransactionExitStatement
       return false if fluidigm_data.empty? # Return false if we have no data
 
-      # rubocop:enable Rails/TransactionExitStatement
-
       apply_fluidigm_data(FluidigmFile.new(fluidigm_data.content))
-      return true # rubocop:todo Rails/TransactionExitStatement
+      return true
     end
   end
 

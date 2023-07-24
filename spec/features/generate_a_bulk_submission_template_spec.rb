@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'Generate a bulk submission spreadsheet', bulk_submission_excel: true, js: true do
+describe 'Generate a bulk submission spreadsheet', js: true, bulk_submission_excel: true do
   let!(:user) { create :user }
   let!(:plate) { create(:plate_with_untagged_wells, well_count: 30) }
 

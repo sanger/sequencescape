@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Api::StudySampleIO do
+RSpec.describe Api::StudySampleIO, type: :model do
   subject { create :study_sample, study: study, sample: sample }
 
   let(:study) { create :study }

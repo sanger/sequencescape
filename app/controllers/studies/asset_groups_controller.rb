@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# rubocop:todo Metrics/ClassLength
 class Studies::AssetGroupsController < ApplicationController # rubocop:todo Style/Documentation
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -40,7 +39,7 @@ class Studies::AssetGroupsController < ApplicationController # rubocop:todo Styl
     @study = Study.find(params[:study_id])
   end
 
-  def create # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def create # rubocop:todo Metrics/AbcSize
     @study = Study.find(params[:study_id])
     @asset_group = AssetGroup.new(params[:asset_group])
     @asset_group.study = @study
@@ -59,7 +58,7 @@ class Studies::AssetGroupsController < ApplicationController # rubocop:todo Styl
     end
   end
 
-  def update # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def update # rubocop:todo Metrics/AbcSize
     @asset_group = AssetGroup.find(params[:id])
     @study = Study.find(params[:study_id])
 
@@ -93,7 +92,7 @@ class Studies::AssetGroupsController < ApplicationController # rubocop:todo Styl
     if query.blank? || (query.length < 2)
       # We should not blame the user, we should instead help.
       # - By returning the X most recent ones together with an explanation.
-      flash[:error] = 'Search too wide. Please make your query more specific.' # rubocop:disable Rails/ActionControllerFlashBeforeRender
+      flash[:error] = 'Search too wide. Please make your query more specific.'
       redirect_to study_asset_groups_path(@study)
       return
     else
@@ -108,7 +107,7 @@ class Studies::AssetGroupsController < ApplicationController # rubocop:todo Styl
 
   # rubocop:enable Metrics/MethodLength
 
-  def add # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def add # rubocop:todo Metrics/AbcSize
     @asset_group = AssetGroup.find(params[:id])
     @study = Study.find(params[:study_id])
     if params[:asset]
@@ -136,7 +135,7 @@ class Studies::AssetGroupsController < ApplicationController # rubocop:todo Styl
     @labware = @asset_group.labware.select { |asset| asset.is_a?(Barcode::Barcodeable) }
   end
 
-  def print_labels # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def print_labels # rubocop:todo Metrics/AbcSize
     @asset_group = AssetGroup.find(params[:id])
     @study = Study.find(params[:study_id])
 
@@ -151,4 +150,3 @@ class Studies::AssetGroupsController < ApplicationController # rubocop:todo Styl
     end
   end
 end
-# rubocop:enable Metrics/ClassLength

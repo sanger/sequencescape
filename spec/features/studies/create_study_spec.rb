@@ -74,7 +74,7 @@ describe 'Create a study' do
     visit new_study_path
     expect(page).to have_content('Study Create')
     expect(page).to have_content('Alignments in BAM')
-    bam = find_by_id('study_study_metadata_attributes_bam')
+    bam = find('#study_study_metadata_attributes_bam')
     expect(bam).to be_checked
     uncheck 'study_study_metadata_attributes_bam'
     expect(bam).not_to be_checked

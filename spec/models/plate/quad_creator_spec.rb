@@ -4,7 +4,7 @@ require 'rails_helper'
 
 # The Quad creator takes 4 parent 96 well plates or size 96 tube-racks
 # and transfers them onto a new 384 well plate
-RSpec.describe Plate::QuadCreator do
+RSpec.describe Plate::QuadCreator, type: :model do
   subject(:quad_creator) { described_class.new(creation_options) }
 
   let(:target_purpose) { create :plate_purpose, size: 384 }

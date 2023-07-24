@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe 'QcFiles' do
+RSpec.describe 'QcFiles', type: :request do
   let(:authorised_app) { create :api_application }
 
   describe 'create qc file' do
-    let(:filename) { Rails.root.join('spec/data/parsers/cardinal_pbmc_count.csv').expand_path }
+    let(:filename) { File.expand_path(Rails.root.join('spec/data/parsers/cardinal_pbmc_count.csv')) }
     let(:file) { File.open(filename) }
     let(:plate) { create(:plate_with_empty_wells, well_count: 96) }
 

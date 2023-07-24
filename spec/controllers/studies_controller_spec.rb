@@ -16,7 +16,7 @@ RSpec.describe StudiesController do
   describe '#new' do
     before { get :new }
 
-    it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
+    it 'works', :aggregate_failures do
       expect(subject).to respond_with :success
       expect(subject).to render_template :new
     end
@@ -49,7 +49,7 @@ RSpec.describe StudiesController do
         }
       end
 
-      it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
+      it 'works', :aggregate_failures do
         expect(subject).to set_flash.to('Your study has been created')
         expect(subject).to redirect_to('study path') { study_path(Study.last) }
       end
@@ -86,7 +86,7 @@ RSpec.describe StudiesController do
       post :grant_role, params: { role: { user: user.id, authorizable_type: 'manager' }, id: study.id }, xhr: true
     end
 
-    it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
+    it 'works', :aggregate_failures do
       expect(subject).to respond_with :ok
       expect(subject).to set_flash.now.to('Role added')
     end

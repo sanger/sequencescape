@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SequencingRequest do
+RSpec.describe SequencingRequest, type: :model do
   let(:library_tube) { create :library_tube }
   let(:sequencing_request) { create(:sequencing_request, asset: library_tube) }
 

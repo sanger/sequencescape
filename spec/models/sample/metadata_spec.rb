@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Sample::Metadata do
+RSpec.describe Sample::Metadata, type: :model do
   describe '#user_of_consent_withdrawn' do
     let(:user) { create :user }
     let(:sample) { create :sample }

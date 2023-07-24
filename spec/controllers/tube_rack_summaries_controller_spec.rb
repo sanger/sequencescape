@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe TubeRackSummariesController do
+RSpec.describe TubeRackSummariesController, type: :controller do
   let(:current_user) { create :user }
 
   describe '#show' do

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe BulkSubmissionExcel::DownloadsController do
+RSpec.describe BulkSubmissionExcel::DownloadsController, type: :controller do
   before do
     session[:user] = create :admin
 

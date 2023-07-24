@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'report_fails/index.html.erb' do
+RSpec.describe 'report_fails/index.html.erb', type: :view do
   include AuthenticatedSystem
   let(:user) { create :user }
 

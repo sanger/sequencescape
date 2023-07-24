@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'Plates Heron API', heron: true, heron_events: true, lighthouse: true, with: :api_v2 do
+describe 'Plates Heron API', with: :api_v2, lighthouse: true, heron: true, heron_events: true do
   describe '#create' do
     include BarcodeHelper
 

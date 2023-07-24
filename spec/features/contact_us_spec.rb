@@ -12,11 +12,11 @@ describe 'Contact us' do
     click_link 'Help'
     expect(page).to have_content('Please, fill in this form')
     expect(find_field('Your email').value).to eq 'login@example.com'
-    expect(find_by_id('user_query_url', visible: false).value).to eq 'http://www.example.com/'
+    expect(find('#user_query_url', visible: false).value).to eq 'http://www.example.com/'
     fill_in('Your email', with: ' ')
     click_button('Send')
     expect(page).to have_content("User email can't be blank")
-    expect(find_by_id('user_query_url', visible: false).value).to eq 'http://www.example.com/'
+    expect(find('#user_query_url', visible: false).value).to eq 'http://www.example.com/'
     fill_in('Your email', with: 'new_email@example.com')
     fill_in('What were you trying to do?', with: 'Do some stuff')
     fill_in('What has happened?', with: 'Something went wrong')

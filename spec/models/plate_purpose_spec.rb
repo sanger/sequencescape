@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'shared_contexts/limber_shared_context'
 
-describe PlatePurpose do
+describe PlatePurpose, type: :model do
   let(:plate_purpose) { create :plate_purpose, target_type: target_type, size: size }
 
   shared_examples 'a plate factory' do

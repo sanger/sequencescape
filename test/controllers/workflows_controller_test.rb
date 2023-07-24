@@ -2,7 +2,7 @@
 
 require 'test_helper'
 
-ActionController::TestCase.include AuthenticatedTestHelper # rubocop:todo Rails/ActiveSupportOnLoad
+ActionController::TestCase.include AuthenticatedTestHelper
 
 class WorkflowsControllerTest < ActionController::TestCase
   context 'WorkflowController' do
@@ -16,7 +16,6 @@ class WorkflowsControllerTest < ActionController::TestCase
     end
 
     context '#stage' do
-      # rubocop:todo Metrics/BlockLength
       setup do
         @pipeline = FactoryBot.create :pipeline, name: 'Generic workflow'
         @ws1 = @pipeline.workflow # :item_limit => 5
@@ -73,8 +72,6 @@ class WorkflowsControllerTest < ActionController::TestCase
         session[:user] = @user.id
         @batch_events_size = @batch.lab_events.size
       end
-
-      # rubocop:enable Metrics/BlockLength
 
       context 'should set descriptors on batch' do
         setup do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'tube_rack_summaries/show.html.erb' do
+RSpec.describe 'tube_rack_summaries/show.html.erb', type: :view do
   include AuthenticatedSystem
   let(:user) { create :user }
 

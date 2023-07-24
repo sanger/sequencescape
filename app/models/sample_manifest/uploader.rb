@@ -29,9 +29,9 @@ class SampleManifest::Uploader
 
   def run!
     ActiveRecord::Base.transaction do
-      return false unless valid? # rubocop:todo Rails/TransactionExitStatement
+      return false unless valid?
 
-      return true if process_upload_and_callbacks # rubocop:todo Rails/TransactionExitStatement
+      return true if process_upload_and_callbacks
 
       # One of our post processing checks failed, something went wrong, so we
       # roll everything back

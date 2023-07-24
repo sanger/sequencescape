@@ -10,8 +10,7 @@ class GetYourQcCompletedTubesHereController < ApplicationController # rubocop:to
       LibPoolNormTubeGenerator.new(params[:barcode], current_user, Study.find_by(name: 'Lib PCR-XP QC Completed Tubes'))
     if @generator.valid?
       if @generator.create!
-        flash.now[:notice] =
-          "QC Completed tubes successfully created for #{@generator.plate.human_barcode}. Go celebrate!"
+        flash[:notice] = "QC Completed tubes successfully created for #{@generator.plate.human_barcode}. Go celebrate!"
         redirect_to study_asset_groups_path(@generator.study.id)
       else
         flash.now[:error] = "Oh dear, your tubes weren't created. It's not you its me so please contact PSD."

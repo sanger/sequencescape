@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe IlluminaHtp::Requests::StdLibraryRequest do
+RSpec.describe IlluminaHtp::Requests::StdLibraryRequest, type: :model do
   let(:tagged_well) { create :tagged_well }
 
   describe '#pass' do

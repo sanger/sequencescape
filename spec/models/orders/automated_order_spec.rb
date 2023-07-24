@@ -3,7 +3,7 @@
 require 'rails_helper'
 require_relative 'shared_order_specs'
 
-RSpec.describe AutomatedOrder do
+RSpec.describe AutomatedOrder, type: :model do
   subject { build :automated_order, assets: assets }
 
   let(:assets) { [tube] }

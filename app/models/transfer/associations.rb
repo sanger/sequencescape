@@ -2,7 +2,7 @@
 
 # Include in assets that can act as sources/destinations for transfers
 module Transfer::Associations
-  def self.included(base) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def self.included(base) # rubocop:todo Metrics/AbcSize
     base.class_eval do
       include Transfer::State
 

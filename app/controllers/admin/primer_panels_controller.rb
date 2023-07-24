@@ -8,10 +8,11 @@ class Admin::PrimerPanelsController < ApplicationController # rubocop:todo Style
     @primer_panels = PrimerPanel.all
   end
 
-  def show; end
   def new
     @primer_panel = PrimerPanel.new(programs: default_programs)
   end
+
+  def show; end
 
   def edit; end
 

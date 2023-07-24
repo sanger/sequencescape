@@ -3,7 +3,7 @@
 require 'rails_helper'
 require_relative 'shared_order_specs'
 
-RSpec.describe Order do
+RSpec.describe Order, type: :model do
   let(:study) { create :study, state: study_state }
   let(:study_state) { 'pending' }
   let(:project) { create :project }

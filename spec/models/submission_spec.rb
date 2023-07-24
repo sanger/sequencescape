@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Submission do
+RSpec.describe Submission, type: :model do
   describe '#priority' do
     let(:submission) { described_class.new(user: create(:user)) }
 

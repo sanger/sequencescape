@@ -3,7 +3,7 @@
 require 'rails_helper'
 require './spec/features/shared_examples/cherrypicking'
 
-describe 'Cherrypicking pipeline', cherrypicking: true, js: true do
+describe 'Cherrypicking pipeline', type: :feature, cherrypicking: true, js: true do
   include BarcodeHelper
 
   let(:swipecard_code) { '123456' }

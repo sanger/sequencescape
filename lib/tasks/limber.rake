@@ -137,7 +137,6 @@ namespace :limber do
       }
     }
 
-    # rubocop:todo Metrics/BlockLength
     ActiveRecord::Base.transaction do
       st_params.each do |prefix, params|
         catalogue_name = (params[:catalogue_name] || prefix)
@@ -154,7 +153,6 @@ namespace :limber do
         end
       end
 
-      # rubocop:enable Metrics/BlockLength
       heron_catalogue = ProductCatalogue.find_or_create_by!(name: 'Heron')
       Limber::Helper::TemplateConstructor.new(prefix: 'Heron', catalogue: heron_catalogue, sequencing_keys: base_list)
         .build!

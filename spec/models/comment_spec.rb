@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Comment do
+RSpec.describe Comment, type: :model do
   context 'A comment has relationships' do
     it 'belongs to commentable' do
       expect(subject).to belong_to(:commentable).required

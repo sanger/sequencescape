@@ -26,7 +26,7 @@ describe 'Labware API', with: :api_v2 do
 
     it 'identifies the type of labware' do
       api_get base_endpoint
-      listed = json['data'].pluck('type').sort
+      listed = json['data'].map { |data| data['type'] }.sort
       expect(listed).to eq(%w[tubes tubes])
     end
 

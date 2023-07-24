@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Accession::Accessionable, accession: true, type: :model do
+RSpec.describe Accession::Accessionable, type: :model, accession: true do
   let(:configuration) { Accession::Configuration.new }
 
   it 'is comparable' do

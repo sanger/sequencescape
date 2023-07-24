@@ -38,7 +38,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
 
   belongs_to :plate_purpose, inverse_of: :plates
   belongs_to :purpose, foreign_key: :plate_purpose_id
-  has_many :wells, inverse_of: :plate, foreign_key: :labware_id do # rubocop:todo Metrics/BlockLength
+  has_many :wells, inverse_of: :plate, foreign_key: :labware_id do
     # rubocop:todo Metrics/MethodLength
     def construct! # rubocop:todo Metrics/AbcSize
       transaction do

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SampleManifestExcel::Download, sample_manifest: true, sample_manifest_excel: true, type: :model do
+RSpec.describe SampleManifestExcel::Download, type: :model, sample_manifest_excel: true, sample_manifest: true do
   attr_reader :download, :spreadsheet
 
   let(:test_file) { 'test.xlsx' }

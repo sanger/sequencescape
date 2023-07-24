@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Api::AliquotIO do
+RSpec.describe Api::AliquotIO, type: :model do
   subject do
     create :aliquot,
            receptacle: well,

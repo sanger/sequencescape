@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe CherrypickTask::ControlLocator do
+RSpec.describe CherrypickTask::ControlLocator, type: :model do
   let(:instance) do
     described_class.new(
       batch_id: batch_id,
@@ -91,6 +91,7 @@ RSpec.describe CherrypickTask::ControlLocator do
     end
 
     # Test the basics for a range of batches
+    # rubocop:todo Metrics/BlockLength
     1.upto(100) do |batch_id|
       context "when batch is #{batch_id} and we have a 96 well plate with no wells free" do
         let(:batch_id) { batch_id }
@@ -128,6 +129,8 @@ RSpec.describe CherrypickTask::ControlLocator do
         it_behaves_like 'a generator of valid positions', (0...384)
       end
     end
+
+    # rubocop:enable Metrics/BlockLength
 
     context 'when over a range of batches' do
       let(:range) { (1...1000) }

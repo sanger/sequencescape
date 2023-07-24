@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Qcable::Statemachine # rubocop:todo Style/Documentation
-  def self.included(base) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def self.included(base) # rubocop:todo Metrics/AbcSize
     base.class_eval do
       ## State machine
       ## namespace: true as destroyed clashes with rails, but we can't easily rename the state

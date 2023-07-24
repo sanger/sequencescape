@@ -18,19 +18,19 @@ shared_examples 'a sequencing procedure' do
 
     expect(page).to have_content("Can't find a spiked hybridization buffer with barcode Not a barcode")
 
-    find_by_id('sample-2-checkbox').uncheck
+    find('#sample-2-checkbox').uncheck
 
     fill_in('PhiX Barcode', with: spiked_buffer.machine_barcode)
 
     click_on 'Next step'
 
-    find_by_id('sample-1-checkbox').uncheck
+    find('#sample-1-checkbox').uncheck
 
     expect(page).to have_content('Request 1 :')
 
     click_on 'Next step'
 
-    find_by_id('sample-1-checkbox').uncheck
+    find('#sample-1-checkbox').uncheck
 
     select('XP', from: 'Workflow (Standard or Xp)')
     fill_in('Lane loading concentration (pM)', with: 23)
@@ -38,7 +38,7 @@ shared_examples 'a sequencing procedure' do
 
     click_on 'Next step'
 
-    find_by_id('sample-2-checkbox').uncheck
+    find('#sample-2-checkbox').uncheck
 
     # Pending question on issue#3225 may be populated with previous value
     fill_in('+4 field of weirdness', with: 'Something else', currently_with: '')

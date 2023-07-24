@@ -3,7 +3,7 @@
 require 'rails_helper'
 require './spec/features/shared_examples/sequencing'
 
-RSpec.describe 'Following a Sequencing Pipeline', js: true do
+RSpec.describe 'Following a Sequencing Pipeline', type: :feature, js: true do
   let(:user) { create :user }
   let(:pipeline) { create(:sequencing_pipeline, :with_workflow) }
 
@@ -68,7 +68,7 @@ RSpec.describe 'Following a Sequencing Pipeline', js: true do
 
       click_on 'Next step'
 
-      find_by_id('sample-1-checkbox').uncheck
+      find('#sample-1-checkbox').uncheck
 
       select('XP', from: 'Workflow (Standard or Xp)')
       fill_in('Lane loading concentration (pM)', with: 23)
@@ -76,7 +76,7 @@ RSpec.describe 'Following a Sequencing Pipeline', js: true do
 
       click_on 'Next step'
 
-      find_by_id('sample-2-checkbox').uncheck
+      find('#sample-2-checkbox').uncheck
 
       # Pending question on issue#3225 may be populated with previous value
       fill_in('+4 field of weirdness', with: 'Something else', currently_with: '')

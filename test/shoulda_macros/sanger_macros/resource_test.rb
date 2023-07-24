@@ -39,7 +39,7 @@ module Sanger
             setup do
               @factory_options = defaults
               @create_options = defaults
-              @update_options = defaults.reject { |k, _v| protect_on_update.include?(k) }.deep_merge(extra_on_update) # rubocop:todo Style/HashExcept
+              @update_options = defaults.reject { |k, _v| protect_on_update.include?(k) }.deep_merge(extra_on_update)
               @input_params = {}
             end
 

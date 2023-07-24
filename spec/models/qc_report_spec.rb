@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe QcReport do
+RSpec.describe QcReport, type: :model do
   it 'is not valid without a study' do
     expect(build(:qc_report, study: nil)).not_to be_valid
   end

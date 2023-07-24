@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'shared_contexts/limber_shared_context'
 
-RSpec.describe BroadcastEvent::LibraryComplete, broadcast_event: true do
+RSpec.describe BroadcastEvent::LibraryComplete, type: :model, broadcast_event: true do
   include_context 'a limber target plate with submissions'
 
   let(:user) { create(:user) }

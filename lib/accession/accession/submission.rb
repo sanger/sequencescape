@@ -26,7 +26,7 @@ module Accession
       end
     end
 
-    def to_xml # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+    def to_xml # rubocop:todo Metrics/AbcSize
       xml = Builder::XmlMarkup.new
       xml.instruct!
       xml.SUBMISSION(
@@ -82,7 +82,7 @@ module Accession
       end
 
       def close!
-        files.values.each(&:close!) # rubocop:todo Style/HashEachMethods
+        files.values.each(&:close!)
       end
     end
 

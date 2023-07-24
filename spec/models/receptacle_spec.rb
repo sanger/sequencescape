@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Receptacle do
+RSpec.describe Receptacle, type: :model do
   let(:receptacle) { create :receptacle }
 
   # Uhh, looks like all our asset tests were labware tests!
@@ -38,7 +38,7 @@ RSpec.describe Receptacle do
       context 'when units: nM' do
         let(:units) { 'nM' }
 
-        it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
+        it 'works', :aggregate_failures do
           expect(receptacle.concentration).to eq(100)
         end
       end

@@ -51,7 +51,7 @@ module CsvParserClient
   # rubocop:enable Metrics/MethodLength
 
   def self.remove_no_read_results(tube_barcode_to_coordinate)
-    tube_barcode_to_coordinate&.reject! { |key| no_read?(key) } unless tube_barcode_to_coordinate.nil? # rubocop:todo Style/SafeNavigation
+    tube_barcode_to_coordinate&.reject! { |key| no_read?(key) } unless tube_barcode_to_coordinate.nil?
     tube_barcode_to_coordinate
   end
 

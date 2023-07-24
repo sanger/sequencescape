@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Study do
+RSpec.describe Study, type: :model do
   it 'request calculates correctly and is valid' do
     study = create(:study)
     request_type = create(:request_type)

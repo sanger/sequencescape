@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 def upload_submission_spreadsheet(name, encoding = nil)
-  attach_file('bulk_submission_spreadsheet', Rails.root.join('features', 'submission', 'csv', "#{name}.csv"))
+  attach_file('bulk_submission_spreadsheet', File.join(Rails.root, 'features', 'submission', 'csv', "#{name}.csv"))
   step("I select \"#{encoding}\" from 'Encoding'") if encoding
   click_button 'Create Bulk submission'
 end
@@ -9,7 +9,7 @@ end
 def upload_custom_row_submission
   attach_file(
     'bulk_submission_spreadsheet',
-    Rails.root.join('features', 'submission', 'csv', 'template_for_bulk_submission.csv')
+    File.join(Rails.root, 'features', 'submission', 'csv', 'template_for_bulk_submission.csv')
   )
   click_button 'Create Bulk submission'
 end

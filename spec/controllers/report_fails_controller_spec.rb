@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe ReportFailsController do
+describe ReportFailsController, type: :controller do
   context 'with Report Fails' do
     let(:user) { create :user, barcode: 'ID48601I', swipecard_code: '02face' }
     let(:plate) { create :plate }

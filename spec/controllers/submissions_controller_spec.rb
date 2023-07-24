@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SubmissionsController do
+RSpec.describe SubmissionsController, type: :controller do
   render_views
 
   let(:request_type) { create :well_request_type }

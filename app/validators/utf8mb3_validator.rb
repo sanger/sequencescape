@@ -18,7 +18,7 @@ class Utf8mb3Validator < ActiveModel::EachValidator
     invalid_characters = value.chars.select { |c| c.bytesize > 3 }
     return true if invalid_characters.empty?
 
-    record.errors[attribute] << # rubocop:todo Rails/DeprecatedActiveModelErrorsMethods
+    record.errors[attribute] <<
       (
         options[:message] ||
           "contains supplementary characters (eg. emoji), remove or replace them: #{invalid_characters.to_sentence}"

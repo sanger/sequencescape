@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe BulkSubmissionExcel::Download, bulk_submission_excel: true, type: :model do
+RSpec.describe BulkSubmissionExcel::Download, type: :model, bulk_submission_excel: true do
   attr_reader :download, :spreadsheet
 
   let(:test_file) { 'test.xlsx' }

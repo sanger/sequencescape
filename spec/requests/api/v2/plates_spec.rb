@@ -3,7 +3,7 @@
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
 
-describe 'Plates API', tags: :lighthouse, with: :api_v2 do
+describe 'Plates API', with: :api_v2, tags: :lighthouse do
   let(:params) {}
   let(:base_endpoint) { '/api/v2/plates' }
 
@@ -131,7 +131,7 @@ describe 'Plates API', tags: :lighthouse, with: :api_v2 do
         api_get "#{base_endpoint}/#{resource_model.id}/parents"
         expect(response).to have_http_status(:success), response.body
         expect(json['data'].length).to eq(2)
-        types = json['data'].pluck('type')
+        types = json['data'].map { |anc| anc['type'] }
         expect(types).to include('plates')
         expect(types).to include('tubes')
       end
@@ -140,7 +140,7 @@ describe 'Plates API', tags: :lighthouse, with: :api_v2 do
         api_get "#{base_endpoint}/#{resource_model.id}/relationships/parents"
         expect(response).to have_http_status(:success), response.body
         expect(json['data'].length).to eq(2)
-        types = json['data'].pluck('type')
+        types = json['data'].map { |anc| anc['type'] }
         expect(types).to include('plates')
         expect(types).to include('tubes')
       end
@@ -153,7 +153,7 @@ describe 'Plates API', tags: :lighthouse, with: :api_v2 do
         api_get "#{base_endpoint}/#{resource_model.id}/comments"
         expect(response).to have_http_status(:success), response.body
         expect(json['data'].length).to eq(1)
-        types = json['data'].pluck('type')
+        types = json['data'].map { |comment| comment['type'] }
         expect(types).to include('comments')
         expect(json['data'].first['attributes']['title']).to eq('Test')
       end

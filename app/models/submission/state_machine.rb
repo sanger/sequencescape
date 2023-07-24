@@ -81,7 +81,7 @@ module Submission::StateMachine
     end
   end
 
-  def configure_state_machine # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def configure_state_machine # rubocop:todo Metrics/AbcSize
     aasm column: :state, whiny_persistence: true do
       state :building, initial: true, exit: :valid_for_leaving_building_state
       state :pending, after_enter: :queue_submission_builder
