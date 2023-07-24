@@ -10,7 +10,7 @@ RSpec.describe Api::V2::SubmissionResource, type: :resource do
   let(:resource_model) { build_stubbed :submission, sequencing_requests: sequencing_requests }
 
   # Test attributes
-  it 'works', :aggregate_failures do
+  it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
     expect(subject).to have_attribute :uuid
     expect(subject).to have_attribute :name
     expect(subject).to have_attribute :used_tags

@@ -15,7 +15,7 @@
 # an untagged well.
 # We have some performance optimizations in place to avoid trying to look up tag -1
 # @see Tag
-class Aliquot < ApplicationRecord
+class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include Uuid::Uuidable
   include Api::Messages::FlowcellIO::AliquotExtensions
   include Api::Messages::QcResultIO::AliquotExtensions
@@ -171,8 +171,7 @@ class Aliquot < ApplicationRecord
     super unless tag2_id == UNASSIGNED_TAG
   end
 
-  # Cop disabled as this isn't a setter
-  def set_library(force: false) # rubocop:disable Naming/AccessorMethodName
+  def set_library(force: false)
     self.library = receptacle if library.nil? || force
   end
 

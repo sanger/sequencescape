@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require File.join(Rails.root, 'app', 'sample_manifest_excel', 'sample_manifest_excel')
+require Rails.root.join('app', 'sample_manifest_excel', 'sample_manifest_excel')
 
 unless Rails.env.test?
   SampleManifestExcel.configure do |config|

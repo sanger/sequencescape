@@ -17,7 +17,32 @@ class QcReportsController < ApplicationController # rubocop:todo Style/Documenta
     @plate_purposes = PlatePurpose.pluck(:name).sort
   end
 
-  def create # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength
+  def show # rubocop:todo Metrics/AbcSize
+    qc_report = QcReport.find_by!(report_identifier: params[:id])
+    queue_count = qc_report.queued? ? Delayed::Job.count : 0
+    @report_presenter = Presenters::QcReportPresenter.new(qc_report, queue_count)
+
+    respond_to do |format|
+      format.html
+
+      format.csv do
+        file = nil
+        begin
+          file = Tempfile.new(@report_presenter.filename)
+          @report_presenter.to_csv(file)
+          file.flush
+        ensure
+          file.close unless file.nil?
+        end
+        send_file file.path, content_type: 'text/csv', filename: @report_presenter.filename
+      end if qc_report.available?
+    end
+  end
+
+  # rubocop:enable Metrics/MethodLength
+
+  def create # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     study = Study.find_by(id: params[:qc_report][:study_id])
     exclude_existing = params[:qc_report][:exclude_existing] == '1'
     qc_report =
@@ -53,31 +78,6 @@ class QcReportsController < ApplicationController # rubocop:todo Style/Documenta
       redirect_back fallback_location: root_path
     end
   end
-
-  # rubocop:todo Metrics/MethodLength
-  def show # rubocop:todo Metrics/AbcSize
-    qc_report = QcReport.find_by!(report_identifier: params[:id])
-    queue_count = qc_report.queued? ? Delayed::Job.count : 0
-    @report_presenter = Presenters::QcReportPresenter.new(qc_report, queue_count)
-
-    respond_to do |format|
-      format.html
-
-      format.csv do
-        file = nil
-        begin
-          file = Tempfile.new(@report_presenter.filename)
-          @report_presenter.to_csv(file)
-          file.flush
-        ensure
-          file.close unless file.nil?
-        end
-        send_file file.path, content_type: 'text/csv', filename: @report_presenter.filename
-      end if qc_report.available?
-    end
-  end
-
-  # rubocop:enable Metrics/MethodLength
 
   private
 

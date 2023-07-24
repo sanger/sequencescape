@@ -9,7 +9,7 @@ RSpec.describe Api::V2::PrimerPanelResource, type: :resource do
   let(:resource_model) { build_stubbed :primer_panel }
 
   # Test attributes
-  it 'works', :aggregate_failures do
+  it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
     expect(subject).to have_attribute :name
     expect(subject).to have_attribute :programs
     expect(subject).not_to have_updatable_field(:id)

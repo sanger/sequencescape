@@ -5,7 +5,7 @@ require 'rails_helper'
 # Rubocop doesn't like the .and change {}.by bits and will
 # result in repeatedly indenting them to the level of the last call in the previous chain
 
-RSpec.describe SampleManifest, type: :model, sample_manifest: true do
+RSpec.describe SampleManifest, sample_manifest: true do
   let(:user) { create :user }
   let(:study) { create :study }
 
@@ -33,7 +33,6 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
 
       teardown { Delayed::Worker.delay_jobs = true }
 
-      # rubocop:disable Metrics/BlockLength
       [1, 2].each do |count|
         context "count: #{count}" do
           let(:count) { count }
@@ -76,8 +75,6 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
           end
         end
       end
-
-      # rubocop:enable Metrics/BlockLength
 
       context 'with a custom purpose' do
         let(:purpose) { create :plate_purpose, size: 2 }
@@ -154,7 +151,7 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
       let(:manifest) { create :sample_manifest, study: study }
 
       it 'adds created broadcast event when sample manifest is created' do
-        expect { manifest.generate }.to change { BroadcastEvent::SampleManifestCreated.count }.by(1)
+        expect { manifest.generate }.to change(BroadcastEvent::SampleManifestCreated, :count).by(1)
         broadcast_event = BroadcastEvent::SampleManifestCreated.last
         expect(broadcast_event.subjects.count).to eq 2
         expect(broadcast_event.to_json).to be_a String
@@ -164,7 +161,6 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
     context 'when asset_type: multiplexed_library' do
       let(:asset_type) { 'multiplexed_library' }
 
-      # rubocop:disable Metrics/BlockLength
       [2, 3].each do |count|
         context "#{count} libraries(s)" do
           let(:count) { count }
@@ -216,7 +212,6 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
           end
         end
       end
-      # rubocop:enable Metrics/BlockLength
     end
 
     context 'when asset_type: library' do
@@ -226,9 +221,11 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
       context 'library tubes' do
         it 'create 1 tube' do
           # We need to create library tubes as we have downstream dependencies that assume a unique library tube
-          expect { manifest.generate }.to change(LibraryTube, :count).by(count) &&
-            change(MultiplexedLibraryTube, :count).by(0) && change(SampleTube, :count).by(0) &&
-            change(SampleManifestAsset, :count).by(count) && change(BroadcastEvent, :count).by(1)
+          expect { manifest.generate }.to change(LibraryTube, :count).by(count)
+          expect { manifest.generate }.not_to change(MultiplexedLibraryTube, :count)
+          expect { manifest.generate }.not_to change(SampleTube, :count)
+          expect { manifest.generate }.to change(SampleManifestAsset, :count).by(count)
+          expect { manifest.generate }.to change(BroadcastEvent, :count).by(1)
         end
 
         context 'once generated' do
@@ -274,7 +271,6 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
       let(:asset_type) { '1dtube' }
       let(:purpose) { Tube::Purpose.standard_sample_tube }
 
-      # rubocop:todo Metrics/BlockLength
       [1, 2].each do |count|
         context "#{count} tubes(s)" do
           let(:count) { count }
@@ -319,7 +315,6 @@ RSpec.describe SampleManifest, type: :model, sample_manifest: true do
           end
         end
       end
-      # rubocop:enable Metrics/BlockLength
     end
   end
 

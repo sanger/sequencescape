@@ -9,7 +9,7 @@ RSpec.describe Api::V2::AliquotResource, type: :resource do
   let(:resource_model) { build_stubbed :aliquot }
 
   # Test attributes
-  it 'works', :aggregate_failures do
+  it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
     expect(subject).to have_attribute :tag_oligo
     expect(subject).to have_attribute :tag2_oligo
 

@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 
 ENV['APP_ROOT'] ||= File.expand_path(File.join(File.dirname(__FILE__), '..'))
-APP_ROOT = ENV['APP_ROOT']
+APP_ROOT = ENV.fetch('APP_ROOT', nil)
 script_file = File.join(APP_ROOT, 'lib', 'qc_evaluations-mini_poller.rb')
 tmp_dir = File.join(APP_ROOT, 'log')
 

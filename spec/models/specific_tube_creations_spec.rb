@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SpecificTubeCreation, type: :model do
+RSpec.describe SpecificTubeCreation do
   shared_context 'with common setup' do
     subject(:specific_tube_creation) { described_class.new(creation_parameters) }
 

@@ -13,9 +13,9 @@ describe 'Edit a study' do
     visit study_path(study)
     click_link 'Edit'
     expect(page).to have_content('Alignments in BAM')
-    expect(find('#study_study_metadata_attributes_bam')).not_to be_checked
+    expect(find_by_id('study_study_metadata_attributes_bam')).not_to be_checked
     check 'study_study_metadata_attributes_bam'
-    expect(find('#study_study_metadata_attributes_bam')).to be_checked
+    expect(find_by_id('study_study_metadata_attributes_bam')).to be_checked
     click_button 'Save Study'
     expect(page).to have_content('Your study has been updated')
     click_link 'Study details'

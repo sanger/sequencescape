@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Tag2LayoutTemplate, type: :model do
+RSpec.describe Tag2LayoutTemplate do
   subject { tag2_layout_template.create! plate: plate, tag: tag, user: user }
 
   let(:plate) { create :plate_with_untagged_wells, :with_submissions, sample_count: 2 }

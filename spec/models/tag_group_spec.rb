@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe TagGroup, type: :model do
+RSpec.describe TagGroup do
   context 'when the name is not unique' do
     let(:tag_group_1) { create(:tag_group, tag_count: 3, name: 'test name') }
     let(:tag_group_2) { build(:tag_group, tag_count: 3, name: 'test name') }

@@ -6,18 +6,21 @@ require 'qc_files_controller'
 class QcFilesControllerTest < ActionController::TestCase
   context '#show' do
     setup do
-      File.open(Rails.root.join('test/data/190_tube_sample_info.xls')) do |file|
-        @asset = create(:sample_tube)
-        @qc_file =
-          QcFile.create(
-            asset: @asset,
-            uploaded_data: {
-              tempfile: file,
+      Rails
+        .root
+        .join('test/data/190_tube_sample_info.xls')
+        .open do |file|
+          @asset = create(:sample_tube)
+          @qc_file =
+            QcFile.create(
+              asset: @asset,
+              uploaded_data: {
+                tempfile: file,
+                filename: 'example.xls'
+              },
               filename: 'example.xls'
-            },
-            filename: 'example.xls'
-          )
-      end
+            )
+        end
 
       @controller = QcFilesController.new
       @request = ActionController::TestRequest.create(@controller)

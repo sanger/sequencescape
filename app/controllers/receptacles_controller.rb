@@ -9,7 +9,7 @@ class ReceptaclesController < ApplicationController # rubocop:todo Metrics/Class
   before_action :find_receptacle_with_includes, only: %i[show edit update summary close print_assets print history]
   before_action :find_receptacle_only, only: %i[new_request create_request]
 
-  def index # rubocop:todo Metrics/AbcSize
+  def index # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     if params[:study_id]
       @study = Study.find(params[:study_id])
       @assets = @study.assets_through_aliquots.order(created_at: :desc).page(params[:page])
@@ -27,7 +27,7 @@ class ReceptaclesController < ApplicationController # rubocop:todo Metrics/Class
     end
   end
 
-  def show
+  def show # rubocop:todo Metrics/MethodLength
     @source_plates = @asset.source_plates
     respond_to do |format|
       format.html do
@@ -51,7 +51,7 @@ class ReceptaclesController < ApplicationController # rubocop:todo Metrics/Class
     respond_to { |format| format.html }
   end
 
-  def update # rubocop:todo Metrics/AbcSize
+  def update # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     respond_to do |format|
       if @asset.update(asset_params.merge(params.to_unsafe_h.fetch(:lane, {})))
         flash[:notice] = 'Receptacle was successfully updated.'
@@ -161,14 +161,14 @@ class ReceptaclesController < ApplicationController # rubocop:todo Metrics/Class
     submission.built!
 
     respond_to do |format|
-      flash[:notice] = 'Created request'
+      flash[:notice] = 'Created request' # rubocop:disable Rails/ActionControllerFlashBeforeRender
 
       format.html { redirect_to receptacle_path(@asset) }
       format.json { render json: submission.requests, status: :created }
     end
   rescue Submission::ProjectValidation::Error, ActiveRecord::RecordNotFound, ActiveRecord::RecordInvalid => e
     respond_to do |format|
-      flash[:error] = e.message.truncate(2000, separator: ' ')
+      flash.now[:error] = e.message.truncate(2000, separator: ' ')
       format.html { redirect_to new_request_for_current_asset }
       format.json { render json: e.message, status: :unprocessable_entity }
     end
@@ -176,7 +176,7 @@ class ReceptaclesController < ApplicationController # rubocop:todo Metrics/Class
 
   # rubocop:enable Metrics/MethodLength
 
-  def lookup # rubocop:todo Metrics/AbcSize
+  def lookup # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     return unless params[:asset] && params[:asset][:barcode]
 
     @assets = Labware.with_barcode(params[:asset][:barcode]).limit(50).page(params[:page])

@@ -8,7 +8,7 @@ class SampleManifestTubeTest < ActiveSupport::TestCase
 
   attr_reader :manifest, :tube_label, :tube1, :tube2, :tube3, :tubes, :prefix, :barcode1, :label
 
-  def setup # rubocop:todo Metrics/AbcSize
+  def setup # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     @manifest = create :sample_manifest, asset_type: '1dtube', purpose: Tube::Purpose.standard_sample_tube, count: 3
     @manifest.generate
     @tube1 = manifest.printables[0]

@@ -6,7 +6,7 @@
 # and to from there progress a {Batch} through the associated workflow.
 # @note Generally speaking we are trying to migrate pipelines out of the Sequencescape
 #       core.
-class Pipeline < ApplicationRecord
+class Pipeline < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include Uuid::Uuidable
   include Pipeline::BatchValidation
   include SharedBehaviour::Named

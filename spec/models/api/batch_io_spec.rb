@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Api::BatchIO, type: :model do
+RSpec.describe Api::BatchIO do
   subject { create :batch, user: user, assignee: user2, pipeline: pipeline }
 
   let(:user) { create :user }

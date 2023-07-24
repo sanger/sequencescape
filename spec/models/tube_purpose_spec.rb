@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe Tube::Purpose, type: :model do
+describe Tube::Purpose do
   let(:tube_purpose) { create :tube_purpose, prefix: barcode_prefix, target_type: target_type }
 
   shared_examples 'a tube factory' do

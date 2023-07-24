@@ -13,7 +13,7 @@ class Ability::BaseUser
 
   private
 
-  def grant_privileges # rubocop:todo Metrics/AbcSize
+  def grant_privileges # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     Rails.logger.debug { 'Granting BaseUser privileges' }
 
     can :delete, Comment, { user_id: user.id }

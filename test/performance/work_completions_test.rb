@@ -6,7 +6,7 @@ require 'rails/performance_test_help'
 class WorkCompletionsTest < ActionDispatch::PerformanceTest
   self.profile_options = { runs: 1, metrics: %i[wall_time memory], formats: [:flat] }
 
-  def setup # rubocop:todo Metrics/AbcSize
+  def setup # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     @user = create :user
 
     tested_wells = 96

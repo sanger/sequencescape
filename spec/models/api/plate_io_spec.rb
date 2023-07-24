@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Api::PlateIO, type: :model do
+RSpec.describe Api::PlateIO do
   subject { create :plate, plate_purpose: purpose }
 
   let(:purpose) { create :plate_purpose }

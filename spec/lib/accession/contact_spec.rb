@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Accession::Contact, type: :model, accession: true do
+RSpec.describe Accession::Contact, accession: true, type: :model do
   subject { described_class.new(user) }
 
   before(:all) do

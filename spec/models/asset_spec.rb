@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Asset, type: :model do
+RSpec.describe Asset do
   # Asset is being split into two separate models:
   # {Labware}: Representing the physical piece of plastic that moves round the lab
   # {Receptacle}: Representing something that can contain samples
