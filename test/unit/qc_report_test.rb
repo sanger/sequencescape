@@ -63,6 +63,7 @@ class QcReportTest < ActiveSupport::TestCase
     end
 
     context 'excluding existing' do
+      # rubocop:todo Metrics/BlockLength
       setup do
         @study = create :study
         @stock_plate = create :plate, purpose: PlatePurpose.find_or_create_by(name: 'Stock plate')
@@ -126,6 +127,8 @@ class QcReportTest < ActiveSupport::TestCase
         @qc_metric_count = QcMetric.count
         @qc_report.generate!
       end
+
+      # rubocop:enable Metrics/BlockLength
 
       should 'generate qc_metrics per sample which needs them' do
         assert_equal 2, QcMetric.count - @qc_metric_count

@@ -168,7 +168,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   # Fail specific requests on this batch
-  def fail_requests(requests_to_fail, reason, comment, fail_but_charge = false)
+  def fail_requests(requests_to_fail, reason, comment, fail_but_charge = false) # rubocop:todo Metrics/MethodLength
     ActiveRecord::Base.transaction do
       requests
         .find(requests_to_fail)

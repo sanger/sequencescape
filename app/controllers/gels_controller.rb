@@ -20,7 +20,7 @@ class GelsController < ApplicationController # rubocop:todo Style/Documentation
   def lookup
     @plate = Plate.find_from_barcode([params[:barcode], "#{Plate.default_prefix}#{params[:barcode]}"])
     unless @plate
-      flash[:error] = 'plate not found'
+      flash.now[:error] = 'plate not found'
       render action: :find
       return
     end

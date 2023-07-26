@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe TagGroup::FormObject, type: :model do
+RSpec.describe TagGroup::FormObject do
   context 'when validating the oligos entered by the user' do
     let(:tag_group_form_object) { build(:tag_group_form_object) }
 

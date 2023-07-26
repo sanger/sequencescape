@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Api::BatchRequestIO, type: :model do
+RSpec.describe Api::BatchRequestIO do
   subject { create :batch_request, request: request }
 
   let(:request) { create :request }

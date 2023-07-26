@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe Pooling, type: :model, poolings: true do
+describe Pooling, poolings: true do
   let(:empty_lb_tube) { create :empty_library_tube, barcode: 1 }
   let(:untagged_lb_tube1) { create :library_tube, barcode: 2 }
   let(:untagged_lb_tube2) { create :library_tube, barcode: 3 }

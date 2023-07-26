@@ -43,7 +43,7 @@ class PlatePicksController < ApplicationController
 
   # rubocop:enable Metrics/MethodLength
 
-  def batches # rubocop:todo Metrics/AbcSize
+  def batches # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     batch = Batch.find(params[:id])
 
     # Either we're not a cherrypick batch, or we haven't been processed

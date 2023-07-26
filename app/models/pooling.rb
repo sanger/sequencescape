@@ -2,7 +2,7 @@
 
 # Used by {PoolingsController} to take multiple scanned {Tube} barcodes containing
 # one or more {Aliquot aliquots} and use them to generate a new {MultiplexedLibraryTube}
-class Pooling
+class Pooling # rubocop:todo Metrics/ClassLength
   include ActiveModel::Model
 
   attr_writer :barcodes, :source_assets

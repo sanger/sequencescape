@@ -4,7 +4,7 @@ module StudyReport::StudyDetails # rubocop:todo Style/Documentation
   BATCH_SIZE = 1000
 
   # This will pull out all well ids from stock plates in the study
-  def each_stock_well_id_in_study_in_batches(&block)
+  def each_stock_well_id_in_study_in_batches(&block) # rubocop:todo Metrics/MethodLength
     # Stock wells are determined by the requests leading from the stock plate
     handle_wells(
       :requests,

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SamplesController, type: :controller do
+RSpec.describe SamplesController do
   let(:sample) { create :sample }
   let(:current_user) { create :user }
 

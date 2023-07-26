@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Heron::Factories::TubeRackStatus, type: :model, heron: true do
+RSpec.describe Heron::Factories::TubeRackStatus, heron: true, type: :model do
   before { create(:study) }
 
   let(:params) { { barcode: '0000000001', status: 'validation_failed', messages: ['message 1', 'message 2'] } }

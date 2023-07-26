@@ -2,7 +2,7 @@
 
 # Something that is aliquotable can be part of an aliquot.  So sample and tag are both examples.
 module Aliquot::Aliquotable
-  def self.included(base) # rubocop:todo Metrics/AbcSize
+  def self.included(base) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     base.class_eval do
       extend ClassMethods
 

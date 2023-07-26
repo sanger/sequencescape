@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Insdc::Country, type: :model do
+RSpec.describe Insdc::Country do
   context 'without a name' do
     subject { build :insdc_country, name: nil }
 

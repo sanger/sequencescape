@@ -14,7 +14,7 @@ describe 'Batches controller', js: true, warren: true do
     login_user user
     visit batch_path(batch)
     click_link('Edit batch')
-    request_list = find('#requests_list')
+    request_list = find_by_id('requests_list')
     expect(request_list).to have_css('tr', count: request_count)
     first_request, _second_request, third_request = *request_list.all('tr')
 
@@ -39,7 +39,7 @@ describe 'Batches controller', js: true, warren: true do
   it 'request zero comments link' do
     login_user user
     visit batch_path(batch)
-    request_list = find('#requests_list')
+    request_list = find_by_id('requests_list')
     td = request_list.first('tr').all('td').last
     expect(td).to have_link('0 comments')
   end

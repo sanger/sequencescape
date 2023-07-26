@@ -9,7 +9,7 @@ RSpec.describe Api::V2::CommentResource, type: :resource do
   let(:resource_model) { build_stubbed :comment }
 
   # Test attributes
-  it 'works', :aggregate_failures do
+  it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
     expect(subject).to have_attribute :title
     expect(subject).to have_attribute :description
     expect(subject).not_to have_updatable_field(:id)

@@ -82,7 +82,7 @@ module SampleManifestExcel
         @sample_manifest ||= create_sample_manifest
       end
 
-      def create_sample_manifest
+      def create_sample_manifest # rubocop:todo Metrics/MethodLength
         case manifest_type
         when /plate/
           FactoryBot.create(

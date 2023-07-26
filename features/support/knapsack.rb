@@ -12,4 +12,4 @@ KnapsackPro::Adapters::CucumberAdapter.bind
 # a seperate cucumber process for each subset of the queue. This results in Simplecov
 # clobbering the coverage. Before queue runs only the once, whereas this will run
 # on each invokation
-SimpleCov.command_name("#{SimpleCov.command_name}_#{ENV['KNAPSACK_PRO_SUBSET_QUEUE_ID']}")
+SimpleCov.command_name("#{SimpleCov.command_name}_#{ENV.fetch('KNAPSACK_PRO_SUBSET_QUEUE_ID', nil)}")

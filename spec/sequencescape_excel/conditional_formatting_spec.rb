@@ -3,9 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe SequencescapeExcel::ConditionalFormatting,
-               type: :model,
+               sample_manifest: true,
                sample_manifest_excel: true,
-               sample_manifest: true do
+               type: :model do
   let(:worksheet) { Axlsx::Workbook.new.add_worksheet }
   let(:rule) do
     {

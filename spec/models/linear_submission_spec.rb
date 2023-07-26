@@ -88,10 +88,12 @@ RSpec.describe LinearSubmission do
             let(:request_type_option) { [library_creation_request_type.id, sequencing_request_type.id] }
 
             it 'create requests but not comments' do
+              # rubocop:todo RSpec/ChangeByZero
               expect { mpx_submission.process! }.to change(Request, :count).by(mx_asset_count + 1).and change(
                                                                    Comment,
                                                                    :count
                                                                  ).by(0)
+              # rubocop:enable RSpec/ChangeByZero
             end
 
             it 'be a multiplexed submission' do
@@ -110,10 +112,12 @@ RSpec.describe LinearSubmission do
             end
 
             it 'create requests but not comments' do
+              # rubocop:todo RSpec/ChangeByZero
               expect { mpx_submission.process! }.to change(Request, :count).by(mx_asset_count + 2).and change(
                                                                    Comment,
                                                                    :count
                                                                  ).by(0)
+              # rubocop:enable RSpec/ChangeByZero
             end
           end
         end

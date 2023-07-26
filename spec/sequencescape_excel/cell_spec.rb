@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SequencescapeExcel::Cell, type: :model, sample_manifest_excel: true, sample_manifest: true do
+RSpec.describe SequencescapeExcel::Cell, sample_manifest: true, sample_manifest_excel: true, type: :model do
   it 'creates a row' do
     expect(described_class.new(1, 4).row).to eq(1)
   end

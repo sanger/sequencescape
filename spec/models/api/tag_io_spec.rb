@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Api::TagIO, type: :model do
+RSpec.describe Api::TagIO do
   subject { create :tag }
 
   let(:expected_json) do
