@@ -11,6 +11,8 @@ module SequencescapeExcel
     # 'pcr positive' or 'pcr negative' cannot be in H12
     # 'lysate negative' control (if present) can only be in H12
     class BioscanControlType < ControlType
+      include Base
+
       attr_accessor :supplier_name, :well
 
       validate :check_supplier_name

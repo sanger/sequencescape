@@ -485,6 +485,15 @@ module Barcode::FormatHandlers
     self.format = /\A(?<prefix>BB)-(?<number>\d+)\z/
   end
 
+  # Support for Brants Bridge centre unconsolidated plates from July 2023
+  #
+  # Expected formats:
+  # nnnnnnnDWP
+  # where n is a digit
+  class BrantsBridgeV3 < BaseRegExBarcode
+    self.format = /\A(?<number>\d{7})(?<suffix>DWP)\z/
+  end
+
   # Support for Leamington Spa centre
   # Expected formats:
   # CHERYnnnnnn
@@ -494,7 +503,7 @@ module Barcode::FormatHandlers
   end
 
   # Support for Leamington Spa centre
-
+  #
   # Expected formats:
   # RFLCPnnnnnnnn
   # where n is a digit

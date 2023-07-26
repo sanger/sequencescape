@@ -299,6 +299,20 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode 'BB_12345678'
   end
 
+  describe Barcode::FormatHandlers::BrantsBridgeV3 do
+    it_has_a_valid_barcode '1234567DWP', prefix: nil, number: 1_234_567, suffix: 'DWP'
+    it_has_a_valid_barcode '0001234DWP', prefix: nil, number: 1_234, suffix: 'DWP'
+    it_has_an_invalid_barcode '12345678DWP'
+    it_has_an_invalid_barcode '123456DWP'
+    it_has_an_invalid_barcode 'DWP1234567'
+    it_has_an_invalid_barcode '1234567SWP'
+    it_has_an_invalid_barcode "1234567\nDWP"
+    it_has_an_invalid_barcode '1234567-DWP'
+    it_has_an_invalid_barcode '  1234567DWP'
+    it_has_an_invalid_barcode '1234567DWP  '
+    it_has_an_invalid_barcode 'INVALID'
+  end
+
   describe Barcode::FormatHandlers::LeamingtonSpa do
     it_has_a_valid_barcode 'CHERY500171', prefix: 'CHERY', number: 500_171
     it_has_a_valid_barcode 'CHERY123456789', prefix: 'CHERY', number: 123_456_789
