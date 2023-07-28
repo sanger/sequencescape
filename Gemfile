@@ -183,11 +183,9 @@ group :test, :cucumber do
   gem 'nokogiri', require: false
   gem 'rspec-rails', require: false
   gem 'shoulda'
+  gem 'selenium-webdriver', '~> 4.1', require: false
   gem 'simplecov', require: false
   gem 'timecop', require: false
-
-  # Keep webdriver in sync with chrome to prevent frustrating CI failures
-  gem 'webdrivers', '>= 5.2.0'
 end
 
 group :cucumber do
