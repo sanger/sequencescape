@@ -8,16 +8,6 @@ GIT
       activerecord (>= 4.0.0)
 
 GIT
-  remote: https://github.com/sanger/axlsx.git
-  revision: 3555519d96329e2561406a8cb1e0350098026ee9
-  branch: v2.0.2sgr
-  specs:
-    axlsx (2.0.2sgr)
-      htmlentities (~> 4.3.4)
-      nokogiri (>= 1.6.6)
-      rubyzip (>= 1.2.1)
-
-GIT
   remote: https://github.com/sanger/sanger_barcode_format.git
   revision: 8e93771a9f38e1efb07c1d82dca1a81d74353e11
   branch: development
@@ -103,20 +93,13 @@ GEM
       zeitwerk (~> 2.3)
     addressable (2.8.0)
       public_suffix (>= 2.0.2, < 5.0)
-    after_commit_everywhere (0.1.5)
+    after_commit_everywhere (1.3.1)
       activerecord (>= 4.2)
+      activesupport
     amq-protocol (2.3.2)
     ast (2.4.2)
-    autoprefixer-rails (10.3.1.0)
-      execjs (~> 2)
-    binding_of_caller (1.0.0)
-      debug_inspector (>= 0.0.1)
     bootsnap (1.7.7)
       msgpack (~> 1.0)
-    bootstrap (4.6.0)
-      autoprefixer-rails (>= 9.1.0)
-      popper_js (>= 1.14.3, < 2)
-      sassc-rails (>= 2.0.0)
     builder (3.2.4)
     bullet (6.1.5)
       activesupport (>= 3.0.0)
@@ -133,9 +116,6 @@ GEM
       rack-test (>= 0.6.3)
       regexp_parser (>= 1.5, < 3.0)
       xpath (~> 3.2)
-    capybara-selenium (0.0.6)
-      capybara
-      selenium-webdriver
     carrierwave (2.2.2)
       activemodel (>= 5.0.0)
       activesupport (>= 5.0.0)
@@ -144,7 +124,11 @@ GEM
       marcel (~> 1.0.0)
       mini_mime (>= 0.1.3)
       ssrf_filter (~> 1.0)
-    childprocess (3.0.0)
+    caxlsx (3.4.1)
+      htmlentities (~> 4.3, >= 4.3.4)
+      marcel (~> 1.0)
+      nokogiri (~> 1.10, >= 1.10.4)
+      rubyzip (>= 1.3.0, < 3)
     choice (0.2.0)
     chronic (0.10.2)
     coderay (1.1.3)
@@ -193,6 +177,7 @@ GEM
       cucumber-core (~> 10.0, >= 10.0.1)
       cucumber-cucumber-expressions (~> 12.1, >= 12.1.1)
       cucumber-messages (~> 17.0, >= 17.0.1)
+    cucumber_github_formatter (0.1.0)
     daemons (1.4.0)
     database_cleaner (2.0.1)
       database_cleaner-active_record (~> 2.0.0)
@@ -200,7 +185,6 @@ GEM
       activerecord (>= 5.a)
       database_cleaner-core (~> 2.0.0)
     database_cleaner-core (2.0.1)
-    debug_inspector (1.1.0)
     delayed_job (4.1.9)
       activesupport (>= 3.0, < 6.2)
     delayed_job_active_record (4.1.6)
@@ -210,20 +194,28 @@ GEM
     docile (1.4.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
+    dry-cli (1.0.0)
     dynamic_form (1.1.4)
     erubi (1.10.0)
     exception_notification (4.4.3)
       actionmailer (>= 4.0, < 7)
       activesupport (>= 4.0, < 7)
-    execjs (2.8.1)
     factory_bot (6.2.0)
       activesupport (>= 5.0.0)
     factory_bot_rails (6.2.0)
       factory_bot (~> 6.2.0)
       railties (>= 5.0.0)
     ffi (1.15.3)
-    font-awesome-sass (5.15.1)
-      sassc (>= 1.11)
+    flipper (0.25.4)
+    flipper-active_record (0.25.4)
+      activerecord (>= 4.2, < 8)
+      flipper (~> 0.25.4)
+    flipper-ui (0.25.4)
+      erubi (>= 1.0.0, < 2.0.0)
+      flipper (~> 0.25.4)
+      rack (>= 1.4, < 3)
+      rack-protection (>= 1.5.3, <= 4.0.0)
+      sanitize (< 7)
     formtastic (4.0.0)
       actionpack (>= 5.2.0)
     globalid (0.5.2)
@@ -238,12 +230,6 @@ GEM
     image_processing (1.12.1)
       mini_magick (>= 4.9.5, < 5)
       ruby-vips (>= 2.0.17, < 3)
-    jquery-rails (4.4.0)
-      rails-dom-testing (>= 1, < 3)
-      railties (>= 4.2.0)
-      thor (>= 0.14, < 2.0)
-    jquery-ui-rails (6.0.1)
-      railties (>= 3.2.16)
     json (2.5.1)
     jsonapi-resources (0.9.0)
       activerecord (>= 4.1)
@@ -255,7 +241,6 @@ GEM
       rake
     launchy (2.5.0)
       addressable (~> 2.7)
-    libv8-node (15.14.0.1)
     listen (3.7.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -272,8 +257,6 @@ GEM
     mini_magick (4.11.0)
     mini_mime (1.1.1)
     mini_portile2 (2.6.1)
-    mini_racer (0.4.0)
-      libv8-node (~> 15.14.0.0)
     minitest (5.14.4)
     minitest-profiler (0.0.2)
       activesupport (>= 4.1.0)
@@ -294,7 +277,6 @@ GEM
     parallel (1.20.1)
     parser (3.0.2.0)
       ast (~> 2.4.1)
-    popper_js (1.16.0)
     pry (0.13.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -303,9 +285,6 @@ GEM
       pry (~> 0.13.0)
     pry-rails (0.3.9)
       pry (>= 0.10.4)
-    pry-stack_explorer (0.6.1)
-      binding_of_caller (~> 1.0)
-      pry (~> 0.13)
     public_suffix (4.0.6)
     puma (5.4.0)
       nio4r (~> 2.0)
@@ -319,7 +298,7 @@ GEM
       rack (>= 1.2.0)
     rack-protection (2.1.0)
       rack
-    rack-proxy (0.7.0)
+    rack-proxy (0.7.6)
       rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
@@ -386,6 +365,8 @@ GEM
     rspec-expectations (3.10.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.10.0)
+    rspec-github (2.4.0)
+      rspec-core (~> 3.0)
     rspec-html-matchers (0.9.4)
       nokogiri (~> 1)
       rspec (>= 3.0.0.a, < 4)
@@ -439,21 +420,13 @@ GEM
       connection_pool (~> 2.2.0)
       multi_json (~> 1.0)
       thor (~> 1.1.0)
-    sass-rails (6.0.0)
-      sassc-rails (~> 2.1, >= 2.1.1)
-    sassc (2.1.0)
-      ffi (~> 1.9)
-    sassc-rails (2.1.2)
-      railties (>= 4.0.0)
-      sassc (>= 2.0)
-      sprockets (> 3.0)
-      sprockets-rails
-      tilt
-    select2-rails (4.0.13)
-    selenium-webdriver (3.142.7)
-      childprocess (>= 0.5, < 4.0)
-      rubyzip (>= 1.2.2)
-    semantic_range (3.0.0)
+    sanitize (6.0.2)
+      crass (~> 1.0.2)
+      nokogiri (>= 1.12.0)
+    selenium-webdriver (4.9.0)
+      rexml (~> 3.2, >= 3.2.5)
+      rubyzip (>= 1.2.2, < 3.0)
+      websocket (~> 1.0)
     shoulda (4.0.0)
       shoulda-context (~> 2.0)
       shoulda-matchers (~> 4.0)
@@ -488,32 +461,27 @@ GEM
     timecop (0.9.4)
     traceroute (0.8.1)
       rails (>= 3.0.0)
-    transactional_capybara (0.2.0)
-      capybara
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
-    uglifier (4.2.0)
-      execjs (>= 0.3.0, < 3)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.7)
     unicode-display_width (2.0.0)
     uniform_notifier (1.14.2)
     uuidtools (2.2.0)
-    webdrivers (4.6.1)
-      nokogiri (~> 1.6)
-      rubyzip (>= 1.3.0)
-      selenium-webdriver (>= 3.0, < 4.0)
+    vite_rails (3.0.15)
+      railties (>= 5.1, < 8)
+      vite_ruby (~> 3.0, >= 3.2.2)
+    vite_ruby (3.3.4)
+      dry-cli (>= 0.7, < 2)
+      rack-proxy (~> 0.6, >= 0.6.1)
+      zeitwerk (~> 2.2)
     webmock (3.14.0)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
-    webpacker (5.4.2)
-      activesupport (>= 5.2)
-      rack-proxy (>= 0.6.1)
-      railties (>= 5.2)
-      semantic_range (>= 2.3.0)
     webrick (1.7.0)
+    websocket (1.2.9)
     websocket-driver (0.7.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
@@ -538,36 +506,33 @@ DEPENDENCIES
   activerecord-import
   activeresource
   acts-as-dag!
-  after_commit_everywhere (~> 0.1, >= 0.1.5)
-  axlsx!
+  after_commit_everywhere (~> 1.0)
   bootsnap
-  bootstrap (~> 4.0)
   builder
   bullet
   cancancan
   capybara
-  capybara-selenium
   carrierwave
+  caxlsx
   configatron
   cucumber-rails
+  cucumber_github_formatter
   daemons
   database_cleaner
   delayed_job_active_record
   dynamic_form
   exception_notification
   factory_bot_rails
-  font-awesome-sass
+  flipper (~> 0.25.0)
+  flipper-active_record (~> 0.25.0)
+  flipper-ui (~> 0.25.0)
   formtastic
-  jquery-rails
-  jquery-ui-rails
   json
   jsonapi-resources (= 0.9.0)
   jsonapi-resources-matchers
   knapsack_pro
   launchy
   listen
-  mime-types
-  mini_racer
   minitest
   minitest-profiler
   mocha
@@ -577,7 +542,6 @@ DEPENDENCIES
   nokogiri
   pry-byebug
   pry-rails
-  pry-stack_explorer
   puma
   rack-acceptable
   rack-cors
@@ -591,6 +555,7 @@ DEPENDENCIES
   rest-client
   roo
   rspec-collection_matchers
+  rspec-github
   rspec-html-matchers
   rspec-json_expectations
   rspec-longrun
@@ -601,12 +566,9 @@ DEPENDENCIES
   rubocop-rspec
   ruby-prof
   ruby-units
-  rubyzip
   sanger_barcode_format!
   sanger_warren
-  sass-rails
-  sassc (= 2.1.0)
-  select2-rails
+  selenium-webdriver (~> 4.1)
   shoulda
   simplecov
   sinatra
@@ -614,12 +576,9 @@ DEPENDENCIES
   test-prof
   timecop
   traceroute
-  transactional_capybara
-  uglifier (>= 1.0.3)
   uuidtools
-  webdrivers
+  vite_rails
   webmock
-  webpacker
   whenever
   will_paginate
   will_paginate-bootstrap
