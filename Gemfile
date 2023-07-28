@@ -182,8 +182,8 @@ group :test, :cucumber do
   gem 'mocha', require: false # avoids load order problems
   gem 'nokogiri', require: false
   gem 'rspec-rails', require: false
-  gem 'shoulda'
   gem 'selenium-webdriver', '~> 4.1', require: false
+  gem 'shoulda'
   gem 'simplecov', require: false
   gem 'timecop', require: false
 end
