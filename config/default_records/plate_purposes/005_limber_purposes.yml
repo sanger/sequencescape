@@ -27,6 +27,9 @@ LDS Stock:
 LTN Stock:
   <<: *limber_input_96
   cherrypickable_target: false
+LCMB Cherrypick:
+  <<: *limber_input_96
+  cherrypickable_target: true
 
 # 384 well input plates
 GBS Stock: &limber_input_384

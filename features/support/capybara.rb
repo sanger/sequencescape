@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
-require 'webdrivers/chromedriver'
 require 'selenium/webdriver'
 require 'capybara'
-
-Webdrivers::Chromedriver.update
 
 # Capybara.configure do |config|
 #   config.server = :puma
