@@ -23,7 +23,7 @@ jobs:
     services:
       mysql:
         # Use the Mysql docker image https://hub.docker.com/_/mysql
-        image: mysql:5.7 # Using 5.7 to map to what is used in production.
+        image: mysql:8.0 # Using 8.0 to map to what is used in production.
         ports:
           - 3306 # Default port mappings
           # Monitor the health of the container to mesaure when it is ready
@@ -63,7 +63,7 @@ jobs:
     services:
       mysql:
         # Use the Mysql docker image https://hub.docker.com/_/mysql
-        image: mysql:5.7 # Using 5.7 to map to what is used in production.
+        image: mysql:8.0 # Using 8.0 to map to what is used in production.
         ports:
           - 3306 # Default port mappings
           # Monitor the health of the container to mesaure when it is ready
@@ -142,7 +142,7 @@ jobs:
     services:
       mysql:
         # Use the Mysql docker image https://hub.docker.com/_/mysql
-        image: mysql:5.7 # Using 5.7 to map to what is used in production.
+        image: mysql:8.0 # Using 8.0 to map to what is used in production.
         ports:
           - 3306 # Default port mappings
           # Monitor the health of the container to mesaure when it is ready
