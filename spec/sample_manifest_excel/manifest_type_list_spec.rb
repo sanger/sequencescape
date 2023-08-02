@@ -3,9 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::ManifestTypeList,
-               type: :model,
+               sample_manifest: true,
                sample_manifest_excel: true,
-               sample_manifest: true do
+               type: :model do
   include SequencescapeExcel::Helpers
 
   let(:folder) { File.join('spec', 'data', 'sample_manifest_excel', 'extract') }

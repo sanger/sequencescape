@@ -37,7 +37,7 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController # r
     render :new
   end
 
-  def prepare_manifest_pagination
+  def prepare_manifest_pagination # rubocop:todo Metrics/MethodLength
     pending_sample_manifests =
       SampleManifest
         .pending_manifests

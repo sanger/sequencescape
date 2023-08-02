@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Aliquot, type: :model do
+RSpec.describe Aliquot do
   let(:tag1) { create :tag }
   let(:tag2) { create :tag }
   let(:sample1) { create :sample }

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Heron::Factories::Tube, type: :model, heron: true do
+RSpec.describe Heron::Factories::Tube, heron: true, type: :model do
   let(:params) { { barcode: 'FD00000001' } }
 
   it 'is valid with all relevant attributes' do

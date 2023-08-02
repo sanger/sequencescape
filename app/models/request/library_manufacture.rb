@@ -2,7 +2,7 @@
 # Any request involved in building a library should include this module that defines some of the
 # most common behaviour, namely the library type and insert size information.
 module Request::LibraryManufacture
-  def self.included(base)
+  def self.included(base) # rubocop:todo Metrics/MethodLength
     base::Metadata.class_eval do
       custom_attribute(:fragment_size_required_from, required: true, integer: true, on: :create, minimum: 1)
       custom_attribute(:fragment_size_required_to, required: true, integer: true, on: :create, minimum: 1)

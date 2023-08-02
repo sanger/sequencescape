@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'shared_contexts/limber_shared_context'
 
-RSpec.describe TransferRequest, type: :model do
+RSpec.describe TransferRequest do
   let(:source) { create :well_with_sample_and_without_plate }
   let(:tag) { create(:tag).tag!(source) }
   let(:destination) { create :well }

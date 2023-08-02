@@ -143,7 +143,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   private
 
-  def create_asset_group(created_plates)
+  def create_asset_group(created_plates) # rubocop:todo Metrics/MethodLength
     group = nil
     all_wells = created_plates.map { |hash| hash[:destinations].map(&:wells) }.flatten
 

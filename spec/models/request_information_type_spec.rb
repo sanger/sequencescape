@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe RequestInformationType, type: :model do
+RSpec.describe RequestInformationType do
   subject(:request_information_type) { described_class.new(name: name, key: key, label: label, data_type: data_type) }
 
   let(:label) { 'example' }

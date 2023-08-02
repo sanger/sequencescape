@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Api::OrderIO, type: :model do
+RSpec.describe Api::OrderIO do
   subject do
     create :order,
            user: user,

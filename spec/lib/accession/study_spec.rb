@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Study, type: :model, accession: true do
+RSpec.describe Study, accession: true, type: :model do
   include MockAccession
 
   context 'accession all samples in study' do

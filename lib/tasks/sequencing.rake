@@ -16,6 +16,7 @@ namespace :sequencing do
   namespace :novaseq do
     desc 'Setting up NovaSeq 6000 PE pipeline'
     task setup: :environment do
+      # rubocop:todo Metrics/BlockLength
       ActiveRecord::Base.transaction do
         unless RequestType.exists?(key: 'illumina_htp_novaseq_6000_paired_end_sequencing')
           RequestType
@@ -96,6 +97,7 @@ namespace :sequencing do
           end
         end
       end
+      # rubocop:enable Metrics/BlockLength
     end
   end
 

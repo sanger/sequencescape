@@ -4,16 +4,16 @@ require 'rails_helper'
 
 RSpec.configure { |c| c.include LabWhereClientHelper }
 
-RSpec.describe CherrypickTask, type: :model do
+RSpec.describe CherrypickTask do
   let!(:plate) { create :plate_with_untagged_wells, sample_count: 4 }
   let(:control_plate) { create :control_plate, sample_count: 2 }
   let(:requests) do
     plate.wells.in_column_major_order.map { |w| create(:cherrypick_request, asset: w, submission: submission) }
   end
   let(:template) { create(:plate_template, size: 6) }
-  let(:robot) { instance_double('Robot', max_beds: 2) }
+  let(:robot) { instance_double('Robot', max_beds: 2) } # rubocop:todo RSpec/VerifiedDoubleReference
   let(:purpose) { create :purpose }
-  let(:batch) { instance_double('Batch', id: 1235, requests: requests) }
+  let(:batch) { instance_double('Batch', id: 1235, requests: requests) } # rubocop:todo RSpec/VerifiedDoubleReference
   let(:submission) { create :submission }
   let(:wells_to_leave_free) { Rails.application.config.plate_default_control_wells_to_leave_free }
 
