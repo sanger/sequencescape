@@ -34,7 +34,6 @@ cucumber:
   type: test
   config:
     routing_key_prefix: test
-
 # You are encouraged to use the WARREN_CONNECTION_URI environmental
 # variable to configure your production environment. Under no
 # circumstances should you commit sensitive information in the file.
