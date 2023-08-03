@@ -29,13 +29,18 @@ test:
   type: test
   config:
     routing_key_prefix: test
-# The test environment sets up a test message handler, which lets
-# you make assertions about which messages have been sent.
-# See: https://rubydoc.info/gems/sanger_warren/Warren/Handler/Test
+
 cucumber:
   type: test
   config:
     routing_key_prefix: test
+
+# We need to pass some value to Warren when the app is being packaged up (vite:build),
+# because the initializers are run.
+# The value will be overwritten when the app is deployed.
+build:
+  type: test
+
 # You are encouraged to use the WARREN_CONNECTION_URI environmental
 # variable to configure your production environment. Under no
 # circumstances should you commit sensitive information in the file.

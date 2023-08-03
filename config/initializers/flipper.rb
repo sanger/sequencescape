@@ -23,8 +23,12 @@ Flipper::UI.configure do |config|
 end
 
 begin
-  # Automatically add tracking of features in the yaml file
-  FLIPPER_FEATURES.each_key { |feature| Flipper.add(feature) }
+  # Prevent this from running when the app is being packaged up (vite:build),
+  # because Flipper.add accesses the database, which is not available at that time.
+  unless Rails.env == 'build'
+    # Automatically add tracking of features in the yaml file
+    FLIPPER_FEATURES.each_key { |feature| Flipper.add(feature) }
+  end
 rescue ActiveRecord::ActiveRecordError => e
   Rails.logger.warn(e.message)
   Rails.logger.warn('Features not registered with flipper')

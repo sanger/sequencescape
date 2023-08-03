@@ -52,6 +52,12 @@ cucumber:
   <<: *test
   database: sequencescape_test<%= ENV['TEST_ENV_NUMBER'] %><%= suffix %>_cuke
 
+# We need to have some configuration here when the app is being packaged up (vite:build),
+# because the initializers are run.
+# The config will be overwritten when the app is deployed.
+build:
+  <<: *MYSQL
+
 # These other connections are exported during deploy, from:
 # ssh://git/repos/git/psd/config/private.git/
 ### Staging
