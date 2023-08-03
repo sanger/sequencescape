@@ -29,9 +29,7 @@ test:
   type: test
   config:
     routing_key_prefix: test
-# The test environment sets up a test message handler, which lets
-# you make assertions about which messages have been sent.
-# See: https://rubydoc.info/gems/sanger_warren/Warren/Handler/Test
+
 cucumber:
   type: test
   config:
