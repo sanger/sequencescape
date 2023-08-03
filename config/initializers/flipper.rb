@@ -25,7 +25,7 @@ end
 begin
   # Prevent this from running when the app is being packaged up (vite:build),
   # because Flipper.add accesses the database, which is not available at that time.
-  unless Rails.env == 'build'
+  unless ENV.key?('BUILDING_APP') && ENV.fetch('BUILDING_APP')
     # Automatically add tracking of features in the yaml file
     FLIPPER_FEATURES.each_key { |feature| Flipper.add(feature) }
   end
