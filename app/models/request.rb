@@ -450,7 +450,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def next_request_type_id
     # May be nil, so can't use lazy assignment
-    return @next_request_type_id if instance_variable_defined?('@next_request_type_id')
+    return @next_request_type_id if instance_variable_defined?(:@next_request_type_id)
 
     @next_request_type_id = calculate_next_request_type_id
   end

@@ -66,7 +66,7 @@ class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpo
   private :_read
   standard_action(:read)
 
-  def separate(associations, _) # rubocop:todo Metrics/AbcSize
+  def separate(associations, _) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     associations[@options[:json].to_s] =
       lambda do |object, options, stream|
         stream.block(@options[:json].to_s) do |nested_stream|

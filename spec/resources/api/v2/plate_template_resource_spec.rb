@@ -9,7 +9,7 @@ RSpec.describe Api::V2::PlateTemplateResource, type: :resource do
   let(:resource_model) { build_stubbed :plate_template }
 
   # Test attributes
-  it 'works', :aggregate_failures do
+  it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
     expect(resource).to have_attribute :uuid
     expect(resource).not_to have_updatable_field(:id)
     expect(resource).not_to have_updatable_field(:uuid)

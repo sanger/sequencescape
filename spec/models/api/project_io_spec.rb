@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Api::ProjectIO, type: :model do
+RSpec.describe Api::ProjectIO do
   context 'with minimal details' do
     subject { create :project, approved: true }
 

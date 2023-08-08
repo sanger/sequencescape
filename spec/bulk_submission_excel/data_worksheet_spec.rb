@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe BulkSubmissionExcel::Worksheet::DataWorksheet, type: :model, bulk_submission_excel: true do
+RSpec.describe BulkSubmissionExcel::Worksheet::DataWorksheet, bulk_submission_excel: true, type: :model do
   let(:xls) { Axlsx::Package.new }
   let(:workbook) { xls.workbook }
   let(:test_file) { 'test.xlsx' }

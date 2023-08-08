@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 require 'event_factory'
-class ProjectsController < ApplicationController # rubocop:todo Style/Documentation
+class ProjectsController < ApplicationController # rubocop:todo Style/Documentation, Metrics/ClassLength
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
@@ -42,7 +42,7 @@ class ProjectsController < ApplicationController # rubocop:todo Style/Documentat
     @users = User.all
   end
 
-  def create # rubocop:todo Metrics/AbcSize
+  def create # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     # TODO[5002667]: All of this code should be in a before_create/after_create callback in the Project model ...
     @project = Project.new(params[:project])
     @project.save!
@@ -54,7 +54,7 @@ class ProjectsController < ApplicationController # rubocop:todo Style/Documentat
 
     # TODO[5002667]: ... to here.
 
-    flash[:notice] = 'Your project has been created'
+    flash[:notice] = 'Your project has been created' # rubocop:disable Rails/ActionControllerFlashBeforeRender
     respond_to do |format|
       format.html { redirect_to project_path(@project) }
       format.xml { render xml: @project, status: :created, location: @project }
@@ -130,11 +130,11 @@ class ProjectsController < ApplicationController # rubocop:todo Style/Documentat
       if params[:role]
         @user.grant_role(params[:role][:authorizable_type].to_s, @project)
         @roles = @project.roles
-        flash[:notice] = 'Role added'
+        flash[:notice] = 'Role added' # rubocop:disable Rails/ActionControllerFlashBeforeRender
         render partial: 'roles', status: 200
       else
         @roles = @project.roles
-        flash[:error] = 'A problem occurred while adding the role'
+        flash[:error] = 'A problem occurred while adding the role' # rubocop:disable Rails/ActionControllerFlashBeforeRender
         render partial: 'roles', status: 500
       end
     else
@@ -156,11 +156,11 @@ class ProjectsController < ApplicationController # rubocop:todo Style/Documentat
       if params[:role]
         @user.remove_role(params[:role][:authorizable_type].to_s, @project)
         @roles = @project.roles
-        flash[:error] = 'Role was removed'
+        flash[:error] = 'Role was removed' # rubocop:disable Rails/ActionControllerFlashBeforeRender
         render partial: 'roles', status: 200
       else
         @roles = @project.roles
-        flash[:error] = 'A problem occurred while removing the role'
+        flash[:error] = 'A problem occurred while removing the role' # rubocop:disable Rails/ActionControllerFlashBeforeRender
         render partial: 'roles', status: 500
       end
     else

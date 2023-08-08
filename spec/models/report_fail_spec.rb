@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe ReportFail, type: :model do
+RSpec.describe ReportFail do
   let!(:user) { create(:user, swipecard_code: '12345') }
   let(:plate_1) { create(:plate) }
   let(:plate_2) { create(:plate) }

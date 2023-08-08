@@ -20,7 +20,7 @@
 #
 module MethodBenchmarking
   # rubocop:disable Metrics/AbcSize
-  def benchmark_method(method_name, options = {})
+  def benchmark_method(method_name, options = {}) # rubocop:todo Metrics/MethodLength
     return if method_name.start_with?('benchmark', '_')
     alias_method :"benchmark_#{method_name}", :"#{method_name}"
 

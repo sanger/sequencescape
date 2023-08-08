@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Plate::SampleTubeFactory, type: :model do
+RSpec.describe Plate::SampleTubeFactory do
   it 'sends print request' do
     plate = create :plate, :with_wells, well_count: 2
     barcode_printer = create :barcode_printer

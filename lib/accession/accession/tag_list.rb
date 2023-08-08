@@ -99,7 +99,7 @@ module Accession
     end
 
     def build_tag(tag_yaml, key)
-      (factory_class_for(tag_yaml)).new(tag_yaml.merge(name: key))
+      factory_class_for(tag_yaml).new(tag_yaml.merge(name: key))
     end
   end
 end

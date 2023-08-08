@@ -20,7 +20,7 @@ class Ability::Manager
 
   private
 
-  def grant_privileges # rubocop:todo Metrics/AbcSize
+  def grant_privileges # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     Rails.logger.debug { 'Granting Manager privileges' }
 
     can(:edit, Labware) { |lw| !lw.is_a?(PlateTemplate) }

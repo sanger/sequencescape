@@ -15,7 +15,7 @@
 # All {Sample samples} in a given manifest will initially belong to a single
 # {Study}, although it is possible for them to become associated with additional
 # studies over time.
-class SampleManifest < ApplicationRecord
+class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include Uuid::Uuidable
   include ModelExtensions::SampleManifest
   include SampleManifest::BarcodePrinterBehaviour

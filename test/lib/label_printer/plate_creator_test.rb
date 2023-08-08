@@ -17,7 +17,7 @@ class PlateCreatorTest < ActiveSupport::TestCase
               :study_abbreviation,
               :purpose_name
 
-  def setup # rubocop:todo Metrics/AbcSize
+  def setup # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     @parent_barcode = 'SQPD-1234'
     @studies = create_list :study, 1
     parent = create :source_plate, barcode: parent_barcode, studies: @studies

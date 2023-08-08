@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'samples/show.html.erb', type: :view do
+RSpec.describe 'samples/show.html.erb' do
   include AuthenticatedSystem
   let(:user) { create :user }
 

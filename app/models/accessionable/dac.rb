@@ -20,7 +20,7 @@ class Accessionable::Dac < Accessionable::Base
     [].tap { |errors| errors << 'Data Access Contacts Empty. Please add a contact' if @contacts.empty? }
   end
 
-  def xml
+  def xml # rubocop:todo Metrics/MethodLength
     xml = Builder::XmlMarkup.new
     xml.instruct!
     xml.DAC_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') do

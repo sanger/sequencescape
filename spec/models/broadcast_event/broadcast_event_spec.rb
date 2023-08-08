@@ -102,7 +102,7 @@ class ExampleEvent < BroadcastEvent
   end
 end
 
-RSpec.describe BroadcastEvent, type: :model, broadcast_event: true do
+RSpec.describe BroadcastEvent, broadcast_event: true do
   it 'is not directly instantiated' do
     expect(described_class.new).not_to be_valid
   end

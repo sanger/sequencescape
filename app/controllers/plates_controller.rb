@@ -8,16 +8,15 @@ class PlatesController < ApplicationController # rubocop:todo Style/Documentatio
   before_action :set_plate_creators, only: %i[new create]
   before_action :set_barcode_printers, only: %i[new create]
 
+  def show
+    @plate = Plate.find(params[:id])
+  end
   def new
     respond_to do |format|
       format.html
       format.xml { render xml: @plate }
       format.json { render json: @plate }
     end
-  end
-
-  def show
-    @plate = Plate.find(params[:id])
   end
 
   # rubocop:todo Metrics/MethodLength
@@ -31,7 +30,7 @@ class PlatesController < ApplicationController # rubocop:todo Style/Documentatio
 
     respond_to do |format|
       if scanned_user.nil?
-        flash[:error] = 'Please scan your user barcode'
+        flash[:error] = 'Please scan your user barcode' # rubocop:disable Rails/ActionControllerFlashBeforeRender
       elsif tube_rack_sources?
         plate_creator.create_plates_from_tube_racks!(tube_racks, barcode_printer, scanned_user, create_asset_group)
       else
@@ -43,13 +42,13 @@ class PlatesController < ApplicationController # rubocop:todo Style/Documentatio
           Plate::CreatorParameters.new(params[:plates])
         )
       end
-      flash[:notice] = 'Created plates successfully'
-      flash[:warning] = plate_creator.warnings if plate_creator.warnings.present?
+      flash[:notice] = 'Created plates successfully' # rubocop:disable Rails/ActionControllerFlashBeforeRender
+      flash[:warning] = plate_creator.warnings if plate_creator.warnings.present? # rubocop:disable Rails/ActionControllerFlashBeforeRender
       format.html { render(new_plate_path) }
     end
   rescue StandardError => e
     respond_to do |format|
-      flash[:error] = e.message
+      flash[:error] = e.message # rubocop:disable Rails/ActionControllerFlashBeforeRender
       format.html { render(new_plate_path) }
     end
   end
@@ -86,7 +85,7 @@ class PlatesController < ApplicationController # rubocop:todo Style/Documentatio
     @studies = Study.alphabetical
   end
 
-  def create_sample_tubes # rubocop:todo Metrics/AbcSize
+  def create_sample_tubes # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     barcode_printer = BarcodePrinter.find(params[:plates][:barcode_printer])
     barcode_array = params[:plates][:source_plates].scan(/\w+/)
     plates = Plate.with_barcode(barcode_array)

@@ -73,6 +73,7 @@ Given 'H12 on {asset_name} is empty' do |plate|
 end
 
 # rubocop:todo Metrics/PerceivedComplexity, Metrics/AbcSize
+# rubocop:todo Metrics/MethodLength
 def work_pipeline_for(submissions, name, template = nil) # rubocop:todo Metrics/CyclomaticComplexity
   raise StandardError, 'No submissions to process' if submissions.empty?
 
@@ -97,6 +98,7 @@ def work_pipeline_for(submissions, name, template = nil) # rubocop:todo Metrics/
     template.create!(source: source_plate, destination: final_plate, user: FactoryBot.create(:user))
   end
 end
+# rubocop:enable Metrics/MethodLength
 # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
 
 Given /^(all submissions) have been worked until the last plate of the "Pulldown ISC" pipeline$/ do |submissions|

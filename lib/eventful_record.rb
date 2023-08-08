@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module EventfulRecord # rubocop:todo Style/Documentation
-  def has_many_events(&block)
+  def has_many_events(&block) # rubocop:todo Metrics/MethodLength
     has_many(:events, -> { order(created_at: :asc, id: :asc) }, as: :eventful, dependent: :destroy) do
       def self.event_constructor(name, event_class, event_class_method)
         line = __LINE__ + 1

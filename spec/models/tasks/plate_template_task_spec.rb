@@ -4,7 +4,7 @@ require 'rails_helper'
 
 # This is a very tangled test, as I'm hoping to unhook the current dependencies
 # so need to wrap it at its current level of messiness
-RSpec.describe PlateTemplateTask, type: :model do
+RSpec.describe PlateTemplateTask do
   subject(:task) { create :plate_template_task }
 
   let(:pipeline) { task.workflow.pipeline }

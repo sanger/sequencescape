@@ -19,7 +19,7 @@ def read_file(filename)
   File.read(filename)
 end
 
-RSpec.describe Parsers::CardinalPbmcCountParser, type: :model do
+RSpec.describe Parsers::CardinalPbmcCountParser do
   it 'will have an assay type' do
     expect(described_class.assay_type).to eq('Cardinal_PBMC_Count')
   end

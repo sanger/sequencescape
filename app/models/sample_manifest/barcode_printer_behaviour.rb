@@ -5,7 +5,7 @@ module SampleManifest::BarcodePrinterBehaviour # rubocop:todo Style/Documentatio
     'plate' => [BarcodePrinterType96Plate, BarcodePrinterType384DoublePlate]
   }.freeze
 
-  def applicable_barcode_printers
+  def applicable_barcode_printers # rubocop:todo Metrics/MethodLength
     printer_type_classes = ASSET_TYPE_TO_PRINTER_TYPE[asset_type]
     printers = []
     if printer_type_classes.nil?

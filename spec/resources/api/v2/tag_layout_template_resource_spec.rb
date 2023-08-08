@@ -9,7 +9,7 @@ RSpec.describe Api::V2::TagLayoutTemplateResource, type: :resource do
   let(:resource_model) { build_stubbed :tag_layout_template }
 
   # Test attributes
-  it 'works', :aggregate_failures do
+  it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
     expect(subject).to have_attribute :uuid
     expect(subject).not_to have_updatable_field(:id)
     expect(subject).not_to have_updatable_field(:uuid)

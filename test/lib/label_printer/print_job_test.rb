@@ -12,7 +12,7 @@ class PrintJobTest < ActiveSupport::TestCase
               :label_template_name,
               :labels_attributes
 
-  def setup # rubocop:todo Metrics/AbcSize
+  def setup # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     @barcode_printer = create :barcode_printer
     @plates = create_list :plate, 1, well_count: 1, well_factory: :untagged_well
     @plate = plates[0]
