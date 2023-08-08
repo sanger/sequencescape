@@ -34,6 +34,13 @@ cucumber:
   type: test
   config:
     routing_key_prefix: test
+
+# We need to pass some value to Warren when the app is being packaged up (vite:build),
+# because the initializers are run.
+# The value will be overwritten when the app is deployed.
+production:
+  type: test
+
 # You are encouraged to use the WARREN_CONNECTION_URI environmental
 # variable to configure your production environment. Under no
 # circumstances should you commit sensitive information in the file.
