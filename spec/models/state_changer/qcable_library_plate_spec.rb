@@ -13,8 +13,8 @@ RSpec.describe StateChanger::QcableLibraryPlate do
       customer_accepts_responsibility: customer_accepts_responsibility
     )
   end
-  let(:labware) { instance_double('Plate', wells: [well]) }
-  let(:well) { instance_double('Well', aliquots: [aliquot]) }
+  let(:labware) { instance_double('Plate', wells: [well]) } # rubocop:todo RSpec/VerifiedDoubleReference
+  let(:well) { instance_double('Well', aliquots: [aliquot]) } # rubocop:todo RSpec/VerifiedDoubleReference
   let(:user) { build_stubbed :user }
   let(:contents) { [] }
   let(:customer_accepts_responsibility) { false }

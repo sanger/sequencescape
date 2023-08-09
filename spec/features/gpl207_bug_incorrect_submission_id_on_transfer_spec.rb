@@ -6,7 +6,7 @@ RSpec.describe 'Bug research' do
   context 'with GPL-207' do
     context 'Incorrect submission ids recorded in transfer requests when other plates with
  the same samples have library requests under different submission ids still in progress' do
-      def create_pool_requests(plate, pool_defs, pool_instances, submission_ids)
+      def create_pool_requests(plate, pool_defs, pool_instances, submission_ids) # rubocop:todo Metrics/MethodLength
         pool_defs.each_with_index do |well_locs, index|
           plate
             .wells
@@ -23,7 +23,7 @@ RSpec.describe 'Bug research' do
         end
       end
 
-      def create_cherrypick_requests(plate, target_plate, transfers, submission_id)
+      def create_cherrypick_requests(plate, target_plate, transfers, submission_id) # rubocop:todo Metrics/MethodLength
         transfers.map do |source, destinations|
           target_plate
             .wells

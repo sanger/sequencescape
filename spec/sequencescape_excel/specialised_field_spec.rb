@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SequencescapeExcel::SpecialisedField, type: :model, sample_manifest_excel: true, sample_manifest: true do
+RSpec.describe SequencescapeExcel::SpecialisedField, sample_manifest: true, sample_manifest_excel: true, type: :model do
   let(:map) { create(:map) }
   let(:asset) { create(:untagged_well, map: map) }
   let(:asset2) { create(:untagged_well, map: map) }

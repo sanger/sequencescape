@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Robot::Generator::Tecan, type: :model do
+describe Robot::Generator::Tecan do
   before { create(:full_plate) }
 
   shared_examples 'a generator' do

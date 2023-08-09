@@ -22,7 +22,7 @@ namespace :mbrave do
     end
 
     # rubocop:todo Metrics/AbcSize
-    def create_tag_plates(tag_layout_templates, user)
+    def create_tag_plates(tag_layout_templates, user) # rubocop:todo Metrics/MethodLength
       ActiveRecord::Base.transaction do
         lot_type = LotType.find_by!(name: 'Pre Stamped Tags - 384')
         tag_layout_templates.each_with_index do |tag_layout_template, _index|

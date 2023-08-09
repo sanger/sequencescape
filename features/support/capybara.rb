@@ -8,21 +8,17 @@ require 'capybara'
 # end
 
 Capybara.register_driver :headless_chrome do |app|
-  driver = Capybara.drivers[:selenium_chrome_headless].call(app)
+  options = Selenium::WebDriver::Chrome::Options.new
 
-  configure_window_size(driver)
-  enable_chrome_headless_downloads(driver)
-end
+  options.add_argument('--headless')
+  options.add_argument('--window-size=1600,3200')
+  options.add_preference('download.default_directory', DownloadHelpers::PATH)
+  the_driver = Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 
-def configure_window_size(driver)
-  # links in header disappear if window is too small, then capybara can't click on them
-  driver.options[:options].add_argument('--window-size=1600,3200')
-end
-
-def enable_chrome_headless_downloads(driver)
-  driver.options[:options].add_preference(:download, default_directory: Capybara.save_path)
-  driver.browser.download_path = Capybara.save_path
-  driver
+  # the following is needed to avoid a test failure where the driver would
+  # forget / ignore its configured download location on every other run
+  the_driver.browser.download_path = DownloadHelpers::PATH.to_s
+  the_driver
 end
 
 Capybara.register_driver :chrome do |app|

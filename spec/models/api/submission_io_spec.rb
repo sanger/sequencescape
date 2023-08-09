@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Api::SubmissionIO, type: :model do
+RSpec.describe Api::SubmissionIO do
   subject { create :submission, user: user }
 
   let(:user) { create :user }

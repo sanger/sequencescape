@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Api::StudyIO, type: :model do
+RSpec.describe Api::StudyIO do
   subject do
     create :study,
            ethically_approved: true,

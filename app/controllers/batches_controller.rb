@@ -29,7 +29,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
                 ]
   before_action :find_batch_by_batch_id, only: %i[sort print_plate_barcodes print_barcodes]
 
-  def index # rubocop:todo Metrics/AbcSize
+  def index # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     if logged_in?
       @user = params.fetch(:user, current_user)
       @batches = Batch.for_user(@user).order(id: :desc).includes(:user, :assignee, :pipeline).page(params[:page])
@@ -79,33 +79,6 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
   end
 
   # rubocop:todo Metrics/MethodLength
-  def update # rubocop:todo Metrics/AbcSize
-    if batch_parameters[:assignee_id]
-      user = User.find(batch_parameters[:assignee_id])
-      assigned_message = "Assigned to #{user.name} (#{user.login})."
-    else
-      assigned_message = ''
-    end
-
-    respond_to do |format|
-      if @batch.update(batch_parameters)
-        flash[:notice] = "Batch was successfully updated. #{assigned_message}"
-        format.html { redirect_to batch_url(@batch) }
-        format.xml { head :ok }
-      else
-        format.html { render action: 'edit' }
-        format.xml { render xml: @batch.errors.to_xml }
-      end
-    end
-  end
-
-  # rubocop:enable Metrics/MethodLength
-
-  def batch_parameters
-    @batch_parameters ||= params.require(:batch).permit(:assignee_id)
-  end
-
-  # rubocop:todo Metrics/MethodLength
   def create # rubocop:todo Metrics/AbcSize
     @pipeline = Pipeline.find(params[:id])
 
@@ -132,6 +105,33 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
   end
 
   # rubocop:enable Metrics/MethodLength
+
+  # rubocop:todo Metrics/MethodLength
+  def update # rubocop:todo Metrics/AbcSize
+    if batch_parameters[:assignee_id]
+      user = User.find(batch_parameters[:assignee_id])
+      assigned_message = "Assigned to #{user.name} (#{user.login})."
+    else
+      assigned_message = ''
+    end
+
+    respond_to do |format|
+      if @batch.update(batch_parameters)
+        flash[:notice] = "Batch was successfully updated. #{assigned_message}"
+        format.html { redirect_to batch_url(@batch) }
+        format.xml { head :ok }
+      else
+        format.html { render action: 'edit' }
+        format.xml { render xml: @batch.errors.to_xml }
+      end
+    end
+  end
+
+  # rubocop:enable Metrics/MethodLength
+
+  def batch_parameters
+    @batch_parameters ||= params.require(:batch).permit(:assignee_id)
+  end
 
   def pipeline
     # All pipeline batches routes should just direct to batches#index with pipeline and state as filter parameters
@@ -187,7 +187,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     @fail_reasons = @batch.workflow.source_is_internal? ? FAILURE_REASONS['internal'] : FAILURE_REASONS['external']
   end
 
-  def fail_items # rubocop:todo Metrics/AbcSize
+  def fail_items # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     ActiveRecord::Base.transaction do
       fail_params =
         params.permit(:id, requested_fail: {}, requested_remove: {}, failure: %i[reason comment fail_but_charge])
@@ -215,7 +215,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   def print_labels; end
 
-  def print_plate_labels
+  def print_plate_labels # rubocop:todo Metrics/MethodLength
     @pipeline = @batch.pipeline
     @output_barcodes = []
 
@@ -249,7 +249,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
   end
 
   # Handles printing of the worksheet
-  def print # rubocop:todo Metrics/AbcSize
+  def print # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     @task = Task.find_by(id: params[:task_id])
     @pipeline = @batch.pipeline
     @comments = @batch.comments
@@ -350,7 +350,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   private
 
-  def print_handler(print_class) # rubocop:todo Metrics/AbcSize
+  def print_handler(print_class) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     print_job =
       LabelPrinter::PrintJob.new(
         params[:printer],

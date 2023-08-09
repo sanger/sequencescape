@@ -112,6 +112,7 @@ Given /^the UUID for the plate associated with the tag layout with ID (\d+) is "
   set_uuid_for(TagLayout.find(id).plate, uuid_value)
 end
 
+# rubocop:todo Metrics/MethodLength
 def pool_by_strategy(source, destination, pooling_strategy) # rubocop:todo Metrics/AbcSize
   unless pooling_strategy.sum == source.size
     Rails.logger.info("Pooling strategy does not fit plate size #{source.size}: #{pooling_strategy.inspect}")
@@ -133,6 +134,7 @@ def pool_by_strategy(source, destination, pooling_strategy) # rubocop:todo Metri
       end
   end
 end
+# rubocop:enable Metrics/MethodLength
 # This fakes out the transfers so that they look like they came from different submissions, effectively meaning
 # that the source plate is pooled in columns to the destination plate (it's not actually pooled, it's just the
 # indication of what pools will occur).

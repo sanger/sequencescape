@@ -4,7 +4,7 @@ require 'rails_helper'
 require 'record_loader/request_information_type_loader'
 
 # This file was initially generated via `rails g record_loader`
-RSpec.describe RecordLoader::RequestInformationTypeLoader, type: :model, loader: true do
+RSpec.describe RecordLoader::RequestInformationTypeLoader, loader: true, type: :model do
   subject(:record_loader) { described_class.new(directory: test_directory, files: selected_files) }
 
   # Tests use a separate directory to avoid coupling your specs to the data

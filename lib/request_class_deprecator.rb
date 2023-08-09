@@ -17,6 +17,7 @@ module RequestClassDeprecator
     RequestType.find_by!(key: 'transfer')
   end
 
+  # rubocop:todo Metrics/MethodLength
   def deprecate_class(request_class_name, options = {}) # rubocop:todo Metrics/AbcSize
     state_changes = options.fetch(:state_change, {})
     new_request_type = options.fetch(:new_type, transfer_request)
@@ -46,4 +47,5 @@ module RequestClassDeprecator
         end
     end
   end
+  # rubocop:enable Metrics/MethodLength
 end

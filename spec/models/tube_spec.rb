@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'timecop'
 
-describe Tube, type: :model do
+describe Tube do
   describe 'scope:: in_column_major_order' do
     let(:tube_rack) { create :tube_rack }
     let(:num_tubes) { locations.length }

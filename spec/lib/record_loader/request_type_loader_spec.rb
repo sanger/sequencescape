@@ -4,7 +4,7 @@ require 'rails_helper'
 require 'record_loader/request_type_loader'
 
 # This file was initially generated via `rails g record_loader`
-RSpec.describe RecordLoader::RequestTypeLoader, type: :model, loader: true do
+RSpec.describe RecordLoader::RequestTypeLoader, loader: true, type: :model do
   def a_new_record_loader(files = selected_files)
     described_class.new(directory: test_directory, files: files)
   end
