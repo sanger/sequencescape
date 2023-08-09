@@ -560,4 +560,13 @@ module Barcode::FormatHandlers
   class EastLondonGenesAndHealthV2 < BaseRegExBarcode
     self.format = /\A(?<prefix>S2)-\d+-(?<number>\d+)\z/
   end
+
+  # Support for Code128 barcodes supplied by CILS for the IBD Response study.
+  # Added as part of the scRNA Core pipeline
+  # Expected formats:
+  # IBDRnnnnnn
+  # where n is a digit
+  class IBDResponse < BaseRegExBarcode
+    self.format = /\A(?<prefix>IBDR)(?<number>[0-9]{6})\z/
+  end
 end
