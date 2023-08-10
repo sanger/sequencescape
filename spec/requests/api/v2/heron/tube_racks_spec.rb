@@ -100,6 +100,7 @@ RSpec.describe 'TubeRacks Heron API', heron: true, lighthouse: true, with: :api_
               .joins(sample: { aliquots: { receptacle: :barcodes } })
               .where(barcodes: { barcode: tubes_barcodes })
               .map(&:supplier_name)
+              .sort
           ).to eq(supplier_sample_ids)
         end
       end
