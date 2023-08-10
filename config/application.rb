@@ -114,7 +114,8 @@ module Sequencescape
         RequestType::Validator::FlowcellTypeValidator,
         ActionController::Parameters,
         Set,
-        Range
+        Range,
+        FieldInfo
       ]
     end
   end
