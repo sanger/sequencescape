@@ -404,7 +404,7 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode 'SQPD-1234-23-0'
   end
 
-  describe Barcode::FormatHandlers::IBDResponse do
+  describe Barcode::FormatHandlers::IbdResponse do
     it_has_a_valid_barcode 'IBDR123456', prefix: 'IBDR', number: 123_456
     it_has_a_valid_barcode 'IBDR000000', prefix: 'IBDR', number: 0
     it_has_an_invalid_barcode 'SQPD-12345678-234233890-WD'

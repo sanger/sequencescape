@@ -566,7 +566,7 @@ module Barcode::FormatHandlers
   # Expected formats:
   # IBDRnnnnnn
   # where n is a digit
-  class IBDResponse < BaseRegExBarcode
+  class IbdResponse < BaseRegExBarcode
     self.format = /\A(?<prefix>IBDR)(?<number>[0-9]{6})\z/
   end
 end
