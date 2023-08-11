@@ -78,8 +78,7 @@ The following tools are required for development:
 - node (version defined in the `.nvmrc`)
 - mysql client libraries - if you do not want to install mysql server on your machine, consider
   using mysql-client: `brew install mysql-client`. Alternatively, to install the MySQL required by
-  Sequencescape (currently 5.7) use [this](https://gist.github.com/operatino/392614486ce4421063b9dece4dfe6c21)
-  helpful link.
+  Sequencescape (currently 8.0)
 
 ## Getting started (using Docker)
 
