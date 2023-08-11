@@ -33,7 +33,7 @@ services:
       retries: 5
 
   mysql_server:
-    image: mysql:5.7
+    image: mysql:8.0
     environment:
       - MYSQL_ALLOW_EMPTY_PASSWORD="yes"
     healthcheck:
