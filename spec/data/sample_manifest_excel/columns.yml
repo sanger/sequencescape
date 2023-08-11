@@ -709,6 +709,7 @@ donor_id:
   attribute: :sample_id
 donor_id_mandatory:
   heading: DONOR ID (mandatory)
+  updates: donor_id
   unlocked: true
   conditional_formattings:
     empty_mandatory_cell:
