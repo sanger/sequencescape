@@ -77,6 +77,49 @@ collected_by_for_cardinal:
     - UKB_Newcastle_11027
     - UKB_Reading_11026
     - UKB_Stockport_11025
+# TODO: this list will need updating, asking Laura L 10th Aug 23
+collected_by_for_scrna_core:
+  options:
+    - IBD-BAR
+    - IBD-BAT
+    - IBD-BER
+    - IBD-BIR
+    - IBD-BOU
+    - IBD-CAM
+    - IBD-CAR
+    - IBD-CDD
+    - IBD-COV
+    - IBD-ECH
+    - IBD-EDI
+    - IBD-ENH
+    - IBD-ESH
+    - IBD-GST
+    - IBD-HUL
+    - IBD-ICL
+    - IBD-KCH
+    - IBD-KET
+    - IBD-LEE
+    - IBD-LIV
+    - IBD-MAN
+    - IBD-NCL
+    - IBD-NNU
+    - IBD-NOR
+    - IBD-OXF
+    - IBD-PEN
+    - IBD-RDE
+    - IBD-ROF
+    - IBD-SME
+    - IBD-SOM
+    - IBD-STE
+    - IBD-STG
+    - IBD-STH
+    - IBD-STS
+    - IBD-SUS
+    - IBD-SWA
+    - IBD-SWF
+    - IBD-TOR
+    - IBD-UHS
+    - IBD-WOL
 collected_by_for_controls:
   options:
     - Sanger Institute
