@@ -115,7 +115,8 @@ module Sequencescape
         ActionController::Parameters,
         Set,
         Range,
-        FieldInfo
+        FieldInfo,
+        Time
       ]
     end
   end
