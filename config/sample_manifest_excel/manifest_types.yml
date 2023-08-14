@@ -719,7 +719,6 @@ cardinal:
     - :sanger_tube_id
     - :sanger_sample_id
     - :supplier_name
-    - :retention_instruction
     - :volume
     - :collected_by_for_cardinal
 scrna_core:
