@@ -752,6 +752,13 @@ donor_id:
   conditional_formattings:
     empty_cell:
   attribute: :sample_id
+donor_id_mandatory:
+  heading: DONOR ID (mandatory)
+  updates: donor_id
+  unlocked: true
+  conditional_formattings:
+    empty_mandatory_cell:
+  attribute: :sample_id
 phenotype:
   heading: PHENOTYPE (required for EGA)
   unlocked: true
@@ -958,6 +965,27 @@ collected_by_for_controls:
       errorTitle: "Collected By"
       error: "You must enter a collection site from the list provided."
     range_name: :collected_by_for_controls
+  conditional_formattings:
+    empty_cell:
+    is_error:
+collected_by_for_scrna_core:
+  heading: COLLECTED BY FOR SCRNA CORE
+  updates: :collected_by
+  unlocked: true
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: false
+      hideDropDown: false
+      showInputMessage: true
+      promptTitle: "Collected By"
+      prompt: "Please enter a collection site from the provided list."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Collected By"
+      error: "You must enter a collection site from the list provided."
+    range_name: :collected_by_for_scrna_core
   conditional_formattings:
     empty_cell:
     is_error:

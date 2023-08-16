@@ -69,7 +69,9 @@ RSpec.describe SequencescapeExcel::Column, sample_manifest: true, sample_manifes
 
   it 'can indicate whether the column is related to sample metadata' do
     expect(described_class.new(options)).not_to be_metadata_field
-    expect(described_class.new(options.merge(heading: 'DONOR ID', name: :donor_id))).to be_metadata_field
+    expect(
+      described_class.new(options.merge(heading: 'DONOR ID (required for EGA)', name: :donor_id))
+    ).to be_metadata_field
   end
 
   it 'can indicate whether the column is a specialised field and returns the constant' do
@@ -82,14 +84,17 @@ RSpec.describe SequencescapeExcel::Column, sample_manifest: true, sample_manifes
   end
 
   it 'can update the sample metadata if it is a sample metadata field' do
-    column = described_class.new(options.merge(heading: 'DONOR ID', name: :donor_id))
+    column = described_class.new(options.merge(heading: 'DONOR ID (required for EGA)', name: :donor_id))
     metadata = Sample::Metadata.new
     column.update_metadata(metadata, '1234')
     expect(metadata.donor_id).to eq('1234')
   end
 
   it 'can update the field targets by :updates' do
-    column = described_class.new(options.merge(heading: 'DONOR ID', name: :legacy_donor_id, updates: :donor_id))
+    column =
+      described_class.new(
+        options.merge(heading: 'DONOR ID (required for cancer samples)', name: :legacy_donor_id, updates: :donor_id)
+      )
     metadata = Sample::Metadata.new
     column.update_metadata(metadata, '1234')
     expect(metadata.donor_id).to eq('1234')
@@ -113,6 +118,20 @@ RSpec.describe SequencescapeExcel::Column, sample_manifest: true, sample_manifes
     metadata = Sample::Metadata.new
     column.update_metadata(metadata, 'Collection Site B')
     expect(metadata.collected_by).to eq('Collection Site B')
+  end
+
+  it 'can update the field targets by :updates, for collected_by_for_scrna_core' do
+    column =
+      described_class.new(
+        options.merge(
+          heading: 'COLLECTED BY FOR SCRNA CORE',
+          name: :collected_by_for_scrna_core,
+          updates: :collected_by
+        )
+      )
+    metadata = Sample::Metadata.new
+    column.update_metadata(metadata, 'Collection Site A')
+    expect(metadata.collected_by).to eq('Collection Site A')
   end
 
   context 'with no validation' do
