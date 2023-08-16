@@ -758,7 +758,6 @@ donor_id_mandatory:
   unlocked: true
   conditional_formattings:
     empty_mandatory_cell:
-  attribute: :sample_id
 phenotype:
   heading: PHENOTYPE (required for EGA)
   unlocked: true
