@@ -650,11 +650,11 @@ scrna_core:
   columns:
     - :sanger_tube_id
     - :sanger_sample_id
-    - :supplier_name
-    - :retention_instruction
-    - :volume
     - :collected_by_for_scrna_core
     - :donor_id_mandatory
+    - :supplier_name
+    - :volume
+    - :retention_instruction
 tube_controls:
   heading: "Control tubes"
   asset_type: "1dtube"
