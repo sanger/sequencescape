@@ -109,6 +109,7 @@ module Sequencescape
       ActiveRecord::Base.yaml_column_permitted_classes = [
         Symbol,
         ActiveSupport::HashWithIndifferentAccess,
+        HashWithIndifferentAccess,
         RequestType::Validator::ArrayWithDefault,
         RequestType::Validator::LibraryTypeValidator,
         RequestType::Validator::FlowcellTypeValidator,
