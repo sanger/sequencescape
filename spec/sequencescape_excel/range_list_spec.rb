@@ -50,4 +50,11 @@ RSpec.describe SequencescapeExcel::RangeList, sample_manifest: true, sample_mani
     expect(static_range.name).to eq 'collected_by_for_controls'
     expect(static_range.options.count).to eq 1
   end
+
+  it 'has collected_by_for_scrna_core ranges' do
+    static_range = range_list.find_by('collected_by_for_scrna_core')
+    assert static_range.static?
+    expect(static_range.name).to eq 'collected_by_for_scrna_core'
+    expect(static_range.options.count).to eq 40
+  end
 end

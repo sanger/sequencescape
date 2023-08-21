@@ -721,6 +721,17 @@ cardinal:
     - :supplier_name
     - :volume
     - :collected_by_for_cardinal
+scrna_core:
+  heading: "scRNA Core"
+  asset_type: "1dtube"
+  columns:
+    - :sanger_tube_id
+    - :sanger_sample_id
+    - :collected_by_for_scrna_core
+    - :donor_id_mandatory
+    - :supplier_name
+    - :volume
+    - :retention_instruction
 tube_controls:
   heading: "Control tubes"
   asset_type: "1dtube"
