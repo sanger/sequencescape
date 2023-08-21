@@ -30,7 +30,8 @@ a organisation of 900 people.
 
 - [Documentation](#documentation)
 - [Requirements](#requirements)
-- [Getting started](#getting-started)
+- [Getting started (using Docker)](#getting-started-using-docker)
+- [Getting started (using native installation)](#getting-started-using-native-installation)
   - [Installing ruby](#installing-ruby)
     - [rbenv](#rbenv)
   - [Automatic Sequencescape setup](#automatic-sequencescape-setup)
@@ -38,8 +39,9 @@ a organisation of 900 people.
     - [Installing gems](#installing-gems)
     - [Adjusting config](#adjusting-config)
     - [Default setup](#default-setup)
-  - [Stating rails](#stating-rails)
+  - [Starting rails](#starting-rails)
     - [Delayed job](#delayed-job)
+  - [Message broker](#message-broker)
 - [Testing](#testing)
 - [Linting and formatting](#linting-and-formatting)
 - [Rake tasks](#rake-tasks)
@@ -48,10 +50,13 @@ a organisation of 900 people.
   - [Plate barcode service](#plate-barcode-service)
   - [Data warehousing](#data-warehousing)
 - [Miscellaneous](#miscellaneous)
+  - [Lefthook](#lefthook)
   - [Ruby warnings and rake 11](#ruby-warnings-and-rake-11)
   - [NPG - Illumina tracking software](#npg---illumina-tracking-software)
   - [Troubleshooting](#troubleshooting)
     - [MySQL errors when installing](#mysql-errors-when-installing)
+    - [Installing on Apple Silicon (M1)](#installing-on-apple-silicon-m1)
+  - [API V2 Authentication](#api-v2-authentication)
   - [Updating the table of contents](#updating-the-table-of-contents)
   - [CI](#ci)
 
@@ -101,6 +106,8 @@ docker-compose up
 With this we should have started Sequencescape server and all required services. You should be
 able to access Sequencescape by going to <http://localhost:3000> and log in with
 username and password admin/admin.
+
+If you are using [Apple silicon](https://support.apple.com/en-gb/HT211814) and encounter any issues, please see [Troubleshooting](#installing-on-apple-silicon-m1) below.
 
 **ABOUT LOCAL DEVELOPMENT SETUP** You may want to start only the required services for Sequencescape (server and jobs worker) and use your local version of Mysql
 instead of the Docker version, in that case you can start this setup with the
@@ -353,6 +360,55 @@ cluster formation batch which represents a flowcell.
 
 If you are using homebrew with rbenv and run into errors relating to SSL, have a look [here](https://github.com/brianmario/mysql2/issues/795#issuecomment-433219176)
 
+#### Installing on Apple Silicon (M1)
+
+If installation issues are encountered with Docker on M1 processors, try the fixes below:
+
+- The docker-compose build command fails with any mentions to a processor architecture ('amd64', 'x86') or the message below:
+
+  ```sh
+  ...
+  #0 1.528 The following packages have unmet dependencies:
+  #0 1.568  google-chrome-stable:amd64 : Depends: libasound2:amd64 (>= 1.0.17) but it is not installable
+  #0 1.568                               Depends: libatk-bridge2.0-0:amd64 (>= 2.5.3) but it is not installable
+  ...
+  #0 1.568                               Depends: libxkbcommon0:amd64 (>= 0.5.0) but it is not installable
+  #0 1.568                               Depends: libxrandr2:amd64 but it is not installable
+  #0 1.581 E: Unable to correct problems, you have held broken packages.
+  ------
+  failed to solve: process "/bin/bash --login -c apt install -y ./google-chrome-stable_current_amd64.deb" did not complete successfully: exit code: 100
+  ```
+
+  Force docker to use the an ARM image as the base with the patch below. It is also recommended to [install and enable Rosetta 2](https://docs.docker.com/desktop/install/mac-install/#mac-with-apple-silicon).
+
+  ```diff
+  # ./Dockerfile
+
+  -FROM ruby:2.7.8-slim
+  +FROM --platform=linux/arm64 ruby:2.7.8-slim
+  ```
+
+  [Sanger/lighthouse ([Dockerfile](https://github.com/sanger/lighthouse/blob/develop/Dockerfile), [docker-compose.yml](https://github.com/sanger/lighthouse/blob/develop/dependencies/docker-compose.yml))]
+
+- The sequencescape_server container terminates with the error:
+
+  ```sh
+  Function not implemented - Failed to initialize inotify (Errno::ENOSYS)
+  ```
+
+  Use an alternative file update checker:
+
+  ```diff
+    # ./config/environments/development.rb
+
+    # Use an evented file watcher to asynchronously detect changes in source code,
+    # routes, locales, etc. This feature depends on the listen gem.
+  -  config.file_watcher = ActiveSupport::EventedFileUpdateChecker
+  +  config.file_watcher = ActiveSupport::FileUpdateChecker
+  ```
+
+  [[GitHub issue](https://github.com/evilmartians/terraforming-rails/issues/34#issuecomment-872021786)]
+
 ### API V2 Authentication
 
 The V2 API has had authentication checks added to it so that other applications calling the API should provide a valid key.
@@ -377,7 +433,7 @@ node module. To install it, make sure you have install the dev dependencies from
 the table of contents, run:
 
 ```shell
-npx markdown-toc -i README.md --bullets "*"
+npx markdown-toc -i README.md --bullets "-"
 ```
 
 ### CI
