@@ -60,6 +60,10 @@ limber_chromium_bespoke:
     - Chromium single cell
     - Chromium single cell CNV
     - Chromium single cell ATAC
+    - Chromium single cell 3 prime HT v3
+    - Chromium single cell 5 prime HT v2
+    - Chromium single cell BCR HT
+    - Chromium single cell TCR HT
 limber_pcr_free_bespoke:
   <<: *limber_bespoke_library
   name: Limber PCR Free Bespoke
