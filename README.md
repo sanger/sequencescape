@@ -56,6 +56,7 @@ a organisation of 900 people.
   - [Troubleshooting](#troubleshooting)
     - [MySQL errors when installing](#mysql-errors-when-installing)
     - [Installing on Apple Silicon (M1)](#installing-on-apple-silicon-m1)
+    - [Server Shutting Down](#server-shutting-down)
   - [API V2 Authentication](#api-v2-authentication)
   - [Updating the table of contents](#updating-the-table-of-contents)
   - [CI](#ci)
@@ -408,6 +409,18 @@ If installation issues are encountered with Docker on M1 processors, try the fix
   ```
 
   [[GitHub issue](https://github.com/evilmartians/terraforming-rails/issues/34#issuecomment-872021786)]
+
+#### Server Shutting Down
+
+- The sequencescape server terminates with the error:
+
+  ```sh
+  A server is already running. Check /code/tmp/pids/server.pid.
+  Exiting
+  ```
+
+  It's likely that the server was not shut down gracefully and the server.pid file was not removed.
+  Navigate to `/tmp/pids/` and delete `server.pid`.
 
 ### API V2 Authentication
 
