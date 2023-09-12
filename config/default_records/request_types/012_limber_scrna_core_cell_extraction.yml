@@ -1,4 +1,4 @@
-# These purposes are associated with the Limber scRNA Core Cell Extraction pipeline.
+# These request types are associated with the Limber scRNA Core Cell Extraction pipeline.
 # They are in a separate file to allow us to soft-release them before
 # the real release.
 ---
