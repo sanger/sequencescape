@@ -9,6 +9,6 @@ limber_scrna_core_cell_extraction:
   request_class_name: CustomerRequest
   for_multiplexing: false
   billable: true
-  product_line_name: scRNA Core Cell Extraction
+  product_line_name: Sample Preparation
   acceptable_purposes:
     - LRC Blood Vac
