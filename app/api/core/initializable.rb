@@ -13,8 +13,10 @@ module Core::Initializable # rubocop:todo Style/Documentation
       end
 
       def delegate_to_owner(*names)
-        names.push(to: :@owner)
-        delegate(*names)
+        #names.push(to: :@owner)
+        # https://www.ruby-lang.org/en/news/2019/12/12/separation-of-positional-and-keyword-arguments-in-ruby-3-0/
+        delegate(*names, to: :@owner)
+
       end
     end
   end

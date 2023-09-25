@@ -285,6 +285,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
         record[attribute] = nil if record[attribute].blank? # Empty strings should be nil
       end
     end
+    include Study::ExtraMetadata    
   end
   validates_associated :study_metadata, on: %i[accession EGA ENA]
 
@@ -557,4 +558,4 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 end
 
-require_dependency 'study/metadata'
+#require_dependency 'study/metadata'

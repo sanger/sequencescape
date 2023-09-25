@@ -14,3 +14,4 @@ end
 class JSONAPI::ResourceController
   include Api::V2::Concerns::ApiKeyAuthenticatable
 end
+

@@ -8,6 +8,13 @@ GIT
       activerecord (>= 4.0.0)
 
 GIT
+  remote: https://github.com/sanger/record_loader
+  revision: d4145dc3321e977c5baaee9c4bca3cffe8b1ae07
+  branch: dpl680_upgrade_ruby3
+  specs:
+    record_loader (0.3.0)
+
+GIT
   remote: https://github.com/sanger/sanger_barcode_format.git
   revision: 8e93771a9f38e1efb07c1d82dca1a81d74353e11
   branch: development
@@ -269,6 +276,10 @@ GEM
       ruby2_keywords (~> 0.0.1)
     mysql2 (0.5.3)
     net-ldap (0.17.0)
+    net-protocol (0.2.1)
+      timeout
+    net-smtp (0.4.0)
+      net-protocol
     netrc (0.11.0)
     nio4r (2.5.8)
     nokogiri (1.12.4)
@@ -343,7 +354,6 @@ GEM
     rb-fsevent (0.11.0)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    record_loader (0.1.1)
     regexp_parser (2.1.1)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
@@ -459,6 +469,7 @@ GEM
     thor (1.1.0)
     tilt (2.0.10)
     timecop (0.9.4)
+    timeout (0.4.0)
     traceroute (0.8.1)
       rails (>= 3.0.0)
     tzinfo (2.0.4)
@@ -539,6 +550,7 @@ DEPENDENCIES
   multi_json
   mysql2
   net-ldap
+  net-smtp
   nokogiri
   pry-byebug
   pry-rails
@@ -551,7 +563,7 @@ DEPENDENCIES
   rails-erd
   rails-perftest
   rainbow
-  record_loader
+  record_loader!
   rest-client
   roo
   rspec-collection_matchers
@@ -586,4 +598,4 @@ DEPENDENCIES
   yard-activerecord (~> 0.0.16)
 
 BUNDLED WITH
-   2.1.4
+   2.2.33

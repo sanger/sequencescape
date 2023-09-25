@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
+  config.force_ssl = false
+  config.assume_ssl = false
 
   # Support requests coming from other Docker containers on localhost.
   config.hosts << 'host.docker.internal'

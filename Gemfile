@@ -9,7 +9,8 @@ group :default do
   if next_rails
     gem 'rails', '~> 6.1.0'
   else
-    gem 'rails', '~> 6.0.0'
+    #gem 'rails', '~> 6.0.6'
+    gem 'rails', '~> 6.1'
   end
 
   # State machine
@@ -28,7 +29,8 @@ group :default do
 
   # Provides bulk insert capabilities
   gem 'activerecord-import'
-  gem 'record_loader'
+  #gem 'record_loader'
+  gem 'record_loader', git: 'https://github.com/sanger/record_loader', branch: 'dpl680_upgrade_ruby3'
 
   gem 'mysql2', platforms: :mri
   gem 'will_paginate'
@@ -68,7 +70,8 @@ group :default do
   # https://github.com/JamesGlover/sequencescape/tree/depfu/update/jsonapi-resources-0.9.5
   # but not only is there a failing test, but performance was tanking in a few places
   # due to not correctly eager loading dependencies on nested resources.
-  gem 'jsonapi-resources', '0.9.0'
+  #gem 'jsonapi-resources', '0.9.0'
+  gem 'jsonapi-resources', '0.9.12'
 
   # Wraps bunny with connection pooling ad consumer process handling
   gem 'sanger_warren'
@@ -107,6 +110,9 @@ group :default do
   gem 'flipper', '~> 0.25.0'
   gem 'flipper-active_record', '~> 0.25.0'
   gem 'flipper-ui', '~> 0.25.0'
+
+  # Upgrades Ruby 3.2.2
+  gem 'net-smtp'
 end
 
 group :development do
