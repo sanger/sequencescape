@@ -63,14 +63,14 @@ module LabelPrinter
 
     def self.register_printer(name, printer_type)
       unless printer_exists?(name)
-        RestClient.post printers_url,
+        RestClient.post(printers_url,
                         { 'data' => { 'attributes' => { 'name' => name, 'printer_type' => printer_type } } }.to_json,
-                        headers
+                        **headers)
       end
     end
 
     def self.printer_exists?(name)
-      response = JSON.parse(RestClient.get "#{printers_filter_url}#{name}", headers)
+      response = JSON.parse(RestClient.get("#{printers_filter_url}#{name}", **headers))
       response['data'].present?
     end
 
