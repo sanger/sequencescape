@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+module MigrationExtensions
+end
+require 'migration_extensions/encoding_changes'
 
 RSpec.describe MigrationExtensions::EncodingChanges do
   let(:migration) do

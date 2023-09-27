@@ -2,6 +2,7 @@
 
 require 'syslog/logger'
 require 'ostruct'
+require 'psd_formatter'
 
 class PsdFormatter < Syslog::Logger::Formatter # rubocop:todo Style/Documentation
   LINE_FORMAT = "(thread-%s) [%s] %5s -- : %s\n".freeze
