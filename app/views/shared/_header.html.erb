@@ -40,7 +40,7 @@
   </div><!-- /.navbar-collapse -->
 </nav>
 
-<% if old_url %>
+<% if old_url && !Rails.env.development? %>
   <!-- This alert can be removed after users have been given a time period to switch over. -->
   <div>
     <%= alert(:warning) do %>
