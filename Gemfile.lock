@@ -8,6 +8,13 @@ GIT
       activerecord (>= 4.0.0)
 
 GIT
+  remote: https://github.com/sanger/record_loader
+  revision: d4145dc3321e977c5baaee9c4bca3cffe8b1ae07
+  branch: dpl680_upgrade_ruby3
+  specs:
+    record_loader (0.3.0)
+
+GIT
   remote: https://github.com/sanger/sanger_barcode_format.git
   revision: 8e93771a9f38e1efb07c1d82dca1a81d74353e11
   branch: development
@@ -186,7 +193,7 @@ GEM
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
     dry-cli (1.0.0)
-    dynamic_form (1.1.4)
+    dynamic_form (1.2.0)
     erubi (1.12.0)
     exception_notification (4.5.0)
       actionmailer (>= 5.2, < 8)
@@ -339,7 +346,6 @@ GEM
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     rbtree (0.4.5)
-    record_loader (0.2.0)
     regexp_parser (2.8.1)
     rest-client (2.1.0)
       http-accept (>= 1.7.0, < 2.0)
@@ -553,7 +559,7 @@ DEPENDENCIES
   rails-erd
   rails-perftest
   rainbow
-  record_loader
+  record_loader!
   rest-client
   roo
   rspec-collection_matchers
