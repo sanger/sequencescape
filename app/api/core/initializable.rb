@@ -13,8 +13,7 @@ module Core::Initializable # rubocop:todo Style/Documentation
       end
 
       def delegate_to_owner(*names)
-        names.push(to: :@owner)
-        delegate(*names)
+        delegate(*names, to: :@owner)
       end
     end
   end
