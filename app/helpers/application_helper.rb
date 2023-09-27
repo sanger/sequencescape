@@ -171,7 +171,7 @@ module ApplicationHelper # rubocop:todo Style/Documentation
     if count.zero?
       ''
     else
-      error_messages = objects.map { |object| object.errors.full_messages.map { |msg| tag.div(msg) } }.join
+      error_messages = objects.map { |object| object.errors.full_messages.map { |msg| tag.div(**msg) } }.join
       [
         tag.td(class: 'error item') { "Your #{params.first} has not been created." },
         tag.td(class: 'error') { raw(error_messages) }
