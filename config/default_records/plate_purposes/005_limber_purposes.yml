@@ -30,6 +30,9 @@ LTN Stock:
 LCMB Cherrypick:
   <<: *limber_input_96
   cherrypickable_target: true
+RVI Cherrypick:
+  <<: *limber_input_96
+  cherrypickable_target: true
 
 # 384 well input plates
 GBS Stock: &limber_input_384
