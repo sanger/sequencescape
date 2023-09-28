@@ -20,6 +20,7 @@ limber_wgs:
   library_types:
     - Standard
     - Chromium single cell CNV
+    - BGE
 limber_isc:
   <<: *limber_htp_library
   name: Limber ISC
@@ -29,6 +30,7 @@ limber_isc:
   library_types:
     - Agilent Pulldown
     - Twist Pulldown
+    - BGE
 limber_reisc:
   <<: *limber_htp_library
   name: Limber ReISC
