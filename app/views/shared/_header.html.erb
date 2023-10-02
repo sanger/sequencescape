@@ -40,16 +40,6 @@
   </div><!-- /.navbar-collapse -->
 </nav>
 
-<% if old_url && !Rails.env.development? %>
-  <!-- This alert can be removed after users have been given a time period to switch over. -->
-  <div>
-    <%= alert(:warning) do %>
-      The Sequencescape URL has changed. Please switch to using the new URL by 9th May:
-      <%= link_to 'https://sequencescape.psd.sanger.ac.uk', 'https://sequencescape.psd.sanger.ac.uk', class: "alert-link" %>
-    <% end %>
-  </div>
-<% end %>
-
 <%- unless custom_text("app_info_box", 1).blank? -%>
     <div id="app-info-box" class="well well-sm">
       <span><%= custom_text("app_info_box", 1) %></span>

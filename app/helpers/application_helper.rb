@@ -287,6 +287,8 @@ module ApplicationHelper # rubocop:todo Style/Documentation
     end
   end
 
+  # rubocop:enable Metrics/MethodLength
+
   #
   # Ideally we don't want inline script tags, however there is a fair chunk of
   # legacy code, some of which isn't trivial to migrate, as it uses erb to
@@ -305,19 +307,6 @@ module ApplicationHelper # rubocop:todo Style/Documentation
       yield
       concat '})'
     end
-  end
-
-  # rubocop:enable Metrics/MethodLength
-
-  # Used in _header.html.erb. Can be removed after users have been given a time period to switch over.
-  def old_url
-    permitted_urls = %w[
-      https://sequencescape.psd.sanger.ac.uk
-      https://uat.sequencescape.psd.sanger.ac.uk
-      https://uat2.sequencescape.psd.sanger.ac.uk
-      https://training.sequencescape.psd.sanger.ac.uk
-    ]
-    return true unless permitted_urls.include?(request.base_url)
   end
 end
 # rubocop:enable Metrics/ModuleLength
