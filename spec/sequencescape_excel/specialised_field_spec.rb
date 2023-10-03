@@ -61,7 +61,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, sample_manifest: true, samp
     it 'will produce the correct error message' do
       my_perfect_class = class_with_base_and_value_required.new(value: nil)
       my_perfect_class.valid?
-      expect(my_perfect_class.errors.full_messages).to include('My perfect class can\'t be blank')
+      expect(my_perfect_class.errors.full_messages.join('')).to include('My perfect class can\'t be blank')
     end
   end
 
@@ -688,7 +688,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, sample_manifest: true, samp
     it 'will not be valid if value does not match enum' do
       sf = described_class.new(value: '5', sample_manifest_asset: sample_manifest_asset)
       expect(sf).not_to be_valid
-      expect(sf.errors.full_messages).to include('the priority 5 was not recognised.')
+      expect(sf.errors.full_messages.join('')).to include('the priority 5 was not recognised.')
     end
 
     it 'will update the priority on the sample when present' do
@@ -881,7 +881,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, sample_manifest: true, samp
         sf = described_class.new(value: nil, sample_manifest_asset: sample_manifest_asset)
 
         expect(sf).not_to be_valid
-        expect(sf.errors.full_messages).to include('Retention instruction can\'t be blank')
+        expect(sf.errors.full_messages.join('')).to include('Retention instruction can\'t be blank')
       end
 
       it 'will be valid if the value matches one of the expected values' do
