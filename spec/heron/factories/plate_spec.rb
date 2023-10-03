@@ -147,9 +147,9 @@ RSpec.describe Heron::Factories::Plate, heron: true, heron_events: true, lightho
         it 'stores the error message from samples' do
           expect(plate_factory.tap(&:validate).errors.full_messages).to eq(
             [
-              'Content a1 Wrong Unexisting field for sample or sample_metadata',
-              "Content c1, pos: 0 Study can't be blank",
-              'Content c1, pos: 1 Phenotype No other params can be added when sample uuid specified'
+              "Content a1 [\"Wrong Unexisting field for sample or sample_metadata\"]",
+              "Content c1, pos: 0 [\"Study can't be blank\"]",
+              "Content c1, pos: 1 [\"Phenotype No other params can be added when sample uuid specified\"]"
             ]
           )
         end

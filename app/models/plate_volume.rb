@@ -17,7 +17,6 @@ class PlateVolume < ApplicationRecord # rubocop:todo Style/Documentation
   end
 
   def call(filename, file)
-    puts filename
     return unless update_required?(file.stat.mtime)
 
     db_files.map(&:destroy)
@@ -98,7 +97,6 @@ class PlateVolume < ApplicationRecord # rubocop:todo Style/Documentation
     def find_for_filename(filename)
       find_by(uploaded_file_name: filename) or
         lambda do |filename, file|
-          puts filename
           PlateVolume.create!(uploaded_file_name: filename, updated_at: file.stat.mtime, uploaded: file)
         end
     end
