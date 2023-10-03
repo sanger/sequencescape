@@ -145,7 +145,7 @@ module BootstrapHelper
 
   def render_radio_section(_form, _field_name, sections, field)
     label =
-      tag.label(sections.label, sections.label_options) << tag.span(sections.edit_info, class: 'property_edit_info')
+      tag.label(sections.label, **sections.label_options) << tag.span(sections.edit_info, class: 'property_edit_info')
     help = sections.help
     tag.legend(sections.label, class: 'sr-only') << form_collection(label, field, help)
   end

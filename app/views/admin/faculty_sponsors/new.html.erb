@@ -2,7 +2,7 @@
 <div class="page-header"><h1>New Faculty Sponsor</h1></div>
 
 <%= form_for([:admin,@faculty_sponsor]) do |f| %>
-  <%= f.error_messages %>
+  <%= render_error_messages(@faculty_sponsor) %>
 
   <p>
     <%= f.label :name %><br />

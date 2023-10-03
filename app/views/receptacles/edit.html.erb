@@ -3,7 +3,7 @@
 
 <%= form_for(@asset,url: receptacle_path(@asset),as:'asset') do |f| %>
   <%= alert do %>
-    <%= f.error_messages %>
+    <%= render_error_messages(@asset) %>
   <% end %>
 
   <% if @asset.is_a?(Lane) %>

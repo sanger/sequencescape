@@ -287,15 +287,6 @@ module ApplicationHelper # rubocop:todo Style/Documentation
     end
   end
 
-  def render_error_messages(instance)
-    return if instance.errors.empty?
-    tag.ul do
-      instance.errors.full_messages.each do |msg|
-        tag.li { msg }
-      end
-    end
-  end
-
   #
   # Ideally we don't want inline script tags, however there is a fair chunk of
   # legacy code, some of which isn't trivial to migrate, as it uses erb to
@@ -330,3 +321,30 @@ module ApplicationHelper # rubocop:todo Style/Documentation
   end
 end
 # rubocop:enable Metrics/ModuleLength
+
+
+# error_messages_for method was deprecated, however lots of the tests depend on the message format it 
+# was using.
+# <https://apidock.com/rails/ActionView/Helpers/ActiveRecordHelper/error_messages_for>
+def render_error_messages(object)
+  return if object.errors.count.zero?
+  contents = "".dup
+  contents << error_message_header(object)
+  contents << error_messages_ul_html_safe(object)
+  content_tag(:div, contents.html_safe)
+end
+
+def error_message_header(object)
+  count = object.errors.full_messages.count
+  model_name = object.class.to_s.tableize.gsub('_', ' ').gsub(/\/.*/,'')
+  is_plural = count > 1 ? 's' : ''
+  header = "#{count} error#{is_plural} prohibited this #{model_name} from being saved"
+  content_tag(:h2, header)
+end
+
+def error_messages_ul_html_safe(object)
+  messages = object.errors.full_messages.map do |msg| 
+    content_tag(:li, ERB::Util.html_escape(msg))
+  end.join.html_safe
+  content_tag(:ul, messages)
+end
