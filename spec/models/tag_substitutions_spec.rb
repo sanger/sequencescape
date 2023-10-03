@@ -294,7 +294,7 @@ describe TagSubstitution, warren: true do
 
       it 'return false and an error of the details don\'t match' do
         expect(subject.save).to be false
-        assert_includes subject.errors.full_messages, 'Substitution Matching aliquots could not be found'
+        assert_includes subject.errors.full_messages, "Substitution [\"Matching aliquots could not be found\"]"
       end
     end
 

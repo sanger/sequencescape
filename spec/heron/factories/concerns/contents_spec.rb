@@ -119,9 +119,8 @@ RSpec.describe Heron::Factories::Concerns::Contents, heron: true, lighthouse: tr
       it 'gets an error message about it for each wrong sample' do
         expect(factory_klass.new(params).tap(&:validate).errors.full_messages.uniq).to eq(
           [
-            'Content b1, pos: 1 Phenotype No other params can be added when sample uuid specified',
-            "Content c1 Study can't be blank",
-            'Content c1 Asdf Unexisting field for sample or sample_metadata'
+            "Content b1, pos: 1 [\"Phenotype No other params can be added when sample uuid specified\"]",
+            "Content c1 [\"Study can't be blank\", \"Asdf Unexisting field for sample or sample_metadata\"]"
           ]
         )
       end
