@@ -1,4 +1,4 @@
-FROM ruby:2.7.8-slim
+FROM ruby:3.0.6-slim
 
 COPY .nvmrc /.nvmrc
 
@@ -39,6 +39,7 @@ ADD . /code/
 
 # Install Chrome for being able to run tests
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+RUN apt update
 RUN apt install -y ./google-chrome-stable_current_amd64.deb
 RUN rm ./google-chrome-stable_current_amd64.deb
 

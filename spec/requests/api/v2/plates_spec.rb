@@ -17,7 +17,7 @@ describe 'Plates API', tags: :lighthouse, with: :api_v2 do
     let(:request) { api_post base_endpoint, payload }
     let(:plate) do
       request
-      uuid = response.parsed_body.dig('data', 'attributes', 'uuid')
+      uuid = json.dig('data', 'attributes', 'uuid')
       Plate.with_uuid(uuid).first
     end
 

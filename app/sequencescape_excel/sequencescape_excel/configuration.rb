@@ -78,6 +78,8 @@ module SequencescapeExcel
         all == other.all
       end
 
+      delegate :count, to: :all
+
       private
 
       def column_sets
