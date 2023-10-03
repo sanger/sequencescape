@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Core::Io::Json::Grammar
-  module Intermediate # rubocop:todo Style/Documentation
+  module Intermediate
     attr_reader :children
 
     def initialize(children)
@@ -61,7 +61,7 @@ module Core::Io::Json::Grammar
     private :duplicate
   end
 
-  class Root # rubocop:todo Style/Documentation
+  class Root
     include Intermediate
 
     def initialize(owner, children = nil)
@@ -112,7 +112,7 @@ module Core::Io::Json::Grammar
     end
   end
 
-  class Node # rubocop:todo Style/Documentation
+  class Node
     include Intermediate
     attr_reader :name
 
@@ -138,7 +138,7 @@ module Core::Io::Json::Grammar
     end
   end
 
-  class Leaf # rubocop:todo Style/Documentation
+  class Leaf
     attr_reader :name
 
     def initialize(name, attribute)
@@ -178,7 +178,7 @@ module Core::Io::Json::Grammar
     end
   end
 
-  module Resource # rubocop:todo Style/Documentation
+  module Resource
     def resource_details(endpoint, object, options, stream)
       stream.block('actions') do |nested_stream|
         endpoint
@@ -190,7 +190,7 @@ module Core::Io::Json::Grammar
     end
   end
 
-  class Actions # rubocop:todo Style/Documentation
+  class Actions
     include Intermediate
     include Resource
 

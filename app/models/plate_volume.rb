@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'carrierwave'
 
-class PlateVolume < ApplicationRecord # rubocop:todo Style/Documentation
+class PlateVolume < ApplicationRecord
   ASSAY_TYPE = 'Volume Check'
   ASSAY_VERSION = '1.0'
   extend DbFile::Uploader

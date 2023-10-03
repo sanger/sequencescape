@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # rubocop:todo Metrics/ModuleLength
-module ApplicationHelper # rubocop:todo Style/Documentation
+module ApplicationHelper
   # Should return either the custom text or a blank string
   def custom_text(identifier, differential = nil)
     Rails
@@ -317,7 +317,7 @@ module ApplicationHelper # rubocop:todo Style/Documentation
       https://uat2.sequencescape.psd.sanger.ac.uk
       https://training.sequencescape.psd.sanger.ac.uk
     ]
-    return true unless permitted_urls.include?(request.base_url)
+    true unless permitted_urls.include?(request.base_url)
   end
 end
 # rubocop:enable Metrics/ModuleLength
@@ -328,7 +328,7 @@ end
 # <https://apidock.com/rails/ActionView/Helpers/ActiveRecordHelper/error_messages_for>
 def render_error_messages(object)
   return if object.errors.count.zero?
-  contents = "".dup
+  contents = +''
   contents << error_message_header(object)
   contents << error_messages_ul_html_safe(object)
   content_tag(:div, contents.html_safe)
@@ -336,7 +336,7 @@ end
 
 def error_message_header(object)
   count = object.errors.full_messages.count
-  model_name = object.class.to_s.tableize.gsub('_', ' ').gsub(/\/.*/,'').singularize
+  model_name = object.class.to_s.tableize.tr('_', ' ').gsub(%r{/.*},'').singularize
   is_plural = count > 1 ? 's' : ''
   header = "#{count} error#{is_plural} prohibited this #{model_name} from being saved"
   content_tag(:h2, header)

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module StudiesHelper # rubocop:todo Style/Documentation
+module StudiesHelper
   def status_link_title(study)
     study.inactive? || study.pending? ? 'Open' : 'Close'
   end

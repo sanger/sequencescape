@@ -225,7 +225,7 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
     target_asset.aliquots << aliquots_for_transfer
   rescue ActiveRecord::RecordNotUnique => e
     # We'll specifically handle tag clashes here so that we can produce more informative messages
-    raise e unless /aliquot_tag_tag2_and_tag_depth_are_unique_within_receptacle/.match?(e.message)
+    raise e unless e.message.include?('aliquot_tag_tag2_and_tag_depth_are_unique_within_receptacle')
 
     message = "#{asset.display_name} contains aliquots which can't be transferred due to tag clash"
     errors.add(:asset, message)

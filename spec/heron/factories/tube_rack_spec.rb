@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Heron::Factories::TubeRack, heron: true, type: :model do
+RSpec.describe Heron::Factories::TubeRack, :heron, type: :model do
   let(:study) { create(:study) }
 
   let(:params) do

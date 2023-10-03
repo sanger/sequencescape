@@ -31,7 +31,7 @@ module RequestType::Validation
     create_validator(request_type).tap { |sub_class| sub_class.request_type = request_type }
   end
 
-  class RequestTypeValidator < DelegateValidation::Validator # rubocop:todo Style/Documentation
+  class RequestTypeValidator < DelegateValidation::Validator
     class_attribute :request_type, instance_writer: false
     request_type = nil
 

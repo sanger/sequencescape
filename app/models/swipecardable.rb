@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Swipecardable # rubocop:todo Style/Documentation
+module Swipecardable
   def swipecard_code=(code)
     self.encrypted_swipecard_code = User.encrypt_swipecard_code(code)
   end

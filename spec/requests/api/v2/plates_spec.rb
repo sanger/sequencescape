@@ -17,7 +17,7 @@ describe 'Plates API', tags: :lighthouse, with: :api_v2 do
     let(:request) { api_post base_endpoint, payload }
     let(:plate) do
       request
-      uuid = JSON.parse(response.body).dig('data', 'attributes', 'uuid')
+      uuid = response.parsed_body.dig('data', 'attributes', 'uuid')
       Plate.with_uuid(uuid).first
     end
 
@@ -99,7 +99,7 @@ describe 'Plates API', tags: :lighthouse, with: :api_v2 do
     context 'when the ancestor is a tube rack' do
       let(:purpose) { create(:plate_purpose, target_type: 'Plate', name: 'Stock Plate', size: '96') }
       let(:rack) { create :tube_rack }
-      let(:plate_factory) { ::Heron::Factories::PlateFromRack.new(tube_rack: rack, plate_purpose: purpose) }
+      let(:plate_factory) { Heron::Factories::PlateFromRack.new(tube_rack: rack, plate_purpose: purpose) }
       let(:tubes) { create_list(:sample_tube, 2) }
 
       include BarcodeHelper

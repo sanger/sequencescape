@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'record_loader/plate_purpose_loader'
 
-RSpec.describe RecordLoader::PlatePurposeLoader, loader: true, type: :model do
+RSpec.describe RecordLoader::PlatePurposeLoader, :loader, type: :model do
   def a_new_record_loader
     described_class.new(directory: test_directory, files: selected_files)
   end

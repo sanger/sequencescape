@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SampleManifestExcel::Upload, sample_manifest: true, sample_manifest_excel: true, type: :model do
+RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_excel, type: :model do
   before(:all) do
     SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
@@ -326,7 +326,7 @@ RSpec.describe SampleManifestExcel::Upload, sample_manifest: true, sample_manife
         expect(upload).to be_processed
       end
 
-      context 'when accessioning is enabled', accessioning_enabled: true do
+      context 'when accessioning is enabled', :accessioning_enabled do
         it 'suppresses accessioning to allow explicit triggering after upload' do
           expect { upload.process(nil) }.not_to change(Delayed::Job, :count)
         end

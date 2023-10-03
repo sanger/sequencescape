@@ -17,7 +17,7 @@
 # require 'net/http'
 
 # module Net
-#   class HTTP # rubocop:todo Style/Documentation
+#   class HTTP
 #     def self.set_proxy_header(name, value)
 #       additional_proxy_headers[name] = value
 #     end
@@ -31,8 +31,8 @@
 #     end
 
 #     # Adapted from https://raw.githubusercontent.com/jruby/jruby/9.0.5.0/lib/ruby/stdlib/net/http.rb
-#     # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
-#     def connect # rubocop:todo Metrics/CyclomaticComplexity
+#
+#     def connect
 #       if proxy?
 #         conn_address = proxy_address
 #         conn_port = proxy_port

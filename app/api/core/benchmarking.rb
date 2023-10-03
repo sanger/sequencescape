@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Core::Benchmarking # rubocop:todo Style/Documentation
+module Core::Benchmarking
   def self.registered(app)
     app.helpers self
   end

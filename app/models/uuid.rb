@@ -5,7 +5,7 @@ class Uuid < ApplicationRecord
   # Allows tests to dictate the next UUID generted for a given class
   class_attribute :store_for_tests
 
-  module Uuidable # rubocop:todo Style/Documentation
+  module Uuidable
     def self.included(base)
       base.class_eval do
         # Lazy uuid generation disables uuid generation on record creation. For the most part this is
@@ -60,7 +60,7 @@ class Uuid < ApplicationRecord
     end
   end
 
-  ValidRegexp = /\A[\da-f]{8}(-[\da-f]{4}){3}-[\da-f]{12}\z/.freeze
+  ValidRegexp = /\A[\da-f]{8}(-[\da-f]{4}){3}-[\da-f]{12}\z/
   validates :external_id, format: { with: ValidRegexp }
 
   # It is more efficient to check the individual parts of the resource association than it is to check the

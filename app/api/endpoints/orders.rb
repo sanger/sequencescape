@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Endpoints::Orders < Core::Endpoint::Base # rubocop:todo Style/Documentation
+class Endpoints::Orders < Core::Endpoint::Base
   model {}
 
   instance do

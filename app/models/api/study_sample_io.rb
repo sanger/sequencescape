@@ -2,8 +2,8 @@
 # Despite name controls rendering of warehouse messages for {StudySample}
 # Historically used to be v0.5 API
 class Api::StudySampleIO < Api::Base
-  module Extensions # rubocop:todo Style/Documentation
-    module ClassMethods # rubocop:todo Style/Documentation
+  module Extensions
+    module ClassMethods
       def render_class
         Api::StudySampleIO
       end

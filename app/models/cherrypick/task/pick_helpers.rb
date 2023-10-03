@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Cherrypick::Task::PickHelpers # rubocop:todo Style/Documentation
+module Cherrypick::Task::PickHelpers
   def self.included(base)
     base.class_eval do
       include Cherrypick::Task::PickByNanoGramsPerMicroLitre

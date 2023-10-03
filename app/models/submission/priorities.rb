@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Submission::Priorities # rubocop:todo Style/Documentation
+module Submission::Priorities
   def self.priorities
     %w[None Low Medium High]
   end

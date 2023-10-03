@@ -2,9 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SampleManifestExcel::ManifestTypeList,
-               sample_manifest: true,
-               sample_manifest_excel: true,
+RSpec.describe SampleManifestExcel::ManifestTypeList, :sample_manifest, :sample_manifest_excel,
                type: :model do
   include SequencescapeExcel::Helpers
 

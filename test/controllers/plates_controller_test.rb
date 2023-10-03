@@ -106,7 +106,7 @@ class PlatesControllerTest < ActionController::TestCase
                 @missing_barcode_create_params = {
                   plates: {
                     creator_id: @dilution_plates_creator.id,
-                    source_plates: @plate_barcodes.concat(['missing']).join(','),
+                    source_plates: @plate_barcodes.push('missing').join(','),
                     barcode_printer: @barcode_printer.id,
                     user_barcode: '1234567',
                     create_asset_group: 'Yes'

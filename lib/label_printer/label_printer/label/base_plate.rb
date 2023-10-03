@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module LabelPrinter
   module Label
-    class BasePlate # rubocop:todo Style/Documentation
+    class BasePlate
       include Label::MultipleLabels
 
       def build_label(plate)

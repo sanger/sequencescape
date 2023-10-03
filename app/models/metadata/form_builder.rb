@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Metadata::FormBuilder < Metadata::BuilderBase # rubocop:todo Style/Documentation
+class Metadata::FormBuilder < Metadata::BuilderBase
   def initialize(*args, &block)
     super
     view_for(:field, 'shared/metadata/edit_field')

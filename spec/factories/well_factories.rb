@@ -66,8 +66,8 @@ FactoryBot.define do
   end
 
   factory :well_link, class: 'Well::Link' do
-    association(:source_well, factory: :well)
-    association(:target_well, factory: :well)
+    source_well factory: %i[well]
+    target_well factory: %i[well]
     type { 'stock' }
 
     factory :stock_well_link

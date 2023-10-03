@@ -2,7 +2,7 @@
 # require 'pmb_client'
 
 module LabelPrinter
-  class PrintJob # rubocop:todo Style/Documentation
+  class PrintJob
     include ActiveModel::Validations
 
     attr_reader :printer_name, :label_class, :options, :labels

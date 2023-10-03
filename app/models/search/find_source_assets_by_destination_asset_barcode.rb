@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Search::FindSourceAssetsByDestinationAssetBarcode < Search # rubocop:todo Style/Documentation
+class Search::FindSourceAssetsByDestinationAssetBarcode < Search
   def scope(criteria)
     Labware.source_assets_from_machine_barcode(criteria['barcode'])
   end

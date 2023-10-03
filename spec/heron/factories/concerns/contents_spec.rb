@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Heron::Factories::Concerns::Contents, heron: true, lighthouse: true, type: :model do
+RSpec.describe Heron::Factories::Concerns::Contents, :heron, :lighthouse, type: :model do
   require 'rspec/mocks/standalone'
   let(:factory_klass) do
     Class.new do
@@ -20,7 +20,7 @@ RSpec.describe Heron::Factories::Concerns::Contents, heron: true, lighthouse: tr
       end
 
       def content_factory
-        ::Heron::Factories::Sample
+        Heron::Factories::Sample
       end
 
       def recipients_key
@@ -49,7 +49,7 @@ RSpec.describe Heron::Factories::Concerns::Contents, heron: true, lighthouse: tr
 
       it 'is not valid' do
         factory = factory_klass.new(params)
-        expect(factory).to be_invalid
+        expect(factory).not_to be_valid
       end
 
       it 'gets an error message about it for each wrong location' do
@@ -71,7 +71,7 @@ RSpec.describe Heron::Factories::Concerns::Contents, heron: true, lighthouse: tr
 
       it 'is not valid' do
         factory = factory_klass.new(params)
-        expect(factory).to be_invalid
+        expect(factory).not_to be_valid
       end
 
       context 'when supplying the study_uuid' do
@@ -113,13 +113,13 @@ RSpec.describe Heron::Factories::Concerns::Contents, heron: true, lighthouse: tr
 
       it 'is not valid' do
         factory = factory_klass.new(params)
-        expect(factory).to be_invalid
+        expect(factory).not_to be_valid
       end
 
       it 'gets an error message about it for each wrong sample' do
         expect(factory_klass.new(params).tap(&:validate).errors.full_messages.uniq).to eq(
           [
-            "Content b1, pos: 1 [\"Phenotype No other params can be added when sample uuid specified\"]",
+            'Content b1, pos: 1 ["Phenotype No other params can be added when sample uuid specified"]',
             "Content c1 [\"Study can't be blank\", \"Asdf Unexisting field for sample or sample_metadata\"]"
           ]
         )
@@ -233,7 +233,7 @@ RSpec.describe Heron::Factories::Concerns::Contents, heron: true, lighthouse: tr
 
     context 'with a tube rack' do
       let(:purpose) { create(:plate_purpose, target_type: 'Plate', name: 'Stock Plate', size: '96') }
-      let(:tube_rack) { ::TubeRack.create!(size: '96', purpose: purpose) }
+      let(:tube_rack) { TubeRack.create!(size: '96', purpose: purpose) }
       let(:plate) { tube_rack }
       let(:tubes) do
         %w[A1 B1 C1].map do |coordinate|

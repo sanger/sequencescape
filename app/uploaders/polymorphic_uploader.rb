@@ -17,7 +17,7 @@ module CarrierWave
         CarrierWave::Storage::DirectDatabase::File.new(uploader, self, uploader.store_path(identifier))
       end
 
-      class File # rubocop:todo Style/Documentation
+      class File
         def initialize(uploader, base, path)
           @uploader = uploader
           @path = path
@@ -76,7 +76,7 @@ module CarrierWave
   end
 end
 
-class PolymorphicUploader < CarrierWave::Uploader::Base # rubocop:todo Style/Documentation
+class PolymorphicUploader < CarrierWave::Uploader::Base
   def initialize(*args, &block)
     super
   end

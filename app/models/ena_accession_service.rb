@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class EnaAccessionService < AccessionService # rubocop:todo Style/Documentation
+class EnaAccessionService < AccessionService
   self.priority = 1
   self.operational = true
 

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Io::Endpoints::Uuids::Search # rubocop:todo Style/Documentation
+class Io::Endpoints::Uuids::Search
   def self.model_for_input
     ::Uuids::Search
   end

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module SharedBehaviour::Named # rubocop:todo Style/Documentation
+module SharedBehaviour::Named
   def self.included(base)
     base.class_eval do
       scope :with_name, ->(*names) { where(name: names.flatten) }

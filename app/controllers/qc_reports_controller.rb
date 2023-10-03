@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class QcReportsController < ApplicationController # rubocop:todo Style/Documentation
+class QcReportsController < ApplicationController
   before_action :login_required
   before_action :check_required, only: :create
 

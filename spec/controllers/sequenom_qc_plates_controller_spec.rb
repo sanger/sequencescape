@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SequenomQcPlatesController, phi_x: true do
+RSpec.describe SequenomQcPlatesController, :phi_x do
   describe 'GET index' do
     let(:current_user) { create :user }
 

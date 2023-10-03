@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 require 'eventful_mailer'
-class EventFactory # rubocop:todo Style/Documentation
+class EventFactory
   #################################
   # project related notifications #
   #################################

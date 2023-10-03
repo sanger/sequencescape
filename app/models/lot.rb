@@ -3,8 +3,8 @@
 # A lot represents a received batch of consumables (eg. tag plates)
 # that can be assumed to share some level of QC.
 
-class Lot < ApplicationRecord # rubocop:todo Style/Documentation
-  module Template # rubocop:todo Style/Documentation
+class Lot < ApplicationRecord
+  module Template
     def self.included(base)
       base.class_eval { belongs_to :lot }
     end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-class Core::Endpoint::BasicHandler # rubocop:todo Style/Documentation
-  module Json # rubocop:todo Style/Documentation
+class Core::Endpoint::BasicHandler
+  module Json
     def actions(object, options)
       @actions
         .select { |_name, behaviour| accessible_action?(self, behaviour, options[:response].request, object) }

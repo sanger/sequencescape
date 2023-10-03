@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class OrderPresenter # rubocop:todo Style/Documentation
+class OrderPresenter
   attr_accessor :study_id,
                 :project_name,
                 :plate_purpose_id,
@@ -17,7 +17,7 @@ class OrderPresenter # rubocop:todo Style/Documentation
     @target_order.id
   end
 
-  def method_missing(method, *args, &block)
-    @target_order.send(method, *args, &block)
+  def method_missing(method, ...)
+    @target_order.send(method, ...)
   end
 end

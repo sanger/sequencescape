@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # rubocop:todo Metrics/ClassLength
-class QcReport::File # rubocop:todo Style/Documentation
+class QcReport::File
   ACCEPTED_MIMETYPE = 'text/csv'
   ACCEPTED_EXTENSTION = 'csv'
   FILE_VERSION_KEY = 'Sequencescape QC Report'

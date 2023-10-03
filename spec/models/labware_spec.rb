@@ -18,19 +18,19 @@ RSpec.describe Labware do
       let(:plate_fluidigm_2) { fluidigm_plates_list[1] }
 
       it 'correctly finds a single ean13 barcode' do
-        expect(described_class.with_barcode(plate_ean13_1.machine_barcode)).to match_array([plate_ean13_1])
+        expect(described_class.with_barcode(plate_ean13_1.machine_barcode)).to contain_exactly(plate_ean13_1)
       end
 
       it 'does not find anything when sent a non-valid ean13 barcode' do
-        expect(described_class.with_barcode('1234567890123')).to match_array([])
+        expect(described_class.with_barcode('1234567890123')).to be_empty
       end
 
       it 'correctly finds a plate with a single fluidigm barcode' do
-        expect(described_class.with_barcode(plate_fluidigm_1.fluidigm_barcode)).to match_array([plate_fluidigm_1])
+        expect(described_class.with_barcode(plate_fluidigm_1.fluidigm_barcode)).to contain_exactly(plate_fluidigm_1)
       end
 
       it 'does not find anything when sent any other string' do
-        expect(described_class.with_barcode('INVALID123ABC')).to match_array([])
+        expect(described_class.with_barcode('INVALID123ABC')).to be_empty
       end
 
       context 'with valid barcodes' do

@@ -12,7 +12,7 @@ describe 'Create a new tag layout template' do
     tag_group_2
   end
 
-  it 'create a new layout template from a tag group', js: true do
+  it 'create a new layout template from a tag group', :js do
     login_user user
     visit tag_group_path(tag_group_1)
     expect(page).to have_content 'Test tag group 1'
@@ -32,7 +32,7 @@ describe 'Create a new tag layout template' do
     expect(page).to have_content 'To tag layout templates list'
   end
 
-  it 'create a new layout template directly', js: true do
+  it 'create a new layout template directly', :js do
     login_user user
     visit new_tag_layout_template_path
     expect(page).to have_content 'Tag Layout Template New'
@@ -52,7 +52,7 @@ describe 'Create a new tag layout template' do
     expect(page).to have_content 'To tag layout templates list'
   end
 
-  it 'get an error when creating a new layout template', js: true do
+  it 'get an error when creating a new layout template', :js do
     login_user user
     visit new_tag_layout_template_path
     expect(page).to have_content 'Tag Layout Template New'

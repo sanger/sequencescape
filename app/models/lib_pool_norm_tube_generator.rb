@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class LibPoolNormTubeGenerator # rubocop:todo Style/Documentation
+class LibPoolNormTubeGenerator
   include ActiveModel::Validations
 
   attr_accessor :plate

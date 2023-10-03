@@ -69,9 +69,9 @@ shared_examples 'a cherrypicking procedure' do
         expect(page).to have_content('Batch released!')
         expected_input_count = plates.count
         expected_input_count += 1 if control_plate
-        within('#input_assets table tbody') { expect(page).to have_selector('tr', count: expected_input_count) }
+        within('#input_assets table tbody') { expect(page).to have_css('tr', count: expected_input_count) }
         within('#output_assets table tbody') do
-          expect(page).to have_selector('tr', count: expected_plates_by_destination_plate.size)
+          expect(page).to have_css('tr', count: expected_plates_by_destination_plate.size)
         end
       end
     end

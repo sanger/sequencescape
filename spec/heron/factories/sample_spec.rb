@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Heron::Factories::Sample, heron: true, lighthouse: true, type: :model do
+RSpec.describe Heron::Factories::Sample, :heron, :lighthouse, type: :model do
   let(:study) { create :study }
 
   describe '#valid?' do
@@ -20,7 +20,7 @@ RSpec.describe Heron::Factories::Sample, heron: true, lighthouse: true, type: :m
 
       it 'is not valid' do
         factory = described_class.new(params)
-        expect(factory).to be_invalid
+        expect(factory).not_to be_valid
       end
 
       it 'stores the error message' do
@@ -36,7 +36,7 @@ RSpec.describe Heron::Factories::Sample, heron: true, lighthouse: true, type: :m
 
       it 'is not valid' do
         factory = described_class.new(params)
-        expect(factory).to be_invalid
+        expect(factory).not_to be_valid
       end
 
       it 'stores the error message' do
@@ -63,7 +63,7 @@ RSpec.describe Heron::Factories::Sample, heron: true, lighthouse: true, type: :m
 
         it 'is valid' do
           factory = described_class.new(params)
-          expect(factory).to be_invalid
+          expect(factory).not_to be_valid
         end
       end
     end
@@ -73,7 +73,7 @@ RSpec.describe Heron::Factories::Sample, heron: true, lighthouse: true, type: :m
 
       it 'is invalid' do
         factory = described_class.new(params)
-        expect(factory).to be_invalid
+        expect(factory).not_to be_valid
       end
     end
   end
@@ -85,20 +85,20 @@ RSpec.describe Heron::Factories::Sample, heron: true, lighthouse: true, type: :m
       let(:factory) { described_class.new(study: study, aliquot: { tag_id: tag_id }) }
 
       it 'can create an aliquot of the sample in the well' do
-        expect { factory.create_aliquot_at(well) }.to change(::Aliquot, :count)
+        expect { factory.create_aliquot_at(well) }.to change(Aliquot, :count)
           .by(1)
-          .and(change(::Sample, :count).by(1))
+          .and(change(Sample, :count).by(1))
       end
 
       it 'creates aliquots using the arguments provided' do
         aliquot = factory.create_aliquot_at(well)
-        expect(aliquot.class).to eq(::Aliquot)
+        expect(aliquot.class).to eq(Aliquot)
         expect(aliquot.tag_id).to eq(tag_id)
       end
 
       it 'registers a stock resource message' do
         expect { factory.create_aliquot_at(well) }.to change(
-          ::Messenger.where(root: 'stock_resource', template: 'WellStockResourceIO', target: well),
+          Messenger.where(root: 'stock_resource', template: 'WellStockResourceIO', target: well),
           :count
         ).by(1)
       end
@@ -116,7 +116,7 @@ RSpec.describe Heron::Factories::Sample, heron: true, lighthouse: true, type: :m
     context 'when the factory is valid' do
       it 'returns a sample instance' do
         factory = described_class.new(study: study)
-        expect(factory.create.class).to eq(::Sample)
+        expect(factory.create.class).to eq(Sample)
       end
 
       it 'returns the same sample instance in any subsequent call' do
@@ -152,7 +152,7 @@ RSpec.describe Heron::Factories::Sample, heron: true, lighthouse: true, type: :m
 
         it 'will be invalid if providing any other extra attributes' do
           factory = described_class.new(study: study, sample_uuid: sample.uuid, sample_id: '1234')
-          expect(factory).to be_invalid
+          expect(factory).not_to be_valid
         end
 
         it 'will be valid if providing any other attributes not sample related' do

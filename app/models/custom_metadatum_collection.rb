@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class CustomMetadatumCollection < ApplicationRecord # rubocop:todo Style/Documentation
+class CustomMetadatumCollection < ApplicationRecord
   include Uuid::Uuidable
 
   belongs_to :user

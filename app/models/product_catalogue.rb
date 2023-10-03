@@ -5,7 +5,7 @@
 # Ideally we want to deprecate submission templates in favour of
 # products.
 
-class ProductCatalogue < ApplicationRecord # rubocop:todo Style/Documentation
+class ProductCatalogue < ApplicationRecord
   # Specify the behaviour classes that may be used to select a product
   # The behaviours take the catalogue and submission parameters and
   # return a product

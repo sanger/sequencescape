@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Accession # rubocop:todo Style/Documentation
+module Accession
   # Handles assigning of accessioning number to a Sequenescape sample.
   # Before accessioning:
   #  check configuration settings, in particular:
@@ -28,7 +28,7 @@ module Accession # rubocop:todo Style/Documentation
     end
   end
 
-  module Equality # rubocop:todo Style/Documentation
+  module Equality
     include Comparable
 
     def to_a

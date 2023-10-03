@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module LabelPrinter
   module Label
-    class AssetPlate < BasePlate # rubocop:todo Style/Documentation
+    class AssetPlate < BasePlate
       attr_reader :plates
 
       def initialize(plates)

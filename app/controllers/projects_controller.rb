@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 require 'event_factory'
-class ProjectsController < ApplicationController # rubocop:todo Style/Documentation, Metrics/ClassLength
+class ProjectsController < ApplicationController # rubocop:todo Metrics/ClassLength
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
@@ -54,7 +54,7 @@ class ProjectsController < ApplicationController # rubocop:todo Style/Documentat
 
     # TODO[5002667]: ... to here.
 
-    flash[:notice] = 'Your project has been created' # rubocop:disable Rails/ActionControllerFlashBeforeRender
+    flash[:notice] = 'Your project has been created'
     respond_to do |format|
       format.html { redirect_to project_path(@project) }
       format.xml { render xml: @project, status: :created, location: @project }

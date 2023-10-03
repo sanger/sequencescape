@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module Informatics
   module Support
-    class Options # rubocop:todo Style/Documentation
+    class Options
       attr_reader :options
 
       def self.collect(*options)

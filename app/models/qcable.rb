@@ -7,7 +7,7 @@
 
 require 'aasm'
 
-class Qcable < ApplicationRecord # rubocop:todo Style/Documentation
+class Qcable < ApplicationRecord
   include Uuid::Uuidable
   include AASM
   include AASM::Extensions

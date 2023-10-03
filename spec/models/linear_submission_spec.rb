@@ -57,9 +57,8 @@ RSpec.describe LinearSubmission do
           mpx_submission.requests.each do |request|
             assert request.qc_metrics.include?(expected_metric),
                    "Metric not included in #{request.request_type.name}: #{request.qc_metrics.inspect}"
-            assert_equal true,
-                         request.request_metadata.customer_accepts_responsibility,
-                         "Customer doesn't accept responsibility"
+            expect(request.request_metadata.customer_accepts_responsibility).to(be(true), 
+"Customer doesn't accept responsibility")
           end
         end
       end
@@ -181,7 +180,7 @@ RSpec.describe LinearSubmission do
       end
 
       it "save a comment if there's one passed in" do
-        assert_equal ['This is a comment'], submission.comments
+        expect(submission.comments).to eq(['This is a comment'])
       end
 
       describe '#process!' do
@@ -197,7 +196,7 @@ RSpec.describe LinearSubmission do
           let(:sequencing_request) { submission.requests.find_by!(request_type_id: sequencing_request_type.id) }
 
           it 'assign submission ids to the requests' do
-            assert_equal submission, submission.requests.first.submission
+            expect(submission.requests.first.submission).to eq(submission)
           end
 
           it 'sets metadata on library creation requests' do

@@ -4,7 +4,7 @@ require 'rails_helper'
 require 'support/barcode_helper'
 require 'sample_accessioning_job'
 
-RSpec.describe Sample, accession: true, cardinal: true do
+RSpec.describe Sample, :accession, :cardinal do
   include MockAccession
 
   context 'accessioning' do
@@ -174,12 +174,12 @@ RSpec.describe Sample, accession: true, cardinal: true do
     end
 
     it 'compound samples are able to query their component samples' do
-      expect(compound_sample.component_samples).to match_array [component_sample1, component_sample2]
+      expect(compound_sample.component_samples).to contain_exactly(component_sample1, component_sample2)
     end
 
     it 'component samples are able to query their compound samples' do
-      expect(component_sample1.compound_samples).to match_array [compound_sample]
-      expect(component_sample2.compound_samples).to match_array [compound_sample]
+      expect(component_sample1.compound_samples).to contain_exactly(compound_sample)
+      expect(component_sample2.compound_samples).to contain_exactly(compound_sample)
     end
 
     it 'removing a component sample removes both sides of the relationship' do
@@ -187,8 +187,8 @@ RSpec.describe Sample, accession: true, cardinal: true do
       compound_sample.save
       component_sample2.reload
 
-      expect(compound_sample.component_samples).to match_array [component_sample1]
-      expect(component_sample1.compound_samples).to match_array [compound_sample]
+      expect(compound_sample.component_samples).to contain_exactly(component_sample1)
+      expect(component_sample1.compound_samples).to contain_exactly(compound_sample)
       expect(component_sample2.compound_samples).to be_empty
     end
 
@@ -196,18 +196,18 @@ RSpec.describe Sample, accession: true, cardinal: true do
       component_sample1.compound_samples.delete(compound_sample)
       compound_sample.reload
 
-      expect(compound_sample.component_samples).to match_array [component_sample2]
+      expect(compound_sample.component_samples).to contain_exactly(component_sample2)
       expect(component_sample1.compound_samples).to be_empty
-      expect(component_sample2.compound_samples).to match_array [compound_sample]
+      expect(component_sample2.compound_samples).to contain_exactly(compound_sample)
     end
 
     it 'component samples can belong to many compound samples' do
       other_compound_sample = create(:sample, component_samples: [component_sample1])
       component_sample1.reload
 
-      expect(other_compound_sample.component_samples).to match_array [component_sample1]
-      expect(component_sample1.compound_samples).to match_array [compound_sample, other_compound_sample]
-      expect(component_sample2.compound_samples).to match_array [compound_sample]
+      expect(other_compound_sample.component_samples).to contain_exactly(component_sample1)
+      expect(component_sample1.compound_samples).to contain_exactly(compound_sample, other_compound_sample)
+      expect(component_sample2.compound_samples).to contain_exactly(compound_sample)
     end
 
     context 'changing associations modifies the updated_at time of affected samples' do
@@ -264,7 +264,7 @@ RSpec.describe Sample, accession: true, cardinal: true do
   context '(DPL-148) on updating sample metadata' do
     let(:sample) { create :sample }
 
-    it 'triggers warehouse update', warren: true do
+    it 'triggers warehouse update', :warren do
       expect do
         # We try with a valid update
         sample.sample_metadata.update(gender: 'Male')

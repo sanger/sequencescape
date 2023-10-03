@@ -2,9 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SequencescapeExcel::ConditionalFormattingDefault,
-               sample_manifest: true,
-               sample_manifest_excel: true,
+RSpec.describe SequencescapeExcel::ConditionalFormattingDefault, :sample_manifest, :sample_manifest_excel,
                type: :model do
   context 'basic' do
     let(:options) do

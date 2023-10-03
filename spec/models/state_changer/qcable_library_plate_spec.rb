@@ -30,8 +30,8 @@ RSpec.describe StateChanger::QcableLibraryPlate do
 
   it 'sets library type on aliquots' do
     state_changer.update_labware_state
-    assert_equal aliquot.library, well
-    assert_equal aliquot.library_type, 'QA1'
-    assert_equal aliquot.insert_size.from, 100
+    expect(well).to eq(aliquot.library)
+    expect(aliquot.library_type).to eq('QA1')
+    expect(aliquot.insert_size.from).to eq(100)
   end
 end

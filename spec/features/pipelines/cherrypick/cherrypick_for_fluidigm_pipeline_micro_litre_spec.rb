@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'pry'
 
-describe 'cherrypick for fluidigm pipeline - micro litre', js: true do
+describe 'cherrypick for fluidigm pipeline - micro litre', :js do
   let(:user) { create :admin }
   let(:project) { create :project, name: 'Test project' }
   let(:study) { create :study }

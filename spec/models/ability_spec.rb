@@ -110,7 +110,7 @@ RSpec.describe Ability do
   end
 
   shared_examples 'it grants only granted_permissions' do
-    it 'grants expected permissions', aggregate_failures: true do
+    it 'grants expected permissions', :aggregate_failures do
       all_actions.each do |klass, action|
         next unless granted_permissions.fetch(klass, []).include?(action)
 
@@ -118,7 +118,7 @@ RSpec.describe Ability do
       end
     end
 
-    it 'does not grant unexpected permissions', aggregate_failures: true do
+    it 'does not grant unexpected permissions', :aggregate_failures do
       all_actions.each do |klass, action|
         next if granted_permissions.fetch(klass, []).include?(action)
 

@@ -3,7 +3,7 @@
 # {Tube} is playing within the lab, and my modify its behaviour.
 # This is not an abstract class, and can be used directly.
 # @see Purpose
-class Tube::Purpose < ::Purpose
+class Tube::Purpose < Purpose
   self.default_prefix = 'NT'
 
   self.state_changer = StateChanger::StockTube

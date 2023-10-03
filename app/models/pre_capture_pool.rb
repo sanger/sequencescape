@@ -27,7 +27,7 @@ class PreCapturePool < ApplicationRecord
   has_many :pooled_requests, dependent: :destroy, inverse_of: :pre_capture_pool
   has_many :requests, through: :pooled_requests
 
-  class Builder # rubocop:todo Style/Documentation
+  class Builder
     attr_reader :submission
 
     def initialize(submission)

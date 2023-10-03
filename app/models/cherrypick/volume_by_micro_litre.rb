@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Cherrypick::VolumeByMicroLitre # rubocop:todo Style/Documentation
+module Cherrypick::VolumeByMicroLitre
   # rubocop:todo Metrics/AbcSize
   def volume_to_cherrypick_by_micro_litre(volume_required, robot_minimum_picking_volume = 0.0)
     robot_minimum_picking_volume ||= 0.0

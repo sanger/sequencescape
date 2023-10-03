@@ -4,7 +4,7 @@ FactoryBot.define do
   sequence(:barcode_number) { |i| i }
 
   factory :barcode, aliases: [:external] do
-    association(:asset, factory: :labware)
+    asset factory: %i[labware]
     sequence(:barcode) { |i| "EXT_#{i}_A" }
     format { 'external' }
 

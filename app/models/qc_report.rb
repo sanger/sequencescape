@@ -1,13 +1,13 @@
 # frozen_string_literal: true
-class QcReport < ApplicationRecord # rubocop:todo Style/Documentation
+class QcReport < ApplicationRecord
   # :id => The primary key for internal use only
   # :report_identifier => A unique identifier exposed to customers
   # :state => Tracks report processing and return
 
   include AASM
 
-  module StateMachine # rubocop:todo Style/Documentation
-    module ClassMethods # rubocop:todo Style/Documentation
+  module StateMachine
+    module ClassMethods
       def available_states
         QcReport.aasm.states.map { |state| state.name.to_s }
       end
@@ -73,7 +73,7 @@ class QcReport < ApplicationRecord # rubocop:todo Style/Documentation
     # rubocop:enable Metrics/MethodLength
   end
 
-  module ReportBehaviour # rubocop:todo Style/Documentation
+  module ReportBehaviour
     # Generates the report.
     # Generally speaking this gets triggered automatically, and is handled by the delayed job.
     # Briefly, an after_create event creates a delayed job to call generate! on the report.

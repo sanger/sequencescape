@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'Plates Heron API', heron: true, heron_events: true, lighthouse: true, with: :api_v2 do
+describe 'Plates Heron API', :heron, :heron_events, :lighthouse, with: :api_v2 do
   describe '#create' do
     include BarcodeHelper
 
@@ -13,13 +13,13 @@ describe 'Plates Heron API', heron: true, heron_events: true, lighthouse: true, 
     let(:purpose) { create(:plate_purpose, target_type: 'Plate', name: 'Stock Plate', size: '96') }
     let(:plate) do
       request
-      uuid = JSON.parse(response.body).dig('data', 'attributes', 'uuid')
+      uuid = response.parsed_body.dig('data', 'attributes', 'uuid')
       Plate.with_uuid(uuid).first
     end
-    let(:url_for_plate) { JSON.parse(response.body).dig('data', 'links', 'self') }
+    let(:url_for_plate) { response.parsed_body.dig('data', 'links', 'self') }
     let(:error_messages) do
       request
-      JSON.parse(response.body).dig('errors')
+      response.parsed_body.dig('errors')
     end
 
     shared_examples_for 'a successful plate creation' do
@@ -151,8 +151,8 @@ describe 'Plates Heron API', heron: true, heron_events: true, lighthouse: true, 
         it 'displays the error' do
           expect(error_messages).to eq(
             [
-              "Content a1 [\"Asdf Unexisting field for sample or sample_metadata\"]",
-              "Content b1 [\"Phenotype No other params can be added when sample uuid specified\"]"
+              'Content a1 ["Asdf Unexisting field for sample or sample_metadata"]',
+              'Content b1 ["Phenotype No other params can be added when sample uuid specified"]'
             ]
           )
         end
@@ -180,7 +180,7 @@ describe 'Plates Heron API', heron: true, heron_events: true, lighthouse: true, 
       end
 
       context 'when there is an exception during plate creation' do
-        before { allow(::Sample).to receive(:with_uuid).with(sample.uuid).and_raise('BOOM!!') }
+        before { allow(Sample).to receive(:with_uuid).with(sample.uuid).and_raise('BOOM!!') }
 
         it 'does not create any plates' do
           expect(Plate.count).to eq(0)

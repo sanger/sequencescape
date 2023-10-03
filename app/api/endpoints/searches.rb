@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 # Controls API V1 {::Core::Endpoint::Base endpoints} for Searches
-class Endpoints::Searches < ::Core::Endpoint::Base
-  module SearchActions # rubocop:todo Style/Documentation
+class Endpoints::Searches < Core::Endpoint::Base
+  module SearchActions
     def search_action(name) # rubocop:todo Metrics/AbcSize
       bind_action(:create, to: name.to_s, as: name.to_sym) do |action, request, response|
         request.json['search']['page'] ||= request.path.fetch(1).to_i if request.path.fetch(1, false)

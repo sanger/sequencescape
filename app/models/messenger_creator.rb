@@ -5,7 +5,7 @@
 # 1. Cherrypick batch release
 # They specify both a template (under Api::Messages) and a root
 class MessengerCreator < ApplicationRecord
-  class SelfFinder # rubocop:todo Style/Documentation
+  class SelfFinder
     def initialize(base)
       @base = base
     end
@@ -15,7 +15,7 @@ class MessengerCreator < ApplicationRecord
     end
   end
 
-  class WellFinder # rubocop:todo Style/Documentation
+  class WellFinder
     def initialize(base)
       @base = base
     end

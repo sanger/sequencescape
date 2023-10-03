@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'timecop'
 
-describe 'track SampleManifest updates', sample_manifest: true do
+describe 'track SampleManifest updates', :sample_manifest do
   include FetchTable
 
   def load_manifest_spec
@@ -20,14 +20,14 @@ describe 'track SampleManifest updates', sample_manifest: true do
   let!(:supplier) { create :supplier }
   let!(:study) { create :study }
 
-  around { |example| travel_to(Time.zone.local(2010, 7, 12, 10, 25, 0)) { example.run } }
-
-  before do
-    login_user user
+  before do travel_to(Time.zone.local(2010, 7, 12, 10, 25, 0))
+login_user user
     load_manifest_spec
     visit(study_path(study))
-    click_link('Sample Manifests')
-  end
+    click_link('Sample Manifests') end
+
+
+
 
   it 'Some samples get updated by a manifest and events get created' do
     broadcast_events_count = BroadcastEvent.count

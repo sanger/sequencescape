@@ -46,7 +46,7 @@ describe TagLayoutTemplate do
         expect(TagLayout::TemplateSubmission.where(submission_id: submissions)).to be_present
         TagLayout::TemplateSubmission
           .where(submission_id: submissions)
-          .each do |tlts|
+          .find_each do |tlts|
             expect(tlts.tag_layout_template).to eq(template)
             expect(tlts.enforce_uniqueness).to eq(enforce_uniqueness)
           end
@@ -71,7 +71,7 @@ describe TagLayoutTemplate do
           expect(TagLayout::TemplateSubmission.where(submission_id: submissions)).to be_present
           TagLayout::TemplateSubmission
             .where(submission_id: submissions)
-            .each do |tlts|
+            .find_each do |tlts|
               expect(tlts.tag_layout_template).to eq(template)
               expect(tlts.enforce_uniqueness).to eq(enforce_uniqueness)
             end
@@ -99,7 +99,7 @@ describe TagLayoutTemplate do
           expect(TagLayout::TemplateSubmission.where(submission_id: submissions)).to be_present
           TagLayout::TemplateSubmission
             .where(submission_id: submissions)
-            .each do |tlts|
+            .find_each do |tlts|
               expect(tlts.tag_layout_template).to eq(template)
               expect(tlts.enforce_uniqueness).to eq(enforce_uniqueness)
             end

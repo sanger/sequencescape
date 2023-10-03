@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :task do
     name { 'New task' }
-    association(:workflow, factory: :lab_workflow)
+    workflow factory: %i[lab_workflow]
     sorted { nil }
     batched { nil }
     location { '' }
@@ -12,7 +12,7 @@ FactoryBot.define do
 
   factory :plate_template_task do
     name { 'Select Plate Template' }
-    association(:workflow, factory: :cherrypick_pipeline_workflow)
+    workflow factory: %i[cherrypick_pipeline_workflow]
     sorted { 1 }
     batched { true }
     lab_activity { true }
@@ -23,7 +23,7 @@ FactoryBot.define do
 
   factory :fluidigm_template_task do
     name { 'Select Plate Template' }
-    association(:workflow, factory: :fluidigm_pipeline_workflow)
+    workflow factory: %i[fluidigm_pipeline_workflow]
     sorted { 1 }
     batched { true }
     lab_activity { true }
