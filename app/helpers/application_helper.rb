@@ -287,6 +287,15 @@ module ApplicationHelper # rubocop:todo Style/Documentation
     end
   end
 
+  def render_error_messages(instance)
+    return if instance.errors.empty?
+    tag.ul do
+      instance.errors.full_messages.each do |msg|
+        tag.li { msg }
+      end
+    end
+  end
+
   #
   # Ideally we don't want inline script tags, however there is a fair chunk of
   # legacy code, some of which isn't trivial to migrate, as it uses erb to

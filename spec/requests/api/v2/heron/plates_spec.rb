@@ -151,8 +151,8 @@ describe 'Plates Heron API', heron: true, heron_events: true, lighthouse: true, 
         it 'displays the error' do
           expect(error_messages).to eq(
             [
-              'Content a1 Asdf Unexisting field for sample or sample_metadata',
-              'Content b1 Phenotype No other params can be added when sample uuid specified'
+              "Content a1 [\"Asdf Unexisting field for sample or sample_metadata\"]",
+              "Content b1 [\"Phenotype No other params can be added when sample uuid specified\"]"
             ]
           )
         end
@@ -175,7 +175,7 @@ describe 'Plates Heron API', heron: true, heron_events: true, lighthouse: true, 
         it_behaves_like 'a failed plate creation'
 
         it 'displays the error' do
-          expect(error_messages).to eq(["Content a1 Study can't be blank"])
+          expect(error_messages).to eq(["Content a1 [\"Study can't be blank\"]"])
         end
       end
 
