@@ -85,9 +85,7 @@ RSpec.describe Heron::Factories::Sample, :heron, :lighthouse, type: :model do
       let(:factory) { described_class.new(study: study, aliquot: { tag_id: tag_id }) }
 
       it 'can create an aliquot of the sample in the well' do
-        expect { factory.create_aliquot_at(well) }.to change(Aliquot, :count)
-          .by(1)
-          .and(change(Sample, :count).by(1))
+        expect { factory.create_aliquot_at(well) }.to change(Aliquot, :count).by(1).and(change(Sample, :count).by(1))
       end
 
       it 'creates aliquots using the arguments provided' do

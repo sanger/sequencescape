@@ -57,8 +57,10 @@ RSpec.describe LinearSubmission do
           mpx_submission.requests.each do |request|
             assert request.qc_metrics.include?(expected_metric),
                    "Metric not included in #{request.request_type.name}: #{request.qc_metrics.inspect}"
-            expect(request.request_metadata.customer_accepts_responsibility).to(be(true), 
-"Customer doesn't accept responsibility")
+            expect(request.request_metadata.customer_accepts_responsibility).to(
+              be(true),
+              "Customer doesn't accept responsibility"
+            )
           end
         end
       end

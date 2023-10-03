@@ -125,12 +125,14 @@ RSpec.describe SequencescapeExcel::Range, :sample_manifest, :sample_manifest_exc
     end
 
     it '#references should return first_cell reference, reference, fixed_reference and absolute_reference' do
-      expect(range.references).to eq({
+      expect(range.references).to eq(
+        {
           first_cell_reference: range.first_cell_reference,
           reference: range.reference,
           fixed_reference: range.fixed_reference,
           absolute_reference: range.absolute_reference
-        })
+        }
+      )
     end
 
     it 'knows it is dynamic' do

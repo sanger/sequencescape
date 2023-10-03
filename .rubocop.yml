@@ -212,7 +212,7 @@ FactoryBot/FactoryAssociationWithStrategy:
   Enabled: false
 
 Performance/MapMethodChain:
-  Enabled: false  
+  Enabled: false
 
 Rails/ThreeStateBooleanColumn:
   Enabled: false

@@ -322,8 +322,7 @@ module ApplicationHelper
 end
 # rubocop:enable Metrics/ModuleLength
 
-
-# error_messages_for method was deprecated, however lots of the tests depend on the message format it 
+# error_messages_for method was deprecated, however lots of the tests depend on the message format it
 # was using.
 # <https://apidock.com/rails/ActionView/Helpers/ActiveRecordHelper/error_messages_for>
 def render_error_messages(object)
@@ -336,15 +335,13 @@ end
 
 def error_message_header(object)
   count = object.errors.full_messages.count
-  model_name = object.class.to_s.tableize.tr('_', ' ').gsub(%r{/.*},'').singularize
+  model_name = object.class.to_s.tableize.tr('_', ' ').gsub(%r{/.*}, '').singularize
   is_plural = count > 1 ? 's' : ''
   header = "#{count} error#{is_plural} prohibited this #{model_name} from being saved"
   content_tag(:h2, header)
 end
 
 def error_messages_ul_html_safe(object)
-  messages = object.errors.full_messages.map do |msg| 
-    content_tag(:li, ERB::Util.html_escape(msg))
-  end.join.html_safe
+  messages = object.errors.full_messages.map { |msg| content_tag(:li, ERB::Util.html_escape(msg)) }.join.html_safe
   content_tag(:ul, messages)
 end

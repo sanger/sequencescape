@@ -2,7 +2,9 @@
 
 require 'rails_helper'
 
-RSpec.describe SequencescapeExcel::ConditionalFormattingDefaultList, :sample_manifest, :sample_manifest_excel,
+RSpec.describe SequencescapeExcel::ConditionalFormattingDefaultList,
+               :sample_manifest,
+               :sample_manifest_excel,
                type: :model do
   include SequencescapeExcel::Helpers
 

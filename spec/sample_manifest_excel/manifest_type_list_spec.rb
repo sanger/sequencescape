@@ -2,8 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SampleManifestExcel::ManifestTypeList, :sample_manifest, :sample_manifest_excel,
-               type: :model do
+RSpec.describe SampleManifestExcel::ManifestTypeList, :sample_manifest, :sample_manifest_excel, type: :model do
   include SequencescapeExcel::Helpers
 
   let(:folder) { File.join('spec', 'data', 'sample_manifest_excel', 'extract') }

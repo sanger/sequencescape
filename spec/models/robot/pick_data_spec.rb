@@ -8,8 +8,6 @@ RSpec.describe Robot::PickData, :robot_verification do
 
   before { travel_to(time) }
 
-
-
   describe '#picking_data_hash' do
     let(:time) { Time.zone.local(2010, 7, 12, 10, 25, 0) }
     let(:source_plate_1) { create :plate, well_count: 2 }

@@ -62,7 +62,6 @@ module Core::Io::Base::JsonFormattingBehaviour
   end
 
   VALID_LINE_REGEXP = /^\s*((?:[a-z_][\w_]*\.)*[a-z_][\w_]*[?!]?)\s*(<=|<=>|=>)\s*((?:[a-z_][\w_]*\.)*[a-z_][\w_]*)\s*$/
-    
 
   def parse_mapping_rules(mapping) # rubocop:todo Metrics/AbcSize
     attribute_to_json, json_to_attribute = [], []

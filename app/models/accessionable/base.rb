@@ -142,7 +142,6 @@ class Accessionable::Base
     class FieldCollectionDate < FieldSerializer
       # rubocop:disable Layout/LineLength
       REGEXP = %r{(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)}
-        
 
       # rubocop:enable Layout/LineLength
 
