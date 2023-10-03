@@ -171,7 +171,7 @@ module ApplicationHelper # rubocop:todo Style/Documentation
     if count.zero?
       ''
     else
-      error_messages = objects.map { |object| object.errors.full_messages.map { |msg| tag.div(**msg) } }.join
+      error_messages = objects.map { |object| object.errors.full_messages.map { |msg| tag.div(msg) } }.join
       [
         tag.td(class: 'error item') { "Your #{params.first} has not been created." },
         tag.td(class: 'error') { raw(error_messages) }
@@ -336,7 +336,7 @@ end
 
 def error_message_header(object)
   count = object.errors.full_messages.count
-  model_name = object.class.to_s.tableize.gsub('_', ' ').gsub(/\/.*/,'')
+  model_name = object.class.to_s.tableize.gsub('_', ' ').gsub(/\/.*/,'').singularize
   is_plural = count > 1 ? 's' : ''
   header = "#{count} error#{is_plural} prohibited this #{model_name} from being saved"
   content_tag(:h2, header)
