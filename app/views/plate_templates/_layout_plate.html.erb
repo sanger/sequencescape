@@ -27,15 +27,21 @@
           <% if col==0 %>
             <td class='border' width='2%'><%= rowchar  %></td>
           <% else %>
-            <% well = "#{rowchar}#{col}" %>
+            <% well_position = "#{rowchar}#{col}" %>
             <% unless pattern.nil?%>
-              <% if pattern.find_well_by_name(well).nil? %>
-                <td onclick="empty_well( '<%= "#{well}" %>',<%= row %>, <%= col %>, <%= plate_cols %> )"  id="<%= "#{well}" %>"  ><%= "#{well}" %></td>
+              <% if pattern.find_well_by_name(well_position).nil? %>
+                <td id="<%= "well_#{well_position}" %>"  data-well-position='<%= "#{well_position}" %>' data-row='<%= row %>' data-col='<%= col %>' data-plate_cols='<%= plate_cols %>' class="well">
+                <%= "#{well_position}" %>
+                </td>
               <% else %>
-                <td id="<%= "#{well}" %>" onclick="empty_well( '<%= "#{well}" %>',<%= row %>, <%= col %>, <%= plate_cols %>  )" class="empty">Empty<input type="hidden" value="<%= ((row)*plate_cols) + col %>" name="empty_well[<%= well %>]"/></td>
+                <td id="<%= "well_#{well_position}" %>" data-well-position='<%= "#{well_position}" %>' data-row='<%= row %>' data-col='<%= col %>' data-plate_cols='<%= plate_cols %>' class="well empty">
+                Empty<input type="hidden" value="<%= (row*plate_cols) + col %>" name="empty_well[<%= well_position %>]"/>
+                </td>
               <% end -%>
             <% else -%>
-              <td onclick="empty_well( '<%= "#{well}" %>',<%= row %>, <%= col %>, <%= plate_cols %>  )"  id="<%= "#{well}" %>"  ><%= "#{well}" %></td>
+              <td id="<%= "well_#{well_position}" %>"  data-well-position='<%= "#{well_position}" %>' data-row='<%= row %>' data-col='<%= col %>' data-plate_cols='<%= plate_cols %>' class="well">
+              <%= "#{well_position}" %>
+              </td>
             <% end -%>
 
           <% end %>
@@ -50,13 +56,28 @@
 <% end %>
 
 <%= legacy_javascript_tag do %>
-  function empty_well(well,row,col,plate_width) {
-    if($(well).className == 'empty') {
-      $(well).removeClassName('empty');
-      $(well).update(well);
+  const wells = document.querySelectorAll('.well');
+  for (let well of wells) {
+    well.addEventListener('click', handleClick);
+  }
+
+  function handleClick(event) {
+    const well = event.target;
+    toggleEmptyWell(well);
+  }
+
+  function toggleEmptyWell(well) {
+    const wellPosition = well.dataset.wellPosition;
+    const row = parseInt(well.dataset.row);
+    const col = parseInt(well.dataset.col);
+    const plateCols = parseInt(well.dataset.plate_cols);
+
+    if(well.classList.contains('empty')) {
+      well.classList.remove('empty');
+      well.innerHTML=wellPosition;
     } else {
-      $(well).addClassName('empty');
-      $(well).update('Empty<input type="hidden" name="empty_well['+well+']" value="'+ (((row)*plate_width)+ col)+'">');
+      well.classList.add('empty');
+      well.innerHTML = `Empty<input type="hidden" name="empty_well[${wellPosition}]" value="${(row * plateCols) + col}">`;
     }
   }
 <% end %>
