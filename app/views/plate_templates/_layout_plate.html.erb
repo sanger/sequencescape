@@ -64,9 +64,9 @@
   function toggleEmptyWell(event) {
     const well = event.target;
     const wellPosition = well.dataset.wellPosition;
-    const row = parseInt(well.dataset.row);
-    const col = parseInt(well.dataset.col);
-    const plateCols = parseInt(well.dataset.plate_cols);
+    const row = parseInt(well.dataset.row, 10);
+    const col = parseInt(well.dataset.col, 10);
+    const plateCols = parseInt(well.dataset.plate_cols, 10);
 
     if(well.classList.contains('empty')) {
       well.classList.remove('empty');
