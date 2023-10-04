@@ -58,15 +58,11 @@
 <%= legacy_javascript_tag do %>
   const wells = document.querySelectorAll('.well');
   for (let well of wells) {
-    well.addEventListener('click', handleClick);
+    well.addEventListener('click', toggleEmptyWell);
   }
 
-  function handleClick(event) {
+  function toggleEmptyWell(event) {
     const well = event.target;
-    toggleEmptyWell(well);
-  }
-
-  function toggleEmptyWell(well) {
     const wellPosition = well.dataset.wellPosition;
     const row = parseInt(well.dataset.row);
     const col = parseInt(well.dataset.col);
