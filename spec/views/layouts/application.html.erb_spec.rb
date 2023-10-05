@@ -4,14 +4,14 @@ require 'rails_helper'
 
 RSpec.describe 'layouts/application', type: :view do
   environments = {
-    cucumber: "🥒",
-    development: "🚧",
+    cucumber: '🥒',
+    development: '🚧',
     # production is tested separately
-    profile: "⏱️",
-    staging: "🚀",
-    staging_2: "🚀2️⃣",
-    test: "🧪",
-    training: "🎓",
+    profile: '⏱️',
+    staging: '🚀',
+    staging_2: '🚀2️⃣', # rubocop:disable Naming/VariableNumber
+    test: '🧪',
+    training: '🎓'
   }
 
   environments.each do |env, emoji|
@@ -27,13 +27,13 @@ RSpec.describe 'layouts/application', type: :view do
     allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('production'))
     assign(:page_name, 'the homepage')
     render
-    expect(rendered).to have_title("Sequencescape : Test - the homepage")
+    expect(rendered).to have_title('Sequencescape : Test - the homepage')
   end
 
   it 'displays the correct title with question mark emoji for undefined environment' do
     allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('undefined_environment'))
     assign(:page_name, 'the homepage')
     render
-    expect(rendered).to have_title("❓: Sequencescape : Test - the homepage")
+    expect(rendered).to have_title('❓: Sequencescape : Test - the homepage')
   end
 end

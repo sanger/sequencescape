@@ -19,19 +19,19 @@
     <title>
       <% # Define a hash of environments
         environments = {
-          cucumber: "🥒",
-          development: "🚧",
-          production: "🌎",
-          profile: "⏱️",
-          staging: "🚀",
-          staging_2: "🚀2️⃣",
-          test: "🧪",
-          training: "🎓",
+          cucumber: '🥒',
+          development: '🚧',
+          production: '🌎',
+          profile: '⏱️',
+          staging: '🚀',
+          staging_2: '🚀2️⃣',  # rubocop:disable Naming/VariableNumber
+          test: '🧪',
+          training: '🎓',
         }
 
         # Get an emoji for the current environment
         current_environment = Rails.env.to_sym
-        emoji = environments[current_environment] || "❓" 
+        emoji = environments[current_environment] || '❓' 
       %>
       <%= "#{emoji}:" unless Rails.env.production? %> Sequencescape : <%= controller.controller_name.capitalize %> - <%= @page_name || controller.action_name %>
     </title>
