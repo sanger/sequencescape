@@ -2,7 +2,7 @@
 <div class="page-header"><h1>Edit robot property for <%= @robot.name %></h1></div>
 
 <%= form_for([@robot, @robot_property], url: admin_robot_robot_property_path(@robot, @robot_property)) do |f| %>
-<%= render_error_messages(@robot, @robot_property) %>
+<%= render_error_messages(@robot_property) %>
 <p>
 <%= f.label :name %>
 <br />

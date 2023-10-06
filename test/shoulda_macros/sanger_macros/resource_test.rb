@@ -16,19 +16,21 @@ module Sanger
         # rubocop:todo Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
         def resource_test(
           resource_name,
-          ignore_actions: [],
-          actions: (RESTFUL_ACTIONS - ignore_actions),
-          with_prefix: '',
-          other_actions: [],
-          formats: %w[html xml json],
-          defaults: {},
-          protect_on_update: [],
-          extra_on_update: {},
-          parent: nil,
-          setup_with: nil,
-          teardown_with: nil,
-          user: :user
+          kwords
         )
+          ignore_actions = kwords[:ignore_actions] || []
+          actions = kwords[:actions] || (RESTFUL_ACTIONS - ignore_actions)
+          with_prefix = kwords[:with_prefix] || ''
+          other_actions = kwords[:other_actions] || []
+          formats = kwords[:formats] || %w[html xml json]
+          defaults = kwords[:defaults] || {}
+          protect_on_update = kwords[:protect_on_update] || []
+          extra_on_update = kwords[:extra_on_update] || {}
+          parent = kwords[:parent] || nil
+          setup_with = kwords[:setup_with] || nil
+          teardown_with = kwords[:teardown_with] || nil
+          user = kwords[:user] || :user
+
           resource_name = resource_name.to_sym
 
           untested_actions = (RESTFUL_ACTIONS - ignore_actions) - actions
