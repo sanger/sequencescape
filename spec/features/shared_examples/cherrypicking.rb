@@ -233,7 +233,11 @@ shared_examples 'a cherrypicking procedure' do
           end
 
           step "Download pick file for destination plate #{destination_barcode} pick number #{pick_number_index}" do
-            expect(page).to have_content("Download #{robot.name.capitalize} File Step 3 of 3")
+            Capybara.using_wait_time(5) do
+              # This requires more time to perform the check between runs.
+              # Throws a JS error if not waiting enough
+              expect(page).to have_content("Download #{robot.name.capitalize} File Step 3 of 3")
+            end
 
             click_link("Download #{robot.name} File")
 

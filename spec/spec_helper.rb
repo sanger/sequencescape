@@ -59,6 +59,12 @@ Capybara.register_driver :headless_chrome do |app|
   the_driver
 end
 
+Capybara.register_driver :selenium_chrome do |app|
+  driver = Capybara::Selenium::Driver.new(app, browser: :chrome)
+  driver.browser.download_path = DownloadHelpers::PATH.to_s
+  driver
+end
+
 Capybara.javascript_driver = ENV.fetch('JS_DRIVER', 'headless_chrome').to_sym
 Capybara.default_max_wait_time = 10
 
