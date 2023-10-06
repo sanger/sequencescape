@@ -6,7 +6,6 @@
 # elsewhere.
 # rubocop:disable Metrics/MethodLength
 # rubocop:disable Metrics/AbcSize
-# rubocop:disable Metrics/ParameterLists
 module Sanger
   module Testing
     module Controller
@@ -14,10 +13,7 @@ module Sanger
         RESTFUL_ACTIONS = %w[index new create show update destroy edit].freeze
 
         # rubocop:todo Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
-        def resource_test(
-          resource_name,
-          kwords
-        )
+        def resource_test(resource_name, kwords)
           ignore_actions = kwords[:ignore_actions] || []
           actions = kwords[:actions] || (RESTFUL_ACTIONS - ignore_actions)
           with_prefix = kwords[:with_prefix] || ''
@@ -235,4 +231,4 @@ module Sanger
     end
   end
 end
-# rubocop:enable Metrics/MethodLength, Metrics/AbcSize, Metrics/ParameterLists
+# rubocop:enable Metrics/MethodLength, Metrics/AbcSize
