@@ -1,11 +1,14 @@
 #!/bin/bash
 
+export RAILS_ENV=cucumber
+
 # See https://knapsackpro.com/faq/question/how-to-make-knapsack_pro-works-for-forked-repositories-of-my-project
 if [ "$KNAPSACK_PRO_TEST_SUITE_TOKEN_CUCUMBER" = "" ]; then
   echo "WARN: No KNAPSACK_PRO_TEST_SUITE_TOKEN_CUCUMBER github secret. Using fallback."
   echo "To improve performance consider:"
   echo "1) Add knapsackpro.com API keys to your github secrets"
   echo "2) Make pull requests from the sanger repo"
+
   KNAPSACK_PRO_ENDPOINT=https://localhost \
     KNAPSACK_PRO_TEST_SUITE_TOKEN_CUCUMBER=disabled-for-fork \
     KNAPSACK_PRO_MAX_REQUEST_RETRIES=0 \
