@@ -1,0 +1,14 @@
+# These request types are associated with the Limber scRNA Core Cell Extraction pipeline.
+# They are in a separate file to allow us to soft-release them before
+# the real release.
+---
+limber_scrna_core_cell_extraction:
+  name: scRNA Core Cell Extraction
+  asset_type: SampleTube
+  order: 1
+  request_class_name: CustomerRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: Sample Preparation
+  acceptable_purposes:
+    - LRC Blood Vac
