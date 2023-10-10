@@ -31,6 +31,7 @@ services:
     environment:
       - DBHOST=host.docker.internal
       - DBPORT=3306
+      - USE_POLLING_FILE_WATCHER=$USE_POLLING_FILE_WATCHER
     entrypoint: "bash -c 'bundle exec rake jobs:work'"
     healthcheck:
       test: "ps -ef | grep -q jobs"
