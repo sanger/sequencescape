@@ -96,6 +96,13 @@ docker-compose build
 RESET_DATABASE=true docker-compose up
 ```
 
+Or if you are using an Apple M1 Chip:
+
+```shell
+docker-compose build --build-arg CHIPSET=m1
+USE_POLLING_FILE_WATCHER=true RESET_DATABASE=true docker-compose up
+```
+
 Optionally, if this is not the first time you start the app, you may not want to reset the
 database, and you can run this command instead:
 
@@ -379,16 +386,8 @@ If installation issues are encountered with Docker on M1 processors, try the fix
   failed to solve: process "/bin/bash --login -c apt install -y ./google-chrome-stable_current_amd64.deb" did not complete successfully: exit code: 100
   ```
 
-  Force docker to use the an ARM image as the base with the patch below. It is also recommended to [install and enable Rosetta 2](https://docs.docker.com/desktop/install/mac-install/#mac-with-apple-silicon).
-
-  ```diff
-  # ./Dockerfile
-
-  -FROM ruby:2.7.8-slim
-  +FROM --platform=linux/arm64 ruby:2.7.8-slim
-  ```
-
-  [Sanger/lighthouse ([Dockerfile](https://github.com/sanger/lighthouse/blob/develop/Dockerfile), [docker-compose.yml](https://github.com/sanger/lighthouse/blob/develop/dependencies/docker-compose.yml))]
+  Force docker to use the an AMD image as the base by setting `--build-arg CHIPSET=m1` during the build.
+  It is also recommended to [install and enable Rosetta 2](https://docs.docker.com/desktop/install/mac-install/#mac-with-apple-silicon).
 
 - The sequencescape_server container terminates with the error:
 
@@ -396,16 +395,7 @@ If installation issues are encountered with Docker on M1 processors, try the fix
   Function not implemented - Failed to initialize inotify (Errno::ENOSYS)
   ```
 
-  Use an alternative file update checker:
-
-  ```diff
-    # ./config/environments/development.rb
-
-    # Use an evented file watcher to asynchronously detect changes in source code,
-    # routes, locales, etc. This feature depends on the listen gem.
-  -  config.file_watcher = ActiveSupport::EventedFileUpdateChecker
-  +  config.file_watcher = ActiveSupport::FileUpdateChecker
-  ```
+  Use a polling instead of event file update checker by setting `USE_POLLING_FILE_WATCHER=true` during the compose up.
 
   [[GitHub issue](https://github.com/evilmartians/terraforming-rails/issues/34#issuecomment-872021786)]
 

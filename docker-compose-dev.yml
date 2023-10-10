@@ -12,6 +12,7 @@ services:
       - DBHOST=host.docker.internal
       - DBPORT=3306
       - RESET_DATABASE=$RESET_DATABASE
+      - USE_POLLING_FILE_WATCHER=$USE_POLLING_FILE_WATCHER
     entrypoint: "bash -c ./entrypoint.sh"
     ports:
       - "3000:3000"
