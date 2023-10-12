@@ -49,8 +49,10 @@ test: &test
   timeout: 5000
 
 cucumber:
-  <<: *test
+  <<: *MYSQL
   database: sequencescape_test<%= ENV['TEST_ENV_NUMBER'] %><%= suffix %>_cuke
+  pool: 10
+  timeout: 5000
 
 # We need to have some dummy configuration here when the app is being packaged up (vite:build),
 # because the initializers are run.
