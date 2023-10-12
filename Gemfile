@@ -186,9 +186,7 @@ group :test, :cucumber do
   gem 'shoulda'
   gem 'simplecov', require: false
   gem 'timecop', require: false
-end
 
-group :cucumber do
   gem 'cucumber_github_formatter'
   gem 'cucumber-rails', require: false
 end
