@@ -137,7 +137,7 @@ jobs:
   cucumber_tests:
     runs-on: ubuntu-latest
     env:
-      RAILS_ENV: cucumber
+      RAILS_ENV: test
       BUNDLE_WITHOUT: "deployment profile development test"
     # Services
     # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idservices
@@ -188,7 +188,7 @@ jobs:
           KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
           KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
           DBPORT: ${{ job.services.mysql.ports[3306] }}
-          RAILS_ENV: cucumber
+          RAILS_ENV: test
         run: bin/knapsack_pro_cucumber
       - name: Upload capybara artifacts
         uses: actions/upload-artifact@v2
