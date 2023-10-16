@@ -9,7 +9,6 @@ RSpec.describe 'layouts/application', type: :view do
     # production is tested separately
     profile: '⏱️',
     staging: '🚀',
-    staging_2: '🚀2️⃣', # rubocop:disable Naming/VariableNumber
     test: '🧪',
     training: '🎓'
   }
