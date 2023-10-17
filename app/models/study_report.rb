@@ -46,7 +46,7 @@ class StudyReport < ApplicationRecord
       Tempfile.open("#{study.dehumanise_abbreviated_name}_progress_report.csv") do |tempfile|
         Study
           .find(study_id)
-          .progress_report_on_all_assets { |fields| tempfile.puts(CSV.generate_line(fields, csv_options)) }
+          .progress_report_on_all_assets { |fields| tempfile.puts(CSV.generate_line(fields, **csv_options)) }
         tempfile.open # Reopen the temporary file
         update!(report: tempfile)
       end
