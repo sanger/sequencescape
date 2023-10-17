@@ -223,7 +223,7 @@ Then 'the HTTP response should be {string}' do |status|
     raise StandardError, "Status #{status.inspect} should be an HTTP status code + message"
   begin
     assert_equal(match[1].to_i, page.driver.status_code)
-  rescue MiniTest::Assertion => e
+  rescue Minitest::Assertion => e
     step 'show me the HTTP response body'
     raise e
   end

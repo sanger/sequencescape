@@ -31,7 +31,7 @@ module Validateable
       defaults.flatten!
       defaults << attribute_key_name.to_s.humanize
       options[:count] ||= 1
-      I18n.t(defaults.shift, options.merge(default: defaults, scope: %i[activerecord attributes]))
+      I18n.t(defaults.shift, **options.merge(default: defaults, scope: %i[activerecord attributes]))
     end
 
     def human_name(options = {})

@@ -107,7 +107,7 @@ class PolymorphicUploader < CarrierWave::Uploader::Base
 
   def delete_tmp_dir(_new_file)
     # make sure we don't delete other things accidentally by checking the name pattern
-    if @cache_id_was.present? && @cache_id_was =~ /\A\d{8}-\d{4}-\d+-\d{4}\z/
+    if @cache_id_was.present? && @cache_id_was =~ /\A[\d-]*\z/
       FileUtils.rm_rf(File.join(cache_dir, @cache_id_was))
     end
   end
