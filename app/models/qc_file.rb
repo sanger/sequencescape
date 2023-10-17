@@ -10,7 +10,7 @@ class QcFile < ApplicationRecord
       class_eval do
         has_many :qc_files, foreign_key: :asset_id, dependent: :destroy
 
-        def add_qc_file(file, filename = nil)
+        def add_qc_file(file, filename = nil) # rubocop:todo Metrics/MethodLength
           opts = { uploaded_data: { tempfile: file, filename: filename } }
           opts[:filename] = filename unless filename.nil?
           if file.present?
@@ -41,6 +41,7 @@ class QcFile < ApplicationRecord
 
   # CarrierWave uploader - gets the uploaded_data file, but saves the identifier to the "filename" column
   has_uploaded :uploaded_data, serialization_column: 'filename'
+
   #mount_uploader :uploaded_data, PolymorphicUploader, mount_on: :filename
   #mount_uploader :uploaded_data, PolymorphicUploader, mount_on: 'filename'
 
@@ -54,7 +55,7 @@ class QcFile < ApplicationRecord
   def retrieve_file
     uploaded_data.cache!(uploaded_data.file)
     yield(uploaded_data)
-    
+
     # We can't actually delete the cache file here, as the send_file
     # operation happens asynchronously. Instead we can use:
     # PolymorphicUploader.clean_cached_files!
