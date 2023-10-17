@@ -13,7 +13,16 @@ class QcFile < ApplicationRecord
         def add_qc_file(file, filename = nil)
           opts = { uploaded_data: { tempfile: file, filename: filename } }
           opts[:filename] = filename unless filename.nil?
-          qc_files.create!(opts) if file.present?
+          if file.present?
+            original_filename = filename
+            instance = qc_files.new(opts)
+            instance.save
+            instance.update(filename: original_filename)
+            instance.reload
+            instance.update(filename: original_filename)
+            instance.reload
+            instance
+          end
         end
 
         def update_qc_values_with_parser(_parser)
@@ -32,6 +41,9 @@ class QcFile < ApplicationRecord
 
   # CarrierWave uploader - gets the uploaded_data file, but saves the identifier to the "filename" column
   has_uploaded :uploaded_data, serialization_column: 'filename'
+  #mount_uploader :uploaded_data, PolymorphicUploader, mount_on: :filename
+  #mount_uploader :uploaded_data, PolymorphicUploader, mount_on: 'filename'
+
   validates :uploaded_data, presence: :true
 
   # Method provided for backwards compatibility
@@ -42,6 +54,7 @@ class QcFile < ApplicationRecord
   def retrieve_file
     uploaded_data.cache!(uploaded_data.file)
     yield(uploaded_data)
+    
     # We can't actually delete the cache file here, as the send_file
     # operation happens asynchronously. Instead we can use:
     # PolymorphicUploader.clean_cached_files!
