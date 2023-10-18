@@ -13,16 +13,7 @@ class QcFile < ApplicationRecord
         def add_qc_file(file, filename = nil) # rubocop:todo Metrics/MethodLength
           opts = { uploaded_data: { tempfile: file, filename: filename } }
           opts[:filename] = filename unless filename.nil?
-          if file.present?
-            original_filename = filename
-            instance = qc_files.new(opts)
-            instance.save
-            instance.update(filename: original_filename)
-            instance.reload
-            instance.update(filename: original_filename)
-            instance.reload
-            instance
-          end
+          qc_files.create!(opts) if file.present?
         end
 
         def update_qc_values_with_parser(_parser)
