@@ -10,7 +10,7 @@ class QcFile < ApplicationRecord
       class_eval do
         has_many :qc_files, foreign_key: :asset_id, dependent: :destroy
 
-        def add_qc_file(file, filename = nil) # rubocop:todo Metrics/MethodLength
+        def add_qc_file(file, filename = nil)
           opts = { uploaded_data: { tempfile: file, filename: filename } }
           opts[:filename] = filename unless filename.nil?
           qc_files.create!(opts) if file.present?
