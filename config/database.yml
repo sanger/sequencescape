@@ -67,5 +67,3 @@ production:
 ### Training
 ### Production
 
-cucumber:
-  <<: *test
