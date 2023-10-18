@@ -7,6 +7,7 @@ if [ "$KNAPSACK_PRO_TEST_SUITE_TOKEN_CUCUMBER" = "" ]; then
   echo "To improve performance consider:"
   echo "1) Add knapsackpro.com API keys to your github secrets"
   echo "2) Make pull requests from the sanger repo"
+  RAILS_ENV=cucumber bundle exec rake db:seed
 
   KNAPSACK_PRO_ENDPOINT=https://localhost \
     KNAPSACK_PRO_TEST_SUITE_TOKEN_CUCUMBER=disabled-for-fork \
