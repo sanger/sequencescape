@@ -180,6 +180,7 @@ jobs:
         run: |
           bin/setup
           bundle exec rake assets:precompile
+          echo "Seed database"
           bundle exec rake db:seed
       # Actually run our tests
       - name: Run Cucumber tests
