@@ -180,6 +180,8 @@ jobs:
         run: |
           bin/setup
           bundle exec rake assets:precompile
+          echo "Reset database database cucumber"
+          RAILS_ENV=cucumber bundle exec rake db:reset
           echo "Seed database"
           RAILS_ENV=cucumber bundle exec rake db:seed
       # Actually run our tests
@@ -190,7 +192,7 @@ jobs:
           KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
           KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
           DBPORT: ${{ job.services.mysql.ports[3306] }}
-          #RAILS_ENV: test
+          RAILS_ENV: cucumber
         run: bin/knapsack_pro_cucumber
       - name: Upload capybara artifacts
         uses: actions/upload-artifact@v2
