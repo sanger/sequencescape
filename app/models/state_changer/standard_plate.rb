@@ -56,8 +56,20 @@ module StateChanger
       raise_request_error if associated_requests.empty? && associated_submission?
 
       associated_requests.each do |request|
+        # customer_accepts_responsibility = nil
         request.customer_accepts_responsibility! if customer_accepts_responsibility
-        request.transition_to(associated_request_target_state)
+
+        # Only trigger a transition of the request if it is not linked to other wells
+        request.transition_to(associated_request_target_state) unless request_in_other_wells(request)
+      end
+    end
+
+    # Check the request is not in other wells (excuding any in contents or that already have the target state)
+    def request_in_other_wells(request)
+      _receptacles.any? do |well|
+        well.aliquot_requests.try(:map, &:id).to_a.any?(request.id) &&
+          !contents.include?(well.absolute_position_name) &&
+          well.state != associated_request_target_state
       end
     end
 
