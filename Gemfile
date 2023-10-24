@@ -28,7 +28,7 @@ group :default do
 
   # Provides bulk insert capabilities
   gem 'activerecord-import'
-  gem 'record_loader', git: 'https://github.com/sanger/record_loader', branch: 'dpl680_upgrade_ruby3'
+  gem 'record_loader', git: 'https://github.com/sanger/record_loader'
 
   gem 'mysql2', platforms: :mri
   gem 'will_paginate'

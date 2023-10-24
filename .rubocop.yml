@@ -40,9 +40,6 @@ Rails/SkipsModelValidations:
 
 Style/Documentation:
   Enabled: false
-  #Exclude:
-  #  - "test/**/*"
-  #  - "spec/**/*"
 
 Rails:
   Enabled: true
