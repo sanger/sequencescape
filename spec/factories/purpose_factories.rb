@@ -35,7 +35,7 @@ FactoryBot.define do
     prefix { 'DN' }
     name { generate :purpose_name }
     size { 96 }
-    association(:barcode_printer_type, factory: :plate_barcode_printer_type)
+    barcode_printer_type factory: %i[plate_barcode_printer_type]
     target_type { 'Plate' }
     asset_shape { AssetShape.default }
 
@@ -58,12 +58,12 @@ FactoryBot.define do
     factory :fluidigm_96_purpose do
       cherrypick_direction { 'interlaced_column' }
       size { 96 }
-      association(:asset_shape, factory: :fluidigm_96_shape)
+      asset_shape factory: %i[fluidigm_96_shape]
     end
     factory :fluidigm_192_purpose do
       cherrypick_direction { 'interlaced_column' }
       size { 192 }
-      association(:asset_shape, factory: :fluidigm_192_shape)
+      asset_shape factory: %i[fluidigm_192_shape]
     end
   end
 

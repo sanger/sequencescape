@@ -54,7 +54,7 @@ class TagGroup::FormObject
         invalid_oligos_list << cur_oligo
       end
     end
-    unless invalid_oligos_list.size.zero?
+    unless invalid_oligos_list.empty?
       errors.add(:base, I18n.t('tag_groups.errors.invalid_oligos_found') + invalid_oligos_list.join(','))
     end
     errors.add(:base, I18n.t('tag_groups.errors.no_valid_oligos_found')) if valid_oligos_hash.empty?

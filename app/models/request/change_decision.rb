@@ -1,8 +1,8 @@
 # frozen_string_literal: true
-class Request::ChangeDecision # rubocop:todo Style/Documentation
+class Request::ChangeDecision
   include ::Validateable
 
-  class ChangeDecisionError < ::StandardError # rubocop:todo Style/Documentation
+  class ChangeDecisionError < ::StandardError
     attr_reader :object
 
     def initialize(object)

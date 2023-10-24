@@ -115,8 +115,8 @@ jobs:
       # Actually run our tests
       - name: Run rspec tests
         env:
-          CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
-          CI_NODE_INDEX: ${{ matrix.ci_node_index }}
+          KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
+          KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
           DBPORT: ${{ job.services.mysql.ports[3306] }}
         run: bin/knapsack_pro_rspec
       - name: Upload capybara artifacts
@@ -181,8 +181,8 @@ jobs:
       # Actually run our tests
       - name: Run Cucumber tests
         env:
-          CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
-          CI_NODE_INDEX: ${{ matrix.ci_node_index }}
+          KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
+          KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
           DBPORT: ${{ job.services.mysql.ports[3306] }}
         run: bin/knapsack_pro_cucumber
       - name: Upload capybara artifacts

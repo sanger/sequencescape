@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Core::Logging # rubocop:todo Style/Documentation
+module Core::Logging
   def self.logging_helper(name)
     module_eval <<-END_OF_HELPER
       def #{name}(message)

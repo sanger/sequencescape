@@ -1,3 +1,3 @@
 # frozen_string_literal: true
-module Informatics # rubocop:todo Style/Documentation
+module Informatics
 end

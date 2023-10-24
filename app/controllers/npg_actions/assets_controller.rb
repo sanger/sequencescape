@@ -86,10 +86,10 @@ class NpgActions::AssetsController < ApplicationController
   end
 
   def rescue_error(exception)
-    render xml: "<error><message>#{exception.message}</message></error>", status: '404'
+    render xml: "<error><message>#{exception.message}</message></error>", status: :not_found
   end
 
   def rescue_error_bad_request(exception)
-    render xml: "<error><message>#{exception.message}</message></error>", status: '400'
+    render xml: "<error><message>#{exception.message}</message></error>", status: :bad_request
   end
 end

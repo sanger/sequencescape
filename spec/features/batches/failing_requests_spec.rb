@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'pry'
 
-describe 'Batches controller', js: true do
+describe 'Batches controller', :js do
   let(:request_count) { 3 }
   let(:batch) do
     create :cherrypick_batch,

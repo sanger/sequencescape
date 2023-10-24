@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class ProductCriteria < ApplicationRecord # rubocop:todo Style/Documentation
+class ProductCriteria < ApplicationRecord
   STAGE_STOCK = 'stock'
 
   # By default rails will try and name the table 'product_criterias'

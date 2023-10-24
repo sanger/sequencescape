@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Event::SampleLogisticsQcEvent < Event # rubocop:todo Style/Documentation
+class Event::SampleLogisticsQcEvent < Event
   def self.create_gel_qc_for_asset!(asset, result, user)
     case asset
     when Well

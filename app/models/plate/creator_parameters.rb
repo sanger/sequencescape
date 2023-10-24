@@ -2,7 +2,7 @@
 require 'bigdecimal'
 require 'bigdecimal/util'
 
-class Plate::CreatorParameters # rubocop:todo Style/Documentation
+class Plate::CreatorParameters
   def initialize(params_plate_creator)
     @params = params_plate_creator
   end

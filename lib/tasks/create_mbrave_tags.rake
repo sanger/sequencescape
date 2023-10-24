@@ -58,7 +58,7 @@ namespace :mbrave do
     version = args[:version]
 
     tag_layout_templates =
-      TagLayoutTemplate.all.select do |template|
+      TagLayoutTemplate.select do |template|
         template.name.match(Regexp.new("^Bioscan_384_template_(\\d+)_#{version}$"))
       end
 

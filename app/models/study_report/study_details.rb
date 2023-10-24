@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # rubocop:todo Metrics/ModuleLength
-module StudyReport::StudyDetails # rubocop:todo Style/Documentation
+module StudyReport::StudyDetails
   BATCH_SIZE = 1000
 
   # This will pull out all well ids from stock plates in the study

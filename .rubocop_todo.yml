@@ -589,6 +589,7 @@ RSpec/ContextWording:
     - 'spec/shared_contexts/limber_shared_context.rb'
     - 'spec/uat_actions/integration_suite_tools_spec.rb'
     - 'spec/uat_actions/test_submission_spec.rb'
+    - 'spec/features/gpl207_bug_incorrect_submission_id_on_transfer_spec.rb'
 
 # Offense count: 4
 RSpec/EmptyExampleGroup:
@@ -1860,3 +1861,8 @@ Style/ZeroLengthPredicate:
     - 'app/models/sequencing_pipeline.rb'
     - 'features/support/step_definitions/samples_steps.rb'
     - 'test/shoulda_macros/sanger_macros/resource_test.rb'
+
+Metrics/ClassLength:
+  Exclude:
+    - 'app/middleware/api/endpoint_handler.rb'
+    - 'lib/tasks/add_templates_and_printers_to_pmb.rake'

@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :custom_metadatum_collection do
-    association(:asset, factory: :labware)
+    asset factory: %i[labware]
     user
 
     factory :custom_metadatum_collection_with_metadata do

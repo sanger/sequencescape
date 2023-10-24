@@ -7,7 +7,7 @@ module Heron
       # This module adds validation and processing utilities for this type of identifiers.
       # Eg: A01, A1, F12, etc...
       module CoordinatesSupport
-        LOCATION_REGEXP = /[A-Z][0-9]{0,1}[0-9]/.freeze
+        LOCATION_REGEXP = /[A-Z][0-9]{0,1}[0-9]/
 
         def unpad_coordinate(coordinate)
           Map.strip_description(coordinate.to_s)

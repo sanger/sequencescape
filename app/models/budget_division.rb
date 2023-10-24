@@ -13,7 +13,7 @@ class BudgetDivision < ApplicationRecord
   validates :name, presence: true
   validates :name, uniqueness: { message: 'of budget division already present in database', case_sensitive: false }
 
-  module Associations # rubocop:todo Style/Documentation
+  module Associations
     def self.included(base)
       base.belongs_to :budget_division, optional: false
     end

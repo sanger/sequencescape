@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Search::FindLotByLotNumber < Search # rubocop:todo Style/Documentation
+class Search::FindLotByLotNumber < Search
   def scope(criteria)
     Lot.with_lot_number(criteria['lot_number'])
   end

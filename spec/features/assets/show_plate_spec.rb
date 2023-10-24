@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'Show plate', js: true do
+describe 'Show plate', :js do
   let(:plate) { create :plate, well_count: 3 }
   let(:user) { create :user }
 

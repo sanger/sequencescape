@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class PacBioSequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
+class PacBioSequencingRequest < CustomerRequest
   self.sequencing = true
 
   delegate :pac_bio_library_tube_metadata, to: :source_tube, allow_nil: true

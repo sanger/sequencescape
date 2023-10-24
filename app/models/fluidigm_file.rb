@@ -1,7 +1,7 @@
 # frozen_string_literal: true
-class FluidigmFile # rubocop:todo Style/Documentation
-  module Finder # rubocop:todo Style/Documentation
-    class Directory # rubocop:todo Style/Documentation
+class FluidigmFile
+  module Finder
+    class Directory
       def initialize(barcode)
         @barcode = barcode
       end
@@ -31,7 +31,7 @@ class FluidigmFile # rubocop:todo Style/Documentation
   class InvalidFile < StandardError
   end
 
-  class Assay # rubocop:todo Style/Documentation
+  class Assay
     attr_reader :name, :result
 
     @@valid_markers = %w[XX XY YY]
@@ -55,7 +55,7 @@ class FluidigmFile # rubocop:todo Style/Documentation
     end
   end
 
-  class FluidigmWell # rubocop:todo Style/Documentation
+  class FluidigmWell
     attr_reader :description
 
     def initialize(description)

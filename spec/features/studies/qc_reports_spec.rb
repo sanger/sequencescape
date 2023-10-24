@@ -25,6 +25,6 @@ describe 'Create a QC report' do
       plate_purpose_names.each { |plate_purpose| select(plate_purpose, from: 'Plate purpose') }
     end
     click_button('Create report')
-    expect(QcReport.first.plate_purposes & plate_purpose_names).to contain_exactly(*plate_purpose_names)
+    expect(QcReport.first.plate_purposes & plate_purpose_names).to match_array(plate_purpose_names)
   end
 end

@@ -11,7 +11,7 @@ describe UatActions::GenerateStudy do
     describe '#perform' do
       context 'when generating a study' do
         it 'generates a study' do
-          expect { uat_action.perform }.to(change { Study.all.count }.by(1))
+          expect { uat_action.perform }.to(change(Study, :count).by(1))
         end
 
         it 'creates the study with the correct data' do

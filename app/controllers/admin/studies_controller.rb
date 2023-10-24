@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Admin::StudiesController < ApplicationController # rubocop:todo Style/Documentation
+class Admin::StudiesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
@@ -42,7 +42,7 @@ class Admin::StudiesController < ApplicationController # rubocop:todo Style/Docu
 
     unless params[:filter].nil?
       if params[:filter][:by] == 'unallocated manager'
-        @studies = Study.all.select { |p| p.name.include?(params[:q]) && !(p.roles.map(&:name).include?('manager')) }
+        @studies = Study.select { |p| p.name.include?(params[:q]) && !(p.roles.map(&:name).include?('manager')) }
       end
     end
 

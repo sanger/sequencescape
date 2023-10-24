@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'broadcast_event/lab_event'
 
-RSpec.describe Robot::Verification::SourceDestBeds, robot_verification: true do
+RSpec.describe Robot::Verification::SourceDestBeds, :robot_verification do
   subject(:verifier) { described_class.new }
 
   # We test pick_number_to_expected_layout and pick_numbers with shared contexts
@@ -33,6 +33,7 @@ RSpec.describe Robot::Verification::SourceDestBeds, robot_verification: true do
         end
       end
     end
+
     let(:source_plate_1) { create :plate, well_count: 2 }
     let(:source_plate_3) { create :plate, well_count: 2 }
     let(:destination_plate) { create :plate, well_count: 9 }
@@ -126,7 +127,7 @@ RSpec.describe Robot::Verification::SourceDestBeds, robot_verification: true do
     end
 
     it 'does not add extra plates' do
-      assert_equal plate_index_lookup.length, barcodes.length
+      expect(barcodes.length).to eq(plate_index_lookup.length)
     end
   end
 
@@ -155,7 +156,7 @@ RSpec.describe Robot::Verification::SourceDestBeds, robot_verification: true do
     end
 
     it 'order source plates by destination well barcode to match the way the robot picks' do
-      assert_equal expected_order, source_index
+      expect(source_index).to eq(expected_order)
     end
   end
 

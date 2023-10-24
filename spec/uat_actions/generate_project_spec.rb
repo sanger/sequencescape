@@ -12,7 +12,7 @@ describe UatActions::GenerateProject do
     describe '#perform' do
       context 'when generating a project' do
         it 'generates a project' do
-          expect { uat_action.perform }.to(change { Project.all.count }.by(1))
+          expect { uat_action.perform }.to(change(Project, :count).by(1))
         end
 
         it 'creates the project with the correct data' do

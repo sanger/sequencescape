@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Core::Endpoint::BasicHandler::Actions::Standard # rubocop:todo Style/Documentation
+module Core::Endpoint::BasicHandler::Actions::Standard
   def self.extended(base)
     base.class_eval do
       include InstanceMethods
@@ -14,7 +14,7 @@ module Core::Endpoint::BasicHandler::Actions::Standard # rubocop:todo Style/Docu
     standard_actions.merge!(names.to_h { |a| [a.to_sym, a.to_sym] })
   end
 
-  module InstanceMethods # rubocop:todo Style/Documentation
+  module InstanceMethods
     def standard_update!(request, _)
       request.update!
     end

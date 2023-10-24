@@ -89,7 +89,7 @@ Given /^I am using version "(\d+)" of the API$/ do |version|
 end
 
 Given /^I am using the latest version of the API$/ do
-  step("I am using version \"#{::Core::Service::API_VERSION}\" of the API")
+  step("I am using version \"#{Core::Service::API_VERSION}\" of the API")
 end
 
 When %r{^I (GET|PUT|POST|DELETE) the API path "(\/[^"]*)"$} do |action, path|
@@ -223,7 +223,7 @@ Then 'the HTTP response should be {string}' do |status|
     raise StandardError, "Status #{status.inspect} should be an HTTP status code + message"
   begin
     assert_equal(match[1].to_i, page.driver.status_code)
-  rescue MiniTest::Assertion => e
+  rescue Minitest::Assertion => e
     step 'show me the HTTP response body'
     raise e
   end
@@ -327,7 +327,7 @@ Given /^the infinium barcode for plate "([^"]*)" is "([^"]*)"$/ do |plate_name, 
 end
 
 Given /^the number of results returned by the API per page is (\d+)$/ do |count|
-  ::Core::Endpoint::BasicHandler::Paged.results_per_page = count.to_i
+  Core::Endpoint::BasicHandler::Paged.results_per_page = count.to_i
 end
 
 Given /^the "([^"]+)" action on samples requires authorisation$/ do |action|

@@ -2,7 +2,7 @@
 
 module LabelPrinter
   module Label
-    module MultipleDoubleLabels # rubocop:todo Style/Documentation
+    module MultipleDoubleLabels
       include MultipleLabels
 
       def create_labels

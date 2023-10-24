@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe BroadcastEvent::Helpers::ExternalSubjects, heron_events: true do
+RSpec.describe BroadcastEvent::Helpers::ExternalSubjects, :heron_events do
   let(:testing_event_class) { Class.new(BroadcastEvent) { include BroadcastEvent::Helpers::ExternalSubjects } }
   let(:labware) { create :labware }
   let(:sub1) do

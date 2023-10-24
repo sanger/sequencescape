@@ -49,5 +49,5 @@ ActiveRecord::Base.transaction do
   # example, property definitions depend on workflows to be present, so they should be ordered *after*
   # those workflows have been created.  Ideally you will be preceeding your seed data with a 4 digit
   # 0-extended sequence number, i.e. 0001_foo.rb is executed *before* 0002_bar.rb.
-  Dir.glob(File.expand_path(File.join(File.dirname(__FILE__), %w[seeds *.rb]))).sort.each(&handler)
+  Dir.glob(File.expand_path(File.join(File.dirname(__FILE__), %w[seeds *.rb]))).each(&handler)
 end

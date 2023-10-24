@@ -2,7 +2,7 @@
 <div class="page-header"><h1>New reference genome</h1></div>
 
 <%= form_for(@reference_genome) do |f| %>
-  <%= f.error_messages %>
+  <%= render_error_messages(@reference_genome) %>
 
   <p>
     <%= f.label :name %><br />

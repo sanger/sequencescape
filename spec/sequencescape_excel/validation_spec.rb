@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SequencescapeExcel::Validation, sample_manifest: true, sample_manifest_excel: true, type: :model do
+RSpec.describe SequencescapeExcel::Validation, :sample_manifest, :sample_manifest_excel, type: :model do
   let(:options) { { option1: 'value1', option2: 'value2', type: :whole, formula1: 'smth' }.freeze }
   let(:range) { build(:range) }
   let(:worksheet) { instance_double(Axlsx::Worksheet, add_data_validation: true) }

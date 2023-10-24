@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Accession::Submission, accession: true, type: :model do
+RSpec.describe Accession::Submission, :accession, type: :model do
   let!(:user) { create(:user) }
   let!(:sample) { build(:accession_sample) }
 

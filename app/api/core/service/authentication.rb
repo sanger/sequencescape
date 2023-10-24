@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-module Core::Service::Authentication # rubocop:todo Style/Documentation
-  class UnauthenticatedError < Core::Service::Error # rubocop:todo Style/Documentation
+module Core::Service::Authentication
+  class UnauthenticatedError < Core::Service::Error
     def self.no_cookie!
       raise self, 'no authentication provided'
     end
@@ -14,7 +14,7 @@ module Core::Service::Authentication # rubocop:todo Style/Documentation
     end
   end
 
-  module Helpers # rubocop:todo Style/Documentation
+  module Helpers
     def user
       @user
     end

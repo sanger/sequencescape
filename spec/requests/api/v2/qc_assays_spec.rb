@@ -3,7 +3,7 @@
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
 
-RSpec.describe Api::V2::QcAssaysController, qc_result: true, with: :api_v2 do
+RSpec.describe Api::V2::QcAssaysController, :qc_result, with: :api_v2 do
   let(:asset_1) { attributes_for(:qc_result).merge(uuid: create(:receptacle).uuid) }
   let(:asset_2) { attributes_for(:qc_result).merge(uuid: create(:receptacle).uuid) }
   let(:asset_3) { attributes_for(:qc_result).merge(uuid: create(:receptacle).uuid) }

@@ -704,7 +704,7 @@ RSpec.describe Study do
     let(:study) { create :study }
     let(:user) { create :user }
 
-    it 'triggers warehouse update', warren: true do
+    it 'triggers warehouse update', :warren do
       expect { user.grant_follower(study) }.to change(Warren.handler.messages, :count).from(0)
     end
   end

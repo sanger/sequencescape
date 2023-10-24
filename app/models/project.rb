@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'aasm'
 
-class Project < ApplicationRecord # rubocop:todo Style/Documentation
+class Project < ApplicationRecord
   # It has to be here, as there are has_many through: :orders associations in modules
   has_many :orders
   include Api::ProjectIO::Extensions

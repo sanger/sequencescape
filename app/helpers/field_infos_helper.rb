@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module FieldInfosHelper # rubocop:todo Style/Documentation
+module FieldInfosHelper
   def field_info_id(path, field)
     path = path.clone
     return field if path.empty?

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class ExtractionAttribute < ApplicationRecord # rubocop:todo Style/Documentation
+class ExtractionAttribute < ApplicationRecord
   include Uuid::Uuidable
 
   validates :created_by, presence: true

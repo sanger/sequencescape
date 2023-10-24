@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Validateable # rubocop:todo Style/Documentation
+module Validateable
   %i[save save! update_attribute].each { |attr| define_method(attr) {} }
 
   def method_missing(symbol, *_params)
@@ -16,7 +16,7 @@ module Validateable # rubocop:todo Style/Documentation
     raise(ActiveRecord::RecordInvalid, self) unless valid?
   end
 
-  module ClassMethods # rubocop:todo Style/Documentation
+  module ClassMethods
     def self_and_descendants_from_active_record
       [self]
     end
@@ -31,7 +31,7 @@ module Validateable # rubocop:todo Style/Documentation
       defaults.flatten!
       defaults << attribute_key_name.to_s.humanize
       options[:count] ||= 1
-      I18n.t(defaults.shift, options.merge(default: defaults, scope: %i[activerecord attributes]))
+      I18n.t(defaults.shift, **options.merge(default: defaults, scope: %i[activerecord attributes]))
     end
 
     def human_name(options = {})

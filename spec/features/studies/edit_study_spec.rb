@@ -6,7 +6,7 @@ describe 'Edit a study' do
   let(:user) { create :admin }
   let!(:study) { create :study }
 
-  it 'edit open study', js: true do
+  it 'edit open study', :js do
     study.study_metadata.bam = false
     study.save
     login_user(user)
@@ -22,7 +22,7 @@ describe 'Edit a study' do
     expect(page).to have_content('Alignments in BAM: true')
   end
 
-  it 'add external customer information', js: true do
+  it 'add external customer information', :js do
     login_user(user)
     visit study_path(study)
     click_link 'Edit'
@@ -38,7 +38,7 @@ describe 'Edit a study' do
   context 'when data release strategy is Not Applicable' do
     let!(:study) { create :not_app_study }
 
-    it 'does not error when setting strategy to Open', js: true do
+    it 'does not error when setting strategy to Open', :js do
       study.study_metadata.data_release_strategy = 'not applicable'
       study.save
       login_user(user)

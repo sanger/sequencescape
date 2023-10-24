@@ -13,7 +13,7 @@ class PlateCreation < AssetCreation
   end
   private :record_creation_of_children
 
-  module Children # rubocop:todo Style/Documentation
+  module Children
     def self.included(base)
       base.class_eval do
         include_plate_named_scope :child
@@ -40,7 +40,7 @@ class PlateCreation < AssetCreation
   end
   include Children
 
-  module CreationChild # rubocop:todo Style/Documentation
+  module CreationChild
     def self.included(base)
       base.class_eval { has_many :plate_creations, foreign_key: :child_id }
     end

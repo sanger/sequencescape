@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class ProjectManager < ApplicationRecord # rubocop:todo Style/Documentation
+class ProjectManager < ApplicationRecord
   extend Attributable::Association::Target
 
   def self.unallocated
@@ -11,7 +11,7 @@ class ProjectManager < ApplicationRecord # rubocop:todo Style/Documentation
   validates :name, presence: true
   validates :name, uniqueness: { message: 'of project manager already present in database', case_sensitive: false }
 
-  module Associations # rubocop:todo Style/Documentation
+  module Associations
     def self.included(base)
       base.belongs_to :project_manager, optional: false
     end

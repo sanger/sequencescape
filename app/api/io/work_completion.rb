@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Controls API V1 IO for {::WorkCompletion}
-class Io::WorkCompletion < ::Core::Io::Base
+class Io::WorkCompletion < Core::Io::Base
   set_model_for_input(::WorkCompletion)
   set_json_root(:work_completion)
 

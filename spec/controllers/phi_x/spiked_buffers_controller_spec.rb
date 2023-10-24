@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe PhiX::SpikedBuffersController, phi_x: true do
+RSpec.describe PhiX::SpikedBuffersController, :phi_x do
   describe 'POST create' do
     let(:current_user) { create :user }
     let(:library_tube) { create :phi_x_stock_tube, name: 'PhiX Stock' }

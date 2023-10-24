@@ -29,8 +29,8 @@ RSpec.describe LotType do
       end
 
       it 'set the lot properties' do
-        assert_equal user, lot.user
-        assert_equal '123456789', lot.lot_number
+        expect(lot.user).to eq(user)
+        expect(lot.lot_number).to eq('123456789')
       end
     end
   end

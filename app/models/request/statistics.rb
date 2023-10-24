@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-module Request::Statistics # rubocop:todo Style/Documentation
-  class Counter # rubocop:todo Style/Documentation
+module Request::Statistics
+  class Counter
     def initialize(statistics = {})
       @statistics = Hash.new(0).merge(statistics)
     end
@@ -49,7 +49,7 @@ module Request::Statistics # rubocop:todo Style/Documentation
     end
   end
 
-  class Summary # rubocop:todo Style/Documentation
+  class Summary
     def initialize
       @counters = Hash.new { |h, k| h[k] = Counter.new }
     end

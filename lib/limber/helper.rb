@@ -3,7 +3,7 @@
 # Helper templates and methods used in limber.rake
 module Limber::Helper
   PIPELINE = 'Limber-Htp'
-  PIPELINE_REGEX = /Illumina-[A-z]+ /.freeze
+  PIPELINE_REGEX = /Illumina-[A-z]+ /
   PRODUCTLINE = 'Illumina-Htp'
 
   # Construct submission templates for the Limber pipeline

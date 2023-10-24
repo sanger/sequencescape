@@ -17,7 +17,7 @@ module CarrierWave
         CarrierWave::Storage::DirectDatabase::File.new(uploader, self, uploader.store_path(identifier))
       end
 
-      class File # rubocop:todo Style/Documentation
+      class File
         def initialize(uploader, base, path)
           @uploader = uploader
           @path = path
@@ -76,7 +76,7 @@ module CarrierWave
   end
 end
 
-class PolymorphicUploader < CarrierWave::Uploader::Base # rubocop:todo Style/Documentation
+class PolymorphicUploader < CarrierWave::Uploader::Base
   def initialize(*args, &block)
     super
   end
@@ -107,8 +107,6 @@ class PolymorphicUploader < CarrierWave::Uploader::Base # rubocop:todo Style/Doc
 
   def delete_tmp_dir(_new_file)
     # make sure we don't delete other things accidentally by checking the name pattern
-    if @cache_id_was.present? && @cache_id_was =~ /\A\d{8}-\d{4}-\d+-\d{4}\z/
-      FileUtils.rm_rf(File.join(cache_dir, @cache_id_was))
-    end
+    FileUtils.rm_rf(File.join(cache_dir, @cache_id_was)) if @cache_id_was.present? && @cache_id_was =~ /\A[\d-]*\z/
   end
 end

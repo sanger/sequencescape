@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module SampleManifest::SharedTubeBehaviour
-  class Base # rubocop:todo Style/Documentation
+  class Base
     include SampleManifest::CoreBehaviour::Shared
 
     def updated_by!(user, samples)

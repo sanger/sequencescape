@@ -13,7 +13,7 @@
 class AliquotIndexer
   attr_reader :lane, :aliquots
 
-  module AliquotScopes # rubocop:todo Style/Documentation
+  module AliquotScopes
     def self.included(base)
       base.class_eval do
         scope :sorted_for_indexing, -> { includes(%i[tag tag2]).reorder('tag2s_aliquots.map_id ASC, tags.map_id ASC') }

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Presenters
-  class GroupedPipelineInboxPresenter # rubocop:todo Style/Documentation
+  class GroupedPipelineInboxPresenter
     class << self
       def fields
         @fields ||= []
@@ -104,7 +104,7 @@ module Presenters
     end
   end
 
-  class GroupLinePresenter # rubocop:todo Style/Documentation
+  class GroupLinePresenter
     include PipelinesHelper
 
     attr_reader :group, :request, :index, :pipeline, :inbox

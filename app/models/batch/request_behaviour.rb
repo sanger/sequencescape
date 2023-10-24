@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Batch::RequestBehaviour # rubocop:todo Style/Documentation
+module Batch::RequestBehaviour
   def self.included(base) # rubocop:todo Metrics/MethodLength
     base.class_eval do
       has_one :batch_request, inverse_of: :request, dependent: :destroy

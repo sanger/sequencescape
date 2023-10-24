@@ -36,7 +36,7 @@ RSpec.describe NpgActions::AssetsController, type: :request do
   before { post '/login', params: { login: user.login, password: 'password' } }
 
   shared_examples 'a passed state change' do
-    it 'renders and creates events', aggregate_failures: true do
+    it 'renders and creates events', :aggregate_failures do
       # Response
       expect(response).to have_http_status(:ok)
       expect(response).to render_template :'assets/show.xml.builder'
@@ -61,7 +61,7 @@ RSpec.describe NpgActions::AssetsController, type: :request do
   end
 
   shared_examples 'a failed state change' do
-    it 'renders and creates events', aggregate_failures: true do
+    it 'renders and creates events', :aggregate_failures do
       # Response
       expect(response).to render_template :'assets/show.xml.builder'
       expect(response.body).to match(expected_response_content)
@@ -266,7 +266,7 @@ RSpec.describe NpgActions::AssetsController, type: :request do
         lane.reload
       end
 
-      it 'renders and but does not recreate the events', aggregate_failures: true do
+      it 'renders and but does not recreate the events', :aggregate_failures do
         # Response
         expect(response).to have_http_status(:ok)
         expect(response).to render_template :'assets/show.xml.builder'

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require_dependency 'tube/purpose'
 
-class MultiplexedLibraryTube < Tube # rubocop:todo Style/Documentation
+class MultiplexedLibraryTube < Tube
   include ModelExtensions::MultiplexedLibraryTube
   include Api::MultiplexedLibraryTubeIO::Extensions
   include Asset::SharedLibraryTubeBehaviour

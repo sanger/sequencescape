@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # rubocop:todo Metrics/ModuleLength
-module NavigationHelpers # rubocop:todo Style/Documentation
+module NavigationHelpers
   # Finds the specified page for the given model with the specified name.
   def page_for_model(model, page, name)
     object = model.find_by!(name: name)

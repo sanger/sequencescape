@@ -67,7 +67,7 @@ ActiveRecord::Base.transaction do
     c = Plate::Creator.find_by!(name: name)
     c.update!(valid_options: { valid_dilution_factors: values })
   end
-  Plate::Creator.all.each do |c|
+  Plate::Creator.find_each do |c|
     if c.valid_options.nil?
       # Any other valid option will be set to 1
       c.update!(valid_options: { valid_dilution_factors: [1.0] })

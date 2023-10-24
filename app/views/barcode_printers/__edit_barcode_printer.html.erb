@@ -1,6 +1,6 @@
 
 <%= form_for(@barcode_printer) do |f| %>
-  <%= f.error_messages %>
+  <%= render_error_messages(@barcode_printer) %>
   <p>
     <%= f.label :name %><br />
     <%= f.text_field :name %>

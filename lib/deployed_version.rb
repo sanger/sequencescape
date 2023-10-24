@@ -2,8 +2,8 @@
 
 require 'open3'
 
-module Deployed # rubocop:todo Style/Documentation
-  class RepoData # rubocop:todo Style/Documentation
+module Deployed
+  class RepoData
     def tag
       @tag ||= git_tag || read_file('TAG').strip.presence
     end
@@ -107,8 +107,8 @@ module Deployed # rubocop:todo Style/Documentation
   COMMIT = REPO_DATA.revision.presence || 'unknown_revision'
   ABBREV_COMMIT = REPO_DATA.revision_short.presence || 'unknown_revision'
 
-  VERSION_STRING = "#{APP_NAME} #{VERSION_ID} [#{ENVIRONMENT}]"
-  VERSION_COMMIT = "#{BRANCH}@#{ABBREV_COMMIT}"
+  VERSION_STRING = "#{APP_NAME} #{VERSION_ID} [#{ENVIRONMENT}]".freeze
+  VERSION_COMMIT = "#{BRANCH}@#{ABBREV_COMMIT}".freeze
   REPO_URL = REPO_DATA.release_url.presence || '#'
   HOSTNAME = Socket.gethostname
 
