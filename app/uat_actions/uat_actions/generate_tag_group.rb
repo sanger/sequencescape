@@ -61,7 +61,14 @@ class UatActions::GenerateTagGroup < UatActions
     # All the form fields are accessible as simple attributes.
     # Return true if everything works
     report[:name] = name
-    return true if existing_tag_group
+    if existing_tag_group
+      existing_adapter_type_name = existing_tag_group.adapter_type.name
+      return true  if existing_adapter_type_name == adapter_type_name
+      raise %{
+        The tag group you want to create already exists and has a different 
+        adapter type (#{existing_adapter_type_name}) than they one you specified (#{adapter_type_name})
+      }
+    end
 
     adapter_type = TagGroup::AdapterType.find_by(name: adapter_type_name)
 
