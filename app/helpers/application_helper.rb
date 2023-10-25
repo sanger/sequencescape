@@ -34,6 +34,34 @@ module ApplicationHelper # rubocop:todo Style/Documentation
     icon('fas', 'asterisk', class: 'text-warning', title: 'required')
   end
 
+  # Returns the appropriate icon suffix for the current environment
+  # Returns empty string for production
+  # Returns "-#{environment}" for training, staging
+  # Returns "-development" for any other environment
+  # @return [String] The suffix to append to the icon name
+  def icon_suffix
+    case Rails.env
+    when 'production'
+      ''
+    when 'training', 'staging'
+      "-#{Rails.env}"
+    else
+      '-development'
+    end
+  end
+
+  # Return the appropriate favicon for the current environment
+  # @return [String] The path to the favicon
+  def favicon
+    "favicon#{icon_suffix}.ico"
+  end
+
+  # Return the appropriate apple icon for the current environment
+  # @return [String] The path to the apple icon
+  def apple_icon
+    "apple-icon#{icon_suffix}.png"
+  end
+
   def render_flashes
     flash.each do |key, message|
       concat(alert(key, id: "message_#{key}") { Array(message).each { |m| concat tag.div(m) } })
