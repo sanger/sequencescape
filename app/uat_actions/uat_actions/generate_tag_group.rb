@@ -62,7 +62,7 @@ class UatActions::GenerateTagGroup < UatActions
     # Return true if everything works
     report[:name] = name
 
-    existing_tag_group&.destroy if existing_tag_group
+    existing_tag_group&.destroy
 
     adapter_type = TagGroup::AdapterType.find_by(name: adapter_type_name)
 
