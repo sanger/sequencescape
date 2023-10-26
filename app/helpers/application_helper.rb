@@ -40,11 +40,12 @@ module ApplicationHelper # rubocop:todo Style/Documentation
   # Returns "-development" for any other environment
   # @return [String] The suffix to append to the icon name
   def icon_suffix
-    case Rails.env
+    environment = Rails.env
+    case environment
     when 'production'
       ''
     when 'training', 'staging'
-      "-#{Rails.env}"
+      "-#{environment}"
     else
       '-development'
     end
