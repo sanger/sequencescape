@@ -1,3 +1,9 @@
+/* Colours defined per environment */
+$production:    $primary !default;
+$training:      $green !default;
+$staging:       $red !default;
+$development:   $gray-600 !default;
+
 @mixin colour-badge($base_colour, $text_colour) {
   background-color: $base_colour;
   color: $text_colour;
