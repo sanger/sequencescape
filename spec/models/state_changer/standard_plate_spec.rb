@@ -108,26 +108,64 @@ RSpec.describe StateChanger::StandardPlate do
       let(:samples) { create_list :sample, 2 }
       let(:study) { create :study, samples: samples }
 
-      let(:request1) do
-        create :library_request, asset: input_plate.wells[0], submission: target_submission, state: 'started'
+      let(:library_request_type) { create :library_request_type }
+      let(:submission_request_types) { [library_request_type] }
+
+      # input plate
+      let!(:input_plate) { create :plate }
+
+      let(:input_aliquot1) { create :aliquot, sample: samples[0] }
+      let(:input_aliquot2) { create :aliquot, sample: samples[1] }
+
+      let!(:input_well1) do
+        create :well, map: Map.find_by(description: 'A1'), plate: input_plate, aliquots: [input_aliquot1]
       end
-      let(:request2) do
-        create :library_request, asset: input_plate.wells[1], submission: target_submission, state: 'started'
+      let!(:input_well2) do
+        create :well, map: Map.find_by(description: 'B1'), plate: input_plate, aliquots: [input_aliquot2]
       end
 
-      let(:aliquot1) { create :aliquot, sample: samples[0], request: request1 }
-      let(:aliquot2) { create :aliquot, sample: samples[0], request: request1 }
-      let(:aliquot3) { create :aliquot, sample: samples[1], request: request2 }
+      let(:request1) { create :library_request, asset: input_well1, submission: target_submission, state: 'started' }
+      let(:request2) { create :library_request, asset: input_well2, submission: target_submission, state: 'started' }
 
-      let(:well1) { create :tagged_well, aliquots: [aliquot1] }
-      let(:well2) { create :tagged_well, aliquots: [aliquot2] }
-      let(:well3) { create :tagged_well, aliquots: [aliquot3] }
+      let!(:input_plate) { create :plate }
 
-      let(:target_wells) { [well1, well2, well3] }
+      # target plate
+      let!(:target_plate) { create :plate }
 
-      let(:target_plate) { create :target_plate, parent: input_plate, well_count: 3, submission: target_submission }
+      let(:target_aliquot1) { create :aliquot, sample: samples[0] }
+      let(:target_aliquot2) { create :aliquot, sample: samples[0] }
+      let(:target_aliquot3) { create :aliquot, sample: samples[1] }
 
-      before { target_plate.wells = target_wells }
+      let!(:target_well1) do
+        create :well, map: Map.find_by(description: 'A1'), plate: target_plate, aliquots: [target_aliquot1]
+      end
+      let!(:target_well2) do
+        create :well, map: Map.find_by(description: 'B1'), plate: target_plate, aliquots: [target_aliquot2]
+      end
+      let!(:target_well3) do
+        create :well, map: Map.find_by(description: 'C1'), plate: target_plate, aliquots: [target_aliquot3]
+      end
+
+      before do
+        # need to reload plate to see wells in factory for creating requests
+        input_plate.reload
+
+        # set requests on aliquots
+        input_well1.aliquots.first.update!(request: request1)
+        input_well2.aliquots.first.update!(request: request2)
+
+        target_plate.reload
+
+        # stock well links TODO: do we need these?
+        # target_well1.stock_well_links << build(:stock_well_link, target_well: target_well1, source_well: input_well1)
+
+        # transfers from input plate A1 to two wells A1 and B1 in target plate
+        create :transfer_request, asset: input_well1, target_asset: target_well1, outer_request: request1
+        create :transfer_request, asset: input_well1, target_asset: target_well2, outer_request: request1
+
+        # single transfer from input plate B1 to target plate C1
+        create :transfer_request, asset: input_well2, target_asset: target_well3, outer_request: request2
+      end
 
       context 'when the other wells are not failed' do
         let(:contents) { ['A1'] } # This well will be failed, but another well shares the request
@@ -144,17 +182,30 @@ RSpec.describe StateChanger::StandardPlate do
         # This well will be failed, it shares a request with B1 that is already failed.
         let(:contents) { ['A1'] }
 
-        before { well2.update!(state: 'failed') }
+        before do
+          # this should fail the request in B1, and cause target_well2 to have state failed
+          target_well2.transfer_requests_as_target.first.transition_to('failed')
+        end
 
         it 'fails the request', :aggregate_failures do
+          # check target_well2 is in failed state as expected
+          expect(target_well2.reload).to be_failed
+
+          puts "DEBUG: request1 = #{request1.inspect}"
+          puts "DEBUG: request2 = #{request2.inspect}"
+          puts "DEBUG: submission = #{target_submission.inspect}"
+
           expect { state_changer.update_labware_state }.not_to change(BroadcastEvent::LibraryStart, :count)
-          reloaded_library_requests = library_requests.each(&:reload)
+
+          # need to reload before checking state
+          request1.reload
+          request2.reload
 
           # A1 request should be failed
-          expect(reloaded_library_requests.first).to be_failed
+          expect(request1).to be_failed
 
           # Requests in C1 should be unchanged
-          expect(reloaded_library_requests.last).to be_started
+          expect(request2).to be_started
         end
       end
     end
