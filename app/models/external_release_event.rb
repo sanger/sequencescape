@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 require 'eventful_mailer'
-class ExternalReleaseEvent < Event # rubocop:todo Style/Documentation
+class ExternalReleaseEvent < Event
   after_create :physically_send_email, if: :send_email
 
   attr_accessor :send_email

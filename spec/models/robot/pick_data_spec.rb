@@ -3,10 +3,10 @@
 require 'rails_helper'
 require './spec/models/robot/pick_hash_tester_helper'
 
-RSpec.describe Robot::PickData, robot_verification: true do
+RSpec.describe Robot::PickData, :robot_verification do
   subject(:pick_data) { described_class.new(batch, max_beds: 2) }
 
-  around { |example| travel_to(time) { example.run } }
+  before { travel_to(time) }
 
   describe '#picking_data_hash' do
     let(:time) { Time.zone.local(2010, 7, 12, 10, 25, 0) }

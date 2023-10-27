@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class BaitLibraryLayout < ApplicationRecord # rubocop:todo Style/Documentation
+class BaitLibraryLayout < ApplicationRecord
   include Uuid::Uuidable
   include ModelExtensions::BaitLibraryLayout
 

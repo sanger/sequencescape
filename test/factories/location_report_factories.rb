@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :location_report, class: LocationReport do
+  factory :location_report, class: 'LocationReport' do
     user
     sequence(:name) { |n| "Location Report #{n}" }
     report_type { :type_selection }
@@ -14,7 +14,7 @@ FactoryBot.define do
     end
   end
 
-  factory(:location_report_form, class: LocationReport::LocationReportForm) do
+  factory(:location_report_form, class: 'LocationReport::LocationReportForm') do
     skip_create
 
     user

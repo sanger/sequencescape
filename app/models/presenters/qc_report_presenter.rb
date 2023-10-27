@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Presenters::QcReportPresenter # rubocop:todo Style/Documentation
+class Presenters::QcReportPresenter
   REPORT_IDENTITY = 'Sequencescape QC Report'
   VERSION = '1.0.0'
   HEADER_FIELDS = {

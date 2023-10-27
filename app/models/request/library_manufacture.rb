@@ -21,7 +21,7 @@ module Request::LibraryManufacture
     )
   end
 
-  module ClassMethods # rubocop:todo Style/Documentation
+  module ClassMethods
     def delegate_validator
       self::RequestOptionsValidator
     end

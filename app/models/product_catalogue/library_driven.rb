@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class ProductCatalogue::LibraryDriven # rubocop:todo Style/Documentation
+class ProductCatalogue::LibraryDriven
   attr_reader :product
 
   def initialize(catalogue, submission_attributes)

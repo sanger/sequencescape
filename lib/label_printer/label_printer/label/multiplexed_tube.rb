@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module LabelPrinter
   module Label
-    class MultiplexedTube < BaseTube # rubocop:todo Style/Documentation
+    class MultiplexedTube < BaseTube
       attr_reader :tubes
 
       def initialize(options)

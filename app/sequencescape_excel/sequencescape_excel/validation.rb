@@ -28,7 +28,7 @@ module SequencescapeExcel
       @reference = attributes[:reference]
       @range = attributes[:range]
 
-      @worksheet_validation = attributes[:worksheet].add_data_validation(attributes[:reference], sanitized_options)
+      @worksheet_validation = attributes[:worksheet].add_data_validation(attributes[:reference], **sanitized_options)
     end
 
     ##

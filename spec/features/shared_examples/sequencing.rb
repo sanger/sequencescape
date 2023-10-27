@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 shared_examples 'a sequencing procedure' do
-  it 'can be processed', warren: true do
+  it 'can be processed', :warren do
     login_user(user)
     visit pipeline_path(pipeline)
     within('#available-requests') { all('input[type=checkbox]', count: 2).each(&:check) }

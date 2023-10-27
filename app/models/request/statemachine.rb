@@ -4,7 +4,7 @@
 require 'aasm'
 
 # rubocop:todo Metrics/ModuleLength
-module Request::Statemachine # rubocop:todo Style/Documentation
+module Request::Statemachine
   extend ActiveSupport::Concern
   COMPLETED_STATE = %w[passed failed].freeze
   OPENED_STATE = %w[pending blocked started].freeze

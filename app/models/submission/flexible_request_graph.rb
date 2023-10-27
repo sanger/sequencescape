@@ -11,7 +11,7 @@ module Submission::FlexibleRequestGraph
   class RequestChainError < RuntimeError
   end
 
-  class RequestChain # rubocop:todo Style/Documentation
+  class RequestChain
     attr_reader :order, :source_assets_qc_metrics, :preplexed, :built, :multiplexed
     alias built? built
     alias multiplexed? multiplexed
@@ -161,7 +161,7 @@ module Submission::FlexibleRequestGraph
     end
   end
 
-  class MultiplexedLink # rubocop:todo Style/Documentation
+  class MultiplexedLink
     include ChainLink
 
     def initialize(request_type, multiplier, assets, chain)
@@ -204,7 +204,7 @@ module Submission::FlexibleRequestGraph
     end
   end
 
-  class UnplexedLink # rubocop:todo Style/Documentation
+  class UnplexedLink
     include ChainLink
 
     def initialize(request_type, multiplier, assets, chain)
@@ -227,7 +227,7 @@ module Submission::FlexibleRequestGraph
     end
   end
 
-  module OrderMethods # rubocop:todo Style/Documentation
+  module OrderMethods
     def build_request_graph!(multiplexing_assets = nil)
       ActiveRecord::Base.transaction do
         chain = RequestChain.new(self, assets, multiplexing_assets)

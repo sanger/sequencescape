@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Request::CustomerResponsibility # rubocop:todo Style/Documentation
+module Request::CustomerResponsibility
   def self.included(base)
     base::Metadata.class_eval do
       custom_attribute(:customer_accepts_responsibility, boolean: true)

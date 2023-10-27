@@ -20,7 +20,7 @@ class RequestType < ApplicationRecord # rubocop:todo Metrics/ClassLength
   class DeprecatedError < RuntimeError
   end
 
-  class RequestTypePlatePurpose < ApplicationRecord # rubocop:todo Style/Documentation
+  class RequestTypePlatePurpose < ApplicationRecord
     self.table_name = ('request_type_plate_purposes')
 
     belongs_to :request_type

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class TagGroup < ApplicationRecord # rubocop:todo Style/Documentation
+class TagGroup < ApplicationRecord
   CHROMIUM_ADAPTER_TYPE = 'Chromium'
 
   include Uuid::Uuidable

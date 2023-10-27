@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'Asset submission', js: true do
+describe 'Asset submission', :js do
   let(:project) { create :project }
   let(:study) { create :study }
   let(:request_factory) { :sequencing_request }

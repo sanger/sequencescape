@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 require 'carrierwave'
 
-class PlateVolume < ApplicationRecord # rubocop:todo Style/Documentation
+class PlateVolume < ApplicationRecord
   ASSAY_TYPE = 'Volume Check'
   ASSAY_VERSION = '1.0'
   extend DbFile::Uploader
 
   has_uploaded :uploaded, serialization_column: 'uploaded_file_name'
 
-  before_save :calculate_barcode_from_filename
+  before_validation :calculate_barcode_from_filename
   after_save :update_well_volumes
 
   # Is an update required given the timestamp specified

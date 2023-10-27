@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Tasks::PlateTransferHandler # rubocop:todo Style/Documentation
+module Tasks::PlateTransferHandler
   class InvalidBatch < StandardError
   end
 

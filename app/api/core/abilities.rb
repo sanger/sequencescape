@@ -25,7 +25,7 @@ module Core::Abilities
     CompositeAbility.new(request)
   end
 
-  module ActionBehaviour # rubocop:todo Style/Documentation
+  module ActionBehaviour
     # Modify the behaviour so that we can only access the action if the ability permits and the super
     # implementation permits it too.
     def accessible_action?(handler, action, request, object)
@@ -43,12 +43,12 @@ module Core::Abilities
       @application.authenticate!(@user)
     end
 
-    def can?(*args, &block)
-      application.can?(*args, &block) or user.can?(*args, &block)
+    def can?(...)
+      application.can?(...) or user.can?(...)
     end
   end
 
-  class Base # rubocop:todo Style/Documentation
+  class Base
     class Recorder #:nodoc:
       def initialize
         @recorded = []
@@ -63,7 +63,7 @@ module Core::Abilities
       end
     end
 
-    module ClassMethods # rubocop:todo Style/Documentation
+    module ClassMethods
       def recorder_helper(name)
         line = __LINE__ + 1
         singleton_class.class_eval(
@@ -102,7 +102,7 @@ module Core::Abilities
     private :abilitise
   end
 
-  class User < Base # rubocop:todo Style/Documentation
+  class User < Base
     unregistered do
       # The API is designed to be read-only, at least.
       can(:read, :all)
@@ -137,7 +137,7 @@ module Core::Abilities
     end
   end
 
-  class Application < Base # rubocop:todo Style/Documentation
+  class Application < Base
     recorder_helper(:tag_plates)
 
     def initialize(request)

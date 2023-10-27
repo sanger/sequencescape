@@ -4,7 +4,7 @@ require 'rest-client'
 module LabWhereClient
   LabwhereException = Class.new(StandardError)
 
-  class LabWhere # rubocop:todo Style/Documentation
+  class LabWhere
     def base_url
       configatron.fetch(:labwhere_api)
     end
@@ -45,7 +45,7 @@ module LabWhereClient
     end
   end
 
-  class Endpoint # rubocop:todo Style/Documentation
+  class Endpoint
     def self.endpoint_name(name)
       @endpoint = name
     end
@@ -57,8 +57,8 @@ module LabWhereClient
     def initialize(params); end # rubocop:todo Style/RedundantInitialize
   end
 
-  module EndpointCreateActions # rubocop:todo Style/Documentation
-    module ClassMethods # rubocop:todo Style/Documentation
+  module EndpointCreateActions
+    module ClassMethods
       def creation_params(params)
         params
       end
@@ -74,8 +74,8 @@ module LabWhereClient
     end
   end
 
-  module EndpointUpdateActions # rubocop:todo Style/Documentation
-    module ClassMethods # rubocop:todo Style/Documentation
+  module EndpointUpdateActions
+    module ClassMethods
       def update(target, params)
         attrs = LabWhere.new.put(self, target, params)
         new(attrs) unless attrs.nil?
@@ -87,7 +87,7 @@ module LabWhereClient
     end
   end
 
-  class Labware < Endpoint # rubocop:todo Style/Documentation
+  class Labware < Endpoint
     endpoint_name 'labwares'
 
     attr_reader :barcode, :location
@@ -105,7 +105,7 @@ module LabWhereClient
     end
   end
 
-  class LabwareSearch < Endpoint # rubocop:todo Style/Documentation
+  class LabwareSearch < Endpoint
     endpoint_name 'labwares/searches'
 
     attr_reader :labwares
@@ -124,7 +124,7 @@ module LabWhereClient
     end
   end
 
-  class Scan < Endpoint # rubocop:todo Style/Documentation
+  class Scan < Endpoint
     include EndpointCreateActions
 
     attr_reader :message, :errors
@@ -155,7 +155,7 @@ module LabWhereClient
     end
   end
 
-  class Location < Endpoint # rubocop:todo Style/Documentation
+  class Location < Endpoint
     endpoint_name 'locations'
 
     attr_reader :name, :parentage, :barcode

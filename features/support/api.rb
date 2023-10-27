@@ -8,10 +8,10 @@ Before('@api') do
 end
 
 # Ensure that the number of results displayed per page by the API is always 1.
-Before('@new-api') { ::Core::Endpoint::BasicHandler::Paged.results_per_page = 1 }
+Before('@new-api') { Core::Endpoint::BasicHandler::Paged.results_per_page = 1 }
 
 # Enables a replacement Sample endpoint for the object service tests, disabling it after
-class TestSampleEndpoint < ::Core::Endpoint::Base
+class TestSampleEndpoint < Core::Endpoint::Base
   model { action(:create, to: :standard_create!) }
 
   instance do
@@ -30,7 +30,7 @@ class TestSampleEndpoint < ::Core::Endpoint::Base
   end
 end
 
-module Core::Endpoint::BasicHandler::EndpointLookup # rubocop:todo Style/Documentation
+module Core::Endpoint::BasicHandler::EndpointLookup
   %i[object class].each do |name|
     line = __LINE__ + 1
 
@@ -59,5 +59,5 @@ module Core::Endpoint::BasicHandler::EndpointLookup # rubocop:todo Style/Documen
   end
 end
 
-Before('@object_service') { ::Core::Endpoint::BasicHandler::EndpointLookup.testing_api = true }
-After('@object_service') { ::Core::Endpoint::BasicHandler::EndpointLookup.testing_api = false }
+Before('@object_service') { Core::Endpoint::BasicHandler::EndpointLookup.testing_api = true }
+After('@object_service') { Core::Endpoint::BasicHandler::EndpointLookup.testing_api = false }

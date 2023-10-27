@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'stamping of stock', js: true do
+describe 'stamping of stock', :js do
   let(:user) { create :admin, barcode: 'ID41440E', swipecard_code: '1234567' }
   let(:plate) { create :plate_with_3_wells }
   let!(:barcode_printer) { create :barcode_printer }

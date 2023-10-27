@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'aasm'
 
-module SampleManifest::StateMachine # rubocop:todo Style/Documentation
+module SampleManifest::StateMachine
   def self.extended(base)
     base.class_eval do
       include AASM

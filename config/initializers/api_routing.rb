@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # TODO: Fix these
-module ApiRouting # rubocop:todo Style/Documentation
+module ApiRouting
   # Assets have a couple of extra actions that are always present: namely 'parents' and 'children'
   def asset(*entities, &block)
     options = entities.extract_options!

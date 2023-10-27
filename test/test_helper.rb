@@ -22,10 +22,10 @@ rescue LoadError
 end
 
 Dir.glob(File.expand_path(File.join(Rails.root, %w[spec factories ** *.rb]))) # rubocop:disable Rails/RootPathnameMethods
-  .sort.each { |factory_filename| require factory_filename }
+  .each { |factory_filename| require factory_filename }
 
 Dir.glob(File.expand_path(File.join(Rails.root, %w[test shoulda_macros *.rb]))) # rubocop:disable Rails/RootPathnameMethods
-  .sort.each { |macro_filename| require macro_filename }
+  .each { |macro_filename| require macro_filename }
 
 require "#{Rails.root}/test/unit/task_test_base"
 

@@ -7,7 +7,7 @@ describe 'Study roles' do
   let!(:study) { create :study_with_manager, updated_at: 1.year.ago }
   let(:manager) { study.managers.first }
 
-  it 'can be removed', js: true do
+  it 'can be removed', :js do
     # We had an issue where the timestamp was not updating on study
     # https://github.com/sanger/sequencescape/issues/2942
     # which was user list to not be updated in the UWH

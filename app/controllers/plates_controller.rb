@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class PlatesController < ApplicationController # rubocop:todo Style/Documentation
+class PlatesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
@@ -42,13 +42,13 @@ class PlatesController < ApplicationController # rubocop:todo Style/Documentatio
           Plate::CreatorParameters.new(params[:plates])
         )
       end
-      flash[:notice] = 'Created plates successfully' # rubocop:disable Rails/ActionControllerFlashBeforeRender
+      flash[:notice] = 'Created plates successfully'
       flash[:warning] = plate_creator.warnings if plate_creator.warnings.present? # rubocop:disable Rails/ActionControllerFlashBeforeRender
       format.html { render(new_plate_path) }
     end
   rescue StandardError => e
     respond_to do |format|
-      flash[:error] = e.message # rubocop:disable Rails/ActionControllerFlashBeforeRender
+      flash[:error] = e.message
       format.html { render(new_plate_path) }
     end
   end

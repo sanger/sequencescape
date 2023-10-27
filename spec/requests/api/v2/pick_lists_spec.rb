@@ -3,7 +3,7 @@
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
 
-describe 'PickLists API', pick_list: true, with: :api_v2 do
+describe 'PickLists API', :pick_list, with: :api_v2 do
   let(:base_endpoint) { '/api/v2/pick_lists' }
 
   it_behaves_like 'ApiKeyAuthenticatable'

@@ -12,7 +12,7 @@ module Receptacle::DownstreamAliquotsRemoval
     # @return [Boolean] true if we allow to remove downstream aliquots, false otherwise
     def allow_to_remove_downstream_aliquots?
       creation_batches = PrivateMethods.creation_batches_for_requests(self)
-      creation_batches.nil? || creation_batches.flatten.uniq.length.zero?
+      creation_batches.nil? || creation_batches.flatten.uniq.empty?
     end
   end
 

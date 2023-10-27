@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class NoAccessionService < AccessionService # rubocop:todo Style/Documentation
+class NoAccessionService < AccessionService
   self.no_study_accession_needed = true
 
   def initialize(study)

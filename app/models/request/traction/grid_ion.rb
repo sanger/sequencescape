@@ -3,7 +3,7 @@ require_dependency 'request'
 
 class Request
   module Traction
-    class GridIon < CustomerRequest # rubocop:todo Style/Documentation
+    class GridIon < CustomerRequest
       self.sequencing = true
 
       after_create :register_work_orders

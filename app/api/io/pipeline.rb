@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Controls API V1 IO for {::Pipeline}
-class Io::Pipeline < ::Core::Io::Base
+class Io::Pipeline < Core::Io::Base
   set_model_for_input(::Pipeline)
   set_json_root(:pipeline)
 

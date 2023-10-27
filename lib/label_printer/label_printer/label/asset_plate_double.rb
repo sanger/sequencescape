@@ -4,7 +4,7 @@ require_relative 'base_plate_double'
 
 module LabelPrinter
   module Label
-    class AssetPlateDouble < BasePlateDouble # rubocop:todo Style/Documentation
+    class AssetPlateDouble < BasePlateDouble
       attr_reader :plates
 
       def initialize(plates)

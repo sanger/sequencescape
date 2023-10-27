@@ -1,10 +1,10 @@
 # frozen_string_literal: true
-class AssetsController < ApplicationController # rubocop:todo Style/Documentation
+class AssetsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
 
-  class PlateLayout # rubocop:todo Style/Documentation
+  class PlateLayout
     DEFAULT_WELL = { request: nil, asset: nil, error: nil }.freeze
 
     attr_reader :width, :height, :wells
@@ -38,7 +38,7 @@ class AssetsController < ApplicationController # rubocop:todo Style/Documentatio
     end
 
     def empty_well_at?(row, column)
-      DEFAULT_WELL == well_at(row, column)
+      well_at(row, column) == DEFAULT_WELL
     end
 
     def good_well_at?(row, column)

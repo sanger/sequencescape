@@ -8,7 +8,7 @@ describe DeprecationHelper do
   include FontawesomeHelper
 
   describe '#deprecate_section' do
-    subject(:returned_html) { deprecate_section(params) { '<p>Deprecated content</p>' } }
+    subject(:returned_html) { deprecate_section(**params) { '<p>Deprecated content</p>' } }
 
     context 'with only a message' do
       let(:params) { { message: 'This is old' } }

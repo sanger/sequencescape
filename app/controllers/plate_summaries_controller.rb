@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class PlateSummariesController < ApplicationController # rubocop:todo Style/Documentation
+class PlateSummariesController < ApplicationController
   before_action :login_required
 
   def index

@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'pry'
 
-describe 'Asset submission', js: true do
+describe 'Asset submission', :js do
   let(:plate) { create :plate }
   let(:user) { create :user }
 

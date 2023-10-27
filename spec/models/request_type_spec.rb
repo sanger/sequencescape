@@ -38,7 +38,7 @@ describe RequestType do
 
       it 'set purpose on request' do
         request = @nrequest_type.create!
-        assert_equal 'internal', request.request_purpose
+        expect(request.request_purpose).to eq('internal')
       end
     end
 

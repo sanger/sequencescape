@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Submission::AssetGroupBehaviour # rubocop:todo Style/Documentation
+module Submission::AssetGroupBehaviour
   def self.included(base)
     base.class_eval do
       belongs_to :asset_group

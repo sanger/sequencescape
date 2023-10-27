@@ -29,11 +29,11 @@ describe UatActions::GenerateSampleManifest do
             let(:with_samples) { '1' }
 
             it 'generates tubes' do
-              expect { uat_action.perform }.to(change { Tube.all.count }.by(2))
+              expect { uat_action.perform }.to(change(Tube, :count).by(2))
             end
 
             it 'generates samples' do
-              expect { uat_action.perform }.to(change { Sample.all.count }.by(2))
+              expect { uat_action.perform }.to(change(Sample, :count).by(2))
             end
 
             it 'links to those samples' do
@@ -46,11 +46,11 @@ describe UatActions::GenerateSampleManifest do
             let(:with_samples) { '0' }
 
             it 'generates tubes' do
-              expect { uat_action.perform }.to(change { Tube.all.count }.by(2))
+              expect { uat_action.perform }.to(change(Tube, :count).by(2))
             end
 
             it 'does not generate samples' do
-              expect { uat_action.perform }.not_to(change { Sample.all.count })
+              expect { uat_action.perform }.not_to(change(Sample, :count))
             end
           end
         end

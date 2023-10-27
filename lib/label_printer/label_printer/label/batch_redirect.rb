@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module LabelPrinter
   module Label
-    class BatchRedirect # rubocop:todo Style/Documentation
+    class BatchRedirect
       attr_reader :options
 
       def initialize(options)

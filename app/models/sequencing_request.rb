@@ -1,7 +1,7 @@
 # encoding: utf-8
 # frozen_string_literal: true
 
-class SequencingRequest < CustomerRequest # rubocop:todo Style/Documentation
+class SequencingRequest < CustomerRequest
   extend Request::AccessioningRequired
   include Api::Messages::FlowcellIO::LaneExtensions
 

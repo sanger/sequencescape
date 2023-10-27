@@ -11,7 +11,7 @@ require_dependency 'study'
 # Study itself will also ensure that this file gets loaded, to make sure the metadata class contains these methods
 
 class Study
-  class Metadata # rubocop:todo Style/Documentation
+  class Metadata
     delegate :enforce_data_release, to: :study
 
     def remove_x_and_autosomes?

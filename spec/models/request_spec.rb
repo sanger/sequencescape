@@ -85,7 +85,7 @@ RSpec.describe Request do
       before { @request2 = create :request, submission: @submission, request_type: @genotyping_request_type }
 
       it 'return the correct next request' do
-        assert_equal [@request2], @request1.next_requests
+        expect(@request1.next_requests).to eq([@request2])
       end
     end
 
@@ -95,7 +95,7 @@ RSpec.describe Request do
       end
 
       it 'return the correct next request' do
-        assert_equal [@request2], @request1.next_requests
+        expect(@request1.next_requests).to eq([@request2])
       end
     end
   end
@@ -243,7 +243,7 @@ RSpec.describe Request do
         @request.request_metadata.attributes.merge('id' => nil, 'request_id' => nil, 'updated_at' => nil)
       copied_attributes =
         @new_request.request_metadata.attributes.merge('id' => nil, 'request_id' => nil, 'updated_at' => nil)
-      assert_equal original_attributes, copied_attributes
+      expect(copied_attributes).to eq(original_attributes)
     end
 
     it 'remove target_asset' do
@@ -279,7 +279,7 @@ RSpec.describe Request do
 
     context 'when a new request is created' do
       it "return the default state 'pending'" do
-        assert_equal 'pending', @request.state
+        expect(@request.state).to eq('pending')
       end
     end
 
@@ -324,19 +324,19 @@ RSpec.describe Request do
       end
 
       it "return status of 'passed'" do
-        assert_equal 'passed', @request.state
+        expect(@request.state).to eq('passed')
       end
 
       it 'not be pending' do
-        assert_equal false, @request.pending?
+        expect(@request.pending?).to be(false)
       end
 
       it 'not be failed' do
-        assert_equal false, @request.failed?
+        expect(@request.failed?).to be(false)
       end
 
       it 'not be started' do
-        assert_equal false, @request.started?
+        expect(@request.started?).to be(false)
       end
 
       it 'be passed' do
@@ -360,19 +360,19 @@ RSpec.describe Request do
       end
 
       it "return status of 'failed'" do
-        assert_equal 'failed', @request.state
+        expect(@request.state).to eq('failed')
       end
 
       it 'not be pending' do
-        assert_equal false, @request.pending?
+        expect(@request.pending?).to be(false)
       end
 
       it 'not be passed' do
-        assert_equal false, @request.passed?
+        expect(@request.passed?).to be(false)
       end
 
       it 'not be started' do
-        assert_equal false, @request.started?
+        expect(@request.started?).to be(false)
       end
 
       it 'be failed' do
@@ -412,18 +412,18 @@ RSpec.describe Request do
 
       @all_states.each { |state| create :request, state: state }
 
-      assert_equal @all_states.size, described_class.count
+      expect(described_class.count).to eq(@all_states.size)
     end
 
     context 'open requests' do
       it 'total right number' do
-        assert_equal @open_states.size, described_class.opened.count
+        expect(described_class.opened.count).to eq(@open_states.size)
       end
     end
 
     context 'closed requests' do
       it 'total right number' do
-        assert_equal @closed_states.size, described_class.closed.count
+        expect(described_class.closed.count).to eq(@closed_states.size)
       end
     end
   end
@@ -432,7 +432,7 @@ RSpec.describe Request do
     before { @library_creation_request = create(:library_creation_request_for_testing_sequencing_requests) }
 
     it 'check any non-sequencing request is always ready' do
-      assert_equal true, @library_creation_request.ready?
+      expect(@library_creation_request.ready?).to be(true)
     end
   end
 

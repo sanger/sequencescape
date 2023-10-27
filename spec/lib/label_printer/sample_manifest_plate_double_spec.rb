@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe LabelPrinter::Label::SampleManifestPlateDouble, sample_manifest: true do
+describe LabelPrinter::Label::SampleManifestPlateDouble, :sample_manifest do
   subject { described_class.new(label_options) }
 
   let(:sample_manifest) { create :pending_plate_sample_manifest }

@@ -17,7 +17,7 @@ describe WellAttribute do
     expect(described_class.last.current_volume).to eq 1.0
   end
 
-  it 'triggers warehouse message on well attribute update', warren: true do
+  it 'triggers warehouse message on well attribute update', :warren do
     current_message_count = Warren.handler.messages.count
     expect { well_attribute.update(concentration: 200) }.to change(Warren.handler.messages, :count).from(
       current_message_count

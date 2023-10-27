@@ -2,7 +2,7 @@
 require 'csv'
 require 'linefeed_fix'
 
-module Parsers # rubocop:todo Style/Documentation
+module Parsers
   ENCODINGS = %w[Windows-1252 iso-8859-1 utf-8 utf-16].freeze
   PARSERS = [QuantParser, BioanalysisCsvParser, PlateReaderParser, CardinalPbmcCountParser].freeze
 
@@ -15,7 +15,7 @@ module Parsers # rubocop:todo Style/Documentation
     cleaned_content = LinefeedFix.scrub!(content.dup)
     csv = parse_with_fallback_encodings(cleaned_content)
     parser_class = PARSERS.detect { |parser| parser.parses?(csv) }
-    parser_class ? parser_class.new(csv) : nil
+    parser_class&.new(csv)
   end
 
   def self.parse_with_fallback_encodings(content)

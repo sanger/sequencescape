@@ -3,7 +3,7 @@
 require 'singleton'
 require 'rest-client'
 
-class FakeAccessionService # rubocop:todo Style/Documentation
+class FakeAccessionService
   include Singleton
 
   # Unfortunately Webmock doesn't handle multipart files, so we can't access

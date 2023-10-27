@@ -1,6 +1,7 @@
 !/.gitignore
 *.log.[0-9]
 *.log
+.byebug_history
 tmp/*
 dockermysql/*
 .DS_Store

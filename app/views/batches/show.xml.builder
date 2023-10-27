@@ -24,7 +24,7 @@ xml.batch do
             :submission
           ]
         )
-        .each do |batch_request|
+        .find_each do |batch_request|
           request = batch_request.request
           xml.lane(
             'position' => batch_request.position,

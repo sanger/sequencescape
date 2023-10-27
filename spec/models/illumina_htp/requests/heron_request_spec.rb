@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe IlluminaHtp::Requests::HeronRequest, heron: true do
+describe IlluminaHtp::Requests::HeronRequest, :heron do
   subject(:request) { create :heron_request }
 
   describe '#request_metadata' do

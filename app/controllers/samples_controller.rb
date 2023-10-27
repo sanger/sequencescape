@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # rubocop:todo Metrics/ClassLength
-class SamplesController < ApplicationController # rubocop:todo Style/Documentation
+class SamplesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
@@ -34,7 +34,7 @@ class SamplesController < ApplicationController # rubocop:todo Style/Documentati
     authorize! :update, @sample
 
     if @sample.released? && cannot?(:update_released, @sample)
-      flash[:error] = 'Cannot edit publicly released sample' # rubocop:disable Rails/ActionControllerFlashBeforeRender
+      flash[:error] = 'Cannot edit publicly released sample'
       redirect_to sample_path(@sample)
       return
     end

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Health # rubocop:todo Style/Documentation
+class Health
   attr_reader :status, :message, :details
 
   def initialize

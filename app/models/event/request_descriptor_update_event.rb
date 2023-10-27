@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Event::RequestDescriptorUpdateEvent # rubocop:todo Style/Documentation
+module Event::RequestDescriptorUpdateEvent
   def self.included(base)
     base.after_create(
       :update_metadata_for_request,

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'Perform a tag substitution', js: true do
+describe 'Perform a tag substitution', :js do
   let(:sample_a) { create :sample }
   let(:sample_b) { create :sample }
   let(:library_tube_a) { create :library_tube }

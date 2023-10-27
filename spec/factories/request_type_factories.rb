@@ -60,7 +60,7 @@ FactoryBot.define do
         request_class { Request::Multiplexing }
         billable { false }
         for_multiplexing { true }
-        association(:target_purpose, factory: :tube_purpose)
+        target_purpose factory: %i[tube_purpose]
       end
     end
 
@@ -182,12 +182,12 @@ FactoryBot.define do
 
     factory :sequencing_request_type_validator do
       default { 54 }
-      association(:request_type, factory: :sequencing_request_type)
+      request_type factory: %i[sequencing_request_type]
     end
 
     factory :library_request_type_validator, class: 'RequestType::Validator' do
       request_option { 'library_type' }
-      association(:request_type, factory: :library_creation_request_type)
+      request_type factory: %i[library_creation_request_type]
       valid_options { |rtva| RequestType::Validator::LibraryTypeValidator.new(rtva.request_type.id) }
     end
 
