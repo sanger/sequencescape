@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require 'insdc/import_countries'
 
 RSpec.describe Insdc::ImportCountries do
   subject(:importer) do
