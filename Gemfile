@@ -1,17 +1,12 @@
 # frozen_string_literal: true
-next_rails = ENV.fetch('BUNDLE_GEMFILE', 'Gemfile')&.end_with?('GemfileNext')
 
 source 'https://rubygems.org'
 
 group :default do
   gem 'bootsnap'
 
-  if next_rails
-    gem 'rails', '~> 6.1.0'
-  else
-    gem 'rails', '~> 6.0.0'
-  end
-
+  gem 'rails', '~> 6.1.7.6'
+ 
   # State machine
   gem 'aasm'
 
@@ -68,7 +63,7 @@ group :default do
   # https://github.com/JamesGlover/sequencescape/tree/depfu/update/jsonapi-resources-0.9.5
   # but not only is there a failing test, but performance was tanking in a few places
   # due to not correctly eager loading dependencies on nested resources.
-  gem 'jsonapi-resources', '0.9.0'
+  gem 'jsonapi-resources'
 
   # Wraps bunny with connection pooling ad consumer process handling
   gem 'sanger_warren'

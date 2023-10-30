@@ -232,7 +232,7 @@ GEM
       mini_magick (>= 4.9.5, < 5)
       ruby-vips (>= 2.0.17, < 3)
     json (2.6.3)
-    jsonapi-resources (0.9.0)
+    jsonapi-resources (0.10.7)
       activerecord (>= 4.1)
       concurrent-ruby
       railties (>= 4.1)
@@ -358,7 +358,7 @@ GEM
       rake (>= 12.2)
       thor (~> 1.0)
     rainbow (3.1.1)
-    rake (13.0.6)
+    rake (13.1.0)
     rb-fsevent (0.11.2)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
@@ -559,7 +559,7 @@ DEPENDENCIES
   flipper-ui (~> 0.25.0)
   formtastic
   json
-  jsonapi-resources (= 0.9.0)
+  jsonapi-resources
   jsonapi-resources-matchers
   knapsack_pro
   launchy
@@ -577,7 +577,7 @@ DEPENDENCIES
   rack-acceptable
   rack-cors
   rack-mini-profiler
-  rails (~> 6.0.0)
+  rails (~> 6.1.7.6)
   rails-controller-testing
   rails-erd
   rails-perftest
