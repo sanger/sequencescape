@@ -4,7 +4,7 @@
 .main-nav {
   @extend .navbar;
   @extend .navbar-dark;
-  @extend .bg-danger;
+  @extend .bg-development; // development and unknown environments
   @extend .navbar-expand-lg;
 
   #logo_container {
@@ -17,9 +17,20 @@
   }
 }
 
+// Set the background color of the navbar based on the environment
 body.production {
   .main-nav {
-    @extend .bg-primary;
+    @extend .bg-production;
+  }
+}
+body.training {
+  .main-nav {
+    @extend .bg-training;
+  }
+}
+body.staging {
+  .main-nav {
+    @extend .bg-staging;
   }
 }
 
