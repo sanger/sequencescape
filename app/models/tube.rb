@@ -83,7 +83,12 @@ class Tube < Labware
     comments.add_comment_to_submissions(comment)
   end
 
+  # TODO: we need to look at this method
+  # we are having to remove the foreign barcode to get it saved as the primary barcode
+  # create! is not saving the tube
+  # we are adding a save to the end of the method to get it to save
   def self.create_with_barcode!(*args, &block)
+    
     attributes = args.extract_options!.symbolize_keys
 
     barcode, prefix = extract_barcode(args, attributes)
@@ -94,7 +99,11 @@ class Tube < Labware
     # this is to control the order of barcode addition so that it gets set as the 'primary' barcode
     foreign_barcode = attributes.delete(:foreign_barcode)
 
+    # this does not seem to save the tube
     tube = create!(attributes.merge(sanger_barcode: { prefix: prefix, number: barcode }), &block)
+
+    # hack to get the tube to save
+    tube.save
 
     tube.foreign_barcode = foreign_barcode if foreign_barcode
     tube.reload
