@@ -21,7 +21,7 @@ module SequencescapeExcel
                      :scope_on,
                      defaults: {
                        first_column: 1,
-                       options: {}
+                       options: []
                      }
 
     attr_reader :first_cell
@@ -30,7 +30,8 @@ module SequencescapeExcel
     # If the range is valid i.e. has a first row then a first cell and last cell are created
     # these are used for references.
     def initialize(attributes = {})
-      super(default_attributes.merge(attributes))
+
+      super(default_attributes.deep_merge(attributes.with_indifferent_access))
 
       return unless valid?
 
