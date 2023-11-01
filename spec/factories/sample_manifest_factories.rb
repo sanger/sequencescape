@@ -16,7 +16,7 @@ FactoryBot.define do
       transient do
         num_plates { 1 }
         num_samples_per_plate { 1 }
-        plates { create_list :plate, num_plates, well_factory: :empty_well, well_count: num_samples_per_plate }
+        plates { create_list :plate_with_wells, num_plates, well_factory: :empty_well, well_count: num_samples_per_plate }
       end
 
       barcodes { plates.map(&:human_barcode) }
@@ -76,7 +76,7 @@ FactoryBot.define do
       transient do
         num_plates { 2 }
         num_samples_per_plate { 2 }
-        plates { create_list :plate, num_plates, well_factory: :empty_well, well_count: num_samples_per_plate }
+        plates { create_list :plate_with_wells, num_plates, well_factory: :empty_well, well_count: num_samples_per_plate }
       end
 
       barcodes { plates.map(&:human_barcode) }

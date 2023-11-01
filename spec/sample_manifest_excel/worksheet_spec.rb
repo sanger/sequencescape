@@ -156,6 +156,7 @@ RSpec.describe SampleManifestExcel::Worksheet, :sample_manifest, :sample_manifes
     end
 
     it 'adds the attributes for each details' do
+      debugger
       [sample_manifest.details_array.first, sample_manifest.details_array.last].each do |detail|
         worksheet.columns.each do |column|
           expect(spreadsheet.sheet(0).cell(sample_manifest.details_array.index(detail) + 10, column.number)).to eq(

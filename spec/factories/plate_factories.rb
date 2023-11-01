@@ -61,6 +61,23 @@ FactoryBot.define do
     sanger_barcode { barcode.nil? ? build(:plate_barcode) : build(:plate_barcode, barcode: barcode) }
   end
 
+  # TODO: review this factory
+  # basic factory to counteract the fact that sample manifest factory is not working correctly.
+  factory :plate_with_wells, class: 'Plate' do
+
+    transient do
+      well_count { sample_count } # The number of wells to create
+      well_factory { :well } # THe factory to use for wells
+    end
+ 
+    plate_purpose
+    size { 96 }
+
+    after(:build) do |plate, evaluator|
+      plate.wells = create_list(evaluator.well_factory, evaluator.well_count, plate: plate)
+    end
+  end
+
   factory :plate, traits: %i[plate_barcode with_wells] do
     plate_purpose
     size { 96 }

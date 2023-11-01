@@ -4,7 +4,6 @@
 # the factory {PhiX::SpikedBuffer}
 class PhiX::SpikedBuffersController < ApplicationController
   def create
-    # debugger
     @spiked_buffer = PhiX::SpikedBuffer.new(phi_x_spiked_buffers_params)
     if @spiked_buffer.save
       @spiked_buffers = @spiked_buffer.created_spiked_buffers
