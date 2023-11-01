@@ -68,8 +68,7 @@ module StateChanger
     def request_in_other_wells(request)
       _receptacles.any? do |well|
         well.aliquot_requests.try(:map, &:id).to_a.any?(request.id) &&
-          !contents.include?(well.absolute_position_name) &&
-          well.state != associated_request_target_state
+          contents.exclude?(well.absolute_position_name) && well.state != associated_request_target_state
       end
     end
 
