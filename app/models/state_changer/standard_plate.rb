@@ -81,7 +81,9 @@ module StateChanger
     # Note: Do *NOT* go through labware here, as you'll pull out all requests
     # not just those associated with the wells in the 'contents' array
     def associated_requests
-      receptacles.flat_map(&:aliquot_requests)
+      # uniq is present here in case more than one well shares the same request
+      # e.g. a parent well was split into multiple child wells
+      receptacles.flat_map(&:aliquot_requests).uniq
     end
 
     # Checks if the transfer requests have an associated submission, and thus
