@@ -180,7 +180,7 @@ RSpec.describe LocationReport::LocationReportForm do
       let(:study_id) { study_1.id }
       let(:start_date) { '2016-01-01 00:00:00' }
       let(:end_date) { '2016-03-01 00:00:00' }
-      let(:plate_purpose_ids) { [plt_1_purpose.id] }
+      let(:plate_purpose_ids) { [plate_1.plate_purpose.id] }
       let(:barcodes_text) { plate_1.machine_barcode.to_s }
 
       before { location_report_form.save }
@@ -190,6 +190,7 @@ RSpec.describe LocationReport::LocationReportForm do
       end
 
       it 'creates a valid location report' do
+        debugger
         expect(location_report_form.location_report).to be_valid
       end
 
