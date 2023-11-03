@@ -356,15 +356,18 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def autodetection_attributes_must_not_clash
-    if(autodetection_clash?)
-      errors.add(:base, 'You can specify either autodetect_studies_projects, or the individual equivalents (autodetect_studies and autodetect_projects), but not both.')
-    end
+    return unless autodetection_clash?
+
+    msg =
+      'You can specify either autodetect_studies_projects, or the individual equivalents' \
+        ' (autodetect_studies and autodetect_projects), but not both.'
+    errors.add(:base, msg)
   end
 
   def autodetection_clash?
     # if autodetect_studies_projects is specified, cannot use the individual versions
     # and vice versa
-    autodetect_studies_projects != nil && (autodetect_studies != nil || autodetect_projects != nil)
+    !autodetect_studies_projects.nil? && (!autodetect_studies.nil? || !autodetect_projects.nil?)
   end
 
   def set_study_from_aliquots

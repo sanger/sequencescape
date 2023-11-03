@@ -15,8 +15,14 @@ RSpec.describe Order do
     # don't want to trigger this behaviour accidentally if someone forgets to
     # specify a study.
 
-    subject do
-      build :order, assets: assets, autodetect_studies_projects: autodetect_studies_projects, autodetect_studies: autodetect_studies, autodetect_projects: autodetect_projects, study: nil, project: nil
+    subject(:order) do
+      build :order,
+            assets: assets,
+            autodetect_studies_projects: autodetect_studies_projects,
+            autodetect_studies: autodetect_studies,
+            autodetect_projects: autodetect_projects,
+            study: nil,
+            project: nil
     end
 
     let(:assets) { [tube] }
@@ -58,30 +64,34 @@ RSpec.describe Order do
         let(:autodetect_studies) { true }
         let(:autodetect_projects) { true }
 
-        it 'should fail validation' do
-          expect(subject).not_to be_valid
-          expect(subject.errors.full_messages.one? { |message| message.include? 'autodetect_studies_projects' }).to be true
+        it 'fails validation' do
+          expect(order).not_to be_valid
+          expect(
+            order.errors.full_messages.one? { |message| message.include? 'autodetect_studies_projects' }
+          ).to be true
         end
 
-        it 'should use the defaults' do
-          expect(subject.autodetect_studies?).to equal(subject.autodetection_default)
-          expect(subject.autodetect_projects?).to equal(subject.autodetection_default)
+        it 'uses the defaults' do
+          expect(order.autodetect_studies?).to equal(order.autodetection_default)
+          expect(order.autodetect_projects?).to equal(order.autodetection_default)
         end
       end
 
       context 'with all attributes set to false' do
-        let(:autodetect_studies_projects) { true }
-        let(:autodetect_studies) { true }
-        let(:autodetect_projects) { true }
+        let(:autodetect_studies_projects) { false }
+        let(:autodetect_studies) { false }
+        let(:autodetect_projects) { false }
 
-        it 'should fail validation' do
-          expect(subject).not_to be_valid
-          expect(subject.errors.full_messages.one? { |message| message.include? 'autodetect_studies_projects' }).to be true
+        it 'fails validation' do
+          expect(order).not_to be_valid
+          expect(
+            order.errors.full_messages.one? { |message| message.include? 'autodetect_studies_projects' }
+          ).to be true
         end
 
-        it 'should use the defaults' do
-          expect(subject.autodetect_studies?).to equal(subject.autodetection_default)
-          expect(subject.autodetect_projects?).to equal(subject.autodetection_default)
+        it 'uses the defaults' do
+          expect(order.autodetect_studies?).to equal(order.autodetection_default)
+          expect(order.autodetect_projects?).to equal(order.autodetection_default)
         end
       end
 
@@ -90,14 +100,16 @@ RSpec.describe Order do
         let(:autodetect_studies) { nil }
         let(:autodetect_projects) { true }
 
-        it 'should fail validation' do
-          expect(subject).not_to be_valid
-          expect(subject.errors.full_messages.one? { |message| message.include? 'autodetect_studies_projects' }).to be true
+        it 'fails validation' do
+          expect(order).not_to be_valid
+          expect(
+            order.errors.full_messages.one? { |message| message.include? 'autodetect_studies_projects' }
+          ).to be true
         end
 
-        it 'should use the defaults' do
-          expect(subject.autodetect_studies?).to equal(subject.autodetection_default)
-          expect(subject.autodetect_projects?).to equal(subject.autodetection_default)
+        it 'uses the defaults' do
+          expect(order.autodetect_studies?).to equal(order.autodetection_default)
+          expect(order.autodetect_projects?).to equal(order.autodetection_default)
         end
       end
 
@@ -106,16 +118,18 @@ RSpec.describe Order do
         let(:autodetect_studies) { nil }
         let(:autodetect_projects) { nil }
 
-        it 'should pass validation' do
+        it 'passes validation' do
           # Trigger validation, but don't assert that it's valid.
           # It might validation for other reasons, but we only care about this one.
-          subject.valid?
-          expect(subject.errors.full_messages.none? { |message| message.include? 'autodetect_studies_projects' }).to be true
+          order.valid?
+          expect(
+            order.errors.full_messages.none? { |message| message.include? 'autodetect_studies_projects' }
+          ).to be true
         end
 
-        it 'should use autodetect_studies_projects' do
-          expect(subject.autodetect_studies?).to equal(true)
-          expect(subject.autodetect_projects?).to equal(true)
+        it 'uses autodetect_studies_projects' do
+          expect(order.autodetect_studies?).to equal(true)
+          expect(order.autodetect_projects?).to equal(true)
         end
       end
 
@@ -124,16 +138,18 @@ RSpec.describe Order do
         let(:autodetect_studies) { true }
         let(:autodetect_projects) { true }
 
-        it 'should pass validation' do
+        it 'passes validation' do
           # Trigger validation, but don't assert that it's valid.
           # It might validation for other reasons, but we only care about this one.
-          subject.valid?
-          expect(subject.errors.full_messages.none? { |message| message.include? 'autodetect_studies_projects' }).to be true
+          order.valid?
+          expect(
+            order.errors.full_messages.none? { |message| message.include? 'autodetect_studies_projects' }
+          ).to be true
         end
 
-        it 'should use the individual versions' do
-          expect(subject.autodetect_studies?).to equal(true)
-          expect(subject.autodetect_projects?).to equal(true)
+        it 'uses the individual versions' do
+          expect(order.autodetect_studies?).to equal(true)
+          expect(order.autodetect_projects?).to equal(true)
         end
       end
     end
