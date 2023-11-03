@@ -16,7 +16,7 @@ RSpec.describe Order do
     # specify a study.
 
     subject do
-      build :order, assets: assets, autodetect_studies_projects: autodetect_studies_projects, study: nil, project: nil
+      build :order, assets: assets, autodetect_studies_projects: autodetect_studies_projects, autodetect_studies: autodetect_studies, autodetect_projects: autodetect_projects, study: nil, project: nil
     end
 
     let(:assets) { [tube] }
@@ -25,6 +25,8 @@ RSpec.describe Order do
 
     context 'with autodetect_studies_projects set to true' do
       let(:autodetect_studies_projects) { true }
+      let(:autodetect_studies) { nil }
+      let(:autodetect_projects) { nil }
 
       it_behaves_like 'an automated order'
 
@@ -41,9 +43,99 @@ RSpec.describe Order do
 
     context 'with autodetect_studies_projects set to false' do
       let(:autodetect_studies_projects) { false }
+      let(:autodetect_studies) { nil }
+      let(:autodetect_projects) { nil }
       let(:aliquots) { create_list :tagged_aliquot, 2, study: study, project: project }
 
       it { is_expected.not_to be_valid }
+    end
+
+    describe 'combining autodetection attributes' do
+      let(:aliquots) { create_list :tagged_aliquot, 2 }
+
+      context 'with all attributes set to true' do
+        let(:autodetect_studies_projects) { true }
+        let(:autodetect_studies) { true }
+        let(:autodetect_projects) { true }
+
+        it 'should fail validation' do
+          expect(subject).not_to be_valid
+          expect(subject.errors.full_messages.one? { |message| message.include? 'autodetect_studies_projects' }).to be true
+        end
+
+        it 'should use the defaults' do
+          expect(subject.autodetect_studies?).to equal(subject.autodetection_default)
+          expect(subject.autodetect_projects?).to equal(subject.autodetection_default)
+        end
+      end
+
+      context 'with all attributes set to false' do
+        let(:autodetect_studies_projects) { true }
+        let(:autodetect_studies) { true }
+        let(:autodetect_projects) { true }
+
+        it 'should fail validation' do
+          expect(subject).not_to be_valid
+          expect(subject.errors.full_messages.one? { |message| message.include? 'autodetect_studies_projects' }).to be true
+        end
+
+        it 'should use the defaults' do
+          expect(subject.autodetect_studies?).to equal(subject.autodetection_default)
+          expect(subject.autodetect_projects?).to equal(subject.autodetection_default)
+        end
+      end
+
+      context 'with some attributes nil and some set to mixed values' do
+        let(:autodetect_studies_projects) { false }
+        let(:autodetect_studies) { nil }
+        let(:autodetect_projects) { true }
+
+        it 'should fail validation' do
+          expect(subject).not_to be_valid
+          expect(subject.errors.full_messages.one? { |message| message.include? 'autodetect_studies_projects' }).to be true
+        end
+
+        it 'should use the defaults' do
+          expect(subject.autodetect_studies?).to equal(subject.autodetection_default)
+          expect(subject.autodetect_projects?).to equal(subject.autodetection_default)
+        end
+      end
+
+      context 'with only autodetect_studies_projects set' do
+        let(:autodetect_studies_projects) { true }
+        let(:autodetect_studies) { nil }
+        let(:autodetect_projects) { nil }
+
+        it 'should pass validation' do
+          # Trigger validation, but don't assert that it's valid.
+          # It might validation for other reasons, but we only care about this one.
+          subject.valid?
+          expect(subject.errors.full_messages.none? { |message| message.include? 'autodetect_studies_projects' }).to be true
+        end
+
+        it 'should use autodetect_studies_projects' do
+          expect(subject.autodetect_studies?).to equal(true)
+          expect(subject.autodetect_projects?).to equal(true)
+        end
+      end
+
+      context 'with only the individual versions set' do
+        let(:autodetect_studies_projects) { nil }
+        let(:autodetect_studies) { true }
+        let(:autodetect_projects) { true }
+
+        it 'should pass validation' do
+          # Trigger validation, but don't assert that it's valid.
+          # It might validation for other reasons, but we only care about this one.
+          subject.valid?
+          expect(subject.errors.full_messages.none? { |message| message.include? 'autodetect_studies_projects' }).to be true
+        end
+
+        it 'should use the individual versions' do
+          expect(subject.autodetect_studies?).to equal(true)
+          expect(subject.autodetect_projects?).to equal(true)
+        end
+      end
     end
   end
 

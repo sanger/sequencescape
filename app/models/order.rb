@@ -39,7 +39,14 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # auto-detect studies and projects based on their aliquots. However we
   # don't want to trigger this behaviour accidentally if someone forgets to
   # specify a study.
-  attribute :autodetect_studies_projects, :boolean, default: false
+  #
+  # autodetect_studies_projects was the original, then
+  # autodetect_studies and autodetect_projects were added so the behaviour could be different for studies vs projects
+  # we ensure only one approach is used (see validation)
+  # and default behaviour to false if neither is specified (see methods)
+  attribute :autodetect_studies_projects, :boolean
+  attribute :autodetect_studies, :boolean
+  attribute :autodetect_projects, :boolean
 
   # Required at initial construction time ...
   belongs_to :study, optional: true
@@ -60,8 +67,8 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
   serialize :request_types
   serialize :item_options
 
-  before_validation :set_study_from_aliquots, unless: :cross_study_allowed, if: :autodetect_studies_projects
-  before_validation :set_project_from_aliquots, unless: :cross_project_allowed, if: :autodetect_studies_projects
+  before_validation :set_study_from_aliquots, unless: :cross_study_allowed, if: :autodetect_studies?
+  before_validation :set_project_from_aliquots, unless: :cross_project_allowed, if: :autodetect_projects?
 
   validates :study, presence: true, unless: :cross_study_allowed
   validates :project, presence: true, unless: :cross_project_allowed
@@ -70,6 +77,7 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
   validate :study_is_active, on: :create
   validate :assets_are_appropriate
   validate :no_consent_withdrawal
+  validate :autodetection_attributes_must_not_clash
 
   before_destroy :building_submission?
   after_destroy :on_delete_destroy_submission
@@ -95,6 +103,32 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
     def render_class
       Api::OrderIO
     end
+  end
+
+  def autodetect_studies?
+    # need this check here, as this method is called before validation
+    return autodetection_default if autodetection_clash?
+
+    return autodetect_studies unless autodetect_studies.nil?
+
+    return autodetect_studies_projects unless autodetect_studies_projects.nil?
+
+    autodetection_default
+  end
+
+  def autodetect_projects?
+    # need this check here, as this method is called before validation
+    return autodetection_default if autodetection_clash?
+
+    return autodetect_projects unless autodetect_projects.nil?
+
+    return autodetect_studies_projects unless autodetect_studies_projects.nil?
+
+    autodetection_default
+  end
+
+  def autodetection_default
+    false
   end
 
   def complete_building
@@ -319,6 +353,18 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
     return true if errors.empty?
 
     false
+  end
+
+  def autodetection_attributes_must_not_clash
+    if(autodetection_clash?)
+      errors.add(:base, 'You can specify either autodetect_studies_projects, or the individual equivalents (autodetect_studies and autodetect_projects), but not both.')
+    end
+  end
+
+  def autodetection_clash?
+    # if autodetect_studies_projects is specified, cannot use the individual versions
+    # and vice versa
+    autodetect_studies_projects != nil && (autodetect_studies != nil || autodetect_projects != nil)
   end
 
   def set_study_from_aliquots
