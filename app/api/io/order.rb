@@ -38,6 +38,8 @@ class Io::Order < Core::Io::Base
                                            user <=  user
 
                     autodetect_studies_projects <= autodetect_studies_projects
+                             autodetect_studies <= autodetect_studies
+                            autodetect_projects <= autodetect_projects
   '
   )
 end
