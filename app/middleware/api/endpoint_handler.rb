@@ -4,7 +4,7 @@ module Api
   # Sinatra application which provides routing for the V1 API
   # Automatically generates routes from the files listed under `app/api/endpoints`
   # used in {Api::RootService} which in turn gets mounted in `config/routes.rb`
-  class EndpointHandler < ::Core::Service # rubocop:todo Metrics/ClassLength
+  class EndpointHandler < ::Core::Service
     class << self
       def registered_mimetypes
         @registered_mimetypes || []

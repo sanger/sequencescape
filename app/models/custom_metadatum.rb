@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class CustomMetadatum < ApplicationRecord # rubocop:todo Style/Documentation
+class CustomMetadatum < ApplicationRecord
   belongs_to :custom_metadatum_collection
 
   validates :value, presence: true

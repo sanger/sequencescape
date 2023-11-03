@@ -95,7 +95,7 @@ class Batch::RequestFailAndRemover
   end
 
   def requests_selected?
-    return if requested_remove.present? || requested_fail.present?
+    return false if requested_remove.present? || requested_fail.present?
 
     errors.add(:base, 'Please select an item to fail or remove')
   end

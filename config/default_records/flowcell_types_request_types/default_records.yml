@@ -21,3 +21,9 @@ S2:
 10B:
   flowcell_type_name: 10B
   request_type_key: illumina_htp_novaseqx_paired_end_sequencing
+25B:
+  flowcell_type_name: 25B
+  request_type_key: illumina_htp_novaseqx_paired_end_sequencing
+1.5B:
+  flowcell_type_name: 1.5B
+  request_type_key: illumina_htp_novaseqx_paired_end_sequencing

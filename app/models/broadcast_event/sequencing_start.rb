@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class BroadcastEvent::SequencingStart < BroadcastEvent # rubocop:todo Style/Documentation
+class BroadcastEvent::SequencingStart < BroadcastEvent
   set_event_type 'sequencing_start'
 
   seed_class Batch

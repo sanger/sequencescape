@@ -36,18 +36,18 @@ FactoryBot.define do
   factory :lot do
     sequence(:lot_number) { |n| "lot#{n}" }
     lot_type
-    association(:template, factory: :plate_template_with_well)
+    template factory: %i[plate_template_with_well]
     user
     received_at { '2014-02-01' }
 
     factory :tag2_lot do
-      association(:lot_type, factory: :tag2_lot_type)
-      association(:template, factory: :tag2_layout_template)
+      lot_type factory: %i[tag2_lot_type]
+      template factory: %i[tag2_layout_template]
     end
 
     factory :tag_layout_lot do
-      association(:lot_type, factory: :tag_layout_lot_type)
-      association(:template, factory: :tag_layout_template)
+      lot_type factory: %i[tag_layout_lot_type]
+      template factory: %i[tag_layout_template]
     end
   end
 

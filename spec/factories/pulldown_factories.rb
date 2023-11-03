@@ -20,13 +20,13 @@ FactoryBot.define do
   # Transfers and their templates
   factory(:transfer_between_plates, class: 'Transfer::BetweenPlates') do
     user
-    association(:source, factory: :transfer_plate)
-    association(:destination, factory: :plate_with_empty_wells)
+    source factory: %i[transfer_plate]
+    destination factory: %i[plate_with_empty_wells]
     transfers { { 'A1' => 'A1', 'B1' => 'B1' } }
 
     factory(:full_transfer_between_plates) do
-      association(:source, factory: :full_plate)
-      association(:destination, factory: :full_plate)
+      source factory: %i[full_plate]
+      destination factory: %i[full_plate]
       transfers { ('A'..'H').map { |r| (1..12).map { |c| "#{r}#{c}" } }.flatten.to_h { |w| [w, w] } }
     end
   end
@@ -105,8 +105,8 @@ FactoryBot.define do
   factory(:plate_creation) do
     user
     barcode { create(:sequencescape22).barcode }
-    association(:parent, factory: :full_plate, well_count: 2)
-    association(:child_purpose, factory: :plate_purpose)
+    parent factory: %i[full_plate], well_count: 2
+    child_purpose factory: %i[plate_purpose]
 
     # PlateCreation inherits from AssetCreation that will try to call
     # Baracoda to obtain a new barcode. As this is not needed for the
@@ -116,8 +116,8 @@ FactoryBot.define do
 
   factory(:tube_creation) do
     user
-    association(:parent, factory: :full_plate, well_count: 2)
-    association(:child_purpose, factory: :child_tube_purpose)
+    parent factory: %i[full_plate], well_count: 2
+    child_purpose factory: %i[child_tube_purpose]
 
     after(:build) do |tube_creation|
       mock_request_type = create(:library_creation_request_type)
@@ -165,7 +165,7 @@ FactoryBot.define do
   factory(:isc_request, class: 'Pulldown::Requests::IscLibraryRequest', aliases: [:pulldown_isc_request]) do
     transient { bait_library { BaitLibrary.first || create(:bait_library) } }
 
-    association(:request_type, factory: :library_creation_request_type)
+    request_type factory: %i[library_creation_request_type]
     asset { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
     request_purpose { :standard }
@@ -180,9 +180,9 @@ FactoryBot.define do
   end
 
   factory(:re_isc_request, class: 'Pulldown::Requests::ReIscLibraryRequest') do
-    association(:request_type, factory: :library_request_type)
-    association(:asset, factory: :well_with_sample_and_plate)
-    association(:target_asset, factory: :empty_well)
+    request_type factory: %i[library_request_type]
+    asset factory: %i[well_with_sample_and_plate]
+    target_asset factory: %i[empty_well]
     request_purpose { :standard }
     request_metadata_attributes do
       {

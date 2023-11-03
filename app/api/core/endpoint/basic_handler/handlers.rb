@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Core::Endpoint::BasicHandler::Handlers # rubocop:todo Style/Documentation
+module Core::Endpoint::BasicHandler::Handlers
   # Handler that behaves like it never deals with any URLs
   NullHandler =
     Object.new.tap do |handler|

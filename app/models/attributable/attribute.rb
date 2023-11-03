@@ -27,7 +27,7 @@ module Attributable
 
     def default_from(origin = nil)
       return nil if origin.nil?
-      return origin.validator_for(name).default if validator?
+      origin.validator_for(name).default if validator?
     end
 
     def validator?
@@ -164,7 +164,7 @@ module Attributable
 
     def selection_from_metadata(validator_source)
       return nil if validator_source.blank?
-      return validator_source.validator_for(name).valid_options.to_a if validator?
+      validator_source.validator_for(name).valid_options.to_a if validator?
     end
 
     def selection_options(validator_source)

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Robot < ApplicationRecord # rubocop:todo Style/Documentation
+class Robot < ApplicationRecord
   include Uuid::Uuidable
   include ModelExtensions::Robot
 

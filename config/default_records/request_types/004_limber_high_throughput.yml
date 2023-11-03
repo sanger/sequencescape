@@ -29,6 +29,7 @@ limber_isc:
   library_types:
     - Agilent Pulldown
     - Twist Pulldown
+    - BGE
 limber_reisc:
   <<: *limber_htp_library
   name: Limber ReISC
@@ -41,6 +42,7 @@ limber_reisc:
     - Duplex-Seq
     - Targeted NanoSeq Pulldown Twist
     - Targeted NanoSeq Pulldown Agilent
+    - BGE
 limber_pcr_free:
   <<: *limber_htp_library
   name: Limber PCR Free
@@ -51,6 +53,7 @@ limber_pcr_free:
     - Chromium single cell CNV
     - DAFT-seq
     - PCR Free 384
+    - BGE
 limber_lcmb:
   <<: *limber_htp_library
   name: Limber LCMB

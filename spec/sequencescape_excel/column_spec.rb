@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SequencescapeExcel::Column, sample_manifest: true, sample_manifest_excel: true, type: :model do
+RSpec.describe SequencescapeExcel::Column, :sample_manifest, :sample_manifest_excel, type: :model do
   let(:range_list) do
     build(:range_list, ranges_data: { attributes_for(:validation)[:range_name] => attributes_for(:range) })
   end

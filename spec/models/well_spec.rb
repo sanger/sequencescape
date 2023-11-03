@@ -181,62 +181,62 @@ describe Well do
 
     result = described_class.hash_stock_with_targets(stock_plate.wells, purposes.map(&:name))
 
-    assert_equal result.count, 3
-    assert_equal result[stock_plate.wells[1].id].count, 1
-    assert_equal result[stock_plate.wells[2].id].count, 1
-    assert_equal result[stock_plate.wells[0].id].count, 3
+    expect(result.count).to eq(3)
+    expect(result[stock_plate.wells[1].id].count).to eq(1)
+    expect(result[stock_plate.wells[2].id].count).to eq(1)
+    expect(result[stock_plate.wells[0].id].count).to eq(3)
   end
 
   it 'have pico pass' do
     well.well_attribute.pico_pass = 'Yes'
-    assert_equal 'Yes', well.get_pico_pass
+    expect(well.get_pico_pass).to eq('Yes')
   end
 
   it 'have gel pass' do
     well.well_attribute.gel_pass = 'Pass'
-    assert_equal 'Pass', well.get_gel_pass
+    expect(well.get_gel_pass).to eq('Pass')
     assert well.get_gel_pass.is_a?(String)
   end
 
   it 'have picked volume' do
     well.set_picked_volume(3.6)
-    assert_equal 3.6, well.get_picked_volume
+    expect(well.get_picked_volume).to eq(3.6)
   end
 
   it 'allow concentration to be set' do
     well.set_concentration(1.0)
     concentration = well.get_concentration
-    assert_equal 1.0, concentration
+    expect(concentration).to eq(1.0)
     assert concentration.is_a?(Float)
   end
 
   it 'allow volume to be set' do
     well.set_current_volume(2.5)
     vol = well.get_volume
-    assert_equal 2.5, vol
+    expect(vol).to eq(2.5)
     assert vol.is_a?(Float)
   end
 
   it 'allow current volume to be set' do
     well.set_current_volume(3.5)
     vol = well.get_current_volume
-    assert_equal 3.5, vol
+    expect(vol).to eq(3.5)
     assert vol.is_a?(Float)
   end
 
   it 'record the initial volume as initial_volume' do
     well.well_attribute.measured_volume = 3.5
     vol = well.well_attribute.initial_volume
-    assert_equal 3.5, vol
+    expect(vol).to eq(3.5)
     well.well_attribute.measured_volume = 2.5
     orig_vol = well.well_attribute.initial_volume
-    assert_equal 3.5, orig_vol
+    expect(orig_vol).to eq(3.5)
   end
 
   it 'allow buffer volume to be set' do
     well.set_buffer_volume(4.5)
     vol = well.get_buffer_volume
-    assert_equal 4.5, vol
+    expect(vol).to eq(4.5)
     assert vol.is_a?(Float)
   end
 
@@ -249,14 +249,14 @@ describe Well do
     it 'have a parent plate' do
       parent = well.plate
       assert parent.is_a?(Plate)
-      assert_equal parent.id, @plate.id
+      expect(@plate.id).to eq(parent.id)
     end
 
     context 'for a tecan' do
       it 'have a parent plate' do
         parent = well.plate
         assert parent.is_a?(Plate)
-        assert_equal parent.id, @plate.id
+        expect(@plate.id).to eq(parent.id)
       end
     end
   end
@@ -298,14 +298,14 @@ describe Well do
 
       # rubocop:disable Layout/LineLength
       it "output stock_to_pick #{stock_to_pick} for a target of #{target_ng} with vol #{measured_volume} and conc #{measured_concentration}" do
-        assert_equal stock_to_pick, @target_well.well_attribute.picked_volume
+        expect(@target_well.well_attribute.picked_volume).to eq(stock_to_pick)
       end
 
       # rubocop:enable Layout/LineLength
 
       # rubocop:disable Layout/LineLength
       it "output buffer #{buffer_added} for a target of #{target_ng} with vol #{measured_volume} and conc #{measured_concentration}" do
-        assert_equal buffer_added, @target_well.well_attribute.buffer_volume
+        expect(@target_well.well_attribute.buffer_volume).to eq(buffer_added)
       end
       # rubocop:enable Layout/LineLength
     end
@@ -336,8 +336,8 @@ describe Well do
           @source_well,
           robot_minimum_picking_volume
         )
-        assert_equal stock_to_pick, @target_well.get_picked_volume
-        assert_equal buffer_added, @target_well.well_attribute.buffer_volume
+        expect(@target_well.get_picked_volume).to eq(stock_to_pick)
+        expect(@target_well.well_attribute.buffer_volume).to eq(buffer_added)
       end
 
       it "get correct buffer volume when it's above robot minimum picking volume" do
@@ -352,8 +352,8 @@ describe Well do
           @source_well,
           robot_minimum_picking_volume
         )
-        assert_equal stock_to_pick, @target_well.get_picked_volume
-        assert_equal buffer_added, @target_well.well_attribute.buffer_volume
+        expect(@target_well.get_picked_volume).to eq(stock_to_pick)
+        expect(@target_well.well_attribute.buffer_volume).to eq(buffer_added)
       end
 
       it 'get no buffer volume if the minimum picking volume exceeds the minimum volume' do
@@ -368,8 +368,8 @@ describe Well do
           @source_well,
           robot_minimum_picking_volume
         )
-        assert_equal stock_to_pick, @target_well.get_picked_volume
-        assert_equal buffer_added, @target_well.well_attribute.buffer_volume
+        expect(@target_well.get_picked_volume).to eq(stock_to_pick)
+        expect(@target_well.well_attribute.buffer_volume).to eq(buffer_added)
       end
 
       it 'get robot minimum picking volume if the correct buffer volume is below this value' do
@@ -384,8 +384,8 @@ describe Well do
           @source_well,
           robot_minimum_picking_volume
         )
-        assert_equal stock_to_pick, @target_well.get_picked_volume
-        assert_equal buffer_added, @target_well.well_attribute.buffer_volume
+        expect(@target_well.get_picked_volume).to eq(stock_to_pick)
+        expect(@target_well.well_attribute.buffer_volume).to eq(buffer_added)
       end
     end
   end
@@ -401,22 +401,22 @@ describe Well do
     end
 
     it 'return volume to pick' do
-      assert_equal 1.25, well.volume_to_cherrypick_by_nano_grams_per_micro_litre(5.0, 50.0, 200.0, 20)
-      assert_equal 3.9, well.volume_to_cherrypick_by_nano_grams_per_micro_litre(13.0, 30.0, 100.0, 20)
-      assert_equal 9.1, well.get_buffer_volume
+      expect(well.volume_to_cherrypick_by_nano_grams_per_micro_litre(5.0, 50.0, 200.0, 20)).to eq(1.25)
+      expect(well.volume_to_cherrypick_by_nano_grams_per_micro_litre(13.0, 30.0, 100.0, 20)).to eq(3.9)
+      expect(well.get_buffer_volume).to eq(9.1)
     end
 
     it 'sets the buffer volume' do
       well.volume_to_cherrypick_by_nano_grams_per_micro_litre(5.0, 50.0, 200.0, 20)
-      assert_equal 3.75, well.get_buffer_volume
+      expect(well.get_buffer_volume).to eq(3.75)
       well.volume_to_cherrypick_by_nano_grams_per_micro_litre(13.0, 30.0, 100.0, 20)
-      assert_equal 9.1, well.get_buffer_volume
+      expect(well.get_buffer_volume).to eq(9.1)
     end
 
     it 'sets buffer and volume_to_pick correctly' do
       vol_to_pick = well.volume_to_cherrypick_by_nano_grams_per_micro_litre(5.0, 50.0, 200.0, 20)
-      assert_equal well.get_picked_volume, vol_to_pick
-      assert_equal 5.0, well.get_buffer_volume + vol_to_pick
+      expect(vol_to_pick).to eq(well.get_picked_volume)
+      expect(well.get_buffer_volume + vol_to_pick).to eq(5.0)
     end
 
     [
@@ -458,11 +458,11 @@ describe Well do
         end
 
         it 'gets correct volume quantity' do
-          assert_equal source_volume_obtained, @result_volume
+          expect(@result_volume).to eq(source_volume_obtained)
         end
 
         it 'gets correct buffer volume measures' do
-          assert_equal buffer_volume_obtained, @result_buffer_volume
+          expect(@result_buffer_volume).to eq(buffer_volume_obtained)
         end
       end
     end
@@ -502,7 +502,7 @@ describe Well do
     end
 
     it 'report appropriate metrics' do
-      assert_equal [@expected_metric], well.latest_stock_metrics(@our_product_criteria.product)
+      expect(well.latest_stock_metrics(@our_product_criteria.product)).to eq([@expected_metric])
     end
   end
 
@@ -568,7 +568,7 @@ describe Well do
   context '(DPL-148) on updating well attribute' do
     let(:well) { create :well }
 
-    it 'triggers warehouse update', warren: true do
+    it 'triggers warehouse update', :warren do
       expect do
         # We try a valid update
         well.well_attribute.update(concentration: 200)

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SampleManifestExcel::Configuration, sample_manifest: true, sample_manifest_excel: true, type: :model do
+RSpec.describe SampleManifestExcel::Configuration, :sample_manifest, :sample_manifest_excel, type: :model do
   let(:configuration) { described_class.new }
 
   it 'is comparable' do

@@ -33,7 +33,7 @@ class AssetLink < ApplicationRecord
 
   def destroy!; end
 
-  module Associations # rubocop:todo Style/Documentation
+  module Associations
     def self.included(base)
       base.class_eval do
         extend ClassMethods
@@ -47,7 +47,7 @@ class AssetLink < ApplicationRecord
       base.extend(ClassMethods)
     end
 
-    module ClassMethods # rubocop:todo Style/Documentation
+    module ClassMethods
       def has_one_as_child(name, scope) # rubocop:todo Metrics/MethodLength
         plural_name = name.to_s.pluralize.to_sym
         has_many(plural_name, scope, through: :links_as_child, source: :ancestor)

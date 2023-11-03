@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe TagSubstitution, warren: true do
+describe TagSubstitution, :warren do
   # Works for: Library manifests, old tube pipelines
   # We have two samples, each with unique tags, which only exist
   # in aliquots identified by the library id. We don't need to consider:
@@ -294,7 +294,7 @@ describe TagSubstitution, warren: true do
 
       it 'return false and an error of the details don\'t match' do
         expect(subject.save).to be false
-        assert_includes subject.errors.full_messages, 'Substitution Matching aliquots could not be found'
+        assert_includes subject.errors.full_messages, 'Substitution ["Matching aliquots could not be found"]'
       end
     end
 
@@ -333,9 +333,9 @@ describe TagSubstitution, warren: true do
       it 'also update allow update of other attributes' do
         [library_aliquot_a, library_aliquot_b, mx_aliquot_a, mx_aliquot_b].each do |aliquot|
           aliquot.reload
-          assert_equal aliquot.library_type, library_type.name
-          assert_equal 20, aliquot.insert_size_from
-          assert_equal 400, aliquot.insert_size_to
+          expect(library_type.name).to eq(aliquot.library_type)
+          expect(aliquot.insert_size_from).to eq(20)
+          expect(aliquot.insert_size_to).to eq(400)
         end
       end
     end

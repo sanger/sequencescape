@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # rubocop:todo Metrics/ClassLength
-class ProductCriteria::Basic # rubocop:todo Style/Documentation
+class ProductCriteria::Basic
   SUPPORTED_WELL_ATTRIBUTES = %i[
     gel_pass
     concentration

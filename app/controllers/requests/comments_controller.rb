@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Requests::CommentsController < ApplicationController # rubocop:todo Style/Documentation
+class Requests::CommentsController < ApplicationController
   before_action :discover_request
 
   def index

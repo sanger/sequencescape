@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class RequestEvent < ApplicationRecord # rubocop:todo Style/Documentation
+class RequestEvent < ApplicationRecord
   belongs_to :request, inverse_of: :request_events
 
   validates :request, :to_state, :current_from, :event_name, presence: true

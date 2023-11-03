@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module SampleManifest::CoreBehaviour # rubocop:todo Style/Documentation
+module SampleManifest::CoreBehaviour
   BEHAVIOURS = %w[1dtube plate multiplexed_library library library_plate tube_rack].freeze
 
   # Include in cores which exhibit the default behaviour
@@ -11,7 +11,7 @@ module SampleManifest::CoreBehaviour # rubocop:todo Style/Documentation
     end
   end
 
-  module Shared # rubocop:todo Style/Documentation
+  module Shared
     def self.included(base)
       base.class_eval do
         delegate :create_sample, to: :@manifest

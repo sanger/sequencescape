@@ -2,8 +2,8 @@
 # Despite name controls rendering of warehouse messages for {Tag}
 # Historically used to be v0.5 API
 class Api::TagIO < Api::Base
-  module Extensions # rubocop:todo Style/Documentation
-    module ClassMethods # rubocop:todo Style/Documentation
+  module Extensions
+    module ClassMethods
       def render_class
         Api::TagIO
       end

@@ -220,7 +220,7 @@ def assign_asset_to_study(asset, study_name)
   Asset
     .where(id: asset_ids)
     .includes(:aliquots)
-    .each { |asset| asset.aliquots.each { |aliquot| aliquot.update!(study_id: study.id) } }
+    .find_each { |asset| asset.aliquots.each { |aliquot| aliquot.update!(study_id: study.id) } }
 end
 
 Then /^abbreviation for Study "([^"]*)" should be "([^"]*)"$/ do |study_name, abbreviation_regex|

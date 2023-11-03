@@ -17,7 +17,7 @@ FactoryBot.define do
     sti_type { 'MultiplexedLibraryCreationRequest' }
     asset { |asset| asset.association(:sample_tube) }
     target_asset { |asset| asset.association(:library_tube) }
-    association(:request_type, factory: :multiplexed_library_creation_request_type)
+    request_type factory: %i[multiplexed_library_creation_request_type]
     request_metadata_attributes do
       { fragment_size_required_from: 150, fragment_size_required_to: 400, library_type: 'Standard' }
     end
@@ -41,7 +41,7 @@ FactoryBot.define do
 
     factory :customer_request, class: 'CustomerRequest' do
       sti_type { 'CustomerRequest' } # Oddly, this seems to be necessary!
-      association(:request_type, factory: :customer_request_type)
+      request_type factory: %i[customer_request_type]
     end
 
     factory :create_asset_request do
@@ -50,20 +50,20 @@ FactoryBot.define do
   end
 
   factory :sequencing_request, class: 'SequencingRequest' do
-    association(:request_type, factory: :sequencing_request_type)
+    request_type factory: %i[sequencing_request_type]
     request_purpose { :standard }
     sti_type { 'SequencingRequest' }
     request_metadata_attributes { attributes_for :request_metadata_for_standard_sequencing_with_read_length }
 
     factory(:sequencing_request_with_assets) do
-      association(:asset, factory: :library_tube)
-      association(:target_asset, factory: :lane)
+      asset factory: %i[library_tube]
+      target_asset factory: %i[lane]
     end
 
     factory(:complete_sequencing_request) do
       transient { event_descriptors { { 'Chip Barcode' => 'fcb' } } }
-      association(:asset, factory: :library_tube)
-      association(:target_asset, factory: :lane)
+      asset factory: %i[library_tube]
+      target_asset factory: %i[lane]
 
       after(:build) do |request, evaluator|
         request.lab_events << build(:flowcell_event, descriptors: evaluator.event_descriptors, batch: request.batch)
@@ -72,8 +72,8 @@ FactoryBot.define do
   end
 
   factory(:library_creation_request, parent: :request, class: 'LibraryCreationRequest') do
-    association(:asset, factory: :sample_tube)
-    association(:request_type, factory: :library_creation_request_type)
+    asset factory: %i[sample_tube]
+    request_type factory: %i[library_creation_request_type]
 
     request_metadata_attributes do
       { fragment_size_required_from: 100, fragment_size_required_to: 200, library_type: 'Standard' }
@@ -82,8 +82,8 @@ FactoryBot.define do
 
   # Well based library request as used in eg. Limber pipeline
   factory :library_request, class: 'IlluminaHtp::Requests::StdLibraryRequest' do
-    association(:asset, factory: :well)
-    association(:request_type, factory: :library_request_type)
+    asset factory: %i[well]
+    request_type factory: %i[library_request_type]
     request_purpose { :standard }
     request_metadata_attributes { attributes_for :request_metadata_for_library_manufacture }
 
@@ -102,24 +102,24 @@ FactoryBot.define do
 
   factory(:multiplex_request, class: 'Request::Multiplexing') do
     asset { nil }
-    association(:target_asset, factory: :multiplexed_library_tube)
-    association(:request_type, factory: :multiplex_request_type)
+    target_asset factory: %i[multiplexed_library_tube]
+    request_type factory: %i[multiplex_request_type]
     request_purpose { :standard }
   end
 
   factory :cherrypick_request do
-    association :asset, factory: :well
-    association :target_asset, factory: :well
-    association(:request_type, factory: :cherrypick_request_type)
+    asset factory: %i[well]
+    target_asset factory: %i[well]
+    request_type factory: %i[cherrypick_request_type]
     request_purpose { :standard }
 
     # Adds the associations needed for processing down a pipeline
     factory :cherrypick_request_for_pipeline do
-      association :asset, factory: :well_with_sample_and_plate
+      asset factory: %i[well_with_sample_and_plate]
       submission
 
       factory :passed_cherrypick_request do
-        association :target_asset, factory: :well_with_sample_and_plate
+        target_asset factory: %i[well_with_sample_and_plate]
         state { 'passed' }
       end
     end
@@ -127,14 +127,14 @@ FactoryBot.define do
 
   factory :cherrypick_for_fluidigm_request do
     transient { target_purpose { create :plate_purpose } }
-    association :asset, factory: :well
-    association :target_asset, factory: :well
-    association(:request_type, factory: :cherrypick_request_type)
+    asset factory: %i[well]
+    target_asset factory: %i[well]
+    request_type factory: %i[cherrypick_request_type]
     request_purpose { :standard }
     request_metadata_attributes { { target_purpose: target_purpose } }
 
     factory :final_cherrypick_for_fluidigm_request do
-      association(:request_type, factory: :request_type, key: 'pick_to_fluidigm')
+      request_type factory: %i[request_type], key: 'pick_to_fluidigm'
     end
   end
 
@@ -148,8 +148,8 @@ FactoryBot.define do
 
   factory :request, parent: :request_without_assets do
     # the sample should be setup correctly and the assets should be valid
-    association(:asset, factory: :sample_tube)
-    association(:target_asset, factory: :empty_library_tube)
+    asset factory: %i[sample_tube]
+    target_asset factory: %i[empty_library_tube]
 
     factory :request_with_submission do
       after(:build) do |request|
@@ -194,10 +194,10 @@ FactoryBot.define do
   end
 
   factory :request_traction_grid_ion, class: 'Request::Traction::GridIon' do
-    association(:asset, factory: :well)
+    asset factory: %i[well]
     target_asset { nil }
     request_purpose { :standard }
-    association(:request_type, factory: :well_request_type)
+    request_type factory: %i[well_request_type]
     request_metadata_attributes { attributes_for(:request_traction_grid_ion_metadata) }
   end
 
@@ -222,7 +222,7 @@ FactoryBot.define do
     class: 'Request::LibraryCreation',
     aliases: [:library_creation_request_for_testing_sequencing_requests]
   ) do
-    association(:request_type, factory: :library_creation_request_type)
+    request_type factory: %i[library_creation_request_type]
     request_purpose { :standard }
     asset { |target| target.association(:well_with_sample_and_plate) }
     target_asset { |target| target.association(:empty_well) }
@@ -240,7 +240,7 @@ FactoryBot.define do
     target_asset { |ta| ta.association(:pac_bio_library_tube) }
     asset { |a| a.association(:well) }
     submission { |s| s.association(:submission) }
-    association(:request_type, factory: :pac_bio_sample_prep_request_type)
+    request_type factory: %i[pac_bio_sample_prep_request_type]
     request_purpose { :standard }
   end
 

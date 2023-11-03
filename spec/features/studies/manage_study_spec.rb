@@ -6,7 +6,7 @@ describe 'Manage a study' do
   let(:user) { create :admin }
   let!(:study) { create :study, name: 'Original name' }
 
-  it 'Rename a study', js: true do
+  it 'Rename a study', :js do
     login_user(user)
     visit study_path(study)
     click_link 'Manage'

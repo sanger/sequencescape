@@ -161,7 +161,7 @@ class ReceptaclesController < ApplicationController # rubocop:todo Metrics/Class
     submission.built!
 
     respond_to do |format|
-      flash[:notice] = 'Created request' # rubocop:disable Rails/ActionControllerFlashBeforeRender
+      flash[:notice] = 'Created request'
 
       format.html { redirect_to receptacle_path(@asset) }
       format.json { render json: submission.requests, status: :created }

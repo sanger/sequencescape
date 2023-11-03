@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Cherrypick::Task::PickByMicroLitre # rubocop:todo Style/Documentation
+module Cherrypick::Task::PickByMicroLitre
   def valid_params_for_micro_litre_pick?(options)
     valid_float_param?(options[:volume_required])
   end

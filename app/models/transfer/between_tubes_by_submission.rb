@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Transfer::BetweenTubesBySubmission < Transfer # rubocop:todo Style/Documentation
+class Transfer::BetweenTubesBySubmission < Transfer
   include TransfersToKnownDestination
 
   before_validation :ensure_destination_setup

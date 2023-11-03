@@ -7,7 +7,7 @@ class Api::Messages::FluidigmPlateIO < Api::Base
     { wells: [:map, :uuid_object, { primary_aliquot: [:project, { sample: :uuid_object, study: :uuid_object }] }] }
   ]
 
-  module WellExtensions # rubocop:todo Style/Documentation
+  module WellExtensions
     def cost_code
       return nil if primary_aliquot.nil?
 

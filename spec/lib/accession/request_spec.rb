@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Accession::Request, accession: true, type: :model do
+RSpec.describe Accession::Request, :accession, type: :model do
   include MockAccession
 
   let(:submission) { build(:accession_submission) }

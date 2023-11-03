@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class PlateType < ApplicationRecord # rubocop:todo Style/Documentation
+class PlateType < ApplicationRecord
   validates :name, :maximum_volume, presence: true
 
   class << self

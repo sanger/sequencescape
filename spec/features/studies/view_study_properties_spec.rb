@@ -7,7 +7,7 @@ describe 'View study properties' do
   let(:prelim_id) { 'A1234' }
   let(:study) { create(:study, study_metadata: create(:study_metadata, prelim_id: prelim_id)) }
 
-  it 'view open study properties', js: true do
+  it 'view open study properties', :js do
     login_user(user)
     visit study_path(study)
     click_link 'Study details'

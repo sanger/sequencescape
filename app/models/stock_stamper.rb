@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class StockStamper # rubocop:todo Style/Documentation
+class StockStamper
   include ActiveModel::Model
 
   attr_accessor :user_barcode,

@@ -3,6 +3,6 @@
 FactoryBot.define do
   factory :comment do
     description { 'It is okay I guess' }
-    association(:commentable, factory: :labware)
+    commentable factory: %i[labware]
   end
 end

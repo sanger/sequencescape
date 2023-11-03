@@ -12,7 +12,7 @@ class Latin1Validator < ActiveModel::EachValidator
     return true if value.blank?
 
     value.encode('cp1252')
-    return true if value.encode('cp1252').valid_encoding?
+    true if value.encode('cp1252').valid_encoding?
   rescue Encoding::UndefinedConversionError => e
     record.errors[attribute] << # rubocop:todo Rails/DeprecatedActiveModelErrorsMethods
       (

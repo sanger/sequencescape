@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe QcResultFactory, qc_result: true do
+RSpec.describe QcResultFactory, :qc_result do
   describe 'multiple resources' do
     let(:asset_1) { attributes_for(:qc_result).merge(uuid: create(:receptacle).uuid) }
     let(:asset_2) { attributes_for(:qc_result).merge(uuid: create(:receptacle).uuid) }
@@ -26,9 +26,9 @@ RSpec.describe QcResultFactory, qc_result: true do
         factory = described_class.new([asset_1, asset_2, asset_3])
         expect(factory).to be_valid
         expect(factory.save).to be_truthy
-        expect(QcResult.all.count).to eq(3)
-        expect(QcAssay.all.count).to eq(1)
-        QcResult.all.each { |qc_result| expect(qc_result.qc_assay).to eq QcAssay.last }
+        expect(QcResult.count).to eq(3)
+        expect(QcAssay.count).to eq(1)
+        QcResult.find_each { |qc_result| expect(qc_result.qc_assay).to eq QcAssay.last }
       end
 
       it 'produces sensible error messages if the resource is not valid' do
@@ -67,9 +67,9 @@ RSpec.describe QcResultFactory, qc_result: true do
         factory = described_class.new(qc_results: [asset_1, asset_2, asset_3], lot_number: 'LN1234567')
         expect(factory).to be_valid
         expect(factory.save).to be_truthy
-        expect(QcResult.all.count).to eq(3)
-        expect(QcAssay.all.count).to eq(1)
-        QcResult.all.each { |qc_result| expect(qc_result.qc_assay).to eq QcAssay.last }
+        expect(QcResult.count).to eq(3)
+        expect(QcAssay.count).to eq(1)
+        QcResult.find_each { |qc_result| expect(qc_result.qc_assay).to eq QcAssay.last }
       end
     end
 
@@ -93,7 +93,7 @@ RSpec.describe QcResultFactory, qc_result: true do
 
       it 'will save all of the assets with valid wells' do
         expect(factory.save).to be_truthy
-        expect(QcResult.all.count).to eq(2)
+        expect(QcResult.count).to eq(2)
       end
     end
   end

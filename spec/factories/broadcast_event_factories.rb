@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :broadcast_event_asset_audit, class: 'BroadcastEvent::AssetAudit' do
-    association(:seed, factory: :asset_audit)
+    seed factory: %i[asset_audit]
   end
 
   factory :event_subject, class: Hash do

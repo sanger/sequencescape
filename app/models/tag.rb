@@ -7,7 +7,7 @@
 # Tag is stored on aliquot, and an individual aliquot can have two tags
 # identified as tag and tag2, these may also be known as i7 and i5 respectively.
 class Tag < ApplicationRecord
-  module Associations # rubocop:todo Style/Documentation
+  module Associations
     def untag!
       aliquots.first.try(:update!, tag: nil)
     end

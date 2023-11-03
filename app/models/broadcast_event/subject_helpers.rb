@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module BroadcastEvent::SubjectHelpers
-  class Subject # rubocop:todo Style/Documentation
+  class Subject
     attr_reader :target, :role_type
 
     def initialize(name, target)
@@ -23,7 +23,7 @@ module BroadcastEvent::SubjectHelpers
     delegate :friendly_name, :uuid, :subject_type, to: :target, allow_nil: true
   end
 
-  module SimpleTargetLookup # rubocop:todo Style/Documentation
+  module SimpleTargetLookup
     def initialize(name, method)
       @name = name
       @method = method
@@ -38,7 +38,7 @@ module BroadcastEvent::SubjectHelpers
     end
   end
 
-  module BlockTargetLookup # rubocop:todo Style/Documentation
+  module BlockTargetLookup
     def initialize(name, &block)
       @name = name
       @block = block
@@ -53,19 +53,19 @@ module BroadcastEvent::SubjectHelpers
     end
   end
 
-  module SingleTarget # rubocop:todo Style/Documentation
+  module SingleTarget
     def for(seed, event)
       Subject.new(name, target_for(seed, event))
     end
   end
 
-  module MultiTarget # rubocop:todo Style/Documentation
+  module MultiTarget
     def for(seed, event)
       target_for(seed, event).map { |t| Subject.new(name, t) }
     end
   end
 
-  class SeedSubjectAssociation # rubocop:todo Style/Documentation
+  class SeedSubjectAssociation
     attr_reader :name
 
     def initialize(name)
@@ -97,7 +97,7 @@ module BroadcastEvent::SubjectHelpers
     include MultiTarget
   end
 
-  module SubjectableClassMethods # rubocop:todo Style/Documentation
+  module SubjectableClassMethods
     # The class expected to seed the messenger
     def seed_class(seed_class)
       @seed_class = seed_class
@@ -130,7 +130,7 @@ module BroadcastEvent::SubjectHelpers
     end
   end
 
-  module Subjectable # rubocop:todo Style/Documentation
+  module Subjectable
     def self.included(base)
       base.class.extend SubjectableClassMethods
     end

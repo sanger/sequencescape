@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module Attributable
-  class Association # rubocop:todo Style/Documentation
-    module Target # rubocop:todo Style/Documentation
+  class Association
+    module Target
       def self.extended(base)
         base.class_eval do
           include InstanceMethods
@@ -17,7 +17,7 @@ module Attributable
         nil
       end
 
-      module InstanceMethods # rubocop:todo Style/Documentation
+      module InstanceMethods
         def for_select_dropdown
           [name, id]
         end

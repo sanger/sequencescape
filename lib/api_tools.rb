@@ -1,10 +1,10 @@
 # frozen_string_literal: true
-module ApiTools # rubocop:todo Style/Documentation
+module ApiTools
   def self.included(base)
     base.extend(ClassMethods)
   end
 
-  module ClassMethods # rubocop:todo Style/Documentation
+  module ClassMethods
     def render_class
       @render_class ||= Api::Base.render_class_for_model(self)
     end

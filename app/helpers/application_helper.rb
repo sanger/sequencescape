@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # rubocop:todo Metrics/ModuleLength
-module ApplicationHelper # rubocop:todo Style/Documentation
+module ApplicationHelper
   # Should return either the custom text or a blank string
   def custom_text(identifier, differential = nil)
     Rails
@@ -32,6 +32,35 @@ module ApplicationHelper # rubocop:todo Style/Documentation
   # @return [String] HTML representing the required marker
   def required_marker
     icon('fas', 'asterisk', class: 'text-warning', title: 'required')
+  end
+
+  # Returns the appropriate icon suffix for the current environment
+  # Returns empty string for production
+  # Returns "-#{environment}" for training, staging
+  # Returns "-development" for any other environment
+  # @return [String] The suffix to append to the icon name
+  def icon_suffix
+    environment = Rails.env
+    case environment
+    when 'production'
+      ''
+    when 'training', 'staging'
+      "-#{environment}"
+    else
+      '-development'
+    end
+  end
+
+  # Return the appropriate favicon for the current environment
+  # @return [String] The path to the favicon
+  def favicon
+    "favicon#{icon_suffix}.ico"
+  end
+
+  # Return the appropriate apple icon for the current environment
+  # @return [String] The path to the apple icon
+  def apple_icon
+    "apple-icon#{icon_suffix}.png"
   end
 
   def render_flashes
@@ -310,3 +339,27 @@ module ApplicationHelper # rubocop:todo Style/Documentation
   end
 end
 # rubocop:enable Metrics/ModuleLength
+
+# error_messages_for method was deprecated, however lots of the tests depend on the message format it
+# was using.
+# <https://apidock.com/rails/ActionView/Helpers/ActiveRecordHelper/error_messages_for>
+def render_error_messages(object)
+  return if object.errors.count.zero?
+  contents = +''
+  contents << error_message_header(object)
+  contents << error_messages_ul_html_safe(object)
+  content_tag(:div, contents.html_safe)
+end
+
+def error_message_header(object)
+  count = object.errors.full_messages.count
+  model_name = object.class.to_s.tableize.tr('_', ' ').gsub(%r{/.*}, '').singularize
+  is_plural = count > 1 ? 's' : ''
+  header = "#{count} error#{is_plural} prohibited this #{model_name} from being saved"
+  content_tag(:h2, header)
+end
+
+def error_messages_ul_html_safe(object)
+  messages = object.errors.full_messages.map { |msg| content_tag(:li, ERB::Util.html_escape(msg)) }.join.html_safe
+  content_tag(:ul, messages)
+end

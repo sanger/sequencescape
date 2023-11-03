@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module StudyReport::AssetDetails # rubocop:todo Style/Documentation
+module StudyReport::AssetDetails
   def qc_report # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     qc_data = { supplier_volume: 0 }
 

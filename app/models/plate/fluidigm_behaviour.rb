@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Plate::FluidigmBehaviour # rubocop:todo Style/Documentation
+module Plate::FluidigmBehaviour
   class FluidigmError < StandardError
   end
 

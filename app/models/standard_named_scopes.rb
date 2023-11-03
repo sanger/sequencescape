@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module StandardNamedScopes # rubocop:todo Style/Documentation
+module StandardNamedScopes
   SORT_FIELDS = %i[created updated].freeze
   SORT_ORDERS = { first: 'DESC', last: 'ASC' }.freeze
 

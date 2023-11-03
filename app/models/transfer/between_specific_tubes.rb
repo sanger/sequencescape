@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Transfer::BetweenSpecificTubes < Transfer # rubocop:todo Style/Documentation
+class Transfer::BetweenSpecificTubes < Transfer
   include TransfersToKnownDestination
 
   belongs_to :source, class_name: 'Tube'

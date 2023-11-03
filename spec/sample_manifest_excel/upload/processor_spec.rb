@@ -904,7 +904,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
               .first(no_of_racks)
               .map { |scan_result| scan_result['layout'].keys }
               .flatten
-          tube_barcodes.reject! { |key| ::CsvParserClient.no_read?(key) }
+          tube_barcodes.reject! { |key| CsvParserClient.no_read?(key) }
 
           expect(barcodes.size).to eq(no_of_rows)
           expect(barcodes.map(&:barcode)).to eq(tube_barcodes)
@@ -938,7 +938,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
             layout = mock_microservice_responses[tube_rack_barcode]['layout']
             layout.each_key do |tube_barcode|
-              next if ::CsvParserClient.no_read?(tube_barcode)
+              next if CsvParserClient.no_read?(tube_barcode)
 
               tube = Barcode.find_by(barcode: tube_barcode).asset
               expect(tube.tube_rack).to eq(tube_rack)

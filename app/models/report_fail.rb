@@ -50,8 +50,8 @@ class ReportFail
   end
 
   def missing_barcodes
-    machine_barcodes = failed_labware.map(&:machine_barcode).to_set
-    human_barcodes = failed_labware.map(&:human_barcode).to_set
+    machine_barcodes = failed_labware.to_set(&:machine_barcode)
+    human_barcodes = failed_labware.to_set(&:human_barcode)
     failed_labware_barcodes.delete_if do |barcode|
       human_barcodes.include?(barcode) || machine_barcodes.include?(barcode)
     end

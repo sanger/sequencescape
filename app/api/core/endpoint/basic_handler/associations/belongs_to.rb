@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-module Core::Endpoint::BasicHandler::Associations::BelongsTo # rubocop:todo Style/Documentation
-  class Handler # rubocop:todo Style/Documentation
+module Core::Endpoint::BasicHandler::Associations::BelongsTo
+  class Handler
     include Core::Endpoint::BasicHandler::EndpointLookup
 
     def initialize(name, options)
@@ -21,7 +21,7 @@ module Core::Endpoint::BasicHandler::Associations::BelongsTo # rubocop:todo Styl
     end
     private :endpoint_details
 
-    class Association # rubocop:todo Style/Documentation
+    class Association
       include Core::Io::Json::Grammar::Intermediate
       include Core::Io::Json::Grammar::Resource
 

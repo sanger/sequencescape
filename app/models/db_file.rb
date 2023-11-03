@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class DbFile < ApplicationRecord # rubocop:todo Style/Documentation
+class DbFile < ApplicationRecord
   # This is the model for database storage
 
   # Polymorphic so that many models can use this class to store binary data
@@ -10,7 +10,7 @@ class DbFile < ApplicationRecord # rubocop:todo Style/Documentation
   # This module will set up all required associations and allow mounting "polymorphic uploaders"
   module Uploader
     def self.extended(base)
-      base.has_many :db_files, as: :owner, dependent: :destroy # rubocop:todo Rails/HasManyOrHasOneDependent
+      base.has_many :db_files, as: :owner, dependent: :destroy
     end
 
     # Mount an uploader on the specified 'data' column

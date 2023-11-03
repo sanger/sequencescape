@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'Lab view', js: true do
+describe 'Lab view', :js do
   let(:user) { create :user, email: 'login@example.com' }
   let(:library_tube) { create :library_tube }
 

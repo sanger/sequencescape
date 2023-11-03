@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Submission::RequestOptionsBehaviour # rubocop:todo Style/Documentation
+module Submission::RequestOptionsBehaviour
   # Ensures the hash gets loaded with indifferent access.
   # Note: We can't just specify the class, as otherwise legacy
   # hashes throw an exception
@@ -41,7 +41,7 @@ module Submission::RequestOptionsBehaviour # rubocop:todo Style/Documentation
     # TODO[xxx]: should probably error if they've specified a request type that isn't being used
     errors.add(:request_options, 'negative multiplier supplied') if multipliers.values.map(&:to_i).any?(&:negative?)
     errors.add(:request_options, 'zero multiplier supplied') if multipliers.values.map(&:to_i).any?(&:zero?)
-    return false unless errors.empty?
+    false unless errors.empty?
   end
 
   # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity

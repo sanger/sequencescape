@@ -11,7 +11,7 @@ describe LabwhereReceptionsController do
 
     shared_examples 'a reception' do
       before do
-        expect(LabWhereClient::Scan).to receive(:create) # rubocop:todo RSpec/ExpectInHook
+        expect(LabWhereClient::Scan).to receive(:create)
           .with(
             location_barcode: location_barcode,
             user_code: SBCF::SangerBarcode.from_human(user.barcode).machine_barcode.to_s,
