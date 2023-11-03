@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'pry'
 
-RSpec.describe SampleManifest::Uploader, sample_manifest: true, sample_manifest_excel: true do
+RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_excel do
   before(:all) do
     SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
@@ -161,7 +161,7 @@ RSpec.describe SampleManifest::Uploader, sample_manifest: true, sample_manifest_
       expect(uploader.upload.sample_manifest).to be_completed
     end
 
-    it 'will generate sample accessions', accessioning_enabled: true do
+    it 'will generate sample accessions', :accessioning_enabled do
       number_of_plates = 2
       samples_per_plate = 2
       download =

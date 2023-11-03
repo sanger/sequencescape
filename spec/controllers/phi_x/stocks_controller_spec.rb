@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe PhiX::StocksController, phi_x: true do
+RSpec.describe PhiX::StocksController, :phi_x do
   describe 'POST create' do
     let(:current_user) { create :user }
     let(:study) { create :study }

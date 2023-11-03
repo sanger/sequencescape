@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Metadata::ViewBuilder < Metadata::BuilderBase # rubocop:todo Style/Documentation
+class Metadata::ViewBuilder < Metadata::BuilderBase
   def initialize(*args, &block)
     super
     view_for(:plain_value, 'shared/metadata/plain_field')

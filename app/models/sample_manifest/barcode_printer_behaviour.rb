@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module SampleManifest::BarcodePrinterBehaviour # rubocop:todo Style/Documentation
+module SampleManifest::BarcodePrinterBehaviour
   ASSET_TYPE_TO_PRINTER_TYPE = {
     '1dtube' => [BarcodePrinterType1DTube],
     'plate' => [BarcodePrinterType96Plate, BarcodePrinterType384DoublePlate]

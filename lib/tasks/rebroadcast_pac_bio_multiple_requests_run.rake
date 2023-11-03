@@ -191,6 +191,6 @@ namespace :pac_bio_run do
       9993
     ]
 
-    Messenger.where(template: 'PacBioRunIO', target_id: list_of_runs).each(&:broadcast)
+    Messenger.where(template: 'PacBioRunIO', target_id: list_of_runs).find_each(&:broadcast)
   end
 end

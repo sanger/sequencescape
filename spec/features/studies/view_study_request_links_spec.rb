@@ -36,12 +36,12 @@ describe 'View study properties' do
     visit study_path(study)
   end
 
-  it 'No links to absent requests', js: true do
+  it 'No links to absent requests', :js do
     click_link sequencing_request_type.name
     expect(page).not_to have_link(title: "#{library_tube.human_barcode} started")
   end
 
-  it 'Single requests link directly to the request', js: true do
+  it 'Single requests link directly to the request', :js do
     click_link sequencing_request_type.name
     expect(page).to have_link('1', title: "#{library_tube.human_barcode} passed")
     click_link('1', title: "#{library_tube.human_barcode} passed")
@@ -49,14 +49,14 @@ describe 'View study properties' do
     expect(page).to have_text(sequencing_request_type.name)
   end
 
-  it 'Multiple requests link to the summary', js: true do
+  it 'Multiple requests link to the summary', :js do
     click_link sequencing_request_type.name
     expect(page).to have_link('2', title: "#{library_tube.human_barcode} failed")
     click_link('2', title: "#{library_tube.human_barcode} failed")
     expect(page).to have_text("#{sequencing_request_type.name} Study 3871492")
   end
 
-  it 'Filtering by asset type', js: true do
+  it 'Filtering by asset type', :js do
     click_link 'Assets progress'
     within '#summary' do
       expect(page).to have_text sample_tube.name

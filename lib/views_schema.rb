@@ -32,8 +32,8 @@ module ViewsSchema
 
   # rubocop:todo Layout/LineLength
   REGEXP = /\ACREATE ALGORITHM=(?<algorithm>\w*) DEFINER=`[^`]*`@`[^`]*` SQL SECURITY (?<security>\w*) VIEW `[^`]+` AS (?<statement>.*)\z/i
-    # rubocop:enable Layout/LineLength
-    .freeze
+
+  # rubocop:enable Layout/LineLength
 
   def self.each_view
     all_views.each do |name|

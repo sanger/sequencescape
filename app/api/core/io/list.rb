@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Core::Io::List # rubocop:todo Style/Documentation
+class Core::Io::List
   include Core::Benchmarking
 
   def initialize(command, objects)

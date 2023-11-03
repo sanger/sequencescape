@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Event < ApplicationRecord # rubocop:todo Style/Documentation
+class Event < ApplicationRecord
   include Uuid::Uuidable
 
   self.per_page = 500

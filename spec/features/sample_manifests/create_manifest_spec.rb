@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'SampleManifest controller', sample_manifest: true do
+describe 'SampleManifest controller', :sample_manifest do
   def load_manifest_spec
     SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
@@ -24,8 +24,8 @@ describe 'SampleManifest controller', sample_manifest: true do
       select(study.name, from: 'Study')
       select(supplier.name, from: 'Supplier')
       within('#sample_manifest_template') do
-        expect(page).to have_selector('option', count: 7)
-        expect(page).not_to have_selector('option', text: 'Default Tube')
+        expect(page).to have_css('option', count: 7)
+        expect(page).not_to have_css('option', text: 'Default Tube')
       end
       select('Default Plate', from: 'Template')
       select(printer.name, from: 'Barcode printer')
@@ -66,7 +66,7 @@ describe 'SampleManifest controller', sample_manifest: true do
 
     it 'indicate the purpose field is used for plates only' do
       visit(new_sample_manifest_path)
-      within('#sample_manifest_template') { expect(page).to have_selector('option', count: 22) }
+      within('#sample_manifest_template') { expect(page).to have_css('option', count: 22) }
       select(created_purpose.name, from: 'Purpose')
       expect(page).to have_text('Used for plate manifests only')
     end
@@ -81,8 +81,8 @@ describe 'SampleManifest controller', sample_manifest: true do
       select(study.name, from: 'Study')
       select(supplier.name, from: 'Supplier')
       within('#sample_manifest_template') do
-        expect(page).to have_selector('option', count: 2)
-        expect(page).to have_selector('option', text: 'Default Tube Rack')
+        expect(page).to have_css('option', count: 2)
+        expect(page).to have_css('option', text: 'Default Tube Rack')
       end
       select('Default Tube Rack', from: 'Template')
       expect(page).not_to have_text('Barcodes')
@@ -90,8 +90,8 @@ describe 'SampleManifest controller', sample_manifest: true do
       select(selected_purpose.name, from: 'Tube purpose') if selected_purpose
       expect(page).to have_text('Tube rack purpose')
       within('#sample_manifest_tube_rack_purpose_input') do
-        expect(page).to have_selector('option', count: 2)
-        expect(page).to have_selector('option', text: selected_tube_rack_purpose.name)
+        expect(page).to have_css('option', count: 2)
+        expect(page).to have_css('option', text: selected_tube_rack_purpose.name)
       end
       select(selected_tube_rack_purpose.name, from: 'Tube rack purpose') if selected_tube_rack_purpose
       click_button('Create manifest')

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Core::Io::Base::JsonFormattingBehaviour # rubocop:todo Style/Documentation
+module Core::Io::Base::JsonFormattingBehaviour
   def self.extended(base)
     base.class_eval do
       extend ::Core::Io::Base::JsonFormattingBehaviour::Input
@@ -62,7 +62,6 @@ module Core::Io::Base::JsonFormattingBehaviour # rubocop:todo Style/Documentatio
   end
 
   VALID_LINE_REGEXP = /^\s*((?:[a-z_][\w_]*\.)*[a-z_][\w_]*[?!]?)\s*(<=|<=>|=>)\s*((?:[a-z_][\w_]*\.)*[a-z_][\w_]*)\s*$/
-    .freeze
 
   def parse_mapping_rules(mapping) # rubocop:todo Metrics/AbcSize
     attribute_to_json, json_to_attribute = [], []

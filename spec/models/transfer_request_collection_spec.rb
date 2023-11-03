@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe TransferRequestCollection, transfer_request_collection: true do
+RSpec.describe TransferRequestCollection, :transfer_request_collection do
   subject { described_class.new(creation_attributes) }
 
   let(:user) { create :user }

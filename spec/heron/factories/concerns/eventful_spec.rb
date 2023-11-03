@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 require 'rails_helper'
-RSpec.describe Heron::Factories::Concerns::Eventful, heron_events: true do
+RSpec.describe Heron::Factories::Concerns::Eventful, :heron_events do
   let(:my_test_class) do
     Class.new do
       include ActiveModel::Model

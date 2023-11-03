@@ -1,8 +1,8 @@
 # frozen_string_literal: true
-class QcDecision < ApplicationRecord # rubocop:todo Style/Documentation
+class QcDecision < ApplicationRecord
   include Uuid::Uuidable
 
-  class QcDecisionQcable < ApplicationRecord # rubocop:todo Style/Documentation
+  class QcDecisionQcable < ApplicationRecord
     self.table_name = ('qc_decision_qcables')
 
     belongs_to :qcable

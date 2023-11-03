@@ -103,11 +103,20 @@ class PlateBarcode
   if Rails.env.development?
     # If we don't want a test dependency on baracoda we need to mock barcodes and child barcodes
 
+    #
+    # When in development we were receiving concurrent requests for a barcode
+    # we were experiencing a race condition where both requests were obtaining the same barcode.
+    # To avoid it we will cache the barcodes and perform retry until unique barcode is
+    # obtained
+    extend Dev::PlateBarcode::CacheBarcodes
+
     def self.create_barcode
       # We should use a different prefix for local so that you can switch between using baracoda
       # locally and there will not be clashes
-      current_num = Barcode.sequencescape22.order(id: :desc).first&.number || 9000
-      Barcode.build_sequencescape22({ barcode: "#{prefix}-#{current_num + 1}" })
+
+      # We cache the last barcode so we don't get race conditions on generating barcodes
+      # when requests appear at the same time
+      Barcode.build_sequencescape22({ barcode: "#{prefix}-#{dev_cache_get_next_barcode}" })
     end
 
     def self.create_child_barcodes(parent_barcode, count = 1)

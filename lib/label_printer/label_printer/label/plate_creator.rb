@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module LabelPrinter
   module Label
-    class PlateCreator < BasePlate # rubocop:todo Style/Documentation
+    class PlateCreator < BasePlate
       attr_reader :plates, :plate_purpose, :user_login
 
       def initialize(options)

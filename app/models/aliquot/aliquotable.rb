@@ -21,7 +21,7 @@ module Aliquot::Aliquotable
     end
   end
 
-  module ClassMethods # rubocop:todo Style/Documentation
+  module ClassMethods
     def receptacle_alias(name, options = {}, &block)
       has_many(name, -> { distinct }, options.merge(through: :aliquots, source: :receptacle), &block)
     end

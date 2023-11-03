@@ -4,7 +4,7 @@
 
 require 'rails_helper'
 
-RSpec.describe BroadcastEvent::QcAssay, broadcast_event: true do
+RSpec.describe BroadcastEvent::QcAssay, :broadcast_event do
   subject do
     described_class.create!(
       seed: qc_assay,

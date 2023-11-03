@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe PhiX::Stock, phi_x: true do
+RSpec.describe PhiX::Stock, :phi_x do
   subject { build :phi_x_stock, custom_options }
 
   context 'with suitable options' do

@@ -101,7 +101,7 @@ FactoryBot.define do
     control_request_type_id { 0 }
     min_size { 1 }
 
-    association(:workflow, factory: :fluidigm_pipeline_workflow)
+    workflow factory: %i[fluidigm_pipeline_workflow]
 
     after(:build) { |pipeline| pipeline.request_types << build(:well_request_type) }
   end
@@ -234,12 +234,12 @@ FactoryBot.define do
 
     factory :cherrypick_batch_request do
       batch
-      association(:request, factory: :cherrypick_request)
+      request factory: %i[cherrypick_request]
     end
 
     factory :sequencing_batch_request do
       batch
-      association(:request, factory: :complete_sequencing_request)
+      request factory: %i[complete_sequencing_request]
     end
   end
 
@@ -280,8 +280,8 @@ FactoryBot.define do
   factory :asset_link do
     # Asset links get annoyed if created between nodes which have
     # not been persisted.
-    association(:ancestor, factory: :labware, strategy: :create)
-    association(:descendant, factory: :labware, strategy: :create)
+    ancestor factory: %i[labware], strategy: :create
+    descendant factory: %i[labware], strategy: :create
     direct { true }
   end
 

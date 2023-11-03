@@ -51,7 +51,7 @@ module SequencingQcBatch
       end
       return nil if qc_state.to_s == qc_states.send(delimiter)
 
-      return qc_states[qc_states.index(qc_state.to_s) + offset]
+      qc_states[qc_states.index(qc_state.to_s) + offset]
     end
   end
 

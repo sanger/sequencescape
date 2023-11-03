@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Controls API V1 IO for {::Batch}
-class Io::Batch < ::Core::Io::Base
+class Io::Batch < Core::Io::Base
   set_model_for_input(::Batch)
   set_json_root(:batch)
   set_eager_loading { |model| model.include_user.include_requests.include_pipeline }

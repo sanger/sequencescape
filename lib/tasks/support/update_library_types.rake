@@ -30,7 +30,7 @@ namespace :support do
         lane.aliquots.each do |aliquot|
           Aliquot
             .where(library_id: aliquot.library_id)
-            .each do |ali|
+            .find_each do |ali|
               ali.library_type = new_library_type.name
               ali.save!
               record_count += 1

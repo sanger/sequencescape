@@ -6,7 +6,7 @@ module ModelExtensions::Order
     delegate :errors, :include_unset_values?, to: :owner
   end
 
-  module Validations # rubocop:todo Style/Documentation
+  module Validations
     def self.included(base)
       base.class_eval do
         extend DelegateValidation
@@ -93,7 +93,7 @@ module ModelExtensions::Order
 
   # rubocop:enable Metrics/MethodLength
 
-  class NonNilHash # rubocop:todo Style/Documentation
+  class NonNilHash
     def initialize(key_style_operation = :symbolize_keys)
       @key_style_operation = key_style_operation
       @store = ActiveSupport::HashWithIndifferentAccess.new

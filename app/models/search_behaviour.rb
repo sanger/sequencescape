@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module SearchBehaviour # rubocop:todo Style/Documentation
+module SearchBehaviour
   MINIMUM_QUERY_LENGTH = 3
 
   def self.included(base)

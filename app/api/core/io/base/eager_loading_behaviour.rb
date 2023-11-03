@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Core::Io::Base::EagerLoadingBehaviour # rubocop:todo Style/Documentation
+module Core::Io::Base::EagerLoadingBehaviour
   def set_eager_loading
     singleton_class.class_eval { define_method(:eager_loading_for) { |loaded_class| yield(super(loaded_class)) } }
   end

@@ -3,7 +3,7 @@
 
 <%= page_title 'Quadrant Stamping', 'Create' %>
 
-<%= error_messages_for(@quad_creator) %>
+<%= render_error_messages(@quad_creator) %>
 
 <%= semantic_form_for(:quad_creator, url: quad_stamp_index_path) do |form| %>
   <div class="columnize">

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class GetYourQcCompletedTubesHereController < ApplicationController # rubocop:todo Style/Documentation
+class GetYourQcCompletedTubesHereController < ApplicationController
   before_action :login_required
 
   def new; end

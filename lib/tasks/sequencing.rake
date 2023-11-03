@@ -6,10 +6,10 @@ namespace :sequencing do
 
   desc 'Run to update descriptors. Can be removed once run'
   task update_descriptors: :environment do
-    Descriptor.where(name: 'Operator').each(&:destroy)
+    Descriptor.where(name: 'Operator').find_each(&:destroy)
     Task
       .where(workflow: Workflow.where(name: 'NovaSeq 6000 PE'), name: 'Read 1 & 2')
-      .each { |task| task.descriptors.where(name: 'Pipette Carousel').each(&:destroy) }
+      .find_each { |task| task.descriptors.where(name: 'Pipette Carousel').find_each(&:destroy) }
   end
   task 'application:post_deploy' => 'sequencing:update_descriptors'
 

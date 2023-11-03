@@ -42,15 +42,20 @@ development:
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 
-test: &test
+test2: &test
   <<: *MYSQL
   database: sequencescape_test<%= ENV['TEST_ENV_NUMBER'] %><%= suffix %>
   pool: 10
   timeout: 5000
 
-cucumber:
-  <<: *test
+cucumber: &cucumber
+  <<: *MYSQL
   database: sequencescape_test<%= ENV['TEST_ENV_NUMBER'] %><%= suffix %>_cuke
+  pool: 10
+  timeout: 5000
+
+test:
+  <<: *cucumber
 
 # We need to have some dummy configuration here when the app is being packaged up (vite:build),
 # because the initializers are run.
@@ -64,3 +69,4 @@ production:
 ### Next release
 ### Training
 ### Production
+

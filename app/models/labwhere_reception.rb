@@ -84,8 +84,8 @@ class LabwhereReception
   end
 
   def missing_barcodes
-    machine_barcodes = assets.map(&:machine_barcode).to_set
-    human_barcodes = assets.map(&:human_barcode).to_set
+    machine_barcodes = assets.to_set(&:machine_barcode)
+    human_barcodes = assets.to_set(&:human_barcode)
     asset_barcodes.delete_if { |barcode| human_barcodes.include?(barcode) || machine_barcodes.include?(barcode) }
   end
 end

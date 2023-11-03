@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Core::Endpoint::BasicHandler::Actions::InnerAction # rubocop:todo Style/Documentation
+module Core::Endpoint::BasicHandler::Actions::InnerAction
   def initialize(name, options, &block)
     raise StandardError, "Cannot declare inner action #{name.inspect} without a block" unless block
 

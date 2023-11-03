@@ -160,7 +160,7 @@ end
 
 Then 'the study for the aliquots in the wells of {uuid} should match the last submission' do |plate|
   study = Submission.last.orders.first.study
-  plate.wells.includes(:aliquots).each { |w| w.aliquots.each { |a| assert_equal study.id, a.study_id } }
+  plate.wells.includes(:aliquots).find_each { |w| w.aliquots.each { |a| assert_equal study.id, a.study_id } }
 end
 Given '{asset_name} is a {string}' do |plate, name|
   plate_purpose = Purpose.find_by!(name: name)

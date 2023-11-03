@@ -2,8 +2,8 @@
 # Despite name controls rendering of warehouse messages for {Lane}
 # Historically used to be v0.5 API
 class Api::LaneIO < Api::Base
-  module Extensions # rubocop:todo Style/Documentation
-    module ClassMethods # rubocop:todo Style/Documentation
+  module Extensions
+    module ClassMethods
       def render_class
         Api::LaneIO
       end

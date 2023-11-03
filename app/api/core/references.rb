@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Core::References # rubocop:todo Style/Documentation
+module Core::References
   # Discards all of the references that this object is keeping to other objects.  This means that
   # all of the objects should be garbage collected, rather than a proportion that are external to an
   # instance of this class.

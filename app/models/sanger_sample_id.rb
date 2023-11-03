@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-class SangerSampleId < ApplicationRecord # rubocop:todo Style/Documentation
-  class Factory # rubocop:todo Style/Documentation
+class SangerSampleId < ApplicationRecord
+  class Factory
     def self.instance
       @instance ||= new
     end

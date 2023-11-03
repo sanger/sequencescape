@@ -28,7 +28,7 @@ group :default do
 
   # Provides bulk insert capabilities
   gem 'activerecord-import'
-  gem 'record_loader'
+  gem 'record_loader', git: 'https://github.com/sanger/record_loader'
 
   gem 'mysql2', platforms: :mri
   gem 'will_paginate'
@@ -40,7 +40,7 @@ group :default do
   gem 'will_paginate-bootstrap'
 
   # Provides eg. error_messages_for previously in rails 2, now deprecated.
-  gem 'dynamic_form'
+  #gem 'dynamic_form'
 
   gem 'daemons'
   gem 'puma'
@@ -186,9 +186,7 @@ group :test, :cucumber do
   gem 'shoulda'
   gem 'simplecov', require: false
   gem 'timecop', require: false
-end
 
-group :cucumber do
   gem 'cucumber_github_formatter'
   gem 'cucumber-rails', require: false
 end

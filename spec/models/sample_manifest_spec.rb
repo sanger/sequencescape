@@ -5,7 +5,7 @@ require 'rails_helper'
 # Rubocop doesn't like the .and change {}.by bits and will
 # result in repeatedly indenting them to the level of the last call in the previous chain
 
-RSpec.describe SampleManifest, sample_manifest: true do
+RSpec.describe SampleManifest, :sample_manifest do
   let(:user) { create :user }
   let(:study) { create :study }
 
@@ -83,7 +83,7 @@ RSpec.describe SampleManifest, sample_manifest: true do
         before { manifest.generate }
 
         it 'create a plate of the correct purpose' do
-          assert_equal purpose, Plate.last.purpose
+          expect(Plate.last.purpose).to eq(purpose)
         end
       end
     end
@@ -142,7 +142,7 @@ RSpec.describe SampleManifest, sample_manifest: true do
         before { manifest.generate }
 
         it 'create a plate of the correct purpose' do
-          assert_equal purpose, Plate.last.purpose
+          expect(Plate.last.purpose).to eq(purpose)
         end
       end
     end
@@ -174,7 +174,7 @@ RSpec.describe SampleManifest, sample_manifest: true do
 
           it 'create sample manifest asset' do
             expect { manifest.generate }.to change(SampleManifestAsset, :count).by(count)
-            expect(manifest.assets).to contain_exactly(*LibraryTube.with_barcode(manifest.barcodes).map(&:receptacle))
+            expect(manifest.assets).to match_array(LibraryTube.with_barcode(manifest.barcodes).map(&:receptacle))
           end
 
           context 'after generation' do

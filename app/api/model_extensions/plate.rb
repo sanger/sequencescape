@@ -2,7 +2,7 @@
 # Included in {Plate}
 # The intent of this file was to provide methods specific to the V1 API
 module ModelExtensions::Plate
-  module NamedScopeHelpers # rubocop:todo Style/Documentation
+  module NamedScopeHelpers
     def include_plate_named_scope(plate_association)
       scope :"include_#{plate_association}",
             lambda { includes(plate_association.to_sym => ::ModelExtensions::Plate::PLATE_INCLUDES) }

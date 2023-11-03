@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Event::SampleManifestEvent < Event # rubocop:todo Style/Documentation
+class Event::SampleManifestEvent < Event
   def self.created_sample!(sample, user)
     create!(
       eventful: sample,

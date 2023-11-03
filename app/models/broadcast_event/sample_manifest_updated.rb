@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class BroadcastEvent::SampleManifestUpdated < BroadcastEvent # rubocop:todo Style/Documentation
+class BroadcastEvent::SampleManifestUpdated < BroadcastEvent
   set_event_type 'sample_manifest.updated'
 
   # Properties takes :updated_samples_ids

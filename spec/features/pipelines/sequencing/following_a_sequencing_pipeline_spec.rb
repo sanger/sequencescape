@@ -3,7 +3,7 @@
 require 'rails_helper'
 require './spec/features/shared_examples/sequencing'
 
-RSpec.describe 'Following a Sequencing Pipeline', js: true do
+RSpec.describe 'Following a Sequencing Pipeline', :js do
   let(:user) { create :user }
   let(:pipeline) { create(:sequencing_pipeline, :with_workflow) }
 
@@ -51,7 +51,7 @@ RSpec.describe 'Following a Sequencing Pipeline', js: true do
       ]
     end
 
-    it 'can be processed', warren: true do
+    it 'can be processed', :warren do
       login_user(user)
       visit pipeline_path(pipeline)
       within('#available-requests') { all('input[type=checkbox]', count: 2).each(&:check) }
@@ -145,7 +145,7 @@ RSpec.describe 'Following a Sequencing Pipeline', js: true do
       end
     end
 
-    it 'descriptors can be edited', warren: true do
+    it 'descriptors can be edited', :warren do
       Warren.handler.clear_messages
 
       login_user(user)
@@ -182,7 +182,7 @@ RSpec.describe 'Following a Sequencing Pipeline', js: true do
       expect(Batch.last.updated_at).to be_today
     end
 
-    it 'multiple descriptors can be edited', warren: true do
+    it 'multiple descriptors can be edited', :warren do
       Warren.handler.clear_messages
 
       login_user(user)
@@ -221,7 +221,7 @@ RSpec.describe 'Following a Sequencing Pipeline', js: true do
       expect(Batch.last.updated_at).to be_today
     end
 
-    it 'spiked PhiX can be edited', warren: true do
+    it 'spiked PhiX can be edited', :warren do
       Warren.handler.clear_messages
 
       login_user(user)

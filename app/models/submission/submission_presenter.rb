@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Submission::SubmissionPresenter < Submission::PresenterSkeleton # rubocop:todo Style/Documentation
+class Submission::SubmissionPresenter < Submission::PresenterSkeleton
   self.attributes = [:id]
 
   def submission

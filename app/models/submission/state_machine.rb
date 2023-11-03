@@ -29,7 +29,7 @@ module Submission::StateMachine
     end
   end
 
-  module InstanceMethods # rubocop:todo Style/Documentation
+  module InstanceMethods
     def valid_for_leaving_building_state
       raise ActiveRecord::RecordInvalid, self unless valid?
     end

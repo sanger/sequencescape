@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Endpoints::Studies < Core::Endpoint::Base # rubocop:todo Style/Documentation
+class Endpoints::Studies < Core::Endpoint::Base
   model {}
 
   instance do

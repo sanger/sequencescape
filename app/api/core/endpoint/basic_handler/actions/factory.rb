@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-module Core::Endpoint::BasicHandler::Actions::Factory # rubocop:todo Style/Documentation
-  class Nested < Core::Endpoint::BasicHandler # rubocop:todo Style/Documentation
+module Core::Endpoint::BasicHandler::Actions::Factory
+  class Nested < Core::Endpoint::BasicHandler
     def initialize(name, &block)
       super(&block)
       @name = name.to_s

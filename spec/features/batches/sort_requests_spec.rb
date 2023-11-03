@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'pry'
 
-describe 'Batches controller', js: true, warren: true do
+describe 'Batches controller', :js, :warren do
   let(:request_count) { 3 }
   let(:batch) { create :sequencing_batch, request_count: request_count, created_at: 1.day.ago, updated_at: 1.day.ago }
   let(:user) { create :admin }

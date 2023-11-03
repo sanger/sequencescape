@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Submission::AccessionBehaviour # rubocop:todo Style/Documentation
+module Submission::AccessionBehaviour
   def self.included(base)
     base.class_eval do
       validate :check_data_release_and_accession_for_submission, if: :can_check_data_release_and_accession?

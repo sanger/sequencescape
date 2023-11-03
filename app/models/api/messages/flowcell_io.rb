@@ -175,7 +175,7 @@ class Api::Messages::FlowcellIO < Api::Base
 
   # Included in Batch model
   module Extensions
-    module ClassMethods # rubocop:todo Style/Documentation
+    module ClassMethods
     end
 
     def self.included(base)

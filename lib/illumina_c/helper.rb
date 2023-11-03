@@ -21,7 +21,7 @@ module IlluminaC::Helper
   ].freeze
 
   PIPELINE = 'Illumina-C'
-  class TemplateConstructor # rubocop:todo Style/Documentation
+  class TemplateConstructor
     # Construct submission templates for the generic pipeline
     # opts is a hash
     # {

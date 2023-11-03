@@ -8,4 +8,4 @@ else
   require File.expand_path(File.dirname(__FILE__) + '/../config/environment') unless defined?(Rails.root)
 end
 require 'spec/autorun'
-exit ::Spec::Runner::CommandLine.run
+exit Spec::Runner::CommandLine.run

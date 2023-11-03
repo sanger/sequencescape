@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class LabwhereReceptionsController < ApplicationController # rubocop:todo Style/Documentation
+class LabwhereReceptionsController < ApplicationController
   before_action :login_required, except: %i[index create]
 
   def index

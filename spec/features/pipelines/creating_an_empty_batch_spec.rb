@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'Empty batch creation', js: true do
+describe 'Empty batch creation', :js do
   let(:user) { create :user }
   let(:pipeline) { create :cherrypick_pipeline }
   let(:pipeline_name) { pipeline.name }

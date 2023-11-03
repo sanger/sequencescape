@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Submission::DelayedJobBehaviour # rubocop:todo Style/Documentation
+module Submission::DelayedJobBehaviour
   def default_priority
     configatron.delayed_job.fetch(:submission_process_priority, 0)
   end

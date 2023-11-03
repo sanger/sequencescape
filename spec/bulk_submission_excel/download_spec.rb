@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe BulkSubmissionExcel::Download, bulk_submission_excel: true, type: :model do
+RSpec.describe BulkSubmissionExcel::Download, :bulk_submission_excel, type: :model do
   attr_reader :download, :spreadsheet
 
   let(:test_file) { 'test.xlsx' }
@@ -75,7 +75,7 @@ RSpec.describe BulkSubmissionExcel::Download, bulk_submission_excel: true, type:
     end
 
     it 'have the correct number of columns' do
-      expect(download.column_list.count).to eq(configuration.columns.all.count)
+      expect(download.column_list.count).to eq(configuration.columns.count)
     end
 
     describe 'with requested_flowcell_type column' do

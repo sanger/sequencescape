@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module IlluminaC::Requests
-  class LibraryRequest < Request::LibraryCreation # rubocop:todo Style/Documentation
+  class LibraryRequest < Request::LibraryCreation
     def role
       "#{request_metadata.library_type} #{super}"
     end

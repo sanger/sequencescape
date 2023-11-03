@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'Pooling', js: true, poolings: true do
+describe 'Pooling', :js, :poolings do
   let(:user) { create :user, email: 'login@example.com' }
 
   describe 'from page directly' do

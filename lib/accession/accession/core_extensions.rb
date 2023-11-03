@@ -4,7 +4,7 @@ module Accession
   # Core Extensions provide extensions to standard classes
   # which can be included whenever needed.
   module CoreExtensions
-    module String # rubocop:todo Style/Documentation
+    module String
       # replace everything that is not a valid character with an underscore
       def sanitize
         downcase.gsub(/[^\w\d]/i, '_')

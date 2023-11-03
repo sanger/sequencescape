@@ -10,7 +10,7 @@ require 'uri'
 require 'cgi'
 require_relative '../paths'
 
-module WithinHelpers # rubocop:todo Style/Documentation
+module WithinHelpers
   def with_scope(locator)
     locator ? within(locator) { yield } : yield
   end

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Search::FindModelByName < Search # rubocop:todo Style/Documentation
+class Search::FindModelByName < Search
   validates :target_model_name, presence: true
 
   def model

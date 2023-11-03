@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Parsers::PlateReaderParser # rubocop:todo Style/Documentation
+class Parsers::PlateReaderParser
   class InvalidFile < StandardError
   end
 

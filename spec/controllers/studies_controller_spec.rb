@@ -55,7 +55,7 @@ RSpec.describe StudiesController do
       end
 
       it 'changes Study.count by 1' do
-        assert_equal 1, Study.count - @study_count
+        expect(Study.count - @study_count).to eq(1)
       end
     end
 
@@ -73,7 +73,7 @@ RSpec.describe StudiesController do
       end
 
       it 'not change Study.count' do
-        assert_equal @initial_study_count, Study.count
+        expect(Study.count).to eq(@initial_study_count)
       end
     end
   end

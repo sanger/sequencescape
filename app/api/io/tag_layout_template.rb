@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Controls API V1 IO for {::TagLayoutTemplate}
-class Io::TagLayoutTemplate < ::Core::Io::Base
+class Io::TagLayoutTemplate < Core::Io::Base
   set_model_for_input(::TagLayoutTemplate)
   set_json_root(:tag_layout_template)
   set_eager_loading { |model| model.include_tags.enabled_only }

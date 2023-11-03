@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # rubocop:todo Metrics/ClassLength
-class Studies::AssetGroupsController < ApplicationController # rubocop:todo Style/Documentation
+class Studies::AssetGroupsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
@@ -93,7 +93,7 @@ class Studies::AssetGroupsController < ApplicationController # rubocop:todo Styl
     if query.blank? || (query.length < 2)
       # We should not blame the user, we should instead help.
       # - By returning the X most recent ones together with an explanation.
-      flash[:error] = 'Search too wide. Please make your query more specific.' # rubocop:disable Rails/ActionControllerFlashBeforeRender
+      flash[:error] = 'Search too wide. Please make your query more specific.'
       redirect_to study_asset_groups_path(@study)
       return
     else

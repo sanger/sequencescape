@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Controls API V1 {::Core::Endpoint::Base endpoints} for TagLayoutTemplates
-class Endpoints::TagLayoutTemplates < ::Core::Endpoint::Base
+class Endpoints::TagLayoutTemplates < Core::Endpoint::Base
   model {}
 
   instance do

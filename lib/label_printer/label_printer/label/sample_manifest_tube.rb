@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module LabelPrinter
   module Label
-    class SampleManifestTube < BaseTube # rubocop:todo Style/Documentation
+    class SampleManifestTube < BaseTube
       attr_reader :sample_manifest, :only_first_label
 
       def initialize(options)

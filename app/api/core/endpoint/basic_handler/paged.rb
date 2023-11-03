@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Core::Endpoint::BasicHandler::Paged # rubocop:todo Style/Documentation
+module Core::Endpoint::BasicHandler::Paged
   def self.page_accessor(action, will_paginate_method, default_value = nil)
     lambda do |object|
       page = object.send(will_paginate_method) || default_value
@@ -54,14 +54,14 @@ module Core::Endpoint::BasicHandler::Paged # rubocop:todo Style/Documentation
   end
   private :page_of_results
 
-  class PagedTarget # rubocop:todo Style/Documentation
+  class PagedTarget
     def initialize(model)
       @model = model
     end
 
     delegate :count, to: :@model
 
-    class PageOfResults # rubocop:todo Style/Documentation
+    class PageOfResults
       def initialize(page, _total, per_page)
         @page, @total_pages = page, page / per_page
       end

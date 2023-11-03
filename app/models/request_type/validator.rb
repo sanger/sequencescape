@@ -6,7 +6,7 @@
 # valid_options  => A serialized object that responds to include? Returning true if the option is present
 #                   It should also return an array of valid options in response to to_a
 class RequestType::Validator < ApplicationRecord
-  class LibraryTypeValidator # rubocop:todo Style/Documentation
+  class LibraryTypeValidator
     attr_reader :request_type_id
 
     def initialize(request_type_id)
@@ -74,8 +74,8 @@ class RequestType::Validator < ApplicationRecord
       @array = array
     end
 
-    def method_missing(method, *args, &block)
-      @array.send(method, *args, &block)
+    def method_missing(method, ...)
+      @array.send(method, ...)
     end
 
     def include?(option)

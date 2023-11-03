@@ -80,9 +80,9 @@ RSpec.describe Order do
         yielded = false
         order.duplicates_within(1.month) do |samples, orders, submissions|
           yielded = true
-          assert_equal [asset_a.samples.first], samples
-          assert_equal [@secondary_order], orders
-          assert_equal [@secondary_submission], submissions
+          expect(samples).to eq([asset_a.samples.first])
+          expect(orders).to eq([@secondary_order])
+          expect(submissions).to eq([@secondary_submission])
         end
         assert yielded, 'duplicates_within failed to yield'
       end

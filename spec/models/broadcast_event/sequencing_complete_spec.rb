@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe BroadcastEvent::SequencingComplete, broadcast_event: true do
+RSpec.describe BroadcastEvent::SequencingComplete, :broadcast_event do
   let(:user) { create(:user) }
   let(:study) { create(:study) }
   let(:project) { create(:project) }

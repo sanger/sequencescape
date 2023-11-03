@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Core::Service::ErrorHandling # rubocop:todo Style/Documentation
+module Core::Service::ErrorHandling
   def self.registered(app) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     app.instance_eval do
       helpers Helpers
@@ -23,8 +23,8 @@ module Core::Service::ErrorHandling # rubocop:todo Style/Documentation
     end
   end
 
-  module Helpers # rubocop:todo Style/Documentation
-    class JsonError # rubocop:todo Style/Documentation
+  module Helpers
+    class JsonError
       def initialize(error)
         @error = error
       end
@@ -50,20 +50,20 @@ module Core::Service::ErrorHandling # rubocop:todo Style/Documentation
   end
 end
 
-class ActiveRecord::ActiveRecordError # rubocop:todo Style/Documentation
+class ActiveRecord::ActiveRecordError
   include ::Core::Service::Error::Behaviour
   self.api_error_code = 500
 end
 
-class ActiveRecord::RecordNotFound # rubocop:todo Style/Documentation
+class ActiveRecord::RecordNotFound
   self.api_error_code = 404
 end
 
-class ActiveRecord::AssociationTypeMismatch # rubocop:todo Style/Documentation
+class ActiveRecord::AssociationTypeMismatch
   self.api_error_code = 422
 end
 
-class ActiveRecord::RecordInvalid # rubocop:todo Style/Documentation
+class ActiveRecord::RecordInvalid
   def api_error(response)
     io_handler = ::Core::Io::Registry.instance.lookup_for_object(record)
     response.content_error(422, errors_grouped_by_attribute { |attribute| io_handler.json_field_for(attribute) })
@@ -75,7 +75,7 @@ class ActiveRecord::RecordInvalid # rubocop:todo Style/Documentation
   private :errors_grouped_by_attribute
 end
 
-class ActiveModel::ValidationError # rubocop:todo Style/Documentation
+class ActiveModel::ValidationError
   def api_error(response)
     io_handler = ::Core::Io::Registry.instance.lookup_for_object(model)
     response.content_error(422, errors_grouped_by_attribute { |attribute| io_handler.json_field_for(attribute) })
@@ -87,17 +87,17 @@ class ActiveModel::ValidationError # rubocop:todo Style/Documentation
   private :errors_grouped_by_attribute
 end
 
-class ActiveRecord::RecordNotSaved # rubocop:todo Style/Documentation
+class ActiveRecord::RecordNotSaved
   def api_error(response)
     response.content_error(422, message)
   end
 end
 
-class IllegalOperation < RuntimeError # rubocop:todo Style/Documentation
+class IllegalOperation < RuntimeError
   include ::Core::Service::Error::Behaviour
   self.api_error_code = 501
   self.api_error_message = 'requested action is not supported on this resource'
 end
 
-Aliquot::TagClash.include ::Core::Service::Error::Behaviour
+Aliquot::TagClash.include Core::Service::Error::Behaviour
 Aliquot::TagClash.api_error_code = 422

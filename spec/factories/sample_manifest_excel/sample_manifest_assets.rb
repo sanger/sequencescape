@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :sample_manifest_asset do
     sanger_sample_id
     sample_manifest
-    association(:asset, factory: :receptacle)
+    asset factory: %i[receptacle]
 
     after(:build) do |sma|
       sma.sample_manifest.labware = [sma.asset.labware] if sma.sample_manifest &&
