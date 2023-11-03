@@ -4,7 +4,7 @@ limber_bait_capture_library_prep:
   name: Bait Capture Library Preparation
   asset_type: Well
   order: 1
-  request_class_name: IlluminaHtp::Requests::StdLibraryRequest
+  request_class_name: Pulldown::Requests::IscLibraryRequest
   for_multiplexing: false
   billable: true
   product_line_name: Bait Capture Library
@@ -12,3 +12,12 @@ limber_bait_capture_library_prep:
     - RVI-BCL
   acceptable_purposes:
     - RVI Cherrypick
+
+limber_bait_capture_library_prep_multiplexing:
+  name: Bait Capture Library Preparation Multiplexing
+  asset_type: Well
+  order: 2
+  request_class_name: Request::Multiplexing
+  for_multiplexing: true
+  product_line_name: Illumina-HTP
+  target_purpose_name: RVI Lib Pool Norm
