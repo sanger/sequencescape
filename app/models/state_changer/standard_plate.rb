@@ -56,7 +56,6 @@ module StateChanger
       raise_request_error if associated_requests.empty? && associated_submission?
 
       associated_requests.each do |request|
-        # customer_accepts_responsibility = nil
         request.customer_accepts_responsibility! if customer_accepts_responsibility
 
         # Only trigger a transition of the request if it is not linked to other wells
