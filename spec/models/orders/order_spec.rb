@@ -72,6 +72,9 @@ RSpec.describe Order do
         end
 
         it 'uses the defaults' do
+          # We have to specify some behaviour even if the validation will fail,
+          # because the method is called before validation runs.
+          # Therefore we use the default behaviour.
           expect(order.autodetect_studies?).to equal(order.autodetection_default)
           expect(order.autodetect_projects?).to equal(order.autodetection_default)
         end
@@ -90,6 +93,9 @@ RSpec.describe Order do
         end
 
         it 'uses the defaults' do
+          # We have to specify some behaviour even if the validation will fail,
+          # because the method is called before validation runs.
+          # Therefore we use the default behaviour.
           expect(order.autodetect_studies?).to equal(order.autodetection_default)
           expect(order.autodetect_projects?).to equal(order.autodetection_default)
         end
@@ -108,6 +114,9 @@ RSpec.describe Order do
         end
 
         it 'uses the defaults' do
+          # We have to specify some behaviour even if the validation will fail,
+          # because the method is called before validation runs.
+          # Therefore we use the default behaviour.
           expect(order.autodetect_studies?).to equal(order.autodetection_default)
           expect(order.autodetect_projects?).to equal(order.autodetection_default)
         end

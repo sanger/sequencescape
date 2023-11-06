@@ -106,9 +106,11 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def autodetect_studies?
-    # need this check here, as this method is called before validation
+    # Method is called before validation is run - check if we've got valid autodetection instructions.
     return autodetection_default if autodetection_clash?
 
+    # If the instructions are valid, use whichever one is not nil.
+    # Use explicit nil checks here to distinguish between nil (behaviour not specified) and false (a valid instruction).
     return autodetect_studies unless autodetect_studies.nil?
 
     return autodetect_studies_projects unless autodetect_studies_projects.nil?
@@ -117,9 +119,11 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def autodetect_projects?
-    # need this check here, as this method is called before validation
+    # Method is called before validation is run - check if we've got valid autodetection instructions.
     return autodetection_default if autodetection_clash?
 
+    # If the instructions are valid, use whichever one is not nil.
+    # Use explicit nil checks here to distinguish between nil (behaviour not specified) and false (a valid instruction).
     return autodetect_projects unless autodetect_projects.nil?
 
     return autodetect_studies_projects unless autodetect_studies_projects.nil?
