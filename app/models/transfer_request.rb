@@ -58,6 +58,7 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
     state :started
     state :processed_1
     state :processed_2
+    state :processed_3
     state :failed, enter: :on_failed
     state :passed
     state :qc_complete
@@ -76,18 +77,22 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
       transitions to: :processed_2, from: [:processed_1]
     end
 
+    event :process_3 do
+      transitions to: :processed_3, from: [:processed_2]
+    end
+
     event :pass do
       # Jumping straight to passed moves through an implied started state.
       transitions to: :passed, from: :pending, after: :on_started
-      transitions to: :passed, from: %i[started failed processed_2]
+      transitions to: :passed, from: %i[started failed processed_2 processed_3]
     end
 
     event :fail do
-      transitions to: :failed, from: %i[pending started processed_1 processed_2 passed]
+      transitions to: :failed, from: %i[pending started processed_1 processed_2 processed_3 passed]
     end
 
     event :cancel do
-      transitions to: :cancelled, from: %i[started processed_1 processed_2 passed qc_complete]
+      transitions to: :cancelled, from: %i[started processed_1 processed_2 processed_3 passed qc_complete]
     end
 
     event :cancel_before_started do

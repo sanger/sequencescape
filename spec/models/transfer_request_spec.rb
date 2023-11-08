@@ -268,13 +268,17 @@ RSpec.describe TransferRequest do
         pending: :passed,
         started: :passed,
         failed: :passed,
-        processed_2: :passed
+        processed_2: :passed,
+        processed_3: :passed
       },
       process_1: {
         pending: :processed_1
       },
       process_2: {
         processed_1: :processed_2
+      },
+      process_3: {
+        processed_2: :processed_3
       },
       qc: {
         passed: :qc_complete
@@ -284,12 +288,14 @@ RSpec.describe TransferRequest do
         started: :failed,
         processed_1: :failed,
         processed_2: :failed,
+        processed_3: :failed,
         passed: :failed
       },
       cancel: {
         started: :cancelled,
         processed_1: :cancelled,
         processed_2: :cancelled,
+        processed_3: :cancelled,
         passed: :cancelled,
         qc_complete: :cancelled
       },
