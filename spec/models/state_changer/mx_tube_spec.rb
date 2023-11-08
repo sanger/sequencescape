@@ -277,7 +277,7 @@ RSpec.describe StateChanger::MxTube do
       let(:target_state) { 'processed_3' }
       let(:request_state) { 'started' }
 
-      it 'updates the tube to "processed_3" with "started" requests', aggregate_failures: true do
+      it 'updates the tube to "processed_3" with "started" requests', :aggregate_failures do
         expect(transfer_request.reload.state).to eq('processed_3')
         expect(request.reload.state).to eq('started')
       end
@@ -291,7 +291,7 @@ RSpec.describe StateChanger::MxTube do
       let(:target_state) { 'passed' }
       let(:request_state) { 'started' }
 
-      it 'updates the tube to "passed" with "started" requests', aggregate_failures: true do
+      it 'updates the tube to "passed" with "started" requests', :aggregate_failures do
         expect(transfer_request.reload.state).to eq('passed')
         expect(request.reload.state).to eq('passed')
       end
