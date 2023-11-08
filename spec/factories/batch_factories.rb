@@ -29,11 +29,11 @@ FactoryBot.define do
     end
 
     factory :multiplexed_batch do
-      association(:pipeline, factory: :multiplexed_pipeline)
+      pipeline factory: %i[multiplexed_pipeline]
     end
 
     factory :sequencing_batch do
-      association(:pipeline, factory: :sequencing_pipeline)
+      pipeline factory: %i[sequencing_pipeline]
     end
 
     factory :cherrypick_batch do
@@ -42,7 +42,7 @@ FactoryBot.define do
         batch_request_factory { :cherrypick_batch_request }
         request_factory { :cherrypick_request }
       end
-      association(:pipeline, factory: :cherrypick_pipeline)
+      pipeline factory: %i[cherrypick_pipeline]
     end
   end
 
@@ -53,7 +53,7 @@ FactoryBot.define do
       assets { create_list(:pac_bio_library_tube, request_count) }
     end
 
-    association(:pipeline, factory: :pac_bio_sequencing_pipeline)
+    pipeline factory: %i[pac_bio_sequencing_pipeline]
 
     after(:build) do |batch, evaluator|
       evaluator.assets.each_with_index.each do |asset, index|

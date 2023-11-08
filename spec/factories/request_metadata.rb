@@ -9,7 +9,7 @@ FactoryBot.define do
   factory :request_traction_grid_ion_metadata, class: 'Request::Traction::GridIon::Metadata' do
     library_type { 'Rapid' }
     data_type { 'basecalls and raw data' }
-    association(:owner, factory: :request_traction_grid_ion)
+    owner factory: %i[request_traction_grid_ion]
   end
 
   # Automatically generated request types
@@ -31,7 +31,7 @@ FactoryBot.define do
     fragment_size_required_from { 1 }
     fragment_size_required_to { 21 }
     read_length { 76 }
-    association(:owner, factory: :sequencing_request)
+    owner factory: %i[sequencing_request]
   end
 
   # HiSeq sequencing
@@ -103,12 +103,12 @@ FactoryBot.define do
 
     factory :request_metadata_for_gbs, class: 'IlluminaHtp::Requests::GbsRequest::Metadata' do
       primer_panel_name { create(:primer_panel).name }
-      association(:owner, factory: :gbs_request)
+      owner factory: %i[gbs_request]
     end
 
     factory :request_metadata_for_heron, class: 'IlluminaHtp::Requests::HeronRequest::Metadata' do
       primer_panel_name { create(:primer_panel).name }
-      association(:owner, factory: :heron_request)
+      owner factory: %i[heron_request]
     end
   end
 
@@ -118,7 +118,7 @@ FactoryBot.define do
   end
 
   # set default  metadata factories to every request types which have been defined yet
-  RequestType.all.each do |rt|
+  RequestType.find_each do |rt|
     factory_name = :"request_metadata_for_#{rt.name.downcase.gsub(/[^a-z]+/, '_')}"
     next if FactoryBot.factories.registered?(factory_name)
 

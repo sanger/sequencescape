@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class BroadcastEvent::LibraryStart < BroadcastEvent # rubocop:todo Style/Documentation
+class BroadcastEvent::LibraryStart < BroadcastEvent
   set_event_type 'library_start'
 
   # Properties takes :order_id

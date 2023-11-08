@@ -2,7 +2,7 @@
 <%= page_title 'Tag Layout Template', 'New' %>
 
 <%= form_for(@tag_layout_template) do |f| %>
-  <%= f.error_messages %>
+  <%= render_error_messages(@tag_layout_template) %>
   <div class='form-group'>
     <%= f.label :name, 'Tag Layout Template name' %><br>
     <%= f.text_field :name, { class: 'form-control' } %>

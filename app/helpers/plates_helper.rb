@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module PlatesHelper # rubocop:todo Style/Documentation
+module PlatesHelper
   class AliquotError < StandardError
   end
 

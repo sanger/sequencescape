@@ -1,8 +1,8 @@
 # frozen_string_literal: true
-class Transfer::BetweenPlateAndTubes < Transfer # rubocop:todo Style/Documentation
+class Transfer::BetweenPlateAndTubes < Transfer
   DESTINATION_INCLUDES = { destination: %i[uuid_object barcodes] }.freeze
 
-  class WellToTube < ApplicationRecord # rubocop:todo Style/Documentation
+  class WellToTube < ApplicationRecord
     self.table_name = ('well_to_tube_transfers')
 
     belongs_to :transfer, class_name: 'Transfer::BetweenPlateAndTubes'

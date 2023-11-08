@@ -148,9 +148,9 @@ class CherrypickTaskTest < ActiveSupport::TestCase
             (1..4).inject([]) do |plate, row|
               plate.tap do
                 request = @requests[row - 1]
-                plate.concat([CherrypickTask::TEMPLATE_EMPTY_WELL])
+                plate.push(CherrypickTask::TEMPLATE_EMPTY_WELL)
                 plate.push([request.id, request.asset.plate.human_barcode, request.asset.map.description])
-                plate.concat([CherrypickTask::EMPTY_WELL])
+                plate.push(CherrypickTask::EMPTY_WELL)
               end
             end
 

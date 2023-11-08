@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :qc_result do
-    association(:asset, factory: :receptacle)
+    asset factory: %i[receptacle]
     key { 'molarity' }
     value { '5.43' }
     units { 'nM' }

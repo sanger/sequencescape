@@ -4,7 +4,7 @@ require_relative '../multiple_double_labels'
 
 module LabelPrinter
   module Label
-    class BasePlateDouble # rubocop:todo Style/Documentation
+    class BasePlateDouble
       include Label::MultipleDoubleLabels
 
       def barcode(plate)

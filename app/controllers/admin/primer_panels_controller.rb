@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Admin::PrimerPanelsController < ApplicationController # rubocop:todo Style/Documentation
+class Admin::PrimerPanelsController < ApplicationController
   authorize_resource
   before_action :discover_primer_panel, only: %i[edit update]
 

@@ -4,7 +4,7 @@ require_relative '../../config/config'
 
 namespace :pmb do
   task add_label_templates: :environment do
-    class LabelTemplateCreator # rubocop:todo Style/Documentation
+    class LabelTemplateCreator
       attr_accessor :label_types
 
       class << self

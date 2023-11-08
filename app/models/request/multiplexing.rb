@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Request::Multiplexing < CustomerRequest # rubocop:todo Style/Documentation
+class Request::Multiplexing < CustomerRequest
   # If we re request we need to make sure we look in the new
   # source wells for our repool
   after_create :flag_asset_as_stock_well, if: :asset

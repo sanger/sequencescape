@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module LabelPrinter
   module Label
-    class RobotBeds < BasePlate # rubocop:todo Style/Documentation
+    class RobotBeds < BasePlate
       attr_reader :plates
 
       def initialize(beds)

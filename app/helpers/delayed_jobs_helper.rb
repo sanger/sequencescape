@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module DelayedJobsHelper # rubocop:todo Style/Documentation
+module DelayedJobsHelper
   def job_type(job)
     case job.name
     when /StudyReport/

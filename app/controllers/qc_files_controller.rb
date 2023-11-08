@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class QcFilesController < ApplicationController # rubocop:todo Style/Documentation
+class QcFilesController < ApplicationController
   def show
     QcFile
       .find(params[:id])

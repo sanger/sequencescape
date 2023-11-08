@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class SampleTube < Tube # rubocop:todo Style/Documentation
+class SampleTube < Tube
   include Api::SampleTubeIO::Extensions
   include ModelExtensions::SampleTube
   include StandardNamedScopes

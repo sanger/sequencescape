@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class RequestType::PoolingMethod < ApplicationRecord # rubocop:todo Style/Documentation
+class RequestType::PoolingMethod < ApplicationRecord
   has_many :request_types
   validates :pooling_behaviour, presence: true
   serialize :pooling_options

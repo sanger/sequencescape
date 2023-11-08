@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Heron::Factories::Plate, heron: true, heron_events: true, lighthouse: true, type: :model do
+RSpec.describe Heron::Factories::Plate, :heron, :heron_events, :lighthouse, type: :model do
   let(:purpose) { create(:plate_purpose, target_type: 'Plate', name: 'Stock Plate', size: '96') }
   let(:study) { create(:study) }
   let(:barcode) { '0000000001' }
@@ -24,7 +24,7 @@ RSpec.describe Heron::Factories::Plate, heron: true, heron_events: true, lightho
     shared_examples_for 'an invalid parameter' do
       let(:factory) { described_class.new(params) }
       it 'is not valid' do
-        expect(factory).to be_invalid
+        expect(factory).not_to be_valid
       end
 
       it 'has an error' do
@@ -141,15 +141,15 @@ RSpec.describe Heron::Factories::Plate, heron: true, heron_events: true, lightho
         end
 
         it 'is invalid' do
-          expect(plate_factory).to be_invalid
+          expect(plate_factory).not_to be_valid
         end
 
         it 'stores the error message from samples' do
           expect(plate_factory.tap(&:validate).errors.full_messages).to eq(
             [
-              'Content a1 Wrong Unexisting field for sample or sample_metadata',
-              "Content c1, pos: 0 Study can't be blank",
-              'Content c1, pos: 1 Phenotype No other params can be added when sample uuid specified'
+              'Content a1 ["Wrong Unexisting field for sample or sample_metadata"]',
+              "Content c1, pos: 0 [\"Study can't be blank\"]",
+              'Content c1, pos: 1 ["Phenotype No other params can be added when sample uuid specified"]'
             ]
           )
         end

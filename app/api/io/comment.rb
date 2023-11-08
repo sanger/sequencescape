@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Controls API V1 IO for {::Comment}
-class Io::Comment < ::Core::Io::Base
+class Io::Comment < Core::Io::Base
   set_model_for_input(::Comment)
   set_json_root(:comment)
   set_eager_loading { |model| model }

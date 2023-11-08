@@ -13,14 +13,14 @@ describe 'Plate QC display' do
       visit plate_path(plate)
       %w[concentration volume quantity_in_nano_grams loci_passed rin].each do |qc_result|
         within("##{qc_result}") do
-          expect(page).to have_selector('td', count: 126)
-          expect(page).to have_selector('tr', count: 10)
-          expect(page).to have_selector('th[2]', text: '1')
-          expect(page).to have_selector('th[13]', text: '12')
-          expect(page).to have_selector('tr[1]/td[1]', text: 'A')
-          expect(page).to have_selector('tr[8]/td[14]', text: 'H')
-          expect(page).to have_selector('tr[9]/td[2]', text: '1')
-          expect(page).to have_selector('tr[9]/td[13]', text: '12')
+          expect(page).to have_css('td', count: 126)
+          expect(page).to have_css('tr', count: 10)
+          expect(page).to have_css('th[2]', text: '1')
+          expect(page).to have_css('th[13]', text: '12')
+          expect(page).to have_css('tr[1]/td[1]', text: 'A')
+          expect(page).to have_css('tr[8]/td[14]', text: 'H')
+          expect(page).to have_css('tr[9]/td[2]', text: '1')
+          expect(page).to have_css('tr[9]/td[13]', text: '12')
         end
       end
     end

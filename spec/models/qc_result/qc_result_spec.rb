@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe QcResult, qc_result: true do
+RSpec.describe QcResult, :qc_result do
   it 'is not valid without a key' do
     expect(build(:qc_result, key: nil)).not_to be_valid
   end
@@ -60,7 +60,7 @@ RSpec.describe QcResult, qc_result: true do
   end
 end
 
-describe QcResult, warren: true do
+describe QcResult, :warren do
   let(:warren) { Warren.handler }
 
   before { warren.clear_messages }

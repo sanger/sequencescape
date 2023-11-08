@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class BroadcastEvent::LabwareReceived < BroadcastEvent # rubocop:todo Style/Documentation
+class BroadcastEvent::LabwareReceived < BroadcastEvent
   set_event_type 'labware.received'
 
   seed_class Asset

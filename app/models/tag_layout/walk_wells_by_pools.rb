@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class TagLayout::WalkWellsByPools < TagLayout::Walker # rubocop:todo Style/Documentation
+class TagLayout::WalkWellsByPools < TagLayout::Walker
   self.walking_by = 'wells in pools'
 
   # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize

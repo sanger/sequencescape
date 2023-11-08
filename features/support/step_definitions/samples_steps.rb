@@ -228,5 +228,5 @@ Given /^there are no samples$/ do
   # To bypass all the callbacks
   # That trigger when they die
   Sample.delete_all
-  Uuid.where(resource_type: 'Sample').each(&:destroy)
+  Uuid.where(resource_type: 'Sample').find_each(&:destroy)
 end

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
-class QcFile < ApplicationRecord # rubocop:todo Style/Documentation
+class QcFile < ApplicationRecord
   extend DbFile::Uploader
   include Uuid::Uuidable
 
-  module Associations # rubocop:todo Style/Documentation
+  module Associations
     # Adds accessors for named fields and attaches documents to them
 
     def has_qc_files # rubocop:todo Metrics/MethodLength
@@ -32,6 +32,10 @@ class QcFile < ApplicationRecord # rubocop:todo Style/Documentation
 
   # CarrierWave uploader - gets the uploaded_data file, but saves the identifier to the "filename" column
   has_uploaded :uploaded_data, serialization_column: 'filename'
+
+  #mount_uploader :uploaded_data, PolymorphicUploader, mount_on: :filename
+  #mount_uploader :uploaded_data, PolymorphicUploader, mount_on: 'filename'
+
   validates :uploaded_data, presence: :true
 
   # Method provided for backwards compatibility
@@ -42,6 +46,7 @@ class QcFile < ApplicationRecord # rubocop:todo Style/Documentation
   def retrieve_file
     uploaded_data.cache!(uploaded_data.file)
     yield(uploaded_data)
+
     # We can't actually delete the cache file here, as the send_file
     # operation happens asynchronously. Instead we can use:
     # PolymorphicUploader.clean_cached_files!

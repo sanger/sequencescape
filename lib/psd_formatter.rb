@@ -3,7 +3,7 @@
 require 'syslog/logger'
 require 'ostruct'
 
-class PsdFormatter < Syslog::Logger::Formatter # rubocop:todo Style/Documentation
+class PsdFormatter < Syslog::Logger::Formatter
   LINE_FORMAT = "(thread-%s) [%s] %5s -- : %s\n".freeze
 
   def initialize(deployment_info)

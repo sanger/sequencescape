@@ -16,7 +16,7 @@ module Api
 
     use Api::EndpointHandler
 
-    module RootResponse # rubocop:todo Style/Documentation
+    module RootResponse
       # rubocop:todo Metrics/MethodLength
       def services(services) # rubocop:todo Metrics/AbcSize
         self.object = services

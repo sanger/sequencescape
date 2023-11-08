@@ -15,7 +15,7 @@ def find_value_at_tag(xml_received, tag_name)
     end
 end
 
-RSpec.describe Accession::Sample, accession: true, type: :model do
+RSpec.describe Accession::Sample, :accession, type: :model do
   let(:tag_list) { build(:standard_accession_tag_list) }
 
   before { @country = create :insdc_country, name: 'Australia' }

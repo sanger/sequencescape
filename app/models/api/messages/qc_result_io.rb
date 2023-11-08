@@ -2,29 +2,29 @@
 
 # Generates a warehouse message describing a {QcResult}
 class Api::Messages::QcResultIO < Api::Base
-  module Extensions # rubocop:todo Style/Documentation
+  module Extensions
     def assay
       "#{assay_type} #{assay_version}"
     end
   end
 
-  module AliquotExtensions # rubocop:todo Style/Documentation
+  module AliquotExtensions
     def library_identifier
       library&.external_identifier
     end
   end
 
-  module AssetExtensions # rubocop:todo Style/Documentation
+  module AssetExtensions
     def labware_purpose; end
   end
 
-  module WellExtensions # rubocop:todo Style/Documentation
+  module WellExtensions
     def labware_purpose
       plate&.purpose&.name
     end
   end
 
-  module TubeExtensions # rubocop:todo Style/Documentation
+  module TubeExtensions
     def labware_purpose
       purpose&.name
     end

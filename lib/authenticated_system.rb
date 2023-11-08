@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module AuthenticatedSystem # rubocop:todo Style/Documentation
+module AuthenticatedSystem
   protected
 
   # Returns true or false if the user is logged in.

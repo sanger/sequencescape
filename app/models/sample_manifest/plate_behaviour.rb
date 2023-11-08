@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module SampleManifest::PlateBehaviour
-  class Base # rubocop:todo Style/Documentation
+  class Base
     include SampleManifest::CoreBehaviour::Shared
     include SampleManifest::CoreBehaviour::NoSpecializedValidation
 

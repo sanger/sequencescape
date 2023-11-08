@@ -2,8 +2,8 @@
 # Despite name controls rendering of warehouse messages for {Project}
 # Historically used to be v0.5 API
 class Api::ProjectIO < Api::Base
-  module Extensions # rubocop:todo Style/Documentation
-    module ClassMethods # rubocop:todo Style/Documentation
+  module Extensions
+    module ClassMethods
       def render_class
         Api::ProjectIO
       end

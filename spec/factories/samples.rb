@@ -11,7 +11,7 @@ FactoryBot.define do
     end
 
     factory :sample_with_gender do
-      association :sample_metadata, factory: :sample_metadata_with_gender
+      sample_metadata factory: %i[sample_metadata_with_gender]
     end
 
     factory :sample_with_sanger_sample_id do
@@ -20,7 +20,7 @@ FactoryBot.define do
     end
 
     factory :accessioned_sample do
-      association :sample_metadata, factory: :sample_metadata_with_accession_number
+      sample_metadata factory: %i[sample_metadata_with_accession_number]
     end
   end
 

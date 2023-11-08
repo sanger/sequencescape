@@ -59,6 +59,12 @@ Capybara.register_driver :headless_chrome do |app|
   the_driver
 end
 
+Capybara.register_driver :selenium_chrome do |app|
+  driver = Capybara::Selenium::Driver.new(app, browser: :chrome)
+  driver.browser.download_path = DownloadHelpers::PATH.to_s
+  driver
+end
+
 Capybara.javascript_driver = ENV.fetch('JS_DRIVER', 'headless_chrome').to_sym
 Capybara.default_max_wait_time = 10
 
@@ -149,7 +155,7 @@ RSpec.configure do |config|
 
   config.include UserLogin
 
-  config.around(:each, warren: true) do |ex|
+  config.around(:each, :warren) do |ex|
     Warren.handler.enable!
     ex.run
     Warren.handler.disable!
@@ -166,7 +172,7 @@ RSpec.configure do |config|
   #       expect { upload.process(nil) }.not_to change(Delayed::Job, :count)
   #     end
   #   end
-  config.around(:each, accessioning_enabled: true) do |ex|
+  config.around(:each, :accessioning_enabled) do |ex|
     original_value = configatron.accession_samples
     original_config = Accession.configuration
     Accession.configure do |accession|
@@ -185,9 +191,9 @@ RSpec.configure do |config|
     FactoryBot.rewind_sequences
   end
 
-  config.before(:each, js: true) { page.driver.browser.manage.window.resize_to(1024, 1024) }
+  config.before(:each, :js) { page.driver.browser.manage.window.resize_to(1024, 1024) }
 
-  config.after(:each, js: true) do |example|
+  config.after(:each, :js) do |example|
     if example.exception
       name = example.full_description.gsub(/\s/, '_')
       CapybaraFailureLogger.log_failure(name, page)

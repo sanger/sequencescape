@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe Pooling, poolings: true do
+describe Pooling, :poolings do
   let(:empty_lb_tube) { create :empty_library_tube, barcode: 1 }
   let(:untagged_lb_tube1) { create :library_tube, barcode: 2 }
   let(:untagged_lb_tube2) { create :library_tube, barcode: 3 }
@@ -94,7 +94,7 @@ describe Pooling, poolings: true do
         )
       end
 
-      it 'sets up child relationships', aggregate_failures: true do
+      it 'sets up child relationships', :aggregate_failures do
         expect(pooling.execute).to be true
         input_tubes = Labware.with_barcode(barcodes)
         expect(input_tubes.all? { |l| l.children.include?(pooling.stock_mx_tube) }).to be true

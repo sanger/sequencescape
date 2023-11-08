@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class HomesController < ApplicationController # rubocop:todo Style/Documentation
+class HomesController < ApplicationController
   before_action :login_required
 
   def show # rubocop:todo Metrics/AbcSize

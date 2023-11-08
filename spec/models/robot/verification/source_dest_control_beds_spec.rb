@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'broadcast_event/lab_event'
 
-RSpec.describe Robot::Verification::SourceDestControlBeds, robot_verification: true do
+RSpec.describe Robot::Verification::SourceDestControlBeds, :robot_verification do
   subject(:verifier) { described_class.new }
 
   describe '#pick_number_to_expected_layout' do

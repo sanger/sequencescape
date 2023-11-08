@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Accession
-  class Configuration # rubocop:todo Style/Documentation
+  class Configuration
     include Accession::Helpers
     include Accession::Equality
 

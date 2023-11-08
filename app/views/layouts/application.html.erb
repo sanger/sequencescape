@@ -33,9 +33,9 @@
       <% end %>
     <% end %>
     <%= csrf_meta_tags %>
-    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-    <link rel="apple-touch-icon-precomposed" href="/apple-icon.png" type="image/png" />
+    <link rel="shortcut icon" href="/<%= favicon %>" type="image/x-icon" />
+    <link rel="icon" href="/<%= favicon %>" type="image/x-icon" />
+    <link rel="apple-touch-icon-precomposed" href="/<%= apple_icon %>" type="image/png" />
   </head>
 
   <body class="<%= Rails.env %> <%= DeploymentEnvironment.role %>">

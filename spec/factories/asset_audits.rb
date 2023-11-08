@@ -6,6 +6,6 @@ FactoryBot.define do
     key { 'some_key' }
     created_by { 'abc123' }
     witnessed_by { 'jane' }
-    association(:asset, factory: :labware)
+    asset factory: %i[labware]
   end
 end

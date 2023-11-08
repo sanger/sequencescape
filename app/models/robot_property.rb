@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class RobotProperty < ApplicationRecord # rubocop:todo Style/Documentation
+class RobotProperty < ApplicationRecord
   belongs_to :robot
 
   scope :beds, -> { where(name: nil) }

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SampleManifestExcel::Worksheet, sample_manifest: true, sample_manifest_excel: true, type: :model do
+RSpec.describe SampleManifestExcel::Worksheet, :sample_manifest, :sample_manifest_excel, type: :model do
   attr_reader :sample_manifest, :spreadsheet
 
   let(:xls) { Axlsx::Package.new }

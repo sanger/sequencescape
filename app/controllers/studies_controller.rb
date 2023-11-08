@@ -2,7 +2,7 @@
 require 'rexml/document'
 
 # rubocop:todo Metrics/ClassLength
-class StudiesController < ApplicationController # rubocop:todo Style/Documentation
+class StudiesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
@@ -85,7 +85,7 @@ class StudiesController < ApplicationController # rubocop:todo Style/Documentati
       User.find(params[:study_owner_id]).grant_owner(@study) if params[:study_owner_id].present?
     end
 
-    flash[:notice] = 'Your study has been created' # rubocop:disable Rails/ActionControllerFlashBeforeRender
+    flash[:notice] = 'Your study has been created'
     respond_to do |format|
       format.html { redirect_to study_path(@study) }
       format.xml { render xml: @study, status: :created, location: @study }

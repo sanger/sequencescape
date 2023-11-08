@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class TagLayout::WalkManualWellsOfPlate < TagLayout::Walker # rubocop:todo Style/Documentation
+class TagLayout::WalkManualWellsOfPlate < TagLayout::Walker
   self.walking_by = 'wells of plate'
 
   def walk_wells

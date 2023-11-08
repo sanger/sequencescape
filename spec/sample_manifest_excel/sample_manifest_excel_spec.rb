@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SampleManifestExcel, sample_manifest: true, sample_manifest_excel: true, type: :model do
+RSpec.describe SampleManifestExcel, :sample_manifest, :sample_manifest_excel, type: :model do
   before do
     described_class.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')

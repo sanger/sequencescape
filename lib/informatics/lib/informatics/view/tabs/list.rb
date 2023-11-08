@@ -2,7 +2,7 @@
 module Informatics
   module View
     module Tabs
-      class List # rubocop:todo Style/Documentation
+      class List
         attr_accessor :items
 
         def initialize(_options = {})

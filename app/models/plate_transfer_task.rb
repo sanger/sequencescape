@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class PlateTransferTask < Task # rubocop:todo Style/Documentation
+class PlateTransferTask < Task
   belongs_to :purpose
 
   def render_task(workflows_controller, params, _user)

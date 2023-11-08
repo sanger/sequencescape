@@ -183,7 +183,7 @@ module SampleManifestExcel
       end
 
       def sanger_sample_id_exists?
-        return if manifest_asset.present?
+        return false if manifest_asset.present?
 
         errors.add(:base, "#{row_title} Cannot find sample manifest for Sanger ID: #{sanger_sample_id}")
       end

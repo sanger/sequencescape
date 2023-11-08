@@ -3,7 +3,7 @@
 
 <%= form_for(@asset,url: labware_path(@asset),as:'labware') do |f| %>
   <%= alert do %>
-    <%= f.error_messages %>
+    <%= render_error_messages(@asset) %>
   <% end %>
 
   <% if can? :rename, @asset %>

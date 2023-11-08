@@ -2,7 +2,7 @@
 
 # Helper class that wraps well ranges in specs
 class WellRange
-  WELL_REGEXP = /^([A-H])(\d+)$/.freeze
+  WELL_REGEXP = /^([A-H])(\d+)$/
 
   def initialize(start, finish)
     start_match = WELL_REGEXP.match(start)

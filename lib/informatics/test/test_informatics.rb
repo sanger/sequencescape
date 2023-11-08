@@ -2,7 +2,7 @@
 require 'test/unit'
 require 'informatics/support/options'
 
-class TestInformatics < Test::Unit::TestCase # rubocop:todo Style/Documentation
+class TestInformatics < Test::Unit::TestCase
   def setup
     @hash = { 'KEY' => 'VALUE' }
     @o = Informatics::Support::Options.collect(@hash)

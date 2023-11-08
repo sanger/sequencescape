@@ -38,7 +38,7 @@ RSpec.describe StateChanger::MxTube do
       let(:target_state) { 'started' }
       let(:request_state) { 'pending' }
 
-      it 'updates the tube to "started" with "pending" requests', aggregate_failures: true do
+      it 'updates the tube to "started" with "pending" requests', :aggregate_failures do
         expect(transfer_request.reload.state).to eq('started')
         expect(request.reload.state).to eq('pending')
       end
@@ -48,7 +48,7 @@ RSpec.describe StateChanger::MxTube do
       let(:target_state) { 'started' }
       let(:request_state) { 'started' }
 
-      it 'updates the tube to "started" with "started" requests', aggregate_failures: true do
+      it 'updates the tube to "started" with "started" requests', :aggregate_failures do
         expect(transfer_request.reload.state).to eq('started')
         expect(request.reload.state).to eq('started')
       end
@@ -58,7 +58,7 @@ RSpec.describe StateChanger::MxTube do
       let(:target_state) { 'started' }
       let(:request_state) { 'failed' }
 
-      it 'updates the tube to "started" with "failed" requests', aggregate_failures: true do
+      it 'updates the tube to "started" with "failed" requests', :aggregate_failures do
         expect(transfer_request.reload.state).to eq('started')
         expect(request.reload.state).to eq('failed')
       end
@@ -68,7 +68,7 @@ RSpec.describe StateChanger::MxTube do
       let(:target_state) { 'started' }
       let(:request_state) { 'passed' }
 
-      it 'updates the tube to "started" with "passed" requests', aggregate_failures: true do
+      it 'updates the tube to "started" with "passed" requests', :aggregate_failures do
         expect(transfer_request.reload.state).to eq('started')
         expect(request.reload.state).to eq('passed')
       end
@@ -78,7 +78,7 @@ RSpec.describe StateChanger::MxTube do
       let(:target_state) { 'started' }
       let(:request_state) { 'cancelled' }
 
-      it 'updates the tube to "started" with "cancelled" requests', aggregate_failures: true do
+      it 'updates the tube to "started" with "cancelled" requests', :aggregate_failures do
         expect(transfer_request.reload.state).to eq('started')
         expect(request.reload.state).to eq('cancelled')
       end
@@ -88,7 +88,7 @@ RSpec.describe StateChanger::MxTube do
       let(:target_state) { 'processed_1' }
       let(:request_state) { 'pending' }
 
-      it 'updates the tube to "processed_1" with "pending" requests', aggregate_failures: true do
+      it 'updates the tube to "processed_1" with "pending" requests', :aggregate_failures do
         expect(transfer_request.reload.state).to eq('processed_1')
         expect(request.reload.state).to eq('pending')
       end
@@ -98,7 +98,7 @@ RSpec.describe StateChanger::MxTube do
       let(:target_state) { 'passed' }
       let(:request_state) { 'failed' }
 
-      it 'updates the tube to "passed" with "failed" requests', aggregate_failures: true do
+      it 'updates the tube to "passed" with "failed" requests', :aggregate_failures do
         expect(transfer_request.reload.state).to eq('passed')
         expect(request.reload.state).to eq('failed')
       end
@@ -108,7 +108,7 @@ RSpec.describe StateChanger::MxTube do
       let(:target_state) { 'passed' }
       let(:request_state) { 'passed' }
 
-      it 'updates the tube to "passed" with "passed" requests', aggregate_failures: true do
+      it 'updates the tube to "passed" with "passed" requests', :aggregate_failures do
         expect(transfer_request.reload.state).to eq('passed')
         expect(request.reload.state).to eq('passed')
       end
@@ -118,7 +118,7 @@ RSpec.describe StateChanger::MxTube do
       let(:target_state) { 'passed' }
       let(:request_state) { 'cancelled' }
 
-      it 'updates the tube to "passed" with "cancelled" requests', aggregate_failures: true do
+      it 'updates the tube to "passed" with "cancelled" requests', :aggregate_failures do
         expect(transfer_request.reload.state).to eq('passed')
         expect(request.reload.state).to eq('cancelled')
       end
@@ -128,7 +128,7 @@ RSpec.describe StateChanger::MxTube do
       let(:target_state) { 'failed' }
       let(:request_state) { 'started' }
 
-      it 'updates the tube to "failed" with "failed" requests', aggregate_failures: true do
+      it 'updates the tube to "failed" with "failed" requests', :aggregate_failures do
         expect(transfer_request.reload.state).to eq('failed')
         expect(request.reload.state).to eq('failed')
       end
@@ -138,7 +138,7 @@ RSpec.describe StateChanger::MxTube do
       let(:target_state) { 'failed' }
       let(:request_state) { 'passed' }
 
-      it 'updates the tube to "failed" with "passed" requests', aggregate_failures: true do
+      it 'updates the tube to "failed" with "passed" requests', :aggregate_failures do
         expect(transfer_request.reload.state).to eq('failed')
         expect(request.reload.state).to eq('passed')
       end
@@ -148,7 +148,7 @@ RSpec.describe StateChanger::MxTube do
       let(:target_state) { 'cancelled' }
       let(:request_state) { 'pending' }
 
-      it 'updates the tube to "cancelled" with "pending" requests', aggregate_failures: true do
+      it 'updates the tube to "cancelled" with "pending" requests', :aggregate_failures do
         expect(transfer_request.reload.state).to eq('cancelled')
         expect(request.reload.state).to eq('pending')
       end
@@ -162,7 +162,7 @@ RSpec.describe StateChanger::MxTube do
       let(:target_state) { 'processed_2' }
       let(:request_state) { 'started' }
 
-      it 'updates the tube to "processed_2" with "started" requests', aggregate_failures: true do
+      it 'updates the tube to "processed_2" with "started" requests', :aggregate_failures do
         expect(transfer_request.reload.state).to eq('processed_2')
         expect(request.reload.state).to eq('started')
       end
@@ -176,7 +176,7 @@ RSpec.describe StateChanger::MxTube do
       let(:target_state) { 'passed' }
       let(:request_state) { 'started' }
 
-      it 'updates the tube to "passed" with "passed" requests', aggregate_failures: true do
+      it 'updates the tube to "passed" with "passed" requests', :aggregate_failures do
         expect(transfer_request.reload.state).to eq('passed')
         expect(request.reload.state).to eq('passed')
       end
@@ -186,7 +186,7 @@ RSpec.describe StateChanger::MxTube do
       let(:target_state) { 'passed' }
       let(:request_state) { 'failed' }
 
-      it 'updates the tube to "passed" with "failed" requests', aggregate_failures: true do
+      it 'updates the tube to "passed" with "failed" requests', :aggregate_failures do
         expect(transfer_request.reload.state).to eq('passed')
         expect(request.reload.state).to eq('failed')
       end
@@ -196,7 +196,7 @@ RSpec.describe StateChanger::MxTube do
       let(:target_state) { 'passed' }
       let(:request_state) { 'cancelled' }
 
-      it 'updates the tube to "passed" with "cancelled" requests', aggregate_failures: true do
+      it 'updates the tube to "passed" with "cancelled" requests', :aggregate_failures do
         expect(transfer_request.reload.state).to eq('passed')
         expect(request.reload.state).to eq('cancelled')
       end
@@ -206,7 +206,7 @@ RSpec.describe StateChanger::MxTube do
       let(:target_state) { 'failed' }
       let(:request_state) { 'started' }
 
-      it 'updates the tube to "failed" with "failed" requests', aggregate_failures: true do
+      it 'updates the tube to "failed" with "failed" requests', :aggregate_failures do
         expect(transfer_request.reload.state).to eq('failed')
         expect(request.reload.state).to eq('failed')
       end
@@ -216,7 +216,7 @@ RSpec.describe StateChanger::MxTube do
       let(:target_state) { 'failed' }
       let(:request_state) { 'passed' }
 
-      it 'updates the tube to "failed" with "passed" requests', aggregate_failures: true do
+      it 'updates the tube to "failed" with "passed" requests', :aggregate_failures do
         expect(transfer_request.reload.state).to eq('failed')
         expect(request.reload.state).to eq('passed')
       end
@@ -226,7 +226,7 @@ RSpec.describe StateChanger::MxTube do
       let(:target_state) { 'cancelled' }
       let(:request_state) { 'pending' }
 
-      it 'updates the tube to "cancelled" with "pending" requests', aggregate_failures: true do
+      it 'updates the tube to "cancelled" with "pending" requests', :aggregate_failures do
         expect(transfer_request.reload.state).to eq('cancelled')
         expect(request.reload.state).to eq('pending')
       end
@@ -242,7 +242,7 @@ RSpec.describe StateChanger::MxTube do
       let(:target_state) { 'passed' }
       let(:request_state) { 'started' }
 
-      it 'updates the tube to "passed" with "passed" requests', aggregate_failures: true do
+      it 'updates the tube to "passed" with "passed" requests', :aggregate_failures do
         expect(transfer_request.reload.state).to eq('passed')
         expect(request.reload.state).to eq('passed')
       end
@@ -253,7 +253,7 @@ RSpec.describe StateChanger::MxTube do
       let(:target_state) { 'passed' }
       let(:request_state) { 'failed' }
 
-      it 'updates the tube to "passed" with "failed" requests', aggregate_failures: true do
+      it 'updates the tube to "passed" with "failed" requests', :aggregate_failures do
         expect(transfer_request.reload.state).to eq('passed')
         expect(request.reload.state).to eq('failed')
       end
@@ -267,7 +267,7 @@ RSpec.describe StateChanger::MxTube do
       let(:target_state) { 'passed' }
       let(:request_state) { 'started' }
 
-      it 'updates the tube to "passed" with "passed" requests', aggregate_failures: true do
+      it 'updates the tube to "passed" with "passed" requests', :aggregate_failures do
         expect(transfer_request.reload.state).to eq('passed')
         expect(request.reload.state).to eq('passed')
       end
@@ -305,7 +305,7 @@ RSpec.describe StateChanger::MxTube do
       let(:target_state) { 'failed' }
       let(:request_state) { 'started' }
 
-      it 'updates the tube to "failed" with "failed" requests', aggregate_failures: true do
+      it 'updates the tube to "failed" with "failed" requests', :aggregate_failures do
         expect(transfer_request.reload.state).to eq('failed')
         expect(request.reload.state).to eq('failed')
       end
@@ -315,7 +315,7 @@ RSpec.describe StateChanger::MxTube do
       let(:target_state) { 'failed' }
       let(:request_state) { 'passed' }
 
-      it 'updates the tube to "failed" with "passed" requests', aggregate_failures: true do
+      it 'updates the tube to "failed" with "passed" requests', :aggregate_failures do
         expect(transfer_request.reload.state).to eq('failed')
         expect(request.reload.state).to eq('passed')
       end
@@ -325,7 +325,7 @@ RSpec.describe StateChanger::MxTube do
       let(:target_state) { 'qc_complete' }
       let(:request_state) { 'started' }
 
-      it 'updates the tube to "qc_complete" with "started" requests', aggregate_failures: true do
+      it 'updates the tube to "qc_complete" with "started" requests', :aggregate_failures do
         expect(transfer_request.reload.state).to eq('qc_complete')
         expect(request.reload.state).to eq('started')
       end
@@ -335,7 +335,7 @@ RSpec.describe StateChanger::MxTube do
       let(:target_state) { 'qc_complete' }
       let(:request_state) { 'passed' }
 
-      it 'updates the tube to "qc_complete" with "passed" requests', aggregate_failures: true do
+      it 'updates the tube to "qc_complete" with "passed" requests', :aggregate_failures do
         expect(transfer_request.reload.state).to eq('qc_complete')
         expect(request.reload.state).to eq('passed')
       end
@@ -349,7 +349,7 @@ RSpec.describe StateChanger::MxTube do
       let(:target_state) { 'cancelled' }
       let(:request_state) { 'started' }
 
-      it 'updates the tube to "cancelled" with "started" requests', aggregate_failures: true do
+      it 'updates the tube to "cancelled" with "started" requests', :aggregate_failures do
         expect(transfer_request.reload.state).to eq('cancelled')
         expect(request.reload.state).to eq('started')
       end

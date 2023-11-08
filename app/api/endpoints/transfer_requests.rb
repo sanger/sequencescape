@@ -3,7 +3,7 @@
 # TransferRequests are exposed via the API and allow
 # you to access their source and target assets, and their submissions
 # Controls API V1 {::Core::Endpoint::Base endpoints} for TransferRequests
-class Endpoints::TransferRequests < ::Core::Endpoint::Base
+class Endpoints::TransferRequests < Core::Endpoint::Base
   model {}
 
   instance do

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Core::Service::EndpointHandling # rubocop:todo Style/Documentation
+module Core::Service::EndpointHandling
   def self.included(base)
     base.class_eval { attr_reader :endpoint }
   end

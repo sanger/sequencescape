@@ -20,7 +20,7 @@ module Robot::Generator::Behaviours::HamiltonDefault
 
     output_file_contents = [column_headers]
     output_file_contents << source_mappings(data_object)
-    output_file_contents.join("\n").gsub(/\n\n/, "\n")
+    output_file_contents.join("\n").gsub("\n\n", "\n")
   end
 
   private

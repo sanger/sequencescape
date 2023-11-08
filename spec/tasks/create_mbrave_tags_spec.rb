@@ -146,7 +146,7 @@ describe 'mbrave tasks' do
         xit 'creates the right content in the yaml file' do
           run_task
 
-          contents = YAML.safe_load(File.read('mbrave.yml'), aliases: true)
+          contents = YAML.safe_load_file('mbrave.yml', aliases: true)
           expect(contents[Rails.env].keys).to eq(
             %w[Bioscan_forward_96_v1 Bioscan_reverse_4_1_v1 Bioscan_reverse_4_2_v1]
           )

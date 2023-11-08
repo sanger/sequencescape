@@ -33,6 +33,6 @@ RSpec.describe Tag2LayoutTemplate do
     expect(Tag2Layout::TemplateSubmission.where(submission_id: submissions)).to be_present
     Tag2Layout::TemplateSubmission
       .where(submission_id: submissions)
-      .each { |t2lts| expect(t2lts.tag2_layout_template).to eq(tag2_layout_template) }
+      .find_each { |t2lts| expect(t2lts.tag2_layout_template).to eq(tag2_layout_template) }
   end
 end

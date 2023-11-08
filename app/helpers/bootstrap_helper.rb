@@ -22,7 +22,7 @@ module BootstrapHelper
   def bs_custom_panel(type, body_type, body_options, options, &block)
     title = options.delete(:title)
     append_class!(options, "ss-card card-style-#{type}")
-    tag.div(options) do
+    tag.div(**options) do
       concat tag.h3(title, class: 'card-header-custom') unless title.nil?
       concat content_tag(body_type, body_options, &block)
     end
@@ -34,7 +34,7 @@ module BootstrapHelper
   def alert(type = :default, options = {}, &block)
     options[:role] ||= 'alert'
     append_class!(options, "alert alert-#{type}")
-    tag.div(options, &block)
+    tag.div(**options, &block)
   end
 
   # Summary composites a panel with a table to deliver
@@ -145,7 +145,7 @@ module BootstrapHelper
 
   def render_radio_section(_form, _field_name, sections, field)
     label =
-      tag.label(sections.label, sections.label_options) << tag.span(sections.edit_info, class: 'property_edit_info')
+      tag.label(sections.label, **sections.label_options) << tag.span(sections.edit_info, class: 'property_edit_info')
     help = sections.help
     tag.legend(sections.label, class: 'sr-only') << form_collection(label, field, help)
   end

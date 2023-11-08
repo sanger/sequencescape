@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpoint::BasicHandler # rubocop:todo Style/Documentation
+class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpoint::BasicHandler
   include Core::Endpoint::BasicHandler::Paged
 
   def initialize(association, options, &block)

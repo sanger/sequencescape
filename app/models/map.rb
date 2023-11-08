@@ -127,7 +127,7 @@ class Map < ApplicationRecord
     end
   end
 
-  module Sequential # rubocop:todo Style/Documentation
+  module Sequential
     def self.location_from_row_and_column(row, column, width, size)
       digit_count = Math.log10(size + 1).ceil
       "S%0#{digit_count}d" % [((row) * width) + column]

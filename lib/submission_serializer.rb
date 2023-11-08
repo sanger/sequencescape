@@ -14,7 +14,7 @@
 #   }
 # }
 
-module SubmissionSerializer # rubocop:todo Style/Documentation
+module SubmissionSerializer
   STRAIGHT_CLONE = %w[name submission_class_name].freeze
   SP_STRAIGHT_CLONE = %i[info_differential asset_input_methods request_options].freeze
 
