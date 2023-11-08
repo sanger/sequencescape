@@ -53,3 +53,9 @@ LBC Cherrypick:
 # requests
 LB Lib PCR-XP:
   stock_plate: false
+
+# RVI Bait Capture
+RVI Cherrypick:
+  cherrypickable_target: true
+  type: PlatePurpose
+  stock_plate: false
