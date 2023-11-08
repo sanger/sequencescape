@@ -9,7 +9,7 @@ RSpec.describe Order do
   let(:project) { create :project }
   let(:asset) { create :empty_sample_tube }
 
-  describe '#autodetect_studies_projects' do
+  describe 'study and project autodetection' do
     # When automating submission creation, it is really useful if we can
     # auto-detect studies and projects based on their aliquots. However we
     # don't want to trigger this behaviour accidentally if someone forgets to
@@ -18,7 +18,6 @@ RSpec.describe Order do
     subject(:order) do
       build :order,
             assets: assets,
-            autodetect_studies_projects: autodetect_studies_projects,
             autodetect_studies: autodetect_studies,
             autodetect_projects: autodetect_projects,
             study: nil,
@@ -29,10 +28,9 @@ RSpec.describe Order do
     let(:tube) { create :sample_tube, aliquots: aliquots }
     let(:study_state) { 'active' }
 
-    context 'with autodetect_studies_projects set to true' do
-      let(:autodetect_studies_projects) { true }
-      let(:autodetect_studies) { nil }
-      let(:autodetect_projects) { nil }
+    context 'with autodetection turned on' do
+      let(:autodetect_studies) { true }
+      let(:autodetect_projects) { true }
 
       it_behaves_like 'an automated order'
 
@@ -47,120 +45,12 @@ RSpec.describe Order do
       end
     end
 
-    context 'with autodetect_studies_projects set to false' do
-      let(:autodetect_studies_projects) { false }
-      let(:autodetect_studies) { nil }
-      let(:autodetect_projects) { nil }
+    context 'with autodetection turned off' do
+      let(:autodetect_studies) { false }
+      let(:autodetect_projects) { false }
       let(:aliquots) { create_list :tagged_aliquot, 2, study: study, project: project }
 
       it { is_expected.not_to be_valid }
-    end
-
-    describe 'combining autodetection attributes' do
-      let(:aliquots) { create_list :tagged_aliquot, 2 }
-
-      context 'with all attributes set to true' do
-        let(:autodetect_studies_projects) { true }
-        let(:autodetect_studies) { true }
-        let(:autodetect_projects) { true }
-
-        it 'fails validation' do
-          expect(order).not_to be_valid
-          expect(
-            order.errors.full_messages.one? { |message| message.include? 'autodetect_studies_projects' }
-          ).to be true
-        end
-
-        it 'uses the defaults' do
-          # We have to specify some behaviour even if the validation will fail,
-          # because the method is called before validation runs.
-          # Therefore we use the default behaviour.
-          expect(order.autodetect_studies?).to equal(order.autodetection_default)
-          expect(order.autodetect_projects?).to equal(order.autodetection_default)
-        end
-      end
-
-      context 'with all attributes set to false' do
-        let(:autodetect_studies_projects) { false }
-        let(:autodetect_studies) { false }
-        let(:autodetect_projects) { false }
-
-        it 'fails validation' do
-          expect(order).not_to be_valid
-          expect(
-            order.errors.full_messages.one? { |message| message.include? 'autodetect_studies_projects' }
-          ).to be true
-        end
-
-        it 'uses the defaults' do
-          # We have to specify some behaviour even if the validation will fail,
-          # because the method is called before validation runs.
-          # Therefore we use the default behaviour.
-          expect(order.autodetect_studies?).to equal(order.autodetection_default)
-          expect(order.autodetect_projects?).to equal(order.autodetection_default)
-        end
-      end
-
-      context 'with some attributes nil and some set to mixed values' do
-        let(:autodetect_studies_projects) { false }
-        let(:autodetect_studies) { nil }
-        let(:autodetect_projects) { true }
-
-        it 'fails validation' do
-          expect(order).not_to be_valid
-          expect(
-            order.errors.full_messages.one? { |message| message.include? 'autodetect_studies_projects' }
-          ).to be true
-        end
-
-        it 'uses the defaults' do
-          # We have to specify some behaviour even if the validation will fail,
-          # because the method is called before validation runs.
-          # Therefore we use the default behaviour.
-          expect(order.autodetect_studies?).to equal(order.autodetection_default)
-          expect(order.autodetect_projects?).to equal(order.autodetection_default)
-        end
-      end
-
-      context 'with only autodetect_studies_projects set' do
-        let(:autodetect_studies_projects) { true }
-        let(:autodetect_studies) { nil }
-        let(:autodetect_projects) { nil }
-
-        it 'passes validation' do
-          # Trigger validation, but don't assert that it's valid.
-          # It might validation for other reasons, but we only care about this one.
-          order.valid?
-          expect(
-            order.errors.full_messages.none? { |message| message.include? 'autodetect_studies_projects' }
-          ).to be true
-        end
-
-        it 'uses autodetect_studies_projects' do
-          expect(order.autodetect_studies?).to equal(true)
-          expect(order.autodetect_projects?).to equal(true)
-        end
-      end
-
-      context 'with only the individual versions set' do
-        let(:autodetect_studies_projects) { nil }
-        let(:autodetect_studies) { true }
-        let(:autodetect_projects) { true }
-
-        it 'passes validation' do
-          # Trigger validation, but don't assert that it's valid.
-          # It might validation for other reasons, but we only care about this one.
-          order.valid?
-          expect(
-            order.errors.full_messages.none? { |message| message.include? 'autodetect_studies_projects' }
-          ).to be true
-        end
-
-        it 'uses the individual versions' do
-          expect(order.autodetect_studies?).to equal(true)
-          expect(order.autodetect_projects?).to equal(true)
-        end
-      end
     end
   end
 
