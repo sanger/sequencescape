@@ -108,14 +108,12 @@ describe PlateVolume do
     end
 
     context 'when carrierwave returns a wrong filename' do
-      let(:double_file_carrier) { double('file', filename: 'SQPD-111.csv(2).CSV')}
+      let(:double_file_carrier) { double('file', filename: 'SQPD-111.csv(2).CSV') }
       let(:bad_filename) { Rails.root.join('test/data/plate_volume/SQPD-111.csv(2).CSV') }
       let(:good_filename) { Rails.root.join('test/data/plate_volume/SQPD-111.csv') }
       let(:file) { File.open(good_filename, 'r') }
 
-      before do
-        described_class.handle_volume(bad_filename, file)  
-      end
+      before { described_class.handle_volume(bad_filename, file) }
 
       it 'updates measured and current volumes' do
         wells = plate_with_barcodes_in_csv.wells.includes(:well_attribute, :map).index_by(&:map_description)
@@ -124,7 +122,7 @@ describe PlateVolume do
           expect(well_attribute.measured_volume).to eq volume
           expect(well_attribute.current_volume).to eq volume
         end
-      end  
+      end
 
       it 'updates measured and current volumes for plate_without_barcodes_in_csv' do
         wells = plate_without_barcodes_in_csv.wells.includes(:well_attribute, :map).index_by(&:map_description)
@@ -134,7 +132,7 @@ describe PlateVolume do
           expect(well_attribute.current_volume).to eq volume
         end
       end
-  
+
       it 'generates a QcResult for each well' do
         plate_with_barcodes_in_csv
           .wells
@@ -145,8 +143,6 @@ describe PlateVolume do
             expect(well.qc_results.first.assay_type).to eq('Volume Check')
           end
       end
-  
-
     end
   end
 end
