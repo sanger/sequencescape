@@ -98,7 +98,7 @@ describe 'Asset submission', :js do
       # of the current asset, with parameters included in the URL.
       redirect_path =
         new_request_receptacle_path(
-          asset,
+          asset.receptacle,
           study_id: study.id,
           project_id: project.id,
           request_type_id: selected_request_type.id
