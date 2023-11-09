@@ -250,6 +250,8 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
         }
 
   def self.search_for_plates(params)
+    # TODO: This is failing for the location_report
+    # looks like it is the only thing using it.
     with_faculty_sponsor_ids(params[:faculty_sponsor_ids] || nil)
       .with_study_id(params[:study_id] || nil)
       .with_plate_purpose_ids(params[:plate_purpose_ids] || nil)

@@ -4,10 +4,10 @@ require 'rails_helper'
 
 RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_manifest_excel, type: :model do
   let(:map) { create(:map) }
-  let(:asset) { create(:untagged_well, map: map) }
+  let!(:asset) { create(:untagged_well, map: map) }
   let(:asset2) { create(:untagged_well, map: map) }
-  let(:sample_manifest) { create :sample_manifest }
-  let(:sample_manifest_asset) do
+  let!(:sample_manifest) { create :sample_manifest }
+  let!(:sample_manifest_asset) do
     create :sample_manifest_asset,
            asset: asset,
            sanger_sample_id: sample.sanger_sample_id,
@@ -885,6 +885,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
       end
 
       it 'will be valid if the value matches one of the expected values' do
+        # debugger
         expect(
           described_class.new(value: 'Long term storage', sample_manifest_asset: sample_manifest_asset)
         ).to be_valid

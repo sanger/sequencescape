@@ -190,7 +190,6 @@ RSpec.describe LocationReport::LocationReportForm do
       end
 
       it 'creates a valid location report' do
-        debugger
         expect(location_report_form.location_report).to be_valid
       end
 
