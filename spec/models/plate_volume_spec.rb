@@ -108,7 +108,6 @@ describe PlateVolume do
     end
 
     context 'when carrierwave returns a wrong filename' do
-      let(:double_file_carrier) { double('file', filename: 'SQPD-111.csv(2).CSV') }
       let(:bad_filename) { Rails.root.join('test/data/plate_volume/SQPD-111.csv(2).CSV') }
       let(:good_filename) { Rails.root.join('test/data/plate_volume/SQPD-111.csv') }
       let(:file) { File.open(good_filename, 'r') }
