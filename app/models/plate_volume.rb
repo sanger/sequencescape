@@ -82,11 +82,13 @@ class PlateVolume < ApplicationRecord
     private :all_plate_volume_file_names
 
     def handle_volume(filename, file)
-      ActiveRecord::Base.transaction { find_for_filename(sanitized_filename(file)).call(filename, file) }
+      ActiveRecord::Base.transaction do
+        find_for_filename(filename).call(filename, file)
+      end
     rescue => e
       Rails.logger.warn("Error processing volume file #{filename}: #{e.message}")
     end
-    private :handle_volume
+    #private :handle_volume
 
     def sanitized_filename(file)
       # We need to use the Carrierwave sanitized filename for lookup, else files with spaces are repetedly processed
@@ -102,7 +104,7 @@ class PlateVolume < ApplicationRecord
     end
 
     def bugfix_dpl680(filename)
-      matching_regexp = /\(\d*\)\.CSV/
+      matching_regexp = /\(\d*\)\.CSV/i
       filename.gsub!(matching_regexp, '.CSV') if filename.match(matching_regexp)
       filename
     end
