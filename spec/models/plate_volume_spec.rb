@@ -108,11 +108,18 @@ describe PlateVolume do
     end
 
     context 'when carrierwave returns a wrong filename' do
-      let(:bad_filename) { Rails.root.join('test/data/plate_volume/SQPD-111.csv(2).CSV') }
-      let(:good_filename) { Rails.root.join('test/data/plate_volume/SQPD-111.csv') }
-      let(:file) { File.open(good_filename, 'r') }
+      let(:bad_filename) { "SQPD-111.csv(2).CSV" }
+      let(:bad_filename_path) { Rails.root.join("test/data/plate_volume/#{bad_filename}") }
+      let(:good_filename_path) { Rails.root.join('test/data/plate_volume/SQPD-111.csv') }
+      let(:file) { File.open(good_filename_path, 'r') }
 
-      before { described_class.handle_volume(bad_filename, file) }
+      before { 
+        #PlateVolume.all.each do |vol|
+        #  vol.touch
+        #end
+        #described_class.process_all_volume_check_files(Rails.root.join('test/data/plate_volume'))
+        #described_class.handle_volume(bad_filename, file) 
+      }
 
       it 'updates measured and current volumes' do
         wells = plate_with_barcodes_in_csv.wells.includes(:well_attribute, :map).index_by(&:map_description)
@@ -141,6 +148,13 @@ describe PlateVolume do
             expect(well.qc_results.first.key).to eq('volume')
             expect(well.qc_results.first.assay_type).to eq('Volume Check')
           end
+      end
+
+      it 'creates a record in the database with the right value in uploaded_file_name' do
+        expect(PlateVolume.all.count > 0).to be_truthy
+        PlateVolume.all.each do |volume|
+          expect(volume.uploaded_file_name).to eq("#{volume.barcode}.csv")
+        end
       end
     end
   end

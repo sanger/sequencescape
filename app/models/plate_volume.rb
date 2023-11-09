@@ -82,27 +82,40 @@ class PlateVolume < ApplicationRecord
     private :all_plate_volume_file_names
 
     def handle_volume(filename, file)
-      ActiveRecord::Base.transaction { find_for_filename(filename).call(filename, file) }
-    rescue => e
-      Rails.logger.warn("Error processing volume file #{filename}: #{e.message}")
+      vol = nil
+      ActiveRecord::Base.transaction { 
+        vol = find_for_filename(filename).call(filename, file)
+        unless vol.nil?
+          ActiveRecord::Base.connection.execute(
+            %Q{
+              UPDATE plate_volumes
+              SET uploaded_file_name='#{bugfix_filename_dpl680(vol.uploaded_file_name)}'
+              WHERE plate_volumes.id=#{vol.id}
+            }
+          )
+        end
+      }
     end
 
-    #private :handle_volume
+    private :handle_volume
 
     def sanitized_filename(file)
       # We need to use the Carrierwave sanitized filename for lookup, else files with spaces are repetedly processed
       # Later versions of carrierwave expose this sanitization better, but for now we are forced to create an object
-      bugfix_dpl680(CarrierWave::SanitizedFile.new(file).filename)
+      CarrierWave::SanitizedFile.new(file).filename
     end
 
     def find_for_filename(filename)
       find_by(uploaded_file_name: filename) or
         lambda do |filename, file|
+          # TODO: 
+          # After saving, the uploaded_file_name is renamed internally by CarrierWave to (2).CSV 
+          # This should be amended in future.
           PlateVolume.create!(uploaded_file_name: filename, updated_at: file.stat.mtime, uploaded: file)
         end
     end
-
-    def bugfix_dpl680(filename)
+  
+    def bugfix_filename_dpl680(filename)
       matching_regexp = /\(\d*\)\.CSV/i
       filename.gsub!(matching_regexp, '.CSV') if filename.match(matching_regexp)
       filename
