@@ -91,7 +91,7 @@ class PlateVolume < ApplicationRecord
     def sanitized_filename(file)
       # We need to use the Carrierwave sanitized filename for lookup, else files with spaces are repetedly processed
       # Later versions of carrierwave expose this sanitization better, but for now we are forced to create an object
-      bugfix_dpl369(CarrierWave::SanitizedFile.new(file).filename)
+      bugfix_dpl680(CarrierWave::SanitizedFile.new(file).filename)
     end
 
     def find_for_filename(filename)
