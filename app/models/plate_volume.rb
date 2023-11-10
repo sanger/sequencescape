@@ -82,7 +82,9 @@ class PlateVolume < ApplicationRecord
     private :all_plate_volume_file_names
 
     def handle_volume(filename, file)
-      ActiveRecord::Base.transaction { find_for_filename(filename).call(filename, file) }
+      ActiveRecord::Base.transaction { find_for_filename(sanitized_filename(file)).call(filename, file) }
+    rescue => e
+      Rails.logger.warn("Error processing volume file #{filename}: #{e.message}")
     end
 
     private :handle_volume
