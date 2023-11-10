@@ -119,7 +119,13 @@ class PlateVolume < ApplicationRecord
 
     # rubocop:enable Metrics/MethodLength
 
-    def bugfix_filename_dpl680(filename)
+    #
+    # Given a .csv filename it removes the characters (2) that were appended to indicate the file was
+    # a duplicate. This is currently happening to files handled by CarrierWave during the save() action.
+    #
+    # An example of this method, suppose file1.csv --> file1(2).csv then the action of this method
+    # would revert file1(2).csv into file1.csv
+    def bugfix_filename_duplicate_back_to_normal(filename)
       matching_regexp = /\(\d*\)\.CSV/i
       filename.gsub!(matching_regexp, '.csv') if filename.match(matching_regexp)
       filename
