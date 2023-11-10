@@ -107,55 +107,9 @@ describe PlateVolume do
         end
     end
 
-    context 'when carrierwave returns a wrong filename' do
-      let(:bad_filename) { "SQPD-111.csv(2).CSV" }
-      let(:bad_filename_path) { Rails.root.join("test/data/plate_volume/#{bad_filename}") }
-      let(:good_filename_path) { Rails.root.join('test/data/plate_volume/SQPD-111.csv') }
-      let(:file) { File.open(good_filename_path, 'r') }
-
-      before { 
-        #PlateVolume.all.each do |vol|
-        #  vol.touch
-        #end
-        #described_class.process_all_volume_check_files(Rails.root.join('test/data/plate_volume'))
-        #described_class.handle_volume(bad_filename, file) 
-      }
-
-      it 'updates measured and current volumes' do
-        wells = plate_with_barcodes_in_csv.wells.includes(:well_attribute, :map).index_by(&:map_description)
-        plate_a_expected_volumes.each do |well_name, volume|
-          well_attribute = wells[well_name].well_attribute
-          expect(well_attribute.measured_volume).to eq volume
-          expect(well_attribute.current_volume).to eq volume
-        end
-      end
-
-      it 'updates measured and current volumes for plate_without_barcodes_in_csv' do
-        wells = plate_without_barcodes_in_csv.wells.includes(:well_attribute, :map).index_by(&:map_description)
-        plate_b_expected_volumes.each do |well_name, volume|
-          well_attribute = wells[well_name].well_attribute
-          expect(well_attribute.measured_volume).to eq volume
-          expect(well_attribute.current_volume).to eq volume
-        end
-      end
-
-      it 'generates a QcResult for each well' do
-        plate_with_barcodes_in_csv
-          .wells
-          .includes(:well_attribute, :map)
-          .find_each do |well|
-            expect(well.qc_results).to be_one
-            expect(well.qc_results.first.key).to eq('volume')
-            expect(well.qc_results.first.assay_type).to eq('Volume Check')
-          end
-      end
-
-      it 'creates a record in the database with the right value in uploaded_file_name' do
-        expect(PlateVolume.all.count > 0).to be_truthy
-        PlateVolume.all.each do |volume|
-          expect(volume.uploaded_file_name).to eq("#{volume.barcode}.csv")
-        end
-      end
+    it 'creates a record in the database with the right value in uploaded_file_name' do
+      expect(described_class.count).to be_positive
+      described_class.find_each { |volume| expect(volume.uploaded_file_name).to eq("#{volume.barcode}.csv") }
     end
   end
 end
