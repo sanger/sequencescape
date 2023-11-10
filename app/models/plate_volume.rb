@@ -109,7 +109,7 @@ class PlateVolume < ApplicationRecord
             ActiveRecord::Base.connection.execute(
               "
                   UPDATE plate_volumes
-                  SET uploaded_file_name='#{bugfix_filename_dpl680(instance.uploaded_file_name)}'
+                  SET uploaded_file_name='#{bugfix_filename_duplicate_back_to_normal(instance.uploaded_file_name)}'
                   WHERE plate_volumes.id=#{instance.id}
                 "
             )
