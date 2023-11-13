@@ -168,9 +168,7 @@ class ReceptaclesController < ApplicationController # rubocop:todo Metrics/Class
     end
   rescue Submission::ProjectValidation::Error, ActiveRecord::RecordNotFound, ActiveRecord::RecordInvalid => e
     respond_to do |format|
-      # Using 'flash' instead of 'flash.now' to ensure the message persists after the redirect.
-      # See: https://guides.rubyonrails.org/action_controller_overview.html#the-flash
-      flash[:error] = e.message.truncate(2000, separator: ' ')
+      flash.now[:error] = e.message.truncate(2000, separator: ' ')
       format.html { redirect_to new_request_for_current_asset }
       format.json { render json: e.message, status: :unprocessable_entity }
     end

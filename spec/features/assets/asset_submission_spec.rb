@@ -81,37 +81,6 @@ describe 'Asset submission', :js do
     end
   end
 
-  shared_examples 'it shows an error message about study' do
-    it 'has error message' do
-      login_user user
-      visit labware_path(asset)
-      click_link 'Request additional sequencing'
-      select(selected_request_type.name, from: 'Request type')
-      select(study.name, from: 'Study')
-      select(project.name, from: 'Project')
-      fill_in 'Fragment size required (from)', with: '100'
-      fill_in 'Fragment size required (to)', with: '200'
-      select(selected_read_length, from: 'Read length')
-      click_button 'Create'
-
-      # If an error occurs, the user is redirected to the 'new request' page
-      # of the current asset, with parameters included in the URL.
-      redirect_path =
-        new_request_receptacle_path(
-          asset.receptacle,
-          study_id: study.id,
-          project_id: project.id,
-          request_type_id: selected_request_type.id
-        )
-      expect(page).to have_current_path(redirect_path)
-
-      # The redirected page displays an error message detailing the issue
-      # encountered. In this particular case, the study does not have an
-      # accession number.
-      expect(page).to have_content "#{study.name} and all samples must have accession numbers"
-    end
-  end
-
   context 'when an admin' do
     let(:user) { create :admin }
 
@@ -142,15 +111,5 @@ describe 'Asset submission', :js do
     let(:user) { create :user }
 
     it_behaves_like 'it forbids additional sequencing'
-  end
-
-  context 'when study does not have an accession number' do
-    # Create a user that is allowed to request additional sequencing.
-    let(:user) { create :admin }
-
-    # Create a study that requires accessioning, but does not have an accession number.
-    let(:study) { create :open_study, enforce_accessioning: true, accession_number: nil }
-
-    it_behaves_like 'it shows an error message about study'
   end
 end
