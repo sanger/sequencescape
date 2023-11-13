@@ -7,7 +7,7 @@ class SwipecardTest < ActiveSupport::TestCase
 
   def setup
     @options = { swipecard: 'test-swipecard', user_login: 'test-user' }
-    @label = { top_left: options[:user_login], barcode: options[:swipecard], label_name: 'main_label' }
+    @label = { left_text: options[:user_login], barcode: options[:swipecard], label_name: 'main_label' }
     @swipecard_label = LabelPrinter::Label::Swipecard.new(options)
   end
 

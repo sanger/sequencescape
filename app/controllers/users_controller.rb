@@ -55,7 +55,8 @@ class UsersController < ApplicationController
         printer,
         LabelPrinter::Label::Swipecard,
         user_login: @user.login.truncate(10, omission: '..'),
-        swipecard: swipecard
+        swipecard: swipecard,
+        label_template_name: configatron.swipecard_pmb_template
       )
     if print_job.execute
       flash[:notice] = print_job.success
