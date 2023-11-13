@@ -106,5 +106,10 @@ describe PlateVolume do
           expect(well.qc_results.first.assay_type).to eq('Volume Check')
         end
     end
+
+    it 'creates a record in the database with the right value in uploaded_file_name' do
+      expect(described_class.count).to be_positive
+      described_class.find_each { |volume| expect(volume.uploaded_file_name).to eq("#{volume.barcode}.csv") }
+    end
   end
 end
