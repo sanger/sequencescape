@@ -16,7 +16,7 @@ context 'when printing swipecard' do
       label_template_name: label_template_name
     )
   end
-  let(:labels_attribute) { [{ left_text: user.login, barcode: swipecard, label_name: 'main_label' }] }
+  let(:labels_attribute) { [{ left_text: user.login, barcode: swipecard, label_name: 'main' }] }
   let(:build_attributes) do
     { printer_name: barcode_printer.name, label_template_name: label_template_name, labels: labels_attribute }
   end
