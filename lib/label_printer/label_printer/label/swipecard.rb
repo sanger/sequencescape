@@ -13,7 +13,7 @@ module LabelPrinter
       # @return [Hash] a hash of label field values
       #
       def build_label
-        { left_text: @user_login, barcode: @swipecard, label_name: 'main_label' }
+        { left_text: @user_login, barcode: @swipecard, label_name: 'main' }
       end
 
       def labels
