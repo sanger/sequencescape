@@ -39,7 +39,8 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # auto-detect studies and projects based on their aliquots. However we
   # don't want to trigger this behaviour accidentally if someone forgets to
   # specify a study.
-  attribute :autodetect_studies_projects, :boolean, default: false
+  attribute :autodetect_studies, :boolean, default: :autodetection_default
+  attribute :autodetect_projects, :boolean, default: :autodetection_default
 
   # Required at initial construction time ...
   belongs_to :study, optional: true
@@ -60,8 +61,8 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
   serialize :request_types
   serialize :item_options
 
-  before_validation :set_study_from_aliquots, unless: :cross_study_allowed, if: :autodetect_studies_projects
-  before_validation :set_project_from_aliquots, unless: :cross_project_allowed, if: :autodetect_studies_projects
+  before_validation :set_study_from_aliquots, unless: :cross_study_allowed, if: :autodetect_studies
+  before_validation :set_project_from_aliquots, unless: :cross_project_allowed, if: :autodetect_projects
 
   validates :study, presence: true, unless: :cross_study_allowed
   validates :project, presence: true, unless: :cross_project_allowed
@@ -95,6 +96,10 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
     def render_class
       Api::OrderIO
     end
+  end
+
+  def autodetection_default
+    false
   end
 
   def complete_building
