@@ -42,7 +42,15 @@ module LabelPrinter
       @labels = label_class.new(options.merge(printer_type_class)).labels
     end
 
+    # Returns the name of the label template to use for this print job.
+    # If not specified in the options during initialisation, the label template
+    # name configured for the printer in the database is used.
+    #
+    # @return [String] the name of the label template to use for this print job
+    #
     def label_template_name
+      return options[:label_template_name] if options[:label_template_name]
+
       printer = find_printer
       printer.barcode_printer_type.label_template_name
     end
