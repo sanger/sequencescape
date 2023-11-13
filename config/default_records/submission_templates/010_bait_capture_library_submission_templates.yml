@@ -3,7 +3,7 @@
 Limber-Htp - RVI - Bait Capture Library:
   submission_class_name: "LinearSubmission"
   related_records:
-    request_type_keys: ["limber_bait_capture_library_prep", "limber_bait_capture_library_prep_multiplexing"]
+    request_type_keys: ["limber_bait_capture_library_prep", "limber_multiplexing"]
     project_name: Respiratory Virus and Microbiome Initiative
     product_line_name: Illumina-HTP
     product_catalogue_name: Bait Capture Library
