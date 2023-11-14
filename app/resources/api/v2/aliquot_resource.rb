@@ -16,7 +16,7 @@ module Api
       has_one :request
       has_one :receptacle
       has_one :tag
-      has_one :tag2
+      has_one :tag2, class_name: 'Tag'
 
       # Attributes
       attribute :tag_oligo, readonly: true

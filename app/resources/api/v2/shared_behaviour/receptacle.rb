@@ -17,23 +17,23 @@ module Api::V2::SharedBehaviour::Receptacle
     has_many :studies, readonly: true
     has_many :projects, readonly: true
 
-    has_many :requests_as_source, readonly: true
-    has_many :requests_as_target, readonly: true
+    has_many :requests_as_source, readonly: true, class_name: 'Request'
+    has_many :requests_as_target, readonly: true, class_name: 'Request'
     has_many :qc_results, readonly: true
     has_many :aliquots, readonly: true
 
     has_many :downstream_assets, readonly: true, polymorphic: true
-    has_many :downstream_wells, readonly: true
-    has_many :downstream_plates, readonly: true
-    has_many :downstream_tubes, readonly: true
+    has_many :downstream_wells, readonly: true, class_name: 'Well'
+    has_many :downstream_plates, readonly: true, class_name: 'Plate'
+    has_many :downstream_tubes, readonly: true, class_name: 'Tube'
 
     has_many :upstream_assets, readonly: true, polymorphic: true
-    has_many :upstream_wells, readonly: true
-    has_many :upstream_plates, readonly: true
-    has_many :upstream_tubes, readonly: true
+    has_many :upstream_wells, readonly: true, class_name: 'Well'
+    has_many :upstream_plates, readonly: true, class_name: 'Plate'
+    has_many :upstream_tubes, readonly: true, class_name: 'Tube'
 
-    has_many :transfer_requests_as_source, readonly: true
-    has_many :transfer_requests_as_target, readonly: true
+    has_many :transfer_requests_as_source, readonly: true, class_name: 'TransferRequest'
+    has_many :transfer_requests_as_target, readonly: true, class_name: 'TransferRequest'
 
     # Attributes
     attribute :uuid, readonly: true

@@ -70,7 +70,7 @@ describe 'Comments API', with: :api_v2 do
           'relationships' => {
             'commentable' => {
               'data' => {
-                'type' => 'labware',
+                'type' => 'Labware',
                 'id' => plate.id.to_s
               }
             }

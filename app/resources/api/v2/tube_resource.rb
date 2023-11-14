@@ -15,7 +15,7 @@ module Api
 
       # Associations:
       has_many :aliquots, readonly: true
-      has_many :transfer_requests_as_target, readonly: true
+      has_many :transfer_requests_as_target, readonly: true, class_name: 'TransferRequest'
       has_one :receptacle, readonly: true, foreign_key_on: :related
 
       # Attributes

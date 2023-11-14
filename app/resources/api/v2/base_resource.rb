@@ -40,13 +40,14 @@ module Api
       end
 
       # Extends the default behaviour to add our default inclusions if provided
-      def self.apply_includes(records, options = {})
-        if @default_includes.present?
-          super(records.preload(*inclusions), options)
-        else
-          super
-        end
-      end
+      #def self.apply_includes(records, options = {})
+      #  if @default_includes.present?
+      #    super(records.preload(*inclusions), options)
+      #  else
+      #    super
+      #  end
+      #end
+
 
       # The majority of this is lifted from JSONAPI::Resource
       # We've had to modify the when Symbol chunk to handle nested includes
