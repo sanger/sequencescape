@@ -8,7 +8,7 @@ module LabelPrinter
       end
 
       def build_label
-        { top_left: @user_login, barcode: @swipecard, label_name: 'main_label' }
+        { left_text: @user_login, barcode: @swipecard, label_name: 'main' }
       end
 
       def labels
