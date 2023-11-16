@@ -18,7 +18,7 @@ module Api
       default_includes :uuid_object, :barcodes, :plate_purpose, :transfer_requests
 
       # Associations:
-      has_many :wells, readonly: true
+      has_many :wells #, readonly: true
 
       # Attributes
       attribute :number_of_rows, readonly: true, delegate: :height

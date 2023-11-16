@@ -121,3 +121,51 @@ class JSONAPI::ResourceSerializer
     { data: object_hash(resource, {}) }
   end
 end
+
+# Patch json api resources matchers to pass tests
+module JSONAPI
+  module Resources
+    module Matchers
+      class Relationship
+        # This is in jsonapi-resources-matches master but is not in the last release 1.0.0 ??
+        # Probably make sure we are getting the right version.
+        def has_key_in_relationships?
+          relationships = resource.class._relationships
+          return false if relationships.blank?
+
+          formatter = JSONAPI.configuration.key_formatter
+
+          expected_key = formatter.format(name.to_s)
+          relationship_keys = relationships.keys.map do |key|
+            formatter.format(key.to_s)
+          end
+
+          relationship_keys.include?(expected_key)
+        end
+      end
+    end
+  end
+end
+
+
+# Patch 
+# module JSONAPI
+#   class Relationship
+#     def self.polymorphic_types(name)
+#       @poly_hash ||= {}.tap do |hash|
+#         ObjectSpace.each_object do |klass|
+#           next unless Module === klass
+#           if ActiveRecord::Base > klass
+#             next if klass.name.nil?
+#             klass.reflect_on_all_associations(:has_many).select{|r| r.options[:as] }.each do |reflection|
+#               (hash[reflection.options[:as]] ||= []) << klass.name.underscore
+#             end
+#           end
+#         end
+#       end
+#       return @poly_hash[name.to_sym] if @poly_hash.keys.include?(name.to_sym)
+#       []
+#       #@poly_hash[name.to_sym]
+#     end
+#   end
+# end

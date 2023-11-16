@@ -12,7 +12,6 @@ RSpec.describe Api::V2::TagResource, type: :resource do
   it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
     expect(tag_resource).to have_attribute :oligo
     expect(tag_resource).to have_attribute :map_id
-
     expect(tag_resource).to have_one(:tag_group).with_class_name('TagGroup')
   end
 

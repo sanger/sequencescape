@@ -12,7 +12,7 @@ module Api::V2::SharedBehaviour::Labware
 
   included do
     # Associations:
-    has_one :purpose, readonly: true, foreign_key: :plate_purpose_id, class_name: 'Purpose'
+    has_one :purpose, foreign_key: :plate_purpose_id, class_name: 'Purpose'
     has_one :custom_metadatum_collection, foreign_key_on: :related
 
     has_many :samples, readonly: true

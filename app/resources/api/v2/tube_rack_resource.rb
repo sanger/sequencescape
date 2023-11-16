@@ -21,6 +21,7 @@ module Api
 
       # Associations:
       has_many :racked_tubes
+      delegate :racked_tubes, to: :_model
       has_many :comments, readonly: true
       has_one :purpose, foreign_key: :plate_purpose_id
 
@@ -64,6 +65,8 @@ module Api
           RackedTube.create(coordinate: coordinate, tube: tubes[tube_uuid], tube_rack: @model)
         end
       end
+
+      
 
       # Custom methods
       # These shouldn't be used for business logic, and are more about
