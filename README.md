@@ -367,6 +367,9 @@ cluster formation batch which represents a flowcell.
 
 If you are using homebrew with rbenv and run into errors relating to SSL, have a look [here](https://github.com/brianmario/mysql2/issues/795#issuecomment-433219176)
 
+If you are upgrading a homebrew MySQL locally and have an error about a missing libmysqlclient dylib file, you may need to redownload the mysql2 gem to fix it i.e. `bundle install --redownload`
+This is because the mysql2 gem is simlinked to the homebrew mysql.
+
 #### Installing on Apple Silicon (M1)
 
 If installation issues are encountered with Docker on M1 processors, try the fixes below:
