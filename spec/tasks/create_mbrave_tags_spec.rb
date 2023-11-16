@@ -106,7 +106,8 @@ describe 'mbrave tasks' do
               '1,PB1F_bc1001,CACATATCAGAGTGCG',
               '2,PB1F_bc1002,ACACACAGACTGTGAG',
               '3,PB1F_bc1003,ACACATCTCGTGAGAG',
-              '4,PB1F_bc1004,CACGCACACACGCGCG'
+              '4,PB1F_bc1004,CACGCACACACGCGCG',
+              '5,PB1F_bc1005,CACGCACACACGCGCG'
             ].join("\n")
           )
           file.rewind
@@ -138,12 +139,23 @@ describe 'mbrave tasks' do
           )
         end
 
-        xit 'creates the expected tag layout templates' do
+        it 'creates the tag group with the right indexing' do
+          run_task
+          %w[Bioscan_reverse_4_1_v1 Bioscan_reverse_4_2_v1].each do |name|
+            indexes = TagGroup.find_by(name: name).tags.map(&:map_id)
+            expect(indexes).to eq([1, 2, 3, 4])
+          end
+
+          indexes = TagGroup.find_by(name: 'Bioscan_forward_96_v1').tags.map(&:map_id)
+          expect(indexes).to eq([1, 2, 3, 4, 5])
+        end
+
+        it 'creates the expected tag layout templates' do
           run_task
           expect(TagLayoutTemplate.all.map(&:name)).to eq(%w[Bioscan_384_template_1_v1 Bioscan_384_template_2_v1])
         end
 
-        xit 'creates the right content in the yaml file' do
+        it 'creates the right content in the yaml file' do
           run_task
 
           contents = YAML.safe_load_file('mbrave.yml', aliases: true)
@@ -160,7 +172,7 @@ describe 'mbrave tasks' do
           expect(contents[Rails.env]['Bioscan_reverse_4_2_v1']['version']).to eq('v1')
 
           expect(contents[Rails.env]['Bioscan_forward_96_v1']['tags']).to eq(
-            %w[PB1F_bc1001 PB1F_bc1002 PB1F_bc1003 PB1F_bc1004]
+            %w[PB1F_bc1001 PB1F_bc1002 PB1F_bc1003 PB1F_bc1004 PB1F_bc1005]
           )
 
           expect(contents[Rails.env]['Bioscan_reverse_4_1_v1']['tags']).to eq(
