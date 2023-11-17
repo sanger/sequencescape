@@ -9,22 +9,28 @@ RSpec.describe Order do
   let(:project) { create :project }
   let(:asset) { create :empty_sample_tube }
 
-  describe '#autodetect_studies_projects' do
+  describe 'study and project autodetection' do
     # When automating submission creation, it is really useful if we can
     # auto-detect studies and projects based on their aliquots. However we
     # don't want to trigger this behaviour accidentally if someone forgets to
     # specify a study.
 
-    subject do
-      build :order, assets: assets, autodetect_studies_projects: autodetect_studies_projects, study: nil, project: nil
+    subject(:order) do
+      build :order,
+            assets: assets,
+            autodetect_studies: autodetect_studies,
+            autodetect_projects: autodetect_projects,
+            study: nil,
+            project: nil
     end
 
     let(:assets) { [tube] }
     let(:tube) { create :sample_tube, aliquots: aliquots }
     let(:study_state) { 'active' }
 
-    context 'with autodetect_studies_projects set to true' do
-      let(:autodetect_studies_projects) { true }
+    context 'with autodetection turned on' do
+      let(:autodetect_studies) { true }
+      let(:autodetect_projects) { true }
 
       it_behaves_like 'an automated order'
 
@@ -39,8 +45,9 @@ RSpec.describe Order do
       end
     end
 
-    context 'with autodetect_studies_projects set to false' do
-      let(:autodetect_studies_projects) { false }
+    context 'with autodetection turned off' do
+      let(:autodetect_studies) { false }
+      let(:autodetect_projects) { false }
       let(:aliquots) { create_list :tagged_aliquot, 2, study: study, project: project }
 
       it { is_expected.not_to be_valid }

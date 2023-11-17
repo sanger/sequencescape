@@ -11,5 +11,7 @@ class AutomatedOrder < FlexibleSubmission
   # When automating submission creation, it is really useful if we can
   # auto-detect studies and projects based on their aliquots. For automated
   # orders this is enabled by default.
-  attribute :autodetect_studies_projects, :boolean, default: true
+  def autodetection_default
+    true
+  end
 end

@@ -6,7 +6,6 @@ Limber - scRNA Core Cell Extraction:
   submission_class_name: "LinearSubmission"
   related_records:
     request_type_keys: ["limber_scrna_core_cell_extraction"]
-    project_name: "UAT Project"
-    study_name: "UAT Study"
+    project_name: "S0842"
     product_line_name: Sample Preparation
     product_catalogue_name: scRNA Core Cell Extraction
