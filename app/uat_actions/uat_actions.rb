@@ -10,7 +10,7 @@
 class UatActions
   include ActiveModel::Model
 
-  CATEGORY_LIST = ['Tag', 'Plate', 'Tube', 'Miscellaneous'].freeze
+  CATEGORY_LIST = %w[Tag Plate Tube Miscellaneous].freeze
 
   class_attribute :title, :description, :message
   self.message = 'Completed successfully'
