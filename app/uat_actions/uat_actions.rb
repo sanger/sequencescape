@@ -10,6 +10,8 @@
 class UatActions
   include ActiveModel::Model
 
+  CATEGORY_LIST = ['Tag', 'Plate', 'Tube', 'Miscellaneous'].freeze
+
   class_attribute :title, :description, :message
   self.message = 'Completed successfully'
 
@@ -37,6 +39,13 @@ class UatActions
     # The hash of all registered uat_actions
     def uat_actions
       @uat_actions ||= {}
+    end
+
+    # A logical grouping for display purposes
+    def category
+      # returns the first category in the list that matches the class name
+      # or the last category in the list if no match is found
+      CATEGORY_LIST.detect { |category| name.include?(category) } || CATEGORY_LIST.last
     end
 
     # Automatically called by UatActions classes to register themselves

@@ -1,5 +1,16 @@
 <%= page_title 'UAT' %>
 <p class="lead">Useful tools to quickly get things set-up for UAT</p>
-<div class="columnize">
-  <%= render @uat_actions %>
-</div>
+
+<% grouped_and_sorted_uat_actions(@uat_actions).each do |category, uat_actions| %>
+  <%# Display the category as a heading %>
+  <h2><%= category.pluralize.titleize %></h2>
+  <hr>
+
+  <%# Display each action in a column %>
+  <div class="columnize">
+    <% uat_actions.each do |uat_action| %>
+      <%= render uat_action %>
+    <% end %>
+  </div>
+
+<% end %>
