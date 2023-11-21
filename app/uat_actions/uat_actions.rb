@@ -48,6 +48,11 @@ class UatActions
       CATEGORY_LIST.detect { |category| name.include?(category) } || CATEGORY_LIST.last
     end
 
+    # Returns a hash of all registered uat_actions grouped by category and sorted
+    def grouped_and_sorted_uat_actions(uat_actions)
+      uat_actions.group_by(&:category).sort_by { |category, _| UatActions::CATEGORY_LIST.index(category) }
+    end
+
     # Automatically called by UatActions classes to register themselves
     #
     # @param [Class] other Automatically called when inherited. Receives the descendant class
