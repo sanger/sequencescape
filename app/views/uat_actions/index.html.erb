@@ -1,7 +1,7 @@
 <%= page_title('UAT Actions', titlecase: false) %>
 <p class="lead">Useful tools to quickly get things set-up for UAT</p>
 
-<% UatActions::grouped_and_sorted_uat_actions(@uat_actions).each do |category, uat_actions| %>
+<% UatActions::grouped_and_sorted_uat_actions.each do |category, uat_actions| %>
   <%# Display the category as a heading %>
   <h2><%= category.pluralize.titleize %></h2>
   <hr>

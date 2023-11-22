@@ -23,6 +23,8 @@ class UatActions::GenerateBananas < UatActions
 end
 
 RSpec.describe UatActions, type: :model do
+  before { allow(described_class).to receive(:all).and_return(uat_actions) }
+
   let(:generate_plates) { UatActions::GeneratePlates }
   let(:generate_tubes) { UatActions::GenerateTubes }
   let(:generate_plate_tags) { UatActions::GeneratePlateTags }
@@ -40,7 +42,7 @@ RSpec.describe UatActions, type: :model do
   end
 
   describe '.grouped_and_sorted_uat_actions' do
-    let(:grouped_and_sorted_uat_actions) { described_class.grouped_and_sorted_uat_actions(uat_actions) }
+    let(:grouped_and_sorted_uat_actions) { described_class.grouped_and_sorted_uat_actions }
     let(:expected_grouped_and_sorted_uat_actions) do
       {
         'Miscellaneous' => [generate_bananas],
@@ -51,8 +53,8 @@ RSpec.describe UatActions, type: :model do
     end
 
     it 'returns grouped uat_actions' do
-      grouped_and_sorted_uat_actions.each do |category, uat_actions|
-        expect(uat_actions).to eq(expected_grouped_and_sorted_uat_actions[category])
+      grouped_and_sorted_uat_actions.each do |category, actions|
+        expect(actions).to eq(expected_grouped_and_sorted_uat_actions[category])
       end
     end
 

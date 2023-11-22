@@ -49,8 +49,8 @@ class UatActions
     end
 
     # Returns a hash of all registered uat_actions grouped by category and sorted
-    def grouped_and_sorted_uat_actions(uat_actions)
-      uat_actions.group_by(&:category).sort_by { |category, _| UatActions::CATEGORY_LIST.index(category) }
+    def grouped_and_sorted_uat_actions
+      all.group_by(&:category).sort_by { |category, _| CATEGORY_LIST.index(category) }
     end
 
     # Automatically called by UatActions classes to register themselves
