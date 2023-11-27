@@ -51,10 +51,10 @@ class UatActions
     # Returns a hash of all registered uat_actions grouped by category and sorted
     def grouped_and_sorted_uat_actions
       # raise error if any categories are not in the list
-      uat_actions.each do |_, uat_action|
+      all.each do |uat_action|
         unless CATEGORY_LIST.include?(uat_action.category)
           raise "Category '#{uat_action.category}' from '#{uat_action}' is not in the list" \
-                " of categories #{CATEGORY_LIST}"
+                  " of categories #{CATEGORY_LIST}"
         end
       end
 
