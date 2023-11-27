@@ -10,7 +10,11 @@
 #
 # This version of the input class sets the state as started rather than passed.
 class PlatePurpose::InputStarted < PlatePurpose::Input
-  READY_STATE = 'started'
+  self.state_changer = StateChanger::InputStartedPlate
+
+  UNREADY_STATE = 'pending'
+  PREP_STATE = 'started'
+  READY_STATE = 'passed'
 
   private
 
@@ -27,7 +31,11 @@ class PlatePurpose::InputStarted < PlatePurpose::Input
     when ['cancelled']
       'cancelled'
     else
-      READY_STATE
+      if unique_states.all?('pending')
+        PREP_STATE
+      else
+        READY_STATE
+      end
     end
   end
 end
