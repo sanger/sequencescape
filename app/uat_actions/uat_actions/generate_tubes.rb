@@ -4,6 +4,7 @@
 class UatActions::GenerateTubes < UatActions
   self.title = 'Generate tubes'
   self.description = 'Generate sample tubes in the selected study.'
+  self.category = :generating_samples
 
   form_field :tube_purpose_name,
              :select,

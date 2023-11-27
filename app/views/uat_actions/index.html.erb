@@ -3,7 +3,7 @@
 
 <% UatActions::grouped_and_sorted_uat_actions.each do |category, uat_actions| %>
   <%# Display the category as a heading %>
-  <h2><%= category.pluralize.titleize %></h2>
+  <h2><%= category.to_s.titleize %></h2>
   <hr>
 
   <%# Display each action in a column %>
