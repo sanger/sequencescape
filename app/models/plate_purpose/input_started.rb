@@ -18,9 +18,8 @@ class PlatePurpose::InputStarted < PlatePurpose::Input
 
   private
 
-  # TODO: for some reason this private method needs to be here despite being a copy of
-  # the parent class method, otherwise the READY_STATE constant above isn't used over the
-  # one in the parent class.
+  # The state of the plate is determined by the state of the wells
+  # In this version we add an extra state PREP_STATE
   def calculate_state_of_plate(wells_states)
     unique_states = wells_states.uniq
     return UNREADY_STATE if unique_states.include?(:unready)
