@@ -4,6 +4,7 @@
 class UatActions::GenerateTagLayoutTemplate < UatActions
   self.title = 'Generate tag layout template'
   self.description = 'Generates a tag layout template from one or two tag groups.'
+  self.category = :auxiliary_data
 
   form_field :name,
              :text_field,

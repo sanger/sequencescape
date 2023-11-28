@@ -4,6 +4,7 @@
 class UatActions::GenerateProject < UatActions
   self.title = 'Generate project'
   self.description = 'Generate a simple project with the provided name.'
+  self.category = :setup_and_test
 
   form_field :project_name, :text_field, label: 'Project Name', help: 'The name of the project.'
 

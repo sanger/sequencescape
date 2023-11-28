@@ -6,6 +6,7 @@ class UatActions::GenerateTagPlates < UatActions
   self.description =
     'Generate available tag plates. All tag plates will be part of a new lot. For generation of plates ' \
       'of pretagged samples see "Generate Tagged Plates".'
+  self.category = :auxiliary_data
 
   form_field :tag_layout_template_name,
              :select,
