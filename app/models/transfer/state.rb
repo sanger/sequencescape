@@ -30,6 +30,30 @@ module Transfer::State
     ALL_STATES.detect { |s| unique_states.include?(s) } || default_state || 'unknown'
   end
 
+  module ReceptacleState
+    # We have to include this specifically because it does not implicitly include the
+    # methods from the Transfer::State module.
+    include Transfer::State
+
+    def default_state
+      # Well state was 'unknown' without this change for our input plate because input
+      # plates do not have any transfer requests.
+      # Users wish to be able to fail wells at this point in the pipeline, and we need wells
+      # to be in state 'passed' for well failing to be allowed.
+      return 'passed' if input_started_plate_with_aliquots?
+
+      nil
+    end
+
+    private
+
+    def input_started_plate_with_aliquots?
+      self.labware.purpose.type == 'PlatePurpose::InputStarted' &&
+        %w[started passed].include?(self.labware.state) &&
+        self.aliquots.present?
+    end
+  end
+
   # Plate specific behaviour
   module PlateState
     def self.included(base) # rubocop:todo Metrics/MethodLength
