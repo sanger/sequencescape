@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class QcMetric < ApplicationRecord # rubocop:todo Style/Documentation
+class QcMetric < ApplicationRecord
   extend QcMetric::QcState
 
   InvalidValue = Class.new(StandardError)

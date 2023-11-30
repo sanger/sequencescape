@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Batch::PipelineBehaviour # rubocop:todo Style/Documentation
+module Batch::PipelineBehaviour
   def self.included(base)
     base.class_eval do
       # The associations with the pipeline

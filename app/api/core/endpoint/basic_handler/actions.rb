@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 # rubocop:todo Metrics/ModuleLength
-module Core::Endpoint::BasicHandler::Actions # rubocop:todo Style/Documentation
-  class UnsupportedAction < StandardError # rubocop:todo Style/Documentation
+module Core::Endpoint::BasicHandler::Actions
+  class UnsupportedAction < StandardError
     def initialize(action, _request)
       super(action.to_s)
     end

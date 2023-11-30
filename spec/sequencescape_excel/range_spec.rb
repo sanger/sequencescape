@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SequencescapeExcel::Range, sample_manifest: true, sample_manifest_excel: true, type: :model do
+RSpec.describe SequencescapeExcel::Range, :sample_manifest, :sample_manifest_excel, type: :model do
   let(:options) { %w[option1 option2 option3] }
 
   it 'is comparable' do
@@ -88,51 +88,50 @@ RSpec.describe SequencescapeExcel::Range, sample_manifest: true, sample_manifest
     it 'has identifier, scope, options' do
       assert range.identifier
       assert range.scope
-      assert_equal original_option_size, range.options.count
+      expect(range.options.count).to eq(original_option_size)
     end
 
     it 'has a first row' do
-      assert_equal 4, range.first_row
+      expect(range.first_row).to eq(4)
     end
 
     it 'sets the first column' do
-      assert_equal 1, range.first_column
+      expect(range.first_column).to eq(1)
     end
 
     it 'sets the last column' do
-      assert_equal original_option_size, range.last_column
-      assert_equal 3 + original_option_size, described_class.new(attributes.merge(first_column: 4)).last_column
+      expect(range.last_column).to eq(original_option_size)
+      expect(described_class.new(attributes.merge(first_column: 4)).last_column).to eq(3 + original_option_size)
     end
 
     it 'has a first_cell' do
-      assert_equal SequencescapeExcel::Cell.new(range.first_row, range.first_column), range.first_cell
+      expect(range.first_cell).to eq(SequencescapeExcel::Cell.new(range.first_row, range.first_column))
     end
 
     it 'has a last_cell' do
-      assert_equal SequencescapeExcel::Cell.new(range.last_row, range.last_column), range.last_cell
+      expect(range.last_cell).to eq(SequencescapeExcel::Cell.new(range.last_row, range.last_column))
     end
 
     it 'has a first cell reference' do
-      assert_equal range.first_cell.reference, range.first_cell_reference
+      expect(range.first_cell_reference).to eq(range.first_cell.reference)
     end
 
     it 'sets the reference' do
-      assert_equal "#{range.first_cell.reference}:#{range.last_cell.reference}", range.reference
+      expect(range.reference).to eq("#{range.first_cell.reference}:#{range.last_cell.reference}")
     end
 
     it 'sets the fixed reference' do
-      assert_equal "#{range.first_cell.fixed}:#{range.last_cell.fixed}", range.fixed_reference
+      expect(range.fixed_reference).to eq("#{range.first_cell.fixed}:#{range.last_cell.fixed}")
     end
 
     it '#references should return first_cell reference, reference, fixed_reference and absolute_reference' do
-      assert_equal(
+      expect(range.references).to eq(
         {
           first_cell_reference: range.first_cell_reference,
           reference: range.reference,
           fixed_reference: range.fixed_reference,
           absolute_reference: range.absolute_reference
-        },
-        range.references
+        }
       )
     end
 
@@ -144,8 +143,8 @@ RSpec.describe SequencescapeExcel::Range, sample_manifest: true, sample_manifest
     it 'adjusts to changes in option number' do
       previous_last_cell = range.last_cell.column
       create :library_type, name: 'Other'
-      assert_equal original_option_size + 1, range.last_column
-      assert_equal previous_last_cell.next, range.last_cell.column
+      expect(range.last_column).to eq(original_option_size + 1)
+      expect(range.last_cell.column).to eq(previous_last_cell.next)
     end
   end
 

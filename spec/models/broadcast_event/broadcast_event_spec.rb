@@ -102,7 +102,7 @@ class ExampleEvent < BroadcastEvent
   end
 end
 
-RSpec.describe BroadcastEvent, broadcast_event: true do
+RSpec.describe BroadcastEvent, :broadcast_event do
   it 'is not directly instantiated' do
     expect(described_class.new).not_to be_valid
   end
@@ -149,7 +149,7 @@ RSpec.describe BroadcastEvent, broadcast_event: true do
 
       it 'has five subjects' do
         expect(event.subjects).to be_present
-        assert_equal 5, event.subjects.length
+        expect(event.subjects.length).to eq(5)
       end
 
       it 'finds subjects with a 1 to many relationship' do
@@ -199,7 +199,7 @@ RSpec.describe BroadcastEvent, broadcast_event: true do
       end
 
       it 'finds all metadata as a hash' do
-        assert_equal({ 'data_a' => value_a, 'data_b' => value_b, 'data_c' => 'value_c' }, event.metadata)
+        expect(event.metadata).to eq({ 'data_a' => value_a, 'data_b' => value_b, 'data_c' => 'value_c' })
       end
 
       describe '#routing_key' do
@@ -258,7 +258,7 @@ RSpec.describe BroadcastEvent, broadcast_event: true do
           'lims' => 'SQSCP'
         }
 
-        assert_equal expected_json, JSON.parse(event.to_json)
+        expect(JSON.parse(event.to_json)).to eq(expected_json)
       end
     end
   end

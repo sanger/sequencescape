@@ -161,14 +161,16 @@ class ReceptaclesController < ApplicationController # rubocop:todo Metrics/Class
     submission.built!
 
     respond_to do |format|
-      flash[:notice] = 'Created request' # rubocop:disable Rails/ActionControllerFlashBeforeRender
+      flash[:notice] = 'Created request'
 
       format.html { redirect_to receptacle_path(@asset) }
       format.json { render json: submission.requests, status: :created }
     end
   rescue Submission::ProjectValidation::Error, ActiveRecord::RecordNotFound, ActiveRecord::RecordInvalid => e
     respond_to do |format|
-      flash.now[:error] = e.message.truncate(2000, separator: ' ')
+      # Using 'flash' instead of 'flash.now' to ensure the message persists after the redirect.
+      # See: https://guides.rubyonrails.org/action_controller_overview.html#the-flash
+      flash[:error] = e.message.truncate(2000, separator: ' ')
       format.html { redirect_to new_request_for_current_asset }
       format.json { render json: e.message, status: :unprocessable_entity }
     end

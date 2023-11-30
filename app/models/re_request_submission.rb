@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class ReRequestSubmission < Order # rubocop:todo Style/Documentation
+class ReRequestSubmission < Order
   include Submission::LinearRequestGraph
   include Submission::Crossable
 

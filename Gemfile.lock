@@ -8,6 +8,12 @@ GIT
       activerecord (>= 4.0.0)
 
 GIT
+  remote: https://github.com/sanger/record_loader
+  revision: 9e7481f4d2342f042ab13465962e5d6689863198
+  specs:
+    record_loader (0.3.0)
+
+GIT
   remote: https://github.com/sanger/sanger_barcode_format.git
   revision: 8e93771a9f38e1efb07c1d82dca1a81d74353e11
   branch: development
@@ -115,7 +121,7 @@ GEM
       rack-test (>= 0.6.3)
       regexp_parser (>= 1.5, < 3.0)
       xpath (~> 3.2)
-    carrierwave (3.0.4)
+    carrierwave (3.0.5)
       activemodel (>= 6.0.0)
       activesupport (>= 6.0.0)
       addressable (~> 2.6)
@@ -250,7 +256,7 @@ GEM
     method_source (1.0.0)
     mime-types (3.5.1)
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2023.1003)
+    mime-types-data (3.2023.0808)
     mini_magick (4.12.0)
     mini_mime (1.1.5)
     mini_portile2 (2.8.4)
@@ -293,10 +299,10 @@ GEM
       pry (>= 0.13, < 0.15)
     pry-rails (0.3.9)
       pry (>= 0.10.4)
-    public_suffix (5.0.3)
+    public_suffix (5.0.4)
     puma (6.4.0)
       nio4r (~> 2.0)
-    racc (1.7.1)
+    racc (1.7.3)
     rack (2.2.8)
     rack-acceptable (0.1.0)
       rack (>= 1.1.0)
@@ -396,7 +402,7 @@ GEM
       rspec-mocks (~> 3.10)
       rspec-support (~> 3.10)
     rspec-support (3.12.1)
-    rubocop (1.57.0)
+    rubocop (1.57.2)
       base64 (~> 0.1.1)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
@@ -408,7 +414,7 @@ GEM
       rubocop-ast (>= 1.28.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.29.0)
+    rubocop-ast (1.30.0)
       parser (>= 3.2.1.0)
     rubocop-capybara (2.19.0)
       rubocop (~> 1.41)
@@ -417,12 +423,13 @@ GEM
     rubocop-performance (1.19.1)
       rubocop (>= 1.7.0, < 2.0)
       rubocop-ast (>= 0.4.0)
-    rubocop-rails (2.21.2)
+    rubocop-rails (2.22.2)
       activesupport (>= 4.2.0)
       rack (>= 1.1)
       rubocop (>= 1.33.0, < 2.0)
-    rubocop-rspec (2.24.1)
-      rubocop (~> 1.33)
+      rubocop-ast (>= 1.30.0, < 2.0)
+    rubocop-rspec (2.25.0)
+      rubocop (~> 1.40)
       rubocop-capybara (~> 2.17)
       rubocop-factory_bot (~> 2.22)
     ruby-graphviz (1.2.5)
@@ -430,7 +437,7 @@ GEM
     ruby-prof (1.6.3)
     ruby-progressbar (1.13.0)
     ruby-units (4.0.0)
-    ruby-vips (2.1.4)
+    ruby-vips (2.2.0)
       ffi (~> 1.12)
     ruby2_keywords (0.0.5)
     rubyzip (2.3.2)
@@ -545,7 +552,6 @@ DEPENDENCIES
   daemons
   database_cleaner
   delayed_job_active_record
-  dynamic_form
   exception_notification
   factory_bot_rails
   flipper (~> 0.25.0)
@@ -576,7 +582,7 @@ DEPENDENCIES
   rails-erd
   rails-perftest
   rainbow
-  record_loader
+  record_loader!
   rest-client
   roo
   rspec-collection_matchers
@@ -611,4 +617,4 @@ DEPENDENCIES
   yard-activerecord (~> 0.0.16)
 
 BUNDLED WITH
-   2.1.4
+   2.2.33

@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'support/barcode_helper'
 
-RSpec.describe 'TubeRacks Heron API', heron: true, lighthouse: true, with: :api_v2 do
+RSpec.describe 'TubeRacks Heron API', :heron, :lighthouse, with: :api_v2 do
   let(:size) { 96 }
   let(:purpose) { create(:purpose, type: 'TubeRack::Purpose', target_type: 'TubeRack', size: 96) }
 
@@ -17,10 +17,10 @@ RSpec.describe 'TubeRacks Heron API', heron: true, lighthouse: true, with: :api_
     let(:supplier_sample_ids) { %w[PHEC-nnnnnnn1 PHEC-nnnnnnn2] }
     let(:purpose_uuid) { purpose.uuid }
     let(:rack) do
-      uuid = JSON.parse(response.body).dig('data', 'attributes', 'uuid')
+      uuid = response.parsed_body.dig('data', 'attributes', 'uuid')
       TubeRack.with_uuid(uuid).first
     end
-    let(:url_for_rack) { JSON.parse(response.body).dig('data', 'links', 'self') }
+    let(:url_for_rack) { response.parsed_body.dig('data', 'links', 'self') }
 
     let(:tubes) do
       {
@@ -64,7 +64,7 @@ RSpec.describe 'TubeRacks Heron API', heron: true, lighthouse: true, with: :api_
 
       it 'contains errors in the response' do
         request
-        expect(!JSON.parse(response.body)['errors'].empty?).to be_truthy
+        expect(!response.parsed_body['errors'].empty?).to be_truthy
       end
     end
 
@@ -96,7 +96,7 @@ RSpec.describe 'TubeRacks Heron API', heron: true, lighthouse: true, with: :api_
         it 'writes the supplier name' do
           request
           expect(
-            ::Sample::Metadata
+            Sample::Metadata
               .joins(sample: { aliquots: { receptacle: :barcodes } })
               .where(barcodes: { barcode: tubes_barcodes })
               .map(&:supplier_name)
@@ -130,7 +130,7 @@ RSpec.describe 'TubeRacks Heron API', heron: true, lighthouse: true, with: :api_
         it 'writes the control' do
           request
           expect(
-            ::Sample
+            Sample
               .joins(aliquots: { receptacle: :barcodes })
               .where(barcodes: { barcode: tubes_barcodes })
               .map(&:control)
@@ -140,7 +140,7 @@ RSpec.describe 'TubeRacks Heron API', heron: true, lighthouse: true, with: :api_
         it 'writes the control type' do
           request
           expect(
-            ::Sample
+            Sample
               .joins(aliquots: { receptacle: :barcodes })
               .where(barcodes: { barcode: tubes_barcodes })
               .map(&:control_type)

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module PipelinesHelper # rubocop:todo Style/Documentation
+module PipelinesHelper
   def target_purpose_for(request)
     nrs = request.next_requests
     return nrs.first.request_type.acceptable_purposes.pluck(:name).join('|') unless nrs.empty?

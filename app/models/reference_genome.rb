@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class ReferenceGenome < ApplicationRecord # rubocop:todo Style/Documentation
+class ReferenceGenome < ApplicationRecord
   extend Attributable::Association::Target
   include Api::ReferenceGenomeIO::Extensions
   include Uuid::Uuidable
@@ -15,7 +15,7 @@ class ReferenceGenome < ApplicationRecord # rubocop:todo Style/Documentation
             }
   broadcast_with_warren
 
-  module Associations # rubocop:todo Style/Documentation
+  module Associations
     def self.included(base)
       base.validates_presence_of :reference_genome_id
       base.validates_numericality_of :reference_genome_id, greater_than: 0, message: 'appears to be invalid'

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Informatics
-  module Globals # rubocop:todo Style/Documentation
+  module Globals
     @@application = nil
     @@defaults = nil
 

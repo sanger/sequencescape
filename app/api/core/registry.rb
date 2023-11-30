@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Core::Registry # rubocop:todo Style/Documentation
+class Core::Registry
   include ::Singleton
   include ::Core::Logging
 
@@ -18,7 +18,7 @@ class Core::Registry # rubocop:todo Style/Documentation
   end
 
   def lookup_target_class_through_model_hierarchy!(model_class, root_lookup_model_class = model_class)
-    if model_class.nil? || (ActiveRecord::Base == model_class)
+    if model_class.nil? || (model_class == ActiveRecord::Base)
       raise UnregisteredError, "Unable to locate for #{root_lookup_model_class.name.inspect} (#{inspect})"
     end
 

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class UserQueriesController < ApplicationController # rubocop:todo Style/Documentation
+class UserQueriesController < ApplicationController
   def new
     @user_query = UserQuery.new(url: request.referer, user: current_user)
   end

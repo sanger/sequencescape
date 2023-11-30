@@ -14,7 +14,7 @@ module BroadcastEvent::RenderHelpers
     end
   end
 
-  module RenderableClassMethods # rubocop:todo Style/Documentation
+  module RenderableClassMethods
     def render_class
       Render
     end

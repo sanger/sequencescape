@@ -8,7 +8,7 @@
 # @author [jg16]
 #
 class Purpose::Relationship < ApplicationRecord
-  module Associations # rubocop:todo Style/Documentation
+  module Associations
     def self.included(base)
       base.class_eval do
         has_many :child_relationships, class_name: 'Purpose::Relationship', foreign_key: :parent_id, dependent: :destroy

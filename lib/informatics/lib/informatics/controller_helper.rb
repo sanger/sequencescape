@@ -5,7 +5,7 @@ require_relative 'view/tabs/item'
 require_relative 'view/tabs/list'
 require_relative 'globals'
 
-module ApplicationHelper # rubocop:todo Style/Documentation
+module ApplicationHelper
   include Informatics::Globals
 
   # rubocop:todo Metrics/MethodLength, Metrics/AbcSize

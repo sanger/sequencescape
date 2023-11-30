@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Metadata::BuilderBase < ActionView::Helpers::FormBuilder # rubocop:todo Style/Documentation
+class Metadata::BuilderBase < ActionView::Helpers::FormBuilder
   attr_writer :locals
 
   def initialize(*args, &block)

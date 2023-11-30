@@ -4,7 +4,7 @@ require 'rails_helper'
 require 'record_loader/tag_layout_templates_loader'
 
 # This file was initially generated via `rails g record_loader`
-RSpec.describe RecordLoader::TagLayoutTemplatesLoader, loader: true, type: :model do
+RSpec.describe RecordLoader::TagLayoutTemplatesLoader, :loader, type: :model do
   def a_new_record_loader
     described_class.new(directory: test_directory, files: selected_files)
   end

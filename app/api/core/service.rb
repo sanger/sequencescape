@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 require 'sinatra/base'
 module Core
-  class Service < Sinatra::Base # rubocop:todo Style/Documentation
+  class Service < Sinatra::Base
     API_VERSION = 1
 
-    class Error < StandardError # rubocop:todo Style/Documentation
-      module Behaviour # rubocop:todo Style/Documentation
+    class Error < StandardError
+      module Behaviour
         def self.included(base)
           base.class_eval do
             class_attribute :api_error_code
@@ -23,17 +23,17 @@ module Core
       include Behaviour
     end
 
-    class UnsupportedAction < Error # rubocop:todo Style/Documentation
+    class UnsupportedAction < Error
       self.api_error_code = 501
       self.api_error_message = 'requested action is not supported on this resource'
     end
 
-    class DeprecatedAction < Error # rubocop:todo Style/Documentation
+    class DeprecatedAction < Error
       self.api_error_code = 410
       self.api_error_message = 'requested action is no longer supported'
     end
 
-    class MethodNotAllowed < Error # rubocop:todo Style/Documentation
+    class MethodNotAllowed < Error
       def initialize(allowed_http_verbs)
         super('HTTP verb was not allowed!')
         @allowed = Array(allowed_http_verbs).map(&:to_s).map(&:upcase).join(',')
@@ -114,7 +114,7 @@ module Core
     register Core::Service::Authentication
     register Core::Service::ContentFiltering
 
-    class Request # rubocop:todo Style/Documentation
+    class Request
       extend Core::Initializable
       include Core::References
       include Core::Benchmarking
@@ -188,7 +188,7 @@ module Core
       include Core::References
       include Core::Benchmarking
 
-      class Initializer # rubocop:todo Style/Documentation
+      class Initializer
         delegate :status, :headers, :api_path, to: '@owner.request.service'
 
         # Causes a response that will redirect the client to the specified UUID path.

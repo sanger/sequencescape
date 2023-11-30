@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module DataRelease # rubocop:todo Style/Documentation
+module DataRelease
   # TODO[xxx]: All of this probably falls into the Study::Metadata class
 
   def valid_data_release_properties?

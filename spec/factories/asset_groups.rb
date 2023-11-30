@@ -15,7 +15,7 @@ FactoryBot.define do
   end
 
   factory :asset_group_asset do
-    association(:asset, factory: :receptacle)
+    asset factory: %i[receptacle]
     asset_group
   end
 end

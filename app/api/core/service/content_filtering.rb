@@ -1,24 +1,24 @@
 # frozen_string_literal: true
 # Everything coming in and going out should be JSON.
 module Core::Service::ContentFiltering
-  class InvalidRequestedContentType < ::Core::Service::Error # rubocop:todo Style/Documentation
+  class InvalidRequestedContentType < ::Core::Service::Error
     self.api_error_code = 406
     self.api_error_message =
       "the 'Accept' header can only be 'application/json' or a supported filetype eg.'sequencescape/qc_file'"
   end
 
-  class InvalidRequestedContentTypeOnFile < ::Core::Service::Error # rubocop:todo Style/Documentation
+  class InvalidRequestedContentTypeOnFile < ::Core::Service::Error
     self.api_error_code = 406
     self.api_error_message = "the 'Accept' header can only be 'application/json' when submitting a file"
   end
 
-  class InvalidBodyContentType < ::Core::Service::Error # rubocop:todo Style/Documentation
+  class InvalidBodyContentType < ::Core::Service::Error
     self.api_error_code = 415
     self.api_error_message =
       "the 'Content-Type' can only be 'application/json' or a supported filetype eg.'sequencescape/qc_file'"
   end
 
-  module Helpers # rubocop:todo Style/Documentation
+  module Helpers
     def json
       @json
     end

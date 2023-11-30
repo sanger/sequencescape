@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Controls API V1 IO for {::Order}
-class Io::Order < ::Core::Io::Base
+class Io::Order < Core::Io::Base
   REQUEST_OPTIONS_FIELDS =
     {
       read_length: 'read_length',
@@ -37,7 +37,8 @@ class Io::Order < ::Core::Io::Base
 
                                            user <=  user
 
-                    autodetect_studies_projects <= autodetect_studies_projects
+                             autodetect_studies <= autodetect_studies
+                            autodetect_projects <= autodetect_projects
   '
   )
 end

@@ -15,7 +15,7 @@ describe 'See labware history' do
            }
   end
 
-  it 'displays asset audits', js: true do
+  it 'displays asset audits', :js do
     login_user(user)
     visit labware_path(tube)
     click_link 'Event history'

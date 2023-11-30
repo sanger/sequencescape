@@ -58,7 +58,7 @@ namespace :mbrave do
     version = args[:version]
 
     tag_layout_templates =
-      TagLayoutTemplate.all.select do |template|
+      TagLayoutTemplate.select do |template|
         template.name.match(Regexp.new("^Bioscan_384_template_(\\d+)_#{version}$"))
       end
 
@@ -131,12 +131,12 @@ namespace :mbrave do
         CSV.foreach(reverse_filename, headers: true) do |row|
           _validate_reverse_row(row)
           map_id = row['Reverse Index Number'].to_i
-          pos = ((map_id - 1) % 4)
+          pos = ((map_id - 1) % 4) + 1
           tag = Tag.new(map_id: pos, oligo: row['R index sequence'])
           tags.push(tag)
           mbrave_tags.push(row['Reverse Oligo Label'])
 
-          if pos == 3
+          if pos == 4
             puts " - #{reverse_tag_group_name(group)}"
             @reverse_groups.push(_create_tag_group(reverse_tag_group_name(group), tags))
             _add_to_yaml(yaml_filename, reverse_tag_group_name(group), mbrave_tags, version, group)

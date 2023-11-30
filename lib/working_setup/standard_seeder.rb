@@ -37,7 +37,7 @@ module WorkingSetup
     end
 
     def seed
-      Sample.all.each { |s| study_b.samples << s }
+      Sample.find_each { |s| study_b.samples << s }
       create_purposes
 
       Robot

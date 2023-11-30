@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Controls API V1 IO for {::LibraryCreationRequest}
-class Io::LibraryCreationRequest < ::Io::Request
+class Io::LibraryCreationRequest < Io::Request
   set_model_for_input(::LibraryCreationRequest)
   set_json_root(:library_creation_request)
 

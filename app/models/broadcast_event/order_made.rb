@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class BroadcastEvent::OrderMade < BroadcastEvent # rubocop:todo Style/Documentation
+class BroadcastEvent::OrderMade < BroadcastEvent
   set_event_type 'order_made'
 
   # Properties takes :order_id

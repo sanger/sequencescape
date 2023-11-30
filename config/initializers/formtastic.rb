@@ -6,7 +6,7 @@ require 'formtastic'
 module Formtastic
   module Inputs
     module Base
-      module Labelling # rubocop:todo Style/Documentation
+      module Labelling
         def label_html_options
           { for: input_html_options[:id], class: ['ft-label'] }
         end

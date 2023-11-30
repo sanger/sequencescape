@@ -4,6 +4,7 @@
 class UatActions::PlateInformation < UatActions
   self.title = 'Plate information'
   self.description = 'Get plate information for a barcode.'
+  self.category = :setup_and_test
 
   form_field :plate_barcode, :text_field, label: 'Plate Barcode', help: 'Fetches basic information for a plate barcode.'
 

@@ -69,9 +69,9 @@ shared_examples 'a cherrypicking procedure' do
         expect(page).to have_content('Batch released!')
         expected_input_count = plates.count
         expected_input_count += 1 if control_plate
-        within('#input_assets table tbody') { expect(page).to have_selector('tr', count: expected_input_count) }
+        within('#input_assets table tbody') { expect(page).to have_css('tr', count: expected_input_count) }
         within('#output_assets table tbody') do
-          expect(page).to have_selector('tr', count: expected_plates_by_destination_plate.size)
+          expect(page).to have_css('tr', count: expected_plates_by_destination_plate.size)
         end
       end
     end
@@ -233,7 +233,11 @@ shared_examples 'a cherrypicking procedure' do
           end
 
           step "Download pick file for destination plate #{destination_barcode} pick number #{pick_number_index}" do
-            expect(page).to have_content("Download #{robot.name.capitalize} File Step 3 of 3")
+            Capybara.using_wait_time(5) do
+              # This requires more time to perform the check between runs.
+              # Throws a JS error if not waiting enough
+              expect(page).to have_content("Download #{robot.name.capitalize} File Step 3 of 3")
+            end
 
             click_link("Download #{robot.name} File")
 

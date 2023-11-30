@@ -3,11 +3,11 @@
 # A stamp is a means of transfering material from a lot
 # into a qcable.
 
-class Stamp < ApplicationRecord # rubocop:todo Style/Documentation
+class Stamp < ApplicationRecord
   include Uuid::Uuidable
   include ModelExtensions::Stamp
 
-  class StampQcable < ApplicationRecord # rubocop:todo Style/Documentation
+  class StampQcable < ApplicationRecord
     self.table_name = ('stamp_qcables')
 
     belongs_to :stamp, inverse_of: :stamp_qcables

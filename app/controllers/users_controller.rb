@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class UsersController < ApplicationController # rubocop:todo Style/Documentation
+class UsersController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
@@ -55,7 +55,8 @@ class UsersController < ApplicationController # rubocop:todo Style/Documentation
         printer,
         LabelPrinter::Label::Swipecard,
         user_login: @user.login.truncate(10, omission: '..'),
-        swipecard: swipecard
+        swipecard: swipecard,
+        label_template_name: configatron.swipecard_pmb_template
       )
     if print_job.execute
       flash[:notice] = print_job.success

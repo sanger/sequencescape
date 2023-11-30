@@ -2,7 +2,7 @@
 
 # The following module is included where we have deprecated behaviours that rely on sample or request.
 module Aliquot::DeprecatedBehaviours
-  module Request # rubocop:todo Style/Documentation
+  module Request
     def tag_number
       tag.try(:map_id) || ''
     end

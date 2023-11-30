@@ -58,7 +58,7 @@ RSpec.describe 'PlatePicks' do
       get "/plate_picks/plates/#{plate.machine_barcode}", headers: headers
       expect(response.media_type).to eq('application/json')
       expect(response).to have_http_status(:success)
-      expect(JSON.parse(response.body)).to eq(found_plate)
+      expect(response.parsed_body).to eq(found_plate)
     end
 
     it 'returns 404 if the plate is missing', :aggregate_failures do
@@ -81,7 +81,7 @@ RSpec.describe 'PlatePicks' do
       get "/plate_picks/batches/#{released_cherrypick_batch.id}", headers: headers
       expect(response.media_type).to eq('application/json')
       expect(response).to have_http_status(:success)
-      expect(JSON.parse(response.body)).to eq(found_batch)
+      expect(response.parsed_body).to eq(found_batch)
     end
 
     it 'returns an error if the batch has no pick info', :aggregate_failures do

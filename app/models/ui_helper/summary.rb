@@ -4,7 +4,7 @@
 require 'will_paginate/array'
 
 module UiHelper
-  class Summary # rubocop:todo Style/Documentation
+  class Summary
     attr_accessor :summary_items, :current_page
 
     def initialize(options = {})

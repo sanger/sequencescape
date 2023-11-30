@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 require 'carrierwave'
 
-class Document < ApplicationRecord # rubocop:todo Style/Documentation
+class Document < ApplicationRecord
   extend DbFile::Uploader
 
-  module Associations # rubocop:todo Style/Documentation
+  module Associations
     # Adds accessors for named fields and attaches documents to them
 
     def has_uploaded_document(field, differentiator: field.to_s) # rubocop:todo Metrics/MethodLength

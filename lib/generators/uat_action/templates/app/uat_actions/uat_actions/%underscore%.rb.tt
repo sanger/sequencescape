@@ -5,6 +5,7 @@ class UatActions::<%= camelcase %> < UatActions
   self.title = '<%= title %>'
   # The description displays on the list of UAT actions to provide additional information
   self.description = '<%= description %>'
+  self.category = '<%= category %>'
 
   # Form fields
   # form_field :resource_id, :select, label: 'Resource', help: 'Select a resource from the list', select_options: -> { Resource.scope.pluck(:name, :id) }

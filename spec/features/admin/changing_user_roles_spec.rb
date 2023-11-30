@@ -37,7 +37,7 @@ describe 'Manage users' do
     expect(test_user.roles.pluck(:name)).to eq(['lab_manager'])
   end
 
-  it 'assign a study role', js: true do
+  it 'assign a study role', :js do
     within('div#study_role') do
       select('manager', from: 'Study role')
       select('Study Name', from: 'for Study')
@@ -46,7 +46,7 @@ describe 'Manage users' do
     expect(page).to have_content 'Manager'
   end
 
-  it 'assign a project role', js: true do
+  it 'assign a project role', :js do
     within('div#project_role') do
       select('manager', from: 'Project role')
       select('Project Name', from: 'for Project')

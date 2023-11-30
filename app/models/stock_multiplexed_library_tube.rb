@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class StockMultiplexedLibraryTube < Tube # rubocop:todo Style/Documentation
+class StockMultiplexedLibraryTube < Tube
   include Asset::Stock
 
   def stock_wells

@@ -1,0 +1,10 @@
+# This submission template is associated with the Limber Bait Capture Library preparation pipeline.
+# To create this run WIP=010_bait_capture_library_submission_templates rake record_loader:all
+---
+Limber-Htp - RVI - Bait Capture Library:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_bait_capture_library_prep", "limber_multiplexing"]
+    project_name: Respiratory Virus and Microbiome Initiative
+    product_line_name: Illumina-HTP
+    product_catalogue_name: Bait Capture Library

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module LabelPrinter
   module Label
-    class AssetRedirect # rubocop:todo Style/Documentation
+    class AssetRedirect
       attr_reader :printables
 
       def initialize(options)

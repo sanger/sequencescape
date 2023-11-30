@@ -2,10 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SequencescapeExcel::ConditionalFormattingList,
-               sample_manifest: true,
-               sample_manifest_excel: true,
-               type: :model do
+RSpec.describe SequencescapeExcel::ConditionalFormattingList, :sample_manifest, :sample_manifest_excel, type: :model do
   include SequencescapeExcel::Helpers
 
   let(:folder) { File.join('spec', 'data', 'sample_manifest_excel', 'extract') }

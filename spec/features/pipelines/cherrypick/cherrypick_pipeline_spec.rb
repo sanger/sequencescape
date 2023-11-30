@@ -3,7 +3,7 @@
 require 'rails_helper'
 require './spec/features/shared_examples/cherrypicking'
 
-describe 'Cherrypicking pipeline', cherrypicking: true, js: true do
+describe 'Cherrypicking pipeline', :cherrypicking, :js do
   include BarcodeHelper
 
   let(:swipecard_code) { '123456' }
@@ -408,7 +408,7 @@ describe 'Cherrypicking pipeline', cherrypicking: true, js: true do
     end
   end
 
-  describe 'where there is a control plate and multiple destinations', js: true do
+  describe 'where there is a control plate and multiple destinations', :js do
     let(:plate1) { create :plate_with_untagged_wells, sample_count: 50 }
     let(:plate2) { create :plate_with_untagged_wells, sample_count: 50 }
     let(:control_plate) { create :control_plate, sample_count: 2 }

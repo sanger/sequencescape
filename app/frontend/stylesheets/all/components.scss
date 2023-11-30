@@ -2,6 +2,20 @@
  * Please ensure you keep it commented
  */
 
+/* Background colours for different environments */
+.bg-production {
+  background-color: $production;
+}
+.bg-training {
+  background-color: $training;
+}
+.bg-staging {
+  background-color: $staging;
+}
+.bg-development {
+  background-color: $development;
+}
+
 /* A Summary table presents simple key-value pairs */
 .table-summary th {
   text-align: right;
@@ -75,6 +89,10 @@ div.batch-summary-events {
 
 .card-style-filters {
   @extend .bg-light;
+}
+
+.card-style-uniform {
+  min-height: 8.5em; // title and 2 lines of description
 }
 
 // Apply basic button formatting to all buttons

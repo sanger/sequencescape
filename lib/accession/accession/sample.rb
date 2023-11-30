@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Accession
-  class Sample # rubocop:todo Style/Documentation
+  class Sample
     # Validate the sample to ensure that it can be accessioned
     # The sample must:
     # - not be accessioned

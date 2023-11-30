@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module LabelPrinter
   module Label
-    class BatchTube < BaseTube # rubocop:todo Style/Documentation
+    class BatchTube < BaseTube
       attr_reader :count, :printable, :batch, :stock
 
       def initialize(options)

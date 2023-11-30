@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Controls API V1 {::Core::Endpoint::Base endpoints} for PlateCreations
-class Endpoints::PlateCreations < ::Core::Endpoint::Base
+class Endpoints::PlateCreations < Core::Endpoint::Base
   model { action(:create, to: :standard_create!) }
 
   instance do

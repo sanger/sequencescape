@@ -28,18 +28,18 @@ FactoryBot.define do
 
   factory :tube, traits: [:tube_barcode] do
     name { generate :asset_name }
-    association(:purpose, factory: :tube_purpose)
+    purpose factory: %i[tube_purpose]
   end
 
   factory :unbarcoded_tube, class: 'Tube' do
     name { generate :asset_name }
-    association(:purpose, factory: :tube_purpose)
+    purpose factory: %i[tube_purpose]
   end
 
   factory :empty_sample_tube, class: 'SampleTube', traits: [:tube_barcode] do
     name { generate :asset_name }
     qc_state { '' }
-    association(:purpose, factory: :sample_tube_purpose) # { Tube::Purpose.standard_sample_tube }
+    purpose factory: %i[sample_tube_purpose] # { Tube::Purpose.standard_sample_tube }
   end
 
   factory :sample_tube, parent: :empty_sample_tube do
@@ -79,7 +79,7 @@ FactoryBot.define do
     end
 
     name { generate :asset_name }
-    association(:purpose, factory: :mx_tube_purpose)
+    purpose factory: %i[mx_tube_purpose]
     after(:build) do |tube, evaluator|
       unless evaluator.sample_count.zero?
         tube.aliquots = build_list(:library_aliquot, evaluator.sample_count, study: evaluator.study)
@@ -97,13 +97,13 @@ FactoryBot.define do
     purpose { Tube::Purpose.stock_mx_tube }
 
     factory :new_stock_multiplexed_library_tube do |_t|
-      association(:purpose, factory: :new_stock_tube_purpose)
+      purpose factory: %i[new_stock_tube_purpose]
     end
   end
 
   factory(:empty_library_tube, traits: [:tube_barcode], class: 'LibraryTube') do
     name { generate :asset_name }
-    association(:purpose, factory: :library_tube_purpose) #  { Tube::Purpose.standard_library_tube }
+    purpose factory: %i[library_tube_purpose] #  { Tube::Purpose.standard_library_tube }
 
     transient do
       sample_count { 0 }

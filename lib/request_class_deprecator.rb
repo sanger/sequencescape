@@ -9,7 +9,7 @@
 # state_change: Hash of from_state => to_state applied to affected requests
 # }
 module RequestClassDeprecator
-  class Request < ApplicationRecord # rubocop:todo Style/Documentation
+  class Request < ApplicationRecord
     self.table_name = 'requests'
   end
 
@@ -26,7 +26,7 @@ module RequestClassDeprecator
     ActiveRecord::Base.transaction do
       RequestType
         .where(request_class_name: request_class_name)
-        .each do |rt|
+        .find_each do |rt|
           say "Deprecating: #{rt.name}"
           rt.update!(deprecated: true)
 

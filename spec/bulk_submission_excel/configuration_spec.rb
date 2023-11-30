@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe BulkSubmissionExcel::Configuration, bulk_submission_excel: true, type: :model do
+RSpec.describe BulkSubmissionExcel::Configuration, :bulk_submission_excel, type: :model do
   let(:configuration) { described_class.new }
 
   it 'is comparable' do

@@ -47,9 +47,15 @@ LHR-384 RT:
 # Later, included as an alternative entry point to the Limber Bespoke PCR pipeline, and made
 # a cherrypickable_target to add flexibility.
 LBC Cherrypick:
-  type: PlatePurpose::Input
+  type: PlatePurpose
   cherrypickable_target: true
 # Towards the end of the WGS process, forms the attachment point for the multiplexing
 # requests
 LB Lib PCR-XP:
+  stock_plate: false
+
+# RVI Bait Capture
+RVI Cherrypick:
+  cherrypickable_target: true
+  type: PlatePurpose
   stock_plate: false

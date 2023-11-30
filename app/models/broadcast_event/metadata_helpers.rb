@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module BroadcastEvent::MetadataHelpers
-  class SimpleMetadataFinder # rubocop:todo Style/Documentation
+  class SimpleMetadataFinder
     attr_reader :name, :method
 
     def initialize(name, method)
@@ -13,7 +13,7 @@ module BroadcastEvent::MetadataHelpers
     end
   end
 
-  class BlockMetadataFinder # rubocop:todo Style/Documentation
+  class BlockMetadataFinder
     attr_reader :name, :block
 
     def initialize(name, &block)
@@ -26,7 +26,7 @@ module BroadcastEvent::MetadataHelpers
     end
   end
 
-  module MetadatableClassMethods # rubocop:todo Style/Documentation
+  module MetadatableClassMethods
     def has_metadata(key, method = nil, &block)
       return metadata_finders << SimpleMetadataFinder.new(key, method) unless method.nil?
       return metadata_finders << BlockMetadataFinder.new(key, &block) unless block.nil?

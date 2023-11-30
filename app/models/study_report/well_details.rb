@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module StudyReport::WellDetails # rubocop:todo Style/Documentation
+module StudyReport::WellDetails
   def self.included(base)
     base.class_eval do
       scope :for_study_report,

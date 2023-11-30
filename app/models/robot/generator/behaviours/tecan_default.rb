@@ -14,7 +14,7 @@ module Robot::Generator::Behaviours::TecanDefault
 
     output_file_contents << dyn_mappings(data_object)
     output_file_contents << footer
-    output_file_contents.join("\n").gsub(/\n\n/, "\n")
+    output_file_contents.join("\n").gsub("\n\n", "\n")
   end
 
   def sort_order

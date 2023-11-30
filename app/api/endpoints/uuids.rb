@@ -4,8 +4,8 @@
 # so it is going to go.  Rather than pollute the main API code with this rubbish it's here.
 #++
 # Controls API V1 {::Core::Endpoint::Base endpoints} for Uuids
-class Endpoints::Uuids < ::Core::Endpoint::Base
-  module Response # rubocop:todo Style/Documentation
+class Endpoints::Uuids < Core::Endpoint::Base
+  module Response
     def redirect_to(path)
       @owner.request.service.status(301)
       @owner.request.service.headers('Location' => path)
@@ -25,8 +25,8 @@ class Endpoints::Uuids < ::Core::Endpoint::Base
     private :render_body_json_directly
   end
 
-  class Search # rubocop:todo Style/Documentation
-    class CriteriaInvalid < ::Core::Service::Error # rubocop:todo Style/Documentation
+  class Search
+    class CriteriaInvalid < ::Core::Service::Error
       def initialize(*args)
         super
         @errors = { lookup: [message] }

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class ApiV2Generator < Rails::Generators::NamedBase # rubocop:todo Style/Documentation
+class ApiV2Generator < Rails::Generators::NamedBase
   source_root File.expand_path('../templates', __FILE__)
 
   def create_directories

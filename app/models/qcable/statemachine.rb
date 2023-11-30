@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Qcable::Statemachine # rubocop:todo Style/Documentation
+module Qcable::Statemachine
   def self.included(base) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     base.class_eval do
       ## State machine

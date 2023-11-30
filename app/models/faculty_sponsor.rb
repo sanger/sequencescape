@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class FacultySponsor < ApplicationRecord # rubocop:todo Style/Documentation
+class FacultySponsor < ApplicationRecord
   include SharedBehaviour::Named
   extend Attributable::Association::Target
 
@@ -19,7 +19,7 @@ class FacultySponsor < ApplicationRecord # rubocop:todo Style/Documentation
     studies.count
   end
 
-  module Associations # rubocop:todo Style/Documentation
+  module Associations
     def self.included(base)
       base.validates_presence_of :faculty_sponsor
       base.belongs_to :faculty_sponsor

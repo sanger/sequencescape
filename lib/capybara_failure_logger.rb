@@ -43,9 +43,9 @@ module CapybaraFailureLogger
   end
 
   def self.log_js(_name, page)
-    return unless page.driver.browser.respond_to?(:manage)
+    return unless page.driver.browser.respond_to?(:logs)
 
-    errors = page.driver.browser.manage.logs.get(:browser)
+    errors = page.driver.browser.logs.get(:browser)
     yield '== JS errors ============'
     errors.each { |jserror| yield jserror.message }
     yield '========================='

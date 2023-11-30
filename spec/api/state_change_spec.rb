@@ -49,13 +49,13 @@ describe '/api/1/state_changes' do
 
     before { api_request :post, subject, payload }
 
-    it 'supports resource creation', aggregate_failures: true do
+    it 'supports resource creation', :aggregate_failures do
       expect(JSON.parse(response.body)).to include_json(JSON.parse(response_body))
       expect(status).to eq(response_code)
     end
 
     # This probably best belongs on a unit test. Just porting current feature tests for now.
-    it 'transitions the selected well only', aggregate_failures: true do
+    it 'transitions the selected well only', :aggregate_failures do
       all_wells = target_plate.maps.pluck(:description)
       affected_wells = contents || all_wells
       unaffected_wells = all_wells - affected_wells
@@ -81,7 +81,7 @@ describe '/api/1/state_changes' do
 
     before { api_request :post, subject, payload }
 
-    it 'errors on resource creation', aggregate_failures: true do
+    it 'errors on resource creation', :aggregate_failures do
       expect(JSON.parse(response.body)).to include_json(JSON.parse(response_body))
       expect(status).to eq(response_code)
     end

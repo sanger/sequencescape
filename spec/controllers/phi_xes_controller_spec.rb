@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe PhiXesController, phi_x: true do
+RSpec.describe PhiXesController, :phi_x do
   describe 'GET show' do
     let(:current_user) { create :user }
 

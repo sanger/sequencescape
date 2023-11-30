@@ -47,7 +47,7 @@ RSpec.describe SubmissionsController do
       end
 
       it 'allow update of priorities' do
-        assert_equal 3, @submission.reload.priority
+        expect(@submission.reload.priority).to eq(3)
       end
     end
 
@@ -136,7 +136,7 @@ RSpec.describe SubmissionsController do
       end
 
       it 'create the appropriate orders' do
-        assert_equal 4, Order.first.assets.count
+        expect(Order.first.assets.count).to eq(4)
       end
 
       context 'with a more recent plate' do
@@ -173,8 +173,8 @@ RSpec.describe SubmissionsController do
 
           # Return an empty hash if we have no hits, makes the test failures clearer.
           per_plate.default = []
-          assert_equal 1, per_plate[@new_plate].count
-          assert_equal 3, per_plate[@plate].count
+          expect(per_plate[@new_plate].count).to eq(1)
+          expect(per_plate[@plate].count).to eq(3)
         end
       end
     end
@@ -215,7 +215,7 @@ RSpec.describe SubmissionsController do
       end
 
       it 'used the working dilution plate' do
-        assert_equal 1, Order.count - @order_count
+        expect(Order.count - @order_count).to eq(1)
 
         wells = Order.last.assets
 
@@ -232,7 +232,7 @@ RSpec.describe SubmissionsController do
 
       it 'create the appropriate orders' do
         assert Order.first.present?, 'No order was created!'
-        assert_equal 9, Order.first.assets.count
+        expect(Order.first.assets.count).to eq(9)
       end
     end
 
@@ -243,7 +243,7 @@ RSpec.describe SubmissionsController do
       end
 
       it 'create the appropriate orders' do
-        assert_equal 9, Order.first.assets.count
+        expect(Order.first.assets.count).to eq(9)
       end
     end
 
@@ -251,7 +251,7 @@ RSpec.describe SubmissionsController do
       before { post :create, params: plate_submission('SQPD-123456:A1,B3,C2') }
 
       it 'create the appropriate orders' do
-        assert_equal 3, Order.first.assets.count
+        expect(Order.first.assets.count).to eq(3)
       end
     end
 
@@ -259,7 +259,7 @@ RSpec.describe SubmissionsController do
       before { post :create, params: plate_submission('SQPD-123456:B,C') }
 
       it 'create the appropriate orders' do
-        assert_equal 6, Order.first.assets.count
+        expect(Order.first.assets.count).to eq(6)
       end
     end
 
@@ -267,7 +267,7 @@ RSpec.describe SubmissionsController do
       before { post :create, params: plate_submission('SQPD-123456:1,2,3') }
 
       it 'create the appropriate orders' do
-        assert_equal 9, Order.first.assets.count
+        expect(Order.first.assets.count).to eq(9)
       end
     end
 

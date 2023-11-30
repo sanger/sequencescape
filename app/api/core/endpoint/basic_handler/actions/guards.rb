@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-module Core::Endpoint::BasicHandler::Actions::Guards # rubocop:todo Style/Documentation
-  class Guard # rubocop:todo Style/Documentation
+module Core::Endpoint::BasicHandler::Actions::Guards
+  class Guard
     def initialize(method = nil, &block) # rubocop:todo Metrics/MethodLength
       if method.present?
         line = __LINE__ + 1
@@ -21,7 +21,7 @@ module Core::Endpoint::BasicHandler::Actions::Guards # rubocop:todo Style/Docume
     end
   end
 
-  class GuardChain # rubocop:todo Style/Documentation
+  class GuardChain
     def initialize
       @guards = []
     end
@@ -35,7 +35,7 @@ module Core::Endpoint::BasicHandler::Actions::Guards # rubocop:todo Style/Docume
     end
   end
 
-  class GuardProxy < ActiveSupport::ProxyObject # rubocop:todo Style/Documentation
+  class GuardProxy < ActiveSupport::ProxyObject
     def initialize(request, object)
       @request, @object = request, object
     end
@@ -44,8 +44,8 @@ module Core::Endpoint::BasicHandler::Actions::Guards # rubocop:todo Style/Docume
       super || @object.respond_to?(method, private_methods)
     end
 
-    def method_missing(name, *args, &block)
-      @object.send(name, *args, &block)
+    def method_missing(name, ...)
+      @object.send(name, ...)
     end
     protected :method_missing
   end

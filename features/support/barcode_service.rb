@@ -2,7 +2,7 @@
 
 require 'singleton'
 
-class FakeBarcodeService # rubocop:todo Style/Documentation
+class FakeBarcodeService
   include Singleton
 
   # Ensure that the configuration is maintained, otherwise things start behaving badly

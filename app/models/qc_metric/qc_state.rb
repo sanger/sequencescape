@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module QcMetric::QcState # rubocop:todo Style/Documentation
+module QcMetric::QcState
   State = Struct.new(:name, :automatic, :passed, :proceedable)
 
   def new_state(name, options = {})

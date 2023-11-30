@@ -6,6 +6,7 @@ class UatActions::GenerateSpikedBufferTube < UatActions
 
   # The description displays on the list of UAT actions to provide additional information
   self.description = 'Generates one or more spiked buffer tubes, with a parent stock tube.'
+  self.category = :auxiliary_data
 
   # Form fields
   form_field :tube_count,

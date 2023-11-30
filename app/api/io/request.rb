@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Controls API V1 IO for Request
-class Io::Request < ::Core::Io::Base
+class Io::Request < Core::Io::Base
   set_model_for_input(::Request)
   set_json_root(:request)
   set_eager_loading do |model|

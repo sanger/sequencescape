@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'support/barcode_helper'
 
-RSpec.describe Api::V2::Heron::PlatesController, heron: true, type: :request do
+RSpec.describe Api::V2::Heron::PlatesController, :heron, type: :request do
   include BarcodeHelper
 
   let(:stock_plate_purpose) { PlatePurpose.stock_plate_purpose }

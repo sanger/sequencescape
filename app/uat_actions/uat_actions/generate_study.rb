@@ -4,6 +4,7 @@
 class UatActions::GenerateStudy < UatActions
   self.title = 'Generate study'
   self.description = 'Generate a simple study with the provided name.'
+  self.category = :setup_and_test
 
   form_field :study_name, :text_field, label: 'Study Name', help: 'The name of the study.'
 

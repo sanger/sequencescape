@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'event_factory'
 # rubocop:todo Metrics/ClassLength
-class RequestsController < ApplicationController # rubocop:todo Style/Documentation
+class RequestsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
@@ -79,7 +79,7 @@ class RequestsController < ApplicationController # rubocop:todo Style/Documentat
 
     begin
       if @request.update(parameters)
-        flash[:notice] = 'Request details have been updated' # rubocop:disable Rails/ActionControllerFlashBeforeRender
+        flash[:notice] = 'Request details have been updated'
         redirect_to request_path(@request)
       else
         flash[:error] = 'Request was not updated. No change specified ?' # rubocop:disable Rails/ActionControllerFlashBeforeRender
@@ -88,7 +88,7 @@ class RequestsController < ApplicationController # rubocop:todo Style/Documentat
     rescue => e
       error_message = "An error has occurred, category:'#{e.class}'\ndescription:'#{e.message}'"
       EventFactory.request_update_note_to_manager(@request, current_user, error_message)
-      flash[:error] = 'Failed to update request. ' << error_message # rubocop:disable Rails/ActionControllerFlashBeforeRender
+      flash[:error] = 'Failed to update request. ' << error_message
       render action: 'edit', id: @request.id
     end
   end
@@ -177,7 +177,7 @@ class RequestsController < ApplicationController # rubocop:todo Style/Documentat
     flash[:notice] = 'Update. Below you find the new situation.'
     redirect_to filter_change_decision_request_path(params[:id])
   rescue Request::ChangeDecision::InvalidDecision => e
-    flash[:error] = 'Failed! Please, read the list of problem below.' # rubocop:disable Rails/ActionControllerFlashBeforeRender
+    flash[:error] = 'Failed! Please, read the list of problem below.'
     @change_decision = e.object
     render(action: :filter_change_decision)
   end

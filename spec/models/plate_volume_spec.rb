@@ -100,11 +100,16 @@ describe PlateVolume do
       plate_with_barcodes_in_csv
         .wells
         .includes(:well_attribute, :map)
-        .each do |well|
+        .find_each do |well|
           expect(well.qc_results).to be_one
           expect(well.qc_results.first.key).to eq('volume')
           expect(well.qc_results.first.assay_type).to eq('Volume Check')
         end
+    end
+
+    it 'creates a record in the database with the right value in uploaded_file_name' do
+      expect(described_class.count).to be_positive
+      described_class.find_each { |volume| expect(volume.uploaded_file_name).to eq("#{volume.barcode}.csv") }
     end
   end
 end

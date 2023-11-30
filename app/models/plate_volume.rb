@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 require 'carrierwave'
 
-class PlateVolume < ApplicationRecord # rubocop:todo Style/Documentation
+class PlateVolume < ApplicationRecord
   ASSAY_TYPE = 'Volume Check'
   ASSAY_VERSION = '1.0'
   extend DbFile::Uploader
 
   has_uploaded :uploaded, serialization_column: 'uploaded_file_name'
 
-  before_save :calculate_barcode_from_filename
+  before_validation :calculate_barcode_from_filename
   after_save :update_well_volumes
 
   # Is an update required given the timestamp specified
@@ -86,6 +86,7 @@ class PlateVolume < ApplicationRecord # rubocop:todo Style/Documentation
     rescue => e
       Rails.logger.warn("Error processing volume file #{filename}: #{e.message}")
     end
+
     private :handle_volume
 
     def sanitized_filename(file)
@@ -94,11 +95,40 @@ class PlateVolume < ApplicationRecord # rubocop:todo Style/Documentation
       CarrierWave::SanitizedFile.new(file).filename
     end
 
+    # rubocop:disable Metrics/MethodLength
     def find_for_filename(filename)
       find_by(uploaded_file_name: filename) or
         lambda do |filename, file|
-          PlateVolume.create!(uploaded_file_name: filename, updated_at: file.stat.mtime, uploaded: file)
+          # TODO: After saving, the uploaded_file_name is renamed internally by CarrierWave to (2).CSV
+          # This should be amended in future.
+
+          instance = PlateVolume.new(uploaded_file_name: filename, updated_at: file.stat.mtime, uploaded: file)
+          instance.save
+        ensure
+          unless instance.nil?
+            ActiveRecord::Base.connection.execute(
+              "
+                  UPDATE plate_volumes
+                  SET uploaded_file_name='#{bugfix_filename_duplicate_back_to_normal(instance.uploaded_file_name)}'
+                  WHERE plate_volumes.id=#{instance.id}
+                "
+            )
+          end
         end
+    end
+
+    # rubocop:enable Metrics/MethodLength
+
+    #
+    # Given a .csv filename it removes the characters (2) that were appended to indicate the file was
+    # a duplicate. This is currently happening to files handled by CarrierWave during the save() action.
+    #
+    # An example of this method, suppose file1.csv --> file1(2).csv then the action of this method
+    # would revert file1(2).csv into file1.csv
+    def bugfix_filename_duplicate_back_to_normal(filename)
+      matching_regexp = /\(\d*\)\.CSV/i
+      filename.gsub!(matching_regexp, '.csv') if filename.match(matching_regexp)
+      filename
     end
   end
 end

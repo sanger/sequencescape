@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class BaitLibraryLayout < ApplicationRecord # rubocop:todo Style/Documentation
+class BaitLibraryLayout < ApplicationRecord
   include Uuid::Uuidable
   include ModelExtensions::BaitLibraryLayout
 
@@ -50,20 +50,21 @@ class BaitLibraryLayout < ApplicationRecord # rubocop:todo Style/Documentation
 
   # rubocop:todo Metrics/MethodLength
   def each_bait_library_assignment # rubocop:todo Metrics/AbcSize
-    plate.stock_wells.each do |well, stock_wells|
-      bait_library =
-        stock_wells
-          .filter_map { |w| w.requests_as_source.for_submission_id(well.pool_id).first }
-          .map(&:request_metadata)
-          .map(&:bait_library)
-          .uniq
-      if bait_library.size > 1
-        raise StandardError,
-              "Multiple bait libraries found for #{well.map.description} on plate #{well.plate.human_barcode}"
-      end
+    # We only accept the wells which have been pooled
+    plate
+      .wells
+      .with_pool_id
+      .filter(&:pool_id)
+      .each do |well|
+        bait_library =
+          well.aliquot_requests.for_submission_id(well.pool_id).map(&:request_metadata).map(&:bait_library).uniq
+        if bait_library.size > 1
+          raise StandardError,
+                "Multiple bait libraries found for #{well.map.description} on plate #{well.plate.human_barcode}"
+        end
 
-      yield(well, bait_library.first)
-    end
+        yield(well, bait_library.first)
+      end
   end
 
   # rubocop:enable Metrics/MethodLength

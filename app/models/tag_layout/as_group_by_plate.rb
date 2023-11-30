@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 # Assigns multiple tags to each well.
 
-class TagLayout::AsGroupByPlate < TagLayout::Walker # rubocop:todo Style/Documentation
+class TagLayout::AsGroupByPlate < TagLayout::Walker
   DEFAULT_TAGS_PER_WELL = 4
 
   self.walking_by = 'as group by plate'

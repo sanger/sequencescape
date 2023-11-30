@@ -1,4 +1,4 @@
 # frozen_string_literal: true
-class Sdb::HomeController < Sdb::BaseController # rubocop:todo Style/Documentation
+class Sdb::HomeController < Sdb::BaseController
   def index; end
 end

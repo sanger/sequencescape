@@ -40,7 +40,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     respond_to do |format|
       format.html
       format.xml { render xml: @batches.to_xml }
-      format.json { render json: @batches.to_json.gsub(/null/, '""') }
+      format.json { render json: @batches.to_json.gsub('null', '""') }
     end
   end
 
@@ -406,7 +406,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
       # Fortunately we can detect the corresponding exception, and generate a friendly error message.
 
       # If this isn't the exception we're expecting, re-raise it.
-      raise e unless /request_id/.match?(e.message)
+      raise e unless e.message.include?('request_id')
 
       # Find the requests which caused the clash.
       batched_requests = BatchRequest.where(request_id: requests.map(&:id)).pluck(:request_id)

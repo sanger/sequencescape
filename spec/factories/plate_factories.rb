@@ -68,7 +68,7 @@ FactoryBot.define do
     transient { barcode { nil } }
 
     factory :input_plate do
-      association(:plate_purpose, factory: :input_plate_purpose)
+      plate_purpose factory: %i[input_plate_purpose]
     end
 
     factory :target_plate do
@@ -196,7 +196,7 @@ FactoryBot.define do
     end
 
     factory :input_plate_for_pooling do
-      association(:plate_purpose, factory: :input_plate_purpose)
+      plate_purpose factory: %i[input_plate_purpose]
       transient do
         well_count { 6 }
         well_factory { :tagged_well }
@@ -204,7 +204,7 @@ FactoryBot.define do
     end
 
     factory :stock_plate do
-      association(:plate_purpose, factory: :stock_plate_purpose)
+      plate_purpose factory: %i[stock_plate_purpose]
     end
 
     factory(:full_stock_plate) do

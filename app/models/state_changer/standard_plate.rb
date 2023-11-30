@@ -57,7 +57,18 @@ module StateChanger
 
       associated_requests.each do |request|
         request.customer_accepts_responsibility! if customer_accepts_responsibility
-        request.transition_to(associated_request_target_state)
+
+        # Only trigger a transition of the request if it is not linked to other wells
+        request.transition_to(associated_request_target_state) unless request_in_other_wells(request)
+      end
+    end
+
+    # Check the request is not in other wells (excuding any in contents or that already have the target state)
+    def request_in_other_wells(request)
+      _receptacles.any? do |well|
+        well.aliquot_requests.try(:map, &:id).to_a.any?(request.id) &&
+          (contents.present? && contents.exclude?(well.absolute_position_name)) &&
+          well.state != associated_request_target_state
       end
     end
 
@@ -69,7 +80,9 @@ module StateChanger
     # Note: Do *NOT* go through labware here, as you'll pull out all requests
     # not just those associated with the wells in the 'contents' array
     def associated_requests
-      receptacles.flat_map(&:aliquot_requests)
+      # uniq is present here in case more than one well shares the same request
+      # e.g. a parent well was split into multiple child wells
+      receptacles.flat_map(&:aliquot_requests).uniq
     end
 
     # Checks if the transfer requests have an associated submission, and thus

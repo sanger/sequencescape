@@ -5,6 +5,7 @@
 class UatActionGenerator < Rails::Generators::NamedBase
   source_root File.expand_path('templates', __dir__)
 
+  class_option :category, type: :string, default: ''
   class_option :description, type: :string, default: ''
   class_option :title, type: :string, default: ''
 
@@ -48,5 +49,9 @@ class UatActionGenerator < Rails::Generators::NamedBase
 
   def description
     options['description']
+  end
+
+  def category
+    options['category'] || UatActions::CATEGORY_LIST.last # one of UatActions::CATEGORY_LIST
   end
 end

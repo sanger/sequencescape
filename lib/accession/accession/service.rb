@@ -37,7 +37,7 @@ module Accession
 
     def login
       return configatron.accession.ega!.to_hash if ega?
-      return configatron.accession.ena!.to_hash if ena?
+      configatron.accession.ena!.to_hash if ena?
     end
   end
 end

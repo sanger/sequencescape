@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module Sdb::SampleManifestsHelper # rubocop:todo Style/Documentation
+module Sdb::SampleManifestsHelper
   def count_labels
     {
       '1dtube' => 'Tubes required',
