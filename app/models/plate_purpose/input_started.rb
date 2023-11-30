@@ -30,11 +30,7 @@ class PlatePurpose::InputStarted < PlatePurpose::Input
     when ['cancelled']
       'cancelled'
     else
-      if unique_states.all?('pending')
-        PREP_STATE
-      else
-        READY_STATE
-      end
+      unique_states.all?('pending') ? PREP_STATE : READY_STATE
     end
   end
 end

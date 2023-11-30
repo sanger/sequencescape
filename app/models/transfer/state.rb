@@ -48,9 +48,8 @@ module Transfer::State
     private
 
     def input_started_plate_with_aliquots?
-      self.labware.purpose.type == 'PlatePurpose::InputStarted' &&
-        %w[started passed].include?(self.labware.state) &&
-        self.aliquots.present?
+      labware.purpose.type == 'PlatePurpose::InputStarted' && %w[started passed].include?(labware.state) &&
+        aliquots.present?
     end
   end
 

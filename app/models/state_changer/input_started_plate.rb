@@ -6,10 +6,7 @@ module StateChanger
   class InputStartedPlate < InputPlate
     # Target state of labware to state of associated requests.
     # All other transitions will be ignored.
-    self.map_target_state_to_associated_request_state = {
-      'failed' => 'failed',
-      'passed' => 'started'
-    }
+    self.map_target_state_to_associated_request_state = { 'failed' => 'failed', 'passed' => 'started' }
 
     private
 
