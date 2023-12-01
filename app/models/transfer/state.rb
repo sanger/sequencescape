@@ -51,10 +51,10 @@ module Transfer::State
     def input_started_plate_with_aliquots?
       # Only set this default for receptacles with aliquots, in a labware of purpose type InputStarted.
       # in specific states only.
-      # Had to add a labware.present? check here as many tests seem to fail otherwise, probably
-      # due to factory test data setup not having a labware (e.g. Well with no Plate) which would not
+      # Had to add labware.present? and purpose.present? checks here as many tests seem to fail otherwise, probably
+      # due to incomplete factory test data setup (e.g. Well with no Plate, Tube with no purpose) which should not
       # happen in reality.
-      labware.present? && labware.purpose.type == 'PlatePurpose::InputStarted' &&
+      labware.present? && labware.purpose.present? && labware.purpose.type == 'PlatePurpose::InputStarted' &&
         %w[started passed].include?(labware.state) && aliquots.present?
     end
   end
