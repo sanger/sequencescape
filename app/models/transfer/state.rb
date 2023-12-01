@@ -38,8 +38,9 @@ module Transfer::State
     def default_state
       # Well state was 'unknown' without this change for our input plate because input
       # plates do not have any transfer requests.
-      # Users wish to be able to fail wells at this point in the pipeline, and we need wells
-      # to be in state 'passed' for well failing to be allowed.
+      # This change was made specifically for the Bioscan pipeline, where the users wish to be able to fail
+      # wells at this point in the pipeline, and we need wells to be in state 'passed' for well failing to
+      # be allowed.
       return 'passed' if input_started_plate_with_aliquots?
 
       nil
@@ -48,8 +49,13 @@ module Transfer::State
     private
 
     def input_started_plate_with_aliquots?
-      labware.purpose.type == 'PlatePurpose::InputStarted' && %w[started passed].include?(labware.state) &&
-        aliquots.present?
+      # Only set this default for receptacles with aliquots, in a labware of purpose type InputStarted.
+      # in specific states only.
+      # Had to add a labware.present? check here as many tests seem to fail otherwise, probably
+      # due to factory test data setup not having a labware (e.g. Well with no Plate) which would not
+      # happen in reality.
+      labware.present? && labware.purpose.type == 'PlatePurpose::InputStarted' &&
+        %w[started passed].include?(labware.state) && aliquots.present?
     end
   end
 
