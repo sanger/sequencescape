@@ -30,6 +30,9 @@ module Transfer::State
     ALL_STATES.detect { |s| unique_states.include?(s) } || default_state || 'unknown'
   end
 
+  # This transfer state is specific to receptacles
+  # Added so can specifically check the state on certain types of input plates
+  # and return a default state of passed to allow well failing.
   module ReceptacleState
     # We have to include this specifically because it does not implicitly include the
     # methods from the Transfer::State module.
