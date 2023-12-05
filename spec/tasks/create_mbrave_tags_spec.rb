@@ -4,6 +4,10 @@ require 'rake'
 
 # rubocop:todo RSpec/DescribeClass
 describe 'mbrave tasks' do
+  after { Rake.application.clear }
+
+  before { Rails.application.load_tasks }
+
   let(:queue_mode_setup) do
     if ENV.key?('KNAPSACK_PRO_FIXED_QUEUE_SPLIT')
       %w[mbrave:create_tag_plates mbrave:create_tag_groups].each do |task_name|
@@ -23,7 +27,7 @@ describe 'mbrave tasks' do
     context 'with mbrave:create_tag_plates' do
       context 'when the create_tag_plates task is invoked' do
         context 'when there are no arguments' do
-          xit 'does not do anything' do
+          it 'does not do anything' do
             expect { Rake::Task['mbrave:create_tag_plates'].execute }.not_to change(Plate, :count)
           end
         end
@@ -69,10 +73,10 @@ describe 'mbrave tasks' do
               tag2_group: tag_group_two
             )
 
-            allow(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode))
+            allow(PlateBarcode).to receive(:create_barcode_with_text).and_return(build(:plate_barcode))
           end
 
-          xit 'creates tag plates' do
+          it 'creates tag plates' do
             expect { run_action }.to change(Plate, :count).by(3)
           end
         end
@@ -90,7 +94,7 @@ describe 'mbrave tasks' do
 
     context 'when the create_mbrave_tags task is invoked' do
       context 'when there are no arguments' do
-        xit 'does not write the file' do
+        it 'does not write the file' do
           expect(File).not_to receive(:write)
 
           Rake.application.invoke_task 'mbrave:create_tag_groups'
@@ -139,7 +143,7 @@ describe 'mbrave tasks' do
           )
         end
 
-        xit 'creates the tag group with the right indexing' do
+        it 'creates the tag group with the right indexing' do
           run_task
           %w[Bioscan_reverse_4_1_v1 Bioscan_reverse_4_2_v1].each do |name|
             indexes = TagGroup.find_by(name: name).tags.map(&:map_id)
@@ -150,12 +154,12 @@ describe 'mbrave tasks' do
           expect(indexes).to eq([1, 2, 3, 4, 5])
         end
 
-        xit 'creates the expected tag layout templates' do
+        it 'creates the expected tag layout templates' do
           run_task
           expect(TagLayoutTemplate.all.map(&:name)).to eq(%w[Bioscan_384_template_1_v1 Bioscan_384_template_2_v1])
         end
 
-        xit 'creates the right content in the yaml file' do
+        it 'creates the right content in the yaml file' do
           run_task
 
           contents = YAML.safe_load_file('mbrave.yml', aliases: true)
