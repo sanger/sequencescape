@@ -3,25 +3,64 @@
 require 'rails_helper'
 
 RSpec.describe PolyMetadatum, type: :model do
-  subject { build(:poly_metadatum) }
+  subject(:test_metadatum) { build(:poly_metadatum) }
 
-  # Test for validations
+  # let(:test_metadatum) { described_class.new(key: 'test_key', value: 'test_value', metadatable: build(:request)) }
+
+  # Tests for validations
   describe 'validations' do
-    it { is_expected.to validate_presence_of(:value) }
-    it { is_expected.to validate_uniqueness_of(:key).scoped_to(:metadatable_id).case_insensitive }
+    it 'requires a key' do
+      expect(test_metadatum).to validate_presence_of(:key)
+    end
+
+    it 'requires a value' do
+      expect(test_metadatum).to validate_presence_of(:value)
+    end
+
+    it 'key must be unique' do
+      expect(test_metadatum).to validate_uniqueness_of(:key).scoped_to(:metadatable_id).case_insensitive
+    end
+
+    context 'when creating a new poly_metadatum' do
+      it 'is valid with valid attributes' do
+        expect(test_metadatum).to be_valid
+      end
+
+      it 'is invalid without a key' do
+        test_metadatum.key = nil
+        expect(test_metadatum).not_to be_valid
+        expect(test_metadatum.errors.full_messages).to include('Key can\'t be blank')
+      end
+
+      it 'is invalid without a value' do
+        test_metadatum.value = nil
+        expect(test_metadatum).not_to be_valid
+        expect(test_metadatum.errors.full_messages).to include('Value can\'t be blank')
+      end
+
+      it 'is invalid without a metadatable' do
+        test_metadatum.metadatable = nil
+        expect(test_metadatum).not_to be_valid
+        expect(test_metadatum.errors.full_messages).to include('Metadatable must exist')
+      end
+    end
   end
 
-  # Test for associations
+  # Tests for associations
   describe 'associations' do
-    it { is_expected.to belong_to(:metadatable) }
-    it { is_expected.to have_many(:poly_metadata) }
+    it 'belongs to metadatable' do
+      expect(test_metadatum).to belong_to(:metadatable).required
+    end
+
+    it 'can have many poly_metadata' do
+      expect(test_metadatum).to have_many :poly_metadata
+    end
   end
 
-  # Test for #to_h method
+  # Tests for #to_h method
   describe '#to_h' do
     it 'returns a hash with key and value' do
-      poly_metadatum = described_class.new(key: 'test_key', value: 'test_value', metadatable: build(:request))
-      expect(poly_metadatum.to_h).to eq({ 'test_key' => 'test_value' })
+      expect(test_metadatum.to_h).to eq({ 'some_key_1' => 'some_value_1' })
     end
   end
 end
