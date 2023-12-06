@@ -48,7 +48,6 @@ module Api
       #  end
       #end
 
-
       # The majority of this is lifted from JSONAPI::Resource
       # We've had to modify the when Symbol chunk to handle nested includes
       # We disable the cops for the shared section to avoid accidental drift

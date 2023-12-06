@@ -66,8 +66,6 @@ module Api
         end
       end
 
-      
-
       # Custom methods
       # These shouldn't be used for business logic, and are more about
       # I/O and isolating implementation details.

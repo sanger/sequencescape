@@ -10,6 +10,7 @@ module Api
         if @qc_result_factory.valid?
           @qc_result_factory.save
           @qc_result_resources = @qc_result_factory.qc_results.map { |qc_result| QcResultResource.new(qc_result, nil) }
+
           #render json: JSONAPI::ResourceSerializer.new(QcResultResource).serialize_to_hash(@qc_result_resources),
           #       status: :created
           render json: serialize_array(@qc_result_resources), status: :created

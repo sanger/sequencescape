@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # # frozen_string_literal: true
 
 # # JSON API resource assumes that single table inheritance uses the default
@@ -22,7 +23,7 @@
 # # Modified from: jsonapi-resources-0.9.0/lib/jsonapi/resource_serializer.rb
 # module JSONAPI
 #   # Disable cops to prevent auto-correct-induced drift
-#   # rubocop:disable all
+#
 #   # Reopen ResourceSerializer to fix the polymorphic associations
 #   class ResourceSerializer
 #     def to_many_linkage(source, relationship)
@@ -89,24 +90,21 @@
 #   end
 # end
 
-
 # Fix: "labware"."id" AS "labware_id" not valid quoting for mysql.
 # TODO: JSON API RESOURCES Version 11 should solve it <https://github.com/cerebris/jsonapi-resources/issues/1369>
 class JSONAPI::ActiveRelationResource
+  # rubocop:disable Style/OptionalBooleanParameter
   def self.sql_field_with_alias(table, field, quoted = false)
     Arel.sql("#{concat_table_field(table, field, quoted)} AS #{alias_table_field(table, field, quoted)}")
   end
+  # rubocop:enable Style/OptionalBooleanParameter
 end
 
 class JSONAPI::ResourceController
   # Caution: Using this approach for a 'create' action is not strictly JSON API
   # compliant.
   def serialize_array(array)
-    {
-      data: array.map do |r|
-        JSONAPI::ResourceSerializer.new(r.class).object_hash(r, {})
-      end
-    }
+    { data: array.map { |r| JSONAPI::ResourceSerializer.new(r.class).object_hash(r, {}) } }
   end
 
   # Where possible try to use the default json api resources actions, as
@@ -129,6 +127,7 @@ module JSONAPI
       class Relationship
         # This is in jsonapi-resources-matches master but is not in the last release 1.0.0 ??
         # Probably make sure we are getting the right version.
+        # rubocop:disable Naming/PredicateName
         def has_key_in_relationships?
           relationships = resource.class._relationships
           return false if relationships.blank?
@@ -136,17 +135,15 @@ module JSONAPI
           formatter = JSONAPI.configuration.key_formatter
 
           expected_key = formatter.format(name.to_s)
-          relationship_keys = relationships.keys.map do |key|
-            formatter.format(key.to_s)
-          end
+          relationship_keys = relationships.keys.map { |key| formatter.format(key.to_s) }
 
           relationship_keys.include?(expected_key)
         end
+        # rubocop:enable Naming/PredicateName
       end
     end
   end
 end
-
 
 # module JSONAPI
 #   class Relationship
@@ -159,7 +156,7 @@ end
 #   end
 # end
 
-# Patch 
+# Patch
 # module JSONAPI
 #   class Relationship
 #     def self.polymorphic_types(name)

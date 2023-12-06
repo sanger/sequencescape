@@ -8,6 +8,7 @@ module Api
         @qc_result_factory = QcResultFactory.new(qc_assay_params)
         if @qc_result_factory.valid?
           @qc_result_factory.save
+
           #render json:
           #         JSONAPI::ResourceSerializer
           #           .new(QcAssayResource)

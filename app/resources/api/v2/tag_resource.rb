@@ -18,8 +18,6 @@ module Api
       attribute :oligo, readonly: true
       attribute :map_id, readonly: true
 
-
-
       # Filters
 
       # Custom methods
