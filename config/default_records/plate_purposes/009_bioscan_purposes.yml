@@ -9,7 +9,7 @@
 # This is the insects in ethanol plate for the start of the Lysate pipeline
 # It is the original source plate that has come in from the suppliers around the UK.
 LILYS-96 Stock:
-  type: PlatePurpose::Input
+  type: PlatePurpose::InputStarted
   stock_plate: true
   cherrypickable_target: false
 # This is the lysed material plate, ready for the Library prep pipeline. These plates
