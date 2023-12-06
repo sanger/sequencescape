@@ -7,6 +7,7 @@ class PolyMetadatum < ApplicationRecord
   has_many :poly_metadata, as: :metadatable, dependent: :destroy
 
   # Validations
+  validates :key, presence: true # otherwise nil is a valid key
   validates :value, presence: true
   validates :key, uniqueness: { scope: :metadatable_id, case_sensitive: false }
 
