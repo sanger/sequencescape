@@ -4,6 +4,7 @@
 class UatActions::GenerateTubeRacks < UatActions
   self.title = 'Generate tube rack'
   self.description = 'Generate tube racks in the selected study.'
+  self.category = :generating_samples
 
   form_field :rack_count,
              :number_field,

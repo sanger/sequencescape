@@ -6,6 +6,7 @@ class UatActions::GeneratePrimerPanel < UatActions
 
   # The description displays on the list of UAT actions to provide additional information
   self.description = 'Generates a primer panel with the specified details.'
+  self.category = :auxiliary_data
 
   # Form fields
   form_field :name,

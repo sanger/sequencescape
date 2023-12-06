@@ -4,6 +4,7 @@
 class UatActions::GenerateSampleManifest < UatActions
   self.title = 'Generate sample manifest'
   self.description = 'Generate sample manifest with the provided information.'
+  self.category = :generating_samples
 
   form_field :study_name,
              :select,

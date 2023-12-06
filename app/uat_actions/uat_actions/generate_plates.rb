@@ -4,6 +4,7 @@
 class UatActions::GeneratePlates < UatActions
   self.title = 'Generate plate'
   self.description = 'Generate plates in the selected study.'
+  self.category = :generating_samples
 
   form_field :plate_purpose_name,
              :select,

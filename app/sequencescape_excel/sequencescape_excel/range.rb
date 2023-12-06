@@ -21,7 +21,7 @@ module SequencescapeExcel
                      :scope_on,
                      defaults: {
                        first_column: 1,
-                       options: {}
+                       options: []
                      }
 
     attr_reader :first_cell

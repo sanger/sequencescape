@@ -12,7 +12,7 @@ Capybara.register_driver :headless_chrome do |app|
 
   options.add_argument('--headless')
   options.add_argument('--window-size=1600,3200')
-  options.add_preference('download.default_directory', DownloadHelpers::PATH)
+  options.add_preference('download.default_directory', DownloadHelpers::PATH.to_s)
   the_driver = Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 
   # the following is needed to avoid a test failure where the driver would

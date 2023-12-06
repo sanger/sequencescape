@@ -91,6 +91,10 @@ div.batch-summary-events {
   @extend .bg-light;
 }
 
+.card-style-uniform {
+  min-height: 8.5em; // title and 2 lines of description
+}
+
 // Apply basic button formatting to all buttons
 // Specific styles will override the default due to CSS specificity rules
 input[type="submit"] {

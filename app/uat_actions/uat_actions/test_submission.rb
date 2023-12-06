@@ -9,6 +9,7 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
   self.description =
     'Generates a basic submission for supported pipelines. ' \
       'This may produce odd results for some pipelines.'
+  self.category = :setup_and_test
 
   # Form fields
   form_field :submission_template_name,

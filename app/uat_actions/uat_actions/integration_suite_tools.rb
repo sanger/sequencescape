@@ -8,6 +8,7 @@ class UatActions::IntegrationSuiteTools < UatActions
   self.description =
     # rubocop:todo Layout/LineLength
     'Returns a suite of information for configuring automatic integration tests. Of limited use in UAT but will not cause problems.'
+  self.category = :setup_and_test
 
   # rubocop:enable Layout/LineLength
 
