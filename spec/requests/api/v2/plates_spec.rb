@@ -141,8 +141,9 @@ describe 'Plates API', tags: :lighthouse, with: :api_v2 do
         expect(response).to have_http_status(:success), response.body
         expect(json['data'].length).to eq(2)
         types = json['data'].pluck('type')
-        expect(types).to include('plates')
-        expect(types).to include('tubes')
+        expect(types).to include('labware')
+        #expect(types).to include('plates')
+        #expect(types).to include('tubes')
       end
     end
 

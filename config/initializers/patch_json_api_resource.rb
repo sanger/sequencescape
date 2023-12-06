@@ -148,6 +148,17 @@ module JSONAPI
 end
 
 
+# module JSONAPI
+#   class Relationship
+
+#     class ToMany < Relationship
+#       def polymorphic_type
+#         "#{name}_type" if polymorphic?
+#       end
+#     end
+#   end
+# end
+
 # Patch 
 # module JSONAPI
 #   class Relationship

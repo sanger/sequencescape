@@ -18,7 +18,7 @@ module Api
 
       has_one :study, readonly: true
       has_one :project, readonly: true
-      #has_one :source_receptacle, readonly: true, polymorphic: true
+      has_one :source_receptacle, readonly: true, polymorphic: true
       has_many :samples, readonly: true
 
       attribute :order_type, readonly: true
