@@ -11,7 +11,7 @@
 # does not contain the 'Stock RNA Plate' purpose.
 #
 # If the migration is rolled back, the 'Stock RNA Plate' purpose is removed from
-# the parent plate purposes of the 'Working Dilution' plate creator. However,
+# the parent plate purposes of the 'Working dilution' plate creator. However,
 # the 'Stock RNA Plate' plate purpose is kept in the database.
 #
 class AddStockRnaPlateToWorkingDilutionParentPurposes < ActiveRecord::Migration[6.0]
