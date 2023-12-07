@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 module Api
   module V2
-    class AncestorResource < JSONAPI::Resource
+    class AncestorResource < LabwareResource
+      filter :purpose_name
     end
     class DescendantResource < JSONAPI::Resource
     end
