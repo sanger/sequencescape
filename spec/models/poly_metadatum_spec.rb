@@ -5,8 +5,6 @@ require 'rails_helper'
 RSpec.describe PolyMetadatum, type: :model do
   subject(:test_metadatum) { build(:poly_metadatum) }
 
-  # let(:test_metadatum) { described_class.new(key: 'test_key', value: 'test_value', metadatable: build(:request)) }
-
   # Tests for validations
   describe 'validations' do
     it 'requires a key' do
