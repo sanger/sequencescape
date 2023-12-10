@@ -32,9 +32,4 @@ ActiveRecord::Base.transaction do
     stock_plate: true,
     barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate')
   )
-
-  # Create the 'Stock RNA Plate' purpose (if not exists) to use as a parent plate
-  # purpose for the 'Working dilution' plate creator when db:seed is executed,
-  # for example during db:reset .
-  PlatePurpose.find_or_create_by!(name: 'Stock RNA Plate') { |p| p.stock_plate = true }
 end
