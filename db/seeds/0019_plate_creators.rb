@@ -73,11 +73,4 @@ ActiveRecord::Base.transaction do
       c.update!(valid_options: { valid_dilution_factors: [1.0] })
     end
   end
-
-  # Add the 'Stock RNA Plate' purpose to the 'Working dilution' creator parent
-  # purposes (if not added already) when db:seed is executed, for example
-  # during db:reset .
-  purpose = Purpose.find_by!(name: 'Stock RNA Plate')
-  creator = Plate::Creator.find_by!(name: 'Working dilution')
-  creator.parent_plate_purposes << purpose unless creator.parent_plate_purposes.include?(purpose)
 end
