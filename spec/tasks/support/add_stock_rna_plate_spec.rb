@@ -4,7 +4,7 @@ require 'rails_helper'
 
 Rails.application.load_tasks
 
-describe 'support:add_stock_rna_plate', type: :task do
+describe 'support:add_stock_rna_plate_to_working_dilution_parents', type: :task do
   let(:source_purpose_name) { 'Stock RNA Plate' }
   let(:target_purpose_name) { 'Working Dilution' }
   let(:plate_creator_name) { 'Working dilution' }
