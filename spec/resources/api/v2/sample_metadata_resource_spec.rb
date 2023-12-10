@@ -13,6 +13,7 @@ RSpec.describe Api::V2::SampleMetadataResource, type: :resource do
       expect(subject).to have_attribute :sample_common_name
       expect(subject).to have_attribute :supplier_name
       expect(subject).to have_attribute :collected_by
+      expect(subject).to have_attribute :donor_id
     end
   end
 end

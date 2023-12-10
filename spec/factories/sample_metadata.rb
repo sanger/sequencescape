@@ -47,6 +47,7 @@ FactoryBot.define do
       disease { 'disease' }
       subject { 'subject' }
       collected_by { 'collected_by' }
+      donor_id { 'donor_id' }
 
       consent_withdrawn { false }
 
