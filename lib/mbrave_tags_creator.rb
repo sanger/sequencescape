@@ -25,8 +25,12 @@ class MbraveTagsCreator
     @yaml_contents = {}
   end
 
+  def log_line
+    Rails.logger.debug yield
+  end
+
   def write_yaml(yaml_filename)
-    Rails.logger.debug { "Generating file #{yaml_filename}" }
+    log_line { "Generating file #{yaml_filename}" }
     new_contents = {}
     new_contents['development'] = @yaml_contents
     new_contents['test'] = @yaml_contents
@@ -41,13 +45,13 @@ class MbraveTagsCreator
   def create_1_tag_group_forward
     tags = []
     mbrave_tags = []
-    Rails.logger.debug { "Creating forward_tags from: #{forward_filename}" }
+    log_line { "Creating forward_tags from: #{forward_filename}" }
     CSV.foreach(forward_filename, headers: true) do |row|
       tag = Tag.new(map_id: row['Forward Index Number'], oligo: row['F index sequence'])
       tags.push(tag)
       mbrave_tags.push(row['Forward Oligo Label'])
     end
-    Rails.logger.debug { " - #{forward_tag_group_name}" }
+    log_line { " - #{forward_tag_group_name}" }
     @forward_group = _create_tag_group(forward_tag_group_name, tags)
     _add_to_yaml(yaml_filename, forward_tag_group_name, mbrave_tags, version, 1)
   end
@@ -56,7 +60,7 @@ class MbraveTagsCreator
     tags = []
     mbrave_tags = []
     group = 1
-    Rails.logger.debug { "Creating reverse tags from: #{reverse_filename}" }
+    log_line { "Creating reverse tags from: #{reverse_filename}" }
     CSV.foreach(reverse_filename, headers: true) do |row|
       _validate_reverse_row(row)
       map_id = row['Reverse Index Number'].to_i
@@ -66,7 +70,7 @@ class MbraveTagsCreator
       mbrave_tags.push(row['Reverse Oligo Label'])
 
       if pos == 4
-        Rails.logger.debug { " - #{reverse_tag_group_name(group)}" }
+        log_line { " - #{reverse_tag_group_name(group)}" }
         @reverse_groups.push(_create_tag_group(reverse_tag_group_name(group), tags))
         _add_to_yaml(yaml_filename, reverse_tag_group_name(group), mbrave_tags, version, group)
         group += 1
@@ -80,9 +84,9 @@ class MbraveTagsCreator
   # rubocop:enable Metrics/MethodLength
 
   def create_tag_layout_templates
-    Rails.logger.debug 'Creating tag layout templates:'
+    log_line { 'Creating tag layout templates:' }
     @reverse_groups.each_with_index do |reverse_group, index|
-      Rails.logger.debug { " - #{tag_layout_template_name(index)}" }
+      log_line { " - #{tag_layout_template_name(index)}" }
       TagLayoutTemplate.create(
         name: tag_layout_template_name(index),
         tag_group: @forward_group,
@@ -153,8 +157,8 @@ class MbraveTagsCreator
           qcc = QcableCreator.create!(lot: lot, user: user, supplied_barcode: plate_barcode)
           qcc.qcables.each_with_index do |qcable, _index|
             qcable.update!(state: 'available')
-            Rails.logger.debug { "#{tag_layout_template.name}:" }
-            Rails.logger.debug { " - #{plate_barcode.barcode}" } # barcode string
+            log_line { "#{tag_layout_template.name}:" }
+            log_line { " - #{plate_barcode.barcode}" } # barcode string
           end
         end
       end
