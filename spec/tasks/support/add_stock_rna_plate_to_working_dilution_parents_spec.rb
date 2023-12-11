@@ -30,6 +30,7 @@ describe 'support:add_stock_rna_plate_to_working_dilution_parents', type: :task 
       task_invoke
       plate_creator.reload # Reload to get the updated parent purposes
       expect(plate_creator.parent_plate_purposes).to include(source_purpose)
+      expect(plate_creator.parent_plate_purposes.where(name: source_purpose_name).count).to eq(1)
     end
   end
 
@@ -44,6 +45,7 @@ describe 'support:add_stock_rna_plate_to_working_dilution_parents', type: :task 
       task_invoke
       plate_creator.reload # Reload to get the updated parent purposes
       expect(plate_creator.parent_plate_purposes).to include(source_purpose)
+      expect(plate_creator.parent_plate_purposes.where(name: source_purpose_name).count).to eq(1)
     end
   end
 
