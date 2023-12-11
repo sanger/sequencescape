@@ -27,8 +27,6 @@ module Api::V2::SharedBehaviour::Labware
     has_many :ancestors, readonly: true, class_name: 'Labware' #, polymorphic: true
     has_many :descendants, readonly: true, class_name: 'Labware' #polymorphic: true
 
-    #has_many :parents, readonly: true, polymorphic: true
-    #has_many :children, readonly: true, polymorphic: true
     has_many :parents, readonly: true, class_name: 'Labware'
     has_many :children, readonly: true, class_name: 'Labware'
 
