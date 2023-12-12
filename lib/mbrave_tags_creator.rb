@@ -26,7 +26,12 @@ class MbraveTagsCreator
     @yaml_contents = {}
   end
 
-  def log_line
+  def log_line(&block)
+    # We want to enforce that logs go to STDOUT while printing the barcodes
+    self.class.log_line(&block)
+  end
+
+  def self.log_line
     # We want to enforce that logs go to STDOUT while printing the barcodes
     # rubocop:disable Rails/Output
     puts yield
