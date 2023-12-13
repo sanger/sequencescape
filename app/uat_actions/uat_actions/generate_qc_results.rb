@@ -4,6 +4,7 @@
 class UatActions::GenerateQcResults < UatActions
   self.title = 'Generate qc results for a plate or tube'
   self.description = 'Generate a set of randomised qc result values for a plate or tube.'
+  self.category = :quality_control
 
   ATTRIBUTE_UNITS = {
     'molarity' => 'nM',

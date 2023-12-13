@@ -273,6 +273,30 @@ RSpec.describe StateChanger::StockTube do
         expect(request.reload.state).to eq('started')
       end
     end
+
+    context 'when transitioning to "processed_3" with "started" requests' do
+      let(:target_state) { 'processed_3' }
+      let(:request_state) { 'started' }
+
+      it 'updates the tube to "processed_3" with "started" requests', :aggregate_failures do
+        expect(transfer_request.reload.state).to eq('processed_3')
+        expect(request.reload.state).to eq('started')
+      end
+    end
+  end
+
+  context 'when the tube is: "processed_3"' do
+    let(:transfer_request_state) { 'processed_3' }
+
+    context 'when transitioning to "passed" with "started" requests' do
+      let(:target_state) { 'passed' }
+      let(:request_state) { 'started' }
+
+      it 'updates the tube to "passed" with "started" requests', :aggregate_failures do
+        expect(transfer_request.reload.state).to eq('passed')
+        expect(request.reload.state).to eq('started')
+      end
+    end
   end
 
   context 'when the tube is: "passed"' do

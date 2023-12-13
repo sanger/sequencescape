@@ -10,7 +10,11 @@
 class UatActions
   include ActiveModel::Model
 
-  class_attribute :title, :description, :message
+  # List of categories to group UatActions by, in the order they should be displayed
+  # This is used only for display purposes and can be altered as required
+  CATEGORY_LIST = %i[setup_and_test generating_samples auxiliary_data quality_control uncategorised].freeze
+
+  class_attribute :title, :description, :category, :message
   self.message = 'Completed successfully'
 
   class << self
@@ -37,6 +41,24 @@ class UatActions
     # The hash of all registered uat_actions
     def uat_actions
       @uat_actions ||= {}
+    end
+
+    # Default category should one not be provided
+    def category
+      UatActions::CATEGORY_LIST.last
+    end
+
+    # Returns a hash of all registered uat_actions grouped by category and sorted
+    def grouped_and_sorted_uat_actions
+      # raise error if any categories are not in the list
+      all.each do |uat_action|
+        unless CATEGORY_LIST.include?(uat_action.category)
+          raise "Category '#{uat_action.category}' from '#{uat_action}' is not in the list" \
+                  " of categories #{CATEGORY_LIST}"
+        end
+      end
+
+      all.group_by(&:category).sort_by { |category, _| CATEGORY_LIST.index(category) }
     end
 
     # Automatically called by UatActions classes to register themselves

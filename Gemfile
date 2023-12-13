@@ -1,16 +1,10 @@
 # frozen_string_literal: true
-next_rails = ENV.fetch('BUNDLE_GEMFILE', 'Gemfile')&.end_with?('GemfileNext')
 
 source 'https://rubygems.org'
 
 group :default do
   gem 'bootsnap'
-
-  if next_rails
-    gem 'rails', '~> 6.1.0'
-  else
-    gem 'rails', '~> 6.0.0'
-  end
+  gem 'rails', '~> 6.0.0'
 
   # State machine
   gem 'aasm'

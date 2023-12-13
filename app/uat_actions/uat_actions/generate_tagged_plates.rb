@@ -11,6 +11,7 @@ class UatActions::GenerateTaggedPlates < UatActions::GeneratePlates
   # The description displays on the list of UAT actions to provide additional information
   self.description =
     'Generates a plate of tagged samples. For plates of tags for use in Limber see "Generate Tag plates".'
+  self.category = :auxiliary_data
 
   # @see UatActions::GeneratePlates for other fields
   form_field :tag_group_name,
