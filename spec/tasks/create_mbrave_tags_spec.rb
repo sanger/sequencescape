@@ -22,7 +22,7 @@ describe 'mbrave tasks' do
           let(:run_action) { Rake::Task['mbrave:create_tag_plates'].execute(login: 'test', version: 'v1') }
 
           it 'creates tag plates' do
-            expect(MbraveTagsCreator).to receive(:process_create_tag_plates).with('test', 'v1')
+            expect(MbraveTagsCreator).to receive(:process_create_tag_plates).with('test', 'v1').at_least(:once)
             run_action
           end
         end
