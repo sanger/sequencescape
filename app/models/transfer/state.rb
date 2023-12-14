@@ -31,41 +31,18 @@ module Transfer::State
   end
 
   # This transfer state is specific to receptacles
-  # Added so can specifically check the state on certain types of input plates
-  # and return a default state of passed to allow well failing.
+  # Added so can specifically check the state of wells on certain types of input plates
+  # to allow well failing.
   module ReceptacleState
     # We have to include this specifically because it does not implicitly include the
     # methods from the Transfer::State module.
     include Transfer::State
 
-    def default_state
-      # Well state was 'unknown' without this change for our input plate because input
-      # plates do not have any transfer requests.
-      # This check was added specifically for the Bioscan pipeline, where the users wish to be able to fail
-      # wells at this point in the pipeline, and we need wells to be in state 'passed' for well failing to
-      # be allowed.
-      return 'passed' if input_started_plate_with_aliquots?
+    def state
+      # check for flag set to true on specific input plate purposes that allow failable wells
+      return labware.purpose.state_for_receptacle(self) if labware.purpose.has_failable_input_receptacles
 
-      nil
-    end
-
-    private
-
-    def input_started_plate_with_aliquots?
-      # Had to add labware and purpose checks here as many tests seem to fail otherwise, probably
-      # due to incomplete factory test data setup (e.g. Well with no Plate, Tube with no purpose)
-      # which should not happen in reality.
-      return false unless labware&.purpose
-
-      labware_of_input_started_type? && labware_in_valid_state? && aliquots.present?
-    end
-
-    def labware_of_input_started_type?
-      labware.purpose.type == 'PlatePurpose::InputStarted'
-    end
-
-    def labware_in_valid_state?
-      %w[started passed].include?(labware.state)
+      state_from(transfer_requests_as_target)
     end
   end
 
