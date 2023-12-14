@@ -4,76 +4,26 @@ require 'rake'
 
 # rubocop:todo RSpec/DescribeClass
 describe 'mbrave tasks' do
-  let(:queue_mode_setup) do
-    if ENV.key?('KNAPSACK_PRO_FIXED_QUEUE_SPLIT')
-      %w[mbrave:create_tag_plates mbrave:create_tag_groups].each do |task_name|
-        Rake::Task[task_name].clear if Rake::Task.task_defined?(task_name)
-      end
-    end
-  end
+  after { Rake.application.clear }
+
+  before { Rails.application.load_tasks }
 
   describe 'mbrave:create_tag_plates' do
-    before do
-      queue_mode_setup
-
-      Rake.application.rake_require 'tasks/create_mbrave_tags'
-      Rake::Task.define_task(:environment)
-    end
-
     context 'with mbrave:create_tag_plates' do
       context 'when the create_tag_plates task is invoked' do
         context 'when there are no arguments' do
-          xit 'does not do anything' do
-            expect { Rake::Task['mbrave:create_tag_plates'].execute }.not_to change(Plate, :count)
+          it 'does not do anything' do
+            expect(MbraveTagsCreator).not_to receive(:process_create_tag_plates)
+            Rake::Task['mbrave:create_tag_plates'].execute
           end
         end
 
         context 'when receiving the right arguments' do
-          let(:tag_group_one) { create(:tag_group) }
-          let(:tag_purpose) { create(:plate_purpose, name: 'Tag Plate') }
           let(:run_action) { Rake::Task['mbrave:create_tag_plates'].execute(login: 'test', version: 'v1') }
-          let(:tag_group_two) { create(:tag_group) }
 
-          before do
-            create(:user, login: 'test')
-            create(
-              :lot_type,
-              name: 'Pre Stamped Tags - 384',
-              template_class: 'TagLayoutTemplate',
-              target_purpose: tag_purpose
-            )
-
-            create(
-              :tag_layout_template,
-              name: 'Bioscan_384_template_1_v1',
-              tag_group: tag_group_one,
-              tag2_group: tag_group_two
-            )
-            create(:tag_layout_template, name: 'bubidi_2_v1', tag_group: tag_group_one, tag2_group: tag_group_two)
-            create(
-              :tag_layout_template,
-              name: 'Bioscan_384_template_3_v1',
-              tag_group: tag_group_one,
-              tag2_group: tag_group_two
-            )
-            create(
-              :tag_layout_template,
-              name: 'Bioscan_384_template_4_v14',
-              tag_group: tag_group_one,
-              tag2_group: tag_group_two
-            )
-            create(
-              :tag_layout_template,
-              name: 'Bioscan_384_template_5_v1',
-              tag_group: tag_group_one,
-              tag2_group: tag_group_two
-            )
-
-            allow(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode))
-          end
-
-          xit 'creates tag plates' do
-            expect { run_action }.to change(Plate, :count).by(3)
+          it 'creates tag plates' do
+            expect(MbraveTagsCreator).to receive(:process_create_tag_plates).with('test', 'v1').at_least(:once)
+            run_action
           end
         end
       end
@@ -81,107 +31,26 @@ describe 'mbrave tasks' do
   end
 
   describe 'mbrave:create_tag_groups' do
-    before do
-      queue_mode_setup
-
-      Rake.application.rake_require 'tasks/create_mbrave_tags'
-      Rake::Task.define_task(:environment)
-    end
-
     context 'when the create_mbrave_tags task is invoked' do
       context 'when there are no arguments' do
-        xit 'does not write the file' do
-          expect(File).not_to receive(:write)
-
+        it 'does not write the file' do
+          expect(MbraveTagsCreator).not_to receive(:process_create_tag_groups)
           Rake.application.invoke_task 'mbrave:create_tag_groups'
         end
       end
 
       context 'when there is valid arguments' do
-        let(:forward_file) do
-          file = Tempfile.new('forward')
-          file.write(
-            [
-              'Forward Index Number,Forward Oligo Label,F index sequence',
-              '1,PB1F_bc1001,CACATATCAGAGTGCG',
-              '2,PB1F_bc1002,ACACACAGACTGTGAG',
-              '3,PB1F_bc1003,ACACATCTCGTGAGAG',
-              '4,PB1F_bc1004,CACGCACACACGCGCG',
-              '5,PB1F_bc1005,CACGCACACACGCGCG'
-            ].join("\n")
-          )
-          file.rewind
-          file
-        end
-        let(:reverse_file) do
-          reverse = Tempfile.new('reverse')
-          reverse.write(
-            [
-              'Reverse Index Number,Reverse Oligo Label,R index sequence',
-              '1,PB1R_bc1097_rc,TAGAGAGATAGAGACG',
-              '2,PB1R_bc1098_rc,TGATGTGACACTGCGC',
-              '3,PB1R_bc1099_rc,AGTACAGTGTAGTAGA',
-              '4,PB1R_bc1100_rc,ACTACTGAGACATAGA',
-              '5,PB1R_bc1101_rc,TATATCGCGTCGCTAT',
-              '6,PB1R_bc1102_rc,CTATCATATCGAGAGA',
-              '7,PB1R_bc1103_rc,CGAGCGAGTGTGTATA',
-              '8,PB1R_bc1104_rc,CACGAGTCACTCATAT'
-            ].join("\n")
-          )
-          reverse.rewind
-          reverse
-        end
         let(:run_task) do
           Rake::Task['mbrave:create_tag_groups'].execute(
-            forward_file: forward_file.path,
-            reverse_file: reverse_file.path,
+            forward_file: 'forward',
+            reverse_file: 'reverse',
             version: 'v1'
           )
         end
 
-        xit 'creates the tag group with the right indexing' do
+        it 'creates the tag group with the right indexing' do
+          expect(MbraveTagsCreator).to receive(:process_create_tag_groups).with('forward', 'reverse', 'v1')
           run_task
-          %w[Bioscan_reverse_4_1_v1 Bioscan_reverse_4_2_v1].each do |name|
-            indexes = TagGroup.find_by(name: name).tags.map(&:map_id)
-            expect(indexes).to eq([1, 2, 3, 4])
-          end
-
-          indexes = TagGroup.find_by(name: 'Bioscan_forward_96_v1').tags.map(&:map_id)
-          expect(indexes).to eq([1, 2, 3, 4, 5])
-        end
-
-        xit 'creates the expected tag layout templates' do
-          run_task
-          expect(TagLayoutTemplate.all.map(&:name)).to eq(%w[Bioscan_384_template_1_v1 Bioscan_384_template_2_v1])
-        end
-
-        xit 'creates the right content in the yaml file' do
-          run_task
-
-          contents = YAML.safe_load_file('mbrave.yml', aliases: true)
-          expect(contents[Rails.env].keys).to eq(
-            %w[Bioscan_forward_96_v1 Bioscan_reverse_4_1_v1 Bioscan_reverse_4_2_v1]
-          )
-
-          expect(contents[Rails.env]['Bioscan_forward_96_v1']['num_plate']).to eq(1)
-          expect(contents[Rails.env]['Bioscan_reverse_4_1_v1']['num_plate']).to eq(1)
-          expect(contents[Rails.env]['Bioscan_reverse_4_2_v1']['num_plate']).to eq(2)
-
-          expect(contents[Rails.env]['Bioscan_forward_96_v1']['version']).to eq('v1')
-          expect(contents[Rails.env]['Bioscan_reverse_4_1_v1']['version']).to eq('v1')
-          expect(contents[Rails.env]['Bioscan_reverse_4_2_v1']['version']).to eq('v1')
-
-          expect(contents[Rails.env]['Bioscan_forward_96_v1']['tags']).to eq(
-            %w[PB1F_bc1001 PB1F_bc1002 PB1F_bc1003 PB1F_bc1004 PB1F_bc1005]
-          )
-
-          expect(contents[Rails.env]['Bioscan_reverse_4_1_v1']['tags']).to eq(
-            %w[PB1R_bc1097_rc PB1R_bc1098_rc PB1R_bc1099_rc PB1R_bc1100_rc]
-          )
-
-          expect(contents[Rails.env]['Bioscan_reverse_4_2_v1']['tags']).to eq(
-            %w[PB1R_bc1101_rc PB1R_bc1102_rc PB1R_bc1103_rc PB1R_bc1104_rc]
-          )
         end
       end
     end
