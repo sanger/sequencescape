@@ -55,7 +55,7 @@ Capybara.register_driver :headless_chrome do |app|
   the_driver = Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 
   # copied the following over from features/support/capybara.rb because I expect it is also relevant here
-  the_driver.browser.download_path = DownloadHelpers::PATH.to_s
+  the_driver.browser.download_path = DownloadHelpers::PATH.to_s if the_driver.browser.respond_to?(:download_path=)
   the_driver
 end
 
