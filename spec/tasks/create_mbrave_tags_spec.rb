@@ -4,9 +4,14 @@ require 'rake'
 
 # rubocop:todo RSpec/DescribeClass
 describe 'mbrave tasks' do
-  after { Rake.application.clear }
+  before do
+    MbraveTagsCreator.mbrave_filepath = Tempfile.new.path
 
-  before { Rails.application.load_tasks }
+    # load rake tasks
+    Rails.application.load_tasks
+  end
+
+  after { Rake.application.clear }
 
   describe 'mbrave:create_tag_plates' do
     context 'with mbrave:create_tag_plates' do
@@ -14,7 +19,7 @@ describe 'mbrave tasks' do
         context 'when there are no arguments' do
           it 'does not do anything' do
             expect(MbraveTagsCreator).not_to receive(:process_create_tag_plates)
-            Rake::Task['mbrave:create_tag_plates'].execute
+            expect { Rake::Task['mbrave:create_tag_plates'].execute }.to output.to_stdout
           end
         end
 
@@ -23,7 +28,7 @@ describe 'mbrave tasks' do
 
           it 'creates tag plates' do
             expect(MbraveTagsCreator).to receive(:process_create_tag_plates).with('test', 'v1').at_least(:once)
-            run_action
+            expect { run_action }.to output.to_stdout
           end
         end
       end
@@ -35,7 +40,7 @@ describe 'mbrave tasks' do
       context 'when there are no arguments' do
         it 'does not write the file' do
           expect(MbraveTagsCreator).not_to receive(:process_create_tag_groups)
-          Rake.application.invoke_task 'mbrave:create_tag_groups'
+          expect { Rake.application.invoke_task 'mbrave:create_tag_groups' }.to output.to_stdout
         end
       end
 
@@ -49,8 +54,10 @@ describe 'mbrave tasks' do
         end
 
         it 'creates the tag group with the right indexing' do
-          expect(MbraveTagsCreator).to receive(:process_create_tag_groups).with('forward', 'reverse', 'v1').at_least(:once)
-          run_task
+          expect(MbraveTagsCreator).to receive(:process_create_tag_groups)
+            .with('forward', 'reverse', 'v1')
+            .at_least(:once)
+          expect { run_task }.to output.to_stdout
         end
       end
     end

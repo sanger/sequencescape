@@ -4,8 +4,8 @@
 # end of the bioscan process.
 # rubocop:disable Metrics/ClassLength
 class MbraveTagsCreator
-  YAML_FILENAME = 'mbrave.yml'
   TAG_IDENTIFIER = 'Bioscan'
+  DEFAULT_MBRAVE_FILE = 'mbrave.yml'
 
   attr_reader :forward_filename,
               :reverse_filename,
@@ -24,6 +24,14 @@ class MbraveTagsCreator
     @forward_group = nil
     @reverse_groups = []
     @yaml_contents = {}
+  end
+
+  class << self
+    attr_writer :mbrave_filepath
+  end
+
+  def self.mbrave_filepath
+    @mbrave_filepath ||= MbraveTagsCreator::DEFAULT_MBRAVE_FILE
   end
 
   def log_line(&block)
@@ -194,13 +202,13 @@ class MbraveTagsCreator
             reverse_filename: reverse_filename,
             tag_identifier: MbraveTagsCreator::TAG_IDENTIFIER,
             version: version,
-            yaml_filename: MbraveTagsCreator::YAML_FILENAME
+            yaml_filename: MbraveTagsCreator.mbrave_filepath
           )
 
         mbrave_tags_creator.create_1_tag_group_forward
         mbrave_tags_creator.create_24_tag_groups_reverse
         mbrave_tags_creator.create_tag_layout_templates
-        mbrave_tags_creator.write_yaml(MbraveTagsCreator::YAML_FILENAME)
+        mbrave_tags_creator.write_yaml(MbraveTagsCreator.mbrave_filepath)
       end
     end
   end
