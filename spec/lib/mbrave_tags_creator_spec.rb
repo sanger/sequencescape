@@ -4,7 +4,16 @@ require 'rake'
 require 'mbrave_tags_creator'
 
 describe MbraveTagsCreator do
+  let(:mbrave_filepath) { Tempfile.new.path }
+
+  it 'has a default value for mbrave file' do
+    expect(described_class::DEFAULT_MBRAVE_FILE.length).to be_positive
+    expect(described_class.mbrave_filepath).to eq(described_class::DEFAULT_MBRAVE_FILE)
+  end
+
   describe 'MbraveTagsCreator::create_tag_plates' do
+    before { described_class.mbrave_filepath = mbrave_filepath }
+
     context 'when receiving the right arguments' do
       let(:tag_group_one) { create(:tag_group) }
       let(:tag_purpose) { create(:plate_purpose, name: 'Tag Plate') }
@@ -50,12 +59,23 @@ describe MbraveTagsCreator do
       end
 
       it 'creates tag plates' do
-        expect { run_action }.to change(Plate, :count).by(3)
+        expect { run_action }.to change(Plate, :count).by(3).and output(
+                                          [
+                                            "Bioscan_384_template_1_v1:\n",
+                                            " - SQPD-1\n",
+                                            "Bioscan_384_template_3_v1:\n",
+                                            " - SQPD-1\n",
+                                            "Bioscan_384_template_5_v1:\n",
+                                            " - SQPD-1\n"
+                                          ].join
+                                        ).to_stdout
       end
     end
   end
 
   describe 'MbraveTagsCreator::create_tag_groups' do
+    before { described_class.mbrave_filepath = mbrave_filepath }
+
     context 'when there is valid arguments' do
       let(:forward_file) do
         file = Tempfile.new('forward')
@@ -90,7 +110,9 @@ describe MbraveTagsCreator do
         reverse.rewind
         reverse
       end
-      let(:run_task) { described_class.process_create_tag_groups(forward_file, reverse_file.path, 'v1') }
+      let(:run_task) do
+        expect { described_class.process_create_tag_groups(forward_file, reverse_file.path, 'v1') }.to output.to_stdout
+      end
 
       it 'creates the tag group with the right indexing' do
         run_task
@@ -111,7 +133,7 @@ describe MbraveTagsCreator do
       it 'creates the right content in the yaml file' do
         run_task
 
-        contents = YAML.safe_load_file('mbrave.yml', aliases: true)
+        contents = YAML.safe_load_file(mbrave_filepath, aliases: true)
         expect(contents[Rails.env].keys).to eq(%w[Bioscan_forward_96_v1 Bioscan_reverse_4_1_v1 Bioscan_reverse_4_2_v1])
 
         expect(contents[Rails.env]['Bioscan_forward_96_v1']['num_plate']).to eq(1)
