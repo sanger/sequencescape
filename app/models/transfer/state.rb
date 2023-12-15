@@ -40,7 +40,7 @@ module Transfer::State
 
     def state
       # check for flag set to true on specific input plate purposes that allow failable wells
-      return labware.purpose.state_for_receptacle(self) if labware.purpose.has_failable_input_receptacles
+      return labware.purpose.state_for_receptacle(self) if labware&.purpose&.has_failable_input_receptacles
 
       state_from(transfer_requests_as_target)
     end
