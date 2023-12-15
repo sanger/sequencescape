@@ -17,7 +17,7 @@ Capybara.register_driver :headless_chrome do |app|
 
   # the following is needed to avoid a test failure where the driver would
   # forget / ignore its configured download location on every other run
-  the_driver.browser.download_path = DownloadHelpers::PATH.to_s
+  the_driver.browser.download_path = DownloadHelpers::PATH.to_s if the_driver.browser.respond_to?(:download_path=)
   the_driver
 end
 
