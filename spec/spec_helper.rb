@@ -52,17 +52,14 @@ Capybara.register_driver :headless_chrome do |app|
 
   options.add_argument('--headless')
   options.add_preference('download.default_directory', DownloadHelpers::PATH.to_s)
-  the_driver = Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
-
-  # copied the following over from features/support/capybara.rb because I expect it is also relevant here
-  the_driver.browser.download_path = DownloadHelpers::PATH.to_s if the_driver.browser.respond_to?(:download_path=)
-  the_driver
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 end
 
 Capybara.register_driver :selenium_chrome do |app|
-  driver = Capybara::Selenium::Driver.new(app, browser: :chrome)
-  driver.browser.download_path = DownloadHelpers::PATH.to_s
-  driver
+  options = Selenium::WebDriver::Chrome::Options.new
+
+  options.add_preference('download.default_directory', DownloadHelpers::PATH.to_s)
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 end
 
 Capybara.javascript_driver = ENV.fetch('JS_DRIVER', 'headless_chrome').to_sym
