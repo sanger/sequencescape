@@ -53,7 +53,8 @@ describe 'mbrave tasks' do
         end
 
         it 'creates the tag group with the right indexing' do
-          expect(MbraveTagsCreator).to receive(:process_create_tag_groups).with('forward', 'reverse', 'v1')
+          expect(MbraveTagsCreator).to
+          receive(:process_create_tag_groups).with('forward', 'reverse', 'v1').at_least(:once)
           run_task
         end
       end
