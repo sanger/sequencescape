@@ -63,7 +63,7 @@ module JSONAPI
 
     def foreign_key_types_and_values(source, relationship)
       binding.pry
-      if relationship.is_a?(JSONAPI::Relationship::ToMany)
+      return unless relationship.is_a?(JSONAPI::Relationship::ToMany)
         if relationship.polymorphic?
           assoc = source._model.public_send(relationship.name)
 
@@ -86,7 +86,7 @@ module JSONAPI
         else
           source.public_send(relationship.name).map { |value| [relationship.type, @id_formatter.format(value.id)] }
         end
-      end
+
     end
     # rubocop:enable all
   end
