@@ -3,7 +3,10 @@
 # Class to support a different state machine for inputs added
 # in the middle of a workflow
 class PlatePurpose::AdditionalInput < PlatePurpose
+  self.state_changer = StateChanger::AdditionalInputPlate
+
   READY_STATE = 'passed'
+
   def state_of(plate)
     return READY_STATE if valid_intermediate_input?(plate)
     super(plate)
