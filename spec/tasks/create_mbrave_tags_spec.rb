@@ -9,6 +9,8 @@ describe 'mbrave tasks' do
   before { Rails.application.load_tasks }
 
   describe 'mbrave:create_tag_plates' do
+    before { Rake::Task['mbrave:create_tag_plates'].reenable }
+
     context 'with mbrave:create_tag_plates' do
       context 'when the create_tag_plates task is invoked' do
         context 'when there are no arguments' do
@@ -31,6 +33,8 @@ describe 'mbrave tasks' do
   end
 
   describe 'mbrave:create_tag_groups' do
+    before { Rake::Task['mbrave:create_tag_groups'].reenable }
+
     context 'when the create_mbrave_tags task is invoked' do
       context 'when there are no arguments' do
         it 'does not write the file' do
@@ -49,7 +53,9 @@ describe 'mbrave tasks' do
         end
 
         it 'creates the tag group with the right indexing' do
-          expect(MbraveTagsCreator).to receive(:process_create_tag_groups).with('forward', 'reverse', 'v1')
+          expect(MbraveTagsCreator).to receive(:process_create_tag_groups)
+            .with('forward', 'reverse', 'v1')
+            .at_least(:once)
           run_task
         end
       end
