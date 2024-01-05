@@ -23,6 +23,7 @@ module Api
       has_one :request_type, always_include_linkage_data: true
       has_one :primer_panel
       has_one :pre_capture_pool
+      has_many :poly_metadata
 
       # Attributes
       attribute :uuid, readonly: true
