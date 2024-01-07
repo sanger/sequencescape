@@ -1,0 +1,238 @@
+# frozen_string_literal: true
+
+require 'rails_helper'
+
+describe Map, type: :model do
+  context 'with Chromium Chip 16-well' do
+    # The Map class contains a nested module called Coordinate. For clarity, we
+    # use map_class to refer to the Map class and coordinate_module to refer to
+    # the Coordinate module.
+    #
+    # The Chromium Chip 16-well has 16 wells arranged in 2 rows and 8 columns.
+    # The following diagrams show the horizontal and vertical positions of the
+    # wells used by the methods in Map and Map::Coordinate.
+    #
+    # horizontal positions (order in rows)
+    #      1    2    3    4    5    6    7    8
+    #    ╔════╦════╦════╦════╦════╦════╦════╦════╗
+    #  A ║  1 ║  2 ║  3 ║  4 ║  5 ║  6 ║  7 ║  8 ║
+    #    ║════╬════╬════╬════╬════╬════╬════╬════╣
+    #  B ║  9 ║ 10 ║ 11 ║ 12 ║ 13 ║ 14 ║ 15 ║ 16 ║
+    #    ╚════╩════╩════╩════╩════╩════╩════╩════╝
+
+    # vertical positions (order in columns)
+    #      1    2    3    4    5    6    7    8
+    #    ╔════╦════╦════╦════╦════╦════╦════╦════╗
+    #  A ║  1 ║  3 ║  5 ║  7 ║  9 ║ 11 ║ 13 ║ 15 ║
+    #    ║════╬════╬════╬════╬════╬════╬════╬════╣
+    #  B ║  2 ║  4 ║  6 ║  8 ║ 10 ║ 12 ║ 14 ║ 16 ║
+    #    ╚════╩════╩════╩════╩════╩════╩════╩════╝
+
+    let(:map_class) { described_class }
+    let(:plate_size) { 16 } # Chromium Chip 16-well
+
+    describe Map::Coordinate do
+      let(:coordinate_module) { described_class }
+
+      describe '.location_from_row_and_column' do
+        it 'returns the name of a well by row and colum' do
+          # Rows are using zero-based index; columns are using one-based index.
+          (1..8).each do |column|
+            expect(coordinate_module.location_from_row_and_column(0, column)).to eq("A#{column}")
+            expect(coordinate_module.location_from_row_and_column(1, column)).to eq("B#{column}")
+          end
+        end
+      end
+
+      describe '.description_to_horizontal_plate_position' do
+        it 'returns nil if well description is invalid' do
+          expect(coordinate_module.description_to_horizontal_plate_position('', plate_size)).to be_nil
+          expect(coordinate_module.description_to_horizontal_plate_position(nil, plate_size)).to be_nil
+        end
+
+        it 'returns nil if plate size is invalid' do
+          expect(coordinate_module.description_to_horizontal_plate_position('A1', '16')).to be_nil # string
+          expect(coordinate_module.description_to_horizontal_plate_position('A1', 0)).to be_nil # zero
+          expect(coordinate_module.description_to_horizontal_plate_position('A1', -1)).to be_nil # negative
+        end
+
+        it 'returns one-based index of a well in rows' do
+          # Indexes of wells in rows: 1 to 16 for A1, A2, A3, ..., A8, B1, B2, B3, ..., B8
+          (1..8).each do |column|
+            expect(coordinate_module.description_to_horizontal_plate_position("A#{column}", plate_size)).to eq(column)
+            expect(coordinate_module.description_to_horizontal_plate_position("B#{column}", plate_size)).to eq(
+              column + 8
+            )
+          end
+        end
+      end
+
+      describe '.description_to_vertical_plate_position' do
+        it 'returns nil if well description is invalid' do
+          expect(coordinate_module.description_to_vertical_plate_position('A1', '16')).to be_nil # string
+          expect(coordinate_module.description_to_vertical_plate_position('A1', 0)).to be_nil # zero
+          expect(coordinate_module.description_to_vertical_plate_position('A1', -1)).to be_nil # negative
+        end
+
+        it 'returns nil if plate size is invalid' do
+          expect(coordinate_module.description_to_vertical_plate_position('', plate_size)).to be_nil
+          expect(coordinate_module.description_to_vertical_plate_position(nil, plate_size)).to be_nil
+        end
+
+        it 'returns one-based index of a well columns' do
+          # Indexes of wells in columns: 1 to 16 for A1, B1, A2, B2, A3, B3, ..., A8, B8
+          (1..8).each do |column|
+            expect(coordinate_module.description_to_vertical_plate_position("A#{column}", plate_size)).to eq(
+              (2 * column) - 1
+            )
+            expect(coordinate_module.description_to_vertical_plate_position("B#{column}", plate_size)).to eq(2 * column)
+          end
+        end
+      end
+
+      describe '.horizontal_plate_position_to_description' do
+        it 'returns nil if well position is invalid' do
+          expect(coordinate_module.horizontal_plate_position_to_description('1', plate_size)).to be_nil # string
+          expect(coordinate_module.horizontal_plate_position_to_description(0, plate_size)).to be_nil # zero
+          expect(coordinate_module.horizontal_plate_position_to_description(-1, plate_size)).to be_nil # negative
+          expect(coordinate_module.horizontal_plate_position_to_description(17, plate_size)).to be_nil # out of bound
+        end
+
+        it 'returns nil if plate size is invalid' do
+          expect(coordinate_module.horizontal_plate_position_to_description(1, '16')).to be_nil # string
+          expect(coordinate_module.horizontal_plate_position_to_description(1, 0)).to be_nil # zero
+          expect(coordinate_module.horizontal_plate_position_to_description(1, -1)).to be_nil # negative
+        end
+
+        it 'returns name of a well in rows by one-based index' do
+          # Names of wells in rows: A1, A2, A3, ..., A8, B1, B2, B3, ..., B8 for indexes 1 to 16
+          (1..8).each do |column|
+            expect(coordinate_module.horizontal_plate_position_to_description(column, plate_size)).to eq("A#{column}")
+            expect(coordinate_module.horizontal_plate_position_to_description(column + 8, plate_size)).to eq(
+              "B#{column}"
+            )
+          end
+        end
+      end
+
+      describe '.vertical_plate_position_to_description' do
+        it 'returns nil if well position is invalid' do
+          expect(coordinate_module.vertical_plate_position_to_description('1', plate_size)).to be_nil # string
+          expect(coordinate_module.vertical_plate_position_to_description(0, plate_size)).to be_nil # zero
+          expect(coordinate_module.vertical_plate_position_to_description(-1, plate_size)).to be_nil # negative
+          expect(coordinate_module.vertical_plate_position_to_description(17, plate_size)).to be_nil # out of bound
+        end
+
+        it 'returns nil if plate size is invalid' do
+          expect(coordinate_module.vertical_plate_position_to_description(1, '16')).to be_nil # string
+          expect(coordinate_module.vertical_plate_position_to_description(1, 0)).to be_nil # zero
+          expect(coordinate_module.vertical_plate_position_to_description(1, -1)).to be_nil # negative
+        end
+
+        it 'returns name of a well in columns by one-based index' do
+          # Names of wells in columns: A1, B1, A2, B2, A3, B3, ..., A8, B8 for indexes 1 to 16
+          (1..8).each do |column|
+            expect(coordinate_module.vertical_plate_position_to_description((2 * column) - 1, plate_size)).to eq(
+              "A#{column}"
+            )
+            expect(coordinate_module.vertical_plate_position_to_description(2 * column, plate_size)).to eq("B#{column}")
+          end
+        end
+      end
+
+      describe '.descriptions_for_row' do
+        it 'returns names of wells in a row' do
+          expect(coordinate_module.descriptions_for_row('A', plate_size)).to eq((1..8).map { |column| "A#{column}" })
+          expect(coordinate_module.descriptions_for_row('B', plate_size)).to eq((1..8).map { |column| "B#{column}" })
+        end
+      end
+
+      describe '.descriptions_for_column' do
+        it 'returns names of wells in a column' do
+          (1..8).each do |column|
+            expect(coordinate_module.descriptions_for_column(column, plate_size)).to eq(["A#{column}", "B#{column}"])
+          end
+        end
+      end
+
+      describe '.plate_width' do
+        it 'returns the width of a plate' do
+          expect(coordinate_module.plate_width(plate_size)).to eq(8)
+        end
+      end
+
+      describe '.plate_length' do
+        it 'returns the height of a plate' do
+          expect(coordinate_module.plate_length(plate_size)).to eq(2)
+        end
+      end
+
+      describe '.vertical_position_to_description' do
+        it 'returns the name of a well by well position and height' do
+          # The well position is in column order. Instead of plate size, the
+          # length (height, number of rows) of the plate is used to find the well.
+          expect(coordinate_module.vertical_position_to_description(1, 2)).to eq('A1')
+          expect(coordinate_module.vertical_position_to_description(2, 2)).to eq('B1')
+          expect(coordinate_module.vertical_position_to_description(3, 2)).to eq('A2')
+
+          # ...
+          expect(coordinate_module.vertical_position_to_description(15, 2)).to eq('A8')
+          expect(coordinate_module.vertical_position_to_description(16, 2)).to eq('B8')
+        end
+      end
+
+      describe '.horizontal_position_to_description' do
+        it 'returns the name of a well by well position and width' do
+          # The well position is in row order. Instead of plate size, the width
+          # (number of columns) of the plate is used to find the well.
+          expect(coordinate_module.horizontal_position_to_description(1, 8)).to eq('A1')
+          expect(coordinate_module.horizontal_position_to_description(2, 8)).to eq('A2')
+
+          # ...
+          expect(coordinate_module.horizontal_position_to_description(8, 8)).to eq('A8')
+          expect(coordinate_module.horizontal_position_to_description(9, 8)).to eq('B1')
+
+          # ...
+          expect(coordinate_module.horizontal_position_to_description(15, 8)).to eq('B7')
+          expect(coordinate_module.horizontal_position_to_description(16, 8)).to eq('B8')
+        end
+      end
+
+      describe '.horizontal_to_vertical' do
+        it 'returns the vertical position of a well by horizontal position' do
+          input = (1..16).to_a
+          expected = input.select(&:odd?) + input.select(&:even?)
+
+          input
+            .zip(expected)
+            .each do |horizontal, vertical|
+              expect(coordinate_module.horizontal_to_vertical(horizontal, plate_size)).to eq(vertical)
+            end
+        end
+      end
+
+      describe '.vertical_to_horizontal' do
+        it 'returns the horizontal position of a well by vertical position' do
+          expected = (1..16).to_a
+          input = expected.select(&:odd?) + expected.select(&:even?)
+
+          input
+            .zip(expected)
+            .each do |vertical, horizontal|
+              expect(coordinate_module.vertical_to_horizontal(vertical, plate_size)).to eq(horizontal)
+            end
+        end
+      end
+
+      describe '.location_from_index' do
+        it 'returns the name of a well by zero-based index in row order' do
+          # Names of wells in rows: A1, A2, A3, ..., A8, B1, B2, B3, ..., B8 for indexes 0 to 15
+          8.times do |index|
+            expect(coordinate_module.location_from_index(index, plate_size)).to eq("A#{index + 1}") # first row
+            expect(coordinate_module.location_from_index(index + 8, plate_size)).to eq("B#{index + 1}") # second row
+          end
+        end
+      end
+    end
+  end
+end
