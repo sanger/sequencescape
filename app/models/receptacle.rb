@@ -7,7 +7,7 @@
 class Receptacle < Asset # rubocop:todo Metrics/ClassLength
   include Uuid::Uuidable
   include Commentable
-  include Transfer::State::ReceptacleState
+  include Transfer::State
   include Aliquot::Remover
   include StudyReport::AssetDetails
   include Receptacle::DownstreamAliquotsRemoval::Mixin
