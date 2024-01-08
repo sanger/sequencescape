@@ -234,5 +234,127 @@ describe Map, type: :model do
         end
       end
     end
+
+    describe 'class methods' do
+      describe '.valid_plate_size?' do
+        # This method checks if the plate size is a positive integer only.
+        it 'returns true for a valid plate size' do
+          expect(map_class.valid_plate_size?(plate_size)).to be true
+        end
+
+        it 'returns false for an invalid plate size' do
+          expect(map_class.valid_plate_size?('16')).to be false # string
+          expect(map_class.valid_plate_size?(0)).to be false # zero
+          expect(map_class.valid_plate_size?(-1)).to be false # negative
+        end
+      end
+
+      describe '.valid_plate_position_and_plate_size?' do
+        # This method is able to check if the position is out of bounds.
+        it 'returns true for a valid plate position and plate size' do
+          expect(map_class.valid_plate_position_and_plate_size?(1, plate_size)).to be true
+          expect(map_class.valid_plate_position_and_plate_size?(16, plate_size)).to be true
+        end
+
+        it 'returns false for an invalid plate position' do
+          expect(map_class.valid_plate_position_and_plate_size?(0, plate_size)).to be false # zero
+          expect(map_class.valid_plate_position_and_plate_size?(17, plate_size)).to be false # out of bound
+        end
+
+        it 'returns false for an invalid plate size' do
+          expect(map_class.valid_plate_position_and_plate_size?(1, 0)).to be false
+        end
+      end
+
+      describe '.valid_well_description_and_plate_size?' do
+        # This method is not able to check if the well is out of bounds.
+        # It is called by Coordinate methods for basic validation.
+        it 'returns true for a valid well description and plate size' do
+          expect(map_class.valid_well_description_and_plate_size?('A1', plate_size)).to be true
+        end
+
+        it 'returns false if well description is invalid' do
+          expect(map_class.valid_well_description_and_plate_size?('', plate_size)).to be false # empty string
+          expect(map_class.valid_well_description_and_plate_size?(nil, plate_size)).to be false # nil
+        end
+
+        it 'returns false if plate size is invalid' do
+          expect(map_class.valid_well_description_and_plate_size?('A1', '16')).to be false # string
+          expect(map_class.valid_well_description_and_plate_size?('A1', 0)).to be false # zero
+          expect(map_class.valid_well_description_and_plate_size?('A1', -1)).to be false # negative
+        end
+      end
+
+      describe '.valid_well_position?' do
+        # This method checks if the well position is a positive integer only.
+        it 'returns true for a valid well position' do
+          expect(map_class.valid_well_position?(1)).to be true
+          expect(map_class.valid_well_position?(16)).to be true
+        end
+
+        it 'returns false of an invalid well position' do
+          expect(map_class.valid_well_position?('1')).to be false  # string
+          expect(map_class.valid_well_position?(0)).to be false  # zero
+          expect(map_class.valid_well_position?(nil)).to be false  # string
+        end
+      end
+
+      describe '.location_from_row_and_column' do
+        # This method calls Map::Coordinate.location_from_row_and_column .
+        it 'returns the name of a well by row and colum' do
+          # Rows are using zero-based index; columns are using one-based index.
+          (1..8).each do |column|
+            expect(map_class.location_from_row_and_column(0, column)).to eq("A#{column}")
+            expect(map_class.location_from_row_and_column(1, column)).to eq("B#{column}")
+          end
+        end
+      end
+
+      describe '.horizontal_to_vertical' do
+        # This method calls Map::Coordinate.horizontal_to_vertical .
+        it 'returns the vertical position of a well by horizontal position' do
+            input = (1..16).to_a
+            expected = input.select(&:odd?) + input.select(&:even?)
+
+            input
+              .zip(expected)
+              .each do |horizontal, vertical|
+                expect(map_class.horizontal_to_vertical(horizontal, plate_size)).to eq(vertical)
+              end
+          end
+      end
+
+      describe '.vertical_to_horizontal' do
+        # This method calls Map::Coordinate.vertical_to_horizontal .
+        it 'returns the vertical position of a well by horizontal position' do
+          expected = (1..16).to_a
+          input = expected.select(&:odd?) + expected.select(&:even?)
+
+          input
+            .zip(expected)
+            .each do |vertical, horizontal|
+              expect(map_class.vertical_to_horizontal(vertical, plate_size)).to eq(horizontal)
+            end
+        end
+      end
+
+      describe '.split_well_description' do
+        it 'returns the row and column of a well in a hash' do
+          # Rows are using zero-based index; columns are using one-based index.
+          expect(map_class.split_well_description('A1')).to eq({row: 0, col: 1})
+          expect(map_class.split_well_description('A8')).to eq({row: 0, col: 8})
+          expect(map_class.split_well_description('B1')).to eq({row: 1, col: 1})
+          expect(map_class.split_well_description('B8')).to eq({row: 1, col: 8})
+        end
+      end
+
+      describe '.strip_description' do
+        # Removes the leading zero from column if there is one.
+        it 'returns well description by removing the leading zero from column' do
+          expect(map_class.strip_description('A01')).to eq('A1')  # one leading zero
+          expect(map_class.strip_description('B1')).to eq('B1') # no leading zeros
+        end
+      end
+    end
   end
 end
