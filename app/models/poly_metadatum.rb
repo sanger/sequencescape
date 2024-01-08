@@ -4,7 +4,6 @@
 class PolyMetadatum < ApplicationRecord
   # Associations
   belongs_to :metadatable, polymorphic: true, optional: false
-  has_many :poly_metadata, as: :metadatable, dependent: :destroy
 
   # Validations
   validates :key, presence: true # otherwise nil is a valid key
