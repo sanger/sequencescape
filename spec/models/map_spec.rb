@@ -293,9 +293,9 @@ describe Map, type: :model do
         end
 
         it 'returns false of an invalid well position' do
-          expect(map_class.valid_well_position?('1')).to be false  # string
-          expect(map_class.valid_well_position?(0)).to be false  # zero
-          expect(map_class.valid_well_position?(nil)).to be false  # string
+          expect(map_class.valid_well_position?('1')).to be false # string
+          expect(map_class.valid_well_position?(0)).to be false # zero
+          expect(map_class.valid_well_position?(nil)).to be false # string
         end
       end
 
@@ -313,15 +313,15 @@ describe Map, type: :model do
       describe '.horizontal_to_vertical' do
         # This method calls Map::Coordinate.horizontal_to_vertical .
         it 'returns the vertical position of a well by horizontal position' do
-            input = (1..16).to_a
-            expected = input.select(&:odd?) + input.select(&:even?)
+          input = (1..16).to_a
+          expected = input.select(&:odd?) + input.select(&:even?)
 
-            input
-              .zip(expected)
-              .each do |horizontal, vertical|
-                expect(map_class.horizontal_to_vertical(horizontal, plate_size)).to eq(vertical)
-              end
-          end
+          input
+            .zip(expected)
+            .each do |horizontal, vertical|
+              expect(map_class.horizontal_to_vertical(horizontal, plate_size)).to eq(vertical)
+            end
+        end
       end
 
       describe '.vertical_to_horizontal' do
@@ -341,17 +341,17 @@ describe Map, type: :model do
       describe '.split_well_description' do
         it 'returns the row and column of a well in a hash' do
           # Rows are using zero-based index; columns are using one-based index.
-          expect(map_class.split_well_description('A1')).to eq({row: 0, col: 1})
-          expect(map_class.split_well_description('A8')).to eq({row: 0, col: 8})
-          expect(map_class.split_well_description('B1')).to eq({row: 1, col: 1})
-          expect(map_class.split_well_description('B8')).to eq({row: 1, col: 8})
+          expect(map_class.split_well_description('A1')).to eq({ row: 0, col: 1 })
+          expect(map_class.split_well_description('A8')).to eq({ row: 0, col: 8 })
+          expect(map_class.split_well_description('B1')).to eq({ row: 1, col: 1 })
+          expect(map_class.split_well_description('B8')).to eq({ row: 1, col: 8 })
         end
       end
 
       describe '.strip_description' do
         # Removes the leading zero from column if there is one.
         it 'returns well description by removing the leading zero from column' do
-          expect(map_class.strip_description('A01')).to eq('A1')  # one leading zero
+          expect(map_class.strip_description('A01')).to eq('A1') # one leading zero
           expect(map_class.strip_description('B1')).to eq('B1') # no leading zeros
         end
       end
