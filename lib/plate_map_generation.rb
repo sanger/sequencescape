@@ -22,7 +22,8 @@ class PlateMapGeneration
         vertical_ratio: 8,
         description_strategy: 'Sequential',
         sizes: [8]
-      }
+      },
+      { name: 'ChromiumChip', horizontal_ratio: 4, vertical_ratio: 1, description_strategy: 'Coordinate', sizes: [16] }
     ]
   end
 
