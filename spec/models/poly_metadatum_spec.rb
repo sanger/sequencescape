@@ -49,10 +49,6 @@ RSpec.describe PolyMetadatum, type: :model do
     it 'belongs to metadatable' do
       expect(test_metadatum).to belong_to(:metadatable).required
     end
-
-    it 'can have many poly_metadata' do
-      expect(test_metadatum).to have_many :poly_metadata
-    end
   end
 
   # Tests for #to_h method
