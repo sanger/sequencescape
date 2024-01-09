@@ -12,7 +12,7 @@ module Api
       # model_name / model_hint if required
 
       # Associations:
-      belongs_to :metadatable, polymorphic: true
+      has_one :metadatable, polymorphic: true
 
       # Attributes
       attribute :key
