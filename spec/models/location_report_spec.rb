@@ -174,6 +174,10 @@ RSpec.describe LocationReport do
 
           expect(lines).to match_array(expected_lines)
         end
+
+        it 'generates the report' do
+          expect(location_report.generate!).not_to raise_error
+        end
       end
 
       context 'by selection on' do
