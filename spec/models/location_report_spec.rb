@@ -176,7 +176,7 @@ RSpec.describe LocationReport do
         end
 
         it 'generates the report' do
-          expect(location_report.generate!).not_to raise_error
+          expect{ location_report.generate! }.not_to raise_error
         end
       end
 
