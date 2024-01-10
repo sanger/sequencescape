@@ -281,5 +281,6 @@ class Map < ApplicationRecord
         .order(:row_order)
         .each { |position| yield(position, position.row_order) }
     end
+    alias walk_plate_horizontally walk_plate_in_row_major_order
   end
 end
