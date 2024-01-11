@@ -355,6 +355,76 @@ describe Map, type: :model do
           expect(map_class.strip_description('B1')).to eq('B1') # no leading zeros
         end
       end
+
+      describe '.pad_description' do
+        # Returns well description with a leading zero for a given map.
+        # AssetShapes and Maps are created before the test suite runs and
+        # they are available in the test database.
+        let(:chromium_chip_maps) { map_class.joins(:asset_shape).where(asset_shapes: { name: 'ChromiumChip' }) }
+
+        it 'returns well description by adding a leading zero' do
+          expect(map_class.pad_description(chromium_chip_maps.first)).to eq('A01')
+          expect(map_class.pad_description(chromium_chip_maps.last)).to eq('B08')
+        end
+      end
+
+      describe 'walk_plate_in_column_major_order' do
+        let(:shape) { AssetShape.find_by(name: 'ChromiumChip') }
+
+        it 'walks vertically' do
+          # Generate a hash of well descriptions and their column order (zero-based) for testing.
+          hash = {}
+          map_class.walk_plate_vertically(plate_size, shape.id) do |map, column_order|
+            hash[map.description] = column_order
+          end
+          expected =
+            {
+              A1: 0,
+              B1: 1,
+              A2: 2,
+              B2: 3,
+              A3: 4,
+              B3: 5,
+              A4: 6,
+              B4: 7,
+              A5: 8,
+              B5: 9,
+              A6: 10,
+              B6: 11,
+              A7: 12,
+              B7: 13,
+              A8: 14,
+              B8: 15
+            }.transform_keys(&:to_s)
+          expect(hash).to eq(expected)
+        end
+
+        it 'walks horizontally' do
+          # Generate a hash of well descriptions and their column order (zero-based) for testing.
+          hash = {}
+          map_class.walk_plate_horizontally(plate_size, shape.id) { |map, row_order| hash[map.description] = row_order }
+          expected =
+            {
+              A1: 0,
+              A2: 1,
+              A3: 2,
+              A4: 3,
+              A5: 4,
+              A6: 5,
+              A7: 6,
+              A8: 7,
+              B1: 8,
+              B2: 9,
+              B3: 10,
+              B4: 11,
+              B5: 12,
+              B6: 13,
+              B7: 14,
+              B8: 15
+            }.transform_keys(&:to_s)
+          expect(hash).to eq(expected)
+        end
+      end
     end
   end
 end
