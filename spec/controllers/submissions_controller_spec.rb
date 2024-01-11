@@ -17,12 +17,23 @@ RSpec.describe SubmissionsController do
 
       session[:user] = @user
 
+      # We need to specify the details of the map while using Map.find_by
+      # to avoid picking up another map with the same description.
+      @asset_shape = AssetShape.default
+      @asset_size = 96
+
       @plate = build :plate, barcode: 'SQPD-123456'
       %w[A1 A2 A3 B1 B2 B3 C1 C2 C3].each do |location|
-        well = build :well_with_sample_and_without_plate, map: Map.find_by(description: location)
+        well =
+          build :well_with_sample_and_without_plate,
+                map: Map.find_by(description: location, asset_shape: @asset_shape, asset_size: @asset_size)
         @plate.wells << well
       end
-      build(:well, map: Map.find_by(description: 'C5'), plate: @plate)
+      build(
+        :well,
+        map: Map.find_by(description: 'C5', asset_shape: @asset_shape, asset_size: @asset_size),
+        plate: @plate
+      )
       @plate.save
       @study = create :study, name: 'A study'
       @project = create :project, name: 'A project'
@@ -142,7 +153,10 @@ RSpec.describe SubmissionsController do
       context 'with a more recent plate' do
         before do
           @new_plate = create :plate, plate_purpose: @plate.purpose
-          @well = create :well, map: Map.find_by(description: 'A1'), plate: @new_plate
+          @well =
+            create :well,
+                   map: Map.find_by(description: 'A1', asset_shape: @asset_shape, asset_size: @asset_size),
+                   plate: @new_plate
           create(:aliquot, sample: Sample.find_by(name: @samples.first), receptacle: @well)
           post(
             :create,
@@ -184,7 +198,7 @@ RSpec.describe SubmissionsController do
         @order_count = Order.count
         @wd_plate = create :working_dilution_plate
         %w[A1 A2 A3 B1 B2 B3 C1 C2 C3].each do |location|
-          well = create :empty_well, map: Map.find_by(description: location)
+          well = create :empty_well, map: Map.find_by(description: location, asset_shape: @asset_shape)
           well.aliquots.create(sample: @plate.wells.located_at(location).first.aliquots.first.sample)
           @wd_plate.wells << well
         end
