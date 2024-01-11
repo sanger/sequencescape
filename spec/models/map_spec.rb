@@ -400,7 +400,7 @@ describe Map, type: :model do
         end
 
         it 'walks horizontally' do
-          # Generate a hash of well descriptions and their column order (zero-based) for testing.
+          # Generate a hash of well descriptions and their row order (zero-based) for testing.
           hash = {}
           map_class.walk_plate_horizontally(plate_size, shape.id) { |map, row_order| hash[map.description] = row_order }
           expected =
