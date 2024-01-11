@@ -27,6 +27,7 @@ module RecordLoader
       creator = config.delete('plate_creator')
       config['barcode_printer_type'] = barcode_printer_type(config.delete('barcode_printer_type'))
       config['name'] = name
+      config['asset_shape'] = AssetShape.find_by(name: config.delete('asset_shape'))
       purpose = PlatePurpose.create!(config)
       build_creator(purpose, creator) if creator
     end
