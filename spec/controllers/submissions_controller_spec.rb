@@ -198,7 +198,9 @@ RSpec.describe SubmissionsController do
         @order_count = Order.count
         @wd_plate = create :working_dilution_plate
         %w[A1 A2 A3 B1 B2 B3 C1 C2 C3].each do |location|
-          well = create :empty_well, map: Map.find_by(description: location, asset_shape: @asset_shape)
+          well =
+            create :empty_well,
+                   map: Map.find_by(description: location, asset_shape: @asset_shape, asset_size: @asset_size)
           well.aliquots.create(sample: @plate.wells.located_at(location).first.aliquots.first.sample)
           @wd_plate.wells << well
         end
