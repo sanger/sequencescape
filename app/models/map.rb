@@ -26,9 +26,9 @@ class Map < ApplicationRecord
     # @note
     #   - 96 represents a 96-well plate, arranged in 12 columns and 8 rows.
     #   - 384 represents a 384-well plate, arranged in 24 columns and 16 rows.
-    #   - 16 represents a 16-well Chromium Chip , which has 8 columns and 2 rows.
-    #     Although a 16-well Chromium Chip does not have 4:3 ratio to be a standard plate,
-    #     the methods here still apply.
+    #   - 16 represents a 16-well Chromium Chip, which has 8 columns and 2 rows.
+    #     Although a 16-well Chromium Chip does not have 3:2 ratio to be a
+    #     standard plate, i.e. it has 4:1 ratio, the methods here still apply.
     # @return [Hash{Integer => Array<Integer>}] the dimensions of the plates
     PLATE_DIMENSIONS = Hash.new { |_h, _k| [] }.merge(96 => [12, 8], 384 => [24, 16], 16 => [8, 2])
 
