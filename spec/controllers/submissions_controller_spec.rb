@@ -18,7 +18,9 @@ RSpec.describe SubmissionsController do
       session[:user] = @user
 
       # We need to specify the details of the map while using Map.find_by
-      # to avoid picking up another map with the same description.
+      # to avoid picking up another map with the same description. As of
+      # the current records, the 'description' and 'asset_size' attributes
+      # can uniquely identify a map; asset_shape is added for completeness.
       @asset_shape = AssetShape.default
       @asset_size = 96
 
