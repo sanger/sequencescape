@@ -75,7 +75,7 @@ describe 'Poly Metadata API', with: :api_v2 do
           'relationships' => {
             'metadatable' => {
               'data' => {
-                'type' => 'requests',
+                'type' => 'Request',
                 'id' => request.id.to_s
               }
             }

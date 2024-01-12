@@ -7,47 +7,53 @@ RSpec.describe PolyMetadatum, type: :model do
 
   # Tests for validations
   describe 'validations' do
-    it 'requires a key' do
-      expect(test_metadatum).to validate_presence_of(:key)
+    let(:request) { create(:request) }
+
+    it 'is valid with valid attributes' do
+      expect(test_metadatum).to be_valid
     end
 
-    it 'requires a value' do
-      expect(test_metadatum).to validate_presence_of(:value)
-    end
-
-    it 'key must be unique' do
-      expect(test_metadatum).to validate_uniqueness_of(:key).scoped_to(:metadatable_id).case_insensitive
-    end
-
-    context 'when creating a new poly_metadatum' do
-      it 'is valid with valid attributes' do
-        expect(test_metadatum).to be_valid
+    context 'when checking the key' do
+      it 'validates for presence' do
+        expect(test_metadatum).to validate_presence_of(:key)
       end
 
-      it 'is invalid without a key' do
+      it 'sets a suitable error message if not present' do
         test_metadatum.key = nil
-        expect(test_metadatum).not_to be_valid
+        test_metadatum.valid?
         expect(test_metadatum.errors.full_messages).to include('Key can\'t be blank')
       end
 
-      it 'is invalid without a value' do
-        test_metadatum.value = nil
+      it 'validates uniqueness of key, scoped to metadatable_type and metadatable_id, case insensitive' do
+        create(:poly_metadatum, key: 'testkey', value: 'testvalue', metadatable: request)
+        test_metadatum.key = 'TESTKEY'
+        test_metadatum.metadatable = request
         expect(test_metadatum).not_to be_valid
-        expect(test_metadatum.errors.full_messages).to include('Value can\'t be blank')
-      end
-
-      it 'is invalid without a metadatable' do
-        test_metadatum.metadatable = nil
-        expect(test_metadatum).not_to be_valid
-        expect(test_metadatum.errors.full_messages).to include('Metadatable must exist')
+        expect(test_metadatum.errors[:key]).to include('has already been taken')
       end
     end
-  end
 
-  # Tests for associations
-  describe 'associations' do
-    it 'belongs to metadatable' do
-      expect(test_metadatum).to belong_to(:metadatable).required
+    context 'when checking the value' do
+      it 'validates for presence' do
+        expect(test_metadatum).to validate_presence_of(:value)
+      end
+
+      it 'sets a suitable error message if not present' do
+        test_metadatum.value = nil
+        test_metadatum.valid?
+        expect(test_metadatum.errors.full_messages).to include('Value can\'t be blank')
+      end
+    end
+
+    context 'when checking the metadatable' do
+      # test for association to the metadatable object
+      it { is_expected.to belong_to(:metadatable).required(true) }
+
+      it 'sets a suitable error message if not present' do
+        test_metadatum.metadatable = nil
+        test_metadatum.valid?
+        expect(test_metadatum.errors.full_messages).to include('Metadatable must exist')
+      end
     end
   end
 
