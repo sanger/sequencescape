@@ -12,17 +12,17 @@
 # sizes with that shape, for example, 96 and 384. Each size determines the
 # number of Map records to be created for that shape and size.
 # The "description_strategy" option defines the nested module in the Map model
-# that is used for handling positions, rows, columns, and wells in plate 
-# geometry. AssetShapeLoader uses PlateMapGeneration to create records in the 
+# that is used for handling positions, rows, columns, and wells in plate
+# geometry. AssetShapeLoader uses PlateMapGeneration to create records in the
 # database. Each "Well" on a "Plate" is associated with a "Map".
-# 
-# When configuring a "Purpose", both "asset_shape" and "size" need to be 
+#
+# When configuring a "Purpose", both "asset_shape" and "size" need to be
 # specified in that configuration in order to use the correct labware. If not
 # specified, they will default to Standard and 96 respectively. For example,
 # LRC HT 5p Chip:
 #   asset_shape: ChromiumChip
 #   size: 16
-# 
+#
 # The information in this file is duplicated in a couple of places in the
 # codebase. When the local development environment is "setup" or "reset", a
 # database "seed" is executed. This results in using the maps hash in
@@ -34,29 +34,29 @@
 Standard:
   horizontal_ratio: 3
   vertical_ratio: 2
-  description_strategy: 'Coordinate'
+  description_strategy: Coordinate
   sizes: [96, 384]
 
 Fluidigm96:
   horizontal_ratio: 3
   vertical_ratio: 8
-  description_strategy: 'Sequential'
+  description_strategy: Sequential
   sizes: [96]
 
 Fluidigm192:
   horizontal_ratio: 3
   vertical_ratio: 4
-  description_strategy: 'Sequential'
+  description_strategy: Sequential
   sizes: [192]
 
 StripTubeColumn:
   horizontal_ratio: 1,
   vertical_ratio: 8,
-  description_strategy: 'Sequential'
+  description_strategy: Sequential
   sizes: [8]
 
 ChromiumChip:
   horizontal_ratio: 4
   vertical_ratio: 1
-  description_strategy: 'Coordinate'
+  description_strategy: Coordinate
   sizes: [16]
