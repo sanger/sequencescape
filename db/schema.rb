@@ -866,8 +866,8 @@ ActiveRecord::Schema.define(version: 2023_12_04_163029) do
   end
 
   create_table "poly_metadata", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
-    t.string "key"
-    t.string "value"
+    t.string "key", null: false
+    t.string "value", null: false
     t.string "metadatable_type", null: false
     t.bigint "metadatable_id", null: false
     t.datetime "created_at", precision: 6, null: false
