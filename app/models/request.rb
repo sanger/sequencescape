@@ -88,7 +88,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_many :related_aliquots, class_name: 'Aliquot', inverse_of: :request
 
   # Can have many key value pairs of metadata
-  has_many :poly_metadata, as: :metadatable
+  has_many :poly_metadata, as: :metadatable, dependent: :destroy
 
   delegate :flowcell, to: :batch, allow_nil: true
   delegate :for_multiplexing?, to: :request_type
