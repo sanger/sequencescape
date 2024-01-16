@@ -20,8 +20,8 @@
 # specified in that configuration in order to use the correct labware. If not
 # specified, they will default to Standard and 96 respectively. For example,
 # LRC HT 5p Chip:
-#   asset_shape: ChromiumChip
-#   size: 16
+#   :asset_shape: ChromiumChip
+#   :size: 16
 #
 # The information in this file is duplicated in a couple of places in the
 # codebase. When the local development environment is "setup" or "reset", a
