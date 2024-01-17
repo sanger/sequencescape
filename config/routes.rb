@@ -28,6 +28,7 @@ Rails.application.routes.draw do
       jsonapi_resources :lot_types
       jsonapi_resources :lots
       jsonapi_resources :orders
+      jsonapi_resources :plate_purposes
       jsonapi_resources :plate_templates
       jsonapi_resources :plates
       jsonapi_resources :pre_capture_pools
