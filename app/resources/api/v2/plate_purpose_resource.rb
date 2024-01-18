@@ -11,7 +11,7 @@ module Api
       # migrate the registration of plate purposes done by the Limber rake
       # task config:generate from API version 1 to API version 2.
 
-      # The following options are sent by Limber for a new plate purpose.
+      # The following attributes are sent by Limber for a new plate purpose.
 
       # @!attribute name
       #  @return [String] the name of the plate purpose
@@ -36,6 +36,12 @@ module Api
       # @!attribute asset_shape
       #  @return [String] the name of the shape of the plates of this purpose
       attribute :asset_shape
+
+      # The following attribute is required by Limber to store purposes.
+
+      # @!attribute [r] uuid
+      #  @return [String] the UUID of the plate purpose
+      attribute :uuid, readonly: true
 
       # Sets the asset shape of the plate purpose by name if given.
       # 'asset_shape' can be given via the Limber purpose configuration and

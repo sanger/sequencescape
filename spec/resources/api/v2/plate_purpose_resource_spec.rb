@@ -31,6 +31,7 @@ RSpec.describe Api::V2::PlatePurposeResource, type: :resource do
       expect(purpose.asset_shape_id).to eq asset_shape.id # Foreign key
       expect(purpose.size).to eq plate_size
       expect(purpose).to be_valid
+      expect(purpose.uuid).to be_present
     end
   end
 
@@ -46,6 +47,7 @@ RSpec.describe Api::V2::PlatePurposeResource, type: :resource do
       expect(purpose.asset_shape_id).to eq AssetShape.default.id # Foreign key
       expect(purpose.size).to eq 96 # Default size
       expect(purpose).to be_valid
+      expect(purpose.uuid).to be_present
     end
   end
 
@@ -59,6 +61,7 @@ RSpec.describe Api::V2::PlatePurposeResource, type: :resource do
       expect(purpose.asset_shape).to eq AssetShape.default # Association
       expect(purpose.asset_shape_id).to eq AssetShape.default.id # Foreign key
       expect(purpose.size).to eq 384
+      expect(purpose.uuid).to be_present
     end
   end
 
