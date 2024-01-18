@@ -2,6 +2,8 @@
 
 module Api
   module V2
+    # Provides a JSON API representation of StateChange
+    # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
     class StateChangeResource < BaseResource
       immutable # comment to make the resource mutable
 

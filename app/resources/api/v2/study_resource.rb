@@ -2,6 +2,8 @@
 
 module Api
   module V2
+    # Provides a JSON API representation of Study
+    # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
     class StudyResource < BaseResource
       immutable # comment to make the resource mutable
 
