@@ -21,6 +21,10 @@ module RecordLoader
     # @option options [Array<Integer>] :sizes The sizes of the plates to generate Maps for
     def create_or_update!(name, options)
       config = { name: name }.merge(options.symbolize_keys)
+      # PlateMapGeneration expects a non-namespaced constant for
+      # description_strategy. It adds "Map::" prefix to refer to a nested
+      # module in the Map class. We remove this prefix in case it is given
+      # in the records file.
       config[:description_strategy] = config[:description_strategy].delete_prefix('Map::')
       PlateMapGeneration.new(**config).save!
     end
