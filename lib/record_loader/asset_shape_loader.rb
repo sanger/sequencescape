@@ -15,8 +15,8 @@ module RecordLoader
     #
     # @param name [String] the name of the AssetShape record
     # @param options [Hash] the options to be used for creating the record
-    # @option options [Integer] :horizontal_ratio The horizontal ratio of the plate
-    # @option options [Integer] :vertical_ratio The vertical ratio of the plate
+    # @option options [Integer] :horizontal_ratio the numerator in the simplest form of the plate width/height ratio
+    # @option options [Integer] :vertical_ratio the denominator in the simplest form of the plate width/height ratio
     # @option options [String] :description_strategy The strategy for describing the plate
     # @option options [Array<Integer>] :sizes The sizes of the plates to generate Maps for
     def create_or_update!(name, options)

@@ -1,18 +1,23 @@
-# This file contains the AssetShape and associated Map records to be created
-# in deployment environments by RecordLoader. The loading is triggered by
-# the "post_deploy" task. The records are checked against the database by
-# their names. If the records already exist, they are not created.
-# AssetShape records are created in the "asset_shapes" table, and Map records
-# are created in the "maps" table. Each section in this file starts with the
-# name of the AssetShape record. For example, a "Standard" 96-well plate has
-# a horizontal ratio of 3 and a vertical ratio of 2 because it has 12 columns
-# (1 to 12) and 8 rows (A to H). The "sizes" option defines different plate
-# sizes with that shape, for example, 96 and 384. Each size determines the
-# number of Map records to be created for that shape and size.
-# The "description_strategy" option defines the nested module in the Map model
-# that is used for handling positions, rows, columns, and wells in plate
-# geometry. AssetShapeLoader uses PlateMapGeneration to create records in the
-# database. Each "Well" on a "Plate" is associated with a "Map".
+# This file contains the AssetShape and associated Map records to be created in
+# deployment environments by RecordLoader. The loading is triggered by the
+# "post_deploy" task. The records are checked against the database by their
+# names. If the records already exist, they are not created. AssetShape records
+# are created in the "asset_shapes" table, and Map records are created in the
+# "maps" table. Each section in this file starts with the name of the AssetShape
+# record. The "horizontal_ratio" and "vertical_ratio" options are used to define
+# the plate's shape. These options represent the simplest form of the ratio
+# between the number of columns and rows (i.e. width / height). Specifically,
+# "horizontal_ratio" corresponds to the number of columns (numerator), and
+# "vertical_ratio" corresponds to the number of rows (denominator). For
+# instance, a "Standard" 96-well plate has a horizontal ratio of 3 and a
+# vertical ratio of 2 because it has 12 columns (1 to 12) and 8 rows (A to H).
+# The "sizes" option defines different plate sizes with that shape, for example,
+# 96 and 384. Each size determines the number of Map records to be created for
+# that shape and size. The "description_strategy" option defines the nested
+# module in the Map model that is used for handling positions, rows, columns,
+# and wells in plate geometry. AssetShapeLoader uses PlateMapGeneration to
+# create records in the database. Each "Well" on a "Plate" is associated with a
+# "Map".
 #
 # When configuring a "Purpose", both "asset_shape" and "size" need to be
 # specified in that configuration in order to use the correct labware. If not
