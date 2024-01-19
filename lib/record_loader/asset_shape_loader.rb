@@ -4,6 +4,7 @@
 # across different environments
 # @see https://rubydoc.info/github/sanger/record_loader/
 module RecordLoader
+  # Creates the specified asset shapes if they are not present
   class AssetShapeLoader < ApplicationRecordLoader
     config_folder 'asset_shapes'
 
