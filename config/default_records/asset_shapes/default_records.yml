@@ -28,7 +28,7 @@
 # database "seed" is executed. This results in using the maps hash in
 # PlateMapGeneration. The same hash is used when the RSpec before suite hook
 # calls PlateMapGeneration to create records in the local test environment.
-# Plate sizes and number or rows and columns are also defined separately in
+# Plate sizes and number of rows and columns are also defined separately in
 # a hash in the Map model, which is used by the nested Coordinate module.
 ---
 Standard:
