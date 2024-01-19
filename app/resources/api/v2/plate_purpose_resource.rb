@@ -2,7 +2,7 @@
 
 module Api
   module V2
-    # Provides a JSON API representation of Plate
+    # Provides a JSON API representation of PlatePurpose
     # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
     class PlatePurposeResource < BaseResource
       model_name 'PlatePurpose'
