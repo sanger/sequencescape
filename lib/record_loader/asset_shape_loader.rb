@@ -15,7 +15,6 @@ module RecordLoader
     #
     # @param name [String] the name of the AssetShape record
     # @param options [Hash] the options to be used for creating the record
-    # @param options [String] :name If provided, this will override the 'name' parameter
     # @option options [Integer] :horizontal_ratio The horizontal ratio of the plate
     # @option options [Integer] :vertical_ratio The vertical ratio of the plate
     # @option options [String] :description_strategy The strategy for describing the plate

@@ -4,9 +4,7 @@
 # their names. If the records already exist, they are not created.
 # AssetShape records are created in the "asset_shapes" table, and Map records
 # are created in the "maps" table. Each section in this file starts with the
-# name of the AssetShape record. If the name is defined again in the options,
-# it takes priority. The "horizontal_ratio" and "vertical_ratio" options
-# define the shape of the plates. For example, a "Standard" 96-well plate has
+# name of the AssetShape record. For example, a "Standard" 96-well plate has
 # a horizontal ratio of 3 and a vertical ratio of 2 because it has 12 columns
 # (1 to 12) and 8 rows (A to H). The "sizes" option defines different plate
 # sizes with that shape, for example, 96 and 384. Each size determines the
