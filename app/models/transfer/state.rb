@@ -30,6 +30,22 @@ module Transfer::State
     ALL_STATES.detect { |s| unique_states.include?(s) } || default_state || 'unknown'
   end
 
+  # This transfer state is specific to receptacles
+  # Added so can specifically check the state of wells on certain types of input plates
+  # to allow well failing.
+  module ReceptacleState
+    # We have to include this specifically because it does not implicitly include the
+    # methods from the Transfer::State module.
+    include Transfer::State
+
+    def state
+      # check for flag set to true on specific input plate purposes that allow failable wells
+      return labware.purpose.state_for_receptacle(self) if labware&.purpose&.has_failable_input_receptacles
+
+      state_from(transfer_requests_as_target)
+    end
+  end
+
   # Plate specific behaviour
   module PlateState
     def self.included(base) # rubocop:todo Metrics/MethodLength
