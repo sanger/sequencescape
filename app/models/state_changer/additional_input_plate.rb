@@ -39,7 +39,6 @@ module StateChanger
     def transfer_requests
       # We don't want to update transfer requests if there are is no parent
       # i.e. this labware is an additional start point so might not have any
-      puts "DEBUG: labware.ancestors.count = #{labware.ancestors.count}"
       labware.ancestors.count.zero? ? [] : receptacles.flat_map(&:transfer_requests_as_target)
     end
   end
