@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_05_12_102847) do
+ActiveRecord::Schema.define(version: 2023_12_04_163029) do
 
   create_table "aliquot_indices", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "aliquot_id", null: false
@@ -863,6 +863,16 @@ ActiveRecord::Schema.define(version: 2023_05_12_102847) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["uploaded_file_name"], name: "index_plate_volumes_on_uploaded_file_name"
+  end
+
+  create_table "poly_metadata", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "value", null: false
+    t.string "metadatable_type", null: false
+    t.bigint "metadatable_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["metadatable_type", "metadatable_id"], name: "index_poly_metadata_on_metadatable_type_and_metadatable_id"
   end
 
   create_table "pooling_methods", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
