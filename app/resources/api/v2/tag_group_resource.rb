@@ -14,7 +14,11 @@ module Api
       default_includes :uuid_object, :tags
 
       # Associations:
-      has_one :tag_group_adapter_type, foreign_key: :adapter_type_id, readonly: true, class_name: 'TagGroupAdapterType'
+      has_one :tag_group_adapter_type,
+              foreign_key: :adapter_type_id,
+              readonly: true,
+              class_name: 'TagGroupAdapterType',
+              relation_name: :adapter_type
 
       # Attributes
       attribute :uuid, readonly: true
