@@ -39,6 +39,14 @@ module Api
         @default_includes || [].freeze
       end
 
+      def self.records_for_populate(options = {})
+        if @default_includes.present?
+          super(options).preload(*inclusions)
+        else
+          super
+        end
+      end
+
       # Extends the default behaviour to add our default inclusions if provided
       #def self.apply_includes(records, options = {})
       #  if @default_includes.present?
