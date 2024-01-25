@@ -46,41 +46,6 @@ module Api
           super
         end
       end
-
-      # The majority of this is lifted from JSONAPI::Resource
-      # We've had to modify the when Symbol chunk to handle nested includes
-      # We disable the cops for the shared section to avoid accidental drift
-      # due to auto-correct.
-      # rubocop:disable all
-      # def self.resolve_relationship_names_to_relations(resource_klass, model_includes, options = {})
-      #   case model_includes
-      #   when Array
-      #     return model_includes.map { |value| resolve_relationship_names_to_relations(resource_klass, value, options) }
-      #   when Hash
-      #     model_includes.keys.each do |key|
-      #       relationship = resource_klass._relationships[key]
-      #       value = model_includes[key]
-      #       model_includes.delete(key)
-
-      #       # MODIFICATION BEGINS
-      #       included_relationships =
-      #         resolve_relationship_names_to_relations(relationship.resource_klass, value, options)
-      #       model_includes[relationship.relation_name(options)] =
-      #         relationship.resource_klass.inclusions + included_relationships
-      #       # MODIFICATION ENDS
-      #     end
-      #     return model_includes
-      #   when Symbol
-      #     relationship = resource_klass._relationships[model_includes]
-
-      #     # MODIFICATION BEGINS
-      #     # return relationship.relation_name(options)
-      #     inclusions = relationship.resource_klass.inclusions
-      #     { relationship.relation_name(options) => inclusions }
-      #     # MODIFICATION ENDS
-      #   end
-      # end
-      # # rubocop:enable all
     end
   end
 end
