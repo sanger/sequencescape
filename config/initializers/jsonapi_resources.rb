@@ -14,3 +14,8 @@ end
 class JSONAPI::ResourceController
   include Api::V2::Concerns::ApiKeyAuthenticatable
 end
+
+# Monkey patch the DefaultIncludesParser concern into JSONAPI::RequestParser .
+class JSONAPI::RequestParser
+  include Api::V2::Concerns::DefaultIncludesParser
+end
