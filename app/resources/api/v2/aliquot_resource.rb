@@ -13,7 +13,7 @@ module Api
       has_one :study
       has_one :project
       has_one :sample
-      has_one :request
+      has_one :request, always_include_optional_linkage_data: true
       has_one :receptacle
       has_one :tag
       has_one :tag2, class_name: 'Tag'
