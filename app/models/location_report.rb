@@ -89,7 +89,7 @@ class LocationReport < ApplicationRecord
 
     ActiveRecord::Base.transaction do
       Tempfile.open(filename) do |tempfile|
-        generate_report_rows { |fields| tempfile << CSV.generate_line(fields, csv_options) }
+        generate_report_rows { |fields| tempfile << CSV.generate_line(fields, **csv_options) }
         tempfile.rewind
         update!(report: tempfile)
       end
