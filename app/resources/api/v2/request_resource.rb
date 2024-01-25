@@ -18,9 +18,9 @@ module Api
                        :submission
 
       # Associations:
-      has_one :submission, always_include_linkage_data: true
-      has_one :order, always_include_linkage_data: true
-      has_one :request_type, always_include_linkage_data: true
+      has_one :submission, always_include_optional_linkage_data: true
+      has_one :order, always_include_optional_linkage_data: true
+      has_one :request_type, always_include_optional_linkage_data: true
       has_one :primer_panel
       has_one :pre_capture_pool
       has_many :poly_metadata, as: :metadatable, class_name: 'PolyMetadatum'
