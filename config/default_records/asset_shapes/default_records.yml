@@ -1,0 +1,65 @@
+# This file contains the AssetShape and associated Map records to be created in
+# deployment environments by RecordLoader. The loading is triggered by the
+# "post_deploy" task. The records are checked against the database by their
+# names. If the records already exist, they are not created. AssetShape records
+# are created in the "asset_shapes" table, and Map records are created in the
+# "maps" table. Each section in this file starts with the name of the AssetShape
+# record. The "horizontal_ratio" and "vertical_ratio" options are used to define
+# the plate's shape. These options represent the simplest form of the ratio
+# between the number of columns and rows (i.e. width / height). Specifically,
+# "horizontal_ratio" corresponds to the number of columns (numerator), and
+# "vertical_ratio" corresponds to the number of rows (denominator). For
+# instance, a "Standard" 96-well plate has a horizontal ratio of 3 and a
+# vertical ratio of 2 because it has 12 columns (1 to 12) and 8 rows (A to H).
+# The "sizes" option defines different plate sizes with that shape, for example,
+# 96 and 384. Each size determines the number of Map records to be created for
+# that shape and size. The "description_strategy" option defines the nested
+# module in the Map model that is used for handling positions, rows, columns,
+# and wells in plate geometry. AssetShapeLoader uses PlateMapGeneration to
+# create records in the database. Each "Well" on a "Plate" is associated with a
+# "Map".
+#
+# When configuring a "Purpose", both "asset_shape" and "size" need to be
+# specified in that configuration in order to use the correct labware. If not
+# specified, they will default to Standard and 96 respectively. For example,
+# LRC HT 5p Chip:
+#   :asset_shape: ChromiumChip
+#   :size: 16
+#
+# The information in this file is duplicated in a couple of places in the
+# codebase. When the local development environment is "setup" or "reset", a
+# database "seed" is executed. This results in using the maps hash in
+# PlateMapGeneration. The same hash is used when the RSpec before suite hook
+# calls PlateMapGeneration to create records in the local test environment.
+# Plate sizes and number of rows and columns are also defined separately in
+# a hash in the Map model, which is used by the nested Coordinate module.
+---
+Standard:
+  horizontal_ratio: 3
+  vertical_ratio: 2
+  description_strategy: Coordinate
+  sizes: [96, 384]
+
+Fluidigm96:
+  horizontal_ratio: 3
+  vertical_ratio: 8
+  description_strategy: Sequential
+  sizes: [96]
+
+Fluidigm192:
+  horizontal_ratio: 3
+  vertical_ratio: 4
+  description_strategy: Sequential
+  sizes: [192]
+
+StripTubeColumn:
+  horizontal_ratio: 1,
+  vertical_ratio: 8,
+  description_strategy: Sequential
+  sizes: [8]
+
+ChromiumChip:
+  horizontal_ratio: 4
+  vertical_ratio: 1
+  description_strategy: Coordinate
+  sizes: [16]
