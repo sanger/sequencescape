@@ -56,27 +56,41 @@ module Api
       end
 
       def self.format_inclusions
-        formatted = []
-        Array(inclusions).each do |inclusion|
-          formatted << format_single_inclusion(inclusion)
-        end
+        formatted = Array(inclusions).filter_map { |inclusion| format_single_inclusion(inclusion) }
         formatted.join(',')
       end
 
       def self.format_single_inclusion(inclusion, parent = nil)
         case inclusion
         when Symbol
-          [parent, inclusion].compact.join('.')
+          format_symbol_inclusion(inclusion, parent)
         when Hash
-          inclusion.map do |key, value|
-            new_parent = format_single_inclusion(key, parent)
-            format_single_inclusion(value, new_parent)
-          end.join(',')
+          format_hash_inclusion(inclusion, parent)
         when Array
-          inclusion.map do |value|
-            format_single_inclusion(value, parent)
-          end.join(',')
+          format_array_inclusion(inclusion, parent)
         end
+      end
+
+      def self.format_symbol_inclusion(inclusion, parent)
+        resource_klass_for(inclusion.to_s)  # Test that the resource exists
+        [parent, inclusion].compact.join('.') unless _relationship(inclusion).nil?
+      rescue StandardError
+        nil
+      end
+
+      def self.format_hash_inclusion(inclusion, parent)
+        result =
+          inclusion.filter_map do |key, value|
+            new_parent = format_single_inclusion(key, parent)
+            next if new_parent.nil?
+            format_single_inclusion(value, new_parent)
+          end
+        result.join(',') unless result.empty?
+      end
+
+      def self.format_array_inclusion(inclusion, parent)
+        result = inclusion.filter_map { |value| format_single_inclusion(value, parent) }
+        result.join(',') unless result.empty?
       end
     end
   end
