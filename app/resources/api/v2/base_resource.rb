@@ -39,6 +39,8 @@ module Api
         @default_includes || [].freeze
       end
 
+      # TODO: Explain preloading and why we used it here.
+
       def self.records_for_populate(options = {})
         if @default_includes.present?
           super(options).preload(*inclusions)
@@ -46,6 +48,38 @@ module Api
           super
         end
       end
+
+      # TODO: Document these methods and explain how they are used by the Concern.
+
+      def self.format_default_includes
+        @format_default_includes ||= format_inclusions
+      end
+
+      def self.format_inclusions
+        formatted = []
+        Array(inclusions).each do |inclusion|
+          formatted << format_single_inclusion(inclusion)
+        end
+        formatted.join(',')
+      end
+
+      def self.format_single_inclusion(inclusion, parent = nil)
+        case inclusion
+        when Symbol
+          [parent, inclusion].compact.join('.')
+        when Hash
+          inclusion.map do |key, value|
+            new_parent = format_single_inclusion(key, parent)
+            format_single_inclusion(value, new_parent)
+          end.join(',')
+        when Array
+          inclusion.map do |value|
+            format_single_inclusion(value, parent)
+          end.join(',')
+        end
+      end
     end
   end
 end
+
+# {k1: {k2: { k3: 'v3' }}} # => "k1.k2.k3.v3"
