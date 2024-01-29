@@ -20,3 +20,7 @@ end
 class JSONAPI::RequestParser
   prepend Api::V2::Concerns::DefaultIncludesParser
 end
+
+class JSONAPI::ResourceSerializer
+  prepend Api::V2::Concerns::IncludeOptionalLinkage
+end
