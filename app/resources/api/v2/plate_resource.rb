@@ -15,7 +15,7 @@ module Api
 
       # immutable # comment to make the resource mutable
 
-      default_includes :uuid_object, :barcodes, :plate_purpose, :transfer_requests
+      default_includes :uuid_object, :barcodes, :purpose, :transfer_requests
 
       # Associations:
       has_many :wells
