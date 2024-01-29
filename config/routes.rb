@@ -30,6 +30,7 @@ Rails.application.routes.draw do
       jsonapi_resources :orders
       jsonapi_resources :plate_templates
       jsonapi_resources :plates
+      jsonapi_resources :poly_metadata
       jsonapi_resources :pre_capture_pools
       jsonapi_resources :primer_panels
       jsonapi_resources :projects
@@ -284,6 +285,7 @@ Rails.application.routes.draw do
 
   resources :requests do
     resources :comments, controller: 'requests/comments'
+    resources :poly_metadata, controller: 'requests/poly_metadata'
 
     member do
       get :history
