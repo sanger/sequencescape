@@ -18,7 +18,19 @@ class Map < ApplicationRecord
     # TODO: These methods are only valid for standard plates. Moved them here to make that more explicit
     # (even if its not strictly appropriate) They could do with refactoring/removing.
 
-    PLATE_DIMENSIONS = Hash.new { |_h, _k| [] }.merge(96 => [12, 8], 384 => [24, 16])
+    # A hash representing the dimensions of different types of plates.
+    # The keys are the total number of wells in the plate, and the values are
+    # arrays, where the first element is the number of columns and the second
+    # element is the number of rows.
+    #
+    # @note
+    #   - 96 represents a 96-well plate, arranged in 12 columns and 8 rows.
+    #   - 384 represents a 384-well plate, arranged in 24 columns and 16 rows.
+    #   - 16 represents a 16-well Chromium Chip, which has 8 columns and 2 rows.
+    #     Although a 16-well Chromium Chip does not have 3:2 ratio to be a
+    #     standard plate, i.e. it has 4:1 ratio, the methods here still apply.
+    # @return [Hash{Integer => Array<Integer>}] the dimensions of the plates
+    PLATE_DIMENSIONS = Hash.new { |_h, _k| [] }.merge(96 => [12, 8], 384 => [24, 16], 16 => [8, 2])
 
     # Seems to expect row to be zero-indexed but column to be 1 indexed
     def self.location_from_row_and_column(row, column, _ = nil, __ = nil)
@@ -269,5 +281,6 @@ class Map < ApplicationRecord
         .order(:row_order)
         .each { |position| yield(position, position.row_order) }
     end
+    alias walk_plate_horizontally walk_plate_in_row_major_order
   end
 end
