@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 group :default do
   gem 'bootsnap'
-  gem 'rails', '~> 6.0.0'
+  gem 'rails', '~> 6.1.7'
 
   # State machine
   gem 'aasm'
