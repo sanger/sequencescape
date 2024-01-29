@@ -2,12 +2,13 @@ module Api
     module V2
       module Concerns
         module DefaultIncludesParser
-          extend ActiveSupport::Concern
-          included { prepend_before_action :handle_default_includes }
-
-          def handle_default_includes
-            # method body
-            # p params
+          def parse_include_directives(resource_klass, raw_include)
+            if resource_klass.respond_to?(:format_default_includes)
+              p 'X' * 80
+              p resource_klass.format_default_includes
+              p 'Y' * 80
+            end
+            super
           end
         end
       end
