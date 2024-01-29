@@ -65,6 +65,11 @@ FactoryBot.define do
       size { 192 }
       asset_shape factory: %i[fluidigm_192_shape]
     end
+
+    factory :chromium_chip_purpose do
+      size { 16 }
+      asset_shape { AssetShape.find_by(name: 'ChromiumChip') }
+    end
   end
 
   factory :dilution_plate_purpose do
