@@ -72,7 +72,7 @@ module Api
       end
 
       def self.format_symbol_inclusion(inclusion, parent)
-        resource_klass_for(inclusion.to_s)  # Test that the resource exists
+        resource_klass_for(inclusion.to_s) # Test that the resource exists
         [parent, inclusion].compact.join('.') unless _relationship(inclusion).nil?
       rescue StandardError
         nil
