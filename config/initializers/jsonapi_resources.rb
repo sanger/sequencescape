@@ -16,6 +16,7 @@ class JSONAPI::ResourceController
 end
 
 # Monkey patch the DefaultIncludesParser concern into JSONAPI::RequestParser .
+# TODO: Explain what we are doing here and why using 'prepend' is important.
 class JSONAPI::RequestParser
-  include Api::V2::Concerns::DefaultIncludesParser
+  prepend Api::V2::Concerns::DefaultIncludesParser
 end
