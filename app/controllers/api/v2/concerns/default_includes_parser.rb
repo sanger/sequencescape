@@ -4,11 +4,10 @@ module Api
         module DefaultIncludesParser
           def parse_include_directives(resource_klass, raw_include)
             if resource_klass.respond_to?(:format_default_includes)
-              p 'X' * 80
-              p resource_klass.format_default_includes
-              p 'Y' * 80
+              default_includes = resource_klass.format_default_includes
+              raw_include = [raw_include.presence, default_includes.presence].compact.join(',')
             end
-            super
+            super(resource_klass, raw_include)
           end
         end
       end
