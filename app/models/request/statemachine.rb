@@ -62,7 +62,8 @@ module Request::Statemachine
       end
 
       event :fail do
-        transitions to: :failed, from: [:started]
+        # Added pending for use in Bioscan pipeline
+        transitions to: :failed, from: %i[pending started]
       end
 
       event :retrospective_pass do
