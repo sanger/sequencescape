@@ -105,6 +105,13 @@ module Request::Statemachine
         transitions to: :cancelled, from: %i[pending hold]
       end
 
+      # Added specifically to allow library requests to be failed on
+      # LBSN-96 Lysate plates in the Bioscan pipeline whilst still in
+      # the pending state.
+      event :fail_before_started do
+        transitions to: :failed, from: %i[pending]
+      end
+
       event :submission_cancelled, manual_only?: true do
         transitions to: :cancelled, from: %i[pending cancelled]
       end
