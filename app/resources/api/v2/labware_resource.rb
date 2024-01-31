@@ -9,7 +9,7 @@ module Api
       # is automatically available on plate and tube.
       include Api::V2::SharedBehaviour::Labware
 
-      default_includes :uuid_object, :barcodes
+      default_includes :uuid_object, :barcodes, :purpose
 
       # Custom methods
       # These shouldn't be used for business logic, and a more about

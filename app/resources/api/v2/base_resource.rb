@@ -49,8 +49,6 @@ module Api
         end
       end
 
-      # TODO: Document these methods and explain how they are used by the Concern.
-
       def self.format_default_includes
         @format_default_includes ||= format_inclusions
       end

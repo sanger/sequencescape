@@ -15,12 +15,15 @@ class JSONAPI::ResourceController
   include Api::V2::Concerns::ApiKeyAuthenticatable
 end
 
-# Monkey patch the DefaultIncludesParser concern into JSONAPI::RequestParser .
-# TODO: Explain what we are doing here and why using 'prepend' is important.
+
 class JSONAPI::RequestParser
   prepend Api::V2::Concerns::DefaultIncludesParser
 end
 
 class JSONAPI::ResourceSerializer
   prepend Api::V2::Concerns::IncludeOptionalLinkage
+end
+
+class JSONAPI::RequestParser
+  prepend Api::V2::Concerns::NestedIncludeExpander
 end
