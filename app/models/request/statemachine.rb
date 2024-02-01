@@ -62,7 +62,8 @@ module Request::Statemachine
       end
 
       event :fail do
-        transitions to: :failed, from: [:started]
+        # Added pending for use in Bioscan pipeline
+        transitions to: :failed, from: %i[pending started]
       end
 
       event :retrospective_pass do
@@ -103,6 +104,13 @@ module Request::Statemachine
 
       event :cancel_before_started do
         transitions to: :cancelled, from: %i[pending hold]
+      end
+
+      # Added specifically to allow library requests to be failed on
+      # LBSN-96 Lysate plates in the Bioscan pipeline whilst still in
+      # the pending state.
+      event :fail_before_started do
+        transitions to: :failed, from: %i[pending]
       end
 
       event :submission_cancelled, manual_only?: true do
