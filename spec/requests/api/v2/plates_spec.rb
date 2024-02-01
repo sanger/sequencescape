@@ -128,6 +128,7 @@ describe 'Plates API', tags: :lighthouse, with: :api_v2 do
       before { resource_model.parents << create(:plate) << create(:multiplexed_library_tube) }
 
       it 'handles polymorphic relationships properly' do
+
         api_get "#{base_endpoint}/#{resource_model.id}/parents"
         expect(response).to have_http_status(:success), response.body
         expect(json['data'].length).to eq(2)

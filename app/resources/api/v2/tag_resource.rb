@@ -12,7 +12,7 @@ module Api
       # model_name / model_hint if required
 
       # Associations:
-      has_one :tag_group
+      has_one :tag_group, class_name: 'TagGroup'
 
       # Attributes
       attribute :oligo, readonly: true

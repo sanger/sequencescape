@@ -13,7 +13,7 @@ module Api
       has_one :sample_manifest
 
       has_many :studies
-      has_many :component_samples
+      has_many :component_samples, class_name: 'Sample'
 
       attribute :name
       attribute :sanger_sample_id

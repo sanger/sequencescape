@@ -17,6 +17,7 @@ RSpec.describe Api::V2::QcableResource, type: :resource do
     expect(subject).not_to have_updatable_field(:state)
     expect(subject).to filter(:barcode)
     expect(subject).to have_one(:lot).with_class_name('Lot')
+    binding.pry
     expect(subject).to have_one(:asset).with_class_name('Labware')
   end
 

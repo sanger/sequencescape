@@ -15,7 +15,7 @@ module Api
 
       # Associations:
       has_one :tag_group
-      has_one :tag2_group
+      has_one :tag2_group, class_name: 'TagGroup'
 
       # Attributes
       attribute :uuid, readonly: true

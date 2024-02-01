@@ -39,49 +39,66 @@ module Api
         @default_includes || [].freeze
       end
 
-      # Extends the default behaviour to add our default inclusions if provided
-      def self.apply_includes(records, options = {})
+      # # Extends the default behaviour to add our default inclusions if provided
+      # def self.apply_includes(records, options = {})
+      #   if @default_includes.present?
+      #     super(records.preload(*inclusions), options)
+      #   else
+      #     super
+      #   end
+      # end
+
+      def self.records_for_populate(options = {})
         if @default_includes.present?
-          super(records.preload(*inclusions), options)
+          super(options).preload(*inclusions)
         else
           super
         end
       end
 
-      # The majority of this is lifted from JSONAPI::Resource
-      # We've had to modify the when Symbol chunk to handle nested includes
-      # We disable the cops for the shared section to avoid accidental drift
-      # due to auto-correct.
-      # rubocop:disable all
-      def self.resolve_relationship_names_to_relations(resource_klass, model_includes, options = {})
-        case model_includes
-        when Array
-          return model_includes.map { |value| resolve_relationship_names_to_relations(resource_klass, value, options) }
-        when Hash
-          model_includes.keys.each do |key|
-            relationship = resource_klass._relationships[key]
-            value = model_includes[key]
-            model_includes.delete(key)
+      # # The majority of this is lifted from JSONAPI::Resource
+      # # We've had to modify the when Symbol chunk to handle nested includes
+      # # We disable the cops for the shared section to avoid accidental drift
+      # # due to auto-correct.
+      # # rubocop:disable all
+      # def self.resolve_relationship_names_to_relations(resource_klass, model_includes, options = {})
+      #   case model_includes
+      #   when Array
+      #     return model_includes.map { |value| resolve_relationship_names_to_relations(resource_klass, value, options) }
+      #   when Hash
+      #     model_includes.keys.each do |key|
+      #       relationship = resource_klass._relationships[key]
+      #       value = model_includes[key]
+      #       model_includes.delete(key)
 
-            # MODIFICATION BEGINS
-            included_relationships =
-              resolve_relationship_names_to_relations(relationship.resource_klass, value, options)
-            model_includes[relationship.relation_name(options)] =
-              relationship.resource_klass.inclusions + included_relationships
-            # MODIFICATION ENDS
-          end
-          return model_includes
-        when Symbol
-          relationship = resource_klass._relationships[model_includes]
+      #       # MODIFICATION BEGINS
+      #       included_relationships =
+      #         resolve_relationship_names_to_relations(relationship.resource_klass, value, options)
+      #       model_includes[relationship.relation_name(options)] =
+      #         relationship.resource_klass.inclusions + included_relationships
+      #       # MODIFICATION ENDS
+      #     end
+      #     return model_includes
+      #   when Symbol
+      #     relationship = resource_klass._relationships[model_includes]
 
-          # MODIFICATION BEGINS
-          # return relationship.relation_name(options)
-          inclusions = relationship.resource_klass.inclusions
-          { relationship.relation_name(options) => inclusions }
-          # MODIFICATION ENDS
-        end
+      #     # MODIFICATION BEGINS
+      #     # return relationship.relation_name(options)
+      #     inclusions = relationship.resource_klass.inclusions
+      #     { relationship.relation_name(options) => inclusions }
+      #     # MODIFICATION ENDS
+      #   end
+      # end
+      # # rubocop:enable all
+
+      def _replace_polymorphic_to_one_link(relationship_type, key_value, key_type, _options)
+        relationship = self.class._relationships[relationship_type.to_sym]
+
+        send("#{relationship.foreign_key}=", {type: key_type.to_s.capitalize, id: key_value})
+        @save_needed = true
+
+        :completed
       end
-      # rubocop:enable all
     end
   end
 end

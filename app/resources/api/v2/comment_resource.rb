@@ -16,8 +16,8 @@ module Api
       has_one :commentable, polymorphic: true
 
       # Attributes
-      attribute :title, readonly: true
-      attribute :description, readonly: true
+      attribute :title #, readonly: true
+      attribute :description #, readonly: true
       attribute :created_at, readonly: true
       attribute :updated_at, readonly: true
 

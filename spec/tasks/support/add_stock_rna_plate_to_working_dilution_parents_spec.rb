@@ -36,6 +36,7 @@ describe 'support:add_stock_rna_plate_to_working_dilution_parents', type: :task 
 
   context 'when the source purpose is already in parent purposes' do
     before do
+      task_reenable
       source_purpose
       plate_creator.parent_plate_purposes << source_purpose
     end
