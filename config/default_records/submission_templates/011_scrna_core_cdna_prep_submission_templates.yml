@@ -1,0 +1,16 @@
+---
+# TODO: Check: submission_class_name is LinearSubmission because it represents
+# a chain of request types in linear order, without branching.
+# TODO: Check: request_type_keys is an array of request types. These match the
+# pipeline group scRNA Core cDNA Prep in Limber.
+# TODO: Check: project_name (cost code)
+# TODO: Check: product_line_name
+# TODO: Check: product_catalogue_name
+# TODO: Check: Testing: What else other than Integration Suite?
+Limber - scRNA Core Donor Pooling and cDNA Prep:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_scrna_core_donor_pooling", "limber_scrna_core_cDNA_prep"]
+    project_name: "S0842"
+    product_line_name: Sample Preparation
+    product_catalogue_name: scRNA Core cDNA Prep
