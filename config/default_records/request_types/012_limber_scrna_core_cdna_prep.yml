@@ -1,0 +1,29 @@
+---
+# TODO: Check: asset_type, is it for LRC Bank Seq/Spare
+# TODO: Check: order, is it the sequence of requests in the submission
+# TODO: Check: request_class_name
+# TODO: Check: for_multiplexing
+# TODO: Check: product_line_name
+# TODO: Check: acceptable_purposes
+limber_scrna_core_donor_pooling:
+  name: scRNA Core Donor Pooling
+  asset_type: SampleTube
+  order: 1
+  request_class_name: CustomerRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: Sample Preparation
+  acceptable_purposes:
+    - LRC Bank Seq
+    - LRC Bank Spare
+  
+limber_scrna_core_cDNA_prep:
+  name: scRNA Core cDNA Prep
+  asset_type: SampleTube
+  order: 2
+  request_class_name: CustomerRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: Sample Preparation
+  acceptable_purposes:
+    - LRC PBMC Pools
