@@ -7,10 +7,9 @@
 # TODO: Check: product_line_name
 # TODO: Check: product_catalogue_name
 # TODO: Check: Testing: What else other than Integration Suite?
-Limber - scRNA Core Donor Pooling and cDNA Prep:
+Limber-Htp - scRNA Core Donor Pooling and cDNA Prep:
   submission_class_name: "LinearSubmission"
   related_records:
-    request_type_keys: ["limber_scrna_core_donor_pooling", "limber_scrna_core_cDNA_prep"]
-    project_name: "S0842"
-    product_line_name: Sample Preparation
+    request_type_keys: ["limber_scrna_core_donor_pooling", "limber_scrna_core_cdna_prep"]
+    product_line_name: scRNA Core
     product_catalogue_name: scRNA Core cDNA Prep
