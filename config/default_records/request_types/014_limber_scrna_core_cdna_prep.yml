@@ -12,10 +12,11 @@ limber_scrna_core_donor_pooling:
   request_class_name: CustomerRequest
   for_multiplexing: false
   billable: true
-  product_line_name: Sample Preparation
+  product_line_name: scRNA Core
   acceptable_purposes:
     - LRC Bank Seq
     - LRC Bank Spare
+  # TODO: There will be a third purpose here LRC Bank Input in phase 3.
 
 limber_scrna_core_cDNA_prep:
   name: scRNA Core cDNA Prep
@@ -24,6 +25,6 @@ limber_scrna_core_cDNA_prep:
   request_class_name: CustomerRequest
   for_multiplexing: false
   billable: true
-  product_line_name: Sample Preparation
+  product_line_name: scRNA Core
   acceptable_purposes:
     - LRC PBMC Pools
