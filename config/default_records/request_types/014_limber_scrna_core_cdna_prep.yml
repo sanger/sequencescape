@@ -18,7 +18,7 @@ limber_scrna_core_donor_pooling:
     - LRC Bank Spare
   # TODO: There will be a third purpose here LRC Bank Input in phase 3.
 
-limber_scrna_core_cDNA_prep:
+limber_scrna_core_cdna_prep:
   name: scRNA Core cDNA Prep
   asset_type: SampleTube
   order: 2
