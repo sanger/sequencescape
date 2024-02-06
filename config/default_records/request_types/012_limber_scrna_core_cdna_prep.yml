@@ -16,7 +16,7 @@ limber_scrna_core_donor_pooling:
   acceptable_purposes:
     - LRC Bank Seq
     - LRC Bank Spare
-  
+
 limber_scrna_core_cDNA_prep:
   name: scRNA Core cDNA Prep
   asset_type: SampleTube
