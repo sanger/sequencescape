@@ -1,0 +1,6 @@
+# We have added these purposes here to create submission and request type
+# records for for scRNA Core cDNA Prep stage.
+---
+LRC PBMC Pools:
+  stock_plate: false
+  cherrypickable_target: false
