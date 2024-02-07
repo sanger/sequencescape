@@ -29,3 +29,5 @@ limber_scrna_core_cdna_prep:
   acceptable_purposes:
     - LRC PBMC Pools
     # - LRC PBMC Pools Input
+  library_types:
+    - Chromium single cell 5 prime HT v2
