@@ -31,3 +31,6 @@ limber_scrna_core_cdna_prep:
     # - LRC PBMC Pools Input
   library_types:
     - Chromium single cell 5 prime HT v2
+    # - Chromium single cell 3 prime HT v3
+    # - Chromium single cell BCR HT
+    # - Chromium single cell TCR HT
