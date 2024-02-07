@@ -255,6 +255,15 @@ plate_bioscan:
     - :sample_type
     - :donor_id
     - :bioscan_control_type
+plate_scrna_core_pools:
+  heading: "scRNA Core Pools Plate"
+  asset_type: "plate"
+  columns:
+    - :sanger_plate_id
+    - :well
+    - :sanger_sample_id
+    - :collected_by_for_scrna_core
+    - :donor_id_mandatory
 tube_default:
   heading: "Default Tube"
   asset_type: "1dtube"

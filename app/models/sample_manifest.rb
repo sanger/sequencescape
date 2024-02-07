@@ -6,7 +6,7 @@
 # for the potential samples. It also generates a {SampleManifestExcel}
 # spreadsheet which gets sent to the customer.
 #
-# The labware that gets generate is determined by the {#asset_type} which
+# The labware that gets generated is determined by the {#asset_type} which
 # switches out the {#core_behaviour} module {SampleManifest::CoreBehaviour}.
 # This is concerned with generating {Labware} and {Receptacle receptacles},
 # generating any event specific to the asset type, and setting manifest specific
