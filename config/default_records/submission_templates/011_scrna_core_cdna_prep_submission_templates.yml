@@ -15,4 +15,4 @@ Limber-Htp - scRNA Core Donor Pooling and cDNA Prep:
   related_records:
     request_type_keys: ["limber_scrna_core_donor_pooling", "limber_scrna_core_cdna_prep"]
     product_line_name: scRNA Core
-    product_catalogue_name: scRNA Core cDNA Prep
+    product_catalogue_name: scRNA Core
