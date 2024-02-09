@@ -48,7 +48,7 @@ class UatActions::TubeSubmission < UatActions
     SubmissionTemplate
       .visible
       .each_with_object([]) do |submission_template, compatible|
-        next unless submission_template.input_asset_type.constantize < Tube
+        next unless submission_template.input_asset_type.constantize <= Tube
 
         compatible << submission_template.name
       end
