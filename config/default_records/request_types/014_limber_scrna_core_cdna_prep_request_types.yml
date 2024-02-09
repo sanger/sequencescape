@@ -12,7 +12,7 @@ limber_scrna_core_donor_pooling:
   request_class_name: CustomerRequest
   for_multiplexing: false
   billable: true
-  product_line_name: scRNA Core
+  product_line_name: Sample Prep
   acceptable_purposes:
     - LRC Bank Seq
     - LRC Bank Spare
@@ -24,7 +24,7 @@ limber_scrna_core_cdna_prep:
   request_class_name: CustomerRequest
   for_multiplexing: false
   billable: true
-  product_line_name: scRNA Core
+  product_line_name: Sample Prep
   acceptable_purposes:
     - LRC PBMC Pools
     # - LRC PBMC Pools Input
