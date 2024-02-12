@@ -1,0 +1,14 @@
+# The 'LCR Bank Seq' and 'LCR Bank Spare' purposes are used the end of scRNA
+# Core Cell Extraction pipeline and they are controlled by of Limber. However,
+# they have been added here to create submission and request type records for
+# scRNA Core cDNA Prep stage.
+---
+LRC Bank Seq:
+  type: Tube::Purpose
+  target_type: SampleTube
+  stock_plate: false
+
+LRC Bank Spare:
+  type: Tube::Purpose
+  target_type: SampleTube
+  stock_plate: false
