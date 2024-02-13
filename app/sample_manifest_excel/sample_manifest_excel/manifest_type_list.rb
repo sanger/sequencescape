@@ -16,6 +16,7 @@ module SampleManifestExcel
       manifest_types.each(&block)
     end
 
+    # Hash version of the manifest_types.yml config file
     def manifest_types
       @manifest_types ||= {}
     end
@@ -49,7 +50,7 @@ module SampleManifestExcel
     class ManifestType
       include SequencescapeExcel::Helpers::Attributes
 
-      setup_attributes :name, :columns, :heading, :asset_type
+      setup_attributes :name, :columns, :heading, :asset_type, :rows_per_well
 
       def initialize(attributes = {})
         super
@@ -62,7 +63,7 @@ module SampleManifestExcel
       def ==(other)
         return false unless other.is_a?(self.class)
 
-        name == other.name && columns == other.columns && heading == other.heading && asset_type == other.asset_type
+        name == other.name && columns == other.columns && heading == other.heading && asset_type == other.asset_type && rows_per_well == other.rows_per_well
       end
     end
 
