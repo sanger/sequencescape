@@ -80,7 +80,19 @@ class LocationReport < ApplicationRecord
   end
 
   def column_headers
-    %w[ScannedBarcode HumanBarcode Type Created Location Service RetentionInstructions StudyName StudyId FacultySponsor]
+    %w[
+      ScannedBarcode
+      HumanBarcode
+      Type
+      Created
+      ReceivedDate
+      Location
+      Service
+      RetentionInstructions
+      StudyName
+      StudyId
+      FacultySponsor
+    ]
   end
 
   def generate!
@@ -134,18 +146,29 @@ class LocationReport < ApplicationRecord
       end
   end
 
+  def received_date(cur_plate)
+    cur_plate
+      &.asset_audits
+      &.where(key: 'slf_receive_plates')
+      &.where('message LIKE ?', '%Reception fridge%')
+      &.first
+      &.created_at
+      &.strftime('%Y-%m-%d %H:%M:%S') #TODO: add reception fridge check on message
+  end
+
   def generate_report_row(cur_plate, cur_study)
     row = generate_plate_cols_for_row(cur_plate)
     row + generate_study_cols_for_row(cur_study)
   end
 
-  def generate_plate_cols_for_row(cur_plate)
+  def generate_plate_cols_for_row(cur_plate) # rubocop:disable Metrics/AbcSize
     cols = [] << cur_plate.machine_barcode
     cols << cur_plate.human_barcode
 
     # NB. some older plates do not have a purpose
     cols << (cur_plate.plate_purpose&.name || 'Unknown')
     cols << cur_plate.created_at.strftime('%Y-%m-%d %H:%M:%S')
+    cols << (received_date(cur_plate) || 'Unknown')
     cols << cur_plate.storage_location
     cols << cur_plate.storage_location_service
     cols << (cur_plate.retention_instructions || 'Unknown')
