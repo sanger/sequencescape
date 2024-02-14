@@ -5,8 +5,17 @@ SampleManifest::GenerateWellsJob =
     def perform
       ActiveRecord::Base.transaction do
         # Ensure the order of the wells are maintained
+        # Why does the order of the wells matter? Maybe can't use a hash if it does.
+        # Keep key of hash as map_id and query Maps in the generate_wells_job method?
         maps = Map.find(map_ids).index_by(&:id)
-        well_data = map_ids_to_sample_ids.map { |map_id, sample_id| [maps[map_id], sample_id] }
+        well_data = {}
+        map_ids_to_sample_ids.each do |map_id, sample_id|
+          if(well_data[maps[map_id]])
+            well_data[maps[map_id]] << sample_id
+          else
+            well_data[maps[map_id]] = [sample_id]
+          end
+        end
 
         sample_manifest.core_behaviour.generate_wells_job(well_data, plate)
       end

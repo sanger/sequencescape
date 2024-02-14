@@ -96,11 +96,16 @@ class SampleManifest::Generator
   end
 
   def attributes
-    params.except(:template, :barcode_printer, :only_first_label).merge(user: user, asset_type: asset_type)
+    params.except(:template, :barcode_printer, :only_first_label).merge(user: user, asset_type: asset_type, rows_per_well: rows_per_well)
   end
 
   def asset_type
     configuration.manifest_types.find_by(params[:template]).asset_type
+  end
+
+  def rows_per_well
+    # OK if this is not set, there is an accessor in the model that will default to 1
+    configuration.manifest_types.find_by(params[:template]).rows_per_well
   end
 
   def only_first_label

@@ -40,7 +40,7 @@ module SampleManifest::PlateBehaviour
       @details_array =
         plates.flat_map do |plate|
           well_data
-            .slice!(0, plate.size)
+            .slice!(0, plate.size * @manifest.rows_per_well)
             .map { |map, sample_id| { barcode: plate.human_barcode, position: map.description, sample_id: sample_id } }
         end
     end
@@ -88,12 +88,15 @@ module SampleManifest::PlateBehaviour
     alias printables labware
 
     # Called by {SampleManifest::GenerateWellsJob} and builds the wells
+    # wells_for_plate: Hash, Map to list of SangerSampleIds
     def generate_wells_job(wells_for_plate, plate)
-      wells_for_plate.map do |map, sanger_sample_id|
+      wells_for_plate.map do |map, sanger_sample_ids|
         plate
           .wells
           .create!(map: map) do |well|
-            SampleManifestAsset.create(sanger_sample_id: sanger_sample_id, asset: well, sample_manifest: @manifest)
+            sanger_sample_ids.each do |sanger_sample_id|
+              SampleManifestAsset.create(sanger_sample_id: sanger_sample_id, asset: well, sample_manifest: @manifest)
+            end
           end
       end
       RequestFactory.create_assets_requests(plate.wells, study)
@@ -107,7 +110,7 @@ module SampleManifest::PlateBehaviour
     # truncate the data.
     def generate_wells_for_plates(well_data, plates)
       cloned_well_data = well_data.dup
-      plates.each { |plate| yield(cloned_well_data.slice!(0, plate.size), plate) }
+      plates.each { |plate| yield(cloned_well_data.slice!(0, plate.size * @manifest.rows_per_well), plate) }
     end
 
     def labware_from_barcodes
@@ -126,13 +129,15 @@ module SampleManifest::PlateBehaviour
       plates = Array.new(count) { purpose.create!(:without_wells) }.sort_by(&:human_barcode)
 
       plates.each do |plate|
-        sanger_sample_ids = generate_sanger_ids(plate.size)
+        sanger_sample_ids = generate_sanger_ids(plate.size * @manifest.rows_per_well)
 
         plate.maps.in_column_major_order.each do |well_map|
-          sanger_sample_id = sanger_sample_ids.shift
-          generated_sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study_abbreviation, sanger_sample_id)
+          @manifest.rows_per_well.times do
+            sanger_sample_id = sanger_sample_ids.shift
+            generated_sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study_abbreviation, sanger_sample_id)
 
-          well_data << [well_map, generated_sanger_sample_id]
+            well_data << [well_map, generated_sanger_sample_id]
+          end
         end
       end
 

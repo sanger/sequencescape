@@ -102,4 +102,32 @@ describe 'SampleManifest controller', :sample_manifest do
       )
     end
   end
+
+  context 'with multiple rows per well' do
+    it 'generates multiple rows per well'  do
+      click_link('Create manifest for plates')
+      expect(PlateBarcode).to receive(:create_barcode).and_return(plate_barcode)
+
+      select(study.name, from: 'Study')
+      select(supplier.name, from: 'Supplier')
+
+      select('Pools Plate', from: 'Template') # This template has multiple rows per well
+
+      click_button('Create manifest and print labels')
+
+      expect(page).to have_text('Upload a sample manifest') # Check it landed on the correct page
+
+      click_on 'Download Blank Manifest'
+
+      expect(page.driver.response.headers['Content-Type']).to(
+        eq('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+      )
+
+      # DownloadHelpers.wait_for_download(filename)
+
+      binding.pry
+      # check downloads
+      # Check the file has the expected number of rows
+    end
+  end
 end

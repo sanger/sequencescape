@@ -258,6 +258,7 @@ plate_bioscan:
 plate_scrna_core_pools:
   heading: "scRNA Core Pools Plate"
   asset_type: "plate"
+  rows_per_well: 20
   columns:
     - :sanger_plate_id
     - :well

@@ -128,6 +128,11 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
     "#{study_id}stdy_manifest_#{id}_#{created_at.to_formatted_s(:dmy)}"
   end
 
+  # Use a default value of 1 for rows_per_well if not set
+  def rows_per_well
+    @rows_per_well || 1
+  end
+
   scope :pending_manifests,
         -> {
           order(id: :desc).includes(:uploaded_document).references(:uploaded_document).where(documents: { id: nil })

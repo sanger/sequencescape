@@ -701,3 +701,12 @@ tube_extraction:
     - :sample_ebi_accession_number
     - :donor_id
     - :phenotype
+pools_plate:
+  heading: "Pools Plate"
+  asset_type: "plate"
+  rows_per_well: 2
+  columns:
+    - :sanger_plate_id
+    - :well
+    - :sanger_sample_id
+    - :supplier_name
