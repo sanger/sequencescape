@@ -49,6 +49,7 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_uploaded_document :generated, differentiator: 'generated'
 
   attr_accessor :override, :only_first_label
+  attr_writer :rows_per_well
 
   class_attribute :spreadsheet_offset
   class_attribute :spreadsheet_header_row

@@ -105,8 +105,9 @@ class SampleManifest::Generator
     configuration.manifest_types.find_by(params[:template]).asset_type
   end
 
+  # Retrieves the value of the rows_per_well attribute from the manifest_types.yml config ('template' dropdown in the UI).
+  # Returns nil if the rows_per_well attribute is not set in the manifest_types.yml config.
   def rows_per_well
-    # OK if this is not set, there is an accessor in the model that will default to 1
     configuration.manifest_types.find_by(params[:template]).rows_per_well
   end
 
