@@ -153,7 +153,7 @@ class LocationReport < ApplicationRecord
       &.where('message LIKE ?', '%Reception fridge%')
       &.first
       &.created_at
-      &.strftime('%Y-%m-%d %H:%M:%S') #TODO: add reception fridge check on message
+      &.strftime('%Y-%m-%d %H:%M:%S')
   end
 
   def generate_report_row(cur_plate, cur_study)
