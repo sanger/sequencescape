@@ -104,7 +104,7 @@ describe 'SampleManifest controller', :sample_manifest do
   end
 
   context 'with multiple rows per well' do
-    it 'generates multiple rows per well'  do
+    it 'generates multiple rows per well' do
       click_link('Create manifest for plates')
       expect(PlateBarcode).to receive(:create_barcode).and_return(plate_barcode)
 
