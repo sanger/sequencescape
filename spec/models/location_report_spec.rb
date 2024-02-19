@@ -27,9 +27,15 @@ RSpec.describe LocationReport do
   let!(:plt_1_asset_audit) do
     create :asset_audit,
            asset: plate_1,
+           created_at: Time.zone.parse('June 15, 2020 15:41'),
+           key: 'slf_receive_plates',
+           message: "Process '...' performed on instrument Reception fridge"
+    create :asset_audit,
+           asset: plate_1,
            created_at: Time.zone.parse('June 16, 2020 15:42'),
            key: 'slf_receive_plates',
            message: "Process '...' performed on instrument Reception fridge"
+    # return the last audit only
   end
   let(:plt_1_purpose) { plate_1.plate_purpose.name }
   let(:plt_1_created) { plate_1.created_at.strftime('%Y-%m-%d %H:%M:%S') }
