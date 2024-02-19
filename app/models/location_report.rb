@@ -146,16 +146,6 @@ class LocationReport < ApplicationRecord
       end
   end
 
-  def received_date(cur_plate)
-    cur_plate
-      &.asset_audits
-      &.where(key: 'slf_receive_plates')
-      &.where('message LIKE ?', '%Reception fridge%')
-      &.first
-      &.created_at
-      &.strftime('%Y-%m-%d %H:%M:%S')
-  end
-
   def generate_report_row(cur_plate, cur_study)
     row = generate_plate_cols_for_row(cur_plate)
     row + generate_study_cols_for_row(cur_study)
@@ -168,7 +158,7 @@ class LocationReport < ApplicationRecord
     # NB. some older plates do not have a purpose
     cols << (cur_plate.plate_purpose&.name || 'Unknown')
     cols << cur_plate.created_at.strftime('%Y-%m-%d %H:%M:%S')
-    cols << (received_date(cur_plate) || 'Unknown')
+    cols << (cur_plate.received_date&.strftime('%Y-%m-%d %H:%M:%S') || 'Unknown')
     cols << cur_plate.storage_location
     cols << cur_plate.storage_location_service
     cols << (cur_plate.retention_instructions || 'Unknown')

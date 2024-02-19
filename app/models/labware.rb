@@ -231,6 +231,15 @@ class Labware < Asset
     scanned_into_lab_event.try(:content) || ''
   end
 
+  def received_date
+    self
+      &.asset_audits
+      &.where(key: 'slf_receive_plates')
+      &.where('message LIKE ?', '%Reception fridge%')
+      &.first
+      &.created_at
+  end
+
   def retention_instructions
     @retention_instructions ||= obtain_retention_instructions
   end
