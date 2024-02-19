@@ -236,7 +236,7 @@ class Labware < Asset
       &.asset_audits
       &.where(key: 'slf_receive_plates')
       &.where('message LIKE ?', '%Reception fridge%')
-      &.first
+      &.last
       &.created_at
   end
 
