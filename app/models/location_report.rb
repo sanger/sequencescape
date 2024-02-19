@@ -151,17 +151,17 @@ class LocationReport < ApplicationRecord
     row + generate_study_cols_for_row(cur_study)
   end
 
-  def generate_plate_cols_for_row(cur_plate) # rubocop:disable Metrics/AbcSize
-    cols = [] << cur_plate.machine_barcode
-    cols << cur_plate.human_barcode
-
-    # NB. some older plates do not have a purpose
-    cols << (cur_plate.plate_purpose&.name || 'Unknown')
-    cols << cur_plate.created_at.strftime('%Y-%m-%d %H:%M:%S')
-    cols << (cur_plate.received_date&.strftime('%Y-%m-%d %H:%M:%S') || 'Unknown')
-    cols << cur_plate.storage_location
-    cols << cur_plate.storage_location_service
-    cols << (cur_plate.retention_instructions || 'Unknown')
+  def generate_plate_cols_for_row(cur_plate)
+    [
+      cur_plate.machine_barcode,
+      cur_plate.human_barcode,
+      cur_plate.plate_purpose&.name || 'Unknown', # NB. some older plates do not have a purpose
+      cur_plate.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+      cur_plate.received_date&.strftime('%Y-%m-%d %H:%M:%S') || 'Unknown',
+      cur_plate.storage_location,
+      cur_plate.storage_location_service,
+      cur_plate.retention_instructions || 'Unknown'
+    ]
   end
 
   def generate_study_cols_for_row(cur_study)
