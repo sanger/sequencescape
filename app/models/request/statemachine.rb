@@ -62,7 +62,10 @@ module Request::Statemachine
       end
 
       event :fail do
-        transitions to: :failed, from: [:started]
+        # Added pending specifically to allow library requests to be failed on
+        # LBSN-96 Lysate plates in the Bioscan pipeline whilst still in
+        # the pending state.
+        transitions to: :failed, from: %i[pending started]
       end
 
       event :retrospective_pass do
