@@ -8,6 +8,16 @@ GIT
       activerecord (>= 4.0.0)
 
 GIT
+  remote: https://github.com/sanger/jsonapi-resources.git
+  revision: be2fb43f5f8da2e632fb5f48200928b2dd3d8bf9
+  branch: develop
+  specs:
+    jsonapi-resources (0.9.0)
+      activerecord (>= 4.1)
+      concurrent-ruby
+      railties (>= 4.1)
+
+GIT
   remote: https://github.com/sanger/record_loader
   revision: 9e7481f4d2342f042ab13465962e5d6689863198
   specs:
@@ -227,10 +237,6 @@ GEM
       mini_magick (>= 4.9.5, < 5)
       ruby-vips (>= 2.0.17, < 3)
     json (2.6.3)
-    jsonapi-resources (0.9.0)
-      activerecord (>= 4.1)
-      concurrent-ruby
-      railties (>= 4.1)
     jsonapi-resources-matchers (1.0.0)
       jsonapi-resources (>= 0.9.0)
     knapsack_pro (5.7.0)
@@ -555,7 +561,7 @@ DEPENDENCIES
   flipper-ui (~> 0.25.0)
   formtastic
   json
-  jsonapi-resources (= 0.9.0)
+  jsonapi-resources!
   jsonapi-resources-matchers
   knapsack_pro
   launchy
