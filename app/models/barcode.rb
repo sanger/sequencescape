@@ -65,8 +65,7 @@ class Barcode < ApplicationRecord
          plymouth_v2: 43,
          leamington_spa_v3: 44,
          brants_bridge_v3: 45,
-         ibd_response: 46,
-         rvi: 47
+         ibd_response: 46
        }
 
   # Barcode formats which may be submitted via sample manifests
