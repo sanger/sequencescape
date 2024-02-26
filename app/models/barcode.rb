@@ -111,7 +111,7 @@ class Barcode < ApplicationRecord
     plymouth_v2
     leamington_spa_v3
     brants_bridge_v3
-    ibd_response,
+    ibd_response
     rvi
   ].freeze
 
