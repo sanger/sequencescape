@@ -263,7 +263,7 @@ plate_scrna_core_pools:
     - :sanger_plate_id
     - :well
     - :sanger_sample_id
-    - :collected_by_for_scrna_core
+    - :supplier_name
     - :donor_id_mandatory
 tube_default:
   heading: "Default Tube"
