@@ -103,6 +103,8 @@ module Sequencescape
 
     # end Rails 5 #
 
+    config.action_controller.include_all_helpers = true
+
     # Fix for Psych::DisallowedClass: Tried to load unspecified class
     # this has to be in "after_initialize" because we need custom classes to be loaded already
     config.after_initialize do
