@@ -10,7 +10,7 @@ Rails.application.configure do
   config.annotations.register_extensions('feature') { |tag| /#\s*(#{tag}):?\s*(.*)$/ }
 
   # Settings specified here will take precedence over those in config/application.rb.
-  config.eager_load = true
+  # config.eager_load = true
 
   config.cache_classes = true
 
