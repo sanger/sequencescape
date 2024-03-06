@@ -411,5 +411,14 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode 'IBD123456'
     it_has_an_invalid_barcode 'IBDR-123456'
   end
+
+  describe Barcode::FormatHandlers::Rvi do
+    it_has_a_valid_barcode 'RVI-111111', prefix: 'RVI', number: 111_111
+    it_has_a_valid_barcode 'RVI-000000', prefix: 'RVI', number: 0
+    it_has_an_invalid_barcode 'SQPD-12345678-234233890-WD'
+    it_has_an_invalid_barcode 'RVI123456'
+    it_has_an_invalid_barcode 'IRVI-123456'
+  end
+
   # rubocop:enable RSpec/EmptyExampleGroup
 end

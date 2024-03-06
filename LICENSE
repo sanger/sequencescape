@@ -1,55 +1,21 @@
-Sequencescape - A open source project and lab management systems
+MIT License
 
-Authors:
-Andrew Page <andrewjpage@gmail.com>
-Andrew Sparkes <as28@sanger.ac.uk>
-Arfon Smith <as8@sanger.ac.uk>
-Beth Jones <bj2@sanger.ac.uk>
-Cinzia Malangone <cm10@sanger.ac.uk>
-Conny Brunnkvist <cb16@sanger.ac.uk>
-Constantine Nicolou <cn5@sanger.ac.uk>
-David Franklin <df2@sanger.ac.uk>
-Eduardo Martin Rojo <emr@sanger.ac.uk>
-Harriet Craven <hc6@sanger.ac.uk>
-James Glover <james.glover@sanger.ac.uk>
-Jens Raaby <jr16@sanger.ac.uk>
-Kate Taylor <kt6@sanger.ac.uk>
-Lars G T Jorgensen <lj3@sanger.ac.uk>
-Luca Da Rin Fioretto <ldrf@sanger.ac.uk>
-Matthew Astley <mca@sanger.ac.uk>
-Matthew Denner <md12@sanger.ac.uk>
-Matt Wood <mw4@sanger.ac.uk>
-Maxime Bourget <mb14@sanger.ac.uk>
-Neil Sycamore <nts@sanger.ac.uk>
-Niels Jansen <nj3@sanger.ac.uk>
-Paul Thornthwaite <pt2@sanger.ac.uk>
-Paul Western <pw6@sanger.ac.uk>
-Sean Dunn <sd9@sanger.ac.uk>
-Simon Holroyd <holroyd@sanger.ac.uk>
-Stephen Inglis <si5@sanger.ac.uk>
-Yana Proskurina <yp3@sanger.ac.uk>
+Copyright (c) 2024 Wellcome Sanger Institute - PSD
 
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 1, or (at your option)
-any later version.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, see <http://www.gnu.org/licenses/>.
-
-
-The usage of a range of years within a copyright statement contained within
-this distribution should be interpreted as being equivalent to a list of years
-including the first and last year specified and all consecutive years between
-them. For example, a copyright statement that reads "Copyright (c) 2005, 2007-
-2009, 2011-2012" should be interpreted as being identical to a statement that
-reads "Copyright (c) 2005, 2007, 2008, 2009, 2011, 2012" and a copyright
-statement that reads "Copyright (c) 2005-2012" should be interpreted as being
-identical to a statement that reads "Copyright (c) 2005, 2006, 2007, 2008, 2009
-, 2010 , 2011 , 2012".
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
