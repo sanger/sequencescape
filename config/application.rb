@@ -31,6 +31,8 @@ module Sequencescape
     config.action_controller.forgery_protection_origin_check = false
     config.action_controller.per_form_csrf_tokens = false
 
+    config.action_view.automatically_disable_submit_tag = false
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading

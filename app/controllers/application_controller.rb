@@ -9,6 +9,7 @@ class ApplicationController < ActionController::Base
   # {FlashTruncation} provides the #truncate_flash method for automatically trimming
   # large flash messages to prevent cookie overflow.
   include FlashTruncation
+  include ApplicationHelper
 
   helper :all # include all helpers, all the time
 
