@@ -132,7 +132,7 @@ RSpec.describe SampleManifest::Generator, :sample_manifest, :sample_manifest_exc
     skip 'generates a details array with more than one entry per well' do
       generator = described_class.new(attributes, user, configuration)
       generator.execute
-      expect(generator.sample_manifest.details_array.size).to eq(4*96*2)
+      expect(generator.sample_manifest.details_array.size).to eq(4 * 96 * 2)
     end
   end
 
@@ -141,7 +141,7 @@ RSpec.describe SampleManifest::Generator, :sample_manifest, :sample_manifest_exc
     skip 'generates a details array with one entry per well' do
       generator = described_class.new(attributes, user, configuration)
       generator.execute
-      expect(generator.sample_manifest.details_array.size).to eq(4*96)
+      expect(generator.sample_manifest.details_array.size).to eq(4 * 96)
     end
   end
 end
