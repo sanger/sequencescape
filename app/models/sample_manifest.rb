@@ -131,7 +131,9 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   # Use a default value of 1 for rows_per_well if not set
   def rows_per_well
-    @rows_per_well || 1
+    1
+    # TODO: replace above line with below line when we want to turn the 'rows_per_well' feature on
+    # @rows_per_well || 1
   end
 
   scope :pending_manifests,

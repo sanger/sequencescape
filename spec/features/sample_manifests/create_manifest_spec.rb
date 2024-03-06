@@ -24,7 +24,7 @@ describe 'SampleManifest controller', :sample_manifest do
       select(study.name, from: 'Study')
       select(supplier.name, from: 'Supplier')
       within('#sample_manifest_template') do
-        expect(page).to have_css('option', count: 7)
+        expect(page).to have_css('option', count: 8)
         expect(page).not_to have_css('option', text: 'Default Tube')
       end
       select('Default Plate', from: 'Template')
@@ -66,7 +66,7 @@ describe 'SampleManifest controller', :sample_manifest do
 
     it 'indicate the purpose field is used for plates only' do
       visit(new_sample_manifest_path)
-      within('#sample_manifest_template') { expect(page).to have_css('option', count: 22) }
+      within('#sample_manifest_template') { expect(page).to have_css('option', count: 23) }
       select(created_purpose.name, from: 'Purpose')
       expect(page).to have_text('Used for plate manifests only')
     end
@@ -100,34 +100,6 @@ describe 'SampleManifest controller', :sample_manifest do
       expect(page.driver.response.headers['Content-Type']).to(
         eq('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
       )
-    end
-  end
-
-  context 'with multiple rows per well' do
-    it 'generates multiple rows per well' do
-      click_link('Create manifest for plates')
-      expect(PlateBarcode).to receive(:create_barcode).and_return(plate_barcode)
-
-      select(study.name, from: 'Study')
-      select(supplier.name, from: 'Supplier')
-
-      select('Pools Plate', from: 'Template') # This template has multiple rows per well
-
-      click_button('Create manifest and print labels')
-
-      expect(page).to have_text('Upload a sample manifest') # Check it landed on the correct page
-
-      click_on 'Download Blank Manifest'
-
-      expect(page.driver.response.headers['Content-Type']).to(
-        eq('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-      )
-
-      # DownloadHelpers.wait_for_download(filename)
-
-      binding.pry
-      # check downloads
-      # Check the file has the expected number of rows
     end
   end
 end
