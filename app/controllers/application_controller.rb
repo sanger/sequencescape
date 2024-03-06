@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
   # large flash messages to prevent cookie overflow.
   include FlashTruncation
 
-  helper Rails.application.helpers # include all helpers, all the time
+  helper :all # include all helpers, all the time
 
   # See ActionController::RequestForgeryProtection for details
   # Uncomment the :secret if you're not using the cookie session store
@@ -29,7 +29,7 @@ class ApplicationController < ActionController::Base
   def block_api_access(message = nil, format = :xml)
     content = { error: 'Unsupported API access' }
     content[:message] = message unless message.nil?
-    { format => content.send(:"to_#{format}", root: :errors), :status => 406 }
+    { format => content.send("to_#{format}".to_sym, root: :errors), :status => 406 }
   end
 
   def extract_header_info
