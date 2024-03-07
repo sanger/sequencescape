@@ -9,7 +9,7 @@ RSpec.describe Api::V2::UserResource, type: :resource do
   let(:resource_model) { build_stubbed :user }
 
   # Test attributes
-  it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
+  it 'works', :aggregate_failures do
     expect(subject).to have_attribute :uuid
     expect(subject).to have_attribute :login
     expect(subject).not_to have_updatable_field(:id)

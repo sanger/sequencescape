@@ -56,7 +56,7 @@ describe IlluminaHtp::InitialStockTubePurpose do
         let(:sibling_submission) { current_submission }
         let(:parents_sibling_well) { create :well }
 
-        it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
+        it 'works', :aggregate_failures do
           expect(subject).to be_a Array
           expect(subject).to include(sibling_tube_hash)
         end
@@ -70,7 +70,7 @@ describe IlluminaHtp::InitialStockTubePurpose do
           let(:sibling_request_type) { create :multiplex_request_type }
           let(:sibling_state) { 'started' }
 
-          it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
+          it 'works', :aggregate_failures do
             expect(subject).to be_a Array
             expect(subject).to include(sibling_tube_hash)
           end
@@ -105,7 +105,7 @@ describe IlluminaHtp::InitialStockTubePurpose do
                    state: 'passed'
           end
 
-          it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
+          it 'works', :aggregate_failures do
             expect(subject).to be_a Array
             expect(subject).not_to include(sibling_tube_hash)
             expect(subject).to include(sibling_descendant_hash)
@@ -119,7 +119,7 @@ describe IlluminaHtp::InitialStockTubePurpose do
         let(:sibling_tube) { create(:well) }
         let(:parents_sibling_well) { create :well }
 
-        it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
+        it 'works', :aggregate_failures do
           expect(subject).to be_a Array
           expect(subject).not_to include(sibling_tube)
         end
@@ -130,7 +130,7 @@ describe IlluminaHtp::InitialStockTubePurpose do
         let(:sibling_submission) { create :submission }
         let(:parents_sibling_well) { parent_well }
 
-        it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
+        it 'works', :aggregate_failures do
           expect(subject).to be_a Array
           expect(subject).not_to include(sibling_tube_hash)
         end
@@ -143,7 +143,7 @@ describe IlluminaHtp::InitialStockTubePurpose do
           let(:parents_sibling_well) { parent_well }
           let(:sibling_state) { 'cancelled' }
 
-          it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
+          it 'works', :aggregate_failures do
             expect(subject).to be_a Array
             expect(subject).not_to include(sibling_tube_hash)
           end
@@ -166,7 +166,7 @@ describe IlluminaHtp::InitialStockTubePurpose do
         let(:sibling_submission) { current_submission }
         let(:parents_sibling_well) { create :well }
 
-        it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
+        it 'works', :aggregate_failures do
           expect(subject).to be_a Array
           expect(subject).to include(sibling_tube_hash)
         end

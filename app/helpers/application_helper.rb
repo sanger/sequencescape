@@ -2,6 +2,7 @@
 # rubocop:todo Metrics/ModuleLength
 module ApplicationHelper
   include ControllerHelper
+
   # Should return either the custom text or a blank string
   def custom_text(identifier, differential = nil)
     Rails
