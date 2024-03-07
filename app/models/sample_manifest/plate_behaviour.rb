@@ -115,13 +115,18 @@ module SampleManifest::PlateBehaviour
     # output:
     # [{barcode, position, sanger_sample_id}, {barcode, position, sanger_sample_id}, ...]
     def build_details_array(well_data)
-      @details_array = @plates.flat_map do |plate|
-        well_data[plate.id].flat_map do |map_id, sanger_sample_ids|
-          sanger_sample_ids.map do |sanger_sample_id|
-            { barcode: plate.human_barcode, position: plate.maps.find(map_id).description, sample_id: sanger_sample_id }
+      @details_array =
+        @plates.flat_map do |plate|
+          well_data[plate.id].flat_map do |map_id, sanger_sample_ids|
+            sanger_sample_ids.map do |sanger_sample_id|
+              {
+                barcode: plate.human_barcode,
+                position: plate.maps.find(map_id).description,
+                sample_id: sanger_sample_id
+              }
+            end
           end
         end
-      end
     end
   end
 
