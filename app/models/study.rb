@@ -262,6 +262,8 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     # This excludes supplementary characters, which include emoji and rare kanji
     validates :study_abstract, :study_study_title, :study_description, :s3_email_list, utf8mb3: true
 
+    validates :data_release_delay_other_comment, length: { maximum: 255 }
+
     # These fields are restricted further as they aren't expected to ever contain anything more than ASCII
     validates :study_project_id,
               :ega_dac_accession_number,
