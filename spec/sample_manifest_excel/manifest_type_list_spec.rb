@@ -20,7 +20,8 @@ RSpec.describe SampleManifestExcel::ManifestTypeList, :sample_manifest, :sample_
       expect(manifest_type.heading).to eq(v['heading'])
       expect(manifest_type.columns).to eq(v['columns'])
       expect(manifest_type.asset_type).to eq(v['asset_type'])
-      expect(manifest_type.rows_per_well).to eq(v['rows_per_well']) # if this attribute isn't present, just compares nil == nil
+      # if the rows_per_well attribute isn't present, just compares nil == nil
+      expect(manifest_type.rows_per_well).to eq(v['rows_per_well'])
     end
   end
 

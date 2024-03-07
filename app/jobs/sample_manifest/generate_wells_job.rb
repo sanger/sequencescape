@@ -10,7 +10,7 @@ SampleManifest::GenerateWellsJob =
         maps = Map.find(map_ids).index_by(&:id)
         well_data = {}
         map_ids_to_sample_ids.each do |map_id, sample_id|
-          if (well_data[maps[map_id]])
+          if well_data[maps[map_id]]
             well_data[maps[map_id]] << sample_id
           else
             well_data[maps[map_id]] = [sample_id]
