@@ -20,7 +20,7 @@ module Core::Io::Json::Grammar
     end
 
     def process_children(object, options, stream)
-      @children.each { |_, child| child.call(object, options, stream) }
+      @children.each_value { |child| child.call(object, options, stream) }
     end
     private :process_children
 

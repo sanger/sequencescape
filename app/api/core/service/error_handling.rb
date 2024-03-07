@@ -70,7 +70,12 @@ class ActiveRecord::RecordInvalid
   end
 
   def errors_grouped_by_attribute
-    record.errors.to_h { |k, v| [yield(k), [v].flatten.uniq] }
+    transformed_errors = {}
+    model.errors.each_key do |k|
+      unique_messages = model.errors.full_messages_for(k).uniq
+      transformed_key = yield(k)
+      transformed_errors[transformed_key] = unique_messages
+    end
   end
   private :errors_grouped_by_attribute
 end
@@ -82,7 +87,12 @@ class ActiveModel::ValidationError
   end
 
   def errors_grouped_by_attribute
-    model.errors.to_h { |k, v| [yield(k), [v].flatten.uniq] }
+    transformed_errors = {}
+    model.errors.each_key do |k|
+      unique_messages = model.errors.full_messages_for(k).uniq
+      transformed_key = yield(k)
+      transformed_errors[transformed_key] = unique_messages
+    end
   end
   private :errors_grouped_by_attribute
 end
