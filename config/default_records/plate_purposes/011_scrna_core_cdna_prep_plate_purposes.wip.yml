@@ -1,0 +1,7 @@
+# The 'LRC PBMC Pools' purpose is controlled by Limber. However, it has been
+# added here to create submission and request type records for scRNA Core cDNA
+# Prep stage.
+---
+LRC PBMC Pools:
+  stock_plate: false
+  cherrypickable_target: false

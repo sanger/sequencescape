@@ -569,4 +569,12 @@ module Barcode::FormatHandlers
   class IbdResponse < BaseRegExBarcode
     self.format = /\A(?<prefix>IBDR)(?<number>[0-9]{6})\z/
   end
+
+  # Support for RVI barcodes.
+  # Expected formats:
+  # RVI-nnnnnn
+  # where n is a digit
+  class Rvi < BaseRegExBarcode
+    self.format = /\A(?<prefix>RVI)-(?<number>[0-9]{6,})\z/
+  end
 end
