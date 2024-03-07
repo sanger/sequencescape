@@ -1,28 +1,30 @@
 # frozen_string_literal: true
 # Generates wells for plate sample manifests
 SampleManifest::GenerateWellsJob =
-  Struct.new(:sample_manifest_id, :map_ids_to_sample_ids, :plate_id) do
+  Struct.new(:sample_manifest_id, :map_ids_to_sanger_sample_ids, :plate_id) do
+
+    # Passes the data back to the core behaviour class to generate the wells for the plate.
     def perform
       ActiveRecord::Base.transaction do
-        # Ensure the order of the wells are maintained
-        # Why does the order of the wells matter? Maybe can't use a hash if it does.
-        # Keep key of hash as map_id and query Maps in the generate_wells_job method?
         maps = Map.find(map_ids).index_by(&:id)
-        well_data = {}
-        map_ids_to_sample_ids.each do |map_id, sample_id|
-          if well_data[maps[map_id]]
-            well_data[maps[map_id]] << sample_id
-          else
-            well_data[maps[map_id]] = [sample_id]
-          end
+
+        map_ids_to_sanger_sample_ids.each do |map_id, sanger_sample_ids|
+          plate.wells
+            .create!(map: maps[map_id]) do |well|
+              sanger_sample_ids.each do |sanger_sample_id|
+                SampleManifestAsset.create(sanger_sample_id: sanger_sample_id, asset: well, sample_manifest: sample_manifest)
+              end
+            end
         end
 
-        sample_manifest.core_behaviour.generate_wells_job(well_data, plate)
+        RequestFactory.create_assets_requests(plate.wells, sample_manifest.study)
+
+        plate.events.created_using_sample_manifest!(sample_manifest.user)
       end
     end
 
     def map_ids
-      map_ids_to_sample_ids.map(&:first)
+      map_ids_to_sanger_sample_ids.keys
     end
 
     def plate
