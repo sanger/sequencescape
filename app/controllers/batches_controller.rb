@@ -221,7 +221,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
     @output_labware = @batch.plate_group_barcodes || []
 
-    @output_labware.each do |parent, _children|
+    @output_labware.each_key do |parent|
       next if parent.nil?
 
       plate_barcode = parent.human_barcode
