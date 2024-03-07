@@ -279,7 +279,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
                   details['plate well'] = rows.field_list('plate well')
                   details['barcode'] = rows.field_list('barcode')
                 end
-                .delete_if { |_, v| v.blank? }
+                .delete_if { |_, v| v.compact_blank! }
             end
         { submission_name => order }
       end

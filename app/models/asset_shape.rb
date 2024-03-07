@@ -74,7 +74,7 @@ class AssetShape < ApplicationRecord
   def alternate_position(well_position, size, *dimensions)
     return nil unless Map.valid_well_position?(well_position)
 
-    divisor, multiplier = dimensions.map { |n| send("plate_#{n}", size) }
+    divisor, multiplier = dimensions.map { |n| send(:"plate_#{n}", size) }
     column, row = (well_position - 1).divmod(divisor)
     return nil unless (0...multiplier).cover?(column)
     return nil unless (0...divisor).cover?(row)
