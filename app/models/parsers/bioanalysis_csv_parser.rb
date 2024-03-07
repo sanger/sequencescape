@@ -147,6 +147,6 @@ class Parsers::BioanalysisCsvParser # rubocop:todo Metrics/ClassLength
 
   def self.parses?(content)
     # We don't go through the whole file
-    content[0..10].detect { |line| /Version Created/ === line[0] && /^B.*/ === line[1] }.present?
+    content[0..10].detect { |line| line[0].include?('Version Created') && /^B.*/ === line[1] }.present?
   end
 end
