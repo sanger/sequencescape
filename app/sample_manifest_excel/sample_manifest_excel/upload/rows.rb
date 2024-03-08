@@ -46,8 +46,12 @@ module SampleManifestExcel
       end
 
       def find_pools_if_present
-        # add an 'if plate_barcode and well_position exist' condition here
+        return unless row.plate_barcode && row.well_position
+
         pools = items.group_by { |row| "#{row.plate_barcode}:#{row.well_position}" }
+        return if pools.values.all?(&:one?)
+
+        # TODO: only add tag_depth if there are no tags being assigned
         pools.each do |_pool_identifier, rows|
           rows.each_with_index do |row, index|
             # within each pool, assign a unique tag_depth to each Row
