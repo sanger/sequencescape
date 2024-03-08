@@ -250,6 +250,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
   #    where each order is a hash of headers to values (grouped by "asset group name")
   # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def submission_structure # rubocop:todo Metrics/CyclomaticComplexity
+    # rubocop:disable Rails/CompactBlank
     Hash
       .new { |h, i| h[i] = Array.new }
       .tap do |submission|
@@ -279,10 +280,11 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
                   details['plate well'] = rows.field_list('plate well')
                   details['barcode'] = rows.field_list('barcode')
                 end
-                .delete_if { |_, v| v.compact_blank! }
+                .delete_if { |_, v| v.blank? }
             end
         { submission_name => order }
-      end
+    end
+    # rubocop:enable Rails/CompactBlank
   end
 
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
