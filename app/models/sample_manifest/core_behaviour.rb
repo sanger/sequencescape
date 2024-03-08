@@ -48,7 +48,7 @@ module SampleManifest::CoreBehaviour
 
   # Used for read-made libraries. Ensures that the library_id gets set
   module LibraryAssets
-    def generate_sample_and_aliquot(sanger_sample_id, receptacle)
+    def generate_sample_and_aliquot(sanger_sample_id, receptacle, row = nil)
       create_sample(sanger_sample_id).tap do |sample|
         receptacle.aliquots.create!(sample: sample, study: study, library: receptacle)
         study.samples << sample

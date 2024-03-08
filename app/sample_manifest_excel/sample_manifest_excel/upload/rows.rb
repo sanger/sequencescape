@@ -46,7 +46,7 @@ module SampleManifestExcel
       end
 
       def find_pools_if_present
-        return unless row.plate_barcode && row.well_position
+        return unless items.first.plate_barcode && items.first.well_position
 
         pools = items.group_by { |row| "#{row.plate_barcode}:#{row.well_position}" }
         return if pools.values.all?(&:one?)
