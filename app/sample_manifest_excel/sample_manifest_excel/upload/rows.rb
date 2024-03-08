@@ -21,6 +21,7 @@ module SampleManifestExcel
         @data = data || []
         @columns = columns
         @items = create_rows(cache)
+        @pools = find_pools_if_present
       end
 
       def each(&block)
@@ -42,6 +43,19 @@ module SampleManifestExcel
             rows << row unless row.empty?
           end
         end
+      end
+
+      def find_pools_if_present
+        # add an 'if plate_barcode and well_position exist' condition here
+        pools = items.group_by { |row| row.plate_barcode + ':' + row.well_position }
+        pools.each do |pool_identifier, rows|
+          rows.each_with_index do |row, index|
+            # within each pool, assign a unique tag_depth to each Row
+            row.tag_depth = index + 1
+          end
+        end
+
+        pools
       end
 
       def check_rows

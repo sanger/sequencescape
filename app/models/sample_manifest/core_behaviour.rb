@@ -34,9 +34,9 @@ module SampleManifest::CoreBehaviour
   # The samples get registered in the stock resource table at the end of manifest upload and processing
   # (It used to happen here)
   module StockAssets
-    def generate_sample_and_aliquot(sanger_sample_id, receptacle)
+    def generate_sample_and_aliquot(sanger_sample_id, receptacle, row = nil)
       create_sample(sanger_sample_id).tap do |sample|
-        receptacle.aliquots.create!(sample: sample, study: study)
+        receptacle.aliquots.create!(sample: sample, study: study, tag_depth: row&.tag_depth)
         study.samples << sample
       end
     end

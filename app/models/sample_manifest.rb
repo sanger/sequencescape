@@ -131,9 +131,7 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   # Use a default value of 1 for rows_per_well if not set
   def rows_per_well
-    1
-    # TODO: replace above line with below line when we want to turn the 'rows_per_well' feature on
-    # @rows_per_well || 1
+    @rows_per_well || 1
   end
 
   scope :pending_manifests,
@@ -158,8 +156,8 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
     nil
   end
 
-  def create_sample_and_aliquot(sanger_sample_id, asset)
-    core_behaviour.generate_sample_and_aliquot(sanger_sample_id, asset)
+  def create_sample_and_aliquot(sanger_sample_id, asset, row = nil)
+    core_behaviour.generate_sample_and_aliquot(sanger_sample_id, asset, row)
   end
 
   def create_sample(sanger_sample_id)

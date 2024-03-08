@@ -13,8 +13,11 @@ module SampleManifestExcel
       include ActiveModel::Model
       include Converters
 
-      attr_accessor :number, :data, :columns, :cache
+      attr_accessor :number, :data, :columns, :cache, :tag_depth
       attr_reader :sanger_sample_id
+
+      attr_reader :plate_barcode
+      attr_reader :well_position
 
       validates :number, presence: true, numericality: true
       validate :sanger_sample_id_exists?, if: :sanger_sample_id
@@ -30,6 +33,8 @@ module SampleManifestExcel
         super
         @cache ||= SampleManifestAsset
         @sanger_sample_id ||= value(:sanger_sample_id).presence if columns.present? && data.present?
+        @plate_barcode ||= value(:sanger_plate_id) if columns.present? && data.present? # TODO: do we want a 'presence' here?
+        @well_position ||= value(:well) if columns.present? && data.present?
       end
 
       ##
@@ -132,7 +137,7 @@ module SampleManifestExcel
       end
 
       def sample
-        @sample ||= manifest_asset&.find_or_create_sample if sanger_sample_id.present? && !empty?
+        @sample ||= manifest_asset&.find_or_create_sample(self) if sanger_sample_id.present? && !empty?
       end
 
       def sample_updated?
