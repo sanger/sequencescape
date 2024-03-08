@@ -14,7 +14,7 @@ module SampleManifestExcel
       include Converters
 
       attr_accessor :number, :data, :columns, :cache, :tag_depth
-      attr_reader :sanger_sample_id, :plate_barcode, :well_position
+      attr_reader :sanger_sample_id, :plate_barcode, :well_position, :has_tags
 
       validates :number, presence: true, numericality: true
       validate :sanger_sample_id_exists?, if: :sanger_sample_id
@@ -35,6 +35,7 @@ module SampleManifestExcel
         @sanger_sample_id ||= value(:sanger_sample_id).presence
         @plate_barcode ||= value(:sanger_plate_id) # TODO: do we want a 'presence' here?
         @well_position ||= value(:well) # TODO: do we want a 'presence' here?
+        @has_tags ||= columns.has_tags?
       end
 
       ##
