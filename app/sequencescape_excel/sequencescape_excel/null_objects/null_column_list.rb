@@ -26,10 +26,6 @@ module SequencescapeExcel
       def with_specialised_fields
         []
       end
-
-      def has_tags?
-        false
-      end
     end
   end
 end
