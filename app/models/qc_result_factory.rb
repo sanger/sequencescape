@@ -178,7 +178,7 @@ class QcResultFactory
     resources.each do |resource|
       next if resource.valid?
 
-      resource_errors = resource.errors.map { |key, value| "#{key} #{value}" }.join(' ')
+      resource_errors = resource.errors.map { |error| "#{error.attribute} #{error.message}" }.join(' ')
 
       errors.add(resource.message_id, resource_errors)
     end
