@@ -4,7 +4,7 @@ SampleManifest::GenerateWellsJob =
   Struct.new(:sample_manifest_id, :map_ids_to_sanger_sample_ids, :plate_id) do
     def perform
       ActiveRecord::Base.transaction do
-        map_ids_to_sanger_sample_ids.each { |k, v| create_well(k, v) }
+        map_ids_to_sanger_sample_ids.each { |map_id, sanger_sample_id| create_well(map_id, sanger_sample_id) }
 
         RequestFactory.create_assets_requests(plate.wells, sample_manifest.study)
 
