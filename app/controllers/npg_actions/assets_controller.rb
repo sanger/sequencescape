@@ -26,7 +26,7 @@ class NpgActions::AssetsController < ApplicationController
 
   private
 
-  def action_for_qc_state(state) # rubocop:todo Metrics/MethodLength
+  def action_for_qc_state(state)
     ActiveRecord::Base.transaction do
       if @last_event.present?
         # If we already have an event we check to see its state. If it matches,
@@ -37,8 +37,7 @@ class NpgActions::AssetsController < ApplicationController
       end
 
       respond_to do |format|
-        format.xml { render file: 'assets/show' }
-        format.html { render template: 'assets/show.xml.builder' }
+        format.any { render template: 'assets/show', formats: [:xml] }
       end
     end
   end
@@ -90,6 +89,6 @@ class NpgActions::AssetsController < ApplicationController
   end
 
   def rescue_error_bad_request(exception)
-    render xml: "<error><message>#{exception.message}</message></error>", status: :bad_request
+    render xml: "<error><message>#{exception.message.split("\n").first}</message></error>", status: :bad_request
   end
 end

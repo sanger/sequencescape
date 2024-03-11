@@ -39,7 +39,7 @@ RSpec.describe NpgActions::AssetsController, type: :request do
     it 'renders and creates events', :aggregate_failures do
       # Response
       expect(response).to have_http_status(:ok)
-      expect(response).to render_template :'assets/show.xml.builder'
+      expect(response).to render_template :'assets/show'
       expect(response.body).to match(expected_response_content)
 
       # Lane QC event
@@ -63,7 +63,7 @@ RSpec.describe NpgActions::AssetsController, type: :request do
   shared_examples 'a failed state change' do
     it 'renders and creates events', :aggregate_failures do
       # Response
-      expect(response).to render_template :'assets/show.xml.builder'
+      expect(response).to render_template :'assets/show'
       expect(response.body).to match(expected_response_content)
 
       # Lane QC event
@@ -269,7 +269,7 @@ RSpec.describe NpgActions::AssetsController, type: :request do
       it 'renders and but does not recreate the events', :aggregate_failures do
         # Response
         expect(response).to have_http_status(:ok)
-        expect(response).to render_template :'assets/show.xml.builder'
+        expect(response).to render_template :'assets/show'
         expect(response.body).to match(expected_response_content)
 
         # Lane QC event
