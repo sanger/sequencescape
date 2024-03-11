@@ -52,14 +52,14 @@ class Api::Base # rubocop:todo Metrics/ClassLength
       attribute_to_json_attribute_mappings.each do |attribute, json_attribute|
         json_attributes[json_attribute] = object.send(attribute)
       end
-      associations.each_key do |helper|
+      associations.each do |_association, helper|
         value = helper.target(object)
         json_attributes.update(helper.to_hash(value))
         helper.newer_than(value, json_attributes['updated_at']) do |timestamp|
           json_attributes['updated_at'] = timestamp
         end
       end
-      nested_has_many_associations.each_key do |helper|
+      nested_has_many_associations.each do |_association, helper|
         values = helper.target(object)
         all_targets =
           values.map do |value|
