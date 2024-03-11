@@ -128,7 +128,7 @@ RSpec.describe SampleManifest::Generator, :sample_manifest, :sample_manifest_exc
   context 'with rows_per_well set' do
     let(:template) { 'pools_plate' }
 
-    # TODO: un-skip when rows_per_well feature is enabled
+    # TODO: un-skip when rows_per_well feature is enabled (when DPL-823 is complete)
     skip 'generates a details array with more than one entry per well' do
       generator = described_class.new(attributes, user, configuration)
       generator.execute
@@ -137,7 +137,7 @@ RSpec.describe SampleManifest::Generator, :sample_manifest, :sample_manifest_exc
   end
 
   context 'with rows_per_well not set' do
-    # TODO: un-skip when rows_per_well feature is enabled
+    # TODO: un-skip when rows_per_well feature is enabled (when DPL-823 is complete)
     skip 'generates a details array with one entry per well' do
       generator = described_class.new(attributes, user, configuration)
       generator.execute
