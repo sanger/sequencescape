@@ -153,10 +153,16 @@ class QcResultFactory
       errors.add(:uuid, "#{message_id} does not belong to a valid asset")
     end
 
-    def check_qc_result
+    def check_qc_result # rubocop:
       return if qc_result.valid?
+      if qc_result.errors.is_a?(ActiveModel::Errors)
+        qc_result.errors.each do |error|
+          errors.add error.attribute, error.message unless error.attribute == :asset && blank_well?
+        end
+      else
+        qc_result.errors.each { |key, value| errors.add key, value unless key == :asset && blank_well? }
+      end
 
-      qc_result.errors.each { |k, v| errors.add(k, v) unless k == :asset && blank_well? }
     end
 
     def check_asset_identifier

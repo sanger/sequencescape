@@ -66,6 +66,12 @@ class SampleManifest::Uploader
   end
 
   def extract_errors
-    upload.errors.each { |key, value| errors.add key, value }
+    if upload.errors.is_a?(ActiveModel::Errors)
+      upload.errors.each do |error|
+        errors.add error.attribute, error.message
+      end
+    else
+      upload.errors.each { |key, value| errors.add key, value }
+    end
   end
 end
