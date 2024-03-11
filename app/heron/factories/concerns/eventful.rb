@@ -23,7 +23,13 @@ module Heron
         end
 
         def add_all_errors_from_event(event)
-          event.errors.each { |key, value| errors.add(key, value) }
+          if event.errors.is_a?(ActiveModel::Errors)
+            event.errors.each do |error|
+              errors.add(error.attribute, error.message)
+            end
+          else
+            event.errors.each { |key, value| errors.add(key, value) }
+          end
         end
 
         def rollback_for_events(events)
