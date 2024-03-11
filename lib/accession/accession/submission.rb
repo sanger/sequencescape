@@ -88,8 +88,14 @@ module Accession
 
     private
 
-    def check_sample
-      sample.errors.each { |key, value| errors.add key, value } unless sample.valid?
+    def check_sample  # rubocop:todo Metrics/AbcSize
+      if sample.errors.is_a?(ActiveModel::Errors)
+        sample.errors.each do |error|
+          errors.add error.attribute, error.message unless sample.valid?
+        end
+      else
+        sample.errors.each { |key, value| errors.add key, value } unless sample.valid?
+      end
     end
   end
 end
