@@ -31,6 +31,7 @@ test_2:
 test_3:
   heading: "Yet Another test"
   asset_type: "plate"
+  rows_per_well: 2
   columns:
     - :sanger_plate_id
     - :well

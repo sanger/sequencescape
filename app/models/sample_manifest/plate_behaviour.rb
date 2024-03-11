@@ -13,6 +13,15 @@ module SampleManifest::PlateBehaviour
 
     def generate
       @plates = generate_plates(purpose)
+
+      sanger_sample_ids = insert_sanger_sample_ids
+      well_data = build_well_data(sanger_sample_ids)
+
+      build_wells_async(well_data)
+
+      @details_array = build_details_array(well_data)
+
+      @manifest.update!(barcodes: @plates.map(&:human_barcode))
     end
 
     def acceptable_purposes
@@ -25,24 +34,6 @@ module SampleManifest::PlateBehaviour
 
     def included_resources
       [{ sample: :sample_metadata, asset: { plate: :barcodes } }]
-    end
-
-    def generate_wells(well_data, plates)
-      # Generate the wells, samples & requests asynchronously.
-      generate_wells_for_plates(well_data, plates) do |this_plates_well_data, plate|
-        generate_wells_asynchronously(this_plates_well_data.map { |map, sample_id| [map.id, sample_id] }, plate.id)
-      end
-
-      # Ensure we maintain the information we need for printing labels and generating
-      # the CSV file
-      @plates = plates.sort_by(&:human_barcode)
-
-      @details_array =
-        plates.flat_map do |plate|
-          well_data
-            .slice!(0, plate.size)
-            .map { |map, sample_id| { barcode: plate.human_barcode, position: map.description, sample_id: sample_id } }
-        end
     end
 
     def io_samples
@@ -83,65 +74,60 @@ module SampleManifest::PlateBehaviour
 
     # We use the barcodes here as we may need to reference the plates before the delayed job has passed
     def labware
-      plates | labware_from_barcodes
+      plates | Labware.with_barcode(barcodes)
     end
     alias printables labware
 
-    # Called by {SampleManifest::GenerateWellsJob} and builds the wells
-    def generate_wells_job(wells_for_plate, plate)
-      wells_for_plate.map do |map, sanger_sample_id|
-        plate
-          .wells
-          .create!(map: map) do |well|
-            SampleManifestAsset.create(sanger_sample_id: sanger_sample_id, asset: well, sample_manifest: @manifest)
-          end
-      end
-      RequestFactory.create_assets_requests(plate.wells, study)
-      plate.events.created_using_sample_manifest!(@manifest.user)
-    end
-
     private
 
-    # This method ensures that each of the plates is handled by an individual job.  If it doesn't do this we run
-    # the risk that the 'handler' column in the database for the delayed job will not be large enough and will
-    # truncate the data.
-    def generate_wells_for_plates(well_data, plates)
-      cloned_well_data = well_data.dup
-      plates.each { |plate| yield(cloned_well_data.slice!(0, plate.size), plate) }
+    def generate_plates(purpose)
+      Array.new(count) { purpose.create!(:without_wells) }.sort_by(&:human_barcode)
     end
 
-    def labware_from_barcodes
-      Labware.with_barcode(barcodes)
+    def insert_sanger_sample_ids
+      sanger_sample_ids = generate_sanger_ids(@plates.sum(&:size) * @manifest.rows_per_well)
+      sanger_sample_ids.map do |sanger_sample_id|
+        SangerSampleId.generate_sanger_sample_id!(study.abbreviation, sanger_sample_id)
+      end
     end
 
-    def generate_wells_asynchronously(map_ids_to_sample_ids, plate_id)
-      Delayed::Job.enqueue SampleManifest::GenerateWellsJob.new(@manifest.id, map_ids_to_sample_ids, plate_id)
-    end
-
-    # rubocop:todo Metrics/MethodLength
-    def generate_plates(purpose) # rubocop:todo Metrics/AbcSize
-      study_abbreviation = study.abbreviation
-
-      well_data = []
-      plates = Array.new(count) { purpose.create!(:without_wells) }.sort_by(&:human_barcode)
-
-      plates.each do |plate|
-        sanger_sample_ids = generate_sanger_ids(plate.size)
+    # output:
+    # plate_id => { map_id => [sanger_sample_id, sanger_sample_id, ...] }
+    def build_well_data(sanger_sample_ids)
+      @plates.each_with_object({}) do |plate, well_data|
+        well_data[plate.id] = {}
 
         plate.maps.in_column_major_order.each do |well_map|
-          sanger_sample_id = sanger_sample_ids.shift
-          generated_sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study_abbreviation, sanger_sample_id)
-
-          well_data << [well_map, generated_sanger_sample_id]
+          well_data[plate.id][well_map.id] = sanger_sample_ids.shift(@manifest.rows_per_well)
         end
       end
-
-      generate_wells(well_data, plates)
-      @manifest.update!(barcodes: plates.map(&:human_barcode))
-
-      plates
     end
-    # rubocop:enable Metrics/MethodLength
+
+    # Each of the plates is handled by an individual job.
+    # If it doesn't do this we run the risk that the 'handler' column in the database
+    # for the delayed job will not be large enough and will truncate the data.
+    def build_wells_async(well_data)
+      @plates.each do |plate|
+        Delayed::Job.enqueue SampleManifest::GenerateWellsJob.new(@manifest.id, well_data[plate.id], plate.id)
+      end
+    end
+
+    # output:
+    # [{barcode, position, sanger_sample_id}, {barcode, position, sanger_sample_id}, ...]
+    def build_details_array(well_data)
+      @details_array =
+        @plates.flat_map do |plate|
+          well_data[plate.id].flat_map do |map_id, sanger_sample_ids|
+            sanger_sample_ids.map do |sanger_sample_id|
+              {
+                barcode: plate.human_barcode,
+                position: plate.maps.find(map_id).description,
+                sample_id: sanger_sample_id
+              }
+            end
+          end
+        end
+    end
   end
 
   class Core < Base

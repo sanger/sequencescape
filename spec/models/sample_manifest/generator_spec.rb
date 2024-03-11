@@ -24,9 +24,10 @@ RSpec.describe SampleManifest::Generator, :sample_manifest, :sample_manifest_exc
   let!(:supplier) { create(:supplier) }
   let!(:barcode_printer) { create(:barcode_printer) }
   let(:configuration) { SampleManifestExcel.configuration }
+  let(:template) { 'plate_full' }
 
   let(:attributes) do
-    { template: 'plate_full', study_id: study.id, supplier_id: supplier.id, count: '4' }.with_indifferent_access
+    { template: template, study_id: study.id, supplier_id: supplier.id, count: '4' }.with_indifferent_access
   end
 
   after(:all) { SampleManifestExcel.reset! }
@@ -39,7 +40,7 @@ RSpec.describe SampleManifest::Generator, :sample_manifest, :sample_manifest_exc
     expect(described_class.new(attributes, nil, configuration)).not_to be_valid
   end
 
-  it 'is not be unless all of the attributes are present' do
+  it 'is not valid unless all of the attributes are present' do
     SampleManifest::Generator::REQUIRED_ATTRIBUTES.each do |attribute|
       expect(described_class.new(attributes.except(attribute), user, configuration)).not_to be_valid
     end
@@ -122,5 +123,25 @@ RSpec.describe SampleManifest::Generator, :sample_manifest, :sample_manifest_exc
 
   it 'does not have a print job if printer name has not been provided' do
     expect(described_class.new(attributes, user, configuration)).not_to be_print_job_required
+  end
+
+  context 'with rows_per_well set' do
+    let(:template) { 'pools_plate' }
+
+    # TODO: un-skip when rows_per_well feature is enabled (when DPL-823 is complete)
+    skip 'generates a details array with more than one entry per well' do
+      generator = described_class.new(attributes, user, configuration)
+      generator.execute
+      expect(generator.sample_manifest.details_array.size).to eq(4 * 96 * 2)
+    end
+  end
+
+  context 'with rows_per_well not set' do
+    # TODO: un-skip when rows_per_well feature is enabled (when DPL-823 is complete)
+    skip 'generates a details array with one entry per well' do
+      generator = described_class.new(attributes, user, configuration)
+      generator.execute
+      expect(generator.sample_manifest.details_array.size).to eq(4 * 96)
+    end
   end
 end
