@@ -29,13 +29,16 @@ class SampleManifest::Uploader
 
   def run!
     result = ActiveRecord::Base.transaction do
-      raise ActiveRecord::Rollback unless valid?
-      raise ActiveRecord::Rollback unless process_upload_and_callbacks
+      process_result = process_upload_and_callbacks
+      is_valid = valid?
+      raise ActiveRecord::Rollback unless is_valid && process_result
       true
     end
 
-    extract_errors unless result
-    upload.fail unless result
+    local_result = result || false
+
+    extract_errors unless local_result
+    upload.fail unless local_result
     result
   end
 
