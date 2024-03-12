@@ -88,7 +88,7 @@ GEM
       activesupport (= 6.0.6.1)
     activerecord-import (1.5.1)
       activerecord (>= 4.2)
-    activeresource (6.0.0)
+    activeresource (6.1.0)
       activemodel (>= 6.0)
       activemodel-serializers-xml (~> 1.0)
       activesupport (>= 6.0)
