@@ -27,12 +27,17 @@ class SampleManifest::Uploader
       SampleManifestExcel::Upload::Base.new(file: file, column_list: self.configuration.columns.all, override: override)
   end
 
+  # 1. If valid? == false, exit from the block returning false
+  # 2. If process_upload_and_callbacks == true, exit from the block returning true
+  # 3. Else, raise ActiveRecord::Rollback
   def run!
     result = ActiveRecord::Base.transaction do
-      process_result = process_upload_and_callbacks
       is_valid = valid?
+      return false unless is_valid  # Find a better way to do this. Returning in a transaction
+      # block is not a good practice
+      process_result = process_upload_and_callbacks
       raise ActiveRecord::Rollback unless is_valid && process_result
-      true
+      is_valid && process_result
     end
 
     local_result = result || false
