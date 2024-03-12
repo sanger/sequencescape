@@ -110,7 +110,7 @@ GEM
       activesupport
     amq-protocol (2.3.2)
     ast (2.4.2)
-    bootsnap (1.16.0)
+    bootsnap (1.18.3)
       msgpack (~> 1.2)
     builder (3.2.4)
     bullet (7.1.6)
