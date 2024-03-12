@@ -303,7 +303,7 @@ module ApplicationHelper
     when String
       json
     when Array
-      tag.ul { json.each_key { |elem| concat tag.li(render_parsed_json(elem)) } }
+      tag.ul { json.each { |elem| concat tag.li(render_parsed_json(elem)) } }
     when Hash
       tag.dl do
         json.each do |key, value|
