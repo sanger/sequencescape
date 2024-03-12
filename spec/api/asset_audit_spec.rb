@@ -44,7 +44,7 @@ describe '/api/1/asset_audits' do
       let(:response_body) do
         '{
           "content": {
-            "key": ["Key can only contain letters, numbers or _"]
+            "key": ["can\'t be blank", "Key can only contain letters, numbers or _"]
           }
         }'
       end
@@ -52,6 +52,7 @@ describe '/api/1/asset_audits' do
 
       it 'prevents resource creation' do
         api_request :post, resources, payload
+        p response.body
         expect(JSON.parse(response.body)).to include_json(JSON.parse(response_body))
         expect(status).to eq(response_code)
       end
