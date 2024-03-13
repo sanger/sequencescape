@@ -138,7 +138,7 @@ module SampleManifestExcel
       end
 
       def sample
-        @sample ||= manifest_asset&.find_or_create_sample(self) if sanger_sample_id.present? && !empty?
+        @sample ||= manifest_asset&.find_or_create_sample if sanger_sample_id.present? && !empty?
       end
 
       def sample_updated?

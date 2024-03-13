@@ -34,9 +34,16 @@ module SampleManifest::CoreBehaviour
   # The samples get registered in the stock resource table at the end of manifest upload and processing
   # (It used to happen here)
   module StockAssets
-    def generate_sample_and_aliquot(sanger_sample_id, receptacle, row = nil)
+    # Assume no tags?
+    def generate_sample_and_aliquot(sanger_sample_id, receptacle)
       create_sample(sanger_sample_id).tap do |sample|
-        receptacle.aliquots.create!(sample: sample, study: study, tag_depth: row&.tag_depth)
+        tag_depth = if @manifest.pools
+                      @manifest.pools[receptacle].find_index { |sma| sma.sample.sanger_sample_id == sanger_sample_id }
+                    else
+                      nil
+                    end
+
+        receptacle.aliquots.create!(sample: sample, study: study, tag_depth: tag_depth)
         study.samples << sample
       end
     end
@@ -46,9 +53,10 @@ module SampleManifest::CoreBehaviour
     end
   end
 
-  # Used for read-made libraries. Ensures that the library_id gets set
+  # Used for ready-made libraries. Ensures that the library_id gets set
   module LibraryAssets
-    def generate_sample_and_aliquot(sanger_sample_id, receptacle, row = nil)
+    # Assume tags?
+    def generate_sample_and_aliquot(sanger_sample_id, receptacle)
       create_sample(sanger_sample_id).tap do |sample|
         receptacle.aliquots.create!(sample: sample, study: study, library: receptacle)
         study.samples << sample
