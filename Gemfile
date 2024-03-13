@@ -42,7 +42,10 @@ group :default do
   # We pull down a slightly later version as there are commits on head
   # which we depend on, but don't have an official release yet.
   # This is mainly https://github.com/resgraph/acts-as-dag/commit/be2c0179983aaed44fda0842742c7abc96d26c4e
-  gem 'acts-as-dag', github: 'resgraph/acts-as-dag', branch: '5e185dddff6563ee9ee92611555cd9d9a519d280'
+  # ----------------------------
+  # NOTE: THIS WAS CHANGED TO payrollhero's master release as it contains a fix for a bug we were
+  # experiencing in Rails 6.1
+  gem 'acts-as-dag', github: 'payrollhero/acts-as-dag'
 
   # For background processing
   # Locked for ruby version

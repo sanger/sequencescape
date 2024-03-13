@@ -1,9 +1,8 @@
 GIT
-  remote: https://github.com/resgraph/acts-as-dag.git
-  revision: 5e185dddff6563ee9ee92611555cd9d9a519d280
-  branch: 5e185dddff6563ee9ee92611555cd9d9a519d280
+  remote: https://github.com/payrollhero/acts-as-dag.git
+  revision: 0a0a824013013d5b54d5b62716c3e29f0fe8a536
   specs:
-    acts-as-dag (4.0.0)
+    acts-as-dag (4.1.0)
       activemodel
       activerecord (>= 4.0.0)
 
@@ -235,9 +234,8 @@ GEM
     http-accept (1.7.0)
     http-cookie (1.0.5)
       domain_name (~> 0.5)
-    i18n (1.14.3)
+    i18n (1.14.4)
       concurrent-ruby (~> 1.0)
-      racc (~> 1.7)
     image_processing (1.12.2)
       mini_magick (>= 4.9.5, < 5)
       ruby-vips (>= 2.0.17, < 3)
