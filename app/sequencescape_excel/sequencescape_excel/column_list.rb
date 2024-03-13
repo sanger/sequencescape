@@ -96,11 +96,6 @@ module SequencescapeExcel
       "<#{self.class}: @columns:#{columns.map(&:name).inspect}...>"
     end
 
-    def has_tags?
-      names = columns.map(&:name)
-      names.any? { |name| name.include? 'tag' }
-    end
-
     private
 
     # You can add a hash of columns, a hash of attributes or an array of columns.

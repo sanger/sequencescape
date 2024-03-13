@@ -18,7 +18,7 @@ class SampleManifestAsset < ApplicationRecord
   convert_labware_to_receptacle_for :asset
 
   # Returns the existing sample, or generates a new one if it doesn't exist
-  def find_or_create_sample()
+  def find_or_create_sample
     self.sample ||= create_sample
   end
 
@@ -36,7 +36,7 @@ class SampleManifestAsset < ApplicationRecord
 
   private
 
-  def create_sample(row = nil)
+  def create_sample
     sample_manifest.create_sample_and_aliquot(sanger_sample_id, asset)
   end
 end
