@@ -37,8 +37,8 @@ module SampleManifest::CoreBehaviour
     # Used in manifest upload code to insert the sample and aliquot the database.
     # The receptacle and sanger_sample_id already exist as they are inserted upfront when the manifest is generated.
     # tag_depth is set on the aliquot if pools are present, and if the samples are not tagged, to avoid tag clash.
-    # The assumption is made that the fact we're in the 'StockAssets' module means tags are never present,
-    # and if we are in the LibraryAssets module, then tags are always present (hence no tag_depth setting in the equivalent method there).
+    # The assumption is made that samples passed to the below method are never tagged,
+    # because we're in the 'StockAssets' module rather than the 'LibraryAssets' module.
     def generate_sample_and_aliquot(sanger_sample_id, receptacle)
       create_sample(sanger_sample_id).tap do |sample|
         tag_depth = tag_depth_for_sample(@manifest.pools, receptacle, sanger_sample_id)
