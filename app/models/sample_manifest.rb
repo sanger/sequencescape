@@ -129,11 +129,26 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
     "#{study_id}stdy_manifest_#{id}_#{created_at.to_formatted_s(:dmy)}"
   end
 
-  # Use a default value of 1 for rows_per_well if not set
+  # Number of rows per well in the manifest.
+  # Specified in the manifest_types.yml config.
+  # Used to pre-populate the spreadsheet with a sufficient number of rows per well,
+  # in the case where we are importing a plate containing pools, and we want to provide
+  # sample-level information for the pools.
+  # Developed initially for the scRNA Core pipeline.
+  #
+  # Uses a default value of 1 if not set.
   def rows_per_well
     @rows_per_well || 1
   end
 
+  # Used in manifest upload code to determine if pools are present,
+  # so that tag_depth can be set on the aliquots if needed.
+  # Checks if at least one receptacle has more than one sample manifest asset.
+  # Sample manifest assets are a join table between sample manifest and receptacle,
+  # created upfront when a manifest is generated.
+  #
+  # Returns a hash, where key is receptacle and value is array of sample manifest assets.
+  # Returns nil if all receptacles only contain 0 or 1 sample.
   def pools
     @pools ||=
       begin
