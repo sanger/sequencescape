@@ -59,7 +59,7 @@ module SampleManifest::CoreBehaviour
     def tag_depth_for_sample(pools, receptacle, sanger_sample_id)
       return nil unless pools
 
-      pools[receptacle].find_index { |sma| sma.sample.sanger_sample_id == sanger_sample_id }
+      pools[receptacle].find_index { |sma| sma.sanger_sample_id == sanger_sample_id }
     end
   end
 
