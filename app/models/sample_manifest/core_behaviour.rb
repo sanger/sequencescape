@@ -37,11 +37,12 @@ module SampleManifest::CoreBehaviour
     # Assume no tags?
     def generate_sample_and_aliquot(sanger_sample_id, receptacle)
       create_sample(sanger_sample_id).tap do |sample|
-        tag_depth = if @manifest.pools
-                      @manifest.pools[receptacle].find_index { |sma| sma.sample.sanger_sample_id == sanger_sample_id }
-                    else
-                      nil
-                    end
+        tag_depth =
+          if @manifest.pools
+            @manifest.pools[receptacle].find_index { |sma| sma.sample.sanger_sample_id == sanger_sample_id }
+          else
+            nil
+          end
 
         receptacle.aliquots.create!(sample: sample, study: study, tag_depth: tag_depth)
         study.samples << sample

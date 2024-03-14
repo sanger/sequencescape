@@ -135,16 +135,13 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def pools
-    @pools ||= begin
-      receptacle_to_smas = sample_manifest_assets.group_by(&:asset)
+    @pools ||=
+      begin
+        receptacle_to_smas = sample_manifest_assets.group_by(&:asset)
 
-      # if all receptacles only contain 0 or 1 sample, there are no pools so return nil
-      if receptacle_to_smas.values.all?{ |smas| smas.size <= 1 }
-        nil
-      else
-        receptacle_to_smas
+        # if all receptacles only contain 0 or 1 sample, there are no pools so return nil
+        receptacle_to_smas.values.all? { |smas| smas.size <= 1 } ? nil : receptacle_to_smas
       end
-    end
   end
 
   scope :pending_manifests,
