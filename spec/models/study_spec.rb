@@ -660,6 +660,17 @@ RSpec.describe Study do
           metadata[:data_release_delay_reason_comment]
         )
       end
+
+      it 'validates the length of data_release_delay_other_comment' do
+        study.study_metadata.data_release_delay_other_comment =
+          'Data Release delay other comment.
+          Data Release delay other comment. Data Release delay other comment. Data Release delay other comment.
+          Data Release delay other comment. Data Release delay other comment. Data Release delay other comment.
+          Data Release delay other comment. Data Release delay other comment. Data Release delay other comment.'
+        expect { study.save! }.to raise_error(ActiveRecord::RecordInvalid)
+        expect(study.valid?).to be false
+        expect(study.errors.messages.length).to eq 1
+      end
     end
 
     context 'delayed for long time' do

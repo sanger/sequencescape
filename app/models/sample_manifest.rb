@@ -6,7 +6,7 @@
 # for the potential samples. It also generates a {SampleManifestExcel}
 # spreadsheet which gets sent to the customer.
 #
-# The labware that gets generate is determined by the {#asset_type} which
+# The labware that gets generated is determined by the {#asset_type} which
 # switches out the {#core_behaviour} module {SampleManifest::CoreBehaviour}.
 # This is concerned with generating {Labware} and {Receptacle receptacles},
 # generating any event specific to the asset type, and setting manifest specific
@@ -49,6 +49,7 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_uploaded_document :generated, differentiator: 'generated'
 
   attr_accessor :override, :only_first_label
+  attr_writer :rows_per_well
 
   class_attribute :spreadsheet_offset
   class_attribute :spreadsheet_header_row
@@ -126,6 +127,13 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def default_filename
     "#{study_id}stdy_manifest_#{id}_#{created_at.to_formatted_s(:dmy)}"
+  end
+
+  # Use a default value of 1 for rows_per_well if not set
+  def rows_per_well
+    1
+    # TODO: replace above line with below line to turn the rows_per_well feature on, when DPL-823 is complete
+    # @rows_per_well || 1
   end
 
   scope :pending_manifests,

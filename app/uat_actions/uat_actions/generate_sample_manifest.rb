@@ -114,7 +114,8 @@ class UatActions::GenerateSampleManifest < UatActions
       name: sample_name,
       sample_metadata_attributes: {
         supplier_name: sample_name,
-        collected_by: UatActions::StaticRecords.collection_site
+        collected_by: UatActions::StaticRecords.collection_site,
+        donor_id: "#{sample_name}_donor"
       },
       sample_manifest: sample_manifest
     )

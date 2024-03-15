@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_12_04_163029) do
+ActiveRecord::Schema.define(version: 2024_02_14_144515) do
 
   create_table "aliquot_indices", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "aliquot_id", null: false
@@ -1327,6 +1327,7 @@ ActiveRecord::Schema.define(version: 2023_12_04_163029) do
     t.string "password"
     t.integer "purpose_id"
     t.integer "tube_rack_purpose_id"
+    t.integer "rows_per_well"
     t.index ["purpose_id"], name: "fk_rails_5627ab4aaa"
     t.index ["study_id"], name: "index_sample_manifests_on_study_id"
     t.index ["supplier_id"], name: "index_sample_manifests_on_supplier_id"

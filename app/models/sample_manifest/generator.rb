@@ -96,11 +96,19 @@ class SampleManifest::Generator
   end
 
   def attributes
-    params.except(:template, :barcode_printer, :only_first_label).merge(user: user, asset_type: asset_type)
+    params
+      .except(:template, :barcode_printer, :only_first_label)
+      .merge(user: user, asset_type: asset_type, rows_per_well: rows_per_well)
   end
 
   def asset_type
     configuration.manifest_types.find_by(params[:template]).asset_type
+  end
+
+  # Retrieves the value of the rows_per_well attribute from the manifest_types.yml config.
+  # If the attribute is not set, it returns nil.
+  def rows_per_well
+    configuration.manifest_types.find_by(params[:template]).rows_per_well
   end
 
   def only_first_label

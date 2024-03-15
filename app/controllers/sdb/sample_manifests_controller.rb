@@ -37,6 +37,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
     @study_id = @sample_manifest.study_id
     @samples = @sample_manifest.samples.paginate(page: params[:page])
   end
+
   def new # rubocop:todo Metrics/AbcSize
     params[:only_first_label] ||= false
     @sample_manifest = SampleManifest.new(new_manifest_params)
