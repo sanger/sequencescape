@@ -29,7 +29,7 @@ RUN apt-get update && apt-get install -y \
     yarn
 
 # switch shell to bash, to use source command
-SHELL ["/bin/bash", "--login", "-i", "-c"]
+SHELL ["/bin/bash", "--login", "-c"]
 # install nvm, in order to install the correct version of nodejs, rather than the image default
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.2/install.sh | bash
 # install nodejs, using the version in the .nvmrc file
