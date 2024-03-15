@@ -27,9 +27,6 @@ class SampleManifest::Uploader
       SampleManifestExcel::Upload::Base.new(file: file, column_list: self.configuration.columns.all, override: override)
   end
 
-  # 1. If valid? == false, exit from the block returning false
-  # 2. If process_upload_and_callbacks == true, exit from the block returning true
-  # 3. Else, raise ActiveRecord::Rollback
   def run!
     result = ActiveRecord::Base.transaction do
       is_valid = valid?

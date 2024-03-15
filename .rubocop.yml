@@ -202,9 +202,6 @@ RSpec/SpecFilePathFormat:
 RSpec/PendingWithoutReason:
   Enabled: false
 
-RSpec/ExampleWording:
-  Enabled: false
-
 Capybara/ClickLinkOrButtonStyle:
   Enabled: false
 
