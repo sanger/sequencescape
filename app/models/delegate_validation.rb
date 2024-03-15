@@ -102,7 +102,9 @@ module DelegateValidation
 
       @validators.each do |validator|
         validator.errors.each do |attrib, message|
-          errors.add(attrib, message)
+          unless errors.include?(attrib)
+            errors.add(attrib, message)
+          end
         end
       end
 
