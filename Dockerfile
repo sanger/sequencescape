@@ -49,7 +49,7 @@ RUN apt update
 RUN apt install -y ./google-chrome-stable_current_amd64.deb
 RUN rm ./google-chrome-stable_current_amd64.deb
 
-echo "Using node version $(node -v)"
+RUN echo "Using node version $(node -v)"
 
 # Rails installation
 RUN npm install --global yarn
