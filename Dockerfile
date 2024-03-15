@@ -55,4 +55,4 @@ RUN echo "Using node version $(node -v)"
 RUN npm install --global yarn
 RUN gem install bundler
 RUN bundle install
-RUN yarn --install
+RUN source /root/.bashrc && nvm exec yarn --install
