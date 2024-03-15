@@ -65,6 +65,6 @@ class QuadStampController < ApplicationController
       .require(:quad_creator)
       .require(:parent_barcodes)
       .permit(:quad_1, :quad_2, :quad_3, :quad_4)
-      .reject { |_key, barcode| barcode.empty?  }
+      .reject { |_key, barcode| barcode.empty? }
   end
 end

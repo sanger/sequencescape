@@ -90,11 +90,7 @@ module Accession
 
     def check_sample
       if sample.errors.is_a?(ActiveModel::Errors)
-        unless sample.valid?
-          sample.errors.each do |error|
-            errors.add error.attribute, error.message
-          end
-        end
+        sample.errors.each { |error| errors.add error.attribute, error.message } unless sample.valid?
       else
         sample.errors.each { |key, value| errors.add key, value } unless sample.valid?
       end

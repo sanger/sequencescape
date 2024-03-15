@@ -18,7 +18,10 @@ class Utf8mb3Validator < ActiveModel::EachValidator
     invalid_characters = value.chars.select { |c| c.bytesize > 3 }
     return true if invalid_characters.empty?
 
-    record.errors.add(attribute, options[:message] ||
-      "contains supplementary characters (eg. emoji), remove or replace them: #{invalid_characters.to_sentence}")
+    record.errors.add(
+      attribute,
+      options[:message] ||
+        "contains supplementary characters (eg. emoji), remove or replace them: #{invalid_characters.to_sentence}"
+    )
   end
 end

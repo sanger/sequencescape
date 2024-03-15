@@ -28,14 +28,16 @@ class SampleManifest::Uploader
   end
 
   def run!
-    result = ActiveRecord::Base.transaction do
-      is_valid = valid?
-      return false unless is_valid  # Find a better way to do this. Returning in a transaction
-      # block is not a good practice
-      process_result = process_upload_and_callbacks
-      raise ActiveRecord::Rollback unless is_valid && process_result
-      is_valid && process_result
-    end
+    result =
+      ActiveRecord::Base.transaction do
+        is_valid = valid?
+        return false unless is_valid # Find a better way to do this. Returning in a transaction
+
+        # block is not a good practice
+        process_result = process_upload_and_callbacks
+        raise ActiveRecord::Rollback unless is_valid && process_result
+        is_valid && process_result
+      end
 
     local_result = result || false
 
@@ -68,9 +70,7 @@ class SampleManifest::Uploader
 
   def extract_errors
     if upload.errors.is_a?(ActiveModel::Errors)
-      upload.errors.each do |error|
-        errors.add error.attribute, error.message
-      end
+      upload.errors.each { |error| errors.add error.attribute, error.message }
     else
       upload.errors.each { |key, value| errors.add key, value }
     end

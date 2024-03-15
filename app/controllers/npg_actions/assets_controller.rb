@@ -36,9 +36,7 @@ class NpgActions::AssetsController < ApplicationController
         generate_events(state)
       end
 
-      respond_to do |format|
-        format.any { render template: 'assets/show', formats: [:xml] }
-      end
+      respond_to { |format| format.any { render template: 'assets/show', formats: [:xml] } }
     end
   end
 

@@ -24,9 +24,7 @@ module Heron
 
         def add_all_errors_from_event(event)
           if event.errors.is_a?(ActiveModel::Errors)
-            event.errors.each do |error|
-              errors.add(error.attribute, error.message)
-            end
+            event.errors.each { |error| errors.add(error.attribute, error.message) }
           else
             event.errors.each { |key, value| errors.add(key, value) }
           end

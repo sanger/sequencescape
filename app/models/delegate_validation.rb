@@ -101,11 +101,7 @@ module DelegateValidation
       return true if @validators.map(&:valid?).all?(true)
 
       @validators.each do |validator|
-        validator.errors.each do |attrib, message|
-          unless errors.include?(attrib)
-            errors.add(attrib, message)
-          end
-        end
+        validator.errors.each { |attrib, message| errors.add(attrib, message) unless errors.include?(attrib) }
       end
 
       false

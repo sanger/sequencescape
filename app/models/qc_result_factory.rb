@@ -162,7 +162,6 @@ class QcResultFactory
       else
         qc_result.errors.each { |key, value| errors.add key, value unless key == :asset && blank_well? }
       end
-
     end
 
     def check_asset_identifier
