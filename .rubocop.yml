@@ -216,3 +216,7 @@ Rails/ThreeStateBooleanColumn:
 
 RSpec/ExpectInHook:
   Enabled: false
+
+# Remove this after the rubocop fixes
+Lint/RedundantCopDisableDirective:
+  Enabled: false
