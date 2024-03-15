@@ -87,20 +87,20 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: "18"
-      - name: Cache js
-        uses: actions/cache@v2
-        with:
-          path: |
-            public/assets
-            node_modules
-          key: ${{ runner.os }}-tests-${{ hashFiles('yarn.lock') }}
-          # If we don't find the specific cache we want, fallback to the last raketests
-          # cache, then finally any cache for this repo.
-          # Github looks for the newest cache beginning with the first entry, before
-          # falling back the the second if none is present.
-          restore-keys: |
-            ${{ runner.os }}-tests-
-            ${{ runner.os }}-
+#      - name: Cache js
+#        uses: actions/cache@v2
+#        with:
+#          path: |
+#            public/assets
+#            node_modules
+#          key: ${{ runner.os }}-tests-${{ hashFiles('yarn.lock') }}
+#          # If we don't find the specific cache we want, fallback to the last raketests
+#          # cache, then finally any cache for this repo.
+#          # Github looks for the newest cache beginning with the first entry, before
+#          # falling back the the second if none is present.
+#          restore-keys: |
+#            ${{ runner.os }}-tests-
+#            ${{ runner.os }}-
       # Install only the gems needed for testing
       # Keep an eye on https://github.com/rubygems/bundler-features/issues/59
       # in case bundler add an only flag
