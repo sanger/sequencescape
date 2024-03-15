@@ -102,7 +102,7 @@ class LocationReport::LocationReportForm
     end
   end
 
-  def add_location_errors # rubocop:todo Metrics/AbcSize
+  def add_location_errors
     return if location_report.nil?
 
     # In Rails 6.1 object.errors returns ActiveModel::Errors, in Rails 6.0 it returns a Hash

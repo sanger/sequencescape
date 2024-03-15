@@ -153,7 +153,7 @@ class QcResultFactory
       errors.add(:uuid, "#{message_id} does not belong to a valid asset")
     end
 
-    def check_qc_result # rubocop:todo Metrics/AbcSize
+    def check_qc_result
       return if qc_result.valid?
       if qc_result.errors.is_a?(ActiveModel::Errors)
         qc_result.errors.each do |error|
