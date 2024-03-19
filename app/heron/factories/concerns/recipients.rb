@@ -49,12 +49,8 @@ module Heron
 
             next if recipient.valid?
 
-            if recipient.errors.is_a?(ActiveModel::Errors)
-              recipient.errors.each do |error|
-                errors.add("Recipient at #{coordinate} #{error.attribute}", error.message)
-              end
-            else
-              recipient.errors.each { |k, v| errors.add("Recipient at #{coordinate} #{k}", v) }
+            recipient.errors.each do |error|
+              errors.add("Recipient at #{coordinate} #{error.attribute}", error.message)
             end
           end
         end

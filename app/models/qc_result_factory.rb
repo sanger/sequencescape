@@ -155,12 +155,8 @@ class QcResultFactory
 
     def check_qc_result
       return if qc_result.valid?
-      if qc_result.errors.is_a?(ActiveModel::Errors)
-        qc_result.errors.each do |error|
-          errors.add error.attribute, error.message unless error.attribute == :asset && blank_well?
-        end
-      else
-        qc_result.errors.each { |key, value| errors.add key, value unless key == :asset && blank_well? }
+      qc_result.errors.each do |error|
+        errors.add error.attribute, error.message unless error.attribute == :asset && blank_well?
       end
     end
 

@@ -104,7 +104,7 @@ jobs:
           # falling back the the second if none is present.
           restore-keys: |
             ${{ runner.os }}-tests-
-      #            ${{ runner.os }}-
+            ${{ runner.os }}-
       # Install only the gems needed for testing
       # Keep an eye on https://github.com/rubygems/bundler-features/issues/59
       # in case bundler add an only flag

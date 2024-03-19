@@ -30,11 +30,7 @@ module Heron
         return if broadcast_event.valid?
 
         # In Rails 6.1 object.errors returns ActiveModel::Errors, in Rails 6.0 it returns a Hash
-        if broadcast_event.errors.is_a?(ActiveModel::Errors)
-          broadcast_event.errors.each { |error| errors.add error.attribute, error.message }
-        else
-          object.errors.each { |key, value| errors.add key, value }
-        end
+        broadcast_event.errors.each { |error| errors.add error.attribute, error.message }
       end
 
       def save
