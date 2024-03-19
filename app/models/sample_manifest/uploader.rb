@@ -28,22 +28,19 @@ class SampleManifest::Uploader
   end
 
   def run!
-    result =
-      ActiveRecord::Base.transaction do
-        is_valid = valid?
-        return false unless is_valid # Find a better way to do this. Returning in a transaction
+    ActiveRecord::Base.transaction do
+      return false unless valid? # rubocop:todo Rails/TransactionExitStatement
 
-        # block is not a good practice
-        process_result = process_upload_and_callbacks
-        raise ActiveRecord::Rollback unless is_valid && process_result
-        is_valid && process_result
-      end
+      return true if process_upload_and_callbacks # rubocop:todo Rails/TransactionExitStatement
 
-    local_result = result || false
+      # One of our post processing checks failed, something went wrong, so we
+      # roll everything back
+      raise ActiveRecord::Rollback
+    end
 
-    extract_errors unless local_result
-    upload.fail unless local_result
-    result
+    extract_errors
+    upload.fail
+    false
   end
 
   private
