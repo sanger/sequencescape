@@ -91,19 +91,19 @@ jobs:
           node-version: "${{ steps.nvm.outputs.NVMRC }}"
 
       # Establish a cache of js modules to improve performance
-      #      - name: Cache js
-      #        uses: actions/cache@v2
-      #        with:
-      #          path: |
-      #            public/assets
-      #            node_modules
-      #          key: ${{ runner.os }}-tests-${{ hashFiles('yarn.lock') }}
-      #          # If we don't find the specific cache we want, fallback to the last raketests
-      #          # cache, then finally any cache for this repo.
-      #          # Github looks for the newest cache beginning with the first entry, before
-      #          # falling back the the second if none is present.
-      #          restore-keys: |
-      #            ${{ runner.os }}-tests-
+      - name: Cache js
+        uses: actions/cache@v2
+        with:
+          path: |
+            public/assets
+            node_modules
+          key: ${{ runner.os }}-tests-${{ hashFiles('yarn.lock') }}
+          # If we don't find the specific cache we want, fallback to the last raketests
+          # cache, then finally any cache for this repo.
+          # Github looks for the newest cache beginning with the first entry, before
+          # falling back the the second if none is present.
+          restore-keys: |
+            ${{ runner.os }}-tests-
       #            ${{ runner.os }}-
       # Install only the gems needed for testing
       # Keep an eye on https://github.com/rubygems/bundler-features/issues/59
