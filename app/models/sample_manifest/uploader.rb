@@ -28,15 +28,15 @@ class SampleManifest::Uploader
   end
 
   def run!
-
     # Validation outside the transaction because we want to return the errors
     return false unless valid?
 
     # Rails 6.1 doesn't allow return value from transaction block
-    success = ActiveRecord::Base.transaction do
-      raise ActiveRecord::Rollback unless process_upload_and_callbacks
-      true
-    end
+    success =
+      ActiveRecord::Base.transaction do
+        raise ActiveRecord::Rollback unless process_upload_and_callbacks
+        true
+      end
 
     # Return from the function if the transaction succeeded
     return true if success
