@@ -82,11 +82,15 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-      # Establish a cache of js modules to improve performance
+      - name: Read .nvmrc
+        run: echo ::set-output name=NVMRC::$(cat .nvmrc)
+        id: nvm
       - name: Setup node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v1
         with:
-          node-version: "18"
+          node-version: '${{ steps.nvm.outputs.NVMRC }}'
+
+      # Establish a cache of js modules to improve performance
       #      - name: Cache js
       #        uses: actions/cache@v2
       #        with:

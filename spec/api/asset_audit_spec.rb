@@ -52,7 +52,6 @@ describe '/api/1/asset_audits' do
 
       it 'prevents resource creation' do
         api_request :post, resources, payload
-        p response.body
         expect(JSON.parse(response.body)).to include_json(JSON.parse(response_body))
         expect(status).to eq(response_code)
       end

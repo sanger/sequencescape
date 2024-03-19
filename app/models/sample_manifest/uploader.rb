@@ -28,16 +28,20 @@ class SampleManifest::Uploader
   end
 
   def run!
-    ActiveRecord::Base.transaction do
-      return false unless valid? # rubocop:todo Rails/TransactionExitStatement
 
-      return true if process_upload_and_callbacks # rubocop:todo Rails/TransactionExitStatement
+    # Validation outside the transaction because we want to return the errors
+    return false unless valid?
 
-      # One of our post processing checks failed, something went wrong, so we
-      # roll everything back
-      raise ActiveRecord::Rollback
+    # Rails 6.1 doesn't allow return value from transaction block
+    success = ActiveRecord::Base.transaction do
+      raise ActiveRecord::Rollback unless process_upload_and_callbacks
+      true
     end
 
+    # Return from the function if the transaction succeeded
+    return true if success
+
+    # Else, return false and extract the errors
     extract_errors
     upload.fail
     false
