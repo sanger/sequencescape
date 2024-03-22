@@ -229,8 +229,7 @@ Lint/NonLocalExitFromIterator:
 # Offense count: 1
 # This cop supports safe autocorrection (--autocorrect).
 Lint/RedundantCopDisableDirective:
-  Exclude:
-    - 'app/controllers/npg_actions/assets_controller.rb'
+  Enabled: false
 
 # Offense count: 4
 Lint/ReturnInVoidContext:
