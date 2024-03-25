@@ -74,7 +74,7 @@ class TagGroup::FormObject
         @tag_group.save
       end
 
-    return unless success
+    return if success
 
     errors.add(:base, I18n.t('tag_groups.errors.failed_to_save_tag_group'))
     @tag_group.errors.full_messages.each { |msg| errors.add_to_base("TagGroup Error: #{msg}") }
