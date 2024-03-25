@@ -20,42 +20,44 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
 
   after { File.delete(test_file_name) if File.exist?(test_file_name) }
 
-  it 'will not be valid without a filename' do
-    expect(described_class.new(nil, SampleManifestExcel.configuration, user, false)).not_to be_valid
-  end
+  describe '#initialize' do
+    it 'will not be valid without a filename' do
+      expect(described_class.new(nil, SampleManifestExcel.configuration, user, false)).not_to be_valid
+    end
 
-  it 'will not be valid without some configuration' do
-    download =
-      build(
-        :test_download_tubes,
-        manifest_type: 'tube_library_with_tag_sequences',
-        columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup
-      )
-    download.save(test_file_name)
-    expect(described_class.new(test_file, nil, user, false)).not_to be_valid
-  end
+    it 'will not be valid without some configuration' do
+      download =
+        build(
+          :test_download_tubes,
+          manifest_type: 'tube_library_with_tag_sequences',
+          columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup
+        )
+      download.save(test_file_name)
+      expect(described_class.new(test_file, nil, user, false)).not_to be_valid
+    end
 
-  it 'will not be valid without a tag group' do
-    SampleManifestExcel.configuration.tag_group = nil
-    download =
-      build(
-        :test_download_tubes,
-        manifest_type: 'tube_library_with_tag_sequences',
-        columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup
-      )
-    download.save(test_file_name)
-    expect(described_class.new(test_file, SampleManifestExcel.configuration, user, false)).not_to be_valid
-    SampleManifestExcel.configuration.tag_group = 'My Magic Tag Group'
-  end
+    it 'will not be valid without a tag group' do
+      SampleManifestExcel.configuration.tag_group = nil
+      download =
+        build(
+          :test_download_tubes,
+          manifest_type: 'tube_library_with_tag_sequences',
+          columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup
+        )
+      download.save(test_file_name)
+      expect(described_class.new(test_file, SampleManifestExcel.configuration, user, false)).not_to be_valid
+      SampleManifestExcel.configuration.tag_group = 'My Magic Tag Group'
+    end
 
-  it 'will not be valid without a user' do
-    download =
-      build(
-        :test_download_tubes,
-        columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup
-      )
-    download.save(test_file_name)
-    expect(described_class.new(test_file, SampleManifestExcel.configuration, nil, false)).not_to be_valid
+    it 'will not be valid without a user' do
+      download =
+        build(
+          :test_download_tubes,
+          columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup
+        )
+      download.save(test_file_name)
+      expect(described_class.new(test_file, SampleManifestExcel.configuration, nil, false)).not_to be_valid
+    end
   end
 
   context 'when checking uploads' do
@@ -168,7 +170,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
         build(
           :test_download_plates,
           num_plates: number_of_plates,
-          num_samples_per_plate: samples_per_plate,
+          num_filled_wells_per_plate: samples_per_plate,
           manifest_type: 'plate_full',
           columns: SampleManifestExcel.configuration.columns.plate_full.dup,
           study: create(:open_study, accession_number: 'acc')
@@ -301,6 +303,43 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
       uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
       uploader.run!
       expect(uploader).to be_processed
+    end
+
+    context 'pools plate manifest' do
+      let(:uploader) { described_class.new(test_file, SampleManifestExcel.configuration, user, false) }
+
+      before do
+        # create a test manifest file with 2 plates, 2 wells per plate, and 2 rows per well
+        download = build(:test_download_plates, num_rows_per_well: 2, columns: SampleManifestExcel.configuration.columns.pools_plate.dup)
+        download.save(test_file_name)
+        Delayed::Worker.delay_jobs = false
+        uploader.run!
+      end
+
+      it 'will upload the manifest' do
+        expect(uploader).to be_processed
+      end
+
+      it 'will understand there is one pool per well' do
+        expect(uploader.upload.sample_manifest.pools).not_to be_nil
+        expect(uploader.upload.sample_manifest.pools.count).to eq(4) # one pool per well
+      end
+
+      it 'will set tag_depth on aliquots' do
+        labware = uploader.upload.sample_manifest.labware
+        expect(labware.count).to eq(2)
+
+        labware.each do |plate|
+          wells = plate.wells
+          expect(wells.count).to eq(2)
+
+          wells.each do |well|
+            aliquots = well.aliquots
+            # within a well, each aliquot should have its own tag_depth
+            expect(aliquots.map { |w| w.tag_depth }.uniq.count).to eq(aliquots.count)
+          end
+        end
+      end
     end
   end
 end

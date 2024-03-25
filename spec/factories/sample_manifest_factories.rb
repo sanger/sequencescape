@@ -78,8 +78,9 @@ FactoryBot.define do
     factory :pending_plate_sample_manifest do
       transient do
         num_plates { 2 }
-        num_samples_per_plate { 2 }
-        plates { create_list :plate, num_plates, well_factory: :empty_well, well_count: num_samples_per_plate }
+        num_filled_wells_per_plate { 2 }
+        num_rows_per_well { 1 }
+        plates { create_list :plate, num_plates, well_factory: :empty_well, well_count: num_filled_wells_per_plate }
       end
 
       barcodes { plates.map(&:human_barcode) }
@@ -89,7 +90,9 @@ FactoryBot.define do
         evaluator
           .plates
           .flat_map(&:wells)
-          .each { |well| create(:sample_manifest_asset, asset: well, sample_manifest: sample_manifest) }
+          .each do |well|
+            evaluator.num_rows_per_well.times { create(:sample_manifest_asset, asset: well, sample_manifest: sample_manifest) }
+          end
       end
     end
 
