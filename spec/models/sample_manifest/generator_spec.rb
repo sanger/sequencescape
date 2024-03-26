@@ -128,7 +128,7 @@ RSpec.describe SampleManifest::Generator, :sample_manifest, :sample_manifest_exc
   context 'with rows_per_well set' do
     let(:template) { 'pools_plate' }
 
-    skip 'generates a details array with more than one entry per well' do
+    it 'generates a details array with more than one entry per well' do
       generator = described_class.new(attributes, user, configuration)
       generator.execute
       expect(generator.sample_manifest.details_array.size).to eq(4 * 96 * 2)
@@ -136,7 +136,7 @@ RSpec.describe SampleManifest::Generator, :sample_manifest, :sample_manifest_exc
   end
 
   context 'with rows_per_well not set' do
-    skip 'generates a details array with one entry per well' do
+    it 'generates a details array with one entry per well' do
       generator = described_class.new(attributes, user, configuration)
       generator.execute
       expect(generator.sample_manifest.details_array.size).to eq(4 * 96)
