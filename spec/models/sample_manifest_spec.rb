@@ -348,7 +348,12 @@ RSpec.describe SampleManifest, :sample_manifest do
   end
 
   describe '#pools' do
-    let(:manifest) { create :plate_sample_manifest_with_manifest_assets, study: study, asset_type: 'plate', num_samples_per_well: num_samples_per_well }
+    let(:manifest) do
+      create :plate_sample_manifest_with_manifest_assets,
+             study: study,
+             asset_type: 'plate',
+             num_samples_per_well: num_samples_per_well
+    end
 
     context 'when there is only one sample per well' do
       let(:num_samples_per_well) { 1 }

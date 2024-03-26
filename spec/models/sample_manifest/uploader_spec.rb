@@ -310,7 +310,12 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
 
       before do
         # create a test manifest file with 2 plates, 2 wells per plate, and 2 rows per well
-        download = build(:test_download_plates, num_rows_per_well: 2, columns: SampleManifestExcel.configuration.columns.pools_plate.dup)
+        download =
+          build(
+            :test_download_plates,
+            num_rows_per_well: 2,
+            columns: SampleManifestExcel.configuration.columns.pools_plate.dup
+          )
         download.save(test_file_name)
         Delayed::Worker.delay_jobs = false
         uploader.run!
@@ -335,6 +340,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
 
           wells.each do |well|
             aliquots = well.aliquots
+
             # within a well, each aliquot should have its own tag_depth
             expect(aliquots.map { |w| w.tag_depth }.uniq.count).to eq(aliquots.count)
           end
