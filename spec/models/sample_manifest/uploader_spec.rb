@@ -305,7 +305,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
       expect(uploader).to be_processed
     end
 
-    context 'pools plate manifest' do
+    context 'with a pools plate manifest' do
       let(:uploader) { described_class.new(test_file, SampleManifestExcel.configuration, user, false) }
 
       before do
@@ -342,7 +342,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
             aliquots = well.aliquots
 
             # within a well, each aliquot should have its own tag_depth
-            expect(aliquots.map { |w| w.tag_depth }.uniq.count).to eq(aliquots.count)
+            expect(aliquots.map(&:tag_depth).uniq.count).to eq(aliquots.count)
           end
         end
       end

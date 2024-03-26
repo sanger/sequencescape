@@ -21,10 +21,9 @@ module SampleManifestExcel
                     :partial,
                     :cgap,
                     :num_plates,
-                    :num_filled_wells_per_plate,
-                    :num_rows_per_well
+                    :num_filled_wells_per_plate
       attr_reader :dynamic_attributes, :tags, :study
-      attr_writer :manifest_type
+      attr_writer :manifest_type, :num_rows_per_well
 
       def initialize(attributes = {}) # rubocop:todo Metrics/MethodLength
         super
