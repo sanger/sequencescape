@@ -20,3 +20,18 @@ limber_scrna_core_cdna_prep_v2:
     # - Chromium single cell 3 prime HT v3
     # - Chromium single cell BCR HT
     # - Chromium single cell TCR HT
+limber_scrna_core_cdna_prep_input:
+  name: scRNA Core cDNA Prep Input
+  asset_type: Well
+  order: 1
+  request_class_name: IlluminaHtp::Requests::StdLibraryRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: Short Read
+  acceptable_purposes:
+    - LRC PBMC Pools Input
+  library_types:
+    - Chromium single cell 5 prime HT v2
+    # - Chromium single cell 3 prime HT v3
+    # - Chromium single cell BCR HT
+    # - Chromium single cell TCR HT
