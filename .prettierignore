@@ -52,3 +52,4 @@ config/cucumber.yml
 config/database.yml
 *.min.js
 public/vite-*
+.ruby-lsp/vendor
