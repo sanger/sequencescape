@@ -34,9 +34,9 @@ module SampleManifest::CoreBehaviour
   # The samples get registered in the stock resource table at the end of manifest upload and processing
   # (It used to happen here)
   module StockAssets
-    # Used in manifest upload code to insert the sample and aliquot the database.
+    # Used in manifest upload code to insert the sample and aliquot into the database.
     # The receptacle and sanger_sample_id already exist as they are inserted upfront when the manifest is generated.
-    # tag_depth is set on the aliquot if pools are present, and if the samples are not tagged, to avoid tag clash.
+    # tag_depth is set on the aliquot to avoid tag clash if a) pools are present, and b) if the samples are not tagged.
     # The assumption is made that samples passed to the below method are never tagged,
     # because we're in the 'StockAssets' module rather than the 'LibraryAssets' module.
     def generate_sample_and_aliquot(sanger_sample_id, receptacle)
