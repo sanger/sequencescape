@@ -1,33 +1,20 @@
-# Request types for scRNA Core 'Donor Pooling' and 'cDNA Prep' submission.
-# These are two stages of the pipeline for doing the submission in one go.
+# Request type for scRNA Core 'Donor Pooling' and 'cDNA Prep' submission.
+# There is only one request type for this submission.
 # - asset_type is the type of asset that is being requested.
-# - order is the sequence of requests within the submission.
 # - acceptable_purposes is where the request type can be used.
 #
 ---
-limber_scrna_core_donor_pooling:
-  name: scRNA Core Donor Pooling
+limber_scrna_core_cdna_prep_v2:
+  name: scRNA Core cDNA Prep
   asset_type: SampleTube
   order: 1
-  request_class_name: CustomerRequest
+  request_class_name: IlluminaHtp::Requests::StdLibraryRequest
   for_multiplexing: false
   billable: true
   product_line_name: Short Read
   acceptable_purposes:
     - LRC Bank Seq
     - LRC Bank Spare
-
-limber_scrna_core_cdna_prep:
-  name: scRNA Core cDNA Prep
-  asset_type: Well
-  order: 2
-  request_class_name: IlluminaHtp::Requests::StdLibraryRequest
-  for_multiplexing: false
-  billable: true
-  product_line_name: Short Read
-  acceptable_purposes:
-    - LRC PBMC Pools
-    # - LRC PBMC Pools Input
   library_types:
     - Chromium single cell 5 prime HT v2
     # - Chromium single cell 3 prime HT v3
