@@ -5,7 +5,9 @@ require_relative 'view/tabs/item'
 require_relative 'view/tabs/list'
 require_relative 'globals'
 
-module ApplicationHelper
+module ControllerHelper
+  # Extends the application helper with methods to add menu items, tabs, and legends and logging
+
   include Informatics::Globals
 
   # rubocop:todo Metrics/MethodLength, Metrics/AbcSize

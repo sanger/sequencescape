@@ -53,7 +53,7 @@ class ApplicationRecord < ActiveRecord::Base
     #   end
     def convert_labware_to_receptacle_for(*associations)
       associations.each do |assn|
-        define_method("#{assn}=") do |associated|
+        define_method(:"#{assn}=") do |associated|
           return super(associated) if associated.is_a?(Receptacle)
 
           Rails.logger.warn("#{associated.class.name} passed to #{assn}")

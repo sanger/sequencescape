@@ -280,7 +280,7 @@ class StudiesController < ApplicationController
 
   # rubocop:todo Metrics/MethodLength
   def self.role_helper(name, success_action, error_action) # rubocop:todo Metrics/AbcSize
-    define_method("#{name}_role") do
+    define_method(:"#{name}_role") do
       ActiveRecord::Base.transaction do
         @study = Study.find(params[:id])
         @user = User.find(params.require(:role).fetch(:user))

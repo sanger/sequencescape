@@ -89,7 +89,7 @@ module Accession
     private
 
     def check_sample
-      sample.errors.each { |key, value| errors.add key, value } unless sample.valid?
+      sample.errors.each { |error| errors.add error.attribute, error.message } unless sample.valid?
     end
   end
 end
