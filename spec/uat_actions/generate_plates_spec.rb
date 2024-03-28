@@ -36,7 +36,7 @@ describe UatActions::GeneratePlates do
         expect(Plate.find_by_barcode(report['plate_0']).wells.first.aliquots.first.study).to eq study
         expect(Plate.find_by_barcode(report['plate_0']).wells.first.aliquots.size).to eq 1
       end
-      
+
       context 'with multiple samples per well' do
         let(:num_samples_per_well) { 4 }
 
