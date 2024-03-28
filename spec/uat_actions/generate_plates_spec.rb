@@ -11,13 +11,15 @@ describe UatActions::GeneratePlates do
     let(:plate_barcode_3) { build(:plate_barcode) }
 
     context 'when creating a single plate' do
+      let(:num_samples_per_well) { 1 }
       let(:parameters) do
         {
           plate_purpose_name: PlatePurpose.stock_plate_purpose.name,
           plate_count: 1,
           well_count: 1,
           study_name: study.name,
-          well_layout: 'Column'
+          well_layout: 'Column',
+          number_of_samples_in_each_well: num_samples_per_well
         }
       end
       let(:report) do
@@ -32,6 +34,16 @@ describe UatActions::GeneratePlates do
         expect(uat_action.perform).to be true
         expect(uat_action.report['plate_0']).to eq report['plate_0']
         expect(Plate.find_by_barcode(report['plate_0']).wells.first.aliquots.first.study).to eq study
+        expect(Plate.find_by_barcode(report['plate_0']).wells.first.aliquots.size).to eq 1
+      end
+
+      context 'with multiple samples per well' do
+        let(:num_samples_per_well) { 4 }
+
+        it 'can be performed' do
+          expect(uat_action.perform).to be true
+          expect(Plate.find_by_barcode(report['plate_0']).wells.first.aliquots.size).to eq 4
+        end
       end
     end
 

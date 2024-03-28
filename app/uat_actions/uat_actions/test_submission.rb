@@ -67,6 +67,18 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
              options: {
                minimum: 1
              }
+  form_field :number_of_samples_in_each_well,
+             :number_field,
+             label: 'Number of samples per occupied well',
+             help:
+               'Use this option to create wells containing a pool of multiple samples. Enter ' \
+                 'the number of samples per well. All occupied wells will have this number of samples.' \
+                 'Useful for a pipeline where pools of starting samples is required.' \
+                 'Leave blank for 1 sample per well. Max 10 samples per well.',
+             options: {
+               minimum: 1,
+               maximum: 10
+             }
   form_field :number_of_wells_to_submit,
              :number_field,
              label: 'Number of wells to submit',
@@ -80,6 +92,7 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
 
   validates :submission_template, presence: { message: 'could not be found' }
   validates :number_of_wells_with_samples, numericality: { greater_than: 0, only_integer: true, allow_blank: true }
+  validates :number_of_samples_in_each_well, numericality: { greater_than: 0, only_integer: true, allow_blank: true }
   validates :number_of_wells_to_submit, numericality: { greater_than: 0, only_integer: true, allow_blank: true }
 
   #
@@ -87,7 +100,7 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
   #
   # @return [UatActions::TestSubmission] A default object for rendering a form
   def self.default
-    new
+    new(number_of_samples_in_each_well: 1)
   end
 
   def self.compatible_submission_templates
@@ -121,6 +134,7 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
     report['primer_panel'] = order.request_options[:primer_panel_name] if order.request_options[:primer_panel_name]
       .present?
     report['number_of_wells_with_samples'] = labware.wells.with_aliquots.size
+    report['number_of_samples_in_each_well'] = labware.wells.with_aliquots.first.aliquots.size
     report['number_of_wells_to_submit'] = assets.size
     order.submission.built!
     true
@@ -166,22 +180,46 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
     @labware ||= plate_barcode.blank? ? generate_plate : Plate.find_by_barcode(plate_barcode.strip)
   end
 
-  def generate_plate # rubocop:todo Metrics/MethodLength
-    generator = UatActions::GeneratePlates.default
-    generator.plate_purpose_name = plate_purpose_name.presence || default_purpose_name
-
-    num_sample_wells = number_of_wells_with_samples.to_i
-    generator.well_count =
-      if num_sample_wells.zero?
-        # default option, create a full plate
-        96
+  # Ensures number of samples per occupied well is at least 1
+  def num_samples_per_well
+    @num_samples_per_well ||=
+      if number_of_samples_in_each_well.present? && number_of_samples_in_each_well.to_i.positive?
+        number_of_samples_in_each_well.to_i
       else
-        # take the number entered in the form
-        num_sample_wells
+        1
       end
-    generator.well_layout = 'Random'
+  end
+
+  # Generates a new plate using a plate generator.
+  # The generator is set up with the appropriate parameters, then used to perform the plate generation.
+  # After the plate is generated, the barcode is retrieved.
+  # @return [Plate] the newly generated Plate object
+  def generate_plate
+    generator = setup_generator
     generator.perform
     Plate.find_by_barcode(generator.report['plate_0'])
+  end
+
+  # Sets up a plate generator with the appropriate parameters.
+  # The generator is created with default settings, then its attributes are set based on the current object's state.
+  # The plate purpose name is set to the plate_purpose_name entered by the user, or to the default purpose name if
+  # plate_purpose_name is not present.
+  # The well count is determined by the `determine_well_count` method.
+  # The well layout is set to 'Random'.
+  # The number of samples in each well is set to num_samples_per_well.
+  # @return [UatActions::GeneratePlates] the configured plate generator
+  def setup_generator
+    generator = UatActions::GeneratePlates.default
+    generator.plate_purpose_name = plate_purpose_name.presence || default_purpose_name
+    generator.well_count = determine_well_count
+    generator.well_layout = 'Random'
+    generator.number_of_samples_in_each_well = num_samples_per_well
+    generator
+  end
+
+  def determine_well_count
+    num_sample_wells = number_of_wells_with_samples.to_i
+    num_sample_wells.zero? ? 96 : num_sample_wells
   end
 
   def order_request_options

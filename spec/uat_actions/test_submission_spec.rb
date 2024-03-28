@@ -87,6 +87,16 @@ describe UatActions::TestSubmission do
         expect(uat_action.report['number_of_wells_to_submit']).to be_a Integer
       end
     end
+
+    context 'with optional number of samples per well supplied' do
+      let(:parameters) { { submission_template_name: submission_template.name, number_of_samples_in_each_well: '2' } }
+
+      it 'can be performed' do
+        expect(uat_action.perform).to be true
+        expect(uat_action.report['plate_barcode_0']).to eq report['plate_barcode_0']
+        expect(uat_action.report['number_of_samples_in_each_well']).to be_a Integer
+      end
+    end
   end
 
   it 'returns a default' do
