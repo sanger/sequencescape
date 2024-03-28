@@ -37,13 +37,13 @@ RSpec.describe SampleManifest, :sample_manifest do
         context "count: #{count}" do
           let(:count) { count }
 
-          it "create #{count} plate(s), #{count * 96} wells" do
+          it "creates #{count} plate(s), #{count * 96} wells" do
             expect { manifest.generate }.to change(Plate, :count).by(count).and change(Well, :count).by(count * 96)
             expect(manifest.labware.count).to eq(count)
             expect(manifest.labware.first).to be_a(Plate)
           end
 
-          it 'create sample manifest assets' do
+          it 'creates sample manifest assets' do
             expect { manifest.generate }.to change(SampleManifestAsset, :count).by(count * 96)
             wells = Plate.includes(:wells).with_barcode(manifest.barcodes).flat_map(&:wells)
             expect(manifest.assets).to eq(wells)
@@ -62,7 +62,7 @@ RSpec.describe SampleManifest, :sample_manifest do
               )
             end
 
-            it 'create sample and aliquots' do
+            it 'creates sample and aliquots' do
               sma1 = manifest.sample_manifest_assets.first
               expect { manifest.create_sample_and_aliquot(sma1.sanger_sample_id, sma1.asset) }.to change(Sample, :count)
                 .by(1).and change { study.samples.count }.by(1)
@@ -82,7 +82,7 @@ RSpec.describe SampleManifest, :sample_manifest do
 
         before { manifest.generate }
 
-        it 'create a plate of the correct purpose' do
+        it 'creates a plate of the correct purpose' do
           expect(Plate.last.purpose).to eq(purpose)
         end
       end
@@ -96,19 +96,19 @@ RSpec.describe SampleManifest, :sample_manifest do
 
       teardown { Delayed::Worker.delay_jobs = true }
 
-      it 'create 1 plate(s), 96 wells' do
+      it 'creates 1 plate(s), 96 wells' do
         expect { manifest.generate }.to change(Plate, :count).by(count).and change(Well, :count).by(count * 96)
         expect(manifest.labware.count).to eq(count)
         expect(manifest.labware.first).to be_a(Plate)
       end
 
-      it 'create sample manifest assets' do
+      it 'creates sample manifest assets' do
         expect { manifest.generate }.to change(SampleManifestAsset, :count).by(count * 96)
         wells = Plate.includes(:wells).with_barcode(manifest.barcodes).flat_map(&:wells)
         expect(manifest.assets).to eq(wells)
       end
 
-      context 'follwing generation' do
+      context 'following generation' do
         before { manifest.generate }
 
         it 'returns the details of the created samples' do
@@ -121,7 +121,7 @@ RSpec.describe SampleManifest, :sample_manifest do
           )
         end
 
-        it 'create sample and aliquots' do
+        it 'creates sample and aliquots' do
           sma1 = manifest.sample_manifest_assets.first
           expect { manifest.create_sample_and_aliquot(sma1.sanger_sample_id, sma1.asset) }.to change(Sample, :count).by(
             1
@@ -141,7 +141,7 @@ RSpec.describe SampleManifest, :sample_manifest do
 
         before { manifest.generate }
 
-        it 'create a plate of the correct purpose' do
+        it 'creates a plate of the correct purpose' do
           expect(Plate.last.purpose).to eq(purpose)
         end
       end
@@ -172,7 +172,7 @@ RSpec.describe SampleManifest, :sample_manifest do
                                                       ).by(1).and change(BroadcastEvent, :count).by(1)
           end
 
-          it 'create sample manifest asset' do
+          it 'creates sample manifest assets' do
             expect { manifest.generate }.to change(SampleManifestAsset, :count).by(count)
             expect(manifest.assets).to match_array(LibraryTube.with_barcode(manifest.barcodes).map(&:receptacle))
           end
@@ -189,7 +189,7 @@ RSpec.describe SampleManifest, :sample_manifest do
               )
             end
 
-            it 'create sample and aliquots' do
+            it 'creates sample and aliquots' do
               sma = manifest.sample_manifest_assets.last
               expect { manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset) }.to change(Sample, :count)
                 .by(1).and change { study.samples.count }.by(1)
@@ -219,7 +219,7 @@ RSpec.describe SampleManifest, :sample_manifest do
       let(:count) { 1 }
 
       context 'library tubes' do
-        it 'create 1 tube' do
+        it 'creates 1 tube' do
           # We need to create library tubes as we have downstream dependencies that assume a unique library tube
           expect { manifest.generate }.to change(LibraryTube, :count).by(count)
           expect { manifest.generate }.not_to change(MultiplexedLibraryTube, :count)
@@ -237,12 +237,12 @@ RSpec.describe SampleManifest, :sample_manifest do
             expect(manifest.details_array.first).to eq(barcode: manifest.barcodes.first, sample_id: "WTCCC#{sample_id}")
           end
 
-          it 'create sample manifest asset' do
+          it 'creates sample manifest asset' do
             expect(manifest.assets.count).to eq(count)
             expect(manifest.assets).to eq(LibraryTube.with_barcode(manifest.barcodes).map(&:receptacle))
           end
 
-          it 'create sample and aliquots' do
+          it 'creates sample and aliquots' do
             sma = manifest.sample_manifest_assets.last
             expect { manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset) }.to change(Sample, :count).by(
               1
@@ -275,7 +275,7 @@ RSpec.describe SampleManifest, :sample_manifest do
         context "#{count} tubes(s)" do
           let(:count) { count }
 
-          it "create #{count} tubes(s)" do
+          it "creates #{count} tubes(s)" do
             expect { manifest.generate }.to change(SampleTube, :count).by(count).and change { manifest.assets.count }
                                                        .by(count)
             expect(manifest.assets).to eq(SampleTube.with_barcode(manifest.barcodes).map(&:receptacle))
@@ -284,7 +284,7 @@ RSpec.describe SampleManifest, :sample_manifest do
           context 'when generation has completed' do
             before { manifest.generate }
 
-            it 'create sample and aliquots' do
+            it 'creates sample and aliquots' do
               sma = manifest.sample_manifest_assets.last
               expect { manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset) }.to change(Sample, :count)
                 .by(1).and change { study.samples.count }.by(1)
@@ -293,7 +293,7 @@ RSpec.describe SampleManifest, :sample_manifest do
               expect(manifest.samples.first.primary_aliquot.study).to eq(study)
             end
 
-            it 'create create asset requests when jobs are processed' do
+            it 'creates create asset requests when jobs are processed' do
               # Not entirely certain this behaviour is all that useful to us.
               Delayed::Worker.new.work_off
 
@@ -344,6 +344,32 @@ RSpec.describe SampleManifest, :sample_manifest do
 
     it 'has one job per plate' do
       expect(Delayed::Job.count).to eq(manifest.count)
+    end
+  end
+
+  describe '#pools' do
+    let(:manifest) do
+      create :plate_sample_manifest_with_manifest_assets,
+             study: study,
+             asset_type: 'plate',
+             num_samples_per_well: num_samples_per_well
+    end
+
+    context 'when there is only one sample per well' do
+      let(:num_samples_per_well) { 1 }
+
+      it 'returns nil' do
+        expect(manifest.pools).to be_nil
+      end
+    end
+
+    context 'when there are multiple samples per well' do
+      let(:num_samples_per_well) { 2 }
+
+      it 'returns a hash of pools' do
+        expect(manifest.pools).to be_a(Hash)
+        expect(manifest.pools.size).to eq(manifest.labware.size)
+      end
     end
   end
 end

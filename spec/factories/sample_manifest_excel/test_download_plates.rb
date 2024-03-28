@@ -5,7 +5,8 @@ FactoryBot.define do
     columns { build :column_list }
     validation_errors { [] }
     num_plates { 2 }
-    num_samples_per_plate { 2 }
+    num_filled_wells_per_plate { 2 }
+    num_rows_per_well { 1 }
     study { 'WTCCC' }
     supplier { 'Test Supplier' }
     partial { false }
@@ -41,7 +42,8 @@ FactoryBot.define do
         study: study,
         supplier: supplier,
         num_plates: num_plates,
-        num_samples_per_plate: num_samples_per_plate,
+        num_filled_wells_per_plate: num_filled_wells_per_plate,
+        num_rows_per_well: num_rows_per_well,
         type: type,
         manifest_type: manifest_type
       )

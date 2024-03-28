@@ -34,9 +34,17 @@ module SampleManifest::CoreBehaviour
   # The samples get registered in the stock resource table at the end of manifest upload and processing
   # (It used to happen here)
   module StockAssets
+    # Used in manifest upload code to insert the sample and aliquot into the database.
+    # The receptacle and sanger_sample_id already exist as they are inserted upfront when the manifest is generated.
+    # tag_depth is set on the aliquot to avoid tag clash if a) pools are present, and b) if the samples are not tagged.
+    # The assumption is made that samples passed to the below method are never tagged,
+    # because we're in the 'StockAssets' module rather than the 'LibraryAssets' module.
     def generate_sample_and_aliquot(sanger_sample_id, receptacle)
       create_sample(sanger_sample_id).tap do |sample|
-        receptacle.aliquots.create!(sample: sample, study: study)
+        tag_depth = tag_depth_for_sample(@manifest.pools, receptacle, sanger_sample_id)
+
+        receptacle.aliquots.create!(sample: sample, study: study, tag_depth: tag_depth)
+
         study.samples << sample
       end
     end
@@ -44,9 +52,18 @@ module SampleManifest::CoreBehaviour
     def stocks?
       true
     end
+
+    # Assigns a tag_depth to a sample in a pool.
+    # Tag_depth just needs to be a unique integer for each sample in the pool,
+    # So we just use the index in the list of sample manifest assets in this receptacle.
+    def tag_depth_for_sample(pools, receptacle, sanger_sample_id)
+      return nil unless pools
+
+      pools[receptacle].find_index { |sma| sma.sanger_sample_id == sanger_sample_id }
+    end
   end
 
-  # Used for read-made libraries. Ensures that the library_id gets set
+  # Used for ready-made libraries. Ensures that the library_id gets set
   module LibraryAssets
     def generate_sample_and_aliquot(sanger_sample_id, receptacle)
       create_sample(sanger_sample_id).tap do |sample|
