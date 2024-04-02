@@ -153,23 +153,22 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
   end
 
   # take a selection of the wells to go into the submission
-  # rubocop:todo Metrics/MethodLength
   def select_assets # rubocop:todo Metrics/AbcSize
-    num_subm_wells = number_of_wells_to_submit.to_i
-    if num_subm_wells.zero?
-      # default option, take all wells with aliquots
-      labware.wells.with_aliquots
-    else
-      # take the number entered in the form
-      reqd_num_samples = num_subm_wells
+    num_wells_to_submit_from_plate = number_of_wells_to_submit.to_i
 
+    # fetch wells with aliquots, and remove duplicates in cases where multiple aliquots per well
+    wells_with_aliquots = labware.wells.with_aliquots.uniq
+
+    if num_wells_to_submit_from_plate.zero?
+      # default option, take all wells with aliquots
+      wells_with_aliquots
+    else
       # check the number is less than the total wells with aliquots
       # N.B. sort the array after random sampling to get back into original well order
-      num_wells_with_aliquots = labware.wells.with_aliquots.size
-      if reqd_num_samples > num_wells_with_aliquots
-        labware.wells.with_aliquots
+      if num_wells_to_submit_from_plate > wells_with_aliquots.size
+        wells_with_aliquots
       else
-        labware.wells.with_aliquots.sample(reqd_num_samples).sort_by(&:map_id)
+        wells_with_aliquots.sample(num_wells_to_submit_from_plate).sort_by(&:map_id)
       end
     end
   end
