@@ -152,7 +152,7 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
     @assets ||= select_assets
   end
 
-  # take a sample of the wells to go into the submission
+  # take a selection of the wells to go into the submission
   # rubocop:todo Metrics/MethodLength
   def select_assets # rubocop:todo Metrics/AbcSize
     num_subm_wells = number_of_wells_to_submit.to_i
