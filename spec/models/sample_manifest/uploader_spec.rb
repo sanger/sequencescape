@@ -296,6 +296,9 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
       expect(uploader).to be_processed
     end
 
+    # The manifest is generated for 2 plates, with 2 wells each, with 1 sample per well.
+    # The test_download_plates_partial factory leaves the last 2 rows of the manifest empty.
+    # So 2 samples are uploaded for the first plate, and 0 samples for the second plate.
     it 'will upload a valid partial plate sample manifest' do
       download = build(:test_download_plates_partial, columns: SampleManifestExcel.configuration.columns.plate_full.dup)
       download.save(test_file_name)
