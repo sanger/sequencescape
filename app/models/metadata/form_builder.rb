@@ -42,8 +42,8 @@ class Metadata::FormBuilder < Metadata::BuilderBase
         #{field}_without_bootstrap(*args, &block)
       end
     END_OF_METHOD
-    alias_method("#{field}_without_bootstrap", field)
-    alias_method(field, "#{field}_with_bootstrap")
+    alias_method(:"#{field}_without_bootstrap", field)
+    alias_method(field, :"#{field}_with_bootstrap")
   end
 
   def select(method, choices, options = {}, html_options = {}, &block)

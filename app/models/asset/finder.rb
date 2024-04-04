@@ -21,7 +21,7 @@ class Asset::Finder
       labware = Labware.find_by_barcode(labware_barcode)
       raise InvalidInputException, "No labware found for barcode #{labware_barcode}." if labware.nil?
 
-      well_array = (well_locations || '').split(',').reject(&:blank?).map(&:strip)
+      well_array = (well_locations || '').split(',').map(&:strip).compact_blank
 
       labware.respond_to?(:wells) ? find_wells_in_array(labware, well_array) : labware
     end

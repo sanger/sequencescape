@@ -155,8 +155,9 @@ class QcResultFactory
 
     def check_qc_result
       return if qc_result.valid?
-
-      qc_result.errors.each { |k, v| errors.add(k, v) unless k == :asset && blank_well? }
+      qc_result.errors.each do |error|
+        errors.add error.attribute, error.message unless error.attribute == :asset && blank_well?
+      end
     end
 
     def check_asset_identifier
@@ -171,9 +172,7 @@ class QcResultFactory
   def check_resources
     resources.each do |resource|
       next if resource.valid?
-
-      resource_errors = resource.errors.map { |key, value| "#{key} #{value}" }.join(' ')
-
+      resource_errors = resource.errors.map { |error| "#{error.attribute} #{error.message}" }.join(' ')
       errors.add(resource.message_id, resource_errors)
     end
   end

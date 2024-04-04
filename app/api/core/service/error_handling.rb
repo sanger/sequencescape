@@ -70,7 +70,7 @@ class ActiveRecord::RecordInvalid
   end
 
   def errors_grouped_by_attribute
-    record.errors.to_h { |k, v| [yield(k), [v].flatten.uniq] }
+    record.errors.as_json.transform_keys { |k| yield(k) }.transform_values { |v| [v].flatten.uniq }
   end
   private :errors_grouped_by_attribute
 end
@@ -82,7 +82,7 @@ class ActiveModel::ValidationError
   end
 
   def errors_grouped_by_attribute
-    model.errors.to_h { |k, v| [yield(k), [v].flatten.uniq] }
+    model.errors.to_hash { |k, v| [yield(k), [v].flatten.uniq] }
   end
   private :errors_grouped_by_attribute
 end

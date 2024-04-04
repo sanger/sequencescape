@@ -19,14 +19,14 @@
     <div class="col">
       <div class='form-group'>
         <%= f.label 'start_date', 'Start date' %><br>
-        <%= f.date_field :start_date %>
+        <%= f.date_field :start_date, value: f.object.start_date %>
       </div>
     </div>
 
     <div class="col">
       <div class='form-group'>
         <%= f.label 'end_date', 'End date' %><br>
-        <%= f.date_field :end_date %>
+        <%= f.date_field :end_date, value: f.object.end_date %>
       </div>
     </div>
   </div>

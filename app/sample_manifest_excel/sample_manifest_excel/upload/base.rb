@@ -161,7 +161,12 @@ module SampleManifestExcel
       def check_object(object)
         return if object.valid?
 
-        object.errors.each { |key, value| errors.add key, value }
+        # In Rails 6.1 object.errors returns ActiveModel::Errors, in Rails 6.0 it returns a Hash
+        if object.errors.is_a?(ActiveModel::Errors)
+          object.errors.each { |error| errors.add error.attribute, error.message }
+        else
+          object.errors.each { |key, value| errors.add key, value }
+        end
       end
 
       def processor?

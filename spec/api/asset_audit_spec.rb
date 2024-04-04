@@ -44,7 +44,7 @@ describe '/api/1/asset_audits' do
       let(:response_body) do
         '{
           "content": {
-            "key": ["Key can only contain letters, numbers or _"]
+            "key": ["can\'t be blank", "Key can only contain letters, numbers or _"]
           }
         }'
       end
