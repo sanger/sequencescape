@@ -52,8 +52,3 @@ config/cucumber.yml
 config/database.yml
 *.min.js
 public/vite-*
-
-features/support/paths.rb
-test/controllers/plates_controller_test.rb
-test/shoulda_macros/sanger_macros/resource_test.rb
-spec/features/shared_examples/cherrypicking.rb
