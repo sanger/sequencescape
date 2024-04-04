@@ -598,7 +598,7 @@ RSpec.describe SampleManifestExcel::Worksheet, :sample_manifest, :sample_manifes
         count: 1,
         type: 'Plates',
         num_plates: 2,
-        num_samples_per_plate: 3,
+        num_filled_wells_per_plate: 3,
         manifest_type: 'plate_default'
       }
     end
@@ -615,7 +615,7 @@ RSpec.describe SampleManifestExcel::Worksheet, :sample_manifest, :sample_manifes
 
       it 'last row should be correct' do
         expect(worksheet.last_row).to eq(
-          worksheet.first_row + (attributes[:num_plates] * attributes[:num_samples_per_plate]) - 1
+          worksheet.first_row + (attributes[:num_plates] * attributes[:num_filled_wells_per_plate]) - 1
         )
       end
 
