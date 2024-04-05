@@ -20,7 +20,7 @@ class PlatePurpose::Input < PlatePurpose
 
   def state_of(plate)
     # If there are no wells with aliquots we're pending
-    ids_of_wells_with_aliquots = plate.wells.with_aliquots.ids
+    ids_of_wells_with_aliquots = plate.wells.with_aliquots.ids.uniq
     return UNREADY_STATE if ids_of_wells_with_aliquots.empty?
 
     # All of the wells with aliquots must have customer requests for us to consider the plate passed

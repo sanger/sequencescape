@@ -63,13 +63,20 @@ class TagGroup::FormObject
   # rubocop:enable Metrics/MethodLength
 
   def persist! # rubocop:todo Metrics/AbcSize
-    TagGroup.transaction do
-      @tag_group = TagGroup.new(name: name, adapter_type_id: adapter_type_id)
-      @tag_group.tags.build(parse_oligos_list.each_with_index.map { |oligo, i| { oligo: oligo.upcase, map_id: i + 1 } })
-      return if @tag_group.save # rubocop:todo Rails/TransactionExitStatement
+    success =
+      TagGroup.transaction do
+        @tag_group = TagGroup.new(name: name, adapter_type_id: adapter_type_id)
+        @tag_group.tags.build(
+          parse_oligos_list.each_with_index.map { |oligo, i| { oligo: oligo.upcase, map_id: i + 1 } }
+        )
 
-      errors.add(:base, I18n.t('tag_groups.errors.failed_to_save_tag_group'))
-      @tag_group.errors.full_messages.each { |msg| errors.add_to_base("TagGroup Error: #{msg}") }
-    end
+        # return if @tag_group.save
+        @tag_group.save
+      end
+
+    return if success
+
+    errors.add(:base, I18n.t('tag_groups.errors.failed_to_save_tag_group'))
+    @tag_group.errors.full_messages.each { |msg| errors.add_to_base("TagGroup Error: #{msg}") }
   end
 end

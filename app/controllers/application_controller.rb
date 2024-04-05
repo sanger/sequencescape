@@ -29,7 +29,7 @@ class ApplicationController < ActionController::Base
   def block_api_access(message = nil, format = :xml)
     content = { error: 'Unsupported API access' }
     content[:message] = message unless message.nil?
-    { format => content.send("to_#{format}".to_sym, root: :errors), :status => 406 }
+    { format => content.send(:"to_#{format}", root: :errors), :status => 406 }
   end
 
   def extract_header_info

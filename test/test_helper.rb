@@ -82,6 +82,7 @@ end
 
 class ActionController::TestCase
   include FactoryBot::Syntax::Methods
+  include ApplicationHelper
 end
 
 require 'mocha'

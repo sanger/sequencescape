@@ -24,7 +24,7 @@ describe 'SampleManifest controller', :sample_manifest do
       select(study.name, from: 'Study')
       select(supplier.name, from: 'Supplier')
       within('#sample_manifest_template') do
-        expect(page).to have_css('option', count: 7)
+        expect(page).to have_css('option', count: 8)
         expect(page).not_to have_css('option', text: 'Default Tube')
       end
       select('Default Plate', from: 'Template')
@@ -66,7 +66,7 @@ describe 'SampleManifest controller', :sample_manifest do
 
     it 'indicate the purpose field is used for plates only' do
       visit(new_sample_manifest_path)
-      within('#sample_manifest_template') { expect(page).to have_css('option', count: 22) }
+      within('#sample_manifest_template') { expect(page).to have_css('option', count: 23) }
       select(created_purpose.name, from: 'Purpose')
       expect(page).to have_text('Used for plate manifests only')
     end

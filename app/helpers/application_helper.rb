@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 # rubocop:todo Metrics/ModuleLength
 module ApplicationHelper
+  include ControllerHelper
+
   # Should return either the custom text or a blank string
   def custom_text(identifier, differential = nil)
     Rails
@@ -195,7 +197,7 @@ module ApplicationHelper
 
   def tabulated_error_messages_for(*params) # rubocop:todo Metrics/AbcSize
     options = params.last.is_a?(Hash) ? params.pop.symbolize_keys : {}
-    objects = params.filter_map { |object_name| instance_variable_get("@#{object_name}") }
+    objects = params.filter_map { |object_name| instance_variable_get(:"@#{object_name}") }
     count = objects.inject(0) { |sum, object| sum + object.errors.count }
     if count.zero?
       ''
@@ -301,7 +303,7 @@ module ApplicationHelper
     when String
       json
     when Array
-      tag.ul { json.each { |elem, _string| concat tag.li(render_parsed_json(elem)) } }
+      tag.ul { json.each { |elem| concat tag.li(render_parsed_json(elem)) } }
     when Hash
       tag.dl do
         json.each do |key, value|

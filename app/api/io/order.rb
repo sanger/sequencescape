@@ -9,7 +9,7 @@ class Io::Order < Core::Io::Base
       fragment_size_required_to: 'fragment_size_required.to',
       pcr_cycles: 'pcr_cycles',
       primer_panel_name: 'primer_panel_name'
-    }.to_h { |k, v| ["request_options.#{k}".to_sym, "request_options.#{v}"] }
+    }.to_h { |k, v| [:"request_options.#{k}", "request_options.#{v}"] }
 
   def self.json_field_for(attribute)
     REQUEST_OPTIONS_FIELDS[attribute.to_sym] || super

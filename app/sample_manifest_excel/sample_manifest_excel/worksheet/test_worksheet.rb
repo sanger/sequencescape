@@ -21,9 +21,9 @@ module SampleManifestExcel
                     :partial,
                     :cgap,
                     :num_plates,
-                    :num_samples_per_plate
+                    :num_filled_wells_per_plate
       attr_reader :dynamic_attributes, :tags, :study
-      attr_writer :manifest_type
+      attr_writer :manifest_type, :num_rows_per_well
 
       def initialize(attributes = {}) # rubocop:todo Metrics/MethodLength
         super
@@ -60,7 +60,7 @@ module SampleManifestExcel
 
       def compute_last_row
         if %w[plate_default plate_full plate_rnachip].include? manifest_type
-          computed_first_row + (num_plates * num_samples_per_plate) - 1
+          computed_first_row + (num_plates * num_filled_wells_per_plate * num_rows_per_well) - 1
         else
           computed_first_row + no_of_rows
         end
@@ -88,7 +88,8 @@ module SampleManifestExcel
           FactoryBot.create(
             :pending_plate_sample_manifest,
             num_plates: num_plates,
-            num_samples_per_plate: num_samples_per_plate,
+            num_filled_wells_per_plate: num_filled_wells_per_plate,
+            num_rows_per_well: num_rows_per_well,
             study: study
           )
         when /tube_library/, /tube_chromium_library/
@@ -328,6 +329,10 @@ module SampleManifestExcel
 
       def computed_first_row
         type == 'Tube Racks' ? first_row + count + 1 : first_row
+      end
+
+      def num_rows_per_well
+        @num_rows_per_well ||= 1
       end
     end
   end

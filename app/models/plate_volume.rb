@@ -29,7 +29,9 @@ class PlateVolume < ApplicationRecord
   def calculate_barcode_from_filename
     return if uploaded_file_name.blank?
 
-    match = uploaded_file_name.match(/^([\w-]+).csv/i)
+    # "1710199891-762034227931512-0001-4669/SQPD-222.csv" -> "SQPD-222"
+    # "SQPD-222.csv" -> "SQPD-222"
+    match = uploaded_file_name.match(/([\w-]+).csv/i)
     return if match.nil?
 
     self.barcode = match[1]

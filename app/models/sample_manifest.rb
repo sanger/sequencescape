@@ -6,7 +6,7 @@
 # for the potential samples. It also generates a {SampleManifestExcel}
 # spreadsheet which gets sent to the customer.
 #
-# The labware that gets generate is determined by the {#asset_type} which
+# The labware that gets generated is determined by the {#asset_type} which
 # switches out the {#core_behaviour} module {SampleManifest::CoreBehaviour}.
 # This is concerned with generating {Labware} and {Receptacle receptacles},
 # generating any event specific to the asset type, and setting manifest specific
@@ -49,6 +49,7 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_uploaded_document :generated, differentiator: 'generated'
 
   attr_accessor :override, :only_first_label
+  attr_writer :rows_per_well
 
   class_attribute :spreadsheet_offset
   class_attribute :spreadsheet_header_row
@@ -126,6 +127,34 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def default_filename
     "#{study_id}stdy_manifest_#{id}_#{created_at.to_formatted_s(:dmy)}"
+  end
+
+  # Number of rows per well in the manifest file, specified in manifest_types.yml.
+  # Used to pre-populate the spreadsheet with a sufficient number of rows,
+  # in the case where we are importing a plate containing pools,
+  # and want to provide sample-level information for each pool.
+  # Developed initially for the scRNA Core pipeline.
+  #
+  # Uses a default value of 1 if not set.
+  def rows_per_well
+    @rows_per_well || 1
+  end
+
+  # Used in manifest upload code to determine if pools are present,
+  # so that tag_depth can be set on the aliquots if needed.
+  #
+  # Returns a hash of receptacle to array of sample manifest assets.
+  # Returns nil if all receptacles only contain 0 or 1 sample.
+  def pools
+    @pools ||=
+      begin
+        # Sample manifest assets are a join table between sample manifests and samples,
+        # created upfront when the manifest is generated.
+        # Here we use them to see how many samples are in each receptacle.
+        receptacle_to_smas = sample_manifest_assets.group_by(&:asset)
+
+        receptacle_to_smas.values.all? { |smas| smas.size <= 1 } ? nil : receptacle_to_smas
+      end
   end
 
   scope :pending_manifests,

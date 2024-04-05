@@ -1,7 +1,11 @@
-# The 'LRC PBMC Pools' purpose is controlled by Limber. However, it has been
-# added here to create submission and request type records for scRNA Core cDNA
-# Prep stage.
+# scRNA Core pipeline purposes
+# Most are defined in the Limber config, but the below also need to be defined in Sequencescape.
+# They are in a separate file so it can be 'feature flagged off' until needed.
 ---
-LRC PBMC Pools:
-  stock_plate: false
+# The 'LRC PBMC Pools Input' purpose is included here so that it's available for
+# sample manifests, and also because it is an acceptable purpose for the scRNA Core cDNA Prep Input
+# submission template.
+LRC PBMC Pools Input:
+  input_plate: true
+  stock_plate: true
   cherrypickable_target: false

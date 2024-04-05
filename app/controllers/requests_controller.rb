@@ -31,7 +31,7 @@ class RequestsController < ApplicationController
     @request_type = RequestType.find(params[:request_type_id]) if params[:request_type_id]
     @study = Study.find(params[:study_id]) if params[:study_id]
 
-    @subtitle = (@study&.name || @asset&.display_name)
+    @subtitle = @study&.name || @asset&.display_name
 
     # Deprecated?: It would be great if we could remove this
     if params[:request_type] && params[:workflow]
