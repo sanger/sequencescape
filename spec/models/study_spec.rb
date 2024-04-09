@@ -368,19 +368,7 @@ RSpec.describe Study do
         expect(studies).not_to include(study_4)
       end
 
-      it 'not include studies that do not have the correct data release timings' do
-        expect(
-          study_7.study_metadata.update!(
-            data_release_timing: Study::DATA_RELEASE_TIMING_NEVER,
-            data_release_prevention_reason: 'data validity',
-            data_release_prevention_approval: 'Yes',
-            data_release_prevention_reason_comment: 'blah, blah, blah'
-          )
-        ).to be_truthy
-        expect(described_class.for_sample_accessioning.count).to eq(4)
-      end
-
-      it 'not include studies that do not have the correct data release strategies' do
+      it 'not include studies that do not have the correct data release strategy or timing' do
         studies = described_class.for_sample_accessioning
         expect(studies).not_to include(study_8)
       end
@@ -640,6 +628,22 @@ RSpec.describe Study do
       it 'will have a dac_policy_title' do
         expect(study.study_metadata.dac_policy_title).to eq(metadata[:dac_policy_title])
       end
+
+      it 'errors if the data_release_timing is invalid' do
+        study.study_metadata.data_release_timing = 'never'
+        expect { study.save! }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
+
+    context 'open study' do
+      let(:study) do
+        create(:study, study_metadata: create(:study_metadata, metadata.merge(data_release_strategy: Study::DATA_RELEASE_STRATEGY_OPEN)))
+      end
+
+      it 'errors if the data_release_timing is invalid' do
+        study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_NEVER
+        expect { study.save! }.to raise_error(ActiveRecord::RecordInvalid)
+      end
     end
 
     context 'delayed for other reasons' do
@@ -691,8 +695,15 @@ RSpec.describe Study do
     end
 
     context 'never released' do
+      let(:never_release_fields) do
+        {
+          data_release_strategy: Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE,
+          data_release_timing: Study::DATA_RELEASE_TIMING_NEVER
+        }
+      end
+
       let(:study) do
-        create(:study, study_metadata: create(:study_metadata, metadata.merge(data_release_timing: 'never')))
+        create(:study, study_metadata: create(:study_metadata, metadata.merge(never_release_fields)))
       end
 
       it 'will have a data_release_prevention_reason' do
@@ -707,6 +718,26 @@ RSpec.describe Study do
         expect(study.study_metadata.data_release_prevention_reason_comment).to eq(
           metadata[:data_release_prevention_reason_comment]
         )
+      end
+
+      it 'errors if the data_release_timing is standard' do
+        study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_STANDARD
+        expect { study.save! }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it 'errors if the data_release_timing is immediate' do
+        study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_IMMEDIATE
+        expect { study.save! }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it 'errors if the data_release_timing is delayed' do
+        study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_DELAYED
+        expect { study.save! }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it 'is valid if the data_release_timing is never' do
+        study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_NEVER
+        expect { study.save! }.not_to raise_error(ActiveRecord::RecordInvalid)
       end
     end
   end

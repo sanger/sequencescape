@@ -22,6 +22,10 @@ class Study
       data_release_strategy == DATA_RELEASE_STRATEGY_MANAGED
     end
 
+    def strategy_not_applicable?
+      data_release_strategy == DATA_RELEASE_STRATEGY_NOT_APPLICABLE
+    end
+
     def delayed_release?
       data_release_timing == DATA_RELEASE_TIMING_DELAYED
     end
@@ -51,6 +55,9 @@ class Study
     validate :valid_policy_url?
 
     validate :sanity_check_y_separation, if: :separate_y_chromosome_data?
+
+    validates :data_release_timing, inclusion: { in: DATA_RELEASE_TIMINGS }, unless: :strategy_not_applicable?
+    validates :data_release_timing, inclusion: { in: [DATA_RELEASE_TIMING_NEVER] }, if: :strategy_not_applicable?
 
     def sanity_check_y_separation
       if remove_x_and_autosomes?
