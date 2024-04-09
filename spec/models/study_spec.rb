@@ -637,7 +637,11 @@ RSpec.describe Study do
 
     context 'open study' do
       let(:study) do
-        create(:study, study_metadata: create(:study_metadata, metadata.merge(data_release_strategy: Study::DATA_RELEASE_STRATEGY_OPEN)))
+        create(
+          :study,
+          study_metadata:
+            create(:study_metadata, metadata.merge(data_release_strategy: Study::DATA_RELEASE_STRATEGY_OPEN))
+        )
       end
 
       it 'errors if the data_release_timing is invalid' do
@@ -702,9 +706,7 @@ RSpec.describe Study do
         }
       end
 
-      let(:study) do
-        create(:study, study_metadata: create(:study_metadata, metadata.merge(never_release_fields)))
-      end
+      let(:study) { create(:study, study_metadata: create(:study_metadata, metadata.merge(never_release_fields))) }
 
       it 'will have a data_release_prevention_reason' do
         expect(study.study_metadata.data_release_prevention_reason).to eq(metadata[:data_release_prevention_reason])
