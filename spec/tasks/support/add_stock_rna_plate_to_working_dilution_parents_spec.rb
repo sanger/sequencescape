@@ -16,7 +16,7 @@ describe 'support:add_stock_rna_plate_to_working_dilution_parents', type: :task 
   let(:task_invoke) { Rake::Task[self.class.top_level_description].invoke }
 
   before do
-    load_tasks # Load tasks directly in the test
+    load_tasks # Load tasks directly in the test to avoid intermittent CI failures
     task_reenable # Allows the task to be invoked again
     plate_creator # The task assumes the plate creator already exists
     target_purpose # The task assumes the target purpose already exists
