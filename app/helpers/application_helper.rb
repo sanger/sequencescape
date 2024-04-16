@@ -334,9 +334,11 @@ module ApplicationHelper
   #
   def legacy_javascript_tag
     javascript_tag nonce: true do
-      concat "window.addEventListener('DOMContentLoaded', function() {".html_safe
+      concat 'if (document.readyState === "loading") {window.addEventListener("DOMContentLoaded", function() {'.html_safe
       yield
-      concat '})'
+      concat '});} else {'.html_safe
+      yield
+      concat '}'.html_safe
     end
   end
 end
