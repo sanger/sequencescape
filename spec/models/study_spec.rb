@@ -634,7 +634,10 @@ RSpec.describe Study do
 
         it 'errors if the data_release_timing is invalid' do
           study.study_metadata.data_release_timing = 'never'
-          expect { study.save! }.to raise_error(ActiveRecord::RecordInvalid, /Study metadata data release timing is not included in the list/)
+          expect { study.save! }.to raise_error(
+            ActiveRecord::RecordInvalid,
+            /Study metadata data release timing is not included in the list/
+          )
         end
       end
 
@@ -643,7 +646,10 @@ RSpec.describe Study do
 
         it 'does not error if the data_release_timing is invalid' do
           study.study_metadata.data_release_timing = 'never'
-          expect { study.save! }.not_to raise_error(ActiveRecord::RecordInvalid, /Study metadata data release timing is not included in the list/)
+          expect { study.save! }.not_to raise_error(
+            ActiveRecord::RecordInvalid,
+            /Study metadata data release timing is not included in the list/
+          )
         end
       end
     end
@@ -662,7 +668,10 @@ RSpec.describe Study do
 
         it 'errors if the data_release_timing is invalid' do
           study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_NEVER
-          expect { study.save! }.to raise_error(ActiveRecord::RecordInvalid, /Study metadata data release timing is not included in the list/)
+          expect { study.save! }.to raise_error(
+            ActiveRecord::RecordInvalid,
+            /Study metadata data release timing is not included in the list/
+          )
         end
       end
 
@@ -671,7 +680,10 @@ RSpec.describe Study do
 
         it 'does not error if the data_release_timing is invalid' do
           study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_NEVER
-          expect { study.save! }.not_to raise_error(ActiveRecord::RecordInvalid, /Study metadata data release timing is not included in the list/)
+          expect { study.save! }.not_to raise_error(
+            ActiveRecord::RecordInvalid,
+            /Study metadata data release timing is not included in the list/
+          )
         end
       end
     end
@@ -753,12 +765,18 @@ RSpec.describe Study do
 
         it 'errors if the data_release_timing is standard' do
           study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_STANDARD
-          expect { study.save! }.to raise_error(ActiveRecord::RecordInvalid, /Study metadata data release timing is not included in the list/)
+          expect { study.save! }.to raise_error(
+            ActiveRecord::RecordInvalid,
+            /Study metadata data release timing is not included in the list/
+          )
         end
 
         it 'errors if the data_release_timing is immediate' do
           study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_IMMEDIATE
-          expect { study.save! }.to raise_error(ActiveRecord::RecordInvalid, /Study metadata data release timing is not included in the list/)
+          expect { study.save! }.to raise_error(
+            ActiveRecord::RecordInvalid,
+            /Study metadata data release timing is not included in the list/
+          )
         end
 
         it 'errors if the data_release_timing is delayed' do
@@ -766,12 +784,18 @@ RSpec.describe Study do
           study.study_metadata.data_release_delay_reason = Study::DATA_RELEASE_DELAY_REASONS_STANDARD[0]
           study.study_metadata.data_release_delay_period = Study::DATA_RELEASE_DELAY_PERIODS[0]
           study.study_metadata.data_release_delay_approval = Study::YES
-          expect { study.save! }.to raise_error(ActiveRecord::RecordInvalid, /Study metadata data release timing is not included in the list/)
+          expect { study.save! }.to raise_error(
+            ActiveRecord::RecordInvalid,
+            /Study metadata data release timing is not included in the list/
+          )
         end
 
         it 'is valid if the data_release_timing is never' do
           study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_NEVER
-          expect { study.save! }.not_to raise_error(ActiveRecord::RecordInvalid, /Study metadata data release timing is not included in the list/)
+          expect { study.save! }.not_to raise_error(
+            ActiveRecord::RecordInvalid,
+            /Study metadata data release timing is not included in the list/
+          )
         end
       end
 
@@ -780,12 +804,18 @@ RSpec.describe Study do
 
         it 'does not error if the data_release_timing is standard' do
           study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_STANDARD
-          expect { study.save! }.not_to raise_error(ActiveRecord::RecordInvalid, /Study metadata data release timing is not included in the list/)
+          expect { study.save! }.not_to raise_error(
+            ActiveRecord::RecordInvalid,
+            /Study metadata data release timing is not included in the list/
+          )
         end
 
         it 'does not error if the data_release_timing is immediate' do
           study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_IMMEDIATE
-          expect { study.save! }.not_to raise_error(ActiveRecord::RecordInvalid, /Study metadata data release timing is not included in the list/)
+          expect { study.save! }.not_to raise_error(
+            ActiveRecord::RecordInvalid,
+            /Study metadata data release timing is not included in the list/
+          )
         end
 
         it 'does not error if the data_release_timing is delayed' do
@@ -793,12 +823,18 @@ RSpec.describe Study do
           study.study_metadata.data_release_delay_reason = Study::DATA_RELEASE_DELAY_REASONS_STANDARD[0]
           study.study_metadata.data_release_delay_period = Study::DATA_RELEASE_DELAY_PERIODS[0]
           study.study_metadata.data_release_delay_approval = Study::YES
-          expect { study.save! }.not_to raise_error(ActiveRecord::RecordInvalid, /Study metadata data release timing is not included in the list/)
+          expect { study.save! }.not_to raise_error(
+            ActiveRecord::RecordInvalid,
+            /Study metadata data release timing is not included in the list/
+          )
         end
 
         it 'is still valid if the data_release_timing is never' do
           study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_NEVER
-          expect { study.save! }.not_to raise_error(ActiveRecord::RecordInvalid, /Study metadata data release timing is not included in the list/)
+          expect { study.save! }.not_to raise_error(
+            ActiveRecord::RecordInvalid,
+            /Study metadata data release timing is not included in the list/
+          )
         end
       end
     end
