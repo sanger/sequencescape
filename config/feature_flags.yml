@@ -2,3 +2,4 @@
 # dpl202_enable_angry_cat_feature: When enabled this will add an angry cat to all pages that will try to catch the mouse pointer
 # The key should be lower case and snake case, and prefixed with the issue number to allow easy identification
 dpl_395_2_enable_advanced_search_tab: Shows the Search tab in the top navigation bar
+y24_052_enable_data_release_timing_validation: Shows the Search tab in the top navigation bar

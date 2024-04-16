@@ -629,9 +629,22 @@ RSpec.describe Study do
         expect(study.study_metadata.dac_policy_title).to eq(metadata[:dac_policy_title])
       end
 
-      it 'errors if the data_release_timing is invalid' do
-        study.study_metadata.data_release_timing = 'never'
-        expect { study.save! }.to raise_error(ActiveRecord::RecordInvalid)
+      context 'when the data_release_timing validation is switched on' do
+        before { Flipper.enable :y24_052_enable_data_release_timing_validation }
+
+        it 'errors if the data_release_timing is invalid' do
+          study.study_metadata.data_release_timing = 'never'
+          expect { study.save! }.to raise_error(ActiveRecord::RecordInvalid, /Study metadata data release timing is not included in the list/)
+        end
+      end
+
+      context 'when the data_release_timing validation is switched off' do
+        before { Flipper.disable :y24_052_enable_data_release_timing_validation }
+
+        it 'does not error if the data_release_timing is invalid' do
+          study.study_metadata.data_release_timing = 'never'
+          expect { study.save! }.not_to raise_error(ActiveRecord::RecordInvalid, /Study metadata data release timing is not included in the list/)
+        end
       end
     end
 
@@ -644,9 +657,22 @@ RSpec.describe Study do
         )
       end
 
-      it 'errors if the data_release_timing is invalid' do
-        study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_NEVER
-        expect { study.save! }.to raise_error(ActiveRecord::RecordInvalid)
+      context 'when the data_release_timing validation is switched on' do
+        before { Flipper.enable :y24_052_enable_data_release_timing_validation }
+
+        it 'errors if the data_release_timing is invalid' do
+          study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_NEVER
+          expect { study.save! }.to raise_error(ActiveRecord::RecordInvalid, /Study metadata data release timing is not included in the list/)
+        end
+      end
+
+      context 'when the data_release_timing validation is switched off' do
+        before { Flipper.disable :y24_052_enable_data_release_timing_validation }
+
+        it 'does not error if the data_release_timing is invalid' do
+          study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_NEVER
+          expect { study.save! }.not_to raise_error(ActiveRecord::RecordInvalid, /Study metadata data release timing is not included in the list/)
+        end
       end
     end
 
@@ -722,24 +748,58 @@ RSpec.describe Study do
         )
       end
 
-      it 'errors if the data_release_timing is standard' do
-        study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_STANDARD
-        expect { study.save! }.to raise_error(ActiveRecord::RecordInvalid)
+      context 'when the data_release_timing validation is switched on' do
+        before { Flipper.enable :y24_052_enable_data_release_timing_validation }
+
+        it 'errors if the data_release_timing is standard' do
+          study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_STANDARD
+          expect { study.save! }.to raise_error(ActiveRecord::RecordInvalid, /Study metadata data release timing is not included in the list/)
+        end
+
+        it 'errors if the data_release_timing is immediate' do
+          study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_IMMEDIATE
+          expect { study.save! }.to raise_error(ActiveRecord::RecordInvalid, /Study metadata data release timing is not included in the list/)
+        end
+
+        it 'errors if the data_release_timing is delayed' do
+          study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_DELAYED
+          study.study_metadata.data_release_delay_reason = Study::DATA_RELEASE_DELAY_REASONS_STANDARD[0]
+          study.study_metadata.data_release_delay_period = Study::DATA_RELEASE_DELAY_PERIODS[0]
+          study.study_metadata.data_release_delay_approval = Study::YES
+          expect { study.save! }.to raise_error(ActiveRecord::RecordInvalid, /Study metadata data release timing is not included in the list/)
+        end
+
+        it 'is valid if the data_release_timing is never' do
+          study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_NEVER
+          expect { study.save! }.not_to raise_error(ActiveRecord::RecordInvalid, /Study metadata data release timing is not included in the list/)
+        end
       end
 
-      it 'errors if the data_release_timing is immediate' do
-        study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_IMMEDIATE
-        expect { study.save! }.to raise_error(ActiveRecord::RecordInvalid)
-      end
+      context 'when the data_release_timing validation is switched off' do
+        before { Flipper.disable :y24_052_enable_data_release_timing_validation }
 
-      it 'errors if the data_release_timing is delayed' do
-        study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_DELAYED
-        expect { study.save! }.to raise_error(ActiveRecord::RecordInvalid)
-      end
+        it 'does not error if the data_release_timing is standard' do
+          study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_STANDARD
+          expect { study.save! }.not_to raise_error(ActiveRecord::RecordInvalid, /Study metadata data release timing is not included in the list/)
+        end
 
-      it 'is valid if the data_release_timing is never' do
-        study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_NEVER
-        expect { study.save! }.not_to raise_error(ActiveRecord::RecordInvalid)
+        it 'does not error if the data_release_timing is immediate' do
+          study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_IMMEDIATE
+          expect { study.save! }.not_to raise_error(ActiveRecord::RecordInvalid, /Study metadata data release timing is not included in the list/)
+        end
+
+        it 'does not error if the data_release_timing is delayed' do
+          study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_DELAYED
+          study.study_metadata.data_release_delay_reason = Study::DATA_RELEASE_DELAY_REASONS_STANDARD[0]
+          study.study_metadata.data_release_delay_period = Study::DATA_RELEASE_DELAY_PERIODS[0]
+          study.study_metadata.data_release_delay_approval = Study::YES
+          expect { study.save! }.not_to raise_error(ActiveRecord::RecordInvalid, /Study metadata data release timing is not included in the list/)
+        end
+
+        it 'is still valid if the data_release_timing is never' do
+          study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_NEVER
+          expect { study.save! }.not_to raise_error(ActiveRecord::RecordInvalid, /Study metadata data release timing is not included in the list/)
+        end
       end
     end
   end
