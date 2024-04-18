@@ -73,6 +73,9 @@ const attachEvents = () => {
   $(".observed").on("keyup", throttledUpdate).on("change", throttledUpdate);
 };
 
+// This violates the content security policy script-src directive.
+// Nonce values are used to allow some inline scripts, but can't be used by inline 'onclick' event handlers.
+// At time of writing, CSP is 'report only', so this JS will still run, but will produce a console warning.
 $(() => {
   attachEvents();
   // Trigger automatic loading if already flagged as active

@@ -120,6 +120,32 @@ class Metadata::FormBuilder < Metadata::BuilderBase
   end
 
   # Allows the options of the specified 'field' to be changed based on the value of another field.
+  #
+  # Inputs:
+  # field [Symbol] The affected field e.g. :data_release_timing
+  # options [Hash] Contains the controlling field, & a map of controlling values to resulting values (see e.g. below)
+  #
+  # All this method does is reformat the values hash to separate out keys that are arrays
+  # e.g. changing the options hash as follows:
+  #
+  # {
+  #   :when=>:data_release_strategy,
+  #   :values=>{
+  #     "not applicable"=>"never",
+  #     ["open", "managed"]=>["standard", "immediate", "delayed"]
+  #   }
+  # }
+  # becomes
+  # {
+  #   :when=>:data_release_strategy,
+  #   :values=>{
+  #     "not applicable"=>["never"],
+  #     "open"=>["standard", "immediate", "delayed"],
+  #     "managed"=>["standard", "immediate", "delayed"]
+  #   }
+  # }
+  #
+  # It then passes the modified arguments on to the @changing array.
   def change_select_options_for(field, options)
     options[:values] =
       options[:values].inject({}) do |values, (key, value)|

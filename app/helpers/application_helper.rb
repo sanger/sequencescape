@@ -327,16 +327,24 @@ module ApplicationHelper
   #
   # This tag:
   # - Ensures we add a nonce for security
-  # - Delays script execution until DOMContentLoaded to ensure that the
+  # - If the page is still loading,
+  #   delays script execution until DOMContentLoaded to ensure that the
   #   modern JS has had a chance to export jQuery
+  # - If the page has already loaded, executes the script immediately.
+  #   This is needed for use cases where the partial that renders this script
+  #   is loaded after the main page has loaded
+  #   e.g. the admin study edit page, within the admin study index page.
   #
   # @return [String] Script tag
   #
   def legacy_javascript_tag
     javascript_tag nonce: true do
-      concat "window.addEventListener('DOMContentLoaded', function() {".html_safe
+      concat 'if (document.readyState === "loading") {window.addEventListener("DOMContentLoaded", function() {'
+               .html_safe
       yield
-      concat '})'
+      concat '});} else {'.html_safe
+      yield
+      concat '}'.html_safe
     end
   end
 end
