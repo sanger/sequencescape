@@ -64,13 +64,11 @@ class Study
               if: :data_release_timing_must_be_never?
 
     def data_release_timing_must_be_never?
-      Flipper.enabled?(:y24_052_enable_data_release_timing_validation) && data_release_strategy.present? &&
-        strategy_not_applicable?
+      data_release_strategy.present? && strategy_not_applicable?
     end
 
     def data_release_timing_must_not_be_never?
-      Flipper.enabled?(:y24_052_enable_data_release_timing_validation) && data_release_strategy.present? &&
-        !strategy_not_applicable?
+      data_release_strategy.present? && !strategy_not_applicable?
     end
 
     def sanity_check_y_separation
