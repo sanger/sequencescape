@@ -239,7 +239,7 @@ GEM
     image_processing (1.12.2)
       mini_magick (>= 4.9.5, < 5)
       ruby-vips (>= 2.0.17, < 3)
-    json (2.7.2)
+    json (2.7.0)
     jsonapi-resources-matchers (1.0.0)
       jsonapi-resources (>= 0.9.0)
     knapsack_pro (7.0.0)
@@ -267,7 +267,6 @@ GEM
     mime-types-data (3.2024.0305)
     mini_magick (4.12.0)
     mini_mime (1.1.5)
-    mini_portile2 (2.8.6)
     minitest (5.22.2)
     minitest-profiler (0.0.2)
       activesupport (>= 4.1.0)
@@ -292,8 +291,9 @@ GEM
       net-protocol
     netrc (0.11.0)
     nio4r (2.7.0)
-    nokogiri (1.16.4)
-      mini_portile2 (~> 2.8.2)
+    nokogiri (1.16.4-arm64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.16.4-x86_64-linux)
       racc (~> 1.4)
     parallel (1.24.0)
     parser (3.3.0.5)
@@ -307,6 +307,7 @@ GEM
       pry (>= 0.13, < 0.15)
     pry-rails (0.3.9)
       pry (>= 0.10.4)
+    psych (3.3.4)
     public_suffix (5.0.4)
     puma (6.4.2)
       nio4r (~> 2.0)
@@ -410,7 +411,7 @@ GEM
       rspec-mocks (~> 3.12)
       rspec-support (~> 3.12)
     rspec-support (3.13.1)
-    rubocop (1.61.0)
+    rubocop (1.63.2)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
@@ -418,7 +419,7 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 1.8, < 3.0)
       rexml (>= 3.2.5, < 4.0)
-      rubocop-ast (>= 1.30.0, < 2.0)
+      rubocop-ast (>= 1.31.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
     rubocop-ast (1.31.1)
@@ -533,7 +534,8 @@ GEM
     zeitwerk (2.6.13)
 
 PLATFORMS
-  ruby
+  arm64-darwin-23
+  x86_64-linux
 
 DEPENDENCIES
   aasm
@@ -576,6 +578,7 @@ DEPENDENCIES
   nokogiri
   pry-byebug
   pry-rails
+  psych (< 4)
   puma
   rack-acceptable
   rack-cors
@@ -620,4 +623,4 @@ DEPENDENCIES
   yard-activerecord (~> 0.0.16)
 
 BUNDLED WITH
-   2.2.33
+   2.5.9
