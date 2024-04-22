@@ -49,7 +49,9 @@ class Tube < Labware
 
   # Delegates the provided methods to purpose, passing the tube as the first argument, and the remaining arguments as-is
   def self.delegate_to_purpose(*methods)
-    methods.each { |method| class_eval("def #{method}(*args, &block) ; purpose.#{method}(self, *args, &block) ; end", __FILE__, __LINE__) }
+    methods.each do |method|
+      class_eval("def #{method}(*args, &block) ; purpose.#{method}(self, *args, &block) ; end", __FILE__, __LINE__)
+    end
   end
 
   # TODO: change column name to account for purpose, not plate_purpose!

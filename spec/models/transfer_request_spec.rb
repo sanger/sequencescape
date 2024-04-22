@@ -359,7 +359,8 @@ RSpec.describe TransferRequest do
         let(:source_asset) { create(:tube) }
 
         before do
-          create(:transfer_request, asset: last_well, target_asset: source_asset, submission: library_request.submission)
+          create(:transfer_request, asset: last_well, target_asset: source_asset, 
+submission: library_request.submission)
         end
 
         it { is_expected.to eq library_request }

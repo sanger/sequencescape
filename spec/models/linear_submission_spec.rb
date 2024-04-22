@@ -32,7 +32,8 @@ RSpec.describe LinearSubmission do
           well
         end
         let(:expected_metric) do
-          create(:qc_metric, asset: stock_well, qc_report: current_report, qc_decision: 'manually_failed', proceed: true)
+          create(:qc_metric, asset: stock_well, qc_report: current_report, qc_decision: 'manually_failed', 
+proceed: true)
         end
         let(:mpx_submission) do
           create(
