@@ -8,6 +8,13 @@ class Sample
   include Commentable
 end
 
+# The Asset class represents a physical item in the laboratory.
+# An asset can be associated with multiple orders through the SubmittedAsset join model.
+#
+# @!attribute [r] submitted_assets
+#   @return [ActiveRecord::Relation<SubmittedAsset>] The submitted assets associated with this asset.
+# @!attribute [r] orders
+#   @return [ActiveRecord::Relation<Order>] The orders associated with this asset through the submitted assets.
 class Asset
   has_many :submitted_assets
   has_many :orders, through: :submitted_assets, as: :asset
@@ -85,6 +92,7 @@ def split_asset_groups_and_update(split_asset_groups_hash, user, rt_ticket)
       # assumption is that above will return 1 order with a state of 'ready'
       # if it doesn't then the logic is flawed and we need to bale out
       raise 'More than one order of state READY found... time to tweak the code!' if orders.size > 1
+
       assets = ag.assets.select { |a| to_remove.include?(a.aliquots.first.sample.name) }
 
       # remove the assets from the old order
@@ -100,7 +108,7 @@ def split_asset_groups_and_update(split_asset_groups_hash, user, rt_ticket)
 
       # add the assets to the new order and asset group
       puts 'add the assets to the new order and asset group'
-      assets.each { |asset| new_order.submitted_assets.create!(asset: asset) }
+      assets.each { |asset| new_order.submitted_assets.create!(asset:) }
       new_order.save!
       new_orders << new_order
       ag.asset_group_assets.where(asset: assets).map(&:delete)
@@ -128,6 +136,7 @@ def update_whole_asset_groups(whole_asset_groups)
     orders = Order.where(asset_group_id: asset_group.id).select { |o| o.submission.state == 'ready' }
     raise 'More than one order of state READY found... time to tweak the code!' if orders.size > 1
     next if orders.empty?
+
     order = orders.first
     order.requests.each do |request|
       request.initial_study = @study_to
@@ -140,10 +149,12 @@ end
 
 def update_create_requests_on(asset)
   requests = asset.requests.where(request_type_id: [11, 143])
+  return if requests.empty?
+
   requests.map do |r|
     r.initial_study = @study_to
     r.save!
-  end unless requests.empty?
+  end
 end
 
 def update_seq_requests(requests)
@@ -166,6 +177,7 @@ def new_move_samples(sample_names, study_from_id, study_to_id, user_login, rt_ti
     if StudySample.where(sample_id: test_sample.id).where(study_id: study_from_id).empty?
       raise "test sample #{test_sample} is not associated with study #{study_from_id}"
     end
+
     asset_group_sample_hash = find_asset_groups(sample_names)
     whole_asset_groups, split_asset_groups_hash =
       find_whole_and_split_asset_groups(asset_group_sample_hash, sample_names)
@@ -180,7 +192,7 @@ def new_move_samples(sample_names, study_from_id, study_to_id, user_login, rt_ti
         "Sample #{sample.id} moved from #{study_from_id} to #{study_to_id} requested via RT ticket #{rt_ticket} using sample_move.rb"
 
       comment_on =
-        lambda { |x| x.comments.create!(description: comment_text, user_id: user.id, title: "Adjustment #{rt_ticket}") }
+        ->(x) { x.comments.create!(description: comment_text, user_id: user.id, title: "Adjustment #{rt_ticket}") }
 
       puts "Moving sample #{sample.id} #{sample.name}"
       [sample].map(&comment_on)
@@ -228,10 +240,11 @@ def new_move_samples(sample_names, study_from_id, study_to_id, user_login, rt_ti
     end
 
     raise 'Hell!!!... in test mode' if mode == 'test'
+
     unless stock_wells.compact.empty?
       puts 'Rebroadcasting well stock resource messages.. '
       stock_wells.uniq.each do |sw|
-        sw.touch #correct behaviour
+        sw.touch # correct behaviour
         sw.messengers.first.resend
       end
     end
@@ -239,7 +252,7 @@ def new_move_samples(sample_names, study_from_id, study_to_id, user_login, rt_ti
     unless tubes.empty?
       puts 'Rebroadcasting tube stock resource messages.. '
       tubes.each do |tube|
-        tube.touch #correct behaviour
+        tube.touch # correct behaviour
         tube.messengers.first.resend
       end
     end
@@ -254,7 +267,7 @@ def new_move_samples(sample_names, study_from_id, study_to_id, user_login, rt_ti
         .uniq
         .each do |batch|
           puts "lane batches: #{batch.id}"
-          batch.touch #correct behaviour
+          batch.touch # correct behaviour
         end
     end
 
@@ -266,7 +279,7 @@ def new_move_samples(sample_names, study_from_id, study_to_id, user_login, rt_ti
         .uniq
         .each do |batch|
           puts "pb batches: #{batch.id}"
-          batch.touch #correct behaviour
+          batch.touch # correct behaviour
         end
     end
 
