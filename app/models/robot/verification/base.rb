@@ -3,31 +3,27 @@
 require_dependency 'robot/verification'
 
 # Base class for handling bed verification for picking robots
-class Robot::Verification::Base # rubocop:todo Metrics/ClassLength
+class Robot::Verification::Base
   attr_reader :errors
 
-  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
-  def validate_barcode_params(barcode_hash) # rubocop:todo Metrics/CyclomaticComplexity
+  def validate_barcode_params(barcode_hash)
     return yield('No barcodes specified') if barcode_hash.nil?
 
-    if barcode_hash[:batch_barcode].blank? || !Batch.valid_barcode?(barcode_hash[:batch_barcode])
-      yield('Worksheet barcode invalid')
-    end
-    if barcode_hash[:robot_barcode].blank? || !Robot.valid_barcode?(barcode_hash[:robot_barcode])
-      yield('Robot barcode invalid')
-    end
-    if barcode_hash[:user_barcode].blank? || !User.find_with_barcode_or_swipecard_code(barcode_hash[:user_barcode])
-      yield('User barcode invalid')
-    end
-    if barcode_hash[:destination_plate_barcode].blank? ||
-         !Plate.with_barcode(barcode_hash[:destination_plate_barcode]).exists?
-      yield('Destination plate barcode invalid')
+    validations = [
+      { key: :batch_barcode, error: 'Worksheet barcode invalid', validator: :batch_barcode_validator },
+      { key: :robot_barcode, error: 'Robot barcode invalid', validator: :robot_barcode_validator },
+      { key: :user_barcode, error: 'User barcode invalid', validator: :user_barcode_validator },
+      { key: :destination_plate_barcode, error: 'Destination plate barcode invalid',
+        validator: :destination_plate_barcode_validator }
+    ]
+
+    validations.each do |validation|
+      if barcode_hash[validation[:key]].blank? || !method(validation[:validator]).call(barcode_hash[validation[:key]])
+        yield(validation[:error])
+      end
     end
   end
 
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
-
-  #
   # Returns an array of all pick numbers associated with the corresponding batch and plate_barcode
   # @note Added as I refactor the batches/_assets.html.erb page. Currently just wraps pick_number_to_expected_layout
   #       and as a result performs a lot of unnecessary work.
@@ -124,6 +120,23 @@ class Robot::Verification::Base # rubocop:todo Metrics/ClassLength
 
   private
 
+  def batch_barcode_validator(code)
+    Batch.valid_barcode?(code)
+  end
+
+  def robot_barcode_validator(code)
+    Robot.valid_barcode?(code)
+  end
+
+  def user_barcode_validator(code)
+    User.find_with_barcode_or_swipecard_code(code)
+  end
+
+  def destination_plate_barcode_validator(code)
+    Plate.with_barcode(code).exists?
+  end
+
+
   #
   # Returns a hash of plates to indexes sorted by destination well to make sure
   # the plates are put the right way round for the robot
@@ -139,9 +152,9 @@ class Robot::Verification::Base # rubocop:todo Metrics/ClassLength
       mapping_sorted = sort_mapping_by_destination_well(destination_barcode, destination_info['mapping'])
       mapping_sorted.each do |map_well|
         barcode, _well = map_well['src_well']
-        if block_given? && !yield barcode
-next
-end
+        if block_given?
+          next unless yield barcode
+        end
         all_barcodes[barcode] ||= all_barcodes.length + 1
       end
     end
