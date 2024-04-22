@@ -53,6 +53,10 @@ Lint/AmbiguousRegexpLiteral:
 Style/NumericLiterals:
   Enabled: false
 
+Layout/LineLength:
+  # The auto-correct for this cop is not robust enough to handle all cases.
+  AutoCorrect: false
+
 # Blocks are used to structure tests and are part of the shoulda dsl.
 # The standard BlockLength limits are too stringent for this purpose.
 # Block DSL is also used in routes
