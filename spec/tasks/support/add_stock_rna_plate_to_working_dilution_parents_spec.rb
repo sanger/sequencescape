@@ -2,8 +2,6 @@
 
 require 'rails_helper'
 
-Rails.application.load_tasks
-
 describe 'support:add_stock_rna_plate_to_working_dilution_parents', type: :task do
   let(:source_purpose_name) { 'Stock RNA Plate' }
   let(:target_purpose_name) { 'Working Dilution' }
@@ -13,10 +11,12 @@ describe 'support:add_stock_rna_plate_to_working_dilution_parents', type: :task 
   let(:target_purpose) { create(:plate_purpose, name: target_purpose_name, stock_plate: false) }
   let(:plate_creator) { create(:plate_creator, name: plate_creator_name) }
 
+  let(:load_tasks) { Rails.application.load_tasks }
   let(:task_reenable) { Rake::Task[self.class.top_level_description].reenable }
   let(:task_invoke) { Rake::Task[self.class.top_level_description].invoke }
 
   before do
+    load_tasks # Load tasks directly in the test to avoid intermittent CI failures
     task_reenable # Allows the task to be invoked again
     plate_creator # The task assumes the plate creator already exists
     target_purpose # The task assumes the target purpose already exists

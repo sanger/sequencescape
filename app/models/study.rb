@@ -9,7 +9,7 @@ require 'aasm'
 #   - These accession numbers are used at data release to group samples together for publication
 #   - For managed/EGA studies, also ties the data to an {Accessionable::Dac} and {Accessionable::Policy}
 # - A means of generating the aforementioned {Accessionable::Dac} and {Accessionable::Policy}
-#   @note These should DEFINATELY be separate entities
+#   @note These should DEFINITELY be separate entities
 # - A means of tying data to internal data-release timings
 # - A means to apply internal data access policies to released sequencing data
 # - A means to tie interested parties to the samples and the work done on them
@@ -76,7 +76,12 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   DATA_RELEASE_TIMING_STANDARD = 'standard'
   DATA_RELEASE_TIMING_NEVER = 'never'
   DATA_RELEASE_TIMING_DELAYED = 'delayed'
-  DATA_RELEASE_TIMINGS = [DATA_RELEASE_TIMING_STANDARD, 'immediate', DATA_RELEASE_TIMING_DELAYED].freeze
+  DATA_RELEASE_TIMING_IMMEDIATE = 'immediate'
+  DATA_RELEASE_TIMINGS = [
+    DATA_RELEASE_TIMING_STANDARD,
+    DATA_RELEASE_TIMING_IMMEDIATE,
+    DATA_RELEASE_TIMING_DELAYED
+  ].freeze
   DATA_RELEASE_PREVENTION_REASONS = ['data validity', 'legal', 'replication of data subset'].freeze
 
   DATA_RELEASE_DELAY_FOR_OTHER = 'other'
