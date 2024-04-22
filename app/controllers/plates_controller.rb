@@ -111,10 +111,10 @@ class PlatesController < ApplicationController
   end
 
   def fluidigm_file
-    if logged_in?
+    return unless logged_in?
       @plate = Plate.includes(wells: [{ samples: :sample_metadata }, :map]).find(params[:id])
       @parents = @plate.parents
       respond_to { |format| format.csv { render csv: @plate, content_type: 'text/csv' } }
-    end
+    
   end
 end

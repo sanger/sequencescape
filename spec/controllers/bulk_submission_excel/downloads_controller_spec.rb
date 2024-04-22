@@ -12,7 +12,7 @@ RSpec.describe BulkSubmissionExcel::DownloadsController do
   end
 
   context 'when receiving a create request' do
-    let(:submission) { create :submission }
+    let(:submission) { create(:submission) }
     let(:plates) { create_list(:plate, 2) }
     let(:barcodes) { plates.map(&:barcodes).flatten.map(&:barcode) }
     let(:action) do

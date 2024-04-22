@@ -218,7 +218,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   scope :request_type, ->(request_type) { where(request_type_id: request_type) }
 
-  scope :where_has_a_submission, -> { where('submission_id IS NOT NULL') }
+  scope :where_has_a_submission, -> { where.not(submission_id: nil) }
 
   scope :full_inbox, -> { where(state: %w[pending hold]) }
   scope :pipeline_pending,
@@ -304,7 +304,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
         -> {
           includes([:request_metadata, :request_type, :request_events, { asset: :aliquots, target_asset: :aliquots }])
         }
-  scope :not_failed, -> { where(['state != ?', 'failed']) }
+  scope :not_failed, -> { where.not(state: 'failed') }
 
   scope :multiplexed, -> { joins(:request_type).where(request_types: { for_multiplexing: true }) }
 
@@ -340,7 +340,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def self.number_expected_for_submission_id_and_request_type_id(submission_id, request_type_id)
-    Request.where(submission_id: submission_id, request_type_id: request_type_id)
+    Request.where(submission_id:, request_type_id:)
   end
 
   def self.accessioning_required?
@@ -364,13 +364,13 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def project_id=(project_id)
-    raise RuntimeError, 'Initial project already set' if initial_project_id
+    raise 'Initial project already set' if initial_project_id
 
     self.initial_project_id = project_id
   end
 
   def submission_plate_count
-    submission.requests.where(request_type_id: request_type_id).joins(:source_labware).distinct.count('labware.id')
+    submission.requests.where(request_type_id:).joins(:source_labware).distinct.count('labware.id')
   end
 
   def update_responsibilities!
@@ -384,7 +384,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def study_id=(study_id)
-    raise RuntimeError, 'Initial study already set' if initial_study_id
+    raise 'Initial study already set' if initial_study_id
 
     self.initial_study_id = study_id
   end
@@ -460,9 +460,9 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   # CAUTION!: This may not behaves as expected. I'll be deprecating this soon.
   def next_requests_via_asset
-    if target_asset.present?
-      target_asset.requests.where(submission_id: submission_id, request_type_id: next_request_type_id)
-    end
+    return unless target_asset.present?
+      target_asset.requests.where(submission_id:, request_type_id: next_request_type_id)
+    
   end
 
   def next_requests_via_submission
@@ -480,7 +480,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def add_comment(comment, user, title = nil)
     # Unscope comments to fix Rails 6 deprecation warnings. But I *think* this
     # essentially models the new behaviour in 6.1 So should be removable then
-    Comment.unscoped { comments.create(description: comment, user: user, title: title) }
+    Comment.unscoped { comments.create(description: comment, user:, title:) }
   end
 
   def return_pending_to_inbox!
@@ -513,7 +513,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def update_priority
     priority = (self.priority + 1) % 4
-    submission.update!(priority: priority)
+    submission.update!(priority:)
   end
 
   def priority

@@ -32,12 +32,12 @@ class PlatePicksController < ApplicationController
                plate: {
                  id: plate.id,
                  barcode: plate.machine_barcode,
-                 batches: batches,
+                 batches:,
                  control: plate.pick_as_control?
                }
              }
     else
-      render json: { errors: 'Could not find plate in Sequencescape' }, status: 404
+      render json: { errors: 'Could not find plate in Sequencescape' }, status: :not_found
     end
   end
 
@@ -48,7 +48,7 @@ class PlatePicksController < ApplicationController
 
     # Either we're not a cherrypick batch, or we haven't been processed
 
-    return render json: { errors: 'Batch has no pick information' }, status: 409 unless batch.pick_information?
+    return render json: { errors: 'Batch has no pick information' }, status: :conflict unless batch.pick_information?
 
     robot = batch.robot_id ? Robot.find(batch.robot_id) : Robot.with_verification_behaviour.first
 
@@ -72,6 +72,6 @@ class PlatePicksController < ApplicationController
 
     render json: PlatePicks::BatchesJson.new(batch.id, picks, plate_information).to_json
   rescue ActiveRecord::RecordNotFound
-    render json: { errors: 'Could not find batch in Sequencescape' }, status: 404
+    render json: { errors: 'Could not find batch in Sequencescape' }, status: :not_found
   end
 end

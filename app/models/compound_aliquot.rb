@@ -77,14 +77,14 @@ class CompoundAliquot
   def create_compound_sample
     default_compound_study.samples.create!(
       name: SangerSampleId.generate_sanger_sample_id!(default_compound_study.abbreviation),
-      component_samples: component_samples
+      component_samples:
     )
   end
 
   def aliquot_attributes
     {
-      tag_id: tag_id,
-      tag2_id: tag2_id,
+      tag_id:,
+      tag2_id:,
       library_type: default_library_type,
       study_id: default_compound_study.id,
       project_id: default_compound_project_id,

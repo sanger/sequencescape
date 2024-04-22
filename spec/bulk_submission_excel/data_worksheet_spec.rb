@@ -27,13 +27,13 @@ RSpec.describe BulkSubmissionExcel::Worksheet::DataWorksheet, :bulk_submission_e
   context 'data worksheet' do
     let!(:worksheet) do
       described_class.new(
-        workbook: workbook,
+        workbook:,
         columns: configuration.columns.all.dup,
-        assets: assets,
+        assets:,
         ranges: configuration.ranges.dup,
         defaults: {
-          user_login: user_login,
-          template_name: template_name
+          user_login:,
+          template_name:
         }
       )
     end
@@ -43,7 +43,7 @@ RSpec.describe BulkSubmissionExcel::Worksheet::DataWorksheet, :bulk_submission_e
       @spreadsheet = Roo::Spreadsheet.open(test_file)
     end
 
-    it 'will have a axlsx worksheet' do
+    it 'has a axlsx worksheet' do
       expect(worksheet.axlsx_worksheet).to be_present
     end
 

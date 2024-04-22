@@ -20,7 +20,7 @@ module RecordLoader
     # @option options [String] :description_strategy The strategy for describing the plate
     # @option options [Array<Integer>] :sizes The sizes of the plates to generate Maps for
     def create_or_update!(name, options)
-      config = { name: name }.merge(options.symbolize_keys)
+      config = { name: }.merge(options.symbolize_keys)
 
       # PlateMapGeneration expects a non-namespaced constant for
       # description_strategy. It adds "Map::" prefix to refer to a nested

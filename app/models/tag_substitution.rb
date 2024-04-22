@@ -119,7 +119,7 @@ class TagSubstitution
   #
   # @return [void]
   def template_asset=(asset)
-    @substitutions = asset.aliquots.includes(:sample).map { |aliquot| Substitution.new(aliquot: aliquot) }
+    @substitutions = asset.aliquots.includes(:sample).map { |aliquot| Substitution.new(aliquot:) }
     @name = asset.display_name
   end
 
@@ -170,7 +170,7 @@ class TagSubstitution
       commented_assets.map do |asset_id|
         {
           commentable_id: asset_id,
-          commentable_type: commentable_type,
+          commentable_type:,
           user_id: @user&.id,
           description: comment_text,
           title: "Tag Substitution #{@ticket}"

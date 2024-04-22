@@ -32,7 +32,7 @@ module Accession
     include Comparable
 
     def to_a
-      attributes.filter_map { |v| instance_variable_get("@#{v}") }
+      attributes.filter_map { |v| instance_variable_get(:"@#{v}") }
     end
 
     ##

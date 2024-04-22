@@ -114,7 +114,6 @@ module Accessionable
     end
   end
 
-  private
 
   class ArrayExpressTag < Base::Tag
     def label

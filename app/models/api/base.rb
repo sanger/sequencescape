@@ -152,13 +152,19 @@ class Api::Base # rubocop:todo Metrics/ClassLength
   def self.newer_than(object, timestamp) # rubocop:todo Metrics/CyclomaticComplexity
     return if object.nil? || timestamp.nil?
 
-    modified, object_timestamp = false, (object.respond_to?(:updated_at) ? object.updated_at : timestamp) || timestamp
-    timestamp, modified = object_timestamp, true if object_timestamp > timestamp
+    modified = false
+    object_timestamp = (object.respond_to?(:updated_at) ? object.updated_at : timestamp) || timestamp
+    if object_timestamp > timestamp
+      timestamp = object_timestamp
+      modified = true
+    end
     associations.each_value do |helper|
-      helper.newer_than(helper.target(object), timestamp) { |t| timestamp, modified = t, true }
+      helper.newer_than(helper.target(object), timestamp) do |t| timestamp = t
+                                                                modified = true end
     end
     nested_has_many_associations.each_value do |helper|
-      helper.target(object).each { |child| helper.newer_than(child, timestamp) { |t| timestamp, modified = t, true } }
+      helper.target(object).each do |child| helper.newer_than(child, timestamp) do |t| timestamp = t
+                                                                                     modified = true end end
     end
     yield(timestamp) if modified
   end
@@ -172,9 +178,9 @@ class Api::Base # rubocop:todo Metrics/ClassLength
   end
 
   # rubocop:todo Metrics/MethodLength
-  def self.with_association(association, options = {}, &block) # rubocop:todo Metrics/AbcSize
+  def self.with_association(association, options = {}, &) # rubocop:todo Metrics/AbcSize
     association_helper = Class.new(Api::Base)
-    association_helper.class_eval(&block)
+    association_helper.class_eval(&)
     association_helper.singleton_class.class_eval do
       alias_method(:default_object, options[:if_nil_use]) if options.key?(:if_nil_use)
       define_method(:lookup_by) { options[:lookup_by] }
@@ -184,16 +190,16 @@ class Api::Base # rubocop:todo Metrics/ClassLength
         options[:decorator] && target_object ? options[:decorator].new(target_object) : target_object
       end
     end
-    self.associations = Hash.new if associations.empty?
+    self.associations =({}) if associations.empty?
     associations[association.to_sym] = association_helper
   end
 
   # rubocop:enable Metrics/MethodLength
 
   # rubocop:todo Metrics/MethodLength
-  def self.with_nested_has_many_association(association, options = {}, &block) # rubocop:todo Metrics/AbcSize
+  def self.with_nested_has_many_association(association, options = {}, &) # rubocop:todo Metrics/AbcSize
     association_helper = Class.new(Api::Base)
-    association_helper.class_eval(&block)
+    association_helper.class_eval(&)
     association_helper.singleton_class.class_eval do
       define_method(:association) { association }
       define_method(:alias) { options[:as] || association }
@@ -202,7 +208,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
         options[:decorator] && target_object ? options[:decorator].new(target_object) : target_object
       end
     end
-    self.nested_has_many_associations = Hash.new if nested_has_many_associations.empty?
+    self.nested_has_many_associations =({}) if nested_has_many_associations.empty?
     nested_has_many_associations[association.to_sym] = association_helper
   end
 
@@ -236,7 +242,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
   self.extra_json_attribute_handlers = []
 
   def self.extra_json_attributes(&block)
-    self.extra_json_attribute_handlers = Array.new if extra_json_attribute_handlers.empty?
+    self.extra_json_attribute_handlers = [] if extra_json_attribute_handlers.empty?
     extra_json_attribute_handlers.push(block)
   end
 

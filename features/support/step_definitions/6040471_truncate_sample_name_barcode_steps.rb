@@ -39,5 +39,5 @@ end
 Given /^the asset "([^"]*)" has a sanger_sample_id of "([^"]*)"$/ do |asset_id, sanger_sample_id|
   asset = Labware.find(asset_id).receptacle
   asset.aliquots.clear
-  asset.aliquots.create!(sample: Sample.create!(name: 'Sample_123456', sanger_sample_id: sanger_sample_id))
+  asset.aliquots.create!(sample: Sample.create!(name: 'Sample_123456', sanger_sample_id:))
 end

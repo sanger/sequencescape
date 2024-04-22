@@ -14,18 +14,18 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
 
   let(:test_file_name) { 'test_file.xlsx' }
   let(:test_file) { Rack::Test::UploadedFile.new(Rails.root.join(test_file_name), '') }
-  let(:user) { create :user }
+  let(:user) { create(:user) }
 
   after(:all) { SampleManifestExcel.reset! }
 
   after { File.delete(test_file_name) if File.exist?(test_file_name) }
 
   describe '#initialize' do
-    it 'will not be valid without a filename' do
+    it 'does not be valid without a filename' do
       expect(described_class.new(nil, SampleManifestExcel.configuration, user, false)).not_to be_valid
     end
 
-    it 'will not be valid without some configuration' do
+    it 'does not be valid without some configuration' do
       download =
         build(
           :test_download_tubes,
@@ -36,7 +36,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
       expect(described_class.new(test_file, nil, user, false)).not_to be_valid
     end
 
-    it 'will not be valid without a tag group' do
+    it 'does not be valid without a tag group' do
       SampleManifestExcel.configuration.tag_group = nil
       download =
         build(
@@ -49,7 +49,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
       SampleManifestExcel.configuration.tag_group = 'My Magic Tag Group'
     end
 
-    it 'will not be valid without a user' do
+    it 'does not be valid without a user' do
       download =
         build(
           :test_download_tubes,
@@ -63,7 +63,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
   context 'when checking uploads' do
     after { Delayed::Worker.delay_jobs = true }
 
-    it 'will upload a valid 1d tube sample manifest' do
+    it 'uploads a valid 1d tube sample manifest' do
       broadcast_events_count = BroadcastEvent.count
       download =
         build(
@@ -80,7 +80,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
       expect(uploader.upload.sample_manifest).to be_completed
     end
 
-    it 'will upload a valid library tube with tag sequences sample manifest' do
+    it 'uploads a valid library tube with tag sequences sample manifest' do
       broadcast_events_count = BroadcastEvent.count
       download =
         build(
@@ -97,7 +97,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
       expect(uploader.upload.sample_manifest).to be_completed
     end
 
-    it 'will upload a valid library tube with tag sequences sample manifest with duplicated tags' do
+    it 'uploads a valid library tube with tag sequences sample manifest with duplicated tags' do
       broadcast_events_count = BroadcastEvent.count
       download =
         build(
@@ -114,7 +114,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
       expect(uploader.upload.sample_manifest).to be_completed
     end
 
-    it 'will upload a valid multiplexed library tube with tag sequences sample manifest' do
+    it 'uploads a valid multiplexed library tube with tag sequences sample manifest' do
       broadcast_events_count = BroadcastEvent.count
       download =
         build(
@@ -131,7 +131,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
       expect(uploader.upload.sample_manifest).to be_completed
     end
 
-    it 'will upload a valid multiplexed library tube with tag groups and indexes sample manifest' do
+    it 'uploads a valid multiplexed library tube with tag groups and indexes sample manifest' do
       broadcast_events_count = BroadcastEvent.count
       download =
         build(
@@ -148,7 +148,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
       expect(uploader.upload.sample_manifest).to be_completed
     end
 
-    it 'will upload a valid plate sample manifest' do
+    it 'uploads a valid plate sample manifest' do
       download =
         build(
           :test_download_plates,
@@ -163,7 +163,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
       expect(uploader.upload.sample_manifest).to be_completed
     end
 
-    it 'will generate sample accessions', :accessioning_enabled do
+    it 'generates sample accessions', :accessioning_enabled do
       number_of_plates = 2
       samples_per_plate = 2
       download =
@@ -180,7 +180,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
       expect { uploader.run! }.to change(Delayed::Job, :count).by(number_of_plates * samples_per_plate)
     end
 
-    it 'will not upload an invalid 1d tube sample manifest' do
+    it 'does not upload an invalid 1d tube sample manifest' do
       download =
         build(
           :test_download_tubes,
@@ -192,7 +192,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
       expect(described_class.new(test_file, SampleManifestExcel.configuration, user, false)).not_to be_valid
     end
 
-    it 'will not upload an invalid library tube with tag sequences sample manifest' do
+    it 'does not upload an invalid library tube with tag sequences sample manifest' do
       download =
         build(
           :test_download_tubes,
@@ -204,7 +204,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
       expect(described_class.new(test_file, SampleManifestExcel.configuration, user, false)).not_to be_valid
     end
 
-    it 'will not upload an invalid multiplexed library tube with tag sequences sample manifest' do
+    it 'does not upload an invalid multiplexed library tube with tag sequences sample manifest' do
       download =
         build(
           :test_download_tubes,
@@ -216,7 +216,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
       expect(described_class.new(test_file, SampleManifestExcel.configuration, user, false)).not_to be_valid
     end
 
-    it 'will not upload an invalid multiplexed library tube with tag groups and indexes sample manifest' do
+    it 'does not upload an invalid multiplexed library tube with tag groups and indexes sample manifest' do
       download =
         build(
           :test_download_tubes,
@@ -228,7 +228,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
       expect(described_class.new(test_file, SampleManifestExcel.configuration, user, false)).not_to be_valid
     end
 
-    it 'will not upload an invalid plate sample manifest' do
+    it 'does not upload an invalid plate sample manifest' do
       download =
         build(
           :test_download_plates,
@@ -240,7 +240,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
       expect(described_class.new(test_file, SampleManifestExcel.configuration, user, false)).not_to be_valid
     end
 
-    it 'will upload a valid partial 1d tube sample manifest' do
+    it 'uploads a valid partial 1d tube sample manifest' do
       download =
         build(
           :test_download_tubes_partial,
@@ -254,7 +254,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
       expect(uploader).to be_processed
     end
 
-    it 'will upload a valid partial library tube sample manifest' do
+    it 'uploads a valid partial library tube sample manifest' do
       download =
         build(
           :test_download_tubes_partial,
@@ -268,7 +268,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
       expect(uploader).to be_processed
     end
 
-    it 'will upload a valid partial multiplexed library tube with tag sequences sample manifest' do
+    it 'uploads a valid partial multiplexed library tube with tag sequences sample manifest' do
       download =
         build(
           :test_download_tubes_partial,
@@ -282,7 +282,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
       expect(uploader).to be_processed
     end
 
-    it 'will upload a valid partial multiplexed library tube with tag groups and indexes' do
+    it 'uploads a valid partial multiplexed library tube with tag groups and indexes' do
       download =
         build(
           :test_download_tubes_partial,
@@ -299,7 +299,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
     # The manifest is generated for 2 plates, with 2 wells each, with 1 sample per well.
     # The test_download_plates_partial factory leaves the last 2 rows of the manifest empty.
     # So 2 samples are uploaded for the first plate, and 0 samples for the second plate.
-    it 'will upload a valid partial plate sample manifest' do
+    it 'uploads a valid partial plate sample manifest' do
       download = build(:test_download_plates_partial, columns: SampleManifestExcel.configuration.columns.plate_full.dup)
       download.save(test_file_name)
       Delayed::Worker.delay_jobs = false
@@ -324,16 +324,16 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
         uploader.run!
       end
 
-      it 'will upload the manifest' do
+      it 'uploads the manifest' do
         expect(uploader).to be_processed
       end
 
-      it 'will understand there is one pool per well' do
+      it 'understands there is one pool per well' do
         expect(uploader.upload.sample_manifest.pools).not_to be_nil
         expect(uploader.upload.sample_manifest.pools.count).to eq(4) # one pool per well
       end
 
-      it 'will set tag_depth on aliquots' do
+      it 'sets tag_depth on aliquots' do
         labware = uploader.upload.sample_manifest.labware
         expect(labware.count).to eq(2)
 

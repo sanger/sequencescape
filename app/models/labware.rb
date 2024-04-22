@@ -116,7 +116,7 @@ class Labware < Asset
         }
   scope :for_lab_searches_display,
         lambda { includes(:barcodes, requests_as_source: %i[pipeline batch]).order('requests.pipeline_id ASC') }
-  scope :named, ->(name) { where(name: name) }
+  scope :named, ->(name) { where(name:) }
   scope :with_purpose, ->(*purposes) { where(plate_purpose_id: purposes.flatten) }
   scope :include_scanned_into_lab_event, -> { includes(:scanned_into_lab_event) }
   scope :include_creation_batches, -> { includes(:creation_batches) }

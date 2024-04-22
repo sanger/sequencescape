@@ -1,4 +1,3 @@
-# encoding: utf-8
 # frozen_string_literal: true
 
 require 'formtastic'
@@ -23,7 +22,7 @@ class BulkSubmissionsController < ApplicationController
 
   # rubocop:todo Metrics/MethodLength
   def create # rubocop:todo Metrics/AbcSize
-    begin
+    
       @bulk_submission = BulkSubmission.new(params.fetch(:bulk_submission, {}))
       if @bulk_submission.valid?
         flash.now[:notice] = 'File was processed successfully'
@@ -37,7 +36,7 @@ class BulkSubmissionsController < ApplicationController
       flash.now[:error] = 'There was a problem when building your submissions'
       @bulk_submission.errors.add(:base, e.message)
       render action: 'new'
-    end
+    
   end
 
   # rubocop:enable Metrics/MethodLength

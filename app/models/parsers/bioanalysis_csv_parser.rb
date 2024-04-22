@@ -42,8 +42,8 @@ class Parsers::BioanalysisCsvParser # rubocop:todo Metrics/ClassLength
   end
 
   def build_range(range)
-    range = range == nil ? [0, content.length - 1] : range.dup
-    range.push(content.length - 1) if (range.length == 1)
+    range = range.nil? ? [0, content.length - 1] : range.dup
+    range.push(content.length - 1) if range.length == 1
     range
   end
 
@@ -63,7 +63,7 @@ class Parsers::BioanalysisCsvParser # rubocop:todo Metrics/ClassLength
     group_contents.each_with_index do |line, pos|
       if line[0].present? && line[0].match(regexp) && group.empty?
         group.push(pos)
-      elsif (line.empty? && group.one?)
+      elsif line.empty? && group.one?
         group.push(pos - 1)
       end
 
@@ -71,7 +71,7 @@ class Parsers::BioanalysisCsvParser # rubocop:todo Metrics/ClassLength
         groups.push [group[0] + range[0], group[1] + range[0]]
         group = []
       end
-      groups.push [group[0] + range[0], pos + range[0]] if ((group.length == 1) && (pos == (group_contents.length - 1)))
+      groups.push [group[0] + range[0], pos + range[0]] if (group.length == 1) && (pos == (group_contents.length - 1))
     end
     groups
   end
@@ -115,10 +115,10 @@ class Parsers::BioanalysisCsvParser # rubocop:todo Metrics/ClassLength
     groups
       .each_with_index
       .map do |group, pos|
-        next_index = (pos == (groups.length - 1)) ? @content.length - 1 : groups[pos + 1][0] - 1
+        next_index = pos == (groups.length - 1) ? @content.length - 1 : groups[pos + 1][0] - 1
         [group[0], next_index]
       end
-      .reduce({}) { |memo, group| memo.merge(parse_sample group) }
+      .reduce({}) { |memo, group| memo.merge(parse_sample(group)) }
   end
 
   def parsed_content

@@ -5,9 +5,9 @@ require 'shared_contexts/limber_shared_context'
 
 describe Plate do
   describe '#comments' do
-    let(:plate) { create :plate, well_count: 2 }
+    let(:plate) { create(:plate, well_count: 2) }
 
-    before { create :comment, commentable: plate, description: 'Comment on plate' }
+    before { create(:comment, commentable: plate, description: 'Comment on plate') }
 
     it 'allows comment addition' do
       plate.comments.create!(description: 'Works')
@@ -24,9 +24,9 @@ describe Plate do
 
     context 'with requests out of the wells' do
       before do
-        submission = create :submission
-        request = create :well_request, asset: plate.wells.first, submission: submission
-        create :comment, commentable: request, description: 'Comment on request'
+        submission = create(:submission)
+        request = create(:well_request, asset: plate.wells.first, submission:)
+        create(:comment, commentable: request, description: 'Comment on request')
         plate.reload
       end
 
@@ -45,11 +45,11 @@ describe Plate do
 
     context 'with requests in progress the wells' do
       before do
-        submission = create :submission
-        request = create :well_request, submission: submission
-        plate.wells.first.aliquots << create(:aliquot, request: request)
-        create :transfer_request, target_asset: plate.wells.first, submission: submission
-        create :comment, commentable: request, description: 'Comment on request'
+        submission = create(:submission)
+        request = create(:well_request, submission:)
+        plate.wells.first.aliquots << create(:aliquot, request:)
+        create(:transfer_request, target_asset: plate.wells.first, submission:)
+        create(:comment, commentable: request, description: 'Comment on request')
         plate.reload
       end
 
@@ -62,12 +62,12 @@ describe Plate do
 
     context 'with multiple identical comments' do
       before do
-        submission = create :submission
-        request = create :well_request, asset: plate.wells.first, submission: submission
-        request2 = create :well_request, asset: plate.wells.last, submission: submission
-        create :comment, commentable: request, description: 'Duplicate comment'
-        create :comment, commentable: request2, description: 'Duplicate comment'
-        create :comment, commentable: plate, description: 'Duplicate comment'
+        submission = create(:submission)
+        request = create(:well_request, asset: plate.wells.first, submission:)
+        request2 = create(:well_request, asset: plate.wells.last, submission:)
+        create(:comment, commentable: request, description: 'Duplicate comment')
+        create(:comment, commentable: request2, description: 'Duplicate comment')
+        create(:comment, commentable: plate, description: 'Duplicate comment')
         plate.reload
       end
 
@@ -82,7 +82,7 @@ describe Plate do
   context 'barcodes' do
     # Maintaining existing barcode behaviour
     context 'sanger barcodes' do
-      let(:plate) { create :plate }
+      let(:plate) { create(:plate) }
 
       describe '#human_barcode' do
         subject { plate.human_barcode }
@@ -102,9 +102,10 @@ describe Plate do
   # Pools are horrendously complicated
 
   describe '#pools' do
+    subject { target_plate.pools }
+
     include_context 'a limber target plate with submissions'
 
-    subject { target_plate.pools }
 
     context 'before passing' do
       let(:expected_pools_hash) do

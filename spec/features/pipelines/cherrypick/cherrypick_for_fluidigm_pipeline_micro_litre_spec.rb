@@ -4,18 +4,18 @@ require 'rails_helper'
 require 'pry'
 
 describe 'cherrypick for fluidigm pipeline - micro litre', :js do
-  let(:user) { create :admin }
-  let(:project) { create :project, name: 'Test project' }
-  let(:study) { create :study }
+  let(:user) { create(:admin) }
+  let(:project) { create(:project, name: 'Test project') }
+  let(:study) { create(:study) }
   let(:pipeline_name) { pipeline.name }
-  let(:pipeline) { create :fluidigm_pipeline }
-  let(:submission) { create :submission }
-  let(:plate1) { create :plate_with_untagged_wells, sample_count: 2, barcode: 'SQPD-1' }
-  let(:plate2) { create :plate_with_untagged_wells, sample_count: 2, barcode: 'SQPD-10' }
-  let(:plate3) { create :plate_with_untagged_wells, sample_count: 2, barcode: 'SQPD-5' }
+  let(:pipeline) { create(:fluidigm_pipeline) }
+  let(:submission) { create(:submission) }
+  let(:plate1) { create(:plate_with_untagged_wells, sample_count: 2, barcode: 'SQPD-1') }
+  let(:plate2) { create(:plate_with_untagged_wells, sample_count: 2, barcode: 'SQPD-10') }
+  let(:plate3) { create(:plate_with_untagged_wells, sample_count: 2, barcode: 'SQPD-5') }
   let(:plates) { [plate1, plate2, plate3] }
-  let(:robot) { create :robot, barcode: '444' }
-  let!(:plate_template) { create :plate_template }
+  let(:robot) { create(:robot, barcode: '444') }
+  let!(:plate_template) { create(:plate_template) }
   let(:request_types) { pipeline.request_types.map(&:key) }
 
   before do
@@ -25,12 +25,12 @@ describe 'cherrypick for fluidigm pipeline - micro litre', :js do
         plate.wells.each_with_index { |well, index| well.well_attribute.update!(measured_volume: 30 + (index % 30)) }
       end
     assets.each do |asset|
-      create :cherrypick_for_fluidigm_request,
-             asset: asset,
+      create(:cherrypick_for_fluidigm_request,
+             asset:,
              request_type: pipeline.request_types.first,
-             submission: submission,
-             study: study,
-             project: project
+             submission:,
+             study:,
+             project:)
     end
 
     allow(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode, barcode: 'SQPD-2'))

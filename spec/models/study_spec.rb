@@ -12,25 +12,25 @@ RSpec.describe Study do
     requests =
       [].tap do |r|
         # Cancelled
-        3.times { r << (create :cancelled_request, study: study, request_type: request_type) }
+        3.times { r << (create(:cancelled_request, study:, request_type:)) }
 
         # Failed
-        r << (create :failed_request, study: study, request_type: request_type)
+        r << (create(:failed_request, study:, request_type:))
 
         # Passed
-        3.times { r << (create :passed_request, study: study, request_type: request_type) }
+        3.times { r << (create(:passed_request, study:, request_type:)) }
 
-        r << (create :passed_request, study: study, request_type: request_type_2)
-        r << (create :passed_request, study: study, request_type: request_type_3)
-        r << (create :passed_request, study: study, request_type: request_type_3)
+        r << (create(:passed_request, study:, request_type: request_type_2))
+        r << (create(:passed_request, study:, request_type: request_type_3))
+        r << (create(:passed_request, study:, request_type: request_type_3))
 
         # Pending
-        r << (create :pending_request, study: study, request_type: request_type)
-        r << (create :pending_request, study: study, request_type: request_type_3)
+        r << (create(:pending_request, study:, request_type:))
+        r << (create(:pending_request, study:, request_type: request_type_3))
       end
 
     # we have to hack t
-    requests.each { |request| request.asset.aliquots.each { |a| a.update(study: study) } }
+    requests.each { |request| request.asset.aliquots.each { |a| a.update(study:) } }
     study.save!
 
     expect(study).to be_valid
@@ -38,9 +38,9 @@ RSpec.describe Study do
   end
 
   it 'validates uniqueness of name (case sensitive)' do
-    study_1 = create :study, name: 'Study_name'
-    study_2 = build :study, name: 'Study_name'
-    study_3 = build :study, name: 'Study_NAME'
+    study_1 = create(:study, name: 'Study_name')
+    study_2 = build(:study, name: 'Study_name')
+    study_3 = build(:study, name: 'Study_NAME')
     expect(study_2.valid?).to be false
     expect(study_2.errors.messages.length).to eq 1
     expect(study_2.errors.full_messages).to include 'Name has already been taken'
@@ -191,12 +191,12 @@ RSpec.describe Study do
 
       before { study.study_metadata.separate_y_chromosome_data = true }
 
-      it 'will be valid when we are sane' do
+      it 'is valid when we are sane' do
         study.study_metadata.remove_x_and_autosomes = Study::NO
         expect(study.save!).to be_truthy
       end
 
-      it 'will be invalid when we do something silly' do
+      it 'is invalid when we do something silly' do
         study.study_metadata.remove_x_and_autosomes = Study::YES
         expect { study.save! }.to raise_error(ActiveRecord::RecordInvalid)
       end
@@ -208,9 +208,9 @@ RSpec.describe Study do
 
       context 'with submissions still unprocessed' do
         before do
-          FactoryHelp.submission study: study, state: 'building', assets: [asset]
-          FactoryHelp.submission study: study, state: 'pending', assets: [asset]
-          FactoryHelp.submission study: study, state: 'processing', assets: [asset]
+          FactoryHelp.submission study:, state: 'building', assets: [asset]
+          FactoryHelp.submission study:, state: 'pending', assets: [asset]
+          FactoryHelp.submission study:, state: 'processing', assets: [asset]
         end
 
         it 'returns true' do
@@ -220,8 +220,8 @@ RSpec.describe Study do
 
       context 'with no submissions unprocessed' do
         before do
-          FactoryHelp.submission study: study, state: 'ready', assets: [asset]
-          FactoryHelp.submission study: study, state: 'failed', assets: [asset]
+          FactoryHelp.submission study:, state: 'ready', assets: [asset]
+          FactoryHelp.submission study:, state: 'failed', assets: [asset]
         end
 
         it 'returns false' do
@@ -242,14 +242,14 @@ RSpec.describe Study do
 
       before do
         2.times do
-          r = create(:passed_request, request_type: request_type, initial_study_id: study.id)
+          r = create(:passed_request, request_type:, initial_study_id: study.id)
           r.asset.aliquots.each do |al|
             al.study = study
             al.save!
           end
         end
 
-        create_list(:order, 2, study: study)
+        create_list(:order, 2, study:)
         study.projects.each { |project| project.enforce_quotas = true }
         study.save!
 
@@ -377,21 +377,21 @@ RSpec.describe Study do
     describe '#each_well_for_qc_report_in_batches' do
       let!(:study) { create(:study) }
       let(:purpose_1) { PlatePurpose.stock_plate_purpose }
-      let(:purpose_2) { create :plate_purpose }
-      let(:purpose_3) { create :plate_purpose }
-      let(:purpose_4) { create :plate_purpose }
-      let!(:well_1) { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: purpose_1)) }
-      let!(:well_2) { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: purpose_2)) }
-      let!(:well_3) { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: purpose_3)) }
-      let!(:well_4) { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: purpose_4)) }
+      let(:purpose_2) { create(:plate_purpose) }
+      let(:purpose_3) { create(:plate_purpose) }
+      let(:purpose_4) { create(:plate_purpose) }
+      let!(:well_1) { create(:well_for_qc_report, study:, plate: create(:plate, plate_purpose: purpose_1)) }
+      let!(:well_2) { create(:well_for_qc_report, study:, plate: create(:plate, plate_purpose: purpose_2)) }
+      let!(:well_3) { create(:well_for_qc_report, study:, plate: create(:plate, plate_purpose: purpose_3)) }
+      let!(:well_4) { create(:well_for_qc_report, study:, plate: create(:plate, plate_purpose: purpose_4)) }
 
-      it 'will limit by stock plate purposes if there are no plate purposes' do
+      it 'limits by stock plate purposes if there are no plate purposes' do
         wells_count = 0
         study.each_well_for_qc_report_in_batches(false, 'Bespoke RNA') { |wells| wells_count += wells.length }
         expect(wells_count).to eq(1)
       end
 
-      it 'will limit by passed plates purposes' do
+      it 'limits by passed plates purposes' do
         wells_count = 0
         study.each_well_for_qc_report_in_batches(
           false,
@@ -412,16 +412,16 @@ RSpec.describe Study do
   describe '#mailing_list_of_managers' do
     subject { study.mailing_list_of_managers }
 
-    let(:study) { create :study }
+    let(:study) { create(:study) }
 
     context 'with a manger' do
-      before { create :manager, authorizable: study, email: 'manager@example.com' }
+      before { create(:manager, authorizable: study, email: 'manager@example.com') }
 
       it { is_expected.to eq ['manager@example.com'] }
     end
 
     context 'without a manger' do
-      before { create :admin }
+      before { create(:admin) }
 
       it { is_expected.to eq ['ssr@example.com'] }
     end
@@ -473,107 +473,107 @@ RSpec.describe Study do
     context 'standard data release' do
       let(:study) { create(:study, study_metadata: create(:study_metadata, metadata)) }
 
-      it 'will have a prelim_id' do
+      it 'has a prelim_id' do
         expect(study.study_metadata.prelim_id).to eq(metadata[:prelim_id])
       end
 
-      it 'will have a study_description' do
+      it 'has a study_description' do
         expect(study.study_metadata.study_description).to eq(metadata[:study_description])
       end
 
-      it 'will have a contaminated_human_dna' do
+      it 'has a contaminated_human_dna' do
         expect(study.study_metadata.contaminated_human_dna).to eq(metadata[:contaminated_human_dna])
       end
 
-      it 'will have a remove_x_and_autosomes' do
+      it 'has a remove_x_and_autosomes' do
         expect(study.study_metadata.remove_x_and_autosomes).to eq(metadata[:remove_x_and_autosomes])
       end
 
-      it 'will have a separate_y_chromosome_data' do
+      it 'has a separate_y_chromosome_data' do
         expect(study.study_metadata.separate_y_chromosome_data).to eq(metadata[:separate_y_chromosome_data])
       end
 
-      it 'will have a study_project_id' do
+      it 'has a study_project_id' do
         expect(study.study_metadata.study_project_id).to eq(metadata[:study_project_id])
       end
 
-      it 'will have a study_abstract' do
+      it 'has a study_abstract' do
         expect(study.study_metadata.study_abstract).to eq(metadata[:study_abstract])
       end
 
-      it 'will have a study_study_title' do
+      it 'has a study_study_title' do
         expect(study.study_metadata.study_study_title).to eq(metadata[:study_study_title])
       end
 
-      it 'will have a study_ebi_accession_number' do
+      it 'has a study_ebi_accession_number' do
         expect(study.study_metadata.study_ebi_accession_number).to eq(metadata[:study_ebi_accession_number])
       end
 
-      it 'will have a study_sra_hold' do
+      it 'has a study_sra_hold' do
         expect(study.study_metadata.study_sra_hold).to eq(metadata[:study_sra_hold])
       end
 
-      it 'will have a contains_human_dna' do
+      it 'has a contains_human_dna' do
         expect(study.study_metadata.contains_human_dna).to eq(metadata[:contains_human_dna])
       end
 
-      it 'will have a commercially_available' do
+      it 'has a commercially_available' do
         expect(study.study_metadata.commercially_available).to eq(metadata[:commercially_available])
       end
 
-      it 'will have a study_name_abbreviation' do
+      it 'has a study_name_abbreviation' do
         expect(study.study_metadata.study_name_abbreviation).to eq(metadata[:study_name_abbreviation])
       end
 
-      it 'will have a data_release_strategy' do
+      it 'has a data_release_strategy' do
         expect(study.study_metadata.data_release_strategy).to eq(metadata[:data_release_strategy])
       end
 
-      it 'will have a data_release_timing' do
+      it 'has a data_release_timing' do
         expect(study.study_metadata.data_release_timing).to eq(metadata[:data_release_timing])
       end
 
-      it 'will have a bam' do
+      it 'has a bam' do
         expect(study.study_metadata.bam).to eq(metadata[:bam])
       end
 
-      it 'will have a ega_dac_accession_number' do
+      it 'has a ega_dac_accession_number' do
         expect(study.study_metadata.ega_dac_accession_number).to eq(metadata[:ega_dac_accession_number])
       end
 
-      it 'will have a ega_policy_accession_number' do
+      it 'has a ega_policy_accession_number' do
         expect(study.study_metadata.ega_policy_accession_number).to eq(metadata[:ega_policy_accession_number])
       end
 
-      it 'will have a array_express_accession_number' do
+      it 'has a array_express_accession_number' do
         expect(study.study_metadata.array_express_accession_number).to eq(metadata[:array_express_accession_number])
       end
 
-      it 'will have a data_access_group' do
+      it 'has a data_access_group' do
         expect(study.study_metadata.data_access_group).to eq(metadata[:data_access_group])
       end
 
-      it 'will have a snp_study_id' do
+      it 'has a snp_study_id' do
         expect(study.study_metadata.snp_study_id).to eq(metadata[:snp_study_id])
       end
 
-      it 'will have a snp_parent_study_id' do
+      it 'has a snp_parent_study_id' do
         expect(study.study_metadata.snp_parent_study_id).to eq(metadata[:snp_parent_study_id])
       end
 
-      it 'will have a number_of_gigabases_per_sample' do
+      it 'has a number_of_gigabases_per_sample' do
         expect(study.study_metadata.number_of_gigabases_per_sample).to eq(metadata[:number_of_gigabases_per_sample])
       end
 
-      it 'will have a hmdmc_approval_number' do
+      it 'has a hmdmc_approval_number' do
         expect(study.study_metadata.hmdmc_approval_number).to eq(metadata[:hmdmc_approval_number])
       end
 
-      it 'will have a s3_email_list' do
+      it 'has a s3_email_list' do
         expect(study.study_metadata.s3_email_list).to eq(metadata[:s3_email_list])
       end
 
-      it 'will have a data_deletion_period' do
+      it 'has a data_deletion_period' do
         expect(study.study_metadata.data_deletion_period).to eq(metadata[:data_deletion_period])
       end
 
@@ -603,11 +603,11 @@ RSpec.describe Study do
         create(:study, study_metadata: create(:study_metadata, metadata.merge(data_release_timing: 'delayed')))
       end
 
-      it 'will have a data_release_delay_reason' do
+      it 'has a data_release_delay_reason' do
         expect(study.study_metadata.data_release_delay_reason).to eq(metadata[:data_release_delay_reason])
       end
 
-      it 'will have a data_release_delay_period' do
+      it 'has a data_release_delay_period' do
         expect(study.study_metadata.data_release_delay_period).to eq(metadata[:data_release_delay_period])
       end
     end
@@ -617,15 +617,15 @@ RSpec.describe Study do
         create(:study, study_metadata: create(:study_metadata, metadata.merge(data_release_strategy: 'managed')))
       end
 
-      it 'will have a data_release_standard_agreement' do
+      it 'has a data_release_standard_agreement' do
         expect(study.study_metadata.data_release_standard_agreement).to eq(metadata[:data_release_standard_agreement])
       end
 
-      it 'will have a dac_policy' do
+      it 'has a dac_policy' do
         expect(study.study_metadata.dac_policy).to eq(metadata[:dac_policy])
       end
 
-      it 'will have a dac_policy_title' do
+      it 'has a dac_policy_title' do
         expect(study.study_metadata.dac_policy_title).to eq(metadata[:dac_policy_title])
       end
 
@@ -697,11 +697,11 @@ RSpec.describe Study do
         )
       end
 
-      it 'will have a data_release_delay_other_comment' do
+      it 'has a data_release_delay_other_comment' do
         expect(study.study_metadata.data_release_delay_other_comment).to eq(metadata[:data_release_delay_other_comment])
       end
 
-      it 'will have a data_release_delay_reason_comment' do
+      it 'has a data_release_delay_reason_comment' do
         expect(study.study_metadata.data_release_delay_reason_comment).to eq(
           metadata[:data_release_delay_reason_comment]
         )
@@ -731,7 +731,7 @@ RSpec.describe Study do
         )
       end
 
-      it 'will have a data_release_delay_approval' do
+      it 'has a data_release_delay_approval' do
         expect(study.study_metadata.data_release_delay_approval).to eq(metadata[:data_release_delay_approval])
       end
     end
@@ -746,15 +746,15 @@ RSpec.describe Study do
 
       let(:study) { create(:study, study_metadata: create(:study_metadata, metadata.merge(never_release_fields))) }
 
-      it 'will have a data_release_prevention_reason' do
+      it 'has a data_release_prevention_reason' do
         expect(study.study_metadata.data_release_prevention_reason).to eq(metadata[:data_release_prevention_reason])
       end
 
-      it 'will have a data_release_prevention_approval' do
+      it 'has a data_release_prevention_approval' do
         expect(study.study_metadata.data_release_prevention_approval).to eq(metadata[:data_release_prevention_approval])
       end
 
-      it 'will have a data_release_prevention_reason_comment' do
+      it 'has a data_release_prevention_reason_comment' do
         expect(study.study_metadata.data_release_prevention_reason_comment).to eq(
           metadata[:data_release_prevention_reason_comment]
         )
@@ -841,8 +841,8 @@ RSpec.describe Study do
   end
 
   context '(DPL-148) on updating user roles' do
-    let(:study) { create :study }
-    let(:user) { create :user }
+    let(:study) { create(:study) }
+    let(:user) { create(:user) }
 
     it 'triggers warehouse update', :warren do
       expect { user.grant_follower(study) }.to change(Warren.handler.messages, :count).from(0)

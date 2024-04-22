@@ -49,8 +49,8 @@ class LabwhereReception
     begin
       scan =
         LabWhereClient::Scan.create(
-          location_barcode: location_barcode,
-          user_code: user_code,
+          location_barcode:,
+          user_code:,
           labware_barcodes: asset_barcodes
         )
 
@@ -67,9 +67,9 @@ class LabwhereReception
       asset.events.create_scanned_into_lab!(location_barcode, user.login)
       BroadcastEvent::LabwareReceived.create!(
         seed: asset,
-        user: user,
+        user:,
         properties: {
-          location_barcode: location_barcode
+          location_barcode:
         }
       )
     end

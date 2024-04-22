@@ -3,9 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe StudiesController do
-  let(:data_release_study_type) { create :data_release_study_type, name: 'genomic sequencing' }
-  let(:reference_genome) { create :reference_genome }
-  let(:study) { create :study }
+  let(:data_release_study_type) { create(:data_release_study_type, name: 'genomic sequencing') }
+  let(:reference_genome) { create(:reference_genome) }
+  let(:study) { create(:study) }
   let(:program) { create(:program) }
   let(:user) { create(:owner) }
 
@@ -25,7 +25,7 @@ RSpec.describe StudiesController do
   describe '#create' do
     before do
       @study_count = Study.count
-      post :create, params: params
+      post :create, params:
     end
 
     context 'with valid options' do
@@ -79,7 +79,7 @@ RSpec.describe StudiesController do
   end
 
   describe '#grant_role' do
-    let(:user) { create :admin }
+    let(:user) { create(:admin) }
 
     before do
       session[:user] = user.id

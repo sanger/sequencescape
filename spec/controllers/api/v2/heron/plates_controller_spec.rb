@@ -7,7 +7,7 @@ RSpec.describe Api::V2::Heron::PlatesController, :heron, type: :request do
   include BarcodeHelper
 
   let(:stock_plate_purpose) { PlatePurpose.stock_plate_purpose }
-  let(:study) { create :study, name: 'Study 1' }
+  let(:study) { create(:study, name: 'Study 1') }
 
   before { mock_plate_barcode_service }
 
@@ -20,7 +20,7 @@ RSpec.describe Api::V2::Heron::PlatesController, :heron, type: :request do
         data: {
           type: 'plates',
           attributes: {
-            barcode: barcode,
+            barcode:,
             wells: {
               A01: {
                 content: {
@@ -33,15 +33,15 @@ RSpec.describe Api::V2::Heron::PlatesController, :heron, type: :request do
                 }
               }
             },
-            purpose_uuid: purpose_uuid,
-            study_uuid: study_uuid
+            purpose_uuid:,
+            study_uuid:
           }
         }
       }.to_h.with_indifferent_access
     end
     let!(:before_plate_count) { Plate.count }
 
-    before { post api_v2_heron_plates_path, params: params }
+    before { post api_v2_heron_plates_path, params: }
 
     it 'creates a new plate successfully' do
       expect(response).to have_http_status(:created)
@@ -56,7 +56,7 @@ RSpec.describe Api::V2::Heron::PlatesController, :heron, type: :request do
     end
 
     it 'fails if barcode is not unique with the barcode information' do
-      post api_v2_heron_plates_path, params: params
+      post(api_v2_heron_plates_path, params:)
       expect(response).to have_http_status(:unprocessable_entity)
       json = ActiveSupport::JSON.decode(response.body)
       expect(json['errors']).to eq(["The barcode '#{barcode}' is already in use."])

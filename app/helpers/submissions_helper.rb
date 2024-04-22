@@ -43,7 +43,7 @@ module SubmissionsHelper # rubocop:todo Metrics/ModuleLength
       studies,
       :id,
       :name,
-      { prompt: prompt },
+      { prompt: },
       disabled: true,
       class: 'study_id custom-select'
     )
@@ -62,7 +62,7 @@ module SubmissionsHelper # rubocop:todo Metrics/ModuleLength
       projects,
       :name,
       :name,
-      { prompt: prompt },
+      { prompt: },
       disabled: true,
       class: 'submission_project_name custom-select'
     )
@@ -83,7 +83,7 @@ module SubmissionsHelper # rubocop:todo Metrics/ModuleLength
       asset_groups,
       :id,
       :name,
-      { prompt: prompt },
+      { prompt: },
       class: 'submission_asset_group_id required form-control',
       disabled: asset_groups.empty?
     )

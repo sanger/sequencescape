@@ -3,15 +3,15 @@
 require 'rails_helper'
 
 describe Transfer::BetweenPlates do
-  let(:user) { create :user }
-  let(:source) { create :stock_plate, sample_count: 5, well_factory: :untagged_well }
-  let(:destination) { create :plate, well_count: 5, well_factory: :empty_well }
+  let(:user) { create(:user) }
+  let(:source) { create(:stock_plate, sample_count: 5, well_factory: :untagged_well) }
+  let(:destination) { create(:plate, well_count: 5, well_factory: :empty_well) }
 
   before do
     described_class.create!(
-      source: source,
-      destination: destination,
-      user: user,
+      source:,
+      destination:,
+      user:,
       transfers: {
         'A1' => 'A1',
         'B1' => 'B1',

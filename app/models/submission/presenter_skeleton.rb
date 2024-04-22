@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 class Submission::PresenterSkeleton
   class_attribute :attributes, instance_writer: false
-  self.attributes = Array.new
+  self.attributes = []
 
   delegate :not_ready_samples_names, to: :submission
 
@@ -10,7 +10,7 @@ class Submission::PresenterSkeleton
 
     @user = user
 
-    attributes.each { |attribute| send("#{attribute}=", submission_attributes[attribute]) }
+    attributes.each { |attribute| send(:"#{attribute}=", submission_attributes[attribute]) }
   end
 
   # id accessors need to be explicitly defined...
@@ -24,13 +24,13 @@ class Submission::PresenterSkeleton
 
   def cross_compatible?; end
 
-  def each_submission_warning(&block)
-    submission.each_submission_warning(&block)
+  def each_submission_warning(&)
+    submission.each_submission_warning(&)
   end
 
   protected
 
-  def method_missing(name, *args, &block)
+  def method_missing(name, *args, &)
     name_without_assignment = name.to_s.sub(/=$/, '').to_sym
     return super unless attributes.include?(name_without_assignment)
 

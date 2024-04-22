@@ -76,7 +76,7 @@ class PhiX::SpikedBuffer
 
   def tags
     i7_oligo, i5_oligo = parent.aliquots.first.tags_combination
-    PhiX.tag_option_for(i7_oligo: i7_oligo, i5_oligo: i5_oligo)
+    PhiX.tag_option_for(i7_oligo:, i5_oligo:)
   end
 
   private
@@ -89,7 +89,7 @@ class PhiX::SpikedBuffer
   # due to concerns that it will be set accidentally
   # But the option is here in the model to set it via study_id if needed in future
   def aliquot_attributes
-    study_id.present? ? { study_id: study_id } : {}
+    study_id.present? ? { study_id: } : {}
   end
 
   # Generates .number PhiX.stock_purpose tubes names
@@ -109,7 +109,7 @@ class PhiX::SpikedBuffer
             receptacle.transfer_requests_as_target.build(
               asset: parent.receptacle,
               target_asset: receptacle,
-              aliquot_attributes: aliquot_attributes
+              aliquot_attributes:
             )
           end
       parent.children << spiked_buffer

@@ -18,7 +18,7 @@ module Role::UserRoleHelper
   # Grants a user the role_name,  in cases like
   # owner, authorizable should indicate the owned resource
   def grant_role(role_name, authorizable = nil)
-    roles << Role.find_or_create_by!(name: role_name, authorizable: authorizable)
+    roles << Role.find_or_create_by!(name: role_name, authorizable:)
   end
 
   def remove_role(role_name, authorizable = nil)
@@ -50,9 +50,9 @@ module Role::UserRoleHelper
     # @note Disabling Naming/PredicateName as this is not a predicate, but instead has been named
     #       to evoke the behaviour of has_many/has_one
     def has_role(role_name) # rubocop:disable Naming/PredicateName
-      define_method("#{role_name}?") { |authorizable = nil| role?(role_name, authorizable) }
-      alias_method "#{role_name}_of?", "#{role_name}?"
-      define_method("grant_#{role_name}") { |authorizable = nil| grant_role(role_name, authorizable) }
+      define_method(:"#{role_name}?") { |authorizable = nil| role?(role_name, authorizable) }
+      alias_method :"#{role_name}_of?", :"#{role_name}?"
+      define_method(:"grant_#{role_name}") { |authorizable = nil| grant_role(role_name, authorizable) }
     end
   end
 end

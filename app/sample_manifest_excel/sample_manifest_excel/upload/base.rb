@@ -64,8 +64,8 @@ module SampleManifestExcel
         return unless start_row.present? && sanger_sample_id_column.present?
 
         sanger_sample_id = data.cell(1, sanger_sample_id_column.number)
-        SampleManifestAsset.find_by(sanger_sample_id: sanger_sample_id)&.sample_manifest ||
-          Sample.find_by(sanger_sample_id: sanger_sample_id)&.sample_manifest
+        SampleManifestAsset.find_by(sanger_sample_id:)&.sample_manifest ||
+          Sample.find_by(sanger_sample_id:)&.sample_manifest
       end
 
       ##

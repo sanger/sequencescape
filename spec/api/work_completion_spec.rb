@@ -4,13 +4,14 @@ require 'rails_helper'
 require 'shared_contexts/limber_shared_context'
 
 describe '/api/1/work_completions' do
-  include_context 'a limber target plate with submissions'
-
   subject { '/api/1/work_completions' }
 
-  let(:authorised_app) { create :api_application }
-  let(:parent_purpose) { create :plate_purpose }
-  let(:user) { create :user }
+  include_context 'a limber target plate with submissions'
+
+
+  let(:authorised_app) { create(:api_application) }
+  let(:parent_purpose) { create(:plate_purpose) }
+  let(:user) { create(:user) }
 
   describe '#post' do
     let(:payload) do

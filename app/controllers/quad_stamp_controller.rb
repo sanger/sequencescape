@@ -55,9 +55,9 @@ class QuadStampController < ApplicationController
   def set_barcode_printers
     @barcode_printers =
       BarcodePrinter.where(barcode_printer_type_id: BarcodePrinterType384DoublePlate.all).order('name asc')
-    if @barcode_printers.blank?
+    return if @barcode_printers.present?
       @barcode_printers = BarcodePrinter.where(barcode_printer_type_id: BarcodePrinterType96Plate.all).order('name asc')
-    end
+    
   end
 
   def parent_barcodes

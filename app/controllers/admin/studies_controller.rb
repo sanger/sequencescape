@@ -16,12 +16,12 @@ class Admin::StudiesController < ApplicationController
 
   def edit
     @request_types = RequestType.order(name: :asc)
-    if params[:id] != '0'
+    if params[:id] == '0'
+      render nothing: true
+    else
       @study = Study.find(params[:id])
       flash.now[:warning] = @study.warnings if @study.warnings.present?
       render partial: 'edit', locals: { study: @study }
-    else
-      render nothing: true
     end
   end
   def update
@@ -34,17 +34,15 @@ class Admin::StudiesController < ApplicationController
   # TODO: remove unneeded code
   # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def filter # rubocop:todo Metrics/CyclomaticComplexity
-    filter_conditions = { approved: false } if params[:filter][:by] == 'not approved' unless params[:filter].nil?
+    filter_conditions = { approved: false } if !params[:filter].nil? && (params[:filter][:by] == 'not approved')
 
     if params[:filter][:by] == 'not approved' || params[:filter][:by] == 'all'
       @studies = Study.where(filter_conditions).alphabetical.select { |p| p.name.include? params[:q] }
     end
 
-    unless params[:filter].nil?
-      if params[:filter][:by] == 'unallocated manager'
-        @studies = Study.select { |p| p.name.include?(params[:q]) && !(p.roles.map(&:name).include?('manager')) }
+    if !params[:filter].nil? && (params[:filter][:by] == 'unallocated manager')
+        @studies = Study.select { |p| p.name.include?(params[:q]) && !p.roles.map(&:name).include?('manager') }
       end
-    end
 
     case params[:filter][:status]
     when 'open'

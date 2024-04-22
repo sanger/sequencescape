@@ -20,10 +20,10 @@ module Accession
       @sample = sample
       @response = Accession::NullResponse.new
 
-      if valid?
+      return unless valid?
         @service = sample.service
         @contact = Contact.new(user)
-      end
+      
     end
 
     def to_xml # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
@@ -73,8 +73,8 @@ module Accession
           end
       end
 
-      def each(&block)
-        files.each(&block)
+      def each(&)
+        files.each(&)
       end
 
       def open

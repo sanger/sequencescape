@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 Given /^the ((?:entire plate |inverted )?tag layout template) "([^"]+)" exists$/ do |style, name|
-  FactoryBot.create(style.tr(' ', '_'), name: name)
+  FactoryBot.create(style.tr(' ', '_'), name:)
 end
 
 Given /^the tag 2 layout template "([^"]+)" exists$/ do |name|
-  FactoryBot.create(:tag2_layout_template, name: name, oligo: 'AAA')
+  FactoryBot.create(:tag2_layout_template, name:, oligo: 'AAA')
 end
 
 TAG_LAYOUT_TEMPLATE_REGEXP = 'tag layout template "[^\"]+"'
@@ -41,19 +41,20 @@ def plate_view_of_oligos(label, mapping) # rubocop:todo Metrics/AbcSize
   plate = []
   mapping.each do |location, oligo|
     location =~ /^([A-H])(\d+)$/ or raise StandardError, "Could not match well location #{location.inspect}"
-    row, column = $1.bytes.first - 'A'.bytes.first, $2.to_i - 1
+    row = Regexp.last_match(1).bytes.first - 'A'.bytes.first
+    column = Regexp.last_match(2).to_i - 1
     plate[(row * 12) + column] = oligo
   end
 
   plate_layout = (1..8).map { |_| [] }
   plate.each_with_index { |oligo, i| plate_layout[i / 12][i % 12] = oligo }
 
-  $stderr.puts "#{label}:"
+  warn "#{label}:"
   plate_layout.map(&:inspect).map(&$stderr.method(:puts))
 end
 
 def check_tag_layout(name, well_range, expected_wells_to_oligos) # rubocop:todo Metrics/MethodLength
-  plate = Plate.find_by(name: name) or raise StandardError, "Cannot find plate #{name.inspect}"
+  plate = Plate.find_by(name:) or raise StandardError, "Cannot find plate #{name.inspect}"
   wells_to_oligos =
     plate
       .wells
@@ -63,14 +64,14 @@ def check_tag_layout(name, well_range, expected_wells_to_oligos) # rubocop:todo 
         [w.map.description, w.primary_aliquot.try(:tag).try(:oligo) || '']
       end
       .to_h
-  if expected_wells_to_oligos != wells_to_oligos
+  return unless expected_wells_to_oligos != wells_to_oligos
     plate_view_of_oligos('Expected', expected_wells_to_oligos)
     plate_view_of_oligos('Got', wells_to_oligos)
     assert(false, 'Tag assignment appears to be invalid')
-  end
+  
 end
 def check_tag2_layout(name, well_range, expected_wells_to_oligos) # rubocop:todo Metrics/MethodLength
-  plate = Plate.find_by(name: name) or raise StandardError, "Cannot find plate #{name.inspect}"
+  plate = Plate.find_by(name:) or raise StandardError, "Cannot find plate #{name.inspect}"
   wells_to_oligos =
     plate
       .wells
@@ -80,11 +81,11 @@ def check_tag2_layout(name, well_range, expected_wells_to_oligos) # rubocop:todo
         [w.map.description, w.primary_aliquot.try(:tag2).try(:oligo) || '']
       end
       .to_h
-  if expected_wells_to_oligos != wells_to_oligos
+  return unless expected_wells_to_oligos != wells_to_oligos
     plate_view_of_oligos('Expected', expected_wells_to_oligos)
     plate_view_of_oligos('Got', wells_to_oligos)
     assert(false, 'Tag 2 assignment appears to be invalid')
-  end
+  
 end
 Then /^the tag layout on the plate "([^"]+)" should be:$/ do |name, table|
   check_tag_layout(
@@ -122,15 +123,16 @@ def pool_by_strategy(source, destination, pooling_strategy) # rubocop:todo Metri
 
   pooling_strategy.each_with_index do |pool, _old_submission_id|
     submission_id = Submission.create!(user: User.first || User.create!(login: 'a')).id
-    wells_for_source, wells_for_destination = source_wells.slice!(0, pool), destination_wells.slice!(0, pool)
+    wells_for_source = source_wells.slice!(0, pool)
+    wells_for_destination = destination_wells.slice!(0, pool)
     wells_for_source
       .zip(wells_for_destination)
       .each do |w|
-        TransferRequest.create!(asset: w.first, target_asset: w.last, submission_id: submission_id)
+        TransferRequest.create!(asset: w.first, target_asset: w.last, submission_id:)
         FactoryBot.create :request_without_submission,
                           asset: w.first,
                           target_asset: w.last,
-                          submission_id: submission_id
+                          submission_id:
       end
   end
 end
@@ -149,7 +151,7 @@ Given 'the wells for {plate_name} have been pooled to {plate_name} according to 
 end
 
 Given /^the tag group "(.*?)" exists$/ do |name|
-  TagGroup.create!(name: name)
+  TagGroup.create!(name:)
 end
 
 Given /^the tag group "(.*?)" has (\d+) tags$/ do |group, count|

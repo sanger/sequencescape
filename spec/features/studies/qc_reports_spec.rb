@@ -6,14 +6,14 @@ describe 'Create a QC report' do
   let(:user) { create(:admin) }
   let!(:study) { create(:study) }
   let!(:product_criteria) { create(:product_criteria) }
-  let(:plate_purposes) { create_list :plate_purpose, 3 }
+  let(:plate_purposes) { create_list(:plate_purpose, 3) }
   let(:plate_purpose_names) { plate_purposes.map(&:name) }
 
   before do
     create(:plate_purpose)
-    create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: plate_purposes[0]))
-    create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: plate_purposes[1]))
-    create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: plate_purposes[2]))
+    create(:well_for_qc_report, study:, plate: create(:plate, plate_purpose: plate_purposes[0]))
+    create(:well_for_qc_report, study:, plate: create(:plate, plate_purpose: plate_purposes[1]))
+    create(:well_for_qc_report, study:, plate: create(:plate, plate_purpose: plate_purposes[2]))
   end
 
   it 'create a new report' do

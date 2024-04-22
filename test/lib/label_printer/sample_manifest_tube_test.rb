@@ -9,7 +9,7 @@ class SampleManifestTubeTest < ActiveSupport::TestCase
   attr_reader :manifest, :tube_label, :tube1, :tube2, :tube3, :tubes, :prefix, :barcode1, :label
 
   def setup # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
-    @manifest = create :sample_manifest, asset_type: '1dtube', purpose: Tube::Purpose.standard_sample_tube, count: 3
+    @manifest = create(:sample_manifest, asset_type: '1dtube', purpose: Tube::Purpose.standard_sample_tube, count: 3)
     @manifest.generate
     @tube1 = manifest.printables[0]
     @tube2 = manifest.printables[1]
@@ -22,9 +22,9 @@ class SampleManifestTubeTest < ActiveSupport::TestCase
     options = { sample_manifest: @manifest, only_first_label: false }
     @tube_label = LabelPrinter::Label::SampleManifestTube.new(options)
     @label = {
-      first_line: (manifest.study.abbreviation).to_s,
+      first_line: manifest.study.abbreviation.to_s,
       second_line: barcode1,
-      third_line: (Date.today.strftime('%e-%^b-%Y')).to_s,
+      third_line: Date.today.strftime('%e-%^b-%Y').to_s,
       round_label_top_line: prefix,
       round_label_bottom_line: barcode1,
       barcode: tube1.machine_barcode,

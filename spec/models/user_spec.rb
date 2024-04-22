@@ -3,10 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe User do
-  let(:user) { create :user }
+  let(:user) { create(:user) }
 
   describe '#consent_withdrawn_sample_metadata' do
-    let(:samples) { create_list :sample, 4 }
+    let(:samples) { create_list(:sample, 4) }
 
     before { samples.each { |sample| sample.sample_metadata.update(user_id_of_consent_withdrawn: user.id) } }
 
@@ -17,7 +17,7 @@ RSpec.describe User do
 
   shared_examples 'a role predicate' do
     context 'when checking an administrator is an administrator' do
-      let(:user) { create :admin }
+      let(:user) { create(:admin) }
       let(:role_name) { 'administrator' }
       let(:authorizable) { nil }
 
@@ -25,7 +25,7 @@ RSpec.describe User do
     end
 
     context 'when checking an administrator is an manager' do
-      let(:user) { create :admin }
+      let(:user) { create(:admin) }
       let(:role_name) { 'manager' }
       let(:authorizable) { nil }
 
@@ -33,7 +33,7 @@ RSpec.describe User do
     end
 
     context 'when checking an non-administrator is an administrator' do
-      let(:user) { create :user }
+      let(:user) { create(:user) }
       let(:role_name) { 'administrator' }
       let(:authorizable) { nil }
 
@@ -41,7 +41,7 @@ RSpec.describe User do
     end
 
     context 'when checking an manager is an manager (generic)' do
-      let(:study) { create :study_with_manager }
+      let(:study) { create(:study_with_manager) }
       let(:user) { study.managers.first }
       let(:role_name) { 'manager' }
       let(:authorizable) { nil }
@@ -50,7 +50,7 @@ RSpec.describe User do
     end
 
     context 'when checking an manager of their study' do
-      let(:study) { create :study_with_manager }
+      let(:study) { create(:study_with_manager) }
       let(:user) { study.managers.first }
       let(:role_name) { 'manager' }
       let(:authorizable) { study }
@@ -59,10 +59,10 @@ RSpec.describe User do
     end
 
     context 'when checking an manager of a different study' do
-      let(:study) { create :study_with_manager }
+      let(:study) { create(:study_with_manager) }
       let(:user) { study.managers.first }
       let(:role_name) { 'manager' }
-      let(:authorizable) { create :study }
+      let(:authorizable) { create(:study) }
 
       it { is_expected.to be false }
     end
@@ -86,20 +86,20 @@ RSpec.describe User do
   end
 
   describe '#<role_name>?' do
-    subject { user.public_send("#{role_name}?", authorizable) }
+    subject { user.public_send(:"#{role_name}?", authorizable) }
 
     it_behaves_like 'a role predicate'
   end
 
   describe '#<role_name>_of?' do
-    subject { user.public_send("#{role_name}_of?", authorizable) }
+    subject { user.public_send(:"#{role_name}_of?", authorizable) }
 
     it_behaves_like 'a role predicate'
   end
 
   describe '#grant_role' do
-    let(:user) { create :user }
-    let(:study) { create :study }
+    let(:user) { create(:user) }
+    let(:study) { create(:study) }
 
     it 'adds a role to a user' do
       user.grant_role('administrator')
@@ -127,7 +127,7 @@ RSpec.describe User do
   end
 
   describe '#remove_role' do
-    let(:study) { create :study_with_manager, updated_at: 2.years.ago }
+    let(:study) { create(:study_with_manager, updated_at: 2.years.ago) }
 
     it 'updates the study updated_at timestamp' do
       # We make sure that defining a study with a manager triggers study update

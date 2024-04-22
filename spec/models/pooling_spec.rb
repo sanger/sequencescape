@@ -3,18 +3,18 @@
 require 'rails_helper'
 
 describe Pooling, :poolings do
-  let(:empty_lb_tube) { create :empty_library_tube, barcode: 1 }
-  let(:untagged_lb_tube1) { create :library_tube, barcode: 2 }
-  let(:untagged_lb_tube2) { create :library_tube, barcode: 3 }
-  let(:tagged_lb_tube1) { create :tagged_library_tube, barcode: 4 }
-  let(:tagged_lb_tube2) { create :tagged_library_tube, barcode: 5 }
-  let(:mx_tube) { create :multiplexed_library_tube, barcode: 6 }
+  let(:empty_lb_tube) { create(:empty_library_tube, barcode: 1) }
+  let(:untagged_lb_tube1) { create(:library_tube, barcode: 2) }
+  let(:untagged_lb_tube2) { create(:library_tube, barcode: 3) }
+  let(:tagged_lb_tube1) { create(:tagged_library_tube, barcode: 4) }
+  let(:tagged_lb_tube2) { create(:tagged_library_tube, barcode: 5) }
+  let(:mx_tube) { create(:multiplexed_library_tube, barcode: 6) }
   let(:stock_mx_tube_required) { false }
   let(:barcode_printer_option) { nil }
   let(:pooling) do
     described_class.new(
-      barcodes: barcodes,
-      stock_mx_tube_required: stock_mx_tube_required,
+      barcodes:,
+      stock_mx_tube_required:,
       barcode_printer: barcode_printer_option,
       count: 1
     )
@@ -109,7 +109,7 @@ describe Pooling, :poolings do
     # failing to disambiguate between them.
     context 'when the source tubes are from an mx library manifest' do
       before do
-        create :create_asset_request, asset: tagged_lb_tube1.receptacle
+        create(:create_asset_request, asset: tagged_lb_tube1.receptacle)
         create(:external_multiplexed_library_tube_creation_request, asset: tagged_lb_tube1.receptacle)
       end
 
@@ -121,7 +121,7 @@ describe Pooling, :poolings do
     end
 
     context 'when a barcode printer is provided' do
-      let(:barcode_printer) { create :barcode_printer }
+      let(:barcode_printer) { create(:barcode_printer) }
       let(:barcode_printer_option) { barcode_printer.name }
 
       it 'executes print_job' do
@@ -154,7 +154,7 @@ describe Pooling, :poolings do
       # set the tags in the second tube to be the same as the first, to create a tag clash
       tag1 = tagged_lb_tube1.aliquots.first.tag
       tag2 = tagged_lb_tube1.aliquots.first.tag2
-      tagged_lb_tube2.aliquots.first.update!(tag: tag1, tag2: tag2)
+      tagged_lb_tube2.aliquots.first.update!(tag: tag1, tag2:)
     end
 
     it 'is not valid due to the tag clash' do

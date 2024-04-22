@@ -22,10 +22,10 @@ module Accession
     def initialize(submission)
       @submission = submission
 
-      if valid?
+      return unless valid?
         @resource = rest_client.new(submission.service.url, submission.service.login)
         set_proxy
-      end
+      
     end
 
     # Post the submission to the appropriate accessioning service
@@ -33,7 +33,7 @@ module Accession
     # If the service errors it will return a NullResponse
     # Makes sure that the payload is closed.
     def post
-      if valid?
+      return unless valid?
         begin
           Accession::Response.new(resource.post(submission.payload.open))
         rescue StandardError => e
@@ -42,7 +42,7 @@ module Accession
         ensure
           submission.payload.close!
         end
-      end
+      
     end
 
     private

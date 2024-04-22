@@ -82,7 +82,7 @@ class QcReport < ApplicationRecord
     # You can trigger a synchronous report manually by calling #generate!
     # rubocop:todo Metrics/MethodLength
     def generate_report # rubocop:todo Metrics/AbcSize
-      begin
+      
         study.each_well_for_qc_report_in_batches(
           exclude_existing,
           product_criteria,
@@ -100,7 +100,7 @@ class QcReport < ApplicationRecord
             assets.each do |asset|
               criteria = product_criteria.assess(asset, connected_wells[asset.id])
               QcMetric.create!(
-                asset: asset,
+                asset:,
                 qc_decision: criteria.qc_decision,
                 metrics: criteria.metrics,
                 qc_report: self
@@ -109,12 +109,12 @@ class QcReport < ApplicationRecord
           end
         end
         generation_complete!
-      rescue => e
+      rescue StandardError => e
         # If something goes wrong, requeue the report and re-raise the exception
         qc_metrics.clear
         requeue!
         raise e
-      end
+      
     end
 
     # rubocop:enable Metrics/MethodLength

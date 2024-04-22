@@ -5,9 +5,9 @@ require 'pry'
 
 describe 'Batches controller', :js, :warren do
   let(:request_count) { 3 }
-  let(:batch) { create :sequencing_batch, request_count: request_count, created_at: 1.day.ago, updated_at: 1.day.ago }
-  let(:user) { create :admin }
-  let!(:flowcell_message) { create :flowcell_messenger, target: batch }
+  let(:batch) { create(:sequencing_batch, request_count:, created_at: 1.day.ago, updated_at: 1.day.ago) }
+  let(:user) { create(:admin) }
+  let!(:flowcell_message) { create(:flowcell_messenger, target: batch) }
 
   it 'reordering requests' do
     requests_ids = batch.batch_requests.map(&:request_id)

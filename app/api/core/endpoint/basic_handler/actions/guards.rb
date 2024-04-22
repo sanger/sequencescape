@@ -11,7 +11,7 @@ module Core::Endpoint::BasicHandler::Actions::Guards
           end
         ",
           __FILE__,
-          line
+          __LINE__ - 6
         )
       elsif block
         singleton_class.send(:define_method, :execute, &block)
@@ -37,7 +37,8 @@ module Core::Endpoint::BasicHandler::Actions::Guards
 
   class GuardProxy < ActiveSupport::ProxyObject
     def initialize(request, object)
-      @request, @object = request, object
+      @request = request
+      @object = object
     end
 
     def respond_to?(method, private_methods = false)
@@ -50,8 +51,8 @@ module Core::Endpoint::BasicHandler::Actions::Guards
     protected :method_missing
   end
 
-  def check_authorisation!(*args)
-    accessible_action?(*args) or
+  def check_authorisation!(*)
+    accessible_action?(*) or
       raise ::Core::Service::UnsupportedAction, 'requested action is not supported on this resource'
   end
   private :check_authorisation!
@@ -61,8 +62,8 @@ module Core::Endpoint::BasicHandler::Actions::Guards
   end
   private :accessible_action?
 
-  def action_guard(name, method_name = nil, &block)
-    guard_for(name).push(Guard.new(method_name, &block))
+  def action_guard(name, method_name = nil, &)
+    guard_for(name).push(Guard.new(method_name, &))
   end
 
   def guard_for(name)

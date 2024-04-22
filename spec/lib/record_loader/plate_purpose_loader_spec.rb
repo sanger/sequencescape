@@ -32,7 +32,7 @@ RSpec.describe RecordLoader::PlatePurposeLoader, :loader, type: :model do
 
     context 'with a pre-existing plate' do
       before do
-        create :plate_purpose, name: created_purposes.first
+        create(:plate_purpose, name: created_purposes.first)
         subject.create! # rubocop:todo RSpec/NamedSubject
       end
 
@@ -44,9 +44,9 @@ RSpec.describe RecordLoader::PlatePurposeLoader, :loader, type: :model do
 
   context 'with a specific file specified' do
     let(:selected_files) { '002_example' }
+    let(:the_creator) { Plate::Creator.joins(:plate_purposes).find_by(plate_purposes: { name: created_purposes.last }) }
     before { subject.create! } # rubocop:todo RSpec/NamedSubject
 
-    let(:the_creator) { Plate::Creator.joins(:plate_purposes).find_by(plate_purposes: { name: created_purposes.last }) }
 
     it 'creates purposes from the selected file files' do
       expect(Purpose.where(name: created_purposes).count).to eq(1)

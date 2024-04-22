@@ -21,13 +21,13 @@ rescue LoadError
   # No pry? That's okay, we're probably on the CI server
 end
 
-Dir.glob(File.expand_path(File.join(Rails.root, %w[spec factories ** *.rb]))) # rubocop:disable Rails/RootPathnameMethods
+Dir.glob(File.expand_path(Rails.root.join(%w[spec factories ** *.rb]).to_s)) # rubocop:disable Rails/RootPathnameMethods
   .each { |factory_filename| require factory_filename }
 
-Dir.glob(File.expand_path(File.join(Rails.root, %w[test shoulda_macros *.rb]))) # rubocop:disable Rails/RootPathnameMethods
+Dir.glob(File.expand_path(Rails.root.join(%w[test shoulda_macros *.rb]).to_s)) # rubocop:disable Rails/RootPathnameMethods
   .each { |macro_filename| require macro_filename }
 
-require "#{Rails.root}/test/unit/task_test_base"
+require "#{Rails.root.join('test/unit/task_test_base')}"
 
 # Rails.application.load_seed
 

@@ -2,9 +2,10 @@
 
 module QcableStatemachineChecks
   class StatemachineHelper
-    def initialize(owner, target, &block)
-      @owner, @target = owner, target
-      instance_eval(&block)
+    def initialize(owner, target, &)
+      @owner = owner
+      @target = target
+      instance_eval(&)
     end
 
     # rubocop:todo Metrics/MethodLength
@@ -46,7 +47,7 @@ module QcableStatemachineChecks
     # rubocop:enable Metrics/MethodLength
   end
 
-  def state_machine(state_machined_class, &block)
-    StatemachineHelper.new(self, state_machined_class, &block)
+  def state_machine(state_machined_class, &)
+    StatemachineHelper.new(self, state_machined_class, &)
   end
 end

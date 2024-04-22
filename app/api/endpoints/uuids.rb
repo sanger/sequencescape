@@ -58,7 +58,7 @@ class Endpoints::Uuids < Core::Endpoint::Base
           protected #{name.to_sym.inspect}
         ",
           __FILE__,
-          line
+          __LINE__ - 8
         )
       end
     end

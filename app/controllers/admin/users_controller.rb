@@ -56,16 +56,16 @@ class Admin::UsersController < ApplicationController
         @users_roles = @user.study_and_project_roles.order(name: :asc)
 
         flash[:notice] = 'Role added' # rubocop:disable Rails/ActionControllerFlashBeforeRender
-        render partial: 'roles', status: 200
+        render partial: 'roles', status: :ok
       else
         @users_roles = @user.study_and_project_roles.order(name: :asc)
         flash[:error] = 'A problem occurred while adding the role' # rubocop:disable Rails/ActionControllerFlashBeforeRender
-        render partial: 'roles', status: 500
+        render partial: 'roles', status: :internal_server_error
       end
     else
       @users_roles = @user.study_and_project_roles.sort_by(&:name)
       flash[:error] = 'A problem occurred while adding the role'
-      render partial: 'roles', status: 401
+      render partial: 'roles', status: :unauthorized
     end
   end
 
@@ -82,16 +82,16 @@ class Admin::UsersController < ApplicationController
         @users_roles = @user.study_and_project_roles.order(name: :asc)
 
         flash[:error] = 'Role was removed' # rubocop:disable Rails/ActionControllerFlashBeforeRender
-        render partial: 'roles', status: 200
+        render partial: 'roles', status: :ok
       else
         @users_roles = @user.study_and_project_roles.order(name: :asc)
         flash[:error] = 'A problem occurred while removing the role' # rubocop:disable Rails/ActionControllerFlashBeforeRender
-        render partial: 'roles', status: 500
+        render partial: 'roles', status: :internal_server_error
       end
     else
       @users_roles = @user.study_and_project_roles.order(name: :asc)
       flash[:error] = 'A problem occurred while removing the role'
-      render partial: 'roles', status: 401
+      render partial: 'roles', status: :unauthorized
     end
   end
 

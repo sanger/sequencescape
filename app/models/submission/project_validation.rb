@@ -38,19 +38,19 @@ module Submission::ProjectValidation
   private :check_project_details!
 
   def multiplier_for(request_type)
-    return 1 if request_options.blank? || (not request_options.key?(:multiplier))
+    return 1 if request_options.blank? || !request_options.key?(:multiplier)
 
     request_options[:multiplier][request_type.id.to_i] || 1
   end
   private :multiplier_for
 
   def submittable?
-    begin
+    
       @checking_project = true
       valid?
     ensure
       @checking_project = false
-    end
+    
   end
 
   # Hack to be able to build order

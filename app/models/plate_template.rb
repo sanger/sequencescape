@@ -13,10 +13,10 @@ class PlateTemplate < Plate
     self.size = (details[:rows]).to_i * (details[:cols]).to_i
     save!
 
-    unless details[:wells].nil?
+    return if details[:wells].nil?
       empty_wells = details[:wells].keys
       empty_wells.each { |well| add_well_by_map_description(Well.create!, well) }
-    end
+    
   end
 
   def add_well_by_map_description(well, map_description)

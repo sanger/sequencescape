@@ -30,7 +30,7 @@ class FakeBarcodeService
   end
 
   def barcode(barcode, format = nil)
-    barcodes.push({ barcode: barcode, format: format })
+    barcodes.push({ barcode:, format: })
   end
 
   def next_barcode!
@@ -64,7 +64,7 @@ class FakeBarcodeService
     end
     WebMock
       .stub_request(:post, "#{plate_barcode_url}/child-barcodes/#{configatron.plate_barcode_prefix}/new")
-      .with(body: { barcode: parent_barcode, count: count })
+      .with(body: { barcode: parent_barcode, count: })
       .to_return do
         {
           headers: {

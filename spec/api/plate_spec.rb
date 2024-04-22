@@ -6,17 +6,9 @@ require 'support/barcode_helper'
 describe '/api/1/plate-uuid' do
   subject { '/api/1/' + uuid }
 
-  let(:authorised_app) { create :api_application }
-  let(:uuid) { plate.uuid }
-
-  let(:plate) { create :plate, barcode: 'SQPD-1' }
-
-  before { custom_metadata_collection }
-
+  let(:authorised_app) { create(:api_application) }
   let(:custom_metadata_collection) { create(:custom_metadatum_collection, asset: plate) }
-
   let(:purpose) { plate.purpose }
-
   let(:response_body) do
     "{
       \"plate\": {
@@ -65,8 +57,16 @@ describe '/api/1/plate-uuid' do
       }
     }"
   end
-
   let(:response_code) { 200 }
+  let(:uuid) { plate.uuid }
+
+  let(:plate) { create(:plate, barcode: 'SQPD-1') }
+
+  before { custom_metadata_collection }
+
+
+
+
 
   it 'supports resource reading' do
     api_request :get, subject
@@ -131,7 +131,7 @@ describe '/api/1/plate-uuid' do
     end
 
     let(:stock_plate) { create(:full_stock_plate, barcode: 'SQPD-2') }
-    let(:plate) { create :plate, parents: [stock_plate], barcode: 'SQPD-1' }
+    let(:plate) { create(:plate, parents: [stock_plate], barcode: 'SQPD-1') }
     let(:response_code) { 200 }
 
     it 'supports resource reading' do

@@ -41,10 +41,11 @@ module AssetsHelper
   # parameter along with its current value, based either on the instance variable ID value or the
   # ID parameter.  For instance, if the 'name' is 'foo' then either the '@foo.id' value will be yielded,
   # or the 'params[:foo_id]' value if @foo is nil.
-  def instance_variable_or_id_param(name, &block)
-    field_name, value = :"#{name}_id", instance_variable_get(:"@#{name}")
+  def instance_variable_or_id_param(name, &)
+    field_name = :"#{name}_id"
+    value = instance_variable_get(:"@#{name}")
     value_id = value.nil? ? params[field_name] : value.id
-    concat(capture(field_name, value_id, &block))
+    concat(capture(field_name, value_id, &))
   end
 
   # Returns a select tag that has it's options ordered by name (assumes present of sorted_by_name function)
@@ -56,7 +57,7 @@ module AssetsHelper
       select_tag(
         field,
         options_for_select(select_options_source.sorted_by_name.pluck(:name, :id), selected.try(:to_i)),
-        options.merge(disabled: disabled, class: 'form-control select2')
+        options.merge(disabled:, class: 'form-control select2')
       )
     end
   end

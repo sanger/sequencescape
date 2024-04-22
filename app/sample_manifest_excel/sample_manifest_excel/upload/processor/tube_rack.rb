@@ -58,7 +58,7 @@ module SampleManifestExcel
         # it has been processed before and should not be re-processed
         def check_if_tube_racks_present
           @tube_rack_barcodes_from_manifest.each do |barcode|
-            existing_barcode_record = Barcode.includes(:asset).find_by(barcode: barcode)
+            existing_barcode_record = Barcode.includes(:asset).find_by(barcode:)
             return true if !existing_barcode_record.nil? && !existing_barcode_record.asset.nil?
           end
           false
@@ -180,7 +180,7 @@ module SampleManifestExcel
             tube_rack_barcode = @tube_barcode_to_rack_barcode[tube_barcode]
             tube_rack = rack_barcode_to_tube_rack[tube_rack_barcode]
             tube_barcode_to_coordinate = @rack_barcode_to_scan_results[tube_rack_barcode]
-            RackedTube.create!(tube_rack: tube_rack, tube: tube, coordinate: tube_barcode_to_coordinate[tube_barcode])
+            RackedTube.create!(tube_rack:, tube:, coordinate: tube_barcode_to_coordinate[tube_barcode])
           end
         end
 

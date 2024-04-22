@@ -94,13 +94,13 @@ class Map < ApplicationRecord
     def self.vertical_position_to_description(well_position, length)
       desc_letter = (((well_position - 1) % length) + 65).chr
       desc_number = ((well_position - 1) / length) + 1
-      (desc_letter + (desc_number.to_s))
+      (desc_letter + desc_number.to_s)
     end
 
     def self.horizontal_position_to_description(well_position, width)
       desc_letter = (((well_position - 1) / width) + 65).chr
       desc_number = ((well_position - 1) % width) + 1
-      (desc_letter + (desc_number.to_s))
+      (desc_letter + desc_number.to_s)
     end
 
     def self.horizontal_to_vertical(well_position, plate_size)
@@ -142,12 +142,12 @@ class Map < ApplicationRecord
   module Sequential
     def self.location_from_row_and_column(row, column, width, size)
       digit_count = Math.log10(size + 1).ceil
-      "S%0#{digit_count}d" % [((row) * width) + column]
+      format("S%0#{digit_count}d", (row * width) + column)
     end
 
     def self.location_from_index(index, size)
       digit_count = Math.log10(size + 1).ceil
-      "S%0#{digit_count}d" % [index + 1]
+      format("S%0#{digit_count}d", index + 1)
     end
   end
 

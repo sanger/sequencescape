@@ -4,7 +4,7 @@
 module NavigationHelpers
   # Finds the specified page for the given model with the specified name.
   def page_for_model(model, page, name)
-    object = model.find_by!(name: name)
+    object = model.find_by!(name:)
     routing_method = "#{model.name.underscore}_path"
     routing_method = "#{page}_#{routing_method}" unless page == 'show'
     send(routing_method.to_sym, object)
@@ -34,9 +34,9 @@ module NavigationHelpers
     when /the admin page/
       admin_path
     when /the new (study|project|asset) page/, /the (study|project|asset) creation page/
-      send(:"new_#{$1}_path")
+      send(:"new_#{::Regexp.last_match(1)}_path")
     when /the (studies|projects) page/
-      send(:"#{$1}_path")
+      send(:"#{::Regexp.last_match(1)}_path")
     when /the custom texts admin page/
       admin_custom_texts_path
     when /the search page/
@@ -46,35 +46,36 @@ module NavigationHelpers
     when /the sample db homepage/
       '/sdb/'
     when /the "([^"]+)" pipeline page/
-      pipeline = Pipeline.find_by!(name: $1)
+      pipeline = Pipeline.find_by!(name: ::Regexp.last_match(1))
       pipeline_path(pipeline)
     when /the last batch show page/
       batch_path(Batch.last)
     when /the robot verification page/
       robot_verifications_path
     when /the (show|edit) page for sample "([^"]+)"/
-      page_for_model(Sample, $1, $2)
+      page_for_model(Sample, ::Regexp.last_match(1), ::Regexp.last_match(2))
     when /the (show|edit) page for project "([^"]+)"/
-      page_for_model(Project, $1, $2)
+      page_for_model(Project, ::Regexp.last_match(1), ::Regexp.last_match(2))
     when /the (show|edit|related studies) page for study "([^"]+)"/
-      page, name = $1, $2
+      page = ::Regexp.last_match(1)
+      name = ::Regexp.last_match(2)
       page_for_model(Study, page.sub(' ', '_'), name)
     when /the show accession page for study named "([^"]+)"/
-      study_name = $1
+      study_name = ::Regexp.last_match(1)
       study = Study.find_by!(name: study_name)
       study_show_accession_path(study)
     when /the page for editing the last request/
       edit_request_path(Request.last!)
     when /the update page for sample "([^"]+)"/
-      sample_name = $1
+      sample_name = ::Regexp.last_match(1)
       sample = Sample.find_by!(name: sample_name)
       sample_path(sample)
     when /the study information page for "([^"]+)"/, /the information page for study "([^"]+)"/
-      study_name = $1
+      study_name = ::Regexp.last_match(1)
       study = Study.find_by!(name: study_name)
       study_information_path(study)
     when /the study named "([^"]+)"/
-      study_name = $1
+      study_name = ::Regexp.last_match(1)
       study = Study.find_by!(name: study_name)
       study_path(study)
     when /the edit page for the last batch/
@@ -84,15 +85,15 @@ module NavigationHelpers
     when /the plate page/
       plates_path
     when /the show page for library tube "([^"]+)"/
-      tube_name = $1
+      tube_name = ::Regexp.last_match(1)
       library_tube = LibraryTube.find_by!(name: tube_name)
       labware_path(library_tube)
     when /^the show page for labware "([^"]+)"$/
-      asset_name = $1
+      asset_name = ::Regexp.last_match(1)
       asset = Labware.find_by!(name: asset_name)
       labware_path(asset)
     when /^the show page for receptacle "([^"]+)"$/
-      asset_name = $1
+      asset_name = ::Regexp.last_match(1)
       asset = Labware.find_by!(name: asset_name).receptacle
       receptacle_path(asset)
     when /the Submissions Inbox page/
@@ -105,8 +106,8 @@ module NavigationHelpers
     when /the Qc reports homepage/
       study_reports_path
     when /the profile page for "([^"]+)"/
-      login = $1
-      user = User.find_by!(login: login)
+      login = ::Regexp.last_match(1)
+      user = User.find_by!(login:)
       profile_path(user)
     when /the plate purpose homepage/
       admin_plate_purposes_path
@@ -117,15 +118,17 @@ module NavigationHelpers
     when /the delayed jobs admin page/
       url_for(controller: 'admin/delayed_jobs', action: :index)
     when /the details page for (study) "([^"]+)"/
-      page, name = $1, $2
+      page = ::Regexp.last_match(1)
+      name = ::Regexp.last_match(2)
       page_for_model(Study, 'properties', name)
     when /the asset group "([^"]+)" page for study "([^"]+)"$/
-      asset_group_name, study_name = $1, $2
+      asset_group_name = ::Regexp.last_match(1)
+      study_name = ::Regexp.last_match(2)
       study = Study.find_by!(name: study_name)
       asset_group = study.asset_groups.find_by!(name: asset_group_name)
       study_asset_group_path(study, asset_group)
     when /the show page for pipeline "([^"]+)"/
-      pipeline_name = $1
+      pipeline_name = ::Regexp.last_match(1)
       pipeline = Pipeline.find_by!(name: pipeline_name)
       pipeline_path(pipeline)
 
@@ -133,26 +136,26 @@ module NavigationHelpers
     when /the request page for the last request/
       request_path(Request.last!)
     when /the events page for asset with barcode "([^"]+)"/
-      asset = Labware.find_from_barcode($1)
+      asset = Labware.find_from_barcode(::Regexp.last_match(1))
       history_labware_path(asset)
     when /the sample move using spreadsheet page/
       move_spreadsheet_samples_path
     when /the event history page for study "([^"]+)"/
-      study = Study.find_by!(name: $1)
+      study = Study.find_by!(name: ::Regexp.last_match(1))
       study_events_path(study)
     when /the event history page for sample "([^"]+)"/
-      sample = Sample.find_by!(name: $1)
+      sample = Sample.find_by!(name: ::Regexp.last_match(1))
       history_sample_path(sample)
     when /the tag changing page/
       change_tags_path
     when /the XML show page for request (\d+)/
-      request = Request.find($1)
+      request = Request.find(::Regexp.last_match(1))
       request_path(request, format: :xml)
     when /the show page for request (\d+)/
-      request = Request.find($1)
+      request = Request.find(::Regexp.last_match(1))
       request_path(request)
     when /^the new request page for "([^"]+)"$/
-      asset = Asset.find_by!(name: $1)
+      asset = Asset.find_by!(name: ::Regexp.last_match(1))
       new_request_asset_path(id: asset)
     when /the faculty sponsor homepage/
       admin_faculty_sponsors_path

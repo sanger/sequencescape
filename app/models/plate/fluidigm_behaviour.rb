@@ -61,7 +61,7 @@ module Plate::FluidigmBehaviour
                 assay_version: 'v0.1',
                 value: gender_markers,
                 units: 'bases',
-                qc_assay: qc_assay
+                qc_assay:
               },
               {
                 asset: sw,
@@ -70,7 +70,7 @@ module Plate::FluidigmBehaviour
                 assay_version: 'v0.1',
                 value: loci_passed,
                 units: 'bases',
-                qc_assay: qc_assay
+                qc_assay:
               }
             ]
           )

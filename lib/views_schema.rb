@@ -28,7 +28,7 @@ module ViewsSchema
 
   # Valid security options, first option is default
   SECURITIES = %w[DEFINER INVOKER].freeze
-  VIEW_STATEMENT = '%{action} ALGORITHM=%<algorithm>s SQL SECURITY %<security>s VIEW `%<name>s` AS %<statement>s'
+  VIEW_STATEMENT = '%<action>s ALGORITHM=%<algorithm>s SQL SECURITY %<security>s VIEW `%<name>s` AS %<statement>s'
 
   # rubocop:todo Layout/LineLength
   REGEXP = /\ACREATE ALGORITHM=(?<algorithm>\w*) DEFINER=`[^`]*`@`[^`]*` SQL SECURITY (?<security>\w*) VIEW `[^`]+` AS (?<statement>.*)\z/i
@@ -71,7 +71,7 @@ module ViewsSchema
   #
   # @return [Void]
   def self.create_view(name, statement, algorithm: ALGORITHMS.first, security: SECURITIES.first)
-    execute(action: 'CREATE', name: name, statement: statement, algorithm: algorithm, security: security)
+    execute(action: 'CREATE', name:, statement:, algorithm:, security:)
   end
 
   #
@@ -83,7 +83,7 @@ module ViewsSchema
   #
   # @return [Void]
   def self.update_view(name, statement, algorithm: ALGORITHMS.first, security: SECURITIES.first)
-    execute(action: 'CREATE OR REPLACE', name: name, statement: statement, algorithm: algorithm, security: security)
+    execute(action: 'CREATE OR REPLACE', name:, statement:, algorithm:, security:)
   end
 
   #

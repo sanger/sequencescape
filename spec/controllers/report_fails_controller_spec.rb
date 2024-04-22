@@ -4,10 +4,10 @@ require 'rails_helper'
 
 describe ReportFailsController do
   context 'with Report Fails' do
-    let(:user) { create :user, barcode: 'ID48601I', swipecard_code: '02face' }
-    let(:plate) { create :plate }
-    let(:plate_2) { create :plate }
-    let(:sample_tube) { create :sample_tube, barcode: 1 }
+    let(:user) { create(:user, barcode: 'ID48601I', swipecard_code: '02face') }
+    let(:plate) { create(:plate) }
+    let(:plate_2) { create(:plate) }
+    let(:sample_tube) { create(:sample_tube, barcode: 1) }
 
     shared_examples 'a successful failure event' do
       before do
@@ -16,7 +16,7 @@ describe ReportFailsController do
                report_fail: {
                  barcodes: [plate.human_barcode, plate_2.machine_barcode, sample_tube.human_barcode],
                  user_code: SBCF::SangerBarcode.from_human(user.barcode).machine_barcode,
-                 failure_id: failure_id
+                 failure_id:
                }
              }
       end
@@ -39,7 +39,7 @@ describe ReportFailsController do
                report_fail: {
                  barcodes: [plate.human_barcode, plate_2.machine_barcode, sample_tube.human_barcode],
                  user_code: SBCF::SangerBarcode.from_human(user.barcode).machine_barcode,
-                 failure_id: failure_id
+                 failure_id:
                }
              }
       end

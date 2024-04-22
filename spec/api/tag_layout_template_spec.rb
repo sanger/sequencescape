@@ -4,12 +4,13 @@ require 'rails_helper'
 require 'shared_contexts/limber_shared_context'
 
 describe '/api/1/tag_layout_templates' do
-  include_context 'a limber target plate with submissions'
-
   subject { '/api/1/tag_layout_templates' }
 
-  let(:authorised_app) { create :api_application }
-  let(:user) { create :user }
+  include_context 'a limber target plate with submissions'
+
+
+  let(:authorised_app) { create(:api_application) }
+  let(:user) { create(:user) }
 
   describe '#get' do
     describe 'with valid tag layout template' do
@@ -48,7 +49,7 @@ describe '/api/1/tag_layout_templates' do
       end
       let(:response_code) { 200 }
 
-      let!(:example_template) { create :tag_layout_template, tags: ['', ''] }
+      let!(:example_template) { create(:tag_layout_template, tags: ['', '']) }
 
       let(:example_template_uuid) { example_template.uuid }
       let(:example_group) { example_template.tag_group }
@@ -78,7 +79,7 @@ describe '/api/1/tag_layout_templates' do
       end
       let(:response_code) { 200 }
 
-      let!(:example_template) { create :tag_layout_template, tags: ['', ''] }
+      let!(:example_template) { create(:tag_layout_template, tags: ['', '']) }
 
       before do
         example_template.enabled = false
@@ -96,7 +97,7 @@ describe '/api/1/tag_layout_templates' do
   describe '/api/1/template-uuid' do
     subject { "/api/1/#{example_template.uuid}" }
 
-    let(:example_template) { create :entire_plate_tag_layout_template, name: 'Test Example', tags: %w[AAA TTT] }
+    let(:example_template) { create(:entire_plate_tag_layout_template, name: 'Test Example', tags: %w[AAA TTT]) }
     let(:example_tag_group) { example_template.tag_group }
 
     describe '#get' do
@@ -131,7 +132,7 @@ describe '/api/1/tag_layout_templates' do
     end
 
     describe '#post' do
-      let(:target) { create :plate }
+      let(:target) { create(:plate) }
       let(:payload) { "{\"tag_layout\":{ \"plate\": \"#{target.uuid}\", \"user\": \"#{user.uuid}\"}}" }
 
       let(:response_body) do

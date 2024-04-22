@@ -14,7 +14,7 @@ class BroadcastEvent::QcAssay < BroadcastEvent
       .distinct
       .pluck(:assay_type, :assay_version)
       .map do |assay_type, assay_version|
-        create!(seed: qc_assay, properties: { assay_type: assay_type, assay_version: assay_version })
+        create!(seed: qc_assay, properties: { assay_type:, assay_version: })
       end
   end
 

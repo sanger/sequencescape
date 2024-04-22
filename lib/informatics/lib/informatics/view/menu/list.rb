@@ -6,7 +6,7 @@ module Informatics
         attr_accessor :items
 
         def add_item(options = {})
-          @items = [] unless @items
+          @items ||= []
           @items.push Informatics::View::Menu::Item.new(
                         text: options[:text],
                         link: options[:link],

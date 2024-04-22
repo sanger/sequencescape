@@ -22,7 +22,7 @@ end
 Given /^study "([^"]*)" has assets registered$/ do |study|
   proj = Study.find_by(name: study)
   user = User.find_by login: 'user'
-  new_sample_group = FactoryBot.create :asset_group, name: 'new_asset_group', user: user, study: proj
+  new_sample_group = FactoryBot.create :asset_group, name: 'new_asset_group', user:, study: proj
 end
 
 Given /^the following user records$/ do |table|
@@ -43,7 +43,7 @@ Given /^user "([^"]*)" is an? "([^"]*)" of study "([^"]*)"$/ do |login, role_nam
                         created_at: Time.zone.now,
                         updated_at: Time.zone.now
   end
-  usr = User.find_by(login: login)
+  usr = User.find_by(login:)
   usr.roles << role
   usr.save
 end
@@ -64,7 +64,7 @@ end
 
 def given_fixed_study_metadata(attribute, value, regexp)
   Given(regexp) do |name|
-    study = Study.find_by(name: name) or raise StandardError, "There appears to be no study named '#{name}'"
+    study = Study.find_by(name:) or raise StandardError, "There appears to be no study named '#{name}'"
     study.study_metadata.send(:"#{attribute}=", value)
     study.save!
   end
@@ -94,7 +94,7 @@ given_fixed_study_metadata(
 
 def given_study_metadata(attribute, regexp)
   Given(regexp) do |name, value|
-    study = Study.find_by(name: name) or raise StandardError, "There appears to be no study named '#{name}'"
+    study = Study.find_by(name:) or raise StandardError, "There appears to be no study named '#{name}'"
     study.study_metadata.send(:"#{attribute}=", value.presence)
     study.save!
   end
@@ -112,28 +112,28 @@ Given /^the study "([^"]+)" belongs to the program "([^"]*)"$/ do |study_name, p
 end
 
 Given(/^the study "([^"]+)" is a "([^"]*)" study$/) do |name, value|
-  study = Study.find_by!(name: name)
+  study = Study.find_by!(name:)
   study_type = StudyType.find_by!(name: value)
   study.study_metadata.study_type = study_type
   study.save!
 end
 
 Given(/^the study "([^"]+)" is a "([^"]+)" study for data release$/) do |name, value|
-  study = Study.find_by!(name: name)
+  study = Study.find_by!(name:)
   study_type_dr = DataReleaseStudyType.find_by!(name: value)
   study.study_metadata.data_release_study_type = study_type_dr
   study.save!
 end
 
 Given(/^the faculty sponsor for study "([^"]+)" is "([^"]+)"$/) do |name, value|
-  study = Study.find_by!(name: name)
+  study = Study.find_by!(name:)
   faculty_sponsor = FacultySponsor.create!(name: value)
   study.study_metadata.faculty_sponsor = faculty_sponsor
   study.save!
 end
 
 Given(/^the reference genome for study "([^"]+)" is "([^"]+)"$/) do |name, value|
-  study = Study.find_by!(name: name)
+  study = Study.find_by!(name:)
   ref_genome = ReferenceGenome.find_or_create_by!(name: value)
   study.study_metadata.reference_genome = ref_genome
   study.save!
@@ -148,14 +148,14 @@ given_study_metadata(
 given_study_metadata(:ega_policy_accession_number, /^the EGA policy accession number for study "([^"]+)" is "([^"]+)"$/)
 
 Given /^the (abstract|description|title) of study "([^"]+)" is "([^"]*)"$/ do |attribute, name, description|
-  study = Study.find_by(name: name) or raise StandardError, "There appears to be no study named '#{name}'"
+  study = Study.find_by(name:) or raise StandardError, "There appears to be no study named '#{name}'"
   attribute = 'study_title' if attribute == 'title' # Got to love consistency
   study.study_metadata.send(:"study_#{attribute}=", description)
   study.save!
 end
 
 Given /^the study "([^"]+)" is delayed for (3|6|9|12) months because "([^"]+)"$/ do |name, period, reason|
-  study = Study.find_by(name: name) or raise StandardError, "There appears to be no study named '#{name}'"
+  study = Study.find_by(name:) or raise StandardError, "There appears to be no study named '#{name}'"
   study.update!(
     study_metadata_attributes: {
       data_release_timing: 'delayed',
@@ -176,13 +176,13 @@ Given /^study "([^"]*)" has asset and assetgroup$/ do |study|
   proj = Study.find_by(name: study)
   user = User.find_by login: 'user'
 
-  id_asset_group = FactoryBot.create :asset_group, user: user, study: proj
+  id_asset_group = FactoryBot.create :asset_group, user:, study: proj
   id_asset = FactoryBot.create :sample_tube, name: 'Cucumberirbattle', barcode: 'barcode', closed: '0'
   id_aga = FactoryBot.create :asset_group_asset, asset_id: id_asset.id, asset_group_id: id_asset_group.id
 end
 
 Given /^study "([^"]*)" has an accession number$/ do |name|
-  study = Study.find_by(name: name) or raise StandardError, "Cannot find study with name '#{name}'"
+  study = Study.find_by(name:) or raise StandardError, "Cannot find study with name '#{name}'"
   study.study_metadata.study_ebi_accession_number = 9999
   study.study_metadata.data_release_strategy ||= 'managed'
   study.save!
@@ -228,7 +228,7 @@ Then /^abbreviation for Study "([^"]*)" should be "([^"]*)"$/ do |study_name, ab
   assert_not_nil study.abbreviation.match(Regexp.new(abbreviation_regex))
 end
 When /^I get the XML accession for the study *"([^"]+)"$/ do |name|
-  study = Study.find_by(name: name) or raise StandardError, "Cannot find sample with name #{name.inspect}"
+  study = Study.find_by(name:) or raise StandardError, "Cannot find sample with name #{name.inspect}"
   visit(url_for(controller: 'studies', action: 'show_accession', id: study.id, format: :xml))
 end
 

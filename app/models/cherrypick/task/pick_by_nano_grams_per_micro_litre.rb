@@ -6,7 +6,8 @@ module Cherrypick::Task::PickByNanoGramsPerMicroLitre
   private :valid_params_for_nano_grams_per_micro_litre_pick?
 
   def create_nano_grams_per_micro_litre_picker(params) # rubocop:todo Metrics/MethodLength
-    volume, concentration = params[:volume_required].to_f, params[:concentration_required].to_f
+    volume = params[:volume_required].to_f
+    concentration = params[:concentration_required].to_f
     robot_minimum_picking_volume = params[:robot_minimum_picking_volume].to_f
 
     lambda do |well, request|

@@ -67,8 +67,8 @@ module MigrationExtensions::DbTableArchiver
   # Destroys the archive database
   # @raise [StandardError] if the archive is not empty
   def destroy_archive!
-    if connection.execute("SHOW tables IN #{archive_name}").present?
+    return unless connection.execute("SHOW tables IN #{archive_name}").present?
       raise StandardError, "#{archive_name} contains tables. Can't be destroyed!"
-    end
+    
   end
 end

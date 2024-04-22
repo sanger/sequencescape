@@ -8,7 +8,7 @@ module Core::Initializable
 
     class << self
       def delegated_attribute_writer(*names)
-        names.each { |name| class_eval("def #{name}=(value) ; @owner.instance_variable_set(:@#{name}, value) ; end") }
+        names.each { |name| class_eval("def #{name}=(value) ; @owner.instance_variable_set(:@#{name}, value) ; end", __FILE__, __LINE__) }
         delegate_to_owner(*names)
       end
 

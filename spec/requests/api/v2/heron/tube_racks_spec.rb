@@ -43,10 +43,10 @@ RSpec.describe 'TubeRacks Heron API', :heron, :lighthouse, with: :api_v2 do
         data: {
           'type' => 'tube_rack',
           :attributes => {
-            purpose_uuid: purpose_uuid,
+            purpose_uuid:,
             study_uuid: study.uuid,
             barcode: tube_rack_barcode,
-            tubes: tubes
+            tubes:
           }
         }
       }

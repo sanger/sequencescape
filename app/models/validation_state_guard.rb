@@ -32,14 +32,15 @@ module ValidationStateGuard
       after_save { |record| record.send(#{guard.inspect}=, false) ; true }
     ",
       __FILE__,
-      line
+      __LINE__ - 11
     )
   end
 
   def validation_guarded_by(method, guard) # rubocop:todo Metrics/MethodLength
     # Method name could end in ! or ?, in which case the unguarded name needs to be correct.
     method.to_s =~ /^([^!?]+)([!?])?$/
-    core_name, extender = $1, $2
+    core_name = ::Regexp.last_match(1)
+    extender = ::Regexp.last_match(2)
     unguarded_name = :"#{core_name}_unguarded_by_#{guard}#{extender}"
 
     line = __LINE__ + 1
@@ -54,7 +55,7 @@ module ValidationStateGuard
       end
     ",
       __FILE__,
-      line
+      __LINE__ - 10
     )
   end
 end

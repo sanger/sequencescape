@@ -67,7 +67,7 @@ class PhiX::Stock
             tag: i7_tag,
             tag2: i5_tag,
             library: tube,
-            study_id: study_id
+            study_id:
           )
         end
     end

@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 module Core::Io::Collection
   def as_json(options = {})
-    results, base_stream = options[:object], options[:stream]
+    results = options[:object]
+    base_stream = options[:stream]
 
     base_stream.attribute(:size, size_for(results))
     base_stream.array(options[:response].io.json_root.to_s.pluralize, results) do |stream, object|
@@ -9,7 +10,7 @@ module Core::Io::Collection
         ::Core::Io::Registry
           .instance
           .lookup_for_object(object)
-          .object_json(object, options.merge(stream: stream, target: object, nested: true))
+          .object_json(object, options.merge(stream:, target: object, nested: true))
       end
     end
   end

@@ -18,17 +18,17 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
   context 'PlateTransferHandler' do
     setup do
       @workflows_controller = DummyWorkflowController.new
-      @task = create :plate_transfer_task
+      @task = create(:plate_transfer_task)
       @params = 'UNUSED_PARAMS'
-      @batch = create :batch
+      @batch = create(:batch)
       @workflows_controller.batch = @batch
-      @source_plate = create :plate
-      @user = build :user
+      @source_plate = create(:plate)
+      @user = build(:user)
       @source_plate.wells =
         %w[A1 B1 C1].map do |loc|
           create(:well_with_sample_and_without_plate).tap do |w|
             w.map = Map.find_by(description: loc, asset_size: 96)
-            request = create :pac_bio_sample_prep_request, asset: w
+            request = create(:pac_bio_sample_prep_request, asset: w)
             @batch.requests << request
           end
         end
@@ -57,8 +57,8 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
 
         should 'mimic the original layout' do
           @source_plate.wells.each do |w|
-            assert_equal w.aliquots.map { |a| a.sample.name },
-                         Plate.last.wells.located_at(w.map_description).first.aliquots.map { |a| a.sample.name }
+            assert_equal(w.aliquots.map { |a| a.sample.name },
+                         Plate.last.wells.located_at(w.map_description).first.aliquots.map { |a| a.sample.name })
           end
         end
 
@@ -104,11 +104,11 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
 
       context 'when spanning multiple plates' do
         setup do
-          plate_b = create :plate
+          plate_b = create(:plate)
           plate_b.wells <<
             create(:well_with_sample_and_without_plate).tap do |w|
               w.map = Map.find_by(description: 'A1', asset_size: 96)
-              request = create :well_request, asset: w, target_asset: create(:pac_bio_library_tube)
+              request = create(:well_request, asset: w, target_asset: create(:pac_bio_library_tube))
               w.requests << request
               @batch.requests << request
             end

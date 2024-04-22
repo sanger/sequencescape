@@ -85,7 +85,7 @@ module SampleManifestExcel
           columns.each do |column|
             style = find_or_create_style(column.style)&.reference
 
-            row.add_cell column.attribute_value(detail), type: column.type, style: style
+            row.add_cell column.attribute_value(detail), type: column.type, style:
           end
         end
       end

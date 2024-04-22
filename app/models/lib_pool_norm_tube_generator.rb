@@ -8,7 +8,7 @@ class LibPoolNormTubeGenerator
   validates :plate, presence: { message: 'Barcode does not relate to any existing plate' }
   validates :user, :study, presence: true
 
-  validate :check_state, :check_plate_purpose, if: Proc.new { |g| g.plate.present? }
+  validate :check_state, :check_plate_purpose, if: proc { |g| g.plate.present? }
 
   def initialize(barcode, user, study)
     self.plate = barcode
@@ -42,7 +42,7 @@ class LibPoolNormTubeGenerator
 
   # rubocop:todo Metrics/MethodLength
   def create! # rubocop:todo Metrics/AbcSize
-    if valid?
+    return unless valid?
       begin
         ActiveRecord::Base.transaction do
           lib_pool_tubes.each do |tube|
@@ -53,17 +53,17 @@ class LibPoolNormTubeGenerator
           @asset_group =
             AssetGroup.create!(
               assets: destination_tubes.map(&:receptacle),
-              study: study,
+              study:,
               name: "#{plate.human_barcode}_qc_completed_tubes"
             )
         end
         true
-      rescue => e
+      rescue StandardError => e
         Rails.logger.error("Pool generation error: #{e.message}")
         Rails.logger.error(e.backtrace)
         false
       end
-    end
+    
   end
 
   # rubocop:enable Metrics/MethodLength
@@ -71,14 +71,14 @@ class LibPoolNormTubeGenerator
   private
 
   def create_lib_pool_norm_tube(tube)
-    destination_tube = transfer_template.create!(user: user, source: tube).destination
+    destination_tube = transfer_template.create!(user:, source: tube).destination
     destination_tubes << destination_tube
     destination_tube
   end
 
   def pass_and_complete(tube)
-    StateChange.create!(user: user, target: tube, target_state: 'passed')
-    StateChange.create!(user: user, target: tube, target_state: 'qc_complete')
+    StateChange.create!(user:, target: tube, target_state: 'passed')
+    StateChange.create!(user:, target: tube, target_state: 'qc_complete')
   end
 
   def check_state

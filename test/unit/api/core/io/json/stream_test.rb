@@ -60,39 +60,48 @@ class Core::Io::Json::StreamTest < ActiveSupport::TestCase
       end
 
       should 'nil' do
-        @value, @expected = nil, 'null'
+        @value = nil
+        @expected = 'null'
       end
 
       should 'true' do
-        @value, @expected = true, 'true'
+        @value = true
+        @expected = 'true'
       end
 
       should 'false' do
-        @value, @expected = false, 'false'
+        @value = false
+        @expected = 'false'
       end
 
       should 'string' do
-        @value, @expected = 'value', '"value"'
+        @value = 'value'
+        @expected = '"value"'
       end
 
       should 'integer' do
-        @value, @expected = 1, '1'
+        @value = 1
+        @expected = '1'
       end
 
       should 'float' do
-        @value, @expected = 1.01, '1.01'
+        @value = 1.01
+        @expected = '1.01'
       end
 
       should 'date' do
-        @value, @expected = Date.new(2012, 10, 26), '"2012-10-26"'
+        @value = Date.new(2012, 10, 26)
+        @expected = '"2012-10-26"'
       end
 
       should 'time' do
-        @value, @expected = Time.parse('2012-10-26 09:35'), '"Fri Oct 26 09:35:00 +0100 2012"' # rubocop:disable Rails/TimeZone
+        @value = Time.parse('2012-10-26 09:35')
+        @expected = '"Fri Oct 26 09:35:00 +0100 2012"' # rubocop:disable Rails/TimeZone
       end
 
       should 'ActiveSupport::TimeWithZone' do
-        @value, @expected = Time.zone.parse('2012-10-26 09:35'), '"2012-10-26 09:35:00 +0100"'
+        @value = Time.zone.parse('2012-10-26 09:35')
+        @expected = '"2012-10-26 09:35:00 +0100"'
       end
 
       should 'hash' do
@@ -106,7 +115,8 @@ class Core::Io::Json::StreamTest < ActiveSupport::TestCase
       end
 
       should 'symbol' do
-        @value, @expected = :value, '"value"'
+        @value = :value
+        @expected = '"value"'
       end
     end
   end

@@ -22,7 +22,7 @@ module SequencescapeExcel
       # Adds row to a worksheet with particular value, style and type for each cell
 
       def add_row(values = [], style = nil, types = nil)
-        axlsx_worksheet.add_row values, types: types || ([:string] * values.length), style: style
+        axlsx_worksheet.add_row values, types: types || ([:string] * values.length), style:
       end
 
       # Adds n empty rows
@@ -50,7 +50,7 @@ module SequencescapeExcel
       # Adds axlsx worksheet to a workbook, to a particular place.
 
       def insert_axlsx_worksheet(name, index = 0)
-        @axlsx_worksheet ||= workbook.insert_worksheet(index, name: name) # rubocop:disable Naming/MemoizedInstanceVariableName
+        @axlsx_worksheet ||= workbook.insert_worksheet(index, name:) # rubocop:disable Naming/MemoizedInstanceVariableName
       end
 
       # Creates a worksheet, empty one in this case

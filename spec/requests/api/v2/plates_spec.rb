@@ -33,9 +33,9 @@ describe 'Plates API', tags: :lighthouse, with: :api_v2 do
     end
 
     context 'when providing a payload using default JSON API' do
-      let(:purpose) { create :plate_purpose }
-      let(:well) { create :well }
-      let(:well2) { create :well }
+      let(:purpose) { create(:plate_purpose) }
+      let(:well) { create(:well) }
+      let(:well2) { create(:well) }
       let(:payload) do
         {
           'data' => {
@@ -81,8 +81,8 @@ describe 'Plates API', tags: :lighthouse, with: :api_v2 do
   end
 
   context 'with a plate' do
-    let(:resource_model) { create :plate }
-    let!(:resource_model_2) { create :plate }
+    let(:resource_model) { create(:plate) }
+    let!(:resource_model_2) { create(:plate) }
 
     it 'sends an individual plate' do
       api_get "#{base_endpoint}/#{resource_model.id}"
@@ -98,7 +98,7 @@ describe 'Plates API', tags: :lighthouse, with: :api_v2 do
 
     context 'when the ancestor is a tube rack' do
       let(:purpose) { create(:plate_purpose, target_type: 'Plate', name: 'Stock Plate', size: '96') }
-      let(:rack) { create :tube_rack }
+      let(:rack) { create(:tube_rack) }
       let(:plate_factory) { Heron::Factories::PlateFromRack.new(tube_rack: rack, plate_purpose: purpose) }
       let(:tubes) { create_list(:sample_tube, 2) }
 

@@ -6,26 +6,26 @@ require 'spec_helper'
 RSpec.describe StateChanger::InitialStockTube do
   let(:state_changer) do
     described_class.new(
-      labware: labware,
-      target_state: target_state,
-      user: user,
-      customer_accepts_responsibility: customer_accepts_responsibility
+      labware:,
+      target_state:,
+      user:,
+      customer_accepts_responsibility:
     )
   end
 
-  let(:user) { build_stubbed :user }
+  let(:user) { build_stubbed(:user) }
   let(:customer_accepts_responsibility) { false }
-  let(:labware) { create :tube }
-  let(:submission) { build_stubbed :submission }
-  let(:well) { create :well }
+  let(:labware) { create(:tube) }
+  let(:submission) { build_stubbed(:submission) }
+  let(:well) { create(:well) }
   let!(:transfer_request) do
-    create :transfer_request,
+    create(:transfer_request,
            asset: well,
            target_asset: labware.receptacle,
            state: transfer_request_state,
-           outer_request: request
+           outer_request: request)
   end
-  let!(:request) { create :customer_request, asset: well, state: request_state, submission: submission }
+  let!(:request) { create(:customer_request, asset: well, state: request_state, submission:) }
 
   before do
     well.stock_wells << well

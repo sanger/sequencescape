@@ -19,9 +19,9 @@ shared_examples_for 'asset labels creator' do
 end
 
 context 'printing plates' do
-  let(:asset1) { create :child_plate, name: 'Plate Name' }
-  let(:asset2) { create :child_plate, name: 'Plate Name' }
-  let(:asset3) { create :child_plate }
+  let(:asset1) { create(:child_plate, name: 'Plate Name') }
+  let(:asset2) { create(:child_plate, name: 'Plate Name') }
+  let(:asset3) { create(:child_plate) }
   let(:assets) { [asset1, asset2, asset3] }
 
   describe LabelPrinter::Label::AssetPlate do
@@ -63,8 +63,8 @@ end
 
 context 'printing tubes' do
   describe LabelPrinter::Label::AssetTube do
-    let(:asset1) { create :empty_sample_tube, barcode: '11111', name: 'Tube Name' }
-    let(:asset2) { create :empty_sample_tube }
+    let(:asset1) { create(:empty_sample_tube, barcode: '11111', name: 'Tube Name') }
+    let(:asset2) { create(:empty_sample_tube) }
     let(:assets) { [asset1, asset2] }
 
     let(:body) do

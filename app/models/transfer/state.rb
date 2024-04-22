@@ -8,7 +8,7 @@ module Transfer::State
   ALL_STATES = %w[started qc_complete pending passed failed cancelled].freeze
 
   def self.state_helper(names)
-    names.each { |name| module_eval { define_method("#{name}?") { state == name } } }
+    names.each { |name| module_eval { define_method(:"#{name}?") { state == name } } }
   end
 
   state_helper(ALL_STATES)
@@ -40,7 +40,9 @@ module Transfer::State
 
                 # If all of the states are present there is no point in actually adding this set of conditions because
                 # we're basically looking for all of the plates.
-                if states.sort != ALL_STATES.sort
+                if states.sort == ALL_STATES.sort
+                  all
+                else
                   # Note that 'state IS NULL' is included here for plates that are stock plates, because they will not
                   # have any transfer requests coming into their wells and so we can assume they are pending (from the
                   # perspective of pulldown at least).
@@ -50,8 +52,6 @@ module Transfer::State
                   end
 
                   joins(:transfer_requests_as_target, :plate_purpose).where([query_conditions, states])
-                else
-                  all
                 end
               }
       end
@@ -68,7 +68,9 @@ module Transfer::State
 
                 # If all of the states are present there is no point in actually adding this set of conditions because
                 # we're basically looking for all of the plates.
-                if states.sort != ALL_STATES.sort
+                if states.sort == ALL_STATES.sort
+                  all
+                else
                   join_options = [
                     # rubocop:todo Layout/LineLength
                     'LEFT OUTER JOIN `transfer_requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = `assets`.id'
@@ -76,8 +78,6 @@ module Transfer::State
                   ]
 
                   joins(join_options).where(transfer_requests_as_target: { state: states })
-                else
-                  all
                 end
               }
         scope :without_finished_tubes,

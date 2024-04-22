@@ -109,7 +109,7 @@ module IlluminaC::Helper
     def submission_parameters(cherrypick, sequencing)
       {
         request_type_ids_list: request_type_ids(cherrypick, sequencing),
-        order_role_id: OrderRole.find_or_create_by(role: role).id,
+        order_role_id: OrderRole.find_or_create_by(role:).id,
         info_differential: 1
       }
     end
@@ -125,7 +125,7 @@ module IlluminaC::Helper
     end
 
     def self.find_for(name, sequencing = nil)
-      tc = TemplateConstructor.new(name: name, sequencing: sequencing)
+      tc = TemplateConstructor.new(name:, sequencing:)
       [true, false].map do |cherrypick|
         tc.sequencing.map do |sequencing_request_type|
           SubmissionTemplate.find_by!(name: tc.name_for(cherrypick, sequencing_request_type))

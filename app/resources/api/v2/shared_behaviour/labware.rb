@@ -45,13 +45,13 @@ module Api::V2::SharedBehaviour::Labware
     filter :barcode, apply: ->(records, value, _options) { records.with_barcode(value) }
     filter :uuid, apply: ->(records, value, _options) { records.with_uuid(value) }
     filter :purpose_name,
-           apply: (lambda { |records, value, _options| records.joins(:purpose).where(plate_purposes: { name: value }) })
+           apply: lambda { |records, value, _options| records.joins(:purpose).where(plate_purposes: { name: value }) }
     filter :purpose_id, apply: ->(records, value, _options) { records.where(plate_purpose_id: value) }
     filter :without_children, apply: ->(records, _value, _options) { records.without_children }
     filter :created_at_gt,
-           apply: (lambda { |records, value, _options| records.where('labware.created_at > ?', value[0].to_date) })
+           apply: lambda { |records, value, _options| records.where('labware.created_at > ?', value[0].to_date) }
     filter :updated_at_gt,
-           apply: (lambda { |records, value, _options| records.where('labware.updated_at > ?', value[0].to_date) })
+           apply: lambda { |records, value, _options| records.where('labware.updated_at > ?', value[0].to_date) }
     filter :include_used, apply: ->(records, value, _options) { records.include_labware_with_children(value) }
   end
 

@@ -4,14 +4,12 @@ require 'rails_helper'
 require 'shared_contexts/limber_shared_context'
 
 describe PlatePurpose do
-  let(:plate_purpose) { create :plate_purpose, target_type: target_type, size: size }
+  let(:plate_purpose) { create(:plate_purpose, target_type:, size:) }
 
   shared_examples 'a plate factory' do
     before { expect(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode)) }
 
-    # rubocop:enable RSpec/ExpectInHook
-
-    describe '#create!' do
+        describe '#create!' do
       subject { plate_purpose.create! }
 
       it { is_expected.to be_a expected_plate_class }

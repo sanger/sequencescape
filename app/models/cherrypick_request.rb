@@ -13,7 +13,7 @@ class CherrypickRequest < CustomerRequest
   end
 
   def on_passed
-    target_asset.transfer_requests_as_target.where(submission_id: submission_id).find_each(&:pass!)
+    target_asset.transfer_requests_as_target.where(submission_id:).find_each(&:pass!)
   end
 
   def reduce_source_volume
@@ -28,6 +28,6 @@ class CherrypickRequest < CustomerRequest
 
   # The transfer requests handle the actual transfer
   def transfer_aliquots
-    TransferRequest.create!(asset: asset, target_asset: target_asset, outer_request: self)
+    TransferRequest.create!(asset:, target_asset:, outer_request: self)
   end
 end

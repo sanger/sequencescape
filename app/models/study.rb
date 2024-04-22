@@ -349,7 +349,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   scope :with_remove_x_and_autosomes,
         -> { joins(:study_metadata).where(study_metadata: { remove_x_and_autosomes: Study::YES }) }
 
-  scope :by_state, ->(state) { where(state: state) }
+  scope :by_state, ->(state) { where(state:) }
 
   scope :by_user,
         ->(login) {
@@ -380,7 +380,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     false
   end
 
-  def each_well_for_qc_report_in_batches(exclude_existing, product_criteria, plate_purposes = nil)
+  def each_well_for_qc_report_in_batches(exclude_existing, product_criteria, plate_purposes = nil, &)
     # @note We include aliquots here, despite the fact they are only needed if we have to set a poor-quality flag
     #       as in some cases failures are not as rare as you may imagine, and it can cause major performance issues.
     base_scope =
@@ -391,16 +391,16 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
         .includes(:well_attribute, :aliquots, :map, samples: :sample_metadata)
         .readonly(true)
     scope = exclude_existing ? base_scope.without_report(product_criteria) : base_scope
-    scope.find_in_batches { |wells| yield wells }
+    scope.find_in_batches(&)
   end
 
   def warnings
     # These studies are now invalid, but the warning should remain until existing studies are fixed.
-    if study_metadata.managed? && study_metadata.data_access_group.blank?
+    return unless study_metadata.managed? && study_metadata.data_access_group.blank?
       # rubocop:todo Layout/LineLength
       'No user group specified for a managed study. Please specify a valid Unix user group to ensure study data is visible to the correct people.'
       # rubocop:enable Layout/LineLength
-    end
+    
   end
 
   def mark_deactive
@@ -515,10 +515,10 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def ethical_approval_required?
-    (
+    
       study_metadata.contains_human_dna == Study::YES && study_metadata.contaminated_human_dna == Study::NO &&
         study_metadata.commercially_available == Study::NO
-    )
+    
   end
 
   def accession_service
@@ -533,7 +533,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def send_samples_to_service?
-    accession_service.no_study_accession_needed || ((!study_metadata.never_release?) && accession_number?)
+    accession_service.no_study_accession_needed || (!study_metadata.never_release? && accession_number?)
   end
 
   def validate_ena_required_fields!

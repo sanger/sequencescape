@@ -50,14 +50,14 @@ module Heron
         return false unless valid?
 
         ActiveRecord::Base.transaction do
-          @tube_rack = ::TubeRack.create!(size: size, purpose: purpose)
+          @tube_rack = ::TubeRack.create!(size:, purpose:)
 
-          Barcode.create!(asset: tube_rack, barcode: barcode, format: barcode_format)
+          Barcode.create!(asset: tube_rack, barcode:, format: barcode_format)
 
           create_recipients!
           create_contents!
 
-          ::TubeRackStatus.create!(barcode: barcode, status: :created, labware: @tube_rack)
+          ::TubeRackStatus.create!(barcode:, status: :created, labware: @tube_rack)
         end
         true
       end
@@ -85,7 +85,7 @@ module Heron
         recipients.keys.map do |coordinate|
           tube_factory = recipients[coordinate]
           sample_tube = tube_factory.create
-          RackedTube.create(tube: sample_tube, coordinate: unpad_coordinate(coordinate), tube_rack: tube_rack)
+          RackedTube.create(tube: sample_tube, coordinate: unpad_coordinate(coordinate), tube_rack:)
         end
       end
 

@@ -55,7 +55,7 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
 
   before_create :well_attribute # Ensure all wells have attributes
 
-  scope :with_concentration, -> { joins(:well_attribute).where('well_attributes.concentration IS NOT NULL') }
+  scope :with_concentration, -> { joins(:well_attribute).where.not(well_attributes: { concentration: nil }) }
   scope :include_stock_wells, -> { includes(stock_wells: :requests_as_source) }
   scope :include_stock_wells_for_modification,
         -> {
@@ -163,7 +163,7 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
 
   class << self
     def delegate_to_well_attribute(attribute, options = {})
-      class_eval <<-END_OF_METHOD_DEFINITION
+      class_eval <<-END_OF_METHOD_DEFINITION, __FILE__, __LINE__ + 1
         def get_#{attribute}
           self.well_attribute.#{attribute} || #{options[:default].inspect}
         end
@@ -171,7 +171,7 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
     end
 
     def writer_for_well_attribute_as_float(attribute)
-      class_eval <<-END_OF_METHOD_DEFINITION
+      class_eval <<-END_OF_METHOD_DEFINITION, __FILE__, __LINE__ + 1
         def set_#{attribute}(value)
           self.well_attribute.update!(:#{attribute} => value.to_f)
         end
@@ -199,7 +199,7 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
   end
 
   def outer_request(submission_id)
-    outer_requests.order(id: :desc).find_by(submission_id: submission_id)
+    outer_requests.order(id: :desc).find_by(submission_id:)
   end
 
   def qc_results_by_key
@@ -287,14 +287,14 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
       events.update_gender_markers!(resource)
     end
 
-    well_attribute.update!(gender_markers: gender_markers)
+    well_attribute.update!(gender_markers:)
   end
 
   # rubocop:enable Metrics/MethodLength
 
   def update_sequenom_count!(sequenom_count, resource)
     events.update_sequenom_count!(resource) unless well_attribute.sequenom_count == sequenom_count
-    well_attribute.update!(sequenom_count: sequenom_count)
+    well_attribute.update!(sequenom_count:)
   end
 
   # The sequenom pass value is either the string 'Unknown' or it is the combination of gender marker values.

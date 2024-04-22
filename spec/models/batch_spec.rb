@@ -51,10 +51,10 @@ RSpec.describe Batch do
   describe '::for_user' do
     subject(:batch_for_user) { described_class.for_user(query) }
 
-    let(:user) { create :user }
-    let!(:owned_batch) { create :batch, user: user }
-    let!(:assigned_batch) { create :batch, assignee: user }
-    let!(:other_batch) { create :batch }
+    let(:user) { create(:user) }
+    let!(:owned_batch) { create(:batch, user:) }
+    let!(:assigned_batch) { create(:batch, assignee: user) }
+    let!(:other_batch) { create(:batch) }
 
     context 'with a user' do
       let(:query) { user }

@@ -7,7 +7,7 @@ class Transfer::FromPlateToSpecificTubesByPool < Transfer::BetweenPlateAndTubes
     # {'pool_uuid'=>'target_uuid'}
     @targets = Uuid.include_resource.lookup_many_uuids(uuids_for_tubes.values).map(&:resource)
     uuid_targets = @targets.index_by(&:uuid)
-    @pools_to_tubes = Hash.new
+    @pools_to_tubes = {}
     uuids_for_tubes.each do |pool_uuid, target_uuid|
       @pools_to_tubes[Uuid.find_id(pool_uuid, 'Submission')] = uuid_targets[target_uuid]
     end

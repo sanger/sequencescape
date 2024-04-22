@@ -21,7 +21,7 @@ module SequencescapeExcel
         if asset.aliquots.one?
           tags.each { |tag| tag.multitag!(asset) }
         elsif aliquot_count == TAGS_PER_WELL
-          tags.zip(aliquots).each { |tag, aliquot| aliquot.assign_attributes(tag: tag) }
+          tags.zip(aliquots).each { |tag, aliquot| aliquot.assign_attributes(tag:) }
         else
           # We should never end up here, as our validation should handle this
           # However if that fails, something has gone wrong, and we shouldn't proceed

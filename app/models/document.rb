@@ -28,7 +28,7 @@ class Document < ApplicationRecord
         end
       ",
         __FILE__,
-        line
+        __LINE__ - 15
       )
     end
   end
@@ -51,9 +51,9 @@ class Document < ApplicationRecord
 
   # Save Size/content_type Metadata
   def update_document_attributes
-    if uploaded_data.present?
+    return unless uploaded_data.present?
       self.content_type = uploaded_data.file.content_type
       self.size = uploaded_data.file.size
-    end
+    
   end
 end

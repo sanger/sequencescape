@@ -29,7 +29,7 @@ module SequencescapeExcel
         options = classes.extract_options!
         classes.each do |klass|
           object_type = options[:modual] ? "#{options[:modual]}::#{klass.to_s.classify}" : klass.to_s.classify.to_s
-          define_method "#{klass}?" do
+          define_method :"#{klass}?" do
             type == object_type
           end
         end

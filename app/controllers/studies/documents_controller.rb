@@ -25,13 +25,13 @@ class Studies::DocumentsController < ApplicationController
     begin
       if @document.save
         flash[:notice] = 'Document was saved okay'
-        redirect_to [:admin, @study], status: 303
+        redirect_to [:admin, @study], status: :see_other
       else
         render action: 'new'
       end
     rescue ActiveRecord::StatementInvalid
       flash[:error] = 'Something bad happened. Perhaps karma has caught up with you?'
-      redirect_to [:admin, @study], status: 303
+      redirect_to [:admin, @study], status: :see_other
     end
   end
 
@@ -39,10 +39,10 @@ class Studies::DocumentsController < ApplicationController
     @document = Document.find(params[:id])
     if @document.destroy
       flash[:notice] = 'Document was successfully deleted'
-      redirect_to [:admin, @study], status: 303
+      redirect_to [:admin, @study], status: :see_other
     else
       flash[:error] = 'Document cannot be destroyed'
-      redirect_to [:admin, @study], status: 303
+      redirect_to [:admin, @study], status: :see_other
     end
   end
 

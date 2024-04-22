@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 describe RequestType::Validator::LibraryTypeValidator do
-  let(:library_type) { create :library_type, name: 'MyLibraryType' }
-  let(:request_type) { create :library_creation_request_type, :with_library_types, library_type: library_type }
+  let(:library_type) { create(:library_type, name: 'MyLibraryType') }
+  let(:request_type) { create(:library_creation_request_type, :with_library_types, library_type:) }
   let(:validator) { described_class.new(request_type.id) }
 
   context 'when initialising' do
@@ -34,15 +34,15 @@ describe RequestType::Validator::LibraryTypeValidator do
   end
 
   context 'when using default' do
-    let(:request_type) { create :request_type }
-    let(:library_type2) { create :library_type, name: 'MyDefaultLibraryType' }
+    let(:request_type) { create(:request_type) }
+    let(:library_type2) { create(:library_type, name: 'MyDefaultLibraryType') }
 
     context 'when a default library type is set' do
       before do
         request_type.library_types_request_types <<
-          create(:library_types_request_type, library_type: library_type, request_type: request_type, is_default: false)
+          create(:library_types_request_type, library_type:, request_type:, is_default: false)
         request_type.library_types_request_types <<
-          create(:library_types_request_type, library_type: library_type2, request_type: request_type, is_default: true)
+          create(:library_types_request_type, library_type: library_type2, request_type:, is_default: true)
       end
 
       it 'returns the name' do
@@ -53,12 +53,12 @@ describe RequestType::Validator::LibraryTypeValidator do
     context 'when a default library type is not set' do
       before do
         request_type.library_types_request_types <<
-          create(:library_types_request_type, library_type: library_type, request_type: request_type, is_default: false)
+          create(:library_types_request_type, library_type:, request_type:, is_default: false)
         request_type.library_types_request_types <<
           create(
             :library_types_request_type,
             library_type: library_type2,
-            request_type: request_type,
+            request_type:,
             is_default: false
           )
       end

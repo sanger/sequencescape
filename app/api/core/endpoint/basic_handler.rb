@@ -17,7 +17,8 @@ class Core::Endpoint::BasicHandler
     end
 
     def tree_for(_object, _options)
-      associations, actions = {}, {}
+      associations = {}
+      actions = {}
       related.each { |r| r.separate(associations, actions) }
       Core::Io::Json::Grammar::Root.new(
         root_json,
@@ -33,9 +34,9 @@ class Core::Endpoint::BasicHandler
       root =
         if options[:target].respond_to?(:uuid)
           options[:target].uuid
-        elsif not options[:endpoint].nil?
+        elsif !options[:endpoint].nil?
           options[:endpoint].root
-        elsif not response.request.endpoint.nil?
+        elsif !response.request.endpoint.nil?
           response.request.endpoint.root
         end
       args.unshift(root) unless root.nil?

@@ -5,10 +5,10 @@ class RobotProperty < ApplicationRecord
   scope :beds, -> { where(name: nil) }
 
   def ean13_barcode
-    if name.nil?
+    return unless name.nil?
       str = Barcode.calculate_barcode('BD', value.to_i).to_s
       str.length == 12 ? '0' + str : str
-    end
+    
   end
 
   def human_barcode

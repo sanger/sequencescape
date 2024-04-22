@@ -12,7 +12,7 @@ FactoryBot.define do
         create_list(
           :custom_metadatum,
           evaluator.metadatum_count,
-          custom_metadatum_collection: custom_metadatum_collection
+          custom_metadatum_collection:
         )
       end
     end

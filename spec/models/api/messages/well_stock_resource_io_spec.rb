@@ -10,19 +10,7 @@ RSpec.describe Api::Messages::WellStockResourceIO do
 
   after { Timecop.return }
 
-  let(:sample) { create :sample }
-  let(:plate_barcode) { build(:plate_barcode) }
-  let(:well) do
-    create :well,
-           map: Map.find_by!(description: 'A1', asset_shape: AssetShape.default, asset_size: 96),
-           plate: create(:plate, barcode: plate_barcode.barcode),
-           well_attribute: create(:complete_well_attribute)
-  end
-  let(:study) { create :study }
-  let(:aliquot) { create :aliquot, study: study, sample: sample, receptacle: well }
-
-  before { aliquot } # rubocop:todo RSpec/ScatteredSetup
-
+  let(:sample) { create(:sample) }
   let(:expected_json) do
     {
       'created_at' => '2012-03-11T10:22:42+00:00',
@@ -42,6 +30,18 @@ RSpec.describe Api::Messages::WellStockResourceIO do
       'labware_type' => 'well'
     }
   end
+  let(:plate_barcode) { build(:plate_barcode) }
+  let(:well) do
+    create(:well,
+           map: Map.find_by!(description: 'A1', asset_shape: AssetShape.default, asset_size: 96),
+           plate: create(:plate, barcode: plate_barcode.barcode),
+           well_attribute: create(:complete_well_attribute))
+  end
+  let(:study) { create(:study) }
+  let(:aliquot) { create(:aliquot, study:, sample:, receptacle: well) }
+
+  before { aliquot } # rubocop:todo RSpec/ScatteredSetup
+
 
   it 'generates valid json' do
     expect(subject.as_json).to eq(expected_json)

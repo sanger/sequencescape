@@ -54,10 +54,10 @@ class UatActions::GenerateTagLayoutTemplate < UatActions
     walk_algorithm = walking_by_algorithm.presence || 'TagLayout::WalkWellsOfPlate'
 
     tlt_parameters = {
-      name: name,
+      name:,
       tag_group_id: tag_group.id,
       tag2_group_id: tag2_group&.id,
-      direction_algorithm: direction_algorithm,
+      direction_algorithm:,
       walking_algorithm: walk_algorithm
     }
 
@@ -72,7 +72,7 @@ class UatActions::GenerateTagLayoutTemplate < UatActions
   end
 
   def existing_tag_layout_template
-    @existing_tag_layout_template ||= TagLayoutTemplate.find_by(name: name)
+    @existing_tag_layout_template ||= TagLayoutTemplate.find_by(name:)
   end
 
   def tag_group

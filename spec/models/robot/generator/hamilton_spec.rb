@@ -23,7 +23,7 @@ describe Robot::Generator::Hamilton do
 
         # rubocop:enable Layout/LineLength
 
-        assert_match(regex, generator.mapping)
+        expect(generator.mapping).to match(regex)
       end
 
       it 'contains source control plate rows' do
@@ -32,7 +32,7 @@ describe Robot::Generator::Hamilton do
 
         # rubocop:enable Layout/LineLength
 
-        assert_match(regex, generator.mapping)
+        expect(generator.mapping).to match(regex)
       end
 
       it 'contains source plate rows' do
@@ -41,7 +41,7 @@ describe Robot::Generator::Hamilton do
 
         # rubocop:enable Layout/LineLength
 
-        assert_match(regex, generator.mapping)
+        expect(generator.mapping).to match(regex)
       end
     end
 

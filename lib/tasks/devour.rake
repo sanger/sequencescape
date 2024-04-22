@@ -25,7 +25,7 @@ namespace :devour do
             attributes[attr] = { jsonApi: relation }
             attributes[attr][:type] = details.resource_klass._type.to_s.singularize unless details.polymorphic?
           end
-          { resource: resource._type.to_s.singularize, attributes: attributes, options: {} }
+          { resource: resource._type.to_s.singularize, attributes:, options: {} }
         end
 
     serialized_config = JSON.generate(config, json_formatting)

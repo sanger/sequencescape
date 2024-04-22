@@ -24,7 +24,7 @@ class Request::ChangeDecision
   end
 
   validates_each(:asset_qc_state, unless: :asset_qc_state_absent?) do |record, _attr, value|
-    if not record.request.target_asset.been_through_qc?
+    if !record.request.target_asset.been_through_qc?
       record.errors.add(:asset, 'has not been through QC')
     elsif value == record.request.target_asset.qc_state
       record.errors.add(:asset_qc_state, 'cannot be same as current state')
@@ -57,7 +57,7 @@ class Request::ChangeDecision
   private
 
   def perform_decision_change!
-    begin
+    
       ActiveRecord::Base.transaction do
         perform_decision_change_request_state! if state_change?
         perform_decision_change_asset_qc_state! unless asset_qc_state_absent?
@@ -65,7 +65,7 @@ class Request::ChangeDecision
     rescue ActiveRecord::RecordInvalid => e
       reload_objects
       raise InvalidDecision, self
-    end
+    
   end
 
   def reload_objects
@@ -80,10 +80,9 @@ class Request::ChangeDecision
       # Really this toggle of states isn't ideal, as effectively it means
       # multiple requests in quick succession could toggle the state, which probably
       # wasn't the intended behaviour.
-      case
-      when request.failed?
+      if request.failed?
         request.retrospective_pass!
-      when request.passed?
+      elsif request.passed?
         request.retrospective_fail!
       else
         raise InvalidDecision, self

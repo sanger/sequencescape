@@ -9,7 +9,7 @@ RSpec.describe SequencescapeExcel::RangeList, :sample_manifest, :sample_manifest
   let(:ranges) { load_file(folder, 'ranges') }
   let(:range_list) { described_class.new(ranges) }
 
-  it 'will create a list of ranges' do
+  it 'creates a list of ranges' do
     expect(range_list.count).to eq(ranges.count)
   end
 
@@ -33,7 +33,7 @@ RSpec.describe SequencescapeExcel::RangeList, :sample_manifest, :sample_manifest
     range_list.set_worksheet_names('Ranges').each { |_k, range| expect(range.worksheet_name).to eq('Ranges') }
   end
 
-  it 'will be comparable' do
+  it 'is comparable' do
     expect(described_class.new(ranges)).to eq(range_list)
   end
 

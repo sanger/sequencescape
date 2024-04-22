@@ -20,7 +20,8 @@ module Submission::AssetSubmissionFinder
 
   # rubocop:todo Metrics/MethodLength
   def find_wells_including_samples_for!(details) # rubocop:todo Metrics/AbcSize
-    barcodes, well_list = details['barcode'], details['plate well']
+    barcodes = details['barcode']
+    well_list = details['plate well']
     errors.add(:spreadsheet, 'You can only specify one plate per asset group') unless barcodes.uniq.one?
     barcode = barcodes.first
     plate = Plate.find_from_barcode(barcode)

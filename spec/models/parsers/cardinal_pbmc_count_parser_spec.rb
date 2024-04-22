@@ -20,11 +20,11 @@ def read_file(filename)
 end
 
 RSpec.describe Parsers::CardinalPbmcCountParser do
-  it 'will have an assay type' do
+  it 'has an assay type' do
     expect(described_class.assay_type).to eq('Cardinal_PBMC_Count')
   end
 
-  it 'will have an assay version' do
+  it 'has an assay version' do
     expect(described_class.assay_version).to eq('v1.0')
   end
 
@@ -34,29 +34,29 @@ RSpec.describe Parsers::CardinalPbmcCountParser do
     let(:csv) { CSV.parse(content) }
     let(:parser) { described_class.new(csv) }
 
-    it 'will return the correct parser' do
+    it 'returns the correct parser' do
       expect(Parsers.parser_for('cardinal_pbmc_count.csv', nil, content)).to be_a(described_class)
     end
 
-    it 'will have some content' do
+    it 'has some content' do
       expect(parser.content).to eq(csv)
     end
 
     context 'when parsing rows' do
       let(:rows) { parser.rows }
 
-      it 'will have the correct number of rows' do
+      it 'has the correct number of rows' do
         expect(rows.length).to eq(8)
       end
 
-      it 'will have the correct csv for well A1' do
+      it 'has the correct csv for well A1' do
         row = rows[0]
         expect(row[0]).to eq('DN871908M:A1')
         expect(row[2]).to eq('2030000')
         expect(row[4]).to eq('75.00%')
       end
 
-      it 'will have the correct csv for well H1' do
+      it 'has the correct csv for well H1' do
         row = rows[7]
         expect(row[0]).to eq('DN871908M:H1')
         expect(row[2]).to eq('1940000')
@@ -67,17 +67,17 @@ RSpec.describe Parsers::CardinalPbmcCountParser do
     context 'when formatting into qc data' do
       let(:qc_data) { parser.qc_data }
 
-      it 'will have the correct number of values' do
+      it 'has the correct number of values' do
         expect(qc_data.values.length).to eq(8)
       end
 
-      it 'will have the correct data for well A1' do
+      it 'has the correct data for well A1' do
         row = qc_data['A1']
         expect(row[:live_cell_count]).to eq(Unit.new('2030000', 'cells'))
         expect(row[:viability]).to eq(Unit.new('75.00', '%'))
       end
 
-      it 'will have the correct data for well H1' do
+      it 'has the correct data for well H1' do
         row = qc_data['H1']
         expect(row[:live_cell_count]).to eq(Unit.new('1940000', 'cells'))
         expect(row[:viability]).to eq(Unit.new('74.00', '%'))
@@ -92,15 +92,15 @@ RSpec.describe Parsers::CardinalPbmcCountParser do
     let(:csv) { CSV.parse(content) }
     let(:parser) { described_class.new(csv) }
 
-    it 'will return the correct parser' do
+    it 'returns the correct parser' do
       expect(Parsers.parser_for('cardinal_pbmc_count.csv', nil, content)).to be_a(described_class)
     end
 
-    it 'will have some content' do
+    it 'has some content' do
       expect(parser.content).to eq(csv)
     end
 
-    it 'will have some qc data' do
+    it 'has some qc data' do
       expect(parser.qc_data.values.length).to eq(1)
     end
   end
@@ -112,15 +112,15 @@ RSpec.describe Parsers::CardinalPbmcCountParser do
     let(:csv) { CSV.parse(content) }
     let(:parser) { described_class.new(csv) }
 
-    it 'will have three qc data entries - one for each row in the file' do
+    it 'has three qc data entries - one for each row in the file' do
       expect(parser.qc_data.values.length).to eq(3)
     end
 
-    it 'will have cell count and viability metrics for the normal row' do
+    it 'has cell count and viability metrics for the normal row' do
       expect(parser.qc_data['A4'].keys).to eq(%i[live_cell_count viability])
     end
 
-    it 'will have just cell count for the rows with 0 cells' do
+    it 'has just cell count for the rows with 0 cells' do
       expect(parser.qc_data['A5'].keys).to eq([:live_cell_count])
       expect(parser.qc_data['E5'].keys).to eq([:live_cell_count])
       expect(parser.qc_data['E5'][:live_cell_count].zero?).to be(true)
@@ -137,11 +137,11 @@ RSpec.describe Parsers::CardinalPbmcCountParser do
     context 'when creating some qc results' do
       before { plate.update_qc_values_with_parser(parser) }
 
-      it 'will have the correct number of results' do
+      it 'has the correct number of results' do
         expect(QcResult.count).to eq(16)
       end
 
-      it 'will create the qc results for well A1' do
+      it 'creates the qc results for well A1' do
         well = plate.wells.located_at('A1').first
         qc_results = QcResult.where(asset_id: well.id)
 
@@ -160,7 +160,7 @@ RSpec.describe Parsers::CardinalPbmcCountParser do
         expect(qc_result.assay_version).to eq('v1.0')
       end
 
-      it 'will create the qc results for well H1' do
+      it 'creates the qc results for well H1' do
         well = plate.wells.located_at('H1').first
         qc_results = QcResult.where(asset_id: well.id)
 

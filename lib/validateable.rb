@@ -3,7 +3,7 @@ module Validateable
   %i[save save! update_attribute].each { |attr| define_method(attr) {} }
 
   def method_missing(symbol, *_params)
-    send($1) if symbol.to_s =~ /(.*)_before_type_cast$/
+    send(::Regexp.last_match(1)) if symbol.to_s =~ /(.*)_before_type_cast$/
   end
 
   def self.append_features(base)

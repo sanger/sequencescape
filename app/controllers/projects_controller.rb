@@ -131,16 +131,16 @@ class ProjectsController < ApplicationController # rubocop:todo Metrics/ClassLen
         @user.grant_role(params[:role][:authorizable_type].to_s, @project)
         @roles = @project.roles
         flash[:notice] = 'Role added' # rubocop:disable Rails/ActionControllerFlashBeforeRender
-        render partial: 'roles', status: 200
+        render partial: 'roles', status: :ok
       else
         @roles = @project.roles
         flash[:error] = 'A problem occurred while adding the role' # rubocop:disable Rails/ActionControllerFlashBeforeRender
-        render partial: 'roles', status: 500
+        render partial: 'roles', status: :internal_server_error
       end
     else
       @roles = @project.roles
       flash[:error] = 'A problem occurred while adding the role'
-      render partial: 'roles', status: 401
+      render partial: 'roles', status: :unauthorized
     end
   end
 
@@ -157,16 +157,16 @@ class ProjectsController < ApplicationController # rubocop:todo Metrics/ClassLen
         @user.remove_role(params[:role][:authorizable_type].to_s, @project)
         @roles = @project.roles
         flash[:error] = 'Role was removed' # rubocop:disable Rails/ActionControllerFlashBeforeRender
-        render partial: 'roles', status: 200
+        render partial: 'roles', status: :ok
       else
         @roles = @project.roles
         flash[:error] = 'A problem occurred while removing the role' # rubocop:disable Rails/ActionControllerFlashBeforeRender
-        render partial: 'roles', status: 500
+        render partial: 'roles', status: :internal_server_error
       end
     else
       @roles = @project.roles
       flash[:error] = 'A problem occurred while removing the role'
-      render partial: 'roles', status: 401
+      render partial: 'roles', status: :unauthorized
     end
   end
 

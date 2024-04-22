@@ -22,9 +22,9 @@ class SessionsController < ApplicationController
     if logged_in?
       flash[:notice] = 'Logged in successfully'
       redirect_back_or_default(controller: :studies)
-    else
-      flash.now[:error] = "Your log in details don't match our records. Please try again." if params
-    end
+    elsif params
+      flash.now[:error] = "Your log in details don't match our records. Please try again."
+end
   end
 
   def logout

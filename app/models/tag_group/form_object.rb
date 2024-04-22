@@ -65,7 +65,7 @@ class TagGroup::FormObject
   def persist! # rubocop:todo Metrics/AbcSize
     success =
       TagGroup.transaction do
-        @tag_group = TagGroup.new(name: name, adapter_type_id: adapter_type_id)
+        @tag_group = TagGroup.new(name:, adapter_type_id:)
         @tag_group.tags.build(
           parse_oligos_list.each_with_index.map { |oligo, i| { oligo: oligo.upcase, map_id: i + 1 } }
         )

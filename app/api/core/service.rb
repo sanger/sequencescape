@@ -74,8 +74,8 @@ module Core
     # we can see it.
     configure :cucumber do
       error(Exception) do
-        $stderr.puts exception_thrown.message
-        $stderr.puts exception_thrown.backtrace.join("\n")
+        warn exception_thrown.message
+        warn exception_thrown.backtrace.join("\n")
         raise exception_thrown
       end
     end
@@ -99,12 +99,12 @@ module Core
       "#{request.scheme}://#{request.host_with_port}/#{self.class.api_version_path}/#{sub_path.compact.join('/')}"
     end
 
-    def self.before_all_actions(&block)
-      before('/*', &block)
+    def self.before_all_actions(&)
+      before('/*', &)
     end
 
-    def self.after_all_actions(&block)
-      after('/*', &block)
+    def self.after_all_actions(&)
+      after('/*', &)
     end
 
     attr_reader :command
@@ -126,9 +126,10 @@ module Core
 
       delegate :user, to: :service
 
-      def initialize(identifier, *args, &block)
-        @identifier, @started_at = identifier, Time.zone.now
-        super(*args, &block)
+      def initialize(identifier, *args, &)
+        @identifier = identifier
+        @started_at = Time.zone.now
+        super(*args, &)
         @ability = Core::Abilities.create(self)
       end
 
@@ -143,14 +144,15 @@ module Core
         @service.request.cookies['api_key'] || @service.request.cookies['WTSISignOn']
       end
 
-      def response(&block)
-        ::Core::Service::Response.new(self, &block)
+      def response(&)
+        ::Core::Service::Response.new(self, &)
       end
 
       # Safe way to push a particular value on to the request target stack.  Ensures that the
       # original value is reset when the block is exitted.
       def push(value)
-        target_before, @target = @target, value
+        target_before = @target
+        @target = value
         yield
       ensure
         @target = target_before
@@ -216,10 +218,12 @@ module Core
       delegate :endpoint_for_object, to: 'request.service'
       private :endpoint_for_object
 
-      def initialize(request, &block)
-        @request, @io, @include_actions = request, nil, true
+      def initialize(request, &)
+        @request = request
+        @io = nil
+        @include_actions = true
         status(200)
-        super(&block)
+        super(&)
       end
 
       #--
@@ -238,7 +242,7 @@ module Core
               ::Core::Io::Registry
                 .instance
                 .lookup_for_object(object)
-                .as_json(response: self, target: object, stream: stream, object: object, handled_by: handled_by)
+                .as_json(response: self, target: object, stream:, object:, handled_by:)
             end
         end
 
@@ -248,7 +252,8 @@ module Core
       # rubocop:enable Metrics/MethodLength
 
       def close
-        identifier, started_at = self.identifier, self.started_at # Save for later as next line discards our request!
+        identifier = self.identifier
+        started_at = self.started_at # Save for later as next line discards our request!
         discard_all_references
       ensure
         Rails.logger.info("API[finished]: #{identifier} in #{Time.zone.now - started_at}s")

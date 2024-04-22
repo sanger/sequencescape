@@ -47,7 +47,8 @@ module Core::Io::Base::JsonFormattingBehaviour::Input
     # rubocop:todo Metrics/BlockLength
     read_write.each do |json, attribute|
       steps = attribute.split('.')
-      trunk, leaf = steps[0..-2], steps.last
+      trunk = steps[0..-2]
+      leaf = steps.last
 
       # This bit ends up with the 'path' for the inner bit of the attribute (i.e. if the attribute
       # was 'a.b.c.d' then the inner bit is 'a.b.c' and this path could be 'a_attributes,
@@ -117,7 +118,7 @@ module Core::Io::Base::JsonFormattingBehaviour::Input
       end
     ",
       __FILE__,
-      line
+      __LINE__ - 10
     )
   end
 

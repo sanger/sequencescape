@@ -15,7 +15,7 @@ class StudiesController < ApplicationController
   around_action :rescue_validation, only: %i[close open]
 
   def setup_studies_from_scope(exclude_nested_resource = false) # rubocop:todo Metrics/AbcSize
-    if logged_in? && (not exclude_nested_resource)
+    if logged_in? && !exclude_nested_resource
       @alternatives = [
         'interesting',
         'followed',
@@ -287,13 +287,15 @@ class StudiesController < ApplicationController
 
         if request.xhr?
           yield(@user, @study, params[:role][:authorizable_type].to_s)
-          status, flash.now[:notice] = 200, "Role #{success_action}"
+          status = 200
+          flash.now[:notice] = "Role #{success_action}"
         else
-          status, flash.now[:error] = 401, "A problem occurred while #{error_action} the role"
+          status = 401
+          flash.now[:error] = "A problem occurred while #{error_action} the role"
         end
 
         @roles = @study.roles.reload
-        render partial: 'roles', status: status
+        render partial: 'roles', status:
       end
     end
   end
@@ -362,13 +364,13 @@ class StudiesController < ApplicationController
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   def rescue_validation
-    begin
+    
       yield
     rescue ActiveRecord::RecordInvalid
       Rails.logger.warn "Failed to update attributes: #{@study.errors.map { |error| error.to_s }}" # rubocop:disable Style/SymbolProc
       flash.now[:error] = 'Failed to update attributes for study!'
       render action: 'edit', id: @study.id
-    end
+    
   end
 end
 # rubocop:enable Metrics/ClassLength

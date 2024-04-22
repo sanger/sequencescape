@@ -37,7 +37,7 @@ RSpec.describe Heron::Factories::TubeRack, :heron, type: :model do
     expect(tube_rack).to be_valid
   end
 
-  it 'will create the correct number of tubes' do
+  it 'creates the correct number of tubes' do
     tube_rack = described_class.new(params)
     expect(tube_rack.recipients.count).to eq(params[:tubes].length)
   end

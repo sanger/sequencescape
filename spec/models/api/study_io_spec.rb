@@ -4,23 +4,23 @@ require 'rails_helper'
 
 RSpec.describe Api::StudyIO do
   subject do
-    create :study,
+    create(:study,
            ethically_approved: true,
            study_metadata_attributes: {
              faculty_sponsor: create(:faculty_sponsor, name: 'John Smith'),
              data_release_strategy: 'open',
              data_release_timing: 'standard',
-             reference_genome: reference_genome,
+             reference_genome:,
              array_express_accession_number: 'AE111',
              ega_policy_accession_number: 'EGA222',
              ega_dac_accession_number: 'DAC333'
-           }
+           })
   end
 
-  let(:reference_genome) { create :reference_genome }
+  let(:reference_genome) { create(:reference_genome) }
 
-  let!(:manager) { create :manager, authorizable: subject }
-  let!(:manager2) { create :manager, authorizable: subject }
+  let!(:manager) { create(:manager, authorizable: subject) }
+  let!(:manager2) { create(:manager, authorizable: subject) }
 
   let(:expected_json) do
     {

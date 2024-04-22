@@ -55,7 +55,9 @@ module CarrierWave
         end
 
         def content_type=(type)
-          @uploader.model.content_type = type unless type.nil? if @uploader.model.respond_to? :content_type
+          return unless @uploader.model.respond_to? :content_type
+@uploader.model.content_type = type unless type.nil?
+
         end
 
         private
@@ -77,7 +79,7 @@ module CarrierWave
 end
 
 class PolymorphicUploader < CarrierWave::Uploader::Base
-  def initialize(*args, &block)
+  def initialize(*args, &)
     super
   end
 
@@ -90,7 +92,7 @@ class PolymorphicUploader < CarrierWave::Uploader::Base
 
   # This is where files are stored on upload. We are using callbacks to empty it after upload
   def self.cache_dir
-    "#{Rails.root}/tmp/uploads"
+    "#{Rails.root.join('tmp/uploads')}"
   end
 
   def cache_dir

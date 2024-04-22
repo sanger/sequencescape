@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 class Metadata::FormBuilder < Metadata::BuilderBase
-  def initialize(*args, &block)
+  def initialize(*args, &)
     super
     view_for(:field, 'shared/metadata/edit_field')
     view_for(:radio_field, 'shared/metadata/radio_field')
     view_for(:header, 'shared/metadata/header')
     view_for(:document, 'shared/metadata/edit_document_field')
 
-    @related_fields, @changing = [], []
+    @related_fields = []
+    @changing = []
   end
 
   # Creates a file upload field that will be properly handled by Document instances.  It's a bit of
@@ -34,7 +35,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase
   end
 
   %i[text_area text_field number_field].each do |field|
-    class_eval <<-END_OF_METHOD
+    class_eval <<-END_OF_METHOD, __FILE__, __LINE__ + 1
       def #{field}_with_bootstrap(*args, &block)
         options    = args.extract_options!
         append_class!(options, 'form-control')
@@ -60,7 +61,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase
           tag.div(class: %w[custom-control custom-radio custom-control-inline]) do
             value = option_value || label_text
             concat radio_button(method, value, class: 'custom-control-input', required: true)
-            concat label(method, label_text, class: 'custom-control-label', value: value)
+            concat label(method, label_text, class: 'custom-control-label', value:)
           end
       end
     end
@@ -105,14 +106,14 @@ class Metadata::FormBuilder < Metadata::BuilderBase
   # You can use `:to` to give the name of the field, `:when` for the single value when the fields should
   # be shown, and `:in` for a group of values.  You *must* call finalize_related_fields at the end of
   # your view to get the appropriate behaviour
-  def related_fields(options, &block) # rubocop:todo Metrics/AbcSize
+  def related_fields(options, &) # rubocop:todo Metrics/AbcSize
     options.symbolize_keys!
 
     values =
       (options.fetch(:in, Array(options[:when])) - Array(options[:not])).map do |v|
         v.to_s.downcase.gsub(/[^a-z0-9]+/, '_')
       end
-    content = capture(&block)
+    content = capture(&)
     concat(tag.div(content, class: [:related_to, options[:to], values].flatten.join(' ')))
 
     @related_fields.push(options[:to])
@@ -157,18 +158,18 @@ class Metadata::FormBuilder < Metadata::BuilderBase
   # Renders the Javascript for dealing with showing and hiding the related fields.
   def finalize_related_fields
     related = @related_fields.compact.uniq.map(&:to_s)
-    unless related.empty?
+    return if related.empty?
       concat(
         render(
           partial: 'shared/metadata/related_fields',
           locals: {
             root: sanitized_object_name,
-            related: related,
+            related:,
             changing_fields: @changing
           }
         )
       )
-    end
+    
   end
 
   private

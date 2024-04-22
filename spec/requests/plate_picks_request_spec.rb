@@ -2,18 +2,18 @@
 require 'rails_helper'
 
 RSpec.describe 'PlatePicks' do
-  let(:user) { create :user, password: 'password' }
+  let(:user) { create(:user, password: 'password') }
   let(:headers) { { 'ACCEPT' => 'application/json' } }
-  let(:plate) { create :plate, well_count: 1 }
-  let(:destination_plate) { create :plate, well_count: 1 }
+  let(:plate) { create(:plate, well_count: 1) }
+  let(:destination_plate) { create(:plate, well_count: 1) }
   let(:released_cherrypick_batch) do
-    build :cherrypick_batch,
+    build(:cherrypick_batch,
           state: 'released',
-          request_attributes: [{ asset: plate.wells[0], target_asset: destination_plate.wells.first, state: 'passed' }]
+          request_attributes: [{ asset: plate.wells[0], target_asset: destination_plate.wells.first, state: 'passed' }])
   end
-  let(:released_other_batch) { build :batch, state: 'released', request_attributes: [{ asset: plate.wells[0] }] }
+  let(:released_other_batch) { build(:batch, state: 'released', request_attributes: [{ asset: plate.wells[0] }]) }
   let(:pending_cherrypick_batch) do
-    build :cherrypick_batch, state: 'pending', request_attributes: [{ asset: plate.wells[0] }]
+    build(:cherrypick_batch, state: 'pending', request_attributes: [{ asset: plate.wells[0] }])
   end
 
   # We exclude the pending batches here, as they don't have pick information.
@@ -55,14 +55,14 @@ RSpec.describe 'PlatePicks' do
     end
 
     it 'returns the plate', :aggregate_failures do
-      get "/plate_picks/plates/#{plate.machine_barcode}", headers: headers
+      get("/plate_picks/plates/#{plate.machine_barcode}", headers:)
       expect(response.media_type).to eq('application/json')
       expect(response).to have_http_status(:success)
       expect(response.parsed_body).to eq(found_plate)
     end
 
     it 'returns 404 if the plate is missing', :aggregate_failures do
-      get '/plate_picks/plates/not_a_barcode', headers: headers
+      get('/plate_picks/plates/not_a_barcode', headers:)
       expect(response.media_type).to eq('application/json')
       expect(response).to have_http_status(:not_found)
       expect(response.body).to eq(missing_plate)
@@ -71,28 +71,28 @@ RSpec.describe 'PlatePicks' do
 
   describe 'GET batches/:id' do
     before do
-      create :robot_with_verification_behaviour
+      create(:robot_with_verification_behaviour)
       released_cherrypick_batch.save!
       pending_cherrypick_batch.save!
       released_other_batch.save!
     end
 
     it 'returns the batch', :aggregate_failures do
-      get "/plate_picks/batches/#{released_cherrypick_batch.id}", headers: headers
+      get("/plate_picks/batches/#{released_cherrypick_batch.id}", headers:)
       expect(response.media_type).to eq('application/json')
       expect(response).to have_http_status(:success)
       expect(response.parsed_body).to eq(found_batch)
     end
 
     it 'returns an error if the batch has no pick info', :aggregate_failures do
-      get "/plate_picks/batches/#{pending_cherrypick_batch.id}", headers: headers
+      get("/plate_picks/batches/#{pending_cherrypick_batch.id}", headers:)
       expect(response.media_type).to eq('application/json')
       expect(response).to have_http_status(:conflict)
       expect(response.body).to eq(not_suitable)
     end
 
     it 'returns 404 if the batch is missing', :aggregate_failures do
-      get '/plate_picks/batches/not_a_barcode', headers: headers
+      get('/plate_picks/batches/not_a_barcode', headers:)
       expect(response.media_type).to eq('application/json')
       expect(response).to have_http_status(:not_found)
       expect(response.body).to eq(missing_batch)

@@ -6,13 +6,13 @@ RSpec.describe LinearSubmission do
   let(:mx_asset_count) { 5 }
   let(:sx_asset_count) { 5 }
 
-  let(:study) { create :study }
-  let(:project) { create :project }
-  let(:user) { create :user }
+  let(:study) { create(:study) }
+  let(:project) { create(:project) }
+  let(:user) { create(:user) }
 
   describe 'build (Submission factory)' do
-    let(:sequencing_request_type) { create :sequencing_request_type }
-    let(:purpose) { create :std_mx_tube_purpose }
+    let(:sequencing_request_type) { create(:sequencing_request_type) }
+    let(:purpose) { create(:std_mx_tube_purpose) }
     let(:request_options) do
       { 'read_length' => '108', 'fragment_size_required_from' => '150', 'fragment_size_required_to' => '200' }
     end
@@ -20,28 +20,28 @@ RSpec.describe LinearSubmission do
     context 'when a multiplexed submission' do
       describe 'Customer decision propagation' do
         let(:library_creation_request_type) do
-          create :well_request_type, :with_library_types, target_purpose: purpose, for_multiplexing: true
+          create(:well_request_type, :with_library_types, target_purpose: purpose, for_multiplexing: true)
         end
-        let(:product_criteria) { create :product_criteria }
-        let(:current_report) { create :qc_report, product_criteria: product_criteria }
-        let(:stock_well) { create :well }
+        let(:product_criteria) { create(:product_criteria) }
+        let(:current_report) { create(:qc_report, product_criteria:) }
+        let(:stock_well) { create(:well) }
         let(:request_well) do
-          well = create :well
+          well = create(:well)
           well.stock_wells.attach!([stock_well])
           well.reload
           well
         end
         let(:expected_metric) do
-          create :qc_metric, asset: stock_well, qc_report: current_report, qc_decision: 'manually_failed', proceed: true
+          create(:qc_metric, asset: stock_well, qc_report: current_report, qc_decision: 'manually_failed', proceed: true)
         end
         let(:mpx_submission) do
           create(
             :linear_submission,
-            study: study,
-            project: project,
-            user: user,
+            study:,
+            project:,
+            user:,
             request_types: [library_creation_request_type.id, sequencing_request_type.id],
-            request_options: request_options,
+            request_options:,
             product: product_criteria.product,
             assets: [request_well]
           ).submission
@@ -68,17 +68,17 @@ RSpec.describe LinearSubmission do
       context 'with basic behaviour' do
         let(:mpx_assets) { create_list(:sample_tube, mx_asset_count) }
         let(:library_creation_request_type) do
-          create :multiplexed_library_creation_request_type, target_purpose: purpose
+          create(:multiplexed_library_creation_request_type, target_purpose: purpose)
         end
         let(:mpx_submission) do
           create(
             :linear_submission,
-            study: study,
-            project: project,
-            user: user,
+            study:,
+            project:,
+            user:,
             assets: mpx_assets,
             request_types: request_type_option,
-            request_options: request_options
+            request_options:
           ).submission
         end
 
@@ -107,7 +107,7 @@ RSpec.describe LinearSubmission do
           end
 
           context 'when multiple requests after plexing' do
-            let(:sequencing_request_type_2) { create :sequencing_request_type }
+            let(:sequencing_request_type_2) { create(:sequencing_request_type) }
             let(:request_type_option) do
               [library_creation_request_type.id, sequencing_request_type_2.id, sequencing_request_type.id]
             end
@@ -126,21 +126,21 @@ RSpec.describe LinearSubmission do
     end
 
     context 'with two stages of library creation' do
-      let(:library_creation_stage1) { create :library_request_type, :with_library_types }
-      let(:library_creation_stage2) { create :library_request_type, :with_library_types }
-      let(:mx_request_type) { create :multiplex_request_type }
+      let(:library_creation_stage1) { create(:library_request_type, :with_library_types) }
+      let(:library_creation_stage2) { create(:library_request_type, :with_library_types) }
+      let(:mx_request_type) { create(:multiplex_request_type) }
       let(:request_type_option) do
         [library_creation_stage1.id, library_creation_stage2.id, mx_request_type.id, sequencing_request_type.id]
       end
       let(:assets) { create_list(:untagged_well, 2) }
       let(:basic_options) do
         {
-          study: study,
-          project: project,
-          user: user,
+          study:,
+          project:,
+          user:,
           request_types: request_type_option,
-          request_options: request_options,
-          assets: assets
+          request_options:,
+          assets:
         }
       end
       let(:submission) { create(:linear_submission, basic_options).submission.tap(&:built!) }
@@ -155,17 +155,17 @@ RSpec.describe LinearSubmission do
 
     context 'when a single-plex submission' do
       let(:assets) { (1..sx_asset_count).map { |i| create(:sample_tube, name: "Asset#{i}") } }
-      let(:library_creation_request_type) { create :library_creation_request_type, :with_library_types }
+      let(:library_creation_request_type) { create(:library_creation_request_type, :with_library_types) }
       let(:request_type_option) { [library_creation_request_type.id, sequencing_request_type.id] }
       let(:submission) do
         create(
           :linear_submission,
-          study: study,
-          project: project,
-          user: user,
-          assets: assets,
+          study:,
+          project:,
+          user:,
+          assets:,
           request_types: request_type_option,
-          request_options: request_options,
+          request_options:,
           comments: 'This is a comment'
         ).submission
       end
@@ -223,33 +223,33 @@ RSpec.describe LinearSubmission do
   end
 
   context 'when we have a multiplier for request type' do
-    let(:assets) { create_list :sample_tube, 2 }
+    let(:assets) { create_list(:sample_tube, 2) }
     let(:mx_request_type) do
-      create :multiplexed_library_creation_request_type,
+      create(:multiplexed_library_creation_request_type,
              asset_type: 'SampleTube',
              target_asset_type: 'LibraryTube',
              initial_state: 'pending',
              name: 'Multiplexed Library Creation',
              order: 1,
-             key: 'multiplexed_library_creation'
+             key: 'multiplexed_library_creation')
     end
     let(:lib_request_type) do
-      create :library_creation_request_type,
+      create(:library_creation_request_type,
              :with_library_types,
              asset_type: 'SampleTube',
              target_asset_type: 'LibraryTube',
              initial_state: 'pending',
              name: 'Library Creation',
              order: 1,
-             key: 'library_creation'
+             key: 'library_creation')
     end
     let(:sequencing_request_type) do
-      create :request_type,
+      create(:request_type,
              asset_type: 'LibraryTube',
              initial_state: 'pending',
              name: 'PE sequencing',
              order: 2,
-             key: 'pe_sequencing'
+             key: 'pe_sequencing')
     end
 
     context 'when a multiplication factor of 5 is provided' do
@@ -257,10 +257,10 @@ RSpec.describe LinearSubmission do
         let(:submission) do
           create(
             :linear_submission,
-            study: study,
-            project: project,
-            user: user,
-            assets: assets,
+            study:,
+            project:,
+            user:,
+            assets:,
             request_types: [lib_request_type.id, sequencing_request_type.id],
             request_options: {
               :multiplier => {
@@ -287,10 +287,10 @@ RSpec.describe LinearSubmission do
         let(:submission) do
           create(
             :linear_submission,
-            study: study,
-            project: project,
-            user: user,
-            assets: assets,
+            study:,
+            project:,
+            user:,
+            assets:,
             request_types: [mx_request_type.id, sequencing_request_type.id],
             request_options: {
               :multiplier => {

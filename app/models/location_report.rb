@@ -50,9 +50,9 @@ class LocationReport < ApplicationRecord
 
   def check_any_select_field_present
     attr_list = %i[faculty_sponsor_ids study_id start_date end_date plate_purpose_ids barcodes]
-    if attr_list.all? { |attr| send(attr).blank? }
+    return unless attr_list.all? { |attr| send(attr).blank? }
       errors.add(:base, I18n.t('location_reports.errors.no_selection_fields_filled'))
-    end
+    
   end
 
   def check_both_dates_present_if_used
@@ -177,12 +177,12 @@ class LocationReport < ApplicationRecord
 
   def search_for_plates_by_selection
     params = {
-      faculty_sponsor_ids: faculty_sponsor_ids,
-      study_id: study_id,
-      start_date: start_date,
-      end_date: end_date,
-      plate_purpose_ids: plate_purpose_ids,
-      barcodes: barcodes
+      faculty_sponsor_ids:,
+      study_id:,
+      start_date:,
+      end_date:,
+      plate_purpose_ids:,
+      barcodes:
     }
     Plate.search_for_plates(params)
   end

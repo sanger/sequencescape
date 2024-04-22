@@ -3,7 +3,8 @@ class Health
   attr_reader :status, :message, :details
 
   def initialize
-    @status, @message = :ok, []
+    @status = :ok
+    @message = []
     @details = { vm_stas: RubyVM.stat }
     check
   end

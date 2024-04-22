@@ -49,7 +49,7 @@ class Tube < Labware
 
   # Delegates the provided methods to purpose, passing the tube as the first argument, and the remaining arguments as-is
   def self.delegate_to_purpose(*methods)
-    methods.each { |method| class_eval("def #{method}(*args, &block) ; purpose.#{method}(self, *args, &block) ; end") }
+    methods.each { |method| class_eval("def #{method}(*args, &block) ; purpose.#{method}(self, *args, &block) ; end", __FILE__, __LINE__) }
   end
 
   # TODO: change column name to account for purpose, not plate_purpose!
@@ -83,7 +83,7 @@ class Tube < Labware
     comments.add_comment_to_submissions(comment)
   end
 
-  def self.create_with_barcode!(*args, &block)
+  def self.create_with_barcode!(*args, &)
     attributes = args.extract_options!.symbolize_keys
 
     barcode, prefix = extract_barcode(args, attributes)
@@ -94,7 +94,7 @@ class Tube < Labware
     # this is to control the order of barcode addition so that it gets set as the 'primary' barcode
     foreign_barcode = attributes.delete(:foreign_barcode)
 
-    tube = create!(attributes.merge(sanger_barcode: { prefix: prefix, number: barcode }), &block)
+    tube = create!(attributes.merge(sanger_barcode: { prefix:, number: barcode }), &)
 
     tube.foreign_barcode = foreign_barcode if foreign_barcode
     tube.reload
@@ -111,7 +111,7 @@ def extract_barcode(args, attributes)
 end
 
 def validate_barcode(barcode, prefix)
-  human = SBCF::SangerBarcode.new(prefix: prefix, number: barcode).human_barcode
+  human = SBCF::SangerBarcode.new(prefix:, number: barcode).human_barcode
   raise "Barcode: #{barcode} already used!" if Barcode.exists?(barcode: human)
 end
 

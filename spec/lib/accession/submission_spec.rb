@@ -43,8 +43,8 @@ RSpec.describe Accession::Submission, :accession, type: :model do
   it 'creates a payload' do
     payload = described_class.new(user, sample).payload
     expect(payload.count).to eq(2)
-    expect(payload).to be_all { |_, file| File.file?(file) }
-    expect(payload).to be_all { |key, _| key.match(/\p{Lower}/).nil? }
+    expect(payload).to(be_all { |_, file| File.file?(file) })
+    expect(payload).to(be_all { |key, _| key.match(/\p{Lower}/).nil? })
   end
 
   it 'posts the submission and return an appropriate response' do

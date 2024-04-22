@@ -18,29 +18,29 @@ class StampTest < ActiveSupport::TestCase
 
     context '#stamp' do
       should 'transition qcables to pending' do
-        @qcable = create :qcable_with_asset
+        @qcable = create(:qcable_with_asset)
 
         # Unfortunately we can't do this, as stamp looks for qcables directly.
         # @qcable.expects(:do_stamp!).returns(true)
         sqc = Stamp::StampQcable.new(bed: '1', order: 1, qcable: @qcable)
-        @stamp = create :stamp, stamp_qcables: [sqc]
+        @stamp = create(:stamp, stamp_qcables: [sqc])
         assert_equal 'pending', @qcable.reload.state
       end
 
       should 'transfer samples' do
-        @qcable = create :qcable_with_asset
+        @qcable = create(:qcable_with_asset)
 
         # Unfortunately we can't do this, as stamp looks for qcables directly.
         # @qcable.expects(:do_stamp!).returns(true)
 
         sqc = Stamp::StampQcable.new(bed: '1', order: 1, qcable: @qcable)
-        @stamp = create :stamp, stamp_qcables: [sqc]
+        @stamp = create(:stamp, stamp_qcables: [sqc])
         assert_equal 'pending', @qcable.reload.state
         assert_equal 1, @qcable.asset.wells.located_at('A2').first.aliquots.count
       end
 
       should 'clone the aliquots' do
-        @qcable = create :qcable_with_asset, state: 'created'
+        @qcable = create(:qcable_with_asset, state: 'created')
         @qcable_2 =
           @qcable.lot.qcables.create!(
             qcable_creator: @qcable.qcable_creator,
@@ -50,7 +50,7 @@ class StampTest < ActiveSupport::TestCase
 
         sqc = Stamp::StampQcable.new(bed: '1', order: 1, qcable: @qcable)
         sqc_2 = Stamp::StampQcable.new(bed: '2', order: 2, qcable: @qcable_2)
-        @stamp = create :stamp, stamp_qcables: [sqc, sqc_2]
+        @stamp = create(:stamp, stamp_qcables: [sqc, sqc_2])
         assert_equal 'pending', @qcable.reload.state
         assert_equal 1, @qcable.asset.wells.located_at('A2').first.aliquots.count
         assert_equal 'pending', @qcable_2.reload.state

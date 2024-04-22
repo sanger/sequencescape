@@ -51,7 +51,7 @@ class PlateVolume < ApplicationRecord
         units: 'ul',
         assay_type: ASSAY_TYPE,
         assay_version: ASSAY_VERSION,
-        qc_assay: qc_assay
+        qc_assay:
       )
     end
   end
@@ -85,7 +85,7 @@ class PlateVolume < ApplicationRecord
 
     def handle_volume(filename, file)
       ActiveRecord::Base.transaction { find_for_filename(sanitized_filename(file)).call(filename, file) }
-    rescue => e
+    rescue StandardError => e
       Rails.logger.warn("Error processing volume file #{filename}: #{e.message}")
     end
 

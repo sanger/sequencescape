@@ -34,10 +34,10 @@ class MigrateRemovedPipelinesToLegacyClass < ActiveRecord::Migration[6.0]
       %w[Genotyping GenotypingPipeline],
       ['Cherrypicking for Pulldown', 'CherrypickForPulldownPipeline']
     ].each do |name, sti_type|
-      pipeline = Pipeline.find_by(name: name)
+      pipeline = Pipeline.find_by(name:)
       next if pipeline.nil?
 
-      pipeline.update!(sti_type: sti_type)
+      pipeline.update!(sti_type:)
     end
   end
 end

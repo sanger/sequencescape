@@ -132,21 +132,21 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def batch_meets_minimum_size
-    if min_size && (requests.size < min_size)
+    return unless min_size && (requests.size < min_size)
       errors.add :base, "You must create batches of at least #{min_size} requests in the pipeline #{pipeline.name}"
-    end
+    
   end
 
   def requests_have_same_read_length
-    unless pipeline.is_read_length_consistent_for_batch?(self)
+    return if pipeline.is_read_length_consistent_for_batch?(self)
       errors.add :base, "The selected requests must have the same values in their 'Read length' field."
-    end
+    
   end
 
   def requests_have_same_flowcell_type
-    unless pipeline.is_flowcell_type_consistent_for_batch?(self)
+    return if pipeline.is_flowcell_type_consistent_for_batch?(self)
       errors.add :base, "The selected requests must have the same values in their 'Flowcell Requested' field."
-    end
+    
   end
 
   # Fail was removed from State Machine (as a state) to allow the addition of qc_state column and features
@@ -156,10 +156,10 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
     raise StandardError, 'Can not fail batch without failing requests' if ignore_requests
 
     # create failures
-    failures.create(reason: reason, comment: comment, notify_remote: false)
+    failures.create(reason:, comment:, notify_remote: false)
 
     requests.each do |request|
-      request.failures.create(reason: reason, comment: comment, notify_remote: true)
+      request.failures.create(reason:, comment:, notify_remote: true)
       EventSender.send_fail_event(request, reason, comment, id) unless request.asset && request.asset.resource?
     end
 
@@ -176,7 +176,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
           logger.debug "SENDING FAIL FOR REQUEST #{request.id}, BATCH #{id}, WITH REASON #{reason}"
 
           request.customer_accepts_responsibility! if fail_but_charge
-          request.failures.create(reason: reason, comment: comment, notify_remote: true)
+          request.failures.create(reason:, comment:, notify_remote: true)
           EventSender.send_fail_event(request, reason, comment, id)
         end
       update_batch_state(reason, comment)
@@ -184,11 +184,11 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def update_batch_state(reason, comment)
-    if requests.all?(&:terminated?)
-      failures.create(reason: reason, comment: comment, notify_remote: false)
+    return unless requests.all?(&:terminated?)
+      failures.create(reason:, comment:, notify_remote: false)
       self.production_state = 'fail'
       save!
-    end
+    
   end
 
   def failed?
@@ -328,7 +328,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
       end
     end
     if errors.empty?
-      lab_events.create(description: 'Tube layout verified', user: user)
+      lab_events.create(description: 'Tube layout verified', user:)
       true
     else
       false
@@ -349,7 +349,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
       Request
         .find(request_ids)
         .each do |request|
-          request.failures.create(reason: reason, comment: comment, notify_remote: true)
+          request.failures.create(reason:, comment:, notify_remote: true)
           detach_request(request)
         end
       update_batch_state(reason, comment)
@@ -427,8 +427,9 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
       # Swap the two batch requests so that they are correct.  This involves swapping both the batch and the lane but
       # ensuring that the two requests don't clash on position by removing one of them.
-      original_left_batch_id, original_left_position, original_right_request_id =
-        batch_request_left.batch_id, batch_request_left.position, batch_request_right.request_id
+      original_left_batch_id = batch_request_left.batch_id
+      original_left_position = batch_request_left.position
+      original_right_request_id = batch_request_right.request_id
       batch_request_right.destroy
       batch_request_left.update!(batch_id: batch_request_right.batch_id, position: batch_request_right.position)
       batch_request_right =
@@ -481,7 +482,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
     lab_events.create(
       description: 'Robot verified',
       message: 'Robot verification completed and source volumes updated.',
-      user_id: user_id
+      user_id:
     )
   end
 
@@ -532,11 +533,11 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def npg_set_state
-    if all_requests_qced?
+    return unless all_requests_qced?
       self.state = 'released'
       qc_complete
       save!
-    end
+    
   end
 
   def downstream_requests_needing_asset(request)
@@ -588,12 +589,12 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
         requests_to_update.concat(downstream_requests.map { |r| [r, target_asset.receptacle] })
       end
 
-      request.update!(target_asset: target_asset)
+      request.update!(target_asset:)
 
       target_asset.parents << request.asset.labware
     end
 
-    requests_to_update.each { |request, asset| request.update!(asset: asset) }
+    requests_to_update.each { |request, asset| request.update!(asset:) }
   end
   # rubocop:enable Metrics/MethodLength
 end

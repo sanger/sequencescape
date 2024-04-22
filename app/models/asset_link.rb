@@ -70,7 +70,7 @@ class AssetLink < ApplicationRecord
           end
         ",
           __FILE__,
-          line
+          __LINE__ - 17
         )
       end
     end

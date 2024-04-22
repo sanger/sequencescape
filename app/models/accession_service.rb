@@ -101,11 +101,11 @@ class AccessionService # rubocop:todo Metrics/ClassLength
               if accession_number
                 acc.update_accession_number!(user, accession_number)
                 accession_numbers << accession_number
-              else
+              elsif accessionables.include?(acc)
+                number_generated = false
+end
                 # error only, if one of the expected accessionable didn't get a AN
                 # We don't care about the submission
-                number_generated = false if accessionables.include?(acc)
-              end
               ae_an = acc.extract_array_express_accession_number(xmldoc)
               acc.update_array_express_accession_number!(ae_an) if ae_an
             end

@@ -41,7 +41,8 @@ module Api
               # Be kind...
               file.rewind
               request.body.rewind
-              uuid_in_url, parts = params[:captures][0], params[:captures][1].try(:split, '/') || []
+              uuid_in_url = params[:captures][0]
+              parts = params[:captures][1].try(:split, '/') || []
               uuid = Uuid.find_by(external_id: uuid_in_url) or raise ActiveRecord::RecordNotFound, 'UUID does not exist'
               handle_request(:instance, request, action, parts) do |request|
                 request.io = lookup_for_class(uuid.resource.class) { |e| raise e }
@@ -104,7 +105,8 @@ module Api
           file_requested: true
         ) do
           report('file') do
-            uuid_in_url, parts = params[:captures][0], params[:captures][1].try(:split, '/') || []
+            uuid_in_url = params[:captures][0]
+            parts = params[:captures][1].try(:split, '/') || []
             uuid = Uuid.find_by(external_id: uuid_in_url) or raise ActiveRecord::RecordNotFound, 'UUID does not exist'
 
             file_through =
@@ -125,7 +127,8 @@ module Api
           file_requested: false
         ) do
           report('instance') do
-            uuid_in_url, parts = params[:captures][0], params[:captures][1].try(:split, '/') || []
+            uuid_in_url = params[:captures][0]
+            parts = params[:captures][1].try(:split, '/') || []
             uuid = Uuid.find_by(external_id: uuid_in_url) or raise ActiveRecord::RecordNotFound, 'UUID does not exist'
             handle_request(:instance, request, action, parts) do |request|
               request.io = lookup_for_class(uuid.resource.class) { |e| raise e }
@@ -180,7 +183,8 @@ module Api
       parts
         .length
         .downto(1) do |n|
-          model_name, remainder = parts.slice(0, n), parts.slice(n, parts.length)
+          model_name = parts.slice(0, n)
+          remainder = parts.slice(n, parts.length)
           model_constant = model_name.join('/').classify
           begin
             constant = model_constant.constantize

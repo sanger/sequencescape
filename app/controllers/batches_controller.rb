@@ -399,7 +399,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     return pipeline_error_on_batch_creation('Batches must contain at least one request') if requests.empty?
 
     begin
-      ActiveRecord::Base.transaction { @batch = @pipeline.batches.create!(requests: requests, user: current_user) }
+      ActiveRecord::Base.transaction { @batch = @pipeline.batches.create!(requests:, user: current_user) }
     rescue ActiveRecord::RecordNotUnique => e
       # We don't explicitly check for this on creation of batch_request for performance reasons, and the front end
       # usually ensures this situation isn't possible. However if the user opens duplicate tabs it is possible.

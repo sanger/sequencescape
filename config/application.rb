@@ -53,11 +53,11 @@ module Sequencescape
 
     # Add additional load paths for your own custom dirs
     # config.load_paths += %W( #{Rails.root}/extras )
-    config.autoload_paths += %W[#{Rails.root}/app/observers]
-    config.autoload_paths += %W[#{Rails.root}/app/metal]
-    config.autoload_paths += %W[#{Rails.root}/app]
-    config.autoload_paths += %W[#{Rails.root}/lib]
-    config.autoload_paths += %W[#{Rails.root}/lib/accession]
+    config.autoload_paths += %W[#{Rails.root.join('app/observers')}]
+    config.autoload_paths += %W[#{Rails.root.join('app/metal')}]
+    config.autoload_paths += %W[#{Rails.root.join('app')}]
+    config.autoload_paths += %W[#{Rails.root.join('lib')}]
+    config.autoload_paths += %W[#{Rails.root.join('lib/accession')}]
 
     config.encoding = 'utf-8'
 
@@ -67,7 +67,7 @@ module Sequencescape
     config.time_zone = 'London'
 
     # Enable localisations to be split over multiple paths.
-    config.i18n.load_path = Dir[File.join(Rails.root, %w[config locales metadata *.{rb,yml}])] # rubocop:disable Rails/RootPathnameMethods
+    config.i18n.load_path = Dir[Rails.root.join(%w[config locales metadata *.{rb,yml}]).to_s] # rubocop:disable Rails/RootPathnameMethods
     I18n.enforce_available_locales = false
 
     config.cherrypickable_default_type = 'ABgene_0800'

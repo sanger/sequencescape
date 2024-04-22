@@ -15,11 +15,11 @@ class RequestFactory
 
   def self.create_assets_requests(assets, study)
     request_type = RequestType.create_asset
-    assets.each { |asset| request_type.create!(study: study, asset: asset, state: 'passed') }
+    assets.each { |asset| request_type.create!(study:, asset:, state: 'passed') }
   end
 
   def self.create_external_multiplexed_library_creation_requests(sources, target, study)
     request_type = RequestType.external_multiplexed_library_creation
-    sources.each { |asset| request_type.create!(study: study, asset: asset, target_asset: target) }
+    sources.each { |asset| request_type.create!(study:, asset:, target_asset: target) }
   end
 end

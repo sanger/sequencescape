@@ -82,13 +82,15 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
           end
 
           should 'handle times' do
-            @value, @expected = Time.parse('2012-10-25 12:39'), 'Thu Oct 25 12:39:00 +0100 2012' # rubocop:disable Rails/TimeZone
+            @value = Time.parse('2012-10-25 12:39')
+            @expected = 'Thu Oct 25 12:39:00 +0100 2012' # rubocop:disable Rails/TimeZone
           end
 
           # The fact this format is different is probably an accidental change to the API.
           # It was made ages ago though, so lets not change it back.
           should 'handle ActiveSupport::TimeWithZone' do
-            @value, @expected = Time.zone.parse('2012-10-25 12:39'), '2012-10-25 12:39:00 +0100'
+            @value = Time.zone.parse('2012-10-25 12:39')
+            @expected = '2012-10-25 12:39:00 +0100'
           end
         end
 

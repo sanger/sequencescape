@@ -64,14 +64,15 @@ module Core::Io::Base::JsonFormattingBehaviour
   VALID_LINE_REGEXP = /^\s*((?:[a-z_][\w_]*\.)*[a-z_][\w_]*[?!]?)\s*(<=|<=>|=>)\s*((?:[a-z_][\w_]*\.)*[a-z_][\w_]*)\s*$/
 
   def parse_mapping_rules(mapping) # rubocop:todo Metrics/AbcSize
-    attribute_to_json, json_to_attribute = [], []
+    attribute_to_json = []
+    json_to_attribute = []
     StringIO
       .new(mapping)
       .each_line do |line|
         next if line.blank? || line =~ (/^\s*#/)
 
         match = VALID_LINE_REGEXP.match(line) or raise StandardError, "Invalid line: #{line.inspect}"
-        attribute_to_json.push([match[1], match[3]]) if (match[2] =~ /<?=>/)
+        attribute_to_json.push([match[1], match[3]]) if /<?=>/.match?(match[2])
         json_to_attribute.push([match[3], /<=>?/.match?(match[2]) ? match[1] : nil])
       end
     yield(attribute_to_json, json_to_attribute)

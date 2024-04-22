@@ -7,7 +7,8 @@ class Core::Io::Json::GrammarTest < ActiveSupport::TestCase
     context 'nested attribute value' do
       setup do
         @target = Core::Io::Json::Grammar::Leaf.new(:attribute_name, %w[root leaf])
-        @object, @stream = mock('Target object'), mock('Stream')
+        @object = mock('Target object')
+        @stream = mock('Stream')
       end
 
       teardown { @target.call(@object, :options, @stream) }
@@ -36,7 +37,8 @@ class Core::Io::Json::GrammarTest < ActiveSupport::TestCase
     end
 
     should 'place children inside a block' do
-      stream, nested_stream = mock('Stream'), mock('Nested Stream')
+      stream = mock('Stream')
+      nested_stream = mock('Nested Stream')
       stream.expects(:block).with(:attribute_name).yields(nested_stream)
 
       children =
@@ -62,7 +64,8 @@ class Core::Io::Json::GrammarTest < ActiveSupport::TestCase
       end
 
       teardown do
-        stream, nested_stream = mock('Stream'), mock('Nested Stream')
+        stream = mock('Stream')
+        nested_stream = mock('Nested Stream')
         stream.expects(:block).with(:root_json).yields(nested_stream)
         nested_stream.expects(:attribute).with('created_at', 'now')
         nested_stream.expects(:attribute).with('updated_at', 'tomorrow')

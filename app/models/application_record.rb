@@ -38,7 +38,7 @@ class ApplicationRecord < ActiveRecord::Base
       return find(id) if id.present?
       raise StandardError, 'Must specify at least ID or name' if name.blank?
 
-      find_by(name: name)
+      find_by(name:)
     end
 
     # Temporary compatibility layer following AssetRefactor:

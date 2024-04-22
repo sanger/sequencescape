@@ -14,7 +14,7 @@ module Submission::AssetGroupBehaviour
   # Assets need validating if we are putting this order into a submission and the asset group has not been
   # specified in some form.
   def assets_need_validating?
-    not building? and not (asset_group? or asset_group_name.present?)
+    !building? and !(asset_group? or asset_group_name.present?)
   end
   private :assets_need_validating?
 
@@ -40,7 +40,7 @@ module Submission::AssetGroupBehaviour
     group_name = asset_group_name
     group_name = uuid if asset_group_name.blank?
 
-    asset_group = study.asset_groups.create!(name: group_name, user: user, assets: assets)
+    asset_group = study.asset_groups.create!(name: group_name, user:, assets:)
     update!(asset_group_id: asset_group.id)
   end
   private :create_our_asset_group

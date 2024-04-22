@@ -31,7 +31,7 @@ class Parsers::PlateReaderParser
   def get_column_for_header(sym)
     headers.each_with_index do |h, pos|
       name = get_name_for_header(sym)
-      return pos if h.squish == name.squish unless name.nil? || h.nil?
+      return pos if !(name.nil? || h.nil?) && (h.squish == name.squish)
     end
   end
 

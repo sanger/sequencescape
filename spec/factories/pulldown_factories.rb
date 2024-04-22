@@ -68,7 +68,7 @@ FactoryBot.define do
 
     transient { tag_sequences { %w[ACGT TGCA] } }
 
-    tags { tag_sequences.each_with_index.map { |oligo, index| build(:tag, map_id: index + 1, oligo: oligo) } }
+    tags { tag_sequences.each_with_index.map { |oligo, index| build(:tag, map_id: index + 1, oligo:) } }
   end
 
   # Tag layouts and their templates
@@ -122,7 +122,7 @@ FactoryBot.define do
     after(:build) do |tube_creation|
       mock_request_type = create(:library_creation_request_type)
 
-      stock_plate = create :full_stock_plate, well_count: 2
+      stock_plate = create(:full_stock_plate, well_count: 2)
       stock_wells = stock_plate.wells
 
       AssetLink.create!(ancestor: stock_plate, descendant: tube_creation.parent)
@@ -133,16 +133,16 @@ FactoryBot.define do
         .in_column_major_order
         .in_groups_of(tube_creation.parent.wells.size / 2)
         .each_with_index do |pool, i|
-          submission = create :submission
+          submission = create(:submission)
           pool.each do |well|
-            create :transfer_request, asset: stock_wells[i], target_asset: well, submission: submission
+            create(:transfer_request, asset: stock_wells[i], target_asset: well, submission:)
             mock_request_type.create!(
               asset: stock_wells[i],
               target_asset: well,
-              submission: submission,
+              submission:,
               request_metadata_attributes: create(:request_metadata_for_library_creation).attributes
             )
-            create :stock_well_link, target_well: well, source_well: stock_wells[i]
+            create(:stock_well_link, target_well: well, source_well: stock_wells[i])
           end
         end
     end
@@ -173,7 +173,7 @@ FactoryBot.define do
       {
         fragment_size_required_from: 100,
         fragment_size_required_to: 400,
-        bait_library: bait_library,
+        bait_library:,
         library_type: 'Agilent Pulldown'
       }
     end

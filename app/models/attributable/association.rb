@@ -72,9 +72,9 @@ module Attributable
 
     def to_field_info(*_args)
       FieldInfo.new(
-        display_name: display_name,
+        display_name:,
         key: assignable_attribute_name,
-        kind: kind,
+        kind:,
         selection: selection_options(nil)
       )
     end
@@ -91,7 +91,7 @@ module Attributable
         def #{assignable_attribute_name}
           send(:#{@name}).send(:#{@method})
         end
-      }
+      }, __FILE__, __LINE__ - 10
       )
     end
 

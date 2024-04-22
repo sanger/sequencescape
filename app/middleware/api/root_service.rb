@@ -8,7 +8,7 @@ module Api
   class RootService < ::Core::Service
     # @note This is partly a hack but it suffices to keep the dynamic ability to write endpoints.
     ALL_SERVICES_AVAILABLE =
-      Dir.glob(File.join(Rails.root, %w[app api endpoints ** *.rb])) # rubocop:todo Rails/RootPathnameMethods
+      Dir.glob(Rails.root.join(%w[app api endpoints ** *.rb]).to_s) # rubocop:todo Rails/RootPathnameMethods
         .to_h do |file|
         handler = file.gsub(%r{^.+/(endpoints/.+).rb$}, '\1').camelize.constantize
         [handler.root.tr('/', '_'), handler]
@@ -31,7 +31,7 @@ module Api
                     nested_stream.block('actions') do |actions_stream|
                       endpoint
                         .model_handler
-                        .send(:actions, endpoint.model_handler, response: self, endpoint: endpoint)
+                        .send(:actions, endpoint.model_handler, response: self, endpoint:)
                         .map { |action, url| actions_stream.attribute(action, url) }
                     end
                   end

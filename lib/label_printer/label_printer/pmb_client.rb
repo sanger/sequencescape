@@ -50,7 +50,7 @@ module LabelPrinter
     end
 
     def self.get_label_template_by_name(name)
-      JSON.parse(RestClient.get "#{label_templates_filter_url}#{name}", headers)
+      JSON.parse(RestClient.get("#{label_templates_filter_url}#{name}", headers))
     rescue RestClient::UnprocessableEntity => e
       raise PmbException.new(e), pretty_errors(e.response)
     rescue RestClient::InternalServerError => e
@@ -62,13 +62,13 @@ module LabelPrinter
     end
 
     def self.register_printer(name, printer_type)
-      unless printer_exists?(name)
+      return if printer_exists?(name)
         RestClient.post(
           printers_url,
           { 'data' => { 'attributes' => { 'name' => name, 'printer_type' => printer_type } } }.to_json,
           **headers
         )
-      end
+      
     end
 
     def self.printer_exists?(name)
@@ -77,7 +77,7 @@ module LabelPrinter
     end
 
     def self.pretty_errors(errors)
-      if errors.present?
+      return unless errors.present?
         parsed_errors = JSON.parse(errors)['errors']
         case parsed_errors
         when Array
@@ -85,14 +85,14 @@ module LabelPrinter
         when Hash
           prettify_old_errors(parsed_errors)
         end
-      end
+      
     end
 
     def self.prettify_new_errors(errors)
       [].tap do |error_list|
         errors.each do |error|
           attribute = error['source']['pointer'].split('/').last.humanize
-          error_list << ('%{attribute} %{message}' % { attribute: attribute, message: error['detail'] })
+          error_list << (format('%<attribute>s %<message>s', attribute:, message: error['detail']))
         end
       end.join('; ')
     end
@@ -100,7 +100,7 @@ module LabelPrinter
     def self.prettify_old_errors(errors)
       [].tap do |error_list|
         errors.each do |k, v|
-          error_list << ('%{attribute} %{message}' % { attribute: k.capitalize + ':', message: v.join(', ') })
+          error_list << (format('%<attribute>s %<message>s', attribute: k.capitalize + ':', message: v.join(', ')))
         end
       end.join('; ')
     end

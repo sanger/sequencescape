@@ -2,9 +2,10 @@
 class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpoint::BasicHandler
   include Core::Endpoint::BasicHandler::Paged
 
-  def initialize(association, options, &block)
-    super(&block)
-    @association, @options = association, options
+  def initialize(association, options, &)
+    super(&)
+    @association = association
+    @options = options
   end
 
   %i[create update delete].each do |action|
@@ -18,7 +19,7 @@ class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpo
       end
     ",
       __FILE__,
-      line
+      __LINE__ - 8
     )
   end
 

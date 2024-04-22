@@ -11,7 +11,7 @@ class QcFile < ApplicationRecord
         has_many :qc_files, foreign_key: :asset_id, dependent: :destroy
 
         def add_qc_file(file, filename = nil)
-          opts = { uploaded_data: { tempfile: file, filename: filename } }
+          opts = { uploaded_data: { tempfile: file, filename: } }
           opts[:filename] = filename unless filename.nil?
           qc_files.create!(opts) if file.present?
         end
@@ -68,9 +68,9 @@ class QcFile < ApplicationRecord
 
   # Save Size/content_type Metadata
   def update_document_attributes
-    if uploaded_data.present?
+    return unless uploaded_data.present?
       self.content_type = uploaded_data.file.content_type
       self.size = uploaded_data.file.size
-    end
+    
   end
 end

@@ -5,10 +5,10 @@ require 'rails_helper'
 RSpec.describe CherrypickTask::ControlLocator do
   let(:instance) do
     described_class.new(
-      batch_id: batch_id,
-      total_wells: total_wells,
-      num_control_wells: num_control_wells,
-      wells_to_leave_free: wells_to_leave_free
+      batch_id:,
+      total_wells:,
+      num_control_wells:,
+      wells_to_leave_free:
     )
   end
 
@@ -133,7 +133,7 @@ RSpec.describe CherrypickTask::ControlLocator do
       let(:range) { (1...1000) }
       let(:control_positions) do
         range.map do |batch_id|
-          described_class.new(batch_id: batch_id, total_wells: 96, num_control_wells: 1).control_positions(0).first
+          described_class.new(batch_id:, total_wells: 96, num_control_wells: 1).control_positions(0).first
         end
       end
 

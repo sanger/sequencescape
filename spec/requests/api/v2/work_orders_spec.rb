@@ -9,10 +9,10 @@ describe 'WorkOrders API', with: :api_v2 do
   it_behaves_like 'ApiKeyAuthenticatable'
 
   context 'with multiple requests' do
-    let(:our_request_type) { create :request_type }
-    let(:other_request_type) { create :request_type }
-    let(:our_work_order_type) { create :work_order_type, name: our_request_type.key }
-    let(:other_work_order_type) { create :work_order_type, name: other_request_type.key }
+    let(:our_request_type) { create(:request_type) }
+    let(:other_request_type) { create(:request_type) }
+    let(:our_work_order_type) { create(:work_order_type, name: our_request_type.key) }
+    let(:other_work_order_type) { create(:work_order_type, name: other_request_type.key) }
 
     before do
       [
@@ -69,15 +69,7 @@ describe 'WorkOrders API', with: :api_v2 do
   end
 
   context 'with relationships' do
-    let(:study) { create :study }
-    let(:well) { create :untagged_well }
-    let(:sample) { well.samples.first }
-
-    before do
-      request = create :library_request, initial_study: study, asset: well, project: nil
-      create :work_order, requests: [request]
-    end
-
+    let(:study) { create(:study) }
     let(:expected_includes) do
       # Note, we don't test the actual resource content here.
       [
@@ -86,6 +78,14 @@ describe 'WorkOrders API', with: :api_v2 do
         { 'type' => 'samples', 'id' => sample.id.to_s }
       ]
     end
+    let(:well) { create(:untagged_well) }
+    let(:sample) { well.samples.first }
+
+    before do
+      request = create(:library_request, initial_study: study, asset: well, project: nil)
+      create(:work_order, requests: [request])
+    end
+
 
     it 'can inline all necessary information' do
       api_get "#{base_endpoint}?include=study,samples,project,source_receptacle"
@@ -99,8 +99,8 @@ describe 'WorkOrders API', with: :api_v2 do
   end
 
   context 'with a request' do
-    let(:requests) { create_list :library_request, 2 }
-    let(:work_order) { create :work_order, requests: requests }
+    let(:requests) { create_list(:library_request, 2) }
+    let(:work_order) { create(:work_order, requests:) }
 
     let(:payload) do
       {

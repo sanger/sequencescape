@@ -8,6 +8,6 @@ class UuidsController < ApplicationController
     # and assets especially end up getting redirected to undesired
     # locations. This line basically coerces a resource to its
     # base class, ensuring it ends up at the correct controller.
-    redirect_to(uuid.resource.becomes uuid.resource.class.base_class)
+    redirect_to(uuid.resource.becomes(uuid.resource.class.base_class))
   end
 end

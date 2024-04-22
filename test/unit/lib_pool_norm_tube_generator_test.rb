@@ -15,14 +15,14 @@ class LibPoolNormTubeGeneratorTest < ActiveSupport::TestCase
   def setup
     @user = create(:admin)
     @study = create(:study)
-    create :between_tubes_transfer_template # Needed by LibPoolNormTubeGenerator.new
+    create(:between_tubes_transfer_template) # Needed by LibPoolNormTubeGenerator.new
   end
 
   def mock_transfer(generator)
     generator.lib_pool_tubes.each do |source|
       transfer = mock('transfer')
       transfer.stubs(:destination).returns(create(:lib_pool_norm_tube, parent_tube: source))
-      generator.transfer_template.stubs(:create!).with(user: @user, source: source).returns(transfer)
+      generator.transfer_template.stubs(:create!).with(user: @user, source:).returns(transfer)
     end
   end
 

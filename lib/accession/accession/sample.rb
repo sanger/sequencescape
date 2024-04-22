@@ -36,7 +36,7 @@ module Accession
     end
 
     def title
-      @title ||= (sample.sample_metadata.sample_public_name || sample.sanger_sample_id)
+      @title ||= sample.sample_metadata.sample_public_name || sample.sanger_sample_id
     end
 
     # rubocop:todo Metrics/MethodLength
@@ -91,15 +91,15 @@ module Accession
     end
 
     def check_sample
-      if sample.sample_metadata.sample_ebi_accession_number.present?
+      return unless sample.sample_metadata.sample_ebi_accession_number.present?
         errors.add(:sample, 'has already been accessioned.')
-      end
+      
     end
 
     def check_required_fields
-      unless tags.meets_service_requirements?(service, standard_tags)
+      return if tags.meets_service_requirements?(service, standard_tags)
         errors.add(:sample, "does not have the required metadata: #{tags.missing}.")
-      end
+      
     end
 
     def check_studies

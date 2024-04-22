@@ -51,7 +51,7 @@ xml.batch do
             # If there are no aliquots in the target asset and the batch is not pending then we likely have
             # an error.  If the batch is pending then the aliquots are assumed to have not been transferred
             # so the lane is effectively empty.
-            if (not @batch.pending?) && target_asset_aliquots.empty?
+            if !@batch.pending? && target_asset_aliquots.empty?
               raise StandardError, "Empty lane #{request.target_asset.id} in batch #{@batch.id}"
             end
 

@@ -4,11 +4,11 @@ require 'rails_helper'
 
 RSpec.describe Api::OrderIO do
   subject do
-    create :order,
-           user: user,
+    create(:order,
+           user:,
            template_name: 'Cool template',
-           study: study,
-           project: project,
+           study:,
+           project:,
            comments: 'Good',
            request_options: {
              read_length: '200',
@@ -18,12 +18,12 @@ RSpec.describe Api::OrderIO do
              bait_library_name: 'EG',
              sequencing_type: 'MagBead',
              insert_size: 12
-           }
+           })
   end
 
-  let(:user) { create :user }
-  let(:study) { create :study }
-  let(:project) { create :project }
+  let(:user) { create(:user) }
+  let(:study) { create(:study) }
+  let(:project) { create(:project) }
 
   let(:expected_json) do
     {

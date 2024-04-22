@@ -7,13 +7,13 @@ RSpec.describe StateChanger::StandardPlate do
   let(:state_changer) do
     described_class.new(
       labware: target_plate,
-      target_state: target_state,
-      user: user,
-      contents: contents,
-      customer_accepts_responsibility: customer_accepts_responsibility
+      target_state:,
+      user:,
+      contents:,
+      customer_accepts_responsibility:
     )
   end
-  let(:user) { build_stubbed :user }
+  let(:user) { build_stubbed(:user) }
   let(:contents) { [] }
   let(:customer_accepts_responsibility) { false }
 
@@ -41,7 +41,7 @@ RSpec.describe StateChanger::StandardPlate do
     end
 
     context 'when the plate is cancelled at the end of the pipeline' do
-      let(:target_plate) { create :final_plate }
+      let(:target_plate) { create(:final_plate) }
       let(:library_requests) { target_plate.wells.flat_map(&:requests_as_target) }
       let(:target_state) { 'cancelled' }
 
@@ -52,7 +52,7 @@ RSpec.describe StateChanger::StandardPlate do
     end
 
     context 'when the plate is failed at the end of the pipeline' do
-      let(:target_plate) { create :final_plate }
+      let(:target_plate) { create(:final_plate) }
       let(:library_requests) { target_plate.wells.flat_map(&:requests_as_target) }
       let(:target_state) { 'failed' }
 
@@ -109,7 +109,7 @@ RSpec.describe StateChanger::StandardPlate do
       let(:target_state) { 'failed' }
 
       # override default target plate creation
-      let(:target_plate) { create :plate, well_count: 4 }
+      let(:target_plate) { create(:plate, well_count: 4) }
       let(:target_wells) { target_plate.wells.index_by(&:map_description) }
 
       before do
@@ -122,32 +122,32 @@ RSpec.describe StateChanger::StandardPlate do
         # A1, B1 and C1 created by transferring from parent A1 (1st library request)
         target_wells['A1'].stock_well_links <<
           build(:stock_well_link, target_well: target_wells['A1'], source_well: parent_wells['A1'])
-        create :transfer_request,
+        create(:transfer_request,
                asset: parent_wells['A1'],
                target_asset: target_wells['A1'],
-               outer_request: source_well_a1_request
+               outer_request: source_well_a1_request)
 
         target_wells['B1'].stock_well_links <<
           build(:stock_well_link, target_well: target_wells['B1'], source_well: parent_wells['A1'])
-        create :transfer_request,
+        create(:transfer_request,
                asset: parent_wells['A1'],
                target_asset: target_wells['B1'],
-               outer_request: source_well_a1_request
+               outer_request: source_well_a1_request)
 
         target_wells['C1'].stock_well_links <<
           build(:stock_well_link, target_well: target_wells['C1'], source_well: parent_wells['A1'])
-        create :transfer_request,
+        create(:transfer_request,
                asset: parent_wells['A1'],
                target_asset: target_wells['C1'],
-               outer_request: source_well_a1_request
+               outer_request: source_well_a1_request)
 
         # D1 created by transferring from parent B1 (2nd library request)
         target_wells['D1'].stock_well_links <<
           build(:stock_well_link, target_well: target_wells['D1'], source_well: parent_wells['B1'])
-        create :transfer_request,
+        create(:transfer_request,
                asset: parent_wells['B1'],
                target_asset: target_wells['D1'],
-               outer_request: source_well_b1_request
+               outer_request: source_well_b1_request)
       end
 
       context 'when the other wells are not failed' do

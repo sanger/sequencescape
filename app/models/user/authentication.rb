@@ -18,7 +18,7 @@ module User::Authentication
     filter = Net::LDAP::Filter.eq('uid', login)
     treebase = 'ou=people,dc=sanger,dc=ac,dc=uk'
 
-    ldap_profile = ldap.search(base: treebase, filter: filter)[0]
+    ldap_profile = ldap.search(base: treebase, filter:)[0]
 
     # If we have two or more records, something is off with LDAP
 
@@ -43,7 +43,7 @@ module User::Authentication
       when 'none'
         raise StandardError, 'Can only disable authentication in development' unless Rails.env.development?
 
-        User.find_by(login: login)
+        User.find_by(login:)
       else
         authenticated = authenticate_by_local(login, password)
       end
@@ -61,8 +61,8 @@ module User::Authentication
           encryption: :simple_tls,
           auth: {
             method: :simple,
-            username: username,
-            password: password
+            username:,
+            password:
           }
         )
       begin
@@ -83,7 +83,7 @@ module User::Authentication
     end
 
     def register_or_update_via_ldap(login)
-      u = find_or_create_by(login: login)
+      u = find_or_create_by(login:)
       if u.nil?
         logger.error "Failed to find or create user #{login}"
       else
@@ -95,7 +95,7 @@ module User::Authentication
 
   module Local
     def authenticate_by_local(login, password)
-      u = find_by(login: login) # need to get the salt
+      u = find_by(login:) # need to get the salt
       u && u.authenticated?(password) ? u : nil
     end
   end

@@ -140,17 +140,17 @@ namespace :limber do
     # rubocop:todo Metrics/BlockLength
     ActiveRecord::Base.transaction do
       st_params.each do |prefix, params|
-        catalogue_name = (params[:catalogue_name] || prefix)
+        catalogue_name = params[:catalogue_name] || prefix
         catalogue =
           ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: catalogue_name)
         Limber::Helper::TemplateConstructor.new(
-          prefix: prefix,
-          catalogue: catalogue,
+          prefix:,
+          catalogue:,
           sequencing_keys: params[:sequencing_list]
         ).build!
         unless params[:omit_library_templates]
-          Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: prefix, catalogue: catalogue).build!
-          Limber::Helper::LibraryAndMultiplexingTemplateConstructor.new(prefix: prefix, catalogue: catalogue).build!
+          Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix:, catalogue:).build!
+          Limber::Helper::LibraryAndMultiplexingTemplateConstructor.new(prefix:, catalogue:).build!
         end
       end
 
@@ -236,7 +236,7 @@ namespace :limber do
       Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'GBS', catalogue: gbs_catalogue).build!
 
       catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'Generic')
-      Limber::Helper::TemplateConstructor.new(prefix: 'Multiplexing', catalogue: catalogue, sequencing_keys: base_list)
+      Limber::Helper::TemplateConstructor.new(prefix: 'Multiplexing', catalogue:, sequencing_keys: base_list)
         .build!
 
       ## Bespoke Pipelines ##

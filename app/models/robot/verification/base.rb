@@ -139,7 +139,9 @@ class Robot::Verification::Base # rubocop:todo Metrics/ClassLength
       mapping_sorted = sort_mapping_by_destination_well(destination_barcode, destination_info['mapping'])
       mapping_sorted.each do |map_well|
         barcode, _well = map_well['src_well']
-        next unless yield barcode if block_given?
+        if block_given? && !yield barcode
+next
+end
         all_barcodes[barcode] ||= all_barcodes.length + 1
       end
     end
@@ -220,6 +222,6 @@ class Robot::Verification::Base # rubocop:todo Metrics/ClassLength
 
   def cached_pick_data(batch, max_beds)
     @cached_pick_data ||= {}
-    @cached_pick_data[[batch, max_beds]] ||= Robot::PickData.new(batch, max_beds: max_beds)
+    @cached_pick_data[[batch, max_beds]] ||= Robot::PickData.new(batch, max_beds:)
   end
 end

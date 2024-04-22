@@ -3,22 +3,22 @@
 require 'rails_helper'
 
 RSpec.describe Request do
-  let(:study) { create :study }
-  let(:project) { create :project }
-  let(:submission) { create :submission }
-  let(:order1) { create :order, study: study, project: project, submission: submission }
-  let(:order2) { create :order, study: study, project: project, submission: submission }
-  let(:order3) { create :order, study: study, project: project, submission: submission }
-  let(:order4) { create :order_with_submission, study: study, project: project }
+  let(:study) { create(:study) }
+  let(:project) { create(:project) }
+  let(:submission) { create(:submission) }
+  let(:order1) { create(:order, study:, project:, submission:) }
+  let(:order2) { create(:order, study:, project:, submission:) }
+  let(:order3) { create(:order, study:, project:, submission:) }
+  let(:order4) { create(:order_with_submission, study:, project:) }
 
   describe '#for_order_including_submission_based_requests' do
     before do
-      @sequencing_request = create :request_with_sequencing_request_type, submission: submission
-      @request = create :request, order: order1, submission: submission, asset: @asset
-      @request2 = create :request, order: order2, submission: submission
+      @sequencing_request = create(:request_with_sequencing_request_type, submission:)
+      @request = create(:request, order: order1, submission:, asset: @asset)
+      @request2 = create(:request, order: order2, submission:)
 
-      @request3 = create :request, order: order4, submission: order4.submission
-      @sequencing_request2 = create :request_with_sequencing_request_type, submission: order4.submission
+      @request3 = create(:request, order: order4, submission: order4.submission)
+      @sequencing_request2 = create(:request_with_sequencing_request_type, submission: order4.submission)
     end
 
     it 'the sequencing requests are included' do
@@ -59,16 +59,16 @@ RSpec.describe Request do
 
   describe '#next_request' do
     before do
-      @genotyping_request_type = create :request_type, name: 'genotyping'
-      @cherrypick_request_type = create :request_type, name: 'cherrypick', target_asset_type: nil
+      @genotyping_request_type = create(:request_type, name: 'genotyping')
+      @cherrypick_request_type = create(:request_type, name: 'cherrypick', target_asset_type: nil)
       @submission =
         FactoryHelp.submission(
           request_types: [@cherrypick_request_type, @genotyping_request_type].map(&:id),
           asset_group_name: 'to avoid asset errors'
         )
 
-      @genotype_pipeline = create :pipeline, name: 'genotyping pipeline', request_types: [@genotyping_request_type]
-      @cherrypick_pipeline = create :pipeline, name: 'cherrypick pipeline', request_types: [@cherrypick_request_type]
+      @genotype_pipeline = create(:pipeline, name: 'genotyping pipeline', request_types: [@genotyping_request_type])
+      @cherrypick_pipeline = create(:pipeline, name: 'cherrypick pipeline', request_types: [@cherrypick_request_type])
 
       @request1 =
         create(
@@ -82,7 +82,7 @@ RSpec.describe Request do
     end
 
     context 'with valid input' do
-      before { @request2 = create :request, submission: @submission, request_type: @genotyping_request_type }
+      before { @request2 = create(:request, submission: @submission, request_type: @genotyping_request_type) }
 
       it 'return the correct next request' do
         expect(@request1.next_requests).to eq([@request2])
@@ -91,7 +91,7 @@ RSpec.describe Request do
 
     context 'where asset hasnt been created for second request' do
       before do
-        @request2 = create :request, asset: nil, submission: @submission, request_type: @genotyping_request_type
+        @request2 = create(:request, asset: nil, submission: @submission, request_type: @genotyping_request_type)
       end
 
       it 'return the correct next request' do
@@ -105,9 +105,9 @@ RSpec.describe Request do
   # so these tests use the submission builder. Please don't switch to building the requests
   # themselves via FactoryBot until the two behaviours are uncoupled
   describe '#next_requests' do
-    let(:submission) { create :submission, orders: [order1, order2], state: 'pending' }
-    let(:order1) { create(:linear_submission, request_types: order1_request_types, request_options: request_options) }
-    let(:order2) { create(:linear_submission, request_types: order2_request_types, request_options: request_options) }
+    let(:submission) { create(:submission, orders: [order1, order2], state: 'pending') }
+    let(:order1) { create(:linear_submission, request_types: order1_request_types, request_options:) }
+    let(:order2) { create(:linear_submission, request_types: order2_request_types, request_options:) }
     let(:order1_request1) do
       submission.requests.detect { |r| r.order == order1 && r.request_type_id == order1_request_types.first }
     end
@@ -231,8 +231,8 @@ RSpec.describe Request do
 
   describe '#copy' do
     before do
-      @request_type = create :request_type
-      @request = create :request, request_type: @request_type, study: study, state: 'failed'
+      @request_type = create(:request_type)
+      @request = create(:request, request_type: @request_type, study:, state: 'failed')
       @new_request = @request.copy
     end
 
@@ -257,8 +257,8 @@ RSpec.describe Request do
 
   describe '#after_create' do
     context 'successful' do
-      let(:study) { create :study }
-      let(:request) { create :request, study: study }
+      let(:study) { create(:study) }
+      let(:request) { create(:request, study:) }
 
       it 'not have ActiveRecord errors' do
         expect(request.errors).to be_empty
@@ -272,8 +272,8 @@ RSpec.describe Request do
 
   describe '#state' do
     before do
-      @request = create :request_suitable_for_starting, study: study
-      @user = create :admin
+      @request = create(:request_suitable_for_starting, study:)
+      @user = create(:admin)
       @user.grant_owner study
     end
 
@@ -387,8 +387,8 @@ RSpec.describe Request do
   end
 
   describe '#eventful_studies' do
-    let(:asset) { create :untagged_well }
-    let(:request) { create :request, asset: asset, initial_study: study }
+    let(:asset) { create(:untagged_well) }
+    let(:request) { create(:request, asset:, initial_study: study) }
 
     context 'with no study itself' do
       let(:study) { nil }
@@ -397,7 +397,7 @@ RSpec.describe Request do
     end
 
     context 'with a study itself' do
-      let(:study) { create :study }
+      let(:study) { create(:study) }
 
       it { expect(request.eventful_studies).to eq([study]) }
     end
@@ -410,7 +410,7 @@ RSpec.describe Request do
 
       @all_states = @open_states + @closed_states
 
-      @all_states.each { |state| create :request, state: state }
+      @all_states.each { |state| create(:request, state:) }
 
       expect(described_class.count).to eq(@all_states.size)
     end
@@ -438,7 +438,7 @@ RSpec.describe Request do
 
   describe '#customer_responsible' do
     before do
-      @request = create :library_creation_request
+      @request = create(:library_creation_request)
       @request.state = 'started'
     end
 
@@ -458,18 +458,18 @@ RSpec.describe Request do
   describe '::progress_statistics' do
     subject { described_class.progress_statistics }
 
-    let(:request_type1) { create :request_type }
-    let(:request_type2) { create :request_type }
+    let(:request_type1) { create(:request_type) }
+    let(:request_type2) { create(:request_type) }
 
     before do
-      create_list :request, 2, state: 'pending', request_type: request_type1
-      create_list :request, 1, state: 'started', request_type: request_type1
-      create_list :request, 3, state: 'passed', request_type: request_type1
-      create_list :request, 1, state: 'failed', request_type: request_type1
-      create_list :request, 2, state: 'pending', request_type: request_type2
-      create_list :request, 1, state: 'started', request_type: request_type2
-      create_list :request, 3, state: 'cancelled', request_type: request_type2
-      create_list :request, 1, state: 'failed', request_type: request_type2
+      create_list(:request, 2, state: 'pending', request_type: request_type1)
+      create_list(:request, 1, state: 'started', request_type: request_type1)
+      create_list(:request, 3, state: 'passed', request_type: request_type1)
+      create_list(:request, 1, state: 'failed', request_type: request_type1)
+      create_list(:request, 2, state: 'pending', request_type: request_type2)
+      create_list(:request, 1, state: 'started', request_type: request_type2)
+      create_list(:request, 3, state: 'cancelled', request_type: request_type2)
+      create_list(:request, 1, state: 'failed', request_type: request_type2)
     end
 
     it 'returns a summary' do

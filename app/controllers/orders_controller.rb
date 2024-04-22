@@ -8,9 +8,9 @@ class OrdersController < ApplicationController
   end
   def destroy
     # Check for ajax request...
-    if request.xhr?
+    return unless request.xhr?
       Order.find(params[:id]).destroy
       head :accepted
-    end
+    
   end
 end

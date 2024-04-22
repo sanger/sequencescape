@@ -27,7 +27,7 @@ module ControllerHelper
     when :legend_option
       @legend = add_link(@legend, l, o, options)
     when :tab
-      @tabs = Informatics::View::Tabs::List.new unless @tabs
+      @tabs ||= Informatics::View::Tabs::List.new
       @tabs.add_item text: l.first_key, link: l.first_value
     end
   end

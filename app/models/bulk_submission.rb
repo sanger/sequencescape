@@ -1,4 +1,3 @@
-# encoding: utf-8
 # frozen_string_literal: true
 
 # Previously this was extending Array globally.
@@ -62,12 +61,10 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     if spreadsheet.present?
       if spreadsheet.size == 0
         errors.add(:spreadsheet, 'The supplied file was empty')
-      else
-        if spreadsheet.original_filename.end_with?('.csv')
-          process
+      elsif spreadsheet.original_filename.end_with?('.csv')
+        process
         else
           errors.add(:spreadsheet, 'The supplied file was not a CSV file')
-        end
       end
     end
   rescue CSV::MalformedCSVError
@@ -147,7 +144,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     csv_content = spreadsheet.read
     @csv_rows = CSV.parse(csv_content.encode!('utf-8', encoding))
 
-    if spreadsheet_valid?
+    return unless spreadsheet_valid?
       submission_details = submission_structure
 
       raise ActiveRecord::RecordInvalid, self if errors.count > 0
@@ -176,7 +173,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
               submission =
                 Submission.create!(
                   name: submission_name,
-                  user: user,
+                  user:,
                   orders: orders_processed,
                   priority: max_priority(orders)
                 )
@@ -196,7 +193,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
         raise ActiveRecord::Rollback if errors.present?
       end
       # rubocop:enable Metrics/BlockLength
-    end
+    
   end
 
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
@@ -251,7 +248,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
   # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def submission_structure # rubocop:todo Metrics/CyclomaticComplexity
     Hash
-      .new { |h, i| h[i] = Array.new }
+      .new { |h, i| h[i] = [] }
       .tap do |submission|
         csv_data_rows.each_with_index do |row, index|
           next if row.all?(&:nil?)
@@ -354,11 +351,11 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
 
     # Set up the order attributes
     attributes = {
-      study: study,
-      project: project,
-      user: user,
+      study:,
+      project:,
+      user:,
       comments: details['comments'],
-      request_options: request_options,
+      request_options:,
       pre_cap_group: details['pre-capture group']
     }
 
@@ -380,7 +377,8 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     elsif is_tube?(details)
       found_assets = find_tubes_including_samples_for!(details)
     else
-      asset_ids, asset_names = details.fetch('asset ids', ''), details.fetch('asset names', '')
+      asset_ids = details.fetch('asset ids', '')
+      asset_names = details.fetch('asset names', '')
       found_assets =
         if attributes[:asset_group] && asset_ids.blank? && asset_names.blank?
           []
@@ -392,8 +390,8 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
           raise StandardError, 'Please specify a barcode or name for each asset.'
         end
 
-      assets_found, expecting =
-        found_assets.map { |asset| "#{asset.name}(#{asset.id})" }, asset_ids.size + asset_names.size
+      assets_found = found_assets.map { |asset| "#{asset.name}(#{asset.id})" }
+      expecting = asset_ids.size + asset_names.size
       if assets_found.size < expecting
         raise StandardError, "Too few assets found for #{details['rows']}: #{assets_found.inspect}"
       end
@@ -424,7 +422,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
           new_order.request_options[:multiplier][multiplexed_request_type_id] = number_of_lanes
         end
       end
-  rescue => e
+  rescue StandardError => e
     errors.add :spreadsheet, "There was a problem on row(s) #{details['rows']}: #{e.message}"
     nil
   end

@@ -3,10 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe TubeRackSummariesController do
-  let(:current_user) { create :user }
+  let(:current_user) { create(:user) }
 
   describe '#show' do
-    let(:tube_rack) { create :tube_rack }
+    let(:tube_rack) { create(:tube_rack) }
 
     before { get :show, params: { id: tube_rack.primary_barcode.barcode }, session: { user: current_user.id } }
 

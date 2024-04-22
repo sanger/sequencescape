@@ -8,11 +8,11 @@ def create_request(request_type, study, project, asset, target_asset, additional
     FactoryBot.create(
       :request_with_submission,
       additional_options.merge(
-        study: study,
-        project: project,
-        asset: asset,
-        target_asset: target_asset,
-        request_type: request_type
+        study:,
+        project:,
+        asset:,
+        target_asset:,
+        request_type:
       )
     )
   request.id = additional_options[:id] if additional_options.key?(:id) # Force ID hack!
@@ -22,14 +22,15 @@ def create_request(request_type, study, project, asset, target_asset, additional
 
   # The UUID for the requests needs to be sequentially generated from the study UUID
   uuid_parts = study.uuid.match(/^(.+)-([\da-f]{12})$/) or raise StandardError, "UUID invalid (#{study.uuid.inspect})"
-  uuid_root, uuid_index = uuid_parts[1], uuid_parts[2].to_i(0x10)
+  uuid_root = uuid_parts[1]
+  uuid_index = uuid_parts[2].to_i(0x10)
 
   Request
     .where(initial_study_id: study.id)
     .order(:id)
     .each_with_index do |request, index|
       request.uuid_object.tap do |uuid|
-        uuid.external_id = "#{uuid_root}-%012x" % (uuid_index + 1 + index)
+        uuid.external_id = format("#{uuid_root}-%012x", (uuid_index + 1 + index))
         uuid.save(validate: false)
       end
     end
@@ -97,7 +98,7 @@ Given '{study_name} has an asset group of {int} samples in SampleTubes called {s
       tube_name = "#{group_name}, sample tube #{i}"
       FactoryBot.create(:sample_tube, name: tube_name, sample_attributes: { name: sample_name })
     end
-  FactoryBot.create(:asset_group, name: group_name, study: study, assets: assets.map(&:receptacle))
+  FactoryBot.create(:asset_group, name: group_name, study:, assets: assets.map(&:receptacle))
 end
 
 Then /^I should see the following request information:$/ do |expected|

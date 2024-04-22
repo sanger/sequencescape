@@ -18,31 +18,31 @@
 require 'rails_helper'
 
 describe 'Starting transfers on repools starts repools' do
-  let(:original_input_plate) { create :input_plate_for_pooling }
+  let(:original_input_plate) { create(:input_plate_for_pooling) }
   let(:secondary_input_plate) do
-    plate = PlateCreation.create!(user: user, parent: original_input_plate, child_purpose: create(:plate_purpose)).child
-    create :transfer_between_plates, source: original_input_plate, destination: plate
+    plate = PlateCreation.create!(user:, parent: original_input_plate, child_purpose: create(:plate_purpose)).child
+    create(:transfer_between_plates, source: original_input_plate, destination: plate)
     plate
   end
 
   let(:target_plate) do
-    PlateCreation.create!(user: user, parent: original_input_plate, child_purpose: create(:plate_purpose)).child
+    PlateCreation.create!(user:, parent: original_input_plate, child_purpose: create(:plate_purpose)).child
   end
 
-  let(:user) { create :user }
+  let(:user) { create(:user) }
 
   let(:source_a1) { secondary_input_plate.wells.detect { |w| w.map_description == 'A1' } }
   let(:source_b1) { secondary_input_plate.wells.detect { |w| w.map_description == 'B1' } }
   let(:target_a1) { target_plate.wells.detect { |w| w.map_description == 'A1' } }
   let(:target_b1) { target_plate.wells.detect { |w| w.map_description == 'B1' } }
 
-  let(:library_creation_request_a1) { create :library_creation_request, asset: source_a1 }
-  let(:library_creation_request_b1) { create :library_creation_request, asset: source_b1 }
+  let(:library_creation_request_a1) { create(:library_creation_request, asset: source_a1) }
+  let(:library_creation_request_b1) { create(:library_creation_request, asset: source_b1) }
 
   before do
     allow(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode), build(:plate_barcode))
     TransferRequestCollection.create!(
-      user: user,
+      user:,
       transfer_requests_attributes: [
         { asset: source_a1, target_asset: target_a1, submission: library_creation_request_a1.submission },
         { asset: source_b1, target_asset: target_b1, submission: library_creation_request_b1.submission }
@@ -51,7 +51,7 @@ describe 'Starting transfers on repools starts repools' do
   end
 
   it 'The target plate is started' do
-    StateChange.create(user: user, target: target_plate, target_state: 'started')
+    StateChange.create(user:, target: target_plate, target_state: 'started')
     expect(library_creation_request_a1.reload).to be_started
     expect(library_creation_request_b1.reload).to be_started
   end

@@ -22,7 +22,7 @@ module Submission::DelayedJobBehaviour
     Rails.logger.error(e.message)
     Rails.logger.error(e.backtrace)
     fail_set_message_and_save(e.message)
-  rescue => e
+  rescue StandardError => e
     Rails.logger.error(e.message)
     Rails.logger.error(e.backtrace)
     fail_set_message_and_save("#{e.message}\n#{e.backtrace.join("\n")}")

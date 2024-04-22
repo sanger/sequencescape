@@ -23,10 +23,10 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
   #
   def new_control_locator(batch_id, total_wells, num_control_wells, wells_to_leave_free: DEFAULT_WELLS_TO_LEAVE_FREE)
     CherrypickTask::ControlLocator.new(
-      batch_id: batch_id,
-      total_wells: total_wells,
-      num_control_wells: num_control_wells,
-      wells_to_leave_free: wells_to_leave_free
+      batch_id:,
+      total_wells:,
+      num_control_wells:,
+      wells_to_leave_free:
     )
   end
 

@@ -20,10 +20,10 @@ module Accession
     end
 
     def load!
-      if folder.present?
-        FILES.each { |file| send("#{file}=", load_file(folder, file.to_s)) }
+      return unless folder.present?
+        FILES.each { |file| send(:"#{file}=", load_file(folder, file.to_s)) }
         @loaded = true
-      end
+      
     end
 
     def loaded?

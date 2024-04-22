@@ -65,7 +65,7 @@ module Request::Statistics
         end
       ",
         __FILE__,
-        line
+        __LINE__ - 6
       )
     end
 

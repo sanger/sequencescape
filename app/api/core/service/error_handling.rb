@@ -69,8 +69,8 @@ class ActiveRecord::RecordInvalid
     response.content_error(422, errors_grouped_by_attribute { |attribute| io_handler.json_field_for(attribute) })
   end
 
-  def errors_grouped_by_attribute
-    record.errors.as_json.transform_keys { |k| yield(k) }.transform_values { |v| [v].flatten.uniq }
+  def errors_grouped_by_attribute(&block)
+    record.errors.as_json.transform_keys(&block).transform_values { |v| [v].flatten.uniq }
   end
   private :errors_grouped_by_attribute
 end

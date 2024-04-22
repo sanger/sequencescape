@@ -27,7 +27,7 @@ RSpec.describe SampleManifest::Generator, :sample_manifest, :sample_manifest_exc
   let(:template) { 'plate_full' }
 
   let(:attributes) do
-    { template: template, study_id: study.id, supplier_id: supplier.id, count: '4' }.with_indifferent_access
+    { template:, study_id: study.id, supplier_id: supplier.id, count: '4' }.with_indifferent_access
   end
 
   after(:all) { SampleManifestExcel.reset! }
@@ -54,7 +54,7 @@ RSpec.describe SampleManifest::Generator, :sample_manifest, :sample_manifest_exc
     expect(described_class.new(attributes.merge(template: 'dodgy_template'), user, configuration)).not_to be_valid
   end
 
-  it 'will create a sample manifest' do
+  it 'creates a sample manifest' do
     generator = described_class.new(attributes, user, configuration)
     generator.execute
     expect(generator.sample_manifest.study_id).to eq(study.id)

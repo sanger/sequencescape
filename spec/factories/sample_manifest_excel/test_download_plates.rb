@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :test_download_plates, class: 'SampleManifestExcel::TestDownload' do
-    columns { build :column_list }
+    columns { build(:column_list) }
     validation_errors { [] }
     num_plates { 2 }
     num_filled_wells_per_plate { 2 }
@@ -34,18 +34,18 @@ FactoryBot.define do
 
     initialize_with do
       new(
-        data: data,
-        columns: columns,
-        validation_errors: validation_errors,
-        partial: partial,
-        cgap: cgap,
-        study: study,
-        supplier: supplier,
-        num_plates: num_plates,
-        num_filled_wells_per_plate: num_filled_wells_per_plate,
-        num_rows_per_well: num_rows_per_well,
-        type: type,
-        manifest_type: manifest_type
+        data:,
+        columns:,
+        validation_errors:,
+        partial:,
+        cgap:,
+        study:,
+        supplier:,
+        num_plates:,
+        num_filled_wells_per_plate:,
+        num_rows_per_well:,
+        type:,
+        manifest_type:
       )
     end
 

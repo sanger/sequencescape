@@ -8,9 +8,9 @@ describe '/api/1/state_changes' do
 
   include_context 'a limber target plate with submissions'
 
-  let(:authorised_app) { create :api_application }
-  let(:parent_purpose) { create :plate_purpose }
-  let(:user) { create :user }
+  let(:authorised_app) { create(:api_application) }
+  let(:parent_purpose) { create(:plate_purpose) }
+  let(:user) { create(:user) }
 
   shared_examples 'a state_change_endpoint' do
     let(:response_code) { 201 }
@@ -20,10 +20,10 @@ describe '/api/1/state_changes' do
         state_change: {
           user: user.uuid,
           target: target_plate.uuid,
-          target_state: target_state,
-          contents: contents,
-          customer_accepts_responsibility: customer_accepts_responsibility,
-          reason: reason
+          target_state:,
+          contents:,
+          customer_accepts_responsibility:,
+          reason:
         }
       }.to_json
     end
@@ -39,10 +39,10 @@ describe '/api/1/state_changes' do
               read: "http://www.example.com/api/1/#{target_plate.uuid}"
             }
           },
-          target_state: target_state,
-          previous_state: previous_state,
-          contents: contents,
-          reason: reason
+          target_state:,
+          previous_state:,
+          contents:,
+          reason:
         }
       }.to_json
     end
@@ -73,8 +73,8 @@ describe '/api/1/state_changes' do
         state_change: {
           user: user.uuid,
           target: target_plate.uuid,
-          target_state: target_state,
-          reason: reason
+          target_state:,
+          reason:
         }
       }.to_json
     end
