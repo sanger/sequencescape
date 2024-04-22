@@ -120,8 +120,6 @@ class PlateBarcode
     end
 
     def self.create_child_barcodes(parent_barcode, count = 1)
-      child_barcodes = []
-
       current_child = Barcode.find_by_barcode(parent_barcode).child_barcodes.order(id: :desc).first
 
       # gets the 'child count' section of the barcode SQPD-12345-(1) as an int
@@ -129,11 +127,9 @@ class PlateBarcode
       current_child_count = current_child.blank? ? 0 : current_child.barcode.split('-').last.to_i
 
       # creates new child barcodes based on existing ones
-      (1..count).each do |num|
-        child_barcodes << Barcode.build_sequencescape22({ barcode: "#{parent_barcode}-#{current_child_count + num}" })
+      (1..count).map do |num|
+        Barcode.build_sequencescape22({ barcode: "#{parent_barcode}-#{current_child_count + num}" })
       end
-
-      child_barcodes
     end
   end
 

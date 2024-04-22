@@ -9,9 +9,8 @@ RSpec.describe PlateTemplateTask do
 
   let(:pipeline) { task.workflow.pipeline }
   let(:requests) do
-    requests = []
-    plate_a.wells.each do |well|
-      requests << create(:cherrypick_request, asset: well, request_type: pipeline.request_types.first)
+    requests = plate_a.wells.map do |well|
+      create(:cherrypick_request, asset: well, request_type: pipeline.request_types.first)
     end
     plate_b.wells.each do |well|
       requests << create(:cherrypick_request, asset: well, request_type: pipeline.request_types.first)

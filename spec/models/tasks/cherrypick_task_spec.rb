@@ -197,9 +197,8 @@ RSpec.describe CherrypickTask do
     context 'with locations set' do
       # with locations set we expect requests to be ordered primarily by location parentage
       let(:expected_output) do
-        output = []
-        requests3.each do |request|
-          output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
+        output = requests3.map do |request|
+          [request.id, request.asset.plate.human_barcode, request.asset.map_description]
         end
         requests1.each do |request|
           output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
@@ -228,9 +227,8 @@ RSpec.describe CherrypickTask do
     context 'with no locations set' do
       # with no locations, they should just be in plate creation order
       let(:expected_output) do
-        output = []
-        requests1.each do |request|
-          output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
+        output = requests1.map do |request|
+          [request.id, request.asset.plate.human_barcode, request.asset.map_description]
         end
         requests2.each do |request|
           output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
@@ -259,11 +257,9 @@ RSpec.describe CherrypickTask do
     context 'with a mix of locations and no locations' do
       # with a mixture we expect plates with no locations to be sorted first then those with locations
       let(:expected_output) do
-        output = []
-
         # no location, should be first
-        requests1.each do |request|
-          output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
+        output = requests1.map do |request|
+          [request.id, request.asset.plate.human_barcode, request.asset.map_description]
         end
         requests3.each do |request|
           output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
@@ -292,9 +288,8 @@ RSpec.describe CherrypickTask do
     context 'with multiple plates with same location' do
       # when multiple plates have the same location (e.g. a box) we expect order to be by plate creation
       let(:expected_output) do
-        output = []
-        requests1.each do |request|
-          output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
+        output = requests1.map do |request|
+          [request.id, request.asset.plate.human_barcode, request.asset.map_description]
         end
         requests2.each do |request|
           output << [request.id, request.asset.plate.human_barcode, request.asset.map_description]
