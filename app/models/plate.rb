@@ -385,7 +385,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   end
 
   # This method returns a map from the wells on the plate to their stock well.
-  def stock_wells # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def stock_wells # rubocop:todo Metrics/AbcSize
     # Optimisation: if the plate is a stock plate then it's wells are it's stock wells!]
     if stock_plate?
       wells.with_pool_id.index_with { |w| [w] }

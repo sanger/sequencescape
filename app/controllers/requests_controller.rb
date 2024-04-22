@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 require 'event_factory'
-# rubocop:todo Metrics/ClassLength
 class RequestsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -111,8 +110,7 @@ class RequestsController < ApplicationController
     end
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def cancel # rubocop:todo Metrics/AbcSize
+    def cancel # rubocop:todo Metrics/AbcSize
     @request = Request.find(params[:id])
     if @request.try(:may_cancel_before_started?)
       if @request.cancel_before_started && @request.save
@@ -126,9 +124,7 @@ class RequestsController < ApplicationController
     redirect_to request_path(@request)
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  # Displays history of events
+    # Displays history of events
   def history
     @request = Request.find(params[:id])
     respond_to do |format|
@@ -187,4 +183,3 @@ class RequestsController < ApplicationController
     permitted
   end
 end
-# rubocop:enable Metrics/ClassLength

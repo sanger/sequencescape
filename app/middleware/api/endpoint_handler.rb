@@ -119,7 +119,7 @@ module Api
         end
       end
 
-      def instance_action(action, http_method) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+      def instance_action(action, http_method) # rubocop:todo Metrics/AbcSize
         send(
           http_method,
           %r{/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?},
@@ -179,7 +179,7 @@ module Api
     private :report
 
     # Not ideal but at least this allows us to pick up the appropriate model from the URL.
-    def determine_model_from_parts(*parts) # rubocop:todo Metrics/MethodLength
+    def determine_model_from_parts(*parts)
       parts
         .length
         .downto(1) do |n|
@@ -228,8 +228,7 @@ module Api
 
     # rubocop:enable Metrics/MethodLength
 
-    # rubocop:todo Metrics/MethodLength
-    def return_file(http_request, action, parts) # rubocop:todo Metrics/AbcSize
+        def return_file(http_request, action, parts) # rubocop:todo Metrics/AbcSize
       request =
         ::Core::Service::Request.new(requested_url = http_request.fullpath) do |request|
           request.service = self
@@ -246,9 +245,7 @@ module Api
       file_through
     end
 
-    # rubocop:enable Metrics/MethodLength
-
-    ACTIONS_TO_HTTP_VERBS = { create: :post, read: :get, update: :put, delete: :delete }.freeze
+        ACTIONS_TO_HTTP_VERBS = { create: :post, read: :get, update: :put, delete: :delete }.freeze
 
     ACTIONS_TO_HTTP_VERBS.each do |action, verb|
       instance_action(action, verb)

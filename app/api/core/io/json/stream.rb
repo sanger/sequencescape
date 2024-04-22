@@ -3,7 +3,7 @@
 module Core::Io::Json
   # Custom JSON streaming class to handle streamed serialization of API V1
   # objects
-  class Stream # rubocop:todo Metrics/ClassLength
+  class Stream
     # An interface matches object who respond to the provided method
     class Interface
       def initialize(interface)

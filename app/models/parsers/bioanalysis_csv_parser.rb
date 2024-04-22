@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Parsers::BioanalysisCsvParser # rubocop:todo Metrics/ClassLength
+class Parsers::BioanalysisCsvParser
   class InvalidFile < StandardError
   end
 

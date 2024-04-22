@@ -12,7 +12,7 @@ class AbilityAnalysis::SpecGenerator
 
   delegate :ability, :roles, :sorted_permissions, :abilities_for, :user_with_roles, to: :ability_analysis
 
-  def generate # rubocop:todo Metrics/MethodLength
+  def generate
     output <<~HEADER
       # frozen_string_literal: true
 
@@ -120,7 +120,7 @@ class AbilityAnalysis::SpecGenerator
       end
   end
 
-  def generate_tests(user, role: nil) # rubocop:todo Metrics/MethodLength
+  def generate_tests(user, role: nil)
     ability = abilities_for(user)
     granted = permissions_for(ability)
     generate_permissions_list('granted_permissions', granted, indent: 4)

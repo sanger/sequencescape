@@ -9,7 +9,7 @@
 # via submission_id, either set explicitly, (eg Transfer::BetweenPlates#calculate_location_submissions)
 # or extracted from the pool_id attribute on well, which itself is populated as part of an
 # sql query. (See #with_pool_id on the well association in {Plate})
-class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
+class TransferRequest < ApplicationRecord
   include Uuid::Uuidable
   include AASM
   include AASM::Extensions

@@ -39,8 +39,7 @@ module Api
       # These shouldn't be used for business logic, and a more about
       # I/O and isolating implementation details.
 
-      # rubocop:todo Metrics/MethodLength
-      def options # rubocop:todo Metrics/AbcSize
+            def options # rubocop:todo Metrics/AbcSize
         # We need to pass in the attribute details here, as eager loading the metadata just instantiates
         # Request::Metadata
         # TODO: Nuke the separate metadata classes and metaprogramming
@@ -57,9 +56,7 @@ module Api
         end
       end
 
-      # rubocop:enable Metrics/MethodLength
-
-      # JSONAPI::Resource doesn't support has_one through relationships by default
+            # JSONAPI::Resource doesn't support has_one through relationships by default
       def primer_panel_id
         _model.request_metadata.primer_panel_id
       end

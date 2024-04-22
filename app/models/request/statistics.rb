@@ -74,7 +74,7 @@ module Request::Statistics
 
   # Returns a hash that maps from the RequestType to the information about the number of requests in various
   # states.  This is effectively summary data that can be displayed in a tabular format for the user.
-  def progress_statistics # rubocop:todo Metrics/MethodLength
+  def progress_statistics
     counters =
       select('request_type_id, state, count(distinct requests.id) as total')
         .group('request_type_id, state')
@@ -88,8 +88,7 @@ module Request::Statistics
     end
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def asset_statistics(wheres) # rubocop:todo Metrics/AbcSize
+    def asset_statistics(wheres) # rubocop:todo Metrics/AbcSize
     counters =
       select('asset_id,request_type_id,state, count(*) as total')
         .group('asset_id, request_type_id, state')
@@ -106,10 +105,7 @@ module Request::Statistics
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  # rubocop:todo Metrics/MethodLength
-  def sample_statistics_new # rubocop:todo Metrics/AbcSize
+      def sample_statistics_new # rubocop:todo Metrics/AbcSize
     counters =
       join_asset
         .select('sample_id,request_type_id,state,count(*) as total')
@@ -125,5 +121,4 @@ module Request::Statistics
       end
     end
   end
-  # rubocop:enable Metrics/MethodLength
-end
+  end

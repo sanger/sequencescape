@@ -14,7 +14,7 @@
 # {ProductLine team (product line)} however this may belong better on request itself, and
 # could be set either on the basis of the submission template used, or by a new 'team' option
 # on the submission itself.
-class RequestType < ApplicationRecord # rubocop:todo Metrics/ClassLength
+class RequestType < ApplicationRecord
   include RequestType::Validation
 
   class DeprecatedError < RuntimeError

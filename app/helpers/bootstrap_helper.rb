@@ -48,7 +48,7 @@ module BootstrapHelper
   #       </tr>
   #     </table>
   #   </div>
-  def summary(type = :default, options = {}) # rubocop:todo Metrics/MethodLength
+  def summary(type = :default, options = {})
     options[:title] ||= 'Summary'
     bs_custom_panel(type, :table, { class: 'table table-summary' }, options) do
       yield.each do |key, value|
@@ -65,7 +65,6 @@ module BootstrapHelper
   # <div class="page-header">
   #   <h1>Title <small>subtitle</small></h1>
   # </div>
-  # rubocop:todo Metrics/MethodLength
   def page_title(title, subtitle = nil, titlecase: true, badges: []) # rubocop:todo Metrics/AbcSize
     tag.div(class: 'page-header') do
       title_class = title.length > 25 ? 'title-long' : 'title-short'
@@ -85,9 +84,7 @@ module BootstrapHelper
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  def pagination(collection)
+    def pagination(collection)
     will_paginate collection, renderer: BootstrapPagination::Rails, previous_label: '&laquo;', next_label: '&raquo;'
   end
 
@@ -100,7 +97,7 @@ module BootstrapHelper
     tag.div(class: "col-#{screen}-#{size}", &)
   end
 
-  def progress_bar(count) # rubocop:todo Metrics/MethodLength
+  def progress_bar(count)
     css_class =
       if count < 25
         'bg-danger'

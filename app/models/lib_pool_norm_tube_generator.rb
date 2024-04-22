@@ -40,8 +40,7 @@ class LibPoolNormTubeGenerator
     @destination_tubes ||= []
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def create! # rubocop:todo Metrics/AbcSize
+    def create! # rubocop:todo Metrics/AbcSize
     return unless valid?
       begin
         ActiveRecord::Base.transaction do
@@ -66,9 +65,7 @@ class LibPoolNormTubeGenerator
     
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  private
+    private
 
   def create_lib_pool_norm_tube(tube)
     destination_tube = transfer_template.create!(user:, source: tube).destination

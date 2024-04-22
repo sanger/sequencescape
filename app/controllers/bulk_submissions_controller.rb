@@ -20,8 +20,7 @@ class BulkSubmissionsController < ApplicationController
     @bulk_submission = BulkSubmission.new
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def create # rubocop:todo Metrics/AbcSize
+    def create # rubocop:todo Metrics/AbcSize
     
       @bulk_submission = BulkSubmission.new(params.fetch(:bulk_submission, {}))
       if @bulk_submission.valid?
@@ -39,9 +38,7 @@ class BulkSubmissionsController < ApplicationController
     
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  private
+    private
 
   def find_submission_template_groups
     @submission_template_groups =

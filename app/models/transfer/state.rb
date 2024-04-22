@@ -32,7 +32,7 @@ module Transfer::State
 
   # Plate specific behaviour
   module PlateState
-    def self.included(base) # rubocop:todo Metrics/MethodLength
+    def self.included(base)
       base.class_eval do
         scope :in_state,
               lambda { |states|

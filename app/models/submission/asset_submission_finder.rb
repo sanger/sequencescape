@@ -18,8 +18,7 @@ module Submission::AssetSubmissionFinder
       end
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def find_wells_including_samples_for!(details) # rubocop:todo Metrics/AbcSize
+    def find_wells_including_samples_for!(details) # rubocop:todo Metrics/AbcSize
     barcodes = details['barcode']
     well_list = details['plate well']
     errors.add(:spreadsheet, 'You can only specify one plate per asset group') unless barcodes.uniq.one?
@@ -36,9 +35,7 @@ module Submission::AssetSubmissionFinder
     wells
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  def find_tubes_including_samples_for!(details)
+    def find_tubes_including_samples_for!(details)
     Receptacle
       .on_a(Tube)
       .for_bulk_submission

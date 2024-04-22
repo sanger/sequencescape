@@ -5,7 +5,7 @@
 #
 # @author [grl]
 #
-class TagSubstitution::Substitution # rubocop:todo Metrics/ClassLength
+class TagSubstitution::Substitution
   include ActiveModel::Model
 
   attr_accessor :sample_id, :library_id
@@ -36,7 +36,7 @@ class TagSubstitution::Substitution # rubocop:todo Metrics/ClassLength
   #   OR
   #   aliquot: Provide an aliquot to act as a template. Useful for pre-populating forms
   # @param tag_substituter [TagSubstitution] The parent tag substituter
-  def initialize(attributes, tag_substituter = nil) # rubocop:todo Metrics/MethodLength
+  def initialize(attributes, tag_substituter = nil)
     super(
       attributes.extract!(
         :sample_id,

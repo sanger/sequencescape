@@ -15,7 +15,7 @@
 # All {Sample samples} in a given manifest will initially belong to a single
 # {Study}, although it is possible for them to become associated with additional
 # studies over time.
-class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
+class SampleManifest < ApplicationRecord
   include Uuid::Uuidable
   include ModelExtensions::SampleManifest
   include SampleManifest::BarcodePrinterBehaviour
@@ -96,7 +96,7 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
            to: :core_behaviour
   delegate :name, to: :supplier, prefix: true
 
-  def truncate_errors # rubocop:todo Metrics/MethodLength
+  def truncate_errors
     return unless last_errors && last_errors.join.length > LIMIT_ERROR_LENGTH
       # First we truncate individual error messages. This ensures that it the first message is already
       # longer than out max limit, we still show something.

@@ -29,7 +29,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
                 ]
   before_action :find_batch_by_batch_id, only: %i[sort print_plate_barcodes print_barcodes]
 
-  def index # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def index # rubocop:todo Metrics/AbcSize
     if logged_in?
       @user = params.fetch(:user, current_user)
       @batches = Batch.for_user(@user).order(id: :desc).includes(:user, :assignee, :pipeline).page(params[:page])
@@ -44,8 +44,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def show # rubocop:todo Metrics/AbcSize
+    def show # rubocop:todo Metrics/AbcSize
     respond_to do |format|
       format.html do
         @submenu_presenter = Presenters::BatchSubmenuPresenter.new(current_user, @batch)
@@ -69,9 +68,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  def edit
+    def edit
     @rits = @batch.pipeline.request_information_types
     @requests = @batch.ordered_requests.includes(:batch_request, :asset, :target_asset, :comments)
     @users = User.all
@@ -106,8 +103,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   # rubocop:enable Metrics/MethodLength
 
-  # rubocop:todo Metrics/MethodLength
-  def update # rubocop:todo Metrics/AbcSize
+    def update # rubocop:todo Metrics/AbcSize
     if batch_parameters[:assignee_id]
       user = User.find(batch_parameters[:assignee_id])
       assigned_message = "Assigned to #{user.name} (#{user.login})."
@@ -127,9 +123,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  def batch_parameters
+    def batch_parameters
     @batch_parameters ||= params.require(:batch).permit(:assignee_id)
   end
 
@@ -187,7 +181,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     @fail_reasons = @batch.workflow.source_is_internal? ? FAILURE_REASONS['internal'] : FAILURE_REASONS['external']
   end
 
-  def fail_items # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def fail_items # rubocop:todo Metrics/AbcSize
     ActiveRecord::Base.transaction do
       fail_params =
         params.permit(:id, requested_fail: {}, requested_remove: {}, failure: %i[reason comment fail_but_charge])
@@ -215,7 +209,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   def print_labels; end
 
-  def print_plate_labels # rubocop:todo Metrics/MethodLength
+  def print_plate_labels
     @pipeline = @batch.pipeline
     @output_barcodes = []
 
@@ -249,7 +243,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
   end
 
   # Handles printing of the worksheet
-  def print # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def print # rubocop:todo Metrics/AbcSize
     @task = Task.find_by(id: params[:task_id])
     @pipeline = @batch.pipeline
     @comments = @batch.comments
@@ -350,7 +344,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   private
 
-  def print_handler(print_class) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def print_handler(print_class) # rubocop:todo Metrics/AbcSize
     print_job =
       LabelPrinter::PrintJob.new(
         params[:printer],

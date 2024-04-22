@@ -3,7 +3,6 @@
 module SampleManifestExcel
   module Upload
     module Processor
-      # rubocop:disable Metrics/ClassLength
       ##
       # Uploads will be processed slightly differently based on the manifest type.
       class Base
@@ -167,7 +166,7 @@ module SampleManifestExcel
         end
 
         # Return the row of the first encountered barcode mismatch
-        # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
+        # rubocop:todo Metrics/AbcSize
         def duplicate_barcodes # rubocop:todo Metrics/CyclomaticComplexity
           return unless upload.respond_to?(:rows)
 
@@ -185,7 +184,7 @@ module SampleManifestExcel
           end
           nil
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/ClassLength
+        # rubocop:enable Metrics/AbcSize
       end
     end
   end

@@ -4,7 +4,7 @@ require 'aasm'
 
 # Used to handle the rendering of the submission/order pages in the
 # web-based submission interface
-class Submission::SubmissionCreator < Submission::PresenterSkeleton # rubocop:todo Metrics/ClassLength
+class Submission::SubmissionCreator < Submission::PresenterSkeleton
   SubmissionsCreaterError = Class.new(StandardError)
   IncorrectParamsException = Class.new(SubmissionsCreaterError)
   InvalidInputException = Class.new(SubmissionsCreaterError)
@@ -122,7 +122,6 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton # rubocop:to
   # rubocop:enable Metrics/MethodLength
 
   # this is more order_receptacles, asset_group is actually receptacle group
-  # rubocop:todo Metrics/MethodLength
   def order_assets # rubocop:todo Metrics/AbcSize
     input_methods =
       %i[asset_group_id sample_names_text barcodes_wells_text].select { |input_method| send(input_method).present? }
@@ -144,9 +143,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton # rubocop:to
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  # This is a legacy of the old controller...
+    # This is a legacy of the old controller...
   def wells_on_specified_plate_purpose_for(plate_purpose, samples)
     samples.map do |sample|
       # Prioritise the newest well

@@ -26,7 +26,7 @@ module SampleManifestExcel
       # The file is opened as a Roo spreadsheet.
       # If it is valid it is split by the start row.
       # Start row of column headers and data put into separate rows.
-      def initialize(file) # rubocop:todo Metrics/MethodLength
+      def initialize(file)
         @file = file
         @file_errors = nil
         @sheet = read_sheet

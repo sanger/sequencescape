@@ -34,7 +34,7 @@ class Admin::PlatePurposesController < ApplicationController
 
   def edit; end
 
-  def create # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def create # rubocop:todo Metrics/AbcSize
     @plate_purpose = PlatePurpose.new(params[:plate_purpose])
 
     respond_to do |format|

@@ -6,8 +6,7 @@ module Core::Io::Base::JsonFormattingBehaviour::Output
   end
   private :json_code_tree
 
-  # rubocop:todo Metrics/MethodLength
-  def generate_object_to_json_mapping(attribute_to_json) # rubocop:todo Metrics/AbcSize
+    def generate_object_to_json_mapping(attribute_to_json) # rubocop:todo Metrics/AbcSize
     # Sort the attribute_to_json map such that the JSON elements are in order, thus ensuring that
     # we will only open and close blocks as we go.  Then build a tree that can be executed against
     # an object to generate the JSON appropriately.
@@ -26,5 +25,4 @@ module Core::Io::Base::JsonFormattingBehaviour::Output
     singleton_class.send(:define_method, :json_code_tree) { tree }
     singleton_class.send(:define_method, :object_json, &tree.method(:encode))
   end
-  # rubocop:enable Metrics/MethodLength
-end
+  end

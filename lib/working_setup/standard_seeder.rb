@@ -61,7 +61,7 @@ module WorkingSetup
     end
 
     # rubocop:todo Metrics/AbcSize
-    def tag_plates( # rubocop:todo Metrics/MethodLength
+    def tag_plates(
       lot_type: 'IDT Tags',
       template: 'Sanger_168tags - 10 mer tags in columns ignoring pools (first oligo: ATCACGTT)',
       size: 30

@@ -133,7 +133,7 @@ class SubmissionTemplate < ApplicationRecord
   # NOTE: You cannot use Marshal.load(Marshal.dump(params)) here because it causes all kinds of problems with
   # the ActiveRecord::Base derived classes when params contains their instances.  It'll appear as insecure
   # method errors somewhere else in the code.
-  def safely_duplicate(params) # rubocop:todo Metrics/MethodLength
+  def safely_duplicate(params)
     params.transform_values do |v|
       if v.is_a?(ActiveRecord::Base)
         v

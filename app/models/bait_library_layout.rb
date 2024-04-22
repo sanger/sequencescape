@@ -48,8 +48,7 @@ class BaitLibraryLayout < ApplicationRecord
   end
   private :layout_bait_libraries_on_plate
 
-  # rubocop:todo Metrics/MethodLength
-  def each_bait_library_assignment # rubocop:todo Metrics/AbcSize
+    def each_bait_library_assignment # rubocop:todo Metrics/AbcSize
     # We only accept the wells which have been pooled
     plate
       .wells
@@ -67,8 +66,7 @@ class BaitLibraryLayout < ApplicationRecord
       end
   end
 
-  # rubocop:enable Metrics/MethodLength
-  private :each_bait_library_assignment
+    private :each_bait_library_assignment
 
   # Generates the layout of bait libraries for preview.  In other words, none of the actually assignment is
   # done, just the recording, which would fail validation if an attempt was then made to save it.  So this is

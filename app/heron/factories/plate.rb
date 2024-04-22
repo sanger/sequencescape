@@ -31,7 +31,7 @@ module Heron
         @params[:barcode]
       end
 
-      def save # rubocop:todo Metrics/MethodLength
+      def save
         return false unless valid?
 
         @output_result = true

@@ -53,7 +53,7 @@ def plate_view_of_oligos(label, mapping) # rubocop:todo Metrics/AbcSize
   plate_layout.map(&:inspect).map(&$stderr.method(:puts))
 end
 
-def check_tag_layout(name, well_range, expected_wells_to_oligos) # rubocop:todo Metrics/MethodLength
+def check_tag_layout(name, well_range, expected_wells_to_oligos)
   plate = Plate.find_by(name:) or raise StandardError, "Cannot find plate #{name.inspect}"
   wells_to_oligos =
     plate
@@ -70,7 +70,7 @@ def check_tag_layout(name, well_range, expected_wells_to_oligos) # rubocop:todo 
     assert(false, 'Tag assignment appears to be invalid')
   
 end
-def check_tag2_layout(name, well_range, expected_wells_to_oligos) # rubocop:todo Metrics/MethodLength
+def check_tag2_layout(name, well_range, expected_wells_to_oligos)
   plate = Plate.find_by(name:) or raise StandardError, "Cannot find plate #{name.inspect}"
   wells_to_oligos =
     plate

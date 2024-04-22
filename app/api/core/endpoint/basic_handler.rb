@@ -26,8 +26,7 @@ class Core::Endpoint::BasicHandler
       )
     end
 
-    # rubocop:todo Metrics/MethodLength
-    def core_path(*args) # rubocop:todo Metrics/AbcSize
+        def core_path(*args) # rubocop:todo Metrics/AbcSize
       options = args.extract_options!
       response = options[:response]
 
@@ -44,8 +43,7 @@ class Core::Endpoint::BasicHandler
       options[:response].request.service.api_path(*args)
     end
 
-    # rubocop:enable Metrics/MethodLength
-    private :core_path
+        private :core_path
 
     def attach_action(name, behaviour = name)
       @actions[name.to_sym] = behaviour.to_sym

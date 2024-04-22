@@ -17,8 +17,7 @@ module SampleManifest::SharedTubeBehaviour
 
     private
 
-    # rubocop:todo Metrics/MethodLength
-    def generate_tubes(tube_purpose, number_of_tubes = count) # rubocop:todo Metrics/AbcSize
+        def generate_tubes(tube_purpose, number_of_tubes = count) # rubocop:todo Metrics/AbcSize
       sanger_ids = generate_sanger_ids(number_of_tubes)
       study_abbreviation = study.abbreviation
 
@@ -40,9 +39,7 @@ module SampleManifest::SharedTubeBehaviour
       tubes
     end
 
-    # rubocop:enable Metrics/MethodLength
-
-    def delayed_generate_asset_requests(asset_ids, study_id)
+        def delayed_generate_asset_requests(asset_ids, study_id)
       Delayed::Job.enqueue GenerateCreateAssetRequestsJob.new(asset_ids, study_id)
     end
   end

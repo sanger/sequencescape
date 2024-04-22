@@ -38,7 +38,7 @@ class Plate::QuadCreator
 
   private
 
-  def all_parents_acceptable # rubocop:todo Metrics/MethodLength
+  def all_parents_acceptable
     @parents.each do |location, parent|
       case parent
       when Plate, TubeRack

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Submission::ProjectValidation
-  def self.included(base) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def self.included(base) # rubocop:todo Metrics/AbcSize
     base.class_eval do
       # We probably want to move this validation
       validates_each(:project, if: :checking_project?) do |record, _attr, project|

@@ -14,7 +14,7 @@
 #
 # While orders are mostly in charge of building their own requests, Submissions trigger this
 # behaviour, and handle multiplexing between orders.
-class Submission < ApplicationRecord # rubocop:todo Metrics/ClassLength
+class Submission < ApplicationRecord
   include Uuid::Uuidable
   extend Submission::StateMachine
   include Submission::DelayedJobBehaviour

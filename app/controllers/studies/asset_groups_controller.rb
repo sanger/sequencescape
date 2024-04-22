@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# rubocop:todo Metrics/ClassLength
 class Studies::AssetGroupsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -40,7 +39,7 @@ class Studies::AssetGroupsController < ApplicationController
     @study = Study.find(params[:study_id])
   end
 
-  def create # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def create # rubocop:todo Metrics/AbcSize
     @study = Study.find(params[:study_id])
     @asset_group = AssetGroup.new(params[:asset_group])
     @asset_group.study = @study
@@ -59,7 +58,7 @@ class Studies::AssetGroupsController < ApplicationController
     end
   end
 
-  def update # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def update # rubocop:todo Metrics/AbcSize
     @asset_group = AssetGroup.find(params[:id])
     @study = Study.find(params[:study_id])
 
@@ -86,8 +85,7 @@ class Studies::AssetGroupsController < ApplicationController
     end
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def search # rubocop:todo Metrics/AbcSize
+    def search # rubocop:todo Metrics/AbcSize
     @study = Study.find(params[:study_id])
     query = params[:q]
     if query.blank? || (query.length < 2)
@@ -106,9 +104,7 @@ class Studies::AssetGroupsController < ApplicationController
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  def add # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+    def add # rubocop:todo Metrics/AbcSize
     @asset_group = AssetGroup.find(params[:id])
     @study = Study.find(params[:study_id])
     if params[:asset]
@@ -136,7 +132,7 @@ class Studies::AssetGroupsController < ApplicationController
     @labware = @asset_group.labware.select { |asset| asset.is_a?(Barcode::Barcodeable) }
   end
 
-  def print_labels # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def print_labels # rubocop:todo Metrics/AbcSize
     @asset_group = AssetGroup.find(params[:id])
     @study = Study.find(params[:study_id])
 
@@ -151,4 +147,3 @@ class Studies::AssetGroupsController < ApplicationController
     end
   end
 end
-# rubocop:enable Metrics/ClassLength

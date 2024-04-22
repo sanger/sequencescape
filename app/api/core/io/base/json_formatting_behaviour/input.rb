@@ -145,7 +145,7 @@ module Core::Io::Base::JsonFormattingBehaviour::Input
     end
     private :association_class
 
-    def handle_belongs_to(attributes, attribute, json, object) # rubocop:todo Metrics/MethodLength
+    def handle_belongs_to(attributes, attribute, json, object)
       if json.is_a?(Hash)
         uuid = json.delete('uuid')
         associated = association_class(attribute, object)

@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:todo Metrics/ClassLength
 class LocationReport < ApplicationRecord
   # includes / extends
   extend DbFile::Uploader
@@ -112,7 +111,7 @@ class LocationReport < ApplicationRecord
     Delayed::Job.enqueue LocationReportJob.new(id)
   end
 
-  def generate_report_rows # rubocop:todo Metrics/MethodLength
+  def generate_report_rows
     if plates_list.empty?
       yield([I18n.t('location_reports.errors.plate_list_empty')])
       return
@@ -210,4 +209,3 @@ class LocationReport < ApplicationRecord
     curr_locn_children.each { |curr_locn| get_labwares_per_location(curr_locn.barcode) } if curr_locn_children.present?
   end
 end
-# rubocop:enable Metrics/ClassLength

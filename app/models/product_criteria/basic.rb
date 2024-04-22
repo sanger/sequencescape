@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# rubocop:todo Metrics/ClassLength
 class ProductCriteria::Basic
   SUPPORTED_WELL_ATTRIBUTES = %i[
     gel_pass
@@ -152,7 +151,7 @@ class ProductCriteria::Basic
     @comment.uniq!
   end
 
-  def assess! # rubocop:todo Metrics/MethodLength
+  def assess!
     @passed = true
     params.each do |attribute, comparisons|
       value = fetch_attribute(attribute)
@@ -193,4 +192,3 @@ class ProductCriteria::Basic
       raise(UnknownSpecification, "#{comparison} isn't a recognised means of comparison.")
   end
 end
-# rubocop:enable Metrics/ClassLength

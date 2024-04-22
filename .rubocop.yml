@@ -170,10 +170,6 @@ Lint/UnusedMethodArgument:
   # applying an underscore before the keyword name breaks that API.
   AllowUnusedKeywordArguments: true
 
-Lint/RedundantCopDisableDirective:
-  # I suspect this is breaking file formatting in some cases...
-  AutoCorrect: false
-
 # This seems to be causing all sorts of issues with failing tests
 Rails/RedundantPresenceValidationOnBelongsTo:
   Enabled: false

@@ -6,7 +6,6 @@
 # Because RequestType isn't subclassed it actually delegates to the Request class that it'll instantiate, so
 # you can find examples of the delegator stuff in SequencingRequest and LibraryCreationRequest
 module DelegateValidation
-  # rubocop:todo Metrics/MethodLength
   def delegate_validation(*args) # rubocop:todo Metrics/AbcSize
     options = args.extract_options!
     delegation_target = options.delete(:to) or raise StandardError, 'Cannot delegate validation without :to!'
@@ -23,9 +22,7 @@ module DelegateValidation
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  class Validator
+    class Validator
     include Validateable
 
     class DelegateError < ActiveModel::Errors

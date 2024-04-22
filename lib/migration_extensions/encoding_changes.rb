@@ -32,7 +32,6 @@ module MigrationExtensions::EncodingChanges
   # @option from [String] row_format: The current row_format of the table (COMPACT by default)
   #
   # @return [void]
-  # rubocop:todo Metrics/MethodLength
   def change_encoding(table, from:, to:) # rubocop:todo Metrics/AbcSize
     from_options = from.is_a?(String) ? { character_set: from } : from
     to_options = to.is_a?(String) ? { character_set: to } : to
@@ -52,8 +51,6 @@ module MigrationExtensions::EncodingChanges
       end
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def alter_encoding(table, row_format, character_set, collation)
     say "Updating Encoding on #{table}"

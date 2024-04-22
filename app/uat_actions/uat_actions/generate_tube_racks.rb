@@ -24,7 +24,7 @@ class UatActions::GenerateTubeRacks < UatActions
     new(rack_count: 1, study_name: UatActions::StaticRecords.study.name)
   end
 
-  def perform # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def perform # rubocop:todo Metrics/AbcSize
     purpose = Purpose.find_by(name: 'TR Stock 96')
     rack_count.to_i.times do |i|
       TubeRack

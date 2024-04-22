@@ -2,7 +2,7 @@
 
 # Will construct submissions
 # Currently VERY basic
-class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
+class UatActions::TestSubmission < UatActions
   self.title = 'Test submission'
 
   # The description displays on the list of UAT actions to provide additional information
@@ -118,7 +118,6 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
   # A partial submission is possible if the number_of_wells_to_submit form field has been set.
   #
   # @return [Boolean] Returns true if the action was successful, false otherwise
-  # rubocop:todo Metrics/MethodLength
   def perform # rubocop:todo Metrics/AbcSize
     order =
       submission_template.create_with_submission!(
@@ -140,9 +139,7 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
     true
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  private
+    private
 
   def submission_template
     @submission_template = SubmissionTemplate.find_by(name: submission_template_name)

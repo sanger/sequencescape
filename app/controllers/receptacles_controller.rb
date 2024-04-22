@@ -2,14 +2,14 @@
 
 # View information about {Receptacle}
 # @see Receptacle
-class ReceptaclesController < ApplicationController # rubocop:todo Metrics/ClassLength
+class ReceptaclesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :find_receptacle_with_includes, only: %i[show edit update summary close print_assets print history]
   before_action :find_receptacle_only, only: %i[new_request create_request]
 
-  def index # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def index # rubocop:todo Metrics/AbcSize
     if params[:study_id]
       @study = Study.find(params[:study_id])
       @assets = @study.assets_through_aliquots.order(created_at: :desc).page(params[:page])
@@ -27,7 +27,7 @@ class ReceptaclesController < ApplicationController # rubocop:todo Metrics/Class
     end
   end
 
-  def show # rubocop:todo Metrics/MethodLength
+  def show
     @source_plates = @asset.source_plates
     respond_to do |format|
       format.html do
@@ -51,7 +51,7 @@ class ReceptaclesController < ApplicationController # rubocop:todo Metrics/Class
     respond_to { |format| format.html }
   end
 
-  def update # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def update # rubocop:todo Metrics/AbcSize
     respond_to do |format|
       if @asset.update(asset_params.merge(params.to_unsafe_h.fetch(:lane, {})))
         flash[:notice] = 'Receptacle was successfully updated.'
@@ -178,7 +178,7 @@ class ReceptaclesController < ApplicationController # rubocop:todo Metrics/Class
 
   # rubocop:enable Metrics/MethodLength
 
-  def lookup # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def lookup # rubocop:todo Metrics/AbcSize
     return unless params[:asset] && params[:asset][:barcode]
 
     @assets = Labware.with_barcode(params[:asset][:barcode]).limit(50).page(params[:page])

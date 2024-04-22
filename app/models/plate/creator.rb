@@ -2,7 +2,7 @@
 
 # A plate creator creates a stamp of a parent plate into one or more children
 # A stamp is the complete transfer of content, maintaining the same well locations.
-class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
+class Plate::Creator < ApplicationRecord
   PlateCreationError = Class.new(StandardError)
 
   # Join between the {Plate::Creator}, and the child purposes if can create
@@ -143,7 +143,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   private
 
-  def create_asset_group(created_plates) # rubocop:todo Metrics/MethodLength
+  def create_asset_group(created_plates)
     group = nil
     all_wells = created_plates.map { |hash| hash[:destinations].map(&:wells) }.flatten
 

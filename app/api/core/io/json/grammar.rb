@@ -28,8 +28,7 @@ module Core::Io::Json::Grammar
       yield(node.merge_children_with(self))
     end
 
-    # rubocop:todo Metrics/MethodLength
-    def merge_children_with(node) # rubocop:todo Metrics/AbcSize
+        def merge_children_with(node) # rubocop:todo Metrics/AbcSize
       (node.children.keys + @children.keys)
         .uniq
         .each_with_object({}) do |k, store|
@@ -48,9 +47,7 @@ module Core::Io::Json::Grammar
         end
     end
 
-    # rubocop:enable Metrics/MethodLength
-
-    def inspect
+        def inspect
       @children.values.inspect
     end
 

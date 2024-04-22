@@ -7,7 +7,7 @@ module Attributable
   # 2) Tools to assist with validating eg. submissions prior to the creation of the
   #    requests themselves
   # 3) Wiping out some fields on the condition of others
-  class Attribute # rubocop:todo Metrics/ClassLength
+  class Attribute
     attr_reader :name, :default
 
     alias assignable_attribute_name name

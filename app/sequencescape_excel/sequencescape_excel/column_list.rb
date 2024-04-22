@@ -100,7 +100,7 @@ module SequencescapeExcel
 
     # You can add a hash of columns, a hash of attributes or an array of columns.
     # If it is a hash of columns there is an assumption that a copy is being created.
-    def create_columns(columns, conditional_formattings) # rubocop:todo Metrics/MethodLength
+    def create_columns(columns, conditional_formattings)
       columns.each do |k, v|
         add_with_number(
           if v.is_a?(Hash)

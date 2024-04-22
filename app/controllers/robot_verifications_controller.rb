@@ -7,7 +7,6 @@ class RobotVerificationsController < ApplicationController
 
   # Step 2: Renders the bed verification form, in which the user is expected to scan in all beds and plates
   #         This is generated based on the information provided in step 1.
-  # rubocop:todo Metrics/MethodLength
   def submission # rubocop:todo Metrics/AbcSize
     errors = []
 
@@ -28,12 +27,10 @@ class RobotVerificationsController < ApplicationController
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  # Step 3: Receives the submission form and checks if it is valid. In the event it is valid
+    # Step 3: Receives the submission form and checks if it is valid. In the event it is valid
   #         provides a link to download the gwl/csv driver file for the robot. Otherwise
   #         redirects the user back to step 1 with an error message.
-  def download # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def download # rubocop:todo Metrics/AbcSize
     @robot = Robot.find(params[:robot_id])
     @robot_verification = @robot.verification_behaviour
 

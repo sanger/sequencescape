@@ -28,7 +28,7 @@ class Admin::UsersController < ApplicationController
     redirect_to studies_url
   end
 
-  def update # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def update # rubocop:todo Metrics/AbcSize
     @user = User.find(params[:id])
     Role.general_roles.each do |role|
       params[:role] && params[:role][role.name] ? @user.grant_role(role.name) : @user.remove_role(role.name)

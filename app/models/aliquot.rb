@@ -15,7 +15,7 @@
 # an untagged well.
 # We have some performance optimizations in place to avoid trying to look up tag -1
 # @see Tag
-class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
+class Aliquot < ApplicationRecord
   include Uuid::Uuidable
   include Api::Messages::FlowcellIO::AliquotExtensions
   include Api::Messages::QcResultIO::AliquotExtensions
@@ -187,7 +187,7 @@ class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
     save!
   end
 
-  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/AbcSize
   def matches?(object) # rubocop:todo Metrics/CyclomaticComplexity
     # NOTE: This function is directional, and assumes that the downstream aliquot
     # is checking the upstream aliquot
@@ -210,7 +210,7 @@ class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
   end
 
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
 
   # Unlike the above methods, which allow untagged to match with tagged, this looks for exact matches only
   # only id, timestamps and receptacles are excluded

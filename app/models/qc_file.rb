@@ -6,7 +6,7 @@ class QcFile < ApplicationRecord
   module Associations
     # Adds accessors for named fields and attaches documents to them
 
-    def has_qc_files # rubocop:todo Metrics/MethodLength
+    def has_qc_files
       class_eval do
         has_many :qc_files, foreign_key: :asset_id, dependent: :destroy
 

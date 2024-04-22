@@ -63,7 +63,7 @@ module Core::Endpoint::BasicHandler::Actions
     singleton_class.class_eval('def check_request_io_class!(_) ; end', __FILE__, __LINE__)
   end
 
-  def disable(*actions) # rubocop:todo Metrics/MethodLength
+  def disable(*actions)
     actions.each do |action|
       line = __LINE__ + 1
       singleton_class.class_eval(
@@ -79,7 +79,7 @@ module Core::Endpoint::BasicHandler::Actions
     end
   end
 
-  def deprecate(*actions) # rubocop:todo Metrics/MethodLength
+  def deprecate(*actions)
     actions.each do |action|
       line = __LINE__ + 1
       singleton_class.class_eval(

@@ -25,7 +25,7 @@ module SampleManifestExcel
         freeze_panes
       end
 
-      def type # rubocop:todo Metrics/MethodLength
+      def type
         @type ||=
           case sample_manifest.asset_type
           when '1dtube', 'multiplexed_library', 'library'

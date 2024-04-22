@@ -4,7 +4,7 @@
 # @note Originally the warehouse was built nightly by calls the the v0.5 API.
 #       When the warehouse was switched to a queue based system the same JSON
 #       exposed via the API was used to form the message payload.
-class Api::Base # rubocop:todo Metrics/ClassLength
+class Api::Base
   class_attribute :includes
   self.includes = []
 
@@ -94,7 +94,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
   class << self
     # The default behaviour for any model I/O is to write out all of the columns as they appear.  Some of
     # the columns are ignored, a few manipulated, but mostly it's a direct copy.
-    # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
+    # rubocop:todo Metrics/AbcSize
     def render_class_for_model(model) # rubocop:todo Metrics/CyclomaticComplexity
       render_class = Class.new(self)
 
@@ -120,7 +120,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
       end
       render_class
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+    # rubocop:enable Metrics/AbcSize
   end
 
   # The model class that our I/O methods are responsible for
@@ -177,8 +177,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
     nil
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def self.with_association(association, options = {}, &) # rubocop:todo Metrics/AbcSize
+    def self.with_association(association, options = {}, &) # rubocop:todo Metrics/AbcSize
     association_helper = Class.new(Api::Base)
     association_helper.class_eval(&)
     association_helper.singleton_class.class_eval do
@@ -194,10 +193,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
     associations[association.to_sym] = association_helper
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  # rubocop:todo Metrics/MethodLength
-  def self.with_nested_has_many_association(association, options = {}, &) # rubocop:todo Metrics/AbcSize
+      def self.with_nested_has_many_association(association, options = {}, &) # rubocop:todo Metrics/AbcSize
     association_helper = Class.new(Api::Base)
     association_helper.class_eval(&)
     association_helper.singleton_class.class_eval do
@@ -212,9 +208,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
     nested_has_many_associations[association.to_sym] = association_helper
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  def self.performs_lookup?
+    def self.performs_lookup?
     !!lookup_by
   end
 
@@ -251,8 +245,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
       convert_json_attributes_to_attributes(params[model_class.name.underscore])
     end
 
-    # rubocop:todo Metrics/MethodLength
-    def convert_json_attributes_to_attributes(json_attributes) # rubocop:todo Metrics/AbcSize
+        def convert_json_attributes_to_attributes(json_attributes) # rubocop:todo Metrics/AbcSize
       return {} if json_attributes.blank?
 
       attributes = {}
@@ -272,10 +265,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
       attributes
     end
 
-    # rubocop:enable Metrics/MethodLength
-
-    # rubocop:todo Metrics/MethodLength
-    def json_attribute_for_attribute(attribute_or_association, *rest) # rubocop:todo Metrics/AbcSize
+            def json_attribute_for_attribute(attribute_or_association, *rest) # rubocop:todo Metrics/AbcSize
       json_attribute = attribute_to_json_attribute_mappings[attribute_or_association.to_sym]
       if json_attribute.blank?
         # If we have reached the end of the line, and the attribute_or_association is for what looks like
@@ -294,6 +284,5 @@ class Api::Base # rubocop:todo Metrics/ClassLength
 
       json_attribute
     end
-    # rubocop:enable Metrics/MethodLength
-  end
+      end
 end

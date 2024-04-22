@@ -13,7 +13,7 @@ module LabelPrinter
       @options = options
     end
 
-    def execute # rubocop:todo Metrics/MethodLength
+    def execute
       begin
         LabelPrinter::PmbClient.print(build_attributes)
       rescue LabelPrinter::PmbException => e

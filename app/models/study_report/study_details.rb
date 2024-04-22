@@ -4,7 +4,7 @@ module StudyReport::StudyDetails
   BATCH_SIZE = 1000
 
   # This will pull out all well ids from stock plates in the study
-  def each_stock_well_id_in_study_in_batches(&) # rubocop:todo Metrics/MethodLength
+  def each_stock_well_id_in_study_in_batches(&)
     # Stock wells are determined by the requests leading from the stock plate
     handle_wells(
       :requests,
@@ -72,8 +72,7 @@ module StudyReport::StudyDetails
     ]
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def progress_report_on_all_assets # rubocop:todo Metrics/AbcSize
+    def progress_report_on_all_assets # rubocop:todo Metrics/AbcSize
     yield(progress_report_header)
 
     each_stock_well_id_in_study_in_batches do |asset_ids|
@@ -124,6 +123,5 @@ module StudyReport::StudyDetails
         end
     end
   end
-  # rubocop:enable Metrics/MethodLength
-end
+  end
 # rubocop:enable Metrics/ModuleLength

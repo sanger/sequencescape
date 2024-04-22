@@ -2,7 +2,7 @@
 
 # Handles viewing {Labware} information
 # @see Labware
-class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLength
+class LabwareController < ApplicationController
   before_action :discover_asset, only: %i[show edit update summary print_assets print history]
 
   def index # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
@@ -49,7 +49,7 @@ class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
   end
 
-  def update # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def update # rubocop:todo Metrics/AbcSize
     respond_to do |format|
       if @asset.update(labware_params.merge(params.to_unsafe_h.fetch(:lane, {})))
         flash[:notice] = 'Labware was successfully updated.'
@@ -116,7 +116,7 @@ class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLeng
     @asset = Plate.find(params[:id])
   end
 
-  def lookup # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def lookup # rubocop:todo Metrics/AbcSize
     return unless params[:asset] && params[:asset][:barcode]
 
     @assets = Labware.with_barcode(params[:asset][:barcode]).limit(50).page(params[:page])

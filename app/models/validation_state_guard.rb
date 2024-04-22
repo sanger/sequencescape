@@ -16,7 +16,7 @@
 #
 # JG: This pattern has been pretty much eliminated. It seems to just be used to control {Sample} renaming
 module ValidationStateGuard
-  def validation_guard(guard) # rubocop:todo Metrics/MethodLength
+  def validation_guard(guard)
     guard = guard.to_sym
 
     line = __LINE__ + 1

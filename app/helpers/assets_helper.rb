@@ -4,7 +4,7 @@ module AssetsHelper
     plate_layout.cell_name_for_well_at(row, column)
   end
 
-  def well_information(plate_layout, row, column) # rubocop:todo Metrics/MethodLength
+  def well_information(plate_layout, row, column)
     well = plate_layout.well_at(row, column)
     if plate_layout.empty_well_at?(row, column)
       ['Empty', '', '']

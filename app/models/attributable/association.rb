@@ -79,7 +79,7 @@ module Attributable
       )
     end
 
-    def configure(target) # rubocop:todo Metrics/MethodLength
+    def configure(target)
       target.class_eval(
         %{
         def #{assignable_attribute_name}=(value)

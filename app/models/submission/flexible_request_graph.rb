@@ -99,8 +99,7 @@ module Submission::FlexibleRequestGraph
       false
     end
 
-    # rubocop:todo Metrics/MethodLength
-    def build! # rubocop:todo Metrics/AbcSize
+        def build! # rubocop:todo Metrics/AbcSize
       multiplier.times do |_|
         # Now we can iterate over the source assets and target assets building the requests between them.
         # Ensure that the request has the correct comments on it, and that the aliquots of the source asset
@@ -124,9 +123,7 @@ module Submission::FlexibleRequestGraph
       associate_built_requests!
     end
 
-    # rubocop:enable Metrics/MethodLength
-
-    def target_assets
+        def target_assets
       target_assets_qc_metrics.map(&:asset).flatten.uniq
     end
 

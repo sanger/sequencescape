@@ -2,7 +2,6 @@
 # Class to support creation of tag groups, tag layout templates and generation of the
 # mbrave.yml config needed by limber to be able to generate the mbrave UMI file at the
 # end of the bioscan process.
-# rubocop:disable Metrics/ClassLength
 class MbraveTagsCreator
   YAML_FILENAME = 'mbrave.yml'
   TAG_IDENTIFIER = 'Bioscan'
@@ -149,7 +148,7 @@ class MbraveTagsCreator
     end
 
     # rubocop:disable Metrics/AbcSize
-    def create_tag_plates(tag_layout_templates, user) # rubocop:todo Metrics/MethodLength
+    def create_tag_plates(tag_layout_templates, user)
       ActiveRecord::Base.transaction do
         lot_type = LotType.find_by!(name: 'Pre Stamped Tags - 384')
         tag_layout_templates.each_with_index do |tag_layout_template, _index|
@@ -206,4 +205,3 @@ class MbraveTagsCreator
   end
   extend StaticMethods
 end
-# rubocop:enable Metrics/ClassLength

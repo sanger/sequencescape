@@ -80,7 +80,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
     @transfers[source.map.description] = [destination, stock_well]
   end
 
-  def build_well_to_tube_transfers # rubocop:todo Metrics/MethodLength
+  def build_well_to_tube_transfers
     tube_to_stock_wells = Hash.new { |h, k| h[k] = [] }
 
     well_to_tubes

@@ -2,8 +2,6 @@
 
 module LabelPrinterTests
   module SharedTubeTests
-    # rubocop:todo Metrics/MethodLength
-
     def self.included(base) # rubocop:todo Metrics/AbcSize
       base.class_eval do
         test 'should return the correct values' do
@@ -18,7 +16,6 @@ module LabelPrinterTests
         end
       end
     end
-    # rubocop:enable Metrics/MethodLength
   end
 
   module SharedPlateTests

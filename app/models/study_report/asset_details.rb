@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module StudyReport::AssetDetails
-  def qc_report # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def qc_report # rubocop:todo Metrics/AbcSize
     qc_data = { supplier_volume: 0 }
 
     sample = primary_aliquot.try(:sample)

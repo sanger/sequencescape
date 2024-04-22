@@ -25,7 +25,7 @@ module SampleManifestExcel
       attr_reader :dynamic_attributes, :tags, :study
       attr_writer :manifest_type, :num_rows_per_well
 
-      def initialize(attributes = {}) # rubocop:todo Metrics/MethodLength
+      def initialize(attributes = {})
         super
         @validation_errors ||= []
         if type == 'Plates'
@@ -82,7 +82,7 @@ module SampleManifestExcel
         @sample_manifest ||= create_sample_manifest
       end
 
-      def create_sample_manifest # rubocop:todo Metrics/MethodLength
+      def create_sample_manifest
         case manifest_type
         when /plate/
           FactoryBot.create(
@@ -235,7 +235,7 @@ module SampleManifestExcel
         end
       end
 
-      # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
+      # rubocop:todo Metrics/PerceivedComplexity, Metrics/AbcSize
       def add_cell_data(column, row_num, partial) # rubocop:todo Metrics/CyclomaticComplexity
         if partial && empty_row?(row_num)
           data[column.name] || dynamic_attributes[row_num][column.name] unless empty_columns.include?(column.name)
@@ -250,7 +250,7 @@ module SampleManifestExcel
         end
       end
 
-      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
+      # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
 
       def build_tube_sample_manifest_asset
         asset =

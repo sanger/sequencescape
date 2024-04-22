@@ -230,7 +230,6 @@ module Core
       # Note that this method disables garbage collection, which should improve the performance of writing
       # out the JSON to the client.  The garbage collection is then re-enabled in close.
       #++
-      # rubocop:todo Metrics/MethodLength
       def each(&block) # rubocop:todo Metrics/AbcSize
         Rails.logger.info('API[streaming]: starting JSON streaming')
         start = Time.zone.now
@@ -249,9 +248,7 @@ module Core
         Rails.logger.info("API[streaming]: finished JSON streaming in #{Time.zone.now - start}s")
       end
 
-      # rubocop:enable Metrics/MethodLength
-
-      def close
+            def close
         identifier = self.identifier
         started_at = self.started_at # Save for later as next line discards our request!
         discard_all_references

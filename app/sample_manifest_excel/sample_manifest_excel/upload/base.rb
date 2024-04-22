@@ -14,7 +14,7 @@ module SampleManifestExcel
     # *Retrieve the sample manifest
     # *Create a processor based on the sample manifest
     # The Upload is only valid if the file, columns, sample manifest and processor are valid.
-    class Base # rubocop:todo Metrics/ClassLength
+    class Base
       include ActiveModel::Model
 
       attr_accessor :file, :column_list, :start_row, :override
@@ -121,7 +121,7 @@ module SampleManifestExcel
 
       private
 
-      def create_processor # rubocop:todo Metrics/MethodLength
+      def create_processor
         case sample_manifest&.asset_type
         when '1dtube'
           Upload::Processor::OneDTube.new(self)

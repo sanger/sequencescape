@@ -31,7 +31,7 @@ module Core::Endpoint::BasicHandler::Actions::InnerAction
     rooted_json(options) { |stream| super(object, options.merge(stream:)) }
   end
 
-  def declare_action(name, _options) # rubocop:todo Metrics/MethodLength
+  def declare_action(name, _options)
     line = __LINE__ + 1
     singleton_class.class_eval(
       "

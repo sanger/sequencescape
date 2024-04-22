@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module Core::Endpoint::BasicHandler::Actions::Guards
   class Guard
-    def initialize(method = nil, &block) # rubocop:todo Metrics/MethodLength
+    def initialize(method = nil, &block)
       if method.present?
         line = __LINE__ + 1
         singleton_class.class_eval(

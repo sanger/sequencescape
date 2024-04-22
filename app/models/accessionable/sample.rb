@@ -77,8 +77,7 @@ module Accessionable
       { alias: self.alias, accession: accession_number }.tap { |obj| obj.delete(:alias) if accession_number.present? }
     end
 
-    # rubocop:todo Metrics/MethodLength
-    def xml # rubocop:todo Metrics/AbcSize
+        def xml # rubocop:todo Metrics/AbcSize
       xml = Builder::XmlMarkup.new
       xml.instruct!
       xml.SAMPLE_SET('xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance') do
@@ -96,9 +95,7 @@ module Accessionable
       xml.target!
     end
 
-    # rubocop:enable Metrics/MethodLength
-
-    def update_accession_number!(user, accession_number)
+        def update_accession_number!(user, accession_number)
       @accession_number = accession_number
       add_updated_event(user, "Sample #{@sample.id}", @sample) if @accession_number
       @sample.sample_metadata.sample_ebi_accession_number = accession_number

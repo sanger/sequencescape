@@ -73,8 +73,7 @@ class Request::ChangeDecision
     request.target_asset.reload
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def perform_decision_change_request_state! # rubocop:todo Metrics/AbcSize
+    def perform_decision_change_request_state! # rubocop:todo Metrics/AbcSize
     previous_state = request.state
     ActiveRecord::Base.transaction do
       # Really this toggle of states isn't ideal, as effectively it means
@@ -96,9 +95,7 @@ class Request::ChangeDecision
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  def perform_decision_change_asset_qc_state!
+    def perform_decision_change_asset_qc_state!
     previous_state = request.target_asset.qc_state
     request.target_asset.set_qc_state(asset_qc_state)
 

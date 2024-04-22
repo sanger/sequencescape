@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Search::FindTubes < Search
-  def scope(user_criteria) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def scope(user_criteria) # rubocop:todo Metrics/AbcSize
     criteria = default_parameters.stringify_keys.merge(user_criteria)
 
     purpose_ids =

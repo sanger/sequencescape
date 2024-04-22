@@ -26,7 +26,7 @@ module Accession
       
     end
 
-    def to_xml # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+    def to_xml # rubocop:todo Metrics/AbcSize
       xml = Builder::XmlMarkup.new
       xml.instruct!
       xml.SUBMISSION(

@@ -19,7 +19,7 @@ class CherrypickPipeline < CherrypickingPipeline
     # Nothing, we don't want all the requests to be completed
   end
 
-  def post_release_batch(batch, _user) # rubocop:todo Metrics/MethodLength
+  def post_release_batch(batch, _user)
     target_purpose = batch.output_plates.first.purpose.name
 
     # stock wells

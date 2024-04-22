@@ -213,8 +213,7 @@ class StudiesController < ApplicationController
     end
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def rescue_accession_errors # rubocop:todo Metrics/AbcSize
+    def rescue_accession_errors # rubocop:todo Metrics/AbcSize
     yield
   rescue ActiveRecord::RecordInvalid => e
     flash.now[:error] = 'Please fill in the required fields'
@@ -230,9 +229,7 @@ class StudiesController < ApplicationController
     redirect_to(edit_study_path(@study))
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  def accession
+    def accession
     rescue_accession_errors do
       @study = Study.find(params[:id])
       @study.validate_ena_required_fields!
@@ -278,8 +275,7 @@ class StudiesController < ApplicationController
     @study = Study.find(params[:id])
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def self.role_helper(name, success_action, error_action) # rubocop:todo Metrics/AbcSize
+    def self.role_helper(name, success_action, error_action) # rubocop:todo Metrics/AbcSize
     define_method(:"#{name}_role") do
       ActiveRecord::Base.transaction do
         @study = Study.find(params[:id])
@@ -300,9 +296,7 @@ class StudiesController < ApplicationController
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  role_helper(:grant, 'added', 'adding') { |user, study, name| user.grant_role(name, study) }
+    role_helper(:grant, 'added', 'adding') { |user, study, name| user.grant_role(name, study) }
   role_helper(:remove, 'remove', 'removing') { |user, study, name| user.remove_role(name, study) }
 
   def projects

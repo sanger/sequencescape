@@ -18,7 +18,7 @@ module Request::Statemachine
       aasm(options, &block)
     end
 
-    def destroy_aasm # rubocop:todo Metrics/MethodLength
+    def destroy_aasm
       # Destroy all evidence of the statemachine we've inherited!  Ugly, but it works!
       old_machine = AASM::StateMachineStore.fetch(self) && AASM::StateMachineStore.fetch(self).machine(:default)
       if old_machine

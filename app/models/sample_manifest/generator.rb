@@ -46,7 +46,7 @@ class SampleManifest::Generator
       )
   end
 
-  def execute # rubocop:todo Metrics/MethodLength
+  def execute
     if valid?
       ActiveRecord::Base.transaction do
         @sample_manifest = SampleManifest.create!(attributes)

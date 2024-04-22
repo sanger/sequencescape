@@ -344,7 +344,7 @@ class Receptacle < Asset # rubocop:todo Metrics/ClassLength
 
   private
 
-  def set_external_release(state) # rubocop:todo Metrics/MethodLength
+  def set_external_release(state)
     update_external_release do
       if state == 'failed'
         self.external_release = false

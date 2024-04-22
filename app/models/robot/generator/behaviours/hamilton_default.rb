@@ -31,7 +31,6 @@ module Robot::Generator::Behaviours::HamiltonDefault
   end
 
   # sorts the rows by destination well
-  # rubocop:todo Metrics/MethodLength
   def each_mapping(data_object) # rubocop:todo Metrics/AbcSize
     data_object['destination'].each do |dest_plate_barcode, plate_details|
       mapping_by_well = Hash.new { |h, i| h[i] = [] }
@@ -49,14 +48,11 @@ module Robot::Generator::Behaviours::HamiltonDefault
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  def column_headers
+    def column_headers
     COLUMN_HEADERS.join(',')
   end
 
   # formats the data object into rows to output in the file
-  # rubocop:todo Metrics/MethodLength
   def source_mappings(data_object) # rubocop:todo Metrics/AbcSize
     source_mappings = ''
     each_mapping(data_object) do |mapping, destination_plate_barcode, plate_details|
@@ -81,5 +77,4 @@ module Robot::Generator::Behaviours::HamiltonDefault
     end
     source_mappings
   end
-  # rubocop:enable Metrics/MethodLength
-end
+  end

@@ -250,7 +250,7 @@ class Labware < Asset
     # Returns hash { labware barcode => location string, .. } e.g. { 'DN1234' => 'Sanger - Room 1 - Shelf 2' }
     # Hash has blank values where location was not found for a particular barcode
     # Or raises LabWhereClient::LabwhereException if Labwhere response is unexpected
-    def labwhere_locations(labware_barcodes) # rubocop:todo Metrics/MethodLength
+    def labwhere_locations(labware_barcodes)
       info_from_labwhere = LabWhereClient::LabwareSearch.find_locations_by_barcodes(labware_barcodes)
 
       if info_from_labwhere.blank?

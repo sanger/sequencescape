@@ -131,8 +131,7 @@ module ApplicationHelper
     badge(status, type: 'counter-badge', style: 'primary')
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def dynamic_link_to(summary_item) # rubocop:todo Metrics/AbcSize
+    def dynamic_link_to(summary_item) # rubocop:todo Metrics/AbcSize
     object = summary_item.object
     if object.instance_of?(Submission)
       link_to("Submission #{object.id}", study_information_submission_path(object.study, object))
@@ -147,9 +146,7 @@ module ApplicationHelper
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  def request_count_link(study, asset, state, request_type) # rubocop:todo Metrics/AbcSize
+    def request_count_link(study, asset, state, request_type) # rubocop:todo Metrics/AbcSize
     matching_requests =
       asset.requests.select { |request| (request.request_type_id == request_type.id) and request.state == state }
     html_options = { title: "#{asset.try(:human_barcode) || asset.id} #{state}" }
@@ -298,7 +295,6 @@ module ApplicationHelper
   #
   # @return [String] HTML formatted for rendering
   #
-  # rubocop:todo Metrics/MethodLength
   def render_parsed_json(json) # rubocop:todo Metrics/AbcSize
     case json
     when String
@@ -319,9 +315,7 @@ module ApplicationHelper
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  #
+    #
   # Ideally we don't want inline script tags, however there is a fair chunk of
   # legacy code, some of which isn't trivial to migrate, as it uses erb to
   # generate javascript, rather than using data-attributes.

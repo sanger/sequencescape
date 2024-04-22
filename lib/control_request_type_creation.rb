@@ -16,7 +16,7 @@ module ControlRequestTypeCreation
     @last_request_type ||= request_types.last
   end
 
-  def add_control_request_type # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def add_control_request_type # rubocop:todo Metrics/AbcSize
     RequestType
       .find_or_create_by(key: key_name) do |crt|
         crt.name = control_type_name
