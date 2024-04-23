@@ -34,7 +34,8 @@ class AccessionService
   Protect = 'protect'
   Hold = 'hold'
 
-  def provider; end
+  def provider
+  end
 
   class AccessionedFile < File
     # This class provides an original_filename method

@@ -207,7 +207,8 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     redirect_to action: :show, id: @batch.id
   end
 
-  def print_labels; end
+  def print_labels
+  end
 
   def print_plate_labels
     @pipeline = @batch.pipeline
@@ -294,7 +295,8 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     redirect_to batch_url(@batch)
   end
 
-  def filtered; end
+  def filtered
+  end
 
   def swap # rubocop:todo Metrics/AbcSize
     if @batch.swap(

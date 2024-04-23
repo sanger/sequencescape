@@ -178,15 +178,20 @@ module Request::Statemachine
   deprecate change_decision!:
               'Change decision is being deprecated in favour of retrospective_pass and retrospective_fail!'
 
-  def on_failed; end
+  def on_failed
+  end
 
-  def on_passed; end
+  def on_passed
+  end
 
-  def on_cancelled; end
+  def on_cancelled
+  end
 
-  def on_blocked; end
+  def on_blocked
+  end
 
-  def on_hold; end
+  def on_hold
+  end
 
   def failed_upstream!
     # Don't transition it again if it's already reached an end state

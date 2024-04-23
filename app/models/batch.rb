@@ -134,19 +134,19 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def batch_meets_minimum_size
     return unless min_size && (requests.size < min_size)
       errors.add :base, "You must create batches of at least #{min_size} requests in the pipeline #{pipeline.name}"
-    
+
   end
 
   def requests_have_same_read_length
     return if pipeline.is_read_length_consistent_for_batch?(self)
       errors.add :base, "The selected requests must have the same values in their 'Read length' field."
-    
+
   end
 
   def requests_have_same_flowcell_type
     return if pipeline.is_flowcell_type_consistent_for_batch?(self)
       errors.add :base, "The selected requests must have the same values in their 'Flowcell Requested' field."
-    
+
   end
 
   # Fail was removed from State Machine (as a state) to allow the addition of qc_state column and features
@@ -168,7 +168,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   # Fail specific requests on this batch
-  def fail_requests(requests_to_fail, reason, comment, fail_but_charge = false) # rubocop:todo Metrics/MethodLength
+  def fail_requests(requests_to_fail, reason, comment, fail_but_charge = false)
     ActiveRecord::Base.transaction do
       requests
         .find(requests_to_fail)
@@ -188,7 +188,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
       failures.create(reason:, comment:, notify_remote: false)
       self.production_state = 'fail'
       save!
-    
+
   end
 
   def failed?
@@ -318,7 +318,6 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   #
   # @return [Bool] true if the layout is correct, false otherwise
   #
-  # rubocop:todo Metrics/MethodLength
   def verify_tube_layout(barcodes, user = nil) # rubocop:todo Metrics/AbcSize
     requests.each do |request|
       barcode = barcodes[request.position - 1]
@@ -334,8 +333,6 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
       false
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def release_pending_requests
     # We set the unused requests to pending.
@@ -379,7 +376,6 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
   end
 
-  # rubocop:todo Metrics/MethodLength
   def reset!(current_user) # rubocop:todo Metrics/AbcSize
     ActiveRecord::Base.transaction do
       discard!
@@ -400,8 +396,6 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
       end
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def swap(current_user, batch_info = {}) # rubocop:todo Metrics/CyclomaticComplexity
@@ -537,7 +531,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
       self.state = 'released'
       qc_complete
       save!
-    
+
   end
 
   def downstream_requests_needing_asset(request)
@@ -569,7 +563,6 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
     requests.all? { |request| request.asset.resource? || request.events.family_pass_and_fail.exists? }
   end
 
-  # rubocop:todo Metrics/MethodLength
   def generate_target_assets_for_requests # rubocop:todo Metrics/AbcSize
     requests_to_update = []
 
@@ -596,5 +589,4 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     requests_to_update.each { |request, asset| request.update!(asset:) }
   end
-  # rubocop:enable Metrics/MethodLength
 end

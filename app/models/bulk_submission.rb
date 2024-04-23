@@ -54,7 +54,6 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
 
   include ManifestUtil
 
-  # rubocop:todo Metrics/MethodLength
   def process_file # rubocop:todo Metrics/AbcSize
     # Slightly inelegant file-type checking
     # TODO (jr) Find a better way of verifying the CSV file?
@@ -72,8 +71,6 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
   rescue Encoding::InvalidByteSequenceError
     errors.add(:encoding, "didn't match for the provided file.")
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def headers
     @headers ||= filter_end_of_header(@csv_rows.fetch(header_index)) unless header_index.nil?
@@ -193,7 +190,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
         raise ActiveRecord::Rollback if errors.present?
       end
       # rubocop:enable Metrics/BlockLength
-    
+
   end
 
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
@@ -284,7 +281,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
 
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
-  def shared_options!(rows) # rubocop:todo Metrics/MethodLength
+  def shared_options!(rows)
     # Builds an array of the common fields. Raises and exception if the fields are inconsistent
     COMMON_FIELDS.map do |field|
       option = rows.pluck(field).uniq

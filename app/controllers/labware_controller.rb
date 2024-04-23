@@ -137,7 +137,8 @@ class LabwareController < ApplicationController
     end
   end
 
-  def find_by_barcode; end
+  def find_by_barcode
+  end
 
   def lab_view
     barcode = params.fetch(:barcode, '').strip

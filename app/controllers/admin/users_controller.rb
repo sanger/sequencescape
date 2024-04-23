@@ -10,7 +10,8 @@ class Admin::UsersController < ApplicationController
     @users = User.order(:login)
   end
 
-  def show; end
+  def show
+  end
   def edit
     @all_roles = Role.keys
     @users_roles = @user.study_and_project_roles.order(name: :asc)

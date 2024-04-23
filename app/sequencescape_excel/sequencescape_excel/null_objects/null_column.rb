@@ -9,7 +9,8 @@ module SequencescapeExcel
         -1
       end
 
-      def value; end
+      def value
+      end
     end
   end
 end

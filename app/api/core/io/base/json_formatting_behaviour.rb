@@ -22,7 +22,8 @@ module Core::Io::Base::JsonFormattingBehaviour
   #--
   # Very root level does absolutely nothing useful!
   #++
-  def object_json(*args); end
+  def object_json(*args)
+  end
 
   def json_field_for(attribute) # rubocop:todo Metrics/AbcSize
     return attribute_to_json_field[attribute.to_s] if attribute_to_json_field.key?(attribute.to_s)

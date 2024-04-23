@@ -57,9 +57,11 @@ class SampleManifest < ApplicationRecord
   self.spreadsheet_header_row = 8
 
   # Needed for the UI to work!
-  def barcode_printer; end
+  def barcode_printer
+  end
 
-  def template; end
+  def template
+  end
 
   belongs_to :supplier, optional: false
   belongs_to :study, optional: false

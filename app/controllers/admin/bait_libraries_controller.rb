@@ -17,7 +17,8 @@ class Admin::BaitLibrariesController < ApplicationController
     @bait_library = BaitLibrary.new
   end
 
-  def edit; end
+  def edit
+  end
 
   def create
     @bait_library = BaitLibrary.new(params[:bait_library])

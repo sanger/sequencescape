@@ -556,7 +556,8 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
     _product_line&.name
   end
 
-  def manifest_processed!; end
+  def manifest_processed!
+  end
 
   private
 

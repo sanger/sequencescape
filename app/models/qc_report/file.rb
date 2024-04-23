@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:todo Metrics/ClassLength
 class QcReport::File
   ACCEPTED_MIMETYPE = 'text/csv'
   ACCEPTED_EXTENSTION = 'csv'
@@ -41,7 +40,7 @@ class QcReport::File
     @valid
   end
 
-  def valid? # rubocop:todo Metrics/MethodLength
+  def valid?
     return invalid("#{filename} was not a csv file") unless is_a_csv?
     unless is_a_report?
       return(
@@ -170,4 +169,3 @@ class QcReport::File
     @headers = headers
   end
 end
-# rubocop:enable Metrics/ClassLength

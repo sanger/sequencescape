@@ -2,7 +2,8 @@
 class GetYourQcCompletedTubesHereController < ApplicationController
   before_action :login_required
 
-  def new; end
+  def new
+  end
 
     def create # rubocop:todo Metrics/AbcSize
     @generator =

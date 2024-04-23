@@ -231,7 +231,8 @@ class Receptacle < Asset # rubocop:todo Metrics/ClassLength
     primary_aliquot if aliquots.count == 1
   end
 
-  def library_information; end
+  def library_information
+  end
 
   def assign_tag2(tag)
     aliquots.each do |aliquot|

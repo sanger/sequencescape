@@ -10,7 +10,8 @@ class UsersController < ApplicationController
     @printer_list = BarcodePrinter.alphabetical.where(barcode_printer_type: BarcodePrinterType96Plate.all).pluck(:name)
   end
 
-  def edit; end
+  def edit
+  end
 
   def update # rubocop:todo Metrics/AbcSize
     params[:user].delete(:swipecard_code) if params[:user][:swipecard_code].blank?

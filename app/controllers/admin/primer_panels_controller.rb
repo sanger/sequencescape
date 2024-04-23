@@ -8,12 +8,14 @@ class Admin::PrimerPanelsController < ApplicationController
     @primer_panels = PrimerPanel.all
   end
 
-  def show; end
+  def show
+  end
   def new
     @primer_panel = PrimerPanel.new(programs: default_programs)
   end
 
-  def edit; end
+  def edit
+  end
 
   def create
     @primer_panel = PrimerPanel.new(primer_panel_params)

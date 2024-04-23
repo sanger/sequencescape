@@ -46,7 +46,7 @@ module ViewsSchema
     raise e
   end
 
-  def self.all_views # rubocop:todo Metrics/MethodLength
+  def self.all_views
     ActiveRecord::Base
       .connection
       .execute(

@@ -104,7 +104,8 @@ class Pipeline < ApplicationRecord
     Labware.none
   end
 
-  def post_finish_batch(batch, user); end
+  def post_finish_batch(batch, user)
+  end
 
   def completed_request_as_part_of_release_batch(request)
     EventSender.send_request_update(request, 'complete', "Completed pipeline: #{name}")
