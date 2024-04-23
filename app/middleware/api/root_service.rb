@@ -8,9 +8,8 @@ module Api
   class RootService < ::Core::Service
     # @note This is partly a hack but it suffices to keep the dynamic ability to write endpoints.
     ALL_SERVICES_AVAILABLE =
-      Dir.glob(Rails.root.join(%w[app api endpoints ** *.rb]).to_s) # rubocop:todo Rails/RootPathnameMethods
-        .to_h do |file|
-        handler = file.gsub(%r{^.+/(endpoints/.+).rb$}, '\1').camelize.constantize
+      Rails.root.glob("app/api/endpoints/**/*.rb").to_h do |file|
+        handler = file.to_s.gsub(%r{^.+/(endpoints/.+).rb$}, '\1').camelize.constantize
         [handler.root.tr('/', '_'), handler]
       end
 
