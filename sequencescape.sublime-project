@@ -16,7 +16,7 @@
         "coverage",
         "node_modules",
         "public/public",
-        "public/packs"
+        "public/packs",
       ],
       "file_exclude_patterns": [".swp", "sequencescape.sublime-workspace"],
       "binary_file_patterns": [
@@ -33,17 +33,17 @@
         "*.swf",
         "*.jar",
         "*.zip",
-        "*.xls"
-      ]
+        "*.xls",
+      ],
     },
     {
       "name": "Documentation",
-      "path": "doc"
+      "path": "doc",
     },
     {
       "name": "Factories",
-      "path": "spec/factories"
-    }
+      "path": "spec/factories",
+    },
   ],
   // These settings will be applied to anyone working
   // on the project. They are intended to set up the accepted
@@ -51,6 +51,6 @@
   "settings": {
     "tab_size": 2,
     "translate_tabs_to_spaces": true,
-    "trim_trailing_white_space_on_save": true
-  }
+    "trim_trailing_white_space_on_save": true,
+  },
 }
