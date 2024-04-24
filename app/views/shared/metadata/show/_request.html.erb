@@ -3,7 +3,7 @@
 <%= fields_for(request) do |form| %>
   <%= form.fields_for(:request_metadata, builder: Metadata::ViewBuilder) do |metadata_fields| %>
     <%- request.request_metadata.field_infos.each do |field_info| %>
-      <%= metadata_fields.plain_value(field_info.key) %>
+      <%= metadata_fields.label(field_info.key) %>: <%= metadata_fields.object.send(field_info.key) || 'Not specified' %> <br/>
     <% end %>
   <% end %>
 <% end %>
