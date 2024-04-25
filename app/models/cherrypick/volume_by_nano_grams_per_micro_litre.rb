@@ -87,7 +87,6 @@ module Cherrypick::VolumeByNanoGramsPerMicroLitre
 
   private
 
-  # rubocop:todo Metrics/MethodLength
   def check_inputs_to_volume_to_cherrypick_by_nano_grams_per_micro_litre!(
     final_volume_desired,
     final_conc_desired,
@@ -107,5 +106,4 @@ module Cherrypick::VolumeByNanoGramsPerMicroLitre
       # rubocop:enable Layout/LineLength
     
   end
-  # rubocop:enable Metrics/MethodLength
 end

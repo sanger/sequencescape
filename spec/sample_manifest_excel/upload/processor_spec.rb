@@ -78,9 +78,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         expect(processor).to be_downstream_aliquots_updated
       end
 
-      # rubocop:todo Layout/LineLength
       it 'updates the aliquots downstream in dual index cases where the substituted tags alone look like a tag clash' do
-        # rubocop:enable Layout/LineLength
         # We already have distinct tag2s, so by setting these to the same, we aren't creating a tag clash.
         cell(rows.first, columns[:i7]).value = 'ATAGATAGATAG'
         cell(rows.last, columns[:i7]).value = 'ATAGATAGATAG'

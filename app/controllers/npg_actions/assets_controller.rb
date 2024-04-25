@@ -26,7 +26,7 @@ class NpgActions::AssetsController < ApplicationController
 
   private
 
-  def action_for_qc_state(state) # rubocop:todo Metrics/MethodLength
+  def action_for_qc_state(state)
     ActiveRecord::Base.transaction do
       if @last_event.present?
         # If we already have an event we check to see its state. If it matches,

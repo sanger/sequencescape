@@ -74,7 +74,7 @@ class ExtractionAttribute < ApplicationRecord
     samples.all? { |sample| destination_well.samples.exclude?(sample) }
   end
 
-  def rack_well(well_data) # rubocop:todo Metrics/MethodLength
+  def rack_well(well_data)
     return unless well_data && well_data['sample_tube_uuid']
     raise SampleTubeNotExists unless well_data['sample_tube_resource']
 

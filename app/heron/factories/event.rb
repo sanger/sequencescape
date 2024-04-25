@@ -24,7 +24,7 @@ module Heron
         EVENT_CLASSES.dig(@params.dig(:event, :event_type))
       end
 
-      def check_broadcast_event #rubocop:todo Metrics/AbcSize
+      def check_broadcast_event
         return if errors.count.positive?
         return unless broadcast_event
         return if broadcast_event.valid?

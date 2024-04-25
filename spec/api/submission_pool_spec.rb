@@ -20,12 +20,10 @@ describe '/api/1/plate-uuid/submission_pools' do
     let(:response_code) { 200 }
 
       let(:response_body) do
-        # rubocop:todo Layout/LineLength
 
       it_behaves_like 'an API/1 GET endpoint'
     end
       let(:response_body) do
-        # rubocop:todo Layout/LineLength
 
       it_behaves_like 'an API/1 GET endpoint'
     end
@@ -99,7 +97,6 @@ plate.wells.each do |well|
 
     context 'a submission and a used tag template' do
       let(:plate) { create(:input_plate, well_count: 2) }
-        # rubocop:enable Layout/LineLength
       end
 
 
