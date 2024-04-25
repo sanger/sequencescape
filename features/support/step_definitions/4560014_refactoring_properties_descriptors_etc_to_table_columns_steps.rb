@@ -104,11 +104,10 @@ Then /^I should see the following request information:$/ do |expected|
   actual =
     page
       .all('.field')
-      .map do |field|
+      .each_with_object({}) do |field, hash|
         label = field.find('label').text
         value = field.find('.value_identifier', visible: false).text
-        [label, value]
+        hash[label] = value
       end
-      .to_h
   assert_equal expected.rows_hash, actual
 end
