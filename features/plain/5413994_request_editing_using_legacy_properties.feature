@@ -19,9 +19,9 @@ Feature: Editing a request as an administrator
     And I press "Save Request"
     Then I should see "Request details have been updated"
     And I should see the following request information:
-      | Still charge on fail          | Not specified |
-      | Read length                   | 76            |
-      | Gigabases expected            | 1.0           |
-      | Fragment size required (from) | 11111111      |
-      | Fragment size required (to)   | 22222222      |
-      | Library type                  | Standard      |
+      | Still charge on fail:          | Not specified |
+      | Read length:                   | 76            |
+      | Gigabases expected:            | 1.0           |
+      | Fragment size required (from): | 11111111      |
+      | Fragment size required (to):   | 22222222      |
+      | Library type:                  | Standard      |
