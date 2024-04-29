@@ -7,6 +7,7 @@ module SequencescapeExcel
     class RetentionInstruction
       include Base
       include ValueRequired
+      include RetentionKeyHelper
 
       def update(_attributes = {})
         return unless valid?
@@ -19,6 +20,7 @@ module SequencescapeExcel
         if labware_metadatum_collection.present?
           check_and_update_existing_custom_metadatum_collection
         else
+          update_labware
           asset_labware.custom_metadatum_collection = create_custom_metadatum_collection
         end
       end
@@ -36,6 +38,13 @@ module SequencescapeExcel
       end
 
       private
+
+      def update_labware
+        retention_enum_key = find_retention_instruction_key_for_value(value)
+        return if retention_enum_key.blank?
+        asset_labware.retention_instruction = retention_enum_key
+        asset_labware.save!
+      end
 
       def create_custom_metadatum_collection
         cmc =

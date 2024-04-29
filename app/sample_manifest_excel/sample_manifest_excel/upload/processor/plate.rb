@@ -8,6 +8,8 @@ module SampleManifestExcel
       ##
       # Processor to handle plate manifest uploads.
       class Plate < SampleManifestExcel::Upload::Processor::Base
+        include RetentionKeyHelper
+
         validate :check_for_retention_instruction_by_plate
 
         # For plate manifests the barcodes (sanger plate id column) should be the same for each well from the same
@@ -77,6 +79,8 @@ module SampleManifestExcel
         def non_matching_retention_instructions_for_plates
           return nil, nil unless upload.respond_to?(:rows)
 
+          # Initialize empty plate_retentions and retention_instructions hashes to store retention instructions
+          retention_instructions = {}
           upload
             .rows
             .each_with_object({}) do |row, plate_retentions|
@@ -92,7 +96,7 @@ module SampleManifestExcel
               next unless plate_barcode.present? && sample_id.present?
 
               # check the row retention instruction is valid
-              err_msg = check_row_retention_value(row, plate_barcode, plate_retentions)
+              err_msg = check_row_retention_value(row, plate_barcode, plate_retentions, retention_instructions)
               return row, err_msg if err_msg.present?
             end
           [nil, nil]
@@ -100,7 +104,7 @@ module SampleManifestExcel
 
         # rubocop:enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
 
-        def check_row_retention_value(row, plate_barcode, plate_retentions)
+        def check_row_retention_value(row, plate_barcode, plate_retentions, retention_instructions)
           # if present the column is mandatory
           row_retention_value = row.value('retention_instruction')
           return 'Value cannot be blank.' if row_retention_value.nil?
@@ -113,6 +117,7 @@ module SampleManifestExcel
           else
             # first time we are seeing this plate, add it to plate retentions hash
             plate_retentions[plate_barcode] = row_retention_value
+            retention_instructions[plate_barcode] = find_retention_instruction_key_for_value(row_retention_value)
           end
           nil
         end

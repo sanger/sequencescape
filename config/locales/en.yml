@@ -241,3 +241,8 @@ en:
   unauthorized:
     manage:
       all: "Sorry, you are not authorized to %{action} this %{subject}"
+  
+  retention_instructions:
+    destroy_after_2_years: "Destroy after 2 years"
+    return_to_customer_after_2_years: "Return to customer after 2 years"
+    long_term_storage: "Long term storage"
