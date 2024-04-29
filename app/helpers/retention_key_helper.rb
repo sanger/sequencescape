@@ -2,12 +2,14 @@
 module RetentionKeyHelper
   # Return the retention instruction options for select
   def retention_instruction_option_for_select
-    Labware.retention_instruction.keys.map { |option| [I18n.t("retention_instructions.#{option}"), option] }
+    Labware.retention_instructions.keys.map { |option| [I18n.t("retention_instructions.#{option}"), option] }
   end
 
   # Find the retention instruction value based on the key
   def find_retention_instruction_from_key(key)
-    Labware.retention_instruction[key]
+    value = I18n.t("retention_instructions.#{key}")
+    return nil if value.include?('Translation missing:')
+    value
   end
 
   # Retrieve the I18n key for a given value in the retention_instructions hash
