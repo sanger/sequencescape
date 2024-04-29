@@ -15,14 +15,11 @@ module SequencescapeExcel
         # do nothing unless we can access the labware (assuming asset will be a well or tube receptacle)
         return if asset_labware.blank?
 
-        # NB. it is most likely that as we process the sample rows for a plate labware, that a previous row
-        # will have already created the retention instructions field in the labware metadata
-        if labware_metadatum_collection.present?
-          check_and_update_existing_custom_metadatum_collection
-        else
-          update_labware
-          asset_labware.custom_metadatum_collection = create_custom_metadatum_collection
-        end
+        # NB: Retention instructions are no longer stored in custom_metadata.
+        # We need to keep this logic in place to ensure that updating existing manifests would update the retention instructions
+        # currently stored in the labware metadata
+        check_and_update_existing_custom_metadatum_collection if labware_metadatum_collection.present?
+        update_labware
       end
 
       def asset_labware
@@ -44,19 +41,6 @@ module SequencescapeExcel
         return if retention_enum_key.blank?
         asset_labware.retention_instruction = retention_enum_key
         asset_labware.save!
-      end
-
-      def create_custom_metadatum_collection
-        cmc =
-          CustomMetadatumCollection.new(
-            user: sample_manifest.user,
-            asset: asset_labware,
-            metadata: {
-              retention_instruction: value
-            }
-          )
-        cmc.save!
-        cmc
       end
 
       def check_and_update_existing_custom_metadatum_collection
