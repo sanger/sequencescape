@@ -102,7 +102,11 @@
   <% end %>
   <tr>
     <th>Retention Instruction</th>
-    <td><%= find_retention_instruction_from_key(@asset.retention_instruction.to_sym) %></td>
+    <% if @asset.retention_instruction.blank? %>
+      <td>Not set</td>
+    <%  else  %>
+      <td><%=  find_retention_instruction_from_key(@asset.retention_instruction.to_sym)  %></td>
+    <%  end %>
   </tr>
 </table>
 </div>
