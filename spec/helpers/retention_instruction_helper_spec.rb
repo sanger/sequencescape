@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'rails_helper'
 
-describe RetentionKeyHelper do
+describe RetentionInstructionHelper do
   describe '#find_retention_instruction_key_for_value' do
     subject { helper.find_retention_instruction_key_for_value(value) }
 

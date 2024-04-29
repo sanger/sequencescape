@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module RetentionKeyHelper
+module RetentionInstructionHelper
   # Return the retention instruction options for select
   def retention_instruction_option_for_select
     Labware.retention_instructions.keys.map { |option| [I18n.t("retention_instructions.#{option}"), option] }

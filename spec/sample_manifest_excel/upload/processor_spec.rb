@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
   include SequencescapeExcel::Helpers
-  include RetentionKeyHelper
+  include RetentionInstructionHelper
 
   def cell(row, column)
     download.worksheet.axlsx_worksheet.rows[row].cells[column]

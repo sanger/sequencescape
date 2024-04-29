@@ -8,7 +8,7 @@ module SampleManifestExcel
       ##
       # Processor to handle plate manifest uploads.
       class Plate < SampleManifestExcel::Upload::Processor::Base
-        include RetentionKeyHelper
+        include RetentionInstructionHelper
 
         validate :check_for_retention_instruction_by_plate
 

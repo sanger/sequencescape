@@ -100,5 +100,9 @@
       <td><%= asset.storage_location %></td>
     </tr>
   <% end %>
+  <tr>
+    <th>Retention Instruction</th>
+    <td><%= find_retention_instruction_from_key(@asset.retention_instruction.to_sym) %></td>
+  </tr>
 </table>
 </div>
