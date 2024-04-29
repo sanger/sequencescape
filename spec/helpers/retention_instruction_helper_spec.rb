@@ -37,10 +37,10 @@ describe RetentionInstructionHelper do
   end
 
   describe '#retention_instruction_option_for_select' do
-    subject { helper.retention_instruction_option_for_select }
+    let(:options_for_select) { helper.retention_instruction_option_for_select }
 
     it 'returns the retention instruction options for select' do
-      expect(subject).to eq(
+      expect(options_for_select).to eq(
         [
           ['Destroy after 2 years', 'destroy_after_2_years'],
           ['Return to customer after 2 years', 'return_to_customer_after_2_years'],
