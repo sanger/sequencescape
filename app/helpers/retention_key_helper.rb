@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module RetentionKeyHelper
   # Return the retention instruction options for select
   def retention_instruction_option_for_select
