@@ -16,8 +16,8 @@ module SequencescapeExcel
         return if asset_labware.blank?
 
         # NB: Retention instructions are no longer stored in custom_metadata.
-        # We need to keep this logic in place to ensure that updating existing manifests would update the retention instructions
-        # currently stored in the labware metadata
+        # We need to keep this logic in place to ensure that updating existing manifests would update
+        # the retention instructions currently stored in the labware metadata
         check_and_update_existing_custom_metadatum_collection if labware_metadatum_collection.present?
         update_labware
       end
