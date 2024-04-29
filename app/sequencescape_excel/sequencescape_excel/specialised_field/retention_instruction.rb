@@ -7,7 +7,6 @@ module SequencescapeExcel
     class RetentionInstruction
       include Base
       include ValueRequired
-      include RetentionInstructionHelper
 
       def update(_attributes = {})
         return unless valid?

@@ -242,7 +242,6 @@ class Labware < Asset
       &.created_at
   end
 
-  # TODO: Fix this ONLY IF REQUIRED
   def retention_instructions
     @retention_instructions ||= obtain_retention_instructions
   end

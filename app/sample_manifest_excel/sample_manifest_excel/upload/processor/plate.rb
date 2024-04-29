@@ -8,8 +8,6 @@ module SampleManifestExcel
       ##
       # Processor to handle plate manifest uploads.
       class Plate < SampleManifestExcel::Upload::Processor::Base
-        include RetentionInstructionHelper
-
         validate :check_for_retention_instruction_by_plate
 
         # For plate manifests the barcodes (sanger plate id column) should be the same for each well from the same
