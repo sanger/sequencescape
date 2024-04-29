@@ -5,6 +5,11 @@ module RetentionKeyHelper
     Labware.retention_instruction.keys.map { |option| [I18n.t("retention_instructions.#{option}"), option] }
   end
 
+  # Find the retention instruction value based on the key
+  def find_retention_instruction_from_key(key)
+    Labware.retention_instruction[key]
+  end
+
   # Retrieve the I18n key for a given value in the retention_instructions hash
   def find_retention_instruction_key_for_value(value)
     key = I18n.t(:retention_instructions).key(value)

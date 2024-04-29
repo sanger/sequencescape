@@ -4,6 +4,7 @@ require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
   include SequencescapeExcel::Helpers
+  include RetentionKeyHelper
 
   def cell(row, column)
     download.worksheet.axlsx_worksheet.rows[row].cells[column]
@@ -809,6 +810,14 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             expect(processor.errors.full_messages).to include(
               'Retention instruction checks failed at row: 11. ' \
                 'Plate (SQPD-2) cannot have different retention instruction values.'
+            )
+          end
+
+          it 'should populate retention_instruction attribute in labware' do
+            processor.run(nil)
+            expect(upload.rows).to be_all(&:sample_updated?)
+            expect(upload.sample_manifest.assets.map(&:labware).map { |l| l.retention_instruction.to_sym }.uniq).to eq(
+              [:long_term_storage]
             )
           end
         end
