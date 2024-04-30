@@ -12,6 +12,7 @@ RSpec.describe 'labware/show.html.erb' do # rubocop:todo RSpec/DescribeClass
 
     before do
       assign(:asset, plate) # sets @widget = Widget.new in the view template
+      plate.retention_instruction = :destroy_after_2_years
     end
 
     it 'displays the barcode of the plate' do
@@ -22,6 +23,16 @@ RSpec.describe 'labware/show.html.erb' do # rubocop:todo RSpec/DescribeClass
     it 'does not display the barcode for the wells' do
       render
       expect(rendered).not_to match(/Tube Barcode/)
+    end
+
+    it 'displays retention key instruction in asset summary' do
+      render
+      expect(rendered).to match(/Retention Instruction/)
+    end
+
+    it 'displays retention instruction value in asset summary' do
+      render
+      expect(rendered).to match(/Destroy after 2 years/)
     end
   end
 

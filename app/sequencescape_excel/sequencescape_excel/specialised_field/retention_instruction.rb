@@ -36,6 +36,7 @@ module SequencescapeExcel
 
       private
 
+      # Update the retention instruction on the labware
       def update_labware
         retention_enum_key = find_retention_instruction_key_for_value(value)
         return if retention_enum_key.blank?
