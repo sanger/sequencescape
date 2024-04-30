@@ -103,33 +103,21 @@ module SampleManifestExcel
 
         # rubocop:enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
         def check_row_retention_value(row, plate_barcode, retention_instructions)
+          # if present the column is mandatory
           row_retention_value = row.value('retention_instruction')
           return 'Value cannot be blank.' if row_retention_value.nil?
 
+          # Check that a plate has only one retention instruction value
           retention_instruction_key = find_retention_instruction_key_for_value(row_retention_value)
           return "Invalid retention instruction #{retention_instruction_key}" if retention_instruction_key.blank?
-
-          check_plate_retention_instructions(plate_barcode, retention_instruction_key, retention_instructions)
-        end
-
-        def check_plate_retention_instructions(plate_barcode, retention_instruction_key, retention_instructions)
           if retention_instructions.key?(plate_barcode)
-            check_existing_plate_retention_instruction(plate_barcode, retention_instruction_key, retention_instructions)
+            if retention_instructions[plate_barcode] != retention_instruction_key
+              return "Plate (#{plate_barcode}) cannot have different retention instruction values."
+            end
           else
-            add_new_plate_retention_instruction(plate_barcode, retention_instruction_key, retention_instructions)
+            # first time we are seeing this plate, add it to plate retentions hash
+            retention_instructions[plate_barcode] = retention_instruction_key
           end
-        end
-
-        def check_existing_plate_retention_instruction(plate_barcode, retention_instruction_key, retention_instructions)
-          if retention_instructions[plate_barcode] != retention_instruction_key
-            return "Plate (#{plate_barcode}) cannot have different retention instruction values."
-          end
-          nil
-        end
-
-        def add_new_plate_retention_instruction(plate_barcode, retention_instruction_key, retention_instructions)
-          # first time we are seeing this plate, add it to plate retentions hash
-          retention_instructions[plate_barcode] = retention_instruction_key
           nil
         end
       end
