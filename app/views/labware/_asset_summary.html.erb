@@ -102,14 +102,14 @@
   <% end %>
   <tr>
     <th>Retention Instruction</th>
-    <% if @asset.retention_instruction.blank? %>
+    <% if asset.retention_instruction.blank? %>
       <%  if asset.custom_metadatum_collection.present?  %>
         <td><%= asset.metadata['retention_instruction'] if asset.metadata.key?('retention_instruction') %></td>
       <%  else  %>
         <td>Not specified</td>
       <%  end  %>
     <%  else  %>
-      <td><%= find_retention_instruction_from_key(@asset.retention_instruction.to_sym) %></td>
+      <td><%= find_retention_instruction_from_key(asset.retention_instruction.to_sym) %></td>
     <%  end %>
   </tr>
 </table>
