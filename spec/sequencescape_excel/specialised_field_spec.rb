@@ -894,17 +894,19 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
         sf = described_class.new(value: 'Long term storage', sample_manifest_asset: sample_manifest_asset)
         sf.update
 
-        expect(sf.asset.labware.retention_instruction).to include('long_term_storage')
+        expect(sf.asset.labware.retention_instruction.to_sym).to eq(:long_term_storage)
       end
 
       it 'will update any existing labware custom metadata on the labware to add the retention instruction choice' do
+        # Set an initial retention instruction value and save the asset
         asset.labware.retention_instruction = :destroy_after_2_years
         asset.labware.save
 
+        # Update the retention instruction value
         sf = described_class.new(value: 'Long term storage', sample_manifest_asset: sample_manifest_asset)
         sf.update
 
-        expect(sf.asset.labware.retention_instruction).to include('long_term_storage')
+        expect(sf.asset.labware.retention_instruction.to_sym).to eq(:long_term_storage)
       end
 
       # It is valid for this special field to update the labware metadata and change it to a new value.
@@ -915,7 +917,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
         expect(sf).to be_valid
         sf.update
 
-        expect(sf.asset.labware.retention_instruction).to eq('destroy_after_2_years')
+        expect(sf.asset.labware.retention_instruction.to_sym).to eq(:destroy_after_2_years)
       end
     end
 
