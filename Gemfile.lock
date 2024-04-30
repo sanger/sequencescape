@@ -267,7 +267,6 @@ GEM
     mime-types-data (3.2024.0305)
     mini_magick (4.12.0)
     mini_mime (1.1.5)
-    mini_portile2 (2.8.6)
     minitest (5.22.2)
     minitest-profiler (0.0.2)
       activesupport (>= 4.1.0)
@@ -292,8 +291,9 @@ GEM
       net-protocol
     netrc (0.11.0)
     nio4r (2.7.0)
-    nokogiri (1.16.4)
-      mini_portile2 (~> 2.8.2)
+    nokogiri (1.16.4-arm64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.16.4-x86_64-linux)
       racc (~> 1.4)
     parallel (1.24.0)
     parser (3.3.0.5)
@@ -307,6 +307,7 @@ GEM
       pry (>= 0.13, < 0.15)
     pry-rails (0.3.9)
       pry (>= 0.10.4)
+    psych (3.3.4)
     public_suffix (5.0.4)
     puma (6.4.2)
       nio4r (~> 2.0)
@@ -576,6 +577,7 @@ DEPENDENCIES
   nokogiri
   pry-byebug
   pry-rails
+  psych (< 4)
   puma
   rack-acceptable
   rack-cors
@@ -620,4 +622,4 @@ DEPENDENCIES
   yard-activerecord (~> 0.0.16)
 
 BUNDLED WITH
-   2.2.33
+   2.5.9

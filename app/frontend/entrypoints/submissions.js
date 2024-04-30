@@ -338,7 +338,7 @@
             $("#start-submission").attr("disabled", true);
           }
         });
-      }
+      },
     );
 
     // don't forget to stop the form submitting...

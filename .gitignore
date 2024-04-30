@@ -54,6 +54,8 @@ rcov
 *.sublime-workspace
 *.idea
 .vscode
+sequencescape.code-workspace
+sequencescape.sublime-project
 
 # Repository files
 .bundle
