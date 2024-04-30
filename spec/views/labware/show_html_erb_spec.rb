@@ -12,7 +12,6 @@ RSpec.describe 'labware/show.html.erb' do # rubocop:todo RSpec/DescribeClass
 
     before do
       assign(:asset, plate) # sets @widget = Widget.new in the view template
-      plate.retention_instruction = :destroy_after_2_years
     end
 
     it 'displays the barcode of the plate' do
@@ -25,14 +24,55 @@ RSpec.describe 'labware/show.html.erb' do # rubocop:todo RSpec/DescribeClass
       expect(rendered).not_to match(/Tube Barcode/)
     end
 
-    it 'displays retention key instruction in asset summary' do
-      render
-      expect(rendered).to match(/Retention Instruction/)
+    context 'when retention instructions are coming from custom_metadata (for old submissions)' do
+      before do
+        custom_metadatum = CustomMetadatum.new
+        custom_metadatum.key = 'retention_instruction'
+        custom_metadatum.value = 'Destroy after 2 years'
+        custom_metadatum_collection = CustomMetadatumCollection.new
+        custom_metadatum_collection.custom_metadata = [custom_metadatum]
+        custom_metadatum_collection.asset = plate
+        custom_metadatum_collection.user = user
+        custom_metadatum_collection.save!
+        custom_metadatum.save!
+      end
+
+      it 'displays retention instruction value in Metadata' do
+        render
+        expect(rendered).to match(/retention_instruction/)
+      end
+
+      it 'displays retention instruction value in asset summary' do
+        render
+        expect(rendered).to match(/Retention Instruction/)
+      end
+
+      it 'displays same retention instruction in asset summary and metadata' do
+        render
+        expect(rendered).to have_text(/Destroy after 2 years/, count: 2)
+      end
     end
 
-    it 'displays retention instruction value in asset summary' do
-      render
-      expect(rendered).to match(/Destroy after 2 years/)
+    context 'when retention instructions are coming from labware.retention_instruction' do
+      before do
+        plate.retention_instruction = :destroy_after_2_years
+        plate.custom_metadatum_collection = nil
+      end
+
+      it 'displays retention key instruction in asset summary' do
+        render
+        expect(rendered).to match(/Retention Instruction/)
+      end
+
+      it 'displays retention instruction value in asset summary' do
+        render
+        expect(rendered).to match(/Destroy after 2 years/)
+      end
+
+      it 'does not display retention instruction value in Metadata' do
+        render
+        expect(rendered).not_to match(/retention_instruction/)
+      end
     end
   end
 

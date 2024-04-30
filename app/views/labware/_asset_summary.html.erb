@@ -107,7 +107,7 @@
       <!-- If retention instructions aren't there in the labware table, check whether if the labware has -->
       <!-- instructions stored in custom_metadata -->
       <%  if asset.custom_metadatum_collection.present?  %>
-        <td><%= asset.metadata[:retention_instruction] if asset.metadata.key?(:retention_instruction) %></td>
+        <td><%= asset.metadata['retention_instruction'] if asset.metadata.key?('retention_instruction') %></td>
       <%  else  %>
         <td>Not specified</td>
       <%  end  %>
@@ -116,7 +116,7 @@
       <td><%= find_retention_instruction_from_key(asset.retention_instruction.to_sym) %></td>
     <%  end %>
     <!-- There shouldn't be a situation where retention instructions are there in both custom_metadata -->
-    <!-- and in labware table's retention_instruction attribute -->
+    <!-- and in labware table's retention instruction attribute -->
   </tr>
 </table>
 </div>
