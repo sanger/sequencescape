@@ -4,8 +4,7 @@
 # @see Labware
 class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLength
   include RetentionInstructionHelper
-  before_action :discover_asset, only: %i[show edit update summary print_assets print history
-                retention_instruction update_retention_instruction]
+  before_action :discover_asset, only: %i[show edit update summary print_assets print history retention_instruction]
 
   def index # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     if params[:study_id]
