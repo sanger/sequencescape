@@ -64,62 +64,6 @@ module SampleManifestExcel
           sample_manifest_asset = SampleManifestAsset.find_by(sanger_sample_id: sample_id)
           sample_manifest_asset.labware&.id
         end
-
-        # A subset of the plate manifests (stock plates not library plates) are required to have
-        # a retention instruction column to describe how they should be disposed of. The column should
-        # have the same value for all manifest rows for the same plate.
-        def check_for_retention_instruction_by_plate
-          retention_error_row, err_msg = non_matching_retention_instructions_for_plates
-          return if retention_error_row.nil?
-
-          errors.add(:base, "Retention instruction checks failed at row: #{retention_error_row.number}. #{err_msg}")
-        end
-
-        # rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
-        def non_matching_retention_instructions_for_plates
-          return nil, nil unless upload.respond_to?(:rows)
-
-          # Initialize empty retention_instructions hash to store retention instructions
-          upload
-            .rows
-            .each_with_object({}) do |row, retention_instructions|
-              # ignore empty rows and skip if the retention column is not present
-              if row.columns.blank? || row.data.blank? || row.columns.extract(['retention_instruction']).count.zero?
-                next
-              end
-
-              plate_barcode = row.value('sanger_plate_id')
-              sample_id = row.value('sanger_sample_id')
-
-              # ignore rows where primary sample fields have not been filled in
-              next unless plate_barcode.present? && sample_id.present?
-
-              # check the row retention instruction is valid
-              err_msg = check_row_retention_value(row, plate_barcode, retention_instructions)
-              return row, err_msg if err_msg.present?
-            end
-          [nil, nil]
-        end
-
-        # rubocop:enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
-        def check_row_retention_value(row, plate_barcode, retention_instructions)
-          # if present the column is mandatory
-          row_retention_value = row.value('retention_instruction')
-          return 'Value cannot be blank.' if row_retention_value.nil?
-
-          # Check that a plate has only one retention instruction value
-          retention_instruction_key = find_retention_instruction_key_for_value(row_retention_value)
-          return "Invalid retention instruction #{retention_instruction_key}" if retention_instruction_key.blank?
-          if retention_instructions.key?(plate_barcode)
-            if retention_instructions[plate_barcode] != retention_instruction_key
-              return "Plate (#{plate_barcode}) cannot have different retention instruction values."
-            end
-          else
-            # first time we are seeing this plate, add it to plate retentions hash
-            retention_instructions[plate_barcode] = retention_instruction_key
-          end
-          nil
-        end
       end
     end
   end
