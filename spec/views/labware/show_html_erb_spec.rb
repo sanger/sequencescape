@@ -6,6 +6,18 @@ RSpec.describe 'labware/show.html.erb' do # rubocop:todo RSpec/DescribeClass
   include AuthenticatedSystem
   let(:user) { create :user }
 
+  shared_examples 'retention instruction' do
+    it 'displays retention key instruction in asset summary' do
+      render
+      expect(rendered).to match(/Retention Instruction/)
+    end
+
+    it 'displays retention instruction value in asset summary' do
+      render
+      expect(rendered).to match(/Destroy after 2 years/)
+    end
+  end
+
   context 'when rendering a plate' do
     let(:current_user) { user }
     let(:plate) { create :plate_with_3_wells }
@@ -37,20 +49,7 @@ RSpec.describe 'labware/show.html.erb' do # rubocop:todo RSpec/DescribeClass
         custom_metadatum.save!
       end
 
-      it 'displays retention instruction value in Metadata' do
-        render
-        expect(rendered).to match(/retention_instruction/)
-      end
-
-      it 'displays retention instruction value in asset summary' do
-        render
-        expect(rendered).to match(/Retention Instruction/)
-      end
-
-      it 'displays same retention instruction in asset summary and metadata' do
-        render
-        expect(rendered).to have_text(/Destroy after 2 years/, count: 2)
-      end
+      it_behaves_like 'retention instruction'
     end
 
     context 'when retention instructions are coming from labware.retention_instruction' do
@@ -59,20 +58,7 @@ RSpec.describe 'labware/show.html.erb' do # rubocop:todo RSpec/DescribeClass
         plate.custom_metadatum_collection = nil
       end
 
-      it 'displays retention key instruction in asset summary' do
-        render
-        expect(rendered).to match(/Retention Instruction/)
-      end
-
-      it 'displays retention instruction value in asset summary' do
-        render
-        expect(rendered).to match(/Destroy after 2 years/)
-      end
-
-      it 'does not display retention instruction value in Metadata' do
-        render
-        expect(rendered).not_to match(/retention_instruction/)
-      end
+      it_behaves_like 'retention instruction'
     end
   end
 
