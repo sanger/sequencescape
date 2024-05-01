@@ -477,6 +477,7 @@ Rails.application.routes.draw do
       get :close
       get :print
       get :history
+      get :retention_instruction
       post :move
       post :print_assets
     end

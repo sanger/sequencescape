@@ -3,7 +3,9 @@
 # Handles viewing {Labware} information
 # @see Labware
 class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLength
-  before_action :discover_asset, only: %i[show edit update summary print_assets print history]
+  include RetentionInstructionHelper
+  before_action :discover_asset, only: %i[show edit update summary print_assets print history
+                retention_instruction update_retention_instruction]
 
   def index # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     if params[:study_id]
@@ -39,6 +41,10 @@ class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   def edit
     @valid_purposes_options = @asset.compatible_purposes.pluck(:name, :id)
+  end
+
+  def retention_instruction
+    @retention_instruction_options = retention_instruction_option_for_select
   end
 
   def history
@@ -156,7 +162,7 @@ class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLeng
   private
 
   def labware_params
-    permitted = %i[volume concentration]
+    permitted = %i[volume concentration retention_instruction]
     permitted << :name if can? :rename, Labware
     permitted << :plate_purpose_id if can? :change_purpose, Labware
     params.require(:labware).permit(permitted)
