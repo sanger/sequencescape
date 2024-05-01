@@ -18,7 +18,10 @@ module RetentionInstructionHelper
     return key if key
     nil
   end
-  
+
+  # This function is used to find the retention instruction to display for a given asset
+  # NB: The elsif statement in the function will not be necessary after the script in #4095 is run,.
+  # After the script in #4095 is run, the elsif branch can be removed.
   def find_retention_instruction_to_display(asset)
     if asset.retention_instruction.present?
       return asset.retention_instruction
