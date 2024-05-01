@@ -38,6 +38,10 @@ describe 'Update retention instructions' do
       expect(page).to have_content 'Edit Retention Instruction'
     end
 
+    it "does not have a retention instruction yet" do
+      expect(page).to have_content 'This asset does not currently have a retention instruction.'
+    end
+
     it_behaves_like 'updating retention instruction'
   end
 
