@@ -42,4 +42,15 @@ describe 'Update retention instructions' do
     it_behaves_like 'updating retention instruction'
   end
 
+  context 'when retention instruction exists for tube' do
+    let(:user) { create :admin }
+    let(:asset) { create :tube, retention_instruction: :destroy_after_2_years }
+
+    it 'does not display the warning message' do
+      expect(page).to have_no_content 'This asset does not currently have a retention instruction.'
+    end
+
+    it_behaves_like 'updating retention instruction'
+  end
+
 end
