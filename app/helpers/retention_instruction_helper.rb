@@ -18,5 +18,14 @@ module RetentionInstructionHelper
     return key if key
     nil
   end
+  
+  def find_retention_instruction_to_display(asset)
+    if asset.retention_instruction.present?
+      return asset.retention_instruction
+    elsif asset.custom_metadatum_collection.present? && asset.metadata.key?('retention_instruction')
+      return find_retention_instruction_key_for_value(asset.metadata['retention_instruction'])
+    end
+    nil
+  end
 
 end

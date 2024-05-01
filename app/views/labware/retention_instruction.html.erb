@@ -20,7 +20,10 @@
   <div class="form-group">
     <%= f.label :retention_instruction %>
     <%= f.select(:retention_instruction,
-                 options_for_select(@retention_instruction_options, @asset.retention_instruction),
+                 options_for_select(
+                   @retention_instruction_options,
+                   find_retention_instruction_to_display(@asset)
+                 ),
                  {}, class: 'select2' ) %>
   </div>
 
