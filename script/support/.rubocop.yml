@@ -3,3 +3,8 @@ require: rubocop-rails
 
 Style/Documentation:
   Enabled: false
+
+# New in Ruby 3.2
+
+Style/HashSyntax:
+  Enabled: false
