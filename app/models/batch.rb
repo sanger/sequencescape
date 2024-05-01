@@ -60,6 +60,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
            :requests_have_same_flowcell_type,
            :batch_meets_minimum_size,
            :all_requests_are_ready?,
+           :requests_have_same_target_purpose,
            on: :create,
            if: :pipeline
 
@@ -134,6 +135,12 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def batch_meets_minimum_size
     if min_size && (requests.size < min_size)
       errors.add :base, "You must create batches of at least #{min_size} requests in the pipeline #{pipeline.name}"
+    end
+  end
+
+  def requests_have_same_target_purpose
+    if (pipeline.is_a? CherrypickingPipeline) && requests.map { |request| request.request_metadata.target_purpose_id }.uniq.size > 1
+      errors.add :base, 'The selected requests must have the same target purpose (Pick To) values'
     end
   end
 
@@ -357,7 +364,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   # Remove a request from the batch and reset it to a point where it can be put back into
-  # the pending queue.
+  # the pending queue.ƒ
   def detach_request(request, current_user = nil)
     ActiveRecord::Base.transaction do
       unless current_user.nil?
