@@ -366,7 +366,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   # Remove a request from the batch and reset it to a point where it can be put back into
-  # the pending queue.ƒ
+  # the pending queue.
   def detach_request(request, current_user = nil)
     ActiveRecord::Base.transaction do
       unless current_user.nil?
