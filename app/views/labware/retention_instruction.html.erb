@@ -1,5 +1,5 @@
 
-<%= page_title('Edit Retention Instruction') %>
+<%= page_title('Retention Instruction', "#{@asset.display_name}") %>
 
 <% if @asset.retention_instruction.blank? %>
   <!-- This doesn't necessarily set the retention instruction. It will just prevent displaying the warning message
