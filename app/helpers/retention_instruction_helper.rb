@@ -25,8 +25,9 @@ module RetentionInstructionHelper
   def find_retention_instruction_to_display(asset)
     metadata = asset.metadata
 
-    if asset.retention_instruction.present?
-      return asset.retention_instruction
+    retention_instruction = asset.retention_instruction
+    if retention_instruction.present?
+      return retention_instruction
     elsif asset.custom_metadatum_collection.present? && metadata.key?('retention_instruction')
       return find_retention_instruction_key_for_value(metadata['retention_instruction'])
     end
