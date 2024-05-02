@@ -956,6 +956,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
       end
 
       it 'will not update custom_metadata when a new retention instruction is added' do
+        asset_plate.reload
         expect(asset_plate.metadata.key?('retention_instruction')).to be(false)
       end
 
