@@ -44,14 +44,11 @@ module SequencescapeExcel
         asset_labware.save!
       end
 
+      # Check and update the existing retention instruction
       def check_and_update_existing_custom_metadatum_collection
-        if labware_metadata.key?(:retention_instruction)
-          # update the existing value
-          labware_metadatum_collection.update(metadata: { 'retention_instruction' => value })
-        else
-          # otherwise we need add the retention instructions metadata field to the existing collection
-          labware_metadatum_collection.update!(metadata: labware_metadata.merge({ retention_instruction: value }))
-        end
+        return unless labware_metadata.key?(:retention_instruction)
+        # update the existing value
+        labware_metadatum_collection.update(metadata: { 'retention_instruction' => value })
       end
     end
   end
