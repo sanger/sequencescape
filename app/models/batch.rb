@@ -139,10 +139,12 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def requests_have_same_target_purpose
-    if (pipeline.is_a? CherrypickingPipeline) && requests.map { |request| request.request_metadata.target_purpose_id }.uniq.size > 1
-      errors.add :base, 'The selected requests must have the same target purpose (Pick To) values'
+    if pipeline.is_a?(CherrypickingPipeline) &&
+       requests.map { |request| request.request_metadata.target_purpose_id }.uniq.size > 1
+  
+      errors.add(:base, 'The selected requests must have the same target purpose (Pick To) values')
     end
-  end
+  end  
 
   def requests_have_same_read_length
     unless pipeline.is_read_length_consistent_for_batch?(self)
