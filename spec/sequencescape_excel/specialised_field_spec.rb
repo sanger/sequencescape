@@ -933,5 +933,36 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
 
       it_behaves_like 'a retention instruction labware'
     end
+
+    context 'when retention instruction is updated (through manifests) for a labware that doesn\'t
+            have retention instructions' do
+      let(:asset_plate) { create :plate_with_untagged_wells, sample_count: 1 }
+      let(:asset) { asset_plate.wells.first }
+      let(:user) { create :user }
+
+      before do
+        custom_metadatum = CustomMetadatum.new
+        custom_metadatum.key = 'sample_metadata'
+        custom_metadatum.value = 'Sample Metadata'
+        custom_metadatum_collection = CustomMetadatumCollection.new
+        custom_metadatum_collection.custom_metadata = [custom_metadatum]
+        custom_metadatum_collection.asset = asset_plate
+        custom_metadatum_collection.user = user
+        custom_metadatum_collection.save!
+        custom_metadatum.save!
+
+        sf = described_class.new(value: 'Long term storage', sample_manifest_asset: sample_manifest_asset)
+        sf.update
+      end
+
+      it 'will not update custom_metadata when a new retention instruction is added' do
+        expect(asset_plate.metadata.key?('retention_instruction')).to be(false)
+      end
+
+      it 'will update labware table\'s retention_instruction column' do
+        asset_plate.reload
+        expect(asset_plate.retention_instruction.to_sym).to eq(:long_term_storage)
+      end
+    end
   end
 end
