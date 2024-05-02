@@ -9,7 +9,7 @@ LRC PBMC Pools Input:
   input_plate: true
   stock_plate: true
   cherrypickable_target: false
-# The 'LRC HT 5p cDNA PCR XP' and 'LRC HT 5p cDNA Input' purposes are included here so they are 
+# The 'LRC HT 5p cDNA PCR XP' and 'LRC HT 5p cDNA Input' purposes are included here so they are
 # available for aggregation submissions.
 LRC HT 5p cDNA PCR XP:
   input_plate: false
