@@ -56,12 +56,9 @@ class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   def update # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     respond_to do |format|
-      if @asset.update(labware_params.merge(params.to_unsafe_h.fetch(:lane, {})))
-        flash[:notice] = if params.to_unsafe_h['labware'].key?('retention_instruction')
-                           'Retention Instruction was successfully updated.'
-                         else
-                           'Labware was successfully updated.'
-                         end
+      params_hash = params.to_unsafe_h
+      if @asset.update(labware_params.merge(params_hash.fetch(:lane, {})))
+        flash[:notice] = find_flash(params_hash)
         if params[:lab_view]
           format.html { redirect_to(action: :lab_view, barcode: @asset.human_barcode) }
         else
@@ -173,5 +170,13 @@ class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   def discover_asset
     @asset = Labware.include_for_show.find(params[:id])
+  end
+
+  def find_flash(params_hash)
+    if params_hash[:labware].key?(:retention_instruction)
+      'Retention Instruction was successfully updated.'
+    else
+      'Labware was successfully updated.'
+    end
   end
 end
