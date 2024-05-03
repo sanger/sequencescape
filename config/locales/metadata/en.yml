@@ -100,6 +100,8 @@ en:
           <<: *REQUEST
         library_completion:
           <<: *REQUEST
+        std_library_request:
+          <<: *REQUEST
 
     illuminaC:
       requests:
