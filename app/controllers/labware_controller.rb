@@ -57,7 +57,11 @@ class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLeng
   def update # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     respond_to do |format|
       if @asset.update(labware_params.merge(params.to_unsafe_h.fetch(:lane, {})))
-        flash[:notice] = 'Labware was successfully updated.'
+        flash[:notice] = if params.to_unsafe_h['labware'].key?('retention_instruction')
+                           'Retention Instruction was successfully updated.'
+                         else
+                           'Labware was successfully updated.'
+                         end
         if params[:lab_view]
           format.html { redirect_to(action: :lab_view, barcode: @asset.human_barcode) }
         else

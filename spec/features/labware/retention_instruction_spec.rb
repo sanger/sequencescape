@@ -8,7 +8,7 @@ describe 'Update retention instructions' do
     it 'updates the retention instruction' do
       select 'Long term storage', from: 'Retention instruction'
       click_button 'Update'
-      expect(page).to have_content 'Labware was successfully updated.'
+      expect(page).to have_content 'Retention Instruction was successfully updated.'
       expect(page).to have_content 'Long term storage'
     end
   end
