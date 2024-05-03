@@ -35,8 +35,8 @@ limber_scrna_core_cdna_prep_input:
     # - Chromium single cell 3 prime HT v3
     # - Chromium single cell BCR HT
     # - Chromium single cell TCR HT
-limber_scrna_core_chromium_ht_aggregation:
-  name: scRNA Core Chromium HT Aggregation
+limber_scrna_core_chromium_ht_5p_aggregation:
+  name: scRNA Core Chromium HT 5p Aggregation
   asset_type: Well
   order: 1
   request_class_name: CustomerRequest
