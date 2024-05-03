@@ -581,7 +581,7 @@ ActiveRecord::Schema.define(version: 2024_04_29_093317) do
     t.integer "labware_type_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "retention_instruction", default: 0
+    t.integer "retention_instruction"
     t.index ["labware_type_id"], name: "fk_rails_32b35f8bf9"
     t.index ["plate_purpose_id"], name: "fk_rails_745455e964"
     t.index ["sti_type", "plate_purpose_id"], name: "index_labware_on_sti_type_and_plate_purpose_id"
