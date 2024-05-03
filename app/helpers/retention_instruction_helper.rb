@@ -14,9 +14,7 @@ module RetentionInstructionHelper
 
   # Retrieve the I18n key for a given value in the retention_instructions hash
   def find_retention_instruction_key_for_value(value)
-    key = I18n.t(:retention_instructions).key(value)
-    return key if key
-    nil
+    I18n.t(:retention_instructions).key(value)
   end
 
 end
