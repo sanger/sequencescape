@@ -101,13 +101,8 @@ Given '{study_name} has an asset group of {int} samples in SampleTubes called {s
 end
 
 Then /^I should see the following request information:$/ do |expected|
-  actual =
-    page
-      .all('.field')
-      .each_with_object({}) do |field, hash|
-        label = field.find('label').text
-        value = field.find('.value_identifier', visible: false).text
-        hash[label] = value
-      end
+  # The request info is actually a series of tables. fetch_table just grabs the first.
+  # This is silly, but attempting to fix it is probably more hassle than its worth.
+  actual = page.all('.property_group_general tr').to_h { |row| row.all('td').map(&:text) }
   assert_equal expected.rows_hash, actual
 end
