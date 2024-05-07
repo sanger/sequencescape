@@ -6,6 +6,10 @@ group :default do
   gem 'bootsnap'
   gem 'rails', '~> 6.1.7'
 
+  # Fix incompatibility with between Ruby 3.1 and Psych 4 (used for yaml)
+  # see https://stackoverflow.com/a/71192990
+  gem 'psych', '< 4'
+
   # State machine
   gem 'aasm'
 
