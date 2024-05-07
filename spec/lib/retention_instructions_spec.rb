@@ -1,10 +1,11 @@
-# spec/tasks/retention_instructions_rake_spec.rb
+# frozen_string_literal: true
 
+# rubocop:disable RSpec/DescribeClass
 require 'rails_helper'
 require 'rake'
 
-RSpec.xdescribe 'retention_instructions:backfill' do
-  before :all do
+RSpec.describe 'retention_instructions:backfill' do
+  before do
     Rake.application.rake_require "tasks/retention_instructions"
     Rake::Task.define_task(:environment)
   end
@@ -15,12 +16,12 @@ RSpec.xdescribe 'retention_instructions:backfill' do
       Rake.application.invoke_task 'retention_instructions:backfill'
     end
 
-    it 'will backfill retention instructions' do
+    it 'backfills retention instructions' do
       # Setup
       labware_with_metadata = create(:labware, retention_instruction: nil,
                                      custom_metadatum_collection:
                                        create(:custom_metadatum_collection,
-                                              metadata: { 'retention_instruction' => 'some_value' }
+                                              metadata: { 'retention_instruction' => 'Destroy after 2 years' }
                                        )
       )
       labware_without_metadata = create(:labware, retention_instruction: nil)
@@ -34,3 +35,5 @@ RSpec.xdescribe 'retention_instructions:backfill' do
     end
   end
 end
+
+# rubocop:enable RSpec/DescribeClass
