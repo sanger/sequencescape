@@ -84,9 +84,8 @@ module SampleManifestExcel
             .rows
             .each_with_object({}) do |row, retention_instructions|
               # ignore empty rows and skip if the retention column is not present
-              if row.columns.blank? || row.data.blank? || row.columns.extract(['retention_instruction']).count.zero?
-                next
-              end
+              next if
+                row.columns.blank? || row.data.blank? || row.columns.extract(['retention_instruction']).count.zero?
 
               plate_barcode = row.value('sanger_plate_id')
               sample_id = row.value('sanger_sample_id')
