@@ -18,6 +18,8 @@
   <% add :menu, "Edit" => edit_labware_path(@asset) -%>
 <% end %>
 
+<% add :menu, "Edit Retention Instruction" => retention_instruction_labware_path(@asset) %>
+
 <% @asset.studies.each do |study| %>
   <% add :menu, "Back to study #{study.name}" => study_path(study) -%>
 <% end %>

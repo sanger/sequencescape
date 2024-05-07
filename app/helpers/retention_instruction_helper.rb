@@ -17,4 +17,19 @@ module RetentionInstructionHelper
     I18n.t(:retention_instructions).key(value)
   end
 
+  # This function is used to find the retention instruction to display for a given asset
+  # NB: The elsif statement in the function will not be necessary after the script in #4095 is run,.
+  # After the script in #4095 is run, the elsif branch can be removed.
+  def find_retention_instruction_to_display(asset)
+    metadata = asset.metadata
+
+    retention_instruction = asset.retention_instruction
+    if retention_instruction.present?
+      return retention_instruction
+    elsif asset.custom_metadatum_collection.present? && metadata.key?('retention_instruction')
+      return find_retention_instruction_key_for_value(metadata['retention_instruction'])
+    end
+    nil
+  end
+
 end
