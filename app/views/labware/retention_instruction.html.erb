@@ -7,7 +7,7 @@
    This check should be removed after executing the script in story #4095 -->
   <% unless @asset.custom_metadatum_collection.present? && @asset.metadata.key?('retention_instruction') %>
     <div class="alert alert-warning">
-      <strong>Warning!</strong> This asset does not currently have a retention instruction.
+      <strong>Warning!</strong> This labware does not currently have a retention instruction.
     </div>
   <% end %>
 <% end %>
