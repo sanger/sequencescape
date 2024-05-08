@@ -39,7 +39,7 @@ describe 'Update retention instructions' do
       let(:asset) { create :plate_with_3_wells, retention_instruction: :destroy_after_2_years }
 
       it 'does not display the warning message' do
-        expect(page).to have_no_content 'This asset does not currently have a retention instruction.'
+        expect(page).to have_no_content 'This labware does not currently have a retention instruction.'
       end
 
       it_behaves_like 'updating retention instruction'
@@ -58,7 +58,7 @@ describe 'Update retention instructions' do
       end
 
       it 'does not display the warning message' do
-        expect(page).to have_no_content 'This asset does not currently have a retention instruction.'
+        expect(page).to have_no_content 'This labware does not currently have a retention instruction.'
       end
 
       it 'displays the retention instruction in metadata' do
@@ -73,7 +73,7 @@ describe 'Update retention instructions' do
       let(:asset) { create :plate_with_3_wells, retention_instruction: nil }
 
       it "does not have a retention instruction yet" do
-        expect(page).to have_content 'This asset does not currently have a retention instruction.'
+        expect(page).to have_content 'This labware does not currently have a retention instruction.'
       end
 
       it_behaves_like 'updating retention instruction'
@@ -84,7 +84,7 @@ describe 'Update retention instructions' do
       let(:asset) { create :tube, retention_instruction: :destroy_after_2_years }
 
       it 'does not display the warning message' do
-        expect(page).to have_no_content 'This asset does not currently have a retention instruction.'
+        expect(page).to have_no_content 'This labware does not currently have a retention instruction.'
       end
 
       it_behaves_like 'updating retention instruction'
