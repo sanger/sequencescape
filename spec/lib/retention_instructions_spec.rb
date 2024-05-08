@@ -48,6 +48,24 @@ RSpec.describe 'retention_instructions:backfill' do
       # Verify
       expect(labware_with_metadata.reload.custom_metadatum_collection.metadata['retention_instruction']).to be_nil
     end
+
+    it 'correctly backfills the data' do
+      # Setup
+      labware_with_metadata = create(:labware, retention_instruction: nil,
+                                     custom_metadatum_collection:
+                                       create(:custom_metadatum_collection,
+                                              metadata: { 'retention_instruction' => 'Destroy after 2 years' }
+                                       )
+      )
+
+      # Execute
+      run_rake_task
+
+
+
+      # Verify
+      expect(labware_with_metadata.reload.retention_instruction.to_sym).to be(:destroy_after_2_years)
+    end
   end
 
 end
