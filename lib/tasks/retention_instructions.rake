@@ -15,6 +15,8 @@ namespace :retention_instructions do
 
     puts "Backfilling retention instructions with batch size: #{batch_size}..."
 
+    saved_count = 0
+
     ActiveRecord::Base.transaction do
       Labware.where(retention_instruction: nil).find_in_batches(batch_size: batch_size) do |labware_group|
         labware_group.each do |labware|
@@ -23,14 +25,15 @@ namespace :retention_instructions do
           labware.retention_instruction = find_retention_instruction_key_for_value(
             labware.custom_metadatum_collection.metadata['retention_instruction']
           ).to_sym
-          p "Setting retention instruction for labware #{labware.id} to #{labware.retention_instruction}..."
           labware.custom_metadatum_collection.custom_metadata.each do |custom_metadata_record|
             custom_metadata_record.key == 'retention_instruction' && custom_metadata_record.destroy!
           end
-          labware.save!
+          saved_count +=1 if labware.save!
         end
       end
     end
+
+    puts "Backfilled retention instructions for #{saved_count} labware items."
   end
 
 end
