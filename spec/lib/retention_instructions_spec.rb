@@ -6,16 +6,7 @@ require 'rake'
 
 RSpec.describe 'retention_instructions:backfill' do
 
-  before do
-    Rake.application.rake_require "tasks/retention_instructions"
-    Rake::Task.define_task(:environment)
-  end
-
-  context 'when retention instructions are there' do
-    let(:run_rake_task) do
-      Rake::Task['retention_instructions:backfill'].reenable
-      Rake.application.invoke_task 'retention_instructions:backfill'
-    end
+  shared_examples 'backfilling retention instructions' do
 
     it 'backfills retention instructions' do
       # Setup
@@ -61,11 +52,37 @@ RSpec.describe 'retention_instructions:backfill' do
       # Execute
       run_rake_task
 
-
-
       # Verify
       expect(labware_with_metadata.reload.retention_instruction.to_sym).to be(:destroy_after_2_years)
     end
+  end
+
+  context 'when batch size is given' do
+    let(:run_rake_task) do
+      Rake::Task['retention_instructions:backfill'].reenable
+      Rake.application.invoke_task 'retention_instructions:backfill[500]'
+    end
+
+    before do
+      Rake.application.rake_require "tasks/retention_instructions"
+      Rake::Task.define_task(:environment)
+    end
+
+    it_behaves_like 'backfilling retention instructions'
+  end
+
+  context 'when batch size is not given' do
+    let(:run_rake_task) do
+      Rake::Task['retention_instructions:backfill'].reenable
+      Rake.application.invoke_task 'retention_instructions:backfill'
+    end
+
+    before do
+      Rake.application.rake_require "tasks/retention_instructions"
+      Rake::Task.define_task(:environment)
+    end
+
+    it_behaves_like 'backfilling retention instructions'
   end
 
 end
