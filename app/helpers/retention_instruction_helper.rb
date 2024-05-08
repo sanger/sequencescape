@@ -22,7 +22,6 @@ module RetentionInstructionHelper
   # After the script in #4095 is run, the elsif branch can be removed.
   def find_retention_instruction_to_display(labware)
     metadata = labware.metadata
-
     retention_instruction = labware.retention_instruction
     if retention_instruction.present?
       return retention_instruction
