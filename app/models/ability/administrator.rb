@@ -23,7 +23,7 @@ class Ability::Administrator
     Rails.logger.debug { 'Granting Administrator privileges' }
 
     # Labware
-    can %i[edit rename change_purpose], Labware
+    can %i[edit rename change_purpose edit_retention_instruction], Labware
 
     # Requests
     can :update, Request
