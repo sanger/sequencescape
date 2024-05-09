@@ -56,7 +56,6 @@ RSpec.describe 'retention_instructions:backfill' do
       run_rake_task
 
       # Verify
-      expect(labware_with_metadata.reload.custom_metadatum_collection.metadata['other_key']).not_to be_nil
       expect(labware_with_metadata.reload.custom_metadatum_collection.metadata['other_key']).to eq('other_value')
     end
 
