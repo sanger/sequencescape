@@ -6,38 +6,6 @@ require 'rake'
 
 RSpec.describe 'retention_instructions:backfill' do
 
-  shared_examples 'backfilling retention instructions for a large load' do
-
-    it 'backfills retention instructions' do
-
-      # Setup
-      labwares = []
-      2500.times do
-        labwares.push(
-          create(:labware, retention_instruction: nil,
-                 custom_metadatum_collection:
-                   create(:custom_metadatum_collection,
-                          metadata: { 'retention_instruction' => 'Destroy after 2 years' }
-                   )
-          )
-        )
-      end
-
-      # Execute
-      run_rake_task
-
-      # Verify
-      labwares.each do |labware|
-        expect(labware.reload.retention_instruction).not_to be_nil
-        expect(labware.reload.custom_metadatum_collection.metadata['retention_instruction']).to be_nil
-        expect(labware.reload.custom_metadatum_collection).not_to be_nil
-        expect(labware.reload.retention_instruction.to_sym).to be(:destroy_after_2_years)
-        expect(labware.reload.retention_instruction_before_type_cast).to be(0)
-      end
-
-    end
-  end
-
   shared_examples 'backfilling retention instructions' do
 
     it 'backfills retention instructions' do
@@ -183,7 +151,34 @@ RSpec.describe 'retention_instructions:backfill' do
       Rake::Task.define_task(:environment)
     end
 
-    it_behaves_like 'backfilling retention instructions for a large load'
+    it 'backfills retention instructions' do
+
+      # Setup
+      labwares = []
+      2500.times do
+        labwares.push(
+          create(:labware, retention_instruction: nil,
+                 custom_metadatum_collection:
+                   create(:custom_metadatum_collection,
+                          metadata: { 'retention_instruction' => 'Destroy after 2 years' }
+                   )
+          )
+        )
+      end
+
+      # Execute
+      run_rake_task
+
+      # Verify
+      labwares.each do |labware|
+        expect(labware.reload.retention_instruction).not_to be_nil
+        expect(labware.reload.custom_metadatum_collection.metadata['retention_instruction']).to be_nil
+        expect(labware.reload.custom_metadatum_collection).not_to be_nil
+        expect(labware.reload.retention_instruction.to_sym).to be(:destroy_after_2_years)
+        expect(labware.reload.retention_instruction_before_type_cast).to be(0)
+      end
+
+    end
   end
 
 end
