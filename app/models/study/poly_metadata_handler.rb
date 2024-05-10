@@ -8,6 +8,7 @@ class Study::PolyMetadataHandler
 
   # @!attribute [rw] scrna_core_pbmc_donor_pooling_required_number_of_cells
   #   @return [Integer] The number of cells required for PBMC donor pooling.
+  # :reek:Attribute
   attr_accessor :scrna_core_pbmc_donor_pooling_required_number_of_cells
 
   # Add validations for each polymorphic metadata key here.
@@ -75,6 +76,7 @@ class Study::PolyMetadataHandler
   #
   # @param params [Hash] The parameters to dispatch.
   # @return [void]
+  # :reek:ManualDispatch
   def dispatch(params)
     params.each do |key, value|
       method = "handle_#{key}"
