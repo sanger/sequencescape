@@ -8,7 +8,7 @@ RSpec.describe 'retention_instructions:backfill' do
 
   shared_examples 'backfilling retention instructions' do
 
-    it 'backfills retention instructions' do
+    it 'backfills retention_instruction attribute in labware table' do
       # Setup
       labware = create(:labware, retention_instruction: nil,
                                      custom_metadatum_collection:
@@ -24,7 +24,7 @@ RSpec.describe 'retention_instructions:backfill' do
       expect(labware.reload.retention_instruction).not_to be_nil
     end
 
-    it 'removes from custom_metadata' do
+    it 'removes existing retention instruction from custom_metadata table' do
       # Setup
       labware = create(:labware, retention_instruction: nil,
                                      custom_metadatum_collection:
@@ -78,7 +78,7 @@ RSpec.describe 'retention_instructions:backfill' do
       expect(labware.reload.custom_metadatum_collection.metadata['other_key']).to eq('other_value')
     end
 
-    it 'correctly backfills the data' do
+    it 'correctly backfills the retention_instruction column with the correct value' do
       # Setup
       labware = create(:labware, retention_instruction: nil,
                                      custom_metadatum_collection:
@@ -125,7 +125,7 @@ RSpec.describe 'retention_instructions:backfill' do
     it_behaves_like 'backfilling retention instructions'
   end
 
-  context 'when batch size is not given' do
+  context 'when batch size is not given (i.e., the default batch size)' do
     let(:run_rake_task) do
       Rake::Task['retention_instructions:backfill'].reenable
       Rake.application.invoke_task 'retention_instructions:backfill'
