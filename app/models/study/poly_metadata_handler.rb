@@ -78,7 +78,7 @@ class Study::PolyMetadataHandler
   def dispatch(params)
     params.each do |key, value|
       method = "handle_#{key}"
-      send(method, value) if respond_to?(method)
+      send(method, key, value) if respond_to?(method)
     end
   end
 
@@ -92,8 +92,7 @@ class Study::PolyMetadataHandler
   # @param value [String] The value of the
   #   scrna_core_pbmc_donor_pooling_required_number_of_cells parameter.
   # @return [void]
-  def handle_scrna_core_pbmc_donor_pooling_required_number_of_cells(value)
-    key = 'scrna_core_pbmc_donor_pooling_required_number_of_cells'
+  def handle_scrna_core_pbmc_donor_pooling_required_number_of_cells(key, value)
     poly_metadatum = @study.poly_metadatum_by_key(key)
 
     # PolyMetadatum does not allow a blank value; delete the record instead.
