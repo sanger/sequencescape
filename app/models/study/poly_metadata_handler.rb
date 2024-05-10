@@ -13,8 +13,7 @@ class Study::PolyMetadataHandler
   # Add validations for each polymorphic metadata key here.
 
   validates :scrna_core_pbmc_donor_pooling_required_number_of_cells,
-    numericality: { greater_than: 0,
-    allow_nil: true }
+    numericality: { greater_than: 0, allow_blank: true }
 
   # Initializes a new instance of the PolyMetadataHandler class. The studies
   # controller creates an instance of this class in the create and update
@@ -90,18 +89,26 @@ class Study::PolyMetadataHandler
   # redundant updates. Otherwise, a new PolyMetadatum is created or updated with
   # the new value, followed by a save operation.
   #
-  # @param value [Integer] The value of the
+  # @param value [String] The value of the
   #   scrna_core_pbmc_donor_pooling_required_number_of_cells parameter.
-  # @return [nil, true] Returns nil if a matching PolyMetadatum already exists
-  #   with the same value. Returns true if a new PolyMetadatum was created or an
-  #   existing one was updated and saved successfully.
+  # @return [void]
   def handle_scrna_core_pbmc_donor_pooling_required_number_of_cells(value)
     key = 'scrna_core_pbmc_donor_pooling_required_number_of_cells'
     poly_metadatum = @study.poly_metadatum_by_key(key)
+
+    # PolyMetadatum does not allow a blank value; delete the record instead.
+    if value.blank?
+      poly_metadatum.destroy! if poly_metadatum.present?
+      return
+    end
+
+    # Do not update if the value is the same.
     return if poly_metadatum&.value == value
 
+    # Create or update the PolyMetadatum.
     poly_metadatum ||= PolyMetadatum.new(key: key, metadatable: @study)
     poly_metadatum.value = value
     poly_metadatum.save!
+    nil
   end
 end
