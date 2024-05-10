@@ -154,15 +154,12 @@ RSpec.describe 'retention_instructions:backfill' do
     it 'backfills retention instructions' do
 
       # Setup
-      labwares = []
-      2500.times do
-        labwares.push(
-          create(:labware, retention_instruction: nil,
-                 custom_metadatum_collection:
-                   create(:custom_metadatum_collection,
-                          metadata: { 'retention_instruction' => 'Destroy after 2 years' }
-                   )
-          )
+      labwares = Array.new(2500) do
+        create(:labware, retention_instruction: nil,
+               custom_metadatum_collection:
+                 create(:custom_metadatum_collection,
+                        metadata: { 'retention_instruction' => 'Destroy after 2 years' }
+                 )
         )
       end
 
@@ -170,12 +167,13 @@ RSpec.describe 'retention_instructions:backfill' do
       run_rake_task
 
       # Verify
-      labwares.each do |labware|
-        expect(labware.reload.retention_instruction).not_to be_nil
-        expect(labware.reload.custom_metadatum_collection.metadata['retention_instruction']).to be_nil
-        expect(labware.reload.custom_metadatum_collection).not_to be_nil
-        expect(labware.reload.retention_instruction.to_sym).to be(:destroy_after_2_years)
-        expect(labware.reload.retention_instruction_before_type_cast).to be(0)
+      labwares.find_each do |labware|
+        labware.reload
+        expect(labware.retention_instruction).not_to be_nil
+        expect(labware.custom_metadatum_collection.metadata['retention_instruction']).to be_nil
+        expect(labware.custom_metadatum_collection).not_to be_nil
+        expect(labware.retention_instruction.to_sym).to be(:destroy_after_2_years)
+        expect(labware.retention_instruction_before_type_cast).to be(0)
       end
 
     end
