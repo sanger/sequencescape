@@ -130,6 +130,9 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_many :sample_manifests
   has_many :suppliers, -> { distinct }, through: :sample_manifests
 
+  # Can have many key value pairs of metadata
+  has_many :poly_metadata, as: :metadatable, dependent: :destroy
+
   # Validations
   validates :name, uniqueness: { case_sensitive: false }, presence: true, latin1: true
   validates :name, length: { maximum: 200 }
