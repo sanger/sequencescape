@@ -83,6 +83,9 @@ class StudiesController < ApplicationController
       @study.save!
       current_user.grant_manager(@study)
       User.find(params[:study_owner_id]).grant_owner(@study) if params[:study_owner_id].present?
+
+      # Process Study PolyMetadata options within the same transaction.
+      Study::PolyMetadataHandler.new(@study).process(params[:poly_metadata])
     end
 
     flash[:notice] = 'Your study has been created'
@@ -113,6 +116,9 @@ class StudiesController < ApplicationController
           owner.grant_owner(@study)
         end
       end
+
+      # Process Study PolyMetadata options within the same transaction.
+      Study::PolyMetadataHandler.new(@study).process(params[:poly_metadata])
 
       flash[:notice] = 'Your study has been updated'
 
