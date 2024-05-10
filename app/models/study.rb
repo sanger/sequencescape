@@ -556,6 +556,19 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     broadcast
   end
 
+  # Returns the PolyMetadatum object associated with the given key.
+  #
+  # @param key [String] The key of the PolyMetadatum to find.
+  #
+  # @return [PolyMetadatum, nil] The PolyMetadatum object with the given key,
+  #   or nil if no such PolyMetadatum exists.
+  #
+  # @example
+  #   study.poly_metadatum_by_key("sample_key")
+  def poly_metadatum_by_key(key)
+    poly_metadata.find { |pm| pm.key == key.to_s }
+  end
+
   private
 
   def valid_ethically_approved?
