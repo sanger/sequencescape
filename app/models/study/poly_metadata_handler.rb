@@ -97,7 +97,7 @@ class Study::PolyMetadataHandler
 
     # PolyMetadatum does not allow a blank value; delete the record instead.
     if value.blank?
-      poly_metadatum.destroy! if poly_metadatum.present?
+      poly_metadatum&.destroy!
       return
     end
 
