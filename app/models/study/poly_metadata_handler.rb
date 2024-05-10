@@ -85,7 +85,7 @@ class Study::PolyMetadataHandler
   end
 
   # Handles 'scrna_core_pbmc_donor_pooling_required_number_of_cells' parameter.
-  # A blank value defaults to Limber's value. Limber will warn but allow
+  # A blank value defaults to Limber's configuration. Limber will warn but allow
   # proceeding with the default value for the study. If a matching PolyMetadatum
   # exists with the same value as the parameter, the method exits early to avoid
   # redundant updates. Otherwise, a new PolyMetadatum is created or updated with
@@ -97,19 +97,12 @@ class Study::PolyMetadataHandler
   def handle_scrna_core_pbmc_donor_pooling_required_number_of_cells(key, value)
     poly_metadatum = @study.poly_metadatum_by_key(key)
 
-    # PolyMetadatum does not allow a blank value; delete the record instead.
     if value.blank?
       poly_metadatum&.destroy!
-      return
+    elsif poly_metadatum&.value != value
+      poly_metadatum ||= PolyMetadatum.new(key: key, metadatable: @study)
+      poly_metadatum.value = value
+      poly_metadatum.save!
     end
-
-    # Do not update if the value is the same.
-    return if poly_metadatum&.value == value
-
-    # Create or update the PolyMetadatum.
-    poly_metadatum ||= PolyMetadatum.new(key: key, metadatable: @study)
-    poly_metadatum.value = value
-    poly_metadatum.save!
-    nil
   end
 end
