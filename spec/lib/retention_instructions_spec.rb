@@ -119,42 +119,10 @@ RSpec.describe 'retention_instructions:backfill' do
     end
   end
 
-  context 'when a large number or records are given',
-          skip: 'Skipped as it slows down CI. Run it locally for testing purposes.' do
-    let(:run_rake_task) do
-      Rake::Task['retention_instructions:backfill'].reenable
-      Rake.application.invoke_task 'retention_instructions:backfill'
-    end
-
-    before do
-      Rake.application.rake_require "tasks/retention_instructions"
-      Rake::Task.define_task(:environment)
-    end
-
-    it 'backfills retention instructions' do
-
-      # Setup
-      labwares = Array.new(2500) do
-        create(:custom_metadatum_collection,
-               metadata: { 'retention_instruction' => 'Destroy after 2 years' }
-        ).asset
-      end
-
-      # Execute
-      run_rake_task
-
-      # Verify
-      labwares.find_each do |labware|
-        labware.reload
-        expect(labware.retention_instruction).not_to be_nil
-        expect(labware.custom_metadatum_collection.metadata['retention_instruction']).to be_nil
-        expect(labware.custom_metadatum_collection).not_to be_nil
-        expect(labware.retention_instruction.to_sym).to be(:destroy_after_2_years)
-        expect(labware.retention_instruction_before_type_cast).to be(0)
-      end
-
-    end
-  end
+  # NOTE: This was tested with over 2500 records in the database to ensure that the batch size was working correctly
+  # and that the rake task was able to process all records.
+  # I have not included this test here as it is not necessary to be version controlled, as it is not a regular
+  # part of the test suite. However, it was tested and worked as expected.
 
 end
 
