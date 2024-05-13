@@ -26,6 +26,8 @@ namespace :retention_instructions do
     puts "Backfilled retention instructions for #{saved_count} labware items."
   end
 
+  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength
   def process_labware(labware, saved_count)
     return saved_count unless labware.custom_metadatum_collection.present? &&
       labware.custom_metadatum_collection.metadata['retention_instruction'].present?
@@ -34,11 +36,17 @@ namespace :retention_instructions do
       labware.custom_metadatum_collection.metadata['retention_instruction']
     ).to_sym
 
-    labware.custom_metadatum_collection.custom_metadata.each do |custom_metadata_record|
-      custom_metadata_record.key == 'retention_instruction' && custom_metadata_record.destroy!
+    begin
+      labware.custom_metadatum_collection.custom_metadata.each do |custom_metadata_record|
+        custom_metadata_record.key == 'retention_instruction' && custom_metadata_record.destroy!
+      end
+      labware.save! ? saved_count + 1 : saved_count
+    rescue ActiveRecord::ActiveRecordError => e
+      puts "ActiveRecord error for labware with barcode: #{labware.barcode} - #{e.message}"
+      saved_count
     end
-
-    labware.save! ? saved_count + 1 : saved_count
   end
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize
 
 end

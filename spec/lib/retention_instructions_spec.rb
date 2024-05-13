@@ -22,6 +22,7 @@ RSpec.describe 'retention_instructions:backfill' do
 
       # Verify
       expect(labware.reload.retention_instruction).not_to be_nil
+      expect(labware.reload.retention_instruction.to_sym).to be(:destroy_after_2_years)
     end
 
     it 'removes existing retention instruction from custom_metadata table' do
@@ -38,25 +39,6 @@ RSpec.describe 'retention_instructions:backfill' do
 
       # Verify
       expect(labware.reload.custom_metadatum_collection.metadata['retention_instruction']).to be_nil
-    end
-
-    it 'does not remove custom_metadatum_collection record for the labware' do
-      # Setup
-      labware = create(:labware, retention_instruction: nil,
-                                     custom_metadatum_collection:
-                                       create(:custom_metadatum_collection,
-                                              metadata: {
-                                                'retention_instruction' => 'Destroy after 2 years',
-                                                'other_key' => 'other_value'
-                                              }
-                                       )
-      )
-
-      # Execute
-      run_rake_task
-
-      # Verify
-      expect(labware.reload.custom_metadatum_collection).not_to be_nil
     end
 
     it 'removes only retention instructions from custom_metadata' do
@@ -76,22 +58,6 @@ RSpec.describe 'retention_instructions:backfill' do
 
       # Verify
       expect(labware.reload.custom_metadatum_collection.metadata['other_key']).to eq('other_value')
-    end
-
-    it 'correctly backfills the retention_instruction column with the correct value' do
-      # Setup
-      labware = create(:labware, retention_instruction: nil,
-                                     custom_metadatum_collection:
-                                       create(:custom_metadatum_collection,
-                                              metadata: { 'retention_instruction' => 'Destroy after 2 years' }
-                                       )
-      )
-
-      # Execute
-      run_rake_task
-
-      # Verify
-      expect(labware.reload.retention_instruction.to_sym).to be(:destroy_after_2_years)
     end
 
     it 'correctly backfills the data (actual enum value)' do
