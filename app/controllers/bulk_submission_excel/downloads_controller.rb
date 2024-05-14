@@ -22,9 +22,9 @@ class BulkSubmissionExcel::DownloadsController < ApplicationController
 
     file = Tempfile.new
     download.save(file)
-    send_file(file.path,
+    send_file file.path,
               content_type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-              filename: build_filename)
+              filename: build_filename
   rescue Asset::Finder::InvalidInputException => e
     flash[:error] = e.message
     redirect_back fallback_location: bulk_submissions_path
