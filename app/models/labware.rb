@@ -11,6 +11,8 @@ class Labware < Asset
 
   attr_reader :storage_location_service
 
+  enum retention_instruction: { destroy_after_2_years: 0, return_to_customer_after_2_years: 1, long_term_storage: 2 }
+
   delegate :metadata, to: :custom_metadatum_collection, allow_nil: true
 
   class_attribute :receptacle_class
