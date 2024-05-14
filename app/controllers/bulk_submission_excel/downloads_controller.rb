@@ -42,7 +42,7 @@ class BulkSubmissionExcel::DownloadsController < ApplicationController
   # Consists of the template name in kebab-case, followed by the current date and time in ISO8601 format
   # e.g. "submission-template_20190101T120000.xlsx"
   def build_filename
-    template_name = params[:defaults].fetch(:template_name, 'Submission Template')
+    template_name = params.dig(:defaults, :template_name) || 'Submission Template'
     # convert to kebab-case, catching existing hyphens
     template_name = template_name.downcase.gsub(/[-\s]+/, '-')
     "#{template_name.dasherize}_#{Time.current.strftime('%Y%m%dT%H%M%S')}.xlsx"
