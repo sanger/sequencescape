@@ -10,8 +10,10 @@ describe 'Generate a bulk submission spreadsheet', :bulk_submission_excel, :js d
   # to ensure we are only using the specified well. The other two will be ignored.
   let!(:partial_plate) { create(:plate_with_untagged_wells, well_count: 13) }
   let!(:submission_template) { create :libray_and_sequencing_template }
-  let(:date) { Time.current.strftime('%Y%m%d') }
-  let(:filename) { "#{plate.human_barcode}_#{partial_plate.human_barcode}_#{date}.xlsx" }
+
+  let(:kebabbed_submission_template_name) { submission_template.name.downcase.gsub(/[-\s]+/, '-') }
+  let(:simplified_iso_timestamp) { Time.current.strftime('%Y%m%dT%H%M%S') }
+  let(:filename) { "#{kebabbed_submission_template_name}_#{simplified_iso_timestamp}.xlsx" }
 
   before do
     BulkSubmissionExcel.configure do |config|
