@@ -9,7 +9,7 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
     end
   end
 
-  def encoder_for(mappings) # rubocop:todo Metrics/MethodLength
+  def encoder_for(mappings)
     Object
       .new
       .tap do |encoder|
@@ -83,7 +83,7 @@ class Core::Io::JsonOutputTest < ActiveSupport::TestCase
 
           should 'handle times' do
             @value = Time.parse('2012-10-25 12:39')
-            @expected = 'Thu Oct 25 12:39:00 +0100 2012' # rubocop:disable Rails/TimeZone
+            @expected = 'Thu Oct 25 12:39:00 +0100 2012'
           end
 
           # The fact this format is different is probably an accidental change to the API.

@@ -19,7 +19,7 @@ describe 'cherrypick for fluidigm pipeline - micro litre', :js do
   let(:request_types) { pipeline.request_types.map(&:key) }
 
   before do
-    target_purpose = create :plate_purpose, name: 'Fluidigm'
+    target_purpose = create(:plate_purpose, name: 'Fluidigm')
     assets =
       plates.each_with_object([]) do |plate, assets|
         assets.concat(plate.wells)
@@ -29,10 +29,10 @@ describe 'cherrypick for fluidigm pipeline - micro litre', :js do
       create(:cherrypick_for_fluidigm_request,
              asset:,
              request_type: pipeline.request_types.first,
-             submission: submission,
-             study: study,
-             project: project,
-             target_purpose: target_purpose)
+             submission:,
+             study:,
+             project:,
+             target_purpose:)
     end
 
     allow(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode, barcode: 'SQPD-2'))

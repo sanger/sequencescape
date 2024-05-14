@@ -811,7 +811,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             )
           end
 
-          it 'should populate retention_instruction attribute in labware' do
+          it 'populates retention_instruction attribute in labware' do
             processor.run(nil)
             expect(upload.rows).to be_all(&:sample_updated?)
             expect(upload.sample_manifest.assets.map(&:labware).map { |l| l.retention_instruction.to_sym }.uniq).to eq(
