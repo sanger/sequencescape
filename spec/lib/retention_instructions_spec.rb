@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # rubocop:disable RSpec/DescribeClass
+# rubocop:disable RSpec/AnyInstance
 require 'rails_helper'
 require 'rake'
 
@@ -112,7 +113,7 @@ RSpec.describe 'retention_instructions:backfill' do
       # Execute
       expect { run_rake_task }.to raise_error(ActiveRecord::ActiveRecordError)
       # Verify
-      expect(labware.retention_instruction).to be_nil
+      expect(labware.reload.retention_instruction).to be_nil
     end
   end
 
@@ -124,3 +125,4 @@ RSpec.describe 'retention_instructions:backfill' do
 end
 
 # rubocop:enable RSpec/DescribeClass
+# rubocop:enable RSpec/AnyInstance
