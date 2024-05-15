@@ -41,6 +41,7 @@ namespace :retention_instructions do
       end
       labware.save! ? saved_count + 1 : saved_count
     rescue ActiveRecord::ActiveRecordError => e
+      puts "Error processing labware #{labware.id}: #{e.message}"
       raise e
     rescue StandardError => e
       puts "Error processing labware #{labware.id}: #{e.message}"
