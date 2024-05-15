@@ -12,7 +12,7 @@ describe 'Generate a bulk submission spreadsheet', :bulk_submission_excel, :js d
   let!(:submission_template) { create :libray_and_sequencing_template }
 
   let(:kebabbed_submission_template_name) { submission_template.name.downcase.gsub(/[-\s]+/, '-') }
-  let(:simplified_iso_timestamp) { Time.current.strftime('%Y%m%dT%H%M%S') }
+  let(:simplified_iso_timestamp) { Time.current.utc.strftime('%Y%m%dT%H%M%SZ') }
   let(:filename) { "#{kebabbed_submission_template_name}_#{simplified_iso_timestamp}.xlsx" }
 
   before do
