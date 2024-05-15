@@ -18,6 +18,7 @@ namespace :retention_instructions do
     ActiveRecord::Base.transaction do
       saved_count = 0
       Labware.where(retention_instruction: nil).find_each(batch_size: batch_size) do |labware|
+        puts "Processing labware #{labware.id} : #{labware.name}..."
         saved_count = process_labware(labware, saved_count)
       end
       puts "Backfilled retention instructions for #{saved_count} labware items."
