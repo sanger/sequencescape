@@ -15,15 +15,14 @@ namespace :retention_instructions do
 
     puts "Backfilling retention instructions with batch size: #{batch_size}..."
 
-    saved_count = 0
-
     ActiveRecord::Base.transaction do
+      saved_count = 0
       Labware.where(retention_instruction: nil).find_each(batch_size: batch_size) do |labware|
         saved_count = process_labware(labware, saved_count)
       end
+      puts "Backfilled retention instructions for #{saved_count} labware items."
     end
 
-    puts "Backfilled retention instructions for #{saved_count} labware items."
   end
 
   # rubocop:todo Metrics/AbcSize
@@ -39,7 +38,6 @@ namespace :retention_instructions do
     labware.custom_metadatum_collection.custom_metadata.each do |custom_metadata_record|
       custom_metadata_record.key == 'retention_instruction' && custom_metadata_record.destroy!
     end
-
     labware.save! ? saved_count + 1 : saved_count
   end
   # rubocop:enable Metrics/MethodLength

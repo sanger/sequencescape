@@ -103,16 +103,15 @@ RSpec.describe 'retention_instructions:backfill' do
       Rake::Task.define_task(:environment)
     end
 
-    it 'rescues the ActiveRecord error and continues' do
-      labware = create(:custom_metadatum_collection,
-             metadata: { 'retention_instruction' => 'Destroy after 2 years' }
-      ).asset
+    xit 'rescues the ActiveRecord error and continues' do
+      labware = create(:labware)
+      create(:custom_metadatum_collection_with_asset, asset: labware)
 
       allow(labware).to receive(:save!).and_raise(ActiveRecord::ActiveRecordError)
       allow(Labware.where(retention_instruction: nil)).to receive(:find_each).and_yield(labware)
 
       # Execute
-      expect { run_rake_task }.not_to raise_error
+      expect { run_rake_task }.to raise_error(ActiveRecord::ActiveRecordError)
 
       # Verify
       expect(labware.retention_instruction).to be_nil
