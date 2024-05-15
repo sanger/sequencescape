@@ -35,10 +35,16 @@ namespace :retention_instructions do
       labware.custom_metadatum_collection.metadata['retention_instruction']
     ).to_sym
 
-    labware.custom_metadatum_collection.custom_metadata.each do |custom_metadata_record|
-      custom_metadata_record.key == 'retention_instruction' && custom_metadata_record.destroy!
+    begin
+      labware.custom_metadatum_collection.custom_metadata.each do |custom_metadata_record|
+        custom_metadata_record.key == 'retention_instruction' && custom_metadata_record.destroy!
+      end
+      labware.save! ? saved_count + 1 : saved_count
+    rescue ActiveRecord::ActiveRecordError => e
+      raise e
+    rescue StandardError => e
+      puts "Error processing labware #{labware.id}: #{e.message}"
     end
-    labware.save! ? saved_count + 1 : saved_count
   end
   # rubocop:enable Metrics/MethodLength
   # rubocop:enable Metrics/AbcSize
