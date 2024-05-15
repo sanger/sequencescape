@@ -107,7 +107,7 @@ RSpec.describe 'retention_instructions:backfill' do
       labware = create(:custom_metadatum_collection,
                        metadata: { 'retention_instruction' => 'Destroy after 2 years' }
       ).asset
-      allow_any_instance_of(Labware).to receive(:'save!').and_raise(ActiveRecord::ActiveRecordError)
+      allow_any_instance_of(Labware).to receive(:save!).and_raise(ActiveRecord::ActiveRecordError)
       allow(Labware.where(retention_instruction: nil)).to receive(:find_each).and_yield(labware)
       # Execute
       expect { run_rake_task }.to raise_error(ActiveRecord::ActiveRecordError)
