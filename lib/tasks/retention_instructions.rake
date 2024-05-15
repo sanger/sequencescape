@@ -2,8 +2,6 @@
 
 # $ bundle exec rake "retention_instructions:backfill[batch_size]"
 
-require_relative '../../app/helpers/retention_instruction_helper'
-
 namespace :retention_instructions do
 
   include RetentionInstructionHelper
@@ -37,14 +35,14 @@ namespace :retention_instructions do
 
     begin
       labware.custom_metadatum_collection.custom_metadata.where(key: 'retention_instruction').find_each(&:destroy!)
-      saved_count += 1 if labware.save!
-      saved_count
-    rescue ActiveRecord::ActiveRecordError => e
+      # increment saved_count if save is successful
+      labware.save!
+      saved_count += 1
+    rescue ActiveRecord::ActiveRecordError, StandardError => e
       puts "Error processing labware #{labware.id}: #{e.message}"
       raise e
-    rescue StandardError => e
-      puts "Error processing labware #{labware.id}: #{e.message}"
     end
+    saved_count
   end
   # rubocop:enable Metrics/MethodLength
   # rubocop:enable Metrics/AbcSize
