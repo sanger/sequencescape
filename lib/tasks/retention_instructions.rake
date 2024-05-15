@@ -36,10 +36,9 @@ namespace :retention_instructions do
     ).to_sym
 
     begin
-      labware.custom_metadatum_collection.custom_metadata.each do |custom_metadata_record|
-        custom_metadata_record.key == 'retention_instruction' && custom_metadata_record.destroy!
-      end
-      labware.save! ? saved_count + 1 : saved_count
+      labware.custom_metadatum_collection.custom_metadata.where(key: 'retention_instruction').find_each(&:destroy!)
+      saved_count += 1 if labware.save!
+      saved_count
     rescue ActiveRecord::ActiveRecordError => e
       puts "Error processing labware #{labware.id}: #{e.message}"
       raise e
