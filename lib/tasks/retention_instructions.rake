@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # $ bundle exec rake "retention_instructions:backfill[batch_size]"
+require_relative '../../app/helpers/retention_instruction_helper'
 
 namespace :retention_instructions do
 
