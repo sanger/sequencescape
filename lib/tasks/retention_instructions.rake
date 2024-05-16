@@ -36,6 +36,7 @@ namespace :retention_instructions do
       labware.custom_metadatum_collection.metadata['retention_instruction']
     )
 
+    # Had to add this because there are some labwares with retention instructions like 'not provided'!
     return saved_count if retention_instruction.nil?
 
     labware.retention_instruction = retention_instruction.to_sym
