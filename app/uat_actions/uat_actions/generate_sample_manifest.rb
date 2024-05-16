@@ -112,10 +112,12 @@ class UatActions::GenerateSampleManifest < UatActions
   def create_sample(sample_name, sample_manifest)
     Sample.create!(
       name: sample_name,
+      sanger_sample_id: sample_name,
       sample_metadata_attributes: {
         supplier_name: sample_name,
         collected_by: UatActions::StaticRecords.collection_site,
-        donor_id: "#{sample_name}_donor"
+        donor_id: "#{sample_name}_donor",
+        sample_common_name: 'human'
       },
       sample_manifest: sample_manifest
     )
