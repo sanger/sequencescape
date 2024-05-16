@@ -17,7 +17,8 @@ namespace :retention_instructions do
 
     ActiveRecord::Base.transaction do
       saved_count = 0
-      labwares = Labware.where(retention_instruction: nil)
+      labwares = Labware.joins(custom_metadatum_collection: :custom_metadata)
+                        .where(retention_instruction: nil, custom_metadata: { key: 'retention_instruction' })
       labwares = labwares.limit(limit) unless limit.nil?
       labwares.find_each(batch_size: batch_size) do |labware|
         puts "Processing labware #{labware.id}: #{labware.name}..."
@@ -31,12 +32,13 @@ namespace :retention_instructions do
   # rubocop:todo Metrics/AbcSize
   # rubocop:todo Metrics/MethodLength
   def process_labware(labware, saved_count)
-    return saved_count unless labware.custom_metadatum_collection.present? &&
-      labware.custom_metadatum_collection.metadata['retention_instruction'].present?
-
-    labware.retention_instruction = find_retention_instruction_key_for_value(
+    retention_instruction = find_retention_instruction_key_for_value(
       labware.custom_metadatum_collection.metadata['retention_instruction']
-    ).to_sym
+    )
+
+    return saved_count if retention_instruction.nil?
+
+    labware.retention_instruction = retention_instruction.to_sym
 
     begin
       labware.custom_metadatum_collection.custom_metadata.where(key: 'retention_instruction').find_each(&:destroy!)
