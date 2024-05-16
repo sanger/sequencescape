@@ -2,14 +2,9 @@
 <%= page_title('Edit Retention Instruction', "#{@asset.display_name}") %>
 
 <% if @asset.retention_instruction.blank? %>
-  <!-- This doesn't necessarily set the retention instruction. It will just prevent displaying the warning message
-   if the retention instruction is there in custom_metadata but isn't populated (yet) in labware table.
-   This check should be removed after executing the script in story #4095 -->
-  <% unless @asset.custom_metadatum_collection.present? && @asset.metadata.key?('retention_instruction') %>
-    <div class="alert alert-warning">
-      <strong>Warning!</strong> This labware does not currently have a retention instruction.
-    </div>
-  <% end %>
+  <div class="alert alert-warning">
+    <strong>Warning!</strong> This labware does not currently have a retention instruction.
+  </div>
 <% end %>
 
 <%= form_for(@asset,url: labware_path(@asset),as:'labware') do |f| %>

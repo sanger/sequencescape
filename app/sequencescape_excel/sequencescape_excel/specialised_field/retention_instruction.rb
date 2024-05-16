@@ -14,12 +14,7 @@ module SequencescapeExcel
 
         # do nothing unless we can access the labware (assuming asset will be a well or tube receptacle)
         return if asset_labware.blank?
-
-        # NB: Retention instructions are no longer stored in custom_metadata.
-        # We need to keep this logic in place to ensure that updating existing manifests would update
-        # the retention instructions currently stored in the labware metadata
-        check_and_update_existing_custom_metadatum_collection if labware_metadatum_collection.present?
-        update_labware
+        update_retention_instructions
       end
 
       def asset_labware
@@ -37,19 +32,13 @@ module SequencescapeExcel
       private
 
       # Update the retention instruction on the labware
-      def update_labware
+      def update_retention_instructions
         retention_enum_key = find_retention_instruction_key_for_value(value)
         return if retention_enum_key.blank?
         asset_labware.retention_instruction = retention_enum_key
         asset_labware.save!
       end
 
-      # Check and update the existing retention instruction
-      def check_and_update_existing_custom_metadatum_collection
-        return unless labware_metadata.key?(:retention_instruction)
-        # update the existing value
-        labware_metadatum_collection.update(metadata: { 'retention_instruction' => value })
-      end
     end
   end
 end
