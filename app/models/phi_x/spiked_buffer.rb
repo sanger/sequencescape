@@ -103,7 +103,6 @@ class PhiX::SpikedBuffer
         PhiX
           .spiked_buffer_purpose
           .create!(name: "#{name} ##{index + 1}") do |tube|
-            p "Tube ID: #{tube.id}"
             receptacle = tube.receptacle
             receptacle.qc_results.build(key: 'molarity', value: concentration, units: 'nM')
             receptacle.qc_results.build(key: 'volume', value: volume, units: 'ul')
