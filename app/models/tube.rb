@@ -97,7 +97,7 @@ class Tube < Labware
     tube = create!(attributes.merge(sanger_barcode: { prefix: prefix, number: barcode }), &block)
 
     tube.foreign_barcode = foreign_barcode if foreign_barcode
-    tube.reload
+    tube
   end
 end
 
