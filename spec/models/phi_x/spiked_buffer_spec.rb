@@ -6,12 +6,7 @@ RSpec.describe PhiX::SpikedBuffer, :phi_x do
   subject { build :phi_x_spiked_buffer, custom_options }
 
   # Wrap tests in a transaction
-  around(:all) do |example|
-    ActiveRecord::Base.transaction do
-      example.run
-      raise ActiveRecord::Rollback
-    end
-  end
+  around { |example| ActiveRecord::Base.transaction { example.run } }
 
 
   context 'with suitable options' do
