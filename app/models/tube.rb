@@ -94,9 +94,7 @@ class Tube < Labware
     # this is to control the order of barcode addition so that it gets set as the 'primary' barcode
     foreign_barcode = attributes.delete(:foreign_barcode)
 
-    tube = ActiveRecord::Base.transaction do
-      create!(attributes.merge(sanger_barcode: { prefix: prefix, number: barcode }), &block)
-    end
+    tube = create!(attributes.merge(sanger_barcode: { prefix: prefix, number: barcode }), &block)
 
     tube.foreign_barcode = foreign_barcode if foreign_barcode
     tube.reload

@@ -5,6 +5,15 @@ require 'rails_helper'
 RSpec.describe PhiX::SpikedBuffer, :phi_x do
   subject { build :phi_x_spiked_buffer, custom_options }
 
+  # Wrap tests in a transaction
+  around(:all) do |example|
+    ActiveRecord::Base.transaction do
+      example.run
+      raise ActiveRecord::Rollback
+    end
+  end
+
+
   context 'with suitable options' do
     let(:custom_options) { {} } # Fallback to factory defaults
 
