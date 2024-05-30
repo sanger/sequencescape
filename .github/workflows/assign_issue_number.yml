@@ -1,0 +1,12 @@
+name: Assign Issue Number
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  call-add-to-project:
+    uses: sanger/.github/.github/workflows/generate-issue-number.yml@master
+    secrets:
+      app_id: ${{ secrets.ISSUE_GEN_APP_ID }}
+      app_key: ${{ secrets.ISSUE_GEN_APP_KEY }}
