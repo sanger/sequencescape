@@ -74,9 +74,7 @@ RSpec.describe PhiX::SpikedBuffer, :phi_x do
       end
 
       before do
-        ActiveRecord::Base.transaction do
           save
-        end
       end
 
       it { is_expected.to be true }

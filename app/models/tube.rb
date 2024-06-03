@@ -90,11 +90,27 @@ class Tube < Labware
     validate_barcode(barcode, prefix) if barcode.present?
     barcode ||= AssetBarcode.new_barcode
 
+    concentration = attributes.delete(:concentration)
+    volume = attributes.delete(:volume)
+    parent = attributes.delete(:parent)
+    aliquot_attributes = attributes.delete(:aliquot_attributes)
+
     # remove this so it's not passed in on creation, and set it explicitly afterwards
     # this is to control the order of barcode addition so that it gets set as the 'primary' barcode
     foreign_barcode = attributes.delete(:foreign_barcode)
 
     tube = create!(attributes.merge(sanger_barcode: { prefix: prefix, number: barcode }), &block)
+
+    receptacle = tube.receptacle
+    receptacle.qc_results.build(key: 'molarity', value: concentration, units: 'nM')
+    receptacle.qc_results.build(key: 'volume', value: volume, units: 'ul')
+    target = receptacle.transfer_requests_as_target.build(
+      asset: parent.receptacle,
+      target_asset: receptacle,
+      aliquot_attributes: aliquot_attributes
+    )
+
+    target.save!
 
     tube.foreign_barcode = foreign_barcode if foreign_barcode
     tube.reload
