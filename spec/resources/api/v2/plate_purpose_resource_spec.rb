@@ -11,17 +11,17 @@ RSpec.describe Api::V2::PlatePurposeResource, type: :resource do
   let(:resource) { described_class.new(purpose, {}) } # Resource wrapping the instance
   let(:receive) { resource.replace_fields(payload[:data]) } # Simulate receiving payload
   let(:payload) { { data: { type: 'plate_purposes', attributes: attributes } } } # Payload to be received
-  let(:purpose_name) { 'LRC HT 5p Chip' }
-  let(:plate_size) { 16 }
+  let(:purpose_name) { 'LRC GEM-X 5p Chip' }
+  let(:plate_size) { 8 }
   let(:asset_shape_name) { 'ChromiumChip' }
   let(:asset_shape) { AssetShape.find_by(name: asset_shape_name) }
 
   context 'when asset_shape and size are specified in payload' do
     let(:attributes) { { name: purpose_name, size: plate_size, asset_shape: asset_shape_name } }
 
-    # This creates a ChromiumChip 16-well plate purpose:
-    # LRC HT 5p Chip:
-    #  size: 16
+    # This creates a ChromiumChip 8-well plate purpose:
+    # LRC GEM-X 5p Chip:
+    #  size: 8
     #  asset_shape: ChromiumChip
 
     it 'sets the specified asset_shape and size' do
