@@ -63,7 +63,8 @@ describe UatActions::PlateInformation do
     let(:submission) { create :submission }
     let(:request_type) { create :library_creation_request_type }
     let(:report) do
-      { plate_barcode: plate_barcode, wells_with_aliquots: 'A1, B1, C1', wells_with_active_requests_as_source: 'A1, C1' }
+      { plate_barcode: plate_barcode, wells_with_aliquots: 'A1, B1, C1',
+wells_with_active_requests_as_source: 'A1, C1' }
     end
 
     before do
@@ -71,11 +72,13 @@ describe UatActions::PlateInformation do
 
       plate_wells = plate.wells.with_contents
 
-      req_1 = create :library_creation_request, asset: plate_wells.first, submission: submission, request_type: request_type, state: 'started'
-      plate_wells.first.requests_as_source << req_1
+      req1 = create :library_creation_request, asset: plate_wells.first, submission: submission,
+request_type: request_type, state: 'started'
+      plate_wells.first.requests_as_source << req1
 
-      req_2 = create :library_creation_request, asset: plate_wells.last, submission: submission, request_type: request_type, state: 'started'
-      plate_wells.last.requests_as_source << req_2
+      req2 = create :library_creation_request, asset: plate_wells.last, submission: submission,
+request_type: request_type, state: 'started'
+      plate_wells.last.requests_as_source << req2
     end
 
     it 'can be performed' do
@@ -84,7 +87,8 @@ describe UatActions::PlateInformation do
     end
   end
 
-  # test for scenario wuth previous closed submission on the wells ONLY - i.e. only want wells with ACTIVE requests as source so this should return empty
+  # test for scenario wuth previous closed submission on the wells ONLY
+  # i.e. only want wells with ACTIVE requests as source so this should return empty
   context 'when the plate has a closed submission' do
     let(:plate_barcode) { 'SQPD-4' }
     let(:parameters) { { plate_barcode: plate_barcode } }
@@ -100,11 +104,13 @@ describe UatActions::PlateInformation do
 
       plate_wells = plate.wells.with_contents
 
-      req_1 = create :library_creation_request, asset: plate_wells.first, submission: submission, request_type: request_type, state: 'passed'
-      plate_wells.first.requests_as_source << req_1
+      req1 = create :library_creation_request, asset: plate_wells.first, submission: submission,
+request_type: request_type, state: 'passed'
+      plate_wells.first.requests_as_source << req1
 
-      req_2 = create :library_creation_request, asset: plate_wells.last, submission: submission, request_type: request_type, state: 'passed'
-      plate_wells.last.requests_as_source << req_2
+      req2 = create :library_creation_request, asset: plate_wells.last, submission: submission,
+request_type: request_type, state: 'passed'
+      plate_wells.last.requests_as_source << req2
     end
 
     it 'can be performed' do
@@ -113,7 +119,8 @@ describe UatActions::PlateInformation do
     end
   end
 
-  # TODO: test for scenario where we have both an old submission and a new submission on the plate (different subsets of wells) - we only want the wells with the new active submission
+  # TODO: test for scenario where we have both an old submission and a new submission on the plate (different
+  # subsets of wells) - we only want the wells with the new active submission
   context 'when the plate has both active and closed submissions' do
     let(:plate_barcode) { 'SQPD-4' }
     let(:parameters) { { plate_barcode: plate_barcode } }
@@ -122,7 +129,8 @@ describe UatActions::PlateInformation do
     let(:submission2) { create :submission }
     let(:request_type) { create :library_creation_request_type }
     let(:report) do
-      { plate_barcode: plate_barcode, wells_with_aliquots: 'A1, B1, C1', wells_with_active_requests_as_source: 'A1, C1' }
+      { plate_barcode: plate_barcode, wells_with_aliquots: 'A1, B1, C1',
+wells_with_active_requests_as_source: 'A1, C1' }
     end
 
     before do
@@ -130,20 +138,25 @@ describe UatActions::PlateInformation do
 
       plate_wells = plate.wells.with_contents
 
-      req_1 = create :library_creation_request, asset: plate_wells.first, submission: submission, request_type: request_type, state: 'passed'
-      plate_wells.first.requests_as_source << req_1
+      req1 = create :library_creation_request, asset: plate_wells.first, submission: submission,
+request_type: request_type, state: 'passed'
+      plate_wells.first.requests_as_source << req1
 
-      req_2 = create :library_creation_request, asset: plate_wells.second, submission: submission, request_type: request_type, state: 'passed'
-      plate_wells.second.requests_as_source << req_2
+      req2 = create :library_creation_request, asset: plate_wells.second, submission: submission,
+request_type: request_type, state: 'passed'
+      plate_wells.second.requests_as_source << req2
 
-      req_3 = create :library_creation_request, asset: plate_wells.last, submission: submission, request_type: request_type, state: 'passed'
-      plate_wells.last.requests_as_source << req_3
+      req3 = create :library_creation_request, asset: plate_wells.last, submission: submission,
+request_type: request_type, state: 'passed'
+      plate_wells.last.requests_as_source << req3
 
-      req_4 = create :library_creation_request, asset: plate_wells.first, submission: submission2, request_type: request_type, state: 'started'
-      plate_wells.first.requests_as_source << req_4
+      req4 = create :library_creation_request, asset: plate_wells.first, submission: submission2,
+request_type: request_type, state: 'started'
+      plate_wells.first.requests_as_source << req4
 
-      req_5 = create :library_creation_request, asset: plate_wells.last, submission: submission2, request_type: request_type, state: 'started'
-      plate_wells.last.requests_as_source << req_5
+      req5 = create :library_creation_request, asset: plate_wells.last, submission: submission2,
+request_type: request_type, state: 'started'
+      plate_wells.last.requests_as_source << req5
     end
 
     it 'can be performed' do
