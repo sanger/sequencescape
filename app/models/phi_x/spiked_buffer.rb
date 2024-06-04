@@ -102,16 +102,16 @@ class PhiX::SpikedBuffer
       spiked_buffer =
         PhiX
           .spiked_buffer_purpose
-          .create!(name: "#{name} ##{index + 1}", concentration: concentration, volume: volume, parent: parent, aliquot_attributes: aliquot_attributes) do |tube|
-            # receptacle = tube.receptacle
-            # receptacle.qc_results.build(key: 'molarity', value: concentration, units: 'nM')
-            # receptacle.qc_results.build(key: 'volume', value: volume, units: 'ul')
-            # receptacle.transfer_requests_as_target.build(
-            #   asset: parent.receptacle,
-            #   target_asset: receptacle,
-            #   aliquot_attributes: aliquot_attributes
-            # )
-        end
+          .create!(name: "#{name} ##{index + 1}") do |tube|
+            receptacle = tube.receptacle
+            receptacle.qc_results.build(key: 'molarity', value: concentration, units: 'nM')
+            receptacle.qc_results.build(key: 'volume', value: volume, units: 'ul')
+            receptacle.transfer_requests_as_target.build(
+              asset: parent.receptacle,
+              target_asset: receptacle,
+              aliquot_attributes: aliquot_attributes
+            )
+          end
       parent.children << spiked_buffer
       spiked_buffer
     end

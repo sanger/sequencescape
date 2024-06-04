@@ -5,7 +5,6 @@ require 'rails_helper'
 RSpec.describe PhiX::SpikedBuffer, :phi_x do
   subject { build :phi_x_spiked_buffer, custom_options }
 
-
   context 'with suitable options' do
     let(:custom_options) { {} } # Fallback to factory defaults
 
@@ -73,9 +72,7 @@ RSpec.describe PhiX::SpikedBuffer, :phi_x do
               study_id: study_id
       end
 
-      before do
-          save
-      end
+      before { save }
 
       it { is_expected.to be true }
 
