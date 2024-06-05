@@ -23,10 +23,19 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # States which are still considered to be processable (ie. not failed or cancelled)
   ACTIVE_STATES = %w[pending started passed qc_complete].freeze
 
+  # target_asset and asset are both Receptacle objects, and are the source and target of the transfer request.
+  # That is, when a transfer is made, the asset is moved from the source to the target, which are both receptacles.
   # The assets on a request can be treated as a particular class when being used by certain pieces of code.
   #  For instance, QC might be performed on a source asset that is a well, in which case we'd like to load it as such.
   belongs_to :target_asset, class_name: 'Receptacle', inverse_of: :transfer_requests_as_source, optional: false
+
+  # inverse_of: :transfer_requests_as_target is an option that sets up a two-way association between TransferRequest
+  # and Receptacle. This means that not only does a TransferRequest have an asset method that returns the associated
+  # Receptacle, but a Receptacle also has a transfer_requests_as_target method that returns all associated
+  # TransferRequest objects.
+  # So, calling receptacle.transfer_requests_as_target will return all TransferRequest objects associated with that.
   belongs_to :asset, class_name: 'Receptacle', inverse_of: :transfer_requests_as_target, optional: false
+
   has_one :target_labware, through: :target_asset, source: :labware
   has_one :source_labware, through: :asset, source: :labware
   has_many :associated_requests, through: :asset, source: :requests_as_source
