@@ -54,8 +54,8 @@ describe UatActions::PlateInformation do
     end
   end
 
-  # TODO: when the plate has a partial submission on it
-  # how to set up a partial submission on a plate? (see UAT actions? or create a new factory?)
+  # This test is for the scenario where the plate has a partial submission on it.
+  # We expect to return the wells that have been submitted (have active requests as source)
   context 'when the plate has a partial submission' do
     let(:plate_barcode) { 'SQPD-3' }
     let(:parameters) { { plate_barcode: plate_barcode } }
@@ -87,8 +87,8 @@ request_type: request_type, state: 'started'
     end
   end
 
-  # test for scenario wuth previous closed submission on the wells ONLY
-  # i.e. only want wells with ACTIVE requests as source so this should return empty
+  # This test is for a scenario where there there is a previous (now closed) submission on the wells ONLY
+  # i.e. only want wells with ACTIVE requests as source so this should not return any wells
   context 'when the plate has a closed submission' do
     let(:plate_barcode) { 'SQPD-4' }
     let(:parameters) { { plate_barcode: plate_barcode } }
@@ -119,8 +119,8 @@ request_type: request_type, state: 'passed'
     end
   end
 
-  # TODO: test for scenario where we have both an old submission and a new submission on the plate (different
-  # subsets of wells) - we only want the wells with the new active submission
+  # This test is for the scenario where we have both an old submission and a new submission on the plate (different
+  # subsets of wells) - we expect to only return the wells with the new (active) submission
   context 'when the plate has both active and closed submissions' do
     let(:plate_barcode) { 'SQPD-4' }
     let(:parameters) { { plate_barcode: plate_barcode } }
