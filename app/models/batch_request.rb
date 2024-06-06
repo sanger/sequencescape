@@ -28,7 +28,7 @@ class BatchRequest < ApplicationRecord
   # Constraint removed here for performance reasons
   # validates_uniqueness_of :request_id, message: '%{value} is already in a batch.'
   before_validation(if: :requires_position?, unless: :position?) do |record|
-    record.position = (record.batch.batch_requests.reload.filter_map(&:position).max || 0) + 1
+    record.position = (record.batch.batch_requests.filter_map(&:position).max || 0) + 1
   end
 
   broadcast_with_warren
