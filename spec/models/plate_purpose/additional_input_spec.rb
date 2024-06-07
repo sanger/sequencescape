@@ -11,8 +11,6 @@ describe PlatePurpose::AdditionalInput do
     expect(plate_purpose_input).to be_valid
   end
 
-  # TODO: This tests are disabled because they don't pass in github currently,
-  # my assumption is the order or loaded classes is a factor but is not clear why.
   describe '#state_of' do
     subject(:state_of) { plate_purpose_input.state_of(plate) }
 
