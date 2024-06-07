@@ -70,6 +70,11 @@ FactoryBot.define do
       size { 16 }
       asset_shape { AssetShape.find_by(name: 'ChromiumChip') }
     end
+
+    factory :chromium_chip_x_purpose do
+      size { 8 }
+      asset_shape { AssetShape.find_by(name: 'ChromiumChipX') }
+    end
   end
 
   factory :dilution_plate_purpose do
