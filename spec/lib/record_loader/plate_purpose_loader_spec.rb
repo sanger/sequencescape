@@ -75,4 +75,18 @@ RSpec.describe RecordLoader::PlatePurposeLoader, :loader, type: :model do
       expect(purpose.size).to eq(16)
     end
   end
+
+  context 'with ChromimumChipX Plate purpose' do
+    let(:selected_files) { '004_chromium_chip_x' }
+    let(:purpose_name) { 'ChromiumChipX Plate' }
+
+    before { record_loader.create! }
+
+    it 'creates a plate purpose' do
+      expect(Purpose.where(name: purpose_name).count).to eq(1)
+      purpose = Purpose.where(name: purpose_name).first
+      expect(purpose.asset_shape).to eq(AssetShape.find_by(name: 'ChromiumChipX'))
+      expect(purpose.size).to eq(8)
+    end
+  end
 end
