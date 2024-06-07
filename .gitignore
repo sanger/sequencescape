@@ -1,57 +1,83 @@
+# Git files
 !/.gitignore
+
+# Log files
 *.log.[0-9]
 *.log
+
+# Temporary files
 .byebug_history
 tmp/*
-dockermysql/*
-.DS_Store
-public/doc/*
-db/*.sql
-db/views_schema.old
-repository
-lib/tasks/*.local.rake
-log/ruby_prof_profile
-public/documents
-public/system
-metrics_directory/*
+rerun*
 *.swp
 *~
 *.orig
-db/*test.sqlite3
-.bundle
-rcov
-capybara*.html
-.Rakelist
-database_suffix
-*.sublime-workspace
-app/sample_manifest_excel/doc/
-coverage
-.yardoc
-rerun*
-spec/examples.txt
-public/public
-doc/*
-.yardoc/*
-test_file.xlsx
-new_test_file.xlsx
-node_modules
-sbin
 
+# System files
+.DS_Store
+
+# Database files
+db/*.sql
+db/views_schema.old
+db/*test.sqlite3
+database_suffix
+dockermysql/*
+
+# Profiling files
+log/ruby_prof_profile
+
+# Public files
+public/doc/*
+public/documents
+public/system
+public/public
 /public/packs
 /public/packs-test
-/node_modules
-/yarn-error.log
-yarn-debug.log*
+
+# Documentation files
+doc/*
+.yardoc
+.yardoc/*
+app/sample_manifest_excel/doc/
+
+# Test files
+capybara*.html
+spec/examples.txt
+test_file.xlsx
+new_test_file.xlsx
+
+# Coverage files
+coverage
+rcov
+
+# IDE files
+*.sublime-workspace
+*.idea
+.vscode
+sequencescape.code-workspace
+sequencescape.sublime-project
+
+# Repository files
+.bundle
+.talismanrc
 .yarn-integrity
 /vendor
-.talismanrc
+node_modules
+repository
+sbin
 
-# Vite Ruby
+# Task files
+.Rakelist
+lib/tasks/*.local.rake
+
+# Vite Ruby files
 /public/vite
 /public/vite-dev
 /public/vite-test
 /public/vite-cucumber
-node_modules
 # Vite uses dotenv and suggests to ignore local-only env files. See
 # https://vitejs.dev/guide/env-and-mode.html#env-files
 *.local
+
+# Generated files
+mbrave.yml

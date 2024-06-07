@@ -24,12 +24,13 @@ module Heron
         EVENT_CLASSES.dig(@params.dig(:event, :event_type))
       end
 
-      def check_broadcast_event
+      def check_broadcast_event #rubocop:todo Metrics/AbcSize
         return if errors.count.positive?
         return unless broadcast_event
         return if broadcast_event.valid?
 
-        broadcast_event.errors.each { |key, value| errors.add(key, value) }
+        # In Rails 6.1 object.errors returns ActiveModel::Errors, in Rails 6.0 it returns a Hash
+        broadcast_event.errors.each { |error| errors.add error.attribute, error.message }
       end
 
       def save

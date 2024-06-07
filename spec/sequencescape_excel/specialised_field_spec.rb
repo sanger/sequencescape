@@ -894,49 +894,30 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
         sf = described_class.new(value: 'Long term storage', sample_manifest_asset: sample_manifest_asset)
         sf.update
 
-        expect(sf.asset.labware.custom_metadatum_collection&.metadata&.values&.count).to eq(1)
-        expect(sf.asset.labware.custom_metadatum_collection&.metadata&.values).to include('Long term storage')
+        expect(sf.asset.labware.retention_instruction.to_sym).to eq(:long_term_storage)
       end
 
       it 'will update any existing labware custom metadata on the labware to add the retention instruction choice' do
-        cm =
-          CustomMetadatumCollection.new(
-            user: sample_manifest.user,
-            asset: asset.labware,
-            metadata: {
-              'some_existing_metadata' => 'some_value'
-            }
-          )
-        asset.labware.custom_metadatum_collection = cm
-        cm.save
+        # Set an initial retention instruction value and save the asset
+        asset.labware.retention_instruction = :destroy_after_2_years
+        asset.labware.save
 
+        # Update the retention instruction value
         sf = described_class.new(value: 'Long term storage', sample_manifest_asset: sample_manifest_asset)
         sf.update
 
-        expect(sf.asset.labware.custom_metadatum_collection.metadata.values.count).to eq(2)
-        expect(sf.asset.labware.custom_metadatum_collection.metadata.values).to include('Long term storage')
+        expect(sf.asset.labware.retention_instruction.to_sym).to eq(:long_term_storage)
       end
 
       # It is valid for this special field to update the labware metadata and change it to a new value.
       # As long as the validation on the manifest re-upload passes (and for a plate that all wells for a labware
       # have the same retention instruction value, it is valid to update.
       it 'will be valid to update if the labware already contains a retention instruction metadata' do
-        cm =
-          CustomMetadatumCollection.new(
-            user: sample_manifest.user,
-            asset: asset.labware,
-            metadata: {
-              'retention_instruction' => 'Long term storage'
-            }
-          )
-        asset.labware.custom_metadatum_collection = cm
-        cm.save
-
         sf = described_class.new(value: 'Destroy after 2 years', sample_manifest_asset: sample_manifest_asset)
         expect(sf).to be_valid
         sf.update
 
-        expect(cm.metadata['retention_instruction']).to eq('Destroy after 2 years')
+        expect(sf.asset.labware.retention_instruction.to_sym).to eq(:destroy_after_2_years)
       end
     end
 
@@ -951,6 +932,38 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
       let(:asset) { create :sample_tube }
 
       it_behaves_like 'a retention instruction labware'
+    end
+
+    context 'when retention instruction is updated (through manifests) for a labware that doesn\'t
+            have retention instructions' do
+      let(:asset_plate) { create :plate_with_untagged_wells, sample_count: 1 }
+      let(:asset) { asset_plate.wells.first }
+      let(:user) { create :user }
+
+      before do
+        custom_metadatum = CustomMetadatum.new
+        custom_metadatum.key = 'sample_metadata'
+        custom_metadatum.value = 'Sample Metadata'
+        custom_metadatum_collection = CustomMetadatumCollection.new
+        custom_metadatum_collection.custom_metadata = [custom_metadatum]
+        custom_metadatum_collection.asset = asset_plate
+        custom_metadatum_collection.user = user
+        custom_metadatum_collection.save!
+        custom_metadatum.save!
+
+        sf = described_class.new(value: 'Long term storage', sample_manifest_asset: sample_manifest_asset)
+        sf.update
+      end
+
+      it 'will not update custom_metadata when a new retention instruction is added' do
+        asset_plate.reload
+        expect(asset_plate.metadata.key?('retention_instruction')).to be(false)
+      end
+
+      it 'will update labware table\'s retention_instruction column' do
+        asset_plate.reload
+        expect(asset_plate.retention_instruction.to_sym).to eq(:long_term_storage)
+      end
     end
   end
 end

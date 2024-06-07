@@ -8,6 +8,8 @@ module Api
       attribute :name
       attribute :uuid
 
+      has_many :poly_metadata, as: :metadatable, class_name: 'PolyMetadatum'
+
       filter :name
 
       filter :state, apply: lambda { |records, value, _options| records.by_state(value) }

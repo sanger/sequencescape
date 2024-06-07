@@ -49,4 +49,6 @@ Rails.application.config.content_security_policy_nonce_directives = %w[script-sr
 # Report CSP violations to a specified URI
 # For further information see the following documentation:
 # https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy-Report-Only
+# Report only for now because we have some inline JS that can't use nonce values e.g. inline onclick event handlers
+# (see ajax_handling.js for an example)
 Rails.application.config.content_security_policy_report_only = true

@@ -1,9 +1,9 @@
 ARG CHIPSET=default
 
 # Use the correct base image depending on the architecture
-# For Apple M1 Chip, run: docker build --build-arg CHIPSET=m1
-FROM ruby:3.0.6-slim AS base_default
-FROM --platform=linux/amd64 ruby:3.0.6-slim AS base_m1
+# For Apple M1 Chip, run: docker build --build-arg CHIPSET=m1 .
+FROM ruby:3.2.4-slim AS base_default
+FROM --platform=linux/amd64 ruby:3.2.4-slim AS base_m1
 FROM base_${CHIPSET} AS base
 
 COPY .nvmrc /.nvmrc
@@ -21,9 +21,10 @@ RUN apt-get update && apt-get install -y \
     git \
     graphviz \
     net-tools \
-    netcat \
+    netcat-traditional \
     nodejs \
     npm \
+    ruby-dev \
     vim \
     wget \
     yarn

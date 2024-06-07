@@ -105,7 +105,8 @@ class LocationReport::LocationReportForm
   def add_location_errors
     return if location_report.nil?
 
-    location_report.errors.each { |key, value| errors.add key, value }
+    # In Rails 6.1 object.errors returns ActiveModel::Errors, in Rails 6.0 it returns a Hash
+    location_report.errors.each { |error| errors.add error.attribute, error.message }
   end
 
   def barcode_is_human_readable?(barcode)

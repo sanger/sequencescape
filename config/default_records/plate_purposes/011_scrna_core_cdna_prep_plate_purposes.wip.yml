@@ -2,14 +2,25 @@
 # Most are defined in the Limber config, but the below also need to be defined in Sequencescape.
 # They are in a separate file so it can be 'feature flagged off' until needed.
 ---
-# The 'LRC PBMC Pools' purpose is controlled by Limber. However, it has been
-# added here to create submission and request type records for scRNA Core cDNA
-# Prep stage.
-LRC PBMC Pools:
-  stock_plate: false
-  cherrypickable_target: false
 # The 'LRC PBMC Pools Input' purpose is included here so that it's available for
-# sample manifests.
+# sample manifests, and also because it is an acceptable purpose for the scRNA Core cDNA Prep Input
+# submission template.
 LRC PBMC Pools Input:
+  input_plate: true
   stock_plate: true
   cherrypickable_target: false
+# The 'LRC HT 5p cDNA PCR XP' and 'LRC HT 5p cDNA Input' purposes are included here so they are
+# available for aggregation submissions.
+LRC HT 5p cDNA PCR XP:
+  input_plate: false
+  stock_plate: false
+  cherrypickable_target: false
+LRC HT 5p cDNA Input:
+  input_plate: true
+  stock_plate: true
+  cherrypickable_target: false
+# The 'LRC HT 5p Cherrypick' purpose is included here so it is available for library submissions.
+LRC HT 5p Cherrypick:
+  input_plate: false
+  stock_plate: false
+  cherrypickable_target: true

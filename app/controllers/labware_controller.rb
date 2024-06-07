@@ -3,7 +3,8 @@
 # Handles viewing {Labware} information
 # @see Labware
 class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLength
-  before_action :discover_asset, only: %i[show edit update summary print_assets print history]
+  include RetentionInstructionHelper
+  before_action :discover_asset, only: %i[show edit update summary print_assets print history retention_instruction]
 
   def index # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     if params[:study_id]
@@ -41,6 +42,10 @@ class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLeng
     @valid_purposes_options = @asset.compatible_purposes.pluck(:name, :id)
   end
 
+  def retention_instruction
+    @retention_instruction_options = retention_instruction_option_for_select
+  end
+
   def history
     respond_to do |format|
       format.html
@@ -51,8 +56,9 @@ class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   def update # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     respond_to do |format|
-      if @asset.update(labware_params.merge(params.to_unsafe_h.fetch(:lane, {})))
-        flash[:notice] = 'Labware was successfully updated.'
+      params_hash = params.to_unsafe_h
+      if @asset.update(labware_params.merge(params_hash.fetch(:lane, {})))
+        flash[:notice] = find_flash(params_hash)
         if params[:lab_view]
           format.html { redirect_to(action: :lab_view, barcode: @asset.human_barcode) }
         else
@@ -156,7 +162,7 @@ class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLeng
   private
 
   def labware_params
-    permitted = %i[volume concentration]
+    permitted = %i[volume concentration retention_instruction]
     permitted << :name if can? :rename, Labware
     permitted << :plate_purpose_id if can? :change_purpose, Labware
     params.require(:labware).permit(permitted)
@@ -164,5 +170,13 @@ class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   def discover_asset
     @asset = Labware.include_for_show.find(params[:id])
+  end
+
+  def find_flash(params_hash)
+    if params_hash[:labware].key?(:retention_instruction)
+      'Retention Instruction was successfully updated.'
+    else
+      'Labware was successfully updated.'
+    end
   end
 end

@@ -1,8 +1,8 @@
-# Submission template for scRNA Core 'Donor Pooling' and 'cDNA Prep'.
-# - submission_class_name is LinearSubmission because it represents a
-#   chain of request types in linear order.
-# - request_type_keys is an array of request types. These match two stages of
-#   the pipeline for doing the submission in one go.
+# Submission templates for the scRNA Core pipeline.
+# - submission_class_name is LinearSubmission because it a simple submission
+#   that represents a chain of request types in linear order but there is only
+#   one request type for two stages of the pipeline in this sumission.
+# - request_type_keys is an array of request types.
 # - project_name (cost code) is not included here because it comes from the
 #   manual subssion.
 # - product_line name is a grouping of related products. This is shown in UI
@@ -10,9 +10,27 @@
 # - product_catalogue_name is the name of the product catalogue that has a
 #   selection_behaviour as 'SingleProduct'.
 ---
-Limber-Htp - scRNA Core Donor Pooling and cDNA Prep:
+Limber-Htp - scRNA Core cDNA Prep:
   submission_class_name: "LinearSubmission"
   related_records:
-    request_type_keys: ["limber_scrna_core_donor_pooling", "limber_scrna_core_cdna_prep"]
+    request_type_keys: ["limber_scrna_core_cdna_prep_v2"]
+    product_line_name: Short Read
+    product_catalogue_name: scRNA Core
+Limber-Htp - scRNA Core cDNA Prep Input:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_scrna_core_cdna_prep_input"]
+    product_line_name: Short Read
+    product_catalogue_name: scRNA Core
+Limber-Htp - scRNA Core Chromium HT 5p Aggregation:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_scrna_core_chromium_ht_5p_aggregation"]
+    product_line_name: Short Read
+    product_catalogue_name: scRNA Core
+Limber-Htp - scRNA Core Chromium HT:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_scrna_core_chromium_ht"]
     product_line_name: Short Read
     product_catalogue_name: scRNA Core

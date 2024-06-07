@@ -15,8 +15,9 @@ FactoryBot.define do
     factory :plate_sample_manifest_with_manifest_assets do
       transient do
         num_plates { 1 }
-        num_samples_per_plate { 1 }
-        plates { create_list :plate, num_plates, well_factory: :empty_well, well_count: num_samples_per_plate }
+        num_wells_per_plate { 1 }
+        num_samples_per_well { 1 }
+        plates { create_list :plate, num_plates, well_factory: :empty_well, well_count: num_wells_per_plate }
       end
 
       barcodes { plates.map(&:human_barcode) }
@@ -26,12 +27,14 @@ FactoryBot.define do
           .plates
           .flat_map(&:wells)
           .each do |well|
-            create(
-              :sample_manifest_asset,
-              sanger_sample_id: generate(:sanger_sample_id),
-              asset: well,
-              sample_manifest: sample_manifest
-            )
+            evaluator.num_samples_per_well.times do
+              create(
+                :sample_manifest_asset,
+                sanger_sample_id: generate(:sanger_sample_id),
+                asset: well,
+                sample_manifest: sample_manifest
+              )
+            end
           end
         sample_manifest.barcodes = sample_manifest.labware.map(&:human_barcode)
       end
@@ -75,8 +78,9 @@ FactoryBot.define do
     factory :pending_plate_sample_manifest do
       transient do
         num_plates { 2 }
-        num_samples_per_plate { 2 }
-        plates { create_list :plate, num_plates, well_factory: :empty_well, well_count: num_samples_per_plate }
+        num_filled_wells_per_plate { 2 }
+        num_rows_per_well { 1 }
+        plates { create_list :plate, num_plates, well_factory: :empty_well, well_count: num_filled_wells_per_plate }
       end
 
       barcodes { plates.map(&:human_barcode) }
@@ -86,7 +90,11 @@ FactoryBot.define do
         evaluator
           .plates
           .flat_map(&:wells)
-          .each { |well| create(:sample_manifest_asset, asset: well, sample_manifest: sample_manifest) }
+          .each do |well|
+            evaluator.num_rows_per_well.times do
+              create(:sample_manifest_asset, asset: well, sample_manifest: sample_manifest)
+            end
+          end
       end
     end
 

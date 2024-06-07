@@ -6,6 +6,18 @@ RSpec.describe 'labware/show.html.erb' do # rubocop:todo RSpec/DescribeClass
   include AuthenticatedSystem
   let(:user) { create :user }
 
+  shared_examples 'retention instruction' do
+    it 'displays retention key instruction in asset summary' do
+      render
+      expect(rendered).to match(/Retention Instruction/)
+    end
+
+    it 'displays retention instruction value in asset summary' do
+      render
+      expect(rendered).to match(/Destroy after 2 years/)
+    end
+  end
+
   context 'when rendering a plate' do
     let(:current_user) { user }
     let(:plate) { create :plate_with_3_wells }
@@ -22,6 +34,31 @@ RSpec.describe 'labware/show.html.erb' do # rubocop:todo RSpec/DescribeClass
     it 'does not display the barcode for the wells' do
       render
       expect(rendered).not_to match(/Tube Barcode/)
+    end
+
+    context 'when retention instructions are coming from custom_metadata (for old submissions)' do
+      before do
+        custom_metadatum = CustomMetadatum.new
+        custom_metadatum.key = 'retention_instruction'
+        custom_metadatum.value = 'Destroy after 2 years'
+        custom_metadatum_collection = CustomMetadatumCollection.new
+        custom_metadatum_collection.custom_metadata = [custom_metadatum]
+        custom_metadatum_collection.asset = plate
+        custom_metadatum_collection.user = user
+        custom_metadatum_collection.save!
+        custom_metadatum.save!
+      end
+
+      it_behaves_like 'retention instruction'
+    end
+
+    context 'when retention instructions are coming from labware.retention_instruction' do
+      before do
+        plate.retention_instruction = :destroy_after_2_years
+        plate.custom_metadatum_collection = nil
+      end
+
+      it_behaves_like 'retention instruction'
     end
   end
 

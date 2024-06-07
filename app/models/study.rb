@@ -9,7 +9,7 @@ require 'aasm'
 #   - These accession numbers are used at data release to group samples together for publication
 #   - For managed/EGA studies, also ties the data to an {Accessionable::Dac} and {Accessionable::Policy}
 # - A means of generating the aforementioned {Accessionable::Dac} and {Accessionable::Policy}
-#   @note These should DEFINATELY be separate entities
+#   @note These should DEFINITELY be separate entities
 # - A means of tying data to internal data-release timings
 # - A means to apply internal data access policies to released sequencing data
 # - A means to tie interested parties to the samples and the work done on them
@@ -76,7 +76,12 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   DATA_RELEASE_TIMING_STANDARD = 'standard'
   DATA_RELEASE_TIMING_NEVER = 'never'
   DATA_RELEASE_TIMING_DELAYED = 'delayed'
-  DATA_RELEASE_TIMINGS = [DATA_RELEASE_TIMING_STANDARD, 'immediate', DATA_RELEASE_TIMING_DELAYED].freeze
+  DATA_RELEASE_TIMING_IMMEDIATE = 'immediate'
+  DATA_RELEASE_TIMINGS = [
+    DATA_RELEASE_TIMING_STANDARD,
+    DATA_RELEASE_TIMING_IMMEDIATE,
+    DATA_RELEASE_TIMING_DELAYED
+  ].freeze
   DATA_RELEASE_PREVENTION_REASONS = ['data validity', 'legal', 'replication of data subset'].freeze
 
   DATA_RELEASE_DELAY_FOR_OTHER = 'other'
@@ -124,6 +129,9 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_many :documents, as: :documentable
   has_many :sample_manifests
   has_many :suppliers, -> { distinct }, through: :sample_manifests
+
+  # Can have many key value pairs of metadata
+  has_many :poly_metadata, as: :metadatable, dependent: :destroy
 
   # Validations
   validates :name, uniqueness: { case_sensitive: false }, presence: true, latin1: true
@@ -546,6 +554,19 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def rebroadcast
     broadcast
+  end
+
+  # Returns the PolyMetadatum object associated with the given key.
+  #
+  # @param key [String] The key of the PolyMetadatum to find.
+  #
+  # @return [PolyMetadatum, nil] The PolyMetadatum object with the given key,
+  #   or nil if no such PolyMetadatum exists.
+  #
+  # @example
+  #   study.poly_metadatum_by_key("sample_key")
+  def poly_metadatum_by_key(key)
+    poly_metadata.find { |pm| pm.key == key.to_s }
   end
 
   private

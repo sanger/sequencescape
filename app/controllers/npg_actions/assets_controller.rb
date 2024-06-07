@@ -36,10 +36,7 @@ class NpgActions::AssetsController < ApplicationController
         generate_events(state)
       end
 
-      respond_to do |format|
-        format.xml { render file: 'assets/show' }
-        format.html { render template: 'assets/show.xml.builder' }
-      end
+      respond_to { |format| format.any { render template: 'assets/show', formats: [:xml] } }
     end
   end
 
@@ -90,6 +87,6 @@ class NpgActions::AssetsController < ApplicationController
   end
 
   def rescue_error_bad_request(exception)
-    render xml: "<error><message>#{exception.message}</message></error>", status: :bad_request
+    render xml: "<error><message>#{exception.message.split("\n").first}</message></error>", status: :bad_request
   end
 end

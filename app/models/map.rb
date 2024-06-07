@@ -126,7 +126,7 @@ class Map < ApplicationRecord
       def alternate_position(well_position, size, *dimensions)
         return nil unless Map.valid_well_position?(well_position)
 
-        divisor, multiplier = dimensions.map { |n| send("plate_#{n}", size) }
+        divisor, multiplier = dimensions.map { |n| send(:"plate_#{n}", size) }
         return nil if divisor.nil? || multiplier.nil?
 
         column, row = (well_position - 1).divmod(divisor)
