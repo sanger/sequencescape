@@ -22,8 +22,9 @@
 # When configuring a "Purpose", both "asset_shape" and "size" need to be
 # specified in that configuration in order to use the correct labware. If not
 # specified, they will default to Standard and 96 respectively. For example,
-# LRC GEM-X 5p Chip:
-#   :asset_shape: ChromiumChip
+#
+# Example Purpose:
+#   :asset_shape: ChromiumChipX
 #   :size: 8
 #
 # The information in this file is duplicated in a couple of places in the
@@ -58,8 +59,18 @@ StripTubeColumn:
   description_strategy: Sequential
   sizes: [8]
 
+# The ChromiumChip shape has a horizontal ratio of 4 and a vertical ratio of 1.
+# This shape was defined for the 16-well chip (8 columns and 2 rows).
 ChromiumChip:
   horizontal_ratio: 4
   vertical_ratio: 1
   description_strategy: Coordinate
   sizes: [16]
+
+# The ChromiumChipX shape has a horizontal ratio of 8 and a vertical ratio of 1,
+# which is different from the ChromiumChip above.
+ChromiumChipX:
+  horizontal_ratio: 8
+  vertical_ratio: 1
+  description_strategy: Coordinate
+  sizes: [8]
