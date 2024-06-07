@@ -24,8 +24,16 @@
 # specified, they will default to Standard and 96 respectively. For example,
 #
 # Example Purpose:
-#   :asset_shape: ChromiumChipX
-#   :size: 8
+#   :asset_shape: ChromiumChip
+#   :size: 16
+#
+# Example Purpose X:
+#  :asset_shape: ChromiumChipX
+#  :size: 8
+#
+# Note that ChromiumChip and ChromiumChipX are different shapes, and they have
+# different horizontal/vertical ratios. The "sizes" option is used to define
+# how many wells are in the plate.
 #
 # The information in this file is duplicated in a couple of places in the
 # codebase. When the local development environment is "setup" or "reset", a
