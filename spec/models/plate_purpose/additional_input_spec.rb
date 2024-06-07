@@ -19,7 +19,7 @@ describe PlatePurpose::AdditionalInput do
     let(:plate) { create :plate, :with_wells, well_count: 2, purpose: plate_purpose_input }
 
     context 'with no requests' do
-      xit 'is pending' do
+      it 'is pending' do
         expect(state_of).to eq('pending')
       end
     end
@@ -29,7 +29,7 @@ describe PlatePurpose::AdditionalInput do
       let(:plate) { create(:target_plate, parent: parent_plate, purpose: plate_purpose_input) }
 
       context 'with no library requests' do
-        xit 'is pending' do
+        it 'is pending' do
           expect(state_of).to eq('pending')
         end
       end
@@ -40,7 +40,7 @@ describe PlatePurpose::AdditionalInput do
           create(:library_creation_request, asset: plate.wells[1])
         end
 
-        xit 'is pending' do
+        it 'is pending' do
           expect(state_of).to eq('pending')
         end
       end
@@ -50,7 +50,7 @@ describe PlatePurpose::AdditionalInput do
       let(:plate) { create :plate_with_untagged_wells, well_count: 2, purpose: plate_purpose_input }
 
       context 'with no library requests' do
-        xit 'is pending' do
+        it 'is pending' do
           expect(state_of).to eq('pending')
         end
       end
@@ -61,7 +61,7 @@ describe PlatePurpose::AdditionalInput do
           create(:library_creation_request, asset: plate.wells[1])
         end
 
-        xit 'is passed' do
+        it 'is passed' do
           expect(state_of).to eq('passed')
         end
       end
