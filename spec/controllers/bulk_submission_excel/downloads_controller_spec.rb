@@ -13,13 +13,13 @@ RSpec.describe BulkSubmissionExcel::DownloadsController do
 
   context 'when receiving a create request' do
     let(:submission) { create :submission }
-    let(:plates) { create_list(:plate, 2) }
+    let(:plates) { create_list(:plate, 6) }
     let(:barcodes) { plates.map(&:barcodes).flatten.map(&:barcode) }
     let(:action) do
       post :create,
            params: {
              bulk_submission_excel_download: {
-               asset_barcodes: barcodes,
+               asset_barcodes: barcodes.join("\n"),
                submission_template_id: submission.id
              }
            }
@@ -28,6 +28,25 @@ RSpec.describe BulkSubmissionExcel::DownloadsController do
     it 'generates a new submission Excel file' do
       action
       expect(response).to have_http_status(:ok)
+    end
+
+    it 'generates an Excel file with the correct headers' do
+      action
+      expect(response.headers['Content-Type']).to eq('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+      expect(response.headers['Content-Disposition']).to include(
+        "#{barcodes.first}_to_#{barcodes.last}_#{Time.current.utc.strftime('%Y%m%d')}_#{session[:user].login}.xlsx"
+      )
+    end
+
+    context 'when only one barcode is provided' do
+      let(:plates) { create_list(:plate, 1) }
+
+      it 'generates an Excel file with the correct headers' do
+        action
+        expect(response.headers['Content-Disposition']).to include(
+          "#{barcodes.first}_to_#{barcodes.first}_#{Time.current.utc.strftime('%Y%m%d')}_#{session[:user].login}.xlsx"
+        )
+      end
     end
   end
 end
