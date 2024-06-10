@@ -104,13 +104,7 @@
     <th>Retention Instruction</th>
     <!-- First, check if retention instructions are there. -->
     <% if asset.retention_instruction.blank? %>
-      <!-- If retention instructions aren't there in the labware table, check whether if the labware has -->
-      <!-- instructions stored in custom_metadata -->
-      <%  if asset.custom_metadatum_collection.present?  %>
-        <td><%= asset.metadata['retention_instruction'] if asset.metadata.key?('retention_instruction') %></td>
-      <%  else  %>
         <td>Not specified</td>
-      <%  end  %>
     <!-- If retention instructions are present, display them. -->
     <%  else  %>
       <td><%= find_retention_instruction_from_key(asset.retention_instruction.to_sym) %></td>

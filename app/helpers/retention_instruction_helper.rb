@@ -13,8 +13,12 @@ module RetentionInstructionHelper
   end
 
   # Retrieve the I18n key for a given value in the retention_instructions hash
+  # NB: Might not be an ideal way to do this, but it works for now.
   def find_retention_instruction_key_for_value(value)
-    I18n.t(:retention_instructions).key(value)
+    I18n.t(:retention_instructions).each do |key, val|
+      return key if val.casecmp(value).zero?
+    end
+    nil
   end
 
   # This function is used to find the retention instruction to display for a given labware
@@ -22,7 +26,6 @@ module RetentionInstructionHelper
   # After the script in #4095 is run, the elsif branch can be removed.
   def find_retention_instruction_to_display(labware)
     metadata = labware.metadata
-
     retention_instruction = labware.retention_instruction
     if retention_instruction.present?
       return retention_instruction
