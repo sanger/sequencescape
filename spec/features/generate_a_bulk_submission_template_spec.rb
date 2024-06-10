@@ -11,9 +11,8 @@ describe 'Generate a bulk submission spreadsheet', :bulk_submission_excel, :js d
   let!(:partial_plate) { create(:plate_with_untagged_wells, well_count: 13) }
   let!(:submission_template) { create :libray_and_sequencing_template }
 
-  let(:kebabbed_submission_template_name) { submission_template.name.downcase.gsub(/[-\s]+/, '-') }
-  let(:simplified_iso_timestamp) { Time.current.utc.strftime('%Y%m%dT%H%M%SZ') }
-  let(:filename) { "#{kebabbed_submission_template_name}_#{simplified_iso_timestamp}.xlsx" }
+  let(:iso_date) { Time.current.utc.strftime('%Y%m%d') }
+  let(:filename) { "#{plate.human_barcode}_to_#{partial_plate.human_barcode}_#{iso_date}_#{user.login}.xlsx" }
 
   before do
     BulkSubmissionExcel.configure do |config|
