@@ -11,40 +11,60 @@ class BulkSubmissionExcel::DownloadsController < ApplicationController
   end
 
   def create
-    finder = Asset::Finder.new(submission_parameters.fetch(:asset_barcodes, '').split(/\s+/))
-    assets = finder.resolve
-    bulk_submission_excel_config = BulkSubmissionExcel.configuration
-    download = BulkSubmissionExcel::Download.new(
-        column_list: bulk_submission_excel_config.columns.all,
-        range_list: bulk_submission_excel_config.ranges,
-        defaults: params[:defaults],
-        assets: assets,
-      )
-
-    file = Tempfile.new
-    download.save(file)
-    send_file file.path,
-              content_type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-              filename: build_filename(finder.barcodes)
+    download = build_download
+    file = save_download_to_file(download)
+    send_file_to_user(file)
   rescue Asset::Finder::InvalidInputException => e
-    flash[:error] = e.message
-    redirect_back fallback_location: bulk_submissions_path
+    handle_invalid_input_exception(e)
   ensure
     file&.close
   end
 
-  # submission_parameters is a private method used for strong parameter handling in Rails.
-  # It requires the presence of :bulk_submission_excel_download in the params hash and permits only the :asset_barcodes attribute.
-  # This is used to prevent mass assignment vulnerabilities when creating or updating a BulkSubmissionExcelDownload.
-  # After the parameters are filtered for mass assignment, it returns the :bulk_submission_excel_download key from the params hash.
-  #
-  # @return [ActionController::Parameters] The permitted parameters for a BulkSubmissionExcelDownload.
+  private
+
+  # Create a download object
+  def build_download
+    finder = build_finder
+    bulk_submission_excel_config = BulkSubmissionExcel.configuration
+    BulkSubmissionExcel::Download.new(
+      column_list: bulk_submission_excel_config.columns.all,
+      range_list: bulk_submission_excel_config.ranges,
+      defaults: params[:defaults],
+      assets: finder.resolve,
+    )
+  end
+
+  # Build a finder to find the assets
+  def build_finder
+    Asset::Finder.new(submission_parameters.fetch(:asset_barcodes, '').split(/\s+/))
+  end
+
+  # Create initial temporary file to hold the download
+  def save_download_to_file(download)
+    file = Tempfile.new
+    download.save(file)
+    file
+  end
+
+  # Send the file to the user
+  def send_file_to_user(file)
+    finder = build_finder
+    send_file file.path,
+              content_type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+              filename: build_filename(finder.barcodes)
+  end
+
+  # Handle invalid input exceptions by redirecting back to the bulk submissions page
+  def handle_invalid_input_exception(exception)
+    flash[:error] = exception.message
+    redirect_back fallback_location: bulk_submissions_path
+  end
+
+  # Extract the submission parameters from the request
   def submission_parameters
     params.require(:bulk_submission_excel_download).permit(:asset_barcodes)
     params[:bulk_submission_excel_download]
   end
-
-  private
 
   # Build a filename for the file to be downloaded
   # Follows the format: first barcode_to_last barcode_date_sanger user ID
