@@ -29,7 +29,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
                 ]
   before_action :find_batch_by_batch_id, only: %i[sort print_plate_barcodes print_barcodes]
 
-  def index # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def index # rubocop:todo Metrics/AbcSize
     if logged_in?
       @user = params.fetch(:user, current_user)
       @batches = Batch.for_user(@user).order(id: :desc).includes(:user, :assignee, :pipeline).page(params[:page])
@@ -44,8 +44,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def show # rubocop:todo Metrics/AbcSize
+    def show # rubocop:todo Metrics/AbcSize
     respond_to do |format|
       format.html do
         @submenu_presenter = Presenters::BatchSubmenuPresenter.new(current_user, @batch)
@@ -69,9 +68,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  def edit
+    def edit
     @rits = @batch.pipeline.request_information_types
     @requests = @batch.ordered_requests.includes(:batch_request, :asset, :target_asset, :comments)
     @users = User.all
@@ -106,8 +103,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   # rubocop:enable Metrics/MethodLength
 
-  # rubocop:todo Metrics/MethodLength
-  def update # rubocop:todo Metrics/AbcSize
+    def update # rubocop:todo Metrics/AbcSize
     if batch_parameters[:assignee_id]
       user = User.find(batch_parameters[:assignee_id])
       assigned_message = "Assigned to #{user.name} (#{user.login})."
@@ -127,9 +123,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  def batch_parameters
+    def batch_parameters
     @batch_parameters ||= params.require(:batch).permit(:assignee_id)
   end
 
@@ -187,7 +181,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     @fail_reasons = @batch.workflow.source_is_internal? ? FAILURE_REASONS['internal'] : FAILURE_REASONS['external']
   end
 
-  def fail_items # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def fail_items # rubocop:todo Metrics/AbcSize
     ActiveRecord::Base.transaction do
       fail_params =
         params.permit(:id, requested_fail: {}, requested_remove: {}, failure: %i[reason comment fail_but_charge])
@@ -213,9 +207,10 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     redirect_to action: :show, id: @batch.id
   end
 
-  def print_labels; end
+  def print_labels
+  end
 
-  def print_plate_labels # rubocop:todo Metrics/MethodLength
+  def print_plate_labels
     @pipeline = @batch.pipeline
     @output_barcodes = []
 
@@ -249,7 +244,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
   end
 
   # Handles printing of the worksheet
-  def print # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def print # rubocop:todo Metrics/AbcSize
     @task = Task.find_by(id: params[:task_id])
     @pipeline = @batch.pipeline
     @comments = @batch.comments
@@ -300,7 +295,8 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     redirect_to batch_url(@batch)
   end
 
-  def filtered; end
+  def filtered
+  end
 
   def swap # rubocop:todo Metrics/AbcSize
     if @batch.swap(
@@ -350,7 +346,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   private
 
-  def print_handler(print_class) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def print_handler(print_class) # rubocop:todo Metrics/AbcSize
     print_job =
       LabelPrinter::PrintJob.new(
         params[:printer],
@@ -399,7 +395,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     return pipeline_error_on_batch_creation('Batches must contain at least one request') if requests.empty?
 
     begin
-      ActiveRecord::Base.transaction { @batch = @pipeline.batches.create!(requests: requests, user: current_user) }
+      ActiveRecord::Base.transaction { @batch = @pipeline.batches.create!(requests:, user: current_user) }
     rescue ActiveRecord::RecordNotUnique => e
       # We don't explicitly check for this on creation of batch_request for performance reasons, and the front end
       # usually ensures this situation isn't possible. However if the user opens duplicate tabs it is possible.

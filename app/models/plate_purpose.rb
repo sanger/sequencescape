@@ -63,7 +63,7 @@ class PlatePurpose < Purpose
     self.type = 'PlatePurpose::Input' if is_input
   end
 
-  def pool_wells(wells) # rubocop:todo Metrics/MethodLength
+  def pool_wells(wells)
     _pool_wells(wells)
       .joins(
         # rubocop:todo Layout/LineLength

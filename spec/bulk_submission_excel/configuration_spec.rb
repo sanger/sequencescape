@@ -23,7 +23,7 @@ RSpec.describe BulkSubmissionExcel::Configuration, :bulk_submission_excel, type:
   end
 
   describe 'without a folder' do
-    it 'will not be loaded' do
+    it 'does not be loaded' do
       configuration.load!
       expect(configuration).not_to be_loaded
     end
@@ -41,7 +41,7 @@ RSpec.describe BulkSubmissionExcel::Configuration, :bulk_submission_excel, type:
       expect(configuration).to be_loaded
     end
 
-    it 'will load the columns' do
+    it 'loads the columns' do
       columns =
         SequencescapeExcel::ColumnList.new(
           configuration.load_file(folder, 'columns'),

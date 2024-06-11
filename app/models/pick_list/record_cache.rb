@@ -41,7 +41,7 @@ class PickList::RecordCache
       study_id, project_id = entry.values_at(:study_id, :project_id)
       other_keys = entry.except(*LABWARE_KEYS).to_hash
       source_receptacles.map do |source_receptacle|
-        other_keys.merge(source_receptacle: source_receptacle, study: study(study_id), project: project(project_id))
+        other_keys.merge(source_receptacle:, study: study(study_id), project: project(project_id))
       end
     end
 

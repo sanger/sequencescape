@@ -4,12 +4,12 @@ require 'rails_helper'
 require 'support/barcode_helper'
 
 describe '/api/1/receptacle-uuid' do
-  let(:authorised_app) { create :api_application }
+  let(:authorised_app) { create(:api_application) }
   let(:uuid) { receptacle.uuid }
   let(:custom_metadata_uuid) { collection.uuid }
   let(:purpose_uuid) { '00000000-1111-2222-3333-666666666666' }
 
-  let(:receptacle) { create :receptacle }
+  let(:receptacle) { create(:receptacle) }
 
   describe '#get' do
     subject(:url) { '/api/1/' + uuid }

@@ -36,7 +36,7 @@ describe 'Purposes API', with: :api_v2 do
   end
 
   context 'with a purpose' do
-    let(:resource_model) { create :purpose }
+    let(:resource_model) { create(:purpose) }
 
     it 'sends an individual purpose' do
       api_get "#{base_endpoint}/#{resource_model.id}"

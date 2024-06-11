@@ -2,7 +2,7 @@
 
 shared_examples 'an automated order' do
   context 'with a cross study/project tube' do
-    let(:aliquots) { create_list :tagged_aliquot, 2 }
+    let(:aliquots) { create_list(:tagged_aliquot, 2) }
 
     it 'does not set study' do
       subject.valid?
@@ -16,7 +16,7 @@ shared_examples 'an automated order' do
   end
 
   context 'with a single study/project tube' do
-    let(:aliquots) { create_list :tagged_aliquot, 2, study: study, project: project }
+    let(:aliquots) { create_list(:tagged_aliquot, 2, study:, project:) }
 
     it { is_expected.to be_valid }
 
@@ -32,8 +32,8 @@ shared_examples 'an automated order' do
 
     context 'with two single study/project assets in different studies' do
       let(:assets) { [tube, other_tube] }
-      let(:other_tube) { create :multiplexed_library_tube, aliquots: other_aliquots }
-      let(:other_aliquots) { create_list :tagged_aliquot, 1 }
+      let(:other_tube) { create(:multiplexed_library_tube, aliquots: other_aliquots) }
+      let(:other_aliquots) { create_list(:tagged_aliquot, 1) }
 
       it { is_expected.not_to be_valid }
     end

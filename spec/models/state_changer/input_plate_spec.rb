@@ -8,13 +8,13 @@ RSpec.describe StateChanger::InputPlate do
   let(:state_changer) do
     described_class.new(
       labware: input_plate,
-      target_state: target_state,
-      user: user,
-      contents: contents,
-      customer_accepts_responsibility: customer_accepts_responsibility
+      target_state:,
+      user:,
+      contents:,
+      customer_accepts_responsibility:
     )
   end
-  let(:user) { build_stubbed :user }
+  let(:user) { build_stubbed(:user) }
   let(:contents) { [] }
   let(:customer_accepts_responsibility) { false }
 

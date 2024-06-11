@@ -7,7 +7,7 @@ describe UatActions::GenerateProject do
     let(:uat_action) { described_class.new(parameters) }
     let(:project_name) { 'Test Project' }
     let(:project_cost_code) { '1234' }
-    let(:parameters) { { project_name: project_name, project_cost_code: project_cost_code } }
+    let(:parameters) { { project_name:, project_cost_code: } }
 
     describe '#perform' do
       context 'when generating a project' do

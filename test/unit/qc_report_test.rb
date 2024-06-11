@@ -15,26 +15,26 @@ class QcReportTest < ActiveSupport::TestCase
   context 'A QcReport' do
     context 'including existing' do
       setup do
-        @study = create :study
-        @other_study = create :study
-        @stock_plate = create :plate, purpose: PlatePurpose.find_or_create_by(name: 'Stock plate')
+        @study = create(:study)
+        @other_study = create(:study)
+        @stock_plate = create(:plate, purpose: PlatePurpose.find_or_create_by(name: 'Stock plate'))
 
         [@study, @other_study].each do |study|
           2.times do |i|
-            attribute = create :well_attribute, current_volume: 500, concentration: 200
-            sample = create(:study_sample, study: study).sample
+            attribute = create(:well_attribute, current_volume: 500, concentration: 200)
+            sample = create(:study_sample, study:).sample
             sample.update!(sanger_sample_id: 'TEST1')
             well =
-              create :well,
+              create(:well,
                      samples: [sample],
                      plate: @stock_plate,
                      map: create(:map, location_id: i),
-                     well_attribute: attribute
-            well.aliquots.each { |a| a.update!(study: study) }
+                     well_attribute: attribute)
+            well.aliquots.each { |a| a.update!(study:) }
           end
         end
 
-        @qc_report = create :qc_report, study: @study
+        @qc_report = create(:qc_report, study: @study)
         @qc_metric_count = QcMetric.count
         Delayed::Worker.new.work_off
       end
@@ -65,65 +65,65 @@ class QcReportTest < ActiveSupport::TestCase
     context 'excluding existing' do
       # rubocop:todo Metrics/BlockLength
       setup do
-        @study = create :study
-        @stock_plate = create :plate, purpose: PlatePurpose.find_or_create_by(name: 'Stock plate')
+        @study = create(:study)
+        @stock_plate = create(:plate, purpose: PlatePurpose.find_or_create_by(name: 'Stock plate'))
 
-        @current_criteria = create :product_criteria
-        @other_criteria = create :product_criteria
+        @current_criteria = create(:product_criteria)
+        @other_criteria = create(:product_criteria)
 
         @matching_report =
-          create :qc_report,
+          create(:qc_report,
                  study: @study,
                  exclude_existing: true,
                  product_criteria: @current_criteria,
-                 report_identifier: 'Override'
-        @other_report = create :qc_report, study: @study, exclude_existing: true, product_criteria: @other_criteria
+                 report_identifier: 'Override')
+        @other_report = create(:qc_report, study: @study, exclude_existing: true, product_criteria: @other_criteria)
 
-        @attribute = create :well_attribute, current_volume: 500, concentration: 200
+        @attribute = create(:well_attribute, current_volume: 500, concentration: 200)
 
         sample = create(:study_sample, study: @study).sample
         @unreported_sample =
           well =
-            create :well,
+            create(:well,
                    samples: [sample],
                    plate: @stock_plate,
                    map: create(:map, location_id: 1),
-                   well_attribute: @attribute
+                   well_attribute: @attribute)
         well.aliquots.each { |a| a.update!(study: @study) }
 
         sample = create(:study_sample, study: @study).sample
         well =
-          create :well,
+          create(:well,
                  samples: [sample],
                  plate: @stock_plate,
                  map: create(:map, location_id: 2),
-                 well_attribute: @attribute
+                 well_attribute: @attribute)
         well.aliquots.each { |a| a.update!(study: @study) }
-        create :qc_metric, asset: well, qc_report: @matching_report
+        create(:qc_metric, asset: well, qc_report: @matching_report)
 
         sample = create(:study_sample, study: @study).sample
         @other_reported_sample =
           well =
-            create :well,
+            create(:well,
                    samples: [sample],
                    plate: @stock_plate,
                    map: create(:map, location_id: 3),
-                   well_attribute: @attribute
+                   well_attribute: @attribute)
         well.aliquots.each { |a| a.update!(study: @study) }
-        create :qc_metric, asset: well, qc_report: @other_report
+        create(:qc_metric, asset: well, qc_report: @other_report)
 
         sample = create(:study_sample, study: @study).sample
         well =
-          create :well,
+          create(:well,
                  samples: [sample],
                  plate: @stock_plate,
                  map: create(:map, location_id: 4),
-                 well_attribute: @attribute
+                 well_attribute: @attribute)
         well.aliquots.each { |a| a.update!(study: @study) }
-        create :qc_metric, asset: well, qc_report: @matching_report
-        create :qc_metric, asset: well, qc_report: @other_report
+        create(:qc_metric, asset: well, qc_report: @matching_report)
+        create(:qc_metric, asset: well, qc_report: @other_report)
 
-        @qc_report = create :qc_report, study: @study, exclude_existing: true, product_criteria: @current_criteria
+        @qc_report = create(:qc_report, study: @study, exclude_existing: true, product_criteria: @current_criteria)
         @qc_metric_count = QcMetric.count
         @qc_report.generate!
       end
@@ -141,7 +141,7 @@ class QcReportTest < ActiveSupport::TestCase
 
   context 'QcReport state machine' do
     setup do
-      @qc_report = create :qc_report
+      @qc_report = create(:qc_report)
 
       # Stub out report generation as it advances the state machine
       @qc_report.stubs(:generate_report)

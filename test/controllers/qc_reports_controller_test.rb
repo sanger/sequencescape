@@ -10,11 +10,11 @@ class QcReportsControllerTest < ActionController::TestCase
       @request = ActionController::TestRequest.create(@controller)
       @request.env['HTTP_REFERER'] = '/'
 
-      @user = create :user
+      @user = create(:user)
       session[:user] = @user.id
-      @study = create :study
-      @product = create :product
-      @product_criteria = create :product_criteria, product: @product
+      @study = create(:study)
+      @product = create(:product)
+      @product_criteria = create(:product_criteria, product: @product)
     end
 
     should_require_login(:index)

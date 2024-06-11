@@ -25,7 +25,7 @@ describe 'Comments API', with: :api_v2 do
   end
 
   context 'with a Comment' do
-    let(:resource_model) { create :comment }
+    let(:resource_model) { create(:comment) }
 
     let(:payload) do
       {
@@ -56,8 +56,8 @@ describe 'Comments API', with: :api_v2 do
   end
 
   describe '#post' do
-    let(:plate) { create :plate }
-    let!(:request) { create :well_request, asset: plate.wells.first }
+    let(:plate) { create(:plate) }
+    let!(:request) { create(:well_request, asset: plate.wells.first) }
 
     let(:payload) do
       {

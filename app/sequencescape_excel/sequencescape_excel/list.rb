@@ -104,8 +104,8 @@ module SequencescapeExcel
 
     ##
     # relates to each value i.e. each object that is added.
-    def each(&block)
-      values.each(&block)
+    def each(&)
+      values.each(&)
     end
 
     def values

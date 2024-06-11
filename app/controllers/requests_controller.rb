@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 require 'event_factory'
-# rubocop:todo Metrics/ClassLength
 class RequestsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -16,7 +15,8 @@ class RequestsController < ApplicationController
 
   # rubocop:todo Metrics/PerceivedComplexity, Metrics/AbcSize
   def index # rubocop:todo Metrics/CyclomaticComplexity, Metrics/MethodLength
-    @study, @item = nil, nil
+    @study = nil
+    @item = nil
 
     # Ok, here we pick the initial source for the Requests.  They either come from Request (as in all Requests), or they
     # are limited by the Asset / Item.
@@ -69,13 +69,11 @@ class RequestsController < ApplicationController
     @request = Request.find(params[:id])
     authorize! :update, @request
 
-    unless params[:request][:request_type_id].nil?
-      unless @request.request_type_updatable?(params[:request][:request_type_id])
+    if !params[:request][:request_type_id].nil? && !@request.request_type_updatable?(params[:request][:request_type_id])
         flash[:error] = 'You can not change the request type.'
         redirect_to request_path(@request)
         return
       end
-    end
 
     begin
       if @request.update(parameters)
@@ -85,7 +83,7 @@ class RequestsController < ApplicationController
         flash[:error] = 'Request was not updated. No change specified ?' # rubocop:disable Rails/ActionControllerFlashBeforeRender
         render action: 'edit', id: @request.id
       end
-    rescue => e
+    rescue StandardError => e
       error_message = "An error has occurred, category:'#{e.class}'\ndescription:'#{e.message}'"
       EventFactory.request_update_note_to_manager(@request, current_user, error_message)
       flash[:error] = 'Failed to update request. ' << error_message
@@ -112,8 +110,7 @@ class RequestsController < ApplicationController
     end
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def cancel # rubocop:todo Metrics/AbcSize
+    def cancel # rubocop:todo Metrics/AbcSize
     @request = Request.find(params[:id])
     if @request.try(:may_cancel_before_started?)
       if @request.cancel_before_started && @request.save
@@ -127,9 +124,7 @@ class RequestsController < ApplicationController
     redirect_to request_path(@request)
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  # Displays history of events
+    # Displays history of events
   def history
     @request = Request.find(params[:id])
     respond_to do |format|
@@ -188,4 +183,3 @@ class RequestsController < ApplicationController
     permitted
   end
 end
-# rubocop:enable Metrics/ClassLength

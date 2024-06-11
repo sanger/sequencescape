@@ -582,11 +582,11 @@ namespace :pmb do
 
         def register_label_template(template)
           template = template[:type]&.first
-          if template.present?
+          return unless template.present?
             puts "Registering template: #{template[:name]}"
             template.label_template_name = template[:name]
             template.save!
-          end
+          
         end
 
         def execute

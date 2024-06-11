@@ -7,7 +7,7 @@
 # required (as the login step does this) but it's here for clarity should that ever change.
 FactoryBot.define do
   factory :study do
-    name { generate :study_name }
+    name { generate(:study_name) }
     user
     blocked { false }
     state { 'active' }
@@ -63,14 +63,14 @@ FactoryBot.define do
   end
 
   factory :study_type do
-    name { generate :study_type_name }
+    name { generate(:study_type_name) }
   end
 
   factory :data_release_study_type do
-    name { generate :data_release_study_type_name }
+    name { generate(:data_release_study_type_name) }
   end
 
-  factory(:faculty_sponsor) { name { |_a| generate :faculty_sponsor_name } }
+  factory(:faculty_sponsor) { name { |_a| generate(:faculty_sponsor_name) } }
 
   factory :study_for_study_list, parent: :study do
     transient do
@@ -99,7 +99,7 @@ FactoryBot.define do
     factory(:study_for_study_list_pending_ethical_approval) do
       name { 'Study: Pending ethical approval' }
       ethically_approved { false }
-      study_metadata_attributes { FactoryBot.attributes_for :study_metadata_for_study_list_pending_ethical_approval }
+      study_metadata_attributes { FactoryBot.attributes_for(:study_metadata_for_study_list_pending_ethical_approval) }
     end
 
     factory(:study_for_study_list_remove_x_and_autosomes) do

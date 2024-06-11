@@ -36,9 +36,9 @@ module Presenters
       @show_held_requests = show_held_requests
 
       # We shouldn't trigger this, as we explicitly detect the group by status
-      unless pipeline.group_by_parent?
+      return if pipeline.group_by_parent?
         raise "Pipeline #{pipeline.name} is incompatible with GroupedPipelineInboxPresenter"
-      end
+      
     end
 
     def requests_waiting
@@ -112,7 +112,11 @@ module Presenters
     delegate :submission_id, :submission, :submitted_at, :priority, :well_count, to: :request
 
     def initialize(group, request, index, pipeline, inbox)
-      @group, @request, @index, @pipeline, @inbox = group, request, index, pipeline, inbox
+      @group = group
+      @request = request
+      @index = index
+      @pipeline = pipeline
+      @inbox = inbox
     end
 
     def group_id

@@ -11,18 +11,18 @@ class ProductTest < ActiveSupport::TestCase
     should validate_presence_of :name
 
     should 'only allow one active product with each name' do
-      @product_a = create :product
-      assert_raise(ActiveRecord::RecordInvalid) { @product_b = create :product, name: @product_a.name }
+      @product_a = create(:product)
+      assert_raise(ActiveRecord::RecordInvalid) { @product_b = create(:product, name: @product_a.name) }
     end
 
     should 'allow products with the same name if one is deprecated' do
-      @product_a = create :product, deprecated_at: Time.zone.now
-      @product_b = create :product, name: @product_a.name
+      @product_a = create(:product, deprecated_at: Time.zone.now)
+      @product_b = create(:product, name: @product_a.name)
       assert @product_b.valid?
     end
 
     should 'not be destroyable' do
-      @product_a = create :product
+      @product_a = create(:product)
 
       # ActiveRecord::RecordNotDestroyed is the Rails4 exception for this
       # Added here as Rails 2 is a bit useless with appropriate exceptions
@@ -30,17 +30,17 @@ class ProductTest < ActiveSupport::TestCase
     end
 
     should 'be deprecatable' do
-      @product_a = create :product
+      @product_a = create(:product)
       @product_a.deprecate!
       assert @product_a.deprecated?
-      assert @product_a.deprecated_at != nil
+      assert_not @product_a.deprecated_at.nil?
     end
   end
 
   context 'Product' do
     setup do
-      @product_a = create :product, deprecated_at: Time.zone.now
-      @product_b = create :product
+      @product_a = create(:product, deprecated_at: Time.zone.now)
+      @product_b = create(:product)
     end
 
     context '::active' do

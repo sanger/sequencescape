@@ -137,15 +137,15 @@ RSpec.describe SequencescapeExcel::Column, :sample_manifest, :sample_manifest_ex
   context 'with no validation' do
     let(:column) { described_class.new(options.except(:validation)) }
 
-    it 'will have an empty validation' do
+    it 'has an empty validation' do
       expect(column.validation).to be_empty
     end
 
-    it 'will have a range name' do
+    it 'has a range name' do
       expect(column.range_name).to be_present
     end
 
-    it 'will update without any problems' do
+    it 'updates without any problems' do
       expect(column.update(27, 150, range_list, worksheet)).to be_updated
     end
   end
@@ -153,7 +153,7 @@ RSpec.describe SequencescapeExcel::Column, :sample_manifest, :sample_manifest_ex
   context 'with no conditional formattings' do
     let(:column) { described_class.new(options.except(:conditional_formattings)) }
 
-    it 'will have empty conditional formattings' do
+    it 'has empty conditional formattings' do
       expect(column.conditional_formattings).to be_empty
     end
 
@@ -169,7 +169,7 @@ RSpec.describe SequencescapeExcel::Column, :sample_manifest, :sample_manifest_ex
 
     before { column.update(27, 150, range_list, worksheet) }
 
-    it 'will update' do
+    it 'updates' do
       expect(column).to be_updated
     end
 
@@ -179,7 +179,7 @@ RSpec.describe SequencescapeExcel::Column, :sample_manifest, :sample_manifest_ex
 
     it 'modifies the validation' do
       expect(column.validation.formula1).to eq(range_list.find_by(column.range_name).absolute_reference)
-      expect(worksheet.data_validation_rules).to be_all { |rule| rule.sqref == column.range.reference }
+      expect(worksheet.data_validation_rules).to(be_all { |rule| rule.sqref == column.range.reference })
       expect(column.validation).to be_saved
     end
 
@@ -199,7 +199,7 @@ RSpec.describe SequencescapeExcel::Column, :sample_manifest, :sample_manifest_ex
   end
 
   describe '#style' do
-    subject { described_class.new({ **options, unlocked: unlocked }).style }
+    subject { described_class.new({ **options, unlocked: }).style }
 
     context 'when locked' do
       let(:unlocked) { false }

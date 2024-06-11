@@ -66,8 +66,8 @@ class Request::LibraryCreation < CustomerRequest
     {
       study_id: initial_study_id,
       project_id: initial_project_id,
-      library_type: library_type,
-      insert_size: insert_size,
+      library_type:,
+      insert_size:,
       request_id: id
     }
   end

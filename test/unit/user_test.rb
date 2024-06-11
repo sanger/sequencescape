@@ -6,7 +6,7 @@ class UserTest < ActiveSupport::TestCase
   context 'A User' do
     context 'authenticate' do
       setup do
-        @user = create :admin, login: 'xyz987', api_key: 'my_key', crypted_password: '1'
+        @user = create(:admin, login: 'xyz987', api_key: 'my_key', crypted_password: '1')
         @ldap = mock('LDAP')
         @ldap.stubs(:bind).returns(true)
         Net::LDAP.stubs(:new).returns(@ldap)
@@ -22,7 +22,7 @@ class UserTest < ActiveSupport::TestCase
     end
 
     context 'is an administrator' do
-      setup { @user = create :admin }
+      setup { @user = create(:admin) }
 
       should 'be able to access admin functions' do
         assert @user.administrator?
@@ -34,7 +34,7 @@ class UserTest < ActiveSupport::TestCase
     end
 
     context 'is a manager' do
-      setup { @user = create :manager }
+      setup { @user = create(:manager) }
 
       should 'not be able to access admin functions' do
         assert_not @user.administrator?
@@ -50,7 +50,7 @@ class UserTest < ActiveSupport::TestCase
     end
 
     context 'is an owner' do
-      setup { @user = create :owner }
+      setup { @user = create(:owner) }
 
       should 'not be able to access admin functions' do
         assert_not @user.administrator?
@@ -63,9 +63,9 @@ class UserTest < ActiveSupport::TestCase
 
     context 'admins and emails' do
       setup do
-        admin = create :role, name: 'administrator'
-        user1 = create :user, login: 'bla'
-        user2 = create :user, login: 'wow'
+        admin = create(:role, name: 'administrator')
+        user1 = create(:user, login: 'bla')
+        user2 = create(:user, login: 'wow')
         user2.roles << admin
         user1.roles << admin
       end
@@ -81,7 +81,7 @@ class UserTest < ActiveSupport::TestCase
     context '#name' do
       context 'when profile is complete' do
         setup do
-          @user = create :user, first_name: 'Alan', last_name: 'Brown'
+          @user = create(:user, first_name: 'Alan', last_name: 'Brown')
           assert @user.valid?
         end
         should 'return full name' do
@@ -90,7 +90,7 @@ class UserTest < ActiveSupport::TestCase
       end
       context 'when profile is incomplete' do
         setup do
-          @user = create :user, login: 'abc123', first_name: 'Alan', last_name: nil
+          @user = create(:user, login: 'abc123', first_name: 'Alan', last_name: nil)
           assert @user.valid?
         end
         should 'return login' do
@@ -101,7 +101,7 @@ class UserTest < ActiveSupport::TestCase
 
     context '#new_api_key' do
       setup do
-        @user = create :user, first_name: 'Alan', last_name: 'Brown'
+        @user = create(:user, first_name: 'Alan', last_name: 'Brown')
         @old_api_key = @user.api_key
         @user.new_api_key
         @user.save
@@ -113,7 +113,7 @@ class UserTest < ActiveSupport::TestCase
     end
 
     context 'without a swipecard_code' do
-      setup { @user = create :user }
+      setup { @user = create(:user) }
 
       should 'not have a swipecard code' do
         assert_equal false, @user.swipecard_code?
@@ -126,7 +126,7 @@ class UserTest < ActiveSupport::TestCase
     end
 
     context 'is a data_access_coordinator' do
-      setup { @user = create :data_access_coordinator }
+      setup { @user = create(:data_access_coordinator) }
 
       should 'be able to access data_access_coordinator functions' do
         assert @user.data_access_coordinator?

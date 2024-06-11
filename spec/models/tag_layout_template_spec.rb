@@ -8,26 +8,26 @@ require 'shared_contexts/limber_shared_context'
 # and is tested there.
 describe TagLayoutTemplate do
   let(:template) do
-    build :tag_layout_template,
-          direction_algorithm: direction_algorithm,
-          walking_algorithm: walking_algorithm,
-          tag2_group: tag2_group,
-          tags: ['AAA']
+    build(:tag_layout_template,
+          direction_algorithm:,
+          walking_algorithm:,
+          tag2_group:,
+          tags: ['AAA'])
   end
 
   describe '#create!' do
-    subject { template.create!(plate: plate, user: user) }
+    subject { template.create!(plate:, user:) }
 
-    let(:user) { build :user }
+    let(:user) { build(:user) }
 
-    let(:plate) { create :plate }
+    let(:plate) { create(:plate) }
     let(:tag2_group) { nil }
     let(:enforce_uniqueness) { nil }
 
     context 'by plate in columns' do
       let(:direction_algorithm) { 'TagLayout::InColumns' }
       let(:walking_algorithm) { 'TagLayout::WalkWellsOfPlate' }
-      let(:plate) { create :plate, :with_submissions, well_count: 1 }
+      let(:plate) { create(:plate, :with_submissions, well_count: 1) }
 
       it { is_expected.to be_a TagLayout }
 
@@ -54,7 +54,7 @@ describe TagLayoutTemplate do
 
       context 'with a tag2 group' do
         let(:enforce_uniqueness) { true }
-        let(:tag2_group) { create :tag_group_with_tags }
+        let(:tag2_group) { create(:tag_group_with_tags) }
 
         it { is_expected.to be_a TagLayout }
 
@@ -79,10 +79,10 @@ describe TagLayoutTemplate do
       end
 
       context 'with a tag2 group with uniqueness unenforced' do
-        subject { template.create!(plate: plate, user: user, enforce_uniqueness: enforce_uniqueness) }
+        subject { template.create!(plate:, user:, enforce_uniqueness:) }
 
         let(:enforce_uniqueness) { nil }
-        let(:tag2_group) { create :tag_group_with_tags }
+        let(:tag2_group) { create(:tag_group_with_tags) }
 
         it { is_expected.to be_a TagLayout }
 

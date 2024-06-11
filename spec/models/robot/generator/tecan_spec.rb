@@ -7,7 +7,7 @@ describe Robot::Generator::Tecan do
     describe '.as_text' do
       let(:batch) { instance_double(Batch, total_volume_to_cherrypick: 13) }
       let(:layout) { Robot::Verification::SourceDestBeds.new.layout_data_object(data_object) }
-      let(:generator) { described_class.new(picking_data: data_object, batch: batch, layout: layout) }
+      let(:generator) { described_class.new(picking_data: data_object, batch:, layout:) }
 
       context 'when mapping wells from 1 96 well source plate to 1 96 well destination plate' do
         it 'returns a String object' do
@@ -19,15 +19,15 @@ describe Robot::Generator::Tecan do
         end
 
         it 'has a header section' do
-          assert_match(/^C;\nC; This file created by (.+?) on (.+?)\nC;\n/, generator.as_text)
+          expect(generator.as_text).to match(/^C;\nC; This file created by (.+?) on (.+?)\nC;\n/)
         end
 
         it 'contains buffers' do
-          assert_match(/(?:A;BUFF;;.*?\nD;DEST[0-9].*?\nW;\n)?/, generator.as_text)
+          expect(generator.as_text).to match(/(?:A;BUFF;;.*?\nD;DEST[0-9].*?\nW;\n)?/)
         end
 
         it 'contains a footer' do
-          assert_match(/C;\n(C; SCRC[0-9] = [0-9]+\n)+C;\nC; DEST[0-9] = DN[0-9]+U\n$/, generator.as_text)
+          expect(generator.as_text).to match(/C;\n(C; SCRC[0-9] = [0-9]+\n)+C;\nC; DEST[0-9] = DN[0-9]+U\n$/)
         end
       end
     end

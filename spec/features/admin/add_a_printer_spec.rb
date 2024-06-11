@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe 'Add a printer' do
-  let(:user) { create :admin, email: 'login@example.com' }
+  let(:user) { create(:admin, email: 'login@example.com') }
 
   it 'user can add a new printer' do
     login_user user

@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 describe 'Lab view', :js do
-  let(:user) { create :user, email: 'login@example.com' }
-  let(:library_tube) { create :library_tube }
+  let(:user) { create(:user, email: 'login@example.com') }
+  let(:library_tube) { create(:library_tube) }
 
   it 'User can update concentrations' do
     login_user user

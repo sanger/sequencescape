@@ -6,7 +6,7 @@ require './app/resources/api/v2/labware_resource'
 RSpec.describe Api::V2::LabwareResource, type: :resource do
   subject(:resource) { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { build_stubbed :labware }
+  let(:resource_model) { build_stubbed(:labware) }
 
   shared_examples 'a labware resource' do
     # Test attributes

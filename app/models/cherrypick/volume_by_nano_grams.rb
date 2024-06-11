@@ -21,8 +21,8 @@ module Cherrypick::VolumeByNanoGrams
       raise Cherrypick::AmountError, "Target nano grams (#{target_ng.inspect}) is invalid for cherrypick by nano grams"
     end
 
-    source_concentration, source_volume =
-      source_well.well_attribute.concentration, source_well.well_attribute.measured_volume
+    source_concentration = source_well.well_attribute.concentration
+    source_volume = source_well.well_attribute.measured_volume
     if source_volume.blank? || source_volume <= 0.0
       raise Cherrypick::VolumeError, "Missing measured volume for well #{source_well.display_name}(#{source_well.id})"
     end
@@ -30,10 +30,10 @@ module Cherrypick::VolumeByNanoGrams
       raise Cherrypick::ConcentrationError,
             "Missing measured concentration for well #{source_well.display_name}(#{source_well.id})"
     end
-    if source_concentration < 0.0
+    return unless source_concentration < 0.0
       raise Cherrypick::ConcentrationError,
             "Concentration is negative for well #{source_well.display_name}(#{source_well.id})"
-    end
+    
   end
 
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity

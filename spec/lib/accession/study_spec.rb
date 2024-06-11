@@ -50,18 +50,18 @@ RSpec.describe Study, :accession, type: :model do
       expect(managed_study.samples.count { |sample| sample.sample_metadata.sample_ebi_accession_number.nil? }).to eq(3)
     end
 
-    it 'will not attempt to accession any samples belonging to a study that does not have an accession number' do
+    it 'does not attempt to accession any samples belonging to a study that does not have an accession number' do
       open_study = create(:open_study, samples: create_list(:sample_for_accessioning, 5))
       expect(open_study.samples.first).not_to receive(:accession)
       open_study.accession_all_samples
       open_study.reload
-      expect(open_study.samples).to be_all { |sample| sample.sample_metadata.sample_ebi_accession_number.nil? }
+      expect(open_study.samples).to(be_all { |sample| sample.sample_metadata.sample_ebi_accession_number.nil? })
 
       managed_study = create(:managed_study, samples: create_list(:sample_for_accessioning, 5))
       expect(managed_study.samples.first).not_to receive(:accession)
       managed_study.accession_all_samples
       managed_study.reload
-      expect(managed_study.samples).to be_all { |sample| sample.sample_metadata.sample_ebi_accession_number.nil? }
+      expect(managed_study.samples).to(be_all { |sample| sample.sample_metadata.sample_ebi_accession_number.nil? })
     end
   end
 end

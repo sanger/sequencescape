@@ -118,7 +118,7 @@ class Labware < Asset
         }
   scope :for_lab_searches_display,
         lambda { includes(:barcodes, requests_as_source: %i[pipeline batch]).order('requests.pipeline_id ASC') }
-  scope :named, ->(name) { where(name: name) }
+  scope :named, ->(name) { where(name:) }
   scope :with_purpose, ->(*purposes) { where(plate_purpose_id: purposes.flatten) }
   scope :include_scanned_into_lab_event, -> { includes(:scanned_into_lab_event) }
   scope :include_creation_batches, -> { includes(:creation_batches) }
@@ -252,7 +252,7 @@ class Labware < Asset
     # Returns hash { labware barcode => location string, .. } e.g. { 'DN1234' => 'Sanger - Room 1 - Shelf 2' }
     # Hash has blank values where location was not found for a particular barcode
     # Or raises LabWhereClient::LabwhereException if Labwhere response is unexpected
-    def labwhere_locations(labware_barcodes) # rubocop:todo Metrics/MethodLength
+    def labwhere_locations(labware_barcodes)
       info_from_labwhere = LabWhereClient::LabwareSearch.find_locations_by_barcodes(labware_barcodes)
 
       if info_from_labwhere.blank?

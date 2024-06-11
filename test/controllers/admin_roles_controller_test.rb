@@ -13,7 +13,7 @@ module Admin
       should_require_login
 
       context 'with user' do
-        setup { session[:user] = @user = create :admin }
+        setup { session[:user] = @user = create(:admin) }
 
         resource_test(
           'role',

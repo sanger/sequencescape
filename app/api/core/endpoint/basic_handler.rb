@@ -17,7 +17,8 @@ class Core::Endpoint::BasicHandler
     end
 
     def tree_for(_object, _options)
-      associations, actions = {}, {}
+      associations = {}
+      actions = {}
       related.each { |r| r.separate(associations, actions) }
       Core::Io::Json::Grammar::Root.new(
         root_json,
@@ -25,17 +26,16 @@ class Core::Endpoint::BasicHandler
       )
     end
 
-    # rubocop:todo Metrics/MethodLength
-    def core_path(*args) # rubocop:todo Metrics/AbcSize
+        def core_path(*args) # rubocop:todo Metrics/AbcSize
       options = args.extract_options!
       response = options[:response]
 
       root =
         if options[:target].respond_to?(:uuid)
           options[:target].uuid
-        elsif not options[:endpoint].nil?
+        elsif !options[:endpoint].nil?
           options[:endpoint].root
-        elsif not response.request.endpoint.nil?
+        elsif !response.request.endpoint.nil?
           response.request.endpoint.root
         end
       args.unshift(root) unless root.nil?
@@ -43,8 +43,7 @@ class Core::Endpoint::BasicHandler
       options[:response].request.service.api_path(*args)
     end
 
-    # rubocop:enable Metrics/MethodLength
-    private :core_path
+        private :core_path
 
     def attach_action(name, behaviour = name)
       @actions[name.to_sym] = behaviour.to_sym

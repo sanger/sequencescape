@@ -25,7 +25,7 @@ describe 'Lots API', with: :api_v2 do
   end
 
   context 'with a Lot' do
-    let(:resource_model) { create :lot }
+    let(:resource_model) { create(:lot) }
 
     let(:payload) do
       {

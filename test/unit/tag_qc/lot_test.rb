@@ -14,7 +14,7 @@ class LotTest < ActiveSupport::TestCase
     should belong_to :template
 
     context 'when validating' do
-      setup { create :lot }
+      setup { create(:lot) }
 
       should validate_uniqueness_of(:lot_number).case_insensitive
     end
@@ -22,14 +22,14 @@ class LotTest < ActiveSupport::TestCase
     context '#lot' do
       setup do
         PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode))
-        @lot = create :lot
+        @lot = create(:lot)
         @mock_asset = Labware.new
         @mock_asset.stubs(:save!).returns(true)
         @mock_purpose = mock('Purpose')
 
         @mock_purpose.stubs('create!').returns(@mock_asset)
         @lot.stubs(:target_purpose).returns(@mock_purpose)
-        @user = create :user
+        @user = create(:user)
       end
 
       should 'validate the template type' do

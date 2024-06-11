@@ -6,8 +6,8 @@ describe UatActions::TestSubmission do
   context 'valid options' do
     before { expect(PlateBarcode).to receive(:create_barcode).and_return(first_plate_barcode) }
 
-    let(:submission_template) { create :limber_wgs_submission_template }
-    let(:primer_panel) { create :primer_panel }
+    let(:submission_template) { create(:limber_wgs_submission_template) }
+    let(:primer_panel) { create(:primer_panel) }
     let(:parameters) { { submission_template_name: submission_template.name } }
     let(:uat_action) { described_class.new(parameters) }
     let(:first_plate_barcode) { build(:plate_barcode) }

@@ -11,7 +11,7 @@ class PlateCreationTest < ActionDispatch::PerformanceTest
   #                          output: 'tmp/performance', formats: [:flat] }
   SIZE = 6
   def setup
-    @purpose = create :plate_purpose
+    @purpose = create(:plate_purpose)
   end
 
   test 'PlatePurpose.create' do

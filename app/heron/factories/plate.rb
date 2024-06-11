@@ -31,14 +31,14 @@ module Heron
         @params[:barcode]
       end
 
-      def save # rubocop:todo Metrics/MethodLength
+      def save
         return false unless valid?
 
         @output_result = true
         ActiveRecord::Base.transaction do
           @plate = purpose.create!
 
-          Barcode.create!(asset: @plate, barcode: barcode, format: barcode_format)
+          Barcode.create!(asset: @plate, barcode:, format: barcode_format)
 
           create_contents!
 

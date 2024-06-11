@@ -76,7 +76,8 @@ class PipelinesController < ApplicationController
 
   # Renders the batch summary
   # @todo More out of the pipelines controller
-  def summary; end
+  def summary
+  end
 
   def finish
     ActiveRecord::Base.transaction { @batch.complete!(current_user) }

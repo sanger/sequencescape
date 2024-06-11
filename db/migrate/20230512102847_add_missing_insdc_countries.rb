@@ -12,6 +12,6 @@ class AddMissingInsdcCountries < ActiveRecord::Migration[6.0]
       'missing: data agreement established pre-2023',
       'missing: endangered species',
       'missing: human-identifiable'
-    ].each { |name| Insdc::Country.find_or_create_by(name: name, sort_priority: -2, validation_state: 0) }
+    ].each { |name| Insdc::Country.find_or_create_by(name:, sort_priority: -2, validation_state: 0) }
   end
 end

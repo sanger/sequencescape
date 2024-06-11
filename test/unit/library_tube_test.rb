@@ -4,12 +4,12 @@ require 'test_helper'
 
 class LibraryTubeTest < ActiveSupport::TestCase
   context 'A Library tube' do
-    setup { @library_tube = create :library_tube }
+    setup { @library_tube = create(:library_tube) }
 
     context '#has_stock_asset?' do
       setup do
-        @library_tube_with_stock_tube = create :library_tube
-        @stock_library_tube = create :stock_library_tube
+        @library_tube_with_stock_tube = create(:library_tube)
+        @stock_library_tube = create(:stock_library_tube)
         @stock_library_tube.children << @library_tube_with_stock_tube
       end
 

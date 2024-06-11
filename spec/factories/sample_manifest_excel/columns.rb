@@ -3,11 +3,11 @@
 FactoryBot.define do
   factory :column, class: 'SequencescapeExcel::Column' do
     sequence(:number) { |n| n }
-    name { "column_#{number}".to_sym }
+    name { :"column_#{number}" }
     heading { "Column #{number}" }
     value { "Value #{number}" }
 
-    initialize_with { new(name: name, heading: heading, number: number, value: value) }
+    initialize_with { new(name:, heading:, number:, value:) }
 
     factory :sanger_sample_id_column do
       name { :sanger_sample_id }

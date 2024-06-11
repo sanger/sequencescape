@@ -27,14 +27,14 @@ module UatActions::StaticRecords
         state: 'active',
         study_metadata_attributes: {
           data_access_group: 'dag',
-          study_type: study_type,
-          faculty_sponsor: faculty_sponsor,
-          data_release_study_type: data_release_study_type,
+          study_type:,
+          faculty_sponsor:,
+          data_release_study_type:,
           study_description: 'A study generated for UAT',
           contaminated_human_dna: 'No',
           contains_human_dna: 'No',
           commercially_available: 'No',
-          program: program
+          program:
         }
       )
       .find_or_create_by!(name: 'UAT Study')
@@ -56,7 +56,7 @@ module UatActions::StaticRecords
         project_metadata_attributes: {
           project_cost_code: 'FAKE1',
           project_funding_model: 'Internal',
-          budget_division: budget_division
+          budget_division:
         }
       )
       .find_or_create_by!(name: 'UAT Project')

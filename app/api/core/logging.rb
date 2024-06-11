@@ -2,7 +2,7 @@
 
 module Core::Logging
   def self.logging_helper(name)
-    module_eval <<-END_OF_HELPER
+    module_eval <<-END_OF_HELPER, __FILE__, __LINE__ + 1
       def #{name}(message)
         Rails.logger.#{name}("API(\#{(self.is_a?(Class) ? self : self.class).name}): \#{message}")
       end

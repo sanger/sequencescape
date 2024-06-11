@@ -1,4 +1,5 @@
 # frozen_string_literal: true
 class Sdb::HomeController < Sdb::BaseController
-  def index; end
+  def index
+  end
 end

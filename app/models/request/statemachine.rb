@@ -18,7 +18,7 @@ module Request::Statemachine
       aasm(options, &block)
     end
 
-    def destroy_aasm # rubocop:todo Metrics/MethodLength
+    def destroy_aasm
       # Destroy all evidence of the statemachine we've inherited!  Ugly, but it works!
       old_machine = AASM::StateMachineStore.fetch(self) && AASM::StateMachineStore.fetch(self).machine(:default)
       if old_machine
@@ -130,7 +130,7 @@ module Request::Statemachine
       end
     end
 
-    scope :for_state, ->(state) { where(state: state) }
+    scope :for_state, ->(state) { where(state:) }
 
     scope :completed, -> { where(state: COMPLETED_STATE) }
     scope :pending, -> { where(state: %w[pending blocked]) } # block is a kind of substate of pending }
@@ -178,15 +178,20 @@ module Request::Statemachine
   deprecate change_decision!:
               'Change decision is being deprecated in favour of retrospective_pass and retrospective_fail!'
 
-  def on_failed; end
+  def on_failed
+  end
 
-  def on_passed; end
+  def on_passed
+  end
 
-  def on_cancelled; end
+  def on_cancelled
+  end
 
-  def on_blocked; end
+  def on_blocked
+  end
 
-  def on_hold; end
+  def on_hold
+  end
 
   def failed_upstream!
     # Don't transition it again if it's already reached an end state

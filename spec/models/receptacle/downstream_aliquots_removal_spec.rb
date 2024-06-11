@@ -32,7 +32,7 @@ RSpec.describe 'Receptacle::DownstreamAliquotsRemovalSpec::Mixin' do
     context 'when any of the downstream assets have a batch' do
       let(:batch) { create(:sequencing_batch, request_count: 1) }
 
-      before { outer_requests_graph[2].update(batch: batch) }
+      before { outer_requests_graph[2].update(batch:) }
 
       it 'returns false' do
         expect(original_well).not_to be_allow_to_remove_downstream_aliquots

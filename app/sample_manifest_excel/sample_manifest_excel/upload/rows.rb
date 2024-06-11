@@ -23,8 +23,8 @@ module SampleManifestExcel
         @items = create_rows(cache)
       end
 
-      def each(&block)
-        items.each(&block)
+      def each(&)
+        items.each(&)
       end
 
       # Return values for rows for a particular column number
@@ -38,7 +38,7 @@ module SampleManifestExcel
       def create_rows(cache)
         [].tap do |rows|
           data.each_with_index do |r, i|
-            row = Row.new(number: i + data.start_row + 1, data: r, columns: columns, cache: cache)
+            row = Row.new(number: i + data.start_row + 1, data: r, columns:, cache:)
             rows << row unless row.empty?
           end
         end

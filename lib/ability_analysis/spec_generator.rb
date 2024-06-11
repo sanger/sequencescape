@@ -12,7 +12,7 @@ class AbilityAnalysis::SpecGenerator
 
   delegate :ability, :roles, :sorted_permissions, :abilities_for, :user_with_roles, to: :ability_analysis
 
-  def generate # rubocop:todo Metrics/MethodLength
+  def generate
     output <<~HEADER
       # frozen_string_literal: true
 
@@ -42,12 +42,12 @@ class AbilityAnalysis::SpecGenerator
   private
 
   def generate_permissions_list(name, permissions_to_list, indent: 2)
-    output "let(:#{name}) do", indent: indent
+    output("let(:#{name}) do", indent:)
     output '{', indent: indent + 2
     list = permissions_to_list.map { |klass, permissions| "#{klass} => %i[#{permissions.join(' ')}]" }.join(",\n")
     output list, indent: indent + 4
     output '}', indent: indent + 2
-    output 'end', indent: indent
+    output 'end', indent:
   end
 
   def generate_shared_example
@@ -107,7 +107,7 @@ class AbilityAnalysis::SpecGenerator
     generate_authorized_models(role)
     output
     user = user_with_roles(role)
-    generate_tests(user, role: role)
+    generate_tests(user, role:)
     output 'end', indent: 2
   end
 
@@ -120,7 +120,7 @@ class AbilityAnalysis::SpecGenerator
       end
   end
 
-  def generate_tests(user, role: nil) # rubocop:todo Metrics/MethodLength
+  def generate_tests(user, role: nil)
     ability = abilities_for(user)
     granted = permissions_for(ability)
     generate_permissions_list('granted_permissions', granted, indent: 4)

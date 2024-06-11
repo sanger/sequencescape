@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 describe 'Manage a study' do
-  let(:user) { create :admin }
-  let!(:study) { create :study, name: 'Original name' }
+  let(:user) { create(:admin) }
+  let!(:study) { create(:study, name: 'Original name') }
 
   it 'Rename a study', :js do
     login_user(user)
@@ -14,7 +14,7 @@ describe 'Manage a study' do
     fill_in 'Study name', with: 'Updated name'
     click_on 'Update'
     expect(page).to have_content('Updated name')
-    expect(page).not_to have_content('Original name')
+    expect(page).to have_no_content('Original name')
   end
 
   context 'with data release strategy' do

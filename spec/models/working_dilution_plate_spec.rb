@@ -22,9 +22,9 @@ RSpec.describe WorkingDilutionPlate do
       }
     end
     let(:plate) do
-      create :working_dilution_plate, well_count: 3, well_factory: :empty_well, parents: [parent], dilution_factor: 10
+      create(:working_dilution_plate, well_count: 3, well_factory: :empty_well, parents: [parent], dilution_factor: 10)
     end
-    let(:parent) { create :plate, well_count: 3 }
+    let(:parent) { create(:plate, well_count: 3) }
     let(:parser) { MockParser.new(readings) }
 
     before { plate.update_qc_values_with_parser(parser) }

@@ -7,7 +7,7 @@ describe '/api/1/' do
   subject { '/api/1/' }
 
   describe '#get' do
-    let(:authorised_app) { create :api_application }
+    let(:authorised_app) { create(:api_application) }
 
     let(:response_body) do
       '{
@@ -389,7 +389,7 @@ describe '/api/1/' do
   end
 
   describe '#get unauthorized' do
-    let(:user) { create :user }
+    let(:user) { create(:user) }
 
     let(:response_body) do
       '{

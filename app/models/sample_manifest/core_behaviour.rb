@@ -4,7 +4,8 @@ module SampleManifest::CoreBehaviour
 
   # Include in cores which exhibit the default behaviour
   module NoSpecializedValidation
-    def validate_specialized_fields(*args); end
+    def validate_specialized_fields(*args)
+    end
 
     def specialized_fields(*_args)
       {}
@@ -26,8 +27,8 @@ module SampleManifest::CoreBehaviour
       Array.new(count) { SangerSampleId::Factory.instance.next! }
     end
 
-    def details(&block)
-      details_array.each(&block)
+    def details(&)
+      details_array.each(&)
     end
   end
 
@@ -43,7 +44,7 @@ module SampleManifest::CoreBehaviour
       create_sample(sanger_sample_id).tap do |sample|
         tag_depth = tag_depth_for_sample(@manifest.pools, receptacle, sanger_sample_id)
 
-        receptacle.aliquots.create!(sample: sample, study: study, tag_depth: tag_depth)
+        receptacle.aliquots.create!(sample:, study:, tag_depth:)
 
         study.samples << sample
       end
@@ -67,7 +68,7 @@ module SampleManifest::CoreBehaviour
   module LibraryAssets
     def generate_sample_and_aliquot(sanger_sample_id, receptacle)
       create_sample(sanger_sample_id).tap do |sample|
-        receptacle.aliquots.create!(sample: sample, study: study, library: receptacle)
+        receptacle.aliquots.create!(sample:, study:, library: receptacle)
         study.samples << sample
       end
     end

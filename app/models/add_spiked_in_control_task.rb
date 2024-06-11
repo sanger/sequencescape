@@ -32,9 +32,9 @@ class AddSpikedInControlTask < Task
   def do_task(workflows_controller, params, user)
     Tasks::AddSpikedInControlHandler::Handler.new(
       controller: workflows_controller,
-      params: params,
+      params:,
       task: self,
-      user: user
+      user:
     ).perform
   end
 

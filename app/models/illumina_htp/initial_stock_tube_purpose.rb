@@ -15,7 +15,7 @@ class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
   # (Such as following the introduction of a QC tube). Given that this will require knowledge of
   # the pipeline though, this logic is best shifted out into Limber.
   # TODO: Make tis decision in Limber, then strip out this code.
-  def sibling_tubes(tube) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def sibling_tubes(tube) # rubocop:todo Metrics/AbcSize
     return [] if tube.submission.nil?
 
     # Find all requests that are being pooled together

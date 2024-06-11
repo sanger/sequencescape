@@ -5,11 +5,11 @@ require 'rails_helper'
 RSpec.describe 'samples/edit.html.erb' do
   include AuthenticatedSystem
   include RSpecHtmlMatchers
-  let(:user) { create :user }
+  let(:user) { create(:user) }
 
   context 'when rendering the edit view' do
     let(:current_user) { user }
-    let(:sample) { create :sample }
+    let(:sample) { create(:sample) }
     let(:time) { DateTime.now }
 
     context 'when the sample has consent withdrawn' do

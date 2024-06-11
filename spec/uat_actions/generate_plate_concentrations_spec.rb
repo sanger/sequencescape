@@ -4,7 +4,7 @@ require 'rails_helper'
 
 describe UatActions::GeneratePlateConcentrations do
   context 'with valid options' do
-    let(:plate) { create :plate_with_untagged_wells, sample_count: 3 }
+    let(:plate) { create(:plate_with_untagged_wells, sample_count: 3) }
     let(:uat_action) { described_class.new(parameters) }
     let(:report) do
       # A report is a hash of key value pairs which get returned to the user.

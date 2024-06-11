@@ -6,7 +6,7 @@ require './app/resources/api/v2/receptacle_resource'
 RSpec.describe Api::V2::ReceptacleResource, type: :resource do
   subject(:resource) { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { build_stubbed :receptacle }
+  let(:resource_model) { build_stubbed(:receptacle) }
 
   # Test attributes
   it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording

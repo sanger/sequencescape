@@ -8,8 +8,7 @@ class ReportFailsController < ApplicationController
     @report_fail = ReportFail.new(nil, nil, [])
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def create # rubocop:todo Metrics/AbcSize
+    def create # rubocop:todo Metrics/AbcSize
     @report_fail =
       ReportFail.new(
         params_for_report_fails[:user_code],
@@ -23,9 +22,7 @@ class ReportFailsController < ApplicationController
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  protected
+    protected
 
   def params_for_report_fails
     params.require(:report_fail).permit(:user_code, :failure_id, barcodes: [])

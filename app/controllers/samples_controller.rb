@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# rubocop:todo Metrics/ClassLength
 class SamplesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -29,7 +28,7 @@ class SamplesController < ApplicationController
     @studies = Study.alphabetical
   end
 
-  def edit # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def edit # rubocop:todo Metrics/AbcSize
     @sample = Sample.find(params[:id])
     authorize! :update, @sample
 
@@ -82,8 +81,7 @@ class SamplesController < ApplicationController
     redirect_to sample_path(@sample)
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def update # rubocop:todo Metrics/AbcSize
+    def update # rubocop:todo Metrics/AbcSize
     @sample = Sample.find(params[:id])
     authorize! :update, @sample
 
@@ -104,9 +102,7 @@ class SamplesController < ApplicationController
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  def history
+    def history
     @sample = Sample.find(params[:id])
     respond_to { |format| format.html }
   end
@@ -252,4 +248,3 @@ class SamplesController < ApplicationController
     }
   end
 end
-# rubocop:enable Metrics/ClassLength

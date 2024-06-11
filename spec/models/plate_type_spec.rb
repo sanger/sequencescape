@@ -3,14 +3,14 @@
 require 'rails_helper'
 
 describe PlateType do
-  let(:plate_type) { create :plate_type }
+  let(:plate_type) { create(:plate_type) }
   let(:invalid_plate_type) { described_class.new }
 
   before do
-    create :plate_type, name: 'ABgene_0765', maximum_volume: 800
-    create :plate_type, name: 'ABgene_0800', maximum_volume: 180
-    create :plate_type, name: 'FluidX075', maximum_volume: 500
-    create :plate_type, name: 'FluidX03', maximum_volume: 280
+    create(:plate_type, name: 'ABgene_0765', maximum_volume: 800)
+    create(:plate_type, name: 'ABgene_0800', maximum_volume: 180)
+    create(:plate_type, name: 'FluidX075', maximum_volume: 500)
+    create(:plate_type, name: 'FluidX03', maximum_volume: 280)
   end
 
   it 'has name and maximum volume' do

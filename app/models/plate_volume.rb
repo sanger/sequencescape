@@ -51,7 +51,7 @@ class PlateVolume < ApplicationRecord
         units: 'ul',
         assay_type: ASSAY_TYPE,
         assay_version: ASSAY_VERSION,
-        qc_assay: qc_assay
+        qc_assay:
       )
     end
   end
@@ -85,7 +85,7 @@ class PlateVolume < ApplicationRecord
 
     def handle_volume(filename, file)
       ActiveRecord::Base.transaction { find_for_filename(sanitized_filename(file)).call(filename, file) }
-    rescue => e
+    rescue StandardError => e
       Rails.logger.warn("Error processing volume file #{filename}: #{e.message}")
     end
 
@@ -97,8 +97,7 @@ class PlateVolume < ApplicationRecord
       CarrierWave::SanitizedFile.new(file).filename
     end
 
-    # rubocop:disable Metrics/MethodLength
-    def find_for_filename(filename)
+        def find_for_filename(filename)
       find_by(uploaded_file_name: filename) or
         lambda do |filename, file|
           # TODO: After saving, the uploaded_file_name is renamed internally by CarrierWave to (2).CSV
@@ -119,9 +118,7 @@ class PlateVolume < ApplicationRecord
         end
     end
 
-    # rubocop:enable Metrics/MethodLength
-
-    #
+        #
     # Given a .csv filename it removes the characters (2) that were appended to indicate the file was
     # a duplicate. This is currently happening to files handled by CarrierWave during the save() action.
     #

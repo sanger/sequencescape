@@ -13,7 +13,7 @@ class Robot::Verification::SourceDestControlBeds < Robot::Verification::Base
     [dest_barcode_index, source_barcode_index, control_barcode_index]
   end
 
-  def valid_plate_locations?(params, batch, robot, expected_plate_layout) # rubocop:todo Metrics/MethodLength
+  def valid_plate_locations?(params, batch, robot, expected_plate_layout)
     return false unless super
     unless valid_control_plates_on_robot?(
              params[:control_bed_barcodes],

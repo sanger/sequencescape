@@ -25,7 +25,7 @@ module SampleManifestExcel
       attr_reader :dynamic_attributes, :tags, :study
       attr_writer :manifest_type, :num_rows_per_well
 
-      def initialize(attributes = {}) # rubocop:todo Metrics/MethodLength
+      def initialize(attributes = {})
         super
         @validation_errors ||= []
         if type == 'Plates'
@@ -82,24 +82,24 @@ module SampleManifestExcel
         @sample_manifest ||= create_sample_manifest
       end
 
-      def create_sample_manifest # rubocop:todo Metrics/MethodLength
+      def create_sample_manifest
         case manifest_type
         when /plate/
           FactoryBot.create(
             :pending_plate_sample_manifest,
-            num_plates: num_plates,
-            num_filled_wells_per_plate: num_filled_wells_per_plate,
-            num_rows_per_well: num_rows_per_well,
-            study: study
+            num_plates:,
+            num_filled_wells_per_plate:,
+            num_rows_per_well:,
+            study:
           )
         when /tube_library/, /tube_chromium_library/
-          FactoryBot.create(:sample_manifest, asset_type: 'library', study: study)
+          FactoryBot.create(:sample_manifest, asset_type: 'library', study:)
         when /tube_multiplexed_library/
-          FactoryBot.create(:sample_manifest, asset_type: 'multiplexed_library', study: study)
+          FactoryBot.create(:sample_manifest, asset_type: 'multiplexed_library', study:)
         when /tube_rack/
-          FactoryBot.create(:tube_rack_manifest, asset_type: 'tube_rack', study: study)
+          FactoryBot.create(:tube_rack_manifest, asset_type: 'tube_rack', study:)
         else
-          FactoryBot.create(:sample_manifest, asset_type: '1dtube', study: study)
+          FactoryBot.create(:sample_manifest, asset_type: '1dtube', study:)
         end
       end
 
@@ -235,10 +235,10 @@ module SampleManifestExcel
         end
       end
 
-      # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
+      # rubocop:todo Metrics/PerceivedComplexity, Metrics/AbcSize
       def add_cell_data(column, row_num, partial) # rubocop:todo Metrics/CyclomaticComplexity
         if partial && empty_row?(row_num)
-          (data[column.name] || dynamic_attributes[row_num][column.name]) unless empty_columns.include?(column.name)
+          data[column.name] || dynamic_attributes[row_num][column.name] unless empty_columns.include?(column.name)
         elsif validation_errors.include?(:insert_size_from) && column.name == 'insert_size_from' &&
               row_num == computed_first_row
           nil
@@ -250,7 +250,7 @@ module SampleManifestExcel
         end
       end
 
-      # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
+      # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity
 
       def build_tube_sample_manifest_asset
         asset =
@@ -274,7 +274,7 @@ module SampleManifestExcel
         assets.each do |asset|
           FactoryBot.create(
             :external_multiplexed_library_tube_creation_request,
-            asset: asset,
+            asset:,
             target_asset: multiplexed_library_tube
           )
         end

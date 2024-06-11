@@ -3,14 +3,14 @@
 require 'rails_helper'
 
 RSpec.describe LabSearchesController do
-  let(:current_user) { create :user }
+  let(:current_user) { create(:user) }
 
   it_behaves_like 'it requires login'
 
   context 'searching (when logged in)' do
     let!(:asset) { create(:sample_tube, name: 'FindMeAsset') }
     let!(:other_asset) { create(:sample_tube) }
-    let!(:batch) { create :batch, user: current_user }
+    let!(:batch) { create(:batch, user: current_user) }
 
     describe '#new' do
       before { get :new, params: { q: query }, session: { user: current_user.id } }
@@ -65,7 +65,7 @@ RSpec.describe LabSearchesController do
       end
 
       context 'with a plate barcode' do
-        let(:asset) { create :plate }
+        let(:asset) { create(:plate) }
         let(:query) { asset.human_barcode }
 
         it 'finds the asset' do

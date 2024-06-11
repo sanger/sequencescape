@@ -6,7 +6,7 @@ require 'digest/sha1'
 
 # Represents Sequencescape users, used to regulate login as well as provide tracking of who did what.
 # While most users are internal, some are external.
-class User < ApplicationRecord # rubocop:todo Metrics/ClassLength
+class User < ApplicationRecord
   include Authentication
   extend EventfulRecord
   include Uuid::Uuidable
@@ -93,7 +93,7 @@ class User < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def logout_path
-    configatron.authentication == 'sanger-sso' ? (configatron.sso_logout_url).to_s : '/logout'
+    configatron.authentication == 'sanger-sso' ? configatron.sso_logout_url.to_s : '/logout'
   end
 
   def profile_incomplete?
@@ -101,7 +101,7 @@ class User < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def profile_complete?
-    not profile_incomplete?
+    !profile_incomplete?
   end
 
   def name_incomplete?
@@ -109,7 +109,7 @@ class User < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def name_complete?
-    not name_incomplete?
+    !name_incomplete?
   end
 
   def name

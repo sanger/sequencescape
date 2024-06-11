@@ -7,7 +7,9 @@ class HashGenerationTest < ActiveSupport::TestCase
     attr_reader :association, :has_many_association, :name
 
     def initialize(name, association, has_many_association)
-      @name, @association, @has_many_association = name, association, has_many_association
+      @name = name
+      @association = association
+      @has_many_association = has_many_association
     end
 
     def destroyed?

@@ -51,22 +51,22 @@ RSpec.describe QcResult, :qc_result do
   end
 
   context 'with an asset' do
-    let(:asset) { build :receptacle }
+    let(:asset) { build(:receptacle) }
 
     it 'can update its asset' do
       expect(asset).to receive(:update_from_qc).with(an_instance_of(described_class))
-      create :qc_result, asset: asset
+      create(:qc_result, asset:)
     end
   end
 end
 
 describe QcResult, :warren do
   let(:warren) { Warren.handler }
+  let(:resource) { build(:qc_result) }
+  let(:routing_key) { 'message.qc_result.' }
 
   before { warren.clear_messages }
 
-  let(:resource) { build :qc_result }
-  let(:routing_key) { 'message.qc_result.' }
 
   it 'broadcasts the resource' do
     resource.save!

@@ -18,6 +18,6 @@ class AssetAudit < ApplicationRecord
   private
 
   def broadcast_event
-    BroadcastEvent::AssetAudit.create!(seed: self, user: User.find_by(login: created_by), created_at: created_at)
+    BroadcastEvent::AssetAudit.create!(seed: self, user: User.find_by(login: created_by), created_at:)
   end
 end

@@ -6,7 +6,7 @@ require 'support/lab_where_client_helper'
 RSpec.configure { |c| c.include LabWhereClientHelper }
 
 describe 'Viewing labware' do
-  let(:user) { create :user }
+  let(:user) { create(:user) }
 
   shared_examples 'labware' do
     it 'can be viewed on its show page' do
@@ -17,13 +17,13 @@ describe 'Viewing labware' do
   end
 
   context 'with a sample tube' do
-    let(:labware) { create :sample_tube }
+    let(:labware) { create(:sample_tube) }
 
     it_behaves_like 'labware'
   end
 
   context 'with a library_tube' do
-    let(:labware) { create :library_tube }
+    let(:labware) { create(:library_tube) }
 
     it_behaves_like 'labware'
   end
@@ -35,7 +35,7 @@ describe 'Viewing labware' do
   end
 
   context 'with a plate' do
-    let(:labware) { create :plate, well_count: 2 }
+    let(:labware) { create(:plate, well_count: 2) }
 
     context 'when in labwhere' do
       before do

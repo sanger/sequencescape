@@ -42,7 +42,7 @@ class SamplesControllerTest < ActionController::TestCase
     # TODO: Test without admin
     context 'when logged in' do
       setup do
-        @user = FactoryBot.create :user
+        @user = FactoryBot.create(:user)
         @controller.stubs(:logged_in?).returns(@user)
         session[:user] = @user.id
       end
@@ -50,8 +50,8 @@ class SamplesControllerTest < ActionController::TestCase
       context '#add_to_study' do
         setup do
           @initial_study_sample_count = StudySample.count
-          @sample = FactoryBot.create :sample
-          @study = FactoryBot.create :study
+          @sample = FactoryBot.create(:sample)
+          @study = FactoryBot.create(:study)
           put :add_to_study, params: { id: @sample.id, study: { id: @study.id } }
         end
         should 'change StudySample.count from  0 to 1' do

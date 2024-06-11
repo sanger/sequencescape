@@ -11,9 +11,9 @@ RSpec.describe RecordLoader::PipelineRequestInformationTypeLoader, :loader, type
   let(:test_directory) { Rails.root.join('spec/data/record_loader/pipeline_request_information_types') }
 
   before do
-    create :pipeline, name: 'Pipeline 1'
-    create :request_information_type, key: 'key'
-    create :request_information_type, key: 'key2'
+    create(:pipeline, name: 'Pipeline 1')
+    create(:request_information_type, key: 'key')
+    create(:request_information_type, key: 'key2')
   end
 
   context 'with two_entry_example selected' do

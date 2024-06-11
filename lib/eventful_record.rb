@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module EventfulRecord
-  def has_many_events(&block) # rubocop:todo Metrics/MethodLength
+  def has_many_events(&block)
     has_many(:events, -> { order(created_at: :asc, id: :asc) }, as: :eventful, dependent: :destroy) do
       def self.event_constructor(name, event_class, event_class_method)
         line = __LINE__ + 1
@@ -13,7 +13,7 @@ module EventfulRecord
           end
         ",
           __FILE__,
-          line
+          __LINE__ - 6
         )
         # rubocop:enable Layout/LineLength
       end
@@ -22,17 +22,17 @@ module EventfulRecord
     end
   end
 
-  def has_many_lab_events(&block)
-    has_many(:lab_events, -> { order(created_at: :asc, id: :asc) }, as: :eventful, dependent: :destroy, &block)
+  def has_many_lab_events(&)
+    has_many(:lab_events, -> { order(created_at: :asc, id: :asc) }, as: :eventful, dependent: :destroy, &)
   end
 
-  def has_one_event_with_family(event_family, &block)
+  def has_one_event_with_family(event_family, &)
     has_one(
       :"#{event_family}_event",
       lambda { order(id: :desc).where(family: event_family) },
       class_name: 'Event',
       as: :eventful,
-      &block
+      &
     )
   end
 end

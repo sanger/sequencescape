@@ -9,7 +9,7 @@ module RecordLoader
     config_folder 'robots'
 
     def create_or_update!(name, options)
-      Robot.create_with(options).find_or_create_by!(name: name)
+      Robot.create_with(options).find_or_create_by!(name:)
     end
   end
 end

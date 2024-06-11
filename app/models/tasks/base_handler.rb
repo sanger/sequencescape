@@ -21,7 +21,7 @@ module Tasks
     private
 
     def create_batch_events
-      event = batch.lab_events.build(description: 'Complete', user: user, batch: batch)
+      event = batch.lab_events.build(description: 'Complete', user:, batch:)
       event.add_descriptor Descriptor.new(name: 'task_id', value: task.id)
       event.add_descriptor Descriptor.new(name: 'task', value: task.name)
       event.save!

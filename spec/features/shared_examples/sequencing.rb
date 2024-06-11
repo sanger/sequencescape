@@ -66,7 +66,7 @@ shared_examples 'a sequencing procedure' do
     go_back
 
     all(:link, 'Lane').last.click
-    expect(page).not_to have_content('Spiked Buffer')
+    expect(page).to have_no_content('Spiked Buffer')
 
     batch = Batch.last
     flowcell_message = batch.messengers.last

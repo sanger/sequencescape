@@ -7,7 +7,7 @@ class FluidigmPlateTest < ActiveSupport::TestCase
     setup do
       barcode = build(:plate_barcode)
       PlateBarcode.stubs(:create_barcode).returns(barcode)
-      @plate = create(:fluidigm_96_purpose).create!(barcode: barcode)
+      @plate = create(:fluidigm_96_purpose).create!(barcode:)
     end
 
     should 'have 96 wells' do
@@ -28,7 +28,7 @@ class FluidigmPlateTest < ActiveSupport::TestCase
     setup do
       barcode = build(:plate_barcode)
       PlateBarcode.stubs(:create_barcode).returns(barcode)
-      @plate = create(:fluidigm_192_purpose).create!(barcode: barcode)
+      @plate = create(:fluidigm_192_purpose).create!(barcode:)
     end
 
     should 'have 192 wells' do

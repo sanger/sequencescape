@@ -4,7 +4,7 @@ require 'aasm'
 
 # Used to handle the rendering of the submission/order pages in the
 # web-based submission interface
-class Submission::SubmissionCreator < Submission::PresenterSkeleton # rubocop:todo Metrics/ClassLength
+class Submission::SubmissionCreator < Submission::PresenterSkeleton
   SubmissionsCreaterError = Class.new(StandardError)
   IncorrectParamsException = Class.new(SubmissionsCreaterError)
   InvalidInputException = Class.new(SubmissionsCreaterError)
@@ -101,7 +101,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton # rubocop:to
 
           submission.orders << new_order
         else
-          @submission = new_order.create_submission(user: order.user, priority: priority)
+          @submission = new_order.create_submission(user: order.user, priority:)
         end
 
         new_order.save!
@@ -122,7 +122,6 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton # rubocop:to
   # rubocop:enable Metrics/MethodLength
 
   # this is more order_receptacles, asset_group is actually receptacle group
-  # rubocop:todo Metrics/MethodLength
   def order_assets # rubocop:todo Metrics/AbcSize
     input_methods =
       %i[asset_group_id sample_names_text barcodes_wells_text].select { |input_method| send(input_method).present? }
@@ -144,9 +143,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton # rubocop:to
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  # This is a legacy of the old controller...
+    # This is a legacy of the old controller...
   def wells_on_specified_plate_purpose_for(plate_purpose, samples)
     samples.map do |sample|
       # Prioritise the newest well
@@ -222,13 +219,13 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton # rubocop:to
     order_role = OrderRole.find_by(role: order_params.delete('order_role')) if order_params.present?
     new_order =
       template.new_order(
-        study: study,
-        project: project,
+        study:,
+        project:,
         user: @user,
         request_options: order_params,
-        comments: comments,
+        comments:,
         pre_cap_group: pre_capture_plex_group,
-        order_role: order_role
+        order_role:
       )
     if order_params
       new_order.request_type_multiplier do |sequencing_request_type_id|
@@ -243,7 +240,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton # rubocop:to
   # This is a legacy of the old controller...
   def find_samples_from_text(sample_text)
     names = sample_text.split(/\s+/)
-    samples = Sample.includes(:assets).where(['name IN (:names) OR sanger_sample_id IN (:names)', { names: names }])
+    samples = Sample.includes(:assets).where(['name IN (:names) OR sanger_sample_id IN (:names)', { names: }])
 
     name_set = Set.new(names)
     found_set = Set.new(samples.map { |s| [s.name, s.sanger_sample_id] }.flatten)

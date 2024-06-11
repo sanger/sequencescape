@@ -74,7 +74,7 @@ class ExtractionAttribute < ApplicationRecord
     samples.all? { |sample| destination_well.samples.exclude?(sample) }
   end
 
-  def rack_well(well_data) # rubocop:todo Metrics/MethodLength
+  def rack_well(well_data)
     return unless well_data && well_data['sample_tube_uuid']
     raise SampleTubeNotExists unless well_data['sample_tube_resource']
 
@@ -84,10 +84,10 @@ class ExtractionAttribute < ApplicationRecord
     location = well_data['location']
     destination_well = location_wells[location]
 
-    if validate_well_for_racking_samples!(destination_well, samples)
+    return unless validate_well_for_racking_samples!(destination_well, samples)
       destination_well.aliquots << aliquots
       AssetLink.create_edge(sample_tube, destination_well)
-    end
+    
   end
 
   def rerack_well(well_data) # rubocop:todo Metrics/AbcSize

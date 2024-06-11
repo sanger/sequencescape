@@ -4,11 +4,11 @@ require 'spec_helper'
 
 RSpec.describe 'samples/index.html.erb' do
   include AuthenticatedSystem
-  let(:user) { create :user }
+  let(:user) { create(:user) }
 
   context 'when rendering the index view' do
     let(:current_user) { user }
-    let(:samples) { create_list :sample, 4 }
+    let(:samples) { create_list(:sample, 4) }
     let(:time) { DateTime.now.utc }
     let(:time2) { DateTime.now.utc + 5 }
 

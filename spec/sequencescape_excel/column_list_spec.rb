@@ -21,7 +21,7 @@ RSpec.describe SequencescapeExcel::ColumnList, :sample_manifest, :sample_manifes
     columns = build_list(:column, 5)
     column_list = described_class.new(build_list(:column, 5))
     expect(column_list.count).to eq(columns.length)
-    expect(column_list).to be_all { |column| column_list.find_by(:name, column.name).present? }
+    expect(column_list).to(be_all { |column| column_list.find_by(:name, column.name).present? })
   end
 
   it 'has some conditional formattings' do

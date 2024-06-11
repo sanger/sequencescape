@@ -6,7 +6,7 @@ require './app/resources/api/v2/poly_metadatum_resource'
 RSpec.describe Api::V2::PolyMetadatumResource, type: :resource do
   subject(:metadatum_resource) { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { build_stubbed :poly_metadatum }
+  let(:resource_model) { build_stubbed(:poly_metadatum) }
 
   # Test attributes
   it 'works as expected', :aggregate_failures do

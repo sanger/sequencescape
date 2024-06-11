@@ -28,18 +28,16 @@ module Core::Io::Json::Grammar
       yield(node.merge_children_with(self))
     end
 
-    # rubocop:todo Metrics/MethodLength
-    def merge_children_with(node) # rubocop:todo Metrics/AbcSize
+        def merge_children_with(node) # rubocop:todo Metrics/AbcSize
       (node.children.keys + @children.keys)
         .uniq
         .each_with_object({}) do |k, store|
           cloned =
-            case
-            when @children.key?(k) && node.children.key?(k)
+            if @children.key?(k) && node.children.key?(k)
               node.children[k].merge(@children[k])
-            when @children.key?(k)
+            elsif @children.key?(k)
               @children[k]
-            when node.children.key?(k)
+            elsif node.children.key?(k)
               node.children[k]
             else
               raise 'Odd, how did that happen?'
@@ -49,9 +47,7 @@ module Core::Io::Json::Grammar
         end
     end
 
-    # rubocop:enable Metrics/MethodLength
-
-    def inspect
+        def inspect
       @children.values.inspect
     end
 
@@ -100,10 +96,10 @@ module Core::Io::Json::Grammar
       end
     end
 
-    def rooted_json(stream, nested, &block)
+    def rooted_json(stream, nested, &)
       return yield(stream) if nested
 
-      stream.block(json_root, &block)
+      stream.block(json_root, &)
     end
     private :rooted_json
 

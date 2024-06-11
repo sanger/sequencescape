@@ -29,10 +29,10 @@ RSpec.describe Robot::Verification::SourceDestControlBeds, :robot_verification d
       end
     end
 
-    let(:source_plate_1) { create :plate, well_count: 2 }
-    let(:source_plate_3) { create :plate, well_count: 2 }
-    let(:destination_plate) { create :plate, well_count: 9 }
-    let(:pipeline) { create :cherrypick_pipeline }
+    let(:source_plate_1) { create(:plate, well_count: 2) }
+    let(:source_plate_3) { create(:plate, well_count: 2) }
+    let(:destination_plate) { create(:plate, well_count: 9) }
+    let(:pipeline) { create(:cherrypick_pipeline) }
     let(:max_beds) { 17 }
 
     let(:transfers) do
@@ -57,20 +57,20 @@ RSpec.describe Robot::Verification::SourceDestControlBeds, :robot_verification d
 
     let(:requests) do
       transfers.map do |source, target|
-        create :cherrypick_request,
+        create(:cherrypick_request,
                asset: source,
                target_asset: target,
                request_type: pipeline.request_types.first,
-               state: 'passed'
+               state: 'passed')
       end
     end
 
-    let(:batch) { create :batch, requests: requests, pipeline: pipeline }
-    let(:user) { create :user }
-    let(:robot) { create :hamilton, barcode: '444' }
+    let(:batch) { create(:batch, requests:, pipeline:) }
+    let(:user) { create(:user) }
+    let(:robot) { create(:hamilton, barcode: '444') }
 
     context 'without control plates' do
-      let(:source_plate_2) { create :plate, well_count: 2 }
+      let(:source_plate_2) { create(:plate, well_count: 2) }
       let(:expected_layout) do
         {
           1 => [
@@ -131,7 +131,7 @@ RSpec.describe Robot::Verification::SourceDestControlBeds, :robot_verification d
 
     context 'without control plates and multiple picks' do
       let(:max_beds) { 2 }
-      let(:source_plate_2) { create :plate, well_count: 2 }
+      let(:source_plate_2) { create(:plate, well_count: 2) }
       let(:expected_layout) do
         {
           1 => [
@@ -153,7 +153,7 @@ RSpec.describe Robot::Verification::SourceDestControlBeds, :robot_verification d
     end
 
     context 'with control plates' do
-      let(:source_plate_2) { create :control_plate, well_count: 2 }
+      let(:source_plate_2) { create(:control_plate, well_count: 2) }
       let(:expected_layout) do
         {
           1 => [
@@ -215,7 +215,7 @@ RSpec.describe Robot::Verification::SourceDestControlBeds, :robot_verification d
     context 'with control plates and multiple picks' do
       let(:max_beds) { 1 }
 
-      let(:source_plate_2) { create :control_plate, well_count: 2 }
+      let(:source_plate_2) { create(:control_plate, well_count: 2) }
       let(:expected_layout) do
         # NOTE: This generates three picks.
         # In theory this should be possible to do in two, as the control bed

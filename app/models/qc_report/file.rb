@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:todo Metrics/ClassLength
 class QcReport::File
   ACCEPTED_MIMETYPE = 'text/csv'
   ACCEPTED_EXTENSTION = 'csv'
@@ -41,7 +40,7 @@ class QcReport::File
     @valid
   end
 
-  def valid? # rubocop:todo Metrics/MethodLength
+  def valid?
     return invalid("#{filename} was not a csv file") unless is_a_csv?
     unless is_a_report?
       return(
@@ -65,7 +64,7 @@ class QcReport::File
 
   # The report to which the file corresponds
   def qc_report
-    @qc_report ||= QcReport.find_by(report_identifier: report_identifier)
+    @qc_report ||= QcReport.find_by(report_identifier:)
   end
 
   # A hash of the header section
@@ -134,7 +133,7 @@ class QcReport::File
   def process_line(line)
     qc_decision = (line[:qc_decision] || '').strip
     proceed = (line[:proceed] || '').strip
-    { qc_decision: qc_decision, proceed: proceed }
+    { qc_decision:, proceed: }
   end
 
   def invalid(message)
@@ -170,4 +169,3 @@ class QcReport::File
     @headers = headers
   end
 end
-# rubocop:enable Metrics/ClassLength

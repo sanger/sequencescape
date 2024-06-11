@@ -6,7 +6,7 @@ require './app/resources/api/v2/study_resource'
 RSpec.describe Api::V2::StudyResource, type: :resource do
   subject { described_class.new(study, {}) }
 
-  let(:study) { create :study }
+  let(:study) { create(:study) }
 
   it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
     expect(subject).to have_attribute :name

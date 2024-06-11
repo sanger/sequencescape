@@ -39,9 +39,9 @@ RSpec.describe Submission do
         request_type_3.id,
         request_type_4.id
       ]
-      order1 = create(:order, request_types: request_types, request_options: { read_length: 100 })
-      order2 = create(:order, request_types: request_types, request_options: { read_length: 100 })
-      order3 = create(:order, request_types: request_types, request_options: { read_length: 100 })
+      order1 = create(:order, request_types:, request_options: { read_length: 100 })
+      order2 = create(:order, request_types:, request_options: { read_length: 100 })
+      order3 = create(:order, request_types:, request_options: { read_length: 100 })
       order4 = create(:order, request_types: [request_type_1.id] + request_types, request_options: { read_length: 100 })
       expect(build(:submission, orders: [order1, order2, order3, order4])).to be_valid
     end
@@ -65,42 +65,42 @@ RSpec.describe Submission do
 
     it 'are not compatible with different request types after a multiplexed request types' do
       request_types = [request_type_1.id, request_type_2.id, request_type_for_multiplexing.id, request_type_3.id]
-      order1 = create(:order, request_types: request_types, request_options: { read_length: 100 })
-      order2 = create(:order, request_types: request_types, request_options: { read_length: 100 })
-      order3 = create(:order, request_types: request_types, request_options: { read_length: 100 })
+      order1 = create(:order, request_types:, request_options: { read_length: 100 })
+      order2 = create(:order, request_types:, request_options: { read_length: 100 })
+      order3 = create(:order, request_types:, request_options: { read_length: 100 })
       request_types[3] = request_type_4.id
-      order4 = create(:order, request_types: request_types, request_options: { read_length: 100 })
+      order4 = create(:order, request_types:, request_options: { read_length: 100 })
       expect(build(:submission, orders: [order1, order2, order3, order4])).not_to be_valid
     end
 
     it 'are not compatible if any of the read lengths are different' do
       request_types = [request_type_1.id, request_type_2.id, request_type_for_multiplexing.id, request_type_3.id]
-      order1 = create(:order, request_types: request_types, request_options: { read_length: 100 })
-      order2 = create(:order, request_types: request_types, request_options: { read_length: 100 })
-      order3 = create(:order, request_types: request_types, request_options: { read_length: 200 })
-      order4 = create(:order, request_types: request_types, request_options: { read_length: 100 })
+      order1 = create(:order, request_types:, request_options: { read_length: 100 })
+      order2 = create(:order, request_types:, request_options: { read_length: 100 })
+      order3 = create(:order, request_types:, request_options: { read_length: 200 })
+      order4 = create(:order, request_types:, request_options: { read_length: 100 })
       expect(build(:submission, orders: [order1, order2, order3, order4])).not_to be_valid
     end
 
     it 'are not compatible if at least one of the request types are not for multiplexing' do
       request_types = [request_type_1.id, request_type_2.id, request_type_for_multiplexing.id, request_type_3.id]
-      order1 = create(:order, request_types: request_types, request_options: { read_length: 100 })
-      order2 = create(:order, request_types: request_types, request_options: { read_length: 100 })
-      order3 = create(:order, request_types: request_types, request_options: { read_length: 100 })
+      order1 = create(:order, request_types:, request_options: { read_length: 100 })
+      order2 = create(:order, request_types:, request_options: { read_length: 100 })
+      order3 = create(:order, request_types:, request_options: { read_length: 100 })
       request_types = [request_type_1.id, request_type_2.id, request_type_3.id, request_type_4.id]
-      order4 = create(:order, request_types: request_types, request_options: { read_length: 100 })
+      order4 = create(:order, request_types:, request_options: { read_length: 100 })
       expect(build(:submission, orders: [order1, order2, order3, order4])).not_to be_valid
     end
   end
 
   it 'knows all samples that can not be included in submission' do
-    sample_manifest = create :tube_sample_manifest_with_samples
+    sample_manifest = create(:tube_sample_manifest_with_samples)
     sample_manifest.samples.first.sample_metadata.update(supplier_name: 'new_name')
     samples = sample_manifest.samples[1..]
-    order1 = create :order, assets: sample_manifest.labware
+    order1 = create(:order, assets: sample_manifest.labware)
 
-    asset = create :sample_tube
-    order2 = create :order, assets: [asset.receptacle]
+    asset = create(:sample_tube)
+    order2 = create(:order, assets: [asset.receptacle])
 
     submission = described_class.new(user: create(:user), orders: [order1, order2])
 
@@ -108,24 +108,24 @@ RSpec.describe Submission do
   end
 
   describe '#used_tags' do
-    let(:submission) { create :submission }
-    let(:request_1) { create :request, submission: submission }
-    let(:request_2) { create :request, submission: submission }
-    let(:tag_a) { create :tag }
-    let(:tag2_a) { create :tag }
-    let(:tag_b) { create :tag }
-    let(:tag2_b) { create :tag }
+    let(:submission) { create(:submission) }
+    let(:request_1) { create(:request, submission:) }
+    let(:request_2) { create(:request, submission:) }
+    let(:tag_a) { create(:tag) }
+    let(:tag2_a) { create(:tag) }
+    let(:tag_b) { create(:tag) }
+    let(:tag2_b) { create(:tag) }
 
     before do
       # Some untagged aliquots upstream of tagging
-      create :untagged_aliquot, request: request_1
-      create :untagged_aliquot, request: request_2
+      create(:untagged_aliquot, request: request_1)
+      create(:untagged_aliquot, request: request_2)
 
       # Once tagged, we may have multiple tagged aliquots
-      create :aliquot, request: request_1, tag: tag_a, tag2: tag2_a
-      create :aliquot, request: request_2, tag: tag_b, tag2: tag2_b
-      create :aliquot, request: request_1, tag: tag_a, tag2: tag2_a
-      create :aliquot, request: request_2, tag: tag_b, tag2: tag2_b
+      create(:aliquot, request: request_1, tag: tag_a, tag2: tag2_a)
+      create(:aliquot, request: request_2, tag: tag_b, tag2: tag2_b)
+      create(:aliquot, request: request_1, tag: tag_a, tag2: tag2_a)
+      create(:aliquot, request: request_2, tag: tag_b, tag2: tag2_b)
     end
 
     it 'returns an array of used tag pairs' do

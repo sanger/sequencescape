@@ -59,7 +59,7 @@ class WorkCompletion::LabwareCompletion
         seed: work_completion,
         user: work_completion.user,
         properties: {
-          order_id: order_id
+          order_id:
         }
       )
     end

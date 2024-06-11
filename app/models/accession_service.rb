@@ -21,7 +21,7 @@
 # {Accessionable::Policy} Details about how the data may be used. (EGA)
 #
 # Accessioning of samples has been partially migrated to {Accession 'a separate accession library'}
-class AccessionService # rubocop:todo Metrics/ClassLength
+class AccessionService
   # We overide this in testing to do a bit of evesdropping
   class_attribute :rest_client_class
   self.rest_client_class = RestClient::Resource
@@ -34,7 +34,8 @@ class AccessionService # rubocop:todo Metrics/ClassLength
   Protect = 'protect'
   Hold = 'hold'
 
-  def provider; end
+  def provider
+  end
 
   class AccessionedFile < File
     # This class provides an original_filename method
@@ -101,11 +102,11 @@ class AccessionService # rubocop:todo Metrics/ClassLength
               if accession_number
                 acc.update_accession_number!(user, accession_number)
                 accession_numbers << accession_number
-              else
+              elsif accessionables.include?(acc)
+                number_generated = false
+end
                 # error only, if one of the expected accessionable didn't get a AN
                 # We don't care about the submission
-                number_generated = false if accessionables.include?(acc)
-              end
               ae_an = acc.extract_array_express_accession_number(xmldoc)
               acc.update_array_express_accession_number!(ae_an) if ae_an
             end

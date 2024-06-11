@@ -4,8 +4,8 @@ require 'rails_helper'
 
 RSpec.describe Plate::SampleTubeFactory do
   it 'sends print request' do
-    plate = create :plate, :with_wells, well_count: 2
-    barcode_printer = create :barcode_printer
+    plate = create(:plate, :with_wells, well_count: 2)
+    barcode_printer = create(:barcode_printer)
 
     expect(RestClient).to receive(:post)
 

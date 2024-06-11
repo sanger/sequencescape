@@ -9,8 +9,8 @@ def create_submission_of_assets(template, assets, request_options = {})
       user: FactoryBot.create(:user),
       study: FactoryBot.create(:study),
       project: FactoryBot.create(:project),
-      assets: assets,
-      request_options: request_options
+      assets:,
+      request_options:
     ).submission
   submission.built!
   Delayed::Worker.delay_jobs = true
@@ -35,7 +35,7 @@ Given '{well_range} of {plate_name} are part of the same submission' do |range, 
   plate
     .wells
     .select(&range.method(:include?))
-    .each { |well| FactoryBot.create :transfer_request, submission: submission, target_asset: well }
+    .each { |well| FactoryBot.create :transfer_request, submission:, target_asset: well }
 end
 
 Given '{well_range} of {plate_name} have been failed' do |range, plate|
@@ -77,7 +77,7 @@ end
 def work_pipeline_for(submissions, name, template = nil) # rubocop:todo Metrics/CyclomaticComplexity
   raise StandardError, 'No submissions to process' if submissions.empty?
 
-  final_plate_type = PlatePurpose.find_by(name: name) or raise StandardError, "Cannot find #{name.inspect} plate type"
+  final_plate_type = PlatePurpose.find_by(name:) or raise StandardError, "Cannot find #{name.inspect} plate type"
   template ||= TransferTemplate.find_by(name: 'Pool wells based on submission') or
     raise StandardError, 'Cannot find pooling transfer template'
 
@@ -119,11 +119,11 @@ end
 # rubocop:todo Layout/LineLength
 Given 'all of the wells on {plate_name} are in an asset group called {string} owned by {study_name}' do |plate, name, study|
   # rubocop:enable Layout/LineLength
-  AssetGroup.create!(study: study, name: name, assets: plate.wells)
+  AssetGroup.create!(study:, name:, assets: plate.wells)
 end
 
 Then /^all "([^"]+)" requests should have the following details:$/ do |name, table|
-  request_type = RequestType.find_by(name: name) or raise StandardError, "Could not find request type #{name.inspect}"
+  request_type = RequestType.find_by(name:) or raise StandardError, "Could not find request type #{name.inspect}"
   raise StandardError, "No requests of type #{name.inspect}" if request_type.requests.empty?
 
   results =
@@ -156,7 +156,7 @@ end
 
 Given '{plate_name} will pool into 1 tube' do |plate|
   well_count = plate.wells.count
-  stock_plate = FactoryBot.create :full_stock_plate, well_count: well_count
+  stock_plate = FactoryBot.create(:full_stock_plate, well_count:)
   stock_wells = stock_plate.wells
   submission = Submission.create!(user: FactoryBot.create(:user))
 
@@ -168,8 +168,8 @@ Given '{plate_name} will pool into 1 tube' do |plate|
     .readonly(false)
     .each_with_index do |well, i|
       stock_well = stock_wells[i]
-      FactoryBot.create(:library_creation_request, asset: stock_well, target_asset: well, submission: submission)
-      FactoryBot.create(:transfer_request, asset: stock_well, target_asset: well, submission: submission)
+      FactoryBot.create(:library_creation_request, asset: stock_well, target_asset: well, submission:)
+      FactoryBot.create(:transfer_request, asset: stock_well, target_asset: well, submission:)
       well.stock_wells.attach!([stock_well])
     end
 end

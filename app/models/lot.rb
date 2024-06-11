@@ -34,7 +34,7 @@ class Lot < ApplicationRecord
 
   scope :include_lot_type, -> { includes(:lot_type) }
   scope :include_template, -> { includes(:template) }
-  scope :with_lot_number, ->(lot_number) { where(lot_number: lot_number) }
+  scope :with_lot_number, ->(lot_number) { where(lot_number:) }
 
   scope :with_qc_asset,
         ->(qc_asset) {

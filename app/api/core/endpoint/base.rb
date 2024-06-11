@@ -57,8 +57,8 @@ class Core::Endpoint::Base
     #           This is where you define your actions.
     #
     # @return [Void]
-    def instance(&block)
-      handler = Class.new(Handler).tap { |handler_class| const_set(:Instance, handler_class) }.new(&block)
+    def instance(&)
+      handler = Class.new(Handler).tap { |handler_class| const_set(:Instance, handler_class) }.new(&)
       handler.instance_variable_set(:@name, name)
       self.instance_handler = handler
     end
@@ -96,8 +96,8 @@ class Core::Endpoint::Base
     #           This is where you define your actions.
     #
     # @return [Void]
-    def model(&block)
-      handler = Class.new(Handler).tap { |handler_class| const_set(:Model, handler_class) }.new(&block)
+    def model(&)
+      handler = Class.new(Handler).tap { |handler_class| const_set(:Model, handler_class) }.new(&)
       self.model_handler = handler
     end
   end

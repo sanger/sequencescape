@@ -99,8 +99,7 @@ module Submission::FlexibleRequestGraph
       false
     end
 
-    # rubocop:todo Metrics/MethodLength
-    def build! # rubocop:todo Metrics/AbcSize
+        def build! # rubocop:todo Metrics/AbcSize
       multiplier.times do |_|
         # Now we can iterate over the source assets and target assets building the requests between them.
         # Ensure that the request has the correct comments on it, and that the aliquots of the source asset
@@ -108,7 +107,7 @@ module Submission::FlexibleRequestGraph
         source_asset_metrics_target_assets do |source_asset, qc_metrics, target_asset|
           chain
             .order
-            .create_request_of_type!(request_type, asset: source_asset, target_asset: target_asset)
+            .create_request_of_type!(request_type, asset: source_asset, target_asset:)
             .tap do |request|
               if source_asset&.labware.present? && target_asset&.labware.present?
                 AssetLink.create_edge(source_asset.labware, target_asset.labware)
@@ -117,18 +116,14 @@ module Submission::FlexibleRequestGraph
               request.qc_metrics = qc_metrics.compact.uniq
               request.update_responsibilities!
 
-              if comments.present?
-                comments.each { |comment| request.comments.create!(user: user, description: comment) }
-              end
+              comments.each { |comment| request.comments.create!(user:, description: comment) } if comments.present?
             end
         end
       end
       associate_built_requests!
     end
 
-    # rubocop:enable Metrics/MethodLength
-
-    def target_assets
+        def target_assets
       target_assets_qc_metrics.map(&:asset).flatten.uniq
     end
 
@@ -195,7 +190,7 @@ module Submission::FlexibleRequestGraph
       downstream_requests.each do |request|
         request.update!(initial_study: nil) if request.initial_study != study
         request.update!(initial_project: nil) if request.initial_project != project
-        comments.each { |comment| request.comments.create!(user: user, description: comment) } if comments.present?
+        comments.each { |comment| request.comments.create!(user:, description: comment) } if comments.present?
       end
     end
 
@@ -222,8 +217,8 @@ module Submission::FlexibleRequestGraph
         end
     end
 
-    def source_assets_doublet_with_index
-      source_assets_qc_metrics.each_with_index { |doublet, index| yield(doublet, index) }
+    def source_assets_doublet_with_index(&)
+      source_assets_qc_metrics.each_with_index(&)
     end
   end
 

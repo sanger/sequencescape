@@ -12,8 +12,8 @@ module Core::Endpoint::BasicHandler::Associations::HasMany
   # @yield [] Use block to define additional actions on the association.
   #
   # @return [Void]
-  def has_many(name, options, &block)
+  def has_many(name, options, &)
     class_handler = Class.new(Handler).tap { |handler| self.class.const_set(name.to_s.camelize, handler) }
-    register_handler(options[:to], class_handler.new(name, options, &block))
+    register_handler(options[:to], class_handler.new(name, options, &))
   end
 end

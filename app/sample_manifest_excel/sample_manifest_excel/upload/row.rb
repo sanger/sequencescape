@@ -9,7 +9,7 @@ module SampleManifestExcel
     # *number: Number of the row which is used for error tracking
     # *data: An array of sample data
     # *columns: The columns which relate to the data.
-    class Row # rubocop:todo Metrics/ClassLength
+    class Row
       include ActiveModel::Model
       include Converters
 
@@ -79,7 +79,6 @@ module SampleManifestExcel
       # *Updating all of the specialised fields in the aliquot
       # *Updating the sample metadata
       # *Saving the asset, metadata and sample
-      # rubocop:todo Metrics/MethodLength
       def update_sample(tag_group, override) # rubocop:todo Metrics/AbcSize
         return unless valid?
 
@@ -98,15 +97,13 @@ module SampleManifestExcel
         end
       end
 
-      # rubocop:enable Metrics/MethodLength
-
-      def changed?
+            def changed?
         (@sample_updated && sample.previous_changes.present?) || metadata.previous_changes.present? ||
           aliquots.any? { |a| a.previous_changes.present? }
       end
 
       def update_specialised_fields(tag_group)
-        specialised_fields.each { |specialised_field| specialised_field.update(tag_group: tag_group) }
+        specialised_fields.each { |specialised_field| specialised_field.update(tag_group:) }
       end
 
       def update_metadata_fields
@@ -179,7 +176,7 @@ module SampleManifestExcel
       private
 
       def manifest_asset
-        @manifest_asset ||= cache.find_by(sanger_sample_id: sanger_sample_id)
+        @manifest_asset ||= cache.find_by(sanger_sample_id:)
       end
 
       def sanger_sample_id_exists?

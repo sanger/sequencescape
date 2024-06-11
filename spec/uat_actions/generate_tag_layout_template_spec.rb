@@ -5,8 +5,8 @@ require 'rails_helper'
 describe UatActions::GenerateTagLayoutTemplate do
   context 'with valid options' do
     let(:tag_count) { 96 }
-    let(:tag_group) { create :tag_group, tag_count: tag_count }
-    let(:tag2_group) { create :tag_group, tag_count: tag_count }
+    let(:tag_group) { create(:tag_group, tag_count:) }
+    let(:tag2_group) { create(:tag_group, tag_count:) }
 
     let(:parameters) do
       {

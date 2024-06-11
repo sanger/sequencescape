@@ -11,7 +11,7 @@ module SampleManifestExcel
       # Used for processing the upload of sample manifests.
       # Contains behaviour specific to processing 'Tube Rack' manifests.
       # Had to explicitly specify the namespace for Base here otherwise it picks up Upload::Base
-      class TubeRack < SampleManifestExcel::Upload::Processor::Base # rubocop:todo Metrics/ClassLength
+      class TubeRack < SampleManifestExcel::Upload::Processor::Base
         include ActiveModel::Validations
         include ::CsvParserClient
 
@@ -29,7 +29,7 @@ module SampleManifestExcel
           @tube_rack_information_previously_processed = check_if_tube_racks_present
         end
 
-        def run(tag_group) # rubocop:todo Metrics/MethodLength
+        def run(tag_group)
           return unless valid?
 
           unless @tube_rack_information_previously_processed
@@ -58,7 +58,7 @@ module SampleManifestExcel
         # it has been processed before and should not be re-processed
         def check_if_tube_racks_present
           @tube_rack_barcodes_from_manifest.each do |barcode|
-            existing_barcode_record = Barcode.includes(:asset).find_by(barcode: barcode)
+            existing_barcode_record = Barcode.includes(:asset).find_by(barcode:)
             return true if !existing_barcode_record.nil? && !existing_barcode_record.asset.nil?
           end
           false
@@ -125,7 +125,7 @@ module SampleManifestExcel
           rack_barcode_to_tube_rack
         end
 
-        def create_tube_rack_if_not_existing(tube_rack_barcode) # rubocop:todo Metrics/MethodLength
+        def create_tube_rack_if_not_existing(tube_rack_barcode)
           barcode = Barcode.includes(:asset).find_by(asset_id: tube_rack_barcode)
 
           if barcode.nil?
@@ -148,7 +148,7 @@ module SampleManifestExcel
           tube_rack
         end
 
-        def create_barcodes_for_existing_tubes # rubocop:todo Metrics/MethodLength
+        def create_barcodes_for_existing_tubes
           upload.rows.each do |row|
             tube_barcode = row.value('tube_barcode')
             tube = row.labware
@@ -180,7 +180,7 @@ module SampleManifestExcel
             tube_rack_barcode = @tube_barcode_to_rack_barcode[tube_barcode]
             tube_rack = rack_barcode_to_tube_rack[tube_rack_barcode]
             tube_barcode_to_coordinate = @rack_barcode_to_scan_results[tube_rack_barcode]
-            RackedTube.create!(tube_rack: tube_rack, tube: tube, coordinate: tube_barcode_to_coordinate[tube_barcode])
+            RackedTube.create!(tube_rack:, tube:, coordinate: tube_barcode_to_coordinate[tube_barcode])
           end
         end
 

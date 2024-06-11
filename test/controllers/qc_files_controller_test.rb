@@ -24,7 +24,7 @@ class QcFilesControllerTest < ActionController::TestCase
 
       @controller = QcFilesController.new
       @request = ActionController::TestRequest.create(@controller)
-      @user = create :user
+      @user = create(:user)
       session[:user] = @user.id
     end
 

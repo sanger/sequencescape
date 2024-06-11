@@ -52,7 +52,8 @@ class Accessionable::Base
     raise NotImplementedError, 'abstract method'
   end
 
-  def update_array_express_accession_number!(accession_number); end
+  def update_array_express_accession_number!(accession_number)
+  end
 
   def accessionable_id
     raise NotImplementError, 'abstract method'

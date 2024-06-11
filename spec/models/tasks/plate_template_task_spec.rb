@@ -5,13 +5,12 @@ require 'rails_helper'
 # This is a very tangled test, as I'm hoping to unhook the current dependencies
 # so need to wrap it at its current level of messiness
 RSpec.describe PlateTemplateTask do
-  subject(:task) { create :plate_template_task }
+  subject(:task) { create(:plate_template_task) }
 
   let(:pipeline) { task.workflow.pipeline }
   let(:requests) do
-    requests = []
-    plate_a.wells.each do |well|
-      requests << create(:cherrypick_request, asset: well, request_type: pipeline.request_types.first)
+    requests = plate_a.wells.map do |well|
+      create(:cherrypick_request, asset: well, request_type: pipeline.request_types.first)
     end
     plate_b.wells.each do |well|
       requests << create(:cherrypick_request, asset: well, request_type: pipeline.request_types.first)
@@ -21,13 +20,13 @@ RSpec.describe PlateTemplateTask do
   let(:plate_a_barcode_number) { '1' }
   let(:plate_b_barcode_number) { '2' }
   let(:plate_a) do
-    create :plate, barcode: "SQPD-#{plate_a_barcode_number}", well_count: 4, well_factory: :untagged_well
+    create(:plate, barcode: "SQPD-#{plate_a_barcode_number}", well_count: 4, well_factory: :untagged_well)
   end
   let(:plate_b) do
-    create :plate, barcode: "SQPD-#{plate_b_barcode_number}", well_count: 4, well_factory: :untagged_well
+    create(:plate, barcode: "SQPD-#{plate_b_barcode_number}", well_count: 4, well_factory: :untagged_well)
   end
 
-  let(:batch) { create :batch, requests: requests, pipeline: pipeline }
+  let(:batch) { create(:batch, requests:, pipeline:) }
   let(:request) { instance_double(ActionDispatch::Request, parameters: params) }
   let(:workflow) { pipeline.workflow }
 
@@ -57,8 +56,8 @@ RSpec.describe PlateTemplateTask do
 
   let(:file) { instance_double(ActionDispatch::Http::UploadedFile, 'blank?' => false, :read => payload) }
 
-  let(:workflow_controller) { instance_double(WorkflowsController, batch: batch) }
-  let(:user) { build :user }
+  let(:workflow_controller) { instance_double(WorkflowsController, batch:) }
+  let(:user) { build(:user) }
 
   describe '#render_task' do
     let(:workflow_controller) do
@@ -79,7 +78,7 @@ RSpec.describe PlateTemplateTask do
     let(:params) do
       ActionController::Parameters.new(
         workflow_id: workflow.id,
-        file: file,
+        file:,
         plate_purpose_id: create(:plate_purpose).id
       )
     end

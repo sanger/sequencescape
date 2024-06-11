@@ -25,7 +25,7 @@ describe 'Lanes API', with: :api_v2 do
   end
 
   context 'with a lane' do
-    let(:resource_model) { create :lane }
+    let(:resource_model) { create(:lane) }
 
     it 'sends an individual lane' do
       api_get "#{base_endpoint}/#{resource_model.id}"

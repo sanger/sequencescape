@@ -32,13 +32,13 @@ module Admin
 
       context '#filter' do
         setup do
-          @user = FactoryBot.create :user
-          @admin = FactoryBot.create :admin
+          @user = FactoryBot.create(:user)
+          @admin = FactoryBot.create(:admin)
 
           session[:user] = @admin
 
-          @user_to_find = FactoryBot.create :user, first_name: 'Some', last_name: 'Body', login: 'sb1'
-          @another_user = FactoryBot.create :user, first_name: 'No', last_name: 'One', login: 'no1'
+          @user_to_find = FactoryBot.create(:user, first_name: 'Some', last_name: 'Body', login: 'sb1')
+          @another_user = FactoryBot.create(:user, first_name: 'No', last_name: 'One', login: 'no1')
         end
 
         should 'find a user based on name' do
@@ -59,16 +59,16 @@ module Admin
           post :filter, params: { q: '1' }
 
           @users = assigns(:users)
-          assert @users.detect { |u| u == @user_to_find }
-          assert @users.detect { |u| u == @another_user }
+          assert(@users.detect { |u| u == @user_to_find })
+          assert(@users.detect { |u| u == @another_user })
         end
 
         should 'find multiple users with shared characters in their names' do
           post :filter, params: { q: 'o' }
 
           @users = assigns(:users)
-          assert @users.detect { |u| u == @user_to_find }
-          assert @users.detect { |u| u == @another_user }
+          assert(@users.detect { |u| u == @user_to_find })
+          assert(@users.detect { |u| u == @another_user })
         end
       end
     end

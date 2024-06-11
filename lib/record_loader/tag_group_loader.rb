@@ -15,9 +15,9 @@ module RecordLoader
 
       TagGroup
         .create_with(options)
-        .find_or_create_by!(name: name)
+        .find_or_create_by!(name:)
         .tap do |tag_group|
-          tag_attributes = tags.map { |map_id, oligo| { map_id: map_id, oligo: oligo } }
+          tag_attributes = tags.map { |map_id, oligo| { map_id:, oligo: } }
           tag_group.tags.import(tag_attributes) if tag_group.tags.empty?
         end
     end

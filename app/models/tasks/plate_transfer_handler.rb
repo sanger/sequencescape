@@ -11,8 +11,7 @@ module Tasks::PlateTransferHandler
     [{ asset: [:map, { plate: %i[plate_purpose barcodes] }, :aliquots] }, { target_asset: [] }]
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def find_or_create_target(task) # rubocop:todo Metrics/AbcSize
+    def find_or_create_target(task) # rubocop:todo Metrics/AbcSize
     return target_plate if target_plate.present?
 
     # We only eager load the request stuff if we actually need it.
@@ -39,9 +38,7 @@ module Tasks::PlateTransferHandler
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  def target_plate
+    def target_plate
     transfer =
       TransferRequest
         .for_request(@batch.requests.first)

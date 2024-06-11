@@ -3,13 +3,13 @@
 require 'rails_helper'
 
 describe 'Creating a quad stamp' do
-  let(:user) { create :slf_manager, swipecard_code: swipecard }
+  let(:user) { create(:slf_manager, swipecard_code: swipecard) }
   let(:swipecard) { '123456' }
-  let(:quad_1) { create :plate_with_untagged_wells, well_count: 2 }
-  let(:quad_2) { create :plate_with_untagged_wells, well_count: 2 }
-  let!(:plate_purpose) { create :plate_purpose, size: 384, stock_plate: true }
+  let(:quad_1) { create(:plate_with_untagged_wells, well_count: 2) }
+  let(:quad_2) { create(:plate_with_untagged_wells, well_count: 2) }
+  let!(:plate_purpose) { create(:plate_purpose, size: 384, stock_plate: true) }
   let(:new_barcode) { build(:plate_barcode) }
-  let!(:barcode_printer) { create :barcode_printer }
+  let!(:barcode_printer) { create(:barcode_printer) }
 
   before { allow(PlateBarcode).to receive(:create_barcode).and_return(new_barcode) }
 

@@ -5,17 +5,17 @@ module ApiV2Helper
 
   def api_get(path, headers: {})
     headers.merge!(DEFAULT_HEADERS)
-    get(path, headers: headers)
+    get(path, headers:)
   end
 
   def api_patch(path, payload, headers: {})
     headers.merge!(DEFAULT_HEADERS)
-    patch(path, params: payload.to_json, headers: headers)
+    patch(path, params: payload.to_json, headers:)
   end
 
   def api_post(path, payload, headers: {})
     headers.merge!(DEFAULT_HEADERS)
-    post(path, params: payload.to_json, headers: headers)
+    post(path, params: payload.to_json, headers:)
   end
 
   def json

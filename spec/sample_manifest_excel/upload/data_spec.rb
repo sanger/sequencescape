@@ -13,7 +13,7 @@ RSpec.describe SampleManifestExcel::Upload::Data, :sample_manifest, :sample_mani
   let(:test_file_name) { 'test_file.xlsx' }
   let(:test_file) { Rack::Test::UploadedFile.new(Rails.root.join(test_file_name), '') }
   let(:columns) { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
-  let!(:download) { build(:test_download_tubes, columns: columns) }
+  let!(:download) { build(:test_download_tubes, columns:) }
 
   before { download.save(test_file_name) }
 

@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :budget_division do
-    name { |_a| generate :budget_division_name }
+    name { |_a| generate(:budget_division_name) }
   end
 
   factory :project_metadata, class: 'Project::Metadata' do

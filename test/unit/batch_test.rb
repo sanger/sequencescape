@@ -5,7 +5,7 @@ require 'test_helper'
 class BatchTest < ActiveSupport::TestCase
   context 'A batch' do
     context 'on its own' do
-      setup { @batch = build :batch }
+      setup { @batch = build(:batch) }
 
       should 'have begin in pending then change to started' do
         assert_equal @batch.state, 'pending'
@@ -18,11 +18,11 @@ class BatchTest < ActiveSupport::TestCase
 
   context 'modifying request positions within a batch' do
     setup do
-      @pipeline = create :pipeline
+      @pipeline = create(:pipeline)
 
       # Weirdly, this is actually FASTER than factories by a substantial amount
       @requests = Array.new(10) { @pipeline.request_types.last.create! }
-      @batch = create :batch, requests: @requests, pipeline: @pipeline
+      @batch = create(:batch, requests: @requests, pipeline: @pipeline)
     end
 
     context '#assign_positions_to_requests!' do
@@ -49,11 +49,11 @@ class BatchTest < ActiveSupport::TestCase
 
   context 'when batch is created' do
     setup do
-      @pipeline = create :pipeline
-      @request1 = create :request, request_type: @pipeline.request_types.first
-      @request2 = create :request, request_type: @pipeline.request_types.first
+      @pipeline = create(:pipeline)
+      @request1 = create(:request, request_type: @pipeline.request_types.first)
+      @request2 = create(:request, request_type: @pipeline.request_types.first)
 
-      @batch = create :batch, requests: [@request1, @request2], pipeline: @pipeline
+      @batch = create(:batch, requests: [@request1, @request2], pipeline: @pipeline)
     end
 
     should 'be able to call start_requests' do
@@ -87,7 +87,7 @@ class BatchTest < ActiveSupport::TestCase
 
   context 'batch #has_event(event_name)' do
     setup do
-      @batch = create :batch
+      @batch = create(:batch)
       @batch.start!(create(:user))
 
       @lab_event = LabEvent.new
@@ -115,9 +115,9 @@ class BatchTest < ActiveSupport::TestCase
 
   context '#requests_by_study' do
     setup do
-      @pipeline = create :pipeline, locale: 'Internal'
-      @batch = create :batch, pipeline: @pipeline
-      @study1 = create :study
+      @pipeline = create(:pipeline, locale: 'Internal')
+      @batch = create(:batch, pipeline: @pipeline)
+      @study1 = create(:study)
     end
 
     context 'with no requests' do
@@ -128,8 +128,8 @@ class BatchTest < ActiveSupport::TestCase
 
     context 'with 1 request' do
       setup do
-        @study2 = create :study
-        @request1 = create :request, request_type: @pipeline.request_types.last, study: @study1, batch: @batch
+        @study2 = create(:study)
+        @request1 = create(:request, request_type: @pipeline.request_types.last, study: @study1, batch: @batch)
       end
 
       should 'return correct studies' do
@@ -140,10 +140,10 @@ class BatchTest < ActiveSupport::TestCase
 
     context 'with 2 requests from different studies' do
       setup do
-        @study2 = create :study
-        @study3 = create :study
-        @request1 = create :request, request_type: @pipeline.request_types.last, study: @study1
-        @request2 = create :request, request_type: @pipeline.request_types.last, study: @study2
+        @study2 = create(:study)
+        @study3 = create(:study)
+        @request1 = create(:request, request_type: @pipeline.request_types.last, study: @study1)
+        @request2 = create(:request, request_type: @pipeline.request_types.last, study: @study2)
         @batch.requests << @request1 << @request2
       end
 
@@ -157,9 +157,9 @@ class BatchTest < ActiveSupport::TestCase
 
   context '#plate_ids_in_study' do
     setup do
-      @pipeline = create :pipeline
-      @batch = create :batch, pipeline: @pipeline
-      @study1 = create :study
+      @pipeline = create(:pipeline)
+      @batch = create(:batch, pipeline: @pipeline)
+      @study1 = create(:study)
     end
 
     context 'with no requests' do
@@ -170,12 +170,12 @@ class BatchTest < ActiveSupport::TestCase
 
     context 'with 2 request on a different plates' do
       setup do
-        @study2 = create :study
-        @plate1 = create :plate
-        @well1 = create :well, plate: @plate1
+        @study2 = create(:study)
+        @plate1 = create(:plate)
+        @well1 = create(:well, plate: @plate1)
 
-        @plate2 = create :plate
-        @well2 = create :well, plate: @plate2
+        @plate2 = create(:plate)
+        @well2 = create(:well, plate: @plate2)
 
         @batch.requests = [
           @pipeline.request_types.last.create!(study: @study1, asset: @well1),
@@ -203,7 +203,7 @@ class BatchTest < ActiveSupport::TestCase
 
     should_have_instance_methods :assigned_user, :start, :fail, :workflow, :started?, :released?, :qc_state
 
-    setup { @pipeline = create :sequencing_pipeline, name: 'Pipeline for BatchTest' }
+    setup { @pipeline = create(:sequencing_pipeline, name: 'Pipeline for BatchTest') }
 
     context 'create requests' do
       setup do
@@ -237,7 +237,7 @@ class BatchTest < ActiveSupport::TestCase
         # send_fail_event will be used once since only one request is not a resource /@request1
         #        EventSender.expects(:send_fail_event).returns(true).times(1)
         EventSender.stubs(:send_fail_event).returns(true)
-        @control = create :sample_tube, resource: true
+        @control = create(:sample_tube, resource: true)
 
         @batch = @pipeline.batches.create!
         @request1, @request2 =
@@ -335,8 +335,8 @@ class BatchTest < ActiveSupport::TestCase
 
     context '#public methods' do
       setup do
-        @asset1 = create :sample_tube, barcode: '123456'
-        @asset2 = create :sample_tube, barcode: '654321'
+        @asset1 = create(:sample_tube, barcode: '123456')
+        @asset2 = create(:sample_tube, barcode: '654321')
 
         @request1 = @pipeline.request_types.last.create!(asset: @asset1)
         @request2 = @pipeline.request_types.last.create!(asset: @asset2)
@@ -371,14 +371,14 @@ class BatchTest < ActiveSupport::TestCase
       end
 
       should 'return user login' do
-        @user = create :user
+        @user = create(:user)
         @batch.assignee_id = @user.id
         assert 'lg1', @batch.assigned_user
       end
 
       context 'with control' do
         setup do
-          @control = create :sample_tube, resource: true
+          @control = create(:sample_tube, resource: true)
           @request = @pipeline.request_types.last.create!(asset: @control)
           @batch.batch_requests.create!(request: @request, position: 3)
         end
@@ -434,7 +434,7 @@ class BatchTest < ActiveSupport::TestCase
 
     context '#reset!' do
       context 'once started' do
-        setup { @batch = create :batch, pipeline: @pipeline, state: 'started' }
+        setup { @batch = create(:batch, pipeline: @pipeline, state: 'started') }
 
         should 'raise an exception' do
           assert_raise AASM::InvalidTransition do
@@ -449,10 +449,10 @@ class BatchTest < ActiveSupport::TestCase
       }.each do |pipeline_type, request_factory|
         context "of a #{pipeline_type}" do
           setup do
-            @pipeline = create pipeline_type
-            @batch = create :batch, pipeline: @pipeline
-            @pending_request = create request_factory, request_type: @pipeline.request_types.last
-            @pending_request_2 = create request_factory, request_type: @pipeline.request_types.last
+            @pipeline = create(pipeline_type)
+            @batch = create(:batch, pipeline: @pipeline)
+            @pending_request = create(request_factory, request_type: @pipeline.request_types.last)
+            @pending_request_2 = create(request_factory, request_type: @pipeline.request_types.last)
             @batch.requests << @pending_request << @pending_request_2
           end
 
@@ -483,8 +483,8 @@ class BatchTest < ActiveSupport::TestCase
 
     context '#qc_previous_state!' do
       setup do
-        @user = create :user
-        @batch = create :batch, pipeline: @pipeline
+        @user = create(:user)
+        @batch = create(:batch, pipeline: @pipeline)
         @batch.update!(qc_state: 'qc_completed')
       end
       should 'move batch to previous qc state' do
@@ -503,16 +503,16 @@ class BatchTest < ActiveSupport::TestCase
         context "when swapping #{left_position} and #{right_position}" do
           setup do
             # Create a batch with a couple of requests positioned appropriately
-            @left_batch = create :batch, pipeline: @pipeline
-            @original_left_request = create :batch_request, batch_id: @left_batch.id, position: left_position
-            create :batch_request, batch_id: @left_batch.id, position: 1
+            @left_batch = create(:batch, pipeline: @pipeline)
+            @original_left_request = create(:batch_request, batch_id: @left_batch.id, position: left_position)
+            create(:batch_request, batch_id: @left_batch.id, position: 1)
 
             # Now create another batch that we'll swap the requests between
-            @right_batch = create :batch, pipeline: @pipeline
-            @original_right_request = create :batch_request, batch_id: @right_batch.id, position: right_position
-            create :batch_request, batch_id: @right_batch.id, position: 2
+            @right_batch = create(:batch, pipeline: @pipeline)
+            @original_right_request = create(:batch_request, batch_id: @right_batch.id, position: right_position)
+            create(:batch_request, batch_id: @right_batch.id, position: 2)
 
-            @user = create :user
+            @user = create(:user)
           end
 
           should 'swap lanes given 2 batches and swap requests.' do
@@ -546,12 +546,12 @@ class BatchTest < ActiveSupport::TestCase
 
     context '#detach_request' do
       setup do
-        @library_prep_pipeline = create :pipeline, name: 'Library Prep Pipeline'
-        @lib_prep_batch = create :batch, pipeline: @library_prep_pipeline
-        @sample_tube = create :sample_tube, name: 'sample tube 1'
-        @library_tube = create :library_tube, name: 'lib tube 1'
-        @lib_prep_request = create :library_request, state: 'started', asset: @sample_tube, target_asset: @library_tube
-        @pe_seq_request = create :sequencing_request, state: 'pending', asset: @library_tube
+        @library_prep_pipeline = create(:pipeline, name: 'Library Prep Pipeline')
+        @lib_prep_batch = create(:batch, pipeline: @library_prep_pipeline)
+        @sample_tube = create(:sample_tube, name: 'sample tube 1')
+        @library_tube = create(:library_tube, name: 'lib tube 1')
+        @lib_prep_request = create(:library_request, state: 'started', asset: @sample_tube, target_asset: @library_tube)
+        @pe_seq_request = create(:sequencing_request, state: 'pending', asset: @library_tube)
         @lib_prep_batch.requests << @lib_prep_request
       end
 
@@ -593,23 +593,23 @@ class BatchTest < ActiveSupport::TestCase
 
     context '#last_completed_task' do
       setup do
-        @library_prep_pipeline = create :pipeline, name: 'Library Prep Pipeline'
-        @task1 = create :task, workflow: @library_prep_pipeline.workflow, name: 'Task 1', sorted: 0
-        @task2 = create :task, workflow: @library_prep_pipeline.workflow, name: 'Task 2', sorted: 1
-        @task3 = create :task, workflow: @library_prep_pipeline.workflow, name: 'Task 3', sorted: 2
+        @library_prep_pipeline = create(:pipeline, name: 'Library Prep Pipeline')
+        @task1 = create(:task, workflow: @library_prep_pipeline.workflow, name: 'Task 1', sorted: 0)
+        @task2 = create(:task, workflow: @library_prep_pipeline.workflow, name: 'Task 2', sorted: 1)
+        @task3 = create(:task, workflow: @library_prep_pipeline.workflow, name: 'Task 3', sorted: 2)
 
-        @batch = create :batch, pipeline: @library_prep_pipeline, state: 'started'
+        @batch = create(:batch, pipeline: @library_prep_pipeline, state: 'started')
         @batch.requests << @library_prep_pipeline.request_types.last.create!(state: 'started')
 
         # NO idea why descriptors are added twice here, or why the descriptors
         # implementation appears to be so complicated. I've converted this from
         # mocks to use factories instead, I'm keeping the duplicate tasks
         # until I can work out why they were added.
-        @event1 = create :lab_event, description: 'Complete', batch: @batch
+        @event1 = create(:lab_event, description: 'Complete', batch: @batch)
         @event1.add_new_descriptor 'task_id', @task1.id.to_s
         @event1.add_new_descriptor 'task_id', @task1.id.to_s
 
-        @event2 = create :lab_event, description: 'Complete', batch: @batch
+        @event2 = create(:lab_event, description: 'Complete', batch: @batch)
         @event2.add_new_descriptor 'task_id', @task2.id.to_s
         @event2.add_new_descriptor 'task_id', @task2.id.to_s
 
@@ -625,7 +625,8 @@ class BatchTest < ActiveSupport::TestCase
 
   context 'completing a batch' do
     setup do
-      @batch, @user = create(:batch), create(:user)
+      @batch = create(:batch)
+      @user = create(:user)
       @batch.start!(@user)
     end
 
@@ -639,11 +640,11 @@ class BatchTest < ActiveSupport::TestCase
       # JG: The QC state machine on batch is near non-existent, and all events
       # just push the batch into the next state. Here we advance the qc_state
       # to try and model what appears to be the intended behaviour.
-      @pipeline = create :sequencing_pipeline
-      @batch = create :batch, pipeline: @pipeline
+      @pipeline = create(:sequencing_pipeline)
+      @batch = create(:batch, pipeline: @pipeline)
       @batch.update!(qc_state: 'qc_manual_in_progress')
       @requests =
-        create_list :sequencing_request_with_assets, 2, state: 'started', request_type: @pipeline.request_types.first
+        create_list(:sequencing_request_with_assets, 2, state: 'started', request_type: @pipeline.request_types.first)
       @batch.requests = @requests
     end
 
@@ -684,14 +685,14 @@ class BatchTest < ActiveSupport::TestCase
 
   context 'ready? all requests before creating batch' do
     setup do
-      @library_tube = create :library_tube, sample_count: 1
+      @library_tube = create(:library_tube, sample_count: 1)
       @library_creation_request =
         create(:library_creation_request_for_testing_sequencing_requests, target_asset: @library_tube)
-      @pipeline = create :sequencing_pipeline
+      @pipeline = create(:sequencing_pipeline)
 
       @library_tube.create_scanned_into_lab_event!(content: '2018-01-01')
 
-      @batch = build :batch, pipeline: @pipeline
+      @batch = build(:batch, pipeline: @pipeline)
       @request_type = @batch.pipeline.request_types.first
       @sequencing_request = create(:sequencing_request, asset: @library_tube, request_type: @request_type)
       @batch.requests << @sequencing_request

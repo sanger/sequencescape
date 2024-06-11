@@ -15,37 +15,37 @@ describe AssetsHelper do
     subject { helper.current_user_can_request_additional_sequencing_on?(asset) }
 
     context 'an admin user' do
-      let(:user) { create :admin }
+      let(:user) { create(:admin) }
 
       context 'with a SampleTube' do
-        let(:asset) { create :sample_tube }
+        let(:asset) { create(:sample_tube) }
 
         it { is_expected.to be false }
       end
 
       context 'with a LibraryTube' do
-        let(:asset) { create :library_tube }
+        let(:asset) { create(:library_tube) }
 
         it { is_expected.to be true }
       end
 
       context 'with a MultiplexedTube' do
-        let(:asset) { create :multiplexed_library_tube }
+        let(:asset) { create(:multiplexed_library_tube) }
 
         it { is_expected.to be true }
       end
     end
 
     context 'a manager' do
-      let(:user) { create :manager }
-      let(:asset) { create :library_tube }
+      let(:user) { create(:manager) }
+      let(:asset) { create(:library_tube) }
 
       it { is_expected.to be true }
     end
 
     context 'a regular user' do
-      let(:user) { create :user }
-      let(:asset) { create :library_tube }
+      let(:user) { create(:user) }
+      let(:asset) { create(:library_tube) }
 
       it { is_expected.to be false }
     end
@@ -55,30 +55,30 @@ describe AssetsHelper do
     subject { helper.current_user_can_request_additional_library_on?(asset) }
 
     context 'an admin user' do
-      let(:user) { create :admin }
+      let(:user) { create(:admin) }
 
       context 'with a SampleTube' do
-        let(:asset) { create :sample_tube }
+        let(:asset) { create(:sample_tube) }
 
         it { is_expected.to be true }
       end
 
       context 'with a LibraryTube' do
-        let(:asset) { create :library_tube }
+        let(:asset) { create(:library_tube) }
 
         it { is_expected.to be false }
       end
 
       context 'with a MultiplexedTube' do
-        let(:asset) { create :multiplexed_library_tube }
+        let(:asset) { create(:multiplexed_library_tube) }
 
         it { is_expected.to be false }
       end
     end
 
     context 'with a manager' do
-      let(:user) { create :manager }
-      let(:asset) { create :sample_tube }
+      let(:user) { create(:manager) }
+      let(:asset) { create(:sample_tube) }
 
       # NOTE: This behaviour changes with the permissions update to be consistent
       # with sequencing.
@@ -87,8 +87,8 @@ describe AssetsHelper do
     end
 
     context 'with a regular user' do
-      let(:user) { create :user }
-      let(:asset) { create :sample_tube }
+      let(:user) { create(:user) }
+      let(:asset) { create(:sample_tube) }
 
       it { is_expected.to be false }
     end

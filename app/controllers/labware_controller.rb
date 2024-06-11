@@ -2,7 +2,7 @@
 
 # Handles viewing {Labware} information
 # @see Labware
-class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLength
+class LabwareController < ApplicationController
   include RetentionInstructionHelper
   before_action :discover_asset, only: %i[show edit update summary print_assets print history retention_instruction]
 
@@ -54,7 +54,7 @@ class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
   end
 
-  def update # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def update # rubocop:todo Metrics/AbcSize
     respond_to do |format|
       params_hash = params.to_unsafe_h
       if @asset.update(labware_params.merge(params_hash.fetch(:lane, {})))
@@ -122,7 +122,7 @@ class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLeng
     @asset = Plate.find(params[:id])
   end
 
-  def lookup # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def lookup # rubocop:todo Metrics/AbcSize
     return unless params[:asset] && params[:asset][:barcode]
 
     @assets = Labware.with_barcode(params[:asset][:barcode]).limit(50).page(params[:page])
@@ -143,7 +143,8 @@ class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
   end
 
-  def find_by_barcode; end
+  def find_by_barcode
+  end
 
   def lab_view
     barcode = params.fetch(:barcode, '').strip

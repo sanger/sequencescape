@@ -48,7 +48,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
           pp.save!
         end
 
-      @task = build :cherrypick_task
+      @task = build(:cherrypick_task)
 
       @robot = mock('robot')
       @robot.stubs(:max_beds).returns(2)

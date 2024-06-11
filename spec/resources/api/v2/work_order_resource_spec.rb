@@ -7,7 +7,7 @@ RSpec.describe Api::V2::WorkOrderResource, type: :resource do
   shared_examples_for 'a work order resource' do
     subject { described_class.new(work_order, {}) }
 
-    let(:work_order) { create(:work_order, requests: requests).reload }
+    let(:work_order) { create(:work_order, requests:).reload }
 
     it { is_expected.to have_attribute :order_type }
     it { is_expected.to have_attribute :state }

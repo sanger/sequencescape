@@ -25,9 +25,9 @@ describe 'CustomMetadatumCollections API', with: :api_v2 do
   end
 
   context 'with a custom_metadatum_collection' do
-    let(:resource_model) { create :custom_metadatum_collection_with_metadata }
-    let(:user) { create :user }
-    let(:asset) { create :asset }
+    let(:resource_model) { create(:custom_metadatum_collection_with_metadata) }
+    let(:user) { create(:user) }
+    let(:asset) { create(:asset) }
 
     describe '#get' do
       it 'sends an individual custom_metadatum_collection' do

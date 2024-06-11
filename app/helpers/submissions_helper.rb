@@ -29,7 +29,7 @@ module SubmissionsHelper # rubocop:todo Metrics/ModuleLength
     end
   end
 
-  def studies_select(form, studies) # rubocop:todo Metrics/MethodLength
+  def studies_select(form, studies)
     prompt =
       case studies.count
       when 0
@@ -43,13 +43,13 @@ module SubmissionsHelper # rubocop:todo Metrics/ModuleLength
       studies,
       :id,
       :name,
-      { prompt: prompt },
+      { prompt: },
       disabled: true,
       class: 'study_id custom-select'
     )
   end
 
-  def projects_select(form, projects) # rubocop:todo Metrics/MethodLength
+  def projects_select(form, projects)
     prompt =
       case projects.count
       when 0
@@ -62,13 +62,13 @@ module SubmissionsHelper # rubocop:todo Metrics/ModuleLength
       projects,
       :name,
       :name,
-      { prompt: prompt },
+      { prompt: },
       disabled: true,
       class: 'submission_project_name custom-select'
     )
   end
 
-  def asset_group_select(asset_groups) # rubocop:todo Metrics/MethodLength
+  def asset_group_select(asset_groups)
     prompt =
       case asset_groups.size
       when 0
@@ -83,7 +83,7 @@ module SubmissionsHelper # rubocop:todo Metrics/ModuleLength
       asset_groups,
       :id,
       :name,
-      { prompt: prompt },
+      { prompt: },
       class: 'submission_asset_group_id required form-control',
       disabled: asset_groups.empty?
     )

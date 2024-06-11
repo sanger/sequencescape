@@ -40,9 +40,9 @@ module Presenters
       @options += [{ label: text, url: action_params }]
     end
 
-    def each_option(&block)
+    def each_option(&)
       build_submenu if @options.nil?
-      @options.each(&block)
+      @options.each(&)
     end
 
     private

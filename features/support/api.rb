@@ -46,7 +46,7 @@ module Core::Endpoint::BasicHandler::EndpointLookup
     ",
       # rubocop:enable Layout/LineLength
       __FILE__,
-      line
+      __LINE__ - 10
     )
   end
 

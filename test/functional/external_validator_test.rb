@@ -5,7 +5,7 @@ require 'test_helper'
 class ExternalValidatorTest < ActiveSupport::TestCase
   context 'A submission with a validated request type' do
     setup do
-      @validated_request_type = FactoryBot.create :validated_request_type
+      @validated_request_type = FactoryBot.create(:validated_request_type)
       @assets = [create(:sample_tube)]
 
       # We don't want to trigger validation just yet!

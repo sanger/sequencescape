@@ -6,14 +6,14 @@ require 'record_loader/request_type_loader'
 # This file was initially generated via `rails g record_loader`
 RSpec.describe RecordLoader::RequestTypeLoader, :loader, type: :model do
   def a_new_record_loader(files = selected_files)
-    described_class.new(directory: test_directory, files: files)
+    described_class.new(directory: test_directory, files:)
   end
 
   subject(:record_loader) { a_new_record_loader }
 
   before do
-    create :plate_purpose, name: 'Example purpose'
-    create :library_type, name: 'Standard'
+    create(:plate_purpose, name: 'Example purpose')
+    create(:library_type, name: 'Standard')
   end
 
   # Tests use a separate directory to avoid coupling your specs to the data
@@ -69,7 +69,7 @@ RSpec.describe RecordLoader::RequestTypeLoader, :loader, type: :model do
     let(:selected_files) { 'request_types_updated' }
 
     before do
-      create :plate_purpose, name: 'Example purpose 2'
+      create(:plate_purpose, name: 'Example purpose 2')
       a_new_record_loader('request_types_basic').create!
       record_loader.create!
     end

@@ -18,7 +18,7 @@ end
 RSpec.describe Accession::Sample, :accession, type: :model do
   let(:tag_list) { build(:standard_accession_tag_list) }
 
-  before { @country = create :insdc_country, name: 'Australia' }
+  before { @country = create(:insdc_country, name: 'Australia') }
 
   it 'is not sent for accessioning if the sample has already been accessioned' do
     sample =

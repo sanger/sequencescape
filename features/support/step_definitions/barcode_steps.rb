@@ -31,7 +31,7 @@ end
 
 Given /^the "([^"]+)" barcode printer "([^"]+)" exists$/ do |type_name, name|
   printer_type = BarcodePrinterType.find_by!(name: type_name)
-  BarcodePrinter.create!(name: name, barcode_printer_type: printer_type, active: true)
+  BarcodePrinter.create!(name:, barcode_printer_type: printer_type, active: true)
 end
 
 Given '{asset_id} has a barcode of {string}' do |barcoded, barcode|

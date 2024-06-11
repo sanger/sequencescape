@@ -9,7 +9,7 @@ Given /^the following custom texts are defined$/ do |table|
 end
 
 Given /^there is a CustomText with identifier: "([^"]*)", differential: "([^"]*)"$/ do |identifier, differential|
-  @current_custom_text = CustomText.find_by(identifier: identifier, differential: differential)
+  @current_custom_text = CustomText.find_by(identifier:, differential:)
 
   assert_not_nil @current_custom_text
 end

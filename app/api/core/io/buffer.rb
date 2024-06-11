@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 class Core::Io::Buffer
   def initialize(stream)
-    @stream, @buffer = stream, StringIO.new
+    @stream = stream
+    @buffer = StringIO.new
     return unless block_given?
 
     yield(self)

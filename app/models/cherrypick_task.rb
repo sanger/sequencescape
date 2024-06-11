@@ -10,7 +10,7 @@
 #
 # @see PlateTemplateTask for previous step
 # @see Tasks::CherrypickHandler for behaviour included in the {WorkflowsController}
-class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
+class CherrypickTask < Task
   EMPTY_WELL = [0, 'Empty', ''].freeze
   TEMPLATE_EMPTY_WELL = [0, '---', ''].freeze
   DEFAULT_WELLS_TO_LEAVE_FREE = Rails.application.config.plate_default_control_wells_to_leave_free
@@ -23,10 +23,10 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
   #
   def new_control_locator(batch_id, total_wells, num_control_wells, wells_to_leave_free: DEFAULT_WELLS_TO_LEAVE_FREE)
     CherrypickTask::ControlLocator.new(
-      batch_id: batch_id,
-      total_wells: total_wells,
-      num_control_wells: num_control_wells,
-      wells_to_leave_free: wells_to_leave_free
+      batch_id:,
+      total_wells:,
+      num_control_wells:,
+      wells_to_leave_free:
     )
   end
 
@@ -155,7 +155,6 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
   end
 
   # returns array [ [ request id, source plate barcode, source coordinate ] ]
-  # rubocop:todo Metrics/MethodLength
   def build_plate_wells_from_requests(requests, workflow_controller = nil) # rubocop:todo Metrics/AbcSize
     loaded_requests = Request.where(requests: { id: requests }).includes(asset: [{ plate: :barcodes }, :map])
 
@@ -184,5 +183,4 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
 
     sorted_requests.map { |request| [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
   end
-  # rubocop:enable Metrics/MethodLength
-end
+  end

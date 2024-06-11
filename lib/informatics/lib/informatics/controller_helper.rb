@@ -27,7 +27,7 @@ module ControllerHelper
     when :legend_option
       @legend = add_link(@legend, l, o, options)
     when :tab
-      @tabs = Informatics::View::Tabs::List.new unless @tabs
+      @tabs ||= Informatics::View::Tabs::List.new
       @tabs.add_item text: l.first_key, link: l.first_value
     end
   end
@@ -40,7 +40,7 @@ module ControllerHelper
 
   private
 
-  def add_link(menu, l, o, options) # rubocop:todo Metrics/MethodLength
+  def add_link(menu, l, o, options)
     menu ||= Informatics::View::Menu::List.new
     if options.nil?
       menu.add_item text: l.first_key, link: l.first_value

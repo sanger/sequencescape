@@ -51,7 +51,7 @@ module Api
       # @param name [String] the name of the asset shape
       # @return [void]
       def asset_shape=(name)
-        @model.asset_shape = (AssetShape.find_by!(name: name) if name.present?) || AssetShape.default
+        @model.asset_shape = (AssetShape.find_by!(name:) if name.present?) || AssetShape.default
       end
 
       # Returns the name of the asset shape of the plate purpose.

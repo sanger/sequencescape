@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Heron::Factories::PlateFromRack, :heron, type: :model do
   let(:purpose) { create(:plate_purpose, target_type: 'Plate', name: 'Stock Plate', size: '96') }
-  let(:rack) { create :tube_rack }
+  let(:rack) { create(:tube_rack) }
   let(:plate_factory) { described_class.new(tube_rack: rack, plate_purpose: purpose) }
   let(:tubes) { create_list(:sample_tube, 2) }
 

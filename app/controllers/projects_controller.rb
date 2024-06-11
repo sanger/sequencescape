@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 require 'event_factory'
-class ProjectsController < ApplicationController # rubocop:todo Metrics/ClassLength
+class ProjectsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
@@ -131,16 +131,16 @@ class ProjectsController < ApplicationController # rubocop:todo Metrics/ClassLen
         @user.grant_role(params[:role][:authorizable_type].to_s, @project)
         @roles = @project.roles
         flash[:notice] = 'Role added' # rubocop:disable Rails/ActionControllerFlashBeforeRender
-        render partial: 'roles', status: 200
+        render partial: 'roles', status: :ok
       else
         @roles = @project.roles
         flash[:error] = 'A problem occurred while adding the role' # rubocop:disable Rails/ActionControllerFlashBeforeRender
-        render partial: 'roles', status: 500
+        render partial: 'roles', status: :internal_server_error
       end
     else
       @roles = @project.roles
       flash[:error] = 'A problem occurred while adding the role'
-      render partial: 'roles', status: 401
+      render partial: 'roles', status: :unauthorized
     end
   end
 
@@ -157,16 +157,16 @@ class ProjectsController < ApplicationController # rubocop:todo Metrics/ClassLen
         @user.remove_role(params[:role][:authorizable_type].to_s, @project)
         @roles = @project.roles
         flash[:error] = 'Role was removed' # rubocop:disable Rails/ActionControllerFlashBeforeRender
-        render partial: 'roles', status: 200
+        render partial: 'roles', status: :ok
       else
         @roles = @project.roles
         flash[:error] = 'A problem occurred while removing the role' # rubocop:disable Rails/ActionControllerFlashBeforeRender
-        render partial: 'roles', status: 500
+        render partial: 'roles', status: :internal_server_error
       end
     else
       @roles = @project.roles
       flash[:error] = 'A problem occurred while removing the role'
-      render partial: 'roles', status: 401
+      render partial: 'roles', status: :unauthorized
     end
   end
 

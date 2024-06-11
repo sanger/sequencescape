@@ -95,8 +95,7 @@ class Study
       errors.add(:study_type, 'is not specified') if study_type.name == 'Not specified'
     end
 
-    # rubocop:todo Metrics/MethodLength
-    def valid_policy_url? # rubocop:todo Metrics/AbcSize
+        def valid_policy_url? # rubocop:todo Metrics/AbcSize
       # Rails 2.3 has no inbuilt URL validation, but rather than rolling our own, we'll
       # use the inbuilt ruby URI parser, a bit like here:
       # http://www.simonecarletti.com/blog/2009/04/validating-the-format-of-an-url-with-rails/
@@ -116,9 +115,7 @@ class Study
       end
     end
 
-    # rubocop:enable Metrics/MethodLength
-
-    with_options(on: :accession, if: :enforce_data_release) do
+        with_options(on: :accession, if: :enforce_data_release) do
       validates :data_release_strategy, presence: true
       validates :data_release_timing, presence: true
       validates :study_description, presence: true

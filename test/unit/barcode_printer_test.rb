@@ -6,10 +6,10 @@ class BarcodePrinterTest < ActiveSupport::TestCase
   attr_reader :barcode_printer, :printer_for_384_wells_plate
 
   def setup
-    @barcode_printer = create :barcode_printer, name: 'test_printer'
+    @barcode_printer = create(:barcode_printer, name: 'test_printer')
     printer384 =
       BarcodePrinterType.find_by(name: '384 Well Plate') || create(:barcode_printer_type, name: '384 Well Plate')
-    @printer_for_384_wells_plate = create :barcode_printer, barcode_printer_type: printer384
+    @printer_for_384_wells_plate = create(:barcode_printer, barcode_printer_type: printer384)
   end
 
   test 'should know if it can print on plates with 384 wells' do
@@ -36,7 +36,7 @@ class BarcodePrinterTest < ActiveSupport::TestCase
         accept: 'application/vnd.api+json'
       )
       .returns(201)
-    create :barcode_printer, name: 'test_printer'
+    create(:barcode_printer, name: 'test_printer')
     configatron.register_printers_automatically = false
   end
 end

@@ -6,7 +6,7 @@ require './app/resources/api/v2/transfer_request_resource'
 RSpec.describe Api::V2::TransferRequestResource, type: :resource do
   subject(:transfer_request) { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { build_stubbed :transfer_request }
+  let(:resource_model) { build_stubbed(:transfer_request) }
 
   it 'exposes attributes', :aggregate_failures do
     # Test attributes

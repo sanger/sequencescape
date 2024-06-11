@@ -3,8 +3,8 @@
 require 'rails_helper'
 RSpec.describe RackedTube do
   describe '#create' do
-    let!(:tube_rack) { create :tube_rack }
-    let!(:tube) { create :tube }
+    let!(:tube_rack) { create(:tube_rack) }
+    let!(:tube) { create(:tube) }
 
     it 'allows a tube rack to be accessed from a tube' do
       racked_tube = described_class.create(tube_rack_id: tube_rack.id, tube_id: tube.id)
@@ -24,8 +24,8 @@ RSpec.describe RackedTube do
   end
 
   describe '#update' do
-    let!(:tube_rack) { create :tube_rack }
-    let!(:tube) { create :tube }
+    let!(:tube_rack) { create(:tube_rack) }
+    let!(:tube) { create(:tube) }
     let!(:racked_tube) { described_class.create(tube_rack_id: tube_rack.id, tube_id: tube.id) }
 
     it 'can be updated' do
@@ -36,8 +36,8 @@ RSpec.describe RackedTube do
   end
 
   describe '#destroy' do
-    let!(:tube_rack) { create :tube_rack }
-    let!(:tube) { create :tube }
+    let!(:tube_rack) { create(:tube_rack) }
+    let!(:tube) { create(:tube) }
     let!(:racked_tube) { described_class.create(tube_rack_id: tube_rack.id, tube_id: tube.id) }
 
     it 'can be destroyed without affecting the tube or tube rack' do
@@ -49,14 +49,14 @@ RSpec.describe RackedTube do
   end
 
   describe 'scope:: in_column_major_order' do
-    let(:tube_rack) { create :tube_rack }
+    let(:tube_rack) { create(:tube_rack) }
     let(:num_tubes) { locations.length }
     let(:locations) { %w[A01 H12 D04] }
-    let(:barcodes) { Array.new(num_tubes) { create :fluidx } }
+    let(:barcodes) { Array.new(num_tubes) { create(:fluidx) } }
 
     before do
       Array.new(num_tubes) do |i|
-        create(:sample_tube, :in_a_rack, tube_rack: tube_rack, coordinate: locations[i], barcodes: [barcodes[i]])
+        create(:sample_tube, :in_a_rack, tube_rack:, coordinate: locations[i], barcodes: [barcodes[i]])
       end
     end
 

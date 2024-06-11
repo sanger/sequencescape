@@ -60,8 +60,8 @@ module Parsers
       cell.split(':')[1]
     end
 
-    def each_well_and_parameters(&block)
-      qc_data.each(&block)
+    def each_well_and_parameters(&)
+      qc_data.each(&)
     end
 
     def qc_metrics_hash(row)

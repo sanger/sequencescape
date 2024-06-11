@@ -27,7 +27,7 @@ FactoryBot.define do
     end
 
     factory :library_aliquot do
-      library { build :library_tube }
+      library { build(:library_tube) }
       library_type { 'Standard' }
       bait_library
       primer_panel
@@ -41,7 +41,7 @@ FactoryBot.define do
       end
 
       sample { PhiX.sample }
-      library { build :library_tube }
+      library { build(:library_tube) }
       tag { PhiX.find_tag(tag_option, :i7_oligo) }
       tag2 { PhiX.find_tag(tag_option, :i5_oligo) }
       study { nil }

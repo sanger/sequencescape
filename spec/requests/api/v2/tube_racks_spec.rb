@@ -25,7 +25,7 @@ describe 'TubeRacks API', with: :api_v2 do
   end
 
   context 'with a TubeRack' do
-    let(:resource_model) { create :tube_rack }
+    let(:resource_model) { create(:tube_rack) }
 
     let(:payload) do
       {

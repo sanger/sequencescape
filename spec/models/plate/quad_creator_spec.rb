@@ -7,9 +7,9 @@ require 'rails_helper'
 RSpec.describe Plate::QuadCreator do
   subject(:quad_creator) { described_class.new(creation_options) }
 
-  let(:target_purpose) { create :plate_purpose, size: 384 }
-  let(:user) { create :user }
-  let(:creation_options) { { parent_barcodes: parent_barcodes_hash, target_purpose: target_purpose, user: user } }
+  let(:target_purpose) { create(:plate_purpose, size: 384) }
+  let(:user) { create(:user) }
+  let(:creation_options) { { parent_barcodes: parent_barcodes_hash, target_purpose:, user: } }
 
   before { allow(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode)) }
 
@@ -31,7 +31,7 @@ RSpec.describe Plate::QuadCreator do
   end
 
   context 'when loading from barcodes' do
-    let(:creation_options) { { parent_barcodes: parent_barcodes_hash, target_purpose: target_purpose, user: user } }
+    let(:creation_options) { { parent_barcodes: parent_barcodes_hash, target_purpose:, user: } }
 
     context 'when a barcode is invalid' do
       let(:parent_barcodes_hash) { { 'quad_1' => 'INVALID' } }
@@ -45,7 +45,7 @@ RSpec.describe Plate::QuadCreator do
     end
 
     context 'when a parent is not a plate or rack' do
-      let(:tube) { create :tube }
+      let(:tube) { create(:tube) }
 
       # this should pass in the tube, not the barcode
       let(:parent_barcodes_hash) { { 'quad_1' => tube.machine_barcode } }
@@ -61,7 +61,7 @@ RSpec.describe Plate::QuadCreator do
     end
 
     context 'when a parent is the wrong size' do
-      let(:plate) { create :plate, size: 384 }
+      let(:plate) { create(:plate, size: 384) }
 
       # this should pass in the plate, not the barcode
       let(:parent_barcodes_hash) { { 'quad_1' => plate.machine_barcode } }
@@ -83,7 +83,7 @@ RSpec.describe Plate::QuadCreator do
       let(:number_of_parents) { 4 }
 
       # 2 wells in each, A1 & H12
-      let(:parents) { create_list :plate_with_untagged_wells, number_of_parents, occupied_well_index: occupied_wells }
+      let(:parents) { create_list(:plate_with_untagged_wells, number_of_parents, occupied_well_index: occupied_wells) }
       let(:parent_barcodes_hash) do
         {
           'quad_1' => parents[0].machine_barcode,
@@ -101,11 +101,11 @@ RSpec.describe Plate::QuadCreator do
         context 'when complete' do
           before { quad_creator.save }
 
-          it 'will create a new plate of the selected purpose' do
+          it 'creates a new plate of the selected purpose' do
             expect(quad_creator.target_plate.purpose).to eq target_purpose
           end
 
-          it 'will transfer the material from the source plates' do
+          it 'transfers the material from the source plates' do
             well_hash = quad_creator.target_plate.wells.index_by(&:map_description)
             expect(well_hash['A1'].samples).to eq(quad_1_wells['A1'].samples)
             expect(well_hash['B1'].samples).to eq(quad_2_wells['A1'].samples)
@@ -117,7 +117,7 @@ RSpec.describe Plate::QuadCreator do
             expect(well_hash['P24'].samples).to eq(quad_4_wells['H12'].samples)
           end
 
-          it 'will set each parent as a parent plate of the target' do
+          it 'sets each parent as a parent plate of the target' do
             parents.each { |parent| expect(quad_creator.target_plate.parents).to include(parent) }
           end
         end
@@ -144,13 +144,13 @@ RSpec.describe Plate::QuadCreator do
     end
 
     context 'with 1 parent' do
-      let(:parents) { create_list :plate_with_untagged_wells, 1, occupied_well_index: [0, 95] } # 2 wells, A1 & H12
+      let(:parents) { create_list(:plate_with_untagged_wells, 1, occupied_well_index: [0, 95]) } # 2 wells, A1 & H12
       let(:parent_barcodes_hash) { { 'quad_3' => parents[0].machine_barcode } }
       let(:quad_3_wells) { parents[0].wells.index_by(&:map_description) }
 
       before { quad_creator.save }
 
-      it 'will transfer the material from the source plates' do
+      it 'transfers the material from the source plates' do
         well_hash = quad_creator.target_plate.wells.index_by(&:map_description)
         expect(well_hash['A2'].samples).to eq(quad_3_wells['A1'].samples)
         expect(well_hash['O24'].samples).to eq(quad_3_wells['H12'].samples)
@@ -171,7 +171,7 @@ RSpec.describe Plate::QuadCreator do
 
   context 'with parent tube racks' do
     context 'with 4 parents' do
-      let(:parents) { create_list :tube_rack_with_tubes, 4 }
+      let(:parents) { create_list(:tube_rack_with_tubes, 4) }
       let(:parent_barcodes_hash) do
         {
           'quad_1' => parents[0].machine_barcode,
@@ -188,11 +188,11 @@ RSpec.describe Plate::QuadCreator do
       describe '#save' do
         before { quad_creator.save }
 
-        it 'will create a new plate of the selected purpose' do
+        it 'creates a new plate of the selected purpose' do
           expect(quad_creator.target_plate.purpose).to eq target_purpose
         end
 
-        it 'will transfer the material from the source racks' do
+        it 'transfers the material from the source racks' do
           well_hash = quad_creator.target_plate.wells.index_by(&:map_description)
           expect(well_hash['A1'].samples).to eq(quad_1_tubes['A1'].samples)
           expect(well_hash['B1'].samples).to eq(quad_2_tubes['A1'].samples)
@@ -204,7 +204,7 @@ RSpec.describe Plate::QuadCreator do
           expect(well_hash['P24'].samples).to eq(quad_4_tubes['H12'].samples)
         end
 
-        it 'will set each parent as a parent rack of the target' do
+        it 'sets each parent as a parent rack of the target' do
           parents.each { |parent| expect(quad_creator.target_plate.parents).to include(parent) }
         end
       end
@@ -213,8 +213,8 @@ RSpec.describe Plate::QuadCreator do
 
   context 'with a mixture of parent plates and racks' do
     # 2 wells in each, A1 & H12
-    let(:parents_plates) { create_list :plate_with_untagged_wells, 2, occupied_well_index: [0, 95] }
-    let(:parents_racks) { create_list :tube_rack_with_tubes, 2 }
+    let(:parents_plates) { create_list(:plate_with_untagged_wells, 2, occupied_well_index: [0, 95]) }
+    let(:parents_racks) { create_list(:tube_rack_with_tubes, 2) }
 
     let(:parent_barcodes_hash) do
       {
@@ -233,11 +233,11 @@ RSpec.describe Plate::QuadCreator do
     describe '#save' do
       before { quad_creator.save }
 
-      it 'will create a new plate of the selected purpose' do
+      it 'creates a new plate of the selected purpose' do
         expect(quad_creator.target_plate.purpose).to eq target_purpose
       end
 
-      it 'will transfer the material from the sources' do
+      it 'transfers the material from the sources' do
         well_hash = quad_creator.target_plate.wells.index_by(&:map_description)
         expect(well_hash['A1'].samples).to eq(quad_1_wells['A1'].samples)
         expect(well_hash['B1'].samples).to eq(quad_2_wells['A1'].samples)
@@ -249,7 +249,7 @@ RSpec.describe Plate::QuadCreator do
         expect(well_hash['P24'].samples).to eq(quad_4_tubes['H12'].samples)
       end
 
-      it 'will set each parent as a parent rack or plate of the target' do
+      it 'sets each parent as a parent rack or plate of the target' do
         parents_plates
           .concat(parents_racks)
           .each { |parent| expect(quad_creator.target_plate.parents).to include(parent) }

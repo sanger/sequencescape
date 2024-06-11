@@ -2,7 +2,6 @@
 # Class to support creation of tag groups, tag layout templates and generation of the
 # mbrave.yml config needed by limber to be able to generate the mbrave UMI file at the
 # end of the bioscan process.
-# rubocop:disable Metrics/ClassLength
 class MbraveTagsCreator
   YAML_FILENAME = 'mbrave.yml'
   TAG_IDENTIFIER = 'Bioscan'
@@ -26,9 +25,9 @@ class MbraveTagsCreator
     @yaml_contents = {}
   end
 
-  def log_line(&block)
+  def log_line(&)
     # We want to enforce that logs go to STDOUT while printing the barcodes
-    self.class.log_line(&block)
+    self.class.log_line(&)
   end
 
   def self.log_line
@@ -129,7 +128,7 @@ class MbraveTagsCreator
 
   def _create_tag_group(tag_group_name, tags)
     raise "TagGroup #{tag_group_name} already exists" if TagGroup.find_by(name: tag_group_name)
-    TagGroup.create(name: tag_group_name, tags: tags)
+    TagGroup.create(name: tag_group_name, tags:)
   end
 
   def _add_to_yaml(_yaml_filename, tag_group_name, mbrave_tags, version, num_plate)
@@ -149,7 +148,7 @@ class MbraveTagsCreator
     end
 
     # rubocop:disable Metrics/AbcSize
-    def create_tag_plates(tag_layout_templates, user) # rubocop:todo Metrics/MethodLength
+    def create_tag_plates(tag_layout_templates, user)
       ActiveRecord::Base.transaction do
         lot_type = LotType.find_by!(name: 'Pre Stamped Tags - 384')
         tag_layout_templates.each_with_index do |tag_layout_template, _index|
@@ -157,13 +156,13 @@ class MbraveTagsCreator
             lot_type.lots.create!(
               lot_number: "PSD_#{Time.current.to_f}",
               template: tag_layout_template,
-              user: user,
+              user:,
               received_at: Time.current
             )
           text_code = text_code_for_tag_layout(tag_layout_template)
           plate_barcode = PlateBarcode.create_barcode_with_text(text_code) # barcode object
 
-          qcc = QcableCreator.create!(lot: lot, user: user, supplied_barcode: plate_barcode)
+          qcc = QcableCreator.create!(lot:, user:, supplied_barcode: plate_barcode)
           qcc.qcables.each_with_index do |qcable, _index|
             qcable.update!(state: 'available')
             log_line { "#{tag_layout_template.name}:" }
@@ -176,7 +175,7 @@ class MbraveTagsCreator
     # rubocop:enable Metrics/AbcSize
 
     def process_create_tag_plates(login, version)
-      user = User.find_by!(login: login)
+      user = User.find_by!(login:)
 
       tag_layout_templates =
         TagLayoutTemplate.select do |template|
@@ -190,10 +189,10 @@ class MbraveTagsCreator
       ActiveRecord::Base.transaction do
         mbrave_tags_creator =
           MbraveTagsCreator.new(
-            forward_filename: forward_filename,
-            reverse_filename: reverse_filename,
+            forward_filename:,
+            reverse_filename:,
             tag_identifier: MbraveTagsCreator::TAG_IDENTIFIER,
-            version: version,
+            version:,
             yaml_filename: MbraveTagsCreator::YAML_FILENAME
           )
 
@@ -206,4 +205,3 @@ class MbraveTagsCreator
   end
   extend StaticMethods
 end
-# rubocop:enable Metrics/ClassLength

@@ -11,7 +11,7 @@ module RecordLoader
     config_folder 'barcode_printer_types'
 
     def create_or_update!(name, options)
-      BarcodePrinterType.create_with(options).find_or_create_by!(name: name)
+      BarcodePrinterType.create_with(options).find_or_create_by!(name:)
     end
   end
 end

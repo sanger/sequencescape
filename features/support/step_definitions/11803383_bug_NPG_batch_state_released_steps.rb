@@ -11,8 +11,8 @@ Given /^sequencescape is setup for 11803383$/ do
                       request_type: pipeline.request_types.last,
                       state: 'started'
 
-  batch = FactoryBot.create :batch, state: 'started', qc_state: 'qc_manual', pipeline: pipeline
-  FactoryBot.create :batch_request, request: request, batch: batch, position: 1
+  batch = FactoryBot.create(:batch, state: 'started', qc_state: 'qc_manual', pipeline:)
+  FactoryBot.create :batch_request, request:, batch:, position: 1
 end
 
 When /^I (POST|PUT) following XML to pass QC state on the last asset:$/ do |action, xml|

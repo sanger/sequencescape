@@ -10,7 +10,7 @@ RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_e
     end
   end
 
-  let(:user) { create :user, login: 'test_user' }
+  let(:user) { create(:user, login: 'test_user') }
   let(:test_file_name) { 'test_file.xlsx' }
   let(:test_file) { Rack::Test::UploadedFile.new(Rails.root.join(test_file_name), '') }
   let!(:tag_group) { create(:tag_group) }
@@ -133,7 +133,7 @@ RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_e
   describe '#processor' do
     context '1dtube' do
       let!(:columns) { SampleManifestExcel.configuration.columns.tube_full.dup }
-      let!(:download) { build(:test_download_tubes, columns: columns) }
+      let!(:download) { build(:test_download_tubes, columns:) }
       let(:upload) { SampleManifestExcel::Upload::Base.new(file: test_file, column_list: columns, start_row: 9) }
 
       before { download.save(test_file_name) }
@@ -151,7 +151,7 @@ RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_e
     context 'library tube with tag sequences' do
       let!(:columns) { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
       let!(:download) do
-        build(:test_download_tubes, columns: columns, manifest_type: 'tube_library_with_tag_sequences')
+        build(:test_download_tubes, columns:, manifest_type: 'tube_library_with_tag_sequences')
       end
 
       before { download.save(test_file_name) }
@@ -311,7 +311,7 @@ RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_e
 
     context 'plate' do
       let!(:plate_columns) { SampleManifestExcel.configuration.columns.plate_full.dup }
-      let(:download) { build(:test_download_plates, columns: plate_columns, study: study) }
+      let(:download) { build(:test_download_plates, columns: plate_columns, study:) }
       let(:study) { create(:open_study, accession_number: 'acc') }
       let(:upload) { SampleManifestExcel::Upload::Base.new(file: test_file, column_list: plate_columns, start_row: 9) }
 

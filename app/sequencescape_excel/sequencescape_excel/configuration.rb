@@ -25,7 +25,7 @@ module SequencescapeExcel
     def load!
       return if folder.blank?
 
-      @files.each { |file| send("#{file}=", load_file(folder, file.to_s)) }
+      @files.each { |file| send(:"#{file}=", load_file(folder, file.to_s)) }
       @loaded = true
     end
 
@@ -62,7 +62,7 @@ module SequencescapeExcel
 
         initial_column_sets.each do |key, manifest_type|
           extract = all.extract(manifest_type.columns).freeze
-          instance_variable_set "@#{key}", extract
+          instance_variable_set :"@#{key}", extract
           class_eval { attr_reader key }
           column_sets[key] = extract
         end

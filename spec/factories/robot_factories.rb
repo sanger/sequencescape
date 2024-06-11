@@ -32,12 +32,12 @@ FactoryBot.define do
 
     factory :robot_with_verification_behaviour do
       transient { verification_behaviour_value { 'Tecan' } }
-      robot_properties { build_list :validation_property, 1, value: verification_behaviour_value }
+      robot_properties { build_list(:validation_property, 1, value: verification_behaviour_value) }
     end
 
     factory :robot_with_generation_behaviour do
       transient { generation_behaviour_value { 'Tecan' } }
-      robot_properties { build_list :generation_property, 1, value: generation_behaviour_value }
+      robot_properties { build_list(:generation_property, 1, value: generation_behaviour_value) }
     end
 
     factory :full_robot do

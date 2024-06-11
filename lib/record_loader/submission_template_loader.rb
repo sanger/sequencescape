@@ -13,7 +13,7 @@ module RecordLoader
       derived_options = generate_derived_options(options['related_records'])
       final_options = options.except('related_records').merge(derived_options)
 
-      SubmissionTemplate.create_with(final_options).find_or_create_by!(name: name)
+      SubmissionTemplate.create_with(final_options).find_or_create_by!(name:)
     end
 
     def generate_derived_options(related_records)
@@ -43,19 +43,19 @@ module RecordLoader
 
     def find_project(name)
       if Rails.env.production?
-        Project.find_by!(name: name)
+        Project.find_by!(name:)
       else
         # In development mode or UAT we don't care so much
-        Project.find_by(name: name) || UatActions::StaticRecords.project
+        Project.find_by(name:) || UatActions::StaticRecords.project
       end
     end
 
     def find_study(name)
       if Rails.env.production?
-        Study.find_by!(name: name)
+        Study.find_by!(name:)
       else
         # In development mode or UAT we don't care so much
-        Study.find_by(name: name) || UatActions::StaticRecords.study
+        Study.find_by(name:) || UatActions::StaticRecords.study
       end
     end
   end

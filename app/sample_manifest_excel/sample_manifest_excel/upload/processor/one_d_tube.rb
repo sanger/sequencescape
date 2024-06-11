@@ -17,7 +17,7 @@ module SampleManifestExcel
           errors.add(:base, "Retention instruction checks failed at row: #{retention_error_row.number}. #{err_msg}")
         end
 
-        # rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
+        # rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Metrics/AbcSize
         def non_matching_retention_instructions
           return nil, nil unless upload.respond_to?(:rows)
 
@@ -42,7 +42,7 @@ module SampleManifestExcel
           [nil, nil]
         end
 
-        # rubocop:enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
+        # rubocop:enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Metrics/AbcSize
         def check_row_retention_value(row, tube_barcode, tube_retentions)
           # if present the column is mandatory
           row_retention_value = row.value('retention_instruction')

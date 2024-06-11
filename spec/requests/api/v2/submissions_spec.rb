@@ -25,7 +25,7 @@ describe 'Submissions API', with: :api_v2 do
   end
 
   context 'with a submission' do
-    let(:resource_model) { create :submission }
+    let(:resource_model) { create(:submission) }
 
     it 'sends an individual submission without tags' do
       api_get "#{base_endpoint}/#{resource_model.id}?fields[submissions]"

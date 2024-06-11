@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:todo Metrics/ClassLength
 class LocationReport < ApplicationRecord
   # includes / extends
   extend DbFile::Uploader
@@ -50,9 +49,9 @@ class LocationReport < ApplicationRecord
 
   def check_any_select_field_present
     attr_list = %i[faculty_sponsor_ids study_id start_date end_date plate_purpose_ids barcodes]
-    if attr_list.all? { |attr| send(attr).blank? }
+    return unless attr_list.all? { |attr| send(attr).blank? }
       errors.add(:base, I18n.t('location_reports.errors.no_selection_fields_filled'))
-    end
+    
   end
 
   def check_both_dates_present_if_used
@@ -112,7 +111,7 @@ class LocationReport < ApplicationRecord
     Delayed::Job.enqueue LocationReportJob.new(id)
   end
 
-  def generate_report_rows # rubocop:todo Metrics/MethodLength
+  def generate_report_rows
     if plates_list.empty?
       yield([I18n.t('location_reports.errors.plate_list_empty')])
       return
@@ -177,12 +176,12 @@ class LocationReport < ApplicationRecord
 
   def search_for_plates_by_selection
     params = {
-      faculty_sponsor_ids: faculty_sponsor_ids,
-      study_id: study_id,
-      start_date: start_date,
-      end_date: end_date,
-      plate_purpose_ids: plate_purpose_ids,
-      barcodes: barcodes
+      faculty_sponsor_ids:,
+      study_id:,
+      start_date:,
+      end_date:,
+      plate_purpose_ids:,
+      barcodes:
     }
     Plate.search_for_plates(params)
   end
@@ -210,4 +209,3 @@ class LocationReport < ApplicationRecord
     curr_locn_children.each { |curr_locn| get_labwares_per_location(curr_locn.barcode) } if curr_locn_children.present?
   end
 end
-# rubocop:enable Metrics/ClassLength

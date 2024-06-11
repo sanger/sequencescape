@@ -14,11 +14,11 @@ describe 'track SampleManifest updates', :sample_manifest do
     end
   end
 
-  let(:user) { create :user, login: 'john' }
-  let(:new_user) { create :user, login: 'jane' }
-  let!(:printer) { create :barcode_printer }
-  let!(:supplier) { create :supplier }
-  let!(:study) { create :study }
+  let(:user) { create(:user, login: 'john') }
+  let(:new_user) { create(:user, login: 'jane') }
+  let!(:printer) { create(:barcode_printer) }
+  let!(:supplier) { create(:supplier) }
+  let!(:study) { create(:study) }
 
   before do
     travel_to(Time.zone.local(2010, 7, 12, 10, 25, 0))
@@ -33,7 +33,7 @@ describe 'track SampleManifest updates', :sample_manifest do
     expect(page).to have_content('Create manifest for plates')
 
     expect(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode, barcode: 'SQPD-1234567'))
-    sample_manifest = create :sample_manifest, study: study, supplier: supplier, user: user
+    sample_manifest = create(:sample_manifest, study:, supplier:, user:)
     sample_manifest.generate
 
     expect(BroadcastEvent.count).to eq broadcast_events_count + 1

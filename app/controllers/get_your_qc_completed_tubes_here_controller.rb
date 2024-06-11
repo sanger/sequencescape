@@ -2,10 +2,10 @@
 class GetYourQcCompletedTubesHereController < ApplicationController
   before_action :login_required
 
-  def new; end
+  def new
+  end
 
-  # rubocop:todo Metrics/MethodLength
-  def create # rubocop:todo Metrics/AbcSize
+    def create # rubocop:todo Metrics/AbcSize
     @generator =
       LibPoolNormTubeGenerator.new(params[:barcode], current_user, Study.find_by(name: 'Lib PCR-XP QC Completed Tubes'))
     if @generator.valid?
@@ -22,5 +22,4 @@ class GetYourQcCompletedTubesHereController < ApplicationController
       render :new
     end
   end
-  # rubocop:enable Metrics/MethodLength
-end
+  end

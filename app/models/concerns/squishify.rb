@@ -2,7 +2,7 @@
 # Extends ApplicationRecord and provides squishify configuration
 # to remove duplicated whitespace from strings
 module Squishify
-  def self.extended(base) # rubocop:todo Metrics/MethodLength
+  def self.extended(base)
     base.instance_eval do
       def squishify(*names)
         class_eval do

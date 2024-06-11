@@ -6,7 +6,7 @@ require './app/resources/api/v2/purpose_resource'
 RSpec.describe Api::V2::PurposeResource, type: :resource do
   subject { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { build_stubbed :purpose }
+  let(:resource_model) { build_stubbed(:purpose) }
 
   # Test attributes
   it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording

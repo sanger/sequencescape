@@ -20,8 +20,8 @@ class MessengerCreator < ApplicationRecord
       @base = base
     end
 
-    def each_target
-      @base.wells.map { |w| yield w }
+    def each_target(&)
+      @base.wells.map(&)
     end
   end
 
@@ -31,7 +31,7 @@ class MessengerCreator < ApplicationRecord
   validate :template_exists?
 
   def create!(base)
-    finder.new(base).each_target { |target| Messenger.create!(target: target, root: root, template: template) }
+    finder.new(base).each_target { |target| Messenger.create!(target:, root:, template:) }
   end
 
   private

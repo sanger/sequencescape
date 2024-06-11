@@ -11,7 +11,7 @@ class FluidigmFileTest < ActiveSupport::TestCase
 
   context 'A fluidigm file' do
     setup do
-      File.open("#{Rails.root}/test/data/fluidigm.csv") { |file| @fluidigm = FluidigmFile.new(file.read) }
+      File.open("#{Rails.root.join('test/data/fluidigm.csv')}") { |file| @fluidigm = FluidigmFile.new(file.read) }
 
       @well_maps = {
         'S06' => {

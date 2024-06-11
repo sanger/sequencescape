@@ -6,7 +6,7 @@ require './app/resources/api/v2/tube_resource'
 RSpec.describe Api::V2::TubeResource, type: :resource do
   subject(:resource) { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { build_stubbed :tube, barcode_number: 1 }
+  let(:resource_model) { build_stubbed(:tube, barcode_number: 1) }
 
   # Test attributes
   it 'exposes the expected data', :aggregate_failures do

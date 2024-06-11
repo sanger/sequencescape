@@ -16,7 +16,7 @@ module StudiesHelper
 
   public
 
-  def display_file_icon(document) # rubocop:todo Metrics/MethodLength
+  def display_file_icon(document)
     return icon('fas', 'exclamation-circle', class: 'text-danger') unless document
 
     case document.content_type

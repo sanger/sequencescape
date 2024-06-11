@@ -9,7 +9,7 @@ describe BatchesHelper do
     subject { subject { helper.each_action(batch) } }
 
     context 'with a pending batch' do
-      let(:batch) { build :batch, state: 'pending' }
+      let(:batch) { build(:batch, state: 'pending') }
       let(:fail_link) do
         [
           'Fail batch or requests',
@@ -25,7 +25,7 @@ describe BatchesHelper do
     end
 
     context 'with a release batch' do
-      let(:batch) { build_stubbed :batch, state: 'released' }
+      let(:batch) { build_stubbed(:batch, state: 'released') }
       let(:fail_link) { ['Fail batch or requests', { action: :fail, id: batch.id }, true, nil] }
 
       it 'yields an active fail link' do
@@ -35,10 +35,10 @@ describe BatchesHelper do
 
     context 'with potential tasks' do
       def stage_link(id)
-        { action: :stage, batch_id: nil, controller: :workflows, id: id, workflow_id: pipeline.workflow.id }
+        { action: :stage, batch_id: nil, controller: :workflows, id:, workflow_id: pipeline.workflow.id }
       end
       let(:pipeline) { create(:sequencing_pipeline, :with_workflow) }
-      let(:batch) { build :batch, state: 'pending', pipeline: pipeline }
+      let(:batch) { build(:batch, state: 'pending', pipeline:) }
 
       let(:task1) { ['Specify Dilution Volume', stage_link(0), true, nil] }
       let(:task2) { ['Add Spiked in control', stage_link(1), true, nil] }

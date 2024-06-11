@@ -85,7 +85,7 @@ module SequencescapeExcel
     end
 
     def sanitized_options
-      options.merge(formula1: formula1)
+      options.merge(formula1:)
     end
   end
 end

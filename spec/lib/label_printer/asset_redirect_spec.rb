@@ -49,18 +49,18 @@ context 'printing different asset types' do
 
   describe LabelPrinter::Label::AssetRedirect do
     context 'printing plates' do
-      let(:asset1) { create :child_plate }
-      let(:asset2) { create :child_plate }
-      let(:asset3) { create :child_plate }
+      let(:asset1) { create(:child_plate) }
+      let(:asset2) { create(:child_plate) }
+      let(:asset3) { create(:child_plate) }
 
       it_behaves_like 'a correct filter'
       it_behaves_like 'a correct plate renderer'
     end
 
     context 'printing tubes' do
-      let(:asset1) { create :empty_sample_tube }
-      let(:asset2) { create :empty_sample_tube }
-      let(:asset3) { create :empty_sample_tube }
+      let(:asset1) { create(:empty_sample_tube) }
+      let(:asset2) { create(:empty_sample_tube) }
+      let(:asset3) { create(:empty_sample_tube) }
 
       it_behaves_like 'a correct filter'
       it_behaves_like 'a correct tube renderer'

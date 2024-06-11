@@ -135,7 +135,7 @@ RSpec.describe Ability do
   end
 
   context 'when there is a basic user' do
-    let(:user) { build :user }
+    let(:user) { build(:user) }
 
     let(:granted_permissions) { basic_permissions }
 
@@ -143,7 +143,7 @@ RSpec.describe Ability do
   end
 
   context 'when the user has the role "administrator"' do
-    let(:user) { build :user, :with_role, role_name: 'administrator' }
+    let(:user) { build(:user, :with_role, role_name: 'administrator') }
 
     let(:granted_permissions) do
       merge_permissions(
@@ -204,7 +204,7 @@ RSpec.describe Ability do
   end
 
   context 'when the user has the role "data_access_coordinator"' do
-    let(:user) { build :user, :with_role, role_name: 'data_access_coordinator' }
+    let(:user) { build(:user, :with_role, role_name: 'data_access_coordinator') }
 
     let(:granted_permissions) { merge_permissions(basic_permissions, { Study => %i[change_ethically_approved] }) }
 
@@ -212,18 +212,18 @@ RSpec.describe Ability do
   end
 
   context 'when the user has the role "follower"' do
-    let(:user) { build :user, :with_role, role_name: 'follower' }
+    let(:user) { build(:user, :with_role, role_name: 'follower') }
 
     let(:granted_permissions) { basic_permissions }
 
     it_behaves_like 'it grants only granted_permissions'
 
     context 'with specific studies and projects' do
-      let(:user) { create :user, :with_role, role_name: 'follower' }
-      let(:authorized_project) { create :project, :with_follower, follower: user }
-      let(:unauthorized_project) { create :project }
-      let(:authorized_study) { create :study, :with_follower, follower: user }
-      let(:unauthorized_study) { create :study }
+      let(:user) { create(:user, :with_role, role_name: 'follower') }
+      let(:authorized_project) { create(:project, :with_follower, follower: user) }
+      let(:unauthorized_project) { create(:project) }
+      let(:authorized_study) { create(:study, :with_follower, follower: user) }
+      let(:unauthorized_study) { create(:study) }
 
       # Project
       it { is_expected.not_to be_able_to(:administer, authorized_project) }
@@ -264,7 +264,7 @@ RSpec.describe Ability do
   end
 
   context 'when the user has the role "lab"' do
-    let(:user) { build :user, :with_role, role_name: 'lab' }
+    let(:user) { build(:user, :with_role, role_name: 'lab') }
 
     let(:granted_permissions) { basic_permissions }
 
@@ -272,7 +272,7 @@ RSpec.describe Ability do
   end
 
   context 'when the user has the role "lab_manager"' do
-    let(:user) { build :user, :with_role, role_name: 'lab_manager' }
+    let(:user) { build(:user, :with_role, role_name: 'lab_manager') }
 
     let(:granted_permissions) do
       merge_permissions(
@@ -291,7 +291,7 @@ RSpec.describe Ability do
   end
 
   context 'when the user has the role "manager"' do
-    let(:user) { build :user, :with_role, role_name: 'manager' }
+    let(:user) { build(:user, :with_role, role_name: 'manager') }
 
     let(:granted_permissions) do
       merge_permissions(
@@ -315,11 +315,11 @@ RSpec.describe Ability do
     it_behaves_like 'it grants only granted_permissions'
 
     context 'with specific studies and projects' do
-      let(:user) { create :user, :with_role, role_name: 'manager' }
-      let(:authorized_project) { create :project, :with_manager, manager: user }
-      let(:unauthorized_project) { create :project }
-      let(:authorized_study) { create :study, :with_manager, manager: user }
-      let(:unauthorized_study) { create :study }
+      let(:user) { create(:user, :with_role, role_name: 'manager') }
+      let(:authorized_project) { create(:project, :with_manager, manager: user) }
+      let(:unauthorized_project) { create(:project) }
+      let(:authorized_study) { create(:study, :with_manager, manager: user) }
+      let(:unauthorized_study) { create(:study) }
 
       # Project
       it { is_expected.not_to be_able_to(:administer, authorized_project) }
@@ -360,20 +360,20 @@ RSpec.describe Ability do
   end
 
   context 'when the user has the role "owner"' do
-    let(:user) { build :user, :with_role, role_name: 'owner' }
+    let(:user) { build(:user, :with_role, role_name: 'owner') }
 
     let(:granted_permissions) { basic_permissions }
 
     it_behaves_like 'it grants only granted_permissions'
 
     context 'with specific studies and projects' do
-      let(:user) { create :user, :with_role, role_name: 'owner' }
-      let(:authorized_project) { create :project, :with_owner, owner: user }
-      let(:unauthorized_project) { create :project }
-      let(:authorized_sample) { create :sample, :with_owner, owner: user }
-      let(:unauthorized_sample) { create :sample }
-      let(:authorized_study) { create :study, :with_owner, owner: user }
-      let(:unauthorized_study) { create :study }
+      let(:user) { create(:user, :with_role, role_name: 'owner') }
+      let(:authorized_project) { create(:project, :with_owner, owner: user) }
+      let(:unauthorized_project) { create(:project) }
+      let(:authorized_sample) { create(:sample, :with_owner, owner: user) }
+      let(:unauthorized_sample) { create(:sample) }
+      let(:authorized_study) { create(:study, :with_owner, owner: user) }
+      let(:unauthorized_study) { create(:study) }
 
       # Project
       it { is_expected.not_to be_able_to(:administer, authorized_project) }
@@ -424,7 +424,7 @@ RSpec.describe Ability do
   end
 
   context 'when the user has the role "qa_manager"' do
-    let(:user) { build :user, :with_role, role_name: 'qa_manager' }
+    let(:user) { build(:user, :with_role, role_name: 'qa_manager') }
 
     let(:granted_permissions) { merge_permissions(basic_permissions, { QcDecision => %i[create new] }) }
 
@@ -432,7 +432,7 @@ RSpec.describe Ability do
   end
 
   context 'when the user has the role "slf_gel"' do
-    let(:user) { build :user, :with_role, role_name: 'slf_gel' }
+    let(:user) { build(:user, :with_role, role_name: 'slf_gel') }
 
     let(:granted_permissions) do
       merge_permissions(
@@ -445,7 +445,7 @@ RSpec.describe Ability do
   end
 
   context 'when the user has the role "slf_manager"' do
-    let(:user) { build :user, :with_role, role_name: 'slf_manager' }
+    let(:user) { build(:user, :with_role, role_name: 'slf_manager') }
 
     let(:granted_permissions) do
       merge_permissions(

@@ -4,13 +4,13 @@ module StudyReport::StudyDetails
   BATCH_SIZE = 1000
 
   # This will pull out all well ids from stock plates in the study
-  def each_stock_well_id_in_study_in_batches(&block) # rubocop:todo Metrics/MethodLength
+  def each_stock_well_id_in_study_in_batches(&)
     # Stock wells are determined by the requests leading from the stock plate
     handle_wells(
       :requests,
       { requests: { initial_study_id: id } },
       PlatePurpose.where(name: Study::STOCK_PLATE_PURPOSES).pluck(:id),
-      &block
+      &
     )
 
     # Aliquot 1,2,3,4 & 5 plates are determined by the aliquots in their wells
@@ -20,15 +20,15 @@ module StudyReport::StudyDetails
       PlatePurpose
         .where(name: ['Aliquot 1', 'Aliquot 2', 'Aliquot 3', 'Aliquot 4', 'Aliquot 1', 'Pre-Extracted Plate'])
         .pluck(:id),
-      &block
+      &
     )
   end
 
   # Similar to find in batches, we pluck out the relevant asset ids, then slice them into batches of the
   # batch size. This allows us to perform one query to grab all our ids.
-  def handle_wells(join, study_condition, plate_purpose_id, &block)
+  def handle_wells(join, study_condition, plate_purpose_id, &)
     asset_ids = well_report_ids(join, study_condition, plate_purpose_id)
-    asset_ids.each_slice(BATCH_SIZE, &block)
+    asset_ids.each_slice(BATCH_SIZE, &)
   end
   private :handle_wells
 
@@ -72,8 +72,7 @@ module StudyReport::StudyDetails
     ]
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def progress_report_on_all_assets # rubocop:todo Metrics/AbcSize
+    def progress_report_on_all_assets # rubocop:todo Metrics/AbcSize
     yield(progress_report_header)
 
     each_stock_well_id_in_study_in_batches do |asset_ids|
@@ -124,6 +123,5 @@ module StudyReport::StudyDetails
         end
     end
   end
-  # rubocop:enable Metrics/MethodLength
-end
+  end
 # rubocop:enable Metrics/ModuleLength

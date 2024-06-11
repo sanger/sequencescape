@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe FlowcellType do
-  subject { described_class.new(name: name) }
+  subject { described_class.new(name:) }
 
   context 'without a name' do
     let(:name) { '' }
@@ -18,7 +18,7 @@ RSpec.describe FlowcellType do
   end
 
   context 'with a shared name' do
-    before { create :flowcell_type, name: 'Shared' }
+    before { create(:flowcell_type, name: 'Shared') }
 
     let(:name) { 'Shared' }
 
@@ -26,7 +26,7 @@ RSpec.describe FlowcellType do
   end
 
   context 'with a shared name (case-insensitive)' do
-    before { create :flowcell_type, name: 'Shared' }
+    before { create(:flowcell_type, name: 'Shared') }
 
     let(:name) { 'shared' }
 

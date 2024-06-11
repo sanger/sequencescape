@@ -14,7 +14,7 @@ module Qcable::Statemachine
         state :qc_in_progress, enter: :on_qc
         state :exhausted, enter: :on_used
 
-        initial_state Proc.new { |qcable| qcable.default_state }
+        initial_state proc { |qcable| qcable.default_state }
 
         # State Machine events
         event :do_stamp do
@@ -47,7 +47,7 @@ module Qcable::Statemachine
       end
 
       # new version of combinable named_scope
-      scope :for_state, ->(state) { where(state: state) }
+      scope :for_state, ->(state) { where(state:) }
 
       scope :unavailable, -> { where(state: %i[created pending failed passed destroyed qc_in_progress exhausted]) }
     end
@@ -69,17 +69,23 @@ module Qcable::Statemachine
     asset_purpose.default_state.to_sym || :created
   end
 
-  def on_failed; end
+  def on_failed
+  end
 
-  def on_passed; end
+  def on_passed
+  end
 
-  def on_released; end
+  def on_released
+  end
 
-  def on_destroyed; end
+  def on_destroyed
+  end
 
-  def on_qc; end
+  def on_qc
+  end
 
-  def on_used; end
+  def on_used
+  end
 
   private
 

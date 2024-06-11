@@ -21,7 +21,7 @@ class EventSender
   end
 
   def self.send_request_update(request, family, message, options = nil)
-    hash = { eventful: request, family: family, message: message }
+    hash = { eventful: request, family:, message: }
     create!(hash.merge(options || {}))
   end
 
@@ -29,13 +29,12 @@ class EventSender
     hash = {
       eventful: well,
       family: PlatesHelper.event_family_for_pick(purpose_name),
-      message: message,
+      message:,
       content: Date.today.to_s
     }
     create!(hash.merge(options || {}))
   end
 
-  private
 
   def self.create!(hash = {})
     hash.delete(:key)

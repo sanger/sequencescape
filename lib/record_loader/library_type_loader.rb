@@ -10,7 +10,7 @@ module RecordLoader
     config_folder 'library_types'
 
     def create_or_update!(name, options)
-      LibraryType.create_with(options).find_or_create_by!(name: name)
+      LibraryType.create_with(options).find_or_create_by!(name:)
     end
 
     def names

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require "#{Rails.root}/config/config.rb"
+require "#{Rails.root.join('config/config.rb')}"
 # Converting config.yml
 #  config = ERB.new((IO.read("#{Rails.root}/config/config.yml"))).result
 # yam=YAML::load(config)

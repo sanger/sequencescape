@@ -15,7 +15,7 @@ class StudiesController < ApplicationController
   around_action :rescue_validation, only: %i[close open]
 
   def setup_studies_from_scope(exclude_nested_resource = false) # rubocop:todo Metrics/AbcSize
-    if logged_in? && (not exclude_nested_resource)
+    if logged_in? && !exclude_nested_resource
       @alternatives = [
         'interesting',
         'followed',
@@ -221,8 +221,7 @@ class StudiesController < ApplicationController
     end
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def rescue_accession_errors # rubocop:todo Metrics/AbcSize
+    def rescue_accession_errors # rubocop:todo Metrics/AbcSize
     yield
   rescue ActiveRecord::RecordInvalid => e
     flash.now[:error] = 'Please fill in the required fields'
@@ -238,9 +237,7 @@ class StudiesController < ApplicationController
     redirect_to(edit_study_path(@study))
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  def accession
+    def accession
     rescue_accession_errors do
       @study = Study.find(params[:id])
       @study.validate_ena_required_fields!
@@ -286,8 +283,7 @@ class StudiesController < ApplicationController
     @study = Study.find(params[:id])
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def self.role_helper(name, success_action, error_action) # rubocop:todo Metrics/AbcSize
+    def self.role_helper(name, success_action, error_action) # rubocop:todo Metrics/AbcSize
     define_method(:"#{name}_role") do
       ActiveRecord::Base.transaction do
         @study = Study.find(params[:id])
@@ -295,20 +291,20 @@ class StudiesController < ApplicationController
 
         if request.xhr?
           yield(@user, @study, params[:role][:authorizable_type].to_s)
-          status, flash.now[:notice] = 200, "Role #{success_action}"
+          status = 200
+          flash.now[:notice] = "Role #{success_action}"
         else
-          status, flash.now[:error] = 401, "A problem occurred while #{error_action} the role"
+          status = 401
+          flash.now[:error] = "A problem occurred while #{error_action} the role"
         end
 
         @roles = @study.roles.reload
-        render partial: 'roles', status: status
+        render partial: 'roles', status:
       end
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  role_helper(:grant, 'added', 'adding') { |user, study, name| user.grant_role(name, study) }
+    role_helper(:grant, 'added', 'adding') { |user, study, name| user.grant_role(name, study) }
   role_helper(:remove, 'remove', 'removing') { |user, study, name| user.remove_role(name, study) }
 
   def projects
@@ -370,13 +366,13 @@ class StudiesController < ApplicationController
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   def rescue_validation
-    begin
+    
       yield
     rescue ActiveRecord::RecordInvalid
       Rails.logger.warn "Failed to update attributes: #{@study.errors.map { |error| error.to_s }}" # rubocop:disable Style/SymbolProc
       flash.now[:error] = 'Failed to update attributes for study!'
       render action: 'edit', id: @study.id
-    end
+    
   end
 end
 # rubocop:enable Metrics/ClassLength

@@ -4,10 +4,10 @@ require 'rails_helper'
 require 'support/barcode_helper'
 
 describe '/api/1/plate-purpose-uuid' do
-  let(:authorised_app) { create :api_application }
+  let(:authorised_app) { create(:api_application) }
   let(:uuid) { '00000000-1111-2222-3333-444444444444' }
 
-  before { create :dilution_plate_purpose, :uuidable, uuid: uuid, name: 'Example purpose' }
+  before { create(:dilution_plate_purpose, :uuidable, uuid:, name: 'Example purpose') }
 
   describe '#get' do
     subject(:url) { '/api/1/' + uuid }

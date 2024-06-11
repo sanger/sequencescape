@@ -6,11 +6,11 @@ module RequestType::Validation
     DelegateValidation::CompositeValidator.construct(request_class.delegate_validator, request_type_validator)
   end
 
-  def create_validator(request_type) # rubocop:todo Metrics/MethodLength
+  def create_validator(request_type)
     Class.new(RequestTypeValidator) do
       request_type.request_type_validators.each do |validator|
         message =
-          "is '%{value}' should be #{
+          "is '%<value>s' should be #{
             validator.valid_options.to_sentence(last_word_connector: ', or ', two_words_connector: ' or ')
           }"
         vro = :"#{validator.request_option}"
@@ -19,7 +19,7 @@ module RequestType::Validation
                   inclusion: {
                     in: validator.valid_options,
                     if: :"#{validator.request_option}_needs_checking?",
-                    message: message,
+                    message:,
                     allow_blank: validator.allow_blank?
                   }
       end

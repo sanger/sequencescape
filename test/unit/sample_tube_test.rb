@@ -15,10 +15,10 @@ class SampleTubeTest < ActiveSupport::TestCase
   context 'can be rendered as a stock resource' do
     setup do
       Timecop.freeze(DateTime.parse('2012-03-11 10:22:42')) do
-        @sample_tube = create :empty_sample_tube, barcode: '12345'
-        @study = create :study
-        @sample = create :sample
-        @aliquot = create :aliquot, study: @study, sample: @sample, receptacle: @sample_tube
+        @sample_tube = create(:empty_sample_tube, barcode: '12345')
+        @study = create(:study)
+        @sample = create(:sample)
+        @aliquot = create(:aliquot, study: @study, sample: @sample, receptacle: @sample_tube)
         @messenger = @sample_tube.register_stock!
       end
     end

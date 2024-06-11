@@ -9,8 +9,9 @@ module Cherrypick::Task::PickByNanoGrams
   private :valid_params_for_nano_grams_pick?
 
   def create_nano_grams_picker(params)
-    min_vol, max_vol, nano_grams =
-      params[:minimum_volume].to_f, params[:maximum_volume].to_f, params[:total_nano_grams].to_f
+    min_vol = params[:minimum_volume].to_f
+    max_vol = params[:maximum_volume].to_f
+    nano_grams = params[:total_nano_grams].to_f
     robot_minimum_picking_volume = params[:robot_minimum_picking_volume].to_f
 
     lambda do |well, request|

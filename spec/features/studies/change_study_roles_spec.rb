@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 describe 'Study roles' do
-  let(:user) { create :admin }
-  let!(:study) { create :study_with_manager, updated_at: 1.year.ago }
+  let(:user) { create(:admin) }
+  let!(:study) { create(:study_with_manager, updated_at: 1.year.ago) }
   let(:manager) { study.managers.first }
 
   it 'can be removed', :js do
@@ -16,7 +16,7 @@ describe 'Study roles' do
     click_link 'Contacts'
     expect(find_by_id('role_list')).to have_content(manager.login)
     click_button 'Remove'
-    expect(find_by_id('role_list')).not_to have_content(manager.login)
+    expect(find_by_id('role_list')).to have_no_content(manager.login)
     expect(study.reload.updated_at).to be > 1.hour.ago
   end
 end

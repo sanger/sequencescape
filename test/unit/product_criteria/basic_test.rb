@@ -28,9 +28,9 @@ class ProductCriteriaBasicTest < ActiveSupport::TestCase
     context 'with a bad well' do
       setup do
         @well_attribute =
-          create :well_attribute, concentration: 1, current_volume: 30_000, gel_pass: 'OKAY', gender_markers: %w[M M U]
-        @well = create :well, well_attribute: @well_attribute
-        @sample = create :sample, sample_metadata_attributes: { gender: 'female' }
+          create(:well_attribute, concentration: 1, current_volume: 30_000, gel_pass: 'OKAY', gender_markers: %w[M M U])
+        @well = create(:well, well_attribute: @well_attribute)
+        @sample = create(:sample, sample_metadata_attributes: { gender: 'female' })
         @well.samples << @sample
         @criteria = ProductCriteria::Basic.new(@params, @well)
       end
@@ -56,9 +56,9 @@ class ProductCriteriaBasicTest < ActiveSupport::TestCase
     context 'with a good well' do
       setup do
         @well_attribute =
-          create :well_attribute, concentration: 800, current_volume: 100, gel_pass: 'OKAY', gender_markers: %w[M M U]
-        @well = create :well, well_attribute: @well_attribute
-        @sample = create :sample, sample_metadata_attributes: { gender: 'male' }
+          create(:well_attribute, concentration: 800, current_volume: 100, gel_pass: 'OKAY', gender_markers: %w[M M U])
+        @well = create(:well, well_attribute: @well_attribute)
+        @sample = create(:sample, sample_metadata_attributes: { gender: 'male' })
         @well.samples << @sample
         @criteria = ProductCriteria::Basic.new(@params, @well)
       end

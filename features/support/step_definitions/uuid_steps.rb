@@ -57,7 +57,7 @@ PLURAL_MODELS_BASED_ON_NAME_REGEXP = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAM
 # rubocop:todo Layout/LineLength
 Given /^the UUID for the (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) "([^"]+)" is "([^"]+)"$/o do |model, name, uuid_value|
   # rubocop:enable Layout/LineLength
-  object = model.gsub(/\s+/, '_').classify.constantize.find_by(name: name) or
+  object = model.gsub(/\s+/, '_').classify.constantize.find_by(name:) or
     raise "Cannot find #{model} #{name.inspect}"
   set_uuid_for(object, uuid_value)
 end
@@ -67,7 +67,7 @@ end
 # rubocop:todo Layout/LineLength
 Given /^the UUID for the receptacle in (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) "([^"]+)" is "([^"]+)"$/o do |model, name, uuid_value|
   # rubocop:enable Layout/LineLength
-  object = model.gsub(/\s+/, '_').classify.constantize.find_by(name: name) or
+  object = model.gsub(/\s+/, '_').classify.constantize.find_by(name:) or
     raise "Cannot find #{model} #{name.inspect}"
   set_uuid_for(object.receptacle, uuid_value)
 end
@@ -75,15 +75,15 @@ end
 # rubocop:todo Layout/LineLength
 Given /^an? (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) called "([^"]+)" with UUID "([^"]+)"$/o do |model, name, uuid_value|
   # rubocop:enable Layout/LineLength
-  set_uuid_for(FactoryBot.create(model.gsub(/\s+/, '_').to_sym, name: name), uuid_value)
+  set_uuid_for(FactoryBot.create(model.gsub(/\s+/, '_').to_sym, name:), uuid_value)
 end
 
 Given /^a tube purpose called "([^"]+)" with UUID "([^"]+)"$/ do |name, uuid_value|
-  set_uuid_for(FactoryBot.create(:tube_purpose, name: name), uuid_value)
+  set_uuid_for(FactoryBot.create(:tube_purpose, name:), uuid_value)
 end
 
 Given /^an? (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) called "([^"]+)" with ID (\d+)$/o do |model, name, id|
-  FactoryBot.create(model.gsub(/\s+/, '_').to_sym, name: name, id: id)
+  FactoryBot.create(model.gsub(/\s+/, '_').to_sym, name:, id:)
 end
 
 # rubocop:todo Layout/LineLength
@@ -225,7 +225,7 @@ Given /^a (plate|well) with uuid "([^"]*)" exists$/ do |model, uuid_value|
 end
 
 Given /^the (#{SINGULAR_MODELS_BASED_ON_ID_REGEXP}) exists with ID (\d+)$/o do |model, id|
-  FactoryBot.create(model.gsub(/\s+/, '_').to_sym, id: id)
+  FactoryBot.create(model.gsub(/\s+/, '_').to_sym, id:)
 end
 
 # rubocop:todo Layout/LineLength

@@ -88,7 +88,7 @@ class TransferRequestCollection < ApplicationRecord
   # Transfer requests rely both on the aliquots in an assets, and the transfer requests
   # into the asset (used to track state). Here we eager load all necessary assets
   # and associated records, and pass them to the transfer requests directly.
-  def transfer_requests_attributes=(args) # rubocop:todo Metrics/MethodLength
+  def transfer_requests_attributes=(args)
     asset_ids = extract_asset_ids(args)
     asset_cache =
       Receptacle

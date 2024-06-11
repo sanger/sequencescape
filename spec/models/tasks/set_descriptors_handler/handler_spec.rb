@@ -5,12 +5,12 @@ require 'rails_helper'
 # This is a very tangled test, as I'm hoping to unhook the current dependencies
 # so need to wrap it at its current level of messiness
 RSpec.describe Tasks::SetDescriptorsHandler::Handler do
-  subject(:handler) { described_class.new(controller: controller, params: params, task: task, user: user) }
+  subject(:handler) { described_class.new(controller:, params:, task:, user:) }
 
-  let(:batch) { create :batch, request_count: 1 }
+  let(:batch) { create(:batch, request_count: 1) }
   let(:request) { batch.requests.first }
   let(:controller) { instance_double(WorkflowsController) }
-  let(:user) { create :user }
+  let(:user) { create(:user) }
   let(:task) { instance_double(SetDescriptorsTask, name: 'Step 1', id: 1) }
 
   describe '#perform' do
@@ -30,7 +30,7 @@ RSpec.describe Tasks::SetDescriptorsHandler::Handler do
       it 'sets attributes on the lab event' do
         handler.perform
         event = request.reload.lab_events.first
-        expect(event).to have_attributes(description: 'Step 1', descriptor_hash: { 'key' => 'value ' }, user: user)
+        expect(event).to have_attributes(description: 'Step 1', descriptor_hash: { 'key' => 'value ' }, user:)
       end
 
       it 'sets attributes on the batch event' do
@@ -42,7 +42,7 @@ RSpec.describe Tasks::SetDescriptorsHandler::Handler do
             'task' => 'Step 1',
             'task_id' => '1'
           },
-          user: user
+          user:
         )
       end
     end

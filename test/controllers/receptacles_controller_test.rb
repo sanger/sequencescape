@@ -6,7 +6,7 @@ class ReceptaclesControllerTest < ActionController::TestCase
   setup do
     @controller = ReceptaclesController.new
     @request = ActionController::TestRequest.create(@controller)
-    @user = create :admin, api_key: 'abc'
+    @user = create(:admin, api_key: 'abc')
     session[:user] = @user.id
   end
 
@@ -18,9 +18,9 @@ class ReceptaclesControllerTest < ActionController::TestCase
       @asset = create(:sample_tube).receptacle
       @sample = @asset.primary_aliquot.sample
 
-      @study = create :study
-      @project = create :project, enforce_quotas: true
-      @request_type = create :request_type
+      @study = create(:study)
+      @project = create(:project, enforce_quotas: true)
+      @request_type = create(:request_type)
       @json_data = valid_json_create_request(@asset, @request_type, @study, @project)
 
       @request.accept = @request.env['CONTENT_TYPE'] = 'application/json'

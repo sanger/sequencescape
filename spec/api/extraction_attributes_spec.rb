@@ -6,14 +6,14 @@ describe '/api/1/extraction_attributes' do
   describe '#post' do
     subject { "/api/1/#{target_plate.uuid}/extraction_attributes" }
 
-    let(:user) { create :user, login: 'test' }
-    let(:authorised_app) { create :api_application }
-    let(:target_plate) { create :plate_with_empty_wells }
+    let(:user) { create(:user, login: 'test') }
+    let(:authorised_app) { create(:api_application) }
+    let(:target_plate) { create(:plate_with_empty_wells) }
 
     let(:response_code) { 201 }
 
     it 'supports attributes update on a plate' do
-      sample_tube = create :sample_tube
+      sample_tube = create(:sample_tube)
       payload =
         "{
           \"extraction_attribute\":{
@@ -29,8 +29,8 @@ describe '/api/1/extraction_attributes' do
     end
 
     describe '#racking' do
-      let(:sample_tube) { create :sample_tube }
-      let(:sample_tube2) { create :sample_tube }
+      let(:sample_tube) { create(:sample_tube) }
+      let(:sample_tube2) { create(:sample_tube) }
       let(:source_tube1_uuid) { sample_tube.uuid }
       let(:source_tube2_uuid) { sample_tube2.uuid }
 
@@ -67,7 +67,7 @@ describe '/api/1/extraction_attributes' do
       context 'with a plate with wells' do
         subject { "/api/1/#{target_plate.uuid}/extraction_attributes" }
 
-        let(:target_plate) { create :plate_with_tagged_wells }
+        let(:target_plate) { create(:plate_with_tagged_wells) }
         let(:taget_well_a1) { target_plate.wells.located_at('A1').first }
         let(:taget_well_b1) { target_plate.wells.located_at('B1').first }
 
@@ -78,8 +78,8 @@ describe '/api/1/extraction_attributes' do
         end
 
         context 'when tubes contain the same samples as the wells' do
-          let(:sample_tube) { create :sample_tube, sample: taget_well_a1.samples.first }
-          let(:sample_tube2) { create :sample_tube, sample: taget_well_b1.samples.first }
+          let(:sample_tube) { create(:sample_tube, sample: taget_well_a1.samples.first) }
+          let(:sample_tube2) { create(:sample_tube, sample: taget_well_b1.samples.first) }
 
           it 'does not rack without error a tube in the well if the well already contains the sample for this tube' do
             authorized_api_request :post, subject, payload
@@ -94,9 +94,9 @@ describe '/api/1/extraction_attributes' do
     describe '#reracking' do
       subject { "/api/1/#{target_plate.uuid}/extraction_attributes" }
 
-      let(:previous_plate) { create :plate_with_tagged_wells }
-      let(:previous_plate2) { create :plate_with_tagged_wells }
-      let(:target_plate) { create :plate_with_empty_wells }
+      let(:previous_plate) { create(:plate_with_tagged_wells) }
+      let(:previous_plate2) { create(:plate_with_tagged_wells) }
+      let(:target_plate) { create(:plate_with_empty_wells) }
       let(:well1) { previous_plate.wells.first }
       let(:well2) { previous_plate2.wells.first }
 
@@ -133,7 +133,7 @@ describe '/api/1/extraction_attributes' do
         # rubocop:enable Layout/LineLength
         subject { "/api/1/#{target_plate.uuid}/extraction_attributes" }
 
-        let(:target_plate) { create :plate_with_tagged_wells }
+        let(:target_plate) { create(:plate_with_tagged_wells) }
         let(:well1) { target_plate.wells[0] }
         let(:well2) { target_plate.wells[1] }
         let(:well3) { target_plate.wells[2] }
@@ -212,10 +212,10 @@ describe '/api/1/extraction_attributes' do
     end
 
     describe '#racking + #reracking' do
-      let(:previous_plate) { create :plate_with_tagged_wells }
-      let(:previous_plate2) { create :plate_with_tagged_wells }
-      let(:sample_tube) { create :sample_tube }
-      let(:sample_tube2) { create :sample_tube }
+      let(:previous_plate) { create(:plate_with_tagged_wells) }
+      let(:previous_plate2) { create(:plate_with_tagged_wells) }
+      let(:sample_tube) { create(:sample_tube) }
+      let(:sample_tube2) { create(:sample_tube) }
       let(:well1) { previous_plate.wells.first }
       let(:well2) { previous_plate2.wells.first }
 
@@ -254,12 +254,12 @@ describe '/api/1/extraction_attributes' do
       end
 
       context 'in different requests' do
-        let(:second_plate) { create :plate_with_tagged_wells }
+        let(:second_plate) { create(:plate_with_tagged_wells) }
         let(:first_plate_subject) { "/api/1/#{first_plate.uuid}/extraction_attributes" }
         let(:second_plate_subject) { "/api/1/#{second_plate.uuid}/extraction_attributes" }
 
-        let(:sample_tube) { create :sample_tube }
-        let(:sample_tube2) { create :sample_tube }
+        let(:sample_tube) { create(:sample_tube) }
+        let(:sample_tube2) { create(:sample_tube) }
 
         let(:well1) { first_plate.wells.located_at('A1').first }
         let(:well2) { first_plate.wells.located_at('B1').first }
@@ -294,7 +294,7 @@ describe '/api/1/extraction_attributes' do
         end
 
         context 'with 2 plates with samples already' do
-          let(:first_plate) { create :plate_with_tagged_wells }
+          let(:first_plate) { create(:plate_with_tagged_wells) }
 
           context 'when performing a rerack from a position and then try to rack back' do
             it 'reracks to the second plate but fails to rack into the first plate' do
@@ -333,7 +333,7 @@ describe '/api/1/extraction_attributes' do
         end
 
         context 'with a first empty plate and second full plate' do
-          let(:first_plate) { create :plate_with_empty_wells }
+          let(:first_plate) { create(:plate_with_empty_wells) }
 
           it 'racks to the first plate and reracks to the second plate' do
             authorized_api_request :post, first_plate_subject, payload_rack
@@ -358,6 +358,6 @@ describe '/api/1/extraction_attributes' do
     headers['CONTENT_TYPE'] = 'application/json' unless body.nil?
     headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = authorised_app.key
     yield(headers) if block_given?
-    send(action.downcase, path, params: body, headers: headers)
+    send(action.downcase, path, params: body, headers:)
   end
 end

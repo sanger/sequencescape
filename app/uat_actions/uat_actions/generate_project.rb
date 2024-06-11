@@ -27,7 +27,7 @@ class UatActions::GenerateProject < UatActions
         approved: true,
         state: 'active',
         project_metadata_attributes: {
-          project_cost_code: project_cost_code,
+          project_cost_code:,
           project_funding_model: 'Internal'
         }
       )

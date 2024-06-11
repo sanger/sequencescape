@@ -8,7 +8,7 @@ AssetLink::BuilderJob =
   Struct.new(:links) do
     # For memory reasons we need to limit transaction size to 10 links at a time
     TRANSACTION_COUNT = 10
-    def perform # rubocop:todo Metrics/MethodLength
+    def perform
       links
         .uniq
         .each_slice(TRANSACTION_COUNT) do |link_group|

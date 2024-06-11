@@ -10,7 +10,7 @@ module SampleManifest::StateMachine
     end
   end
 
-  def configure_state_machine # rubocop:todo Metrics/MethodLength
+  def configure_state_machine
     aasm column: :state, whiny_persistence: true do
       state :pending, initial: true
       state :processing

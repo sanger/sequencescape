@@ -81,17 +81,17 @@ RSpec.describe QcResultFactory, :qc_result do
       let(:asset_3) { qc_result_attributes.merge(well_location: 'Z999') }
       let(:factory) { described_class.new([asset_1, asset_2, asset_3]) }
 
-      it 'will create all of the resources' do
+      it 'creates all of the resources' do
         expect(factory.resources.length).to eq(3)
       end
 
-      it 'will ignore those resources with blank wells' do
+      it 'ignores those resources with blank wells' do
         no_blank_wells = factory.except_blank_wells
         expect(no_blank_wells.length).to eq(2)
         expect(no_blank_wells).not_to include(asset_3)
       end
 
-      it 'will save all of the assets with valid wells' do
+      it 'saves all of the assets with valid wells' do
         expect(factory.save).to be_truthy
         expect(QcResult.count).to eq(2)
       end
@@ -152,7 +152,7 @@ RSpec.describe QcResultFactory, :qc_result do
     context 'Barcode' do
       let(:plate) { create(:plate_with_empty_wells, well_count: 12) }
 
-      it 'will create a valid resource with a valid barcode' do
+      it 'creates a valid resource with a valid barcode' do
         expect(
           described_class.new(
             qc_result_attributes.merge(
@@ -163,7 +163,7 @@ RSpec.describe QcResultFactory, :qc_result do
         ).to be_valid
       end
 
-      it 'will not create a valid resource with an invalid barcode' do
+      it 'does not create a valid resource with an invalid barcode' do
         expect(
           described_class.new(
             qc_result_attributes.merge(barcode: 'DODGY_BARCODE', well_location: plate.wells.first.map.description)

@@ -4,11 +4,11 @@ require 'spec_helper'
 
 RSpec.describe 'samples/show.html.erb' do
   include AuthenticatedSystem
-  let(:user) { create :user }
+  let(:user) { create(:user) }
 
   context 'when rendering a sample' do
     let(:current_user) { user }
-    let(:sample) { create :sample }
+    let(:sample) { create(:sample) }
     let(:time) { DateTime.now.utc }
 
     context 'when the user has withdrawn consent' do

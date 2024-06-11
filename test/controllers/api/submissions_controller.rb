@@ -8,7 +8,7 @@ module Api
       setup do
         @controller = Api::SubmissionsController.new
         @request = ActionController::TestRequest.create(@controller)
-        @user = FactoryBot.create :user
+        @user = FactoryBot.create(:user)
         @controller.stubs(:logged_in?).returns(@user)
         session[:user] = @user.id
       end
@@ -16,11 +16,11 @@ module Api
       context '#create' do
         setup do
           @submission_count = Submission.count
-          template = FactoryBot.create :submission_template
-          study = FactoryBot.create :study
-          project = FactoryBot.create :project
-          sample_tube = FactoryBot.create :sample_tube
-          rt = FactoryBot.create :request_type
+          template = FactoryBot.create(:submission_template)
+          study = FactoryBot.create(:study)
+          project = FactoryBot.create(:project)
+          sample_tube = FactoryBot.create(:sample_tube)
+          rt = FactoryBot.create(:request_type)
           template.request_types << rt
 
           post :create,

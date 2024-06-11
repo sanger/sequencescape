@@ -43,10 +43,10 @@ class BulkTransfer < ApplicationRecord
     ActiveRecord::Base.transaction do
       each_transfer do |source, destination, transfers|
         Transfer::BetweenPlates.create!(
-          source: source,
-          destination: destination,
-          user: user,
-          transfers: transfers,
+          source:,
+          destination:,
+          user:,
+          transfers:,
           bulk_transfer_id: id
         )
       end
@@ -54,7 +54,7 @@ class BulkTransfer < ApplicationRecord
   end
   private :build_transfers!
 
-  def each_transfer # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def each_transfer # rubocop:todo Metrics/AbcSize
     well_transfers
       .group_by { |tf| [tf['source_uuid'], tf['destination_uuid']] }
       .each do |source_dest, all_transfers|

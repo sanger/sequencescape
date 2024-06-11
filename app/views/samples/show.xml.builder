@@ -28,7 +28,7 @@ xml.sample(api_data) do
       xml.property do
         # NOTE: The display text is targeted at HTML, so contains escaped entities, which we must unescape for XML.
         xml.name(REXML::Text.unnormalize(attribute.to_field_info.display_name))
-        if (attribute.to_field_info.display_name == 'Reference Genome') && (value.blank?)
+        if (attribute.to_field_info.display_name == 'Reference Genome') && value.blank?
           xml.value(nil)
         else
           xml.value(value)

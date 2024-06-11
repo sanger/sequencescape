@@ -17,12 +17,12 @@ module Submission::AccessionBehaviour
   def check_data_release_and_accession_for_submission # rubocop:todo Metrics/AbcSize
     return if configatron.disable_accession_check == true
 
-    if not study.valid_data_release_properties?
+    if !study.valid_data_release_properties?
       errors.add(:study, "#{study.name}: Please fill in the study data release information")
     elsif study.accession_required?
-      if not study.accession_number?
+      if !study.accession_number?
         errors.add(:study, "#{study.name} and all samples must have accession numbers")
-      elsif not all_samples_have_accession_numbers?
+      elsif !all_samples_have_accession_numbers?
         errors.add(:base, "The following samples are missing accession numbers: #{unaccessioned_samples}")
       end
     end
@@ -31,7 +31,7 @@ module Submission::AccessionBehaviour
   private
 
   def test_asset_group
-    AssetGroup.new(assets: assets)
+    AssetGroup.new(assets:)
   end
 
   def unaccessioned_samples

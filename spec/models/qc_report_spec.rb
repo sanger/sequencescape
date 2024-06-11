@@ -15,26 +15,26 @@ RSpec.describe QcReport do
     attr_reader :study, :other_study, :stock_plate, :qc_report, :qc_metric_count
 
     before do
-      @study = create :study
-      @other_study = create :study
-      @stock_plate = create :plate, purpose: PlatePurpose.find_or_create_by(name: 'Stock plate')
+      @study = create(:study)
+      @other_study = create(:study)
+      @stock_plate = create(:plate, purpose: PlatePurpose.find_or_create_by(name: 'Stock plate'))
 
       [@study, @other_study].each do |study|
         2.times do |i|
-          attribute = create :well_attribute, current_volume: 500, concentration: 200
-          sample = create(:study_sample, study: study).sample
+          attribute = create(:well_attribute, current_volume: 500, concentration: 200)
+          sample = create(:study_sample, study:).sample
           sample.update!(sanger_sample_id: 'TEST1')
           well =
-            create :well,
+            create(:well,
                    samples: [sample],
                    plate: stock_plate,
                    map: create(:map, location_id: i),
-                   well_attribute: attribute
-          well.aliquots.each { |a| a.update!(study: study) }
+                   well_attribute: attribute)
+          well.aliquots.each { |a| a.update!(study:) }
         end
       end
 
-      @qc_report = create :qc_report, study: @study
+      @qc_report = create(:qc_report, study: @study)
       @qc_metric_count = QcMetric.count
       Delayed::Worker.new.work_off
     end
@@ -53,7 +53,7 @@ RSpec.describe QcReport do
       qc_report.qc_metrics.each do |metric|
         expect(metric.qc_decision).to eq('passed')
         expect(metric.proceed).to be_nil
-        expect(total_micrograms: 100, comment: '', sanger_sample_id: 'TEST1').to eq(metric.metrics)
+        expect(metric.metrics).to eq(total_micrograms: 100, comment: '', sanger_sample_id: 'TEST1')
       end
     end
   end
@@ -73,65 +73,65 @@ RSpec.describe QcReport do
                 :other_reported_sample
 
     before do
-      @study = create :study
-      @stock_plate = create :plate, purpose: PlatePurpose.find_or_create_by(name: 'Stock plate')
+      @study = create(:study)
+      @stock_plate = create(:plate, purpose: PlatePurpose.find_or_create_by(name: 'Stock plate'))
 
-      @current_criteria = create :product_criteria
-      @other_criteria = create :product_criteria
+      @current_criteria = create(:product_criteria)
+      @other_criteria = create(:product_criteria)
 
       @matching_report =
-        create :qc_report,
-               study: study,
+        create(:qc_report,
+               study:,
                exclude_existing: true,
                product_criteria: current_criteria,
-               report_identifier: 'Override'
-      @other_report = create :qc_report, study: study, exclude_existing: true, product_criteria: other_criteria
+               report_identifier: 'Override')
+      @other_report = create(:qc_report, study:, exclude_existing: true, product_criteria: other_criteria)
 
-      @attribute = create :well_attribute, current_volume: 500, concentration: 200
+      @attribute = create(:well_attribute, current_volume: 500, concentration: 200)
 
-      sample = create(:study_sample, study: study).sample
+      sample = create(:study_sample, study:).sample
       @unreported_sample =
         well =
-          create :well,
+          create(:well,
                  samples: [sample],
                  plate: stock_plate,
                  map: create(:map, location_id: 1),
-                 well_attribute: attribute
-      well.aliquots.each { |a| a.update!(study: study) }
+                 well_attribute: attribute)
+      well.aliquots.each { |a| a.update!(study:) }
 
-      sample = create(:study_sample, study: study).sample
+      sample = create(:study_sample, study:).sample
       well =
-        create :well,
+        create(:well,
                samples: [sample],
                plate: stock_plate,
                map: create(:map, location_id: 2),
-               well_attribute: attribute
-      well.aliquots.each { |a| a.update!(study: study) }
-      create :qc_metric, asset: well, qc_report: matching_report
+               well_attribute: attribute)
+      well.aliquots.each { |a| a.update!(study:) }
+      create(:qc_metric, asset: well, qc_report: matching_report)
 
-      sample = create(:study_sample, study: study).sample
+      sample = create(:study_sample, study:).sample
       @other_reported_sample =
         well =
-          create :well,
+          create(:well,
                  samples: [sample],
                  plate: stock_plate,
                  map: create(:map, location_id: 3),
-                 well_attribute: attribute
-      well.aliquots.each { |a| a.update!(study: study) }
-      create :qc_metric, asset: well, qc_report: other_report
+                 well_attribute: attribute)
+      well.aliquots.each { |a| a.update!(study:) }
+      create(:qc_metric, asset: well, qc_report: other_report)
 
-      sample = create(:study_sample, study: study).sample
+      sample = create(:study_sample, study:).sample
       well =
-        create :well,
+        create(:well,
                samples: [sample],
                plate: stock_plate,
                map: create(:map, location_id: 4),
-               well_attribute: attribute
-      well.aliquots.each { |a| a.update!(study: study) }
-      create :qc_metric, asset: well, qc_report: matching_report
-      create :qc_metric, asset: well, qc_report: other_report
+               well_attribute: attribute)
+      well.aliquots.each { |a| a.update!(study:) }
+      create(:qc_metric, asset: well, qc_report: matching_report)
+      create(:qc_metric, asset: well, qc_report: other_report)
 
-      @qc_report = create :qc_report, study: study, exclude_existing: true, product_criteria: current_criteria
+      @qc_report = create(:qc_report, study:, exclude_existing: true, product_criteria: current_criteria)
       @qc_metric_count = QcMetric.count
       qc_report.generate!
     end
@@ -164,20 +164,20 @@ RSpec.describe QcReport do
     attr_reader :qc_report
 
     let!(:study) { create(:study) }
-    let(:plate_purposes) { create_list :plate_purpose, 3 }
+    let(:plate_purposes) { create_list(:plate_purpose, 3) }
     let(:plate_purpose_names) { plate_purposes.map(&:name) }
 
     before do
-      create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: plate_purposes[0]))
-      create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: plate_purposes[1]))
-      create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: plate_purposes[2]))
+      create(:well_for_qc_report, study:, plate: create(:plate, plate_purpose: plate_purposes[0]))
+      create(:well_for_qc_report, study:, plate: create(:plate, plate_purpose: plate_purposes[1]))
+      create(:well_for_qc_report, study:, plate: create(:plate, plate_purpose: plate_purposes[2]))
 
       @qc_report =
-        create :qc_report,
-               study: study,
+        create(:qc_report,
+               study:,
                exclude_existing: false,
                product_criteria: create(:product_criteria),
-               plate_purposes: plate_purpose_names
+               plate_purposes: plate_purpose_names)
       qc_report.generate!
     end
 

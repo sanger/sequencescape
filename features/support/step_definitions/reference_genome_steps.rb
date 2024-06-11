@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Given /^the reference genome "([^"]*)" exists$/ do |name|
-  FactoryBot.create :reference_genome, name: name
+  FactoryBot.create :reference_genome, name:
 end
 
 Given /^a reference genome table$/ do

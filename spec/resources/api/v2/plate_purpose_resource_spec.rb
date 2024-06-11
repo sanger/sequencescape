@@ -10,7 +10,7 @@ RSpec.describe Api::V2::PlatePurposeResource, type: :resource do
   let(:purpose) { PlatePurpose.new } # New instance of PlatePurpose model
   let(:resource) { described_class.new(purpose, {}) } # Resource wrapping the instance
   let(:receive) { resource.replace_fields(payload[:data]) } # Simulate receiving payload
-  let(:payload) { { data: { type: 'plate_purposes', attributes: attributes } } } # Payload to be received
+  let(:payload) { { data: { type: 'plate_purposes', attributes: } } } # Payload to be received
   let(:purpose_name) { 'LRC HT 5p Chip' }
   let(:plate_size) { 16 }
   let(:asset_shape_name) { 'ChromiumChip' }

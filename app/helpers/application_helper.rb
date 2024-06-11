@@ -8,7 +8,7 @@ module ApplicationHelper
     Rails
       .cache
       .fetch("#{identifier}-#{differential}") do
-        custom_text = CustomText.find_by(identifier: identifier, differential: differential)
+        custom_text = CustomText.find_by(identifier:, differential:)
 
         custom_text.try(:content) || ''
       end
@@ -131,8 +131,7 @@ module ApplicationHelper
     badge(status, type: 'counter-badge', style: 'primary')
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def dynamic_link_to(summary_item) # rubocop:todo Metrics/AbcSize
+    def dynamic_link_to(summary_item) # rubocop:todo Metrics/AbcSize
     object = summary_item.object
     if object.instance_of?(Submission)
       link_to("Submission #{object.id}", study_information_submission_path(object.study, object))
@@ -147,12 +146,11 @@ module ApplicationHelper
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  def request_count_link(study, asset, state, request_type) # rubocop:todo Metrics/AbcSize
+    def request_count_link(study, asset, state, request_type) # rubocop:todo Metrics/AbcSize
     matching_requests =
       asset.requests.select { |request| (request.request_type_id == request_type.id) and request.state == state }
-    html_options, count = { title: "#{asset.try(:human_barcode) || asset.id} #{state}" }, matching_requests.size
+    html_options = { title: "#{asset.try(:human_barcode) || asset.id} #{state}" }
+    count = matching_requests.size
 
     # 0 requests => no link, just '0'
     # 1 request  => request summary page
@@ -161,7 +159,7 @@ module ApplicationHelper
       url_path = request_path(matching_requests.first)
       link_to count, url_path, html_options
     elsif count > 1
-      url_path = study_requests_path(study, state: state, request_type_id: request_type.id, asset_id: asset.id)
+      url_path = study_requests_path(study, state:, request_type_id: request_type.id, asset_id: asset.id)
       link_to count, url_path, html_options
     end
   end
@@ -221,7 +219,7 @@ module ApplicationHelper
     tag.li(class: 'nav-item') do
       link_to name,
               "##{target}",
-              id: id,
+              id:,
               data: {
                 toggle: 'tab'
               },
@@ -234,23 +232,23 @@ module ApplicationHelper
   # <div class="tab-pane fade show <active>" id="pending" role="tabpanel" aria-labelledby="peding-tab">
   #   yield
   # </div>
-  def tab_pane(name, id: nil, tab_id: nil, active: false, &block)
+  def tab_pane(name, id: nil, tab_id: nil, active: false, &)
     tab_id ||= "#{name}-tab".parameterize
     id ||= name.parameterize
     active_class = active ? 'active' : ''
     tag.div(
       class: ['tab-pane', 'fade', 'show', active_class],
-      id: id,
+      id:,
       role: 'tabpanel',
       aria_labelledby: tab_id,
-      &block
+      &
     )
   end
 
   def display_boolean_results(result)
     return 'NA' if result.blank?
 
-    if result == 'pass' || result == '1' || result == 'true'
+    if ['pass', '1', 'true'].include?(result)
       icon('far', 'check-circle', title: result)
     else
       icon('fas', 'exclamation-circle', class: 'text-danger', title: result)
@@ -261,7 +259,7 @@ module ApplicationHelper
     sorted_requests = requests.select { |r| r.pipeline_id.nil? }
     new_requests = requests - sorted_requests
     new_requests.sort_by(&:pipeline_id)
-    requests = requests + sorted_requests
+    requests += sorted_requests
   end
 
   # Creates a label that is hidden from the view so that testing is easier
@@ -269,8 +267,8 @@ module ApplicationHelper
     label_tag(name, text, options.merge(style: 'display:none;'))
   end
 
-  def help_text(&block)
-    tag.small(class: 'form-text text-muted col', &block)
+  def help_text(&)
+    tag.small(class: 'form-text text-muted col', &)
   end
 
   def help_link(text, entry = '', options = {})
@@ -297,7 +295,6 @@ module ApplicationHelper
   #
   # @return [String] HTML formatted for rendering
   #
-  # rubocop:todo Metrics/MethodLength
   def render_parsed_json(json) # rubocop:todo Metrics/AbcSize
     case json
     when String
@@ -318,9 +315,7 @@ module ApplicationHelper
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  #
+    #
   # Ideally we don't want inline script tags, however there is a fair chunk of
   # legacy code, some of which isn't trivial to migrate, as it uses erb to
   # generate javascript, rather than using data-attributes.

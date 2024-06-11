@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Studies::InformationController do
-  let(:study) { create :study }
+  let(:study) { create(:study) }
   let(:user) { create(:user) }
 
   before { session[:user] = user.id }
@@ -20,10 +20,10 @@ RSpec.describe Studies::InformationController do
   end
 
   describe '#show with requests' do
-    let(:request_type1) { create :request_type }
-    let(:request_type2) { create :request_type }
-    let(:request_type3) { create :request_type }
-    let(:well) { create :untagged_well, study: study }
+    let(:request_type1) { create(:request_type) }
+    let(:request_type2) { create(:request_type) }
+    let(:request_type3) { create(:request_type) }
+    let(:well) { create(:untagged_well, study:) }
 
     before do
       request_type3

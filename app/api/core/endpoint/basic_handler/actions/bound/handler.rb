@@ -6,14 +6,14 @@ class Core::Endpoint::BasicHandler::Actions::Bound::Handler < Core::Endpoint::Ba
   include Core::Endpoint::BasicHandler::Actions::InnerAction
   include Core::Endpoint::BasicHandler::Paged
 
-  def initialize(owner, name, options, &block)
-    super(name, options, &block)
+  def initialize(owner, name, options, &)
+    super(name, options, &)
     @owner = owner
   end
 
   def owner_for(_request, object)
     endpoint_for_object(object).instance_handler
-  rescue => e
+  rescue StandardError => e
     @owner
   end
   private :owner_for

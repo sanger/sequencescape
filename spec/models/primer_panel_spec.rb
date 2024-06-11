@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe PrimerPanel do
-  let(:primer_panel) { create :primer_panel }
+  let(:primer_panel) { create(:primer_panel) }
 
   it 'validates a valid primer panel' do
     expect(primer_panel).to be_valid

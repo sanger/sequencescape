@@ -54,7 +54,7 @@ class StudyReport < ApplicationRecord
   end
 
   def schedule_report
-    Delayed::Job.enqueue StudyReportJob.new(id), priority: priority
+    Delayed::Job.enqueue StudyReportJob.new(id), priority:
   end
 
   def priority

@@ -15,7 +15,7 @@
 # All {Sample samples} in a given manifest will initially belong to a single
 # {Study}, although it is possible for them to become associated with additional
 # studies over time.
-class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
+class SampleManifest < ApplicationRecord
   include Uuid::Uuidable
   include ModelExtensions::SampleManifest
   include SampleManifest::BarcodePrinterBehaviour
@@ -57,9 +57,11 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   self.spreadsheet_header_row = 8
 
   # Needed for the UI to work!
-  def barcode_printer; end
+  def barcode_printer
+  end
 
-  def template; end
+  def template
+  end
 
   belongs_to :supplier, optional: false
   belongs_to :study, optional: false
@@ -96,8 +98,8 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
            to: :core_behaviour
   delegate :name, to: :supplier, prefix: true
 
-  def truncate_errors # rubocop:todo Metrics/MethodLength
-    if last_errors && last_errors.join.length > LIMIT_ERROR_LENGTH
+  def truncate_errors
+    return unless last_errors && last_errors.join.length > LIMIT_ERROR_LENGTH
       # First we truncate individual error messages. This ensures that it the first message is already
       # longer than out max limit, we still show something.
       full_last_errors = last_errors.map { |error| error.truncate(INDIVIDUAL_ERROR_LIMIT) }
@@ -114,7 +116,7 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
       end
 
       self.last_errors = full_last_errors
-    end
+    
   end
 
   def default_asset_type
@@ -185,12 +187,12 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def create_sample(sanger_sample_id)
     Sample
-      .create!(name: sanger_sample_id, sanger_sample_id: sanger_sample_id, sample_manifest: self)
+      .create!(name: sanger_sample_id, sanger_sample_id:, sample_manifest: self)
       .tap { |sample| sample.events.created_using_sample_manifest!(user) }
   end
 
   def created_broadcast_event
-    BroadcastEvent::SampleManifestCreated.create!(seed: self, user: user)
+    BroadcastEvent::SampleManifestCreated.create!(seed: self, user:)
   end
 
   def updated_broadcast_event(user_updating_manifest, updated_samples_ids)

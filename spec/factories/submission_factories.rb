@@ -18,12 +18,12 @@ FactoryBot.define do
 
     submission_class_name { LinearSubmission.name }
     sequence(:name) { |i| "Template #{i}" }
-    submission_parameters { { request_type_ids_list: request_type_ids_list } }
+    submission_parameters { { request_type_ids_list: } }
     product_catalogue { |pc| pc.association(:single_product_catalogue) }
 
     factory :cherrypick_submission_template do
       name { 'Cherrypick' }
-      request_types { create_list :cherrypick_request_type, 1 }
+      request_types { create_list(:cherrypick_request_type, 1) }
     end
 
     factory :limber_wgs_submission_template do
@@ -69,7 +69,7 @@ FactoryBot.define do
     request_types { [create(:request_type).id] }
 
     factory :library_order do
-      assets { create_list :untagged_well, 1 }
+      assets { create_list(:untagged_well, 1) }
       request_types { [create(:library_request_type).id] }
       request_options do
         {
@@ -80,7 +80,7 @@ FactoryBot.define do
         }
       end
       template_name { 'test_template_name' }
-      order_role { create :order_role }
+      order_role { create(:order_role) }
     end
   end
 

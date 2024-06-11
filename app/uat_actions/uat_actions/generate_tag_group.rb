@@ -41,7 +41,7 @@ class UatActions::GenerateTagGroup < UatActions
   validates :size,
             numericality: {
               less_than_or_equal_to: ->(record) { record.existing_tags },
-              message: 'is larger than the tag group with this name which already exists (%{count})'
+              message: 'is larger than the tag group with this name which already exists (%<count>s)'
             },
             if: :existing_tag_group
 
@@ -70,13 +70,13 @@ class UatActions::GenerateTagGroup < UatActions
   end
 
   def create_tag_group(name, adapter_type)
-    tag_group = TagGroup.create!(name: name, adapter_type_id: adapter_type&.id)
+    tag_group = TagGroup.create!(name:, adapter_type_id: adapter_type&.id)
 
     tag_group.tags.build(
       OligoEnumerator
         .new(size.to_i, tag_sequence_offset.to_i)
         .each_with_index
-        .map { |oligo, map_id| { oligo: oligo, map_id: map_id + 1 } }
+        .map { |oligo, map_id| { oligo:, map_id: map_id + 1 } }
     )
     tag_group.save
   end
@@ -90,7 +90,7 @@ class UatActions::GenerateTagGroup < UatActions
   # Any helper methods
 
   def existing_tag_group
-    @tag_group ||= TagGroup.find_by(name: name)
+    @tag_group ||= TagGroup.find_by(name:)
   end
 
   #

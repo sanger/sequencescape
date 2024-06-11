@@ -127,7 +127,7 @@ module AuthenticatedSystem
     return unless cookies[:auth_token] && !logged_in?
 
     user = User.find_by(remember_token: cookies[:auth_token])
-    if user && user.remember_token?
+    return unless user && user.remember_token?
       user.remember_me
       self.current_user = user
       cookies[:auth_token] = {
@@ -135,7 +135,7 @@ module AuthenticatedSystem
         expires: self.current_user.remember_token_expires_at
       }
       flash[:notice] = 'Logged in successfully'
-    end
+    
   end
 
   private

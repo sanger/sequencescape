@@ -30,7 +30,7 @@ shared_examples_for 'ApiKeyAuthenticatable' do
     let(:headers) { client_headers.merge!({ 'X-Sequencescape-Client-Id': 'invalid-key' }) }
 
     it 'gets an unauthorized response' do
-      api_get base_endpoint, headers: headers
+      api_get(base_endpoint, headers:)
 
       expect(response).to have_http_status(:unauthorized)
     end
@@ -38,7 +38,7 @@ shared_examples_for 'ApiKeyAuthenticatable' do
     it 'logs the request with client details' do
       allow(Rails.logger).to receive(:info)
 
-      api_get base_endpoint, headers: headers
+      api_get(base_endpoint, headers:)
 
       expect(Rails.logger).to have_received(:info).with(/Request made with invalid API key/)
       expect(Rails.logger).to have_received(:info).with(/:remote_ip=>"127.0.0.1"/)
@@ -55,7 +55,7 @@ shared_examples_for 'ApiKeyAuthenticatable' do
     let(:headers) { client_headers.merge!({ 'X-Sequencescape-Client-Id': api_application.key }) }
 
     it 'gets a success response' do
-      api_get base_endpoint, headers: headers
+      api_get(base_endpoint, headers:)
 
       expect(response).to have_http_status(:success)
     end

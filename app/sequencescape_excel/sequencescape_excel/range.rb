@@ -136,10 +136,10 @@ module SequencescapeExcel
     # classes of the module.
     def references
       {
-        first_cell_reference: first_cell_reference,
-        reference: reference,
-        fixed_reference: fixed_reference,
-        absolute_reference: absolute_reference
+        first_cell_reference:,
+        reference:,
+        fixed_reference:,
+        absolute_reference:
       }
     end
 

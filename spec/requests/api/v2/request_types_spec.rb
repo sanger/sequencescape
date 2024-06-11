@@ -25,7 +25,7 @@ describe 'RequestTypes API', with: :api_v2 do
   end
 
   context 'with a request_type' do
-    let(:resource_model) { create :request_type }
+    let(:resource_model) { create(:request_type) }
 
     it 'sends an individual request_type' do
       api_get "#{base_endpoint}/#{resource_model.id}"

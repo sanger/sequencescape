@@ -17,7 +17,7 @@
 #         and shows the qc information for plates.
 class AssetsController < ApplicationController
   # rubocop:todo Metrics/PerceivedComplexity, Metrics/AbcSize
-  def show # rubocop:todo Metrics/CyclomaticComplexity, Metrics/MethodLength
+  def show # rubocop:todo Metrics/CyclomaticComplexity
     # LEGACY API FOR CGP to allow switch-over
     # In future they will use the recpetacles/:id/parent
     if request.format.xml?
@@ -60,7 +60,7 @@ class AssetsController < ApplicationController
 
   # JG 23/12/2020: I can't find any links to this page, and think we can probably lose it.
   def lookup # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
-    if params[:asset] && params[:asset][:barcode]
+    return unless params[:asset] && params[:asset][:barcode]
       @assets = Labware.with_barcode(params[:asset][:barcode]).limit(50).page(params[:page])
 
       case @assets.size
@@ -78,6 +78,6 @@ class AssetsController < ApplicationController
           format.xml { render xml: @assets.to_xml }
         end
       end
-    end
+    
   end
 end

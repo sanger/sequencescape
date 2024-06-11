@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 describe 'Edit a study' do
-  let(:user) { create :admin }
-  let!(:study) { create :study }
+  let(:user) { create(:admin) }
+  let!(:study) { create(:study) }
 
   it 'edit open study', :js do
     study.study_metadata.bam = false
@@ -36,7 +36,7 @@ describe 'Edit a study' do
   end
 
   context 'when data release strategy is Not Applicable' do
-    let!(:study) { create :not_app_study }
+    let!(:study) { create(:not_app_study) }
 
     it 'does not error when setting strategy to Open', :js do
       study.study_metadata.data_release_strategy = 'not applicable'

@@ -3,16 +3,16 @@
 require 'rails_helper'
 
 describe 'Manage users' do
-  let(:user) { create :admin, email: 'login@example.com' }
-  let(:test_user) { create :user, login: 'john', first_name: 'John', last_name: 'Smith' }
-  let(:primer_panel) { create :primer_panel, name: 'Primer Panel 1' }
+  let(:user) { create(:admin, email: 'login@example.com') }
+  let(:test_user) { create(:user, login: 'john', first_name: 'John', last_name: 'Smith') }
+  let(:primer_panel) { create(:primer_panel, name: 'Primer Panel 1') }
 
   before do
     test_user # is_created
-    create :study, name: 'Study Name', state: 'active'
-    create :project, name: 'Project Name', state: 'active'
-    create :role, name: 'lab_manager'
-    create :role, name: 'manager'
+    create(:study, name: 'Study Name', state: 'active')
+    create(:project, name: 'Project Name', state: 'active')
+    create(:role, name: 'lab_manager')
+    create(:role, name: 'manager')
     login_user user
     click_link 'Admin'
     expect(page).to have_content('Administration')

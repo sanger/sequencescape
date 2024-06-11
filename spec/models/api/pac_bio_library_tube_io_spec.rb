@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Api::PacBioLibraryTubeIO do
   subject do
-    create :pac_bio_library_tube,
+    create(:pac_bio_library_tube,
            :scanned_into_lab,
            concentration: 8.0,
            volume: 12.0,
@@ -14,7 +14,7 @@ RSpec.describe Api::PacBioLibraryTubeIO do
              smrt_cells_available: 5,
              movie_length: 100,
              protocol: 'xyzzy'
-           }
+           })
   end
 
   let(:expected_json) do

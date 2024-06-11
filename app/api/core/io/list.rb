@@ -3,9 +3,11 @@ class Core::Io::List
   include Core::Benchmarking
 
   def initialize(command, objects)
-    @command, @container = command, command.send(:container)
+    @command = command
+    @container = command.send(:container)
     @objects = objects.map { |o| Core::Io::Registry.instance.lookup(o.class).create!(@container, o) }
-    @current_page, @last_page = [1, objects.current_page].max, [1, objects.total_pages].max
+    @current_page = [1, objects.current_page].max
+    @last_page = [1, objects.total_pages].max
   end
 
   delegate :action_for_page, to: :@command

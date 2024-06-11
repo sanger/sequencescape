@@ -5,6 +5,6 @@ FactoryBot.define do
     sequence(:key) { |n| "some_key_#{n}" }
     sequence(:value) { |n| "some_value_#{n}" }
 
-    metadatable { create :request }
+    metadatable { create(:request) }
   end
 end

@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :asset_group do
-    name { |_a| generate :asset_group_name }
+    name { |_a| generate(:asset_group_name) }
     study
 
     transient do
@@ -11,7 +11,7 @@ FactoryBot.define do
       asset_attributes { {} }
     end
 
-    assets { create_list asset_type, asset_count, asset_attributes }
+    assets { create_list(asset_type, asset_count, asset_attributes) }
   end
 
   factory :asset_group_asset do

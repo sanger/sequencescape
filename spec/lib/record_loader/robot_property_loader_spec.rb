@@ -18,8 +18,8 @@ RSpec.describe RecordLoader::RobotPropertyLoader, :loader, type: :model do
     let(:selected_files) { 'robot_properties_example' }
 
     before do
-      create :robot, name: 'Robot 1'
-      create :robot, name: 'Robot 2'
+      create(:robot, name: 'Robot 1')
+      create(:robot, name: 'Robot 2')
     end
 
     it 'creates seven records' do

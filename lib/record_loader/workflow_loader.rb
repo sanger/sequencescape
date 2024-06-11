@@ -10,7 +10,7 @@ module RecordLoader
     config_folder 'workflows'
 
     def create_or_update!(name, options)
-      Workflow.create_with(options).find_or_create_by!(name: name)
+      Workflow.create_with(options).find_or_create_by!(name:)
     end
   end
 end

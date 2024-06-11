@@ -52,10 +52,10 @@ module Tasks::AddSpikedInControlHandler
       lane.direct_spiked_in_buffer = nil
       lane.direct_spiked_in_buffer = phi_x_tube if phi_x_tube
       LabEvent.create!(
-        batch: batch,
+        batch:,
         description: task.name,
         descriptors: descriptors_for(phi_x_tube),
-        user: user,
+        user:,
         eventful: request
       )
     end

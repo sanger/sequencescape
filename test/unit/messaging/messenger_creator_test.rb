@@ -5,13 +5,13 @@ require 'test_helper'
 class MessengerCreatorTest < ActiveSupport::TestCase
   context '#messenger_creator' do
     setup do
-      @purpose = FactoryBot.build :plate_purpose
-      @plate = FactoryBot.build :plate, plate_purpose: @purpose
+      @purpose = FactoryBot.build(:plate_purpose)
+      @plate = FactoryBot.build(:plate, plate_purpose: @purpose)
     end
 
     context 'with SelfFinder' do
       setup do
-        @messenger_creator = FactoryBot.build :messenger_creator, purpose: @purpose
+        @messenger_creator = FactoryBot.build(:messenger_creator, purpose: @purpose)
         @start_count = Messenger.count
       end
 
@@ -33,7 +33,7 @@ class MessengerCreatorTest < ActiveSupport::TestCase
     context 'with WellFinder' do
       setup do
         @messenger_creator =
-          build :messenger_creator, purpose: @purpose, target_finder_class: 'WellFinder', root: 'well'
+          build(:messenger_creator, purpose: @purpose, target_finder_class: 'WellFinder', root: 'well')
         @start_count = Messenger.count
         @plate.save
         3.times { @plate.wells << build(:well) }

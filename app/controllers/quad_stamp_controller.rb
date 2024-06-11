@@ -13,7 +13,7 @@ class QuadStampController < ApplicationController
     end
   end
 
-  def create # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def create # rubocop:todo Metrics/AbcSize
     @user = User.find_with_barcode_or_swipecard_code(params[:quad_creator][:user_barcode])
     @target_purpose = Purpose.find(params[:quad_creator][:target_purpose_id])
     @quad_creator =
@@ -30,7 +30,7 @@ class QuadStampController < ApplicationController
 
   private
 
-  def print_labels # rubocop:todo Metrics/MethodLength
+  def print_labels
     print_job =
       LabelPrinter::PrintJob.new(
         params.dig(:barcode_printer, :name),
@@ -55,9 +55,9 @@ class QuadStampController < ApplicationController
   def set_barcode_printers
     @barcode_printers =
       BarcodePrinter.where(barcode_printer_type_id: BarcodePrinterType384DoublePlate.all).order('name asc')
-    if @barcode_printers.blank?
+    return if @barcode_printers.present?
       @barcode_printers = BarcodePrinter.where(barcode_printer_type_id: BarcodePrinterType96Plate.all).order('name asc')
-    end
+    
   end
 
   def parent_barcodes

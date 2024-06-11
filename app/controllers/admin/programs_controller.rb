@@ -7,13 +7,15 @@ class Admin::ProgramsController < ApplicationController
     @programs = Program.all
   end
 
-  def show; end
+  def show
+  end
 
   def new
     @program = Program.new
   end
 
-  def edit; end
+  def edit
+  end
 
   def create
     @program = Program.new(program_params)

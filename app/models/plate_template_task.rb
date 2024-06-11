@@ -11,8 +11,7 @@ class PlateTemplateTask < Task
       @plate_size = plate_size
     end
 
-    # rubocop:todo Metrics/MethodLength
-    def layout # rubocop:todo Metrics/AbcSize
+        def layout # rubocop:todo Metrics/AbcSize
       barcodes = Set.new
       plates =
         mapped_plate_wells.each_value.map do |mapped_wells|
@@ -31,9 +30,7 @@ class PlateTemplateTask < Task
       [plates, barcodes.to_a]
     end
 
-    # rubocop:enable Metrics/MethodLength
-
-    private
+        private
 
     def mapped_plate_wells
       (Hash.new { |h, k| h[k] = {} }).tap do |parsed_plates|

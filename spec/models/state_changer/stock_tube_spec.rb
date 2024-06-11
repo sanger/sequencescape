@@ -6,21 +6,21 @@ require 'spec_helper'
 RSpec.describe StateChanger::StockTube do
   let(:state_changer) do
     described_class.new(
-      labware: labware,
-      target_state: target_state,
-      user: user,
-      customer_accepts_responsibility: customer_accepts_responsibility
+      labware:,
+      target_state:,
+      user:,
+      customer_accepts_responsibility:
     )
   end
 
-  let(:user) { build_stubbed :user }
+  let(:user) { build_stubbed(:user) }
   let(:customer_accepts_responsibility) { false }
-  let(:labware) { create :tube }
-  let!(:transfer_request) { create :transfer_request, target_asset: labware.receptacle, state: transfer_request_state }
-  let!(:request) { create :request, target_asset: labware.receptacle, state: request_state }
+  let(:labware) { create(:tube) }
+  let!(:transfer_request) { create(:transfer_request, target_asset: labware.receptacle, state: transfer_request_state) }
+  let!(:request) { create(:request, target_asset: labware.receptacle, state: request_state) }
 
   before do
-    labware.receptacle.aliquots << build(:aliquot, request: request)
+    labware.receptacle.aliquots << build(:aliquot, request:)
     state_changer.update_labware_state
   end
 

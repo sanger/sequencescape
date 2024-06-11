@@ -7,7 +7,7 @@ FactoryBot.define do
     services { %i[SERVICE_1 SERVICE_2] }
     ebi_name { :ebi_tag_1 }
 
-    initialize_with { new(name: name, groups: groups, services: services, ebi_name: ebi_name) }
+    initialize_with { new(name:, groups:, services:, ebi_name:) }
     skip_create
 
     factory :sample_taxon_id_accession_tag do

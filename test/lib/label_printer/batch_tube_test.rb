@@ -7,16 +7,16 @@ class BatchTubeTest < ActiveSupport::TestCase
 
   context 'stock' do
     should 'return the right tubes and top line' do
-      library_tube_with_stock_tube = create :library_tube
-      stock_library_tube = create :stock_library_tube
+      library_tube_with_stock_tube = create(:library_tube)
+      stock_library_tube = create(:stock_library_tube)
       stock_library_tube.children << library_tube_with_stock_tube
 
-      request = create :library_creation_request, target_asset: library_tube_with_stock_tube
-      @batch = create :batch
+      request = create(:library_creation_request, target_asset: library_tube_with_stock_tube)
+      @batch = create(:batch)
       @batch.requests << request
 
       printable = { request.id => 'on' }
-      options = { count: '1', printable: printable, batch: batch, stock: true }
+      options = { count: '1', printable:, batch:, stock: true }
       @tube_label = LabelPrinter::Label::BatchTube.new(options)
 
       assert_equal 1, tube_label.tubes.count
@@ -27,12 +27,12 @@ class BatchTubeTest < ActiveSupport::TestCase
 
   context 'no stock' do
     should 'return the right tubes and top line' do
-      request = create :library_creation_request, target_asset: (create :library_tube, barcode: '111')
-      @batch = create :batch
+      request = create(:library_creation_request, target_asset: create(:library_tube, barcode: '111'))
+      @batch = create(:batch)
       @batch.requests << request
 
       printable = { request.id => 'on' }
-      options = { count: '1', printable: printable, batch: batch, stock: false }
+      options = { count: '1', printable:, batch:, stock: false }
       @tube_label = LabelPrinter::Label::BatchTube.new(options)
 
       assert_equal 1, tube_label.tubes.count

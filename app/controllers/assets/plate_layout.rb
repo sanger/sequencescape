@@ -10,7 +10,8 @@ class AssetsController < ApplicationController
     attr_reader :width, :height, :wells
 
     def initialize(width, height)
-      @width, @height = width, height
+      @width = width
+      @height = height
       @wells = (1..@width * @height).map { |_| DEFAULT_WELL.dup }
     end
 
@@ -43,12 +44,12 @@ class AssetsController < ApplicationController
 
     def good_well_at?(row, column)
       well = well_at(row, column)
-      %i[request asset].all? { |field| not well[field].nil? }
+      %i[request asset].all? { |field| !well[field].nil? }
     end
 
     def bad_well_at?(row, column)
       well = well_at(row, column)
-      not well[:error].nil?
+      !well[:error].nil?
     end
 
     def assert_valid_location(location_id)

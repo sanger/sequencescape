@@ -10,7 +10,7 @@ module RecordLoader
 
     def create_or_update!(name, options)
       # find the robot by name
-      r = Robot.find_by(name: name)
+      r = Robot.find_by(name:)
       return if r.blank?
 
       # find or create each property

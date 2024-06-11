@@ -15,13 +15,13 @@ class Plate::SampleTubeFactory < SimpleDelegator
   def create_sample_tubes_and_print_barcodes(barcode_printer)
     sample_tubes = create_sample_tubes
     print_job =
-      LabelPrinter::PrintJob.new(barcode_printer.name, LabelPrinter::Label::PlateToTubes, sample_tubes: sample_tubes)
+      LabelPrinter::PrintJob.new(barcode_printer.name, LabelPrinter::Label::PlateToTubes, sample_tubes:)
     print_job.execute
 
     sample_tubes
   end
 
-  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
+  # rubocop:todo Metrics/AbcSize
   def self.create_sample_tubes_asset_group_and_print_barcodes(plates, barcode_printer, study)
     return nil if plates.empty?
 
@@ -44,5 +44,5 @@ class Plate::SampleTubeFactory < SimpleDelegator
 
     asset_group
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize
 end

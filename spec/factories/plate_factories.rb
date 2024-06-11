@@ -32,7 +32,7 @@ FactoryBot.define do
         evaluator.well_locations.map do |map|
           build(
             evaluator.well_factory,
-            map: map,
+            map:,
             study: evaluator.studies_cycle.next,
             project: evaluator.projects_cycle.next
           )
@@ -43,7 +43,7 @@ FactoryBot.define do
   trait :with_submissions do
     transient do
       submission_count { 1 }
-      submissions { create_list :submission, submission_count }
+      submissions { create_list(:submission, submission_count) }
       submission_cycle { submissions.cycle }
     end
     after(:create) do |plate, evaluator|
@@ -58,7 +58,7 @@ FactoryBot.define do
     transient { barcode { nil } }
 
     # May be a nicer way of doing this?
-    sanger_barcode { barcode.nil? ? build(:plate_barcode) : build(:plate_barcode, barcode: barcode) }
+    sanger_barcode { barcode.nil? ? build(:plate_barcode) : build(:plate_barcode, barcode:) }
   end
 
   factory :plate, traits: %i[plate_barcode with_wells] do
@@ -73,8 +73,8 @@ FactoryBot.define do
 
     factory :target_plate do
       transient do
-        parent { build :input_plate }
-        submission { build :submission }
+        parent { build(:input_plate) }
+        submission { build(:submission) }
       end
 
       after(:build) do |plate, evaluator|
@@ -85,10 +85,10 @@ FactoryBot.define do
           outer_request =
             well_hash[well.map_description].requests.detect { |r| r.submission_id == evaluator.submission.id }
 
-          create :transfer_request,
+          create(:transfer_request,
                  asset: well_hash[well.map_description],
                  target_asset: well,
-                 outer_request: outer_request
+                 outer_request:)
         end
       end
     end
@@ -152,7 +152,7 @@ FactoryBot.define do
       after(:create) do |plate, evaluator|
         plate.wells =
           evaluator.occupied_map_locations.map.with_index do |map, i|
-            create(:well_for_location_report, map: map, study: evaluator.studies[i], project: nil)
+            create(:well_for_location_report, map:, study: evaluator.studies[i], project: nil)
           end
       end
     end
@@ -163,7 +163,7 @@ FactoryBot.define do
         well_factory { :tagged_well }
       end
       plate_purpose { create(:fluidigm_192_purpose) }
-      barcodes { build_list :fluidigm, 1 }
+      barcodes { build_list(:fluidigm, 1) }
       size { 192 }
     end
   end
@@ -179,7 +179,7 @@ FactoryBot.define do
 
     # A plate that has exactly the right number of wells!
     factory :pooling_plate do
-      plate_purpose { create :pooling_plate_purpose }
+      plate_purpose { create(:pooling_plate_purpose) }
       transient do
         well_count { 6 }
         well_factory { :tagged_well }
@@ -276,7 +276,7 @@ FactoryBot.define do
   factory :strip_tube do
     name { 'Strip_tube' }
     size { 8 }
-    plate_purpose { create :strip_tube_purpose }
-    after(:create) { |st| st.wells = st.maps.map { |map| create(:well, map: map) } }
+    plate_purpose { create(:strip_tube_purpose) }
+    after(:create) { |st| st.wells = st.maps.map { |map| create(:well, map:) } }
   end
 end

@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 describe '/api/1/tube/purposes' do
-  let(:authorised_app) { create :api_application }
-  let(:parent_purpose) { create :plate_purpose }
+  let(:authorised_app) { create(:api_application) }
+  let(:parent_purpose) { create(:plate_purpose) }
 
   let(:payload) do
     '{

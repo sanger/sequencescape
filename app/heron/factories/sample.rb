@@ -101,11 +101,11 @@ module Heron
       end
 
       def params_for_sample_creation
-        { name: sanger_sample_id, sanger_sample_id: sanger_sample_id }.merge(params_for_sample_table)
+        { name: sanger_sample_id, sanger_sample_id: }.merge(params_for_sample_table)
       end
 
       def params_for_aliquot_creation
-        { sample: sample, study: study }.merge(@params.dig(:aliquot) || {})
+        { sample:, study: }.merge(@params.dig(:aliquot) || {})
       end
 
       def params_for_sample_table

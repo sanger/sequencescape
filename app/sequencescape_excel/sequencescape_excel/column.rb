@@ -88,7 +88,7 @@ module SequencescapeExcel
     end
 
     def update_metadata(metadata, value)
-      metadata.send("#{updates}=", value) if metadata_field?
+      metadata.send(:"#{updates}=", value) if metadata_field?
     end
 
     def attribute_value(detail)
@@ -118,13 +118,13 @@ module SequencescapeExcel
     # Update the column validation using the passed worksheet and found range.
     # Update the conditional formatting based on a range and worksheet.
     def update(first_row, last_row, ranges, worksheet)
-      self.range = { first_column: number, first_row: first_row, last_row: last_row }
+      self.range = { first_column: number, first_row:, last_row: }
 
       range = ranges.find_by(range_name) || NullRange.new
-      validation.update(range: range, reference: self.range.reference, worksheet: worksheet)
+      validation.update(range:, reference: self.range.reference, worksheet:)
 
       conditional_formattings.update(
-        self.range.references.merge(absolute_reference: range.absolute_reference, worksheet: worksheet)
+        self.range.references.merge(absolute_reference: range.absolute_reference, worksheet:)
       )
 
       @updated = true

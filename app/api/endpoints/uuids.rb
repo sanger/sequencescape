@@ -46,7 +46,7 @@ class Endpoints::Uuids < Core::Endpoint::Base
       record.errors.add(field, 'should be a tuple') unless value.is_a?(Hash)
     end
 
-    def self.attribute_delegate(*names) # rubocop:todo Metrics/MethodLength
+    def self.attribute_delegate(*names)
       names.each do |name|
         line = __LINE__ + 1
         class_eval(
@@ -58,7 +58,7 @@ class Endpoints::Uuids < Core::Endpoint::Base
           protected #{name.to_sym.inspect}
         ",
           __FILE__,
-          line
+          __LINE__ - 8
         )
       end
     end

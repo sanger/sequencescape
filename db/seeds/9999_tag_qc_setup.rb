@@ -48,9 +48,9 @@ SequencingPipeline
           workflow.item_limit = 1
         end
         .tap do |workflow|
-          t1 = SetDescriptorsTask.create!(name: 'Specify Dilution Volume', sorted: 0, workflow: workflow)
+          t1 = SetDescriptorsTask.create!(name: 'Specify Dilution Volume', sorted: 0, workflow:)
           Descriptor.create!(kind: 'Text', sorter: 1, name: 'Concentration', task: t1)
-          t2 = SetDescriptorsTask.create!(name: 'Cluster Generation', sorted: 0, workflow: workflow)
+          t2 = SetDescriptorsTask.create!(name: 'Cluster Generation', sorted: 0, workflow:)
           Descriptor.create!(kind: 'Text', sorter: 1, name: 'Chip barcode', task: t2)
           Descriptor.create!(kind: 'Text', sorter: 2, name: 'Cartridge barcode', task: t2)
           Descriptor.create!(kind: 'Text', sorter: 4, name: 'Machine name', task: t2)

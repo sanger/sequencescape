@@ -2,7 +2,7 @@
 
 # A plate creator creates a stamp of a parent plate into one or more children
 # A stamp is the complete transfer of content, maintaining the same well locations.
-class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
+class Plate::Creator < ApplicationRecord
   PlateCreationError = Class.new(StandardError)
 
   # Join between the {Plate::Creator}, and the child purposes if can create
@@ -81,8 +81,8 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
           LabelPrinter::PrintJob.new(
             barcode_printer.name,
             LabelPrinter::Label::PlateCreator,
-            plates: plates,
-            plate_purpose: plate_purpose,
+            plates:,
+            plate_purpose:,
             user_login: scanned_user.login
           )
 
@@ -131,7 +131,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
         barcode_printer.name,
         LabelPrinter::Label::PlateCreator,
         plates: created_plates.pluck(:destinations).flatten.compact,
-        plate_purpose: plate_purpose,
+        plate_purpose:,
         user_login: scanned_user.login
       )
 
@@ -143,7 +143,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   private
 
-  def create_asset_group(created_plates) # rubocop:todo Metrics/MethodLength
+  def create_asset_group(created_plates)
     group = nil
     all_wells = created_plates.map { |hash| hash[:destinations].map(&:wells) }.flatten
 
@@ -155,7 +155,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     ActiveRecord::Base.transaction do
       # TO DO: handle exceptions from this?
-      group = AssetGroup.create!(study: study, name: asset_group_name)
+      group = AssetGroup.create!(study:, name: asset_group_name)
       group.assets.concat(all_wells)
     end
 
@@ -188,7 +188,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def tube_rack_to_plate_factories(tube_racks, plate_purpose)
-    tube_racks.map { |rack| ::Heron::Factories::PlateFromRack.new(tube_rack: rack, plate_purpose: plate_purpose) }
+    tube_racks.map { |rack| ::Heron::Factories::PlateFromRack.new(tube_rack: rack, plate_purpose:) }
   end
 
   def can_create_plates?(source_plate)
@@ -239,7 +239,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # rubocop:enable Metrics/MethodLength
 
   def add_created_plates(source, destinations)
-    created_plates.push(source: source, destinations: destinations)
+    created_plates.push(source:, destinations:)
   end
 
   # rubocop:todo Metrics/MethodLength

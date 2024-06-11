@@ -4,24 +4,24 @@ require 'rails_helper'
 
 RSpec.describe Api::AliquotIO do
   subject do
-    create :aliquot,
+    create(:aliquot,
            receptacle: well,
-           sample: sample,
-           study: study,
-           project: project,
+           sample:,
+           study:,
+           project:,
            library: well,
-           tag: tag,
+           tag:,
            insert_size_from: 100,
            insert_size_to: 200,
-           bait_library: bait_library
+           bait_library:)
   end
 
-  let(:well) { create :empty_well }
-  let(:sample) { create :sample }
-  let(:study) { create :study }
-  let(:project) { create :project }
-  let(:tag) { create :tag }
-  let(:bait_library) { create :bait_library }
+  let(:well) { create(:empty_well) }
+  let(:sample) { create(:sample) }
+  let(:study) { create(:study) }
+  let(:project) { create(:project) }
+  let(:tag) { create(:tag) }
+  let(:bait_library) { create(:bait_library) }
 
   let(:expected_json) do
     {
@@ -55,7 +55,7 @@ RSpec.describe Api::AliquotIO do
   it_behaves_like('an IO object')
 
   context 'with minimal data' do
-    subject { create :minimal_aliquot }
+    subject { create(:minimal_aliquot) }
 
     let(:expected_json) do
       {

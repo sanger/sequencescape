@@ -24,11 +24,11 @@ RSpec.describe SequencescapeExcel::Worksheet, :sample_manifest, :sample_manifest
   end
 
   before do
-    create :tag_group, adapter_type: (create :adapter_type, name: 'chromium')
-    create :primer_panel
+    create(:tag_group, adapter_type: create(:adapter_type, name: 'chromium'))
+    create(:primer_panel)
     allow(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode))
 
-    @sample_manifest = create :sample_manifest
+    @sample_manifest = create(:sample_manifest)
     sample_manifest.generate
   end
 
@@ -38,7 +38,7 @@ RSpec.describe SequencescapeExcel::Worksheet, :sample_manifest, :sample_manifest
 
   describe 'validations ranges worksheet' do
     let!(:range_list) { SampleManifestExcel.configuration.ranges.dup }
-    let!(:worksheet) { SequencescapeExcel::Worksheet::RangesWorksheet.new(workbook: workbook, ranges: range_list) }
+    let!(:worksheet) { SequencescapeExcel::Worksheet::RangesWorksheet.new(workbook:, ranges: range_list) }
 
     before { save_file }
 
@@ -46,7 +46,7 @@ RSpec.describe SequencescapeExcel::Worksheet, :sample_manifest, :sample_manifest
       expect(worksheet.axlsx_worksheet).to be_present
     end
 
-    it 'will add ranges to axlsx worksheet' do
+    it 'adds ranges to axlsx worksheet' do
       range = worksheet.ranges.first.last
       range.options.each_with_index { |option, i| expect(spreadsheet.sheet(0).cell(1, i + 1)).to eq(option) }
       expect(spreadsheet.sheet(0).last_row).to eq(worksheet.ranges.count)

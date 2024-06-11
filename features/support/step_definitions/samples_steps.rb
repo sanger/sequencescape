@@ -1,37 +1,37 @@
 # frozen_string_literal: true
 
 Given /^the sample "([^"]+)" has the Taxon ID "([^"]+)"$/ do |name, id|
-  sample = Sample.find_by(name: name) or raise StandardError, "Cannot find sample with name #{name.inspect}"
+  sample = Sample.find_by(name:) or raise StandardError, "Cannot find sample with name #{name.inspect}"
   sample.sample_metadata.sample_taxon_id = id
   sample.save!
 end
 
 Given /^the sample "([^"]+)" has the common name "([^"]*)"$/ do |name, common_name|
-  sample = Sample.find_by(name: name) or raise StandardError, "Cannot find sample with name #{name.inspect}"
+  sample = Sample.find_by(name:) or raise StandardError, "Cannot find sample with name #{name.inspect}"
   sample.sample_metadata.sample_common_name = common_name
   sample.save!
 end
 
 Given /^the sample "([^"]+)" has the gender "([^"]*)"$/ do |name, gender|
-  sample = Sample.find_by(name: name) or raise StandardError, "Cannot find sample with name #{name.inspect}"
+  sample = Sample.find_by(name:) or raise StandardError, "Cannot find sample with name #{name.inspect}"
   sample.sample_metadata.gender = gender
   sample.save!
 end
 
 Given /^the sample "([^"]+)" has the donor id "([^"]*)"$/ do |name, donor_id|
-  sample = Sample.find_by(name: name) or raise StandardError, "Cannot find sample with name #{name.inspect}"
+  sample = Sample.find_by(name:) or raise StandardError, "Cannot find sample with name #{name.inspect}"
   sample.sample_metadata.donor_id = donor_id
   sample.save!
 end
 
 Given /^the sample "([^"]+)" has the phenotype "([^"]*)"$/ do |name, phenotype|
-  sample = Sample.find_by(name: name) or raise StandardError, "Cannot find sample with name #{name.inspect}"
+  sample = Sample.find_by(name:) or raise StandardError, "Cannot find sample with name #{name.inspect}"
   sample.sample_metadata.phenotype = phenotype
   sample.save!
 end
 
 Given /^the reference genome for sample "([^"]+)" is "([^"]+)"$/ do |name, value|
-  sample = Sample.find_by!(name: name)
+  sample = Sample.find_by!(name:)
   ref_genome = ReferenceGenome.find_or_create_by!(name: value)
   sample.sample_metadata.reference_genome = ref_genome
   sample.save!
@@ -45,7 +45,7 @@ Given /^the sample "([^"]+)" belongs to the study "([^"]+)"$/ do |sample_name, s
 end
 
 Then /^the reference genome for the sample "([^"]+)" should be "([^"]+)"$/ do |name, genome|
-  sample = Sample.find_by(name: name) or raise StandardError, "Cannot find sample with name #{name.inspect}"
+  sample = Sample.find_by(name:) or raise StandardError, "Cannot find sample with name #{name.inspect}"
   assert_equal(genome, sample.sample_metadata.reference_genome.name)
 end
 
@@ -100,26 +100,26 @@ Given /^the attribute "(.*?)" of the sample "(.*?)" is "(.*?)"$/ do |attr_name, 
 end
 
 Then /^the sample "([^"]+)" should exist$/ do |name|
-  assert_not_nil(Sample.find_by(name: name), "The sample #{name.inspect} does not exist")
+  assert_not_nil(Sample.find_by(name:), "The sample #{name.inspect} does not exist")
 end
 
 Then /^the sample "([^"]+)" should have an associated sample tube$/ do |name|
-  sample = Sample.find_by(name: name) or raise StandardError, "Cannot find sample with name #{name.inspect}"
+  sample = Sample.find_by(name:) or raise StandardError, "Cannot find sample with name #{name.inspect}"
   assert(!sample.assets.empty?, 'No associated sample tubes')
 end
 
 When /^I get the XML for the sample "([^"]+)"$/ do |name|
-  sample = Sample.find_by(name: name) or raise StandardError, "Cannot find sample with name #{name.inspect}"
+  sample = Sample.find_by(name:) or raise StandardError, "Cannot find sample with name #{name.inspect}"
   visit(url_for(controller: 'samples', action: 'show', id: sample, format: :xml))
 end
 
 Given /^I have a sample called "([^"]*)" with metadata$/ do |name|
-  sample = FactoryBot.create :sample, name: name
+  sample = FactoryBot.create :sample, name:
 end
 
 Given /^the sample "([^"]*)" has a supplier name of "([^"]*)"$/ do |sample_name, supplier_name|
   sample = Sample.find_by(name: sample_name)
-  sample.sample_metadata.update!(supplier_name: supplier_name)
+  sample.sample_metadata.update!(supplier_name:)
 end
 
 Given /^the sample "([^"]+)" is in the (sample tube|well) "([^"]+)"$/ do |sample_name, _asset_type, asset_name|
@@ -127,11 +127,11 @@ Given /^the sample "([^"]+)" is in the (sample tube|well) "([^"]+)"$/ do |sample
   asset = Labware.find_by(name: asset_name).receptacle or
     raise StandardError, "Cannot find sample tube #{asset_name.inspect}"
   asset.aliquots.clear
-  asset.aliquots.create!(sample: sample)
+  asset.aliquots.create!(sample:)
 end
 
 Given(/^the sample "([^"]+)" has the accession number "([^"]+)"$/) do |name, value|
-  sample = Sample.find_by!(name: name)
+  sample = Sample.find_by!(name:)
   sample.sample_metadata.sample_ebi_accession_number = value.presence
   sample.save!
 end
@@ -159,7 +159,7 @@ end
 Given /^sample "([^"]*)" came from a sample manifest$/ do |sample_name|
   sample = Sample.find_by(name: sample_name)
   sample_manifest = FactoryBot.create(:sample_manifest, id: 1)
-  sample.update!(sample_manifest: sample_manifest)
+  sample.update!(sample_manifest:)
 end
 
 Given /^a sample named "([^"]+)" exists for accession/ do |sample_name|
@@ -179,7 +179,7 @@ Given /^the Sanger sample ID of the last sample is "([^"]+)"$/ do |id|
 end
 
 Given /^all samples have a Sanger sample ID based on "([^"]+)"$/ do |id|
-  Sample.all.each_with_index { |sample, index| sample.update!(sanger_sample_id: "#{id}#{'%02d' % (index + 1)}") }
+  Sample.all.each_with_index { |sample, index| sample.update!(sanger_sample_id: "#{id}#{format('%02d', (index + 1))}") }
 end
 
 Given /^the supplier sample name of the last sample is "([^"]+)"$/ do |name|
@@ -188,37 +188,37 @@ Given /^the supplier sample name of the last sample is "([^"]+)"$/ do |name|
 end
 
 Given /^the sample called "([^"]+)" is (#{Sample::GENDERS.join('|')})$/ do |name, gender|
-  sample = Sample.find_by(name: name) or raise StandardError, "Cannot find the sample #{name.inspect}"
-  sample.update!(sample_metadata_attributes: { gender: gender })
+  sample = Sample.find_by(name:) or raise StandardError, "Cannot find the sample #{name.inspect}"
+  sample.update!(sample_metadata_attributes: { gender: })
 end
 
 Given /^the GC content of the sample called "([^"]+)" is (#{Sample::GC_CONTENTS.join('|')})$/ do |name, gc_content|
-  sample = Sample.find_by(name: name) or raise StandardError, "Cannot find the sample #{name.inspect}"
-  sample.update!(sample_metadata_attributes: { gc_content: gc_content })
+  sample = Sample.find_by(name:) or raise StandardError, "Cannot find the sample #{name.inspect}"
+  sample.update!(sample_metadata_attributes: { gc_content: })
 end
 
 Given /^the DNA source of the sample called "([^"]+)" is (#{Sample::DNA_SOURCES.join('|')})$/ do |name, source|
-  sample = Sample.find_by(name: name) or raise StandardError, "Cannot find the sample #{name.inspect}"
+  sample = Sample.find_by(name:) or raise StandardError, "Cannot find the sample #{name.inspect}"
   sample.update!(sample_metadata_attributes: { dna_source: source })
 end
 
 Given /^the SRA status of the sample called "([^"]+)" is (#{Sample::SRA_HOLD_VALUES.join('|')})$/ do |name, sra_status|
-  sample = Sample.find_by(name: name) or raise StandardError, "Cannot find the sample #{name.inspect}"
+  sample = Sample.find_by(name:) or raise StandardError, "Cannot find the sample #{name.inspect}"
   sample.update!(sample_metadata_attributes: { sample_sra_hold: sra_status })
 end
 
 Given /^the sample called "([^"]+)" is (#{Sample::AGE_REGEXP}) old$/o do |name, age|
-  sample = Sample.find_by(name: name) or raise StandardError, "Cannot find the sample #{name.inspect}"
-  sample.update!(sample_metadata_attributes: { age: age })
+  sample = Sample.find_by(name:) or raise StandardError, "Cannot find the sample #{name.inspect}"
+  sample.update!(sample_metadata_attributes: { age: })
 end
 
 Given /^the dosage of the sample called "([^"]+)" is (#{Sample::DOSE_REGEXP})/o do |name, dose|
-  sample = Sample.find_by(name: name) or raise StandardError, "Cannot find the sample #{name.inspect}"
-  sample.update!(sample_metadata_attributes: { dose: dose })
+  sample = Sample.find_by(name:) or raise StandardError, "Cannot find the sample #{name.inspect}"
+  sample.update!(sample_metadata_attributes: { dose: })
 end
 
 Given /^the description of the sample called "([^"]+)" contains quotes/ do |name|
-  sample = Sample.find_by(name: name) or raise StandardError, "Cannot find the sample #{name.inspect}"
+  sample = Sample.find_by(name:) or raise StandardError, "Cannot find the sample #{name.inspect}"
   sample.update!(sample_metadata_attributes: { sample_description: 'something "with" quotes' })
 end
 

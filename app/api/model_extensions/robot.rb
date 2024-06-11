@@ -6,5 +6,4 @@ module ModelExtensions::Robot
     robot_properties.to_h { |prop| [prop.key, prop.value] }
   end
 
-  private
 end

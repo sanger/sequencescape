@@ -17,7 +17,7 @@ FactoryBot.define do
     name { 'PhiX Spiked Buffer' }
     concentration { '9.2' }
     parent_barcode { parent.machine_barcode }
-    parent { create :phi_x_stock_tube }
+    parent { create(:phi_x_stock_tube) }
     volume { '10.0' }
     number { '1' }
   end

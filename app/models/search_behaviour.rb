@@ -27,7 +27,7 @@ module SearchBehaviour
   end
 
   def clazz_search(clazz, query)
-    instance_variable_set("@#{clazz.name.underscore.pluralize}", clazz_query(clazz, query).to_a)
+    instance_variable_set(:"@#{clazz.name.underscore.pluralize}", clazz_query(clazz, query).to_a)
   end
 
   def clazz_query(clazz, query)
@@ -36,13 +36,13 @@ module SearchBehaviour
 
   def each_non_empty_search_result
     searchable_classes.each do |clazz|
-      results = instance_variable_get("@#{clazz.name.underscore.pluralize}")
+      results = instance_variable_get(:"@#{clazz.name.underscore.pluralize}")
       yield(clazz.name.underscore, results) if results.present?
     end
   end
 
   def no_results?
-    searchable_classes.all? { |clazz| instance_variable_get("@#{clazz.name.underscore.pluralize}").blank? }
+    searchable_classes.all? { |clazz| instance_variable_get(:"@#{clazz.name.underscore.pluralize}").blank? }
   end
 
   def query_invalid?

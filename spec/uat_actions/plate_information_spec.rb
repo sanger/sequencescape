@@ -12,7 +12,7 @@ describe UatActions::PlateInformation do
       { plate_barcode: 'SQPD-1', wells_with_aliquots: 'A1, B1, C1' }
     end
 
-    before { create :plate_with_untagged_wells, sample_count: 3, barcode: 'SQPD-1' }
+    before { create(:plate_with_untagged_wells, sample_count: 3, barcode: 'SQPD-1') }
 
     it 'can be performed' do
       expect(uat_action.perform).to be true
@@ -29,7 +29,7 @@ describe UatActions::PlateInformation do
       { plate_barcode: 'SQPD-2', wells_with_aliquots: '' }
     end
 
-    before { create :plate_with_empty_wells, well_count: 3, barcode: 'SQPD-2' }
+    before { create(:plate_with_empty_wells, well_count: 3, barcode: 'SQPD-2') }
 
     it 'can be performed' do
       expect(uat_action.perform).to be true

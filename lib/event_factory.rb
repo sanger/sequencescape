@@ -16,7 +16,7 @@ class EventFactory
         eventful_type: 'Project',
         message: 'Project registered',
         created_by: user.login,
-        content: content,
+        content:,
         of_interest_to: 'administrators'
       )
     event.save
@@ -33,7 +33,7 @@ class EventFactory
         eventful_type: 'Project',
         message: 'Project approved',
         created_by: user.login,
-        content: content,
+        content:,
         of_interest_to: 'administrators'
       )
     event.save
@@ -48,7 +48,7 @@ class EventFactory
         eventful_type: 'Project',
         message: "Refund #{reference}",
         created_by: user.login,
-        content: content,
+        content:,
         of_interest_to: 'administrators'
       )
     event.save
@@ -59,7 +59,6 @@ class EventFactory
   #################################
 
   # creates an event and sends an email when update(s) to a request fail
-  # rubocop:todo Metrics/MethodLength
   def self.request_update_note_to_manager(request, user, message) # rubocop:todo Metrics/AbcSize
     content =
       # rubocop:todo Layout/LineLength
@@ -73,7 +72,7 @@ class EventFactory
         eventful_type: 'Request',
         message: 'Request update(s) failed',
         created_by: user.login,
-        content: content,
+        content:,
         of_interest_to: 'manager'
       )
 
@@ -88,5 +87,4 @@ class EventFactory
       'No Milestone'
     ).deliver_now
   end
-  # rubocop:enable Metrics/MethodLength
 end

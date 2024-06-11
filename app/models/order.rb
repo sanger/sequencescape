@@ -172,8 +172,7 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
     (request_options.dig(:multiplier, request_type_id.to_s) || 1).to_i
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def create_request_of_type!(request_type, attributes = {}) # rubocop:todo Metrics/AbcSize
+    def create_request_of_type!(request_type, attributes = {}) # rubocop:todo Metrics/AbcSize
     em = request_type.extract_metadata_from_hash(request_options)
     request_type.create!(attributes) do |request|
       request.submission_id = submission_id
@@ -184,23 +183,19 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
       request.state = request_type.initial_state
       request.order = self
 
-      if request.asset.present?
-        unless asset_applicable_to_type?(request_type, request.asset)
+      if request.asset.present? && !asset_applicable_to_type?(request_type, request.asset)
           raise AssetTypeError, 'Asset type does not match that expected by request type.'
         end
-      end
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  def duplicates_within(timespan) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+    def duplicates_within(timespan) # rubocop:todo Metrics/AbcSize
     matching_orders =
       Order
         .containing_samples(all_samples)
-        .where(template_name: template_name)
+        .where(template_name:)
         .includes(:submission, assets: :samples)
-        .where.not(orders: { id: id })
+        .where.not(orders: { id: })
         .where('orders.created_at > ?', Time.current - timespan)
     return false if matching_orders.empty?
 
@@ -286,7 +281,7 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def generate_broadcast_event
-    BroadcastEvent::OrderMade.create!(seed: self, user: user)
+    BroadcastEvent::OrderMade.create!(seed: self, user:)
   end
 
   def study_is_active

@@ -31,7 +31,7 @@ class MigratePlateTypeToNewColumn < ActiveRecord::Migration[5.1]
         .find_each do |asset|
           labware_type_id = LabwareType.id_for(asset.labware_type)
           say "Updating #{asset.id} => #{asset.labware_type} (#{labware_type_id})"
-          asset.update(labware_type_id: labware_type_id)
+          asset.update(labware_type_id:)
         end
     end
   end

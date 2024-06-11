@@ -4,11 +4,11 @@ require 'rails_helper'
 
 RSpec.describe BroadcastEvent::PlateCherrypicked, :broadcast_event, :heron_events do
   def subject_record(subject_type, role_type, friendly_name, uuid)
-    { role_type: role_type, subject_type: subject_type, friendly_name: friendly_name, uuid: uuid }
+    { role_type:, subject_type:, friendly_name:, uuid: }
   end
 
   let(:uuids) { Array.new(6) { SecureRandom.uuid } }
-  let(:destination_plate) { create :plate }
+  let(:destination_plate) { create(:plate) }
   let(:plate1) do
     subject_record('plate', BroadcastEvent::PlateCherrypicked::SOURCE_PLATES_ROLE_TYPE, '000001', uuids[0])
   end

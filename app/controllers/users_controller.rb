@@ -10,7 +10,8 @@ class UsersController < ApplicationController
     @printer_list = BarcodePrinter.alphabetical.where(barcode_printer_type: BarcodePrinterType96Plate.all).pluck(:name)
   end
 
-  def edit; end
+  def edit
+  end
 
   def update # rubocop:todo Metrics/AbcSize
     params[:user].delete(:swipecard_code) if params[:user][:swipecard_code].blank?
@@ -49,13 +50,13 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
   end
 
-  def print_swipecard_with_pmb(swipecard, printer) # rubocop:todo Metrics/MethodLength
+  def print_swipecard_with_pmb(swipecard, printer)
     print_job =
       LabelPrinter::PrintJob.new(
         printer,
         LabelPrinter::Label::Swipecard,
         user_login: @user.login.truncate(10, omission: '..'),
-        swipecard: swipecard,
+        swipecard:,
         label_template_name: configatron.swipecard_pmb_template
       )
     if print_job.execute

@@ -3,20 +3,20 @@
 
 # A collection of view helpers to assist with rendering bootstrap components
 module BootstrapHelper
-  def panel(type = :default, options = {}, &block)
-    bs_custom_panel(type, :div, { class: 'card-body' }, options, &block)
+  def panel(type = :default, options = {}, &)
+    bs_custom_panel(type, :div, { class: 'card-body' }, options, &)
   end
 
-  def list_panel(type = :default, options = {}, &block)
-    bs_custom_panel(type, :ul, { class: 'list-group list-group-flush' }, options, &block)
+  def list_panel(type = :default, options = {}, &)
+    bs_custom_panel(type, :ul, { class: 'list-group list-group-flush' }, options, &)
   end
 
-  def link_panel(type = :default, options = {}, &block)
-    bs_custom_panel(type, :div, { class: 'link-panel' }, options, &block)
+  def link_panel(type = :default, options = {}, &)
+    bs_custom_panel(type, :div, { class: 'link-panel' }, options, &)
   end
 
-  def panel_no_body(type = :default, options = {}, &block)
-    bs_custom_panel(type, :div, {}, options, &block)
+  def panel_no_body(type = :default, options = {}, &)
+    bs_custom_panel(type, :div, {}, options, &)
   end
 
   def bs_custom_panel(type, body_type, body_options, options, &block)
@@ -31,10 +31,10 @@ module BootstrapHelper
   # <div class="alert alert-warning" role="alert">
   #  block_content
   # </div>
-  def alert(type = :default, options = {}, &block)
+  def alert(type = :default, options = {}, &)
     options[:role] ||= 'alert'
     append_class!(options, "alert alert-#{type}")
-    tag.div(**options, &block)
+    tag.div(**options, &)
   end
 
   # Summary composites a panel with a table to deliver
@@ -48,7 +48,7 @@ module BootstrapHelper
   #       </tr>
   #     </table>
   #   </div>
-  def summary(type = :default, options = {}) # rubocop:todo Metrics/MethodLength
+  def summary(type = :default, options = {})
     options[:title] ||= 'Summary'
     bs_custom_panel(type, :table, { class: 'table table-summary' }, options) do
       yield.each do |key, value|
@@ -65,7 +65,6 @@ module BootstrapHelper
   # <div class="page-header">
   #   <h1>Title <small>subtitle</small></h1>
   # </div>
-  # rubocop:todo Metrics/MethodLength
   def page_title(title, subtitle = nil, titlecase: true, badges: []) # rubocop:todo Metrics/AbcSize
     tag.div(class: 'page-header') do
       title_class = title.length > 25 ? 'title-long' : 'title-short'
@@ -85,22 +84,20 @@ module BootstrapHelper
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  def pagination(collection)
+    def pagination(collection)
     will_paginate collection, renderer: BootstrapPagination::Rails, previous_label: '&laquo;', next_label: '&raquo;'
   end
 
   # <div class="col-md-size form-group sqs-form"></div>
-  def form_group(&block)
-    tag.div(class: 'form-group row sqs-form', &block)
+  def form_group(&)
+    tag.div(class: 'form-group row sqs-form', &)
   end
 
-  def bs_column(size = 6, screen = 'md', &block)
-    tag.div(class: "col-#{screen}-#{size}", &block)
+  def bs_column(size = 6, screen = 'md', &)
+    tag.div(class: "col-#{screen}-#{size}", &)
   end
 
-  def progress_bar(count) # rubocop:todo Metrics/MethodLength
+  def progress_bar(count)
     css_class =
       if count < 25
         'bg-danger'
@@ -129,7 +126,7 @@ module BootstrapHelper
   # rubocop:enable Layout/LineLength
   def loading_bar(id = 'update_loader', show: false, text: 'Loading')
     tag.div(class: 'loading-bar-placeholder') do
-      tag.div(id: id, class: 'loading-bar-container', style: show ? '' : 'display: none;') do
+      tag.div(id:, class: 'loading-bar-container', style: show ? '' : 'display: none;') do
         tag.div(text, class: 'loading-bar', role: 'progressbar')
       end
     end

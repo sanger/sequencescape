@@ -30,7 +30,7 @@ class TagGroup < ApplicationRecord
   end
 
   def adapter_type_name=(name)
-    self.adapter_type = TagGroup::AdapterType.find_by!(name: name)
+    self.adapter_type = TagGroup::AdapterType.find_by!(name:)
   end
 
   # Returns a Hash that maps from the tag index in the group to the oligo sequence for the tag

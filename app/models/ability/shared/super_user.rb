@@ -4,7 +4,7 @@
 # These privileges should be restricted to PSD only in future
 # Currently awarded to all admins
 module Ability::Shared::SuperUser
-  def grant_privileges # rubocop:todo Metrics/MethodLength
+  def grant_privileges
     super
 
     # More advanced user administration, such as the ability to add

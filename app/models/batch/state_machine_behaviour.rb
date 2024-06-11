@@ -62,7 +62,7 @@ module Batch::StateMachineBehaviour
 
   def create_complete_batch_event_for(user)
     lab_events
-      .create!(batch: self, user: user, description: 'Complete')
+      .create!(batch: self, user:, description: 'Complete')
       .tap do |event|
         event.add_descriptor Descriptor.new(name: 'pipeline_id', value: pipeline.id)
         event.add_descriptor Descriptor.new(name: 'pipeline', value: pipeline.name)
@@ -80,7 +80,7 @@ module Batch::StateMachineBehaviour
 
   def create_release_batch_event_for(user) # rubocop:todo Metrics/AbcSize
     lab_events
-      .create!(batch: self, user: user, description: 'Released')
+      .create!(batch: self, user:, description: 'Released')
       .tap do |event|
         event.add_descriptor Descriptor.new(name: 'workflow_id', value: workflow.id)
         event.add_descriptor Descriptor.new(name: 'workflow', value: "Released from #{workflow.name}")

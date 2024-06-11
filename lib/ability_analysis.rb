@@ -73,7 +73,7 @@ class AbilityAnalysis
   end
 
   def generate_spec(output = $stdout)
-    AbilityAnalysis::SpecGenerator.new(self, output: output).generate
+    AbilityAnalysis::SpecGenerator.new(self, output:).generate
   end
 
   def abilities_for(user)

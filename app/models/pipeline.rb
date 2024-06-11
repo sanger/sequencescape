@@ -6,7 +6,7 @@
 # and to from there progress a {Batch} through the associated workflow.
 # @note Generally speaking we are trying to migrate pipelines out of the Sequencescape
 #       core.
-class Pipeline < ApplicationRecord # rubocop:todo Metrics/ClassLength
+class Pipeline < ApplicationRecord
   include Uuid::Uuidable
   include Pipeline::BatchValidation
   include SharedBehaviour::Named
@@ -104,7 +104,8 @@ class Pipeline < ApplicationRecord # rubocop:todo Metrics/ClassLength
     Labware.none
   end
 
-  def post_finish_batch(batch, user); end
+  def post_finish_batch(batch, user)
+  end
 
   def completed_request_as_part_of_release_batch(request)
     EventSender.send_request_update(request, 'complete', "Completed pipeline: #{name}")

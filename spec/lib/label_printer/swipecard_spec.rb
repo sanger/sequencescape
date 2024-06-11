@@ -2,7 +2,7 @@
 
 context 'when printing swipecard' do
   let(:barcode_printer_type) { create(:plate_barcode_printer_type) }
-  let(:barcode_printer) { create(:barcode_printer, barcode_printer_type: barcode_printer_type) }
+  let(:barcode_printer) { create(:barcode_printer, barcode_printer_type:) }
   let(:user) { create(:user) }
   let(:label_class) { LabelPrinter::Label::Swipecard }
   let(:label_template_name) { configatron.swipecard_pmb_template }
@@ -12,13 +12,13 @@ context 'when printing swipecard' do
       barcode_printer.name,
       label_class,
       user_login: user.login,
-      swipecard: swipecard,
-      label_template_name: label_template_name
+      swipecard:,
+      label_template_name:
     )
   end
   let(:labels_attribute) { [{ left_text: user.login, barcode: swipecard, label_name: 'main' }] }
   let(:build_attributes) do
-    { printer_name: barcode_printer.name, label_template_name: label_template_name, labels: labels_attribute }
+    { printer_name: barcode_printer.name, label_template_name:, labels: labels_attribute }
   end
 
   it 'builds correct attributes' do

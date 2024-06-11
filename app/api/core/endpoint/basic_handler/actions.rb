@@ -51,7 +51,7 @@ module Core::Endpoint::BasicHandler::Actions
       end
     ",
       __FILE__,
-      line
+      __LINE__ - 22
     )
   end
 
@@ -63,7 +63,7 @@ module Core::Endpoint::BasicHandler::Actions
     singleton_class.class_eval('def check_request_io_class!(_) ; end', __FILE__, __LINE__)
   end
 
-  def disable(*actions) # rubocop:todo Metrics/MethodLength
+  def disable(*actions)
     actions.each do |action|
       line = __LINE__ + 1
       singleton_class.class_eval(
@@ -73,13 +73,13 @@ module Core::Endpoint::BasicHandler::Actions
         end
       ",
         __FILE__,
-        line
+        __LINE__ - 6
       )
       @actions.delete(action.to_sym)
     end
   end
 
-  def deprecate(*actions) # rubocop:todo Metrics/MethodLength
+  def deprecate(*actions)
     actions.each do |action|
       line = __LINE__ + 1
       singleton_class.class_eval(
@@ -89,25 +89,24 @@ module Core::Endpoint::BasicHandler::Actions
         end
       ",
         __FILE__,
-        line
+        __LINE__ - 6
       )
       @actions.delete(action.to_sym)
     end
   end
 
-  def action(name, options = {}, &block)
-    declare_action(name, options, &block)
+  def action(name, options = {}, &)
+    declare_action(name, options, &)
     attach_action(options[:as] || name, name)
     action_guard(name, options[:if]) if options.key?(:if)
   end
 
   def declare_action(name, options, &block) # rubocop:todo Metrics/MethodLength
     action_implementation_method =
-      case
-      when block
+      if block
         singleton_class.class_eval { define_method(:"_#{name}_internal", &block) }
         :"_#{name}_internal"
-      when options[:to]
+      elsif options[:to]
         options[:to]
       else
         raise StandardError, 'Block or :to option needed to declare action'
@@ -122,7 +121,7 @@ module Core::Endpoint::BasicHandler::Actions
       end
     ",
       __FILE__,
-      line
+      __LINE__ - 7
     )
   end
   private :declare_action

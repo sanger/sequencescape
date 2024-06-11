@@ -53,14 +53,14 @@ Capybara.register_driver :headless_chrome do |app|
 
   options.add_argument('--headless')
   options.add_preference('download.default_directory', DownloadHelpers::PATH.to_s)
-  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options:)
 end
 
 Capybara.register_driver :selenium_chrome do |app|
   options = Selenium::WebDriver::Chrome::Options.new
 
   options.add_preference('download.default_directory', DownloadHelpers::PATH.to_s)
-  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options:)
 end
 
 Capybara.javascript_driver = ENV.fetch('JS_DRIVER', 'headless_chrome').to_sym
@@ -84,7 +84,7 @@ RSpec.configure do |config|
     DatabaseCleaner.clean_with(:truncation)
   end
 
-  config.around(:each) { |example| DatabaseCleaner.cleaning { example.run } }
+  config.around { |example| DatabaseCleaner.cleaning { example.run } }
 
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest

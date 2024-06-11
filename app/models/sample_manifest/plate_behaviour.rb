@@ -40,7 +40,7 @@ module SampleManifest::PlateBehaviour
       samples.map do |sample|
         container = sample.primary_receptacle
         {
-          sample: sample,
+          sample:,
           container: {
             barcode: container.plate.human_barcode,
             position: container.map.description.sub(/^([^\d]+)(\d)$/, '\10\2')

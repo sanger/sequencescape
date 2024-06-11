@@ -19,7 +19,7 @@ module Accession
     end
 
     def to_h
-      { inform_on_error: email, inform_on_status: email, name: name }
+      { inform_on_error: email, inform_on_status: email, name: }
     end
   end
 end

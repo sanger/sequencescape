@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Api::SampleIO do
   subject do
-    create :sample,
+    create(:sample,
            name: 'sample_testing_messages',
            component_samples: [comp_sample1, comp_sample2],
            updated_by_manifest: true,
@@ -62,13 +62,13 @@ RSpec.describe Api::SampleIO do
              consent_withdrawn: false,
              donor_id: 2,
              developmental_stage: 'thing'
-           }
+           })
   end
 
-  let(:user) { create :user }
-  let(:reference_genome) { create :reference_genome }
-  let(:comp_sample1) { create :sample }
-  let(:comp_sample2) { create :sample }
+  let(:user) { create(:user) }
+  let(:reference_genome) { create(:reference_genome) }
+  let(:comp_sample1) { create(:sample) }
+  let(:comp_sample2) { create(:sample) }
 
   let(:expected_json) do
     {

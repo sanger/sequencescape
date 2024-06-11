@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Receptacle do
-  let(:receptacle) { create :receptacle }
+  let(:receptacle) { create(:receptacle) }
 
   # Uhh, looks like all our asset tests were labware tests!
 
@@ -12,10 +12,10 @@ RSpec.describe Receptacle do
   end
 
   describe '#most_recent_requests_as_target_group_by_same_source' do
-    let(:source) { create :receptacle }
-    let(:source2) { create :receptacle }
-    let(:requests_source1) { create_list :request, 3, { asset: source } }
-    let(:requests_source2) { create_list :request, 2, { asset: source2 } }
+    let(:source) { create(:receptacle) }
+    let(:source2) { create(:receptacle) }
+    let(:requests_source1) { create_list(:request, 3, { asset: source }) }
+    let(:requests_source2) { create_list(:request, 2, { asset: source2 }) }
     let(:requests) { [requests_source1, requests_source2].flatten }
     let(:expected) { [requests_source1.last, requests_source2.last].flatten }
 
@@ -27,7 +27,7 @@ RSpec.describe Receptacle do
   end
 
   describe '#update_from_qc' do
-    let(:qc_result) { build :qc_result, key: key, value: value, units: units, assay_type: 'assay', assay_version: 1 }
+    let(:qc_result) { build(:qc_result, key:, value:, units:, assay_type: 'assay', assay_version: 1) }
 
     before { receptacle.update_from_qc(qc_result) }
 
@@ -62,41 +62,41 @@ RSpec.describe Receptacle do
   end
 
   describe '#pcr_cycles' do
-    let(:receptacle) { create :receptacle, pcr_cycles: 10 }
+    let(:receptacle) { create(:receptacle, pcr_cycles: 10) }
 
     it { expect(receptacle.pcr_cycles).to eq 10 }
   end
 
   describe '#submit_for_sequencing' do
-    let(:receptacle) { create :receptacle, submit_for_sequencing: true }
+    let(:receptacle) { create(:receptacle, submit_for_sequencing: true) }
 
     it { expect(receptacle.submit_for_sequencing).to be true }
   end
 
   describe '#sub_pool' do
-    let(:receptacle) { create :receptacle, sub_pool: 5 }
+    let(:receptacle) { create(:receptacle, sub_pool: 5) }
 
     it { expect(receptacle.sub_pool).to eq 5 }
   end
 
   describe '#coverage' do
-    let(:receptacle) { create :receptacle, coverage: 100 }
+    let(:receptacle) { create(:receptacle, coverage: 100) }
 
     it { expect(receptacle.coverage).to eq 100 }
   end
 
   describe '#diluent_volume' do
-    let(:receptacle) { create :receptacle, diluent_volume: 40 }
+    let(:receptacle) { create(:receptacle, diluent_volume: 40) }
 
     it { expect(receptacle.diluent_volume).to eq 40 }
   end
 
   describe '#attach_tag' do
-    let(:tag1) { create :tag }
-    let(:tag2) { create :tag }
-    let(:receptacle) { create :receptacle }
+    let(:tag1) { create(:tag) }
+    let(:tag2) { create(:tag) }
+    let(:receptacle) { create(:receptacle) }
 
-    before { receptacle.update(aliquots: aliquots) }
+    before { receptacle.update(aliquots:) }
 
     context 'when the receptacle has no aliquots' do
       let(:aliquots) { [] }
@@ -108,7 +108,7 @@ RSpec.describe Receptacle do
 
     context 'when the receptacle has one aliquot' do
       let(:aliquots) { [al1] }
-      let(:al1) { create :aliquot }
+      let(:al1) { create(:aliquot) }
 
       it 'can attach a tag to an aliquot' do
         receptacle.attach_tag(tag1, tag2)
@@ -119,8 +119,8 @@ RSpec.describe Receptacle do
       let(:aliquots) { [al1, al2] }
 
       context 'when every aliquot has a different tag_depth' do
-        let(:al1) { create :aliquot, tag_depth: 1 }
-        let(:al2) { create :aliquot, tag_depth: 2 }
+        let(:al1) { create(:aliquot, tag_depth: 1) }
+        let(:al2) { create(:aliquot, tag_depth: 2) }
 
         it 'can attach a tag to every aliquot' do
           receptacle.attach_tag(tag1, tag2)
@@ -128,8 +128,8 @@ RSpec.describe Receptacle do
       end
 
       context 'when there is duplication in tag_depths' do
-        let(:al1) { create :aliquot, tag_depth: 1 }
-        let(:al2) { create :aliquot, tag_depth: 1 }
+        let(:al1) { create(:aliquot, tag_depth: 1) }
+        let(:al2) { create(:aliquot, tag_depth: 1) }
 
         it 'raises an error' do
           expect { receptacle.attach_tag(tag1, tag2) }.to raise_error(StandardError)
@@ -137,8 +137,8 @@ RSpec.describe Receptacle do
       end
 
       context 'when there is no tag_depth' do
-        let(:al1) { create :aliquot }
-        let(:al2) { create :aliquot }
+        let(:al1) { create(:aliquot) }
+        let(:al2) { create(:aliquot) }
 
         it 'raises an error' do
           expect { receptacle.attach_tag(tag1, tag2) }.to raise_error(StandardError)

@@ -14,10 +14,10 @@ class PipelineTest < ActiveSupport::TestCase
 
     context 'sequencing_pipeline#read length consistency among batch requests' do
       setup do
-        @sample = create :sample
+        @sample = create(:sample)
 
-        @request_type = create :request_type, name: 'sequencing', target_asset_type: nil
-        @pipeline = create :sequencing_pipeline, name: 'sequencing pipeline', request_types: [@request_type]
+        @request_type = create(:request_type, name: 'sequencing', target_asset_type: nil)
+        @pipeline = create(:sequencing_pipeline, name: 'sequencing pipeline', request_types: [@request_type])
         @request1 =
           create(
             :sequencing_request,
@@ -36,7 +36,7 @@ class PipelineTest < ActiveSupport::TestCase
       end
 
       should 'return true if not any request was selected' do
-        @batch = create :batch
+        @batch = create(:batch)
         assert @pipeline.is_read_length_consistent_for_batch?(@batch)
       end
 
@@ -59,7 +59,7 @@ class PipelineTest < ActiveSupport::TestCase
       end
 
       should 'check that other pipelines are not affected by different read_length attributes' do
-        @pipeline2 = create :pipeline, name: 'other pipeline', request_types: [@request_type]
+        @pipeline2 = create(:pipeline, name: 'other pipeline', request_types: [@request_type])
         @request1 =
           create(
             :sequencing_request,
@@ -85,10 +85,10 @@ class PipelineTest < ActiveSupport::TestCase
 
     context 'sequencing_pipeline#requested_flowcell_type consistency among batch requests' do
       setup do
-        @sample = create :sample
+        @sample = create(:sample)
 
-        @request_type = create :request_type, name: 'sequencing', target_asset_type: nil
-        @pipeline = create :sequencing_pipeline, name: 'sequencing pipeline', request_types: [@request_type]
+        @request_type = create(:request_type, name: 'sequencing', target_asset_type: nil)
+        @pipeline = create(:sequencing_pipeline, name: 'sequencing pipeline', request_types: [@request_type])
         @request1 =
           create(
             :sequencing_request,
@@ -107,7 +107,7 @@ class PipelineTest < ActiveSupport::TestCase
       end
 
       should 'return true if no request was selected' do
-        @batch = create :batch
+        @batch = create(:batch)
         assert @pipeline.is_flowcell_type_consistent_for_batch?(@batch)
       end
 
@@ -124,7 +124,7 @@ class PipelineTest < ActiveSupport::TestCase
       end
 
       should 'check that other pipelines are not affected by different requested_flowcell_type attributes' do
-        @pipeline2 = create :pipeline, name: 'other pipeline', request_types: [@request_type]
+        @pipeline2 = create(:pipeline, name: 'other pipeline', request_types: [@request_type])
         @request1 =
           create(
             :sequencing_request,

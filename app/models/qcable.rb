@@ -34,7 +34,7 @@ class Qcable < ApplicationRecord
   scope :stamped,
         -> {
           includes(%i[stamp_qcable stamp])
-            .where('stamp_qcables.id IS NOT NULL')
+            .where.not(stamp_qcables: { id: nil })
             .order('stamps.created_at ASC, stamp_qcables.order ASC')
         }
 

@@ -3,7 +3,7 @@
 module Core::Io::Json
   # Custom JSON streaming class to handle streamed serialization of API V1
   # objects
-  class Stream # rubocop:todo Metrics/ClassLength
+  class Stream
     # An interface matches object who respond to the provided method
     class Interface
       def initialize(interface)
@@ -18,7 +18,8 @@ module Core::Io::Json
     ZIPPABLE = Interface.new(:zip).freeze
 
     def initialize(buffer)
-      @buffer, @have_output_value = buffer, []
+      @buffer = buffer
+      @have_output_value = []
     end
 
     def open
@@ -80,7 +81,7 @@ module Core::Io::Json
         ::Core::Io::Registry
           .instance
           .lookup_for_object(object)
-          .object_json(object, options.merge(stream: self, object: object, nested: true))
+          .object_json(object, options.merge(stream: self, object:, nested: true))
       end
     end
     private :object_encode

@@ -37,7 +37,7 @@ class Tag < ApplicationRecord
   end
 
   # Allows the application of multiple tags to an aliquot
-  def multitag!(asset) # rubocop:todo Metrics/MethodLength
+  def multitag!(asset)
     raise StandardError, 'Cannot tag an empty asset' if asset.aliquots.empty?
 
     asset

@@ -8,13 +8,13 @@ module Admin
       setup do
         @controller = Admin::ProgramsController.new
         @request = ActionController::TestRequest.create(@controller)
-        session[:user] = @user = create :admin
+        session[:user] = @user = create(:admin)
       end
 
       should_require_login
 
       context '#create' do
-        setup { FactoryBot.create :program, name: 'My unique name of program' }
+        setup { FactoryBot.create(:program, name: 'My unique name of program') }
 
         should 'create a new program' do
           num = Program.count
@@ -32,7 +32,7 @@ module Admin
       end
 
       context '#edit' do
-        setup { @program = FactoryBot.create :program, name: 'My program name' }
+        setup { @program = FactoryBot.create(:program, name: 'My program name') }
 
         should 'edit the name of the new program' do
           post :update, params: { id: @program.id, program: { name: 'A new name for the program' } }
@@ -44,7 +44,7 @@ module Admin
       end
 
       context '#show' do
-        setup { @program = create :program }
+        setup { @program = create(:program) }
 
         should 'display existing programs' do
           get :show, params: { id: @program.id }

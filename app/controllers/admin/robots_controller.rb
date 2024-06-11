@@ -31,9 +31,10 @@ class Admin::RobotsController < ApplicationController
     end
   end
 
-  def edit; end
+  def edit
+  end
 
-  def create # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def create # rubocop:todo Metrics/AbcSize
     @robot = Robot.new(params[:robot])
 
     respond_to do |format|

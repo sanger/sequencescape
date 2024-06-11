@@ -12,7 +12,7 @@ module RecordLoader
     def create_or_update!(key, options)
       request_type_key = options.delete('request_type_key')
       rt = RequestType.find_by(key: request_type_key)
-      RequestType::Validator.create_with(options.merge(request_type_id: rt.id)).find_or_create_by!(key: key)
+      RequestType::Validator.create_with(options.merge(request_type_id: rt.id)).find_or_create_by!(key:)
     end
   end
 end

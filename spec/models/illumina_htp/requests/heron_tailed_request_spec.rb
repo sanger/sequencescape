@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe IlluminaHtp::Requests::HeronTailedRequest, :heron do
-  subject(:request) { build :heron_tailed_request }
+  subject(:request) { build(:heron_tailed_request) }
 
   describe '#request_metadata' do
     describe '#primer_panel' do

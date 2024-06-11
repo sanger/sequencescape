@@ -93,7 +93,7 @@ class TagSubstitution
 
   # Perform the substitution, add comments to all tubes and lanes and rebroadcast all flowcells
   # @return [Boolean] returns true if the operation was successful, false otherwise
-  def save # rubocop:todo Metrics/MethodLength
+  def save
     return false unless valid?
 
     # First set all tags to null to avoid the issue of tag clashes
@@ -119,7 +119,7 @@ class TagSubstitution
   #
   # @return [void]
   def template_asset=(asset)
-    @substitutions = asset.aliquots.includes(:sample).map { |aliquot| Substitution.new(aliquot: aliquot) }
+    @substitutions = asset.aliquots.includes(:sample).map { |aliquot| Substitution.new(aliquot:) }
     @name = asset.display_name
   end
 
@@ -170,7 +170,7 @@ class TagSubstitution
       commented_assets.map do |asset_id|
         {
           commentable_id: asset_id,
-          commentable_type: commentable_type,
+          commentable_type:,
           user_id: @user&.id,
           description: comment_text,
           title: "Tag Substitution #{@ticket}"

@@ -41,7 +41,8 @@ module Api
               # Be kind...
               file.rewind
               request.body.rewind
-              uuid_in_url, parts = params[:captures][0], params[:captures][1].try(:split, '/') || []
+              uuid_in_url = params[:captures][0]
+              parts = params[:captures][1].try(:split, '/') || []
               uuid = Uuid.find_by(external_id: uuid_in_url) or raise ActiveRecord::RecordNotFound, 'UUID does not exist'
               handle_request(:instance, request, action, parts) do |request|
                 request.io = lookup_for_class(uuid.resource.class) { |e| raise e }
@@ -104,7 +105,8 @@ module Api
           file_requested: true
         ) do
           report('file') do
-            uuid_in_url, parts = params[:captures][0], params[:captures][1].try(:split, '/') || []
+            uuid_in_url = params[:captures][0]
+            parts = params[:captures][1].try(:split, '/') || []
             uuid = Uuid.find_by(external_id: uuid_in_url) or raise ActiveRecord::RecordNotFound, 'UUID does not exist'
 
             file_through =
@@ -117,7 +119,7 @@ module Api
         end
       end
 
-      def instance_action(action, http_method) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+      def instance_action(action, http_method) # rubocop:todo Metrics/AbcSize
         send(
           http_method,
           %r{/([\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12})(?:/([^/]+(?:/[^/]+)*))?},
@@ -125,7 +127,8 @@ module Api
           file_requested: false
         ) do
           report('instance') do
-            uuid_in_url, parts = params[:captures][0], params[:captures][1].try(:split, '/') || []
+            uuid_in_url = params[:captures][0]
+            parts = params[:captures][1].try(:split, '/') || []
             uuid = Uuid.find_by(external_id: uuid_in_url) or raise ActiveRecord::RecordNotFound, 'UUID does not exist'
             handle_request(:instance, request, action, parts) do |request|
               request.io = lookup_for_class(uuid.resource.class) { |e| raise e }
@@ -176,11 +179,12 @@ module Api
     private :report
 
     # Not ideal but at least this allows us to pick up the appropriate model from the URL.
-    def determine_model_from_parts(*parts) # rubocop:todo Metrics/MethodLength
+    def determine_model_from_parts(*parts)
       parts
         .length
         .downto(1) do |n|
-          model_name, remainder = parts.slice(0, n), parts.slice(n, parts.length)
+          model_name = parts.slice(0, n)
+          remainder = parts.slice(n, parts.length)
           model_constant = model_name.join('/').classify
           begin
             constant = model_constant.constantize
@@ -224,8 +228,7 @@ module Api
 
     # rubocop:enable Metrics/MethodLength
 
-    # rubocop:todo Metrics/MethodLength
-    def return_file(http_request, action, parts) # rubocop:todo Metrics/AbcSize
+        def return_file(http_request, action, parts) # rubocop:todo Metrics/AbcSize
       request =
         ::Core::Service::Request.new(requested_url = http_request.fullpath) do |request|
           request.service = self
@@ -242,9 +245,7 @@ module Api
       file_through
     end
 
-    # rubocop:enable Metrics/MethodLength
-
-    ACTIONS_TO_HTTP_VERBS = { create: :post, read: :get, update: :put, delete: :delete }.freeze
+        ACTIONS_TO_HTTP_VERBS = { create: :post, read: :get, update: :put, delete: :delete }.freeze
 
     ACTIONS_TO_HTTP_VERBS.each do |action, verb|
       instance_action(action, verb)

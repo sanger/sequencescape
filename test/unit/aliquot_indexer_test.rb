@@ -7,10 +7,10 @@ class AliquotIndexerTest < ActiveSupport::TestCase
     context 'which are dual indexed' do
       setup do
         @pre_count = AliquotIndex.count
-        @lane = create :lane
-        @tags = [1, 8, 2, 4].map { |map_id| create :tag, map_id: map_id }
-        @tag2s = [1, 2].map { |map_id| create :tag, map_id: map_id } * 2
-        @aliquots = Array.new(4) { |i| create :aliquot, receptacle: @lane, tag: @tags[i], tag2: @tag2s[i] }
+        @lane = create(:lane)
+        @tags = [1, 8, 2, 4].map { |map_id| create(:tag, map_id:) }
+        @tag2s = [1, 2].map { |map_id| create(:tag, map_id:) } * 2
+        @aliquots = Array.new(4) { |i| create(:aliquot, receptacle: @lane, tag: @tags[i], tag2: @tag2s[i]) }
 
         @aliquot_index = [1, 4, 2, 3]
       end
@@ -35,7 +35,7 @@ class AliquotIndexerTest < ActiveSupport::TestCase
 
       context 'when phix is added' do
         setup do
-          @phix = create :spiked_buffer, aliquot_attributes: { tag: @tags[2], tag2: nil }
+          @phix = create(:spiked_buffer, aliquot_attributes: { tag: @tags[2], tag2: nil })
           @lane.labware.parents << @phix
           @aliquot_index = [1, 5, 3, 4]
         end
@@ -63,9 +63,9 @@ class AliquotIndexerTest < ActiveSupport::TestCase
     context 'which are single indexed' do
       setup do
         @pre_count = AliquotIndex.count
-        @lane = create :lane
-        @tags = [1, 8, 2, 4].map { |map_id| create :tag, map_id: map_id }
-        @aliquots = Array.new(4) { |i| create :aliquot, receptacle: @lane, tag: @tags[i], tag2_id: -1 }
+        @lane = create(:lane)
+        @tags = [1, 8, 2, 4].map { |map_id| create(:tag, map_id:) }
+        @aliquots = Array.new(4) { |i| create(:aliquot, receptacle: @lane, tag: @tags[i], tag2_id: -1) }
 
         @aliquot_index = [1, 4, 2, 3]
       end
@@ -90,7 +90,7 @@ class AliquotIndexerTest < ActiveSupport::TestCase
 
       context 'when phix is added' do
         setup do
-          @phix = create :spiked_buffer, aliquot_attributes: { tag: @tags[2], tag2: nil }
+          @phix = create(:spiked_buffer, aliquot_attributes: { tag: @tags[2], tag2: nil })
           @lane.labware.parents << @phix
           @aliquot_index = [1, 5, 3, 4]
         end
@@ -118,9 +118,9 @@ class AliquotIndexerTest < ActiveSupport::TestCase
     context 'which are single indexed with i5 (tag2) tags' do
       setup do
         @pre_count = AliquotIndex.count
-        @lane = create :lane
-        @tags = [1, 8, 2, 4].map { |map_id| create :tag, map_id: map_id }
-        @aliquots = Array.new(4) { |i| create :aliquot, receptacle: @lane, tag_id: -1, tag2: @tags[i] }
+        @lane = create(:lane)
+        @tags = [1, 8, 2, 4].map { |map_id| create(:tag, map_id:) }
+        @aliquots = Array.new(4) { |i| create(:aliquot, receptacle: @lane, tag_id: -1, tag2: @tags[i]) }
 
         @aliquot_index = [1, 4, 2, 3]
       end
@@ -145,7 +145,7 @@ class AliquotIndexerTest < ActiveSupport::TestCase
 
       context 'when phix is added' do
         setup do
-          @phix = create :spiked_buffer, aliquot_attributes: { tag: @tags[2], tag2: nil }
+          @phix = create(:spiked_buffer, aliquot_attributes: { tag: @tags[2], tag2: nil })
           @lane.labware.parents << @phix
           @aliquot_index = [1, 5, 3, 4]
         end

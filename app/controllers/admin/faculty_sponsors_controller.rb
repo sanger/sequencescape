@@ -10,13 +10,15 @@ class Admin::FacultySponsorsController < ApplicationController
     @faculty_sponsors = FacultySponsor.all
   end
 
-  def show; end
+  def show
+  end
 
   def new
     @faculty_sponsor = FacultySponsor.new
   end
 
-  def edit; end
+  def edit
+  end
 
   def create
     @faculty_sponsor = FacultySponsor.new(params[:faculty_sponsor])

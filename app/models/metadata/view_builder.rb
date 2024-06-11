@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 class Metadata::ViewBuilder < Metadata::BuilderBase
-  def initialize(*args, &block)
+  def initialize(*args, &)
     super
     view_for(:plain_value, 'shared/metadata/plain_field')
     view_for(:file, 'shared/metadata/file')

@@ -14,8 +14,8 @@ describe 'Users API', with: :api_v2 do
 
     before do
       create_list(:user, 5)
-      create :user, swipecard_code: swipecard_code
-      create :user, barcode: 'ID41440E'
+      create(:user, swipecard_code:)
+      create(:user, barcode: 'ID41440E')
     end
 
     it 'sends a list of users' do
@@ -50,7 +50,7 @@ describe 'Users API', with: :api_v2 do
   end
 
   context 'with a user' do
-    let(:resource_model) { create :user }
+    let(:resource_model) { create(:user) }
 
     it 'sends an individual user' do
       api_get "#{base_endpoint}/#{resource_model.id}"

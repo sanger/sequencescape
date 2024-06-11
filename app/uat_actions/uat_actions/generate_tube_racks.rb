@@ -24,11 +24,11 @@ class UatActions::GenerateTubeRacks < UatActions
     new(rack_count: 1, study_name: UatActions::StaticRecords.study.name)
   end
 
-  def perform # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def perform # rubocop:todo Metrics/AbcSize
     purpose = Purpose.find_by(name: 'TR Stock 96')
     rack_count.to_i.times do |i|
       TubeRack
-        .create!(size: 96, purpose: purpose)
+        .create!(size: 96, purpose:)
         .tap do |rack|
           Barcode.create!(
             asset: rack,
@@ -58,7 +58,7 @@ class UatActions::GenerateTubeRacks < UatActions
               supplier_name: sample_name
             }
           ),
-        study: study
+        study:
       )
 
       racked_tube = RackedTube.create!(tube_rack_id: rack.id, tube_id: tube.id, coordinate: i)

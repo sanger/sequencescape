@@ -39,7 +39,8 @@ module Core::Abilities
     private :user, :application
 
     def initialize(request)
-      @user, @application = User.new(request), Application.new(request)
+      @user = User.new(request)
+      @application = Application.new(request)
       @application.authenticate!(@user)
     end
 
@@ -73,7 +74,7 @@ module Core::Abilities
           end
         ",
           __FILE__,
-          line
+          __LINE__ - 6
         )
       end
 

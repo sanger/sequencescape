@@ -15,7 +15,8 @@ class Api::Messages::QcResultIO < Api::Base
   end
 
   module AssetExtensions
-    def labware_purpose; end
+    def labware_purpose
+    end
   end
 
   module WellExtensions

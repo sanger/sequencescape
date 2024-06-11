@@ -12,9 +12,9 @@ class Event::SampleLogisticsQcEvent < Event
   def self.gel_qc_message(asset, message, family, user)
     create!(
       eventful: asset,
-      message: message,
+      message:,
       content: Date.today.to_s,
-      family: family,
+      family:,
       created_by: user ? user.login : nil
     )
   end

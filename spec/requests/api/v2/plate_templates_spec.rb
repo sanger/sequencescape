@@ -25,7 +25,7 @@ describe 'PlateTemplates API', with: :api_v2 do
   end
 
   context 'with a PlateTemplate' do
-    let(:resource_model) { create :plate_template }
+    let(:resource_model) { create(:plate_template) }
 
     let(:payload) do
       {

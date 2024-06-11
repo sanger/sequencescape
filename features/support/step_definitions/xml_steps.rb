@@ -49,7 +49,7 @@ When /^I request XML for (.+)$/ do |page_name|
   page.driver.get(path_to(page_name), nil, 'HTTP_ACCEPT' => 'application/xml')
 end
 
-When %r{^I (POST|PUT) the following XML to "(\/[^"]+)":$} do |action, path, xml|
+When %r{^I (POST|PUT) the following XML to "(/[^"]+)":$} do |action, path, xml|
   page.driver.send(
     action.downcase,
     path.to_s,

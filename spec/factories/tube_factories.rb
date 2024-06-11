@@ -10,10 +10,10 @@ FactoryBot.define do
   trait :tube_barcode do
     transient do
       barcode_number { barcode }
-      barcode { generate :barcode_number }
+      barcode { generate(:barcode_number) }
       prefix { 'NT' }
     end
-    sanger_barcode { { prefix: prefix, number: barcode_number } }
+    sanger_barcode { { prefix:, number: barcode_number } }
   end
 
   trait :in_a_rack do
@@ -22,22 +22,22 @@ FactoryBot.define do
       coordinate { nil }
     end
     after(:create) do |tube, evaluator|
-      create(:racked_tube, tube: tube, tube_rack: evaluator.tube_rack, coordinate: evaluator.coordinate)
+      create(:racked_tube, tube:, tube_rack: evaluator.tube_rack, coordinate: evaluator.coordinate)
     end
   end
 
   factory :tube, traits: [:tube_barcode] do
-    name { generate :asset_name }
+    name { generate(:asset_name) }
     purpose factory: %i[tube_purpose]
   end
 
   factory :unbarcoded_tube, class: 'Tube' do
-    name { generate :asset_name }
+    name { generate(:asset_name) }
     purpose factory: %i[tube_purpose]
   end
 
   factory :empty_sample_tube, class: 'SampleTube', traits: [:tube_barcode] do
-    name { generate :asset_name }
+    name { generate(:asset_name) }
     qc_state { '' }
     purpose factory: %i[sample_tube_purpose] # { Tube::Purpose.standard_sample_tube }
   end
@@ -78,7 +78,7 @@ FactoryBot.define do
       study { create(:study) }
     end
 
-    name { generate :asset_name }
+    name { generate(:asset_name) }
     purpose factory: %i[mx_tube_purpose]
     after(:build) do |tube, evaluator|
       unless evaluator.sample_count.zero?
@@ -88,12 +88,12 @@ FactoryBot.define do
   end
 
   factory :pulldown_multiplexed_library_tube, traits: [:tube_barcode] do
-    name { generate :asset_name }
+    name { generate(:asset_name) }
     public_name { 'ABC' }
   end
 
   factory :stock_multiplexed_library_tube, traits: [:tube_barcode] do
-    name { |_a| generate :asset_name }
+    name { |_a| generate(:asset_name) }
     purpose { Tube::Purpose.stock_mx_tube }
 
     factory :new_stock_multiplexed_library_tube do |_t|
@@ -102,14 +102,14 @@ FactoryBot.define do
   end
 
   factory(:empty_library_tube, traits: [:tube_barcode], class: 'LibraryTube') do
-    name { generate :asset_name }
+    name { generate(:asset_name) }
     purpose factory: %i[library_tube_purpose] #  { Tube::Purpose.standard_library_tube }
 
     transient do
       sample_count { 0 }
       samples { create_list(:sample, sample_count) }
       aliquot_factory { :untagged_aliquot }
-      study { build :study }
+      study { build(:study) }
     end
 
     after(:build) do |library_tube, evaluator|
@@ -167,7 +167,7 @@ FactoryBot.define do
       smrt_cells_available { 1 }
     end
     pac_bio_library_tube_metadata_attributes do
-      { prep_kit_barcode: prep_kit_barcode, smrt_cells_available: smrt_cells_available }
+      { prep_kit_barcode:, smrt_cells_available: }
     end
     after(:build) { |t, evaluator| t.receptacle.aliquots << evaluator.aliquot }
   end
@@ -178,17 +178,17 @@ FactoryBot.define do
   end
 
   factory :stock_library_tube do
-    name { |_a| generate :asset_name }
+    name { |_a| generate(:asset_name) }
     purpose { Tube::Purpose.stock_library_tube }
   end
 
   factory :spiked_buffer do
     transient do
       tag_option { 'Single' } # The PhiX Tag option to use, eg. Single/Dual
-      aliquot_attributes { { tag_option: tag_option } }
+      aliquot_attributes { { tag_option: } }
     end
 
-    name { generate :asset_name }
+    name { generate(:asset_name) }
     concentration { 12.0 }
     volume { 50 }
 
@@ -197,7 +197,7 @@ FactoryBot.define do
     end
 
     factory :spiked_buffer_with_parent do
-      transient { parent { create :spiked_buffer, :tube_barcode } }
+      transient { parent { create(:spiked_buffer, :tube_barcode) } }
 
       after(:build) { |tube, evaluator| tube.parents << evaluator.parent }
     end
@@ -206,10 +206,10 @@ FactoryBot.define do
   factory :phi_x_stock_tube, class: 'LibraryTube', traits: [:tube_barcode] do
     transient do
       tag_option { 'Single' } # The PhiX Tag option to use, eg. Single/Dual
-      study { create :study }
+      study { create(:study) }
     end
 
-    name { generate :asset_name }
+    name { generate(:asset_name) }
     concentration { 12.0 }
 
     after(:build) do |tube, evaluator|

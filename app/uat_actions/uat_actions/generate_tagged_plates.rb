@@ -72,12 +72,12 @@ class UatActions::GenerateTaggedPlates < UatActions::GeneratePlates
   def perform
     super do |plate|
       TagLayout.create!(
-        user: user,
-        plate: plate,
-        direction: direction,
-        walking_by: walking_by,
-        tag_group: tag_group,
-        tag2_group: tag2_group
+        user:,
+        plate:,
+        direction:,
+        walking_by:,
+        tag_group:,
+        tag2_group:
       )
     end
   end

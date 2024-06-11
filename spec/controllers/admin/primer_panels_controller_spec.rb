@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe Admin::PrimerPanelsController do
-  let(:primer_panel) { create :primer_panel }
+  let(:primer_panel) { create(:primer_panel) }
 
   context 'as admin' do
     before { session[:user] = create :admin }

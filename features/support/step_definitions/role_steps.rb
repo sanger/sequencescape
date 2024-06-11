@@ -13,6 +13,6 @@ Given /^the role "([^"]*)" exists$/ do |role_name|
 end
 
 Given /^user "([^"]+)" is an administrator$/ do |login|
-  user = User.find_by(login: login) or raise StandardError, "Cannot find user with login #{login.inspect}"
+  user = User.find_by(login:) or raise StandardError, "Cannot find user with login #{login.inspect}"
   user.roles.create!(name: 'administrator')
 end

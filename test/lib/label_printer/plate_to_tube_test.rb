@@ -12,15 +12,15 @@ class PlateToTubesTest < ActiveSupport::TestCase
     @prefix = 'NT'
     @barcode1 = '1111'
     @asset_name = 'tube name'
-    @tube1 = create :sample_tube, barcode: barcode1, name: asset_name
-    @sample_tubes = create_list :sample_tube, 4
+    @tube1 = create(:sample_tube, barcode: barcode1, name: asset_name)
+    @sample_tubes = create_list(:sample_tube, 4)
     sample_tubes.unshift(tube1)
-    options = { sample_tubes: sample_tubes }
+    options = { sample_tubes: }
     @tube_label = LabelPrinter::Label::PlateToTubes.new(options)
     @label = {
-      first_line: (asset_name).to_s,
+      first_line: asset_name.to_s,
       second_line: barcode1,
-      third_line: (Date.today.strftime('%e-%^b-%Y')).to_s,
+      third_line: Date.today.strftime('%e-%^b-%Y').to_s,
       round_label_top_line: prefix,
       round_label_bottom_line: barcode1,
       barcode: tube1.machine_barcode,

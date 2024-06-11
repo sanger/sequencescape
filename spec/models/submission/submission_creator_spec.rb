@@ -4,16 +4,16 @@ require 'rails_helper'
 
 describe Submission::SubmissionCreator do
   describe '#order_fields' do
-    let(:user) { create :user }
+    let(:user) { create(:user) }
     let(:creator) { described_class.new(user, template_id: template.id) }
 
     context 'a full template' do
-      let(:library_type) { create :library_type }
+      let(:library_type) { create(:library_type) }
       let(:library_creation_request_type) do
-        create(:library_request_type, :with_library_types, library_type: library_type)
+        create(:library_request_type, :with_library_types, library_type:)
       end
       let(:template) do
-        create :submission_template, request_types: [library_creation_request_type, create(:sequencing_request_type)]
+        create(:submission_template, request_types: [library_creation_request_type, create(:sequencing_request_type)])
       end
 
       it 'finds the appropriate order fields' do

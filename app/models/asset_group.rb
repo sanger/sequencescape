@@ -40,9 +40,7 @@ class AssetGroup < ApplicationRecord
   def self.find_or_create_asset_group(new_assets_name, study)
     # Is new name set or create group
     asset_group = nil
-    if new_assets_name.present?
-      asset_group = AssetGroup.create_with(study: study).find_or_create_by(name: new_assets_name)
-    end
+    asset_group = AssetGroup.create_with(study:).find_or_create_by(name: new_assets_name) if new_assets_name.present?
     asset_group
   end
 

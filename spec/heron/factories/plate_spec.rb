@@ -6,7 +6,7 @@ RSpec.describe Heron::Factories::Plate, :heron, :heron_events, :lighthouse, type
   let(:purpose) { create(:plate_purpose, target_type: 'Plate', name: 'Stock Plate', size: '96') }
   let(:study) { create(:study) }
   let(:barcode) { '0000000001' }
-  let(:params) { { purpose_uuid: purpose.uuid, barcode: barcode } }
+  let(:params) { { purpose_uuid: purpose.uuid, barcode: } }
 
   include BarcodeHelper
 
@@ -41,14 +41,14 @@ RSpec.describe Heron::Factories::Plate, :heron, :heron_events, :lighthouse, type
     end
 
     context 'without a plate purpose uuid' do
-      let(:params) { { barcode: barcode } }
+      let(:params) { { barcode: } }
       let(:error_messages) { ['Plate purpose uuid not defined'] }
 
       it_behaves_like 'an invalid parameter'
     end
 
     context 'with a plate purpose uuid set to nil' do
-      let(:params) { { purpose_uuid: nil, barcode: barcode } }
+      let(:params) { { purpose_uuid: nil, barcode: } }
       let(:error_messages) { ['Plate purpose for uuid () do not exist'] }
 
       it_behaves_like 'an invalid parameter'
@@ -56,7 +56,7 @@ RSpec.describe Heron::Factories::Plate, :heron, :heron_events, :lighthouse, type
 
     context 'with a plate purpose uuid that do not exist' do
       let(:uuid) { SecureRandom.uuid }
-      let(:params) { { purpose_uuid: uuid, barcode: barcode } }
+      let(:params) { { purpose_uuid: uuid, barcode: } }
       let(:error_messages) { ["Plate purpose for uuid (#{uuid}) do not exist"] }
 
       it_behaves_like 'an invalid parameter'
@@ -107,7 +107,7 @@ RSpec.describe Heron::Factories::Plate, :heron, :heron_events, :lighthouse, type
           }
         }
       end
-      let(:params) { { barcode: barcode, purpose_uuid: purpose.uuid, wells: wells } }
+      let(:params) { { barcode:, purpose_uuid: purpose.uuid, wells: } }
 
       it 'persists the plate' do
         expect { plate_factory.save }.to change(Plate, :count).by(1)
@@ -157,7 +157,7 @@ RSpec.describe Heron::Factories::Plate, :heron, :heron_events, :lighthouse, type
     end
 
     context 'when declaring events' do
-      let(:params) { { barcode: barcode, purpose_uuid: purpose.uuid, events: [event] } }
+      let(:params) { { barcode:, purpose_uuid: purpose.uuid, events: [event] } }
       let(:subjects) do
         [
           build(
@@ -170,7 +170,7 @@ RSpec.describe Heron::Factories::Plate, :heron, :heron_events, :lighthouse, type
         ]
       end
       let(:event_type) { BroadcastEvent::PlateCherrypicked::EVENT_TYPE }
-      let(:event) { { event: { event_type: event_type, subjects: subjects } } }
+      let(:event) { { event: { event_type:, subjects: } } }
 
       it 'can persist the events' do
         expect { plate_factory.save }.to change(BroadcastEvent, :count).by(1)

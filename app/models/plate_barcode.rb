@@ -25,7 +25,7 @@ class PlateBarcode
   # Returns:
   # - Barcode instance, using Sequencescape22 format
   def self.create_barcode_with_text(text)
-    response = fetch_response("#{site}/barcodes/#{prefix}/new", { text: text })
+    response = fetch_response("#{site}/barcodes/#{prefix}/new", { text: })
     Barcode.build_sequencescape22(response)
   end
 
@@ -36,8 +36,8 @@ class PlateBarcode
   # Returns:
   # - Barcode instance, using Sequencescape22 format
   def self.create_child_barcodes(parent_barcode, count = 1)
-    response = fetch_response("#{site}/child-barcodes/#{prefix}/new", { barcode: parent_barcode, count: count })
-    response[:barcodes_group][:barcodes].map! { |barcode| Barcode.build_sequencescape22(barcode: barcode) }
+    response = fetch_response("#{site}/child-barcodes/#{prefix}/new", { barcode: parent_barcode, count: })
+    response[:barcodes_group][:barcodes].map! { |barcode| Barcode.build_sequencescape22(barcode:) }
   end
 
   # Obtain a record from Baracoda and retries the specified amount of time. If the number or retries is reached
@@ -120,8 +120,6 @@ class PlateBarcode
     end
 
     def self.create_child_barcodes(parent_barcode, count = 1)
-      child_barcodes = []
-
       current_child = Barcode.find_by_barcode(parent_barcode).child_barcodes.order(id: :desc).first
 
       # gets the 'child count' section of the barcode SQPD-12345-(1) as an int
@@ -129,11 +127,9 @@ class PlateBarcode
       current_child_count = current_child.blank? ? 0 : current_child.barcode.split('-').last.to_i
 
       # creates new child barcodes based on existing ones
-      (1..count).each do |num|
-        child_barcodes << Barcode.build_sequencescape22({ barcode: "#{parent_barcode}-#{current_child_count + num}" })
+      (1..count).map do |num|
+        Barcode.build_sequencescape22({ barcode: "#{parent_barcode}-#{current_child_count + num}" })
       end
-
-      child_barcodes
     end
   end
 

@@ -43,13 +43,12 @@ class BaitLibraryLayout < ApplicationRecord
 
     # Bulk update the aliquots with the appropriate bait libraries
     bait_libraries_to_aliquot_ids.each do |bait_library_id, aliquot_ids|
-      Aliquot.where(id: aliquot_ids).update_all(bait_library_id: bait_library_id) # rubocop:disable Rails/SkipsModelValidations
+      Aliquot.where(id: aliquot_ids).update_all(bait_library_id:) # rubocop:disable Rails/SkipsModelValidations
     end
   end
   private :layout_bait_libraries_on_plate
 
-  # rubocop:todo Metrics/MethodLength
-  def each_bait_library_assignment # rubocop:todo Metrics/AbcSize
+    def each_bait_library_assignment # rubocop:todo Metrics/AbcSize
     # We only accept the wells which have been pooled
     plate
       .wells
@@ -67,8 +66,7 @@ class BaitLibraryLayout < ApplicationRecord
       end
   end
 
-  # rubocop:enable Metrics/MethodLength
-  private :each_bait_library_assignment
+    private :each_bait_library_assignment
 
   # Generates the layout of bait libraries for preview.  In other words, none of the actually assignment is
   # done, just the recording, which would fail validation if an attempt was then made to save it.  So this is

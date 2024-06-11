@@ -16,12 +16,12 @@ class BatchesControllerTest < ActionController::TestCase
 
       context 'NPG xml view' do
         setup do
-          pipeline = create :sequencing_pipeline
+          pipeline = create(:sequencing_pipeline)
 
           @study = create(:study)
           @project = create(:project)
-          @sample = create :sample
-          @submission = create :submission_without_order, priority: 3
+          @sample = create(:sample)
+          @submission = create(:submission_without_order, priority: 3)
 
           @library =
             create(:empty_library_tube).tap do |library_tube|
@@ -34,7 +34,7 @@ class BatchesControllerTest < ActionController::TestCase
               )
             end
 
-          @phix = create :spiked_buffer, :tube_barcode
+          @phix = create(:spiked_buffer, :tube_barcode)
 
           @lane = create(:empty_lane, qc_state: 'failed')
           @lane.labware.parents << @library
@@ -53,7 +53,7 @@ class BatchesControllerTest < ActionController::TestCase
               }
             )
 
-          @batch = create :batch, pipeline: pipeline
+          @batch = create(:batch, pipeline:)
           @batch.batch_requests.create!(request: @request_one, position: 1)
           @batch.reload
           @batch.start!(create(:user))
@@ -120,7 +120,7 @@ class BatchesControllerTest < ActionController::TestCase
 
           context 'when the lane has multiple SpikedBuffer ancestors' do
             setup do
-              @phix_with_parent = create :spiked_buffer_with_parent, :tube_barcode
+              @phix_with_parent = create(:spiked_buffer_with_parent, :tube_barcode)
               @library.parents << @phix_with_parent
 
               get :show, params: { id: @batch.id, format: :xml }
@@ -141,14 +141,14 @@ class BatchesControllerTest < ActionController::TestCase
 
     context 'with a user logged in' do
       setup do
-        @user = create :user
+        @user = create(:user)
         session[:user] = @user.id
       end
 
       context 'with a few batches' do
         setup do
-          @batch_one = create :batch
-          @batch_two = create :batch
+          @batch_one = create(:batch)
+          @batch_two = create(:batch)
         end
 
         should '#index' do
@@ -172,9 +172,9 @@ class BatchesControllerTest < ActionController::TestCase
 
       context '#verify_tube_layout' do
         setup do
-          @pipeline = create :pipeline
-          @asset1 = create :sample_tube, barcode: '123456'
-          @asset2 = create :sample_tube, barcode: '654321'
+          @pipeline = create(:pipeline)
+          @asset1 = create(:sample_tube, barcode: '123456')
+          @asset2 = create(:sample_tube, barcode: '654321')
 
           @request1 = @pipeline.request_types.last.create!(asset: @asset1)
           @request2 = @pipeline.request_types.last.create!(asset: @asset2)
@@ -216,7 +216,7 @@ class BatchesControllerTest < ActionController::TestCase
 
       context 'with a cherrypick pipeline' do
         setup do
-          @pipeline = create :cherrypick_pipeline
+          @pipeline = create(:cherrypick_pipeline)
           @requests = create_list(:cherrypick_request_for_pipeline, 2, request_type: @pipeline.request_types.first)
           @selected_request = @requests.first
           @submission = @selected_request.submission || raise('No Sub')
@@ -240,10 +240,10 @@ class BatchesControllerTest < ActionController::TestCase
 
       context 'actions' do
         setup do
-          @pipeline_next = create :pipeline, name: 'Next pipeline'
-          @pipeline = create :pipeline, name: 'New Pipeline'
-          @pipeline_qc_manual = create :pipeline, name: 'Manual quality control'
-          @pipeline_qc = create :pipeline, name: 'quality control'
+          @pipeline_next = create(:pipeline, name: 'Next pipeline')
+          @pipeline = create(:pipeline, name: 'New Pipeline')
+          @pipeline_qc_manual = create(:pipeline, name: 'Manual quality control')
+          @pipeline_qc = create(:pipeline, name: 'quality control')
 
           @ws = @pipeline.workflow # :name => 'A New workflow', :item_limit => 2
           @ws_two = @pipeline_qc.workflow # :name => 'Another workflow', :item_limit => 2
@@ -252,10 +252,10 @@ class BatchesControllerTest < ActionController::TestCase
           @batch_one = create(:batch, pipeline: @pipeline)
           @batch_two = create(:batch, pipeline: @pipeline_qc)
 
-          @sample = create :sample_tube
-          @library1 = create :empty_library_tube
+          @sample = create(:sample_tube)
+          @library1 = create(:empty_library_tube)
           @library1.parents << @sample
-          @library2 = create :empty_library_tube
+          @library2 = create(:empty_library_tube)
           @library2.parents << @sample
 
           @target_one = create(:sample_tube)
@@ -280,7 +280,7 @@ class BatchesControllerTest < ActionController::TestCase
         end
 
         should '#update' do
-          @pipeline_user = create :pipeline_admin, login: 'ur1', first_name: 'Ursula', last_name: 'Robinson'
+          @pipeline_user = create(:pipeline_admin, login: 'ur1', first_name: 'Ursula', last_name: 'Robinson')
           put :update, params: { id: @batch_one.id, batch: { assignee_id: @pipeline_user.id } }
           assert_redirected_to batch_path(assigns(:batch))
           assert_equal assigns(:batch).assignee, @pipeline_user
@@ -507,8 +507,8 @@ class BatchesControllerTest < ActionController::TestCase
     context 'Find by barcode (found)' do
       setup do
         @controller.stubs(:current_user).returns(@admin)
-        @batch = FactoryBot.create :batch
-        request = FactoryBot.create :request
+        @batch = FactoryBot.create(:batch)
+        request = FactoryBot.create(:request)
         @batch.requests << request
         r = @batch.requests.first
         @e = r.lab_events.create(description: 'Cluster generation')
@@ -541,24 +541,24 @@ class BatchesControllerTest < ActionController::TestCase
       attr_reader :barcode_printer
 
       setup do
-        @user = create :user
+        @user = create(:user)
         @controller.stubs(:current_user).returns(@user)
-        @barcode_printer = create :barcode_printer
+        @barcode_printer = create(:barcode_printer)
       end
 
       should '#print_plate_barcodes should send print request' do
-        study = create :study
-        project = create :project
-        asset = create :empty_sample_tube
+        study = create(:study)
+        project = create(:project)
+        asset = create(:empty_sample_tube)
         order_role = OrderRole.new role: 'test'
 
-        order = create :order, order_role: order_role, study: study, assets: [asset], project: project
+        order = create(:order, order_role:, study:, assets: [asset], project:)
         request =
-          create :well_request,
-                 asset: (create :well_with_sample_and_plate),
-                 target_asset: (create :well_with_sample_and_plate),
-                 order: order
-        @batch = create :batch
+          create(:well_request,
+                 asset: create(:well_with_sample_and_plate),
+                 target_asset: create(:well_with_sample_and_plate),
+                 order:)
+        @batch = create(:batch)
         @batch.requests << request
 
         RestClient.expects(:post)
@@ -575,8 +575,8 @@ class BatchesControllerTest < ActionController::TestCase
       end
 
       should '#print_barcodes should send print request' do
-        request = create :library_creation_request, target_asset: (create :library_tube, barcode: '111')
-        @batch = create :batch
+        request = create(:library_creation_request, target_asset: create(:library_tube, barcode: '111'))
+        @batch = create(:batch)
         @batch.requests << request
         printable = { request.id => 'on' }
 
@@ -586,7 +586,7 @@ class BatchesControllerTest < ActionController::TestCase
              params: {
                printer: barcode_printer.name,
                count: '3',
-               printable: printable,
+               printable:,
                batch_id: @batch.id.to_s
              }
       end

@@ -6,7 +6,7 @@ describe RequestType do
   context described_class do
     describe '#for_multiplexing?' do
       context 'when it is for multiplexing' do
-        let(:request_type) { create :multiplexed_library_creation_request_type }
+        let(:request_type) { create(:multiplexed_library_creation_request_type) }
 
         it 'return true' do
           expect(request_type).to be_for_multiplexing
@@ -14,7 +14,7 @@ describe RequestType do
       end
 
       context 'when it is not for multiplexing' do
-        let(:request_type) { create :library_creation_request_type }
+        let(:request_type) { create(:library_creation_request_type) }
 
         it 'return false' do
           expect(request_type).not_to be_for_multiplexing

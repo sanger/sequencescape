@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Heron::Factories::Event, :heron, :heron_events, type: :model do
-  let(:plate) { create :plate }
+  let(:plate) { create(:plate) }
   let(:subjects) do
     [
       build(
@@ -16,7 +16,7 @@ RSpec.describe Heron::Factories::Event, :heron, :heron_events, type: :model do
     ]
   end
   let(:event_type) { BroadcastEvent::PlateCherrypicked::EVENT_TYPE }
-  let(:params) { { event: { event_type: event_type, subjects: subjects } } }
+  let(:params) { { event: { event_type:, subjects: } } }
 
   it 'is valid with all relevant attributes' do
     event = described_class.new(params, plate)

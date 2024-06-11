@@ -63,7 +63,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
             # Warren::Message::Short keeps track of the class (Well) and id, and gets sent after
             # the transaction completes. This avoids us needing to instantiate wells, keeping the memory footprint
             # down.
-            ids.each { |id| Warren::Message::Short.new(class_name: 'Well', id: id).queue(Warren.handler) }
+            ids.each { |id| Warren::Message::Short.new(class_name: 'Well', id:).queue(Warren.handler) }
           end
       end
     end
@@ -188,7 +188,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   def iteration
     iter =
       siblings # assets sharing the same parent
-        .where(plate_purpose_id: plate_purpose_id, sti_type: sti_type) # of the same purpose and type
+        .where(plate_purpose_id:, sti_type:) # of the same purpose and type
         .where("#{self.class.table_name}.created_at <= ?", created_at) # created before or at the same time
         .count(:id) # count the siblings.
 
@@ -336,10 +336,10 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   end
   deprecate stock_plate: 'Stock plate is nebulous and can easily lead to unexpected behaviour'
 
-  def self.create_with_barcode!(*args, &block)
+  def self.create_with_barcode!(*args, &)
     attributes = args.extract_options!
     attributes[:sanger_barcode] ||= PlateBarcode.create_barcode
-    create!(attributes, &block)
+    create!(attributes, &)
   end
 
   def number_of_blank_samples
@@ -385,7 +385,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   end
 
   # This method returns a map from the wells on the plate to their stock well.
-  def stock_wells # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def stock_wells # rubocop:todo Metrics/AbcSize
     # Optimisation: if the plate is a stock plate then it's wells are it's stock wells!]
     if stock_plate?
       wells.with_pool_id.index_with { |w| [w] }
@@ -426,7 +426,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
             unit_value: value,
             assay_type: parser.assay_type,
             assay_version: parser.assay_version,
-            qc_assay: qc_assay
+            qc_assay:
           )
         end
       end

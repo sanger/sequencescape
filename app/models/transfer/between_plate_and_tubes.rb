@@ -44,7 +44,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
   end
 
   def barcode_to_hash(barcoded)
-    if barcoded.present?
+    return unless barcoded.present?
       yield(
         {
           number: barcoded.barcode_number,
@@ -54,7 +54,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
           type: barcoded.barcode_type
         }
       )
-    end
+    
   end
 
   #--
@@ -80,14 +80,14 @@ class Transfer::BetweenPlateAndTubes < Transfer
     @transfers[source.map.description] = [destination, stock_well]
   end
 
-  def build_well_to_tube_transfers # rubocop:todo Metrics/MethodLength
+  def build_well_to_tube_transfers
     tube_to_stock_wells = Hash.new { |h, k| h[k] = [] }
 
     well_to_tubes
       .build(
         @transfers.map do |source, (destination, stock_wells)|
           tube_to_stock_wells[destination].concat(stock_wells)
-          { source: source, destination: destination }
+          { source:, destination: }
         end
       )
       .map(&:save!)
@@ -112,7 +112,8 @@ class Transfer::BetweenPlateAndTubes < Transfer
     raise StandardError, 'There appears to be no stock plate!' if stock_plates.empty?
 
     plate_name = stock_plates.size > 1 ? "#{stock_plates.first.human_barcode}+" : stock_plates.first.human_barcode
-    first, last = source_wells.first.map_description, source_wells.last.map_description
+    first = source_wells.first.map_description
+    last = source_wells.last.map_description
     "#{plate_name} #{first}:#{last}"
   end
 

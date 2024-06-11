@@ -60,10 +60,10 @@ class UatActions::TubeSubmission < UatActions
   def perform
     order =
       submission_template.create_with_submission!(
-        study: study,
-        project: project,
-        user: user,
-        assets: assets,
+        study:,
+        project:,
+        user:,
+        assets:,
         request_options: order_request_options
       )
     fill_report(order)

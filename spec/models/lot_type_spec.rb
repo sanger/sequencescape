@@ -5,7 +5,7 @@ require 'broadcast_event/lab_event'
 
 RSpec.describe LotType do
   context 'validating' do
-    before { create :lot }
+    before { create(:lot) }
 
     it { is_expected.to validate_uniqueness_of(:name).case_insensitive }
   end
@@ -18,10 +18,10 @@ RSpec.describe LotType do
   end
 
   describe '#lot' do
-    let(:lot_type) { create :lot_type }
-    let(:user) { create :user }
+    let(:lot_type) { create(:lot_type) }
+    let(:user) { create(:user) }
     let(:template) { PlateTemplate.new }
-    let(:lot) { lot_type.create!(template: template, user: user, lot_number: '123456789', received_at: '2014-02-01') }
+    let(:lot) { lot_type.create!(template:, user:, lot_number: '123456789', received_at: '2014-02-01') }
 
     context 'create' do
       it 'change Lot.count by 1' do

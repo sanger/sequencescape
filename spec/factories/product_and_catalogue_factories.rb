@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :product_catalogue do
-    name { |_x| FactoryBot.generate :product_catalogue_name }
+    name { |_x| FactoryBot.generate(:product_catalogue_name) }
 
     factory :single_product_catalogue do
       selection_behaviour { 'SingleProduct' }
@@ -14,7 +14,7 @@ FactoryBot.define do
   end
 
   factory :product do
-    name { FactoryBot.generate :product_name }
+    name { FactoryBot.generate(:product_name) }
     deprecated_at { nil }
   end
 

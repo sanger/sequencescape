@@ -37,17 +37,17 @@ FactoryBot.define do
 
     initialize_with do
       new(
-        data: data,
-        columns: columns,
-        validation_errors: validation_errors,
-        no_of_rows: no_of_rows,
-        partial: partial,
-        cgap: cgap,
-        study: study,
-        supplier: supplier,
-        count: count,
-        type: type,
-        manifest_type: manifest_type
+        data:,
+        columns:,
+        validation_errors:,
+        no_of_rows:,
+        partial:,
+        cgap:,
+        study:,
+        supplier:,
+        count:,
+        type:,
+        manifest_type:
       )
     end
 

@@ -12,7 +12,7 @@ describe Barcode::FormatHandlers do
 
       it 'parses the barcode correctly', :aggregate_failures do
         expect(format_handler).to be_valid
-        expect(format_handler).to have_attributes(number: number, barcode_prefix: prefix, suffix: suffix, child: child)
+        expect(format_handler).to have_attributes(number:, barcode_prefix: prefix, suffix:, child:)
       end
     end
   end

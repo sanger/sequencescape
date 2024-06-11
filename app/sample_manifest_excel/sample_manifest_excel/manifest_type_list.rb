@@ -12,8 +12,8 @@ module SampleManifestExcel
       yield self if block_given?
     end
 
-    def each(&block)
-      manifest_types.each(&block)
+    def each(&)
+      manifest_types.each(&)
     end
 
     # Hash version of the manifest_types.yml config file

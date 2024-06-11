@@ -5,8 +5,8 @@ require 'rails_helper'
 describe LabelPrinter::Label::SampleManifestPlateDouble, :sample_manifest do
   subject { described_class.new(label_options) }
 
-  let(:sample_manifest) { create :pending_plate_sample_manifest }
-  let(:label_options) { { sample_manifest: sample_manifest, only_first_label: only_first_label } }
+  let(:sample_manifest) { create(:pending_plate_sample_manifest) }
+  let(:label_options) { { sample_manifest:, only_first_label: } }
   let(:sample_manifest_plates) { sample_manifest.printables }
 
   context 'printing only the first label' do

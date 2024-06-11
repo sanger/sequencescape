@@ -24,8 +24,8 @@ module Accession
       yield self if block_given?
     end
 
-    def each(&block)
-      tags.each(&block)
+    def each(&)
+      tags.each(&)
     end
 
     def required_for(service)
