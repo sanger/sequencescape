@@ -3,6 +3,9 @@
 # Generate a bulk submission excel template
 # from basic user provided data
 class BulkSubmissionExcel::DownloadsController < ApplicationController
+
+CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+
   def new
     @submission_template = SubmissionTemplate.find_by(id: params[:submission_template_id])
     @input_field_infos = @submission_template&.input_field_infos || []
@@ -50,7 +53,7 @@ class BulkSubmissionExcel::DownloadsController < ApplicationController
   def send_file_to_user(file)
     finder = build_finder
     send_file file.path,
-              content_type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+              content_type: CONTENT_TYPE,
               filename: build_filename(finder.barcodes)
   end
 

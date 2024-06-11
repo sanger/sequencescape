@@ -2,6 +2,8 @@
 require 'rails_helper'
 RSpec.describe BulkSubmissionExcel::DownloadsController, type: :controller do
 
+  subject(:downloads_controller) { described_class.new }
+
   let(:submission) { create :submission }
 
   before do
@@ -40,7 +42,7 @@ RSpec.describe BulkSubmissionExcel::DownloadsController, type: :controller do
         post :create, params: valid_attributes
         expect(
           response.header['Content-Type']
-        ).to include 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        ).to include downloads_controller.class::CONTENT_TYPE
       end
 
       it 'generates a new submission Excel file' do
@@ -50,9 +52,7 @@ RSpec.describe BulkSubmissionExcel::DownloadsController, type: :controller do
 
       it 'generates an Excel file with the correct headers' do
         post :create, params: valid_attributes
-        expect(response.headers['Content-Type']).to eq(
-          'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        )
+        expect(response.headers['Content-Type']).to eq(downloads_controller.class::CONTENT_TYPE)
         expect(response.headers['Content-Disposition']).to include(
           "#{barcodes.first}_to_#{barcodes.last}_#{Time.current.utc.strftime('%Y%m%d')}_#{session[:user].login}.xlsx"
         )
