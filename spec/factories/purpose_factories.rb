@@ -71,9 +71,9 @@ FactoryBot.define do
       asset_shape { AssetShape.find_by(name: 'ChromiumChip') }
     end
 
-    factory :chromium_chip_x_purpose do
+    factory :shape8x1_purpose do
       size { 8 }
-      asset_shape { AssetShape.find_by(name: 'ChromiumChipX') }
+      asset_shape { AssetShape.find_by(name: 'Shape8x1') }
     end
   end
 

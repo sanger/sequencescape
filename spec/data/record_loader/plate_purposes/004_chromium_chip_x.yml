@@ -1,6 +1,6 @@
 ---
-ChromiumChipX Plate:
-  asset_shape: ChromiumChipX
+Shape8x1 Plate:
+  asset_shape: Shape8x1
   cherrypickable_target: false
   target_type: plate
   size: 8
