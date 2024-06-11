@@ -29,7 +29,11 @@ class Map < ApplicationRecord
     #   - 16 represents a 16-well Chromium Chip, which has 8 columns and 2 rows.
     #     Although a 16-well Chromium Chip does not have 3:2 ratio to be a
     #     standard plate, i.e. it has 4:1 ratio, the methods here still apply.
+    #     Note that the asset shape is a generic one, Shape4x1, although it has
+    #     been created for the 16-well Chromium Chip.
     #   - 8 represents a 8-well Chromium Chip, which has 8 columns and 1 row.
+    #     Note that the asset shape is a generic one, Shape8x1, although it has
+    #     been created for the 8-well Chromium Chip.
     # @return [Hash{Integer => Array<Integer>}] the dimensions of the plates
     PLATE_DIMENSIONS = Hash.new { |_h, _k| [] }.merge(96 => [12, 8], 384 => [24, 16], 16 => [8, 2], 8 => [8, 1])
 
