@@ -77,7 +77,7 @@ RSpec.describe RecordLoader::PlatePurposeLoader, :loader, type: :model do
   end
 
   context 'with Shape8x1 Plate purpose' do
-    let(:selected_files) { '004_chromium_chip_x' }
+    let(:selected_files) { '004_shape8x1' }
     let(:purpose_name) { 'Shape8x1 Plate' }
 
     before { record_loader.create! }
