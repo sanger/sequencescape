@@ -13,16 +13,16 @@ RSpec.describe Api::V2::PlatePurposeResource, type: :resource do
   let(:payload) { { data: { type: 'plate_purposes', attributes: attributes } } } # Payload to be received
   let(:purpose_name) { 'Example Purpose' }
   let(:plate_size) { 16 }
-  let(:asset_shape_name) { 'ChromiumChip' }
+  let(:asset_shape_name) { 'Shape4x1' }
   let(:asset_shape) { AssetShape.find_by(name: asset_shape_name) }
 
   context 'when asset_shape and size are specified in payload' do
     let(:attributes) { { name: purpose_name, size: plate_size, asset_shape: asset_shape_name } }
 
-    # This creates a ChromiumChip 16-well plate purpose:
+    # This creates a Shape4x1 16-well plate purpose:
     # Example Purpose:
     #  size: 16
-    #  asset_shape: ChromiumChip
+    #  asset_shape: Shape4x1
 
     it 'sets the specified asset_shape and size' do
       receive

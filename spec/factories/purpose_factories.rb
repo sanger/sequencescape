@@ -66,9 +66,9 @@ FactoryBot.define do
       asset_shape factory: %i[fluidigm_192_shape]
     end
 
-    factory :chromium_chip_purpose do
+    factory :shape4x1_purpose do
       size { 16 }
-      asset_shape { AssetShape.find_by(name: 'ChromiumChip') }
+      asset_shape { AssetShape.find_by(name: 'Shape4x1') }
     end
 
     factory :shape8x1_purpose do

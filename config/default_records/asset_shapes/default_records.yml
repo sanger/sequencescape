@@ -24,14 +24,14 @@
 # specified, they will default to Standard and 96 respectively. For example,
 #
 # Example Purpose:
-#   :asset_shape: ChromiumChip
+#   :asset_shape: Shape4x1
 #   :size: 16
 #
 # Example Purpose X:
 #  :asset_shape: Shape8x1
 #  :size: 8
 #
-# Note that ChromiumChip and Shape8x1 are different shapes, and they have
+# Note that Shape4x1 and Shape8x1 are different shapes, and they have
 # different horizontal/vertical ratios. The "sizes" option is used to define
 # how many wells are in the plate.
 #
@@ -67,16 +67,16 @@ StripTubeColumn:
   description_strategy: Sequential
   sizes: [8]
 
-# The ChromiumChip shape has a horizontal ratio of 4 and a vertical ratio of 1.
+# The Shape4x1 shape has a horizontal ratio of 4 and a vertical ratio of 1.
 # This shape was defined for the 16-well chip (8 columns and 2 rows).
-ChromiumChip:
+Shape4x1:
   horizontal_ratio: 4
   vertical_ratio: 1
   description_strategy: Coordinate
   sizes: [16]
 
 # The Shape8x1 shape has a horizontal ratio of 8 and a vertical ratio of 1,
-# which is different from the ChromiumChip above.
+# which is different from the Shape4x1 above.
 Shape8x1:
   horizontal_ratio: 8
   vertical_ratio: 1
