@@ -15,7 +15,6 @@ class Barcode < ApplicationRecord
   before_validation :serialize_barcode
 
   # See #4121 - renaming asset terminology to labware
-  alias_attribute :labware, :asset
   # See #4121 - The actual table column will be renamed in a subsequent story
   alias_attribute :labware_id, :asset_id
 
@@ -220,4 +219,15 @@ class Barcode < ApplicationRecord
   def broadcast_barcode
     Messenger.new(template: 'BarcodeIO', root: 'barcode', target: self).broadcast
   end
+
+  # See #4121 - renaming asset terminology to labware
+  def labware
+    asset
+  end
+
+  # See #4121 - renaming asset terminology to labware
+  def labware=(labware)
+    self.asset = labware
+  end
+
 end
