@@ -9,7 +9,7 @@ module Api
         skip_before_action :verify_authenticity_token
 
         def create
-          puts "DEBUG: In ExportPoolXpToTractionController create"
+          Rails.logger.debug "DEBUG: In ExportPoolXpToTractionController create"
           # TODO: do we need to check the tube barcode is valid here?
           Delayed::Job.enqueue ExportPoolXpToTractionJob.new(barcode)
           # TODO: check if job queuing was successful or not and return appropriate status

@@ -59,6 +59,13 @@ if Rails.env.development? || Rails.env.profile?
   configatron.disable_accession_check = true
   configatron.disable_api_authentication = true
 
+  configatron.amqp.isg.host = 'localhost'
+  configatron.amqp.isg.tls = false
+  configatron.amqp.isg.vhost = 'tol'
+  configatron.amqp.isg.username = 'admin'
+  configatron.amqp.isg.password = 'development'
+  configatron.amqp.isg.exchange = 'sequencescape'
+
   configatron.ldap_port = 13_890
   configatron.ldap_secure_port = 6360
   configatron.ldap_server = 'localhost'
