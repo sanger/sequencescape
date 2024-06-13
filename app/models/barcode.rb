@@ -206,6 +206,16 @@ class Barcode < ApplicationRecord
     Barcode.where('barcode LIKE ?', "#{barcode}-%")
   end
 
+  # See #4121 - renaming asset terminology to labware
+  def labware
+    asset
+  end
+
+  # See #4121 - renaming asset terminology to labware
+  def labware(labware)
+    self.asset = labware
+  end
+
   private
 
   def barcode_valid?
@@ -218,16 +228,6 @@ class Barcode < ApplicationRecord
 
   def broadcast_barcode
     Messenger.new(template: 'BarcodeIO', root: 'barcode', target: self).broadcast
-  end
-
-  # See #4121 - renaming asset terminology to labware
-  def labware
-    asset
-  end
-
-  # See #4121 - renaming asset terminology to labware
-  def labware=(labware)
-    self.asset = labware
   end
 
 end
