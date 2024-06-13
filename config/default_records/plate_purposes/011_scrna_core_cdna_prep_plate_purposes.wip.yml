@@ -9,18 +9,18 @@ LRC PBMC Pools Input:
   input_plate: true
   stock_plate: true
   cherrypickable_target: false
-# The 'LRC HT 5p cDNA PCR XP' and 'LRC HT 5p cDNA Input' purposes are included here so they are
+# The 'LRC GEM-X 5p cDNA PCR XP' and 'LRC GEM-X 5p cDNA Input' purposes are included here so they are
 # available for aggregation submissions.
-LRC HT 5p cDNA PCR XP:
+LRC GEM-X 5p cDNA PCR XP:
   input_plate: false
   stock_plate: false
   cherrypickable_target: false
-LRC HT 5p cDNA Input:
+LRC GEM-X 5p cDNA Input:
   input_plate: true
   stock_plate: true
   cherrypickable_target: false
-# The 'LRC HT 5p Cherrypick' purpose is included here so it is available for library submissions.
-LRC HT 5p Cherrypick:
+# The 'LRC GEM-X 5p Cherrypick' purpose is included here so it is available for library submissions.
+LRC GEM-X 5p Cherrypick:
   input_plate: false
   stock_plate: false
   cherrypickable_target: true

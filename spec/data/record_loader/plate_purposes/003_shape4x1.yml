@@ -1,6 +1,6 @@
 ---
-ChromiumChip Plate:
-  asset_shape: ChromiumChip
+Shape4x1 Plate:
+  asset_shape: Shape4x1
   cherrypickable_target: false
   target_type: plate
   size: 16
