@@ -14,6 +14,11 @@ class Barcode < ApplicationRecord
   belongs_to :asset, optional: false, class_name: 'Labware'
   before_validation :serialize_barcode
 
+  # See #4121 - renaming asset terminology to labware
+  alias_attribute :labware, :asset
+  # See #4121 - The actual table column will be renamed in a subsequent story
+  alias_attribute :labware_id, :asset_id
+
   after_commit :broadcast_barcode
 
   # Caution! Do not adjust the index of existing formats.
