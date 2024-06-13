@@ -38,7 +38,7 @@ module Heron
         ActiveRecord::Base.transaction do
           @plate = purpose.create!
 
-          Barcode.create!(labware: @plate, barcode: barcode, format: barcode_format)
+          Barcode.create!(asset: @plate, barcode: barcode, format: barcode_format)
 
           create_contents!
 

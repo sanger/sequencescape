@@ -142,7 +142,7 @@ module SampleManifestExcel
             end
             Barcode.create!(asset: tube_rack, barcode: tube_rack_barcode, format: barcode_format)
           else
-            tube_rack = barcode.labware
+            tube_rack = barcode.asset
           end
 
           tube_rack
