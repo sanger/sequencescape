@@ -113,6 +113,8 @@ GEM
       activesupport
     amq-protocol (2.3.2)
     ast (2.4.2)
+    avro (1.11.3)
+      multi_json (~> 1.0)
     base64 (0.2.0)
     bigdecimal (3.1.6)
     bootsnap (1.18.3)
@@ -545,9 +547,11 @@ DEPENDENCIES
   activeresource
   acts-as-dag!
   after_commit_everywhere (~> 1.0)
+  avro (~> 1.11.0)
   bootsnap
   builder
   bullet
+  bunny (>= 2.22.0)
   cancancan
   capybara
   carrierwave
