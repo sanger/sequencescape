@@ -212,7 +212,7 @@ class Barcode < ApplicationRecord
   end
 
   # See #4121 - renaming asset terminology to labware
-  def labware(labware)
+  def set_labware(labware)
     self.asset = labware
   end
 
