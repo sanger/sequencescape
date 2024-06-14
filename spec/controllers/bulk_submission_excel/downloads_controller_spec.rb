@@ -64,7 +64,7 @@ RSpec.describe BulkSubmissionExcel::DownloadsController, type: :controller do
         it 'generates an Excel file with the correct headers' do
           post :create, params: valid_attributes
           expect(response.headers['Content-Disposition']).to include(
-            "#{barcodes.first}_to_#{barcodes.first}_#{Time.current.utc.strftime('%Y%m%d')}_#{session[:user].login}.xlsx"
+            "#{barcodes.first}_#{Time.current.utc.strftime('%Y%m%d')}_#{session[:user].login}.xlsx"
           )
         end
       end
