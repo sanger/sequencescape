@@ -5,12 +5,15 @@
 ExportPoolXpToTractionJob =
   Struct.new(:barcode) do
     def perform
+      message_data = get_message_data(barcode)
+
       subject_obj = configatron.amqp.schemas.subjects[:export_pool_xp_to_traction]
       subject = subject_obj[:subject]
       version = subject_obj[:version]
 
-      get_message_schema(subject, version)
-      send_message(barcode, subject)
+      schema = get_message_schema(subject, version)
+      encoded_message = avro_encode_message(message_data, schema)
+      send_message(encoded_message, subject, version)
     end
 
     def fetch(uri_str, limit = 10)
@@ -26,20 +29,56 @@ ExportPoolXpToTractionJob =
       end
     end
 
+    def get_message_data(barcode)
+      {
+        messageUuid: "f1b3b3b4-4b3b-4b3b-4b3b-4b3b3b3b3b3b",
+        messageCreateDateUtc: 1610611200000,
+        tubeBarcode: barcode,
+        library: {
+          volume: 110.2,
+          concentration: 1.17,
+          boxBarcode: "034451102141700063024",
+          insertSize: 900
+        },
+        request: {
+          costCode: "S10500",
+          libraryType: "Pacbio_Amplicon",
+          studyUuid: "b58a81f4-8e4f-11ec-b919-fa163eea3084"
+        },
+        sample: {
+          sampleName: "BIOSCAN123456",
+          sampleUuid: "f1b3b3b4-4b3b-4b3b-4b3b-4b3b3b3b3b3b",
+          speciesName: "Unidentified"
+        }
+      }
+    end
+
     def get_message_schema(subject, version)
       response = fetch("#{configatron.amqp.schemas.registry_url}#{subject}/versions/#{version}")
       resp_json = JSON.parse(response.body)
       resp_json['schema']
     end
 
-    def send_message(message, subject)
+    def avro_encode_message(message, schema)
+      schema = Avro::Schema.parse(schema)
+      stream = StringIO.new
+      writer = Avro::IO::DatumWriter.new(schema)
+      encoder = Avro::IO::BinaryEncoder.new(stream)
+      encoder.write("\xC3\x01") # Avro single-object container file header
+      encoder.write([schema.crc_64_avro_fingerprint].pack('Q')) # 8 byte schema fingerprint
+      writer.write(message, encoder)
+      stream.string
+    end
+
+    def send_message(message, subject, version)
       conn = Bunny.new(connection_params)
       conn.start
 
       begin
         channel = conn.create_channel
         exchange = channel.headers(configatron.amqp.isg.exchange, passive: true)
-        exchange.publish(message, headers: { 'subject' => subject }, persistent: true)
+        headers = { subject: subject, version: version, encoder_type: 'binary' }
+        exchange.publish(message, headers: headers, persistent: true)
       ensure
         conn.close
       end
