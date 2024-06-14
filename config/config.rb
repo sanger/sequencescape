@@ -66,6 +66,14 @@ if Rails.env.development? || Rails.env.profile?
   configatron.amqp.isg.password = 'development'
   configatron.amqp.isg.exchange = 'sequencescape'
 
+  configatron.amqp.schemas.registry_url = 'http://redpanda.uat.psd.sanger.ac.uk/subjects/'
+  configatron.amqp.schemas.subjects = {
+    export_pool_xp_to_traction: {
+      subject: 'bioscan-pool-xp-tube-to-traction',
+      version: 1,
+    }
+  }
+
   configatron.ldap_port = 13_890
   configatron.ldap_secure_port = 6360
   configatron.ldap_server = 'localhost'
