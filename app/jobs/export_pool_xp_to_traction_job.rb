@@ -1,18 +1,24 @@
 # frozen_string_literal: true
-require "bunny"
 
 # Combine the samples from a Pool XP tube into a compound sample, generate a bioscan-pool-xp-tube-to-traction message
 # and submit it to RabbitMQ so that it can forwarded to Traction by the message processor.
 ExportPoolXpToTractionJob =
   Struct.new(:barcode) do
     def perform
+      send_message(barcode, 'bioscan-pool-xp-tube-to-traction')
+    end
+
+    def send_message(message, subject)
       conn = Bunny.new(connection_params)
       conn.start
-      channel = conn.create_channel
-      exchange = channel.headers(configatron.amqp.isg.exchange)
-      exchange.publish('Test message', headers: { 'subject' => 'bioscan-pool-xp-tube-to-traction' }, persistent: true)
-      puts "Published"
-      conn.close
+
+      begin
+        channel = conn.create_channel
+        exchange = channel.headers(configatron.amqp.isg.exchange, passive: true)
+        exchange.publish(message, headers: { 'subject' => subject }, persistent: true)
+      ensure
+        conn.close
+      end
     end
 
     def connection_params
@@ -23,7 +29,11 @@ ExportPoolXpToTractionJob =
         vhost: configatron.amqp.isg.vhost,
       }
 
-      add_tls_params(connection_params) if configatron.amqp.isg.tls
+      if configatron.amqp.isg.tls
+        add_tls_params(connection_params)
+      else
+        connection_params
+      end
     end
 
     def add_tls_params(connection_params)
