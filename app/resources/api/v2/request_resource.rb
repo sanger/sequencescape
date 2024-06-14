@@ -24,6 +24,7 @@ module Api
       has_one :primer_panel
       has_one :pre_capture_pool
       has_many :poly_metadata, as: :metadatable, class_name: 'PolyMetadatum'
+      has_one :asset
 
       # Attributes
       attribute :uuid, readonly: true
