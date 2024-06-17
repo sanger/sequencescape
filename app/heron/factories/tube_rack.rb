@@ -52,7 +52,9 @@ module Heron
         ActiveRecord::Base.transaction do
           @tube_rack = ::TubeRack.create!(size: size, purpose: purpose)
 
-          Barcode.create!(asset: tube_rack, barcode: barcode, format: barcode_format)
+          barcode = Barcode.new(barcode: barcode, format: barcode_format);
+          barcode.labware = @tube_rack;
+          barcode.save!
 
           create_recipients!
           create_contents!
