@@ -45,7 +45,10 @@ RSpec.describe 'Following a Sequencing Pipeline', :js do
                 submission: create(:submission)
   end
 
-  before { requests }
+  before do
+    requests
+    study1.update!(samples: [aliquot1.sample, aliquot2.sample])
+  end
 
   context 'when no compound sample exists with the component samples' do
     it_behaves_like 'a sequencing procedure'

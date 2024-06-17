@@ -13,19 +13,15 @@
 #
 class CompoundAliquot
   include ActiveModel::Model
+  include Sample::Compoundable
 
   DUPLICATE_TAG_DEPTH_ERROR_MSG = "Cannot create compound sample from following samples due to duplicate 'tag depth'"
-  MULTIPLE_STUDIES_ERROR_MSG =
-    'Cannot create compound sample due to the component samples being under different studies.'
   MULTIPLE_PROJECTS_ERROR_MSG =
     'Cannot create compound sample due to the component samples being under different projects.'
 
-  attr_accessor :request, :source_aliquots
-
-  attr_reader :component_samples, :compound_sample
+  attr_accessor :source_aliquots
 
   validate :tag_depth_is_unique
-  validate :source_aliquots_have_same_study
   validate :source_aliquots_have_same_project
 
   def initialize(attributes)
@@ -42,43 +38,10 @@ class CompoundAliquot
     errors.add(:base, "#{DUPLICATE_TAG_DEPTH_ERROR_MSG}: #{component_samples.map(&:name)}")
   end
 
-  def source_aliquots_have_same_study
-    return if request.initial_study || source_aliquots.map(&:study_id).uniq.count == 1
-
-    errors.add(:base, "#{MULTIPLE_STUDIES_ERROR_MSG}: #{component_samples.map(&:name)}")
-  end
-
   def source_aliquots_have_same_project
     return if request.initial_project || source_aliquots.map(&:project_id).uniq.count == 1
 
     errors.add(:base, "#{MULTIPLE_PROJECTS_ERROR_MSG}: #{component_samples.map(&:name)}")
-  end
-
-  def find_or_create_compound_sample
-    #  Check if a compound sample already exists with the source_aliquot samples
-    existing_compound_sample = find_compound_sample_for_component_samples
-
-    @compound_sample = existing_compound_sample || create_compound_sample
-  end
-
-  # Due to previous implementation, there may be multiple compound samples with the provided component samples.
-  # NPG have confirmed we do not need to fix the data where there are multiple compound samples with
-  # the same component samples
-  def find_compound_sample_for_component_samples
-    # Get all the compound samples of the first component sample
-    # .includes eager loads the component_samples upfront, otherwise you risk lots of hits to the database.
-    compound_samples = component_samples[0].compound_samples.includes(:component_samples).order(id: :desc)
-
-    # Find the latest compound sample which contains the given component samples
-    compound_samples.find { |compound_sample| compound_sample.component_samples == component_samples }
-  end
-
-  # Generates the compound sample, under the default study, using the component samples
-  def create_compound_sample
-    default_compound_study.samples.create!(
-      name: SangerSampleId.generate_sanger_sample_id!(default_compound_study.abbreviation),
-      component_samples: component_samples
-    )
   end
 
   def aliquot_attributes
@@ -93,14 +56,10 @@ class CompoundAliquot
     }
   end
 
-  # Study & Project:
+  # Project:
   # Use the one from the request if present,
   # Otherwise use the one from the source aliquots if it's consistent
   # Error if inconsistent (see validation)
-  def default_compound_study
-    request.initial_study || source_aliquots.first.study
-  end
-
   def default_compound_project_id
     request.initial_project_id || source_aliquots.first.project_id
   end
