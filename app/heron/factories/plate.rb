@@ -39,9 +39,11 @@ module Heron
           @plate = purpose.create!
 
           # Overriding labware=() function causes issues in the factory
-          new_barcode = Barcode.new(barcode: barcode, format: barcode_format)
-          new_barcode.labware = @plate
-          new_barcode.save!
+          # new_barcode = Barcode.new(barcode: barcode, format: barcode_format)
+          # new_barcode.labware = @plate
+          # new_barcode.save!
+
+          Barcode.create!(labware: @plate, barcode: barcode, format: barcode_format)
 
           create_contents!
 
