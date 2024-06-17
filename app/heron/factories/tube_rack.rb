@@ -56,6 +56,7 @@ module Heron
           barcode.labware = @tube_rack
           barcode.save!
 
+
           create_recipients!
           create_contents!
 
