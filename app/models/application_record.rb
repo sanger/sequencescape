@@ -79,8 +79,8 @@ class ApplicationRecord < ActiveRecord::Base
     end
 
     # Define the setter
-    define_method("#{new_name}=") do |new_value|
-      send("#{old_name}=", new_value)
+    define_method(:"#{new_name}=") do |new_value|
+      send(:"#{old_name}=", new_value)
     end
   end
 end
