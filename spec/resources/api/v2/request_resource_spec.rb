@@ -25,6 +25,7 @@ RSpec.describe Api::V2::RequestResource, type: :resource do
     expect(subject).to have_one(:request_type).with_class_name('RequestType')
     expect(subject).to have_one(:primer_panel).with_class_name('PrimerPanel')
     expect(subject).to have_one(:pre_capture_pool).with_class_name('PreCapturePool')
+    expect(subject).to have_one(:asset).with_class_name('Receptacle')
   end
 
   # Custom method tests
