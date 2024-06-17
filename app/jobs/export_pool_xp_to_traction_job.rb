@@ -37,8 +37,7 @@ ExportPoolXpToTractionJob =
         library: {
           volume: 110.2,
           concentration: 1.17,
-          boxBarcode: "034451102141700063024",
-          insertSize: 900
+          boxBarcode: "034451102141700063024"
         },
         request: {
           costCode: "S10500",
