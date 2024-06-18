@@ -207,18 +207,6 @@ class Barcode < ApplicationRecord
     Barcode.where('barcode LIKE ?', "#{barcode}-%")
   end
 
-  # See #4121 - renaming asset terminology to labware
-  def labware
-    asset
-  end
-
-  # See #4121 - renaming asset terminology to labware
-  # rubocop:disable Naming/AccessorMethodName
-  def labware=(labware)
-    self.asset = labware
-  end
-  # rubocop:enable Naming/AccessorMethodName
-
   private
 
   def barcode_valid?
