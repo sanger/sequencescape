@@ -130,7 +130,7 @@ class Barcode < ApplicationRecord
       where(format: %i[sanger_ean13 sanger_code39], barcode: human_barcode)
     end
   )
-  scope :for_search_query, ->(*input) { where(barcode: Barcode.extract_barcodes(input)).includes(:asset) }
+  scope :for_search_query, ->(*input) { where(barcode: Barcode.extract_barcodes(input)).includes(:labware) }
 
   delegate :=~, to: :handler
   delegate_missing_to :handler
