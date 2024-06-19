@@ -12,7 +12,7 @@ class Barcode < ApplicationRecord
   extend SBCF::LegacyMethods
 
   # belongs_to :asset, optional: false, class_name: 'Labware'
-  belongs_to :labware, class_name: 'Labware', optional: false, foreign_key: 'asset_id'
+  belongs_to :labware, class_name: 'Labware', optional: false, foreign_key: 'asset_id', inverse_of: :barcodes
   before_validation :serialize_barcode
 
   # See #4121 - renaming asset terminology to labware
