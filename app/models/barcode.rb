@@ -11,6 +11,7 @@ class Barcode < ApplicationRecord
   require 'sanger_barcode_format/legacy_methods'
   extend SBCF::LegacyMethods
 
+  # This association will have to be removed in a subsequent story
   belongs_to :asset, optional: false, class_name: 'Labware'
   # New association introduced in #4121. This is a temporary measure to allow the renaming
   # of the asset association to labware.
