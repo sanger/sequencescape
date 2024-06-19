@@ -11,7 +11,7 @@ class Barcode < ApplicationRecord
   require 'sanger_barcode_format/legacy_methods'
   extend SBCF::LegacyMethods
 
-  # belongs_to :asset, optional: false, class_name: 'Labware'
+  belongs_to :asset, optional: false, class_name: 'Labware'
   belongs_to :labware, class_name: 'Labware', optional: false
   before_validation :serialize_barcode
 
