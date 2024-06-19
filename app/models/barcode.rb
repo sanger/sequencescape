@@ -12,6 +12,8 @@ class Barcode < ApplicationRecord
   extend SBCF::LegacyMethods
 
   belongs_to :asset, optional: false, class_name: 'Labware'
+  # New association introduced in #4121. This is a temporary measure to allow the renaming
+  # of the asset association to labware.
   belongs_to :labware, class_name: 'Labware', optional: false
   before_validation :serialize_barcode
 
