@@ -28,7 +28,7 @@ class CompoundAliquot
     @component_samples ||= source_aliquots.map(&:sample)
   end
 
-  def set_source_aliquots(source_aliquots)
+  def source_aliquots=(source_aliquots)
     @source_aliquots = source_aliquots
     @component_samples = nil
   end
