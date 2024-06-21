@@ -22,15 +22,4 @@ Limber-Htp - scRNA Core cDNA Prep Input:
     request_type_keys: ["limber_scrna_core_cdna_prep_input"]
     product_line_name: Short Read
     product_catalogue_name: scRNA Core
-Limber-Htp - scRNA Core Chromium GEM-X 5p Aggregation:
-  submission_class_name: "LinearSubmission"
-  related_records:
-    request_type_keys: ["limber_scrna_core_chromium_gem_x_5p_aggregation"]
-    product_line_name: Short Read
-    product_catalogue_name: scRNA Core
-Limber-Htp - scRNA Core Chromium GEM-X 5p:
-  submission_class_name: "LinearSubmission"
-  related_records:
-    request_type_keys: ["limber_scrna_core_chromium_gem_x_5p"]
-    product_line_name: Short Read
-    product_catalogue_name: scRNA Core
+

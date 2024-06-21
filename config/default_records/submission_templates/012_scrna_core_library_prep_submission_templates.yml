@@ -1,0 +1,38 @@
+# Submission templates for the aggregation and library prep parts of the scRNA Core pipeline.
+---
+Limber-Htp - scRNA Core Chromium GEM-X 5p Aggregation:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_scrna_core_chromium_gem_x_5p_aggregation"]
+    product_line_name: Short Read
+    product_catalogue_name: scRNA Core
+Limber-Htp - scRNA Core Library Prep:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_scrna_core_library_prep"]
+    product_line_name: Short Read
+    product_catalogue_name: scRNA Core
+Limber-Htp - scRNA Core Library Prep - Pool:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_scrna_core_library_prep", "limber_multiplexing"]
+    product_line_name: Short Read
+    product_catalogue_name: scRNA Core
+Limber-Htp - scRNA Core Library Prep - NovaSeqX paired end sequencing:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_scrna_core_library_prep", "limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"]
+    product_line_name: Short Read
+    product_catalogue_name: scRNA Core
+Limber-Htp - scRNA Core Library Prep - NovaSeq 6000 paired end sequencing:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_scrna_core_library_prep", "limber_multiplexing", "illumina_htp_novaseq_6000_paired_end_sequencing"]
+    product_line_name: Short Read
+    product_catalogue_name: scRNA Core
+Limber-Htp - scRNA Core Library Prep - MiSeq sequencing:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_scrna_core_library_prep", "limber_multiplexing", "illumina_b_miseq_sequencing"]
+    product_line_name: Short Read
+    product_catalogue_name: scRNA Core
