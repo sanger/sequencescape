@@ -30,23 +30,28 @@ ExportPoolXpToTractionJob =
     end
 
     def get_message_data(barcode)
+      tube = Tube.with_barcode(barcode).first
+      project = tube.projects.first
+      study = tube.studies.first
+      sample = find_or_create_compound_sample(study, tube.samples)
+
       {
-        messageUuid: "f1b3b3b4-4b3b-4b3b-4b3b-4b3b3b3b3b3b",
-        messageCreateDateUtc: 1610611200000,
-        tubeBarcode: barcode,
+        messageUuid: UUIDTools::UUID.timestamp_create.to_s,
+        messageCreateDateUtc: Time.now.utc,
+        tubeBarcode: tube.human_barcode,
         library: {
-          volume: 110.2,
-          concentration: 1.17,
-          boxBarcode: "034451102141700063024"
+          volume: 100.0,
+          concentration: 0.0,
+          boxBarcode: ""
         },
         request: {
-          costCode: "S10500",
+          costCode: project.project_cost_code,
           libraryType: "Pacbio_Amplicon",
-          studyUuid: "b58a81f4-8e4f-11ec-b919-fa163eea3084"
+          studyUuid: study.uuid
         },
         sample: {
-          sampleName: "BIOSCAN123456",
-          sampleUuid: "f1b3b3b4-4b3b-4b3b-4b3b-4b3b3b3b3b3b",
+          sampleName: sample.name,
+          sampleUuid: sample.uuid,
           speciesName: "Unidentified"
         }
       }
