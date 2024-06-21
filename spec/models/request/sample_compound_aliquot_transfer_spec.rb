@@ -183,10 +183,7 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
     end
 
     context 'with no study or project specified on the sequencing request' do
-      before do
-        sequencing_request.update!(initial_study_id: nil, initial_project_id: nil)
-        study1.update!(samples: [samples[0], samples[1]])
-      end
+      before { sequencing_request.update!(initial_study_id: nil, initial_project_id: nil) }
 
       it 'uses the study and project from the source aliquots' do
         sequencing_request.transfer_aliquots_into_compound_sample_aliquots
@@ -197,12 +194,12 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
       # If the component samples are under different studies, this is a potential data governance issue
       # since the study controls data access. Error in this case.
       context 'with conflicting study_ids' do
-        before { study2.update!(samples: [samples[1]]) }
+        before { aliquot1.update!(study: study2) }
 
         it 'throws an exception' do
           expect { sequencing_request.transfer_aliquots_into_compound_sample_aliquots }.to raise_error(
             Request::SampleCompoundAliquotTransfer::Error,
-            /#{Sample::Compoundable::MULTIPLE_STUDIES_ERROR_MSG}/o
+            /#{CompoundAliquot::MULTIPLE_STUDIES_ERROR_MSG}/o
           )
         end
       end
@@ -248,11 +245,7 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
       let(:tags_extra) { create_list :tag, 2 }
       let(:source) { create :receptacle, aliquots: [aliquot1, aliquot2, aliquot3, aliquot4] }
 
-      before do
-        sequencing_request.update!(initial_study_id: nil)
-        study1.update!(samples: [samples[0], samples[1]])
-        study2.update!(samples: [samples_extra[0], samples_extra[1]])
-      end
+      before { sequencing_request.update!(initial_study_id: nil) }
 
       it 'creates 2 compound samples and transfers an aliquot of each' do
         expect(sequencing_request.target_asset.aliquots.count).to eq(0)

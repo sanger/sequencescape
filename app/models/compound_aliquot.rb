@@ -13,22 +13,29 @@
 #
 class CompoundAliquot
   include ActiveModel::Model
-  include Sample::Compoundable
+  include CompoundSampleHelper
 
   DUPLICATE_TAG_DEPTH_ERROR_MSG = "Cannot create compound sample from following samples due to duplicate 'tag depth'"
   MULTIPLE_PROJECTS_ERROR_MSG =
     'Cannot create compound sample due to the component samples being under different projects.'
+  MULTIPLE_STUDIES_ERROR_MSG =
+    'Cannot create compound sample due to the component samples being under different studies.'
 
-  attr_accessor :source_aliquots
+  attr_accessor :request
+  attr_reader :source_aliquots
+
+  def component_samples
+    @component_samples ||= source_aliquots.map(&:sample)
+  end
+
+  def set_source_aliquots(source_aliquots)
+    @source_aliquots = source_aliquots
+    @component_samples = nil
+  end
 
   validate :tag_depth_is_unique
+  validate :source_aliquots_have_same_study
   validate :source_aliquots_have_same_project
-
-  def initialize(attributes)
-    super
-
-    @component_samples = source_aliquots.map(&:sample)
-  end
 
   # Check that the component samples in the compound sample will be able to be distinguished -
   # this is represented by them all having a unique 'tag_depth'
@@ -36,6 +43,12 @@ class CompoundAliquot
     return unless source_aliquots.pluck(:tag_depth).uniq!
 
     errors.add(:base, "#{DUPLICATE_TAG_DEPTH_ERROR_MSG}: #{component_samples.map(&:name)}")
+  end
+
+  def source_aliquots_have_same_study
+    return if request.initial_study || source_aliquots.map(&:study_id).uniq.count == 1
+
+    errors.add(:base, "#{MULTIPLE_STUDIES_ERROR_MSG}: #{component_samples.map(&:name)}")
   end
 
   def source_aliquots_have_same_project
@@ -52,14 +65,18 @@ class CompoundAliquot
       study_id: default_compound_study.id,
       project_id: default_compound_project_id,
       library_id: default_library_id,
-      sample: compound_sample
+      sample: find_or_create_compound_sample(default_compound_study, component_samples)
     }
   end
 
-  # Project:
+  # Default Study & Project:
   # Use the one from the request if present,
   # Otherwise use the one from the source aliquots if it's consistent
   # Error if inconsistent (see validation)
+  def default_compound_study
+    request.initial_study || source_aliquots.first.study
+  end
+
   def default_compound_project_id
     request.initial_project_id || source_aliquots.first.project_id
   end
