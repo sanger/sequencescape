@@ -84,14 +84,16 @@ ExportPoolXpToTractionJob =
     end
 
     def connection_params
+      rabbit_config = configatron.amqp.isg
+
       connection_params = {
-        host: configatron.amqp.isg.host,
-        username: configatron.amqp.isg.username,
-        password: configatron.amqp.isg.password,
-        vhost: configatron.amqp.isg.vhost,
+        host: rabbit_config.host,
+        username: rabbit_config.username,
+        password: rabbit_config.password,
+        vhost: rabbit_config.vhost,
       }
 
-      if configatron.amqp.isg.tls
+      if rabbit_config.tls
         add_tls_params(connection_params)
       else
         connection_params
