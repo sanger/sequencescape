@@ -17,9 +17,6 @@ limber_scrna_core_cdna_prep_v2:
     - LRC Bank Spare
   library_types:
     - Chromium single cell 5 prime GEM-X
-    # - Chromium single cell 3 prime GEM-X
-    # - Chromium single cell BCR GEM-X
-    # - Chromium single cell TCR GEM-X
 limber_scrna_core_cdna_prep_input:
   name: scRNA Core cDNA Prep Input
   asset_type: Well
@@ -32,9 +29,6 @@ limber_scrna_core_cdna_prep_input:
     - LRC PBMC Pools Input
   library_types:
     - Chromium single cell 5 prime GEM-X
-    # - Chromium single cell 3 prime GEM-X
-    # - Chromium single cell BCR GEM-X
-    # - Chromium single cell TCR GEM-X
 limber_scrna_core_chromium_gem_x_5p_aggregation:
   name: scRNA Core Chromium GEM-X 5p Aggregation
   asset_type: Well
