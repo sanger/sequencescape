@@ -1,0 +1,15 @@
+# Request type for scRNA Core library prep submissions.
+#
+---
+limber_scrna_core_library_prep:
+  name: scRNA Core Library Prep
+  asset_type: Well
+  order: 1
+  request_class_name: IlluminaHtp::Requests::StdLibraryRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: Short Read
+  acceptable_purposes:
+    - LRC GEM-X 5p Cherrypick
+  library_types:
+    - Chromium single cell 5 prime GEM-X
