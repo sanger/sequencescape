@@ -4,11 +4,11 @@ require 'rails_helper'
 
 RSpec.describe Api::V2::Bioscan::ExportPoolXpToTractionController, :bioscan, type: :request do
   let(:tube_state) { 'passed' }
-  let(:plate_purpose_name) { 'LBSN-9216 Lib PCR Pool XP' }
+  let(:tube_purpose_name) { 'LBSN-9216 Lib PCR Pool XP' }
   let(:requested_barcode) { tube.human_barcode }
 
-  let(:plate_purpose) { create :tube_purpose, name: plate_purpose_name }
-  let(:tube) { create :multiplexed_library_tube, purpose: plate_purpose }
+  let(:tube_purpose) { create :tube_purpose, name: tube_purpose_name }
+  let(:tube) { create :multiplexed_library_tube, purpose: tube_purpose }
 
   let(:params) do
     {
@@ -49,7 +49,7 @@ RSpec.describe Api::V2::Bioscan::ExportPoolXpToTractionController, :bioscan, typ
   end
 
   context 'when the tube has the wrong purpose' do
-    let(:plate_purpose_name) { 'WRONG-PURPOSE' }
+    let(:tube_purpose_name) { 'WRONG-PURPOSE' }
 
     it 'responds with an unprocessable entity status' do
       expect(response).to have_http_status(:unprocessable_entity)
