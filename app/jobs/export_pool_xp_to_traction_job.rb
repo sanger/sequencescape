@@ -4,6 +4,8 @@
 # and submit it to RabbitMQ so that it can forwarded to Traction by the message processor.
 ExportPoolXpToTractionJob =
   Struct.new(:barcode) do
+    include CompoundSampleHelper
+
     def perform
       message_data = get_message_data(barcode)
 
@@ -42,7 +44,7 @@ ExportPoolXpToTractionJob =
         library: {
           volume: 100.0,
           concentration: 0.0,
-          boxBarcode: ""
+          boxBarcode: "Unspecified"
         },
         request: {
           costCode: project.project_cost_code,
