@@ -9,7 +9,6 @@ RSpec.describe Api::V2::Bioscan::ExportPoolXpToTractionController, :bioscan, typ
 
   let(:plate_purpose) { create :tube_purpose, name: plate_purpose_name }
   let(:tube) { create :multiplexed_library_tube, purpose: plate_purpose }
-  let!(:request) { create :transfer_request, state: tube_state, target_asset: tube.receptacle }
 
   let(:params) do
     {
@@ -22,7 +21,10 @@ RSpec.describe Api::V2::Bioscan::ExportPoolXpToTractionController, :bioscan, typ
     }.to_h.with_indifferent_access
   end
 
-  before { post api_v2_bioscan_export_pool_xp_to_traction_index_path, params: params }
+  before do
+    create :transfer_request, state: tube_state, target_asset: tube.receptacle
+    post api_v2_bioscan_export_pool_xp_to_traction_index_path, params: params
+  end
 
   context 'when the tube exists with the correct properties' do
     it 'responds with an OK status' do
