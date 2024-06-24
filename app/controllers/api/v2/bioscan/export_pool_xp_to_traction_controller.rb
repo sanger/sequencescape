@@ -10,19 +10,31 @@ module Api
 
         def create
           Rails.logger.debug "DEBUG: In ExportPoolXpToTractionController create"
-          # TODO: do we need to check the tube barcode is valid here?
+
+          errors = preflight_errors(barcode)
+          render json: { errors: errors }, status: :unprocessable_entity and return unless errors.empty?
+
           Delayed::Job.enqueue ExportPoolXpToTractionJob.new(barcode)
-          # TODO: check if job queuing was successful or not and return appropriate status
-          # TODO: how to know if job successfully queued?
-          # TODO: does rendering something here send something back to Limber?
-          # if successful
-          render json: {}, status: :created
-          # else
-          #   render json: { errors: ?.errors.full_messages }, status: :unprocessable_entity
-          # end
+          render json: {}, status: :ok
         end
 
         private
+
+        def preflight_errors(barcode)
+          # Check that the tube exists
+          tube = Tube.with_barcode(barcode).first
+          return ["Tube with barcode '#{barcode}' not found"] if tube.nil?
+
+          errors = []
+
+          # Check that the tube has the correct purpose and state
+          if tube.purpose.name != "LBSN-9216 Lib PCR Pool XP"
+            errors << "Tube with barcode '#{barcode}' is not a Pool XP tube"
+          end
+          errors << "Tube with barcode '#{barcode}' is not in the 'passed' state" if tube.state != "passed"
+
+          errors
+        end
 
         def attributes
           params.require(:data).require(:attributes).permit(:barcode)
