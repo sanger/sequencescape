@@ -41,6 +41,14 @@ avro_encode_message: encoded_message)
     it 'calls send_message' do
       expect(export_job).to have_received(:send_message).with(encoded_message, schema_subject, schema_version)
     end
+
+    it 'logs an error if an exception is raised' do
+      allow(export_job).to receive(:get_message_data).and_raise(ArgumentError.new('An error'))
+      allow(Rails.logger).to receive(:error).and_call_original
+
+      expect { export_job.perform }.to raise_error(ArgumentError, 'An error')
+      expect(Rails.logger).to have_received(:error).with('Error exporting Pool XP tube to Traction: <An error>')
+    end
   end
 
   describe '#get_message_data' do

@@ -16,6 +16,9 @@ ExportPoolXpToTractionJob =
       schema = get_message_schema(subject, version)
       encoded_message = avro_encode_message(message_data, schema)
       send_message(encoded_message, subject, version)
+    rescue StandardError => e
+      Rails.logger.error("Error exporting Pool XP tube to Traction: <#{e.message}>")
+      raise
     end
 
     def fetch(uri_str, limit = 10)
