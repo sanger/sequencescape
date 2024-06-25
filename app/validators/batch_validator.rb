@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-# A standard validator for batches. It checks that all {Request requests} in the batch are ready to be added to a batch,
-# that the batch meets the minimum size, that the requests have the same read length, that the requests have the same
-# flowcell type, and that the requests have the same target purpose.
+# A standard validator for batches. It checks that all {Request requests} in the {Batch batch} are ready to be added to
+# a batch, that the batch meets the minimum size, that the requests have the same read length, that the requests have
+# the same flowcell type, and that the requests have the same target purpose.
 class BatchValidator < ActiveModel::Validator
 
   def validate(record)
