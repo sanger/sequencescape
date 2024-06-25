@@ -360,16 +360,16 @@ describe Map, type: :model do
         # Returns well description with a leading zero for a given map.
         # AssetShapes and Maps are created before the test suite runs and
         # they are available in the test database.
-        let(:chromium_chip_maps) { map_class.joins(:asset_shape).where(asset_shapes: { name: 'ChromiumChip' }) }
+        let(:shape4x1_maps) { map_class.joins(:asset_shape).where(asset_shapes: { name: 'Shape4x1' }) }
 
         it 'returns well description by adding a leading zero' do
-          expect(map_class.pad_description(chromium_chip_maps.first)).to eq('A01')
-          expect(map_class.pad_description(chromium_chip_maps.last)).to eq('B08')
+          expect(map_class.pad_description(shape4x1_maps.first)).to eq('A01')
+          expect(map_class.pad_description(shape4x1_maps.last)).to eq('B08')
         end
       end
 
       describe 'walk_plate_in_column_major_order' do
-        let(:shape) { AssetShape.find_by(name: 'ChromiumChip') }
+        let(:shape) { AssetShape.find_by(name: 'Shape4x1') }
 
         it 'walks vertically' do
           # Generate a hash of well descriptions and their column order (zero-based) for testing.

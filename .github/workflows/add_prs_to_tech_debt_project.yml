@@ -1,0 +1,19 @@
+# Calls a reusable workflow in the .github repo,
+# which adds the PR that triggered this to the Technical Debt project board, if it is a depfu one.
+# Passes the 'PSD-AddToProject' GitHub App key and App Id as secrets to the reusable workflow.
+
+name: Add dependencies to technical debt project
+
+on:
+  # Triggered on creation of pull requests with any label,
+  # or when a label is added to an existing pull request.
+  pull_request:
+    types:
+      - labeled
+
+jobs:
+  call-workflow-add_to_technical_debt_project:
+    uses: sanger/.github/.github/workflows/add_to_tech_debt_project_reusable.yml@master
+    secrets:
+      app_id: ${{ secrets.ADD_TO_PROJECT_APP_ID_PSD }}
+      app_key: ${{ secrets.ADD_TO_PROJECT_APP_KEY_PSD }}
