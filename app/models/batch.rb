@@ -56,13 +56,16 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   accepts_nested_attributes_for :requests
   broadcast_with_warren
 
-  validate :requests_have_same_read_length,
-           :requests_have_same_flowcell_type,
-           :batch_meets_minimum_size,
-           :all_requests_are_ready?,
-           :requests_have_same_target_purpose,
-           on: :create,
-           if: :pipeline
+  # validate :requests_have_same_read_length,
+  #          :requests_have_same_flowcell_type,
+  #          :batch_meets_minimum_size,
+  #          :all_requests_are_ready?,
+  #          :requests_have_same_target_purpose,
+  #          on: :create,
+  #          if: :pipeline
+
+  # https://guides.rubyonrails.org/active_record_validations.html#validates-with
+  validates_with BatchValidator, on: :create, if: :pipeline
 
   after_create :generate_target_assets_for_requests, if: :generate_target_assets_on_batch_create?
   after_commit :rebroadcast
