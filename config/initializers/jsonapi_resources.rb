@@ -13,4 +13,5 @@ end
 # Monkey patch the ApiKeyAuthenticatable concern into all JSONAPI::ResourceControllers
 class JSONAPI::ResourceController
   include Api::V2::Concerns::ApiKeyAuthenticatable
+  include Api::V2::Concerns::DisableCSRFTokenAuthentication
 end
