@@ -35,13 +35,13 @@ class BatchValidator < ActiveModel::Validator
   end
 
   def requests_have_same_read_length(record)
-    unless record.pipeline.is_read_length_consistent_for_batch?(self)
+    unless record.pipeline.is_read_length_consistent_for_batch?(record)
       record.errors.add :base, "The selected requests must have the same values in their 'Read length' field."
     end
   end
 
   def requests_have_same_flowcell_type(record)
-    unless record.pipeline.is_flowcell_type_consistent_for_batch?(self)
+    unless record.pipeline.is_flowcell_type_consistent_for_batch?(record)
       record.errors.add :base, "The selected requests must have the same values in their 'Flowcell Requested' field."
     end
   end
