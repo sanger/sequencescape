@@ -38,7 +38,6 @@ module Heron
         ActiveRecord::Base.transaction do
           @plate = purpose.create!
 
-          # Overriding labware=() function causes issues in the factory
           Barcode.create!(labware: @plate, barcode: barcode, format: barcode_format)
 
 
