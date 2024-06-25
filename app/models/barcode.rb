@@ -20,7 +20,7 @@ class Barcode < ApplicationRecord
 
   # See #4121 - renaming asset terminology to labware
   # See #4121 - The actual table column will be renamed in a subsequent story
-  # alias_association :labware, :asset
+  alias_association :labware, :asset
   alias_attribute :labware_id, :asset_id
 
   after_commit :broadcast_barcode
