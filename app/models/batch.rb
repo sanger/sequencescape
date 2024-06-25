@@ -109,12 +109,6 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   alias friendly_name id
 
-  def all_requests_are_ready?
-    # Checks that SequencingRequests have at least one LibraryCreationRequest in passed status before being processed
-    # (as referred by #75102998)
-    errors.add :base, 'All requests must be ready to be added to a batch' unless requests.all?(&:ready?)
-  end
-
   def subject_type
     sequencing? ? 'flowcell' : 'batch'
   end
@@ -125,32 +119,6 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def flowcell
     self if sequencing?
-  end
-
-  def batch_meets_minimum_size
-    if min_size && (requests.size < min_size)
-      errors.add :base, "You must create batches of at least #{min_size} requests in the pipeline #{pipeline.name}"
-    end
-  end
-
-  def requests_have_same_target_purpose
-    if pipeline.is_a?(CherrypickingPipeline) &&
-       requests.map { |request| request.request_metadata.target_purpose_id }.uniq.size > 1
-  
-      errors.add(:base, 'The selected requests must have the same target purpose (Pick To) values')
-    end
-  end  
-
-  def requests_have_same_read_length
-    unless pipeline.is_read_length_consistent_for_batch?(self)
-      errors.add :base, "The selected requests must have the same values in their 'Read length' field."
-    end
-  end
-
-  def requests_have_same_flowcell_type
-    unless pipeline.is_flowcell_type_consistent_for_batch?(self)
-      errors.add :base, "The selected requests must have the same values in their 'Flowcell Requested' field."
-    end
   end
 
   # Fail was removed from State Machine (as a state) to allow the addition of qc_state column and features
