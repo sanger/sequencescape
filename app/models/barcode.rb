@@ -15,7 +15,7 @@ class Barcode < ApplicationRecord
   belongs_to :asset, optional: false, class_name: 'Labware'
   # New association introduced in #4121. This is a temporary measure to allow the renaming
   # of the asset association to labware. This was created to accommodate for_search_query scope's include() method
-  belongs_to :labware, foreign_key: :asset_id, optional: false
+  belongs_to :labware, class_name: 'Labware', optional: false
   before_validation :serialize_barcode
 
   # See #4121 - renaming asset terminology to labware
