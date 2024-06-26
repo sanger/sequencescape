@@ -29,6 +29,9 @@
 #   author_name: 'Matt Wood'
 
 module ActsAsDescriptable # :nodoc:
+  # added as getting 'Tried to load unspecified class: HashWithIndifferentAccess' errors in Production and UAT
+  require 'active_support/hash_with_indifferent_access'
+
   def self.included(base)
     base.class_eval { serialize :descriptors }
   end
