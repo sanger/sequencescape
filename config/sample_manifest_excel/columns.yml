@@ -707,7 +707,7 @@ sample_description:
   unlocked: true
   conditional_formattings:
     empty_cell:
-bioscan_sample_description:
+sample_description_specimen_plate_barcode:
   heading: SAMPLE DESCRIPTION
   updates: sample_description
   unlocked: true
