@@ -3,8 +3,7 @@
 # Base class for custom validators
 # Subclasses should implement the validate method
 # The validate method should return true if the object is valid, false otherwise
-# Do we need to make subclass ActiveModel::Validator?
-class CustomValidatorBase
+class CustomValidatorBase < ActiveModel::Validator
 
   # This method should be implemented by subclasses to return true if the object is valid, false otherwise
   def validate

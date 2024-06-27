@@ -14,18 +14,9 @@ module DynamicValidations
     # These needs to be fetched from pipeline record's 'validator' attribute
     class_names = []
     class_names.each do |class_name|
-      # Get the class from the class name
-      klass = class_name.constantize
-
-      # Defining validation methods for each class
-      self.class.send(:define_method, "validate_#{class_name.underscore}") do
-        # Implement a method "valid?" on the class. This method should return true if the object is valid,
-        # false otherwise. This method should be implemented by subclasses of CustomValidatorBase.
-        errors.add(:base, "#{class_name} is invalid") unless klass.valid?
-      end
 
       # Including validations in the class
-      validate :"validate_#{class_name.underscore}"
+      validates_with class_name.constantize
     end
   end
 end
