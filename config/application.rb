@@ -105,6 +105,7 @@ module Sequencescape
 
     # Fix for Psych::DisallowedClass: Tried to load unspecified class
     config.active_record.yaml_column_permitted_classes = Array(config.active_record.yaml_column_permitted_classes) + %w[
+      Symbol
       ActiveSupport::HashWithIndifferentAccess
       HashWithIndifferentAccess
       RequestType::Validator::ArrayWithDefault
