@@ -34,7 +34,9 @@ try {
   // Nothing
 }
 
+// Export jquery for some legacy scripts
 import jQuery from "jquery";
+window.jQuery = jQuery;
 
 // Bootstrap
 // We import the bundled version, as it automatically includes popper et al for us
@@ -45,9 +47,6 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "../datatables";
 import "../barcodeRendering";
 import "../legacy";
-
-// Export jquery for some legacy scripts
-window.jQuery = jQuery;
 
 jQuery.ajaxSetup({
   headers: {
