@@ -8,6 +8,7 @@ module DynamicValidationsTest
 
   # Add the following in the real logic which is not supported in the test.
   # For it to be supported PipelineX should be an ActiveRecord model.
+  #
   # included do
   #   after_initialize do |record|
   #     add_dynamic_validations(record)
