@@ -3,6 +3,7 @@
 require 'rails_helper'
 
 # In the business logic, if a pipeline X wants custom validations, it should:
+# 0. Add a migration to add attribute validator_class_name to pipelines table
 # 1. Implement the custom validator class
 # 2. Include the DynamicValidations module
 # 3. Call add_dynamic_validations in the initialize method.
