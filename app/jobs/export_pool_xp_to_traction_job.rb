@@ -35,7 +35,7 @@ ExportPoolXpToTractionJob =
     end
 
     def get_message_data(barcode)
-      tube = Tube.with_barcode(barcode).first
+      tube = Tube.find_by_barcode(barcode)
       project = tube.projects.first
       study = tube.studies.first
       sample = find_or_create_compound_sample(study, tube.samples)
