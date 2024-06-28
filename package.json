@@ -35,7 +35,7 @@
     "@babel/core": "^7.0.0",
     "@prettier/plugin-ruby": "^4.0.0",
     "@testing-library/jest-dom": "^5.17.0",
-    "@vitejs/plugin-legacy": "^1.6.4",
+    "@vitejs/plugin-legacy": "^1.8.2",
     "@vue/test-utils": "^1.0.3",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
