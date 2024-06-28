@@ -21,14 +21,14 @@ ExportPoolXpToTractionJob =
       raise
     end
 
-    def fetch(uri_str, limit = 10)
+    def fetch_response(uri_str, limit = 10)
       raise IOError, 'Too many HTTP redirects' if limit.zero?
 
       response = Net::HTTP.get_response(URI.parse(uri_str))
 
       case response
         when Net::HTTPSuccess     then response
-        when Net::HTTPRedirection then fetch(response['location'], limit - 1)
+        when Net::HTTPRedirection then fetch_response(response['location'], limit - 1)
       else
         response.error!
       end
@@ -63,7 +63,7 @@ ExportPoolXpToTractionJob =
     end
 
     def get_message_schema(subject, version)
-      response = fetch("#{configatron.amqp.schemas.registry_url}#{subject}/versions/#{version}")
+      response = fetch_response("#{configatron.amqp.schemas.registry_url}#{subject}/versions/#{version}")
       resp_json = JSON.parse(response.body)
       resp_json['schema']
     end
