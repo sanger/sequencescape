@@ -3308,7 +3308,7 @@ datatables.net-bs4@>=1.11.0:
     datatables.net "2.0.8"
     jquery ">=1.7"
 
-datatables.net-bs4@^1.13.0, datatables.net-bs4@^1.13.11:
+datatables.net-bs4@^1.11.3, datatables.net-bs4@^1.13.0:
   version "1.13.11"
   resolved "https://registry.yarnpkg.com/datatables.net-bs4/-/datatables.net-bs4-1.13.11.tgz#b31b9006f1901746e6c835925523608bd0a29025"
   integrity sha512-1LnxzQDFKpwvBETc8wtUtQ+pUXhs6NJomNST5pRzzHAccckkj9rZeOp3mevKDnDJKuNhBM1Y0rIeZGylJnqh9A==
@@ -3316,7 +3316,7 @@ datatables.net-bs4@^1.13.0, datatables.net-bs4@^1.13.11:
     datatables.net "1.13.11"
     jquery "1.8 - 4"
 
-datatables.net-buttons-bs4@^2.4.3:
+datatables.net-buttons-bs4@^2.1.1:
   version "2.4.3"
   resolved "https://registry.yarnpkg.com/datatables.net-buttons-bs4/-/datatables.net-buttons-bs4-2.4.3.tgz#d4a720b45e3f2ec3c776536a9ac057f57861438f"
   integrity sha512-j/4ZFyGtRcNNknwN/+evClgmG/OZIAF+xEhfzpwFzOz7Mk/0j7GyDGO+V5tg5FTOyxyK03NSu0cT0hvPglDpmA==
@@ -3333,7 +3333,7 @@ datatables.net-buttons@2.4.3:
     datatables.net "^1.13.0"
     jquery ">=1.7"
 
-datatables.net-fixedcolumns-bs4@^4.3.1:
+datatables.net-fixedcolumns-bs4@^4.0.1:
   version "4.3.1"
   resolved "https://registry.yarnpkg.com/datatables.net-fixedcolumns-bs4/-/datatables.net-fixedcolumns-bs4-4.3.1.tgz#00c691ff963b69a77edcb23f440a3869c51f3874"
   integrity sha512-/JkG5vAil/KEB+FFvl0kcvqFMVHXZgq+6yzImlZaHE3NSApV8L5eWnyIQakShczPcxrU9iozGOxvtRRIFl0rqA==
@@ -3350,7 +3350,7 @@ datatables.net-fixedcolumns@4.3.1:
     datatables.net "^1.13.0"
     jquery ">=1.7"
 
-datatables.net-fixedheader-bs4@^3.4.1:
+datatables.net-fixedheader-bs4@^3.2.1:
   version "3.4.1"
   resolved "https://registry.yarnpkg.com/datatables.net-fixedheader-bs4/-/datatables.net-fixedheader-bs4-3.4.1.tgz#567aa2e41cd3972f8ce5eb76173ad397e74b597d"
   integrity sha512-Oq6yCpswdFRn+nwrjOjD0nmpH3F0glz/ppgdT8vA6U/8qkguze4d3qZyEYd7osqrCeX9ccUZR9ptpqRYb6sVtg==
@@ -3367,7 +3367,7 @@ datatables.net-fixedheader@3.4.1:
     datatables.net "^1.13.0"
     jquery ">=1.7"
 
-datatables.net-responsive-bs4@^2.5.1:
+datatables.net-responsive-bs4@^2.2.9:
   version "2.5.1"
   resolved "https://registry.yarnpkg.com/datatables.net-responsive-bs4/-/datatables.net-responsive-bs4-2.5.1.tgz#1f5d615de94b07558bc2df0174b546fcfdc30255"
   integrity sha512-cOVCG9zRioqJiqZUPXel5/vxKGt8EFhxgzVafDNy2hY3ZO+UMMuRKcs2br/QMoojbXzpKNf2rL/lM7NoXKVKZA==
@@ -3384,7 +3384,7 @@ datatables.net-responsive@2.5.1:
     datatables.net "^1.13.0"
     jquery ">=1.7"
 
-datatables.net-rowgroup-bs4@^1.5.0:
+datatables.net-rowgroup-bs4@^1.1.4:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/datatables.net-rowgroup-bs4/-/datatables.net-rowgroup-bs4-1.5.0.tgz#31e5ad371f187c079df8dc4275ef8b441bf4cab2"
   integrity sha512-1CTXF2BsYwWYg3tjUw6cayRYsbt61DD3ms/8Evuz3/qrlKO6txdbp8OsmBNQJwT6qgEjPWx6tuGi8xdHGOey3A==
@@ -3401,7 +3401,7 @@ datatables.net-rowgroup@1.5.0:
     datatables.net ">=1.11.0"
     jquery ">=1.7"
 
-datatables.net-rowreorder-bs4@^1.5.0:
+datatables.net-rowreorder-bs4@^1.2.8:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/datatables.net-rowreorder-bs4/-/datatables.net-rowreorder-bs4-1.5.0.tgz#5006eb235d9dfd78974d113df25a6b921328f013"
   integrity sha512-4C9tzLRaisO+IOdJ1n6NRQ8ak0zC0IbX50Ed5hg+5PT7VJLI9klH+GBwE6hpF28UTWk7E6somzOwnRHLexqXdA==
