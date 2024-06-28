@@ -41,6 +41,8 @@ class PipelineX
 
   # In real logic, this would be a dynamic list of validations
   # It should be possible to access validator_class_name from the record (because it's in pipelines schema)
+  # We wouldn't need to override initialize, because it's called in the after_initialize hook. Overriding this
+  # is for test purposes only.
   def initialize(validator_class_name)
     # This is not required in the real logic, because it's part of the schema
     @validator_class_name = validator_class_name
