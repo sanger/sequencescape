@@ -63,7 +63,11 @@ ExportPoolXpToTractionJob =
     end
 
     def get_message_schema(subject, version)
-      response = fetch_response("#{configatron.amqp.schemas.registry_url}#{subject}/versions/#{version}")
+      base_url = configatron.amqp.schemas.registry_url
+
+      return File.read("data/local_schemas/#{subject}_v#{version}.avsc") if base_url == 'development'
+
+      response = fetch_response("#{base_url}#{subject}/versions/#{version}")
       resp_json = JSON.parse(response.body)
       resp_json['schema']
     end

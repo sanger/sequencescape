@@ -1,0 +1,126 @@
+{
+    "namespace": "uk.ac.sanger.psd",
+    "type": "record",
+    "name": "ExportPoolXPTubeToTraction",
+    "doc": "A message to pass all the metadata required to export a Bioscan Pool XP tube to Traction.",
+    "fields": [
+        {
+            "name": "messageUuid",
+            "doc": "The UTF-8 byte encoded unique message ID.",
+            "type": {
+                "name": "version4MessageUuid",
+                "type": "fixed",
+                "size": 36
+            }
+        },
+        {
+            "name": "messageCreateDateUtc",
+            "doc": "Date (UTC) that the message was created. Represented as milliseconds since the Unix epoch.",
+            "type": {
+                "type": "long",
+                "logicalType": "timestamp-millis"
+            }
+        },
+        {
+            "name": "tubeBarcode",
+            "type": "string",
+            "doc": "The barcode for the tube."
+        },
+        {
+            "name": "library",
+            "doc": "Properties of the library associated with the tube.",
+            "type": {
+                "name": "Library",
+                "type": "record",
+                "doc": "Library properties.",
+                "fields": [
+                    {
+                        "name": "volume",
+                        "type": "float",
+                        "doc": "The volume of the library in µL. Must be greater than or equal to 0.0."
+                    },
+                    {
+                        "name": "concentration",
+                        "type": "float",
+                        "doc": "The concentration of the library in ng/µL. Must be greater than or equal to 0.0."
+                    },
+                    {
+                        "name": "boxBarcode",
+                        "type": "string",
+                        "doc": "The template prep kit box barcode."
+                    },
+                    {
+                        "name": "insertSize",
+                        "type": [
+                            "null",
+                            "int"
+                        ],
+                        "default": null,
+                        "doc": "(Optional) The library insert size."
+                    }
+                ]
+            }
+        },
+        {
+            "name": "request",
+            "doc": "Properties of the request associated with the tube.",
+            "type": {
+                "name": "Request",
+                "type": "record",
+                "doc": "Request properties.",
+                "fields": [
+                    {
+                        "name": "costCode",
+                        "type": "string",
+                        "doc": "The cost code for billing purposes."
+                    },
+                    {
+                        "name": "genomeSize",
+                        "type": [
+                            "null",
+                            "string"
+                        ],
+                        "default": null,
+                        "doc": "(Optional) The size of the genome, to be recorded as estimate_of_gb_required."
+                    },
+                    {
+                        "name": "libraryType",
+                        "type": "string",
+                        "doc": "The type of library for the request. Must match one of the options in Traction."
+                    },
+                    {
+                        "name": "studyUuid",
+                        "type": "version4MessageUuid",
+                        "doc": "The UTF-8 byte encoded unique study UUID the request belongs to."
+                    }
+                ]
+            }
+        },
+        {
+            "name": "sample",
+            "doc": "Properties of the sample contained in the tube.",
+            "type": {
+                "name": "Sample",
+                "type": "record",
+                "doc": "Sample properties.",
+                "fields": [
+                    {
+                        "name": "sampleName",
+                        "type": "string",
+                        "doc": "The name of the sample - displayed in Traction and filterable so might be used to store an identifier."
+                    },
+                    {
+                        "name": "sampleUuid",
+                        "type": "version4MessageUuid",
+                        "doc": "The UTF-8 byte encoded unique sample UUID the request belongs to. Will be stored as external_id in Traction."
+                    },
+                    {
+                        "name": "speciesName",
+                        "type": "string",
+                        "doc": "The name of the species the sample was collected from."
+                    }
+                ]
+            }
+        }
+    ]
+}

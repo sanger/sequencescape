@@ -14,14 +14,9 @@ RSpec.describe ExportPoolXpToTractionJob, type: :job do
     let(:encoded_message) { 'encoded_message' }
 
     before do
-      # Mock HTTP requests to the schema registry
-      stub_request(:get, 'http://redpanda.uat.psd.sanger.ac.uk/subjects/bioscan-pool-xp-tube-to-traction/versions/1')
-        .to_return(status: 200, body: '{"schema": "{}"}', headers: {})
-
-      # Mock Avro message encoding
+      # Mock called methods
       allow(export_job).to receive_messages(get_message_data: message_data, get_message_schema: message_schema,
-avro_encode_message: encoded_message)
-      allow(export_job).to receive(:send_message)
+avro_encode_message: encoded_message, send_message: nil)
 
       export_job.perform
     end
