@@ -2,9 +2,8 @@
 
 module DynamicValidations
 
-  def add_dynamic_validations
-    validator_class_name = 'PipelineXValidator'
-    self.class.validates_with validator_class_name.constantize
+  def add_dynamic_validations(record)
+    self.class.validates_with record.validator_class_name.constantize
   end
 
 end
