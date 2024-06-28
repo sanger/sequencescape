@@ -22,7 +22,7 @@ module Api
 
         def preflight_errors(barcode)
           # Check that the tube exists
-          tube = Tube.with_barcode(barcode).first
+          tube = Tube.find_by_barcode(barcode)
           return ["Tube with barcode '#{barcode}' not found"] if tube.nil?
 
           errors = []
