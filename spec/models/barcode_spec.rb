@@ -95,6 +95,25 @@ describe Barcode do
     end
   end
 
+  context 'Adding labware association' do
+    let(:barcode_value) { 'DN12345U' }
+    let(:barcode_format) { 'sanger_ean13' }
+    let(:barcode) { build :sanger_ean13, barcode: barcode_value, format: barcode_format }
+
+    before do
+      barcode.save!
+    end
+
+    it 'has an asset' do
+      expect(barcode.labware).to be_a Labware
+    end
+
+    it 'has one asset' do
+      expect(Labware.find(barcode.reload.asset_id)).not_to be_nil
+    end
+
+  end
+
   shared_examples 'not a code39 barcode' do
     describe '#code39_barcode?' do
       subject { barcode.code39_barcode? }
