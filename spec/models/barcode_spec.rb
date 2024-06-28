@@ -110,6 +110,7 @@ describe Barcode do
 
     it 'has one asset' do
       expect(Labware.find(barcode.reload.asset_id)).not_to be_nil
+      expect(Labware.all.count).to eq 1
     end
 
   end
