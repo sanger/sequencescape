@@ -12,7 +12,7 @@
     "datatables.net-responsive-bs4": "^2.2.9",
     "datatables.net-rowgroup-bs4": "^1.1.4",
     "datatables.net-rowreorder-bs4": "^1.2.8",
-    "jquery": "^3.5.0",
+    "jquery": "^3.7.1",
     "jsbarcode": "^3.11.5",
     "jszip": "^3.8.0",
     "postcss": "^8.3.0",
