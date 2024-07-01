@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DefaultValidator < ActiveModel::Validator
+class DefaultValidator < CustomValidatorBase
 
   def validate(_)
     true
