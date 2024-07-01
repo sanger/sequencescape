@@ -7,7 +7,7 @@ class CustomValidatorBase < ActiveModel::Validator
 
   # This method should be implemented by subclasses to return true if the object is valid, false otherwise
   def validate(record)
-    raise NotImplementedError, 'Subclasses must implement a valid? method'
+    raise NotImplementedError, 'Subclasses must implement a validate method'
   end
 
 end
