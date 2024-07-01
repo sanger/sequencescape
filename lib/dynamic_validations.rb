@@ -19,7 +19,7 @@ module DynamicValidations
     return if pipeline.blank?
     validator_class_name = pipeline.validator_class_name
     validator_class = validator_class_name.constantize if validator_class_name.present?
-    self.class.validates_with validator_class if validator_class < ActiveModel::Validator
+    self.class.validates_with validator_class if validator_class.present?
   end
 
 end
