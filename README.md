@@ -429,6 +429,9 @@ Under development conditions, you may not have a registry running, hence the def
 This means, the first time you publish a message with this schema, you need to be connected to the Sanger network directly or via VPN.
 After the first use, a cached file will be created in `data/avro_schema_cache` so that the registry does not need to be reachable to continue generating messages.
 
+Because this is the first and only job doing this pubishing / RedPanda caching / Avro encoding, etc, there are parts which could be exracted in future if further jobs of this type are created.
+This isn't necessary at this stage, but it seems wise to note the intended pattern of usage here for future work.
+
 ### Updating the table of contents
 
 To update the table of contents after adding things to this README you can use the [markdown-toc](https://github.com/jonschlinkert/markdown-toc)
