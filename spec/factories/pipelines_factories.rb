@@ -50,6 +50,7 @@ FactoryBot.define do
   factory :pipeline do
     name { generate :pipeline_name }
     active { true }
+    validator_class_name { 'DefaultValidator' }
 
     transient do
       item_limit { 2 }
