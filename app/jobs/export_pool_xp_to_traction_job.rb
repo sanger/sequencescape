@@ -66,16 +66,16 @@ ExportPoolXpToTractionJob =
       # Prefer to use the cached schema if it exists.
       cache_file_path = "data/avro_schema_cache/#{subject}_v#{version}.avsc"
       if File.exist?(cache_file_path)
-        Rails.logger.debug("Using cached schema for #{subject} v#{version}")
+        Rails.logger.debug { "Using cached schema for #{subject} v#{version}" }
         return File.read(cache_file_path)
       end
 
       # Default to fetching the schema from the registry and caching it.
-      Rails.logger.debug("Fetching and caching schema for #{subject} v#{version}")
+      Rails.logger.debug { "Fetching and caching schema for #{subject} v#{version}" }
       response = fetch_response("#{configatron.amqp.schemas.registry_url}#{subject}/versions/#{version}")
       resp_json = JSON.parse(response.body)
       schema_str = resp_json['schema']
-      File.open(cache_file_path, 'w') { |f| f.write(schema_str) }
+      File.write(cache_file_path, schema_str)
       schema_str
     end
 

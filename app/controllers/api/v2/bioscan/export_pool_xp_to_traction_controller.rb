@@ -9,7 +9,7 @@ module Api
         skip_before_action :verify_authenticity_token
 
         def create
-          Rails.logger.debug "DEBUG: In ExportPoolXpToTractionController create"
+          Rails.logger.debug { "Creating export_pool_xp_to_traction job for tube with barcode '#{barcode}'" }
 
           errors = preflight_errors(barcode)
           render json: { errors: errors }, status: :unprocessable_entity and return unless errors.empty?

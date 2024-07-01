@@ -57,7 +57,6 @@ avro_encode_message: encoded_message, send_message: nil)
       allow(export_job).to receive(:find_or_create_compound_sample).and_return(compound_sample)
     end
 
-
     it 'returns a message with the correct values and/or types' do
       expect(actual_message).to include(
         messageUuid: kind_of(String),
@@ -89,14 +88,81 @@ avro_encode_message: encoded_message, send_message: nil)
   end
 
   describe '#get_message_schema' do
+    let(:cache_file_path) { "data/avro_schema_cache/#{schema_subject}_v#{schema_version}.avsc" }
+
     before do
-      # Mock HTTP requests to the schema registry
-      stub_request(:get, "http://test-redpanda/subjects/#{schema_subject}/versions/#{schema_version}")
-        .to_return(status: 200, body: '{"schema": "{the_schema}"}', headers: {})
+      # Remove any cached schema file
+      File.delete(cache_file_path) if File.exist?(cache_file_path)
     end
 
-    it 'returns the schema from the schema registry' do
-      expect(export_job.get_message_schema(schema_subject, schema_version)).to eq('{the_schema}')
+    context 'when the schema is cached' do
+      before do
+        # Create the cached schema file
+        File.write(cache_file_path, message_schema)
+
+        # Make the registry raise an error if it's called
+        stub_request(:get, "http://test-redpanda/subjects/#{schema_subject}/versions/#{schema_version}")
+          .to_raise 'Should not have been called'
+      end
+
+      it 'logs that the cached file schema is being used' do
+        allow(Rails.logger).to receive(:debug).and_call_original
+
+        # Ideally we'd use .to have_received but I'm unable to make it work with block syntax.
+        # rubocop:disable RSpec/MessageSpies
+        expect(Rails.logger).to receive(:debug) do |&block|
+          expect(block.call).to eq("Using cached schema for #{schema_subject} v#{schema_version}")
+        end
+        # rubocop:enable RSpec/MessageSpies
+
+        export_job.get_message_schema(schema_subject, schema_version)
+
+      end
+
+      it 'returns the cached schema' do
+        expect(export_job.get_message_schema(schema_subject, schema_version)).to eq(message_schema)
+      end
+
+      it "doesn't query the registry" do
+        expect { export_job.get_message_schema(schema_subject, schema_version) }.not_to raise_error
+      end
+    end
+
+    context 'when the schema gets fetched from the registry' do
+      before do
+        # Mock HTTP requests to the schema registry
+        stub_request(:get, "http://test-redpanda/subjects/#{schema_subject}/versions/#{schema_version}")
+          .to_return(status: 200, body: '{"schema": "{the_schema}"}', headers: {})
+      end
+
+      it 'returns the schema from the schema registry' do
+        expect(export_job.get_message_schema(schema_subject, schema_version)).to eq('{the_schema}')
+      end
+
+      it 'logs that the schema is being fetched and cached' do
+        allow(Rails.logger).to receive(:debug).and_call_original
+
+        # Ideally we'd use .to have_received but I'm unable to make it work with block syntax.
+        # rubocop:disable RSpec/MessageSpies
+        expect(Rails.logger).to receive(:debug) do |&block|
+          expect(block.call).to eq("Fetching and caching schema for #{schema_subject} v#{schema_version}")
+        end
+        # rubocop:enable RSpec/MessageSpies
+
+        export_job.get_message_schema(schema_subject, schema_version)
+      end
+    end
+
+    context 'when the schema cannot be fetched' do
+      before do
+        # Mock HTTP requests to the schema registry
+        stub_request(:get, "http://test-redpanda/subjects/#{schema_subject}/versions/#{schema_version}")
+          .to_return(status: 404, body: '', headers: {})
+      end
+
+      it 'raises an error' do
+        expect { export_job.get_message_schema(schema_subject, schema_version) }.to raise_error(StandardError)
+      end
     end
   end
 
