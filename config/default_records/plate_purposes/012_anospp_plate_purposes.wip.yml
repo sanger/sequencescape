@@ -6,6 +6,6 @@
 # sample manifests, and also because it is an acceptable purpose for the ANOSPP library prep
 # submission template.
 LANS-96 Stock:
-  input_plate: true
+  type: PlatePurpose::Input
   stock_plate: true
   cherrypickable_target: false
