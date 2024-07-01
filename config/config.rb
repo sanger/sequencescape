@@ -146,8 +146,8 @@ if Rails.env.test? || Rails.env.cucumber?
   configatron.amqp.schemas.registry_url = 'http://test-redpanda/subjects/'
   configatron.amqp.schemas.subjects = {
     export_pool_xp_to_traction: {
-      subject: 'bioscan-pool-xp-tube-to-traction',
-      version: 1,
+      subject: 'test-subject-name',
+      version: 10,
     }
   }
 
