@@ -63,13 +63,20 @@ ExportPoolXpToTractionJob =
     end
 
     def get_message_schema(subject, version)
-      base_url = configatron.amqp.schemas.registry_url
+      # Prefer to use the cached schema if it exists.
+      cache_file_path = "data/avro_schema_cache/#{subject}_v#{version}.avsc"
+      if File.exist?(cache_file_path)
+        Rails.logger.debug("Using cached schema for #{subject} v#{version}")
+        return File.read(cache_file_path)
+      end
 
-      return File.read("data/local_schemas/#{subject}_v#{version}.avsc") if base_url == 'development'
-
-      response = fetch_response("#{base_url}#{subject}/versions/#{version}")
+      # Default to fetching the schema from the registry and caching it.
+      Rails.logger.debug("Fetching and caching schema for #{subject} v#{version}")
+      response = fetch_response("#{configatron.amqp.schemas.registry_url}#{subject}/versions/#{version}")
       resp_json = JSON.parse(response.body)
-      resp_json['schema']
+      schema_str = resp_json['schema']
+      File.open(cache_file_path, 'w') { |f| f.write(schema_str) }
+      schema_str
     end
 
     def avro_encode_message(message, schema)

@@ -84,7 +84,7 @@ if Rails.env.development? || Rails.env.profile?
   configatron.amqp.isg.password = 'development'
   configatron.amqp.isg.exchange = 'sequencescape'
 
-  configatron.amqp.schemas.registry_url = 'http://redpanda.uat.psd.sanger.ac.uk/subjects/'
+  configatron.amqp.schemas.registry_url = 'https://redpanda.uat.psd.sanger.ac.uk/subjects/'
   configatron.amqp.schemas.subjects = {
     export_pool_xp_to_traction: {
       subject: 'bioscan-pool-xp-tube-to-traction',
