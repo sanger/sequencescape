@@ -14,6 +14,7 @@ module DynamicValidations
     end
   end
 
+  # Adding dynamic validations to the model
   def add_dynamic_validations(batch)
     pipeline = batch.pipeline
     return if pipeline.blank?
