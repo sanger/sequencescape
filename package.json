@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.24.7",
-    "@babel/core": "^7.0.0",
+    "@babel/core": "^7.24.7",
     "@prettier/plugin-ruby": "^4.0.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@vitejs/plugin-legacy": "^1.8.2",
