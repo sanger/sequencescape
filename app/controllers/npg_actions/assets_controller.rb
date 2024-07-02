@@ -53,6 +53,7 @@ class NpgActions::AssetsController < ApplicationController
 
     batch.npg_set_state
 
+
     BroadcastEvent::SequencingComplete.create!(seed: @asset, properties: { result: state_str })
   end
 
