@@ -281,6 +281,16 @@ RSpec.describe Request do
       it "return the default state 'pending'" do
         expect(@request.state).to eq('pending')
       end
+
+      context 'allow transition' do
+        it 'to start' do
+          @request.start!
+        end
+
+        it 'to fail' do
+          @request.fail!
+        end
+      end
     end
 
     context 'when started' do
