@@ -81,8 +81,14 @@ group :default do
   # - Load the gem from the branch
   gem 'jsonapi-resources', github: 'sanger/jsonapi-resources', branch: 'develop'
 
-  # Wraps bunny with connection pooling ad consumer process handling
+  # Wraps bunny with connection pooling and consumer process handling
   gem 'sanger_warren'
+
+  # Use bunny for simple RabbitMQ publishing operations
+  gem 'bunny', '>= 2.22.0'
+
+  # Provides message schema encoding and decoding for messages to RabbitMQ
+  gem 'avro', '~> 1.11.0'
 
   # Excel file generation
   # Note: We're temporarily using out own for of the project to make use of a few changes

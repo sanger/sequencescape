@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'rails_helper'
 require './app/helpers/report_fails_helper'
 describe ReportFailsHelper do
   describe '#report_fail_failure_options' do

@@ -77,6 +77,21 @@ if Rails.env.development? || Rails.env.profile?
 
   configatron.taxon_lookup_url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/'
 
+  configatron.amqp.isg.host = 'localhost'
+  configatron.amqp.isg.tls = false
+  configatron.amqp.isg.vhost = 'tol'
+  configatron.amqp.isg.username = 'admin'
+  configatron.amqp.isg.password = 'development'
+  configatron.amqp.isg.exchange = 'sequencescape'
+
+  configatron.amqp.schemas.registry_url = 'https://redpanda.uat.psd.sanger.ac.uk/subjects/'
+  configatron.amqp.schemas.subjects = {
+    export_pool_xp_to_traction: {
+      subject: 'bioscan-pool-xp-tube-to-traction',
+      version: 1,
+    }
+  }
+
   configatron.tecan_precision = 2
   configatron.beckman_precision = 2
   configatron.hamilton_precision = 2
@@ -119,6 +134,22 @@ if Rails.env.test? || Rails.env.cucumber?
   configatron.plate_volume_files = "#{Rails.root}/test/data/plate_volume/"
 
   configatron.taxon_lookup_url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/'
+
+  configatron.amqp.isg.host = 'localhost'
+  configatron.amqp.isg.tls = true
+  configatron.amqp.isg.ca_certificate = 'test-ca-cert'
+  configatron.amqp.isg.vhost = 'test-vhost'
+  configatron.amqp.isg.username = 'test-user'
+  configatron.amqp.isg.password = 'test-pass'
+  configatron.amqp.isg.exchange = 'test-exchange'
+
+  configatron.amqp.schemas.registry_url = 'http://test-redpanda/subjects/'
+  configatron.amqp.schemas.subjects = {
+    export_pool_xp_to_traction: {
+      subject: 'test-subject-name',
+      version: 10,
+    }
+  }
 
   configatron.tecan_precision = 1
   configatron.beckman_precision = 2
