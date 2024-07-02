@@ -251,10 +251,28 @@ plate_bioscan:
     - :date_of_sample_collection
     - :sample_taxon_id
     - :sample_common_name
-    - :bioscan_sample_description
+    - :sample_description_specimen_plate_barcode
     - :sample_type
     - :donor_id
     - :bioscan_control_type
+plate_anospp:
+  heading: "ANOSPP Plate"
+  asset_type: "plate"
+  columns:
+    - :sanger_plate_id
+    - :well
+    - :sanger_sample_id
+    - :supplier_name
+    - :retention_instruction
+    - :cohort
+    - :country_of_origin
+    - :date_of_sample_collection
+    - :sample_taxon_id
+    - :sample_common_name
+    - :sample_description_specimen_plate_barcode
+    - :sample_type
+    - :donor_id
+    - :control_type
 plate_scrna_core_pools:
   heading: "scRNA Core Pools Plate"
   asset_type: "plate"
