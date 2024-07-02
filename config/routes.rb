@@ -64,6 +64,10 @@ Rails.application.routes.draw do
         resources :tube_racks, only: [:create]
         resources :plates, only: [:create]
       end
+
+      namespace :bioscan do
+        resources :export_pool_xp_to_traction, only: [:create]
+      end
     end
   end
 
