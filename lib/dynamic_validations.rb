@@ -16,11 +16,15 @@ module DynamicValidations
 
   # Adding dynamic validations to the model
   def add_dynamic_validations(batch)
-    pipeline = batch.pipeline
-    return if pipeline.blank?
-    validator_class_name = pipeline.validator_class_name
-    validator_class = validator_class_name.constantize if validator_class_name.present?
-    self.class.validates_with validator_class if validator_class.present?
+    validator_class = get_validator_class(batch.pipeline)
+    self.class.validates_with validator_class if validator_class
+  end
+
+  private
+
+  def get_validator_class(pipeline)
+    validator_class_name = pipeline&.validator_class_name
+    validator_class_name.try(:constantize)
   end
 
 end
