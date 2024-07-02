@@ -3,7 +3,6 @@
 # This had to be loaded to call constantize.
 # To call constantize on a string symbol, the class must be eagerly loaded.
 require_relative '../app/validators/nova_seq6000_validator'
-# require_relative '../app/validators/default_validator'
 
 # Include this module in the model to add dynamic validations
 module DynamicValidations
