@@ -59,3 +59,14 @@ RVI Cherrypick:
   cherrypickable_target: true
   type: PlatePurpose
   stock_plate: false
+
+# Targeted NanoSeq loop back point
+LTN AL Lib:
+  cherrypickable_target: false
+  type: PlatePurpose
+  stock_plate: false
+
+# Targeted NanoSeq plate for reISC
+LTN Lib PCR XP:
+  type: PlatePurpose
+  stock_plate: false

@@ -36,6 +36,7 @@ limber_reisc:
   request_class_name: Pulldown::Requests::ReIscLibraryRequest
   acceptable_purposes:
     - LB Lib PCR-XP
+    - LTN Lib PCR XP # for Targeted NanoSeq ReISC
   library_types:
     - Agilent Pulldown
     - Twist Pulldown
