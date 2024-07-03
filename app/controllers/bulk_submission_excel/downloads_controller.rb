@@ -73,12 +73,11 @@ CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.shee
   # Follows the format: first barcode_to_last barcode_date_sanger user ID
   # e.g. "SQPP-1234_to_SQPP-5678_20240521_ec20.xlsx"
   def build_filename(barcodes)
-    first_barcode = barcodes.first
-    last_barcode = barcodes.last
     date = Time.current.utc.strftime('%Y%m%d')
     username = current_user.login
+    barcode_part = barcodes.one? ? barcodes.first.to_s : "#{barcodes.first}_to_#{barcodes.last}"
 
-    "#{first_barcode}_to_#{last_barcode}_#{date}_#{username}.xlsx"
+    "#{barcode_part}_#{date}_#{username}.xlsx"
   end
 
 end
