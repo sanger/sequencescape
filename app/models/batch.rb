@@ -58,7 +58,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   broadcast_with_warren
 
   # Validations for batches
-  validates_with BatchValidator, on: :create, if: :pipeline
+  validates_with BatchCreationValidator, on: :create, if: :pipeline
 
   after_create :generate_target_assets_for_requests, if: :generate_target_assets_on_batch_create?
   after_commit :rebroadcast

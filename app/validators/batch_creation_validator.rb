@@ -3,7 +3,7 @@
 # A standard validator for batches. It checks that all {Request requests} in the {Batch batch} are ready to be added to
 # a batch, that the batch meets the minimum size, that the requests have the same read length, that the requests have
 # the same flowcell type, and that the requests have the same target purpose.
-class BatchValidator < ActiveModel::Validator
+class BatchCreationValidator < ActiveModel::Validator
 
   def validate(record)
     requests_have_same_read_length(record)
