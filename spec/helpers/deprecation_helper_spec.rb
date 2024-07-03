@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'rails_helper'
 require './app/helpers/deprecation_helper'
 
 describe DeprecationHelper do
