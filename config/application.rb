@@ -104,21 +104,18 @@ module Sequencescape
     # end Rails 5 #
 
     # Fix for Psych::DisallowedClass: Tried to load unspecified class
-    # this has to be in "after_initialize" because we need custom classes to be loaded already
-    config.after_initialize do
-      ActiveRecord::Base.yaml_column_permitted_classes = [
-        Symbol,
-        ActiveSupport::HashWithIndifferentAccess,
-        HashWithIndifferentAccess, # rubocop:disable Rails/TopLevelHashWithIndifferentAccess
-        RequestType::Validator::ArrayWithDefault,
-        RequestType::Validator::LibraryTypeValidator,
-        RequestType::Validator::FlowcellTypeValidator,
-        ActionController::Parameters,
-        Set,
-        Range,
-        FieldInfo,
-        Time
-      ]
-    end
+    config.active_record.yaml_column_permitted_classes = Array(config.active_record.yaml_column_permitted_classes) + %w[
+      Symbol
+      ActiveSupport::HashWithIndifferentAccess
+      HashWithIndifferentAccess
+      RequestType::Validator::ArrayWithDefault
+      RequestType::Validator::LibraryTypeValidator
+      RequestType::Validator::FlowcellTypeValidator
+      ActionController::Parameters
+      Set
+      Range
+      FieldInfo
+      Time
+    ]
   end
 end
