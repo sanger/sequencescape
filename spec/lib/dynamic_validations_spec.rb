@@ -2,10 +2,29 @@
 
 require 'rails_helper'
 
+class NovaSeq6000ValidatorStub < CustomValidatorBase
+  def validate(record)
+    record.errors.add :base, 'NovaSeq6000Validator failed'
+  end
+end
+
+# rubocop:disable Lint/ConstantDefinitionInBlock
 RSpec.describe 'DynamicValidations' do
     context 'when added, includes the dynamic validations' do
+
+      before do
+        Batch.class_eval do
+          include DynamicValidations
+        end
+
+        # Dynamically assign the stub class to the constant for the test environment
+        stub_const('NovaSeq6000Validator', NovaSeq6000ValidatorStub)
+
+      end
+
       let(:pipeline) { create :pipeline, validator_class_name: 'NovaSeq6000Validator'}
       let(:batch) { Batch.new(pipeline: pipeline) }
+
 
       it 'adds dynamic validations' do
         expect(batch.valid?).to be false
@@ -13,3 +32,4 @@ RSpec.describe 'DynamicValidations' do
       end
     end
 end
+# rubocop:enable Lint/ConstantDefinitionInBlock
