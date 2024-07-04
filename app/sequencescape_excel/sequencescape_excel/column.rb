@@ -23,7 +23,8 @@ module SequencescapeExcel
                      defaults: {
                        number: 0,
                        type: :string,
-                       conditional_formattings: {},
+                       conditional_formattings: {
+                       },
                        validation: NullValidation.new
                      }
 

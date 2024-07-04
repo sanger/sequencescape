@@ -14,7 +14,7 @@ class Api::AliquotIO < Api::Base
         extend ClassMethods
 
         scope :including_associations_for_json,
-              -> {
+              -> do
                 includes(
                   [
                     :uuid_object,
@@ -26,7 +26,7 @@ class Api::AliquotIO < Api::Base
                     { receptacle: :uuid_object }
                   ]
                 )
-              }
+              end
       end
     end
   end

@@ -160,7 +160,8 @@ class Barcode < ApplicationRecord
   # Extract barcode from user input
   def self.extract_barcode(barcode)
     [barcode.to_s].tap { |barcodes| barcodes << SBCF::SangerBarcode.from_user_input(barcode.to_s).human_barcode }
-      .compact.uniq
+      .compact
+      .uniq
   end
 
   # Returns the barcode format matching the supplied barcode
@@ -224,5 +225,4 @@ class Barcode < ApplicationRecord
   def broadcast_barcode
     Messenger.new(template: 'BarcodeIO', root: 'barcode', target: self).broadcast
   end
-
 end

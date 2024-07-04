@@ -3,7 +3,8 @@ class RobotVerificationsController < ApplicationController
   before_action :find_barcodes, only: :submission
 
   # Step 1: Renders a form asking for user barcode, batch barcode, robot barcode and destination plate barcode
-  def index; end
+  def index
+  end
 
   # Step 2: Renders the bed verification form, in which the user is expected to scan in all beds and plates
   #         This is generated based on the information provided in step 1.

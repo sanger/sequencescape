@@ -43,13 +43,11 @@ class PlateMapGeneration
 
   def save!
     @shape =
-      AssetShape
-        .create_with(
-          horizontal_ratio: @horizontal_ratio,
-          vertical_ratio: @vertical_ratio,
-          description_strategy: @description_strategy
-        )
-        .find_or_create_by!(name: @name)
+      AssetShape.create_with(
+        horizontal_ratio: @horizontal_ratio,
+        vertical_ratio: @vertical_ratio,
+        description_strategy: @description_strategy
+      ).find_or_create_by!(name: @name)
 
     @sizes.each do |size|
       next if Map.find_by(asset_size: size, asset_shape_id: @shape.id).present?

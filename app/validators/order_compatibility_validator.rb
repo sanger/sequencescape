@@ -15,9 +15,9 @@ class OrderCompatibilityValidator < ActiveModel::Validator
     return if order_request_types.all?(&:not_for_multiplexing?)
 
     record.errors.add(:orders, 'are incompatible') if order_request_types.any?(&:not_for_multiplexing?)
-    unless order_request_types.all? do |request_types|
+    unless order_request_types.all? { |request_types|
              request_types.post_for_multiplexing == order_request_types.first.post_for_multiplexing
-           end
+           }
       record.errors.add(:orders, 'are incompatible')
     end
   end

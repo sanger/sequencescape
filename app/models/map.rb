@@ -157,9 +157,9 @@ class Map < ApplicationRecord
   end
 
   scope :for_position_on_plate,
-        ->(position, plate_size, asset_shape) {
+        ->(position, plate_size, asset_shape) do
           where(row_order: position - 1, asset_size: plate_size, asset_shape_id: asset_shape.id)
-        }
+        end
 
   scope :where_description, ->(*descriptions) { where(description: descriptions.flatten) }
   scope :where_plate_size, ->(size) { where(asset_size: size) }

@@ -81,12 +81,12 @@ class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   scope :include_summary, -> { includes([:sample, { tag: :tag_group }, { tag2: :tag_group }]) }
   scope :in_tag_order,
-        -> {
+        -> do
           joins(
             'LEFT OUTER JOIN tags AS tag1s ON tag1s.id = aliquots.tag_id,
        LEFT OUTER JOIN tags AS tag2s ON tag2s.id = aliquots.tag2_id'
           ).order('tag1s.map_id ASC, tag2s.map_id ASC')
-        }
+        end
   scope :untagged, -> { where(tag_id: UNASSIGNED_TAG, tag2_id: UNASSIGNED_TAG) }
   scope :any_tags, -> { where.not(tag_id: UNASSIGNED_TAG).or(where.not(tag2_id: UNASSIGNED_TAG)) }
 

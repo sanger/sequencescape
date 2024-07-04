@@ -28,10 +28,10 @@ module Api
           errors = []
 
           # Check that the tube has the correct purpose and state
-          if tube.purpose.name != "LBSN-9216 Lib PCR Pool XP"
+          if tube.purpose.name != 'LBSN-9216 Lib PCR Pool XP'
             errors << "Tube with barcode '#{barcode}' is not a Pool XP tube"
           end
-          errors << "Tube with barcode '#{barcode}' is not in the 'passed' state" if tube.state != "passed"
+          errors << "Tube with barcode '#{barcode}' is not in the 'passed' state" if tube.state != 'passed'
 
           errors
         end

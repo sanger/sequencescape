@@ -56,8 +56,12 @@ class TagLayoutTemplatesController < ApplicationController
   end
 
   def tag_layout_template_params
-    params
-      .require(:tag_layout_template)
-      .permit(:name, :tag_group_id, :tag2_group_id, :direction_algorithm, :walking_algorithm)
+    params.require(:tag_layout_template).permit(
+      :name,
+      :tag_group_id,
+      :tag2_group_id,
+      :direction_algorithm,
+      :walking_algorithm
+    )
   end
 end

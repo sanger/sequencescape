@@ -861,7 +861,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           stub_request(:get, "#{configatron.tube_rack_scans_microservice_url}#{rack_barcode}").to_return(
             status: mock_microservices_response_status,
             body: JSON.generate(mock_microservice_responses[rack_barcode]),
-            headers: {}
+            headers: {
+            }
           )
         end
       end
@@ -1021,9 +1022,9 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           RSpec::Matchers.define_negated_matcher :not_change, :change
 
           expect { processor.run(nil) }.to not_change(TubeRack, :count).and not_change(
-                                             RackedTube,
-                                             :count
-                                           ).and not_change(Barcode, :count)
+                  RackedTube,
+                  :count
+                ).and not_change(Barcode, :count)
         end
       end
 
@@ -1040,9 +1041,9 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           RSpec::Matchers.define_negated_matcher :not_change, :change
 
           expect { processor.run(nil) }.to not_change(TubeRack, :count).and not_change(
-                                             RackedTube,
-                                             :count
-                                           ).and not_change(Barcode, :count)
+                  RackedTube,
+                  :count
+                ).and not_change(Barcode, :count)
         end
 
         it 'will have errors' do
@@ -1099,7 +1100,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             stub_request(:get, "#{configatron.tube_rack_scans_microservice_url}#{rack_barcode}").to_return(
               status: mock_microservices_response_status,
               body: mock_microservice_responses[rack_barcode],
-              headers: {}
+              headers: {
+              }
             )
           end
         end

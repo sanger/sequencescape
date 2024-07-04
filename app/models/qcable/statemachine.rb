@@ -69,17 +69,23 @@ module Qcable::Statemachine
     asset_purpose.default_state.to_sym || :created
   end
 
-  def on_failed; end
+  def on_failed
+  end
 
-  def on_passed; end
+  def on_passed
+  end
 
-  def on_released; end
+  def on_released
+  end
 
-  def on_destroyed; end
+  def on_destroyed
+  end
 
-  def on_qc; end
+  def on_qc
+  end
 
-  def on_used; end
+  def on_used
+  end
 
   private
 

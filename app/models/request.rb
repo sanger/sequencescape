@@ -118,16 +118,16 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   # Scopes
   scope :for_pipeline,
-        ->(pipeline) {
-          joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id')
-            .where(['prt.pipeline_id=?', pipeline.id])
-            .readonly(false)
-        }
+        ->(pipeline) do
+          joins('LEFT JOIN pipelines_request_types prt ON prt.request_type_id=requests.request_type_id').where(
+            ['prt.pipeline_id=?', pipeline.id]
+          ).readonly(false)
+        end
 
   scope :customer_requests, -> { where(sti_type: [CustomerRequest, *CustomerRequest.descendants].map(&:name)) }
 
   scope :for_pooling_of,
-        ->(plate) {
+        ->(plate) do
           submission_ids = plate.all_submission_ids
           add_joins =
             if plate.stock_plate?
@@ -140,7 +140,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
             end
 
           select(
-              "uuids.external_id AS pool_id,
+            "uuids.external_id AS pool_id,
               GROUP_CONCAT(DISTINCT pw_location.description ORDER BY pw.map_id ASC SEPARATOR \",\") AS pool_into,
               SUM(requests.state = 'passed') > 0 AS pool_complete,
               MIN(requests.id) AS id,
@@ -148,20 +148,21 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
               MIN(requests.target_asset_id) AS target_asset_id,
               MIN(requests.submission_id) AS submission_id,
               MIN(requests.request_type_id) AS request_type_id"
-            )
+          )
             .joins(
-              add_joins + [
-                'INNER JOIN maps AS pw_location ON pw.map_id=pw_location.id',
-                'INNER JOIN uuids ON uuids.resource_id=requests.submission_id AND uuids.resource_type="Submission"'
-              ]
+              add_joins +
+                [
+                  'INNER JOIN maps AS pw_location ON pw.map_id=pw_location.id',
+                  'INNER JOIN uuids ON uuids.resource_id=requests.submission_id AND uuids.resource_type="Submission"'
+                ]
             )
             .group('uuids.external_id')
             .where(pw: { labware_id: plate.id }, requests: { submission_id: submission_ids })
             .where.not(requests: { state: 'cancelled' })
-        }
+        end
 
   scope :for_pre_cap_grouping_of,
-        ->(plate) {
+        ->(plate) do
           add_joins =
             if plate.stock_plate?
               ['INNER JOIN receptacles AS pw ON requests.asset_id=pw.id']
@@ -173,24 +174,25 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
             end
 
           select(
-              'min(uuids.external_id) AS group_id,
+            'min(uuids.external_id) AS group_id,
       GROUP_CONCAT(DISTINCT pw_location.description SEPARATOR ",") AS group_into,
       MIN(requests.id) AS id, MIN(requests.submission_id) AS submission_id,
       MIN(requests.request_type_id) AS request_type_id'
-            )
+          )
             .joins(
-              add_joins + [
-                'INNER JOIN maps AS pw_location ON pw.map_id = pw_location.id',
-                # rubocop:todo Layout/LineLength
-                'INNER JOIN pre_capture_pool_pooled_requests ON requests.id=pre_capture_pool_pooled_requests.request_id',
-                'INNER JOIN uuids ON uuids.resource_id = pre_capture_pool_pooled_requests.pre_capture_pool_id AND uuids.resource_type="PreCapturePool"'
-                # rubocop:enable Layout/LineLength
-              ]
+              add_joins +
+                [
+                  'INNER JOIN maps AS pw_location ON pw.map_id = pw_location.id',
+                  # rubocop:todo Layout/LineLength
+                  'INNER JOIN pre_capture_pool_pooled_requests ON requests.id=pre_capture_pool_pooled_requests.request_id',
+                  'INNER JOIN uuids ON uuids.resource_id = pre_capture_pool_pooled_requests.pre_capture_pool_id AND uuids.resource_type="PreCapturePool"'
+                  # rubocop:enable Layout/LineLength
+                ]
             )
             .group('pre_capture_pool_pooled_requests.pre_capture_pool_id')
             .where(state: %w[started pending])
             .where(pw: { labware_id: plate })
-        }
+        end
 
   scope :in_order, ->(order) { where(order_id: order) }
 
@@ -200,7 +202,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   scope :including_samples_from_source, -> { includes(asset: { aliquots: :sample }) }
 
   scope :for_order_including_submission_based_requests,
-        ->(order) {
+        ->(order) do
           # To obtain the requests for an order and the sequencing requests of its submission (as they are defined
           # as a common element for any order in the submission)
           where(
@@ -210,7 +212,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
               order.submission.id
             ]
           )
-        }
+        end
 
   scope :with_request_type_id, ->(id) { where(request_type_id: id) }
 
@@ -232,19 +234,19 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   scope :with_asset_location, -> { includes(asset: :map) }
   scope :siblings_of, ->(request) { where(asset_id: request.asset_id).where.not(id: request.id) }
   scope :asset_on_labware,
-        -> {
+        -> do
           joins(:asset)
             .select('requests.*')
             .select('receptacles.labware_id AS labware_id')
             .where.not(receptacles: { labware_id: nil })
-        }
+        end
   scope :target_asset_on_labware,
-        -> {
+        -> do
           joins(:target_asset)
             .select('requests.*')
             .select('receptacles.labware_id AS labware_id')
             .where.not(receptacles: { labware_id: nil })
-        }
+        end
 
   scope :without_asset, -> { where('asset_id is null') }
   scope :without_target, -> { where('target_asset_id is null') }
@@ -254,13 +256,13 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # NOTE: These scopes use preload due to a limitation in the way rails handles custom selects with eager loading
   # https://github.com/rails/rails/issues/15185
   scope :loaded_for_inbox_display,
-        -> {
+        -> do
           preload(
             [{ submission: { orders: :study }, asset: [:scanned_into_lab_event, :studies, { labware: :barcodes }] }]
           )
-        }
+        end
   scope :loaded_for_sequencing_inbox_display,
-        -> {
+        -> do
           preload(
             [
               :upstream_requests,
@@ -278,18 +280,18 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
               { request_type: :product_line }
             ]
           )
-        }
+        end
   scope :loaded_for_grouped_inbox_display,
         -> { preload([{ submission: :orders, asset: { labware: %i[purpose barcodes] } }, :target_asset, :order]) }
 
   scope :for_submission_id, ->(id) { where(submission_id: id) }
   scope :for_asset_id, ->(id) { where(asset_id: id) }
   scope :for_study_ids,
-        ->(ids) {
-          joins('INNER JOIN aliquots AS al ON requests.asset_id = al.receptacle_id')
-            .where(['al.study_id IN (?)', ids])
-            .uniq
-        }
+        ->(ids) do
+          joins('INNER JOIN aliquots AS al ON requests.asset_id = al.receptacle_id').where(
+            ['al.study_id IN (?)', ids]
+          ).uniq
+        end
 
   scope :for_study_id, ->(id) { for_study_ids(id) }
 
@@ -301,9 +303,9 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   scope :for_studies, ->(*studies) { where(initial_study_id: studies) }
 
   scope :with_assets_for_starting_requests,
-        -> {
+        -> do
           includes([:request_metadata, :request_type, :request_events, { asset: :aliquots, target_asset: :aliquots }])
-        }
+        end
   scope :not_failed, -> { where(['state != ?', 'failed']) }
 
   scope :multiplexed, -> { joins(:request_type).where(request_types: { for_multiplexing: true }) }
@@ -490,17 +492,19 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def format_qc_information
     return [] if lab_events.empty?
 
-    events.filter_map do |event|
-      next if event.family.nil? || %w[pass fail].exclude?(event.family.downcase)
+    events
+      .filter_map do |event|
+        next if event.family.nil? || %w[pass fail].exclude?(event.family.downcase)
 
-      message = event.message.presence || '(No message was specified)'
-      {
-        'event_id' => event.id,
-        'status' => event.family.downcase,
-        'message' => message,
-        'created_at' => event.created_at
-      }
-    end.compact
+        message = event.message.presence || '(No message was specified)'
+        {
+          'event_id' => event.id,
+          'status' => event.family.downcase,
+          'message' => message,
+          'created_at' => event.created_at
+        }
+      end
+      .compact
   end
 
   def copy
@@ -556,7 +560,8 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
     _product_line&.name
   end
 
-  def manifest_processed!; end
+  def manifest_processed!
+  end
 
   private
 
