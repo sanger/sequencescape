@@ -14,6 +14,8 @@ RSpec.describe Api::V2::SampleMetadataResource, type: :resource do
       expect(subject).to have_attribute :supplier_name
       expect(subject).to have_attribute :collected_by
       expect(subject).to have_attribute :donor_id
+      expect(subject).to have_attribute :concentration
+      expect(subject).to have_attribute :volume
     end
   end
 end
