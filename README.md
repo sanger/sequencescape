@@ -57,6 +57,7 @@ a organisation of 900 people.
     - [MySQL errors when installing](#mysql-errors-when-installing)
     - [Installing on Apple Silicon (M1)](#installing-on-apple-silicon-m1)
   - [API V2 Authentication](#api-v2-authentication)
+  - [Publishing AMQP Messages](#publishing-amqp-messages)
   - [Updating the table of contents](#updating-the-table-of-contents)
   - [CI](#ci)
 
@@ -419,10 +420,22 @@ As of the time of writing, there are three outcomes to a request made, with resp
   - The request is logged with the prefix "Request made without an API key" including information about the client.
   - The client application should be updated to use a valid API key in future.
 
+### Publishing AMQP Messages
+
+Some API endpoints (such as `/api/v2/bioscan/export_pool_xp_to_traction`) trigger background jobs which are responsible for publishing data to another instance of RabbitMQ.
+In the case of the Bioscan Export Pool XP to Traction job, the message goes to the ISG managed RabbitMQ instance.
+In order to publish a message, the job must get a schema from a registry.
+Under development conditions, you may not have a registry running, hence the default config directs to the UAT instance of PSD's supported RedPanda.
+This means, the first time you publish a message with this schema, you need to be connected to the Sanger network directly or via VPN.
+After the first use, a cached file will be created in `data/avro_schema_cache` so that the registry does not need to be reachable to continue generating messages.
+
+Because this is the first and only job doing this pubishing / RedPanda caching / Avro encoding, etc, there are parts which could be extracted in future if further jobs of this type are created.
+This isn't necessary at this stage, but it seems wise to note the intended pattern of usage here for future work.
+
 ### Updating the table of contents
 
 To update the table of contents after adding things to this README you can use the [markdown-toc](https://github.com/jonschlinkert/markdown-toc)
-node module. To install it, make sure you have install the dev dependencies from yarn. To update
+node module. To install it, make sure you have installed the dev dependencies from yarn. To update
 the table of contents, run:
 
 ```shell
