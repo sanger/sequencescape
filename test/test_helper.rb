@@ -27,8 +27,8 @@ Dir
 
 Dir
   .glob(
-    File.expand_path(File.join(Rails.root, %w[test shoulda_macros *.rb]))
-  ) # rubocop:disable Rails/RootPathnameMethods
+    File.expand_path(File.join(Rails.root, %w[test shoulda_macros *.rb])) # rubocop:disable Rails/RootPathnameMethods
+  )
   .each { |macro_filename| require macro_filename }
 
 require "#{Rails.root}/test/unit/task_test_base"

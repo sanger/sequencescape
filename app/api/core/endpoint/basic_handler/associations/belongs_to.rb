@@ -33,7 +33,7 @@ module Core::Endpoint::BasicHandler::Associations::BelongsTo
       delegate :endpoint_details, to: :@endpoint
 
       def merge(node)
-        super(node) do |children| self.class.new(@endpoint_helper, children) end
+        super(node) do |children| self.class.new(@endpoint_helper, children) end # rubocop:disable Style/SingleLineDoEndBlock,Style/BlockDelimiters
       end
 
       def call(object, options, stream)

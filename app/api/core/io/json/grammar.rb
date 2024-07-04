@@ -130,7 +130,7 @@ module Core::Io::Json::Grammar
     end
 
     def merge(node)
-      super(node) do |children| self.class.new(@name, children) end
+      super(node) do |children| self.class.new(@name, children) end # rubocop:disable Style/SingleLineDoEndBlock,Style/BlockDelimiters
     end
 
     def inspect

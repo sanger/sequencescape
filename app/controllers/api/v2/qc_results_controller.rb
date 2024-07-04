@@ -17,7 +17,7 @@ module Api
         end
       end
 
-      def qc_results_params
+      def qc_results_params # rubocop:disable Metrics/MethodLength
         params
           .require(:data)
           .require(:attributes)
