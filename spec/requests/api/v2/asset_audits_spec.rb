@@ -17,8 +17,6 @@ describe 'AssetAudits API', with: :api_v2 do
       expect(response).to have_http_status(:success)
       expect(json['data'].length).to eq(5)
     end
-
-
   end
 
   context 'with an AssetAudit' do
@@ -27,7 +25,6 @@ describe 'AssetAudits API', with: :api_v2 do
       resource_model.update(witnessed_by: 'new_witness_user')
       resource_model
     end
-
 
     let(:payload) do
       {
@@ -54,7 +51,7 @@ describe 'AssetAudits API', with: :api_v2 do
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('asset_audits')
       expect(json.dig('data', 'attributes', 'key')).to eq(resource_model.key )
-      expect(json.dig('data','attributes', 'witnessed_by')).to eq(updated_resource_model.witnessed_by)
+      expect(json.dig('data', 'attributes', 'witnessed_by')).to eq(updated_resource_model.witnessed_by)
     end
   end
 
