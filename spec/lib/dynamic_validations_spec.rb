@@ -22,10 +22,6 @@ RSpec.describe 'DynamicValidations' do
 
       end
 
-      after do
-        pipeline.destroy
-      end
-
       let(:pipeline) { create :pipeline, validator_class_name: 'NovaSeq6000Validator'}
       let(:batch) { Batch.new(pipeline: pipeline) }
 
