@@ -53,7 +53,7 @@ describe 'VolumeUpdate API', with: :api_v2 do
   end
 
   describe '#post' do
-    let(:labware) { create :labware }
+    let(:plate) { create :plate } # Only works for plates as update_volume is not set for all labware
 
     let(:payload) do
       {
@@ -62,7 +62,7 @@ describe 'VolumeUpdate API', with: :api_v2 do
           'attributes' => {
             'volume_change' => 5.0,
             'created_by' => 'test_user',
-            'target_uuid' => labware.uuid,
+            'target_uuid' => plate.uuid,
           },
         }
       }
@@ -73,7 +73,7 @@ describe 'VolumeUpdate API', with: :api_v2 do
       expect(response).to have_http_status(:success), response.body
       expect(json.dig('data', 'type')).to eq('volume_updates')
       expect(json.dig('data', 'attributes', 'created_by')).to eq('test_user')
-      expect(json.dig('data', 'attributes', 'target_uuid')).to eq(labware.uuid)
+      expect(json.dig('data', 'attributes', 'target_uuid')).to eq(plate.uuid)
     end
   end
 end
