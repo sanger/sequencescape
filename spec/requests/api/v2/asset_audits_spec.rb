@@ -21,10 +21,7 @@ describe 'AssetAudits API', with: :api_v2 do
 
   context 'with an AssetAudit' do
     let(:resource_model) { create(:asset_audit) }
-    let(:updated_resource_model) do
-      resource_model.update(witnessed_by: 'new_witness_user')
-      resource_model
-    end
+    let(:updated_witnessed_by) { 'new_witness_user' }
 
     let(:payload) do
       {
@@ -32,7 +29,7 @@ describe 'AssetAudits API', with: :api_v2 do
           'id' => resource_model.id,
           'type' => 'asset_audits',
           'attributes' => {
-            'witnessed_by' => updated_resource_model.witnessed_by,
+            'witnessed_by' => updated_witnessed_by,
           }
         }
       }
