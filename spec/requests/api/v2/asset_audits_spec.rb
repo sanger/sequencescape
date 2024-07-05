@@ -46,12 +46,10 @@ describe 'AssetAudits API', with: :api_v2 do
       expect(json.dig('data', 'attributes','witnessed_by')).to eq(resource_model.witnessed_by)
     end
 
-    it 'allows update of an AssetAudit' do
+    it 'does not allow update of an AssetAudit' do
       api_patch "#{base_endpoint}/#{resource_model.id}", payload
-      expect(response).to have_http_status(:success)
-      expect(json.dig('data', 'type')).to eq('asset_audits')
-      expect(json.dig('data', 'attributes', 'key')).to eq(resource_model.key )
-      expect(json.dig('data', 'attributes', 'witnessed_by')).to eq(updated_resource_model.witnessed_by)
+      expect(response).to have_http_status(:bad_request)
+      expect(json.dig('errors', 0, 'detail')).to eq('witnessed_by is not allowed.')
     end
   end
 

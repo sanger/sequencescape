@@ -50,7 +50,7 @@ module Api
       #
       # @param _context [JSONAPI::Resource::Context] not used.
       # @return [Array<Symbol>] the list of updatable fields.
-      def updatable_fields(_context)
+      def self.updatable_fields(_context)
         []  # Do not allow updating any fields.
       end
     end
