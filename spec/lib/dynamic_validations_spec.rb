@@ -13,10 +13,6 @@ RSpec.describe 'DynamicValidations' do
     context 'when added, includes the dynamic validations' do
 
       before do
-        Batch.class_eval do
-          include DynamicValidations
-        end
-
         # Dynamically assign the stub class to the constant for the test environment
         stub_const('NovaSeq6000Validator', NovaSeq6000ValidatorStub)
 
