@@ -21,10 +21,7 @@ describe 'VolumeUpdate API', with: :api_v2 do
 
   context 'with a VolumeUpdate' do
     let(:resource_model) { create(:volume_update) }
-    let(:updated_resource_model) do
-      resource_model.update(volume_change: 10.0)
-      resource_model
-    end
+    let(:updated_volume_change) { 10.0 }
 
     let(:payload) do
       {
@@ -32,7 +29,7 @@ describe 'VolumeUpdate API', with: :api_v2 do
           'id' => resource_model.id,
           'type' => 'volume_updates',
           'attributes' => {
-            'volume_change' => updated_resource_model.volume_change,
+            'volume_change' => updated_volume_change,
           }
         }
       }
