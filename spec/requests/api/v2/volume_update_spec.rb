@@ -74,6 +74,7 @@ describe 'VolumeUpdate API', with: :api_v2 do
       expect(json.dig('data', 'type')).to eq('volume_updates')
       expect(json.dig('data', 'attributes', 'created_by')).to eq('test_user')
       expect(json.dig('data', 'attributes', 'target_uuid')).to eq(plate.uuid)
+      expect(json.dig('data', 'attributes', 'volume_change')).to eq(5.0)
     end
   end
 end
