@@ -39,7 +39,7 @@ describe 'AssetAudits API', with: :api_v2 do
       api_get "#{base_endpoint}/#{resource_model.id}"
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('asset_audits')
-      expect(json.dig('data','attributes', 'key')).to eq(resource_model.key)
+      expect(json.dig('data', 'attributes', 'key')).to eq(resource_model.key)
       expect(json.dig('data', 'attributes','witnessed_by')).to eq(resource_model.witnessed_by)
     end
 
