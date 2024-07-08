@@ -139,15 +139,21 @@ module SampleManifestExcel
           errors.add(:base, 'This is not a recognised upload type.')
         end
 
+        # A method to validate if wells have been used that are not permitted in the manifest
         def check_invalid_wells
-          return if upload.sample_manifest.invalid_wells.empty?
+          # We first check sample_manifest exists and that it has invalid wells options
+          return if upload.try(:sample_manifest)&.invalid_wells.blank?
 
+          # Collect all the well positions that have been used and are invalid
           invalid_wells = upload.rows.collect do |row|
             upload.sample_manifest.invalid_wells.include?(row.value(:well)) ? row.value(:well) : '' 
-          end
+            # We set it to unique in case the same well is used multiple times
+          end.compact_blank.uniq.join(', ')
 
+          # If there are no invalid wells return
           return if invalid_wells.empty?
 
+          # If there are invalid wells, add an error to the upload
           errors.add(:base, "Wells: #{invalid_wells} are not permitted in this manifest.")
         end
 

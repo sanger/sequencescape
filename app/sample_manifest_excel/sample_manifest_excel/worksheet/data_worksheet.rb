@@ -84,7 +84,7 @@ module SampleManifestExcel
         axlsx_worksheet.add_row do |row|
           columns.each do |column|
             # If the row is invalid in the manifest, the cell should be locked and greyed out
-            if sample_manifest.invalid_wells.include?(detail.fetch(:position, nil))
+            if sample_manifest.invalid_wells&.include?(detail.fetch(:position, nil))
               row.add_cell column.attribute_value(detail), type: column.type, 
                            style: styles[[:locked, :string]].reference
             else
