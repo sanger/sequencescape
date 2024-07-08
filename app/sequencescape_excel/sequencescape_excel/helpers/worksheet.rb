@@ -37,10 +37,11 @@ module SequencescapeExcel
         disabled: {
           locked: true,
           border: {
-            style: :thin,
-            color: '00'
+            style: :thick,
+            color: 'd3d3d3',
+            edges: [:top, :bottom]
           },
-          bg_color: "d3d3d3"
+          bg_color: "d3d3d3",
         }
       }.freeze
 
