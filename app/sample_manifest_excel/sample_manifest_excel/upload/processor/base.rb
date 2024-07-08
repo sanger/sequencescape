@@ -20,6 +20,7 @@ module SampleManifestExcel
         validate :check_upload_type
         validate :check_for_barcodes_unique
         validate :check_mandatory_fields
+        validate :check_invalid_wells
 
         def initialize(upload)
           @upload = upload
@@ -136,6 +137,18 @@ module SampleManifestExcel
           return if upload.instance_of?(SampleManifestExcel::Upload::Base)
 
           errors.add(:base, 'This is not a recognised upload type.')
+        end
+
+        def check_invalid_wells
+          return if upload.sample_manifest.invalid_wells.empty?
+
+          invalid_wells = upload.rows.collect do |row|
+            upload.sample_manifest.invalid_wells.include?(row.value(:well)) ? row.value(:well) : '' 
+          end
+
+          return if invalid_wells.empty?
+
+          errors.add(:base, "Wells: #{invalid_wells} are not permitted in this manifest.")
         end
 
         # For tube manifests barcodes (sanger tube id column) should be different in each row in the upload.

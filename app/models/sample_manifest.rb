@@ -75,6 +75,7 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   serialize :last_errors
   serialize :barcodes
+  serialize :invalid_wells
 
   validates :count, numericality: { only_integer: true, greater_than: 0, allow_blank: false }
   validates :asset_type, presence: true, inclusion: { in: SampleManifest::CoreBehaviour::BEHAVIOURS }

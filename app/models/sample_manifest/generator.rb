@@ -98,7 +98,7 @@ class SampleManifest::Generator
   def attributes
     params
       .except(:template, :barcode_printer, :only_first_label)
-      .merge(user: user, asset_type: asset_type, rows_per_well: rows_per_well)
+      .merge(user: user, asset_type: asset_type, rows_per_well: rows_per_well, invalid_wells: invalid_wells)
   end
 
   def asset_type
@@ -109,6 +109,10 @@ class SampleManifest::Generator
   # If the attribute is not set, it returns nil.
   def rows_per_well
     configuration.manifest_types.find_by(params[:template]).rows_per_well
+  end
+
+  def invalid_wells
+    configuration.manifest_types.find_by(params[:template]).invalid_wells
   end
 
   def only_first_label
