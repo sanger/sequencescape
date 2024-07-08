@@ -85,6 +85,7 @@ limber_gbs:
   acceptable_purposes:
     - GBS Stock
     - GBS-96 Stock
+    - LANS-96 Lysate
   library_types:
     - GBS
     - GnT MDA
