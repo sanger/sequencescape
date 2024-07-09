@@ -78,20 +78,21 @@ RSpec.describe Batch do
   end
 
   # This test is a flaky test because it leaks state between tests.
-  describe "::add_dynamic_validations", focus: false do
+  describe "::add_dynamic_validations" do
 
     let(:pipeline) { create :pipeline, validator_class_name: 'NovaSeq6000Validator' }
-    let(:batch) { described_class.new(pipeline: pipeline) }
+    let(:batch) { described_class.new pipeline: pipeline}
+
+    before do
+      stub_const('NovaSeq6000Validator', Class.new(CustomValidatorBase) do
+        def validate(record)
+          record.errors.add :base, 'NovaSeq6000Validator failed'
+        end
+      end)
+    end
 
     context 'when added, includes the dynamic validations' do
       xit 'adds dynamic validations' do
-
-        stub_const('NovaSeq6000Validator', Class.new(CustomValidatorBase) do
-          def validate(record)
-            record.errors.add :base, 'NovaSeq6000Validator failed'
-          end
-        end)
-
         expect(batch.valid?).to be false
         expect(batch.errors[:base]).to include('NovaSeq6000Validator failed')
       end
