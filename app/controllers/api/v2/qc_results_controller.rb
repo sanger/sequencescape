@@ -17,23 +17,17 @@ module Api
         end
       end
 
-      def qc_results_params # rubocop:disable Metrics/MethodLength
+      def qc_results_params
         params
           .require(:data)
           .require(:attributes)
-          .map do |p|
-            ActionController::Parameters.new(p.to_unsafe_h).permit(
-              :barcode,
-              :uuid,
-              :well_location,
-              :key,
-              :value,
-              :units,
-              :cv,
-              :assay_type,
-              :assay_version
-            )
-          end
+          .map { |p| ActionController::Parameters.new(p.to_unsafe_h).permit(permitted_qc_result_attributes) }
+      end
+
+      private
+
+      def permitted_qc_result_attributes
+        %i[barcode uuid well_location key value units cv assay_type assay_version]
       end
     end
   end

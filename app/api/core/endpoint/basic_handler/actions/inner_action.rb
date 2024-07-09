@@ -3,7 +3,9 @@ module Core::Endpoint::BasicHandler::Actions::InnerAction
   def initialize(name, options, &block)
     raise StandardError, "Cannot declare inner action #{name.inspect} without a block" unless block
 
-    super() do end # stree-ignore # rubocop:disable Style/SingleLineDoEndBlock,Style/BlockDelimiters
+    super() do # prettier-ignore
+    end
+
     @options, @handler = options, block
     action(name, options)
   end
