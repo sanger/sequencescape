@@ -37,9 +37,8 @@ module SequencescapeExcel
         disabled: {
           locked: true,
           border: {
-            style: :thick,
-            color: 'd3d3d3',
-            edges: [:top, :bottom]
+            style: :thin,
+            color: '00'
           },
           bg_color: "d3d3d3",
         }
