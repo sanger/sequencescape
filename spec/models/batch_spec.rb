@@ -77,7 +77,7 @@ RSpec.describe Batch do
     end
   end
 
-  describe "Dynamic Validations" do
+  describe "::dynamic validations" do
     context 'when added, includes the dynamic validations' do
 
       before do
