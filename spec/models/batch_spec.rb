@@ -86,7 +86,7 @@ RSpec.describe Batch do
     let(:batch) { described_class.new pipeline: pipeline}
 
     before do
-      stub_const('NovaSeq6000Validator', Class.new(CustomValidatorBase) do
+      stub_const('NovaSeq6000Validator', Class.new(ActiveModel::Validator) do
         def validate(record)
           record.errors.add :base, 'NovaSeq6000Validator failed'
         end
@@ -94,7 +94,7 @@ RSpec.describe Batch do
     end
 
     context 'when added, includes the dynamic validations' do
-      xit 'adds dynamic validations' do
+      it 'adds dynamic validations' do
         expect(batch.valid?).to be false
         expect(batch.errors[:base]).to include('NovaSeq6000Validator failed')
       end
