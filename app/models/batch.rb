@@ -57,6 +57,8 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   broadcast_with_warren
 
   # Validations for batches
+  # For custom validators, create a a validator class extending CustomValidatorBase and
+  # add it to the pipeline table.
   validates_with BatchCreationValidator, on: :create, if: :pipeline
 
   after_initialize do
