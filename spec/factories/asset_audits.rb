@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :asset_audit do
-    message { 'Some message' }
-    key { 'some_key' }
+    sequence(:message) { |n| "Audit message #{n}" }
+    sequence(:key) { |n| "instrument_process_key_#{n}" }
     created_by { 'abc123' }
     witnessed_by { 'jane' }
     asset factory: %i[labware]

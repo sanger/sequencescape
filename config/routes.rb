@@ -20,6 +20,7 @@ Rails.application.routes.draw do
     namespace :v2 do
       jsonapi_resources :aliquots
       jsonapi_resources :assets
+      jsonapi_resources :asset_audits
       jsonapi_resources :comments
       jsonapi_resources :custom_metadatum_collections
       jsonapi_resources :labware

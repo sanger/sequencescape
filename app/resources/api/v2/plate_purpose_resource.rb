@@ -25,7 +25,7 @@ module Api
       #  @return [Boolean] whether the plates of this purpose are cherrypickable
       attribute :cherrypickable_target
 
-      # @!attribute input_plate
+      # @!attribute input_plate -- readonly
       #  @return [Boolean] whether the plates of this purpose are input plates
       attribute :input_plate
 
@@ -39,9 +39,9 @@ module Api
 
       # The following attribute is required by Limber to store purposes.
 
-      # @!attribute [r] uuid
+      # @!attribute [r] uuid -- readonly
       #  @return [String] the UUID of the plate purpose
-      attribute :uuid, readonly: true
+      attribute :uuid
 
       # Sets the asset shape of the plate purpose by name if given.
       # 'asset_shape' can be given via the Limber purpose configuration and
@@ -73,12 +73,20 @@ module Api
         @model.type == 'PlatePurpose::Input'
       end
 
-      # Prevents updating existing plate purposes.
+      # Gets the list of fields which are creatable on a PlatePurpose.
       #
       # @param _context [JSONAPI::Resource::Context] not used
-      # @return [Array<Symbol>] empty array
-      def updatable_fields(_context)
-        []
+      # @return [Array<Symbol>] the list of creatable fields.
+      def self.creatable_fields(_context)
+        super - %i[input_plate uuid]  # Do not allow creating with any readonly fields
+      end
+
+      # Gets the list of fields which are updatable on an existing PlatePurpose.
+      #
+      # @param _context [JSONAPI::Resource::Context] not used
+      # @return [Array<Symbol>] the list of updatable fields.
+      def self.updatable_fields(_context)
+        []  # Do not allow updating any fields.
       end
     end
   end

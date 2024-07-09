@@ -172,8 +172,8 @@ describe '/api/1/asset_audits' do
           },
           uuid: asset_audit.uuid,
           created_by: 'abc123',
-          key: 'some_key',
-          message: 'Some message',
+          key: asset_audit.key,
+          message: asset_audit.message,
           witnessed_by: 'jane'
         }
       }
