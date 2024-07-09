@@ -93,7 +93,7 @@ RSpec.describe Batch do
       end
 
       let(:pipeline) { create :pipeline, validator_class_name: 'NovaSeq6000Validator'}
-      let(:batch) { Batch.new(pipeline: pipeline) }
+      let(:batch) { described_class.new(pipeline: pipeline) }
 
       it 'adds dynamic validations' do
         expect(batch.valid?).to be false
