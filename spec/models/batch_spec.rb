@@ -78,6 +78,8 @@ RSpec.describe Batch do
   end
 
   # This test is a flaky test because it leaks state between tests.
+  # It is not clear what the state is that is leaking.
+  # This can be removed with proper classes and tests in Y24-040, as this is a test for a feature that is not yet used.
   describe "::add_dynamic_validations" do
 
     let(:pipeline) { create :pipeline, validator_class_name: 'NovaSeq6000Validator' }
