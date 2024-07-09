@@ -78,7 +78,7 @@ module Api
       # @param _context [JSONAPI::Resource::Context] not used
       # @return [Array<Symbol>] the list of creatable fields.
       def self.creatable_fields(_context)
-        %i[name stock_plate cherrypickable_target size asset_shape]
+        super - %i[input_plate uuid]  # Do not allow creating with any readonly fields
       end
 
       # Gets the list of fields which are updatable on an existing PlatePurpose.
