@@ -94,7 +94,7 @@ RSpec.describe Batch do
     end
 
     context 'when added, includes the dynamic validations' do
-      xit 'adds dynamic validations' do
+      it 'adds dynamic validations' do
         expect(batch.valid?).to be false
         expect(batch.errors[:base]).to include('NovaSeq6000Validator failed')
       end

@@ -61,9 +61,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # add it to the pipeline table.
   validates_with BatchCreationValidator, on: :create, if: :pipeline
 
-  after_initialize do
-    add_dynamic_validations(self)
-  end
+  validate :add_dynamic_validations
 
   after_create :generate_target_assets_for_requests, if: :generate_target_assets_on_batch_create?
   after_commit :rebroadcast
@@ -543,9 +541,12 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   private
 
   # Adding dynamic validations to the model
-  def add_dynamic_validations(batch)
-    validator_class = get_validator_class(batch.pipeline)
-    self.class.validates_with validator_class if validator_class
+  def add_dynamic_validations
+    validator_class = get_validator_class(pipeline)
+    return unless validator_class
+
+    validator = validator_class.new
+    validator.validate(self)
   end
 
 
