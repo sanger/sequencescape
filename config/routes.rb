@@ -18,9 +18,9 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v2 do
-      jsonapi_resources :pick_lists
       jsonapi_resources :aliquots
       jsonapi_resources :assets
+      jsonapi_resources :asset_audits
       jsonapi_resources :comments
       jsonapi_resources :custom_metadatum_collections
       jsonapi_resources :labware
@@ -28,6 +28,7 @@ Rails.application.routes.draw do
       jsonapi_resources :lot_types
       jsonapi_resources :lots
       jsonapi_resources :orders
+      jsonapi_resources :pick_lists
       jsonapi_resources :plate_purposes
       jsonapi_resources :plate_templates
       jsonapi_resources :plates
@@ -55,6 +56,7 @@ Rails.application.routes.draw do
       jsonapi_resources :tube_racks
       jsonapi_resources :tubes
       jsonapi_resources :users
+      jsonapi_resources :volume_updates
       jsonapi_resources :wells
       jsonapi_resources :work_orders
 

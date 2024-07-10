@@ -28,17 +28,16 @@ Given(
   plate = FactoryBot.create(:plate, purpose: purpose, sanger_barcode: sanger_barcode)
 
   asset_group = study.asset_groups.find_by(name: asset_group_name) || study.asset_groups.create!(name: asset_group_name)
-  asset_group.assets <<
-    (1..number_of_samples.to_i).map do |index|
-      FactoryBot
-        .create(:well, plate: plate, map_id: index)
-        .tap do |well|
-          well.aliquots.create!(
-            sample: FactoryBot.create(:sample, name: "Sample_#{plate_barcode}_#{index}"),
-            study: study
-          )
-        end
-    end
+  asset_group.assets << (1..number_of_samples.to_i).map do |index|
+    FactoryBot
+      .create(:well, plate: plate, map_id: index)
+      .tap do |well|
+        well.aliquots.create!(
+          sample: FactoryBot.create(:sample, name: "Sample_#{plate_barcode}_#{index}"),
+          study: study
+        )
+      end
+  end
 end
 
 Given(/^I have a cherrypicking batch with (\d+) samples$/) do |number_of_samples|

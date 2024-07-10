@@ -3,7 +3,6 @@
 require 'rails_helper'
 
 describe 'Update retention instructions' do
-
   shared_examples 'updating retention instruction' do
     it 'updates the retention instruction' do
       select 'Long term storage', from: 'Retention instruction'
@@ -17,9 +16,7 @@ describe 'Update retention instructions' do
     let(:user) { create :user }
     let(:asset) { create :plate_with_3_wells, retention_instruction: :destroy_after_2_years }
 
-    before do
-      visit labware_path(asset)
-    end
+    before { visit labware_path(asset) }
 
     it 'does not allow the user to edit the retention instruction' do
       expect(page).to have_no_content 'Edit Retention Instruction'
@@ -51,9 +48,8 @@ describe 'Update retention instructions' do
       let(:asset) { create :plate_with_3_wells, retention_instruction: :destroy_after_2_years }
 
       before do
-        asset.custom_metadatum_collection = create :custom_metadatum_collection,
-                                                   metadata:
-                                                     { retention_instruction: 'Return to customer after 2 years' }
+        asset.custom_metadatum_collection =
+          create :custom_metadatum_collection, metadata: { retention_instruction: 'Return to customer after 2 years' }
         asset.save
       end
 
@@ -72,7 +68,7 @@ describe 'Update retention instructions' do
       let(:user) { create :admin }
       let(:asset) { create :plate_with_3_wells, retention_instruction: nil }
 
-      it "does not have a retention instruction yet" do
+      it 'does not have a retention instruction yet' do
         expect(page).to have_content 'This labware does not currently have a retention instruction.'
       end
 
@@ -90,5 +86,4 @@ describe 'Update retention instructions' do
       it_behaves_like 'updating retention instruction'
     end
   end
-
 end

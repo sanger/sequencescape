@@ -9,9 +9,9 @@ class UpdateEventsEventableTypes < ActiveRecord::Migration[5.1]
     ExternalReleaseEvent.update_all(eventful_type: 'Receptacle')
     Event.where('family LIKE "picked_well_%"').update_all(eventful_type: 'Receptacle')
     Event::SequenomLoading.where(family: 'update_fluidigm_plate').update_all(eventful_type: 'Labware')
-    Event::SequenomLoading
-      .where(family: %w[update_gender_markers update_sequenom_count])
-      .update_all(eventful_type: 'Receptacle')
+    Event::SequenomLoading.where(family: %w[update_gender_markers update_sequenom_count]).update_all(
+      eventful_type: 'Receptacle'
+    )
     Event::AssetSetQcStateEvent.update_all(eventful_type: 'Receptacle')
 
     # Remaining events prioritize receptacles over labware

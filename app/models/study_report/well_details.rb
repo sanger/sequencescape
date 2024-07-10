@@ -3,7 +3,7 @@ module StudyReport::WellDetails
   def self.included(base)
     base.class_eval do
       scope :for_study_report,
-            -> {
+            -> do
               includes(
                 [
                   :map,
@@ -17,7 +17,7 @@ module StudyReport::WellDetails
                   }
                 ]
               )
-            }
+            end
     end
   end
 

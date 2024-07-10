@@ -100,9 +100,7 @@ describe Barcode do
     let(:barcode_format) { 'sanger_ean13' }
     let(:barcode) { build :sanger_ean13, barcode: barcode_value, format: barcode_format }
 
-    before do
-      barcode.save!
-    end
+    before { barcode.save! }
 
     it 'has an asset' do
       expect(barcode.labware).to be_a Labware
@@ -112,7 +110,6 @@ describe Barcode do
       expect(Labware.find(barcode.reload.asset_id)).not_to be_nil
       expect(Labware.count).to eq 1
     end
-
   end
 
   shared_examples 'not a code39 barcode' do

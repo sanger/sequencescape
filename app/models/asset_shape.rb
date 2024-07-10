@@ -19,9 +19,11 @@ class AssetShape < ApplicationRecord
   end
 
   def self.default
-    AssetShape
-      .create_with(horizontal_ratio: 3, vertical_ratio: 2, description_strategy: 'Map::Coordinate')
-      .find_or_create_by(name: 'Standard')
+    AssetShape.create_with(
+      horizontal_ratio: 3,
+      vertical_ratio: 2,
+      description_strategy: 'Map::Coordinate'
+    ).find_or_create_by(name: 'Standard')
   end
 
   def standard?

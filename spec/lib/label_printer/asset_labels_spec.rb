@@ -44,17 +44,19 @@ context 'printing plates' do
 
   describe LabelPrinter::Label::AssetPlateDouble do
     let(:body) do
-      assets.map do |asset|
-        [
-          {
-            left_text: asset.human_barcode.to_s,
-            right_text: "#{asset.prefix} #{asset.barcode_number}",
-            barcode: asset.machine_barcode.to_s,
-            label_name: 'main_label'
-          },
-          { left_text: date, right_text: asset.purpose.name, label_name: 'extra_label' }
-        ]
-      end.flatten
+      assets
+        .map do |asset|
+          [
+            {
+              left_text: asset.human_barcode.to_s,
+              right_text: "#{asset.prefix} #{asset.barcode_number}",
+              barcode: asset.machine_barcode.to_s,
+              label_name: 'main_label'
+            },
+            { left_text: date, right_text: asset.purpose.name, label_name: 'extra_label' }
+          ]
+        end
+        .flatten
     end
 
     it_behaves_like 'asset labels creator'

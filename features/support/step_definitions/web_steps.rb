@@ -145,37 +145,38 @@ When /^I refresh the page$/ do
 end
 
 Then /^Pmb is down$/ do
-  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_96plate_label_template_code39")
-    .with(headers: LabelPrinter::PmbClient.headers)
-    .to_raise(Errno::ECONNREFUSED)
-  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}tube_label_template_1d")
-    .with(headers: LabelPrinter::PmbClient.headers)
-    .to_raise(Errno::ECONNREFUSED)
-  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_384plate_label_template")
-    .with(headers: LabelPrinter::PmbClient.headers)
-    .to_raise(Errno::ECONNREFUSED)
+  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_96plate_label_template_code39").with(
+    headers: LabelPrinter::PmbClient.headers
+  ).to_raise(Errno::ECONNREFUSED)
+  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}tube_label_template_1d").with(
+    headers: LabelPrinter::PmbClient.headers
+  ).to_raise(Errno::ECONNREFUSED)
+  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_384plate_label_template").with(
+    headers: LabelPrinter::PmbClient.headers
+  ).to_raise(Errno::ECONNREFUSED)
 end
 
 Then /^Pmb has the required label templates$/ do
   body = '{"data":[{"id":"1"}]}'
 
-  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_96plate_label_template")
-    .with(headers: LabelPrinter::PmbClient.headers)
-    .to_return(status: 200, body: body)
+  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_96plate_label_template").with(
+    headers: LabelPrinter::PmbClient.headers
+  ).to_return(status: 200, body: body)
 
-  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}tube_label_template_1d")
-    .with(headers: LabelPrinter::PmbClient.headers)
-    .to_return(status: 200, body: body)
+  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}tube_label_template_1d").with(
+    headers: LabelPrinter::PmbClient.headers
+  ).to_return(status: 200, body: body)
 
-  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_384plate_label_template")
-    .with(headers: LabelPrinter::PmbClient.headers)
-    .to_return(status: 200, body: body)
+  stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_384plate_label_template").with(
+    headers: LabelPrinter::PmbClient.headers
+  ).to_return(status: 200, body: body)
 end
 
 Then /^Pmb is up and running$/ do
-  stub_request(:post, LabelPrinter::PmbClient.print_job_url)
-    .with(headers: LabelPrinter::PmbClient.headers)
-    .to_return(status: 200, headers: LabelPrinter::PmbClient.headers)
+  stub_request(:post, LabelPrinter::PmbClient.print_job_url).with(headers: LabelPrinter::PmbClient.headers).to_return(
+    status: 200,
+    headers: LabelPrinter::PmbClient.headers
+  )
 end
 
 When 'I click the header {string}' do |text|

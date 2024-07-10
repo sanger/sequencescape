@@ -423,11 +423,9 @@ RSpec.describe TransferRequest do
         # method is called on the first transfer request. In other words, it's expecting that all downstream assets
         # initially have one aliquot, and that they have zero aliquots after the transfer request is failed.
         expect { transfer_requests.first.fail! }.to change {
-            Delayed::Worker.new.work_off
-            assets[2..].map { |a| a.aliquots.count }.uniq
-          }
-          .from([1])
-          .to([0])
+          Delayed::Worker.new.work_off
+          assets[2..].map { |a| a.aliquots.count }.uniq
+        }.from([1]).to([0])
       end
     end
   end

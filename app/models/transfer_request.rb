@@ -224,8 +224,9 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
       asset
         .aliquots
         .each_with_object({}) do |aliquot, store|
-          store[aliquot.id] =
-            outer_request_candidates.detect { |r| aliquot.request&.next_requests_via_submission&.include?(r) }
+          store[aliquot.id] = outer_request_candidates.detect do |r|
+            aliquot.request&.next_requests_via_submission&.include?(r)
+          end
         end
   end
 

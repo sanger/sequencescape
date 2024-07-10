@@ -88,7 +88,7 @@ if Rails.env.development? || Rails.env.profile?
   configatron.amqp.schemas.subjects = {
     export_pool_xp_to_traction: {
       subject: 'bioscan-pool-xp-tube-to-traction',
-      version: 1,
+      version: 1
     }
   }
 
@@ -144,12 +144,7 @@ if Rails.env.test? || Rails.env.cucumber?
   configatron.amqp.isg.exchange = 'test-exchange'
 
   configatron.amqp.schemas.registry_url = 'http://test-redpanda/subjects/'
-  configatron.amqp.schemas.subjects = {
-    export_pool_xp_to_traction: {
-      subject: 'test-subject-name',
-      version: 10,
-    }
-  }
+  configatron.amqp.schemas.subjects = { export_pool_xp_to_traction: { subject: 'test-subject-name', version: 10 } }
 
   configatron.tecan_precision = 1
   configatron.beckman_precision = 2

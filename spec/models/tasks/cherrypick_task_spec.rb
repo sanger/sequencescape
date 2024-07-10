@@ -32,9 +32,12 @@ RSpec.describe CherrypickTask do
       context 'when controls and wells fit in one plate' do
         before do
           locator = instance_double(CherrypickTask::ControlLocator, control_positions: [2, 5])
-          allow(CherrypickTask::ControlLocator).to receive(:new)
-            .with(batch_id: 1235, total_wells: 6, num_control_wells: 2, wells_to_leave_free: wells_to_leave_free)
-            .and_return(locator)
+          allow(CherrypickTask::ControlLocator).to receive(:new).with(
+            batch_id: 1235,
+            total_wells: 6,
+            num_control_wells: 2,
+            wells_to_leave_free: wells_to_leave_free
+          ).and_return(locator)
         end
 
         let(:instance) { described_class.new }

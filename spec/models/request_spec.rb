@@ -76,7 +76,8 @@ RSpec.describe Request do
           asset: create(:sample_tube),
           target_asset: nil,
           submission: @submission,
-          request_metadata_attributes: {},
+          request_metadata_attributes: {
+          },
           request_type: @cherrypick_request_type
         )
     end

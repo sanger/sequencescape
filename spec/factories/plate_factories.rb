@@ -48,8 +48,11 @@ FactoryBot.define do
     end
     after(:create) do |plate, evaluator|
       plate.wells.each do |well|
-        well.transfer_requests_as_target <<
-          create(:transfer_request, target_asset: well, submission: evaluator.submission_cycle.next)
+        well.transfer_requests_as_target << create(
+          :transfer_request,
+          target_asset: well,
+          submission: evaluator.submission_cycle.next
+        )
       end
     end
   end
@@ -81,8 +84,11 @@ FactoryBot.define do
         well_hash = evaluator.parent.wells.index_by(&:map_description)
         plate.save!
         plate.wells.each do |well|
-          well.stock_well_links <<
-            build(:stock_well_link, target_well: well, source_well: well_hash[well.map_description])
+          well.stock_well_links << build(
+            :stock_well_link,
+            target_well: well,
+            source_well: well_hash[well.map_description]
+          )
           outer_request =
             well_hash[well.map_description].requests.detect { |r| r.submission_id == evaluator.submission.id }
 

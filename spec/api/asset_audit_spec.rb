@@ -94,13 +94,15 @@ describe '/api/1/asset_audits' do
       let(:response_body) do
         {
           asset_audit: {
-            actions: {},
+            actions: {
+            },
             created_by: 'john',
             key: 'some_key',
             message: 'My message',
             witnessed_by: 'jane',
             asset: {
-              actions: {},
+              actions: {
+              },
               uuid: labware.uuid
             }
           }
@@ -134,7 +136,8 @@ describe '/api/1/asset_audits' do
       let(:response_body) do
         {
           asset_audit: {
-            actions: {},
+            actions: {
+            },
             created_by: 'john',
             key: 'some_key',
             message: 'My message',
@@ -143,7 +146,8 @@ describe '/api/1/asset_audits' do
               bed_1: 'plate_1'
             },
             asset: {
-              actions: {},
+              actions: {
+              },
               uuid: labware.uuid
             }
           }
@@ -172,8 +176,8 @@ describe '/api/1/asset_audits' do
           },
           uuid: asset_audit.uuid,
           created_by: 'abc123',
-          key: 'some_key',
-          message: 'Some message',
+          key: asset_audit.key,
+          message: asset_audit.message,
           witnessed_by: 'jane'
         }
       }

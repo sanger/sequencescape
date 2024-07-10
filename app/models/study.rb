@@ -302,9 +302,9 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   # Scopes
   scope :for_search_query,
-        ->(query) {
+        ->(query) do
           joins(:study_metadata).where(['name LIKE ? OR studies.id=? OR prelim_id=?', "%#{query}%", query, query])
-        }
+        end
 
   scope :with_no_ethical_approval, -> { where(ethically_approved: false) }
 
@@ -316,26 +316,24 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   scope :with_user_included, -> { includes(:user) }
 
   scope :in_assets,
-        ->(assets) {
-          select('DISTINCT studies.*')
-            .joins(['LEFT JOIN aliquots ON aliquots.study_id = studies.id'])
-            .where(['aliquots.receptacle_id IN (?)', assets.map(&:id)])
-        }
+        ->(assets) do
+          select('DISTINCT studies.*').joins(['LEFT JOIN aliquots ON aliquots.study_id = studies.id']).where(
+            ['aliquots.receptacle_id IN (?)', assets.map(&:id)]
+          )
+        end
 
   scope :for_sample_accessioning,
-        -> {
-          joins(:study_metadata)
-            .where("study_metadata.study_ebi_accession_number <> ''")
-            .where(
-              study_metadata: {
-                data_release_strategy: [Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED],
-                data_release_timing: Study::DATA_RELEASE_TIMINGS
-              }
-            )
-        }
+        -> do
+          joins(:study_metadata).where("study_metadata.study_ebi_accession_number <> ''").where(
+            study_metadata: {
+              data_release_strategy: [Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED],
+              data_release_timing: Study::DATA_RELEASE_TIMINGS
+            }
+          )
+        end
 
   scope :awaiting_ethical_approval,
-        -> {
+        -> do
           joins(:study_metadata).where(
             ethically_approved: false,
             study_metadata: {
@@ -344,7 +342,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
               commercially_available: Study::NO
             }
           )
-        }
+        end
 
   scope :contaminated_with_human_dna,
         -> { joins(:study_metadata).where(study_metadata: { contaminated_human_dna: Study::YES }) }
@@ -355,9 +353,9 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   scope :by_state, ->(state) { where(state: state) }
 
   scope :by_user,
-        ->(login) {
+        ->(login) do
           joins(:roles, :users).where(roles: { name: %w[follower manager owner], users: { login: [login] } })
-        }
+        end
 
   scope :with_related_owners_included, -> { includes(:owners) }
 

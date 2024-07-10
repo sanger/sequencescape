@@ -52,7 +52,8 @@ class Accessionable::Base
     raise NotImplementedError, 'abstract method'
   end
 
-  def update_array_express_accession_number!(accession_number); end
+  def update_array_express_accession_number!(accession_number)
+  end
 
   def accessionable_id
     raise NotImplementError, 'abstract method'
@@ -141,7 +142,8 @@ class Accessionable::Base
     # NB: this regexp is defined in <https://www.ebi.ac.uk/ena/browser/api/xml/ERC000011>
     class FieldCollectionDate < FieldSerializer
       # rubocop:disable Layout/LineLength
-      REGEXP = %r{(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)}
+      REGEXP =
+        %r{(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)}
 
       # rubocop:enable Layout/LineLength
 

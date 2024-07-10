@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 require 'rails_helper'
 RSpec.describe BulkSubmissionExcel::DownloadsController, type: :controller do
-
   subject(:downloads_controller) { described_class.new }
 
   let(:submission) { create :submission }
@@ -26,12 +25,7 @@ RSpec.describe BulkSubmissionExcel::DownloadsController, type: :controller do
     let(:plates) { create_list(:plate, 6) }
     let(:barcodes) { plates.map(&:barcodes).flatten.map(&:barcode) }
     let(:valid_attributes) do
-      {
-        bulk_submission_excel_download: {
-          asset_barcodes: barcodes.join("\n"),
-          submission_template_id: submission.id
-        }
-      }
+      { bulk_submission_excel_download: { asset_barcodes: barcodes.join("\n"), submission_template_id: submission.id } }
     end
     let(:invalid_attributes) do
       { bulk_submission_excel_download: { asset_barcodes: 'invalid barcode', submission_template_id: submission.id } }
@@ -40,9 +34,7 @@ RSpec.describe BulkSubmissionExcel::DownloadsController, type: :controller do
     context 'with valid params' do
       it 'creates a new download and sends a file' do
         post :create, params: valid_attributes
-        expect(
-          response.header['Content-Type']
-        ).to include downloads_controller.class::CONTENT_TYPE
+        expect(response.header['Content-Type']).to include downloads_controller.class::CONTENT_TYPE
       end
 
       it 'generates a new submission Excel file' do

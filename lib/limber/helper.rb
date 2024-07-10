@@ -41,10 +41,11 @@ module Limber::Helper
     def self.find_for(name, sequencing = nil)
       tc = TemplateConstructor.new(name: name, sequencing: sequencing)
       [true, false].map do |cherrypick|
-        tc.sequencing.map do |sequencing_request_type|
-          SubmissionTemplate.find_by!(name: tc.name_for(cherrypick, sequencing_request_type))
+          tc.sequencing.map do |sequencing_request_type|
+            SubmissionTemplate.find_by!(name: tc.name_for(cherrypick, sequencing_request_type))
+          end
         end
-      end.flatten
+        .flatten
     end
 
     validates :name, presence: { message: 'must be specified, or prefix should be provided' }

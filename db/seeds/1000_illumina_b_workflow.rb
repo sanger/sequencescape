@@ -4,10 +4,12 @@ ActiveRecord::Base.transaction do
   pipeline_name = 'Illumina-B STD'
 
   if Rails.env.cucumber?
-    RecordLoader::TubePurposeLoader.new(files: %w[002_illumina_b_legacy_purposes 004_illumina_htp_legacy_purposes])
-      .create!
-    RecordLoader::PlatePurposeLoader.new(files: %w[002_illumina_b_legacy_purposes 004_illumina_htp_legacy_purposes])
-      .create!
+    RecordLoader::TubePurposeLoader.new(
+      files: %w[002_illumina_b_legacy_purposes 004_illumina_htp_legacy_purposes]
+    ).create!
+    RecordLoader::PlatePurposeLoader.new(
+      files: %w[002_illumina_b_legacy_purposes 004_illumina_htp_legacy_purposes]
+    ).create!
   end
 
   # For B
@@ -252,15 +254,14 @@ ActiveRecord::Base.transaction do
     product_line: ProductLine.find_by!(name: 'Illumina-HTP')
   ) { |rt| rt.acceptable_purposes << Purpose.find_by!(name: 'PF Cherrypicked') }
 
-  RequestType.find_by!(key: 'illumina_b_hiseq_x_paired_end_sequencing').acceptable_purposes <<
-    PlatePurpose.create!(
-      name: 'Strip Tube Purpose',
-      target_type: 'StripTube',
-      stock_plate: false,
-      cherrypickable_target: false,
-      barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
-      cherrypick_direction: 'column',
-      size: 8,
-      asset_shape: AssetShape.find_by(name: 'StripTubeColumn')
-    )
+  RequestType.find_by!(key: 'illumina_b_hiseq_x_paired_end_sequencing').acceptable_purposes << PlatePurpose.create!(
+    name: 'Strip Tube Purpose',
+    target_type: 'StripTube',
+    stock_plate: false,
+    cherrypickable_target: false,
+    barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
+    cherrypick_direction: 'column',
+    size: 8,
+    asset_shape: AssetShape.find_by(name: 'StripTubeColumn')
+  )
 end
