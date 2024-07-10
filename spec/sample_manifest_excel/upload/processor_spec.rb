@@ -737,7 +737,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
           it 'will be valid when invalid_wells are present but none are included in the upload' do
             # These wells aren't included in the upload
-            upload.sample_manifest.invalid_wells = ['D1', 'E1']
+            upload.sample_manifest.invalid_wells = %w[D1 E1]
             upload.sample_manifest.save!
             upload.process(nil)
             upload.finished!
@@ -844,15 +844,13 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
 
           it 'will not be valid when all wells are in the invalid_wells list' do
-            upload.sample_manifest.invalid_wells = ['A1', 'B1']
+            upload.sample_manifest.invalid_wells = %w[A1 B1]
             upload.sample_manifest.save!
             upload.process(nil)
             upload.finished!
 
             expect(processor).not_to be_valid
-            expect(processor.errors.full_messages).to include(
-              'Wells: A1, B1 are not permitted in this manifest.'
-            )
+            expect(processor.errors.full_messages).to include('Wells: A1, B1 are not permitted in this manifest.')
           end
 
           it 'will not be valid when some wells are in the invalid_wells list' do
@@ -862,9 +860,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             upload.finished!
 
             expect(processor).not_to be_valid
-            expect(processor.errors.full_messages).to include(
-              'Wells: A1 are not permitted in this manifest.'
-            )
+            expect(processor.errors.full_messages).to include('Wells: A1 are not permitted in this manifest.')
           end
         end
       end

@@ -145,10 +145,16 @@ module SampleManifestExcel
           return if upload.try(:sample_manifest)&.invalid_wells.blank?
 
           # Collect all the well positions that have been used and are invalid
-          invalid_wells = upload.rows.collect do |row|
-            upload.sample_manifest.invalid_wells.include?(row.value(:well)) ? row.value(:well) : '' 
-            # We set it to unique in case the same well is used multiple times
-          end.compact_blank.uniq.join(', ')
+          invalid_wells =
+            upload
+              .rows
+              .collect do |row|
+                upload.sample_manifest.invalid_wells.include?(row.value(:well)) ? row.value(:well) : ''
+                # We set it to unique in case the same well is used multiple times
+              end
+              .compact_blank
+              .uniq
+              .join(', ')
 
           # If there are no invalid wells return
           return if invalid_wells.empty?

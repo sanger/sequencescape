@@ -40,7 +40,7 @@ module SequencescapeExcel
             style: :thin,
             color: '00'
           },
-          bg_color: "d3d3d3",
+          bg_color: 'd3d3d3'
         }
       }.freeze
 
