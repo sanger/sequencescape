@@ -29,7 +29,7 @@ describe 'AssetAudits API', with: :api_v2 do
           'id' => resource_model.id,
           'type' => 'asset_audits',
           'attributes' => {
-            'witnessed_by' => updated_witnessed_by,
+            'witnessed_by' => updated_witnessed_by
           }
         }
       }
@@ -40,7 +40,7 @@ describe 'AssetAudits API', with: :api_v2 do
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('asset_audits')
       expect(json.dig('data', 'attributes', 'key')).to eq(resource_model.key)
-      expect(json.dig('data', 'attributes','witnessed_by')).to eq(resource_model.witnessed_by)
+      expect(json.dig('data', 'attributes', 'witnessed_by')).to eq(resource_model.witnessed_by)
     end
 
     it 'does not allow update of an AssetAudit' do
@@ -62,8 +62,8 @@ describe 'AssetAudits API', with: :api_v2 do
             'message' => 'This is a test message',
             'created_by' => 'test_user',
             'asset_uuid' => labware.uuid,
-            'witnessed_by' => 'witness_user',
-          },
+            'witnessed_by' => 'witness_user'
+          }
         }
       }
     end
