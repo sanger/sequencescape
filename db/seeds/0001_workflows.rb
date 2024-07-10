@@ -116,19 +116,18 @@ cluster_formation_se_request_type =
       request_type.multiples_allowed = true
       request_type.request_class = SequencingRequest
     end
-  end <<
-    RequestType.create!(
-      key: 'single_ended_sequencing',
-      name: 'Single ended sequencing',
-      deprecated: true
-    ) do |request_type|
-      request_type.billable = true
-      request_type.initial_state = 'pending'
-      request_type.asset_type = 'LibraryTube'
-      request_type.order = 2
-      request_type.multiples_allowed = true
-      request_type.request_class = SequencingRequest
-    end
+  end << RequestType.create!(
+    key: 'single_ended_sequencing',
+    name: 'Single ended sequencing',
+    deprecated: true
+  ) do |request_type|
+    request_type.billable = true
+    request_type.initial_state = 'pending'
+    request_type.asset_type = 'LibraryTube'
+    request_type.order = 2
+    request_type.multiples_allowed = true
+    request_type.request_class = SequencingRequest
+  end
 
 SequencingPipeline
   .create!(
@@ -314,19 +313,18 @@ single_ended_hi_seq_sequencing =
       request_type.multiples_allowed = true
       request_type.request_class = HiSeqSequencingRequest
     end
-  end <<
-    RequestType.create!(
-      key: 'single_ended_hi_seq_sequencing',
-      name: 'Single ended hi seq sequencing',
-      deprecated: true
-    ) do |request_type|
-      request_type.billable = true
-      request_type.initial_state = 'pending'
-      request_type.asset_type = 'LibraryTube'
-      request_type.order = 2
-      request_type.multiples_allowed = true
-      request_type.request_class = HiSeqSequencingRequest
-    end
+  end << RequestType.create!(
+    key: 'single_ended_hi_seq_sequencing',
+    name: 'Single ended hi seq sequencing',
+    deprecated: true
+  ) do |request_type|
+    request_type.billable = true
+    request_type.initial_state = 'pending'
+    request_type.asset_type = 'LibraryTube'
+    request_type.order = 2
+    request_type.multiples_allowed = true
+    request_type.request_class = HiSeqSequencingRequest
+  end
 
 SequencingPipeline
   .create!(name: 'Cluster formation SE HiSeq', request_types: single_ended_hi_seq_sequencing) do |pipeline|
@@ -451,19 +449,18 @@ cluster_formation_pe_request_types =
       request_type.multiples_allowed = true
       request_type.request_class = SequencingRequest
     end
-  end <<
-    RequestType.create!(
-      key: 'paired_end_sequencing',
-      name: 'Paired end sequencing',
-      deprecated: true
-    ) do |request_type|
-      request_type.billable = true
-      request_type.initial_state = 'pending'
-      request_type.asset_type = 'LibraryTube'
-      request_type.order = 2
-      request_type.multiples_allowed = true
-      request_type.request_class = SequencingRequest
-    end
+  end << RequestType.create!(
+    key: 'paired_end_sequencing',
+    name: 'Paired end sequencing',
+    deprecated: true
+  ) do |request_type|
+    request_type.billable = true
+    request_type.initial_state = 'pending'
+    request_type.asset_type = 'LibraryTube'
+    request_type.order = 2
+    request_type.multiples_allowed = true
+    request_type.request_class = SequencingRequest
+  end
 
 hiseq_2500_request_types =
   %w[a b c].map do |pl|
@@ -859,25 +856,10 @@ SequencingPipeline
     pipeline.active = true
 
     %w[a b c].each do |pl|
-      pipeline.request_types <<
-        RequestType.create!(
-          key: "illumina_#{pl}_hiseq_paired_end_sequencing",
-          name: "Illumina-#{pl.upcase} HiSeq Paired end sequencing",
-          product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")
-        ) do |request_type|
-          request_type.billable = true
-          request_type.initial_state = 'pending'
-          request_type.asset_type = 'LibraryTube'
-          request_type.order = 2
-          request_type.multiples_allowed = true
-          request_type.request_class = HiSeqSequencingRequest
-        end
-    end
-    pipeline.request_types <<
-      RequestType.create!(
-        key: 'hiseq_paired_end_sequencing',
-        name: 'HiSeq Paired end sequencing',
-        deprecated: true
+      pipeline.request_types << RequestType.create!(
+        key: "illumina_#{pl}_hiseq_paired_end_sequencing",
+        name: "Illumina-#{pl.upcase} HiSeq Paired end sequencing",
+        product_line: ProductLine.find_by(name: "Illumina-#{pl.upcase}")
       ) do |request_type|
         request_type.billable = true
         request_type.initial_state = 'pending'
@@ -886,6 +868,19 @@ SequencingPipeline
         request_type.multiples_allowed = true
         request_type.request_class = HiSeqSequencingRequest
       end
+    end
+    pipeline.request_types << RequestType.create!(
+      key: 'hiseq_paired_end_sequencing',
+      name: 'HiSeq Paired end sequencing',
+      deprecated: true
+    ) do |request_type|
+      request_type.billable = true
+      request_type.initial_state = 'pending'
+      request_type.asset_type = 'LibraryTube'
+      request_type.order = 2
+      request_type.multiples_allowed = true
+      request_type.request_class = HiSeqSequencingRequest
+    end
 
     pipeline.workflow =
       Workflow
@@ -961,18 +956,17 @@ pulldown_variants = %w[WGS SC ISC]
       pipeline.active = true
       pipeline.externally_managed = true
 
-      pipeline.request_types <<
-        RequestType.create!(name: pipeline_name) do |request_type|
-          request_type.billable = true
-          request_type.key = pipeline_name.downcase.underscore.gsub(/\s+/, '_')
-          request_type.initial_state = 'pending'
-          request_type.asset_type = 'Well'
-          request_type.target_purpose = Purpose.find_by(name: 'Legacy MX tube')
-          request_type.order = 1
-          request_type.multiples_allowed = false
-          request_type.request_class = "Pulldown::Requests::#{pipeline_type.humanize}LibraryRequest".constantize
-          request_type.for_multiplexing = true
-        end
+      pipeline.request_types << RequestType.create!(name: pipeline_name) do |request_type|
+        request_type.billable = true
+        request_type.key = pipeline_name.downcase.underscore.gsub(/\s+/, '_')
+        request_type.initial_state = 'pending'
+        request_type.asset_type = 'Well'
+        request_type.target_purpose = Purpose.find_by(name: 'Legacy MX tube')
+        request_type.order = 1
+        request_type.multiples_allowed = false
+        request_type.request_class = "Pulldown::Requests::#{pipeline_type.humanize}LibraryRequest".constantize
+        request_type.for_multiplexing = true
+      end
 
       pipeline.workflow = Workflow.create!(name: pipeline_name)
     end
@@ -984,27 +978,25 @@ SequencingPipeline
     pipeline.sorter = 2
     pipeline.active = true
 
-    pipeline.request_types <<
-      RequestType.create!(key: 'miseq_sequencing', name: 'MiSeq sequencing') do |request_type|
+    pipeline.request_types << RequestType.create!(key: 'miseq_sequencing', name: 'MiSeq sequencing') do |request_type|
+      request_type.initial_state = 'pending'
+      request_type.asset_type = 'LibraryTube'
+      request_type.order = 1
+      request_type.multiples_allowed = false
+      request_type.request_class_name = MiSeqSequencingRequest.name
+    end
+
+    %w[a b c].each do |pl|
+      pipeline.request_types << RequestType.create!(
+        key: "illumina_#{pl}_miseq_sequencing",
+        name: "Illumina-#{pl.upcase} MiSeq sequencing"
+      ) do |request_type|
         request_type.initial_state = 'pending'
         request_type.asset_type = 'LibraryTube'
         request_type.order = 1
         request_type.multiples_allowed = false
         request_type.request_class_name = MiSeqSequencingRequest.name
       end
-
-    %w[a b c].each do |pl|
-      pipeline.request_types <<
-        RequestType.create!(
-          key: "illumina_#{pl}_miseq_sequencing",
-          name: "Illumina-#{pl.upcase} MiSeq sequencing"
-        ) do |request_type|
-          request_type.initial_state = 'pending'
-          request_type.asset_type = 'LibraryTube'
-          request_type.order = 1
-          request_type.multiples_allowed = false
-          request_type.request_class_name = MiSeqSequencingRequest.name
-        end
     end
 
     pipeline.workflow =
@@ -1181,17 +1173,16 @@ x10_requests_types =
       billable: true,
       product_line: ProductLine.find_by(name: "Illumina-#{pipeline.upcase}")
     )
-  end <<
-    RequestType.create!(
-      key: 'bespoke_hiseq_x_paired_end_sequencing',
-      name: 'Bespoke HiSeq X Paired end sequencing',
-      asset_type: 'LibraryTube',
-      order: 2,
-      initial_state: 'pending',
-      request_class_name: 'HiSeqSequencingRequest',
-      billable: true,
-      product_line: ProductLine.find_by(name: 'Illumina-C')
-    )
+  end << RequestType.create!(
+    key: 'bespoke_hiseq_x_paired_end_sequencing',
+    name: 'Bespoke HiSeq X Paired end sequencing',
+    asset_type: 'LibraryTube',
+    order: 2,
+    initial_state: 'pending',
+    request_class_name: 'HiSeqSequencingRequest',
+    billable: true,
+    product_line: ProductLine.find_by(name: 'Illumina-C')
+  )
 
 ['(spiked in controls)', '(no controls)'].each do |type|
   SequencingPipeline.create!(

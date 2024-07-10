@@ -69,14 +69,14 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   # Named scope for search by query string behaviour
   scope :for_search_query,
-        ->(query) {
+        ->(query) do
           user = User.find_by(login: query)
           if user
             where(user_id: user)
           else
             with_safe_id(query) # Ensures extra long input (most likely barcodes) doesn't throw an exception
           end
-        }
+        end
 
   scope :includes_for_ui, -> { limit(5).includes(:user, :assignee, :pipeline) }
   scope :pending_for_ui, -> { where(state: 'pending', production_state: nil).latest_first }
@@ -87,7 +87,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   scope :include_pipeline, -> { includes(pipeline: :uuid_object) }
   scope :include_user, -> { includes(:user) }
   scope :include_requests,
-        -> {
+        -> do
           includes(
             requests: [
               :uuid_object,
@@ -98,7 +98,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
               { target_asset: [:uuid_object, { aliquots: %i[sample tag] }] }
             ]
           )
-        }
+        end
 
   scope :latest_first, -> { order(created_at: :desc) }
   scope :most_recent, ->(number) { latest_first.limit(number) }
@@ -140,11 +140,10 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def requests_have_same_target_purpose
     if pipeline.is_a?(CherrypickingPipeline) &&
-       requests.map { |request| request.request_metadata.target_purpose_id }.uniq.size > 1
-  
+         requests.map { |request| request.request_metadata.target_purpose_id }.uniq.size > 1
       errors.add(:base, 'The selected requests must have the same target purpose (Pick To) values')
     end
-  end  
+  end
 
   def requests_have_same_read_length
     unless pipeline.is_read_length_consistent_for_batch?(self)
@@ -437,7 +436,9 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
       # Swap the two batch requests so that they are correct.  This involves swapping both the batch and the lane but
       # ensuring that the two requests don't clash on position by removing one of them.
       original_left_batch_id, original_left_position, original_right_request_id =
-        batch_request_left.batch_id, batch_request_left.position, batch_request_right.request_id
+        batch_request_left.batch_id,
+        batch_request_left.position,
+        batch_request_right.request_id
       batch_request_right.destroy
       batch_request_left.update!(batch_id: batch_request_right.batch_id, position: batch_request_right.position)
       batch_request_right =

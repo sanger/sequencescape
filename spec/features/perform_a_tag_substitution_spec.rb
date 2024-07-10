@@ -66,18 +66,14 @@ describe 'Perform a tag substitution', :js do
     expect(page).to have_content(lane.name)
     fill_in('Ticket', with: '12345')
     select('Incorrect tags selected in Sequencescape.', from: 'Reason')
-    find('td', text: "#{sample_a.id}: #{sample_a.sanger_sample_id}")
-      .ancestor('tr')
-      .select(
-        "#{sample_b_orig_tag.map_id} - #{sample_b_orig_tag.oligo}",
-        from: 'tag_substitution[substitutions][][substitute_tag_id]'
-      )
-    find('td', text: "#{sample_b.id}: #{sample_a.sanger_sample_id}")
-      .ancestor('tr')
-      .select(
-        "#{sample_a_orig_tag.map_id} - #{sample_a_orig_tag.oligo}",
-        from: 'tag_substitution[substitutions][][substitute_tag_id]'
-      )
+    find('td', text: "#{sample_a.id}: #{sample_a.sanger_sample_id}").ancestor('tr').select(
+      "#{sample_b_orig_tag.map_id} - #{sample_b_orig_tag.oligo}",
+      from: 'tag_substitution[substitutions][][substitute_tag_id]'
+    )
+    find('td', text: "#{sample_b.id}: #{sample_a.sanger_sample_id}").ancestor('tr').select(
+      "#{sample_a_orig_tag.map_id} - #{sample_a_orig_tag.oligo}",
+      from: 'tag_substitution[substitutions][][substitute_tag_id]'
+    )
 
     scroll_to(find_button('Substitute Tags'))
     click_button 'Substitute Tags'
@@ -106,18 +102,14 @@ describe 'Perform a tag substitution', :js do
     expect(page).to have_content(lane.name)
     fill_in('Ticket', with: '12345')
     select('Incorrect tags selected in Sequencescape.', from: 'Reason')
-    find('td', text: "#{sample_a.id}: #{sample_a.sanger_sample_id}")
-      .ancestor('tr')
-      .select(
-        "#{sample_b_orig_tag.map_id} - #{sample_b_orig_tag.oligo}",
-        from: 'tag_substitution[substitutions][][substitute_tag_id]'
-      )
-    find('td', text: "#{sample_a.id}: #{sample_a.sanger_sample_id}")
-      .ancestor('tr')
-      .select(
-        "#{sample_b_orig_tag2.map_id} - #{sample_b_orig_tag2.oligo}",
-        from: 'tag_substitution[substitutions][][substitute_tag2_id]'
-      )
+    find('td', text: "#{sample_a.id}: #{sample_a.sanger_sample_id}").ancestor('tr').select(
+      "#{sample_b_orig_tag.map_id} - #{sample_b_orig_tag.oligo}",
+      from: 'tag_substitution[substitutions][][substitute_tag_id]'
+    )
+    find('td', text: "#{sample_a.id}: #{sample_a.sanger_sample_id}").ancestor('tr').select(
+      "#{sample_b_orig_tag2.map_id} - #{sample_b_orig_tag2.oligo}",
+      from: 'tag_substitution[substitutions][][substitute_tag2_id]'
+    )
 
     scroll_to(find_button('Substitute Tags'))
     click_button 'Substitute Tags'

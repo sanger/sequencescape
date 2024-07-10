@@ -27,9 +27,13 @@ describe ExternalReleaseEvent do
       let(:sendmail) { true }
 
       before do
-        expect(EventfulMailer).to receive(:confirm_external_release_event)
-          .with(expected_recipients, asset, expected_message, nil, 'No Milestone')
-          .and_call_original
+        expect(EventfulMailer).to receive(:confirm_external_release_event).with(
+          expected_recipients,
+          asset,
+          expected_message,
+          nil,
+          'No Milestone'
+        ).and_call_original
       end
 
       it { is_expected.to be_a described_class }

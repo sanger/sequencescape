@@ -18,8 +18,10 @@ RSpec.describe 'labware/retention_instruction.html.erb' do
 
     it 'displays a form to update the retention instruction' do
       expect(rendered).to have_css('form')
-      expect(rendered).to have_select('labware[retention_instruction]',
-                                      options: retention_instruction_option_for_select.map(&:first))
+      expect(rendered).to have_select(
+        'labware[retention_instruction]',
+        options: retention_instruction_option_for_select.map(&:first)
+      )
     end
 
     it 'displays a submit button' do
@@ -46,5 +48,4 @@ RSpec.describe 'labware/retention_instruction.html.erb' do
 
     it_behaves_like 'displaying retention instruction'
   end
-
 end

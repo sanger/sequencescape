@@ -14,7 +14,7 @@ class Api::StudyIO < Api::Base
         extend ClassMethods
 
         scope :including_associations_for_json,
-              -> {
+              -> do
                 includes(
                   [
                     :uuid_object,
@@ -24,7 +24,7 @@ class Api::StudyIO < Api::Base
                     }
                   ]
                 )
-              }
+              end
       end
     end
 

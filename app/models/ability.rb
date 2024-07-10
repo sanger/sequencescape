@@ -85,7 +85,8 @@ class Ability
 
   # Global privileges are those granted
   # EVEN IF THE USER IS NOT LOGGED IN
-  def grant_global_privileges; end
+  def grant_global_privileges
+  end
 
   # Permissions granted to all users following
   # authentication

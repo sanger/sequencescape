@@ -57,9 +57,11 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   self.spreadsheet_header_row = 8
 
   # Needed for the UI to work!
-  def barcode_printer; end
+  def barcode_printer
+  end
 
-  def template; end
+  def template
+  end
 
   belongs_to :supplier, optional: false
   belongs_to :study, optional: false
@@ -159,17 +161,17 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   scope :pending_manifests,
-        -> {
+        -> do
           order(id: :desc).includes(:uploaded_document).references(:uploaded_document).where(documents: { id: nil })
-        }
+        end
 
   scope :completed_manifests,
-        -> {
+        -> do
           order(updated_at: :desc)
             .includes(:uploaded_document)
             .references(:uploaded_document)
             .where.not(documents: { id: nil })
-        }
+        end
 
   def generate
     ActiveRecord::Base.transaction do

@@ -420,11 +420,9 @@ RSpec.describe TransferRequest do
     context 'when none of the downstream assets have a batch' do
       it 'removes the downstream aliquots' do
         expect { transfer_requests.first.fail! }.to change {
-            Delayed::Worker.new.work_off
-            assets[2..].map { |a| a.aliquots.count }.uniq
-          }
-          .from([1])
-          .to([0])
+          Delayed::Worker.new.work_off
+          assets[2..].map { |a| a.aliquots.count }.uniq
+        }.from([1]).to([0])
       end
     end
   end

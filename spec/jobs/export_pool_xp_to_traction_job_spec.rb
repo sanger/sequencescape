@@ -15,8 +15,12 @@ RSpec.describe ExportPoolXpToTractionJob, type: :job do
 
     before do
       # Mock called methods
-      allow(export_job).to receive_messages(get_message_data: message_data, get_message_schema: message_schema,
-avro_encode_message: encoded_message, send_message: nil)
+      allow(export_job).to receive_messages(
+        get_message_data: message_data,
+        get_message_schema: message_schema,
+        avro_encode_message: encoded_message,
+        send_message: nil
+      )
 
       export_job.perform
     end
@@ -101,8 +105,10 @@ avro_encode_message: encoded_message, send_message: nil)
         File.write(cache_file_path, message_schema)
 
         # Make the registry raise an error if it's called
-        stub_request(:get, "http://test-redpanda/subjects/#{schema_subject}/versions/#{schema_version}")
-          .to_raise 'Should not have been called'
+        stub_request(
+          :get,
+          "http://test-redpanda/subjects/#{schema_subject}/versions/#{schema_version}"
+        ).to_raise 'Should not have been called'
       end
 
       it 'logs that the cached file schema is being used' do
@@ -116,7 +122,6 @@ avro_encode_message: encoded_message, send_message: nil)
         # rubocop:enable RSpec/MessageSpies
 
         export_job.get_message_schema(schema_subject, schema_version)
-
       end
 
       it 'returns the cached schema' do
@@ -131,8 +136,12 @@ avro_encode_message: encoded_message, send_message: nil)
     context 'when the schema gets fetched from the registry' do
       before do
         # Mock HTTP requests to the schema registry
-        stub_request(:get, "http://test-redpanda/subjects/#{schema_subject}/versions/#{schema_version}")
-          .to_return(status: 200, body: '{"schema": "{the_schema}"}', headers: {})
+        stub_request(:get, "http://test-redpanda/subjects/#{schema_subject}/versions/#{schema_version}").to_return(
+          status: 200,
+          body: '{"schema": "{the_schema}"}',
+          headers: {
+          }
+        )
       end
 
       it 'returns the schema from the schema registry' do
@@ -156,8 +165,12 @@ avro_encode_message: encoded_message, send_message: nil)
     context 'when the schema cannot be fetched' do
       before do
         # Mock HTTP requests to the schema registry
-        stub_request(:get, "http://test-redpanda/subjects/#{schema_subject}/versions/#{schema_version}")
-          .to_return(status: 404, body: '', headers: {})
+        stub_request(:get, "http://test-redpanda/subjects/#{schema_subject}/versions/#{schema_version}").to_return(
+          status: 404,
+          body: '',
+          headers: {
+          }
+        )
       end
 
       it 'raises an error' do
@@ -182,7 +195,7 @@ avro_encode_message: encoded_message, send_message: nil)
 
     it 'prepends the encoded data with the format marker' do
       result = export_job.avro_encode_message(message_data, message_schema)
-      expect(result[0,2]).to eq("\xC3\x01")
+      expect(result[0, 2]).to eq("\xC3\x01")
     end
 
     it 'includes any crc 64 fingerprint in the encoded data' do
@@ -197,9 +210,7 @@ avro_encode_message: encoded_message, send_message: nil)
     let(:mock_channel) { instance_double(Bunny::Channel, headers: mock_exchange) }
     let(:mock_exchange) { instance_double(Bunny::Exchange, publish: nil) }
 
-    before do
-      allow(Bunny).to receive(:new).and_return(mock_bunny)
-    end
+    before { allow(Bunny).to receive(:new).and_return(mock_bunny) }
 
     it 'creates a valid connection to the AMQP broker' do
       export_job.send_message(encoded_message, schema_subject, schema_version)
@@ -219,7 +230,11 @@ avro_encode_message: encoded_message, send_message: nil)
 
       expect(mock_exchange).to have_received(:publish).with(
         encoded_message,
-        headers: { subject: schema_subject, version: schema_version, encoder_type: 'binary' },
+        headers: {
+          subject: schema_subject,
+          version: schema_version,
+          encoder_type: 'binary'
+        },
         persistent: true
       )
     end

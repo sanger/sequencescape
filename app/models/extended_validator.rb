@@ -35,11 +35,11 @@ class ExtendedValidator < ApplicationRecord
   serialize :options
 
   scope :for_submission,
-        ->(submission) {
+        ->(submission) do
           joins(
             # rubocop:todo Layout/LineLength
             'INNER JOIN request_types_extended_validators ON request_types_extended_validators.extended_validator_id = extended_validators.id'
             # rubocop:enable Layout/LineLength
           ).where(request_types_extended_validators: { request_type_id: submission.request_types })
-        }
+        end
 end

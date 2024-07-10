@@ -35,15 +35,13 @@ class StockStampersController < ApplicationController
   end
 
   def stock_stamper_params
-    params
-      .require(:stock_stamper)
-      .permit(
-        :user_barcode,
-        :source_plate_barcode,
-        :source_plate_type_name,
-        :destination_plate_barcode,
-        :destination_plate_type_name,
-        :overage
-      )
+    params.require(:stock_stamper).permit(
+      :user_barcode,
+      :source_plate_barcode,
+      :source_plate_type_name,
+      :destination_plate_barcode,
+      :destination_plate_type_name,
+      :overage
+    )
   end
 end

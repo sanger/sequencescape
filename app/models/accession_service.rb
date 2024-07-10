@@ -34,7 +34,8 @@ class AccessionService # rubocop:todo Metrics/ClassLength
   Protect = 'protect'
   Hold = 'hold'
 
-  def provider; end
+  def provider
+  end
 
   class AccessionedFile < File
     # This class provides an original_filename method
@@ -256,8 +257,9 @@ class AccessionService # rubocop:todo Metrics/ClassLength
 
     payload =
       file_params.each_with_object({}) do |param, hash|
-        hash[param[:name]] =
-          AccessionedFile.open(param[:local_name]).tap { |f| f.original_filename = param[:remote_name] }
+        hash[param[:name]] = AccessionedFile
+          .open(param[:local_name])
+          .tap { |f| f.original_filename = param[:remote_name] }
       end
 
     response = rc.post(payload)

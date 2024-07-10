@@ -37,15 +37,13 @@ class SampleManifestsControllerTest < ActionController::TestCase
 
     context '#create' do
       should 'send print request' do
-        PlateBarcode
-          .stubs(:create_barcode)
-          .returns(
-            build(:plate_barcode, barcode: 'SQPD-23'),
-            build(:plate_barcode, barcode: 'SQPD-24'),
-            build(:plate_barcode, barcode: 'SQPD-25'),
-            build(:plate_barcode, barcode: 'SQPD-26'),
-            build(:plate_barcode, barcode: 'SQPD-27')
-          )
+        PlateBarcode.stubs(:create_barcode).returns(
+          build(:plate_barcode, barcode: 'SQPD-23'),
+          build(:plate_barcode, barcode: 'SQPD-24'),
+          build(:plate_barcode, barcode: 'SQPD-25'),
+          build(:plate_barcode, barcode: 'SQPD-26'),
+          build(:plate_barcode, barcode: 'SQPD-27')
+        )
         study = create :study
         supplier = Supplier.new(name: 'test')
         supplier.save
