@@ -29,7 +29,7 @@ describe 'PlatePurposes API', with: :api_v2 do
           'id' => resource_model.id,
           'type' => 'plate_purposes',
           'attributes' => {
-            'size' => updated_size,
+            'size' => updated_size
           }
         }
       }
@@ -62,8 +62,8 @@ describe 'PlatePurposes API', with: :api_v2 do
             'stock_plate' => true,
             'cherrypickable_target' => false,
             'size' => 384,
-            'asset_shape' => asset_shape.name,
-          },
+            'asset_shape' => asset_shape.name
+          }
         }
       }
     end

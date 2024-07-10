@@ -29,7 +29,7 @@ module Api
 
       # @!attribute metadata
       #  @return [Hash] the metadata of the asset audit.
-      attribute :metadata  # Currently known clients (AssetAudits app) are sending null; unsure of the expected format.
+      attribute :metadata # Currently known clients (AssetAudits app) are sending null; unsure of the expected format.
 
       # Sets the Asset on the model using the UUID provided in the API create/update request.
       #
@@ -51,7 +51,7 @@ module Api
       # @param _context [JSONAPI::Resource::Context] not used.
       # @return [Array<Symbol>] the list of updatable fields.
       def self.updatable_fields(_context)
-        []  # Do not allow updating any fields.
+        [] # Do not allow updating any fields.
       end
     end
   end

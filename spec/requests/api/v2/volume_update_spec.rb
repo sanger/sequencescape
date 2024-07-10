@@ -29,7 +29,7 @@ describe 'VolumeUpdate API', with: :api_v2 do
           'id' => resource_model.id,
           'type' => 'volume_updates',
           'attributes' => {
-            'volume_change' => updated_volume_change,
+            'volume_change' => updated_volume_change
           }
         }
       }
@@ -59,8 +59,8 @@ describe 'VolumeUpdate API', with: :api_v2 do
           'attributes' => {
             'volume_change' => 5.0,
             'created_by' => 'test_user',
-            'target_uuid' => plate.uuid,
-          },
+            'target_uuid' => plate.uuid
+          }
         }
       }
     end
