@@ -53,16 +53,15 @@ Given /^the plate "(.*?)" has additional wells$/ do |name|
   Plate
     .find_by(name: name)
     .tap do |plate|
-      plate.wells <<
-        %w[C1 D1].map do |location|
-          map =
-            Map
-              .where_description(location)
-              .where_plate_size(plate.size)
-              .where_plate_shape(AssetShape.find_by(name: 'Standard'))
-              .first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
-          FactoryBot.create(:tagged_well, map: map)
-        end
+      plate.wells << %w[C1 D1].map do |location|
+        map =
+          Map
+            .where_description(location)
+            .where_plate_size(plate.size)
+            .where_plate_shape(AssetShape.find_by(name: 'Standard'))
+            .first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
+        FactoryBot.create(:tagged_well, map: map)
+      end
     end
 end
 
@@ -98,9 +97,9 @@ end
 
 def change_request_state(state, targets, direction, request_class)
   association = direction == 'to' ? :requests_as_target : :requests_as_source
-  Request
-    .where(id: Array(targets).map(&association).flatten.select { |r| r.is_a?(request_class) }.map(&:id))
-    .update_all(state: state)
+  Request.where(
+    id: Array(targets).map(&association).flatten.select { |r| r.is_a?(request_class) }.map(&:id)
+  ).update_all(state: state)
 end
 
 # rubocop:todo Layout/LineLength

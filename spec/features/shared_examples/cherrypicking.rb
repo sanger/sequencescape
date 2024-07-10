@@ -262,11 +262,10 @@ shared_examples 'a cherrypicking procedure' do
               expect(generated_lines).not_to be_empty
 
               # check generated lines match expected by calculation
-              plates_and_controls_barcodes =
-                [
-                  current_expected_plates[pick_number_index][:sources],
-                  current_expected_plates[pick_number_index][:control]
-                ].flatten.compact.map(&:human_barcode)
+              plates_and_controls_barcodes = [
+                current_expected_plates[pick_number_index][:sources],
+                current_expected_plates[pick_number_index][:control]
+              ].flatten.compact.map(&:human_barcode)
 
               input_wells_requests_for_current_pick =
                 current_destination_plate

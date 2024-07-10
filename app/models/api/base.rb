@@ -112,8 +112,9 @@ class Api::Base # rubocop:todo Metrics/ClassLength
           json_attributes['user'] = object.user.nil? ? 'unknown' : object.user.login if object.respond_to?(:user)
           if object.respond_to?(:roles)
             object.roles.each do |role|
-              json_attributes[role.name.underscore] =
-                role.users.map { |user| { login: user.login, email: user.email, name: user.name } }
+              json_attributes[role.name.underscore] = role.users.map do |user|
+                { login: user.login, email: user.email, name: user.name }
+              end
             end
           end
         end

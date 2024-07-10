@@ -90,19 +90,21 @@ module LabelPrinter
 
     def self.prettify_new_errors(errors)
       [].tap do |error_list|
-        errors.each do |error|
-          attribute = error['source']['pointer'].split('/').last.humanize
-          error_list << ('%{attribute} %{message}' % { attribute: attribute, message: error['detail'] })
+          errors.each do |error|
+            attribute = error['source']['pointer'].split('/').last.humanize
+            error_list << ('%{attribute} %{message}' % { attribute: attribute, message: error['detail'] })
+          end
         end
-      end.join('; ')
+        .join('; ')
     end
 
     def self.prettify_old_errors(errors)
       [].tap do |error_list|
-        errors.each do |k, v|
-          error_list << ('%{attribute} %{message}' % { attribute: k.capitalize + ':', message: v.join(', ') })
+          errors.each do |k, v|
+            error_list << ('%{attribute} %{message}' % { attribute: k.capitalize + ':', message: v.join(', ') })
+          end
         end
-      end.join('; ')
+        .join('; ')
     end
   end
 end

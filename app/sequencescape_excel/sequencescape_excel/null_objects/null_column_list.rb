@@ -9,7 +9,8 @@ module SequencescapeExcel
         NullColumnList.new
       end
 
-      def find_by(_key, _value); end
+      def find_by(_key, _value)
+      end
 
       def find_column_or_null(_key, _value)
         NullColumn.new

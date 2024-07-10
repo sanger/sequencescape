@@ -69,10 +69,10 @@ class Project < ApplicationRecord
   scope :for_user, ->(user) { joins(roles: :user_role_bindings).where(roles_users: { user_id: user }) }
 
   scope :with_unallocated_manager,
-        -> {
+        -> do
           roles = Role.arel_table
           joins(:roles).on(roles[:name].eq('manager')).where(roles[:id].eq(nil))
-        }
+        end
 
   squishify :name
 
@@ -139,11 +139,11 @@ class Project < ApplicationRecord
   end
 
   scope :with_unallocated_budget_division,
-        -> {
+        -> do
           joins(:project_metadata).where(
             project_metadata: {
               budget_division_id: BudgetDivision.find_by(name: 'Unallocated')
             }
           )
-        }
+        end
 end

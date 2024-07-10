@@ -147,8 +147,9 @@ class Uuid < ApplicationRecord
   end
 
   def self.generate_all_uuids_for_class(base_class_name)
-    eval(base_class_name)
-      .find_in_batches(batch_size: 5000) { |group| generate_uuids!(base_class_name.to_s, group.map(&:id)) }
+    eval(base_class_name).find_in_batches(batch_size: 5000) do |group|
+      generate_uuids!(base_class_name.to_s, group.map(&:id))
+    end
   end
 
   # Find the id corresponding to the uuid. Check the resource and base_class names are as expected if they are given.
@@ -166,14 +167,12 @@ class Uuid < ApplicationRecord
     end
 
     def lookup_many_uuids(uuids)
-      with_external_id(uuids)
-        .all
-        .tap do |found|
-          missing = uuids - found.map(&:external_id)
-          unless missing.empty?
-            raise ActiveRecord::RecordNotFound, "Could not find UUIDs #{missing.map(&:inspect).join(',')}"
-          end
+      with_external_id(uuids).all.tap do |found|
+        missing = uuids - found.map(&:external_id)
+        unless missing.empty?
+          raise ActiveRecord::RecordNotFound, "Could not find UUIDs #{missing.map(&:inspect).join(',')}"
         end
+      end
     end
   end
 end

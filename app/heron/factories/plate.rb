@@ -40,7 +40,6 @@ module Heron
 
           Barcode.create!(labware: @plate, barcode: barcode, format: barcode_format)
 
-
           create_contents!
 
           if @params[:events]

@@ -65,14 +65,14 @@ class Submission < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   # Used in the v1 API
   scope :including_associations_for_json,
-        -> {
+        -> do
           includes(
             [
               :uuid_object,
               { orders: [{ project: :uuid_object }, { assets: :uuid_object }, { study: :uuid_object }, :user] }
             ]
           )
-        }
+        end
 
   scope :latest_first, -> { order('id DESC') }
 

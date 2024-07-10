@@ -339,8 +339,7 @@ module ApplicationHelper
   #
   def legacy_javascript_tag
     javascript_tag nonce: true do
-      concat 'if (document.readyState === "loading") {window.addEventListener("DOMContentLoaded", function() {'
-               .html_safe
+      concat 'if (document.readyState === "loading") {window.addEventListener("DOMContentLoaded", function() {'.html_safe # rubocop:disable Layout/LineLength
       yield
       concat '});} else {'.html_safe
       yield

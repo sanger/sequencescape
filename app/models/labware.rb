@@ -81,12 +81,12 @@ class Labware < Asset
           inverse_of: :descendant
 
   has_one :spiked_in_buffer_most_recent_links, # rubocop:todo Rails/HasManyOrHasOneDependent
-          -> {
+          -> do
             includes(:ancestor)
               .references(:ancestor)
               .where(labware: { sti_type: 'SpikedBuffer' })
               .order(ancestor_id: :desc)
-          },
+          end,
           class_name: 'AssetLink',
           foreign_key: :descendant_id,
           inverse_of: :descendant

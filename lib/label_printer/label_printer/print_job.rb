@@ -31,8 +31,11 @@ module LabelPrinter
     end
 
     def build_attributes
-      @build_attributes ||=
-        { printer_name: printer_name, label_template_name: label_template_name, labels: labels_attribute }
+      @build_attributes ||= {
+        printer_name: printer_name,
+        label_template_name: label_template_name,
+        labels: labels_attribute
+      }
     end
 
     # returns: a list of labels

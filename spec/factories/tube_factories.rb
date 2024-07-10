@@ -149,14 +149,13 @@ FactoryBot.define do
     end
 
     after(:build) do |library_tube, evaluator|
-      library_tube.receptacle.aliquots <<
-        build(
-          :tagged_aliquot,
-          tag: evaluator.tag,
-          receptacle: library_tube,
-          sample: evaluator.sample,
-          library: library_tube
-        )
+      library_tube.receptacle.aliquots << build(
+        :tagged_aliquot,
+        tag: evaluator.tag,
+        receptacle: library_tube,
+        sample: evaluator.sample,
+        library: library_tube
+      )
     end
   end
 
@@ -213,8 +212,12 @@ FactoryBot.define do
     concentration { 12.0 }
 
     after(:build) do |tube, evaluator|
-      tube.receptacle.aliquots <<
-        build(:phi_x_aliquot, library: tube, tag_option: evaluator.tag_option, study: evaluator.study)
+      tube.receptacle.aliquots << build(
+        :phi_x_aliquot,
+        library: tube,
+        tag_option: evaluator.tag_option,
+        study: evaluator.study
+      )
     end
   end
 end

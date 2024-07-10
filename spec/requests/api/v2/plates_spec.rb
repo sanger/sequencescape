@@ -40,7 +40,8 @@ describe 'Plates API', tags: :lighthouse, with: :api_v2 do
         {
           'data' => {
             'type' => 'plates',
-            'attributes' => {},
+            'attributes' => {
+            },
             :relationships => {
               purpose: {
                 data: {

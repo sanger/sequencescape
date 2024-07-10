@@ -58,7 +58,7 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
   scope :with_concentration, -> { joins(:well_attribute).where('well_attributes.concentration IS NOT NULL') }
   scope :include_stock_wells, -> { includes(stock_wells: :requests_as_source) }
   scope :include_stock_wells_for_modification,
-        -> {
+        -> do
           # Preload rather than include, as otherwise joins result
           # in exponential expansion of the number of records loaded
           # and you run out of memory.
@@ -74,51 +74,51 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
               ]
             }
           )
-        }
+        end
 
   scope :on_plate_purpose, ->(purposes) { joins(:labware).where(labware: { plate_purpose_id: purposes }) }
 
   # added version of scope with includes to avoid multiple calls to LabWhere in qc report when getting storage location
   # for wells in the same plate
   scope :on_plate_purpose_included,
-        ->(purposes) {
+        ->(purposes) do
           includes(labware: :barcodes).references(:labware).where(labware: { plate_purpose_id: purposes })
-        }
+        end
 
   scope :for_study_through_aliquot, ->(study) { joins(:aliquots).where(aliquots: { study_id: study }) }
 
   scope :with_report,
-        ->(product_criteria) {
+        ->(product_criteria) do
           joins(:reported_criteria).where(
             product_criteria: {
               product_id: product_criteria.product_id,
               stage: product_criteria.stage
             }
           )
-        }
+        end
 
   scope :without_report, ->(product_criteria) { where.not(id: with_report(product_criteria)) }
 
   scope :stock_wells_for,
         ->(wells) { joins(:target_well_links).where(well_links: { target_well_id: [wells].flatten.map(&:id) }) }
   scope :target_wells_for,
-        ->(wells) {
+        ->(wells) do
           select_table
             .select('well_links.source_well_id AS stock_well_id')
             .joins(:stock_well_links)
             .where(well_links: { source_well_id: wells })
-        }
+        end
 
   scope :pooled_as_target_by_transfer,
-        -> {
+        -> do
           joins("LEFT JOIN transfer_requests patb ON #{table_name}.id=patb.target_asset_id")
             .select_table
             .select('patb.submission_id AS pool_id')
             .distinct
-        }
+        end
 
   scope :pooled_as_source_by,
-        ->(type) {
+        ->(type) do
           joins("LEFT JOIN requests pasb ON #{table_name}.id=pasb.asset_id")
             .where(
               [
@@ -130,7 +130,7 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
             .select_table
             .select('pasb.submission_id AS pool_id')
             .distinct
-        }
+        end
 
   # It feels like we should be able to do this with just includes and order, but oddly this causes more disruption
   # downstream
@@ -140,22 +140,22 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
         -> { joins(:map).order('column_order DESC').select_table.select('column_order') }
   scope :in_inverse_row_major_order, -> { joins(:map).order('row_order DESC').select_table.select('row_order') }
   scope :in_plate_column,
-        ->(col, size) {
+        ->(col, size) do
           joins(:map).where(maps: { description: Map::Coordinate.descriptions_for_column(col, size), asset_size: size })
-        }
+        end
   scope :in_plate_row,
-        ->(row, size) {
+        ->(row, size) do
           joins(:map).where(maps: { description: Map::Coordinate.descriptions_for_row(row, size), asset_size: size })
-        }
+        end
   scope :with_blank_samples,
-        -> {
+        -> do
           joins(
             [
               'INNER JOIN aliquots ON aliquots.receptacle_id=assets.id',
               'INNER JOIN samples ON aliquots.sample_id=samples.id'
             ]
           ).where(['samples.empty_supplier_sample_name=?', true])
-        }
+        end
   scope :without_blank_samples, -> { joins(aliquots: :sample).where(samples: { empty_supplier_sample_name: false }) }
 
   delegate :location, :location_id, :location_id=, :printable_target, :source_plate, to: :plate, allow_nil: true

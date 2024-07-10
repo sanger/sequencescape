@@ -49,13 +49,12 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
       .where(
         requests: {
           target_asset_id: tube.receptacle.id,
-          sti_type:
-            [
-              Request::Multiplexing,
-              Request::AutoMultiplexing,
-              Request::LibraryCreation,
-              *Request::LibraryCreation.descendants
-            ].map(&:name)
+          sti_type: [
+            Request::Multiplexing,
+            Request::AutoMultiplexing,
+            Request::LibraryCreation,
+            *Request::LibraryCreation.descendants
+          ].map(&:name)
         }
       )
       .distinct

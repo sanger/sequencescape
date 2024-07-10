@@ -143,7 +143,8 @@ class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
   end
 
-  def find_by_barcode; end
+  def find_by_barcode
+  end
 
   def lab_view
     barcode = params.fetch(:barcode, '').strip

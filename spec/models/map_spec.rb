@@ -377,25 +377,24 @@ describe Map, type: :model do
           map_class.walk_plate_vertically(plate_size, shape.id) do |map, column_order|
             hash[map.description] = column_order
           end
-          expected =
-            {
-              A1: 0,
-              B1: 1,
-              A2: 2,
-              B2: 3,
-              A3: 4,
-              B3: 5,
-              A4: 6,
-              B4: 7,
-              A5: 8,
-              B5: 9,
-              A6: 10,
-              B6: 11,
-              A7: 12,
-              B7: 13,
-              A8: 14,
-              B8: 15
-            }.transform_keys(&:to_s)
+          expected = {
+            A1: 0,
+            B1: 1,
+            A2: 2,
+            B2: 3,
+            A3: 4,
+            B3: 5,
+            A4: 6,
+            B4: 7,
+            A5: 8,
+            B5: 9,
+            A6: 10,
+            B6: 11,
+            A7: 12,
+            B7: 13,
+            A8: 14,
+            B8: 15
+          }.transform_keys(&:to_s)
           expect(hash).to eq(expected)
         end
 
@@ -403,25 +402,24 @@ describe Map, type: :model do
           # Generate a hash of well descriptions and their row order (zero-based) for testing.
           hash = {}
           map_class.walk_plate_horizontally(plate_size, shape.id) { |map, row_order| hash[map.description] = row_order }
-          expected =
-            {
-              A1: 0,
-              A2: 1,
-              A3: 2,
-              A4: 3,
-              A5: 4,
-              A6: 5,
-              A7: 6,
-              A8: 7,
-              B1: 8,
-              B2: 9,
-              B3: 10,
-              B4: 11,
-              B5: 12,
-              B6: 13,
-              B7: 14,
-              B8: 15
-            }.transform_keys(&:to_s)
+          expected = {
+            A1: 0,
+            A2: 1,
+            A3: 2,
+            A4: 3,
+            A5: 4,
+            A6: 5,
+            A7: 6,
+            A8: 7,
+            B1: 8,
+            B2: 9,
+            B3: 10,
+            B4: 11,
+            B5: 12,
+            B6: 13,
+            B7: 14,
+            B8: 15
+          }.transform_keys(&:to_s)
           expect(hash).to eq(expected)
         end
       end
