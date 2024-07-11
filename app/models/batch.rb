@@ -56,13 +56,12 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   accepts_nested_attributes_for :requests
   broadcast_with_warren
 
-  validate :requests_have_same_read_length,
-           :requests_have_same_flowcell_type,
-           :batch_meets_minimum_size,
-           :all_requests_are_ready?,
-           :requests_have_same_target_purpose,
-           on: :create,
-           if: :pipeline
+  # Validations for batches
+  # For custom validators, create a a validator class extending CustomValidatorBase and
+  # add it to the pipeline table.
+  validates_with BatchCreationValidator, on: :create, if: :pipeline
+
+  validate :add_dynamic_validations
 
   after_create :generate_target_assets_for_requests, if: :generate_target_assets_on_batch_create?
   after_commit :rebroadcast
@@ -114,12 +113,6 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   alias friendly_name id
 
-  def all_requests_are_ready?
-    # Checks that SequencingRequests have at least one LibraryCreationRequest in passed status before being processed
-    # (as referred by #75102998)
-    errors.add :base, 'All requests must be ready to be added to a batch' unless requests.all?(&:ready?)
-  end
-
   def subject_type
     sequencing? ? 'flowcell' : 'batch'
   end
@@ -130,31 +123,6 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def flowcell
     self if sequencing?
-  end
-
-  def batch_meets_minimum_size
-    if min_size && (requests.size < min_size)
-      errors.add :base, "You must create batches of at least #{min_size} requests in the pipeline #{pipeline.name}"
-    end
-  end
-
-  def requests_have_same_target_purpose
-    if pipeline.is_a?(CherrypickingPipeline) &&
-         requests.map { |request| request.request_metadata.target_purpose_id }.uniq.size > 1
-      errors.add(:base, 'The selected requests must have the same target purpose (Pick To) values')
-    end
-  end
-
-  def requests_have_same_read_length
-    unless pipeline.is_read_length_consistent_for_batch?(self)
-      errors.add :base, "The selected requests must have the same values in their 'Read length' field."
-    end
-  end
-
-  def requests_have_same_flowcell_type
-    unless pipeline.is_flowcell_type_consistent_for_batch?(self)
-      errors.add :base, "The selected requests must have the same values in their 'Flowcell Requested' field."
-    end
   end
 
   # Fail was removed from State Machine (as a state) to allow the addition of qc_state column and features
@@ -573,6 +541,22 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   private
+
+  # Adding dynamic validations to the model
+  def add_dynamic_validations
+    validator_class = get_validator_class(pipeline)
+    return unless validator_class
+
+    validator = validator_class.new
+    validator.validate(self)
+  end
+
+
+  def get_validator_class(pipeline)
+    validator_class_name = pipeline&.validator_class_name
+    validator_class_name.try(:constantize)
+  end
+
 
   def all_requests_qced?
     requests.all? { |request| request.asset.resource? || request.events.family_pass_and_fail.exists? }
