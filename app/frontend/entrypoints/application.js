@@ -27,6 +27,7 @@
 // import '~/index.css'
 
 import Rails from "@rails/ujs";
+import "./jquery";
 
 try {
   Rails.start();
@@ -42,13 +43,3 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "../datatables";
 import "../barcodeRendering";
 import "../legacy";
-
-// Export jquery for some legacy scripts
-import jQuery from "jquery";
-window.jQuery = jQuery;
-
-jQuery.ajaxSetup({
-  headers: {
-    "X-CSRF-Token": jQuery('meta[name="csrf-token"]').attr("content"),
-  },
-});
