@@ -110,11 +110,10 @@ class PhiX::SpikedBuffer
             # The build() function creates the TransferRequest object with asset, target_asset and aliquot_attributes
             # set as the following parameters
             receptacle.save!
-            receptacle.transfer_requests_as_target.build(
-              asset: parent.receptacle,
-              target_asset: receptacle,
-              aliquot_attributes: aliquot_attributes
-            ).save!
+            receptacle
+              .transfer_requests_as_target
+              .build(asset: parent.receptacle, target_asset: receptacle, aliquot_attributes: aliquot_attributes)
+              .save!
           end
       parent.children << spiked_buffer
       spiked_buffer
