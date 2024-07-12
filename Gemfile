@@ -206,7 +206,6 @@ group :test, :cucumber do
   gem 'rspec-rails', require: false
   gem 'selenium-webdriver', '~> 4.1', require: false
   gem 'shoulda'
-  gem 'simplecov', require: false
   gem 'timecop', require: false
 
   gem 'cucumber_github_formatter'

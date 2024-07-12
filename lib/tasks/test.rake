@@ -12,15 +12,6 @@ task test: :environment do
 end
 
 namespace :test do
-  # Code coverage needs to be one of the very first things you do
-  # as coverage is only tracked on first run. As a result, if we don't
-  # initialize it before running our factory linters we MASSIVELY under-report
-  # coverage. Any code paths hit by the linters will have a coverage of zero,
-  # regardless of subsequent processing.
-  task load_cov: :environment do
-    require 'simplecov'
-  end
-
   namespace :factory_bot do
     desc 'Verify that all FactoryBot factories are valid'
     task lint: :environment do
