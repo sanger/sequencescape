@@ -33,4 +33,4 @@ namespace :test do
   end
 end
 
-task test: %w[test:load_cov test:factory_bot:lint]
+task test: %w[test:factory_bot:lint]
