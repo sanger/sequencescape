@@ -8,7 +8,9 @@ import "jszip";
 // resulted in the uncaught type-error mentioned in the link.
 // https://datatables.net/forums/discussion/43042/uncaught-typeerror-cannot-set-property-of-undefined/p2
 
-import dt from "datatables.net-bs4";
+import "datatables.net";
+import "datatables.net-bs";
+import "datatables.net-bs4";
 import dtButtons from "datatables.net-buttons-bs4";
 import dtButtonsColVis from "datatables.net-buttons/js/buttons.colVis";
 import dtButtonsHtml5 from "datatables.net-buttons/js/buttons.html5";
@@ -18,7 +20,6 @@ import dtResponsive from "datatables.net-responsive-bs4";
 import dtRowGroup from "datatables.net-rowgroup-bs4";
 import dtRowOrder from "datatables.net-rowreorder-bs4";
 
-dt(window, $);
 dtButtons(window, $);
 dtButtonsColVis(window, $);
 dtButtonsHtml5(window, $);
