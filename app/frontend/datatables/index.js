@@ -9,7 +9,6 @@ import "jszip";
 // https://datatables.net/forums/discussion/43042/uncaught-typeerror-cannot-set-property-of-undefined/p2
 
 import "datatables.net";
-import "datatables.net-bs";
 import "datatables.net-bs4";
 import "datatables.net-buttons";
 import "datatables.net-buttons-bs4";
