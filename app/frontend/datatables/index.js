@@ -8,12 +8,10 @@ import "jszip";
 // resulted in the uncaught type-error mentioned in the link.
 // https://datatables.net/forums/discussion/43042/uncaught-typeerror-cannot-set-property-of-undefined/p2
 
-import "datatables.net";
 import "datatables.net-bs4";
-import "datatables.net-buttons";
 import "datatables.net-buttons-bs4";
-import "datatables.net-buttons/js/buttons.colVis.mjs";
-import "datatables.net-buttons/js/buttons.html5.mjs";
+import "datatables.net-buttons/js/buttons.colVis";
+import "datatables.net-buttons/js/buttons.html5";
 import "datatables.net-fixedcolumns-bs4";
 import "datatables.net-fixedheader-bs4";
 import "datatables.net-responsive-bs4";
