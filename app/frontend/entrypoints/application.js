@@ -34,7 +34,7 @@ try {
   // Nothing
 }
 
-import "./jquery";
+import "./init_jquery";
 
 // Bootstrap
 // We import the bundled version, as it automatically includes popper et al for us
