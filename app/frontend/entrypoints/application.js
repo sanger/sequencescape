@@ -33,6 +33,9 @@ try {
 } catch {
   // Nothing
 }
+
+import "./jquery";
+
 // Bootstrap
 // We import the bundled version, as it automatically includes popper et al for us
 // If we don't use the bundled version, we don't get automatic mounting of
@@ -42,13 +45,3 @@ import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import "../datatables";
 import "../barcodeRendering";
 import "../legacy";
-
-// Export jquery for some legacy scripts
-import jQuery from "jquery";
-window.jQuery = jQuery;
-
-jQuery.ajaxSetup({
-  headers: {
-    "X-CSRF-Token": jQuery('meta[name="csrf-token"]').attr("content"),
-  },
-});
