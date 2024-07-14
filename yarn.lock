@@ -3372,7 +3372,7 @@ datatables.net-rowreorder@1.5.0:
     datatables.net ">=1.11.0"
     jquery ">=1.7"
 
-datatables.net@1.13.11, datatables.net@^1.13.0:
+datatables.net@1.13.11, datatables.net@^1.13.0, datatables.net@^1.13.11:
   version "1.13.11"
   resolved "https://registry.yarnpkg.com/datatables.net/-/datatables.net-1.13.11.tgz#e2a4c8b50553512f241ebfcbc078d74d551183b2"
   integrity sha512-AE6RkMXziRaqzPcu/pl3SJXeRa6fmXQG/fVjuRESujvkzqDCYEeKTTpPMuVJSGYJpPi32WGSphVNNY1G4nSN/g==
