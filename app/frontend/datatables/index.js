@@ -1,5 +1,5 @@
 // Load the datatables plugins
-import "jquery";
+import "./init_jquery";
 import "jszip";
 
 // I went in a few circles here.
@@ -8,7 +8,7 @@ import "jszip";
 // resulted in the uncaught type-error mentioned in the link.
 // https://datatables.net/forums/discussion/43042/uncaught-typeerror-cannot-set-property-of-undefined/p2
 
-import "datatables.net-bs4";
+import "./init_datatables";
 import "datatables.net-buttons-bs4";
 import "datatables.net-buttons/js/buttons.colVis";
 import "datatables.net-buttons/js/buttons.html5";
