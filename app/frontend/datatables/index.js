@@ -1,5 +1,4 @@
 // Load the datatables plugins
-import "./init_jquery";
 import "jszip";
 
 // I went in a few circles here.
