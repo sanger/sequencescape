@@ -399,19 +399,19 @@ RSpec.describe NpgActions::AssetsController, type: :request do
         # Response
         expect(response).to render_template :'assets/show'
         expect(response.body).to match(expected_response_content)
-  
+
         # Lane QC event
         expect(lane.events.last).to be_a Event::AssetSetQcStateEvent
         expect(lane.events.last.message).to eq('failed qc')
-  
+
         # State event
         expect(Event.last).to be_a Event
         expect(Event.last.created_by).to eq('npg')
         expect(Event.last.message).to eq('Failed manual qc')
-  
+
         # Batch state
         expect(batch.reload.state).to eq('started')
-  
+
         # Broadcast sequencing completed event
         expect(BroadcastEvent::SequencingComplete.find_by(seed: lane)).to be_a BroadcastEvent::SequencingComplete
         expect(BroadcastEvent::SequencingComplete.find_by(seed: lane).properties[:result]).to eq('failed')
