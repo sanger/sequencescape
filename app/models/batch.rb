@@ -557,12 +557,10 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
     validator.validate(self)
   end
 
-
   def get_validator_class(pipeline)
     validator_class_name = pipeline&.validator_class_name
     validator_class_name.try(:constantize)
   end
-
 
   def all_requests_qced?
     requests.all? { |request| request.asset.resource? || request.events.family_pass_and_fail.exists? }

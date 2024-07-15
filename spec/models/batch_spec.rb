@@ -79,17 +79,19 @@ RSpec.describe Batch do
 
   # It is not clear what the state is that is leaking.
   # This can be removed with proper classes and tests in Y24-040, as this is a test for a feature that is not yet used.
-  describe "::add_dynamic_validations" do
-
+  describe '::add_dynamic_validations' do
     let(:pipeline) { create :pipeline, validator_class_name: 'NovaSeq6000Validator' }
-    let(:batch) { described_class.new pipeline: pipeline}
+    let(:batch) { described_class.new pipeline: pipeline }
 
     before do
-      stub_const('NovaSeq6000Validator', Class.new(ActiveModel::Validator) do
-        def validate(record)
-          record.errors.add :base, 'NovaSeq6000Validator failed'
+      stub_const(
+        'NovaSeq6000Validator',
+        Class.new(ActiveModel::Validator) do
+          def validate(record)
+            record.errors.add :base, 'NovaSeq6000Validator failed'
+          end
         end
-      end)
+      )
     end
 
     context 'when added, includes the dynamic validations' do
