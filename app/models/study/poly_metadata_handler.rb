@@ -14,7 +14,10 @@ class Study::PolyMetadataHandler
   # Add validations for each polymorphic metadata key here.
 
   validates :scrna_core_pbmc_donor_pooling_required_number_of_cells,
-    numericality: { greater_than: 0, allow_blank: true }
+            numericality: {
+              greater_than: 0,
+              allow_blank: true
+            }
 
   # Initializes a new instance of the PolyMetadataHandler class. The studies
   # controller creates an instance of this class in the create and update
@@ -47,9 +50,7 @@ class Study::PolyMetadataHandler
   # @param params [Hash] The parameters to assign.
   # @return [void]
   def assign_attributes(params)
-    params.each do |key, value|
-      send(:"#{key}=", value) if self.class.method_defined?(key)
-    end
+    params.each { |key, value| send(:"#{key}=", value) if self.class.method_defined?(key) }
   end
 
   # Validates the assigned attributes. If any attributes are invalid, their
@@ -62,10 +63,8 @@ class Study::PolyMetadataHandler
   # @raise [ActiveRecord::RecordInvalid] If any attributes are invalid.
   def validate_attributes
     return if valid?
-      errors.each do |error|
-        @study.errors.add(error.attribute, error.message)
-      end
-      raise ActiveRecord::RecordInvalid, @study
+    errors.each { |error| @study.errors.add(error.attribute, error.message) }
+    raise ActiveRecord::RecordInvalid, @study
   end
 
   # Dispatches the given parameters by calling a handler method for each one

@@ -24,19 +24,21 @@ RSpec.describe 'Bug research' do
       end
 
       def create_cherrypick_requests(plate, target_plate, transfers, submission_id) # rubocop:todo Metrics/MethodLength
-        transfers.map do |source, destinations|
-          target_plate
-            .wells
-            .located_at(destinations)
-            .map do |destination|
-              create(
-                :cherrypick_request,
-                asset: plate.wells.located_at(source).first,
-                target_asset: destination,
-                submission_id: submission_id
-              )
-            end
-        end.flatten
+        transfers
+          .map do |source, destinations|
+            target_plate
+              .wells
+              .located_at(destinations)
+              .map do |destination|
+                create(
+                  :cherrypick_request,
+                  asset: plate.wells.located_at(source).first,
+                  target_asset: destination,
+                  submission_id: submission_id
+                )
+              end
+          end
+          .flatten
       end
 
       context 'We have a Stock plate with 9 samples, from it, we create 2 new plates (plates 1 and 2) and we

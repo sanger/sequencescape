@@ -256,20 +256,17 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
       .zip(children_plate_barcodes)
       .map do |target_plate_purpose, child_plate_barcode|
         child_plate =
-          target_plate_purpose.create!(
-            :without_wells,
-            sanger_barcode: child_plate_barcode,
-            size: plate.size
-          ) { |child| child.name = "#{target_plate_purpose.name} #{child.human_barcode}" }
+          target_plate_purpose.create!(:without_wells, sanger_barcode: child_plate_barcode, size: plate.size) do |child|
+            child.name = "#{target_plate_purpose.name} #{child.human_barcode}"
+          end
 
         # We should probably just use a transfer here.
-        child_plate.wells <<
-          parent_wells.map do |well|
-            well.dup.tap do |child_well|
-              child_well.aliquots = well.aliquots.map(&:dup)
-              child_well.stock_wells.attach(stock_well_picker.call(well))
-            end
+        child_plate.wells << parent_wells.map do |well|
+          well.dup.tap do |child_well|
+            child_well.aliquots = well.aliquots.map(&:dup)
+            child_well.stock_wells.attach(stock_well_picker.call(well))
           end
+        end
 
         creator_parameters&.set_plate_parameters(child_plate, plate)
 

@@ -65,18 +65,17 @@ module Robot::Generator::Behaviours::HamiltonDefault
       source_plate_type = data_object['source'][(mapping['src_well'][0]).to_s]['name']
       destination_well_position = mapping['dst_well']
       destination_plate_type = plate_details['name']
-      current_row =
-        [
-          source_plate_barcode,
-          source_well_position,
-          source_plate_type,
-          hamilton_precision_value(mapping['volume']).to_s,
-          destination_plate_barcode,
-          destination_well_position,
-          destination_plate_type,
-          hamilton_precision_value(mapping['volume']).to_s,
-          hamilton_precision_value(mapping['buffer_volume']).to_s
-        ].join(',')
+      current_row = [
+        source_plate_barcode,
+        source_well_position,
+        source_plate_type,
+        hamilton_precision_value(mapping['volume']).to_s,
+        destination_plate_barcode,
+        destination_well_position,
+        destination_plate_type,
+        hamilton_precision_value(mapping['volume']).to_s,
+        hamilton_precision_value(mapping['buffer_volume']).to_s
+      ].join(',')
       source_mappings += "#{current_row}\n"
     end
     source_mappings

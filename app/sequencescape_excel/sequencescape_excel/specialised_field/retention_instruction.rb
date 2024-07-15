@@ -38,7 +38,6 @@ module SequencescapeExcel
         asset_labware.retention_instruction = retention_enum_key
         asset_labware.save!
       end
-
     end
   end
 end

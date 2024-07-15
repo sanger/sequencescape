@@ -115,8 +115,13 @@ class UatActions::TubeSubmission < UatActions
     submission_template
       .input_field_infos
       .each_with_object({}) do |ifi, options|
-        options[ifi.key] =
-          ifi.default_value.nil? ? ifi.selection&.first.presence || ifi.max.presence || ifi.min : ifi.default_value
+        options[ifi.key] = (
+          if ifi.default_value.nil?
+            ifi.selection&.first.presence || ifi.max.presence || ifi.min
+          else
+            ifi.default_value
+          end
+        )
       end
   end
 

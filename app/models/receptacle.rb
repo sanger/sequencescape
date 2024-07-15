@@ -158,9 +158,11 @@ class Receptacle < Asset # rubocop:todo Metrics/ClassLength
 
   scope :for_study_and_request_type,
         lambda { |study, request_type|
-          joins(:aliquots, :requests)
-            .where(aliquots: { study_id: study })
-            .where(requests: { request_type_id: request_type })
+          joins(:aliquots, :requests).where(aliquots: { study_id: study }).where(
+            requests: {
+              request_type_id: request_type
+            }
+          )
         }
 
   # This is a lambda as otherwise the scope selects Receptacles
@@ -231,7 +233,8 @@ class Receptacle < Asset # rubocop:todo Metrics/ClassLength
     primary_aliquot if aliquots.count == 1
   end
 
-  def library_information; end
+  def library_information
+  end
 
   def assign_tag2(tag)
     aliquots.each do |aliquot|

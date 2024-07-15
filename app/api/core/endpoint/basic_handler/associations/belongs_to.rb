@@ -33,7 +33,9 @@ module Core::Endpoint::BasicHandler::Associations::BelongsTo
       delegate :endpoint_details, to: :@endpoint
 
       def merge(node)
-        super(node) { |children| self.class.new(@endpoint_helper, children) }
+        super(node) do |children|
+          self.class.new(@endpoint_helper, children) # prettier-ignore
+        end
       end
 
       def call(object, options, stream)

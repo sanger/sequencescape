@@ -26,7 +26,7 @@ class SubmissionPool < ApplicationRecord
   has_many :tag2_layout_template_submissions, class_name: 'Tag2Layout::TemplateSubmission', foreign_key: 'submission_id'
   has_many :tag2_layout_templates, through: :tag2_layout_template_submissions
 
-  scope :include_uuid, -> {  }
+  scope :include_uuid, -> {}
   scope :for_plate, ->(plate) { where(id: plate.all_submission_ids) }
 
   # JG [2018-10-12] LIMITATION: This currently uses the first request in a submission, so could cause

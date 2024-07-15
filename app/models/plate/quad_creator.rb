@@ -77,14 +77,18 @@ class Plate::QuadCreator
 
   def transfer_requests_attributes
     # Logic for quad stamping.
-    %w[quad_1 quad_2 quad_3 quad_4].each_with_index.flat_map do |quadrant_name, quadrant_index|
-      next if @parents[quadrant_name].blank?
+    %w[quad_1 quad_2 quad_3 quad_4]
+      .each_with_index
+      .flat_map do |quadrant_name, quadrant_index|
+        next if @parents[quadrant_name].blank?
 
-      @parents[quadrant_name].receptacles_with_position.map do |receptacle|
-        target_coordinate = Plate::QuadCreator.target_coordinate_for(receptacle.absolute_position_name, quadrant_index)
-        { asset_id: receptacle.id, target_asset_id: indexed_target_wells[target_coordinate].id }
+        @parents[quadrant_name].receptacles_with_position.map do |receptacle|
+          target_coordinate =
+            Plate::QuadCreator.target_coordinate_for(receptacle.absolute_position_name, quadrant_index)
+          { asset_id: receptacle.id, target_asset_id: indexed_target_wells[target_coordinate].id }
+        end
       end
-    end.compact
+      .compact
   end
 
   # Sets up the metadata we store on the destination plate that tells us which source went into which quadrant.

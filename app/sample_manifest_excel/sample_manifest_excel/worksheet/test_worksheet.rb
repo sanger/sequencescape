@@ -135,18 +135,17 @@ module SampleManifestExcel
           plate_id = cur_sm_sample_asset.asset.plate.id
 
           # Validation errors here indicates problems we WANT not problems we HAVE
-          dynamic_attributes[sheet_row][:sanger_plate_id] =
-            if cgap
-              if validation_errors.include?(:sample_plate_id_duplicates)
-                'CGAP-99999'
-              elsif validation_errors.include?(:sample_plate_id_unrecognised_foreign)
-                "INVALID-#{plate_id.to_s.upcase}#{(plate_id % 10).to_s.upcase}"
-              else
-                "CGAP-#{plate_id.to_s(16).upcase}#{(plate_id % 16).to_s(16).upcase}"
-              end
+          dynamic_attributes[sheet_row][:sanger_plate_id] = if cgap
+            if validation_errors.include?(:sample_plate_id_duplicates)
+              'CGAP-99999'
+            elsif validation_errors.include?(:sample_plate_id_unrecognised_foreign)
+              "INVALID-#{plate_id.to_s.upcase}#{(plate_id % 10).to_s.upcase}"
             else
-              cur_sm_sample_asset.asset.plate.human_barcode
+              "CGAP-#{plate_id.to_s(16).upcase}#{(plate_id % 16).to_s(16).upcase}"
             end
+          else
+            cur_sm_sample_asset.asset.plate.human_barcode
+          end
 
           # set the well position
           dynamic_attributes[sheet_row][:well] = cur_sm_sample_asset.asset.map_description
@@ -175,17 +174,16 @@ module SampleManifestExcel
               sample_manifest_asset.save
             end
             row[:sanger_sample_id] = sample_manifest_asset.sanger_sample_id
-            row[:sanger_tube_id] =
-              if cgap
-                tube_row_num = (sheet_row - computed_first_row) + 1
-                if validation_errors.include?(:sample_tube_id_duplicates) && tube_row_num < 3
-                  'CGAP-99999'
-                else
-                  "CGAP-#{tube_row_num.to_s(16).upcase}#{(tube_row_num % 16).to_s(16).upcase}"
-                end
+            row[:sanger_tube_id] = if cgap
+              tube_row_num = (sheet_row - computed_first_row) + 1
+              if validation_errors.include?(:sample_tube_id_duplicates) && tube_row_num < 3
+                'CGAP-99999'
               else
-                asset.human_barcode
+                "CGAP-#{tube_row_num.to_s(16).upcase}#{(tube_row_num % 16).to_s(16).upcase}"
               end
+            else
+              asset.human_barcode
+            end
           end
           row[:tube_barcode] = 'TB1111111' + tube_counter.to_s
           tube_counter += 1

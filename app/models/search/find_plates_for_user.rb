@@ -7,8 +7,10 @@ class Search::FindPlatesForUser < Search
 
     # External calls will probably use uuids not ids
     if criteria['plate_purpose_uuids']
-      criteria['plate_purpose_ids'] =
-        Uuid.where(resource_type: 'Purpose', external_id: criteria['plate_purpose_uuids']).pluck(:id)
+      criteria['plate_purpose_ids'] = Uuid.where(
+        resource_type: 'Purpose',
+        external_id: criteria['plate_purpose_uuids']
+      ).pluck(:id)
     end
 
     Plate

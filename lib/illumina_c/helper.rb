@@ -118,19 +118,20 @@ module IlluminaC::Helper
       each_submission_template do |options|
         next if options[:submission_parameters][:input_field_infos].nil?
 
-        SubmissionTemplate
-          .find_by!(name: options[:name])
-          .update!(submission_parameters: options[:submission_parameters])
+        SubmissionTemplate.find_by!(name: options[:name]).update!(
+          submission_parameters: options[:submission_parameters]
+        )
       end
     end
 
     def self.find_for(name, sequencing = nil)
       tc = TemplateConstructor.new(name: name, sequencing: sequencing)
       [true, false].map do |cherrypick|
-        tc.sequencing.map do |sequencing_request_type|
-          SubmissionTemplate.find_by!(name: tc.name_for(cherrypick, sequencing_request_type))
+          tc.sequencing.map do |sequencing_request_type|
+            SubmissionTemplate.find_by!(name: tc.name_for(cherrypick, sequencing_request_type))
+          end
         end
-      end.flatten
+        .flatten
     end
   end
 end

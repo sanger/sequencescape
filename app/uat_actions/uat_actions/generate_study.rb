@@ -20,22 +20,20 @@ class UatActions::GenerateStudy < UatActions
   end
 
   def create_study
-    Study
-      .create_with(
-        state: 'active',
-        study_metadata_attributes: {
-          data_access_group: 'dag',
-          study_type: UatActions::StaticRecords.study_type,
-          faculty_sponsor: UatActions::StaticRecords.faculty_sponsor,
-          data_release_study_type: UatActions::StaticRecords.data_release_study_type,
-          study_description: 'A study generated for UAT',
-          contaminated_human_dna: 'No',
-          contains_human_dna: 'No',
-          commercially_available: 'No',
-          program: UatActions::StaticRecords.program
-        }
-      )
-      .find_or_create_by!(name: study_name)
+    Study.create_with(
+      state: 'active',
+      study_metadata_attributes: {
+        data_access_group: 'dag',
+        study_type: UatActions::StaticRecords.study_type,
+        faculty_sponsor: UatActions::StaticRecords.faculty_sponsor,
+        data_release_study_type: UatActions::StaticRecords.data_release_study_type,
+        study_description: 'A study generated for UAT',
+        contaminated_human_dna: 'No',
+        contains_human_dna: 'No',
+        commercially_available: 'No',
+        program: UatActions::StaticRecords.program
+      }
+    ).find_or_create_by!(name: study_name)
   end
 
   private

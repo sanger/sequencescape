@@ -163,7 +163,8 @@ module Barcode::FormatHandlers
     prefix = configatron.plate_barcode_prefix
 
     # rubocop:todo Layout/LineLength
-    self.format = /\A(?<prefix>#{prefix})(-[a-zA-Z0-9_]{1,3})?-(?<number>[0-9]+)(-(?<child>[0-9]+))?(-(?<suffix>[A-Z]))?\z/
+    self.format =
+      /\A(?<prefix>#{prefix})(-[a-zA-Z0-9_]{1,3})?-(?<number>[0-9]+)(-(?<child>[0-9]+))?(-(?<suffix>[A-Z]))?\z/
     # rubocop:enable Layout/LineLength
   end
 

@@ -12,7 +12,8 @@ module SequencescapeExcel
 
     ##
     # Does nothing
-    def update(attributes = {}); end
+    def update(attributes = {})
+    end
 
     ##
     # A null validation is always empty.

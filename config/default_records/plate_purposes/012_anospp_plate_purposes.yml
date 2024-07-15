@@ -1,0 +1,17 @@
+# ANOSPP pipeline purposes
+# NB. cannot WIP flag this file as the Lysate plate purpose has been added to the existing
+# limber_gbs request type
+---
+# The 'LANS-96 Stock' purpose is included here so that it's available for
+# sample manifests, and also because it is an acceptable purpose for the ANOSPP library prep
+# submission template.
+LANS-96 Stock:
+  type: PlatePurpose::Input
+  stock_plate: true
+  cherrypickable_target: false
+# The 'LANS-96 Lysate' purpose is included here so that it's available for use in the limber_gbs
+# request type as an acceptable purpose for GBS library prep
+LANS-96 Lysate:
+  type: PlatePurpose
+  stock_plate: false
+  cherrypickable_target: false

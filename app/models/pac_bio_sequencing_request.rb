@@ -22,7 +22,8 @@ class PacBioSequencingRequest < CustomerRequest
     PacBioSequencingRequest::RequestOptionsValidator
   end
 
-  def on_started; end
+  def on_started
+  end
 
   def source_tube
     asset&.labware

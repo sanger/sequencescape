@@ -3,16 +3,17 @@ module Core::Endpoint::BasicHandler::Actions::InnerAction
   def initialize(name, options, &block)
     raise StandardError, "Cannot declare inner action #{name.inspect} without a block" unless block
 
-    super() {}
+    super() do # prettier-ignore
+    end
+
     @options, @handler = options, block
     action(name, options)
   end
 
   def separate(_, actions)
-    actions[@options[:to].to_s] =
-      lambda do |object, options, stream|
-        actions(object, options.merge(target: object)).map { |action, url| stream.attribute(action, url) }
-      end
+    actions[@options[:to].to_s] = lambda do |object, options, stream|
+      actions(object, options.merge(target: object)).map { |action, url| stream.attribute(action, url) }
+    end
   end
 
   def for_json

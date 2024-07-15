@@ -16,7 +16,8 @@ module LabelPrinter
         }
       end
 
-      def first_line(tube); end
+      def first_line(tube)
+      end
 
       def second_line(tube)
         tube.barcode_number
