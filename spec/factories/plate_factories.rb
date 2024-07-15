@@ -82,6 +82,7 @@ FactoryBot.define do
 
       after(:build) do |plate, evaluator|
         well_hash = evaluator.parent.wells.index_by(&:map_description)
+        plate.save!
         plate.wells.each do |well|
           well.stock_well_links << build(
             :stock_well_link,
