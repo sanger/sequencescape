@@ -49,7 +49,7 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_uploaded_document :generated, differentiator: 'generated'
 
   attr_accessor :override, :only_first_label
-  attr_writer :rows_per_well
+  attr_writer :rows_per_well, :invalid_wells
 
   class_attribute :spreadsheet_offset
   class_attribute :spreadsheet_header_row
@@ -77,7 +77,6 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   serialize :last_errors
   serialize :barcodes
-  serialize :invalid_wells
 
   validates :count, numericality: { only_integer: true, greater_than: 0, allow_blank: false }
   validates :asset_type, presence: true, inclusion: { in: SampleManifest::CoreBehaviour::BEHAVIOURS }
@@ -141,6 +140,10 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Uses a default value of 1 if not set.
   def rows_per_well
     @rows_per_well || 1
+  end
+
+  def invalid_wells
+    @invalid_wells || []
   end
 
   # Used in manifest upload code to determine if pools are present,

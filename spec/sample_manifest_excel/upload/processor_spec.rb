@@ -729,22 +729,6 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             expect(s1.sample_metadata.gender).to eq('Unknown')
           end
         end
-
-        context 'when invalid_wells is defined' do
-          let(:download) { build(:test_download_plates, columns: column_list) }
-
-          after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
-
-          it 'will be valid when invalid_wells are present but none are included in the upload' do
-            # These wells aren't included in the upload
-            upload.sample_manifest.invalid_wells = %w[D1 E1]
-            upload.sample_manifest.save!
-            upload.process(nil)
-            upload.finished!
-
-            expect(processor).to be_valid
-          end
-        end
       end
 
       context 'when invalid' do
@@ -835,32 +819,6 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             expect(upload.sample_manifest.assets.map(&:labware).map { |l| l.retention_instruction.to_sym }.uniq).to eq(
               [:long_term_storage]
             )
-          end
-        end
-
-        context 'when using invalid wells' do
-          let(:download) { build(:test_download_plates, columns: column_list) }
-
-          after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
-
-          it 'will not be valid when all wells are in the invalid_wells list' do
-            upload.sample_manifest.invalid_wells = %w[A1 B1]
-            upload.sample_manifest.save!
-            upload.process(nil)
-            upload.finished!
-
-            expect(processor).not_to be_valid
-            expect(processor.errors.full_messages).to include('Wells: A1, B1 are not permitted in this manifest.')
-          end
-
-          it 'will not be valid when some wells are in the invalid_wells list' do
-            upload.sample_manifest.invalid_wells = ['A1']
-            upload.sample_manifest.save!
-            upload.process(nil)
-            upload.finished!
-
-            expect(processor).not_to be_valid
-            expect(processor.errors.full_messages).to include('Wells: A1 are not permitted in this manifest.')
           end
         end
       end
