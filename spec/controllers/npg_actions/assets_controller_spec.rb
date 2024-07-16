@@ -7,6 +7,7 @@ RSpec.describe NpgActions::AssetsController, type: :request do
 
   let(:lane) { create :lane_with_stock_plate, name: 'NPG_Action_Lane_Test', qc_state: 'passed', external_release: 1 }
   let(:study) { create :study }
+  let(:pipeline) { create :sequencing_pipeline }
   let(:batch) { create :sequencing_batch, state: 'started', qc_state: 'qc_manual' }
   let(:valid_seq_request) do
     create :sequencing_request_with_assets,
@@ -191,7 +192,32 @@ RSpec.describe NpgActions::AssetsController, type: :request do
              }
       end
 
-      it_behaves_like 'a passed state change'
+      it 'renders and creates events', :aggregate_failures do
+        # This is the same as the passed state change shared test with a different batch state
+        # This is because the cancelled requests arent filtered on the all_requests_qced? batch.rb method
+        # which prevents if being released
+
+        # Response
+        expect(response).to have_http_status(:ok)
+        expect(response).to render_template :'assets/show'
+        expect(response.body).to match(expected_response_content)
+
+        # Lane QC event
+        expect(lane.events.last).to be_a Event::AssetSetQcStateEvent
+        expect(lane.events.last.message).to eq('qc passed ok')
+
+        # State event
+        expect(Event.last).to be_a Event
+        expect(Event.last.created_by).to eq('npg')
+        expect(Event.last.message).to eq('Passed manual qc')
+
+        # Batch state
+        expect(batch.reload.state).to eq('started')
+
+        # Broadcast sequencing completed event
+        expect(BroadcastEvent::SequencingComplete.find_by(seed: lane)).to be_a BroadcastEvent::SequencingComplete
+        expect(BroadcastEvent::SequencingComplete.find_by(seed: lane).properties[:result]).to eq('passed')
+      end
     end
 
     context 'with two active requests' do
@@ -365,7 +391,31 @@ RSpec.describe NpgActions::AssetsController, type: :request do
              }
       end
 
-      it_behaves_like 'a failed state change'
+      it 'renders and creates events', :aggregate_failures do
+        # This is the same as the failed state change shared test with a different batch state
+        # This is because the cancelled requests arent filtered on the all_requests_qced? batch.rb method
+        # which prevents if being released
+
+        # Response
+        expect(response).to render_template :'assets/show'
+        expect(response.body).to match(expected_response_content)
+
+        # Lane QC event
+        expect(lane.events.last).to be_a Event::AssetSetQcStateEvent
+        expect(lane.events.last.message).to eq('failed qc')
+
+        # State event
+        expect(Event.last).to be_a Event
+        expect(Event.last.created_by).to eq('npg')
+        expect(Event.last.message).to eq('Failed manual qc')
+
+        # Batch state
+        expect(batch.reload.state).to eq('started')
+
+        # Broadcast sequencing completed event
+        expect(BroadcastEvent::SequencingComplete.find_by(seed: lane)).to be_a BroadcastEvent::SequencingComplete
+        expect(BroadcastEvent::SequencingComplete.find_by(seed: lane).properties[:result]).to eq('failed')
+      end
     end
 
     context 'when changing qc state on an asset when NPG did a different action before' do
