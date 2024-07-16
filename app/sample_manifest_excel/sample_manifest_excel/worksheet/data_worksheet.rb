@@ -84,15 +84,11 @@ module SampleManifestExcel
         axlsx_worksheet.add_row do |row|
           columns.each do |column|
             # If the row is invalid in the manifest, the cell should be locked
-            if sample_manifest.invalid_wells&.include?(detail.fetch(:position, nil))
-              row.add_cell column.attribute_value(detail),
-                           type: column.type,
-                           style: find_or_create_style([:disabled])&.reference
-            else
-              style = find_or_create_style(column.style)&.reference
+            style_name =
+              (sample_manifest.invalid_wells&.include?(detail.fetch(:position, nil)) ? [:disabled] : column.style)
 
-              row.add_cell column.attribute_value(detail), type: column.type, style: style
-            end
+            style = find_or_create_style(style_name)&.reference
+            row.add_cell column.attribute_value(detail), type: column.type, style: style
           end
         end
       end
