@@ -106,11 +106,14 @@ class PhiX::SpikedBuffer
             receptacle = tube.receptacle
             receptacle.qc_results.build(key: 'molarity', value: concentration, units: 'nM')
             receptacle.qc_results.build(key: 'volume', value: volume, units: 'ul')
-            receptacle.transfer_requests_as_target.build(
-              asset: parent.receptacle,
-              target_asset: receptacle,
-              aliquot_attributes: aliquot_attributes
-            )
+            # This builds the transfer request to move the aliquot from the parent to the spiked buffer
+            # The build() function creates the TransferRequest object with asset, target_asset and aliquot_attributes
+            # set as the following parameters
+            receptacle.save!
+            receptacle
+              .transfer_requests_as_target
+              .build(asset: parent.receptacle, target_asset: receptacle, aliquot_attributes: aliquot_attributes)
+              .save!
           end
       parent.children << spiked_buffer
       spiked_buffer

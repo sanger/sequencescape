@@ -29,14 +29,17 @@ mysql: &MYSQL
     # is too small for larger pools.
     group_concat_max_len: 67108864
 
+# https://guides.rubyonrails.org/upgrading_ruby_on_rails.html#how-to-use-the-classic-autoloader-in-rails-6
 development:
   <<: *MYSQL
   database: sequencescape_development<%= suffix %>
+  pool: 1
 
   # indentation is deliberate!
   development_warehouse: &warehouse
     <<: *MYSQL
     database: warehouse_development<%= suffix %>
+    pool: 1
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -45,13 +48,13 @@ development:
 test2: &test
   <<: *MYSQL
   database: sequencescape_test<%= ENV['TEST_ENV_NUMBER'] %><%= suffix %>
-  pool: 10
+  pool: 1
   timeout: 5000
 
 cucumber: &cucumber
   <<: *MYSQL
   database: sequencescape_test<%= ENV['TEST_ENV_NUMBER'] %><%= suffix %>_cuke
-  pool: 10
+  pool: 1
   timeout: 5000
 
 test:
