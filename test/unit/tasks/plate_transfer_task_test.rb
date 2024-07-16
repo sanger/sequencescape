@@ -105,13 +105,12 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
       context 'when spanning multiple plates' do
         setup do
           plate_b = create :plate
-          plate_b.wells <<
-            create(:well_with_sample_and_without_plate).tap do |w|
-              w.map = Map.find_by(description: 'A1', asset_size: 96)
-              request = create :well_request, asset: w, target_asset: create(:pac_bio_library_tube)
-              w.requests << request
-              @batch.requests << request
-            end
+          plate_b.wells << create(:well_with_sample_and_without_plate).tap do |w|
+            w.map = Map.find_by(description: 'A1', asset_size: 96)
+            request = create :well_request, asset: w, target_asset: create(:pac_bio_library_tube)
+            w.requests << request
+            @batch.requests << request
+          end
         end
 
         should 'raise an exception' do

@@ -1,0 +1,12 @@
+#Request types for ANOSPP
+---
+limber_anospp_lysate_prep:
+  name: ANOSPP Lysate Preparation
+  asset_type: Well
+  order: 1
+  request_class_name: CustomerRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: ANOSPP
+  acceptable_purposes:
+    - LANS-96 Stock

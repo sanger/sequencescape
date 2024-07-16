@@ -153,13 +153,12 @@ module Request::Statemachine
   # Aliquots are copied from the source asset to the target and updated with the
   # project and study information from the request itself.
   def transfer_aliquots
-    target_asset.aliquots <<
-      asset.aliquots.map do |aliquot|
-        aliquot.dup.tap do |clone|
-          clone.study_id = initial_study_id || aliquot.study_id
-          clone.project_id = initial_project_id || aliquot.project_id
-        end
+    target_asset.aliquots << asset.aliquots.map do |aliquot|
+      aliquot.dup.tap do |clone|
+        clone.study_id = initial_study_id || aliquot.study_id
+        clone.project_id = initial_project_id || aliquot.project_id
       end
+    end
   end
 
   #
@@ -178,15 +177,20 @@ module Request::Statemachine
   deprecate change_decision!:
               'Change decision is being deprecated in favour of retrospective_pass and retrospective_fail!'
 
-  def on_failed; end
+  def on_failed
+  end
 
-  def on_passed; end
+  def on_passed
+  end
 
-  def on_cancelled; end
+  def on_cancelled
+  end
 
-  def on_blocked; end
+  def on_blocked
+  end
 
-  def on_hold; end
+  def on_hold
+  end
 
   def failed_upstream!
     # Don't transition it again if it's already reached an end state

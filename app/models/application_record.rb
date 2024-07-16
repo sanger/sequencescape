@@ -74,13 +74,9 @@ class ApplicationRecord < ActiveRecord::Base
   # @param [Symbol] old_name The old name of the association (the one that already exists on the model
   def self.alias_association(new_name, old_name)
     # Define the getter
-    define_method(new_name) do
-      send(old_name)
-    end
+    define_method(new_name) { send(old_name) }
 
     # Define the setter
-    define_method(:"#{new_name}=") do |new_value|
-      send(:"#{old_name}=", new_value)
-    end
+    define_method(:"#{new_name}=") { |new_value| send(:"#{old_name}=", new_value) }
   end
 end

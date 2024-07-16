@@ -4,7 +4,8 @@ module Swipecardable
     self.encrypted_swipecard_code = User.encrypt_swipecard_code(code)
   end
 
-  def swipecard_code; end
+  def swipecard_code
+  end
 
   def swipecard_code?
     encrypted_swipecard_code?

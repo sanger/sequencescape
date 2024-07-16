@@ -16,9 +16,10 @@ class SampleManifestPlateTest < ActiveSupport::TestCase
 
   context 'labels for plate sample manifest rapid_core' do
     setup do
-      PlateBarcode
-        .stubs(:create_barcode)
-        .returns(build(:plate_barcode, barcode: 'SQPD-23'), build(:plate_barcode, barcode: 'SQPD-24'))
+      PlateBarcode.stubs(:create_barcode).returns(
+        build(:plate_barcode, barcode: 'SQPD-23'),
+        build(:plate_barcode, barcode: 'SQPD-24')
+      )
 
       @purpose = create :plate_purpose
 

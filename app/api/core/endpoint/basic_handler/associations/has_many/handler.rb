@@ -67,19 +67,18 @@ class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpo
   standard_action(:read)
 
   def separate(associations, _) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
-    associations[@options[:json].to_s] =
-      lambda do |object, options, stream|
-        stream.block(@options[:json].to_s) do |nested_stream|
-          association = object.send(@association)
-          nested_stream.attribute('size', association.count)
+    associations[@options[:json].to_s] = lambda do |object, options, stream|
+      stream.block(@options[:json].to_s) do |nested_stream|
+        association = object.send(@association)
+        nested_stream.attribute('size', association.count)
 
-          nested_stream.block('actions') do |action_stream|
-            actions(count_of_pages(association), options.merge(target: object)).map do |action, url|
-              action_stream.attribute(action, url)
-            end
+        nested_stream.block('actions') do |action_stream|
+          actions(count_of_pages(association), options.merge(target: object)).map do |action, url|
+            action_stream.attribute(action, url)
           end
         end
       end
+    end
   end
 
   def core_path(*args)

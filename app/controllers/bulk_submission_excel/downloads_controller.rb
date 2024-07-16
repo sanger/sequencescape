@@ -3,8 +3,7 @@
 # Generate a bulk submission excel template
 # from basic user provided data
 class BulkSubmissionExcel::DownloadsController < ApplicationController
-
-CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 
   def new
     @submission_template = SubmissionTemplate.find_by(id: params[:submission_template_id])
@@ -33,7 +32,7 @@ CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.shee
       column_list: bulk_submission_excel_config.columns.all,
       range_list: bulk_submission_excel_config.ranges,
       defaults: params[:defaults],
-      assets: finder.resolve,
+      assets: finder.resolve
     )
   end
 
@@ -52,9 +51,7 @@ CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.shee
   # Send the file to the user
   def send_file_to_user(file)
     finder = build_finder
-    send_file file.path,
-              content_type: CONTENT_TYPE,
-              filename: build_filename(finder.barcodes)
+    send_file file.path, content_type: CONTENT_TYPE, filename: build_filename(finder.barcodes)
   end
 
   # Handle invalid input exceptions by redirecting back to the bulk submissions page
@@ -79,5 +76,4 @@ CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.shee
 
     "#{barcode_part}_#{date}_#{username}.xlsx"
   end
-
 end

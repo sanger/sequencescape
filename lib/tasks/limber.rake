@@ -57,14 +57,12 @@ namespace :limber do
       puts 'Could not find tag groups to create templates. Skipping.'
     else
       puts 'Creating tag Group - IDT for Illumina v1 - 384 Quadrant'
-      TagLayoutTemplate
-        .create_with(
-          tag_group: i7_group,
-          tag2_group: i5_group,
-          walking_algorithm: 'TagLayout::Quadrants',
-          direction_algorithm: 'TagLayout::InColumns'
-        )
-        .find_or_create_by!(name: 'IDT for Illumina v1 - 384 Quadrant')
+      TagLayoutTemplate.create_with(
+        tag_group: i7_group,
+        tag2_group: i5_group,
+        walking_algorithm: 'TagLayout::Quadrants',
+        direction_algorithm: 'TagLayout::InColumns'
+      ).find_or_create_by!(name: 'IDT for Illumina v1 - 384 Quadrant')
     end
   end
 
@@ -156,8 +154,11 @@ namespace :limber do
 
       # rubocop:enable Metrics/BlockLength
       heron_catalogue = ProductCatalogue.find_or_create_by!(name: 'Heron')
-      Limber::Helper::TemplateConstructor.new(prefix: 'Heron', catalogue: heron_catalogue, sequencing_keys: base_list)
-        .build!
+      Limber::Helper::TemplateConstructor.new(
+        prefix: 'Heron',
+        catalogue: heron_catalogue,
+        sequencing_keys: base_list
+      ).build!
       Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'Heron', catalogue: heron_catalogue).build!
       Limber::Helper::LibraryAndMultiplexingTemplateConstructor.new(prefix: 'Heron', catalogue: heron_catalogue).build!
 
@@ -236,8 +237,11 @@ namespace :limber do
       Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'GBS', catalogue: gbs_catalogue).build!
 
       catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'Generic')
-      Limber::Helper::TemplateConstructor.new(prefix: 'Multiplexing', catalogue: catalogue, sequencing_keys: base_list)
-        .build!
+      Limber::Helper::TemplateConstructor.new(
+        prefix: 'Multiplexing',
+        catalogue: catalogue,
+        sequencing_keys: base_list
+      ).build!
 
       ## Bespoke Pipelines ##
       generic_pcr =

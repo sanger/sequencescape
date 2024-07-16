@@ -172,8 +172,9 @@ class RequestsController < ApplicationController
 
   def change_decision
     @change_decision =
-      Request::ChangeDecision.new({ request: @request, user: @current_user }.merge(params[:change_decision] || {}))
-        .execute!
+      Request::ChangeDecision.new(
+        { request: @request, user: @current_user }.merge(params[:change_decision] || {})
+      ).execute!
     flash[:notice] = 'Update. Below you find the new situation.'
     redirect_to filter_change_decision_request_path(params[:id])
   rescue Request::ChangeDecision::InvalidDecision => e

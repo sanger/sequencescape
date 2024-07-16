@@ -233,7 +233,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   scope :source_plates, -> { joins(:plate_purpose).where('plate_purposes.id = plate_purposes.source_purpose_id') }
 
   scope :with_wells_and_requests,
-        -> {
+        -> do
           eager_load(
             wells: [
               :uuid_object,
@@ -247,7 +247,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
               }
             ]
           )
-        }
+        end
 
   def self.search_for_plates(params)
     with_faculty_sponsor_ids(params[:faculty_sponsor_ids] || nil)
@@ -259,11 +259,11 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   end
 
   scope :with_faculty_sponsor_ids,
-        ->(faculty_sponsor_ids) {
+        ->(faculty_sponsor_ids) do
           if faculty_sponsor_ids.present?
             joins(studies: { study_metadata: :faculty_sponsor }).where(faculty_sponsors: { id: faculty_sponsor_ids })
           end
-        }
+        end
 
   scope :with_study_id, ->(study_id) { joins(:studies).where(studies: { id: study_id }) if study_id.present? }
 
@@ -272,9 +272,9 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
 
   # TODO: When on Ruby 2.6 try using endless ranges
   scope :created_between,
-        ->(start_date, end_date) {
+        ->(start_date, end_date) do
           where(created_at: (start_date.midnight..(end_date || Time.current).end_of_day)) if start_date.present?
-        }
+        end
 
   def maps
     Map.where_plate_size(size).where_plate_shape(asset_shape)

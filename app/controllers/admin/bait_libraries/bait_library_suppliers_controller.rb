@@ -8,7 +8,8 @@ class Admin::BaitLibraries::BaitLibrarySuppliersController < ApplicationControll
     @bait_library_supplier = BaitLibrary::Supplier.new
   end
 
-  def edit; end
+  def edit
+  end
 
   def create
     @bait_library_supplier = BaitLibrary::Supplier.new(bait_library_supplier_params)

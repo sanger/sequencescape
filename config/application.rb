@@ -24,7 +24,8 @@ Bundler.require(*Rails.groups)
 module Sequencescape
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 5.0
+    config.load_defaults 6.1
+    config.autoloader = :classic
 
     # Default options which predate the Rails 5 switch
     config.active_record.belongs_to_required_by_default = false
@@ -104,18 +105,20 @@ module Sequencescape
     # end Rails 5 #
 
     # Fix for Psych::DisallowedClass: Tried to load unspecified class
-    config.active_record.yaml_column_permitted_classes = Array(config.active_record.yaml_column_permitted_classes) + %w[
-      Symbol
-      ActiveSupport::HashWithIndifferentAccess
-      HashWithIndifferentAccess
-      RequestType::Validator::ArrayWithDefault
-      RequestType::Validator::LibraryTypeValidator
-      RequestType::Validator::FlowcellTypeValidator
-      ActionController::Parameters
-      Set
-      Range
-      FieldInfo
-      Time
-    ]
+    config.active_record.yaml_column_permitted_classes =
+      Array(config.active_record.yaml_column_permitted_classes) +
+        %w[
+          Symbol
+          ActiveSupport::HashWithIndifferentAccess
+          HashWithIndifferentAccess
+          RequestType::Validator::ArrayWithDefault
+          RequestType::Validator::LibraryTypeValidator
+          RequestType::Validator::FlowcellTypeValidator
+          ActionController::Parameters
+          Set
+          Range
+          FieldInfo
+          Time
+        ]
   end
 end

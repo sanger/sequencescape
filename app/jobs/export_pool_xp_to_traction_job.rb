@@ -27,8 +27,10 @@ ExportPoolXpToTractionJob =
       response = Net::HTTP.get_response(URI.parse(uri_str))
 
       case response
-        when Net::HTTPSuccess     then response
-        when Net::HTTPRedirection then fetch_response(response['location'], limit - 1)
+      when Net::HTTPSuccess
+        response
+      when Net::HTTPRedirection
+        fetch_response(response['location'], limit - 1)
       else
         response.error!
       end
@@ -47,17 +49,17 @@ ExportPoolXpToTractionJob =
         library: {
           volume: 100.0,
           concentration: 0.0,
-          boxBarcode: "Unspecified"
+          boxBarcode: 'Unspecified'
         },
         request: {
           costCode: project&.project_cost_code,
-          libraryType: "Pacbio_Amplicon",
+          libraryType: 'Pacbio_Amplicon',
           studyUuid: study&.uuid
         },
         sample: {
           sampleName: sample.name,
           sampleUuid: sample.uuid,
-          speciesName: "Unidentified"
+          speciesName: 'Unidentified'
         }
       }
     end
@@ -111,14 +113,10 @@ ExportPoolXpToTractionJob =
         host: rabbit_config.host,
         username: rabbit_config.username,
         password: rabbit_config.password,
-        vhost: rabbit_config.vhost,
+        vhost: rabbit_config.vhost
       }
 
-      if rabbit_config.tls
-        add_tls_params(connection_params)
-      else
-        connection_params
-      end
+      rabbit_config.tls ? add_tls_params(connection_params) : connection_params
     end
 
     def add_tls_params(connection_params)

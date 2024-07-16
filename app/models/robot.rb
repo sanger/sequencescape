@@ -11,11 +11,11 @@ class Robot < ApplicationRecord
   has_one :generation_behaviour_property, -> { where(key: 'generation_behaviour') }, class_name: 'RobotProperty'
 
   scope :with_barcode,
-        ->(barcode) {
+        ->(barcode) do
           return none unless Barcode.prefix_from_barcode(barcode) == prefix
 
           where(barcode: Barcode.number_to_human(barcode))
-        }
+        end
   scope :include_properties, -> { includes(:robot_properties) }
   scope :with_verification_behaviour,
         -> { includes(:robot_properties).where(robot_properties: { key: 'verification_behaviour' }) }

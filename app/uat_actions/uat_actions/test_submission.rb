@@ -131,8 +131,9 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
     report['plate_barcode_0'] = labware.human_barcode
     report['submission_id'] = order.submission.id
     report['library_type'] = order.request_options[:library_type] if order.request_options[:library_type].present?
-    report['primer_panel'] = order.request_options[:primer_panel_name] if order.request_options[:primer_panel_name]
-      .present?
+    report['primer_panel'] = order.request_options[:primer_panel_name] if order.request_options[
+      :primer_panel_name
+    ].present?
     report['number_of_wells_with_samples'] = labware.wells.with_aliquots.size
     report['number_of_samples_in_each_well'] = labware.wells.with_aliquots.first.aliquots.size
     report['number_of_wells_to_submit'] = assets.size
@@ -222,8 +223,13 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
     submission_template
       .input_field_infos
       .each_with_object({}) do |ifi, options|
-        options[ifi.key] =
-          ifi.default_value.nil? ? ifi.selection&.first.presence || ifi.max.presence || ifi.min : ifi.default_value
+        options[ifi.key] = (
+          if ifi.default_value.nil?
+            ifi.selection&.first.presence || ifi.max.presence || ifi.min
+          else
+            ifi.default_value
+          end
+        )
       end
   end
 

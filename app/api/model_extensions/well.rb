@@ -5,7 +5,7 @@ module ModelExtensions::Well
   def self.included(base)
     base.class_eval do
       scope :for_api_plate_json,
-            -> {
+            -> do
               preload(
                 :map,
                 :transfer_requests_as_target, # Should be :transfer_requests_as_target
@@ -14,7 +14,7 @@ module ModelExtensions::Well
                 plate: :uuid_object,
                 aliquots: Io::Aliquot::PRELOADS
               )
-            }
+            end
     end
   end
 

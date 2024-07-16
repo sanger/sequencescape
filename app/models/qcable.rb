@@ -32,11 +32,11 @@ class Qcable < ApplicationRecord
   scope :include_for_json, -> { includes(%i[asset lot stamp stamp_qcable]) }
 
   scope :stamped,
-        -> {
-          includes(%i[stamp_qcable stamp])
-            .where('stamp_qcables.id IS NOT NULL')
-            .order('stamps.created_at ASC, stamp_qcables.order ASC')
-        }
+        -> do
+          includes(%i[stamp_qcable stamp]).where('stamp_qcables.id IS NOT NULL').order(
+            'stamps.created_at ASC, stamp_qcables.order ASC'
+          )
+        end
 
   has_many :barcodes, through: :asset
 
@@ -45,7 +45,7 @@ class Qcable < ApplicationRecord
   # to their appropriate query conditions (as though they operated on their own) and then we join
   # them together with 'OR' to get the overall conditions.
   scope :with_barcode,
-        ->(*barcodes) {
+        ->(*barcodes) do
           db_barcodes =
             barcodes
               .flatten
@@ -55,7 +55,7 @@ class Qcable < ApplicationRecord
                 store.concat(Barcode.extract_barcode(source_bc))
               end
           joins(:barcodes).where(barcodes: { barcode: db_barcodes }).distinct
-        }
+        end
 
   def stamp_index
     return nil if stamp_qcable.nil?

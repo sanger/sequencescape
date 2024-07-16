@@ -18,6 +18,7 @@ module RequestClassDeprecator
   end
 
   # rubocop:todo Metrics/MethodLength
+  # rubocop:disable Rails/SkipsModelValidations
   def deprecate_class(request_class_name, options = {}) # rubocop:todo Metrics/AbcSize
     state_changes = options.fetch(:state_change, {})
     new_request_type = options.fetch(:new_type, transfer_request)
@@ -34,18 +35,19 @@ module RequestClassDeprecator
 
           state_changes.each do |from_state, to_state|
             say "Moving #{rt.name} from #{from_state} to #{to_state}", true
-            mig = rt_requests.where(state: from_state).update_all(state: to_state) # rubocop:disable Rails/SkipsModelValidations
+            mig = rt_requests.where(state: from_state).update_all(state: to_state)
             say "Moved: #{mig}", true
           end
 
           say 'Updating requests:'
-          mig = rt_requests.update_all(sti_type: new_class_name, request_type_id: new_request_type.id) # rubocop:disable Rails/SkipsModelValidations
+          mig = rt_requests.update_all(sti_type: new_class_name, request_type_id: new_request_type.id)
           say "Updated: #{mig}", true
-          PlatePurpose::Relationship
-            .where(transfer_request_type_id: rt.id)
-            .update_all(transfer_request_type_id: new_request_type.id) # rubocop:disable Rails/SkipsModelValidations
+          PlatePurpose::Relationship.where(transfer_request_type_id: rt.id).update_all(
+            transfer_request_type_id: new_request_type.id
+          )
         end
     end
   end
+  # rubocop:enable Rails/SkipsModelValidations
   # rubocop:enable Metrics/MethodLength
 end
