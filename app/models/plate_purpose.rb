@@ -57,6 +57,7 @@ class PlatePurpose < Purpose
   # Set the class to PlatePurpose::Input is set to true.
   # Allows creation of the input plate purposes through the API
   # without directly exposing our class names.
+  # Note: This could be moved to the V2 API resource when V1 is removed.
   #
   # @param [Bool] is_input Set to true to assign the sti type to PlatePurpose::Input
   def input_plate=(is_input)
