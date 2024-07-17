@@ -14,33 +14,33 @@ module Api
       # The following attributes are sent by Limber for a new plate purpose.
 
       # @!attribute name
-      #  @return [String] the name of the plate purpose
+      #  @return [String] gets or sets the name of the plate purpose
       attribute :name
 
       # @!attribute stock_plate
-      #  @return [Boolean] whether the plates of this purpose are stock plates
+      #  @return [Boolean] gets or sets whether the plates of this purpose are stock plates
       attribute :stock_plate
 
       # @!attribute cherrypickable_target
-      #  @return [Boolean] whether the plates of this purpose are cherrypickable
+      #  @return [Boolean] gets or sets whether the plates of this purpose are cherrypickable
       attribute :cherrypickable_target
 
-      # @!attribute input_plate -- readonly
-      #  @return [Boolean] whether the plates of this purpose are input plates
+      # @!attribute input_plate
+      #  @return [Boolean] gets or sets whether the plates of this purpose are input plates
       attribute :input_plate
 
       # @!attribute size
-      #  @return [Integer] the size of the plates of this purpose
+      #  @return [Integer] gets or sets the size of the plates of this purpose
       attribute :size
 
       # @!attribute asset_shape
-      #  @return [String] the name of the shape of the plates of this purpose
+      #  @return [String] gets or sets the name of the shape of the plates of this purpose
       attribute :asset_shape
 
       # The following attribute is required by Limber to store purposes.
 
-      # @!attribute [r] uuid -- readonly
-      #  @return [String] the UUID of the plate purpose
+      # @!attribute [r] uuid
+      #  @return [String] gets the UUID of the plate purpose
       attribute :uuid
 
       # Sets the asset shape of the plate purpose by name if given.
@@ -63,12 +63,19 @@ module Api
         @model.asset_shape.name
       end
 
-      # Returns the input_plate attribute from the type of the plate purpose.
-      # This method is the counterpart to the model's attribute writer for
-      # input_plate. It performs the inverse operation, determining the value
-      # of input_plate attribute based on the model's type.
+      # Set the class to PlatePurpose::Input if set to true.
+      # Pass through to the setter in the model.
+      # While not strictly necessary as the model would respond implicitly, this method is provided for clarity.
       #
-      # @return [Boolean] whether the plate purpose is an input plate
+      # @param is_input [Bool] whether to set the sti type to PlatePurpose::Input.
+      # @return [void]
+      def input_plate=(is_input)
+        @model.input_plate = is_input
+      end
+
+      # Returns the input_plate attribute from the type of the plate purpose.
+      #
+      # @return [Boolean] whether the plate purpose is an input plate.
       def input_plate
         @model.type == 'PlatePurpose::Input'
       end
@@ -78,7 +85,7 @@ module Api
       # @param _context [JSONAPI::Resource::Context] not used
       # @return [Array<Symbol>] the list of creatable fields.
       def self.creatable_fields(_context)
-        super - %i[input_plate uuid] # Do not allow creating with any readonly fields
+        super - %i[uuid] # Do not allow creating with any readonly fields
       end
 
       # Gets the list of fields which are updatable on an existing PlatePurpose.
