@@ -6,6 +6,11 @@ class NovaseqxPeValidator < ActiveModel::Validator
     batch_size_for_flowcell_type(record)
   end
 
+  # Used in _pipeline_limit.html to display custom validation warnings
+  def self.validation_info
+    'Requests must be selected in pairs for 1.5B flowcells and in groups of 8 for 10B and 25B flowcells.'
+  end
+
   private
 
   def batch_size_for_flowcell_type(record)
