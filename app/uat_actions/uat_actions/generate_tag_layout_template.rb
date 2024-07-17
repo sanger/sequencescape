@@ -30,7 +30,7 @@ class UatActions::GenerateTagLayoutTemplate < UatActions
              :select,
              label: 'Direction',
              help: 'Direction the tags are laid out by',
-             select_options: -> { TagLayoutTemplatesController::DIRECTIONS },
+             select_options: -> { TagLayout::DIRECTIONS },
              options: {
                include_blank: 'Select a direction...'
              }
@@ -38,7 +38,7 @@ class UatActions::GenerateTagLayoutTemplate < UatActions
              :select,
              label: 'Walking By',
              help: 'Walking by algorithms, will default to TagLayout::WalkWellsOfPlate if left blank',
-             select_options: -> { TagLayoutTemplatesController::WALKING_ALGORITHMS },
+             select_options: -> { TagLayout::WALKING_ALGORITHMS },
              options: {
                include_blank: 'Select a walking by...'
              }
