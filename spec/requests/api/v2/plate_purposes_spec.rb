@@ -53,28 +53,62 @@ describe 'PlatePurposes API', with: :api_v2 do
   describe '#post' do
     let(:asset_shape) { create :asset_shape }
 
-    let(:payload) do
-      {
-        'data' => {
-          'type' => 'plate_purposes',
-          'attributes' => {
-            'name' => 'My Plate Purpose',
-            'stock_plate' => true,
-            'cherrypickable_target' => false,
-            'size' => 384,
-            'asset_shape' => asset_shape.name
+    context 'with valid payload' do
+      def payload(bools)
+        {
+          'data' => {
+            'type' => 'plate_purposes',
+            'attributes' => {
+              'name' => 'My Plate Purpose',
+              'stock_plate' => bools,
+              'cherrypickable_target' => bools,
+              'size' => 384,
+              'asset_shape' => asset_shape.name,
+              'input_plate' => bools
+            }
           }
         }
-      }
+      end
+
+      [true, false].each do |bool|
+        it "allows creation of a PlatePurpose using #{bool} values" do
+          api_post base_endpoint, payload(bool)
+
+          expect(response).to have_http_status(:success), response.body
+          expect(json.dig('data', 'type')).to eq('plate_purposes')
+          expect(json.dig('data', 'attributes', 'name')).to eq('My Plate Purpose')
+          expect(json.dig('data', 'attributes', 'stock_plate')).to eq(bool)
+          expect(json.dig('data', 'attributes', 'cherrypickable_target')).to eq(bool)
+          expect(json.dig('data', 'attributes', 'size')).to eq(384)
+          expect(json.dig('data', 'attributes', 'asset_shape')).to eq(asset_shape.name)
+          expect(json.dig('data', 'attributes', 'input_plate')).to eq(bool)
+        end
+      end
     end
 
-    it 'allows creation of a PlatePurpose' do
-      api_post base_endpoint, payload
-      expect(response).to have_http_status(:success), response.body
-      expect(json.dig('data', 'type')).to eq('plate_purposes')
-      expect(json.dig('data', 'attributes', 'name')).to eq('My Plate Purpose')
-      expect(json.dig('data', 'attributes', 'size')).to eq(384)
-      expect(json.dig('data', 'attributes', 'asset_shape')).to eq(asset_shape.name)
+    context 'with uuid in the payload' do
+      let(:payload) do
+        {
+          'data' => {
+            'type' => 'plate_purposes',
+            'attributes' => {
+              'name' => 'My Plate Purpose',
+              'stock_plate' => true,
+              'cherrypickable_target' => false,
+              'size' => 384,
+              'asset_shape' => asset_shape.name,
+              'input_plate' => true,
+              'uuid' => '11111111-2222-3333-4444-555555666666'
+            }
+          }
+        }
+      end
+
+      it 'disallows creation of the PlatePurpose' do
+        api_post base_endpoint, payload
+        expect(response).to have_http_status(:bad_request)
+        expect(json.dig('errors', 0, 'detail')).to eq('uuid is not allowed.')
+      end
     end
   end
 end
