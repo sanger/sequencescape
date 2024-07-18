@@ -5,27 +5,21 @@ module Api
     # Provides a JSON API representation of a submission template.
     # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
     class SubmissionTemplateResource < BaseResource
-      # Constants...
-
-      immutable # uncomment to make the resource immutable
-
-      # model_name / model_hint if required
+      immutable
 
       default_includes :uuid_object
 
-      # Associations:
-
+      ###
       # Attributes
+      ###
+
+      # @!attribute [r]
+      # @return [String] The name of the submission template.
       attribute :name
+
+      # @!attribute [r]
+      # @return [String] The UUID of the submission template.
       attribute :uuid
-
-      # Filters
-
-      # Custom methods
-      # These shouldn't be used for business logic, and are more about
-      # I/O and isolating implementation details.
-
-      # Class method overrides
     end
   end
 end
