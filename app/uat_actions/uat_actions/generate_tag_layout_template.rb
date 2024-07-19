@@ -30,7 +30,7 @@ class UatActions::GenerateTagLayoutTemplate < UatActions
              :select,
              label: 'Direction',
              help: 'Direction the tags are laid out by',
-             select_options: -> { TagLayout::DIRECTIONS },
+             select_options: -> { TagLayout::DIRECTION_ALGORITHMS },
              options: {
                include_blank: 'Select a direction...'
              }
