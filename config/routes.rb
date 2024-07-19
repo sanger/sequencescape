@@ -53,6 +53,7 @@ Rails.application.routes.draw do
       jsonapi_resources :tag_groups
       jsonapi_resources :tag_layout_templates
       jsonapi_resources :transfer_requests
+      jsonapi_resources :transfer_templates
       jsonapi_resources :tube_purposes
       jsonapi_resources :tube_rack_statuses
       jsonapi_resources :tube_racks
