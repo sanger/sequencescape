@@ -65,21 +65,21 @@ module ApplicationHelper
     "apple-icon#{icon_suffix}.png"
   end
 
-  def render_flashes # rubocop:disable Metrics/MethodLength
-    flash.each do |key, message|
-      messages = Array(message)
-      concat(
-        alert(key, id: "message_#{key}") do
-          # If there are multiple messages, render them as a list, else render as a single div
-          if messages.size > 1
-            concat(tag.ul(style: 'margin: 0') { messages.each { |m| concat tag.li(m) } })
-          else
-            concat(tag.div(message))
-          end
-        end
-      )
-    end
+  def render_flashes
+    flash.each { |key, message| concat(alert(key, id: "message_#{key}") { render_message(message) }) }
     nil
+  end
+
+  # A helper method for render_flashes - renders a message with the appropriate styling
+  # @param key [String] The type of flash message
+  def render_message(message)
+    messages = Array(message)
+    # If there are multiple messages, render them as a list, else render as a single div
+    if messages.size > 1
+      tag.ul { messages.each { |m| concat tag.li(m) } }
+    else
+      tag.div(messages.first)
+    end
   end
 
   def api_data

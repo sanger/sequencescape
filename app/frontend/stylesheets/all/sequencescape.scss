@@ -134,6 +134,10 @@ h3.card-header-custom {
   }
 }
 
+.alert-error ul {
+  margin: 0;
+}
+
 .alert-notice,
 .alert-passed {
   @extend .alert-success;
