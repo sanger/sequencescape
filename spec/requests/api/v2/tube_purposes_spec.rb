@@ -35,7 +35,7 @@ describe 'Tube Purposes API', with: :api_v2 do
   describe '#patch a specific Tube Purpose' do
     let(:resource_model) { create(:tube_purpose) }
 
-    context 'patching the name' do
+    context 'when patching the name' do
       let(:updated_name) { 'Updated Name' }
       let(:payload) do
         {
@@ -59,7 +59,7 @@ describe 'Tube Purposes API', with: :api_v2 do
       end
     end
 
-    context 'patching the purpose_type' do
+    context 'when patching the purpose_type' do
       let(:updated_purpose_type) { 'Updated Purpose Type' }
       let(:payload) do
         {
@@ -83,7 +83,7 @@ describe 'Tube Purposes API', with: :api_v2 do
       end
     end
 
-    context 'patching the target_type' do
+    context 'when patching the target_type' do
       let(:updated_target_type) { 'SampleTube' }
       let(:payload) do
         {
