@@ -19,7 +19,7 @@ module Api
 
       # @!attribute [r]
       # @return [String] The UUID of the transfer template.
-      attribute :uuid
+      attribute :uuid, readonly: true
     end
   end
 end

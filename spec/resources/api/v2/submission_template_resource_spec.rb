@@ -1,20 +1,25 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require './app/resources/api/v2/plate_template_resource'
+require './app/resources/api/v2/submission_template_resource'
 
-RSpec.describe Api::V2::PlateTemplateResource, type: :resource do
+RSpec.describe Api::V2::SubmissionTemplateResource, type: :resource do
   subject(:resource) { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { build_stubbed :plate_template }
+  let(:resource_model) { build_stubbed :submission_template }
 
   # Test attributes
   it 'has the expected attributes', :aggregate_failures do
     expect(resource).not_to have_attribute :id
     expect(resource).to have_attribute :uuid
+    expect(resource).to have_attribute :name
   end
 
   # Updatable fields
+  it 'allows updating of read-write fields', :aggregate_failures do
+    expect(resource).to have_updatable_field :name
+  end
+
   it 'disallows updating of read only fields', :aggregate_failures do
     expect(resource).not_to have_updatable_field :uuid
   end
