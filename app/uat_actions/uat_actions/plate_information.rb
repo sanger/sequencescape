@@ -46,14 +46,14 @@ class UatActions::PlateInformation < UatActions
     active_request_states = %w[pending started]
 
     plate
-    .wells_in_column_order
-    .each_with_object([]) do |well, wells_with_active_requests_as_source|
-      # requests must have an active state
-      if well.requests_as_source.present? && well.requests_as_source.any? do |request|
- active_request_states.include?(request.state) end
-        wells_with_active_requests_as_source << well.map_description
+      .wells_in_column_order
+      .each_with_object([]) do |well, wells_with_active_requests_as_source|
+        # requests must have an active state
+        if well.requests_as_source.present? &&
+             well.requests_as_source.any? { |request| active_request_states.include?(request.state) }
+          wells_with_active_requests_as_source << well.map_description
+        end
       end
-    end
-    .join(', ')
+      .join(', ')
   end
 end
