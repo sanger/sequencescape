@@ -71,7 +71,7 @@ module ApplicationHelper
       concat(
         alert(key, id: "message_#{key}") do
           # If there are multiple messages, render them as a list, else render as a single div
-          if messages > 1
+          if messages.size > 1
             concat(tag.ul(style: 'margin: 0') { messages.each { |m| concat tag.li(m) } })
           else
             concat(tag.div(message))
