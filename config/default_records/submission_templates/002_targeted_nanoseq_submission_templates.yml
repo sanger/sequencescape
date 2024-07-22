@@ -1,8 +1,14 @@
-# This submission template is associated with the Limber Targeted NanoSeq pipeline.
+# Submission templates associated with the Limber Targeted NanoSeq pipeline.
 ---
 Limber-Htp - Targeted NanoSeq:
   submission_class_name: "LinearSubmission"
   related_records:
     request_type_keys: ["limber_targeted_nanoseq"]
+    product_line_name: Targeted-NanoSeq
+    product_catalogue_name: Targeted-NanoSeq
+Limber-Htp - Targeted NanoSeq ISC Prep:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_targeted_nanoseq_isc_prep"]
     product_line_name: Targeted-NanoSeq
     product_catalogue_name: Targeted-NanoSeq
