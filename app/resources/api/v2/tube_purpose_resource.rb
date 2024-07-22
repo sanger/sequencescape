@@ -17,28 +17,11 @@ module Api
 
       # @!attribute [rw]
       # @return [String] The purpose type. This is mapped to the type attribute on the model.
-      attribute :purpose_type
+      attribute :purpose_type, delegate: :type
 
       # @!attribute [rw]
       # @return [String] The target type.
       attribute :target_type
-
-      #####
-      # Custom getters and setters
-      #####
-
-      # Gets the purpose type from the model.
-      # @return [String] The purpose type.
-      def purpose_type
-        @model.type
-      end
-
-      # Set the purpose type on the model.
-      # @param [String] value The purpose type to set.
-      # @return [void]
-      def purpose_type=(value)
-        @model.type = value
-      end
     end
   end
 end
