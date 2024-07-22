@@ -70,11 +70,10 @@ module ApplicationHelper
     nil
   end
 
-  # A helper method for render_flashes - renders a message with the appropriate styling
+  # A helper method for render_flashes - If multiple messages, render them as a list, else render as a single div
   # @param key [String] The type of flash message
   def render_message(message)
     messages = Array(message)
-    # If there are multiple messages, render them as a list, else render as a single div
     if messages.size > 1
       tag.ul { messages.each { |m| concat tag.li(m) } }
     else
