@@ -4,7 +4,7 @@
 # - acceptable_purposes is where the request type can be used.
 #
 ---
-limber_scrna_core_cdna_prep_v2:
+limber_scrna_core_cdna_prep_gem_x_5p:
   name: scRNA Core cDNA Prep
   asset_type: SampleTube
   order: 1
@@ -16,8 +16,6 @@ limber_scrna_core_cdna_prep_v2:
     - LRC Bank Seq
     - LRC Bank Spare
     - LRC Bank Input
-  library_types:
-    - Chromium single cell GEM-X 5p v3 GE
 limber_scrna_core_cdna_prep_input:
   name: scRNA Core cDNA Prep Input
   asset_type: Well
