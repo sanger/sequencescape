@@ -22,13 +22,13 @@ module Api
       attribute :uuid, readonly: true
 
       # @!attribute [r]
-      # @return [String] The name of the printer type.
-      attribute :type_name
+      # @return [String] The name of the barcode type for this printer.
+      attribute :barcode_type, readonly: true
 
       ###
       # Getters and Setters
       ###
-      def type_name
+      def barcode_type
         @model.barcode_printer_type.name
       end
     end
