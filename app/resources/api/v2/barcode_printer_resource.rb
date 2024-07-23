@@ -22,6 +22,10 @@ module Api
       attribute :uuid, readonly: true
 
       # @!attribute [r]
+      # @return [String] The service this printer can be instructed to print from.
+      attribute :print_service, readonly: true
+
+      # @!attribute [r]
       # @return [String] The name of the barcode type for this printer.
       attribute :barcode_type, readonly: true
 
