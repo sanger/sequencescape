@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Base class for the all tube purposes, describes the role the associated
-# {Tube} is playing within the lab, and my modify its behaviour.
+# {Tube} is playing within the lab, and modifies its behaviour.
 # This is not an abstract class, and can be used directly.
 # @see Purpose
 class Tube::Purpose < Purpose
