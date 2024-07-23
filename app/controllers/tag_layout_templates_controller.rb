@@ -38,7 +38,7 @@ class TagLayoutTemplatesController < ApplicationController
         flash[:notice] = I18n.t('tag_groups.success')
         format.html { redirect_to(@tag_layout_template) }
       else
-        @direction_algorithms = Taglayout::DIRECTION_ALGORITHMS
+        @direction_algorithms = TagLayout::DIRECTION_ALGORITHMS
         @walking_algorithms = TagLayout::WALKING_ALGORITHMS
         format.html { render action: 'new' }
       end
