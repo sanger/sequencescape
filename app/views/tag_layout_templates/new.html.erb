@@ -18,12 +18,41 @@
     <%= f.select :tag2_group_id, TagGroup.visible.pluck(:name, :id), { prompt: 'Select tag2 group...' }, { class: 'form-control select2' } %>
   </div>
 
+  <div>
+    <p>Direction Algorithms and what they mean:</p>
+    <ul>
+      <li>In columns: A1,B1,C1...</li>
+      <li>In rows: A1,A2,A3...</li>
+      <li>In inverse columns: H12,G12,F12...</li>
+      <li>In inverse rows: H12,H11,H10...</li>
+      <li>In columns then rows (use with quadrants direction): A1,A2,B1,B2...</li>
+      <li>In columns then columns (use with quadrants direction): A1,B1,A2,B2...</li>
+      <li>Combinatorial by row (4 x tag1 per well): [A1,A2,A3,A4],[A5,A6,A7,A8],...</li>
+  </div>
+
   <div class="form-group">
     <%= f.label :direction, 'Direction the tags are laid out by' %><br>
     <%= f.select :direction_algorithm, options_for_select(@direction_algorithms), { prompt: 'Select direction algorithm...' }, { class: 'form-control select2' } %>
   </div>
 
-  <%= f.hidden_field 'walking_algorithm', value: 'TagLayout::WalkWellsOfPlate' %>
+  <div>
+    <p>Walking Algorithms and what they mean:</p>
+    <ul>
+      <li>Wells in Pools: Groups by pools</li>
+      <li>Wells of Plate: All wells in plate</li>
+      <li>Manual by pool: By pool id</li>
+      <li>As group by plate: Assigns 4 tags per well</li>
+      <li>Manual by plate: All wells with aliquots in plate</li>
+      <li>Quadrants: By quadrants for 384-well plates</li>
+      <li>As fixed group by plate: Assigns 4 tags per well sequentially</li>
+      <li>Combinatorial sequential: Handles arbitrary layouts of 2 tags (i7 and i5)</li>
+    </ul>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :walking_by, 'Walking by algorithm the tags are laid out by' %><br>
+    <%= f.select :walking_algorithm, options_for_select(@walking_algorithms, 'TagLayout::WalkWellsOfPlate'), { prompt: 'Select walking algorithm...' }, { class: 'form-control select2' } %>
+  </div>
 
   <div class="form-group actions-group">
     <%= f.submit('Create tag layout template', class: 'btn btn-success') %>
