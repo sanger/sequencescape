@@ -15,12 +15,12 @@ module Api
       # @return [String] The UUID of the collection.
       attribute :uuid
 
-      # @!attribute [r]
-      # @return [Int] The ID of the user who created this collection.
+      # @!attribute [rw]
+      # @return [Int] The ID of the user who created this collection. Can only and must be set on creation.
       attribute :user_id
 
-      # @!attribute [r]
-      # @return [Int] The ID of the asset the metadata corresponds to.
+      # @!attribute [rw]
+      # @return [Int] The ID of the labware the metadata corresponds to. Can only and must be set on creation.
       attribute :asset_id
 
       # @!attribute [rw]

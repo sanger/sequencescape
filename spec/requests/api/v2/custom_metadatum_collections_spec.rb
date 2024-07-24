@@ -25,14 +25,26 @@ describe 'CustomMetadatumCollections API', with: :api_v2 do
     let(:asset) { create :asset }
 
     describe '#get' do
-      it 'gets an individual collection' do
+      it 'responds with success' do
         api_get "#{base_endpoint}/#{resource_model.id}"
 
         expect(response).to have_http_status(:success)
+      end
+
+      it 'responds with the correct type' do
+        api_get "#{base_endpoint}/#{resource_model.id}"
+
         expect(json.dig('data', 'type')).to eq('custom_metadatum_collections')
-        expect(json.dig('data', 'attributes', 'metadata').length).to eq 5
-        expect(json.dig('data', 'attributes', 'user_id')).to be_present
-        expect(json.dig('data', 'attributes', 'asset_id')).to be_present
+      end
+
+      it 'gets the expected attribute values' do
+        api_get "#{base_endpoint}/#{resource_model.id}"
+
+        expect(response).to have_http_status(:success)
+        expect(json.dig('data', 'attributes', 'uuid')).to eq resource_model.uuid
+        expect(json.dig('data', 'attributes', 'metadata').length).to eq resource_model.metadata.length
+        expect(json.dig('data', 'attributes', 'user_id')).to eq resource_model.user_id
+        expect(json.dig('data', 'attributes', 'asset_id')).to eq resource_model.asset_id
       end
     end
 
@@ -53,11 +65,21 @@ describe 'CustomMetadatumCollections API', with: :api_v2 do
           }
         end
 
-        it 'gives the expected response' do
+        it 'responds with success' do
           api_patch "#{base_endpoint}/#{resource_model.id}", payload
 
           expect(response).to have_http_status(:success)
+        end
+
+        it 'responds with the correct type' do
+          api_patch "#{base_endpoint}/#{resource_model.id}", payload
+
           expect(json.dig('data', 'type')).to eq('custom_metadatum_collections')
+        end
+
+        it 'responds with the updated attributes' do
+          api_patch "#{base_endpoint}/#{resource_model.id}", payload
+
           expect(json.dig('data', 'attributes', 'metadata')).to include({ 'Key 1' => 'Some updated metadata' })
           expect(json.dig('data', 'attributes', 'metadata')).to include({ 'New key' => 'New key also gets added' })
           expect(json.dig('data', 'attributes', 'user_id')).to be_present
@@ -95,12 +117,21 @@ describe 'CustomMetadatumCollections API', with: :api_v2 do
           }
         end
 
-        it 'does not update the collection' do
+        it 'responds with bad request' do
           api_patch "#{base_endpoint}/#{resource_model.id}", payload
-          expect(response).to have_http_status(:bad_request)
-          expect(json['errors'][0]['title']).to eq('Missing Parameter')
 
-          # Check that the model was not modified
+          expect(response).to have_http_status(:bad_request)
+        end
+
+        it 'responds with the correct error message' do
+          api_patch "#{base_endpoint}/#{resource_model.id}", payload
+
+          expect(json['errors'][0]['title']).to eq('Missing Parameter')
+        end
+
+        it 'does not update the model' do
+          api_patch "#{base_endpoint}/#{resource_model.id}", payload
+
           resource_model.reload
           expect(resource_model.metadata.length).to eq 5
         end
@@ -121,10 +152,20 @@ describe 'CustomMetadatumCollections API', with: :api_v2 do
         context 'with a uuid in the payload' do
           let(:attributes) { { uuid: '111111-2222-3333-4444-555555666666' } }
 
-          it 'does not update the collection' do
+          it 'responds with bad request' do
             api_patch "#{base_endpoint}/#{resource_model.id}", payload
+
             expect(response).to have_http_status(:bad_request)
+          end
+
+          it 'responds with the correct error message' do
+            api_patch "#{base_endpoint}/#{resource_model.id}", payload
+
             expect(json['errors'][0]['title']).to eq('Param not allowed')
+          end
+
+          it 'does not update the resource' do
+            api_patch "#{base_endpoint}/#{resource_model.id}", payload
 
             # Check that the model was not modified
             resource_model.reload
@@ -135,10 +176,20 @@ describe 'CustomMetadatumCollections API', with: :api_v2 do
         context 'with a user_id in the payload' do
           let(:attributes) { { user_id: 1 } }
 
-          it 'does not update the collection' do
+          it 'responds with bad request' do
             api_patch "#{base_endpoint}/#{resource_model.id}", payload
+
             expect(response).to have_http_status(:bad_request)
+          end
+
+          it 'responds with the correct error message' do
+            api_patch "#{base_endpoint}/#{resource_model.id}", payload
+
             expect(json['errors'][0]['title']).to eq('Param not allowed')
+          end
+
+          it 'does not update the resource' do
+            api_patch "#{base_endpoint}/#{resource_model.id}", payload
 
             # Check that the model was not modified
             resource_model.reload
@@ -149,10 +200,20 @@ describe 'CustomMetadatumCollections API', with: :api_v2 do
         context 'with an asset_id in the payload' do
           let(:attributes) { { asset_id: 1 } }
 
+          it 'responds with bad request' do
+            api_patch "#{base_endpoint}/#{resource_model.id}", payload
+
+            expect(response).to have_http_status(:bad_request)
+          end
+
+          it 'responds with the correct error message' do
+            api_patch "#{base_endpoint}/#{resource_model.id}", payload
+
+            expect(json['errors'][0]['title']).to eq('Param not allowed')
+          end
+
           it 'does not update the collection' do
             api_patch "#{base_endpoint}/#{resource_model.id}", payload
-            expect(response).to have_http_status(:bad_request)
-            expect(json['errors'][0]['title']).to eq('Param not allowed')
 
             # Check that the model was not modified
             resource_model.reload
@@ -179,15 +240,33 @@ describe 'CustomMetadatumCollections API', with: :api_v2 do
           }
         end
 
-        it 'successfully creates a custom_metadatum_collection' do
+        it 'creates a new resource' do
           expect { api_post base_endpoint, payload }.to change(CustomMetadatumCollection, :count).by(1)
+        end
 
-          expect(response).to have_http_status(:success), response.body
+        it 'responds with success' do
+          api_post base_endpoint, payload
+
+          expect(response).to have_http_status(:success)
+        end
+
+        it 'responds with the correct attributes' do
+          api_post base_endpoint, payload
+
           expect(json.dig('data', 'type')).to eq('custom_metadatum_collections')
           expect(json.dig('data', 'attributes', 'metadata')).to eq({ 'a metadata key' => 'a value' })
-          expect(json.dig('data', 'attributes', 'user_id')).to be_present
-          expect(json.dig('data', 'attributes', 'asset_id')).to be_present
+          expect(json.dig('data', 'attributes', 'user_id')).to eq 1
+          expect(json.dig('data', 'attributes', 'asset_id')).to eq 1
           expect(json.dig('data', 'attributes', 'uuid')).to be_present
+        end
+
+        it 'applies the attributes to the new record' do
+          api_post base_endpoint, payload
+
+          new_record = CustomMetadatumCollection.last
+          expect(new_record.metadata).to eq({ 'a metadata key' => 'a value' })
+          expect(new_record.user_id).to eq 1
+          expect(new_record.asset_id).to eq 1
         end
       end
 
@@ -206,10 +285,19 @@ describe 'CustomMetadatumCollections API', with: :api_v2 do
           }
         end
 
-        it 'does not create a custom_metadatum_collection' do
+        it 'does not create a new resource' do
           expect { api_post base_endpoint, payload }.not_to change(CustomMetadatumCollection, :count)
+        end
+
+        it 'responds with unprocessable entity' do
+          api_post base_endpoint, payload
 
           expect(response).to have_http_status(:unprocessable_entity)
+        end
+
+        it 'responds with the correct error' do
+          api_post base_endpoint, payload
+
           expect(json['errors'][0]['detail']).to eq("asset_id - can't be blank")
         end
       end
@@ -231,10 +319,19 @@ describe 'CustomMetadatumCollections API', with: :api_v2 do
           }
         end
 
-        it 'does not create a custom_metadatum_collection' do
+        it 'does not create a new resource' do
           expect { api_post base_endpoint, payload }.not_to change(CustomMetadatumCollection, :count)
+        end
+
+        it 'responds with bad request' do
+          api_post base_endpoint, payload
 
           expect(response).to have_http_status(:bad_request)
+        end
+
+        it 'responds with the correct error' do
+          expect { api_post base_endpoint, payload }.not_to change(CustomMetadatumCollection, :count)
+
           expect(json['errors'][0]['detail']).to eq('uuid is not allowed.')
         end
       end
