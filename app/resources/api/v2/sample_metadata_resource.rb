@@ -29,6 +29,10 @@ module Api
       attribute :donor_id
 
       # @!attribute [rw]
+      # @return [String] The gender of the organism providing the sample.
+      attribute :gender
+
+      # @!attribute [rw]
       # @return [String] The common name for the sample.
       attribute :sample_common_name
 
