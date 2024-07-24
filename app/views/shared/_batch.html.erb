@@ -55,8 +55,8 @@
         <% end %>
 
         <td><%= request.state.humanize %></td>
-
-        <td><%= link_to (pluralize request.comments.size, 'comment'),  request_comments_url(request) %></td>
+        
+        <td><%= link_to (pluralize request.all_comments, 'comment'),  request_comments_url(request) %></td>
 
       </tr>
     <% end -%>
