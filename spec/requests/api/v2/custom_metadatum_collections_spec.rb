@@ -165,11 +165,13 @@ describe 'CustomMetadatumCollections API', with: :api_v2 do
           end
 
           it 'does not update the resource' do
+            orig_length = resource_model.metadata.length
+
             api_patch "#{base_endpoint}/#{resource_model.id}", payload
 
             # Check that the model was not modified
             resource_model.reload
-            expect(resource_model.metadata.length).to eq 5
+            expect(resource_model.metadata.length).to eq orig_length
           end
         end
 
@@ -189,11 +191,13 @@ describe 'CustomMetadatumCollections API', with: :api_v2 do
           end
 
           it 'does not update the resource' do
+            orig_length = resource_model.metadata.length
+
             api_patch "#{base_endpoint}/#{resource_model.id}", payload
 
             # Check that the model was not modified
             resource_model.reload
-            expect(resource_model.metadata.length).to eq 5
+            expect(resource_model.metadata.length).to eq orig_length
           end
         end
 
@@ -213,11 +217,13 @@ describe 'CustomMetadatumCollections API', with: :api_v2 do
           end
 
           it 'does not update the collection' do
+            orig_length = resource_model.metadata.length
+
             api_patch "#{base_endpoint}/#{resource_model.id}", payload
 
             # Check that the model was not modified
             resource_model.reload
-            expect(resource_model.metadata.length).to eq 5
+            expect(resource_model.metadata.length).to eq orig_length
           end
         end
       end
