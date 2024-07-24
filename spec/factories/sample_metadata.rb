@@ -12,6 +12,7 @@ FactoryBot.define do
       cohort { 'cohort' }
       country_of_origin { 'country_of_origin' }
       geographical_region { 'geographical_region' }
+      gender { :male }
       ethnicity { 'ethnicity' }
       volume { 'volume' }
       mother { 'mother' }
