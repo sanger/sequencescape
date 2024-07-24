@@ -33,6 +33,14 @@ module SequencescapeExcel
         },
         integer: {
           format_code: '#' # Numeric field (Integer)
+        },
+        disabled: {
+          locked: true,
+          border: {
+            style: :thin,
+            color: '00'
+          },
+          bg_color: 'd3d3d3'
         }
       }.freeze
 

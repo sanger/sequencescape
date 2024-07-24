@@ -83,8 +83,11 @@ module SampleManifestExcel
       def create_row(detail)
         axlsx_worksheet.add_row do |row|
           columns.each do |column|
-            style = find_or_create_style(column.style)&.reference
+            # If the row is invalid in the manifest, the cell should be locked
+            style_name =
+              (sample_manifest.invalid_wells&.include?(detail.fetch(:position, nil)) ? [:disabled] : column.style)
 
+            style = find_or_create_style(style_name)&.reference
             row.add_cell column.attribute_value(detail), type: column.type, style: style
           end
         end

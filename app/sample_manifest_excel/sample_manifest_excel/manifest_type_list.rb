@@ -50,7 +50,7 @@ module SampleManifestExcel
     class ManifestType
       include SequencescapeExcel::Helpers::Attributes
 
-      setup_attributes :name, :columns, :heading, :asset_type, :rows_per_well
+      setup_attributes :name, :columns, :heading, :asset_type, :rows_per_well, :invalid_wells
 
       def initialize(attributes = {})
         super
@@ -64,7 +64,7 @@ module SampleManifestExcel
         return false unless other.is_a?(self.class)
 
         name == other.name && columns == other.columns && heading == other.heading && asset_type == other.asset_type &&
-          rows_per_well == other.rows_per_well
+          rows_per_well == other.rows_per_well && invalid_wells == other.invalid_wells
       end
     end
 
