@@ -6,10 +6,11 @@ namespace :devour do
     # We prettify are json to make it both easier to read and diff
     json_formatting = { indent: '  ', object_nl: "\n", space: ' ', array_nl: "\n" }
 
+    non_resource_symbols = %i[BaseResource Concerns SharedBehaviour]
     config =
       Api::V2
         .constants
-        .reject { |resource_key| %i[BaseResource Concerns SharedBehaviour].include?(resource_key) }
+        .reject { |resource_key| non_resource_symbols.include?(resource_key) }
         .sort
         .map do |resource_key|
           resource = Api::V2.const_get(resource_key)
