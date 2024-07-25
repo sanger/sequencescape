@@ -36,7 +36,7 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
   #
   # @return [false,'Can only be accessed via the previous step'>] Array indicating this action can't be linked
   #
-  def can_link_directly?()
+  def can_link_directly?
     [false, 'Can only be accessed via the previous step']
   end
 
