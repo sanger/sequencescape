@@ -34,11 +34,9 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
   # Cherrypick tasks are directly coupled to the previous task, due to the awkward
   # way in which the WorkflowsController operates. See issues#2831 for aims to help improve some of this
   #
-  # @param batch [Batch] The batch on which the action will be performed
-  #
   # @return [false,'Can only be accessed via the previous step'>] Array indicating this action can't be linked
   #
-  def can_link_directly?(_batch)
+  def can_link_directly?()
     [false, 'Can only be accessed via the previous step']
   end
 
