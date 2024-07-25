@@ -158,7 +158,7 @@ group :development, :linting do
   # Automatically generate documentation
   gem 'yard', require: false
   gem 'yard-activerecord', '~> 0.0.16', require: false
-  gem "yard-junk", "~> 0.0.9", require: false
+  gem 'yard-junk', '~> 0.0.9', require: false
 end
 
 group :linting, :test do
