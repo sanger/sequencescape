@@ -132,10 +132,6 @@ group :development do
   # Detect n+1 queries
   gem 'bullet'
 
-  # Automatically generate documentation
-  gem 'yard', require: false
-  gem 'yard-activerecord', '~> 0.0.16'
-
   # MiniProfiler allows you to see the speed of a request conveniently on the page.
   # It also shows the SQL queries performed and allows you to profile a specific block of code.
   gem 'rack-mini-profiler'
@@ -158,6 +154,11 @@ group :development, :linting do
   gem 'syntax_tree', require: false
   gem 'syntax_tree-haml', require: false
   gem 'syntax_tree-rbs', require: false
+
+  # Automatically generate documentation
+  gem 'yard', require: false
+  gem 'yard-activerecord', '~> 0.0.16', require: false
+  gem "yard-junk", "~> 0.0.9", require: false
 end
 
 group :linting, :test do
