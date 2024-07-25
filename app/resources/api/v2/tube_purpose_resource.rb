@@ -24,7 +24,7 @@ module Api
       attribute :target_type
 
       # @!attribute [r]
-      # @return [String] gets the UUID of the tube purpose.
+      # @return [String] The UUID of the tube purpose.
       attribute :uuid
     end
   end
