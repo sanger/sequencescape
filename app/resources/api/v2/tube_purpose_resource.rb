@@ -26,6 +26,22 @@ module Api
       # @!attribute [r]
       # @return [String] gets the UUID of the tube purpose.
       attribute :uuid
+
+      # Gets the list of fields which are creatable on a TubePurpose.
+      #
+      # @param _context [JSONAPI::Resource::Context] not used
+      # @return [Array<Symbol>] the list of creatable fields.
+      def self.creatable_fields(_context)
+        super - %i[uuid] # Do not allow creating with any readonly fields
+      end
+
+      # Gets the list of fields which are updatable on an existing TubePurpose.
+      #
+      # @param _context [JSONAPI::Resource::Context] not used
+      # @return [Array<Symbol>] the list of updatable fields.
+      def self.updatable_fields(_context)
+        super - %i[uuid] # Do not allow creating with any readonly fields
+      end
     end
   end
 end
