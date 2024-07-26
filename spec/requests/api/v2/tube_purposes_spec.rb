@@ -29,6 +29,7 @@ describe 'Tube Purposes API', with: :api_v2 do
       expect(json.dig('data', 'attributes', 'name')).to eq(resource_model.name)
       expect(json.dig('data', 'attributes', 'purpose_type')).to eq(resource_model.type)
       expect(json.dig('data', 'attributes', 'target_type')).to eq(resource_model.target_type)
+      expect(json.dig('data', 'attributes', 'uuid')).to eq(resource_model.uuid)
     end
   end
 
@@ -56,6 +57,7 @@ describe 'Tube Purposes API', with: :api_v2 do
         expect(json.dig('data', 'attributes', 'name')).to eq(updated_name)
         expect(json.dig('data', 'attributes', 'purpose_type')).to eq(resource_model.type)
         expect(json.dig('data', 'attributes', 'target_type')).to eq(resource_model.target_type)
+        expect(json.dig('data', 'attributes', 'uuid')).to eq(resource_model.uuid)
       end
     end
 
@@ -80,6 +82,7 @@ describe 'Tube Purposes API', with: :api_v2 do
         expect(json.dig('data', 'attributes', 'name')).to eq(resource_model.name)
         expect(json.dig('data', 'attributes', 'purpose_type')).to eq(updated_purpose_type)
         expect(json.dig('data', 'attributes', 'target_type')).to eq(resource_model.target_type)
+        expect(json.dig('data', 'attributes', 'uuid')).to eq(resource_model.uuid)
       end
     end
 
@@ -104,6 +107,27 @@ describe 'Tube Purposes API', with: :api_v2 do
         expect(json.dig('data', 'attributes', 'name')).to eq(resource_model.name)
         expect(json.dig('data', 'attributes', 'purpose_type')).to eq(resource_model.type)
         expect(json.dig('data', 'attributes', 'target_type')).to eq(updated_target_type)
+        expect(json.dig('data', 'attributes', 'uuid')).to eq(resource_model.uuid)
+      end
+    end
+
+    context 'when patching the uuid' do
+      let(:updated_uuid) { 'new-uuid' }
+      let(:payload) do
+        {
+          'data' => {
+            'id' => resource_model.id,
+            'type' => 'tube_purposes',
+            'attributes' => {
+              'uuid' => updated_uuid
+            }
+          }
+        }
+      end
+
+      it 'returns 400, because uuid is read-only' do
+        api_patch "#{base_endpoint}/#{resource_model.id}", payload
+        expect(response).to have_http_status(400)
       end
     end
   end
@@ -149,6 +173,27 @@ describe 'Tube Purposes API', with: :api_v2 do
       it 'responds with 422 unprocessable entity' do
         api_post base_endpoint, payload
         expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+
+    context 'with an invalid payload (includes uuid)' do
+      let(:payload) do
+        {
+          'data' => {
+            'type' => 'tube_purposes',
+            'attributes' => {
+              'name' => 'New Name',
+              'purpose_type' => 'Test Purpose Type',
+              'target_type' => 'MultiplexedLibraryTube',
+              'uuid' => 'new-uuid'
+            }
+          }
+        }
+      end
+
+      it 'returns 400, because uuid is read-only' do
+        api_post base_endpoint, payload
+        expect(response).to have_http_status(400)
       end
     end
   end
