@@ -125,9 +125,9 @@ describe 'Tube Purposes API', with: :api_v2 do
         }
       end
 
-      it 'returns 400, because uuid is read-only' do
+      it 'responds with 400 bad request, because uuid is read-only' do
         api_patch "#{base_endpoint}/#{resource_model.id}", payload
-        expect(response).to have_http_status(400)
+        expect(response).to have_http_status(:bad_request)
       end
     end
   end
@@ -191,9 +191,9 @@ describe 'Tube Purposes API', with: :api_v2 do
         }
       end
 
-      it 'returns 400, because uuid is read-only' do
+      it 'responds with 400 bad request, because uuid is read-only' do
         api_post base_endpoint, payload
-        expect(response).to have_http_status(400)
+        expect(response).to have_http_status(:bad_request)
       end
     end
   end
