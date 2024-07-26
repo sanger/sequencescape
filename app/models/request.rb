@@ -564,8 +564,8 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def all_comments
-    comments.size + asset.comments.size + asset.labware.comments.size    
-  end 
+    comments.size + asset.comments.size + asset.labware.comments.size
+  end
 
   private
 
