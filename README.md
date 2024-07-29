@@ -74,6 +74,14 @@ You can then access the Sequencescape documentation through: [http://localhost:8
 
 Yard will also try and document the installed gems: [http://localhost:8808/docs](http://localhost:8808/docs)
 
+### Linting
+
+Yard-Junk is used to check for missing or incorrect documentation. To run the checks:
+
+```shell
+bundle exec yard-junk --sanity
+```
+
 ## Requirements
 
 The following tools are required for development:

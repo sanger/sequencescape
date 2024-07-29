@@ -326,7 +326,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   # JG: 2021-02-11:
   # See https://github.com/sanger/sequencescape/issues/3040 for more information
   #
-  # @deprecate Do not use this for new behaviour.
+  # @deprecated Do not use this for new behaviour.
   #
   #
   # @return [Plate, nil] The stock plate if found

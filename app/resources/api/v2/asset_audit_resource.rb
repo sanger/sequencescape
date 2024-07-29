@@ -33,7 +33,7 @@ module Api
 
       # Sets the Asset on the model using the UUID provided in the API create/update request.
       #
-      # @param name [String] the uuid of the associated asset.
+      # @param uuid [String] the uuid of the associated asset.
       # @return [void]
       def asset_uuid=(uuid)
         @model.asset = Uuid.with_external_id(uuid).include_resource.map(&:resource).first
