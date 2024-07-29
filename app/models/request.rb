@@ -565,7 +565,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def self.get_all_comments(request)
     counts = Comment.counts_for_requests([request])
-    return counts[request.id]
+    counts[request.id]
   end
 
   private
