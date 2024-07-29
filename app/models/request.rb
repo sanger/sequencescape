@@ -563,8 +563,9 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def manifest_processed!
   end
 
-  def all_comments
-    comments.size + asset.comments.size + asset.labware.comments.size
+  def self.get_all_comments(request)
+    counts = Comment.counts_for_requests([request])
+    return counts[request.id]
   end
 
   private

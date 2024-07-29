@@ -56,7 +56,7 @@
 
         <td><%= request.state.humanize %></td>
         
-        <td><%= link_to (pluralize request.all_comments, 'comment'),  request_comments_url(request) %></td>
+        <td><%= link_to (pluralize Request.get_all_comments(request), 'comment'),  request_comments_url(request) %></td>
 
       </tr>
     <% end -%>
