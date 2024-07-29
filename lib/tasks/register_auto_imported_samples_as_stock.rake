@@ -23,16 +23,14 @@ namespace :auto_imported_samples do
     relevant_purpose_ids = Purpose.where(name: relevant_purpose_names).map(&:id).join(',')
 
     labware_samples =
-      Labware
-        .joins(:samples)
-        .where(
-          "
+      Labware.joins(:samples).where(
+        "
       labware.created_at > '2020-05-01 00:00:00' AND
       labware.sti_type IN ('Plate', 'TubeRack') AND
       labware.plate_purpose_id IN (#{relevant_purpose_ids}) AND
       samples.sample_manifest_id IS NULL
       "
-        ) # 78,507 in training 2020-07-07
+      ) # 78,507 in training 2020-07-07
     puts "labware_samples count: #{labware_samples.count}"
 
     labware = labware_samples.uniq # 890 in training 2020-07-07

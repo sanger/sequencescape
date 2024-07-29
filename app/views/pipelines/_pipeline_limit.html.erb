@@ -11,6 +11,11 @@
       <p>This pipeline does not have a limit set on the number of requests in a batch.</p>
     <% end -%>
 
+    <%# Custom validation warnings taken from the pipeline's custom validator %>
+    <% if @pipeline.validator_class_name&.constantize&.validation_info %>
+      <p><%= @pipeline.validator_class_name&.constantize.validation_info %></p>
+    <% end %>
+
     <p>There are <%= requests_waiting %> requests available.</p>
     <p>You have <span id="selection_count">no</span> requests selected.</p>
   </div>

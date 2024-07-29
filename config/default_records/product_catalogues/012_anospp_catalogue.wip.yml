@@ -1,0 +1,4 @@
+# This product catalogue is associated with the Limber ANOSPP pipelines.
+---
+ANOSPP:
+  selection_behaviour: SingleProduct

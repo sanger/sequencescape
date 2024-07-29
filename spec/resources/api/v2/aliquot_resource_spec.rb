@@ -21,14 +21,17 @@ RSpec.describe Api::V2::AliquotResource, type: :resource do
     expect(subject).to have_attribute :tag2_index
     expect(subject).to have_attribute :suboptimal
     expect(subject).to have_attribute :library_type
+    expect(subject).to have_attribute :insert_size_to
     expect(subject).not_to have_updatable_field(:id)
     expect(subject).not_to have_updatable_field(:tag_oligo)
     expect(subject).not_to have_updatable_field(:tag2_oligo)
     expect(subject).not_to have_updatable_field(:suboptimal)
     expect(subject).not_to have_updatable_field(:library_type)
+    expect(subject).not_to have_updatable_field(:insert_size_to)
     expect(subject).to have_one(:sample).with_class_name('Sample')
     expect(subject).to have_one(:tag).with_class_name('Tag')
     expect(subject).to have_one(:tag2).with_class_name('Tag')
+    expect(subject).to have_one(:library).with_class_name('Receptacle')
   end
 
   # Custom method tests

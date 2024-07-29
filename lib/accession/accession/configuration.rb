@@ -4,6 +4,8 @@ module Accession
     include Accession::Helpers
     include Accession::Equality
 
+    # This constant defines a list of tags for loading
+    # @return [Array<Symbol>] a list of symbols
     FILES = [:tags].freeze
 
     attr_accessor :folder, *FILES

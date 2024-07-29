@@ -51,21 +51,19 @@ class LocationReportsController < ApplicationController
   #######
 
   def location_report_params # rubocop:todo Metrics/MethodLength
-    params
-      .require(:location_report)
-      .permit(
-        :report_type,
-        :name,
-        :location_barcode,
-        :barcodes,
-        :barcodes_text,
-        :study_id,
-        :start_date,
-        :end_date,
-        :barcodes,
-        :barcodes_text,
-        faculty_sponsor_ids: [],
-        plate_purpose_ids: []
-      )
+    params.require(:location_report).permit(
+      :report_type,
+      :name,
+      :location_barcode,
+      :barcodes,
+      :barcodes_text,
+      :study_id,
+      :start_date,
+      :end_date,
+      :barcodes,
+      :barcodes_text,
+      faculty_sponsor_ids: [],
+      plate_purpose_ids: []
+    )
   end
 end

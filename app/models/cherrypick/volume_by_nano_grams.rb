@@ -22,7 +22,8 @@ module Cherrypick::VolumeByNanoGrams
     end
 
     source_concentration, source_volume =
-      source_well.well_attribute.concentration, source_well.well_attribute.measured_volume
+      source_well.well_attribute.concentration,
+      source_well.well_attribute.measured_volume
     if source_volume.blank? || source_volume <= 0.0
       raise Cherrypick::VolumeError, "Missing measured volume for well #{source_well.display_name}(#{source_well.id})"
     end

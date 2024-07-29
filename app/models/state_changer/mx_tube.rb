@@ -25,13 +25,15 @@ module StateChanger
     def update_associated_requests
       # @note map.uniq is actually about twice as fast as a set for the kind of data we're expecting to see
       orders =
-        associated_requests.map do |request|
-          request.customer_accepts_responsibility! if customer_accepts_responsibility
-          request.transition_to(associated_request_target_state)
+        associated_requests
+          .map do |request|
+            request.customer_accepts_responsibility! if customer_accepts_responsibility
+            request.transition_to(associated_request_target_state)
 
-          # Grab the order ids
-          request.order_id
-        end.uniq
+            # Grab the order ids
+            request.order_id
+          end
+          .uniq
 
       generate_events_for(orders) if target_state == 'passed'
     end

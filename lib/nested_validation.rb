@@ -38,7 +38,7 @@ module NestedValidation
   #
   # Records of this class will call valid? on any associations provided
   # as attr_names. Errors on these records will be propagated out
-  # @param *attr_names [Symbol] One or more associations to validate
+  # @param attr_names [Symbol] One or more associations to validate
   #
   # @return [NestedValidator]
   def validates_nested(*attr_names)

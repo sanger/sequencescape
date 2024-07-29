@@ -66,10 +66,19 @@ module ApplicationHelper
   end
 
   def render_flashes
-    flash.each do |key, message|
-      concat(alert(key, id: "message_#{key}") { Array(message).each { |m| concat tag.div(m) } })
-    end
+    flash.each { |key, message| concat(alert(key, id: "message_#{key}") { render_message(message) }) }
     nil
+  end
+
+  # A helper method for render_flashes - If multiple messages, render them as a list, else render as a single div
+  # @param messages [Array<String>, String] The flash message or messages to be rendered
+  def render_message(messages)
+    messages = Array(messages)
+    if messages.size > 1
+      tag.ul { messages.each { |m| concat tag.li(m) } }
+    else
+      tag.div(messages.first)
+    end
   end
 
   def api_data
@@ -327,16 +336,23 @@ module ApplicationHelper
   #
   # This tag:
   # - Ensures we add a nonce for security
-  # - Delays script execution until DOMContentLoaded to ensure that the
+  # - If the page is still loading,
+  #   delays script execution until DOMContentLoaded to ensure that the
   #   modern JS has had a chance to export jQuery
+  # - If the page has already loaded, executes the script immediately.
+  #   This is needed for use cases where the partial that renders this script
+  #   is loaded after the main page has loaded
+  #   e.g. the admin study edit page, within the admin study index page.
   #
   # @return [String] Script tag
   #
   def legacy_javascript_tag
     javascript_tag nonce: true do
-      concat "window.addEventListener('DOMContentLoaded', function() {".html_safe
+      concat 'if (document.readyState === "loading") {window.addEventListener("DOMContentLoaded", function() {'.html_safe # rubocop:disable Layout/LineLength
       yield
-      concat '})'
+      concat '});} else {'.html_safe
+      yield
+      concat '}'.html_safe
     end
   end
 end

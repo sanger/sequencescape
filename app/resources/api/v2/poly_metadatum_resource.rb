@@ -21,6 +21,8 @@ module Api
       attribute :updated_at, readonly: true
 
       # Filters
+      filter :key
+      filter :metadatable_id
 
       # Custom methods
       # These shouldn't be used for business logic, and a more about

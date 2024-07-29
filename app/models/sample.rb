@@ -399,13 +399,11 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
           # rails to build subquery, results in a sub-optimal execution plan.
 
           md =
-            Sample::Metadata
-              .where(
-                'supplier_name LIKE :left OR sample_ebi_accession_number = :exact',
-                left: "#{query}%",
-                exact: query
-              )
-              .pluck(:sample_id)
+            Sample::Metadata.where(
+              'supplier_name LIKE :left OR sample_ebi_accession_number = :exact',
+              left: "#{query}%",
+              exact: query
+            ).pluck(:sample_id)
 
           # The query id is kept distinct from the metadata retrieved ids, as including a string in what is otherwise an
           # array of numbers seems to massively increase the query length.

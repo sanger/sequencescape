@@ -120,30 +120,42 @@ RSpec.describe StateChanger::StandardPlate do
 
         # set up wells in target plate
         # A1, B1 and C1 created by transferring from parent A1 (1st library request)
-        target_wells['A1'].stock_well_links <<
-          build(:stock_well_link, target_well: target_wells['A1'], source_well: parent_wells['A1'])
+        target_wells['A1'].stock_well_links << build(
+          :stock_well_link,
+          target_well: target_wells['A1'],
+          source_well: parent_wells['A1']
+        )
         create :transfer_request,
                asset: parent_wells['A1'],
                target_asset: target_wells['A1'],
                outer_request: source_well_a1_request
 
-        target_wells['B1'].stock_well_links <<
-          build(:stock_well_link, target_well: target_wells['B1'], source_well: parent_wells['A1'])
+        target_wells['B1'].stock_well_links << build(
+          :stock_well_link,
+          target_well: target_wells['B1'],
+          source_well: parent_wells['A1']
+        )
         create :transfer_request,
                asset: parent_wells['A1'],
                target_asset: target_wells['B1'],
                outer_request: source_well_a1_request
 
-        target_wells['C1'].stock_well_links <<
-          build(:stock_well_link, target_well: target_wells['C1'], source_well: parent_wells['A1'])
+        target_wells['C1'].stock_well_links << build(
+          :stock_well_link,
+          target_well: target_wells['C1'],
+          source_well: parent_wells['A1']
+        )
         create :transfer_request,
                asset: parent_wells['A1'],
                target_asset: target_wells['C1'],
                outer_request: source_well_a1_request
 
         # D1 created by transferring from parent B1 (2nd library request)
-        target_wells['D1'].stock_well_links <<
-          build(:stock_well_link, target_well: target_wells['D1'], source_well: parent_wells['B1'])
+        target_wells['D1'].stock_well_links << build(
+          :stock_well_link,
+          target_well: target_wells['D1'],
+          source_well: parent_wells['B1']
+        )
         create :transfer_request,
                asset: parent_wells['B1'],
                target_asset: target_wells['D1'],

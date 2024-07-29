@@ -85,9 +85,8 @@ class WorkCompletionTubesTest < ActionDispatch::PerformanceTest
     # Build the tube graphs
     tube_1_2 = create :new_stock_multiplexed_library_tube, parents: [target_plate_1, target_plate_2]
 
-    [target_plate_1, target_plate_2].flat_map(&:wells).each do |well|
-      create :transfer_request, asset: well, target_asset: tube_1_2
-    end
+    [target_plate_1, target_plate_2].flat_map(&:wells)
+      .each { |well| create :transfer_request, asset: well, target_asset: tube_1_2 }
 
     tube_3 = create :new_stock_multiplexed_library_tube, parents: [target_plate_3]
 

@@ -7,17 +7,15 @@
 # exceptions on loading the classes.
 class MigrateRemovedPipelinesToLegacyClass < ActiveRecord::Migration[6.0]
   def up
-    Pipeline
-      .where(
-        sti_type: %w[
-          PacBioSequencingPipeline
-          PacBioSamplePrepPipeline
-          Pipeline
-          GenotypingPipeline
-          CherrypickForPulldownPipeline
-        ]
-      )
-      .update_all(sti_type: 'LegacyPipeline')
+    Pipeline.where(
+      sti_type: %w[
+        PacBioSequencingPipeline
+        PacBioSamplePrepPipeline
+        Pipeline
+        GenotypingPipeline
+        CherrypickForPulldownPipeline
+      ]
+    ).update_all(sti_type: 'LegacyPipeline')
   end
 
   def down

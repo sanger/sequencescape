@@ -12,8 +12,11 @@ FactoryBot.define do
     transient { library_type { build :library_type } }
 
     after(:build) do |request_type, evaluator|
-      request_type.library_types_request_types <<
-        create(:library_types_request_type, library_type: evaluator.library_type, request_type: request_type)
+      request_type.library_types_request_types << create(
+        :library_types_request_type,
+        library_type: evaluator.library_type,
+        request_type: request_type
+      )
       request_type.request_type_validators << create(:library_request_type_validator, request_type: request_type)
     end
   end

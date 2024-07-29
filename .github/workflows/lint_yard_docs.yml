@@ -1,0 +1,18 @@
+name: Lint documentation
+on:
+  - push
+  - pull_request
+
+jobs:
+  yard-junk:
+    runs-on: ubuntu-latest
+    env:
+      BUNDLE_WITHOUT: "cucumber deployment profile development default test"
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+      - name: Run yard-junk
+        run: bundle exec yard-junk --sanity

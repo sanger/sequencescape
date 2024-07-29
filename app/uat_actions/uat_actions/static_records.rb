@@ -16,28 +16,26 @@ module UatActions::StaticRecords
   end
 
   def self.tube_purpose
-    Purpose
-      .create_with(target_type: 'SampleTube', type: 'Tube::Purpose', asset_shape_id: 1)
-      .find_or_create_by!(name: 'LCA Blood Vac')
+    Purpose.create_with(target_type: 'SampleTube', type: 'Tube::Purpose', asset_shape_id: 1).find_or_create_by!(
+      name: 'LCA Blood Vac'
+    )
   end
 
   def self.study
-    Study
-      .create_with(
-        state: 'active',
-        study_metadata_attributes: {
-          data_access_group: 'dag',
-          study_type: study_type,
-          faculty_sponsor: faculty_sponsor,
-          data_release_study_type: data_release_study_type,
-          study_description: 'A study generated for UAT',
-          contaminated_human_dna: 'No',
-          contains_human_dna: 'No',
-          commercially_available: 'No',
-          program: program
-        }
-      )
-      .find_or_create_by!(name: 'UAT Study')
+    Study.create_with(
+      state: 'active',
+      study_metadata_attributes: {
+        data_access_group: 'dag',
+        study_type: study_type,
+        faculty_sponsor: faculty_sponsor,
+        data_release_study_type: data_release_study_type,
+        study_description: 'A study generated for UAT',
+        contaminated_human_dna: 'No',
+        contains_human_dna: 'No',
+        commercially_available: 'No',
+        program: program
+      }
+    ).find_or_create_by!(name: 'UAT Study')
   end
 
   def self.study_type
@@ -49,17 +47,15 @@ module UatActions::StaticRecords
   end
 
   def self.project
-    Project
-      .create_with(
-        approved: true,
-        state: 'active',
-        project_metadata_attributes: {
-          project_cost_code: 'FAKE1',
-          project_funding_model: 'Internal',
-          budget_division: budget_division
-        }
-      )
-      .find_or_create_by!(name: 'UAT Project')
+    Project.create_with(
+      approved: true,
+      state: 'active',
+      project_metadata_attributes: {
+        project_cost_code: 'FAKE1',
+        project_funding_model: 'Internal',
+        budget_division: budget_division
+      }
+    ).find_or_create_by!(name: 'UAT Project')
   end
 
   def self.budget_division
@@ -71,14 +67,12 @@ module UatActions::StaticRecords
   end
 
   def self.user
-    User
-      .create_with(
-        email: configatron.admin_email,
-        first_name: 'Test',
-        last_name: 'User',
-        swipecard_code: SWIPECARD_CODE
-      )
-      .find_or_create_by(login: '__uat_test__')
+    User.create_with(
+      email: configatron.admin_email,
+      first_name: 'Test',
+      last_name: 'User',
+      swipecard_code: SWIPECARD_CODE
+    ).find_or_create_by(login: '__uat_test__')
   end
 
   def self.faculty_sponsor

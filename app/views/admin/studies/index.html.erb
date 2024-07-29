@@ -5,6 +5,7 @@
 <% if @studies %>
   <%= page_title 'Studies', 'Manage' %>
 
+  <!-- 'remote-form' class means the JS in ajax_handling.js will be used  -->
   <%= form_tag(filter_admin_studies_path, remote: true, id: "filter_form", class: 'remote-form observed form-inline', data: { update: "#studies",  throbber: '#update_loader'} ) %>
 
     <%= panel(:default,title:'Filter Studies') do %>

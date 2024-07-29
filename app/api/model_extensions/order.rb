@@ -176,10 +176,10 @@ module ModelExtensions::Order
               # If the template uses symbol names then these need to be symbols too.
               attributes[:read_length] = json['read_length']
               attributes['library_type'] = json['library_type']
-              attributes['fragment_size_required_from'] =
-                json['fragment_size_required', 'from'] || json['fragment_size_required_from']
-              attributes['fragment_size_required_to'] =
-                json['fragment_size_required', 'to'] || json['fragment_size_required_to']
+              attributes['fragment_size_required_from'] = json['fragment_size_required', 'from'] ||
+                json['fragment_size_required_from']
+              attributes['fragment_size_required_to'] = json['fragment_size_required', 'to'] ||
+                json['fragment_size_required_to']
               attributes['pcr_cycles'] = json['pcr_cycles']
               attributes[:bait_library_name] = json['bait_library']
               attributes[:primer_panel_name] = json['primer_panel_name']

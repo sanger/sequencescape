@@ -15,7 +15,8 @@ class GelsController < ApplicationController
     @plates = @gel_plates.filter_map(&:stock_plate)
   end
 
-  def find; end
+  def find
+  end
 
   def lookup
     @plate = Plate.find_from_barcode([params[:barcode], "#{Plate.default_prefix}#{params[:barcode]}"])

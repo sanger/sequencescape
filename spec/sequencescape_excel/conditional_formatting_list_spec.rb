@@ -46,8 +46,9 @@ RSpec.describe SequencescapeExcel::ConditionalFormattingList, :sample_manifest, 
     expect(conditional_formatting_list).to be_saved
     expect(worksheet.conditional_formatting_rules.to_a.first.rules.first.formula.first).to eq(
       ERB::Util.html_escape(
-        SequencescapeExcel::Formula.new(options.merge(attributes_for(:conditional_formatting_with_formula)[:formula]))
-          .to_s
+        SequencescapeExcel::Formula.new(
+          options.merge(attributes_for(:conditional_formatting_with_formula)[:formula])
+        ).to_s
       )
     )
   end

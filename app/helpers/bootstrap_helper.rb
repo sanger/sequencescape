@@ -109,15 +109,14 @@ module BootstrapHelper
       else
         'bg-warning'
       end
-    tag.span(count, style: 'display:none') <<
-      tag.div(class: 'progress') do
-        tag.div(
-          "#{count}%",
-          class: ['progress-bar', 'progress-bar-striped', css_class],
-          role: 'progressbar',
-          style: "width: #{count}%;"
-        )
-      end
+    tag.span(count, style: 'display:none') << tag.div(class: 'progress') do
+      tag.div(
+        "#{count}%",
+        class: ['progress-bar', 'progress-bar-striped', css_class],
+        role: 'progressbar',
+        style: "width: #{count}%;"
+      )
+    end
   end
 
   # rubocop:disable Layout/LineLength
@@ -137,8 +136,10 @@ module BootstrapHelper
 
   def render_section(form, field_name, sections, field)
     label =
-      form.label(field_name, sections.label, sections.label_options) <<
-        tag.span(sections.edit_info, class: 'property_edit_info')
+      form.label(field_name, sections.label, sections.label_options) << tag.span(
+        sections.edit_info,
+        class: 'property_edit_info'
+      )
     help = sections.help
     form_collection(label, field, help)
   end

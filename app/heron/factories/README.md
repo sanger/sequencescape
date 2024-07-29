@@ -100,17 +100,17 @@ Or we can specify the tubes with their barcodes:
     barcode: '1',
     purpose_uuid: 'uuid',
     tubes: {
-      'A1': {
-        barcode: '2',
+      A1: {
+        barcode: '2'
       },
-      'A2': {
+      A2: {
         barcode: '3',
         contents: {
-          name: 'A sample',
-        },
-      },
-    },
-  },
+          name: 'A sample'
+        }
+      }
+    }
+  }
 ).save
 ```
 
@@ -120,7 +120,7 @@ of a different tube purpose:
 ```ruby
 # This creates a tube at A1 of purpose with uuid uuid2
 ::Heron::Factories::TubeRack.new(
-  { barcode: '1', purpose_uuid: 'uuid', tubes: { 'A1': { barcode: '2', purpose_uuid: 'uuid2' } } },
+  { barcode: '1', purpose_uuid: 'uuid', tubes: { A1: { barcode: '2', purpose_uuid: 'uuid2' } } }
 ).save
 ```
 
@@ -142,14 +142,14 @@ study uuid will be mandatory.
     purpose_uuid: 'uuid',
     study_uuid: 'uuid2',
     tubes: {
-      'A1': {
+      A1: {
         barcode: '2',
         contents: {
-          name: 'A sample',
-        },
-      },
-    },
-  },
+          name: 'A sample'
+        }
+      }
+    }
+  }
 ).save
 ```
 
@@ -163,15 +163,15 @@ Study uuid can be defined at rack/plate level or at sample level. Rack/Plate lev
     barcode: '1',
     purpose_uuid: 'uuid',
     tubes: {
-      'A1': {
+      A1: {
         barcode: '2',
         contents: {
           name: 'A sample',
-          study_uuid: 'uuid2',
-        },
-      },
-    },
-  },
+          study_uuid: 'uuid2'
+        }
+      }
+    }
+  }
 ).save
 ```
 
@@ -186,16 +186,16 @@ Contents attributes can update any column from Sample and Sample::Metadata table
     purpose_uuid: 'uuid',
     study_uuid: 'uuid2',
     tubes: {
-      'A1': {
+      A1: {
         barcode: '2',
         contents: {
           supplier_name: 'My supplier',
           control: true,
-          control_type: 'Negative',
-        },
-      },
-    },
-  },
+          control_type: 'Negative'
+        }
+      }
+    }
+  }
 ).save
 ```
 
@@ -211,14 +211,14 @@ tube or well. To refer to an already created sample we can use the uuid of the s
     purpose_uuid: 'uuid',
     study_uuid: 'uuid2',
     tubes: {
-      'A1': {
+      A1: {
         barcode: '2',
         contents: {
-          sample_uuid: 'uuid3',
-        },
-      },
-    },
-  },
+          sample_uuid: 'uuid3'
+        }
+      }
+    }
+  }
 ).save
 ```
 

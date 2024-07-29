@@ -128,7 +128,8 @@ class UatActions::GeneratePlates < UatActions
       sample_metadata_attributes: {
         supplier_name: sample_name,
         cohort: "Cohort#{plate.human_barcode}",
-        sample_description: "SD-#{plate.human_barcode}"
+        sample_description: "SD-#{plate.human_barcode}",
+        sample_common_name: 'human'
       }
     )
   end

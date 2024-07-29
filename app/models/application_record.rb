@@ -62,4 +62,21 @@ class ApplicationRecord < ActiveRecord::Base
       end
     end
   end
+
+  # Defining alias_association to provide an alias for an association (instead of an attribute)
+  # @example
+  #   alias_association :labware, :receptacle
+  #   def labware=(labware)
+  #     return super if labware.is_a?(Receptacle)
+  #     super(labware.receptacle)
+  #   end
+  # @param [Symbol] new_name The new name of the association
+  # @param [Symbol] old_name The old name of the association (the one that already exists on the model
+  def self.alias_association(new_name, old_name)
+    # Define the getter
+    define_method(new_name) { send(old_name) }
+
+    # Define the setter
+    define_method(:"#{new_name}=") { |new_value| send(:"#{old_name}=", new_value) }
+  end
 end

@@ -10,7 +10,8 @@ class Admin::UsersController < ApplicationController
     @users = User.order(:login)
   end
 
-  def show; end
+  def show
+  end
   def edit
     @all_roles = Role.keys
     @users_roles = @user.study_and_project_roles.order(name: :asc)
@@ -98,12 +99,10 @@ class Admin::UsersController < ApplicationController
   def filter
     if params[:q]
       @users =
-        User
-          .order(:login)
-          .where(
-            'first_name LIKE :query OR last_name LIKE :query OR login LIKE :query',
-            query: "%#{params[:q].downcase}%"
-          )
+        User.order(:login).where(
+          'first_name LIKE :query OR last_name LIKE :query OR login LIKE :query',
+          query: "%#{params[:q].downcase}%"
+        )
     end
 
     render partial: 'users', locals: { users: @users }

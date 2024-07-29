@@ -90,10 +90,14 @@ namespace :sequencing do
                   )
                 end
               end
-            pipeline.request_information_types <<
-              RequestInformationType.where(label: 'Vol.', hide_in_inbox: false).first!
-            pipeline.request_information_types <<
-              RequestInformationType.where(label: 'Read length', hide_in_inbox: false).first!
+            pipeline.request_information_types << RequestInformationType.where(
+              label: 'Vol.',
+              hide_in_inbox: false
+            ).first!
+            pipeline.request_information_types << RequestInformationType.where(
+              label: 'Read length',
+              hide_in_inbox: false
+            ).first!
           end
         end
       end

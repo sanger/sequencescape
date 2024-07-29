@@ -22,6 +22,10 @@ class Study
       data_release_strategy == DATA_RELEASE_STRATEGY_MANAGED
     end
 
+    def strategy_not_applicable?
+      data_release_strategy == DATA_RELEASE_STRATEGY_NOT_APPLICABLE
+    end
+
     def delayed_release?
       data_release_timing == DATA_RELEASE_TIMING_DELAYED
     end
@@ -51,6 +55,23 @@ class Study
     validate :valid_policy_url?
 
     validate :sanity_check_y_separation, if: :separate_y_chromosome_data?
+
+    validates :data_release_timing, inclusion: { in: DATA_RELEASE_TIMINGS }, if: :data_release_timing_must_not_be_never?
+    validates :data_release_timing,
+              inclusion: {
+                in: [DATA_RELEASE_TIMING_NEVER]
+              },
+              if: :data_release_timing_must_be_never?
+
+    def data_release_timing_must_be_never?
+      Flipper.enabled?(:y24_052_enable_data_release_timing_validation) && data_release_strategy.present? &&
+        strategy_not_applicable?
+    end
+
+    def data_release_timing_must_not_be_never?
+      Flipper.enabled?(:y24_052_enable_data_release_timing_validation) && data_release_strategy.present? &&
+        !strategy_not_applicable?
+    end
 
     def sanity_check_y_separation
       if remove_x_and_autosomes?

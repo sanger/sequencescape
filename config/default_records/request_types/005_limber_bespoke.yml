@@ -43,6 +43,7 @@ limber_pcr_bespoke:
     - Standard
     - TraDIS
     - TruSeq mRNA (RNA Seq)
+    - SGE Library v0.2
 limber_chromium_bespoke:
   <<: *limber_bespoke_library
   name: Limber Chromium Bespoke

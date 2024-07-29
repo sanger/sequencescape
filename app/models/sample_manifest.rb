@@ -49,7 +49,7 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_uploaded_document :generated, differentiator: 'generated'
 
   attr_accessor :override, :only_first_label
-  attr_writer :rows_per_well
+  attr_writer :rows_per_well, :invalid_wells
 
   class_attribute :spreadsheet_offset
   class_attribute :spreadsheet_header_row
@@ -57,9 +57,11 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   self.spreadsheet_header_row = 8
 
   # Needed for the UI to work!
-  def barcode_printer; end
+  def barcode_printer
+  end
 
-  def template; end
+  def template
+  end
 
   belongs_to :supplier, optional: false
   belongs_to :study, optional: false
@@ -140,6 +142,10 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
     @rows_per_well || 1
   end
 
+  def invalid_wells
+    @invalid_wells || []
+  end
+
   # Used in manifest upload code to determine if pools are present,
   # so that tag_depth can be set on the aliquots if needed.
   #
@@ -158,17 +164,17 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   scope :pending_manifests,
-        -> {
+        -> do
           order(id: :desc).includes(:uploaded_document).references(:uploaded_document).where(documents: { id: nil })
-        }
+        end
 
   scope :completed_manifests,
-        -> {
+        -> do
           order(updated_at: :desc)
             .includes(:uploaded_document)
             .references(:uploaded_document)
             .where.not(documents: { id: nil })
-        }
+        end
 
   def generate
     ActiveRecord::Base.transaction do

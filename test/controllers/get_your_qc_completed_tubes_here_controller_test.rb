@@ -23,15 +23,13 @@ class GetYourQcCompletedTubesHereControllerTest < ActionController::TestCase
         @generator = LibPoolNormTubeGenerator.new(plate.human_barcode, user, study)
         generator.stubs(:valid?).returns(true)
         generator.stubs(:create!).returns(true)
-        generator
-          .stubs(:asset_group)
-          .returns(
-            AssetGroup.create(
-              assets: create_list(:lib_pool_tube, 3).map(&:receptacle),
-              study: create(:study),
-              name: 'Asset Group 1'
-            )
+        generator.stubs(:asset_group).returns(
+          AssetGroup.create(
+            assets: create_list(:lib_pool_tube, 3).map(&:receptacle),
+            study: create(:study),
+            name: 'Asset Group 1'
           )
+        )
       end
 
       should 'create some assets, redirect to the asset group' do

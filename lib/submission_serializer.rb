@@ -67,12 +67,11 @@ module SubmissionSerializer
     if hash[:product_catalogue]
       st[:product_catalogue_id] = ProductCatalogue.find_or_create_by(name: hash[:product_catalogue]).id
     end
-    st[:superceded_by_id] =
-      if hash.has_key?(:superceded_by)
-        SubmissionTemplate.find_by(name: hash[:superceded_by]).try(:id) || -2
-      else
-        hash[:superceded_by_id] || -1
-      end
+    st[:superceded_by_id] = if hash.has_key?(:superceded_by)
+      SubmissionTemplate.find_by(name: hash[:superceded_by]).try(:id) || -2
+    else
+      hash[:superceded_by_id] || -1
+    end
     st[:superceded_at] = DateTime.parse(hash[:superceded_at]) if hash.has_key?(:superceded_at)
 
     sp = st[:submission_parameters] = {}
@@ -85,10 +84,9 @@ module SubmissionSerializer
       sp[:request_options][:initial_state] = new_initial
     end
 
-    sp[:request_type_ids_list] =
-      ensp[:request_types].map do |rtk|
-        [(RequestType.find_by(key: rtk).try(:id) || raise(StandardError, "Could not find #{rtk}"))]
-      end
+    sp[:request_type_ids_list] = ensp[:request_types].map do |rtk|
+      [(RequestType.find_by(key: rtk).try(:id) || raise(StandardError, "Could not find #{rtk}"))]
+    end
     sp[:order_role_id] = OrderRole.find_or_create_by(role: ensp[:order_role]).id if ensp[:order_role]
 
     SubmissionTemplate.create!(st)

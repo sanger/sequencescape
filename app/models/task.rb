@@ -18,7 +18,8 @@ class Task < ApplicationRecord
 
   self.inheritance_column = 'sti_type'
 
-  def partial; end
+  def partial
+  end
 
   #
   # Indicates if a task can be performed.

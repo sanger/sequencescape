@@ -9,14 +9,15 @@ RSpec.describe Api::V2::PlateTemplateResource, type: :resource do
   let(:resource_model) { build_stubbed :plate_template }
 
   # Test attributes
-  it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
+  it 'has the expected attributes', :aggregate_failures do
+    expect(resource).not_to have_attribute :id
     expect(resource).to have_attribute :uuid
-    expect(resource).not_to have_updatable_field(:id)
-    expect(resource).not_to have_updatable_field(:uuid)
   end
 
   # Updatable fields
-  # eg. it { is_expected.to have_updatable_field(:state) }
+  it 'disallows updating of read only fields', :aggregate_failures do
+    expect(resource).not_to have_updatable_field :uuid
+  end
 
   # Filters
   # eg. it { is_expected.to filter(:order_type) }

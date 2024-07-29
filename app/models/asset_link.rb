@@ -31,7 +31,8 @@ class AssetLink < ApplicationRecord
   self.per_page = 500
   self.lazy_uuid_generation = true
 
-  def destroy!; end
+  def destroy!
+  end
 
   module Associations
     def self.included(base)

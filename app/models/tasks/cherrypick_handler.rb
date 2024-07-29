@@ -206,9 +206,11 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
       end
 
       links =
-        plate_and_requests.flat_map do |target_plate, requests|
-          Plate.with_requests(requests).map { |source_plate| [source_plate.id, target_plate.id] }
-        end.uniq
+        plate_and_requests
+          .flat_map do |target_plate, requests|
+            Plate.with_requests(requests).map { |source_plate| [source_plate.id, target_plate.id] }
+          end
+          .uniq
 
       @batch.lab_events.create(
         description: 'Cherrypick Layout Set',

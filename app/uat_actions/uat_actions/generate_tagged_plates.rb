@@ -38,7 +38,7 @@ class UatActions::GenerateTaggedPlates < UatActions::GeneratePlates
              help:
                'The order in which tags will be laid out on the plate. ' \
                  'Most commonly \'column\'.',
-             select_options: -> { TagLayout::DIRECTIONS.keys }
+             select_options: -> { TagLayout::DIRECTION_ALGORITHMS.keys }
   form_field :walking_by,
              :select,
              label: 'Tag layout pattern',
@@ -51,7 +51,7 @@ class UatActions::GenerateTaggedPlates < UatActions::GeneratePlates
              # driven by submission information
              select_options: -> { TagLayout::WALKING_ALGORITHMS.keys - EXCLUDED_WALKING }
 
-  validates :direction, inclusion: { in: TagLayout::DIRECTIONS.keys }, presence: true
+  validates :direction, inclusion: { in: TagLayout::DIRECTION_ALGORITHMS.keys }, presence: true
   validates :walking_by, inclusion: { in: TagLayout::WALKING_ALGORITHMS.keys - EXCLUDED_WALKING }, presence: true
   validates :tag_group_name, presence: true
   validates :tag_group, presence: { message: 'could not be found' }, if: :tag_group_name

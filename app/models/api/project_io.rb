@@ -42,8 +42,9 @@ class Api::ProjectIO < Api::Base
 
   extra_json_attributes do |object, json_attributes|
     object.roles.each do |role|
-      json_attributes[role.name.underscore] =
-        role.users.map { |user| { login: user.login, email: user.email, name: user.name } }
+      json_attributes[role.name.underscore] = role.users.map do |user|
+        { login: user.login, email: user.email, name: user.name }
+      end
     end
   end
 end

@@ -184,8 +184,9 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
 
               # Collect successful submissions
               @submission_ids << submission.id
-              @completed_submissions[submission.id] =
-                "Submission #{submission.id} built (#{submission.orders.count} orders)"
+              @completed_submissions[
+                submission.id
+              ] = "Submission #{submission.id} built (#{submission.orders.count} orders)"
             rescue Submission::ProjectValidation::Error => e
               errors.add :spreadsheet, "There was an issue with a project: #{e.message}"
             end
@@ -364,8 +365,10 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
 
     # Deal with the asset group: either it's one we should be loading, or one we should be creating.
 
-    attributes[:asset_group] =
-      study.asset_groups.find_by_id_or_name(details['asset group id'], details['asset group name'])
+    attributes[:asset_group] = study.asset_groups.find_by_id_or_name(
+      details['asset group id'],
+      details['asset group name']
+    )
     attributes[:asset_group_name] = details['asset group name'] if attributes[:asset_group].nil?
 
     ##
@@ -393,7 +396,8 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
         end
 
       assets_found, expecting =
-        found_assets.map { |asset| "#{asset.name}(#{asset.id})" }, asset_ids.size + asset_names.size
+        found_assets.map { |asset| "#{asset.name}(#{asset.id})" },
+        asset_ids.size + asset_names.size
       if assets_found.size < expecting
         raise StandardError, "Too few assets found for #{details['rows']}: #{assets_found.inspect}"
       end

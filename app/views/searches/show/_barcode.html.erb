@@ -1,2 +1,2 @@
 
-<li><%= barcode.barcode %>: <%= link_to(h(barcode.asset.display_name), labware_path(barcode.asset)) -%></li>
+<li><%= barcode.barcode %>: <%= link_to(h(barcode.labware.display_name), labware_path(barcode.labware)) -%></li>

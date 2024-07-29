@@ -20,11 +20,10 @@ Given /^a batch in "Illumina-B MX Library Preparation" has been setup for featur
         fragment_size_required_to: 20,
         library_type: 'Standard'
       },
-      request_types:
-        [
-          RequestType.find_by(key: 'illumina_b_multiplexed_library_creation'),
-          RequestType.find_by(key: 'paired_end_sequencing')
-        ].map(&:id)
+      request_types: [
+        RequestType.find_by(key: 'illumina_b_multiplexed_library_creation'),
+        RequestType.find_by(key: 'paired_end_sequencing')
+      ].map(&:id)
     )
 
   asset_type = pipeline_name_to_asset_type(pipeline.name)

@@ -21,9 +21,11 @@ module SequencescapeExcel
       delegate :asset, :sample, :sample_manifest, to: :sample_manifest_asset
       delegate :aliquots, to: :asset
 
-      def update(_attributes = {}); end
+      def update(_attributes = {})
+      end
 
-      def link(_other_fields); end
+      def link(_other_fields)
+      end
     end
   end
 end

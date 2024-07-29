@@ -13,20 +13,32 @@ FactoryBot.define do
     after(:create) do |robot, evaluator|
       evaluator.number_of_sources.times do |i|
         bed_number = (i + 1).to_s
-        robot.robot_properties <<
-          create(:robot_property, name: "Source #{i + 1}", key: "SCRC#{i + 1}", value: bed_number)
+        robot.robot_properties << create(
+          :robot_property,
+          name: "Source #{i + 1}",
+          key: "SCRC#{i + 1}",
+          value: bed_number
+        )
       end
 
       evaluator.number_of_controls.times do |i|
         bed_number = (evaluator.number_of_sources + i + 1).to_s
-        robot.robot_properties <<
-          create(:robot_property, name: "Control #{i + 1}", key: "CTRL#{i + 1}", value: bed_number)
+        robot.robot_properties << create(
+          :robot_property,
+          name: "Control #{i + 1}",
+          key: "CTRL#{i + 1}",
+          value: bed_number
+        )
       end
 
       evaluator.number_of_destinations.times do |i|
         bed_number = (evaluator.number_of_sources + evaluator.number_of_controls + i + 1).to_s
-        robot.robot_properties <<
-          create(:robot_property, name: "Destination #{i + 1}", key: "DEST#{i + 1}", value: bed_number)
+        robot.robot_properties << create(
+          :robot_property,
+          name: "Destination #{i + 1}",
+          key: "DEST#{i + 1}",
+          value: bed_number
+        )
       end
     end
 

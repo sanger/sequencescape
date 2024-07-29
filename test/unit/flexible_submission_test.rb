@@ -148,7 +148,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
 
           context '#process!' do
             context 'multiple requests' do
-              setup { @xs_mpx_submission.process! }
+              setup { @xs_mpx_submission.reload.process! }
 
               should("change Request.count by #{16 + 8}") { assert_equal (16 + 8), Request.count - @request_count }
 

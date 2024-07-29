@@ -4,7 +4,8 @@ module SampleManifest::CoreBehaviour
 
   # Include in cores which exhibit the default behaviour
   module NoSpecializedValidation
-    def validate_specialized_fields(*args); end
+    def validate_specialized_fields(*args)
+    end
 
     def specialized_fields(*_args)
       {}

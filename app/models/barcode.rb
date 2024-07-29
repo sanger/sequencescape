@@ -11,8 +11,17 @@ class Barcode < ApplicationRecord
   require 'sanger_barcode_format/legacy_methods'
   extend SBCF::LegacyMethods
 
+  # This association will have to be removed in a subsequent story
   belongs_to :asset, optional: false, class_name: 'Labware'
+  # New association introduced in #4121. This is a temporary measure to allow the renaming
+  # of the asset association to labware. This was created to accommodate for_search_query scope's include() method
+  # belongs_to :labware, class_name: 'Labware', optional: false
   before_validation :serialize_barcode
+
+  # See #4121 - renaming asset terminology to labware
+  # See #4121 - The actual table column will be renamed in a subsequent story
+  alias_association :labware, :asset
+  alias_attribute :labware_id, :asset_id
 
   after_commit :broadcast_barcode
 
@@ -151,7 +160,8 @@ class Barcode < ApplicationRecord
   # Extract barcode from user input
   def self.extract_barcode(barcode)
     [barcode.to_s].tap { |barcodes| barcodes << SBCF::SangerBarcode.from_user_input(barcode.to_s).human_barcode }
-      .compact.uniq
+      .compact
+      .uniq
   end
 
   # Returns the barcode format matching the supplied barcode

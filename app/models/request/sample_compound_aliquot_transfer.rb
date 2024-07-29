@@ -58,8 +58,6 @@ module Request::SampleCompoundAliquotTransfer
       raise Request::SampleCompoundAliquotTransfer::Error, compound_aliquot.errors.full_messages
     end
 
-    compound_aliquot.find_or_create_compound_sample
-
     target_asset.aliquots.create(compound_aliquot.aliquot_attributes)
   end
 end

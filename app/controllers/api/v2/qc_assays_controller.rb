@@ -9,9 +9,9 @@ module Api
         if @qc_result_factory.valid?
           @qc_result_factory.save
           render json:
-                   JSONAPI::ResourceSerializer
-                     .new(QcAssayResource)
-                     .serialize_to_hash(QcAssayResource.new(@qc_result_factory.qc_assay, nil)),
+                   JSONAPI::ResourceSerializer.new(QcAssayResource).serialize_to_hash(
+                     QcAssayResource.new(@qc_result_factory.qc_assay, nil)
+                   ),
                  status: :created
         else
           render json: { errors: @qc_result_factory.errors }, status: :unprocessable_entity

@@ -9,7 +9,7 @@ require 'aasm'
 #   - These accession numbers are used at data release to group samples together for publication
 #   - For managed/EGA studies, also ties the data to an {Accessionable::Dac} and {Accessionable::Policy}
 # - A means of generating the aforementioned {Accessionable::Dac} and {Accessionable::Policy}
-#   @note These should DEFINATELY be separate entities
+#   @note These should DEFINITELY be separate entities
 # - A means of tying data to internal data-release timings
 # - A means to apply internal data access policies to released sequencing data
 # - A means to tie interested parties to the samples and the work done on them
@@ -76,7 +76,12 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   DATA_RELEASE_TIMING_STANDARD = 'standard'
   DATA_RELEASE_TIMING_NEVER = 'never'
   DATA_RELEASE_TIMING_DELAYED = 'delayed'
-  DATA_RELEASE_TIMINGS = [DATA_RELEASE_TIMING_STANDARD, 'immediate', DATA_RELEASE_TIMING_DELAYED].freeze
+  DATA_RELEASE_TIMING_IMMEDIATE = 'immediate'
+  DATA_RELEASE_TIMINGS = [
+    DATA_RELEASE_TIMING_STANDARD,
+    DATA_RELEASE_TIMING_IMMEDIATE,
+    DATA_RELEASE_TIMING_DELAYED
+  ].freeze
   DATA_RELEASE_PREVENTION_REASONS = ['data validity', 'legal', 'replication of data subset'].freeze
 
   DATA_RELEASE_DELAY_FOR_OTHER = 'other'
@@ -124,6 +129,9 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_many :documents, as: :documentable
   has_many :sample_manifests
   has_many :suppliers, -> { distinct }, through: :sample_manifests
+
+  # Can have many key value pairs of metadata
+  has_many :poly_metadata, as: :metadatable, dependent: :destroy
 
   # Validations
   validates :name, uniqueness: { case_sensitive: false }, presence: true, latin1: true
@@ -294,9 +302,9 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   # Scopes
   scope :for_search_query,
-        ->(query) {
+        ->(query) do
           joins(:study_metadata).where(['name LIKE ? OR studies.id=? OR prelim_id=?', "%#{query}%", query, query])
-        }
+        end
 
   scope :with_no_ethical_approval, -> { where(ethically_approved: false) }
 
@@ -308,26 +316,24 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   scope :with_user_included, -> { includes(:user) }
 
   scope :in_assets,
-        ->(assets) {
-          select('DISTINCT studies.*')
-            .joins(['LEFT JOIN aliquots ON aliquots.study_id = studies.id'])
-            .where(['aliquots.receptacle_id IN (?)', assets.map(&:id)])
-        }
+        ->(assets) do
+          select('DISTINCT studies.*').joins(['LEFT JOIN aliquots ON aliquots.study_id = studies.id']).where(
+            ['aliquots.receptacle_id IN (?)', assets.map(&:id)]
+          )
+        end
 
   scope :for_sample_accessioning,
-        -> {
-          joins(:study_metadata)
-            .where("study_metadata.study_ebi_accession_number <> ''")
-            .where(
-              study_metadata: {
-                data_release_strategy: [Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED],
-                data_release_timing: Study::DATA_RELEASE_TIMINGS
-              }
-            )
-        }
+        -> do
+          joins(:study_metadata).where("study_metadata.study_ebi_accession_number <> ''").where(
+            study_metadata: {
+              data_release_strategy: [Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED],
+              data_release_timing: Study::DATA_RELEASE_TIMINGS
+            }
+          )
+        end
 
   scope :awaiting_ethical_approval,
-        -> {
+        -> do
           joins(:study_metadata).where(
             ethically_approved: false,
             study_metadata: {
@@ -336,7 +342,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
               commercially_available: Study::NO
             }
           )
-        }
+        end
 
   scope :contaminated_with_human_dna,
         -> { joins(:study_metadata).where(study_metadata: { contaminated_human_dna: Study::YES }) }
@@ -347,9 +353,9 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   scope :by_state, ->(state) { where(state: state) }
 
   scope :by_user,
-        ->(login) {
+        ->(login) do
           joins(:roles, :users).where(roles: { name: %w[follower manager owner], users: { login: [login] } })
-        }
+        end
 
   scope :with_related_owners_included, -> { includes(:owners) }
 
@@ -546,6 +552,19 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def rebroadcast
     broadcast
+  end
+
+  # Returns the PolyMetadatum object associated with the given key.
+  #
+  # @param key [String] The key of the PolyMetadatum to find.
+  #
+  # @return [PolyMetadatum, nil] The PolyMetadatum object with the given key,
+  #   or nil if no such PolyMetadatum exists.
+  #
+  # @example
+  #   study.poly_metadatum_by_key("sample_key")
+  def poly_metadatum_by_key(key)
+    poly_metadata.find { |pm| pm.key == key.to_s }
   end
 
   private

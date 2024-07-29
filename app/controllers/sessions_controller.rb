@@ -13,7 +13,8 @@ class SessionsController < ApplicationController
     redirect_to action: :login
   end
 
-  def settings; end
+  def settings
+  end
 
   def login
     return unless request.post?

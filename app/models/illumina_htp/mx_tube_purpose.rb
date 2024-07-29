@@ -20,7 +20,7 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
   # limber pipelines this will actually return the plate on which you charge and pass.
   # See https://github.com/sanger/sequencescape/issues/3040 for more information
   #
-  # @deprecate Do not use this for new behaviour.
+  # @deprecated Do not use this for new behaviour.
   #
   # @param tube [Tube] The tube for which to find the stock_plate
   #
@@ -49,13 +49,12 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
       .where(
         requests: {
           target_asset_id: tube.receptacle.id,
-          sti_type:
-            [
-              Request::Multiplexing,
-              Request::AutoMultiplexing,
-              Request::LibraryCreation,
-              *Request::LibraryCreation.descendants
-            ].map(&:name)
+          sti_type: [
+            Request::Multiplexing,
+            Request::AutoMultiplexing,
+            Request::LibraryCreation,
+            *Request::LibraryCreation.descendants
+          ].map(&:name)
         }
       )
       .distinct

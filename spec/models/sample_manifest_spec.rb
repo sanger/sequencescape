@@ -64,11 +64,15 @@ RSpec.describe SampleManifest, :sample_manifest do
 
             it 'creates sample and aliquots' do
               sma1 = manifest.sample_manifest_assets.first
-              expect { manifest.create_sample_and_aliquot(sma1.sanger_sample_id, sma1.asset) }.to change(Sample, :count)
-                .by(1).and change { study.samples.count }.by(1)
+              expect { manifest.create_sample_and_aliquot(sma1.sanger_sample_id, sma1.asset) }.to change(
+                Sample,
+                :count
+              ).by(1).and change { study.samples.count }.by(1)
               sma2 = manifest.sample_manifest_assets.last
-              expect { manifest.create_sample_and_aliquot(sma2.sanger_sample_id, sma2.asset) }.to change(Sample, :count)
-                .by(1).and change { study.samples.count }.by(1)
+              expect { manifest.create_sample_and_aliquot(sma2.sanger_sample_id, sma2.asset) }.to change(
+                Sample,
+                :count
+              ).by(1).and change { study.samples.count }.by(1)
               manifest.samples.reset
               expect(manifest.samples.first.primary_aliquot.study).to eq(study)
             end
@@ -167,9 +171,9 @@ RSpec.describe SampleManifest, :sample_manifest do
 
           it 'create 1 MX tube' do
             expect { manifest.generate }.to change(LibraryTube, :count).by(count).and change(
-                                                        MultiplexedLibraryTube,
-                                                        :count
-                                                      ).by(1).and change(BroadcastEvent, :count).by(1)
+                    MultiplexedLibraryTube,
+                    :count
+                  ).by(1).and change(BroadcastEvent, :count).by(1)
           end
 
           it 'creates sample manifest assets' do
@@ -191,8 +195,10 @@ RSpec.describe SampleManifest, :sample_manifest do
 
             it 'creates sample and aliquots' do
               sma = manifest.sample_manifest_assets.last
-              expect { manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset) }.to change(Sample, :count)
-                .by(1).and change { study.samples.count }.by(1)
+              expect { manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset) }.to change(
+                Sample,
+                :count
+              ).by(1).and change { study.samples.count }.by(1)
               expect(LibraryTube.last.aliquots.first.library).to eq(manifest.assets.last)
               manifest.samples.reset
               expect(manifest.samples.first.primary_aliquot.study).to eq(study)
@@ -276,8 +282,9 @@ RSpec.describe SampleManifest, :sample_manifest do
           let(:count) { count }
 
           it "creates #{count} tubes(s)" do
-            expect { manifest.generate }.to change(SampleTube, :count).by(count).and change { manifest.assets.count }
-                                                       .by(count)
+            expect { manifest.generate }.to change(SampleTube, :count).by(count).and change {
+                    manifest.assets.count
+                  }.by(count)
             expect(manifest.assets).to eq(SampleTube.with_barcode(manifest.barcodes).map(&:receptacle))
           end
 
@@ -286,8 +293,10 @@ RSpec.describe SampleManifest, :sample_manifest do
 
             it 'creates sample and aliquots' do
               sma = manifest.sample_manifest_assets.last
-              expect { manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset) }.to change(Sample, :count)
-                .by(1).and change { study.samples.count }.by(1)
+              expect { manifest.create_sample_and_aliquot(sma.sanger_sample_id, sma.asset) }.to change(
+                Sample,
+                :count
+              ).by(1).and change { study.samples.count }.by(1)
               expect(SampleTube.last.aliquots.first.library).to be_nil
               manifest.samples.reset
               expect(manifest.samples.first.primary_aliquot.study).to eq(study)

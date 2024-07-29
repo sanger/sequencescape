@@ -54,6 +54,10 @@ describe 'View study properties' do
 
     it 'displays HuMFre approval number for Not Applicable (Contact Datasharing) data release strategy' do
       study.study_metadata.data_release_strategy = Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE
+      study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_NEVER
+      study.study_metadata.data_release_prevention_reason = Study::DATA_RELEASE_PREVENTION_REASONS[0]
+      study.study_metadata.data_release_prevention_approval = Study::YES
+      study.study_metadata.data_release_prevention_reason_comment = 'comment'
       study.study_metadata.hmdmc_approval_number = '12345'
       study.study_metadata.save!
 

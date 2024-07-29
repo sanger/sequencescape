@@ -87,22 +87,20 @@ class UatActions::GenerateSampleManifest < UatActions
 
   def study
     @study ||=
-      Study
-        .create_with(
-          state: 'active',
-          study_metadata_attributes: {
-            data_access_group: 'dag',
-            study_type: UatActions::StaticRecords.study_type,
-            faculty_sponsor: UatActions::StaticRecords.faculty_sponsor,
-            data_release_study_type: UatActions::StaticRecords.data_release_study_type,
-            study_description: 'A study generated for UAT',
-            contaminated_human_dna: 'No',
-            contains_human_dna: 'No',
-            commercially_available: 'No',
-            program: UatActions::StaticRecords.program
-          }
-        )
-        .find_or_create_by!(name: study_name)
+      Study.create_with(
+        state: 'active',
+        study_metadata_attributes: {
+          data_access_group: 'dag',
+          study_type: UatActions::StaticRecords.study_type,
+          faculty_sponsor: UatActions::StaticRecords.faculty_sponsor,
+          data_release_study_type: UatActions::StaticRecords.data_release_study_type,
+          study_description: 'A study generated for UAT',
+          contaminated_human_dna: 'No',
+          contains_human_dna: 'No',
+          commercially_available: 'No',
+          program: UatActions::StaticRecords.program
+        }
+      ).find_or_create_by!(name: study_name)
   end
 
   def supplier
@@ -112,10 +110,12 @@ class UatActions::GenerateSampleManifest < UatActions
   def create_sample(sample_name, sample_manifest)
     Sample.create!(
       name: sample_name,
+      sanger_sample_id: sample_name,
       sample_metadata_attributes: {
         supplier_name: sample_name,
         collected_by: UatActions::StaticRecords.collection_site,
-        donor_id: "#{sample_name}_donor"
+        donor_id: "#{sample_name}_donor",
+        sample_common_name: 'human'
       },
       sample_manifest: sample_manifest
     )

@@ -17,13 +17,21 @@ class SetDescriptorsTask < Task
   end
 
   def render_task(workflows_controller, params, user)
-    Tasks::SetDescriptorsHandler::Handler.new(controller: workflows_controller, params: params, task: self, user: user)
-      .render
+    Tasks::SetDescriptorsHandler::Handler.new(
+      controller: workflows_controller,
+      params: params,
+      task: self,
+      user: user
+    ).render
   end
 
   def do_task(workflows_controller, params, user)
-    Tasks::SetDescriptorsHandler::Handler.new(controller: workflows_controller, params: params, task: self, user: user)
-      .perform
+    Tasks::SetDescriptorsHandler::Handler.new(
+      controller: workflows_controller,
+      params: params,
+      task: self,
+      user: user
+    ).perform
   end
 
   #

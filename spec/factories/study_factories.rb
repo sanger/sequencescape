@@ -50,7 +50,16 @@ FactoryBot.define do
   factory(:not_app_study, parent: :study) do
     name { 'Study: Never' }
     state { 'active' }
-    after(:create) { |study| study.study_metadata.update!(data_release_strategy: 'not applicable') }
+    after(:create) do |study|
+      new_field_values = {
+        data_release_strategy: 'not applicable',
+        data_release_timing: 'never',
+        data_release_prevention_reason: 'data validity',
+        data_release_prevention_approval: 'Yes',
+        data_release_prevention_reason_comment: 'This is the reason context'
+      }
+      study.study_metadata.update!(new_field_values)
+    end
   end
 
   factory :study_type do

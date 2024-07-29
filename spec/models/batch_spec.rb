@@ -76,4 +76,38 @@ RSpec.describe Batch do
       end
     end
   end
+
+  describe '::add_dynamic_validations' do
+    # Specific validator tests can be found in spec/validators
+    let(:pipeline) { create :pipeline, validator_class_name: 'TestPipelineValidator' }
+    let(:batch) { described_class.new pipeline: pipeline }
+
+    it 'fails validation when dynamic validations fail' do
+      stub_const(
+        'TestPipelineValidator',
+        Class.new(ActiveModel::Validator) do
+          def validate(record)
+            record.errors.add :base, 'TestPipelineValidator failed'
+          end
+        end
+      )
+
+      expect(batch.valid?).to be false
+      expect(batch.errors[:base]).to include('TestPipelineValidator failed')
+    end
+
+    it 'passes validation when dynamic validations pass' do
+      stub_const(
+        'TestPipelineValidator',
+        Class.new(ActiveModel::Validator) do
+          def validate(_record)
+            true
+          end
+        end
+      )
+
+      expect(batch.valid?).to be true
+      expect(batch.errors[:base]).to be_empty
+    end
+  end
 end

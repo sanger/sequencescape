@@ -24,11 +24,14 @@ module LabelPrinter
         plate.human_barcode
       end
 
-      def top_right(plate); end
+      def top_right(plate)
+      end
 
-      def bottom_right(plate); end
+      def bottom_right(plate)
+      end
 
-      def top_far_right(plate); end
+      def top_far_right(plate)
+      end
 
       def barcode(plate)
         plate.machine_barcode

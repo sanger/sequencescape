@@ -8,12 +8,14 @@ class Admin::PrimerPanelsController < ApplicationController
     @primer_panels = PrimerPanel.all
   end
 
-  def show; end
+  def show
+  end
   def new
     @primer_panel = PrimerPanel.new(programs: default_programs)
   end
 
-  def edit; end
+  def edit
+  end
 
   def create
     @primer_panel = PrimerPanel.new(primer_panel_params)
@@ -50,8 +52,10 @@ class Admin::PrimerPanelsController < ApplicationController
   end
 
   def primer_panel_params
-    params
-      .require(:primer_panel)
-      .permit(:name, :snp_count, programs: [{ 'pcr 1': %i[name duration], 'pcr 2': %i[name duration] }])
+    params.require(:primer_panel).permit(
+      :name,
+      :snp_count,
+      programs: [{ 'pcr 1': %i[name duration], 'pcr 2': %i[name duration] }]
+    )
   end
 end

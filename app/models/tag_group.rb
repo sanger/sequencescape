@@ -15,9 +15,9 @@ class TagGroup < ApplicationRecord
   scope :chromium, -> { visible.joins(:adapter_type).where(tag_group_adapter_types: { name: CHROMIUM_ADAPTER_TYPE }) }
 
   scope :by_adapter_type,
-        ->(adapter_type_name) {
+        ->(adapter_type_name) do
           visible.joins(:adapter_type).where(tag_group_adapter_types: { name: adapter_type_name })
-        }
+        end
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }
 

@@ -8,8 +8,9 @@ Given /^study "([^"]+)" has an asset group called "([^"]+)" with (\d+) wells$/ d
     .asset_groups
     .create!(name: group_name)
     .tap do |asset_group|
-      asset_group.assets <<
-        (1..count.to_i).map { |index| FactoryBot.create(:well, plate: plate, map: Map.map_96wells[index - 1]) }
+      asset_group.assets << (1..count.to_i).map do |index|
+        FactoryBot.create(:well, plate: plate, map: Map.map_96wells[index - 1])
+      end
     end
 end
 
@@ -110,16 +111,15 @@ Given /^the batch and all its requests are pending$/ do
   batch.requests.each { |r| r.update!(state: 'pending') }
 end
 
-SEQUENCING_PIPELINES =
-  [
-    'Cluster formation SE',
-    'Cluster formation PE',
-    'Cluster formation PE (no controls)',
-    'Cluster formation PE (spiked in controls)',
-    'Cluster formation SE HiSeq',
-    'Cluster formation SE HiSeq (no controls)',
-    'HiSeq Cluster formation PE (no controls)'
-  ].map(&Regexp.method(:escape)).join('|')
+SEQUENCING_PIPELINES = [
+  'Cluster formation SE',
+  'Cluster formation PE',
+  'Cluster formation PE (no controls)',
+  'Cluster formation PE (spiked in controls)',
+  'Cluster formation SE HiSeq',
+  'Cluster formation SE HiSeq (no controls)',
+  'HiSeq Cluster formation PE (no controls)'
+].map(&Regexp.method(:escape)).join('|')
 
 Given /^I have a batch with (\d+) requests? for the "(#{SEQUENCING_PIPELINES})" pipeline$/o do |count, name|
   build_batch_for(name, count.to_i) do |pipeline|
@@ -146,15 +146,14 @@ Then /^the (\d+) requests should be in the "(#{SEQUENCING_PIPELINES})" pipeline 
   end
 end
 
-LIBRARY_CREATION_PIPELINES =
-  [
-    'Library preparation',
-    'Illumina-C Library preparation',
-    'Illumina-B Library preparation',
-    'Illumina-A Library preparation',
-    'MX Library creation',
-    'Illumina-B MX Library Preparation'
-  ].map(&Regexp.method(:escape)).join('|')
+LIBRARY_CREATION_PIPELINES = [
+  'Library preparation',
+  'Illumina-C Library preparation',
+  'Illumina-B Library preparation',
+  'Illumina-A Library preparation',
+  'MX Library creation',
+  'Illumina-B MX Library Preparation'
+].map(&Regexp.method(:escape)).join('|')
 
 Given /^I have a batch with (\d+) requests? for the "(#{LIBRARY_CREATION_PIPELINES})" pipeline$/o do |count, name|
   build_batch_for(name, count.to_i) do |_pipeline|

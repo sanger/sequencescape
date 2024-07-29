@@ -116,6 +116,9 @@ module SampleManifestExcel
         # If we've failed, do not update the manifest file, trying to do so
         # causes exceptions
         sample_manifest.association(:uploaded_document).reset
+        # Errs here because sample_manifest.samples is a collection that's not empty in Rails 6.1,
+        # but is empty in Rails 5.0. Therefore, reloaded the samples.
+        sample_manifest.samples.reload
         sample_manifest.fail!
       end
 

@@ -111,8 +111,7 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
 
     context 'when robot is using 96-Trough buffer (Tecan v1)' do
       #prettier-ignore
-      let(:expected_tecan_file) do
-        <<~TECAN
+      let(:expected_tecan_file) { <<~TECAN }
           C;
           C; This file created by user_abc6 on 2018-06-14 11:17:04 +0100
           C;
@@ -160,7 +159,6 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
           C;
           C; DEST1 = #{destination_plate_human_barcode}
         TECAN
-      end
 
       it_behaves_like 'a cherrypicking procedure'
     end
@@ -185,8 +183,7 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
       end
 
       #prettier-ignore
-      let(:expected_tecan_file) do
-        <<~TECAN
+      let(:expected_tecan_file) { <<~TECAN }
           C;
           C; This file created by user_abc6 on 2018-06-14 11:17:04 +0100
           C;
@@ -270,7 +267,6 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
           C;
           C; DEST1 = #{destination_plate_human_barcode}
         TECAN
-      end
 
       it_behaves_like 'a cherrypicking procedure'
     end
@@ -285,8 +281,7 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
     end
 
     #prettier-ignore
-    let(:expected_tecan_file) do
-      <<~TECAN
+    let(:expected_tecan_file) { <<~TECAN }
         C;
         C; This file created by user_abc12 on 2018-06-14 17:09:13 +0100
         C;
@@ -315,7 +310,6 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
         C;
         C; DEST1 = #{destination_plate_human_barcode}
       TECAN
-    end
 
     let(:expected_pick_files_by_destination_plate) do
       { destination_plate_human_barcode => { 1 => expected_tecan_file } }

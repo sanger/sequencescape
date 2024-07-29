@@ -17,6 +17,7 @@ module Api
       has_one :receptacle
       has_one :tag
       has_one :tag2
+      has_one :library
 
       # Attributes
       attribute :tag_oligo, readonly: true
@@ -25,6 +26,7 @@ module Api
       attribute :tag2_index, readonly: true
       attribute :suboptimal, readonly: true
       attribute :library_type, readonly: true
+      attribute :insert_size_to, readonly: true
 
       # Filters
 

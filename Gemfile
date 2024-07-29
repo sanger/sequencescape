@@ -6,6 +6,10 @@ group :default do
   gem 'bootsnap'
   gem 'rails', '~> 6.1.7'
 
+  # Fix incompatibility with between Ruby 3.1 and Psych 4 (used for yaml)
+  # see https://stackoverflow.com/a/71192990
+  gem 'psych', '< 4'
+
   # State machine
   gem 'aasm'
 
@@ -77,8 +81,14 @@ group :default do
   # - Load the gem from the branch
   gem 'jsonapi-resources', github: 'sanger/jsonapi-resources', branch: 'develop'
 
-  # Wraps bunny with connection pooling ad consumer process handling
+  # Wraps bunny with connection pooling and consumer process handling
   gem 'sanger_warren'
+
+  # Use bunny for simple RabbitMQ publishing operations
+  gem 'bunny', '>= 2.22.0'
+
+  # Provides message schema encoding and decoding for messages to RabbitMQ
+  gem 'avro', '~> 1.11.0'
 
   # Excel file generation
   # Note: We're temporarily using out own for of the project to make use of a few changes
@@ -122,10 +132,6 @@ group :development do
   # Detect n+1 queries
   gem 'bullet'
 
-  # Automatically generate documentation
-  gem 'yard', require: false
-  gem 'yard-activerecord', '~> 0.0.16'
-
   # MiniProfiler allows you to see the speed of a request conveniently on the page.
   # It also shows the SQL queries performed and allows you to profile a specific block of code.
   gem 'rack-mini-profiler'
@@ -143,6 +149,16 @@ group :development, :linting do
   gem 'rubocop-performance', require: false
   gem 'rubocop-rails', require: false
   gem 'rubocop-rspec', require: false
+
+  gem 'prettier_print', require: false
+  gem 'syntax_tree', require: false
+  gem 'syntax_tree-haml', require: false
+  gem 'syntax_tree-rbs', require: false
+
+  # Automatically generate documentation
+  gem 'yard', require: false
+  gem 'yard-activerecord', '~> 0.0.16', require: false
+  gem 'yard-junk', '~> 0.0.9', require: false
 end
 
 group :linting, :test do

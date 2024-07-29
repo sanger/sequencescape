@@ -37,7 +37,7 @@ class Lot < ApplicationRecord
   scope :with_lot_number, ->(lot_number) { where(lot_number: lot_number) }
 
   scope :with_qc_asset,
-        ->(qc_asset) {
+        ->(qc_asset) do
           return none if qc_asset.nil?
 
           sibling = qc_asset.transfers_as_destination.first.source
@@ -46,7 +46,7 @@ class Lot < ApplicationRecord
           asset_ids = [qc_asset.id, sibling.id, tag2_siblings].flatten
 
           includes(:qcables).where(qcables: { asset_id: asset_ids }).where.not(qcables: { state: 'exhausted' })
-        }
+        end
 
   private
 

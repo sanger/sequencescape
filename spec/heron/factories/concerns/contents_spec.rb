@@ -169,9 +169,9 @@ RSpec.describe Heron::Factories::Concerns::Contents, :heron, :lighthouse, type: 
         end
 
         it 'creates the new aliquots' do
-          expect { factory.add_aliquots_into_locations(containers_for_locations) }.to change(Sample, :count)
-            .by(2)
-            .and(change(Aliquot, :count).by(3))
+          expect { factory.add_aliquots_into_locations(containers_for_locations) }.to change(Sample, :count).by(2).and(
+            change(Aliquot, :count).by(3)
+          )
         end
 
         context 'when it creates more than one aliquot in the same location' do
@@ -205,9 +205,9 @@ RSpec.describe Heron::Factories::Concerns::Contents, :heron, :lighthouse, type: 
           end
 
           it 'creates the right number of elements' do
-            expect { factory.add_aliquots_into_locations(containers_for_locations) }.to change(Sample, :count)
-              .by(2)
-              .and(change(Aliquot, :count).by(4))
+            expect { factory.add_aliquots_into_locations(containers_for_locations) }.to change(Sample, :count).by(
+              2
+            ).and(change(Aliquot, :count).by(4))
           end
 
           it 'creates the right aliquots for A1' do

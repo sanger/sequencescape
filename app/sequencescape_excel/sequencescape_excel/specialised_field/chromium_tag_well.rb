@@ -40,10 +40,18 @@ module SequencescapeExcel
         asset.aliquots.length
       end
 
+      # A1 --> 1
+      # B1 --> 2
+      # ...
+      # H12 --> 96
       def well_index
         @well_index = Map::Coordinate.description_to_vertical_plate_position(value, 96)
       end
 
+      # 1 --> [1, 2, 3, 4]
+      # 2 --> [5, 6, 7, 8]
+      # ...
+      # 96 --> [381, 382, 383, 384]
       def map_ids
         Array.new(TAGS_PER_WELL) { |i| ((well_index - 1) * TAGS_PER_WELL) + i + 1 }
       end

@@ -14,7 +14,7 @@ class Api::LibraryTubeIO < Api::Base
         extend ClassMethods
 
         scope :including_associations_for_json,
-              -> {
+              -> do
                 includes(
                   [
                     :uuid_object,
@@ -29,7 +29,7 @@ class Api::LibraryTubeIO < Api::Base
                     :scanned_into_lab_event
                   ]
                 )
-              }
+              end
       end
     end
 

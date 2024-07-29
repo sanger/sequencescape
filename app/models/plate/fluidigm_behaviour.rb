@@ -6,23 +6,23 @@ module Plate::FluidigmBehaviour
   def self.included(base) # rubocop:todo Metrics/MethodLength
     base.class_eval do
       scope :requiring_fluidigm_data,
-            -> {
+            -> do
               fluidigm_request_ids = RequestType.where(key: 'pick_to_fluidigm').ids
 
               joins(
-                  [
-                    :well_requests_as_target,
-                    "LEFT OUTER JOIN events
+                [
+                  :well_requests_as_target,
+                  "LEFT OUTER JOIN events
             ON eventful_id = #{Plate.table_name}.id
             AND eventful_type = \"#{Plate.base_class.name}\"
             AND family = \"update_fluidigm_plate\"
             AND content = \"FLUIDIGM_DATA\""
-                  ]
-                )
+                ]
+              )
                 .includes(:barcodes)
                 .where(events: { id: nil }, requests: { request_type_id: fluidigm_request_ids })
                 .distinct
-            }
+            end
     end
   end
 

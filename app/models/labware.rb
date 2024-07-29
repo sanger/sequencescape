@@ -11,6 +11,8 @@ class Labware < Asset
 
   attr_reader :storage_location_service
 
+  enum retention_instruction: { destroy_after_2_years: 0, return_to_customer_after_2_years: 1, long_term_storage: 2 }
+
   delegate :metadata, to: :custom_metadatum_collection, allow_nil: true
 
   class_attribute :receptacle_class
@@ -79,12 +81,12 @@ class Labware < Asset
           inverse_of: :descendant
 
   has_one :spiked_in_buffer_most_recent_links, # rubocop:todo Rails/HasManyOrHasOneDependent
-          -> {
+          -> do
             includes(:ancestor)
               .references(:ancestor)
               .where(labware: { sti_type: 'SpikedBuffer' })
               .order(ancestor_id: :desc)
-          },
+          end,
           class_name: 'AssetLink',
           foreign_key: :descendant_id,
           inverse_of: :descendant

@@ -232,7 +232,9 @@ RSpec.describe TransferRequest do
         let(:merge) { false }
 
         it 'will throw a TagClash exception' do
-          expect { transfer_request.save }.to raise_error(Aliquot::TagClash)
+          expect { transfer_request.save }.to raise_error(Aliquot::TagClash) do |error|
+            expect(error.api_error_code).to eq(422)
+          end
         end
       end
     end
@@ -419,12 +421,13 @@ RSpec.describe TransferRequest do
 
     context 'when none of the downstream assets have a batch' do
       it 'removes the downstream aliquots' do
+        # checking that the count of unique aliquot counts changes from [1] to [0] when the fail!
+        # method is called on the first transfer request. In other words, it's expecting that all downstream assets
+        # initially have one aliquot, and that they have zero aliquots after the transfer request is failed.
         expect { transfer_requests.first.fail! }.to change {
-            Delayed::Worker.new.work_off
-            assets[2..].map { |a| a.aliquots.count }.uniq
-          }
-          .from([1])
-          .to([0])
+          Delayed::Worker.new.work_off
+          assets[2..].map { |a| a.aliquots.count }.uniq
+        }.from([1]).to([0])
       end
     end
   end

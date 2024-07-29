@@ -110,8 +110,11 @@ FactoryBot.define do
 
     user
     after(:build) do |submission, evaluator|
-      submission.orders <<
-        build(:library_order, assets: evaluator.assets, request_types: evaluator.request_types.map(&:id))
+      submission.orders << build(
+        :library_order,
+        assets: evaluator.assets,
+        request_types: evaluator.request_types.map(&:id)
+      )
     end
   end
 end

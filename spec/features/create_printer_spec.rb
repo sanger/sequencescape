@@ -8,21 +8,17 @@ describe 'Create printers' do
   it 'can create a new printer' do
     create(:barcode_printer_type)
     configatron.register_printers_automatically = true
-    allow(RestClient).to receive(:get)
-      .with(
-        'http://localhost:9292/v2/printers?filter[name]=yetanotherprinter',
-        content_type: 'application/vnd.api+json',
-        accept: 'application/vnd.api+json'
-      )
-      .and_return('{"data":[]}')
-    allow(RestClient).to receive(:post)
-      .with(
-        'http://localhost:9292/v2/printers',
-        { 'data' => { 'attributes' => { 'name' => 'yetanotherprinter', 'printer_type' => 'squix' } } }.to_json,
-        content_type: 'application/vnd.api+json',
-        accept: 'application/vnd.api+json'
-      )
-      .and_return(201)
+    allow(RestClient).to receive(:get).with(
+      'http://localhost:9292/v2/printers?filter[name]=yetanotherprinter',
+      content_type: 'application/vnd.api+json',
+      accept: 'application/vnd.api+json'
+    ).and_return('{"data":[]}')
+    allow(RestClient).to receive(:post).with(
+      'http://localhost:9292/v2/printers',
+      { 'data' => { 'attributes' => { 'name' => 'yetanotherprinter', 'printer_type' => 'squix' } } }.to_json,
+      content_type: 'application/vnd.api+json',
+      accept: 'application/vnd.api+json'
+    ).and_return(201)
     login_user user
     visit admin_path
     click_link 'Printer management'

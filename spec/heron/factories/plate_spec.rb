@@ -114,9 +114,9 @@ RSpec.describe Heron::Factories::Plate, :heron, :heron_events, :lighthouse, type
       end
 
       it 'creates the new samples' do
-        expect { plate_factory.save }.to change(Plate, :count)
-          .by(1)
-          .and(change(Sample, :count).by(2).and(change(Aliquot, :count).by(3)))
+        expect { plate_factory.save }.to change(Plate, :count).by(1).and(
+          change(Sample, :count).by(2).and(change(Aliquot, :count).by(3))
+        )
       end
 
       it 'allows you to fetch a unique list of study names' do

@@ -4,9 +4,9 @@
 # us to strip out the old code.
 class ConvertOldIlluminaPipelinesToLegacy < ActiveRecord::Migration[5.2]
   def up
-    Pipeline
-      .where(sti_type: %w[MultiplexedLibraryCreationPipeline LibraryCreationPipeline])
-      .update_all(sti_type: 'LegacyPipeline')
+    Pipeline.where(sti_type: %w[MultiplexedLibraryCreationPipeline LibraryCreationPipeline]).update_all(
+      sti_type: 'LegacyPipeline'
+    )
   end
 
   def down
@@ -15,9 +15,9 @@ class ConvertOldIlluminaPipelinesToLegacy < ActiveRecord::Migration[5.2]
     # The following code makes assumptions about names, and mimic the production
     # state when the migration was written.
     Pipeline.transaction do
-      Pipeline
-        .where(name: ['Illumina-B MX Library Preparation', 'Illumina-C MX Library Preparation'])
-        .update_all(sti_type: 'MultiplexedLibraryCreationPipeline')
+      Pipeline.where(name: ['Illumina-B MX Library Preparation', 'Illumina-C MX Library Preparation']).update_all(
+        sti_type: 'MultiplexedLibraryCreationPipeline'
+      )
       Pipeline.where(name: ['Illumina-C Library preparation']).update_all(sti_type: 'LibraryCreationPipeline')
     end
   end

@@ -15,7 +15,7 @@ class TagLayout < ApplicationRecord
   UnknownDirection = Struct.new(:direction)
   UnknownWalking = Struct.new(:walking_by)
 
-  DIRECTIONS = {
+  DIRECTION_ALGORITHMS = {
     'column' => 'TagLayout::InColumns',
     'row' => 'TagLayout::InRows',
     'inverse column' => 'TagLayout::InInverseColumns',
@@ -50,7 +50,7 @@ class TagLayout < ApplicationRecord
   # The plate we'll be laying out the tags into
   belongs_to :plate, optional: false
 
-  validates :direction, inclusion: { in: DIRECTIONS.keys }
+  validates :direction, inclusion: { in: DIRECTION_ALGORITHMS.keys }
   validates :walking_by, inclusion: { in: WALKING_ALGORITHMS.keys }
 
   validates :direction_algorithm, presence: true
@@ -65,7 +65,7 @@ class TagLayout < ApplicationRecord
   delegate :walking_by, :walk_wells, :apply_tags, to: :walking_algorithm_helper
 
   def direction=(new_direction)
-    self.direction_algorithm = DIRECTIONS.fetch(new_direction) { UnknownDirection.new(new_direction) }
+    self.direction_algorithm = DIRECTION_ALGORITHMS.fetch(new_direction) { UnknownDirection.new(new_direction) }
   end
 
   def walking_by=(walk)

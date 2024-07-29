@@ -35,12 +35,18 @@ class Transfer::BetweenPlateAndTubes < Transfer
   def tube_to_hash(tube) # rubocop:todo Metrics/AbcSize
     # Only build the hash once per tube. Shows significant speed improvement, esp. with label_text
     @tubes ||= {}
-    @tubes[tube.id] ||=
-      { uuid: tube.uuid, name: tube.name, state: tube.state, label: { text: tube.purpose.name } }.tap do |details|
-        barcode_to_hash(tube) { |s| details[:barcode] = s }
-        barcode_to_hash(tube.source_plate) { |s| details[:stock_plate] = { barcode: s } }
-        details[:label][:prefix] = tube.role unless tube.role.nil?
-      end
+    @tubes[tube.id] ||= {
+      uuid: tube.uuid,
+      name: tube.name,
+      state: tube.state,
+      label: {
+        text: tube.purpose.name
+      }
+    }.tap do |details|
+      barcode_to_hash(tube) { |s| details[:barcode] = s }
+      barcode_to_hash(tube.source_plate) { |s| details[:stock_plate] = { barcode: s } }
+      details[:label][:prefix] = tube.role unless tube.role.nil?
+    end
   end
 
   def barcode_to_hash(barcoded)
@@ -83,14 +89,12 @@ class Transfer::BetweenPlateAndTubes < Transfer
   def build_well_to_tube_transfers # rubocop:todo Metrics/MethodLength
     tube_to_stock_wells = Hash.new { |h, k| h[k] = [] }
 
-    well_to_tubes
-      .build(
-        @transfers.map do |source, (destination, stock_wells)|
-          tube_to_stock_wells[destination].concat(stock_wells)
-          { source: source, destination: destination }
-        end
-      )
-      .map(&:save!)
+    well_to_tubes.build(
+      @transfers.map do |source, (destination, stock_wells)|
+        tube_to_stock_wells[destination].concat(stock_wells)
+        { source: source, destination: destination }
+      end
+    ).map(&:save!)
 
     tube_to_stock_wells.each do |tube, stock_wells|
       next unless apply_name?(tube)

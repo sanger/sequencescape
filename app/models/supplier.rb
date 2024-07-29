@@ -10,7 +10,7 @@ class Supplier < ApplicationRecord
 
   # Named scope for search by query string behaviour
   scope :for_search_query,
-        ->(query) {
+        ->(query) do
           where(['suppliers.name IS NOT NULL AND (suppliers.name LIKE :like)', { like: "%#{query}%", query: query }])
-        }
+        end
 end

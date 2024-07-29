@@ -4,18 +4,16 @@
 # LegacyPipeline for a while. This lets us remove those classes
 class MigrateLegacyPipelineClasses < ActiveRecord::Migration[5.1]
   def up
-    Pipeline
-      .where(
-        sti_type: %w[
-          DnaQcPipeline
-          PulldownLibraryCreationPipeline
-          PulldownMultiplexLibraryPreparationPipeline
-          QcPipeline
-          StripTubeCreationPipeline
-          UnrepeatableSequencingPipeline
-        ]
-      )
-      .update_all(sti_type: 'LegacyPipeline')
+    Pipeline.where(
+      sti_type: %w[
+        DnaQcPipeline
+        PulldownLibraryCreationPipeline
+        PulldownMultiplexLibraryPreparationPipeline
+        QcPipeline
+        StripTubeCreationPipeline
+        UnrepeatableSequencingPipeline
+      ]
+    ).update_all(sti_type: 'LegacyPipeline')
   end
 
   def down

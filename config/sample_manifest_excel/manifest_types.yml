@@ -1,4 +1,4 @@
-plate_default:
+plate_default: &plate_default
   heading: "Default Plate"
   asset_type: "plate"
   columns:
@@ -37,6 +37,10 @@ plate_default:
     - :donor_id
     - :phenotype
     - :control_type
+plate_default_with_h12_empty:
+  <<: *plate_default
+  heading: "Default Plate with H12 empty"
+  invalid_wells: ["H12"]
 plate_full:
   heading: "Full Plate"
   asset_type: "plate"
@@ -251,10 +255,28 @@ plate_bioscan:
     - :date_of_sample_collection
     - :sample_taxon_id
     - :sample_common_name
-    - :bioscan_sample_description
+    - :sample_description_specimen_plate_barcode
     - :sample_type
     - :donor_id
     - :bioscan_control_type
+plate_anospp:
+  heading: "ANOSPP Plate"
+  asset_type: "plate"
+  columns:
+    - :sanger_plate_id
+    - :well
+    - :sanger_sample_id
+    - :supplier_name
+    - :retention_instruction
+    - :cohort
+    - :country_of_origin
+    - :date_of_sample_collection
+    - :sample_taxon_id
+    - :sample_common_name
+    - :sample_description_specimen_plate_barcode
+    - :sample_type
+    - :donor_id
+    - :control_type
 plate_scrna_core_pools:
   heading: "scRNA Core Pools Plate"
   asset_type: "plate"

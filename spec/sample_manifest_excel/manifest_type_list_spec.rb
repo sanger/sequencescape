@@ -23,6 +23,7 @@ RSpec.describe SampleManifestExcel::ManifestTypeList, :sample_manifest, :sample_
 
       # if the rows_per_well attribute isn't present, just compares nil == nil
       expect(manifest_type.rows_per_well).to eq(v['rows_per_well'])
+      expect(manifest_type.invalid_wells).to eq(v['invalid_wells'])
     end
   end
 

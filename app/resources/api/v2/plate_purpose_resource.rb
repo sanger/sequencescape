@@ -13,35 +13,35 @@ module Api
 
       # The following attributes are sent by Limber for a new plate purpose.
 
-      # @!attribute name
-      #  @return [String] the name of the plate purpose
+      # @!attribute [rw]
+      # @return [String] The name of the plate purpose.
       attribute :name
 
-      # @!attribute stock_plate
-      #  @return [Boolean] whether the plates of this purpose are stock plates
+      # @!attribute [rw]
+      # @return [Boolean] Whether the plates of this purpose are stock plates.
       attribute :stock_plate
 
-      # @!attribute cherrypickable_target
-      #  @return [Boolean] whether the plates of this purpose are cherrypickable
+      # @!attribute [rw]
+      # @return [Boolean] Whether the plates of this purpose are cherrypickable.
       attribute :cherrypickable_target
 
-      # @!attribute input_plate
-      #  @return [Boolean] whether the plates of this purpose are input plates
+      # @!attribute [rw]
+      # @return [Boolean] Whether the plates of this purpose are input plates.
       attribute :input_plate
 
-      # @!attribute size
-      #  @return [Integer] the size of the plates of this purpose
+      # @!attribute [rw]
+      # @return [Integer] The size of the plates of this purpose.
       attribute :size
 
-      # @!attribute asset_shape
-      #  @return [String] the name of the shape of the plates of this purpose
+      # @!attribute [rw]
+      # @return [String] The name of the shape of the plates of this purpose.
       attribute :asset_shape
 
       # The following attribute is required by Limber to store purposes.
 
-      # @!attribute [r] uuid
-      #  @return [String] the UUID of the plate purpose
-      attribute :uuid, readonly: true
+      # @!attribute [r]
+      # @return [String] gets the UUID of the plate purpose.
+      attribute :uuid
 
       # Sets the asset shape of the plate purpose by name if given.
       # 'asset_shape' can be given via the Limber purpose configuration and
@@ -63,22 +63,37 @@ module Api
         @model.asset_shape.name
       end
 
-      # Returns the input_plate attribute from the type of the plate purpose.
-      # This method is the counterpart to the model's attribute writer for
-      # input_plate. It performs the inverse operation, determining the value
-      # of input_plate attribute based on the model's type.
+      # Set the class to PlatePurpose::Input if set to true.
+      # Pass through to the setter in the model.
+      # While not strictly necessary as the model would respond implicitly, this method is provided for clarity.
       #
-      # @return [Boolean] whether the plate purpose is an input plate
+      # @param is_input [Bool] whether to set the sti type to PlatePurpose::Input.
+      # @return [void]
+      def input_plate=(is_input)
+        @model.input_plate = is_input
+      end
+
+      # Returns the input_plate attribute from the type of the plate purpose.
+      #
+      # @return [Boolean] whether the plate purpose is an input plate.
       def input_plate
         @model.type == 'PlatePurpose::Input'
       end
 
-      # Prevents updating existing plate purposes.
+      # Gets the list of fields which are creatable on a PlatePurpose.
       #
       # @param _context [JSONAPI::Resource::Context] not used
-      # @return [Array<Symbol>] empty array
-      def updatable_fields(_context)
-        []
+      # @return [Array<Symbol>] the list of creatable fields.
+      def self.creatable_fields(_context)
+        super - %i[uuid] # Do not allow creating with any readonly fields
+      end
+
+      # Gets the list of fields which are updatable on an existing PlatePurpose.
+      #
+      # @param _context [JSONAPI::Resource::Context] not used
+      # @return [Array<Symbol>] the list of updatable fields.
+      def self.updatable_fields(_context)
+        [] # Do not allow updating any fields.
       end
     end
   end

@@ -56,26 +56,26 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   accepts_nested_attributes_for :requests
   broadcast_with_warren
 
-  validate :requests_have_same_read_length,
-           :requests_have_same_flowcell_type,
-           :batch_meets_minimum_size,
-           :all_requests_are_ready?,
-           on: :create,
-           if: :pipeline
+  # Validations for batches
+  # For custom validators, create a a validator class extending CustomValidatorBase and
+  # add it to the pipeline table.
+  validates_with BatchCreationValidator, on: :create, if: :pipeline
+
+  validate :add_dynamic_validations
 
   after_create :generate_target_assets_for_requests, if: :generate_target_assets_on_batch_create?
   after_commit :rebroadcast
 
   # Named scope for search by query string behaviour
   scope :for_search_query,
-        ->(query) {
+        ->(query) do
           user = User.find_by(login: query)
           if user
             where(user_id: user)
           else
             with_safe_id(query) # Ensures extra long input (most likely barcodes) doesn't throw an exception
           end
-        }
+        end
 
   scope :includes_for_ui, -> { limit(5).includes(:user, :assignee, :pipeline) }
   scope :pending_for_ui, -> { where(state: 'pending', production_state: nil).latest_first }
@@ -86,7 +86,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   scope :include_pipeline, -> { includes(pipeline: :uuid_object) }
   scope :include_user, -> { includes(:user) }
   scope :include_requests,
-        -> {
+        -> do
           includes(
             requests: [
               :uuid_object,
@@ -97,7 +97,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
               { target_asset: [:uuid_object, { aliquots: %i[sample tag] }] }
             ]
           )
-        }
+        end
 
   scope :latest_first, -> { order(created_at: :desc) }
   scope :most_recent, ->(number) { latest_first.limit(number) }
@@ -129,24 +129,6 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def flowcell
     self if sequencing?
-  end
-
-  def batch_meets_minimum_size
-    if min_size && (requests.size < min_size)
-      errors.add :base, "You must create batches of at least #{min_size} requests in the pipeline #{pipeline.name}"
-    end
-  end
-
-  def requests_have_same_read_length
-    unless pipeline.is_read_length_consistent_for_batch?(self)
-      errors.add :base, "The selected requests must have the same values in their 'Read length' field."
-    end
-  end
-
-  def requests_have_same_flowcell_type
-    unless pipeline.is_flowcell_type_consistent_for_batch?(self)
-      errors.add :base, "The selected requests must have the same values in their 'Flowcell Requested' field."
-    end
   end
 
   # Fail was removed from State Machine (as a state) to allow the addition of qc_state column and features
@@ -428,7 +410,9 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
       # Swap the two batch requests so that they are correct.  This involves swapping both the batch and the lane but
       # ensuring that the two requests don't clash on position by removing one of them.
       original_left_batch_id, original_left_position, original_right_request_id =
-        batch_request_left.batch_id, batch_request_left.position, batch_request_right.request_id
+        batch_request_left.batch_id,
+        batch_request_left.position,
+        batch_request_right.request_id
       batch_request_right.destroy
       batch_request_left.update!(batch_id: batch_request_right.batch_id, position: batch_request_right.position)
       batch_request_right =
@@ -563,6 +547,20 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   private
+
+  # Adding dynamic validations to the model
+  def add_dynamic_validations
+    validator_class = get_validator_class(pipeline)
+    return unless validator_class
+
+    validator = validator_class.new
+    validator.validate(self)
+  end
+
+  def get_validator_class(pipeline)
+    validator_class_name = pipeline&.validator_class_name
+    validator_class_name.try(:constantize)
+  end
 
   def all_requests_qced?
     requests.all? { |request| request.asset.resource? || request.events.family_pass_and_fail.exists? }

@@ -1,0 +1,9 @@
+# These submission templates are associated with the ANOSPP pipeline.
+---
+# Lysate plate preparation from the stock insects plate
+Limber-Htp - ANOSPP Lysate Prep:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_anospp_lysate_prep"]
+    product_line_name: ANOSPP
+    product_catalogue_name: ANOSPP

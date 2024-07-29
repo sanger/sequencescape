@@ -26,15 +26,13 @@ class DataReleaseTest < ActiveSupport::TestCase
               assert_equal true, @study.valid_data_release_properties?
             end
           end
+
           context 'which do allow release (for EGA)' do
             setup do
               @study.study_metadata.data_release_study_type.name = 'genotyping or cytogenetics'
               @study.study_metadata.data_release_strategy = 'managed'
               @study.study_metadata.data_access_group = 'dag'
-              @study.study_metadata.data_release_timing = 'never'
-              @study.study_metadata.data_release_prevention_reason = 'legal'
-              @study.study_metadata.data_release_prevention_approval = 'Yes'
-              @study.study_metadata.data_release_prevention_reason_comment = 'It just is'
+              @study.study_metadata.data_release_timing = 'standard'
 
               @study.save!
             end
@@ -53,6 +51,7 @@ class DataReleaseTest < ActiveSupport::TestCase
           @study.enforce_accessioning = false
           @study.save!
         end
+
         should 'return false' do
           assert_not @study.accession_required?
         end
@@ -92,23 +91,15 @@ class DataReleaseTest < ActiveSupport::TestCase
 
             context 'and release timing is never' do
               setup do
+                @study.study_metadata.data_release_strategy = 'never'
                 @study.study_metadata.data_release_timing = 'never'
                 @study.study_metadata.data_release_prevention_reason = 'legal'
                 @study.study_metadata.data_release_prevention_approval = 'Yes'
                 @study.study_metadata.data_release_prevention_reason_comment = 'It just is'
               end
 
-              data_release_strategies.each do |strategy|
-                context "and strategy is #{strategy}" do
-                  setup do
-                    @study.study_metadata.data_release_strategy = strategy
-                    @study.save!
-                  end
-
-                  should 'not required ena accession number' do
-                    assert_not @study.accession_required?
-                  end
-                end
+              should 'not required ena accession number' do
+                assert_not @study.accession_required?
               end
             end
 

@@ -4,6 +4,7 @@ require 'rails_helper'
 
 RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
   include SequencescapeExcel::Helpers
+  include RetentionInstructionHelper
 
   def cell(row, column)
     download.worksheet.axlsx_worksheet.rows[row].cells[column]
@@ -811,6 +812,14 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
                 'Plate (SQPD-2) cannot have different retention instruction values.'
             )
           end
+
+          it 'should populate retention_instruction attribute in labware' do
+            processor.run(nil)
+            expect(upload.rows).to be_all(&:sample_updated?)
+            expect(upload.sample_manifest.assets.map(&:labware).map { |l| l.retention_instruction.to_sym }.uniq).to eq(
+              [:long_term_storage]
+            )
+          end
         end
       end
     end
@@ -852,7 +861,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           stub_request(:get, "#{configatron.tube_rack_scans_microservice_url}#{rack_barcode}").to_return(
             status: mock_microservices_response_status,
             body: JSON.generate(mock_microservice_responses[rack_barcode]),
-            headers: {}
+            headers: {
+            }
           )
         end
       end
@@ -1012,9 +1022,9 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           RSpec::Matchers.define_negated_matcher :not_change, :change
 
           expect { processor.run(nil) }.to not_change(TubeRack, :count).and not_change(
-                                             RackedTube,
-                                             :count
-                                           ).and not_change(Barcode, :count)
+                  RackedTube,
+                  :count
+                ).and not_change(Barcode, :count)
         end
       end
 
@@ -1031,9 +1041,9 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           RSpec::Matchers.define_negated_matcher :not_change, :change
 
           expect { processor.run(nil) }.to not_change(TubeRack, :count).and not_change(
-                                             RackedTube,
-                                             :count
-                                           ).and not_change(Barcode, :count)
+                  RackedTube,
+                  :count
+                ).and not_change(Barcode, :count)
         end
 
         it 'will have errors' do
@@ -1090,7 +1100,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             stub_request(:get, "#{configatron.tube_rack_scans_microservice_url}#{rack_barcode}").to_return(
               status: mock_microservices_response_status,
               body: mock_microservice_responses[rack_barcode],
-              headers: {}
+              headers: {
+              }
             )
           end
         end

@@ -42,11 +42,12 @@ module SequencescapeExcel
     # If not defined and there are options is set to first column plus the
     # the number of options minus one.
     def last_column
-      @last_column || if dynamic?
-        calculate_last_column
-      else
-        @last_column = calculate_last_column
-      end
+      @last_column ||
+        if dynamic?
+          calculate_last_column
+        else
+          @last_column = calculate_last_column
+        end
     end
 
     # Returns either the cached last cell, or a dynamically created one.

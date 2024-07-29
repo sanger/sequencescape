@@ -70,7 +70,8 @@ SubmissionTemplate.create!(
   name: 'MiSeq for TagQC',
   submission_class_name: 'LinearSubmission',
   submission_parameters: {
-    request_options: {},
+    request_options: {
+    },
     request_type_ids_list: [[rt.id]],
     info_differential: nil
   },
@@ -81,7 +82,8 @@ SubmissionTemplate.create!(
   name: 'MiSeq for QC',
   submission_class_name: 'LinearSubmission',
   submission_parameters: {
-    request_options: {},
+    request_options: {
+    },
     request_type_ids_list: [[rt.id]],
     info_differential: nil
   },

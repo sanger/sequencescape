@@ -18,13 +18,11 @@ RSpec.describe LabwhereReception do
   end
 
   it 'scans the labware into the location' do
-    allow(LabWhereClient::Scan).to receive(:create)
-      .with(
-        location_barcode: 'labwhere_location',
-        user_code: '12345',
-        labware_barcodes: [plate_1.human_barcode, plate_2.machine_barcode]
-      )
-      .and_return(instance_double(LabWhereClient::Scan, valid?: true, error: ''))
+    allow(LabWhereClient::Scan).to receive(:create).with(
+      location_barcode: 'labwhere_location',
+      user_code: '12345',
+      labware_barcodes: [plate_1.human_barcode, plate_2.machine_barcode]
+    ).and_return(instance_double(LabWhereClient::Scan, valid?: true, error: ''))
     labwhere_reception =
       described_class.new('12345', 'labwhere_location', [plate_1.human_barcode, plate_2.machine_barcode])
     expect(labwhere_reception.save).to be_truthy
@@ -47,9 +45,11 @@ RSpec.describe LabwhereReception do
   end
 
   it 'scans the labware into the location if the labware is not in ss' do
-    allow(LabWhereClient::Scan).to receive(:create)
-      .with(location_barcode: 'labwhere_location', user_code: '12345', labware_barcodes: %w[1 11111111111111])
-      .and_return(instance_double(LabWhereClient::Scan, valid?: true, error: ''))
+    allow(LabWhereClient::Scan).to receive(:create).with(
+      location_barcode: 'labwhere_location',
+      user_code: '12345',
+      labware_barcodes: %w[1 11111111111111]
+    ).and_return(instance_double(LabWhereClient::Scan, valid?: true, error: ''))
     labwhere_reception = described_class.new('12345', 'labwhere_location', %w[1 11111111111111])
     expect(labwhere_reception.save).to be_truthy
   end

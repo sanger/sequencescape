@@ -14,13 +14,13 @@ Rails.application.routes.draw do
     end
   end
 
-  mount Api::RootService.new => '/api/1'
+  mount Api::RootService.new => '/api/1' unless ENV['DISABLE_V1_API']
 
   namespace :api do
     namespace :v2 do
-      jsonapi_resources :pick_lists
       jsonapi_resources :aliquots
       jsonapi_resources :assets
+      jsonapi_resources :asset_audits
       jsonapi_resources :comments
       jsonapi_resources :custom_metadatum_collections
       jsonapi_resources :labware
@@ -28,6 +28,7 @@ Rails.application.routes.draw do
       jsonapi_resources :lot_types
       jsonapi_resources :lots
       jsonapi_resources :orders
+      jsonapi_resources :pick_lists
       jsonapi_resources :plate_purposes
       jsonapi_resources :plate_templates
       jsonapi_resources :plates
@@ -47,14 +48,18 @@ Rails.application.routes.draw do
       jsonapi_resources :sample_manifests
       jsonapi_resources :sample_metadata
       jsonapi_resources :studies
+      jsonapi_resources :submission_templates
       jsonapi_resources :submissions
       jsonapi_resources :tag_groups
       jsonapi_resources :tag_layout_templates
       jsonapi_resources :transfer_requests
+      jsonapi_resources :transfer_templates
+      jsonapi_resources :tube_purposes
       jsonapi_resources :tube_rack_statuses
       jsonapi_resources :tube_racks
       jsonapi_resources :tubes
       jsonapi_resources :users
+      jsonapi_resources :volume_updates
       jsonapi_resources :wells
       jsonapi_resources :work_orders
 
@@ -62,6 +67,10 @@ Rails.application.routes.draw do
         resources :tube_rack_statuses, only: [:create]
         resources :tube_racks, only: [:create]
         resources :plates, only: [:create]
+      end
+
+      namespace :bioscan do
+        resources :export_pool_xp_to_traction, only: [:create]
       end
     end
   end
@@ -306,6 +315,7 @@ Rails.application.routes.draw do
     resources :primer_panels, except: :destroy
 
     resources :studies, except: [:destroy] do
+      resources :poly_metadata, controller: 'studies/poly_metadata'
       collection do
         get :index
         post :filter
@@ -477,6 +487,7 @@ Rails.application.routes.draw do
       get :close
       get :print
       get :history
+      get :retention_instruction
       post :move
       post :print_assets
     end

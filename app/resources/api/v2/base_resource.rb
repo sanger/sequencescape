@@ -66,8 +66,8 @@ module Api
             # MODIFICATION BEGINS
             included_relationships =
               resolve_relationship_names_to_relations(relationship.resource_klass, value, options)
-            model_includes[relationship.relation_name(options)] =
-              relationship.resource_klass.inclusions + included_relationships
+            model_includes[relationship.relation_name(options)] = relationship.resource_klass.inclusions +
+              included_relationships
             # MODIFICATION ENDS
           end
           return model_includes

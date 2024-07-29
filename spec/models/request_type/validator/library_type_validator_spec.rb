@@ -39,10 +39,18 @@ describe RequestType::Validator::LibraryTypeValidator do
 
     context 'when a default library type is set' do
       before do
-        request_type.library_types_request_types <<
-          create(:library_types_request_type, library_type: library_type, request_type: request_type, is_default: false)
-        request_type.library_types_request_types <<
-          create(:library_types_request_type, library_type: library_type2, request_type: request_type, is_default: true)
+        request_type.library_types_request_types << create(
+          :library_types_request_type,
+          library_type: library_type,
+          request_type: request_type,
+          is_default: false
+        )
+        request_type.library_types_request_types << create(
+          :library_types_request_type,
+          library_type: library_type2,
+          request_type: request_type,
+          is_default: true
+        )
       end
 
       it 'returns the name' do
@@ -52,15 +60,18 @@ describe RequestType::Validator::LibraryTypeValidator do
 
     context 'when a default library type is not set' do
       before do
-        request_type.library_types_request_types <<
-          create(:library_types_request_type, library_type: library_type, request_type: request_type, is_default: false)
-        request_type.library_types_request_types <<
-          create(
-            :library_types_request_type,
-            library_type: library_type2,
-            request_type: request_type,
-            is_default: false
-          )
+        request_type.library_types_request_types << create(
+          :library_types_request_type,
+          library_type: library_type,
+          request_type: request_type,
+          is_default: false
+        )
+        request_type.library_types_request_types << create(
+          :library_types_request_type,
+          library_type: library_type2,
+          request_type: request_type,
+          is_default: false
+        )
       end
 
       it 'returns nil' do

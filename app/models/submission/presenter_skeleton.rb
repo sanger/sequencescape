@@ -22,7 +22,8 @@ class Submission::PresenterSkeleton
     lanes_from_request_counting
   end
 
-  def cross_compatible?; end
+  def cross_compatible?
+  end
 
   def each_submission_warning(&block)
     submission.each_submission_warning(&block)

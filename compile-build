@@ -14,7 +14,6 @@ echo 'Compiling tar.gz'
 tar \
   --exclude='./*.swp' \
   --exclude='./.bundle' \
-  --exclude='./.codeclimate.yml' \
   --exclude='./.git' \
   --exclude='./.gitignore' \
   --exclude='./.rspec' \

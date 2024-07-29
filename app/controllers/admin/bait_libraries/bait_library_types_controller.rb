@@ -9,7 +9,8 @@ class Admin::BaitLibraries::BaitLibraryTypesController < ApplicationController
     @bait_library_type = BaitLibraryType.new
   end
 
-  def edit; end
+  def edit
+  end
 
   def create
     @bait_library_type = BaitLibraryType.new(params[:bait_library_type])

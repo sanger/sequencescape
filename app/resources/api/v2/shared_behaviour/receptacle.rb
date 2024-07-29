@@ -35,6 +35,8 @@ module Api::V2::SharedBehaviour::Receptacle
     has_many :transfer_requests_as_source, readonly: true
     has_many :transfer_requests_as_target, readonly: true
 
+    has_one :labware, readonly: true
+
     # Attributes
     attribute :uuid, readonly: true
     attribute :name, delegate: :display_name, readonly: true

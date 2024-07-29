@@ -3,8 +3,7 @@
 ![Ruby Test](https://github.com/sanger/sequencescape/workflows/Ruby%20Test/badge.svg)
 ![Javascript testing](https://github.com/sanger/sequencescape/workflows/Javascript%20testing/badge.svg)
 ![Linting](https://github.com/sanger/sequencescape/workflows/Linting/badge.svg)
-[![Maintainability](https://api.codeclimate.com/v1/badges/2e3913c21e32b86511e4/maintainability)](https://codeclimate.com/github/sanger/sequencescape/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/2e3913c21e32b86511e4/test_coverage)](https://codeclimate.com/github/sanger/sequencescape/test_coverage)
+[![Test Coverage](https://codecov.io/github/sanger/sequencescape/graph/badge.svg?token=Fsd7I0GYQf)](https://codecov.io/github/sanger/sequencescape)
 [![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](https://www.rubydoc.info/github/sanger/sequencescape)
 [![Knapsack Pro Parallel CI builds for RSpec Tests](https://img.shields.io/badge/Knapsack%20Pro-Parallel%20%2F%20RSpec%20Tests-%230074ff)](https://knapsackpro.com/dashboard/organizations/1976/projects/1324/test_suites/1880/builds?utm_campaign=organization-id-1976&utm_content=test-suite-id-1880&utm_medium=readme&utm_source=knapsack-pro-badge&utm_term=project-id-1324)
 [![Knapsack Pro Parallel CI builds for Cucumber Tests](https://img.shields.io/badge/Knapsack%20Pro-Parallel%20%2F%20Cucumber%20Tests-%230074ff)](https://knapsackpro.com/dashboard/organizations/1976/projects/1324/test_suites/1881/builds?utm_campaign=organization-id-1976&utm_content=test-suite-id-1881&utm_medium=readme&utm_source=knapsack-pro-badge&utm_term=project-id-1324)
@@ -57,6 +56,7 @@ a organisation of 900 people.
     - [MySQL errors when installing](#mysql-errors-when-installing)
     - [Installing on Apple Silicon (M1)](#installing-on-apple-silicon-m1)
   - [API V2 Authentication](#api-v2-authentication)
+  - [Publishing AMQP Messages](#publishing-amqp-messages)
   - [Updating the table of contents](#updating-the-table-of-contents)
   - [CI](#ci)
 
@@ -73,6 +73,14 @@ yard server -r --gems -m sequencescape .
 You can then access the Sequencescape documentation through: [http://localhost:8808/docs/sequencescape](http://localhost:8808/docs/sequencescape)
 
 Yard will also try and document the installed gems: [http://localhost:8808/docs](http://localhost:8808/docs)
+
+### Linting
+
+Yard-Junk is used to check for missing or incorrect documentation. To run the checks:
+
+```shell
+bundle exec yard-junk --sanity
+```
 
 ## Requirements
 
@@ -419,10 +427,22 @@ As of the time of writing, there are three outcomes to a request made, with resp
   - The request is logged with the prefix "Request made without an API key" including information about the client.
   - The client application should be updated to use a valid API key in future.
 
+### Publishing AMQP Messages
+
+Some API endpoints (such as `/api/v2/bioscan/export_pool_xp_to_traction`) trigger background jobs which are responsible for publishing data to another instance of RabbitMQ.
+In the case of the Bioscan Export Pool XP to Traction job, the message goes to the ISG managed RabbitMQ instance.
+In order to publish a message, the job must get a schema from a registry.
+Under development conditions, you may not have a registry running, hence the default config directs to the UAT instance of PSD's supported RedPanda.
+This means, the first time you publish a message with this schema, you need to be connected to the Sanger network directly or via VPN.
+After the first use, a cached file will be created in `data/avro_schema_cache` so that the registry does not need to be reachable to continue generating messages.
+
+Because this is the first and only job doing this pubishing / RedPanda caching / Avro encoding, etc, there are parts which could be extracted in future if further jobs of this type are created.
+This isn't necessary at this stage, but it seems wise to note the intended pattern of usage here for future work.
+
 ### Updating the table of contents
 
 To update the table of contents after adding things to this README you can use the [markdown-toc](https://github.com/jonschlinkert/markdown-toc)
-node module. To install it, make sure you have install the dev dependencies from yarn. To update
+node module. To install it, make sure you have installed the dev dependencies from yarn. To update
 the table of contents, run:
 
 ```shell
