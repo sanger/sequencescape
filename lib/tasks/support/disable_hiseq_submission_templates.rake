@@ -17,7 +17,7 @@ namespace :support do
           templates_changed += 1
         end
     end
-    puts "Disabled #{templates_changed} HiSeq submission templates."
+    Rails.logger.info("Disabled #{templates_changed} HiSeq submission templates.")
   end
 
   desc 'Enable the HiSeq submission templates'
@@ -34,6 +34,6 @@ namespace :support do
           templates_changed += 1
         end
     end
-    puts "Enabled #{templates_changed} HiSeq submission templates."
+    Rails.logger.info("Enabled #{templates_changed} HiSeq submission templates.")
   end
 end
