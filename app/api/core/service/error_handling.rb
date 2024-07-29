@@ -99,5 +99,10 @@ class IllegalOperation < RuntimeError
   self.api_error_message = 'requested action is not supported on this resource'
 end
 
-Aliquot::TagClash.include Core::Service::Error::Behaviour
-Aliquot::TagClash.api_error_code = 422
+class Aliquot::TagClash
+  include Core::Service::Error::Behaviour
+
+  def self.api_error_code
+    422
+  end
+end

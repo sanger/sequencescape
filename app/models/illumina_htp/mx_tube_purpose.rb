@@ -20,7 +20,7 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
   # limber pipelines this will actually return the plate on which you charge and pass.
   # See https://github.com/sanger/sequencescape/issues/3040 for more information
   #
-  # @deprecate Do not use this for new behaviour.
+  # @deprecated Do not use this for new behaviour.
   #
   # @param tube [Tube] The tube for which to find the stock_plate
   #
