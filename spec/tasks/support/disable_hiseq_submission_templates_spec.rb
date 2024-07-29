@@ -19,9 +19,7 @@ describe 'support:disable_hiseq_submission_templates', type: :task do
         create(:submission_template, name: "Some other hiseq #{i}")
       end
 
-      expect { task_invoke }.to output(<<~HEREDOC).to_stdout
-          Disabled 10 HiSeq submission templates.
-        HEREDOC
+      expect { task_invoke }.to output("Disabled 10 HiSeq submission templates.\n").to_stdout
       # Expect all hiseq submissions to have a superceded_by_id of -2
       expect(SubmissionTemplate.where('name LIKE ?', '%hiseq%').all? { |st| st.superceded_by_id == -2 }).to be true
       # Expect all other submissions to have a superceded_by_id of -1
@@ -40,9 +38,9 @@ describe 'support:disable_hiseq_submission_templates', type: :task do
         create(:submission_template, name: "Some other hiseq #{i}", superceded_by_id: -2)
       end
 
-      expect { Rake::Task['support:enable_hiseq_submission_templates'].invoke }.to output(<<~HEREDOC).to_stdout
-          Enabled 10 HiSeq submission templates.
-        HEREDOC
+      expect { Rake::Task['support:enable_hiseq_submission_templates'].invoke }.to output(
+        "Enabled 10 HiSeq submission templates.\n"
+      ).to_stdout
       # Expect all hiseq submissions to have a superceded_by_id of -1
       expect(SubmissionTemplate.where('name LIKE ?', '%hiseq%').all? { |st| st.superceded_by_id == -1 }).to be true
     end
