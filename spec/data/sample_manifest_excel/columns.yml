@@ -686,6 +686,26 @@ sample_description_specimen_plate_barcode:
         operator: ">"
         operand: 20
     is_number:
+sample_description_specimen_plate_barcode_mandatory:
+  heading: SAMPLE DESCRIPTION
+  updates: sample_description
+  unlocked: true
+  validation:
+    options:
+      type: :custom
+      operator: :between
+      formula1: "=AND(LEN(A1)>=7,LEN(A1)<=11)"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Sample Description - Specimen Plate Barcode"
+      prompt: "Please enter the specimen plate barcode (NB. should be the same for all wells on the input plate, and between 7 and 11 characters in length)."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Sample Description - Specimen Plate Barcode"
+      error: "The barcode length must be between 7 and 11 characters in length."
+  conditional_formattings:
+    empty_mandatory_cell:
+    is_number:
 sample_strain_att:
   heading: STRAIN
   unlocked: true
