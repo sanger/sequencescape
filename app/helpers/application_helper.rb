@@ -66,10 +66,19 @@ module ApplicationHelper
   end
 
   def render_flashes
-    flash.each do |key, message|
-      concat(alert(key, id: "message_#{key}") { Array(message).each { |m| concat tag.div(m) } })
-    end
+    flash.each { |key, message| concat(alert(key, id: "message_#{key}") { render_message(message) }) }
     nil
+  end
+
+  # A helper method for render_flashes - If multiple messages, render them as a list, else render as a single div
+  # @param messages [Array<String>, String] The flash message or messages to be rendered
+  def render_message(messages)
+    messages = Array(messages)
+    if messages.size > 1
+      tag.ul { messages.each { |m| concat tag.li(m) } }
+    else
+      tag.div(messages.first)
+    end
   end
 
   def api_data

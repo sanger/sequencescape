@@ -232,7 +232,9 @@ RSpec.describe TransferRequest do
         let(:merge) { false }
 
         it 'will throw a TagClash exception' do
-          expect { transfer_request.save }.to raise_error(Aliquot::TagClash)
+          expect { transfer_request.save }.to raise_error(Aliquot::TagClash) do |error|
+            expect(error.api_error_code).to eq(422)
+          end
         end
       end
     end
