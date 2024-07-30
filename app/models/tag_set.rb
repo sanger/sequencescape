@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class TagSet < ApplicationRecord
+  include Uuid::Uuidable
+
   # Associations
   belongs_to :tag_group, class_name: 'TagGroup', optional: true
   belongs_to :tag2_group, class_name: 'TagGroup', optional: true
