@@ -40,6 +40,6 @@ class TagSet < ApplicationRecord
   # Validate that adapter type of tag groups of a tag set are equal
   def validate_adapter_type
     return unless tag_group && tag2_group && tag_group.adapter_type != tag2_group.adapter_type
-      errors.add(:base, 'Adapter types of tag groups must be equal')
+    errors.add(:base, 'Adapter types of tag groups must be equal')
   end
 end
