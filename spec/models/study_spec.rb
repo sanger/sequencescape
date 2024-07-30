@@ -599,12 +599,12 @@ RSpec.describe Study do
         end
 
         context 'assigning value to contaminated human data access group field' do
-          let(:extendedMetaData) { create(:study_metadata, contaminated_human_data_access_group: 'example group') }
-          let(:study) { create(:study, study_metadata: extendedMetaData) }
+          let(:extended_metadata) { create(:study_metadata, contaminated_human_data_access_group: 'example group') }
+          let(:study) { create(:study, study_metadata: extended_metadata) }
 
           it 'has the contaminated human data access group value when specified' do
             expect(study.study_metadata.contaminated_human_data_access_group).to eq(
-              extendedMetaData[:contaminated_human_data_access_group]
+              extended_metadata[:contaminated_human_data_access_group]
             )
           end
         end
