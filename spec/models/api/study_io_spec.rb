@@ -51,6 +51,7 @@ RSpec.describe Api::StudyIO do
       'data_access_group' => 'something',
       's3_email_list' => 'aa1@sanger.ac.uk;aa2@sanger.ac.uk',
       'data_deletion_period' => '3 months',
+      'contaminated_human_data_access_group' => 'contaminated human data access group example',
       'manager' => [
         { login: manager.login, email: manager.email, name: manager.name },
         { login: manager2.login, email: manager2.email, name: manager2.name }
