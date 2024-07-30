@@ -2,6 +2,7 @@
 
 class TagSet < ApplicationRecord
   include Uuid::Uuidable
+  include SharedBehaviour::Named
 
   # Associations
   belongs_to :tag_group, class_name: 'TagGroup', optional: true
