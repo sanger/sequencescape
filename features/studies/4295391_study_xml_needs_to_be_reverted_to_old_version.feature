@@ -198,6 +198,7 @@ Feature: The XML for the sequencescape API
             <name>Data deletion period</name>
             <value>3 months</value>
           </descriptor>
+          <descriptor><name>Contaminated Human Data Access Group</name><value></value></descriptor>
           <descriptor><name>Data access group</name><value>group1</value></descriptor>
           <descriptor><name>EGA DAC Accession Number</name></descriptor>
           <descriptor><name>EGA Policy Accession Number</name></descriptor>
