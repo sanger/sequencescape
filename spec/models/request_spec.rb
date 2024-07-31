@@ -495,7 +495,7 @@ RSpec.describe Request do
     end
   end
 
-  describe '.get_all_comments' do
+  describe '#get_all_comments' do
     let(:labware) { create :labware }
     let(:receptacle) { create :receptacle, labware: labware }
     let(:request) { create :request, asset: receptacle }
