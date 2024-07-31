@@ -10,9 +10,12 @@ namespace :support do
       SubmissionTemplate
         .where('name LIKE ?', '%hiseq%')
         .find_each do |submission_template|
+          # Skip if the template is already superceded
+          next if submission_template.superceded_by_id != SubmissionTemplate::LATEST_VERSION
           # Set the superceded_by_id to SUPERCEDED_BY_UNKNOWN_TEMPLATE (-2) to hide the template
           # This allows us to keep the template in case it needs to be restored
           submission_template.superceded_by_unknown!
+          submission_template.superceded_at = Time.zone.now
           submission_template.save!
           templates_changed += 1
         end
@@ -28,8 +31,11 @@ namespace :support do
       SubmissionTemplate
         .where('name LIKE ?', '%hiseq%')
         .find_each do |submission_template|
+          # Skip if the template is superced by a known template
+          next if submission_template.superceded_by_id != SubmissionTemplate::SUPERCEDED_BY_UNKNOWN_TEMPLATE
           # Set the superceded_by_id to LATEST_VERSION (-1) to show the template
           submission_template.superceded_by_id = SubmissionTemplate::LATEST_VERSION
+          submission_template.superceded_at = nil
           submission_template.save!
           templates_changed += 1
         end
