@@ -13,6 +13,7 @@
 ActiveRecord::Schema.define(version: 2024_07_30_224353) do
 
   create_table "aliquot_indices", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "aliquot_indices", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "aliquot_id", null: false
     t.integer "lane_id", null: false
     t.integer "aliquot_index", null: false
@@ -1544,6 +1545,7 @@ ActiveRecord::Schema.define(version: 2024_07_30_224353) do
     t.integer "program_id"
     t.string "s3_email_list"
     t.string "data_deletion_period"
+    t.string "contaminated_human_data_access_group"
     t.index ["faculty_sponsor_id"], name: "index_study_metadata_on_faculty_sponsor_id"
     t.index ["study_id"], name: "index_study_metadata_on_study_id"
   end
