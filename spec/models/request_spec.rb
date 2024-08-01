@@ -494,4 +494,21 @@ RSpec.describe Request do
       expect(subject[request_type2].started).to eq(1)
     end
   end
+
+  describe '#get_all_comments' do
+    let(:labware) { create :labware }
+    let(:receptacle) { create :receptacle, labware: labware }
+    let(:request) { create :request, asset: receptacle }
+
+    before do
+      create :comment, commentable: labware, description: 'comment on labware'
+      create :comment, commentable: receptacle, description: 'comment on receptacle'
+      create :comment, commentable: request, description: 'first comment on request'
+      create :comment, commentable: request, description: 'second comment on request'
+    end
+
+    it 'returns all of the comments including associated labware, receptacle and request itself' do
+      expect(described_class.get_all_comments(request)).to eq(4)
+    end
+  end
 end
