@@ -68,7 +68,7 @@ module SequencescapeExcel
     ##
     # formula1 is defined within the options, however it needs to be updated
     # with:
-    # 1) A provided rage in the case of lists
+    # 1) A provided range in the case of lists
     # 2) Proper cell names in the case of custom formulas
     # 3) AXLSX doesn't escape text fields for us, so we do that ourselves
     def formula1

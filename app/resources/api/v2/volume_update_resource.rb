@@ -21,7 +21,7 @@ module Api
 
       # Sets the target Labware on the model using the UUID provided in the API create/update request.
       #
-      # @param name [String] the uuid of the associated target Labware.
+      # @param uuid [String] the uuid of the associated target Labware.
       # @return [void]
       def target_uuid=(uuid)
         @model.target = Uuid.with_external_id(uuid).include_resource.map(&:resource).first

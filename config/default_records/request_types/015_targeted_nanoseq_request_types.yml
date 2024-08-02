@@ -1,0 +1,12 @@
+# Request types for Targeted NanoSeq ISC Prep
+---
+limber_targeted_nanoseq_isc_prep:
+  name: Limber Targeted NanoSeq ISC Prep
+  asset_type: Well
+  order: 1
+  request_class_name: CustomerRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: Short Read
+  acceptable_purposes:
+    - LTN AL Lib

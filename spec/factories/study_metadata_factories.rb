@@ -22,6 +22,14 @@ FactoryBot.define do
     s3_email_list { 'aa1@sanger.ac.uk;aa2@sanger.ac.uk' }
     data_deletion_period { '3 months' }
 
+    transient { contaminated_human_data_access_group { nil } }
+
+    after(:build) do |study_metadata, evaluator|
+      if evaluator.contaminated_human_data_access_group.present?
+        study_metadata.contaminated_human_data_access_group = evaluator.contaminated_human_data_access_group
+      end
+    end
+
     # These require property definitions to be properly setup
     factory :study_metadata_for_study_list_pending_ethical_approval do
       contains_human_dna { 'Yes' }
