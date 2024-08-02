@@ -279,7 +279,7 @@ GEM
     minitest-profiler (0.0.2)
       activesupport (>= 4.1.0)
       minitest (>= 5.3.3)
-    mocha (2.4.0)
+    mocha (2.4.5)
       ruby2_keywords (>= 0.0.5)
     msgpack (1.7.2)
     multi_json (1.15.0)
@@ -387,7 +387,7 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
-    rexml (3.3.1)
+    rexml (3.3.4)
       strscan
     roo (2.10.1)
       nokogiri (~> 1)
