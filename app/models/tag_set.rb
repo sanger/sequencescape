@@ -5,7 +5,7 @@ class TagSet < ApplicationRecord
   include SharedBehaviour::Named
 
   # Associations
-  belongs_to :tag_group, class_name: 'TagGroup', optional: true
+  belongs_to :tag_group, class_name: 'TagGroup', optional: false
   belongs_to :tag2_group, class_name: 'TagGroup', optional: true
 
   # Validations
@@ -26,5 +26,13 @@ class TagSet < ApplicationRecord
   def validate_adapter_type
     return unless tag_group && tag2_group && tag_group.adapter_type != tag2_group.adapter_type
     errors.add(:base, 'Adapter types of tag groups must be equal')
+  end
+
+  def tag_group_name=(name)
+    self.tag_group = TagGroup.find_by!(name: name)
+  end
+
+  def tag2_group_name=(name)
+    self.tag2_group = TagGroup.find_by!(name: name)
   end
 end
