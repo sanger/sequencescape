@@ -1,0 +1,13 @@
+
+# Request types for EMseq DNA Prep
+---
+limber_emseq_dna_prep:
+  name: Limber EMseq DNA Prep
+  asset_type: Well
+  order: 1
+  request_class_name: CustomerRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: Short Read
+  acceptable_purposes:
+    - LCMT Lysate
