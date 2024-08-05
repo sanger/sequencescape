@@ -12,7 +12,7 @@ module Api
       ###
 
       has_one :tag_group
-      has_one :tag2_group
+      has_one :tag2_group, class_name: 'TagGroup'
 
       ###
       # Attributes
