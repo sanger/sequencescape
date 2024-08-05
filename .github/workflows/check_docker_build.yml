@@ -15,12 +15,12 @@ jobs:
 
       - name: Build image
         run: >-
-          docker-compose build
+          docker compose build
 
       - name: Start stack and wait for all healthy
         run: |
-          RESET_DATABASE=true docker-compose -f docker-compose.yml up &
-          while docker-compose ps -q | xargs docker inspect --format '{{ .State.Health.Status }}' | grep -v '^healthy$' ; do
+          RESET_DATABASE=true docker compose -f docker-compose.yml up &
+          while docker compose ps -q | xargs docker inspect --format '{{ .State.Health.Status }}' | grep -v '^healthy$' ; do
             sleep 30
             echo "Waiting for healthy containers"
           done
@@ -28,4 +28,4 @@ jobs:
 
       - name: Stop stack
         run: >-
-          docker-compose down
+          docker compose down
