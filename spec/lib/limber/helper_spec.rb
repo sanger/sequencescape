@@ -35,7 +35,6 @@ describe Limber::Helper do
   describe 'build!' do
     it 'returns false if validation fails' do
       expect(template_constructor).to be_valid
-      # Name is an alias for prefix so will cause a validation error
       template_constructor.catalogue = nil
       expect { template_constructor.build! }.to raise_error(ActiveModel::ValidationError)
       expect(template_constructor.errors[:catalogue]).to include('can\'t be blank')
