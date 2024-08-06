@@ -2,14 +2,14 @@
 
 module Api
   module V2
+    # @note This resource is immutable: it's endpoint will not accept `POST`, `PATCH`, or `DELETE` requests.
+    #
     # Provides a JSON:API representation of {TagLayoutTemplate}.
     # This resource can be accessed via the `/api/v2/tag_layout_templates/` endpoint.
     #
     # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
-    #
-    # @note This resource is immutable: it's endpoint will not accept `POST`, `PATCH`, or `DELETE` requests.
     class TagLayoutTemplateResource < BaseResource
       immutable
 
