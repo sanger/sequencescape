@@ -10,3 +10,29 @@ limber_emseq_dna_prep:
   product_line_name: Short Read
   acceptable_purposes:
     - LCMT Lysate
+
+limber_emseq_wgs_library_prep:
+  name: Limber EMseq WGS Library Prep
+  asset_type: Well
+  order: 1
+  request_class_name: IlluminaHtp::Requests::StdLibraryRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: Short Read
+  acceptable_purposes:
+    - LCMT DNA Adp Lig
+  library_types:
+    - EMSeq WGS
+
+limber_emseq_em_library_prep:
+  name: Limber EMseq EM Library Prep
+  asset_type: Well
+  order: 1
+  request_class_name: IlluminaHtp::Requests::StdLibraryRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: Short Read
+  acceptable_purposes:
+    - LCMT DNA Adp Lig
+  library_types:
+    - EMSeq EM
