@@ -1,0 +1,9 @@
+# These submission templates are associated with the ANOSPP pipeline.
+---
+# Lysate plate preparation from the stock insects plate
+Limber-Htp - EMSeq DNA Prep:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_emseq_dna_prep"]
+    product_line_name: EMSeq
+    product_catalogue_name: EMSeq
