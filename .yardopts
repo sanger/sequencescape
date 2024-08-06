@@ -1,5 +1,6 @@
 --markup=markdown
 --asset docs/images:images
+--exclude app/controllers/api/v2/[^/]*\.rb
 -
 LICENSE
 docs/*.md
