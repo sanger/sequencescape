@@ -2,8 +2,12 @@
 
 module Api
   module V2
-    # Provides a JSON API representation of TagLayoutTemplate
-    # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
+    # Provides a JSON:API representation of {TagLayoutTemplate}.
+    # This resource can be accessed via the `/api/v2/tag_layout_templates/` endpoint.
+    #
+    # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
+    # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
+    # of the JSON:API standard.
     class TagLayoutTemplateResource < BaseResource
       immutable
 
