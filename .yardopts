@@ -1,3 +1,4 @@
+--markup=markdown
 --asset docs/images:images
 -
 LICENSE

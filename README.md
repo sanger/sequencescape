@@ -74,6 +74,15 @@ You can then access the Sequencescape documentation through: [http://localhost:8
 
 Yard will also try and document the installed gems: [http://localhost:8808/docs](http://localhost:8808/docs)
 
+If the server complains that the stack depth is too deep, this only appears to be a problem when you try to view the documentation without pre-compiling it.
+Precompiling is the simple solution and can be achieved with the following.
+
+```shell
+yard doc -r -m sequencescape .
+```
+
+This will pre-fill the cache and allow the server command above to display the documentation without complaining about stack depths.
+
 ### Linting
 
 Yard-Junk is used to check for missing or incorrect documentation. To run the checks:
