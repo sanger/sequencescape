@@ -8,6 +8,8 @@ module Api
     # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
+    #
+    # @note This resource is immutable: it's endpoint will not accept `POST`, `PATCH`, or `DELETE` requests.
     class TagLayoutTemplateResource < BaseResource
       immutable
 
