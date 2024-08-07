@@ -2,7 +2,7 @@
 
 module Api
   module V2
-    # @note This resource is immutable: it's endpoint will not accept `POST`, `PATCH`, or `DELETE` requests.
+    # @note This resource is immutable: its endpoint will not accept `POST`, `PATCH`, or `DELETE` requests.
     #
     # Provides a JSON:API representation of {TagLayoutTemplate}.
     # This resource can be accessed via the `/api/v2/tag_layout_templates/` endpoint.
