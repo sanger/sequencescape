@@ -17,33 +17,48 @@ module Api
       # Relationships
       ###
 
+      # @!attribute [r] tag_group
+      #    A relationship for the primary tag group associated with the tag layout template.
+      #    @return [Api::V2::TagGroupResource]
       has_one :tag_group
+
+      # @!attribute [r] tag2_group
+      #    A relationship for the secondary tag group associated with the tag layout template.
+      #    This is used during dual indexing, but will not be found during single indexing.
+      #    @return [Api::V2::TagGroupResource]
       has_one :tag2_group, class_name: 'TagGroup'
 
       ###
       # Attributes
       ###
 
-      # @!attribute [r]
-      # @return [String] The UUID of the tag layout template.
+      # @!attribute [r] uuid
+      #    The UUID of the tag layout template.
+      #    @return [String]
       attribute :uuid, readonly: true
 
-      # @!attribute [r]
-      # @return [String] The name of the tag layout template.
+      # @!attribute [r] name
+      #    The display name of the tag layout template.
+      #    @return [String]
       attribute :name, readonly: true
 
-      # @!attribute [r]
-      # @return [String] The direction algorithm name for the tag layout template.
+      # @!attribute [r] direction
+      #    The name of the algorithm defining the direction of the tag layout.
+      #    @return [String]
       attribute :direction, readonly: true
 
-      # @!attribute [r]
-      # @return [String] The walking_by algorithm name for the tag layout template.
+      # @!attribute [r] walking_by
+      #    The name of the algorithm defining the way of walking through the tag layout.
+      #    @return [String]
       attribute :walking_by, readonly: true
 
       ###
       # Filters
       ###
 
+      # @!method enabled
+      #    A filter to return only enabled tag layout templates.
+      #    Set by default to `true`.
       filter :enabled, default: true
     end
   end
