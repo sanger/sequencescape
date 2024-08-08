@@ -1,7 +1,7 @@
 # Request types for EMseq DNA Prep
 ---
-limber_lcm_wgs_emseq_dna_prep:
-  name: Limber WGS EMseq DNA Prep
+limber_lcm_triomics_dna_prep:
+  name: LCM Triomics DNA Prep
   asset_type: Well
   order: 1
   request_class_name: CustomerRequest
@@ -11,8 +11,8 @@ limber_lcm_wgs_emseq_dna_prep:
   acceptable_purposes:
     - LCMT Lysate
 
-limber_emseq_wgs_library_prep:
-  name: Limber EMseq WGS Library Prep
+limber_lcm_triomics_dna_wgs_library_prep:
+  name: LCM Triomics DNA WGS Library Prep
   asset_type: Well
   order: 1
   request_class_name: IlluminaHtp::Requests::StdLibraryRequest
@@ -22,10 +22,10 @@ limber_emseq_wgs_library_prep:
   acceptable_purposes:
     - LCMT DNA Adp Lig
   library_types:
-    - EMSeq WGS
+    - LCM Triomics DNA WGS
 
 limber_emseq_em_library_prep:
-  name: Limber EMseq EM Library Prep
+  name: LCM Triomics DNA EMSeq Library Prep
   asset_type: Well
   order: 1
   request_class_name: IlluminaHtp::Requests::StdLibraryRequest
@@ -35,4 +35,4 @@ limber_emseq_em_library_prep:
   acceptable_purposes:
     - LCMT DNA Adp Lig
   library_types:
-    - EMSeq EM
+    - LCM Triomics DNA EMSeq
