@@ -7,39 +7,46 @@ module Api
     # @todo This documentation does not yet include any example usage of the API via cURL or similar.
     #
     # @note This resource is immutable: its endpoint will not accept `POST`, `PATCH`, or `DELETE` requests.
-    # @note Access this resource via the `/api/v2/transfer_requests/` endpoint.
+    # @note Access this resource via the `/api/v2/barcode_printers/` endpoint.
     #
-    # Provides a JSON:API representation of {TransferRequest}.
+    # Provides a JSON:API representation of {BarcodePrinter}.
     #
     # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
-    class TransferRequestResource < BaseResource
-      # Constants...
-
+    class BarcodePrinterResource < BaseResource
       immutable
-
-      # model_name / model_hint if required
 
       default_includes :uuid_object
 
-      # Associations:
-      has_one :target_asset, foreign_key: :target_asset_id, class_name: 'Receptacle'
-      has_one :source_asset, relation_name: 'asset', foreign_key: :asset_id, class_name: 'Receptacle'
-      has_one :submission, foreign_key: :submission_id, class_name: 'Submission'
-
+      ###
       # Attributes
+      ###
+
+      # @!attribute [r] name
+      #   @return [String] the name of the barcode printer.
+      attribute :name
+
+      # @!attribute [r] uuid
+      #   @return [String] the UUID of the barcode printer.
       attribute :uuid, readonly: true
-      attribute :state, readonly: true
-      attribute :volume, readonly: true
 
-      # Filters
+      # @!attribute [r] print_service
+      #   @return [String] the service this printer can be instructed to print from.
+      attribute :print_service, readonly: true
 
-      # Custom methods
-      # These shouldn't be used for business logic, and a more about
-      # I/O and isolating implementation details.
+      # @!attribute [r] barcode_type
+      #   @return [String] the name of the barcode type for this printer.
+      attribute :barcode_type, readonly: true
 
-      # Class method overrides
+      ###
+      # Getters and Setters
+      ###
+
+
+      def barcode_type
+        @model.barcode_printer_type.name
+      end
     end
   end
 end

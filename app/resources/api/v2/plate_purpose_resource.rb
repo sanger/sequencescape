@@ -2,8 +2,17 @@
 
 module Api
   module V2
-    # Provides a JSON API representation of PlatePurpose
-    # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
+    # @todo This documentation does not yet include a detailed description of what this resource represents.
+    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
+    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+    #
+    # @note Access this resource via the `/api/v2/plate_purposes/` endpoint.
+    #
+    # Provides a JSON:API representation of {PlatePurpose}.
+    #
+    # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
+    # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
+    # of the JSON:API standard.
     class PlatePurposeResource < BaseResource
       model_name 'PlatePurpose'
 
@@ -13,34 +22,34 @@ module Api
 
       # The following attributes are sent by Limber for a new plate purpose.
 
-      # @!attribute [rw]
-      # @return [String] The name of the plate purpose.
+      # @!attribute [rw] name
+      #   @return [String] the name of the plate purpose.
       attribute :name
 
-      # @!attribute [rw]
-      # @return [Boolean] Whether the plates of this purpose are stock plates.
+      # @!attribute [rw] stock_plate
+      #   @return [Boolean] whether the plates of this purpose are stock plates.
       attribute :stock_plate
 
-      # @!attribute [rw]
-      # @return [Boolean] Whether the plates of this purpose are cherrypickable.
+      # @!attribute [rw] cherrypickable_target
+      #   @return [Boolean] whether the plates of this purpose are cherrypickable.
       attribute :cherrypickable_target
 
-      # @!attribute [rw]
-      # @return [Boolean] Whether the plates of this purpose are input plates.
+      # @!attribute [rw] input_plate
+      #   @return [Boolean] whether the plates of this purpose are input plates.
       attribute :input_plate
 
-      # @!attribute [rw]
-      # @return [Integer] The size of the plates of this purpose.
+      # @!attribute [rw] size
+      #   @return [Integer] the size of the plates of this purpose.
       attribute :size
 
-      # @!attribute [rw]
-      # @return [String] The name of the shape of the plates of this purpose.
+      # @!attribute [rw] asset_shape
+      #   @return [String] the name of the shape of the plates of this purpose.
       attribute :asset_shape
 
       # The following attribute is required by Limber to store purposes.
 
-      # @!attribute [r]
-      # @return [String] gets the UUID of the plate purpose.
+      # @!attribute [r] uuid
+      #   @return [String] the UUID of the plate purpose.
       attribute :uuid
 
       # Sets the asset shape of the plate purpose by name if given.

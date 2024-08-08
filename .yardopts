@@ -1,4 +1,6 @@
 --asset docs/images:images
+--exclude app/controllers/api/v2/[^/]*\.rb
+--exclude app/controllers/api/v2/concerns/.*
 -
 LICENSE
 docs/*.md
