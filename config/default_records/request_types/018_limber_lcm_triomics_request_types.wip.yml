@@ -1,4 +1,4 @@
-# Request types for EMseq DNA Prep
+# Request types for LCM Triomics DNA WGS and EMSeq
 ---
 limber_lcm_triomics_dna_prep:
   name: LCM Triomics DNA Prep

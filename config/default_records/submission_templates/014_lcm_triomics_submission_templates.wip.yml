@@ -1,6 +1,6 @@
-# These submission templates are associated with the EMSeq pipeline.
+# Submission templates for LCM Triomics DNA WGS and EMSeq
 ---
-# EMSeq DNA Prep submission template
+# LCM Triomics DNA Prep submission template
 Limber-Htp - LCM Triomics DNA Prep:
   submission_class_name: "LinearSubmission"
   related_records:

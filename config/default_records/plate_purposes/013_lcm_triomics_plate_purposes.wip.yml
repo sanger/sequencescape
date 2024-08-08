@@ -1,3 +1,5 @@
+# Plate purposes for LCM Triomics DNA WGS and EMSeq
+---
 LCMT Lysate:
   type: PlatePurpose::Input
   stock_plate: true
