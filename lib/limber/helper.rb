@@ -166,12 +166,17 @@ module Limber::Helper
         sequencing_request_types.each do |sequencing_request_type|
           next if SubmissionTemplate.exists?(name: name_for(cherrypick, sequencing_request_type))
 
+          # Hiseq templates are hidden as of Y24-181 so we set them as superceeded by unknown
+          # This allows us to keep the template in case it needs to be restored but not make it visible
+          superceded_by_id = sequencing_request_type&.name&.downcase&.include?('hiseq') ? -2 : -1
+
           yield(
             {
               name: name_for(cherrypick, sequencing_request_type),
               submission_class_name: 'LinearSubmission',
               submission_parameters: submission_parameters(cherrypick, sequencing_request_type),
-              product_line_id: product_line_id,
+              superceded_by_id:,
+              product_line_id:,
               product_catalogue: catalogue
             }
           )
