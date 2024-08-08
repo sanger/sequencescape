@@ -1,9 +1,9 @@
 # These submission templates are associated with the EMSeq pipeline.
 ---
 # EMSeq DNA Prep submission template
-Limber-Htp - EMSeq DNA Prep:
+Limber-Htp - LCM WGS EMSeq DNA Prep:
   submission_class_name: "LinearSubmission"
   related_records:
-    request_type_keys: ["limber_emseq_dna_prep"]
-    product_line_name: EMSeq
-    product_catalogue_name: EMSeq
+    request_type_keys: ["limber_lcm_wgs_emseq_dna_prep"]
+    product_line_name: LCM WGS EMSeq
+    product_catalogue_name: LCM WGS EMSeq
