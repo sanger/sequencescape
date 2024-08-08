@@ -1,7 +1,7 @@
 # Request types for EMseq DNA Prep
 ---
 limber_lcm_wgs_emseq_dna_prep:
-  name: Limber EMseq DNA Prep
+  name: Limber WGS EMseq DNA Prep
   asset_type: Well
   order: 1
   request_class_name: CustomerRequest
