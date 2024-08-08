@@ -30,6 +30,11 @@ class Purpose < ApplicationRecord
 
   self.table_name = 'plate_purposes'
 
+  # Flag to indicate whether this purpose is an input labware upon which the user can fail
+  # receptacles. This is used by the state changer to determine receptacle state.
+  class_attribute :has_failable_input_receptacles
+  self.has_failable_input_receptacles = false
+
   class_attribute :default_prefix
   class_attribute :state_changer
 
