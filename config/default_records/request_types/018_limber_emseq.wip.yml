@@ -24,7 +24,7 @@ limber_lcm_triomics_dna_wgs_library_prep:
   library_types:
     - LCM Triomics DNA WGS
 
-limber_emseq_em_library_prep:
+limber_lcm_triomics_dna_emseq_library_prep:
   name: LCM Triomics DNA EMSeq Library Prep
   asset_type: Well
   order: 1
