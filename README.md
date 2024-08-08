@@ -67,12 +67,19 @@ a organisation of 900 people.
 In addition to the [externally hosted YARD docs](https://www.rubydoc.info/github/sanger/sequencescape), you can also run a local server:
 
 ```shell
-yard server -r --gems -m sequencescape .
+yard server --reload sequencescape .
 ```
 
-You can then access the Sequencescape documentation through: [http://localhost:8808/docs/sequencescape](http://localhost:8808/docs/sequencescape)
+You can then access the Sequencescape documentation through: [http://localhost:8808/docs](http://localhost:8808/docs)
 
-Yard will also try and document the installed gems: [http://localhost:8808/docs](http://localhost:8808/docs)
+If the server complains that the stack depth is too deep, this only appears to be a problem when you try to view the documentation without pre-compiling it.
+Precompiling is the simple solution and can be achieved with the following.
+
+```shell
+yard doc
+```
+
+This will pre-fill the cache and allow the server command above to display the documentation without complaining about stack depths.
 
 ### Linting
 

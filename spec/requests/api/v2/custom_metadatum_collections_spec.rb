@@ -98,52 +98,52 @@ describe 'CustomMetadatumCollections API', with: :api_v2 do
         expect(resource_model.metadata.length).to eq 5
       end
     end
+  end
 
-    describe '#post' do
-      let(:payload) do
-        {
-          'data' => {
-            'type' => 'custom_metadatum_collections',
-            'attributes' => {
-              user_id: '1',
-              asset_id: '1',
-              metadata: {
-                'a metadata key': 'a value'
-              }
+  describe '#post' do
+    let(:payload) do
+      {
+        'data' => {
+          'type' => 'custom_metadatum_collections',
+          'attributes' => {
+            user_id: '1',
+            asset_id: '1',
+            metadata: {
+              'a metadata key': 'a value'
             }
           }
         }
-      end
+      }
+    end
 
-      let(:invalid_payload) do
-        {
-          'data' => {
-            'type' => 'custom_metadatum_collections',
-            'attributes' => {
-              user_id: '1',
-              metadata: {
-                'a metadata key': 'a value'
-              }
+    let(:invalid_payload) do
+      {
+        'data' => {
+          'type' => 'custom_metadatum_collections',
+          'attributes' => {
+            user_id: '1',
+            metadata: {
+              'a metadata key': 'a value'
             }
           }
         }
-      end
+      }
+    end
 
-      it 'successfully allows creation of a custom_metadatum_collection' do
-        api_post base_endpoint, payload
-        expect(response).to have_http_status(:success), response.body
-        expect(json.dig('data', 'type')).to eq('custom_metadatum_collections')
-        expect(json.dig('data', 'attributes', 'metadata')).to eq({ 'a metadata key' => 'a value' })
-        expect(json.dig('data', 'attributes', 'user_id')).to be_present
-        expect(json.dig('data', 'attributes', 'asset_id')).to be_present
-        expect(json.dig('data', 'attributes', 'uuid')).to be_present
-      end
+    it 'successfully allows creation of a custom_metadatum_collection' do
+      api_post base_endpoint, payload
+      expect(response).to have_http_status(:success), response.body
+      expect(json.dig('data', 'type')).to eq('custom_metadatum_collections')
+      expect(json.dig('data', 'attributes', 'metadata')).to eq({ 'a metadata key' => 'a value' })
+      expect(json.dig('data', 'attributes', 'user_id')).to be_present
+      expect(json.dig('data', 'attributes', 'asset_id')).to be_present
+      expect(json.dig('data', 'attributes', 'uuid')).to be_present
+    end
 
-      it 'does not create a custom_metadatum_collection when missing attributes' do
-        api_post base_endpoint, invalid_payload
-        expect(response).to have_http_status(:unprocessable_entity)
-        expect(json['errors'][0]['detail']).to eq("asset_id - can't be blank")
-      end
+    it 'does not create a custom_metadatum_collection when missing attributes' do
+      api_post base_endpoint, invalid_payload
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(json['errors'][0]['detail']).to eq("asset_id - can't be blank")
     end
   end
 end

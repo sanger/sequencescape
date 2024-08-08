@@ -2,6 +2,7 @@
 
 module Api
   module V2
+    # @api V2
     # Provides extensions to JSONAPI::Resource as well as global behaviour
     # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
     class BaseResource < JSONAPI::Resource
