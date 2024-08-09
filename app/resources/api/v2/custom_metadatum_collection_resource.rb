@@ -11,20 +11,20 @@ module Api
       # Attributes
       ###
 
-      # @!attribute [r]
-      # @return [String] The UUID of the collection.
+      # @!attribute [r] uuid
+      #   @return [String] The UUID of the collection.
       attribute :uuid
 
-      # @!attribute [rw]
-      # @return [Int] The ID of the user who created this collection. Can only and must be set on creation.
+      # @!attribute [rw] user_id
+      #   @return [Int] The ID of the user who created this collection. Can only and must be set on creation.
       attribute :user_id
 
-      # @!attribute [rw]
-      # @return [Int] The ID of the labware the metadata corresponds to. Can only and must be set on creation.
+      # @!attribute [rw] asset_id
+      #   @return [Int] The ID of the labware the metadata corresponds to. Can only and must be set on creation.
       attribute :asset_id
 
-      # @!attribute [rw]
-      # @return [Hash] All metadata in this collection.
+      # @!attribute [rw] metadata
+      #   @return [Hash] All metadata in this collection.
       attribute :metadata
 
       ###
