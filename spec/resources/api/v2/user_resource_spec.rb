@@ -4,17 +4,24 @@ require 'rails_helper'
 require './app/resources/api/v2/user_resource'
 
 RSpec.describe Api::V2::UserResource, type: :resource do
-  subject { described_class.new(resource_model, {}) }
+  subject(:resource) { described_class.new(resource_model, {}) }
 
   let(:resource_model) { build_stubbed :user }
 
-  # Test attributes
-  it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
-    expect(subject).to have_attribute :uuid
-    expect(subject).to have_attribute :login
-    expect(subject).not_to have_updatable_field(:id)
-    expect(subject).not_to have_updatable_field(:uuid)
-    expect(subject).not_to have_updatable_field(:login)
-    expect(subject).to filter(:user_code)
-  end
+  # Expected attributes
+  it { is_expected.not_to have_attribute :id }
+  it { is_expected.to have_attribute :uuid }
+  it { is_expected.to have_attribute :login }
+  it { is_expected.to have_attribute :first_name }
+  it { is_expected.to have_attribute :last_name }
+
+  # Read-only fields
+  it { is_expected.not_to have_updatable_field :uuid }
+  it { is_expected.not_to have_updatable_field :login }
+  it { is_expected.not_to have_updatable_field :first_name }
+  it { is_expected.not_to have_updatable_field :last_name }
+
+  # Filters
+  it { is_expected.to filter(:user_code) }
+  it { is_expected.to filter(:uuid) }
 end
