@@ -2,11 +2,18 @@
 
 module Api
   module V2
-    # Class required by json-api-resources gem to be able to read the information of
-    # a sample
+    # @todo This documentation does not yet include a detailed description of what this resource represents.
+    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
+    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+    #
+    # @note Access this resource via the `/api/v2/samples/` endpoint.
+    #
+    # Provides a JSON:API representation of {Sample}.
+    #
+    # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
+    # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
+    # of the JSON:API standard.
     class SampleResource < BaseResource
-      # immutable # comment to make the resource mutable
-
       default_includes :uuid_object
 
       has_one :sample_metadata, class_name: 'SampleMetadata', foreign_key_on: :related

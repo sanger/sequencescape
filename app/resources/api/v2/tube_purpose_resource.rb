@@ -2,30 +2,39 @@
 
 module Api
   module V2
-    # Provides a JSON API representation of a tube purpose.
-    # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
+    # @todo This documentation does not yet include a detailed description of what this resource represents.
+    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
+    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+    #
+    # @note Access this resource via the `/api/v2/tube_purposes/` endpoint.
+    #
+    # Provides a JSON:API representation of {Tube::Purpose}.
+    #
+    # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
+    # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
+    # of the JSON:API standard.
     class TubePurposeResource < BaseResource
-      model_name 'Tube::Purpose'
+      model_name 'Tube::Purpose', model_hint: true
 
       #####
       # Attributes
       #####
 
-      # @!attribute [rw]
-      # @return [String] The name of the tube purpose.
+      # @!attribute [rw] name
+      #   @return [String] the name of the tube purpose.
       attribute :name
 
-      # @!attribute [rw]
-      # @return [String] The purpose type. This is mapped to the type attribute on the model.
+      # @!attribute [rw] purpose_type
+      #   @return [String] the purpose type. This is mapped to the type attribute on the model.
       attribute :purpose_type, delegate: :type
 
-      # @!attribute [rw]
-      # @return [String] The target type.
+      # @!attribute [rw] target_type
+      #   @return [String] the target type.
       attribute :target_type
 
-      # @!attribute [r]
-      # @return [String] The UUID of the tube purpose.
-      attribute :uuid
+      # @!attribute [r] uuid
+      #   @return [String] the UUID of the tube purpose.
+      attribute :uuid, readonly: true
 
       # Gets the list of fields which are creatable on a TubePurpose.
       #
@@ -42,6 +51,8 @@ module Api
       def self.updatable_fields(_context)
         super - %i[uuid] # Do not allow creating with any readonly fields
       end
+
+      filter :type, default: 'Tube::Purpose'
     end
   end
 end

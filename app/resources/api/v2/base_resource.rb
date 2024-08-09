@@ -3,8 +3,16 @@
 module Api
   module V2
     # @api V2
-    # Provides extensions to JSONAPI::Resource as well as global behaviour
-    # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
+    # @abstract
+    #
+    # @todo This documentation does not yet include complete descriptions of methods and what this class offers to its
+    #   sub-classes.
+    #
+    # Provides a base class for JSON:API representations of {ApplicationRecord} sub-classes.
+    #
+    # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
+    # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
+    # of the JSON:API standard.
     class BaseResource < JSONAPI::Resource
       abstract
 
