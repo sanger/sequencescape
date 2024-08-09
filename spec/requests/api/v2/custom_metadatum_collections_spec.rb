@@ -228,6 +228,7 @@ describe 'CustomMetadatumCollections API', with: :api_v2 do
         end
       end
     end
+  end
 
     describe '#post' do
       context 'with a valid payload' do

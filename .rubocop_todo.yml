@@ -912,12 +912,10 @@ RSpec/NamedSubject:
     - 'spec/resources/api/v2/receptacle_resource_spec.rb'
     - 'spec/resources/api/v2/request_resource_spec.rb'
     - 'spec/resources/api/v2/request_type_resource_spec.rb'
-    - 'spec/resources/api/v2/sample_metadata_resource_spec.rb'
     - 'spec/resources/api/v2/sample_resource_spec.rb'
     - 'spec/resources/api/v2/study_resource_spec.rb'
     - 'spec/resources/api/v2/submission_resource_spec.rb'
     - 'spec/resources/api/v2/tag_group_resource_spec.rb'
-    - 'spec/resources/api/v2/tag_layout_template_resource_spec.rb'
     - 'spec/resources/api/v2/tube_resource_spec.rb'
     - 'spec/resources/api/v2/user_resource_spec.rb'
 

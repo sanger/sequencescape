@@ -89,6 +89,7 @@
 
     <%= metadata_fields.text_field(:s3_email_list) %>
     <%= metadata_fields.select(:data_deletion_period, ['','3 months']) %>
+    <%= metadata_fields.text_field(:contaminated_human_data_access_group) %>
 
     <% metadata_fields.finalize_related_fields %>
   <% end %>

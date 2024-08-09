@@ -4,25 +4,29 @@ require 'rails_helper'
 require './app/resources/api/v2/tag_layout_template_resource'
 
 RSpec.describe Api::V2::TagLayoutTemplateResource, type: :resource do
-  subject { described_class.new(resource_model, {}) }
+  subject(:resource) { described_class.new(resource_model, {}) }
 
   let(:resource_model) { build_stubbed :tag_layout_template }
 
-  # Test attributes
-  it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
-    expect(subject).to have_attribute :uuid
-    expect(subject).not_to have_updatable_field(:id)
-    expect(subject).not_to have_updatable_field(:uuid)
-  end
+  # Expected attributes
+  it { is_expected.not_to have_attribute :id }
+  it { is_expected.to have_attribute :uuid }
+  it { is_expected.to have_attribute :name }
+  it { is_expected.to have_attribute :direction }
+  it { is_expected.to have_attribute :walking_by }
 
-  # Updatable fields
-  # eg. it { is_expected.to have_updatable_field(:state) }
+  # Read-only fields
+  it { is_expected.not_to have_updatable_field :uuid }
+  it { is_expected.not_to have_updatable_field :name }
+  it { is_expected.not_to have_updatable_field :direction }
+  it { is_expected.not_to have_updatable_field :walking_by }
 
   # Filters
-  # eg. it { is_expected.to filter(:order_type) }
+  it { is_expected.to filter(:enabled) }
 
   # Associations
-  # eg. it { is_expected.to have_many(:samples).with_class_name('Sample') }
+  it { is_expected.to have_one(:tag_group).with_class_name('TagGroup') }
+  it { is_expected.to have_one(:tag2_group).with_class_name('TagGroup') }
 
   # Custom method tests
   # Add tests for any custom methods you've added.

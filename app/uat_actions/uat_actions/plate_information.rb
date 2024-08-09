@@ -20,6 +20,8 @@ class UatActions::PlateInformation < UatActions
     return false if plate.blank?
 
     report[:wells_with_aliquots] = wells_with_aliquots
+
+    report[:wells_with_active_requests_as_source] = wells_with_active_requests_as_source
     true
   end
 
@@ -34,6 +36,23 @@ class UatActions::PlateInformation < UatActions
       .wells_in_column_order
       .each_with_object([]) do |well, wells_with_aliquots|
         wells_with_aliquots << well.map_description if well.aliquots.present?
+      end
+      .join(', ')
+  end
+
+  # For finding wells in a partial submission plate that are to go forward.
+  # i.e. wells will have active requests as source only if they are to progress.
+  def wells_with_active_requests_as_source
+    active_request_states = %w[pending started]
+
+    plate
+      .wells_in_column_order
+      .each_with_object([]) do |well, wells_with_active_requests_as_source|
+        # requests must have an active state
+        if well.requests_as_source.present? &&
+             well.requests_as_source.any? { |request| active_request_states.include?(request.state) }
+          wells_with_active_requests_as_source << well.map_description
+        end
       end
       .join(', ')
   end

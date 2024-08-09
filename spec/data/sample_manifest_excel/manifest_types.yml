@@ -206,7 +206,7 @@ plate_anospp:
     - :date_of_sample_collection
     - :sample_taxon_id
     - :sample_common_name
-    - :sample_description_specimen_plate_barcode
+    - :sample_description_specimen_plate_barcode_mandatory
     - :sample_type
     - :donor_id
     - :control_type

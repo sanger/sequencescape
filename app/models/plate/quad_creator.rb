@@ -125,7 +125,7 @@ class Plate::QuadCreator
     #
     # Converts a well or tube location name to its co-ordinates
     #
-    # @param [<String>] Location name of the well or tube. Eg. A3
+    # @param [<String>] locn_name name of the well or tube. Eg. A3
     #
     # @return [Array<Integer>] An array of two integers indicating column and row. eg. [0, 2]
     #

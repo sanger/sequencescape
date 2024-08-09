@@ -17,27 +17,30 @@ module Api
 
       # @!attribute [rw]
       # @return [String] The purpose type. This is mapped to the type attribute on the model.
-      attribute :purpose_type
+      attribute :purpose_type, delegate: :type
 
       # @!attribute [rw]
       # @return [String] The target type.
       attribute :target_type
 
-      #####
-      # Custom getters and setters
-      #####
+      # @!attribute [r]
+      # @return [String] The UUID of the tube purpose.
+      attribute :uuid
 
-      # Gets the purpose type from the model.
-      # @return [String] The purpose type.
-      def purpose_type
-        @model.type
+      # Gets the list of fields which are creatable on a TubePurpose.
+      #
+      # @param _context [JSONAPI::Resource::Context] not used
+      # @return [Array<Symbol>] the list of creatable fields.
+      def self.creatable_fields(_context)
+        super - %i[uuid] # Do not allow creating with any readonly fields
       end
 
-      # Set the purpose type on the model.
-      # @param [String] value The purpose type to set.
-      # @return [void]
-      def purpose_type=(value)
-        @model.type = value
+      # Gets the list of fields which are updatable on an existing TubePurpose.
+      #
+      # @param _context [JSONAPI::Resource::Context] not used
+      # @return [Array<Symbol>] the list of updatable fields.
+      def self.updatable_fields(_context)
+        super - %i[uuid] # Do not allow creating with any readonly fields
       end
     end
   end

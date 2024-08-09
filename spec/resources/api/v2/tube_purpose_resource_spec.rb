@@ -14,6 +14,7 @@ RSpec.describe Api::V2::TubePurposeResource, type: :resource do
     expect(resource).to have_attribute :name
     expect(resource).to have_attribute :purpose_type
     expect(resource).to have_attribute :target_type
+    expect(resource).to have_attribute :uuid
   end
 
   # Updatable fields
@@ -21,6 +22,7 @@ RSpec.describe Api::V2::TubePurposeResource, type: :resource do
     expect(resource).to have_updatable_field :name
     expect(resource).to have_updatable_field :purpose_type
     expect(resource).to have_updatable_field :target_type
+    expect(resource).not_to have_updatable_field :uuid
   end
 
   # Filters

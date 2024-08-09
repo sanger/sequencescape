@@ -3,8 +3,7 @@
 ![Ruby Test](https://github.com/sanger/sequencescape/workflows/Ruby%20Test/badge.svg)
 ![Javascript testing](https://github.com/sanger/sequencescape/workflows/Javascript%20testing/badge.svg)
 ![Linting](https://github.com/sanger/sequencescape/workflows/Linting/badge.svg)
-[![Maintainability](https://api.codeclimate.com/v1/badges/2e3913c21e32b86511e4/maintainability)](https://codeclimate.com/github/sanger/sequencescape/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/2e3913c21e32b86511e4/test_coverage)](https://codeclimate.com/github/sanger/sequencescape/test_coverage)
+[![Test Coverage](https://codecov.io/github/sanger/sequencescape/graph/badge.svg?token=Fsd7I0GYQf)](https://codecov.io/github/sanger/sequencescape)
 [![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](https://www.rubydoc.info/github/sanger/sequencescape)
 [![Knapsack Pro Parallel CI builds for RSpec Tests](https://img.shields.io/badge/Knapsack%20Pro-Parallel%20%2F%20RSpec%20Tests-%230074ff)](https://knapsackpro.com/dashboard/organizations/1976/projects/1324/test_suites/1880/builds?utm_campaign=organization-id-1976&utm_content=test-suite-id-1880&utm_medium=readme&utm_source=knapsack-pro-badge&utm_term=project-id-1324)
 [![Knapsack Pro Parallel CI builds for Cucumber Tests](https://img.shields.io/badge/Knapsack%20Pro-Parallel%20%2F%20Cucumber%20Tests-%230074ff)](https://knapsackpro.com/dashboard/organizations/1976/projects/1324/test_suites/1881/builds?utm_campaign=organization-id-1976&utm_content=test-suite-id-1881&utm_medium=readme&utm_source=knapsack-pro-badge&utm_term=project-id-1324)
@@ -68,12 +67,27 @@ a organisation of 900 people.
 In addition to the [externally hosted YARD docs](https://www.rubydoc.info/github/sanger/sequencescape), you can also run a local server:
 
 ```shell
-yard server -r --gems -m sequencescape .
+yard server --reload sequencescape .
 ```
 
-You can then access the Sequencescape documentation through: [http://localhost:8808/docs/sequencescape](http://localhost:8808/docs/sequencescape)
+You can then access the Sequencescape documentation through: [http://localhost:8808/docs](http://localhost:8808/docs)
 
-Yard will also try and document the installed gems: [http://localhost:8808/docs](http://localhost:8808/docs)
+If the server complains that the stack depth is too deep, this only appears to be a problem when you try to view the documentation without pre-compiling it.
+Precompiling is the simple solution and can be achieved with the following.
+
+```shell
+yard doc
+```
+
+This will pre-fill the cache and allow the server command above to display the documentation without complaining about stack depths.
+
+### Linting
+
+Yard-Junk is used to check for missing or incorrect documentation. To run the checks:
+
+```shell
+bundle exec yard-junk --sanity
+```
 
 ## Requirements
 
