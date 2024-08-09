@@ -230,117 +230,116 @@ describe 'CustomMetadatumCollections API', with: :api_v2 do
     end
   end
 
-    describe '#post' do
-      context 'with a valid payload' do
-        let(:payload) do
-          {
-            'data' => {
-              'type' => 'custom_metadatum_collections',
-              'attributes' => {
-                user_id: 1,
-                asset_id: 1,
-                metadata: {
-                  'a metadata key': 'a value'
-                }
+  describe '#post' do
+    context 'with a valid payload' do
+      let(:payload) do
+        {
+          'data' => {
+            'type' => 'custom_metadatum_collections',
+            'attributes' => {
+              user_id: 1,
+              asset_id: 1,
+              metadata: {
+                'a metadata key': 'a value'
               }
             }
           }
-        end
-
-        it 'creates a new resource' do
-          expect { api_post base_endpoint, payload }.to change(CustomMetadatumCollection, :count).by(1)
-        end
-
-        it 'responds with success' do
-          api_post base_endpoint, payload
-
-          expect(response).to have_http_status(:success)
-        end
-
-        it 'responds with the correct attributes' do
-          api_post base_endpoint, payload
-
-          expect(json.dig('data', 'type')).to eq('custom_metadatum_collections')
-          expect(json.dig('data', 'attributes', 'metadata')).to eq({ 'a metadata key' => 'a value' })
-          expect(json.dig('data', 'attributes', 'user_id')).to eq 1
-          expect(json.dig('data', 'attributes', 'asset_id')).to eq 1
-          expect(json.dig('data', 'attributes', 'uuid')).to be_present
-        end
-
-        it 'applies the attributes to the new record' do
-          api_post base_endpoint, payload
-
-          new_record = CustomMetadatumCollection.last
-          expect(new_record.metadata).to eq({ 'a metadata key' => 'a value' })
-          expect(new_record.user_id).to eq 1
-          expect(new_record.asset_id).to eq 1
-        end
+        }
       end
 
-      context 'with missing asset_id in the payload' do
-        let(:payload) do
-          {
-            'data' => {
-              'type' => 'custom_metadatum_collections',
-              'attributes' => {
-                user_id: 1,
-                metadata: {
-                  'a metadata key': 'a value'
-                }
-              }
-            }
-          }
-        end
-
-        it 'does not create a new resource' do
-          expect { api_post base_endpoint, payload }.not_to change(CustomMetadatumCollection, :count)
-        end
-
-        it 'responds with unprocessable entity' do
-          api_post base_endpoint, payload
-
-          expect(response).to have_http_status(:unprocessable_entity)
-        end
-
-        it 'responds with the correct error' do
-          api_post base_endpoint, payload
-
-          expect(json['errors'][0]['detail']).to eq("asset_id - can't be blank")
-        end
+      it 'creates a new resource' do
+        expect { api_post base_endpoint, payload }.to change(CustomMetadatumCollection, :count).by(1)
       end
 
-      context 'with a uuid in the payload' do
-        let(:payload) do
-          {
-            'data' => {
-              'type' => 'custom_metadatum_collections',
-              'attributes' => {
-                uuid: '111111-2222-3333-4444-555555666666',
-                user_id: 1,
-                asset_id: 1,
-                metadata: {
-                  'a metadata key': 'a value'
-                }
+      it 'responds with success' do
+        api_post base_endpoint, payload
+
+        expect(response).to have_http_status(:success)
+      end
+
+      it 'responds with the correct attributes' do
+        api_post base_endpoint, payload
+
+        expect(json.dig('data', 'type')).to eq('custom_metadatum_collections')
+        expect(json.dig('data', 'attributes', 'metadata')).to eq({ 'a metadata key' => 'a value' })
+        expect(json.dig('data', 'attributes', 'user_id')).to eq 1
+        expect(json.dig('data', 'attributes', 'asset_id')).to eq 1
+        expect(json.dig('data', 'attributes', 'uuid')).to be_present
+      end
+
+      it 'applies the attributes to the new record' do
+        api_post base_endpoint, payload
+
+        new_record = CustomMetadatumCollection.last
+        expect(new_record.metadata).to eq({ 'a metadata key' => 'a value' })
+        expect(new_record.user_id).to eq 1
+        expect(new_record.asset_id).to eq 1
+      end
+    end
+
+    context 'with missing asset_id in the payload' do
+      let(:payload) do
+        {
+          'data' => {
+            'type' => 'custom_metadatum_collections',
+            'attributes' => {
+              user_id: 1,
+              metadata: {
+                'a metadata key': 'a value'
               }
             }
           }
-        end
+        }
+      end
 
-        it 'does not create a new resource' do
-          expect { api_post base_endpoint, payload }.not_to change(CustomMetadatumCollection, :count)
-        end
+      it 'does not create a new resource' do
+        expect { api_post base_endpoint, payload }.not_to change(CustomMetadatumCollection, :count)
+      end
 
-        it 'responds with bad request' do
-          api_post base_endpoint, payload
+      it 'responds with unprocessable entity' do
+        api_post base_endpoint, payload
 
-          expect(response).to have_http_status(:bad_request)
-        end
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
 
-        it 'responds with the correct error' do
-          expect { api_post base_endpoint, payload }.not_to change(CustomMetadatumCollection, :count)
+      it 'responds with the correct error' do
+        api_post base_endpoint, payload
 
-          expect(json['errors'][0]['detail']).to eq('uuid is not allowed.')
-        end
+        expect(json['errors'][0]['detail']).to eq("asset_id - can't be blank")
+      end
+    end
+
+    context 'with a uuid in the payload' do
+      let(:payload) do
+        {
+          'data' => {
+            'type' => 'custom_metadatum_collections',
+            'attributes' => {
+              uuid: '111111-2222-3333-4444-555555666666',
+              user_id: 1,
+              asset_id: 1,
+              metadata: {
+                'a metadata key': 'a value'
+              }
+            }
+          }
+        }
+      end
+
+      it 'does not create a new resource' do
+        expect { api_post base_endpoint, payload }.not_to change(CustomMetadatumCollection, :count)
+      end
+
+      it 'responds with bad request' do
+        api_post base_endpoint, payload
+
+        expect(response).to have_http_status(:bad_request)
+      end
+
+      it 'responds with the correct error' do
+        expect { api_post base_endpoint, payload }.not_to change(CustomMetadatumCollection, :count)
+
+        expect(json['errors'][0]['detail']).to eq('uuid is not allowed.')
       end
     end
   end
