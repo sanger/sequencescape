@@ -43,7 +43,6 @@ module Api
       # Getters and Setters
       ###
 
-
       def barcode_type
         @model.barcode_printer_type.name
       end
