@@ -7,3 +7,17 @@ Limber-Htp - LCM Triomics DNA Prep:
     request_type_keys: ["limber_lcm_triomics_dna_prep"]
     product_line_name: LCM Triomics
     product_catalogue_name: LCM Triomics
+
+Limber-Htp - LCM Triomics DNA WGS Library Prep:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_lcm_triomics_dna_wgs_library_prep"]
+    product_line_name: LCM Triomics
+    product_catalogue_name: LCM Triomics
+
+Limber-Htp - LCM Triomics DNA EMSeq Library Prep:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_lcm_triomics_dna_emseq_library_prep"]
+    product_line_name: LCM Triomics
+    product_catalogue_name: LCM Triomics
