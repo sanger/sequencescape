@@ -25,6 +25,7 @@ describe 'Transfer Templates API', with: :api_v2 do
 
     describe '#get TransferTemplates by UUID' do
       let(:uuids) { transfer_templates.map(&:uuid).first(3) }
+
       before { api_get base_endpoint + "?filter[uuid]=#{uuids.join(',')}" }
 
       it 'responds with a success http code' do
@@ -38,6 +39,7 @@ describe 'Transfer Templates API', with: :api_v2 do
 
     describe '#get TransferTemplate by ID' do
       let(:transfer_template) { transfer_templates.first }
+
       before { api_get "#{base_endpoint}/#{transfer_template.id}" }
 
       it 'responds with a success http code' do
