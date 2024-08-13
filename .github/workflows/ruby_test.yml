@@ -9,6 +9,7 @@ env:
   SKIP_AUTOMATIC_GEM_INSTALLATION: true # Disable the bundle install in bin/setup
 
 on:
+  # Warning: changing run conditions could prevent coverage report in PR, see codecov.yml for `after_n_builds`
   - push
   - pull_request
 
