@@ -11,15 +11,13 @@ describe 'Users API', with: :api_v2 do
   context 'with multiple Users' do
     let(:users) { create_list(:user, 5) }
 
-    it 'responds with a success HTTP status code' do
-      api_get base_endpoint
+    before { api_get base_endpoint }
 
+    it 'responds with a success HTTP status code' do
       expect(response).to have_http_status(:success)
     end
 
     it 'responds with all the Users' do
-      api_get base_endpoint
-
       expect(json['data'].length).to eq User.count
     end
 
@@ -29,17 +27,16 @@ describe 'Users API', with: :api_v2 do
       context 'with a User with a swipecard code' do
         let(:swipecard_code) { '1234567' }
 
-        before { user.update(swipecard_code: swipecard_code) }
+        before do
+          user.update(swipecard_code: swipecard_code)
+          api_get "#{base_endpoint}?filter[user_code]=#{swipecard_code}"
+        end
 
         it 'responds with a success HTTP status code' do
-          api_get "#{base_endpoint}?filter[user_code]=#{swipecard_code}"
-
           expect(response).to have_http_status(:success)
         end
 
         it 'responds with only the User with the swipecard code' do
-          api_get "#{base_endpoint}?filter[user_code]=#{swipecard_code}"
-
           expect(json['data'].length).to eq(1)
           expect(json.dig('data', 0, 'id')).to eq user.id.to_s
         end
@@ -48,17 +45,29 @@ describe 'Users API', with: :api_v2 do
       context 'with a User with a barcode' do
         let(:barcode) { '2470041440697' }
 
-        before { user.update(barcode: Barcode.barcode_to_human(barcode)) }
+        before do
+          user.update(barcode: Barcode.barcode_to_human(barcode))
+          api_get "#{base_endpoint}?filter[user_code]=#{barcode}"
+        end
 
         it 'responds with a success HTTP status code' do
-          api_get "#{base_endpoint}?filter[user_code]=#{barcode}"
-
           expect(response).to have_http_status(:success)
         end
 
         it 'responds with only the User with the barcode' do
-          api_get "#{base_endpoint}?filter[user_code]=#{barcode}"
+          expect(json['data'].length).to eq(1)
+          expect(json.dig('data', 0, 'id')).to eq user.id.to_s
+        end
+      end
 
+      context 'with a User with a UUID' do
+        before { api_get "#{base_endpoint}?filter[uuid]=#{user.uuid}" }
+
+        it 'responds with a success HTTP status code' do
+          expect(response).to have_http_status(:success)
+        end
+
+        it 'responds with only the User with the UUID' do
           expect(json['data'].length).to eq(1)
           expect(json.dig('data', 0, 'id')).to eq user.id.to_s
         end
@@ -70,15 +79,13 @@ describe 'Users API', with: :api_v2 do
     let(:resource_model) { create :user }
 
     describe '#get' do
-      it 'responds with a success HTTP status code' do
-        api_get "#{base_endpoint}/#{resource_model.id}"
+      before { api_get "#{base_endpoint}/#{resource_model.id}" }
 
+      it 'responds with a success HTTP status code' do
         expect(response).to have_http_status(:success)
       end
 
       it 'responds with the correct data for the User' do
-        api_get "#{base_endpoint}/#{resource_model.id}"
-
         expect(json.dig('data', 'id')).to eq resource_model.id.to_s
         expect(json.dig('data', 'type')).to eq('users')
         expect(json.dig('data', 'attributes', 'uuid')).to eq resource_model.uuid
