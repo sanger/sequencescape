@@ -64,6 +64,10 @@ Rails.application.routes.draw do
       jsonapi_resources :wells
       jsonapi_resources :work_orders
 
+      namespace :transfer do
+        jsonapi_resources :transfers
+      end
+
       namespace :heron do
         resources :tube_rack_statuses, only: [:create]
         resources :tube_racks, only: [:create]
