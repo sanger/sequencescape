@@ -14,11 +14,9 @@ module Api
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class TagGroupAdapterTypeResource < BaseResource
-      model_name 'TagGroup::AdapterType', add_model_hint: true
+      model_name 'TagGroup::AdapterType'
 
       # Constants...
-
-      # model_name / model_hint if required
 
       # Associations:
       has_many :tag_groups, readonly: true, class_name: 'TagGroup'
