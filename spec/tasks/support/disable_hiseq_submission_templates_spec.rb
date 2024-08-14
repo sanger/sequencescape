@@ -9,7 +9,7 @@ describe 'support:disable_hiseq_submission_templates', type: :task do
 
   before do
     load_tasks # Load tasks directly in the test to avoid intermittent CI failures
-    task_reenable # Allows the task to be invoked again
+    task_reenable # Allows the task to be invoked again and ensures it is intially enabled
   end
 
   context 'when the disable_hiseq_submission_templates task is invoked' do
