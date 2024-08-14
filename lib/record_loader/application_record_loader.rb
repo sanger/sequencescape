@@ -9,5 +9,13 @@ module RecordLoader
     # Uses the standard RailsAdapter
     # @see https://rubydoc.info/github/sanger/record_loader/RecordLoader/Adapter
     adapter RecordLoader::Adapter::Rails.new
+  
+    def wip_list(directory)
+      wip_files = []
+      Find.find(directory) do |path|
+        files << path if path =~ /\wip\.yml$/
+      end
+      files
+    end
   end
 end
