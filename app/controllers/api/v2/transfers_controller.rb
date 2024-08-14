@@ -10,13 +10,13 @@ module Api
         # behaviour, and in many cases this file may be left empty.
       end
 
-      class BetweenPlatesController < JSONAPI::ResourceController
-      end
-
       class BetweenPlateAndTubesController < JSONAPI::ResourceController
       end
 
       class BetweenPlatesBySubmissionsController < JSONAPI::ResourceController
+      end
+
+      class BetweenPlatesController < JSONAPI::ResourceController
       end
 
       class BetweenSpecificTubesController < JSONAPI::ResourceController
@@ -31,7 +31,7 @@ module Api
       class FromPlateToSpecificTubesController < JSONAPI::ResourceController
       end
 
-      class FromPlateToTubeByMultiplexController < JSONAPI::ResourceController
+      class FromPlateToTubeByMultiplexesController < JSONAPI::ResourceController
       end
 
       class FromPlateToTubeBySubmissionsController < JSONAPI::ResourceController

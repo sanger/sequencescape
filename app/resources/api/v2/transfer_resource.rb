@@ -3,8 +3,17 @@
 module Api
   module V2
     module Transfers
-      # Provides a JSON API representation of a Transfer.
-      # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
+      # @todo This documentation does not yet include a detailed description of what this resource represents.
+      # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
+      # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+      #
+      # @note Access this resource via the `/api/v2/transfers/transfers/` endpoint.
+      #
+      # Provides a JSON:API representation of {Transfer}.
+      #
+      # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
+      # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
+      # of the JSON:API standard.
       class TransferResource < BaseResource
         # @!attribute [r]
         #   @return [String] the UUID of the transfer.
@@ -62,42 +71,142 @@ module Api
         end
       end
 
-      class BetweenPlateResource < TransferResource
-        filter :sti_type, default: 'Transfer::BetweenPlates'
-      end
-
+      # @todo This documentation does not yet include a detailed description of what this resource represents.
+      # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+      #
+      # @note Access this resource via the `/api/v2/transfers/between_plate_and_tubes/` endpoint.
+      #
+      # Provides a JSON:API representation of {Transfer::BetweenPlateAndTubes}.
+      #
+      # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
+      # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
+      # of the JSON:API standard.
       class BetweenPlateAndTubeResource < TransferResource
-        filter :sti_type, default: 'Transfer::BetweenPlateAndTube'
+        filter :sti_type, default: 'Transfer::BetweenPlateAndTubes'
       end
 
+      # @todo This documentation does not yet include a detailed description of what this resource represents.
+      # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+      #
+      # @note Access this resource via the `/api/v2/transfers/between_plates_by_submissions/` endpoint.
+      #
+      # Provides a JSON:API representation of {Transfer::BetweenPlatesBySubmission}.
+      #
+      # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
+      # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
+      # of the JSON:API standard.
       class BetweenPlatesBySubmissionResource < TransferResource
         filter :sti_type, default: 'Transfer::BetweenPlatesBySubmission'
       end
 
+      # @todo This documentation does not yet include a detailed description of what this resource represents.
+      # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+      #
+      # @note Access this resource via the `/api/v2/transfers/between_plates/` endpoint.
+      #
+      # Provides a JSON:API representation of {Transfer::BetweenPlates}.
+      #
+      # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
+      # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
+      # of the JSON:API standard.
+      class BetweenPlateResource < TransferResource
+        filter :sti_type, default: 'Transfer::BetweenPlates'
+      end
+
+      # @todo This documentation does not yet include a detailed description of what this resource represents.
+      # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+      #
+      # @note Access this resource via the `/api/v2/transfers/between_specific_tubes/` endpoint.
+      #
+      # Provides a JSON:API representation of {Transfer::BetweenSpecificTubes}.
+      #
+      # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
+      # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
+      # of the JSON:API standard.
       class BetweenSpecificTubeResource < TransferResource
         filter :sti_type, default: 'Transfer::BetweenSpecificTubes'
       end
 
+      # @todo This documentation does not yet include a detailed description of what this resource represents.
+      # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+      #
+      # @note Access this resource via the `/api/v2/transfers/between_tubes_by_submissions/` endpoint.
+      #
+      # Provides a JSON:API representation of {Transfer::BetweenTubesBySubmission}.
+      #
+      # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
+      # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
+      # of the JSON:API standard.
       class BetweenTubesBySubmissionResource < TransferResource
         filter :sti_type, default: 'Transfer::BetweenTubesBySubmission'
       end
 
+      # @todo This documentation does not yet include a detailed description of what this resource represents.
+      # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+      #
+      # @note Access this resource via the `/api/v2/transfers/from_plate_to_specific_tubes_by_pools/` endpoint.
+      #
+      # Provides a JSON:API representation of {Transfer::FromPlateToSpecificTubesByPool}.
+      #
+      # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
+      # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
+      # of the JSON:API standard.
       class FromPlateToSpecificTubesByPoolResource < TransferResource
         filter :sti_type, default: 'Transfer::FromPlateToSpecificTubesByPool'
       end
 
+      # @todo This documentation does not yet include a detailed description of what this resource represents.
+      # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+      #
+      # @note Access this resource via the `/api/v2/transfers/from_plate_to_specific_tubes/` endpoint.
+      #
+      # Provides a JSON:API representation of {Transfer::FromPlateToSpecificTubes}.
+      #
+      # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
+      # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
+      # of the JSON:API standard.
       class FromPlateToSpecificTubeResource < TransferResource
-        filter :sti_type, default: 'Transfer::FromPlateToSpecificTube'
+        filter :sti_type, default: 'Transfer::FromPlateToSpecificTubes'
       end
 
+      # @todo This documentation does not yet include a detailed description of what this resource represents.
+      # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+      #
+      # @note Access this resource via the `/api/v2/transfers/from_plate_to_tube_by_multiplexes/` endpoint.
+      #
+      # Provides a JSON:API representation of {Transfer::FromPlateToTubeByMultiplex}.
+      #
+      # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
+      # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
+      # of the JSON:API standard.
       class FromPlateToTubeByMultiplexResource < TransferResource
         filter :sti_type, default: 'Transfer::FromPlateToTubeByMultiplex'
       end
 
+      # @todo This documentation does not yet include a detailed description of what this resource represents.
+      # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+      #
+      # @note Access this resource via the `/api/v2/transfers/from_plate_to_tube_by_submissions/` endpoint.
+      #
+      # Provides a JSON:API representation of {Transfer::FromPlateToTubeBySubmission}.
+      #
+      # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
+      # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
+      # of the JSON:API standard.
       class FromPlateToTubeBySubmissionResource < TransferResource
         filter :sti_type, default: 'Transfer::FromPlateToTubeBySubmission'
       end
 
+      # @todo This documentation does not yet include a detailed description of what this resource represents.
+      # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+      #
+      # @note Access this resource via the `/api/v2/transfers/from_plate_to_tubes/` endpoint.
+      #
+      # Provides a JSON:API representation of {Transfer::FromPlateToTube}.
+      #
+      # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
+      # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
+      # of the JSON:API standard.
       class FromPlateToTubeResource < TransferResource
         filter :sti_type, default: 'Transfer::FromPlateToTube'
       end
