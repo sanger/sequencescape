@@ -21,4 +21,12 @@ class TagSet < ApplicationRecord
     return unless tag2_group && tag_group.adapter_type != tag2_group.adapter_type
     errors.add(:tag_group, 'Adapter types of tag groups must match')
   end
+
+  def tag_group_name=(name)
+    self.tag_group = TagGroup.find_by!(name: name)
+  end
+
+  def tag2_group_name=(name)
+    self.tag2_group = TagGroup.find_by!(name: name)
+  end
 end

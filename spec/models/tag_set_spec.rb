@@ -84,4 +84,32 @@ RSpec.describe TagSet do
       expect(tag_set.adapter_type).to eq(tag_group.adapter_type)
     end
   end
+
+  describe '#tag_group_name=' do
+    it 'sets the tag_group' do
+      tag_group = create(:tag_group)
+      tag_set = build(:tag_set)
+      tag_set.tag_group_name = tag_group.name
+      expect(tag_set.tag_group).to eq(tag_group)
+    end
+
+    it 'raises an error if the tag_group does not exist' do
+      tag_set = build(:tag_set)
+      expect { tag_set.tag_group_name = 'non-existent tag group' }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+
+  describe '#tag2_group_name=' do
+    it 'sets the tag_group' do
+      tag_group = create(:tag_group)
+      tag_set = build(:tag_set)
+      tag_set.tag2_group_name = tag_group.name
+      expect(tag_set.tag2_group).to eq(tag_group)
+    end
+
+    it 'raises an error if the tag_group does not exist' do
+      tag_set = build(:tag_set)
+      expect { tag_set.tag2_group_name = 'non-existent tag group' }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
 end
