@@ -900,7 +900,6 @@ RSpec/NamedSubject:
     - 'spec/models/work_order_spec.rb'
     - 'spec/resources/api/v2/aliquot_resource_spec.rb'
     - 'spec/resources/api/v2/comment_resource_spec.rb'
-    - 'spec/resources/api/v2/custom_metadatum_collection_resource_spec.rb'
     - 'spec/resources/api/v2/lane_resource_spec.rb'
     - 'spec/resources/api/v2/lot_resource_spec.rb'
     - 'spec/resources/api/v2/lot_type_resource_spec.rb'
