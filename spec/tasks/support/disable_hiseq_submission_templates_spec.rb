@@ -2,10 +2,16 @@
 
 require 'rails_helper'
 
-# only load Rake tasks if they haven't been loaded already
-Rails.application.load_tasks if Rake::Task.tasks.empty?
-
 describe 'support:disable_hiseq_submission_templates', type: :task do
+  let(:load_tasks) { Rails.application.load_tasks }
+  let(:task_reenable) { Rake::Task[self.class.top_level_description].reenable }
+  let(:task_invoke) { Rake::Task[self.class.top_level_description].invoke }
+
+  before do
+    load_tasks # Load tasks directly in the test to avoid intermittent CI failures
+    task_reenable # Allows the task to be invoked again
+  end
+
   context 'when the disable_hiseq_submission_templates task is invoked' do
     it 'updates all hiseq submissions to have a superceded_by_id of -2' do
       # Create unused submission templates
@@ -21,7 +27,7 @@ describe 'support:disable_hiseq_submission_templates', type: :task do
 
       allow(Rails.logger).to receive(:info)
 
-      Rake::Task['support:disable_hiseq_submission_templates'].invoke
+      task_invoke
 
       expect(Rails.logger).to have_received(:info).with('Disabled 10 HiSeq submission templates.').at_least(:once)
       # Expect all hiseq submissions to have a superceded_by_id of -2
