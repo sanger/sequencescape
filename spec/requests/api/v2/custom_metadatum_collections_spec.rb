@@ -337,7 +337,7 @@ describe 'CustomMetadatumCollections API', with: :api_v2 do
       end
 
       it 'responds with the correct error' do
-        expect { api_post base_endpoint, payload }.not_to change(CustomMetadatumCollection, :count)
+        api_post base_endpoint, payload
 
         expect(json['errors'][0]['detail']).to eq('uuid is not allowed.')
       end

@@ -51,8 +51,10 @@ Rails.application.routes.draw do
       jsonapi_resources :studies
       jsonapi_resources :submission_templates
       jsonapi_resources :submissions
+      jsonapi_resources :tag_group_adapter_types
       jsonapi_resources :tag_groups
       jsonapi_resources :tag_layout_templates
+      jsonapi_resources :tags
       jsonapi_resources :transfer_requests
       jsonapi_resources :transfer_templates
       jsonapi_resources :tube_purposes

@@ -4,13 +4,20 @@ require_dependency 'app/resources/api/v2/receptacle_resource'
 
 module Api
   module V2
+    # @todo This documentation does not yet include a detailed description of what this resource (really) represents.
+    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
+    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
     #
-    # Class WorkOrderResource provides an abstraction of
-    # request for exposure to external applications. It
-    # is intended to allow us to update the internal
-    # representation, while maintaining an external
-    # interface
+    # @note Access this resource via the `/api/v2/work_orders/` endpoint.
     #
+    # Provides a JSON:API representation of {WorkOrder}.
+    # Work orders provide an abstraction of requests for exposure to external applications.
+    # They are intended to allow us to update the internal representation, while maintaining an external interface.
+    #
+    # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
+    # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
+    # of the JSON:API standard.
+
     class WorkOrderResource < BaseResource
       IGNORED_METADATA_FIELDS = %w[id request_id created_at updated_at].freeze
 
