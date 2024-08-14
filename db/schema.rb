@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_07_30_085322) do
+ActiveRecord::Schema.define(version: 2024_08_13_130010) do
 
   create_table "aliquot_indices", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "aliquot_id", null: false
@@ -1717,6 +1717,16 @@ ActiveRecord::Schema.define(version: 2024_07_30_085322) do
     t.index ["tag2_group_id"], name: "fk_rails_d221e7c041"
   end
 
+  create_table "tag_sets", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "tag_group_id", null: false
+    t.integer "tag2_group_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["tag2_group_id"], name: "index_tag_sets_on_tag2_group_id"
+    t.index ["tag_group_id"], name: "index_tag_sets_on_tag_group_id"
+  end
+
   create_table "tags", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "oligo"
     t.integer "map_id"
@@ -1990,6 +2000,8 @@ ActiveRecord::Schema.define(version: 2024_07_30_085322) do
   add_foreign_key "tag_layout_template_submissions", "tag_layout_templates"
   add_foreign_key "tag_layout_templates", "tag_groups", column: "tag2_group_id"
   add_foreign_key "tag_layouts", "tag_groups", column: "tag2_group_id"
+  add_foreign_key "tag_sets", "tag_groups"
+  add_foreign_key "tag_sets", "tag_groups", column: "tag2_group_id"
   add_foreign_key "transfer_request_collection_transfer_requests", "transfer_request_collections"
   add_foreign_key "transfer_request_collection_transfer_requests", "transfer_requests"
   add_foreign_key "transfer_request_collections", "users"
