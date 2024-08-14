@@ -5,7 +5,7 @@ class TagSet < ApplicationRecord
   belongs_to :tag2_group, class_name: 'TagGroup', optional: true
 
   # We can assume adapter_type is the same for both tag groups
-  # But tag2_group may be present so we delegate to tag_group
+  # But tag2_group may not be present so we delegate to tag_group
   delegate :adapter_type, to: :tag_group
 
   validates :name, presence: true, uniqueness: true
