@@ -19,6 +19,6 @@ class TagSet < ApplicationRecord
   # Method to determine that both tag groups have the same adapter type
   def tag_group_adapter_types
     return unless tag2_group && tag_group.adapter_type != tag2_group.adapter_type
-      errors.add(:tag_group, 'Adapter types of tag groups must match')
+    errors.add(:tag_group, 'Adapter types of tag groups must match')
   end
 end
