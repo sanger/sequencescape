@@ -14,7 +14,7 @@ module Api
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class TubePurposeResource < BaseResource
-      model_name 'Tube::Purpose', model_hint: true
+      model_name 'Tube::Purpose'
 
       #####
       # Attributes
