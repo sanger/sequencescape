@@ -5,7 +5,7 @@ LCMT Lysate:
   stock_plate: true
   cherrypickable_target: false
 
-LMCT DNA ADP LIG:
+LCMT DNA Adp Lig:
   type: PlatePurpose
   stock_plate: false
   cherrypickable_target: false
