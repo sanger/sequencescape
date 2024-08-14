@@ -15,11 +15,11 @@ module Api
       # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
       # of the JSON:API standard.
       class TransferResource < BaseResource
-        # @!attribute [r]
+        # @!attribute [r] uuid
         #   @return [String] the UUID of the transfer.
         attribute :uuid, readonly: true
 
-        # @!attribute [rw]
+        # @!attribute [rw] source_uuid
         #   @return [String] the UUID of the source labware.
         #     The type of the labware varies by the type of transfer.
         attribute :source_uuid
@@ -32,7 +32,7 @@ module Api
           @model.source = Plate.find_by(uuid: uuid)
         end
 
-        # @!attribute [rw]
+        # @!attribute [rw] destination_uuid
         #   @return [String, void] the UUID of the destination labware.
         attribute :destination_uuid
 
@@ -44,7 +44,7 @@ module Api
           @model.destination = Labware.find_by(uuid: uuid) if destination_uuid
         end
 
-        # @!attribute [rw]
+        # @!attribute [rw] user_uuid
         #   @return [String] the UUID of the user who requested the transfer.
         attribute :user_uuid
 
@@ -56,11 +56,11 @@ module Api
           @model.user = User.find_by(uuid: uuid)
         end
 
-        # @!attribute [rw]
+        # @!attribute [rw] transfers
         #   @return [Hash] a hash of the transfers made.
         attribute :transfers, delegate: :transfers_hash
 
-        # @!attribute [w]
+        # @!attribute [w] transfer_template_uuid
         #   @return [String] the UUID of a transfer template to create a transfer from.
         attribute :transfer_template_uuid
 
