@@ -12,6 +12,7 @@ describe 'asset_audit:add_missing_records', type: :task do
   before do
     Rake.application.rake_require 'tasks/add_missing_asset_audit_records'
     Rake::Task.define_task(:environment)
+    allow(File).to receive(:exist?).and_return(true) # Stub default value
   end
 
   context 'when file path is not provided' do
@@ -41,7 +42,6 @@ describe 'asset_audit:add_missing_records', type: :task do
       CSV
 
     before do
-      allow(File).to receive(:exist?).with(file_path).and_return(true)
       allow(CSV).to receive(:read).with(file_path, headers: true).and_return(CSV.parse(csv_content, headers: true))
     end
 
