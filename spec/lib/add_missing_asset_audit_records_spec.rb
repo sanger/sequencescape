@@ -1,10 +1,9 @@
 # frozen_string_literal: true
 
-# rubocop:disable RSpec/DescribeClass
 require 'rails_helper'
 require 'rake'
 
-RSpec.describe 'asset_audit:add_missing_records' do
+describe 'asset_audit:add_missing_records', type: :task do
   let(:run_rake_task) do
     Rake::Task['asset_audit:add_missing_records'].reenable
     Rake.application.invoke_task('asset_audit:add_missing_records')
@@ -19,15 +18,17 @@ RSpec.describe 'asset_audit:add_missing_records' do
     let(:file_path) { nil }
 
     it 'outputs an error message and exits' do
-      expect { run_rake_task }.to output("Please provide a valid file path\n").to_stdout
+      expect { run_rake_task }.to output('Please provide a valid file path').to_stdout
     end
   end
 
   context 'when file does not exist' do
     let(:file_path) { 'non_existent_file.csv' }
 
+    before { allow(File).to receive(:exist?).with(file_path).and_return(false) }
+
     it 'outputs an error message and exits' do
-      expect { run_rake_task }.to output("Please provide a valid file path\n").to_stdout
+      expect { run_rake_task }.to output('Please provide a valid file path').to_stdout
     end
   end
 
@@ -47,12 +48,14 @@ RSpec.describe 'asset_audit:add_missing_records' do
     it 'adds missing asset audit records' do
       plate1 = create(:plate, barcode: 'SQPD-1')
       plate2 = create(:plate, barcode: 'SQPD-2')
-      expect do run_rake_task end.to output(
-        /Adding missing asset audit records...\nRecord for asset_id #{plate1.id} successfully inserted.\n/ +
-          /Record for asset_id #{plate2.id} successfully inserted.\n/
-      ).to_stdout
 
-      expect { run_rake_task }.to output(/Adding missing asset audit records.../).to_stdout
+      expect { run_rake_task }.to output(
+        /
+          Adding\ missing\ asset\ audit\ records...\n
+          Record\ for\ asset_id\ #{plate1.id}\ successfully\ inserted.\n
+          Record\ for\ asset_id\ #{plate2.id}\ successfully\ inserted.\n
+        /x
+      ).to_stdout
 
       expect(AssetAudit.count).to eq(2)
       expect(
@@ -72,7 +75,7 @@ RSpec.describe 'asset_audit:add_missing_records' do
     end
 
     it 'skips records with invalid records' do
-      create(:plate, barcode: 'ABC123')
+      create(:plate, barcode: 'SQPD-1')
 
       expect { run_rake_task }.to output(/Adding missing asset audit records.../).to_stdout
 
@@ -87,12 +90,12 @@ RSpec.describe 'asset_audit:add_missing_records' do
     end
 
     it 'handles errors when inserting records' do
-      create(:plate, barcode: 'ABC123')
+      create(:plate, barcode: 'SQPD-1')
       allow(AssetAudit).to receive(:create!).and_raise(ActiveRecord::ActiveRecordError, 'Test error')
 
       expect { run_rake_task }.to output(/Error inserting record for asset_id #{labware1.id}: Test error/).to_stdout
+
       expect(AssetAudit.count).to eq(0)
     end
   end
 end
-# rubocop:enable RSpec/DescribeClass
