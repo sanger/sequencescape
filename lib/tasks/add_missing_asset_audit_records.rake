@@ -6,7 +6,7 @@ namespace :asset_audit do
     file_path = args[:file_path] == 'nil' ? nil : args[:file_path]
     if file_path.nil? || !File.exist?(file_path)
       puts 'Please provide a valid file path'
-      exit
+      next
     end
 
     puts 'Adding missing asset audit records...'
@@ -16,7 +16,7 @@ namespace :asset_audit do
         csv_data = CSV.read(file_path, headers: true)
       rescue StandardError => e
         puts "Failed to read CSV file: #{e.message}"
-        exit 1
+        next
       end
       csv_data.each do |row|
         asset = Labware.find_by_barcode(row['barcode'].strip)
