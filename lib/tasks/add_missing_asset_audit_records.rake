@@ -3,7 +3,7 @@
 namespace :asset_audit do
   desc 'Add missing asset audit records'
   task :add_missing_records, [:file_path] => :environment do |_, args|
-    file_path = args[:file_path]
+    file_path = args[:file_path] == 'nil' ? nil : args[:file_path]
     if file_path.nil? || !File.exist?(file_path)
       puts 'Please provide a valid file path'
       exit
@@ -12,7 +12,12 @@ namespace :asset_audit do
     puts 'Adding missing asset audit records...'
 
     ActiveRecord::Base.transaction do
-      csv_data = CSV.read(file_path, headers: true)
+      begin
+        csv_data = CSV.read(file_path, headers: true)
+      rescue StandardError => e
+        puts "Failed to read CSV file: #{e.message}"
+        exit 1
+      end
       csv_data.each do |row|
         asset = Labware.find_by_barcode(row['barcode'].strip)
         next if asset.nil?
@@ -34,9 +39,9 @@ namespace :asset_audit do
             asset_id: asset.id,
             key: key
           )
-          puts "Record for asset_id #{row['asset_id']} successfully inserted."
+          puts "Record for asset_id #{asset.id} successfully inserted."
         rescue ActiveRecord::ActiveRecordError, StandardError => e
-          puts "Error inserting record for asset_id #{row['asset_id']}: #{e.message}"
+          puts "Error inserting record for asset_id #{asset.id}: #{e.message}"
         end
       end
     end
