@@ -5,9 +5,10 @@ require 'rails_helper'
 require 'rake'
 
 RSpec.describe 'asset_audit:add_missing_records' do
+  let(:file_path) { 'testfile.csv' }
   let(:run_rake_task) do
     Rake::Task['asset_audit:add_missing_records'].reenable
-    Rake.application.invoke_task('asset_audit:add_missing_records')
+    Rake.application.invoke_task("asset_audit:add_missing_records[#{file_path}]")
   end
 
   before do
@@ -17,7 +18,10 @@ RSpec.describe 'asset_audit:add_missing_records' do
   end
 
   context 'when file path is not provided' do
-    let(:file_path) { nil }
+    let(:run_rake_task) do
+      Rake::Task['asset_audit:add_missing_records'].reenable
+      Rake.application.invoke_task('asset_audit:add_missing_records[nil]')
+    end
 
     it 'outputs an error message and exits' do
       expect { run_rake_task }.to output('Please provide a valid file path').to_stdout
@@ -25,7 +29,11 @@ RSpec.describe 'asset_audit:add_missing_records' do
   end
 
   context 'when file does not exist' do
-    let(:file_path) { 'non_existent_file.csv' }
+    # let (:file_path) { 'testfile.csv' }
+    # let(:run_rake_task) do
+    #   Rake::Task['asset_audit:add_missing_records'].reenable
+    #   Rake.application.invoke_task('asset_audit:add_missing_records[testfile.csv]')
+    # end
 
     before { allow(File).to receive(:exist?).with(file_path).and_return(false) }
 
@@ -34,8 +42,25 @@ RSpec.describe 'asset_audit:add_missing_records' do
     end
   end
 
+  context 'when CSV read fails' do
+    # let (:file_path) { 'testfile.csv' }
+    # let(:run_rake_task) do
+    #   Rake::Task['asset_audit:add_missing_records'].reenable
+    #   Rake.application.invoke_task('asset_audit:add_missing_records[testfile.csv]')
+    # end
+    it 'outputs an error message and exits' do
+      allow(CSV).to receive(:read).and_raise(StandardError, 'Test error')
+
+      expect { run_rake_task }.to output(/Failed to read CSV file: Test error/).to_stdout
+    end
+  end
+
   context 'when file exists' do
-    let(:file_path) { 'spec/lib/asset_audit_records.csv' }
+    # let (:file_path) { 'testfile.csv' }
+    # let(:run_rake_task) do
+    #   Rake::Task['asset_audit:add_missing_records'].reenable
+    #   Rake.application.invoke_task('asset_audit:add_missing_records[testfile.csv]')
+    # end
     let(:csv_content) { <<~CSV }
         barcode,message,created_by,created_at
         SQPD-1,Destroying location,User1,2021-01-01 12:00:00
@@ -50,14 +75,13 @@ RSpec.describe 'asset_audit:add_missing_records' do
       plate1 = create(:plate, barcode: 'SQPD-1')
       plate2 = create(:plate, barcode: 'SQPD-2')
 
-      expect { run_rake_task }.to output(
-        /
-          Adding\ missing\ asset\ audit\ records...\n
-          Record\ for\ asset_id\ #{plate1.id}\ successfully\ inserted.\n
-          Record\ for\ asset_id\ #{plate2.id}\ successfully\ inserted.\n
-        /x
-      ).to_stdout
-
+      expected_output =
+        Regexp.new(
+          "Adding missing asset audit records...\\n" \
+            "Record for asset_id #{plate1.id} successfully inserted.\\n" \
+            "Record for asset_id #{plate2.id} successfully inserted.\\n"
+        )
+      expect { run_rake_task }.to output(expected_output).to_stdout
       expect(AssetAudit.count).to eq(2)
       expect(
         AssetAudit.where(
@@ -76,14 +100,14 @@ RSpec.describe 'asset_audit:add_missing_records' do
     end
 
     it 'skips records with invalid records' do
-      create(:plate, barcode: 'SQPD-1')
+      plate = create(:plate, barcode: 'SQPD-1')
 
       expect { run_rake_task }.to output(/Adding missing asset audit records.../).to_stdout
 
       expect(AssetAudit.count).to eq(1)
       expect(
         AssetAudit.where(
-          asset_id: plate1.id,
+          asset_id: plate.id,
           key: 'destroy_location',
           message: 'Process \'Destroying location\' performed on instrument Destroying instrument'
         ).count
@@ -91,10 +115,10 @@ RSpec.describe 'asset_audit:add_missing_records' do
     end
 
     it 'handles errors when inserting records' do
-      create(:plate, barcode: 'SQPD-1')
+      plate = create(:plate, barcode: 'SQPD-1')
       allow(AssetAudit).to receive(:create!).and_raise(ActiveRecord::ActiveRecordError, 'Test error')
 
-      expect { run_rake_task }.to output(/Error inserting record for asset_id #{labware1.id}: Test error/).to_stdout
+      expect { run_rake_task }.to output(/Error inserting record for asset_id #{plate.id}: Test error/).to_stdout
 
       expect(AssetAudit.count).to eq(0)
     end
