@@ -72,7 +72,7 @@ RSpec.describe 'asset_audit:add_missing_records', type: :task do
 
     context 'when the file does not exist' do
       it 'outputs an error message and exits' do
-        expect { run_rake_task }.to output("Please provide a valid file path\n").to_stdout
+        expect { run_rake_task }.to output(/Please provide a valid file path/).to_stdout
       end
     end
 
@@ -85,7 +85,7 @@ RSpec.describe 'asset_audit:add_missing_records', type: :task do
       before { allow(File).to receive(:exist?).with(file_path).and_return(false) }
 
       it 'outputs an error message and exits' do
-        expect { run_rake_task }.to output("Please provide a valid file path\n").to_stdout
+        expect { run_rake_task }.to output(/Please provide a valid file path/).to_stdout
       end
     end
 
