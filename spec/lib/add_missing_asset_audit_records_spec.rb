@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 RSpec.describe 'asset_audit:add_missing_records', type: :task do
-  let(:file_path) { File.join('spec', 'data', 'asset_audits','data.csv') }
+  let(:file_path) { File.join('spec', 'data', 'asset_audits', 'data.csv') }
 
   before do
     Rake.application.rake_require 'tasks/add_missing_asset_audit_records'
