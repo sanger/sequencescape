@@ -1,0 +1,10 @@
+# This file was automatically generated via `rails g record_loader`
+# You should modify it to match your particular model.
+---
+Tag Set 1:
+  name: Tag Set 1
+  tag_group_name: Tag Group 1
+Tag Set 2:
+  name: Tag Set 2
+  tag_group_name: Tag Group 2
+  tag2_group_name: Tag Group 3
