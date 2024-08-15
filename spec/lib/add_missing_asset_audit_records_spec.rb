@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
+# rubocop:disable RSpec/DescribeClass
 require 'rails_helper'
 require 'rake'
 
-describe 'asset_audit:add_missing_records', type: :task do
+RSpec.describe 'asset_audit:add_missing_records' do
   let(:run_rake_task) do
     Rake::Task['asset_audit:add_missing_records'].reenable
     Rake.application.invoke_task('asset_audit:add_missing_records')
@@ -99,3 +100,4 @@ describe 'asset_audit:add_missing_records', type: :task do
     end
   end
 end
+# rubocop:enable RSpec/DescribeClass
