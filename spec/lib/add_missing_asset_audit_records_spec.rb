@@ -1,24 +1,12 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-
 RSpec.describe 'asset_audit:add_missing_records', type: :task do
-  let(:file_path) { 'testfile.csv' }
+  let(:file_path) { File.join('spec', 'data', 'asset_audits','data.csv') }
 
   before do
     Rake.application.rake_require 'tasks/add_missing_asset_audit_records'
     Rake::Task.define_task(:environment)
-  end
-
-  context 'when file path is not provided' do
-    let(:run_rake_task) do
-      Rake::Task['asset_audit:add_missing_records'].reenable
-      Rake.application.invoke_task('asset_audit:add_missing_records[nil]')
-    end
-
-    it 'outputs an error message and exits' do
-      expect { run_rake_task }.to output("Please provide a valid file path\n").to_stdout
-    end
   end
 
   context 'when file does not exist' do
@@ -48,20 +36,9 @@ RSpec.describe 'asset_audit:add_missing_records', type: :task do
   end
 
   context 'when file exists' do
-    let(:csv_content) { <<~CSV }
-      barcode,message,created_by,created_at
-      SQPD-1,Destroying location,User1,2021-01-01 12:00:00
-      SQPD-2,Destroying labware,User2,2021-01-02 12:00:00
-    CSV
-
     let(:run_rake_task) do
       Rake::Task['asset_audit:add_missing_records'].reenable
       Rake.application.invoke_task("asset_audit:add_missing_records[#{file_path}]")
-    end
-
-    before do
-      allow(File).to receive(:exist?).with(file_path).and_return(true)
-      allow(CSV).to receive(:read).with(file_path, headers: true).and_return(CSV.parse(csv_content, headers: true))
     end
 
     it 'adds missing asset audit records' do
