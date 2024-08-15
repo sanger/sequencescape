@@ -10,7 +10,7 @@ RSpec.describe 'asset_audit:add_missing_records', type: :task do
     allow(File).to receive(:exist?).and_return(true) # Stub default value
   end
 
-  context 'when file exists' do
+  describe 'file exists' do
     let(:run_rake_task) do
       Rake::Task['asset_audit:add_missing_records'].reenable
       Rake.application.invoke_task("asset_audit:add_missing_records[#{file_path}]")
@@ -45,15 +45,21 @@ RSpec.describe 'asset_audit:add_missing_records', type: :task do
 
     it 'skips records with invalid records' do
       plate = create(:plate, barcode: 'SQPD-1')
-
-      expect { run_rake_task }.to output(/Adding missing asset audit records.../).to_stdout
-      expect(
+      expected_count =
         AssetAudit.where(
           asset_id: plate.id,
-          key: 'destroy_location',
-          message: 'Process \'Destroying location\' performed on instrument Destroying instrument'
-        )
-      ).to exist
+          key: 'destroy_labware',
+          message: 'Process \'Destroying labware\' performed on instrument Destroying instrument'
+        ).count
+
+      expect { run_rake_task }.to output(/Adding missing asset audit records.../).to_stdout
+      count =
+        AssetAudit.where(
+          asset_id: plate.id,
+          key: 'destroy_labware',
+          message: 'Process \'Destroying labware\' performed on instrument Destroying instrument'
+        ).count
+      expect(count).to eq(expected_count)
     end
 
     it 'handles errors when inserting records' do
@@ -61,6 +67,19 @@ RSpec.describe 'asset_audit:add_missing_records', type: :task do
       allow(AssetAudit).to receive(:create!).and_raise(ActiveRecord::ActiveRecordError, 'Test error')
 
       expect { run_rake_task }.to output(/Error inserting record for asset_id #{plate.id}: Test error/).to_stdout
+    end
+  end
+
+  describe 'file does not exist' do
+    let(:run_rake_task) do
+      Rake::Task['asset_audit:add_missing_records'].reenable
+      Rake.application.invoke_task('asset_audit:add_missing_records[nil]')
+    end
+
+    context 'when the file does not exist' do
+      it 'outputs an error message and exits' do
+        expect { run_rake_task }.to output("Please provide a valid file path\n").to_stdout
+      end
     end
   end
 end
