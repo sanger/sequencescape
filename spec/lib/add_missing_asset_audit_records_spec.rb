@@ -63,4 +63,43 @@ RSpec.describe 'asset_audit:add_missing_records', type: :task do
       expect { run_rake_task }.to output(/Error inserting record for asset_id #{plate.id}: Test error/).to_stdout
     end
   end
+
+  describe 'file does not exist' do
+    let(:run_rake_task) do
+      Rake::Task['asset_audit:add_missing_records'].reenable
+      Rake.application.invoke_task('asset_audit:add_missing_records[nil]')
+    end
+
+    context 'when the file does not exist' do
+      it 'outputs an error message and exits' do
+        expect { run_rake_task }.to output("Please provide a valid file path\n").to_stdout
+      end
+    end
+
+    context 'when file does not exist' do
+      let(:run_rake_task) do
+        Rake::Task['asset_audit:add_missing_records'].reenable
+        Rake.application.invoke_task("asset_audit:add_missing_records[#{file_path}]")
+      end
+
+      before { allow(File).to receive(:exist?).with(file_path).and_return(false) }
+
+      it 'outputs an error message and exits' do
+        expect { run_rake_task }.to output("Please provide a valid file path\n").to_stdout
+      end
+    end
+
+    context 'when CSV read fails' do
+      let(:run_rake_task) do
+        Rake::Task['asset_audit:add_missing_records'].reenable
+        Rake.application.invoke_task("asset_audit:add_missing_records[#{file_path}]")
+      end
+
+      it 'outputs an error message and exits' do
+        allow(CSV).to receive(:read).and_raise(StandardError, 'Test error')
+
+        expect { run_rake_task }.to output(/Failed to read CSV file: Test error/).to_stdout
+      end
+    end
+  end
 end
