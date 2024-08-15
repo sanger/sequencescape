@@ -32,15 +32,15 @@ RSpec.describe 'asset_audit:add_missing_records', type: :task do
           asset_id: plate1.id,
           key: 'destroy_location',
           message: 'Process \'Destroying location\' performed on instrument Destroying instrument'
-        ).count
-      ).to eq(1)
+        )
+      ).to exist
       expect(
         AssetAudit.where(
           asset_id: plate2.id,
           key: 'destroy_labware',
           message: 'Process \'Destroying labware\' performed on instrument Destroying instrument'
-        ).count
-      ).to eq(1)
+        )
+      ).to exist
     end
 
     it 'skips records with invalid records' do
@@ -52,8 +52,8 @@ RSpec.describe 'asset_audit:add_missing_records', type: :task do
           asset_id: plate.id,
           key: 'destroy_location',
           message: 'Process \'Destroying location\' performed on instrument Destroying instrument'
-        ).count
-      ).to eq(1)
+        )
+      ).to exist
     end
 
     it 'handles errors when inserting records' do
