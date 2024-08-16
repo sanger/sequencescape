@@ -71,6 +71,7 @@ module Api
         end
 
         def self.create(context)
+          # Create the polymorphic type, not the base class.
           new(context[:polymorphic_type].constantize.new, context)
         end
       end
