@@ -6,8 +6,27 @@ module Api
       # Provides a JSON API controller for Transfers.
       # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation.
       class TransfersController < JSONAPI::ResourceController
-        # By default JSONAPI::ResourceController provides most of the standard
-        # behaviour, and in many cases this file may be left empty.
+        # By default JSONAPI::ResourceController provides most of the standard behaviour.
+        # However in this case we want to redirect create and update operations to the correct polymorphic type.
+
+        def process_operations(operations)
+          # We need to determine the polymorphic type of the transfer to create based on any template provided.
+          operations.each do |operation|
+            context = operation.options[:context]
+            attributes = operation.options[:data][:attributes]
+
+            # Only add a polymorphic type if we have a transfer template.
+            if attributes.key?(:transfer_template_uuid)
+              template = TransferTemplate.with_uuid(attributes[:transfer_template_uuid]).first
+              context[:polymorphic_type] = template.transfer_class_name
+            end
+
+            # Remove the UUID of the transfer template from the attributes.
+            attributes.delete(:transfer_template_uuid)
+          end
+
+          super(operations)
+        end
       end
 
       class BetweenPlateAndTubesController < JSONAPI::ResourceController

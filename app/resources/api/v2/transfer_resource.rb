@@ -69,6 +69,10 @@ module Api
           # It is only submitted when creating a new transfer and not stored.
           super - %i[transfer_template_uuid]
         end
+
+        def self.create(context)
+          new(context[:polymorphic_type].constantize.new, context)
+        end
       end
 
       # @todo This documentation does not yet include a detailed description of what this resource represents.
