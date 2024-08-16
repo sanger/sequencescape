@@ -3,13 +3,13 @@ name: Deploy Yard to GitHub Pages
 on:
   push:
     branches:
-      - 'master'
-      - 'github-pages-doc'
+      - "master"
+      - "github-pages-doc"
   workflow_dispatch:
 
 permissions:
-  pages: write      # Allow writing to the GitHub Pages
-  id-token: write   # Allow OIDC token to be issued
+  pages: write # Allow writing to the GitHub Pages
+  id-token: write # Allow OIDC token to be issued
 
 jobs:
   build:
@@ -31,11 +31,11 @@ jobs:
       - name: Upload artifact to GitHub Pages
         uses: actions/upload-pages-artifact@v3
         with:
-          path: doc  # Path to the folder containing the Yard documentation (default is 'doc')
+          path: doc # Path to the folder containing the Yard documentation (default is 'doc')
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build  # The deploy job will only run if the build job is successful
+    needs: build # The deploy job will only run if the build job is successful
 
     steps:
       - name: Deploy to GitHub Pages
