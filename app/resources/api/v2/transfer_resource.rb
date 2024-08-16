@@ -29,7 +29,7 @@ module Api
         end
 
         def source_uuid=(uuid)
-          @model.source = Plate.find_by(uuid: uuid)
+          @model.source = Labware.with_uuid(uuid).first
         end
 
         # @!attribute [rw] destination_uuid
@@ -41,7 +41,7 @@ module Api
         end
 
         def destination_uuid=(uuid)
-          @model.destination = Labware.find_by(uuid: uuid) if destination_uuid
+          @model.destination = Labware.with_uuid(uuid).first if uuid
         end
 
         # @!attribute [rw] user_uuid
@@ -53,7 +53,7 @@ module Api
         end
 
         def user_uuid=(uuid)
-          @model.user = User.find_by(uuid: uuid)
+          @model.user = User.with_uuid(uuid).first
         end
 
         # @!attribute [rw] transfers
