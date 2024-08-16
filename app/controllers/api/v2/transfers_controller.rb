@@ -15,11 +15,13 @@ module Api
             context = operation.options[:context]
             attributes = operation.options[:data][:attributes]
 
-            # Only add a polymorphic type if we have a transfer template.
-            if attributes.key?(:transfer_template_uuid)
-              template = TransferTemplate.with_uuid(attributes[:transfer_template_uuid]).first
-              context[:polymorphic_type] = template.transfer_class_name
-            end
+            # Skip the operation if it does not contain a transfer template.
+            next unless attributes.key?(:transfer_template_uuid)
+
+            # Get the transfer template and use it to update the context and attributes.
+            template = TransferTemplate.with_uuid(attributes[:transfer_template_uuid]).first
+            context[:polymorphic_type] = template.transfer_class_name
+            attributes[:transfers] = template.transfers if template.transfers.present?
 
             # Remove the UUID of the transfer template from the attributes.
             attributes.delete(:transfer_template_uuid)
