@@ -74,6 +74,7 @@ module Api
       # @todo This documentation does not yet include a detailed description of what this resource represents.
       # @todo This documentation does not yet include any example usage of the API via cURL or similar.
       #
+      # @note This resource is immutable: its endpoint will not accept `POST`, `PATCH`, or `DELETE` requests.
       # @note Access this resource via the `/api/v2/transfers/between_plate_and_tubes/` endpoint.
       #
       # Provides a JSON:API representation of {Transfer::BetweenPlateAndTubes}.
@@ -82,12 +83,14 @@ module Api
       # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
       # of the JSON:API standard.
       class BetweenPlateAndTubeResource < TransferResource
+        immutable
         filter :sti_type, default: 'Transfer::BetweenPlateAndTubes'
       end
 
       # @todo This documentation does not yet include a detailed description of what this resource represents.
       # @todo This documentation does not yet include any example usage of the API via cURL or similar.
       #
+      # @note This resource is immutable: its endpoint will not accept `POST`, `PATCH`, or `DELETE` requests.
       # @note Access this resource via the `/api/v2/transfers/between_plates_by_submissions/` endpoint.
       #
       # Provides a JSON:API representation of {Transfer::BetweenPlatesBySubmission}.
@@ -96,12 +99,14 @@ module Api
       # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
       # of the JSON:API standard.
       class BetweenPlatesBySubmissionResource < TransferResource
+        immutable
         filter :sti_type, default: 'Transfer::BetweenPlatesBySubmission'
       end
 
       # @todo This documentation does not yet include a detailed description of what this resource represents.
       # @todo This documentation does not yet include any example usage of the API via cURL or similar.
       #
+      # @note This resource is immutable: its endpoint will not accept `POST`, `PATCH`, or `DELETE` requests.
       # @note Access this resource via the `/api/v2/transfers/between_plates/` endpoint.
       #
       # Provides a JSON:API representation of {Transfer::BetweenPlates}.
@@ -110,12 +115,14 @@ module Api
       # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
       # of the JSON:API standard.
       class BetweenPlateResource < TransferResource
+        immutable
         filter :sti_type, default: 'Transfer::BetweenPlates'
       end
 
       # @todo This documentation does not yet include a detailed description of what this resource represents.
       # @todo This documentation does not yet include any example usage of the API via cURL or similar.
       #
+      # @note This resource is immutable: its endpoint will not accept `POST`, `PATCH`, or `DELETE` requests.
       # @note Access this resource via the `/api/v2/transfers/between_specific_tubes/` endpoint.
       #
       # Provides a JSON:API representation of {Transfer::BetweenSpecificTubes}.
@@ -124,12 +131,14 @@ module Api
       # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
       # of the JSON:API standard.
       class BetweenSpecificTubeResource < TransferResource
+        immutable
         filter :sti_type, default: 'Transfer::BetweenSpecificTubes'
       end
 
       # @todo This documentation does not yet include a detailed description of what this resource represents.
       # @todo This documentation does not yet include any example usage of the API via cURL or similar.
       #
+      # @note This resource is immutable: its endpoint will not accept `POST`, `PATCH`, or `DELETE` requests.
       # @note Access this resource via the `/api/v2/transfers/between_tubes_by_submissions/` endpoint.
       #
       # Provides a JSON:API representation of {Transfer::BetweenTubesBySubmission}.
@@ -138,12 +147,14 @@ module Api
       # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
       # of the JSON:API standard.
       class BetweenTubesBySubmissionResource < TransferResource
+        immutable
         filter :sti_type, default: 'Transfer::BetweenTubesBySubmission'
       end
 
       # @todo This documentation does not yet include a detailed description of what this resource represents.
       # @todo This documentation does not yet include any example usage of the API via cURL or similar.
       #
+      # @note This resource is immutable: its endpoint will not accept `POST`, `PATCH`, or `DELETE` requests.
       # @note Access this resource via the `/api/v2/transfers/from_plate_to_specific_tubes_by_pools/` endpoint.
       #
       # Provides a JSON:API representation of {Transfer::FromPlateToSpecificTubesByPool}.
@@ -152,12 +163,14 @@ module Api
       # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
       # of the JSON:API standard.
       class FromPlateToSpecificTubesByPoolResource < TransferResource
+        immutable
         filter :sti_type, default: 'Transfer::FromPlateToSpecificTubesByPool'
       end
 
       # @todo This documentation does not yet include a detailed description of what this resource represents.
       # @todo This documentation does not yet include any example usage of the API via cURL or similar.
       #
+      # @note This resource is immutable: its endpoint will not accept `POST`, `PATCH`, or `DELETE` requests.
       # @note Access this resource via the `/api/v2/transfers/from_plate_to_specific_tubes/` endpoint.
       #
       # Provides a JSON:API representation of {Transfer::FromPlateToSpecificTubes}.
@@ -166,12 +179,14 @@ module Api
       # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
       # of the JSON:API standard.
       class FromPlateToSpecificTubeResource < TransferResource
+        immutable
         filter :sti_type, default: 'Transfer::FromPlateToSpecificTubes'
       end
 
       # @todo This documentation does not yet include a detailed description of what this resource represents.
       # @todo This documentation does not yet include any example usage of the API via cURL or similar.
       #
+      # @note This resource is immutable: its endpoint will not accept `POST`, `PATCH`, or `DELETE` requests.
       # @note Access this resource via the `/api/v2/transfers/from_plate_to_tube_by_multiplexes/` endpoint.
       #
       # Provides a JSON:API representation of {Transfer::FromPlateToTubeByMultiplex}.
@@ -180,12 +195,14 @@ module Api
       # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
       # of the JSON:API standard.
       class FromPlateToTubeByMultiplexResource < TransferResource
+        immutable
         filter :sti_type, default: 'Transfer::FromPlateToTubeByMultiplex'
       end
 
       # @todo This documentation does not yet include a detailed description of what this resource represents.
       # @todo This documentation does not yet include any example usage of the API via cURL or similar.
       #
+      # @note This resource is immutable: its endpoint will not accept `POST`, `PATCH`, or `DELETE` requests.
       # @note Access this resource via the `/api/v2/transfers/from_plate_to_tube_by_submissions/` endpoint.
       #
       # Provides a JSON:API representation of {Transfer::FromPlateToTubeBySubmission}.
@@ -194,12 +211,14 @@ module Api
       # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
       # of the JSON:API standard.
       class FromPlateToTubeBySubmissionResource < TransferResource
+        immutable
         filter :sti_type, default: 'Transfer::FromPlateToTubeBySubmission'
       end
 
       # @todo This documentation does not yet include a detailed description of what this resource represents.
       # @todo This documentation does not yet include any example usage of the API via cURL or similar.
       #
+      # @note This resource is immutable: its endpoint will not accept `POST`, `PATCH`, or `DELETE` requests.
       # @note Access this resource via the `/api/v2/transfers/from_plate_to_tubes/` endpoint.
       #
       # Provides a JSON:API representation of {Transfer::FromPlateToTube}.
@@ -208,6 +227,7 @@ module Api
       # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
       # of the JSON:API standard.
       class FromPlateToTubeResource < TransferResource
+        immutable
         filter :sti_type, default: 'Transfer::FromPlateToTube'
       end
     end
