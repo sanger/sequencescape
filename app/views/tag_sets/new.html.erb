@@ -1,0 +1,26 @@
+
+<div class="page-header"><h1>New Tag Set</h1></div>
+
+<%= form_for(@tag_set) do |f| %>
+  <%= render_error_messages(@tag_set) %>
+  <div class='form-group'>
+    <%= f.label :name, 'Tag Set name' %><br>
+    <%= f.text_field :name, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :tag_group_id, 'Tag Group (i7)' %><br/>
+    <%= f.select(:tag_group_id, TagGroup.pluck(:name, :id), { prompt: 'Unspecified' }, class: 'form-control select2' )%>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :tag2_group_id, 'Tag Group (i5)' %><br/>
+    <%= f.select(:tag2_group_id, TagGroup.pluck(:name, :id), { prompt: 'Unspecified' }, class: 'form-control select2' )%>
+  </div>
+
+  <div class="form-group actions-group">
+    <%= f.submit('Create tag set', class: 'btn btn-success') %>
+  </div>
+<% end %>
+
+<%= link_to 'Back to tag sets list', tag_sets_path %>

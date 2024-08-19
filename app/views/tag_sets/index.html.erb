@@ -19,3 +19,8 @@
   <% end %>
   </tbody>
 </table>
+
+
+<% if can? :create, TagSet %>
+  <%= link_to 'Create a new Tag Set', new_tag_set_path %>
+<% end %>

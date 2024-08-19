@@ -17,32 +17,31 @@ class TagSetsController < ApplicationController
     respond_to { |format| format.html }
   end
 
-  # ##
-  # # The new method uses a form object to handle the naming of the Tag Group and the input
-  # # and validation of the Tag oligo sequences.
-  # def new
-  #   @form_object = TagGroup::FormObject.new
+  def new
+    @tag_set = TagSet.new
 
-  #   respond_to { |format| format.html }
-  # end
+    respond_to { |format| format.html }
+  end
 
-  # ##
-  # # The create method uses a form object to validate the user input of the oligo sequences
-  # # and handle the creation of Tags within a new Tag Group.
-  # def create
-  #   @form_object = TagGroup::FormObject.new(tag_group_form_object_params)
+  def create # rubocop:todo Metrics/MethodLength
+    @tag_set = TagSet.new(tag_set_params)
 
-  #   respond_to do |format|
-  #     if @form_object.save
-  #       flash[:notice] = 'Tag Group was successfully created.'
-  #       format.html { redirect_to(@form_object.tag_group) }
-  #     else
-  #       format.html { render action: 'new' }
-  #     end
-  #   end
-  # end
+    respond_to do |format|
+      if @tag_set.save
+        flash[:notice] = 'Tag Set successfully created'
+        format.html { redirect_to tag_set_path(@tag_set) }
+        format.xml { render xml: @tag_set, status: :created, location: @tag_set }
+        format.json { render json: @tag_set, status: :created, location: @tag_set }
+      else
+        flash[:error] = 'Problems creating your new Tag Set'
+        format.html { render action: :new }
+        format.xml { render xml: @tag_set.errors, status: :unprocessable_entity }
+        format.json { render json: @tag_set.errors, status: :unprocessable_entity }
+      end
+    end
+  end
 
-  # def tag_group_form_object_params
-  #   params.require(:tag_group).permit(:name, :oligos_text, :adapter_type_id)
-  # end
+  def tag_set_params
+    params.require(:tag_set).permit(:name, :tag_group_id, :tag2_group_id)
+  end
 end
