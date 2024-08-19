@@ -5,8 +5,8 @@
 
 <dl>
   <dt>Name</dt><dd><%= @tag_set.name %></dd>
-  <dt>Tag group (i7)</dt><dd><%= @tag_set.tag_group.name %></dd>
-  <dt>Tag group (i5)</dt><dd><%= @tag_set.tag2_group&.name %></dd>
+  <dt>Tag group (i7)</dt><dd><%= link_to @tag_set.tag_group.name, @tag_set.tag_group %></dd>
+  <dt>Tag group (i5)</dt><dd><%= @tag_set.tag2_group ? (link_to @tag_set.tag2_group&.name, @tag_set.tag2_group) : 'None'%></dd>
 </dl>
 
 <br>
