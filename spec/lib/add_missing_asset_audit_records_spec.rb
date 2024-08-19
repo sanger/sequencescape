@@ -15,7 +15,7 @@ RSpec.describe 'asset_audit:add_missing_records', type: :task do
     end
 
     it 'outputs an error message and returns' do
-      expect { run_rake_task }.to  raise_error(RuntimeError,/Please provide a valid file path/)
+      expect { run_rake_task }.to raise_error(RuntimeError, /Please provide a valid file path/)
     end
   end
 
@@ -28,7 +28,7 @@ RSpec.describe 'asset_audit:add_missing_records', type: :task do
       end
 
       it 'outputs an error message and return' do
-        expect { run_rake_task }.to  raise_error(RuntimeError,/Failed to read CSV file/)
+        expect { run_rake_task }.to raise_error(RuntimeError, /Failed to read CSV file/)
       end
     end
 
@@ -40,7 +40,7 @@ RSpec.describe 'asset_audit:add_missing_records', type: :task do
       end
 
       it 'outputs an error message and return' do
-        expect { run_rake_task }.to  raise_error(RuntimeError, 'Failed to read CSV file: Missing columns.')
+        expect { run_rake_task }.to raise_error(RuntimeError, 'Failed to read CSV file: Missing columns.')
       end
     end
 
