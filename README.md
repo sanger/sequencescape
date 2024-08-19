@@ -461,7 +461,7 @@ Copyright (c) 2007, 2010-2021 Genome Research Ltd.
 
 ### ERD
 
-You can create a database entity relationship diagram  and view the output:
+You can create a database entity relationship diagram and view the output:
 
 ```
 bundle exec erd
