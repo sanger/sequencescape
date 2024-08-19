@@ -468,4 +468,5 @@ bundle exec rake erd title='Sequencescape Entity Relationship Diagram' attribute
 
 open erd.pdf
 ```
+
 The command uses the [rails-erd](https://github.com/voormedia/rails-erd) gem.
