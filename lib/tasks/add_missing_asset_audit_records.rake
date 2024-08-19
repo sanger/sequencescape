@@ -16,22 +16,17 @@ namespace :asset_audit do
 
     # Check if the file path is provided and valid
     file_path = args[:file_path] == 'nil' ? nil : args[:file_path]
-    if file_path.nil? || !File.exist?(file_path)
-      puts 'Please provide a valid file path'
-      next
-    end
+    raise 'Please provide a valid file path' if file_path.nil? || !File.exist?(file_path)
 
     # Read the CSV file and validate the headers
     begin
       csv_data = CSV.read(file_path, headers: true)
     rescue StandardError => e
-      puts "Failed to read CSV file: #{e.message}"
-      next
+      raise "Failed to read CSV file: #{e.message}"
     end
 
     unless csv_data.headers.length == required_csv_headers.length
-      puts 'Failed to read CSV file: Invalid number of header columns'
-      next
+      raise 'Failed to read CSV file: Invalid number of header columns.'
     end
 
     # Process the CSV data and create asset audit records data array to insert
@@ -40,17 +35,11 @@ namespace :asset_audit do
       missing_columns = required_csv_headers.select { |header| row[header].nil? }
 
       # Check if any of the required columns are missing
-      unless missing_columns.empty?
-        puts 'Failed to read CSV file: Missing columns'
-        next
-      end
+      raise 'Failed to read CSV file: Missing columns.' unless missing_columns.empty?
 
       # Find the asset by barcode
       asset = Labware.find_by_barcode(row['barcode'].strip)
-      if asset.nil?
-        puts "Asset with barcode #{row['barcode']} not found."
-        next
-      end
+      raise "Asset with barcode #{row['barcode']} not found." if asset.nil?
 
       # Check if the message is valid
       key =
@@ -61,10 +50,7 @@ namespace :asset_audit do
           'destroy_labware'
         end
 
-      if key.nil?
-        puts "Invalid message for asset with barcode #{row['barcode']}."
-        next
-      end
+      raise "Invalid message for asset with barcode #{row['barcode']}." if key.nil?
 
       # Create the asset audit record data
       data = {
