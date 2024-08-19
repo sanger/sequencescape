@@ -1,104 +1,135 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-RSpec.describe 'asset_audit:add_missing_records', type: :task do
-  let(:file_path) { File.join('spec', 'data', 'asset_audits', 'data.csv') }
 
+RSpec.describe 'asset_audit:add_missing_records', type: :task do
   before do
     Rake.application.rake_require 'tasks/add_missing_asset_audit_records'
     Rake::Task.define_task(:environment)
-    allow(File).to receive(:exist?).and_return(true) # Stub default value
   end
 
-  context 'when file exists' do
-    let(:run_rake_task) do
-      Rake::Task['asset_audit:add_missing_records'].reenable
-      Rake.application.invoke_task("asset_audit:add_missing_records[#{file_path}]")
-    end
-
-    it 'adds missing asset audit records' do
-      plate1 = create(:plate, barcode: 'SQPD-1')
-      plate2 = create(:plate, barcode: 'SQPD-2')
-
-      expected_output =
-        Regexp.new(
-          "Adding missing asset audit records...\\n" \
-            "Record for asset_id #{plate1.id} successfully inserted.\\n" \
-            "Record for asset_id #{plate2.id} successfully inserted.\\n"
-        )
-      expect { run_rake_task }.to output(expected_output).to_stdout
-      expect(
-        AssetAudit.where(
-          asset_id: plate1.id,
-          key: 'destroy_location',
-          message: 'Process \'Destroying location\' performed on instrument Destroying instrument'
-        )
-      ).to exist
-      expect(
-        AssetAudit.where(
-          asset_id: plate2.id,
-          key: 'destroy_labware',
-          message: 'Process \'Destroying labware\' performed on instrument Destroying instrument'
-        )
-      ).to exist
-    end
-
-    it 'skips records with invalid records' do
-      plate = create(:plate, barcode: 'SQPD-1')
-
-      expect { run_rake_task }.to output(/Adding missing asset audit records.../).to_stdout
-      expect(
-        AssetAudit.where(
-          asset_id: plate.id,
-          key: 'destroy_location',
-          message: 'Process \'Destroying location\' performed on instrument Destroying instrument'
-        )
-      ).to exist
-    end
-
-    it 'handles errors when inserting records' do
-      plate = create(:plate, barcode: 'SQPD-1')
-      allow(AssetAudit).to receive(:create!).and_raise(ActiveRecord::ActiveRecordError, 'Test error')
-
-      expect { run_rake_task }.to output(/Error inserting record for asset_id #{plate.id}: Test error/).to_stdout
-    end
-  end
-
-  describe 'file does not exist' do
+  context 'when an invalid file path is given' do
     let(:run_rake_task) do
       Rake::Task['asset_audit:add_missing_records'].reenable
       Rake.application.invoke_task('asset_audit:add_missing_records[nil]')
     end
 
-    context 'when the file does not exist' do
-      it 'outputs an error message and exits' do
-        expect { run_rake_task }.to output(/Please provide a valid file path/).to_stdout
-      end
+    it 'outputs an error message and returns' do
+      expect { run_rake_task }.to output(/Please provide a valid file path/).to_stdout
     end
+  end
 
-    context 'when file does not exist' do
+  describe 'invalid csv file' do
+    context 'when csv has a bad format' do
+      let(:file_path) { 'spec/data/asset_audits/bad_format.csv' }
       let(:run_rake_task) do
         Rake::Task['asset_audit:add_missing_records'].reenable
         Rake.application.invoke_task("asset_audit:add_missing_records[#{file_path}]")
       end
 
-      before { allow(File).to receive(:exist?).with(file_path).and_return(false) }
-
-      it 'outputs an error message and exits' do
-        expect { run_rake_task }.to output(/Please provide a valid file path/).to_stdout
+      it 'outputs an error message and return' do
+        expect { run_rake_task }.to output(/Failed to read CSV file/).to_stdout
       end
     end
 
-    context 'when CSV read fails' do
+    context 'when csv columns are mising' do
+      let(:file_path) { 'spec/data/asset_audits/missing_column.csv' }
       let(:run_rake_task) do
         Rake::Task['asset_audit:add_missing_records'].reenable
         Rake.application.invoke_task("asset_audit:add_missing_records[#{file_path}]")
       end
 
-      it 'outputs an error message and exits' do
-        allow(CSV).to receive(:read).and_raise(StandardError, 'Test error')
+      it 'outputs an error message and return' do
+        expect { run_rake_task }.to output(/Failed to read CSV file: Missing columns/).to_stdout
+      end
+    end
 
-        expect { run_rake_task }.to output(/Failed to read CSV file: Test error/).to_stdout
+    context 'when csv with no header given' do
+      let(:file_path) { 'spec/data/asset_audits/missing_header.csv' }
+      let(:run_rake_task) do
+        Rake::Task['asset_audit:add_missing_records'].reenable
+        Rake.application.invoke_task("asset_audit:add_missing_records[#{file_path}]")
+      end
+
+      it 'outputs an error message and return' do
+        expect { run_rake_task }.to output(/Failed to read CSV file: Invalid number of header columns/).to_stdout
+      end
+    end
+  end
+
+  describe 'valid csv file' do
+    context 'when asset with barcode is not found' do
+      let(:file_path) { 'spec/data/asset_audits/valid_data.csv' }
+      let(:run_rake_task) do
+        Rake::Task['asset_audit:add_missing_records'].reenable
+        Rake.application.invoke_task("asset_audit:add_missing_records[#{file_path}]")
+      end
+
+      it 'does not add records if there is any invalid data' do
+        create(:plate, barcode: 'SQPD-1')
+
+        expect { run_rake_task }.to output(/Asset with barcode SQPD-2 not found./).to_stdout
+      end
+    end
+
+    context 'when message column is invalid' do
+      let(:file_path) { 'spec/data/asset_audits/invalid_message.csv' }
+      let(:run_rake_task) do
+        Rake::Task['asset_audit:add_missing_records'].reenable
+        Rake.application.invoke_task("asset_audit:add_missing_records[#{file_path}]")
+      end
+
+      it 'does not add records if there is any invalid data' do
+        create(:plate, barcode: 'SQPD-1')
+
+        expect { run_rake_task }.to output(/Invalid message for asset with barcode SQPD-1/).to_stdout
+      end
+    end
+
+    context 'when all data is good' do
+      let(:file_path) { 'spec/data/asset_audits/valid_data.csv' }
+      let(:run_rake_task) do
+        Rake::Task['asset_audit:add_missing_records'].reenable
+        Rake.application.invoke_task("asset_audit:add_missing_records[#{file_path}]")
+      end
+
+      it 'adds missing asset audit records' do
+        plate1 = create(:plate, barcode: 'SQPD-1')
+        plate2 = create(:plate, barcode: 'SQPD-2')
+
+        expect { run_rake_task }.to output(/All records successfully inserted./).to_stdout
+
+        expect(
+          AssetAudit.where(
+            asset_id: plate1.id,
+            key: 'destroy_location',
+            message: "Process 'Destroying location' performed on instrument Destroying instrument"
+          )
+        ).to exist
+
+        expect(
+          AssetAudit.where(
+            asset_id: plate2.id,
+            key: 'destroy_labware',
+            message: "Process 'Destroying labware' performed on instrument Destroying instrument"
+          )
+        ).to exist
+      end
+    end
+
+    context 'when there is a failed transaction' do
+      let(:file_path) { 'spec/data/asset_audits/valid_data.csv' }
+      let(:run_rake_task) do
+        Rake::Task['asset_audit:add_missing_records'].reenable
+        Rake.application.invoke_task("asset_audit:add_missing_records[#{file_path}]")
+      end
+
+      it 'rolls back transaction when there is an error in inserting records' do
+        create(:plate, barcode: 'SQPD-1')
+        create(:plate, barcode: 'SQPD-2')
+        allow(AssetAudit).to receive(:create!).and_raise(ActiveRecord::ActiveRecordError, 'Test error')
+
+        expect { run_rake_task }.to output(/Failed to insert records: Test error/).to_stdout
       end
     end
   end
