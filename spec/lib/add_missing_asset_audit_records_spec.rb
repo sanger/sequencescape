@@ -15,7 +15,7 @@ RSpec.describe 'asset_audit:add_missing_records', type: :task do
     end
 
     it 'outputs an error message and returns' do
-      expect { run_rake_task }.to output(/Please provide a valid file path/).to_stdout
+      expect { run_rake_task }.to  raise_error(RuntimeError,/Please provide a valid file path/)
     end
   end
 
@@ -28,7 +28,7 @@ RSpec.describe 'asset_audit:add_missing_records', type: :task do
       end
 
       it 'outputs an error message and return' do
-        expect { run_rake_task }.to output(/Failed to read CSV file/).to_stdout
+        expect { run_rake_task }.to  raise_error(RuntimeError,/Failed to read CSV file/)
       end
     end
 
@@ -40,7 +40,7 @@ RSpec.describe 'asset_audit:add_missing_records', type: :task do
       end
 
       it 'outputs an error message and return' do
-        expect { run_rake_task }.to output(/Failed to read CSV file: Missing columns/).to_stdout
+        expect { run_rake_task }.to  raise_error(RuntimeError, 'Failed to read CSV file: Missing columns.')
       end
     end
 
@@ -52,7 +52,7 @@ RSpec.describe 'asset_audit:add_missing_records', type: :task do
       end
 
       it 'outputs an error message and return' do
-        expect { run_rake_task }.to output(/Failed to read CSV file: Invalid number of header columns/).to_stdout
+        expect { run_rake_task }.to raise_error(/Failed to read CSV file: Invalid number of header columns./)
       end
     end
   end
@@ -68,7 +68,7 @@ RSpec.describe 'asset_audit:add_missing_records', type: :task do
       it 'does not add records if there is any invalid data' do
         create(:plate, barcode: 'SQPD-1')
 
-        expect { run_rake_task }.to output(/Asset with barcode SQPD-2 not found./).to_stdout
+        expect { run_rake_task }.to raise_error(RuntimeError, 'Asset with barcode SQPD-2 not found.')
       end
     end
 
@@ -82,7 +82,7 @@ RSpec.describe 'asset_audit:add_missing_records', type: :task do
       it 'does not add records if there is any invalid data' do
         create(:plate, barcode: 'SQPD-1')
 
-        expect { run_rake_task }.to output(/Invalid message for asset with barcode SQPD-1/).to_stdout
+        expect { run_rake_task }.to raise_error(RuntimeError, 'Invalid message for asset with barcode SQPD-1.')
       end
     end
 
