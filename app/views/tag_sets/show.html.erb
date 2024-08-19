@@ -1,0 +1,17 @@
+
+<% add :menu, "All Tag Sets" => tag_sets_path(@asset) %>
+
+<%= page_title('Tag Set', @tag_set.name) %>
+
+<dl>
+  <dt>Name</dt><dd><%= @tag_set.name %></dd>
+  <dt>Tag group (i7)</dt><dd><%= @tag_set.tag_group.name %></dd>
+  <dt>Tag group (i5)</dt><dd><%= @tag_set.tag2_group&.name %></dd>
+</dl>
+
+<br>
+<% if can? :create, TagLayoutTemplate %>
+  <%= link_to 'Create a new tag layout template from this tag set', new_tag_layout_template_path(tag_group_id: @tag_set.tag_group.id, tag2_group_id: @tag_set.tag2_group&.id) %>
+<br>
+<% end %>
+<%= link_to 'Back to tag sets list', tag_sets_path %>
