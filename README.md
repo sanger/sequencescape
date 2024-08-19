@@ -74,6 +74,8 @@ You can then access the Sequencescape documentation through: [http://localhost:8
 
 Yard will also try and document the installed gems: [http://localhost:8808/docs](http://localhost:8808/docs)
 
+The Yard documentation is also hosted in [GitHub Pages](https://pages.github.com/) under [https://sanger.github.io/sequencescape/](https://sanger.github.io/sequencescape/). Each `master` merge (i.e., release) would trigger a CI action (`.github/workflows/generate_pages.yml`) that deploy the Yard docs to GitHub Pages. This workflow can also be triggered via `workflow_dispatch` event which means it could be triggered manually through the  "Deploy Yard to GitHub Pages" action in Actions tab in sequencescape repository.
+
 ### Linting
 
 Yard-Junk is used to check for missing or incorrect documentation. To run the checks:
