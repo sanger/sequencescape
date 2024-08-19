@@ -23,20 +23,15 @@ class TagSetsController < ApplicationController
     respond_to { |format| format.html }
   end
 
-  def create # rubocop:todo Metrics/MethodLength
+  def create
     @tag_set = TagSet.new(tag_set_params)
 
     respond_to do |format|
       if @tag_set.save
-        flash[:notice] = 'Tag Set successfully created'
+        flash[:notice] = 'Tag Set was successfully created.'
         format.html { redirect_to tag_set_path(@tag_set) }
-        format.xml { render xml: @tag_set, status: :created, location: @tag_set }
-        format.json { render json: @tag_set, status: :created, location: @tag_set }
       else
-        flash[:error] = 'Problems creating your new Tag Set'
         format.html { render action: :new }
-        format.xml { render xml: @tag_set.errors, status: :unprocessable_entity }
-        format.json { render json: @tag_set.errors, status: :unprocessable_entity }
       end
     end
   end

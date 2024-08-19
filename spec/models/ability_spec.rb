@@ -73,6 +73,7 @@ RSpec.describe Ability do
       Submission => %i[create read edit update delete change_priority new order_fields study_assets],
       Supplier => %i[create new],
       TagGroup => %i[create read edit delete],
+      TagSet => %i[create read edit delete],
       TagLayoutTemplate => %i[create read edit delete],
       User => %i[administer edit read projects study_reports create delete]
     }
@@ -95,6 +96,7 @@ RSpec.describe Ability do
       Study => %i[create read print_asset_group_labels],
       Submission => %i[create read update new order_fields study_assets edit],
       TagGroup => %i[read],
+      TagSet => %i[read],
       TagLayoutTemplate => %i[read],
       User => %i[edit read projects study_reports print_swipecard]
     }
@@ -194,6 +196,7 @@ RSpec.describe Ability do
           Submission => %i[delete change_priority],
           Supplier => %i[create new],
           TagGroup => %i[create edit delete],
+          TagSet => %i[create edit delete],
           TagLayoutTemplate => %i[create edit delete],
           User => %i[administer create delete]
         }
