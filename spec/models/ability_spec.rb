@@ -195,7 +195,7 @@ RSpec.describe Ability do
           Submission => %i[delete change_priority],
           Supplier => %i[create new],
           TagGroup => %i[create edit delete],
-          TagSet => %i[create edit delete],
+          TagSet => %i[create read edit delete],
           TagLayoutTemplate => %i[create edit delete],
           User => %i[administer create delete]
         }
