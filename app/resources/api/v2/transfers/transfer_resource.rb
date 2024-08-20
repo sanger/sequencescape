@@ -60,6 +60,15 @@ module Api
         #   @return [Hash] a hash of the transfers made.
         attribute :transfers, delegate: :transfers_hash
 
+        def transfers=(transfers)
+          @model.transfers_hash =
+            if transfers.is_a?(ActionController::Parameters)
+              transfers.to_unsafe_h # We must unwrap the parameters to a real Hash.
+            else
+              transfers
+            end
+        end
+
         # @!attribute [w] transfer_template_uuid
         #   @return [String] the UUID of a transfer template to create a transfer from.
         attribute :transfer_template_uuid
