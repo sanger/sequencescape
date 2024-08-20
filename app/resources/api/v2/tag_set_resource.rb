@@ -22,7 +22,6 @@ module Api
       attribute :name, readonly: true
 
       # Filters
-      filter :visible, default: true
       filter :name
     end
   end
