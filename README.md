@@ -64,17 +64,13 @@ a organisation of 900 people.
 
 ## Documentation
 
-In addition to the [externally hosted YARD docs](https://www.rubydoc.info/github/sanger/sequencescape), you can also run a local server:
+The Yard documentation is also hosted at [GitHub Pages](https://pages.github.com/) under [https://sanger.github.io/sequencescape/](https://sanger.github.io/sequencescape/). The documentation is automatically updated via a CI workflow when a merge to master occurs, but you can also trigger it manually against any branch (the branch can be selected using the "Run Workflow" button in the [corresponding action](https://github.com/sanger/sequencescape/actions/workflows/generate_pages.yml)). 
+
+To preview this documentation, you can spin up a yard server locally using the following command:
 
 ```shell
 yard server -r --gems -m sequencescape .
 ```
-
-You can then access the Sequencescape documentation through: [http://localhost:8808/docs/sequencescape](http://localhost:8808/docs/sequencescape)
-
-Yard will also try and document the installed gems: [http://localhost:8808/docs](http://localhost:8808/docs)
-
-The Yard documentation is also hosted in [GitHub Pages](https://pages.github.com/) under [https://sanger.github.io/sequencescape/](https://sanger.github.io/sequencescape/). Each `master` merge (i.e., release) would trigger a CI action (`.github/workflows/generate_pages.yml`) that deploy the Yard docs to GitHub Pages. This workflow can also be triggered via `workflow_dispatch` event which means it could be triggered manually through the  "Deploy Yard to GitHub Pages" action in Actions tab in sequencescape repository.
 
 ### Linting
 
