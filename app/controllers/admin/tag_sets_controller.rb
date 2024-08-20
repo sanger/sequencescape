@@ -2,7 +2,7 @@
 ##
 # This class is the controller for Tag Sets which are used to link together two related tag groups.
 # It allows you to create and view Tag Sets.
-class TagSetsController < ApplicationController
+class Admin::TagSetsController < ApplicationController
   authorize_resource
 
   def index
@@ -29,7 +29,7 @@ class TagSetsController < ApplicationController
     respond_to do |format|
       if @tag_set.save
         flash[:notice] = 'Tag Set was successfully created.'
-        format.html { redirect_to tag_set_path(@tag_set) }
+        format.html { redirect_to admin_tag_set_path(@tag_set) }
       else
         format.html { render action: :new }
       end

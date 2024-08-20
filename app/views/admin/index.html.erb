@@ -107,4 +107,11 @@
       Overview of granted abilities.
     <% end %>
   <% end %>
+
+  <% if can? :manage, TagSet %>
+    <%= panel do %>
+      <h4 class="card-title"><%= link_to "Tag set management", admin_tag_sets_path %></h4>
+      Manage the tag sets.
+    <% end %>
+  <% end %>
 </div>

@@ -96,7 +96,6 @@ RSpec.describe Ability do
       Study => %i[create read print_asset_group_labels],
       Submission => %i[create read update new order_fields study_assets edit],
       TagGroup => %i[read],
-      TagSet => %i[read],
       TagLayoutTemplate => %i[read],
       User => %i[edit read projects study_reports print_swipecard]
     }

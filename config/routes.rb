@@ -340,6 +340,7 @@ Rails.application.routes.draw do
     resources :faculty_sponsors
     resources :programs
     resources :delayed_jobs
+    resources :tag_sets, only: %i[index new create show]
 
     resources :users do
       collection { post :filter }
@@ -450,8 +451,6 @@ Rails.application.routes.draw do
   resources :tag_groups, except: [:destroy] do
     resources :tags, except: %i[destroy index create new edit]
   end
-
-  resources :tag_sets, only: %i[index new create show]
 
   resources :tag_layout_templates, only: %i[index new create show]
 
