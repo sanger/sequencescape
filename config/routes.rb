@@ -67,7 +67,7 @@ Rails.application.routes.draw do
       jsonapi_resources :work_orders
 
       namespace :transfers do
-        jsonapi_resources :transfers
+        jsonapi_resources :transfers, except: %i[update]
 
         jsonapi_resources :between_plate_and_tubes
         jsonapi_resources :between_plates_by_submissions
