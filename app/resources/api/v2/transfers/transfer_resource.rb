@@ -58,10 +58,18 @@ module Api
 
         # @!attribute [rw] transfers
         #   @return [Hash] a hash of the transfers made.
-        attribute :transfers, delegate: :transfers_hash
+        attribute :transfers
+
+        def transfers
+          # Only some transfer types have the :transfers method.
+          # This gets implemented differently, depending on the type of transfer being performed.
+          return nil unless @model.respond_to?(:transfers)
+
+          @model.transfers
+        end
 
         def transfers=(transfers)
-          @model.transfers_hash =
+          @model.transfers =
             if transfers.is_a?(ActionController::Parameters)
               transfers.to_unsafe_h # We must unwrap the parameters to a real Hash.
             else
