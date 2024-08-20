@@ -2,21 +2,30 @@
 
 module Api
   module V2
-    # Provides a JSON API representation of VolumeUpdate
-    # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
+    # @todo This documentation does not yet include a detailed description of what this resource represents.
+    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
+    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+    #
+    # @note Access this resource via the `/api/v2/volume_updates/` endpoint.
+    #
+    # Provides a JSON:API representation of {VolumeUpdate}.
+    #
+    # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
+    # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
+    # of the JSON:API standard.
     class VolumeUpdateResource < BaseResource
       model_name 'VolumeUpdate'
 
       # @!attribute created_by
-      #  @return [String] the user who created the volume update.
+      #   @return [String] the user who created the volume update.
       attribute :created_by
 
       # @!attribute asset_uuid
-      #  @return [String] the uuid of the target labware associated with the volume update.
+      #   @return [String] the uuid of the target labware associated with the volume update.
       attribute :target_uuid
 
       # @!attribute witnessed_by
-      #  @return [Float] the volume change that occured on the target labware.
+      #   @return [Float] the volume change that occured on the target labware.
       attribute :volume_change
 
       # Sets the target Labware on the model using the UUID provided in the API create/update request.
