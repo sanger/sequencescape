@@ -12,15 +12,15 @@ module Api
         def process_operations(operations)
           # We need to determine the polymorphic type of the transfer to create based on any template provided.
           operations.each do |operation|
-            context = operation.options[:context]
-            attributes = operation.options[:data][:attributes]
+            # Neither data nor attributes are guaranteed among the operation options.
+            attributes = operation.options.fetch(:data, {}).fetch(:attributes, {})
 
             # Skip the operation if it does not contain a transfer template.
             next unless attributes.key?(:transfer_template_uuid)
 
             # Get the transfer template and use it to update the context and attributes.
             template = TransferTemplate.with_uuid(attributes[:transfer_template_uuid]).first
-            context[:polymorphic_type] = template.transfer_class_name
+            operation.options[:context][:polymorphic_type] = template.transfer_class_name
             attributes[:transfers] = template.transfers if template.transfers.present?
 
             # Remove the UUID of the transfer template from the attributes.
