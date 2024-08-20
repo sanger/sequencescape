@@ -64,7 +64,8 @@ a organisation of 900 people.
 
 ## Documentation
 
-The Yard documentation is also hosted at [GitHub Pages](https://pages.github.com/) under [https://sanger.github.io/sequencescape/](https://sanger.github.io/sequencescape/). The documentation is automatically updated via a CI workflow when a merge to master occurs, but you can also trigger it manually against any branch (the branch can be selected using the "Run Workflow" button in the [corresponding action](https://github.com/sanger/sequencescape/actions/workflows/generate_pages.yml)).
+The Yard documentation is also hosted at [GitHub Pages](https://pages.github.com/) under [https://sanger.github.io/sequencescape/](https://sanger.github.io/sequencescape/).
+The documentation is automatically updated via a CI workflow when a merge to master occurs, but you can also trigger it manually against any branch (the branch can be selected using the "Run Workflow" button in the [corresponding action](https://github.com/sanger/sequencescape/actions/workflows/generate_pages.yml)).
 
 To preview this documentation, you can spin up a yard server locally using the following command:
 
