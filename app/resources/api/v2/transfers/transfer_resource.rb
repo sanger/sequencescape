@@ -17,7 +17,7 @@ module Api
       class TransferResource < BaseResource
         # @!attribute [r] uuid
         #   @return [String] the UUID of the transfer.
-        attribute :uuid, readonly: true
+        attribute :uuid
 
         # @!attribute [rw] source_uuid
         #   @return [String] the UUID of the source labware.
@@ -58,6 +58,7 @@ module Api
 
         # @!attribute [rw] transfers
         #   @return [Hash] a hash of the transfers made.
+        #     This is usually populated by the TransferTemplate used during creation of the Transfer.
         attribute :transfers
 
         def transfers
@@ -69,6 +70,7 @@ module Api
         end
 
         def transfers=(transfers)
+          # This setter is invoked by the TransferTemplate populating the attributes for transfers.
           @model.transfers =
             if transfers.is_a?(ActionController::Parameters)
               transfers.to_unsafe_h # We must unwrap the parameters to a real Hash.
@@ -78,13 +80,19 @@ module Api
         end
 
         # @!attribute [w] transfer_template_uuid
-        #   @return [String] the UUID of a transfer template to create a transfer from.
+        #   @return [String] the UUID of a TransferTemplate to create a transfer from.
+        #     This must be provided or the Transfer creation will raise an error.
         attribute :transfer_template_uuid
 
         def fetchable_fields
           # Do not fetch the transfer template.
           # It is only submitted when creating a new transfer and not stored.
           super - %i[transfer_template_uuid]
+        end
+
+        def self.creatable_fields(context)
+          # Do not allow the UUID to be declared by the client.
+          super - %i[uuid]
         end
 
         def self.create(context)
