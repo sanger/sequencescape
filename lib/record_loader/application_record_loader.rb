@@ -13,7 +13,7 @@ module RecordLoader
 
     def wip_list
       wip_files = []
-      wip_files_path = Rails.root.join("config/default_records")
+      wip_files_path = Rails.root.join('config/default_records')
       Find.find(wip_files_path) { |path| wip_files << path if /\wip\.yml$/.match?(path) }
       wip_files
     end
