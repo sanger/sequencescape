@@ -55,6 +55,10 @@ chromium_tag_groups:
   identifier: :name
   scope: :chromium
   scope_on: TagGroup
+dual_index_tag_sets:
+  identifier: :name
+  scope: :visible_dual_index_tag_sets
+  scope_on: TagSet
 gc_content:
   options:
     - "Neutral"
