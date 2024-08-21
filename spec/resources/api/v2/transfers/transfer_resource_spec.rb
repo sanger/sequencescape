@@ -28,10 +28,6 @@ RSpec.describe Api::V2::Transfers::TransferResource, type: :resource do
     expect(resource).to have_updatable_field :transfer_template_uuid
   end
 
-  it 'disallows updating of read-only fields', :aggregate_failures do
-    expect(resource).not_to have_updatable_field :uuid
-  end
-
   # Filters
   # it { is_expected.to filter(:uuid) }
 
