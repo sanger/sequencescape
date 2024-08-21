@@ -15,6 +15,13 @@ class TagSet < ApplicationRecord
   validates :name, presence: true, uniqueness: true
   validate :tag_group_adapter_types_must_match
 
+  scope :dual_index_tag_sets, -> { where.not(tag2_group: nil) }
+
+  scope :visible_dual_index_tag_sets, -> {
+    dual_index_tag_sets.joins(:tag_group, :tag2_group)
+                      .where(tag_group: { visible: true }, tag2_group: { visible: true })
+  }
+
   # Dynamic method to determine the visibility of a tag_set based on the visibility of its tag_groups
   def visible
     tag_group.visible && (tag2_group.nil? || tag2_group.visible)
