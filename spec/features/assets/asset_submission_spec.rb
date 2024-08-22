@@ -31,9 +31,7 @@ describe 'Asset submission', :js do
     end
 
     describe 'when the user selects a request type' do
-      before do
-        select 'Request Type 1', from: 'Request type'
-      end
+      before { select 'Request Type 1', from: 'Request type' }
 
       it 'does not set flowcell type to default value' do
         expect(page).to have_select('Flowcell type', selected: 'Select a requested flowcell type')
