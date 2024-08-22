@@ -12,14 +12,7 @@ module RecordLoader
     adapter RecordLoader::Adapter::Rails.new
 
     def wip_list
-      deploy_wip_pipelines =
-        (
-          if Rails.application.config.respond_to?(:deploy_wip_pipelines)
-            Rails.application.config.deploy_wip_pipelines
-          else
-            false
-          end
-        )
+      deploy_wip_pipelines = Rails.application.config.try(:deploy_wip_pipelines) || false
       return [] unless deploy_wip_pipelines
 
       wip_files = []
