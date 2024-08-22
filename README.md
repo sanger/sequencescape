@@ -27,44 +27,51 @@ a organisation of 900 people.
 
 <!-- toc -->
 
-- [Documentation](#documentation)
-- [Requirements](#requirements)
-- [Getting started (using Docker)](#getting-started-using-docker)
-- [Getting started (using native installation)](#getting-started-using-native-installation)
-  - [Installing ruby](#installing-ruby)
-    - [rbenv](#rbenv)
-  - [Automatic Sequencescape setup](#automatic-sequencescape-setup)
-  - [Manual Sequencescape setup](#manual-sequencescape-setup)
-    - [Installing gems](#installing-gems)
-    - [Adjusting config](#adjusting-config)
-    - [Default setup](#default-setup)
-  - [Starting rails](#starting-rails)
-    - [Delayed job](#delayed-job)
-  - [Message broker](#message-broker)
-- [Testing](#testing)
-- [Linting and formatting](#linting-and-formatting)
-- [Rake tasks](#rake-tasks)
-- [Supporting applications](#supporting-applications)
-  - [Barcode printing](#barcode-printing)
-  - [Plate barcode service](#plate-barcode-service)
-  - [Data warehousing](#data-warehousing)
-- [Miscellaneous](#miscellaneous)
-  - [Lefthook](#lefthook)
-  - [Ruby warnings and rake 11](#ruby-warnings-and-rake-11)
-  - [NPG - Illumina tracking software](#npg---illumina-tracking-software)
-  - [Troubleshooting](#troubleshooting)
-    - [MySQL errors when installing](#mysql-errors-when-installing)
-    - [Installing on Apple Silicon (M1)](#installing-on-apple-silicon-m1)
-  - [API V2 Authentication](#api-v2-authentication)
-  - [Publishing AMQP Messages](#publishing-amqp-messages)
-  - [Updating the table of contents](#updating-the-table-of-contents)
-  - [CI](#ci)
+- [ Sequencescape](#-sequencescape)
+  - [Contents](#contents)
+  - [Documentation](#documentation)
+    - [Linting](#linting)
+  - [Requirements](#requirements)
+  - [Getting started (using Docker)](#getting-started-using-docker)
+  - [Getting started (using native installation)](#getting-started-using-native-installation)
+    - [Installing ruby](#installing-ruby)
+      - [rbenv](#rbenv)
+    - [Automatic Sequencescape setup](#automatic-sequencescape-setup)
+    - [Manual Sequencescape setup](#manual-sequencescape-setup)
+      - [Installing gems](#installing-gems)
+      - [Adjusting config](#adjusting-config)
+      - [Default setup](#default-setup)
+    - [Starting rails](#starting-rails)
+      - [Delayed job](#delayed-job)
+    - [Message broker](#message-broker)
+  - [Testing](#testing)
+  - [Linting and formatting](#linting-and-formatting)
+  - [Rake tasks](#rake-tasks)
+  - [Supporting applications](#supporting-applications)
+    - [Barcode printing](#barcode-printing)
+    - [Plate barcode service](#plate-barcode-service)
+    - [Data warehousing](#data-warehousing)
+  - [Miscellaneous](#miscellaneous)
+    - [Lefthook](#lefthook)
+    - [Ruby warnings and rake 11](#ruby-warnings-and-rake-11)
+    - [NPG - Illumina tracking software](#npg---illumina-tracking-software)
+    - [Troubleshooting](#troubleshooting)
+      - [MySQL errors when installing](#mysql-errors-when-installing)
+      - [Installing on Apple Silicon (M1)](#installing-on-apple-silicon-m1)
+    - [API V2 Authentication](#api-v2-authentication)
+    - [Publishing AMQP Messages](#publishing-amqp-messages)
+    - [Updating the table of contents](#updating-the-table-of-contents)
+    - [CI](#ci)
+    - [ERD](#erd)
 
 <!-- tocstop -->
 
 ## Documentation
 
-In addition to the [externally hosted YARD docs](https://www.rubydoc.info/github/sanger/sequencescape), you can also run a local server:
+The Yard documentation is also hosted at [GitHub Pages](https://pages.github.com/) under [https://sanger.github.io/sequencescape/](https://sanger.github.io/sequencescape/).
+The documentation is automatically updated via a CI workflow when a merge to master occurs, but you can also trigger it manually against any branch (the branch can be selected using the "Run Workflow" button in the [corresponding action](https://github.com/sanger/sequencescape/actions/workflows/generate_pages.yml)).
+
+To preview this documentation, you can spin up a yard server locally using the following command:
 
 ```shell
 yard server --reload sequencescape .
@@ -461,3 +468,15 @@ npx markdown-toc -i README.md --bullets "-"
 The GH actions builds use the Knapsack-pro gem to reduce build time by parallelizing the RSpec and Cucumber tests. There is no need to regenerate the knapsack_rspec_report.json file, Knapsack Pro will dynamically allocate tests to ensure tests finish as close together as possible.
 
 Copyright (c) 2007, 2010-2021 Genome Research Ltd.
+
+### ERD
+
+You can create a database entity relationship diagram, by specifying the title and attributes optionally, and view the output:
+
+```
+bundle exec rake erd title='Sequencescape Entity Relationship Diagram' attributes='primary_keys,foreign_keys,inheritance' orientation=horizontal polymorphism=true notation=bachman indirect=false inheritance=true only='Sample,Study,AliquotIndex,Aliquot,Project,Order,Submission,Labware,Receptacle,Request,Request::Metadata,Batch,BatchRequest,LabEvent,RequestType,Pipeline,SampleManifest,Sample::Metadata,Study::Metadata,Item,BaitLibrary,RequestEvent,Project::Metadata,Barcode,Purpose,QCResult,QCAssay,User,Plate,Tube,Well' exclude='Target,Commentable,Failable,Eventful,Eventable,Resource,Attributable,Owner,Authorizable,Documentable'
+
+open erd.pdf
+```
+
+The command uses the [rails-erd](https://github.com/voormedia/rails-erd) gem.

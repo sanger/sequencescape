@@ -1,0 +1,3 @@
+barcode,message,created_by,created_at
+SQPD-1,Destroying location,User1,2021-01-01 12:00:00
+SQPD-2,Destroying labware,User2,2021-01-02 12:00:00
