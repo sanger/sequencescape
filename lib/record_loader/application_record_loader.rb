@@ -12,15 +12,19 @@ module RecordLoader
     adapter RecordLoader::Adapter::Rails.new
 
     def wip_list
-      wip_files = []
-      wip_files_path = Rails.root.join('config/default_records')
-      Find.find(wip_files_path) do |path|
-        if path.match?(/\wip\.yml$/)
-          file_name = File.basename(path, '.wip.yml')
-          wip_files << file_name
+      if Rails.application.config.deploy_wip_pipelines
+        wip_files = []
+        wip_files_path = Rails.root.join('config/default_records')
+        Find.find(wip_files_path) do |path|
+          if path.match?(/\wip\.yml$/)
+            file_name = File.basename(path, '.wip.yml')
+            wip_files << file_name
+          end
         end
+        wip_files
+      else
+        []
       end
-      wip_files
     end
   end
 end
