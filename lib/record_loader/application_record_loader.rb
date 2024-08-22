@@ -12,7 +12,15 @@ module RecordLoader
     adapter RecordLoader::Adapter::Rails.new
 
     def wip_list
-      return [] unless Rails.application.config.deploy_wip_pipelines
+      deploy_wip_pipelines =
+        (
+          if Rails.application.config.respond_to?(:deploy_wip_pipelines)
+            Rails.application.config.deploy_wip_pipelines
+          else
+            false
+          end
+        )
+      return [] unless deploy_wip_pipelines
 
       wip_files = []
       wip_files_path = Rails.root.join('config/default_records')
