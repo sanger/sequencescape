@@ -9,7 +9,7 @@
     <% instance_variable_or_id_param(:request_type) do |field_name, value| %>
       <div class="form-group  col-xs-12">
         <%= label_tag(field_name, 'Request type', class: 'col-md-4') %>
-        <%= select_field_sorted_by_name(field_name, @request_types, value, can_edit) %>
+        <%= select_field_sorted_by_name(field_name, @request_types, value, can_edit, prompt: 'Select a request type', required: true) %>
       </div>
     <% end %>
     <% if @asset.studies.uniq.count > 1 -%>
