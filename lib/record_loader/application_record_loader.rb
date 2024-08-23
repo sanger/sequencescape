@@ -12,11 +12,12 @@ module RecordLoader
     adapter RecordLoader::Adapter::Rails.new
 
     def wip_list
+      # return a list of WIP files name as features if deploy_wip_pipelines is set to true, or return empty list
       deploy_wip_pipelines = Rails.application.config.try(:deploy_wip_pipelines) || false
       return [] unless deploy_wip_pipelines
 
       wip_files = []
-      wip_files_path = Rails.root.join('config/default_records')
+      wip_files_path = @path
       Find.find(wip_files_path) do |path|
         if path.match?(/\wip\.yml$/)
           file_name = File.basename(path, '.wip.yml')

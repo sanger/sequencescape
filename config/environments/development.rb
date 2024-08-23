@@ -72,6 +72,7 @@ Rails.application.configure do
     Bullet.rails_logger = true
   end
 
+  # load WIP features flag
   config.deploy_wip_pipelines = true
 end
 
