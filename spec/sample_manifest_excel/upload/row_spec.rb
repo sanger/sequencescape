@@ -288,6 +288,21 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
     end
   end
 
+  context 'when there are dual index columns to link' do
+    let(:columns) { configuration.columns.plate_dual_index_tag_library.dup }
+
+    it 'links up specialised fields' do
+      data[4] = 'Tag Set 1'
+      data[5] = 'B1'
+      row = described_class.new(number: 1, data: data, columns: columns)
+      dual_index_tag_set = row.specialised_fields.detect do |f|
+ f.is_a?(SequencescapeExcel::SpecialisedField::DualIndexTagSet) end
+      dual_index_tag_well = row.specialised_fields.detect do |f|
+ f.is_a?(SequencescapeExcel::SpecialisedField::DualIndexTagWell) end
+      expect(dual_index_tag_well.sf_dual_index_tag_set).to eq dual_index_tag_set
+    end
+  end
+
   context 'when there are bioscan columns to link' do
     let(:columns) { configuration.columns.plate_bioscan.dup }
     let(:sample_manifest) { create(:plate_sample_manifest_with_manifest_assets) }
