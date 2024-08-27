@@ -8,6 +8,7 @@ class Labware < Asset
   include Uuid::Uuidable
   include AssetLink::Associations
   include SharedBehaviour::Named
+  extend EventfulRecord
 
   attr_reader :storage_location_service
 
@@ -111,6 +112,10 @@ class Labware < Asset
   scope :with_required_aliquots, ->(aliquots_ids) { joins(:aliquots).where(aliquots: { id: aliquots_ids }) }
 
   has_many :qc_results, through: :receptacles
+
+  has_many_events do
+    event_constructor(:create_retention_instruction!, Event::RetentionInstructionEvent, :created_retention_instruction!)
+  end
 
   scope :for_search_query,
         lambda { |query|
