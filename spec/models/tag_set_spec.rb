@@ -90,8 +90,6 @@ RSpec.describe TagSet do
     end
   end
 
-
-
   describe '#visible' do
     it 'returns true if it only has one tag_group and it is set to visible' do
       tag_group = create(:tag_group, visible: true)
