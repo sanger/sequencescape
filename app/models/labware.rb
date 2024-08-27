@@ -15,9 +15,6 @@ class Labware < Asset
 
   delegate :metadata, to: :custom_metadatum_collection, allow_nil: true
 
-  # TODO: Do we need to keep this?
-  has_one_event_with_family 'retention_instruction_update'
-
   class_attribute :receptacle_class
   self.receptacle_class = 'Receptacle'
   self.sample_partial = 'assets/samples_partials/asset_samples'

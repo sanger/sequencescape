@@ -2,6 +2,7 @@
 
 class Event::RetentionInstructionEvent < Event
   def self.create_for_labware!(asset, user)
+    return if asset.retention_instruction.blank?
     create!(
       eventful: asset,
       message: "Set retention instruction to #{asset.retention_instruction}",
