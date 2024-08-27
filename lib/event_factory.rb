@@ -96,7 +96,7 @@ class EventFactory
     Event.create!(
       eventful: labware,
       message: "Set retention instruction to #{labware.retention_instruction}",
-      content: 'Content',
+      content: "Updated by user: #{user.login}",
       family: 'set_retention_instruction',
       created_by: user ? user.login : nil
     )
