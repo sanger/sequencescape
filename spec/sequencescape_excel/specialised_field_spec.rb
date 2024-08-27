@@ -641,6 +641,94 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
     end
   end
 
+  describe SequencescapeExcel::SpecialisedField::DualIndexTagSet do
+    let(:tag_group1) { create :tag_group_with_tags }
+    let(:tag_group2) { create :tag_group_with_tags }
+    let(:dual_index_tag_set) { create :tag_set, tag_group: tag_group1, tag2_group: tag_group2 }
+    let(:dual_index_tag_well) { 'A1' }
+
+    describe 'dual index tag set' do
+      let(:sf_dual_index_tag_set) do
+ described_class.new(value: dual_index_tag_set.name, sample_manifest_asset: sample_manifest_asset) end
+
+      it 'will add the value' do
+        expect(sf_dual_index_tag_set.value).to eq(dual_index_tag_set.name)
+      end
+
+      it 'will be valid with an existing dual index tag set name' do
+        expect(sf_dual_index_tag_set).to be_valid
+      end
+
+      context 'when the tag set is not a dual index tag set' do
+        let(:sf_dual_index_tag_set) do
+ described_class.new(value: 'bananas', sample_manifest_asset: sample_manifest_asset) end
+
+        it 'will be not be valid' do
+          expect(sf_dual_index_tag_set).not_to be_valid
+        end
+      end
+    end
+
+    describe SequencescapeExcel::SpecialisedField::DualIndexTagWell do
+      let(:sf_dual_index_tag_well) do
+ described_class.new(value: dual_index_tag_well, sample_manifest_asset: sample_manifest_asset) end
+      let(:sf_dual_index_tag_set) do
+        SequencescapeExcel::SpecialisedField::DualIndexTagSet.new(
+          value: dual_index_tag_set.name,
+          sample_manifest_asset: sample_manifest_asset
+        )
+      end
+
+      it 'will add the value' do
+        expect(sf_dual_index_tag_well.value).to eq(dual_index_tag_well)
+      end
+
+      it 'will not be valid with a valid well location, but when unlinked from a valid dual tag set' do
+        expect(sf_dual_index_tag_well).not_to be_valid
+      end
+
+      describe 'linking' do
+        context 'when linked to a invalid dual tag set' do
+          let(:tag_group2) { create(:tag_group_with_tags, visible: false) }
+
+          before do
+            sf_dual_index_tag_well.sf_dual_index_tag_set = sf_dual_index_tag_set
+          end
+
+          it 'will not be valid when the tag set has only one visible tag group' do
+            expect(sf_dual_index_tag_well).not_to be_valid
+          end
+        end
+
+        context 'when linked to a valid dual tag set' do
+          before do
+            sf_dual_index_tag_well.sf_dual_index_tag_set = sf_dual_index_tag_set
+          end
+
+          it 'will be valid when linked to a tag set with two visible tag groups' do
+            expect(sf_dual_index_tag_well).to be_valid
+          end
+
+          context 'when the well location is empty' do
+            let(:dual_index_tag_well) { '' }
+
+            it 'will not be valid without a well location' do
+              expect(sf_dual_index_tag_well).not_to be_valid
+            end
+          end
+
+          context 'when the well location is invalid' do
+            let(:dual_index_tag_well) { 'Z99' }
+
+            it 'will not be valid without a valid well location' do
+              expect(sf_dual_index_tag_well).not_to be_valid
+            end
+          end
+        end
+      end
+    end
+  end
+
   describe SequencescapeExcel::SpecialisedField::PrimerPanel do
     let(:primer_panel) { create :primer_panel }
 
