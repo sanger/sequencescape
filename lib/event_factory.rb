@@ -89,4 +89,16 @@ class EventFactory
     ).deliver_now
   end
   # rubocop:enable Metrics/MethodLength
+
+  def self.record_retention_instruction_updates(labware, user)
+    return if labware.retention_instruction.blank?
+
+    Event.create!(
+      eventful: labware,
+      message: "Set retention instruction to #{labware.retention_instruction}",
+      content: 'Content',
+      family: 'set_retention_instruction',
+      created_by: user ? user.login : nil
+    )
+  end
 end

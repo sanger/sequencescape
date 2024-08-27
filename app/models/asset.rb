@@ -62,7 +62,7 @@ class Asset < ApplicationRecord
     event_constructor(:update_gender_markers!, Event::SequenomLoading, :created_update_gender_makers!)
     event_constructor(:update_sequenom_count!, Event::SequenomLoading, :created_update_sequenom_count!)
     # Keeping this has_many as there could be many events related to a single asset
-    event_constructor(:update_labware!, Event::RetentionInstructionEvent, :create_for_labware!)
+    # event_constructor(:update_labware!, Event::RetentionInstructionEvent, :create_for_labware!)
   end
   has_many_lab_events
 
