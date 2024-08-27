@@ -169,7 +169,7 @@ library_type:
     empty_cell:
     is_error:
 dual_index_tag_set:
-  heading: DUAL INDEX TAG SET
+  heading: DUAL INDEX TAG PLATE NAME
   unlocked: true
   validation:
     options:
@@ -178,7 +178,7 @@ dual_index_tag_set:
       allowBlank: false
       showInputMessage: true
       promptTitle: "Dual Index Tag set name"
-      prompt: "Input the name of a valid dual index tag set. All samples in a library need to be tagged with the same tag set."
+      prompt: "Input the name of a valid dual index tag set/ manufactor tag plate name. All samples in a library need to be tagged with the same tag set."
     range_name: :dual_index_tag_sets
   conditional_formattings:
     empty_cell:

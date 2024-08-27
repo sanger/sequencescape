@@ -705,8 +705,35 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
             sf_dual_index_tag_well.sf_dual_index_tag_set = sf_dual_index_tag_set
           end
 
-          it 'will be valid when linked to a tag set with two visible tag groups' do
-            expect(sf_dual_index_tag_well).to be_valid
+          context 'when the well location is valid' do
+            it 'will be valid when linked to a tag set with two visible tag groups' do
+              expect(sf_dual_index_tag_well).to be_valid
+            end
+
+            it 'will apply the two tags associated with the map_id' do
+              sf_dual_index_tag_well.update(aliquot: aliquot, tag_group: nil)
+              # well location 'A1' => map_id '1'
+              expect(asset.aliquots.first.tag.map_id).to eq 1
+              expect(asset.aliquots.first.tag.tag_group).to eq tag_group1
+              expect(asset.aliquots.first.tag2.map_id).to eq 1
+              expect(asset.aliquots.first.tag2.tag_group).to eq tag_group2
+
+              tag_set = TagSet.find_by(tag_group_id: asset.aliquots.first.tag.tag_group.id,
+tag2_group_id: asset.aliquots.first.tag2.tag_group.id)
+              expect(tag_set).to eq dual_index_tag_set
+            end
+          end
+
+          context 'when applied to a re-upload' do
+            let(:asset) { create(:tagged_well, map: map, aliquot_count: 1) }
+            let(:dual_index_tag_well) { 'd1' }
+
+            it 'will apply the 2 tags associated with the updated map_id' do
+              sf_dual_index_tag_well.update(aliquot: aliquot, tag_group: nil)
+              # well location 'D1' => map_id '4'
+              expect(asset.reload.aliquots.first.tag.map_id).to eq 4
+              expect(asset.reload.aliquots.first.tag2.map_id).to eq 4
+            end
           end
 
           context 'when the well location is empty' do

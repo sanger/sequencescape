@@ -9,8 +9,8 @@ module SequencescapeExcel
       TAGS_PER_WELL = 2
 
       include Base
-      # TODO: Is the value required?
-      # include ValueRequired
+      include ValueRequired
+      include ValueToUpcase
 
       attr_accessor :sf_dual_index_tag_set
 
@@ -18,10 +18,11 @@ module SequencescapeExcel
       validates :tags, length: { is: TAGS_PER_WELL, message: 'does not have associated tags' }, if: :well_index
 
       def update(_attributes = {})
-        # TODO
-        # assuming there is only 1 aliquot in the well (asset)
-        # so can do a check
-        # add the (hopefully) two tags to the well.aliquots
+        return unless valid?
+
+        raise StandardError, 'Tag aliquot mismatch' unless asset.aliquots.one?
+
+        asset.aliquots.first.update(tag: tags.first, tag2: tags.second)
       end
 
       def link(other_fields)
