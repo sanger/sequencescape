@@ -17,6 +17,8 @@ module RecordLoader
       return [] unless deploy_wip_pipelines
 
       wip_files = []
+      # @path returns 'config/default_records' directory
+      # see https://github.com/sanger/record_loader/blob/master/lib/record_loader/base.rb
       wip_files_path = @path
       Find.find(wip_files_path) do |path|
         if path.match?(/\wip\.yml$/)
