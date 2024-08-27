@@ -65,6 +65,7 @@ class LabwhereReception
 
     assets.each do |asset|
       asset.events.create_scanned_into_lab!(location_barcode, user.login)
+      asset.update_labware!(user)
       BroadcastEvent::LabwareReceived.create!(
         seed: asset,
         user: user,

@@ -61,6 +61,7 @@ class Asset < ApplicationRecord
     event_constructor(:updated_fluidigm_plate!, Event::SequenomLoading, :updated_fluidigm_plate!)
     event_constructor(:update_gender_markers!, Event::SequenomLoading, :created_update_gender_makers!)
     event_constructor(:update_sequenom_count!, Event::SequenomLoading, :created_update_sequenom_count!)
+    event_constructor(:update_labware!, Event::RetentionInstructionEvent, :create_for_labware!)
   end
   has_many_lab_events
 
