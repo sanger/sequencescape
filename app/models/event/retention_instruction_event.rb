@@ -4,7 +4,7 @@ class Event::RetentionInstructionEvent < Event
     create!(
       eventful: retention_instruction,
       message: 'Retention instruction created',
-      content: Date.today.to_s,
+      content: Time.zone.today.to_s,
       family: 'created_retention_instruction',
       created_by: user ? user.login : nil
     )
@@ -14,7 +14,7 @@ class Event::RetentionInstructionEvent < Event
     create!(
       eventful: retention_instruction,
       message: 'Updated by Sample Manifest',
-      content: Date.today.to_s,
+      content: Time.zone.today.to_s,
       family: 'updated_retention_instruction',
       created_by: user&.login
     )
