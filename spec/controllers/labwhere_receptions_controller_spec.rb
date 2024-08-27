@@ -29,7 +29,7 @@ describe LabwhereReceptionsController do
 
       it 'Create reception events' do
         [plate, plate_2, sample_tube].each do |asset|
-          expect(asset.events.last).to be_a(Event::ScannedIntoLabEvent).or be_a(Event::RetentionInstructionEvent)
+          expect(asset.events.last).to be_a Event::ScannedIntoLabEvent
           expect(BroadcastEvent::LabwareReceived.find_by(seed: asset)).to be_a BroadcastEvent::LabwareReceived
           expect(BroadcastEvent::LabwareReceived.find_by(seed: asset).to_json).to be_a String
         end

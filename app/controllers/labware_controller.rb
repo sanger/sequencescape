@@ -58,10 +58,7 @@ class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLeng
     respond_to do |format|
       params_hash = params.to_unsafe_h
       if @asset.update(labware_params.merge(params_hash.fetch(:lane, {})))
-        EventFactory.record_retention_instruction_updates(
-          @asset,
-          current_user
-        )
+        EventFactory.record_retention_instruction_updates(@asset, current_user)
         flash[:notice] = find_flash(params_hash)
         if params[:lab_view]
           format.html { redirect_to(action: :lab_view, barcode: @asset.human_barcode) }
