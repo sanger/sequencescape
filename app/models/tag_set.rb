@@ -17,10 +17,17 @@ class TagSet < ApplicationRecord
 
   scope :dual_index_tag_sets, -> { where.not(tag2_group: nil) }
 
-  scope :visible_dual_index_tag_sets, -> {
-    dual_index_tag_sets.joins(:tag_group, :tag2_group)
-                      .where(tag_group: { visible: true }, tag2_group: { visible: true })
-  }
+  scope :visible_dual_index_tag_sets,
+        -> do
+          dual_index_tag_sets.joins(:tag_group, :tag2_group).where(
+            tag_group: {
+              visible: true
+            },
+            tag2_group: {
+              visible: true
+            }
+          )
+        end
 
   # Dynamic method to determine the visibility of a tag_set based on the visibility of its tag_groups
   def visible
