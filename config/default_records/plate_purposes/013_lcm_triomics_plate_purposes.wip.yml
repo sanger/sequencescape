@@ -4,8 +4,3 @@ LCMT Lysate:
   type: PlatePurpose::Input
   stock_plate: true
   cherrypickable_target: false
-
-LCMT DNA Adp Lig:
-  type: PlatePurpose
-  stock_plate: false
-  cherrypickable_target: false
