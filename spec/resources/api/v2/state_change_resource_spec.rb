@@ -14,7 +14,6 @@ RSpec.describe Api::V2::StateChangeResource, type: :resource do
     expect(resource).to have_attribute :previous_state
     expect(resource).to have_attribute :target_state
     expect(resource).to have_attribute :contents
-    expect(resource).to have_attribute :customer_accepts_responsibility
     expect(resource).to have_attribute :reason
   end
 
@@ -22,7 +21,6 @@ RSpec.describe Api::V2::StateChangeResource, type: :resource do
   it 'allows updating of read-write fields', :aggregate_failures do
     expect(resource).to have_updatable_field :target_state
     expect(resource).to have_updatable_field :contents
-    expect(resource).to have_updatable_field :customer_accepts_responsibility
     expect(resource).to have_updatable_field :reason
   end
 

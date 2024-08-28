@@ -23,10 +23,6 @@ module Api
       #   @return [Array] Array of "contents" to fail, deciphered by the target.
       attribute :contents
 
-      # @!attribute [rw] customer_accepts_responsibility
-      #   @return [Boolean] Whether the customer accepts responsibility for the state change.
-      attribute :customer_accepts_responsibility
-
       # @!attribute [r] previous_state
       #   @return [String] The previous state of the target before this state change.
       attribute :previous_state, readonly: true
