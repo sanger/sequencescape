@@ -57,9 +57,10 @@ class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLeng
   def update # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     respond_to do |format|
       params_hash = params.to_unsafe_h
+      current_retention_instruction = @asset.retention_instruction
       if @asset.update(labware_params.merge(params_hash.fetch(:lane, {})))
         if params_hash[:labware].key?(:retention_instruction)
-          EventFactory.record_retention_instruction_updates(@asset, current_user)
+          EventFactory.record_retention_instruction_updates(@asset, current_user, current_retention_instruction)
         end
         flash[:notice] = find_flash(params_hash)
         if params[:lab_view]

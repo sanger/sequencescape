@@ -90,12 +90,14 @@ class EventFactory
   end
   # rubocop:enable Metrics/MethodLength
 
-  def self.record_retention_instruction_updates(labware, user)
+  def self.record_retention_instruction_updates(labware, user, old_retention_instruction)
     return if labware.retention_instruction.blank?
+
+    old_retention_instruction = 'nil' if [nil, ''].include?(old_retention_instruction)
 
     Event.create!(
       eventful: labware,
-      message: "Set retention instruction to #{labware.retention_instruction}",
+      message: "Set retention instruction from #{old_retention_instruction} to #{labware.retention_instruction}",
       content: "Updated by user: #{user.login}",
       family: 'set_retention_instruction',
       created_by: user ? user.login : nil
