@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 module EventfulRecord
-  # Association callbacks: https://guides.rubyonrails.org/association_basics.html#association-extensions
   def has_many_events(&block) # rubocop:todo Metrics/MethodLength
     has_many(:events, -> { order(created_at: :asc, id: :asc) }, as: :eventful, dependent: :destroy) do
-      # Adds a method to the end of the model file.
       def self.event_constructor(name, event_class, event_class_method)
         line = __LINE__ + 1
 
-        # proxy_association.owner returns the object that the association is a part of.
         # rubocop:todo Layout/LineLength
         class_eval(
           "
