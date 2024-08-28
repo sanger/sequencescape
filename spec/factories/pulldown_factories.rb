@@ -152,9 +152,11 @@ FactoryBot.define do
   end
 
   factory(:state_change) do
-    user
+    contents { %w[A1 D2] }
+    reason { 'Plate was passed' }
     target { |target| target.association(:plate) }
     target_state { 'passed' }
+    user
   end
 
   factory(:plate_owner) do
