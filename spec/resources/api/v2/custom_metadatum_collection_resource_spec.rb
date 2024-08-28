@@ -9,7 +9,7 @@ RSpec.describe Api::V2::CustomMetadatumCollectionResource, type: :resource do
   let(:resource_model) { build_stubbed :custom_metadatum_collection }
 
   # Test attributes
-  it 'has the expected attributes', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
+  it 'has the expected attributes', :aggregate_failures do
     expect(resource).to have_attribute :uuid
     expect(resource).to have_attribute :user_id
     expect(resource).to have_attribute :asset_id

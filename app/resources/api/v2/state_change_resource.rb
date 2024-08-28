@@ -29,7 +29,7 @@ module Api
 
       # @!attribute [r] previous_state
       #   @return [String] The previous state of the target before this state change.
-      attribute :previous_state
+      attribute :previous_state, readonly: true
 
       # @!attribute [rw] reason
       #   @return [String] The previous state of the target before this state change.
@@ -64,7 +64,7 @@ module Api
 
       # @!attribute [r] uuid
       #   @return [String] The UUID of the state change.
-      attribute :uuid
+      attribute :uuid, readonly: true
 
       ###
       # Relationships
