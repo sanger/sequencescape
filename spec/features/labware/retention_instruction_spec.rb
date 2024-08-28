@@ -9,7 +9,11 @@ describe 'Update retention instructions' do
     it 'updates the retention instruction' do
       select 'Long term storage', from: 'Retention instruction'
       click_button 'Update'
-      expect(EventFactory).to have_received(:record_retention_instruction_updates)
+      expect(EventFactory).to have_received(:record_retention_instruction_updates).with(
+        asset,
+        user,
+        asset.retention_instruction
+      )
       expect(page).to have_content 'Retention Instruction was successfully updated.'
       expect(page).to have_content 'Long term storage'
     end

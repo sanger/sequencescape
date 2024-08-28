@@ -49,8 +49,10 @@ class LabwareControllerTest < ActionController::TestCase
     end
 
     should '#update should log event for retention instruction updates' do
-      EventFactory.expects(:record_retention_instruction_updates)
-      put :update, params: { id: asset.id, labware: { retention_instruction: 'destroy_after_2_years' } }
+      old_retention_instruction = @asset.retention_instruction
+      new_retention_instruction = 'destroy_after_2_years'
+      EventFactory.expects(:record_retention_instruction_updates).with(@asset, @user, old_retention_instruction)
+      put :update, params: { id: asset.id, labware: { retention_instruction: new_retention_instruction } }
     end
   end
 end
