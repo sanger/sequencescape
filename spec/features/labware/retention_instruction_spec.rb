@@ -3,10 +3,7 @@
 require 'rails_helper'
 
 describe 'Update retention instructions' do
-
-  before do
-    allow(EventFactory).to receive(:record_retention_instruction_updates)
-  end
+  before { allow(EventFactory).to receive(:record_retention_instruction_updates) }
 
   shared_examples 'updating retention instruction' do
     it 'updates the retention instruction' do
