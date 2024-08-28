@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Admin::TagSetsController do
+RSpec.describe TagSetsController do
   let(:current_user) { create :user }
   let(:tag_set) { create :tag_set }
 
@@ -43,7 +43,7 @@ RSpec.describe Admin::TagSetsController do
     describe '#create' do
       it 'redirects to the tag set show path' do
         post :create, params: { tag_set: { name: 'test-123', tag_group_id: create(:tag_group).id } }
-        expect(response).to redirect_to admin_tag_set_path(TagSet.last)
+        expect(response).to redirect_to tag_set_path(TagSet.last)
       end
 
       it 'renders the new template when there are errors' do
@@ -61,7 +61,8 @@ RSpec.describe Admin::TagSetsController do
     describe '#index' do
       it 'redirects' do
         get :index
-        expect(response).to redirect_to('/')
+        expect(response).to have_http_status(:success)
+        expect(response).to render_template('index')
       end
     end
 
@@ -76,7 +77,8 @@ RSpec.describe Admin::TagSetsController do
       it 'redirects' do
         tag_set = create(:tag_set)
         get :show, params: { id: tag_set.id }
-        expect(response).to redirect_to('/')
+        expect(response).to have_http_status(:success)
+        expect(response).to render_template('show')
       end
     end
 

@@ -1,5 +1,5 @@
 
-<% add :menu, "All Tag Sets" => admin_tag_sets_path(@asset) %>
+<% add :menu, "All Tag Sets" => tag_sets_path(@asset) %>
 
 <%= page_title('Tag Set', @tag_set.name) %>
 
@@ -14,4 +14,4 @@
   <%= link_to 'Create a new tag layout template from this tag set', new_tag_layout_template_path(tag_group_id: @tag_set.tag_group.id, tag2_group_id: @tag_set.tag2_group&.id) %>
 <br>
 <% end %>
-<%= link_to 'Back to tag sets list', admin_tag_sets_path %>
+<%= link_to 'Back to tag sets list', tag_sets_path %>

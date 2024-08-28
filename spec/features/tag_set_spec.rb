@@ -15,7 +15,7 @@ describe 'Create a new tag set' do
 
   it 'view tag sets and create a new valid one' do
     login_user user
-    visit admin_tag_sets_path
+    visit tag_sets_path
     expect(page).to have_content 'Listing Tag Sets'
     click_on 'Create a new Tag Set'
     expect(page).to have_content 'New Tag Set'
@@ -34,7 +34,7 @@ describe 'Create a new tag set' do
     create(:tag_set, name: 'Test tag set')
 
     login_user user
-    visit admin_tag_sets_path
+    visit tag_sets_path
     expect(page).to have_content 'Listing Tag Sets'
     click_on 'Create a new Tag Set'
     expect(page).to have_content 'New Tag Set'

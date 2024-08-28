@@ -14,7 +14,7 @@
       <td><%= tag_set.name %></td>
       <td><%= tag_set.tag_group.name %></td>
       <td><%= tag_set.tag2_group&.name %></td>
-      <td><%= link_to 'Show', admin_tag_set_path(tag_set.id) %></td>
+      <td><%= link_to 'Show', tag_set_path(tag_set.id) %></td>
     </tr>
   <% end %>
   </tbody>
@@ -22,5 +22,5 @@
 
 
 <% if can? :create, TagSet %>
-  <%= link_to 'Create a new Tag Set', new_admin_tag_set_path %>
+  <%= link_to 'Create a new Tag Set', new_tag_set_path %>
 <% end %>

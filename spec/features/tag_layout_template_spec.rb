@@ -36,7 +36,7 @@ describe 'Create a new tag layout template' do
 
   it 'create a new layout template from a tag set', :js do
     login_user user
-    visit admin_tag_set_path(tag_set_1)
+    visit tag_set_path(tag_set_1)
     expect(page).to have_content 'Test tag set 1'
     click_on 'Create a new tag layout template from this tag set'
     expect(page).to have_content 'Tag Layout Template New'
