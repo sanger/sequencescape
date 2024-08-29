@@ -2,9 +2,11 @@
 
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
+require './spec/requests/api/v2/shared_examples/invalid_post_requests'
 
 describe 'State Changes API', with: :api_v2 do
   let(:base_endpoint) { '/api/v2/state_changes' }
+  let(:model_class) { StateChange }
 
   it_behaves_like 'ApiKeyAuthenticatable'
 
@@ -222,22 +224,6 @@ describe 'State Changes API', with: :api_v2 do
     end
 
     context 'with a read-only attribute in the payload' do
-      shared_examples 'a request with a disallowed attribute' do
-        before { api_post base_endpoint, payload }
-
-        it 'does not create a new resource' do
-          expect { api_post base_endpoint, payload }.not_to change(StateChange, :count)
-        end
-
-        it 'responds with bad_request' do
-          expect(response).to have_http_status(:bad_request)
-        end
-
-        it 'specifies which attribute was not allowed ' do
-          expect(json.dig('errors', 0, 'detail')).to eq("#{disallowed_attribute} is not allowed.")
-        end
-      end
-
       context 'with previous_state' do
         let(:disallowed_attribute) { 'previous_state' }
         let(:payload) do
@@ -249,7 +235,7 @@ describe 'State Changes API', with: :api_v2 do
           }
         end
 
-        it_behaves_like 'a request with a disallowed attribute'
+        it_behaves_like 'a POST request with a disallowed attribute'
       end
 
       context 'with uuid' do
@@ -263,12 +249,13 @@ describe 'State Changes API', with: :api_v2 do
           }
         end
 
-        it_behaves_like 'a request with a disallowed attribute'
+        it_behaves_like 'a POST request with a disallowed attribute'
       end
     end
 
     context 'without a required attribute' do
       context 'without target_state' do
+        let(:missing_attribute) { 'target_state' }
         let(:payload) do
           {
             'data' => {
@@ -279,39 +266,11 @@ describe 'State Changes API', with: :api_v2 do
           }
         end
 
-        before { api_post base_endpoint, payload }
-
-        it 'does not create a new resource' do
-          expect { api_post base_endpoint, payload }.not_to change(StateChange, :count)
-        end
-
-        it 'responds with unprocessable_entity' do
-          expect(response).to have_http_status(:unprocessable_entity)
-        end
-
-        it 'specifies which attribute was not allowed ' do
-          expect(json.dig('errors', 0, 'detail')).to eq("target_state - can't be blank")
-        end
+        it_behaves_like 'a POST request with a missing attribute'
       end
     end
 
     context 'without a required relationship' do
-      shared_examples 'a request without required relationships' do
-        before { api_post base_endpoint, payload }
-
-        it 'does not create a new resource' do
-          expect { api_post base_endpoint, payload }.not_to change(StateChange, :count)
-        end
-
-        it 'responds with unprocessable_entity' do
-          expect(response).to have_http_status(:unprocessable_entity)
-        end
-
-        it 'specifies which attribute was not allowed ' do
-          expect(json.dig('errors', 0, 'detail')).to eq("#{missing_relationship} - must exist")
-        end
-      end
-
       context 'without user_uuid' do
         let(:missing_relationship) { 'user' }
         let(:payload) do
@@ -323,7 +282,7 @@ describe 'State Changes API', with: :api_v2 do
           }
         end
 
-        it_behaves_like 'a request without required relationships'
+        it_behaves_like 'a POST request without a required relationship'
       end
 
       context 'without target_uuid' do
@@ -337,7 +296,7 @@ describe 'State Changes API', with: :api_v2 do
           }
         end
 
-        it_behaves_like 'a request without required relationships'
+        it_behaves_like 'a POST request without a required relationship'
       end
 
       context 'without user' do
@@ -354,7 +313,7 @@ describe 'State Changes API', with: :api_v2 do
           }
         end
 
-        it_behaves_like 'a request without required relationships'
+        it_behaves_like 'a POST request without a required relationship'
       end
 
       context 'without target' do
@@ -371,7 +330,7 @@ describe 'State Changes API', with: :api_v2 do
           }
         end
 
-        it_behaves_like 'a request without required relationships'
+        it_behaves_like 'a POST request without a required relationship'
       end
     end
   end
