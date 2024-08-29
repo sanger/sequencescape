@@ -11,7 +11,7 @@ describe 'State Changes API', with: :api_v2 do
   context 'with a list of StateChanges' do
     let!(:state_changes) { create_list(:state_change, 5) }
 
-    describe '#get all StateChanges' do
+    describe '#GET all StateChanges' do
       before { api_get base_endpoint }
 
       it 'responds with a success http code' do
@@ -23,7 +23,7 @@ describe 'State Changes API', with: :api_v2 do
       end
     end
 
-    describe '#get StateChange by ID' do
+    describe '#GET StateChange by ID' do
       let(:state_change) { state_changes.first }
 
       context 'without included relationships' do
@@ -84,7 +84,7 @@ describe 'State Changes API', with: :api_v2 do
     end
   end
 
-  describe '#patch a StateChange' do
+  describe '#PATCH a StateChange' do
     let(:resource_model) { create(:state_change) }
     let(:payload) do
       {
@@ -105,11 +105,274 @@ describe 'State Changes API', with: :api_v2 do
     end
   end
 
-  describe '#post a new StateChange' do
-    let(:payload) { { 'data' => { 'type' => 'state_changes', 'attributes' => { 'target_state' => 'passed' } } } }
+  describe '#POST a new StateChange' do
+    let(:user) { create(:user) }
+    let(:plate) { create(:plate) }
 
-    it 'finds no routes for the method' do
-      expect { api_post base_endpoint, payload }.to raise_error(ActionController::RoutingError)
+    let(:base_attributes) do
+      {
+        'contents' => %w[A1 D2],
+        'customer_accepts_responsibility' => true,
+        'reason' => 'The plate is now passed.',
+        'target_state' => 'passed'
+      }
+    end
+
+    let(:user_relationship) { { 'data' => { 'id' => user.id, 'type' => 'users' } } }
+    let(:target_relationship) { { 'data' => { 'id' => plate.id, 'type' => 'labware' } } }
+
+    context 'with a valid payload' do
+      shared_examples 'a valid request' do
+        before { api_post base_endpoint, payload }
+
+        it 'creates a new resource' do
+          expect { api_post base_endpoint, payload }.to change(StateChange, :count).by(1)
+        end
+
+        it 'responds with success' do
+          expect(response).to have_http_status(:success)
+        end
+
+        it 'responds with the correct attributes' do
+          expect(json.dig('data', 'type')).to eq('state_changes')
+          expect(json.dig('data', 'attributes', 'contents')).to eq(payload.dig('data', 'attributes', 'contents'))
+          expect(json.dig('data', 'attributes', 'reason')).to eq(payload.dig('data', 'attributes', 'reason'))
+          expect(json.dig('data', 'attributes', 'target_state')).to eq(
+            payload.dig('data', 'attributes', 'target_state')
+          )
+        end
+
+        it 'excludes unfetchable attributes' do
+          expect(json.dig('data', 'attributes', 'customer_accepts_responsibility')).not_to be_present
+          expect(json.dig('data', 'attributes', 'target_uuid')).not_to be_present
+          expect(json.dig('data', 'attributes', 'user_uuid')).not_to be_present
+        end
+
+        it 'returns references to related resources' do
+          expect(json.dig('data', 'relationships', 'user')).to be_present
+          expect(json.dig('data', 'relationships', 'target')).to be_present
+        end
+
+        it 'applies the attributes to the new record' do
+          new_record = StateChange.last
+
+          expect(new_record.contents).to eq(payload.dig('data', 'attributes', 'contents'))
+          expect(new_record.reason).to eq(payload.dig('data', 'attributes', 'reason'))
+          expect(new_record.target_state).to eq(payload.dig('data', 'attributes', 'target_state'))
+        end
+
+        it 'applies the relationships to the new record' do
+          new_record = StateChange.last
+
+          expect(new_record.user).to eq(user)
+          expect(new_record.target).to eq(plate)
+        end
+      end
+
+      context 'with complete attributes' do
+        let(:payload) do
+          {
+            'data' => {
+              'type' => 'state_changes',
+              'attributes' => base_attributes.merge({ 'user_uuid' => user.uuid, 'target_uuid' => plate.uuid })
+            }
+          }
+        end
+
+        it_behaves_like 'a valid request'
+      end
+
+      context 'with relationships' do
+        let(:payload) do
+          {
+            'data' => {
+              'type' => 'state_changes',
+              'attributes' => base_attributes,
+              'relationships' => {
+                'user' => user_relationship,
+                'target' => target_relationship
+              }
+            }
+          }
+        end
+
+        it_behaves_like 'a valid request'
+      end
+
+      context 'with conflicting relationships' do
+        let(:other_user) { create(:user) }
+        let(:other_plate) { create(:plate) }
+        let(:payload) do
+          {
+            'data' => {
+              'type' => 'state_changes',
+              'attributes' =>
+                base_attributes.merge({ 'user_uuid' => other_user.uuid, 'target_uuid' => other_plate.uuid }),
+              'relationships' => {
+                'user' => user_relationship,
+                'target' => target_relationship
+              }
+            }
+          }
+        end
+
+        # This test should pass because the relationships are preferred over the attributes.
+        it_behaves_like 'a valid request'
+      end
+    end
+
+    context 'with a read-only attribute in the payload' do
+      shared_examples 'a request with a disallowed attribute' do
+        before { api_post base_endpoint, payload }
+
+        it 'does not create a new resource' do
+          expect { api_post base_endpoint, payload }.not_to change(StateChange, :count)
+        end
+
+        it 'responds with bad_request' do
+          expect(response).to have_http_status(:bad_request)
+        end
+
+        it 'specifies which attribute was not allowed ' do
+          expect(json.dig('errors', 0, 'detail')).to eq("#{disallowed_attribute} is not allowed.")
+        end
+      end
+
+      context 'with previous_state' do
+        let(:disallowed_attribute) { 'previous_state' }
+        let(:payload) do
+          {
+            'data' => {
+              'type' => 'state_changes',
+              'attributes' => base_attributes.merge({ 'previous_state' => 'waiting' })
+            }
+          }
+        end
+
+        it_behaves_like 'a request with a disallowed attribute'
+      end
+
+      context 'with uuid' do
+        let(:disallowed_attribute) { 'uuid' }
+        let(:payload) do
+          {
+            'data' => {
+              'type' => 'state_changes',
+              'attributes' => base_attributes.merge({ 'uuid' => '111111-2222-3333-4444-555555666666' })
+            }
+          }
+        end
+
+        it_behaves_like 'a request with a disallowed attribute'
+      end
+    end
+
+    context 'without a required attribute' do
+      context 'without target_state' do
+        let(:payload) do
+          {
+            'data' => {
+              'type' => 'state_changes',
+              'attributes' =>
+                base_attributes.merge({ 'target_state' => nil, 'user_uuid' => user.uuid, 'target_uuid' => plate.uuid })
+            }
+          }
+        end
+
+        before { api_post base_endpoint, payload }
+
+        it 'does not create a new resource' do
+          expect { api_post base_endpoint, payload }.not_to change(StateChange, :count)
+        end
+
+        it 'responds with unprocessable_entity' do
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+
+        it 'specifies which attribute was not allowed ' do
+          expect(json.dig('errors', 0, 'detail')).to eq("target_state - can't be blank")
+        end
+      end
+    end
+
+    context 'without a required relationship' do
+      shared_examples 'a request without required relationships' do
+        before { api_post base_endpoint, payload }
+
+        it 'does not create a new resource' do
+          expect { api_post base_endpoint, payload }.not_to change(StateChange, :count)
+        end
+
+        it 'responds with unprocessable_entity' do
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+
+        it 'specifies which attribute was not allowed ' do
+          expect(json.dig('errors', 0, 'detail')).to eq("#{missing_relationship} - must exist")
+        end
+      end
+
+      context 'without user_uuid' do
+        let(:missing_relationship) { 'user' }
+        let(:payload) do
+          {
+            'data' => {
+              'type' => 'state_changes',
+              'attributes' => base_attributes.merge({ 'target_uuid' => plate.uuid })
+            }
+          }
+        end
+
+        it_behaves_like 'a request without required relationships'
+      end
+
+      context 'without target_uuid' do
+        let(:missing_relationship) { 'target' }
+        let(:payload) do
+          {
+            'data' => {
+              'type' => 'state_changes',
+              'attributes' => base_attributes.merge({ 'user_uuid' => user.uuid })
+            }
+          }
+        end
+
+        it_behaves_like 'a request without required relationships'
+      end
+
+      context 'without user' do
+        let(:missing_relationship) { 'user' }
+        let(:payload) do
+          {
+            'data' => {
+              'type' => 'state_changes',
+              'attributes' => base_attributes,
+              'relationships' => {
+                'target' => target_relationship
+              }
+            }
+          }
+        end
+
+        it_behaves_like 'a request without required relationships'
+      end
+
+      context 'without target' do
+        let(:missing_relationship) { 'target' }
+        let(:payload) do
+          {
+            'data' => {
+              'type' => 'state_changes',
+              'attributes' => base_attributes,
+              'relationships' => {
+                'user' => user_relationship
+              }
+            }
+          }
+        end
+
+        it_behaves_like 'a request without required relationships'
+      end
     end
   end
 end

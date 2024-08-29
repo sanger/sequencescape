@@ -53,7 +53,7 @@ class StateChange < ApplicationRecord
   end
 
   def state_changer
-    target.state_changer
+    target&.state_changer
   end
 
   # After creation update the state of the target asset, leaving it to do the right thing.

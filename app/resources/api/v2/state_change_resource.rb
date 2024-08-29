@@ -24,7 +24,8 @@ module Api
       attribute :contents
 
       # @!attribute [w] customer_accepts_responsibility
-      #   @param value [Boolean] Sets whether the customer proceeded against advice and will still be charged in the the event of a failure.
+      #   @param value [Boolean] Sets whether the customer proceeded against advice and will still be charged in the
+      #     event of a failure.
       #   @return [Void]
       attribute :customer_accepts_responsibility
 
