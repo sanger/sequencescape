@@ -66,6 +66,21 @@ Rails.application.routes.draw do
       jsonapi_resources :wells
       jsonapi_resources :work_orders
 
+      namespace :transfers do
+        jsonapi_resources :transfers, except: %i[update]
+
+        jsonapi_resources :between_plate_and_tubes
+        jsonapi_resources :between_plates_by_submissions
+        jsonapi_resources :between_plates
+        jsonapi_resources :between_specific_tubes
+        jsonapi_resources :between_tubes_by_submissions
+        jsonapi_resources :from_plate_to_specific_tubes_by_pools
+        jsonapi_resources :from_plate_to_specific_tubes
+        jsonapi_resources :from_plate_to_tube_by_multiplexes
+        jsonapi_resources :from_plate_to_tube_by_submissions
+        jsonapi_resources :from_plate_to_tubes
+      end
+
       namespace :heron do
         resources :tube_rack_statuses, only: [:create]
         resources :tube_racks, only: [:create]

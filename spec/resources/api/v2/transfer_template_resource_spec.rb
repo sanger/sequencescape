@@ -25,7 +25,7 @@ RSpec.describe Api::V2::TransferTemplateResource, type: :resource do
   end
 
   # Filters
-  # eg. it { is_expected.to filter(:order_type) }
+  it { is_expected.to filter(:uuid) }
 
   # Associations
   # eg. it { is_expected.to have_many(:samples).with_class_name('Sample') }

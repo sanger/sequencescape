@@ -8,29 +8,54 @@ describe 'Transfer Templates API', with: :api_v2 do
 
   it_behaves_like 'ApiKeyAuthenticatable'
 
-  describe '#get all Transfer Templates' do
-    before { create_list(:transfer_template, 5) }
+  context 'with a list of TransferTemplates' do
+    let!(:transfer_templates) { create_list(:transfer_template, 5) }
 
-    it 'returns the list of Transfer Templates' do
-      api_get base_endpoint
+    describe '#get all TransferTemplates' do
+      before { api_get base_endpoint }
 
-      expect(response).to have_http_status(:success)
-      expect(json['data'].length).to eq(5)
+      it 'responds with a success http code' do
+        expect(response).to have_http_status(:success)
+      end
+
+      it 'returns the full list of TransferTemplates' do
+        expect(json['data'].length).to eq(5)
+      end
+    end
+
+    describe '#get TransferTemplates by UUID' do
+      let(:uuids) { transfer_templates.map(&:uuid).first(3) }
+
+      before { api_get base_endpoint + "?filter[uuid]=#{uuids.join(',')}" }
+
+      it 'responds with a success http code' do
+        expect(response).to have_http_status(:success)
+      end
+
+      it 'returns matching TransferTemplates matching UUIDs' do
+        expect(json['data'].length).to eq(3)
+      end
+    end
+
+    describe '#get TransferTemplate by ID' do
+      let(:transfer_template) { transfer_templates.first }
+
+      before { api_get "#{base_endpoint}/#{transfer_template.id}" }
+
+      it 'responds with a success http code' do
+        expect(response).to have_http_status(:success)
+      end
+
+      it 'returns the TransferTemplate' do
+        expect(json.dig('data', 'id')).to eq(transfer_template.id.to_s)
+        expect(json.dig('data', 'type')).to eq('transfer_templates')
+        expect(json.dig('data', 'attributes', 'name')).to eq(transfer_template.name)
+        expect(json.dig('data', 'attributes', 'uuid')).to eq(transfer_template.uuid)
+      end
     end
   end
 
-  describe '#get a specific Transfer Template' do
-    let(:resource_model) { create(:transfer_template) }
-
-    it 'returns the template' do
-      api_get "#{base_endpoint}/#{resource_model.id}"
-      expect(response).to have_http_status(:success)
-      expect(json.dig('data', 'type')).to eq('transfer_templates')
-      expect(json.dig('data', 'attributes', 'name')).to eq(resource_model.name)
-    end
-  end
-
-  describe '#patch a specific Transfer Template' do
+  describe '#patch a Transfer Template' do
     let(:resource_model) { create(:transfer_template) }
     let(:payload) do
       {
