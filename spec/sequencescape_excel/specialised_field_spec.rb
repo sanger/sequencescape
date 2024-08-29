@@ -660,13 +660,36 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
         expect(sf_dual_index_tag_set).to be_valid
       end
 
-      context 'when the tag set is not a dual index tag set' do
+      context 'when no tag set name is provided' do
+        let(:sf_dual_index_tag_set) { described_class.new(value: '', sample_manifest_asset: sample_manifest_asset) }
+
+        it 'will be not be valid' do
+          expect(sf_dual_index_tag_set).not_to be_valid
+          expect(sf_dual_index_tag_set.errors.full_messages.join).to include("Dual index tag set can't be blank")
+        end
+      end
+
+      context 'when the tag set name is unknown' do
         let(:sf_dual_index_tag_set) do
           described_class.new(value: 'bananas', sample_manifest_asset: sample_manifest_asset)
         end
 
         it 'will be not be valid' do
           expect(sf_dual_index_tag_set).not_to be_valid
+          expect(sf_dual_index_tag_set.errors.full_messages.join).to include(
+            "could not find a Tag Set with name 'bananas'."
+          )
+        end
+      end
+
+      context 'when the tag set name is has only one visible tag group' do
+        let(:tag_group2) { create :tag_group_with_tags, visible: false }
+
+        it 'will be not be valid' do
+          expect(sf_dual_index_tag_set).not_to be_valid
+          expect(sf_dual_index_tag_set.errors.full_messages.join).to include(
+            "could not find a visible dual index Tag Set with name '#{dual_index_tag_set.name}'"
+          )
         end
       end
     end
@@ -686,21 +709,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
         expect(sf_dual_index_tag_well.value).to eq(dual_index_tag_well)
       end
 
-      it 'will not be valid with a valid well location, but when unlinked from a valid dual tag set' do
-        expect(sf_dual_index_tag_well).not_to be_valid
-      end
-
       describe 'linking' do
-        context 'when linked to a invalid dual tag set' do
-          let(:tag_group2) { create(:tag_group_with_tags, visible: false) }
-
-          before { sf_dual_index_tag_well.sf_dual_index_tag_set = sf_dual_index_tag_set }
-
-          it 'will not be valid when the tag set has only one visible tag group' do
-            expect(sf_dual_index_tag_well).not_to be_valid
-          end
-        end
-
         context 'when linked to a valid dual tag set' do
           before { sf_dual_index_tag_well.sf_dual_index_tag_set = sf_dual_index_tag_set }
 
@@ -739,10 +748,11 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
           end
 
           context 'when the well location is empty' do
-            let(:dual_index_tag_well) { '' }
+            let(:dual_index_tag_well) { ' ' }
 
             it 'will not be valid without a well location' do
               expect(sf_dual_index_tag_well).not_to be_valid
+              expect(sf_dual_index_tag_well.errors.full_messages.join).to include("Dual index tag well can't be blank")
             end
           end
 
@@ -751,6 +761,10 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
 
             it 'will not be valid without a valid well location' do
               expect(sf_dual_index_tag_well).not_to be_valid
+              expect(sf_dual_index_tag_well.errors.full_messages.join).to include('Tag does not have associated i7 tag')
+              expect(sf_dual_index_tag_well.errors.full_messages.join).to include(
+                'Tag2 does not have associated i5 tag'
+              )
             end
           end
         end

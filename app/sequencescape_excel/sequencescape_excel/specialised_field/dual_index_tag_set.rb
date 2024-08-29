@@ -6,20 +6,22 @@ module SequencescapeExcel
     # DualIndexTagSet
     class DualIndexTagSet
       include Base
+      include ValueRequired
 
-      validate :check_dual_index_tag_set
+      validate :dual_index_tag_set
 
       def tag_set_id
-        @tag_set_id ||= ::TagSet.visible_dual_index_tag_sets.find_by(name: value)&.id
+        @tag_set_id ||= ::TagSet.dual_index.visible.find_by(name: value)&.id
       end
 
       private
 
-      # Check the TagSet exists here, check the TagSet/TagWell combination in DualIndexTagWell
-      def check_dual_index_tag_set
+      # Check the Dual Index Tag Set with a visible tag_group and tag2_group exists here
+      # Check the TagSet/TagWell combination in DualIndexTagWell
+      def dual_index_tag_set
         return if tag_set_id.present?
 
-        errors.add(:base, "could not find a visible dual index tag set with name #{value}.")
+        errors.add(:base, "could not find a visible dual index Tag Set with name '#{value}'.")
       end
     end
   end
