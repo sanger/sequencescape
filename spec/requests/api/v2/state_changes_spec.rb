@@ -57,7 +57,7 @@ describe 'State Changes API', with: :api_v2 do
         end
 
         it 'does not include attributes for related resources' do
-          expect(json.dig('included')).not_to be_present
+          expect(json['included']).not_to be_present
         end
       end
 
@@ -69,13 +69,13 @@ describe 'State Changes API', with: :api_v2 do
         end
 
         it 'returns the correct user relationship' do
-          user = json.dig('included').find { |i| i['type'] == 'users' }
+          user = json['included'].find { |i| i['type'] == 'users' }
           expect(user['id']).to eq(state_change.user.id.to_s)
           expect(user['type']).to eq('users')
         end
 
         it 'returns the correct target relationship' do
-          target = json.dig('included').find { |i| i['type'] == 'labware' }
+          target = json['included'].find { |i| i['type'] == 'labware' }
           expect(target['id']).to eq(state_change.target.id.to_s)
           expect(target['type']).to eq('labware')
         end
