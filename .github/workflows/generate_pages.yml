@@ -1,0 +1,41 @@
+name: Deploy Yard to GitHub Pages
+
+on:
+  push:
+    branches:
+      - "master"
+  workflow_dispatch:
+
+permissions:
+  pages: write # Allow writing to the GitHub Pages
+  id-token: write # Allow OIDC token to be issued
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Generate Yard documentation
+        run: |
+          bundle exec yard doc
+
+      - name: Upload artifact to GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: doc # Path to the folder containing the Yard documentation (default is 'doc')
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build # The deploy job will only run if the build job is successful
+
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
