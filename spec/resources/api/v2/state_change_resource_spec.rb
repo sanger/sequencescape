@@ -8,31 +8,35 @@ RSpec.describe Api::V2::StateChangeResource, type: :resource do
 
   let(:resource_model) { build_stubbed :state_change }
 
-  # Test attributes
-  it 'has the expected attributes', :aggregate_failures do
+  # Attributes
+  it 'has the expected read-only attributes', :aggregate_failures do
     expect(resource).to have_attribute :uuid
-    expect(resource).to have_attribute :previous_state
-    expect(resource).to have_attribute :target_state
-    expect(resource).to have_attribute :contents
-    expect(resource).to have_attribute :reason
-  end
-
-  # Updatable fields
-  it 'allows updating of read-write fields', :aggregate_failures do
-    expect(resource).to have_updatable_field :target_state
-    expect(resource).to have_updatable_field :contents
-    expect(resource).to have_updatable_field :reason
-  end
-
-  it 'allows updating of write-only fields', :aggregate_failures do
-    expect(resource).to have_updatable_field :user_uuid
-    expect(resource).to have_updatable_field :target_uuid
-  end
-
-  it 'disallows updating of read-only fields', :aggregate_failures do
-    expect(resource).not_to have_updatable_field :id
     expect(resource).not_to have_updatable_field :uuid
+
+    expect(resource).to have_attribute :previous_state
     expect(resource).not_to have_updatable_field :previous_state
+  end
+
+  it 'has the expected read-write attributes', :aggregate_failures do
+    expect(resource).to have_attribute :contents
+    expect(resource).to have_updatable_field :contents
+
+    expect(resource).to have_attribute :reason
+    expect(resource).to have_updatable_field :reason
+
+    expect(resource).to have_attribute :target_state
+    expect(resource).to have_updatable_field :target_state
+  end
+
+  it 'has the expected write-only attributes', :aggregate_failures do
+    expect(resource).not_to have_attribute :user_uuid
+    expect(resource).to have_updatable_field :user_uuid
+
+    expect(resource).not_to have_attribute :target_uuid
+    expect(resource).to have_updatable_field :target_uuid
+
+    expect(resource).not_to have_attribute :customer_accepts_responsibility
+    expect(resource).to have_updatable_field :customer_accepts_responsibility
   end
 
   # Relationships

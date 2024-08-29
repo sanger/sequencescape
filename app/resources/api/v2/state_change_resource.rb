@@ -23,6 +23,11 @@ module Api
       #   @return [Array] Array of "contents" to fail, deciphered by the target.
       attribute :contents
 
+      # @!attribute [w] customer_accepts_responsibility
+      #   @param value [Boolean] Sets whether the customer proceeded against advice and will still be charged in the the event of a failure.
+      #   @return [Void]
+      attribute :customer_accepts_responsibility
+
       # @!attribute [r] previous_state
       #   @return [String] The previous state of the target before this state change.
       attribute :previous_state, readonly: true
@@ -39,7 +44,8 @@ module Api
       # @!attribute [w] target_uuid
       #   This is declared for convenience where the target is not available to set as a relationship.
       #   Setting this attribute alongside the `target` relationship will prefer the relationship value.
-      #   @return [String] The UUID of the target labware this state change applies to.
+      #   @param uuid [String] The UUID of the target labware this state change applies to.
+      #   @return [Void]
       #   @see #target
       attribute :target_uuid
 
@@ -50,7 +56,8 @@ module Api
       # @!attribute [w] user_uuid
       #   This is declared for convenience where the user is not available to set as a relationship.
       #   Setting this attribute alongside the `user` relationship will prefer the relationship value.
-      #   @return [String] The UUID of the user who initiated this state change.
+      #   @param uuid [String] The UUID of the user who initiated this state change.
+      #   @return [Void]
       #   @see #user
       attribute :user_uuid
 
@@ -84,9 +91,9 @@ module Api
       end
 
       def fetchable_fields
-        # UUIDs for relationships are not fetchable.
-        # They should be accessed via the relationship itself.
-        super - %i[target_uuid user_uuid]
+        # The customer_accepts_responsibility attribute is only available during resource creation.
+        # UUIDs for relationships are not fetchable. They should be accessed via the relationship itself.
+        super - %i[customer_accepts_responsibility target_uuid user_uuid]
       end
     end
   end

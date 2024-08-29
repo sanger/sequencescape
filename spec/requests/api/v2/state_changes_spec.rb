@@ -47,6 +47,7 @@ describe 'State Changes API', with: :api_v2 do
         end
 
         it 'excludes unfetchable attributes' do
+          expect(json.dig('data', 'attributes', 'customer_accepts_responsibility')).not_to be_present
           expect(json.dig('data', 'attributes', 'target_uuid')).not_to be_present
           expect(json.dig('data', 'attributes', 'user_uuid')).not_to be_present
         end
