@@ -13,7 +13,7 @@ shared_examples 'a POST request with a disallowed attribute' do
     expect(response).to have_http_status(:bad_request)
   end
 
-  it 'specifies which attribute was not allowed ' do
+  it 'specifies which attribute was not allowed' do
     expect(json.dig('errors', 0, 'detail')).to eq("#{disallowed_attribute} is not allowed.")
   end
 end
@@ -29,7 +29,7 @@ shared_examples 'a POST request with a missing attribute' do
     expect(response).to have_http_status(:unprocessable_entity)
   end
 
-  it 'specifies which attribute was not allowed ' do
+  it 'specifies which attribute cannot be blank' do
     expect(json.dig('errors', 0, 'detail')).to eq("#{missing_attribute} - can't be blank")
   end
 end
@@ -45,7 +45,7 @@ shared_examples 'a POST request without a required relationship' do
     expect(response).to have_http_status(:unprocessable_entity)
   end
 
-  it 'specifies which attribute was not allowed ' do
+  it 'specifies which relationship must exist' do
     expect(json.dig('errors', 0, 'detail')).to eq("#{missing_relationship} - must exist")
   end
 end
