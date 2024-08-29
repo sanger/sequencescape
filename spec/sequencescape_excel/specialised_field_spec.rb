@@ -677,7 +677,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
         it 'will be not be valid' do
           expect(sf_dual_index_tag_set).not_to be_valid
           expect(sf_dual_index_tag_set.errors.full_messages.join).to include(
-            "could not find a Tag Set with name 'bananas'."
+            "could not find a visible dual index Tag Set with name 'bananas'."
           )
         end
       end
