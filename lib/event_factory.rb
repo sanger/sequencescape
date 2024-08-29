@@ -90,6 +90,7 @@ class EventFactory
   end
   # rubocop:enable Metrics/MethodLength
 
+  # Creates an event for retention instructions when labware is updated
   def self.record_retention_instruction_updates(labware, user, old_retention_instruction)
     old_retention_instruction = 'nil' if [nil, ''].include?(old_retention_instruction)
     Event.create!(
