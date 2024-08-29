@@ -95,7 +95,7 @@ class EventFactory
     Event.create!(
       eventful: labware,
       message: "Set retention instruction from #{old_retention_instruction} to #{labware.retention_instruction}",
-      content: Date.today.to_s,
+      content: Time.zone.today.to_s,
       family: 'set_retention_instruction',
       created_by: user ? user.login : nil
     )
