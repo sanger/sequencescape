@@ -38,7 +38,7 @@ class StateChange < ApplicationRecord
             presence: {
               message: 'target does not have a configured state changer'
             },
-            unless: Proc.new { |state_change| state_change.target.nil? }
+            unless: -> { target.nil? }
 
   before_create :record_current_state_of_target
   after_create :update_state_of_target
