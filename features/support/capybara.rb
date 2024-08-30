@@ -12,7 +12,6 @@ Capybara.register_driver :headless_chrome do |app|
 
   options.add_argument('--headless')
   options.add_argument('--window-size=1600,3200')
-  options.add_argument('--disable-search-engine-choice-screen')
   options.add_preference('download.default_directory', DownloadHelpers::PATH.to_s)
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 end
