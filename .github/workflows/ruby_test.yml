@@ -138,7 +138,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
   cucumber_tests:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       RAILS_ENV: cucumber
       BUNDLE_WITHOUT: "deployment profile development test"
