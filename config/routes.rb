@@ -48,6 +48,7 @@ Rails.application.routes.draw do
       jsonapi_resources :samples
       jsonapi_resources :sample_manifests
       jsonapi_resources :sample_metadata
+      jsonapi_resources :state_changes, except: %i[update]
       jsonapi_resources :studies
       jsonapi_resources :submission_templates
       jsonapi_resources :submissions
