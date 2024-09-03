@@ -11,23 +11,23 @@ module RecordLoader
     # @see https://rubydoc.info/github/sanger/record_loader/RecordLoader/Adapter
     adapter RecordLoader::Adapter::Rails.new
 
-    def wip_list
-      # return a list of WIP files name as features if deploy_wip_pipelines is set to true, or return empty list
-      deploy_wip_pipelines = Rails.application.config.try(:deploy_wip_pipelines) || false
-      return [] unless deploy_wip_pipelines
+    # def wip_list
+    #   # return a list of WIP files name as features if deploy_wip_pipelines is set to true, or return empty list
+    #   deploy_wip_pipelines = Rails.application.config.try(:deploy_wip_pipelines) || false
+    #   return [] unless deploy_wip_pipelines
 
-      wip_files = []
-      # @path is initialised from the directory argument passed to the initialiser method of the super class.
-      # By default, it returns 'config/default_records' directory
-      # see https://github.com/sanger/record_loader/blob/master/lib/record_loader/base.rb
-      wip_files_path = @path
-      Find.find(wip_files_path) do |path|
-        if path.match?(/\wip\.yml$/)
-          file_name = File.basename(path, '.wip.yml')
-          wip_files << file_name
-        end
-      end
-      wip_files
-    end
+    #   wip_files = []
+    #   # @path is initialised from the directory argument passed to the initialiser method of the super class.
+    #   # By default, it returns 'config/default_records' directory
+    #   # see https://github.com/sanger/record_loader/blob/master/lib/record_loader/base.rb
+    #   wip_files_path = @path
+    #   Find.find(wip_files_path) do |path|
+    #     if path.match?(/\wip\.yml$/)
+    #       file_name = File.basename(path, '.wip.yml')
+    #       wip_files << file_name
+    #     end
+    #   end
+    #   wip_files
+    # end
   end
 end
