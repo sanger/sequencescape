@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 
 group :default do
-  gem 'bootsnap', '1.18.3'
+  gem 'bootsnap'
   gem 'rails', '~> 6.1.7'
 
   # Fix incompatibility with between Ruby 3.1 and Psych 4 (used for yaml)
@@ -204,7 +204,7 @@ group :test, :cucumber do
   gem 'launchy', require: false
   gem 'mocha', require: false # avoids load order problems
   gem 'nokogiri', require: false
-  gem 'rspec-rails', '6.1.3', require: false
+  gem 'rspec-rails', require: false
   gem 'selenium-webdriver', '~> 4.1', require: false
   gem 'shoulda'
   gem 'simplecov', require: false

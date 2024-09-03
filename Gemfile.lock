@@ -575,7 +575,7 @@ DEPENDENCIES
   acts-as-dag!
   after_commit_everywhere (~> 1.0)
   avro (~> 1.11.0)
-  bootsnap (= 1.18.3)
+  bootsnap
   builder
   bullet
   bunny (>= 2.22.0)
@@ -629,7 +629,7 @@ DEPENDENCIES
   rspec-html-matchers
   rspec-json_expectations
   rspec-longrun
-  rspec-rails (= 6.1.3)
+  rspec-rails
   rubocop
   rubocop-performance
   rubocop-rails
