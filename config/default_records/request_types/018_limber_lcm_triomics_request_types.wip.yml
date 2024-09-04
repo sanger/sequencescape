@@ -1,6 +1,6 @@
 # Request types for LCM Triomics DNA WGS and EMSeq
 ---
-limber_lcm_triomics:
+limber_lcm_triomics_emseq:
   name: LCM Triomics
   asset_type: Well
   order: 1
