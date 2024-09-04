@@ -20,12 +20,12 @@ module Api
       # @return [JSON] The JSON representation of a {BaitLibraryLayout}.
       def preview
         temp_response = {
-          "data": {
-            "id": 0,
-            "type": "bait_library_layouts",
-            "attributes": {
-              "layout": {
-                "Human all exon 50MB": [ "A1", "A2" ]
+          data: {
+            id: 0,
+            type: 'bait_library_layouts',
+            attributes: {
+              layout: {
+                'Human all exon 50MB': %w[A1 A2]
               }
             }
           }

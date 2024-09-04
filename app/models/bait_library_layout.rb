@@ -73,13 +73,7 @@ class BaitLibraryLayout < ApplicationRecord
 
   def each_bait_library_assignment
     # We only accept the wells which have been pooled
-    plate
-      .wells
-      .with_pool_id
-      .filter(&:pool_id)
-      .each do |well|
-        yield well, first_bait_library(well)
-      end
+    plate.wells.with_pool_id.filter(&:pool_id).each { |well| yield well, first_bait_library(well) }
   end
 
   # Generates the layout of bait libraries for preview.  In other words, none of the actual assignment is
