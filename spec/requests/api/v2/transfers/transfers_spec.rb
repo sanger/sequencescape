@@ -85,14 +85,7 @@ describe 'Transfer API', with: :api_v2 do
     end
 
     context 'with a valid payload' do
-      let(:payload) do
-        {
-          'data' => {
-            'type' => 'transfers',
-            'attributes' => base_attributes
-          }
-        }
-      end
+      let(:payload) { { 'data' => { 'type' => 'transfers', 'attributes' => base_attributes } } }
 
       it 'creates a new resource' do
         expect { api_post base_endpoint, payload }.to change(model_class, :count).by(1)
@@ -134,13 +127,7 @@ describe 'Transfer API', with: :api_v2 do
 
     context 'without a required attribute' do
       let(:payload) do
-        {
-          'data' => {
-            'type' => 'transfers',
-            'attributes' =>
-              base_attributes.merge({ attribute_to_remove => nil })
-          }
-        }
+        { 'data' => { 'type' => 'transfers', 'attributes' => base_attributes.merge({ attribute_to_remove => nil }) } }
       end
 
       context 'without user_uuid' do
@@ -164,7 +151,6 @@ describe 'Transfer API', with: :api_v2 do
         it_behaves_like 'a POST request with a missing attribute'
       end
     end
-
 
     context 'when providing an invalid payload' do
       context 'without "transfer_template_uuid"' do
