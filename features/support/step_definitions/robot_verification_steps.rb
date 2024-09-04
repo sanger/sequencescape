@@ -103,11 +103,12 @@ Then /^the downloaded robot file for batch "([^"]*)" and plate "([^"]*)" is$/ do
   generated_file = DownloadHelpers.downloaded_file("#{batch.id}_batch_#{plate_barcode}_1.gwl")
 
   generated_lines = generated_file.lines(chomp: true)
+  p 'X' * 80
+  p generated_lines
   generated_lines.shift(2)
   assert_not_nil generated_lines
   tecan_file_lines = tecan_file.lines(chomp: true)
   generated_lines.each_with_index do |line, index|
-    p line
     assert_equal tecan_file_lines[index], line, "Mismatch on line #{index + 2} in #{generated_file}"
   end
 end
