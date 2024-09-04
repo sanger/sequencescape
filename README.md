@@ -114,27 +114,29 @@ Sequencescape. start a stack of services that include a mysql database, and rese
 this database contents. You can do all together by running the commands:
 
 ```shell
-docker-compose build
-RESET_DATABASE=true docker-compose up
+docker compose build
+RESET_DATABASE=true docker compose up
 ```
 
 Or if you are using an Apple M1 Chip:
 
 ```shell
-docker-compose build --build-arg CHIPSET=m1
-USE_POLLING_FILE_WATCHER=true RESET_DATABASE=true docker-compose up
+docker compose build --build-arg CHIPSET=m1
+USE_POLLING_FILE_WATCHER=true RESET_DATABASE=true docker compose up
 ```
 
 Optionally, if this is not the first time you start the app, you may not want to reset the
 database, and you can run this command instead:
 
 ```shell
-docker-compose up
+docker compose up
 ```
 
 With this we should have started Sequencescape server and all required services. You should be
 able to access Sequencescape by going to <http://localhost:3000> and log in with
 username and password admin/admin.
+
+The envvar `PRECOMPILE_ASSETS` is also available as `PRECOMPILE_ASSETS=false docker compose up` which will avoid precompiling the assets as Sequencescape is started.
 
 If you are using [Apple silicon](https://support.apple.com/en-gb/HT211814) and encounter any issues, please see [Troubleshooting](#installing-on-apple-silicon-m1) below.
 
@@ -143,14 +145,14 @@ instead of the Docker version, in that case you can start this setup with the
 command:
 
 ```shell
-docker-compose -f docker-compose-dev.yml up
+docker compose -f docker compose-dev.yml up
 ```
 
 **ABOUT RECREATE DOCKER IMAGE** If you ever need to recreate the image built on first start (because you made modifications
 to the Dockerfile file) you can run the building process again with:
 
 ```shell
-docker-compose build
+docker compose build
 ```
 
 ## Getting started (using native installation)
@@ -396,7 +398,7 @@ This is because the mysql2 gem is simlinked to the homebrew mysql.
 
 If installation issues are encountered with Docker on M1 processors, try the fixes below:
 
-- The docker-compose build command fails with any mentions to a processor architecture ('amd64', 'x86') or the message below:
+- The docker compose build command fails with any mentions to a processor architecture ('amd64', 'x86') or the message below:
 
   ```sh
   ...
