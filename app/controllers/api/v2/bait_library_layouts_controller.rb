@@ -30,7 +30,7 @@ module Api
         begin
           preview = BaitLibraryLayout.preview!(user: records[:user], plate: records[:plate])
         rescue ActiveRecord::RecordInvalid => e
-          render json: { errors: e.record.errors.full_messages }, status: :unprocessable_entity and return
+          render_errors('Validation failed', e.record.errors.full_messages, :unprocessable_entity) and return
         end
 
         json = { data: { id: 0, type: 'bait_library_layouts', attributes: { layout: preview.layout } } }
@@ -39,25 +39,44 @@ module Api
 
       private
 
+      def render_errors(title, details, status)
+        status_code = Rack::Utils::SYMBOL_TO_STATUS_CODE[status]
+
+        errors = details.map { |detail| { title: title, detail: detail, code: status_code, status: status_code } }
+
+        render json: { errors: errors }, status: status
+      end
+
       def preview_params
         params.permit(:user_uuid, :plate_uuid)
       end
 
+      def preview_user(record_errors)
+        user_uuid = preview_params.require(:user_uuid)
+        user = User.with_uuid(user_uuid).first
+        record_errors.append("The User record identified by UUID '#{user_uuid}' cannot be found") if user.nil?
+
+        user
+      end
+
+      def preview_plate(record_errors)
+        plate_uuid = preview_params.require(:plate_uuid)
+        plate = Plate.with_uuid(plate_uuid).first
+        record_errors.append("The Plate record identified by UUID '#{plate_uuid}' cannot be found") if plate.nil?
+
+        plate
+      end
+
       def preview_records
-        # Catch missing required parameters.
         begin
-          missing_records_errors = []
-
-          user = User.with_uuid(preview_params.require(:user_uuid)).first
-          missing_records_errors.append('User not found') if user.nil?
-
-          plate = Plate.with_uuid(preview_params.require(:plate_uuid)).first
-          missing_records_errors.append('Plate not found') if plate.nil?
+          record_errors = []
+          user = preview_user(record_errors)
+          plate = preview_plate(record_errors)
         rescue ActionController::ParameterMissing => e
-          render json: { errors: [e.message] }, status: :bad_request and return
+          render_errors('Missing parameter', [e.message], :bad_request) and return
         end
 
-        render json: { errors: missing_records_errors }, status: :bad_request and return if missing_records_errors.any?
+        render_errors('Record not found', record_errors, :bad_request) and return if record_errors.any?
 
         { user: user, plate: plate }
       end
