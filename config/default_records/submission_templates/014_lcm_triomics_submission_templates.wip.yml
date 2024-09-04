@@ -1,9 +1,9 @@
-# Submission template for LCM Triomics DNA WGS and EMSeq
+# Submission templates for LCM Triomics WGS and EMSeq
 ---
-# LCM Triomics DNA Prep submission template
+# LCM Triomics EMSeq submission template
 Limber-Htp - LCM Triomics:
   submission_class_name: "LinearSubmission"
   related_records:
-    request_type_keys: ["limber_lcm_triomics"]
-    product_line_name: LCM Triomics
-    product_catalogue_name: LCM Triomics
+    request_type_keys: ["limber_lcm_triomics_emseq"]
+    product_line_name: LCM Triomics WGS and EMSeq
+    product_catalogue_name: LCM Triomics WGS and EMSeq
