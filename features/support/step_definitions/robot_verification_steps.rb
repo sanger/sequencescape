@@ -107,6 +107,7 @@ Then /^the downloaded robot file for batch "([^"]*)" and plate "([^"]*)" is$/ do
   assert_not_nil generated_lines
   tecan_file_lines = tecan_file.lines(chomp: true)
   generated_lines.each_with_index do |line, index|
+    p line
     assert_equal tecan_file_lines[index], line, "Mismatch on line #{index + 2} in #{generated_file}"
   end
 end
