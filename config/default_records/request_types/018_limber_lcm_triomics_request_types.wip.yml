@@ -10,3 +10,5 @@ limber_lcm_triomics_emseq:
   product_line_name: Short Read
   acceptable_purposes:
     - LCMT Lysate
+  library_types:
+    - LCM Triomics EMSeq
