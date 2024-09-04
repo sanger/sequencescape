@@ -1,7 +1,6 @@
 #
 # Basic version of stack, for Github
 #
-version: "3.3"
 services:
   sequencescape_server:
     build: .

@@ -3,7 +3,6 @@
 # use the local mysql database, which is the default configuration for development
 # in PSD.
 #
-version: "3.3"
 services:
   sequencescape_server:
     build: .
