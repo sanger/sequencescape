@@ -1,4 +1,4 @@
-# Plate purposes for LCM Triomics DNA WGS and EMSeq
+# Plate purposes for LCM Triomics WGS and EMSeq
 ---
 LCMT Lysate:
   type: PlatePurpose::Input
