@@ -33,8 +33,8 @@ module Api
 
       # @!method filter_uuid
       #   Filter the transfer templates by UUID.
-      #   @example URL with UUID filter
-      #     https://sequencescape.psd.sanger.ac.uk/api/v2/transfer_templates?filter[uuid]=12345678-1234-1234-1234-123456789012
+      #   @example GET request with UUID filter
+      #     GET /api/v2/transfer_templates?filter[uuid]=12345678-1234-1234-1234-123456789012
       filter :uuid, apply: ->(records, value, _options) { records.with_uuid(value) }
     end
   end

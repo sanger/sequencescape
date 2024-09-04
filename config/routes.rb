@@ -473,6 +473,8 @@ Rails.application.routes.draw do
     resources :tags, except: %i[destroy index create new edit]
   end
 
+  resources :tag_sets, only: %i[index new create show]
+
   resources :tag_layout_templates, only: %i[index new create show]
 
   resources :assets, except: %i[create new] do

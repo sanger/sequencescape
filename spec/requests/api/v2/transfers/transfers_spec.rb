@@ -2,9 +2,11 @@
 
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
+require './spec/requests/api/v2/shared_examples/invalid_post_requests'
 
 describe 'Transfer API', with: :api_v2 do
   let(:base_endpoint) { '/api/v2/transfers/transfers' }
+  let(:model_class) { Transfer::BetweenPlates }
 
   it_behaves_like 'ApiKeyAuthenticatable'
 
@@ -73,24 +75,27 @@ describe 'Transfer API', with: :api_v2 do
     let(:source) { create(:transfer_plate) }
     let(:destination) { create(:plate_with_empty_wells) }
     let(:transfer_template) { create(:transfer_template) } # BetweenPlates
+    let(:base_attributes) do
+      {
+        user_uuid: user.uuid,
+        source_uuid: source.uuid,
+        destination_uuid: destination.uuid,
+        transfer_template_uuid: transfer_template.uuid
+      }
+    end
 
     context 'with a valid payload' do
       let(:payload) do
         {
           'data' => {
             'type' => 'transfers',
-            'attributes' => {
-              user_uuid: user.uuid,
-              source_uuid: source.uuid,
-              destination_uuid: destination.uuid,
-              transfer_template_uuid: transfer_template.uuid
-            }
+            'attributes' => base_attributes
           }
         }
       end
 
       it 'creates a new resource' do
-        expect { api_post base_endpoint, payload }.to change(Transfer::BetweenPlates, :count).by(1)
+        expect { api_post base_endpoint, payload }.to change(model_class, :count).by(1)
       end
 
       it 'responds with success' do
@@ -111,101 +116,57 @@ describe 'Transfer API', with: :api_v2 do
       end
     end
 
-    context 'when providing an invalid payload' do
-      shared_examples 'it must not contain that attribute' do
-        let(:payload) do
-          {
-            'data' => {
-              'type' => 'transfers',
-              'attributes' => {
-                user_uuid: user.uuid,
-                source_uuid: source.uuid,
-                destination_uuid: destination.uuid,
-                transfer_template_uuid: transfer_template.uuid,
-                "#{disallowed_attribute}": 'Dummy value'
-              }
-            }
-          }
-        end
-
-        it 'does not change the number of Transfers' do
-          expect { api_post base_endpoint, payload }.not_to change(Transfer::BetweenPlates, :count)
-        end
-
-        it 'responds with bad request' do
-          api_post base_endpoint, payload
-
-          expect(response).to have_http_status(:bad_request)
-        end
-
-        it 'gives an informative error message' do
-          api_post base_endpoint, payload
-
-          expect(json.dig('errors', 0, 'detail')).to eq("#{disallowed_attribute} is not allowed.")
-        end
-      end
-
-      context 'with "uuid"' do
+    context 'with a read-only attribute in the payload' do
+      context 'with uuid' do
         let(:disallowed_attribute) { 'uuid' }
-
-        it_behaves_like 'it must not contain that attribute'
-      end
-
-      shared_examples 'it must include that attribute' do
         let(:payload) do
           {
             'data' => {
               'type' => 'transfers',
-              'attributes' => {
-                user_uuid: user.uuid,
-                source_uuid: source.uuid,
-                destination_uuid: destination.uuid,
-                transfer_template_uuid: transfer_template.uuid
-              }
+              'attributes' => base_attributes.merge({ 'uuid' => '111111-2222-3333-4444-555555666666' })
             }
           }
         end
 
-        before { payload['data']['attributes'].delete(required_attribute) }
+        it_behaves_like 'a POST request with a disallowed attribute'
+      end
+    end
 
-        it 'does not change the number of Transfers' do
-          expect { api_post base_endpoint, payload }.not_to change(Transfer::BetweenPlates, :count)
-        end
-
-        it 'responds with unprocessable entity' do
-          api_post base_endpoint, payload
-
-          expect(response).to have_http_status(:unprocessable_entity)
-        end
-
-        it 'gives an informative error message' do
-          api_post base_endpoint, payload
-
-          expect(json.dig('errors', 0, 'detail')).to eq("#{required_model_field} - can't be blank")
-        end
+    context 'without a required attribute' do
+      let(:payload) do
+        {
+          'data' => {
+            'type' => 'transfers',
+            'attributes' =>
+              base_attributes.merge({ attribute_to_remove => nil })
+          }
+        }
       end
 
-      context 'without "user_uuid"' do
-        let(:required_attribute) { :user_uuid }
-        let(:required_model_field) { 'user' }
+      context 'without user_uuid' do
+        let(:attribute_to_remove) { 'user_uuid' }
+        let(:missing_attribute) { 'user' }
 
-        it_behaves_like 'it must include that attribute'
+        it_behaves_like 'a POST request with a missing attribute'
       end
 
-      context 'without "source_uuid"' do
-        let(:required_attribute) { :source_uuid }
-        let(:required_model_field) { 'source' }
+      context 'without source_uuid' do
+        let(:attribute_to_remove) { 'source_uuid' }
+        let(:missing_attribute) { 'source' }
 
-        it_behaves_like 'it must include that attribute'
+        it_behaves_like 'a POST request with a missing attribute'
       end
 
-      context 'without "destination_uuid"' do
-        let(:required_attribute) { :destination_uuid }
-        let(:required_model_field) { 'destination' }
+      context 'without destination_uuid' do
+        let(:attribute_to_remove) { 'destination_uuid' }
+        let(:missing_attribute) { 'destination' }
 
-        it_behaves_like 'it must include that attribute'
+        it_behaves_like 'a POST request with a missing attribute'
       end
+    end
 
+
+    context 'when providing an invalid payload' do
       context 'without "transfer_template_uuid"' do
         let(:payload) do
           {
@@ -221,7 +182,7 @@ describe 'Transfer API', with: :api_v2 do
         end
 
         it 'does not change the number of Transfers' do
-          expect { api_post base_endpoint, payload }.not_to change(Transfer::BetweenPlates, :count)
+          expect { api_post base_endpoint, payload }.not_to change(model_class, :count)
         end
 
         it 'responds with server error' do
