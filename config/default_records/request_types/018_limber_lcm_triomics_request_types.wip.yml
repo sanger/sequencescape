@@ -1,14 +1,14 @@
-# Request types for LCM Triomics DNA WGS and EMSeq
+# Request types for LCM Triomics WGS and EMSeq
 ---
-limber_lcm_triomics:
-  name: LCM Triomics
+limber_lcm_triomics_emseq:
+  name: LCM Triomics EMSeq
   asset_type: Well
   order: 1
   request_class_name: IlluminaHtp::Requests::StdLibraryRequest
   for_multiplexing: false
   billable: true
   product_line_name: Short Read
-  library_types:
-    - LCM Triomics EMSeq
   acceptable_purposes:
     - LCMT Lysate
+  library_types:
+    - LCM Triomics EMSeq
