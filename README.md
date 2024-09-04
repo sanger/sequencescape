@@ -136,6 +136,8 @@ With this we should have started Sequencescape server and all required services.
 able to access Sequencescape by going to <http://localhost:3000> and log in with
 username and password admin/admin.
 
+The envvar `PRECOMPILE_ASSETS` is also available as `PRECOMPILE_ASSETS=false docker-compose up` which will avoid precompiling the assets as Sequencescape is started.
+
 If you are using [Apple silicon](https://support.apple.com/en-gb/HT211814) and encounter any issues, please see [Troubleshooting](#installing-on-apple-silicon-m1) below.
 
 **ABOUT LOCAL DEVELOPMENT SETUP** You may want to start only the required services for Sequencescape (server and jobs worker) and use your local version of Mysql

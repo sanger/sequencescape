@@ -12,6 +12,7 @@ services:
       - DBHOST=mysql_server
       - DBPORT=3306
       - RESET_DATABASE=$RESET_DATABASE
+      - PRECOMPILE_ASSETS=${PRECOMPILE_ASSETS:-true}
     entrypoint: "bash -c ./entrypoint.sh"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
