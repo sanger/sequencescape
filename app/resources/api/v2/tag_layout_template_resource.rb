@@ -23,7 +23,6 @@ module Api
       #   A relationship for the primary tag group associated with the tag layout template.
       #   @return [Api::V2::TagGroupResource]
       has_one :tag_group
-      has_one :tag2_group
 
       # @!attribute [r] tag2_group
       #   A relationship for the secondary tag group associated with the tag layout template.
