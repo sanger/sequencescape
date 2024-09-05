@@ -3,17 +3,16 @@
 namespace :devour do
   desc 'Spits out a devour-client configuration'
   task create_config: :environment do
-    # We prettify are json to make it both easier to read and diff
+    # We prettify our JSON to make it both easier to read and diff
     json_formatting = { indent: '  ', object_nl: "\n", space: ' ', array_nl: "\n" }
 
+    non_resource_symbols = %i[BaseResource Concerns SharedBehaviour Transfers]
+    base_resources = (Api::V2.constants - non_resource_symbols).map { |key| Api::V2.const_get(key) }
+    transfer_resources = Api::V2::Transfers.constants.map { |key| Api::V2::Transfers.const_get(key) }
     config =
-      Api::V2
-        .constants
-        .reject { |resource_key| resource_key == :BaseResource }
-        .sort
-        .map do |resource_key|
-          resource = Api::V2.const_get(resource_key)
-
+      (base_resources + transfer_resources)
+        .sort_by { |resource| resource._type.to_s }
+        .map do |resource|
           attributes = {}
           resource._attributes.each_key do |attr|
             next if attr == :id
