@@ -84,6 +84,7 @@ RSpec.configure do |config|
   config.include Rails.application.routes.url_helpers
 
   config.include ApiV2Helper, with: :api_v2
+  config.include ApiV2Matchers
   config.include RSpec::Longrun::DSL
 
   Capybara.add_selector(:data_behavior) { xpath { |name| XPath.css("[data-behavior='#{name}']") } }
