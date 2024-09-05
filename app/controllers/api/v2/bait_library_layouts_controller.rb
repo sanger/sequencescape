@@ -33,7 +33,7 @@ module Api
           respond_with_errors('Validation failed', e.record.errors.full_messages, :unprocessable_entity) and return
         end
 
-        json = { data: { id: 0, type: 'bait_library_layouts', attributes: { layout: preview.layout } } }
+        json = { data: { id: '0', type: 'bait_library_layouts', attributes: { layout: preview.layout } } }
         render json: json, status: :ok
       end
 
