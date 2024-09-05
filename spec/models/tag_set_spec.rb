@@ -50,6 +50,46 @@ RSpec.describe TagSet do
     end
   end
 
+  describe 'scopes' do
+    describe '.dual_index' do
+      context 'when there are single index tag sets' do
+        let!(:tag_set1) { create(:tag_set) }
+        let!(:tag_set2) { create(:tag_set) }
+        let!(:tag_set3) { create(:tag_set, tag2_group: nil) }
+
+        it 'does not return single index tag sets' do
+          expect(described_class.dual_index).not_to include(tag_set3)
+        end
+
+        it 'returns dual index tag sets' do
+          expect(described_class.dual_index).to include(tag_set1, tag_set2)
+        end
+      end
+    end
+
+    describe '.dual_index.visible' do
+      context 'when there are single and dual index tag sets, where not all tag groups are visible' do
+        let!(:tag_group1) { create(:tag_group_with_tags, name: 'TG1') }
+        let!(:tag_group2) { create(:tag_group_with_tags, name: 'TG2', visible: false) }
+        let!(:tag_group3) { create(:tag_group_with_tags, name: 'TG3') }
+        let!(:tag_group4) { create(:tag_group_with_tags, name: 'TG4') }
+        let!(:tag_group5) { create(:tag_group_with_tags, name: 'TG5') }
+
+        let!(:tag_set1) { create(:tag_set, tag_group: tag_group1, tag2_group: tag_group2) }
+        let!(:tag_set2) { create(:tag_set, tag_group: tag_group3, tag2_group: tag_group4) }
+        let!(:tag_set3) { create(:tag_set, tag_group: tag_group5, tag2_group: nil) }
+
+        it 'does not return single or dual index tag sets with non visible tag groups' do
+          expect(described_class.dual_index.visible).not_to include(tag_set1, tag_set3)
+        end
+
+        it 'returns dual index tag sets with visible tag groups only' do
+          expect(described_class.dual_index.visible).to include(tag_set2)
+        end
+      end
+    end
+  end
+
   describe '#visible' do
     it 'returns true if it only has one tag_group and it is set to visible' do
       tag_group = create(:tag_group, visible: true)
