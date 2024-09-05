@@ -11,7 +11,7 @@ describe 'Transfer API', with: :api_v2 do
   it_behaves_like 'ApiKeyAuthenticatable'
 
   context 'with a list of Transfers' do
-    let!(:transfers) { create_list(:transfer_between_plates, 5) }
+    let(:transfers) { create_list(:transfer_between_plates, 5) }
 
     describe '#get all Transfers' do
       before { api_get base_endpoint }
