@@ -108,7 +108,7 @@ describe 'State Changes API', with: :api_v2 do
     end
   end
 
-  describe '#POST a new resource' do
+  describe '#POST a create request' do
     let(:user) { create(:user) }
     let(:plate) { create(:plate) }
 
@@ -273,7 +273,7 @@ describe 'State Changes API', with: :api_v2 do
 
     context 'without a required relationship' do
       context 'without user_uuid' do
-        let(:error_detail_message) { "user - must exist" }
+        let(:error_detail_message) { 'user - must exist' }
         let(:payload) do
           {
             'data' => {
@@ -287,21 +287,16 @@ describe 'State Changes API', with: :api_v2 do
       end
 
       context 'without target_uuid' do
-        let(:error_detail_message) { "target - must exist" }
+        let(:error_detail_message) { 'target - must exist' }
         let(:payload) do
-          {
-            'data' => {
-              'type' => resource_type,
-              'attributes' => base_attributes.merge({ 'user_uuid' => user.uuid })
-            }
-          }
+          { 'data' => { 'type' => resource_type, 'attributes' => base_attributes.merge({ 'user_uuid' => user.uuid }) } }
         end
 
         it_behaves_like 'a POST request without a required relationship'
       end
 
       context 'without user' do
-        let(:error_detail_message) { "user - must exist" }
+        let(:error_detail_message) { 'user - must exist' }
         let(:payload) do
           {
             'data' => {
@@ -318,7 +313,7 @@ describe 'State Changes API', with: :api_v2 do
       end
 
       context 'without target' do
-        let(:error_detail_message) { "target - must exist" }
+        let(:error_detail_message) { 'target - must exist' }
         let(:payload) do
           {
             'data' => {
