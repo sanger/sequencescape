@@ -1,0 +1,26 @@
+
+<div class="page-header"><h1>Listing Tag Sets</h1></div>
+
+<table class="table">
+  <thead>
+    <th>Name</th>
+    <th>Tag group (i7)</th>
+    <th>Tag group (i5)</th>
+    <th></th>
+  </thead>
+  <tbody>
+  <% for tag_set in @tag_sets %>
+    <tr>
+      <td><%= tag_set.name %></td>
+      <td><%= tag_set.tag_group.name %></td>
+      <td><%= tag_set.tag2_group&.name %></td>
+      <td><%= link_to 'Show', tag_set_path(tag_set.id) %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+
+
+<% if can? :create, TagSet %>
+  <%= link_to 'Create a new Tag Set', new_tag_set_path %>
+<% end %>
