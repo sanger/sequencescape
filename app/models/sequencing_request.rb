@@ -33,6 +33,18 @@ class SequencingRequest < CustomerRequest
     delegate :fragment_size_required_from, :fragment_size_required_to, to: :target
     validates :fragment_size_required_from, numericality: { integer_only: true, greater_than: 0, allow_nil: true }
     validates :fragment_size_required_to, numericality: { integer_only: true, greater_than: 0, allow_nil: true }
+    delegate :requested_flowcell_type, to: :target
+    validates :requested_flowcell_type, presence: true, if: :illumina_htp_novaseq_request?
+
+    def illumina_htp_novaseq_request?
+      request_type_keys = target.owner.request_types.to_set
+      illumina_htp_novaseq_keys =
+        RequestType
+          .where(key: %w[illumina_htp_novaseq_6000_paired_end_sequencing illumina_htp_novaseqx_paired_end_sequencing])
+          .ids
+          .to_set
+      illumina_htp_novaseq_keys.intersect?(request_type_keys)
+    end
   end
 
   def on_started
