@@ -30,7 +30,7 @@ module Api
         begin
           preview = BaitLibraryLayout.preview!(user: records[:user], plate: records[:plate])
         rescue ActiveRecord::RecordInvalid => e
-          render_errors('Validation failed', e.record.errors.full_messages, :unprocessable_entity) and return
+          respond_with_errors('Validation failed', e.record.errors.full_messages, :unprocessable_entity) and return
         end
 
         json = { data: { id: 0, type: 'bait_library_layouts', attributes: { layout: preview.layout } } }
@@ -39,7 +39,7 @@ module Api
 
       private
 
-      def render_errors(title, details, status)
+      def respond_with_errors(title, details, status)
         status_code = Rack::Utils::SYMBOL_TO_STATUS_CODE[status]
 
         errors = details.map { |detail| { title: title, detail: detail, code: status_code, status: status_code } }
@@ -73,10 +73,10 @@ module Api
           user = preview_user(record_errors)
           plate = preview_plate(record_errors)
         rescue ActionController::ParameterMissing => e
-          render_errors('Missing parameter', [e.message], :bad_request) and return
+          respond_with_errors('Missing parameter', [e.message], :bad_request) and return
         end
 
-        render_errors('Record not found', record_errors, :bad_request) and return if record_errors.any?
+        respond_with_errors('Record not found', record_errors, :bad_request) and return if record_errors.any?
 
         { user: user, plate: plate }
       end
