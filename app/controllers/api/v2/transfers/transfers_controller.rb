@@ -31,33 +31,43 @@ module Api
         end
       end
 
+      # Provides a controller for BetweenPlateAndTubes transfers routed using jsonapi_resources endpoints.
       class BetweenPlateAndTubesController < JSONAPI::ResourceController
       end
 
+      # Provides a controller for BetweenPlatesBySubmissions transfers routed using jsonapi_resources endpoints.
       class BetweenPlatesBySubmissionsController < JSONAPI::ResourceController
       end
 
+      # Provides a controller for BetweenPlates transfers routed using jsonapi_resources endpoints.
       class BetweenPlatesController < JSONAPI::ResourceController
       end
 
+      # Provides a controller for BetweenSpecificTubes transfers routed using jsonapi_resources endpoints.
       class BetweenSpecificTubesController < JSONAPI::ResourceController
       end
 
+      # Provides a controller for BetweenTubesBySubmissions transfers routed using jsonapi_resources endpoints.
       class BetweenTubesBySubmissionsController < JSONAPI::ResourceController
       end
 
+      # Provides a controller for FromPlateToSpecificTubes transfers routed using jsonapi_resources endpoints.
       class FromPlateToSpecificTubesByPoolsController < JSONAPI::ResourceController
       end
 
+      # Provides a controller for FromPlateToSpecificTubes transfers routed using jsonapi_resources endpoints.
       class FromPlateToSpecificTubesController < JSONAPI::ResourceController
       end
 
+      # Provides a controller for FromPlateToTubeByMultiplexes transfers routed using jsonapi_resources endpoints.
       class FromPlateToTubeByMultiplexesController < JSONAPI::ResourceController
       end
 
+      # Provides a controller for FromPlateToTubeBySubmissions transfers routed using jsonapi_resources endpoints.
       class FromPlateToTubeBySubmissionsController < JSONAPI::ResourceController
       end
 
+      # Provides a controller for FromPlateToTubes transfers routed using jsonapi_resources endpoints.
       class FromPlateToTubesController < JSONAPI::ResourceController
       end
     end
