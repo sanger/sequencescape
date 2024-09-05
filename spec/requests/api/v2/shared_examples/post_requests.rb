@@ -29,7 +29,7 @@ shared_examples 'a POST request with a missing attribute' do
     expect(response).to have_http_status(:unprocessable_entity)
   end
 
-  it 'specifies which attribute cannot be blank' do
+  it 'gives the expected error message detail' do
     expect(json.dig('errors', 0, 'detail')).to eq(error_detail_message)
   end
 end
