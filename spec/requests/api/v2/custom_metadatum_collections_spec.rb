@@ -8,10 +8,10 @@ describe 'CustomMetadatumCollections API', with: :api_v2 do
 
   it_behaves_like 'ApiKeyAuthenticatable'
 
-  context 'with multiple collection' do
+  context 'with multiple collections' do
     before { create_list(:custom_metadatum_collection, 5) }
 
-    it 'gets a list of collection' do
+    it 'gets a list of collections' do
       api_get base_endpoint
 
       expect(response).to have_http_status(:success)

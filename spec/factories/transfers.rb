@@ -30,17 +30,17 @@ FactoryBot.define do
 
     factory(:pooling_transfer_template) do
       transfer_class_name { 'Transfer::BetweenPlatesBySubmission' }
-      transfers { nil }
+      transfers { nil } # BySubmission transfer types do not define the transfers in the template.
     end
 
     factory(:multiplex_transfer_template) do
       transfer_class_name { 'Transfer::FromPlateToTubeByMultiplex' }
-      transfers { nil }
+      transfers { nil } # ByMultiplex transfer types do not define the transfers in the template.
     end
 
     factory :between_tubes_transfer_template do
       transfer_class_name { 'Transfer::BetweenTubesBySubmission' }
-      transfers { nil }
+      transfers { nil } # BySubmission transfer types do not define the transfers in the template.
     end
   end
 end
