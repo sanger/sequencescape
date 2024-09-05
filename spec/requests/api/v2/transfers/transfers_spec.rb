@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
-require './spec/requests/api/v2/shared_examples/invalid_post_requests'
+require './spec/requests/api/v2/shared_examples/post_requests'
 
 describe 'Transfer API', with: :api_v2 do
   let(:base_endpoint) { '/api/v2/transfers/transfers' }
