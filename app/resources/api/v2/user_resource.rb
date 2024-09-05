@@ -15,22 +15,40 @@ module Api
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class UserResource < BaseResource
-      # Constants...
-
       immutable
 
-      # model_name / model_hint if required
-
-      default_includes :uuid_object
-
+      ###
       # Attributes
+      ###
+
+      # @!attribute [r] uuid
+      #   @return [String] the UUID of the user.
       attribute :uuid, readonly: true
+
+      # @!attribute [r] login
+      #   @return [String] the user's login identifier.
       attribute :login, readonly: true
+
+      # @!attribute [r] first_name
+      #   @return [String] the user's first/given name.
       attribute :first_name, readonly: true
+
+      # @!attribute [r] last_name
+      #   @return [String] the user's last/surname.
       attribute :last_name, readonly: true
 
+      ###
       # Filters
+      ###
+
+      # @!method user_code
+      #   A filter to return only users with the given user code.
+      #   The given user code will be compared with the swipecodes and barcodes for users until matches are found.
       filter :user_code, apply: lambda { |records, value, _options| records.with_user_code(*value) }
+
+      # @!method uuid
+      #   A filter to return only users with the given UUID.
+      filter :uuid, apply: lambda { |records, value, _options| records.with_uuid(*value) }
     end
   end
 end
