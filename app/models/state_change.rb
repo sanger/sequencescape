@@ -34,7 +34,11 @@ class StateChange < ApplicationRecord
   validates_unassigned :previous_state
 
   # If we don't have a state changer configured, we can't change the state
-  validates :state_changer, presence: { message: 'target does not have a configured state changer' }
+  validates :state_changer,
+            presence: {
+              message: 'target does not have a configured state changer'
+            },
+            unless: -> { target.nil? }
 
   before_create :record_current_state_of_target
   after_create :update_state_of_target

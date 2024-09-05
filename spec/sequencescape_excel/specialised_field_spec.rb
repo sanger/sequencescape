@@ -641,6 +641,137 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
     end
   end
 
+  describe SequencescapeExcel::SpecialisedField::DualIndexTagSet do
+    let(:tag_group1) { create :tag_group_with_tags }
+    let(:tag_group2) { create :tag_group_with_tags }
+    let(:dual_index_tag_set) { create :tag_set, tag_group: tag_group1, tag2_group: tag_group2 }
+    let(:dual_index_tag_well) { 'A1' }
+
+    describe 'dual index tag set' do
+      let(:sf_dual_index_tag_set) do
+        described_class.new(value: dual_index_tag_set.name, sample_manifest_asset: sample_manifest_asset)
+      end
+
+      it 'will add the value' do
+        expect(sf_dual_index_tag_set.value).to eq(dual_index_tag_set.name)
+      end
+
+      it 'will be valid with an existing dual index tag set name' do
+        expect(sf_dual_index_tag_set).to be_valid
+      end
+
+      context 'when no tag set name is provided' do
+        let(:sf_dual_index_tag_set) { described_class.new(value: '', sample_manifest_asset: sample_manifest_asset) }
+
+        it 'will be not be valid' do
+          expect(sf_dual_index_tag_set).not_to be_valid
+          expect(sf_dual_index_tag_set.errors.full_messages.join).to include("Dual index tag set can't be blank")
+        end
+      end
+
+      context 'when the tag set name is unknown' do
+        let(:sf_dual_index_tag_set) do
+          described_class.new(value: 'bananas', sample_manifest_asset: sample_manifest_asset)
+        end
+
+        it 'will be not be valid' do
+          expect(sf_dual_index_tag_set).not_to be_valid
+          expect(sf_dual_index_tag_set.errors.full_messages.join).to include(
+            "could not find a visible dual index Tag Set with name 'bananas'."
+          )
+        end
+      end
+
+      context 'when the tag set name is has only one visible tag group' do
+        let(:tag_group2) { create :tag_group_with_tags, visible: false }
+
+        it 'will be not be valid' do
+          expect(sf_dual_index_tag_set).not_to be_valid
+          expect(sf_dual_index_tag_set.errors.full_messages.join).to include(
+            "could not find a visible dual index Tag Set with name '#{dual_index_tag_set.name}'"
+          )
+        end
+      end
+    end
+
+    describe SequencescapeExcel::SpecialisedField::DualIndexTagWell do
+      let(:sf_dual_index_tag_well) do
+        described_class.new(value: dual_index_tag_well, sample_manifest_asset: sample_manifest_asset)
+      end
+      let(:sf_dual_index_tag_set) do
+        SequencescapeExcel::SpecialisedField::DualIndexTagSet.new(
+          value: dual_index_tag_set.name,
+          sample_manifest_asset: sample_manifest_asset
+        )
+      end
+
+      it 'will add the value' do
+        expect(sf_dual_index_tag_well.value).to eq(dual_index_tag_well)
+      end
+
+      describe 'linking' do
+        context 'when linked to a valid dual tag set' do
+          before { sf_dual_index_tag_well.sf_dual_index_tag_set = sf_dual_index_tag_set }
+
+          context 'when the well location is valid' do
+            it 'will be valid when linked to a tag set with two visible tag groups' do
+              expect(sf_dual_index_tag_well).to be_valid
+            end
+
+            it 'will apply the two tags associated with the map_id' do
+              sf_dual_index_tag_well.update(aliquot: aliquot, tag_group: nil)
+              # well location 'A1' => map_id '1'
+              expect(asset.aliquots.first.tag.map_id).to eq 1
+              expect(asset.aliquots.first.tag.tag_group).to eq tag_group1
+              expect(asset.aliquots.first.tag2.map_id).to eq 1
+              expect(asset.aliquots.first.tag2.tag_group).to eq tag_group2
+
+              tag_set =
+                TagSet.find_by(
+                  tag_group_id: asset.aliquots.first.tag.tag_group.id,
+                  tag2_group_id: asset.aliquots.first.tag2.tag_group.id
+                )
+              expect(tag_set).to eq dual_index_tag_set
+            end
+          end
+
+          context 'when applied to a re-upload' do
+            let(:asset) { create(:tagged_well, map: map, aliquot_count: 1) }
+            let(:dual_index_tag_well) { 'd1' }
+
+            it 'will apply the 2 tags associated with the updated map_id' do
+              sf_dual_index_tag_well.update(aliquot: aliquot, tag_group: nil)
+              # well location 'D1' => map_id '4'
+              expect(asset.reload.aliquots.first.tag.map_id).to eq 4
+              expect(asset.reload.aliquots.first.tag2.map_id).to eq 4
+            end
+          end
+
+          context 'when the well location is empty' do
+            let(:dual_index_tag_well) { ' ' }
+
+            it 'will not be valid without a well location' do
+              expect(sf_dual_index_tag_well).not_to be_valid
+              expect(sf_dual_index_tag_well.errors.full_messages.join).to include("Dual index tag well can't be blank")
+            end
+          end
+
+          context 'when the well location is invalid' do
+            let(:dual_index_tag_well) { 'Z99' }
+
+            it 'will not be valid without a valid well location' do
+              expect(sf_dual_index_tag_well).not_to be_valid
+              expect(sf_dual_index_tag_well.errors.full_messages.join).to include('Tag does not have associated i7 tag')
+              expect(sf_dual_index_tag_well.errors.full_messages.join).to include(
+                'Tag2 does not have associated i5 tag'
+              )
+            end
+          end
+        end
+      end
+    end
+  end
+
   describe SequencescapeExcel::SpecialisedField::PrimerPanel do
     let(:primer_panel) { create :primer_panel }
 

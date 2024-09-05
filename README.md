@@ -74,7 +74,7 @@ The documentation is automatically updated via a CI workflow when a merge to mas
 To preview this documentation, you can spin up a yard server locally using the following command:
 
 ```shell
-yard server --reload sequencescape
+yard server --reload sequencescape .
 ```
 
 You can then access the Sequencescape documentation through: [http://localhost:8808/docs](http://localhost:8808/docs)
@@ -83,7 +83,7 @@ If the server complains that the stack depth is too deep, this only appears to b
 Precompiling is the simple solution and can be achieved with the following.
 
 ```shell
-yard doc sequencescape
+yard doc
 ```
 
 This will pre-fill the cache and allow the server command above to display the documentation without complaining about stack depths.

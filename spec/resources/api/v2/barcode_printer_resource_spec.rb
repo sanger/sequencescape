@@ -1,18 +1,20 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require './app/resources/api/v2/submission_template_resource'
+require './app/resources/api/v2/barcode_printer_resource'
 
-RSpec.describe Api::V2::SubmissionTemplateResource, type: :resource do
+RSpec.describe Api::V2::BarcodePrinterResource, type: :resource do
   subject(:resource) { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { build_stubbed :submission_template }
+  let(:resource_model) { build_stubbed :barcode_printer }
 
   # Test attributes
   it 'has the expected attributes', :aggregate_failures do
     expect(resource).not_to have_attribute :id
     expect(resource).to have_attribute :uuid
     expect(resource).to have_attribute :name
+    expect(resource).to have_attribute :print_service
+    expect(resource).to have_attribute :barcode_type
   end
 
   # Updatable fields
@@ -20,8 +22,10 @@ RSpec.describe Api::V2::SubmissionTemplateResource, type: :resource do
     expect(resource).to have_updatable_field :name
   end
 
-  it 'disallows updating of read-only fields', :aggregate_failures do
+  it 'disallows updating of read only fields', :aggregate_failures do
     expect(resource).not_to have_updatable_field :uuid
+    expect(resource).not_to have_updatable_field :print_service
+    expect(resource).not_to have_updatable_field :barcode_type
   end
 
   # Filters
