@@ -43,6 +43,40 @@ describe 'Asset submission', :js do
     end
   end
 
+  describe 'Validation of Flowcell Type field for illumina-HTP NovaSeq requests' do
+    let(:user) { create :admin }
+
+    let(:validator) do
+      instance_double(
+        SequencingRequest::RequestOptionsValidator,
+        illumina_htp_novaseq_request?: true,
+        valid?: false,
+        errors:
+          ActiveModel::Errors
+            .new(SequencingRequest.new)
+            .tap { |errors| errors.add(:requested_flowcell_type, "can't be blank") }
+      )
+    end
+    before do
+      allow(SequencingRequest::RequestOptionsValidator).to receive(:new).and_return(validator)
+      login_user user
+      visit labware_path(asset)
+      click_link 'Request additional sequencing'
+    end
+
+    it 'displays an error if Flowcell Type is not set' do
+      select(selected_request_type.name, from: 'Request type')
+      select(study.name, from: 'Study')
+      select(project.name, from: 'Project')
+      fill_in 'Fragment size required (from)', with: '100'
+      fill_in 'Fragment size required (to)', with: '200'
+      select(selected_read_length, from: 'Read length')
+      click_button 'Create'
+
+      expect(page).to have_content('Validation failed: Request options requested flowcell type can\'t be blank')
+    end
+  end
+
   shared_examples 'it allows additional sequencing' do
     it 'request additional sequencing' do
       login_user user
