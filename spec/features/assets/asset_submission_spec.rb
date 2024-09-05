@@ -57,6 +57,7 @@ describe 'Asset submission', :js do
             .tap { |errors| errors.add(:requested_flowcell_type, "can't be blank") }
       )
     end
+
     before do
       allow(SequencingRequest::RequestOptionsValidator).to receive(:new).and_return(validator)
       login_user user
