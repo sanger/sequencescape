@@ -23,7 +23,8 @@ class TagLayoutTemplatesController < ApplicationController
   ##
   # Allows for the passing in of tag group id using a link from the tag group show page.
   def new
-    @tag_layout_template = TagLayoutTemplate.new(tag_group_id: params[:tag_group_id])
+    @tag_layout_template =
+      TagLayoutTemplate.new(tag_group_id: params[:tag_group_id], tag2_group_id: params[:tag2_group_id])
     @direction_algorithms = TagLayout::DIRECTION_ALGORITHMS
     @walking_algorithms = TagLayout::WALKING_ALGORITHMS
 
