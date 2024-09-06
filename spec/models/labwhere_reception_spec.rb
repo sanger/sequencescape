@@ -98,7 +98,7 @@ RSpec.describe LabwhereReception do
     expect(labwhere_reception.save).to be_falsey
     expect(labwhere_reception.errors).not_to be_empty
     expect(labwhere_reception.errors.full_messages.first).to eq(
-      ['Labwhere User not recognised', 'Labwhere Location does not exist']
+      ['LabWhere User not recognised', 'LabWhere Location does not exist']
     )
   end
 end

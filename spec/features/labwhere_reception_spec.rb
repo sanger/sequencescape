@@ -7,6 +7,8 @@ describe 'Labwhere reception', :js do
   let(:plate) { create :plate }
 
   before { configatron.labwhere_api = 'https://labwhere.example.com/api' }
+  # Reset the configatron value after the test to avoid affecting other tests
+  after { configatron.labwhere_api = nil }
 
   it 'user can scan plates into the reception' do
     allow(RestClient).to receive(:post).with(
@@ -54,7 +56,7 @@ describe 'Labwhere reception', :js do
     fill_in('User barcode or swipecard', with: 12_345)
     fill_in('asset_scan', with: plate.human_barcode).send_keys(:return)
     click_on 'Update locations'
-    expect(page).to have_content 'Labwhere User does not exist'
+    expect(page).to have_content 'LabWhere User does not exist'
     expect(page).to have_no_content plate.human_barcode
     expect(page).to have_no_content plate.purpose.name
     expect(page).to have_no_link plate.name, href: labware_path(plate)
