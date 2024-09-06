@@ -306,7 +306,7 @@ describe 'Bait Library Layouts API', with: :api_v2 do
         end
 
         it 'returns the correct data parameters' do
-          expect(json.dig('data', 'id')).to eq('0')
+          expect(json.dig('data', 'id')).not_to be_present
           expect(json.dig('data', 'type')).to eq(resource_type)
         end
 

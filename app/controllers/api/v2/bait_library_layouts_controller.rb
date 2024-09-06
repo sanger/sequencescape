@@ -21,7 +21,7 @@ module Api
       #
       # @return [JSON] The JSON representation of a sparsely populated {BaitLibraryLayoutResource}.
       #   Only the `layout` attribute is included.
-      #   The returned `id` is always `0` and cannot be used to reference the resource.
+      #   No `id` is included as this is a preview and not a persisted record.
       def preview
         records = preview_records
         return if records.nil?
@@ -33,7 +33,7 @@ module Api
           respond_with_errors('Validation failed', e.record.errors.full_messages, :unprocessable_entity) and return
         end
 
-        json = { data: { id: '0', type: 'bait_library_layouts', attributes: { layout: preview.layout } } }
+        json = { data: { type: 'bait_library_layouts', attributes: { layout: preview.layout } } }
         render json: json, status: :ok
       end
 
