@@ -1,7 +1,7 @@
 # Request types for LCM Triomics DNA WGS and EMSeq
 ---
 limber_lcm_triomics_emseq:
-  name: LCM Triomics
+  name: LCM Triomics EMSeq
   asset_type: Well
   order: 1
   request_class_name: IlluminaHtp::Requests::StdLibraryRequest
