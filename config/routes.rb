@@ -60,6 +60,7 @@ Rails.application.routes.draw do
       jsonapi_resources :tag_group_adapter_types
       jsonapi_resources :tag_groups
       jsonapi_resources :tag_layout_templates
+      jsonapi_resources :tag_layouts, except: %i[update]
       jsonapi_resources :tags
       jsonapi_resources :transfer_requests
       jsonapi_resources :transfer_templates
