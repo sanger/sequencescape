@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
-require './spec/requests/api/v2/shared_examples/invalid_post_requests'
+require './spec/requests/api/v2/shared_examples/post_requests'
 
 describe 'Transfer API', with: :api_v2 do
   let(:base_endpoint) { '/api/v2/transfers/transfers' }
@@ -132,21 +132,21 @@ describe 'Transfer API', with: :api_v2 do
 
       context 'without user_uuid' do
         let(:attribute_to_remove) { 'user_uuid' }
-        let(:missing_attribute) { 'user' }
+        let(:error_detail_message) { "user - can't be blank" }
 
         it_behaves_like 'a POST request with a missing attribute'
       end
 
       context 'without source_uuid' do
         let(:attribute_to_remove) { 'source_uuid' }
-        let(:missing_attribute) { 'source' }
+        let(:error_detail_message) { "source - can't be blank" }
 
         it_behaves_like 'a POST request with a missing attribute'
       end
 
       context 'without destination_uuid' do
         let(:attribute_to_remove) { 'destination_uuid' }
-        let(:missing_attribute) { 'destination' }
+        let(:error_detail_message) { "destination - can't be blank" }
 
         it_behaves_like 'a POST request with a missing attribute'
       end
