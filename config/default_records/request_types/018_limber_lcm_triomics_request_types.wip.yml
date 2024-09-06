@@ -1,4 +1,4 @@
-# Request types for LCM Triomics DNA WGS and EMSeq
+# Request types for LCM Triomics WGS and EMSeq
 ---
 limber_lcm_triomics_emseq:
   name: LCM Triomics EMSeq
