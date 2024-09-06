@@ -55,7 +55,11 @@ class LabwhereReception
         )
 
       unless scan.valid?
-        errors.add(:scan, scan.error)
+        # Prepend the errors with 'Labwhere' to make it clear where the error came from
+        # This is important as you can get both Sequencescape and Labwhere errors of the same type
+        # e.g. User does not exist
+        labwhere_errors = scan.errors.map { |error| "Labwhere #{error}" }
+        errors.add(:base, labwhere_errors)
         return false
       end
     rescue LabWhereClient::LabwhereException => e

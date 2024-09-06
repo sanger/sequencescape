@@ -150,10 +150,6 @@ module LabWhereClient
     def valid?
       @errors.nil?
     end
-
-    def error
-      @errors.join(';')
-    end
   end
 
   class Location < Endpoint
