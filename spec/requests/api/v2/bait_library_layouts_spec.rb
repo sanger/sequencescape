@@ -367,7 +367,7 @@ describe 'Bait Library Layouts API', with: :api_v2 do
               'errors' => [
                 {
                   'title' => 'Record not found',
-                  'detail' => "The #{resource_name} record identified by UUID 'missing_uuid' cannot be found",
+                  'detail' => "The #{resource_name} identified by UUID 'missing_uuid' cannot be found",
                   'code' => 400,
                   'status' => 400
                 }

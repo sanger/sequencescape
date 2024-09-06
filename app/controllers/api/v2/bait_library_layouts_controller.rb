@@ -50,12 +50,10 @@ module Api
       # This should only be called once per request, as it will render an exception every time it's called when any one
       # of the required parameters are not present.
       def permitted_params
-        begin
-          param_keys = [:user_uuid, :plate_uuid]
-          param_keys.zip(params.require(param_keys)).to_h
-        rescue ActionController::ParameterMissing => e
-          respond_with_errors('Missing parameter', [e.message], :bad_request) and return
-        end
+        param_keys = %i[user_uuid plate_uuid]
+        param_keys.zip(params.require(param_keys)).to_h
+      rescue ActionController::ParameterMissing => e
+        respond_with_errors('Missing parameter', [e.message], :bad_request) and return
       end
 
       def preview_records
@@ -64,11 +62,13 @@ module Api
 
         record_errors = []
 
-        user = User.with_uuid(param_hash[:user_uuid]).first ||
-          record_errors.append("The User record identified by UUID '#{permitted_params[:user_uuid]}' cannot be found")
+        user =
+          User.with_uuid(param_hash[:user_uuid]).first ||
+            record_errors.append("The User identified by UUID '#{permitted_params[:user_uuid]}' cannot be found")
 
-        plate = Plate.with_uuid(param_hash[:plate_uuid]).first ||
-          record_errors.append("The Plate record identified by UUID '#{permitted_params[:plate_uuid]}' cannot be found")
+        plate =
+          Plate.with_uuid(param_hash[:plate_uuid]).first ||
+            record_errors.append("The Plate identified by UUID '#{permitted_params[:plate_uuid]}' cannot be found")
 
         respond_with_errors('Record not found', record_errors, :bad_request) and return if record_errors.any?
 
