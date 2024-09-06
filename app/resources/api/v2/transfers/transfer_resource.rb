@@ -49,7 +49,7 @@ module Api
         attribute :user_uuid
 
         def user_uuid
-          @model.user.uuid
+          @model.user&.uuid # Some old data may not have a User relationship even though it's required for new records.
         end
 
         def user_uuid=(uuid)
