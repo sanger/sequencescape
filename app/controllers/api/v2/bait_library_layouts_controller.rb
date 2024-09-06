@@ -47,34 +47,28 @@ module Api
         render json: { errors: errors }, status: status
       end
 
-      def preview_params
-        params.permit(:user_uuid, :plate_uuid)
-      end
-
-      def preview_user(record_errors)
-        user_uuid = preview_params.require(:user_uuid)
-        user = User.with_uuid(user_uuid).first
-        record_errors.append("The User record identified by UUID '#{user_uuid}' cannot be found") if user.nil?
-
-        user
-      end
-
-      def preview_plate(record_errors)
-        plate_uuid = preview_params.require(:plate_uuid)
-        plate = Plate.with_uuid(plate_uuid).first
-        record_errors.append("The Plate record identified by UUID '#{plate_uuid}' cannot be found") if plate.nil?
-
-        plate
-      end
-
-      def preview_records
+      # This should only be called once per request, as it will render an exception every time it's called when any one
+      # of the required parameters are not present.
+      def permitted_params
         begin
-          record_errors = []
-          user = preview_user(record_errors)
-          plate = preview_plate(record_errors)
+          param_keys = [:user_uuid, :plate_uuid]
+          param_keys.zip(params.require(param_keys)).to_h
         rescue ActionController::ParameterMissing => e
           respond_with_errors('Missing parameter', [e.message], :bad_request) and return
         end
+      end
+
+      def preview_records
+        param_hash = permitted_params
+        return if param_hash.nil?
+
+        record_errors = []
+
+        user = User.with_uuid(param_hash[:user_uuid]).first ||
+          record_errors.append("The User record identified by UUID '#{permitted_params[:user_uuid]}' cannot be found")
+
+        plate = Plate.with_uuid(param_hash[:plate_uuid]).first ||
+          record_errors.append("The Plate record identified by UUID '#{permitted_params[:plate_uuid]}' cannot be found")
 
         respond_with_errors('Record not found', record_errors, :bad_request) and return if record_errors.any?
 
