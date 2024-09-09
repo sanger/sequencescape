@@ -16,6 +16,7 @@ class EventFactoryTest < ActiveSupport::TestCase
       @request = create :request, request_type: @request_type, user: @user, project: @project
       @emails = ActionMailer::Base.deliveries
       @emails.clear
+      @labware = create(:sample_tube, retention_instruction: 'return_to_customer_after_2_years')
     end
 
     context '#new_project' do
@@ -90,6 +91,19 @@ class EventFactoryTest < ActiveSupport::TestCase
           assert_match(/failed/, last_mail.subject)
           assert last_mail.bcc.include?('south@example.com')
         end
+      end
+    end
+
+    context '#record_retention_instruction_updates' do
+      setup do
+        @event_count = Event.count
+        @old_retention_instruction = @labware.retention_instruction
+        @new_retention_instruction = 'destroy_after_2_years'
+        EventFactory.record_retention_instruction_updates(@labware, @user, @old_retention_instruction)
+      end
+
+      should 'change Event.count by 1' do
+        assert_equal 1, Event.count - @event_count, 'Expected Event.count to change by 1'
       end
     end
   end
