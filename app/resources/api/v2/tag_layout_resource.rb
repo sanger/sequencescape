@@ -48,6 +48,15 @@ module Api
       #   @return [Hash]
       attribute :substitutions
 
+      def substitutions=(value)
+        @model.substitutions =
+          if value.is_a?(ActionController::Parameters)
+            value.to_unsafe_h # We must unwrap the parameters to a real Hash.
+          else
+            value
+          end
+      end
+
       # @!attribute [w] tag_group_uuid
       #   This is declared for convenience where the {TagGroup} is not available to set as a relationship.
       #   Setting this attribute alongside the `tag_group` relationship will prefer the relationship value.
@@ -76,6 +85,8 @@ module Api
 
       # @!attribute [rw] tags_per_well
       #   The number of tags in each well.
+      #   This is only used and/or returned by specific tag layout {walking_by} algorithms.
+      #   At other times, this value will be `nil`.
       #   @return [Integer]
       attribute :tags_per_well
 

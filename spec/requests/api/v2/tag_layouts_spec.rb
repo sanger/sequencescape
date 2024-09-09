@@ -93,9 +93,7 @@ describe 'Tag Layouts API', with: :api_v2 do
 
   describe '#PATCH a resource' do
     let(:resource_model) { create :tag_layout }
-    let(:payload) do
-      { 'data' => { 'id' => resource_model.id, 'type' => resource_type, 'attributes' => { 'direction' => 'columns' } } }
-    end
+    let(:payload) { { data: { id: resource_model.id, type: resource_type, attributes: { direction: 'columns' } } } }
 
     it 'finds no route for the method' do
       expect { api_patch "#{base_endpoint}/#{resource_model.id}", payload }.to raise_error(
@@ -104,226 +102,165 @@ describe 'Tag Layouts API', with: :api_v2 do
     end
   end
 
-  # describe '#POST a create request' do
-  #   let(:user) { create(:user) }
-  #   let(:plate) { create(:plate) }
+  describe '#POST a create request' do
+    let(:plate) { create(:plate) }
+    let(:tag_group) { create(:tag_group) }
+    let(:tag2_group) { create(:tag_group) }
+    let(:user) { create(:user) }
 
-  #   let(:base_attributes) do
-  #     {
-  #       'contents' => %w[A1 D2],
-  #       'customer_accepts_responsibility' => true,
-  #       'reason' => 'The plate is now passed.',
-  #       'target_state' => 'passed'
-  #     }
-  #   end
+    let(:base_attributes) do
+      {
+        direction: 'column',
+        initial_tag: 0,
+        substitutions: {
+          'A1' => 'B2'
+        },
+        tags_per_well: 1, # Ignored by the walking_by algorithm below
+        walking_by: 'wells of plate'
+      }
+    end
 
-  #   let(:user_relationship) { { 'data' => { 'id' => user.id, 'type' => 'users' } } }
-  #   let(:target_relationship) { { 'data' => { 'id' => plate.id, 'type' => 'labware' } } }
+    let(:plate_relationship) { { data: { id: plate.id, type: 'plates' } } }
+    let(:tag_group_relationship) { { data: { id: tag_group.id, type: 'tag_groups' } } }
+    let(:tag2_group_relationship) { { data: { id: tag2_group.id, type: 'tag_groups' } } }
+    let(:user_relationship) { { data: { id: user.id, type: 'users' } } }
 
-  #   context 'with a valid payload' do
-  #     shared_examples 'a valid request' do
-  #       before { api_post base_endpoint, payload }
+    context 'with a valid payload' do
+      shared_examples 'a valid request' do
+        before { api_post base_endpoint, payload }
 
-  #       it 'creates a new resource' do
-  #         expect { api_post base_endpoint, payload }.to change(model_class, :count).by(1)
-  #       end
+        it 'creates a new resource' do
+          expect { api_post base_endpoint, payload }.to change(model_class, :count).by(1)
+        end
 
-  #       it 'responds with success' do
-  #         expect(response).to have_http_status(:success)
-  #       end
+        it 'responds with success' do
+          expect(response).to have_http_status(:success)
+        end
 
-  #       it 'responds with the correct attributes' do
-  #         new_record = model_class.last
+        it 'responds with the correct attributes' do
+          new_record = model_class.last
 
-  #         expect(json.dig('data', 'type')).to eq(resource_type)
-  #         expect(json.dig('data', 'attributes', 'contents')).to eq(new_record.contents)
-  #         expect(json.dig('data', 'attributes', 'reason')).to eq(new_record.reason)
-  #         expect(json.dig('data', 'attributes', 'target_state')).to eq(new_record.target_state)
-  #       end
+          expect(json.dig('data', 'type')).to eq(resource_type)
+          expect(json.dig('data', 'attributes', 'direction')).to eq(new_record.direction)
+          expect(json.dig('data', 'attributes', 'initial_tag')).to eq(new_record.initial_tag)
+          expect(json.dig('data', 'attributes', 'substitutions')).to eq(new_record.substitutions)
+          expect(json.dig('data', 'attributes', 'walking_by')).to eq(new_record.walking_by)
+          expect(json.dig('data', 'attributes', 'uuid')).to eq(new_record.uuid)
 
-  #       it 'excludes unfetchable attributes' do
-  #         expect(json.dig('data', 'attributes', 'customer_accepts_responsibility')).not_to be_present
-  #         expect(json.dig('data', 'attributes', 'target_uuid')).not_to be_present
-  #         expect(json.dig('data', 'attributes', 'user_uuid')).not_to be_present
-  #       end
+          # Note that the tags per well will not be saved with the record as it isn't a stored attribute in the
+          # database. The response is based on the model after being saved, which still holds the value given in the
+          # payload.
+          expect(json.dig('data', 'attributes', 'tags_per_well')).to eq(payload.dig(:data, :attributes, :tags_per_well))
+        end
 
-  #       it 'returns references to related resources' do
-  #         expect(json.dig('data', 'relationships', 'user')).to be_present
-  #         expect(json.dig('data', 'relationships', 'target')).to be_present
-  #       end
+        it 'excludes unfetchable attributes' do
+          expect(json.dig('data', 'attributes', 'plate_uuid')).not_to be_present
+          expect(json.dig('data', 'attributes', 'tag_group_uuid')).not_to be_present
+          expect(json.dig('data', 'attributes', 'tag2_group_uuid')).not_to be_present
+          expect(json.dig('data', 'attributes', 'user_uuid')).not_to be_present
+        end
 
-  #       it 'applies the attributes to the new record' do
-  #         new_record = model_class.last
+        it 'returns references to related resources' do
+          expect(json.dig('data', 'relationships', 'plate')).to be_present
+          expect(json.dig('data', 'relationships', 'tag_group')).to be_present
+          expect(json.dig('data', 'relationships', 'tag2_group')).to be_present
+          expect(json.dig('data', 'relationships', 'user')).to be_present
+        end
 
-  #         expect(new_record.contents).to eq(payload.dig('data', 'attributes', 'contents'))
-  #         expect(new_record.reason).to eq(payload.dig('data', 'attributes', 'reason'))
-  #         expect(new_record.target_state).to eq(payload.dig('data', 'attributes', 'target_state'))
-  #       end
+        it 'applies the attributes to the new record' do
+          new_record = model_class.last
 
-  #       it 'applies the relationships to the new record' do
-  #         new_record = model_class.last
+          expect(new_record.direction).to eq(payload.dig(:data, :attributes, :direction))
+          expect(new_record.initial_tag).to eq(payload.dig(:data, :attributes, :initial_tag))
+          expect(new_record.substitutions).to eq(payload.dig(:data, :attributes, :substitutions))
+          expect(new_record.walking_by).to eq(payload.dig(:data, :attributes, :walking_by))
 
-  #         expect(new_record.user).to eq(user)
-  #         expect(new_record.target).to eq(plate)
-  #       end
-  #     end
+          # Note that the tags_per_well from the quieried record will be nil as it isn't a stored attribute in the
+          # database.
+          expect(new_record.tags_per_well).to be_nil
+        end
 
-  #     context 'with complete attributes' do
-  #       let(:payload) do
-  #         {
-  #           'data' => {
-  #             'type' => resource_type,
-  #             'attributes' => base_attributes.merge({ 'user_uuid' => user.uuid, 'target_uuid' => plate.uuid })
-  #           }
-  #         }
-  #       end
+        it 'applies the relationships to the new record' do
+          new_record = model_class.last
 
-  #       it_behaves_like 'a valid request'
-  #     end
+          expect(new_record.plate).to eq(plate)
+          expect(new_record.tag_group).to eq(tag_group)
+          expect(new_record.tag2_group).to eq(tag2_group)
+          expect(new_record.user).to eq(user)
+        end
+      end
 
-  #     context 'with relationships' do
-  #       let(:payload) do
-  #         {
-  #           'data' => {
-  #             'type' => resource_type,
-  #             'attributes' => base_attributes,
-  #             'relationships' => {
-  #               'user' => user_relationship,
-  #               'target' => target_relationship
-  #             }
-  #           }
-  #         }
-  #       end
+      context 'with complete attributes' do
+        let(:payload) do
+          {
+            data: {
+              type: resource_type,
+              attributes:
+                base_attributes.merge(
+                  {
+                    plate_uuid: plate.uuid,
+                    tag_group_uuid: tag_group.uuid,
+                    tag2_group_uuid: tag2_group.uuid,
+                    user_uuid: user.uuid
+                  }
+                )
+            }
+          }
+        end
 
-  #       it_behaves_like 'a valid request'
-  #     end
+        it_behaves_like 'a valid request'
+      end
 
-  #     context 'with conflicting relationships' do
-  #       let(:other_user) { create(:user) }
-  #       let(:other_plate) { create(:plate) }
-  #       let(:payload) do
-  #         {
-  #           'data' => {
-  #             'type' => resource_type,
-  #             'attributes' =>
-  #               base_attributes.merge({ 'user_uuid' => other_user.uuid, 'target_uuid' => other_plate.uuid }),
-  #             'relationships' => {
-  #               'user' => user_relationship,
-  #               'target' => target_relationship
-  #             }
-  #           }
-  #         }
-  #       end
+      context 'with relationships' do
+        let(:payload) do
+          {
+            data: {
+              type: resource_type,
+              attributes: base_attributes,
+              relationships: {
+                plate: plate_relationship,
+                tag_group: tag_group_relationship,
+                tag2_group: tag2_group_relationship,
+                user: user_relationship
+              }
+            }
+          }
+        end
 
-  #       # This test should pass because the relationships are preferred over the attributes.
-  #       it_behaves_like 'a valid request'
-  #     end
-  #   end
+        it_behaves_like 'a valid request'
+      end
 
-  #   context 'with a read-only attribute in the payload' do
-  #     context 'with previous_state' do
-  #       let(:disallowed_attribute) { 'previous_state' }
-  #       let(:payload) do
-  #         {
-  #           'data' => {
-  #             'type' => resource_type,
-  #             'attributes' => base_attributes.merge({ 'previous_state' => 'waiting' })
-  #           }
-  #         }
-  #       end
+      context 'with conflicting relationships' do
+        let(:other_plate) { create(:plate) }
+        let(:other_tag_group) { create(:tag_group) }
+        let(:other_tag2_group) { create(:tag_group) }
+        let(:other_user) { create(:user) }
+        let(:payload) do
+          {
+            data: {
+              type: resource_type,
+              attributes:
+                base_attributes.merge(
+                  {
+                    plate_uuid: other_plate.uuid,
+                    tag_group_uuid: other_tag_group.uuid,
+                    tag2_group_uuid: other_tag2_group.uuid,
+                    user_uuid: other_user.uuid
+                  }
+                ),
+              relationships: {
+                plate: plate_relationship,
+                tag_group: tag_group_relationship,
+                tag2_group: tag2_group_relationship,
+                user: user_relationship
+              }
+            }
+          }
+        end
 
-  #       it_behaves_like 'a POST request with a disallowed attribute'
-  #     end
-
-  #     context 'with uuid' do
-  #       let(:disallowed_attribute) { 'uuid' }
-  #       let(:payload) do
-  #         {
-  #           'data' => {
-  #             'type' => resource_type,
-  #             'attributes' => base_attributes.merge({ 'uuid' => '111111-2222-3333-4444-555555666666' })
-  #           }
-  #         }
-  #       end
-
-  #       it_behaves_like 'a POST request with a disallowed attribute'
-  #     end
-  #   end
-
-  #   context 'without a required attribute' do
-  #     context 'without target_state' do
-  #       let(:error_detail_message) { "target_state - can't be blank" }
-  #       let(:payload) do
-  #         {
-  #           'data' => {
-  #             'type' => resource_type,
-  #             'attributes' =>
-  #               base_attributes.merge({ 'target_state' => nil, 'user_uuid' => user.uuid, 'target_uuid' => plate.uuid })
-  #           }
-  #         }
-  #       end
-
-  #       it_behaves_like 'a POST request with a missing attribute'
-  #     end
-  #   end
-
-  #   context 'without a required relationship' do
-  #     context 'without user_uuid' do
-  #       let(:error_detail_message) { 'user - must exist' }
-  #       let(:payload) do
-  #         {
-  #           'data' => {
-  #             'type' => resource_type,
-  #             'attributes' => base_attributes.merge({ 'target_uuid' => plate.uuid })
-  #           }
-  #         }
-  #       end
-
-  #       it_behaves_like 'a POST request without a required relationship'
-  #     end
-
-  #     context 'without target_uuid' do
-  #       let(:error_detail_message) { 'target - must exist' }
-  #       let(:payload) do
-  #         { 'data' => { 'type' => resource_type, 'attributes' => base_attributes.merge({ 'user_uuid' => user.uuid }) } }
-  #       end
-
-  #       it_behaves_like 'a POST request without a required relationship'
-  #     end
-
-  #     context 'without user' do
-  #       let(:error_detail_message) { 'user - must exist' }
-  #       let(:payload) do
-  #         {
-  #           'data' => {
-  #             'type' => resource_type,
-  #             'attributes' => base_attributes,
-  #             'relationships' => {
-  #               'target' => target_relationship
-  #             }
-  #           }
-  #         }
-  #       end
-
-  #       it_behaves_like 'a POST request without a required relationship'
-  #     end
-
-  #     context 'without target' do
-  #       let(:error_detail_message) { 'target - must exist' }
-  #       let(:payload) do
-  #         {
-  #           'data' => {
-  #             'type' => resource_type,
-  #             'attributes' => base_attributes,
-  #             'relationships' => {
-  #               'user' => user_relationship
-  #             }
-  #           }
-  #         }
-  #       end
-
-  #       it_behaves_like 'a POST request without a required relationship'
-  #     end
-  #   end
-  # end
+        # This test should pass because the relationships are preferred over the attributes.
+        it_behaves_like 'a valid request'
+      end
+    end
+  end
 end
