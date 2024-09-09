@@ -108,16 +108,16 @@ module Api
 
       # @!attribute [rw] plate
       #   Setting this relationship alongside the `plate_uuid` attribute will override the attribute value.
-      #   @return [PlateResource] The plate this tag layout applies to.
+      #   @return [Api::V2::PlateResource] The plate this tag layout applies to.
       #   @note This relationship is required.
-      has_one :plate, class_name: 'Plate'
+      has_one :plate
 
       # @!attribute [rw] tag_group
       #   Setting this relationship alongside the `tag_group_uuid` attribute will override the attribute value.
       #   A relationship for the primary tag group associated with the tag layout template.
       #   @return [Api::V2::TagGroupResource]
       #   @note This relationship is required.
-      has_one :tag_group, class_name: 'TagGroup'
+      has_one :tag_group
 
       # @!attribute [rw] tag2_group
       #   Setting this relationship alongside the `tag2_group_uuid` attribute will override the attribute value.
@@ -128,7 +128,7 @@ module Api
 
       # @!attribute [rw] user
       #   Setting this relationship alongside the `user_uuid` attribute will override the attribute value.
-      #   @return [UserResource] The user who initiated this state change.
+      #   @return [Api::V2::UserResource] The user who initiated this state change.
       #   @note This relationship is required.
       has_one :user
 
