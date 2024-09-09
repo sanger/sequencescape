@@ -262,5 +262,155 @@ describe 'Tag Layouts API', with: :api_v2 do
         it_behaves_like 'a valid request'
       end
     end
+
+    context 'with a read-only attribute in the payload' do
+      context 'with uuid' do
+        let(:disallowed_attribute) { 'uuid' }
+        let(:payload) do
+          {
+            data: {
+              type: resource_type,
+              attributes: base_attributes.merge({ uuid: '111111-2222-3333-4444-555555666666' })
+            }
+          }
+        end
+
+        it_behaves_like 'a POST request with a disallowed attribute'
+      end
+    end
+
+    context 'without a required attribute' do
+      context 'without direction' do
+        let(:error_detail_message) { "direction - can't be blank" }
+        let(:payload) do
+          {
+            data: {
+              type: resource_type,
+              attributes:
+                base_attributes.merge(
+                  { direction: nil, plate_uuid: plate.uuid, tag_group_uuid: tag_group.uuid, user_uuid: user.uuid }
+                )
+            }
+          }
+        end
+
+        it_behaves_like 'a POST request with a missing attribute'
+      end
+
+      context 'without walking_by' do
+        let(:error_detail_message) { "walking_by - can't be blank" }
+        let(:payload) do
+          {
+            data: {
+              type: resource_type,
+              attributes:
+                base_attributes.merge(
+                  { walking_by: nil, plate_uuid: plate.uuid, tag_group_uuid: tag_group.uuid, user_uuid: user.uuid }
+                )
+            }
+          }
+        end
+
+        it_behaves_like 'a POST request with a missing attribute'
+      end
+    end
+
+    context 'without a required relationship' do
+      context 'without plate_uuid' do
+        let(:error_detail_message) { 'plate - must exist' }
+        let(:payload) do
+          {
+            data: {
+              type: resource_type,
+              attributes: base_attributes.merge({ tag_group_uuid: tag_group.uuid, user_uuid: user.uuid })
+            }
+          }
+        end
+
+        it_behaves_like 'a POST request without a required relationship'
+      end
+
+      context 'without tag_group_uuid' do
+        let(:error_detail_message) { 'tag_group - must exist' }
+        let(:payload) do
+          {
+            data: {
+              type: resource_type,
+              attributes: base_attributes.merge({ plate_uuid: plate.uuid, user_uuid: user.uuid })
+            }
+          }
+        end
+
+        it_behaves_like 'a POST request without a required relationship'
+      end
+
+      context 'without user_uuid' do
+        let(:error_detail_message) { 'user - must exist' }
+        let(:payload) do
+          {
+            data: {
+              type: resource_type,
+              attributes: base_attributes.merge({ plate_uuid: plate.uuid, tag_group_uuid: tag_group.uuid })
+            }
+          }
+        end
+
+        it_behaves_like 'a POST request without a required relationship'
+      end
+
+      context 'without plate' do
+        let(:error_detail_message) { 'plate - must exist' }
+        let(:payload) do
+          {
+            data: {
+              type: resource_type,
+              attributes: base_attributes,
+              relationships: {
+                tag_group: tag_group_relationship,
+                user: user_relationship
+              }
+            }
+          }
+        end
+
+        it_behaves_like 'a POST request without a required relationship'
+      end
+
+      context 'without tag_group' do
+        let(:error_detail_message) { 'tag_group - must exist' }
+        let(:payload) do
+          {
+            data: {
+              type: resource_type,
+              attributes: base_attributes,
+              relationships: {
+                plate: plate_relationship,
+                user: user_relationship
+              }
+            }
+          }
+        end
+
+        it_behaves_like 'a POST request without a required relationship'
+      end
+
+      context 'without user' do
+        let(:error_detail_message) { 'user - must exist' }
+        let(:payload) do
+          {
+            data: {
+              type: resource_type,
+              attributes: base_attributes,
+              relationships: {
+                plate: plate_relationship,
+                tag_group: tag_group_relationship
+              }
+            }
+          }
+        end
+
+        it_behaves_like 'a POST request without a required relationship'
+      end
+    end
   end
 end
