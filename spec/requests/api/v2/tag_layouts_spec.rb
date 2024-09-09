@@ -5,108 +5,104 @@ require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
 require './spec/requests/api/v2/shared_examples/post_requests'
 
 describe 'Tag Layouts API', with: :api_v2 do
-  # let(:model_class) { StateChange }
-  # let(:base_endpoint) { "/api/v2/#{resource_type}" }
-  # let(:resource_type) { model_class.name.demodulize.pluralize.underscore }
+  let(:model_class) { TagLayout }
+  let(:base_endpoint) { "/api/v2/#{resource_type}" }
+  let(:resource_type) { model_class.name.demodulize.pluralize.underscore }
 
-  # it_behaves_like 'ApiKeyAuthenticatable'
+  it_behaves_like 'ApiKeyAuthenticatable'
 
-  # context 'with a list of resource' do
-  #   let(:resource_count) { 5 }
+  context 'with a list of resources' do
+    let(:resource_count) { 5 }
 
-  #   before { create_list(:state_change, resource_count) }
+    before { create_list(:tag_layout, resource_count) }
 
-  #   describe '#GET all resources' do
-  #     before { api_get base_endpoint }
+    describe '#GET all resources' do
+      before { api_get base_endpoint }
 
-  #     it 'responds with a success http code' do
-  #       expect(response).to have_http_status(:success)
-  #     end
+      it 'responds with a success http code' do
+        expect(response).to have_http_status(:success)
+      end
 
-  #     it 'returns all the resources' do
-  #       expect(json['data'].length).to eq(resource_count)
-  #     end
-  #   end
-  # end
+      it 'returns all the resources' do
+        expect(json['data'].length).to eq(resource_count)
+      end
+    end
+  end
 
-  # context 'with a single resource' do
-  #   describe '#GET resource by ID' do
-  #     let(:resource) { create :state_change }
+  context 'with a single resource' do
+    describe '#GET resource by ID' do
+      let(:resource) { create :tag_layout }
 
-  #     context 'without included relationships' do
-  #       before { api_get "#{base_endpoint}/#{resource.id}" }
+      context 'without included relationships' do
+        before { api_get "#{base_endpoint}/#{resource.id}" }
 
-  #       it 'responds with a success http code' do
-  #         expect(response).to have_http_status(:success)
-  #       end
+        it 'responds with a success http code' do
+          expect(response).to have_http_status(:success)
+        end
 
-  #       it 'returns the correct resource' do
-  #         expect(json.dig('data', 'id')).to eq(resource.id.to_s)
-  #         expect(json.dig('data', 'type')).to eq(resource_type)
-  #       end
+        it 'returns the correct resource' do
+          expect(json.dig('data', 'id')).to eq(resource.id.to_s)
+          expect(json.dig('data', 'type')).to eq(resource_type)
+        end
 
-  #       it 'returns the correct attributes' do
-  #         expect(json.dig('data', 'attributes', 'contents')).to eq(resource.contents)
-  #         expect(json.dig('data', 'attributes', 'previous_state')).to eq(resource.previous_state)
-  #         expect(json.dig('data', 'attributes', 'reason')).to eq(resource.reason)
-  #         expect(json.dig('data', 'attributes', 'target_state')).to eq(resource.target_state)
-  #         expect(json.dig('data', 'attributes', 'uuid')).to eq(resource.uuid)
-  #       end
+        it 'returns the correct attributes' do
+          expect(json.dig('data', 'attributes', 'direction')).to eq(resource.direction)
+          expect(json.dig('data', 'attributes', 'initial_tag')).to eq(resource.initial_tag)
+          expect(json.dig('data', 'attributes', 'substitutions')).to eq(resource.substitutions)
+          expect(json.dig('data', 'attributes', 'tags_per_well')).to eq(resource.tags_per_well)
+          expect(json.dig('data', 'attributes', 'walking_by')).to eq(resource.walking_by)
+          expect(json.dig('data', 'attributes', 'uuid')).to eq(resource.uuid)
+        end
 
-  #       it 'excludes unfetchable attributes' do
-  #         expect(json.dig('data', 'attributes', 'customer_accepts_responsibility')).not_to be_present
-  #         expect(json.dig('data', 'attributes', 'target_uuid')).not_to be_present
-  #         expect(json.dig('data', 'attributes', 'user_uuid')).not_to be_present
-  #       end
+        it 'excludes unfetchable attributes' do
+          expect(json.dig('data', 'attributes', 'plate_uuid')).not_to be_present
+          expect(json.dig('data', 'attributes', 'tag_group_uuid')).not_to be_present
+          expect(json.dig('data', 'attributes', 'tag2_group_uuid')).not_to be_present
+          expect(json.dig('data', 'attributes', 'user_uuid')).not_to be_present
+        end
 
-  #       it 'returns references to related resources' do
-  #         expect(json.dig('data', 'relationships', 'target')).to be_present
-  #         expect(json.dig('data', 'relationships', 'user')).to be_present
-  #       end
+        it 'returns references to related resources' do
+          expect(json.dig('data', 'relationships', 'plate')).to be_present
+          expect(json.dig('data', 'relationships', 'tag_group')).to be_present
+          expect(json.dig('data', 'relationships', 'tag2_group')).to be_present
+          expect(json.dig('data', 'relationships', 'user')).to be_present
+        end
 
-  #       it 'does not include attributes for related resources' do
-  #         expect(json['included']).not_to be_present
-  #       end
-  #     end
+        it 'does not include attributes for related resources' do
+          expect(json['included']).not_to be_present
+        end
+      end
 
-  #     context 'with included relationships' do
-  #       context 'with user' do
-  #         let(:related_name) { 'user' }
-  #         let(:related_type) { 'users' }
+      context 'with included relationships' do
+        context 'with plate' do
+          let(:related_name) { 'plate' }
+          let(:related_type) { 'plates' }
 
-  #         it_behaves_like 'a POST request including a has_one relationship'
-  #       end
+          it_behaves_like 'a POST request including a has_one relationship'
+        end
 
-  #       context 'with target' do
-  #         let(:related_name) { 'target' }
-  #         let(:related_type) { 'labware' }
+        context 'with user' do
+          let(:related_name) { 'user' }
+          let(:related_type) { 'users' }
 
-  #         it_behaves_like 'a POST request including a has_one relationship'
-  #       end
-  #     end
-  #   end
-  # end
+          it_behaves_like 'a POST request including a has_one relationship'
+        end
+      end
+    end
+  end
 
-  # describe '#PATCH a resource' do
-  #   let(:resource_model) { create :state_change }
-  #   let(:payload) do
-  #     {
-  #       'data' => {
-  #         'id' => resource_model.id,
-  #         'type' => resource_type,
-  #         'attributes' => {
-  #           'target_state' => 'passed'
-  #         }
-  #       }
-  #     }
-  #   end
+  describe '#PATCH a resource' do
+    let(:resource_model) { create :tag_layout }
+    let(:payload) do
+      { 'data' => { 'id' => resource_model.id, 'type' => resource_type, 'attributes' => { 'direction' => 'columns' } } }
+    end
 
-  #   it 'finds no route for the method' do
-  #     expect { api_patch "#{base_endpoint}/#{resource_model.id}", payload }.to raise_error(
-  #       ActionController::RoutingError
-  #     )
-  #   end
-  # end
+    it 'finds no route for the method' do
+      expect { api_patch "#{base_endpoint}/#{resource_model.id}", payload }.to raise_error(
+        ActionController::RoutingError
+      )
+    end
+  end
 
   # describe '#POST a create request' do
   #   let(:user) { create(:user) }
