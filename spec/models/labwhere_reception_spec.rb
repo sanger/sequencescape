@@ -10,7 +10,7 @@ RSpec.describe LabwhereReception do
 
   it 'records an event' do
     allow(LabWhereClient::Scan).to receive(:create).and_return(
-      instance_double(LabWhereClient::Scan, valid?: true, error: '')
+      instance_double(LabWhereClient::Scan, valid?: true, errors: [])
     )
     reception = described_class.new('12345', location, [plate_1.human_barcode])
     expect(reception.save).to be_truthy
@@ -22,7 +22,7 @@ RSpec.describe LabwhereReception do
       location_barcode: 'labwhere_location',
       user_code: '12345',
       labware_barcodes: [plate_1.human_barcode, plate_2.machine_barcode]
-    ).and_return(instance_double(LabWhereClient::Scan, valid?: true, error: ''))
+    ).and_return(instance_double(LabWhereClient::Scan, valid?: true, errors: []))
     labwhere_reception =
       described_class.new('12345', 'labwhere_location', [plate_1.human_barcode, plate_2.machine_barcode])
     expect(labwhere_reception.save).to be_truthy
@@ -49,14 +49,14 @@ RSpec.describe LabwhereReception do
       location_barcode: 'labwhere_location',
       user_code: '12345',
       labware_barcodes: %w[1 11111111111111]
-    ).and_return(instance_double(LabWhereClient::Scan, valid?: true, error: ''))
+    ).and_return(instance_double(LabWhereClient::Scan, valid?: true, errors: []))
     labwhere_reception = described_class.new('12345', 'labwhere_location', %w[1 11111111111111])
     expect(labwhere_reception.save).to be_truthy
   end
 
   it 'does not scan the labware into the location if no user supplied' do
     allow(LabWhereClient::Scan).to receive(:create).and_return(
-      instance_double(LabWhereClient::Scan, valid?: true, error: '')
+      instance_double(LabWhereClient::Scan, valid?: true, errors: [])
     )
     labwhere_reception = described_class.new('', 'labwhere_location', [plate_1.human_barcode, plate_2.machine_barcode])
     expect(labwhere_reception.save).to be_falsey
@@ -65,7 +65,7 @@ RSpec.describe LabwhereReception do
 
   it 'does not scan the labware into the location if no barcodes scanned' do
     allow(LabWhereClient::Scan).to receive(:create).and_return(
-      instance_double(LabWhereClient::Scan, valid?: true, error: '')
+      instance_double(LabWhereClient::Scan, valid?: true, errors: [])
     )
     labwhere_reception = described_class.new('12345', 'labwhere_location', [])
     expect(labwhere_reception.save).to be_falsey
@@ -74,7 +74,7 @@ RSpec.describe LabwhereReception do
 
   it 'does not scan the labware into the location if scan was not created' do
     allow(LabWhereClient::Scan).to receive(:create).and_return(
-      instance_double(LabWhereClient::Scan, valid?: false, error: '')
+      instance_double(LabWhereClient::Scan, valid?: false, errors: [])
     )
     labwhere_reception =
       described_class.new('12345', 'labwhere_location', [plate_1.human_barcode, plate_2.machine_barcode])
@@ -87,5 +87,18 @@ RSpec.describe LabwhereReception do
       described_class.new('12345', 'labwhere_location', [plate_1.human_barcode, plate_2.machine_barcode])
     expect(labwhere_reception.save).to be_falsey
     expect(labwhere_reception.errors).not_to be_empty
+  end
+
+  it 'does not scan the labware into the location if Labwhere returns errors' do
+    allow(LabWhereClient::Scan).to receive(:create).and_return(
+      instance_double(LabWhereClient::Scan, valid?: false, errors: ['User not recognised', 'Location does not exist'])
+    )
+    labwhere_reception =
+      described_class.new('12345', 'labwhere_location', [plate_1.human_barcode, plate_2.machine_barcode])
+    expect(labwhere_reception.save).to be_falsey
+    expect(labwhere_reception.errors).not_to be_empty
+    expect(labwhere_reception.errors.full_messages.first).to eq(
+      ['LabWhere User not recognised', 'LabWhere Location does not exist']
+    )
   end
 end
