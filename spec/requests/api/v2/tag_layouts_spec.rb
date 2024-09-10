@@ -315,6 +315,42 @@ describe 'Tag Layouts API', with: :api_v2 do
       end
     end
 
+    context 'with an invalid attribute value' do
+      context 'invalid direction' do
+        let(:error_detail_message) { 'direction - must define a valid algorithm' }
+        let(:payload) do
+          {
+            data: {
+              type: resource_type,
+              attributes:
+                base_attributes.merge(
+                  { direction: '1', plate_uuid: plate.uuid, tag_group_uuid: tag_group.uuid, user_uuid: user.uuid }
+                )
+            }
+          }
+        end
+
+        it_behaves_like 'an unprocessable POST request with a specific error'
+      end
+
+      context 'invalid walking_by' do
+        let(:error_detail_message) { 'walking_by - must define a valid algorithm' }
+        let(:payload) do
+          {
+            data: {
+              type: resource_type,
+              attributes:
+                base_attributes.merge(
+                  { walking_by: '1', plate_uuid: plate.uuid, tag_group_uuid: tag_group.uuid, user_uuid: user.uuid }
+                )
+            }
+          }
+        end
+
+        it_behaves_like 'an unprocessable POST request with a specific error'
+      end
+    end
+
     context 'without a required relationship' do
       context 'without plate_uuid' do
         let(:error_detail_message) { 'plate - must exist' }
