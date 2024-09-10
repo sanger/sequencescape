@@ -17,7 +17,8 @@ module RecordLoader
       return [] unless deploy_wip_pipelines
 
       wip_files = []
-      # @path returns 'config/default_records' directory
+      # @path is initialised from the directory argument passed to the initialiser method of the super class.
+      # By default, it returns 'config/default_records' directory
       # see https://github.com/sanger/record_loader/blob/master/lib/record_loader/base.rb
       wip_files_path = @path
       Find.find(wip_files_path) do |path|

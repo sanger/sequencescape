@@ -7,14 +7,14 @@ module Api
     # @todo This documentation does not yet include any example usage of the API via cURL or similar.
     #
     # @note This resource is immutable: its endpoint will not accept `POST`, `PATCH`, or `DELETE` requests.
-    # @note Access this resource via the `/api/v2/transfer_templates/` endpoint.
+    # @note Access this resource via the `/api/v2/barcode_printers/` endpoint.
     #
-    # Provides a JSON:API representation of {TransferTemplate}.
+    # Provides a JSON:API representation of {BarcodePrinter}.
     #
     # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
-    class TransferTemplateResource < BaseResource
+    class BarcodePrinterResource < BaseResource
       immutable
 
       default_includes :uuid_object
@@ -24,18 +24,28 @@ module Api
       ###
 
       # @!attribute [r] name
-      #   @return [String] the name of the transfer template.
+      #   @return [String] the name of the barcode printer.
       attribute :name
 
       # @!attribute [r] uuid
-      #   @return [String] the UUID of the transfer template.
+      #   @return [String] the UUID of the barcode printer.
       attribute :uuid, readonly: true
 
-      # @!method filter_uuid
-      #   Filter the transfer templates by UUID.
-      #   @example GET request with UUID filter
-      #     GET /api/v2/transfer_templates?filter[uuid]=12345678-1234-1234-1234-123456789012
-      filter :uuid, apply: ->(records, value, _options) { records.with_uuid(value) }
+      # @!attribute [r] print_service
+      #   @return [String] the service this printer can be instructed to print from.
+      attribute :print_service, readonly: true
+
+      # @!attribute [r] barcode_type
+      #   @return [String] the name of the barcode type for this printer.
+      attribute :barcode_type, readonly: true
+
+      ###
+      # Getters and Setters
+      ###
+
+      def barcode_type
+        @model.barcode_printer_type.name
+      end
     end
   end
 end
