@@ -167,21 +167,21 @@ describe 'Transfer API', with: :api_v2 do
         let(:attribute_to_remove) { 'user_uuid' }
         let(:error_detail_message) { "user - can't be blank" }
 
-        it_behaves_like 'a POST request with a missing attribute'
+        it_behaves_like 'an unprocessable POST request with a specific error'
       end
 
       context 'without source_uuid' do
         let(:attribute_to_remove) { 'source_uuid' }
         let(:error_detail_message) { "source - can't be blank" }
 
-        it_behaves_like 'a POST request with a missing attribute'
+        it_behaves_like 'an unprocessable POST request with a specific error'
       end
 
       context 'without destination_uuid' do
         let(:attribute_to_remove) { 'destination_uuid' }
         let(:error_detail_message) { "destination - can't be blank" }
 
-        it_behaves_like 'a POST request with a missing attribute'
+        it_behaves_like 'an unprocessable POST request with a specific error'
       end
     end
 

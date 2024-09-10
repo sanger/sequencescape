@@ -281,7 +281,7 @@ describe 'Tag Layouts API', with: :api_v2 do
 
     context 'without a required attribute' do
       context 'without direction' do
-        let(:error_detail_message) { "direction - can't be blank" }
+        let(:error_detail_message) { 'direction - must define a valid algorithm' }
         let(:payload) do
           {
             data: {
@@ -294,11 +294,11 @@ describe 'Tag Layouts API', with: :api_v2 do
           }
         end
 
-        it_behaves_like 'a POST request with a missing attribute'
+        it_behaves_like 'an unprocessable POST request with a specific error'
       end
 
       context 'without walking_by' do
-        let(:error_detail_message) { "walking_by - can't be blank" }
+        let(:error_detail_message) { 'walking_by - must define a valid algorithm' }
         let(:payload) do
           {
             data: {
@@ -311,7 +311,7 @@ describe 'Tag Layouts API', with: :api_v2 do
           }
         end
 
-        it_behaves_like 'a POST request with a missing attribute'
+        it_behaves_like 'an unprocessable POST request with a specific error'
       end
     end
 
@@ -327,7 +327,7 @@ describe 'Tag Layouts API', with: :api_v2 do
           }
         end
 
-        it_behaves_like 'a POST request without a required relationship'
+        it_behaves_like 'an unprocessable POST request with a specific error'
       end
 
       context 'without tag_group_uuid' do
@@ -341,7 +341,7 @@ describe 'Tag Layouts API', with: :api_v2 do
           }
         end
 
-        it_behaves_like 'a POST request without a required relationship'
+        it_behaves_like 'an unprocessable POST request with a specific error'
       end
 
       context 'without user_uuid' do
@@ -355,7 +355,7 @@ describe 'Tag Layouts API', with: :api_v2 do
           }
         end
 
-        it_behaves_like 'a POST request without a required relationship'
+        it_behaves_like 'an unprocessable POST request with a specific error'
       end
 
       context 'without plate' do
@@ -373,7 +373,7 @@ describe 'Tag Layouts API', with: :api_v2 do
           }
         end
 
-        it_behaves_like 'a POST request without a required relationship'
+        it_behaves_like 'an unprocessable POST request with a specific error'
       end
 
       context 'without tag_group' do
@@ -391,7 +391,7 @@ describe 'Tag Layouts API', with: :api_v2 do
           }
         end
 
-        it_behaves_like 'a POST request without a required relationship'
+        it_behaves_like 'an unprocessable POST request with a specific error'
       end
 
       context 'without user' do
@@ -409,7 +409,7 @@ describe 'Tag Layouts API', with: :api_v2 do
           }
         end
 
-        it_behaves_like 'a POST request without a required relationship'
+        it_behaves_like 'an unprocessable POST request with a specific error'
       end
     end
   end

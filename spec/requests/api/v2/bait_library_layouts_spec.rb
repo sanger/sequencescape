@@ -240,7 +240,7 @@ describe 'Bait Library Layouts API', with: :api_v2 do
             }
           end
 
-          it_behaves_like 'a POST request without a required relationship'
+          it_behaves_like 'an unprocessable POST request with a specific error'
         end
 
         context 'without plate_uuid' do
@@ -254,7 +254,7 @@ describe 'Bait Library Layouts API', with: :api_v2 do
             }
           end
 
-          it_behaves_like 'a POST request without a required relationship'
+          it_behaves_like 'an unprocessable POST request with a specific error'
         end
 
         context 'without user' do
@@ -271,7 +271,7 @@ describe 'Bait Library Layouts API', with: :api_v2 do
             }
           end
 
-          it_behaves_like 'a POST request without a required relationship'
+          it_behaves_like 'an unprocessable POST request with a specific error'
         end
 
         context 'without plate' do
@@ -288,7 +288,7 @@ describe 'Bait Library Layouts API', with: :api_v2 do
             }
           end
 
-          it_behaves_like 'a POST request without a required relationship'
+          it_behaves_like 'an unprocessable POST request with a specific error'
         end
       end
     end
