@@ -153,7 +153,7 @@ chromium_tag_well:
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Tag well"
-      error: "Tag Index must be a well."
+      error: "Tag Index must a well."
   conditional_formattings:
     empty_cell:
     is_number:
@@ -202,43 +202,6 @@ library_type_long_read:
   conditional_formattings:
     empty_cell:
     is_error:
-dual_index_tag_set:
-  heading: TAG PLATE NAME
-  unlocked: true
-  validation:
-    options:
-      type: :list
-      formula1: "$A$1:$A$2"
-      allowBlank: false
-      showInputMessage: true
-      promptTitle: "Dual Index Tag Plate Name"
-      prompt: "Input the name of a valid dual index tag plate."
-    range_name: :dual_index_tag_sets
-  conditional_formattings:
-    empty_cell:
-dual_index_tag_well:
-  heading: DUAL INDEX TAG WELL
-  unlocked: true
-  validation:
-    options:
-      type: :textLength
-      operator: :lessThanOrEqual
-      formula1: "3"
-      allowBlank: false
-      showInputMessage: true
-      promptTitle: "Dual Index Tag well"
-      prompt: "The name of the well, eg. A1 which supplied the dual index tag"
-      showErrorMessage: true
-      errorStyle: :stop
-      errorTitle: "Dual index tag well"
-      error: "Dual Index Tag must be a well."
-  conditional_formattings:
-    empty_cell:
-    is_number:
-    len:
-      formula:
-        operator: ">"
-        operand: 3
 reference_genome:
   heading: REFERENCE GENOME
   unlocked: true
@@ -498,7 +461,7 @@ dna_source:
     empty_cell:
     is_error:
 date_of_sample_collection:
-  heading: DATE OF SAMPLE COLLECTION (YYYY-MM-DD)
+  heading: DATE OF SAMPLE COLLECTION (YYY-MM-DD)
   unlocked: true
   validation:
     options:
