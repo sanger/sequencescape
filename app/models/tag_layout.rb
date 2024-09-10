@@ -39,7 +39,7 @@ class TagLayout < ApplicationRecord
   end
 
   class TagLayout::DummyWalkingHelper
-    def initialize(_layout)
+    def initialize(*)
     end
 
     def walking_by
@@ -60,8 +60,8 @@ class TagLayout < ApplicationRecord
   # The plate we'll be laying out the tags into
   belongs_to :plate, optional: false
 
-  validates_presence_of :direction, message: 'must define a valid algorithm'
-  validates_presence_of :walking_by, message: 'must define a valid algorithm'
+  validates :direction, presence: { message: 'must define a valid algorithm' }
+  validates :walking_by, presence: { message: 'must define a valid algorithm' }
 
   # After creating the instance we can layout the tags into the wells.
   after_create :layout_tags_into_wells, if: :valid?

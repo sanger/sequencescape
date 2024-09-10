@@ -316,7 +316,7 @@ describe 'Tag Layouts API', with: :api_v2 do
     end
 
     context 'with an invalid attribute value' do
-      context 'invalid direction' do
+      context 'with an invalid direction' do
         let(:error_detail_message) { 'direction - must define a valid algorithm' }
         let(:payload) do
           {
@@ -333,7 +333,7 @@ describe 'Tag Layouts API', with: :api_v2 do
         it_behaves_like 'an unprocessable POST request with a specific error'
       end
 
-      context 'invalid walking_by' do
+      context 'with an invalid walking_by' do
         let(:error_detail_message) { 'walking_by - must define a valid algorithm' }
         let(:payload) do
           {
