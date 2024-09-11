@@ -5,5 +5,5 @@ Limber-Htp - LCM Triomics EMSeq:
   submission_class_name: "LinearSubmission"
   related_records:
     request_type_keys: ["limber_lcm_triomics_emseq"]
-    product_line_name: LCM Triomics WGS and EMSeq
+    product_line_name: LCM Triomics
     product_catalogue_name: LCM Triomics
