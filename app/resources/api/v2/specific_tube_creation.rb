@@ -42,6 +42,9 @@ module Api
 
       # @!attribute [w] tube_attributes
       #   @param value [Array<Hash>] Hashes defining the attributes to apply to each tube being created.
+      #     This might be used to set custom attributes on the tubes, such as name.
+      #   @example Setting the name of the tubes being created.
+      #     [{ name: 'Tube one' }, { name: 'Tube two' }]
       #   @return [Void]
       attribute :tube_attributes
 
