@@ -8,6 +8,9 @@ plate_purposes = <<~EOS
     cherrypickable_target: true
     stock_plate: false
     prefix: WD
+  - name: Stock Plate
+    stock_plate: true
+    cherrypickable_target: true
   - name: 40ng
   - name: Whole Genome Amplification
     cherrypickable_target: true
