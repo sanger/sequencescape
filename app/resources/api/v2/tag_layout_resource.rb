@@ -30,7 +30,7 @@ module Api
       #   @return [Integer]
       attribute :initial_tag
 
-      # @!attribute [w] target_uuid
+      # @!attribute [w] plate_uuid
       #   This is declared for convenience where the {Plate} is not available to set as a relationship.
       #   Setting this attribute alongside the `plate` relationship will prefer the relationship value.
       #   @deprecated Use the `plate` relationship instead.
