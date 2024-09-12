@@ -22,6 +22,9 @@ require 'csv'
 #
 class AddUniqueIndexToAssetLinks < ActiveRecord::Migration[6.1]
   def change
-    add_index :asset_links, [:ancestor_id, :descendant_id], unique: true, name: 'index_asset_links_on_ancestor_and_descendant'
+    add_index :asset_links,
+              %i[ancestor_id descendant_id],
+              unique: true,
+              name: 'index_asset_links_on_ancestor_and_descendant'
   end
 end
