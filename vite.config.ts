@@ -7,7 +7,7 @@ import legacy from "@vitejs/plugin-legacy";
 export default defineConfig({
   build: {
     emptyOutDir: true,
-    target: "chrome65",
+    target: ["chrome65", "es2019"],
   },
   plugins: [RubyPlugin(), createVuePlugin(), legacy({ targets: ["defaults"] })],
   resolve: {
