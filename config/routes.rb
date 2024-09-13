@@ -21,6 +21,11 @@ Rails.application.routes.draw do
       jsonapi_resources :aliquots
       jsonapi_resources :assets
       jsonapi_resources :asset_audits
+
+      jsonapi_resources :bait_library_layouts, except: %i[update] do
+        collection { post :preview }
+      end
+
       jsonapi_resources :barcode_printers
       jsonapi_resources :comments
       jsonapi_resources :custom_metadatum_collections
@@ -56,6 +61,7 @@ Rails.application.routes.draw do
       jsonapi_resources :tag_group_adapter_types
       jsonapi_resources :tag_groups
       jsonapi_resources :tag_layout_templates
+      jsonapi_resources :tag_layouts, except: %i[update]
       jsonapi_resources :tags
       jsonapi_resources :transfer_requests
       jsonapi_resources :transfer_templates
