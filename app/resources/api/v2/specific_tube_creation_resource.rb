@@ -20,24 +20,24 @@ module Api
       ###
 
       # @!attribute [w] child_purpose_uuids
-      #   @param value [Array] Array of UUIDs for child purposes to use in the creation of tubes.
+      #   @param value [Array<String>] Array of UUIDs for child purposes to use in the creation of tubes.
       #   @return [Void]
       attribute :child_purpose_uuids
 
       def child_purpose_uuids=(value)
-        @model.set_child_purposes(value)
+        @model.child_purposes = value.map { |uuid| Purpose.with_uuid(uuid).first }
       end
 
-      # @!attribute [w] parent_uuid
+      # @!attribute [w] parent_uuids
       #   This is declared for convenience where the parent is not available to set as a relationship.
-      #   Setting this attribute alongside the `parent` relationship will prefer the relationship value.
-      #   @param value [String] The UUID of a single parent plate that will be the parent for all tubes created.
+      #   Setting this attribute alongside the `parents` relationship will prefer the relationship value.
+      #   @param value [Array<String>] The UUIDs of labware that will be the parents for all tubes created.
       #   @return [Void]
-      #   @see #parent
-      attribute :parent_uuid
+      #   @see #parents
+      attribute :parent_uuids
 
-      def parent_uuid=(value)
-        @model.parent = Plate.with_uuid(value).first
+      def parent_uuids=(value)
+        @model.parents = value.map { |uuid| Labware.with_uuid(uuid).first }
       end
 
       # @!attribute [w] tube_attributes
@@ -47,6 +47,11 @@ module Api
       #     [{ name: 'Tube one' }, { name: 'Tube two' }]
       #   @return [Void]
       attribute :tube_attributes
+
+      def tube_attributes=(value)
+        # Convert ActionController::Parameters into hashes.
+        @model.tube_attributes = value.map(&:to_unsafe_h)
+      end
 
       # @!attribute [w] user_uuid
       #   This is declared for convenience where the user is not available to set as a relationship.
@@ -68,21 +73,21 @@ module Api
       # Relationships
       ###
 
+      # @!attribute [r] children
+      #   @return [Array<TubeResource>] An array of tubes that were created.
+      has_many :children, class_name: 'Tube'
+
+      # @!attribute [rw] parents
+      #   Setting this relationship alongside the `parent_uuids` attribute will override the attribute value.
+      #   @return [Array<AssetResource>] An array of the parents of the tubes being created.
+      #   @note This relationship is required.
+      has_many :parents, class_name: 'Asset'
+
       # @!attribute [rw] user
       #   Setting this relationship alongside the `user_uuid` attribute will override the attribute value.
       #   @return [UserResource] The user who initiated the creation of tubes.
       #   @note This relationship is required.
       has_one :user
-
-      # @!attribute [rw] parents
-      #   Setting this relationship alongside the `parent_uuid` attribute will override the attribute value.
-      #   @return [Array<AssetResource>] An array of the parents of the tubes being created.
-      #   @note This relationship is required.
-      has_many :parents, class_name: 'Asset'
-
-      # @!attribute [r] children
-      #   @return [Array<TubeResource>] An array of tubes that were created.
-      has_many :children, class_name: 'Tube'
 
       def self.creatable_fields(context)
         # UUID is set by the system.
@@ -92,7 +97,7 @@ module Api
       def fetchable_fields
         # The tube_attributes attribute is only available during resource creation.
         # UUIDs for relationships are not fetchable. They should be accessed via the relationship itself.
-        super - %i[child_purpose_uuids parent_uuid tube_attributes user_uuid]
+        super - %i[child_purpose_uuids parent_uuids tube_attributes user_uuid]
       end
     end
   end
