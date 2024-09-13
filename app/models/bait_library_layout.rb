@@ -82,5 +82,4 @@ class BaitLibraryLayout < ApplicationRecord
   def generate_for_preview
     each_bait_library_assignment { |well, bait_library| record_bait_library_assignment(well, bait_library) }
   end
-  private :generate_for_preview
 end
