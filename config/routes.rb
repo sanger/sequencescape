@@ -21,6 +21,11 @@ Rails.application.routes.draw do
       jsonapi_resources :aliquots
       jsonapi_resources :assets
       jsonapi_resources :asset_audits
+
+      jsonapi_resources :bait_library_layouts, except: %i[update] do
+        collection { post :preview }
+      end
+
       jsonapi_resources :barcode_printers
       jsonapi_resources :comments
       jsonapi_resources :custom_metadatum_collections
