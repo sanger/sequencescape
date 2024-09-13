@@ -31,6 +31,7 @@ module Api
       # @!attribute [w] parent_uuids
       #   This is declared for convenience where the parent is not available to set as a relationship.
       #   Setting this attribute alongside the `parents` relationship will prefer the relationship value.
+      #   @deprecated Use the `parents` relationship instead.
       #   @param value [Array<String>] The UUIDs of labware that will be the parents for all tubes created.
       #   @return [Void]
       #   @see #parents
@@ -49,6 +50,8 @@ module Api
       attribute :tube_attributes
 
       def tube_attributes=(value)
+        return if value.nil?
+
         # Convert ActionController::Parameters into hashes.
         @model.tube_attributes = value.map(&:to_unsafe_h)
       end
@@ -56,6 +59,7 @@ module Api
       # @!attribute [w] user_uuid
       #   This is declared for convenience where the user is not available to set as a relationship.
       #   Setting this attribute alongside the `user` relationship will prefer the relationship value.
+      #   @deprecated Use the `user` relationship instead.
       #   @param value [String] The UUID of the user who initiated the creation of tubes.
       #   @return [Void]
       #   @see #user
