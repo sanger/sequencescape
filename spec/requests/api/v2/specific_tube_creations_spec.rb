@@ -68,7 +68,7 @@ describe 'Specific Tube Creations API', with: :api_v2 do
 
       context 'with included relationships' do
         context 'with children' do
-          let(:related_name) { 'parents' }
+          let(:related_name) { 'children' }
 
           it_behaves_like 'a POST request including a has_many relationship'
         end
@@ -108,10 +108,7 @@ describe 'Specific Tube Creations API', with: :api_v2 do
     let(:user) { create(:user) }
 
     let(:base_attributes) do
-      {
-        child_purpose_uuids: child_purposes.map { |cp| cp.uuid },
-        tube_attributes: [{ name: 'Tube one' }, { name: 'Tube two' }]
-      }
+      { child_purpose_uuids: child_purposes.map(&:uuid), tube_attributes: [{ name: 'Tube one' }, { name: 'Tube two' }] }
     end
 
     let(:parents_relationship) { { data: parents.map { |p| { id: p.id, type: 'assets' } } } }
@@ -181,8 +178,8 @@ describe 'Specific Tube Creations API', with: :api_v2 do
               attributes:
                 base_attributes.merge(
                   {
-                    child_purpose_uuids: child_purposes.map { |cp| cp.uuid },
-                    parent_uuids: parents.map { |p| p.uuid },
+                    child_purpose_uuids: child_purposes.map(&:uuid),
+                    parent_uuids: parents.map(&:uuid),
                     user_uuid: user.uuid
                   }
                 )
