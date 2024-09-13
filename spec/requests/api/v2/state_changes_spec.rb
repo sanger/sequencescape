@@ -267,7 +267,7 @@ describe 'State Changes API', with: :api_v2 do
           }
         end
 
-        it_behaves_like 'a POST request with a missing attribute'
+        it_behaves_like 'an unprocessable POST request with a specific error'
       end
     end
 
@@ -283,7 +283,7 @@ describe 'State Changes API', with: :api_v2 do
           }
         end
 
-        it_behaves_like 'a POST request without a required relationship'
+        it_behaves_like 'an unprocessable POST request with a specific error'
       end
 
       context 'without target_uuid' do
@@ -292,7 +292,7 @@ describe 'State Changes API', with: :api_v2 do
           { 'data' => { 'type' => resource_type, 'attributes' => base_attributes.merge({ 'user_uuid' => user.uuid }) } }
         end
 
-        it_behaves_like 'a POST request without a required relationship'
+        it_behaves_like 'an unprocessable POST request with a specific error'
       end
 
       context 'without user' do
@@ -309,7 +309,7 @@ describe 'State Changes API', with: :api_v2 do
           }
         end
 
-        it_behaves_like 'a POST request without a required relationship'
+        it_behaves_like 'an unprocessable POST request with a specific error'
       end
 
       context 'without target' do
@@ -326,7 +326,7 @@ describe 'State Changes API', with: :api_v2 do
           }
         end
 
-        it_behaves_like 'a POST request without a required relationship'
+        it_behaves_like 'an unprocessable POST request with a specific error'
       end
     end
   end
