@@ -42,8 +42,8 @@ shared_examples 'a POST request including a has_one relationship' do
   end
 
   it 'returns the expected relationship' do
-    related = json['included'].find { |i| i['type'] == related_type }
-    expect(related['id']).to eq(resource.send(related_name).id.to_s)
-    expect(related['type']).to eq(related_type)
+    related = json['data']['relationships'][related_name]['data']
+    included = json['included'].map { |i| i.slice('id', 'type') }
+    expect(included).to include(related)
   end
 end
