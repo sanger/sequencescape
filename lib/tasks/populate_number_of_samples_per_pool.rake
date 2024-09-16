@@ -16,18 +16,19 @@ namespace :number_of_samples_per_pool do
 
     ActiveRecord::Base.transaction do
       saved_count = 0
-      request_metadatas = Request::Metadata.where(number_of_samples_per_pool: nil, submission_id: args[:submission_id])
-      # Assuming there are multiple requests for a submission
-      request_metadatas.find_each(batch_size: 50) do |request_metadata|
-        puts "Processing request_metadata #{request_metadata.id}..."
-        saved_count = process_request_metadata(request_metadata, saved_count)
-      end
-      puts "Populated number of samples per pool column for #{saved_count} request_metadata items."
+      # Find request_metadata for each request
+      Request::Metadata
+        .joins(:request)
+        .where(requests: { submission_id: args[:submission_id] })
+        .find_each(batch_size: 50) do |request_metadata|
+          puts "Processing request_metadata #{request_metadata.id}..."
+          saved_count = process_request_metadata(request_metadata, saved_count, args[:samples_per_pool])
+        end
     end
   end
 
-  def process_request_metadata(request_metadata, saved_count)
-    request_metadata.number_of_samples_per_pool = 96
+  def process_request_metadata(request_metadata, saved_count, samples_per_pool)
+    request_metadata.number_of_samples_per_pool = samples_per_pool
     begin
       request_metadata.save!
       saved_count += 1
