@@ -1,0 +1,6 @@
+# Plate purposes for LCM Triomics WGS and EMSeq
+---
+LCMT Lysate:
+  type: PlatePurpose::Input
+  stock_plate: true
+  cherrypickable_target: false
