@@ -56,7 +56,7 @@ Feature: Access tag layouts through the API
       """
 
   @tag_layout @create @barcode-service
-  Scenario: Creating a tag layout of an entire plate using 96 tags by pools
+  Scenario: 1. Creating a tag layout of an entire plate using 96 tags by pools
     Given the Baracoda barcode service returns "SQPD-1000001"
     Given the Baracoda barcode service returns "SQPD-1000002"
     Given the tag group "Example Tag Group" exists
@@ -97,7 +97,7 @@ Feature: Access tag layouts through the API
       | TAG8 | TAG4  | TAG4 | TAG12 | TAG20 | TAG8 | TAG4  | TAG4 | TAG12 | TAG20 | TAG8 | TAG16 |
 
   @tag_layout @create @barcode-service
-  Scenario: Creating a tag layout of an entire plate using 96 tags by pools
+  Scenario: 2. Creating a tag layout of an entire plate using 96 tags by pools
     Given the Baracoda barcode service returns "SQPD-1000001"
     Given the Baracoda barcode service returns "SQPD-1000002"
 
@@ -138,7 +138,7 @@ Feature: Access tag layouts through the API
       | TAG8 | TAG16  | TAG24 | TAG32  | TAG40 | TAG48 | TAG56  | TAG64 | TAG72  | TAG80 | TAG88 | TAG96 |
 
   @tag_layout @create @barcode-service
-  Scenario: Creating a tag layout of an entire plate using 96 tags by pools with empty wells
+  Scenario: 3. Creating a tag layout of an entire plate using 96 tags by pools with empty wells
     Given the Baracoda barcode service returns "SQPD-1000001"
     Given the Baracoda barcode service returns "SQPD-1000002"
     Given the tag group "Example Tag Group" exists
@@ -180,7 +180,7 @@ Feature: Access tag layouts through the API
 
 
   @tag_layout @create @barcode-service
-  Scenario: Creating a tag layout of an entire plate using 96 tags by pools with an offset
+  Scenario: 4. Creating a tag layout of an entire plate using 96 tags by pools with an offset
     Given the Baracoda barcode service returns "SQPD-1000001"
     Given the Baracoda barcode service returns "SQPD-1000002"
     Given the tag group "Example Tag Group" exists
@@ -221,7 +221,7 @@ Feature: Access tag layouts through the API
       | TAG18 | TAG14  | TAG14 | TAG22 | TAG30 | TAG18 | TAG14 | TAG14 | TAG22  | TAG30 | TAG18 | TAG26 |
 
   @tag_layout @create @barcode-service
-  Scenario: Creating a tag layout of an entire plate using 96 tags by pools with an offset
+  Scenario: 5. Creating a tag layout of an entire plate using 96 tags by pools with an offset
     Given the Baracoda barcode service returns "SQPD-1000001"
     Given the Baracoda barcode service returns "SQPD-1000002"
     Given the tag group "Example Tag Group" exists

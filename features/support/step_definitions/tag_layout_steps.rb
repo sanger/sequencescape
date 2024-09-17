@@ -25,6 +25,7 @@ end
 
 def replace_tag_layout_tags(template, index_to_oligo)
   template.tag_group.tags.destroy_all
+  # binding.pry
   index_to_oligo.each do |tag_attributes|
     template.tag_group.tags.create!(map_id: tag_attributes[:index], oligo: tag_attributes[:oligo])
   end
@@ -54,15 +55,25 @@ end
 
 def check_tag_layout(name, well_range, expected_wells_to_oligos) # rubocop:todo Metrics/MethodLength
   plate = Plate.find_by(name: name) or raise StandardError, "Cannot find plate #{name.inspect}"
+  # binding.pry
+  puts "Plate: #{plate.name}, Well Range: #{well_range.inspect}"
+
   wells_to_oligos =
     plate
       .wells
       .filter_map do |w|
         next unless well_range.include?(w)
-
-        [w.map.description, w.primary_aliquot.try(:tag).try(:oligo) || '']
+        oligo = w.primary_aliquot.try(:tag).try(:oligo) || ''
+        puts "Well: #{w.map.description}, Oligo: #{oligo.inspect}" # Debug output
+        [w.map.description, oligo]
+      #  [w.map.description, w.primary_aliquot.try(:tag).try(:oligo) || '']
       end
       .to_h
+  puts "wells to oligos: #{wells_to_oligos.inspect}"
+  puts "-------"
+  puts "expected wells to oligos: #{expected_wells_to_oligos.inspect}"
+
+  puts expected_wells_to_oligos != wells_to_oligos
   if expected_wells_to_oligos != wells_to_oligos
     plate_view_of_oligos('Expected', expected_wells_to_oligos)
     plate_view_of_oligos('Got', wells_to_oligos)

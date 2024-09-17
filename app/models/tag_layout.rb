@@ -49,7 +49,6 @@ class TagLayout < ApplicationRecord
 
   # The plate we'll be laying out the tags into
   belongs_to :plate, optional: false
-
   validates :direction, inclusion: { in: DIRECTION_ALGORITHMS.keys }
   validates :walking_by, inclusion: { in: WALKING_ALGORITHMS.keys }
 
@@ -57,8 +56,9 @@ class TagLayout < ApplicationRecord
   validates :walking_algorithm, presence: true
 
   # After creating the instance we can layout the tags into the wells.
+ 
   after_create :layout_tags_into_wells, if: :valid?
-
+  # binding.pry
   set_target_for_owner(:plate)
 
   delegate :direction, to: :direction_algorithm_module
@@ -97,7 +97,9 @@ class TagLayout < ApplicationRecord
     walk_wells do |well, index, index2 = index|
       tag_index = (index + initial_tag) % tags.length
       tag2_index = (index2 + initial_tag) % tag2s.length if tag2?
+     
       apply_tags(well, tags[tag_index], tag2s[tag2_index || 0])
+      puts well.inspect 
       well.set_as_library
     end
   end
