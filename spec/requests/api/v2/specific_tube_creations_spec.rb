@@ -111,7 +111,7 @@ describe 'Specific Tube Creations API', with: :api_v2 do
       { child_purpose_uuids: child_purposes.map(&:uuid), tube_attributes: [{ name: 'Tube one' }, { name: 'Tube two' }] }
     end
 
-    let(:parents_relationship) { { data: parents.map { |p| { id: p.id, type: 'assets' } } } }
+    let(:parents_relationship) { { data: parents.map { |p| { id: p.id, type: 'labware' } } } }
     let(:user_relationship) { { data: { id: user.id, type: 'users' } } }
 
     context 'with a valid payload' do
