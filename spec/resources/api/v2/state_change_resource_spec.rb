@@ -8,27 +8,40 @@ RSpec.describe Api::V2::StateChangeResource, type: :resource do
 
   let(:resource_model) { build_stubbed :state_change }
 
-  shared_examples 'a state change resource' do
-    # Test attributes
-    it { is_expected.to have_attribute :previous_state }
-    it { is_expected.to have_attribute :target_state }
-    it { is_expected.to have_attribute :created_at }
-    it { is_expected.to have_attribute :updated_at }
+  # Attributes
+  it 'has the expected read-only attributes', :aggregate_failures do
+    expect(resource).to have_attribute :uuid
+    expect(resource).not_to have_updatable_field :uuid
 
-    # Read only attributes (almost certainly id, uuid)
-
-    # Updatable fields
-    # eg. it { is_expected.to have_updatable_field(:state) }
-
-    # Filters
-    # eg. it { is_expected.to filter(:order_type) }
-
-    # Associations
-    it { is_expected.to have_one(:labware) }
-
-    # Custom method tests
-    # Add tests for any custom methods you've added.
+    expect(resource).to have_attribute :previous_state
+    expect(resource).not_to have_updatable_field :previous_state
   end
 
-  it_behaves_like 'a state change resource'
+  it 'has the expected read-write attributes', :aggregate_failures do
+    expect(resource).to have_attribute :contents
+    expect(resource).to have_updatable_field :contents
+
+    expect(resource).to have_attribute :reason
+    expect(resource).to have_updatable_field :reason
+
+    expect(resource).to have_attribute :target_state
+    expect(resource).to have_updatable_field :target_state
+  end
+
+  it 'has the expected write-only attributes', :aggregate_failures do
+    expect(resource).not_to have_attribute :user_uuid
+    expect(resource).to have_updatable_field :user_uuid
+
+    expect(resource).not_to have_attribute :target_uuid
+    expect(resource).to have_updatable_field :target_uuid
+
+    expect(resource).not_to have_attribute :customer_accepts_responsibility
+    expect(resource).to have_updatable_field :customer_accepts_responsibility
+  end
+
+  # Relationships
+  it 'has the expected relationships', :aggregate_failures do
+    expect(resource).to have_one(:target).with_class_name('Labware')
+    expect(resource).to have_one(:user).with_class_name('User')
+  end
 end

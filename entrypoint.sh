@@ -17,5 +17,10 @@ if [ "${RESET_DATABASE:-}" = "true" ]; then
   bundle exec rake db:reset
 fi
 
+# Build the static web assets
+if [ "${PRECOMPILE_ASSETS:-}" = "true" ]; then
+  bundle exec rails assets:precompile
+fi
+
 echo "Starting service"
 exec bundle exec rails s -b 0.0.0.0

@@ -15,7 +15,7 @@
 
   <div class="form-group">
     <%= f.label :tag2_group, 'Tag2 Group' %><br>
-    <%= f.select :tag2_group_id, TagGroup.visible.pluck(:name, :id), { prompt: 'Select tag2 group...' }, { class: 'form-control select2' } %>
+    <%= f.select :tag2_group_id, TagGroup.visible.pluck(:name, :id), { prompt: 'Select tag2 group...',  selected: @tag_layout_template.tag2_group_id }, { class: 'form-control select2' } %>
   </div>
 
   <div>

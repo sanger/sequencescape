@@ -15,15 +15,16 @@ module Api
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class TagLayoutTemplateResource < BaseResource
-      # Constants...
+      immutable
 
-      # immutable # uncomment to make the resource immutable
+      ###
+      # Relationships
+      ###
 
       # @!attribute [r] tag_group
       #   A relationship for the primary tag group associated with the tag layout template.
       #   @return [Api::V2::TagGroupResource]
       has_one :tag_group
-      has_one :tag2_group
 
       # @!attribute [r] tag2_group
       #   A relationship for the secondary tag group associated with the tag layout template.
@@ -55,6 +56,7 @@ module Api
       #   @return [String]
       attribute :walking_by, readonly: true
 
+      ###
       # Filters
       ###
 
@@ -62,12 +64,6 @@ module Api
       #   A filter to return only enabled tag layout templates.
       #   Set by default to `true`.
       filter :enabled, default: true
-
-      # Custom methods
-      # These shouldn't be used for business logic, and a more about
-      # I/O and isolating implementation details.
-
-      # Class method overrides
     end
   end
 end
