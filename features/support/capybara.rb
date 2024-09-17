@@ -20,6 +20,8 @@ end
 
 Capybara.register_driver :chrome do |app|
   options = Selenium::WebDriver::Chrome::Options.new
+  options.add_preference('download.default_directory', DownloadHelpers::PATH.to_s)
+
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 end
 
