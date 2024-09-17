@@ -72,14 +72,12 @@ describe 'State Changes API', with: :api_v2 do
       context 'with included relationships' do
         context 'with user' do
           let(:related_name) { 'user' }
-          let(:related_type) { 'users' }
 
           it_behaves_like 'a POST request including a has_one relationship'
         end
 
         context 'with target' do
           let(:related_name) { 'target' }
-          let(:related_type) { 'labware' }
 
           it_behaves_like 'a POST request including a has_one relationship'
         end
