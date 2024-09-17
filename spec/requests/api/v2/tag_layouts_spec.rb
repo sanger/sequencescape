@@ -76,14 +76,12 @@ describe 'Tag Layouts API', with: :api_v2 do
       context 'with included relationships' do
         context 'with plate' do
           let(:related_name) { 'plate' }
-          let(:related_type) { 'plates' }
 
           it_behaves_like 'a POST request including a has_one relationship'
         end
 
         context 'with user' do
           let(:related_name) { 'user' }
-          let(:related_type) { 'users' }
 
           it_behaves_like 'a POST request including a has_one relationship'
         end
@@ -175,7 +173,7 @@ describe 'Tag Layouts API', with: :api_v2 do
           expect(new_record.substitutions).to eq(payload.dig(:data, :attributes, :substitutions))
           expect(new_record.walking_by).to eq(payload.dig(:data, :attributes, :walking_by))
 
-          # Note that the tags_per_well from the quieried record will be nil as it isn't a stored attribute in the
+          # Note that the tags_per_well from the queried record will be nil as it isn't a stored attribute in the
           # database.
           expect(new_record.tags_per_well).to be_nil
         end
