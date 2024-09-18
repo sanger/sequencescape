@@ -225,8 +225,6 @@ Once setup, the default user/password is `admin/admin`.
 Ensure Node is installed, and in your PATH. You might need to run
 `bin/vite build --clear --mode=development`
 
-To start vite
-
 #### Delayed job
 
 For background processing Sequencescape uses `delayed_job` to ensure that the server is running. It
@@ -320,6 +318,8 @@ Prettier is used for formatting.
 yarn prettier --check .
 yarn prettier --write .
 ```
+
+(If prettier is not yet installed, run `yarn`. This should have ben run in `bin/setup`)
 
 - Prettier rules are configured in .prettierrc.json
 - Whole files can be ignored in .prettierignore
