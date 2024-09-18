@@ -18,6 +18,6 @@ RSpec.describe Api::V2::SpecificTubeCreationResource, type: :resource do
 
   # Relationships
   it { is_expected.to have_many(:children).with_class_name('Tube') }
-  it { is_expected.to have_many(:parents).with_class_name('Asset') }
+  it { is_expected.to have_many(:parents).with_class_name('Labware') }
   it { is_expected.to have_one(:user).with_class_name('User') }
 end

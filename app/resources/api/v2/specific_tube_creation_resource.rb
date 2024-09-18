@@ -83,9 +83,9 @@ module Api
 
       # @!attribute [rw] parents
       #   Setting this relationship alongside the `parent_uuids` attribute will override the attribute value.
-      #   @return [Array<AssetResource>] An array of the parents of the tubes being created.
+      #   @return [Array<LabwareResource>] An array of the parents of the tubes being created.
       #   @note This relationship is required.
-      has_many :parents, class_name: 'Asset'
+      has_many :parents, class_name: 'Labware'
 
       # @!attribute [rw] user
       #   Setting this relationship alongside the `user_uuid` attribute will override the attribute value.
