@@ -34,20 +34,14 @@ class Comment < ApplicationRecord
   # @return [Hash] Hash of counts indexed by request_id
   #
   def self.counts_for_requests(requests) # rubocop:todo Metrics/AbcSize
-    begin
-      all_commentables = requests.flat_map do |request|
-        [request, request.try(:asset), request.try(:asset).try(:labware)]    
-      end    
-      counts = where(commentable: all_commentables.compact).group(:commentable_type, :commentable_id).count
+    all_commentables = requests.flat_map { |request| [request, request.try(:asset), request.try(:asset).try(:labware)] }
+    counts = where(commentable: all_commentables.compact).group(:commentable_type, :commentable_id).count
 
-      requests.each_with_object({}) do |request, counter_cache|
-        request_count = counts.fetch(['Request', request.id], 0)
-        receptacle_count = counts.fetch(['Receptacle', request.try(:asset_id)], 0)
-        labware_count = counts.fetch(['Labware', request.try(:asset).try(:labware_id)], 0) 
-        counter_cache[request.id] = request_count + receptacle_count + labware_count
-      end
-    rescue StandardError => e
-      puts "An error of type #{e.class} happened, message is #{e.message}"
+    requests.each_with_object({}) do |request, counter_cache|
+      request_count = counts.fetch(['Request', request.id], 0)
+      receptacle_count = counts.fetch(['Receptacle', request.try(:asset_id)], 0)
+      labware_count = counts.fetch(['Labware', request.try(:asset).try(:labware_id)], 0)
+      counter_cache[request.id] = request_count + receptacle_count + labware_count
     end
   end
 
