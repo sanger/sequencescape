@@ -99,5 +99,7 @@ class Api::StudyIO < Api::Base
     map_attribute_to_json_attribute(:hmdmc_approval_number, 'hmdmc_number')
     map_attribute_to_json_attribute(:s3_email_list)
     map_attribute_to_json_attribute(:data_deletion_period)
+    map_attribute_to_json_attribute(:contaminated_human_data_access_group)
+    with_association(:program, lookup_by: :id) { map_attribute_to_json_attribute(:name, 'programme') }
   end
 end

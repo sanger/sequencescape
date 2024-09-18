@@ -2,8 +2,8 @@
 # Enables the bulk creation of the asset links defined by the pairs passed as edges.
 require_dependency 'asset_link'
 
-# An AssetLink::BuilderJob receives an array of [parent_id, child_id] and builds
-# asset links between them
+# An AssetLink::BuilderJob receives an array of [parent_id, child_id] and builds asset links between them
+# @return []
 AssetLink::BuilderJob =
   Struct.new(:links) do
     # For memory reasons we need to limit transaction size to 10 links at a time

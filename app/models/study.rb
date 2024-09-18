@@ -256,6 +256,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     # External Customers
     custom_attribute(:s3_email_list)
     custom_attribute(:data_deletion_period)
+    custom_attribute(:contaminated_human_data_access_group)
 
     REMAPPED_ATTRIBUTES =
       {

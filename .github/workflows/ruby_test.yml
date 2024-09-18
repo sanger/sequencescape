@@ -8,6 +8,13 @@ env:
   KNAPSACK_PRO_LOG_LEVEL: info
   SKIP_AUTOMATIC_GEM_INSTALLATION: true # Disable the bundle install in bin/setup
 
+########
+## Warning!
+## CodeCov's config in `codecov.yml` is expecting an exact number of builds to complete before it will run.
+## See the config value with key `after_n_builds` in that file.
+## If the number of build steps changes, it is important to update the count there to match.
+########
+
 on:
   - push
   - pull_request
@@ -119,7 +126,7 @@ jobs:
           DBPORT: ${{ job.services.mysql.ports[3306] }}
         run: bin/knapsack_pro_rspec
       - name: Upload capybara artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4.4.0
         if: ${{ failure() }}
         with:
           name: capybara-${{ github.job }}-${{ matrix.ci_node_index }}
@@ -184,7 +191,7 @@ jobs:
           DBPORT: ${{ job.services.mysql.ports[3306] }}
         run: bin/knapsack_pro_cucumber
       - name: Upload capybara artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4.4.0
         if: ${{ failure() }}
         with:
           name: capybara-${{ github.job }}-${{ matrix.ci_node_index }}

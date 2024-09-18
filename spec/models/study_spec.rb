@@ -593,6 +593,23 @@ RSpec.describe Study do
         expect(study.study_metadata.faculty_sponsor).not_to be_nil
       end
 
+      context 'contaminated human data access group' do
+        it 'defaults to null when not specified' do
+          expect(study.study_metadata.contaminated_human_data_access_group).to be_nil
+        end
+
+        context 'assigning value to contaminated human data access group field' do
+          let(:extended_metadata) { create(:study_metadata, contaminated_human_data_access_group: 'example group') }
+          let(:study) { create(:study, study_metadata: extended_metadata) }
+
+          it 'has the contaminated human data access group value when specified' do
+            expect(study.study_metadata.contaminated_human_data_access_group).to eq(
+              extended_metadata[:contaminated_human_data_access_group]
+            )
+          end
+        end
+      end
+
       it 'must have a program' do
         expect(study.study_metadata.program).not_to be_nil
       end

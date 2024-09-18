@@ -2,34 +2,53 @@
 
 module Api
   module V2
-    # Provides a JSON API representation of custom_metadatum_collection
-    # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
+    # @todo This documentation does not yet include a detailed description of what this resource represents.
+    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
+    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+    #
+    # @note Access this resource via the `/api/v2/custom_metadatum_collections/` endpoint.
+    #
+    # Provides a JSON:API representation of {CustomMetadatumCollection}.
+    #
+    # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
+    # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
+    # of the JSON:API standard.
     class CustomMetadatumCollectionResource < BaseResource
-      # Constants...
-
-      # immutable # uncomment to make the resource immutable
-
-      # model_name / model_hint if required
-
       default_includes :uuid_object, :custom_metadata
 
-      # Associations:
-
+      ###
       # Attributes
-      attribute :uuid, readonly: true
-      attribute :metadata
+      ###
 
-      # This is required for POST
+      # @!attribute [r] uuid
+      #   @return [String] The UUID of the collection.
+      attribute :uuid
+
+      # @!attribute [rw] user_id
+      #   @return [Int] The ID of the user who created this collection. Can only and must be set on creation.
       attribute :user_id
+
+      # @!attribute [rw] asset_id
+      #   @return [Int] The ID of the labware the metadata corresponds to. Can only and must be set on creation.
       attribute :asset_id
 
-      # Filters
+      # @!attribute [rw] metadata
+      #   @return [Hash] All metadata in this collection.
+      attribute :metadata
 
-      # Custom methods
-      # These shouldn't be used for business logic, and a more about
-      # I/O and isolating implementation details.
+      ###
+      # Allowable fields (defining read/write permissions for POST and PATCH)
+      ###
 
-      # Class method overrides
+      # @return [Array<Symbol>] Fields that can be created in a POST request.
+      def self.creatable_fields(context)
+        super - %i[uuid]
+      end
+
+      # @return [Array<Symbol>] Fields that can be updated in a PATCH request.
+      def self.updatable_fields(context)
+        super - %i[uuid user_id asset_id] # PATCH should only update metadata
+      end
     end
   end
 end
