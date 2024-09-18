@@ -101,8 +101,8 @@ bundle exec yard-junk --sanity
 The following tools are required for development:
 
 - ruby (version defined in the `.ruby-version`)
-- yarn
-- node (version defined in the `.nvmrc`)
+- yarn (`brew install yarn`)
+- node (`brew install node@<version>` version defined in the `.nvmrc`, ensure node is in your PATH)
 - mysql client libraries - if you do not want to install mysql server on your machine, consider
   using mysql-client: `brew install mysql-client`. Alternatively, to install the MySQL required by
   Sequencescape (currently 8.0)
@@ -219,6 +219,13 @@ bundle exec rails s
 ```
 
 Once setup, the default user/password is `admin/admin`.
+
+### Vite
+
+Ensure Node is installed, and in your PATH. You might need to run
+`bin/vite build --clear --mode=development`
+
+To start vite
 
 #### Delayed job
 
@@ -389,10 +396,20 @@ cluster formation batch which represents a flowcell.
 
 #### MySQL errors when installing
 
-If you are using homebrew with rbenv and run into errors relating to SSL, have a look [here](https://github.com/brianmario/mysql2/issues/795#issuecomment-433219176)
+- If you are using homebrew with rbenv and run into errors relating to SSL, have a look [here](https://github.com/brianmario/mysql2/issues/795#issuecomment-433219176)
 
-If you are upgrading a homebrew MySQL locally and have an error about a missing libmysqlclient dylib file, you may need to redownload the mysql2 gem to fix it i.e. `bundle install --redownload`
+- If you are upgrading a homebrew MySQL locally and have an error about a missing libmysqlclient dylib file, you may need to redownload the mysql2 gem to fix it i.e. `bundle install --redownload`
 This is because the mysql2 gem is simlinked to the homebrew mysql.
+
+- If bundle install is failing to install the `mysql2` gem, try the below (updating the paths as required):
+
+```
+gem install mysql2 -v '0.5.6' -- \
+--with-mysql-lib=/opt/homebrew/Cellar/mysql/ \
+--with-mysql-dir=/opt/homebrew/Cellar/mysql/9.0.1_1 \
+--with-mysql-config=/opt/homebrew/Cellar/mysql/9.0.1_1/bin/mysql_config \
+--with-mysql-include=/opt/homebrew/Cellar/mysql/9.0.1_1/include
+```
 
 #### Installing on Apple Silicon (M1)
 
