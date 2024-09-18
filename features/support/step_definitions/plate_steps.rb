@@ -55,7 +55,6 @@ end
 
 Given /^plate (\d+) has is a stock plate$/ do |plate_id|
   Plate.find(plate_id).update(plate_purpose: PlatePurpose.stock_plate_purpose)
-  binding.pry
 end
 
 Given /^the plate with ID (\d+) has a plate purpose of "([^"]+)"$/ do |id, name|

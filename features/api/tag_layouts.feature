@@ -55,49 +55,9 @@ Feature: Access tag layouts through the API
       }
       """
 
-  @tag_layout @create @barcode-service
-  Scenario: 1. Creating a tag layout of an entire plate using 96 tags by pools
-    Given the Baracoda barcode service returns "SQPD-1000001"
-    Given the Baracoda barcode service returns "SQPD-1000002"
-    Given the tag group "Example Tag Group" exists
-      And the UUID for the tag group "Example Tag Group" is "00000000-1111-2222-3333-444444444444"
-      And the tag group "Example Tag Group" has 20 tags
-
-    Given a "Stock plate" plate called "Testing the API" exists
-      And the UUID for the plate "Testing the API" is "11111111-2222-3333-4444-000000000002"
-      And all wells on the plate "Testing the API" have unique samples
-
-    Given a "Stock plate" plate called "Testing the tagging" exists
-      And the UUID for the plate "Testing the tagging" is "11111111-2222-3333-4444-000000000001"
-      And the wells for the plate "Testing the API" have been pooled to the plate "Testing the tagging" according to the pooling strategy 12, 8, 20, 12, 8, 20, 16
-
-    When I make an authorised POST with the following JSON to the API path "/tag_layouts":
-      """
-      {
-        "tag_layout": {
-          "plate": "11111111-2222-3333-4444-000000000001",
-          "user": "99999999-8888-7777-6666-555555555555",
-          "tag_group": "00000000-1111-2222-3333-444444444444",
-          "direction": "column",
-          "walking_by": "manual by pool",
-          "initial_tag": 0
-        }
-      }
-      """
-    Then the HTTP response should be "201 Created"
-
-    Then the tag layout on the plate "Testing the tagging" should be:
-      | TAG1 | TAG9  | TAG5 | TAG5  | TAG13 | TAG1 | TAG9  | TAG5 | TAG5  | TAG13 | TAG1 | TAG9  |
-      | TAG2 | TAG10 | TAG6 | TAG6  | TAG14 | TAG2 | TAG10 | TAG6 | TAG6  | TAG14 | TAG2 | TAG10 |
-      | TAG3 | TAG11 | TAG7 | TAG7  | TAG15 | TAG3 | TAG11 | TAG7 | TAG7  | TAG15 | TAG3 | TAG11 |
-      | TAG4 | TAG12 | TAG8 | TAG8  | TAG16 | TAG4 | TAG12 | TAG8 | TAG8  | TAG16 | TAG4 | TAG12 |
-      | TAG5 | TAG1  | TAG1 | TAG9  | TAG17 | TAG5 | TAG1  | TAG1 | TAG9  | TAG17 | TAG5 | TAG13 |
-      | TAG6 | TAG2  | TAG2 | TAG10 | TAG18 | TAG6 | TAG2  | TAG2 | TAG10 | TAG18 | TAG6 | TAG14 |
-      | TAG7 | TAG3  | TAG3 | TAG11 | TAG19 | TAG7 | TAG3  | TAG3 | TAG11 | TAG19 | TAG7 | TAG15 |
-      | TAG8 | TAG4  | TAG4 | TAG12 | TAG20 | TAG8 | TAG4  | TAG4 | TAG12 | TAG20 | TAG8 | TAG16 |
 
   @tag_layout @create @barcode-service
-  Scenario: 2. Creating a tag layout of an entire plate using 96 tags by pools
+  Scenario: Creating a tag layout of an entire plate using 96 tags by pools
     Given the Baracoda barcode service returns "SQPD-1000001"
     Given the Baracoda barcode service returns "SQPD-1000002"
 
@@ -138,7 +98,7 @@ Feature: Access tag layouts through the API
       | TAG8 | TAG16  | TAG24 | TAG32  | TAG40 | TAG48 | TAG56  | TAG64 | TAG72  | TAG80 | TAG88 | TAG96 |
 
   @tag_layout @create @barcode-service
-  Scenario: 3. Creating a tag layout of an entire plate using 96 tags by pools with empty wells
+  Scenario: Creating a tag layout of an entire plate using 96 tags by pools with empty wells
     Given the Baracoda barcode service returns "SQPD-1000001"
     Given the Baracoda barcode service returns "SQPD-1000002"
     Given the tag group "Example Tag Group" exists
@@ -180,48 +140,7 @@ Feature: Access tag layouts through the API
 
 
   @tag_layout @create @barcode-service
-  Scenario: 4. Creating a tag layout of an entire plate using 96 tags by pools with an offset
-    Given the Baracoda barcode service returns "SQPD-1000001"
-    Given the Baracoda barcode service returns "SQPD-1000002"
-    Given the tag group "Example Tag Group" exists
-      And the UUID for the tag group "Example Tag Group" is "00000000-1111-2222-3333-444444444444"
-      And the tag group "Example Tag Group" has 30 tags
-
-    Given a "Stock plate" plate called "Testing the API" exists
-      And the UUID for the plate "Testing the API" is "11111111-2222-3333-4444-000000000002"
-      And all wells on the plate "Testing the API" have unique samples
-
-    Given a "Stock plate" plate called "Testing the tagging" exists
-      And the UUID for the plate "Testing the tagging" is "11111111-2222-3333-4444-000000000001"
-      And the wells for the plate "Testing the API" have been pooled to the plate "Testing the tagging" according to the pooling strategy 12, 8, 20, 12, 8, 20, 16
-
-    When I make an authorised POST with the following JSON to the API path "/tag_layouts":
-      """
-      {
-        "tag_layout": {
-          "plate": "11111111-2222-3333-4444-000000000001",
-          "user": "99999999-8888-7777-6666-555555555555",
-          "tag_group": "00000000-1111-2222-3333-444444444444",
-          "direction": "column",
-          "walking_by": "manual by pool",
-          "initial_tag": 10
-        }
-      }
-      """
-    Then the HTTP response should be "201 Created"
-
-    Then the tag layout on the plate "Testing the tagging" should be:
-      | TAG11 | TAG19  | TAG15 | TAG15 | TAG23 | TAG11 | TAG19 | TAG15 | TAG15  | TAG23 | TAG11 | TAG19 |
-      | TAG12 | TAG20  | TAG16 | TAG16 | TAG24 | TAG12 | TAG20 | TAG16 | TAG16  | TAG24 | TAG12 | TAG20 |
-      | TAG13 | TAG21  | TAG17 | TAG17 | TAG25 | TAG13 | TAG21 | TAG17 | TAG17  | TAG25 | TAG13 | TAG21 |
-      | TAG14 | TAG22  | TAG18 | TAG18 | TAG26 | TAG14 | TAG22 | TAG18 | TAG18  | TAG26 | TAG14 | TAG22 |
-      | TAG15 | TAG11  | TAG11 | TAG19 | TAG27 | TAG15 | TAG11 | TAG11 | TAG19  | TAG27 | TAG15 | TAG23 |
-      | TAG16 | TAG12  | TAG12 | TAG20 | TAG28 | TAG16 | TAG12 | TAG12 | TAG20  | TAG28 | TAG16 | TAG24 |
-      | TAG17 | TAG13  | TAG13 | TAG21 | TAG29 | TAG17 | TAG13 | TAG13 | TAG21  | TAG29 | TAG17 | TAG25 |
-      | TAG18 | TAG14  | TAG14 | TAG22 | TAG30 | TAG18 | TAG14 | TAG14 | TAG22  | TAG30 | TAG18 | TAG26 |
-
-  @tag_layout @create @barcode-service
-  Scenario: 5. Creating a tag layout of an entire plate using 96 tags by pools with an offset
+  Scenario: Creating a tag layout of an entire plate using 96 tags by pools with an offset
     Given the Baracoda barcode service returns "SQPD-1000001"
     Given the Baracoda barcode service returns "SQPD-1000002"
     Given the tag group "Example Tag Group" exists
