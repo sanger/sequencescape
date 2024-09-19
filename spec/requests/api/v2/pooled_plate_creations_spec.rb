@@ -9,17 +9,15 @@ describe 'Pooled Plate Creations API', with: :api_v2 do
   let(:base_endpoint) { "/api/v2/#{resource_type}" }
   let(:resource_type) { model_class.name.demodulize.pluralize.underscore }
 
-  it_behaves_like 'ApiKeyAuthenticatable'
-
   include BarcodeHelper
   before { mock_plate_barcode_service }
+
+  it_behaves_like 'ApiKeyAuthenticatable'
 
   context 'with a list of resources' do
     let(:resource_count) { 5 }
 
-    before do
-      create_list(:pooled_plate_creation, resource_count)
-    end
+    before { create_list(:pooled_plate_creation, resource_count) }
 
     describe '#GET all resources' do
       before { api_get base_endpoint }
@@ -112,9 +110,7 @@ describe 'Pooled Plate Creations API', with: :api_v2 do
     let(:parents) { [create(:plate), create(:tube, prefix: 'PT')] }
     let(:user) { create(:user) }
 
-    let(:base_attributes) do
-      { child_purpose_uuid: purpose.uuid }
-    end
+    let(:base_attributes) { { child_purpose_uuid: purpose.uuid } }
 
     let(:parents_relationship) { { data: parents.map { |p| { id: p.id, type: 'labware' } } } }
     let(:user_relationship) { { data: { id: user.id, type: 'users' } } }
@@ -170,13 +166,7 @@ describe 'Pooled Plate Creations API', with: :api_v2 do
           {
             data: {
               type: resource_type,
-              attributes:
-                base_attributes.merge(
-                  {
-                    parent_uuids: parents.map(&:uuid),
-                    user_uuid: user.uuid
-                  }
-                )
+              attributes: base_attributes.merge({ parent_uuids: parents.map(&:uuid), user_uuid: user.uuid })
             }
           }
         end
