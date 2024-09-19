@@ -18,28 +18,28 @@ RSpec.describe Comment do
   end
 
   describe '#counts_for_requests' do
-    let(:request1) { create :sequencing_request, asset: tube }
-    let(:tube) { create :multiplexed_library_tube }
-
-    let(:request2) { create :sequencing_request }
-
     context 'when request has asset' do
+      let(:request) { create :sequencing_request, asset: tube }
+      let(:tube) { create :multiplexed_library_tube }
+
       before do
         create :comment, commentable: tube, description: 'An excellent tube'
         create :comment, commentable: tube.receptacle, description: 'A good receptacle'
-        create :comment, commentable: request1, description: 'A reasonable request1'
+        create :comment, commentable: request, description: 'A reasonable request'
       end
 
       it 'counts comments on requests, their assets and receptacles' do
-        expect(described_class.counts_for_requests([request1])).to eq({ request1.id => 3 })
+        expect(described_class.counts_for_requests([request])).to eq({ request.id => 3 })
       end
     end
 
     context 'when request has no asset' do
-      before { create :comment, commentable: request2, description: 'A reasonable request2' }
+      let(:request) { create :sequencing_request }
+
+      before { create :comment, commentable: request, description: 'A reasonable request' }
 
       it 'counts comments on requests only' do
-        expect(described_class.counts_for_requests([request2])).to eq({ request2.id => 1 })
+        expect(described_class.counts_for_requests([request])).to eq({ request.id => 1 })
       end
     end
   end
