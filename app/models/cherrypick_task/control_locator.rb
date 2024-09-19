@@ -101,6 +101,9 @@ class CherrypickTask::ControlLocator
     available_positions.sample(num_control_wells, random: Random.new(seed))
   end
 
+  # Because the control source plate wells are ordered inversely to the destination plate wells,
+  # the control asset ids need to be converted to the corresponding destination plate well indexes.
+
   def convert_control_assets(control_assets)
     rows = ('A'..'H').to_a
     columns = (1..12).to_a
@@ -115,10 +118,8 @@ class CherrypickTask::ControlLocator
   end
 
   def fixed_positions_from_available
-    wells = control_assets.map(&:map_id)
-    converted_assets = convert_control_assets(wells)
-    Rails.logger.debug converted_assets
-    converted_assets
+    control_wells = control_assets.map(&:map_id)
+    convert_control_assets(control_wells)
   end
 
   # Works out which offset to use based on the number of available wells and ensures we use
