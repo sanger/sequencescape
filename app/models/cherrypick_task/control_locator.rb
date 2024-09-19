@@ -40,7 +40,7 @@ class CherrypickTask::ControlLocator
   # @param total_wells [Integer] The total number of wells on the plate
   # @param num_control_wells [Integer] The number of control wells to lay out
   # @param wells_to_leave_free [Enumerable] Array or range indicating the wells to leave free from controls
-  def initialize(batch_id:, total_wells:, num_control_wells:, wells_to_leave_free: [], control_assets:)
+  def initialize(batch_id:, total_wells:, num_control_wells:, control_assets:, wells_to_leave_free: [])
     @batch_id = batch_id
     @total_wells = total_wells
     @num_control_wells = num_control_wells
@@ -66,11 +66,11 @@ class CherrypickTask::ControlLocator
 
     # If num plate is equal to the available positions, the cycle is going to be repeated.
     # To avoid it, every num_plate=available_positions we start a new cycle with a new seed.
-    seed = seed_for(num_plate)
+    seed_for(num_plate)
     
     # initial_positions = random_positions_from_available(seed)
 
-    initial_positions = fixed_positions_from_available
+    fixed_positions_from_available
 
     #control_positions_for_plate(num_plate, initial_positions)
   end
@@ -105,50 +105,20 @@ class CherrypickTask::ControlLocator
   def convert_control_assets(control_assets)
     rows = ('A'..'H').to_a
     columns = (1..12).to_a
-    
-
-    valid_map = {}
-    map_id = 1
   
-    rows.each do |row|
-      columns.each do |col|
-        valid_map[map_id] = "#{row}#{col}"
-        map_id += 1
-      end
-    end
-
-
-    rows = ('A'..'H').to_a
-    columns = (1..12).to_a
-    
-
-    invalid_map = {}
-    map_id = 1
+    valid_map = rows.product(columns).each_with_index.to_h { |(row, col), i| [i + 1, "#{row}#{col}"] }
+    invalid_map = columns.product(rows).each_with_index.to_h { |(col, row), i| [i + 1, "#{row}#{col}"] }
   
-    columns.each do |col|
-      rows.each do |row|
-        invalid_map[map_id] = "#{row}#{col}"
-        map_id += 1
-      end
-    end
-    converted_assets = []
     control_assets.map do |id|
-      # Find the location on the invalid grid
       invalid_location = valid_map[id]
-      
-      # Find the corresponding map_id on the valid grid
-      binding.pry
-      converted_assets.push(invalid_map.key(invalid_location) - 1)
-
+      invalid_map.key(invalid_location) - 1
     end
-    converted_assets
-
   end
   
   def fixed_positions_from_available
-    wells = control_assets.map { |asset| asset.map_id }
+    wells = control_assets.map(&:map_id)
     converted_assets = convert_control_assets(wells)
-    puts converted_assets
+    Rails.logger.debug converted_assets
     converted_assets
   end
  
