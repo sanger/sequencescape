@@ -38,8 +38,9 @@ module Parsers
     end
 
     # 0 - well name
-    # 2 - cell count
+    # 2 - live cell count
     # 4 - viability
+    # 9 - total cell count
     def qc_data
       @qc_data ||=
         {}.tap do |qc_data|
@@ -67,6 +68,7 @@ module Parsers
     def qc_metrics_hash(row)
       {}.tap do |hash|
         hash[:live_cell_count] = Unit.new(row[2], 'cells')
+        hash[:total_cell_count] = Unit.new(row[9], 'cells')
         viability = row[4]
         hash[:viability] = Unit.new(viability) unless viability == 'NaN'
       end

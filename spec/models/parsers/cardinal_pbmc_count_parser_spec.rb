@@ -54,6 +54,7 @@ RSpec.describe Parsers::CardinalPbmcCountParser do
         expect(row[0]).to eq('DN871908M:A1')
         expect(row[2]).to eq('2030000')
         expect(row[4]).to eq('75.00%')
+        expect(row[9]).to eq('2710000')
       end
 
       it 'will have the correct csv for well H1' do
@@ -61,6 +62,7 @@ RSpec.describe Parsers::CardinalPbmcCountParser do
         expect(row[0]).to eq('DN871908M:H1')
         expect(row[2]).to eq('1940000')
         expect(row[4]).to eq('74.00%')
+        expect(row[9]).to eq('2610000')
       end
     end
 
@@ -75,12 +77,14 @@ RSpec.describe Parsers::CardinalPbmcCountParser do
         row = qc_data['A1']
         expect(row[:live_cell_count]).to eq(Unit.new('2030000', 'cells'))
         expect(row[:viability]).to eq(Unit.new('75.00', '%'))
+        expect(row[:total_cell_count]).to eq(Unit.new('2710000', 'cells'))
       end
 
       it 'will have the correct data for well H1' do
         row = qc_data['H1']
         expect(row[:live_cell_count]).to eq(Unit.new('1940000', 'cells'))
         expect(row[:viability]).to eq(Unit.new('74.00', '%'))
+        expect(row[:total_cell_count]).to eq(Unit.new('2610000', 'cells'))
       end
     end
   end
@@ -117,13 +121,14 @@ RSpec.describe Parsers::CardinalPbmcCountParser do
     end
 
     it 'will have cell count and viability metrics for the normal row' do
-      expect(parser.qc_data['A4'].keys).to eq(%i[live_cell_count viability])
+      expect(parser.qc_data['A4'].keys).to eq(%i[live_cell_count total_cell_count viability])
     end
 
     it 'will have just cell count for the rows with 0 cells' do
-      expect(parser.qc_data['A5'].keys).to eq([:live_cell_count])
-      expect(parser.qc_data['E5'].keys).to eq([:live_cell_count])
+      expect(parser.qc_data['A5'].keys).to eq([:live_cell_count, :total_cell_count])
+      expect(parser.qc_data['E5'].keys).to eq([:live_cell_count, :total_cell_count])
       expect(parser.qc_data['E5'][:live_cell_count].zero?).to be(true)
+      expect(parser.qc_data['E5'][:total_cell_count].zero?).to be(true)
     end
   end
 
@@ -138,7 +143,7 @@ RSpec.describe Parsers::CardinalPbmcCountParser do
       before { plate.update_qc_values_with_parser(parser) }
 
       it 'will have the correct number of results' do
-        expect(QcResult.count).to eq(16)
+        expect(QcResult.count).to eq(24)
       end
 
       it 'will create the qc results for well A1' do
@@ -158,6 +163,13 @@ RSpec.describe Parsers::CardinalPbmcCountParser do
         expect(qc_result.units).to eq('cells/ml')
         expect(qc_result.assay_type).to eq('Cardinal_PBMC_Count')
         expect(qc_result.assay_version).to eq('v1.0')
+
+        qc_result = qc_results.find_by(key: 'total_cell_count')
+
+        expect(qc_result.value).to eq('2710000')
+        expect(qc_result.units).to eq('cells/ml')
+        expect(qc_result.assay_type).to eq('Cardinal_PBMC_Count')
+        expect(qc_result.assay_version).to eq('v1.0')
       end
 
       it 'will create the qc results for well H1' do
@@ -172,6 +184,11 @@ RSpec.describe Parsers::CardinalPbmcCountParser do
         qc_result = qc_results.find_by(key: 'live_cell_count')
 
         expect(qc_result.value).to eq('1940000')
+        expect(qc_result.units).to eq('cells/ml')
+
+        qc_result = qc_results.find_by(key: 'total_cell_count')
+
+        expect(qc_result.value).to eq('2610000')
         expect(qc_result.units).to eq('cells/ml')
       end
     end
