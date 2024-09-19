@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 namespace :number_of_samples_per_pool do
-  desc 'Populate number of samples per pool column in request_metadata table'
+  desc 'Populate number of samples per pool column in request_metadata table for a given submission ID'
 
   task :populate, %i[samples_per_pool submission_id] => :environment do |_, args|
     # TODO: Replace it with the pre-determined number of samples per pool
