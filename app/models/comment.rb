@@ -34,13 +34,13 @@ class Comment < ApplicationRecord
   # @return [Hash] Hash of counts indexed by request_id
   #
   def self.counts_for_requests(requests) # rubocop:todo Metrics/AbcSize
-    all_commentables = requests.flat_map { |request| [request, request.try(:asset), request.try(:asset).try(:labware)] }
+    all_commentables = requests.flat_map { |request| [request, request.asset, request.asset&.labware] }
     counts = where(commentable: all_commentables.compact).group(:commentable_type, :commentable_id).count
 
     requests.each_with_object({}) do |request, counter_cache|
       request_count = counts.fetch(['Request', request.id], 0)
-      receptacle_count = counts.fetch(['Receptacle', request.try(:asset_id)], 0)
-      labware_count = counts.fetch(['Labware', request.try(:asset).try(:labware_id)], 0)
+      receptacle_count = counts.fetch(['Receptacle', request.asset_id], 0)
+      labware_count = counts.fetch(['Labware', request.asset&.labware_id], 0)
       counter_cache[request.id] = request_count + receptacle_count + labware_count
     end
   end
