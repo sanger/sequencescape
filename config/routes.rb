@@ -39,6 +39,7 @@ Rails.application.routes.draw do
       jsonapi_resources :plate_templates
       jsonapi_resources :plates
       jsonapi_resources :poly_metadata
+      jsonapi_resources :pooled_plate_creations, except: %i[update]
       jsonapi_resources :pre_capture_pools
       jsonapi_resources :primer_panels
       jsonapi_resources :projects
