@@ -64,7 +64,7 @@ module Api
 
       # @!attribute [r] child
       #   @return [PlateResource] The child plate which was created.
-      has_many :child, class_name: 'Plate'
+      has_one :child, class_name: 'Plate'
 
       # @!attribute [rw] parents
       #   Setting this relationship alongside the `parent_uuids` attribute will override the attribute value.
