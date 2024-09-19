@@ -9,9 +9,6 @@ describe 'Pooled Plate Creations API', with: :api_v2 do
   let(:base_endpoint) { "/api/v2/#{resource_type}" }
   let(:resource_type) { model_class.name.demodulize.pluralize.underscore }
 
-  include BarcodeHelper
-  before { mock_plate_barcode_service }
-
   it_behaves_like 'ApiKeyAuthenticatable'
 
   context 'with a list of resources' do
@@ -114,6 +111,11 @@ describe 'Pooled Plate Creations API', with: :api_v2 do
 
     let(:parents_relationship) { { data: parents.map { |p| { id: p.id, type: 'labware' } } } }
     let(:user_relationship) { { data: { id: user.id, type: 'users' } } }
+
+    # Mock the plate barcode service because it is not available in the test environment.
+    # This wasn't needed above because the only records being created were via the factory which supplies a barcode.
+    include BarcodeHelper
+    before { mock_plate_barcode_service }
 
     context 'with a valid payload' do
       shared_examples 'a valid request' do
