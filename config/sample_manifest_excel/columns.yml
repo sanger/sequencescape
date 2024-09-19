@@ -498,7 +498,7 @@ dna_source:
     empty_cell:
     is_error:
 date_of_sample_collection:
-  heading: DATE OF SAMPLE COLLECTION (YYY-MM-DD) # Correcting this typo to YYYY-MM-DD prevents manifests to be re-uploaded
+  heading: DATE OF SAMPLE COLLECTION (YYYY-MM-DD)
   unlocked: true
   validation:
     options:
