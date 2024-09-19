@@ -67,7 +67,7 @@ class CherrypickTask::ControlLocator
     # If num plate is equal to the available positions, the cycle is going to be repeated.
     # To avoid it, every num_plate=available_positions we start a new cycle with a new seed.
     seed_for(num_plate)
-    
+
     # initial_positions = random_positions_from_available(seed)
 
     fixed_positions_from_available
@@ -94,7 +94,6 @@ class CherrypickTask::ControlLocator
 
     initial_positions.map do |pos|
       available_positions[(available_positions.index(pos) + offset) % total_available_positions]
-
     end
   end
 
@@ -105,24 +104,23 @@ class CherrypickTask::ControlLocator
   def convert_control_assets(control_assets)
     rows = ('A'..'H').to_a
     columns = (1..12).to_a
-  
+
     valid_map = rows.product(columns).each_with_index.to_h { |(row, col), i| [i + 1, "#{row}#{col}"] }
     invalid_map = columns.product(rows).each_with_index.to_h { |(col, row), i| [i + 1, "#{row}#{col}"] }
-  
+
     control_assets.map do |id|
       invalid_location = valid_map[id]
       invalid_map.key(invalid_location) - 1
     end
   end
-  
+
   def fixed_positions_from_available
     wells = control_assets.map(&:map_id)
     converted_assets = convert_control_assets(wells)
     Rails.logger.debug converted_assets
     converted_assets
   end
- 
-  
+
   # Works out which offset to use based on the number of available wells and ensures we use
   # all wells before looping. Will select the first suitable value from BETWEEN_PLATE_OFFSETS
   # excluding any numbers that are a factor of the available wells. In the incredibly unlikely
