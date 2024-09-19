@@ -29,7 +29,7 @@ class CherrypickTask::ControlLocator
   # limit ourself to primes to simplify validation.
   BETWEEN_PLATE_OFFSETS = [53, 59].freeze
 
-  attr_reader :batch_id, :total_wells, :wells_to_leave_free, :num_control_wells, :available_positions
+  attr_reader :batch_id, :total_wells, :wells_to_leave_free, :num_control_wells, :available_positions, :control_assets
 
   # @note wells_to_leave_free was originally hardcoded for 96 well plates at 24, in order to avoid
   # control wells being missed in cDNA quant QC. This requirement was removed in
@@ -40,12 +40,13 @@ class CherrypickTask::ControlLocator
   # @param total_wells [Integer] The total number of wells on the plate
   # @param num_control_wells [Integer] The number of control wells to lay out
   # @param wells_to_leave_free [Enumerable] Array or range indicating the wells to leave free from controls
-  def initialize(batch_id:, total_wells:, num_control_wells:, wells_to_leave_free: [])
+  def initialize(batch_id:, total_wells:, num_control_wells:, wells_to_leave_free: [], control_assets:)
     @batch_id = batch_id
     @total_wells = total_wells
     @num_control_wells = num_control_wells
     @wells_to_leave_free = wells_to_leave_free.to_a
     @available_positions = (0...total_wells).to_a - @wells_to_leave_free
+    @control_assets = control_assets
   end
 
   #
@@ -66,8 +67,12 @@ class CherrypickTask::ControlLocator
     # If num plate is equal to the available positions, the cycle is going to be repeated.
     # To avoid it, every num_plate=available_positions we start a new cycle with a new seed.
     seed = seed_for(num_plate)
-    initial_positions = random_positions_from_available(seed)
-    control_positions_for_plate(num_plate, initial_positions)
+    
+    # initial_positions = random_positions_from_available(seed)
+
+    initial_positions = fixed_positions_from_available
+
+    #control_positions_for_plate(num_plate, initial_positions)
   end
 
   private
@@ -89,6 +94,7 @@ class CherrypickTask::ControlLocator
 
     initial_positions.map do |pos|
       available_positions[(available_positions.index(pos) + offset) % total_available_positions]
+
     end
   end
 
@@ -96,6 +102,57 @@ class CherrypickTask::ControlLocator
     available_positions.sample(num_control_wells, random: Random.new(seed))
   end
 
+  def convert_control_assets(control_assets)
+    rows = ('A'..'H').to_a
+    columns = (1..12).to_a
+    
+
+    valid_map = {}
+    map_id = 1
+  
+    rows.each do |row|
+      columns.each do |col|
+        valid_map[map_id] = "#{row}#{col}"
+        map_id += 1
+      end
+    end
+
+
+    rows = ('A'..'H').to_a
+    columns = (1..12).to_a
+    
+
+    invalid_map = {}
+    map_id = 1
+  
+    columns.each do |col|
+      rows.each do |row|
+        invalid_map[map_id] = "#{row}#{col}"
+        map_id += 1
+      end
+    end
+    converted_assets = []
+    control_assets.map do |id|
+      # Find the location on the invalid grid
+      invalid_location = valid_map[id]
+      
+      # Find the corresponding map_id on the valid grid
+      binding.pry
+      converted_assets.push(invalid_map.key(invalid_location) - 1)
+
+    end
+    converted_assets
+
+  end
+  
+  def fixed_positions_from_available
+    wells = control_assets.map { |asset| asset.map_id }
+    converted_assets = convert_control_assets(wells)
+    puts converted_assets
+    converted_assets
+  end
+ 
+  
   # Works out which offset to use based on the number of available wells and ensures we use
   # all wells before looping. Will select the first suitable value from BETWEEN_PLATE_OFFSETS
   # excluding any numbers that are a factor of the available wells. In the incredibly unlikely
