@@ -22,7 +22,7 @@ RSpec.describe 'QcFiles' do
 
       expect(response).to have_http_status(:success)
 
-      expect(QcResult.count).to eq(16)
+      expect(QcResult.count).to eq(24)
     end
   end
 end
