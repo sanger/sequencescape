@@ -125,8 +125,8 @@ RSpec.describe Parsers::CardinalPbmcCountParser do
     end
 
     it 'will have just cell count for the rows with 0 cells' do
-      expect(parser.qc_data['A5'].keys).to eq([:live_cell_count, :total_cell_count])
-      expect(parser.qc_data['E5'].keys).to eq([:live_cell_count, :total_cell_count])
+      expect(parser.qc_data['A5'].keys).to eq(%i[live_cell_count total_cell_count])
+      expect(parser.qc_data['E5'].keys).to eq(%i[live_cell_count total_cell_count])
       expect(parser.qc_data['E5'][:live_cell_count].zero?).to be(true)
       expect(parser.qc_data['E5'][:total_cell_count].zero?).to be(true)
     end
