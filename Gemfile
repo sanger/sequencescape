@@ -149,6 +149,7 @@ group :development, :linting do
   gem 'rubocop-performance', require: false
   gem 'rubocop-rails', require: false
   gem 'rubocop-rspec', require: false
+  gem 'rubocop-rspec_rails', require: false
 
   gem 'prettier_print', require: false
   gem 'syntax_tree', require: false

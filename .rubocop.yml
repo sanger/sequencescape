@@ -6,6 +6,7 @@ require:
   - rubocop-performance
   - rubocop-rails
   - rubocop-rspec
+  - rubocop-rspec_rails
 
 RSpec/AggregateExamples:
   # Aggregate examples can be useful, but the cop gets into nasty battles with
@@ -154,7 +155,7 @@ Metrics/ClassLength:
   Exclude:
     - "spec/**/*"
     - "test/**/*"
-RSpec/Rails/AvoidSetupHook:
+RSpecRails/AvoidSetupHook:
   Exclude:
     - "test/**/*"
 
@@ -180,7 +181,7 @@ FactoryBot/ConsistentParenthesesStyle:
 Rails/I18nLocaleTexts: # new in 2.14
   Enabled: false
 
-RSpec/Rails/InferredSpecType: # new in 2.14
+RSpecRails/InferredSpecType: # new in 2.14
   Enabled: false
 
 Lint/NonAtomicFileOperation: # new in 1.31
