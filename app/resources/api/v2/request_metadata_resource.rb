@@ -14,8 +14,8 @@ module Api
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class RequestMetadataResource < BaseResource
-      # NB. request_metadata has been added to config/initializers/inflections.rb to make this class name work otherwise it
-      # expects RequestMetadatumResource
+      # NB. request_metadata has been added to config/initializers/inflections.rb to make this class name
+      # work otherwise it expects RequestMetadatumResource
 
       # Sets add_model_hint true by default, this allows updates from Limber, otherwise get a
       # 500 error as it looks for resource Api::V2::MetadatumResource
