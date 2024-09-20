@@ -150,6 +150,8 @@ group :development, :linting do
   gem 'rubocop-rails', require: false
   gem 'rubocop-rspec', require: false
   gem 'rubocop-rspec_rails', require: false
+  gem 'rubocop-capybara', require: false
+  gem 'rubocop-factory_bot', require: false
 
   gem 'prettier_print', require: false
   gem 'syntax_tree', require: false
