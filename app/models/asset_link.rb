@@ -99,7 +99,8 @@ class AssetLink < ApplicationRecord
     # Either or both may find no link and try to create a new edge.
     if link.nil?
       edge = build_edge(ancestor, descendant)
-      return true if save_edge_or_handle_error(edge)
+      result = save_edge_or_handle_error(edge)
+      return result unless result.nil? # Bubble up.
       # Losing process finds the edge created by the winning process.
       link = find_link(ancestor, descendant)
     end
@@ -114,19 +115,16 @@ class AssetLink < ApplicationRecord
   # @return [Boolean] Returns true if the edge is successfully saved, false
   #   otherwise.
   def self.save_edge_or_handle_error(edge)
-    begin
-      # Winning process successfully saves the edge (direct link).
-      return true if edge.save
-      # has_duplicate validation may see it for the losing process before
-      # hitting the DB.
-      return false unless unique_validation_error?(edge) # Bubble up.
-      edge.errors.clear # Clear all errors and use the existing link.
-    rescue ActiveRecord::RecordNotUnique => e
-      # Unique constraint violation is triggered for the losing process after
-      # hitting the DB.
-      raise unless unique_violation_error?(edge, e) # Bubble up.
-    end
-    false
+    # Winning process successfully saves the edge (direct link).
+    return true if edge.save
+    # has_duplicate validation may see it for the losing process before
+    # hitting the DB.
+    return false unless unique_validation_error?(edge) # Bubble up.
+    edge.errors.clear # Clear all errors and use the existing link.
+  rescue ActiveRecord::RecordNotUnique => e
+    # Unique constraint violation is triggered for the losing process after
+    # hitting the DB.
+    raise unless unique_violation_error?(edge, e) # Bubble up.
   end
 
   # Checks if the validation error includes a specific message indicating a
