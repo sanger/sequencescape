@@ -91,8 +91,9 @@ class AssetLink < ApplicationRecord
   # @param descendant [Dag::Standard::EndPoint] The descendant node.
   # @return [Boolean] Returns true if the edge is successfully created or
   #   already exists, false otherwise.
-  # @raise [ActiveRecord::RecordNotUnique] Raises an exception if the unique
-  #   constraint violation does not involve the expected columns.
+  # @raise [ActiveRecord::RecordNotUnique] Re-raises any exception if it is
+  #   not a constraint violation that involves ancestor_id and descendant_id
+  #   columns.
   def self.create_edge(ancestor, descendant)
     # Two processes try to find an existing link.
     link = find_link(ancestor, descendant)
@@ -112,8 +113,11 @@ class AssetLink < ApplicationRecord
   # Saves the edge between the ancestor and descendant nodes or handles errors.
   #
   # @param edge [AssetLink] The edge object containing the errors.
-  # @return [Boolean] Returns true if the edge is successfully saved, false
-  #   otherwise.
+  # @return [Boolean] Returns true if the edge is successfully saved,
+  #   nil if the error is unique validation or constraint violation,
+  #   false if the error is another validation error.
+  # @raise [ActiveRecord::RecordNotUnique] Re-raises an exception if the
+  #   exception caught is not a unique constraint violation.
   def self.save_edge_or_handle_error(edge)
     # Winning process successfully saves the edge (direct link).
     return true if edge.save
