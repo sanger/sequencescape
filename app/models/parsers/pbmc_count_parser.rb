@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module Parsers
-  # A parser for the cardinal pipeline qc file
-  class CardinalPbmcCountParser
+  # A parser for the cardinal and scrna pipeline qc files
+  class PbmcCountParser
     class_attribute :assay_type, :assay_version
 
     HEADERS = [
@@ -20,7 +20,7 @@ module Parsers
       'Errors:'
     ].freeze
 
-    self.assay_type = 'Cardinal_PBMC_Count'
+    self.assay_type = 'PBMC_Count'
     self.assay_version = 'v1.0'
 
     def self.parses?(content)
