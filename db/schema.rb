@@ -115,7 +115,7 @@ ActiveRecord::Schema.define(version: 2024_09_12_000109) do
     t.integer "count"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["ancestor_id", "descendant_id"], name: "index_asset_links_on_ancestor_and_descendant", unique: true
+    t.index ["ancestor_id", "descendant_id"], name: "index_asset_links_on_ancestor_id_and_descendant_id", unique: true
     t.index ["ancestor_id", "direct"], name: "index_asset_links_on_ancestor_id_and_direct"
     t.index ["descendant_id", "direct"], name: "index_asset_links_on_descendant_id_and_direct"
   end
