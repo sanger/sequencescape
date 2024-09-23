@@ -351,7 +351,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   scope :with_remove_x_and_autosomes,
         -> { joins(:study_metadata).where(study_metadata: { remove_x_and_autosomes: Study::YES }) }
 
-  scope :by_state, ->(state) { where(state: state) }
+  scope :by_state, ->(state) { where(state:) }
 
   scope :by_user,
         ->(login) do

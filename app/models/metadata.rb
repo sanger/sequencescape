@@ -23,7 +23,7 @@ module Metadata
     class_name = "#{name}::Metadata"
 
     default_options = {
-      class_name: class_name,
+      class_name:,
       dependent: :destroy,
       validate: true,
       autosave: true,

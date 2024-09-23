@@ -58,7 +58,7 @@ namespace :asset_audit do
         created_by: row['created_by'],
         created_at: row['created_at'],
         message: "Process '#{row['message']}' performed on instrument Destroying instrument",
-        key: key
+        key:
       }
       asset_audit_data << data
     end

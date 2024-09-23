@@ -5,10 +5,10 @@ require 'rails_helper'
 RSpec.describe Api::OrderIO do
   subject do
     create :order,
-           user: user,
+           user:,
            template_name: 'Cool template',
-           study: study,
-           project: project,
+           study:,
+           project:,
            comments: 'Good',
            request_options: {
              read_length: '200',

@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe WorkOrder do
-  subject { build :work_order, work_order_type: work_order_type }
+  subject { build :work_order, work_order_type: }
 
   context 'with a work_order_type' do
     let(:work_order_type) { create :work_order_type }
@@ -19,7 +19,7 @@ describe WorkOrder do
 
   context 'with requests' do
     let(:requests) { build_list(:request, 2) }
-    let(:work_order) { build :work_order, requests: requests }
+    let(:work_order) { build :work_order, requests: }
 
     describe '#state=' do
       before { work_order.state = 'passed' }
@@ -33,14 +33,14 @@ describe WorkOrder do
   describe WorkOrder::Factory do
     subject(:factory) { described_class.new(submission) }
 
-    let(:submission) { create :submission, requests: requests }
+    let(:submission) { create :submission, requests: }
     let(:request_type) { create :request_type }
 
-    let(:requests_set_a) { create_list(:request, 3, asset: create(:well), request_type: request_type) }
+    let(:requests_set_a) { create_list(:request, 3, asset: create(:well), request_type:) }
     let(:requests) { requests_set_a + requests_set_b }
 
     context 'where request types match' do
-      let(:requests_set_b) { create_list(:request, 3, asset: create(:well), request_type: request_type) }
+      let(:requests_set_b) { create_list(:request, 3, asset: create(:well), request_type:) }
 
       it { is_expected.to be_valid }
 

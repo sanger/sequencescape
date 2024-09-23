@@ -15,10 +15,10 @@ describe UatActions::GenerateSampleManifest do
       {
         study_name: study.name,
         supplier_name: supplier.name,
-        asset_type: asset_type,
-        count: count,
+        asset_type:,
+        count:,
         tube_purpose_name: purpose.name,
-        with_samples: with_samples
+        with_samples:
       }
     end
 
@@ -70,11 +70,11 @@ describe UatActions::GenerateSampleManifest do
     describe '#create_sample_manifest' do
       let(:manifest) do
         create :sample_manifest,
-               study: study,
-               supplier: supplier,
-               count: count,
-               asset_type: asset_type,
-               purpose: purpose
+               study:,
+               supplier:,
+               count:,
+               asset_type:,
+               purpose:
       end
 
       it 'sets the created sample manifest' do
@@ -87,11 +87,11 @@ describe UatActions::GenerateSampleManifest do
     describe '#generate_manifest' do
       let(:manifest) do
         create :sample_manifest,
-               study: study,
-               supplier: supplier,
-               count: count,
-               asset_type: asset_type,
-               purpose: purpose
+               study:,
+               supplier:,
+               count:,
+               asset_type:,
+               purpose:
       end
 
       it 'create tubes(s)' do

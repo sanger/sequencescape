@@ -27,7 +27,7 @@ module SampleManifest::SharedTubeBehaviour
           tube = tube_purpose.create!
           sanger_sample_id = SangerSampleId.generate_sanger_sample_id!(study_abbreviation, sanger_ids.shift)
           SampleManifestAsset.create!(
-            sanger_sample_id: sanger_sample_id,
+            sanger_sample_id:,
             asset: tube.receptacle,
             sample_manifest: @manifest
           )

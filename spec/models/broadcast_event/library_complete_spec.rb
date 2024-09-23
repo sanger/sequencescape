@@ -7,8 +7,8 @@ RSpec.describe BroadcastEvent::LibraryComplete, :broadcast_event do
   include_context 'a limber target plate with submissions'
 
   let(:user) { create(:user) }
-  let(:work_completion) { WorkCompletion.create!(user: user, target: target_plate, submissions: [target_submission]) }
-  let(:event) { described_class.create!(seed: work_completion, user: user, properties: { order_id: order.id }) }
+  let(:work_completion) { WorkCompletion.create!(user:, target: target_plate, submissions: [target_submission]) }
+  let(:event) { described_class.create!(seed: work_completion, user:, properties: { order_id: order.id }) }
   let(:subject_hash) { event.as_json['event'][:subjects].group_by(&:role_type) }
   let(:metadata) { event.as_json['event'][:metadata] }
 

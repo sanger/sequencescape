@@ -69,7 +69,7 @@ RSpec.describe PhiX::SpikedBuffer, :phi_x do
               concentration: '0.8',
               volume: '10',
               number: 2,
-              study_id: study_id
+              study_id:
       end
 
       before { save }
@@ -128,7 +128,7 @@ RSpec.describe PhiX::SpikedBuffer, :phi_x do
 
         it 'sets study on the new aliquots' do
           phi_x_spiked_buffer.created_spiked_buffers.each do |tube|
-            expect(tube.aliquots).to all have_attributes(study_id: study_id)
+            expect(tube.aliquots).to all have_attributes(study_id:)
           end
         end
       end

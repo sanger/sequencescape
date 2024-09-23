@@ -3,8 +3,8 @@
 FactoryBot.define do
   trait :library_request_validators do
     after(:build) do |request_type|
-      request_type.library_types_request_types << create(:library_types_request_type, request_type: request_type)
-      request_type.request_type_validators << create(:library_request_type_validator, request_type: request_type)
+      request_type.library_types_request_types << create(:library_types_request_type, request_type:)
+      request_type.request_type_validators << create(:library_request_type_validator, request_type:)
     end
   end
 
@@ -15,9 +15,9 @@ FactoryBot.define do
       request_type.library_types_request_types << create(
         :library_types_request_type,
         library_type: evaluator.library_type,
-        request_type: request_type
+        request_type:
       )
-      request_type.request_type_validators << create(:library_request_type_validator, request_type: request_type)
+      request_type.request_type_validators << create(:library_request_type_validator, request_type:)
     end
   end
 
@@ -86,13 +86,13 @@ FactoryBot.define do
         request_type.request_type_validators = [
           build(
             :request_type_validator,
-            request_type: request_type,
+            request_type:,
             request_option: 'insert_size',
             options: [500, 1000, 2000, 5000, 10_000, 20_000]
           ),
           build(
             :request_type_validator,
-            request_type: request_type,
+            request_type:,
             request_option: 'sequencing_type',
             options: ['Standard', 'MagBead', 'MagBead OneCellPerWell v1']
           )
@@ -117,7 +117,7 @@ FactoryBot.define do
         srv =
           create(
             :sequencing_request_type_validator,
-            request_type: request_type,
+            request_type:,
             options: ev.read_lengths,
             default: ev.default
           )
@@ -130,7 +130,7 @@ FactoryBot.define do
       asset_type { 'LibraryTube' }
 
       after(:build) do |request_type|
-        srv = create(:sequencing_request_type_validator, request_type: request_type, options: [54, 150, 250])
+        srv = create(:sequencing_request_type_validator, request_type:, options: [54, 150, 250])
         request_type.request_type_validators << srv
       end
     end
@@ -141,8 +141,8 @@ FactoryBot.define do
       for_multiplexing { true }
 
       after(:build) do |request_type|
-        request_type.library_types_request_types << create(:library_types_request_type, request_type: request_type)
-        request_type.request_type_validators << create(:library_request_type_validator, request_type: request_type)
+        request_type.library_types_request_types << create(:library_types_request_type, request_type:)
+        request_type.request_type_validators << create(:library_request_type_validator, request_type:)
       end
     end
 
@@ -152,8 +152,8 @@ FactoryBot.define do
       for_multiplexing { true }
 
       after(:build) do |request_type|
-        request_type.library_types_request_types << create(:library_types_request_type, request_type: request_type)
-        request_type.request_type_validators << create(:library_request_type_validator, request_type: request_type)
+        request_type.library_types_request_types << create(:library_types_request_type, request_type:)
+        request_type.request_type_validators << create(:library_request_type_validator, request_type:)
       end
     end
 

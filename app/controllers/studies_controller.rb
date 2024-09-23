@@ -301,7 +301,7 @@ class StudiesController < ApplicationController
         end
 
         @roles = @study.roles.reload
-        render partial: 'roles', status: status
+        render partial: 'roles', status:
       end
     end
   end

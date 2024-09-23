@@ -15,7 +15,7 @@ RSpec.describe Api::Messages::FlowcellIO do
              asset: mx_tube1,
              batch: sequencing_batch,
              target_asset: lane1,
-             request_type: request_type,
+             request_type:,
              event_descriptors: request_data
     end
 

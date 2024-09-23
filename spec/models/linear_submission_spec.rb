@@ -23,7 +23,7 @@ RSpec.describe LinearSubmission do
           create :well_request_type, :with_library_types, target_purpose: purpose, for_multiplexing: true
         end
         let(:product_criteria) { create :product_criteria }
-        let(:current_report) { create :qc_report, product_criteria: product_criteria }
+        let(:current_report) { create :qc_report, product_criteria: }
         let(:stock_well) { create :well }
         let(:request_well) do
           well = create :well
@@ -37,11 +37,11 @@ RSpec.describe LinearSubmission do
         let(:mpx_submission) do
           create(
             :linear_submission,
-            study: study,
-            project: project,
-            user: user,
+            study:,
+            project:,
+            user:,
             request_types: [library_creation_request_type.id, sequencing_request_type.id],
-            request_options: request_options,
+            request_options:,
             product: product_criteria.product,
             assets: [request_well]
           ).submission
@@ -73,12 +73,12 @@ RSpec.describe LinearSubmission do
         let(:mpx_submission) do
           create(
             :linear_submission,
-            study: study,
-            project: project,
-            user: user,
+            study:,
+            project:,
+            user:,
             assets: mpx_assets,
             request_types: request_type_option,
-            request_options: request_options
+            request_options:
           ).submission
         end
 
@@ -135,12 +135,12 @@ RSpec.describe LinearSubmission do
       let(:assets) { create_list(:untagged_well, 2) }
       let(:basic_options) do
         {
-          study: study,
-          project: project,
-          user: user,
+          study:,
+          project:,
+          user:,
           request_types: request_type_option,
-          request_options: request_options,
-          assets: assets
+          request_options:,
+          assets:
         }
       end
       let(:submission) { create(:linear_submission, basic_options).submission.tap(&:built!) }
@@ -160,12 +160,12 @@ RSpec.describe LinearSubmission do
       let(:submission) do
         create(
           :linear_submission,
-          study: study,
-          project: project,
-          user: user,
-          assets: assets,
+          study:,
+          project:,
+          user:,
+          assets:,
           request_types: request_type_option,
-          request_options: request_options,
+          request_options:,
           comments: 'This is a comment'
         ).submission
       end
@@ -259,10 +259,10 @@ RSpec.describe LinearSubmission do
         let(:submission) do
           create(
             :linear_submission,
-            study: study,
-            project: project,
-            user: user,
-            assets: assets,
+            study:,
+            project:,
+            user:,
+            assets:,
             request_types: [lib_request_type.id, sequencing_request_type.id],
             request_options: {
               :multiplier => {
@@ -289,10 +289,10 @@ RSpec.describe LinearSubmission do
         let(:submission) do
           create(
             :linear_submission,
-            study: study,
-            project: project,
-            user: user,
-            assets: assets,
+            study:,
+            project:,
+            user:,
+            assets:,
             request_types: [mx_request_type.id, sequencing_request_type.id],
             request_options: {
               :multiplier => {

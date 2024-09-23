@@ -9,7 +9,7 @@ FactoryBot.define do
     project_metadata
 
     factory :project_with_order do
-      after(:build) { |project| project.orders ||= [create(:order, project: project)] }
+      after(:build) { |project| project.orders ||= [create(:order, project:)] }
     end
   end
 

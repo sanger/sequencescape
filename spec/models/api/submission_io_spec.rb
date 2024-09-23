@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Api::SubmissionIO do
-  subject { create :submission, user: user }
+  subject { create :submission, user: }
 
   let(:user) { create :user }
 

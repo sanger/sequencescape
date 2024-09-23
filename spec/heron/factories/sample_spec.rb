@@ -7,7 +7,7 @@ RSpec.describe Heron::Factories::Sample, :heron, :lighthouse, type: :model do
 
   describe '#valid?' do
     context 'when receiving a study instance' do
-      let(:params) { { study: study } }
+      let(:params) { { study: } }
 
       it 'is valid' do
         factory = described_class.new(params)
@@ -16,7 +16,7 @@ RSpec.describe Heron::Factories::Sample, :heron, :lighthouse, type: :model do
     end
 
     context 'when receiving a column that does not exist in sample or sample metadata' do
-      let(:params) { { study: study, asdf: 'wrong' } }
+      let(:params) { { study:, asdf: 'wrong' } }
 
       it 'is not valid' do
         factory = described_class.new(params)
@@ -32,7 +32,7 @@ RSpec.describe Heron::Factories::Sample, :heron, :lighthouse, type: :model do
 
     context 'when receiving other fields and sample_uuid' do
       let(:sample) { create(:sample) }
-      let(:params) { { study: study, phenotype: 'A phenotype', sample_uuid: sample.uuid } }
+      let(:params) { { study:, phenotype: 'A phenotype', sample_uuid: sample.uuid } }
 
       it 'is not valid' do
         factory = described_class.new(params)
@@ -82,7 +82,7 @@ RSpec.describe Heron::Factories::Sample, :heron, :lighthouse, type: :model do
     context 'when the factory is valid' do
       let(:well) { create :well }
       let(:tag_id) { 1 }
-      let(:factory) { described_class.new(study: study, aliquot: { tag_id: tag_id }) }
+      let(:factory) { described_class.new(study:, aliquot: { tag_id: }) }
 
       it 'can create an aliquot of the sample in the well' do
         expect { factory.create_aliquot_at(well) }.to change(Aliquot, :count).by(1).and(change(Sample, :count).by(1))
@@ -113,24 +113,24 @@ RSpec.describe Heron::Factories::Sample, :heron, :lighthouse, type: :model do
 
     context 'when the factory is valid' do
       it 'returns a sample instance' do
-        factory = described_class.new(study: study)
+        factory = described_class.new(study:)
         expect(factory.create.class).to eq(Sample)
       end
 
       it 'returns the same sample instance in any subsequent call' do
-        factory = described_class.new(study: study)
+        factory = described_class.new(study:)
         sample = factory.create
         sample2 = factory.create
         expect(sample).to eq(sample2)
       end
 
       it 'creates one sample' do
-        factory = described_class.new(study: study)
+        factory = described_class.new(study:)
         expect { factory.create }.to change(Sample, :count).by(1)
       end
 
       it 'creates one uuid for the sample' do
-        factory = described_class.new(study: study)
+        factory = described_class.new(study:)
         sample = factory.create
         expect(Uuid.where(resource: sample).count).to eq(1)
       end
@@ -139,29 +139,29 @@ RSpec.describe Heron::Factories::Sample, :heron, :lighthouse, type: :model do
         let(:sample) { create(:sample) }
 
         it 'wont create a new sample' do
-          factory = described_class.new(study: study, sample_uuid: sample.uuid)
+          factory = described_class.new(study:, sample_uuid: sample.uuid)
           expect { factory.create }.not_to change(Sample, :count)
         end
 
         it 'will return the sample with uuid specified' do
-          factory = described_class.new(study: study, sample_uuid: sample.uuid)
+          factory = described_class.new(study:, sample_uuid: sample.uuid)
           expect(factory.create).to eq(sample)
         end
 
         it 'will be invalid if providing any other extra attributes' do
-          factory = described_class.new(study: study, sample_uuid: sample.uuid, sample_id: '1234')
+          factory = described_class.new(study:, sample_uuid: sample.uuid, sample_id: '1234')
           expect(factory).not_to be_valid
         end
 
         it 'will be valid if providing any other attributes not sample related' do
-          factory = described_class.new(study: study, sample_uuid: sample.uuid, aliquot: { tag_id: 1 })
+          factory = described_class.new(study:, sample_uuid: sample.uuid, aliquot: { tag_id: 1 })
           expect(factory).to be_valid
         end
       end
 
       context 'when providing a sanger_sample_id' do
         let(:sample_id) { 'test' }
-        let(:factory) { described_class.new(study: study, sanger_sample_id: sample_id) }
+        let(:factory) { described_class.new(study:, sanger_sample_id: sample_id) }
 
         it 'sets the id provided as sanger_sample_id' do
           expect(factory.create.sanger_sample_id).to eq(sample_id)
@@ -170,7 +170,7 @@ RSpec.describe Heron::Factories::Sample, :heron, :lighthouse, type: :model do
 
       context 'when providing a name' do
         let(:sample_id) { 'test' }
-        let(:factory) { described_class.new(study: study, name: sample_id) }
+        let(:factory) { described_class.new(study:, name: sample_id) }
 
         it 'sets the id provided as name' do
           expect(factory.create.name).to eq(sample_id)
@@ -180,7 +180,7 @@ RSpec.describe Heron::Factories::Sample, :heron, :lighthouse, type: :model do
       context 'when providing both sanger_sample_id and name' do
         let(:sample_id) { 'test' }
         let(:name) { 'testingname' }
-        let(:factory) { described_class.new(study: study, name: name, sanger_sample_id: sample_id) }
+        let(:factory) { described_class.new(study:, name:, sanger_sample_id: sample_id) }
 
         it 'sets the id provided as sanger_sample_id' do
           expect(factory.create.sanger_sample_id).to eq(sample_id)
@@ -196,7 +196,7 @@ RSpec.describe Heron::Factories::Sample, :heron, :lighthouse, type: :model do
       end
 
       context 'when not providing a sanger_sample_id' do
-        let(:factory) { described_class.new(study: study) }
+        let(:factory) { described_class.new(study:) }
 
         it 'generates a new sanger_sample_id' do
           sample = nil
@@ -215,13 +215,13 @@ RSpec.describe Heron::Factories::Sample, :heron, :lighthouse, type: :model do
 
         context 'when the uuid does not exist already' do
           it 'creates a new sample using that uuid' do
-            factory = described_class.new(study: study, uuid: replaced_uuid)
+            factory = described_class.new(study:, uuid: replaced_uuid)
             sample = factory.create
             expect(sample.uuid).to eq(replaced_uuid)
           end
 
           it 'only creates one uuid' do
-            factory = described_class.new(study: study, uuid: replaced_uuid)
+            factory = described_class.new(study:, uuid: replaced_uuid)
             sample = factory.create
             expect(Uuid.where(resource: sample).count).to eq(1)
           end
@@ -231,7 +231,7 @@ RSpec.describe Heron::Factories::Sample, :heron, :lighthouse, type: :model do
           let(:sample) { create :sample }
 
           it 'will be invalid if providing any other extra attributes' do
-            factory = described_class.new(study: study, uuid: sample.uuid)
+            factory = described_class.new(study:, uuid: sample.uuid)
             expect { factory.create }.to raise_error(StandardError)
           end
         end
@@ -239,13 +239,13 @@ RSpec.describe Heron::Factories::Sample, :heron, :lighthouse, type: :model do
 
       context 'when providing other arguments' do
         it 'updates other sample attributes' do
-          factory = described_class.new(study: study, control: true)
+          factory = described_class.new(study:, control: true)
           sample = factory.create
           expect(sample.control).to be(true)
         end
 
         it 'updates other sample_metadata attributes' do
-          factory = described_class.new(study: study, phenotype: 'A phenotype')
+          factory = described_class.new(study:, phenotype: 'A phenotype')
           sample = factory.create
           expect(sample.sample_metadata.phenotype).to eq('A phenotype')
         end

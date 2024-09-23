@@ -38,13 +38,13 @@ shared_context 'a limber target plate with submissions' do |library_state = 'sta
 
   let(:build_library_requests) do
     input_plate.wells.each do |well|
-      create_list :library_request,
+      create_list(:library_request,
                   requests_per_well,
                   request_type: library_request_type,
                   asset: well,
                   submission: target_submission,
                   state: library_state,
-                  order: order
+                  order:)
       create :library_request,
              request_type: library_request_type,
              asset: well,

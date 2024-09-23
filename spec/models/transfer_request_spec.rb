@@ -241,19 +241,19 @@ RSpec.describe TransferRequest do
 
     it 'does not permit transfers to the same asset' do
       asset = create(:sample_tube)
-      expect { described_class.create!(asset: asset, target_asset: asset) }.to raise_error(ActiveRecord::RecordInvalid)
+      expect { described_class.create!(asset:, target_asset: asset) }.to raise_error(ActiveRecord::RecordInvalid)
     end
 
     context 'with a tag clash' do
       let!(:tag) { create :tag }
       let!(:tag2) { create :tag }
-      let!(:aliquot_1) { create :aliquot, tag: tag, tag2: tag2 }
-      let!(:aliquot_2) { create :aliquot, tag: tag, tag2: tag2, receptacle: create(:well) }
+      let!(:aliquot_1) { create :aliquot, tag:, tag2: }
+      let!(:aliquot_2) { create :aliquot, tag:, tag2:, receptacle: create(:well) }
       let!(:target_asset) { create :well, aliquots: [aliquot_1] }
 
       it 'raises an exception' do
         expect do
-          described_class.create!(asset: aliquot_2.receptacle.reload, target_asset: target_asset)
+          described_class.create!(asset: aliquot_2.receptacle.reload, target_asset:)
         end.to raise_error(Aliquot::TagClash)
       end
     end
@@ -316,7 +316,7 @@ RSpec.describe TransferRequest do
       end
       (%i[pending started passed failed qc_complete cancelled] - transitions.keys).each do |state|
         it "does not allow #{state} requests to #{event}" do
-          tf = build :transfer_request, state: state
+          tf = build(:transfer_request, state:)
           expect(tf).not_to allow_event(event)
         end
       end
@@ -409,7 +409,7 @@ RSpec.describe TransferRequest do
     context 'when any of the downstream assets have a batch' do
       let(:batch) { create(:sequencing_batch, request_count: 1) }
 
-      before { outer_requests_graph[2].update(batch: batch) }
+      before { outer_requests_graph[2].update(batch:) }
 
       it 'does not remove the downstream aliquots' do
         expect { transfer_requests.first.fail! }.not_to change {
@@ -443,7 +443,7 @@ RSpec.describe TransferRequest do
     let(:submission) { create :submission }
     let(:order) do
       create :library_order,
-             submission: submission,
+             submission:,
              request_types: [library_request_type.id, multiplex_request_type.id],
              assets: [source_well_a, source_well_b]
     end
@@ -452,8 +452,8 @@ RSpec.describe TransferRequest do
       create :library_request,
              asset: source_well_a,
              target_asset: target_well,
-             submission: submission,
-             order: order,
+             submission:,
+             order:,
              state: 'passed',
              request_type: library_request_type
     end
@@ -461,8 +461,8 @@ RSpec.describe TransferRequest do
       create :library_request,
              asset: source_well_b,
              target_asset: target_well,
-             submission: submission,
-             order: order,
+             submission:,
+             order:,
              state: 'passed',
              request_type: library_request_type
     end
@@ -472,16 +472,16 @@ RSpec.describe TransferRequest do
       create :multiplex_request,
              asset: target_well,
              target_asset: multiplexed_library_tube,
-             submission: submission,
-             order: order,
+             submission:,
+             order:,
              request_type: multiplex_request_type
     end
     let(:multiplex_request_b) do
       create :multiplex_request,
              asset: target_well,
              target_asset: multiplexed_library_tube,
-             submission: submission,
-             order: order,
+             submission:,
+             order:,
              request_type: multiplex_request_type
     end
 
@@ -492,12 +492,12 @@ RSpec.describe TransferRequest do
       library_request_b
       multiplex_request_a
       multiplex_request_b
-      create :transfer_request, asset: source_well_a, target_asset: target_well, submission: submission
-      create :transfer_request, asset: source_well_b, target_asset: target_well, submission: submission
+      create(:transfer_request, asset: source_well_a, target_asset: target_well, submission:)
+      create :transfer_request, asset: source_well_b, target_asset: target_well, submission:
     end
 
     it 'associated each aliquot with a different library request' do
-      create :transfer_request, asset: target_well, target_asset: multiplexed_library_tube, submission: submission
+      create(:transfer_request, asset: target_well, target_asset: multiplexed_library_tube, submission:)
       expect(multiplexed_library_tube.reload.aliquots.map(&:request_id)).to eq(
         [multiplex_request_a.id, multiplex_request_a.id, multiplex_request_b.id]
       )

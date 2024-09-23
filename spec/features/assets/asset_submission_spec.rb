@@ -12,7 +12,7 @@ describe 'Asset submission', :js do
   let(:selected_request_type) { original_request_type }
   let(:selected_read_length) { '76' }
   let!(:original_request) do
-    create(request_factory, study: study, project: project, asset: asset, request_type: original_request_type)
+    create(request_factory, study:, project:, asset:, request_type: original_request_type)
   end
 
   shared_examples 'it allows additional sequencing' do
@@ -130,7 +130,7 @@ describe 'Asset submission', :js do
       let(:study) { asset.aliquots.first.study }
       let(:project) { asset.aliquots.first.project }
       let!(:original_request) do
-        create(request_factory, study: nil, project: nil, asset: asset, request_type: original_request_type)
+        create(request_factory, study: nil, project: nil, asset:, request_type: original_request_type)
       end
       let(:selected_read_length) { '108' }
 

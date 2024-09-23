@@ -34,7 +34,7 @@ module ActsAsDescriptable # :nodoc:
   end
 
   def descriptors
-    descriptor_hash.map { |field, value| Descriptor.new(name: field, value: value) }
+    descriptor_hash.map { |field, value| Descriptor.new(name: field, value:) }
   end
 
   def descriptor_value(key)

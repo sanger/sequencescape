@@ -131,7 +131,7 @@ FactoryBot.define do
     target_asset factory: %i[well]
     request_type factory: %i[cherrypick_request_type]
     request_purpose { :standard }
-    request_metadata_attributes { { target_purpose: target_purpose } }
+    request_metadata_attributes { { target_purpose: } }
 
     factory :final_cherrypick_for_fluidigm_request do
       request_type factory: %i[request_type], key: 'pick_to_fluidigm'

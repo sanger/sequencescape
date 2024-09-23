@@ -128,7 +128,7 @@ module BootstrapHelper
   # rubocop:enable Layout/LineLength
   def loading_bar(id = 'update_loader', show: false, text: 'Loading')
     tag.div(class: 'loading-bar-placeholder') do
-      tag.div(id: id, class: 'loading-bar-container', style: show ? '' : 'display: none;') do
+      tag.div(id:, class: 'loading-bar-container', style: show ? '' : 'display: none;') do
         tag.div(text, class: 'loading-bar', role: 'progressbar')
       end
     end

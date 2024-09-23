@@ -134,7 +134,7 @@ RSpec.describe BroadcastEvent, :broadcast_event do
           data_method_a: value_a
         )
       end
-      let(:event) { ExampleEvent.new(seed: seed, user: user, created_at: time) }
+      let(:event) { ExampleEvent.new(seed:, user:, created_at: time) }
 
       it 'finds subjects with a 1 to 1 relationship' do
         expect(event.subjects).to be_present

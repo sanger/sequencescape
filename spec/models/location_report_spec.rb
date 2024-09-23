@@ -44,7 +44,7 @@ RSpec.describe LocationReport do
   # add retention instruction metadata to plate 1 custom metadatum collection
   let(:retention_key) { 'retention_instruction' }
   let(:retention_value) { 'Long term storage' }
-  let(:plate_1_custom_metadatum_collection) { create :custom_metadatum_collection, asset: plate_1, user: user }
+  let(:plate_1_custom_metadatum_collection) { create :custom_metadatum_collection, asset: plate_1, user: }
   let(:plate_1_custom_metadatum) do
     create :custom_metadatum,
            custom_metadatum_collection: plate_1_custom_metadatum_collection,
@@ -78,7 +78,7 @@ RSpec.describe LocationReport do
   let(:plt_3_received_date) { 'Unknown' }
 
   # add retention instruction metadata to plate 3 custom metadatum collection
-  let(:plate_3_custom_metadatum_collection) { create :custom_metadatum_collection, asset: plate_3, user: user }
+  let(:plate_3_custom_metadatum_collection) { create :custom_metadatum_collection, asset: plate_3, user: }
   let(:plate_3_custom_metadatum) do
     create :custom_metadatum,
            custom_metadatum_collection: plate_3_custom_metadatum_collection,
@@ -107,15 +107,15 @@ RSpec.describe LocationReport do
     let(:location_report) do
       build(
         :location_report,
-        report_type: report_type,
-        name: name,
-        location_barcode: location_barcode,
-        faculty_sponsor_ids: faculty_sponsor_ids,
-        study_id: study_id,
-        start_date: start_date,
-        end_date: end_date,
-        plate_purpose_ids: plate_purpose_ids,
-        barcodes: barcodes
+        report_type:,
+        name:,
+        location_barcode:,
+        faculty_sponsor_ids:,
+        study_id:,
+        start_date:,
+        end_date:,
+        plate_purpose_ids:,
+        barcodes:
       )
     end
     let(:report_type) { nil }
@@ -240,9 +240,9 @@ RSpec.describe LocationReport do
             [plate_3.machine_barcode.to_s, 'Shelf 3', locn_prefix]
           ].each do |lw_barcode, lw_locn_name, lw_locn_parentage|
             stub_lwclient_labware_find_by_bc(
-              lw_barcode: lw_barcode,
-              lw_locn_name: lw_locn_name,
-              lw_locn_parentage: lw_locn_parentage
+              lw_barcode:,
+              lw_locn_name:,
+              lw_locn_parentage:
             )
           end
 

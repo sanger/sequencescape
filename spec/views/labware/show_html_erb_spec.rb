@@ -71,7 +71,7 @@ RSpec.describe 'labware/show.html.erb' do # rubocop:todo RSpec/DescribeClass
     let(:barcodes) { Array.new(num_tubes) { create :fluidx } }
     let!(:tubes) do
       Array.new(num_tubes) do |i|
-        create(:sample_tube, :in_a_rack, tube_rack: tube_rack, coordinate: locations[i], barcodes: [barcodes[i]])
+        create(:sample_tube, :in_a_rack, tube_rack:, coordinate: locations[i], barcodes: [barcodes[i]])
       end
     end
 
@@ -111,10 +111,10 @@ RSpec.describe 'labware/show.html.erb' do # rubocop:todo RSpec/DescribeClass
     end
 
     context 'when the tube is inside a rack' do
-      before { tube.update(racked_tube: racked_tube) }
+      before { tube.update(racked_tube:) }
 
       let(:coordinate) { 'A1' }
-      let(:racked_tube) { build :racked_tube, tube_rack: tube_rack, coordinate: coordinate }
+      let(:racked_tube) { build :racked_tube, tube_rack:, coordinate: }
 
       let(:rack_barcode) { create :barcode }
       let(:tube_rack) { create :tube_rack, barcodes: [rack_barcode] }

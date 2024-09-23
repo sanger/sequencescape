@@ -59,8 +59,8 @@ class CompoundAliquot
 
   def aliquot_attributes
     {
-      tag_id: tag_id,
-      tag2_id: tag2_id,
+      tag_id:,
+      tag2_id:,
       library_type: default_library_type,
       study_id: default_compound_study.id,
       project_id: default_compound_project_id,

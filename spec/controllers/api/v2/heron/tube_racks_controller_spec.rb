@@ -35,7 +35,7 @@ RSpec.describe Api::V2::Heron::TubeRacksController, :heron, type: :request do
               }
             },
             purpose_uuid: purpose_96_uuid,
-            study_uuid: study_uuid
+            study_uuid:
           }
         }
       }.to_h.with_indifferent_access
@@ -43,7 +43,7 @@ RSpec.describe Api::V2::Heron::TubeRacksController, :heron, type: :request do
     let!(:before_tube_rack_count) { TubeRack.count }
     let!(:before_tube_count) { Tube.count }
 
-    before { post api_v2_heron_tube_racks_path, params: params }
+    before { post api_v2_heron_tube_racks_path, params: }
 
     it 'creates a new tube rack successfully' do
       expect(response).to have_http_status(:created)

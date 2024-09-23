@@ -25,16 +25,16 @@ Given(
   study = Study.find_by(name: study_name)
   purpose = Purpose.find_by(name: purpose_name)
   sanger_barcode = Barcode.build_sequencescape22({ barcode: plate_barcode })
-  plate = FactoryBot.create(:plate, purpose: purpose, sanger_barcode: sanger_barcode)
+  plate = FactoryBot.create(:plate, purpose:, sanger_barcode:)
 
   asset_group = study.asset_groups.find_by(name: asset_group_name) || study.asset_groups.create!(name: asset_group_name)
   asset_group.assets << (1..number_of_samples.to_i).map do |index|
     FactoryBot
-      .create(:well, plate: plate, map_id: index)
+      .create(:well, plate:, map_id: index)
       .tap do |well|
         well.aliquots.create!(
           sample: FactoryBot.create(:sample, name: "Sample_#{plate_barcode}_#{index}"),
-          study: study
+          study:
         )
       end
   end
@@ -101,7 +101,7 @@ Given(
   wells = plate.wells.in_column_major_order.to_a
 
   submission_template = SubmissionTemplate.find_by(name: submission_template_name)
-  order = submission_template.create_with_submission!(study: study, project: project, user: User.last, assets: wells)
+  order = submission_template.create_with_submission!(study:, project:, user: User.last, assets: wells)
   order.submission.built!
   step('1 pending delayed jobs are processed')
 end
@@ -114,8 +114,8 @@ Given(/^I have a Cherrypicking submission for asset group "([^"]*)"$/) do |asset
   submission_template = SubmissionTemplate.find_by(name: 'Cherrypick')
   order =
     submission_template.create_with_submission!(
-      study: study,
-      project: project,
+      study:,
+      project:,
       user: User.last,
       assets: asset_group.assets
     )

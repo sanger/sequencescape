@@ -34,7 +34,7 @@ class Pooling # rubocop:todo Metrics/ClassLength
       # pass in a Request Null object. This will disable the attempt to detect an outer request.
       # We don't use nil as its *far* to easy to end up with nil by accident, so basing key behaviour
       # off it is risky.
-      TransferRequest.create!(asset: source_asset, target_asset: target_asset, outer_request: Request::None.new)
+      TransferRequest.create!(asset: source_asset, target_asset:, outer_request: Request::None.new)
     end
     message[:notice] = message[:notice] + success
   end
@@ -72,7 +72,7 @@ class Pooling # rubocop:todo Metrics/ClassLength
         barcode_printer,
         LabelPrinter::Label::MultiplexedTube,
         assets: target_assets,
-        count: count
+        count:
       )
   end
 

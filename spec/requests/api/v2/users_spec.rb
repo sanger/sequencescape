@@ -28,7 +28,7 @@ describe 'Users API', with: :api_v2 do
         let(:swipecard_code) { '1234567' }
 
         before do
-          user.update(swipecard_code: swipecard_code)
+          user.update(swipecard_code:)
           api_get "#{base_endpoint}?filter[user_code]=#{swipecard_code}"
         end
 

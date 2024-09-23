@@ -12,7 +12,7 @@ module RecordLoader
     def create_or_update!(key, options)
       RequestType
         .create_with(filter_options(options))
-        .find_or_create_by!(key: key)
+        .find_or_create_by!(key:)
         .tap do |request_type|
           add_library_types(request_type, options.fetch('library_types', []))
           add_acceptable_purposes(request_type, options.fetch('acceptable_purposes', []))
@@ -26,7 +26,7 @@ module RecordLoader
     def add_library_types(request_type, library_types)
       rt_lts = request_type.library_types.pluck(:name)
       library_types.each do |name|
-        request_type.library_types << LibraryType.find_or_create_by!(name: name) unless rt_lts.include?(name)
+        request_type.library_types << LibraryType.find_or_create_by!(name:) unless rt_lts.include?(name)
       end
 
       return if library_types.empty? || request_type.request_type_validators.exists?(request_option: 'library_type')
@@ -39,13 +39,13 @@ module RecordLoader
       purposes.each do |name|
         next if acceptable_purposes.include?(name)
 
-        request_type.acceptable_purposes << Purpose.find_by!(name: name)
+        request_type.acceptable_purposes << Purpose.find_by!(name:)
       end
     end
 
     def add_library_type_validator(request_type)
       RequestType::Validator.create!(
-        request_type: request_type,
+        request_type:,
         request_option: 'library_type',
         valid_options: RequestType::Validator::LibraryTypeValidator.new(request_type.id)
       )

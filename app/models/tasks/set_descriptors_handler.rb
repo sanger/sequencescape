@@ -33,10 +33,10 @@ module Tasks::SetDescriptorsHandler
 
     def process_request(request)
       LabEvent.create!(
-        batch: batch,
+        batch:,
         description: @task.name,
         descriptors: descriptors(request),
-        user: user,
+        user:,
         eventful: request
       )
 

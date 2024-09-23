@@ -18,8 +18,8 @@ class MigrateSangerBarcodesToNewTables < ActiveRecord::Migration[5.1]
           barcodes_hash =
             barcodes.map do |asset_id, number, prefix_id|
               {
-                asset_id: asset_id,
-                barcode: SBCF::SangerBarcode.new(number: number, prefix: @prefixes[prefix_id]).human_barcode,
+                asset_id:,
+                barcode: SBCF::SangerBarcode.new(number:, prefix: @prefixes[prefix_id]).human_barcode,
                 format: 0
               }
             end

@@ -53,22 +53,22 @@ RSpec.describe RobotVerificationsController do
         user_id: user.id,
         batch_id: batch.id,
         robot_id: robot.id,
-        plate_types: plate_types,
-        barcodes: barcodes,
-        bed_barcodes: bed_barcodes,
-        plate_barcodes: plate_barcodes,
-        destination_bed_barcodes: destination_bed_barcodes,
-        destination_plate_barcodes: destination_plate_barcodes,
+        plate_types:,
+        barcodes:,
+        bed_barcodes:,
+        plate_barcodes:,
+        destination_bed_barcodes:,
+        destination_plate_barcodes:,
         pick_number: 1
       }
     end
 
     before do
       expected_layout[1].each_with_index do |(barcode, _sort_number), index|
-        source_plate = create :plate, barcode: barcode
+        source_plate = create(:plate, barcode:)
         position = Map.for_position_on_plate(index + 1, 96, source_plate.asset_shape).first
         well = create :well, map: position, plate: source_plate
-        target_well = create :well, map: position, plate: plate
+        target_well = create(:well, map: position, plate:)
         well_request = create :request, state: 'passed', asset: well, target_asset: target_well
         batch.requests << well_request
       end
@@ -239,7 +239,7 @@ RSpec.describe RobotVerificationsController do
     end
 
     describe '#submission' do
-      let(:well) { create :well, plate: plate }
+      let(:well) { create :well, plate: }
       let(:well_request) { create :request, state: 'passed' }
       let(:source_plate) { create :plate, barcode: 'SQPD-1234' }
       let(:target_well) { create :well, plate: source_plate }

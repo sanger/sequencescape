@@ -73,7 +73,7 @@ describe Well do
   describe '#update_from_qc' do
     let(:well_attributes) { { concentration: nil } }
 
-    let(:qc_result) { build :qc_result, key: key, value: value, units: units, assay_type: 'assay', assay_version: 1 }
+    let(:qc_result) { build :qc_result, key:, value:, units:, assay_type: 'assay', assay_version: 1 }
 
     before { well.update_from_qc(qc_result) }
 
@@ -162,7 +162,7 @@ describe Well do
     purposes = create_list :plate_purpose, 4
     stock_plate = create :plate_with_untagged_wells, sample_count: 3
 
-    norm_plates = purposes.map { |purpose| create :plate_with_untagged_wells, purpose: purpose, sample_count: 3 }
+    norm_plates = purposes.map { |purpose| create :plate_with_untagged_wells, purpose:, sample_count: 3 }
 
     well_plate_concentrations = [
       # Plate 1, Plate 2, Plate 3
@@ -284,8 +284,8 @@ describe Well do
         robot_minimum_picking_volume = 1.0
         @source_well.well_attribute.update!(
           concentration: measured_concentration,
-          measured_volume: measured_volume,
-          current_volume: current_volume
+          measured_volume:,
+          current_volume:
         )
         @target_well.volume_to_cherrypick_by_nano_grams(
           minimum_volume,
@@ -524,7 +524,7 @@ describe Well do
       build(:qc_result_molarity),
       build(:qc_result_rin)
     ]
-    well = create(:well, qc_results: qc_results)
+    well = create(:well, qc_results:)
     expect(well.qc_results_by_key.size).to eq(4)
     expect(well.qc_results_by_key['concentration'].length).to eq(1)
   end

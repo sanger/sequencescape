@@ -40,7 +40,7 @@ RSpec.describe 'Following a Sequencing Pipeline', :js do
     create_list :sequencing_request_with_assets,
                 2,
                 request_type: pipeline.request_types.first,
-                asset: asset,
+                asset:,
                 target_asset: nil,
                 submission: create(:submission)
   end

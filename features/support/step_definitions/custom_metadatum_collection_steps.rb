@@ -5,7 +5,7 @@ Given /^a custom metadatum collection exists with ID (\d+)$/ do |id|
     FactoryBot.build(:custom_metadatum, key: 'Key1', value: 'Value1'),
     FactoryBot.build(:custom_metadatum, key: 'Key2', value: 'Value2')
   ]
-  FactoryBot.create(:custom_metadatum_collection, id: id, custom_metadata: metadata)
+  FactoryBot.create(:custom_metadatum_collection, id:, custom_metadata: metadata)
 end
 
 Given(/^the UUID for the custom metadatum collection with ID (\d+) is "(.*?)"$/) do |id, uuid|

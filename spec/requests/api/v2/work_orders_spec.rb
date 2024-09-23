@@ -100,7 +100,7 @@ describe 'WorkOrders API', with: :api_v2 do
 
   context 'with a request' do
     let(:requests) { create_list :library_request, 2 }
-    let(:work_order) { create :work_order, requests: requests }
+    let(:work_order) { create :work_order, requests: }
 
     let(:payload) do
       {

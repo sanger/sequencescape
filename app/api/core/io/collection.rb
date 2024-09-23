@@ -9,7 +9,7 @@ module Core::Io::Collection
         ::Core::Io::Registry
           .instance
           .lookup_for_object(object)
-          .object_json(object, options.merge(stream: stream, target: object, nested: true))
+          .object_json(object, options.merge(stream:, target: object, nested: true))
       end
     end
   end

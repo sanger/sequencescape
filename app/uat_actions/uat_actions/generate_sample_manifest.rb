@@ -60,7 +60,7 @@ class UatActions::GenerateSampleManifest < UatActions
   end
 
   def create_sample_manifest
-    SampleManifest.create!(study: study, supplier: supplier, asset_type: asset_type, count: count, purpose: purpose)
+    SampleManifest.create!(study:, supplier:, asset_type:, count:, purpose:)
   end
 
   def generate_manifest(sample_manifest)
@@ -73,7 +73,7 @@ class UatActions::GenerateSampleManifest < UatActions
       raise 'Manifest for plates is not supported yet' unless asset_type == '1dtube'
 
       create_sample("Sample_#{asset.human_barcode}_1", sample_manifest).tap do |sample|
-        asset.aliquots.create!(sample: sample, study: study)
+        asset.aliquots.create!(sample:, study:)
         study.samples << sample
       end
     end
@@ -117,7 +117,7 @@ class UatActions::GenerateSampleManifest < UatActions
         donor_id: "#{sample_name}_donor",
         sample_common_name: 'human'
       },
-      sample_manifest: sample_manifest
+      sample_manifest:
     )
   end
 

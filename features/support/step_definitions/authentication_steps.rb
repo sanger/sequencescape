@@ -12,7 +12,7 @@ Given /^I am an? "([^"]*)" user logged in as "([^"]*)"$/ do |role_name, login|
   @current_user =
     FactoryBot.create(
       :user,
-      login: login,
+      login:,
       first_name: 'John',
       last_name: 'Doe',
       password: 'generic',
@@ -33,11 +33,11 @@ Given /^there is at least one administrator$/ do
 end
 
 Then /^I should be logged in as "([^"]*)"$/ do |login|
-  user = User.find_by(login: login)
+  user = User.find_by(login:)
   assert @current_user == user
 end
 
 Given /^user "([^"]*)" has nil first and last names$/ do |login|
-  user = User.find_by(login: login)
+  user = User.find_by(login:)
   user.update!(last_name: nil, first_name: nil)
 end

@@ -108,7 +108,7 @@ module Submission::FlexibleRequestGraph
         source_asset_metrics_target_assets do |source_asset, qc_metrics, target_asset|
           chain
             .order
-            .create_request_of_type!(request_type, asset: source_asset, target_asset: target_asset)
+            .create_request_of_type!(request_type, asset: source_asset, target_asset:)
             .tap do |request|
               if source_asset&.labware.present? && target_asset&.labware.present?
                 AssetLink.create_edge(source_asset.labware, target_asset.labware)
@@ -117,9 +117,7 @@ module Submission::FlexibleRequestGraph
               request.qc_metrics = qc_metrics.compact.uniq
               request.update_responsibilities!
 
-              if comments.present?
-                comments.each { |comment| request.comments.create!(user: user, description: comment) }
-              end
+              comments.each { |comment| request.comments.create!(user:, description: comment) } if comments.present?
             end
         end
       end
@@ -195,7 +193,7 @@ module Submission::FlexibleRequestGraph
       downstream_requests.each do |request|
         request.update!(initial_study: nil) if request.initial_study != study
         request.update!(initial_project: nil) if request.initial_project != project
-        comments.each { |comment| request.comments.create!(user: user, description: comment) } if comments.present?
+        comments.each { |comment| request.comments.create!(user:, description: comment) } if comments.present?
       end
     end
 

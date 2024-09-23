@@ -59,7 +59,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase
         output << tag.div(class: %w[custom-control custom-radio custom-control-inline]) do
           value = option_value || label_text
           concat radio_button(method, value, class: 'custom-control-input', required: true)
-          concat label(method, label_text, class: 'custom-control-label', value: value)
+          concat label(method, label_text, class: 'custom-control-label', value:)
         end
       end
     end
@@ -161,7 +161,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase
           partial: 'shared/metadata/related_fields',
           locals: {
             root: sanitized_object_name,
-            related: related,
+            related:,
             changing_fields: @changing
           }
         )

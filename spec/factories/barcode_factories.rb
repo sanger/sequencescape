@@ -14,7 +14,7 @@ FactoryBot.define do
         barcode_number
       end
       format { 'sanger_ean13' }
-      barcode { SBCF::SangerBarcode.new(prefix: prefix, number: barcode_number).human_barcode }
+      barcode { SBCF::SangerBarcode.new(prefix:, number: barcode_number).human_barcode }
 
       factory :sanger_ean13_tube do
         transient { prefix { 'NT' } }
@@ -27,7 +27,7 @@ FactoryBot.define do
         barcode_number
       end
       format { 'sanger_code39' }
-      barcode { SBCF::SangerBarcode.new(prefix: prefix, number: barcode_number).human_barcode }
+      barcode { SBCF::SangerBarcode.new(prefix:, number: barcode_number).human_barcode }
 
       factory :sanger_code39_tube do
         transient { prefix { 'NT' } }

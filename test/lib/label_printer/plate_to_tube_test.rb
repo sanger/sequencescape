@@ -15,7 +15,7 @@ class PlateToTubesTest < ActiveSupport::TestCase
     @tube1 = create :sample_tube, barcode: barcode1, name: asset_name
     @sample_tubes = create_list :sample_tube, 4
     sample_tubes.unshift(tube1)
-    options = { sample_tubes: sample_tubes }
+    options = { sample_tubes: }
     @tube_label = LabelPrinter::Label::PlateToTubes.new(options)
     @label = {
       first_line: (asset_name).to_s,

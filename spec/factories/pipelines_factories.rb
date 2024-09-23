@@ -64,7 +64,7 @@ FactoryBot.define do
           name: pipeline.name,
           item_limit: evaluator.item_limit,
           locale: evaluator.locale,
-          pipeline: pipeline
+          pipeline:
         )
       end
     end
@@ -124,14 +124,14 @@ FactoryBot.define do
         create(
           :set_descriptors_task,
           name: 'Specify Dilution Volume',
-          workflow: workflow,
+          workflow:,
           per_item: true,
           descriptor_attributes: [{ kind: 'Text', sorter: 0, name: 'Concentration' }]
         )
-        create(:add_spiked_in_control_task, workflow: workflow)
+        create(:add_spiked_in_control_task, workflow:)
         create(
           :set_descriptors_task,
-          workflow: workflow,
+          workflow:,
           descriptor_attributes: [
             {
               kind: 'Selection',
@@ -204,14 +204,14 @@ FactoryBot.define do
     item_limit { 2 }
     locale { 'Internal' }
 
-    after(:build) { |workflow| workflow.pipeline = build(:pipeline, workflow: workflow) unless workflow.pipeline }
+    after(:build) { |workflow| workflow.pipeline = build(:pipeline, workflow:) unless workflow.pipeline }
   end
 
   factory :fluidigm_pipeline_workflow, class: 'Workflow' do
     name { generate :lab_workflow_name }
 
     after(:build) do |workflow|
-      workflow.pipeline = build(:fluidigm_pipeline, workflow: workflow) unless workflow.pipeline
+      workflow.pipeline = build(:fluidigm_pipeline, workflow:) unless workflow.pipeline
     end
 
     tasks { [build(:fluidigm_template_task, workflow: nil), build(:cherrypick_task, workflow: nil)] }
@@ -221,7 +221,7 @@ FactoryBot.define do
     name { generate :lab_workflow_name }
 
     after(:build) do |workflow|
-      workflow.pipeline = build(:cherrypick_pipeline, workflow: workflow) unless workflow.pipeline
+      workflow.pipeline = build(:cherrypick_pipeline, workflow:) unless workflow.pipeline
     end
 
     tasks { [build(:plate_template_task, workflow: nil), build(:cherrypick_task, workflow: nil)] }

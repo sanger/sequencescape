@@ -54,7 +54,7 @@ RSpec.describe Robot::PickData, :robot_verification do
 
     let(:user) { create :user }
 
-    let(:batch) { create :batch, requests: requests, pipeline: pipeline, user: user }
+    let(:batch) { create :batch, requests:, pipeline:, user: }
 
     shared_examples_for 'a picking process' do
       # This is how the output of the process should be displayed:

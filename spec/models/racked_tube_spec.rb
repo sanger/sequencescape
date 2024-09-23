@@ -56,7 +56,7 @@ RSpec.describe RackedTube do
 
     before do
       Array.new(num_tubes) do |i|
-        create(:sample_tube, :in_a_rack, tube_rack: tube_rack, coordinate: locations[i], barcodes: [barcodes[i]])
+        create(:sample_tube, :in_a_rack, tube_rack:, coordinate: locations[i], barcodes: [barcodes[i]])
       end
     end
 

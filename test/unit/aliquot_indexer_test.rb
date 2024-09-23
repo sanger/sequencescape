@@ -8,8 +8,8 @@ class AliquotIndexerTest < ActiveSupport::TestCase
       setup do
         @pre_count = AliquotIndex.count
         @lane = create :lane
-        @tags = [1, 8, 2, 4].map { |map_id| create :tag, map_id: map_id }
-        @tag2s = [1, 2].map { |map_id| create :tag, map_id: map_id } * 2
+        @tags = [1, 8, 2, 4].map { |map_id| create(:tag, map_id:) }
+        @tag2s = [1, 2].map { |map_id| create(:tag, map_id:) } * 2
         @aliquots = Array.new(4) { |i| create :aliquot, receptacle: @lane, tag: @tags[i], tag2: @tag2s[i] }
 
         @aliquot_index = [1, 4, 2, 3]
@@ -64,7 +64,7 @@ class AliquotIndexerTest < ActiveSupport::TestCase
       setup do
         @pre_count = AliquotIndex.count
         @lane = create :lane
-        @tags = [1, 8, 2, 4].map { |map_id| create :tag, map_id: map_id }
+        @tags = [1, 8, 2, 4].map { |map_id| create(:tag, map_id:) }
         @aliquots = Array.new(4) { |i| create :aliquot, receptacle: @lane, tag: @tags[i], tag2_id: -1 }
 
         @aliquot_index = [1, 4, 2, 3]
@@ -119,7 +119,7 @@ class AliquotIndexerTest < ActiveSupport::TestCase
       setup do
         @pre_count = AliquotIndex.count
         @lane = create :lane
-        @tags = [1, 8, 2, 4].map { |map_id| create :tag, map_id: map_id }
+        @tags = [1, 8, 2, 4].map { |map_id| create(:tag, map_id:) }
         @aliquots = Array.new(4) { |i| create :aliquot, receptacle: @lane, tag_id: -1, tag2: @tags[i] }
 
         @aliquot_index = [1, 4, 2, 3]

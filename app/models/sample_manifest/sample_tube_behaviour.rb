@@ -16,7 +16,7 @@ module SampleManifest::SampleTubeBehaviour
     end
 
     def io_samples
-      samples.map { |sample| { sample: sample, container: { barcode: sample.primary_receptacle.human_barcode } } }
+      samples.map { |sample| { sample:, container: { barcode: sample.primary_receptacle.human_barcode } } }
     end
 
     def acceptable_purposes

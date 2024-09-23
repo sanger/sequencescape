@@ -65,7 +65,7 @@ RSpec.describe Robot::Verification::SourceDestControlBeds, :robot_verification d
       end
     end
 
-    let(:batch) { create :batch, requests: requests, pipeline: pipeline }
+    let(:batch) { create :batch, requests:, pipeline: }
     let(:user) { create :user }
     let(:robot) { create :hamilton, barcode: '444' }
 

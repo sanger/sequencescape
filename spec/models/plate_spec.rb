@@ -25,7 +25,7 @@ describe Plate do
     context 'with requests out of the wells' do
       before do
         submission = create :submission
-        request = create :well_request, asset: plate.wells.first, submission: submission
+        request = create(:well_request, asset: plate.wells.first, submission:)
         create :comment, commentable: request, description: 'Comment on request'
         plate.reload
       end
@@ -46,9 +46,9 @@ describe Plate do
     context 'with requests in progress the wells' do
       before do
         submission = create :submission
-        request = create :well_request, submission: submission
-        plate.wells.first.aliquots << create(:aliquot, request: request)
-        create :transfer_request, target_asset: plate.wells.first, submission: submission
+        request = create(:well_request, submission:)
+        plate.wells.first.aliquots << create(:aliquot, request:)
+        create(:transfer_request, target_asset: plate.wells.first, submission:)
         create :comment, commentable: request, description: 'Comment on request'
         plate.reload
       end
@@ -63,8 +63,8 @@ describe Plate do
     context 'with multiple identical comments' do
       before do
         submission = create :submission
-        request = create :well_request, asset: plate.wells.first, submission: submission
-        request2 = create :well_request, asset: plate.wells.last, submission: submission
+        request = create(:well_request, asset: plate.wells.first, submission:)
+        request2 = create(:well_request, asset: plate.wells.last, submission:)
         create :comment, commentable: request, description: 'Duplicate comment'
         create :comment, commentable: request2, description: 'Duplicate comment'
         create :comment, commentable: plate, description: 'Duplicate comment'

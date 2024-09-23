@@ -56,7 +56,7 @@ module AssetsHelper
       select_tag(
         field,
         options_for_select(select_options_source.sorted_by_name.pluck(:name, :id), selected.try(:to_i)),
-        options.merge(disabled: disabled, class: 'form-control select2')
+        options.merge(disabled:, class: 'form-control select2')
       )
     end
   end

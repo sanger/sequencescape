@@ -94,7 +94,7 @@ class WorkflowsController < ApplicationController
   private
 
   def create_batch_events(batch, task)
-    event = batch.lab_events.build(description: 'Complete', user: current_user, batch: batch)
+    event = batch.lab_events.build(description: 'Complete', user: current_user, batch:)
     event.add_descriptor Descriptor.new(name: 'task_id', value: task.id)
     event.add_descriptor Descriptor.new(name: 'task', value: task.name)
     event.save!

@@ -33,13 +33,13 @@ RSpec.describe SampleManifestExcel::Worksheet, :sample_manifest, :sample_manifes
   after { File.delete(test_file) if File.exist?(test_file) }
 
   context 'type' do
-    let(:options) { { workbook: workbook, ranges: SampleManifestExcel.configuration.ranges.dup, password: '1111' } }
+    let(:options) { { workbook:, ranges: SampleManifestExcel.configuration.ranges.dup, password: '1111' } }
 
     it 'be Plates for any plate based manifest' do
       column_list = SampleManifestExcel.configuration.columns.plate_full.dup
       worksheet =
         SampleManifestExcel::Worksheet::DataWorksheet.new(
-          options.merge(columns: column_list, sample_manifest: sample_manifest)
+          options.merge(columns: column_list, sample_manifest:)
         )
       expect(worksheet.type).to eq('Plates')
     end
@@ -49,7 +49,7 @@ RSpec.describe SampleManifestExcel::Worksheet, :sample_manifest, :sample_manifes
       column_list = SampleManifestExcel.configuration.columns.tube_full.dup
       worksheet =
         SampleManifestExcel::Worksheet::DataWorksheet.new(
-          options.merge(columns: column_list, sample_manifest: sample_manifest)
+          options.merge(columns: column_list, sample_manifest:)
         )
       expect(worksheet.type).to eq('Tubes')
     end
@@ -59,7 +59,7 @@ RSpec.describe SampleManifestExcel::Worksheet, :sample_manifest, :sample_manifes
       column_list = SampleManifestExcel.configuration.columns.tube_extraction.dup
       worksheet =
         SampleManifestExcel::Worksheet::DataWorksheet.new(
-          options.merge(columns: column_list, sample_manifest: sample_manifest)
+          options.merge(columns: column_list, sample_manifest:)
         )
       expect(worksheet.type).to eq('Tubes')
     end
@@ -69,7 +69,7 @@ RSpec.describe SampleManifestExcel::Worksheet, :sample_manifest, :sample_manifes
       column_list = SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup
       worksheet =
         SampleManifestExcel::Worksheet::DataWorksheet.new(
-          options.merge(columns: column_list, sample_manifest: sample_manifest)
+          options.merge(columns: column_list, sample_manifest:)
         )
       expect(worksheet.type).to eq('Tubes')
     end
@@ -79,7 +79,7 @@ RSpec.describe SampleManifestExcel::Worksheet, :sample_manifest, :sample_manifes
       column_list = SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup
       worksheet =
         SampleManifestExcel::Worksheet::DataWorksheet.new(
-          options.merge(columns: column_list, sample_manifest: sample_manifest)
+          options.merge(columns: column_list, sample_manifest:)
         )
       expect(worksheet.type).to eq('Tubes')
     end
@@ -89,7 +89,7 @@ RSpec.describe SampleManifestExcel::Worksheet, :sample_manifest, :sample_manifes
       column_list = SampleManifestExcel.configuration.columns.tube_rack_default.dup
       worksheet =
         SampleManifestExcel::Worksheet::DataWorksheet.new(
-          options.merge(columns: column_list, sample_manifest: sample_manifest)
+          options.merge(columns: column_list, sample_manifest:)
         )
       expect(worksheet.type).to eq('Tube Racks')
     end
@@ -98,9 +98,9 @@ RSpec.describe SampleManifestExcel::Worksheet, :sample_manifest, :sample_manifes
   context 'data worksheet' do
     let!(:worksheet) do
       SampleManifestExcel::Worksheet::DataWorksheet.new(
-        workbook: workbook,
+        workbook:,
         columns: SampleManifestExcel.configuration.columns.plate_full.dup,
-        sample_manifest: sample_manifest,
+        sample_manifest:,
         ranges: SampleManifestExcel.configuration.ranges.dup,
         password: '1111'
       )
@@ -185,9 +185,9 @@ RSpec.describe SampleManifestExcel::Worksheet, :sample_manifest, :sample_manifes
   context 'tube rack worksheet' do
     let!(:worksheet) do
       SampleManifestExcel::Worksheet::DataWorksheet.new(
-        workbook: workbook,
+        workbook:,
         columns: SampleManifestExcel.configuration.columns.tube_rack_default.dup,
-        sample_manifest: sample_manifest,
+        sample_manifest:,
         ranges: SampleManifestExcel.configuration.ranges.dup,
         password: '1111'
       )
@@ -255,9 +255,9 @@ RSpec.describe SampleManifestExcel::Worksheet, :sample_manifest, :sample_manifes
           asset_type: 'multiplexed_library'
         )
       SampleManifestExcel::Worksheet::DataWorksheet.new(
-        workbook: workbook,
+        workbook:,
         columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup,
-        sample_manifest: sample_manifest,
+        sample_manifest:,
         ranges: SampleManifestExcel.configuration.ranges.dup,
         password: '1111'
       )
@@ -292,9 +292,9 @@ RSpec.describe SampleManifestExcel::Worksheet, :sample_manifest, :sample_manifes
 
     let(:attributes) do
       {
-        workbook: workbook,
+        workbook:,
         columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup,
-        data: data,
+        data:,
         no_of_rows: 5,
         study: 'WTCCC',
         supplier: 'Test supplier',
@@ -541,9 +541,9 @@ RSpec.describe SampleManifestExcel::Worksheet, :sample_manifest, :sample_manifes
     end
     let(:attributes) do
       {
-        workbook: workbook,
+        workbook:,
         columns: SampleManifestExcel.configuration.columns.tube_extraction.dup,
-        data: data,
+        data:,
         no_of_rows: 5,
         study: 'WTCCC',
         supplier: 'Test supplier',
@@ -589,9 +589,9 @@ RSpec.describe SampleManifestExcel::Worksheet, :sample_manifest, :sample_manifes
 
     let(:attributes) do
       {
-        workbook: workbook,
+        workbook:,
         columns: SampleManifestExcel.configuration.columns.plate_default.dup,
-        data: data,
+        data:,
         no_of_rows: 5,
         study: 'WTCCC',
         supplier: 'Test supplier',

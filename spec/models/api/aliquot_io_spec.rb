@@ -6,14 +6,14 @@ RSpec.describe Api::AliquotIO do
   subject do
     create :aliquot,
            receptacle: well,
-           sample: sample,
-           study: study,
-           project: project,
+           sample:,
+           study:,
+           project:,
            library: well,
-           tag: tag,
+           tag:,
            insert_size_from: 100,
            insert_size_to: 200,
-           bait_library: bait_library
+           bait_library:
   end
 
   let(:well) { create :empty_well }

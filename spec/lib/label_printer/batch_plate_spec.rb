@@ -66,28 +66,28 @@ context 'printing labels' do
   let(:study) { create :study }
   let(:request1) do
     order =
-      create(:order, order_role: OrderRole.new(role: 'test_role'), study: study, assets: [create(:empty_sample_tube)])
+      create(:order, order_role: OrderRole.new(role: 'test_role'), study:, assets: [create(:empty_sample_tube)])
     create(
       :well_request,
       asset: create(:well_with_sample_and_plate),
       target_asset: create(:well_with_sample_and_plate),
-      order: order
+      order:
     )
   end
   let(:request2) do
     order =
-      create(:order, order_role: OrderRole.new(role: 'test_role'), study: study, assets: [create(:empty_sample_tube)])
+      create(:order, order_role: OrderRole.new(role: 'test_role'), study:, assets: [create(:empty_sample_tube)])
     create(
       :well_request,
       asset: create(:well_with_sample_and_plate),
       target_asset: create(:well_with_sample_and_plate),
-      order: order
+      order:
     )
   end
   let(:plate1) { request1.target_asset.plate }
   let(:plate2) { request2.target_asset.plate }
   let(:printables) { { plate1.human_barcode => 'on' } }
-  let(:options) { { count: count, printable: printables, batch: batch } }
+  let(:options) { { count:, printable: printables, batch: } }
 
   before do
     batch.requests << request1
@@ -96,7 +96,7 @@ context 'printing labels' do
 
   describe LabelPrinter::Label::BatchPlateDouble do
     context 'printing double labels' do
-      let(:label_options) { { count: count, printable: printables, batch: batch } }
+      let(:label_options) { { count:, printable: printables, batch: } }
       let(:expected_count) { count.to_i * 2 }
 
       it_behaves_like 'a correct double label printer'

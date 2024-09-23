@@ -27,7 +27,7 @@ RSpec.describe PlateTemplateTask do
     create :plate, barcode: "SQPD-#{plate_b_barcode_number}", well_count: 4, well_factory: :untagged_well
   end
 
-  let(:batch) { create :batch, requests: requests, pipeline: pipeline }
+  let(:batch) { create :batch, requests:, pipeline: }
   let(:request) { instance_double(ActionDispatch::Request, parameters: params) }
   let(:workflow) { pipeline.workflow }
 
@@ -57,7 +57,7 @@ RSpec.describe PlateTemplateTask do
 
   let(:file) { instance_double(ActionDispatch::Http::UploadedFile, 'blank?' => false, :read => payload) }
 
-  let(:workflow_controller) { instance_double(WorkflowsController, batch: batch) }
+  let(:workflow_controller) { instance_double(WorkflowsController, batch:) }
   let(:user) { build :user }
 
   describe '#render_task' do
@@ -79,7 +79,7 @@ RSpec.describe PlateTemplateTask do
     let(:params) do
       ActionController::Parameters.new(
         workflow_id: workflow.id,
-        file: file,
+        file:,
         plate_purpose_id: create(:plate_purpose).id
       )
     end

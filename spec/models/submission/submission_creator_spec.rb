@@ -10,7 +10,7 @@ describe Submission::SubmissionCreator do
     context 'a full template' do
       let(:library_type) { create :library_type }
       let(:library_creation_request_type) do
-        create(:library_request_type, :with_library_types, library_type: library_type)
+        create(:library_request_type, :with_library_types, library_type:)
       end
       let(:template) do
         create :submission_template, request_types: [library_creation_request_type, create(:sequencing_request_type)]

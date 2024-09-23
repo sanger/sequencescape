@@ -22,7 +22,7 @@ RSpec.describe QcReport do
       [@study, @other_study].each do |study|
         2.times do |i|
           attribute = create :well_attribute, current_volume: 500, concentration: 200
-          sample = create(:study_sample, study: study).sample
+          sample = create(:study_sample, study:).sample
           sample.update!(sanger_sample_id: 'TEST1')
           well =
             create :well,
@@ -30,7 +30,7 @@ RSpec.describe QcReport do
                    plate: stock_plate,
                    map: create(:map, location_id: i),
                    well_attribute: attribute
-          well.aliquots.each { |a| a.update!(study: study) }
+          well.aliquots.each { |a| a.update!(study:) }
         end
       end
 
@@ -81,15 +81,15 @@ RSpec.describe QcReport do
 
       @matching_report =
         create :qc_report,
-               study: study,
+               study:,
                exclude_existing: true,
                product_criteria: current_criteria,
                report_identifier: 'Override'
-      @other_report = create :qc_report, study: study, exclude_existing: true, product_criteria: other_criteria
+      @other_report = create :qc_report, study:, exclude_existing: true, product_criteria: other_criteria
 
       @attribute = create :well_attribute, current_volume: 500, concentration: 200
 
-      sample = create(:study_sample, study: study).sample
+      sample = create(:study_sample, study:).sample
       @unreported_sample =
         well =
           create :well,
@@ -97,19 +97,19 @@ RSpec.describe QcReport do
                  plate: stock_plate,
                  map: create(:map, location_id: 1),
                  well_attribute: attribute
-      well.aliquots.each { |a| a.update!(study: study) }
+      well.aliquots.each { |a| a.update!(study:) }
 
-      sample = create(:study_sample, study: study).sample
+      sample = create(:study_sample, study:).sample
       well =
         create :well,
                samples: [sample],
                plate: stock_plate,
                map: create(:map, location_id: 2),
                well_attribute: attribute
-      well.aliquots.each { |a| a.update!(study: study) }
+      well.aliquots.each { |a| a.update!(study:) }
       create :qc_metric, asset: well, qc_report: matching_report
 
-      sample = create(:study_sample, study: study).sample
+      sample = create(:study_sample, study:).sample
       @other_reported_sample =
         well =
           create :well,
@@ -117,21 +117,21 @@ RSpec.describe QcReport do
                  plate: stock_plate,
                  map: create(:map, location_id: 3),
                  well_attribute: attribute
-      well.aliquots.each { |a| a.update!(study: study) }
+      well.aliquots.each { |a| a.update!(study:) }
       create :qc_metric, asset: well, qc_report: other_report
 
-      sample = create(:study_sample, study: study).sample
+      sample = create(:study_sample, study:).sample
       well =
         create :well,
                samples: [sample],
                plate: stock_plate,
                map: create(:map, location_id: 4),
                well_attribute: attribute
-      well.aliquots.each { |a| a.update!(study: study) }
+      well.aliquots.each { |a| a.update!(study:) }
       create :qc_metric, asset: well, qc_report: matching_report
       create :qc_metric, asset: well, qc_report: other_report
 
-      @qc_report = create :qc_report, study: study, exclude_existing: true, product_criteria: current_criteria
+      @qc_report = create :qc_report, study:, exclude_existing: true, product_criteria: current_criteria
       @qc_metric_count = QcMetric.count
       qc_report.generate!
     end
@@ -168,13 +168,13 @@ RSpec.describe QcReport do
     let(:plate_purpose_names) { plate_purposes.map(&:name) }
 
     before do
-      create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: plate_purposes[0]))
-      create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: plate_purposes[1]))
-      create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: plate_purposes[2]))
+      create(:well_for_qc_report, study:, plate: create(:plate, plate_purpose: plate_purposes[0]))
+      create(:well_for_qc_report, study:, plate: create(:plate, plate_purpose: plate_purposes[1]))
+      create(:well_for_qc_report, study:, plate: create(:plate, plate_purpose: plate_purposes[2]))
 
       @qc_report =
         create :qc_report,
-               study: study,
+               study:,
                exclude_existing: false,
                product_criteria: create(:product_criteria),
                plate_purposes: plate_purpose_names

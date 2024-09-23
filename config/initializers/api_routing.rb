@@ -17,7 +17,7 @@ module ApiRouting
     entities.push({ only: exposed_actions, name_prefix: 'api_' }.merge(options))
 
     original_block = block
-    block = !block_given? ? original_block : ->(r) { r.with_options(read_only: read_only, &original_block) }
+    block = !block_given? ? original_block : ->(r) { r.with_options(read_only:, &original_block) }
     resources(*entities, &block)
   end
 end

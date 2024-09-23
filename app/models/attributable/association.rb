@@ -72,9 +72,9 @@ module Attributable
 
     def to_field_info(*_args)
       FieldInfo.new(
-        display_name: display_name,
+        display_name:,
         key: assignable_attribute_name,
-        kind: kind,
+        kind:,
         selection: selection_options(nil)
       )
     end

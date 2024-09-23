@@ -18,7 +18,7 @@ RSpec.describe 'QcFiles' do
         'HTTP_COOKIE' => ''
       }
 
-      post "/api/1/#{plate.uuid}/qc_files", params: file.read, headers: headers
+      post("/api/1/#{plate.uuid}/qc_files", params: file.read, headers:)
 
       expect(response).to have_http_status(:success)
 

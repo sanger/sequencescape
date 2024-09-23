@@ -9,7 +9,7 @@ RSpec.describe Plate::QuadCreator do
 
   let(:target_purpose) { create :plate_purpose, size: 384 }
   let(:user) { create :user }
-  let(:creation_options) { { parent_barcodes: parent_barcodes_hash, target_purpose: target_purpose, user: user } }
+  let(:creation_options) { { parent_barcodes: parent_barcodes_hash, target_purpose:, user: } }
 
   before { allow(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode)) }
 
@@ -31,7 +31,7 @@ RSpec.describe Plate::QuadCreator do
   end
 
   context 'when loading from barcodes' do
-    let(:creation_options) { { parent_barcodes: parent_barcodes_hash, target_purpose: target_purpose, user: user } }
+    let(:creation_options) { { parent_barcodes: parent_barcodes_hash, target_purpose:, user: } }
 
     context 'when a barcode is invalid' do
       let(:parent_barcodes_hash) { { 'quad_1' => 'INVALID' } }

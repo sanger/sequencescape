@@ -7,7 +7,7 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
   include BarcodeHelper
 
   let(:swipecard_code) { '123456' }
-  let(:user) { create :admin, swipecard_code: swipecard_code }
+  let(:user) { create :admin, swipecard_code: }
   let(:project) { create :project }
   let(:study) { create :study }
   let(:pipeline) { create :cherrypick_pipeline }
@@ -45,12 +45,12 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
     plates.each do |plate|
       plate.wells.each_with_index do |well, index|
         # create the requests for cherrypicking
-        create :cherrypick_request,
+        create(:cherrypick_request,
                asset: well,
                request_type: pipeline.request_types.first,
-               submission: submission,
-               study: study,
-               project: project
+               submission:,
+               study:,
+               project:)
 
         # create a concentration value on the wells if required
         next unless concentrations_required

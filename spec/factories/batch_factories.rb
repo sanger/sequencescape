@@ -23,7 +23,7 @@ FactoryBot.define do
       if evaluator.request_attributes.present?
         batch.requests =
           evaluator.request_attributes.map do |request_attribute|
-            build(evaluator.request_factory, request_attribute.reverse_merge(request_type: request_type))
+            build(evaluator.request_factory, request_attribute.reverse_merge(request_type:))
           end
       end
     end
@@ -58,10 +58,10 @@ FactoryBot.define do
     after(:build) do |batch, evaluator|
       evaluator.assets.each_with_index.each do |asset, index|
         create :pac_bio_sequencing_request,
-               asset: asset,
+               asset:,
                target_asset: evaluator.target_plate.wells[index],
                request_type: batch.pipeline.request_types.first,
-               batch: batch
+               batch:
       end
     end
   end

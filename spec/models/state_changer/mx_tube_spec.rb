@@ -6,10 +6,10 @@ require 'spec_helper'
 RSpec.describe StateChanger::MxTube do
   let(:state_changer) do
     described_class.new(
-      labware: labware,
-      target_state: target_state,
-      user: user,
-      customer_accepts_responsibility: customer_accepts_responsibility
+      labware:,
+      target_state:,
+      user:,
+      customer_accepts_responsibility:
     )
   end
 
@@ -17,7 +17,7 @@ RSpec.describe StateChanger::MxTube do
   let(:customer_accepts_responsibility) { false }
   let(:labware) { create :multiplexed_library_tube }
   let(:transfer_request) { create :transfer_request, target_asset: labware.receptacle, state: transfer_request_state }
-  let(:request) { create :request, target_asset: labware.receptacle, state: request_state, order: order }
+  let(:request) { create :request, target_asset: labware.receptacle, state: request_state, order: }
   let(:requests) { [request] }
   let(:order) { create :order }
 

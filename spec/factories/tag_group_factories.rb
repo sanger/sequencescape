@@ -24,7 +24,7 @@ FactoryBot.define do
     adapter_type { build(:adapter_type, name: adapter_type_name) if adapter_type_name }
 
     after(:build) do |tag_group, evaluator|
-      evaluator.tag_count.times { |i| tag_group.tags << create(:tag, map_id: i + 1, tag_group: tag_group) }
+      evaluator.tag_count.times { |i| tag_group.tags << create(:tag, map_id: i + 1, tag_group:) }
     end
 
     factory :tag_group_with_tags do

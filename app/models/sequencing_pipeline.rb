@@ -74,7 +74,7 @@ class SequencingPipeline < Pipeline
   end
 
   def on_start_batch(batch, user)
-    BroadcastEvent::SequencingStart.create!(seed: batch, user: user, properties: {}, created_at: DateTime.now)
+    BroadcastEvent::SequencingStart.create!(seed: batch, user:, properties: {}, created_at: DateTime.now)
   end
 
   def post_release_batch(batch, _user)

@@ -14,7 +14,7 @@ RSpec.describe 'labware/show.html.erb' do
     let(:current_user) { user }
     let(:purpose_name) { 'chromium-chip-purpose' }
     let(:purpose) { create :shape4x1_purpose, name: purpose_name } # AssetShape Shape4x1, size 16
-    let(:plate) { create :child_plate, well_factory: :passed_well, purpose: purpose, size: 16, sample_count: 16 }
+    let(:plate) { create :child_plate, well_factory: :passed_well, purpose:, size: 16, sample_count: 16 }
     let(:doc) { Nokogiri.HTML(rendered) }
 
     before do

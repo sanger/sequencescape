@@ -13,7 +13,7 @@ Given /^the UUID for the transfer (#{TRANSFER_TYPES_REGEXP}) with ID (\d+) is "(
 end
 
 Given /^the transfer (between plates|from plate to tube) exists with ID (\d+)$/ do |name, id|
-  FactoryBot.create(:"transfer_#{name.gsub(/\s+/, '_')}", id: id)
+  FactoryBot.create(:"transfer_#{name.gsub(/\s+/, '_')}", id:)
 end
 
 # rubocop:todo Layout/LineLength
@@ -23,7 +23,7 @@ Given /^the UUID for the (source|destination) of the transfer (#{TRANSFER_TYPES_
 end
 
 Given /^the ((?:pooling ||multiplex )?transfer template) called "([^"]+)" exists$/ do |type, name|
-  FactoryBot.create(type.gsub(/\s/, '_').to_sym, name: name)
+  FactoryBot.create(type.gsub(/\s/, '_').to_sym, name:)
 end
 
 Then 'the transfers from {plate_name} to {plate_name} should be:' do |source, destination, table|
@@ -42,16 +42,16 @@ Then 'the transfers from {plate_name} to {plate_name} should be:' do |source, de
 end
 
 Given /^a transfer plate exists with ID (\d+)$/ do |id|
-  FactoryBot.create(:transfer_plate, id: id)
+  FactoryBot.create(:transfer_plate, id:)
 end
 
 Given /^a transfer plate called "([^"]+)" exists$/ do |name|
-  FactoryBot.create(:transfer_plate, name: name)
+  FactoryBot.create(:transfer_plate, name:)
 end
 
 Given /^the plate "(.*?)" has additional wells$/ do |name|
   Plate
-    .find_by(name: name)
+    .find_by(name:)
     .tap do |plate|
       plate.wells << %w[C1 D1].map do |location|
         map =
@@ -60,19 +60,19 @@ Given /^the plate "(.*?)" has additional wells$/ do |name|
             .where_plate_size(plate.size)
             .where_plate_shape(AssetShape.find_by(name: 'Standard'))
             .first or raise StandardError, "No location #{location} on plate #{plate.inspect}"
-        FactoryBot.create(:tagged_well, map: map)
+        FactoryBot.create(:tagged_well, map:)
       end
     end
 end
 
 Given /^a transfer plate called "([^"]+)" exists as a child of "([^"]+)"$/ do |name, parent|
   parent_plate = Plate.find_by!(name: parent)
-  AssetLink.create!(ancestor: parent_plate, descendant: FactoryBot.create(:transfer_plate, name: name))
+  AssetLink.create!(ancestor: parent_plate, descendant: FactoryBot.create(:transfer_plate, name:))
 end
 
 Given(/^a transfer plate called "([^"]*)" exists as a child of plate (\d+)$/) do |name, parent_id|
   parent_plate = Plate.find(parent_id)
-  AssetLink.create!(ancestor: parent_plate, descendant: FactoryBot.create(:transfer_plate, name: name))
+  AssetLink.create!(ancestor: parent_plate, descendant: FactoryBot.create(:transfer_plate, name:))
 end
 
 # rubocop:todo Layout/LineLength
@@ -83,7 +83,7 @@ Given /^the "([^"]+)" transfer template has been used between "([^"]+)" and "([^
   source = Plate.find_by(name: source_name) or raise StandardError, "Could not find source plate #{source_name.inspect}"
   destination = Plate.find_by(name: destination_name) or
     raise StandardError, "Could not find destination plate #{destination_plate.inspect}"
-  template.create!(source: source, destination: destination, user: FactoryBot.create(:user))
+  template.create!(source:, destination:, user: FactoryBot.create(:user))
 end
 
 def assert_request_state(state, targets, direction, request_class)
@@ -99,7 +99,7 @@ def change_request_state(state, targets, direction, request_class)
   association = direction == 'to' ? :requests_as_target : :requests_as_source
   Request.where(
     id: Array(targets).map(&association).flatten.select { |r| r.is_a?(request_class) }.map(&:id)
-  ).update_all(state: state)
+  ).update_all(state:)
 end
 
 # rubocop:todo Layout/LineLength
@@ -162,6 +162,6 @@ Then 'the study for the aliquots in the wells of {uuid} should match the last su
   plate.wells.includes(:aliquots).find_each { |w| w.aliquots.each { |a| assert_equal study.id, a.study_id } }
 end
 Given '{asset_name} is a {string}' do |plate, name|
-  plate_purpose = Purpose.find_by!(name: name)
-  plate.update!(plate_purpose: plate_purpose)
+  plate_purpose = Purpose.find_by!(name:)
+  plate.update!(plate_purpose:)
 end

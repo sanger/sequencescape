@@ -31,7 +31,7 @@ end
 REQUEST_INFORMATION_TYPES = RequestInformationType.all.index_by { |t| t.key }.freeze
 def create_request_information_types(pipeline, *keys)
   PipelineRequestInformationType.create!(
-    keys.map { |k| { pipeline: pipeline, request_information_type: REQUEST_INFORMATION_TYPES[k] } }
+    keys.map { |k| { pipeline:, request_information_type: REQUEST_INFORMATION_TYPES[k] } }
   )
 end
 
@@ -175,20 +175,20 @@ SequencingPipeline
               per_item: false,
               lab_activity: true
             }
-          ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+          ].each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
   end
   .tap do |pipeline|
     PipelineRequestInformationType.create!(
-      pipeline: pipeline,
+      pipeline:,
       request_information_type: RequestInformationType.find_by(key: 'read_length')
     )
     PipelineRequestInformationType.create!(
-      pipeline: pipeline,
+      pipeline:,
       request_information_type: RequestInformationType.find_by(key: 'library_type')
     )
     PipelineRequestInformationType.create!(
-      pipeline: pipeline,
+      pipeline:,
       request_information_type: RequestInformationType.find_by(label: 'Vol.')
     )
   end
@@ -235,13 +235,13 @@ SequencingPipeline
               per_item: false,
               lab_activity: true
             }
-          ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+          ].each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
   end
   .tap do |pipeline|
     create_request_information_types(pipeline, 'read_length', 'library_type')
     PipelineRequestInformationType.create!(
-      pipeline: pipeline,
+      pipeline:,
       request_information_type: RequestInformationType.find_by(label: 'Vol.')
     )
   end
@@ -288,13 +288,13 @@ SequencingPipeline
               per_item: false,
               lab_activity: true
             }
-          ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+          ].each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
   end
   .tap do |pipeline|
     create_request_information_types(pipeline, 'read_length', 'library_type')
     PipelineRequestInformationType.create!(
-      pipeline: pipeline,
+      pipeline:,
       request_information_type: RequestInformationType.find_by(label: 'Vol.')
     )
   end
@@ -368,13 +368,13 @@ SequencingPipeline
               per_item: false,
               lab_activity: true
             }
-          ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+          ].each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
   end
   .tap do |pipeline|
     create_request_information_types(pipeline, 'read_length', 'library_type')
     PipelineRequestInformationType.create!(
-      pipeline: pipeline,
+      pipeline:,
       request_information_type: RequestInformationType.find_by(label: 'Vol.')
     )
   end
@@ -424,13 +424,13 @@ SequencingPipeline
               per_item: false,
               lab_activity: true
             }
-          ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+          ].each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
   end
   .tap do |pipeline|
     create_request_information_types(pipeline, 'read_length', 'library_type')
     PipelineRequestInformationType.create!(
-      pipeline: pipeline,
+      pipeline:,
       request_information_type: RequestInformationType.find_by(label: 'Vol.')
     )
   end
@@ -540,13 +540,13 @@ SequencingPipeline
               per_item: true,
               lab_activity: true
             }
-          ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+          ].each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
   end
   .tap do |pipeline|
     create_request_information_types(pipeline, 'read_length', 'library_type')
     PipelineRequestInformationType.create!(
-      pipeline: pipeline,
+      pipeline:,
       request_information_type: RequestInformationType.find_by(label: 'Vol.')
     )
   end
@@ -585,7 +585,7 @@ SequencingPipeline
               per_item: true,
               lab_activity: true
             }
-          ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+          ].each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
   end
   .tap { |pipeline| create_request_information_types(pipeline, 'read_length', 'library_type') }
@@ -634,13 +634,13 @@ SequencingPipeline
               per_item: true,
               lab_activity: true
             }
-          ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+          ].each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
   end
   .tap do |pipeline|
     create_request_information_types(pipeline, 'read_length', 'library_type')
     PipelineRequestInformationType.create!(
-      pipeline: pipeline,
+      pipeline:,
       request_information_type: RequestInformationType.find_by(label: 'Vol.')
     )
   end
@@ -689,13 +689,13 @@ SequencingPipeline
               per_item: true,
               lab_activity: true
             }
-          ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+          ].each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
   end
   .tap do |pipeline|
     create_request_information_types(pipeline, 'read_length', 'library_type')
     PipelineRequestInformationType.create!(
-      pipeline: pipeline,
+      pipeline:,
       request_information_type: RequestInformationType.find_by(label: 'Vol.')
     )
   end
@@ -741,13 +741,13 @@ SequencingPipeline
               per_item: true,
               lab_activity: true
             }
-          ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+          ].each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
   end
   .tap do |pipeline|
     create_request_information_types(pipeline, 'read_length', 'library_type')
     PipelineRequestInformationType.create!(
-      pipeline: pipeline,
+      pipeline:,
       request_information_type: RequestInformationType.find_by(label: 'Vol.')
     )
   end
@@ -792,13 +792,13 @@ SequencingPipeline
               per_item: false,
               lab_activity: true
             }
-          ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+          ].each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
   end
   .tap do |pipeline|
     create_request_information_types(pipeline, 'read_length', 'library_type')
     PipelineRequestInformationType.create!(
-      pipeline: pipeline,
+      pipeline:,
       request_information_type: RequestInformationType.find_by(label: 'Vol.')
     )
   end
@@ -838,13 +838,13 @@ SequencingPipeline
               per_item: true,
               lab_activity: true
             }
-          ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+          ].each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
   end
   .tap do |pipeline|
     create_request_information_types(pipeline, 'read_length', 'library_type')
     PipelineRequestInformationType.create!(
-      pipeline: pipeline,
+      pipeline:,
       request_information_type: RequestInformationType.find_by(label: 'Vol.')
     )
   end
@@ -911,13 +911,13 @@ SequencingPipeline
               per_item: true,
               lab_activity: true
             }
-          ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+          ].each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
   end
   .tap do |pipeline|
     create_request_information_types(pipeline, 'read_length', 'library_type')
     PipelineRequestInformationType.create!(
-      pipeline: pipeline,
+      pipeline:,
       request_information_type: RequestInformationType.find_by(label: 'Vol.')
     )
   end
@@ -941,7 +941,7 @@ CherrypickPipeline.create!(name: 'Cherrypick') do |pipeline|
         [
           { class: PlateTemplateTask, name: 'Select Plate Template', sorted: 1, batched: true, lab_activity: true },
           { class: CherrypickTask, name: 'Approve Plate Layout', sorted: 2, batched: true, lab_activity: true }
-        ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+        ].each { |details| details.delete(:class).create!(details.merge(workflow:)) }
       end
 end
 
@@ -1006,9 +1006,9 @@ SequencingPipeline
           workflow.item_limit = 1
         end
         .tap do |workflow|
-          t1 = SetDescriptorsTask.create!(name: 'Specify Dilution Volume', sorted: 0, workflow: workflow)
+          t1 = SetDescriptorsTask.create!(name: 'Specify Dilution Volume', sorted: 0, workflow:)
           Descriptor.create!(kind: 'Text', sorter: 1, name: 'Concentration', task: t1)
-          t2 = SetDescriptorsTask.create!(name: 'Cluster Generation', sorted: 0, workflow: workflow)
+          t2 = SetDescriptorsTask.create!(name: 'Cluster Generation', sorted: 0, workflow:)
           Descriptor.create!(kind: 'Text', sorter: 1, name: 'Chip barcode', task: t2)
           Descriptor.create!(kind: 'Text', sorter: 2, name: 'Cartridge barcode', task: t2)
           Descriptor.create!(kind: 'Text', sorter: 4, name: 'Machine name', task: t2)
@@ -1232,7 +1232,7 @@ x10_requests_types =
               lab_activity: true
             }
           ].select { |task| type == '(spiked in controls)' || task[:name] != 'Add Spiked in Control' }
-            .each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+            .each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
     pipeline.request_types = v4_requests_types_pe
   end
@@ -1275,7 +1275,7 @@ x10_requests_types =
               lab_activity: true
             }
           ].select { |task| type == '(spiked in controls)' || task[:name] != 'Add Spiked in Control' }
-            .each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+            .each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
     pipeline.request_types = v4_requests_types_se
   end
@@ -1326,7 +1326,7 @@ x10_requests_types =
               lab_activity: true
             }
           ].select { |task| type == '(spiked in controls)' || task[:name] != 'Add Spiked in Control' }
-            .each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+            .each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
     pipeline.request_types = x10_requests_types
   end
@@ -1364,8 +1364,8 @@ end
 end
 
 def build_4000_tasks_for(workflow, paired_only = false) # rubocop:todo Metrics/MethodLength
-  AddSpikedInControlTask.create!(name: 'Add Spiked in control', sorted: 0, workflow: workflow)
-  SetDescriptorsTask.create!(name: 'Cluster Generation', sorted: 1, workflow: workflow) do |task|
+  AddSpikedInControlTask.create!(name: 'Add Spiked in control', sorted: 0, workflow:)
+  SetDescriptorsTask.create!(name: 'Cluster Generation', sorted: 1, workflow:) do |task|
     task.descriptors.build(
       [
         { kind: 'Text', sorter: 1, name: 'Chip Barcode', required: true },
@@ -1379,7 +1379,7 @@ def build_4000_tasks_for(workflow, paired_only = false) # rubocop:todo Metrics/M
     )
   end
 
-  SetDescriptorsTask.create!(name: 'Read 1 Lin/block/hyb/load', sorted: 2, workflow: workflow) do |task|
+  SetDescriptorsTask.create!(name: 'Read 1 Lin/block/hyb/load', sorted: 2, workflow:) do |task|
     task.descriptors.build(
       [
         { kind: 'Text', sorter: 1, name: 'Chip Barcode', required: true },
@@ -1400,7 +1400,7 @@ def build_4000_tasks_for(workflow, paired_only = false) # rubocop:todo Metrics/M
     )
   end
 
-  SetDescriptorsTask.create!(name: 'Read 2 Lin/block/hyb/load', sorted: 2, workflow: workflow) do |task|
+  SetDescriptorsTask.create!(name: 'Read 2 Lin/block/hyb/load', sorted: 2, workflow:) do |task|
     if paired_only
       task.descriptors.build(
         [
@@ -1479,7 +1479,7 @@ RequestType.find_each do |request_type|
 
   if read_lengths.present?
     RequestType::Validator.create!(
-      request_type: request_type,
+      request_type:,
       request_option: 'read_length',
       valid_options: read_lengths
     )

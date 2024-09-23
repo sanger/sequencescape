@@ -40,7 +40,7 @@ class StockStamper
   def generate_tecan_gwl_file_as_text
     picking_data = generate_tecan_data
     layout = Robot::Verification::SourceDestBeds.new.layout_data_object(picking_data)
-    @file_content = Robot::Generator::Tecan.new(picking_data: picking_data, layout: layout, total_volume: 0).as_text
+    @file_content = Robot::Generator::Tecan.new(picking_data:, layout:, total_volume: 0).as_text
   end
 
   def generate_tecan_data # rubocop:todo Metrics/AbcSize

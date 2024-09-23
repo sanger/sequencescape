@@ -223,7 +223,7 @@ class PlatesControllerTest < ActionController::TestCase
 
               should 'keep the created labware persisted' do
                 barcode = @tube_rack.children.first.barcodes.first.barcode
-                assert_equal(1, Plate.joins(:barcodes).where(barcodes: { barcode: barcode }).count)
+                assert_equal(1, Plate.joins(:barcodes).where(barcodes: { barcode: }).count)
               end
 
               should set_flash[:warning].to(/Barcode labels failed to print/)

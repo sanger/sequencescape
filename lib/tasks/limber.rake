@@ -142,13 +142,13 @@ namespace :limber do
         catalogue =
           ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: catalogue_name)
         Limber::Helper::TemplateConstructor.new(
-          prefix: prefix,
-          catalogue: catalogue,
+          prefix:,
+          catalogue:,
           sequencing_keys: params[:sequencing_list]
         ).build!
         unless params[:omit_library_templates]
-          Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: prefix, catalogue: catalogue).build!
-          Limber::Helper::LibraryAndMultiplexingTemplateConstructor.new(prefix: prefix, catalogue: catalogue).build!
+          Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix:, catalogue:).build!
+          Limber::Helper::LibraryAndMultiplexingTemplateConstructor.new(prefix:, catalogue:).build!
         end
       end
 
@@ -239,7 +239,7 @@ namespace :limber do
       catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'Generic')
       Limber::Helper::TemplateConstructor.new(
         prefix: 'Multiplexing',
-        catalogue: catalogue,
+        catalogue:,
         sequencing_keys: base_list
       ).build!
 

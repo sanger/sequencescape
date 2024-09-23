@@ -75,7 +75,7 @@ end
 
 When /^(?:|I )check (the invisible )?"([^"]*)"(?: within "([^"]*)")?$/ do |invisible, field, selector|
   visible = invisible != 'the invisible '
-  with_scope(selector) { check(field, visible: visible) }
+  with_scope(selector) { check(field, visible:) }
 end
 
 When /^(?:|I )uncheck "([^"]*)"(?: within "([^"]*)")?$/ do |field, selector|
@@ -161,15 +161,15 @@ Then /^Pmb has the required label templates$/ do
 
   stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_96plate_label_template").with(
     headers: LabelPrinter::PmbClient.headers
-  ).to_return(status: 200, body: body)
+  ).to_return(status: 200, body:)
 
   stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}tube_label_template_1d").with(
     headers: LabelPrinter::PmbClient.headers
-  ).to_return(status: 200, body: body)
+  ).to_return(status: 200, body:)
 
   stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_384plate_label_template").with(
     headers: LabelPrinter::PmbClient.headers
-  ).to_return(status: 200, body: body)
+  ).to_return(status: 200, body:)
 end
 
 Then /^Pmb is up and running$/ do
@@ -180,5 +180,5 @@ Then /^Pmb is up and running$/ do
 end
 
 When 'I click the header {string}' do |text|
-  find('th', text: text).click
+  find('th', text:).click
 end

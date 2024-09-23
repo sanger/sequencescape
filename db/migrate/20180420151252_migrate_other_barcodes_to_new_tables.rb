@@ -14,7 +14,7 @@ class MigrateOtherBarcodesToNewTables < ActiveRecord::Migration[5.1]
           barcodes = batch.pluck(:plate_id, :infinium_barcode)
           say "From #{barcodes.first.first} to #{barcodes.last.first}"
           say 'Building hashes'
-          barcodes_hash = barcodes.map { |asset_id, barcode| { asset_id: asset_id, barcode: barcode, format: 1 } }
+          barcodes_hash = barcodes.map { |asset_id, barcode| { asset_id:, barcode:, format: 1 } }
           say 'Importing'
           Barcode.import(barcodes_hash)
           say 'Imported'
@@ -29,7 +29,7 @@ class MigrateOtherBarcodesToNewTables < ActiveRecord::Migration[5.1]
           barcodes = batch.pluck(:plate_id, :fluidigm_barcode)
           say "From #{barcodes.first.first} to #{barcodes.last.first}"
           say 'Building hashes'
-          barcodes_hash = barcodes.map { |asset_id, barcode| { asset_id: asset_id, barcode: barcode, format: 2 } }
+          barcodes_hash = barcodes.map { |asset_id, barcode| { asset_id:, barcode:, format: 2 } }
           say 'Importing'
           Barcode.import(barcodes_hash)
           say 'Imported'

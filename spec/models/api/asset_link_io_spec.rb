@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Api::AssetLinkIO do
-  subject { create :asset_link, ancestor: ancestor, descendant: descendant }
+  subject { create :asset_link, ancestor:, descendant: }
 
   let(:ancestor) { create :sample_tube }
   let(:descendant) { create :multiplexed_library_tube }

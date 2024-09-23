@@ -6,11 +6,11 @@ require 'spec_helper'
 RSpec.describe StateChanger::QcableLibraryPlate do
   let(:state_changer) do
     described_class.new(
-      labware: labware,
+      labware:,
       target_state: 'passed',
-      user: user,
-      contents: contents,
-      customer_accepts_responsibility: customer_accepts_responsibility
+      user:,
+      contents:,
+      customer_accepts_responsibility:
     )
   end
   let(:labware) { instance_double('Plate', wells: [well]) } # rubocop:todo RSpec/VerifiedDoubleReference

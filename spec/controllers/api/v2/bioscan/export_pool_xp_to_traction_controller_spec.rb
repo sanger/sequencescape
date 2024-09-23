@@ -23,7 +23,7 @@ RSpec.describe Api::V2::Bioscan::ExportPoolXpToTractionController, :bioscan, typ
 
   before do
     create :transfer_request, state: tube_state, target_asset: tube.receptacle
-    post api_v2_bioscan_export_pool_xp_to_traction_index_path, params: params
+    post api_v2_bioscan_export_pool_xp_to_traction_index_path, params:
   end
 
   context 'when the tube exists with the correct properties' do

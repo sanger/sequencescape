@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe LibraryType do
-  subject { described_class.new(name: name) }
+  subject { described_class.new(name:) }
 
   context 'without a name' do
     let(:name) { '' }

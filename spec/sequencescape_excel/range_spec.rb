@@ -7,7 +7,7 @@ RSpec.describe SequencescapeExcel::Range, :sample_manifest, :sample_manifest_exc
 
   it 'is comparable' do
     attributes = {
-      options: options,
+      options:,
       first_column: 4,
       first_row: 5,
       last_column: 8,
@@ -23,7 +23,7 @@ RSpec.describe SequencescapeExcel::Range, :sample_manifest, :sample_manifest_exc
   end
 
   context 'with static options' do
-    let(:range) { described_class.new(options: options, first_row: 4) }
+    let(:range) { described_class.new(options:, first_row: 4) }
 
     it 'has some options' do
       expect(range.options).to eq(options)
@@ -39,7 +39,7 @@ RSpec.describe SequencescapeExcel::Range, :sample_manifest, :sample_manifest_exc
 
     it 'sets the last column' do
       expect(range.last_column).to eq(3)
-      expect(described_class.new(options: options, first_column: 4, first_row: 4).last_column).to eq(6)
+      expect(described_class.new(options:, first_column: 4, first_row: 4).last_column).to eq(6)
     end
 
     it 'has a first_cell' do
@@ -161,7 +161,7 @@ RSpec.describe SequencescapeExcel::Range, :sample_manifest, :sample_manifest_exc
   end
 
   context 'without first row' do
-    let(:range) { described_class.new(options: options) }
+    let(:range) { described_class.new(options:) }
 
     it 'is be valid' do
       expect(range).not_to be_valid

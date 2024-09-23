@@ -28,7 +28,7 @@ module Core::Endpoint::BasicHandler::Actions::InnerAction
   private :rooted_json
 
   def generate_json_actions(object, options)
-    rooted_json(options) { |stream| super(object, options.merge(stream: stream)) }
+    rooted_json(options) { |stream| super(object, options.merge(stream:)) }
   end
 
   def declare_action(name, _options) # rubocop:todo Metrics/MethodLength

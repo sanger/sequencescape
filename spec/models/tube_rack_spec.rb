@@ -62,7 +62,7 @@ RSpec.describe TubeRack do
     let(:barcodes) { Array.new(num_tubes) { create :fluidx } }
     let!(:tubes) do
       Array.new(num_tubes) do |i|
-        create(:sample_tube, :in_a_rack, tube_rack: tube_rack, coordinate: locations[i], barcodes: [barcodes[i]])
+        create(:sample_tube, :in_a_rack, tube_rack:, coordinate: locations[i], barcodes: [barcodes[i]])
       end
     end
 
@@ -73,10 +73,10 @@ RSpec.describe TubeRack do
 
   context 'with a rack with tubes and requests' do
     let(:tube_rack) { create :tube_rack }
-    let(:tube_a) { create :tube, :in_a_rack, tube_rack: tube_rack, coordinate: 'A1' }
-    let(:tube_b) { create :tube, :in_a_rack, tube_rack: tube_rack, coordinate: 'H12' }
-    let(:aliquot) { create :aliquot, receptacle: tube_a.receptacle, request: create(:request, submission: submission) }
-    let(:outer_request) { create :request, asset: tube_b.receptacle, submission: submission }
+    let(:tube_a) { create :tube, :in_a_rack, tube_rack:, coordinate: 'A1' }
+    let(:tube_b) { create :tube, :in_a_rack, tube_rack:, coordinate: 'H12' }
+    let(:aliquot) { create :aliquot, receptacle: tube_a.receptacle, request: create(:request, submission:) }
+    let(:outer_request) { create :request, asset: tube_b.receptacle, submission: }
     let(:submission) { create :submission }
 
     # The comments scope should also retrieve comments associated with tubes, and

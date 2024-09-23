@@ -30,7 +30,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
 
     context 'valid' do
       context 'standard' do
-        let(:download) { build(:test_download_tubes, columns: columns) }
+        let(:download) { build(:test_download_tubes, columns:) }
 
         it 'upload' do
           login_user(user)
@@ -78,7 +78,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
       end
 
       context 'cgap foreign barcodes' do
-        let(:download) { build(:test_download_tubes_cgap, columns: columns) }
+        let(:download) { build(:test_download_tubes_cgap, columns:) }
 
         it 'upload' do
           login_user(user)
@@ -92,7 +92,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
 
     context 'invalid' do
       context 'upload' do
-        let(:download) { build(:test_download_tubes, columns: columns, validation_errors: [:library_type]) }
+        let(:download) { build(:test_download_tubes, columns:, validation_errors: [:library_type]) }
 
         it 'validation errors' do
           login_user(user)
@@ -111,7 +111,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
       end
 
       context 'cgap foreign barcodes' do
-        let(:download) { build(:test_download_tubes_cgap, columns: columns, validation_errors: [:library_type]) }
+        let(:download) { build(:test_download_tubes_cgap, columns:, validation_errors: [:library_type]) }
 
         it 'validation errors' do
           login_user(user)
@@ -124,7 +124,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
 
       context 'duplicate cgap foreign barcodes' do
         let(:download) do
-          build(:test_download_tubes_cgap, columns: columns, validation_errors: [:sample_tube_id_duplicates])
+          build(:test_download_tubes_cgap, columns:, validation_errors: [:sample_tube_id_duplicates])
         end
 
         it 'validation errors' do
@@ -151,7 +151,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
     context 'valid' do
       context 'upload and reupload' do
         let(:download) do
-          build(:test_download_tubes, columns: columns, manifest_type: 'tube_multiplexed_library_with_tag_sequences')
+          build(:test_download_tubes, columns:, manifest_type: 'tube_multiplexed_library_with_tag_sequences')
         end
 
         it 'with override' do
@@ -196,7 +196,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
         let(:download) do
           build(
             :test_download_tubes_cgap,
-            columns: columns,
+            columns:,
             manifest_type: 'tube_multiplexed_library_with_tag_sequences'
           )
         end
@@ -216,7 +216,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
         let(:download) do
           build(
             :test_download_tubes,
-            columns: columns,
+            columns:,
             manifest_type: 'tube_multiplexed_library_with_tag_sequences',
             validation_errors: %i[library_type tags]
           )
@@ -243,7 +243,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
         let(:download) do
           build(
             :test_download_tubes_cgap,
-            columns: columns,
+            columns:,
             manifest_type: 'tube_multiplexed_library_with_tag_sequences',
             validation_errors: [:sanger_sample_id_invalid]
           )
@@ -262,7 +262,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
         let(:download) do
           build(
             :test_download_tubes_cgap,
-            columns: columns,
+            columns:,
             manifest_type: 'tube_multiplexed_library_with_tag_sequences',
             validation_errors: [:sample_tube_id_duplicates]
           )
@@ -291,7 +291,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
 
     context 'valid' do
       context 'upload and reupload' do
-        let(:download) { build(:test_download_tubes, columns: columns, manifest_type: 'tube_multiplexed_library') }
+        let(:download) { build(:test_download_tubes, columns:, manifest_type: 'tube_multiplexed_library') }
 
         it 'with override' do
           # upload
@@ -332,7 +332,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
       end
 
       context 'cgap foreign barcodes' do
-        let(:download) { build(:test_download_tubes_cgap, columns: columns, manifest_type: 'tube_multiplexed_library') }
+        let(:download) { build(:test_download_tubes_cgap, columns:, manifest_type: 'tube_multiplexed_library') }
 
         it 'upload' do
           login_user(user)
@@ -349,7 +349,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
         let(:download) do
           build(
             :test_download_tubes,
-            columns: columns,
+            columns:,
             manifest_type: 'tube_multiplexed_library',
             validation_errors: %i[tags]
           )
@@ -376,7 +376,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
         let(:download) do
           build(
             :test_download_tubes_cgap,
-            columns: columns,
+            columns:,
             manifest_type: 'tube_multiplexed_library',
             validation_errors: [:sanger_sample_id_invalid]
           )
@@ -395,7 +395,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
         let(:download) do
           build(
             :test_download_tubes_cgap,
-            columns: columns,
+            columns:,
             manifest_type: 'tube_multiplexed_library',
             validation_errors: [:sample_tube_id_duplicates]
           )
@@ -424,7 +424,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
 
     context 'valid' do
       context 'standard' do
-        let(:download) { build(:test_download_plates, columns: columns) }
+        let(:download) { build(:test_download_plates, columns:) }
 
         it 'upload' do
           login_user(user)
@@ -436,7 +436,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
       end
 
       context 'partial' do
-        let(:download) { build(:test_download_plates_partial, columns: columns) }
+        let(:download) { build(:test_download_plates_partial, columns:) }
 
         it 'upload' do
           login_user(user)
@@ -448,7 +448,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
       end
 
       context 'cgap foreign barcodes' do
-        let(:download) { build(:test_download_plates_cgap, columns: columns) }
+        let(:download) { build(:test_download_plates_cgap, columns:) }
 
         it 'upload' do
           login_user(user)
@@ -460,7 +460,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
       end
 
       context 'cgap foreign barcodes partial' do
-        let(:download) { build(:test_download_plates_partial_cgap, columns: columns) }
+        let(:download) { build(:test_download_plates_partial_cgap, columns:) }
 
         it 'upload' do
           login_user(user)
@@ -474,7 +474,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
 
     context 'invalid' do
       context 'no file' do
-        let(:download) { build(:test_download_plates, columns: columns) }
+        let(:download) { build(:test_download_plates, columns:) }
 
         it 'no file' do
           login_user(user)
@@ -488,7 +488,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
         let(:download) do
           build(
             :test_download_plates_cgap,
-            columns: columns,
+            columns:,
             validation_errors: [:sample_plate_id_unrecognised_foreign]
           )
         end
@@ -504,7 +504,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
 
       context 'duplicate cgap foreign barcodes' do
         let(:download) do
-          build(:test_download_plates_cgap, columns: columns, validation_errors: [:sample_plate_id_duplicates])
+          build(:test_download_plates_cgap, columns:, validation_errors: [:sample_plate_id_duplicates])
         end
 
         it 'validation errors' do

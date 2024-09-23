@@ -9,7 +9,7 @@ describe 'Viewing request comments', :js do
   let(:submission) { create :submission }
   let(:tube) { create :multiplexed_library_tube }
   let(:request) do
-    create :sequencing_request, asset: tube, request_type: pipeline.request_types.first, submission: submission
+    create :sequencing_request, asset: tube, request_type: pipeline.request_types.first, submission:
   end
 
   before do

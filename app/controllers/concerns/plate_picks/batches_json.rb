@@ -9,7 +9,7 @@ module PlatePicks
     end
 
     def to_json(_ = nil)
-      { batch: { id: @batch_id.to_s, picks: picks } }
+      { batch: { id: @batch_id.to_s, picks: } }
     end
 
     private

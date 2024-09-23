@@ -11,7 +11,7 @@ describe TagLayout do
   end
 
   let(:plate) { create :plate_with_untagged_wells, well_count: 8 }
-  let(:tag_group) { create :tag_group, tag_count: tag_count }
+  let(:tag_group) { create :tag_group, tag_count: }
   let(:tag2_group) { nil }
   let(:tag_count) { 16 }
   let(:user) { create :user }
@@ -44,13 +44,13 @@ describe TagLayout do
     before do
       create(
         :tag_layout,
-        plate: plate,
-        user: user,
-        tag_group: tag_group,
-        tag2_group: tag2_group,
-        walking_by: walking_by,
-        direction: direction,
-        initial_tag: initial_tag
+        plate:,
+        user:,
+        tag_group:,
+        tag2_group:,
+        walking_by:,
+        direction:,
+        initial_tag:
       )
     end
 
@@ -110,7 +110,7 @@ describe TagLayout do
           context 'with a 384 well plate' do
             let(:plate) { create :plate_with_untagged_wells, sample_count: 4 * 16, size: 384 }
             let(:tag_count) { 384 }
-            let(:tag2_group) { create :tag_group, tag_count: tag_count }
+            let(:tag2_group) { create :tag_group, tag_count: }
             let(:expected_tag_layout) do
               {
                 'A1' => [1],
@@ -271,7 +271,7 @@ describe TagLayout do
           context 'with a 384 well plate' do
             let(:plate) { create :plate_with_untagged_wells, sample_count: 4 * 16, size: 384 }
             let(:tag_count) { 384 }
-            let(:tag2_group) { create :tag_group, tag_count: tag_count }
+            let(:tag2_group) { create :tag_group, tag_count: }
             let(:expected_tag_layout) do
               {
                 'A1' => [1],
@@ -428,7 +428,7 @@ describe TagLayout do
           context 'with a 384 well plate' do
             let(:plate) { create :plate_with_untagged_wells, sample_count: 4 * 16, size: 384 }
             let(:tag_count) { 384 }
-            let(:tag2_group) { create :tag_group, tag_count: tag_count }
+            let(:tag2_group) { create :tag_group, tag_count: }
             let(:expected_tag_layout) do
               {
                 'A1' => [1],
@@ -585,7 +585,7 @@ describe TagLayout do
           context 'with a 384 well plate' do
             let(:plate) { create :plate_with_untagged_wells, sample_count: 4 * 16, size: 384 }
             let(:tag_count) { 384 }
-            let(:tag2_group) { create :tag_group, tag_count: tag_count }
+            let(:tag2_group) { create :tag_group, tag_count: }
             let(:expected_tag_layout) do
               {
                 'A1' => [96],
@@ -742,7 +742,7 @@ describe TagLayout do
           context 'with a 384 well plate' do
             let(:plate) { create :plate_with_untagged_wells, sample_count: 4 * 16, size: 384 }
             let(:tag_count) { 384 }
-            let(:tag2_group) { create :tag_group, tag_count: tag_count }
+            let(:tag2_group) { create :tag_group, tag_count: }
             let(:expected_tag_layout) do
               {
                 'A1' => [1],
@@ -1025,7 +1025,7 @@ describe TagLayout do
     end
 
     context 'with a tag2 group' do
-      let(:tag2_group) { create :tag_group, tag_count: tag_count }
+      let(:tag2_group) { create :tag_group, tag_count: }
       let(:walking_by) { 'wells of plate' }
       let(:direction) { 'column' }
       let(:expected_tag_layout) do

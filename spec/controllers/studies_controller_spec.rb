@@ -45,7 +45,7 @@ RSpec.describe StudiesController do
   describe '#create' do
     before do
       @study_count = Study.count
-      post :create, params: params
+      post :create, params:
     end
 
     context 'with valid options' do
@@ -110,7 +110,7 @@ RSpec.describe StudiesController do
 
       let!(:study) do
         # Create a study without poly_metadata options.
-        post :create, params: params
+        post(:create, params:)
         Study.last
       end
 

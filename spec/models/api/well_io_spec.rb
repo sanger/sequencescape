@@ -8,7 +8,7 @@ RSpec.describe Api::WellIO do
     subject do
       create :well_with_sample_and_without_plate,
              map: Map.find_by(description: 'A1', asset_size: plate.size),
-             plate: plate
+             plate:
     end
 
     let(:plate) { create :plate, barcode: 'SQPD-1' }
@@ -45,7 +45,7 @@ RSpec.describe Api::WellIO do
       # As of the current records, the 'description' and 'asset_size' attributes can uniquely identify a map.
       create :well_with_sample_and_without_plate,
              map: Map.find_by(description: 'A1', asset_size: plate.size),
-             plate: plate,
+             plate:,
              aliquot_count: 2
     end
 

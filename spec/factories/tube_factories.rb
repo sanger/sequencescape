@@ -13,7 +13,7 @@ FactoryBot.define do
       barcode { generate :barcode_number }
       prefix { 'NT' }
     end
-    sanger_barcode { { prefix: prefix, number: barcode_number } }
+    sanger_barcode { { prefix:, number: barcode_number } }
   end
 
   trait :in_a_rack do
@@ -22,7 +22,7 @@ FactoryBot.define do
       coordinate { nil }
     end
     after(:create) do |tube, evaluator|
-      create(:racked_tube, tube: tube, tube_rack: evaluator.tube_rack, coordinate: evaluator.coordinate)
+      create(:racked_tube, tube:, tube_rack: evaluator.tube_rack, coordinate: evaluator.coordinate)
     end
   end
 
@@ -166,7 +166,7 @@ FactoryBot.define do
       smrt_cells_available { 1 }
     end
     pac_bio_library_tube_metadata_attributes do
-      { prep_kit_barcode: prep_kit_barcode, smrt_cells_available: smrt_cells_available }
+      { prep_kit_barcode:, smrt_cells_available: }
     end
     after(:build) { |t, evaluator| t.receptacle.aliquots << evaluator.aliquot }
   end
@@ -184,7 +184,7 @@ FactoryBot.define do
   factory :spiked_buffer do
     transient do
       tag_option { 'Single' } # The PhiX Tag option to use, eg. Single/Dual
-      aliquot_attributes { { tag_option: tag_option } }
+      aliquot_attributes { { tag_option: } }
     end
 
     name { generate :asset_name }

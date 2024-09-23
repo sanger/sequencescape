@@ -22,7 +22,7 @@ describe Api::Messages::QcResultIO do
 
   context 'the qc_result asset is a well' do
     let(:aliquots) { create_list(:aliquot, 1, library: sample_tube) }
-    let(:well) { create :well_with_sample_and_plate, aliquots: aliquots }
+    let(:well) { create :well_with_sample_and_plate, aliquots: }
     let(:qc_result) { create :qc_result, asset: well }
 
     it 'generates a valid json' do

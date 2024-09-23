@@ -18,7 +18,7 @@ shared_examples 'it requires login' do |*actions|
             params["#{parent_resource}_id"] = (create parent_resource).id
           end
           begin
-            get action, params: params
+            get(action, params:)
           rescue AbstractController::ActionNotFound
             flunk "Testing for an unknown action: #{action}"
           rescue ActiveRecord::RecordNotFound
@@ -45,7 +45,7 @@ shared_examples 'it requires login' do |*actions|
             params["#{parent_resource}_id"] = (create parent_resource).id
           end
           begin
-            get action, params: params
+            get(action, params:)
           rescue AbstractController::ActionNotFound
             flunk "Testing for an unknown action: #{action}"
           end

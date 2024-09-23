@@ -16,7 +16,7 @@ module Heron
         return unless valid?
 
         @sample_tube = SampleTube.create!
-        Barcode.create!(labware_id: @sample_tube.id, barcode: barcode, format: barcode_format)
+        Barcode.create!(labware_id: @sample_tube.id, barcode:, format: barcode_format)
 
         @sample_tube
       end

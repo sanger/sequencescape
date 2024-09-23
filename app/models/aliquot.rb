@@ -118,7 +118,7 @@ class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
     {
       fragment_size_required_from: insert_size_from,
       fragment_size_required_to: insert_size_to,
-      library_type: library_type
+      library_type:
     }
   end
 

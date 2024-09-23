@@ -9,7 +9,7 @@ end
 When /^the state of the submission with UUID "([^"]+)" is "([^"]+)"$/ do |uuid, state|
   submission = Uuid.with_external_id(uuid).first.try(:resource) or
     raise StandardError, "Could not find submission with UUID #{uuid.inspect}"
-  submission.update!(state: state)
+  submission.update!(state:)
 end
 
 Then /^there should be no submissions to be processed$/ do
@@ -88,14 +88,14 @@ Then /^the submission with UUID "([^"]+)" should have (\d+) "([^"]+)" requests?$
 end
 
 Given /^the request type "([^"]+)" exists$/ do |name|
-  FactoryBot.create(:request_type, name: name)
+  FactoryBot.create(:request_type, name:)
 end
 
 def submission_in_state(state, attributes = {})
   study = Study.first or raise StandardError, 'There are no studies!'
   submission =
     FactoryHelp.submission(
-      { asset_group_name: 'Faked to prevent empty asset errors' }.merge(attributes).merge(study: study)
+      { asset_group_name: 'Faked to prevent empty asset errors' }.merge(attributes).merge(study:)
     )
   submission.state = state
   submission.save(validate: false)
@@ -106,7 +106,7 @@ Given /^I have a submission in the "([^"]+)" state$/ do |state|
 end
 
 Given /^I have a submission in the "failed" state with message "([^"]+)"$/ do |message|
-  submission_in_state('failed', message: message)
+  submission_in_state('failed', message:)
 end
 
 # These are the sensible default values for requests, which later get bound to the request types
@@ -140,7 +140,7 @@ SENSIBLE_DEFAULTS_FOR_REQUEST_TYPE = {
 }.freeze
 
 def with_request_type_scope(name, &block)
-  request_type = RequestType.find_by(name: name) or raise StandardError, "Cannot find request type #{name.inspect}"
+  request_type = RequestType.find_by(name:) or raise StandardError, "Cannot find request type #{name.inspect}"
   with_scope("#request_type_options_for_#{request_type.id}", &block)
 end
 
@@ -177,7 +177,7 @@ Given /^I have a "([^"]*)" submission with the following setup:$/ do |template_n
       study: Study.find_by(name: params['Study']),
       asset_group: AssetGroup.find_by(name: params['Asset Group']),
       user: @current_user,
-      request_options: request_options
+      request_options:
     )
     .submission
     .built!
@@ -185,7 +185,7 @@ Given /^I have a "([^"]*)" submission with the following setup:$/ do |template_n
   # step(%Q{1 pending delayed jobs are processed})
 end
 Then /^the last submission should have a priority of (\d+)$/ do |priority|
-  Submission.last.update!(priority: priority)
+  Submission.last.update!(priority:)
 end
 
 Given /^all the requests in the last submission are cancelled$/ do

@@ -4,10 +4,10 @@ require 'rails_helper'
 require_relative 'shared_order_specs'
 
 RSpec.describe AutomatedOrder do
-  subject { build :automated_order, assets: assets }
+  subject { build :automated_order, assets: }
 
   let(:assets) { [tube] }
-  let(:tube) { create :multiplexed_library_tube, aliquots: aliquots }
+  let(:tube) { create :multiplexed_library_tube, aliquots: }
   let(:study) { create :study }
   let(:project) { create :project }
 

@@ -26,7 +26,7 @@ class StudyReportsController < ApplicationController
 
   def create # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     study = Study.find_by(id: params[:study_report][:study])
-    study_report = StudyReport.create!(study: study, user: @current_user)
+    study_report = StudyReport.create!(study:, user: @current_user)
 
     study_report.schedule_report
 

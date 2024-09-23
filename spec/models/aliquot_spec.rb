@@ -25,7 +25,7 @@ RSpec.describe Aliquot do
 
     context 'with different tag 2' do
       let(:aliquot1) { build :aliquot, tag: tag1, tag2: tag1, sample: sample1 }
-      let(:aliquot2) { build :aliquot, tag: tag1, tag2: tag2, sample: sample1 }
+      let(:aliquot2) { build :aliquot, tag: tag1, tag2:, sample: sample1 }
 
       it { is_expected.to be false }
     end
@@ -89,17 +89,17 @@ RSpec.describe Aliquot do
 
     it 'allows mixing same tags with a different tag 2' do
       asset.aliquots << build(:aliquot, tag: tag1, tag2: tag1, sample: sample1) <<
-        build(:aliquot, tag: tag1, tag2: tag2, sample: sample2)
+        build(:aliquot, tag: tag1, tag2:, sample: sample2)
       expect(asset.save).to be true
     end
   end
 
   describe '#set_library' do
-    subject { build :aliquot, receptacle: receptacle, library_id: initial_library_id }
+    subject { build :aliquot, receptacle:, library_id: initial_library_id }
 
     let(:receptacle) { create :empty_well }
 
-    before { subject.set_library(force: force) }
+    before { subject.set_library(force:) }
 
     context 'when not set' do
       let(:force) { false }

@@ -8,7 +8,7 @@ describe UserQuery do
   let!(:user_query_attributes) do
     {
       user_email: 'another_email@example.com',
-      user: user,
+      user:,
       url: 'url',
       what_was_trying_to_do: 'create',
       what_happened: 'it did not work',

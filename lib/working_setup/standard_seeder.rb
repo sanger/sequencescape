@@ -46,7 +46,7 @@ module WorkingSetup
     end
 
     def plates_of_purpose(name, number) # rubocop:todo Metrics/AbcSize
-      purpose = Purpose.find_by!(name: name)
+      purpose = Purpose.find_by!(name:)
       number.times do
         purpose.create!.tap do |plate|
           plate.wells.each do |w|
@@ -74,10 +74,10 @@ module WorkingSetup
           .create!(
             lot_number: Time.current.to_i.to_s,
             template: TagLayoutTemplate.find_by!(name: template),
-            user: user,
+            user:,
             received_at: Time.current
           )
-      qcc = QcableCreator.create!(lot: lot, user: user, count: size)
+      qcc = QcableCreator.create!(lot:, user:, count: size)
       qcc.qcables.each do |qcable|
         qcable.update!(state: 'available')
         puts "Tag Plate: #{qcable.asset.ean13_barcode}"
@@ -110,11 +110,11 @@ module WorkingSetup
     end
 
     def create_project(name)
-      existing = Project.find_by(name: name)
+      existing = Project.find_by(name:)
       return existing if existing
 
       Project.create!(
-        name: name,
+        name:,
         enforce_quotas: false,
         approved: true,
         project_metadata_attributes: {
@@ -126,15 +126,15 @@ module WorkingSetup
     end
 
     def create_study(name)
-      existing = Study.find_by(name: name)
+      existing = Study.find_by(name:)
       return existing if existing
 
       Study.create!(
-        name: name,
+        name:,
         study_metadata_attributes: {
           data_access_group: 'dag',
           study_type: StudyType.first,
-          faculty_sponsor: faculty_sponsor,
+          faculty_sponsor:,
           data_release_study_type: DataReleaseStudyType.first,
           study_description: 'A seeded test study',
           contaminated_human_dna: 'No',

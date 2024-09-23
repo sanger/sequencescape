@@ -39,9 +39,9 @@ RSpec.describe Submission do
         request_type_3.id,
         request_type_4.id
       ]
-      order1 = create(:order, request_types: request_types, request_options: { read_length: 100 })
-      order2 = create(:order, request_types: request_types, request_options: { read_length: 100 })
-      order3 = create(:order, request_types: request_types, request_options: { read_length: 100 })
+      order1 = create(:order, request_types:, request_options: { read_length: 100 })
+      order2 = create(:order, request_types:, request_options: { read_length: 100 })
+      order3 = create(:order, request_types:, request_options: { read_length: 100 })
       order4 = create(:order, request_types: [request_type_1.id] + request_types, request_options: { read_length: 100 })
       expect(build(:submission, orders: [order1, order2, order3, order4])).to be_valid
     end
@@ -65,30 +65,30 @@ RSpec.describe Submission do
 
     it 'are not compatible with different request types after a multiplexed request types' do
       request_types = [request_type_1.id, request_type_2.id, request_type_for_multiplexing.id, request_type_3.id]
-      order1 = create(:order, request_types: request_types, request_options: { read_length: 100 })
-      order2 = create(:order, request_types: request_types, request_options: { read_length: 100 })
-      order3 = create(:order, request_types: request_types, request_options: { read_length: 100 })
+      order1 = create(:order, request_types:, request_options: { read_length: 100 })
+      order2 = create(:order, request_types:, request_options: { read_length: 100 })
+      order3 = create(:order, request_types:, request_options: { read_length: 100 })
       request_types[3] = request_type_4.id
-      order4 = create(:order, request_types: request_types, request_options: { read_length: 100 })
+      order4 = create(:order, request_types:, request_options: { read_length: 100 })
       expect(build(:submission, orders: [order1, order2, order3, order4])).not_to be_valid
     end
 
     it 'are not compatible if any of the read lengths are different' do
       request_types = [request_type_1.id, request_type_2.id, request_type_for_multiplexing.id, request_type_3.id]
-      order1 = create(:order, request_types: request_types, request_options: { read_length: 100 })
-      order2 = create(:order, request_types: request_types, request_options: { read_length: 100 })
-      order3 = create(:order, request_types: request_types, request_options: { read_length: 200 })
-      order4 = create(:order, request_types: request_types, request_options: { read_length: 100 })
+      order1 = create(:order, request_types:, request_options: { read_length: 100 })
+      order2 = create(:order, request_types:, request_options: { read_length: 100 })
+      order3 = create(:order, request_types:, request_options: { read_length: 200 })
+      order4 = create(:order, request_types:, request_options: { read_length: 100 })
       expect(build(:submission, orders: [order1, order2, order3, order4])).not_to be_valid
     end
 
     it 'are not compatible if at least one of the request types are not for multiplexing' do
       request_types = [request_type_1.id, request_type_2.id, request_type_for_multiplexing.id, request_type_3.id]
-      order1 = create(:order, request_types: request_types, request_options: { read_length: 100 })
-      order2 = create(:order, request_types: request_types, request_options: { read_length: 100 })
-      order3 = create(:order, request_types: request_types, request_options: { read_length: 100 })
+      order1 = create(:order, request_types:, request_options: { read_length: 100 })
+      order2 = create(:order, request_types:, request_options: { read_length: 100 })
+      order3 = create(:order, request_types:, request_options: { read_length: 100 })
       request_types = [request_type_1.id, request_type_2.id, request_type_3.id, request_type_4.id]
-      order4 = create(:order, request_types: request_types, request_options: { read_length: 100 })
+      order4 = create(:order, request_types:, request_options: { read_length: 100 })
       expect(build(:submission, orders: [order1, order2, order3, order4])).not_to be_valid
     end
   end
@@ -109,8 +109,8 @@ RSpec.describe Submission do
 
   describe '#used_tags' do
     let(:submission) { create :submission }
-    let(:request_1) { create :request, submission: submission }
-    let(:request_2) { create :request, submission: submission }
+    let(:request_1) { create :request, submission: }
+    let(:request_2) { create :request, submission: }
     let(:tag_a) { create :tag }
     let(:tag2_a) { create :tag }
     let(:tag_b) { create :tag }

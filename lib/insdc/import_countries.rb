@@ -35,7 +35,7 @@ class Insdc::ImportCountries
   private
 
   def generate_countries(pending_countries)
-    Insdc::Country.import(pending_countries.map { |name| { name: name, sort_priority: priority_for(name) } })
+    Insdc::Country.import(pending_countries.map { |name| { name:, sort_priority: priority_for(name) } })
   end
 
   def priority_for(name)

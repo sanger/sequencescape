@@ -10,7 +10,7 @@ describe 'Sample#consent_withdrawn', js: false do
   # - If a patient withdraws consent we need to make sure everyone downstream knows
   # - We need to stop new orders being made.
   let(:user) { create :user, email: 'login@example.com' }
-  let(:sample) { create :sample_with_gender, consent_withdrawn: consent_withdrawn }
+  let(:sample) { create :sample_with_gender, consent_withdrawn: }
   let(:study) { create :study }
 
   before { study.samples << sample }
@@ -56,16 +56,16 @@ describe 'Sample#consent_withdrawn', js: false do
       # Lifted straight from the feature test with minimal rspecification
       # and optimization
       let(:submission_template) { create :submission_template, request_type_ids_list: [[create(:request_type).id]] }
-      let(:sample_tube) { create :sample_tube, sample: sample }
+      let(:sample_tube) { create :sample_tube, sample: }
       let(:asset_group) { create :asset_group, assets: [sample_tube.receptacle] }
 
       context 'defined by asset group' do
         let(:order) do
           submission_template.new_order(
             project: create(:project),
-            study: study,
-            asset_group: asset_group,
-            user: user,
+            study:,
+            asset_group:,
+            user:,
             request_options: {
               'fragment_size_required_from' => 300,
               'fragment_size_required_to' => 400,
@@ -81,9 +81,9 @@ describe 'Sample#consent_withdrawn', js: false do
         let(:order) do
           submission_template.new_order(
             project: create(:project),
-            study: study,
+            study:,
             assets: [sample_tube],
-            user: user,
+            user:,
             request_options: {
               'fragment_size_required_from' => 300,
               'fragment_size_required_to' => 400,

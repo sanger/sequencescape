@@ -32,7 +32,7 @@ module Api
                     nested_stream.block('actions') do |actions_stream|
                       endpoint
                         .model_handler
-                        .send(:actions, endpoint.model_handler, response: self, endpoint: endpoint)
+                        .send(:actions, endpoint.model_handler, response: self, endpoint:)
                         .map { |action, url| actions_stream.attribute(action, url) }
                     end
                   end

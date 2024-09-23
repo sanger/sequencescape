@@ -64,7 +64,7 @@ Given /^no cookies are set for HTTP requests to the API$/ do
 end
 
 Given /^the WTSI single sign-on service recognises "([^"]+)" as "([^"]+)"$/ do |key, login|
-  User.find_or_create_by(login: login).update!(api_key: key)
+  User.find_or_create_by(login:).update!(api_key: key)
 end
 
 Given /^the WTSI single sign-on service does not recognise "([^"]+)"$/ do |cookie|
@@ -119,7 +119,7 @@ When %r{^I make an authorised (POST|PUT) with the following JSON to the API path
 end
 
 Given /^I have a "(.*?)" authorised user with the key "(.*?)"$/ do |permission, key|
-  ApiApplication.new(name: 'test_api', key: key, privilege: permission, contact: 'none').save(validate: false)
+  ApiApplication.new(name: 'test_api', key:, privilege: permission, contact: 'none').save(validate: false)
 end
 
 When /^I retrieve the JSON for all (studies|samples|requests)$/ do |model|
@@ -127,18 +127,18 @@ When /^I retrieve the JSON for all (studies|samples|requests)$/ do |model|
 end
 
 When /^I retrieve the JSON for all requests related to the (sample|library) tube "([^"]+)"$/ do |tube_type, name|
-  tube = "#{tube_type}_tube".classify.constantize.find_by(name: name) or
+  tube = "#{tube_type}_tube".classify.constantize.find_by(name:) or
     raise StandardError, "Cannot find #{tube_type} tube called #{name.inspect}"
   visit(url_for(controller: 'api/requests', action: 'index', "#{tube_type}_tube_id": tube.id, format: :json))
 end
 
 When /^I retrieve the JSON for the (sample|study) "([^"]+)"$/ do |model, name|
-  object = model.classify.constantize.find_by(name: name) or raise "Cannot find #{model} #{name.inspect}"
+  object = model.classify.constantize.find_by(name:) or raise "Cannot find #{model} #{name.inspect}"
   visit(url_for(controller: "api/#{model.pluralize}", action: 'show', id: object, format: :json))
 end
 
 When /^I retrieve the JSON for the last request in the study "([^"]+)"$/ do |name|
-  study = Study.find_by(name: name) or raise StandardError, "Cannot find the study #{name.inspect}"
+  study = Study.find_by(name:) or raise StandardError, "Cannot find the study #{name.inspect}"
   raise StandardError, "It appears there are no requests for study #{name.inspect}" if study.requests.empty?
 
   visit(url_for(controller: 'api/requests', action: 'show', id: study.requests.last, format: :json))
@@ -283,11 +283,11 @@ Given /^the well "([^"]+)" is a child of the well "([^"]+)"$/ do |child_name, pa
 end
 
 Given /^the sample "([^"]+)" is in (\d+) sample tubes? with sequential IDs starting at (\d+)$/ do |name, count, base_id|
-  sample = Sample.find_by(name: name) or raise StandardError, "Cannot find the sample #{name.inspect}"
+  sample = Sample.find_by(name:) or raise StandardError, "Cannot find the sample #{name.inspect}"
   (1..count.to_i).each do |index|
     FactoryBot
       .create(:empty_sample_tube, name: "#{name} sample tube #{index}", id: (base_id.to_i + index - 1))
-      .tap { |sample_tube| sample_tube.aliquots.create!(sample: sample) }
+      .tap { |sample_tube| sample_tube.aliquots.create!(sample:) }
   end
 end
 

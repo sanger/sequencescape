@@ -54,11 +54,11 @@ module SequencescapeExcel
 
     def to_h
       {
-        type: type,
-        first_cell_reference: first_cell_reference,
-        absolute_reference: absolute_reference,
-        operator: operator,
-        operand: operand
+        type:,
+        first_cell_reference:,
+        absolute_reference:,
+        operator:,
+        operand:
       }
     end
 

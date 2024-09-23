@@ -43,10 +43,10 @@ class BulkTransfer < ApplicationRecord
     ActiveRecord::Base.transaction do
       each_transfer do |source, destination, transfers|
         Transfer::BetweenPlates.create!(
-          source: source,
-          destination: destination,
-          user: user,
-          transfers: transfers,
+          source:,
+          destination:,
+          user:,
+          transfers:,
           bulk_transfer_id: id
         )
       end

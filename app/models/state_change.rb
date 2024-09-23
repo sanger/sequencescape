@@ -65,10 +65,10 @@ class StateChange < ApplicationRecord
   def update_state_of_target
     state_changer.new(
       labware: target,
-      target_state: target_state,
-      user: user,
-      contents: contents,
-      customer_accepts_responsibility: customer_accepts_responsibility
+      target_state:,
+      user:,
+      contents:,
+      customer_accepts_responsibility:
     ).update_labware_state
   end
 end

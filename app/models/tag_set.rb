@@ -39,10 +39,10 @@ class TagSet < ApplicationRecord
   end
 
   def tag_group_name=(name)
-    self.tag_group = TagGroup.find_by!(name: name)
+    self.tag_group = TagGroup.find_by!(name:)
   end
 
   def tag2_group_name=(name)
-    self.tag2_group = TagGroup.find_by!(name: name)
+    self.tag2_group = TagGroup.find_by!(name:)
   end
 end

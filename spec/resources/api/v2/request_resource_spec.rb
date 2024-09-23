@@ -34,7 +34,7 @@ RSpec.describe Api::V2::RequestResource, type: :resource do
   end
 
   context 'isc request' do
-    let(:resource_model) { build_stubbed :isc_request, bait_library: bait_library }
+    let(:resource_model) { build_stubbed :isc_request, bait_library: }
     let(:bait_library) { create :bait_library }
     let(:expected_metadata) do
       {

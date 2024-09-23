@@ -31,15 +31,15 @@ class PrintJobTest < ActiveSupport::TestCase
     ]
     @attributes = {
       printer_name: barcode_printer.name,
-      label_template_name: label_template_name,
+      label_template_name:,
       labels: labels_attributes
     }
     @print_job =
       LabelPrinter::PrintJob.new(
         barcode_printer.name,
         LabelPrinter::Label::PlateCreator,
-        plates: plates,
-        plate_purpose: plate_purpose,
+        plates:,
+        plate_purpose:,
         user_login: 'user'
       )
   end

@@ -137,11 +137,11 @@ RSpec.describe SequencingRequest do
 
   context 'on start' do
     let(:samples) { create_list :sample, 2 }
-    let(:study) { create :study, samples: samples }
+    let(:study) { create :study, samples: }
     let(:project) { create :project }
     let(:destination) { create :receptacle }
     let(:aliquots) { [aliquot1, aliquot2] }
-    let(:source) { create :receptacle, aliquots: aliquots }
+    let(:source) { create :receptacle, aliquots: }
     let(:library_tube) { create :library_tube, receptacles: [source] }
     let(:sequencing_request) do
       create(
@@ -155,8 +155,8 @@ RSpec.describe SequencingRequest do
     let(:tags) { create_list :tag, 4 }
 
     context 'when compound samples are not necessary because each aliquot has a unique tag combination' do
-      let(:aliquot1) { create :aliquot, sample: samples[0], tag_id: tags[0].id, tag2_id: tags[1].id, study: study }
-      let(:aliquot2) { create :aliquot, sample: samples[1], tag_id: tags[0].id, tag2_id: tags[2].id, study: study }
+      let(:aliquot1) { create :aliquot, sample: samples[0], tag_id: tags[0].id, tag2_id: tags[1].id, study: }
+      let(:aliquot2) { create :aliquot, sample: samples[1], tag_id: tags[0].id, tag2_id: tags[2].id, study: }
 
       it 'performs a normal transfer of aliquots' do
         expect(sequencing_request.target_asset.aliquots.count).to eq(0)
@@ -174,8 +174,8 @@ RSpec.describe SequencingRequest do
                  tag_id: tags[0].id,
                  tag2_id: tags[1].id,
                  tag_depth: 1,
-                 study: study,
-                 project: project
+                 study:,
+                 project:
         end
         let(:aliquot2) do
           create :aliquot,
@@ -183,8 +183,8 @@ RSpec.describe SequencingRequest do
                  tag_id: tags[0].id,
                  tag2_id: tags[1].id,
                  tag_depth: 2,
-                 study: study,
-                 project: project
+                 study:,
+                 project:
         end
 
         it 'creates a compound sample and transfers an aliquot of it' do
@@ -198,16 +198,16 @@ RSpec.describe SequencingRequest do
       context 'when there are two tag combinations' do
         let(:samples) { create_list :sample, 4 }
         let(:aliquot1) do
-          create :aliquot, sample: samples[0], tag_id: tags[0].id, tag2_id: tags[1].id, tag_depth: 1, study: study
+          create :aliquot, sample: samples[0], tag_id: tags[0].id, tag2_id: tags[1].id, tag_depth: 1, study:
         end
         let(:aliquot2) do
-          create :aliquot, sample: samples[1], tag_id: tags[0].id, tag2_id: tags[1].id, tag_depth: 2, study: study
+          create :aliquot, sample: samples[1], tag_id: tags[0].id, tag2_id: tags[1].id, tag_depth: 2, study:
         end
         let(:aliquot3) do
-          create :aliquot, sample: samples[2], tag_id: tags[2].id, tag2_id: tags[3].id, tag_depth: 1, study: study
+          create :aliquot, sample: samples[2], tag_id: tags[2].id, tag2_id: tags[3].id, tag_depth: 1, study:
         end
         let(:aliquot4) do
-          create :aliquot, sample: samples[3], tag_id: tags[2].id, tag2_id: tags[3].id, tag_depth: 2, study: study
+          create :aliquot, sample: samples[3], tag_id: tags[2].id, tag2_id: tags[3].id, tag_depth: 2, study:
         end
         let(:aliquots) { [aliquot1, aliquot2, aliquot3, aliquot4] }
 

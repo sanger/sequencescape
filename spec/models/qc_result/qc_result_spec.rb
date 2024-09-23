@@ -55,7 +55,7 @@ RSpec.describe QcResult, :qc_result do
 
     it 'can update its asset' do
       expect(asset).to receive(:update_from_qc).with(an_instance_of(described_class))
-      create :qc_result, asset: asset
+      create :qc_result, asset:
     end
   end
 end

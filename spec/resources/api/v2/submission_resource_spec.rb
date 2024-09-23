@@ -7,7 +7,7 @@ RSpec.describe Api::V2::SubmissionResource, type: :resource do
   subject(:resource) { described_class.new(resource_model, {}) }
 
   let(:sequencing_requests) { build_stubbed_list(:sequencing_request, 3) }
-  let(:resource_model) { build_stubbed :submission, sequencing_requests: sequencing_requests }
+  let(:resource_model) { build_stubbed :submission, sequencing_requests: }
 
   # Test attributes
   it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording

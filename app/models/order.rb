@@ -198,9 +198,9 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
     matching_orders =
       Order
         .containing_samples(all_samples)
-        .where(template_name: template_name)
+        .where(template_name:)
         .includes(:submission, assets: :samples)
-        .where.not(orders: { id: id })
+        .where.not(orders: { id: })
         .where('orders.created_at > ?', Time.current - timespan)
     return false if matching_orders.empty?
 
@@ -286,7 +286,7 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def generate_broadcast_event
-    BroadcastEvent::OrderMade.create!(seed: self, user: user)
+    BroadcastEvent::OrderMade.create!(seed: self, user:)
   end
 
   def study_is_active

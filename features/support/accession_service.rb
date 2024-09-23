@@ -38,7 +38,7 @@ class FakeAccessionService
             .to_return do |_request|
               response = FakeAccessionService.instance.next!
               status = response.nil? ? 500 : 200
-              { headers: { 'Content-Type' => 'text/xml' }, body: response, status: status }
+              { headers: { 'Content-Type' => 'text/xml' }, body: response, status: }
             end
         end
       end

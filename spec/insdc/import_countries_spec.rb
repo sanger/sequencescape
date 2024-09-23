@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Insdc::ImportCountries do
   subject(:importer) do
-    described_class.new(ena_root: ena_root, sample_checklist: sample_checklist, priorities: priorities)
+    described_class.new(ena_root:, sample_checklist:, priorities:)
   end
 
   before do

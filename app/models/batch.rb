@@ -138,10 +138,10 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
     raise StandardError, 'Can not fail batch without failing requests' if ignore_requests
 
     # create failures
-    failures.create(reason: reason, comment: comment, notify_remote: false)
+    failures.create(reason:, comment:, notify_remote: false)
 
     requests.each do |request|
-      request.failures.create(reason: reason, comment: comment, notify_remote: true)
+      request.failures.create(reason:, comment:, notify_remote: true)
       EventSender.send_fail_event(request, reason, comment, id) unless request.asset && request.asset.resource?
     end
 
@@ -158,7 +158,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
           logger.debug "SENDING FAIL FOR REQUEST #{request.id}, BATCH #{id}, WITH REASON #{reason}"
 
           request.customer_accepts_responsibility! if fail_but_charge
-          request.failures.create(reason: reason, comment: comment, notify_remote: true)
+          request.failures.create(reason:, comment:, notify_remote: true)
           EventSender.send_fail_event(request, reason, comment, id)
         end
       update_batch_state(reason, comment)
@@ -167,7 +167,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def update_batch_state(reason, comment)
     if requests.all?(&:terminated?)
-      failures.create(reason: reason, comment: comment, notify_remote: false)
+      failures.create(reason:, comment:, notify_remote: false)
       self.production_state = 'fail'
       save!
     end
@@ -310,7 +310,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
       end
     end
     if errors.empty?
-      lab_events.create(description: 'Tube layout verified', user: user)
+      lab_events.create(description: 'Tube layout verified', user:)
       true
     else
       false
@@ -331,7 +331,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
       Request
         .find(request_ids)
         .each do |request|
-          request.failures.create(reason: reason, comment: comment, notify_remote: true)
+          request.failures.create(reason:, comment:, notify_remote: true)
           detach_request(request)
         end
       update_batch_state(reason, comment)
@@ -465,7 +465,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
     lab_events.create(
       description: 'Robot verified',
       message: 'Robot verification completed and source volumes updated.',
-      user_id: user_id
+      user_id:
     )
   end
 
@@ -586,12 +586,12 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
         requests_to_update.concat(downstream_requests.map { |r| [r, target_asset.receptacle] })
       end
 
-      request.update!(target_asset: target_asset)
+      request.update!(target_asset:)
 
       target_asset.parents << request.asset.labware
     end
 
-    requests_to_update.each { |request, asset| request.update!(asset: asset) }
+    requests_to_update.each { |request, asset| request.update!(asset:) }
   end
   # rubocop:enable Metrics/MethodLength
 end

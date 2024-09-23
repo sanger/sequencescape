@@ -11,9 +11,9 @@ describe 'Create a QC report' do
 
   before do
     create(:plate_purpose)
-    create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: plate_purposes[0]))
-    create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: plate_purposes[1]))
-    create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: plate_purposes[2]))
+    create(:well_for_qc_report, study:, plate: create(:plate, plate_purpose: plate_purposes[0]))
+    create(:well_for_qc_report, study:, plate: create(:plate, plate_purpose: plate_purposes[1]))
+    create(:well_for_qc_report, study:, plate: create(:plate, plate_purpose: plate_purposes[2]))
   end
 
   it 'create a new report' do

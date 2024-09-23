@@ -7,10 +7,10 @@ RSpec.describe StateChanger::StandardPlate do
   let(:state_changer) do
     described_class.new(
       labware: target_plate,
-      target_state: target_state,
-      user: user,
-      contents: contents,
-      customer_accepts_responsibility: customer_accepts_responsibility
+      target_state:,
+      user:,
+      contents:,
+      customer_accepts_responsibility:
     )
   end
   let(:user) { build_stubbed :user }

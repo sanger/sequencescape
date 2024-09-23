@@ -6,7 +6,7 @@ FactoryBot.define do
       study { build :study }
       project { build :project }
       sample { build :sample }
-      aliquot_options { |_e, well| { study: study, project: project, receptacle: well, sample: sample } }
+      aliquot_options { |_e, well| { study:, project:, receptacle: well, sample: } }
     end
     association(:well_attribute, strategy: :build)
 
@@ -37,7 +37,7 @@ FactoryBot.define do
     factory :passed_well do
       transient do
         aliquot_options do |_e, well|
-          { study: study, project: project, receptacle: well, sample: sample, request: requests_as_target.first }
+          { study:, project:, receptacle: well, sample:, request: requests_as_target.first }
         end
       end
       stock_wells { [association(:well)] }
@@ -74,7 +74,7 @@ FactoryBot.define do
   end
 
   factory :well_for_qc_report, parent: :well do
-    samples { [create(:study_sample, study: study).sample] }
+    samples { [create(:study_sample, study:).sample] }
     plate { create(:plate) }
     map { create(:map) }
 

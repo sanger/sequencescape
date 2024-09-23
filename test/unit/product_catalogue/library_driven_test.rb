@@ -7,8 +7,8 @@ class LibraryDrivenTest < ActiveSupport::TestCase
     setup do
       def link_product_with_pc(product, product_catalogue, library_type_name)
         FactoryBot.create :product_product_catalogue,
-                          product: product,
-                          product_catalogue: product_catalogue,
+                          product:,
+                          product_catalogue:,
                           selection_criterion: library_type_name
       end
 

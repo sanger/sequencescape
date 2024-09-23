@@ -16,7 +16,7 @@ shared_examples 'an automated order' do
   end
 
   context 'with a single study/project tube' do
-    let(:aliquots) { create_list :tagged_aliquot, 2, study: study, project: project }
+    let(:aliquots) { create_list :tagged_aliquot, 2, study:, project: }
 
     it { is_expected.to be_valid }
 

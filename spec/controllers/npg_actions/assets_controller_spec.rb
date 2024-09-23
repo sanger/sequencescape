@@ -11,25 +11,25 @@ RSpec.describe NpgActions::AssetsController, type: :request do
   let(:batch) { create :sequencing_batch, state: 'started', qc_state: 'qc_manual' }
   let(:valid_seq_request) do
     create :sequencing_request_with_assets,
-           batch: batch,
+           batch:,
            request_type: batch.pipeline.request_types.first,
-           study: study,
+           study:,
            target_asset: lane,
            state: 'passed'
   end
   let(:cancelled_seq_request) do
     create :sequencing_request_with_assets,
-           batch: batch,
+           batch:,
            request_type: batch.pipeline.request_types.first,
-           study: study,
+           study:,
            target_asset: lane,
            state: 'cancelled'
   end
   let(:failed_seq_request) do
     create :sequencing_request_with_assets,
-           batch: batch,
+           batch:,
            request_type: batch.pipeline.request_types.first,
-           study: study,
+           study:,
            target_asset: lane,
            state: 'failed'
   end

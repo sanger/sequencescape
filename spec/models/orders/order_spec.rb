@@ -17,15 +17,15 @@ RSpec.describe Order do
 
     subject(:order) do
       build :order,
-            assets: assets,
-            autodetect_studies: autodetect_studies,
-            autodetect_projects: autodetect_projects,
+            assets:,
+            autodetect_studies:,
+            autodetect_projects:,
             study: nil,
             project: nil
     end
 
     let(:assets) { [tube] }
-    let(:tube) { create :sample_tube, aliquots: aliquots }
+    let(:tube) { create :sample_tube, aliquots: }
     let(:study_state) { 'active' }
 
     context 'with autodetection turned on' do
@@ -48,7 +48,7 @@ RSpec.describe Order do
     context 'with autodetection turned off' do
       let(:autodetect_studies) { false }
       let(:autodetect_projects) { false }
-      let(:aliquots) { create_list :tagged_aliquot, 2, study: study, project: project }
+      let(:aliquots) { create_list :tagged_aliquot, 2, study:, project: }
 
       it { is_expected.not_to be_valid }
     end
@@ -116,13 +116,13 @@ RSpec.describe Order do
   end
 
   it 'order should not be valid if study is not active' do
-    order = build :order, study: study, assets: [asset.receptacle], project: project
+    order = build(:order, study:, assets: [asset.receptacle], project:)
     expect(order).not_to be_valid
   end
 
   it 'order should be valid if study is active on create' do
     study.activate!
-    order = create :order, study: study, assets: [asset.receptacle], project: project
+    order = create(:order, study:, assets: [asset.receptacle], project:)
     assert order.valid?
     study.deactivate!
     new_asset = create :empty_sample_tube

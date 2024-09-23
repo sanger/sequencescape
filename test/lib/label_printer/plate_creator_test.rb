@@ -27,16 +27,16 @@ class PlateCreatorTest < ActiveSupport::TestCase
     plate_purpose = create :plate_purpose, name: purpose_name
     @plate1 =
       create :child_plate,
-             parent: parent,
+             parent:,
              barcode: barcode1,
-             plate_purpose: plate_purpose,
+             plate_purpose:,
              well_count: 1,
              well_factory: :untagged_well,
              studies: @studies
     @plates = [plate1]
     @user = 'user'
     @study_abbreviation = 'WTCCC'
-    options = { plate_purpose: plate_purpose, plates: plates, user_login: user }
+    options = { plate_purpose:, plates:, user_login: user }
     @plate_label = LabelPrinter::Label::PlateCreator.new(options)
     @label = {
       top_left: (Date.today.strftime('%e-%^b-%Y')).to_s,

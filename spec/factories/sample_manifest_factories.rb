@@ -32,7 +32,7 @@ FactoryBot.define do
                 :sample_manifest_asset,
                 sanger_sample_id: generate(:sanger_sample_id),
                 asset: well,
-                sample_manifest: sample_manifest
+                sample_manifest:
               )
             end
           end
@@ -57,7 +57,7 @@ FactoryBot.define do
               :sample_manifest_asset,
               sanger_sample_id: generate(:sanger_sample_id),
               asset: tube.receptacle,
-              sample_manifest: sample_manifest
+              sample_manifest:
             )
           end
           sample_manifest.barcodes = sample_manifest.labware.map(&:human_barcode)
@@ -92,7 +92,7 @@ FactoryBot.define do
           .flat_map(&:wells)
           .each do |well|
             evaluator.num_rows_per_well.times do
-              create(:sample_manifest_asset, asset: well, sample_manifest: sample_manifest)
+              create(:sample_manifest_asset, asset: well, sample_manifest:)
             end
           end
       end

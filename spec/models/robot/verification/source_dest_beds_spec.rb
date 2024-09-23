@@ -70,7 +70,7 @@ RSpec.describe Robot::Verification::SourceDestBeds, :robot_verification do
       end
     end
 
-    let(:batch) { create :batch, requests: requests, pipeline: pipeline }
+    let(:batch) { create :batch, requests:, pipeline: }
 
     context 'without control plates' do
       let(:source_plate_2) { create :plate, well_count: 2 }

@@ -32,7 +32,7 @@ class PlatePicksController < ApplicationController
                plate: {
                  id: plate.id,
                  barcode: plate.machine_barcode,
-                 batches: batches,
+                 batches:,
                  control: plate.pick_as_control?
                }
              }

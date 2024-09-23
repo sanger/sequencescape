@@ -20,13 +20,13 @@ module RecordLoader
         name: 'Add Spiked in control',
         sorted: 0,
         lab_activity: true,
-        workflow: workflow
+        workflow:
       ).find_or_create_by!(pipeline_workflow_id: workflow.pipeline_id)
     end
 
     def add_loading_event(workflow)
       SetDescriptorsTask
-        .create_with(name: 'Loading', sorted: 1, lab_activity: true, workflow: workflow)
+        .create_with(name: 'Loading', sorted: 1, lab_activity: true, workflow:)
         .find_or_create_by!(pipeline_workflow_id: workflow.pipeline_id) do |task|
           task.descriptors.build(
             [
@@ -49,7 +49,7 @@ module RecordLoader
       request_type_keys = obj.delete('request_type_keys')
       raise 'Request type keys not found' if request_type_keys.blank?
       request_types = RequestType.where(key: request_type_keys)
-      Pipeline.create_with(obj.merge(workflow: wf, request_types: request_types)).find_or_create_by!(name: name)
+      Pipeline.create_with(obj.merge(workflow: wf, request_types:)).find_or_create_by!(name:)
 
       return unless name == 'NovaSeqX PE'
 

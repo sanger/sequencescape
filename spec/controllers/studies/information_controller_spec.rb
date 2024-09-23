@@ -23,7 +23,7 @@ RSpec.describe Studies::InformationController do
     let(:request_type1) { create :request_type }
     let(:request_type2) { create :request_type }
     let(:request_type3) { create :request_type }
-    let(:well) { create :untagged_well, study: study }
+    let(:well) { create :untagged_well, study: }
 
     before do
       request_type3

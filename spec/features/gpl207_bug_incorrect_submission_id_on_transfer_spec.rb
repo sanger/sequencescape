@@ -34,7 +34,7 @@ RSpec.describe 'Bug research' do
                   :cherrypick_request,
                   asset: plate.wells.located_at(source).first,
                   target_asset: destination,
-                  submission_id: submission_id
+                  submission_id:
                 )
               end
           end

@@ -22,7 +22,7 @@ class QcReportTest < ActiveSupport::TestCase
         [@study, @other_study].each do |study|
           2.times do |i|
             attribute = create :well_attribute, current_volume: 500, concentration: 200
-            sample = create(:study_sample, study: study).sample
+            sample = create(:study_sample, study:).sample
             sample.update!(sanger_sample_id: 'TEST1')
             well =
               create :well,
@@ -30,7 +30,7 @@ class QcReportTest < ActiveSupport::TestCase
                      plate: @stock_plate,
                      map: create(:map, location_id: i),
                      well_attribute: attribute
-            well.aliquots.each { |a| a.update!(study: study) }
+            well.aliquots.each { |a| a.update!(study:) }
           end
         end
 

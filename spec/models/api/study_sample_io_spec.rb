@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Api::StudySampleIO do
-  subject { create :study_sample, study: study, sample: sample }
+  subject { create :study_sample, study:, sample: }
 
   let(:study) { create :study }
   let(:sample) { create :sample }

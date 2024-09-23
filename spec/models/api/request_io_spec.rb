@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Api::RequestIO do
-  subject { create :request, asset: source_asset, target_asset: target_asset }
+  subject { create :request, asset: source_asset, target_asset: }
 
   context 'between tubes' do
     let(:source_asset) { create :sample_tube }

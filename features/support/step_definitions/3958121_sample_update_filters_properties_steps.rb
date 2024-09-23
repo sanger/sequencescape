@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Given /^I am the owner of sample "([^"]+)"$/ do |name|
-  sample = Sample.find_by!(name: name)
+  sample = Sample.find_by!(name:)
   @current_user.grant_owner(sample)
 end
 

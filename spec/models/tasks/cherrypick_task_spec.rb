@@ -8,12 +8,12 @@ RSpec.describe CherrypickTask do
   let!(:plate) { create :plate_with_untagged_wells, sample_count: 4 }
   let(:control_plate) { create :control_plate, sample_count: 2 }
   let(:requests) do
-    plate.wells.in_column_major_order.map { |w| create(:cherrypick_request, asset: w, submission: submission) }
+    plate.wells.in_column_major_order.map { |w| create(:cherrypick_request, asset: w, submission:) }
   end
   let(:template) { create(:plate_template, size: 6) }
   let(:robot) { instance_double('Robot', max_beds: 2) } # rubocop:todo RSpec/VerifiedDoubleReference
   let(:purpose) { create :purpose }
-  let(:batch) { instance_double('Batch', id: 1235, requests: requests) } # rubocop:todo RSpec/VerifiedDoubleReference
+  let(:batch) { instance_double('Batch', id: 1235, requests:) } # rubocop:todo RSpec/VerifiedDoubleReference
   let(:submission) { create :submission }
   let(:wells_to_leave_free) { Rails.application.config.plate_default_control_wells_to_leave_free }
 
@@ -36,7 +36,7 @@ RSpec.describe CherrypickTask do
             batch_id: 1235,
             total_wells: 6,
             num_control_wells: 2,
-            wells_to_leave_free: wells_to_leave_free
+            wells_to_leave_free:
           ).and_return(locator)
         end
 
@@ -63,7 +63,7 @@ RSpec.describe CherrypickTask do
       context 'when control positions clashes with templates' do
         let(:instance) { described_class.new }
         let(:wells) { build_stubbed_list(:well, 1, map_id: 6) }
-        let(:template) { build_stubbed(:plate_template, size: 6, wells: wells) }
+        let(:template) { build_stubbed(:plate_template, size: 6, wells:) }
         let(:destinations) do
           [
             [
@@ -109,7 +109,7 @@ RSpec.describe CherrypickTask do
 
     context 'with controls' do
       before do
-        requests.first.update(submission: submission)
+        requests.first.update(submission:)
         allow(requests.first).to receive(:batch).and_return(batch)
       end
 

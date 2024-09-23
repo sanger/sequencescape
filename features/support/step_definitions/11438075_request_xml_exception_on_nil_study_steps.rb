@@ -8,9 +8,9 @@ Given /^I have a request (\d+) with a study (\d+)$/ do |request_id, study_id|
     FactoryBot.create(
       :request,
       id: request_id,
-      study: study,
-      project: project,
-      request_type: request_type,
+      study:,
+      project:,
+      request_type:,
       asset: FactoryBot.create(:sample_tube)
     )
 end

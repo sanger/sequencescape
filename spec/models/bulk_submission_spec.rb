@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe BulkSubmission, with: :uploader do
-  subject { described_class.new(spreadsheet: submission_file, encoding: encoding) }
+  subject { described_class.new(spreadsheet: submission_file, encoding:) }
 
   let(:encoding) { 'Windows-1252' }
   let(:spreadsheet_path) { Rails.root.join('features', 'submission', 'csv', spreadsheet_filename) }
@@ -19,7 +19,7 @@ describe BulkSubmission, with: :uploader do
   after { submission_file.close }
 
   let!(:study) { create :study, name: 'abc123_study' }
-  let!(:asset_group) { create :asset_group, name: 'assetgroup123', study: study, asset_count: 2 }
+  let!(:asset_group) { create :asset_group, name: 'assetgroup123', study:, asset_count: 2 }
   let!(:library_type) { create :library_type, name: 'Standard' }
 
   before do

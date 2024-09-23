@@ -24,11 +24,11 @@ class QcableCreator < ApplicationRecord
   end
 
   def qcables_by_barcode!
-    barcodes.split(',').collect { |barcode| lot.qcables.create!(qcable_creator: self, barcode: barcode) }
+    barcodes.split(',').collect { |barcode| lot.qcables.create!(qcable_creator: self, barcode:) }
   end
 
   # Creates using the supplied plate barcode we received from baracoda
   def qcables_by_supplied_barcode!
-    lot.qcables.create!(qcable_creator: self, supplied_barcode: supplied_barcode)
+    lot.qcables.create!(qcable_creator: self, supplied_barcode:)
   end
 end

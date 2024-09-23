@@ -15,8 +15,8 @@ class PlateSummariesControllerTest < ActionController::TestCase
     context 'with some plates' do
       setup do
         purpose = create :source_plate_purpose
-        @source_plate_a = create :source_plate, purpose: purpose
-        @source_plate_b = create :source_plate, purpose: purpose
+        @source_plate_a = create(:source_plate, purpose:)
+        @source_plate_b = create(:source_plate, purpose:)
         @child_plate_a = create :child_plate, parent: @source_plate_a
         @child_plate_b = create :child_plate, parent: @source_plate_b
       end

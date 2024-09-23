@@ -8,11 +8,11 @@ def create_request(request_type, study, project, asset, target_asset, additional
     FactoryBot.create(
       :request_with_submission,
       additional_options.merge(
-        study: study,
-        project: project,
-        asset: asset,
-        target_asset: target_asset,
-        request_type: request_type
+        study:,
+        project:,
+        asset:,
+        target_asset:,
+        request_type:
       )
     )
   request.id = additional_options[:id] if additional_options.key?(:id) # Force ID hack!
@@ -97,7 +97,7 @@ Given '{study_name} has an asset group of {int} samples in SampleTubes called {s
       tube_name = "#{group_name}, sample tube #{i}"
       FactoryBot.create(:sample_tube, name: tube_name, sample_attributes: { name: sample_name })
     end
-  FactoryBot.create(:asset_group, name: group_name, study: study, assets: assets.map(&:receptacle))
+  FactoryBot.create(:asset_group, name: group_name, study:, assets: assets.map(&:receptacle))
 end
 
 Then /^I should see the following request information:$/ do |expected|

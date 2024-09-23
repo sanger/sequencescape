@@ -24,7 +24,7 @@ module CompoundSampleHelper
   def create_compound_sample(study, component_samples)
     study.samples.create!(
       name: SangerSampleId.generate_sanger_sample_id!(study.abbreviation),
-      component_samples: component_samples
+      component_samples:
     )
   end
 end

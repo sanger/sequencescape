@@ -99,8 +99,8 @@ ExportPoolXpToTractionJob =
       begin
         channel = conn.create_channel
         exchange = channel.headers(configatron.amqp.isg.exchange, passive: true)
-        headers = { subject: subject, version: version, encoder_type: 'binary' }
-        exchange.publish(message, headers: headers, persistent: true)
+        headers = { subject:, version:, encoder_type: 'binary' }
+        exchange.publish(message, headers:, persistent: true)
       ensure
         conn.close
       end

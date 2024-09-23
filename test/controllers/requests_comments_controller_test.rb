@@ -26,7 +26,7 @@ module Requests
         setup do
           @rq = create :request
 
-          %w[this is a test].each { |description| create :comment, description: description, commentable: @rq }
+          %w[this is a test].each { |description| create :comment, description:, commentable: @rq }
         end
 
         should 'return a ul of comments' do

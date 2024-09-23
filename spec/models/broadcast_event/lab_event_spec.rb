@@ -6,7 +6,7 @@ require 'rails_helper'
 
 RSpec.describe BroadcastEvent::LabEvent, :broadcast_event do
   subject do
-    described_class.create!(seed: lab_event, user: user, created_at: Time.zone.parse('2018-01-12T13:37:03+00:00'))
+    described_class.create!(seed: lab_event, user:, created_at: Time.zone.parse('2018-01-12T13:37:03+00:00'))
   end
 
   let(:json) { JSON.parse(subject.to_json) }
@@ -14,7 +14,7 @@ RSpec.describe BroadcastEvent::LabEvent, :broadcast_event do
   let(:batch) { create :sequencing_batch }
   let(:study) { create :study }
   let!(:request) do
-    create :sequencing_request_with_assets, batch: batch, request_type: batch.pipeline.request_types.first, study: study
+    create :sequencing_request_with_assets, batch:, request_type: batch.pipeline.request_types.first, study:
   end
   let(:sample) { request.asset.samples.first }
   let(:stock_asset) { request.asset.labware }
@@ -26,7 +26,7 @@ RSpec.describe BroadcastEvent::LabEvent, :broadcast_event do
              'key_a' => 'value a',
              'key_b' => 'value b'
            },
-           eventful: eventful
+           eventful:
   end
   let(:user) { create :user }
 

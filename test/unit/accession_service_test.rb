@@ -8,7 +8,7 @@ class AccessionServiceTest < ActiveSupport::TestCase
     tag = acc.tags.detect { |tag| tag.label == tag_label }
     assert tag, "Could not find #{tag} in #{acc.tags.map(&:label).join(',')}"
     subject_tag = { tag: tag.label, value: tag.value }
-    assert_equal({ tag: tag_label, value: value }, subject_tag)
+    assert_equal({ tag: tag_label, value: }, subject_tag)
   end
 
   # temporary test for hotfix

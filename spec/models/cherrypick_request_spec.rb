@@ -7,7 +7,7 @@ describe CherrypickRequest do
   let(:source_asset) { create :tagged_well }
   let(:target_asset) { create :empty_well }
 
-  before { create :cherrypick_request, asset: source_asset, target_asset: target_asset }
+  before { create :cherrypick_request, asset: source_asset, target_asset: }
 
   it 'transfers the contents of the source asset to the target asset' do
     expect(target_asset.aliquots.length).to eq(source_asset.aliquots.length)

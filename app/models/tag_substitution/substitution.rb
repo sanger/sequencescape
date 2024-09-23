@@ -173,7 +173,7 @@ class TagSubstitution::Substitution # rubocop:todo Metrics/ClassLength
   end
 
   def find_matching_aliquots
-    attributes = { sample_id: sample_id, library_id: library_id }
+    attributes = { sample_id:, library_id: }
     attributes[:tag_id] = original_tag_id if original_tag_id
     attributes[:tag2_id] = original_tag2_id if original_tag2_id
     Aliquot.where(attributes).ids

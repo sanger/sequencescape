@@ -38,7 +38,7 @@ RSpec.describe Api::ProjectIO do
                external_funding_source: 'Tooth fairy',
                sequencing_budget_cost_centre: '123',
                funding_comments: 'It is funded',
-               project_manager: project_manager
+               project_manager:
              }
     end
 

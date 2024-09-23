@@ -4,7 +4,7 @@ require 'rails_helper'
 
 describe RequestType::Validator::LibraryTypeValidator do
   let(:library_type) { create :library_type, name: 'MyLibraryType' }
-  let(:request_type) { create :library_creation_request_type, :with_library_types, library_type: library_type }
+  let(:request_type) { create :library_creation_request_type, :with_library_types, library_type: }
   let(:validator) { described_class.new(request_type.id) }
 
   context 'when initialising' do
@@ -41,14 +41,14 @@ describe RequestType::Validator::LibraryTypeValidator do
       before do
         request_type.library_types_request_types << create(
           :library_types_request_type,
-          library_type: library_type,
-          request_type: request_type,
+          library_type:,
+          request_type:,
           is_default: false
         )
         request_type.library_types_request_types << create(
           :library_types_request_type,
           library_type: library_type2,
-          request_type: request_type,
+          request_type:,
           is_default: true
         )
       end
@@ -62,14 +62,14 @@ describe RequestType::Validator::LibraryTypeValidator do
       before do
         request_type.library_types_request_types << create(
           :library_types_request_type,
-          library_type: library_type,
-          request_type: request_type,
+          library_type:,
+          request_type:,
           is_default: false
         )
         request_type.library_types_request_types << create(
           :library_types_request_type,
           library_type: library_type2,
-          request_type: request_type,
+          request_type:,
           is_default: false
         )
       end

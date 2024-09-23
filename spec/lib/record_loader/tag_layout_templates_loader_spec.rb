@@ -19,8 +19,8 @@ RSpec.describe RecordLoader::TagLayoutTemplatesLoader, :loader, type: :model do
     let(:expected_attributes) do
       {
         name: 'Tag Layout 1',
-        tag_group: tag_group,
-        tag2_group: tag2_group,
+        tag_group:,
+        tag2_group:,
         direction: 'column',
         walking_by: 'wells of plate'
       }

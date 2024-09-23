@@ -13,7 +13,7 @@ RSpec.describe SearchesController do
     let!(:sample) { create :sample, name: 'FindMeSample' }
     let!(:asset) { create(:sample_tube, name: 'FindMeAsset') }
     let!(:other_asset) { create(:sample_tube) }
-    let!(:asset_group_to_find) { create :asset_group, name: 'FindMeAssetGroup', study: study }
+    let!(:asset_group_to_find) { create :asset_group, name: 'FindMeAssetGroup', study: }
     let!(:asset_group_to_not_find) { create :asset_group, name: 'IgnoreAssetGroup' }
 
     let!(:submission) { create :submission, name: 'FindMe' }

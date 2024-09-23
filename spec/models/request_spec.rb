@@ -6,16 +6,16 @@ RSpec.describe Request do
   let(:study) { create :study }
   let(:project) { create :project }
   let(:submission) { create :submission }
-  let(:order1) { create :order, study: study, project: project, submission: submission }
-  let(:order2) { create :order, study: study, project: project, submission: submission }
-  let(:order3) { create :order, study: study, project: project, submission: submission }
-  let(:order4) { create :order_with_submission, study: study, project: project }
+  let(:order1) { create :order, study:, project:, submission: }
+  let(:order2) { create :order, study:, project:, submission: }
+  let(:order3) { create :order, study:, project:, submission: }
+  let(:order4) { create :order_with_submission, study:, project: }
 
   describe '#for_order_including_submission_based_requests' do
     before do
-      @sequencing_request = create :request_with_sequencing_request_type, submission: submission
-      @request = create :request, order: order1, submission: submission, asset: @asset
-      @request2 = create :request, order: order2, submission: submission
+      @sequencing_request = create(:request_with_sequencing_request_type, submission:)
+      @request = create :request, order: order1, submission:, asset: @asset
+      @request2 = create(:request, order: order2, submission:)
 
       @request3 = create :request, order: order4, submission: order4.submission
       @sequencing_request2 = create :request_with_sequencing_request_type, submission: order4.submission
@@ -107,8 +107,8 @@ RSpec.describe Request do
   # themselves via FactoryBot until the two behaviours are uncoupled
   describe '#next_requests' do
     let(:submission) { create :submission, orders: [order1, order2], state: 'pending' }
-    let(:order1) { create(:linear_submission, request_types: order1_request_types, request_options: request_options) }
-    let(:order2) { create(:linear_submission, request_types: order2_request_types, request_options: request_options) }
+    let(:order1) { create(:linear_submission, request_types: order1_request_types, request_options:) }
+    let(:order2) { create(:linear_submission, request_types: order2_request_types, request_options:) }
     let(:order1_request1) do
       submission.requests.detect { |r| r.order == order1 && r.request_type_id == order1_request_types.first }
     end
@@ -233,7 +233,7 @@ RSpec.describe Request do
   describe '#copy' do
     before do
       @request_type = create :request_type
-      @request = create :request, request_type: @request_type, study: study, state: 'failed'
+      @request = create :request, request_type: @request_type, study:, state: 'failed'
       @new_request = @request.copy
     end
 
@@ -259,7 +259,7 @@ RSpec.describe Request do
   describe '#after_create' do
     context 'successful' do
       let(:study) { create :study }
-      let(:request) { create :request, study: study }
+      let(:request) { create :request, study: }
 
       it 'not have ActiveRecord errors' do
         expect(request.errors).to be_empty
@@ -273,7 +273,7 @@ RSpec.describe Request do
 
   describe '#state' do
     before do
-      @request = create :request_suitable_for_starting, study: study
+      @request = create(:request_suitable_for_starting, study:)
       @user = create :admin
       @user.grant_owner study
     end
@@ -389,7 +389,7 @@ RSpec.describe Request do
 
   describe '#eventful_studies' do
     let(:asset) { create :untagged_well }
-    let(:request) { create :request, asset: asset, initial_study: study }
+    let(:request) { create :request, asset:, initial_study: study }
 
     context 'with no study itself' do
       let(:study) { nil }
@@ -411,7 +411,7 @@ RSpec.describe Request do
 
       @all_states = @open_states + @closed_states
 
-      @all_states.each { |state| create :request, state: state }
+      @all_states.each { |state| create :request, state: }
 
       expect(described_class.count).to eq(@all_states.size)
     end
@@ -497,7 +497,7 @@ RSpec.describe Request do
 
   describe '.get_all_comments' do
     let(:labware) { create :labware }
-    let(:receptacle) { create :receptacle, labware: labware }
+    let(:receptacle) { create :receptacle, labware: }
     let(:request) { create :request, asset: receptacle }
 
     before do

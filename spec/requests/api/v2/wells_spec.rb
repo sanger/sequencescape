@@ -33,11 +33,11 @@ describe 'Wells API', with: :api_v2 do
 
     let(:well) do
       create :well,
-             pcr_cycles: pcr_cycles,
-             submit_for_sequencing: submit_for_sequencing,
-             sub_pool: sub_pool,
-             coverage: coverage,
-             diluent_volume: diluent_volume
+             pcr_cycles:,
+             submit_for_sequencing:,
+             sub_pool:,
+             coverage:,
+             diluent_volume:
     end
 
     describe '#get' do

@@ -13,8 +13,8 @@ describe Pooling, :poolings do
   let(:barcode_printer_option) { nil }
   let(:pooling) do
     described_class.new(
-      barcodes: barcodes,
-      stock_mx_tube_required: stock_mx_tube_required,
+      barcodes:,
+      stock_mx_tube_required:,
       barcode_printer: barcode_printer_option,
       count: 1
     )
@@ -154,7 +154,7 @@ describe Pooling, :poolings do
       # set the tags in the second tube to be the same as the first, to create a tag clash
       tag1 = tagged_lb_tube1.aliquots.first.tag
       tag2 = tagged_lb_tube1.aliquots.first.tag2
-      tagged_lb_tube2.aliquots.first.update!(tag: tag1, tag2: tag2)
+      tagged_lb_tube2.aliquots.first.update!(tag: tag1, tag2:)
     end
 
     it 'is not valid due to the tag clash' do

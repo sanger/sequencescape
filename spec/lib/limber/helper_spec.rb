@@ -5,7 +5,7 @@ describe Limber::Helper do
   subject(:template_constructor) do
     described_class::TemplateConstructor.new(
       prefix: 'WGS',
-      catalogue: catalogue,
+      catalogue:,
       sequencing_keys: [request_type.key],
       type: request_type.key
     )
@@ -53,7 +53,7 @@ describe Limber::Helper do
       hiseq_template_constructor =
         described_class::TemplateConstructor.new(
           prefix: 'WGS',
-          catalogue: catalogue,
+          catalogue:,
           sequencing_keys: [hiseq_request_type.key],
           type: request_type.key
         )

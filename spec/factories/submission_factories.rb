@@ -18,7 +18,7 @@ FactoryBot.define do
 
     submission_class_name { LinearSubmission.name }
     sequence(:name) { |i| "Template #{i}" }
-    submission_parameters { { request_type_ids_list: request_type_ids_list } }
+    submission_parameters { { request_type_ids_list: } }
     product_catalogue { |pc| pc.association(:single_product_catalogue) }
 
     factory :cherrypick_submission_template do

@@ -41,6 +41,6 @@ class Metadata::BuilderBase < ActionView::Helpers::FormBuilder
       )
     locals[:group] = options[:grouping].downcase.gsub(/[^a-z0-9]+/, '_') if options[:grouping].present?
     locals = yield(locals) if block_given?
-    render(view.merge(locals: locals))
+    render(view.merge(locals:))
   end
 end

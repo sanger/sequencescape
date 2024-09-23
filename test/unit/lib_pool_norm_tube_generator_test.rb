@@ -22,7 +22,7 @@ class LibPoolNormTubeGeneratorTest < ActiveSupport::TestCase
     generator.lib_pool_tubes.each do |source|
       transfer = mock('transfer')
       transfer.stubs(:destination).returns(create(:lib_pool_norm_tube, parent_tube: source))
-      generator.transfer_template.stubs(:create!).with(user: @user, source: source).returns(transfer)
+      generator.transfer_template.stubs(:create!).with(user: @user, source:).returns(transfer)
     end
   end
 

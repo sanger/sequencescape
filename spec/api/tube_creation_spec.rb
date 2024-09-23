@@ -11,7 +11,7 @@ describe 'TubeCreation endpoints' do
 
     let(:parent_plate) { create :plate, well_count: 5 }
     let!(:stock_plate) { create :full_stock_plate, well_count: parent_plate.wells.count }
-    let!(:submission) { Submission.create!(user: user) }
+    let!(:submission) { Submission.create!(user:) }
 
     let(:child_purpose) { create :tube_purpose }
 
@@ -24,8 +24,8 @@ describe 'TubeCreation endpoints' do
         .readonly(false)
         .each_with_index do |well, i|
           stock_well = stock_plate.wells[i]
-          create(:library_creation_request, asset: stock_well, target_asset: well, submission: submission)
-          create(:transfer_request, asset: stock_well, target_asset: well, submission: submission)
+          create(:library_creation_request, asset: stock_well, target_asset: well, submission:)
+          create(:transfer_request, asset: stock_well, target_asset: well, submission:)
           well.stock_wells.attach!([stock_well])
         end
     end
@@ -79,7 +79,7 @@ describe 'TubeCreation endpoints' do
       end
 
       describe 'Retrieving a Tube Creation' do
-        let!(:tube_creation) { TubeCreation.create!(user: user, parent: parent_plate, child_purpose: child_purpose) }
+        let!(:tube_creation) { TubeCreation.create!(user:, parent: parent_plate, child_purpose:) }
 
         let(:response_code) { 200 }
 

@@ -12,7 +12,7 @@ describe Tube do
 
     before do
       Array.new(num_tubes) do |i|
-        create(:sample_tube, :in_a_rack, tube_rack: tube_rack, coordinate: locations[i], barcodes: [barcodes[i]])
+        create(:sample_tube, :in_a_rack, tube_rack:, coordinate: locations[i], barcodes: [barcodes[i]])
       end
     end
 
@@ -87,7 +87,7 @@ describe Tube do
 
     context 'with requests' do
       let(:submission) { create :submission }
-      let!(:request) { create :well_request, asset: tube, submission: submission }
+      let!(:request) { create :well_request, asset: tube, submission: }
 
       before do
         create :comment, commentable: request, description: 'Comment on request'
@@ -111,9 +111,9 @@ describe Tube do
     context 'with requests in progress the wells' do
       before do
         submission = create :submission
-        request = create :well_request, submission: submission
-        tube.receptacle.aliquots << create(:aliquot, request: request)
-        create :transfer_request, target_asset: tube, submission: submission
+        request = create(:well_request, submission:)
+        tube.receptacle.aliquots << create(:aliquot, request:)
+        create(:transfer_request, target_asset: tube, submission:)
         create :comment, commentable: request, description: 'Comment on request'
         tube.reload
       end
@@ -128,8 +128,8 @@ describe Tube do
     context 'with multiple identical comments' do
       before do
         submission = create :submission
-        request = create :well_request, asset: tube, submission: submission
-        request2 = create :well_request, asset: tube, submission: submission
+        request = create(:well_request, asset: tube, submission:)
+        request2 = create(:well_request, asset: tube, submission:)
         create :comment, commentable: request, description: 'Duplicate comment'
         create :comment, commentable: request2, description: 'Duplicate comment'
         create :comment, commentable: tube, description: 'Duplicate comment'

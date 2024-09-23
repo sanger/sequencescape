@@ -15,7 +15,7 @@ module RecordLoader
     def create_or_update!(name, options)
       options['target_type'] = DEFAULT_TARGET_TYPE
       options['barcode_printer_type'] = barcode_printer_type(options['barcode_printer_type'])
-      TubeRack::Purpose.create_with(options).find_or_create_by!(name: name)
+      TubeRack::Purpose.create_with(options).find_or_create_by!(name:)
     end
 
     def barcode_printer_type(name)

@@ -100,7 +100,7 @@ class QcReport < ApplicationRecord
             assets.each do |asset|
               criteria = product_criteria.assess(asset, connected_wells[asset.id])
               QcMetric.create!(
-                asset: asset,
+                asset:,
                 qc_decision: criteria.qc_decision,
                 metrics: criteria.metrics,
                 qc_report: self

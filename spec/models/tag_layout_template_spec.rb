@@ -9,14 +9,14 @@ require 'shared_contexts/limber_shared_context'
 describe TagLayoutTemplate do
   let(:template) do
     build :tag_layout_template,
-          direction_algorithm: direction_algorithm,
-          walking_algorithm: walking_algorithm,
-          tag2_group: tag2_group,
+          direction_algorithm:,
+          walking_algorithm:,
+          tag2_group:,
           tags: ['AAA']
   end
 
   describe '#create!' do
-    subject { template.create!(plate: plate, user: user) }
+    subject { template.create!(plate:, user:) }
 
     let(:user) { build :user }
 
@@ -79,7 +79,7 @@ describe TagLayoutTemplate do
       end
 
       context 'with a tag2 group with uniqueness unenforced' do
-        subject { template.create!(plate: plate, user: user, enforce_uniqueness: enforce_uniqueness) }
+        subject { template.create!(plate:, user:, enforce_uniqueness:) }
 
         let(:enforce_uniqueness) { nil }
         let(:tag2_group) { create :tag_group_with_tags }
