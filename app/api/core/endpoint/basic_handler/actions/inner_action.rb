@@ -46,8 +46,8 @@ module Core::Endpoint::BasicHandler::Actions::InnerAction
   end
   private :declare_action
 
-  def core_path(*args)
-    super(@options[:to], *args)
+  def core_path(*)
+    super(@options[:to], *)
   end
   private :core_path
 end

@@ -81,10 +81,10 @@ class BaseLoginProxy
     raise NotImplementedError
   end
 
-  def method_missing(method, *args)
+  def method_missing(method, *)
     @controller.reset!
     authenticate
-    @controller.send(method, *args)
+    @controller.send(method, *)
     check
   end
 end

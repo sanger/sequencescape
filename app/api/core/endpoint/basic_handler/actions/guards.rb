@@ -50,8 +50,8 @@ module Core::Endpoint::BasicHandler::Actions::Guards
     protected :method_missing
   end
 
-  def check_authorisation!(*args)
-    accessible_action?(*args) or
+  def check_authorisation!(*)
+    accessible_action?(*) or
       raise ::Core::Service::UnsupportedAction, 'requested action is not supported on this resource'
   end
   private :check_authorisation!

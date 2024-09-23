@@ -126,9 +126,9 @@ module Core
 
       delegate :user, to: :service
 
-      def initialize(identifier, *args, &)
+      def initialize(identifier, *, &)
         @identifier, @started_at = identifier, Time.zone.now
-        super(*args, &)
+        super(*, &)
         @ability = Core::Abilities.create(self)
       end
 

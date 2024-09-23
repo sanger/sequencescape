@@ -243,7 +243,7 @@ module ApplicationHelper
   # <div class="tab-pane fade show <active>" id="pending" role="tabpanel" aria-labelledby="peding-tab">
   #   yield
   # </div>
-  def tab_pane(name, id: nil, tab_id: nil, active: false, &block)
+  def tab_pane(name, id: nil, tab_id: nil, active: false, &)
     tab_id ||= "#{name}-tab".parameterize
     id ||= name.parameterize
     active_class = active ? 'active' : ''
@@ -252,7 +252,7 @@ module ApplicationHelper
       id:,
       role: 'tabpanel',
       aria_labelledby: tab_id,
-      &block
+      &
     )
   end
 

@@ -117,8 +117,8 @@ module Metadata
     # This ensures that the default values are stored within the DB, meaning that this information will be
     # preserved for the future, unlike the original properties information which didn't store values when
     # nil which lead to us having to guess.
-    def initialize(attributes = {}, *args, &)
-      super(self.class.defaults.merge(attributes.try(:symbolize_keys) || {}), *args, &)
+    def initialize(attributes = {}, *, &)
+      super(self.class.defaults.merge(attributes.try(:symbolize_keys) || {}), *, &)
     end
 
     before_validation :merge_instance_defaults, on: :create

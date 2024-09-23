@@ -27,10 +27,10 @@ def recursive_diff(h1, h2) # rubocop:todo Metrics/CyclomaticComplexity
 end
 # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
-def assert_hash_equal(h1, h2, *args)
+def assert_hash_equal(h1, h2, *)
   d1 = recursive_diff(h1, h2)
   d2 = recursive_diff(h2, h1)
-  assert_equal(d1, d2, *args)
+  assert_equal(d1, d2, *)
 end
 
 def walk_hash_structure(hash_data, &block)

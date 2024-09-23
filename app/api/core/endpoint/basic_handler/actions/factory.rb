@@ -16,8 +16,8 @@ module Core::Endpoint::BasicHandler::Actions::Factory
       end
     end
 
-    def core_path(*args)
-      super(@name, *args)
+    def core_path(*)
+      super(@name, *)
     end
   end
 
