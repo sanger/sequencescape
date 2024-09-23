@@ -2,7 +2,7 @@
 # Creating an instance of this class causes a child plate, with the specified plate type, to be created from
 # the parent.
 class PooledPlateCreation < AssetCreation
-  attr_accessor :barcode
+  attr_accessor :sanger_barcode
 
   has_many :parent_associations, foreign_key: 'asset_creation_id', class_name: 'AssetCreation::ParentAssociation'
 
