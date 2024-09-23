@@ -1,6 +1,6 @@
 <%= page_title 'Labwhere Reception' %>
 
-<% if @labwhere_reception.valid? %>
+<% if @labwhere_reception.errors.empty? && @labwhere_reception.valid? %>
   <h4>Receipt</h4>
   <p>The following labware has been scanned in.</p>
   <ul class="list-group">

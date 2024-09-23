@@ -45,4 +45,7 @@ Rails.application.configure do
     ENV_JAVA['https.proxyHost'] = nil
     ENV_JAVA['https.proxyPort'] = nil
   end
+
+  # load WIP features flag
+  config.deploy_wip_pipelines = true
 end

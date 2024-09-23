@@ -71,6 +71,9 @@ Rails.application.configure do
     Bullet.bullet_logger = true
     Bullet.rails_logger = true
   end
+
+  # load WIP features flag
+  config.deploy_wip_pipelines = true
 end
 
 Rack::MiniProfiler.config.position = 'right'

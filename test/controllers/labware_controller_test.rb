@@ -39,4 +39,20 @@ class LabwareControllerTest < ActionController::TestCase
            }
     end
   end
+
+  context 'logs events for retention instruction updates' do
+    attr_reader :asset
+
+    setup do
+      @asset = create :sample_tube
+      @controller.stubs(:current_user).returns(@user)
+    end
+
+    should '#update should log event for retention instruction updates' do
+      old_retention_instruction = @asset.retention_instruction
+      new_retention_instruction = 'destroy_after_2_years'
+      EventFactory.expects(:record_retention_instruction_updates).with(@asset, @user, old_retention_instruction)
+      put :update, params: { id: asset.id, labware: { retention_instruction: new_retention_instruction } }
+    end
+  end
 end

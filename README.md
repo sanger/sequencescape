@@ -74,7 +74,7 @@ The documentation is automatically updated via a CI workflow when a merge to mas
 To preview this documentation, you can spin up a yard server locally using the following command:
 
 ```shell
-yard server --reload sequencescape
+yard server --reload sequencescape .
 ```
 
 You can then access the Sequencescape documentation through: [http://localhost:8808/docs](http://localhost:8808/docs)
@@ -83,7 +83,7 @@ If the server complains that the stack depth is too deep, this only appears to b
 Precompiling is the simple solution and can be achieved with the following.
 
 ```shell
-yard doc sequencescape
+yard doc
 ```
 
 This will pre-fill the cache and allow the server command above to display the documentation without complaining about stack depths.
@@ -101,8 +101,8 @@ bundle exec yard-junk --sanity
 The following tools are required for development:
 
 - ruby (version defined in the `.ruby-version`)
-- yarn
-- node (version defined in the `.nvmrc`)
+- yarn (`brew install yarn`)
+- node (`brew install node@<version>` version defined in the `.nvmrc`, ensure node is in your PATH)
 - mysql client libraries - if you do not want to install mysql server on your machine, consider
   using mysql-client: `brew install mysql-client`. Alternatively, to install the MySQL required by
   Sequencescape (currently 8.0)
@@ -114,27 +114,29 @@ Sequencescape. start a stack of services that include a mysql database, and rese
 this database contents. You can do all together by running the commands:
 
 ```shell
-docker-compose build
-RESET_DATABASE=true docker-compose up
+docker compose build
+RESET_DATABASE=true docker compose up
 ```
 
 Or if you are using an Apple M1 Chip:
 
 ```shell
-docker-compose build --build-arg CHIPSET=m1
-USE_POLLING_FILE_WATCHER=true RESET_DATABASE=true docker-compose up
+docker compose build --build-arg CHIPSET=m1
+USE_POLLING_FILE_WATCHER=true RESET_DATABASE=true docker compose up
 ```
 
 Optionally, if this is not the first time you start the app, you may not want to reset the
 database, and you can run this command instead:
 
 ```shell
-docker-compose up
+docker compose up
 ```
 
 With this we should have started Sequencescape server and all required services. You should be
 able to access Sequencescape by going to <http://localhost:3000> and log in with
 username and password admin/admin.
+
+The envvar `PRECOMPILE_ASSETS` is also available as `PRECOMPILE_ASSETS=false docker compose up` which will avoid precompiling the assets as Sequencescape is started.
 
 If you are using [Apple silicon](https://support.apple.com/en-gb/HT211814) and encounter any issues, please see [Troubleshooting](#installing-on-apple-silicon-m1) below.
 
@@ -143,14 +145,14 @@ instead of the Docker version, in that case you can start this setup with the
 command:
 
 ```shell
-docker-compose -f docker-compose-dev.yml up
+docker compose -f docker compose-dev.yml up
 ```
 
 **ABOUT RECREATE DOCKER IMAGE** If you ever need to recreate the image built on first start (because you made modifications
 to the Dockerfile file) you can run the building process again with:
 
 ```shell
-docker-compose build
+docker compose build
 ```
 
 ## Getting started (using native installation)
@@ -217,6 +219,11 @@ bundle exec rails s
 ```
 
 Once setup, the default user/password is `admin/admin`.
+
+### Vite
+
+Ensure Node is installed, and in your PATH. You might need to run
+`bin/vite build --clear --mode=development`
 
 #### Delayed job
 
@@ -312,6 +319,8 @@ yarn prettier --check .
 yarn prettier --write .
 ```
 
+(If prettier is not yet installed, run `yarn`. This should have ben run in `bin/setup`)
+
 - Prettier rules are configured in .prettierrc.json
 - Whole files can be ignored in .prettierignore
 - Sections of files can be disabled using #prettier-ignore
@@ -387,16 +396,26 @@ cluster formation batch which represents a flowcell.
 
 #### MySQL errors when installing
 
-If you are using homebrew with rbenv and run into errors relating to SSL, have a look [here](https://github.com/brianmario/mysql2/issues/795#issuecomment-433219176)
+- If you are using homebrew with rbenv and run into errors relating to SSL, have a look [here](https://github.com/brianmario/mysql2/issues/795#issuecomment-433219176)
 
-If you are upgrading a homebrew MySQL locally and have an error about a missing libmysqlclient dylib file, you may need to redownload the mysql2 gem to fix it i.e. `bundle install --redownload`
-This is because the mysql2 gem is simlinked to the homebrew mysql.
+- If you are upgrading a homebrew MySQL locally and have an error about a missing libmysqlclient dylib file, you may need to redownload the mysql2 gem to fix it i.e. `bundle install --redownload`
+  This is because the mysql2 gem is simlinked to the homebrew mysql.
+
+- If bundle install is failing to install the `mysql2` gem, try the below (updating the paths as required):
+
+```
+gem install mysql2 -v '0.5.6' -- \
+--with-mysql-lib=/opt/homebrew/Cellar/mysql/ \
+--with-mysql-dir=/opt/homebrew/Cellar/mysql/9.0.1_1 \
+--with-mysql-config=/opt/homebrew/Cellar/mysql/9.0.1_1/bin/mysql_config \
+--with-mysql-include=/opt/homebrew/Cellar/mysql/9.0.1_1/include
+```
 
 #### Installing on Apple Silicon (M1)
 
 If installation issues are encountered with Docker on M1 processors, try the fixes below:
 
-- The docker-compose build command fails with any mentions to a processor architecture ('amd64', 'x86') or the message below:
+- The docker compose build command fails with any mentions to a processor architecture ('amd64', 'x86') or the message below:
 
   ```sh
   ...
