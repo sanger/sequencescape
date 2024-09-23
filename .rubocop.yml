@@ -175,9 +175,6 @@ Rails/UniqueValidationWithoutIndex:
   Enabled: false
 
 # Disabling newly introduced cops until we have time to sort out the offenses
-FactoryBot/ConsistentParenthesesStyle:
-  Enabled: false
-
 Rails/I18nLocaleTexts: # new in 2.14
   Enabled: false
 
@@ -201,12 +198,6 @@ RSpec/SpecFilePathFormat:
   Enabled: false
 
 RSpec/PendingWithoutReason:
-  Enabled: false
-
-Capybara/ClickLinkOrButtonStyle:
-  Enabled: false
-
-FactoryBot/FactoryAssociationWithStrategy:
   Enabled: false
 
 Performance/MapMethodChain:
