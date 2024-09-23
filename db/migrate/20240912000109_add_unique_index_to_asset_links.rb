@@ -20,11 +20,13 @@ require 'csv'
 #
 # bundle exec rake 'support:restore_removed_asset_links[csv_file_path]'
 #
+# Note that the column names in the index name below is used for finding the
+# reason of the database unique constraint violation by the AssetLink model.
 class AddUniqueIndexToAssetLinks < ActiveRecord::Migration[6.1]
   def change
     add_index :asset_links,
               %i[ancestor_id descendant_id],
               unique: true,
-              name: 'index_asset_links_on_ancestor_and_descendant'
+              name: 'index_asset_links_on_ancestor_id_and_descendant_id'
   end
 end
