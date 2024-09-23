@@ -3,9 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Insdc::ImportCountries do
-  subject(:importer) do
-    described_class.new(ena_root:, sample_checklist:, priorities:)
-  end
+  subject(:importer) { described_class.new(ena_root:, sample_checklist:, priorities:) }
 
   before do
     # The File api is used heavily internally, and we're going to be mocking it a

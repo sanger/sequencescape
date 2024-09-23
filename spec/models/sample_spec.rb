@@ -136,9 +136,7 @@ RSpec.describe Sample, :accession, :cardinal do
     end
 
     it 'can have a priority' do
-      %w[backlog surveillance priority].each do |priority|
-        expect(build(:sample, priority:).priority).to eq(priority)
-      end
+      %w[backlog surveillance priority].each { |priority| expect(build(:sample, priority:).priority).to eq(priority) }
     end
   end
 

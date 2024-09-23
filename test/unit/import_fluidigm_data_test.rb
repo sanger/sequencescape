@@ -39,13 +39,7 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
 
   def create_plate_with_fluidigm(_barcode, fluidigm_barcode, stock_plate)
     fgp = create :fluidigm_96_purpose
-    plate_target =
-      create(:plate,
-             size: 96,
-             purpose: fgp,
-             well_count: 1,
-             well_factory: :empty_well,
-             fluidigm_barcode:)
+    plate_target = create(:plate, size: 96, purpose: fgp, well_count: 1, well_factory: :empty_well, fluidigm_barcode:)
 
     well_target = plate_target.wells.first
 

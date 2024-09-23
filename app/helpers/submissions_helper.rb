@@ -38,15 +38,7 @@ module SubmissionsHelper # rubocop:todo Metrics/ModuleLength
         'Please select a Study for this Submission...'
       end
 
-    form.collection_select(
-      :study_id,
-      studies,
-      :id,
-      :name,
-      { prompt: },
-      disabled: true,
-      class: 'study_id custom-select'
-    )
+    form.collection_select(:study_id, studies, :id, :name, { prompt: }, disabled: true, class: 'study_id custom-select')
   end
 
   def projects_select(form, projects) # rubocop:todo Metrics/MethodLength

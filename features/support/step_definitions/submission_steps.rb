@@ -94,9 +94,7 @@ end
 def submission_in_state(state, attributes = {})
   study = Study.first or raise StandardError, 'There are no studies!'
   submission =
-    FactoryHelp.submission(
-      { asset_group_name: 'Faked to prevent empty asset errors' }.merge(attributes).merge(study:)
-    )
+    FactoryHelp.submission({ asset_group_name: 'Faked to prevent empty asset errors' }.merge(attributes).merge(study:))
   submission.state = state
   submission.save(validate: false)
 end

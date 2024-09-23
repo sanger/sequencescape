@@ -72,9 +72,7 @@ RSpec.describe SpecificTubeCreation do
     let(:names) { %w[example_1 example_2] }
     let(:purpose_count) { 2 }
     let(:tube_attributes) { names.map { |name| { name: } } }
-    let(:creation_parameters) do
-      { user:, child_purposes: [child_purpose] * purpose_count, parent:, tube_attributes: }
-    end
+    let(:creation_parameters) { { user:, child_purposes: [child_purpose] * purpose_count, parent:, tube_attributes: } }
 
     it_behaves_like 'a specific tube creator'
   end
@@ -86,9 +84,7 @@ RSpec.describe SpecificTubeCreation do
     let(:purpose_count) { 1 }
     let(:foreign_barcode) { 'FD00000001' }
     let(:tube_attributes) { [{ name: names[0], foreign_barcode: }] }
-    let(:creation_parameters) do
-      { user:, child_purposes: [child_purpose], parent:, tube_attributes: }
-    end
+    let(:creation_parameters) { { user:, child_purposes: [child_purpose], parent:, tube_attributes: } }
 
     describe '#save' do
       include_context 'with common test setup'

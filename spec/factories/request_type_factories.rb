@@ -114,13 +114,7 @@ FactoryBot.define do
       request_class { SequencingRequest }
 
       after(:build) do |request_type, ev|
-        srv =
-          create(
-            :sequencing_request_type_validator,
-            request_type:,
-            options: ev.read_lengths,
-            default: ev.default
-          )
+        srv = create(:sequencing_request_type_validator, request_type:, options: ev.read_lengths, default: ev.default)
         request_type.request_type_validators << srv
       end
     end

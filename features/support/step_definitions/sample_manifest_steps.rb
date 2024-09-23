@@ -121,8 +121,7 @@ end
 Then /^the sample reference genomes should be:$/ do |table|
   table.hashes.each do |expected_data|
     sanger_sample_id = expected_data[:sanger_sample_id]
-    sample = Sample.find_by(sanger_sample_id:) or
-      raise StandardError, "Could not find sample #{sanger_sample_id}"
+    sample = Sample.find_by(sanger_sample_id:) or raise StandardError, "Could not find sample #{sanger_sample_id}"
     assert_equal(expected_data[:reference_genome], sample.sample_metadata.reference_genome.name)
   end
 end
@@ -171,8 +170,7 @@ end
 Given /^a manifest has been created for "([^"]*)"$/ do |study_name|
   study = Study.find_by!(name: study_name)
   supplier = Supplier.find_by!(name: 'Test supplier name')
-  sample_manifest =
-    FactoryBot.create :sample_manifest, study:, supplier:, user: User.find_by(first_name: 'john')
+  sample_manifest = FactoryBot.create :sample_manifest, study:, supplier:, user: User.find_by(first_name: 'john')
   sample_manifest.generate
   Delayed::Worker.new.work_off
   visit(url_for(sample_manifest))

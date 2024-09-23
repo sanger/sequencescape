@@ -38,8 +38,7 @@ Given /^a plate with barcode "([^"]*)" exists$/ do |machine_barcode|
   if machine_barcode.start_with?('SQPD')
     FactoryBot.create :plate, sanger_barcode: Barcode.build_sequencescape22({ barcode: machine_barcode })
   else
-    FactoryBot.create :plate,
-                      sanger_barcode: Barcode.build_sanger_code39({ machine_barcode:, format: 'DN' })
+    FactoryBot.create :plate, sanger_barcode: Barcode.build_sanger_code39({ machine_barcode:, format: 'DN' })
   end
 end
 
@@ -133,14 +132,7 @@ Given(
   /^a full plate called "([^"]*)" exists with purpose "([^"]*)" and barcode "([^"]*)"$/
 ) do |name, purpose_name, barcode|
   purpose = Purpose.find_by(name: purpose_name) || FactoryBot.create(:plate_purpose, name: purpose_name)
-  FactoryBot.create(
-    :full_plate,
-    well_factory: :untagged_well,
-    name:,
-    purpose:,
-    barcode:,
-    well_count: 16
-  )
+  FactoryBot.create(:full_plate, well_factory: :untagged_well, name:, purpose:, barcode:, well_count: 16)
 end
 
 Given /^a "([^"]+)" plate called "([^"]+)" exists with barcode "([^"]+)"$/ do |name, plate_name, barcode|
@@ -213,8 +205,7 @@ Given /^I have a plate with uuid "([^"]*)" with the following wells:$/ do |uuid,
   # plate = FactoryBot.create :plate, :barcode => plate_barcode
   plate = Uuid.find_by(external_id: uuid).resource
   well_details.hashes.each do |well_detail|
-    well =
-      Well.create!(map: Map.find_by(description: well_detail[:well_location], asset_size: plate.size), plate:)
+    well = Well.create!(map: Map.find_by(description: well_detail[:well_location], asset_size: plate.size), plate:)
     well.well_attribute.update!(
       concentration: well_detail[:measured_concentration],
       measured_volume: well_detail[:measured_volume]

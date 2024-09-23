@@ -133,16 +133,7 @@ RSpec.describe LinearSubmission do
         [library_creation_stage1.id, library_creation_stage2.id, mx_request_type.id, sequencing_request_type.id]
       end
       let(:assets) { create_list(:untagged_well, 2) }
-      let(:basic_options) do
-        {
-          study:,
-          project:,
-          user:,
-          request_types: request_type_option,
-          request_options:,
-          assets:
-        }
-      end
+      let(:basic_options) { { study:, project:, user:, request_types: request_type_option, request_options:, assets: } }
       let(:submission) { create(:linear_submission, basic_options).submission.tap(&:built!) }
 
       it 'builds the submission' do

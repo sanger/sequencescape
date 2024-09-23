@@ -63,11 +63,7 @@ describe UatActions::PlateInformation do
     let(:submission) { create :submission }
     let(:request_type) { create :library_creation_request_type }
     let(:report) do
-      {
-        plate_barcode:,
-        wells_with_aliquots: 'A1, B1, C1',
-        wells_with_active_requests_as_source: 'A1, C1'
-      }
+      { plate_barcode:, wells_with_aliquots: 'A1, B1, C1', wells_with_active_requests_as_source: 'A1, C1' }
     end
 
     before do
@@ -75,20 +71,10 @@ describe UatActions::PlateInformation do
 
       plate_wells = plate.wells.with_contents
 
-      req1 =
-        create :library_creation_request,
-               asset: plate_wells.first,
-               submission:,
-               request_type:,
-               state: 'started'
+      req1 = create :library_creation_request, asset: plate_wells.first, submission:, request_type:, state: 'started'
       plate_wells.first.requests_as_source << req1
 
-      req2 =
-        create :library_creation_request,
-               asset: plate_wells.last,
-               submission:,
-               request_type:,
-               state: 'started'
+      req2 = create :library_creation_request, asset: plate_wells.last, submission:, request_type:, state: 'started'
       plate_wells.last.requests_as_source << req2
     end
 
@@ -106,29 +92,17 @@ describe UatActions::PlateInformation do
     let(:uat_action) { described_class.new(parameters) }
     let(:submission) { create :submission }
     let(:request_type) { create :library_creation_request_type }
-    let(:report) do
-      { plate_barcode:, wells_with_aliquots: 'A1, B1, C1', wells_with_active_requests_as_source: '' }
-    end
+    let(:report) { { plate_barcode:, wells_with_aliquots: 'A1, B1, C1', wells_with_active_requests_as_source: '' } }
 
     before do
       plate = create :plate_with_untagged_wells, sample_count: 3, barcode: plate_barcode
 
       plate_wells = plate.wells.with_contents
 
-      req1 =
-        create :library_creation_request,
-               asset: plate_wells.first,
-               submission:,
-               request_type:,
-               state: 'passed'
+      req1 = create :library_creation_request, asset: plate_wells.first, submission:, request_type:, state: 'passed'
       plate_wells.first.requests_as_source << req1
 
-      req2 =
-        create :library_creation_request,
-               asset: plate_wells.last,
-               submission:,
-               request_type:,
-               state: 'passed'
+      req2 = create :library_creation_request, asset: plate_wells.last, submission:, request_type:, state: 'passed'
       plate_wells.last.requests_as_source << req2
     end
 
@@ -148,11 +122,7 @@ describe UatActions::PlateInformation do
     let(:submission2) { create :submission }
     let(:request_type) { create :library_creation_request_type }
     let(:report) do
-      {
-        plate_barcode:,
-        wells_with_aliquots: 'A1, B1, C1',
-        wells_with_active_requests_as_source: 'A1, C1'
-      }
+      { plate_barcode:, wells_with_aliquots: 'A1, B1, C1', wells_with_active_requests_as_source: 'A1, C1' }
     end
 
     before do
@@ -160,28 +130,13 @@ describe UatActions::PlateInformation do
 
       plate_wells = plate.wells.with_contents
 
-      req1 =
-        create :library_creation_request,
-               asset: plate_wells.first,
-               submission:,
-               request_type:,
-               state: 'passed'
+      req1 = create :library_creation_request, asset: plate_wells.first, submission:, request_type:, state: 'passed'
       plate_wells.first.requests_as_source << req1
 
-      req2 =
-        create :library_creation_request,
-               asset: plate_wells.second,
-               submission:,
-               request_type:,
-               state: 'passed'
+      req2 = create :library_creation_request, asset: plate_wells.second, submission:, request_type:, state: 'passed'
       plate_wells.second.requests_as_source << req2
 
-      req3 =
-        create :library_creation_request,
-               asset: plate_wells.last,
-               submission:,
-               request_type:,
-               state: 'passed'
+      req3 = create :library_creation_request, asset: plate_wells.last, submission:, request_type:, state: 'passed'
       plate_wells.last.requests_as_source << req3
 
       req4 =

@@ -71,8 +71,7 @@ class Plate::QuadCreator
   end
 
   def transfer_request_collection
-    @transfer_request_collection ||=
-      TransferRequestCollection.new(user:, transfer_requests_attributes:)
+    @transfer_request_collection ||= TransferRequestCollection.new(user:, transfer_requests_attributes:)
   end
 
   def transfer_requests_attributes

@@ -53,13 +53,7 @@ module SequencescapeExcel
     end
 
     def to_h
-      {
-        type:,
-        first_cell_reference:,
-        absolute_reference:,
-        operator:,
-        operand:
-      }
+      { type:, first_cell_reference:, absolute_reference:, operator:, operand: }
     end
 
     def inspect

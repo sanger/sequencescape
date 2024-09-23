@@ -282,11 +282,7 @@ describe Well do
         minimum_volume = 10
         maximum_volume = 50
         robot_minimum_picking_volume = 1.0
-        @source_well.well_attribute.update!(
-          concentration: measured_concentration,
-          measured_volume:,
-          current_volume:
-        )
+        @source_well.well_attribute.update!(concentration: measured_concentration, measured_volume:, current_volume:)
         @target_well.volume_to_cherrypick_by_nano_grams(
           minimum_volume,
           maximum_volume,

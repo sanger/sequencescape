@@ -31,14 +31,7 @@ describe 'Wells API', with: :api_v2 do
     let(:coverage) { 100 }
     let(:diluent_volume) { 50.0 }
 
-    let(:well) do
-      create :well,
-             pcr_cycles:,
-             submit_for_sequencing:,
-             sub_pool:,
-             coverage:,
-             diluent_volume:
-    end
+    let(:well) { create :well, pcr_cycles:, submit_for_sequencing:, sub_pool:, coverage:, diluent_volume: }
 
     describe '#get' do
       before { api_get "#{base_endpoint}/#{well.id}" }

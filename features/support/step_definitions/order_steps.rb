@@ -5,8 +5,7 @@ Given /^no order templates exist$/ do
 end
 
 Given /^I have an order created with the following details based on the template "([^"]+)":$/ do |name, details|
-  template = SubmissionTemplate.find_by(name:) or
-    raise StandardError, "Cannot find submission template #{name.inspect}"
+  template = SubmissionTemplate.find_by(name:) or raise StandardError, "Cannot find submission template #{name.inspect}"
   order_attributes =
     details.rows_hash.map do |k, v|
       v =

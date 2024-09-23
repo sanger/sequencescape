@@ -49,9 +49,7 @@ RSpec.describe PhiX::Stock, :phi_x do
     context 'with valid data' do
       subject(:save) { phi_x_stock.save }
 
-      let(:phi_x_stock) do
-        build :phi_x_stock, number: 2, name: 'Example', concentration: '0.8', tags:, study_id:
-      end
+      let(:phi_x_stock) { build :phi_x_stock, number: 2, name: 'Example', concentration: '0.8', tags:, study_id: }
 
       let(:tags) { 'Single' }
       let(:study_id) { build_stubbed(:study).id }

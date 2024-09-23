@@ -208,6 +208,5 @@ Rails/ThreeStateBooleanColumn:
 
 RSpec/ExpectInHook:
   Enabled: false
-
 # New in Ruby 3.2 upgrade
 # Added to Rubocop Todo and handling from there

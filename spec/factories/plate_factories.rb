@@ -92,10 +92,7 @@ FactoryBot.define do
           outer_request =
             well_hash[well.map_description].requests.detect { |r| r.submission_id == evaluator.submission.id }
 
-          create :transfer_request,
-                 asset: well_hash[well.map_description],
-                 target_asset: well,
-                 outer_request:
+          create :transfer_request, asset: well_hash[well.map_description], target_asset: well, outer_request:
         end
       end
     end

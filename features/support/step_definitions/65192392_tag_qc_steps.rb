@@ -111,16 +111,8 @@ Given /^I have a qc library created$/ do
   reporter_plate = qcb.qcables.first.asset
 
   tag_plate.update!(plate_purpose: PlatePurpose.find_by(name: 'Tag PCR'))
-  Transfer::BetweenPlates.create!(
-    user:,
-    source: reporter_plate,
-    destination: tag_plate,
-    transfers: {
-      'A1' => 'A1'
-    }
-  )
-  stc =
-    SpecificTubeCreation.create!(parent: tag_plate, child_purposes: [Tube::Purpose.find_by(name: 'Tag MX')], user:)
+  Transfer::BetweenPlates.create!(user:, source: reporter_plate, destination: tag_plate, transfers: { 'A1' => 'A1' })
+  stc = SpecificTubeCreation.create!(parent: tag_plate, child_purposes: [Tube::Purpose.find_by(name: 'Tag MX')], user:)
   batch =
     Batch
       .new(pipeline: Pipeline.find_by(name: 'MiSeq sequencing'))

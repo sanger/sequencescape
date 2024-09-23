@@ -210,9 +210,7 @@ FactoryBot.define do
   factory :fluidigm_pipeline_workflow, class: 'Workflow' do
     name { generate :lab_workflow_name }
 
-    after(:build) do |workflow|
-      workflow.pipeline = build(:fluidigm_pipeline, workflow:) unless workflow.pipeline
-    end
+    after(:build) { |workflow| workflow.pipeline = build(:fluidigm_pipeline, workflow:) unless workflow.pipeline }
 
     tasks { [build(:fluidigm_template_task, workflow: nil), build(:cherrypick_task, workflow: nil)] }
   end
@@ -220,9 +218,7 @@ FactoryBot.define do
   factory :cherrypick_pipeline_workflow, class: 'Workflow' do
     name { generate :lab_workflow_name }
 
-    after(:build) do |workflow|
-      workflow.pipeline = build(:cherrypick_pipeline, workflow:) unless workflow.pipeline
-    end
+    after(:build) { |workflow| workflow.pipeline = build(:cherrypick_pipeline, workflow:) unless workflow.pipeline }
 
     tasks { [build(:plate_template_task, workflow: nil), build(:cherrypick_task, workflow: nil)] }
   end

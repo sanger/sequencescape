@@ -12,12 +12,7 @@ describe Pooling, :poolings do
   let(:stock_mx_tube_required) { false }
   let(:barcode_printer_option) { nil }
   let(:pooling) do
-    described_class.new(
-      barcodes:,
-      stock_mx_tube_required:,
-      barcode_printer: barcode_printer_option,
-      count: 1
-    )
+    described_class.new(barcodes:, stock_mx_tube_required:, barcode_printer: barcode_printer_option, count: 1)
   end
 
   context 'without source assets' do

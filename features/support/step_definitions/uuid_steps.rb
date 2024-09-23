@@ -57,8 +57,7 @@ PLURAL_MODELS_BASED_ON_NAME_REGEXP = ALL_MODELS_THAT_CAN_HAVE_UUIDS_BASED_ON_NAM
 # rubocop:todo Layout/LineLength
 Given /^the UUID for the (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) "([^"]+)" is "([^"]+)"$/o do |model, name, uuid_value|
   # rubocop:enable Layout/LineLength
-  object = model.gsub(/\s+/, '_').classify.constantize.find_by(name:) or
-    raise "Cannot find #{model} #{name.inspect}"
+  object = model.gsub(/\s+/, '_').classify.constantize.find_by(name:) or raise "Cannot find #{model} #{name.inspect}"
   set_uuid_for(object, uuid_value)
 end
 
@@ -67,8 +66,7 @@ end
 # rubocop:todo Layout/LineLength
 Given /^the UUID for the receptacle in (#{SINGULAR_MODELS_BASED_ON_NAME_REGEXP}) "([^"]+)" is "([^"]+)"$/o do |model, name, uuid_value|
   # rubocop:enable Layout/LineLength
-  object = model.gsub(/\s+/, '_').classify.constantize.find_by(name:) or
-    raise "Cannot find #{model} #{name.inspect}"
+  object = model.gsub(/\s+/, '_').classify.constantize.find_by(name:) or raise "Cannot find #{model} #{name.inspect}"
   set_uuid_for(object.receptacle, uuid_value)
 end
 

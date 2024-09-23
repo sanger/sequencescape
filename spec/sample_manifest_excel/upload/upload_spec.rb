@@ -150,9 +150,7 @@ RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_e
 
     context 'library tube with tag sequences' do
       let!(:columns) { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
-      let!(:download) do
-        build(:test_download_tubes, columns:, manifest_type: 'tube_library_with_tag_sequences')
-      end
+      let!(:download) { build(:test_download_tubes, columns:, manifest_type: 'tube_library_with_tag_sequences') }
 
       before { download.save(test_file_name) }
 

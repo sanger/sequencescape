@@ -247,13 +247,7 @@ module ApplicationHelper
     tab_id ||= "#{name}-tab".parameterize
     id ||= name.parameterize
     active_class = active ? 'active' : ''
-    tag.div(
-      class: ['tab-pane', 'fade', 'show', active_class],
-      id:,
-      role: 'tabpanel',
-      aria_labelledby: tab_id,
-      &
-    )
+    tag.div(class: ['tab-pane', 'fade', 'show', active_class], id:, role: 'tabpanel', aria_labelledby: tab_id, &)
   end
 
   def display_boolean_results(result)

@@ -6,13 +6,7 @@ require 'shared_contexts/limber_shared_context'
 
 RSpec.describe StateChanger::InputPlate do
   let(:state_changer) do
-    described_class.new(
-      labware: input_plate,
-      target_state:,
-      user:,
-      contents:,
-      customer_accepts_responsibility:
-    )
+    described_class.new(labware: input_plate, target_state:, user:, contents:, customer_accepts_responsibility:)
   end
   let(:user) { build_stubbed :user }
   let(:contents) { [] }

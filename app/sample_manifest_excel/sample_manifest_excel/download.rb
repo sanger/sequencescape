@@ -18,16 +18,9 @@ module SampleManifestExcel
 
       return unless valid?
 
-      @ranges_worksheet =
-        SequencescapeExcel::Worksheet::RangesWorksheet.new(ranges: range_list, workbook:, password:)
+      @ranges_worksheet = SequencescapeExcel::Worksheet::RangesWorksheet.new(ranges: range_list, workbook:, password:)
       @data_worksheet =
-        Worksheet::DataWorksheet.new(
-          workbook:,
-          columns: column_list,
-          sample_manifest:,
-          ranges: range_list,
-          password:
-        )
+        Worksheet::DataWorksheet.new(workbook:, columns: column_list, sample_manifest:, ranges: range_list, password:)
     end
 
     def password

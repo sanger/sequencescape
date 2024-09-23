@@ -6,14 +6,7 @@ RSpec.describe SequencescapeExcel::Range, :sample_manifest, :sample_manifest_exc
   let(:options) { %w[option1 option2 option3] }
 
   it 'is comparable' do
-    attributes = {
-      options:,
-      first_column: 4,
-      first_row: 5,
-      last_column: 8,
-      last_row: 10,
-      worksheet_name: 'Sheet1'
-    }
+    attributes = { options:, first_column: 4, first_row: 5, last_column: 8, last_row: 10, worksheet_name: 'Sheet1' }
 
     # rubocop:todo RSpec/IdenticalEqualityAssertion
     expect(described_class.new(attributes)).to eq(described_class.new(attributes))

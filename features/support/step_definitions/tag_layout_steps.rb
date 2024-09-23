@@ -127,10 +127,7 @@ def pool_by_strategy(source, destination, pooling_strategy) # rubocop:todo Metri
       .zip(wells_for_destination)
       .each do |w|
         TransferRequest.create!(asset: w.first, target_asset: w.last, submission_id:)
-        FactoryBot.create :request_without_submission,
-                          asset: w.first,
-                          target_asset: w.last,
-                          submission_id:
+        FactoryBot.create :request_without_submission, asset: w.first, target_asset: w.last, submission_id:
       end
   end
 end

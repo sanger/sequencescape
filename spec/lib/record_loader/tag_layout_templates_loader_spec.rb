@@ -17,13 +17,7 @@ RSpec.describe RecordLoader::TagLayoutTemplatesLoader, :loader, type: :model do
   context 'with tag_layout_template_basic selected' do
     let(:selected_files) { 'tag_layout_template_basic' }
     let(:expected_attributes) do
-      {
-        name: 'Tag Layout 1',
-        tag_group:,
-        tag2_group:,
-        direction: 'column',
-        walking_by: 'wells of plate'
-      }
+      { name: 'Tag Layout 1', tag_group:, tag2_group:, direction: 'column', walking_by: 'wells of plate' }
     end
 
     let!(:tag_group) { create :tag_group, name: 'group 1' }

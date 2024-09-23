@@ -54,21 +54,12 @@ class TagLayoutTemplate < ApplicationRecord
   end
 
   def tag_layout_attributes
-    {
-      tag_group:,
-      tag2_group:,
-      direction_algorithm:,
-      walking_algorithm:
-    }
+    { tag_group:, tag2_group:, direction_algorithm:, walking_algorithm: }
   end
 
   def record_template_use(plate, enforce_uniqueness)
     plate.submissions.each do |submission|
-      TagLayout::TemplateSubmission.create!(
-        submission:,
-        tag_layout_template: self,
-        enforce_uniqueness:
-      )
+      TagLayout::TemplateSubmission.create!(submission:, tag_layout_template: self, enforce_uniqueness:)
     end
   end
 end

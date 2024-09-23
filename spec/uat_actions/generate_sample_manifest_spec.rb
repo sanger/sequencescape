@@ -68,14 +68,7 @@ describe UatActions::GenerateSampleManifest do
     end
 
     describe '#create_sample_manifest' do
-      let(:manifest) do
-        create :sample_manifest,
-               study:,
-               supplier:,
-               count:,
-               asset_type:,
-               purpose:
-      end
+      let(:manifest) { create :sample_manifest, study:, supplier:, count:, asset_type:, purpose: }
 
       it 'sets the created sample manifest' do
         allow(SampleManifest).to receive(:create!).and_return(manifest)
@@ -85,14 +78,7 @@ describe UatActions::GenerateSampleManifest do
     end
 
     describe '#generate_manifest' do
-      let(:manifest) do
-        create :sample_manifest,
-               study:,
-               supplier:,
-               count:,
-               asset_type:,
-               purpose:
-      end
+      let(:manifest) { create :sample_manifest, study:, supplier:, count:, asset_type:, purpose: }
 
       it 'create tubes(s)' do
         expect { uat_action.generate_manifest(manifest) }.to change(SampleTube, :count).by(count).and change {

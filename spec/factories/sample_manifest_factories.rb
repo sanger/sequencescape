@@ -91,9 +91,7 @@ FactoryBot.define do
           .plates
           .flat_map(&:wells)
           .each do |well|
-            evaluator.num_rows_per_well.times do
-              create(:sample_manifest_asset, asset: well, sample_manifest:)
-            end
+            evaluator.num_rows_per_well.times { create(:sample_manifest_asset, asset: well, sample_manifest:) }
           end
       end
     end

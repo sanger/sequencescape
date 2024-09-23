@@ -44,9 +44,7 @@ class PickList < ApplicationRecord
 
   def pick_attributes
     orders.flat_map do |order|
-      order.assets.map do |source_receptacle|
-        { source_receptacle:, study: order.study, project: order.project }
-      end
+      order.assets.map { |source_receptacle| { source_receptacle:, study: order.study, project: order.project } }
     end
   end
 

@@ -169,22 +169,10 @@ RSpec.describe SequencingRequest do
     context 'when compound samples are necessary because each aliquot does not have a unique tag combination' do
       context 'when there is one tag combination' do
         let(:aliquot1) do
-          create :aliquot,
-                 sample: samples[0],
-                 tag_id: tags[0].id,
-                 tag2_id: tags[1].id,
-                 tag_depth: 1,
-                 study:,
-                 project:
+          create :aliquot, sample: samples[0], tag_id: tags[0].id, tag2_id: tags[1].id, tag_depth: 1, study:, project:
         end
         let(:aliquot2) do
-          create :aliquot,
-                 sample: samples[1],
-                 tag_id: tags[0].id,
-                 tag2_id: tags[1].id,
-                 tag_depth: 2,
-                 study:,
-                 project:
+          create :aliquot, sample: samples[1], tag_id: tags[0].id, tag2_id: tags[1].id, tag_depth: 2, study:, project:
         end
 
         it 'creates a compound sample and transfers an aliquot of it' do

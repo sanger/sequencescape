@@ -4,9 +4,7 @@ namespace :benchmark do
     $stdout.puts 'Preparing'
     stock = Purpose.find_by(name: 'Shear').create!
     sample = Sample.find_or_create_by(name: 'test_sample')
-    stock.wells.each do |w|
-      w.aliquots.create!(sample:, study_id: Study.find_or_create_by(name: 'test_study').id)
-    end
+    stock.wells.each { |w| w.aliquots.create!(sample:, study_id: Study.find_or_create_by(name: 'test_study').id) }
     user = User.find_or_create_by(login: 'test_user')
     targets = []
 

@@ -32,10 +32,7 @@ Given(
     FactoryBot
       .create(:well, plate:, map_id: index)
       .tap do |well|
-        well.aliquots.create!(
-          sample: FactoryBot.create(:sample, name: "Sample_#{plate_barcode}_#{index}"),
-          study:
-        )
+        well.aliquots.create!(sample: FactoryBot.create(:sample, name: "Sample_#{plate_barcode}_#{index}"), study:)
       end
   end
 end
@@ -112,13 +109,7 @@ Given(/^I have a Cherrypicking submission for asset group "([^"]*)"$/) do |asset
   asset_group = AssetGroup.find_by(name: asset_group_name)
 
   submission_template = SubmissionTemplate.find_by(name: 'Cherrypick')
-  order =
-    submission_template.create_with_submission!(
-      study:,
-      project:,
-      user: User.last,
-      assets: asset_group.assets
-    )
+  order = submission_template.create_with_submission!(study:, project:, user: User.last, assets: asset_group.assets)
   order.submission.built!
   step('1 pending delayed jobs are processed')
 end

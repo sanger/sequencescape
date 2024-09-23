@@ -43,9 +43,7 @@ module StateChanger
     end
 
     def generate_events_for(orders)
-      orders.each do |order_id|
-        BroadcastEvent::LibraryStart.create!(seed: labware, user:, properties: { order_id: })
-      end
+      orders.each { |order_id| BroadcastEvent::LibraryStart.create!(seed: labware, user:, properties: { order_id: }) }
     end
 
     def update_transfer_requests

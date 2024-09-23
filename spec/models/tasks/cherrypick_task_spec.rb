@@ -7,9 +7,7 @@ RSpec.configure { |c| c.include LabWhereClientHelper }
 RSpec.describe CherrypickTask do
   let!(:plate) { create :plate_with_untagged_wells, sample_count: 4 }
   let(:control_plate) { create :control_plate, sample_count: 2 }
-  let(:requests) do
-    plate.wells.in_column_major_order.map { |w| create(:cherrypick_request, asset: w, submission:) }
-  end
+  let(:requests) { plate.wells.in_column_major_order.map { |w| create(:cherrypick_request, asset: w, submission:) } }
   let(:template) { create(:plate_template, size: 6) }
   let(:robot) { instance_double('Robot', max_beds: 2) } # rubocop:todo RSpec/VerifiedDoubleReference
   let(:purpose) { create :purpose }

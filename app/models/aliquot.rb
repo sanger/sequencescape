@@ -115,11 +115,7 @@ class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def created_with_request_options
-    {
-      fragment_size_required_from: insert_size_from,
-      fragment_size_required_to: insert_size_to,
-      library_type:
-    }
+    { fragment_size_required_from: insert_size_from, fragment_size_required_to: insert_size_to, library_type: }
   end
 
   # Validating the uniqueness of tags in rails was causing issues, as it was resulting the in the

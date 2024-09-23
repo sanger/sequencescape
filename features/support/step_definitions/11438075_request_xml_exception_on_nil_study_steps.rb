@@ -5,12 +5,5 @@ Given /^I have a request (\d+) with a study (\d+)$/ do |request_id, study_id|
   project = FactoryBot.create(:project)
   request_type = RequestType.find_by(key: 'library_creation')
   request =
-    FactoryBot.create(
-      :request,
-      id: request_id,
-      study:,
-      project:,
-      request_type:,
-      asset: FactoryBot.create(:sample_tube)
-    )
+    FactoryBot.create(:request, id: request_id, study:, project:, request_type:, asset: FactoryBot.create(:sample_tube))
 end

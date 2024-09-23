@@ -239,11 +239,7 @@ RSpec.describe LocationReport do
             [plate_2.machine_barcode.to_s, 'Shelf 2', locn_prefix],
             [plate_3.machine_barcode.to_s, 'Shelf 3', locn_prefix]
           ].each do |lw_barcode, lw_locn_name, lw_locn_parentage|
-            stub_lwclient_labware_find_by_bc(
-              lw_barcode:,
-              lw_locn_name:,
-              lw_locn_parentage:
-            )
+            stub_lwclient_labware_find_by_bc(lw_barcode:, lw_locn_name:, lw_locn_parentage:)
           end
 
           plate_1_custom_metadatum

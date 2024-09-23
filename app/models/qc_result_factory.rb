@@ -59,17 +59,7 @@ class QcResultFactory
       super(attributes)
 
       @asset = build_asset
-      @qc_result =
-        QcResult.new(
-          asset:,
-          key:,
-          value:,
-          units:,
-          cv:,
-          assay_type:,
-          assay_version:,
-          qc_assay:
-        )
+      @qc_result = QcResult.new(asset:, key:, value:, units:, cv:, assay_type:, assay_version:, qc_assay:)
     end
 
     def message_id

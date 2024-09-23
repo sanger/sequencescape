@@ -68,12 +68,7 @@ class Pooling # rubocop:todo Metrics/ClassLength
 
   def print_job
     @print_job ||=
-      LabelPrinter::PrintJob.new(
-        barcode_printer,
-        LabelPrinter::Label::MultiplexedTube,
-        assets: target_assets,
-        count:
-      )
+      LabelPrinter::PrintJob.new(barcode_printer, LabelPrinter::Label::MultiplexedTube, assets: target_assets, count:)
   end
 
   def message

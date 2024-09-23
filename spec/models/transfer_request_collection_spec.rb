@@ -10,9 +10,7 @@ RSpec.describe TransferRequestCollection, :transfer_request_collection do
   let(:target_asset) { create :empty_library_tube }
 
   context 'with a single transfer' do
-    let(:creation_attributes) do
-      { user:, transfer_requests_attributes: [{ asset:, target_asset: }] }
-    end
+    let(:creation_attributes) { { user:, transfer_requests_attributes: [{ asset:, target_asset: }] } }
 
     context 'and no outer requests' do
       describe '#save' do
@@ -68,12 +66,7 @@ RSpec.describe TransferRequestCollection, :transfer_request_collection do
 
         context 'specifying submission' do
           let(:creation_attributes) do
-            {
-              user:,
-              transfer_requests_attributes: [
-                { asset:, target_asset:, submission: outer_request.submission }
-              ]
-            }
+            { user:, transfer_requests_attributes: [{ asset:, target_asset:, submission: outer_request.submission }] }
           end
 
           before { expect(subject.save).to be true }
@@ -111,12 +104,7 @@ RSpec.describe TransferRequestCollection, :transfer_request_collection do
 
         context 'specifying submission' do
           let(:creation_attributes) do
-            {
-              user:,
-              transfer_requests_attributes: [
-                { asset:, target_asset:, submission: outer_request.submission }
-              ]
-            }
+            { user:, transfer_requests_attributes: [{ asset:, target_asset:, submission: outer_request.submission }] }
           end
 
           it 'is invalid' do
@@ -126,10 +114,7 @@ RSpec.describe TransferRequestCollection, :transfer_request_collection do
 
         context 'specifying outer_request' do
           let(:creation_attributes) do
-            {
-              user:,
-              transfer_requests_attributes: [{ asset:, target_asset:, outer_request: }]
-            }
+            { user:, transfer_requests_attributes: [{ asset:, target_asset:, outer_request: }] }
           end
 
           before { expect(subject.save).to be true }

@@ -15,14 +15,7 @@ RSpec.describe Order do
     # don't want to trigger this behaviour accidentally if someone forgets to
     # specify a study.
 
-    subject(:order) do
-      build :order,
-            assets:,
-            autodetect_studies:,
-            autodetect_projects:,
-            study: nil,
-            project: nil
-    end
+    subject(:order) { build :order, assets:, autodetect_studies:, autodetect_projects:, study: nil, project: nil }
 
     let(:assets) { [tube] }
     let(:tube) { create :sample_tube, aliquots: }

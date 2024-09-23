@@ -165,9 +165,7 @@ FactoryBot.define do
       prep_kit_barcode { 999 }
       smrt_cells_available { 1 }
     end
-    pac_bio_library_tube_metadata_attributes do
-      { prep_kit_barcode:, smrt_cells_available: }
-    end
+    pac_bio_library_tube_metadata_attributes { { prep_kit_barcode:, smrt_cells_available: } }
     after(:build) { |t, evaluator| t.receptacle.aliquots << evaluator.aliquot }
   end
 

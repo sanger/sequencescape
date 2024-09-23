@@ -45,12 +45,14 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
     plates.each do |plate|
       plate.wells.each_with_index do |well, index|
         # create the requests for cherrypicking
-        create(:cherrypick_request,
-               asset: well,
-               request_type: pipeline.request_types.first,
-               submission:,
-               study:,
-               project:)
+        create(
+          :cherrypick_request,
+          asset: well,
+          request_type: pipeline.request_types.first,
+          submission:,
+          study:,
+          project:
+        )
 
         # create a concentration value on the wells if required
         next unless concentrations_required

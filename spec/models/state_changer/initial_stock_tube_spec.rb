@@ -4,14 +4,7 @@
 require 'spec_helper'
 
 RSpec.describe StateChanger::InitialStockTube do
-  let(:state_changer) do
-    described_class.new(
-      labware:,
-      target_state:,
-      user:,
-      customer_accepts_responsibility:
-    )
-  end
+  let(:state_changer) { described_class.new(labware:, target_state:, user:, customer_accepts_responsibility:) }
 
   let(:user) { build_stubbed :user }
   let(:customer_accepts_responsibility) { false }

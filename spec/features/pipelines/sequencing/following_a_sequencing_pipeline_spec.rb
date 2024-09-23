@@ -113,9 +113,7 @@ RSpec.describe 'Following a Sequencing Pipeline', :js do
   end
 
   context 'when a batch has been created' do
-    let(:batch) do
-      create :batch, pipeline:, requests: pipeline.requests, state: 'released', updated_at: 1.day.ago
-    end
+    let(:batch) { create :batch, pipeline:, requests: pipeline.requests, state: 'released', updated_at: 1.day.ago }
 
     let!(:flowcell_message) { Messenger.create!(target: batch, template: 'FlowcellIO', root: 'flowcell') }
 

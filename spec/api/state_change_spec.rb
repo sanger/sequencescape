@@ -68,16 +68,7 @@ describe '/api/1/state_changes' do
   end
 
   shared_examples 'a failed state_change_endpoint' do
-    let(:payload) do
-      {
-        state_change: {
-          user: user.uuid,
-          target: target_plate.uuid,
-          target_state:,
-          reason:
-        }
-      }.to_json
-    end
+    let(:payload) { { state_change: { user: user.uuid, target: target_plate.uuid, target_state:, reason: } }.to_json }
 
     before { api_request :post, subject, payload }
 

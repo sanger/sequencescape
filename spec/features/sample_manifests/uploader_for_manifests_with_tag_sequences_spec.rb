@@ -123,9 +123,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
       end
 
       context 'duplicate cgap foreign barcodes' do
-        let(:download) do
-          build(:test_download_tubes_cgap, columns:, validation_errors: [:sample_tube_id_duplicates])
-        end
+        let(:download) { build(:test_download_tubes_cgap, columns:, validation_errors: [:sample_tube_id_duplicates]) }
 
         it 'validation errors' do
           login_user(user)
@@ -194,11 +192,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
 
       context 'cgap foreign barcodes' do
         let(:download) do
-          build(
-            :test_download_tubes_cgap,
-            columns:,
-            manifest_type: 'tube_multiplexed_library_with_tag_sequences'
-          )
+          build(:test_download_tubes_cgap, columns:, manifest_type: 'tube_multiplexed_library_with_tag_sequences')
         end
 
         it 'upload' do
@@ -347,12 +341,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
     context 'invalid' do
       context 'upload' do
         let(:download) do
-          build(
-            :test_download_tubes,
-            columns:,
-            manifest_type: 'tube_multiplexed_library',
-            validation_errors: %i[tags]
-          )
+          build(:test_download_tubes, columns:, manifest_type: 'tube_multiplexed_library', validation_errors: %i[tags])
         end
 
         it 'validation errors' do
@@ -486,11 +475,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
 
       context 'unrecognised cgap foreign barcodes' do
         let(:download) do
-          build(
-            :test_download_plates_cgap,
-            columns:,
-            validation_errors: [:sample_plate_id_unrecognised_foreign]
-          )
+          build(:test_download_plates_cgap, columns:, validation_errors: [:sample_plate_id_unrecognised_foreign])
         end
 
         it 'validation errors' do
@@ -503,9 +488,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
       end
 
       context 'duplicate cgap foreign barcodes' do
-        let(:download) do
-          build(:test_download_plates_cgap, columns:, validation_errors: [:sample_plate_id_duplicates])
-        end
+        let(:download) { build(:test_download_plates_cgap, columns:, validation_errors: [:sample_plate_id_duplicates]) }
 
         it 'validation errors' do
           login_user(user)

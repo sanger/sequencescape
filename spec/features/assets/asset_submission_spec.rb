@@ -11,9 +11,7 @@ describe 'Asset submission', :js do
   let(:original_request_type) { request_types.first }
   let(:selected_request_type) { original_request_type }
   let(:selected_read_length) { '76' }
-  let!(:original_request) do
-    create(request_factory, study:, project:, asset:, request_type: original_request_type)
-  end
+  let!(:original_request) { create(request_factory, study:, project:, asset:, request_type: original_request_type) }
 
   shared_examples 'it allows additional sequencing' do
     it 'request additional sequencing' do

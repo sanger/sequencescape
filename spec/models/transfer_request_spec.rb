@@ -252,9 +252,9 @@ RSpec.describe TransferRequest do
       let!(:target_asset) { create :well, aliquots: [aliquot_1] }
 
       it 'raises an exception' do
-        expect do
-          described_class.create!(asset: aliquot_2.receptacle.reload, target_asset:)
-        end.to raise_error(Aliquot::TagClash)
+        expect do described_class.create!(asset: aliquot_2.receptacle.reload, target_asset:) end.to raise_error(
+          Aliquot::TagClash
+        )
       end
     end
   end

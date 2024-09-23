@@ -17,9 +17,7 @@ context 'when printing swipecard' do
     )
   end
   let(:labels_attribute) { [{ left_text: user.login, barcode: swipecard, label_name: 'main' }] }
-  let(:build_attributes) do
-    { printer_name: barcode_printer.name, label_template_name:, labels: labels_attribute }
-  end
+  let(:build_attributes) { { printer_name: barcode_printer.name, label_template_name:, labels: labels_attribute } }
 
   it 'builds correct attributes' do
     # This hash is sent to the printmybarcode service.

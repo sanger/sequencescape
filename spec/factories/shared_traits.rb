@@ -26,9 +26,7 @@ FactoryBot.define do
     transient { uuid { SecureRandom.uuid } }
 
     # Using an after build as I need access to both the transient and the resource.
-    after(:build) do |resource, context|
-      resource.uuid_object = build(:uuid, external_id: context.uuid, resource:)
-    end
+    after(:build) { |resource, context| resource.uuid_object = build(:uuid, external_id: context.uuid, resource:) }
 
     after(:create) { |resource, _context| resource.uuid_object.save! }
   end

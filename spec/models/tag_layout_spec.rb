@@ -41,18 +41,7 @@ describe TagLayout do
   end
 
   context 'layouts' do
-    before do
-      create(
-        :tag_layout,
-        plate:,
-        user:,
-        tag_group:,
-        tag2_group:,
-        walking_by:,
-        direction:,
-        initial_tag:
-      )
-    end
+    before { create(:tag_layout, plate:, user:, tag_group:, tag2_group:, walking_by:, direction:, initial_tag:) }
 
     context 'by_column' do
       let(:direction) { 'column' }

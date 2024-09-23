@@ -30,12 +30,7 @@ class AddSpikedInControlTask < Task
   end
 
   def do_task(workflows_controller, params, user)
-    Tasks::AddSpikedInControlHandler::Handler.new(
-      controller: workflows_controller,
-      params:,
-      task: self,
-      user:
-    ).perform
+    Tasks::AddSpikedInControlHandler::Handler.new(controller: workflows_controller, params:, task: self, user:).perform
   end
 
   def fields_for(requests)

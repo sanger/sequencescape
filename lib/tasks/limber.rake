@@ -141,11 +141,7 @@ namespace :limber do
         catalogue_name = (params[:catalogue_name] || prefix)
         catalogue =
           ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: catalogue_name)
-        Limber::Helper::TemplateConstructor.new(
-          prefix:,
-          catalogue:,
-          sequencing_keys: params[:sequencing_list]
-        ).build!
+        Limber::Helper::TemplateConstructor.new(prefix:, catalogue:, sequencing_keys: params[:sequencing_list]).build!
         unless params[:omit_library_templates]
           Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix:, catalogue:).build!
           Limber::Helper::LibraryAndMultiplexingTemplateConstructor.new(prefix:, catalogue:).build!
@@ -237,11 +233,7 @@ namespace :limber do
       Limber::Helper::LibraryOnlyTemplateConstructor.new(prefix: 'GBS', catalogue: gbs_catalogue).build!
 
       catalogue = ProductCatalogue.create_with(selection_behaviour: 'SingleProduct').find_or_create_by!(name: 'Generic')
-      Limber::Helper::TemplateConstructor.new(
-        prefix: 'Multiplexing',
-        catalogue:,
-        sequencing_keys: base_list
-      ).build!
+      Limber::Helper::TemplateConstructor.new(prefix: 'Multiplexing', catalogue:, sequencing_keys: base_list).build!
 
       ## Bespoke Pipelines ##
       generic_pcr =

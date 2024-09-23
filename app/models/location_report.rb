@@ -176,14 +176,7 @@ class LocationReport < ApplicationRecord
   end
 
   def search_for_plates_by_selection
-    params = {
-      faculty_sponsor_ids:,
-      study_id:,
-      start_date:,
-      end_date:,
-      plate_purpose_ids:,
-      barcodes:
-    }
+    params = { faculty_sponsor_ids:, study_id:, start_date:, end_date:, plate_purpose_ids:, barcodes: }
     Plate.search_for_plates(params)
   end
 

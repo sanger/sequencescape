@@ -1478,10 +1478,6 @@ RequestType.find_each do |request_type|
     ]
 
   if read_lengths.present?
-    RequestType::Validator.create!(
-      request_type:,
-      request_option: 'read_length',
-      valid_options: read_lengths
-    )
+    RequestType::Validator.create!(request_type:, request_option: 'read_length', valid_options: read_lengths)
   end
 end

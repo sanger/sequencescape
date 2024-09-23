@@ -23,8 +23,7 @@ class SampleManifest::Uploader
     @user = user
     @override = override
     @tag_group = create_tag_group
-    @upload =
-      SampleManifestExcel::Upload::Base.new(file:, column_list: self.configuration.columns.all, override:)
+    @upload = SampleManifestExcel::Upload::Base.new(file:, column_list: self.configuration.columns.all, override:)
   end
 
   def run!

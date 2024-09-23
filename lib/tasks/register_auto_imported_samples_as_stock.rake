@@ -36,8 +36,7 @@ namespace :auto_imported_samples do
     labware = labware_samples.uniq # 890 in training 2020-07-07
     puts "labware count: #{labware.count}"
 
-    receptacles =
-      Receptacle.where(labware:).joins(:aliquots).where("aliquots.study_id IN (#{relevant_study_ids})")
+    receptacles = Receptacle.where(labware:).joins(:aliquots).where("aliquots.study_id IN (#{relevant_study_ids})")
 
     # 78,507 in training 2020-07-08 (85,440 before join with aliquots)
     puts "receptacles count: #{receptacles.count}"
