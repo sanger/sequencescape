@@ -336,10 +336,10 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   end
   deprecate stock_plate: 'Stock plate is nebulous and can easily lead to unexpected behaviour'
 
-  def self.create_with_barcode!(*args, &block)
+  def self.create_with_barcode!(*args, &)
     attributes = args.extract_options!
     attributes[:sanger_barcode] ||= PlateBarcode.create_barcode
-    create!(attributes, &block)
+    create!(attributes, &)
   end
 
   def number_of_blank_samples

@@ -278,8 +278,8 @@ module ApplicationHelper
     label_tag(name, text, options.merge(style: 'display:none;'))
   end
 
-  def help_text(&block)
-    tag.small(class: 'form-text text-muted col', &block)
+  def help_text(&)
+    tag.small(class: 'form-text text-muted col', &)
   end
 
   def help_link(text, entry = '', options = {})

@@ -46,10 +46,10 @@ def walk_hash_structure(hash_data, &block)
   end
 end
 
-def assert_json_equal(expected, received, &block)
+def assert_json_equal(expected, received, &)
   assert_hash_equal(
-    walk_hash_structure(decode_json(expected, 'Expected'), &block),
-    walk_hash_structure(decode_json(received, 'Received'), &block),
+    walk_hash_structure(decode_json(expected, 'Expected'), &),
+    walk_hash_structure(decode_json(received, 'Received'), &),
     'Differs when decoded'
   )
 end

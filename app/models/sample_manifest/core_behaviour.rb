@@ -27,8 +27,8 @@ module SampleManifest::CoreBehaviour
       Array.new(count) { SangerSampleId::Factory.instance.next! }
     end
 
-    def details(&block)
-      details_array.each(&block)
+    def details(&)
+      details_array.each(&)
     end
   end
 

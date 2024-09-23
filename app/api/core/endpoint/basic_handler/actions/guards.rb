@@ -61,8 +61,8 @@ module Core::Endpoint::BasicHandler::Actions::Guards
   end
   private :accessible_action?
 
-  def action_guard(name, method_name = nil, &block)
-    guard_for(name).push(Guard.new(method_name, &block))
+  def action_guard(name, method_name = nil, &)
+    guard_for(name).push(Guard.new(method_name, &))
   end
 
   def guard_for(name)

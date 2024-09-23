@@ -99,12 +99,12 @@ module Core
       "#{request.scheme}://#{request.host_with_port}/#{self.class.api_version_path}/#{sub_path.compact.join('/')}"
     end
 
-    def self.before_all_actions(&block)
-      before('/*', &block)
+    def self.before_all_actions(&)
+      before('/*', &)
     end
 
-    def self.after_all_actions(&block)
-      after('/*', &block)
+    def self.after_all_actions(&)
+      after('/*', &)
     end
 
     attr_reader :command
@@ -126,9 +126,9 @@ module Core
 
       delegate :user, to: :service
 
-      def initialize(identifier, *args, &block)
+      def initialize(identifier, *args, &)
         @identifier, @started_at = identifier, Time.zone.now
-        super(*args, &block)
+        super(*args, &)
         @ability = Core::Abilities.create(self)
       end
 
@@ -143,8 +143,8 @@ module Core
         @service.request.cookies['api_key'] || @service.request.cookies['WTSISignOn']
       end
 
-      def response(&block)
-        ::Core::Service::Response.new(self, &block)
+      def response(&)
+        ::Core::Service::Response.new(self, &)
       end
 
       # Safe way to push a particular value on to the request target stack.  Ensures that the
@@ -216,10 +216,10 @@ module Core
       delegate :endpoint_for_object, to: 'request.service'
       private :endpoint_for_object
 
-      def initialize(request, &block)
+      def initialize(request, &)
         @request, @io, @include_actions = request, nil, true
         status(200)
-        super(&block)
+        super(&)
       end
 
       #--

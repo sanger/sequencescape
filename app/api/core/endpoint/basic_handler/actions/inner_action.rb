@@ -20,10 +20,10 @@ module Core::Endpoint::BasicHandler::Actions::InnerAction
     nil
   end
 
-  def rooted_json(options, &block)
+  def rooted_json(options, &)
     return yield(options[:stream]) if @options.key?(:json)
 
-    options[:stream].block(@options[:json].to_s, &block)
+    options[:stream].block(@options[:json].to_s, &)
   end
   private :rooted_json
 

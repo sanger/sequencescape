@@ -139,9 +139,9 @@ SENSIBLE_DEFAULTS_FOR_REQUEST_TYPE = {
   'Illumina-B HiSeq Paired end sequencing' => SENSIBLE_DEFAULTS_HISEQ
 }.freeze
 
-def with_request_type_scope(name, &block)
+def with_request_type_scope(name, &)
   request_type = RequestType.find_by(name:) or raise StandardError, "Cannot find request type #{name.inspect}"
-  with_scope("#request_type_options_for_#{request_type.id}", &block)
+  with_scope("#request_type_options_for_#{request_type.id}", &)
 end
 
 When /^I fill in "([^"]+)" with "([^"]+)" for the "([^"]+)" request type$/ do |name, value, type|

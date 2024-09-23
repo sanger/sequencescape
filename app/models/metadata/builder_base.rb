@@ -2,13 +2,13 @@
 class Metadata::BuilderBase < ActionView::Helpers::FormBuilder
   attr_writer :locals
 
-  def initialize(*args, &block)
+  def initialize(*args, &)
     super
     @views, @locals, @root = {}, {}, nil
   end
 
-  def view_for(type, partial_name = nil, &block)
-    @views[type.to_sym] = partial_name.nil? ? { inline: capture(&block) } : { partial: partial_name }
+  def view_for(type, partial_name = nil, &)
+    @views[type.to_sym] = partial_name.nil? ? { inline: capture(&) } : { partial: partial_name }
   end
 
   private

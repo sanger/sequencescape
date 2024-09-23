@@ -83,7 +83,7 @@ class Tube < Labware
     comments.add_comment_to_submissions(comment)
   end
 
-  def self.create_with_barcode!(*args, &block)
+  def self.create_with_barcode!(*args, &)
     attributes = args.extract_options!.symbolize_keys
 
     barcode, prefix = extract_barcode(args, attributes)
@@ -94,7 +94,7 @@ class Tube < Labware
     # this is to control the order of barcode addition so that it gets set as the 'primary' barcode
     foreign_barcode = attributes.delete(:foreign_barcode)
 
-    tube = create!(attributes.merge(sanger_barcode: { prefix:, number: barcode }), &block)
+    tube = create!(attributes.merge(sanger_barcode: { prefix:, number: barcode }), &)
 
     tube.foreign_barcode = foreign_barcode if foreign_barcode
     tube.reload
