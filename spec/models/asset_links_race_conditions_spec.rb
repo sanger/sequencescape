@@ -2,20 +2,10 @@
 
 require 'rails_helper'
 
-# Exception raised when a socket operation times out.
-class SocketTimeoutError < StandardError
-end
-
-# Exception raised when a process operation times out.
-class ProcessTimeoutError < StandardError
-end
-
-# Exception raised when a process exits with a non-zero status.
-class ProcessStatusError < StandardError
-end
-
 RSpec.describe AssetLink, type: :model do
   describe '.create_edge' do
+    # Helpers
+
     # Used in IPC when one end of the duplex pipe is waiting for the other end
     # to send a message with a timeout in seconds.
     #
@@ -24,10 +14,9 @@ RSpec.describe AssetLink, type: :model do
     # @param timeout [Integer] The timeout in seconds, default is 10.
     # @param message [String] The message to raise if times out, default is 'socket timeout'.
     # @return [String] The message received from the socket.
-    # @raise SocketTimeoutError
-
+    # @raise StandardError
     def wait_readable_with_timeout(socket, length, timeout = 10, message = 'socket timeout')
-      raise SocketTimeoutError, message unless socket.wait_readable(timeout)
+      raise StandardError, message unless socket.wait_readable(timeout)
       socket.recv(length)
     end
 
@@ -37,7 +26,7 @@ RSpec.describe AssetLink, type: :model do
     # @param timeout [Integer] The timeout in seconds, default is 10.
     # @param message [String] The message to raise if times out, default is 'process timeout'.
     # @return [Process::Status] The status of the process.
-    # @raise ProcessTimeoutError
+    # @raise StandardError
     # rubocop:disable Metrics/MethodLength
     def wait_process_with_timeout(pid, timeout = 10, message = 'process timeout')
       start_time = Time.zone.now
@@ -57,7 +46,7 @@ RSpec.describe AssetLink, type: :model do
           rescue Errno::ECHILD
             # No child process
           end
-          raise ProcessTimeoutError, message
+          raise StandardError, message
         end
         sleep 0.1
       end
@@ -69,12 +58,14 @@ RSpec.describe AssetLink, type: :model do
     # @return [void]
     def wait_for_processes(pids)
       pids.each do |pid|
-        Process.waitpid(pid)
-        # status = wait_process_with_timeout(pid, 10, "Timeout waiting for process #{pid} to finish.")
-        # raise ProcessStatusError,
-        #   "Forked process #{pid} failed with exit status #{status.exitstatus}" if status.exitstatus != 0
+        status = wait_process_with_timeout(pid, 10, "Timeout waiting for process #{pid} to finish.")
+        if status.exitstatus != 0
+          raise StandardError, "Forked process #{pid} failed with exit status #{status.exitstatus}"
+        end
       end
     end
+
+    # Examples
 
     # rubocop:disable RSpec/ExampleLength
     it 'handles race condition at find_link' do
@@ -205,6 +196,8 @@ RSpec.describe AssetLink, type: :model do
             end
             link
           end
+          allow(described_class).to receive(:unique_validation_error?).and_call_original
+
           # Now the first process should be prevented from saving because of has_duplicates validation.
           result = described_class.create_edge(ancestor, descendant)
           expect(result).to be_truthy
@@ -301,6 +294,7 @@ RSpec.describe AssetLink, type: :model do
 
             method.call(*args)
           end
+          allow(described_class).to receive(:unique_violation_error?).and_call_original
 
           described_class.create_edge(ancestor, descendant)
           expect(described_class).to have_received(:unique_violation_error?)
