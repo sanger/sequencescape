@@ -80,7 +80,7 @@ module Api
 
       def self.creatable_fields(context)
         # UUID is set by the system.
-        super - %i[uuid]
+        super - %i[child uuid]
       end
 
       def fetchable_fields
