@@ -210,18 +210,4 @@ RSpec/ExpectInHook:
   Enabled: false
 
 # New in Ruby 3.2 upgrade
-
-Naming/BlockForwarding:
-  Enabled: false
-
-Style/ArgumentsForwarding:
-  Enabled: false
-
-Style/ArrayIntersect:
-  Enabled: false
-
-Style/EmptyMethod:
-  Enabled: false
-
-Style/HashSyntax:
-  Enabled: false
+# Added to Rubocop Todo and handling from there
