@@ -691,7 +691,6 @@ RSpec/ExampleWording:
     - 'spec/heron/factories/sample_spec.rb'
     - 'spec/heron/factories/tube_rack_spec.rb'
     - 'spec/lib/accession/study_spec.rb'
-    - 'spec/models/parsers/cardinal_pbmc_count_parser_spec.rb'
     - 'spec/models/plate/quad_creator_spec.rb'
     - 'spec/models/qc_result/qc_result_factory_spec.rb'
     - 'spec/models/qcable_creator_spec.rb'
