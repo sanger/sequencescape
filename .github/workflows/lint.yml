@@ -12,7 +12,7 @@ jobs:
       RUBOCOP_CACHE_ROOT: ".rubocop-cache"
       BUNDLE_WITHOUT: "cucumber deployment profile development default test"
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -20,14 +20,14 @@ jobs:
       # Establish a cache of rubocop cache to improve performance
       # ${{ env.RUBOCOP_CACHE_ROOT }}
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
           cache: "yarn"
       - name: Set up yarn
-        run: yarn
+        run: yarn install
       - name: Cache cops
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: |
             ${{ env.RUBOCOP_CACHE_ROOT }}
@@ -46,13 +46,14 @@ jobs:
       # and parallel to try and improve speed
       - name: Run rubocop
         run: bundle exec rubocop --extra-details --display-style-guide --parallel --format github --format progress
+
   eslint:
     name: EsLint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Setup node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
           cache: "yarn"
