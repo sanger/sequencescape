@@ -13,12 +13,7 @@ require 'csv'
 # bundle exec rake 'support:remove_duplicate_asset_links[csv_file_path]'
 #
 # The rake task will write the removed records into a CSV file that can be used
-# for recovery if necessary.
-#
-# If the migration is rolled back, the index will be removed. The duplicate
-# records removed before can be restored from a CSV using the rake task:
-#
-# bundle exec rake 'support:restore_removed_asset_links[csv_file_path]'
+# for auditing purposes.
 #
 # Note that the column names in the index name below is used for finding the
 # reason of the database unique constraint violation by the AssetLink model.
