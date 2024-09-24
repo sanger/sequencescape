@@ -6,8 +6,8 @@ namespace :support do
   # index creation will be done using a migration. If there are already
   # duplicate records, the migration will fail. This task fixes that by finding
   # all the duplicate asset links and removes all but the most recently created
-  # one. The task accepts an argument to save the removed duplicates to a file,
-  # which can be used to restore the duplicates if necessary.
+  # one. The task requires an argument to save the removed duplicates to a file
+  # for auditing purposes.
   desc 'Remove duplicate asset links'
   task remove_duplicate_asset_links: :environment do |_t, args|
     csv_file_path = args.extras.first # Positional argument.
