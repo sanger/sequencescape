@@ -177,5 +177,3 @@ class QcReport < ApplicationRecord
     self.report_identifier = rid
   end
 end
-
-require_dependency 'qc_report/file'

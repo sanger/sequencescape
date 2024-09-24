@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require_dependency 'tube/purpose'
 
 # {Tube::Purpose} for standard {MultiplexedLibraryTube multiplexed library tubes}.
 # Used in the legacy {Pipeline pipelines} and in non-pipeline processes such as

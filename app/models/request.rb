@@ -575,5 +575,3 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
     safe_order&.next_request_type_id(request_type_id)
   end
 end
-
-require_dependency 'system_request'

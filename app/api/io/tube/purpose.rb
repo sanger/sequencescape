@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require_dependency 'tube/purpose'
 
 # Controls API V1 IO for Tube
 class Io::Tube::Purpose < Core::Io::Base

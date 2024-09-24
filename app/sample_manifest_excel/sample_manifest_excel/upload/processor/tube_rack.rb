@@ -3,8 +3,6 @@
 require 'net/http'
 require 'json'
 
-require_dependency 'sample_manifest_excel/upload/processor/base'
-
 module SampleManifestExcel
   module Upload
     module Processor

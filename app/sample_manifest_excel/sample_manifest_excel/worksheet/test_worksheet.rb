@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_dependency 'sample_manifest_excel/tags'
-
 module SampleManifestExcel
   module Worksheet
     ##
