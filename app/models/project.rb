@@ -4,9 +4,9 @@ require 'aasm'
 class Project < ApplicationRecord
   # It has to be here, as there are has_many through: :orders associations in modules
   has_many :orders
-  include Api::ProjectIO::Extensions
+  include Api::ProjectIo::Extensions
   include ModelExtensions::Project
-  include Api::Messages::FlowcellIO::ProjectExtensions
+  include Api::Messages::FlowcellIo::ProjectExtensions
 
   self.per_page = 500
   include EventfulRecord

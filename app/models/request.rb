@@ -8,7 +8,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Include
   include ModelExtensions::Request
   include Aliquot::DeprecatedBehaviours::Request
-  include Api::RequestIO::Extensions
+  include Api::RequestIo::Extensions
   include Uuid::Uuidable
   include AASM
   include AASM::Extensions

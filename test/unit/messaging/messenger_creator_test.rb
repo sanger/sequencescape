@@ -20,7 +20,7 @@ class MessengerCreatorTest < ActiveSupport::TestCase
         assert @messenger.is_a?(Messenger)
         assert_equal @messenger.target, @plate
         assert_equal @messenger.root, 'a_plate'
-        assert_equal @messenger.template, 'FluidigmPlateIO'
+        assert_equal @messenger.template, 'FluidigmPlateIo'
       end
 
       should 'be handled automatically by the purpose' do
@@ -47,7 +47,7 @@ class MessengerCreatorTest < ActiveSupport::TestCase
         @plate.wells.each { |well| assert_includes @messengers.map(&:target), well }
 
         assert_equal @messengers.first.root, 'well'
-        assert_equal @messengers.first.template, 'FluidigmPlateIO'
+        assert_equal @messengers.first.template, 'FluidigmPlateIo'
       end
 
       should 'be handled automatically by the purpose' do

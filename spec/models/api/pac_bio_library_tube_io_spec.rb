@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Api::PacBioLibraryTubeIO do
+RSpec.describe Api::PacBioLibraryTubeIo do
   subject do
     create :pac_bio_library_tube,
            :scanned_into_lab,

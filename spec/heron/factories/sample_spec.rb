@@ -96,7 +96,7 @@ RSpec.describe Heron::Factories::Sample, :heron, :lighthouse, type: :model do
 
       it 'registers a stock resource message' do
         expect { factory.create_aliquot_at(well) }.to change(
-          Messenger.where(root: 'stock_resource', template: 'WellStockResourceIO', target: well),
+          Messenger.where(root: 'stock_resource', template: 'WellStockResourceIo', target: well),
           :count
         ).by(1)
       end

@@ -22,7 +22,7 @@
 # @example Retrieve all ancestors of a particular purpose
 #   plate.ancestors.where(purpose_id: 4)
 class AssetLink < ApplicationRecord
-  include Api::AssetLinkIO::Extensions
+  include Api::AssetLinkIo::Extensions
   include Uuid::Uuidable
 
   acts_as_dag_links node_class_name: 'Labware'

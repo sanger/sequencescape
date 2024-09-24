@@ -7,7 +7,7 @@ class Tube < Labware
   include Asset::Ownership::Unowned
   include Transfer::Associations
   include Transfer::State::TubeState
-  include Api::Messages::QcResultIO::TubeExtensions
+  include Api::Messages::QcResultIo::TubeExtensions
   include SingleReceptacleLabware
 
   extend QcFile::Associations

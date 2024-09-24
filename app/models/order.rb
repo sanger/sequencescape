@@ -94,7 +94,7 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
     alias create_order! create!
 
     def render_class
-      Api::OrderIO
+      Api::OrderIo
     end
   end
 

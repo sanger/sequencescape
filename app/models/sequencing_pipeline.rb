@@ -83,6 +83,6 @@ class SequencingPipeline < Pipeline
     # However some old feature tests still use them, and until this behaviour is completely
     # deprecated we should leave it here.
     batch.assets.compact.uniq.each(&:index_aliquots)
-    Messenger.create!(target: batch, template: 'FlowcellIO', root: 'flowcell')
+    Messenger.create!(target: batch, template: 'FlowcellIo', root: 'flowcell')
   end
 end

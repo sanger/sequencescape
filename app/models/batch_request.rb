@@ -3,7 +3,7 @@
 # Requests can be alocated a specific order by setting 'position'. This is
 # especially useful for determining {Lane} order for {SequencingRequest}.
 class BatchRequest < ApplicationRecord
-  include Api::BatchRequestIO::Extensions
+  include Api::BatchRequestIo::Extensions
   include Uuid::Uuidable
 
   self.per_page = 500

@@ -80,7 +80,7 @@ class PlatePurpose < Purpose
       end
   end
 
-  include Api::PlatePurposeIO::Extensions
+  include Api::PlatePurposeIo::Extensions
 
   self.per_page = 500
 

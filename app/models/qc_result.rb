@@ -10,7 +10,7 @@
 # Key: The attribute being measured. Eg. Concentration
 # qc_assay: Groups together qc results performed at the same time.
 class QcResult < ApplicationRecord
-  include Api::Messages::QcResultIO::Extensions
+  include Api::Messages::QcResultIo::Extensions
 
   # Set to disable updating well_attributes
   attr_accessor :suppress_updates
@@ -59,6 +59,6 @@ class QcResult < ApplicationRecord
   end
 
   def broadcast_qc_result
-    Messenger.new(target: self, template: 'QcResultIO', root: 'qc_result').broadcast
+    Messenger.new(target: self, template: 'QcResultIo', root: 'qc_result').broadcast
   end
 end

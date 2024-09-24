@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe Api::Messages::QcResultIO do
+describe Api::Messages::QcResultIo do
   subject { described_class.to_hash(qc_result) }
 
   let(:sample_tube) { create :sample_tube }

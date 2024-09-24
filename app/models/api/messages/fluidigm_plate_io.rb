@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Generates warehouse messages describing a fluidigm plate.
-class Api::Messages::FluidigmPlateIO < Api::Base
+class Api::Messages::FluidigmPlateIo < Api::Base
   self.includes = [
     :barcodes,
     :uuid_object,

@@ -67,7 +67,7 @@ class Receptacle < Asset # rubocop:todo Metrics/ClassLength
     barcodes.any? { |barcode| barcode =~ other_barcode }
   end
 
-  self.stock_message_template = 'TubeStockResourceIO'
+  self.stock_message_template = 'TubeStockResourceIo'
   self.sample_partial = 'assets/samples_partials/asset_samples'
 
   has_many :messengers, as: :target, inverse_of: :target

@@ -40,7 +40,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Includes / Extendes
   include StudyReport::StudyDetails
   include ModelExtensions::Study
-  include Api::StudyIO::Extensions
+  include Api::StudyIo::Extensions
   include Uuid::Uuidable
   include EventfulRecord
   include AASM

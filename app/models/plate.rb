@@ -14,7 +14,7 @@ require 'lab_where_client'
 #                correctly.
 #
 class Plate < Labware # rubocop:todo Metrics/ClassLength
-  include Api::PlateIO::Extensions
+  include Api::PlateIo::Extensions
   include ModelExtensions::Plate
   include Transfer::Associations
   include Transfer::State::PlateState
