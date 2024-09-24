@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class OrderPresenter
+class Submission::OrderPresenter
   attr_accessor :study_id,
                 :project_name,
                 :plate_purpose_id,

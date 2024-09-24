@@ -79,7 +79,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton # rubocop:to
   def orders
     return [] if submission.blank?
 
-    submission.try(:orders).map { |o| OrderPresenter.new(o) }
+    submission.try(:orders).map { |o| Submission::OrderPresenter.new(o) }
   end
 
   def project
