@@ -72,7 +72,8 @@ RSpec.describe AssetLink, type: :model do
     # processes.
     # rubocop:disable RSpec/BeforeAfterAll
     after(:all) do
-      DatabaseCleaner.clean_with(:truncation)
+      AssetLink.delete_all
+      Labware.delete_all
     end
     # rubocop:enable RSpec/BeforeAfterAll
 
