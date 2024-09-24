@@ -4,12 +4,18 @@ require 'rails_helper'
 
 RSpec.describe AssetLink, type: :model do
   describe '.create_edge' do
+
+    after do
+      @ancestor.destroy if @ancestor
+      @descendant.destroy if @descendant
+    end
+
     # rubocop:disable RSpec/ExampleLength
     it 'handles race condition at find_link' do
       # Parent
       ActiveRecord::Base.connection.reconnect!
-      ancestor = create(:labware)
-      descendant = create(:labware)
+      @ancestor = ancestor = create(:labware)
+      @descendant = descendant = create(:labware)
       ActiveRecord::Base.connection.commit_db_transaction
 
       first_socket, second_socket = UNIXSocket.pair
