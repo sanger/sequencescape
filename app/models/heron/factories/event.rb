@@ -17,11 +17,11 @@ module Heron
       def broadcast_event
         return unless event_class
 
-        @broadcast_event ||= event_class.new(seed: @seed, properties: @params.dig(:event))
+        @broadcast_event ||= event_class.new(seed: @seed, properties: @params[:event])
       end
 
       def event_class
-        EVENT_CLASSES.dig(@params.dig(:event, :event_type))
+        EVENT_CLASSES[@params.dig(:event, :event_type)]
       end
 
       def check_broadcast_event #rubocop:todo Metrics/AbcSize

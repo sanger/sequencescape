@@ -14,7 +14,7 @@ module Heron
 
       attr_accessor :sample_tubes, :tube_rack
 
-      validates_presence_of :purpose, :purpose_uuid, :recipients
+      validates :purpose, :purpose_uuid, :recipients, presence: true
 
       def initialize(params)
         @params = params

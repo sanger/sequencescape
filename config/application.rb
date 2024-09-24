@@ -25,7 +25,6 @@ module Sequencescape
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.1
-    config.autoloader = :zeitwerk
 
     # Default options which predate the Rails 5 switch
     config.active_record.belongs_to_required_by_default = false
@@ -61,9 +60,6 @@ module Sequencescape
     config.autoload_paths += %W[#{Rails.root}/lib/accession]
 
     config.encoding = 'utf-8'
-
-    Rails.autoloaders.main.inflector.inflect("warren" => "Warren")
-    Rails.autoloaders.main.inflector.inflect("heron" => "Heron")
 
     # Make Time.zone default to the specified zone, and make Active Record store time values
     # in the database in UTC, and return them converted to the specified local zone.

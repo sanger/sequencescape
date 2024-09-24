@@ -8,7 +8,7 @@ module Heron
 
       attr_accessor :tube_rack, :plate, :plate_purpose
 
-      validates_presence_of :tube_rack, :plate_purpose
+      validates :tube_rack, :plate_purpose, presence: true
       validate :check_tube_rack_persisted
 
       def save

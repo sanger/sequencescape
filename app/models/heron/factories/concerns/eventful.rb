@@ -15,7 +15,7 @@ module Heron
         def params_for_event
           return unless @params
 
-          @params.dig(:events)
+          @params[:events]
         end
 
         def add_all_errors_from_events(events)

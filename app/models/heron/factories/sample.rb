@@ -6,7 +6,7 @@ module Heron
     class Sample
       include ActiveModel::Model
 
-      validates_presence_of :study, unless: :sample_already_present?
+      validates :study, presence: { unless: :sample_already_present? }
       validate :check_no_other_params_when_uuid, if: :sample_already_present?
       validate :all_fields_are_existing_columns
 
@@ -105,7 +105,7 @@ module Heron
       end
 
       def params_for_aliquot_creation
-        { sample: sample, study: study }.merge(@params.dig(:aliquot) || {})
+        { sample: sample, study: study }.merge(@params[:aliquot] || {})
       end
 
       def params_for_sample_table

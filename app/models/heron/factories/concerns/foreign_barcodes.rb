@@ -12,7 +12,7 @@ module Heron
           klass.instance_eval do
             attr_accessor :barcode
 
-            validates_presence_of :barcode
+            validates :barcode, presence: true
             validate :check_barcode_format, :check_foreign_barcode_unique
           end
         end
