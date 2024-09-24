@@ -1,22 +1,31 @@
 # frozen_string_literal: true
+
+# Run the rake task with the following command:
+# bundle exec rake number_of_samples_per_pool:populate[20,1]
+# The rake task will populate the number of samples per pool column in the request_metadata table
+# for a given submission ID.
 namespace :number_of_samples_per_pool do
   desc 'Populate number of samples per pool column in request_metadata table for a given submission ID'
 
   task :populate, %i[samples_per_pool submission_id] => :environment do |_, args|
-    # TODO: Replace it with the pre-determined number of samples per pool
-    args.with_defaults(samples_per_pool: 96)
+    args.with_defaults(samples_per_pool: nil, submission_id: nil)
 
+    if args[:samples_per_pool].nil?
+      raise StandardError,
+            'Please provide the number of samples per pool to populate
+                in request_metadata table.'
+    end
     if args[:submission_id].nil?
-      puts 'Please provide a submission_id to populate the number of samples per pool column.'
-      return
+      raise StandardError,
+            'Please provide a submission_id to populate
+                the number of samples per pool column.'
     end
 
-    puts "Populating number of samples per pool column with #{args[:samples_per_pool]} in request_metadata
-        table for submission: #{args[:submission_id]}..."
+    puts "Populating number of samples per pool column with #{args[:samples_per_pool]}
+        in request_metadata table for submission: #{args[:submission_id]}..."
 
     ActiveRecord::Base.transaction do
       saved_count = 0
-      # Find request_metadata for each request
       Request::Metadata
         .joins(:request)
         .where(requests: { submission_id: args[:submission_id] })
