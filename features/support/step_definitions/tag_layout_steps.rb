@@ -130,7 +130,8 @@ def pool_by_strategy(source, destination, pooling_strategy) # rubocop:todo Metri
   pooling_strategy.each_with_index do |pool, _old_submission_id|
     # This will generate a new submission for each pool. So the number of submissions will be equal to the number of
     # pools. For example, for a pooling strategy of [8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8], there will be 12 submissions.
-    submission_id = Submission.create!(user: User.first || User.create!(login: 'a')).id
+    submission = Submission.create!(user: User.first || User.create!(login: 'a'))
+    submission_id = submission.id
     # Slice operation cuts the array in place (i.e., removes the elements cut from the well array),
     # so we need to assign the result to a new variable
     wells_for_source, wells_for_destination = source_wells.slice!(0, pool), destination_wells.slice!(0, pool)
@@ -138,8 +139,12 @@ def pool_by_strategy(source, destination, pooling_strategy) # rubocop:todo Metri
       .zip(wells_for_destination)
       .each do |w|
         # Because of the way we use zip w.first would be the source, w.last would be the destination
-        # This is the transfer request that would be created by the API
+        # This is the transfer request that would be created by the API.
+        # Note that transfer request behavior not used for input plates. For input plates, it is overridden
+        # to use requests (see app/models/well.rb:120).
+        # Creating TransferRequests invokes a callback that transfers aliquots from source to destination wells.
         TransferRequest.create!(asset: w.first, target_asset: w.last, submission_id: submission_id)
+        # This request is for the source plate.
         FactoryBot.create :request_without_submission,
                           asset: w.first,
                           target_asset: w.last,
@@ -148,8 +153,11 @@ def pool_by_strategy(source, destination, pooling_strategy) # rubocop:todo Metri
   end
 
   # Create a request for each well in the destination plate
-  destination.wells.each do |well|
-    FactoryBot.create(:customer_request, asset: well, sti_type: 'Request::LibraryCreation', state: 'pending')
+  # This is required for input plates
+  if destination.purpose.is_a?(PlatePurpose::Input)
+    destination.wells.each do |well|
+      FactoryBot.create(:customer_request, asset: well, sti_type: 'Request::LibraryCreation', state: 'pending')
+    end
   end
 end
 # rubocop:enable Metrics/MethodLength
