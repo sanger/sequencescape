@@ -11,6 +11,8 @@ RSpec.describe 'number_of_samples_per_pool:populate' do
   end
 
   context 'when number of samples per pool rake task is invoked' do
+    let(:samples_per_pool) { 20 }
+
     before do
       Rake.application.rake_require 'tasks/populate_number_of_samples_per_pool'
       Rake::Task.define_task(:environment)
@@ -22,10 +24,10 @@ RSpec.describe 'number_of_samples_per_pool:populate' do
       request = create(:well_request, asset: tube, submission: submission)
 
       # Execute
-      run_rake_task_with_args('number_of_samples_per_pool:populate', 20, submission.reload.id)
+      run_rake_task_with_args('number_of_samples_per_pool:populate', samples_per_pool, submission.reload.id)
 
       # Verify
-      expect(request.reload.request_metadata.number_of_samples_per_pool).to eq(20)
+      expect(request.reload.request_metadata.number_of_samples_per_pool).to eq(samples_per_pool)
     end
 
     it 'does not populate number of samples per pool when submission_id is nil' do
@@ -33,13 +35,13 @@ RSpec.describe 'number_of_samples_per_pool:populate' do
 
       # Execute
       begin
-        run_rake_task_with_args('number_of_samples_per_pool:populate', 20, nil)
+        run_rake_task_with_args('number_of_samples_per_pool:populate', samples_per_pool, nil)
       rescue StandardError => e
         error_message = e.message
       end
 
       # Verify
-      expect(error_message).to eq('Please provide a submission_id to populate the number of samples per pool column.')
+      expect(error_message).to eq('Submission ID is missing')
     end
 
     it 'does not populate number of samples per pool when samples_per_pool is nil' do
@@ -55,8 +57,7 @@ RSpec.describe 'number_of_samples_per_pool:populate' do
       end
 
       # Verify
-      expect(error_message).to
-      eq('Please provide the number of samples per pool to populate in request_metadata table.')
+      expect(error_message).to eq('Number of samples per pool is missing')
     end
   end
 end

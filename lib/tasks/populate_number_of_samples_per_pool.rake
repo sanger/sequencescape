@@ -11,14 +11,10 @@ namespace :number_of_samples_per_pool do
     args.with_defaults(samples_per_pool: nil, submission_id: nil)
 
     if args[:samples_per_pool].nil?
-      raise StandardError,
-            'Please provide the number of samples per pool to populate
-                in request_metadata table.'
+      raise StandardError, 'Number of samples per pool is missing'
     end
     if args[:submission_id].nil?
-      raise StandardError,
-            'Please provide a submission_id to populate
-                the number of samples per pool column.'
+      raise StandardError, 'Submission ID is missing'
     end
 
     puts "Populating number of samples per pool column with #{args[:samples_per_pool]}
