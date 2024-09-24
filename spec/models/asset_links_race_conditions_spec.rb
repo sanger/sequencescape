@@ -67,11 +67,6 @@ RSpec.describe AssetLink, type: :model do
 
     # Examples
 
-    # We need to explicitly clean the database after examples here because we
-    # are establishing new database connections in the main and forked child
-    # processes.
-    after { DatabaseCleaner.clean_with(:truncation) }
-
     # rubocop:disable RSpec/ExampleLength
     it 'handles race condition at find_link' do
       # In this example, the first and second processes are forked from the
