@@ -129,7 +129,6 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_many :documents, as: :documentable
   has_many :sample_manifests
   has_many :suppliers, -> { distinct }, through: :sample_manifests
-  has_many :study_metadata
 
   # Can have many key value pairs of metadata
   has_many :poly_metadata, as: :metadatable, dependent: :destroy
