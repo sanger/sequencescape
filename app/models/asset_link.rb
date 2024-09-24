@@ -106,10 +106,10 @@ class AssetLink < ApplicationRecord
       link = find_link(ancestor, descendant)
     end
 
-    unless link.nil?
-      link.make_direct
-      link.changed? ? link.save : true
-    end
+    return if link.nil?
+
+    link.make_direct
+    link.changed? ? link.save : true
   end
 
   # Saves the edge between the ancestor and descendant nodes or handles errors.
