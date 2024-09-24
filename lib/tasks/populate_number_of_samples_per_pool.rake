@@ -10,12 +10,8 @@ namespace :number_of_samples_per_pool do
   task :populate, %i[samples_per_pool submission_id] => :environment do |_, args|
     args.with_defaults(samples_per_pool: nil, submission_id: nil)
 
-    if args[:samples_per_pool].nil?
-      raise StandardError, 'Number of samples per pool is missing'
-    end
-    if args[:submission_id].nil?
-      raise StandardError, 'Submission ID is missing'
-    end
+    raise StandardError, 'Number of samples per pool is missing' if args[:samples_per_pool].nil?
+    raise StandardError, 'Submission ID is missing' if args[:submission_id].nil?
 
     puts "Populating number of samples per pool column with #{args[:samples_per_pool]}
         in request_metadata table for submission: #{args[:submission_id]}..."
