@@ -129,12 +129,6 @@ Given /^a "([^"]+)" input plate called "([^"]+)" exists$/ do |name, plate_name|
   plate_purpose = PlatePurpose.find_by!(name: name)
   # binding.pry
   plate_purpose.create!(name: plate_name)
-
-  # Create requests for the wells of the plate
-  plate = Plate.find_by(name: plate_name)
-  plate.wells.each do |well|
-    FactoryBot.create(:customer_request, asset: well, sti_type: 'Request::LibraryCreation', state: 'pending')
-  end
 end
 
 Given(/^a plate called "([^"]*)" exists with purpose "([^"]*)"$/) do |name, purpose_name|
