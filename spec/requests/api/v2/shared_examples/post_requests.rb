@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-shared_examples 'a POST request with a disallowed attribute' do
+shared_examples 'a POST request with a disallowed value' do
   before { api_post base_endpoint, payload }
 
   it 'does not create a new resource' do
@@ -13,8 +13,8 @@ shared_examples 'a POST request with a disallowed attribute' do
     expect(response).to have_http_status(:bad_request)
   end
 
-  it 'specifies which attribute was not allowed' do
-    expect(json.dig('errors', 0, 'detail')).to eq("#{disallowed_attribute} is not allowed.")
+  it 'specifies which value was not allowed' do
+    expect(json.dig('errors', 0, 'detail')).to eq("#{disallowed_value} is not allowed.")
   end
 end
 

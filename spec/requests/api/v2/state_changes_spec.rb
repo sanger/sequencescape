@@ -224,7 +224,7 @@ describe 'State Changes API', with: :api_v2 do
 
     context 'with a read-only attribute in the payload' do
       context 'with previous_state' do
-        let(:disallowed_attribute) { 'previous_state' }
+        let(:disallowed_value) { 'previous_state' }
         let(:payload) do
           {
             'data' => {
@@ -234,11 +234,11 @@ describe 'State Changes API', with: :api_v2 do
           }
         end
 
-        it_behaves_like 'a POST request with a disallowed attribute'
+        it_behaves_like 'a POST request with a disallowed value'
       end
 
       context 'with uuid' do
-        let(:disallowed_attribute) { 'uuid' }
+        let(:disallowed_value) { 'uuid' }
         let(:payload) do
           {
             'data' => {
@@ -248,7 +248,7 @@ describe 'State Changes API', with: :api_v2 do
           }
         end
 
-        it_behaves_like 'a POST request with a disallowed attribute'
+        it_behaves_like 'a POST request with a disallowed value'
       end
     end
 
