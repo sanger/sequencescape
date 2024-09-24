@@ -1641,7 +1641,7 @@ Style/NumericPredicate:
     - 'app/models/tag_layout/walk_wells_by_pools.rb'
     - 'app/models/well_attribute.rb'
     - 'features/support/step_definitions/samples_steps.rb'
-    - 'lib/deployed_version.rb'
+    - 'lib/deployed.rb'
     - 'lib/submission_serializer.rb'
     - 'test/shoulda_macros/sanger_macros/resource_test.rb'
 

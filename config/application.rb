@@ -53,11 +53,20 @@ module Sequencescape
 
     # Add additional load paths for your own custom dirs
     # config.load_paths += %W( #{Rails.root}/extras )
-    config.autoload_paths += %W[#{Rails.root}/app/observers]
-    config.autoload_paths += %W[#{Rails.root}/app/metal]
     config.autoload_paths += %W[#{Rails.root}/app]
     config.autoload_paths += %W[#{Rails.root}/lib]
     config.autoload_paths += %W[#{Rails.root}/lib/accession]
+
+    config.eager_load_paths += %W[#{Rails.root}/app]
+    config.eager_load_paths += %W[#{Rails.root}/lib]
+    config.eager_load_paths += %W[#{Rails.root}/lib/accession]
+
+    Rails.autoloaders.main.ignore(Rails.root.join('lib/bm_plate_creation.rb'))
+    Rails.autoloaders.main.ignore(Rails.root.join('lib/volume_check.rb'))
+    Rails.autoloaders.main.ignore(Rails.root.join('lib/cron_scripts'))
+    Rails.autoloaders.main.ignore(Rails.root.join('lib/generators'))
+    Rails.autoloaders.main.ignore(Rails.root.join('lib/informatics'))
+    Rails.autoloaders.main.ignore(Rails.root.join('lib/label_printer'))
 
     config.encoding = 'utf-8'
 

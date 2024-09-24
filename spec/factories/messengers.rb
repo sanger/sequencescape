@@ -10,7 +10,7 @@ FactoryBot.define do
   factory :messenger do
     root { 'barcode' }
     target factory: %i[barcode]
-    template { 'BarcodeIO' }
+    template { 'BarcodeIo' }
 
     factory :flowcell_messenger do
       root { 'flowcell' }
