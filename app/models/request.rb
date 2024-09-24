@@ -366,7 +366,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def project_id=(project_id)
-    raise RuntimeError, 'Initial project already set' if initial_project_id
+    raise 'Initial project already set' if initial_project_id
 
     self.initial_project_id = project_id
   end
@@ -386,7 +386,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def study_id=(study_id)
-    raise RuntimeError, 'Initial study already set' if initial_study_id
+    raise 'Initial study already set' if initial_study_id
 
     self.initial_study_id = study_id
   end

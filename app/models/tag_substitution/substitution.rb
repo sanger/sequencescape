@@ -124,10 +124,10 @@ class TagSubstitution::Substitution # rubocop:todo Metrics/ClassLength
   # @param oligo_index [Hash] A hash of oligo sequences indexed by oligo id.
   #
   # @return [String] A description of the substitution
-  def comment(oligo_index) # rubocop:todo Metrics/AbcSize
+  def comment(oligo_index)
     return '' unless updated?
 
-    comment = +"Sample #{sample_id}:"
+    comment = "Sample #{sample_id}:"
     if substitute_tag?
       comment << " Tag changed from #{oligo_index[original_tag_id]} to #{oligo_index[substitute_tag_id]};"
     end

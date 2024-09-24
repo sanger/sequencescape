@@ -63,7 +63,7 @@ class QcResultFactory
     end
 
     def message_id
-      "Asset identifier - #{(asset_identifier || 'blank')}"
+      "Asset identifier - #{asset_identifier || 'blank'}"
     end
 
     def parent_plate

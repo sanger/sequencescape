@@ -34,7 +34,7 @@ module LabWhereClient
     rescue Errno::ECONNREFUSED, RestClient::NotFound => e
       raise LabwhereException.new(e), 'LabWhere service is down', e.backtrace
     rescue RestClient::UnprocessableEntity => e
-      return parse_json(e.response)
+      parse_json(e.response)
     end
 
     def put(instance, target, payload)

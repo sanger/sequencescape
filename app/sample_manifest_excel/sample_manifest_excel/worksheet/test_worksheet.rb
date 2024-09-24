@@ -236,7 +236,7 @@ module SampleManifestExcel
       # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
       def add_cell_data(column, row_num, partial) # rubocop:todo Metrics/CyclomaticComplexity
         if partial && empty_row?(row_num)
-          (data[column.name] || dynamic_attributes[row_num][column.name]) unless empty_columns.include?(column.name)
+          data[column.name] || dynamic_attributes[row_num][column.name] unless empty_columns.include?(column.name)
         elsif validation_errors.include?(:insert_size_from) && column.name == 'insert_size_from' &&
               row_num == computed_first_row
           nil

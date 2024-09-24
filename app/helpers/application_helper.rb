@@ -253,7 +253,7 @@ module ApplicationHelper
   def display_boolean_results(result)
     return 'NA' if result.blank?
 
-    if result == 'pass' || result == '1' || result == 'true'
+    if %w[pass 1 true].include?(result)
       icon('far', 'check-circle', title: result)
     else
       icon('fas', 'exclamation-circle', class: 'text-danger', title: result)
@@ -264,7 +264,7 @@ module ApplicationHelper
     sorted_requests = requests.select { |r| r.pipeline_id.nil? }
     new_requests = requests - sorted_requests
     new_requests.sort_by(&:pipeline_id)
-    requests = requests + sorted_requests
+    requests += sorted_requests
   end
 
   # Creates a label that is hidden from the view so that testing is easier

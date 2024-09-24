@@ -13,7 +13,7 @@ module LabelPrinter
       end
 
       def bottom_right(bed)
-        (bed.ean13_barcode).to_s
+        bed.ean13_barcode.to_s
       end
     end
   end

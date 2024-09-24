@@ -40,7 +40,7 @@ describe 'stamping of stock', :js do
     click_button 'Generate TECAN file'
     expect(page).to have_content('Stamping of stock')
 
-    select((barcode_printer.name).to_s, from: 'barcode_printer_list')
+    select(barcode_printer.name.to_s, from: 'barcode_printer_list')
     click_button 'Print label'
     expect(page).to have_content('Printmybarcode service is down')
 

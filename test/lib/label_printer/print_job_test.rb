@@ -20,7 +20,7 @@ class PrintJobTest < ActiveSupport::TestCase
     @label_template_name = barcode_printer.barcode_printer_type.label_template_name
     @labels_attributes = [
       {
-        top_left: (Date.today.strftime('%e-%^b-%Y')).to_s,
+        top_left: Date.today.strftime('%e-%^b-%Y').to_s,
         bottom_left: plate.human_barcode.to_s,
         top_right: plate_purpose.name.to_s,
         bottom_right: 'user WTCCC',

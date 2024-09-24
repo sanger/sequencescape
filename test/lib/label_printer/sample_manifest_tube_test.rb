@@ -22,9 +22,9 @@ class SampleManifestTubeTest < ActiveSupport::TestCase
     options = { sample_manifest: @manifest, only_first_label: false }
     @tube_label = LabelPrinter::Label::SampleManifestTube.new(options)
     @label = {
-      first_line: (manifest.study.abbreviation).to_s,
+      first_line: manifest.study.abbreviation.to_s,
       second_line: barcode1,
-      third_line: (Date.today.strftime('%e-%^b-%Y')).to_s,
+      third_line: Date.today.strftime('%e-%^b-%Y').to_s,
       round_label_top_line: prefix,
       round_label_bottom_line: barcode1,
       barcode: tube1.machine_barcode,

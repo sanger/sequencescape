@@ -92,28 +92,28 @@ Given /^I am using the latest version of the API$/ do
   step("I am using version \"#{Core::Service::API_VERSION}\" of the API")
 end
 
-When %r{^I (GET|PUT|POST|DELETE) the API path "(\/[^"]*)"$} do |action, path|
+When %r{^I (GET|PUT|POST|DELETE) the API path "(/[^"]*)"$} do |action, path|
   api_request(action, path, nil)
 end
 
-When %r{^I (POST|PUT) the following JSON to the API path "(\/[^"]*)":$} do |action, path, serialized_json|
+When %r{^I (POST|PUT) the following JSON to the API path "(/[^"]*)":$} do |action, path, serialized_json|
   api_request(action, path, serialized_json)
 end
 
-When %r{^I GET the "([^"]+)" from the API path "(\/[^"]*)"$} do |content_type, path|
+When %r{^I GET the "([^"]+)" from the API path "(/[^"]*)"$} do |content_type, path|
   api_request('GET', path, nil) { |headers| headers.merge!('HTTP_ACCEPT' => content_type) }
 end
 
-When %r{^I (POST|PUT) the following "([^"]+)" to the API path "(\/[^"]*)":$} do |action, content_type, path, body|
+When %r{^I (POST|PUT) the following "([^"]+)" to the API path "(/[^"]*)":$} do |action, content_type, path, body|
   api_request(action, path, body) { |headers| headers.merge!('CONTENT_TYPE' => content_type) }
 end
 
-When %r{^I make an authorised (GET|DELETE) (?:(?:for|of) )?the API path "(\/[^"]*)"$} do |action, path|
+When %r{^I make an authorised (GET|DELETE) (?:(?:for|of) )?the API path "(/[^"]*)"$} do |action, path|
   api_request(action, path, nil) { |headers| headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = 'cucumber' }
 end
 
 # rubocop:todo Layout/LineLength
-When %r{^I make an authorised (POST|PUT) with the following JSON to the API path "(\/[^"]*)":$} do |action, path, serialized_json|
+When %r{^I make an authorised (POST|PUT) with the following JSON to the API path "(/[^"]*)":$} do |action, path, serialized_json|
   # rubocop:enable Layout/LineLength
   api_request(action, path, serialized_json) { |headers| headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = 'cucumber' }
 end

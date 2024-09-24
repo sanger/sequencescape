@@ -53,7 +53,7 @@ RSpec.describe QcReport do
       qc_report.qc_metrics.each do |metric|
         expect(metric.qc_decision).to eq('passed')
         expect(metric.proceed).to be_nil
-        expect(total_micrograms: 100, comment: '', sanger_sample_id: 'TEST1').to eq(metric.metrics)
+        expect(metric.metrics).to eq(total_micrograms: 100, comment: '', sanger_sample_id: 'TEST1')
       end
     end
   end

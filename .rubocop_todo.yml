@@ -6,14 +6,6 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: TreatCommentsAsGroupSeparators, ConsiderPunctuation, Include.
-# Include: **/*.gemfile, **/Gemfile, **/gems.rb
-Bundler/OrderedGems:
-  Exclude:
-    - 'Gemfile'
-
 # Offense count: 21
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: AllowedMethods, AllowedPatterns.
@@ -81,12 +73,6 @@ Lint/DuplicateMethods:
     - 'app/models/stock_stamper.rb'
     - 'lib/accession/accession/tag.rb'
     - 'lib/label_printer/label_printer/label.rb'
-
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-Lint/DuplicateRegexpCharacterClassElement:
-  Exclude:
-    - 'app/models/barcode/format_handlers.rb'
 
 # Offense count: 66
 # Configuration parameters: AllowComments, AllowEmptyLambdas.
@@ -826,19 +812,6 @@ RSpec/ExampleWording:
     - 'spec/sequencescape_excel/validation_spec.rb'
     - 'spec/sequencescape_excel/worksheet_spec.rb'
 
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-RSpec/ExpectActual:
-  Exclude:
-    - 'spec/models/qc_report_spec.rb'
-
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: implicit, each, example
-RSpec/HookArgument:
-  Exclude:
-    - 'spec/spec_helper.rb'
 
 # Offense count: 248
 # Configuration parameters: AssignmentOnly.
@@ -1836,23 +1809,7 @@ Style/ArrayIntersect:
   Exclude:
     - 'test/unit/flexible_submission_test.rb'
 
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle, ProceduralMethods, FunctionalMethods, AllowedMethods, AllowedPatterns, AllowBracesOnProceduralOneLiners, BracesRequiredMethods.
-# SupportedStyles: line_count_based, semantic, braces_for_chaining, always_braces
-# ProceduralMethods: benchmark, bm, bmbm, create, each_with_object, measure, new, realtime, tap, with_object
-# FunctionalMethods: let, let!, subject, watch
-# AllowedMethods: lambda, proc, it
-Style/BlockDelimiters:
-  Exclude:
-    - 'spec/models/transfer_request_spec.rb'
 
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowOnConstant, AllowOnSelfClass.
-Style/CaseEquality:
-  Exclude:
-    - 'app/models/parsers/bioanalysis_csv_parser.rb'
 
 # Offense count: 14
 Style/ClassVars:
@@ -1903,13 +1860,6 @@ Style/EmptyCaseCondition:
     - 'app/models/request/change_decision.rb'
     - 'app/models/request_type.rb'
 
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AutoCorrect, EnforcedStyle, AllowComments.
-# SupportedStyles: empty, nil, both
-Style/EmptyElse:
-  Exclude:
-    - 'app/controllers/requests/comments_controller.rb'
 
 # Offense count: 8
 # This cop supports safe autocorrection (--autocorrect).
@@ -2132,12 +2082,6 @@ Style/MissingRespondToMissing:
     - 'lib/informatics/test/helpers/authentication_helper.rb'
     - 'lib/validateable.rb'
 
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowMethodComparison, ComparisonsThreshold.
-Style/MultipleComparison:
-  Exclude:
-    - 'app/helpers/application_helper.rb'
 
 # Offense count: 4
 # This cop supports safe autocorrection (--autocorrect).
@@ -2167,21 +2111,7 @@ Style/NestedParenthesizedCalls:
     - 'app/models/parsers/bioanalysis_csv_parser.rb'
     - 'lib/label_printer/label_printer/pmb_client.rb'
 
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle, MinBodyLength.
-# SupportedStyles: skip_modifier_ifs, always
-Style/Next:
-  Exclude:
-    - 'app/views/studies/show.xml.builder'
 
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: predicate, comparison
-Style/NilComparison:
-  Exclude:
-    - 'app/models/parsers/bioanalysis_csv_parser.rb'
 
 # Offense count: 2
 # This cop supports safe autocorrection (--autocorrect).
@@ -2356,84 +2286,6 @@ Style/RedundantArgument:
     - 'features/support/step_definitions/samples_steps.rb'
     - 'spec/features/shared_examples/cherrypicking.rb'
 
-# Offense count: 5
-# This cop supports safe autocorrection (--autocorrect).
-Style/RedundantBegin:
-  Exclude:
-    - 'app/controllers/bulk_submissions_controller.rb'
-    - 'app/controllers/studies_controller.rb'
-    - 'app/models/qc_report.rb'
-    - 'app/models/request/change_decision.rb'
-    - 'app/models/submission/project_validation.rb'
-
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
-Style/RedundantException:
-  Exclude:
-    - 'app/models/request.rb'
-
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-Style/RedundantFreeze:
-  Exclude:
-    - 'lib/psd_formatter.rb'
-
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-Style/RedundantInterpolationUnfreeze:
-  Exclude:
-    - 'app/models/tag_substitution/substitution.rb'
-
-# Offense count: 60
-# This cop supports safe autocorrection (--autocorrect).
-Style/RedundantParentheses:
-  Exclude:
-    - 'app/controllers/admin/studies_controller.rb'
-    - 'app/models/asset_barcode.rb'
-    - 'app/models/map.rb'
-    - 'app/models/parsers/bioanalysis_csv_parser.rb'
-    - 'app/models/plate/creator_parameters.rb'
-    - 'app/models/qc_result_factory.rb'
-    - 'app/models/sequencing_pipeline.rb'
-    - 'app/models/study.rb'
-    - 'app/models/user.rb'
-    - 'app/resources/api/v2/shared_behaviour/labware.rb'
-    - 'app/sample_manifest_excel/sample_manifest_excel/worksheet/test_worksheet.rb'
-    - 'app/views/samples/show.xml.builder'
-    - 'app/views/studies/show.xml.builder'
-    - 'features/support/step_definitions/debug_steps.rb'
-    - 'lib/accession/accession/sample.rb'
-    - 'lib/eventful_mailer.rb'
-    - 'lib/label_printer/label_printer/label/robot_beds.rb'
-    - 'lib/manifest_util.rb'
-    - 'lib/submission_serializer.rb'
-    - 'lib/tasks/limber.rake'
-    - 'spec/features/pooling_spec.rb'
-    - 'spec/features/sample_logistics/lab/stock_stamping_spec.rb'
-    - 'test/lib/label_printer/plate_creator_test.rb'
-    - 'test/lib/label_printer/plate_to_tube_test.rb'
-    - 'test/lib/label_printer/print_job_test.rb'
-    - 'test/lib/label_printer/sample_manifest_multiplex_test.rb'
-    - 'test/lib/label_printer/sample_manifest_plate_test.rb'
-    - 'test/lib/label_printer/sample_manifest_tube_test.rb'
-    - 'test/lib/label_printer/shared_tests.rb'
-    - 'test/unit/custom_metadatum_collection_test.rb'
-
-# Offense count: 10
-# This cop supports safe autocorrection (--autocorrect).
-Style/RedundantRegexpEscape:
-  Exclude:
-    - 'features/support/step_definitions/api_steps.rb'
-    - 'features/support/step_definitions/web_form_steps.rb'
-    - 'features/support/step_definitions/web_steps.rb'
-    - 'features/support/step_definitions/xml_steps.rb'
-
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowMultipleReturnValues.
-Style/RedundantReturn:
-  Exclude:
-    - 'lib/lab_where_client.rb'
 
 # Offense count: 7
 # This cop supports safe autocorrection (--autocorrect).
@@ -2466,12 +2318,6 @@ Style/SafeNavigation:
     - 'lib/event_factory.rb'
     - 'test/unit/qc_report_file_test.rb'
 
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
-Style/SelfAssignment:
-  Exclude:
-    - 'app/helpers/application_helper.rb'
-    - 'app/views/batches/released.xml.builder'
 
 # Offense count: 7
 # This cop supports unsafe autocorrection (--autocorrect-all).
@@ -2483,11 +2329,6 @@ Style/SingleArgumentDig:
     - 'app/heron/factories/sample.rb'
     - 'spec/requests/api/v2/heron/plates_spec.rb'
 
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-Style/SingleLineDoEndBlock:
-  Exclude:
-    - 'spec/models/transfer_request_spec.rb'
 
 # Offense count: 8
 # This cop supports safe autocorrection (--autocorrect).
@@ -2600,13 +2441,6 @@ Style/SymbolProc:
     - 'app/models/tasks/plate_transfer_handler.rb'
     - 'db/seeds/0001_workflows.rb'
 
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle, AllowSafeAssignment.
-# SupportedStyles: require_parentheses, require_no_parentheses, require_parentheses_when_complex
-Style/TernaryParentheses:
-  Exclude:
-    - 'app/models/parsers/bioanalysis_csv_parser.rb'
 
 # Offense count: 9
 # This cop supports unsafe autocorrection (--autocorrect-all).

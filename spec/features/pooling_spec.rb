@@ -23,10 +23,10 @@ describe 'Pooling', :js, :poolings do
       expect(page).to have_content 'Source assets were not scanned or were not found in Sequencescape'
       fill_in('asset_scan', with: '1234567890123').send_keys(:return)
       expect(find('.barcode_list')).to have_content '1234567890123'
-      fill_in('asset_scan', with: (empty_lb_tube1.ean13_barcode).to_s).send_keys(:return)
-      fill_in('asset_scan', with: (empty_lb_tube2.ean13_barcode).to_s).send_keys(:return)
-      fill_in('asset_scan', with: (untagged_lb_tube1.ean13_barcode).to_s).send_keys(:return)
-      fill_in('asset_scan', with: (untagged_lb_tube2.ean13_barcode).to_s).send_keys(:return)
+      fill_in('asset_scan', with: empty_lb_tube1.ean13_barcode.to_s).send_keys(:return)
+      fill_in('asset_scan', with: empty_lb_tube2.ean13_barcode.to_s).send_keys(:return)
+      fill_in('asset_scan', with: untagged_lb_tube1.ean13_barcode.to_s).send_keys(:return)
+      fill_in('asset_scan', with: untagged_lb_tube2.ean13_barcode.to_s).send_keys(:return)
       click_on 'Transfer'
 
       expect(page).to have_content 'Source assets with barcode(s) 1234567890123 were not found in Sequencescape'
@@ -54,8 +54,8 @@ describe 'Pooling', :js, :poolings do
       first('a', text: 'Remove from list').click
       first('a', text: 'Remove from list').click
       expect(page).to have_content 'Scanned: 1'
-      fill_in('asset_scan', with: (tagged_lb_tube1.ean13_barcode).to_s).send_keys(:return)
-      fill_in('asset_scan', with: (tagged_lb_tube2.ean13_barcode).to_s).send_keys(:return)
+      fill_in('asset_scan', with: tagged_lb_tube1.ean13_barcode.to_s).send_keys(:return)
+      fill_in('asset_scan', with: tagged_lb_tube2.ean13_barcode.to_s).send_keys(:return)
       check 'Create stock multiplexed tube'
       click_on 'Transfer'
       expect(page).to have_content 'Samples were transferred successfully'

@@ -39,11 +39,11 @@ class PlateCreatorTest < ActiveSupport::TestCase
     options = { plate_purpose:, plates:, user_login: user }
     @plate_label = LabelPrinter::Label::PlateCreator.new(options)
     @label = {
-      top_left: (Date.today.strftime('%e-%^b-%Y')).to_s,
-      bottom_left: (plate1.human_barcode).to_s,
-      top_right: (purpose_name).to_s,
+      top_left: Date.today.strftime('%e-%^b-%Y').to_s,
+      bottom_left: plate1.human_barcode.to_s,
+      top_right: purpose_name.to_s,
       bottom_right: "#{user} #{study_abbreviation}",
-      top_far_right: (parent_barcode).to_s,
+      top_far_right: parent_barcode.to_s,
       barcode: plate1.machine_barcode,
       label_name: 'main_label'
     }
@@ -56,6 +56,6 @@ class PlateCreatorTest < ActiveSupport::TestCase
   test 'should return the correct specific values' do
     assert_equal purpose_name, plate_label.top_right(plate1)
     assert_equal "#{user} #{study_abbreviation}", plate_label.bottom_right(plate1)
-    assert_equal (parent_barcode).to_s, plate_label.top_far_right(plate1)
+    assert_equal parent_barcode.to_s, plate_label.top_far_right(plate1)
   end
 end
