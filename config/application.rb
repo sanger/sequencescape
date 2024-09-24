@@ -61,6 +61,8 @@ module Sequencescape
 
     config.encoding = 'utf-8'
 
+    Rails.autoloaders.main.inflector.inflect("aasm" => "AASM")
+
     # Make Time.zone default to the specified zone, and make Active Record store time values
     # in the database in UTC, and return them converted to the specified local zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Uncomment to use default local time.

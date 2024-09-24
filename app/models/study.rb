@@ -171,6 +171,134 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   squishify :name
 
+  has_metadata do
+    include StudyType::Associations
+    include DataReleaseStudyType::Associations
+    include ReferenceGenome::Associations
+    include FacultySponsor::Associations
+    include Program::Associations
+
+    association(:study_type, :name, required: true)
+    association(:data_release_study_type, :name, required: true)
+    association(:reference_genome, :name, required: true)
+    association(:faculty_sponsor, :name, required: true)
+    association(:program, :name, required: true)
+
+    custom_attribute(:prelim_id, with: /\A[a-zA-Z]\d{4}\z/, required: false)
+    custom_attribute(:study_description, required: true)
+    custom_attribute(:contaminated_human_dna, required: true, in: YES_OR_NO)
+    custom_attribute(:remove_x_and_autosomes, required: true, default: 'No', in: YES_OR_NO)
+    custom_attribute(:separate_y_chromosome_data, required: true, default: false, boolean: true)
+    custom_attribute(:study_project_id)
+    custom_attribute(:study_abstract)
+    custom_attribute(:study_study_title)
+    custom_attribute(:study_ebi_accession_number)
+    custom_attribute(:study_sra_hold, required: true, default: 'Hold', in: STUDY_SRA_HOLDS)
+    custom_attribute(:contains_human_dna, required: true, in: YES_OR_NO)
+    custom_attribute(:commercially_available, required: true, in: YES_OR_NO)
+    custom_attribute(:study_name_abbreviation)
+
+    custom_attribute(
+      :data_release_strategy,
+      required: true,
+      in: DATA_RELEASE_STRATEGIES,
+      default: DATA_RELEASE_STRATEGY_MANAGED
+    )
+    custom_attribute(:data_release_standard_agreement, default: YES, in: YES_OR_NO, if: :managed?)
+
+    custom_attribute(
+      :data_release_timing,
+      required: true,
+      default: DATA_RELEASE_TIMING_STANDARD,
+      in: DATA_RELEASE_TIMINGS + [DATA_RELEASE_TIMING_NEVER]
+    )
+    custom_attribute(
+      :data_release_delay_reason,
+      required: true,
+      in: DATA_RELEASE_DELAY_REASONS_ASSAY,
+      if: :delayed_release?
+    )
+    custom_attribute(:data_release_delay_period, required: true, in: DATA_RELEASE_DELAY_PERIODS, if: :delayed_release?)
+    custom_attribute(:bam, default: true)
+
+    with_options(required: true, if: :delayed_for_other_reasons?) do
+      custom_attribute(:data_release_delay_other_comment)
+      custom_attribute(:data_release_delay_reason_comment)
+    end
+
+    custom_attribute(:dac_policy, default: configatron.default_policy_text, if: :managed?)
+    custom_attribute(:dac_policy_title, default: configatron.default_policy_title, if: :managed?)
+    custom_attribute(:ega_dac_accession_number)
+    custom_attribute(:ega_policy_accession_number)
+    custom_attribute(:array_express_accession_number)
+
+    with_options(if: :delayed_for_long_time?, required: true) do
+      custom_attribute(:data_release_delay_approval, in: YES_OR_NO, default: NO)
+    end
+
+    with_options(if: :never_release?, required: true) do
+      custom_attribute(:data_release_prevention_reason, in: DATA_RELEASE_PREVENTION_REASONS)
+      custom_attribute(:data_release_prevention_approval, in: YES_OR_NO)
+      custom_attribute(:data_release_prevention_reason_comment)
+    end
+
+    # NOTE: Additional validation in Study::Metadata Class to validate_presence_of :data_access_group, if: :managed
+    # Behaviour can't go here, as :if also toggles the saving of the required information.
+    custom_attribute(:data_access_group, with: /\A[a-z_][a-z0-9_-]{0,31}(?:\s+[a-z_][a-z0-9_-]{0,31})*\Z/)
+
+    # SNP information
+    custom_attribute(:snp_study_id, integer: true)
+    custom_attribute(:snp_parent_study_id, integer: true)
+
+    custom_attribute(:number_of_gigabases_per_sample)
+
+    custom_attribute(:hmdmc_approval_number)
+
+    # External Customers
+    custom_attribute(:s3_email_list)
+    custom_attribute(:data_deletion_period)
+    custom_attribute(:contaminated_human_data_access_group)
+
+    REMAPPED_ATTRIBUTES =
+      {
+        contaminated_human_dna: YES_OR_NO,
+        remove_x_and_autosomes: YES_OR_NO,
+        study_sra_hold: STUDY_SRA_HOLDS,
+        contains_human_dna: YES_OR_NO,
+        commercially_available: YES_OR_NO
+      }.transform_values { |v| v.index_by { |b| b.downcase } }
+
+    # These fields are warehoused, so need to match the encoding restrictions there
+    # This excludes supplementary characters, which include emoji and rare kanji
+    validates :study_abstract, :study_study_title, :study_description, :s3_email_list, utf8mb3: true
+
+    validates :data_release_delay_other_comment, length: { maximum: 255 }
+
+    # These fields are restricted further as they aren't expected to ever contain anything more than ASCII
+    validates :study_project_id,
+              :ega_dac_accession_number,
+              :ega_policy_accession_number,
+              :study_ebi_accession_number,
+              :array_express_accession_number,
+              :hmdmc_approval_number,
+              format: {
+                with: /\A[[:ascii:]]+\z/,
+                message: 'only allows ASCII',
+                allow_blank: true
+              }
+
+    before_validation do |record|
+      record.reference_genome_id = 1 if record.reference_genome_id.blank?
+
+      # Unfortunately it appears that some of the functionality of this implementation relies on non-capitalisation!
+      # So we remap the lowercased versions to their proper values here
+      REMAPPED_ATTRIBUTES.each do |attribute, mapping|
+        record[attribute] = mapping.fetch(record[attribute].try(:downcase), record[attribute])
+        record[attribute] = nil if record[attribute].blank? # Empty strings should be nil
+      end
+    end
+  end
+
   validates_associated :study_metadata, on: %i[accession EGA ENA]
 
   # See app/models/study/metadata.rb for further customization
@@ -452,7 +580,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     self.ethically_approved ||= ethical_approval_required? ? false : nil
   end
 
-  class Metadata < ApplicationRecord
+  class Metadata
     delegate :enforce_data_release, to: :study
 
     def remove_x_and_autosomes?
