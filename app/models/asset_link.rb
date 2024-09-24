@@ -94,7 +94,7 @@ class AssetLink < ApplicationRecord
   # @raise [ActiveRecord::RecordNotUnique] Re-raises any exception if it is
   #   not a constraint violation that involves ancestor_id and descendant_id
   #   columns.
-  def self.create_edge(ancestor, descendant)
+  def self.xcreate_edge(ancestor, descendant)
     # Two processes try to find an existing link.
     link = find_link(ancestor, descendant)
     # Either or both may find no link and try to create a new edge.
