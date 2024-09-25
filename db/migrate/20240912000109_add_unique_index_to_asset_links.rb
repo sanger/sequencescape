@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'csv'
 # This migration adds a unique-together index on ancestor_id and descendant_id
 # in order to prevent duplicate links between the same ancestor and descendant
 # labware.
