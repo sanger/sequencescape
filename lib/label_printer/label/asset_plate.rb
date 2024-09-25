@@ -5,7 +5,7 @@ module LabelPrinter
       attr_reader :plates
 
       def initialize(plates)
-        super
+        super()
         @plates = plates
       end
 

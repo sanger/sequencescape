@@ -5,7 +5,7 @@ module LabelPrinter
       attr_reader :sample_manifest
 
       def initialize(options)
-        super
+        super()
         @sample_manifest = options[:sample_manifest]
         @only_first_label = options[:only_first_label]
       end

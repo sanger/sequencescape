@@ -5,7 +5,7 @@ module LabelPrinter
       attr_reader :tubes
 
       def initialize(tubes)
-        super
+        super()
         @tubes = tubes
       end
 

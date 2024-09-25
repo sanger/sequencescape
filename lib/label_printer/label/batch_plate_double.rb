@@ -10,7 +10,7 @@ module LabelPrinter
       attr_reader :count, :printable, :batch
 
       def initialize(options)
-        super
+        super()
         @count = options[:count].to_i
         @printable = options[:printable]
         @batch = options[:batch]
