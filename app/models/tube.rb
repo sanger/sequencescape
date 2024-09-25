@@ -114,3 +114,11 @@ def validate_barcode(barcode, prefix)
   human = SBCF::SangerBarcode.new(prefix: prefix, number: barcode).human_barcode
   raise "Barcode: #{barcode} already used!" if Barcode.exists?(barcode: human)
 end
+
+require_dependency 'sample_tube'
+require_dependency 'library_tube'
+require_dependency 'qc_tube'
+require_dependency 'pulldown_multiplexed_library_tube'
+require_dependency 'pac_bio_library_tube'
+require_dependency 'stock_library_tube'
+require_dependency 'stock_multiplexed_library_tube'
