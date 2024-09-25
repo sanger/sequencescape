@@ -1934,6 +1934,11 @@
   resolved "https://registry.yarnpkg.com/@rollup/rollup-android-arm64/-/rollup-android-arm64-4.18.1.tgz#82ab3c575f4235fb647abea5e08eec6cf325964e"
   integrity sha512-F/tkdw0WSs4ojqz5Ovrw5r9odqzFjb5LIgHdHZG65dFI1lWTWRVy32KDJLKRISHgJvqUeUhdIvy43fX41znyDg==
 
+"@rollup/rollup-darwin-arm64@*":
+  version "4.22.4"
+  resolved "https://registry.yarnpkg.com/@rollup/rollup-darwin-arm64/-/rollup-darwin-arm64-4.22.4.tgz#6d241d099d1518ef0c2205d96b3fa52e0fe1954b"
+  integrity sha512-xMM9ORBqu81jyMKCDP+SZDhnX2QEVQzTcC6G18KlTQEzWK8r/oNZtKuZaCcHhnsa6fEeOBionoyl5JsAbE/36Q==
+
 "@rollup/rollup-darwin-arm64@4.18.1":
   version "4.18.1"
   resolved "https://registry.yarnpkg.com/@rollup/rollup-darwin-arm64/-/rollup-darwin-arm64-4.18.1.tgz#6a530452e68a9152809ce58de1f89597632a085b"
@@ -1979,6 +1984,11 @@
   resolved "https://registry.yarnpkg.com/@rollup/rollup-linux-s390x-gnu/-/rollup-linux-s390x-gnu-4.18.1.tgz#f1043d9f4026bf6995863cb3f8dd4732606e4baa"
   integrity sha512-qb1hMMT3Fr/Qz1OKovCuUM11MUNLUuHeBC2DPPAWUYYUAOFWaxInaTwTQmc7Fl5La7DShTEpmYwgdt2hG+4TEg==
 
+"@rollup/rollup-linux-x64-gnu@*":
+  version "4.22.4"
+  resolved "https://registry.yarnpkg.com/@rollup/rollup-linux-x64-gnu/-/rollup-linux-x64-gnu-4.22.4.tgz#70116ae6c577fe367f58559e2cffb5641a1dd9d0"
+  integrity sha512-87v0ol2sH9GE3cLQLNEy0K/R0pz1nvg76o8M5nhMR0+Q+BBGLnb35P0fVz4CQxHYXaAOhE8HhlkaZfsdUOlHwg==
+
 "@rollup/rollup-linux-x64-gnu@4.18.1":
   version "4.18.1"
   resolved "https://registry.yarnpkg.com/@rollup/rollup-linux-x64-gnu/-/rollup-linux-x64-gnu-4.18.1.tgz#1e781730be445119f06c9df5f185e193bc82c610"
@@ -1998,6 +2008,11 @@
   version "4.18.1"
   resolved "https://registry.yarnpkg.com/@rollup/rollup-win32-ia32-msvc/-/rollup-win32-ia32-msvc-4.18.1.tgz#075b0713de627843a73b4cf0e087c56b53e9d780"
   integrity sha512-ELfEX1/+eGZYMaCIbK4jqLxO1gyTSOIlZr6pbC4SRYFaSIDVKOnZNMdoZ+ON0mrFDp4+H5MhwNC1H/AhE3zQLg==
+
+"@rollup/rollup-win32-x64-msvc@*":
+  version "4.22.4"
+  resolved "https://registry.yarnpkg.com/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.22.4.tgz#3dd5d53e900df2a40841882c02e56f866c04d202"
+  integrity sha512-j8pPKp53/lq9lMXN57S8cFz0MynJk8OWNuUnXct/9KCpKU7DgU3bYMJhwWmcqC0UU29p8Lr0/7KEVcaM6bf47Q==
 
 "@rollup/rollup-win32-x64-msvc@4.18.1":
   version "4.18.1"
@@ -7281,10 +7296,10 @@ vite-plugin-vue2@^1.9.3:
     source-map "^0.7.3"
     vue-template-es2015-compiler "^1.9.1"
 
-vite@^5.3.2:
-  version "5.3.3"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-5.3.3.tgz#5265b1f0a825b3b6564c2d07524777c83e3c04c2"
-  integrity sha512-NPQdeCU0Dv2z5fu+ULotpuq5yfCS1BzKUIPhNbP3YBfAMGJXbt2nS+sbTFu+qchaqWTD+H3JK++nRwr6XIcp6A==
+vite@^5.3.6:
+  version "5.3.6"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-5.3.6.tgz#e097c0a7b79adb2e60bec9ef7907354f09d027bd"
+  integrity sha512-es78AlrylO8mTVBygC0gTC0FENv0C6T496vvd33ydbjF/mIi9q3XQ9A3NWo5qLGFKywvz10J26813OkLvcQleA==
   dependencies:
     esbuild "^0.21.3"
     postcss "^8.4.39"
