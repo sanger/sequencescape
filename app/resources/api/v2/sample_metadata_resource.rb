@@ -15,6 +15,9 @@ module Api
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class SampleMetadataResource < BaseResource
+      # NB. sample_metadata has been added to config/initializers/inflections.rb to make this class name
+      # work otherwise it expects SampleMetadatumResource
+
       # Set add_model_hint true to allow updates from Limber, otherwise get a
       # 500 error as it looks for resource Api::V2::MetadatumResource
       model_name 'Sample::Metadata', add_model_hint: true
