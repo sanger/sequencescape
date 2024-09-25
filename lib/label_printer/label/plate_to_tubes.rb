@@ -1,15 +1,16 @@
 # frozen_string_literal: true
 module LabelPrinter
   module Label
-    class AssetTube < BaseTube
+    class PlateToTubes < BaseTube
       attr_reader :tubes
 
-      def initialize(tubes)
-        @tubes = tubes
+      def initialize(options)
+        super
+        @tubes = options[:sample_tubes]
       end
 
       def first_line(tube)
-        tube.name_for_label.to_s
+        tube.name_for_label
       end
     end
   end

@@ -4,15 +4,6 @@
 # This is not an abstract class, and can be used directly.
 # @see Purpose
 
-# Required for descendants target_type check to work as these aren't always eager loaded
-require_dependency 'sample_tube'
-require_dependency 'library_tube'
-require_dependency 'qc_tube'
-require_dependency 'pulldown_multiplexed_library_tube'
-require_dependency 'pac_bio_library_tube'
-require_dependency 'stock_library_tube'
-require_dependency 'stock_multiplexed_library_tube'
-
 class Tube::Purpose < Purpose
   self.default_prefix = 'NT'
 

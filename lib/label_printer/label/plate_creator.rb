@@ -5,6 +5,7 @@ module LabelPrinter
       attr_reader :plates, :plate_purpose, :user_login
 
       def initialize(options)
+        super
         @plates = options[:plates]
         @plate_purpose = options[:plate_purpose]
         @user_login = options[:user_login]

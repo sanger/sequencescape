@@ -5,6 +5,7 @@ module LabelPrinter
       attr_reader :count, :printable, :batch, :stock
 
       def initialize(options)
+        super
         @count = options[:count].to_i
         @printable = options[:printable]
         @batch = options[:batch]
@@ -30,7 +31,7 @@ module LabelPrinter
 
       def requests
         request_ids = printable.select { |_barcode, check| check == 'on' }.keys
-        requests = Request.find request_ids
+        Request.find request_ids
       end
 
       def source_plate_barcode(tube)

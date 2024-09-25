@@ -19,7 +19,7 @@ module LabelPrinter
         end
       end
 
-      def count
+      def count # rubocop:disable Lint/DuplicateMethods
         (@count || 1).to_i
       end
     end

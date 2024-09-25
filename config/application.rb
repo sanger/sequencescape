@@ -62,7 +62,7 @@ module Sequencescape
     config.eager_load_paths += %W[#{Rails.root}/lib/accession]
 
     # Some lib files we don't want to autoload as they are one time scripts or dev scripts without module definitions
-    %w[bm_plate_creation.rb volume_check.rb cron_scripts generators informatics label_printer].each do |file|
+    %w[bm_plate_creation.rb volume_check.rb cron_scripts generators informatics].each do |file|
       Rails.autoloaders.main.ignore(Rails.root.join("lib/#{file}"))
     end
 

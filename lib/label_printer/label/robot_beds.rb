@@ -5,6 +5,7 @@ module LabelPrinter
       attr_reader :plates
 
       def initialize(beds)
+        super
         @plates = beds
       end
 
@@ -13,7 +14,7 @@ module LabelPrinter
       end
 
       def bottom_right(bed)
-        (bed.ean13_barcode).to_s
+        bed.ean13_barcode.to_s
       end
     end
   end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../batch_plates'
+require_relative 'batch_plates'
 
 module LabelPrinter
   module Label
@@ -9,6 +9,7 @@ module LabelPrinter
       attr_reader :count, :printable, :batch
 
       def initialize(options)
+        super
         @count = options[:count].to_i
         @printable = options[:printable]
         @batch = options[:batch]

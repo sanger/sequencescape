@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 # require 'pmb_client'
 
+require_relative 'label/multiple_labels'
+require_relative 'label/base_plate'
+require_relative 'label/base_tube'
+
+Dir["#{File.dirname(__FILE__)}/**/*.rb"].each { |file| require file }
+
 module LabelPrinter
   class PrintJob
     include ActiveModel::Validations
