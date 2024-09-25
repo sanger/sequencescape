@@ -38,7 +38,7 @@ RSpec.describe 'support:remove_duplicate_asset_links', type: :task do
   it 'exports the removed duplicates to a CSV file' do
     task_invoke
     expect(File.exist?(csv_file_path)).to be true
-    csv = CSV.read(csv_file_path)
+    csv = CSV.read(Rails.root.join(csv_file_path))
     expect(csv.size).to eq(duplicate_links.size + 1) # With header.
     expect(csv.first).to eq(AssetLink.column_names)
     (1..duplicate_links.size).each do |i|
