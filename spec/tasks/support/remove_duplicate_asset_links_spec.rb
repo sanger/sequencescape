@@ -37,8 +37,11 @@ RSpec.describe 'support:remove_duplicate_asset_links', type: :task do
     task_invoke
     expect(File.exist?(csv_file_path)).to be true
     csv = CSV.read(csv_file_path)
-    expect(csv.size).to eq(links.size + 1) # With header.
+    expect(csv.size).to eq(duplicate_links.size + 1) # With header.
     expect(csv.first).to eq(AssetLink.column_names)
-    (1..duplicate_links).size { |i| expect(csv[i]).to eq(duplicate_links[i - 1].attributes.values.map(&:to_s)) }
+    (1..duplicate_links.size).each do |i|
+      expected_row = duplicate_links[i - 1].attributes.values.map { |value| value&.to_s }
+      expect(csv[i]).to eq(expected_row)
+    end
   end
 end
