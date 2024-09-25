@@ -228,7 +228,9 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     'pre-capture group',
     'gigabases expected',
     'priority',
-    'flowcell type'
+    'flowcell type',
+    'scrna core number of samples per pool',
+    'scrna core cells per chip well'
   ].freeze
 
   ALIAS_FIELDS = { 'plate barcode' => 'barcode', 'tube barcode' => 'barcode' }.freeze
@@ -325,7 +327,9 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
         ['pre-capture plex level', 'pre_capture_plex_level'],
         ['gigabases expected', 'gigabases_expected'],
         ['primer panel', 'primer_panel_name'],
-        ['flowcell type', 'requested_flowcell_type']
+        ['flowcell type', 'requested_flowcell_type'],
+        ['scrna core number of samples per pool', 'number_of_samples_per_pool'],
+        ['scrna core cells per chip well', 'cells_per_chip_well']
       ].each do |source_key, target_key|
         assign_value_if_source_present(details, source_key, request_options, target_key)
       end
