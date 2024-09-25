@@ -3,22 +3,26 @@
 require 'rails_helper'
 
 RSpec.describe 'support:remove_duplicate_asset_links', type: :task do
+  let(:clear_tasks) { Rake.application.clear }
   let(:load_tasks) { Rails.application.load_tasks }
   let(:task_reenable) { Rake::Task[self.class.top_level_description].reenable }
   let(:task_invoke) { Rake::Task[self.class.top_level_description].invoke(csv_file_path) }
-  let(:csv_file_path) { Rails.root.join('tmp/deleted_asset_links.csv').to_s }
-  let!(:links) { create_list(:asset_link, 5) }
-  let!(:duplicate_links) do
+  let(:csv_file_path) { 'tmp/deleted_asset_links.csv' }
+  let(:links) { create_list(:asset_link, 5) }
+  let(:duplicate_links) do
     links.map do |link|
       duplicate = AssetLink.new(ancestor: link.ancestor, descendant: link.descendant, created_at: 1.day.ago)
-      duplicate.save!(validate: false)
+      duplicate.save!(validate: false) # Needs to be saved without validation
       duplicate
     end
   end
 
   before do
-    load_tasks # Load tasks directly in the test to avoid intermittent CI failures
-    task_reenable # Allows the task to be invoked again
+    clear_tasks
+    load_tasks
+    task_reenable
+    links
+    duplicate_links
   end
 
   after { File.delete(csv_file_path) if File.exist?(csv_file_path) }
