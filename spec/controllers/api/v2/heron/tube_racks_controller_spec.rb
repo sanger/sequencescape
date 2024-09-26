@@ -35,7 +35,7 @@ RSpec.describe Api::V2::Heron::TubeRacksController, :heron, type: :request do
               }
             },
             purpose_uuid: purpose_96_uuid,
-            study_uuid:
+            study_uuid: study_uuid
           }
         }
       }.to_h.with_indifferent_access

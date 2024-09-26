@@ -16,7 +16,7 @@ RSpec.describe RequestInformationType do
           read_length: 76,
           created_at: Date.parse('2021-03-01')
         },
-        batch:
+        batch: batch
       )
     end
 
@@ -38,8 +38,8 @@ RSpec.describe RequestInformationType do
 
     context 'when key is an event' do
       before do
-        create(:lab_event, descriptors: { 'My event' => 'old value' }, eventful: request, batch:)
-        create(:lab_event, descriptors: { 'My event' => 'new value' }, eventful: request, batch:)
+        create(:lab_event, descriptors: { 'My event' => 'old value' }, eventful: request, batch: batch)
+        create(:lab_event, descriptors: { 'My event' => 'new value' }, eventful: request, batch: batch)
       end
 
       let(:name) { 'My event' }

@@ -10,5 +10,7 @@ ActiveRecord::Base.transaction do
     'Stock MX' => %w[Tube::StockMx StockMultiplexedLibraryTube],
     'Stock library' => %w[Tube::Purpose StockLibraryTube],
     'Legacy MX tube' => %w[IlluminaHtp::MxTubePurpose MultiplexedLibraryTube]
-  }.each { |name, (type, asset_type)| type.constantize.create!(name:, barcode_printer_type:, target_type: asset_type) }
+  }.each do |name, (type, asset_type)|
+    type.constantize.create!(name: name, barcode_printer_type: barcode_printer_type, target_type: asset_type)
+  end
 end

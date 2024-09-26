@@ -22,7 +22,8 @@ module BulkSubmissionExcel
     end
 
     def ranges_worksheet
-      @ranges_worksheet ||= SequencescapeExcel::Worksheet::RangesWorksheet.new(ranges: range_list, workbook:) if valid?
+      @ranges_worksheet ||=
+        SequencescapeExcel::Worksheet::RangesWorksheet.new(ranges: range_list, workbook: workbook) if valid?
     end
 
     def submission_template_id=(id)
@@ -38,11 +39,11 @@ module BulkSubmissionExcel
 
       @data_worksheet ||=
         BulkSubmissionExcel::Worksheet::DataWorksheet.new(
-          workbook:,
+          workbook: workbook,
           columns: column_list,
-          assets:,
+          assets: assets,
           ranges: range_list,
-          defaults:
+          defaults: defaults
         )
     end
 

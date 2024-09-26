@@ -15,7 +15,7 @@ describe 'Bulk submission', js: false do
   before do
     login_user user
     create(:project, name: 'Test project')
-    create(:asset_group, name: 'assetgroup123', study:, asset_count: 2)
+    create(:asset_group, name: 'assetgroup123', study: study, asset_count: 2)
     visit bulk_submissions_path
     expect(page).to have_content('Bulk Submission New')
     create(:library_type, name: 'Standard')

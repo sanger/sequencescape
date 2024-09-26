@@ -13,7 +13,7 @@ FactoryBot.define do
       barcode { generate(:barcode_number) }
       prefix { 'NT' }
     end
-    sanger_barcode { { prefix:, number: barcode_number } }
+    sanger_barcode { { prefix: prefix, number: barcode_number } }
   end
 
   trait :in_a_rack do
@@ -22,7 +22,7 @@ FactoryBot.define do
       coordinate { nil }
     end
     after(:create) do |tube, evaluator|
-      create(:racked_tube, tube:, tube_rack: evaluator.tube_rack, coordinate: evaluator.coordinate)
+      create(:racked_tube, tube: tube, tube_rack: evaluator.tube_rack, coordinate: evaluator.coordinate)
     end
   end
 

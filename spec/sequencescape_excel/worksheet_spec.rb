@@ -38,7 +38,7 @@ RSpec.describe SequencescapeExcel::Worksheet, :sample_manifest, :sample_manifest
 
   describe 'validations ranges worksheet' do
     let!(:range_list) { SampleManifestExcel.configuration.ranges.dup }
-    let!(:worksheet) { SequencescapeExcel::Worksheet::RangesWorksheet.new(workbook:, ranges: range_list) }
+    let!(:worksheet) { SequencescapeExcel::Worksheet::RangesWorksheet.new(workbook: workbook, ranges: range_list) }
 
     before { save_file }
 

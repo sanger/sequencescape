@@ -24,7 +24,7 @@ module SampleManifest::LibraryTubeBehaviour
     def io_samples
       samples.map do |sample|
         {
-          sample:,
+          sample: sample,
           container: {
             barcode: sample.primary_receptacle.human_barcode
           },

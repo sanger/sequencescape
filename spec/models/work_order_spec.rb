@@ -36,11 +36,11 @@ describe WorkOrder do
     let(:submission) { create(:submission, requests:) }
     let(:request_type) { create(:request_type) }
 
-    let(:requests_set_a) { create_list(:request, 3, asset: create(:well), request_type:) }
+    let(:requests_set_a) { create_list(:request, 3, asset: create(:well), request_type: request_type) }
     let(:requests) { requests_set_a + requests_set_b }
 
     context 'where request types match' do
-      let(:requests_set_b) { create_list(:request, 3, asset: create(:well), request_type:) }
+      let(:requests_set_b) { create_list(:request, 3, asset: create(:well), request_type: request_type) }
 
       it { is_expected.to be_valid }
 

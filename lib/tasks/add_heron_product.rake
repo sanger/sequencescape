@@ -22,7 +22,7 @@ namespace :product_heron do
 
       product = Product.create!(name: 'Heron')
 
-      ProductCriteria.create!(product:, stage: 'stock', configuration: ADDITIONAL_CRITERIA)
+      ProductCriteria.create!(product: product, stage: 'stock', configuration: ADDITIONAL_CRITERIA)
     end
   end
 

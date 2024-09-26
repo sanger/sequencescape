@@ -114,7 +114,7 @@ class UatActions::GenerateQcResults < UatActions
         units: resolved_units,
         assay_type: 'UAT_Testing',
         assay_version: 'Binning',
-        qc_assay:
+        qc_assay: qc_assay
       )
     end
     report['number_results_written'] = qc_assay.qc_results.length

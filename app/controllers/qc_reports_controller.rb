@@ -47,9 +47,9 @@ class QcReportsController < ApplicationController
     exclude_existing = params[:qc_report][:exclude_existing] == '1'
     qc_report =
       QcReport.new(
-        study:,
+        study: study,
         product_criteria: @product.stock_criteria,
-        exclude_existing:,
+        exclude_existing: exclude_existing,
         plate_purposes: params[:qc_report][:plate_purposes].try(:reject, &:blank?)
       )
 

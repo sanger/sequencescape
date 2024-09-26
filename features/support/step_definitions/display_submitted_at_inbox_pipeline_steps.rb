@@ -6,7 +6,8 @@ Given(/^Pipeline "([^"]*)" and a setup for submitted at$/) do |name|
   request_type = pipeline.request_types.detect { |rt| !rt.deprecated }
   metadata = FactoryBot.create :"request_metadata_for_#{request_type.key}"
   asset = FactoryBot.create(asset_type)
-  request = FactoryBot.create :request_with_submission, request_type:, asset:, request_metadata: metadata
+  request =
+    FactoryBot.create :request_with_submission, request_type: request_type, asset: asset, request_metadata: metadata
   request.asset.plate = FactoryBot.create(:plate) if request.asset.plate.nil? if request.asset.is_a?(Well)
 
   request.asset.save!

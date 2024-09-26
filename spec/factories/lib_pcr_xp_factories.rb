@@ -9,7 +9,7 @@ FactoryBot.define do
           .where_description(%w[A1 B2 E6])
           .where_plate_size(plate.size)
           .where_plate_shape(AssetShape.default)
-          .map { |map| build(:tagged_well, map:, requests: [create(:lib_pcr_xp_request)]) }
+          .map { |map| build(:tagged_well, map: map, requests: [create(:lib_pcr_xp_request)]) }
       plate.wells.each do |well|
         well.well_attribute.current_volume = 160
         well.save

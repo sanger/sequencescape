@@ -54,7 +54,7 @@ module SequencescapeExcel
     def create(ranges_data)
       {}.tap do |ranges|
         ranges_data.each_with_index do |(name, attributes), i|
-          attributes = attributes.merge(name:, first_row: i + 1)
+          attributes = attributes.merge(name: name, first_row: i + 1)
           ranges[name] = SequencescapeExcel::Range.new(attributes)
         end
       end

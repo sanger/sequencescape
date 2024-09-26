@@ -29,7 +29,7 @@ RSpec.describe SampleManifestExcel::Upload::Rows, :sample_manifest, :sample_mani
   end
 
   it 'is not valid unless all of the rows are valid' do
-    download = build(:test_download_tubes, columns:, validation_errors: [:sanger_sample_id_invalid])
+    download = build(:test_download_tubes, columns: columns, validation_errors: [:sanger_sample_id_invalid])
     download.save(test_file_name)
     expect(described_class.new(SampleManifestExcel::Upload::Data.new(test_file), columns)).not_to be_valid
   end
@@ -41,14 +41,14 @@ RSpec.describe SampleManifestExcel::Upload::Rows, :sample_manifest, :sample_mani
   end
 
   it 'creates the row number relative to the start row' do
-    download = build(:test_download_tubes, columns:, validation_errors: [:insert_size_from])
+    download = build(:test_download_tubes, columns: columns, validation_errors: [:insert_size_from])
     download.save(test_file_name)
     rows = described_class.new(SampleManifestExcel::Upload::Data.new(test_file), columns)
     expect(rows.first.number).to eq(10)
   end
 
   it 'knows values for all rows at particular column' do
-    download = build(:test_download_tubes, columns:, validation_errors: [:insert_size_from])
+    download = build(:test_download_tubes, columns: columns, validation_errors: [:insert_size_from])
     download.save(test_file_name)
     rows = described_class.new(SampleManifestExcel::Upload::Data.new(test_file), columns)
 

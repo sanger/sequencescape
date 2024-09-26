@@ -12,10 +12,10 @@ module RecordLoader
 
     def create_or_update!(_name, options)
       pipeline = Pipeline.find_by!(name: options['pipeline_name'])
-      req_inf_type = RequestInformationType.find_by!(key: options['request_information_type_key'])
-      PipelineRequestInformationType.create_with(pipeline:, request_information_type: req_inf_type).find_or_create_by!(
+      request_information_type = RequestInformationType.find_by!(key: options['request_information_type_key'])
+      PipelineRequestInformationType.create_with(pipeline:, request_information_type:).find_or_create_by!(
         pipeline:,
-        request_information_type: req_inf_type
+        request_information_type:
       )
     end
   end

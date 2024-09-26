@@ -233,7 +233,7 @@ RSpec.describe Heron::Factories::Concerns::Contents, :heron, :lighthouse, type: 
 
     context 'with a tube rack' do
       let(:purpose) { create(:plate_purpose, target_type: 'Plate', name: 'Stock Plate', size: '96') }
-      let(:tube_rack) { TubeRack.create!(size: '96', purpose:) }
+      let(:tube_rack) { TubeRack.create!(size: '96', purpose: purpose) }
       let(:plate) { tube_rack }
       let(:tubes) do
         %w[A1 B1 C1].map do |coordinate|

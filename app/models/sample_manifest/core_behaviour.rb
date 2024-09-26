@@ -68,7 +68,7 @@ module SampleManifest::CoreBehaviour
   module LibraryAssets
     def generate_sample_and_aliquot(sanger_sample_id, receptacle)
       create_sample(sanger_sample_id).tap do |sample|
-        receptacle.aliquots.create!(sample:, study:, library: receptacle)
+        receptacle.aliquots.create!(sample: sample, study: study, library: receptacle)
         study.samples << sample
       end
     end

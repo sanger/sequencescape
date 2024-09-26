@@ -133,7 +133,7 @@ class Uuid < ApplicationRecord
 
     ids_missing_uuids = filter_uncreated_uuids(resource_type, resource_ids)
     uuids_to_create =
-      ids_missing_uuids.map { |id| create!(resource_type:, resource_id: id, external_id: generate_uuid) }
+      ids_missing_uuids.map { |id| create!(resource_type: resource_type, resource_id: id, external_id: generate_uuid) }
 
     # Uuid.import uuids_to_create unless uuids_to_create.empty?
 
@@ -142,7 +142,7 @@ class Uuid < ApplicationRecord
 
   # ids is a string of internal_ids
   def self.filter_uncreated_uuids(resource_type, resource_ids)
-    existing_uuids = where(resource_type:, resource_id: resource_ids)
+    existing_uuids = where(resource_type: resource_type, resource_id: resource_ids)
     resource_ids - existing_uuids.pluck(:resource_id)
   end
 

@@ -36,7 +36,7 @@ class UatActions::GenerateTagPlates < UatActions
   end
 
   def perform
-    qcc = QcableCreator.create!(lot:, user:, count: plate_count.to_i)
+    qcc = QcableCreator.create!(lot: lot, user: user, count: plate_count.to_i)
     qcc.qcables.each_with_index do |qcable, index|
       qcable.update!(state: 'available')
       report["tag_plate_#{index}"] = qcable.asset.machine_barcode
@@ -54,7 +54,7 @@ class UatActions::GenerateTagPlates < UatActions
       lot_type.lots.create!(
         lot_number: "UAT#{Time.current.to_f}",
         template: tag_layout_template,
-        user:,
+        user: user,
         received_at: Time.current
       )
   end

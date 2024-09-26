@@ -53,7 +53,7 @@ module Request::SampleCompoundAliquotTransfer
   # For a group of source aliquots, find or create a compound sample containing the component samples
   # Assign the compound sample to the target asset
   def transfer_into_compound_sample_aliquot(source_aliquots)
-    compound_aliquot = CompoundAliquot.new(request: self, source_aliquots:)
+    compound_aliquot = CompoundAliquot.new(request: self, source_aliquots: source_aliquots)
     unless compound_aliquot.valid?
       raise Request::SampleCompoundAliquotTransfer::Error, compound_aliquot.errors.full_messages
     end

@@ -34,12 +34,12 @@ RSpec.describe SequencescapeExcel::Validation, :sample_manifest, :sample_manifes
 
     it '#does not add a range' do
       expect(worksheet).to receive(:add_data_validation).with('N10:N30', **options)
-      validation.update(range:, worksheet:, reference: 'N10:N30')
+      validation.update(range: range, worksheet: worksheet, reference: 'N10:N30')
     end
   end
 
   context 'with range name' do
-    let(:validation) { described_class.new(options:, range_name: :a_range) }
+    let(:validation) { described_class.new(options: options, range_name: :a_range) }
 
     it 'will have a range name' do
       expect(validation.range_name).to eq(:a_range)
@@ -47,7 +47,7 @@ RSpec.describe SequencescapeExcel::Validation, :sample_manifest, :sample_manifes
 
     it '#update will set formula1' do
       expect(worksheet).to receive(:add_data_validation).with('N10:N30', **options, formula1: range.absolute_reference)
-      validation.update(range:, worksheet:, reference: 'N10:N30')
+      validation.update(range: range, worksheet: worksheet, reference: 'N10:N30')
     end
   end
 
@@ -61,7 +61,7 @@ RSpec.describe SequencescapeExcel::Validation, :sample_manifest, :sample_manifes
         type: :custom,
         formula1: 'AND(N10&gt;5,N10&lt;10)'
       )
-      validation.update(reference: 'N10:N30', worksheet:)
+      validation.update(reference: 'N10:N30', worksheet: worksheet)
     end
   end
 
@@ -75,7 +75,7 @@ RSpec.describe SequencescapeExcel::Validation, :sample_manifest, :sample_manifes
     end
 
     it 'adds validation to the worksheet' do
-      validation.update(reference: range.reference, worksheet:)
+      validation.update(reference: range.reference, worksheet: worksheet)
       validations = worksheet.data_validation_rules
       expect(validation).to be_saved
       expect(validations.count).to eq(1)
@@ -83,13 +83,13 @@ RSpec.describe SequencescapeExcel::Validation, :sample_manifest, :sample_manifes
     end
 
     it 'is comparable' do
-      validation.update(reference: range.reference, worksheet:)
+      validation.update(reference: range.reference, worksheet: worksheet)
       other_validation = described_class.new(options:)
-      other_validation.update(reference: range.reference, worksheet:)
+      other_validation.update(reference: range.reference, worksheet: worksheet)
       expect(other_validation).to eq(validation)
 
       other_validation = described_class.new(options: options.merge(option3: 'value3'))
-      other_validation.update(reference: range.reference, worksheet:)
+      other_validation.update(reference: range.reference, worksheet: worksheet)
       expect(other_validation).not_to eq(validation)
     end
   end

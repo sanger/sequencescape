@@ -175,8 +175,8 @@ module Limber::Helper
               name: name_for(cherrypick, sequencing_request_type),
               submission_class_name: 'LinearSubmission',
               submission_parameters: submission_parameters(cherrypick, sequencing_request_type),
-              superceded_by_id:,
-              product_line_id:,
+              superceded_by_id: superceded_by_id,
+              product_line_id: product_line_id,
               product_catalogue: catalogue
             }
           )

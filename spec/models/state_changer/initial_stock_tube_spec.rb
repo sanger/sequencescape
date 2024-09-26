@@ -20,7 +20,7 @@ RSpec.describe StateChanger::InitialStockTube do
       outer_request: request
     )
   end
-  let!(:request) { create(:customer_request, asset: well, state: request_state, submission:) }
+  let!(:request) { create(:customer_request, asset: well, state: request_state, submission: submission) }
 
   before do
     well.stock_wells << well

@@ -11,7 +11,7 @@ RSpec.describe SampleManifest, :sample_manifest do
 
   describe '#default_filename' do
     let(:date) { Date.parse('25/10/2018') }
-    let(:manifest) { create(:sample_manifest, study:, created_at: date) }
+    let(:manifest) { create(:sample_manifest, study: study, created_at: date) }
 
     it 'includes the information requested' do
       expect(manifest.default_filename).to eq("#{study.id}stdy_manifest_#{manifest.id}_251018")
@@ -358,7 +358,12 @@ RSpec.describe SampleManifest, :sample_manifest do
 
   describe '#pools' do
     let(:manifest) do
-      create(:plate_sample_manifest_with_manifest_assets, study:, asset_type: 'plate', num_samples_per_well:)
+      create(
+        :plate_sample_manifest_with_manifest_assets,
+        study: study,
+        asset_type: 'plate',
+        num_samples_per_well: num_samples_per_well
+      )
     end
 
     context 'when there is only one sample per well' do

@@ -90,7 +90,7 @@ namespace :limber do
                 OligoEnumerator
                   .new(384, index * 384)
                   .each_with_index
-                  .map { |oligo, map_id| { oligo:, map_id: map_id + 1 } }
+                  .map { |oligo, map_id| { oligo: oligo, map_id: map_id + 1 } }
               )
             end
           TagLayoutTemplate.create!(
@@ -110,7 +110,7 @@ namespace :limber do
         tg =
           TagGroup.create!(name: 'IDT for Illumina v1 - MOCK') do |group|
             group.tags.build(
-              OligoEnumerator.new(384).each_with_index.map { |oligo, map_id| { oligo:, map_id: map_id + 1 } }
+              OligoEnumerator.new(384).each_with_index.map { |oligo, map_id| { oligo: oligo, map_id: map_id + 1 } }
             )
           end
         TagLayoutTemplate.create!(
@@ -140,7 +140,7 @@ namespace :limber do
                   OligoEnumerator
                     .new(384, index * 384)
                     .each_with_index
-                    .map { |oligo, map_id| { oligo:, map_id: map_id + 1 } }
+                    .map { |oligo, map_id| { oligo: oligo, map_id: map_id + 1 } }
                 )
               end
             TagLayoutTemplate.create!(

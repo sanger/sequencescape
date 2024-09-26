@@ -154,7 +154,7 @@ class Barcode < ApplicationRecord
   def self.build_sanger_barcode(attributes, format:)
     # We need to symbolize our hash keys to allow them to get passed in to named arguments.
     safe_attributes = attributes.slice(:number, :prefix, :human_barcode, :machine_barcode).symbolize_keys
-    new(format:, barcode: SBCF::SangerBarcode.new(**safe_attributes).human_barcode)
+    new(format: format, barcode: SBCF::SangerBarcode.new(**safe_attributes).human_barcode)
   end
 
   # Extract barcode from user input

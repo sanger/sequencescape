@@ -21,7 +21,7 @@ RSpec.describe 'number_of_samples_per_pool:populate' do
     it 'populating number of samples per pool' do
       submission = create(:submission)
       tube = create(:tube)
-      request = create(:well_request, asset: tube, submission:)
+      request = create(:well_request, asset: tube, submission: submission)
 
       # Execute
       run_rake_task_with_args('number_of_samples_per_pool:populate', samples_per_pool, submission.reload.id)

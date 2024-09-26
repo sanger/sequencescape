@@ -101,7 +101,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton # rubocop:to
 
           submission.orders << new_order
         else
-          @submission = new_order.create_submission(user: order.user, priority:)
+          @submission = new_order.create_submission(user: order.user, priority: priority)
         end
 
         new_order.save!
@@ -222,13 +222,13 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton # rubocop:to
     order_role = OrderRole.find_by(role: order_params.delete('order_role')) if order_params.present?
     new_order =
       template.new_order(
-        study:,
-        project:,
+        study: study,
+        project: project,
         user: @user,
         request_options: order_params,
-        comments:,
+        comments: comments,
         pre_cap_group: pre_capture_plex_group,
-        order_role:
+        order_role: order_role
       )
     if order_params
       new_order.request_type_multiplier do |sequencing_request_type_id|

@@ -14,7 +14,7 @@ RSpec.describe 'Following a Sequencing Pipeline', :js do
       :sequencing_request_with_assets,
       2,
       request_type: pipeline.request_types.first,
-      asset:,
+      asset: asset,
       target_asset: nil,
       submission: create(:submission)
     )
@@ -115,7 +115,9 @@ RSpec.describe 'Following a Sequencing Pipeline', :js do
   end
 
   context 'when a batch has been created' do
-    let(:batch) { create(:batch, pipeline:, requests: pipeline.requests, state: 'released', updated_at: 1.day.ago) }
+    let(:batch) do
+      create(:batch, pipeline: pipeline, requests: pipeline.requests, state: 'released', updated_at: 1.day.ago)
+    end
 
     let!(:flowcell_message) { Messenger.create!(target: batch, template: 'FlowcellIO', root: 'flowcell') }
 
@@ -124,8 +126,8 @@ RSpec.describe 'Following a Sequencing Pipeline', :js do
         create(
           :lab_event,
           eventful: request,
-          batch:,
-          user:,
+          batch: batch,
+          user: user,
           description: 'Specify Dilution Volume',
           descriptors: {
             'Concentration' => (1.2 + i).to_s
@@ -134,8 +136,8 @@ RSpec.describe 'Following a Sequencing Pipeline', :js do
         create(
           :lab_event,
           eventful: request,
-          batch:,
-          user:,
+          batch: batch,
+          user: user,
           description: 'Set descriptors',
           descriptors: {
             'Workflow (Standard or Xp)' => 'XP',

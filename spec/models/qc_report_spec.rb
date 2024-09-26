@@ -84,12 +84,12 @@ RSpec.describe QcReport do
       @matching_report =
         create(
           :qc_report,
-          study:,
+          study: study,
           exclude_existing: true,
           product_criteria: current_criteria,
           report_identifier: 'Override'
         )
-      @other_report = create(:qc_report, study:, exclude_existing: true, product_criteria: other_criteria)
+      @other_report = create(:qc_report, study: study, exclude_existing: true, product_criteria: other_criteria)
 
       @attribute = create(:well_attribute, current_volume: 500, concentration: 200)
 
@@ -143,7 +143,7 @@ RSpec.describe QcReport do
       create(:qc_metric, asset: well, qc_report: matching_report)
       create(:qc_metric, asset: well, qc_report: other_report)
 
-      @qc_report = create(:qc_report, study:, exclude_existing: true, product_criteria: current_criteria)
+      @qc_report = create(:qc_report, study: study, exclude_existing: true, product_criteria: current_criteria)
       @qc_metric_count = QcMetric.count
       qc_report.generate!
     end
@@ -180,14 +180,14 @@ RSpec.describe QcReport do
     let(:plate_purpose_names) { plate_purposes.map(&:name) }
 
     before do
-      create(:well_for_qc_report, study:, plate: create(:plate, plate_purpose: plate_purposes[0]))
-      create(:well_for_qc_report, study:, plate: create(:plate, plate_purpose: plate_purposes[1]))
-      create(:well_for_qc_report, study:, plate: create(:plate, plate_purpose: plate_purposes[2]))
+      create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: plate_purposes[0]))
+      create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: plate_purposes[1]))
+      create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: plate_purposes[2]))
 
       @qc_report =
         create(
           :qc_report,
-          study:,
+          study: study,
           exclude_existing: false,
           product_criteria: create(:product_criteria),
           plate_purposes: plate_purpose_names

@@ -19,7 +19,7 @@ module SequencescapeExcel
         ActiveRecord::Base.transaction do
           qc_assay = sample_manifest_asset.sample_manifest.find_or_create_qc_assay!
           asset.qc_results.build(
-            qc_assay:,
+            qc_assay: qc_assay,
             key: 'volume',
             value: value.to_f,
             assay_type: 'customer_supplied',

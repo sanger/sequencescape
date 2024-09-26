@@ -93,13 +93,13 @@ module SampleManifestExcel
             study:
           )
         when /tube_library/, /tube_chromium_library/
-          FactoryBot.create(:sample_manifest, asset_type: 'library', study:)
+          FactoryBot.create(:sample_manifest, asset_type: 'library', study: study)
         when /tube_multiplexed_library/
-          FactoryBot.create(:sample_manifest, asset_type: 'multiplexed_library', study:)
+          FactoryBot.create(:sample_manifest, asset_type: 'multiplexed_library', study: study)
         when /tube_rack/
-          FactoryBot.create(:tube_rack_manifest, asset_type: 'tube_rack', study:)
+          FactoryBot.create(:tube_rack_manifest, asset_type: 'tube_rack', study: study)
         else
-          FactoryBot.create(:sample_manifest, asset_type: '1dtube', study:)
+          FactoryBot.create(:sample_manifest, asset_type: '1dtube', study: study)
         end
       end
 
@@ -272,7 +272,7 @@ module SampleManifestExcel
         assets.each do |asset|
           FactoryBot.create(
             :external_multiplexed_library_tube_creation_request,
-            asset:,
+            asset: asset,
             target_asset: multiplexed_library_tube
           )
         end

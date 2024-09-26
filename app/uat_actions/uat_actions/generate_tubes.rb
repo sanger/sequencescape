@@ -49,7 +49,7 @@ class UatActions::GenerateTubes < UatActions
               supplier_name: sample_name
             }
           ),
-        study:
+        study: study
       )
 
       add_foreign_barcode_if_selected(tube)

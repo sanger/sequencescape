@@ -122,10 +122,10 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
   def perform # rubocop:todo Metrics/AbcSize
     order =
       submission_template.create_with_submission!(
-        study:,
-        project:,
-        user:,
-        assets:,
+        study: study,
+        project: project,
+        user: user,
+        assets: assets,
         request_options: order_request_options
       )
     report['plate_barcode_0'] = labware.human_barcode

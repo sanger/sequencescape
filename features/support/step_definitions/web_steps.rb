@@ -161,15 +161,15 @@ Then /^Pmb has the required label templates$/ do
 
   stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_96plate_label_template").with(
     headers: LabelPrinter::PmbClient.headers
-  ).to_return(status: 200, body:)
+  ).to_return(status: 200, body: body)
 
   stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}tube_label_template_1d").with(
     headers: LabelPrinter::PmbClient.headers
-  ).to_return(status: 200, body:)
+  ).to_return(status: 200, body: body)
 
   stub_request(:get, "#{LabelPrinter::PmbClient.label_templates_filter_url}sqsc_384plate_label_template").with(
     headers: LabelPrinter::PmbClient.headers
-  ).to_return(status: 200, body:)
+  ).to_return(status: 200, body: body)
 end
 
 Then /^Pmb is up and running$/ do

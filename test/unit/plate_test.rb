@@ -11,7 +11,7 @@ class PlateTest < ActiveSupport::TestCase
       name: "Cherrypicked #{plate_barcode}",
       size: 192,
       barcode: plate_barcode,
-      fluidigm_barcode:
+      fluidigm_barcode: fluidigm_barcode
     )
   end
 
@@ -116,7 +116,7 @@ class PlateTest < ActiveSupport::TestCase
       @plate = create(:transfer_plate)
       user = create(:user)
       @plate.wells.each_with_index do |well, index|
-        create(:request, asset: well, submission: Submission.create!(priority: index + 1, user:))
+        create(:request, asset: well, submission: Submission.create!(priority: index + 1, user: user))
       end
     end
 

@@ -8,7 +8,9 @@ describe 'Viewing request comments', :js do
   let(:pipeline_name) { pipeline.name }
   let(:submission) { create(:submission) }
   let(:tube) { create(:multiplexed_library_tube) }
-  let(:request) { create(:sequencing_request, asset: tube, request_type: pipeline.request_types.first, submission:) }
+  let(:request) do
+    create(:sequencing_request, asset: tube, request_type: pipeline.request_types.first, submission: submission)
+  end
 
   before do
     create(:comment, commentable: tube, description: 'An excellent tube')

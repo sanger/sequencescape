@@ -144,7 +144,7 @@ class UatActions::GeneratePlates < UatActions
     sample.save!(validate: false)
 
     if num_samples_per_well > 1
-      well.aliquots.create!(sample:, study:, tag_depth: sample_index)
+      well.aliquots.create!(sample: sample, study: study, tag_depth: sample_index)
     else
       well.aliquots.create!(sample:, study:)
     end

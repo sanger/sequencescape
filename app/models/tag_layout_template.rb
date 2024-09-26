@@ -59,7 +59,11 @@ class TagLayoutTemplate < ApplicationRecord
 
   def record_template_use(plate, enforce_uniqueness)
     plate.submissions.each do |submission|
-      TagLayout::TemplateSubmission.create!(submission:, tag_layout_template: self, enforce_uniqueness:)
+      TagLayout::TemplateSubmission.create!(
+        submission: submission,
+        tag_layout_template: self,
+        enforce_uniqueness: enforce_uniqueness
+      )
     end
   end
 end

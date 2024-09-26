@@ -98,7 +98,12 @@ class QcReport < ApplicationRecord
         ActiveRecord::Base.transaction do
           assets.each do |asset|
             criteria = product_criteria.assess(asset, connected_wells[asset.id])
-            QcMetric.create!(asset:, qc_decision: criteria.qc_decision, metrics: criteria.metrics, qc_report: self)
+            QcMetric.create!(
+              asset: asset,
+              qc_decision: criteria.qc_decision,
+              metrics: criteria.metrics,
+              qc_report: self
+            )
           end
         end
       end

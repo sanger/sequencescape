@@ -16,7 +16,7 @@ RSpec.describe 'tube_rack_summaries/show.html.erb' do
 
     before do
       Array.new(num_tubes) do |i|
-        create(:sample_tube, :in_a_rack, tube_rack:, coordinate: locations[i], barcodes: [barcodes[i]])
+        create(:sample_tube, :in_a_rack, tube_rack: tube_rack, coordinate: locations[i], barcodes: [barcodes[i]])
       end
 
       assign(:tube_rack, tube_rack) # sets @widget = Widget.new in the view template

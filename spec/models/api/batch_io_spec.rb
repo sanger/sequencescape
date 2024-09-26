@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Api::BatchIO do
-  subject { create(:batch, user:, assignee: user2, pipeline:) }
+  subject { create(:batch, user: user, assignee: user2, pipeline: pipeline) }
 
   let(:user) { create(:user) }
   let(:user2) { create(:user) }

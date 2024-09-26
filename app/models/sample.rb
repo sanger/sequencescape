@@ -411,7 +411,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
             'name LIKE :wild OR id IN (:sm_ids) OR id = :qid',
             wild: "%#{query}%",
             sm_ids: md,
-            query:,
+            query: query,
             qid: query.to_i
           )
         }

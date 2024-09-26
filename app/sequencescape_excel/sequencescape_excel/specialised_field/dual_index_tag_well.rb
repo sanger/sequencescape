@@ -64,7 +64,7 @@ module SequencescapeExcel
 
       # i7 tag
       def tag
-        Tag.find_by(tag_group_id:, map_id: well_index)
+        Tag.find_by(tag_group_id: tag_group_id, map_id: well_index)
       end
 
       # i5 tag

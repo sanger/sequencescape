@@ -15,10 +15,22 @@ RSpec.describe BroadcastEvent::PoolReleased, :broadcast_event do
   let(:submission) { create(:library_submission) }
   let(:order) { submission.orders.first }
   let(:request1) do
-    create(:multiplex_request, asset: source_plate.wells.first, target_asset: tube.receptacle, state: 'passed', order:)
+    create(
+      :multiplex_request,
+      asset: source_plate.wells.first,
+      target_asset: tube.receptacle,
+      state: 'passed',
+      order: order
+    )
   end
   let(:request2) do
-    create(:multiplex_request, asset: source_plate.wells.last, target_asset: tube.receptacle, state: 'passed', order:)
+    create(
+      :multiplex_request,
+      asset: source_plate.wells.last,
+      target_asset: tube.receptacle,
+      state: 'passed',
+      order: order
+    )
   end
   let(:library_request) { create(:library_request, target_asset: source_plate.wells.first) }
 

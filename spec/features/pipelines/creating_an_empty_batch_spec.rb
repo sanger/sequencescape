@@ -14,7 +14,7 @@ describe 'Empty batch creation', :js do
     plates.each do |plate|
       plate.wells.each do |well|
         # create the requests for cherrypicking
-        create(:cherrypick_request, asset: well, request_type:, submission:)
+        create(:cherrypick_request, asset: well, request_type: request_type, submission: submission)
       end
     end
   end

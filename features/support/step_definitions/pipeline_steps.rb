@@ -2,7 +2,7 @@
 
 Given /^I have a pipeline called "([^"]*)"$/ do |name|
   request_type = FactoryBot.create :request_type
-  pipeline = FactoryBot.create :pipeline, name:, request_types: [request_type]
+  pipeline = FactoryBot.create :pipeline, name: name, request_types: [request_type]
   pipeline.workflow.update!(item_limit: 8)
   task = FactoryBot.create :task, name: 'Task1', workflow: pipeline.workflow
 end
@@ -12,11 +12,11 @@ Given /^I have a batch in "([^"]*)"$/ do |pipeline|
 end
 
 Given /^I have a "([^"]*)" batch in "([^"]*)"$/ do |state, pipeline|
-  @batch = FactoryBot.create :batch, pipeline: Pipeline.find_by(name: pipeline), state:, production_state: nil
+  @batch = FactoryBot.create :batch, pipeline: Pipeline.find_by(name: pipeline), state: state, production_state: nil
 end
 
 Given /^I have a control called "([^"]*)" for "([^"]*)"$/ do |name, pipeline_name|
-  control = FactoryBot.create :control, name:, pipeline: Pipeline.find_by(name: pipeline_name)
+  control = FactoryBot.create :control, name: name, pipeline: Pipeline.find_by(name: pipeline_name)
 end
 
 def pipeline_name_to_asset_type(pipeline_name)
@@ -34,7 +34,7 @@ def create_request_for_pipeline(pipeline_name, options = {}) # rubocop:todo Metr
     options.merge(
       request_type: pipeline.request_types.last,
       asset: FactoryBot.create(pipeline_name_to_asset_type(pipeline_name)),
-      request_metadata:
+      request_metadata: request_metadata
     )
   FactoryBot
     .create(:request_with_submission, request_parameters)

@@ -6,7 +6,7 @@ RSpec.describe IlluminaHtp::Requests::StdLibraryRequest do
   let(:tagged_well) { create(:tagged_well) }
 
   describe '#pass' do
-    subject { create(:library_request, target_asset: tagged_well, state:) }
+    subject { create(:library_request, target_asset: tagged_well, state: state) }
 
     let(:state) { 'started' }
 
@@ -40,7 +40,7 @@ RSpec.describe IlluminaHtp::Requests::StdLibraryRequest do
           name: library_type
         },
         request_type: subject.request_type.key,
-        pcr_cycles:,
+        pcr_cycles: pcr_cycles,
         for_multiplexing: false
       }
     end

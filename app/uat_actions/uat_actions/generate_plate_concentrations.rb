@@ -103,12 +103,12 @@ class UatActions::GeneratePlateConcentrations < UatActions
 
       QcResult.create!(
         asset: well,
-        key:,
+        key: key,
         value: create_random_concentration,
         units: conc_units,
         assay_type: 'UAT_Testing',
         assay_version: 'Binning',
-        qc_assay:
+        qc_assay: qc_assay
       )
       num_wells_written += 1
     end

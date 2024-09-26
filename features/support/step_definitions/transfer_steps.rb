@@ -83,7 +83,7 @@ Given /^the "([^"]+)" transfer template has been used between "([^"]+)" and "([^
   source = Plate.find_by(name: source_name) or raise StandardError, "Could not find source plate #{source_name.inspect}"
   destination = Plate.find_by(name: destination_name) or
     raise StandardError, "Could not find destination plate #{destination_plate.inspect}"
-  template.create!(source:, destination:, user: FactoryBot.create(:user))
+  template.create!(source: source, destination: destination, user: FactoryBot.create(:user))
 end
 
 def assert_request_state(state, targets, direction, request_class)

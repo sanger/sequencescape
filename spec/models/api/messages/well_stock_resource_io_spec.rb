@@ -21,7 +21,7 @@ RSpec.describe Api::Messages::WellStockResourceIO do
     )
   end
   let(:study) { create(:study) }
-  let(:aliquot) { create(:aliquot, study:, sample:, receptacle: well) }
+  let(:aliquot) { create(:aliquot, study: study, sample: sample, receptacle: well) }
 
   before { aliquot } # rubocop:todo RSpec/ScatteredSetup
 

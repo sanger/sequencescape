@@ -11,7 +11,7 @@ class Event::LabwareFailedEvent < Event
       message: "Labware failed for reason: #{failure_id}",
       content: Time.zone.today.to_s,
       family: 'labware_failure',
-      created_by:
+      created_by: created_by
     )
   end
 end

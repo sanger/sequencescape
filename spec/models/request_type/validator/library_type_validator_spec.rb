@@ -41,14 +41,14 @@ describe RequestType::Validator::LibraryTypeValidator do
       before do
         request_type.library_types_request_types << create(
           :library_types_request_type,
-          library_type:,
-          request_type:,
+          library_type: library_type,
+          request_type: request_type,
           is_default: false
         )
         request_type.library_types_request_types << create(
           :library_types_request_type,
           library_type: library_type2,
-          request_type:,
+          request_type: request_type,
           is_default: true
         )
       end
@@ -62,14 +62,14 @@ describe RequestType::Validator::LibraryTypeValidator do
       before do
         request_type.library_types_request_types << create(
           :library_types_request_type,
-          library_type:,
-          request_type:,
+          library_type: library_type,
+          request_type: request_type,
           is_default: false
         )
         request_type.library_types_request_types << create(
           :library_types_request_type,
           library_type: library_type2,
-          request_type:,
+          request_type: request_type,
           is_default: false
         )
       end

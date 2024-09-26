@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Given /^a state "([^"]*)" to lane named "([^"]*)"$/ do |status, name|
-  FactoryBot.create(:lane, name:, qc_state: status)
+  FactoryBot.create(:lane, name: name, qc_state: status)
 end
 
 Given /^an unreleasable lane named "([^"]*)"$/ do |name|

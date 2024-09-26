@@ -18,7 +18,7 @@ module User::Authentication
     filter = Net::LDAP::Filter.eq('uid', login)
     treebase = 'ou=people,dc=sanger,dc=ac,dc=uk'
 
-    ldap_profile = ldap.search(base: treebase, filter:)[0]
+    ldap_profile = ldap.search(base: treebase, filter: filter)[0]
 
     # If we have two or more records, something is off with LDAP
 
@@ -61,8 +61,8 @@ module User::Authentication
           encryption: :simple_tls,
           auth: {
             method: :simple,
-            username:,
-            password:
+            username: username,
+            password: password
           }
         )
       begin

@@ -22,7 +22,7 @@ SampleManifest::GenerateWellsJob =
 
     def create_sample_manifest_assets(well, sanger_sample_ids)
       sanger_sample_ids.each do |sanger_sample_id|
-        SampleManifestAsset.create(sanger_sample_id:, asset: well, sample_manifest:)
+        SampleManifestAsset.create(sanger_sample_id: sanger_sample_id, asset: well, sample_manifest: sample_manifest)
       end
     end
 

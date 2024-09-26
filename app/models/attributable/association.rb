@@ -71,7 +71,12 @@ module Attributable
     end
 
     def to_field_info(*_args)
-      FieldInfo.new(display_name:, key: assignable_attribute_name, kind:, selection: selection_options(nil))
+      FieldInfo.new(
+        display_name: display_name,
+        key: assignable_attribute_name,
+        kind: kind,
+        selection: selection_options(nil)
+      )
     end
 
     def configure(target) # rubocop:todo Metrics/MethodLength

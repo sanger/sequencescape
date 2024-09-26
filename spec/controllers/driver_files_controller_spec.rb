@@ -26,7 +26,7 @@ RSpec.describe DriverFilesController do
       )
     end
 
-    let(:batch) { create(:batch, requests:, pipeline:, user: current_user) }
+    let(:batch) { create(:batch, requests: requests, pipeline: pipeline, user: current_user) }
 
     before do
       get :show, params: { batch_id: batch.id, robot_id: robot.id, pick_number: 1 }, session: { user: current_user.id }

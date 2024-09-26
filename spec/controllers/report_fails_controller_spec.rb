@@ -16,7 +16,7 @@ describe ReportFailsController do
                report_fail: {
                  barcodes: [plate.human_barcode, plate_2.machine_barcode, sample_tube.human_barcode],
                  user_code: SBCF::SangerBarcode.from_human(user.barcode).machine_barcode,
-                 failure_id:
+                 failure_id: failure_id
                }
              }
       end
@@ -39,7 +39,7 @@ describe ReportFailsController do
                report_fail: {
                  barcodes: [plate.human_barcode, plate_2.machine_barcode, sample_tube.human_barcode],
                  user_code: SBCF::SangerBarcode.from_human(user.barcode).machine_barcode,
-                 failure_id:
+                 failure_id: failure_id
                }
              }
       end

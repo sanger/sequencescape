@@ -2,7 +2,7 @@
 
 Given /^plate "([^"]*)" has "([^"]*)" wells$/ do |plate_barcode, number_of_wells|
   plate = Plate.find_from_barcode(plate_barcode)
-  1.upto(number_of_wells.to_i) { |i| Well.create!(plate:, map_id: i) }
+  1.upto(number_of_wells.to_i) { |i| Well.create!(plate: plate, map_id: i) }
 end
 
 Then /^plate with barcode "([^"]*)" should exist$/ do |plate_barcode|
@@ -31,14 +31,15 @@ Given /^plate with barcode "([^"]*)" has a well$/ do |plate_barcode|
 end
 
 Given 'a tube named {string} with barcode {string} exists' do |name, machine_barcode|
-  FactoryBot.create :tube, name:, sanger_barcode: { machine_barcode: }
+  FactoryBot.create :tube, name: name, sanger_barcode: { machine_barcode: }
 end
 
 Given /^a plate with barcode "([^"]*)" exists$/ do |machine_barcode|
   if machine_barcode.start_with?('SQPD')
     FactoryBot.create :plate, sanger_barcode: Barcode.build_sequencescape22({ barcode: machine_barcode })
   else
-    FactoryBot.create :plate, sanger_barcode: Barcode.build_sanger_code39({ machine_barcode:, format: 'DN' })
+    FactoryBot.create :plate,
+                      sanger_barcode: Barcode.build_sanger_code39({ machine_barcode: machine_barcode, format: 'DN' })
   end
 end
 
@@ -46,7 +47,7 @@ end
 Given /^a "([^"]*)" plate purpose and of type "([^"]*)" with barcode "([^"]*)" exists$/ do |plate_purpose_name, plate_type, machine_barcode|
   # rubocop:enable Layout/LineLength
   plate_type.constantize.create!(
-    sanger_barcode: Barcode.build_sanger_code39({ machine_barcode:, format: 'DN' }),
+    sanger_barcode: Barcode.build_sanger_code39({ machine_barcode: machine_barcode, format: 'DN' }),
     plate_purpose: PlatePurpose.find_by(name: plate_purpose_name),
     name: machine_barcode
   )
@@ -110,7 +111,7 @@ end
 Given /^well "([^"]*)" is holded by plate "([^"]*)"$/ do |well_uuid, plate_uuid|
   well = Uuid.find_by(external_id: well_uuid).resource
   plate = Uuid.find_by(external_id: plate_uuid).resource
-  well.update!(plate:, map: Map.find_by(description: 'A1', asset_size: plate.size))
+  well.update!(plate: plate, map: Map.find_by(description: 'A1', asset_size: plate.size))
   Plate.find(plate_id).primary_barcode.update!(barcode: 'DN1S')
 end
 
@@ -125,20 +126,27 @@ end
 
 Given(/^a plate called "([^"]*)" exists with purpose "([^"]*)"$/) do |name, purpose_name|
   purpose = Purpose.find_by(name: purpose_name) || FactoryBot.create(:plate_purpose, name: purpose_name)
-  FactoryBot.create(:plate, name:, purpose:, well_count: 8)
+  FactoryBot.create(:plate, name: name, purpose: purpose, well_count: 8)
 end
 
 Given(
   /^a full plate called "([^"]*)" exists with purpose "([^"]*)" and barcode "([^"]*)"$/
 ) do |name, purpose_name, barcode|
   purpose = Purpose.find_by(name: purpose_name) || FactoryBot.create(:plate_purpose, name: purpose_name)
-  FactoryBot.create(:full_plate, well_factory: :untagged_well, name:, purpose:, barcode:, well_count: 16)
+  FactoryBot.create(
+    :full_plate,
+    well_factory: :untagged_well,
+    name: name,
+    purpose: purpose,
+    barcode: barcode,
+    well_count: 16
+  )
 end
 
 Given /^a "([^"]+)" plate called "([^"]+)" exists with barcode "([^"]+)"$/ do |name, plate_name, barcode|
   plate_purpose = PlatePurpose.find_by!(name:)
   step("the Baracoda barcode service returns \"#{barcode}\"")
-  plate_purpose.create!(name: plate_name, barcode:)
+  plate_purpose.create!(name: plate_name, barcode: barcode)
 end
 
 Given /^a "([^"]+)" plate called "([^"]+)" exists as a child of "([^"]+)"$/ do |name, plate_name, parent_name|
@@ -167,7 +175,7 @@ end
 Given /^the plate "([^"]*)" is (passed|started|pending|failed) by "([^"]*)"$/ do |plate_name, state, user_name|
   plate = Plate.find_by(name: plate_name)
   user = User.find_by(login: user_name)
-  StateChange.create!(user:, target: plate, target_state: state)
+  StateChange.create!(user: user, target: plate, target_state: state)
 end
 
 # rubocop:todo Layout/LineLength
@@ -180,7 +188,7 @@ Given /^(passed|started|pending|failed) transfer requests exist between (\d+) we
       :transfer_request,
       asset: source.wells.in_row_major_order[i],
       target_asset: destination.wells.in_row_major_order[i],
-      state:
+      state: state
     )
     Well::Link.create!(
       source_well: source.wells.in_row_major_order[i],
@@ -205,7 +213,8 @@ Given /^I have a plate with uuid "([^"]*)" with the following wells:$/ do |uuid,
   # plate = FactoryBot.create :plate, :barcode => plate_barcode
   plate = Uuid.find_by(external_id: uuid).resource
   well_details.hashes.each do |well_detail|
-    well = Well.create!(map: Map.find_by(description: well_detail[:well_location], asset_size: plate.size), plate:)
+    well =
+      Well.create!(map: Map.find_by(description: well_detail[:well_location], asset_size: plate.size), plate: plate)
     well.well_attribute.update!(
       concentration: well_detail[:measured_concentration],
       measured_volume: well_detail[:measured_volume]

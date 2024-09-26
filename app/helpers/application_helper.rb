@@ -170,7 +170,7 @@ module ApplicationHelper
       url_path = request_path(matching_requests.first)
       link_to count, url_path, html_options
     elsif count > 1
-      url_path = study_requests_path(study, state:, request_type_id: request_type.id, asset_id: asset.id)
+      url_path = study_requests_path(study, state: state, request_type_id: request_type.id, asset_id: asset.id)
       link_to count, url_path, html_options
     end
   end
@@ -230,7 +230,7 @@ module ApplicationHelper
     tag.li(class: 'nav-item') do
       link_to name,
               "##{target}",
-              id:,
+              id: id,
               data: {
                 toggle: 'tab'
               },
@@ -247,7 +247,7 @@ module ApplicationHelper
     tab_id ||= "#{name}-tab".parameterize
     id ||= name.parameterize
     active_class = active ? 'active' : ''
-    tag.div(class: ['tab-pane', 'fade', 'show', active_class], id:, role: 'tabpanel', aria_labelledby: tab_id, &)
+    tag.div(class: ['tab-pane', 'fade', 'show', active_class], id: id, role: 'tabpanel', aria_labelledby: tab_id, &)
   end
 
   def display_boolean_results(result)

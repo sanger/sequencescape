@@ -117,7 +117,7 @@ class UatActions::GenerateSampleManifest < UatActions
         donor_id: "#{sample_name}_donor",
         sample_common_name: 'human'
       },
-      sample_manifest:
+      sample_manifest: sample_manifest
     )
   end
 

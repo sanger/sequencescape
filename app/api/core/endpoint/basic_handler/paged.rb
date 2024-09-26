@@ -47,7 +47,7 @@ module Core::Endpoint::BasicHandler::Paged
     raise ActiveRecord::RecordNotFound, 'before the start of the results' if page <= 0
 
     target
-      .paginate(page:, per_page: results_per_page, total_entries: model.count(:all))
+      .paginate(page: page, per_page: results_per_page, total_entries: model.count(:all))
       .tap do |results|
         raise ActiveRecord::RecordNotFound, 'past the end of the results' if (page > 1) && (page > results.total_pages)
       end

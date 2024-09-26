@@ -99,7 +99,7 @@ class Study::PolyMetadataHandler
     if value.blank?
       poly_metadatum&.destroy!
     elsif poly_metadatum&.value != value
-      poly_metadatum ||= PolyMetadatum.new(key:, metadatable: @study)
+      poly_metadatum ||= PolyMetadatum.new(key: key, metadatable: @study)
       poly_metadatum.value = value
       poly_metadatum.save!
     end

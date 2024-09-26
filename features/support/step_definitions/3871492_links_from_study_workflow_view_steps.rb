@@ -5,5 +5,5 @@ Given /^study "([^"]+)" has a registered sample "([^"]+)"$/ do |study_name, samp
   sample = study.samples.create!(name: sample_name)
   st = SampleTube.create!.tap { |sample_tube| sample_tube.aliquots.create!(sample:, study:) }
 
-  FactoryHelp.submission(study:, assets: [st], state: 'ready')
+  FactoryHelp.submission(study: study, assets: [st], state: 'ready')
 end

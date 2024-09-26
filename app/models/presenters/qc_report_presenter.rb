@@ -51,7 +51,7 @@ class Presenters::QcReportPresenter
   end
 
   def state_description
-    I18n.t(qc_report.state, scope: 'qc_reports.state_descriptions', default: :default, queue_count:)
+    I18n.t(qc_report.state, scope: 'qc_reports.state_descriptions', default: :default, queue_count: queue_count)
   end
 
   def to_csv(io)

@@ -20,13 +20,13 @@ RSpec.describe Study do
         # Passed
         3.times { r << (create(:passed_request, study:, request_type:)) }
 
-        r << (create(:passed_request, study:, request_type: request_type_2))
-        r << (create(:passed_request, study:, request_type: request_type_3))
-        r << (create(:passed_request, study:, request_type: request_type_3))
+        r << (create(:passed_request, study: study, request_type: request_type_2))
+        r << (create(:passed_request, study: study, request_type: request_type_3))
+        r << (create(:passed_request, study: study, request_type: request_type_3))
 
         # Pending
         r << (create(:pending_request, study:, request_type:))
-        r << (create(:pending_request, study:, request_type: request_type_3))
+        r << (create(:pending_request, study: study, request_type: request_type_3))
       end
 
     # we have to hack t
@@ -208,9 +208,9 @@ RSpec.describe Study do
 
       context 'with submissions still unprocessed' do
         before do
-          FactoryHelp.submission study:, state: 'building', assets: [asset]
-          FactoryHelp.submission study:, state: 'pending', assets: [asset]
-          FactoryHelp.submission study:, state: 'processing', assets: [asset]
+          FactoryHelp.submission study: study, state: 'building', assets: [asset]
+          FactoryHelp.submission study: study, state: 'pending', assets: [asset]
+          FactoryHelp.submission study: study, state: 'processing', assets: [asset]
         end
 
         it 'returns true' do
@@ -220,8 +220,8 @@ RSpec.describe Study do
 
       context 'with no submissions unprocessed' do
         before do
-          FactoryHelp.submission study:, state: 'ready', assets: [asset]
-          FactoryHelp.submission study:, state: 'failed', assets: [asset]
+          FactoryHelp.submission study: study, state: 'ready', assets: [asset]
+          FactoryHelp.submission study: study, state: 'failed', assets: [asset]
         end
 
         it 'returns false' do
@@ -242,7 +242,7 @@ RSpec.describe Study do
 
       before do
         2.times do
-          r = create(:passed_request, request_type:, initial_study_id: study.id)
+          r = create(:passed_request, request_type: request_type, initial_study_id: study.id)
           r.asset.aliquots.each do |al|
             al.study = study
             al.save!
@@ -380,10 +380,10 @@ RSpec.describe Study do
       let(:purpose_2) { create(:plate_purpose) }
       let(:purpose_3) { create(:plate_purpose) }
       let(:purpose_4) { create(:plate_purpose) }
-      let!(:well_1) { create(:well_for_qc_report, study:, plate: create(:plate, plate_purpose: purpose_1)) }
-      let!(:well_2) { create(:well_for_qc_report, study:, plate: create(:plate, plate_purpose: purpose_2)) }
-      let!(:well_3) { create(:well_for_qc_report, study:, plate: create(:plate, plate_purpose: purpose_3)) }
-      let!(:well_4) { create(:well_for_qc_report, study:, plate: create(:plate, plate_purpose: purpose_4)) }
+      let!(:well_1) { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: purpose_1)) }
+      let!(:well_2) { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: purpose_2)) }
+      let!(:well_3) { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: purpose_3)) }
+      let!(:well_4) { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: purpose_4)) }
 
       it 'will limit by stock plate purposes if there are no plate purposes' do
         wells_count = 0

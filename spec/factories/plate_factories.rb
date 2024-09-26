@@ -32,7 +32,7 @@ FactoryBot.define do
         evaluator.well_locations.map do |map|
           build(
             evaluator.well_factory,
-            map:,
+            map: map,
             study: evaluator.studies_cycle.next,
             project: evaluator.projects_cycle.next
           )
@@ -92,7 +92,12 @@ FactoryBot.define do
           outer_request =
             well_hash[well.map_description].requests.detect { |r| r.submission_id == evaluator.submission.id }
 
-          create(:transfer_request, asset: well_hash[well.map_description], target_asset: well, outer_request:)
+          create(
+            :transfer_request,
+            asset: well_hash[well.map_description],
+            target_asset: well,
+            outer_request: outer_request
+          )
         end
       end
     end
@@ -156,7 +161,7 @@ FactoryBot.define do
       after(:create) do |plate, evaluator|
         plate.wells =
           evaluator.occupied_map_locations.map.with_index do |map, i|
-            create(:well_for_location_report, map:, study: evaluator.studies[i], project: nil)
+            create(:well_for_location_report, map: map, study: evaluator.studies[i], project: nil)
           end
       end
     end

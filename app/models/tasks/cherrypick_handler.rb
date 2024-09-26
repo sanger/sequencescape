@@ -162,7 +162,7 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
             plate_purpose.create!(
               :do_not_create_wells,
               name: "Cherrypicked #{plate_barcode.barcode}",
-              size:,
+              size: size,
               sanger_barcode: plate_barcode
             ) { |new_plate| new_plate.fluidigm_barcode = fluidigm_plate if fluidigm_plate.present? }
         end

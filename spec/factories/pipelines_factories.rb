@@ -64,7 +64,7 @@ FactoryBot.define do
           name: pipeline.name,
           item_limit: evaluator.item_limit,
           locale: evaluator.locale,
-          pipeline:
+          pipeline: pipeline
         )
       end
     end
@@ -124,14 +124,14 @@ FactoryBot.define do
         create(
           :set_descriptors_task,
           name: 'Specify Dilution Volume',
-          workflow:,
+          workflow: workflow,
           per_item: true,
           descriptor_attributes: [{ kind: 'Text', sorter: 0, name: 'Concentration' }]
         )
         create(:add_spiked_in_control_task, workflow:)
         create(
           :set_descriptors_task,
-          workflow:,
+          workflow: workflow,
           descriptor_attributes: [
             {
               kind: 'Selection',

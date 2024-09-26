@@ -176,7 +176,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
               submission =
                 Submission.create!(
                   name: submission_name,
-                  user:,
+                  user: user,
                   orders: orders_processed,
                   priority: max_priority(orders)
                 )
@@ -355,11 +355,11 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
 
     # Set up the order attributes
     attributes = {
-      study:,
-      project:,
-      user:,
+      study: study,
+      project: project,
+      user: user,
       comments: details['comments'],
-      request_options:,
+      request_options: request_options,
       pre_cap_group: details['pre-capture group']
     }
 

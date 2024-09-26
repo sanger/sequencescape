@@ -113,10 +113,10 @@ module SampleManifestExcel
         def update_downstream_aliquots
           substituter =
             TagSubstitution.new(
-              substitutions:,
+              substitutions: substitutions,
               comment: 'Manifest updated',
               disable_clash_detection: true,
-              disable_match_expectation:
+              disable_match_expectation: disable_match_expectation
             )
           @downstream_aliquots_updated =
             substituter.save || log_error_and_return_false(substituter.errors.full_messages.join('; '))

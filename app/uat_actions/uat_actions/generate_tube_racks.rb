@@ -28,7 +28,7 @@ class UatActions::GenerateTubeRacks < UatActions
     purpose = Purpose.find_by(name: 'TR Stock 96')
     rack_count.to_i.times do |i|
       TubeRack
-        .create!(size: 96, purpose:)
+        .create!(size: 96, purpose: purpose)
         .tap do |rack|
           Barcode.create!(
             asset: rack,
@@ -58,7 +58,7 @@ class UatActions::GenerateTubeRacks < UatActions
               supplier_name: sample_name
             }
           ),
-        study:
+        study: study
       )
 
       racked_tube = RackedTube.create!(tube_rack_id: rack.id, tube_id: tube.id, coordinate: i)

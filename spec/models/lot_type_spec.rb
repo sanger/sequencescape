@@ -21,7 +21,7 @@ RSpec.describe LotType do
     let(:lot_type) { create(:lot_type) }
     let(:user) { create(:user) }
     let(:template) { PlateTemplate.new }
-    let(:lot) { lot_type.create!(template:, user:, lot_number: '123456789', received_at: '2014-02-01') }
+    let(:lot) { lot_type.create!(template: template, user: user, lot_number: '123456789', received_at: '2014-02-01') }
 
     context 'create' do
       it 'change Lot.count by 1' do

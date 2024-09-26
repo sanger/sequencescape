@@ -7,7 +7,7 @@ describe Robot::Generator::Tecan do
     describe '.as_text' do
       let(:batch) { instance_double(Batch, total_volume_to_cherrypick: 13) }
       let(:layout) { Robot::Verification::SourceDestBeds.new.layout_data_object(data_object) }
-      let(:generator) { described_class.new(picking_data: data_object, batch:, layout:) }
+      let(:generator) { described_class.new(picking_data: data_object, batch: batch, layout: layout) }
 
       context 'when mapping wells from 1 96 well source plate to 1 96 well destination plate' do
         it 'returns a String object' do

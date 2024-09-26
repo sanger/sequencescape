@@ -48,7 +48,7 @@ RSpec.describe LocationReport do
   # add retention instruction metadata to plate 1 custom metadatum collection
   let(:retention_key) { 'retention_instruction' }
   let(:retention_value) { 'Long term storage' }
-  let(:plate_1_custom_metadatum_collection) { create(:custom_metadatum_collection, asset: plate_1, user:) }
+  let(:plate_1_custom_metadatum_collection) { create(:custom_metadatum_collection, asset: plate_1, user: user) }
   let(:plate_1_custom_metadatum) do
     create(
       :custom_metadatum,
@@ -84,7 +84,7 @@ RSpec.describe LocationReport do
   let(:plt_3_received_date) { 'Unknown' }
 
   # add retention instruction metadata to plate 3 custom metadatum collection
-  let(:plate_3_custom_metadatum_collection) { create(:custom_metadatum_collection, asset: plate_3, user:) }
+  let(:plate_3_custom_metadatum_collection) { create(:custom_metadatum_collection, asset: plate_3, user: user) }
   let(:plate_3_custom_metadatum) do
     create(
       :custom_metadatum,

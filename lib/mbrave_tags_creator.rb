@@ -129,7 +129,7 @@ class MbraveTagsCreator
 
   def _create_tag_group(tag_group_name, tags)
     raise "TagGroup #{tag_group_name} already exists" if TagGroup.find_by(name: tag_group_name)
-    TagGroup.create(name: tag_group_name, tags:)
+    TagGroup.create(name: tag_group_name, tags: tags)
   end
 
   def _add_to_yaml(_yaml_filename, tag_group_name, mbrave_tags, version, num_plate)
@@ -157,13 +157,13 @@ class MbraveTagsCreator
             lot_type.lots.create!(
               lot_number: "PSD_#{Time.current.to_f}",
               template: tag_layout_template,
-              user:,
+              user: user,
               received_at: Time.current
             )
           text_code = text_code_for_tag_layout(tag_layout_template)
           plate_barcode = PlateBarcode.create_barcode_with_text(text_code) # barcode object
 
-          qcc = QcableCreator.create!(lot:, user:, supplied_barcode: plate_barcode)
+          qcc = QcableCreator.create!(lot: lot, user: user, supplied_barcode: plate_barcode)
           qcc.qcables.each_with_index do |qcable, _index|
             qcable.update!(state: 'available')
             log_line { "#{tag_layout_template.name}:" }
@@ -190,10 +190,10 @@ class MbraveTagsCreator
       ActiveRecord::Base.transaction do
         mbrave_tags_creator =
           MbraveTagsCreator.new(
-            forward_filename:,
-            reverse_filename:,
+            forward_filename: forward_filename,
+            reverse_filename: reverse_filename,
             tag_identifier: MbraveTagsCreator::TAG_IDENTIFIER,
-            version:,
+            version: version,
             yaml_filename: MbraveTagsCreator::YAML_FILENAME
           )
 

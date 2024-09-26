@@ -6,7 +6,14 @@ Given /^sequencescape is setup for 10071597$/ do
   library_tube = FactoryBot.create :empty_library_tube
   request_type = RequestType.find_by(name: 'Illumina-B Paired end sequencing')
   request =
-    FactoryBot.create(:request, asset: library_tube, target_asset: lane, state: 'pending', project:, request_type:)
+    FactoryBot.create(
+      :request,
+      asset: library_tube,
+      target_asset: lane,
+      state: 'pending',
+      project: project,
+      request_type: request_type
+    )
   project.update!(enforce_quotas: true)
 end
 

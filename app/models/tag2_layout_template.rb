@@ -25,7 +25,7 @@ class Tag2LayoutTemplate < ApplicationRecord
 
   def record_template_use(plate)
     plate.submissions.each do |submission|
-      Tag2Layout::TemplateSubmission.create!(submission:, tag2_layout_template: self)
+      Tag2Layout::TemplateSubmission.create!(submission: submission, tag2_layout_template: self)
     end
   end
 

@@ -20,7 +20,7 @@ Given /^tube "([^"]*)" has a public name of "([^"]*)"$/ do |name, public_name|
 end
 
 Given /^(?:I have )?a phiX tube called "([^"]+)"$/ do |name|
-  FactoryBot.create(:sample_tube, name:, study: nil, project: nil)
+  FactoryBot.create(:sample_tube, name: name, study: nil, project: nil)
 end
 
 Given /^(?:I have )?a (sample|library) tube called "([^"]+)"$/ do |tube_type, name|
@@ -41,6 +41,6 @@ Given /^there is an asset link between "([^"]*)" and "([^"]*)"$/ do |source, tar
   AssetLink.create_edge(source_plate, target_plate)
   target_plate.wells.each do |target_well|
     source_well = source_plate.wells.located_at(target_well.map_description).first
-    Well::Link.create!(target_well:, source_well:, type: 'stock')
+    Well::Link.create!(target_well: target_well, source_well: source_well, type: 'stock')
   end
 end

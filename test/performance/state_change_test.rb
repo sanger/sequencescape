@@ -13,7 +13,7 @@ class StateChangeTest < ActionDispatch::PerformanceTest
     @source = create(:transfer_plate, well_count: 96)
     @destination = create(:plate, well_count: 96)
     transfers = @source.wells.each_with_object({}) { |w, h| h[w.map_description] = w.map_description }
-    @transfer = create(:transfer_between_plates, source: @source, destination: @destination, transfers:)
+    @transfer = create(:transfer_between_plates, source: @source, destination: @destination, transfers: transfers)
     @user = create(:user)
   end
 

@@ -180,7 +180,7 @@ module SampleManifestExcel
             tube_rack_barcode = @tube_barcode_to_rack_barcode[tube_barcode]
             tube_rack = rack_barcode_to_tube_rack[tube_rack_barcode]
             tube_barcode_to_coordinate = @rack_barcode_to_scan_results[tube_rack_barcode]
-            RackedTube.create!(tube_rack:, tube:, coordinate: tube_barcode_to_coordinate[tube_barcode])
+            RackedTube.create!(tube_rack: tube_rack, tube: tube, coordinate: tube_barcode_to_coordinate[tube_barcode])
           end
         end
 

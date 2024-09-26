@@ -165,13 +165,13 @@ RequestType.find_each do |request_type|
   if library_types.present?
     library_types.each do |library_type|
       LibraryTypesRequestType.create!(
-        request_type:,
-        library_type:,
+        request_type: request_type,
+        library_type: library_type,
         is_default: library_type.name == SetupLibraryTypes.existing_defaults_for(request_type)
       )
     end
     RequestType::Validator.create!(
-      request_type:,
+      request_type: request_type,
       request_option: 'library_type',
       valid_options: RequestType::Validator::LibraryTypeValidator.new(request_type.id)
     )
@@ -198,7 +198,11 @@ RequestType.find_each do |request_type|
     ]
 
   if read_lengths.present?
-    RequestType::Validator.create!(request_type:, request_option: 'read_length', valid_options: read_lengths)
+    RequestType::Validator.create!(
+      request_type: request_type,
+      request_option: 'read_length',
+      valid_options: read_lengths
+    )
   end
 end
 
@@ -229,7 +233,9 @@ library_types =
 
 %i[illumina_c_multiplexed_library_creation illumina_c_library_creation].each do |request_class_symbol|
   request_type = RequestType.find_by!(key: request_class_symbol.to_s)
-  library_types.each { |library_type| LibraryTypesRequestType.create!(request_type:, library_type:, is_default: false) }
+  library_types.each do |library_type|
+    LibraryTypesRequestType.create!(request_type: request_type, library_type: library_type, is_default: false)
+  end
 end
 
 libs_ribozero =
@@ -238,7 +244,7 @@ libs_ribozero =
 libs_ribozero.each do |lib|
   %i[illumina_c_pcr illumina_c_pcr_no_pool].each do |request_class_symbol|
     request_type = RequestType.find_by(key: request_class_symbol.to_s)
-    LibraryTypesRequestType.create!(request_type:, library_type: lib, is_default: false)
+    LibraryTypesRequestType.create!(request_type: request_type, library_type: lib, is_default: false)
   end
 end
 

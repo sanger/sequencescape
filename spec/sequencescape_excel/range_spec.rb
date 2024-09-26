@@ -6,7 +6,14 @@ RSpec.describe SequencescapeExcel::Range, :sample_manifest, :sample_manifest_exc
   let(:options) { %w[option1 option2 option3] }
 
   it 'is comparable' do
-    attributes = { options:, first_column: 4, first_row: 5, last_column: 8, last_row: 10, worksheet_name: 'Sheet1' }
+    attributes = {
+      options: options,
+      first_column: 4,
+      first_row: 5,
+      last_column: 8,
+      last_row: 10,
+      worksheet_name: 'Sheet1'
+    }
 
     # rubocop:todo RSpec/IdenticalEqualityAssertion
     expect(described_class.new(attributes)).to eq(described_class.new(attributes))
@@ -16,7 +23,7 @@ RSpec.describe SequencescapeExcel::Range, :sample_manifest, :sample_manifest_exc
   end
 
   context 'with static options' do
-    let(:range) { described_class.new(options:, first_row: 4) }
+    let(:range) { described_class.new(options: options, first_row: 4) }
 
     it 'has some options' do
       expect(range.options).to eq(options)
@@ -32,7 +39,7 @@ RSpec.describe SequencescapeExcel::Range, :sample_manifest, :sample_manifest_exc
 
     it 'sets the last column' do
       expect(range.last_column).to eq(3)
-      expect(described_class.new(options:, first_column: 4, first_row: 4).last_column).to eq(6)
+      expect(described_class.new(options: options, first_column: 4, first_row: 4).last_column).to eq(6)
     end
 
     it 'has a first_cell' do

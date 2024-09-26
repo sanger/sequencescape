@@ -6,7 +6,7 @@ require './app/resources/api/v2/well_resource'
 RSpec.describe Api::V2::WellResource, type: :resource do
   subject(:resource) { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { build_stubbed(:well, plate:, map: position) }
+  let(:resource_model) { build_stubbed(:well, plate: plate, map: position) }
 
   shared_examples 'a well resource' do
     # Test attributes

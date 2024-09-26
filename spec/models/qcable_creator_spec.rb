@@ -7,7 +7,7 @@ describe QcableCreator do
   let(:lot) { create(:tag2_lot) }
 
   it 'will create some qcables with a count' do
-    qcable_creator = described_class.create(count: 10, user:, lot:)
+    qcable_creator = described_class.create(count: 10, user: user, lot: lot)
     expect(qcable_creator.qcables.count).to eq(10)
   end
 
@@ -24,7 +24,7 @@ describe QcableCreator do
     let(:lot) { create(:tag_layout_lot) }
 
     it 'will create qcables with single barcode' do
-      qcable_creator = described_class.create(user:, lot:, supplied_barcode: plate_barcode)
+      qcable_creator = described_class.create(user: user, lot: lot, supplied_barcode: plate_barcode)
       expect(qcable_creator.qcables.count).to eq(1)
       expect(qcable_creator.qcables.first.barcodes.count).to eq(1)
       expect(qcable_creator.qcables.first.barcodes.first).to eq(plate_barcode)

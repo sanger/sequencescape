@@ -55,7 +55,7 @@ Capybara.register_driver :headless_chrome do |app|
   options.add_argument('--headless=old')
   options.add_argument('--disable-gpu')
   options.add_argument('--disable-search-engine-choice-screen')
-  Capybara::Selenium::Driver.new(app, browser: :chrome, options:)
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 end
 
 Capybara.register_driver :selenium_chrome do |app|
@@ -64,7 +64,7 @@ Capybara.register_driver :selenium_chrome do |app|
   options.add_preference('download.default_directory', DownloadHelpers::PATH.to_s)
   options.add_argument('--disable-gpu')
   options.add_argument('--disable-search-engine-choice-screen')
-  Capybara::Selenium::Driver.new(app, browser: :chrome, options:)
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 end
 
 Capybara.javascript_driver = ENV.fetch('JS_DRIVER', 'headless_chrome').to_sym

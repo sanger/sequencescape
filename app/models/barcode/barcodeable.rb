@@ -96,7 +96,7 @@ module Barcode::Barcodeable
 
     raise "Foreign Barcode: #{barcode} is already in use!" if Barcode.exists_for_format?(barcode_format, barcode)
 
-    barcodes << Barcode.new(format: barcode_format, barcode:)
+    barcodes << Barcode.new(format: barcode_format, barcode: barcode)
   end
 
   # ***** End getter and setter methods for foreign barcodes *****

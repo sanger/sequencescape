@@ -20,7 +20,7 @@ RSpec.describe Api::V2::Heron::PlatesController, :heron, type: :request do
         data: {
           type: 'plates',
           attributes: {
-            barcode:,
+            barcode: barcode,
             wells: {
               A01: {
                 content: {
@@ -33,8 +33,8 @@ RSpec.describe Api::V2::Heron::PlatesController, :heron, type: :request do
                 }
               }
             },
-            purpose_uuid:,
-            study_uuid:
+            purpose_uuid: purpose_uuid,
+            study_uuid: study_uuid
           }
         }
       }.to_h.with_indifferent_access

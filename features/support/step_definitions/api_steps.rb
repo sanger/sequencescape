@@ -119,7 +119,7 @@ When %r{^I make an authorised (POST|PUT) with the following JSON to the API path
 end
 
 Given /^I have a "(.*?)" authorised user with the key "(.*?)"$/ do |permission, key|
-  ApiApplication.new(name: 'test_api', key:, privilege: permission, contact: 'none').save(validate: false)
+  ApiApplication.new(name: 'test_api', key: key, privilege: permission, contact: 'none').save(validate: false)
 end
 
 When /^I retrieve the JSON for all (studies|samples|requests)$/ do |model|

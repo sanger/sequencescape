@@ -70,7 +70,7 @@ RSpec.describe PhiX::SpikedBuffer, :phi_x do
           concentration: '0.8',
           volume: '10',
           number: 2,
-          study_id:
+          study_id: study_id
         )
       end
 

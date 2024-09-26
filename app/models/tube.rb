@@ -94,7 +94,7 @@ class Tube < Labware
     # this is to control the order of barcode addition so that it gets set as the 'primary' barcode
     foreign_barcode = attributes.delete(:foreign_barcode)
 
-    tube = create!(attributes.merge(sanger_barcode: { prefix:, number: barcode }), &)
+    tube = create!(attributes.merge(sanger_barcode: { prefix: prefix, number: barcode }), &)
 
     tube.foreign_barcode = foreign_barcode if foreign_barcode
     tube.reload
@@ -111,7 +111,7 @@ def extract_barcode(args, attributes)
 end
 
 def validate_barcode(barcode, prefix)
-  human = SBCF::SangerBarcode.new(prefix:, number: barcode).human_barcode
+  human = SBCF::SangerBarcode.new(prefix: prefix, number: barcode).human_barcode
   raise "Barcode: #{barcode} already used!" if Barcode.exists?(barcode: human)
 end
 

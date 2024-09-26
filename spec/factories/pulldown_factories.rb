@@ -25,7 +25,7 @@ FactoryBot.define do
 
     transient { tag_sequences { %w[ACGT TGCA] } }
 
-    tags { tag_sequences.each_with_index.map { |oligo, index| build(:tag, map_id: index + 1, oligo:) } }
+    tags { tag_sequences.each_with_index.map { |oligo, index| build(:tag, map_id: index + 1, oligo: oligo) } }
   end
 
   # Tag layouts and their templates
@@ -92,11 +92,11 @@ FactoryBot.define do
         .each_with_index do |pool, i|
           submission = create(:submission)
           pool.each do |well|
-            create(:transfer_request, asset: stock_wells[i], target_asset: well, submission:)
+            create(:transfer_request, asset: stock_wells[i], target_asset: well, submission: submission)
             mock_request_type.create!(
               asset: stock_wells[i],
               target_asset: well,
-              submission:,
+              submission: submission,
               request_metadata_attributes: create(:request_metadata_for_library_creation).attributes
             )
             create(:stock_well_link, target_well: well, source_well: stock_wells[i])
@@ -130,7 +130,7 @@ FactoryBot.define do
       {
         fragment_size_required_from: 100,
         fragment_size_required_to: 400,
-        bait_library:,
+        bait_library: bait_library,
         library_type: 'Agilent Pulldown'
       }
     end

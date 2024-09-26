@@ -44,7 +44,9 @@ class PickList < ApplicationRecord
 
   def pick_attributes
     orders.flat_map do |order|
-      order.assets.map { |source_receptacle| { source_receptacle:, study: order.study, project: order.project } }
+      order.assets.map do |source_receptacle|
+        { source_receptacle: source_receptacle, study: order.study, project: order.project }
+      end
     end
   end
 
@@ -98,7 +100,7 @@ class PickList < ApplicationRecord
 
   def build_order(pick_group, order_options)
     AutomatedOrder.new(
-      user:,
+      user: user,
       assets: pick_group.map(&:source_receptacle),
       request_types: [request_type_id],
       **order_options # Merge the order options into the arguments
@@ -106,7 +108,7 @@ class PickList < ApplicationRecord
   end
 
   def create_batch!
-    Batch.create!(requests: submission.requests.reload, pipeline:, user:)
+    Batch.create!(requests: submission.requests.reload, pipeline: pipeline, user: user)
   end
 
   def user

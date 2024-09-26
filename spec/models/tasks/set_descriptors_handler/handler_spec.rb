@@ -30,7 +30,7 @@ RSpec.describe Tasks::SetDescriptorsHandler::Handler do
       it 'sets attributes on the lab event' do
         handler.perform
         event = request.reload.lab_events.first
-        expect(event).to have_attributes(description: 'Step 1', descriptor_hash: { 'key' => 'value ' }, user:)
+        expect(event).to have_attributes(description: 'Step 1', descriptor_hash: { 'key' => 'value ' }, user: user)
       end
 
       it 'sets attributes on the batch event' do
@@ -42,7 +42,7 @@ RSpec.describe Tasks::SetDescriptorsHandler::Handler do
             'task' => 'Step 1',
             'task_id' => '1'
           },
-          user:
+          user: user
         )
       end
     end

@@ -154,7 +154,7 @@ class ReceptaclesController < ApplicationController # rubocop:todo Metrics/Class
         assets: [@asset],
         request_types: [@request_type.id],
         request_options: request_options.to_unsafe_h,
-        submission:,
+        submission: submission,
         comments: params[:comments]
       )
     resubmission_order.save!

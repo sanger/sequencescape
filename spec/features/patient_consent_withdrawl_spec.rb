@@ -63,9 +63,9 @@ describe 'Sample#consent_withdrawn', js: false do
         let(:order) do
           submission_template.new_order(
             project: create(:project),
-            study:,
-            asset_group:,
-            user:,
+            study: study,
+            asset_group: asset_group,
+            user: user,
             request_options: {
               'fragment_size_required_from' => 300,
               'fragment_size_required_to' => 400,
@@ -81,9 +81,9 @@ describe 'Sample#consent_withdrawn', js: false do
         let(:order) do
           submission_template.new_order(
             project: create(:project),
-            study:,
+            study: study,
             assets: [sample_tube],
-            user:,
+            user: user,
             request_options: {
               'fragment_size_required_from' => 300,
               'fragment_size_required_to' => 400,

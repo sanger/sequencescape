@@ -119,7 +119,7 @@ class PreCapGroupsTest < ActiveSupport::TestCase
       @pools = create_list(:pre_capture_pool, 3)
       with_pools(%w[A1 B1 C1], %w[D1 E1 F1])
       transfers = @test_plate.wells.each_with_object({}) { |w, hash| hash[w.map_description] = w.map_description }
-      create(:transfer_between_plates, transfers:, source: @plate, destination: @test_plate)
+      create(:transfer_between_plates, transfers: transfers, source: @plate, destination: @test_plate)
     end
 
     should 'report the pools from the stock plate' do

@@ -67,7 +67,7 @@ class Plate::QuadCreator
   end
 
   def creation
-    @creation ||= PooledPlateCreation.new(user:, parents: @parents.values, child_purpose: target_purpose)
+    @creation ||= PooledPlateCreation.new(user: user, parents: @parents.values, child_purpose: target_purpose)
   end
 
   def transfer_request_collection
@@ -98,7 +98,7 @@ class Plate::QuadCreator
       quadrant_metadata["Quadrant #{quadrant_index + 1}"] = parent_barcodes[quadrant_name] || 'Empty'
     end
     @quadrant_metadata_collection ||=
-      CustomMetadatumCollection.new(user:, asset: target_plate, metadata: quadrant_metadata)
+      CustomMetadatumCollection.new(user: user, asset: target_plate, metadata: quadrant_metadata)
   end
 
   class << self

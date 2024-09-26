@@ -47,7 +47,12 @@ class LabwhereReception
     return false unless valid?
 
     begin
-      scan = LabWhereClient::Scan.create(location_barcode:, user_code:, labware_barcodes: asset_barcodes)
+      scan =
+        LabWhereClient::Scan.create(
+          location_barcode: location_barcode,
+          user_code: user_code,
+          labware_barcodes: asset_barcodes
+        )
 
       unless scan.valid?
         # Prepend the errors with 'Labwhere' to make it clear where the error came from
@@ -64,7 +69,7 @@ class LabwhereReception
 
     assets.each do |asset|
       asset.events.create_scanned_into_lab!(location_barcode, user.login)
-      BroadcastEvent::LabwareReceived.create!(seed: asset, user:, properties: { location_barcode: })
+      BroadcastEvent::LabwareReceived.create!(seed: asset, user: user, properties: { location_barcode: })
     end
 
     valid?

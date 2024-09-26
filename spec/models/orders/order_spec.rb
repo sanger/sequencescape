@@ -15,7 +15,16 @@ RSpec.describe Order do
     # don't want to trigger this behaviour accidentally if someone forgets to
     # specify a study.
 
-    subject(:order) { build(:order, assets:, autodetect_studies:, autodetect_projects:, study: nil, project: nil) }
+    subject(:order) do
+      build(
+        :order,
+        assets: assets,
+        autodetect_studies: autodetect_studies,
+        autodetect_projects: autodetect_projects,
+        study: nil,
+        project: nil
+      )
+    end
 
     let(:assets) { [tube] }
     let(:tube) { create(:sample_tube, aliquots:) }
@@ -109,13 +118,13 @@ RSpec.describe Order do
   end
 
   it 'order should not be valid if study is not active' do
-    order = build(:order, study:, assets: [asset.receptacle], project:)
+    order = build(:order, study: study, assets: [asset.receptacle], project: project)
     expect(order).not_to be_valid
   end
 
   it 'order should be valid if study is active on create' do
     study.activate!
-    order = create(:order, study:, assets: [asset.receptacle], project:)
+    order = create(:order, study: study, assets: [asset.receptacle], project: project)
     assert order.valid?
     study.deactivate!
     new_asset = create(:empty_sample_tube)

@@ -14,8 +14,8 @@ RSpec.describe Request do
   describe '#for_order_including_submission_based_requests' do
     before do
       @sequencing_request = create(:request_with_sequencing_request_type, submission:)
-      @request = create(:request, order: order1, submission:, asset: @asset)
-      @request2 = create(:request, order: order2, submission:)
+      @request = create(:request, order: order1, submission: submission, asset: @asset)
+      @request2 = create(:request, order: order2, submission: submission)
 
       @request3 = create(:request, order: order4, submission: order4.submission)
       @sequencing_request2 = create(:request_with_sequencing_request_type, submission: order4.submission)
@@ -107,8 +107,8 @@ RSpec.describe Request do
   # themselves via FactoryBot until the two behaviours are uncoupled
   describe '#next_requests' do
     let(:submission) { create(:submission, orders: [order1, order2], state: 'pending') }
-    let(:order1) { create(:linear_submission, request_types: order1_request_types, request_options:) }
-    let(:order2) { create(:linear_submission, request_types: order2_request_types, request_options:) }
+    let(:order1) { create(:linear_submission, request_types: order1_request_types, request_options: request_options) }
+    let(:order2) { create(:linear_submission, request_types: order2_request_types, request_options: request_options) }
     let(:order1_request1) do
       submission.requests.detect { |r| r.order == order1 && r.request_type_id == order1_request_types.first }
     end
@@ -233,7 +233,7 @@ RSpec.describe Request do
   describe '#copy' do
     before do
       @request_type = create(:request_type)
-      @request = create(:request, request_type: @request_type, study:, state: 'failed')
+      @request = create(:request, request_type: @request_type, study: study, state: 'failed')
       @new_request = @request.copy
     end
 
@@ -389,7 +389,7 @@ RSpec.describe Request do
 
   describe '#eventful_studies' do
     let(:asset) { create(:untagged_well) }
-    let(:request) { create(:request, asset:, initial_study: study) }
+    let(:request) { create(:request, asset: asset, initial_study: study) }
 
     context 'with no study itself' do
       let(:study) { nil }

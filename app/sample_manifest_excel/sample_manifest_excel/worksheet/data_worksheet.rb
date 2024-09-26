@@ -88,7 +88,7 @@ module SampleManifestExcel
               (sample_manifest.invalid_wells&.include?(detail.fetch(:position, nil)) ? [:disabled] : column.style)
 
             style = find_or_create_style(style_name)&.reference
-            row.add_cell column.attribute_value(detail), type: column.type, style:
+            row.add_cell column.attribute_value(detail), type: column.type, style: style
           end
         end
       end

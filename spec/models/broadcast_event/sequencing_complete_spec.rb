@@ -18,8 +18,8 @@ RSpec.describe BroadcastEvent::SequencingComplete, :broadcast_event do
       project: nil,
       study: nil,
       batch: create(:batch, pipeline:),
-      request_type:,
-      submission:,
+      request_type: request_type,
+      submission: submission,
       target_asset: lane,
       request_metadata_attributes: {
         fragment_size_required_from: 100,
@@ -31,7 +31,7 @@ RSpec.describe BroadcastEvent::SequencingComplete, :broadcast_event do
   let(:event) do
     described_class.create!(
       seed: lane,
-      user:,
+      user: user,
       properties: {
         result: :passed
       },

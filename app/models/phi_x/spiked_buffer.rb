@@ -112,7 +112,7 @@ class PhiX::SpikedBuffer
             receptacle.save!
             receptacle
               .transfer_requests_as_target
-              .build(asset: parent.receptacle, target_asset: receptacle, aliquot_attributes:)
+              .build(asset: parent.receptacle, target_asset: receptacle, aliquot_attributes: aliquot_attributes)
               .save!
           end
       parent.children << spiked_buffer

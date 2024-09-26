@@ -12,9 +12,9 @@ RSpec.describe NpgActions::AssetsController, type: :request do
   let(:valid_seq_request) do
     create(
       :sequencing_request_with_assets,
-      batch:,
+      batch: batch,
       request_type: batch.pipeline.request_types.first,
-      study:,
+      study: study,
       target_asset: lane,
       state: 'passed'
     )
@@ -22,9 +22,9 @@ RSpec.describe NpgActions::AssetsController, type: :request do
   let(:cancelled_seq_request) do
     create(
       :sequencing_request_with_assets,
-      batch:,
+      batch: batch,
       request_type: batch.pipeline.request_types.first,
-      study:,
+      study: study,
       target_asset: lane,
       state: 'cancelled'
     )
@@ -32,9 +32,9 @@ RSpec.describe NpgActions::AssetsController, type: :request do
   let(:failed_seq_request) do
     create(
       :sequencing_request_with_assets,
-      batch:,
+      batch: batch,
       request_type: batch.pipeline.request_types.first,
-      study:,
+      study: study,
       target_asset: lane,
       state: 'failed'
     )

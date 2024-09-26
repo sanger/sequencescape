@@ -62,7 +62,13 @@ class PhiX::Stock
         .stock_purpose
         .create!(name: "#{name} ##{index + 1}") do |tube|
           tube.receptacle.qc_results.build(key: 'molarity', value: concentration, units: 'nM')
-          tube.receptacle.aliquots.build(sample: phi_x_sample, tag: i7_tag, tag2: i5_tag, library: tube, study_id:)
+          tube.receptacle.aliquots.build(
+            sample: phi_x_sample,
+            tag: i7_tag,
+            tag2: i5_tag,
+            library: tube,
+            study_id: study_id
+          )
         end
     end
   end

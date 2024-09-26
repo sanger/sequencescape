@@ -22,7 +22,7 @@ Given(/^plate "([^"]*)" has (\d+) blank samples$/) do |plate_barcode, number_of_
     well.aliquots.clear
     well.aliquots.create!(
       sample: Sample.create!(name: "#{plate_barcode}_#{index}", empty_supplier_sample_name: true),
-      study:
+      study: study
     )
   end
 end

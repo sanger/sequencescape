@@ -12,7 +12,7 @@ Given /^I am an? "([^"]*)" user logged in as "([^"]*)"$/ do |role_name, login|
   @current_user =
     FactoryBot.create(
       :user,
-      login:,
+      login: login,
       first_name: 'John',
       last_name: 'Doe',
       password: 'generic',

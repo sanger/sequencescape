@@ -18,7 +18,7 @@ module Role::UserRoleHelper
   # Grants a user the role_name,  in cases like
   # owner, authorizable should indicate the owned resource
   def grant_role(role_name, authorizable = nil)
-    roles << Role.find_or_create_by!(name: role_name, authorizable:)
+    roles << Role.find_or_create_by!(name: role_name, authorizable: authorizable)
   end
 
   def remove_role(role_name, authorizable = nil)

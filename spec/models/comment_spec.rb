@@ -53,17 +53,17 @@ RSpec.describe Comment do
 
     let(:asset2) { create(:empty_sample_tube) }
 
-    let(:order1) { create(:order_with_submission, study:, assets: [asset], project:) }
-    let(:order2) { create(:order, study:, assets: [asset], project:) }
-    let(:order3) { create(:order, study:, assets: [asset2], project:) }
-    let(:order4) { create(:order_with_submission, study:, assets: [asset2], project:) }
+    let(:order1) { create(:order_with_submission, study: study, assets: [asset], project: project) }
+    let(:order2) { create(:order, study: study, assets: [asset], project: project) }
+    let(:order3) { create(:order, study: study, assets: [asset2], project: project) }
+    let(:order4) { create(:order_with_submission, study: study, assets: [asset2], project: project) }
 
     let(:submission) { order1.submission }
     let(:submission2) { order4.submission }
 
     let!(:sequencing_request) { create(:request_with_sequencing_request_type, submission:) }
-    let!(:request) { create(:request, order: order1, asset:, submission:) }
-    let!(:request2) { create(:request, order: order2, submission:) }
+    let!(:request) { create(:request, order: order1, asset: asset, submission: submission) }
+    let!(:request2) { create(:request, order: order2, submission: submission) }
 
     let!(:request3) { create(:request, order: order4, submission: order4.submission) }
     let!(:sequencing_request2) { create(:request_with_sequencing_request_type, submission: order4.submission) }
@@ -127,7 +127,7 @@ RSpec.describe Comment do
     context 'adding to a plate' do
       let(:plate) { create(:plate, well_count: 1) }
       let(:submission) { create(:submission) }
-      let!(:request) { create(:request, asset: plate.wells.first, submission:) }
+      let!(:request) { create(:request, asset: plate.wells.first, submission: submission) }
 
       it 'also adds to the request' do
         create(:comment, commentable: plate, description: 'Hello')

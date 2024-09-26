@@ -63,7 +63,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
             # Warren::Message::Short keeps track of the class (Well) and id, and gets sent after
             # the transaction completes. This avoids us needing to instantiate wells, keeping the memory footprint
             # down.
-            ids.each { |id| Warren::Message::Short.new(class_name: 'Well', id:).queue(Warren.handler) }
+            ids.each { |id| Warren::Message::Short.new(class_name: 'Well', id: id).queue(Warren.handler) }
           end
       end
     end
@@ -426,7 +426,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
             unit_value: value,
             assay_type: parser.assay_type,
             assay_version: parser.assay_version,
-            qc_assay:
+            qc_assay: qc_assay
           )
         end
       end

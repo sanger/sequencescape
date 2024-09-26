@@ -191,12 +191,12 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def create_sample(sanger_sample_id)
     Sample
-      .create!(name: sanger_sample_id, sanger_sample_id:, sample_manifest: self)
+      .create!(name: sanger_sample_id, sanger_sample_id: sanger_sample_id, sample_manifest: self)
       .tap { |sample| sample.events.created_using_sample_manifest!(user) }
   end
 
   def created_broadcast_event
-    BroadcastEvent::SampleManifestCreated.create!(seed: self, user:)
+    BroadcastEvent::SampleManifestCreated.create!(seed: self, user: user)
   end
 
   def updated_broadcast_event(user_updating_manifest, updated_samples_ids)

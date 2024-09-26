@@ -39,7 +39,7 @@ class ReportFail
 
     failed_labware.each do |labware|
       labware.events.create_labware_failed!(failure_id, user.login)
-      BroadcastEvent::LabwareFailed.create!(seed: labware, user:, properties: { failure_reason: failure_id })
+      BroadcastEvent::LabwareFailed.create!(seed: labware, user: user, properties: { failure_reason: failure_id })
     end
 
     valid?

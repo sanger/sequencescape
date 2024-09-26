@@ -16,7 +16,7 @@ describe 'View study properties' do
       initial_study: study
     )
   end
-  let(:library_tube) { create(:library_tube, samples: [sample], study:) }
+  let(:library_tube) { create(:library_tube, samples: [sample], study: study) }
   let(:sample_tube) { create(:sample_tube, sample:, study:) }
 
   before do

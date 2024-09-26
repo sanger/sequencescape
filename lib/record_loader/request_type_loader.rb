@@ -45,7 +45,7 @@ module RecordLoader
 
     def add_library_type_validator(request_type)
       RequestType::Validator.create!(
-        request_type:,
+        request_type: request_type,
         request_option: 'library_type',
         valid_options: RequestType::Validator::LibraryTypeValidator.new(request_type.id)
       )

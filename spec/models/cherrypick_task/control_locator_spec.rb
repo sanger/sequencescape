@@ -126,7 +126,7 @@ RSpec.describe CherrypickTask::ControlLocator do
       let(:range) { (1...1000) }
       let(:control_positions) do
         range.map do |batch_id|
-          described_class.new(batch_id:, total_wells: 96, num_control_wells: 1).control_positions(0).first
+          described_class.new(batch_id: batch_id, total_wells: 96, num_control_wells: 1).control_positions(0).first
         end
       end
 

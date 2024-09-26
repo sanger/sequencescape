@@ -15,10 +15,10 @@ describe UatActions::GenerateSampleManifest do
       {
         study_name: study.name,
         supplier_name: supplier.name,
-        asset_type:,
-        count:,
+        asset_type: asset_type,
+        count: count,
         tube_purpose_name: purpose.name,
-        with_samples:
+        with_samples: with_samples
       }
     end
 

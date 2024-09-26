@@ -51,7 +51,7 @@ class PlateVolume < ApplicationRecord
         units: 'ul',
         assay_type: ASSAY_TYPE,
         assay_version: ASSAY_VERSION,
-        qc_assay:
+        qc_assay: qc_assay
       )
     end
   end

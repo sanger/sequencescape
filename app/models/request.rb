@@ -462,7 +462,9 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   # CAUTION!: This may not behaves as expected. I'll be deprecating this soon.
   def next_requests_via_asset
-    target_asset.requests.where(submission_id:, request_type_id: next_request_type_id) if target_asset.present?
+    if target_asset.present?
+      target_asset.requests.where(submission_id: submission_id, request_type_id: next_request_type_id)
+    end
   end
 
   def next_requests_via_submission
@@ -480,7 +482,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def add_comment(comment, user, title = nil)
     # Unscope comments to fix Rails 6 deprecation warnings. But I *think* this
     # essentially models the new behaviour in 6.1 So should be removable then
-    Comment.unscoped { comments.create(description: comment, user:, title:) }
+    Comment.unscoped { comments.create(description: comment, user: user, title: title) }
   end
 
   def return_pending_to_inbox!

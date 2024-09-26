@@ -34,10 +34,10 @@ describe BatchesHelper do
 
     context 'with potential tasks' do
       def stage_link(id)
-        { action: :stage, batch_id: nil, controller: :workflows, id:, workflow_id: pipeline.workflow.id }
+        { action: :stage, batch_id: nil, controller: :workflows, id: id, workflow_id: pipeline.workflow.id }
       end
       let(:pipeline) { create(:sequencing_pipeline, :with_workflow) }
-      let(:batch) { build(:batch, state: 'pending', pipeline:) }
+      let(:batch) { build(:batch, state: 'pending', pipeline: pipeline) }
 
       let(:task1) { ['Specify Dilution Volume', stage_link(0), true, nil] }
       let(:task2) { ['Add Spiked in control', stage_link(1), true, nil] }

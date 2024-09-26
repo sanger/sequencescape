@@ -13,7 +13,9 @@ module StateChanger
     end
 
     def generate_events_for(orders)
-      orders.each { |order_id| BroadcastEvent::PoolReleased.create!(seed: labware, user:, properties: { order_id: }) }
+      orders.each do |order_id|
+        BroadcastEvent::PoolReleased.create!(seed: labware, user: user, properties: { order_id: })
+      end
     end
 
     def transfer_requests

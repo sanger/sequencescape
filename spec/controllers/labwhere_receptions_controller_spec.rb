@@ -12,7 +12,7 @@ describe LabwhereReceptionsController do
     shared_examples 'a reception' do
       before do
         expect(LabWhereClient::Scan).to receive(:create).with(
-          location_barcode:,
+          location_barcode: location_barcode,
           user_code: SBCF::SangerBarcode.from_human(user.barcode).machine_barcode.to_s,
           labware_barcodes: [plate.human_barcode, plate_2.machine_barcode, sample_tube.human_barcode]
         ).and_return(instance_double(LabWhereClient::Scan, valid?: true, errors: []))
@@ -22,7 +22,7 @@ describe LabwhereReceptionsController do
                labwhere_reception: {
                  barcodes: [plate.human_barcode, plate_2.machine_barcode, sample_tube.human_barcode],
                  user_code: SBCF::SangerBarcode.from_human(user.barcode).machine_barcode,
-                 location_barcode:
+                 location_barcode: location_barcode
                }
              }
       end

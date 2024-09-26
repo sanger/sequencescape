@@ -5,7 +5,7 @@ Given /^the ((?:entire plate |inverted )?tag layout template) "([^"]+)" exists$/
 end
 
 Given /^the tag 2 layout template "([^"]+)" exists$/ do |name|
-  FactoryBot.create(:tag2_layout_template, name:, oligo: 'AAA')
+  FactoryBot.create(:tag2_layout_template, name: name, oligo: 'AAA')
 end
 
 TAG_LAYOUT_TEMPLATE_REGEXP = 'tag layout template "[^\"]+"'
@@ -126,8 +126,11 @@ def pool_by_strategy(source, destination, pooling_strategy) # rubocop:todo Metri
     wells_for_source
       .zip(wells_for_destination)
       .each do |w|
-        TransferRequest.create!(asset: w.first, target_asset: w.last, submission_id:)
-        FactoryBot.create :request_without_submission, asset: w.first, target_asset: w.last, submission_id:
+        TransferRequest.create!(asset: w.first, target_asset: w.last, submission_id: submission_id)
+        FactoryBot.create :request_without_submission,
+                          asset: w.first,
+                          target_asset: w.last,
+                          submission_id: submission_id
       end
   end
 end

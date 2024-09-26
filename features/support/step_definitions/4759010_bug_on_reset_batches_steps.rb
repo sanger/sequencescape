@@ -8,12 +8,12 @@ end
 Given /^a batch in "Illumina-B MX Library Preparation" has been setup for feature 4759010$/ do
   pipeline = Pipeline.find_by(name: 'Illumina-B MX Library Preparation') or
     raise StandardError, "Cannot find pipeline 'Illumina-B MX Library Preparation'"
-  batch = FactoryBot.create :batch, pipeline:, state: 'pending'
+  batch = FactoryBot.create :batch, pipeline: pipeline, state: 'pending'
   asset_group = FactoryBot.create(:asset_group)
 
   submission =
     FactoryHelp.submission(
-      asset_group:,
+      asset_group: asset_group,
       request_options: {
         read_length: 76,
         fragment_size_required_from: 1,

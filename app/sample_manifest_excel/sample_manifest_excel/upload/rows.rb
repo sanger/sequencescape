@@ -38,7 +38,7 @@ module SampleManifestExcel
       def create_rows(cache)
         [].tap do |rows|
           data.each_with_index do |r, i|
-            row = Row.new(number: i + data.start_row + 1, data: r, columns:, cache:)
+            row = Row.new(number: i + data.start_row + 1, data: r, columns: columns, cache: cache)
             rows << row unless row.empty?
           end
         end

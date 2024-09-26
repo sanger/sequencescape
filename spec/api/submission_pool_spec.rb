@@ -40,7 +40,9 @@ describe '/api/1/plate-uuid/submission_pools' do
       let(:plate) { create(:input_plate, well_count: 2) }
 
       before do
-        plate.wells.each { |well| create(:library_creation_request, asset: well, submission:, request_type:) }
+        plate.wells.each do |well|
+          create(:library_creation_request, asset: well, submission: submission, request_type: request_type)
+        end
         create(:tag2_layout_template_submission, submission:, tag2_layout_template:)
       end
 
@@ -70,7 +72,13 @@ describe '/api/1/plate-uuid/submission_pools' do
 
       before do
         plate.wells.each do |well|
-          create(:library_creation_request, asset: well, submission:, request_type:, state: 'cancelled')
+          create(
+            :library_creation_request,
+            asset: well,
+            submission: submission,
+            request_type: request_type,
+            state: 'cancelled'
+          )
         end
       end
 
@@ -97,7 +105,9 @@ describe '/api/1/plate-uuid/submission_pools' do
       let(:plate) { create(:input_plate, well_count: 2) }
 
       before do
-        plate.wells.each { |well| create(:library_creation_request, asset: well, submission:, request_type:) }
+        plate.wells.each do |well|
+          create(:library_creation_request, asset: well, submission: submission, request_type: request_type)
+        end
         create(:tag_layout_template_submission, submission:, tag_layout_template:)
       end
 
@@ -127,8 +137,12 @@ describe '/api/1/plate-uuid/submission_pools' do
       let(:plate_b) { create(:input_plate, well_count: 2) }
 
       before do
-        plate.wells.each { |well| create(:library_creation_request, asset: well, submission:, request_type:) }
-        plate_b.wells.each { |well| create(:library_creation_request, asset: well, submission:, request_type:) }
+        plate.wells.each do |well|
+          create(:library_creation_request, asset: well, submission: submission, request_type: request_type)
+        end
+        plate_b.wells.each do |well|
+          create(:library_creation_request, asset: well, submission: submission, request_type: request_type)
+        end
       end
 
       let(:response_body) do
@@ -153,11 +167,13 @@ describe '/api/1/plate-uuid/submission_pools' do
     context 'a multi plate submission and a used template on children' do
       let(:plate_b) do
         plate = create(:input_plate, well_count: 2)
-        plate.wells.each { |well| create(:library_creation_request, asset: well, submission:, request_type:) }
+        plate.wells.each do |well|
+          create(:library_creation_request, asset: well, submission: submission, request_type: request_type)
+        end
         plate
       end
 
-      let(:plate) { create(:target_plate, well_count: 2, parent: plate_b, submission:) }
+      let(:plate) { create(:target_plate, well_count: 2, parent: plate_b, submission: submission) }
 
       before { create(:tag2_layout_template_submission, submission:, tag2_layout_template:) }
 

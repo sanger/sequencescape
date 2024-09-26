@@ -358,6 +358,6 @@ describe '/api/1/extraction_attributes' do
     headers['CONTENT_TYPE'] = 'application/json' unless body.nil?
     headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = authorised_app.key
     yield(headers) if block_given?
-    send(action.downcase, path, params: body, headers:)
+    send(action.downcase, path, params: body, headers: headers)
   end
 end

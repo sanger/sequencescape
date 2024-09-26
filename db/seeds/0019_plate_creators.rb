@@ -43,7 +43,7 @@ ActiveRecord::Base.transaction do
   # Additional plate purposes required
   ['Pico dilution', 'Working dilution'].each do |name|
     plate_purpose = PlatePurpose.find_by!(name:)
-    Plate::Creator.create!(name:, plate_purposes: [plate_purpose])
+    Plate::Creator.create!(name: name, plate_purposes: [plate_purpose])
   end
 
   plate_purpose = PlatePurpose.find_by!(name: 'Pre-Extracted Plate')

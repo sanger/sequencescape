@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe Tube::Purpose do
-  let(:tube_purpose) { create(:tube_purpose, prefix: barcode_prefix, target_type:) }
+  let(:tube_purpose) { create(:tube_purpose, prefix: barcode_prefix, target_type: target_type) }
 
   shared_examples 'a tube factory' do
     describe '#create!' do

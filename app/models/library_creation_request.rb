@@ -43,6 +43,12 @@ class LibraryCreationRequest < CustomerRequest
   # @return [Hash] A hash of aliquot attributes
   #
   def aliquot_attributes
-    { study_id: initial_study_id, project_id: initial_project_id, library_type:, insert_size:, request_id: id }
+    {
+      study_id: initial_study_id,
+      project_id: initial_project_id,
+      library_type: library_type,
+      insert_size: insert_size,
+      request_id: id
+    }
   end
 end

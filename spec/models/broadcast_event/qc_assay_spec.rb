@@ -29,7 +29,7 @@ RSpec.describe BroadcastEvent::QcAssay, :broadcast_event do
     let(:qc_assay) do
       create(
         :qc_assay,
-        lot_number:,
+        lot_number: lot_number,
         qc_results: [
           build(:qc_result_concentration, asset: well1, assay_type: 'Example Assay', assay_version: 'v0.0'),
           build(:qc_result_concentration, asset: well2, assay_type: 'Example Assay', assay_version: 'v0.0')
@@ -104,7 +104,7 @@ RSpec.describe BroadcastEvent::QcAssay, :broadcast_event do
     let(:qc_assay) do
       create(
         :qc_assay,
-        lot_number:,
+        lot_number: lot_number,
         qc_results: [
           build(:qc_result_concentration, asset: well1, assay_type: 'Example Assay', assay_version: 'v0.0'),
           build(:qc_result_concentration, asset: well2, assay_type: 'Other Assay', assay_version: 'v0.0')

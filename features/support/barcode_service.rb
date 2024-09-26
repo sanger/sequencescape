@@ -64,7 +64,7 @@ class FakeBarcodeService
     end
     WebMock
       .stub_request(:post, "#{plate_barcode_url}/child-barcodes/#{configatron.plate_barcode_prefix}/new")
-      .with(body: { barcode: parent_barcode, count: })
+      .with(body: { barcode: parent_barcode, count: count })
       .to_return do
         {
           headers: {

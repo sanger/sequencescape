@@ -49,9 +49,9 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
           :cherrypick_request,
           asset: well,
           request_type: pipeline.request_types.first,
-          submission:,
-          study:,
-          project:
+          submission: submission,
+          study: study,
+          project: project
         )
 
         # create a concentration value on the wells if required

@@ -175,7 +175,7 @@ Given /^I have a "([^"]*)" submission with the following setup:$/ do |template_n
       study: Study.find_by(name: params['Study']),
       asset_group: AssetGroup.find_by(name: params['Asset Group']),
       user: @current_user,
-      request_options:
+      request_options: request_options
     )
     .submission
     .built!

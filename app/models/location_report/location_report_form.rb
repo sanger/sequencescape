@@ -35,16 +35,16 @@ class LocationReport::LocationReportForm
     @location_report ||
       @location_report =
         LocationReport.new(
-          user:,
-          name:,
-          report_type:,
-          location_barcode:,
-          faculty_sponsor_ids:,
-          study_id:,
+          user: user,
+          name: name,
+          report_type: report_type,
+          location_barcode: location_barcode,
+          faculty_sponsor_ids: faculty_sponsor_ids,
+          study_id: study_id,
           start_date: start_date&.to_datetime,
           end_date: end_date&.to_datetime,
-          plate_purpose_ids:,
-          barcodes:
+          plate_purpose_ids: plate_purpose_ids,
+          barcodes: barcodes
         )
   end
 

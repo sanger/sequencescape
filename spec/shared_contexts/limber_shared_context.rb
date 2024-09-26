@@ -45,7 +45,7 @@ shared_context 'a limber target plate with submissions' do |library_state = 'sta
         asset: well,
         submission: target_submission,
         state: library_state,
-        order:
+        order: order
       )
       create(
         :library_request,

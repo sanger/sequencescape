@@ -91,7 +91,7 @@ Given '{study_name} has an asset group of {int} samples in SampleTubes called {s
       tube_name = "#{group_name}, sample tube #{i}"
       FactoryBot.create(:sample_tube, name: tube_name, sample_attributes: { name: sample_name })
     end
-  FactoryBot.create(:asset_group, name: group_name, study:, assets: assets.map(&:receptacle))
+  FactoryBot.create(:asset_group, name: group_name, study: study, assets: assets.map(&:receptacle))
 end
 
 Then /^I should see the following request information:$/ do |expected|

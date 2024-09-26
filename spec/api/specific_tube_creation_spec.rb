@@ -24,8 +24,8 @@ describe 'TubeCreation endpoints' do
         .readonly(false)
         .each_with_index do |well, i|
           stock_well = stock_plate.wells[i]
-          create(:library_creation_request, asset: stock_well, target_asset: well, submission:)
-          create(:transfer_request, asset: stock_well, target_asset: well, submission:)
+          create(:library_creation_request, asset: stock_well, target_asset: well, submission: submission)
+          create(:transfer_request, asset: stock_well, target_asset: well, submission: submission)
           well.stock_wells.attach!([stock_well])
         end
     end
@@ -82,7 +82,7 @@ describe 'TubeCreation endpoints' do
 
       describe 'Retrieving a Tube Creation' do
         let!(:tube_creation) do
-          SpecificTubeCreation.create!(user:, parent: parent_plate, child_purposes: [child_purpose])
+          SpecificTubeCreation.create!(user: user, parent: parent_plate, child_purposes: [child_purpose])
         end
 
         let(:response_code) { 200 }

@@ -71,8 +71,8 @@ class UatActions::GeneratePrimerPanel < UatActions
 
   def primer_panel_params
     {
-      name:,
-      snp_count:,
+      name: name,
+      snp_count: snp_count,
       programs: {
         'pcr 1' => {
           'name' => pcr_1_name,

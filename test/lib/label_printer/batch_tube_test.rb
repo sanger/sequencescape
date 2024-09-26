@@ -16,7 +16,7 @@ class BatchTubeTest < ActiveSupport::TestCase
       @batch.requests << request
 
       printable = { request.id => 'on' }
-      options = { count: '1', printable:, batch:, stock: true }
+      options = { count: '1', printable: printable, batch: batch, stock: true }
       @tube_label = LabelPrinter::Label::BatchTube.new(options)
 
       assert_equal 1, tube_label.tubes.count
@@ -32,7 +32,7 @@ class BatchTubeTest < ActiveSupport::TestCase
       @batch.requests << request
 
       printable = { request.id => 'on' }
-      options = { count: '1', printable:, batch:, stock: false }
+      options = { count: '1', printable: printable, batch: batch, stock: false }
       @tube_label = LabelPrinter::Label::BatchTube.new(options)
 
       assert_equal 1, tube_label.tubes.count

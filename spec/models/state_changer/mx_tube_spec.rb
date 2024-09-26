@@ -10,7 +10,7 @@ RSpec.describe StateChanger::MxTube do
   let(:customer_accepts_responsibility) { false }
   let(:labware) { create(:multiplexed_library_tube) }
   let(:transfer_request) { create(:transfer_request, target_asset: labware.receptacle, state: transfer_request_state) }
-  let(:request) { create(:request, target_asset: labware.receptacle, state: request_state, order:) }
+  let(:request) { create(:request, target_asset: labware.receptacle, state: request_state, order: order) }
   let(:requests) { [request] }
   let(:order) { create(:order) }
 

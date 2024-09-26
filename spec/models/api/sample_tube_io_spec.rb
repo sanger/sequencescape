@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Api::SampleTubeIO do
-  subject { create(:sample_tube, volume: 12.0, concentration: 8.0, sample:) }
+  subject { create(:sample_tube, volume: 12.0, concentration: 8.0, sample: sample) }
 
   let(:sample) { create(:sample) }
 

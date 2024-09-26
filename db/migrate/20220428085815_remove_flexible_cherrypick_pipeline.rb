@@ -15,7 +15,7 @@ class RemoveFlexibleCherrypickPipeline < ActiveRecord::Migration[6.0]
       pipeline = Pipeline.find_by(name:)
       next if pipeline.nil?
 
-      pipeline.update!(sti_type:, active: true)
+      pipeline.update!(sti_type: sti_type, active: true)
     end
   end
 end

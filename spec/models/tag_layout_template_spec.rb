@@ -7,7 +7,15 @@ require 'shared_contexts/limber_shared_context'
 # templates. The actual layout of tags is carried out by the tag layouts themselves,
 # and is tested there.
 describe TagLayoutTemplate do
-  let(:template) { build(:tag_layout_template, direction_algorithm:, walking_algorithm:, tag2_group:, tags: ['AAA']) }
+  let(:template) do
+    build(
+      :tag_layout_template,
+      direction_algorithm: direction_algorithm,
+      walking_algorithm: walking_algorithm,
+      tag2_group: tag2_group,
+      tags: ['AAA']
+    )
+  end
 
   describe '#create!' do
     subject { template.create!(plate:, user:) }

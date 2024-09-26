@@ -39,6 +39,6 @@ class LabEvent < ApplicationRecord
   end
 
   def generate_broadcast_event
-    BroadcastEvent::LabEvent.create!(seed: self, user:)
+    BroadcastEvent::LabEvent.create!(seed: self, user: user)
   end
 end

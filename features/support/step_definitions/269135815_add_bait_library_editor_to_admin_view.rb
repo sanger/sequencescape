@@ -14,7 +14,7 @@ end
 
 Given /^I have a bait library called "([^"]*)"$/ do |name|
   BaitLibrary.create!(
-    name:,
+    name: name,
     bait_library_type: BaitLibraryType.find_by(visible: true),
     bait_library_supplier: BaitLibrary::Supplier.find_by(visible: true),
     target_species: 'Dragon'
@@ -26,7 +26,7 @@ Then /^the supplier_identifier for "([^"]*)" should be nil$/ do |name|
 end
 
 Given /^I have a bait library type called "([^"]*)"$/ do |name|
-  BaitLibraryType.create!(name:, category: 'standard')
+  BaitLibraryType.create!(name: name, category: 'standard')
 end
 
 Given /^I have a supplier called "([^"]*)"$/ do |name|
@@ -39,7 +39,7 @@ Then /^the "([^"]*)" called "([^"]*)" should exist$/ do |class_name, name|
 end
 
 Given /^the last bait library has type "([^"]*)"$/ do |name|
-  BaitLibrary.last.update(bait_library_type: BaitLibraryType.create!(name:, category: 'standard'))
+  BaitLibrary.last.update(bait_library_type: BaitLibraryType.create!(name: name, category: 'standard'))
 end
 
 Given /^the last bait library has supplier "([^"]*)"$/ do |name|

@@ -6,10 +6,10 @@ RSpec.describe Api::OrderIO do
   subject do
     create(
       :order,
-      user:,
+      user: user,
       template_name: 'Cool template',
-      study:,
-      project:,
+      study: study,
+      project: project,
       comments: 'Good',
       request_options: {
         read_length: '200',

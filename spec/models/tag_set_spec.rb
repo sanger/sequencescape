@@ -18,7 +18,7 @@ RSpec.describe TagSet do
       adapter_type = build(:adapter_type)
       tag_group = create(:tag_group, adapter_type:)
       tag_group2 = create(:tag_group, adapter_type:)
-      tag_set = build(:tag_set, tag_group:, tag2_group: tag_group2)
+      tag_set = build(:tag_set, tag_group: tag_group, tag2_group: tag_group2)
       expect(tag_set).to be_valid
     end
 
@@ -93,13 +93,13 @@ RSpec.describe TagSet do
   describe '#visible' do
     it 'returns true if it only has one tag_group and it is set to visible' do
       tag_group = create(:tag_group, visible: true)
-      tag_set = create(:tag_set, tag_group:, tag2_group: nil)
+      tag_set = create(:tag_set, tag_group: tag_group, tag2_group: nil)
       expect(tag_set.visible).to be(true)
     end
 
     it 'returns false if it only has one tag_group and it is not set to visible' do
       tag_group = create(:tag_group, visible: false)
-      tag_set = create(:tag_set, tag_group:, tag2_group: nil)
+      tag_set = create(:tag_set, tag_group: tag_group, tag2_group: nil)
       expect(tag_set.visible).to be(false)
     end
 
@@ -112,7 +112,7 @@ RSpec.describe TagSet do
     it 'returns false if one of the tag_groups is not set to visible' do
       tag_group = create(:tag_group, visible: true)
       tag_group2 = create(:tag_group, visible: false)
-      tag_set = create(:tag_set, tag_group:, tag2_group: tag_group2)
+      tag_set = create(:tag_set, tag_group: tag_group, tag2_group: tag_group2)
       expect(tag_set.visible).to be(false)
     end
   end
@@ -120,7 +120,7 @@ RSpec.describe TagSet do
   describe '#adapter_type' do
     it 'delegates to tag_group' do
       tag_group = create(:tag_group)
-      tag_set = create(:tag_set, tag_group:, tag2_group: nil)
+      tag_set = create(:tag_set, tag_group: tag_group, tag2_group: nil)
       expect(tag_set.adapter_type).to eq(tag_group.adapter_type)
     end
   end

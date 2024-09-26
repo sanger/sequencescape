@@ -231,7 +231,7 @@ describe 'Plates Heron API', :heron, :heron_events, :lighthouse, with: :api_v2 d
           build(:event_subject, role_type: BroadcastEvent::PlateCherrypicked::ROBOT_ROLE_TYPE, subject_type: 'robot')
         ]
       end
-      let(:events) { [{ event: { event_type: BroadcastEvent::PlateCherrypicked::EVENT_TYPE, subjects: } }] }
+      let(:events) { [{ event: { event_type: BroadcastEvent::PlateCherrypicked::EVENT_TYPE, subjects: subjects } }] }
 
       it_behaves_like 'a successful plate creation'
 

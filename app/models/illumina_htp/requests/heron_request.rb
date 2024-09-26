@@ -30,9 +30,9 @@ module IlluminaHtp::Requests
       {
         study_id: initial_study_id,
         project_id: initial_project_id,
-        library_type:,
-        insert_size:,
-        primer_panel_id:,
+        library_type: library_type,
+        insert_size: insert_size,
+        primer_panel_id: primer_panel_id,
         request_id: id
       }
     end

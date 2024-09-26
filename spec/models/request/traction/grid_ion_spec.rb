@@ -9,14 +9,14 @@ describe Request::Traction::GridIon do
       :request_traction_grid_ion,
       asset: well,
       request_metadata_attributes: metadata,
-      order:,
-      submission:,
-      request_type:,
-      state:
+      order: order,
+      submission: submission,
+      request_type: request_type,
+      state: state
     )
   end
 
-  let(:order) { build(:order, submission:, assets: [well], request_types: [request_type.id]) }
+  let(:order) { build(:order, submission: submission, assets: [well], request_types: [request_type.id]) }
   let(:request_type) { create(:well_request_type) }
   let(:submission) { build(:submission) }
   let(:well) { create(:well) }

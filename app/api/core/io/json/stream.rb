@@ -80,7 +80,7 @@ module Core::Io::Json
         ::Core::Io::Registry
           .instance
           .lookup_for_object(object)
-          .object_json(object, options.merge(stream: self, object:, nested: true))
+          .object_json(object, options.merge(stream: self, object: object, nested: true))
       end
     end
     private :object_encode

@@ -103,30 +103,30 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
   end
 
   it 'is not valid without row number' do
-    expect(described_class.new(number: 'one', data:, columns:)).not_to be_valid
+    expect(described_class.new(number: 'one', data: data, columns: columns)).not_to be_valid
     expect(described_class.new(data:, columns:)).not_to be_valid
   end
 
   it 'is not valid without some data' do
-    expect(described_class.new(number: 1, columns:)).not_to be_valid
+    expect(described_class.new(number: 1, columns: columns)).not_to be_valid
   end
 
   it 'is not valid without some columns' do
-    expect(described_class.new(number: 1, data:)).not_to be_valid
+    expect(described_class.new(number: 1, data: data)).not_to be_valid
   end
 
   it '#value returns value for specified key' do
-    expect(described_class.new(number: 1, data:, columns:).value(:sanger_sample_id)).to eq(
+    expect(described_class.new(number: 1, data: data, columns: columns).value(:sanger_sample_id)).to eq(
       sample_manifest.labware.first.sample_manifest_assets.first.sanger_sample_id
     )
   end
 
   it '#at returns value at specified index (offset by 1)' do
-    expect(described_class.new(number: 1, data:, columns:).at(3)).to eq('AA')
+    expect(described_class.new(number: 1, data: data, columns: columns).at(3)).to eq('AA')
   end
 
   it '#at strips down spaces including non-breaking ones (\u00A0)' do
-    row = described_class.new(number: 1, data: data_with_spaces, columns:)
+    row = described_class.new(number: 1, data: data_with_spaces, columns: columns)
     tag_cell_content = data_with_spaces[2]
     tag_cell_content_retrieved = row.at(3)
     expect(tag_cell_content.bytes[0]).to eq(32)
@@ -135,7 +135,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
   end
 
   it '#at strips down spaces' do
-    row = described_class.new(number: 1, data: data_with_spaces, columns:)
+    row = described_class.new(number: 1, data: data_with_spaces, columns: columns)
     reference_genome_cell_content = data_with_spaces[4]
     reference_genome_cell_content_retrieved = row.at(5)
     volume_cell_content = data_with_spaces[6]
@@ -148,37 +148,37 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
   end
 
   it '#first? is true if this is the first row' do
-    expect(described_class.new(number: 1, data:, columns:)).to be_first
+    expect(described_class.new(number: 1, data: data, columns: columns)).to be_first
   end
 
   it 'is not valid without a primary receptacle or sample' do
     data[1] = 2
-    expect(described_class.new(number: 1, data:, columns:).validate_sample).to be false
+    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample).to be false
     data[1] = 999_999
-    row = described_class.new(number: 1, data:, columns:)
+    row = described_class.new(number: 1, data: data, columns: columns)
     expect(row.validate_sample).to be false
     expect(row.errors.full_messages).to include('Row 1 - Sample can\'t be blank.')
   end
 
   it 'is not valid unless all specialised fields are valid' do
-    expect(described_class.new(number: 1, data:, columns:).validate_sample).to be true
+    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample).to be true
     data[5] = 'Dodgy library type'
-    expect(described_class.new(number: 1, data:, columns:).validate_sample).to be false
+    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample).to be false
     data[5] = 'My New Library Type'
     data[6] = 'one'
-    expect(described_class.new(number: 1, data:, columns:).validate_sample).to be false
+    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample).to be false
   end
 
   it 'is not valid unless metadata is valid' do
-    described_class.new(number: 1, data:, columns:)
-    expect(described_class.new(number: 1, data:, columns:).validate_sample).to be true
+    described_class.new(number: 1, data: data, columns: columns)
+    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample).to be true
     data[16] = 'Cell-line'
-    expect(described_class.new(number: 1, data:, columns:).validate_sample).to be false
+    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample).to be false
   end
 
   it 'updates the aliquot with the specialised fields' do
     sample_count = Sample.count
-    row = described_class.new(number: 1, data:, columns:)
+    row = described_class.new(number: 1, data: data, columns: columns)
     row.sample
     row.update_specialised_fields(tag_group)
     aliquot = row.aliquots.first
@@ -190,7 +190,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
   end
 
   it 'updates the sample metadata' do
-    row = described_class.new(number: 1, data:, columns:)
+    row = described_class.new(number: 1, data: data, columns: columns)
     row.update_metadata_fields
     expect(row.metadata).to have_attributes(
       concentration: '1',
@@ -209,7 +209,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
   end
 
   it 'updates the sample' do
-    row = described_class.new(number: 1, data:, columns:)
+    row = described_class.new(number: 1, data: data, columns: columns)
     row.update_sample(tag_group, false)
     row.metadata
     expect(row).to be_sample_updated
@@ -257,8 +257,8 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
       sample_manifest.labware.first.sample_manifest_assets.first.sanger_sample_id,
       ''
     ]
-    row = described_class.new(number: 1, data:, columns:)
-    empty_row = described_class.new(number: 1, data: empty_data, columns:)
+    row = described_class.new(number: 1, data: data, columns: columns)
+    empty_row = described_class.new(number: 1, data: empty_data, columns: columns)
     expect(row.empty?).to be false
     expect(empty_row.empty?).to be true
   end
@@ -267,7 +267,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
     let(:columns) { configuration.columns.tube_multiplexed_library.dup }
 
     it 'links up specialised fields' do
-      row = described_class.new(number: 1, data:, columns:)
+      row = described_class.new(number: 1, data: data, columns: columns)
       tag_index = row.specialised_fields.detect { |f| f.is_a?(SequencescapeExcel::SpecialisedField::TagIndex) }
       tag_group = row.specialised_fields.detect { |f| f.is_a?(SequencescapeExcel::SpecialisedField::TagGroup) }
       tag2_index = row.specialised_fields.detect { |f| f.is_a?(SequencescapeExcel::SpecialisedField::Tag2Index) }
@@ -281,7 +281,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
     let(:columns) { configuration.columns.plate_chromium_library.dup }
 
     it 'links up specialised fields' do
-      row = described_class.new(number: 1, data:, columns:)
+      row = described_class.new(number: 1, data: data, columns: columns)
       tag_well = row.specialised_fields.detect { |f| f.is_a?(SequencescapeExcel::SpecialisedField::ChromiumTagWell) }
       tag_group = row.specialised_fields.detect { |f| f.is_a?(SequencescapeExcel::SpecialisedField::ChromiumTagGroup) }
       expect(tag_well.sf_tag_group).to eq tag_group
@@ -294,7 +294,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
     it 'links up specialised fields' do
       data[4] = 'Tag Set 1'
       data[5] = 'B1'
-      row = described_class.new(number: 1, data:, columns:)
+      row = described_class.new(number: 1, data: data, columns: columns)
       dual_index_tag_set =
         row.specialised_fields.detect { |f| f.is_a?(SequencescapeExcel::SpecialisedField::DualIndexTagSet) }
       dual_index_tag_well =
@@ -347,7 +347,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
     end
 
     it 'links up specialised fields' do
-      row = described_class.new(number: 1, data:, columns:)
+      row = described_class.new(number: 1, data: data, columns: columns)
       bs_well = row.specialised_fields.detect { |f| f.is_a?(SequencescapeExcel::SpecialisedField::Well) }
       bioscan_supplier_name =
         row.specialised_fields.detect { |f| f.is_a?(SequencescapeExcel::SpecialisedField::BioscanSupplierName) }
@@ -380,7 +380,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
         row_data[1] = sma.sanger_sample_id
         row_data[2] = tags[i][:i7]
         row_data[3] = tags[i][:i5]
-        rows << described_class.new(number: i + 1, data: row_data, columns:)
+        rows << described_class.new(number: i + 1, data: row_data, columns: columns)
       end
     end
 
@@ -424,7 +424,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
         row_data[1] = tube.samples.first.sanger_sample_id
         row_data[2] = tags[i][:i7]
         row_data[3] = tags[i][:i5]
-        rows << described_class.new(number: i + 1, data: row_data, columns:)
+        rows << described_class.new(number: i + 1, data: row_data, columns: columns)
       end
     end
 

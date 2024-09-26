@@ -7,7 +7,7 @@ describe Qcable do
   let(:qcable_creator) { create(:qcable_creator) }
 
   it 'can create an asset with a barcode' do
-    qcable = described_class.create(qcable_creator:, lot:, barcode: 'CGAP-123456')
+    qcable = described_class.create(qcable_creator: qcable_creator, lot: lot, barcode: 'CGAP-123456')
     expect(qcable.asset.barcodes.first.barcode).to eq('CGAP-123456')
   end
 end

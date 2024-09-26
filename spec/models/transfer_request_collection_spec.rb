@@ -10,7 +10,7 @@ RSpec.describe TransferRequestCollection, :transfer_request_collection do
   let(:target_asset) { create(:empty_library_tube) }
 
   context 'with a single transfer' do
-    let(:creation_attributes) { { user:, transfer_requests_attributes: [{ asset:, target_asset: }] } }
+    let(:creation_attributes) { { user: user, transfer_requests_attributes: [{ asset:, target_asset: }] } }
 
     context 'and no outer requests' do
       describe '#save' do
@@ -58,15 +58,20 @@ RSpec.describe TransferRequestCollection, :transfer_request_collection do
     context 'and two outer requests' do
       let(:submission_a) { create(:submission) }
       let(:submission_b) { create(:submission) }
-      let!(:outer_request) { create(:request, asset:, submission: submission_a) }
-      let!(:other_outer_request) { create(:request, asset:, submission: submission_b) }
+      let!(:outer_request) { create(:request, asset: asset, submission: submission_a) }
+      let!(:other_outer_request) { create(:request, asset: asset, submission: submission_b) }
 
       describe '#save' do
         let(:transfer_request) { subject.transfer_requests.first }
 
         context 'specifying submission' do
           let(:creation_attributes) do
-            { user:, transfer_requests_attributes: [{ asset:, target_asset:, submission: outer_request.submission }] }
+            {
+              user: user,
+              transfer_requests_attributes: [
+                { asset: asset, target_asset: target_asset, submission: outer_request.submission }
+              ]
+            }
           end
 
           before { expect(subject.save).to be true }
@@ -104,7 +109,12 @@ RSpec.describe TransferRequestCollection, :transfer_request_collection do
 
         context 'specifying submission' do
           let(:creation_attributes) do
-            { user:, transfer_requests_attributes: [{ asset:, target_asset:, submission: outer_request.submission }] }
+            {
+              user: user,
+              transfer_requests_attributes: [
+                { asset: asset, target_asset: target_asset, submission: outer_request.submission }
+              ]
+            }
           end
 
           it 'is invalid' do
@@ -114,7 +124,7 @@ RSpec.describe TransferRequestCollection, :transfer_request_collection do
 
         context 'specifying outer_request' do
           let(:creation_attributes) do
-            { user:, transfer_requests_attributes: [{ asset:, target_asset:, outer_request: }] }
+            { user: user, transfer_requests_attributes: [{ asset:, target_asset:, outer_request: }] }
           end
 
           before { expect(subject.save).to be true }

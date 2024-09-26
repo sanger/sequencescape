@@ -9,7 +9,7 @@ class Event::ScannedIntoLabEvent < Event
       message: "Scanned into #{location_barcode}",
       content: Date.today.to_s,
       family: 'scanned_into_lab',
-      created_by:
+      created_by: created_by
     )
   end
 

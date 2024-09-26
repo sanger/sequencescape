@@ -170,7 +170,7 @@ class TagSubstitution
       commented_assets.map do |asset_id|
         {
           commentable_id: asset_id,
-          commentable_type:,
+          commentable_type: commentable_type,
           user_id: @user&.id,
           description: comment_text,
           title: "Tag Substitution #{@ticket}"

@@ -552,13 +552,13 @@ class BatchesControllerTest < ActionController::TestCase
         asset = create(:empty_sample_tube)
         order_role = OrderRole.new role: 'test'
 
-        order = create(:order, order_role:, study:, assets: [asset], project:)
+        order = create(:order, order_role: order_role, study: study, assets: [asset], project: project)
         request =
           create(
             :well_request,
             asset: create(:well_with_sample_and_plate),
             target_asset: create(:well_with_sample_and_plate),
-            order:
+            order: order
           )
         @batch = create(:batch)
         @batch.requests << request
@@ -588,7 +588,7 @@ class BatchesControllerTest < ActionController::TestCase
              params: {
                printer: barcode_printer.name,
                count: '3',
-               printable:,
+               printable: printable,
                batch_id: @batch.id.to_s
              }
       end

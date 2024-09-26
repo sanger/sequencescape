@@ -41,7 +41,7 @@ class ObjectSpaceProfile
   # Export the collected information to the csv file named filename
   # @param [String] filename The csv file to generate (In the application base directory)
   def report(filename)
-    CSV.open(filename, 'wb', headers:, write_headers: true) do |csv|
+    CSV.open(filename, 'wb', headers: headers, write_headers: true) do |csv|
       @data.each_with_index { |data, index| csv << data.merge({ 'Iteration' => index }) }
     end
   end

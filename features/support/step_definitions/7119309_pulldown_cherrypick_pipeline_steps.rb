@@ -38,7 +38,8 @@ end
 Given(/^I have a plate "([^"]*)" with the following wells:$/) do |plate_barcode, well_details|
   plate = FactoryBot.create :plate, barcode: plate_barcode
   well_details.hashes.each do |well_detail|
-    well = Well.create!(map: Map.find_by(description: well_detail[:well_location], asset_size: plate.size), plate:)
+    well =
+      Well.create!(map: Map.find_by(description: well_detail[:well_location], asset_size: plate.size), plate: plate)
     well.well_attribute.update!(
       concentration: well_detail[:measured_concentration],
       measured_volume: well_detail[:measured_volume]

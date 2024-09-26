@@ -28,7 +28,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
     end
     let(:column_list) { configuration.columns.send(manifest_type) }
 
-    let(:upload) { SampleManifestExcel::Upload::Base.new(file: test_file, column_list:, start_row: 9) }
+    let(:upload) { SampleManifestExcel::Upload::Base.new(file: test_file, column_list: column_list, start_row: 9) }
     let(:processor) { described_class.new(upload) }
     let(:test_file_name) { 'test_file.xlsx' }
     let(:new_test_file_name) { 'new_test_file.xlsx' }
@@ -48,7 +48,12 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         cell(rows.last, columns[:insert_size_to]).value = '1000'
         download.save(new_test_file_name)
         reupload2 =
-          SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list:, start_row: 9, override: true)
+          SampleManifestExcel::Upload::Base.new(
+            file: new_test_file,
+            column_list: column_list,
+            start_row: 9,
+            override: true
+          )
         processor = described_class.new(reupload2)
         processor.update_samples_and_aliquots(tag_group)
         expect(processor.substitutions[0]).to include('insert_size_from' => 100)
@@ -63,7 +68,12 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         cell(rows.last, columns[:i7]).value = i7_tag1
         download.save(new_test_file_name)
         reupload2 =
-          SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list:, start_row: 9, override: true)
+          SampleManifestExcel::Upload::Base.new(
+            file: new_test_file,
+            column_list: column_list,
+            start_row: 9,
+            override: true
+          )
         processor = described_class.new(reupload2)
         processor.update_samples_and_aliquots(tag_group)
         expect(processor).to be_downstream_aliquots_updated
@@ -77,7 +87,12 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         cell(rows.last, columns[:i7]).value = 'ATAGATAGATAG'
         download.save(new_test_file_name)
         reupload2 =
-          SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list:, start_row: 9, override: true)
+          SampleManifestExcel::Upload::Base.new(
+            file: new_test_file,
+            column_list: column_list,
+            start_row: 9,
+            override: true
+          )
         processor = described_class.new(reupload2)
         processor.update_samples_and_aliquots(tag_group)
         expect(processor).to be_aliquots_updated
@@ -87,7 +102,12 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
       it 'will not update the aliquots downstream if there is nothing to update' do
         download.save(new_test_file_name)
         reupload2 =
-          SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list:, start_row: 9, override: true)
+          SampleManifestExcel::Upload::Base.new(
+            file: new_test_file,
+            column_list: column_list,
+            start_row: 9,
+            override: true
+          )
         processor = described_class.new(reupload2)
         processor.update_samples_and_aliquots(tag_group)
         expect(processor.substitutions.compact).to be_empty
@@ -101,7 +121,12 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         cell(rows.last, columns[:insert_size_to]).value = '1000'
         download.save(new_test_file_name)
         reupload2 =
-          SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list:, start_row: 9, override: true)
+          SampleManifestExcel::Upload::Base.new(
+            file: new_test_file,
+            column_list: column_list,
+            start_row: 9,
+            override: true
+          )
         processor = described_class.new(reupload2)
         processor.update_samples_and_aliquots(tag_group)
 
@@ -117,7 +142,12 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         cell(rows.last, columns[:chromium_tag_well]).value = chromium_tag1
         download.save(new_test_file_name)
         reupload2 =
-          SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list:, start_row: 9, override: true)
+          SampleManifestExcel::Upload::Base.new(
+            file: new_test_file,
+            column_list: column_list,
+            start_row: 9,
+            override: true
+          )
         processor = described_class.new(reupload2)
         processor.update_samples_and_aliquots(tag_group)
         expect(processor.substitutions.compact.length).to eq(8)
@@ -135,7 +165,12 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         cell(rows.last, columns[:chromium_tag_well]).value = chromium_tag1
         download.save(new_test_file_name)
         reupload2 =
-          SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list:, start_row: 9, override: true)
+          SampleManifestExcel::Upload::Base.new(
+            file: new_test_file,
+            column_list: column_list,
+            start_row: 9,
+            override: true
+          )
         processor = described_class.new(reupload2)
 
         processor.update_samples_and_aliquots(tag_group)
@@ -150,7 +185,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
     describe SampleManifestExcel::Upload::Processor::OneDTube do
       let(:manifest_type) { 'tube_library_with_tag_sequences' }
-      let(:download) { build(:test_download_tubes, columns: column_list, manifest_type:) }
+      let(:download) { build(:test_download_tubes, columns: column_list, manifest_type: manifest_type) }
 
       context 'when valid' do
         it 'will not generate samples on initialisation' do
@@ -195,7 +230,12 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
           context 'when updating sample data' do
             let(:reupload) do
-              SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list:, start_row: 9, override:)
+              SampleManifestExcel::Upload::Base.new(
+                file: new_test_file,
+                column_list: column_list,
+                start_row: 9,
+                override: override
+              )
             end
             let(:processor) { described_class.new(reupload) }
 
@@ -219,7 +259,12 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         context 'when override is false' do
           let(:override) { false }
           let(:reupload) do
-            SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list:, start_row: 9, override:)
+            SampleManifestExcel::Upload::Base.new(
+              file: new_test_file,
+              column_list: column_list,
+              start_row: 9,
+              override: override
+            )
           end
           let(:processor) { described_class.new(reupload) }
 
@@ -243,7 +288,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
       context 'with mandatory fields' do
         let(:column_list) { configuration.columns.tube_extraction.dup }
         let(:manifest_type) { 'tube_extraction' }
-        let(:download) { build(:test_download_tubes, columns: column_list, manifest_type:) }
+        let(:download) { build(:test_download_tubes, columns: column_list, manifest_type: manifest_type) }
         let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
 
         after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
@@ -255,7 +300,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             column_no = column.number
             cell(row_no - 1, column_no - 1).value = nil # zero-based index
             download.save(new_test_file_name)
-            upload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list:)
+            upload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list)
             processor = described_class.new(upload)
             processor.run(nil)
             expect(processor.errors.full_messages).to include(expected_message)
@@ -280,7 +325,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
       context 'when using extraction tube' do
         let(:column_list) { configuration.columns.tube_extraction.dup }
         let(:manifest_type) { 'tube_extraction' }
-        let(:download) { build(:test_download_tubes, columns: column_list, manifest_type:) }
+        let(:download) { build(:test_download_tubes, columns: column_list, manifest_type: manifest_type) }
         let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
 
         after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
@@ -291,7 +336,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           column_no = column.number
           cell(row_no - 1, column_no - 1).value = nil # zero-based index
           download.save(new_test_file_name)
-          upload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list:)
+          upload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list)
           processor = described_class.new(upload)
           processor.run(nil)
           expected = "Retention instruction checks failed at row: #{row_no}. Value cannot be blank."
@@ -305,7 +350,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           (row1..rown).each { |x| cell(x, col1).value = 'Destroy after 2 years' } # Set all the same
           cell(rown, col1).value = 'Long term storage' # Set one of them different
           download.save(new_test_file_name)
-          upload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list:)
+          upload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list)
           processor = described_class.new(upload)
           processor.run(nil)
           col1 = download.worksheet.columns.find_by(:name, :sanger_tube_id).number - 1
@@ -320,7 +365,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
     end
 
     describe SampleManifestExcel::Upload::Processor::LibraryTube do
-      let(:download) { build(:test_download_tubes, columns: column_list, manifest_type:) }
+      let(:download) { build(:test_download_tubes, columns: column_list, manifest_type: manifest_type) }
 
       context 'with chromium tag-columns' do
         let(:manifest_type) { 'tube_chromium_library' }
@@ -346,7 +391,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
     describe SampleManifestExcel::Upload::Processor::MultiplexedLibraryTube do
       let(:manifest_type) { 'tube_multiplexed_library_with_tag_sequences' }
-      let(:download) { build(:test_download_tubes, columns: column_list, manifest_type:) }
+      let(:download) { build(:test_download_tubes, columns: column_list, manifest_type: manifest_type) }
 
       context 'when using tag sequences' do
         context 'when valid' do
@@ -382,7 +427,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         end
 
         context 'with a partial manifest' do
-          let(:download) { build(:test_download_tubes_partial, manifest_type:, columns: column_list) }
+          let(:download) { build(:test_download_tubes_partial, manifest_type: manifest_type, columns: column_list) }
 
           it 'will process partial upload and cancel unprocessed requests' do
             expect(upload.sample_manifest.pending_external_library_creation_requests.count).to eq 6
@@ -410,7 +455,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
         context 'with mismatched tags' do
           let(:download) do
-            build(:test_download_tubes, manifest_type:, columns: column_list, validation_errors: [:tags])
+            build(:test_download_tubes, manifest_type: manifest_type, columns: column_list, validation_errors: [:tags])
           end
 
           it 'will not be valid' do
@@ -425,7 +470,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         let(:manifest_type) { 'tube_multiplexed_library' }
 
         context 'when valid' do
-          let(:download) { build(:test_download_tubes, manifest_type:, columns: column_list) }
+          let(:download) { build(:test_download_tubes, manifest_type: manifest_type, columns: column_list) }
 
           it 'will process', :aggregate_failures do
             processor.run(nil)
@@ -451,7 +496,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         end
 
         context 'when partially filled in' do
-          let(:download) { build(:test_download_tubes_partial, manifest_type:, columns: column_list) }
+          let(:download) { build(:test_download_tubes_partial, manifest_type: manifest_type, columns: column_list) }
 
           it 'will process partial upload and cancel unprocessed requests' do
             processor = described_class.new(upload)
@@ -466,7 +511,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         end
 
         context 'when manifest is reuploaded and overriden' do
-          let(:download) { build(:test_download_tubes, manifest_type:, columns: column_list) }
+          let(:download) { build(:test_download_tubes, manifest_type: manifest_type, columns: column_list) }
 
           let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
 
@@ -482,7 +527,12 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             cell(11, 8).value = '1000'
             download.save(new_test_file_name)
             reupload =
-              SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list:, start_row: 9, override: true)
+              SampleManifestExcel::Upload::Base.new(
+                file: new_test_file,
+                column_list: column_list,
+                start_row: 9,
+                override: true
+              )
             processor = described_class.new(reupload)
             processor.update_samples_and_aliquots(nil)
             expect(processor.substitutions[0]).to include('insert_size_from' => 100)
@@ -501,7 +551,12 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             cell(11, 3).value = tag_index1
             download.save(new_test_file_name)
             reupload =
-              SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list:, start_row: 9, override: true)
+              SampleManifestExcel::Upload::Base.new(
+                file: new_test_file,
+                column_list: column_list,
+                start_row: 9,
+                override: true
+              )
             processor = described_class.new(reupload)
             processor.update_samples_and_aliquots(nil)
             expect(processor).to be_downstream_aliquots_updated
@@ -510,7 +565,12 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           it 'will not update the aliquots downstream if there is nothing to update' do
             download.save(new_test_file_name)
             reupload =
-              SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list:, start_row: 9, override: true)
+              SampleManifestExcel::Upload::Base.new(
+                file: new_test_file,
+                column_list: column_list,
+                start_row: 9,
+                override: true
+              )
             processor = described_class.new(reupload)
             processor.update_samples_and_aliquots(nil)
             expect(processor.substitutions.compact).to be_empty
@@ -520,7 +580,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
         context 'when tags are mismatched' do
           let(:download) do
-            build(:test_download_tubes, manifest_type:, columns: column_list, validation_errors: [:tags])
+            build(:test_download_tubes, manifest_type: manifest_type, columns: column_list, validation_errors: [:tags])
           end
 
           it 'will not be valid' do
@@ -640,7 +700,12 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
           it 'will update the samples if samples data has changed and override is set true' do
             reupload =
-              SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list:, start_row: 9, override: true)
+              SampleManifestExcel::Upload::Base.new(
+                file: new_test_file,
+                column_list: column_list,
+                start_row: 9,
+                override: true
+              )
             processor = described_class.new(reupload)
             processor.update_samples_and_aliquots(nil)
             expect(reupload.rows).to be_all(&:sample_updated?)
@@ -652,7 +717,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           end
 
           it 'will not update the samples if samples data has changed and override is set false' do
-            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list:, start_row: 9)
+            reupload =
+              SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list, start_row: 9)
             processor = described_class.new(reupload)
             processor.update_samples_and_aliquots(nil)
             expect(reupload.rows).not_to be_all(&:sample_updated?)
@@ -683,7 +749,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             cell(10, 0).value = 'CGAP-00000'
             cell(11, 0).value = 'CGAP-00000'
             download.save(new_test_file_name)
-            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list:, start_row: 9)
+            reupload =
+              SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list, start_row: 9)
             processor = described_class.new(reupload)
             processor.update_samples_and_aliquots(nil)
             expect(processor).not_to be_valid
@@ -693,7 +760,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             cell(9, 0).value = 'CGAP-00000'
             cell(10, 0).value = 'CGAP-11111'
             download.save(new_test_file_name)
-            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list:, start_row: 9)
+            reupload =
+              SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list, start_row: 9)
             processor = described_class.new(reupload)
             processor.update_samples_and_aliquots(nil)
             expect(processor).not_to be_valid
@@ -717,7 +785,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             row1 = download.worksheet.first_row - 1
             cell(row1, col1).value = nil
             download.save(new_test_file_name)
-            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list:, start_row: 9)
+            reupload =
+              SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list, start_row: 9)
             processor = described_class.new(reupload)
             processor.update_samples_and_aliquots(nil)
             expect(processor).not_to be_valid
@@ -733,7 +802,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             cell(row1, col1).value = 'Destroy after 2 years'
             cell(row2, col1).value = 'Long term storage'
             download.save(new_test_file_name)
-            reupload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list:, start_row: 9)
+            reupload =
+              SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list, start_row: 9)
             processor = described_class.new(reupload)
             processor.update_samples_and_aliquots(nil)
             expect(processor).not_to be_valid
@@ -935,8 +1005,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             tube_barcode = mock_microservice_responses[tube_rack_barcode]['layout'].keys[counter]
             Barcode.create(asset: tube, barcode: tube_barcode, format: 'fluidx_barcode')
             RackedTube.create(
-              tube:,
-              tube_rack:,
+              tube: tube,
+              tube_rack: tube_rack,
               coordinate: mock_microservice_responses[tube_rack_barcode]['layout'].values[counter]
             )
             counter += 1

@@ -238,7 +238,7 @@ module Core
               ::Core::Io::Registry
                 .instance
                 .lookup_for_object(object)
-                .as_json(response: self, target: object, stream:, object:, handled_by:)
+                .as_json(response: self, target: object, stream: stream, object: object, handled_by: handled_by)
             end
         end
 

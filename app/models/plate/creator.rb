@@ -81,8 +81,8 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
           LabelPrinter::PrintJob.new(
             barcode_printer.name,
             LabelPrinter::Label::PlateCreator,
-            plates:,
-            plate_purpose:,
+            plates: plates,
+            plate_purpose: plate_purpose,
             user_login: scanned_user.login
           )
 
@@ -131,7 +131,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
         barcode_printer.name,
         LabelPrinter::Label::PlateCreator,
         plates: created_plates.pluck(:destinations).flatten.compact,
-        plate_purpose:,
+        plate_purpose: plate_purpose,
         user_login: scanned_user.login
       )
 
@@ -155,7 +155,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     ActiveRecord::Base.transaction do
       # TO DO: handle exceptions from this?
-      group = AssetGroup.create!(study:, name: asset_group_name)
+      group = AssetGroup.create!(study: study, name: asset_group_name)
       group.assets.concat(all_wells)
     end
 
@@ -188,7 +188,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def tube_rack_to_plate_factories(tube_racks, plate_purpose)
-    tube_racks.map { |rack| ::Heron::Factories::PlateFromRack.new(tube_rack: rack, plate_purpose:) }
+    tube_racks.map { |rack| ::Heron::Factories::PlateFromRack.new(tube_rack: rack, plate_purpose: plate_purpose) }
   end
 
   def can_create_plates?(source_plate)

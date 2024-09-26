@@ -86,7 +86,7 @@ module Attributable
       model.with_options(conditions) do |object|
         # false.blank? == true, so we exclude booleans here, they handle themselves further down.
         object.validates_presence_of(name) if required? && !boolean?
-        object.with_options(allow_nil: optional?, allow_blank:) do |required|
+        object.with_options(allow_nil: optional?, allow_blank: allow_blank) do |required|
           required.validates_inclusion_of(name, in: [true, false]) if boolean?
           if integer? || float?
             required.validates name, numericality: { only_integer: integer?, greater_than_or_equal_to: minimum }
@@ -174,10 +174,10 @@ module Attributable
     def to_field_info(validator_source = nil)
       options = {
         # TODO[xxx]: currently only working for metadata, the only place attributes are used
-        display_name:,
+        display_name: display_name,
         key: assignable_attribute_name,
         default_value: find_default(validator_source),
-        kind:,
+        kind: kind,
         required: required?
       }
       options.update(selection: selection_options(validator_source)) if selection?

@@ -9,9 +9,9 @@ describe Transfer::BetweenPlates do
 
   before do
     described_class.create!(
-      source:,
-      destination:,
-      user:,
+      source: source,
+      destination: destination,
+      user: user,
       transfers: {
         'A1' => 'A1',
         'B1' => 'B1',

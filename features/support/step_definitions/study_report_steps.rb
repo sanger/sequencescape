@@ -6,12 +6,12 @@ end
 
 Given /^there is (\d+) pending report for study "([^"]*)"$/ do |num_reports, study_name|
   study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
-  1.upto(num_reports.to_i) { FactoryBot.create :pending_study_report, study:, user: @current_user }
+  1.upto(num_reports.to_i) { FactoryBot.create :pending_study_report, study: study, user: @current_user }
 end
 
 Given /^there is (\d+) completed report for study "([^"]*)"$/ do |num_reports, study_name|
   study = Study.find_by(name: study_name) or raise StandardError, "Cannot find study #{study_name.inspect}"
-  1.upto(num_reports.to_i) { FactoryBot.create :completed_study_report, study:, user: @current_user }
+  1.upto(num_reports.to_i) { FactoryBot.create :completed_study_report, study: study, user: @current_user }
 end
 
 Then /^I should see the report for "([^"]*)":$/ do |study_name, expected_results_table|

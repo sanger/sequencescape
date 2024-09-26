@@ -27,7 +27,7 @@ RSpec.describe Receptacle do
   end
 
   describe '#update_from_qc' do
-    let(:qc_result) { build(:qc_result, key:, value:, units:, assay_type: 'assay', assay_version: 1) }
+    let(:qc_result) { build(:qc_result, key: key, value: value, units: units, assay_type: 'assay', assay_version: 1) }
 
     before { receptacle.update_from_qc(qc_result) }
 

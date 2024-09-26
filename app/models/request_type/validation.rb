@@ -19,7 +19,7 @@ module RequestType::Validation
                   inclusion: {
                     in: validator.valid_options,
                     if: :"#{validator.request_option}_needs_checking?",
-                    message:,
+                    message: message,
                     allow_blank: validator.allow_blank?
                   }
       end

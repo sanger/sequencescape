@@ -13,8 +13,8 @@ class WorkflowTest < ActiveSupport::TestCase
       @workflow.update!(name: 'Workflow for WorkflowTest')
 
       task = create(:task, workflow: @workflow)
-      create(:descriptor, task:, name: 'prop', value: 'something', key: 'something')
-      create(:descriptor, task:, name: 'prop_2', value: 'upstairs', key: 'upstairs')
+      create(:descriptor, task: task, name: 'prop', value: 'something', key: 'something')
+      create(:descriptor, task: task, name: 'prop_2', value: 'upstairs', key: 'upstairs')
     end
 
     subject { @workflow }

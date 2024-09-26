@@ -2,7 +2,7 @@
 require 'rails_helper'
 
 RSpec.describe PickList, :pick_list do
-  subject(:pick_list) { described_class.new(pick_attributes: picks, asynchronous:) }
+  subject(:pick_list) { described_class.new(pick_attributes: picks, asynchronous: asynchronous) }
 
   let(:wells) { create_list(:untagged_well, 2) }
   let(:asynchronous) { false }
@@ -29,7 +29,7 @@ RSpec.describe PickList, :pick_list do
 
     context 'when wells lack project information but the pick provides it' do
       let(:wells) { create_list(:untagged_well, 2, project: nil) }
-      let(:picks) { wells.map { |well| { source_receptacle: well, project: } } }
+      let(:picks) { wells.map { |well| { source_receptacle: well, project: project } } }
 
       it { is_expected.to be_valid }
     end

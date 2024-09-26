@@ -9,8 +9,8 @@ def create_submission_of_assets(template, assets, request_options = {})
       user: FactoryBot.create(:user),
       study: FactoryBot.create(:study),
       project: FactoryBot.create(:project),
-      assets:,
-      request_options:
+      assets: assets,
+      request_options: request_options
     ).submission
   submission.built!
   Delayed::Worker.delay_jobs = true
@@ -35,7 +35,7 @@ Given '{well_range} of {plate_name} are part of the same submission' do |range, 
   plate
     .wells
     .select(&range.method(:include?))
-    .each { |well| FactoryBot.create :transfer_request, submission:, target_asset: well }
+    .each { |well| FactoryBot.create :transfer_request, submission: submission, target_asset: well }
 end
 
 Given '{well_range} of {plate_name} have been failed' do |range, plate|
@@ -119,7 +119,7 @@ end
 # rubocop:todo Layout/LineLength
 Given 'all of the wells on {plate_name} are in an asset group called {string} owned by {study_name}' do |plate, name, study|
   # rubocop:enable Layout/LineLength
-  AssetGroup.create!(study:, name:, assets: plate.wells)
+  AssetGroup.create!(study: study, name: name, assets: plate.wells)
 end
 
 Then /^all "([^"]+)" requests should have the following details:$/ do |name, table|
@@ -168,8 +168,8 @@ Given '{plate_name} will pool into 1 tube' do |plate|
     .readonly(false)
     .each_with_index do |well, i|
       stock_well = stock_wells[i]
-      FactoryBot.create(:library_creation_request, asset: stock_well, target_asset: well, submission:)
-      FactoryBot.create(:transfer_request, asset: stock_well, target_asset: well, submission:)
+      FactoryBot.create(:library_creation_request, asset: stock_well, target_asset: well, submission: submission)
+      FactoryBot.create(:transfer_request, asset: stock_well, target_asset: well, submission: submission)
       well.stock_wells.attach!([stock_well])
     end
 end

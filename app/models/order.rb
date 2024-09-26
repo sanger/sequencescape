@@ -286,7 +286,7 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def generate_broadcast_event
-    BroadcastEvent::OrderMade.create!(seed: self, user:)
+    BroadcastEvent::OrderMade.create!(seed: self, user: user)
   end
 
   def study_is_active

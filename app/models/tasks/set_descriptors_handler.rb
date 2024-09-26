@@ -32,7 +32,13 @@ module Tasks::SetDescriptorsHandler
     end
 
     def process_request(request)
-      LabEvent.create!(batch:, description: @task.name, descriptors: descriptors(request), user:, eventful: request)
+      LabEvent.create!(
+        batch: batch,
+        description: @task.name,
+        descriptors: descriptors(request),
+        user: user,
+        eventful: request
+      )
 
       # Some receptacles are flagged as 'resource'. There are 43 of these in the production database,
       # all are from 2009 - 2010.

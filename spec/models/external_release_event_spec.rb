@@ -6,7 +6,7 @@ describe ExternalReleaseEvent do
   describe '::create_for_asset!' do
     subject { described_class.create_for_asset!(asset, sendmail) }
 
-    let(:asset) { build(:lane, aliquots:, external_release: true) }
+    let(:asset) { build(:lane, aliquots: aliquots, external_release: true) }
     let(:aliquots) { [study_a, study_a, study_b].map { |s| build(:aliquot, study: s) } }
     let(:expected_recipients) { [user_on_multiple_studies.email, user_on_single_study.email] }
     let(:expected_message) { 'Data to be released externally set true' }
