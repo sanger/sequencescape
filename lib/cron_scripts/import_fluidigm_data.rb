@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require 'exception_notification'
 
 module CronScripts
   module ImportFluidigmData
