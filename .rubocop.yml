@@ -8,17 +8,10 @@ require:
   - rubocop-rspec
   - rubocop-rspec_rails
 
-RSpec/AggregateExamples:
-  # Aggregate examples can be useful, but the cop gets into nasty battles with
-  # other Spec cops, and is only really of value in expensive tests.
-  Enabled: false
-# Added exclude because api and feature specs do not have a specific class.
-RSpec/DescribeClass:
-  Exclude:
-    - "spec/requests/**/*.rb"
-    - "spec/api/**/*.rb"
-    - "spec/features/**/*.rb"
-    - "spec/views/**/*.rb"
+inherit_mode:
+  merge:
+    - Exclude
+
 AllCops:
   NewCops: enable
   Exclude:
@@ -32,6 +25,18 @@ AllCops:
     - sbin/*
     - node_modules/**/*
     - tmp/**/*
+
+RSpec/AggregateExamples:
+  # Aggregate examples can be useful, but the cop gets into nasty battles with
+  # other Spec cops, and is only really of value in expensive tests.
+  Enabled: false
+# Added exclude because api and feature specs do not have a specific class.
+RSpec/DescribeClass:
+  Exclude:
+    - "spec/requests/**/*.rb"
+    - "spec/api/**/*.rb"
+    - "spec/features/**/*.rb"
+    - "spec/views/**/*.rb"
 
 Rails/SkipsModelValidations:
   Exclude:
