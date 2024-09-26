@@ -127,6 +127,62 @@ describe 'Asset submission', :js do
     end
   end
 
+  describe 'The request form does not set default values' do
+    let(:user) { create :admin }
+
+    before do
+      login_user user
+      visit labware_path(asset)
+      click_link 'Request additional sequencing'
+    end
+
+    describe 'when the form is loaded' do
+      it 'does not set request type' do
+        expect(page).to have_select('Request type', selected: 'Select a request type')
+      end
+    end
+
+    describe 'when the user selects a request type' do
+      before { select 'Request Type 1', from: 'Request type' }
+
+      it 'does not set flowcell type to default value' do
+        expect(page).to have_select('Flowcell type', selected: 'Select a requested flowcell type')
+      end
+
+      it 'does not set read length to default value' do
+        expect(page).to have_select('Read length', selected: 'Select a read length')
+      end
+    end
+  end
+
+  describe 'Validation of Flowcell Type field for illumina-HTP NovaSeq requests' do
+    let(:user) { create :admin }
+
+    before do
+      allow(RequestType).to receive(:where).with(
+        key: %w[illumina_htp_novaseq_6000_paired_end_sequencing illumina_htp_novaseqx_paired_end_sequencing]
+      ).and_return(request_types)
+      allow(request_types).to receive(:pluck).with(:id).and_return(request_types.map(&:id))
+      login_user user
+      visit labware_path(asset)
+      click_link 'Request additional sequencing'
+    end
+
+    it 'displays an error if Flowcell Type is not set' do
+      select(selected_request_type.name, from: 'Request type')
+      select(study.name, from: 'Study')
+      select(project.name, from: 'Project')
+      fill_in 'Fragment size required (from)', with: '100'
+      fill_in 'Fragment size required (to)', with: '200'
+      select(selected_read_length, from: 'Read length')
+      click_button 'Create'
+
+      # The JS native validation error 'Please select an item in the list' is being displayed but cannot be inspected.
+      expect(page).not_to have_text 'Created request'
+      expect(page).to have_current_path(new_request_receptacle_path(asset))
+    end
+  end
+
   shared_examples 'it allows additional sequencing' do
     it 'request additional sequencing' do
       login_user user
