@@ -9,39 +9,18 @@ RSpec.describe Api::V2::StateChangeResource, type: :resource do
   let(:resource_model) { build_stubbed :state_change }
 
   # Attributes
-  it 'has the expected read-only attributes', :aggregate_failures do
-    expect(resource).to have_attribute :uuid
-    expect(resource).not_to have_updatable_field :uuid
+  it { is_expected.to have_readonly_attribute :uuid }
+  it { is_expected.to have_readonly_attribute :previous_state }
 
-    expect(resource).to have_attribute :previous_state
-    expect(resource).not_to have_updatable_field :previous_state
-  end
+  it { is_expected.to have_readwrite_attribute :contents }
+  it { is_expected.to have_readwrite_attribute :reason }
+  it { is_expected.to have_readwrite_attribute :target_state }
 
-  it 'has the expected read-write attributes', :aggregate_failures do
-    expect(resource).to have_attribute :contents
-    expect(resource).to have_updatable_field :contents
-
-    expect(resource).to have_attribute :reason
-    expect(resource).to have_updatable_field :reason
-
-    expect(resource).to have_attribute :target_state
-    expect(resource).to have_updatable_field :target_state
-  end
-
-  it 'has the expected write-only attributes', :aggregate_failures do
-    expect(resource).not_to have_attribute :user_uuid
-    expect(resource).to have_updatable_field :user_uuid
-
-    expect(resource).not_to have_attribute :target_uuid
-    expect(resource).to have_updatable_field :target_uuid
-
-    expect(resource).not_to have_attribute :customer_accepts_responsibility
-    expect(resource).to have_updatable_field :customer_accepts_responsibility
-  end
+  it { is_expected.to have_writeonly_attribute :user_uuid }
+  it { is_expected.to have_writeonly_attribute :target_uuid }
+  it { is_expected.to have_writeonly_attribute :customer_accepts_responsibility }
 
   # Relationships
-  it 'has the expected relationships', :aggregate_failures do
-    expect(resource).to have_one(:target).with_class_name('Labware')
-    expect(resource).to have_one(:user).with_class_name('User')
-  end
+  it { is_expected.to have_one(:target).with_class_name('Labware') }
+  it { is_expected.to have_one(:user).with_class_name('User') }
 end

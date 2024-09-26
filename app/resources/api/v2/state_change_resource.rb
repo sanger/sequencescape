@@ -45,6 +45,7 @@ module Api
       # @!attribute [w] target_uuid
       #   This is declared for convenience where the target is not available to set as a relationship.
       #   Setting this attribute alongside the `target` relationship will prefer the relationship value.
+      #   @deprecated Use the `target` relationship instead.
       #   @param value [String] The UUID of the target labware this state change applies to.
       #   @return [Void]
       #   @see #target
@@ -57,6 +58,7 @@ module Api
       # @!attribute [w] user_uuid
       #   This is declared for convenience where the user is not available to set as a relationship.
       #   Setting this attribute alongside the `user` relationship will prefer the relationship value.
+      #   @deprecated Use the `user` relationship instead.
       #   @param value [String] The UUID of the user who initiated this state change.
       #   @return [Void]
       #   @see #user
