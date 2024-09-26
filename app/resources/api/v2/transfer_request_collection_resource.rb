@@ -39,7 +39,10 @@ module Api
       attribute :transfer_requests_attributes
 
       def transfer_requests_attributes=(value)
-        @model.transfer_requests_io = value
+        return if value.nil?
+
+        # Convert ActionController::Parameters into hashes.
+        @model.transfer_requests_io = value.map(&:to_unsafe_h)
       end
 
       # @!attribute [w] user_uuid
