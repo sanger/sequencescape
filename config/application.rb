@@ -61,14 +61,13 @@ module Sequencescape
     config.eager_load_paths += %W[#{Rails.root}/lib]
     config.eager_load_paths += %W[#{Rails.root}/lib/accession]
 
-    # Some lib files we don't want to autoload as they are one time scripts or dev scripts without module definitions
-    %w[bm_plate_creation.rb volume_check.rb cron_scripts generators informatics].each do |file|
-      Rails.autoloaders.main.ignore(Rails.root.join("lib/#{file}"))
-    end
+    # Some lib files we don't want to autoload as they are not required in the rails app
+    %w[generators informatics].each { |file| Rails.autoloaders.main.ignore(Rails.root.join("lib/#{file}")) }
+
+    # Load the custom inflections to help with the AASM module
+    Rails.autoloaders.main.inflector.inflect('aasm' => 'AASM')
 
     config.encoding = 'utf-8'
-
-    Rails.autoloaders.main.inflector.inflect('aasm' => 'AASM')
 
     # Make Time.zone default to the specified zone, and make Active Record store time values
     # in the database in UTC, and return them converted to the specified local zone.
