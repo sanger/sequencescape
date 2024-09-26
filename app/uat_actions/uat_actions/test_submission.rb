@@ -219,7 +219,7 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
     default_request_options.merge(custom_request_options)
   end
 
-  def default_request_options
+  def default_request_options # rubocop:todo Metrics/MethodLength
     submission_template
       .input_field_infos
       .each_with_object({}) do |ifi, options|

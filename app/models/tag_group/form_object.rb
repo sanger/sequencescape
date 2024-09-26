@@ -62,7 +62,7 @@ class TagGroup::FormObject
 
   # rubocop:enable Metrics/MethodLength
 
-  def persist! # rubocop:todo Metrics/AbcSize
+  def persist! # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     success =
       TagGroup.transaction do
         @tag_group = TagGroup.new(name:, adapter_type_id:)
