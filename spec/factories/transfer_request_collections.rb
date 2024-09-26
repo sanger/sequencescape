@@ -5,14 +5,14 @@ FactoryBot.define do
     transient do
       target_tube_count { 1 }
       target_assets do
-        target_tube_count.times.map { create(:receptacle, labware: create(:stock_multiplexed_library_tube)) }
+        Array.new(target_tube_count) { create(:receptacle, labware: create(:stock_multiplexed_library_tube)) }
       end
 
       transfer_request_count { 5 }
     end
 
     transfer_requests do
-      transfer_request_count.times.map { create(:transfer_request, target_asset: target_assets.sample) }
+      Array.new(transfer_request_count) { create(:transfer_request, target_asset: target_assets.sample) }
     end
     user { create :user }
   end
