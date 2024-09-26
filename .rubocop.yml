@@ -57,6 +57,7 @@ Lint/AmbiguousRegexpLiteral:
   Exclude:
     - features/support/step_definitions/**/*
 
+# Only use shorthand hash syntax when all keys match the variables for better readability
 Style/HashSyntax:
   EnforcedShorthandSyntax: consistent
 
