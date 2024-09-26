@@ -4,9 +4,7 @@ FactoryBot.define do
   factory :transfer_request_collection do
     transient do
       target_tube_count { 1 }
-      target_assets do
-        Array.new(target_tube_count) { create(:receptacle, labware: create(:stock_multiplexed_library_tube)) }
-      end
+      target_assets { create_list(:receptacle, target_tube_count, labware: create(:stock_multiplexed_library_tube)) }
 
       transfer_request_count { 5 }
     end
