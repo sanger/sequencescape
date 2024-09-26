@@ -488,8 +488,8 @@ Naming/VariableNumber:
     - 'spec/features/retrospective_failure_spec.rb'
     - 'spec/features/sample_manifests/track_sample_manifest_updates_spec.rb'
     - 'spec/features/tag_layout_template_spec.rb'
-    - 'spec/heron/factories/tube_rack_spec.rb'
     - 'spec/lib/accession/tag_spec.rb'
+    - 'spec/models/heron/factories/tube_rack_spec.rb'
     - 'spec/models/api/messages/flowcell_io_spec.rb'
     - 'spec/models/api/messages/pac_bio_run_io_spec.rb'
     - 'spec/models/api/messages/pac_bio_run_with_tag2_io_spec.rb'
@@ -688,8 +688,6 @@ RSpec/ExampleWording:
     - 'spec/bulk_submission_excel/configuration_spec.rb'
     - 'spec/bulk_submission_excel/data_worksheet_spec.rb'
     - 'spec/features/gpl207_bug_incorrect_submission_id_on_transfer_spec.rb'
-    - 'spec/heron/factories/sample_spec.rb'
-    - 'spec/heron/factories/tube_rack_spec.rb'
     - 'spec/lib/accession/study_spec.rb'
     - 'spec/models/parsers/cardinal_pbmc_count_parser_spec.rb'
     - 'spec/models/plate/quad_creator_spec.rb'
@@ -700,6 +698,8 @@ RSpec/ExampleWording:
     - 'spec/models/sample_spec.rb'
     - 'spec/models/study_spec.rb'
     - 'spec/models/transfer_request_spec.rb'
+    - 'spec/models/heron/factories/sample_spec.rb'
+    - 'spec/models/heron/factories/tube_rack_spec.rb'
     - 'spec/sample_manifest_excel/configuration_spec.rb'
     - 'spec/sample_manifest_excel/upload/processor_spec.rb'
     - 'spec/sample_manifest_excel/worksheet_spec.rb'
@@ -1886,9 +1886,6 @@ Style/SelfAssignment:
 Style/SingleArgumentDig:
   Exclude:
     - 'app/controllers/plates_controller.rb'
-    - 'app/heron/factories/concerns/eventful.rb'
-    - 'app/heron/factories/event.rb'
-    - 'app/heron/factories/sample.rb'
     - 'spec/requests/api/v2/heron/plates_spec.rb'
 
 # Offense count: 8
