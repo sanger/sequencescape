@@ -44,7 +44,7 @@ module Api
 
         errors = details.map { |detail| { title: title, detail: detail, code: status_code, status: status_code } }
 
-        render json: { errors: errors }, status: status
+        render json: { errors: }, status: status
       end
 
       # This should only be called once per request, as it will render an exception every time it's called when any one
@@ -72,7 +72,7 @@ module Api
 
         respond_with_errors('Record not found', record_errors, :bad_request) and return if record_errors.any?
 
-        { user: user, plate: plate }
+        { user:, plate: }
       end
     end
   end

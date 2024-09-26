@@ -31,7 +31,7 @@ describe 'State Changes API', with: :api_v2 do
 
   context 'with a single resource' do
     describe '#GET resource by ID' do
-      let(:resource) { create :state_change }
+      let(:resource) { create(:state_change) }
 
       context 'without included relationships' do
         before { api_get "#{base_endpoint}/#{resource.id}" }
@@ -86,7 +86,7 @@ describe 'State Changes API', with: :api_v2 do
   end
 
   describe '#PATCH a resource' do
-    let(:resource_model) { create :state_change }
+    let(:resource_model) { create(:state_change) }
     let(:payload) do
       {
         'data' => {

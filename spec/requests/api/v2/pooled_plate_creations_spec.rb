@@ -31,7 +31,7 @@ describe 'Pooled Plate Creations API', with: :api_v2 do
 
   context 'with a single resource' do
     describe '#GET resource by ID' do
-      let(:resource) { create :pooled_plate_creation }
+      let(:resource) { create(:pooled_plate_creation) }
 
       context 'without included relationships' do
         before { api_get "#{base_endpoint}/#{resource.id}" }
@@ -89,8 +89,8 @@ describe 'Pooled Plate Creations API', with: :api_v2 do
   end
 
   describe '#PATCH a resource' do
-    let(:resource_model) { create :pooled_plate_creation }
-    let(:purpose) { create :plate_purpose }
+    let(:resource_model) { create(:pooled_plate_creation) }
+    let(:purpose) { create(:plate_purpose) }
     let(:payload) do
       { data: { id: resource_model.id, type: resource_type, attributes: { child_purpose_uuid: [purpose.uuid] } } }
     end
@@ -103,7 +103,7 @@ describe 'Pooled Plate Creations API', with: :api_v2 do
   end
 
   describe '#POST a create request' do
-    let(:purpose) { create :plate_purpose }
+    let(:purpose) { create(:plate_purpose) }
     let(:parents) { [create(:plate), create(:tube, prefix: 'PT')] }
     let(:user) { create(:user) }
 
@@ -194,8 +194,8 @@ describe 'Pooled Plate Creations API', with: :api_v2 do
       end
 
       context 'with conflicting relationships' do
-        let(:other_parents) { create_list :plate, 2 }
-        let(:other_user) { create :user }
+        let(:other_parents) { create_list(:plate, 2) }
+        let(:other_user) { create(:user) }
         let(:payload) do
           {
             data: {
