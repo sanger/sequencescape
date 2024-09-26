@@ -52,10 +52,10 @@ RSpec.describe TagGroup do
   describe '#adapter_type_name' do
     subject { tag_group.adapter_type_name }
 
-    let(:tag_group) { build_stubbed :tag_group, adapter_type: }
+    let(:tag_group) { build_stubbed(:tag_group, adapter_type:) }
 
     context 'when an adapter type is specified' do
-      let(:adapter_type) { build_stubbed :adapter_type, name: 'name' }
+      let(:adapter_type) { build_stubbed(:adapter_type, name: 'name') }
 
       it { is_expected.to eq 'name' }
     end

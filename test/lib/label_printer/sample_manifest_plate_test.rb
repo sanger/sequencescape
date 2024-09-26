@@ -21,9 +21,9 @@ class SampleManifestPlateTest < ActiveSupport::TestCase
         build(:plate_barcode, barcode: 'SQPD-24')
       )
 
-      @purpose = create :plate_purpose
+      @purpose = create(:plate_purpose)
 
-      @manifest = create :sample_manifest, count: 2, purpose: @purpose
+      @manifest = create(:sample_manifest, count: 2, purpose: @purpose)
       @manifest.generate
 
       @plates = @manifest.send(:core_behaviour).plates

@@ -7,21 +7,21 @@ require 'shared_contexts/limber_shared_context'
 # templates. The actual layout of tags is carried out by the tag layouts themselves,
 # and is tested there.
 describe TagLayoutTemplate do
-  let(:template) { build :tag_layout_template, direction_algorithm:, walking_algorithm:, tag2_group:, tags: ['AAA'] }
+  let(:template) { build(:tag_layout_template, direction_algorithm:, walking_algorithm:, tag2_group:, tags: ['AAA']) }
 
   describe '#create!' do
     subject { template.create!(plate:, user:) }
 
-    let(:user) { build :user }
+    let(:user) { build(:user) }
 
-    let(:plate) { create :plate }
+    let(:plate) { create(:plate) }
     let(:tag2_group) { nil }
     let(:enforce_uniqueness) { nil }
 
     context 'by plate in columns' do
       let(:direction_algorithm) { 'TagLayout::InColumns' }
       let(:walking_algorithm) { 'TagLayout::WalkWellsOfPlate' }
-      let(:plate) { create :plate, :with_submissions, well_count: 1 }
+      let(:plate) { create(:plate, :with_submissions, well_count: 1) }
 
       it { is_expected.to be_a TagLayout }
 
@@ -48,7 +48,7 @@ describe TagLayoutTemplate do
 
       context 'with a tag2 group' do
         let(:enforce_uniqueness) { true }
-        let(:tag2_group) { create :tag_group_with_tags }
+        let(:tag2_group) { create(:tag_group_with_tags) }
 
         it { is_expected.to be_a TagLayout }
 
@@ -76,7 +76,7 @@ describe TagLayoutTemplate do
         subject { template.create!(plate:, user:, enforce_uniqueness:) }
 
         let(:enforce_uniqueness) { nil }
-        let(:tag2_group) { create :tag_group_with_tags }
+        let(:tag2_group) { create(:tag_group_with_tags) }
 
         it { is_expected.to be_a TagLayout }
 

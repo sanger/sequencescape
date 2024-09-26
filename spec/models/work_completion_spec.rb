@@ -15,16 +15,16 @@ describe WorkCompletion do
       let(:submission_request_types) { [library_request_type] }
 
       let(:target_tube) do
-        tt = create :multiplexed_library_tube
+        tt = create(:multiplexed_library_tube)
         tt.parents << upstream_tube
-        create :transfer_request, asset: upstream_tube, target_asset: tt
+        create(:transfer_request, asset: upstream_tube, target_asset: tt)
         tt
       end
 
       let(:upstream_tube) do
-        ut = create :new_stock_multiplexed_library_tube
+        ut = create(:new_stock_multiplexed_library_tube)
         [target_plate, target_plate2].each do |plate|
-          plate.wells.each { |well| create :transfer_request, asset: well, target_asset: ut }
+          plate.wells.each { |well| create(:transfer_request, asset: well, target_asset: ut) }
         end
         ut.parents = [target_plate, target_plate2]
         ut
@@ -32,22 +32,22 @@ describe WorkCompletion do
 
       let(:target_plate2) do
         build_library_requests2
-        create :target_plate, parent: input_plate2, well_count: tested_wells, submission: target_submission2
+        create(:target_plate, parent: input_plate2, well_count: tested_wells, submission: target_submission2)
       end
-      let(:input_plate2) { create :input_plate, well_count: tested_wells, well_factory: :tagged_well }
+      let(:input_plate2) { create(:input_plate, well_count: tested_wells, well_factory: :tagged_well) }
       let(:build_library_requests2) do
         input_plate2.wells.each do |well|
-          create_list :library_request,
+          create_list(:library_request,
                       requests_per_well,
                       request_type: library_request_type,
                       asset: well,
                       submission: target_submission2,
                       state: 'started',
-                      order: order2
+                      order: order2)
         end
       end
       let(:target_submission2) do
-        create :library_submission, assets: input_plate2.wells, request_types: submission_request_types
+        create(:library_submission, assets: input_plate2.wells, request_types: submission_request_types)
       end
       let(:order2) { target_submission2.orders.first }
 

@@ -10,11 +10,11 @@ describe TagLayout do
     plate.wells.with_aliquots.each_with_object({}) { |w, h| h[w.map_description] = w.aliquots.map(&tag_type) }
   end
 
-  let(:plate) { create :plate_with_untagged_wells, well_count: 8 }
-  let(:tag_group) { create :tag_group, tag_count: }
+  let(:plate) { create(:plate_with_untagged_wells, well_count: 8) }
+  let(:tag_group) { create(:tag_group, tag_count:) }
   let(:tag2_group) { nil }
   let(:tag_count) { 16 }
-  let(:user) { create :user }
+  let(:user) { create(:user) }
   let(:initial_tag) { 0 }
 
   shared_examples 'a tag layout' do
@@ -33,7 +33,7 @@ describe TagLayout do
   end
 
   context 'substitutions' do
-    let(:tag_layout) { build_stubbed :tag_layout }
+    let(:tag_layout) { build_stubbed(:tag_layout) }
 
     it 'defaults to an empty hash' do
       expect(tag_layout.substitutions).to eq({})
@@ -97,9 +97,9 @@ describe TagLayout do
           let(:direction) { 'combinatorial by row' }
 
           context 'with a 384 well plate' do
-            let(:plate) { create :plate_with_untagged_wells, sample_count: 4 * 16, size: 384 }
+            let(:plate) { create(:plate_with_untagged_wells, sample_count: 4 * 16, size: 384) }
             let(:tag_count) { 384 }
-            let(:tag2_group) { create :tag_group, tag_count: }
+            let(:tag2_group) { create(:tag_group, tag_count:) }
             let(:expected_tag_layout) do
               {
                 'A1' => [1],
@@ -258,9 +258,9 @@ describe TagLayout do
           let(:direction) { 'column then row' }
 
           context 'with a 384 well plate' do
-            let(:plate) { create :plate_with_untagged_wells, sample_count: 4 * 16, size: 384 }
+            let(:plate) { create(:plate_with_untagged_wells, sample_count: 4 * 16, size: 384) }
             let(:tag_count) { 384 }
-            let(:tag2_group) { create :tag_group, tag_count: }
+            let(:tag2_group) { create(:tag_group, tag_count:) }
             let(:expected_tag_layout) do
               {
                 'A1' => [1],
@@ -415,9 +415,9 @@ describe TagLayout do
           let(:direction) { 'column' }
 
           context 'with a 384 well plate' do
-            let(:plate) { create :plate_with_untagged_wells, sample_count: 4 * 16, size: 384 }
+            let(:plate) { create(:plate_with_untagged_wells, sample_count: 4 * 16, size: 384) }
             let(:tag_count) { 384 }
-            let(:tag2_group) { create :tag_group, tag_count: }
+            let(:tag2_group) { create(:tag_group, tag_count:) }
             let(:expected_tag_layout) do
               {
                 'A1' => [1],
@@ -572,9 +572,9 @@ describe TagLayout do
           let(:direction) { 'inverse column' }
 
           context 'with a 384 well plate' do
-            let(:plate) { create :plate_with_untagged_wells, sample_count: 4 * 16, size: 384 }
+            let(:plate) { create(:plate_with_untagged_wells, sample_count: 4 * 16, size: 384) }
             let(:tag_count) { 384 }
-            let(:tag2_group) { create :tag_group, tag_count: }
+            let(:tag2_group) { create(:tag_group, tag_count:) }
             let(:expected_tag_layout) do
               {
                 'A1' => [96],
@@ -729,9 +729,9 @@ describe TagLayout do
           let(:direction) { 'row' }
 
           context 'with a 384 well plate' do
-            let(:plate) { create :plate_with_untagged_wells, sample_count: 4 * 16, size: 384 }
+            let(:plate) { create(:plate_with_untagged_wells, sample_count: 4 * 16, size: 384) }
             let(:tag_count) { 384 }
-            let(:tag2_group) { create :tag_group, tag_count: }
+            let(:tag2_group) { create(:tag_group, tag_count:) }
             let(:expected_tag_layout) do
               {
                 'A1' => [1],
@@ -1014,7 +1014,7 @@ describe TagLayout do
     end
 
     context 'with a tag2 group' do
-      let(:tag2_group) { create :tag_group, tag_count: }
+      let(:tag2_group) { create(:tag_group, tag_count:) }
       let(:walking_by) { 'wells of plate' }
       let(:direction) { 'column' }
       let(:expected_tag_layout) do

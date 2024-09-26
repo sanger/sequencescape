@@ -17,7 +17,7 @@ FactoryBot.define do
         num_plates { 1 }
         num_wells_per_plate { 1 }
         num_samples_per_well { 1 }
-        plates { create_list :plate, num_plates, well_factory: :empty_well, well_count: num_wells_per_plate }
+        plates { create_list(:plate, num_plates, well_factory: :empty_well, well_count: num_wells_per_plate) }
       end
 
       barcodes { plates.map(&:human_barcode) }
@@ -49,7 +49,7 @@ FactoryBot.define do
           tube_factory { :empty_sample_tube }
         end
 
-        labware { create_list tube_factory, tube_count }
+        labware { create_list(tube_factory, tube_count) }
 
         after(:build) do |sample_manifest|
           sample_manifest.labware.each do |tube|
@@ -80,7 +80,7 @@ FactoryBot.define do
         num_plates { 2 }
         num_filled_wells_per_plate { 2 }
         num_rows_per_well { 1 }
-        plates { create_list :plate, num_plates, well_factory: :empty_well, well_count: num_filled_wells_per_plate }
+        plates { create_list(:plate, num_plates, well_factory: :empty_well, well_count: num_filled_wells_per_plate) }
       end
 
       barcodes { plates.map(&:human_barcode) }

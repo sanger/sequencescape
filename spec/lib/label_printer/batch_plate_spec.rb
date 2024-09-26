@@ -62,8 +62,8 @@ context 'printing labels' do
 
   let(:count) { '1' }
   let(:date_today) { Time.zone.today.strftime('%e-%^b-%Y') }
-  let(:batch) { create :batch }
-  let(:study) { create :study }
+  let(:batch) { create(:batch) }
+  let(:study) { create(:study) }
   let(:request1) do
     order = create(:order, order_role: OrderRole.new(role: 'test_role'), study:, assets: [create(:empty_sample_tube)])
     create(

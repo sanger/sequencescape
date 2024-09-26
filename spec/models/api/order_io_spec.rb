@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Api::OrderIO do
   subject do
-    create :order,
+    create(:order,
            user:,
            template_name: 'Cool template',
            study:,
@@ -18,12 +18,12 @@ RSpec.describe Api::OrderIO do
              bait_library_name: 'EG',
              sequencing_type: 'MagBead',
              insert_size: 12
-           }
+           })
   end
 
-  let(:user) { create :user }
-  let(:study) { create :study }
-  let(:project) { create :project }
+  let(:user) { create(:user) }
+  let(:study) { create(:study) }
+  let(:project) { create(:project) }
 
   let(:expected_json) do
     {

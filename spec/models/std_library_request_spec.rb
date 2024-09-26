@@ -3,10 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe IlluminaHtp::Requests::StdLibraryRequest do
-  let(:tagged_well) { create :tagged_well }
+  let(:tagged_well) { create(:tagged_well) }
 
   describe '#pass' do
-    subject { create :library_request, target_asset: tagged_well, state: }
+    subject { create(:library_request, target_asset: tagged_well, state:) }
 
     let(:state) { 'started' }
 
@@ -17,7 +17,7 @@ RSpec.describe IlluminaHtp::Requests::StdLibraryRequest do
   end
 
   describe '#request_metadata' do
-    subject { build :library_request, request_metadata_attributes:, request_type: }
+    subject { build(:library_request, request_metadata_attributes:, request_type:) }
 
     let(:fragment_size_required_from) { 1 }
     let(:fragment_size_required_to) { 20 }
@@ -28,7 +28,7 @@ RSpec.describe IlluminaHtp::Requests::StdLibraryRequest do
       { fragment_size_required_from:, fragment_size_required_to:, library_type:, pcr_cycles: }
     end
 
-    let(:request_type) { create :library_creation_request_type }
+    let(:request_type) { create(:library_creation_request_type) }
 
     let(:expected_pool_info) do
       {

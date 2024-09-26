@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Api::StudyIO do
   subject do
-    create :study,
+    create(:study,
            ethically_approved: true,
            study_metadata_attributes: {
              faculty_sponsor: create(:faculty_sponsor, name: 'John Smith'),
@@ -16,13 +16,13 @@ RSpec.describe Api::StudyIO do
              ega_dac_accession_number: 'DAC333',
              program: create(:program, name: 'General'),
              contaminated_human_data_access_group: 'contaminated human data access group test'
-           }
+           })
   end
 
-  let(:reference_genome) { create :reference_genome }
+  let(:reference_genome) { create(:reference_genome) }
 
-  let!(:manager) { create :manager, authorizable: subject }
-  let!(:manager2) { create :manager, authorizable: subject }
+  let!(:manager) { create(:manager, authorizable: subject) }
+  let!(:manager2) { create(:manager, authorizable: subject) }
 
   let(:expected_json) do
     {

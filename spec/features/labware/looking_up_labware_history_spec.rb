@@ -3,16 +3,16 @@
 require 'rails_helper'
 
 describe 'See labware history' do
-  let(:user) { create :admin }
-  let(:tube) { create :tube }
+  let(:user) { create(:admin) }
+  let(:tube) { create(:tube) }
 
   let!(:asset_audit) do
-    create :asset_audit,
+    create(:asset_audit,
            asset: tube,
            created_at: Time.zone.parse('June 16, 2020 15:36'),
            metadata: {
              'metadata key' => 'metadata value'
-           }
+           })
   end
 
   it 'displays asset audits', :js do

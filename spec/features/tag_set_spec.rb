@@ -3,10 +3,10 @@
 require 'rails_helper'
 
 describe 'Create a new tag set' do
-  let(:user) { create :admin }
-  let(:adapter_type) { create :adapter_type }
-  let(:tag_group) { create :tag_group, name: 'test-group-1', adapter_type: }
-  let(:tag2_group) { create :tag_group, name: 'test-group-2', adapter_type: }
+  let(:user) { create(:admin) }
+  let(:adapter_type) { create(:adapter_type) }
+  let(:tag_group) { create(:tag_group, name: 'test-group-1', adapter_type:) }
+  let(:tag2_group) { create(:tag_group, name: 'test-group-2', adapter_type:) }
 
   before do
     tag_group

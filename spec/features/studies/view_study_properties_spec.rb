@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe 'View study properties' do
-  let(:user) { create :admin }
+  let(:user) { create(:admin) }
   let(:prelim_id) { 'A1234' }
   let(:study) { create(:study, study_metadata: create(:study_metadata, prelim_id:)) }
 

@@ -7,8 +7,8 @@ RSpec.describe Api::V2::Bioscan::ExportPoolXpToTractionController, :bioscan, typ
   let(:tube_purpose_name) { 'LBSN-9216 Lib PCR Pool XP' }
   let(:requested_barcode) { tube.human_barcode }
 
-  let(:tube_purpose) { create :tube_purpose, name: tube_purpose_name }
-  let(:tube) { create :multiplexed_library_tube, purpose: tube_purpose }
+  let(:tube_purpose) { create(:tube_purpose, name: tube_purpose_name) }
+  let(:tube) { create(:multiplexed_library_tube, purpose: tube_purpose) }
 
   let(:params) do
     {
@@ -22,7 +22,7 @@ RSpec.describe Api::V2::Bioscan::ExportPoolXpToTractionController, :bioscan, typ
   end
 
   before do
-    create :transfer_request, state: tube_state, target_asset: tube.receptacle
+    create(:transfer_request, state: tube_state, target_asset: tube.receptacle)
     post api_v2_bioscan_export_pool_xp_to_traction_index_path, params:
   end
 

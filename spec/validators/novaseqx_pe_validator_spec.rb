@@ -5,7 +5,7 @@ require 'rails_helper'
 describe NovaseqxPeValidator do
   describe '#validate' do
     context 'with batch_size_for_flowcell_type validations' do
-      let(:record) { create :batch, request_count: 2 }
+      let(:record) { create(:batch, request_count: 2) }
 
       it 'returns true if no requests are selected' do
         record.requests = []
@@ -35,7 +35,7 @@ describe NovaseqxPeValidator do
         ].each do |batch_data|
           it "returns #{batch_data[:result].nil? ? 'nil' : batch_data[:result]} if the flowcell_type is 
               #{batch_data[:flowcell_type]} and the request count is #{batch_data[:request_count]}" do
-            record = create :batch, request_count: batch_data[:request_count]
+            record = create(:batch, request_count: batch_data[:request_count])
             record.requests.each do |request|
               request.request_metadata.requested_flowcell_type = batch_data[:flowcell_type]
             end

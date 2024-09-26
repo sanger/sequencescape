@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Heron::Factories::Sample, :heron, :lighthouse, type: :model do
-  let(:study) { create :study }
+  let(:study) { create(:study) }
 
   describe '#valid?' do
     context 'when receiving a study instance' do
@@ -80,7 +80,7 @@ RSpec.describe Heron::Factories::Sample, :heron, :lighthouse, type: :model do
 
   describe '#create_aliquot_at' do
     context 'when the factory is valid' do
-      let(:well) { create :well }
+      let(:well) { create(:well) }
       let(:tag_id) { 1 }
       let(:factory) { described_class.new(study:, aliquot: { tag_id: }) }
 
@@ -228,7 +228,7 @@ RSpec.describe Heron::Factories::Sample, :heron, :lighthouse, type: :model do
         end
 
         context 'when the uuid already exist' do
-          let(:sample) { create :sample }
+          let(:sample) { create(:sample) }
 
           it 'will be invalid if providing any other extra attributes' do
             factory = described_class.new(study:, uuid: sample.uuid)

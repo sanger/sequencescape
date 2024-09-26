@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe PhiX::Stock, :phi_x do
-  subject { build :phi_x_stock, custom_options }
+  subject { build(:phi_x_stock, custom_options) }
 
   context 'with suitable options' do
     let(:custom_options) { {} } # Fallback to factory defaults
@@ -49,7 +49,7 @@ RSpec.describe PhiX::Stock, :phi_x do
     context 'with valid data' do
       subject(:save) { phi_x_stock.save }
 
-      let(:phi_x_stock) { build :phi_x_stock, number: 2, name: 'Example', concentration: '0.8', tags:, study_id: }
+      let(:phi_x_stock) { build(:phi_x_stock, number: 2, name: 'Example', concentration: '0.8', tags:, study_id:) }
 
       let(:tags) { 'Single' }
       let(:study_id) { build_stubbed(:study).id }
@@ -116,7 +116,7 @@ RSpec.describe PhiX::Stock, :phi_x do
     end
 
     context 'with invalid data' do
-      let(:phi_x_stock) { build :phi_x_stock, number: -2 }
+      let(:phi_x_stock) { build(:phi_x_stock, number: -2) }
 
       it 'returns false' do
         expect(phi_x_stock.save).to be false

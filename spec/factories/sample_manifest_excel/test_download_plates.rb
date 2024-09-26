@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :test_download_plates, class: 'SampleManifestExcel::TestDownload' do
-    columns { build :column_list }
+    columns { build(:column_list) }
     validation_errors { [] }
     num_plates { 2 }
     num_filled_wells_per_plate { 2 }

@@ -6,11 +6,11 @@ require 'pry'
 describe 'Batches controller', :js do
   let(:request_count) { 3 }
   let(:batch) do
-    create :cherrypick_batch, request_count:, state: 'released', request_factory: :passed_cherrypick_request
+    create(:cherrypick_batch, request_count:, state: 'released', request_factory: :passed_cherrypick_request)
   end
-  let(:user) { create :admin }
+  let(:user) { create(:admin) }
 
-  before { create :robot }
+  before { create(:robot) }
 
   it 'failing passed cherrypick requests' do
     request_ids = batch.batch_requests.map(&:request_id)

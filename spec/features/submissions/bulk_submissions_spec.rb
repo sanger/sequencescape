@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 describe 'Bulk submission', js: false do
-  let(:user) { create :admin, login: 'user' }
-  let(:study) { create :study, name: 'abc123_study' }
+  let(:user) { create(:admin, login: 'user') }
+  let(:study) { create(:study, name: 'abc123_study') }
 
   def process_submission(filename, encoding = nil)
     attach_file('bulk_submission_spreadsheet', Rails.root.join('features', 'submission', 'csv', filename))
@@ -14,11 +14,11 @@ describe 'Bulk submission', js: false do
 
   before do
     login_user user
-    create :project, name: 'Test project'
-    create :asset_group, name: 'assetgroup123', study:, asset_count: 2
+    create(:project, name: 'Test project')
+    create(:asset_group, name: 'assetgroup123', study:, asset_count: 2)
     visit bulk_submissions_path
     expect(page).to have_content('Bulk Submission New')
-    create :library_type, name: 'Standard'
+    create(:library_type, name: 'Standard')
   end
 
   shared_examples 'bulk submission file upload' do
@@ -29,8 +29,8 @@ describe 'Bulk submission', js: false do
     end
   end
 
-  let(:library_request_type) { create :library_request_type }
-  let(:sequencing_request_type) { create :sequencing_request_type, read_lengths: [100], default: 100 }
+  let(:library_request_type) { create(:library_request_type) }
+  let(:sequencing_request_type) { create(:sequencing_request_type, read_lengths: [100], default: 100) }
 
   let(:submission_template_hash) do
     {

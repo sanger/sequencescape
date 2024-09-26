@@ -8,7 +8,7 @@ RSpec.describe BroadcastEvent::PlateCherrypicked, :broadcast_event, :heron_event
   end
 
   let(:uuids) { Array.new(6) { SecureRandom.uuid } }
-  let(:destination_plate) { create :plate }
+  let(:destination_plate) { create(:plate) }
   let(:plate1) do
     subject_record('plate', BroadcastEvent::PlateCherrypicked::SOURCE_PLATES_ROLE_TYPE, '000001', uuids[0])
   end

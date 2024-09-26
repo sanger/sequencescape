@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Api::TagIO do
-  subject { create :tag }
+  subject { create(:tag) }
 
   let(:expected_json) do
     {

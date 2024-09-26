@@ -6,7 +6,7 @@ describe 'Create a QC report' do
   let(:user) { create(:admin) }
   let!(:study) { create(:study) }
   let!(:product_criteria) { create(:product_criteria) }
-  let(:plate_purposes) { create_list :plate_purpose, 3 }
+  let(:plate_purposes) { create_list(:plate_purpose, 3) }
   let(:plate_purpose_names) { plate_purposes.map(&:name) }
 
   before do

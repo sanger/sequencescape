@@ -43,7 +43,7 @@ FactoryBot.define do
   trait :with_submissions do
     transient do
       submission_count { 1 }
-      submissions { create_list :submission, submission_count }
+      submissions { create_list(:submission, submission_count) }
       submission_cycle { submissions.cycle }
     end
     after(:create) do |plate, evaluator|
@@ -76,8 +76,8 @@ FactoryBot.define do
 
     factory :target_plate do
       transient do
-        parent { build :input_plate }
-        submission { build :submission }
+        parent { build(:input_plate) }
+        submission { build(:submission) }
       end
 
       after(:build) do |plate, evaluator|
@@ -92,7 +92,7 @@ FactoryBot.define do
           outer_request =
             well_hash[well.map_description].requests.detect { |r| r.submission_id == evaluator.submission.id }
 
-          create :transfer_request, asset: well_hash[well.map_description], target_asset: well, outer_request:
+          create(:transfer_request, asset: well_hash[well.map_description], target_asset: well, outer_request:)
         end
       end
     end
@@ -167,7 +167,7 @@ FactoryBot.define do
         well_factory { :tagged_well }
       end
       plate_purpose { create(:fluidigm_192_purpose) }
-      barcodes { build_list :fluidigm, 1 }
+      barcodes { build_list(:fluidigm, 1) }
       size { 192 }
     end
   end
@@ -183,7 +183,7 @@ FactoryBot.define do
 
     # A plate that has exactly the right number of wells!
     factory :pooling_plate do
-      plate_purpose { create :pooling_plate_purpose }
+      plate_purpose { create(:pooling_plate_purpose) }
       transient do
         well_count { 6 }
         well_factory { :tagged_well }
@@ -280,7 +280,7 @@ FactoryBot.define do
   factory :strip_tube do
     name { 'Strip_tube' }
     size { 8 }
-    plate_purpose { create :strip_tube_purpose }
+    plate_purpose { create(:strip_tube_purpose) }
     after(:create) { |st| st.wells = st.maps.map { |map| create(:well, map:) } }
   end
 end

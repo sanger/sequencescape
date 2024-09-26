@@ -20,7 +20,7 @@ describe 'SampleMetadata API', with: :api_v2 do
   end
 
   context 'with a single metadata resource' do
-    let(:resource_model) { create :sample_metadata_for_api }
+    let(:resource_model) { create(:sample_metadata_for_api) }
 
     describe '#get' do
       it 'generates a success response' do

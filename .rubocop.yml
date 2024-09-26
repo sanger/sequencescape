@@ -7,6 +7,8 @@ require:
   - rubocop-rails
   - rubocop-rspec
   - rubocop-rspec_rails
+  - rubocop-capybara
+  - rubocop-factory_bot
 
 inherit_mode:
   merge:

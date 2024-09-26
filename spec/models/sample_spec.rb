@@ -51,15 +51,15 @@ RSpec.describe Sample, :accession, :cardinal do
 
   context 'can be included in submission' do
     it 'knows if it was registered through manifest' do
-      stand_alone_sample = create :sample
+      stand_alone_sample = create(:sample)
       expect(stand_alone_sample).not_to be_registered_through_manifest
 
-      sample_manifest = create :tube_sample_manifest_with_samples
+      sample_manifest = create(:tube_sample_manifest_with_samples)
       sample_manifest.samples.each { |sample| expect(sample).to be_registered_through_manifest }
     end
 
     it 'knows when it can be included in submission if it was registered through manifest' do
-      sample_manifest = create :tube_sample_manifest_with_samples
+      sample_manifest = create(:tube_sample_manifest_with_samples)
       sample_manifest.samples.each { |sample| expect(sample).not_to be_can_be_included_in_submission }
       sample = sample_manifest.samples.first
       sample.sample_metadata.supplier_name = 'new sample'
@@ -67,15 +67,15 @@ RSpec.describe Sample, :accession, :cardinal do
     end
 
     it 'knows when it can be included in submission if it was not registered through manifest' do
-      sample = create :sample
+      sample = create(:sample)
       expect(sample).to be_can_be_included_in_submission
     end
   end
 
   context 'consent withdraw' do
-    let(:user) { create :user }
+    let(:user) { create(:user) }
     let(:time) { DateTime.now }
-    let(:sample) { create :sample }
+    let(:sample) { create(:sample) }
 
     before do
       sample.update(consent_withdrawn: true, date_of_consent_withdrawn: time, user_id_of_consent_withdrawn: user.id)
@@ -141,7 +141,7 @@ RSpec.describe Sample, :accession, :cardinal do
   end
 
   context 'updating supplier name' do
-    let(:sample) { create :sample }
+    let(:sample) { create(:sample) }
 
     it 'validates that supplier name allows only ASCII characters' do
       expect(sample.sample_metadata.supplier_name).to be_nil
@@ -260,7 +260,7 @@ RSpec.describe Sample, :accession, :cardinal do
   end
 
   context '(DPL-148) on updating sample metadata' do
-    let(:sample) { create :sample }
+    let(:sample) { create(:sample) }
 
     it 'triggers warehouse update', :warren do
       expect do

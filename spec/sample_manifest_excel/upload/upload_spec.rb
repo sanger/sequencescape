@@ -10,7 +10,7 @@ RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_e
     end
   end
 
-  let(:user) { create :user, login: 'test_user' }
+  let(:user) { create(:user, login: 'test_user') }
   let(:test_file_name) { 'test_file.xlsx' }
   let(:test_file) { Rack::Test::UploadedFile.new(Rails.root.join(test_file_name), '') }
   let!(:tag_group) { create(:tag_group) }

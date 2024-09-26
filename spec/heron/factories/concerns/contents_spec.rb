@@ -29,7 +29,7 @@ RSpec.describe Heron::Factories::Concerns::Contents, :heron, :lighthouse, type: 
     end
   end
   let(:factory) { factory_klass.new(params) }
-  let(:study) { create :study }
+  let(:study) { create(:study) }
 
   include BarcodeHelper
 

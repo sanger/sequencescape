@@ -13,8 +13,8 @@ class PrintJobTest < ActiveSupport::TestCase
               :labels_attributes
 
   def setup # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
-    @barcode_printer = create :barcode_printer
-    @plates = create_list :plate, 1, well_count: 1, well_factory: :untagged_well
+    @barcode_printer = create(:barcode_printer)
+    @plates = create_list(:plate, 1, well_count: 1, well_factory: :untagged_well)
     @plate = plates[0]
     @plate_purpose = plate.plate_purpose
     @label_template_name = barcode_printer.barcode_printer_type.label_template_name

@@ -6,13 +6,13 @@ require 'spec_helper'
 RSpec.describe StateChanger::MxTube do
   let(:state_changer) { described_class.new(labware:, target_state:, user:, customer_accepts_responsibility:) }
 
-  let(:user) { build_stubbed :user }
+  let(:user) { build_stubbed(:user) }
   let(:customer_accepts_responsibility) { false }
-  let(:labware) { create :multiplexed_library_tube }
-  let(:transfer_request) { create :transfer_request, target_asset: labware.receptacle, state: transfer_request_state }
-  let(:request) { create :request, target_asset: labware.receptacle, state: request_state, order: }
+  let(:labware) { create(:multiplexed_library_tube) }
+  let(:transfer_request) { create(:transfer_request, target_asset: labware.receptacle, state: transfer_request_state) }
+  let(:request) { create(:request, target_asset: labware.receptacle, state: request_state, order:) }
   let(:requests) { [request] }
-  let(:order) { create :order }
+  let(:order) { create(:order) }
 
   def create_requests_and_transfers
     transfer_request
@@ -391,9 +391,9 @@ RSpec.describe StateChanger::MxTube do
       end
 
       context 'when there are multiple orders' do
-        let(:request2) { create :request, target_asset: labware.receptacle, state: request_state, order: order2 }
+        let(:request2) { create(:request, target_asset: labware.receptacle, state: request_state, order: order2) }
         let(:requests) { [request, request2] }
-        let(:order2) { create :order }
+        let(:order2) { create(:order) }
 
         it 'fires an event per order' do
           expect(BroadcastEvent::PoolReleased.count).to eq(2)

@@ -5,9 +5,9 @@ require 'rails_helper'
 RSpec.describe TransferRequestCollection, :transfer_request_collection do
   subject { described_class.new(creation_attributes) }
 
-  let(:user) { create :user }
-  let(:asset) { create :tagged_well }
-  let(:target_asset) { create :empty_library_tube }
+  let(:user) { create(:user) }
+  let(:asset) { create(:tagged_well) }
+  let(:target_asset) { create(:empty_library_tube) }
 
   context 'with a single transfer' do
     let(:creation_attributes) { { user:, transfer_requests_attributes: [{ asset:, target_asset: }] } }
@@ -33,8 +33,8 @@ RSpec.describe TransferRequestCollection, :transfer_request_collection do
     end
 
     context 'and one outer request' do
-      let(:submission) { create :submission }
-      let!(:outer_request) { create :request, asset:, submission: }
+      let(:submission) { create(:submission) }
+      let!(:outer_request) { create(:request, asset:, submission:) }
 
       describe '#save' do
         let(:transfer_request) { subject.transfer_requests.first }
@@ -56,10 +56,10 @@ RSpec.describe TransferRequestCollection, :transfer_request_collection do
     end
 
     context 'and two outer requests' do
-      let(:submission_a) { create :submission }
-      let(:submission_b) { create :submission }
-      let!(:outer_request) { create :request, asset:, submission: submission_a }
-      let!(:other_outer_request) { create :request, asset:, submission: submission_b }
+      let(:submission_a) { create(:submission) }
+      let(:submission_b) { create(:submission) }
+      let!(:outer_request) { create(:request, asset:, submission: submission_a) }
+      let!(:other_outer_request) { create(:request, asset:, submission: submission_b) }
 
       describe '#save' do
         let(:transfer_request) { subject.transfer_requests.first }
@@ -95,9 +95,9 @@ RSpec.describe TransferRequestCollection, :transfer_request_collection do
     end
 
     context 'and two outer requests in the same submission' do
-      let(:submission) { create :submission }
-      let!(:outer_request) { create :request, asset:, submission: }
-      let!(:other_outer_request) { create :request, asset:, submission: }
+      let(:submission) { create(:submission) }
+      let!(:outer_request) { create(:request, asset:, submission:) }
+      let!(:other_outer_request) { create(:request, asset:, submission:) }
 
       describe '#save' do
         let(:transfer_request) { subject.transfer_requests.first }

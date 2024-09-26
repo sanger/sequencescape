@@ -95,7 +95,7 @@ Then /^(?:|I )should see "([^"]*)"(?: within "([^"]*)")?$/ do |text, selector|
 end
 
 Then /^(?:|I )should not see "([^"]*)"(?: within "([^"]*)")?$/ do |text, selector|
-  with_scope(selector) { expect(page).not_to have_text(text) }
+  with_scope(selector) { expect(page).to have_no_text(text) }
 end
 
 Then %r{^(?:|I )should not see /([^\/]*)/(?: within "([^"]*)")?$} do |regexp, selector|

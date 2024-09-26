@@ -7,12 +7,12 @@ class BatchTubeTest < ActiveSupport::TestCase
 
   context 'stock' do
     should 'return the right tubes and top line' do
-      library_tube_with_stock_tube = create :library_tube
-      stock_library_tube = create :stock_library_tube
+      library_tube_with_stock_tube = create(:library_tube)
+      stock_library_tube = create(:stock_library_tube)
       stock_library_tube.children << library_tube_with_stock_tube
 
-      request = create :library_creation_request, target_asset: library_tube_with_stock_tube
-      @batch = create :batch
+      request = create(:library_creation_request, target_asset: library_tube_with_stock_tube)
+      @batch = create(:batch)
       @batch.requests << request
 
       printable = { request.id => 'on' }
@@ -27,8 +27,8 @@ class BatchTubeTest < ActiveSupport::TestCase
 
   context 'no stock' do
     should 'return the right tubes and top line' do
-      request = create :library_creation_request, target_asset: (create :library_tube, barcode: '111')
-      @batch = create :batch
+      request = create(:library_creation_request, target_asset: create(:library_tube, barcode: '111'))
+      @batch = create(:batch)
       @batch.requests << request
 
       printable = { request.id => 'on' }

@@ -12,7 +12,7 @@ RSpec.describe Heron::Factories::Concerns::Eventful, :heron_events do
     end
   end
 
-  let(:plate) { create :plate }
+  let(:plate) { create(:plate) }
   let(:subjects) do
     [
       build(

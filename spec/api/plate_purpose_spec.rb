@@ -6,8 +6,8 @@ require 'support/barcode_helper'
 describe '/api/1/plate_purposes' do
   subject { '/api/1/plate_purposes' }
 
-  let(:authorised_app) { create :api_application }
-  let(:parent_purpose) { create :plate_purpose }
+  let(:authorised_app) { create(:api_application) }
+  let(:parent_purpose) { create(:plate_purpose) }
 
   describe '#post' do
     let(:payload) do
@@ -46,10 +46,10 @@ describe '/api/1/plate_purposes' do
 end
 
 describe '/api/1/plate-purpose-uuid' do
-  let(:authorised_app) { create :api_application }
+  let(:authorised_app) { create(:api_application) }
   let(:uuid) { '00000000-1111-2222-3333-444444444444' }
 
-  before { create :plate_purpose, :uuidable, uuid:, name: 'Example purpose' }
+  before { create(:plate_purpose, :uuidable, uuid:, name: 'Example purpose') }
 
   describe '#get' do
     subject { '/api/1/' + uuid }

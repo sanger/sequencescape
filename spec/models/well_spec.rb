@@ -3,7 +3,7 @@
 require 'timecop'
 
 describe Well do
-  subject(:well) { create :well, well_attribute_attributes: well_attributes }
+  subject(:well) { create(:well, well_attribute_attributes: well_attributes) }
 
   let(:well_attributes) { {} }
 
@@ -73,7 +73,7 @@ describe Well do
   describe '#update_from_qc' do
     let(:well_attributes) { { concentration: nil } }
 
-    let(:qc_result) { build :qc_result, key:, value:, units:, assay_type: 'assay', assay_version: 1 }
+    let(:qc_result) { build(:qc_result, key:, value:, units:, assay_type: 'assay', assay_version: 1) }
 
     before { well.update_from_qc(qc_result) }
 
@@ -159,10 +159,10 @@ describe Well do
   end
 
   it 'return a correct hash of target wells' do
-    purposes = create_list :plate_purpose, 4
-    stock_plate = create :plate_with_untagged_wells, sample_count: 3
+    purposes = create_list(:plate_purpose, 4)
+    stock_plate = create(:plate_with_untagged_wells, sample_count: 3)
 
-    norm_plates = purposes.map { |purpose| create :plate_with_untagged_wells, purpose:, sample_count: 3 }
+    norm_plates = purposes.map { |purpose| create(:plate_with_untagged_wells, purpose:, sample_count: 3) }
 
     well_plate_concentrations = [
       # Plate 1, Plate 2, Plate 3
@@ -242,7 +242,7 @@ describe Well do
 
   context 'with a plate' do
     before do
-      @plate = create :plate
+      @plate = create(:plate)
       well.plate = @plate
     end
 
@@ -277,8 +277,8 @@ describe Well do
     # rubocop:enable Metrics/ParameterLists
     context 'cherrypick by nano grams' do
       before do
-        @source_well = create :well
-        @target_well = create :well
+        @source_well = create(:well)
+        @target_well = create(:well)
         minimum_volume = 10
         maximum_volume = 50
         robot_minimum_picking_volume = 1.0
@@ -310,8 +310,8 @@ describe Well do
   context 'when while cherrypicking by nanograms' do
     context 'and we want to get less volume than the minimum' do
       before do
-        @source_well = create :well
-        @target_well = create :well
+        @source_well = create(:well)
+        @target_well = create(:well)
 
         @measured_concentration = 100
         @measured_volume = 50
@@ -466,35 +466,35 @@ describe Well do
 
   context 'proceed test' do
     before do
-      @our_product_criteria = create :product_criteria
-      @other_criteria = create :product_criteria
+      @our_product_criteria = create(:product_criteria)
+      @other_criteria = create(:product_criteria)
 
       @old_report =
-        create :qc_report,
+        create(:qc_report,
                product_criteria: @our_product_criteria,
                created_at: 1.day.ago,
-               report_identifier: "A#{Time.zone.now}"
+               report_identifier: "A#{Time.zone.now}")
       @current_report =
-        create :qc_report,
+        create(:qc_report,
                product_criteria: @our_product_criteria,
                created_at: 1.hour.ago,
-               report_identifier: "B#{Time.zone.now}"
+               report_identifier: "B#{Time.zone.now}")
       @unrelated_report =
-        create :qc_report,
+        create(:qc_report,
                product_criteria: @other_criteria,
                created_at: Time.zone.now,
-               report_identifier: "C#{Time.zone.now}"
+               report_identifier: "C#{Time.zone.now}")
 
-      @stock_well = create :well
+      @stock_well = create(:well)
 
       well.stock_wells.attach!([@stock_well])
       well.reload
 
-      create :qc_metric, asset: @stock_well, qc_report: @old_report, qc_decision: 'passed', proceed: true
-      create :qc_metric, asset: @stock_well, qc_report: @unrelated_report, qc_decision: 'passed', proceed: true
+      create(:qc_metric, asset: @stock_well, qc_report: @old_report, qc_decision: 'passed', proceed: true)
+      create(:qc_metric, asset: @stock_well, qc_report: @unrelated_report, qc_decision: 'passed', proceed: true)
 
       @expected_metric =
-        create :qc_metric, asset: @stock_well, qc_report: @current_report, qc_decision: 'failed', proceed: true
+        create(:qc_metric, asset: @stock_well, qc_report: @current_report, qc_decision: 'failed', proceed: true)
     end
 
     it 'report appropriate metrics' do
@@ -562,7 +562,7 @@ describe Well do
   end
 
   context '(DPL-148) on updating well attribute' do
-    let(:well) { create :well }
+    let(:well) { create(:well) }
 
     it 'triggers warehouse update', :warren do
       expect do

@@ -5,14 +5,14 @@ require 'rails_helper'
 RSpec.configure { |c| c.include LabWhereClientHelper }
 
 RSpec.describe CherrypickTask do
-  let!(:plate) { create :plate_with_untagged_wells, sample_count: 4 }
-  let(:control_plate) { create :control_plate, sample_count: 2 }
+  let!(:plate) { create(:plate_with_untagged_wells, sample_count: 4) }
+  let(:control_plate) { create(:control_plate, sample_count: 2) }
   let(:requests) { plate.wells.in_column_major_order.map { |w| create(:cherrypick_request, asset: w, submission:) } }
   let(:template) { create(:plate_template, size: 6) }
   let(:robot) { instance_double('Robot', max_beds: 2) } # rubocop:todo RSpec/VerifiedDoubleReference
-  let(:purpose) { create :purpose }
+  let(:purpose) { create(:purpose) }
   let(:batch) { instance_double('Batch', id: 1235, requests:) } # rubocop:todo RSpec/VerifiedDoubleReference
-  let(:submission) { create :submission }
+  let(:submission) { create(:submission) }
   let(:wells_to_leave_free) { Rails.application.config.plate_default_control_wells_to_leave_free }
 
   def pick_without_request_id(plates)
@@ -98,7 +98,7 @@ RSpec.describe CherrypickTask do
   end
 
   describe '#pick_onto_partial_plate' do
-    let!(:partial_plate) { create :plate, size: 6 }
+    let!(:partial_plate) { create(:plate, size: 6) }
 
     before do
       partial_plate.wells.create!
@@ -118,7 +118,7 @@ RSpec.describe CherrypickTask do
         end
 
         let(:instance) { described_class.new }
-        let!(:plate) { create :plate_with_untagged_wells, sample_count: 2 }
+        let!(:plate) { create(:plate_with_untagged_wells, sample_count: 2) }
         let(:destinations) do
           [
             [
@@ -146,7 +146,7 @@ RSpec.describe CherrypickTask do
         end
 
         let(:instance) { described_class.new }
-        let!(:plate) { create :plate_with_untagged_wells, sample_count: 4 }
+        let!(:plate) { create(:plate_with_untagged_wells, sample_count: 4) }
         let(:destinations) do
           [
             [
@@ -177,9 +177,9 @@ RSpec.describe CherrypickTask do
   end
 
   describe '#build_plate_wells_from_requests' do
-    let!(:plate1) { create :plate_with_untagged_wells, sample_count: 4, name: 'plate1' }
-    let!(:plate2) { create :plate_with_untagged_wells, sample_count: 4, name: 'plate2' }
-    let!(:plate3) { create :plate_with_untagged_wells, sample_count: 4, name: 'plate3' }
+    let!(:plate1) { create(:plate_with_untagged_wells, sample_count: 4, name: 'plate1') }
+    let!(:plate2) { create(:plate_with_untagged_wells, sample_count: 4, name: 'plate2') }
+    let!(:plate3) { create(:plate_with_untagged_wells, sample_count: 4, name: 'plate3') }
     let(:plates) { [plate1, plate2, plate3] }
     let(:requests1) { requests_for_plate(plate1) }
     let(:requests2) { requests_for_plate(plate2) }

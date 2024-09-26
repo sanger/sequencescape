@@ -6,7 +6,7 @@ require './app/resources/api/v2/barcode_printer_resource'
 RSpec.describe Api::V2::BarcodePrinterResource, type: :resource do
   subject(:resource) { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { build_stubbed :barcode_printer }
+  let(:resource_model) { build_stubbed(:barcode_printer) }
 
   # Test attributes
   it 'has the expected attributes', :aggregate_failures do

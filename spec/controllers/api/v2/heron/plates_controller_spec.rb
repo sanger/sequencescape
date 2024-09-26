@@ -7,7 +7,7 @@ RSpec.describe Api::V2::Heron::PlatesController, :heron, type: :request do
   include BarcodeHelper
 
   let(:stock_plate_purpose) { PlatePurpose.stock_plate_purpose }
-  let(:study) { create :study, name: 'Study 1' }
+  let(:study) { create(:study, name: 'Study 1') }
 
   before { mock_plate_barcode_service }
 

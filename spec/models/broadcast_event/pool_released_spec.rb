@@ -4,23 +4,23 @@ require 'rails_helper'
 
 RSpec.describe BroadcastEvent::PoolReleased, :broadcast_event do
   let(:source_plate) do
-    pl = create :full_stock_plate
-    pl.wells.first.aliquots << (create :aliquot, sample: tube.samples.first)
-    pl.wells.last.aliquots << (create :aliquot, sample: tube.samples.last)
+    pl = create(:full_stock_plate)
+    pl.wells.first.aliquots << (create(:aliquot, sample: tube.samples.first))
+    pl.wells.last.aliquots << (create(:aliquot, sample: tube.samples.last))
     tube.ancestors << pl
     pl
   end
-  let(:tube) { create :multiplexed_library_tube, sample_count: 2, purpose: (create :illumina_htp_mx_tube_purpose) }
+  let(:tube) { create(:multiplexed_library_tube, sample_count: 2, purpose: create(:illumina_htp_mx_tube_purpose)) }
 
-  let(:submission) { create :library_submission }
+  let(:submission) { create(:library_submission) }
   let(:order) { submission.orders.first }
   let(:request1) do
-    create :multiplex_request, asset: source_plate.wells.first, target_asset: tube.receptacle, state: 'passed', order:
+    create(:multiplex_request, asset: source_plate.wells.first, target_asset: tube.receptacle, state: 'passed', order:)
   end
   let(:request2) do
-    create :multiplex_request, asset: source_plate.wells.last, target_asset: tube.receptacle, state: 'passed', order:
+    create(:multiplex_request, asset: source_plate.wells.last, target_asset: tube.receptacle, state: 'passed', order:)
   end
-  let(:library_request) { create :library_request, target_asset: source_plate.wells.first }
+  let(:library_request) { create(:library_request, target_asset: source_plate.wells.first) }
 
   let(:event) { described_class.create!(seed: tube, user: create(:user), properties: { order_id: order.id }) }
   let(:subject_hash) { event.as_json['event'][:subjects].group_by(&:role_type) }

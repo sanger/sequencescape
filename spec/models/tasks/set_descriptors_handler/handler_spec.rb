@@ -7,10 +7,10 @@ require 'rails_helper'
 RSpec.describe Tasks::SetDescriptorsHandler::Handler do
   subject(:handler) { described_class.new(controller:, params:, task:, user:) }
 
-  let(:batch) { create :batch, request_count: 1 }
+  let(:batch) { create(:batch, request_count: 1) }
   let(:request) { batch.requests.first }
   let(:controller) { instance_double(WorkflowsController) }
-  let(:user) { create :user }
+  let(:user) { create(:user) }
   let(:task) { instance_double(SetDescriptorsTask, name: 'Step 1', id: 1) }
 
   describe '#perform' do

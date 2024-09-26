@@ -9,7 +9,7 @@ FactoryBot.define do
   end
 
   trait :with_library_types do
-    transient { library_type { build :library_type } }
+    transient { library_type { build(:library_type) } }
 
     after(:build) do |request_type, evaluator|
       request_type.library_types_request_types << create(
@@ -22,8 +22,8 @@ FactoryBot.define do
   end
 
   factory :request_type do
-    name { generate :request_type_name }
-    key { generate :request_type_key }
+    name { generate(:request_type_name) }
+    key { generate(:request_type_key) }
     deprecated { false }
     asset_type { 'SampleTube' }
     request_class { Request }

@@ -9,9 +9,9 @@ describe 'Sample#consent_withdrawn', js: false do
   # Essentially:
   # - If a patient withdraws consent we need to make sure everyone downstream knows
   # - We need to stop new orders being made.
-  let(:user) { create :user, email: 'login@example.com' }
-  let(:sample) { create :sample_with_gender, consent_withdrawn: }
-  let(:study) { create :study }
+  let(:user) { create(:user, email: 'login@example.com') }
+  let(:sample) { create(:sample_with_gender, consent_withdrawn:) }
+  let(:study) { create(:study) }
 
   before { study.samples << sample }
 
@@ -41,8 +41,8 @@ describe 'Sample#consent_withdrawn', js: false do
     end
 
     context 'when batched' do
-      let(:batch) { create :sequencing_batch, state: 'started' }
-      let(:lane) { create :lane, samples: [sample] }
+      let(:batch) { create(:sequencing_batch, state: 'started') }
+      let(:lane) { create(:lane, samples: [sample]) }
 
       before { batch.requests << create(:sequencing_request_with_assets, target_asset: lane) }
 
@@ -55,9 +55,9 @@ describe 'Sample#consent_withdrawn', js: false do
     context 'an order' do
       # Lifted straight from the feature test with minimal rspecification
       # and optimization
-      let(:submission_template) { create :submission_template, request_type_ids_list: [[create(:request_type).id]] }
-      let(:sample_tube) { create :sample_tube, sample: }
-      let(:asset_group) { create :asset_group, assets: [sample_tube.receptacle] }
+      let(:submission_template) { create(:submission_template, request_type_ids_list: [[create(:request_type).id]]) }
+      let(:sample_tube) { create(:sample_tube, sample:) }
+      let(:asset_group) { create(:asset_group, assets: [sample_tube.receptacle]) }
 
       context 'defined by asset group' do
         let(:order) do
@@ -128,14 +128,14 @@ describe 'Sample#consent_withdrawn', js: false do
       login_user user
       visit study_samples_path(study)
       expect(page).to have_content sample.name
-      expect(page).not_to have_content "#{sample.name} - Consent withdrawn"
-      expect(page).not_to have_css('.withdrawn')
+      expect(page).to have_no_content "#{sample.name} - Consent withdrawn"
+      expect(page).to have_no_css('.withdrawn')
     end
 
     it 'and a user visit the sample show page' do
       login_user user
       visit sample_path(sample)
-      expect(page).not_to have_content 'Patient consent has been withdrawn for this sample'
+      expect(page).to have_no_content 'Patient consent has been withdrawn for this sample'
     end
 
     it_behaves_like 'it reports information elsewhere'

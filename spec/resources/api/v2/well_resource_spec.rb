@@ -6,7 +6,7 @@ require './app/resources/api/v2/well_resource'
 RSpec.describe Api::V2::WellResource, type: :resource do
   subject(:resource) { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { build_stubbed :well, plate:, map: position }
+  let(:resource_model) { build_stubbed(:well, plate:, map: position) }
 
   shared_examples 'a well resource' do
     # Test attributes
@@ -54,8 +54,8 @@ RSpec.describe Api::V2::WellResource, type: :resource do
   end
 
   context 'on a plate' do
-    let(:plate) { create :plate, barcode: 'SQPD-1' }
-    let(:position) { create :map, description: 'A1' }
+    let(:plate) { create(:plate, barcode: 'SQPD-1') }
+    let(:position) { create(:map, description: 'A1') }
     let(:expected_barcode_hash) { { 'ean13_barcode' => nil, 'human_barcode' => 'SQPD-1' } }
     let(:expected_position) { { 'name' => 'A1' } }
 

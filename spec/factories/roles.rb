@@ -32,17 +32,17 @@ FactoryBot.define do
   end
 
   trait :with_owner do
-    transient { owner { build :user } }
+    transient { owner { build(:user) } }
     roles { |role| [role.association(:role, name: 'owner', users: [owner])] }
   end
 
   trait :with_manager do
-    transient { manager { build :user } }
+    transient { manager { build(:user) } }
     roles { |role| [role.association(:role, name: 'manager', users: [manager])] }
   end
 
   trait :with_follower do
-    transient { follower { build :user } }
+    transient { follower { build(:user) } }
     roles { |role| [role.association(:role, name: 'follower', users: [follower])] }
   end
 end

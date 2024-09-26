@@ -27,7 +27,7 @@ describe 'Transfer API', with: :api_v2 do
 
     describe '#get Transfer by ID' do
       context 'with all relationships' do
-        let(:transfer) { create :transfer_between_plates }
+        let(:transfer) { create(:transfer_between_plates) }
 
         before { api_get "#{base_endpoint}/#{transfer.id}" }
 
@@ -51,7 +51,7 @@ describe 'Transfer API', with: :api_v2 do
 
       # Some old data may not have a User relationship even though it's required for new records.
       context 'without a User relationship' do
-        let(:transfer) { create :transfer_between_plates }
+        let(:transfer) { create(:transfer_between_plates) }
 
         before do
           # We need to remove the user relationship without invoking validations.

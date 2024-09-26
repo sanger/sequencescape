@@ -7,8 +7,8 @@ RSpec.describe SpecificTubeCreation do
     subject(:specific_tube_creation) { described_class.new(creation_parameters) }
 
     let(:child_purpose) { create(:tube_purpose) }
-    let(:user) { create :user }
-    let(:parent) { create :plate }
+    let(:user) { create(:user) }
+    let(:parent) { create(:plate) }
   end
 
   shared_context 'with common test setup' do

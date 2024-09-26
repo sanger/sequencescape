@@ -11,11 +11,11 @@ shared_examples 'it requires login' do |*actions|
           session[:user] = create(:user)
           if params[:resource].present?
             resource = params.delete(:resource)
-            params['id'] = (create resource).id
+            params['id'] = create(resource).id
           end
           if params[:parent].present?
             parent_resource = params.delete(:parent)
-            params["#{parent_resource}_id"] = (create parent_resource).id
+            params["#{parent_resource}_id"] = create(parent_resource).id
           end
           begin
             get(action, params:)
@@ -38,11 +38,11 @@ shared_examples 'it requires login' do |*actions|
           session[:user] = nil
           if params[:resource].present?
             resource = params.delete(:resource)
-            params['id'] = (create resource).id
+            params['id'] = create(resource).id
           end
           if params[:parent].present?
             parent_resource = params.delete(:parent)
-            params["#{parent_resource}_id"] = (create parent_resource).id
+            params["#{parent_resource}_id"] = create(parent_resource).id
           end
           begin
             get(action, params:)

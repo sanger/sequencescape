@@ -14,11 +14,11 @@ describe 'track SampleManifest updates', :sample_manifest do
     end
   end
 
-  let(:user) { create :user, login: 'john' }
-  let(:new_user) { create :user, login: 'jane' }
-  let!(:printer) { create :barcode_printer }
-  let!(:supplier) { create :supplier }
-  let!(:study) { create :study }
+  let(:user) { create(:user, login: 'john') }
+  let(:new_user) { create(:user, login: 'jane') }
+  let!(:printer) { create(:barcode_printer) }
+  let!(:supplier) { create(:supplier) }
+  let!(:study) { create(:study) }
 
   before do
     travel_to(Time.zone.local(2010, 7, 12, 10, 25, 0))

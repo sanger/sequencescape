@@ -25,7 +25,7 @@ describe 'Aliquots API', with: :api_v2 do
   end
 
   context 'with a aliquot' do
-    let(:resource_model) { create :aliquot }
+    let(:resource_model) { create(:aliquot) }
 
     it 'sends an individual aliquot' do
       api_get "#{base_endpoint}/#{resource_model.id}"

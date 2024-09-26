@@ -3,17 +3,17 @@
 require 'rails_helper'
 
 describe 'Pooling', :js, :poolings do
-  let(:user) { create :user, email: 'login@example.com' }
+  let(:user) { create(:user, email: 'login@example.com') }
 
   describe 'from page directly' do
-    let!(:empty_lb_tube1) { create :empty_library_tube, barcode: 1 }
-    let!(:empty_lb_tube2) { create :empty_library_tube, barcode: 2 }
-    let!(:untagged_lb_tube1) { create :library_tube, barcode: 3 }
+    let!(:empty_lb_tube1) { create(:empty_library_tube, barcode: 1) }
+    let!(:empty_lb_tube2) { create(:empty_library_tube, barcode: 2) }
+    let!(:untagged_lb_tube1) { create(:library_tube, barcode: 3) }
     let(:sample1) { untagged_lb_tube1.samples.first }
-    let!(:untagged_lb_tube2) { create :library_tube, barcode: 4 }
+    let!(:untagged_lb_tube2) { create(:library_tube, barcode: 4) }
     let(:sample2) { untagged_lb_tube2.samples.first }
-    let!(:tagged_lb_tube1) { create :tagged_library_tube, barcode: 5 }
-    let!(:tagged_lb_tube2) { create :tagged_library_tube, barcode: 6 }
+    let!(:tagged_lb_tube1) { create(:tagged_library_tube, barcode: 5) }
+    let!(:tagged_lb_tube2) { create(:tagged_library_tube, barcode: 6) }
 
     it 'user can pool from different tubes to stock and standard mx tubes' do
       login_user user
@@ -63,7 +63,7 @@ describe 'Pooling', :js, :poolings do
   end
 
   describe 'from sample manifest page' do
-    let!(:sample_manifest) { create :tube_sample_manifest_with_sample_tubes, asset_type: 'library' }
+    let!(:sample_manifest) { create(:tube_sample_manifest_with_sample_tubes, asset_type: 'library') }
 
     before do
       aliquot = Tube.last.aliquots.first

@@ -6,7 +6,7 @@ require './app/resources/api/v2/state_change_resource'
 RSpec.describe Api::V2::StateChangeResource, type: :resource do
   subject(:resource) { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { build_stubbed :state_change }
+  let(:resource_model) { build_stubbed(:state_change) }
 
   # Attributes
   it 'has the expected read-only attributes', :aggregate_failures do

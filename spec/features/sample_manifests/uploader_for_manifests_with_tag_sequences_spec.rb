@@ -19,7 +19,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
   after(:all) { SampleManifestExcel.reset! }
 
   context 'library tube sample manifest with tag sequences' do
-    let!(:user) { create :admin }
+    let!(:user) { create(:admin) }
     let(:columns) { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
     let(:test_file) { 'test_file.xlsx' }
 
@@ -137,7 +137,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
   end
 
   context 'multiplexed tube sample manifest with tag sequences' do
-    let!(:user) { create :admin }
+    let!(:user) { create(:admin) }
     let(:columns) { SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup }
     let(:test_file) { 'test_file.xlsx' }
 
@@ -274,7 +274,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
   end
 
   context 'multiplexed tube sample manifest with tag groups and indexes' do
-    let!(:user) { create :admin }
+    let!(:user) { create(:admin) }
     let(:columns) { SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup }
     let(:test_file) { 'test_file.xlsx' }
 
@@ -402,7 +402,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
   end
 
   context 'plate sample manifest' do
-    let!(:user) { create :admin }
+    let!(:user) { create(:admin) }
     let(:columns) { SampleManifestExcel.configuration.columns.plate_default.dup }
     let(:test_file) { 'test_file.xlsx' }
 

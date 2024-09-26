@@ -7,7 +7,7 @@ RSpec.describe Api::V2::Heron::TubeRacksController, :heron, type: :request do
   include BarcodeHelper
 
   let!(:purpose_96) { create(:tube_rack_purpose, target_type: 'TubeRack', size: 96) }
-  let(:study) { create :study, name: 'Study 1' }
+  let(:study) { create(:study, name: 'Study 1') }
 
   before { mock_plate_barcode_service }
 

@@ -17,9 +17,9 @@ RSpec.describe BroadcastEvent::QcAssay, :broadcast_event do
 
   let(:json) { JSON.parse(subject.to_json) }
   let(:lot_number) { '12345' }
-  let(:plate) { create :plate_with_untagged_wells, sample_count: 2, studies: [study], parents: [stock_plate] }
-  let(:stock_plate) { create :stock_plate, purpose: PlatePurpose.stock_plate_purpose, well_count: 2 }
-  let(:study) { create :study }
+  let(:plate) { create(:plate_with_untagged_wells, sample_count: 2, studies: [study], parents: [stock_plate]) }
+  let(:stock_plate) { create(:stock_plate, purpose: PlatePurpose.stock_plate_purpose, well_count: 2) }
+  let(:study) { create(:study) }
   let(:well1) { plate.wells[0] }
   let(:sample1) { well1.samples.first }
   let(:well2) { plate.wells[1] }
@@ -27,12 +27,12 @@ RSpec.describe BroadcastEvent::QcAssay, :broadcast_event do
 
   context 'A single assay qc_assay' do
     let(:qc_assay) do
-      create :qc_assay,
+      create(:qc_assay,
              lot_number:,
              qc_results: [
                build(:qc_result_concentration, asset: well1, assay_type: 'Example Assay', assay_version: 'v0.0'),
                build(:qc_result_concentration, asset: well2, assay_type: 'Example Assay', assay_version: 'v0.0')
-             ]
+             ])
     end
 
     describe '#to_json' do
@@ -100,12 +100,12 @@ RSpec.describe BroadcastEvent::QcAssay, :broadcast_event do
     # The API supports multiple different assays types being conducted at the same time,
     # but event wise these should be distinguishable.
     let(:qc_assay) do
-      create :qc_assay,
+      create(:qc_assay,
              lot_number:,
              qc_results: [
                build(:qc_result_concentration, asset: well1, assay_type: 'Example Assay', assay_version: 'v0.0'),
                build(:qc_result_concentration, asset: well2, assay_type: 'Other Assay', assay_version: 'v0.0')
-             ]
+             ])
     end
 
     describe '#to_json' do

@@ -6,7 +6,7 @@ require './app/resources/api/v2/tag_group_resource'
 RSpec.describe Api::V2::TagGroupResource, type: :resource do
   subject { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { build_stubbed :tag_group, tags: }
+  let(:resource_model) { build_stubbed(:tag_group, tags:) }
   let(:tags) do
     [
       build(:tag, oligo: 'AAA', map_id: 1),

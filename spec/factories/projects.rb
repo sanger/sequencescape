@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :project do
-    name { generate :project_name }
+    name { generate(:project_name) }
     enforce_quotas { false }
     approved { true }
     state { 'active' }

@@ -3,64 +3,64 @@
 require 'rails_helper'
 
 RSpec.describe Aliquot do
-  let(:tag1) { create :tag }
-  let(:tag2) { create :tag }
-  let(:sample1) { create :sample }
-  let(:sample2) { create :sample }
+  let(:tag1) { create(:tag) }
+  let(:tag2) { create(:tag) }
+  let(:sample1) { create(:sample) }
+  let(:sample2) { create(:sample) }
 
   shared_context 'a tag matcher' do
     context 'with the same tags' do
-      let(:aliquot1) { build :aliquot, tag: tag1, tag2: tag1, sample: sample1 }
-      let(:aliquot2) { build :aliquot, tag: tag1, tag2: tag1, sample: sample1 }
+      let(:aliquot1) { build(:aliquot, tag: tag1, tag2: tag1, sample: sample1) }
+      let(:aliquot2) { build(:aliquot, tag: tag1, tag2: tag1, sample: sample1) }
 
       it { is_expected.to be true }
     end
 
     context 'with different tags' do
-      let(:aliquot1) { build :aliquot, tag: tag1, tag2: tag1, sample: sample1 }
-      let(:aliquot2) { build :aliquot, tag: tag2, tag2: tag1, sample: sample1 }
+      let(:aliquot1) { build(:aliquot, tag: tag1, tag2: tag1, sample: sample1) }
+      let(:aliquot2) { build(:aliquot, tag: tag2, tag2: tag1, sample: sample1) }
 
       it { is_expected.to be false }
     end
 
     context 'with different tag 2' do
-      let(:aliquot1) { build :aliquot, tag: tag1, tag2: tag1, sample: sample1 }
-      let(:aliquot2) { build :aliquot, tag: tag1, tag2:, sample: sample1 }
+      let(:aliquot1) { build(:aliquot, tag: tag1, tag2: tag1, sample: sample1) }
+      let(:aliquot2) { build(:aliquot, tag: tag1, tag2:, sample: sample1) }
 
       it { is_expected.to be false }
     end
 
     context 'with missing tags' do
-      let(:aliquot1) { build :aliquot, tag: tag1, tag2_id: -1, sample: sample1 }
-      let(:aliquot2) { build :aliquot, tag: nil, tag2_id: -1, sample: sample1 }
+      let(:aliquot1) { build(:aliquot, tag: tag1, tag2_id: -1, sample: sample1) }
+      let(:aliquot2) { build(:aliquot, tag: nil, tag2_id: -1, sample: sample1) }
 
       it { is_expected.to be true }
     end
 
     context 'with missing tag 2' do
-      let(:aliquot1) { build :aliquot, tag: nil, tag2: tag1, sample: sample1 }
-      let(:aliquot2) { build :aliquot, tag: nil, tag2_id: -1, sample: sample1 }
+      let(:aliquot1) { build(:aliquot, tag: nil, tag2: tag1, sample: sample1) }
+      let(:aliquot2) { build(:aliquot, tag: nil, tag2_id: -1, sample: sample1) }
 
       it { is_expected.to be true }
     end
 
     context 'with missing tags but present tag 2s' do
-      let(:aliquot1) { build :aliquot, tag: tag1, tag2: tag1, sample: sample1 }
-      let(:aliquot2) { build :aliquot, tag: nil, tag2: tag1, sample: sample1 }
+      let(:aliquot1) { build(:aliquot, tag: tag1, tag2: tag1, sample: sample1) }
+      let(:aliquot2) { build(:aliquot, tag: nil, tag2: tag1, sample: sample1) }
 
       it { is_expected.to be true }
     end
 
     context 'with missing tag 2s but present tags' do
-      let(:aliquot1) { build :aliquot, tag: tag1, tag2: tag1, sample: sample1 }
-      let(:aliquot2) { build :aliquot, tag: tag1, tag2_id: -1, sample: sample1 }
+      let(:aliquot1) { build(:aliquot, tag: tag1, tag2: tag1, sample: sample1) }
+      let(:aliquot2) { build(:aliquot, tag: tag1, tag2_id: -1, sample: sample1) }
 
       it { is_expected.to be true }
     end
 
     context 'with different samples' do
-      let(:aliquot1) { build :aliquot, tag: tag1, tag2: tag1, sample: sample1 }
-      let(:aliquot2) { build :aliquot, tag: tag1, tag2: tag1, sample: sample2 }
+      let(:aliquot1) { build(:aliquot, tag: tag1, tag2: tag1, sample: sample1) }
+      let(:aliquot2) { build(:aliquot, tag: tag1, tag2: tag1, sample: sample2) }
 
       it { is_expected.to be false }
     end
@@ -74,7 +74,7 @@ RSpec.describe Aliquot do
   end
 
   context 'mixing tests' do
-    let(:asset) { create :empty_well }
+    let(:asset) { create(:empty_well) }
 
     it 'allows mixing different tags with no tag2' do
       asset.aliquots << build(:aliquot, tag: tag1, sample: sample1) << build(:aliquot, tag: tag2, sample: sample2)
@@ -95,9 +95,9 @@ RSpec.describe Aliquot do
   end
 
   describe '#set_library' do
-    subject { build :aliquot, receptacle:, library_id: initial_library_id }
+    subject { build(:aliquot, receptacle:, library_id: initial_library_id) }
 
-    let(:receptacle) { create :empty_well }
+    let(:receptacle) { create(:empty_well) }
 
     before { subject.set_library(force:) }
 
@@ -131,7 +131,7 @@ RSpec.describe Aliquot do
 
   describe 'for tags substitution' do
     it 'generates correct substitution hash' do
-      aliquot = create :aliquot
+      aliquot = create(:aliquot)
       tag_id = aliquot.tag_id
       expect(aliquot.substitution_hash).to be_nil
       aliquot.update!(tag_id: 42, insert_size_from: 5, insert_size_to: 15)
@@ -152,7 +152,7 @@ RSpec.describe Aliquot do
     aliquots.first.update!(project: nil)
     aliquots.second.project.project_metadata.update!(project_cost_code: 'new_cost_code')
     default_project_cost_code = aliquots.last.project.project_metadata.project_cost_code
-    receptacle = create :empty_well
+    receptacle = create(:empty_well)
     receptacle.aliquots << aliquots
     expect(receptacle.aliquots.count_by_project_cost_code).to eq(
       'new_cost_code' => 1,

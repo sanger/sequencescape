@@ -3,28 +3,28 @@
 require 'rails_helper'
 
 RSpec.describe DriverFilesController do
-  let(:current_user) { create :user }
+  let(:current_user) { create(:user) }
 
   describe '#show' do
-    let(:robot) { create :full_robot, generation_behaviour_value: 'Tecan' }
+    let(:robot) { create(:full_robot, generation_behaviour_value: 'Tecan') }
 
     let(:time) { Time.zone.local(2010, 7, 12, 10, 25, 0) }
-    let(:source_plate) { create :plate, well_count: 1 }
-    let(:destination_plate) { create :plate, well_count: 1, well_factory: :picked_well }
-    let(:pipeline) { create :cherrypick_pipeline }
+    let(:source_plate) { create(:plate, well_count: 1) }
+    let(:destination_plate) { create(:plate, well_count: 1, well_factory: :picked_well) }
+    let(:pipeline) { create(:cherrypick_pipeline) }
 
     let(:transfers) { { source_plate.wells[0] => destination_plate.wells.first } }
 
     let(:requests) do
-      create_list :cherrypick_request,
+      create_list(:cherrypick_request,
                   1,
                   asset: source_plate.wells.first,
                   target_asset: destination_plate.wells.first,
                   request_type: pipeline.request_types.first,
-                  state: 'passed'
+                  state: 'passed')
     end
 
-    let(:batch) { create :batch, requests:, pipeline:, user: current_user }
+    let(:batch) { create(:batch, requests:, pipeline:, user: current_user) }
 
     before do
       get :show, params: { batch_id: batch.id, robot_id: robot.id, pick_number: 1 }, session: { user: current_user.id }

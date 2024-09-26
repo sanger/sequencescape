@@ -4,10 +4,10 @@ require 'rails_helper'
 require_relative 'shared_order_specs'
 
 RSpec.describe Order do
-  let(:study) { create :study, state: study_state }
+  let(:study) { create(:study, state: study_state) }
   let(:study_state) { 'pending' }
-  let(:project) { create :project }
-  let(:asset) { create :empty_sample_tube }
+  let(:project) { create(:project) }
+  let(:asset) { create(:empty_sample_tube) }
 
   describe 'study and project autodetection' do
     # When automating submission creation, it is really useful if we can
@@ -15,10 +15,10 @@ RSpec.describe Order do
     # don't want to trigger this behaviour accidentally if someone forgets to
     # specify a study.
 
-    subject(:order) { build :order, assets:, autodetect_studies:, autodetect_projects:, study: nil, project: nil }
+    subject(:order) { build(:order, assets:, autodetect_studies:, autodetect_projects:, study: nil, project: nil) }
 
     let(:assets) { [tube] }
-    let(:tube) { create :sample_tube, aliquots: }
+    let(:tube) { create(:sample_tube, aliquots:) }
     let(:study_state) { 'active' }
 
     context 'with autodetection turned on' do
@@ -28,7 +28,7 @@ RSpec.describe Order do
       it_behaves_like 'an automated order'
 
       context 'with a cross study/project tube' do
-        let(:aliquots) { create_list :tagged_aliquot, 2 }
+        let(:aliquots) { create_list(:tagged_aliquot, 2) }
 
         # We may wish to relax this in future. I'm keeping the restriction in
         # place for the time being solely because we don't need the
@@ -41,7 +41,7 @@ RSpec.describe Order do
     context 'with autodetection turned off' do
       let(:autodetect_studies) { false }
       let(:autodetect_projects) { false }
-      let(:aliquots) { create_list :tagged_aliquot, 2, study:, project: }
+      let(:aliquots) { create_list(:tagged_aliquot, 2, study:, project:) }
 
       it { is_expected.not_to be_valid }
     end
@@ -49,15 +49,15 @@ RSpec.describe Order do
 
   context 'An order' do
     let(:shared_template) { 'shared_template' }
-    let(:asset_a) { create :sample_tube }
-    let(:order) { create :order, assets: [asset_a], template_name: shared_template }
+    let(:asset_a) { create(:sample_tube) }
+    let(:order) { create(:order, assets: [asset_a], template_name: shared_template) }
 
     it 'not detect duplicates when there are none' do
       expect(order.duplicates_within(1.month)).not_to be_truthy
     end
 
     context 'with the same asset in a different order' do
-      before { create :order, assets: [asset_a], template_name: 'other_template' }
+      before { create(:order, assets: [asset_a], template_name: 'other_template') }
 
       it 'not detect duplicates' do
         expect(order.duplicates_within(1.month)).not_to be_truthy
@@ -66,10 +66,10 @@ RSpec.describe Order do
 
     context 'with the same sample in a similar order' do
       before do
-        @asset_b = create :sample_tube, sample: asset_a.samples.first
-        @secondary_submission = create :submission
+        @asset_b = create(:sample_tube, sample: asset_a.samples.first)
+        @secondary_submission = create(:submission)
         @secondary_order =
-          create :order, assets: [@asset_b], template_name: shared_template, submission: @secondary_submission
+          create(:order, assets: [@asset_b], template_name: shared_template, submission: @secondary_submission)
       end
 
       it 'detect duplicates' do
@@ -97,7 +97,7 @@ RSpec.describe Order do
     %w[SequencingRequest].each do |request_class|
       context "with #{request_class}" do
         before do
-          @sequencing_request_type = create :request_type, request_class_name: request_class
+          @sequencing_request_type = create(:request_type, request_class_name: request_class)
           order.request_types << @sequencing_request_type.id
         end
 
@@ -118,21 +118,21 @@ RSpec.describe Order do
     order = create(:order, study:, assets: [asset.receptacle], project:)
     assert order.valid?
     study.deactivate!
-    new_asset = create :empty_sample_tube
+    new_asset = create(:empty_sample_tube)
     order.assets << new_asset
     assert order.valid?
   end
 
   it 'knows if it has samples that can not be included in submission' do
-    sample_manifest = create :tube_sample_manifest_with_samples
-    order = create :order, assets: sample_manifest.labware
+    sample_manifest = create(:tube_sample_manifest_with_samples)
+    order = create(:order, assets: sample_manifest.labware)
     expect(order.not_ready_samples.count).to eq 5
     sample = sample_manifest.samples.first
     sample.sample_metadata.update(supplier_name: 'new_name')
     expect(order.reload.not_ready_samples.count).to eq 4
 
-    sample_tube_without_manifest = create_list :sample_tube, 1
-    order = create :order, assets: sample_tube_without_manifest
+    sample_tube_without_manifest = create_list(:sample_tube, 1)
+    order = create(:order, assets: sample_tube_without_manifest)
     expect(order.all_samples).not_to be_empty
     expect(order.not_ready_samples).to be_empty
   end

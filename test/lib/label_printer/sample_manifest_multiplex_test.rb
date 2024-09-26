@@ -9,7 +9,7 @@ class SampleManifestMultiplexTest < ActiveSupport::TestCase
   attr_reader :only_first_label, :manifest, :tube_label, :tube1, :prefix, :barcode1, :label, :study_abbreviation
 
   def setup # rubocop:todo Metrics/AbcSize
-    @manifest = create :sample_manifest, asset_type: 'multiplexed_library', count: 3
+    @manifest = create(:sample_manifest, asset_type: 'multiplexed_library', count: 3)
 
     @manifest.generate
 

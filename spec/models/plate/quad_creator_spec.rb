@@ -7,8 +7,8 @@ require 'rails_helper'
 RSpec.describe Plate::QuadCreator do
   subject(:quad_creator) { described_class.new(creation_options) }
 
-  let(:target_purpose) { create :plate_purpose, size: 384 }
-  let(:user) { create :user }
+  let(:target_purpose) { create(:plate_purpose, size: 384) }
+  let(:user) { create(:user) }
   let(:creation_options) { { parent_barcodes: parent_barcodes_hash, target_purpose:, user: } }
 
   before { allow(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode)) }
@@ -45,7 +45,7 @@ RSpec.describe Plate::QuadCreator do
     end
 
     context 'when a parent is not a plate or rack' do
-      let(:tube) { create :tube }
+      let(:tube) { create(:tube) }
 
       # this should pass in the tube, not the barcode
       let(:parent_barcodes_hash) { { 'quad_1' => tube.machine_barcode } }
@@ -61,7 +61,7 @@ RSpec.describe Plate::QuadCreator do
     end
 
     context 'when a parent is the wrong size' do
-      let(:plate) { create :plate, size: 384 }
+      let(:plate) { create(:plate, size: 384) }
 
       # this should pass in the plate, not the barcode
       let(:parent_barcodes_hash) { { 'quad_1' => plate.machine_barcode } }
@@ -83,7 +83,7 @@ RSpec.describe Plate::QuadCreator do
       let(:number_of_parents) { 4 }
 
       # 2 wells in each, A1 & H12
-      let(:parents) { create_list :plate_with_untagged_wells, number_of_parents, occupied_well_index: occupied_wells }
+      let(:parents) { create_list(:plate_with_untagged_wells, number_of_parents, occupied_well_index: occupied_wells) }
       let(:parent_barcodes_hash) do
         {
           'quad_1' => parents[0].machine_barcode,
@@ -144,7 +144,7 @@ RSpec.describe Plate::QuadCreator do
     end
 
     context 'with 1 parent' do
-      let(:parents) { create_list :plate_with_untagged_wells, 1, occupied_well_index: [0, 95] } # 2 wells, A1 & H12
+      let(:parents) { create_list(:plate_with_untagged_wells, 1, occupied_well_index: [0, 95]) } # 2 wells, A1 & H12
       let(:parent_barcodes_hash) { { 'quad_3' => parents[0].machine_barcode } }
       let(:quad_3_wells) { parents[0].wells.index_by(&:map_description) }
 
@@ -171,7 +171,7 @@ RSpec.describe Plate::QuadCreator do
 
   context 'with parent tube racks' do
     context 'with 4 parents' do
-      let(:parents) { create_list :tube_rack_with_tubes, 4 }
+      let(:parents) { create_list(:tube_rack_with_tubes, 4) }
       let(:parent_barcodes_hash) do
         {
           'quad_1' => parents[0].machine_barcode,
@@ -213,8 +213,8 @@ RSpec.describe Plate::QuadCreator do
 
   context 'with a mixture of parent plates and racks' do
     # 2 wells in each, A1 & H12
-    let(:parents_plates) { create_list :plate_with_untagged_wells, 2, occupied_well_index: [0, 95] }
-    let(:parents_racks) { create_list :tube_rack_with_tubes, 2 }
+    let(:parents_plates) { create_list(:plate_with_untagged_wells, 2, occupied_well_index: [0, 95]) }
+    let(:parents_racks) { create_list(:tube_rack_with_tubes, 2) }
 
     let(:parent_barcodes_hash) do
       {

@@ -9,9 +9,9 @@ module Studies
         @controller = Studies::EventsController.new
         @request = ActionController::TestRequest.create(@controller)
 
-        @user = create :user
+        @user = create(:user)
         session[:user] = @user.id
-        @study = create :study
+        @study = create(:study)
       end
 
       should_require_login(:index, resource: 'event', parent: 'study')

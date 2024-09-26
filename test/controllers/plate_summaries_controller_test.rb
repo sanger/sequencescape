@@ -8,17 +8,17 @@ class PlateSummariesControllerTest < ActionController::TestCase
     setup do
       @controller = PlateSummariesController.new
       @request = ActionController::TestRequest.create(@controller)
-      @user = create :user
+      @user = create(:user)
       session[:user] = @user.id
     end
 
     context 'with some plates' do
       setup do
-        purpose = create :source_plate_purpose
+        purpose = create(:source_plate_purpose)
         @source_plate_a = create(:source_plate, purpose:)
         @source_plate_b = create(:source_plate, purpose:)
-        @child_plate_a = create :child_plate, parent: @source_plate_a
-        @child_plate_b = create :child_plate, parent: @source_plate_b
+        @child_plate_a = create(:child_plate, parent: @source_plate_a)
+        @child_plate_b = create(:child_plate, parent: @source_plate_b)
       end
 
       should 'test factory is created' do
@@ -26,7 +26,7 @@ class PlateSummariesControllerTest < ActionController::TestCase
       end
 
       context '#index' do
-        setup { create :plate_owner, user: @user, plate: @child_plate_a }
+        setup { create(:plate_owner, user: @user, plate: @child_plate_a) }
 
         should 'include owned plates' do
           get :index

@@ -3,11 +3,11 @@
 require 'rails_helper'
 
 RSpec.describe Api::RequestIO do
-  subject { create :request, asset: source_asset, target_asset: }
+  subject { create(:request, asset: source_asset, target_asset:) }
 
   context 'between tubes' do
-    let(:source_asset) { create :sample_tube }
-    let(:target_asset) { create :library_tube }
+    let(:source_asset) { create(:sample_tube) }
+    let(:target_asset) { create(:library_tube) }
 
     let(:expected_json) do
       {
@@ -42,8 +42,8 @@ RSpec.describe Api::RequestIO do
   end
 
   context 'between wells' do
-    let(:source_asset) { create :untagged_well }
-    let(:target_asset) { create :untagged_well }
+    let(:source_asset) { create(:untagged_well) }
+    let(:target_asset) { create(:untagged_well) }
 
     let(:expected_json) do
       {
@@ -74,7 +74,7 @@ RSpec.describe Api::RequestIO do
   end
 
   context 'with no target asset' do
-    let(:source_asset) { create :untagged_well }
+    let(:source_asset) { create(:untagged_well) }
     let(:target_asset) { nil }
 
     let(:expected_json) do
@@ -98,7 +98,7 @@ RSpec.describe Api::RequestIO do
   end
 
   context 'with metadata' do
-    subject { create :library_creation_request }
+    subject { create(:library_creation_request) }
 
     let(:expected_json) do
       {

@@ -6,18 +6,18 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
   let(:map) { create(:map) }
   let(:asset) { create(:untagged_well, map:) }
   let(:asset2) { create(:untagged_well, map:) }
-  let(:sample_manifest) { create :sample_manifest }
+  let(:sample_manifest) { create(:sample_manifest) }
   let(:sample_manifest_asset) do
-    create :sample_manifest_asset, asset:, sanger_sample_id: sample.sanger_sample_id, sample_manifest:
+    create(:sample_manifest_asset, asset:, sanger_sample_id: sample.sanger_sample_id, sample_manifest:)
   end
   let(:sample_manifest_asset2) do
-    create :sample_manifest_asset, asset: asset2, sanger_sample_id: sample2.sanger_sample_id, sample_manifest:
+    create(:sample_manifest_asset, asset: asset2, sanger_sample_id: sample2.sanger_sample_id, sample_manifest:)
   end
   let!(:library_type) { create(:library_type) }
   let!(:reference_genome) { create(:reference_genome, name: 'new one') }
   let(:aliquot) { sample_manifest_asset.asset.aliquots.first }
-  let(:sample) { create :sample_with_sanger_sample_id }
-  let(:sample2) { create :sample_with_sanger_sample_id }
+  let(:sample) { create(:sample_with_sanger_sample_id) }
+  let(:sample2) { create(:sample_with_sanger_sample_id) }
 
   describe SequencescapeExcel::SpecialisedField::Base do
     # We use an anonymous class as classes created in specs have global scope.
@@ -195,7 +195,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
   describe SequencescapeExcel::SpecialisedField::SangerPlateId do
     let!(:sample1) { create(:sample_with_well) }
     let!(:sample1_plate) { sample1.wells.first.plate }
-    let(:sample_manifest_asset1) { create :sample_manifest_asset, asset: sample1.primary_receptacle }
+    let(:sample_manifest_asset1) { create(:sample_manifest_asset, asset: sample1.primary_receptacle) }
 
     it 'will be valid if the value matches the sanger human barcode' do
       expect(
@@ -206,7 +206,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
 
     describe 'with foreign barcodes' do
       let!(:sample2) { create(:sample_with_well) }
-      let(:sample_manifest_asset2) { create :sample_manifest_asset, asset: sample2.primary_receptacle }
+      let(:sample_manifest_asset2) { create(:sample_manifest_asset, asset: sample2.primary_receptacle) }
 
       it 'will be valid if the value matches an unused cgap foreign barcode' do
         expect(described_class.new(value: 'CGAP-ABC001', sample_manifest_asset: sample_manifest_asset1)).to be_valid
@@ -241,7 +241,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
     let!(:sample1) { create(:sample) }
     let!(:sample1_tube) { create(:sample_tube_with_sanger_sample_id, sample: sample1) }
 
-    let(:manifest_asset) { create :sample_manifest_asset, asset: sample1_tube }
+    let(:manifest_asset) { create(:sample_manifest_asset, asset: sample1_tube) }
 
     it 'will be valid if the value matches the sanger human barcode' do
       expect(described_class.new(value: sample1_tube.human_barcode, sample_manifest_asset: manifest_asset)).to be_valid
@@ -251,7 +251,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
     describe 'with foreign barcodes' do
       let!(:sample2) { create(:sample) }
       let!(:sample2_tube) { create(:sample_tube_with_sanger_sample_id, sample: sample2) }
-      let(:manifest_asset2) { create :sample_manifest_asset, asset: sample2_tube }
+      let(:manifest_asset2) { create(:sample_manifest_asset, asset: sample2_tube) }
 
       it 'will be valid if the value matches an unused cgap foreign barcode' do
         expect(described_class.new(value: 'CGAP-ABC001', sample_manifest_asset: manifest_asset)).to be_valid
@@ -536,7 +536,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
   end
 
   describe SequencescapeExcel::SpecialisedField::ChromiumTagGroup do
-    let(:adapter_type) { create :adapter_type, name: 'Chromium' }
+    let(:adapter_type) { create(:adapter_type, name: 'Chromium') }
     let(:tag_group) { create(:tag_group_with_tags, adapter_type:) }
     let(:tag_group_name) { tag_group.name }
     let(:tag_well) { 'A1' }
@@ -552,7 +552,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
       end
 
       context 'when the tag group is not Chromium' do
-        let(:adapter_type) { create :adapter_type, name: 'Other' }
+        let(:adapter_type) { create(:adapter_type, name: 'Other') }
 
         it 'will not be valid' do
           expect(described_class.new(value: tag_group_name, sample_manifest_asset:)).not_to be_valid
@@ -615,9 +615,9 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
   end
 
   describe SequencescapeExcel::SpecialisedField::DualIndexTagSet do
-    let(:tag_group1) { create :tag_group_with_tags }
-    let(:tag_group2) { create :tag_group_with_tags }
-    let(:dual_index_tag_set) { create :tag_set, tag_group: tag_group1, tag2_group: tag_group2 }
+    let(:tag_group1) { create(:tag_group_with_tags) }
+    let(:tag_group2) { create(:tag_group_with_tags) }
+    let(:dual_index_tag_set) { create(:tag_set, tag_group: tag_group1, tag2_group: tag_group2) }
     let(:dual_index_tag_well) { 'A1' }
 
     describe 'dual index tag set' do
@@ -652,7 +652,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
       end
 
       context 'when the tag set name is has only one visible tag group' do
-        let(:tag_group2) { create :tag_group_with_tags, visible: false }
+        let(:tag_group2) { create(:tag_group_with_tags, visible: false) }
 
         it 'will be not be valid' do
           expect(sf_dual_index_tag_set).not_to be_valid
@@ -740,7 +740,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
   end
 
   describe SequencescapeExcel::SpecialisedField::PrimerPanel do
-    let(:primer_panel) { create :primer_panel }
+    let(:primer_panel) { create(:primer_panel) }
 
     it 'will not be valid without a persisted primer panel' do
       expect(described_class.new(value: primer_panel.name, sample_manifest_asset:)).to be_valid
@@ -957,7 +957,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
 
   # This section is for the Retention instruction field added as part of the Labware Destruction work
   describe SequencescapeExcel::SpecialisedField::RetentionInstruction do
-    let(:user) { create :user }
+    let(:user) { create(:user) }
 
     shared_examples 'a retention instruction labware' do
       it 'will be invalid if the value is not set' do
@@ -1003,23 +1003,23 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
     end
 
     context 'when processing plate wells' do
-      let(:asset_plate) { create :plate_with_untagged_wells, sample_count: 1 }
+      let(:asset_plate) { create(:plate_with_untagged_wells, sample_count: 1) }
       let(:asset) { asset_plate.wells.first }
 
       it_behaves_like 'a retention instruction labware'
     end
 
     context 'when processing tubes' do
-      let(:asset) { create :sample_tube }
+      let(:asset) { create(:sample_tube) }
 
       it_behaves_like 'a retention instruction labware'
     end
 
     context 'when retention instruction is updated (through manifests) for a labware that doesn\'t
             have retention instructions' do
-      let(:asset_plate) { create :plate_with_untagged_wells, sample_count: 1 }
+      let(:asset_plate) { create(:plate_with_untagged_wells, sample_count: 1) }
       let(:asset) { asset_plate.wells.first }
-      let(:user) { create :user }
+      let(:user) { create(:user) }
 
       before do
         custom_metadatum = CustomMetadatum.new

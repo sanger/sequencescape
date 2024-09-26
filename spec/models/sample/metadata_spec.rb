@@ -4,10 +4,10 @@ require 'rails_helper'
 
 RSpec.describe Sample::Metadata do
   describe '#user_of_consent_withdrawn' do
-    let(:user) { create :user }
-    let(:sample) { create :sample }
-    let(:sample_metadata) { create :sample_metadata_for_api }
-    let(:sample_with_metadata) { create :sample, sample_metadata: }
+    let(:user) { create(:user) }
+    let(:sample) { create(:sample) }
+    let(:sample_metadata) { create(:sample_metadata_for_api) }
+    let(:sample_with_metadata) { create(:sample, sample_metadata:) }
 
     before { sample.sample_metadata.update(user_id_of_consent_withdrawn: user.id) }
 

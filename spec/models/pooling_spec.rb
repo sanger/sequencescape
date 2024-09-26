@@ -3,12 +3,12 @@
 require 'rails_helper'
 
 describe Pooling, :poolings do
-  let(:empty_lb_tube) { create :empty_library_tube, barcode: 1 }
-  let(:untagged_lb_tube1) { create :library_tube, barcode: 2 }
-  let(:untagged_lb_tube2) { create :library_tube, barcode: 3 }
-  let(:tagged_lb_tube1) { create :tagged_library_tube, barcode: 4 }
-  let(:tagged_lb_tube2) { create :tagged_library_tube, barcode: 5 }
-  let(:mx_tube) { create :multiplexed_library_tube, barcode: 6 }
+  let(:empty_lb_tube) { create(:empty_library_tube, barcode: 1) }
+  let(:untagged_lb_tube1) { create(:library_tube, barcode: 2) }
+  let(:untagged_lb_tube2) { create(:library_tube, barcode: 3) }
+  let(:tagged_lb_tube1) { create(:tagged_library_tube, barcode: 4) }
+  let(:tagged_lb_tube2) { create(:tagged_library_tube, barcode: 5) }
+  let(:mx_tube) { create(:multiplexed_library_tube, barcode: 6) }
   let(:stock_mx_tube_required) { false }
   let(:barcode_printer_option) { nil }
   let(:pooling) do
@@ -104,7 +104,7 @@ describe Pooling, :poolings do
     # failing to disambiguate between them.
     context 'when the source tubes are from an mx library manifest' do
       before do
-        create :create_asset_request, asset: tagged_lb_tube1.receptacle
+        create(:create_asset_request, asset: tagged_lb_tube1.receptacle)
         create(:external_multiplexed_library_tube_creation_request, asset: tagged_lb_tube1.receptacle)
       end
 
@@ -116,7 +116,7 @@ describe Pooling, :poolings do
     end
 
     context 'when a barcode printer is provided' do
-      let(:barcode_printer) { create :barcode_printer }
+      let(:barcode_printer) { create(:barcode_printer) }
       let(:barcode_printer_option) { barcode_printer.name }
 
       it 'executes print_job' do

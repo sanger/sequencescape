@@ -4,25 +4,25 @@ require 'rails_helper'
 
 RSpec.describe Insdc::Country do
   context 'without a name' do
-    subject { build :insdc_country, name: nil }
+    subject { build(:insdc_country, name: nil) }
 
     it { is_expected.not_to be_valid }
   end
 
   context 'without a sort_priority' do
-    subject { build :insdc_country, sort_priority: nil }
+    subject { build(:insdc_country, sort_priority: nil) }
 
     it { is_expected.not_to be_valid }
   end
 
   context 'without a validation_state' do
-    subject { build :insdc_country, validation_state: nil }
+    subject { build(:insdc_country, validation_state: nil) }
 
     it { is_expected.not_to be_valid }
   end
 
   describe '#invalid!' do
-    let(:country) { build :insdc_country, validation_state: 'valid' }
+    let(:country) { build(:insdc_country, validation_state: 'valid') }
 
     it 'marks a country as invalid' do
       country.invalid!
@@ -34,11 +34,11 @@ RSpec.describe Insdc::Country do
     subject(:options) { described_class.options }
 
     before do
-      create :insdc_country, name: 'Excellent land'
-      create :insdc_country, name: 'Amazing land'
-      create :insdc_country, name: 'Best land'
-      create :insdc_country, :high_priority, name: 'Cool land'
-      create :insdc_country, :invalid, name: 'Dead land'
+      create(:insdc_country, name: 'Excellent land')
+      create(:insdc_country, name: 'Amazing land')
+      create(:insdc_country, name: 'Best land')
+      create(:insdc_country, :high_priority, name: 'Cool land')
+      create(:insdc_country, :invalid, name: 'Dead land')
     end
 
     it { is_expected.to be_an Array }

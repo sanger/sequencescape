@@ -3,9 +3,9 @@
 FactoryBot.define do
   factory :well, aliases: [:empty_well] do
     transient do
-      study { build :study }
-      project { build :project }
-      sample { build :sample }
+      study { build(:study) }
+      project { build(:project) }
+      sample { build(:sample) }
       aliquot_options { |_e, well| { study:, project:, receptacle: well, sample: } }
     end
     association(:well_attribute, strategy: :build)
@@ -15,7 +15,7 @@ FactoryBot.define do
     end
 
     factory :picked_well do
-      well_attribute { build :well_attribute, picked_volume: 12 }
+      well_attribute { build(:well_attribute, picked_volume: 12) }
     end
   end
 

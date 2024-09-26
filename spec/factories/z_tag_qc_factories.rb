@@ -18,12 +18,12 @@ FactoryBot.define do
   end
 
   factory :pending_purpose, parent: :tube_purpose do
-    name { FactoryBot.generate :purpose_name }
+    name { FactoryBot.generate(:purpose_name) }
     default_state { 'pending' }
   end
 
   factory :created_purpose, parent: :tube_purpose do
-    name { FactoryBot.generate :purpose_name }
+    name { FactoryBot.generate(:purpose_name) }
     default_state { 'created' }
   end
 
@@ -64,12 +64,12 @@ FactoryBot.define do
     # Incidentally we use attributes_for here as factory_bot instantiates
     # the object before setting attributes, which messes up the state machine
     # callbacks.
-    lot { create :lot }
-    qcable_creator { create :qcable_creator }
+    lot { create(:lot) }
+    qcable_creator { create(:qcable_creator) }
 
     factory :qcable_with_asset do
       state { 'created' }
-      asset { create :full_plate }
+      asset { create(:full_plate) }
     end
   end
 

@@ -5,19 +5,19 @@ require 'shared_contexts/limber_shared_context'
 
 describe Request::Traction::GridIon do
   subject do
-    build :request_traction_grid_ion,
+    build(:request_traction_grid_ion,
           asset: well,
           request_metadata_attributes: metadata,
           order:,
           submission:,
           request_type:,
-          state:
+          state:)
   end
 
   let(:order) { build(:order, submission:, assets: [well], request_types: [request_type.id]) }
-  let(:request_type) { create :well_request_type }
+  let(:request_type) { create(:well_request_type) }
   let(:submission) { build(:submission) }
-  let(:well) { create :well }
+  let(:well) { create(:well) }
   let(:state) { 'pending' }
 
   context 'with valid metadata' do

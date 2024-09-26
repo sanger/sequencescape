@@ -20,8 +20,8 @@ RSpec.describe RecordLoader::TagLayoutTemplatesLoader, :loader, type: :model do
       { name: 'Tag Layout 1', tag_group:, tag2_group:, direction: 'column', walking_by: 'wells of plate' }
     end
 
-    let!(:tag_group) { create :tag_group, name: 'group 1' }
-    let!(:tag2_group) { create :tag_group, name: 'group 2' }
+    let!(:tag_group) { create(:tag_group, name: 'group 1') }
+    let!(:tag2_group) { create(:tag_group, name: 'group 2') }
 
     it 'creates two records' do
       expect { record_loader.create! }.to change(TagLayoutTemplate, :count).by(2)

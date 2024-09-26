@@ -3,13 +3,13 @@
 require 'rails_helper'
 
 describe 'stamping of stock', :js do
-  let(:user) { create :admin, barcode: 'ID41440E', swipecard_code: '1234567' }
-  let(:plate) { create :plate_with_3_wells }
-  let!(:barcode_printer) { create :barcode_printer }
+  let(:user) { create(:admin, barcode: 'ID41440E', swipecard_code: '1234567') }
+  let(:plate) { create(:plate_with_3_wells) }
+  let!(:barcode_printer) { create(:barcode_printer) }
 
   before do
-    create :plate_type, name: 'ABgene_0800', maximum_volume: 180
-    create :plate_type, name: 'ABgene_0765', maximum_volume: 800
+    create(:plate_type, name: 'ABgene_0800', maximum_volume: 180)
+    create(:plate_type, name: 'ABgene_0765', maximum_volume: 800)
   end
 
   it 'stamping of stock' do
@@ -36,7 +36,7 @@ describe 'stamping of stock', :js do
 
     # rubocop:enable Layout/LineLength
     expect(page).to have_content 'You can generate the TECAN file and print label now.'
-    expect(page).not_to have_content('Plates barcodes are not identical')
+    expect(page).to have_no_content('Plates barcodes are not identical')
     click_button 'Generate TECAN file'
     expect(page).to have_content('Stamping of stock')
 

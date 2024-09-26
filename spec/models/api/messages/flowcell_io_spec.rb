@@ -6,20 +6,20 @@ RSpec.describe Api::Messages::FlowcellIO do
   subject { described_class.to_hash(sequencing_batch.reload) }
 
   context 'with a batch' do
-    let(:sequencing_pipeline) { create :sequencing_pipeline }
+    let(:sequencing_pipeline) { create(:sequencing_pipeline) }
 
-    let(:sequencing_batch) { create :sequencing_batch, pipeline: sequencing_pipeline }
+    let(:sequencing_batch) { create(:sequencing_batch, pipeline: sequencing_pipeline) }
 
     let!(:request_1) do
-      create :complete_sequencing_request,
+      create(:complete_sequencing_request,
              asset: mx_tube1,
              batch: sequencing_batch,
              target_asset: lane1,
              request_type:,
-             event_descriptors: request_data
+             event_descriptors: request_data)
     end
 
-    let(:mx_tube1) { create :multiplexed_library_tube, sample_count: 1 }
+    let(:mx_tube1) { create(:multiplexed_library_tube, sample_count: 1) }
 
     let(:request_type) { sequencing_pipeline.request_types.first }
 
@@ -32,7 +32,7 @@ RSpec.describe Api::Messages::FlowcellIO do
       end
     end
 
-    let(:phix) { create :spiked_buffer, :tube_barcode, tag_option: 'Dual' }
+    let(:phix) { create(:spiked_buffer, :tube_barcode, tag_option: 'Dual') }
 
     let(:tags) { lane1.aliquots.map(&:tag) }
     let(:tag2s) { lane1.aliquots.map(&:tag2) }
@@ -50,7 +50,7 @@ RSpec.describe Api::Messages::FlowcellIO do
 
     context 'with updated events' do
       before do
-        create :lab_event,
+        create(:lab_event,
                eventful: request_1,
                batch: request_1.batch,
                descriptors: {
@@ -58,7 +58,7 @@ RSpec.describe Api::Messages::FlowcellIO do
                  'PhiX %' => '1',
                  'Workflow (Standard or Xp)' => 'xp',
                  'Lane loading concentration (pM)' => '30'
-               }
+               })
       end
 
       let(:request_data) do
@@ -306,7 +306,7 @@ RSpec.describe Api::Messages::FlowcellIO do
         end
 
         context 'when there are multiple SpikedBuffer ancestors' do
-          let(:phix) { create :spiked_buffer_with_parent, :tube_barcode }
+          let(:phix) { create(:spiked_buffer_with_parent, :tube_barcode) }
 
           # To test whether the PhiX barcode and aliquot come from the correct ancestor,
           # when the lane has multiple SpikedBuffer tube ancestors

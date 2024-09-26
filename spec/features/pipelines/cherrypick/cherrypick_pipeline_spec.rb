@@ -7,10 +7,10 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
   include BarcodeHelper
 
   let(:swipecard_code) { '123456' }
-  let(:user) { create :admin, swipecard_code: }
-  let(:project) { create :project }
-  let(:study) { create :study }
-  let(:pipeline) { create :cherrypick_pipeline }
+  let(:user) { create(:admin, swipecard_code:) }
+  let(:project) { create(:project) }
+  let(:study) { create(:study) }
+  let(:pipeline) { create(:cherrypick_pipeline) }
   let(:pipeline_name) { pipeline.name }
   let(:max_plates) { 17 }
   let(:robot) do
@@ -23,16 +23,16 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
     )
   end
   let(:robot_barcode) { SBCF::SangerBarcode.new(prefix: 'RB', number: robot.barcode).machine_barcode }
-  let(:submission) { create :submission }
-  let(:plate_template) { create :plate_template }
-  let(:plate_type) { create :plate_type, name: 'ABgene_0765', maximum_volume: 800 }
+  let(:submission) { create(:submission) }
+  let(:plate_template) { create(:plate_template) }
+  let(:plate_type) { create(:plate_type, name: 'ABgene_0765', maximum_volume: 800) }
   let(:_destination_plate_barcode) { build(:plate_barcode) }
   let(:destination_plate_barcode) { _destination_plate_barcode.barcode }
   let(:_destination_plate_barcode_2) { build(:plate_barcode) }
   let(:destination_plate_barcode_2) { _destination_plate_barcode_2.barcode }
   let(:destination_plate_human_barcode_2) { destination_plate_barcode_2 }
   let(:destination_plate_human_barcode) { destination_plate_barcode }
-  let(:target_purpose) { create :plate_purpose }
+  let(:target_purpose) { create(:plate_purpose) }
   let(:control_plate) { nil }
   let(:concentrations_required) { false }
   let(:custom_destination_type) { nil }
@@ -96,14 +96,14 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
       first(:select, 'action_on_requests').select('Create Batch')
       first(:button, 'Submit').click
       click_link 'Back to pipeline'
-      expect(page).not_to have_content(plates[0].human_barcode)
+      expect(page).to have_no_content(plates[0].human_barcode)
     end
   end
 
   describe 'where picking by ng/µl for a tecan robot' do
     let(:concentrations_required) { true }
     let(:layout_volume_option) { 'Pick by ng/µl' }
-    let(:custom_destination_type) { create :plate_type, name: 'Custom Type' }
+    let(:custom_destination_type) { create(:plate_type, name: 'Custom Type') }
     let(:expected_plates_by_destination_plate) do
       { destination_plate_human_barcode => { 1 => { sources: [plates[0], plates[1], plates[2]] } } }
     end
@@ -277,7 +277,7 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
   describe 'where picking by ng for a tecan robot' do
     let(:concentrations_required) { true }
     let(:layout_volume_option) { 'Pick by ng' }
-    let(:plate_type) { create :plate_type, name: 'ABgene_0800', maximum_volume: 800 }
+    let(:plate_type) { create(:plate_type, name: 'ABgene_0800', maximum_volume: 800) }
     let(:expected_plates_by_destination_plate) do
       { destination_plate_human_barcode => { 1 => { sources: [plates[0], plates[1], plates[2]] } } }
     end
@@ -368,15 +368,15 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
   end
 
   describe 'where there is a control plate and a single destination' do
-    let(:plate1) { create :plate_with_untagged_wells, sample_count: 2 }
-    let(:plate2) { create :plate_with_untagged_wells, sample_count: 2 }
-    let(:control_plate) { create :control_plate, sample_count: 2 }
+    let(:plate1) { create(:plate_with_untagged_wells, sample_count: 2) }
+    let(:plate2) { create(:plate_with_untagged_wells, sample_count: 2) }
+    let(:control_plate) { create(:control_plate, sample_count: 2) }
     let(:plates) { [plate1, plate2] }
     let(:max_plates) { 25 }
-    let(:robot) { create :hamilton, barcode: '444', max_plates_value: max_plates }
+    let(:robot) { create(:hamilton, barcode: '444', max_plates_value: max_plates) }
     let(:concentrations_required) { true }
     let(:layout_volume_option) { 'Pick by ng/µl' }
-    let(:custom_destination_type) { create :plate_type, name: 'Custom Type' }
+    let(:custom_destination_type) { create(:plate_type, name: 'Custom Type') }
     let(:expected_plates_by_destination_plate) do
       { destination_plate_human_barcode => { 1 => { sources: [plates[0], plates[1]], control: control_plate } } }
     end
@@ -385,7 +385,7 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
 
     context 'when the number of plates exceeds number of beds (Several runs)' do
       let(:max_plates) { 2 }
-      let(:robot) { create :hamilton, barcode: '444', max_plates_value: max_plates }
+      let(:robot) { create(:hamilton, barcode: '444', max_plates_value: max_plates) }
       let(:expected_plates_by_destination_plate) do
         {
           destination_plate_human_barcode => {
@@ -405,16 +405,16 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
   end
 
   describe 'where there is a control plate and multiple destinations', :js do
-    let(:plate1) { create :plate_with_untagged_wells, sample_count: 50 }
-    let(:plate2) { create :plate_with_untagged_wells, sample_count: 50 }
-    let(:control_plate) { create :control_plate, sample_count: 2 }
+    let(:plate1) { create(:plate_with_untagged_wells, sample_count: 50) }
+    let(:plate2) { create(:plate_with_untagged_wells, sample_count: 50) }
+    let(:control_plate) { create(:control_plate, sample_count: 2) }
 
     let(:plates) { [plate1, plate2] }
     let(:max_plates) { 25 }
-    let(:robot) { create :hamilton, barcode: '444', max_plates_value: max_plates }
+    let(:robot) { create(:hamilton, barcode: '444', max_plates_value: max_plates) }
     let(:concentrations_required) { true }
     let(:layout_volume_option) { 'Pick by ng/µl' }
-    let(:custom_destination_type) { create :plate_type, name: 'Custom Type' }
+    let(:custom_destination_type) { create(:plate_type, name: 'Custom Type') }
     let(:expected_plates_by_destination_plate) do
       {
         destination_plate_human_barcode => {
@@ -436,7 +436,7 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
 
     context 'when the number of plates exceeds number of beds (Several runs)' do
       let(:max_plates) { 2 }
-      let(:robot) { create :hamilton, barcode: '444', max_plates_value: max_plates }
+      let(:robot) { create(:hamilton, barcode: '444', max_plates_value: max_plates) }
       let(:expected_plates_by_destination_plate) do
         {
           destination_plate_human_barcode => {

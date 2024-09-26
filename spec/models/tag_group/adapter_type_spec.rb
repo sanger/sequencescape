@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe TagGroup::AdapterType do
-  subject(:adapter_type) { build :adapter_type, name: }
+  subject(:adapter_type) { build(:adapter_type, name:) }
 
   context 'when it has a unique name' do
     let(:name) { 'name' }
@@ -18,7 +18,7 @@ describe TagGroup::AdapterType do
       end
 
       context 'when it is in use' do
-        before { create :tag_group, adapter_type: }
+        before { create(:tag_group, adapter_type:) }
 
         it { is_expected.to be false }
       end
@@ -45,7 +45,7 @@ describe TagGroup::AdapterType do
   end
 
   context 'when its name is already in use' do
-    before { create :adapter_type, name: 'name' }
+    before { create(:adapter_type, name: 'name') }
 
     let(:name) { 'name' }
 

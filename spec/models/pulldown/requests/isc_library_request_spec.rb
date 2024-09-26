@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe Pulldown::Requests::IscLibraryRequest do
-  subject { build :isc_request, bait_library: }
+  subject { build(:isc_request, bait_library:) }
 
   context 'with a active bait library' do
     let(:bait_library) { create(:bait_library) }

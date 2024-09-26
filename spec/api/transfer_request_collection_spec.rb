@@ -8,12 +8,12 @@ describe '/api/1/transfer_request_collection', :transfer_request_collection do
 
   subject { '/api/1/transfer_request_collection' }
 
-  let(:authorised_app) { create :api_application }
+  let(:authorised_app) { create(:api_application) }
 
-  let(:asset) { create :tagged_well }
-  let(:target_asset) { create :empty_library_tube, barcode: 898 }
-  let(:user) { create :user }
-  let(:submission) { create :submission }
+  let(:asset) { create(:tagged_well) }
+  let(:target_asset) { create(:empty_library_tube, barcode: 898) }
+  let(:user) { create(:user) }
+  let(:submission) { create(:submission) }
 
   describe '#post' do
     let(:payload) do

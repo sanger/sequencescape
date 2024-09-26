@@ -57,11 +57,11 @@ FactoryBot.define do
 
     after(:build) do |batch, evaluator|
       evaluator.assets.each_with_index.each do |asset, index|
-        create :pac_bio_sequencing_request,
+        create(:pac_bio_sequencing_request,
                asset:,
                target_asset: evaluator.target_plate.wells[index],
                request_type: batch.pipeline.request_types.first,
-               batch:
+               batch:)
       end
     end
   end

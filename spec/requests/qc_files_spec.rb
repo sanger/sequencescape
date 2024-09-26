@@ -2,7 +2,7 @@
 require 'rails_helper'
 
 RSpec.describe 'QcFiles' do
-  let(:authorised_app) { create :api_application }
+  let(:authorised_app) { create(:api_application) }
 
   describe 'create qc file' do
     let(:filename) { Rails.root.join('spec/data/parsers/cardinal_pbmc_count.csv').expand_path }

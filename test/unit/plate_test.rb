@@ -5,7 +5,7 @@ require './spec/lib/mock_parser'
 
 class PlateTest < ActiveSupport::TestCase
   def create_plate_with_fluidigm(plate_barcode, fluidigm_barcode)
-    purpose = create :plate_purpose
+    purpose = create(:plate_purpose)
     purpose.create!(
       :do_not_create_wells,
       name: "Cherrypicked #{plate_barcode}",
@@ -44,8 +44,8 @@ class PlateTest < ActiveSupport::TestCase
 
   context '#iteration' do
     setup do
-      @parent = create :plate, created_at: 6.hours.ago
-      tested_purpose = create :plate_purpose
+      @parent = create(:plate, created_at: 6.hours.ago)
+      tested_purpose = create(:plate_purpose)
       @parent.children << @child_a = create(:plate, plate_purpose: tested_purpose, created_at: 5.hours.ago)
       @parent.children << @child_b = create(:plate, plate_purpose: tested_purpose, created_at: 4.hours.ago)
       @child_b.children << @dummy = create(:plate, plate_purpose: tested_purpose, created_at: 3.hours.ago)
@@ -63,9 +63,9 @@ class PlateTest < ActiveSupport::TestCase
 
   context '#plate_ids_from_requests' do
     setup do
-      @plate1 = create :plate, :with_wells, well_count: 1
+      @plate1 = create(:plate, :with_wells, well_count: 1)
       @well1 = @plate1.wells.first
-      @request1 = create :well_request, asset: @well1
+      @request1 = create(:well_request, asset: @well1)
     end
 
     context 'with 1 request' do
@@ -80,7 +80,7 @@ class PlateTest < ActiveSupport::TestCase
       setup do
         @well2 = Well.new
         @plate1.wells << @well2
-        @request2 = create :well_request, asset: @well2
+        @request2 = create(:well_request, asset: @well2)
       end
       context 'with a valid well assets' do
         should 'return a single plate ID' do
@@ -93,12 +93,12 @@ class PlateTest < ActiveSupport::TestCase
     context 'with multiple requests on different plates' do
       setup do
         @well2 = Well.new
-        @plate2 = create :plate, :with_wells, well_count: 1
+        @plate2 = create(:plate, :with_wells, well_count: 1)
         @well2 = @plate2.wells.first
-        @request2 = create :well_request, asset: @well2
+        @request2 = create(:well_request, asset: @well2)
         @well3 = Well.new
         @plate1.wells << @well3
-        @request3 = create :well_request, asset: @well3
+        @request3 = create(:well_request, asset: @well3)
       end
       context 'with a valid well assets' do
         should 'return 2 plate IDs' do
@@ -113,10 +113,10 @@ class PlateTest < ActiveSupport::TestCase
 
   context 'Plate priority' do
     setup do
-      @plate = create :transfer_plate
+      @plate = create(:transfer_plate)
       user = create(:user)
       @plate.wells.each_with_index do |well, index|
-        create :request, asset: well, submission: Submission.create!(priority: index + 1, user:)
+        create(:request, asset: well, submission: Submission.create!(priority: index + 1, user:))
       end
     end
 
@@ -161,7 +161,7 @@ class PlateTest < ActiveSupport::TestCase
 
   context 'with existing well data' do
     setup do
-      @plate = create :plate_with_empty_wells, well_count: 3
+      @plate = create(:plate_with_empty_wells, well_count: 3)
       @plate.wells.first.set_concentration('12')
       @plate.wells.first.set_molarity('34')
       @plate.update_qc_values_with_parser(MockParser.new)
@@ -203,13 +203,13 @@ class PlateTest < ActiveSupport::TestCase
 
   context '::with_descendants_owned_by' do
     setup do
-      @user = create :user
-      @source_plate = create :source_plate
-      @child_plate = create :child_plate, parent: @source_plate
+      @user = create(:user)
+      @source_plate = create(:source_plate)
+      @child_plate = create(:child_plate, parent: @source_plate)
     end
 
     should 'find source plates with owners' do
-      create :plate_owner, user: @user, plate: @child_plate
+      create(:plate_owner, user: @user, plate: @child_plate)
       assert_includes Plate.with_descendants_owned_by(@user), @source_plate
     end
 

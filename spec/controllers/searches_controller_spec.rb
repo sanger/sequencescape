@@ -3,25 +3,25 @@
 require 'rails_helper'
 
 RSpec.describe SearchesController do
-  let(:current_user) { create :user }
+  let(:current_user) { create(:user) }
 
   it_behaves_like 'it requires login'
 
   context 'searching (when logged in)' do
-    let!(:study) { create :study, name: 'FindMeStudy' }
-    let!(:study2) { create :study, name: 'Another study' }
-    let!(:sample) { create :sample, name: 'FindMeSample' }
+    let!(:study) { create(:study, name: 'FindMeStudy') }
+    let!(:study2) { create(:study, name: 'Another study') }
+    let!(:sample) { create(:sample, name: 'FindMeSample') }
     let!(:asset) { create(:sample_tube, name: 'FindMeAsset') }
     let!(:other_asset) { create(:sample_tube) }
-    let!(:asset_group_to_find) { create :asset_group, name: 'FindMeAssetGroup', study: }
-    let!(:asset_group_to_not_find) { create :asset_group, name: 'IgnoreAssetGroup' }
+    let!(:asset_group_to_find) { create(:asset_group, name: 'FindMeAssetGroup', study:) }
+    let!(:asset_group_to_not_find) { create(:asset_group, name: 'IgnoreAssetGroup') }
 
-    let!(:submission) { create :submission, name: 'FindMe' }
-    let!(:ignore_submission) { create :submission, name: 'IgnoreMeSub' }
+    let!(:submission) { create(:submission, name: 'FindMe') }
+    let!(:ignore_submission) { create(:submission, name: 'IgnoreMeSub') }
 
-    let!(:sample_with_supplier_name) { create :sample, sample_metadata_attributes: { supplier_name: 'FindMe' } }
+    let!(:sample_with_supplier_name) { create(:sample, sample_metadata_attributes: { supplier_name: 'FindMe' }) }
     let!(:sample_with_accession_number) do
-      create :sample, sample_metadata_attributes: { sample_ebi_accession_number: 'FindMe' }
+      create(:sample, sample_metadata_attributes: { sample_ebi_accession_number: 'FindMe' })
     end
 
     describe '#index' do
