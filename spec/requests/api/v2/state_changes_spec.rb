@@ -2,50 +2,55 @@
 
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
-require './spec/requests/api/v2/shared_examples/invalid_post_requests'
+require './spec/requests/api/v2/shared_examples/post_requests'
 
 describe 'State Changes API', with: :api_v2 do
-  let(:base_endpoint) { '/api/v2/state_changes' }
   let(:model_class) { StateChange }
+  let(:base_endpoint) { "/api/v2/#{resource_type}" }
+  let(:resource_type) { model_class.name.demodulize.pluralize.underscore }
 
   it_behaves_like 'ApiKeyAuthenticatable'
 
-  context 'with a list of StateChanges' do
-    let!(:state_changes) { create_list(:state_change, 5) }
+  context 'with a list of resource' do
+    let(:resource_count) { 5 }
 
-    describe '#GET all StateChanges' do
+    before { create_list(:state_change, resource_count) }
+
+    describe '#GET all resources' do
       before { api_get base_endpoint }
 
       it 'responds with a success http code' do
         expect(response).to have_http_status(:success)
       end
 
-      it 'returns the full list of StateChanges' do
-        expect(json['data'].length).to eq(5)
+      it 'returns all the resources' do
+        expect(json['data'].length).to eq(resource_count)
       end
     end
+  end
 
-    describe '#GET StateChange by ID' do
-      let(:state_change) { state_changes.first }
+  context 'with a single resource' do
+    describe '#GET resource by ID' do
+      let(:resource) { create :state_change }
 
       context 'without included relationships' do
-        before { api_get "#{base_endpoint}/#{state_change.id}" }
+        before { api_get "#{base_endpoint}/#{resource.id}" }
 
         it 'responds with a success http code' do
           expect(response).to have_http_status(:success)
         end
 
-        it 'returns the correct StateChange' do
-          expect(json.dig('data', 'id')).to eq(state_change.id.to_s)
-          expect(json.dig('data', 'type')).to eq('state_changes')
+        it 'returns the correct resource' do
+          expect(json.dig('data', 'id')).to eq(resource.id.to_s)
+          expect(json.dig('data', 'type')).to eq(resource_type)
         end
 
         it 'returns the correct attributes' do
-          expect(json.dig('data', 'attributes', 'contents')).to eq(state_change.contents)
-          expect(json.dig('data', 'attributes', 'previous_state')).to eq(state_change.previous_state)
-          expect(json.dig('data', 'attributes', 'reason')).to eq(state_change.reason)
-          expect(json.dig('data', 'attributes', 'target_state')).to eq(state_change.target_state)
-          expect(json.dig('data', 'attributes', 'uuid')).to eq(state_change.uuid)
+          expect(json.dig('data', 'attributes', 'contents')).to eq(resource.contents)
+          expect(json.dig('data', 'attributes', 'previous_state')).to eq(resource.previous_state)
+          expect(json.dig('data', 'attributes', 'reason')).to eq(resource.reason)
+          expect(json.dig('data', 'attributes', 'target_state')).to eq(resource.target_state)
+          expect(json.dig('data', 'attributes', 'uuid')).to eq(resource.uuid)
         end
 
         it 'excludes unfetchable attributes' do
@@ -55,8 +60,8 @@ describe 'State Changes API', with: :api_v2 do
         end
 
         it 'returns references to related resources' do
-          expect(json.dig('data', 'relationships', 'user')).to be_present
           expect(json.dig('data', 'relationships', 'target')).to be_present
+          expect(json.dig('data', 'relationships', 'user')).to be_present
         end
 
         it 'does not include attributes for related resources' do
@@ -65,34 +70,28 @@ describe 'State Changes API', with: :api_v2 do
       end
 
       context 'with included relationships' do
-        before { api_get "#{base_endpoint}/#{state_change.id}?include=user,target" }
+        context 'with user' do
+          let(:related_name) { 'user' }
 
-        it 'responds with a success http code' do
-          expect(response).to have_http_status(:success)
+          it_behaves_like 'a POST request including a has_one relationship'
         end
 
-        it 'returns the correct user relationship' do
-          user = json['included'].find { |i| i['type'] == 'users' }
-          expect(user['id']).to eq(state_change.user.id.to_s)
-          expect(user['type']).to eq('users')
-        end
+        context 'with target' do
+          let(:related_name) { 'target' }
 
-        it 'returns the correct target relationship' do
-          target = json['included'].find { |i| i['type'] == 'labware' }
-          expect(target['id']).to eq(state_change.target.id.to_s)
-          expect(target['type']).to eq('labware')
+          it_behaves_like 'a POST request including a has_one relationship'
         end
       end
     end
   end
 
-  describe '#PATCH a StateChange' do
-    let(:resource_model) { create(:state_change) }
+  describe '#PATCH a resource' do
+    let(:resource_model) { create :state_change }
     let(:payload) do
       {
         'data' => {
           'id' => resource_model.id,
-          'type' => 'state_changes',
+          'type' => resource_type,
           'attributes' => {
             'target_state' => 'passed'
           }
@@ -107,7 +106,7 @@ describe 'State Changes API', with: :api_v2 do
     end
   end
 
-  describe '#POST a new StateChange' do
+  describe '#POST a create request' do
     let(:user) { create(:user) }
     let(:plate) { create(:plate) }
 
@@ -128,7 +127,7 @@ describe 'State Changes API', with: :api_v2 do
         before { api_post base_endpoint, payload }
 
         it 'creates a new resource' do
-          expect { api_post base_endpoint, payload }.to change(StateChange, :count).by(1)
+          expect { api_post base_endpoint, payload }.to change(model_class, :count).by(1)
         end
 
         it 'responds with success' do
@@ -136,12 +135,12 @@ describe 'State Changes API', with: :api_v2 do
         end
 
         it 'responds with the correct attributes' do
-          expect(json.dig('data', 'type')).to eq('state_changes')
-          expect(json.dig('data', 'attributes', 'contents')).to eq(payload.dig('data', 'attributes', 'contents'))
-          expect(json.dig('data', 'attributes', 'reason')).to eq(payload.dig('data', 'attributes', 'reason'))
-          expect(json.dig('data', 'attributes', 'target_state')).to eq(
-            payload.dig('data', 'attributes', 'target_state')
-          )
+          new_record = model_class.last
+
+          expect(json.dig('data', 'type')).to eq(resource_type)
+          expect(json.dig('data', 'attributes', 'contents')).to eq(new_record.contents)
+          expect(json.dig('data', 'attributes', 'reason')).to eq(new_record.reason)
+          expect(json.dig('data', 'attributes', 'target_state')).to eq(new_record.target_state)
         end
 
         it 'excludes unfetchable attributes' do
@@ -156,7 +155,7 @@ describe 'State Changes API', with: :api_v2 do
         end
 
         it 'applies the attributes to the new record' do
-          new_record = StateChange.last
+          new_record = model_class.last
 
           expect(new_record.contents).to eq(payload.dig('data', 'attributes', 'contents'))
           expect(new_record.reason).to eq(payload.dig('data', 'attributes', 'reason'))
@@ -164,7 +163,7 @@ describe 'State Changes API', with: :api_v2 do
         end
 
         it 'applies the relationships to the new record' do
-          new_record = StateChange.last
+          new_record = model_class.last
 
           expect(new_record.user).to eq(user)
           expect(new_record.target).to eq(plate)
@@ -175,7 +174,7 @@ describe 'State Changes API', with: :api_v2 do
         let(:payload) do
           {
             'data' => {
-              'type' => 'state_changes',
+              'type' => resource_type,
               'attributes' => base_attributes.merge({ 'user_uuid' => user.uuid, 'target_uuid' => plate.uuid })
             }
           }
@@ -188,7 +187,7 @@ describe 'State Changes API', with: :api_v2 do
         let(:payload) do
           {
             'data' => {
-              'type' => 'state_changes',
+              'type' => resource_type,
               'attributes' => base_attributes,
               'relationships' => {
                 'user' => user_relationship,
@@ -207,7 +206,7 @@ describe 'State Changes API', with: :api_v2 do
         let(:payload) do
           {
             'data' => {
-              'type' => 'state_changes',
+              'type' => resource_type,
               'attributes' =>
                 base_attributes.merge({ 'user_uuid' => other_user.uuid, 'target_uuid' => other_plate.uuid }),
               'relationships' => {
@@ -229,7 +228,7 @@ describe 'State Changes API', with: :api_v2 do
         let(:payload) do
           {
             'data' => {
-              'type' => 'state_changes',
+              'type' => resource_type,
               'attributes' => base_attributes.merge({ 'previous_state' => 'waiting' })
             }
           }
@@ -243,7 +242,7 @@ describe 'State Changes API', with: :api_v2 do
         let(:payload) do
           {
             'data' => {
-              'type' => 'state_changes',
+              'type' => resource_type,
               'attributes' => base_attributes.merge({ 'uuid' => '111111-2222-3333-4444-555555666666' })
             }
           }
@@ -255,56 +254,51 @@ describe 'State Changes API', with: :api_v2 do
 
     context 'without a required attribute' do
       context 'without target_state' do
-        let(:missing_attribute) { 'target_state' }
+        let(:error_detail_message) { "target_state - can't be blank" }
         let(:payload) do
           {
             'data' => {
-              'type' => 'state_changes',
+              'type' => resource_type,
               'attributes' =>
                 base_attributes.merge({ 'target_state' => nil, 'user_uuid' => user.uuid, 'target_uuid' => plate.uuid })
             }
           }
         end
 
-        it_behaves_like 'a POST request with a missing attribute'
+        it_behaves_like 'an unprocessable POST request with a specific error'
       end
     end
 
     context 'without a required relationship' do
       context 'without user_uuid' do
-        let(:missing_relationship) { 'user' }
+        let(:error_detail_message) { 'user - must exist' }
         let(:payload) do
           {
             'data' => {
-              'type' => 'state_changes',
+              'type' => resource_type,
               'attributes' => base_attributes.merge({ 'target_uuid' => plate.uuid })
             }
           }
         end
 
-        it_behaves_like 'a POST request without a required relationship'
+        it_behaves_like 'an unprocessable POST request with a specific error'
       end
 
       context 'without target_uuid' do
-        let(:missing_relationship) { 'target' }
+        let(:error_detail_message) { 'target - must exist' }
         let(:payload) do
-          {
-            'data' => {
-              'type' => 'state_changes',
-              'attributes' => base_attributes.merge({ 'user_uuid' => user.uuid })
-            }
-          }
+          { 'data' => { 'type' => resource_type, 'attributes' => base_attributes.merge({ 'user_uuid' => user.uuid }) } }
         end
 
-        it_behaves_like 'a POST request without a required relationship'
+        it_behaves_like 'an unprocessable POST request with a specific error'
       end
 
       context 'without user' do
-        let(:missing_relationship) { 'user' }
+        let(:error_detail_message) { 'user - must exist' }
         let(:payload) do
           {
             'data' => {
-              'type' => 'state_changes',
+              'type' => resource_type,
               'attributes' => base_attributes,
               'relationships' => {
                 'target' => target_relationship
@@ -313,15 +307,15 @@ describe 'State Changes API', with: :api_v2 do
           }
         end
 
-        it_behaves_like 'a POST request without a required relationship'
+        it_behaves_like 'an unprocessable POST request with a specific error'
       end
 
       context 'without target' do
-        let(:missing_relationship) { 'target' }
+        let(:error_detail_message) { 'target - must exist' }
         let(:payload) do
           {
             'data' => {
-              'type' => 'state_changes',
+              'type' => resource_type,
               'attributes' => base_attributes,
               'relationships' => {
                 'user' => user_relationship
@@ -330,7 +324,7 @@ describe 'State Changes API', with: :api_v2 do
           }
         end
 
-        it_behaves_like 'a POST request without a required relationship'
+        it_behaves_like 'an unprocessable POST request with a specific error'
       end
     end
   end
