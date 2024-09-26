@@ -181,6 +181,14 @@ Rails/RedundantPresenceValidationOnBelongsTo:
 Rails/UniqueValidationWithoutIndex:
   Enabled: false
 
+# Factory Bot
+FactoryBot/FactoryAssociationWithStrategy:
+  Enabled: false
+
+# Capybara
+Capybara/ClickLinkOrButtonStyle:
+  Enabled: false
+
 # Disabling newly introduced cops until we have time to sort out the offenses
 Rails/I18nLocaleTexts: # new in 2.14
   Enabled: false
