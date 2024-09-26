@@ -52,6 +52,12 @@
     "vite-plugin-vue2": "^1.9.3",
     "vue-jest": "^3.0.7"
   },
+  "_comment": "Required to address https://github.com/npm/cli/issues/4828",
+  "optionalDependencies": {
+    "@rollup/rollup-darwin-arm64": "*",
+    "@rollup/rollup-linux-x64-gnu": "*",
+    "@rollup/rollup-win32-x64-msvc": "*"
+  },
   "scripts": {
     "test": "jest",
     "lint": "eslint --ext .js --ext .vue app/frontend",

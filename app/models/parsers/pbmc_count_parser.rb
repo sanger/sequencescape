@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module Parsers
-  # A parser for the cardinal pipeline qc file
-  class CardinalPbmcCountParser
+  # A parser for the cardinal and scrna pipeline qc files
+  class PbmcCountParser
     class_attribute :assay_type, :assay_version
 
     HEADERS = [
@@ -20,7 +20,7 @@ module Parsers
       'Errors:'
     ].freeze
 
-    self.assay_type = 'Cardinal_PBMC_Count'
+    self.assay_type = 'PBMC_Count'
     self.assay_version = 'v1.0'
 
     def self.parses?(content)
@@ -38,8 +38,9 @@ module Parsers
     end
 
     # 0 - well name
-    # 2 - cell count
+    # 2 - live cell count
     # 4 - viability
+    # 9 - total cell count
     def qc_data
       @qc_data ||=
         {}.tap do |qc_data|
@@ -67,6 +68,7 @@ module Parsers
     def qc_metrics_hash(row)
       {}.tap do |hash|
         hash[:live_cell_count] = Unit.new(row[2], 'cells')
+        hash[:total_cell_count] = Unit.new(row[9], 'cells')
         viability = row[4]
         hash[:viability] = Unit.new(viability) unless viability == 'NaN'
       end

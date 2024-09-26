@@ -35,6 +35,10 @@ FactoryBot.define do
       request_class { CustomerRequest }
     end
 
+    factory :pbmc_pooling_customer_request_type do
+      request_class { PbmcPoolingCustomerRequest }
+    end
+
     factory :cherrypick_request_type do
       request_class { CherrypickRequest }
       asset_type { 'Well' }

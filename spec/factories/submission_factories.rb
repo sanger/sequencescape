@@ -30,16 +30,20 @@ FactoryBot.define do
       transient { request_types { [create(:library_request_type)] } }
     end
 
-    factory :libray_and_sequencing_template do
+    factory :library_and_sequencing_template do
       transient { request_types { [create(:library_request_type), create(:sequencing_request_type)] } }
     end
 
-    factory :heron_libray_and_sequencing_template do
+    factory :heron_library_and_sequencing_template do
       transient { request_types { [create(:heron_request_type), create(:sequencing_request_type)] } }
     end
 
-    factory :isc_libray_and_sequencing_template do
+    factory :isc_library_and_sequencing_template do
       transient { request_types { [create(:isc_library_request_type), create(:sequencing_request_type)] } }
+    end
+
+    factory :pbmc_pooling_submission_template do
+      transient { request_types { [create(:pbmc_pooling_customer_request_type)] } }
     end
   end
 
