@@ -283,6 +283,7 @@ describe 'Asset submission', :js do
     end
 
     it 'displays an error if Flowcell Type is not set' do
+      current_path = page.current_path
       select(selected_request_type.name, from: 'Request type')
       select(study.name, from: 'Study')
       select(project.name, from: 'Project')
@@ -293,7 +294,7 @@ describe 'Asset submission', :js do
 
       # The JS native validation error 'Please select an item in the list' is being displayed but cannot be inspected.
       expect(page).not_to have_text 'Created request'
-      expect(page).to have_current_path(new_request_receptacle_path(asset))
+      expect(page).to have_current_path(current_path)
     end
   end
 
