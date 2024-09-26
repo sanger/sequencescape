@@ -4,9 +4,9 @@ require 'rails_helper'
 
 describe UatActions::TubeSubmission do
   context 'with valid options' do
-    let(:tube) { create :sample_tube, purpose: create(:sample_tube_purpose) }
+    let(:tube) { create(:sample_tube, purpose: create(:sample_tube_purpose)) }
     let(:tube_barcode) { tube.barcodes.last.barcode }
-    let(:submission_template) { create :pbmc_pooling_submission_template }
+    let(:submission_template) { create(:pbmc_pooling_submission_template) }
     let(:parameters) { { submission_template_name: submission_template.name, tube_barcodes: tube_barcode } }
     let(:uat_action) { described_class.new(parameters) }
     let(:report) do
