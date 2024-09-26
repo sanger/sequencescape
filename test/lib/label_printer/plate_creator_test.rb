@@ -26,13 +26,15 @@ class PlateCreatorTest < ActiveSupport::TestCase
     @purpose_name = 'test purpose'
     plate_purpose = create(:plate_purpose, name: purpose_name)
     @plate1 =
-      create(:child_plate,
-             parent:,
-             barcode: barcode1,
-             plate_purpose:,
-             well_count: 1,
-             well_factory: :untagged_well,
-             studies: @studies)
+      create(
+        :child_plate,
+        parent:,
+        barcode: barcode1,
+        plate_purpose:,
+        well_count: 1,
+        well_factory: :untagged_well,
+        studies: @studies
+      )
     @plates = [plate1]
     @user = 'user'
     @study_abbreviation = 'WTCCC'

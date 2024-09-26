@@ -21,42 +21,54 @@ describe 'Perform a tag substitution', :js do
   let(:user) { create(:user) }
 
   before do
-    create(:aliquot,
-           sample: sample_a,
-           tag: sample_a_orig_tag,
-           tag2: sample_a_orig_tag2,
-           library: library_tube_a,
-           receptacle: library_tube_a)
-    create(:aliquot,
-           sample: sample_b,
-           tag: sample_b_orig_tag,
-           tag2: sample_b_orig_tag2,
-           library: library_tube_b,
-           receptacle: library_tube_b)
-    create(:aliquot,
-           sample: sample_a,
-           tag: sample_a_orig_tag,
-           tag2: sample_a_orig_tag2,
-           library: library_tube_a,
-           receptacle: mx_library_tube)
-    create(:aliquot,
-           sample: sample_b,
-           tag: sample_b_orig_tag,
-           tag2: sample_b_orig_tag2,
-           library: library_tube_b,
-           receptacle: mx_library_tube)
-    create(:aliquot,
-           sample: sample_a,
-           tag: sample_a_orig_tag,
-           tag2: sample_a_orig_tag2,
-           library: library_tube_a,
-           receptacle: lane)
-    create(:aliquot,
-           sample: sample_b,
-           tag: sample_b_orig_tag,
-           tag2: sample_b_orig_tag2,
-           library: library_tube_b,
-           receptacle: lane)
+    create(
+      :aliquot,
+      sample: sample_a,
+      tag: sample_a_orig_tag,
+      tag2: sample_a_orig_tag2,
+      library: library_tube_a,
+      receptacle: library_tube_a
+    )
+    create(
+      :aliquot,
+      sample: sample_b,
+      tag: sample_b_orig_tag,
+      tag2: sample_b_orig_tag2,
+      library: library_tube_b,
+      receptacle: library_tube_b
+    )
+    create(
+      :aliquot,
+      sample: sample_a,
+      tag: sample_a_orig_tag,
+      tag2: sample_a_orig_tag2,
+      library: library_tube_a,
+      receptacle: mx_library_tube
+    )
+    create(
+      :aliquot,
+      sample: sample_b,
+      tag: sample_b_orig_tag,
+      tag2: sample_b_orig_tag2,
+      library: library_tube_b,
+      receptacle: mx_library_tube
+    )
+    create(
+      :aliquot,
+      sample: sample_a,
+      tag: sample_a_orig_tag,
+      tag2: sample_a_orig_tag2,
+      library: library_tube_a,
+      receptacle: lane
+    )
+    create(
+      :aliquot,
+      sample: sample_b,
+      tag: sample_b_orig_tag,
+      tag2: sample_b_orig_tag2,
+      library: library_tube_b,
+      receptacle: lane
+    )
   end
 
   it 'Performing a tag swap' do

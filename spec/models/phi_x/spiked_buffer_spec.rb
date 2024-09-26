@@ -62,14 +62,16 @@ RSpec.describe PhiX::SpikedBuffer, :phi_x do
 
       let(:study_id) { nil }
       let(:phi_x_spiked_buffer) do
-        build(:phi_x_spiked_buffer,
-              name: 'Example',
-              parent_barcode: parent.human_barcode,
-              parent: nil,
-              concentration: '0.8',
-              volume: '10',
-              number: 2,
-              study_id:)
+        build(
+          :phi_x_spiked_buffer,
+          name: 'Example',
+          parent_barcode: parent.human_barcode,
+          parent: nil,
+          concentration: '0.8',
+          volume: '10',
+          number: 2,
+          study_id:
+        )
       end
 
       before { save }
@@ -145,13 +147,15 @@ RSpec.describe PhiX::SpikedBuffer, :phi_x do
 
   describe '#tags' do
     let(:phi_x_spiked_buffer) do
-      build(:phi_x_spiked_buffer,
-            name: 'Example',
-            parent_barcode: parent.human_barcode,
-            parent: nil,
-            concentration: '0.8',
-            volume: '10',
-            number: 2)
+      build(
+        :phi_x_spiked_buffer,
+        name: 'Example',
+        parent_barcode: parent.human_barcode,
+        parent: nil,
+        concentration: '0.8',
+        volume: '10',
+        number: 2
+      )
     end
 
     context 'when single' do

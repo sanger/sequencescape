@@ -10,12 +10,14 @@ RSpec.describe RequestInformationType do
 
     let(:batch) { create(:batch) }
     let(:request) do
-      create(:sequencing_request,
-             request_metadata_attributes: {
-               read_length: 76,
-               created_at: Date.parse('2021-03-01')
-             },
-             batch:)
+      create(
+        :sequencing_request,
+        request_metadata_attributes: {
+          read_length: 76,
+          created_at: Date.parse('2021-03-01')
+        },
+        batch:
+      )
     end
 
     context 'when key is a request metadata' do

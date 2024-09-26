@@ -113,10 +113,12 @@ RSpec.describe 'Bug research' do
 
           it 'will create the transfer requests using the submissions ids from the Repooling requests' do
             # Now we create the transfer requests that represent the pool from before
-            create(:transfer_between_plates,
-                   transfers: pool_transfer1,
-                   source: pcr_xp_plate1,
-                   destination: prepool_plate)
+            create(
+              :transfer_between_plates,
+              transfers: pool_transfer1,
+              source: pcr_xp_plate1,
+              destination: prepool_plate
+            )
 
             # The new transfer requests should have the submission id from the pooling requests (4,5,6), not 1
             s_ids = prepool_plate.wells.map(&:transfer_requests_as_target).flatten.map(&:submission_id)
@@ -148,10 +150,12 @@ RSpec.describe 'Bug research' do
             end
 
             it 'creates the transfer with the right submission id' do
-              create(:transfer_between_plates,
-                     transfers: pool_transfer2,
-                     source: pcr_xp_plate1,
-                     destination: prepool_plate)
+              create(
+                :transfer_between_plates,
+                transfers: pool_transfer2,
+                source: pcr_xp_plate1,
+                destination: prepool_plate
+              )
 
               s_ids = prepool_plate.wells.map(&:transfer_requests_as_target).flatten.map(&:submission_id)
               expect(s_ids.uniq).to eq([submission_f, submission_g])
@@ -194,10 +198,12 @@ RSpec.describe 'Bug research' do
               # There are 2 pools with equal configuration, so it does not know which pooling requests we are
               # referring to when creating the transfer requests.
               expect do
-                create(:transfer_between_plates,
-                       transfers: pool_transfer3,
-                       source: pcr_xp_plate1,
-                       destination: prepool_plate)
+                create(
+                  :transfer_between_plates,
+                  transfers: pool_transfer3,
+                  source: pcr_xp_plate1,
+                  destination: prepool_plate
+                )
               end.to raise_error(ActiveRecord::RecordInvalid)
             end
           end

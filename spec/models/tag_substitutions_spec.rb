@@ -66,47 +66,57 @@ describe TagSubstitution, :warren do
     let(:sample_b_new_tag) { sample_a_orig_tag }
 
     let!(:library_aliquot_a) do
-      create(:aliquot,
-             sample: sample_a,
-             tag: sample_a_orig_tag,
-             tag2: sample_a_orig_tag2,
-             library: library_tube_a,
-             receptacle: library_tube_a)
+      create(
+        :aliquot,
+        sample: sample_a,
+        tag: sample_a_orig_tag,
+        tag2: sample_a_orig_tag2,
+        library: library_tube_a,
+        receptacle: library_tube_a
+      )
     end
     let!(:library_aliquot_b) do
-      create(:aliquot,
-             sample: sample_b,
-             tag: sample_b_orig_tag,
-             tag2: sample_b_orig_tag2,
-             library: library_tube_b,
-             receptacle: library_tube_b)
+      create(
+        :aliquot,
+        sample: sample_b,
+        tag: sample_b_orig_tag,
+        tag2: sample_b_orig_tag2,
+        library: library_tube_b,
+        receptacle: library_tube_b
+      )
     end
     let!(:mx_aliquot_a) do
-      create(:aliquot,
-             sample: sample_a,
-             tag: sample_a_orig_tag,
-             tag2: sample_a_orig_tag2,
-             library: library_tube_a,
-             receptacle: mx_library_tube)
+      create(
+        :aliquot,
+        sample: sample_a,
+        tag: sample_a_orig_tag,
+        tag2: sample_a_orig_tag2,
+        library: library_tube_a,
+        receptacle: mx_library_tube
+      )
     end
     let!(:mx_aliquot_b) do
-      create(:aliquot,
-             sample: sample_b,
-             tag: sample_b_orig_tag,
-             tag2: sample_b_orig_tag2,
-             library: library_tube_b,
-             receptacle: mx_library_tube)
+      create(
+        :aliquot,
+        sample: sample_b,
+        tag: sample_b_orig_tag,
+        tag2: sample_b_orig_tag2,
+        library: library_tube_b,
+        receptacle: mx_library_tube
+      )
     end
     let!(:mx_aliquot_c) { create(:tagged_aliquot, library: library_tube_b, receptacle: mx_library_tube) }
 
     let!(:lane) { create(:lane) }
     let!(:lane_aliquot_a) do
-      create(:aliquot,
-             sample: sample_a,
-             tag: sample_a_orig_tag,
-             tag2: sample_a_orig_tag2,
-             library: library_tube_a,
-             receptacle: lane)
+      create(
+        :aliquot,
+        sample: sample_a,
+        tag: sample_a_orig_tag,
+        tag2: sample_a_orig_tag2,
+        library: library_tube_a,
+        receptacle: lane
+      )
     end
 
     let!(:flowcell_message) do

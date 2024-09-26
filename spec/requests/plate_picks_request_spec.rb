@@ -7,9 +7,11 @@ RSpec.describe 'PlatePicks' do
   let(:plate) { create(:plate, well_count: 1) }
   let(:destination_plate) { create(:plate, well_count: 1) }
   let(:released_cherrypick_batch) do
-    build(:cherrypick_batch,
-          state: 'released',
-          request_attributes: [{ asset: plate.wells[0], target_asset: destination_plate.wells.first, state: 'passed' }])
+    build(
+      :cherrypick_batch,
+      state: 'released',
+      request_attributes: [{ asset: plate.wells[0], target_asset: destination_plate.wells.first, state: 'passed' }]
+    )
   end
   let(:released_other_batch) { build(:batch, state: 'released', request_attributes: [{ asset: plate.wells[0] }]) }
   let(:pending_cherrypick_batch) do

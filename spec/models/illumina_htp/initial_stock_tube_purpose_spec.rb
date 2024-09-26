@@ -33,11 +33,13 @@ describe IlluminaHtp::InitialStockTubePurpose do
                submission: sibling_submission,
                state: sibling_state
       end
-      create(:multiplex_request,
-             asset: parents_sibling_well,
-             target_asset: target_tube,
-             submission: sibling_submission,
-             request_type: sibling_request_type)
+      create(
+        :multiplex_request,
+        asset: parents_sibling_well,
+        target_asset: target_tube,
+        submission: sibling_submission,
+        request_type: sibling_request_type
+      )
     end
 
     context 'which has been created' do
@@ -98,11 +100,13 @@ describe IlluminaHtp::InitialStockTubePurpose do
           end
 
           before do
-            create(:transfer_request,
-                   asset: sibling_tube,
-                   target_asset: sibling_descendant,
-                   submission: sibling_submission,
-                   state: 'passed')
+            create(
+              :transfer_request,
+              asset: sibling_tube,
+              target_asset: sibling_descendant,
+              submission: sibling_submission,
+              state: 'passed'
+            )
           end
 
           it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording

@@ -5,13 +5,15 @@ require 'shared_contexts/limber_shared_context'
 
 describe Request::Traction::GridIon do
   subject do
-    build(:request_traction_grid_ion,
-          asset: well,
-          request_metadata_attributes: metadata,
-          order:,
-          submission:,
-          request_type:,
-          state:)
+    build(
+      :request_traction_grid_ion,
+      asset: well,
+      request_metadata_attributes: metadata,
+      order:,
+      submission:,
+      request_type:,
+      state:
+    )
   end
 
   let(:order) { build(:order, submission:, assets: [well], request_types: [request_type.id]) }

@@ -16,20 +16,24 @@ RSpec.describe TransferRequest do
     end
 
     let(:library_request) do
-      create(:library_request,
-             asset: source,
-             initial_study: example_study,
-             initial_project: example_project,
-             state: library_state)
+      create(
+        :library_request,
+        asset: source,
+        initial_study: example_study,
+        initial_project: example_project,
+        state: library_state
+      )
     end
 
     context 'with volume' do
       subject do
-        create(:transfer_request,
-               asset: source,
-               target_asset: destination,
-               submission: library_request.submission,
-               volume: 4.5)
+        create(
+          :transfer_request,
+          asset: source,
+          target_asset: destination,
+          submission: library_request.submission,
+          volume: 4.5
+        )
       end
 
       let(:library_state) { 'pending' }
@@ -68,11 +72,13 @@ RSpec.describe TransferRequest do
 
     context 'with a primer panel' do
       let(:library_request) do
-        create(:gbs_request,
-               state: 'pending',
-               asset: source,
-               initial_study: example_study,
-               initial_project: example_project)
+        create(
+          :gbs_request,
+          state: 'pending',
+          asset: source,
+          initial_study: example_study,
+          initial_project: example_project
+        )
       end
 
       it 'sets appropriate metadata on the aliquots' do
@@ -102,20 +108,24 @@ RSpec.describe TransferRequest do
     end
 
     let(:library_request) do
-      create(:library_request,
-             asset: source,
-             initial_study: example_study,
-             initial_project: example_project,
-             state: library_state)
+      create(
+        :library_request,
+        asset: source,
+        initial_study: example_study,
+        initial_project: example_project,
+        state: library_state
+      )
     end
 
     let(:dummy_library_request) do
-      create(:library_request,
-             asset: source,
-             initial_study: example_study,
-             initial_project: example_project,
-             state: library_state,
-             submission: library_request.submission)
+      create(
+        :library_request,
+        asset: source,
+        initial_study: example_study,
+        initial_project: example_project,
+        state: library_state,
+        submission: library_request.submission
+      )
     end
 
     context 'with a pending library request' do
@@ -361,8 +371,12 @@ RSpec.describe TransferRequest do
         let(:source_asset) { create(:tube) }
 
         before do
-          create(:transfer_request, asset: last_well, target_asset: source_asset, 
-submission: library_request.submission)
+          create(
+            :transfer_request,
+            asset: last_well,
+            target_asset: source_asset,
+            submission: library_request.submission
+          )
         end
 
         it { is_expected.to eq library_request }
@@ -443,47 +457,57 @@ submission: library_request.submission)
     let(:target_well) { create(:empty_well) }
     let(:submission) { create(:submission) }
     let(:order) do
-      create(:library_order,
-             submission:,
-             request_types: [library_request_type.id, multiplex_request_type.id],
-             assets: [source_well_a, source_well_b])
+      create(
+        :library_order,
+        submission:,
+        request_types: [library_request_type.id, multiplex_request_type.id],
+        assets: [source_well_a, source_well_b]
+      )
     end
     let(:multiplexed_library_tube) { create(:multiplexed_library_tube, aliquots: []) }
     let(:library_request_a) do
-      create(:library_request,
-             asset: source_well_a,
-             target_asset: target_well,
-             submission:,
-             order:,
-             state: 'passed',
-             request_type: library_request_type)
+      create(
+        :library_request,
+        asset: source_well_a,
+        target_asset: target_well,
+        submission:,
+        order:,
+        state: 'passed',
+        request_type: library_request_type
+      )
     end
     let(:library_request_b) do
-      create(:library_request,
-             asset: source_well_b,
-             target_asset: target_well,
-             submission:,
-             order:,
-             state: 'passed',
-             request_type: library_request_type)
+      create(
+        :library_request,
+        asset: source_well_b,
+        target_asset: target_well,
+        submission:,
+        order:,
+        state: 'passed',
+        request_type: library_request_type
+      )
     end
 
     # While source and target assets are the same, we actually have two requests
     let(:multiplex_request_a) do
-      create(:multiplex_request,
-             asset: target_well,
-             target_asset: multiplexed_library_tube,
-             submission:,
-             order:,
-             request_type: multiplex_request_type)
+      create(
+        :multiplex_request,
+        asset: target_well,
+        target_asset: multiplexed_library_tube,
+        submission:,
+        order:,
+        request_type: multiplex_request_type
+      )
     end
     let(:multiplex_request_b) do
-      create(:multiplex_request,
-             asset: target_well,
-             target_asset: multiplexed_library_tube,
-             submission:,
-             order:,
-             request_type: multiplex_request_type)
+      create(
+        :multiplex_request,
+        asset: target_well,
+        target_asset: multiplexed_library_tube,
+        submission:,
+        order:,
+        request_type: multiplex_request_type
+      )
     end
 
     # Order here matters

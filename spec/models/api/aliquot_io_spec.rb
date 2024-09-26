@@ -4,16 +4,18 @@ require 'rails_helper'
 
 RSpec.describe Api::AliquotIO do
   subject do
-    create(:aliquot,
-           receptacle: well,
-           sample:,
-           study:,
-           project:,
-           library: well,
-           tag:,
-           insert_size_from: 100,
-           insert_size_to: 200,
-           bait_library:)
+    create(
+      :aliquot,
+      receptacle: well,
+      sample:,
+      study:,
+      project:,
+      library: well,
+      tag:,
+      insert_size_from: 100,
+      insert_size_to: 200,
+      bait_library:
+    )
   end
 
   let(:well) { create(:empty_well) }

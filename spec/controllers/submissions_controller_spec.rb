@@ -27,8 +27,10 @@ RSpec.describe SubmissionsController do
       @plate = build(:plate, barcode: 'SQPD-123456')
       %w[A1 A2 A3 B1 B2 B3 C1 C2 C3].each do |location|
         well =
-          build(:well_with_sample_and_without_plate,
-                map: Map.find_by(description: location, asset_shape: @asset_shape, asset_size: @asset_size))
+          build(
+            :well_with_sample_and_without_plate,
+            map: Map.find_by(description: location, asset_shape: @asset_shape, asset_size: @asset_size)
+          )
         @plate.wells << well
       end
       build(
@@ -156,9 +158,11 @@ RSpec.describe SubmissionsController do
         before do
           @new_plate = create(:plate, plate_purpose: @plate.purpose)
           @well =
-            create(:well,
-                   map: Map.find_by(description: 'A1', asset_shape: @asset_shape, asset_size: @asset_size),
-                   plate: @new_plate)
+            create(
+              :well,
+              map: Map.find_by(description: 'A1', asset_shape: @asset_shape, asset_size: @asset_size),
+              plate: @new_plate
+            )
           create(:aliquot, sample: Sample.find_by(name: @samples.first), receptacle: @well)
           post(
             :create,
@@ -201,8 +205,10 @@ RSpec.describe SubmissionsController do
         @wd_plate = create(:working_dilution_plate)
         %w[A1 A2 A3 B1 B2 B3 C1 C2 C3].each do |location|
           well =
-            create(:empty_well,
-                   map: Map.find_by(description: location, asset_shape: @asset_shape, asset_size: @asset_size))
+            create(
+              :empty_well,
+              map: Map.find_by(description: location, asset_shape: @asset_shape, asset_size: @asset_size)
+            )
           well.aliquots.create(sample: @plate.wells.located_at(location).first.aliquots.first.sample)
           @wd_plate.wells << well
         end
@@ -297,10 +303,12 @@ RSpec.describe SubmissionsController do
         @asset_b = create(:sample_tube, sample: @sample)
         @secondary_submission = create(:submission)
         @secondary_order =
-          create(:order,
-                 assets: [@asset_b.receptacle],
-                 template_name: @shared_template,
-                 submission: @secondary_submission)
+          create(
+            :order,
+            assets: [@asset_b.receptacle],
+            template_name: @shared_template,
+            submission: @secondary_submission
+          )
         @submission = create(:submission)
         @order = create(:order, assets: [@asset_a.receptacle], template_name: @shared_template, submission: @submission)
       end

@@ -11,12 +11,14 @@ RSpec.describe Api::Messages::FlowcellIO do
     let(:sequencing_batch) { create(:sequencing_batch, pipeline: sequencing_pipeline) }
 
     let!(:request_1) do
-      create(:complete_sequencing_request,
-             asset: mx_tube1,
-             batch: sequencing_batch,
-             target_asset: lane1,
-             request_type:,
-             event_descriptors: request_data)
+      create(
+        :complete_sequencing_request,
+        asset: mx_tube1,
+        batch: sequencing_batch,
+        target_asset: lane1,
+        request_type:,
+        event_descriptors: request_data
+      )
     end
 
     let(:mx_tube1) { create(:multiplexed_library_tube, sample_count: 1) }
@@ -50,15 +52,17 @@ RSpec.describe Api::Messages::FlowcellIO do
 
     context 'with updated events' do
       before do
-        create(:lab_event,
-               eventful: request_1,
-               batch: request_1.batch,
-               descriptors: {
-                 'Chip Barcode' => 'new_fcb',
-                 'PhiX %' => '1',
-                 'Workflow (Standard or Xp)' => 'xp',
-                 'Lane loading concentration (pM)' => '30'
-               })
+        create(
+          :lab_event,
+          eventful: request_1,
+          batch: request_1.batch,
+          descriptors: {
+            'Chip Barcode' => 'new_fcb',
+            'PhiX %' => '1',
+            'Workflow (Standard or Xp)' => 'xp',
+            'Lane loading concentration (pM)' => '30'
+          }
+        )
       end
 
       let(:request_data) do

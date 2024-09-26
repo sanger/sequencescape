@@ -470,20 +470,26 @@ describe Well do
       @other_criteria = create(:product_criteria)
 
       @old_report =
-        create(:qc_report,
-               product_criteria: @our_product_criteria,
-               created_at: 1.day.ago,
-               report_identifier: "A#{Time.zone.now}")
+        create(
+          :qc_report,
+          product_criteria: @our_product_criteria,
+          created_at: 1.day.ago,
+          report_identifier: "A#{Time.zone.now}"
+        )
       @current_report =
-        create(:qc_report,
-               product_criteria: @our_product_criteria,
-               created_at: 1.hour.ago,
-               report_identifier: "B#{Time.zone.now}")
+        create(
+          :qc_report,
+          product_criteria: @our_product_criteria,
+          created_at: 1.hour.ago,
+          report_identifier: "B#{Time.zone.now}"
+        )
       @unrelated_report =
-        create(:qc_report,
-               product_criteria: @other_criteria,
-               created_at: Time.zone.now,
-               report_identifier: "C#{Time.zone.now}")
+        create(
+          :qc_report,
+          product_criteria: @other_criteria,
+          created_at: Time.zone.now,
+          report_identifier: "C#{Time.zone.now}"
+        )
 
       @stock_well = create(:well)
 

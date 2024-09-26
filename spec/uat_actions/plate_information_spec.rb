@@ -140,19 +140,23 @@ describe UatActions::PlateInformation do
       plate_wells.last.requests_as_source << req3
 
       req4 =
-        create(:library_creation_request,
-               asset: plate_wells.first,
-               submission: submission2,
-               request_type:,
-               state: 'started')
+        create(
+          :library_creation_request,
+          asset: plate_wells.first,
+          submission: submission2,
+          request_type:,
+          state: 'started'
+        )
       plate_wells.first.requests_as_source << req4
 
       req5 =
-        create(:library_creation_request,
-               asset: plate_wells.last,
-               submission: submission2,
-               request_type:,
-               state: 'started')
+        create(
+          :library_creation_request,
+          asset: plate_wells.last,
+          submission: submission2,
+          request_type:,
+          state: 'started'
+        )
       plate_wells.last.requests_as_source << req5
     end
 

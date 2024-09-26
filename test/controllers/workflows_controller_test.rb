@@ -26,33 +26,41 @@ class WorkflowsControllerTest < ActionController::TestCase
         @batch = @pipeline.batches.create!
 
         @task1 =
-          FactoryBot.create(:task,
-                            name: 'Q20 Check',
-                            location: '',
-                            workflow: @ws1,
-                            sorted: 0,
-                            sti_type: 'SetDescriptorsTask')
+          FactoryBot.create(
+            :task,
+            name: 'Q20 Check',
+            location: '',
+            workflow: @ws1,
+            sorted: 0,
+            sti_type: 'SetDescriptorsTask'
+          )
         @task2 =
-          FactoryBot.create(:task,
-                            name: 'Submit batch',
-                            location: 'http://someurl',
-                            workflow: @ws1,
-                            sorted: 1,
-                            sti_type: 'SetDescriptorsTask')
+          FactoryBot.create(
+            :task,
+            name: 'Submit batch',
+            location: 'http://someurl',
+            workflow: @ws1,
+            sorted: 1,
+            sti_type: 'SetDescriptorsTask'
+          )
         @task3 =
-          FactoryBot.create(:task,
-                            name: 'Q20 Check',
-                            location: '',
-                            workflow: @ws2,
-                            sorted: 0,
-                            sti_type: 'SetDescriptorsTask')
+          FactoryBot.create(
+            :task,
+            name: 'Q20 Check',
+            location: '',
+            workflow: @ws2,
+            sorted: 0,
+            sti_type: 'SetDescriptorsTask'
+          )
         @task4 =
-          FactoryBot.create(:task,
-                            name: 'Submit batch',
-                            location: 'http://someurl',
-                            workflow: @ws2,
-                            sorted: 1,
-                            sti_type: 'SetDescriptorsTask')
+          FactoryBot.create(
+            :task,
+            name: 'Submit batch',
+            location: 'http://someurl',
+            workflow: @ws2,
+            sorted: 1,
+            sti_type: 'SetDescriptorsTask'
+          )
         @library1 = FactoryBot.create(:library_tube)
         @lane1 = FactoryBot.create(:lane)
         @lane1.labware.parents << @library1

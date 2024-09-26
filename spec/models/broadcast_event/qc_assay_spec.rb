@@ -27,12 +27,14 @@ RSpec.describe BroadcastEvent::QcAssay, :broadcast_event do
 
   context 'A single assay qc_assay' do
     let(:qc_assay) do
-      create(:qc_assay,
-             lot_number:,
-             qc_results: [
-               build(:qc_result_concentration, asset: well1, assay_type: 'Example Assay', assay_version: 'v0.0'),
-               build(:qc_result_concentration, asset: well2, assay_type: 'Example Assay', assay_version: 'v0.0')
-             ])
+      create(
+        :qc_assay,
+        lot_number:,
+        qc_results: [
+          build(:qc_result_concentration, asset: well1, assay_type: 'Example Assay', assay_version: 'v0.0'),
+          build(:qc_result_concentration, asset: well2, assay_type: 'Example Assay', assay_version: 'v0.0')
+        ]
+      )
     end
 
     describe '#to_json' do
@@ -100,12 +102,14 @@ RSpec.describe BroadcastEvent::QcAssay, :broadcast_event do
     # The API supports multiple different assays types being conducted at the same time,
     # but event wise these should be distinguishable.
     let(:qc_assay) do
-      create(:qc_assay,
-             lot_number:,
-             qc_results: [
-               build(:qc_result_concentration, asset: well1, assay_type: 'Example Assay', assay_version: 'v0.0'),
-               build(:qc_result_concentration, asset: well2, assay_type: 'Other Assay', assay_version: 'v0.0')
-             ])
+      create(
+        :qc_assay,
+        lot_number:,
+        qc_results: [
+          build(:qc_result_concentration, asset: well1, assay_type: 'Example Assay', assay_version: 'v0.0'),
+          build(:qc_result_concentration, asset: well2, assay_type: 'Other Assay', assay_version: 'v0.0')
+        ]
+      )
     end
 
     describe '#to_json' do

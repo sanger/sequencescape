@@ -29,12 +29,14 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
   end
 
   def create_stock_plate(barcode)
-    create(:plate,
-           name: "Stock plate #{barcode}",
-           well_count: 1,
-           well_factory: :untagged_well,
-           purpose: PlatePurpose.stock_plate_purpose,
-           barcode:)
+    create(
+      :plate,
+      name: "Stock plate #{barcode}",
+      well_count: 1,
+      well_factory: :untagged_well,
+      purpose: PlatePurpose.stock_plate_purpose,
+      barcode:
+    )
   end
 
   def create_plate_with_fluidigm(_barcode, fluidigm_barcode, stock_plate)
@@ -43,14 +45,16 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
 
     well_target = plate_target.wells.first
 
-    create(:final_cherrypick_for_fluidigm_request,
-           state: 'passed',
-           asset: stock_plate.wells.first,
-           target_asset: well_target,
-           request_metadata_attributes: {
-             target_purpose_id: fgp.id
-           },
-           request_type: @fluidigm_request_type)
+    create(
+      :final_cherrypick_for_fluidigm_request,
+      state: 'passed',
+      asset: stock_plate.wells.first,
+      target_asset: well_target,
+      request_metadata_attributes: {
+        target_purpose_id: fgp.id
+      },
+      request_type: @fluidigm_request_type
+    )
 
     plate_target
   end

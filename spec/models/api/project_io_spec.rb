@@ -31,15 +31,17 @@ RSpec.describe Api::ProjectIO do
 
   context 'with roles and collaborators' do
     subject do
-      create(:project,
-             approved: true,
-             project_metadata_attributes: {
-               collaborators: 'Test',
-               external_funding_source: 'Tooth fairy',
-               sequencing_budget_cost_centre: '123',
-               funding_comments: 'It is funded',
-               project_manager:
-             })
+      create(
+        :project,
+        approved: true,
+        project_metadata_attributes: {
+          collaborators: 'Test',
+          external_funding_source: 'Tooth fairy',
+          sequencing_budget_cost_centre: '123',
+          funding_comments: 'It is funded',
+          project_manager:
+        }
+      )
     end
 
     let(:project_manager) { create(:project_manager) }

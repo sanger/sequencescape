@@ -44,11 +44,13 @@ RSpec.describe Robot::PickData, :robot_verification do
 
     let(:requests) do
       transfers.map do |source, target|
-        create(:cherrypick_request,
-               asset: source,
-               target_asset: target,
-               request_type: pipeline.request_types.first,
-               state: 'passed')
+        create(
+          :cherrypick_request,
+          asset: source,
+          target_asset: target,
+          request_type: pipeline.request_types.first,
+          state: 'passed'
+        )
       end
     end
 
@@ -168,11 +170,13 @@ RSpec.describe Robot::PickData, :robot_verification do
       context 'when we create the requests in different order' do
         let(:requests) do
           transfers.to_a.reverse.map do |source, target|
-            create(:cherrypick_request,
-                   asset: source,
-                   target_asset: target,
-                   request_type: pipeline.request_types.first,
-                   state: 'passed')
+            create(
+              :cherrypick_request,
+              asset: source,
+              target_asset: target,
+              request_type: pipeline.request_types.first,
+              state: 'passed'
+            )
           end
         end
 

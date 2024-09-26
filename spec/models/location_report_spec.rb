@@ -25,16 +25,20 @@ RSpec.describe LocationReport do
     )
   end
   let!(:plt_1_asset_audit) do
-    create(:asset_audit,
-           asset: plate_1,
-           created_at: Time.zone.parse('June 15, 2020 15:41'),
-           key: 'slf_receive_plates',
-           message: "Process '...' performed on instrument Reception fridge")
-    create(:asset_audit,
-           asset: plate_1,
-           created_at: Time.zone.parse('June 16, 2020 15:42'),
-           key: 'slf_receive_plates',
-           message: "Process '...' performed on instrument Reception fridge")
+    create(
+      :asset_audit,
+      asset: plate_1,
+      created_at: Time.zone.parse('June 15, 2020 15:41'),
+      key: 'slf_receive_plates',
+      message: "Process '...' performed on instrument Reception fridge"
+    )
+    create(
+      :asset_audit,
+      asset: plate_1,
+      created_at: Time.zone.parse('June 16, 2020 15:42'),
+      key: 'slf_receive_plates',
+      message: "Process '...' performed on instrument Reception fridge"
+    )
     # return the last audit only
   end
   let(:plt_1_purpose) { plate_1.plate_purpose.name }
@@ -46,10 +50,12 @@ RSpec.describe LocationReport do
   let(:retention_value) { 'Long term storage' }
   let(:plate_1_custom_metadatum_collection) { create(:custom_metadatum_collection, asset: plate_1, user:) }
   let(:plate_1_custom_metadatum) do
-    create(:custom_metadatum,
-           custom_metadatum_collection: plate_1_custom_metadatum_collection,
-           key: retention_key,
-           value: retention_value)
+    create(
+      :custom_metadatum,
+      custom_metadatum_collection: plate_1_custom_metadatum_collection,
+      key: retention_key,
+      value: retention_value
+    )
   end
 
   let(:plate_2) do
@@ -80,10 +86,12 @@ RSpec.describe LocationReport do
   # add retention instruction metadata to plate 3 custom metadatum collection
   let(:plate_3_custom_metadatum_collection) { create(:custom_metadatum_collection, asset: plate_3, user:) }
   let(:plate_3_custom_metadatum) do
-    create(:custom_metadatum,
-           custom_metadatum_collection: plate_3_custom_metadatum_collection,
-           key: retention_key,
-           value: retention_value)
+    create(
+      :custom_metadatum,
+      custom_metadatum_collection: plate_3_custom_metadatum_collection,
+      key: retention_key,
+      value: retention_value
+    )
   end
 
   let(:headers_line) do

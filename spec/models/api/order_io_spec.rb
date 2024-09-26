@@ -4,21 +4,23 @@ require 'rails_helper'
 
 RSpec.describe Api::OrderIO do
   subject do
-    create(:order,
-           user:,
-           template_name: 'Cool template',
-           study:,
-           project:,
-           comments: 'Good',
-           request_options: {
-             read_length: '200',
-             library_type: 'Standard',
-             fragment_size_required_from: '10',
-             fragment_size_required_to: '20',
-             bait_library_name: 'EG',
-             sequencing_type: 'MagBead',
-             insert_size: 12
-           })
+    create(
+      :order,
+      user:,
+      template_name: 'Cool template',
+      study:,
+      project:,
+      comments: 'Good',
+      request_options: {
+        read_length: '200',
+        library_type: 'Standard',
+        fragment_size_required_from: '10',
+        fragment_size_required_to: '20',
+        bait_library_name: 'EG',
+        sequencing_type: 'MagBead',
+        insert_size: 12
+      }
+    )
   end
 
   let(:user) { create(:user) }

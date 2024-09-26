@@ -37,13 +37,15 @@ describe WorkCompletion do
       let(:input_plate2) { create(:input_plate, well_count: tested_wells, well_factory: :tagged_well) }
       let(:build_library_requests2) do
         input_plate2.wells.each do |well|
-          create_list(:library_request,
-                      requests_per_well,
-                      request_type: library_request_type,
-                      asset: well,
-                      submission: target_submission2,
-                      state: 'started',
-                      order: order2)
+          create_list(
+            :library_request,
+            requests_per_well,
+            request_type: library_request_type,
+            asset: well,
+            submission: target_submission2,
+            state: 'started',
+            order: order2
+          )
         end
       end
       let(:target_submission2) do

@@ -12,11 +12,13 @@ RSpec.describe StateChanger::InitialStockTube do
   let(:submission) { build_stubbed(:submission) }
   let(:well) { create(:well) }
   let!(:transfer_request) do
-    create(:transfer_request,
-           asset: well,
-           target_asset: labware.receptacle,
-           state: transfer_request_state,
-           outer_request: request)
+    create(
+      :transfer_request,
+      asset: well,
+      target_asset: labware.receptacle,
+      state: transfer_request_state,
+      outer_request: request
+    )
   end
   let!(:request) { create(:customer_request, asset: well, state: request_state, submission:) }
 

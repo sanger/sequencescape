@@ -26,13 +26,15 @@ describe 'cherrypick for fluidigm pipeline - micro litre', :js do
         plate.wells.each_with_index { |well, index| well.well_attribute.update!(measured_volume: 30 + (index % 30)) }
       end
     assets.each do |asset|
-      create(:cherrypick_for_fluidigm_request,
-             asset:,
-             request_type: pipeline.request_types.first,
-             submission:,
-             study:,
-             project:,
-             target_purpose:)
+      create(
+        :cherrypick_for_fluidigm_request,
+        asset:,
+        request_type: pipeline.request_types.first,
+        submission:,
+        study:,
+        project:,
+        target_purpose:
+      )
     end
 
     allow(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode, barcode: 'SQPD-2'))

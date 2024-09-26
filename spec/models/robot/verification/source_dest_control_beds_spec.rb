@@ -57,11 +57,13 @@ RSpec.describe Robot::Verification::SourceDestControlBeds, :robot_verification d
 
     let(:requests) do
       transfers.map do |source, target|
-        create(:cherrypick_request,
-               asset: source,
-               target_asset: target,
-               request_type: pipeline.request_types.first,
-               state: 'passed')
+        create(
+          :cherrypick_request,
+          asset: source,
+          target_asset: target,
+          request_type: pipeline.request_types.first,
+          state: 'passed'
+        )
       end
     end
 

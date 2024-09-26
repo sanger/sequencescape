@@ -10,12 +10,14 @@ RSpec.describe 'Following a Sequencing Pipeline', :js do
   let(:spiked_buffer) { create(:spiked_buffer, :tube_barcode) }
   let(:requests) do
     asset = create(:multiplexed_library_tube, :scanned_into_lab, sample_count: 2)
-    create_list(:sequencing_request_with_assets,
-                2,
-                request_type: pipeline.request_types.first,
-                asset:,
-                target_asset: nil,
-                submission: create(:submission))
+    create_list(
+      :sequencing_request_with_assets,
+      2,
+      request_type: pipeline.request_types.first,
+      asset:,
+      target_asset: nil,
+      submission: create(:submission)
+    )
   end
 
   before { requests }
@@ -119,24 +121,28 @@ RSpec.describe 'Following a Sequencing Pipeline', :js do
 
     before do
       batch.requests.each_with_index do |request, i|
-        create(:lab_event,
-               eventful: request,
-               batch:,
-               user:,
-               description: 'Specify Dilution Volume',
-               descriptors: {
-                 'Concentration' => (1.2 + i).to_s
-               })
-        create(:lab_event,
-               eventful: request,
-               batch:,
-               user:,
-               description: 'Set descriptors',
-               descriptors: {
-                 'Workflow (Standard or Xp)' => 'XP',
-                 'Lane loading concentration (pM)' => '23',
-                 '+4 field of weirdness' => "Something else #{i}"
-               })
+        create(
+          :lab_event,
+          eventful: request,
+          batch:,
+          user:,
+          description: 'Specify Dilution Volume',
+          descriptors: {
+            'Concentration' => (1.2 + i).to_s
+          }
+        )
+        create(
+          :lab_event,
+          eventful: request,
+          batch:,
+          user:,
+          description: 'Set descriptors',
+          descriptors: {
+            'Workflow (Standard or Xp)' => 'XP',
+            'Lane loading concentration (pM)' => '23',
+            '+4 field of weirdness' => "Something else #{i}"
+          }
+        )
         lane = create(:lane)
         request.update(target_asset: lane)
         lane.labware.parents << spiked_buffer

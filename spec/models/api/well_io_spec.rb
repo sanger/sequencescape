@@ -41,10 +41,12 @@ RSpec.describe Api::WellIO do
   context 'with multiple samples' do
     subject do
       # As of the current records, the 'description' and 'asset_size' attributes can uniquely identify a map.
-      create(:well_with_sample_and_without_plate,
-             map: Map.find_by(description: 'A1', asset_size: plate.size),
-             plate:,
-             aliquot_count: 2)
+      create(
+        :well_with_sample_and_without_plate,
+        map: Map.find_by(description: 'A1', asset_size: plate.size),
+        plate:,
+        aliquot_count: 2
+      )
     end
 
     let(:plate) { create(:plate, barcode: 'SQPD-1') }

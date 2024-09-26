@@ -16,12 +16,14 @@ RSpec.describe DriverFilesController do
     let(:transfers) { { source_plate.wells[0] => destination_plate.wells.first } }
 
     let(:requests) do
-      create_list(:cherrypick_request,
-                  1,
-                  asset: source_plate.wells.first,
-                  target_asset: destination_plate.wells.first,
-                  request_type: pipeline.request_types.first,
-                  state: 'passed')
+      create_list(
+        :cherrypick_request,
+        1,
+        asset: source_plate.wells.first,
+        target_asset: destination_plate.wells.first,
+        request_type: pipeline.request_types.first,
+        state: 'passed'
+      )
     end
 
     let(:batch) { create(:batch, requests:, pipeline:, user: current_user) }

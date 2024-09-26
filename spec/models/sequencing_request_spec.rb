@@ -38,12 +38,16 @@ RSpec.describe SequencingRequest do
     context 'with upstream requests' do
       before do
         library_tube.create_scanned_into_lab_event!(content: '2018-01-01')
-        create(:library_creation_request_for_testing_sequencing_requests,
-               target_asset: library_tube,
-               state: library_request_1_state)
-        create(:library_creation_request_for_testing_sequencing_requests,
-               target_asset: library_tube,
-               state: library_request_2_state)
+        create(
+          :library_creation_request_for_testing_sequencing_requests,
+          target_asset: library_tube,
+          state: library_request_1_state
+        )
+        create(
+          :library_creation_request_for_testing_sequencing_requests,
+          target_asset: library_tube,
+          state: library_request_2_state
+        )
       end
 
       # Nothing has happened yet!

@@ -67,11 +67,13 @@ class QcReport::FileTest < ActiveSupport::TestCase
         @study = create(:study, name: 'Example study')
         Timecop.freeze(DateTime.parse('01/01/2015')) do
           @report =
-            create(:qc_report,
-                   study: @study,
-                   exclude_existing: false,
-                   product_criteria: @criteria,
-                   state: 'awaiting_proceed')
+            create(
+              :qc_report,
+              study: @study,
+              exclude_existing: false,
+              product_criteria: @criteria,
+              state: 'awaiting_proceed'
+            )
         end
         @asset_ids = []
         2.times do |i|
@@ -109,11 +111,13 @@ class QcReport::FileTest < ActiveSupport::TestCase
         @study = FactoryBot.build(:study, name: 'Example study')
         Timecop.freeze(DateTime.parse('01/01/2015')) do
           @report =
-            create(:qc_report,
-                   study: @study,
-                   exclude_existing: false,
-                   product_criteria: @criteria,
-                   state: 'awaiting_proceed')
+            create(
+              :qc_report,
+              study: @study,
+              exclude_existing: false,
+              product_criteria: @criteria,
+              state: 'awaiting_proceed'
+            )
         end
         @asset_ids = []
         2.times do |i|
@@ -140,11 +144,13 @@ class QcReport::FileTest < ActiveSupport::TestCase
         @study = FactoryBot.build(:study, name: 'Example study')
         Timecop.freeze(DateTime.parse('01/01/2015')) do
           @report =
-            create(:qc_report,
-                   study: @study,
-                   exclude_existing: false,
-                   product_criteria: @criteria,
-                   state: 'awaiting_proceed')
+            create(
+              :qc_report,
+              study: @study,
+              exclude_existing: false,
+              product_criteria: @criteria,
+              state: 'awaiting_proceed'
+            )
         end
         @asset_ids = []
         2.times { |i| create(:qc_metric, qc_report: @report, qc_decision: %w[passed failed][i]) }

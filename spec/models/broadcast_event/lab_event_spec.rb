@@ -18,13 +18,15 @@ RSpec.describe BroadcastEvent::LabEvent, :broadcast_event do
   let(:stock_asset) { request.asset.labware }
 
   let(:lab_event) do
-    create(:lab_event,
-           description: 'Read 1 Lin/block/hyb/load',
-           descriptors: {
-             'key_a' => 'value a',
-             'key_b' => 'value b'
-           },
-           eventful:)
+    create(
+      :lab_event,
+      description: 'Read 1 Lin/block/hyb/load',
+      descriptors: {
+        'key_a' => 'value a',
+        'key_b' => 'value b'
+      },
+      eventful:
+    )
   end
   let(:user) { create(:user) }
 

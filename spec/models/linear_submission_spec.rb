@@ -32,8 +32,13 @@ RSpec.describe LinearSubmission do
           well
         end
         let(:expected_metric) do
-          create(:qc_metric, asset: stock_well, qc_report: current_report, qc_decision: 'manually_failed', 
-proceed: true)
+          create(
+            :qc_metric,
+            asset: stock_well,
+            qc_report: current_report,
+            qc_decision: 'manually_failed',
+            proceed: true
+          )
         end
         let(:mpx_submission) do
           create(
@@ -219,31 +224,37 @@ proceed: true)
   context 'when we have a multiplier for request type' do
     let(:assets) { create_list(:sample_tube, 2) }
     let(:mx_request_type) do
-      create(:multiplexed_library_creation_request_type,
-             asset_type: 'SampleTube',
-             target_asset_type: 'LibraryTube',
-             initial_state: 'pending',
-             name: 'Multiplexed Library Creation',
-             order: 1,
-             key: 'multiplexed_library_creation')
+      create(
+        :multiplexed_library_creation_request_type,
+        asset_type: 'SampleTube',
+        target_asset_type: 'LibraryTube',
+        initial_state: 'pending',
+        name: 'Multiplexed Library Creation',
+        order: 1,
+        key: 'multiplexed_library_creation'
+      )
     end
     let(:lib_request_type) do
-      create(:library_creation_request_type,
-             :with_library_types,
-             asset_type: 'SampleTube',
-             target_asset_type: 'LibraryTube',
-             initial_state: 'pending',
-             name: 'Library Creation',
-             order: 1,
-             key: 'library_creation')
+      create(
+        :library_creation_request_type,
+        :with_library_types,
+        asset_type: 'SampleTube',
+        target_asset_type: 'LibraryTube',
+        initial_state: 'pending',
+        name: 'Library Creation',
+        order: 1,
+        key: 'library_creation'
+      )
     end
     let(:sequencing_request_type) do
-      create(:request_type,
-             asset_type: 'LibraryTube',
-             initial_state: 'pending',
-             name: 'PE sequencing',
-             order: 2,
-             key: 'pe_sequencing')
+      create(
+        :request_type,
+        asset_type: 'LibraryTube',
+        initial_state: 'pending',
+        name: 'PE sequencing',
+        order: 2,
+        key: 'pe_sequencing'
+      )
     end
 
     context 'when a multiplication factor of 5 is provided' do
