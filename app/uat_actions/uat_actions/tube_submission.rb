@@ -31,6 +31,26 @@ class UatActions::TubeSubmission < UatActions
                include_blank: 'Using default library type...'
              }
 
+  form_field :number_of_samples_per_pool,
+             :number_field,
+             label: 'Number of samples per pool',
+             help:
+               'Optional field to set the number_of_samples_per_pool field on the ' \
+                 'submission request. Leave blank if not required.',
+             options: {
+               minimum: 0
+             }
+
+  form_field :cells_per_chip_well,
+             :number_field,
+             label: 'Cells per Chip Well',
+             help:
+               'Optional field to set the cells_per_chip_well field on the ' \
+                 'submission request. Leave blank if not required.',
+             options: {
+               minimum: 0
+             }
+
   validates :submission_template, presence: { message: 'could not be found' }
 
   # Returns a default copy of the UatAction which will be used to fill in the form
@@ -74,11 +94,20 @@ class UatActions::TubeSubmission < UatActions
   # Fills the report with the information from the submission
   #
   # @return [Void]
+  # rubocop:disable Metrics/AbcSize
   def fill_report(order)
     report['tube_barcodes'] = assets.map(&:human_barcode)
     report['submission_id'] = order.submission.id
     report['library_type'] = order.request_options[:library_type] if order.request_options[:library_type].present?
+    report['number_of_samples_per_pool'] = order.request_options[:number_of_samples_per_pool] if order.request_options[
+      :number_of_samples_per_pool
+    ].present?
+    report['cells_per_chip_well'] = order.request_options[:cells_per_chip_well] if order.request_options[
+      :cells_per_chip_well
+    ].present?
   end
+
+  # rubocop:enable Metrics/AbcSize
 
   # Returns the submisssion template to use for the submission
   #
@@ -131,6 +160,8 @@ class UatActions::TubeSubmission < UatActions
   def custom_request_options
     options = {}
     options[:library_type] = library_type_name if library_type_name.present?
+    options[:number_of_samples_per_pool] = number_of_samples_per_pool.presence
+    options[:cells_per_chip_well] = cells_per_chip_well.presence
     options
   end
 

@@ -16,7 +16,7 @@ RSpec.describe BulkSubmissionExcel::Download, :bulk_submission_excel, type: :mod
 
   let(:download) do
     described_class.new(
-      assets:,
+      assets: assets,
       column_list: columns,
       range_list: ranges,
       defaults: {
@@ -30,7 +30,7 @@ RSpec.describe BulkSubmissionExcel::Download, :bulk_submission_excel, type: :mod
   let(:columns) { configuration.columns.all.dup }
   let(:ranges) { configuration.ranges.dup }
   let(:assets) { create(:plate_with_untagged_wells).wells }
-  let(:submission_template) { create(:libray_and_sequencing_template) }
+  let(:submission_template) { create :library_and_sequencing_template }
 
   after { File.delete(test_file) if File.exist?(test_file) }
 
