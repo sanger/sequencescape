@@ -86,7 +86,7 @@ module Api
       end
 
       def fetchable_fields
-        # The tube_attributes attribute is only available during resource creation.
+        # The transfer_requests_attributes attribute is only available during resource creation.
         # UUIDs for relationships are not fetchable. They should be accessed via the relationship itself.
         super - %i[transfer_requests_attributes user_uuid]
       end
