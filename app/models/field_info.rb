@@ -42,7 +42,7 @@ class FieldInfo
   deprecate :parameters= => 'set selection directly'
 
   def parameters
-    { min: min, max: max, step: step }
+    { min:, max:, step: }
   end
 
   def value

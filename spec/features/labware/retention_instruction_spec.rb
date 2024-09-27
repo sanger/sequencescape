@@ -20,8 +20,8 @@ describe 'Update retention instructions' do
   end
 
   context 'when the user is not an admin' do
-    let(:user) { create :user }
-    let(:asset) { create :plate_with_3_wells, retention_instruction: :destroy_after_2_years }
+    let(:user) { create(:user) }
+    let(:asset) { create(:plate_with_3_wells, retention_instruction: :destroy_after_2_years) }
 
     before { visit labware_path(asset) }
 
@@ -39,8 +39,8 @@ describe 'Update retention instructions' do
     end
 
     context 'when retention instruction exists' do
-      let(:user) { create :admin }
-      let(:asset) { create :plate_with_3_wells, retention_instruction: :destroy_after_2_years }
+      let(:user) { create(:admin) }
+      let(:asset) { create(:plate_with_3_wells, retention_instruction: :destroy_after_2_years) }
 
       it 'does not display the warning message' do
         expect(page).to have_no_content 'This labware does not currently have a retention instruction.'
@@ -51,8 +51,8 @@ describe 'Update retention instructions' do
 
     # NB: This scenario will be obsolete (but still valid) after the script in #4095 is run
     context 'when retention instruction exists in custom_metadata table' do
-      let(:user) { create :admin }
-      let(:asset) { create :plate_with_3_wells, retention_instruction: :destroy_after_2_years }
+      let(:user) { create(:admin) }
+      let(:asset) { create(:plate_with_3_wells, retention_instruction: :destroy_after_2_years) }
 
       before do
         asset.custom_metadatum_collection =
@@ -72,8 +72,8 @@ describe 'Update retention instructions' do
     end
 
     context 'when retention instruction does not exist' do
-      let(:user) { create :admin }
-      let(:asset) { create :plate_with_3_wells, retention_instruction: nil }
+      let(:user) { create(:admin) }
+      let(:asset) { create(:plate_with_3_wells, retention_instruction: nil) }
 
       it 'does not have a retention instruction yet' do
         expect(page).to have_content 'This labware does not currently have a retention instruction.'
@@ -83,8 +83,8 @@ describe 'Update retention instructions' do
     end
 
     context 'when retention instruction exists for tube' do
-      let(:user) { create :admin }
-      let(:asset) { create :tube, retention_instruction: :destroy_after_2_years }
+      let(:user) { create(:admin) }
+      let(:asset) { create(:tube, retention_instruction: :destroy_after_2_years) }
 
       it 'does not display the warning message' do
         expect(page).to have_no_content 'This labware does not currently have a retention instruction.'

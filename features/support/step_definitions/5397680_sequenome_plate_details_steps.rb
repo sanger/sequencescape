@@ -10,7 +10,7 @@ Given /^there is a (\d+) well "([^"]*)" plate with a barcode of "([^"]*)"$/ do |
 
   sample = FactoryBot.create :sample_with_gender, name: "#{plate_barcode}_x"
 
-  1.upto(number_of_wells.to_i) { |i| new_plate.wells.create!(map_id: i).aliquots.create!(sample: sample) }
+  1.upto(number_of_wells.to_i) { |i| new_plate.wells.create!(map_id: i).aliquots.create!(sample:) }
 end
 
 Given(/^plate "([^"]*)" has (\d+) blank samples$/) do |plate_barcode, number_of_blanks|

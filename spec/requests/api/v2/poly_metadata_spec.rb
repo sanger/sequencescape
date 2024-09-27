@@ -25,7 +25,7 @@ describe 'Poly Metadata API', with: :api_v2 do
   end
 
   context 'with a PolyMetadatum' do
-    let(:resource_model) { create :poly_metadatum }
+    let(:resource_model) { create(:poly_metadatum) }
 
     let(:payload) do
       {
@@ -61,8 +61,8 @@ describe 'Poly Metadata API', with: :api_v2 do
   end
 
   describe '#post' do
-    let(:plate) { create :plate }
-    let!(:request) { create :well_request, asset: plate.wells.first }
+    let(:plate) { create(:plate) }
+    let!(:request) { create(:well_request, asset: plate.wells.first) }
 
     let(:payload) do
       {

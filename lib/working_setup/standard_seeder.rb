@@ -46,7 +46,7 @@ module WorkingSetup
     end
 
     def plates_of_purpose(name, number) # rubocop:todo Metrics/AbcSize
-      purpose = Purpose.find_by!(name: name)
+      purpose = Purpose.find_by!(name:)
       number.times do
         purpose.create!.tap do |plate|
           plate.wells.each do |w|
@@ -110,7 +110,7 @@ module WorkingSetup
     end
 
     def create_project(name)
-      existing = Project.find_by(name: name)
+      existing = Project.find_by(name:)
       return existing if existing
 
       Project.create!(
@@ -126,7 +126,7 @@ module WorkingSetup
     end
 
     def create_study(name)
-      existing = Study.find_by(name: name)
+      existing = Study.find_by(name:)
       return existing if existing
 
       Study.create!(

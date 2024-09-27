@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Given /^I have a hybridization spiked buffer called "([^"]+)"$/ do |name|
-  buffer = FactoryBot.create(:spiked_buffer, name: name)
+  buffer = FactoryBot.create(:spiked_buffer, name:)
   buffer.parents << FactoryBot.create(:phi_x_stock_tube, name: 'indexed phiX')
 end
 
@@ -17,6 +17,6 @@ Given /^the "([^"]+)" of the asset "([^"]+)" is "([^"]+)"$/ do |field, id, value
 end
 
 Then /^(.+) asset (?:called|named) "([^"]+)"(.*)$/ do |pre, name, post|
-  asset = Labware.find_by(name: name) or raise StandardError, "Cannot find asset #{name.inspect}"
+  asset = Labware.find_by(name:) or raise StandardError, "Cannot find asset #{name.inspect}"
   step "#{pre} asset \"#{asset.id}\"#{post}"
 end

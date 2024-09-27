@@ -45,12 +45,10 @@ module Submission::ProjectValidation
   private :multiplier_for
 
   def submittable?
-    begin
-      @checking_project = true
-      valid?
-    ensure
-      @checking_project = false
-    end
+    @checking_project = true
+    valid?
+  ensure
+    @checking_project = false
   end
 
   # Hack to be able to build order

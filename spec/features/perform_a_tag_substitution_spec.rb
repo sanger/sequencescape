@@ -3,60 +3,72 @@
 require 'rails_helper'
 
 describe 'Perform a tag substitution', :js do
-  let(:sample_a) { create :sample }
-  let(:sample_b) { create :sample }
-  let(:library_tube_a) { create :library_tube }
-  let(:library_tube_b) { create :library_tube }
-  let(:mx_library_tube) { create :multiplexed_library_tube }
-  let(:library_type) { create :library_type }
-  let(:used_tag_group) { create :tag_group }
-  let(:sample_a_orig_tag) { create :tag, tag_group: used_tag_group, map_id: 1 }
-  let(:sample_a_orig_tag2) { create :tag, tag_group: used_tag_group, map_id: 2 }
+  let(:sample_a) { create(:sample) }
+  let(:sample_b) { create(:sample) }
+  let(:library_tube_a) { create(:library_tube) }
+  let(:library_tube_b) { create(:library_tube) }
+  let(:mx_library_tube) { create(:multiplexed_library_tube) }
+  let(:library_type) { create(:library_type) }
+  let(:used_tag_group) { create(:tag_group) }
+  let(:sample_a_orig_tag) { create(:tag, tag_group: used_tag_group, map_id: 1) }
+  let(:sample_a_orig_tag2) { create(:tag, tag_group: used_tag_group, map_id: 2) }
 
-  let(:sample_b_orig_tag) { create :tag, tag_group: used_tag_group, map_id: 3 }
-  let(:sample_b_orig_tag2) { create :tag, tag_group: used_tag_group, map_id: 4 }
+  let(:sample_b_orig_tag) { create(:tag, tag_group: used_tag_group, map_id: 3) }
+  let(:sample_b_orig_tag2) { create(:tag, tag_group: used_tag_group, map_id: 4) }
 
-  let!(:lane) { create :lane }
+  let!(:lane) { create(:lane) }
 
-  let(:user) { create :user }
+  let(:user) { create(:user) }
 
   before do
-    create :aliquot,
-           sample: sample_a,
-           tag: sample_a_orig_tag,
-           tag2: sample_a_orig_tag2,
-           library: library_tube_a,
-           receptacle: library_tube_a
-    create :aliquot,
-           sample: sample_b,
-           tag: sample_b_orig_tag,
-           tag2: sample_b_orig_tag2,
-           library: library_tube_b,
-           receptacle: library_tube_b
-    create :aliquot,
-           sample: sample_a,
-           tag: sample_a_orig_tag,
-           tag2: sample_a_orig_tag2,
-           library: library_tube_a,
-           receptacle: mx_library_tube
-    create :aliquot,
-           sample: sample_b,
-           tag: sample_b_orig_tag,
-           tag2: sample_b_orig_tag2,
-           library: library_tube_b,
-           receptacle: mx_library_tube
-    create :aliquot,
-           sample: sample_a,
-           tag: sample_a_orig_tag,
-           tag2: sample_a_orig_tag2,
-           library: library_tube_a,
-           receptacle: lane
-    create :aliquot,
-           sample: sample_b,
-           tag: sample_b_orig_tag,
-           tag2: sample_b_orig_tag2,
-           library: library_tube_b,
-           receptacle: lane
+    create(
+      :aliquot,
+      sample: sample_a,
+      tag: sample_a_orig_tag,
+      tag2: sample_a_orig_tag2,
+      library: library_tube_a,
+      receptacle: library_tube_a
+    )
+    create(
+      :aliquot,
+      sample: sample_b,
+      tag: sample_b_orig_tag,
+      tag2: sample_b_orig_tag2,
+      library: library_tube_b,
+      receptacle: library_tube_b
+    )
+    create(
+      :aliquot,
+      sample: sample_a,
+      tag: sample_a_orig_tag,
+      tag2: sample_a_orig_tag2,
+      library: library_tube_a,
+      receptacle: mx_library_tube
+    )
+    create(
+      :aliquot,
+      sample: sample_b,
+      tag: sample_b_orig_tag,
+      tag2: sample_b_orig_tag2,
+      library: library_tube_b,
+      receptacle: mx_library_tube
+    )
+    create(
+      :aliquot,
+      sample: sample_a,
+      tag: sample_a_orig_tag,
+      tag2: sample_a_orig_tag2,
+      library: library_tube_a,
+      receptacle: lane
+    )
+    create(
+      :aliquot,
+      sample: sample_b,
+      tag: sample_b_orig_tag,
+      tag2: sample_b_orig_tag2,
+      library: library_tube_b,
+      receptacle: lane
+    )
   end
 
   it 'Performing a tag swap' do

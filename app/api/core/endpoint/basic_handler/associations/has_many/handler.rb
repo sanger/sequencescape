@@ -2,8 +2,8 @@
 class Core::Endpoint::BasicHandler::Associations::HasMany::Handler < Core::Endpoint::BasicHandler
   include Core::Endpoint::BasicHandler::Paged
 
-  def initialize(association, options, &block)
-    super(&block)
+  def initialize(association, options, &)
+    super(&)
     @association, @options = association, options
   end
 

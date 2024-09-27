@@ -53,7 +53,7 @@ FactoryBot.define do
     request_type factory: %i[sequencing_request_type]
     request_purpose { :standard }
     sti_type { 'SequencingRequest' }
-    request_metadata_attributes { attributes_for :request_metadata_for_standard_sequencing_with_read_length }
+    request_metadata_attributes { attributes_for(:request_metadata_for_standard_sequencing_with_read_length) }
 
     factory(:sequencing_request_with_assets) do
       asset factory: %i[library_tube]
@@ -85,18 +85,18 @@ FactoryBot.define do
     asset factory: %i[well]
     request_type factory: %i[library_request_type]
     request_purpose { :standard }
-    request_metadata_attributes { attributes_for :request_metadata_for_library_manufacture }
+    request_metadata_attributes { attributes_for(:request_metadata_for_library_manufacture) }
 
     factory :gbs_request, class: 'IlluminaHtp::Requests::GbsRequest' do
-      request_metadata_attributes { attributes_for :request_metadata_for_gbs }
+      request_metadata_attributes { attributes_for(:request_metadata_for_gbs) }
     end
 
     factory :heron_request, class: 'IlluminaHtp::Requests::HeronRequest' do
-      request_metadata_attributes { attributes_for :request_metadata_for_heron }
+      request_metadata_attributes { attributes_for(:request_metadata_for_heron) }
     end
 
     factory :heron_tailed_request, class: 'IlluminaHtp::Requests::HeronTailedRequest' do
-      request_metadata_attributes { attributes_for :request_metadata_for_heron }
+      request_metadata_attributes { attributes_for(:request_metadata_for_heron) }
     end
   end
 
@@ -126,12 +126,12 @@ FactoryBot.define do
   end
 
   factory :cherrypick_for_fluidigm_request do
-    transient { target_purpose { create :plate_purpose } }
+    transient { target_purpose { create(:plate_purpose) } }
     asset factory: %i[well]
     target_asset factory: %i[well]
     request_type factory: %i[cherrypick_request_type]
     request_purpose { :standard }
-    request_metadata_attributes { { target_purpose: target_purpose } }
+    request_metadata_attributes { { target_purpose: } }
 
     factory :final_cherrypick_for_fluidigm_request do
       request_type factory: %i[request_type], key: 'pick_to_fluidigm'

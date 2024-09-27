@@ -27,7 +27,7 @@ class QcMetricTest < ActiveSupport::TestCase
       ['manually_passed', nil, false]
     ].each do |qc_state, proceed_state, poor_quality_proceed|
       should "return #{poor_quality_proceed} when the qc_state is #{qc_state} and proceed is #{proceed_state}" do
-        qc = create :qc_metric, qc_decision: qc_state, proceed: proceed_state
+        qc = create(:qc_metric, qc_decision: qc_state, proceed: proceed_state)
         assert_equal poor_quality_proceed, qc.poor_quality_proceed
       end
     end
@@ -42,22 +42,22 @@ class QcMetricTest < ActiveSupport::TestCase
       ['unprocessable', false, true]
     ].each do |qc_state, proceedable, set_suboptimal|
       should "#{proceedable ? '' : 'not '}allow the proceed flag to be set to Y when #{qc_state}" do
-        qc = create :qc_metric, qc_decision: qc_state
+        qc = create(:qc_metric, qc_decision: qc_state)
         qc.human_proceed = 'Y'
         assert_equal proceedable, qc.proceed
       end
 
       should "allow the proceed flag to be set to N when #{qc_state}" do
-        qc = create :qc_metric, qc_decision: qc_state
+        qc = create(:qc_metric, qc_decision: qc_state)
         qc.human_proceed = 'N'
         assert_equal false, qc.proceed
       end
 
       should "#{set_suboptimal ? '' : 'not '}flag the aliquot as suboptimal when #{qc_state}" do
-        aliquot = create :aliquot
-        well = create :well
+        aliquot = create(:aliquot)
+        well = create(:well)
         well.aliquots << aliquot
-        create :qc_metric, qc_decision: qc_state, asset: well
+        create(:qc_metric, qc_decision: qc_state, asset: well)
 
         # The data NEEDS to be persisted, so we reload to check this is the case.
         aliquot.reload

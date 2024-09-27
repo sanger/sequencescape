@@ -5,8 +5,8 @@ require 'test_helper'
 class AssetLinkTest < ActiveSupport::TestCase
   context 'AssetLink::Job' do
     setup do
-      @source_tube = create :tube
-      @destination_tube = create :tube
+      @source_tube = create(:tube)
+      @destination_tube = create(:tube)
       @job_count = Delayed::Job.count
       AssetLink::Job.create(@source_tube, [@destination_tube])
     end

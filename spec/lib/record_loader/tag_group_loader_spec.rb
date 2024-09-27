@@ -11,7 +11,7 @@ RSpec.describe RecordLoader::TagGroupLoader, :loader, type: :model do
 
   subject(:record_loader) { a_new_record_loader }
 
-  before { create :adapter_type, name: 'Sanger 168' }
+  before { create(:adapter_type, name: 'Sanger 168') }
 
   # Tests use a separate directory to avoid coupling your specs to the data
   let(:test_directory) { Rails.root.join('spec/data/record_loader/tag_groups') }

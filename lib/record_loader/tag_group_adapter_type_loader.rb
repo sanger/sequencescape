@@ -11,7 +11,7 @@ module RecordLoader
     config_folder 'tag_group_adapter_types'
 
     def create_or_update!(name, _options)
-      TagGroup::AdapterType.find_or_create_by!(name: name)
+      TagGroup::AdapterType.find_or_create_by!(name:)
     end
   end
 end

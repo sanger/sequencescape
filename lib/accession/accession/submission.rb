@@ -73,8 +73,8 @@ module Accession
           end
       end
 
-      def each(&block)
-        files.each(&block)
+      def each(&)
+        files.each(&)
       end
 
       def open

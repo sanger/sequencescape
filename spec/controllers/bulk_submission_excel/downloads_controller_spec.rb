@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe BulkSubmissionExcel::DownloadsController, type: :controller do
   subject(:downloads_controller) { described_class.new }
 
-  let(:submission) { create :submission }
+  let(:submission) { create(:submission) }
 
   before do
     session[:user] = create :admin

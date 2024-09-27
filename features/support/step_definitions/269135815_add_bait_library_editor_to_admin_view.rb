@@ -22,7 +22,7 @@ Given /^I have a bait library called "([^"]*)"$/ do |name|
 end
 
 Then /^the supplier_identifier for "([^"]*)" should be nil$/ do |name|
-  assert BaitLibrary.find_by(name: name).supplier_identifier.nil?
+  assert BaitLibrary.find_by(name:).supplier_identifier.nil?
 end
 
 Given /^I have a bait library type called "([^"]*)"$/ do |name|
@@ -30,11 +30,11 @@ Given /^I have a bait library type called "([^"]*)"$/ do |name|
 end
 
 Given /^I have a supplier called "([^"]*)"$/ do |name|
-  BaitLibrary::Supplier.create!(name: name)
+  BaitLibrary::Supplier.create!(name:)
 end
 
 Then /^the "([^"]*)" called "([^"]*)" should exist$/ do |class_name, name|
-  matching = class_name.constantize.find_by(name: name)
+  matching = class_name.constantize.find_by(name:)
   assert matching
 end
 
@@ -43,7 +43,7 @@ Given /^the last bait library has type "([^"]*)"$/ do |name|
 end
 
 Given /^the last bait library has supplier "([^"]*)"$/ do |name|
-  BaitLibrary.last.update(bait_library_supplier: BaitLibrary::Supplier.create!(name: name))
+  BaitLibrary.last.update(bait_library_supplier: BaitLibrary::Supplier.create!(name:))
 end
 
 Given /^the last bait library is hidden$/ do

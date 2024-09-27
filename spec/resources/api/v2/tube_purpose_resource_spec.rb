@@ -6,7 +6,7 @@ require './app/resources/api/v2/tube_purpose_resource'
 RSpec.describe Api::V2::TubePurposeResource, type: :resource do
   subject(:resource) { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { build_stubbed :tube_purpose }
+  let(:resource_model) { build_stubbed(:tube_purpose) }
 
   # Test attributes
   it 'has the expected attributes', :aggregate_failures do

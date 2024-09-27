@@ -5,7 +5,7 @@ FactoryBot.define do
     options { { option1: 'value1', option2: 'value2', type: :none, formula1: 'smth' } }
     range_name { :some_range }
 
-    initialize_with { new(options: options) }
+    initialize_with { new(options:) }
 
     skip_create
   end

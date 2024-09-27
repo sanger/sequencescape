@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe PhiXesController, :phi_x do
   describe 'GET show' do
-    let(:current_user) { create :user }
+    let(:current_user) { create(:user) }
 
     before { get :show, session: { user: current_user.id } }
 

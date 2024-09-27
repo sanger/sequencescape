@@ -172,7 +172,7 @@ module Barcode::FormatHandlers
   class Infinium < BaseRegExBarcode
     # Based on ALL existing examples (bar what appears to be accidental usage of the sanger barcode in 5 cases)
     # eg. WG0000001-DNA and WG0000001-BCD
-    self.format = /\A(?<prefix>WG)(?<number>[0-9]{7})-(?<suffix>[DNA|BCD]{3})\z/
+    self.format = /\A(?<prefix>WG)(?<number>[0-9]{7})-(?<suffix>[DNA|BC]{3})\z/
   end
 
   # Fluidigm barcodes are externally generated barcodes present on fluidigm plates. They are ten digits long.

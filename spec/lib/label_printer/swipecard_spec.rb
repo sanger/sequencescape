@@ -2,7 +2,7 @@
 
 context 'when printing swipecard' do
   let(:barcode_printer_type) { create(:plate_barcode_printer_type) }
-  let(:barcode_printer) { create(:barcode_printer, barcode_printer_type: barcode_printer_type) }
+  let(:barcode_printer) { create(:barcode_printer, barcode_printer_type:) }
   let(:user) { create(:user) }
   let(:label_class) { LabelPrinter::Label::Swipecard }
   let(:label_template_name) { configatron.swipecard_pmb_template }

@@ -34,10 +34,10 @@ RSpec.describe Robot::Verification::SourceDestBeds, :robot_verification do
       end
     end
 
-    let(:source_plate_1) { create :plate, well_count: 2 }
-    let(:source_plate_3) { create :plate, well_count: 2 }
-    let(:destination_plate) { create :plate, well_count: 9 }
-    let(:pipeline) { create :cherrypick_pipeline }
+    let(:source_plate_1) { create(:plate, well_count: 2) }
+    let(:source_plate_3) { create(:plate, well_count: 2) }
+    let(:destination_plate) { create(:plate, well_count: 9) }
+    let(:pipeline) { create(:cherrypick_pipeline) }
     let(:max_beds) { 17 }
 
     let(:transfers) do
@@ -62,18 +62,20 @@ RSpec.describe Robot::Verification::SourceDestBeds, :robot_verification do
 
     let(:requests) do
       transfers.map do |source, target|
-        create :cherrypick_request,
-               asset: source,
-               target_asset: target,
-               request_type: pipeline.request_types.first,
-               state: 'passed'
+        create(
+          :cherrypick_request,
+          asset: source,
+          target_asset: target,
+          request_type: pipeline.request_types.first,
+          state: 'passed'
+        )
       end
     end
 
-    let(:batch) { create :batch, requests: requests, pipeline: pipeline }
+    let(:batch) { create(:batch, requests:, pipeline:) }
 
     context 'without control plates' do
-      let(:source_plate_2) { create :plate, well_count: 2 }
+      let(:source_plate_2) { create(:plate, well_count: 2) }
       let(:expected_layout) do
         {
           1 => [
@@ -93,7 +95,7 @@ RSpec.describe Robot::Verification::SourceDestBeds, :robot_verification do
     end
 
     context 'with control plates' do
-      let(:source_plate_2) { create :control_plate, well_count: 2 }
+      let(:source_plate_2) { create(:control_plate, well_count: 2) }
       let(:expected_layout) do
         {
           1 => [

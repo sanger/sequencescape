@@ -6,7 +6,7 @@ require './app/resources/api/v2/lot_type_resource'
 RSpec.describe Api::V2::LotTypeResource, type: :resource do
   subject(:resource) { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { build_stubbed :lot_type, template_class: template_class }
+  let(:resource_model) { build_stubbed(:lot_type, template_class:) }
   let(:template_class) { 'TagLayoutTemplate' }
 
   # Test attributes

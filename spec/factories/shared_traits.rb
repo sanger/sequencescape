@@ -27,7 +27,7 @@ FactoryBot.define do
 
     # Using an after build as I need access to both the transient and the resource.
     after(:build) do |resource, context|
-      resource.uuid_object = build :uuid, external_id: context.uuid, resource: resource
+      resource.uuid_object = build(:uuid, external_id: context.uuid, resource: resource)
     end
 
     after(:create) { |resource, _context| resource.uuid_object.save! }

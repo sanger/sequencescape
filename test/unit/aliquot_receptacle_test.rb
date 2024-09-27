@@ -4,7 +4,7 @@ require 'test_helper'
 
 class ReceptacleTest < ActiveSupport::TestCase
   context 'Receptacle' do
-    setup { @receptacle = create :receptacle }
+    setup { @receptacle = create(:receptacle) }
 
     [
       ['Untagged', [:untagged_aliquot]],

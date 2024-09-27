@@ -12,7 +12,7 @@ class RemoveFlexibleCherrypickPipeline < ActiveRecord::Migration[6.0]
     # The following code makes assumptions about names, and mimic the production
     # state when the migration was written.
     [['Flexible Cherrypick', 'FlexibleCherrypickPipeline']].each do |name, sti_type|
-      pipeline = Pipeline.find_by(name: name)
+      pipeline = Pipeline.find_by(name:)
       next if pipeline.nil?
 
       pipeline.update!(sti_type: sti_type, active: true)
