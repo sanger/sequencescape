@@ -29,7 +29,7 @@ class CherrypickTask::ControlLocator
   # limit ourself to primes to simplify validation.
   BETWEEN_PLATE_OFFSETS = [53, 59].freeze
 
-  attr_reader :batch_id, :total_wells, :wells_to_leave_free, :num_control_wells, :available_positions, :control_assets
+  attr_reader :batch_id, :total_wells, :wells_to_leave_free, :num_control_wells, :available_positions, :control_assets, :control_placement_type
 
   # @note wells_to_leave_free was originally hardcoded for 96 well plates at 24, in order to avoid
   # control wells being missed in cDNA quant QC. This requirement was removed in
@@ -40,13 +40,13 @@ class CherrypickTask::ControlLocator
   # @param total_wells [Integer] The total number of wells on the plate
   # @param num_control_wells [Integer] The number of control wells to lay out
   # @param wells_to_leave_free [Enumerable] Array or range indicating the wells to leave free from controls
-  def initialize(batch_id:, total_wells:, num_control_wells:, control_assets:, wells_to_leave_free: [])
+  def initialize(batch_id:, total_wells:, num_control_wells:, control_source_plate:, wells_to_leave_free: [])
     @batch_id = batch_id
     @total_wells = total_wells
     @num_control_wells = num_control_wells
     @wells_to_leave_free = wells_to_leave_free.to_a
     @available_positions = (0...total_wells).to_a - @wells_to_leave_free
-    @control_assets = control_assets
+    @control_source_plate = control_source_plate
   end
 
   #
@@ -57,6 +57,11 @@ class CherrypickTask::ControlLocator
   #
   # @return [Array<Integer>] The indexes of the control well positions
   #
+
+  def control_placement_type
+    @control_placement_type ||= control_source_plate.custom_metadatum_collection.metadata['control_placement_type']
+
+
   def control_positions(num_plate)
     raise StandardError, 'More controls than free wells' if num_control_wells > total_available_positions
 
@@ -108,6 +113,8 @@ class CherrypickTask::ControlLocator
     rows = ('A'..'H').to_a
     columns = (1..12).to_a
 
+    # The invalid and valid maps are hash maps to represent a plate that maps A1 -> 1, A2 -> 2, etc, whereas the other map
+    # is the inverse of this, mapping 1 -> A1, 2 -> B1, etc.
     valid_map = rows.product(columns).each_with_index.to_h { |(row, col), i| [i + 1, "#{row}#{col}"] }
     invalid_map = columns.product(rows).each_with_index.to_h { |(col, row), i| [i + 1, "#{row}#{col}"] }
 
@@ -118,6 +125,7 @@ class CherrypickTask::ControlLocator
   end
 
   def fixed_positions_from_available
+    control_assets = @control_source_plate.wells.joins(:samples)
     control_wells = control_assets.map(&:map_id)
     convert_control_assets(control_wells)
   end
