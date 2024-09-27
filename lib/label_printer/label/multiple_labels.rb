@@ -2,8 +2,6 @@
 module LabelPrinter
   module Label
     module MultipleLabels
-      attr_accessor :count
-
       def labels
         return [] unless assets
 
@@ -19,7 +17,7 @@ module LabelPrinter
         end
       end
 
-      def count # rubocop:disable Lint/DuplicateMethods
+      def count
         (@count || 1).to_i
       end
     end
