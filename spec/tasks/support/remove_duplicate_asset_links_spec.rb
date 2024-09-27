@@ -2,6 +2,7 @@
 
 require 'rails_helper'
 
+# rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations,RSpec/MultipleMemoizedHelpers
 RSpec.describe 'support:remove_duplicate_asset_links', type: :task do
   let(:clear_tasks) { Rake.application.clear }
   let(:load_tasks) { Rails.application.load_tasks }
@@ -47,3 +48,4 @@ RSpec.describe 'support:remove_duplicate_asset_links', type: :task do
     end
   end
 end
+# rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations,RSpec/MultipleMemoizedHelpers
