@@ -54,7 +54,7 @@ module Submission::ValidationsByTemplateName
       if list_of_uniq_number_of_samples_per_pool.size > 1
         errors.add(
           :spreadsheet,
-          "Inconsistent values for column 'scRNA Core Number of Samples per Pool' for Study #{study_name}, " \
+          "Inconsistent values for column 'scRNA Core Number of Samples per Pool' for Study name '#{study_name}', " \
             'all rows for a specific study must have the same value'
         )
       end
