@@ -78,7 +78,9 @@ class CherrypickTask::ControlLocator
     # To avoid it, every num_plate=available_positions we start a new cycle with a new seed.
 
     placement_type = control_placement_type
-
+    raise StandardError, 'Control placement type is not set or is invalid' if placement_type.nil? || ["Fixed", 
+    "Random"].exclude?(placement_type)
+    
     if placement_type == 'random'
       seed = seed_for(num_plate)
       initial_positions = random_positions_from_available(seed)
