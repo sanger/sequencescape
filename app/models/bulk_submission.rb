@@ -32,6 +32,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
   extend ActiveModel::Naming
 
   include Submission::AssetSubmissionFinder
+  include Submission::ValidationsByTemplateName
 
   attr_accessor :spreadsheet, :encoding
 
@@ -116,11 +117,9 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     return false if headers.nil?
     return true if headers.include? 'submission name'
 
-    # rubocop:todo Layout/LineLength
     errors.add :spreadsheet,
-               "You submitted an incompatible spreadsheet. Please ensure your spreadsheet contains the 'submission name' column"
-
-    # rubocop:enable Layout/LineLength
+               'You submitted an incompatible spreadsheet. Please ensure your spreadsheet contains ' \
+                 "the 'submission name' column"
     false
   end
 
@@ -149,6 +148,9 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
 
     if spreadsheet_valid?
       submission_details = submission_structure
+
+      # Apply any additional validations based on the submission template name
+      apply_additional_validations_by_template_name unless errors.count > 0
 
       raise ActiveRecord::RecordInvalid, self if errors.count > 0
 
@@ -291,16 +293,15 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   def shared_options!(rows) # rubocop:todo Metrics/MethodLength
-    # Builds an array of the common fields. Raises and exception if the fields are inconsistent
+    # Builds an array of the common fields. Raises an exception if the fields are inconsistent
     COMMON_FIELDS.map do |field|
       option = rows.pluck(field).uniq
       if option.count > 1
         provided_values = option.map { |o| "'#{o}'" }.to_sentence
         errors.add(
           :spreadsheet,
-          # rubocop:todo Layout/LineLength
-          "#{field} should be identical for all requests in asset group '#{rows.first['asset group name']}'. Given values were: #{provided_values}."
-          # rubocop:enable Layout/LineLength
+          "#{field} should be identical for all requests in asset group '#{rows.first['asset group name']}'. " \
+            "Given values were: #{provided_values}."
         )
       end
       [field, option.first]
@@ -413,10 +414,9 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     if attributes[:asset_group].nil?
       attributes[:assets] = found_assets
     elsif found_assets.present? && found_assets != attributes[:asset_group].assets
-      # rubocop:todo Layout/LineLength
       raise StandardError,
-            "Asset Group '#{attributes[:asset_group].name}' contains different assets to those you specified. You may be reusing an asset group name"
-      # rubocop:enable Layout/LineLength
+            "Asset Group '#{attributes[:asset_group].name}' contains different assets to those you specified. " \
+              'You may be reusing an asset group name'
     end
 
     add_study_to_assets(found_assets, study)
