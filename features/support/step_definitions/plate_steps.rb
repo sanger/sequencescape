@@ -27,11 +27,11 @@ end
 Given /^plate with barcode "([^"]*)" has a well$/ do |plate_barcode|
   plate = Plate.find_from_barcode(plate_barcode)
   map = plate.maps.first
-  FactoryBot.create(:untagged_well, plate: plate, map: map)
+  FactoryBot.create(:untagged_well, plate:, map:)
 end
 
 Given 'a tube named {string} with barcode {string} exists' do |name, machine_barcode|
-  FactoryBot.create :tube, name: name, sanger_barcode: { machine_barcode: machine_barcode }
+  FactoryBot.create :tube, name: name, sanger_barcode: { machine_barcode: }
 end
 
 Given /^a plate with barcode "([^"]*)" exists$/ do |machine_barcode|
@@ -58,7 +58,7 @@ Given /^plate (\d+) has is a stock plate$/ do |plate_id|
 end
 
 Given /^the plate with ID (\d+) has a plate purpose of "([^"]+)"$/ do |id, name|
-  purpose = PlatePurpose.find_by(name: name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
+  purpose = PlatePurpose.find_by(name:) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
   Plate.find(id).update!(plate_purpose: purpose)
 end
 
@@ -74,7 +74,7 @@ Given /^a plate with purpose "([^"]*)" and barcode "([^"]*)" exists$/ do |plate_
   else
     FactoryBot.create(
       :plate,
-      sanger_barcode: Barcode.build_sanger_code39({ machine_barcode: machine_barcode }),
+      sanger_barcode: Barcode.build_sanger_code39({ machine_barcode: }),
       well_count: 8,
       plate_purpose: Purpose.find_by(name: plate_purpose_name)
     )
@@ -87,7 +87,7 @@ Given /^a stock plate with barcode "([^"]*)" exists$/ do |machine_barcode|
       :plate,
       name: 'A_TEST_STOCK_PLATE',
       well_count: 8,
-      sanger_barcode: Barcode.build_sanger_code39({ machine_barcode: machine_barcode }),
+      sanger_barcode: Barcode.build_sanger_code39({ machine_barcode: }),
       plate_purpose: PlatePurpose.find_by(name: 'Stock Plate')
     )
 end
@@ -105,7 +105,7 @@ Given /^the well with ID (\d+) is at position "([^"]+)" on the plate with ID (\d
   plate = Plate.find(plate_id)
   map = Map.where_description(position).where_plate_size(plate.size).where_plate_shape(plate.asset_shape).first or
     raise StandardError, "Could not find position #{position}"
-  Well.find(well_id).update!(plate: plate, map: map)
+  Well.find(well_id).update!(plate:, map:)
 end
 
 Given /^well "([^"]*)" is holded by plate "([^"]*)"$/ do |well_uuid, plate_uuid|
@@ -120,8 +120,7 @@ Then /^plate "([^"]*)" should have a purpose of "([^"]*)"$/ do |plate_barcode, p
 end
 
 Given /^a "([^"]+)" plate called "([^"]+)" exists$/ do |name, plate_name|
-  plate_purpose = PlatePurpose.find_by!(name: name)
-  # binding.pry
+  plate_purpose = PlatePurpose.find_by!(name:)
   plate_purpose.create!(name: plate_name)
 end
 
@@ -145,13 +144,13 @@ Given(
 end
 
 Given /^a "([^"]+)" plate called "([^"]+)" exists with barcode "([^"]+)"$/ do |name, plate_name, barcode|
-  plate_purpose = PlatePurpose.find_by!(name: name)
+  plate_purpose = PlatePurpose.find_by!(name:)
   step("the Baracoda barcode service returns \"#{barcode}\"")
   plate_purpose.create!(name: plate_name, barcode: barcode)
 end
 
 Given /^a "([^"]+)" plate called "([^"]+)" exists as a child of "([^"]+)"$/ do |name, plate_name, parent_name|
-  plate_purpose = PlatePurpose.find_by(name: name) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
+  plate_purpose = PlatePurpose.find_by(name:) or raise StandardError, "Cannot find plate purpose #{name.inspect}"
   parent = Plate.find_by(name: parent_name) or raise StandardError, "Cannot find parent plate #{parent_name.inspect}"
   AssetLink.create!(ancestor: parent, descendant: plate_purpose.create!(name: plate_name))
 end

@@ -36,7 +36,7 @@ describe 'Studies API', with: :api_v2 do
   end
 
   context 'with a study' do
-    let(:resource_model) { create :study }
+    let(:resource_model) { create(:study) }
 
     it 'sends an individual study' do
       api_get "#{base_endpoint}/#{resource_model.id}"

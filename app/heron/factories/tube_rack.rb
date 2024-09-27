@@ -50,7 +50,7 @@ module Heron
         return false unless valid?
 
         ActiveRecord::Base.transaction do
-          @tube_rack = ::TubeRack.create!(size: size, purpose: purpose)
+          @tube_rack = ::TubeRack.create!(size:, purpose:)
 
           Barcode.create!(labware: tube_rack, barcode: barcode, format: barcode_format)
 

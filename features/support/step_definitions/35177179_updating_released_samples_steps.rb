@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 Given /^the sample name "([^"]*)" has previously been released$/ do |name|
-  Sample.find_by(name: name).release
+  Sample.find_by(name:).release
 end
 
 When /^ignoring "([^"]+)" the XML submission for the sample "([^"]*)" should be:$/ do |key_regexp, name, serialized_xml|
-  sample = Sample.find_by(name: name) or raise StandardError, "Cannot find sample with name #{name.inspect}"
+  sample = Sample.find_by(name:) or raise StandardError, "Cannot find sample with name #{name.inspect}"
   accession_service = sample.accession_service
   accessionable_sample = Accessionable::Sample.new(sample)
   submission = Accessionable::Submission.new(accession_service, User.find_by(login: 'me'), accessionable_sample)

@@ -7,13 +7,7 @@ def create_request(request_type, study, project, asset, target_asset, additional
   request =
     FactoryBot.create(
       :request_with_submission,
-      additional_options.merge(
-        study: study,
-        project: project,
-        asset: asset,
-        target_asset: target_asset,
-        request_type: request_type
-      )
+      additional_options.merge(study:, project:, asset:, target_asset:, request_type:)
     )
   request.id = additional_options[:id] if additional_options.key?(:id) # Force ID hack!
 

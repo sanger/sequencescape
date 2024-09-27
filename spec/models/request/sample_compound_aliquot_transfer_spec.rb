@@ -5,23 +5,23 @@ require 'rails_helper'
 # Test for module to provide support to create a compound sample during the
 # sequencing request start from all the samples at source of the request
 RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
-  let(:samples) { create_list :sample, 3 }
-  let(:study1) { create :study }
-  let(:study2) { create :study }
-  let(:project1) { create :project }
-  let(:project2) { create :project }
-  let(:destination) { create :receptacle }
-  let(:source) { create :receptacle, aliquots: [aliquot1, aliquot2] }
-  let(:library_tube) { create :library_tube, receptacles: [source] }
+  let(:samples) { create_list(:sample, 3) }
+  let(:study1) { create(:study) }
+  let(:study2) { create(:study) }
+  let(:project1) { create(:project) }
+  let(:project2) { create(:project) }
+  let(:destination) { create(:receptacle) }
+  let(:source) { create(:receptacle, aliquots: [aliquot1, aliquot2]) }
+  let(:library_tube) { create(:library_tube, receptacles: [source]) }
   let(:sequencing_request) do
     create(:sequencing_request, asset: source, target_asset: destination, initial_study_id: study1.id)
   end
-  let(:tags) { create_list :tag, 3 }
+  let(:tags) { create_list(:tag, 3) }
 
   describe '#compound_samples_needed?' do
     context 'when number of aliquots is 1' do
-      let(:aliquot1) { create :aliquot, sample: samples[0], tag_id: 1, tag_depth: 1, project: project1 }
-      let(:source) { create :receptacle, aliquots: [aliquot1] }
+      let(:aliquot1) { create(:aliquot, sample: samples[0], tag_id: 1, tag_depth: 1, project: project1) }
+      let(:source) { create(:receptacle, aliquots: [aliquot1]) }
 
       it 'returns false' do
         expect(sequencing_request).not_to be_compound_samples_needed
@@ -29,8 +29,12 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
     end
 
     context 'when there is no tag clash, using tags 1 and 2' do
-      let(:aliquot1) { create :aliquot, sample: samples[0], tag_id: tags[0].id, tag2_id: tags[1].id, project: project1 }
-      let(:aliquot2) { create :aliquot, sample: samples[1], tag_id: tags[0].id, tag2_id: tags[2].id, project: project1 }
+      let(:aliquot1) do
+        create(:aliquot, sample: samples[0], tag_id: tags[0].id, tag2_id: tags[1].id, project: project1)
+      end
+      let(:aliquot2) do
+        create(:aliquot, sample: samples[1], tag_id: tags[0].id, tag2_id: tags[2].id, project: project1)
+      end
 
       it 'returns false' do
         expect(sequencing_request).not_to be_compound_samples_needed
@@ -39,10 +43,10 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
 
     context 'when there is a tag clash, using tags 1 and 2' do
       let(:aliquot1) do
-        create :aliquot, sample: samples[0], tag_id: tags[0].id, tag2_id: tags[1].id, tag_depth: 1, project: project1
+        create(:aliquot, sample: samples[0], tag_id: tags[0].id, tag2_id: tags[1].id, tag_depth: 1, project: project1)
       end
       let(:aliquot2) do
-        create :aliquot, sample: samples[1], tag_id: tags[0].id, tag2_id: tags[1].id, tag_depth: 2, project: project1
+        create(:aliquot, sample: samples[1], tag_id: tags[0].id, tag2_id: tags[1].id, tag_depth: 2, project: project1)
       end
 
       it 'returns true' do
@@ -53,26 +57,30 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
 
   describe '#transfer_aliquots_into_compound_sample_aliquots' do
     let(:aliquot1) do
-      create :aliquot,
-             sample: samples[0],
-             tag_id: tags[0].id,
-             tag2_id: tags[1].id,
-             tag_depth: 1,
-             study: study1,
-             project: project1,
-             library_type: 'Standard',
-             library_id: 54
+      create(
+        :aliquot,
+        sample: samples[0],
+        tag_id: tags[0].id,
+        tag2_id: tags[1].id,
+        tag_depth: 1,
+        study: study1,
+        project: project1,
+        library_type: 'Standard',
+        library_id: 54
+      )
     end
     let(:aliquot2) do
-      create :aliquot,
-             sample: samples[1],
-             tag_id: tags[0].id,
-             tag2_id: tags[1].id,
-             tag_depth: 2,
-             study: study1,
-             project: project1,
-             library_type: 'Standard',
-             library_id: 54
+      create(
+        :aliquot,
+        sample: samples[1],
+        tag_id: tags[0].id,
+        tag2_id: tags[1].id,
+        tag_depth: 2,
+        study: study1,
+        project: project1,
+        library_type: 'Standard',
+        library_id: 54
+      )
     end
 
     context 'when no compound sample exists with the component samples' do
@@ -219,31 +227,35 @@ RSpec.describe 'Request::SampleCompoundAliquotTransfer' do
     end
 
     context 'when there are two compound samples' do
-      let(:samples_extra) { create_list :sample, 2 }
+      let(:samples_extra) { create_list(:sample, 2) }
       let(:aliquot3) do
-        create :aliquot,
-               sample: samples_extra[0],
-               tag_id: tags_extra[0].id,
-               tag2_id: tags_extra[1].id,
-               tag_depth: 1,
-               study: study2,
-               project: project2,
-               library_type: 'Standard',
-               library_id: 55
+        create(
+          :aliquot,
+          sample: samples_extra[0],
+          tag_id: tags_extra[0].id,
+          tag2_id: tags_extra[1].id,
+          tag_depth: 1,
+          study: study2,
+          project: project2,
+          library_type: 'Standard',
+          library_id: 55
+        )
       end
       let(:aliquot4) do
-        create :aliquot,
-               sample: samples_extra[1],
-               tag_id: tags_extra[0].id,
-               tag2_id: tags_extra[1].id,
-               tag_depth: 2,
-               study: study2,
-               project: project2,
-               library_type: 'Standard',
-               library_id: 55
+        create(
+          :aliquot,
+          sample: samples_extra[1],
+          tag_id: tags_extra[0].id,
+          tag2_id: tags_extra[1].id,
+          tag_depth: 2,
+          study: study2,
+          project: project2,
+          library_type: 'Standard',
+          library_id: 55
+        )
       end
-      let(:tags_extra) { create_list :tag, 2 }
-      let(:source) { create :receptacle, aliquots: [aliquot1, aliquot2, aliquot3, aliquot4] }
+      let(:tags_extra) { create_list(:tag, 2) }
+      let(:source) { create(:receptacle, aliquots: [aliquot1, aliquot2, aliquot3, aliquot4]) }
 
       before { sequencing_request.update!(initial_study_id: nil) }
 

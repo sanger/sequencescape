@@ -9,8 +9,8 @@ class ProductCatalogueTest < ActiveSupport::TestCase
 
     context 'with single product behaviour' do
       setup do
-        @catalogue = create :single_product_catalogue
-        @product = create :product
+        @catalogue = create(:single_product_catalogue)
+        @product = create(:product)
         @catalogue.products << @product
       end
 
@@ -24,14 +24,14 @@ class ProductCatalogueTest < ActiveSupport::TestCase
     context 'with invalid behaviour' do
       should 'reject non-existant behaviours' do
         assert_raise(ActiveRecord::RecordInvalid) do
-          create :product_catalogue, selection_behaviour: 'InvalidSelectionBehaviour'
+          create(:product_catalogue, selection_behaviour: 'InvalidSelectionBehaviour')
         end
       end
     end
 
     context 'with global constants for behaviour' do
       should 'reject behaviours' do
-        assert_raise(ActiveRecord::RecordInvalid) { create :product_catalogue, selection_behaviour: 'File' }
+        assert_raise(ActiveRecord::RecordInvalid) { create(:product_catalogue, selection_behaviour: 'File') }
       end
     end
   end
@@ -40,7 +40,7 @@ class ProductCatalogueTest < ActiveSupport::TestCase
     setup do
       @catalogue_count = ProductCatalogue.count
 
-      @existing_product = create :product, name: 'pre_existing'
+      @existing_product = create(:product, name: 'pre_existing')
 
       @product_count = Product.count
       @product_product_catalogue_count = ProductProductCatalogue.count

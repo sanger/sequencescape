@@ -88,7 +88,7 @@ class Accessionable::Submission < Accessionable::Base
     end
 
     def build(markup)
-      markup.CONTACT(inform_on_error: inform_on_error, inform_on_status: inform_on_status, name: name)
+      markup.CONTACT(inform_on_error:, inform_on_status:, name:)
     end
   end
 end

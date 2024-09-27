@@ -11,7 +11,7 @@ module RecordLoader
     config_folder 'tag_sets'
 
     def create_or_update!(name, options)
-      TagSet.create_with(options).find_or_create_by!(name: name)
+      TagSet.create_with(options).find_or_create_by!(name:)
     end
   end
 end

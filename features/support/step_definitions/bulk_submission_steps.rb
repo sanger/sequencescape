@@ -21,12 +21,12 @@ When /^I have a plate '(.*)' that has a well in location 'A1' that contains the 
   plate = FactoryBot.create :plate, name: asset_name
   plate.wells.construct!
   well = plate.wells.first
-  well.aliquots.create!(sample: sample)
+  well.aliquots.create!(sample:)
 end
 
 When /^the plate '(.*)' has a barcode '(.*)'$/ do |name, barcode|
   bc = SBCF::SangerBarcode.new(prefix: 'DN', number: barcode).human_barcode
-  Plate.find_by(name: name).primary_barcode.update(barcode: bc)
+  Plate.find_by(name:).primary_barcode.update(barcode: bc)
 end
 
 When /^the sample '(.*)' belongs to study '(.*)'$/ do |sample_name, study_name|

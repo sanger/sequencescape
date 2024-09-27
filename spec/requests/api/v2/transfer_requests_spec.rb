@@ -25,7 +25,7 @@ describe 'TransferRequests API', with: :api_v2 do
   end
 
   context 'with a TransferRequest' do
-    let(:resource_model) { create :transfer_request_with_submission }
+    let(:resource_model) { create(:transfer_request_with_submission) }
 
     let(:payload) do
       {

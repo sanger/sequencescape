@@ -17,7 +17,7 @@ Given /^I have a reporter lot type for testing called "(.*?)"$/ do |name|
 end
 
 Given /^the UUID for the lot type "(.*?)" is "(.*?)"$/ do |name, uuid|
-  set_uuid_for(LotType.find_by(name: name), uuid)
+  set_uuid_for(LotType.find_by(name:), uuid)
 end
 
 Given /^the lot exists with the attributes:$/ do |table|
@@ -33,20 +33,20 @@ Given /^the lot exists with the attributes:$/ do |table|
 end
 
 Given /^the UUID for the lot with lot number "(.*?)" is "(.*?)"$/ do |lot_number, uuid|
-  set_uuid_for(Lot.find_by(lot_number: lot_number), uuid)
+  set_uuid_for(Lot.find_by(lot_number:), uuid)
 end
 
 Given /^lot "(.*?)" has (\d+) created qcables$/ do |lot_number, qcable_count|
-  lot = Lot.find_by(lot_number: lot_number)
+  lot = Lot.find_by(lot_number:)
   QcableCreator.create!(lot: lot, user: User.last, count: qcable_count.to_i)
 end
 
 Then /^the qcables in lot "(.*?)" should be "(.*?)"$/ do |lot_number, target_state|
-  Lot.find_by(lot_number: lot_number).qcables.each { |qcable| assert_equal target_state, qcable.state }
+  Lot.find_by(lot_number:).qcables.each { |qcable| assert_equal target_state, qcable.state }
 end
 
 Given /^all qcables in lot "(.*?)" are "(.*?)"$/ do |lot_number, state|
-  Lot.find_by(lot_number: lot_number).qcables.each { |qcable| qcable.update!(state: state) }
+  Lot.find_by(lot_number:).qcables.each { |qcable| qcable.update!(state:) }
 end
 
 Given /^I am set up for testing qcable ordering$/ do

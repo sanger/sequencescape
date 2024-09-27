@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Given /^the ((?:entire plate |inverted )?tag layout template) "([^"]+)" exists$/ do |style, name|
-  FactoryBot.create(style.tr(' ', '_'), name: name)
+  FactoryBot.create(style.tr(' ', '_'), name:)
 end
 
 Given /^the tag 2 layout template "([^"]+)" exists$/ do |name|
@@ -53,8 +53,7 @@ def plate_view_of_oligos(label, mapping) # rubocop:todo Metrics/AbcSize
 end
 
 def check_tag_layout(name, well_range, expected_wells_to_oligos) # rubocop:todo Metrics/MethodLength
-  plate = Plate.find_by(name: name) or raise StandardError, "Cannot find plate #{name.inspect}"
-
+  plate = Plate.find_by(name:) or raise StandardError, "Cannot find plate #{name.inspect}"
   wells_to_oligos =
     plate
       .wells
@@ -70,7 +69,7 @@ def check_tag_layout(name, well_range, expected_wells_to_oligos) # rubocop:todo 
   end
 end
 def check_tag2_layout(name, well_range, expected_wells_to_oligos) # rubocop:todo Metrics/MethodLength
-  plate = Plate.find_by(name: name) or raise StandardError, "Cannot find plate #{name.inspect}"
+  plate = Plate.find_by(name:) or raise StandardError, "Cannot find plate #{name.inspect}"
   wells_to_oligos =
     plate
       .wells
@@ -149,7 +148,7 @@ Given 'the wells for {plate_name} have been pooled to {plate_name} according to 
 end
 
 Given /^the tag group "(.*?)" exists$/ do |name|
-  TagGroup.create!(name: name)
+  TagGroup.create!(name:)
 end
 
 Given /^the tag group "(.*?)" has (\d+) tags$/ do |group, count|

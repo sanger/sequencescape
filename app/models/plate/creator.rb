@@ -239,7 +239,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # rubocop:enable Metrics/MethodLength
 
   def add_created_plates(source, destinations)
-    created_plates.push(source: source, destinations: destinations)
+    created_plates.push(source:, destinations:)
   end
 
   # rubocop:todo Metrics/MethodLength

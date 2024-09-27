@@ -27,10 +27,10 @@ def recursive_diff(h1, h2) # rubocop:todo Metrics/CyclomaticComplexity
 end
 # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
-def assert_hash_equal(h1, h2, *args)
+def assert_hash_equal(h1, h2, *)
   d1 = recursive_diff(h1, h2)
   d2 = recursive_diff(h2, h1)
-  assert_equal(d1, d2, *args)
+  assert_equal(d1, d2, *)
 end
 
 def walk_hash_structure(hash_data, &block)
@@ -46,10 +46,10 @@ def walk_hash_structure(hash_data, &block)
   end
 end
 
-def assert_json_equal(expected, received, &block)
+def assert_json_equal(expected, received, &)
   assert_hash_equal(
-    walk_hash_structure(decode_json(expected, 'Expected'), &block),
-    walk_hash_structure(decode_json(received, 'Received'), &block),
+    walk_hash_structure(decode_json(expected, 'Expected'), &),
+    walk_hash_structure(decode_json(received, 'Received'), &),
     'Differs when decoded'
   )
 end
@@ -64,7 +64,7 @@ Given /^no cookies are set for HTTP requests to the API$/ do
 end
 
 Given /^the WTSI single sign-on service recognises "([^"]+)" as "([^"]+)"$/ do |key, login|
-  User.find_or_create_by(login: login).update!(api_key: key)
+  User.find_or_create_by(login:).update!(api_key: key)
 end
 
 Given /^the WTSI single sign-on service does not recognise "([^"]+)"$/ do |cookie|
@@ -92,28 +92,28 @@ Given /^I am using the latest version of the API$/ do
   step("I am using version \"#{Core::Service::API_VERSION}\" of the API")
 end
 
-When %r{^I (GET|PUT|POST|DELETE) the API path "(\/[^"]*)"$} do |action, path|
+When %r{^I (GET|PUT|POST|DELETE) the API path "(/[^"]*)"$} do |action, path|
   api_request(action, path, nil)
 end
 
-When %r{^I (POST|PUT) the following JSON to the API path "(\/[^"]*)":$} do |action, path, serialized_json|
+When %r{^I (POST|PUT) the following JSON to the API path "(/[^"]*)":$} do |action, path, serialized_json|
   api_request(action, path, serialized_json)
 end
 
-When %r{^I GET the "([^"]+)" from the API path "(\/[^"]*)"$} do |content_type, path|
+When %r{^I GET the "([^"]+)" from the API path "(/[^"]*)"$} do |content_type, path|
   api_request('GET', path, nil) { |headers| headers.merge!('HTTP_ACCEPT' => content_type) }
 end
 
-When %r{^I (POST|PUT) the following "([^"]+)" to the API path "(\/[^"]*)":$} do |action, content_type, path, body|
+When %r{^I (POST|PUT) the following "([^"]+)" to the API path "(/[^"]*)":$} do |action, content_type, path, body|
   api_request(action, path, body) { |headers| headers.merge!('CONTENT_TYPE' => content_type) }
 end
 
-When %r{^I make an authorised (GET|DELETE) (?:(?:for|of) )?the API path "(\/[^"]*)"$} do |action, path|
+When %r{^I make an authorised (GET|DELETE) (?:(?:for|of) )?the API path "(/[^"]*)"$} do |action, path|
   api_request(action, path, nil) { |headers| headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = 'cucumber' }
 end
 
 # rubocop:todo Layout/LineLength
-When %r{^I make an authorised (POST|PUT) with the following JSON to the API path "(\/[^"]*)":$} do |action, path, serialized_json|
+When %r{^I make an authorised (POST|PUT) with the following JSON to the API path "(/[^"]*)":$} do |action, path, serialized_json|
   # rubocop:enable Layout/LineLength
   api_request(action, path, serialized_json) { |headers| headers['HTTP_X_SEQUENCESCAPE_CLIENT_ID'] = 'cucumber' }
 end
@@ -127,18 +127,18 @@ When /^I retrieve the JSON for all (studies|samples|requests)$/ do |model|
 end
 
 When /^I retrieve the JSON for all requests related to the (sample|library) tube "([^"]+)"$/ do |tube_type, name|
-  tube = "#{tube_type}_tube".classify.constantize.find_by(name: name) or
+  tube = "#{tube_type}_tube".classify.constantize.find_by(name:) or
     raise StandardError, "Cannot find #{tube_type} tube called #{name.inspect}"
   visit(url_for(controller: 'api/requests', action: 'index', "#{tube_type}_tube_id": tube.id, format: :json))
 end
 
 When /^I retrieve the JSON for the (sample|study) "([^"]+)"$/ do |model, name|
-  object = model.classify.constantize.find_by(name: name) or raise "Cannot find #{model} #{name.inspect}"
+  object = model.classify.constantize.find_by(name:) or raise "Cannot find #{model} #{name.inspect}"
   visit(url_for(controller: "api/#{model.pluralize}", action: 'show', id: object, format: :json))
 end
 
 When /^I retrieve the JSON for the last request in the study "([^"]+)"$/ do |name|
-  study = Study.find_by(name: name) or raise StandardError, "Cannot find the study #{name.inspect}"
+  study = Study.find_by(name:) or raise StandardError, "Cannot find the study #{name.inspect}"
   raise StandardError, "It appears there are no requests for study #{name.inspect}" if study.requests.empty?
 
   visit(url_for(controller: 'api/requests', action: 'show', id: study.requests.last, format: :json))
@@ -283,11 +283,11 @@ Given /^the well "([^"]+)" is a child of the well "([^"]+)"$/ do |child_name, pa
 end
 
 Given /^the sample "([^"]+)" is in (\d+) sample tubes? with sequential IDs starting at (\d+)$/ do |name, count, base_id|
-  sample = Sample.find_by(name: name) or raise StandardError, "Cannot find the sample #{name.inspect}"
+  sample = Sample.find_by(name:) or raise StandardError, "Cannot find the sample #{name.inspect}"
   (1..count.to_i).each do |index|
     FactoryBot
       .create(:empty_sample_tube, name: "#{name} sample tube #{index}", id: (base_id.to_i + index - 1))
-      .tap { |sample_tube| sample_tube.aliquots.create!(sample: sample) }
+      .tap { |sample_tube| sample_tube.aliquots.create!(sample:) }
   end
 end
 

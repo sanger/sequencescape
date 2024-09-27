@@ -28,7 +28,7 @@ describe 'Users API', with: :api_v2 do
         let(:swipecard_code) { '1234567' }
 
         before do
-          user.update(swipecard_code: swipecard_code)
+          user.update(swipecard_code:)
           api_get "#{base_endpoint}?filter[user_code]=#{swipecard_code}"
         end
 
@@ -76,7 +76,7 @@ describe 'Users API', with: :api_v2 do
   end
 
   context 'with a User' do
-    let(:resource_model) { create :user }
+    let(:resource_model) { create(:user) }
 
     describe '#get' do
       before { api_get "#{base_endpoint}/#{resource_model.id}" }
@@ -97,7 +97,7 @@ describe 'Users API', with: :api_v2 do
   end
 
   describe '#patch' do
-    let(:resource_model) { create :user }
+    let(:resource_model) { create(:user) }
     let(:payload) { { 'data' => { 'id' => resource_model.id, 'type' => 'users', 'attributes' => {} } } }
 
     it 'cannot find a route to the endpoint' do

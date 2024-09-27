@@ -92,7 +92,7 @@ class Transfer::BetweenPlateAndTubes < Transfer
     well_to_tubes.build(
       @transfers.map do |source, (destination, stock_wells)|
         tube_to_stock_wells[destination].concat(stock_wells)
-        { source: source, destination: destination }
+        { source:, destination: }
       end
     ).map(&:save!)
 

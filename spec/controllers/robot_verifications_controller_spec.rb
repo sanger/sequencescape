@@ -3,12 +3,12 @@
 require 'rails_helper'
 
 RSpec.describe RobotVerificationsController do
-  let(:user) { create :user, barcode: 'ID41440E', swipecard_code: '1234567' }
-  let(:batch) { create :batch, barcode: '6262' }
+  let(:user) { create(:user, barcode: 'ID41440E', swipecard_code: '1234567') }
+  let(:batch) { create(:batch, barcode: '6262') }
   let(:robot) do
-    create :robot_with_verification_behaviour, barcode: '1', number_of_sources: 4, number_of_destinations: 1
+    create(:robot_with_verification_behaviour, barcode: '1', number_of_sources: 4, number_of_destinations: 1)
   end
-  let(:plate) { create :plate, barcode: 'SQPD-142334' }
+  let(:plate) { create(:plate, barcode: 'SQPD-142334') }
 
   before { session[:user] = user.id }
 
@@ -65,11 +65,11 @@ RSpec.describe RobotVerificationsController do
 
     before do
       expected_layout[1].each_with_index do |(barcode, _sort_number), index|
-        source_plate = create :plate, barcode: barcode
+        source_plate = create(:plate, barcode:)
         position = Map.for_position_on_plate(index + 1, 96, source_plate.asset_shape).first
-        well = create :well, map: position, plate: source_plate
-        target_well = create :well, map: position, plate: plate
-        well_request = create :request, state: 'passed', asset: well, target_asset: target_well
+        well = create(:well, map: position, plate: source_plate)
+        target_well = create(:well, map: position, plate: plate)
+        well_request = create(:request, state: 'passed', asset: well, target_asset: target_well)
         batch.requests << well_request
       end
       robot.save
@@ -239,10 +239,10 @@ RSpec.describe RobotVerificationsController do
     end
 
     describe '#submission' do
-      let(:well) { create :well, plate: plate }
-      let(:well_request) { create :request, state: 'passed' }
-      let(:source_plate) { create :plate, barcode: 'SQPD-1234' }
-      let(:target_well) { create :well, plate: source_plate }
+      let(:well) { create(:well, plate:) }
+      let(:well_request) { create(:request, state: 'passed') }
+      let(:source_plate) { create(:plate, barcode: 'SQPD-1234') }
+      let(:target_well) { create(:well, plate: source_plate) }
 
       before do
         well_request.asset = well

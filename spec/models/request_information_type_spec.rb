@@ -1,21 +1,23 @@
 # frozen_string_literal: true
 
 RSpec.describe RequestInformationType do
-  subject(:request_information_type) { described_class.new(name: name, key: key, label: label, data_type: data_type) }
+  subject(:request_information_type) { described_class.new(name:, key:, label:, data_type:) }
 
   let(:label) { 'example' }
 
   describe '#value_for' do
     subject { request_information_type.value_for(request, batch) }
 
-    let(:batch) { create :batch }
+    let(:batch) { create(:batch) }
     let(:request) do
-      create :sequencing_request,
-             request_metadata_attributes: {
-               read_length: 76,
-               created_at: Date.parse('2021-03-01')
-             },
-             batch: batch
+      create(
+        :sequencing_request,
+        request_metadata_attributes: {
+          read_length: 76,
+          created_at: Date.parse('2021-03-01')
+        },
+        batch: batch
+      )
     end
 
     context 'when key is a request metadata' do
@@ -36,8 +38,8 @@ RSpec.describe RequestInformationType do
 
     context 'when key is an event' do
       before do
-        create :lab_event, descriptors: { 'My event' => 'old value' }, eventful: request, batch: batch
-        create :lab_event, descriptors: { 'My event' => 'new value' }, eventful: request, batch: batch
+        create(:lab_event, descriptors: { 'My event' => 'old value' }, eventful: request, batch: batch)
+        create(:lab_event, descriptors: { 'My event' => 'new value' }, eventful: request, batch: batch)
       end
 
       let(:name) { 'My event' }

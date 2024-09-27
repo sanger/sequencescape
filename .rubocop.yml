@@ -6,18 +6,14 @@ require:
   - rubocop-performance
   - rubocop-rails
   - rubocop-rspec
+  - rubocop-rspec_rails
+  - rubocop-capybara
+  - rubocop-factory_bot
 
-RSpec/AggregateExamples:
-  # Aggregate examples can be useful, but the cop gets into nasty battles with
-  # other Spec cops, and is only really of value in expensive tests.
-  Enabled: false
-# Added exclude because api and feature specs do not have a specific class.
-RSpec/DescribeClass:
-  Exclude:
-    - "spec/requests/**/*.rb"
-    - "spec/api/**/*.rb"
-    - "spec/features/**/*.rb"
-    - "spec/views/**/*.rb"
+inherit_mode:
+  merge:
+    - Exclude
+
 AllCops:
   NewCops: enable
   Exclude:
@@ -31,6 +27,18 @@ AllCops:
     - sbin/*
     - node_modules/**/*
     - tmp/**/*
+
+RSpec/AggregateExamples:
+  # Aggregate examples can be useful, but the cop gets into nasty battles with
+  # other Spec cops, and is only really of value in expensive tests.
+  Enabled: false
+# Added exclude because api and feature specs do not have a specific class.
+RSpec/DescribeClass:
+  Exclude:
+    - "spec/requests/**/*.rb"
+    - "spec/api/**/*.rb"
+    - "spec/features/**/*.rb"
+    - "spec/views/**/*.rb"
 
 Rails/SkipsModelValidations:
   Exclude:
@@ -48,6 +56,11 @@ Rails:
 Lint/AmbiguousRegexpLiteral:
   Exclude:
     - features/support/step_definitions/**/*
+
+# Only use shorthand hash syntax when all keys match the variables for better readability
+Style/HashSyntax:
+  EnforcedShorthandSyntax: consistent
+
 # Enforces 1234565789 as 123_456_789: While nice when dealing with actual big
 # numbers, we're more likely to see it shout at us about barcodes.
 Style/NumericLiterals:
@@ -154,7 +167,7 @@ Metrics/ClassLength:
   Exclude:
     - "spec/**/*"
     - "test/**/*"
-RSpec/Rails/AvoidSetupHook:
+RSpecRails/AvoidSetupHook:
   Exclude:
     - "test/**/*"
 
@@ -173,14 +186,19 @@ Rails/RedundantPresenceValidationOnBelongsTo:
 Rails/UniqueValidationWithoutIndex:
   Enabled: false
 
-# Disabling newly introduced cops until we have time to sort out the offenses
-FactoryBot/ConsistentParenthesesStyle:
+# Factory Bot
+FactoryBot/FactoryAssociationWithStrategy:
   Enabled: false
 
+# Capybara
+Capybara/ClickLinkOrButtonStyle:
+  Enabled: false
+
+# Disabling newly introduced cops until we have time to sort out the offenses
 Rails/I18nLocaleTexts: # new in 2.14
   Enabled: false
 
-RSpec/Rails/InferredSpecType: # new in 2.14
+RSpecRails/InferredSpecType: # new in 2.14
   Enabled: false
 
 Lint/NonAtomicFileOperation: # new in 1.31
@@ -202,12 +220,6 @@ RSpec/SpecFilePathFormat:
 RSpec/PendingWithoutReason:
   Enabled: false
 
-Capybara/ClickLinkOrButtonStyle:
-  Enabled: false
-
-FactoryBot/FactoryAssociationWithStrategy:
-  Enabled: false
-
 Performance/MapMethodChain:
   Enabled: false
 
@@ -216,20 +228,5 @@ Rails/ThreeStateBooleanColumn:
 
 RSpec/ExpectInHook:
   Enabled: false
-
 # New in Ruby 3.2 upgrade
-
-Naming/BlockForwarding:
-  Enabled: false
-
-Style/ArgumentsForwarding:
-  Enabled: false
-
-Style/ArrayIntersect:
-  Enabled: false
-
-Style/EmptyMethod:
-  Enabled: false
-
-Style/HashSyntax:
-  Enabled: false
+# Added to Rubocop Todo and handling from there

@@ -71,8 +71,7 @@ module ModelExtensions::Order
         end
       end
 
-      scope :that_submitted_asset_id,
-            ->(asset_id) { where(submitted_assets: { asset_id: asset_id }).joins(:submitted_assets) }
+      scope :that_submitted_asset_id, ->(asset_id) { where(submitted_assets: { asset_id: }).joins(:submitted_assets) }
 
       validate :extended_validation
       def extended_validation

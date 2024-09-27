@@ -48,7 +48,7 @@ RSpec.describe SequencescapeExcel::ConditionalFormatting, :sample_manifest, :sam
     end
 
     it 'update the style from a workbook' do
-      expect(conditional_formatting.update(worksheet: worksheet)).to be_styled
+      expect(conditional_formatting.update(worksheet:)).to be_styled
     end
 
     it '#to_h produces a hash of options' do
@@ -58,7 +58,7 @@ RSpec.describe SequencescapeExcel::ConditionalFormatting, :sample_manifest, :sam
     it 'duplicates correctly' do
       dup = conditional_formatting.dup
       expect(dup.formula).to be_nil
-      conditional_formatting.update(worksheet: worksheet)
+      conditional_formatting.update(worksheet:)
       expect(dup).not_to be_styled
     end
   end
@@ -66,7 +66,7 @@ RSpec.describe SequencescapeExcel::ConditionalFormatting, :sample_manifest, :sam
   context 'with formula' do
     let(:references) { build(:range).references }
     let(:formula) { { type: :len, operator: '<', operand: 333 } }
-    let(:conditional_formatting) { described_class.new(rule.merge(formula: formula)) }
+    let(:conditional_formatting) { described_class.new(rule.merge(formula:)) }
 
     it 'has a formula' do
       expect(conditional_formatting.formula).to eq(SequencescapeExcel::Formula.new(formula))
@@ -83,12 +83,12 @@ RSpec.describe SequencescapeExcel::ConditionalFormatting, :sample_manifest, :sam
     end
 
     it 'update the style from a worksheet' do
-      expect(conditional_formatting.update(references.merge(worksheet: worksheet))).to be_styled
+      expect(conditional_formatting.update(references.merge(worksheet:))).to be_styled
     end
 
     it 'duplicate correctly' do
       dup = conditional_formatting.dup
-      conditional_formatting.update(references.merge(worksheet: worksheet))
+      conditional_formatting.update(references.merge(worksheet:))
       expect(dup.options).not_to eq(conditional_formatting.options)
       expect(dup.formula).not_to eq(conditional_formatting.formula)
     end

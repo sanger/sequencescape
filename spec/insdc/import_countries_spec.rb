@@ -3,9 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Insdc::ImportCountries do
-  subject(:importer) do
-    described_class.new(ena_root: ena_root, sample_checklist: sample_checklist, priorities: priorities)
-  end
+  subject(:importer) { described_class.new(ena_root:, sample_checklist:, priorities:) }
 
   before do
     # The File api is used heavily internally, and we're going to be mocking it a
@@ -133,8 +131,8 @@ RSpec.describe Insdc::ImportCountries do
 
     context 'when the file is present' do
       before do
-        create :insdc_country, name: 'Historic Coldland'
-        create :insdc_country, name: 'East Westland'
+        create(:insdc_country, name: 'Historic Coldland')
+        create(:insdc_country, name: 'East Westland')
         allow(File).to receive(:exist?).with(cached_file_path).and_return(true)
         allow(File).to receive(:open).with(cached_file_path).and_yield(mock_response)
         importer.import

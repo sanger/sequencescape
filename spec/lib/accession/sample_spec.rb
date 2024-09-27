@@ -18,7 +18,7 @@ end
 RSpec.describe Accession::Sample, :accession, type: :model do
   let(:tag_list) { build(:standard_accession_tag_list) }
 
-  before { @country = create :insdc_country, name: 'Australia' }
+  before { @country = create(:insdc_country, name: 'Australia') }
 
   it 'is not sent for accessioning if the sample has already been accessioned' do
     sample =
@@ -41,7 +41,7 @@ RSpec.describe Accession::Sample, :accession, type: :model do
     expect(described_class.new(tag_list, sample)).not_to be_valid
   end
 
-  it "is not sent for accessioning if the sample doesn't have the required fields" do # rubocop:todo RSpec/ExampleLength
+  it "is not sent for accessioning if the sample doesn't have the required fields" do
     sample =
       create(
         :sample_for_accessioning_with_open_study,
