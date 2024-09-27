@@ -15,6 +15,11 @@ module Submission::ValidationsByTemplateName
   # submission template name.
   # If no match is found for the submission template name, no additional validations are performed.
   #
+  # Uses the following instance variables:
+  # csv_data_rows [Array<Array<String>>] The CSV data rows, where each row is an array of strings.
+  # headers [Array<String>] The headers of the CSV file, used to find the index of specific columns.
+  # errors [ActiveModel::Errors] The errors object to which validation errors are added.
+  #
   # @return [void]
   def apply_additional_validations_by_template_name
     # depending on the submission template type, call additional validations
@@ -34,10 +39,6 @@ module Submission::ValidationsByTemplateName
   # This method groups the rows in the CSV data by the study name and checks if the scrna core number of samples
   # per pool is the same for all rows within each study group. If inconsistencies are found, an error is added to
   # the errors collection.
-  #
-  # @param csv_data_rows [Array<Array<String>>] The CSV data rows, where each row is an array of strings.
-  # @param headers [Array<String>] The headers of the CSV file, used to find the index of specific columns.
-  # @param errors [ActiveModel::Errors] The errors object to which validation errors are added.
   #
   # @return [void]
   def validate_scrna_core_samples_per_pool
