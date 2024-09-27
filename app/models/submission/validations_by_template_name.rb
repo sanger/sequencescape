@@ -41,6 +41,7 @@ module Submission::ValidationsByTemplateName
   # the errors collection.
   #
   # @return [void]
+  # rubocop:disable Metrics/MethodLength
   def validate_scrna_core_samples_per_pool
     # Group rows by study name
     index_of_study_name = headers.index(HEADER_STUDY_NAME)
@@ -61,4 +62,6 @@ module Submission::ValidationsByTemplateName
       )
     end
   end
+
+  # rubocop:enable Metrics/MethodLength
 end
