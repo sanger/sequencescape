@@ -73,12 +73,12 @@ class CherrypickTask::ControlLocator
     # To avoid it, every num_plate=available_positions we start a new cycle with a new seed.
 
     placement_type = control_placement_type
-    raise StandardError, 'Control placement type is not set or is invalid' if placement_type.nil? || ["fixed", 
-    "random"].exclude?(placement_type)
+    if placement_type.nil? || %w[fixed random].exclude?(placement_type)
+      raise StandardError, 'Control placement type is not set or is invalid'
+    end
 
-    handle_control_placement_type(placement_type)
+    handle_control_placement_type(placement_type, num_plate)
   end
-
 
   private
 
@@ -110,7 +110,7 @@ class CherrypickTask::ControlLocator
     @control_source_plate.custom_metadatum_collection.metadata['control_placement_type']
   end
 
-  def handle_control_placement_type(placement_type)
+  def handle_control_placement_type(placement_type, num_plate)
     if placement_type == 'random'
       control_positions_for_plate(num_plate, random_positions_from_available(seed_for(num_plate)))
     else
@@ -138,7 +138,7 @@ class CherrypickTask::ControlLocator
 
   # The invalid and valid maps are hash maps to represent a plate that maps A1 -> 1, A2 -> 2, etc,
   # whereas the other map is the inverse of this, mapping 1 -> A1, 2 -> B1, etc.
-  
+
   def create_plate_maps
     rows = ('A'..'H').to_a
     columns = (1..12).to_a

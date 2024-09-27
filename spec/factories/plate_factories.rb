@@ -251,7 +251,7 @@ FactoryBot.define do
       custom_metadatum_collection.user = User.new(id: 1)
       custom_metadatum_collection.save!
       custom_metadatum.save!
-  
+
       plate.wells.each_with_index do |well, index|
         next if well.aliquots.empty?
 
