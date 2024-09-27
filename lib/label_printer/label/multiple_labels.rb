@@ -2,6 +2,8 @@
 module LabelPrinter
   module Label
     module MultipleLabels
+      attr_writer :count
+
       def labels
         return [] unless assets
 
