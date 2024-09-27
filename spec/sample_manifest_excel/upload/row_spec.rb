@@ -104,7 +104,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
 
   it 'is not valid without row number' do
     expect(described_class.new(number: 'one', data: data, columns: columns)).not_to be_valid
-    expect(described_class.new(data: data, columns: columns)).not_to be_valid
+    expect(described_class.new(data:, columns:)).not_to be_valid
   end
 
   it 'is not valid without some data' do
@@ -364,7 +364,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
     let(:library_tubes) { create_list(:empty_library_tube, 5) }
     let(:mx_library_tube) { create(:multiplexed_library_tube) }
     let(:tags) { SampleManifestExcel::Tags::ExampleData.new.take(0, 4) }
-    let(:manifest) { create :sample_manifest, asset_type: 'multiplexed_library' }
+    let(:manifest) { create(:sample_manifest, asset_type: 'multiplexed_library') }
 
     before do
       @rows = []
@@ -406,7 +406,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
     let(:library_tubes) { create_list(:tagged_library_tube, 5) }
     let(:mx_library_tube) { create(:multiplexed_library_tube) }
     let(:tags) { SampleManifestExcel::Tags::ExampleData.new.take(0, 4) }
-    let(:manifest) { create :sample_manifest, asset_type: 'library' }
+    let(:manifest) { create(:sample_manifest, asset_type: 'library') }
 
     before do
       @rows = []

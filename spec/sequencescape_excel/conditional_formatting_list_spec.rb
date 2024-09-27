@@ -9,7 +9,7 @@ RSpec.describe SequencescapeExcel::ConditionalFormattingList, :sample_manifest, 
   let(:rules) { load_file(folder, 'conditional_formattings') }
   let(:conditional_formatting_list) { described_class.new(rules) }
   let(:worksheet) { Axlsx::Workbook.new.add_worksheet }
-  let(:options) { build(:range).references.merge(worksheet: worksheet) }
+  let(:options) { build(:range).references.merge(worksheet:) }
 
   it 'must have the correct number of options' do
     expect(conditional_formatting_list.count).to eq(rules.length)

@@ -44,7 +44,7 @@ module StateChanger
 
     def generate_events_for(orders)
       orders.each do |order_id|
-        BroadcastEvent::LibraryStart.create!(seed: labware, user: user, properties: { order_id: order_id })
+        BroadcastEvent::LibraryStart.create!(seed: labware, user: user, properties: { order_id: })
       end
     end
 

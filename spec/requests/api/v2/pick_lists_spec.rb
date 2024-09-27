@@ -25,7 +25,7 @@ describe 'PickLists API', :pick_list, with: :api_v2 do
   end
 
   context 'with a PickList' do
-    let(:resource_model) { create :pick_list }
+    let(:resource_model) { create(:pick_list) }
     let(:payload) do
       {
         'data' => {
@@ -56,12 +56,12 @@ describe 'PickLists API', :pick_list, with: :api_v2 do
 
   describe 'POST' do
     before do
-      rt = create :cherrypick_request_type, key: 'cherrypick'
-      create :cherrypick_pipeline, request_type: rt
+      rt = create(:cherrypick_request_type, key: 'cherrypick')
+      create(:cherrypick_pipeline, request_type: rt)
     end
 
     context 'with pick_attributes' do
-      let(:wells) { create_list :untagged_well, 2 }
+      let(:wells) { create_list(:untagged_well, 2) }
 
       let(:payload) do
         {
@@ -85,8 +85,8 @@ describe 'PickLists API', :pick_list, with: :api_v2 do
     end
 
     context 'with labware_pick_attributes' do
-      let(:plate_1) { create :plate_with_untagged_wells, well_count: 1 }
-      let(:plate_2) { create :plate_with_untagged_wells, well_count: 2 }
+      let(:plate_1) { create(:plate_with_untagged_wells, well_count: 1) }
+      let(:plate_2) { create(:plate_with_untagged_wells, well_count: 2) }
 
       let(:payload) do
         {

@@ -1,20 +1,24 @@
 # frozen_string_literal: true
 
 # Control the defaults to use. Please remember to update sample_checklist if necessary
-INSDC_COUNTRIES_DEFAULTS = {
-  ena_root: 'https://www.ebi.ac.uk/ena/browser/api/xml/',
-  sample_checklist: 'ERC000011'
-}.freeze
+unless defined?(INSDC_COUNTRIES_DEFAULTS)
+  INSDC_COUNTRIES_DEFAULTS = {
+    ena_root: 'https://www.ebi.ac.uk/ena/browser/api/xml/',
+    sample_checklist: 'ERC000011'
+  }.freeze
+end
 
 # Sets the default priorities. Resisting the temptation to put this in a yaml file for now.
 # Higher priorities are sorted towards the top of the list
-INSDC_COUNTRIES_PRIORITIES = {
-  'not provided' => 2,
-  'United Kingdom' => 1,
-  'not applicable' => -1,
-  'not collected' => -1,
-  'restricted access' => -1
-}.freeze
+unless defined?(INSDC_COUNTRIES_PRIORITIES)
+  INSDC_COUNTRIES_PRIORITIES = {
+    'not provided' => 2,
+    'United Kingdom' => 1,
+    'not applicable' => -1,
+    'not collected' => -1,
+    'restricted access' => -1
+  }.freeze
+end
 
 namespace :insdc do
   namespace :countries do

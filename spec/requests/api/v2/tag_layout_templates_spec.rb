@@ -46,7 +46,7 @@ describe 'TagLayoutTemplates API', with: :api_v2 do
   end
 
   context 'with a TagLayoutTemplate' do
-    let(:resource_model) { create :tag_layout_template }
+    let(:resource_model) { create(:tag_layout_template) }
 
     describe '#get' do
       it 'responds with a success HTTP status code' do

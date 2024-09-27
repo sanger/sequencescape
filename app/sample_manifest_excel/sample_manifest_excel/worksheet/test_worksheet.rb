@@ -87,10 +87,10 @@ module SampleManifestExcel
         when /plate/
           FactoryBot.create(
             :pending_plate_sample_manifest,
-            num_plates: num_plates,
-            num_filled_wells_per_plate: num_filled_wells_per_plate,
-            num_rows_per_well: num_rows_per_well,
-            study: study
+            num_plates:,
+            num_filled_wells_per_plate:,
+            num_rows_per_well:,
+            study:
           )
         when /tube_library/, /tube_chromium_library/
           FactoryBot.create(:sample_manifest, asset_type: 'library', study: study)
@@ -236,7 +236,7 @@ module SampleManifestExcel
       # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
       def add_cell_data(column, row_num, partial) # rubocop:todo Metrics/CyclomaticComplexity
         if partial && empty_row?(row_num)
-          (data[column.name] || dynamic_attributes[row_num][column.name]) unless empty_columns.include?(column.name)
+          data[column.name] || dynamic_attributes[row_num][column.name] unless empty_columns.include?(column.name)
         elsif validation_errors.include?(:insert_size_from) && column.name == 'insert_size_from' &&
               row_num == computed_first_row
           nil

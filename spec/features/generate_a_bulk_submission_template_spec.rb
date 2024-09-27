@@ -3,13 +3,13 @@
 require 'rails_helper'
 
 describe 'Generate a bulk submission spreadsheet', :bulk_submission_excel, :js do
-  let!(:user) { create :user }
+  let!(:user) { create(:user) }
   let!(:plate) { create(:plate_with_untagged_wells, well_count: 30) }
 
   # We only use two wells of out partial plate in our submission. However we are generating 13
   # to ensure we are only using the specified well. The other two will be ignored.
   let!(:partial_plate) { create(:plate_with_untagged_wells, well_count: 13) }
-  let!(:submission_template) { create :library_and_sequencing_template }
+  let!(:submission_template) { create(:library_and_sequencing_template) }
 
   let(:iso_date) { Time.current.utc.strftime('%Y%m%d') }
   let(:filename) { "#{plate.human_barcode}_to_#{partial_plate.human_barcode}_#{iso_date}_#{user.login}.xlsx" }
@@ -37,8 +37,8 @@ describe 'Generate a bulk submission spreadsheet', :bulk_submission_excel, :js d
   end
 
   context 'with a primer panel submission' do
-    let!(:submission_template) { create :heron_library_and_sequencing_template }
-    let!(:primer_panel) { create :primer_panel }
+    let!(:submission_template) { create(:heron_library_and_sequencing_template) }
+    let!(:primer_panel) { create(:primer_panel) }
 
     it 'populates the primer panel column' do
       # Regression test for https://github.com/sanger/sequencescape/issues/2582
@@ -58,8 +58,8 @@ describe 'Generate a bulk submission spreadsheet', :bulk_submission_excel, :js d
   end
 
   context 'with a bait_library submission' do
-    let!(:submission_template) { create :isc_library_and_sequencing_template }
-    let!(:bait_library) { create :bait_library }
+    let!(:submission_template) { create(:isc_library_and_sequencing_template) }
+    let!(:bait_library) { create(:bait_library) }
 
     it 'populates the primer panel column' do
       # Regression test for https://github.com/sanger/sequencescape/issues/2582

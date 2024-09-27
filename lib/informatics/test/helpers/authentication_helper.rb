@@ -40,8 +40,8 @@ module AuthenticatedTestHelper
     assert_equal initial_value + difference, object.send(method), "#{object}##{method}"
   end
 
-  def assert_no_difference(object, method, &block)
-    assert_difference object, method, 0, &block
+  def assert_no_difference(object, method, &)
+    assert_difference(object, method, 0, &)
   end
 
   # Assert the block redirects to the login
@@ -81,10 +81,10 @@ class BaseLoginProxy
     raise NotImplementedError
   end
 
-  def method_missing(method, *args)
+  def method_missing(method, *)
     @controller.reset!
     authenticate
-    @controller.send(method, *args)
+    @controller.send(method, *)
     check
   end
 end

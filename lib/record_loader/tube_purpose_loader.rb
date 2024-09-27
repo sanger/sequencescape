@@ -11,7 +11,7 @@ module RecordLoader
     config_folder 'tube_purposes'
 
     def create_or_update!(name, options)
-      Tube::Purpose.create_with(options).find_or_create_by!(name: name)
+      Tube::Purpose.create_with(options).find_or_create_by!(name:)
     end
   end
 end

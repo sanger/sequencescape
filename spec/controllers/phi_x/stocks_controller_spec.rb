@@ -4,8 +4,8 @@ require 'rails_helper'
 
 RSpec.describe PhiX::StocksController, :phi_x do
   describe 'POST create' do
-    let(:current_user) { create :user }
-    let(:study) { create :study }
+    let(:current_user) { create(:user) }
+    let(:study) { create(:study) }
 
     before { post :create, params: { phi_x_stock: form_parameters }, session: { user: current_user.id } }
 

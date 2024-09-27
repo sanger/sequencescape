@@ -19,6 +19,6 @@ module ModelExtensions::Sample
   end
 
   def sample_reference_genome_name=(name)
-    sample_metadata.reference_genome = ReferenceGenome.find_by(name: name)
+    sample_metadata.reference_genome = ReferenceGenome.find_by(name:)
   end
 end

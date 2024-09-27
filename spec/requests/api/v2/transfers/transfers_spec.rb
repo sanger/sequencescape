@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
-require './spec/requests/api/v2/shared_examples/invalid_post_requests'
+require './spec/requests/api/v2/shared_examples/post_requests'
 
 describe 'Transfer API', with: :api_v2 do
   let(:base_endpoint) { '/api/v2/transfers/transfers' }
@@ -27,7 +27,7 @@ describe 'Transfer API', with: :api_v2 do
 
     describe '#get Transfer by ID' do
       context 'with all relationships' do
-        let(:transfer) { create :transfer_between_plates }
+        let(:transfer) { create(:transfer_between_plates) }
 
         before { api_get "#{base_endpoint}/#{transfer.id}" }
 
@@ -51,7 +51,7 @@ describe 'Transfer API', with: :api_v2 do
 
       # Some old data may not have a User relationship even though it's required for new records.
       context 'without a User relationship' do
-        let(:transfer) { create :transfer_between_plates }
+        let(:transfer) { create(:transfer_between_plates) }
 
         before do
           # We need to remove the user relationship without invoking validations.
@@ -165,23 +165,23 @@ describe 'Transfer API', with: :api_v2 do
 
       context 'without user_uuid' do
         let(:attribute_to_remove) { 'user_uuid' }
-        let(:missing_attribute) { 'user' }
+        let(:error_detail_message) { "user - can't be blank" }
 
-        it_behaves_like 'a POST request with a missing attribute'
+        it_behaves_like 'an unprocessable POST request with a specific error'
       end
 
       context 'without source_uuid' do
         let(:attribute_to_remove) { 'source_uuid' }
-        let(:missing_attribute) { 'source' }
+        let(:error_detail_message) { "source - can't be blank" }
 
-        it_behaves_like 'a POST request with a missing attribute'
+        it_behaves_like 'an unprocessable POST request with a specific error'
       end
 
       context 'without destination_uuid' do
         let(:attribute_to_remove) { 'destination_uuid' }
-        let(:missing_attribute) { 'destination' }
+        let(:error_detail_message) { "destination - can't be blank" }
 
-        it_behaves_like 'a POST request with a missing attribute'
+        it_behaves_like 'an unprocessable POST request with a specific error'
       end
     end
 

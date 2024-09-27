@@ -7,7 +7,7 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
     should validate_presence_of :product_catalogue
 
     setup do
-      @template = FactoryBot.build :submission_template
+      @template = FactoryBot.build(:submission_template)
       @product = create(:product)
       @template.product_catalogue.products << @product
     end
@@ -31,9 +31,9 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
 
     context 'without input_field_infos' do
       setup do
-        @library_type = create :library_type
-        @test_request_typ_b = create :library_creation_request_type, :with_library_types, library_type: @library_type
-        @test_request_type = create :sequencing_request_type
+        @library_type = create(:library_type)
+        @test_request_typ_b = create(:library_creation_request_type, :with_library_types, library_type: @library_type)
+        @test_request_type = create(:sequencing_request_type)
         @order.request_types = [@test_request_typ_b, @test_request_type]
         @order.request_type_ids_list = [[@test_request_typ_b.id], [@test_request_type.id]]
       end

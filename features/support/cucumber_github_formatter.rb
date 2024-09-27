@@ -3,8 +3,8 @@
 # This mostly comes from https://github.com/duderman/cucumber_github_formatter
 # but we patch puts to ensure we can use it with the progress formatter
 module CucumberGithubFormatter::Patch
-  def puts(*args)
-    super('', *args)
+  def puts(*)
+    super('', *)
   end
 end
 

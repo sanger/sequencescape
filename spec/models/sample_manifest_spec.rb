@@ -6,12 +6,12 @@ require 'rails_helper'
 # result in repeatedly indenting them to the level of the last call in the previous chain
 
 RSpec.describe SampleManifest, :sample_manifest do
-  let(:user) { create :user }
-  let(:study) { create :study }
+  let(:user) { create(:user) }
+  let(:study) { create(:study) }
 
   describe '#default_filename' do
     let(:date) { Date.parse('25/10/2018') }
-    let(:manifest) { create :sample_manifest, study: study, created_at: date }
+    let(:manifest) { create(:sample_manifest, study: study, created_at: date) }
 
     it 'includes the information requested' do
       expect(manifest.default_filename).to eq("#{study.id}stdy_manifest_#{manifest.id}_251018")
@@ -19,7 +19,7 @@ RSpec.describe SampleManifest, :sample_manifest do
   end
 
   describe '#generate' do
-    let(:manifest) { create :sample_manifest, study: study, count: count, asset_type: asset_type, purpose: purpose }
+    let(:manifest) { create(:sample_manifest, study:, count:, asset_type:, purpose:) }
     let(:purpose) { nil }
     let(:first_plate_barcode) { build(:plate_barcode) }
     let(:second_plate_barcode) { build(:plate_barcode) }
@@ -81,7 +81,7 @@ RSpec.describe SampleManifest, :sample_manifest do
       end
 
       context 'with a custom purpose' do
-        let(:purpose) { create :plate_purpose, size: 2 }
+        let(:purpose) { create(:plate_purpose, size: 2) }
         let(:count) { 1 }
 
         before { manifest.generate }
@@ -140,7 +140,7 @@ RSpec.describe SampleManifest, :sample_manifest do
       end
 
       context 'with a custom purpose' do
-        let(:purpose) { create :plate_purpose, size: 2 }
+        let(:purpose) { create(:plate_purpose, size: 2) }
         let(:count) { 1 }
 
         before { manifest.generate }
@@ -152,7 +152,7 @@ RSpec.describe SampleManifest, :sample_manifest do
     end
 
     context 'with no rapid generation' do
-      let(:manifest) { create :sample_manifest, study: study }
+      let(:manifest) { create(:sample_manifest, study:) }
 
       it 'adds created broadcast event when sample manifest is created' do
         expect { manifest.generate }.to change(BroadcastEvent::SampleManifestCreated, :count).by(1)
@@ -329,7 +329,7 @@ RSpec.describe SampleManifest, :sample_manifest do
 
   describe '#updated_by!' do
     let(:plate_behaviour_core) { SampleManifest::PlateBehaviour::Core.new(described_class.new) }
-    let(:well_with_plate) { create :well_with_sample_and_plate }
+    let(:well_with_plate) { create(:well_with_sample_and_plate) }
 
     it 'adds an event to the plate' do
       plate_behaviour_core.updated_by!(user, [well_with_plate.samples.first])
@@ -358,10 +358,12 @@ RSpec.describe SampleManifest, :sample_manifest do
 
   describe '#pools' do
     let(:manifest) do
-      create :plate_sample_manifest_with_manifest_assets,
-             study: study,
-             asset_type: 'plate',
-             num_samples_per_well: num_samples_per_well
+      create(
+        :plate_sample_manifest_with_manifest_assets,
+        study: study,
+        asset_type: 'plate',
+        num_samples_per_well: num_samples_per_well
+      )
     end
 
     context 'when there is only one sample per well' do

@@ -51,10 +51,10 @@ RSpec.describe Batch do
   describe '::for_user' do
     subject(:batch_for_user) { described_class.for_user(query) }
 
-    let(:user) { create :user }
-    let!(:owned_batch) { create :batch, user: user }
-    let!(:assigned_batch) { create :batch, assignee: user }
-    let!(:other_batch) { create :batch }
+    let(:user) { create(:user) }
+    let!(:owned_batch) { create(:batch, user:) }
+    let!(:assigned_batch) { create(:batch, assignee: user) }
+    let!(:other_batch) { create(:batch) }
 
     context 'with a user' do
       let(:query) { user }
@@ -79,8 +79,8 @@ RSpec.describe Batch do
 
   describe '::add_dynamic_validations' do
     # Specific validator tests can be found in spec/validators
-    let(:pipeline) { create :pipeline, validator_class_name: 'TestPipelineValidator' }
-    let(:batch) { described_class.new pipeline: pipeline }
+    let(:pipeline) { create(:pipeline, validator_class_name: 'TestPipelineValidator') }
+    let(:batch) { described_class.new pipeline: }
 
     it 'fails validation when dynamic validations fail' do
       stub_const(

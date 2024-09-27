@@ -14,8 +14,7 @@ class Plate::SampleTubeFactory < SimpleDelegator
 
   def create_sample_tubes_and_print_barcodes(barcode_printer)
     sample_tubes = create_sample_tubes
-    print_job =
-      LabelPrinter::PrintJob.new(barcode_printer.name, LabelPrinter::Label::PlateToTubes, sample_tubes: sample_tubes)
+    print_job = LabelPrinter::PrintJob.new(barcode_printer.name, LabelPrinter::Label::PlateToTubes, sample_tubes:)
     print_job.execute
 
     sample_tubes

@@ -17,8 +17,8 @@ class OwnerTest < ActionController::TestCase
       @barcode_printer.stubs(:each).returns(@barcode_printer)
       @barcode_printer.stubs(:blank?).returns(true)
 
-      @user = create :user
-      @parent_plate = create :plate
+      @user = create(:user)
+      @parent_plate = create(:plate)
 
       @pc_event = PlateCreation.create(user: @user, parent: @parent_plate, child_purpose: create(:plate_purpose))
       @child_plate = @pc_event.child
@@ -30,7 +30,7 @@ class OwnerTest < ActionController::TestCase
     end
 
     should 'be updated when stuff happens' do
-      @user2 = create :user
+      @user2 = create(:user)
       @tf_event =
         Transfer::BetweenPlates.create!(
           source: @parent_plate,

@@ -12,8 +12,8 @@ class Role < ApplicationRecord
 
   validates :name, presence: true
   scope :general_roles, -> { where(authorizable_type: nil) }
-  scope :named, ->(name) { where(name: name) }
-  scope :authorizing, ->(authorizable) { where(authorizable: authorizable) if authorizable }
+  scope :named, ->(name) { where(name:) }
+  scope :authorizing, ->(authorizable) { where(authorizable:) if authorizable }
 
   after_destroy :touch_authorizable
 

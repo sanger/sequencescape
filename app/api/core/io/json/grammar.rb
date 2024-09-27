@@ -100,10 +100,10 @@ module Core::Io::Json::Grammar
       end
     end
 
-    def rooted_json(stream, nested, &block)
+    def rooted_json(stream, nested, &)
       return yield(stream) if nested
 
-      stream.block(json_root, &block)
+      stream.block(json_root, &)
     end
     private :rooted_json
 

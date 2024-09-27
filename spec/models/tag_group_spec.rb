@@ -52,10 +52,10 @@ RSpec.describe TagGroup do
   describe '#adapter_type_name' do
     subject { tag_group.adapter_type_name }
 
-    let(:tag_group) { build_stubbed :tag_group, adapter_type: adapter_type }
+    let(:tag_group) { build_stubbed(:tag_group, adapter_type:) }
 
     context 'when an adapter type is specified' do
-      let(:adapter_type) { build_stubbed :adapter_type, name: 'name' }
+      let(:adapter_type) { build_stubbed(:adapter_type, name: 'name') }
 
       it { is_expected.to eq 'name' }
     end
@@ -69,7 +69,7 @@ RSpec.describe TagGroup do
 
   describe '#by_adaptor_type' do
     let!(:adapter_type) { create(:adapter_type, name: 'test_adapter') }
-    let!(:tag_group) { create(:tag_group, adapter_type: adapter_type) }
+    let!(:tag_group) { create(:tag_group, adapter_type:) }
 
     context 'a tag group' do
       it 'is selected when the scope adapter name matches' do

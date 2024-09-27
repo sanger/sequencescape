@@ -2,7 +2,7 @@
 require 'rails_helper'
 
 RSpec.describe 'QcFiles' do
-  let(:authorised_app) { create :api_application }
+  let(:authorised_app) { create(:api_application) }
 
   describe 'create qc file' do
     let(:filename) { Rails.root.join('spec/data/parsers/pbmc_count.csv').expand_path }
@@ -18,7 +18,7 @@ RSpec.describe 'QcFiles' do
         'HTTP_COOKIE' => ''
       }
 
-      post "/api/1/#{plate.uuid}/qc_files", params: file.read, headers: headers
+      post("/api/1/#{plate.uuid}/qc_files", params: file.read, headers: headers)
 
       expect(response).to have_http_status(:success)
 

@@ -32,7 +32,7 @@ RSpec.describe RecordLoader::PlatePurposeLoader, :loader, type: :model do
 
     context 'with a pre-existing plate' do
       before do
-        create :plate_purpose, name: created_purposes.first
+        create(:plate_purpose, name: created_purposes.first)
         subject.create! # rubocop:todo RSpec/NamedSubject
       end
 

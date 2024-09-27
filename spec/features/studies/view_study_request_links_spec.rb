@@ -3,10 +3,10 @@
 require 'rails_helper'
 
 describe 'View study properties' do
-  let(:user) { create :admin }
+  let(:user) { create(:admin) }
   let(:study) { create(:study, name: 'Study 3871492') }
   let(:sample) { create(:sample, name: 'sample_1-3871492') }
-  let(:sequencing_request_type) { create :sequencing_request_type }
+  let(:sequencing_request_type) { create(:sequencing_request_type) }
   let(:single_request) do
     create(
       :sequencing_request,
@@ -17,7 +17,7 @@ describe 'View study properties' do
     )
   end
   let(:library_tube) { create(:library_tube, samples: [sample], study: study) }
-  let(:sample_tube) { create(:sample_tube, sample: sample, study: study) }
+  let(:sample_tube) { create(:sample_tube, sample:, study:) }
 
   before do
     user
@@ -38,7 +38,7 @@ describe 'View study properties' do
 
   it 'No links to absent requests', :js do
     click_link sequencing_request_type.name
-    expect(page).not_to have_link(title: "#{library_tube.human_barcode} started")
+    expect(page).to have_no_link(title: "#{library_tube.human_barcode} started")
   end
 
   it 'Single requests link directly to the request', :js do
@@ -65,7 +65,7 @@ describe 'View study properties' do
     select('Library tube', from: 'Filter by')
     expect(page).to have_text 'Currently showing Library tube'
     within '#summary' do
-      expect(page).not_to have_text sample_tube.name
+      expect(page).to have_no_text sample_tube.name
       expect(page).to have_text library_tube.name
     end
   end

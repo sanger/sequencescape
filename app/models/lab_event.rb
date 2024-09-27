@@ -35,7 +35,7 @@ class LabEvent < ApplicationRecord
   end
 
   def add_new_descriptor(name, value)
-    add_descriptor Descriptor.new(name: name, value: value)
+    add_descriptor Descriptor.new(name:, value:)
   end
 
   def generate_broadcast_event

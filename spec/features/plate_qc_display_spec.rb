@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe 'Plate QC display' do
-  let(:user) { create :user, email: 'login@example.com' }
+  let(:user) { create(:user, email: 'login@example.com') }
 
   describe 'with no QC results' do
     let!(:plate) { create(:plate, sample_count: 3) }
@@ -49,7 +49,7 @@ describe 'Plate QC display' do
       %w[concentration volume quantity_in_nano_grams loci_passed rin].each do |qc_result|
         within("##{qc_result}") do
           plate.wells.each_with_index do |well, index|
-            expect(page).to have_selector("tr[#{1 + index}]/td[2]", text: well.qc_result_for(qc_result))
+            expect(page).to have_css("tr[#{1 + index}]/td[2]", text: well.qc_result_for(qc_result))
           end
         end
       end

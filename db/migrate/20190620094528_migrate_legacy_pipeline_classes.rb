@@ -30,10 +30,10 @@ class MigrateLegacyPipelineClasses < ActiveRecord::Migration[5.1]
       ['Strip Tube Creation', 'StripTubeCreationPipeline'],
       ['HiSeq X PE (spiked in controls) from strip-tubes', 'UnrepeatableSequencingPipeline']
     ].each do |name, sti_type|
-      pipeline = Pipeline.find_by(name: name)
+      pipeline = Pipeline.find_by(name:)
       next if pipeline.nil?
 
-      pipeline.update!(sti_type: sti_type)
+      pipeline.update!(sti_type:)
     end
   end
 end

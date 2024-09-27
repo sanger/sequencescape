@@ -11,7 +11,7 @@ FactoryBot.define do
   end
 
   factory :labware do
-    name { generate :asset_name }
+    name { generate(:asset_name) }
   end
 
   factory :plate_creator_purpose, class: 'Plate::Creator::PurposeRelationship' do |_t|
@@ -20,7 +20,7 @@ FactoryBot.define do
   end
 
   factory :plate_creator, class: 'Plate::Creator' do
-    name { generate :plate_creator_name }
+    name { generate(:plate_creator_name) }
   end
 
   factory :control do
@@ -48,7 +48,7 @@ FactoryBot.define do
   end
 
   factory :pipeline do
-    name { generate :pipeline_name }
+    name { generate(:pipeline_name) }
     active { true }
 
     transient do
@@ -77,7 +77,7 @@ FactoryBot.define do
   factory :cherrypick_pipeline do
     transient { request_type { build(:cherrypick_request_type) } }
 
-    name { generate :pipeline_name }
+    name { generate(:pipeline_name) }
     active { true }
     max_size { 3000 }
     summary { true }
@@ -92,7 +92,7 @@ FactoryBot.define do
   end
 
   factory :fluidigm_pipeline, class: 'CherrypickPipeline' do
-    name { generate :pipeline_name }
+    name { generate(:pipeline_name) }
     active { true }
     max_size { 192 }
     sorter { 11 }
@@ -107,10 +107,10 @@ FactoryBot.define do
   end
 
   factory :sequencing_pipeline do
-    name { generate :pipeline_name }
+    name { generate(:pipeline_name) }
     active { true }
 
-    workflow { build :lab_workflow_for_pipeline }
+    workflow { build(:lab_workflow_for_pipeline) }
 
     #   association(:workflow, factory: :lab_workflow_for_pipeline)
     after(:build) do |pipeline|
@@ -128,7 +128,7 @@ FactoryBot.define do
           per_item: true,
           descriptor_attributes: [{ kind: 'Text', sorter: 0, name: 'Concentration' }]
         )
-        create(:add_spiked_in_control_task, workflow: workflow)
+        create(:add_spiked_in_control_task, workflow:)
         create(
           :set_descriptors_task,
           workflow: workflow,
@@ -153,12 +153,12 @@ FactoryBot.define do
   end
 
   factory :pac_bio_sequencing_pipeline do
-    name { FactoryBot.generate :pipeline_name }
+    name { FactoryBot.generate(:pipeline_name) }
     active { true }
 
     #  association(:workflow, factory: :lab_workflow_for_pipeline)
     control_request_type_id { -1 }
-    workflow { build :lab_workflow_for_pipeline }
+    workflow { build(:lab_workflow_for_pipeline) }
 
     after(:build) { |pipeline| pipeline.request_types << create(:pac_bio_sequencing_request_type) }
   end
@@ -191,7 +191,7 @@ FactoryBot.define do
   end
 
   factory :workflow, aliases: [:lab_workflow] do
-    name { FactoryBot.generate :lab_workflow_name }
+    name { FactoryBot.generate(:lab_workflow_name) }
     item_limit { 2 }
     locale { 'Internal' }
 
@@ -200,29 +200,25 @@ FactoryBot.define do
   end
 
   factory :lab_workflow_for_pipeline, class: 'Workflow' do
-    name { generate :lab_workflow_name }
+    name { generate(:lab_workflow_name) }
     item_limit { 2 }
     locale { 'Internal' }
 
-    after(:build) { |workflow| workflow.pipeline = build(:pipeline, workflow: workflow) unless workflow.pipeline }
+    after(:build) { |workflow| workflow.pipeline = build(:pipeline, workflow:) unless workflow.pipeline }
   end
 
   factory :fluidigm_pipeline_workflow, class: 'Workflow' do
-    name { generate :lab_workflow_name }
+    name { generate(:lab_workflow_name) }
 
-    after(:build) do |workflow|
-      workflow.pipeline = build(:fluidigm_pipeline, workflow: workflow) unless workflow.pipeline
-    end
+    after(:build) { |workflow| workflow.pipeline = build(:fluidigm_pipeline, workflow:) unless workflow.pipeline }
 
     tasks { [build(:fluidigm_template_task, workflow: nil), build(:cherrypick_task, workflow: nil)] }
   end
 
   factory :cherrypick_pipeline_workflow, class: 'Workflow' do
-    name { generate :lab_workflow_name }
+    name { generate(:lab_workflow_name) }
 
-    after(:build) do |workflow|
-      workflow.pipeline = build(:cherrypick_pipeline, workflow: workflow) unless workflow.pipeline
-    end
+    after(:build) { |workflow| workflow.pipeline = build(:cherrypick_pipeline, workflow:) unless workflow.pipeline }
 
     tasks { [build(:plate_template_task, workflow: nil), build(:cherrypick_task, workflow: nil)] }
   end

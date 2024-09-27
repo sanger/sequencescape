@@ -2,12 +2,12 @@
 
 FactoryBot.define do
   factory :sample do
-    name { generate :sample_name }
+    name { generate(:sample_name) }
 
     factory :sample_with_well do
       sequence(:sanger_sample_id, &:to_s)
 
-      after(:build) { |sample, _evaluator| sample.wells = create_list(:well_with_sample_and_plate, 1, sample: sample) }
+      after(:build) { |sample, _evaluator| sample.wells = create_list(:well_with_sample_and_plate, 1, sample:) }
     end
 
     factory :sample_with_gender do

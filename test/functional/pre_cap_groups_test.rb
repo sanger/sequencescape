@@ -16,8 +16,8 @@ class PreCapGroupsTest < ActiveSupport::TestCase
 
   context 'A plate' do
     setup do
-      @plate = create :pooling_plate
-      @pools = create_list :pre_capture_pool, 3
+      @plate = create(:pooling_plate)
+      @pools = create_list(:pre_capture_pool, 3)
     end
 
     context 'with two distinct pools' do
@@ -45,7 +45,7 @@ class PreCapGroupsTest < ActiveSupport::TestCase
 
       context 'when transfers are created' do
         setup do
-          @target_plate = create :plate_with_empty_wells
+          @target_plate = create(:plate_with_empty_wells)
           @transfer =
             Transfer::BetweenPlates.create!(
               source: @plate.reload,
@@ -114,12 +114,12 @@ class PreCapGroupsTest < ActiveSupport::TestCase
     # We need to ensure we still see all pools, regardless of which
     # plate they were made on.
     setup do
-      @plate = create :input_plate_for_pooling
-      @test_plate = create :non_stock_pooling_plate
-      @pools = create_list :pre_capture_pool, 3
+      @plate = create(:input_plate_for_pooling)
+      @test_plate = create(:non_stock_pooling_plate)
+      @pools = create_list(:pre_capture_pool, 3)
       with_pools(%w[A1 B1 C1], %w[D1 E1 F1])
       transfers = @test_plate.wells.each_with_object({}) { |w, hash| hash[w.map_description] = w.map_description }
-      create :transfer_between_plates, transfers: transfers, source: @plate, destination: @test_plate
+      create(:transfer_between_plates, transfers: transfers, source: @plate, destination: @test_plate)
     end
 
     should 'report the pools from the stock plate' do

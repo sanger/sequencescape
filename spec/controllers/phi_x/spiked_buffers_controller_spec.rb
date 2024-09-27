@@ -4,8 +4,8 @@ require 'rails_helper'
 
 RSpec.describe PhiX::SpikedBuffersController, :phi_x do
   describe 'POST create' do
-    let(:current_user) { create :user }
-    let(:library_tube) { create :phi_x_stock_tube, name: 'PhiX Stock' }
+    let(:current_user) { create(:user) }
+    let(:library_tube) { create(:phi_x_stock_tube, name: 'PhiX Stock') }
 
     before { post :create, params: { phi_x_spiked_buffer: form_parameters }, session: { user: current_user.id } }
 

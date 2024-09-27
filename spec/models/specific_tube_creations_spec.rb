@@ -7,8 +7,8 @@ RSpec.describe SpecificTubeCreation do
     subject(:specific_tube_creation) { described_class.new(creation_parameters) }
 
     let(:child_purpose) { create(:tube_purpose) }
-    let(:user) { create :user }
-    let(:parent) { create :plate }
+    let(:user) { create(:user) }
+    let(:parent) { create(:plate) }
   end
 
   shared_context 'with common test setup' do
@@ -71,7 +71,7 @@ RSpec.describe SpecificTubeCreation do
   context 'with custom names' do
     let(:names) { %w[example_1 example_2] }
     let(:purpose_count) { 2 }
-    let(:tube_attributes) { names.map { |name| { name: name } } }
+    let(:tube_attributes) { names.map { |name| { name: } } }
     let(:creation_parameters) do
       { user: user, child_purposes: [child_purpose] * purpose_count, parent: parent, tube_attributes: tube_attributes }
     end

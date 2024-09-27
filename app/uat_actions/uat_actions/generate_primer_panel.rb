@@ -66,7 +66,7 @@ class UatActions::GeneratePrimerPanel < UatActions
   # Any helper methods
 
   def existing_primer_panel
-    @existing_primer_panel ||= PrimerPanel.find_by(name: name)
+    @existing_primer_panel ||= PrimerPanel.find_by(name:)
   end
 
   def primer_panel_params

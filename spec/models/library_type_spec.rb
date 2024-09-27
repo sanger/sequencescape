@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe LibraryType do
-  subject { described_class.new(name: name) }
+  subject { described_class.new(name:) }
 
   context 'without a name' do
     let(:name) { '' }
@@ -18,7 +18,7 @@ RSpec.describe LibraryType do
   end
 
   context 'with a shared name' do
-    before { create :library_type, name: 'Shared' }
+    before { create(:library_type, name: 'Shared') }
 
     let(:name) { 'Shared' }
 
@@ -26,7 +26,7 @@ RSpec.describe LibraryType do
   end
 
   context 'with a shared name (case-insensitive)' do
-    before { create :library_type, name: 'Shared' }
+    before { create(:library_type, name: 'Shared') }
 
     let(:name) { 'shared' }
 
@@ -35,9 +35,9 @@ RSpec.describe LibraryType do
 
   describe '::alphabetical' do
     before do
-      create :library_type, name: 'Brilliant'
-      create :library_type, name: 'Amazing'
-      create :library_type, name: 'Cool'
+      create(:library_type, name: 'Brilliant')
+      create(:library_type, name: 'Amazing')
+      create(:library_type, name: 'Cool')
     end
 
     it 'returns library types in alphabetical order' do
@@ -60,7 +60,7 @@ RSpec.describe LibraryType do
     end
 
     before do
-      create :library_type, name: 'Not long read'
+      create(:library_type, name: 'Not long read')
       record_loader.create!
     end
 
