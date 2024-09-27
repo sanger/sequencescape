@@ -23,8 +23,8 @@ module SampleManifestExcel
         @items = create_rows(cache)
       end
 
-      def each(&block)
-        items.each(&block)
+      def each(&)
+        items.each(&)
       end
 
       # Return values for rows for a particular column number

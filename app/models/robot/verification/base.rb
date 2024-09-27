@@ -218,6 +218,6 @@ class Robot::Verification::Base # rubocop:todo Metrics/ClassLength
 
   def cached_pick_data(batch, max_beds)
     @cached_pick_data ||= {}
-    @cached_pick_data[[batch, max_beds]] ||= Robot::PickData.new(batch, max_beds: max_beds)
+    @cached_pick_data[[batch, max_beds]] ||= Robot::PickData.new(batch, max_beds:)
   end
 end

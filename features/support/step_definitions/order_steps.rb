@@ -5,8 +5,7 @@ Given /^no order templates exist$/ do
 end
 
 Given /^I have an order created with the following details based on the template "([^"]+)":$/ do |name, details|
-  template = SubmissionTemplate.find_by(name: name) or
-    raise StandardError, "Cannot find submission template #{name.inspect}"
+  template = SubmissionTemplate.find_by(name:) or raise StandardError, "Cannot find submission template #{name.inspect}"
   order_attributes =
     details.rows_hash.map do |k, v|
       v =
@@ -25,15 +24,15 @@ Given /^I have an order created with the following details based on the template
       [k.to_sym, v]
     end
   user = User.find_by(login: 'abc123') || FactoryBot.create(:user, login: 'abc123')
-  order = template.create_order!({ user: user }.merge(order_attributes.to_h))
+  order = template.create_order!({ user: }.merge(order_attributes.to_h))
 end
 
 Given /^an order template called "([^"]+)" with UUID "([^"]+)"$/ do |name, uuid_value|
-  set_uuid_for(FactoryBot.create(:submission_template, name: name), uuid_value)
+  set_uuid_for(FactoryBot.create(:submission_template, name:), uuid_value)
 end
 
 Given /^the UUID for the order template "([^"]+)" is "([^"]+)"$/ do |name, uuid_value|
-  object = SubmissionTemplate.find_by!(name: name)
+  object = SubmissionTemplate.find_by!(name:)
   set_uuid_for(object, uuid_value)
 end
 

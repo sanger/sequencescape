@@ -14,9 +14,9 @@ module Admin
 
       context 'management UI' do
         setup do
-          @user = FactoryBot.create :admin
-          @study = FactoryBot.create :study
-          @request_type = FactoryBot.create :request_type
+          @user = FactoryBot.create(:admin)
+          @study = FactoryBot.create(:study)
+          @request_type = FactoryBot.create(:request_type)
           session[:user] = @user.id
           @emails = ActionMailer::Base.deliveries
           @emails.clear
@@ -51,7 +51,7 @@ module Admin
         end
 
         context 'with a data_access_coordinator role' do
-          setup { @user.roles << (create :data_access_coordinator_role) }
+          setup { @user.roles << (create(:data_access_coordinator_role)) }
 
           should "change 'ethically_approved'" do
             Rails.logger.info '******** First Request'

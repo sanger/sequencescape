@@ -6,15 +6,15 @@ class CreatorTest < ActiveSupport::TestCase
   attr_reader :creator, :barcode_printer
 
   def setup
-    @creator_purpose = create :plate_purpose
-    @creator = create :plate_creator, plate_purposes: [@creator_purpose]
-    @barcode_printer = create :barcode_printer
+    @creator_purpose = create(:plate_purpose)
+    @creator = create(:plate_creator, plate_purposes: [@creator_purpose])
+    @barcode_printer = create(:barcode_printer)
   end
 
   test 'should send request to print labels' do
     PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode))
 
-    scanned_user = create :user
+    scanned_user = create(:user)
     create_asset_group = 'No'
 
     RestClient.expects(:post)
@@ -41,8 +41,8 @@ class CreatorTest < ActiveSupport::TestCase
 
     LabelPrinter::PrintJob.any_instance.stubs(:execute).returns(true)
 
-    parent = create :plate_with_untagged_wells
-    user = create :user
+    parent = create(:plate_with_untagged_wells)
+    user = create(:user)
     plate_count = Plate.count
     create_asset_group = 'No'
 

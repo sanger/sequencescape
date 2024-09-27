@@ -12,7 +12,7 @@ class BatchRequest < ApplicationRecord
   belongs_to :request, inverse_of: :batch_request
 
   scope :ordered, -> { order(:position) }
-  scope :at_position, ->(position) { where(position: position) }
+  scope :at_position, ->(position) { where(position:) }
 
   # Ensure that any requests that are added have a position that is unique and incremental in the batch,
   # unless we're moving them around in the batch, in which case we assume it'll be valid.

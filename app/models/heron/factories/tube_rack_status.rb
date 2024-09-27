@@ -15,9 +15,7 @@ module Heron
       def save
         return false unless valid?
 
-        ActiveRecord::Base.transaction do
-          @tube_rack_status = ::TubeRackStatus.create!(barcode: barcode, status: status, messages: messages)
-        end
+        ActiveRecord::Base.transaction { @tube_rack_status = ::TubeRackStatus.create!(barcode:, status:, messages:) }
         true
       end
 

@@ -23,11 +23,11 @@ class QcResultFactory
   end
 
   def qc_assay
-    @qc_assay ||= QcAssay.new(lot_number: lot_number)
+    @qc_assay ||= QcAssay.new(lot_number:)
   end
 
   def build_resources(assets)
-    assets.each { |asset| resources << Resource.new(asset.merge(qc_assay: qc_assay)) }
+    assets.each { |asset| resources << Resource.new(asset.merge(qc_assay:)) }
   end
 
   def except_blank_wells
@@ -59,21 +59,11 @@ class QcResultFactory
       super(attributes)
 
       @asset = build_asset
-      @qc_result =
-        QcResult.new(
-          asset: asset,
-          key: key,
-          value: value,
-          units: units,
-          cv: cv,
-          assay_type: assay_type,
-          assay_version: assay_version,
-          qc_assay: qc_assay
-        )
+      @qc_result = QcResult.new(asset:, key:, value:, units:, cv:, assay_type:, assay_version:, qc_assay:)
     end
 
     def message_id
-      "Asset identifier - #{(asset_identifier || 'blank')}"
+      "Asset identifier - #{asset_identifier || 'blank'}"
     end
 
     def parent_plate

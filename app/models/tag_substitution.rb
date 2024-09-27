@@ -119,7 +119,7 @@ class TagSubstitution
   #
   # @return [void]
   def template_asset=(asset)
-    @substitutions = asset.aliquots.includes(:sample).map { |aliquot| Substitution.new(aliquot: aliquot) }
+    @substitutions = asset.aliquots.includes(:sample).map { |aliquot| Substitution.new(aliquot:) }
     @name = asset.display_name
   end
 

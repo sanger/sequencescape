@@ -58,12 +58,12 @@ ActiveRecord::Base.transaction do
     'TruSeq small RNA index tags - 6 mer tags',
     'TruSeq mRNA Adapter Index Sequences'
   ].each do |name|
-    next if TagGroup.find_by(name: name).nil?
+    next if TagGroup.find_by(name:).nil?
 
     TagLayoutTemplate.create!(
       name: "Illumina C - #{name}",
       walking_algorithm: 'TagLayout::WalkWellsOfPlate',
-      tag_group: TagGroup.find_by(name: name),
+      tag_group: TagGroup.find_by(name:),
       direction_algorithm: 'TagLayout::InColumns'
     )
   end

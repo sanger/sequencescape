@@ -105,7 +105,7 @@ module Heron
       end
 
       def params_for_aliquot_creation
-        { sample: sample, study: study }.merge(@params[:aliquot] || {})
+        { sample:, study: }.merge(@params[:aliquot] || {})
       end
 
       def params_for_sample_table

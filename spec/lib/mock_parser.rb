@@ -27,7 +27,7 @@ class MockParser
     '1.0'
   end
 
-  def each_well_and_parameters(&block)
-    @data.each(&block)
+  def each_well_and_parameters(&)
+    @data.each(&)
   end
 end

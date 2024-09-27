@@ -5,7 +5,7 @@ Given /^user "([^"]*)" exists$/ do |user_name|
 end
 
 Given /^a user with an api key of "([^"]*)" exists$/ do |api_key|
-  @current_user = FactoryBot.create :user, api_key: api_key
+  @current_user = FactoryBot.create :user, api_key:
 end
 
 Given /^I have an active project called "([^"]*)"$/ do |project_name|
@@ -24,14 +24,14 @@ end
 
 Given /^user "([^"]*)" exists with barcode "([^"]*)"$/ do |user_name, barcode|
   if User.find_by(login: user_name)
-    User.find_by(login: user_name).update!(barcode: barcode)
+    User.find_by(login: user_name).update!(barcode:)
   else
     FactoryBot.create :user, barcode: barcode, login: user_name
   end
 end
 
 Given /^the user with login "([^"]+)" exists$/ do |login|
-  User.find_by(login: login) || FactoryBot.create(:user, login: login)
+  User.find_by(login:) || FactoryBot.create(:user, login:)
 end
 
 Then /^the user (\d+) should validate the swipecard code "([^"]+)"/ do |user_id, code|

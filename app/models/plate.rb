@@ -188,7 +188,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   def iteration
     iter =
       siblings # assets sharing the same parent
-        .where(plate_purpose_id: plate_purpose_id, sti_type: sti_type) # of the same purpose and type
+        .where(plate_purpose_id:, sti_type:) # of the same purpose and type
         .where("#{self.class.table_name}.created_at <= ?", created_at) # created before or at the same time
         .count(:id) # count the siblings.
 
@@ -336,10 +336,10 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   end
   deprecate stock_plate: 'Stock plate is nebulous and can easily lead to unexpected behaviour'
 
-  def self.create_with_barcode!(*args, &block)
+  def self.create_with_barcode!(*args, &)
     attributes = args.extract_options!
     attributes[:sanger_barcode] ||= PlateBarcode.create_barcode
-    create!(attributes, &block)
+    create!(attributes, &)
   end
 
   def number_of_blank_samples

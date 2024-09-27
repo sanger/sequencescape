@@ -51,7 +51,7 @@ class Receptacle < Asset # rubocop:todo Metrics/ClassLength
   # to a barcode type and retire this
   delegate :two_dimensional_barcode, :two_dimensional_barcode=, to: :labware, allow_nil: true
 
-  scope :named, ->(name) { joins(:labware).where(labware: { name: name }) }
+  scope :named, ->(name) { joins(:labware).where(labware: { name: }) }
 
   # We accept not only an individual barcode but also an array of them.
   scope :with_barcode,
@@ -254,13 +254,13 @@ class Receptacle < Asset # rubocop:todo Metrics/ClassLength
 
   def set_as_library(force: false)
     aliquots.each do |aliquot|
-      aliquot.set_library(force: force)
+      aliquot.set_library(force:)
       aliquot.save!
     end
   end
 
   def outer_request(submission_id)
-    transfer_requests_as_target.find_by(submission_id: submission_id).try(:outer_request)
+    transfer_requests_as_target.find_by(submission_id:).try(:outer_request)
   end
 
   # All studies related to this asset
@@ -269,7 +269,7 @@ class Receptacle < Asset # rubocop:todo Metrics/ClassLength
   end
 
   def attach_tag(tag, tag2 = nil)
-    tags = { tag: tag, tag2: tag2 }.compact
+    tags = { tag:, tag2: }.compact
     return if tags.empty?
     raise StandardError, 'Cannot tag an empty asset' if aliquots.empty?
 

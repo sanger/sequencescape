@@ -26,33 +26,33 @@ describe 'Retrospective failure' do
   # minimal consequence, that the additional code complexity outweighs the minor benefits.
 
   # The well we'll be failing
-  let(:target_well) { create :untagged_well }
+  let(:target_well) { create(:untagged_well) }
 
   # The actual request that gets failed.
-  let(:target_request) { create :transfer_request, target_asset: target_well }
+  let(:target_request) { create(:transfer_request, target_asset: target_well) }
   let(:initial_aliquot) { target_well.aliquots.first }
-  let(:tag) { create :tag }
-  let(:tag2) { create :tag }
+  let(:tag) { create(:tag) }
+  let(:tag2) { create(:tag) }
 
   context 'with two descendants and one clash' do
-    let(:child_well_1) { create :empty_well }
+    let(:child_well_1) { create(:empty_well) }
 
     let(:child_well_2) do
-      well = create :empty_well
+      well = create(:empty_well)
       well.aliquots << create(:tagged_aliquot, receptacle: well, sample: initial_aliquot.sample)
       well
     end
 
     before do
       # NOTE: These transfer requests automatically handle the transfer of our aliquot.
-      create :transfer_request, asset: target_well, target_asset: child_well_1
+      create(:transfer_request, asset: target_well, target_asset: child_well_1)
 
       # Apply tags to make sure that gets handled correctly
       child_well_1.aliquots.first.tap do |aliquot|
         aliquot.tag = tag
         aliquot.save!
       end
-      create :transfer_request, asset: child_well_1, target_asset: child_well_2
+      create(:transfer_request, asset: child_well_1, target_asset: child_well_2)
 
       # Just double check that the setup has worked as intended
       expect(child_well_2.aliquots.count).to eq(2)
@@ -75,17 +75,17 @@ describe 'Retrospective failure' do
   end
 
   context 'with a QcTube descendant' do
-    let(:child_well_1) { create :empty_well }
+    let(:child_well_1) { create(:empty_well) }
 
-    let(:qc_tube) { create :qc_tube }
+    let(:qc_tube) { create(:qc_tube) }
 
-    let(:lane) { create :lane }
+    let(:lane) { create(:lane) }
 
     before do
       # NOTE: These transfer requests automatically handle the transfer of our aliquot.
-      create :transfer_request, asset: target_well, target_asset: child_well_1
-      create :transfer_request, asset: target_well, target_asset: qc_tube
-      create :transfer_request, asset: qc_tube, target_asset: lane
+      create(:transfer_request, asset: target_well, target_asset: child_well_1)
+      create(:transfer_request, asset: target_well, target_asset: qc_tube)
+      create(:transfer_request, asset: qc_tube, target_asset: lane)
     end
 
     it 'fail removed downstream aliquots' do

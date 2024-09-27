@@ -10,8 +10,8 @@ class PlateConversionTest < ActiveSupport::TestCase
 
     context '#stamp' do
       should 'convert plates to a new purpose' do
-        @plate = create :plate
-        @user = create :user
+        @plate = create(:plate)
+        @user = create(:user)
         @purpose_b = PlatePurpose.new(name: 'test_purpose')
 
         PlateConversion.create!(target: @plate, user: @user, purpose: @purpose_b)
@@ -20,9 +20,9 @@ class PlateConversionTest < ActiveSupport::TestCase
       end
 
       should 'set parents when supplied' do
-        @plate = create :plate
-        @parent = create :plate
-        @user = create :user
+        @plate = create(:plate)
+        @parent = create(:plate)
+        @user = create(:user)
         @purpose_b = PlatePurpose.new(name: 'test_purpose')
 
         PlateConversion.create!(target: @plate, user: @user, purpose: @purpose_b, parent: @parent)

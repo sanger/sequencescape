@@ -3,10 +3,10 @@
 module Metadata
   # @!macro [attach] has_metadata
   #   @!parse class Metadata < Metadata::Base; end
-  def has_metadata(options = {}, &block)
+  def has_metadata(options = {}, &)
     as_class = options.delete(:as) || self
     table_name = options.delete(:table_name) || "#{as_class.name.demodulize.underscore}_metadata"
-    construct_metadata_class(table_name, as_class, &block)
+    construct_metadata_class(table_name, as_class, &)
     build_association(as_class, options)
   end
 
@@ -87,9 +87,9 @@ module Metadata
     end
   end
 
-  def construct_metadata_class(table_name, as_class, &block)
+  def construct_metadata_class(table_name, as_class, &)
     parent_class = self == as_class ? Metadata::Base : as_class::Metadata
-    metadata = Class.new(parent_class, &block)
+    metadata = Class.new(parent_class, &)
 
     as_name = as_class.name.demodulize.underscore
 
@@ -116,8 +116,8 @@ module Metadata
     # This ensures that the default values are stored within the DB, meaning that this information will be
     # preserved for the future, unlike the original properties information which didn't store values when
     # nil which lead to us having to guess.
-    def initialize(attributes = {}, *args, &block)
-      super(self.class.defaults.merge(attributes.try(:symbolize_keys) || {}), *args, &block)
+    def initialize(attributes = {}, *, &)
+      super(self.class.defaults.merge(attributes.try(:symbolize_keys) || {}), *, &)
     end
 
     before_validation :merge_instance_defaults, on: :create

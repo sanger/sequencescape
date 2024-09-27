@@ -157,7 +157,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
       # This test may seem a little paranoid, but I actually observed this behaviour
       # when testing. Somewhat lucky, as I only triggered it by accident!
       it 'will update the aliquots downstream if both tags and library types have changed' do
-        new_lt = create :library_type
+        new_lt = create(:library_type)
         chromium_tag1 = cell(rows.first, columns[:chromium_tag_well]).value
         chromium_tag2 = cell(rows.last, columns[:chromium_tag_well]).value
         cell(rows.first, columns[:chromium_tag_well]).value = chromium_tag2
@@ -1167,7 +1167,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
       context 'when the tube barcode exists already' do
         let(:no_of_racks) { 1 }
         let(:no_of_rows) { 2 }
-        let(:tube) { create :tube }
+        let(:tube) { create(:tube) }
 
         before { Barcode.create!(asset_id: tube.id, barcode: 'TB11111110', format: 'fluidx_barcode') }
 

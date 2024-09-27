@@ -312,6 +312,15 @@ Rubocop is used for linting.
 bundle exec rubocop
 ```
 
+Note that permanent `Exclude`s should be defined in `.rubocop.yml`, with 'temporary' ones
+(automatically) listed in `.rubocop_todo.yml`.
+
+To update `.rubocop_todo.yml`, execute
+
+```shell
+rubocop --auto-gen-config --no-exclude-limit
+```
+
 Prettier is used for formatting.
 
 ```shell

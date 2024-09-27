@@ -199,7 +199,7 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
   end
 
   def outer_request(submission_id)
-    outer_requests.order(id: :desc).find_by(submission_id: submission_id)
+    outer_requests.order(id: :desc).find_by(submission_id:)
   end
 
   def qc_results_by_key
@@ -287,14 +287,14 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
       events.update_gender_markers!(resource)
     end
 
-    well_attribute.update!(gender_markers: gender_markers)
+    well_attribute.update!(gender_markers:)
   end
 
   # rubocop:enable Metrics/MethodLength
 
   def update_sequenom_count!(sequenom_count, resource)
     events.update_sequenom_count!(resource) unless well_attribute.sequenom_count == sequenom_count
-    well_attribute.update!(sequenom_count: sequenom_count)
+    well_attribute.update!(sequenom_count:)
   end
 
   # The sequenom pass value is either the string 'Unknown' or it is the combination of gender marker values.

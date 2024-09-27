@@ -22,7 +22,7 @@ class Plate::CreatorParameters
   end
 
   def params_has_dilution_factor?(params)
-    (!params[:dilution_factor].nil?) && (!params[:dilution_factor].to_s.empty?)
+    !params[:dilution_factor].nil? && !params[:dilution_factor].to_s.empty?
   end
 
   def plate_parameters(_plate, parent_plate = nil) # rubocop:todo Metrics/MethodLength

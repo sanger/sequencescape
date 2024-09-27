@@ -112,16 +112,16 @@ class RequestType < ApplicationRecord # rubocop:todo Metrics/ClassLength
     new_request
   end
 
-  def create!(attributes = {}, &block)
-    construct_request(:create!, attributes, &block)
+  def create!(attributes = {}, &)
+    construct_request(:create!, attributes, &)
   end
 
-  def new(attributes = {}, &block)
-    construct_request(:new, attributes, &block)
+  def new(attributes = {}, &)
+    construct_request(:new, attributes, &)
   end
 
-  def create_control!(attributes = {}, &block)
-    construct_request(:create!, attributes, ControlRequest, &block)
+  def create_control!(attributes = {}, &)
+    construct_request(:create!, attributes, ControlRequest, &)
   end
 
   def self.create_asset
@@ -172,14 +172,14 @@ class RequestType < ApplicationRecord # rubocop:todo Metrics/ClassLength
     attributes.delete_if { |k, _| common_attributes.exclude?(k) }
   end
 
-  def create_target_asset!(&block)
+  def create_target_asset!(&)
     case
     when target_purpose.present?
-      target_purpose.create!(&block).receptacle
+      target_purpose.create!(&).receptacle
     when target_asset_type.blank?
       nil
     else
-      target_asset_type.constantize.create!(&block)
+      target_asset_type.constantize.create!(&)
     end
   end
 

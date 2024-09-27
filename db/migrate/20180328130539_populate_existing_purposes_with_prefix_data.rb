@@ -50,7 +50,7 @@ class PopulateExistingPurposesWithPrefixData < ActiveRecord::Migration[5.1]
         Purpose
           .where(target_type: asset_class)
           .find_each do |purpose|
-            purpose.barcode_prefix_id = BarcodePrefix.find_by(prefix: prefix).id
+            purpose.barcode_prefix_id = BarcodePrefix.find_by(prefix:).id
             purpose.save!
           end
       end

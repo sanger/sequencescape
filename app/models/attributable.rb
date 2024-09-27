@@ -24,8 +24,8 @@ module Attributable
     end
   end
 
-  def attribute_details_for(*args)
-    self.class.attribute_details_for(*args)
+  def attribute_details_for(*)
+    self.class.attribute_details_for(*)
   end
 
   def instance_defaults

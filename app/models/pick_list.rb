@@ -91,7 +91,7 @@ class PickList < ApplicationRecord
   # Its listed as a private method, as it is intended as an implementation
   # detail, and I'm hoping that we'll be able to remove the need for it.
   def submission
-    super || build_submission(user: user)
+    super || build_submission(user:)
   end
 
   def request_type

@@ -5,7 +5,7 @@ require 'rails_helper'
 describe Api::Messages::QcResultIo do
   subject { described_class.to_hash(qc_result) }
 
-  let(:sample_tube) { create :sample_tube }
+  let(:sample_tube) { create(:sample_tube) }
   let(:expected_json) do
     {
       'id_qc_result_lims' => qc_result.id,
@@ -22,8 +22,8 @@ describe Api::Messages::QcResultIo do
 
   context 'the qc_result asset is a well' do
     let(:aliquots) { create_list(:aliquot, 1, library: sample_tube) }
-    let(:well) { create :well_with_sample_and_plate, aliquots: aliquots }
-    let(:qc_result) { create :qc_result, asset: well }
+    let(:well) { create(:well_with_sample_and_plate, aliquots:) }
+    let(:qc_result) { create(:qc_result, asset: well) }
 
     it 'generates a valid json' do
       actual = subject.as_json
@@ -35,7 +35,7 @@ describe Api::Messages::QcResultIo do
   end
 
   context 'the qc_result asset is a multiplexed library tube' do
-    let(:qc_result) { create :qc_result, asset: sample_tube }
+    let(:qc_result) { create(:qc_result, asset: sample_tube) }
 
     it 'generates a valid json' do
       actual = subject.as_json

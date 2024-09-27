@@ -17,10 +17,10 @@ class ExampleLabelTest < ActiveSupport::TestCase
 
   def setup
     @example_label = ExampleLabel.new
-    @plate1 = create :plate, name: 'Plate 1', barcode: 'SQPD-1111'
-    @plate2 = create :plate, name: 'Plate 2', barcode: 'SQPD-2222'
-    @plate3 = create :plate, name: 'Plate 3', barcode: 'SQPD-3333'
-    @plate4 = create :plate, name: 'Plate 4', barcode: 'SQPD-4444'
+    @plate1 = create(:plate, name: 'Plate 1', barcode: 'SQPD-1111')
+    @plate2 = create(:plate, name: 'Plate 2', barcode: 'SQPD-2222')
+    @plate3 = create(:plate, name: 'Plate 3', barcode: 'SQPD-3333')
+    @plate4 = create(:plate, name: 'Plate 4', barcode: 'SQPD-4444')
     @label = { left: 'Plate 1', right: 'SQPD', barcode: '1111', label_name: 'main_label' }
 
     @labels = [

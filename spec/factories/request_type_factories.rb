@@ -3,13 +3,13 @@
 FactoryBot.define do
   trait :library_request_validators do
     after(:build) do |request_type|
-      request_type.library_types_request_types << create(:library_types_request_type, request_type: request_type)
-      request_type.request_type_validators << create(:library_request_type_validator, request_type: request_type)
+      request_type.library_types_request_types << create(:library_types_request_type, request_type:)
+      request_type.request_type_validators << create(:library_request_type_validator, request_type:)
     end
   end
 
   trait :with_library_types do
-    transient { library_type { build :library_type } }
+    transient { library_type { build(:library_type) } }
 
     after(:build) do |request_type, evaluator|
       request_type.library_types_request_types << create(
@@ -17,13 +17,13 @@ FactoryBot.define do
         library_type: evaluator.library_type,
         request_type: request_type
       )
-      request_type.request_type_validators << create(:library_request_type_validator, request_type: request_type)
+      request_type.request_type_validators << create(:library_request_type_validator, request_type:)
     end
   end
 
   factory :request_type do
-    name { generate :request_type_name }
-    key { generate :request_type_key }
+    name { generate(:request_type_name) }
+    key { generate(:request_type_key) }
     deprecated { false }
     asset_type { 'SampleTube' }
     request_class { Request }
@@ -33,6 +33,10 @@ FactoryBot.define do
 
     factory :customer_request_type do
       request_class { CustomerRequest }
+    end
+
+    factory :pbmc_pooling_customer_request_type do
+      request_class { PbmcPoolingCustomerRequest }
     end
 
     factory :cherrypick_request_type do
@@ -141,8 +145,8 @@ FactoryBot.define do
       for_multiplexing { true }
 
       after(:build) do |request_type|
-        request_type.library_types_request_types << create(:library_types_request_type, request_type: request_type)
-        request_type.request_type_validators << create(:library_request_type_validator, request_type: request_type)
+        request_type.library_types_request_types << create(:library_types_request_type, request_type:)
+        request_type.request_type_validators << create(:library_request_type_validator, request_type:)
       end
     end
 
@@ -152,8 +156,8 @@ FactoryBot.define do
       for_multiplexing { true }
 
       after(:build) do |request_type|
-        request_type.library_types_request_types << create(:library_types_request_type, request_type: request_type)
-        request_type.request_type_validators << create(:library_request_type_validator, request_type: request_type)
+        request_type.library_types_request_types << create(:library_types_request_type, request_type:)
+        request_type.request_type_validators << create(:library_request_type_validator, request_type:)
       end
     end
 

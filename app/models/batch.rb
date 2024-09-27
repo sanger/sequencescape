@@ -586,12 +586,12 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
         requests_to_update.concat(downstream_requests.map { |r| [r, target_asset.receptacle] })
       end
 
-      request.update!(target_asset: target_asset)
+      request.update!(target_asset:)
 
       target_asset.parents << request.asset.labware
     end
 
-    requests_to_update.each { |request, asset| request.update!(asset: asset) }
+    requests_to_update.each { |request, asset| request.update!(asset:) }
   end
   # rubocop:enable Metrics/MethodLength
 end

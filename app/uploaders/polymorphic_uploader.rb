@@ -77,7 +77,7 @@ module CarrierWave
 end
 
 class PolymorphicUploader < CarrierWave::Uploader::Base
-  def initialize(*args, &block)
+  def initialize(*args, &)
     super
   end
 

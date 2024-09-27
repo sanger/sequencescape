@@ -14,8 +14,8 @@ class AccessionServiceTest < ActiveSupport::TestCase
   # temporary test for hotfix
   context 'A sample with a strain' do
     setup do
-      @study = create :open_study, accession_number: 'accss'
-      @sample = create :sample, studies: [@study]
+      @study = create(:open_study, accession_number: 'accss')
+      @sample = create(:sample, studies: [@study])
       @sample.sample_metadata.sample_strain_att = 'my strain'
     end
 
@@ -26,8 +26,8 @@ class AccessionServiceTest < ActiveSupport::TestCase
 
   context 'A sample with a gender' do
     setup do
-      @study = create :managed_study, accession_number: 'accss'
-      @sample = create :sample, studies: [@study]
+      @study = create(:managed_study, accession_number: 'accss')
+      @sample = create(:sample, studies: [@study])
       @sample.sample_metadata.gender = 'male'
     end
 
@@ -38,8 +38,8 @@ class AccessionServiceTest < ActiveSupport::TestCase
 
   context 'A sample with a donor_id' do
     setup do
-      @study = create :managed_study, accession_number: 'accss'
-      @sample = create :sample, studies: [@study]
+      @study = create(:managed_study, accession_number: 'accss')
+      @sample = create(:sample, studies: [@study])
       @sample.sample_metadata.donor_id = '123456789'
     end
 
@@ -54,9 +54,9 @@ class AccessionServiceTest < ActiveSupport::TestCase
 
   context 'A sample with a country_of_origin' do
     setup do
-      @country = create :insdc_country, name: 'Freedonia'
-      @study = create :managed_study, accession_number: 'accss'
-      @sample = create :sample, studies: [@study]
+      @country = create(:insdc_country, name: 'Freedonia')
+      @study = create(:managed_study, accession_number: 'accss')
+      @sample = create(:sample, studies: [@study])
     end
 
     context 'with unexistent country' do
@@ -96,8 +96,8 @@ class AccessionServiceTest < ActiveSupport::TestCase
 
   context 'A sample with a collection date' do
     setup do
-      @study = create :managed_study, accession_number: 'accss'
-      @sample = create :sample, studies: [@study]
+      @study = create(:managed_study, accession_number: 'accss')
+      @sample = create(:sample, studies: [@study])
     end
 
     context 'with unexistent date_of_sample_collection' do

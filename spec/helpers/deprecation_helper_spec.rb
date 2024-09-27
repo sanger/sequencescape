@@ -57,7 +57,7 @@ describe DeprecationHelper do
       let(:expected_title) { 'Scheduled for removal in 2 days' }
       let(:expected_style) { 'danger' }
 
-      it { is_expected.not_to have_content('Deprecated content') }
+      it { is_expected.to have_no_content('Deprecated content') }
     end
   end
 end

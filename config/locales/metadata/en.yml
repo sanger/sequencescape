@@ -58,6 +58,12 @@ en:
         requested_flowcell_type:
           label: Flowcell type
 
+        number_of_samples_per_pool:
+          label: Number of samples per pool
+
+        cells_per_chip_well:
+          label: Cells per chip well
+
     library_creation_request:
       <<: *REQUEST
     sequencing_request:

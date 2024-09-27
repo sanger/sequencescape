@@ -90,7 +90,7 @@ Given /^I have a released cherrypicking batch with 1 plate which doesnt need buf
 end
 
 Given /^user "([^"]*)" has a user barcode of "([^"]*)"$/ do |login, user_barcode|
-  user = User.find_by(login: login)
+  user = User.find_by(login:)
   user.update!(barcode: user_barcode)
 end
 

@@ -12,7 +12,7 @@ module Api
           Rails.logger.debug { "Creating export_pool_xp_to_traction job for tube with barcode '#{barcode}'" }
 
           errors = preflight_errors(barcode)
-          render json: { errors: errors }, status: :unprocessable_entity and return unless errors.empty?
+          render json: { errors: }, status: :unprocessable_entity and return unless errors.empty?
 
           Delayed::Job.enqueue ExportPoolXpToTractionJob.new(barcode)
           render json: {}, status: :ok

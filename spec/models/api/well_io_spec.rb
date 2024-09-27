@@ -6,12 +6,14 @@ RSpec.describe Api::WellIo do
   context 'with one sample' do
     # As of the current records, the 'description' and 'asset_size' attributes can uniquely identify a map.
     subject do
-      create :well_with_sample_and_without_plate,
-             map: Map.find_by(description: 'A1', asset_size: plate.size),
-             plate: plate
+      create(
+        :well_with_sample_and_without_plate,
+        map: Map.find_by(description: 'A1', asset_size: plate.size),
+        plate: plate
+      )
     end
 
-    let(:plate) { create :plate, barcode: 'SQPD-1' }
+    let(:plate) { create(:plate, barcode: 'SQPD-1') }
     let(:sample) { subject.samples.first }
 
     let(:expected_json) do
@@ -43,13 +45,15 @@ RSpec.describe Api::WellIo do
   context 'with multiple samples' do
     subject do
       # As of the current records, the 'description' and 'asset_size' attributes can uniquely identify a map.
-      create :well_with_sample_and_without_plate,
-             map: Map.find_by(description: 'A1', asset_size: plate.size),
-             plate: plate,
-             aliquot_count: 2
+      create(
+        :well_with_sample_and_without_plate,
+        map: Map.find_by(description: 'A1', asset_size: plate.size),
+        plate: plate,
+        aliquot_count: 2
+      )
     end
 
-    let(:plate) { create :plate, barcode: 'SQPD-1' }
+    let(:plate) { create(:plate, barcode: 'SQPD-1') }
     let(:sample) { subject.samples.first }
 
     # We only send samples in the event we have just one

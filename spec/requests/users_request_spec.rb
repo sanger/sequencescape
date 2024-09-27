@@ -2,7 +2,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Users' do
-  let(:user) { create :user, password: 'password' }
+  let(:user) { create(:user, password: 'password') }
 
   before { post '/login', params: { login: user.login, password: 'password' } }
 

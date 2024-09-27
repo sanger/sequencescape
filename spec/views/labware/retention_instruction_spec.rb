@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'labware/retention_instruction.html.erb' do
   include AuthenticatedSystem
   include RetentionInstructionHelper
-  let(:user) { create :user }
+  let(:user) { create(:user) }
 
   shared_examples 'displaying retention instruction' do
     it 'displays the retention instruction' do
@@ -37,14 +37,14 @@ RSpec.describe 'labware/retention_instruction.html.erb' do
 
   context 'when rendering an existing retention instruction - plate' do
     let(:current_user) { user }
-    let(:asset) { create :plate_with_3_wells, retention_instruction: :destroy_after_2_years }
+    let(:asset) { create(:plate_with_3_wells, retention_instruction: :destroy_after_2_years) }
 
     it_behaves_like 'displaying retention instruction'
   end
 
   context 'when rendering an existing retention instruction - tube' do
     let(:current_user) { user }
-    let(:asset) { create :tube, retention_instruction: :destroy_after_2_years }
+    let(:asset) { create(:tube, retention_instruction: :destroy_after_2_years) }
 
     it_behaves_like 'displaying retention instruction'
   end

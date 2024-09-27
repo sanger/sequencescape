@@ -26,7 +26,7 @@ module RequestClassDeprecator
 
     ActiveRecord::Base.transaction do
       RequestType
-        .where(request_class_name: request_class_name)
+        .where(request_class_name:)
         .find_each do |rt|
           say "Deprecating: #{rt.name}"
           rt.update!(deprecated: true)

@@ -20,7 +20,7 @@ class WorkOrder
         .group_by(&:asset_id)
         .map do |_asset_id, requests|
           state = requests.first.state
-          WorkOrder.create!(work_order_type: work_order_type, requests: requests, state: state)
+          WorkOrder.create!(work_order_type:, requests:, state:)
         end
     end
 

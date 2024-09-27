@@ -99,9 +99,9 @@ module SampleManifestExcel
             end
           [nil, nil]
         end
-
         # rubocop:enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
-        def check_row_retention_value(row, plate_barcode, retention_instructions)
+
+        def check_row_retention_value(row, plate_barcode, retention_instructions) # rubocop:todo Metrics/MethodLength
           # if present the column is mandatory
           row_retention_value = row.value('retention_instruction')
           return 'Value cannot be blank.' if row_retention_value.nil?

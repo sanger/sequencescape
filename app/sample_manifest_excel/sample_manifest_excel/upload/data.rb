@@ -41,8 +41,8 @@ module SampleManifestExcel
         @data ||= []
       end
 
-      def each(&block)
-        data.each(&block)
+      def each(&)
+        data.each(&)
       end
 
       def file_extension
