@@ -25,7 +25,7 @@ describe 'PreCapturePools API', with: :api_v2 do
   end
 
   context 'with a pre_capture_pool' do
-    let(:resource_model) { create :pre_capture_pool }
+    let(:resource_model) { create(:pre_capture_pool) }
 
     let(:payload) do
       {

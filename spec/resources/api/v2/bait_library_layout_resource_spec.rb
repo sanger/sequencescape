@@ -6,7 +6,7 @@ require './app/resources/api/v2/bait_library_layout_resource'
 RSpec.describe Api::V2::BaitLibraryLayoutResource, type: :resource do
   subject(:resource) { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { build_stubbed :bait_library_layout }
+  let(:resource_model) { build_stubbed(:bait_library_layout) }
 
   # Attributes
   it { is_expected.to have_readonly_attribute :uuid }

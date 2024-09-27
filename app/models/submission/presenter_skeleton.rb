@@ -25,13 +25,13 @@ class Submission::PresenterSkeleton
   def cross_compatible?
   end
 
-  def each_submission_warning(&block)
-    submission.each_submission_warning(&block)
+  def each_submission_warning(&)
+    submission.each_submission_warning(&)
   end
 
   protected
 
-  def method_missing(name, *args, &block)
+  def method_missing(name, *args, &)
     name_without_assignment = name.to_s.sub(/=$/, '').to_sym
     return super unless attributes.include?(name_without_assignment)
 

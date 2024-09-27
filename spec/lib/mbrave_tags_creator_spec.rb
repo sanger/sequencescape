@@ -95,7 +95,7 @@ describe MbraveTagsCreator do
       it 'creates the tag group with the right indexing' do
         run_task
         %w[Bioscan_reverse_4_1_v1 Bioscan_reverse_4_2_v1].each do |name|
-          indexes = TagGroup.find_by(name: name).tags.map(&:map_id)
+          indexes = TagGroup.find_by(name:).tags.map(&:map_id)
           expect(indexes).to eq([1, 2, 3, 4])
         end
 

@@ -22,8 +22,8 @@ module Aliquot::Aliquotable
   end
 
   module ClassMethods
-    def receptacle_alias(name, options = {}, &block)
-      has_many(name, -> { distinct }, options.merge(through: :aliquots, source: :receptacle), &block)
+    def receptacle_alias(name, options = {}, &)
+      has_many(name, -> { distinct }, options.merge(through: :aliquots, source: :receptacle), &)
     end
   end
 end

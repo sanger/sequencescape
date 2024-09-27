@@ -6,7 +6,7 @@ require './app/resources/api/v2/pooled_plate_creation_resource'
 RSpec.describe Api::V2::PooledPlateCreationResource, type: :resource do
   subject(:resource) { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { build_stubbed :pooled_plate_creation }
+  let(:resource_model) { build_stubbed(:pooled_plate_creation) }
 
   # Attributes
   it { is_expected.to have_readonly_attribute :uuid }

@@ -19,8 +19,8 @@ module SequencescapeExcel
       @ranges = create(ranges_data)
     end
 
-    def each(&block)
-      ranges.each(&block)
+    def each(&)
+      ranges.each(&)
     end
 
     ##

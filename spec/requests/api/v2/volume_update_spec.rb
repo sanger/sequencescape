@@ -50,7 +50,7 @@ describe 'VolumeUpdate API', with: :api_v2 do
   end
 
   describe '#post' do
-    let(:plate) { create :plate } # Only works for plates as update_volume is not set for all labware
+    let(:plate) { create(:plate) } # Only works for plates as update_volume is not set for all labware
 
     let(:payload) do
       {

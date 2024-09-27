@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe PhiX::Stock, :phi_x do
-  subject { build :phi_x_stock, custom_options }
+  subject { build(:phi_x_stock, custom_options) }
 
   context 'with suitable options' do
     let(:custom_options) { {} } # Fallback to factory defaults
@@ -50,7 +50,7 @@ RSpec.describe PhiX::Stock, :phi_x do
       subject(:save) { phi_x_stock.save }
 
       let(:phi_x_stock) do
-        build :phi_x_stock, number: 2, name: 'Example', concentration: '0.8', tags: tags, study_id: study_id
+        build(:phi_x_stock, number: 2, name: 'Example', concentration: '0.8', tags: tags, study_id: study_id)
       end
 
       let(:tags) { 'Single' }
@@ -82,7 +82,7 @@ RSpec.describe PhiX::Stock, :phi_x do
       end
 
       it 'sets study id the aliquot in each tube' do
-        phi_x_stock.created_stocks.each { |tube| expect(tube.aliquots).to all have_attributes(study_id: study_id) }
+        phi_x_stock.created_stocks.each { |tube| expect(tube.aliquots).to all have_attributes(study_id:) }
       end
 
       it 'generates an aliquot with PhiX sample' do
@@ -118,7 +118,7 @@ RSpec.describe PhiX::Stock, :phi_x do
     end
 
     context 'with invalid data' do
-      let(:phi_x_stock) { build :phi_x_stock, number: -2 }
+      let(:phi_x_stock) { build(:phi_x_stock, number: -2) }
 
       it 'returns false' do
         expect(phi_x_stock.save).to be false

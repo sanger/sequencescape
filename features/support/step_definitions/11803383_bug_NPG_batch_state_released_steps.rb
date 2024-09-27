@@ -11,7 +11,7 @@ Given /^sequencescape is setup for 11803383$/ do
                       request_type: pipeline.request_types.last,
                       state: 'started'
 
-  batch = FactoryBot.create :batch, state: 'started', qc_state: 'qc_manual', pipeline: pipeline
+  batch = FactoryBot.create(:batch, state: 'started', qc_state: 'qc_manual', pipeline: pipeline)
   FactoryBot.create :batch_request, request: request, batch: batch, position: 1
 end
 

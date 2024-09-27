@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 describe 'Primer Panel' do
-  let(:user) { create :admin, email: 'login@example.com' }
-  let(:primer_panel) { create :primer_panel, name: 'Primer Panel 1' }
+  let(:user) { create(:admin, email: 'login@example.com') }
+  let(:primer_panel) { create(:primer_panel, name: 'Primer Panel 1') }
 
   it 'user can add a new primer panel' do
     login_user user

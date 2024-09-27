@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe PhiX::SpikedBuffer, :phi_x do
-  subject { build :phi_x_spiked_buffer, custom_options }
+  subject { build(:phi_x_spiked_buffer, custom_options) }
 
   context 'with suitable options' do
     let(:custom_options) { {} } # Fallback to factory defaults
@@ -46,7 +46,7 @@ RSpec.describe PhiX::SpikedBuffer, :phi_x do
   end
 
   context 'with a non-PhiX containing parent' do
-    let(:parent) { create :library_tube }
+    let(:parent) { create(:library_tube) }
     let(:custom_options) { { parent_barcode: parent.machine_barcode, parent: nil } }
 
     it { is_expected.not_to be_valid }
@@ -56,20 +56,22 @@ RSpec.describe PhiX::SpikedBuffer, :phi_x do
     context 'with valid data' do
       subject(:save) { phi_x_spiked_buffer.save }
 
-      let(:stock_study) { create :study }
+      let(:stock_study) { create(:study) }
 
-      let(:parent) { create :phi_x_stock_tube, study: stock_study }
+      let(:parent) { create(:phi_x_stock_tube, study: stock_study) }
 
       let(:study_id) { nil }
       let(:phi_x_spiked_buffer) do
-        build :phi_x_spiked_buffer,
-              name: 'Example',
-              parent_barcode: parent.human_barcode,
-              parent: nil,
-              concentration: '0.8',
-              volume: '10',
-              number: 2,
-              study_id: study_id
+        build(
+          :phi_x_spiked_buffer,
+          name: 'Example',
+          parent_barcode: parent.human_barcode,
+          parent: nil,
+          concentration: '0.8',
+          volume: '10',
+          number: 2,
+          study_id: study_id
+        )
       end
 
       before { save }
@@ -128,14 +130,14 @@ RSpec.describe PhiX::SpikedBuffer, :phi_x do
 
         it 'sets study on the new aliquots' do
           phi_x_spiked_buffer.created_spiked_buffers.each do |tube|
-            expect(tube.aliquots).to all have_attributes(study_id: study_id)
+            expect(tube.aliquots).to all have_attributes(study_id:)
           end
         end
       end
     end
 
     context 'with invalid data' do
-      let(:phi_x_spiked_buffer) { build :phi_x_spiked_buffer, number: -2 }
+      let(:phi_x_spiked_buffer) { build(:phi_x_spiked_buffer, number: -2) }
 
       it 'returns false' do
         expect(phi_x_spiked_buffer.save).to be false
@@ -145,17 +147,19 @@ RSpec.describe PhiX::SpikedBuffer, :phi_x do
 
   describe '#tags' do
     let(:phi_x_spiked_buffer) do
-      build :phi_x_spiked_buffer,
-            name: 'Example',
-            parent_barcode: parent.human_barcode,
-            parent: nil,
-            concentration: '0.8',
-            volume: '10',
-            number: 2
+      build(
+        :phi_x_spiked_buffer,
+        name: 'Example',
+        parent_barcode: parent.human_barcode,
+        parent: nil,
+        concentration: '0.8',
+        volume: '10',
+        number: 2
+      )
     end
 
     context 'when single' do
-      let(:parent) { create :phi_x_stock_tube, tag_option: 'Single' }
+      let(:parent) { create(:phi_x_stock_tube, tag_option: 'Single') }
 
       it 'returns Single' do
         expect(phi_x_spiked_buffer.tags).to eq('Single')
@@ -163,7 +167,7 @@ RSpec.describe PhiX::SpikedBuffer, :phi_x do
     end
 
     context 'when dual' do
-      let(:parent) { create :phi_x_stock_tube, tag_option: 'Dual' }
+      let(:parent) { create(:phi_x_stock_tube, tag_option: 'Dual') }
 
       it 'returns Dual' do
         expect(phi_x_spiked_buffer.tags).to eq('Dual')

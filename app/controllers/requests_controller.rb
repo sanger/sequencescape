@@ -82,7 +82,7 @@ class RequestsController < ApplicationController
         flash[:notice] = 'Request details have been updated'
         redirect_to request_path(@request)
       else
-        flash[:error] = 'Request was not updated. No change specified ?' # rubocop:disable Rails/ActionControllerFlashBeforeRender
+        flash[:error] = 'Request was not updated. No change specified ?'
         render action: 'edit', id: @request.id
       end
     rescue => e

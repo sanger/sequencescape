@@ -32,7 +32,7 @@ describe 'Bait Library Layouts API', with: :api_v2 do
 
   context 'with a single resource' do
     describe '#GET the resource by ID' do
-      let(:resource) { create :bait_library_layout }
+      let(:resource) { create(:bait_library_layout) }
 
       context 'without included relationships' do
         before { api_get "#{base_endpoint}/#{resource.id}" }
@@ -83,7 +83,7 @@ describe 'Bait Library Layouts API', with: :api_v2 do
   end
 
   describe '#PATCH a resource' do
-    let(:resource) { create :bait_library_layout }
+    let(:resource) { create(:bait_library_layout) }
     let(:payload) do
       {
         'data' => {

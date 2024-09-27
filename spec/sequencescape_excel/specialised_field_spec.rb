@@ -4,26 +4,30 @@ require 'rails_helper'
 
 RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_manifest_excel, type: :model do
   let(:map) { create(:map) }
-  let(:asset) { create(:untagged_well, map: map) }
-  let(:asset2) { create(:untagged_well, map: map) }
-  let(:sample_manifest) { create :sample_manifest }
+  let(:asset) { create(:untagged_well, map:) }
+  let(:asset2) { create(:untagged_well, map:) }
+  let(:sample_manifest) { create(:sample_manifest) }
   let(:sample_manifest_asset) do
-    create :sample_manifest_asset,
-           asset: asset,
-           sanger_sample_id: sample.sanger_sample_id,
-           sample_manifest: sample_manifest
+    create(
+      :sample_manifest_asset,
+      asset: asset,
+      sanger_sample_id: sample.sanger_sample_id,
+      sample_manifest: sample_manifest
+    )
   end
   let(:sample_manifest_asset2) do
-    create :sample_manifest_asset,
-           asset: asset2,
-           sanger_sample_id: sample2.sanger_sample_id,
-           sample_manifest: sample_manifest
+    create(
+      :sample_manifest_asset,
+      asset: asset2,
+      sanger_sample_id: sample2.sanger_sample_id,
+      sample_manifest: sample_manifest
+    )
   end
   let!(:library_type) { create(:library_type) }
   let!(:reference_genome) { create(:reference_genome, name: 'new one') }
   let(:aliquot) { sample_manifest_asset.asset.aliquots.first }
-  let(:sample) { create :sample_with_sanger_sample_id }
-  let(:sample2) { create :sample_with_sanger_sample_id }
+  let(:sample) { create(:sample_with_sanger_sample_id) }
+  let(:sample2) { create(:sample_with_sanger_sample_id) }
 
   describe SequencescapeExcel::SpecialisedField::Base do
     # We use an anonymous class as classes created in specs have global scope.
@@ -37,7 +41,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
     end
 
     it 'knows if value is present' do
-      thing = class_with_base.new(sample_manifest_asset: sample_manifest_asset)
+      thing = class_with_base.new(sample_manifest_asset:)
       expect(thing).not_to be_value_present
       thing.value = 'value'
       expect(thing).to be_value_present
@@ -75,7 +79,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
 
     it 'will add the the value to the aliquot' do
       specialised_field = described_class.new(value: library_type.name, sample_manifest_asset: sample_manifest_asset)
-      specialised_field.update(aliquot: aliquot)
+      specialised_field.update(aliquot:)
       expect(aliquot.library_type).to eq(library_type.name)
     end
 
@@ -84,7 +88,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
 
       it 'will add the the value to all aliquots' do
         specialised_field = described_class.new(value: library_type.name, sample_manifest_asset: sample_manifest_asset)
-        specialised_field.update(aliquot: aliquot)
+        specialised_field.update(aliquot:)
         expect(asset.aliquots).to all(have_attributes(library_type: library_type.name))
       end
     end
@@ -92,7 +96,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
 
   describe SequencescapeExcel::SpecialisedField::ReferenceGenome do
     it 'is valid, if a value was not provided' do
-      expect(described_class.new(sample_manifest_asset: sample_manifest_asset)).to be_valid
+      expect(described_class.new(sample_manifest_asset:)).to be_valid
     end
 
     it 'will not be valid without a persisted reference genome if a value is provided' do
@@ -117,13 +121,13 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
     let(:value2) { '8' }
 
     it 'will update the volume in sample metadata' do
-      specialised_field = described_class.new(value: value, sample_manifest_asset: sample_manifest_asset)
+      specialised_field = described_class.new(value:, sample_manifest_asset:)
       specialised_field.update
       expect(sample_manifest_asset.sample.sample_metadata.volume).to eq(value)
     end
 
     it 'will create a QC result for the asset' do
-      specialised_field = described_class.new(value: value, sample_manifest_asset: sample_manifest_asset)
+      specialised_field = described_class.new(value:, sample_manifest_asset:)
       specialised_field.update
       qc_result = sample_manifest_asset.asset.qc_results.first
       expect(qc_result.value).to eq(value.to_f.to_s)
@@ -133,7 +137,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
     end
 
     it 'will create a QC assay for each sample manifest' do
-      specialised_field1 = described_class.new(value: value, sample_manifest_asset: sample_manifest_asset)
+      specialised_field1 = described_class.new(value:, sample_manifest_asset:)
       specialised_field1.update
       specialised_field2 = described_class.new(value: value2, sample_manifest_asset: sample_manifest_asset2)
       specialised_field2.update
@@ -167,7 +171,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
 
     it 'will add the value to the aliquot' do
       specialised_field = described_class.new(value: 100, sample_manifest_asset: sample_manifest_asset)
-      specialised_field.update(aliquot: aliquot)
+      specialised_field.update(aliquot:)
       expect(aliquot.insert_size_from).to eq(100)
     end
 
@@ -176,7 +180,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
 
       it 'will add the the value to all aliquots' do
         specialised_field = described_class.new(value: 100, sample_manifest_asset: sample_manifest_asset)
-        specialised_field.update(aliquot: aliquot)
+        specialised_field.update(aliquot:)
         expect(asset.aliquots).to all(have_attributes(insert_size_from: 100))
       end
     end
@@ -190,7 +194,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
 
     it 'will add the value to the aliquot' do
       specialised_field = described_class.new(value: 100, sample_manifest_asset: sample_manifest_asset)
-      specialised_field.update(aliquot: aliquot)
+      specialised_field.update(aliquot:)
       expect(aliquot.insert_size_to).to eq(100)
     end
 
@@ -199,7 +203,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
 
       it 'will add the the value to all aliquots' do
         specialised_field = described_class.new(value: 100, sample_manifest_asset: sample_manifest_asset)
-        specialised_field.update(aliquot: aliquot)
+        specialised_field.update(aliquot:)
         expect(asset.aliquots).to all(have_attributes(insert_size_to: 100))
       end
     end
@@ -208,7 +212,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
   describe SequencescapeExcel::SpecialisedField::SangerPlateId do
     let!(:sample1) { create(:sample_with_well) }
     let!(:sample1_plate) { sample1.wells.first.plate }
-    let(:sample_manifest_asset1) { create :sample_manifest_asset, asset: sample1.primary_receptacle }
+    let(:sample_manifest_asset1) { create(:sample_manifest_asset, asset: sample1.primary_receptacle) }
 
     it 'will be valid if the value matches the sanger human barcode' do
       expect(
@@ -219,7 +223,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
 
     describe 'with foreign barcodes' do
       let!(:sample2) { create(:sample_with_well) }
-      let(:sample_manifest_asset2) { create :sample_manifest_asset, asset: sample2.primary_receptacle }
+      let(:sample_manifest_asset2) { create(:sample_manifest_asset, asset: sample2.primary_receptacle) }
 
       it 'will be valid if the value matches an unused cgap foreign barcode' do
         expect(described_class.new(value: 'CGAP-ABC001', sample_manifest_asset: sample_manifest_asset1)).to be_valid
@@ -254,7 +258,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
     let!(:sample1) { create(:sample) }
     let!(:sample1_tube) { create(:sample_tube_with_sanger_sample_id, sample: sample1) }
 
-    let(:manifest_asset) { create :sample_manifest_asset, asset: sample1_tube }
+    let(:manifest_asset) { create(:sample_manifest_asset, asset: sample1_tube) }
 
     it 'will be valid if the value matches the sanger human barcode' do
       expect(described_class.new(value: sample1_tube.human_barcode, sample_manifest_asset: manifest_asset)).to be_valid
@@ -264,7 +268,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
     describe 'with foreign barcodes' do
       let!(:sample2) { create(:sample) }
       let!(:sample2_tube) { create(:sample_tube_with_sanger_sample_id, sample: sample2) }
-      let(:manifest_asset2) { create :sample_manifest_asset, asset: sample2_tube }
+      let(:manifest_asset2) { create(:sample_manifest_asset, asset: sample2_tube) }
 
       it 'will be valid if the value matches an unused cgap foreign barcode' do
         expect(described_class.new(value: 'CGAP-ABC001', sample_manifest_asset: manifest_asset)).to be_valid
@@ -338,8 +342,8 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
       end
 
       it 'will update the aliquot and create the tag if oligo is present' do
-        i7.update(aliquot: aliquot, tag_group: tag_group)
-        tag = tag_group.tags.find_by(oligo: oligo)
+        i7.update(aliquot:, tag_group:)
+        tag = tag_group.tags.find_by(oligo:)
         expect(tag).to be_present
         expect(tag.oligo).to eq(oligo)
         expect(tag.map_id).to eq(1)
@@ -348,14 +352,14 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
 
       it 'if oligo is not present aliquot tag should be -1' do
         i7 = described_class.new(value: nil, sample_manifest_asset: sample_manifest_asset)
-        i7.update(aliquot: aliquot, tag_group: tag_group)
+        i7.update(aliquot:, tag_group:)
         aliquot.save
         expect(aliquot.tag_id).to eq(-1)
       end
 
       it 'will find the tag if it already exists' do
         tag = tag_group.tags.create(oligo: oligo, map_id: 10)
-        i7.update(aliquot: aliquot, tag_group: tag_group)
+        i7.update(aliquot:, tag_group:)
         expect(aliquot.tag).to eq(tag)
       end
     end
@@ -373,9 +377,9 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
       end
 
       it 'will update the aliquot' do
-        i5.update(aliquot: aliquot, tag_group: tag_group)
+        i5.update(aliquot:, tag_group:)
         aliquot.save
-        expect(aliquot.tag2).to eq(tag_group.tags.find_by(oligo: oligo))
+        expect(aliquot.tag2).to eq(tag_group.tags.find_by(oligo:))
       end
     end
   end
@@ -507,7 +511,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
 
         it 'does not retrieve nil tag' do
           expect(sf_tag2_index).to be_valid
-          sf_tag2_index.update(aliquot: aliquot)
+          sf_tag2_index.update(aliquot:)
           expect(aliquot.tag2_id).to eq(-1)
         end
       end
@@ -558,8 +562,8 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
   end
 
   describe SequencescapeExcel::SpecialisedField::ChromiumTagGroup do
-    let(:adapter_type) { create :adapter_type, name: 'Chromium' }
-    let(:tag_group) { create(:tag_group_with_tags, adapter_type: adapter_type) }
+    let(:adapter_type) { create(:adapter_type, name: 'Chromium') }
+    let(:tag_group) { create(:tag_group_with_tags, adapter_type:) }
     let(:tag_group_name) { tag_group.name }
     let(:tag_well) { 'A1' }
 
@@ -574,7 +578,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
       end
 
       context 'when the tag group is not Chromium' do
-        let(:adapter_type) { create :adapter_type, name: 'Other' }
+        let(:adapter_type) { create(:adapter_type, name: 'Other') }
 
         it 'will not be valid' do
           expect(
@@ -642,9 +646,9 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
   end
 
   describe SequencescapeExcel::SpecialisedField::DualIndexTagSet do
-    let(:tag_group1) { create :tag_group_with_tags }
-    let(:tag_group2) { create :tag_group_with_tags }
-    let(:dual_index_tag_set) { create :tag_set, tag_group: tag_group1, tag2_group: tag_group2 }
+    let(:tag_group1) { create(:tag_group_with_tags) }
+    let(:tag_group2) { create(:tag_group_with_tags) }
+    let(:dual_index_tag_set) { create(:tag_set, tag_group: tag_group1, tag2_group: tag_group2) }
     let(:dual_index_tag_well) { 'A1' }
 
     describe 'dual index tag set' do
@@ -683,7 +687,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
       end
 
       context 'when the tag set name is has only one visible tag group' do
-        let(:tag_group2) { create :tag_group_with_tags, visible: false }
+        let(:tag_group2) { create(:tag_group_with_tags, visible: false) }
 
         it 'will be not be valid' do
           expect(sf_dual_index_tag_set).not_to be_valid
@@ -773,7 +777,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
   end
 
   describe SequencescapeExcel::SpecialisedField::PrimerPanel do
-    let(:primer_panel) { create :primer_panel }
+    let(:primer_panel) { create(:primer_panel) }
 
     it 'will not be valid without a persisted primer panel' do
       expect(described_class.new(value: primer_panel.name, sample_manifest_asset: sample_manifest_asset)).to be_valid
@@ -788,7 +792,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
 
     it 'will add the the value to the aliquot' do
       specialised_field = described_class.new(value: primer_panel.name, sample_manifest_asset: sample_manifest_asset)
-      specialised_field.update(aliquot: aliquot)
+      specialised_field.update(aliquot:)
       expect(aliquot.primer_panel).to eq(primer_panel)
     end
 
@@ -797,8 +801,8 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
 
       it 'will add the the value to all aliquots' do
         specialised_field = described_class.new(value: primer_panel.name, sample_manifest_asset: sample_manifest_asset)
-        specialised_field.update(aliquot: aliquot)
-        expect(asset.aliquots).to all(have_attributes(primer_panel: primer_panel))
+        specialised_field.update(aliquot:)
+        expect(asset.aliquots).to all(have_attributes(primer_panel:))
       end
     end
   end
@@ -824,7 +828,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
 
     it 'will update the priority on the sample when present' do
       specialised_field = described_class.new(value: '1', sample_manifest_asset: sample_manifest_asset)
-      specialised_field.update(aliquot: aliquot)
+      specialised_field.update(aliquot:)
       aliquot.save
       expect(sample_manifest_asset.sample.priority).to eq('backlog')
     end
@@ -849,7 +853,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
 
     it 'will update the control and control type on the sample when present' do
       specialised_field = described_class.new(value: 'positive', sample_manifest_asset: sample_manifest_asset)
-      specialised_field.update(aliquot: aliquot)
+      specialised_field.update(aliquot:)
       aliquot.save
       expect(sample_manifest_asset.sample.control).to be(true)
       expect(sample_manifest_asset.sample.control_type).to eq('positive')
@@ -861,7 +865,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
       sample_manifest_asset.sample.control_type = 'positive'
       sample_manifest_asset.sample.save
       specialised_field = described_class.new(value: '', sample_manifest_asset: sample_manifest_asset)
-      specialised_field.update(aliquot: aliquot)
+      specialised_field.update(aliquot:)
       aliquot.save
       expect(sample_manifest_asset.sample.control).to be(false)
       expect(sample_manifest_asset.sample.control_type).to be_nil
@@ -911,7 +915,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
     it 'will update the control and control type on the sample when present' do
       sf = described_class.new(value: 'pcr positive', sample_manifest_asset: sample_manifest_asset)
       sf.supplier_name = bs_supplier_name
-      sf.update(aliquot: aliquot)
+      sf.update(aliquot:)
       aliquot.save
       expect(sample_manifest_asset.sample.control).to be(true)
       expect(sample_manifest_asset.sample.control_type).to eq('pcr positive')
@@ -924,7 +928,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
       sample_manifest_asset.sample.save
       sf = described_class.new(value: '', sample_manifest_asset: sample_manifest_asset)
       sf.supplier_name = bs_supplier_name
-      sf.update(aliquot: aliquot)
+      sf.update(aliquot:)
       aliquot.save
       expect(sample_manifest_asset.sample.control).to be(false)
       expect(sample_manifest_asset.sample.control_type).to be_nil
@@ -1005,7 +1009,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
 
   # This section is for the Retention instruction field added as part of the Labware Destruction work
   describe SequencescapeExcel::SpecialisedField::RetentionInstruction do
-    let(:user) { create :user }
+    let(:user) { create(:user) }
 
     shared_examples 'a retention instruction labware' do
       it 'will be invalid if the value is not set' do
@@ -1053,23 +1057,23 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
     end
 
     context 'when processing plate wells' do
-      let(:asset_plate) { create :plate_with_untagged_wells, sample_count: 1 }
+      let(:asset_plate) { create(:plate_with_untagged_wells, sample_count: 1) }
       let(:asset) { asset_plate.wells.first }
 
       it_behaves_like 'a retention instruction labware'
     end
 
     context 'when processing tubes' do
-      let(:asset) { create :sample_tube }
+      let(:asset) { create(:sample_tube) }
 
       it_behaves_like 'a retention instruction labware'
     end
 
     context 'when retention instruction is updated (through manifests) for a labware that doesn\'t
             have retention instructions' do
-      let(:asset_plate) { create :plate_with_untagged_wells, sample_count: 1 }
+      let(:asset_plate) { create(:plate_with_untagged_wells, sample_count: 1) }
       let(:asset) { asset_plate.wells.first }
-      let(:user) { create :user }
+      let(:user) { create(:user) }
 
       before do
         custom_metadatum = CustomMetadatum.new

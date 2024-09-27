@@ -6,7 +6,7 @@ require './app/resources/api/v2/transfers/transfer_resource'
 RSpec.describe Api::V2::Transfers::TransferResource, type: :resource do
   subject(:resource) { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { build_stubbed :transfer_between_plates }
+  let(:resource_model) { build_stubbed(:transfer_between_plates) }
 
   # Test attributes
   it 'allows fetching the expected attributes', :aggregate_failures do

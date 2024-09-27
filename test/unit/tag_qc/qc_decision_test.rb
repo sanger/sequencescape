@@ -13,12 +13,12 @@ class QcDecisionTest < ActiveSupport::TestCase
 
     context '#qc_decision' do
       setup do
-        @lot = create :lot
-        @user = create :user
+        @lot = create(:lot)
+        @user = create(:user)
         @user.roles.create!(name: 'qa_manager')
-        @user_b = create :user
-        @qcable_a = create :qcable, lot: @lot, state: 'pending'
-        @qcable_b = create :qcable, lot: @lot, state: 'pending'
+        @user_b = create(:user)
+        @qcable_a = create(:qcable, lot: @lot, state: 'pending')
+        @qcable_b = create(:qcable, lot: @lot, state: 'pending')
       end
 
       context 'with valid data' do

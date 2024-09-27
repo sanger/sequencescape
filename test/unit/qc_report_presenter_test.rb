@@ -27,28 +27,32 @@ Asset ID,Total micrograms,Sanger sample,Comment,Qc Decision,Proceed
     STATE_ARRAY = %w[passed failed].freeze
 
     setup do
-      @product = create :product, name: 'Demo Product'
-      @criteria = create :product_criteria, product: @product, version: 1
-      @study = create :study, name: 'Example study'
+      @product = create(:product, name: 'Demo Product')
+      @criteria = create(:product_criteria, product: @product, version: 1)
+      @study = create(:study, name: 'Example study')
       Timecop.freeze(DateTime.parse('01/01/2015')) do
         @report =
-          create :qc_report,
-                 study: @study,
-                 exclude_existing: false,
-                 created_at: DateTime.parse('01/01/2015 00:00:00'),
-                 product_criteria: @criteria
+          create(
+            :qc_report,
+            study: @study,
+            exclude_existing: false,
+            created_at: DateTime.parse('01/01/2015 00:00:00'),
+            product_criteria: @criteria
+          )
       end
       @asset_ids = []
       2.times do |i|
         m =
-          create :qc_metric,
-                 qc_report: @report,
-                 qc_decision: STATE_ARRAY[i],
-                 metrics: {
-                   total_micrograms: 10,
-                   comment: 'X',
-                   sanger_sample_id: 'EG'
-                 }
+          create(
+            :qc_metric,
+            qc_report: @report,
+            qc_decision: STATE_ARRAY[i],
+            metrics: {
+              total_micrograms: 10,
+              comment: 'X',
+              sanger_sample_id: 'EG'
+            }
+          )
         @asset_ids << m.asset_id
       end
     end

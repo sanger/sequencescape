@@ -130,11 +130,11 @@ class ProjectsController < ApplicationController # rubocop:todo Metrics/ClassLen
       if params[:role]
         @user.grant_role(params[:role][:authorizable_type].to_s, @project)
         @roles = @project.roles
-        flash[:notice] = 'Role added' # rubocop:disable Rails/ActionControllerFlashBeforeRender
+        flash[:notice] = 'Role added'
         render partial: 'roles', status: 200
       else
         @roles = @project.roles
-        flash[:error] = 'A problem occurred while adding the role' # rubocop:disable Rails/ActionControllerFlashBeforeRender
+        flash[:error] = 'A problem occurred while adding the role'
         render partial: 'roles', status: 500
       end
     else
@@ -156,11 +156,11 @@ class ProjectsController < ApplicationController # rubocop:todo Metrics/ClassLen
       if params[:role]
         @user.remove_role(params[:role][:authorizable_type].to_s, @project)
         @roles = @project.roles
-        flash[:error] = 'Role was removed' # rubocop:disable Rails/ActionControllerFlashBeforeRender
+        flash[:error] = 'Role was removed'
         render partial: 'roles', status: 200
       else
         @roles = @project.roles
-        flash[:error] = 'A problem occurred while removing the role' # rubocop:disable Rails/ActionControllerFlashBeforeRender
+        flash[:error] = 'A problem occurred while removing the role'
         render partial: 'roles', status: 500
       end
     else

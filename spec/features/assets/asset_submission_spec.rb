@@ -3,10 +3,10 @@
 require 'rails_helper'
 
 describe 'Asset submission', :js do
-  let(:project) { create :project }
-  let(:study) { create :study }
+  let(:project) { create(:project) }
+  let(:study) { create(:study) }
   let(:request_factory) { :sequencing_request }
-  let(:asset) { create :library_tube }
+  let(:asset) { create(:library_tube) }
   let(:request_types) { create_list(:sequencing_request_type, 2) }
   let(:original_request_type) { request_types.first }
   let(:selected_request_type) { original_request_type }
@@ -77,7 +77,7 @@ describe 'Asset submission', :js do
     it 'the link is not visible' do
       login_user user
       visit labware_path(asset)
-      expect(page).not_to have_text('Request additional sequencing')
+      expect(page).to have_no_text('Request additional sequencing')
     end
   end
 
@@ -113,7 +113,7 @@ describe 'Asset submission', :js do
   end
 
   context 'when an admin' do
-    let(:user) { create :admin }
+    let(:user) { create(:admin) }
 
     context 'with the original request_type' do
       it_behaves_like 'it allows additional sequencing'
@@ -126,7 +126,7 @@ describe 'Asset submission', :js do
     end
 
     context 'when cross study pooled' do
-      let(:asset) { create :multiplexed_library_tube, aliquots: build_list(:library_aliquot, 2) }
+      let(:asset) { create(:multiplexed_library_tube, aliquots: build_list(:library_aliquot, 2)) }
       let(:study) { asset.aliquots.first.study }
       let(:project) { asset.aliquots.first.project }
       let!(:original_request) do
@@ -139,17 +139,17 @@ describe 'Asset submission', :js do
   end
 
   context 'when a regular user' do
-    let(:user) { create :user }
+    let(:user) { create(:user) }
 
     it_behaves_like 'it forbids additional sequencing'
   end
 
   context 'when study does not have an accession number' do
     # Create a user that is allowed to request additional sequencing.
-    let(:user) { create :admin }
+    let(:user) { create(:admin) }
 
     # Create a study that requires accessioning, but does not have an accession number.
-    let(:study) { create :open_study, enforce_accessioning: true, accession_number: nil }
+    let(:study) { create(:open_study, enforce_accessioning: true, accession_number: nil) }
 
     it_behaves_like 'it shows an error message about study'
   end

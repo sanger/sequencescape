@@ -13,7 +13,7 @@ describe QcableCreator do
 
   it 'will create some qcables with a list of barcodes' do
     barcodes = 'CGAP-1,CGAP-2,CGAP-3,CGAP-4,CGAP-5'
-    qcable_creator = described_class.create(barcodes: barcodes, user: user, lot: lot)
+    qcable_creator = described_class.create(barcodes:, user:, lot:)
     expect(qcable_creator.qcables.count).to eq(5)
     expect(qcable_creator.qcables.first.barcodes.first.barcode).to eq('CGAP-1')
     expect(qcable_creator.qcables.last.barcodes.first.barcode).to eq('CGAP-5')

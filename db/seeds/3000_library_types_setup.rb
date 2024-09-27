@@ -154,7 +154,7 @@ LibraryType.create!(
     'Pre-quality controlled',
     'DSN_RNAseq',
     'RNA-seq dUTP'
-  ].map { |name| { name: name } }
+  ].map { |name| { name: } }
 )
 
 RequestType.find_each do |request_type|
@@ -228,7 +228,7 @@ library_types =
       'Nextera single index pre quality controlled',
       'Nextera dual index pre quality controlled',
       'Bisulphate pre quality controlled'
-    ].map { |name| { name: name } }
+    ].map { |name| { name: } }
   )
 
 %i[illumina_c_multiplexed_library_creation illumina_c_library_creation].each do |request_class_symbol|
@@ -239,7 +239,7 @@ library_types =
 end
 
 libs_ribozero =
-  ['Ribozero RNA-seq (Bacterial)', 'Ribozero RNA-seq (HMR)'].map { |name| LibraryType.find_or_create_by!(name: name) }
+  ['Ribozero RNA-seq (Bacterial)', 'Ribozero RNA-seq (HMR)'].map { |name| LibraryType.find_or_create_by!(name:) }
 
 libs_ribozero.each do |lib|
   %i[illumina_c_pcr illumina_c_pcr_no_pool].each do |request_class_symbol|

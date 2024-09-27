@@ -40,14 +40,7 @@ describe 'Receptacles API', with: :api_v2 do
     let(:coverage) { 100 }
     let(:diluent_volume) { 50.0 }
 
-    let(:receptacle) do
-      create :receptacle,
-             pcr_cycles: pcr_cycles,
-             submit_for_sequencing: submit_for_sequencing,
-             sub_pool: sub_pool,
-             coverage: coverage,
-             diluent_volume: diluent_volume
-    end
+    let(:receptacle) { create(:receptacle, pcr_cycles:, submit_for_sequencing:, sub_pool:, coverage:, diluent_volume:) }
 
     before { api_get "#{base_endpoint}/#{receptacle.id}" }
 

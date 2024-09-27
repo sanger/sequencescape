@@ -3,12 +3,12 @@
 require 'rails_helper'
 
 RSpec.describe ReceptaclesController do
-  let(:current_user) { create :user }
+  let(:current_user) { create(:user) }
 
   let!(:tube) { create(:sample_tube).receptacle }
-  let!(:lane) { create :lane }
-  let!(:well) { create :untagged_well, study: study }
-  let(:study) { create :study }
+  let!(:lane) { create(:lane) }
+  let!(:well) { create(:untagged_well, study:) }
+  let(:study) { create(:study) }
 
   it_behaves_like 'it requires login'
 

@@ -25,7 +25,7 @@ describe 'Requests API', with: :api_v2 do
   end
 
   context 'with a request' do
-    let(:resource_model) { create :request }
+    let(:resource_model) { create(:request) }
 
     it 'sends an individual request' do
       api_get "#{base_endpoint}/#{resource_model.id}?include=primer_panel"

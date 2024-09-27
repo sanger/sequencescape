@@ -4,7 +4,7 @@ require 'rails_helper'
 
 describe RequestEvent do
   context 'Customer Requests' do
-    let!(:request) { create :customer_request, asset: create(:well), target_asset: create(:well) }
+    let!(:request) { create(:customer_request, asset: create(:well), target_asset: create(:well)) }
 
     context 'creating requests' do
       it 'records a RequestEvent' do

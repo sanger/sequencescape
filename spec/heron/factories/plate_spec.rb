@@ -41,7 +41,7 @@ RSpec.describe Heron::Factories::Plate, :heron, :heron_events, :lighthouse, type
     end
 
     context 'without a plate purpose uuid' do
-      let(:params) { { barcode: barcode } }
+      let(:params) { { barcode: } }
       let(:error_messages) { ['Plate purpose uuid not defined'] }
 
       it_behaves_like 'an invalid parameter'
@@ -170,7 +170,7 @@ RSpec.describe Heron::Factories::Plate, :heron, :heron_events, :lighthouse, type
         ]
       end
       let(:event_type) { BroadcastEvent::PlateCherrypicked::EVENT_TYPE }
-      let(:event) { { event: { event_type: event_type, subjects: subjects } } }
+      let(:event) { { event: { event_type:, subjects: } } }
 
       it 'can persist the events' do
         expect { plate_factory.save }.to change(BroadcastEvent, :count).by(1)

@@ -42,7 +42,7 @@ class Admin::StudiesController < ApplicationController
 
     unless params[:filter].nil?
       if params[:filter][:by] == 'unallocated manager'
-        @studies = Study.select { |p| p.name.include?(params[:q]) && !(p.roles.map(&:name).include?('manager')) }
+        @studies = Study.select { |p| p.name.include?(params[:q]) && !p.roles.map(&:name).include?('manager') }
       end
     end
 

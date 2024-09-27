@@ -8,7 +8,7 @@ class SampleManifestsControllerTest < ActionController::TestCase
     setup do
       @controller = Sdb::SampleManifestsController.new
       @request = ActionController::TestRequest.create(@controller)
-      @user = create :user
+      @user = create(:user)
       session[:user] = @user.id
 
       SampleManifestExcel.configure do |config|
@@ -18,7 +18,7 @@ class SampleManifestsControllerTest < ActionController::TestCase
     end
 
     context '#show' do
-      setup { @sample_manifest = create :sample_manifest_with_samples }
+      setup { @sample_manifest = create(:sample_manifest_with_samples) }
 
       should 'return expected sample manifest' do
         get :show, params: { id: @sample_manifest.id }
@@ -44,11 +44,11 @@ class SampleManifestsControllerTest < ActionController::TestCase
           build(:plate_barcode, barcode: 'SQPD-26'),
           build(:plate_barcode, barcode: 'SQPD-27')
         )
-        study = create :study
+        study = create(:study)
         supplier = Supplier.new(name: 'test')
         supplier.save
 
-        barcode_printer = create :barcode_printer
+        barcode_printer = create(:barcode_printer)
         LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns('data' => [{ 'id' => 15 }])
 
         RestClient.expects(:post)

@@ -6,7 +6,7 @@ require './app/resources/api/v2/tag_layout_template_resource'
 RSpec.describe Api::V2::TagLayoutTemplateResource, type: :resource do
   subject(:resource) { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { build_stubbed :tag_layout_template }
+  let(:resource_model) { build_stubbed(:tag_layout_template) }
 
   # Attributes
   it { is_expected.to have_readonly_attribute :uuid }

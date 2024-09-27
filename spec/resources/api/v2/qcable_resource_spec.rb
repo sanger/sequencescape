@@ -6,7 +6,7 @@ require './app/resources/api/v2/qcable_resource'
 RSpec.describe Api::V2::QcableResource, type: :resource do
   subject { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { build_stubbed :qcable }
+  let(:resource_model) { build_stubbed(:qcable) }
 
   # Test attributes
   it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
