@@ -62,7 +62,7 @@ class CherrypickTask::ControlLocator
   #
   # @return [Array<Integer>] The indexes of the control well positions
 
-  def control_positions(_num_plate)
+  def control_positions(num_plate)
     raise StandardError, 'More controls than free wells' if num_control_wells > total_available_positions
 
     # Check that all elements in wells_to_leave_free fall within the acceptable range
