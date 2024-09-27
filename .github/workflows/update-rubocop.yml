@@ -55,9 +55,12 @@ jobs:
           title: Automatic Rubocop update
           branch: gh_action/update_rubocop
           labels: Technical Debt
+          draft: always-true # https://github.com/peter-evans/create-pull-request/blob/main/docs/concepts-guidelines.md#workarounds-to-trigger-further-workflow-runs
           delete-branch: true
           body: |
             Automatic update via https://github.com/sanger/sequencescape/blob/develop/.github/workflows/update_rubocop.yml
+
+            Click `Ready for review` to trigger the CI checks.
 
             This cop will trigger safe-autocorrect for new cops, and will
             add inline rubocop:todo for other cops. Please sanity check
