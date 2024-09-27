@@ -18,28 +18,32 @@ FactoryBot.define do
 
     submission_class_name { LinearSubmission.name }
     sequence(:name) { |i| "Template #{i}" }
-    submission_parameters { { request_type_ids_list: request_type_ids_list } }
+    submission_parameters { { request_type_ids_list: } }
     product_catalogue { |pc| pc.association(:single_product_catalogue) }
 
     factory :cherrypick_submission_template do
       name { 'Cherrypick' }
-      request_types { create_list :cherrypick_request_type, 1 }
+      request_types { create_list(:cherrypick_request_type, 1) }
     end
 
     factory :limber_wgs_submission_template do
       transient { request_types { [create(:library_request_type)] } }
     end
 
-    factory :libray_and_sequencing_template do
+    factory :library_and_sequencing_template do
       transient { request_types { [create(:library_request_type), create(:sequencing_request_type)] } }
     end
 
-    factory :heron_libray_and_sequencing_template do
+    factory :heron_library_and_sequencing_template do
       transient { request_types { [create(:heron_request_type), create(:sequencing_request_type)] } }
     end
 
-    factory :isc_libray_and_sequencing_template do
+    factory :isc_library_and_sequencing_template do
       transient { request_types { [create(:isc_library_request_type), create(:sequencing_request_type)] } }
+    end
+
+    factory :pbmc_pooling_submission_template do
+      transient { request_types { [create(:pbmc_pooling_customer_request_type)] } }
     end
   end
 
@@ -69,7 +73,7 @@ FactoryBot.define do
     request_types { [create(:request_type).id] }
 
     factory :library_order do
-      assets { create_list :untagged_well, 1 }
+      assets { create_list(:untagged_well, 1) }
       request_types { [create(:library_request_type).id] }
       request_options do
         {
@@ -80,7 +84,7 @@ FactoryBot.define do
         }
       end
       template_name { 'test_template_name' }
-      order_role { create :order_role }
+      order_role { create(:order_role) }
     end
   end
 

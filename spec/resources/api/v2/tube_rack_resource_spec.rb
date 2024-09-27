@@ -6,7 +6,7 @@ require './app/resources/api/v2/tube_rack_resource'
 RSpec.describe Api::V2::TubeRackResource, type: :resource do
   subject(:tube_rack) { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { build_stubbed :tube_rack }
+  let(:resource_model) { build_stubbed(:tube_rack) }
 
   # Test attributes
   it 'has attributes', :aggregate_failures do
@@ -40,8 +40,8 @@ RSpec.describe Api::V2::TubeRackResource, type: :resource do
   # Add tests for any custom methods you've added.
 
   describe 'tube_locations=' do
-    let(:a1_tube) { create :tube }
-    let(:b1_tube) { create :tube }
+    let(:a1_tube) { create(:tube) }
+    let(:b1_tube) { create(:tube) }
     let(:new_locations) { { A1: { uuid: a1_tube.uuid }, B1: { uuid: b1_tube.uuid } } }
 
     it 'adds associations for the two tubes' do

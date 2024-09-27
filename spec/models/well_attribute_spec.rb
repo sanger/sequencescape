@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 describe WellAttribute do
-  let(:well_attribute) { create :well_attribute }
-  let(:well) { create :well, well_attribute: well_attribute }
+  let(:well_attribute) { create(:well_attribute) }
+  let(:well) { create(:well, well_attribute:) }
   let!(:warehouse_message) { Messenger.create!(target: well, template: 'WellStockResourceIO', root: 'stock_resource') }
 
   it 'does not let current_volume to get negative' do

@@ -22,7 +22,7 @@ FactoryBot.define do
     factory :manager do
       roles { |role| Array(authorizable).map { |auth| role.association(:manager_role, authorizable: auth) } }
 
-      transient { authorizable { create :study } }
+      transient { authorizable { create(:study) } }
     end
 
     factory :owner do

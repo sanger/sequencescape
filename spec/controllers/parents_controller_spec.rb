@@ -3,16 +3,16 @@
 require 'rails_helper'
 
 RSpec.describe ParentsController do
-  let(:current_user) { create :user }
+  let(:current_user) { create(:user) }
 
   it_behaves_like 'it requires login', 'show', parent: :receptacle
 
   describe '#show' do
-    let(:child) { create :lane }
+    let(:child) { create(:lane) }
     let(:parents) { create_list(:library_tube, parent_number).map(&:receptacle) }
 
     before do
-      parents.each { |parent| create :sequencing_request, target_asset: child, asset: parent }
+      parents.each { |parent| create(:sequencing_request, target_asset: child, asset: parent) }
       child.reload
       get :show, params: { receptacle_id: child.id }, session: { user: current_user.id }
     end

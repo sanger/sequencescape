@@ -4,12 +4,12 @@ require 'rails_helper'
 require 'support/barcode_helper'
 
 describe '/api/1/well-uuid' do
-  let(:authorised_app) { create :api_application }
+  let(:authorised_app) { create(:api_application) }
   let(:uuid) { well.uuid }
   let(:custom_metadata_uuid) { collection.uuid }
   let(:purpose_uuid) { '00000000-1111-2222-3333-666666666666' }
 
-  let(:well) { create :well_with_sample_and_plate }
+  let(:well) { create(:well_with_sample_and_plate) }
   let(:sample) { well.samples.first }
 
   before { well }

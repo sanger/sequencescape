@@ -11,7 +11,7 @@ module RecordLoader
     config_folder 'plate_types'
 
     def create_or_update!(name, options)
-      PlateType.create_with(options).find_or_create_by!(name: name)
+      PlateType.create_with(options).find_or_create_by!(name:)
     end
   end
 end

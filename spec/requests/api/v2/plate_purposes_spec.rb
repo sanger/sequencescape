@@ -51,7 +51,7 @@ describe 'PlatePurposes API', with: :api_v2 do
   end
 
   describe '#post' do
-    let(:asset_shape) { create :asset_shape }
+    let(:asset_shape) { create(:asset_shape) }
 
     context 'with valid payload' do
       def payload(bools)

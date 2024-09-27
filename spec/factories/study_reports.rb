@@ -13,7 +13,7 @@ FactoryBot.define do
     factory :completed_study_report do
       report_filename { 'progress_report.csv' }
       after(:build) do |study_report_file|
-        create :db_file, owner: study_report_file, data: Tempfile.open('progress_report.csv').read
+        create(:db_file, owner: study_report_file, data: Tempfile.open('progress_report.csv').read)
       end
     end
   end

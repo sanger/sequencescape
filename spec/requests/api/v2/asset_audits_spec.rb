@@ -51,7 +51,7 @@ describe 'AssetAudits API', with: :api_v2 do
   end
 
   describe '#post' do
-    let(:labware) { create :labware }
+    let(:labware) { create(:labware) }
 
     let(:payload) do
       {

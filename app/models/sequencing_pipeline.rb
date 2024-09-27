@@ -16,7 +16,7 @@ class SequencingPipeline < Pipeline
   end
 
   def is_read_length_consistent_for_batch?(batch) # rubocop:todo Metrics/AbcSize
-    if (batch.requests.size == 0) || (batch.requests.first.request_metadata.nil?)
+    if (batch.requests.size == 0) || batch.requests.first.request_metadata.nil?
       # No requests selected or the pipeline doesn't contain metadata to check
       return true
     end
@@ -33,7 +33,7 @@ class SequencingPipeline < Pipeline
   end
 
   def is_flowcell_type_consistent_for_batch?(batch) # rubocop:todo Metrics/AbcSize
-    if (batch.requests.size == 0) || (batch.requests.first.request_metadata.nil?)
+    if (batch.requests.size == 0) || batch.requests.first.request_metadata.nil?
       # No requests selected or the pipeline doesn't contain metadata to check
       return true
     end

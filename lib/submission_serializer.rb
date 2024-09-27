@@ -85,7 +85,7 @@ module SubmissionSerializer
     end
 
     sp[:request_type_ids_list] = ensp[:request_types].map do |rtk|
-      [(RequestType.find_by(key: rtk).try(:id) || raise(StandardError, "Could not find #{rtk}"))]
+      [RequestType.find_by(key: rtk).try(:id) || raise(StandardError, "Could not find #{rtk}")]
     end
     sp[:order_role_id] = OrderRole.find_or_create_by(role: ensp[:order_role]).id if ensp[:order_role]
 

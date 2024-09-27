@@ -24,11 +24,11 @@ RSpec.describe SequencescapeExcel::Worksheet, :sample_manifest, :sample_manifest
   end
 
   before do
-    create :tag_group, adapter_type: (create :adapter_type, name: 'chromium')
-    create :primer_panel
+    create(:tag_group, adapter_type: create(:adapter_type, name: 'chromium'))
+    create(:primer_panel)
     allow(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode))
 
-    @sample_manifest = create :sample_manifest
+    @sample_manifest = create(:sample_manifest)
     sample_manifest.generate
   end
 

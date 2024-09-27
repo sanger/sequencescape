@@ -22,9 +22,9 @@ class SampleTest < ActiveSupport::TestCase
 
     context 'when used in older assets' do
       setup do
-        @sample = create :sample
-        @tube_a = create :empty_library_tube
-        @tube_b = create :empty_sample_tube
+        @sample = create(:sample)
+        @tube_a = create(:empty_library_tube)
+        @tube_b = create(:empty_sample_tube)
 
         create(:aliquot, sample: @sample, receptacle: @tube_b)
         create(:aliquot, sample: @sample, receptacle: @tube_a)
@@ -36,7 +36,7 @@ class SampleTest < ActiveSupport::TestCase
     end
 
     context '#accession_number?' do
-      setup { @sample = create :sample }
+      setup { @sample = create(:sample) }
       context 'with nil accession number' do
         setup { @sample.sample_metadata.sample_ebi_accession_number = nil }
         should 'return false' do
@@ -60,9 +60,9 @@ class SampleTest < ActiveSupport::TestCase
     context '#accession service' do
       context 'with one study' do
         setup do
-          @sample = create :sample
-          @study = create :open_study, accession_number: 'ENA123'
-          create :study_sample, study: @study, sample: @sample
+          @sample = create(:sample)
+          @study = create(:open_study, accession_number: 'ENA123')
+          create(:study_sample, study: @study, sample: @sample)
         end
         should 'delegate to the study' do
           assert_equal @study, @sample.primary_study
@@ -71,9 +71,9 @@ class SampleTest < ActiveSupport::TestCase
       end
       context 'with one un-accessioned study' do
         setup do
-          @sample = create :sample
-          @study = create :open_study
-          create :study_sample, study: @study, sample: @sample
+          @sample = create(:sample)
+          @study = create(:open_study)
+          create(:study_sample, study: @study, sample: @sample)
         end
         should 'not delegate to the study' do
           assert_accession_service(:unsuitable)
@@ -81,9 +81,9 @@ class SampleTest < ActiveSupport::TestCase
       end
       context 'with one un-accessioned, never study' do
         setup do
-          @sample = create :sample
-          @study = create :not_app_study
-          create :study_sample, study: @study, sample: @sample
+          @sample = create(:sample)
+          @study = create(:not_app_study)
+          create(:study_sample, study: @study, sample: @sample)
         end
         should 'not delegate to the study' do
           assert_accession_service(:none)
@@ -94,11 +94,11 @@ class SampleTest < ActiveSupport::TestCase
       # and it reduces the risk of accidentally making human data public
       context 'with an ena and an ega study' do
         setup do
-          @sample = create :sample
-          @study = create :open_study, accession_number: 'ENA123'
-          @study_b = create :managed_study, accession_number: 'ENA123'
-          create :study_sample, study: @study, sample: @sample
-          create :study_sample, study: @study_b, sample: @sample
+          @sample = create(:sample)
+          @study = create(:open_study, accession_number: 'ENA123')
+          @study_b = create(:managed_study, accession_number: 'ENA123')
+          create(:study_sample, study: @study, sample: @sample)
+          create(:study_sample, study: @study_b, sample: @sample)
         end
         should 'delegate to the ega study' do
           assert_accession_service(:ega)
@@ -107,11 +107,11 @@ class SampleTest < ActiveSupport::TestCase
 
       context 'with an ena and an ega study in the other order' do
         setup do
-          @sample = create :sample
-          @study = create :open_study, accession_number: 'ENA123'
-          @study_b = create :managed_study, accession_number: 'ENA123'
-          create :study_sample, study: @study_b, sample: @sample
-          create :study_sample, study: @study, sample: @sample
+          @sample = create(:sample)
+          @study = create(:open_study, accession_number: 'ENA123')
+          @study_b = create(:managed_study, accession_number: 'ENA123')
+          create(:study_sample, study: @study_b, sample: @sample)
+          create(:study_sample, study: @study, sample: @sample)
         end
         should 'still delegate to the ega study' do
           assert_accession_service(:ega)
@@ -122,11 +122,11 @@ class SampleTest < ActiveSupport::TestCase
       # could be an issue.
       context 'with an accessioned ena but un-accessioned ena' do
         setup do
-          @sample = create :sample
-          @study = create :open_study, accession_number: 'ENA123'
-          @study_b = create :managed_study
-          create :study_sample, study: @study_b, sample: @sample
-          create :study_sample, study: @study, sample: @sample
+          @sample = create(:sample)
+          @study = create(:open_study, accession_number: 'ENA123')
+          @study_b = create(:managed_study)
+          create(:study_sample, study: @study_b, sample: @sample)
+          create(:study_sample, study: @study, sample: @sample)
         end
         should 'not delegate to either study' do
           assert_accession_service(:unsuitable)

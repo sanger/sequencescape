@@ -93,7 +93,7 @@ class User < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def logout_path
-    configatron.authentication == 'sanger-sso' ? (configatron.sso_logout_url).to_s : '/logout'
+    configatron.authentication == 'sanger-sso' ? configatron.sso_logout_url.to_s : '/logout'
   end
 
   def profile_incomplete?

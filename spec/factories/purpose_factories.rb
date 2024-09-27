@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :purpose do
     prefix { 'DN' }
-    name { generate :purpose_name }
+    name { generate(:purpose_name) }
     target_type { 'Asset' }
 
     factory :stock_purpose do
@@ -18,22 +18,22 @@ FactoryBot.define do
   end
 
   factory(:purpose_additional_input, class: 'PlatePurpose::AdditionalInput') do
-    name { generate :purpose_name }
+    name { generate(:purpose_name) }
     target_type { 'Plate' }
     size { '96' }
   end
 
   factory :strip_tube_purpose, class: 'PlatePurpose' do
     prefix { 'LS' }
-    name { generate :purpose_name }
+    name { generate(:purpose_name) }
     size { '8' }
-    asset_shape { create :strip_tube_column_shape }
+    asset_shape { create(:strip_tube_column_shape) }
     target_type { 'StripTube' }
   end
 
   factory :plate_purpose do
     prefix { 'DN' }
-    name { generate :purpose_name }
+    name { generate(:purpose_name) }
     size { 96 }
     barcode_printer_type factory: %i[plate_barcode_printer_type]
     target_type { 'Plate' }
@@ -83,14 +83,14 @@ FactoryBot.define do
   end
 
   factory :working_dilution_plate_purpose, class: 'DilutionPlatePurpose' do
-    name { generate :purpose_name }
+    name { generate(:purpose_name) }
     target_type { 'WorkingDilutionPlate' }
     prefix { 'WD' }
   end
 
   factory :tube_purpose, class: 'Tube::Purpose' do
     prefix { 'NT' }
-    name { generate :purpose_name }
+    name { generate(:purpose_name) }
     target_type { 'MultiplexedLibraryTube' }
 
     factory :sample_tube_purpose do
@@ -118,7 +118,7 @@ FactoryBot.define do
 
   factory :std_mx_tube_purpose, class: 'Tube::StandardMx' do
     prefix { 'NT' }
-    name { generate :purpose_name }
+    name { generate(:purpose_name) }
     target_type { 'MultiplexedLibraryTube' }
   end
 
@@ -149,7 +149,7 @@ FactoryBot.define do
 
   factory :tube_rack_purpose, class: 'TubeRack::Purpose' do
     target_type { 'TubeRack' }
-    name { generate :purpose_name }
+    name { generate(:purpose_name) }
     size { 96 }
 
     factory :tube_rack_purpose_48 do

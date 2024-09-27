@@ -85,7 +85,7 @@ class Purpose < ApplicationRecord
   end
 
   def prefix=(prefix)
-    self.barcode_prefix = BarcodePrefix.find_or_create_by(prefix: prefix)
+    self.barcode_prefix = BarcodePrefix.find_or_create_by(prefix:)
   end
 
   def set_default_barcode_prefix

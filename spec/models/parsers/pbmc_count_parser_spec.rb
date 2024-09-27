@@ -19,117 +19,122 @@ def read_file(filename)
   File.read(filename)
 end
 
-RSpec.describe Parsers::CardinalPbmcCountParser do
-  it 'will have an assay type' do
-    expect(described_class.assay_type).to eq('Cardinal_PBMC_Count')
+RSpec.describe Parsers::PbmcCountParser do
+  it 'has an assay type' do
+    expect(described_class.assay_type).to eq('PBMC_Count')
   end
 
-  it 'will have an assay version' do
+  it 'has an assay version' do
     expect(described_class.assay_version).to eq('v1.0')
   end
 
   context 'when a file is parsed' do
-    let(:filename) { Rails.root.join('spec/data/parsers/cardinal_pbmc_count.csv') }
+    let(:filename) { Rails.root.join('spec/data/parsers/pbmc_count.csv') }
     let(:content) { read_file(filename) }
     let(:csv) { CSV.parse(content) }
     let(:parser) { described_class.new(csv) }
 
-    it 'will return the correct parser' do
-      expect(Parsers.parser_for('cardinal_pbmc_count.csv', nil, content)).to be_a(described_class)
+    it 'returns the correct parser' do
+      expect(Parsers.parser_for('pbmc_count.csv', nil, content)).to be_a(described_class)
     end
 
-    it 'will have some content' do
+    it 'has some content' do
       expect(parser.content).to eq(csv)
     end
 
     context 'when parsing rows' do
       let(:rows) { parser.rows }
 
-      it 'will have the correct number of rows' do
+      it 'has the correct number of rows' do
         expect(rows.length).to eq(8)
       end
 
-      it 'will have the correct csv for well A1' do
+      it 'has the correct csv for well A1' do
         row = rows[0]
         expect(row[0]).to eq('DN871908M:A1')
         expect(row[2]).to eq('2030000')
         expect(row[4]).to eq('75.00%')
+        expect(row[9]).to eq('2710000')
       end
 
-      it 'will have the correct csv for well H1' do
+      it 'has the correct csv for well H1' do
         row = rows[7]
         expect(row[0]).to eq('DN871908M:H1')
         expect(row[2]).to eq('1940000')
         expect(row[4]).to eq('74.00%')
+        expect(row[9]).to eq('2610000')
       end
     end
 
     context 'when formatting into qc data' do
       let(:qc_data) { parser.qc_data }
 
-      it 'will have the correct number of values' do
+      it 'has the correct number of values' do
         expect(qc_data.values.length).to eq(8)
       end
 
-      it 'will have the correct data for well A1' do
+      it 'has the correct data for well A1' do
         row = qc_data['A1']
         expect(row[:live_cell_count]).to eq(Unit.new('2030000', 'cells'))
         expect(row[:viability]).to eq(Unit.new('75.00', '%'))
+        expect(row[:total_cell_count]).to eq(Unit.new('2710000', 'cells'))
       end
 
-      it 'will have the correct data for well H1' do
+      it 'has the correct data for well H1' do
         row = qc_data['H1']
         expect(row[:live_cell_count]).to eq(Unit.new('1940000', 'cells'))
         expect(row[:viability]).to eq(Unit.new('74.00', '%'))
+        expect(row[:total_cell_count]).to eq(Unit.new('2610000', 'cells'))
       end
     end
   end
 
   context 'when the file has blank rows' do
     # this file has 1 row and 23 blank rows
-    let(:filename) { Rails.root.join('spec/data/parsers/cardinal_pbmc_count_blank_rows.csv') }
+    let(:filename) { Rails.root.join('spec/data/parsers/pbmc_count_blank_rows.csv') }
     let(:content) { read_file(filename) }
     let(:csv) { CSV.parse(content) }
     let(:parser) { described_class.new(csv) }
 
-    it 'will return the correct parser' do
-      expect(Parsers.parser_for('cardinal_pbmc_count.csv', nil, content)).to be_a(described_class)
+    it 'has the correct parser' do
+      expect(Parsers.parser_for('pbmc_count.csv', nil, content)).to be_a(described_class)
     end
 
-    it 'will have some content' do
+    it 'has some content' do
       expect(parser.content).to eq(csv)
     end
 
-    it 'will have some qc data' do
+    it 'has some qc data' do
       expect(parser.qc_data.values.length).to eq(1)
     end
   end
 
   context 'when a row has no cells' do
     # this file has 1 normal row, and a couple of rows with 0 live cells, and NaN viability
-    let(:filename) { Rails.root.join('spec/data/parsers/cardinal_pbmc_count_no_cells.csv') }
+    let(:filename) { Rails.root.join('spec/data/parsers/pbmc_count_no_cells.csv') }
     let(:content) { read_file(filename) }
     let(:csv) { CSV.parse(content) }
     let(:parser) { described_class.new(csv) }
 
-    it 'will have three qc data entries - one for each row in the file' do
+    it 'has three qc data entries - one for each row in the file' do
       expect(parser.qc_data.values.length).to eq(3)
     end
 
-    it 'will have cell count and viability metrics for the normal row' do
-      expect(parser.qc_data['A4'].keys).to eq(%i[live_cell_count viability])
+    it 'has cell count and viability metrics for the normal row' do
+      expect(parser.qc_data['A4'].keys).to eq(%i[live_cell_count total_cell_count viability])
     end
 
-    it 'will have just cell count for the rows with 0 cells' do
-      expect(parser.qc_data['A5'].keys).to eq([:live_cell_count])
-      expect(parser.qc_data['E5'].keys).to eq([:live_cell_count])
+    it 'has just cell count for the rows with 0 cells' do
+      expect(parser.qc_data['A5'].keys).to eq(%i[live_cell_count total_cell_count])
+      expect(parser.qc_data['E5'].keys).to eq(%i[live_cell_count total_cell_count])
       expect(parser.qc_data['E5'][:live_cell_count].zero?).to be(true)
+      expect(parser.qc_data['E5'][:total_cell_count].zero?).to be(true)
     end
   end
 
   context 'when updating qc results' do
     let(:plate) { create(:plate_with_empty_wells, well_count: 96) }
-    let(:filename) { Rails.root.join('spec/data/parsers/cardinal_pbmc_count.csv') }
+    let(:filename) { Rails.root.join('spec/data/parsers/pbmc_count.csv') }
     let(:content) { read_file(filename) }
     let(:csv) { CSV.parse(content) }
     let(:parser) { described_class.new(csv) }
@@ -137,11 +142,11 @@ RSpec.describe Parsers::CardinalPbmcCountParser do
     context 'when creating some qc results' do
       before { plate.update_qc_values_with_parser(parser) }
 
-      it 'will have the correct number of results' do
-        expect(QcResult.count).to eq(16)
+      it 'has the correct number of results' do
+        expect(QcResult.count).to eq(24)
       end
 
-      it 'will create the qc results for well A1' do
+      it 'has the qc results for well A1' do
         well = plate.wells.located_at('A1').first
         qc_results = QcResult.where(asset_id: well.id)
 
@@ -149,18 +154,25 @@ RSpec.describe Parsers::CardinalPbmcCountParser do
 
         expect(qc_result.value).to eq('75')
         expect(qc_result.units).to eq('%')
-        expect(qc_result.assay_type).to eq('Cardinal_PBMC_Count')
+        expect(qc_result.assay_type).to eq('PBMC_Count')
         expect(qc_result.assay_version).to eq('v1.0')
 
         qc_result = qc_results.find_by(key: 'live_cell_count')
 
         expect(qc_result.value).to eq('2030000')
         expect(qc_result.units).to eq('cells/ml')
-        expect(qc_result.assay_type).to eq('Cardinal_PBMC_Count')
+        expect(qc_result.assay_type).to eq('PBMC_Count')
+        expect(qc_result.assay_version).to eq('v1.0')
+
+        qc_result = qc_results.find_by(key: 'total_cell_count')
+
+        expect(qc_result.value).to eq('2710000')
+        expect(qc_result.units).to eq('cells/ml')
+        expect(qc_result.assay_type).to eq('PBMC_Count')
         expect(qc_result.assay_version).to eq('v1.0')
       end
 
-      it 'will create the qc results for well H1' do
+      it 'creates the qc results for well H1' do
         well = plate.wells.located_at('H1').first
         qc_results = QcResult.where(asset_id: well.id)
 
@@ -172,6 +184,11 @@ RSpec.describe Parsers::CardinalPbmcCountParser do
         qc_result = qc_results.find_by(key: 'live_cell_count')
 
         expect(qc_result.value).to eq('1940000')
+        expect(qc_result.units).to eq('cells/ml')
+
+        qc_result = qc_results.find_by(key: 'total_cell_count')
+
+        expect(qc_result.value).to eq('2610000')
         expect(qc_result.units).to eq('cells/ml')
       end
     end

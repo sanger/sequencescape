@@ -25,7 +25,7 @@ describe 'LotTypes API', with: :api_v2 do
   end
 
   context 'with a LotType' do
-    let(:resource_model) { create :lot_type }
+    let(:resource_model) { create(:lot_type) }
 
     let(:payload) do
       {

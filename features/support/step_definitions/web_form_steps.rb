@@ -72,7 +72,7 @@ Then /^I should see the (required )?(text|select|textarea) field "([^"]+)"$/ do 
 end
 
 # rubocop:todo Layout/LineLength
-Then %r{^I should see the (required )?select field "([^"]+)" with options "([^"]+(?:\/[^"]+)+)"$} do |required, field, options|
+Then %r{^I should see the (required )?select field "([^"]+)" with options "([^"]+(?:/[^"]+)+)"$} do |required, field, options|
   # rubocop:enable Layout/LineLength
   assert_label_exists(field, required)
   element = locate_labeled_field_type(field, 'select')

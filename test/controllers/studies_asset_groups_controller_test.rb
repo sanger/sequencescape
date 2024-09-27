@@ -13,11 +13,11 @@ module Studies
         @study_count_a = Study.count
         @controller = Studies::AssetGroupsController.new
         @request = ActionController::TestRequest.create(@controller)
-        @user = FactoryBot.create :user
+        @user = FactoryBot.create(:user)
         session[:user] = @user.id
         @controller.stubs(:logged_in?).returns(@user)
-        @study = FactoryBot.create :study
-        @asset_group = FactoryBot.create :asset_group
+        @study = FactoryBot.create(:study)
+        @asset_group = FactoryBot.create(:asset_group)
       end
 
       %w[index new].each do |controller_method|
@@ -124,10 +124,10 @@ module Studies
 
       context '#print_labels' do
         should 'send print request' do
-          @user = create :user
+          @user = create(:user)
           @controller.stubs(:current_user).returns(@user)
-          @asset = create :child_plate
-          barcode_printer = create :barcode_printer
+          @asset = create(:child_plate)
+          barcode_printer = create(:barcode_printer)
 
           RestClient.expects(:post)
 

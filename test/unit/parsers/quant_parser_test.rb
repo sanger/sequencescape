@@ -28,7 +28,7 @@ class QuantParserTest < ActiveSupport::TestCase
       context 'processing the file' do
         setup do
           @parser = Parsers.parser_for(@filename, nil, @content)
-          @plate = create :plate, well_count: 18
+          @plate = create(:plate, well_count: 18)
           @default_conc = @plate.wells.first.get_concentration
           @plate.update_qc_values_with_parser(@parser)
           @wells = @plate.reload.wells.index_by(&:map_description)
@@ -56,8 +56,8 @@ class QuantParserTest < ActiveSupport::TestCase
           @filename = Rails.root.join('test/data/complete_quant_test.csv').to_s
           @content = read_file @filename
           @parser = Parsers.parser_for(@filename, nil, @content)
-          @plate = create :working_dilution_plate, well_count: 18, plate_metadata_attributes: { dilution_factor: 10 }
-          @parent = create :plate, well_count: 18
+          @plate = create(:working_dilution_plate, well_count: 18, plate_metadata_attributes: { dilution_factor: 10 })
+          @parent = create(:plate, well_count: 18)
           @plate.parents << @parent
           @default_conc = @plate.wells.reload.first.get_concentration
           @plate.update_qc_values_with_parser(@parser)
@@ -106,7 +106,7 @@ class QuantParserTest < ActiveSupport::TestCase
       context 'processing the file' do
         setup do
           @parser = Parsers.parser_for(@filename, nil, @content)
-          @plate = create :plate, well_count: 18
+          @plate = create(:plate, well_count: 18)
           @default_conc = @plate.wells.first.get_concentration
           @plate.update_qc_values_with_parser(@parser)
           @wells = @plate.wells.reload.index_by(&:map_description)

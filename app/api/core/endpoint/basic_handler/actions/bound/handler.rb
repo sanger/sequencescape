@@ -6,8 +6,8 @@ class Core::Endpoint::BasicHandler::Actions::Bound::Handler < Core::Endpoint::Ba
   include Core::Endpoint::BasicHandler::Actions::InnerAction
   include Core::Endpoint::BasicHandler::Paged
 
-  def initialize(owner, name, options, &block)
-    super(name, options, &block)
+  def initialize(owner, name, options, &)
+    super(name, options, &)
     @owner = owner
   end
 

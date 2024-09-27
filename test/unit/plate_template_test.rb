@@ -6,7 +6,7 @@ class PlateTemplateTest < ActiveSupport::TestCase
   context 'A plate template' do
     context 'with no empty wells' do
       setup do
-        @template = create :plate_template
+        @template = create(:plate_template)
         @old_wells = Well.count
         @old_asset_link = AssetLink.count
         @template.update_params!(name: 'a', value: '2', wells: {})
@@ -19,7 +19,7 @@ class PlateTemplateTest < ActiveSupport::TestCase
 
     context 'with 1 empty well' do
       setup do
-        @template = create :plate_template
+        @template = create(:plate_template)
         @old_wells = Well.count
         @template.update_params!(name: 'a', value: '2', wells: { 'A1' => '123' })
       end
@@ -30,7 +30,7 @@ class PlateTemplateTest < ActiveSupport::TestCase
 
     context 'with 2 empty wells' do
       setup do
-        @template = create :plate_template
+        @template = create(:plate_template)
         @old_wells = Well.count
         @old_asset_link = AssetLink.count
         @template.update_params!(name: 'a', value: '2', wells: { 'A1' => '123', 'B3' => '345' })
