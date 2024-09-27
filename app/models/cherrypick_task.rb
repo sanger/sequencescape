@@ -26,14 +26,14 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
     total_wells,
     num_control_wells,
     wells_to_leave_free: DEFAULT_WELLS_TO_LEAVE_FREE,
-    control_assets: nil
+    control_source_plate: nil
   )
     CherrypickTask::ControlLocator.new(
       batch_id: batch_id,
       total_wells: total_wells,
       num_control_wells: num_control_wells,
       wells_to_leave_free: wells_to_leave_free,
-      control_assets: control_assets
+      control_source_plate: control_source_plate
     )
   end
 
@@ -92,9 +92,8 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
       num_plate = 0
       batch = requests.first.batch
       control_assets = control_source_plate.wells.joins(:samples)
-
       control_locator =
-        new_control_locator(batch.id, current_destination_plate.size, control_assets.count, control_assets:)
+        new_control_locator(batch.id, current_destination_plate.size, control_assets.count, control_source_plate:)
       control_posns = control_locator.control_positions(num_plate)
 
       # If is an incomplete plate, or a plate with a template applied, copy all the controls missing into the
