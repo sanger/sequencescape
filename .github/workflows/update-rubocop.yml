@@ -60,8 +60,8 @@ jobs:
           body: |
             Automatic update via https://github.com/sanger/sequencescape/blob/develop/.github/workflows/update_rubocop.yml
 
-            Click `Ready for review` to trigger the CI checks.
-
             This cop will trigger safe-autocorrect for new cops, and will
             add inline rubocop:todo for other cops. Please sanity check
             any changes before merging in.
+
+            Click `Ready for review` to trigger the CI checks.
