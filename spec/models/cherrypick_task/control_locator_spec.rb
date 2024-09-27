@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe CherrypickTask::ControlLocator do
-  let(:instance) { described_class.new(batch_id:, total_wells:, num_control_wells:, wells_to_leave_free:) }
+  let(:instance) { described_class.new(batch_id:, total_wells:, num_control_wells:, wells_to_leave_free:, control_source_plate: create(:control_plate) ) }
 
   shared_examples 'an invalid ControlLocator' do |plate_number, error = 'More controls than free wells'|
     it 'throws a "More controls than free wells" exception' do
@@ -126,7 +126,7 @@ RSpec.describe CherrypickTask::ControlLocator do
       let(:range) { (1...1000) }
       let(:control_positions) do
         range.map do |batch_id|
-          described_class.new(batch_id: batch_id, total_wells: 96, num_control_wells: 1).control_positions(0).first
+          described_class.new(batch_id: batch_id, total_wells: 96, num_control_wells: 1, control_source_plate: create(:control_plate)).control_positions(0).first
         end
       end
 
