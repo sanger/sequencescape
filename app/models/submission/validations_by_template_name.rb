@@ -31,8 +31,9 @@ module Submission::ValidationsByTemplateName
 
   # Validates that the scrna core number of samples per pool is consistent for all rows with the same study name.
   #
-  # This method groups the rows in the CSV data by the study name and checks if the scrna core number of samples per pool
-  # is the same for all rows within each study group. If inconsistencies are found, an error is added to the errors collection.
+  # This method groups the rows in the CSV data by the study name and checks if the scrna core number of samples
+  # per pool is the same for all rows within each study group. If inconsistencies are found, an error is added to
+  # the errors collection.
   #
   # @param csv_data_rows [Array<Array<String>>] The CSV data rows, where each row is an array of strings.
   # @param headers [Array<String>] The headers of the CSV file, used to find the index of specific columns.
@@ -48,16 +49,15 @@ module Submission::ValidationsByTemplateName
     grouped_rows.each do |study_name, rows|
       # Get the unique values of scrna core number of samples per pool for the group
       index_of_num_samples = headers.index(HEADER_NUM_SAMPLES)
-      list_of_uniq_number_of_samples_per_pool = rows.map { |row| row[index_of_num_samples] }.uniq
+      list_of_uniq_number_of_samples_per_pool = rows.pluck(index_of_num_samples).uniq
 
       # Check if there is more than one unique value
-      if list_of_uniq_number_of_samples_per_pool.size > 1
-        errors.add(
-          :spreadsheet,
-          "Inconsistent values for column 'scRNA Core Number of Samples per Pool' for Study name '#{study_name}', " \
-            'all rows for a specific study must have the same value'
-        )
-      end
+      next unless list_of_uniq_number_of_samples_per_pool.size > 1
+      errors.add(
+        :spreadsheet,
+        "Inconsistent values for column 'scRNA Core Number of Samples per Pool' for Study name '#{study_name}', " \
+          'all rows for a specific study must have the same value'
+      )
     end
   end
 end
