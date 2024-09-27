@@ -36,7 +36,8 @@ RSpec.describe CherrypickTask do
             batch_id: 1235,
             total_wells: 6,
             num_control_wells: 2,
-            wells_to_leave_free: wells_to_leave_free
+            wells_to_leave_free: wells_to_leave_free,
+            control_source_plate: control_plate
           ).and_return(locator)
         end
 
