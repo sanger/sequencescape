@@ -58,7 +58,7 @@ class CherrypickTask::ControlLocator
   # Returns a list with the destination positions for the control wells distributed randomly
   # using batch_id as seed and num_plate to increase position with plates in same batch.
   #
-  # @param _num_plate [Integer] The plate number within the batch
+  # @param num_plate [Integer] The plate number within the batch
   #
   # @return [Array<Integer>] The indexes of the control well positions
 
