@@ -22,9 +22,11 @@
             <label for="Control_plate_id">Control plate & placement type</label>
             <%= select("Control", "plate_id", 
               ControlPlate.all.collect do |p| 
-                placement_type = p.custom_metadatum_collection.metadata['control_placement_type']
-                [ "#{p.human_barcode} - #{p.name} (#{placement_type.capitalize})", p.id ]
-              end, 
+                placement_type = p.custom_metadatum_collection&.metadata&.[]('control_placement_type')
+                if placement_type.present?
+                  [ "#{p.human_barcode} - #{p.name} (#{placement_type.capitalize})", p.id ]
+                end
+              end.compact, 
               { include_blank: true }, class: 'form-control select2') %>
           </fieldset>
         </div>
