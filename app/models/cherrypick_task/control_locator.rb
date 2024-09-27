@@ -59,7 +59,8 @@ class CherrypickTask::ControlLocator
   #
 
   def control_placement_type
-    @control_placement_type ||= control_source_plate.custom_metadatum_collection.metadata['control_placement_type']
+    @control_source_plate.custom_metadatum_collection.metadata['control_placement_type']
+  end
 
 
   def control_positions(num_plate)
@@ -71,13 +72,15 @@ class CherrypickTask::ControlLocator
 
     # If num plate is equal to the available positions, the cycle is going to be repeated.
     # To avoid it, every num_plate=available_positions we start a new cycle with a new seed.
-    seed_for(num_plate)
+    seed = seed_for(num_plate)
 
-    # initial_positions = random_positions_from_available(seed)
-
-    fixed_positions_from_available
-
-    #control_positions_for_plate(num_plate, initial_positions)
+    @control_placement_type = control_placement_type
+    if @control_placement_type == 'random'
+      initial_positions = random_positions_from_available(seed)
+      control_positions_for_plate(num_plate, initial_positions)
+    else
+      fixed_positions_from_available
+    end
   end
 
   private
@@ -125,6 +128,7 @@ class CherrypickTask::ControlLocator
   end
 
   def fixed_positions_from_available
+    binding.pry
     control_assets = @control_source_plate.wells.joins(:samples)
     control_wells = control_assets.map(&:map_id)
     convert_control_assets(control_wells)
