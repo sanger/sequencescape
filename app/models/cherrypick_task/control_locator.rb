@@ -63,11 +63,7 @@ class CherrypickTask::ControlLocator
   # @return [Array<Integer>] The indexes of the control well positions
   #
 
-  def control_placement_type
-    @control_source_plate.custom_metadatum_collection.metadata['control_placement_type']
-  end
-
-  def control_positions(num_plate)
+  def control_positions(_num_plate)
     raise StandardError, 'More controls than free wells' if num_control_wells > total_available_positions
 
     # Check that all elements in wells_to_leave_free fall within the acceptable range
@@ -80,15 +76,10 @@ class CherrypickTask::ControlLocator
     placement_type = control_placement_type
     raise StandardError, 'Control placement type is not set or is invalid' if placement_type.nil? || ["fixed", 
     "random"].exclude?(placement_type)
-    
-    if placement_type == 'random'
-      seed = seed_for(num_plate)
-      initial_positions = random_positions_from_available(seed)
-      control_positions_for_plate(num_plate, initial_positions)
-    else
-      fixed_positions_from_available
-    end
+
+    handle_control_placement_type(placement_type)
   end
+
 
   private
 
@@ -116,17 +107,23 @@ class CherrypickTask::ControlLocator
     available_positions.sample(num_control_wells, random: Random.new(seed))
   end
 
+  def control_placement_type
+    @control_source_plate.custom_metadatum_collection.metadata['control_placement_type']
+  end
+
+  def handle_control_placement_type(placement_type)
+    if placement_type == 'random'
+      control_positions_for_plate(num_plate, random_positions_from_available(seed_for(num_plate)))
+    else
+      fixed_positions_from_available
+    end
+  end
+
   # Because the control source plate wells are ordered inversely to the destination plate wells,
   # the control asset ids need to be converted to the corresponding destination plate well indexes.
 
   def convert_control_assets(control_assets)
-    rows = ('A'..'H').to_a
-    columns = (1..12).to_a
-
-    # The invalid and valid maps are hash maps to represent a plate that maps A1 -> 1, A2 -> 2, etc,
-    # whereas the other map is the inverse of this, mapping 1 -> A1, 2 -> B1, etc.
-    valid_map = rows.product(columns).each_with_index.to_h { |(row, col), i| [i + 1, "#{row}#{col}"] }
-    invalid_map = columns.product(rows).each_with_index.to_h { |(col, row), i| [i + 1, "#{row}#{col}"] }
+    valid_map, invalid_map = create_plate_maps
 
     control_assets.map do |id|
       invalid_location = valid_map[id]
@@ -138,6 +135,19 @@ class CherrypickTask::ControlLocator
     control_assets = @control_source_plate.wells.joins(:samples)
     control_wells = control_assets.map(&:map_id)
     convert_control_assets(control_wells)
+  end
+
+  # The invalid and valid maps are hash maps to represent a plate that maps A1 -> 1, A2 -> 2, etc,
+  # whereas the other map is the inverse of this, mapping 1 -> A1, 2 -> B1, etc.
+  
+  def create_plate_maps
+    rows = ('A'..'H').to_a
+    columns = (1..12).to_a
+
+    valid_map = rows.product(columns).each_with_index.to_h { |(row, col), i| [i + 1, "#{row}#{col}"] }
+    invalid_map = columns.product(rows).each_with_index.to_h { |(col, row), i| [i + 1, "#{row}#{col}"] }
+
+    [valid_map, invalid_map]
   end
 
   # Works out which offset to use based on the number of available wells and ensures we use
