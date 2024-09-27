@@ -29,7 +29,8 @@ class CherrypickTask::ControlLocator
   # limit ourself to primes to simplify validation.
   BETWEEN_PLATE_OFFSETS = [53, 59].freeze
 
-  attr_reader :batch_id, :total_wells, :wells_to_leave_free, :num_control_wells, :available_positions, :control_source_plate
+  attr_reader :batch_id, :total_wells, :wells_to_leave_free, :num_control_wells, :available_positions, 
+:control_source_plate
 
   # @note wells_to_leave_free was originally hardcoded for 96 well plates at 24, in order to avoid
   # control wells being missed in cDNA quant QC. This requirement was removed in
@@ -117,8 +118,8 @@ class CherrypickTask::ControlLocator
     rows = ('A'..'H').to_a
     columns = (1..12).to_a
 
-    # The invalid and valid maps are hash maps to represent a plate that maps A1 -> 1, A2 -> 2, etc, whereas the other map
-    # is the inverse of this, mapping 1 -> A1, 2 -> B1, etc.
+    # The invalid and valid maps are hash maps to represent a plate that maps A1 -> 1, A2 -> 2, etc,
+    # whereas the other map is the inverse of this, mapping 1 -> A1, 2 -> B1, etc.
     valid_map = rows.product(columns).each_with_index.to_h { |(row, col), i| [i + 1, "#{row}#{col}"] }
     invalid_map = columns.product(rows).each_with_index.to_h { |(col, row), i| [i + 1, "#{row}#{col}"] }
 
