@@ -54,6 +54,7 @@ jobs:
         with:
           title: Automatic Rubocop update
           branch: gh_action/update_rubocop
+          labels: Technical Debt
           delete-branch: true
           body: |
             Automatic update via https://github.com/sanger/sequencescape/blob/develop/.github/workflows/update_rubocop.yml
