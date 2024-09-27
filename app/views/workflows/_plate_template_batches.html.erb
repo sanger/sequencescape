@@ -19,8 +19,13 @@
             <%= select(:plate_template, "0", @plate_templates.map { |pt| [pt.name, pt.id ] }, {}, class: 'form-control select2')  %>
             <p class='help-block'>Templates define which wells to leave empty on a plate when you cherrypick samples. You can add to an existing partial plate by scanning the barcode, or entering the plate ID.  The plate must have been previously picked in Sequencescape.  Wells can be rearranged in the next step.</p>
 
-            <label for="Control_plate_id">Control plate</label>
-            <%= select("Control", "plate_id", ControlPlate.all.collect {|p| [ "#{p.human_barcode} - #{p.name}", p.id ] }, { include_blank: true }, class: 'form-control select2') %>
+            <label for="Control_plate_id">Control plate & placement type</label>
+            <%= select("Control", "plate_id", 
+              ControlPlate.all.collect do |p| 
+                placement_type = p.custom_metadatum_collection.metadata['control_placement_type']
+                [ "#{p.human_barcode} - #{p.name} (#{placement_type.capitalize})", p.id ]
+              end, 
+              { include_blank: true }, class: 'form-control select2') %>
           </fieldset>
         </div>
 

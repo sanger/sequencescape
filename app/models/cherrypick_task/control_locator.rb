@@ -29,7 +29,7 @@ class CherrypickTask::ControlLocator
   # limit ourself to primes to simplify validation.
   BETWEEN_PLATE_OFFSETS = [53, 59].freeze
 
-  attr_reader :batch_id, :total_wells, :wells_to_leave_free, :num_control_wells, :available_positions, :control_assets, :control_placement_type
+  attr_reader :batch_id, :total_wells, :wells_to_leave_free, :num_control_wells, :available_positions, :control_source_plate
 
   # @note wells_to_leave_free was originally hardcoded for 96 well plates at 24, in order to avoid
   # control wells being missed in cDNA quant QC. This requirement was removed in
@@ -72,10 +72,11 @@ class CherrypickTask::ControlLocator
 
     # If num plate is equal to the available positions, the cycle is going to be repeated.
     # To avoid it, every num_plate=available_positions we start a new cycle with a new seed.
-    seed = seed_for(num_plate)
 
-    @control_placement_type = control_placement_type
-    if @control_placement_type == 'random'
+    placement_type = control_placement_type
+    
+    if placement_type == 'random'
+      seed = seed_for(num_plate)
       initial_positions = random_positions_from_available(seed)
       control_positions_for_plate(num_plate, initial_positions)
     else
@@ -128,7 +129,6 @@ class CherrypickTask::ControlLocator
   end
 
   def fixed_positions_from_available
-    binding.pry
     control_assets = @control_source_plate.wells.joins(:samples)
     control_wells = control_assets.map(&:map_id)
     convert_control_assets(control_wells)
