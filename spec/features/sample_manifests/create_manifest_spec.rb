@@ -10,10 +10,10 @@ describe 'SampleManifest controller', :sample_manifest do
     end
   end
 
-  let(:user) { create :user }
-  let!(:printer) { create :barcode_printer }
-  let!(:supplier) { create :supplier }
-  let!(:study) { create :study }
+  let(:user) { create(:user) }
+  let!(:printer) { create(:barcode_printer) }
+  let!(:supplier) { create(:supplier) }
+  let!(:study) { create(:study) }
   let(:plate_barcode) { build(:plate_barcode) }
   let(:created_plate) { Plate.with_barcode(plate_barcode.barcode).first }
 
@@ -25,7 +25,7 @@ describe 'SampleManifest controller', :sample_manifest do
       select(supplier.name, from: 'Supplier')
       within('#sample_manifest_template') do
         expect(page).to have_css('option', count: 9)
-        expect(page).not_to have_css('option', text: 'Default Tube')
+        expect(page).to have_no_css('option', text: 'Default Tube')
       end
       select('Default Plate', from: 'Template')
       select(printer.name, from: 'Barcode printer')
@@ -56,13 +56,13 @@ describe 'SampleManifest controller', :sample_manifest do
 
   context 'with a selected purpose' do
     let(:selected_purpose) { created_purpose }
-    let!(:created_purpose) { create :plate_purpose, stock_plate: true }
+    let!(:created_purpose) { create(:plate_purpose, stock_plate: true) }
 
     it_behaves_like 'a plate manifest'
   end
 
   context 'without a type specified' do
-    let!(:created_purpose) { create :plate_purpose, stock_plate: true }
+    let!(:created_purpose) { create(:plate_purpose, stock_plate: true) }
 
     it 'indicate the purpose field is used for plates only' do
       visit(new_sample_manifest_path)
@@ -73,8 +73,8 @@ describe 'SampleManifest controller', :sample_manifest do
   end
 
   context 'with a tube rack manifest' do
-    let!(:selected_purpose) { create :sample_tube_purpose, name: 'Standard sample' }
-    let!(:selected_tube_rack_purpose) { create :tube_rack_purpose, name: 'TR Stock 96' }
+    let!(:selected_purpose) { create(:sample_tube_purpose, name: 'Standard sample') }
+    let!(:selected_tube_rack_purpose) { create(:tube_rack_purpose, name: 'TR Stock 96') }
 
     it 'creating manifests' do
       click_link('Create manifest for tube racks')
@@ -85,7 +85,7 @@ describe 'SampleManifest controller', :sample_manifest do
         expect(page).to have_css('option', text: 'Default Tube Rack')
       end
       select('Default Tube Rack', from: 'Template')
-      expect(page).not_to have_text('Barcodes')
+      expect(page).to have_no_text('Barcodes')
       expect(page).to have_text('Tube racks required')
       select(selected_purpose.name, from: 'Tube purpose') if selected_purpose
       expect(page).to have_text('Tube rack purpose')

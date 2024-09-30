@@ -15,7 +15,7 @@ class LibPoolNormTubeGeneratorTest < ActiveSupport::TestCase
   def setup
     @user = create(:admin)
     @study = create(:study)
-    create :between_tubes_transfer_template # Needed by LibPoolNormTubeGenerator.new
+    create(:between_tubes_transfer_template) # Needed by LibPoolNormTubeGenerator.new
   end
 
   def mock_transfer(generator)

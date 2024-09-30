@@ -95,8 +95,8 @@ module Core::Endpoint::BasicHandler::Actions
     end
   end
 
-  def action(name, options = {}, &block)
-    declare_action(name, options, &block)
+  def action(name, options = {}, &)
+    declare_action(name, options, &)
     attach_action(options[:as] || name, name)
     action_guard(name, options[:if]) if options.key?(:if)
   end

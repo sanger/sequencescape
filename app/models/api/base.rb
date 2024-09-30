@@ -173,9 +173,9 @@ class Api::Base # rubocop:todo Metrics/ClassLength
   end
 
   # rubocop:todo Metrics/MethodLength
-  def self.with_association(association, options = {}, &block) # rubocop:todo Metrics/AbcSize
+  def self.with_association(association, options = {}, &) # rubocop:todo Metrics/AbcSize
     association_helper = Class.new(Api::Base)
-    association_helper.class_eval(&block)
+    association_helper.class_eval(&)
     association_helper.singleton_class.class_eval do
       alias_method(:default_object, options[:if_nil_use]) if options.key?(:if_nil_use)
       define_method(:lookup_by) { options[:lookup_by] }
@@ -192,9 +192,9 @@ class Api::Base # rubocop:todo Metrics/ClassLength
   # rubocop:enable Metrics/MethodLength
 
   # rubocop:todo Metrics/MethodLength
-  def self.with_nested_has_many_association(association, options = {}, &block) # rubocop:todo Metrics/AbcSize
+  def self.with_nested_has_many_association(association, options = {}, &) # rubocop:todo Metrics/AbcSize
     association_helper = Class.new(Api::Base)
-    association_helper.class_eval(&block)
+    association_helper.class_eval(&)
     association_helper.singleton_class.class_eval do
       define_method(:association) { association }
       define_method(:alias) { options[:as] || association }

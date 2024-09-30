@@ -12,7 +12,7 @@ class PickList::Pick
 
   # Used to help group compatible picks together into orders
   def order_options
-    { study: study, project: project }
+    { study:, project: }
   end
 
   def study

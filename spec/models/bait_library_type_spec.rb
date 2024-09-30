@@ -4,7 +4,7 @@ require 'rails_helper'
 
 describe BaitLibraryType do
   context 'When a bait library exists' do
-    let(:bait_library) { create :bait_library }
+    let(:bait_library) { create(:bait_library) }
 
     it 'bait libraries have library types' do
       expect(bait_library.bait_library_type).to be_truthy
@@ -23,8 +23,8 @@ describe BaitLibraryType do
   end
 
   context 'A request with a bait library' do
-    let(:request_type) { create :request_type, name: 'Bait Pulldown', target_asset_type: nil }
-    let(:request) { create :isc_request }
+    let(:request_type) { create(:request_type, name: 'Bait Pulldown', target_asset_type: nil) }
+    let(:request) { create(:isc_request) }
 
     it 'have a bait library type' do
       expect(request.request_metadata.bait_library.bait_library_type).to be_truthy

@@ -49,7 +49,7 @@ class SubmissionTemplate < ApplicationRecord
         name, cloned.name = cloned.name, "Superceding #{cloned.name}"
         cloned.save!
         update!(superceded_by_id: cloned.id, superceded_at: Time.zone.now)
-        cloned.update!(name: name)
+        cloned.update!(name:)
       end
     end
   end

@@ -32,8 +32,8 @@ RSpec.describe BulkSubmissionExcel::Worksheet::DataWorksheet, :bulk_submission_e
         assets: assets,
         ranges: configuration.ranges.dup,
         defaults: {
-          user_login: user_login,
-          template_name: template_name
+          user_login:,
+          template_name:
         }
       )
     end

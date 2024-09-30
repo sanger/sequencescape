@@ -8,9 +8,9 @@ describe '/api/1/work_completions' do
 
   subject { '/api/1/work_completions' }
 
-  let(:authorised_app) { create :api_application }
-  let(:parent_purpose) { create :plate_purpose }
-  let(:user) { create :user }
+  let(:authorised_app) { create(:api_application) }
+  let(:parent_purpose) { create(:plate_purpose) }
+  let(:user) { create(:user) }
 
   describe '#post' do
     let(:payload) do

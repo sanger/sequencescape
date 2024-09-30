@@ -24,13 +24,13 @@ module CapybaraFailureLogger
     log_js(name, page, &block)
   end
 
-  def self.log_screenshot(name, page, &block)
+  def self.log_screenshot(name, page, &)
     return unless page.respond_to?(:save_screenshot)
 
     page.save_screenshot("#{name}.png")
     filename = "#{Capybara.save_path}/#{name}.png"
     yield "📸 Screenshot saved to #{filename}"
-    output_image(filename, &block)
+    output_image(filename, &)
   rescue Capybara::NotSupportedByDriverError
     yield 'Could not save screenshot - Unsupported by this webdriver'
   end

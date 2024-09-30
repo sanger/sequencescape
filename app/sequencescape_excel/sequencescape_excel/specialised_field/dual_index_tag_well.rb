@@ -28,7 +28,7 @@ module SequencescapeExcel
         raise StandardError, 'Tag aliquot mismatch' unless asset.aliquots.one?
 
         # For dual index tags, tag is a i7 oligo and tag2 is a i5 oligo
-        asset.aliquots.first.update(tag: tag, tag2: tag2)
+        asset.aliquots.first.update(tag:, tag2:)
       end
 
       def link(other_fields)

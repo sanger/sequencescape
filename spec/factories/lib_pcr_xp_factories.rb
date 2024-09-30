@@ -30,7 +30,7 @@ FactoryBot.define do
           .map do |map|
             tube = create(:lib_pool_tube)
             plate.children << tube
-            build(:tagged_well, map: map).tap { |well| create(:lib_pcr_xp_request, asset: well, target_asset: tube) }
+            build(:tagged_well, map:).tap { |well| create(:lib_pcr_xp_request, asset: well, target_asset: tube) }
           end
     end
   end
@@ -42,14 +42,14 @@ FactoryBot.define do
   end
 
   factory :lib_pool_tube, class: 'StockMultiplexedLibraryTube' do
-    name { |_a| FactoryBot.generate :asset_name }
+    name { |_a| FactoryBot.generate(:asset_name) }
     purpose factory: %i[illumina_htp_initial_stock_tube_purpose]
     after(:create) { |tube| create(:transfer_request, target_asset: tube) }
   end
 
   factory :lib_pool_norm_tube, class: 'MultiplexedLibraryTube' do
-    transient { parent_tube { create :lib_pool_tube } }
-    name { generate :asset_name }
+    transient { parent_tube { create(:lib_pool_tube) } }
+    name { generate(:asset_name) }
     purpose factory: %i[illumina_htp_mx_tube_purpose]
     after(:create) { |tube, factory| create(:transfer_request, asset: factory.parent_tube, target_asset: tube) }
   end

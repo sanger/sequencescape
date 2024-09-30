@@ -12,7 +12,7 @@ class AdminControllerTest < ActionController::TestCase
     should_require_login
 
     context 'admin frontpage' do
-      setup { session[:user] = @user = create :admin }
+      setup { session[:user] = @user = create(:admin) }
 
       context '#index' do
         setup { get :index }

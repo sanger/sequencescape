@@ -351,7 +351,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   scope :with_remove_x_and_autosomes,
         -> { joins(:study_metadata).where(study_metadata: { remove_x_and_autosomes: Study::YES }) }
 
-  scope :by_state, ->(state) { where(state: state) }
+  scope :by_state, ->(state) { where(state:) }
 
   scope :by_user,
         ->(login) do
@@ -517,10 +517,8 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def ethical_approval_required?
-    (
-      study_metadata.contains_human_dna == Study::YES && study_metadata.contaminated_human_dna == Study::NO &&
-        study_metadata.commercially_available == Study::NO
-    )
+    study_metadata.contains_human_dna == Study::YES && study_metadata.contaminated_human_dna == Study::NO &&
+      study_metadata.commercially_available == Study::NO
   end
 
   def accession_service
@@ -535,7 +533,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def send_samples_to_service?
-    accession_service.no_study_accession_needed || ((!study_metadata.never_release?) && accession_number?)
+    accession_service.no_study_accession_needed || (!study_metadata.never_release? && accession_number?)
   end
 
   def validate_ena_required_fields!

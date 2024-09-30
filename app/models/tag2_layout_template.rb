@@ -30,6 +30,6 @@ class Tag2LayoutTemplate < ApplicationRecord
   end
 
   def default_attributes
-    { tag: tag }
+    { tag: }
   end
 end

@@ -38,7 +38,7 @@ class Plate::QuadCreator
 
   private
 
-  def all_parents_acceptable # rubocop:todo Metrics/MethodLength
+  def all_parents_acceptable
     @parents.each do |location, parent|
       case parent
       when Plate, TubeRack
@@ -71,8 +71,7 @@ class Plate::QuadCreator
   end
 
   def transfer_request_collection
-    @transfer_request_collection ||=
-      TransferRequestCollection.new(user: user, transfer_requests_attributes: transfer_requests_attributes)
+    @transfer_request_collection ||= TransferRequestCollection.new(user:, transfer_requests_attributes:)
   end
 
   def transfer_requests_attributes

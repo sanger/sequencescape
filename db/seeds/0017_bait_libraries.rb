@@ -3,7 +3,7 @@
 # Generate a few bait libraries.
 
 { 'Standard' => 'standard', 'Custom - Pipeline' => 'custom', 'Custom - Customer' => 'custom' }.each do |name, category|
-  BaitLibraryType.create!(name: name, category: category)
+  BaitLibraryType.create!(name:, category:)
 end
 
 BaitLibrary::Supplier

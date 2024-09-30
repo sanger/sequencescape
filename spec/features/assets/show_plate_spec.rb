@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 describe 'Show plate', :js do
-  let(:plate) { create :plate, well_count: 3 }
-  let(:user) { create :user }
+  let(:plate) { create(:plate, well_count: 3) }
+  let(:user) { create(:user) }
 
   before do
     plate # has been created

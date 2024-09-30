@@ -6,7 +6,7 @@ describe BulkSubmission, with: :uploader do
   subject { described_class.new(spreadsheet: submission_file, encoding: encoding) }
 
   let(:encoding) { 'Windows-1252' }
-  let(:spreadsheet_path) { Rails.root.join('features', 'submission', 'csv', spreadsheet_filename) }
+  let(:spreadsheet_path) { Rails.root.join('spec', 'data', 'submission', spreadsheet_filename) }
 
   # NB. fixture_file_upload is a Rails method on ActionDispatch::TestProcess::FixtureFile
   let(:submission_file) { fixture_file_upload(spreadsheet_path) }
@@ -14,17 +14,17 @@ describe BulkSubmission, with: :uploader do
   let(:number_submissions_created) { subject.completed_submissions.first.length }
   let(:generated_submissions) { Submission.find(subject.completed_submissions.first) }
   let(:generated_submission) { generated_submissions.first }
-  let(:request_types) { create_list :well_request_type, 2 }
+  let(:request_types) { create_list(:well_request_type, 2) }
 
   after { submission_file.close }
 
-  let!(:study) { create :study, name: 'abc123_study' }
-  let!(:asset_group) { create :asset_group, name: 'assetgroup123', study: study, asset_count: 2 }
-  let!(:library_type) { create :library_type, name: 'Standard' }
+  let!(:study) { create(:study, name: 'abc123_study') }
+  let!(:asset_group) { create(:asset_group, name: 'assetgroup123', study: study, asset_count: 2) }
+  let!(:library_type) { create(:library_type, name: 'Standard') }
 
   before do
-    create :user, login: 'user'
-    create :project, name: 'Test project'
+    create(:user, login: 'user')
+    create(:project, name: 'Test project')
   end
 
   context 'a simple submission' do
@@ -65,7 +65,7 @@ describe BulkSubmission, with: :uploader do
 
   context 'an asset driven submission' do
     let(:spreadsheet_filename) { 'template_for_bulk_submission.csv' }
-    let!(:asset) { create :plate, barcode: 'SQPD-1', well_count: 1, well_factory: :untagged_well }
+    let!(:asset) { create(:plate, barcode: 'SQPD-1', well_count: 1, well_factory: :untagged_well) }
     let(:submission_template_hash) do
       {
         name: 'Example Template',
@@ -100,7 +100,7 @@ describe BulkSubmission, with: :uploader do
     let(:spreadsheet_filename) { 'pcr_cycles.csv' }
 
     let!(:submission_template) do
-      create :limber_wgs_submission_template, name: 'pcr_cycle_test', request_types: [request_type]
+      create(:limber_wgs_submission_template, name: 'pcr_cycle_test', request_types: [request_type])
     end
     let(:request_type) { create(:library_request_type) }
 
@@ -129,10 +129,10 @@ describe BulkSubmission, with: :uploader do
 
   context 'a submission with primer_panels' do
     let(:spreadsheet_filename) { 'primer_panels.csv' }
-    let!(:primer_panel) { create :primer_panel, name: 'Test panel' }
+    let!(:primer_panel) { create(:primer_panel, name: 'Test panel') }
 
     let!(:submission_template) do
-      create :limber_wgs_submission_template, name: 'primer_panel_test', request_types: [request_type]
+      create(:limber_wgs_submission_template, name: 'primer_panel_test', request_types: [request_type])
     end
     let(:request_type) { create(:gbs_request_type) }
 
@@ -162,11 +162,11 @@ describe BulkSubmission, with: :uploader do
 
   context 'a submission with bait libraries' do
     let(:spreadsheet_filename) { '2_valid_sc_submissions.csv' }
-    let!(:bait_library) { create :bait_library, name: 'Bait library 1' }
-    let!(:bait_library_2) { create :bait_library, name: 'Bait library 2' }
+    let!(:bait_library) { create(:bait_library, name: 'Bait library 1') }
+    let!(:bait_library_2) { create(:bait_library, name: 'Bait library 2') }
 
     let!(:submission_template) do
-      create :limber_wgs_submission_template, name: 'Bait submission example', request_types: [request_type]
+      create(:limber_wgs_submission_template, name: 'Bait submission example', request_types: [request_type])
     end
     let(:request_type) { create(:isc_library_request_type) }
 
@@ -196,7 +196,7 @@ describe BulkSubmission, with: :uploader do
     let(:spreadsheet_filename) { 'with_lowercase_library_type.csv' }
 
     let!(:submission_template) do
-      create :limber_wgs_submission_template, name: 'library_type_test', request_types: [request_type]
+      create(:limber_wgs_submission_template, name: 'library_type_test', request_types: [request_type])
     end
     let(:request_type) { create(:library_request_type) }
 
@@ -227,7 +227,7 @@ describe BulkSubmission, with: :uploader do
     let(:spreadsheet_filename) { 'with_unknown_library_type.csv' }
 
     let!(:submission_template) do
-      create :limber_wgs_submission_template, name: 'library_type_test', request_types: [request_type]
+      create(:limber_wgs_submission_template, name: 'library_type_test', request_types: [request_type])
     end
     let(:request_type) { create(:library_request_type) }
 
@@ -241,6 +241,66 @@ describe BulkSubmission, with: :uploader do
       expect(subject.errors.messages[:spreadsheet][0]).to eq(
         'There was a problem on row(s) 2: Cannot find library type "unrecognised"'
       )
+    end
+  end
+
+  context 'a submission with additional template name validations' do
+    context 'when valid for scRNA template' do
+      let(:submission_template_hash) do
+        {
+          name: 'Limber-Htp - scRNA Core cDNA Prep GEM-X 5p',
+          submission_class_name: 'LinearSubmission',
+          product_catalogue: 'Generic',
+          submission_parameters: {
+            request_options: {
+            },
+            request_types: request_types.map(&:key)
+          }
+        }
+      end
+      let(:spreadsheet_filename) { 'scrna_additional_validations_valid.csv' }
+
+      before { SubmissionSerializer.construct!(submission_template_hash) }
+
+      it 'is valid' do
+        expect(subject).to be_valid
+      end
+
+      it 'generates submissions when processed' do
+        subject.process
+        expect(number_submissions_created).to eq(2)
+      end
+
+      it 'generates submissions with one order' do
+        subject.process
+        expect(generated_submission.orders.count).to eq(1)
+      end
+    end
+
+    context 'when invalid for scRNA template' do
+      let(:submission_template_hash) do
+        {
+          name: 'Limber-Htp - scRNA Core cDNA Prep GEM-X 5p',
+          submission_class_name: 'LinearSubmission',
+          product_catalogue: 'Generic',
+          submission_parameters: {
+            request_options: {
+            },
+            request_types: request_types.map(&:key)
+          }
+        }
+      end
+      let(:spreadsheet_filename) { 'scrna_additional_validations_invalid.csv' }
+
+      before { SubmissionSerializer.construct!(submission_template_hash) }
+
+      it 'raises an error and sets an error message' do
+        expect { subject.process }.to raise_error(ActiveRecord::RecordInvalid)
+        expect(subject.errors.messages[:spreadsheet][0]).to eq(
+          "Inconsistent values for column 'scRNA Core Number of Samples per Pool' for " \
+            "Study name 'abc123_study', all rows for a specific study must have the same value"
+        )
+      end
     end
   end
 end

@@ -36,8 +36,8 @@ class EventTest < ActiveSupport::TestCase
 
     context 'when related to a Request' do
       setup do
-        @study = create :study
-        @request = create :request, study: @study
+        @study = create(:study)
+        @request = create(:request, study: @study)
         @settings = {
           eventful_id: @request.id,
           eventful_type: 'Request',
@@ -65,8 +65,8 @@ class EventTest < ActiveSupport::TestCase
 
     context '#update_request' do
       setup do
-        @study = create :study
-        @request = create :request, study: @study, state: 'started'
+        @study = create(:study)
+        @request = create(:request, study: @study, state: 'started')
         @settings = {
           eventful_id: @request.id,
           eventful_type: 'Request',
@@ -118,18 +118,18 @@ class EventTest < ActiveSupport::TestCase
 
     context 'when created with a' do
       setup do
-        @library_creation_request_type = create :request_type, name: 'Library creation', key: 'library_creation'
+        @library_creation_request_type = create(:request_type, name: 'Library creation', key: 'library_creation')
         @mx_library_creation_request_type =
-          create :request_type, name: 'Multiplexed library creation', key: 'multiplexed_library_creation'
-        @pe_sequencing_request_type = create :request_type, name: 'Paired end sequencing', key: 'paired_end_sequencing'
+          create(:request_type, name: 'Multiplexed library creation', key: 'multiplexed_library_creation')
+        @pe_sequencing_request_type = create(:request_type, name: 'Paired end sequencing', key: 'paired_end_sequencing')
 
         @control = create(:sample_tube, resource: true)
 
-        @library_creation_request = create :request, request_type: @library_creation_request_type
-        @multiplexed_library_creation_request = create :request, request_type: @mx_library_creation_request_type
-        @pe_sequencing_request = create :request, request_type: @pe_sequencing_request_type
+        @library_creation_request = create(:request, request_type: @library_creation_request_type)
+        @multiplexed_library_creation_request = create(:request, request_type: @mx_library_creation_request_type)
+        @pe_sequencing_request = create(:request, request_type: @pe_sequencing_request_type)
         @request_for_control =
-          create :request, request_type: @pe_sequencing_request_type, asset: @control, state: 'started'
+          create(:request, request_type: @pe_sequencing_request_type, asset: @control, state: 'started')
         @requests = [@library_creation_request, @multiplexed_library_creation_request, @pe_sequencing_request]
       end
 

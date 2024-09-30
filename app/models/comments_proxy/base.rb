@@ -38,8 +38,8 @@ module CommentsProxy
     end
 
     # We're using group above, resulting in size and count returning a hash, not a count.
-    def size(*args)
-      comment_assn.size(*args).length
+    def size(*)
+      comment_assn.size(*).length
     end
 
     def count(*_args)

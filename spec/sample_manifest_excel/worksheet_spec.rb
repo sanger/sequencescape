@@ -24,7 +24,7 @@ RSpec.describe SampleManifestExcel::Worksheet, :sample_manifest, :sample_manifes
   before do
     allow(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode))
 
-    @sample_manifest = create :sample_manifest
+    @sample_manifest = create(:sample_manifest)
     sample_manifest.generate
   end
 

@@ -25,7 +25,7 @@ class PlateBarcode
   # Returns:
   # - Barcode instance, using Sequencescape22 format
   def self.create_barcode_with_text(text)
-    response = fetch_response("#{site}/barcodes/#{prefix}/new", { text: text })
+    response = fetch_response("#{site}/barcodes/#{prefix}/new", { text: })
     Barcode.build_sequencescape22(response)
   end
 
@@ -37,7 +37,7 @@ class PlateBarcode
   # - Barcode instance, using Sequencescape22 format
   def self.create_child_barcodes(parent_barcode, count = 1)
     response = fetch_response("#{site}/child-barcodes/#{prefix}/new", { barcode: parent_barcode, count: count })
-    response[:barcodes_group][:barcodes].map! { |barcode| Barcode.build_sequencescape22(barcode: barcode) }
+    response[:barcodes_group][:barcodes].map! { |barcode| Barcode.build_sequencescape22(barcode:) }
   end
 
   # Obtain a record from Baracoda and retries the specified amount of time. If the number or retries is reached
