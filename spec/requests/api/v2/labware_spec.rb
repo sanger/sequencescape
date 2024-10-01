@@ -34,7 +34,7 @@ describe 'Labware API', with: :api_v2 do
   end
 
   context 'with a request' do
-    let(:resource_model) { create :sample_tube }
+    let(:resource_model) { create(:sample_tube) }
 
     it 'sends an individual labware' do
       api_get "#{base_endpoint}/#{resource_model.id}"
@@ -44,7 +44,7 @@ describe 'Labware API', with: :api_v2 do
   end
 
   context 'with include' do
-    let(:custom_metadatum_collection) { create :custom_metadatum_collection_with_metadata }
+    let(:custom_metadatum_collection) { create(:custom_metadatum_collection_with_metadata) }
     let(:labware) { custom_metadatum_collection.asset }
 
     it 'sends an individual labware' do

@@ -55,7 +55,7 @@ class BaitLibraryLayout < ApplicationRecord
 
     # Bulk update the aliquots with the appropriate bait libraries
     bait_libraries_to_aliquot_ids.each do |bait_library_id, aliquot_ids|
-      Aliquot.where(id: aliquot_ids).update_all(bait_library_id: bait_library_id) # rubocop:disable Rails/SkipsModelValidations
+      Aliquot.where(id: aliquot_ids).update_all(bait_library_id:) # rubocop:disable Rails/SkipsModelValidations
     end
   end
 

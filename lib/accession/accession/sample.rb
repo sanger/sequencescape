@@ -36,7 +36,7 @@ module Accession
     end
 
     def title
-      @title ||= (sample.sample_metadata.sample_public_name || sample.sanger_sample_id)
+      @title ||= sample.sample_metadata.sample_public_name || sample.sanger_sample_id
     end
 
     # rubocop:todo Metrics/MethodLength

@@ -29,7 +29,7 @@ Then /^the batch (input|output) asset table should be:$/ do |name, expected_tabl
 end
 
 Given /^the plate template "([^"]+)" exists$/ do |name|
-  FactoryBot.create(:plate_template, name: name)
+  FactoryBot.create(:plate_template, name:)
 end
 
 # This is a complete hack to get this to work: it knows where the wells are and goes to get them.  It knows
@@ -51,7 +51,7 @@ end
 #########################################################################################################
 # rubocop:todo Metrics/MethodLength
 def build_batch_for(name, count) # rubocop:todo Metrics/AbcSize
-  pipeline = Pipeline.find_by(name: name) or raise StandardError, "Cannot find pipeline #{name.inspect}"
+  pipeline = Pipeline.find_by(name:) or raise StandardError, "Cannot find pipeline #{name.inspect}"
   submission_details = yield(pipeline)
 
   user = FactoryBot.create(:user)
@@ -91,12 +91,12 @@ def build_batch_for(name, count) # rubocop:todo Metrics/AbcSize
     raise StandardError, "Pipeline has #{requests.size} requests waiting rather than #{count}"
   end
 
-  batch = Batch.create!(pipeline: pipeline, user: user, requests: requests)
+  batch = Batch.create!(pipeline:, user:, requests:)
 end
 # rubocop:enable Metrics/MethodLength
 
 def requests_for_pipeline(name, count)
-  pipeline = Pipeline.find_by(name: name) or raise StandardError, "Cannot find pipeline #{name.inspect}"
+  pipeline = Pipeline.find_by(name:) or raise StandardError, "Cannot find pipeline #{name.inspect}"
   requests_in_inbox = pipeline.requests.ready_in_storage.full_inbox.all
 
   # There should be requests in the inbox and they should be clones of original requests.

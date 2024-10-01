@@ -75,11 +75,11 @@ class Uuid < ApplicationRecord
   scope :with_resource_type, ->(type) { where(resource_type: type.to_s) }
 
   scope :include_resource, -> { includes(:resource) }
-  scope :with_external_id, ->(external_id) { where(external_id: external_id) }
+  scope :with_external_id, ->(external_id) { where(external_id:) }
   scope :with_resource_by_type_and_id, ->(t, id) { where(resource_type: t, resource_id: id) }
 
   # Limits the query to resources of the given type if provided. Otherwise returns all
-  scope :limited_to_resource, ->(resource_type) { resource_type.nil? ? all : where(resource_type: resource_type) }
+  scope :limited_to_resource, ->(resource_type) { resource_type.nil? ? all : where(resource_type:) }
 
   before_validation do |record|
     record.external_id = Uuid.generate_uuid if record.new_record? && record.external_id.blank?
@@ -102,7 +102,7 @@ class Uuid < ApplicationRecord
   end
 
   def self.find_uuid_instance!(resource_type, resource_id)
-    find_by!(resource_type: resource_type, resource_id: resource_id)
+    find_by!(resource_type:, resource_id:)
   end
 
   # Find the uuid corresponding id and system.
@@ -111,7 +111,7 @@ class Uuid < ApplicationRecord
   # @return [String, nil] the uuid if found.
 
   def self.find_uuid(resource_type, resource_id)
-    find_by(resource_type: resource_type, resource_id: resource_id).try(:external_id)
+    find_by(resource_type:, resource_id:).try(:external_id)
   end
 
   # Find an Uuid or create it if needed.
@@ -121,7 +121,7 @@ class Uuid < ApplicationRecord
   def self.find_uuid!(resource_type, resource_id)
     return unless resource_id # return nil for nil
 
-    find_uuid(resource_type, resource_id) || create!(resource_type: resource_type, resource_id: resource_id).external_id
+    find_uuid(resource_type, resource_id) || create!(resource_type:, resource_id:).external_id
   end
 
   # Given a list of internal ids, create uuids in bulk

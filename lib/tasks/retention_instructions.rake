@@ -24,7 +24,7 @@ namespace :retention_instructions do
           }
         )
       labwares = labwares.limit(limit) unless limit.nil?
-      labwares.find_each(batch_size: batch_size) do |labware|
+      labwares.find_each(batch_size:) do |labware|
         puts "Processing labware #{labware.id}: #{labware.name}..."
         saved_count = process_labware(labware, saved_count)
       end

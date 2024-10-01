@@ -4,8 +4,8 @@ require 'rails_helper'
 
 describe UatActions::GenerateQcResults do
   context 'with valid options' do
-    let(:plate) { create :plate_with_untagged_wells, sample_count: 3 }
-    let(:tube) { create :sample_tube, barcode: '1' }
+    let(:plate) { create(:plate_with_untagged_wells, sample_count: 3) }
+    let(:tube) { create(:sample_tube, barcode: '1') }
 
     let(:uat_action) { described_class.new(parameters) }
     let(:report) do

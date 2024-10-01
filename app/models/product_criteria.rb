@@ -19,7 +19,7 @@ class ProductCriteria < ApplicationRecord
 
   serialize :configuration
 
-  scope :for_stage, ->(stage) { where(stage: stage) }
+  scope :for_stage, ->(stage) { where(stage:) }
   scope :stock, -> { where(stage: STAGE_STOCK) }
   scope :older_than, ->(id) { where(['id < ?', id]) }
 

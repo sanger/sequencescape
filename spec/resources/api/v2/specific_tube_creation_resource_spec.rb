@@ -6,7 +6,7 @@ require './app/resources/api/v2/specific_tube_creation_resource'
 RSpec.describe Api::V2::SpecificTubeCreationResource, type: :resource do
   subject(:resource) { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { build_stubbed :specific_tube_creation }
+  let(:resource_model) { build_stubbed(:specific_tube_creation) }
 
   # Attributes
   it { is_expected.to have_readonly_attribute :uuid }

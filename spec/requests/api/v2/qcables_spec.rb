@@ -25,7 +25,7 @@ describe 'Qcables API', with: :api_v2 do
   end
 
   context 'with a Qcable' do
-    let(:resource_model) { create :qcable }
+    let(:resource_model) { create(:qcable) }
 
     let(:payload) do
       {

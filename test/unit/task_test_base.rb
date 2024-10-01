@@ -11,10 +11,10 @@ class TaskTestBase < ActiveSupport::TestCase
     end
   end
 
-  def task_instance_for(task_module, &block)
+  def task_instance_for(task_module, &)
     object = Object.new
     object.class_eval { include task_module }
-    object.class_eval(&block)
+    object.class_eval(&)
     object
   end
 end

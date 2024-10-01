@@ -14,7 +14,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
 
   let(:test_file_name) { 'test_file.xlsx' }
   let(:test_file) { Rack::Test::UploadedFile.new(Rails.root.join(test_file_name), '') }
-  let(:user) { create :user }
+  let(:user) { create(:user) }
 
   after(:all) { SampleManifestExcel.reset! }
 

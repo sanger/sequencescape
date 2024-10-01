@@ -6,7 +6,7 @@ require 'support/lab_where_client_helper'
 RSpec.configure { |c| c.include LabWhereClientHelper }
 
 describe 'Viewing a receptacle' do
-  let(:user) { create :user }
+  let(:user) { create(:user) }
 
   shared_examples 'a receptacle' do
     it 'can be viewed on its show page' do
@@ -35,7 +35,7 @@ describe 'Viewing a receptacle' do
   end
 
   context 'with a well' do
-    let(:receptacle) { create :well }
+    let(:receptacle) { create(:well) }
 
     it_behaves_like 'a receptacle'
   end

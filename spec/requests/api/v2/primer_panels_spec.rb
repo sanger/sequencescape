@@ -25,7 +25,7 @@ describe 'PrimerPanels API', with: :api_v2 do
   end
 
   context 'with a primer_panel' do
-    let(:resource_model) { create :primer_panel }
+    let(:resource_model) { create(:primer_panel) }
 
     let(:payload) do
       {

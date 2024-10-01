@@ -39,7 +39,7 @@ describe 'TagGroups API', with: :api_v2 do
   end
 
   context 'with a TagGroup' do
-    let(:resource_model) { create :tag_group }
+    let(:resource_model) { create(:tag_group) }
 
     let(:payload) do
       {

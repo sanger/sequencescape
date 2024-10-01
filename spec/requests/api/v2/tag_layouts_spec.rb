@@ -31,7 +31,7 @@ describe 'Tag Layouts API', with: :api_v2 do
 
   context 'with a single resource' do
     describe '#GET resource by ID' do
-      let(:resource) { create :tag_layout }
+      let(:resource) { create(:tag_layout) }
 
       context 'without included relationships' do
         before { api_get "#{base_endpoint}/#{resource.id}" }
@@ -90,7 +90,7 @@ describe 'Tag Layouts API', with: :api_v2 do
   end
 
   describe '#PATCH a resource' do
-    let(:resource_model) { create :tag_layout }
+    let(:resource_model) { create(:tag_layout) }
     let(:payload) { { data: { id: resource_model.id, type: resource_type, attributes: { direction: 'columns' } } } }
 
     it 'finds no route for the method' do

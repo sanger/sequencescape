@@ -21,7 +21,7 @@ Given /^the sample tube "([^"]+)" has (\d+) aliquots$/ do |tube_name, number|
 end
 
 Given /^the aliquots in the library tube called "([^"]+)" have been modified$/ do |name|
-  tube = LibraryTube.find_by(name: name) or raise "Can't find library tube named #{name.inspect}"
+  tube = LibraryTube.find_by(name:) or raise "Can't find library tube named #{name.inspect}"
   tube.aliquots.each do |a|
     a.updated_at = Time.zone.now
     a.save(validate: false)

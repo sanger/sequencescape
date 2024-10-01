@@ -56,11 +56,11 @@ class Admin::UsersController < ApplicationController
         @user.grant_role(params[:role][:authorizable_name].to_s, authorizable_object)
         @users_roles = @user.study_and_project_roles.order(name: :asc)
 
-        flash[:notice] = 'Role added' # rubocop:disable Rails/ActionControllerFlashBeforeRender
+        flash[:notice] = 'Role added'
         render partial: 'roles', status: 200
       else
         @users_roles = @user.study_and_project_roles.order(name: :asc)
-        flash[:error] = 'A problem occurred while adding the role' # rubocop:disable Rails/ActionControllerFlashBeforeRender
+        flash[:error] = 'A problem occurred while adding the role'
         render partial: 'roles', status: 500
       end
     else
@@ -82,11 +82,11 @@ class Admin::UsersController < ApplicationController
         @user.remove_role(params[:role][:authorizable_name].to_s, authorizable_object)
         @users_roles = @user.study_and_project_roles.order(name: :asc)
 
-        flash[:error] = 'Role was removed' # rubocop:disable Rails/ActionControllerFlashBeforeRender
+        flash[:error] = 'Role was removed'
         render partial: 'roles', status: 200
       else
         @users_roles = @user.study_and_project_roles.order(name: :asc)
-        flash[:error] = 'A problem occurred while removing the role' # rubocop:disable Rails/ActionControllerFlashBeforeRender
+        flash[:error] = 'A problem occurred while removing the role'
         render partial: 'roles', status: 500
       end
     else

@@ -29,7 +29,7 @@ RSpec.describe Heron::Factories::Concerns::Contents, :heron, :lighthouse, type: 
     end
   end
   let(:factory) { factory_klass.new(params) }
-  let(:study) { create :study }
+  let(:study) { create(:study) }
 
   include BarcodeHelper
 
@@ -238,7 +238,7 @@ RSpec.describe Heron::Factories::Concerns::Contents, :heron, :lighthouse, type: 
       let(:tubes) do
         %w[A1 B1 C1].map do |coordinate|
           tube = create(:tube)
-          create(:racked_tube, tube: tube, coordinate: coordinate, tube_rack: tube_rack)
+          create(:racked_tube, tube:, coordinate:, tube_rack:)
           tube
         end
       end

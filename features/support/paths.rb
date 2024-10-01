@@ -4,7 +4,7 @@
 module NavigationHelpers
   # Finds the specified page for the given model with the specified name.
   def page_for_model(model, page, name)
-    object = model.find_by!(name: name)
+    object = model.find_by!(name:)
     routing_method = "#{model.name.underscore}_path"
     routing_method = "#{page}_#{routing_method}" unless page == 'show'
     send(routing_method.to_sym, object)
@@ -106,7 +106,7 @@ module NavigationHelpers
       study_reports_path
     when /the profile page for "([^"]+)"/
       login = $1
-      user = User.find_by!(login: login)
+      user = User.find_by!(login:)
       profile_path(user)
     when /the plate purpose homepage/
       admin_plate_purposes_path

@@ -79,7 +79,7 @@ RSpec.describe SequencescapeExcel::Range, :sample_manifest, :sample_manifest_exc
 
   context 'with dynamic options' do
     # Ensure we have at least one option.
-    before { create :library_type }
+    before { create(:library_type) }
 
     let!(:original_option_size) { LibraryType.count }
     let(:attributes) { { name: 'library_type', identifier: :name, scope: :alphabetical, first_row: 4 } }
@@ -142,7 +142,7 @@ RSpec.describe SequencescapeExcel::Range, :sample_manifest, :sample_manifest_exc
 
     it 'adjusts to changes in option number' do
       previous_last_cell = range.last_cell.column
-      create :library_type, name: 'Other'
+      create(:library_type, name: 'Other')
       expect(range.last_column).to eq(original_option_size + 1)
       expect(range.last_cell.column).to eq(previous_last_cell.next)
     end
@@ -161,7 +161,7 @@ RSpec.describe SequencescapeExcel::Range, :sample_manifest, :sample_manifest_exc
   end
 
   context 'without first row' do
-    let(:range) { described_class.new(options: options) }
+    let(:range) { described_class.new(options:) }
 
     it 'is be valid' do
       expect(range).not_to be_valid

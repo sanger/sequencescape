@@ -2,7 +2,7 @@
 
 RSpec.describe ExportPoolXpToTractionJob, type: :job do
   let(:export_job) { described_class.new(tube.human_barcode) }
-  let(:tube) { create :multiplexed_library_tube, sample_count: 3 }
+  let(:tube) { create(:multiplexed_library_tube, sample_count: 3) }
 
   let(:schema_subject) { configatron.amqp.schemas.subjects[:export_pool_xp_to_traction][:subject] }
   let(:schema_version) { configatron.amqp.schemas.subjects[:export_pool_xp_to_traction][:version] }
@@ -51,10 +51,10 @@ RSpec.describe ExportPoolXpToTractionJob, type: :job do
   end
 
   describe '#get_message_data' do
-    let(:project) { create :project }
+    let(:project) { create(:project) }
     let(:actual_message) { export_job.get_message_data(tube.human_barcode) }
-    let(:study) { create :study }
-    let(:compound_sample) { create :sample }
+    let(:study) { create(:study) }
+    let(:compound_sample) { create(:sample) }
 
     before do
       allow(tube).to receive_messages(projects: [project], studies: [study])

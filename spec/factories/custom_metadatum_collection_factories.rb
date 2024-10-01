@@ -9,11 +9,7 @@ FactoryBot.define do
       transient { metadatum_count { 5 } }
 
       after(:create) do |custom_metadatum_collection, evaluator|
-        create_list(
-          :custom_metadatum,
-          evaluator.metadatum_count,
-          custom_metadatum_collection: custom_metadatum_collection
-        )
+        create_list(:custom_metadatum, evaluator.metadatum_count, custom_metadatum_collection:)
       end
     end
   end

@@ -14,7 +14,7 @@ RSpec.describe StateChanger::InputPlate do
       customer_accepts_responsibility: customer_accepts_responsibility
     )
   end
-  let(:user) { build_stubbed :user }
+  let(:user) { build_stubbed(:user) }
   let(:contents) { [] }
   let(:customer_accepts_responsibility) { false }
 

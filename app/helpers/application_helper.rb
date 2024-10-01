@@ -8,7 +8,7 @@ module ApplicationHelper
     Rails
       .cache
       .fetch("#{identifier}-#{differential}") do
-        custom_text = CustomText.find_by(identifier: identifier, differential: differential)
+        custom_text = CustomText.find_by(identifier:, differential:)
 
         custom_text.try(:content) || ''
       end
@@ -243,23 +243,17 @@ module ApplicationHelper
   # <div class="tab-pane fade show <active>" id="pending" role="tabpanel" aria-labelledby="peding-tab">
   #   yield
   # </div>
-  def tab_pane(name, id: nil, tab_id: nil, active: false, &block)
+  def tab_pane(name, id: nil, tab_id: nil, active: false, &)
     tab_id ||= "#{name}-tab".parameterize
     id ||= name.parameterize
     active_class = active ? 'active' : ''
-    tag.div(
-      class: ['tab-pane', 'fade', 'show', active_class],
-      id: id,
-      role: 'tabpanel',
-      aria_labelledby: tab_id,
-      &block
-    )
+    tag.div(class: ['tab-pane', 'fade', 'show', active_class], id: id, role: 'tabpanel', aria_labelledby: tab_id, &)
   end
 
   def display_boolean_results(result)
     return 'NA' if result.blank?
 
-    if result == 'pass' || result == '1' || result == 'true'
+    if %w[pass 1 true].include?(result)
       icon('far', 'check-circle', title: result)
     else
       icon('fas', 'exclamation-circle', class: 'text-danger', title: result)
@@ -270,7 +264,7 @@ module ApplicationHelper
     sorted_requests = requests.select { |r| r.pipeline_id.nil? }
     new_requests = requests - sorted_requests
     new_requests.sort_by(&:pipeline_id)
-    requests = requests + sorted_requests
+    requests += sorted_requests
   end
 
   # Creates a label that is hidden from the view so that testing is easier
@@ -278,8 +272,8 @@ module ApplicationHelper
     label_tag(name, text, options.merge(style: 'display:none;'))
   end
 
-  def help_text(&block)
-    tag.small(class: 'form-text text-muted col', &block)
+  def help_text(&)
+    tag.small(class: 'form-text text-muted col', &)
   end
 
   def help_link(text, entry = '', options = {})

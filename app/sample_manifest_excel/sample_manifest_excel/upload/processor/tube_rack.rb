@@ -58,7 +58,7 @@ module SampleManifestExcel
         # it has been processed before and should not be re-processed
         def check_if_tube_racks_present
           @tube_rack_barcodes_from_manifest.each do |barcode|
-            existing_barcode_record = Barcode.includes(:asset).find_by(barcode: barcode)
+            existing_barcode_record = Barcode.includes(:asset).find_by(barcode:)
             return true if !existing_barcode_record.nil? && !existing_barcode_record.asset.nil?
           end
           false

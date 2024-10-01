@@ -199,7 +199,7 @@ RSpec.describe SequencescapeExcel::Column, :sample_manifest, :sample_manifest_ex
   end
 
   describe '#style' do
-    subject { described_class.new({ **options, unlocked: unlocked }).style }
+    subject { described_class.new({ **options, unlocked: }).style }
 
     context 'when locked' do
       let(:unlocked) { false }

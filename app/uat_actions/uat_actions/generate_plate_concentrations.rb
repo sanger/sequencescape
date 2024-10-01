@@ -113,6 +113,6 @@ class UatActions::GeneratePlateConcentrations < UatActions
       num_wells_written += 1
     end
     qc_assay_success = qc_assay.save
-    { qc_assay_success: qc_assay_success, num_wells_written: num_wells_written }
+    { qc_assay_success:, num_wells_written: }
   end
 end
