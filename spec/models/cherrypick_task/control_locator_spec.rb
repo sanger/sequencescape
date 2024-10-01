@@ -64,6 +64,13 @@ RSpec.describe CherrypickTask::ControlLocator do
       placement_type = instance.send(:control_placement_type)
       expect(placement_type.nil? || %w[fixed random].exclude?(placement_type)).to be_falsey
     end
+
+    it 'validates compatibility with the plate template' do
+      placement_type = instance.send(:control_placement_type)
+      if placement_type == 'fixed'
+        expect(error).not_to eq 'The control plate and plate template are incompatible'
+      end
+    end
   end
 
   # Control positions will be our only public method, sand perhaps some attr_readers
