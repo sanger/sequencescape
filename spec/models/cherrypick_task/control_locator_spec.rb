@@ -185,6 +185,19 @@ RSpec.describe CherrypickTask::ControlLocator do
       end
     end
 
+    context 'when the control placement type is set to fixed' do
+      let(:batch_id) { 1 }
+      let(:total_wells) { 96 }
+      let(:num_control_wells) { 2 }
+      let(:wells_to_leave_free) { [] }
+
+      before { allow(instance).to receive_messages(control_placement_type: 'fixed') }
+
+      it 'does not raise an error' do
+        expect(instance.control_positions(0)).to eq([])
+      end
+    end
+
     context 'when the control plate and plate template are incompatible' do
       let(:batch_id) { 1 }
       let(:total_wells) { 96 }
