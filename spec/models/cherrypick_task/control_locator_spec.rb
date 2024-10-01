@@ -64,11 +64,6 @@ RSpec.describe CherrypickTask::ControlLocator do
       placement_type = instance.send(:control_placement_type)
       expect(placement_type.nil? || %w[fixed random].exclude?(placement_type)).to be_falsey
     end
-
-    it 'validates compatibility with the plate template' do
-      placement_type = instance.send(:control_placement_type)
-      expect(error).not_to eq 'The control plate and plate template are incompatible' if placement_type == 'fixed'
-    end
   end
 
   # Control positions will be our only public method, sand perhaps some attr_readers
@@ -180,15 +175,29 @@ RSpec.describe CherrypickTask::ControlLocator do
       let(:num_control_wells) { 2 }
       let(:wells_to_leave_free) { [] }
 
-      before do
-        # Stub the `control_placement_type` to return an invalid type
-        allow(instance).to receive(:control_placement_type).and_return('invalid_type')
-      end
-    
+      before { allow(instance).to receive(:control_placement_type).and_return('invalid_type') }
+
       it 'raises an error about invalid placement type' do
-        expect do
-          instance.control_positions(0) 
-            end.to raise_error(StandardError, 'Control placement type is not set or is invalid')
+        expect do instance.control_positions(0) end.to raise_error(
+          StandardError,
+          'Control placement type is not set or is invalid'
+        )
+      end
+    end
+
+    context 'when the control plate and plate template are incompatible' do
+      let(:batch_id) { 1 }
+      let(:total_wells) { 96 }
+      let(:num_control_wells) { 2 }
+      let(:wells_to_leave_free) { [] }
+
+      before { allow(instance).to receive_messages(control_placement_type: 'fixed', convert_control_assets: [1, 2, 3]) }
+
+      it 'raises an error about incompatibility' do
+        expect do instance.control_positions(0) end.to raise_error(
+          StandardError,
+          'The control plate and plate template are incompatible'
+        )
       end
     end
   end
