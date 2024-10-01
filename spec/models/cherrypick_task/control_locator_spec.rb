@@ -9,7 +9,8 @@ RSpec.describe CherrypickTask::ControlLocator do
       total_wells: total_wells,
       num_control_wells: num_control_wells,
       wells_to_leave_free: wells_to_leave_free,
-      control_source_plate: create(:control_plate)
+      control_source_plate: create(:control_plate),
+      template: create(:plate_template)
     )
   end
 
@@ -139,7 +140,8 @@ RSpec.describe CherrypickTask::ControlLocator do
               batch_id: batch_id,
               total_wells: 96,
               num_control_wells: 1,
-              control_source_plate: create(:control_plate)
+              control_source_plate: create(:control_plate),
+              template: create(:plate_template)
             )
             .control_positions(0)
             .first
