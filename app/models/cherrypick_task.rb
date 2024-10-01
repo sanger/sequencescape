@@ -21,12 +21,14 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
   #
   # @return [CherrypickTask::ControlLocator] A generator of control locations
   #
+
+  # rubocop:disable Metrics/ParameterLists
   def new_control_locator(
     batch_id,
     total_wells,
     num_control_wells,
     template,
-    control_source_plate: nil,
+    control_source_plate:,
     wells_to_leave_free: DEFAULT_WELLS_TO_LEAVE_FREE
   )
     CherrypickTask::ControlLocator.new(
@@ -38,6 +40,7 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
       template:
     )
   end
+  # rubocop:enable Metrics/ParameterLists
 
   #
   # Cherrypick tasks are directly coupled to the previous task, due to the awkward
@@ -68,7 +71,7 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
     purpose = partial_plate.plate_purpose
     target_type = PickTarget.for(purpose)
 
-    perform_pick(requests, robot, control_source_plate, workflow_controller) do
+    perform_pick(requests, robot, control_source_plate, workflow_controller, template) do
       target_type
         .new(template, purpose.try(:asset_shape), partial_plate)
         .tap do
@@ -95,8 +98,13 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
       batch = requests.first.batch
       control_assets = control_source_plate.wells.joins(:samples)
       control_locator =
-        new_control_locator(batch.id, current_destination_plate.size, control_assets.count, template, 
-control_source_plate:)
+        new_control_locator(
+          batch.id,
+          current_destination_plate.size,
+          control_assets.count,
+          template,
+          control_source_plate:
+        )
       control_posns = control_locator.control_positions(num_plate)
 
       # If is an incomplete plate, or a plate with a template applied, copy all the controls missing into the

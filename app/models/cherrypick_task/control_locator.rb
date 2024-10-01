@@ -45,6 +45,8 @@ class CherrypickTask::ControlLocator
   # @param total_wells [Integer] The total number of wells on the plate
   # @param num_control_wells [Integer] The number of control wells to lay out
   # @param wells_to_leave_free [Enumerable] Array or range indicating the wells to leave free from controls
+
+  # rubocop:disable Metrics/ParameterLists
   def initialize(batch_id:, total_wells:, num_control_wells:, template:, control_source_plate:, wells_to_leave_free: [])
     @batch_id = batch_id
     @total_wells = total_wells
@@ -54,6 +56,7 @@ class CherrypickTask::ControlLocator
     @control_source_plate = control_source_plate
     @plate_template = template
   end
+  # rubocop:enable Metrics/ParameterLists
 
   #
   # Returns a list with the destination positions for the control wells distributed randomly
@@ -131,10 +134,23 @@ class CherrypickTask::ControlLocator
     end
   end
 
+  def handle_incompatible_plates(converted_control_assets)
+    template_wells = @plate_template.wells.map(&:map_id)
+    converted_template_assets = convert_control_assets(template_wells)
+
+    converted_control_assets.intersect?(converted_template_assets)
+  end
+
   def fixed_positions_from_available
     control_assets = @control_source_plate.wells.joins(:samples)
     control_wells = control_assets.map(&:map_id)
-    convert_control_assets(control_wells)
+    converted_assets = convert_control_assets(control_wells)
+
+    if handle_incompatible_plates(converted_assets)
+      raise StandardError, 'The control plate and plate template are incompatible'
+    end
+
+    converted_assets
   end
 
   # The invalid and valid maps are hash maps to represent a plate that maps A1 -> 1, A2 -> 2, etc,
