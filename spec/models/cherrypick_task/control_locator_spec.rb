@@ -191,13 +191,10 @@ RSpec.describe CherrypickTask::ControlLocator do
       let(:num_control_wells) { 2 }
       let(:wells_to_leave_free) { [] }
 
-      before { allow(instance).to receive_messages(control_placement_type: 'fixed', convert_control_assets: [1, 2, 3]) }
+      before { allow(instance).to receive_messages(control_placement_type: 'fixed', convert_assets: [1, 2, 3]) }
 
-      it 'raises an error about incompatibility' do
-        expect { instance.control_positions(0) }.to raise_error(
-          StandardError,
-          'The control plate and plate template are incompatible'
-        )
+      it 'displays an error about incompatibility' do
+        expect(instance.handle_incompatible_plates).to be_falsey
       end
     end
 
@@ -210,7 +207,7 @@ RSpec.describe CherrypickTask::ControlLocator do
       before { allow(instance).to receive_messages(control_placement_type: 'fixed') }
 
       it 'they are given the correct position IDs' do
-        expect(instance.send(:convert_control_assets, [94, 95, 96])).to eq([79, 87, 95])
+        expect(instance.send(:convert_assets, [94, 95, 96])).to eq([79, 87, 95])
       end
     end
   end
