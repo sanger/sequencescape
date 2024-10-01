@@ -6,7 +6,7 @@ require './app/resources/api/v2/transfer_request_collection_resource'
 RSpec.describe Api::V2::TransferRequestCollectionResource, type: :resource do
   subject(:resource) { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { build_stubbed :pooled_plate_creation }
+  let(:resource_model) { build_stubbed(:pooled_plate_creation) }
 
   # Attributes
   it { is_expected.to have_readonly_attribute :uuid }

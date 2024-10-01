@@ -31,7 +31,7 @@ describe 'Transfer Request Collection API', with: :api_v2 do
 
   context 'with a single resource' do
     describe '#GET resource by ID' do
-      let(:resource) { create :transfer_request_collection }
+      let(:resource) { create(:transfer_request_collection) }
 
       context 'without included relationships' do
         before { api_get "#{base_endpoint}/#{resource.id}" }
@@ -88,7 +88,7 @@ describe 'Transfer Request Collection API', with: :api_v2 do
   end
 
   describe '#PATCH a resource' do
-    let(:resource_model) { create :transfer_request_collection }
+    let(:resource_model) { create(:transfer_request_collection) }
     let(:payload) { { data: { id: resource_model.id, type: resource_type, attributes: { user_uuid: '1' } } } }
 
     it 'finds no route for the method' do
@@ -111,7 +111,7 @@ describe 'Transfer Request Collection API', with: :api_v2 do
         .map { |source_asset, target_asset| { source_asset: source_asset.uuid, target_asset: target_asset.uuid } }
     end
 
-    let(:base_attributes) { { transfer_requests_attributes: transfer_requests_attributes } }
+    let(:base_attributes) { { transfer_requests_attributes: } }
 
     context 'with a valid payload' do
       shared_examples 'a valid request' do
@@ -153,10 +153,8 @@ describe 'Transfer Request Collection API', with: :api_v2 do
           new_record = model_class.last
 
           expect(new_record.transfer_requests.count).to eq(transfer_requests_attributes.count)
-          new_record.transfer_requests.each_with_index do |transfer_request, index|
-            expect(transfer_request.asset).to eq(source_assets[index])
-            expect(transfer_request.target_asset).to eq(target_assets[index])
-          end
+          expect(new_record.transfer_requests.map(&:asset)).to match_array(source_assets)
+          expect(new_record.transfer_requests.map(&:target_asset)).to match_array(target_assets)
         end
 
         it 'populates the target_tubes relationship' do
@@ -181,7 +179,7 @@ describe 'Transfer Request Collection API', with: :api_v2 do
       end
 
       context 'with conflicting relationships' do
-        let(:other_user) { create :user }
+        let(:other_user) { create(:user) }
         let(:payload) do
           {
             data: {

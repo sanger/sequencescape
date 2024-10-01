@@ -12,6 +12,6 @@ FactoryBot.define do
     transfer_requests do
       Array.new(transfer_request_count) { create(:transfer_request, target_asset: target_assets.sample) }
     end
-    user { create :user }
+    user { create(:user) }
   end
 end
