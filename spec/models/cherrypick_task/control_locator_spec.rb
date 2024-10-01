@@ -173,5 +173,23 @@ RSpec.describe CherrypickTask::ControlLocator do
         expect(tally.values).to all be_between(2, 25)
       end
     end
+
+    context 'when the control placement type is not valid' do
+      let(:batch_id) { 1 }
+      let(:total_wells) { 96 }
+      let(:num_control_wells) { 2 }
+      let(:wells_to_leave_free) { [] }
+
+      before do
+        # Stub the `control_placement_type` to return an invalid type
+        allow(instance).to receive(:control_placement_type).and_return('invalid_type')
+      end
+    
+      it 'raises an error about invalid placement type' do
+        expect do
+          instance.control_positions(0) 
+            end.to raise_error(StandardError, 'Control placement type is not set or is invalid')
+      end
+    end
   end
 end
