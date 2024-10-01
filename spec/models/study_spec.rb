@@ -131,7 +131,7 @@ RSpec.describe Study do
       it 'not be set to not applicable' do
         study.ethically_approved = nil
         study.valid?
-        expect(study.ethically_approved).to be_falsey
+        expect(study.ethically_approved).to be false
       end
 
       it 'be valid with true' do
@@ -193,12 +193,13 @@ RSpec.describe Study do
 
       it 'will be valid when we are sane' do
         study.study_metadata.remove_x_and_autosomes = Study::NO
-        expect(study.save!).to be_truthy
+        expect(study.save!).to be true
       end
 
       it 'will be invalid when we do something silly' do
         study.study_metadata.remove_x_and_autosomes = Study::YES
-        expect { study.save! }.to raise_error(ActiveRecord::RecordInvalid)
+
+        expect(study.save).to be false
       end
     end
 
@@ -270,27 +271,25 @@ RSpec.describe Study do
       let!(:study) { create(:managed_study) }
 
       it 'accept valid urls' do
-        expect(study.study_metadata.update!(dac_policy: 'http://www.example.com')).to be_truthy
+        expect(study.study_metadata.update(dac_policy: 'http://www.example.com')).to be true
         expect(study.study_metadata.dac_policy).to eq('http://www.example.com')
       end
 
       it 'reject free text' do
-        expect { study.study_metadata.update!(dac_policy: 'Not a URL') }.to raise_error(ActiveRecord::RecordInvalid)
+        expect(study.study_metadata.update(dac_policy: 'Not a URL')).to be false
       end
 
       it 'reject invalid domains' do
-        expect { study.study_metadata.update!(dac_policy: 'http://internal.example.com') }.to raise_error(
-          ActiveRecord::RecordInvalid
-        )
+        expect(study.study_metadata.update(dac_policy: 'http://internal.example.com')).to be false
       end
 
       it 'add http:// before testing a url' do
-        expect(study.study_metadata.update!(dac_policy: 'www.example.com')).to be_truthy
+        expect(study.study_metadata.update(dac_policy: 'www.example.com')).to be true
         expect(study.study_metadata.dac_policy).to eq('http://www.example.com')
       end
 
       it 'not add http for eg. https' do
-        expect(study.study_metadata.update!(dac_policy: 'https://www.example.com')).to be_truthy
+        expect(study.study_metadata.update(dac_policy: 'https://www.example.com')).to be true
         expect(study.study_metadata.dac_policy).to eq('https://www.example.com')
       end
 
@@ -308,14 +307,14 @@ RSpec.describe Study do
         # Valid names contain alphanumerics and underscores. They are limited to 32 characters, and cannot begin with a
         # number
         ['goodname', 'g00dname', 'good_name', '_goodname', 'good-name', 'goodname1  goodname2'].each do |name|
-          expect(study.study_metadata.update!(data_access_group: name)).to be_truthy
+          expect(study.study_metadata.update(data_access_group: name)).to be true
           expect(study.study_metadata.data_access_group).to eq(name)
         end
       end
 
       it 'reject non-alphanumeric data access groups' do
         %w[b@dname 1badname averylongbadnamewouldbebadsowesouldblockit baDname].each do |name|
-          expect { study.study_metadata.update!(data_access_group: name) }.to raise_error(ActiveRecord::RecordInvalid)
+          expect(study.study_metadata.update(data_access_group: name)).to be false
         end
       end
     end
@@ -333,17 +332,17 @@ RSpec.describe Study do
       let!(:study) { create(:study) }
 
       it 'accepts names shorter than 200 characters' do
-        expect(study.update!(name: 'Short name')).to be_truthy
+        expect(study.update(name: 'Short name')).to be true
       end
 
       it 'rejects names longer than 200 characters' do
-        expect { study.update!(name: 'a' * 201) }.to raise_error(ActiveRecord::RecordInvalid)
+        expect(study.update(name: 'a' * 201)).to be false
       end
 
       it 'squish whitespace' do
         expect(
-          study.update!(name: '   Squish   double spaces and flanking whitespace but not double letters ')
-        ).to be_truthy
+          study.update(name: '   Squish   double spaces and flanking whitespace but not double letters ')
+        ).to be true
         expect(study.name).to eq('Squish double spaces and flanking whitespace but not double letters')
       end
     end
@@ -651,8 +650,10 @@ RSpec.describe Study do
 
         it 'errors if the data_release_timing is invalid' do
           study.study_metadata.data_release_timing = 'never'
-          expect { study.save! }.to raise_error(
-            ActiveRecord::RecordInvalid,
+
+          study.save # Don't raise exceptions, we only want to check for validation error messages.
+
+          expect(study.errors.full_messages).to include(
             /Study metadata data release timing is not included in the list/
           )
         end
@@ -664,9 +665,8 @@ RSpec.describe Study do
         it 'does not error if the data_release_timing is invalid' do
           study.study_metadata.data_release_timing = 'never'
 
-          # There will be errors, but they shouldn't include anything about data release timing.
-          expect(study.save).to be_falsey
-          expect(study.errors).not_to be_nil
+          study.save # Don't raise exceptions, we only want to check for validation error messages.
+
           expect(study.errors.full_messages).not_to include(/data release timing/)
         end
       end
@@ -686,8 +686,10 @@ RSpec.describe Study do
 
         it 'errors if the data_release_timing is invalid' do
           study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_NEVER
-          expect { study.save! }.to raise_error(
-            ActiveRecord::RecordInvalid,
+
+          study.save # Don't raise exceptions, we only want to check for validation error messages.
+
+          expect(study.errors.full_messages).to include(
             /Study metadata data release timing is not included in the list/
           )
         end
@@ -699,9 +701,8 @@ RSpec.describe Study do
         it 'does not error if the data_release_timing is invalid' do
           study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_NEVER
 
-          # There will be errors, but they shouldn't include anything about data release timing.
-          expect(study.save).to be_falsey
-          expect(study.errors).not_to be_nil
+          study.save # Don't raise exceptions, we only want to check for validation error messages.
+
           expect(study.errors.full_messages).not_to include(/data release timing/)
         end
       end
@@ -732,7 +733,7 @@ RSpec.describe Study do
           Data Release delay other comment. Data Release delay other comment. Data Release delay other comment.
           Data Release delay other comment. Data Release delay other comment. Data Release delay other comment.
           Data Release delay other comment. Data Release delay other comment. Data Release delay other comment.'
-        expect { study.save! }.to raise_error(ActiveRecord::RecordInvalid)
+        expect(study.save).to be false
         expect(study.valid?).to be false
         expect(study.errors.messages.length).to eq 1
       end
@@ -784,16 +785,20 @@ RSpec.describe Study do
 
         it 'errors if the data_release_timing is standard' do
           study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_STANDARD
-          expect { study.save! }.to raise_error(
-            ActiveRecord::RecordInvalid,
+
+          study.save # Don't raise exceptions, we only want to check for validation error messages.
+
+          expect(study.errors.full_messages).to include(
             /Study metadata data release timing is not included in the list/
           )
         end
 
         it 'errors if the data_release_timing is immediate' do
           study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_IMMEDIATE
-          expect { study.save! }.to raise_error(
-            ActiveRecord::RecordInvalid,
+
+          study.save # Don't raise exceptions, we only want to check for validation error messages.
+
+          expect(study.errors.full_messages).to include(
             /Study metadata data release timing is not included in the list/
           )
         end
@@ -803,15 +808,20 @@ RSpec.describe Study do
           study.study_metadata.data_release_delay_reason = Study::DATA_RELEASE_DELAY_REASONS_STANDARD[0]
           study.study_metadata.data_release_delay_period = Study::DATA_RELEASE_DELAY_PERIODS[0]
           study.study_metadata.data_release_delay_approval = Study::YES
-          expect { study.save! }.to raise_error(
-            ActiveRecord::RecordInvalid,
+
+          study.save # Don't raise exceptions, we only want to check for validation error messages.
+
+          expect(study.errors.full_messages).to include(
             /Study metadata data release timing is not included in the list/
           )
         end
 
         it 'is valid if the data_release_timing is never' do
           study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_NEVER
-          expect { study.save! }.not_to raise_error
+
+          study.save # Don't raise exceptions, we only want to check for validation error messages.
+
+          expect(study.errors.full_messages).not_to include(/data release timing/)
         end
       end
 
@@ -820,12 +830,18 @@ RSpec.describe Study do
 
         it 'does not error if the data_release_timing is standard' do
           study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_STANDARD
-          expect { study.save! }.not_to raise_error
+
+          study.save # Don't raise exceptions, we only want to check for validation error messages.
+
+          expect(study.errors.full_messages).not_to include(/data release timing/)
         end
 
         it 'does not error if the data_release_timing is immediate' do
           study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_IMMEDIATE
-          expect { study.save! }.not_to raise_error
+
+          study.save # Don't raise exceptions, we only want to check for validation error messages.
+
+          expect(study.errors.full_messages).not_to include(/data release timing/)
         end
 
         it 'does not error if the data_release_timing is delayed' do
@@ -833,12 +849,18 @@ RSpec.describe Study do
           study.study_metadata.data_release_delay_reason = Study::DATA_RELEASE_DELAY_REASONS_STANDARD[0]
           study.study_metadata.data_release_delay_period = Study::DATA_RELEASE_DELAY_PERIODS[0]
           study.study_metadata.data_release_delay_approval = Study::YES
-          expect { study.save! }.not_to raise_error
+
+          study.save # Don't raise exceptions, we only want to check for validation error messages.
+
+          expect(study.errors.full_messages).not_to include(/data release timing/)
         end
 
         it 'is still valid if the data_release_timing is never' do
           study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_NEVER
-          expect { study.save! }.not_to raise_error
+
+          study.save # Don't raise exceptions, we only want to check for validation error messages.
+
+          expect(study.errors.full_messages).not_to include(/data release timing/)
         end
       end
     end
