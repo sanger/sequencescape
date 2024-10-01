@@ -200,5 +200,18 @@ RSpec.describe CherrypickTask::ControlLocator do
         )
       end
     end
+
+    context 'when assets are converted using the maps' do
+      let(:batch_id) { 1 }
+      let(:total_wells) { 96 }
+      let(:num_control_wells) { 2 }
+      let(:wells_to_leave_free) { [] }
+
+      before { allow(instance).to receive_messages(control_placement_type: 'fixed') }
+
+      it 'they are given the correct position IDs' do
+        expect(instance.send(:convert_control_assets, [94, 95, 96])).to eq([79, 87, 95])
+      end
+    end
   end
 end
