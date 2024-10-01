@@ -84,6 +84,18 @@ class CherrypickTask::ControlLocator
     handle_control_placement_type(placement_type, num_plate)
   end
 
+  def handle_incompatible_plates
+    return false if control_placement_type == 'random'
+    return false if @plate_template.wells.empty?
+
+    control_assets = control_source_plate.wells.joins(:samples)
+
+    converted_control_assets = convert_assets(control_assets.map(&:map_id))
+    converted_template_assets = convert_assets(@plate_template.wells.map(&:map_id))
+
+    converted_control_assets.intersect?(converted_template_assets)
+  end
+
   private
 
   # If num plate is equal to the available positions, the cycle is going to be repeated.
@@ -125,7 +137,7 @@ class CherrypickTask::ControlLocator
   # Because the control source plate wells are ordered inversely to the destination plate wells,
   # the control asset ids need to be converted to the corresponding destination plate well indexes.
 
-  def convert_control_assets(control_assets)
+  def convert_assets(control_assets)
     valid_map, invalid_map = create_plate_maps
 
     control_assets.map do |id|
@@ -134,23 +146,10 @@ class CherrypickTask::ControlLocator
     end
   end
 
-  def handle_incompatible_plates(converted_control_assets)
-    template_wells = @plate_template.wells.map(&:map_id)
-    converted_template_assets = convert_control_assets(template_wells)
-
-    converted_control_assets.intersect?(converted_template_assets)
-  end
-
   def fixed_positions_from_available
     control_assets = @control_source_plate.wells.joins(:samples)
     control_wells = control_assets.map(&:map_id)
-    converted_assets = convert_control_assets(control_wells)
-
-    if handle_incompatible_plates(converted_assets)
-      raise StandardError, 'The control plate and plate template are incompatible'
-    end
-
-    converted_assets
+    convert_assets(control_wells)
   end
 
   # The invalid and valid maps are hash maps to represent a plate that maps A1 -> 1, A2 -> 2, etc,
