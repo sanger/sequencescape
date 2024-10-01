@@ -153,10 +153,8 @@ describe 'Transfer Request Collection API', with: :api_v2 do
           new_record = model_class.last
 
           expect(new_record.transfer_requests.count).to eq(transfer_requests_attributes.count)
-          new_record.transfer_requests.each_with_index do |transfer_request, index|
-            expect(transfer_request.asset).to eq(source_assets[index])
-            expect(transfer_request.target_asset).to eq(target_assets[index])
-          end
+          expect(new_record.transfer_requests.map(&:asset)).to match_array(source_assets)
+          expect(new_record.transfer_requests.map(&:target_asset)).to match_array(target_assets)
         end
 
         it 'populates the target_tubes relationship' do
