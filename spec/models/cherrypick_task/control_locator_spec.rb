@@ -178,7 +178,7 @@ RSpec.describe CherrypickTask::ControlLocator do
       before { allow(instance).to receive(:control_placement_type).and_return('invalid_type') }
 
       it 'raises an error about invalid placement type' do
-        expect do instance.control_positions(0) end.to raise_error(
+        expect { instance.control_positions(0) }.to raise_error(
           StandardError,
           'Control placement type is not set or is invalid'
         )
@@ -194,7 +194,7 @@ RSpec.describe CherrypickTask::ControlLocator do
       before { allow(instance).to receive_messages(control_placement_type: 'fixed', convert_control_assets: [1, 2, 3]) }
 
       it 'raises an error about incompatibility' do
-        expect do instance.control_positions(0) end.to raise_error(
+        expect { instance.control_positions(0) }.to raise_error(
           StandardError,
           'The control plate and plate template are incompatible'
         )
