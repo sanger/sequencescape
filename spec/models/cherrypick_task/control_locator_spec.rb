@@ -199,7 +199,7 @@ RSpec.describe CherrypickTask::ControlLocator do
         )
       end
 
-      it 'displays an error about incompatibility' do
+      it 'returns and displays an error message' do
         expect(instance.handle_incompatible_plates).to be_truthy
       end
     end
@@ -214,6 +214,19 @@ RSpec.describe CherrypickTask::ControlLocator do
 
       it 'they are given the correct position IDs' do
         expect(instance.send(:convert_assets, [94, 95, 96])).to eq([79, 87, 95])
+      end
+    end
+
+    context 'when the control placement type is fixed' do
+      let(:batch_id) { 1 }
+      let(:total_wells) { 96 }
+      let(:num_control_wells) { 2 }
+      let(:wells_to_leave_free) { [] }
+
+      before { allow(instance).to receive_messages(control_placement_type: 'fixed') }
+
+      it 'passes as intended' do
+        expect(instance.send(:fixed_positions_from_available)).to eq([])
       end
     end
   end
