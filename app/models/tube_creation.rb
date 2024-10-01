@@ -32,6 +32,6 @@ class TubeCreation < AssetCreation
   end
 
   def record_creation_of_children
-    #    children.each { |child| parent.events.create_tube!(child_purpose, child, user) }
+    # No record is made by this model class.
   end
 end
