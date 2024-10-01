@@ -288,13 +288,6 @@ module ApplicationHelper
     link_to text, url, options
   end
 
-  # DEPRECATE
-  # The admin email address should be stored in config.yml for the current environment
-  def help_email_link
-    admin_address = configatron.admin_email || 'admin@test.com'
-    link_to admin_address.to_s, "mailto:#{admin_address}"
-  end
-
   def fresh_sevice_link
     link_to 'Fresh Service', configatron.fresh_sevice_new_ticket_url
   end
