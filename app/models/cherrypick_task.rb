@@ -25,6 +25,7 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
     batch_id,
     total_wells,
     num_control_wells,
+    template,
     control_source_plate: nil,
     wells_to_leave_free: DEFAULT_WELLS_TO_LEAVE_FREE
   )
@@ -33,7 +34,8 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
       total_wells:,
       num_control_wells:,
       wells_to_leave_free:,
-      control_source_plate:
+      control_source_plate:,
+      template:
     )
   end
 
@@ -50,7 +52,7 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
   # rubocop:todo Metrics/ParameterLists
   def pick_new_plate(requests, template, robot, plate_purpose, control_source_plate = nil, workflow_controller = nil)
     target_type = PickTarget.for(plate_purpose)
-    perform_pick(requests, robot, control_source_plate, workflow_controller) do
+    perform_pick(requests, robot, control_source_plate, workflow_controller, template) do
       target_type.new(template, plate_purpose.try(:asset_shape))
     end
   end
@@ -78,7 +80,7 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
   # rubocop:enable Metrics/ParameterLists
 
   # rubocop:todo Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/MethodLength
-  def perform_pick(requests, robot, control_source_plate, workflow_controller) # rubocop:todo Metrics/AbcSize
+  def perform_pick(requests, robot, control_source_plate, workflow_controller, template) # rubocop:todo Metrics/AbcSize
     max_plates = robot.max_beds
     raise StandardError, 'The chosen robot has no beds!' if max_plates.zero?
 
@@ -93,7 +95,8 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
       batch = requests.first.batch
       control_assets = control_source_plate.wells.joins(:samples)
       control_locator =
-        new_control_locator(batch.id, current_destination_plate.size, control_assets.count, control_source_plate:)
+        new_control_locator(batch.id, current_destination_plate.size, control_assets.count, template, 
+control_source_plate:)
       control_posns = control_locator.control_positions(num_plate)
 
       # If is an incomplete plate, or a plate with a template applied, copy all the controls missing into the

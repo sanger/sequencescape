@@ -45,13 +45,14 @@ class CherrypickTask::ControlLocator
   # @param total_wells [Integer] The total number of wells on the plate
   # @param num_control_wells [Integer] The number of control wells to lay out
   # @param wells_to_leave_free [Enumerable] Array or range indicating the wells to leave free from controls
-  def initialize(batch_id:, total_wells:, num_control_wells:, control_source_plate:, wells_to_leave_free: [])
+  def initialize(batch_id:, total_wells:, num_control_wells:, template:, control_source_plate:, wells_to_leave_free: [])
     @batch_id = batch_id
     @total_wells = total_wells
     @num_control_wells = num_control_wells
     @wells_to_leave_free = wells_to_leave_free.to_a
     @available_positions = (0...total_wells).to_a - @wells_to_leave_free
     @control_source_plate = control_source_plate
+    @plate_template = template
   end
 
   #
