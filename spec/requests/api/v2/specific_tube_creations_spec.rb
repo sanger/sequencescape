@@ -231,7 +231,7 @@ describe 'Specific Tube Creations API', with: :api_v2 do
 
     context 'with a read-only attribute in the payload' do
       context 'with uuid' do
-        let(:disallowed_attribute) { 'uuid' }
+        let(:disallowed_value) { 'uuid' }
         let(:payload) do
           {
             data: {
@@ -241,7 +241,7 @@ describe 'Specific Tube Creations API', with: :api_v2 do
           }
         end
 
-        it_behaves_like 'a POST request with a disallowed attribute'
+        it_behaves_like 'a POST request with a disallowed value'
       end
     end
 

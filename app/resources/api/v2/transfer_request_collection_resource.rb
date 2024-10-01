@@ -7,38 +7,42 @@ module Api
     # @todo This documentation does not yet include any example usage of the API via cURL or similar.
     #
     # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
-    # @note Access this resource via the `/api/v2/pooled_plate_creation/` endpoint.
+    # @note Access this resource via the `/api/v2/transfer_request_collections/` endpoint.
     #
-    # Provides a JSON:API representation of {PooledPlateCreation}.
+    # Provides a JSON:API representation of {TransferRequestCollection}.
     #
     # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
-    class PooledPlateCreationResource < BaseResource
+    class TransferRequestCollectionResource < BaseResource
       ###
       # Attributes
       ###
 
-      # @!attribute [w] child_purpose_uuid
-      #   @param value [String] The UUID of a child purpose to use in the creation of the child plate.
+      # @!attribute [w] transfer_requests_attributes
+      #   To enable the creation of {TransferRequest} records server side in a single transaction, the attributes
+      #   for transfer requests to be included in the collection can be passed as an array of hashes. These will be
+      #   created at the same time as the {TransferRequestCollection} to avoid making multiple server calls.
+      #
+      #   @example Hashes should contain the following data about each transfer request
+      #     {
+      #       'source_asset': 'The UUID of the source asset as a string.',
+      #       'target_asset': 'The UUID of the destination asset as a string.',
+      #       'aliquot_attributes': {
+      #         'tag_depth': 'The tag depth of the source as a string.'
+      #       }
+      #     }
+      #
+      #   @param value [Array<Hash>] An array of hashes containing the attributes for transfer request to be created.
       #   @return [Void]
-      attribute :child_purpose_uuid
+      #   @see #transfer_requests
+      attribute :transfer_requests_attributes
 
-      def child_purpose_uuid=(value)
-        @model.child_purpose = Purpose.with_uuid(value).first
-      end
+      def transfer_requests_attributes=(value)
+        return if value.nil?
 
-      # @!attribute [w] parent_uuids
-      #   This is declared for convenience where parents are not available to set as a relationship.
-      #   Setting this attribute alongside the `parents` relationship will prefer the relationship value.
-      #   @deprecated Use the `parents` relationship instead.
-      #   @param value [Array<String>] The UUIDs of labware that will be the parents for the created plate.
-      #   @return [Void]
-      #   @see #parents
-      attribute :parent_uuids
-
-      def parent_uuids=(value)
-        @model.parents = value.map { |uuid| Labware.with_uuid(uuid).first }
+        # Convert ActionController::Parameters into hashes.
+        @model.transfer_requests_io = value.map(&:to_unsafe_h)
       end
 
       # @!attribute [w] user_uuid
@@ -62,15 +66,13 @@ module Api
       # Relationships
       ###
 
-      # @!attribute [r] child
-      #   @return [PlateResource] The child plate which was created.
-      has_one :child, class_name: 'Plate'
+      # @!attribute [r] target_tubes
+      #   @return [Array<TubeResource>] An array of tubes targeted by the transfer requests in this collection.
+      has_many :target_tubes, class_name: 'Tube'
 
-      # @!attribute [rw] parents
-      #   Setting this relationship alongside the `parent_uuids` attribute will override the attribute value.
-      #   @return [Array<LabwareResource>] An array of the parents of the plate being created.
-      #   @note This relationship is required.
-      has_many :parents, class_name: 'Labware'
+      # @!attribute [r] transfer_requests
+      #   @return [Array<TransferRequestResource>] An array of transfer requests in this collection.
+      has_many :transfer_requests
 
       # @!attribute [rw] user
       #   Setting this relationship alongside the `user_uuid` attribute will override the attribute value.
@@ -80,13 +82,13 @@ module Api
 
       def self.creatable_fields(context)
         # UUID is set by the system.
-        super - %i[child uuid]
+        super - %i[target_tubes transfer_requests uuid]
       end
 
       def fetchable_fields
-        # The tube_attributes attribute is only available during resource creation.
+        # The transfer_requests_attributes attribute is only available during resource creation.
         # UUIDs for relationships are not fetchable. They should be accessed via the relationship itself.
-        super - %i[child_purpose_uuid parent_uuids user_uuid]
+        super - %i[transfer_requests_attributes user_uuid]
       end
     end
   end
