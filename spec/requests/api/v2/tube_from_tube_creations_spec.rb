@@ -40,8 +40,11 @@ describe 'Tube from Tube Creations API', with: :api_v2 do
           expect(response).to have_http_status(:success)
         end
 
-        it 'returns the correct resource' do
+        it 'returns the resource with the correct id' do
           expect(json.dig('data', 'id')).to eq(resource.id.to_s)
+        end
+
+        it 'returns the resource with the correct type' do
           expect(json.dig('data', 'type')).to eq(resource_type)
         end
 
@@ -49,15 +52,27 @@ describe 'Tube from Tube Creations API', with: :api_v2 do
           expect(json.dig('data', 'attributes', 'uuid')).to eq(resource.uuid)
         end
 
-        it 'excludes unfetchable attributes' do
+        it 'excludes the unfetchable child_purpose_uuid' do
           expect(json.dig('data', 'attributes', 'child_purpose_uuid')).not_to be_present
+        end
+
+        it 'excludes the unfetchable parent_uuid' do
           expect(json.dig('data', 'attributes', 'parent_uuid')).not_to be_present
         end
 
-        it 'returns references to related resources' do
+        it 'returns a reference to the child relationship' do
           expect(json.dig('data', 'relationships', 'child')).to be_present
+        end
+
+        it 'returns a reference to the child_purpose relationship' do
           expect(json.dig('data', 'relationships', 'child_purpose')).to be_present
+        end
+
+        it 'returns a reference to the parent relationship' do
           expect(json.dig('data', 'relationships', 'parent')).to be_present
+        end
+
+        it 'returns a reference to the user relationship' do
           expect(json.dig('data', 'relationships', 'user')).to be_present
         end
 
@@ -129,36 +144,56 @@ describe 'Tube from Tube Creations API', with: :api_v2 do
           expect(response).to have_http_status(:success)
         end
 
-        it 'responds with the correct attributes' do
-          new_record = model_class.last
-
+        it 'responds with a resource of the correct type' do
           expect(json.dig('data', 'type')).to eq(resource_type)
+        end
+
+        it 'responds with a uuid matching the new record' do
+          new_record = model_class.last
           expect(json.dig('data', 'attributes', 'uuid')).to eq(new_record.uuid)
         end
 
-        it 'excludes unfetchable attributes' do
+        it 'excludes the unfetchable child_purpose_uuid' do
           expect(json.dig('data', 'attributes', 'child_purpose_uuid')).not_to be_present
+        end
+
+        it 'excludes the unfetchable parent_uuid' do
           expect(json.dig('data', 'attributes', 'parent_uuid')).not_to be_present
         end
 
-        it 'returns references to related resources' do
+        it 'returns a reference to the child relationship' do
           expect(json.dig('data', 'relationships', 'child')).to be_present
+        end
+
+        it 'returns a reference to the child_purpose relationship' do
           expect(json.dig('data', 'relationships', 'child_purpose')).to be_present
+        end
+
+        it 'returns a reference to the parent relationship' do
           expect(json.dig('data', 'relationships', 'parent')).to be_present
+        end
+
+        it 'returns a reference to the user relationship' do
           expect(json.dig('data', 'relationships', 'user')).to be_present
         end
 
-        it 'applies the relationships to the new record' do
+        it 'associates the child_purpose with the new record' do
           new_record = model_class.last
-
           expect(new_record.child_purpose).to eq(child_purpose)
+        end
+
+        it 'associates the parent with the new record' do
+          new_record = model_class.last
           expect(new_record.parent).to eq(parent)
+        end
+
+        it 'associates the user with the new record' do
+          new_record = model_class.last
           expect(new_record.user).to eq(user)
         end
 
         it 'generated a child with valid attributes' do
           new_record = model_class.last
-
           expect(new_record.child.purpose).to eq(child_purpose)
         end
       end
