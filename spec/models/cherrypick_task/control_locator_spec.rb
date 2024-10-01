@@ -59,6 +59,11 @@ RSpec.describe CherrypickTask::ControlLocator do
         this_plate.each_with_index { |position, index| expect(position).not_to be_within(5).of(previous_plate[index]) }
       end
     end
+
+    it 'uses a control plate that is valid' do
+      placement_type = instance.send(:control_placement_type)
+      expect(placement_type.nil? || %w[fixed random].exclude?(placement_type)).to be_falsey
+    end
   end
 
   # Control positions will be our only public method, sand perhaps some attr_readers
