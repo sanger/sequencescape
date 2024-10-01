@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe MessengersController do
-  let(:user) { create :user }
-  let(:messenger) { create :messenger }
+  let(:user) { create(:user) }
+  let(:messenger) { create(:messenger) }
 
   before { session[:user] = user.id }
 

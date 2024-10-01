@@ -5,7 +5,7 @@ require 'rails_helper'
 # This is a very tangled test, as I'm hoping to unhook the current dependencies
 # so need to wrap it at its current level of messiness
 RSpec.describe PlateTemplateTask do
-  subject(:task) { create :plate_template_task }
+  subject(:task) { create(:plate_template_task) }
 
   let(:pipeline) { task.workflow.pipeline }
   let(:requests) do
@@ -21,13 +21,13 @@ RSpec.describe PlateTemplateTask do
   let(:plate_a_barcode_number) { '1' }
   let(:plate_b_barcode_number) { '2' }
   let(:plate_a) do
-    create :plate, barcode: "SQPD-#{plate_a_barcode_number}", well_count: 4, well_factory: :untagged_well
+    create(:plate, barcode: "SQPD-#{plate_a_barcode_number}", well_count: 4, well_factory: :untagged_well)
   end
   let(:plate_b) do
-    create :plate, barcode: "SQPD-#{plate_b_barcode_number}", well_count: 4, well_factory: :untagged_well
+    create(:plate, barcode: "SQPD-#{plate_b_barcode_number}", well_count: 4, well_factory: :untagged_well)
   end
 
-  let(:batch) { create :batch, requests: requests, pipeline: pipeline }
+  let(:batch) { create(:batch, requests:, pipeline:) }
   let(:request) { instance_double(ActionDispatch::Request, parameters: params) }
   let(:workflow) { pipeline.workflow }
 
@@ -57,8 +57,8 @@ RSpec.describe PlateTemplateTask do
 
   let(:file) { instance_double(ActionDispatch::Http::UploadedFile, 'blank?' => false, :read => payload) }
 
-  let(:workflow_controller) { instance_double(WorkflowsController, batch: batch) }
-  let(:user) { build :user }
+  let(:workflow_controller) { instance_double(WorkflowsController, batch:) }
+  let(:user) { build(:user) }
 
   describe '#render_task' do
     let(:workflow_controller) do

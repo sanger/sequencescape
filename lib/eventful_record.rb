@@ -22,17 +22,17 @@ module EventfulRecord
     end
   end
 
-  def has_many_lab_events(&block)
-    has_many(:lab_events, -> { order(created_at: :asc, id: :asc) }, as: :eventful, dependent: :destroy, &block)
+  def has_many_lab_events(&)
+    has_many(:lab_events, -> { order(created_at: :asc, id: :asc) }, as: :eventful, dependent: :destroy, &)
   end
 
-  def has_one_event_with_family(event_family, &block)
+  def has_one_event_with_family(event_family, &)
     has_one(
       :"#{event_family}_event",
       lambda { order(id: :desc).where(family: event_family) },
       class_name: 'Event',
       as: :eventful,
-      &block
+      &
     )
   end
 end

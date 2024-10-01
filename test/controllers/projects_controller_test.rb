@@ -17,7 +17,7 @@ class ProjectsControllerTest < ActionController::TestCase
     setup do
       @controller = ProjectsController.new
       @request = ActionController::TestRequest.create(@controller)
-      @user = FactoryBot.create :user
+      @user = FactoryBot.create(:user)
       session[:user] = @user.id
     end
 
@@ -29,7 +29,7 @@ class ProjectsControllerTest < ActionController::TestCase
     end
 
     context '#create' do
-      setup { @request_type_1 = FactoryBot.create :request_type }
+      setup { @request_type_1 = FactoryBot.create(:request_type) }
 
       context 'successfully create a new project' do
         setup do
@@ -103,7 +103,7 @@ class ProjectsControllerTest < ActionController::TestCase
   context "POST '/create'" do
     context 'with JSON data' do
       setup do
-        @user = FactoryBot.create :user, api_key: 'abc'
+        @user = FactoryBot.create(:user, api_key: 'abc')
         session[:user] = @user.id
 
         @json_data = <<-END_OF_JSON_DATA

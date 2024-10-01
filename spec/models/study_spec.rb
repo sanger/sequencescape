@@ -12,25 +12,25 @@ RSpec.describe Study do
     requests =
       [].tap do |r|
         # Cancelled
-        3.times { r << (create :cancelled_request, study: study, request_type: request_type) }
+        3.times { r << (create(:cancelled_request, study:, request_type:)) }
 
         # Failed
-        r << (create :failed_request, study: study, request_type: request_type)
+        r << (create(:failed_request, study:, request_type:))
 
         # Passed
-        3.times { r << (create :passed_request, study: study, request_type: request_type) }
+        3.times { r << (create(:passed_request, study:, request_type:)) }
 
-        r << (create :passed_request, study: study, request_type: request_type_2)
-        r << (create :passed_request, study: study, request_type: request_type_3)
-        r << (create :passed_request, study: study, request_type: request_type_3)
+        r << (create(:passed_request, study: study, request_type: request_type_2))
+        r << (create(:passed_request, study: study, request_type: request_type_3))
+        r << (create(:passed_request, study: study, request_type: request_type_3))
 
         # Pending
-        r << (create :pending_request, study: study, request_type: request_type)
-        r << (create :pending_request, study: study, request_type: request_type_3)
+        r << (create(:pending_request, study:, request_type:))
+        r << (create(:pending_request, study: study, request_type: request_type_3))
       end
 
     # we have to hack t
-    requests.each { |request| request.asset.aliquots.each { |a| a.update(study: study) } }
+    requests.each { |request| request.asset.aliquots.each { |a| a.update(study:) } }
     study.save!
 
     expect(study).to be_valid
@@ -38,9 +38,9 @@ RSpec.describe Study do
   end
 
   it 'validates uniqueness of name (case sensitive)' do
-    study_1 = create :study, name: 'Study_name'
-    study_2 = build :study, name: 'Study_name'
-    study_3 = build :study, name: 'Study_NAME'
+    study_1 = create(:study, name: 'Study_name')
+    study_2 = build(:study, name: 'Study_name')
+    study_3 = build(:study, name: 'Study_NAME')
     expect(study_2.valid?).to be false
     expect(study_2.errors.messages.length).to eq 1
     expect(study_2.errors.full_messages).to include 'Name has already been taken'
@@ -249,7 +249,7 @@ RSpec.describe Study do
           end
         end
 
-        create_list(:order, 2, study: study)
+        create_list(:order, 2, study:)
         study.projects.each { |project| project.enforce_quotas = true }
         study.save!
 
@@ -377,9 +377,9 @@ RSpec.describe Study do
     describe '#each_well_for_qc_report_in_batches' do
       let!(:study) { create(:study) }
       let(:purpose_1) { PlatePurpose.stock_plate_purpose }
-      let(:purpose_2) { create :plate_purpose }
-      let(:purpose_3) { create :plate_purpose }
-      let(:purpose_4) { create :plate_purpose }
+      let(:purpose_2) { create(:plate_purpose) }
+      let(:purpose_3) { create(:plate_purpose) }
+      let(:purpose_4) { create(:plate_purpose) }
       let!(:well_1) { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: purpose_1)) }
       let!(:well_2) { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: purpose_2)) }
       let!(:well_3) { create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: purpose_3)) }
@@ -412,16 +412,16 @@ RSpec.describe Study do
   describe '#mailing_list_of_managers' do
     subject { study.mailing_list_of_managers }
 
-    let(:study) { create :study }
+    let(:study) { create(:study) }
 
     context 'with a manger' do
-      before { create :manager, authorizable: study, email: 'manager@example.com' }
+      before { create(:manager, authorizable: study, email: 'manager@example.com') }
 
       it { is_expected.to eq ['manager@example.com'] }
     end
 
     context 'without a manger' do
-      before { create :admin }
+      before { create(:admin) }
 
       it { is_expected.to eq ['ssr@example.com'] }
     end
@@ -858,8 +858,8 @@ RSpec.describe Study do
   end
 
   context '(DPL-148) on updating user roles' do
-    let(:study) { create :study }
-    let(:user) { create :user }
+    let(:study) { create(:study) }
+    let(:user) { create(:user) }
 
     it 'triggers warehouse update', :warren do
       expect { user.grant_follower(study) }.to change(Warren.handler.messages, :count).from(0)

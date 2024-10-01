@@ -75,7 +75,7 @@ end
 
 When /^(?:|I )check (the invisible )?"([^"]*)"(?: within "([^"]*)")?$/ do |invisible, field, selector|
   visible = invisible != 'the invisible '
-  with_scope(selector) { check(field, visible: visible) }
+  with_scope(selector) { check(field, visible:) }
 end
 
 When /^(?:|I )uncheck "([^"]*)"(?: within "([^"]*)")?$/ do |field, selector|
@@ -95,10 +95,10 @@ Then /^(?:|I )should see "([^"]*)"(?: within "([^"]*)")?$/ do |text, selector|
 end
 
 Then /^(?:|I )should not see "([^"]*)"(?: within "([^"]*)")?$/ do |text, selector|
-  with_scope(selector) { expect(page).not_to have_text(text) }
+  with_scope(selector) { expect(page).to have_no_text(text) }
 end
 
-Then %r{^(?:|I )should not see \/([^\/]*)\/(?: within "([^"]*)")?$} do |regexp, selector|
+Then %r{^(?:|I )should not see /([^\/]*)/(?: within "([^"]*)")?$} do |regexp, selector|
   regexp = Regexp.new(regexp)
   with_scope(selector) { assert page.has_no_xpath?('//*', text: regexp) }
 end
@@ -180,5 +180,5 @@ Then /^Pmb is up and running$/ do
 end
 
 When 'I click the header {string}' do |text|
-  find('th', text: text).click
+  find('th', text:).click
 end

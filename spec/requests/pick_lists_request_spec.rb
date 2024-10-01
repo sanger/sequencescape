@@ -2,12 +2,12 @@
 require 'rails_helper'
 
 RSpec.describe 'PickLists' do
-  let(:user) { create :user, password: 'password' }
+  let(:user) { create(:user, password: 'password') }
 
   before { post '/login', params: { login: user.login, password: 'password' } }
 
   describe 'GET index' do
-    before { create_list :pick_list, 2 }
+    before { create_list(:pick_list, 2) }
 
     it 'returns a list of pick-lists', :aggregate_failures do
       get '/pick_lists'
@@ -17,7 +17,7 @@ RSpec.describe 'PickLists' do
   end
 
   describe 'GET show' do
-    let(:pick_list) { create :pick_list }
+    let(:pick_list) { create(:pick_list) }
 
     it 'returns a pick-list', :aggregate_failures do
       get "/pick_lists/#{pick_list.id}"

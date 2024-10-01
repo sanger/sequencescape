@@ -36,11 +36,11 @@ class TagLayoutTemplate < ApplicationRecord
   end
 
   def tag_group_name=(name)
-    self.tag_group = TagGroup.find_by!(name: name)
+    self.tag_group = TagGroup.find_by!(name:)
   end
 
   def tag2_group_name=(name)
-    self.tag2_group = TagGroup.find_by!(name: name)
+    self.tag2_group = TagGroup.find_by!(name:)
   end
 
   private
@@ -54,12 +54,7 @@ class TagLayoutTemplate < ApplicationRecord
   end
 
   def tag_layout_attributes
-    {
-      tag_group: tag_group,
-      tag2_group: tag2_group,
-      direction_algorithm: direction_algorithm,
-      walking_algorithm: walking_algorithm
-    }
+    { tag_group:, tag2_group:, direction_algorithm:, walking_algorithm: }
   end
 
   def record_template_use(plate, enforce_uniqueness)

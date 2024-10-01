@@ -10,15 +10,15 @@ class WorkflowsControllerTest < ActionController::TestCase
       @controller = WorkflowsController.new
       @request = ActionController::TestRequest.create(@controller)
 
-      @user = FactoryBot.create :user
+      @user = FactoryBot.create(:user)
       session[:user] = @user.id
-      @pipeline_user = FactoryBot.create :pipeline_admin
+      @pipeline_user = FactoryBot.create(:pipeline_admin)
     end
 
     context '#stage' do
       # rubocop:todo Metrics/BlockLength
       setup do
-        @pipeline = FactoryBot.create :pipeline, name: 'Generic workflow'
+        @pipeline = FactoryBot.create(:pipeline, name: 'Generic workflow')
         @ws1 = @pipeline.workflow # :item_limit => 5
 
         @ws2 = FactoryBot.create(:pipeline, name: 'Old workflow').workflow
@@ -26,38 +26,46 @@ class WorkflowsControllerTest < ActionController::TestCase
         @batch = @pipeline.batches.create!
 
         @task1 =
-          FactoryBot.create :task,
-                            name: 'Q20 Check',
-                            location: '',
-                            workflow: @ws1,
-                            sorted: 0,
-                            sti_type: 'SetDescriptorsTask'
+          FactoryBot.create(
+            :task,
+            name: 'Q20 Check',
+            location: '',
+            workflow: @ws1,
+            sorted: 0,
+            sti_type: 'SetDescriptorsTask'
+          )
         @task2 =
-          FactoryBot.create :task,
-                            name: 'Submit batch',
-                            location: 'http://someurl',
-                            workflow: @ws1,
-                            sorted: 1,
-                            sti_type: 'SetDescriptorsTask'
+          FactoryBot.create(
+            :task,
+            name: 'Submit batch',
+            location: 'http://someurl',
+            workflow: @ws1,
+            sorted: 1,
+            sti_type: 'SetDescriptorsTask'
+          )
         @task3 =
-          FactoryBot.create :task,
-                            name: 'Q20 Check',
-                            location: '',
-                            workflow: @ws2,
-                            sorted: 0,
-                            sti_type: 'SetDescriptorsTask'
+          FactoryBot.create(
+            :task,
+            name: 'Q20 Check',
+            location: '',
+            workflow: @ws2,
+            sorted: 0,
+            sti_type: 'SetDescriptorsTask'
+          )
         @task4 =
-          FactoryBot.create :task,
-                            name: 'Submit batch',
-                            location: 'http://someurl',
-                            workflow: @ws2,
-                            sorted: 1,
-                            sti_type: 'SetDescriptorsTask'
-        @library1 = FactoryBot.create :library_tube
-        @lane1 = FactoryBot.create :lane
+          FactoryBot.create(
+            :task,
+            name: 'Submit batch',
+            location: 'http://someurl',
+            workflow: @ws2,
+            sorted: 1,
+            sti_type: 'SetDescriptorsTask'
+          )
+        @library1 = FactoryBot.create(:library_tube)
+        @lane1 = FactoryBot.create(:lane)
         @lane1.labware.parents << @library1
-        @library2 = FactoryBot.create :library_tube
-        @lane2 = FactoryBot.create :lane
+        @library2 = FactoryBot.create(:library_tube)
+        @lane2 = FactoryBot.create(:lane)
         @lane2.labware.parents << @library2
 
         @item1 = @pipeline.request_types.last.create!(asset: @library1, target_asset: @lane1)
@@ -65,11 +73,11 @@ class WorkflowsControllerTest < ActionController::TestCase
         @item2 = @pipeline.request_types.last.create!(asset: @library2, target_asset: @lane2)
         @batch.batch_requests.create!(request: @item2, position: 2)
 
-        FactoryBot.create :descriptor, task: @task2, name: 'Chip Barcode', kind: 'ExternalBarcode', selection: {}
-        FactoryBot.create :descriptor, task: @task2, name: 'Comment', kind: 'Text', selection: {}
-        FactoryBot.create :descriptor, task: @task2, name: 'Passed?', kind: 'Selection', selection: {}
+        FactoryBot.create(:descriptor, task: @task2, name: 'Chip Barcode', kind: 'ExternalBarcode', selection: {})
+        FactoryBot.create(:descriptor, task: @task2, name: 'Comment', kind: 'Text', selection: {})
+        FactoryBot.create(:descriptor, task: @task2, name: 'Passed?', kind: 'Selection', selection: {})
 
-        @user = FactoryBot.create :admin
+        @user = FactoryBot.create(:admin)
         session[:user] = @user.id
         @batch_events_size = @batch.lab_events.size
       end

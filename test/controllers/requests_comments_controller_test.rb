@@ -8,7 +8,7 @@ module Requests
       setup do
         @controller = Requests::CommentsController.new
         @request = ActionController::TestRequest.create(@controller)
-        @user = create :user
+        @user = create(:user)
         session[:user] = @user.id
       end
 
@@ -24,9 +24,9 @@ module Requests
 
       context 'with an ajax request' do
         setup do
-          @rq = create :request
+          @rq = create(:request)
 
-          %w[this is a test].each { |description| create :comment, description: description, commentable: @rq }
+          %w[this is a test].each { |description| create(:comment, description: description, commentable: @rq) }
         end
 
         should 'return a ul of comments' do

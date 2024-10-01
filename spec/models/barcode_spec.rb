@@ -98,7 +98,7 @@ describe Barcode do
   context 'Adding labware association' do
     let(:barcode_value) { 'DN12345U' }
     let(:barcode_format) { 'sanger_ean13' }
-    let(:barcode) { build :sanger_ean13, barcode: barcode_value, format: barcode_format }
+    let(:barcode) { build(:sanger_ean13, barcode: barcode_value, format: barcode_format) }
 
     before { barcode.save! }
 
@@ -127,7 +127,7 @@ describe Barcode do
   end
 
   context 'sanger_ean13' do
-    let(:barcode) { build :sanger_ean13, barcode: barcode_value, format: barcode_format }
+    let(:barcode) { build(:sanger_ean13, barcode: barcode_value, format: barcode_format) }
 
     let(:barcode_value) { 'DN12345U' }
     let(:number) { 12_345 }
@@ -160,7 +160,7 @@ describe Barcode do
   end
 
   context 'sanger_code39' do
-    let(:barcode) { build :sanger_code39, barcode: barcode_value, format: barcode_format }
+    let(:barcode) { build(:sanger_code39, barcode: barcode_value, format: barcode_format) }
 
     let(:barcode_value) { 'DN12345U' }
     let(:number) { 12_345 }
@@ -193,7 +193,7 @@ describe Barcode do
   end
 
   context 'sequencescape22' do
-    let(:barcode) { build :sequencescape22, barcode: barcode_value, format: barcode_format }
+    let(:barcode) { build(:sequencescape22, barcode: barcode_value, format: barcode_format) }
     let(:barcode_value) { 'SQPD-12345' }
     let(:barcode_format) { 'sequencescape22' }
     let(:number) { 12_345 }
@@ -233,7 +233,7 @@ describe Barcode do
   end
 
   context 'infinium' do
-    let(:barcode) { build :infinium, barcode: barcode_value, format: barcode_format }
+    let(:barcode) { build(:infinium, barcode: barcode_value, format: barcode_format) }
 
     let(:barcode_value) { 'WG0010602-DNA' }
     let(:barcode_format) { 'infinium' }
@@ -261,7 +261,7 @@ describe Barcode do
   end
 
   context 'fluidigm' do
-    let(:barcode) { build :fluidigm, barcode: barcode_value, format: barcode_format }
+    let(:barcode) { build(:fluidigm, barcode: barcode_value, format: barcode_format) }
 
     let(:barcode_value) { '1662051218' }
     let(:barcode_format) { 'fluidigm' }
@@ -286,7 +286,7 @@ describe Barcode do
   end
 
   context 'uk biocentre v3' do
-    let(:barcode) { build :external, barcode: barcode_value, format: barcode_format }
+    let(:barcode) { build(:external, barcode: barcode_value, format: barcode_format) }
 
     let(:barcode_value) { 'RNA12345' }
     let(:barcode_format) { 'uk_biocentre_v3' }
@@ -315,7 +315,7 @@ describe Barcode do
   end
 
   context 'external' do
-    let(:barcode) { build :external, barcode: barcode_value, format: barcode_format }
+    let(:barcode) { build(:external, barcode: barcode_value, format: barcode_format) }
 
     let(:barcode_value) { 'EXT_135432_D' }
     let(:barcode_format) { 'external' }
@@ -335,7 +335,7 @@ describe Barcode do
   end
 
   context 'external - odd format' do
-    let(:barcode) { build :external, barcode: barcode_value, format: barcode_format }
+    let(:barcode) { build(:external, barcode: barcode_value, format: barcode_format) }
 
     let(:barcode_value) { 'Q123RT12E45' }
     let(:barcode_format) { 'external' }
@@ -356,7 +356,7 @@ describe Barcode do
   end
 
   context 'foreign - CGAP format' do
-    let(:barcode) { build :cgap, barcode: barcode_value, format: barcode_format }
+    let(:barcode) { build(:cgap, barcode: barcode_value, format: barcode_format) }
 
     let(:barcode_value) { 'CGAP-ABC123' }
     let(:barcode_format) { 'cgap' }

@@ -6,7 +6,7 @@ class PlateCreation < AssetCreation
 
   # This is the child that is created from the parent.  It cannot be assigned before validation.
   belongs_to :parent, class_name: 'Plate'
-  attr_accessor :barcode
+  attr_accessor :sanger_barcode
 
   def record_creation_of_children
     parent.events.create_plate!(child_purpose, child, user)
@@ -34,7 +34,7 @@ class PlateCreation < AssetCreation
     private :children
 
     def create_children!
-      self.child = child_purpose.create!(barcode: barcode)
+      self.child = child_purpose.create!(sanger_barcode:)
     end
     private :create_children!
   end

@@ -6,7 +6,7 @@ require './app/resources/api/v2/submission_template_resource'
 RSpec.describe Api::V2::SubmissionTemplateResource, type: :resource do
   subject(:resource) { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { build_stubbed :submission_template }
+  let(:resource_model) { build_stubbed(:submission_template) }
 
   # Test attributes
   it 'has the expected attributes', :aggregate_failures do

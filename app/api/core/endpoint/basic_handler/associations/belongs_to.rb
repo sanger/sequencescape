@@ -62,9 +62,9 @@ module Core::Endpoint::BasicHandler::Associations::BelongsTo
     @endpoints = []
   end
 
-  def belongs_to(name, options, &block)
+  def belongs_to(name, options, &)
     class_handler = Class.new(Handler).tap { |handler| self.class.const_set(name.to_s.camelize, handler) }
-    @endpoints.push(class_handler.new(name, options, &block))
+    @endpoints.push(class_handler.new(name, options, &))
   end
 
   def related

@@ -16,8 +16,8 @@ RSpec.describe TagSet do
 
     it 'is valid when the tag groups have the same adapter type' do
       adapter_type = build(:adapter_type)
-      tag_group = create(:tag_group, adapter_type: adapter_type)
-      tag_group2 = create(:tag_group, adapter_type: adapter_type)
+      tag_group = create(:tag_group, adapter_type:)
+      tag_group2 = create(:tag_group, adapter_type:)
       tag_set = build(:tag_set, tag_group: tag_group, tag2_group: tag_group2)
       expect(tag_set).to be_valid
     end

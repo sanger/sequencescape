@@ -20,15 +20,15 @@ module Core::Endpoint::BasicHandler::Actions::InnerAction
     nil
   end
 
-  def rooted_json(options, &block)
+  def rooted_json(options, &)
     return yield(options[:stream]) if @options.key?(:json)
 
-    options[:stream].block(@options[:json].to_s, &block)
+    options[:stream].block(@options[:json].to_s, &)
   end
   private :rooted_json
 
   def generate_json_actions(object, options)
-    rooted_json(options) { |stream| super(object, options.merge(stream: stream)) }
+    rooted_json(options) { |stream| super(object, options.merge(stream:)) }
   end
 
   def declare_action(name, _options) # rubocop:todo Metrics/MethodLength
@@ -46,8 +46,8 @@ module Core::Endpoint::BasicHandler::Actions::InnerAction
   end
   private :declare_action
 
-  def core_path(*args)
-    super(@options[:to], *args)
+  def core_path(*)
+    super(@options[:to], *)
   end
   private :core_path
 end

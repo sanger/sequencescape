@@ -5,7 +5,7 @@ module ApiV2Helper
 
   def api_get(path, headers: {})
     headers.merge!(DEFAULT_HEADERS)
-    get(path, headers: headers)
+    get(path, headers:)
   end
 
   def api_patch(path, payload, headers: {})

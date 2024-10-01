@@ -3,13 +3,13 @@
 require 'rails_helper'
 
 describe 'Create a study' do
-  let(:user) { create :admin }
+  let(:user) { create(:admin) }
 
   before do
-    create :faculty_sponsor, name: 'Jack Sponsor'
-    create :data_release_study_type, name: 'genomic sequencing'
-    create :study_type
-    create :program
+    create(:faculty_sponsor, name: 'Jack Sponsor')
+    create(:data_release_study_type, name: 'genomic sequencing')
+    create(:study_type)
+    create(:program)
   end
 
   it 'displays the expected fields' do
@@ -66,7 +66,7 @@ describe 'Create a study' do
     choose('Managed (EGA)', allow_label_click: true)
     expect(page).to have_content('HuMFre approval number')
     click_button 'Create'
-    expect(page).not_to have_content "Study metadata HuMFre approval number can't be blank"
+    expect(page).to have_no_content "Study metadata HuMFre approval number can't be blank"
   end
 
   it 'create open study', :js do

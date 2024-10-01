@@ -269,3 +269,43 @@ requested_flowcell_type:
   conditional_formattings:
     empty_cell:
     is_error:
+number_of_samples_per_pool:
+  heading: scRNA Core Number of Samples per Pool
+  attribute: :number_of_samples_per_pool
+  unlocked: true
+  type: :integer
+  validation:
+    options:
+      type: :whole
+      operator: :between
+      formula1: "5"
+      formula2: "25"
+      allowBlank: true
+      showInputMessage: true
+      promptTitle: "Samples per Pool"
+      prompt: "The requested number of samples per pool (between 5 and 25 inclusive)"
+  conditional_formattings:
+    empty_cell:
+    is_text:
+    is_num_samples_per_pool_in_valid_range:
+    is_num_samples_per_pool_outside_valid_range:
+cells_per_chip_well:
+  heading: scRNA Core Cells per Chip Well
+  attribute: :cells_per_chip_well
+  unlocked: true
+  type: :integer
+  validation:
+    options:
+      type: :whole
+      operator: :between
+      formula1: "12000"
+      formula2: "90000"
+      allowBlank: true
+      showInputMessage: true
+      promptTitle: "Cells per Chip Well"
+      prompt: "The number of cells per chip well (between 12,000 and 90,000 inclusive)"
+  conditional_formattings:
+    empty_cell:
+    is_text:
+    is_num_cells_per_chip_well_in_valid_range:
+    is_num_cells_per_chip_well_outside_valid_range:

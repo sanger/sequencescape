@@ -25,7 +25,7 @@ describe 'Orders API', with: :api_v2 do
   end
 
   context 'with a order' do
-    let(:resource_model) { create :order }
+    let(:resource_model) { create(:order) }
 
     let(:payload) do
       {

@@ -12,9 +12,6 @@ class TagLayout < ApplicationRecord
 
   attr_accessor :tags_per_well
 
-  UnknownDirection = Struct.new(:direction)
-  UnknownWalking = Struct.new(:walking_by)
-
   DIRECTION_ALGORITHMS = {
     'column' => 'TagLayout::InColumns',
     'row' => 'TagLayout::InRows',
@@ -36,6 +33,19 @@ class TagLayout < ApplicationRecord
     'combinatorial sequential' => 'TagLayout::CombinatorialSequential'
   }.freeze
 
+  module TagLayout::DummyDirectionModule
+    def self.direction
+    end
+  end
+
+  class TagLayout::DummyWalkingHelper
+    def initialize(*)
+    end
+
+    def walking_by
+    end
+  end
+
   self.inheritance_column = 'sti_type'
 
   serialize :substitutions, Hash
@@ -50,11 +60,8 @@ class TagLayout < ApplicationRecord
   # The plate we'll be laying out the tags into
   belongs_to :plate, optional: false
 
-  validates :direction, inclusion: { in: DIRECTION_ALGORITHMS.keys }
-  validates :walking_by, inclusion: { in: WALKING_ALGORITHMS.keys }
-
-  validates :direction_algorithm, presence: true
-  validates :walking_algorithm, presence: true
+  validates :direction, presence: { message: 'must define a valid algorithm' }
+  validates :walking_by, presence: { message: 'must define a valid algorithm' }
 
   # After creating the instance we can layout the tags into the wells.
   after_create :layout_tags_into_wells, if: :valid?
@@ -65,11 +72,11 @@ class TagLayout < ApplicationRecord
   delegate :walking_by, :walk_wells, :apply_tags, to: :walking_algorithm_helper
 
   def direction=(new_direction)
-    self.direction_algorithm = DIRECTION_ALGORITHMS.fetch(new_direction) { UnknownDirection.new(new_direction) }
+    self.direction_algorithm = DIRECTION_ALGORITHMS.fetch(new_direction, TagLayout::DummyDirectionModule)
   end
 
   def walking_by=(walk)
-    self.walking_algorithm = WALKING_ALGORITHMS.fetch(walk) { UnknownWalking.new(walk) }
+    self.walking_algorithm = WALKING_ALGORITHMS.fetch(walk, TagLayout::DummyWalkingHelper)
   end
 
   def wells_in_walking_order

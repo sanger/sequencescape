@@ -18,7 +18,7 @@ Given /^well "([^"]*)" on plate "([^"]*)" has a sample name of "([^"]*)"$/ do |w
   # This may be forcing the name of the sample so we cannot check validation here.
   sample = Sample.new(name: sample_name)
   sample.save(validate: false)
-  well.aliquots.create!(sample: sample)
+  well.aliquots.create!(sample:)
 end
 
 Given /^well "([^"]*)" on plate "([^"]*)" has an empty supplier sample name$/ do |well_position, plate_barcode|

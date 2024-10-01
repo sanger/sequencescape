@@ -19,7 +19,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
   after(:all) { SampleManifestExcel.reset! }
 
   context 'library tube sample manifest with tag sequences' do
-    let!(:user) { create :admin }
+    let!(:user) { create(:admin) }
     let(:columns) { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
     let(:test_file) { 'test_file.xlsx' }
 
@@ -30,7 +30,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
 
     context 'valid' do
       context 'standard' do
-        let(:download) { build(:test_download_tubes, columns: columns) }
+        let(:download) { build(:test_download_tubes, columns:) }
 
         it 'upload' do
           login_user(user)
@@ -78,7 +78,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
       end
 
       context 'cgap foreign barcodes' do
-        let(:download) { build(:test_download_tubes_cgap, columns: columns) }
+        let(:download) { build(:test_download_tubes_cgap, columns:) }
 
         it 'upload' do
           login_user(user)
@@ -139,7 +139,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
   end
 
   context 'multiplexed tube sample manifest with tag sequences' do
-    let!(:user) { create :admin }
+    let!(:user) { create(:admin) }
     let(:columns) { SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup }
     let(:test_file) { 'test_file.xlsx' }
 
@@ -280,7 +280,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
   end
 
   context 'multiplexed tube sample manifest with tag groups and indexes' do
-    let!(:user) { create :admin }
+    let!(:user) { create(:admin) }
     let(:columns) { SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup }
     let(:test_file) { 'test_file.xlsx' }
 
@@ -413,7 +413,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
   end
 
   context 'plate sample manifest' do
-    let!(:user) { create :admin }
+    let!(:user) { create(:admin) }
     let(:columns) { SampleManifestExcel.configuration.columns.plate_default.dup }
     let(:test_file) { 'test_file.xlsx' }
 
@@ -424,7 +424,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
 
     context 'valid' do
       context 'standard' do
-        let(:download) { build(:test_download_plates, columns: columns) }
+        let(:download) { build(:test_download_plates, columns:) }
 
         it 'upload' do
           login_user(user)
@@ -436,7 +436,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
       end
 
       context 'partial' do
-        let(:download) { build(:test_download_plates_partial, columns: columns) }
+        let(:download) { build(:test_download_plates_partial, columns:) }
 
         it 'upload' do
           login_user(user)
@@ -448,7 +448,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
       end
 
       context 'cgap foreign barcodes' do
-        let(:download) { build(:test_download_plates_cgap, columns: columns) }
+        let(:download) { build(:test_download_plates_cgap, columns:) }
 
         it 'upload' do
           login_user(user)
@@ -460,7 +460,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
       end
 
       context 'cgap foreign barcodes partial' do
-        let(:download) { build(:test_download_plates_partial_cgap, columns: columns) }
+        let(:download) { build(:test_download_plates_partial_cgap, columns:) }
 
         it 'upload' do
           login_user(user)
@@ -474,7 +474,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
 
     context 'invalid' do
       context 'no file' do
-        let(:download) { build(:test_download_plates, columns: columns) }
+        let(:download) { build(:test_download_plates, columns:) }
 
         it 'no file' do
           login_user(user)

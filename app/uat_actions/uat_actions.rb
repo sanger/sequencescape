@@ -97,7 +97,7 @@ class UatActions
       @form_fields ||= []
       attr_accessor attribute
 
-      @form_fields << UatActions::FormField.new(options.merge(attribute: attribute, type: type))
+      @form_fields << UatActions::FormField.new(options.merge(attribute:, type:))
     end
 
     def form_fields

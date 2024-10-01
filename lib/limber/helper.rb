@@ -39,7 +39,7 @@ module Limber::Helper
     #
     # @return [Array<SubmissionTemplate>] An array of all matching submission templates.
     def self.find_for(name, sequencing = nil)
-      tc = TemplateConstructor.new(name: name, sequencing: sequencing)
+      tc = TemplateConstructor.new(name:, sequencing:)
       [true, false].map do |cherrypick|
           tc.sequencing.map do |sequencing_request_type|
             SubmissionTemplate.find_by!(name: tc.name_for(cherrypick, sequencing_request_type))
@@ -175,8 +175,8 @@ module Limber::Helper
               name: name_for(cherrypick, sequencing_request_type),
               submission_class_name: 'LinearSubmission',
               submission_parameters: submission_parameters(cherrypick, sequencing_request_type),
-              superceded_by_id:,
-              product_line_id:,
+              superceded_by_id: superceded_by_id,
+              product_line_id: product_line_id,
               product_catalogue: catalogue
             }
           )
@@ -187,7 +187,7 @@ module Limber::Helper
     def submission_parameters(cherrypick, sequencing)
       {
         request_type_ids_list: request_type_ids(cherrypick, sequencing),
-        order_role_id: OrderRole.find_or_create_by(role: role).id
+        order_role_id: OrderRole.find_or_create_by(role:).id
       }
     end
   end
@@ -237,10 +237,10 @@ module Limber::Helper
 
   def self.find_project(name)
     if Rails.env.production?
-      Project.find_by!(name: name)
+      Project.find_by!(name:)
     else
       # In development mode or UAT we don't care so much
-      Project.find_by(name: name) || UatActions::StaticRecords.project
+      Project.find_by(name:) || UatActions::StaticRecords.project
     end
   end
 end

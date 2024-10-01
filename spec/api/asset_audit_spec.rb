@@ -4,8 +4,8 @@ require 'rails_helper'
 require 'support/barcode_helper'
 
 describe '/api/1/asset_audits' do
-  let(:authorised_app) { create :api_application }
-  let(:labware) { create :tube }
+  let(:authorised_app) { create(:api_application) }
+  let(:labware) { create(:tube) }
 
   describe '#post' do
     subject(:resources) { '/api/1/asset_audits' }
@@ -166,7 +166,7 @@ describe '/api/1/asset_audits' do
   describe '#get' do
     subject(:resource) { "/api/1/#{asset_audit.uuid}" }
 
-    let(:asset_audit) { create :asset_audit }
+    let(:asset_audit) { create(:asset_audit) }
 
     let(:response_body) do
       {

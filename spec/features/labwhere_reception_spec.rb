@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 describe 'Labwhere reception', :js do
-  let(:user) { create :user, email: 'login@example.com', swipecard_code: 12_345 }
-  let(:plate) { create :plate }
+  let(:user) { create(:user, email: 'login@example.com', swipecard_code: 12_345) }
+  let(:plate) { create(:plate) }
 
   before { configatron.labwhere_api = 'https://labwhere.example.com/api' }
   # Reset the configatron value after the test to avoid affecting other tests

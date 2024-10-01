@@ -30,7 +30,7 @@ class FakeBarcodeService
   end
 
   def barcode(barcode, format = nil)
-    barcodes.push({ barcode: barcode, format: format })
+    barcodes.push({ barcode:, format: })
   end
 
   def next_barcode!

@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe IlluminaHtp::Requests::GbsRequest do
-  subject(:request) { create :gbs_request }
+  subject(:request) { create(:gbs_request) }
 
   describe '#request_metadata' do
     describe '#primer_panel' do

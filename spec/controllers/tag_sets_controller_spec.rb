@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe TagSetsController do
-  let(:current_user) { create :user }
-  let(:tag_set) { create :tag_set }
+  let(:current_user) { create(:user) }
+  let(:tag_set) { create(:tag_set) }
 
   it_behaves_like 'it requires login'
 
@@ -21,7 +21,7 @@ RSpec.describe TagSetsController do
     end
 
     describe '#show' do
-      let(:tag_set) { create :tag_set }
+      let(:tag_set) { create(:tag_set) }
 
       before { get :show, params: { id: tag_set.id } }
 

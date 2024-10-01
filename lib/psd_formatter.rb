@@ -4,7 +4,7 @@ require 'syslog/logger'
 require 'ostruct'
 
 class PsdFormatter < Syslog::Logger::Formatter
-  LINE_FORMAT = "(thread-%s) [%s] %5s -- : %s\n".freeze
+  LINE_FORMAT = "(thread-%s) [%s] %5s -- : %s\n"
 
   def initialize(deployment_info)
     # below line is included because it was unknown whether

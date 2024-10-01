@@ -33,7 +33,7 @@ class Item < ApplicationRecord
   before_validation :set_version, on: :create
 
   def set_version
-    things_with_same_name = self.class.where(name: name)
+    things_with_same_name = self.class.where(name:)
     if things_with_same_name.empty?
       increment(:version)
     else

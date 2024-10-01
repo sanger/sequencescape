@@ -31,7 +31,7 @@ module Submission::AccessionBehaviour
   private
 
   def test_asset_group
-    AssetGroup.new(assets: assets)
+    AssetGroup.new(assets:)
   end
 
   def unaccessioned_samples

@@ -5,7 +5,7 @@ Given /^a supplier called "(.*)" exists$/ do |supplier_name|
 end
 
 Given /^the library type "([^"]+)" exists$/ do |name|
-  LibraryType.find_or_create_by(name: name)
+  LibraryType.find_or_create_by(name:)
 end
 
 Given /^the study "(.*)" has a abbreviation$/ do |study_name|
@@ -71,7 +71,7 @@ end
 Then /^the samples table should look like:$/ do |table|
   table.hashes.each do |expected_data|
     sanger_sample_id = expected_data[:sanger_sample_id]
-    sample = Sample.find_by(sanger_sample_id: sanger_sample_id)
+    sample = Sample.find_by(sanger_sample_id:)
 
     if expected_data.fetch(:empty_supplier_sample_name, expected_data[:sample_absent]) == 'true'
       assert_nil sample, "#{sanger_sample_id} exists but should not be created"
@@ -113,7 +113,7 @@ end
 Then /^the sample accession numbers should be:$/ do |table|
   table.hashes.each do |expected_data|
     sanger_sample_id = expected_data[:sanger_sample_id]
-    sample = Sample.find_by!(sanger_sample_id: sanger_sample_id)
+    sample = Sample.find_by!(sanger_sample_id:)
     assert_equal(expected_data[:accession_number], sample.sample_metadata.sample_ebi_accession_number)
   end
 end
@@ -121,8 +121,7 @@ end
 Then /^the sample reference genomes should be:$/ do |table|
   table.hashes.each do |expected_data|
     sanger_sample_id = expected_data[:sanger_sample_id]
-    sample = Sample.find_by(sanger_sample_id: sanger_sample_id) or
-      raise StandardError, "Could not find sample #{sanger_sample_id}"
+    sample = Sample.find_by(sanger_sample_id:) or raise StandardError, "Could not find sample #{sanger_sample_id}"
     assert_equal(expected_data[:reference_genome], sample.sample_metadata.reference_genome.name)
   end
 end
@@ -223,14 +222,14 @@ end
 
 When /^the sample manifest with ID (\d+) is owned by study "([^"]+)"$/ do |id, name|
   manifest = SampleManifest.find(id)
-  study = Study.find_by(name: name) or raise StandardError, "Cannot find study #{name.inspect}"
-  manifest.update!(study: study)
+  study = Study.find_by(name:) or raise StandardError, "Cannot find study #{name.inspect}"
+  manifest.update!(study:)
 end
 
 When /^the sample manifest with ID (\d+) is supplied by "([^"]+)"$/ do |id, name|
   manifest = SampleManifest.find(id)
-  supplier = Supplier.find_by(name: name) or raise StandardError, "Cannot find supplier #{name.inspect}"
-  manifest.update!(supplier: supplier)
+  supplier = Supplier.find_by(name:) or raise StandardError, "Cannot find supplier #{name.inspect}"
+  manifest.update!(supplier:)
 end
 
 Given /^the sample manifest with ID (\d+) is for (\d+) sample tube$/ do |id, count|

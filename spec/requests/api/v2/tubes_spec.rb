@@ -30,7 +30,7 @@ describe 'Tubes API', with: :api_v2 do
   end
 
   context 'with a tube' do
-    let(:resource_model) { create :tube }
+    let(:resource_model) { create(:tube) }
 
     it 'sends an individual tube' do
       api_get "#{base_endpoint}/#{resource_model.id}"

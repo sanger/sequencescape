@@ -6,7 +6,7 @@ require './app/resources/api/v2/user_resource'
 RSpec.describe Api::V2::UserResource, type: :resource do
   subject(:resource) { described_class.new(resource_model, {}) }
 
-  let(:resource_model) { build_stubbed :user }
+  let(:resource_model) { build_stubbed(:user) }
 
   # Expected attributes
   it { is_expected.not_to have_attribute :id }

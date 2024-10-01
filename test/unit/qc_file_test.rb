@@ -6,7 +6,7 @@ class QcFileTest < ActiveSupport::TestCase
   context QcFile do
     context 'with an asset' do
       setup do
-        @plate = create :plate
+        @plate = create(:plate)
         @parser = Object.new
         Parsers.expects(:parser_for).returns(@parser)
       end

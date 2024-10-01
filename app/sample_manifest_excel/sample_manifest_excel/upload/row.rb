@@ -106,7 +106,7 @@ module SampleManifestExcel
       end
 
       def update_specialised_fields(tag_group)
-        specialised_fields.each { |specialised_field| specialised_field.update(tag_group: tag_group) }
+        specialised_fields.each { |specialised_field| specialised_field.update(tag_group:) }
       end
 
       def update_metadata_fields
@@ -179,7 +179,7 @@ module SampleManifestExcel
       private
 
       def manifest_asset
-        @manifest_asset ||= cache.find_by(sanger_sample_id: sanger_sample_id)
+        @manifest_asset ||= cache.find_by(sanger_sample_id:)
       end
 
       def sanger_sample_id_exists?

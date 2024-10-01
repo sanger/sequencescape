@@ -110,7 +110,7 @@ module PhiX
   #
   # @return [String] The named tag option.
   def self.tag_option_for(i7_oligo:, i5_oligo:)
-    tag_options.deep_symbolize_keys.key(i7_oligo: i7_oligo, i5_oligo: i5_oligo)&.to_s ||
+    tag_options.deep_symbolize_keys.key(i7_oligo:, i5_oligo:)&.to_s ||
       "UNKNOWN i7:#{i7_oligo || '-'} i5:#{i5_oligo || '-'}"
   end
 
@@ -124,6 +124,6 @@ module PhiX
     oligo = tag_options.dig(tag_option.to_sym, tag_type)
     return nil if oligo.nil?
 
-    tag_group.tags.create_with(map_id: configuration[:tag_map_id]).find_or_create_by!(oligo: oligo)
+    tag_group.tags.create_with(map_id: configuration[:tag_map_id]).find_or_create_by!(oligo:)
   end
 end

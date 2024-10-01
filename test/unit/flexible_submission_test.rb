@@ -6,7 +6,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
   context 'FlexibleSubmission' do
     setup do
       @assets = create(:two_column_plate).wells.to_a
-      @pooling = create :pooling_method
+      @pooling = create(:pooling_method)
     end
 
     should belong_to :study
@@ -14,13 +14,13 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
 
     context 'build (Submission factory)' do
       setup do
-        @study = create :study
-        @project = create :project
-        @user = create :user
+        @study = create(:study)
+        @project = create(:project)
+        @user = create(:user)
 
         @library_creation_request_type =
-          create :well_request_type, target_purpose: nil, for_multiplexing: true, pooling_method: @pooling
-        @sequencing_request_type = create :sequencing_request_type
+          create(:well_request_type, target_purpose: nil, for_multiplexing: true, pooling_method: @pooling)
+        @sequencing_request_type = create(:sequencing_request_type)
 
         @request_type_ids = [@library_creation_request_type.id, @sequencing_request_type.id]
 
@@ -66,12 +66,12 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
 
       context 'with qc_criteria' do
         setup do
-          @our_product_criteria = create :product_criteria
-          @current_report = create :qc_report, product_criteria: @our_product_criteria
-          @stock_well = create :well
+          @our_product_criteria = create(:product_criteria)
+          @current_report = create(:qc_report, product_criteria: @our_product_criteria)
+          @stock_well = create(:well)
 
           @metric =
-            create :qc_metric, asset: @stock_well, qc_report: @current_report, qc_decision: 'failed', proceed: true
+            create(:qc_metric, asset: @stock_well, qc_report: @current_report, qc_decision: 'failed', proceed: true)
 
           @assets.each do |qced_well|
             qced_well.stock_wells.attach!([@stock_well])
@@ -109,8 +109,8 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
 
       context 'cross study/project submissions' do
         setup do
-          @study_b = create :study
-          @project_b = create :project
+          @study_b = create(:study)
+          @project_b = create(:project)
           @request_count = Request.count
         end
 
@@ -178,7 +178,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
           context 'On pooled assets' do
             setup do
               @request_count = Request.count
-              @pooled = create :cross_pooled_well
+              @pooled = create(:cross_pooled_well)
               @sub =
                 create(
                   :flexible_submission,
@@ -205,13 +205,13 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
 
     context 'with target asset creation' do
       setup do
-        @study = create :study
-        @project = create :project
-        @user = create :user
-        mx_purpose = create :mx_tube_purpose
+        @study = create(:study)
+        @project = create(:project)
+        @user = create(:user)
+        mx_purpose = create(:mx_tube_purpose)
         @library_creation_request_type =
-          create :well_request_type, for_multiplexing: true, target_purpose: mx_purpose, pooling_method: @pooling
-        @sequencing_request_type = create :sequencing_request_type
+          create(:well_request_type, for_multiplexing: true, target_purpose: mx_purpose, pooling_method: @pooling)
+        @sequencing_request_type = create(:sequencing_request_type)
 
         @request_type_ids = [@library_creation_request_type.id, @sequencing_request_type.id]
 
@@ -275,20 +275,22 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
 
     context 'process with a multiplier for request type' do
       setup do
-        @study = create :study
-        @project = create :project
-        @user = create :user
+        @study = create(:study)
+        @project = create(:project)
+        @user = create(:user)
 
-        @ux_request_type = create :well_request_type, target_purpose: nil, for_multiplexing: false
+        @ux_request_type = create(:well_request_type, target_purpose: nil, for_multiplexing: false)
         @mx_request_type =
-          create :well_request_type, target_purpose: nil, for_multiplexing: true, pooling_method: @pooling
+          create(:well_request_type, target_purpose: nil, for_multiplexing: true, pooling_method: @pooling)
         @pe_request_type =
-          create :request_type,
-                 asset_type: 'LibraryTube',
-                 initial_state: 'pending',
-                 name: 'PE sequencing',
-                 order: 2,
-                 key: 'pe_sequencing'
+          create(
+            :request_type,
+            asset_type: 'LibraryTube',
+            initial_state: 'pending',
+            name: 'PE sequencing',
+            order: 2,
+            key: 'pe_sequencing'
+          )
 
         @request_type_ids = [@mx_request_type.id, @pe_request_type.id]
 
@@ -338,20 +340,22 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
 
     context 'correctly calculate multipliers' do
       setup do
-        @study = create :study
-        @project = create :project
-        @user = create :user
+        @study = create(:study)
+        @project = create(:project)
+        @user = create(:user)
 
-        @ux_request_type = create :well_request_type, target_purpose: nil, for_multiplexing: false
+        @ux_request_type = create(:well_request_type, target_purpose: nil, for_multiplexing: false)
         @mx_request_type =
-          create :well_request_type, target_purpose: nil, for_multiplexing: true, pooling_method: @pooling
+          create(:well_request_type, target_purpose: nil, for_multiplexing: true, pooling_method: @pooling)
         @pe_request_type =
-          create :request_type,
-                 asset_type: 'LibraryTube',
-                 initial_state: 'pending',
-                 name: 'PE sequencing',
-                 order: 2,
-                 key: 'pe_sequencing'
+          create(
+            :request_type,
+            asset_type: 'LibraryTube',
+            initial_state: 'pending',
+            name: 'PE sequencing',
+            order: 2,
+            key: 'pe_sequencing'
+          )
 
         @mx_request_type_ids = [@mx_request_type.id, @pe_request_type.id]
         @ux_request_type_ids = [@ux_request_type.id, @pe_request_type.id]

@@ -14,14 +14,14 @@ ParameterType(
   name: 'plate_name',
   regexp: /the plate "([^"]+)"/,
   type: Plate,
-  transformer: ->(name) { Plate.find_by!(name: name) }
+  transformer: ->(name) { Plate.find_by!(name:) }
 )
 
 ParameterType(
   name: 'asset_name',
   regexp: /the (plate|tube|sample tube|labware) "([^"]+)"/,
   type: Asset,
-  transformer: ->(_, name) { Labware.find_by!(name: name) }
+  transformer: ->(_, name) { Labware.find_by!(name:) }
 )
 
 ParameterType(
@@ -42,7 +42,7 @@ ParameterType(
   name: 'submitted_to',
   regexp: /submitted to "([^"]+)"/,
   type: SubmissionTemplate,
-  transformer: ->(name) { SubmissionTemplate.find_by!(name: name) }
+  transformer: ->(name) { SubmissionTemplate.find_by!(name:) }
 )
 
 ParameterType(
@@ -64,7 +64,7 @@ ParameterType(
   name: 'tag_layout_template',
   regexp: /tag layout template "([^"]+)"/,
   type: TagLayoutTemplate,
-  transformer: ->(name) { TagLayoutTemplate.find_by!(name: name) }
+  transformer: ->(name) { TagLayoutTemplate.find_by!(name:) }
 )
 
 ParameterType(
@@ -78,7 +78,7 @@ ParameterType(
   name: 'study_name',
   regexp: /the study "([^"]+)"/,
   type: Study,
-  transformer: ->(name) { Study.find_by!(name: name) }
+  transformer: ->(name) { Study.find_by!(name:) }
 )
 
 ParameterType(
@@ -115,5 +115,5 @@ ParameterType(
   name: 'asset_group',
   regexp: /the asset group "([^"]+)"/,
   type: AssetGroup,
-  transformer: ->(name) { AssetGroup.find_by!(name: name) }
+  transformer: ->(name) { AssetGroup.find_by!(name:) }
 )
