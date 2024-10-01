@@ -105,6 +105,11 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
           template,
           control_source_plate:
         )
+      if control_locator.handle_incompatible_plates
+        message = 'The control plate and plate template are incompatible'
+        workflow_controller.send(:flash)[:error] = message unless workflow_controller.nil?
+        workflow_controller.redirect_to action: 'stage', batch_id: batch.id, workflow_id: workflow.id
+      end
       control_posns = control_locator.control_positions(num_plate)
 
       # If is an incomplete plate, or a plate with a template applied, copy all the controls missing into the
