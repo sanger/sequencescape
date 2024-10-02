@@ -46,10 +46,22 @@ class UatActions::GenerateFluidxBarcodes < UatActions
                value: 1
              }
 
+  # This method is called from the save method after validations have passed.
+  # If the return value is true, the report hash populated by the action is
+  # used for rendering the response. If the return value is false, the errors
+  # collection is used.
+  #
+  # @return [Boolean] true if the action was successful; false otherwise
   def perform
     random = Array.new(6) { rand(0..9) }.join # uniform distribution of digits
-    report['barcodes'] = generate_barcodes(barcode_count.to_i, barcode_prefix, random, barcode_index.to_i)
-    true
+    barcodes = generate_barcodes(barcode_count.to_i, barcode_prefix, random, barcode_index.to_i)
+    if barcodes.size == barcode_count.to_i
+      report['barcodes'] = barcodes
+      true
+    else
+      errors.add(:base, 'Failed to generate unique barcodes')
+      false
+    end
   end
 
   private
@@ -72,7 +84,6 @@ class UatActions::GenerateFluidxBarcodes < UatActions
       count = barcode_count.to_i - barcodes.size
       index += count
     end
-    raise StandardError, 'Failed to generate unique barcodes'
   end
 
   # Filters out the barcodes that already exist in the database.
