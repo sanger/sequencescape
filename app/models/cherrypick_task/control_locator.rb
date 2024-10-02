@@ -41,22 +41,24 @@ class CherrypickTask::ControlLocator
   # https://github.com/sanger/sequencescape/issues/2967 however I've avoided stripping out the behaviour
   # completely in case controls are used in other pipelines.
   #
-  # @param batch_id [Integer] The id of the batch, used to generate a starting position
-  # @param total_wells [Integer] The total number of wells on the plate
-  # @param num_control_wells [Integer] The number of control wells to lay out
-  # @param wells_to_leave_free [Enumerable] Array or range indicating the wells to leave free from controls
+  # @param params [Hash] A hash containing the following keys:
+  #   - :batch_id [Integer] The id of the batch, used to generate a starting position
+  #   - :total_wells [Integer] The total number of wells on the plate
+  #   - :num_control_wells [Integer] The number of control wells to lay out
+  #   - :wells_to_leave_free [Enumerable] Array or range indicating the wells to leave free from controls
+  #   - :available_positions [Enumerable] Array or range indicating the available positions for controls
+  #   - :control_source_plate [ControlPlate] The plate to source controls from
+  #   - :template [PlateTemplate] The template of the destination plate
 
-  # rubocop:disable Metrics/ParameterLists
-  def initialize(batch_id:, total_wells:, num_control_wells:, template:, control_source_plate:, wells_to_leave_free: [])
-    @batch_id = batch_id
-    @total_wells = total_wells
-    @num_control_wells = num_control_wells
-    @wells_to_leave_free = wells_to_leave_free.to_a
-    @available_positions = (0...total_wells).to_a - @wells_to_leave_free
-    @control_source_plate = control_source_plate
-    @plate_template = template
+  def initialize(params)
+    @batch_id = params[:batch_id]
+    @total_wells = params[:total_wells]
+    @num_control_wells = params[:num_control_wells]
+    @wells_to_leave_free = params[:wells_to_leave_free].to_a || []
+    @available_positions = (0...@total_wells).to_a - @wells_to_leave_free
+    @control_source_plate = params[:control_source_plate]
+    @plate_template = params[:template]
   end
-  # rubocop:enable Metrics/ParameterLists
 
   #
   # Returns a list with the destination positions for the control wells distributed randomly

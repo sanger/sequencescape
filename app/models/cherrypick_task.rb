@@ -22,25 +22,16 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
   # @return [CherrypickTask::ControlLocator] A generator of control locations
   #
 
-  # rubocop:disable Metrics/ParameterLists
-  def new_control_locator(
-    batch_id,
-    total_wells,
-    num_control_wells,
-    template,
-    control_source_plate:,
-    wells_to_leave_free: DEFAULT_WELLS_TO_LEAVE_FREE
-  )
+  def new_control_locator(params)
     CherrypickTask::ControlLocator.new(
-      batch_id:,
-      total_wells:,
-      num_control_wells:,
-      wells_to_leave_free:,
-      control_source_plate:,
-      template:
+      batch_id: params[:batch_id],
+      total_wells: params[:total_wells],
+      num_control_wells: params[:num_control_wells],
+      wells_to_leave_free: params[:wells_to_leave_free] || DEFAULT_WELLS_TO_LEAVE_FREE,
+      control_source_plate: params[:control_source_plate],
+      template: params[:template]
     )
   end
-  # rubocop:enable Metrics/ParameterLists
 
   #
   # Cherrypick tasks are directly coupled to the previous task, due to the awkward
@@ -99,12 +90,15 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
       control_assets = control_source_plate.wells.joins(:samples)
       control_locator =
         new_control_locator(
-          batch.id,
-          current_destination_plate.size,
-          control_assets.count,
-          template,
-          control_source_plate:
+          {
+            batch_id: batch.id,
+            total_wells: current_destination_plate.size,
+            num_control_wells: control_assets.count,
+            template: template,
+            control_source_plate: control_source_plate
+          }
         )
+
       if control_locator.handle_incompatible_plates
         message = 'The control plate and plate template are incompatible'
         workflow_controller.send(:flash)[:error] = message unless workflow_controller.nil?
