@@ -46,7 +46,6 @@ class CherrypickTask::ControlLocator
   #   - :total_wells [Integer] The total number of wells on the plate
   #   - :num_control_wells [Integer] The number of control wells to lay out
   #   - :wells_to_leave_free [Enumerable] Array or range indicating the wells to leave free from controls
-  #   - :available_positions [Enumerable] Array or range indicating the available positions for controls
   #   - :control_source_plate [ControlPlate] The plate to source controls from
   #   - :template [PlateTemplate] The template of the destination plate
 
