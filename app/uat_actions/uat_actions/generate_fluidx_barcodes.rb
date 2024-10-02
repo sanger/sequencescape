@@ -81,8 +81,8 @@ class UatActions::GenerateFluidxBarcodes < UatActions
     5.times do # Max 5 iterations to generate unique barcodes.
       barcodes.concat(filter_barcodes(build_barcodes(count, prefix, random, index)))
       return barcodes if barcodes.size == barcode_count.to_i
-      count = barcode_count.to_i - barcodes.size
-      index += count
+      count = barcode_count.to_i - barcodes.size # More to generate.
+      index += barcode_count.to_i # Continue index.
     end
   end
 
