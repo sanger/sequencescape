@@ -1,10 +1,17 @@
 # frozen_string_literal: true
 
 # UAT action to generate randomised FluidX barcodes.
+# <prefix><random><suffix>: Ten characters in total
+#   <prefix>: two uppercase letters
+#   <random>: six random digits; may be truncated from the end to fit the length
+#   <suffix>: <zero><index>
+#     <zero>: one digit that separates random part and index, i.e. '0'
+#     <index>: sequential tail, 1 to 3 digits, e.g., '9', '99', and '999'
 class UatActions::GenerateFluidxBarcodes < UatActions
   self.title = 'Generate FluidX Barcodes'
   self.description = 'Generate randomised FluidX barcodes'
   self.category = :auxiliary_data
+  self.max_number_of_iterations = 5
 
   validates :barcode_count, numericality: { only_integer: true, greater_than: 0, less_than_or_equal_to: 96 }
   validates :barcode_prefix,
@@ -64,21 +71,27 @@ class UatActions::GenerateFluidxBarcodes < UatActions
     end
   end
 
+  # Returns a default copy of the UatAction which will be used to fill in the form.
+  #
+  # @return [UatActions::GenerateFluidxBarcodes] a default object for rendering a form
+  def self.default
+    new(barcode_count: '1', barcode_prefix: 'TS', barcode_index: '1')
+  end
+
   private
 
-  # Generates an array of barcodes with the specified count, prefix, common
-  # random part, and starting index for the sequential tail. It attempts to
-  # generate unique barcodes, iterating up to 5 times before giving up.
+  # Generates an array of barcodes with the specified count, prefix, random
+  # part, and starting index for the sequential tail. It attempts to generate
+  # unique barcodes, iterating up to max_number_of_iterations before giving up.
   #
   # @param count [Integer] the number of barcodes to generate
   # @param prefix [String] the prefix to be used for the barcodes
-  # @param random [String] a common random part for the barcodes
+  # @param random [String] random part for the barcodes
   # @param index [Integer] the starting index for the sequential tail
   # @return [Array<String>] an array of unique barcodes
-  # @raise [StandardError] if it fails to generate unique barcodes
   def generate_barcodes(count, prefix, random, index)
     barcodes = []
-    5.times do # Max 5 iterations to generate unique barcodes.
+    max_number_of_iterations.times do
       barcodes.concat(filter_barcodes(build_barcodes(count, prefix, random, index)))
       return barcodes if barcodes.size == barcode_count.to_i
       count = barcode_count.to_i - barcodes.size # More to generate.
@@ -94,17 +107,17 @@ class UatActions::GenerateFluidxBarcodes < UatActions
     barcodes - Barcode.where(barcode: barcodes).pluck(:barcode)
   end
 
-  # Builds an array of barcodes with the specified count, prefix, common
-  # random part, and starting index for the sequential tail.
+  # Builds an array of barcodes with the specified count, prefix, random
+  # part, and starting index for the sequential tail.
   #
   # @param count [Integer] the number of barcodes to generate
   # @param prefix [String] the prefix to be used for the barcodes
-  # @param random [String] a common random part for the barcodes
+  # @param random [String] random part for the barcodes
   # @param index [Integer] the starting index for the suffix
   # @return [Array<String>] an array of barcodes
   def build_barcodes(count, prefix, random, index)
     (index...(index + count)).map do |counter|
-      suffix = counter.to_s.rjust(2, '0') # Min 2 suffix digits
+      suffix = '0' + counter.to_s
       random = random[0, 8 - suffix.length] # 8 FluidX digits minus suffix
       "#{prefix}#{random}#{suffix}"
     end
