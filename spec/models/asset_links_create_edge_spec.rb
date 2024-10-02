@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe AssetLink, type: :model do
-  # rubocop:disable RSpec/ExampleLength,RSpec/InstanceVariable
+  # rubocop:disable RSpec/InstanceVariable,Metrics/MethodLength,RSpec/ExampleLength,RSpec/MultipleExpectations
   # Test the overridden create_edge class method.
   describe '.create_edge' do
     # Wait for child processes to finish.
@@ -97,7 +97,7 @@ RSpec.describe AssetLink, type: :model do
       # Parent
       wait_for_child_processes([pid1, pid2])
 
-      expect(described_class.where(ancestor: ancestor, descendant: descendant).count).to eq(1)
+      expect(described_class.where(ancestor:, descendant:).count).to eq(1)
       @edge = edge = described_class.last
       expect(edge.ancestor).to eq(ancestor)
       expect(edge.descendant).to eq(descendant)
@@ -174,7 +174,7 @@ RSpec.describe AssetLink, type: :model do
       # Parent
       wait_for_child_processes([pid1, pid2])
 
-      expect(described_class.where(ancestor: ancestor, descendant: descendant).count).to eq(1)
+      expect(described_class.where(ancestor:, descendant:).count).to eq(1)
       @edge = edge = described_class.last
       expect(edge.ancestor).to eq(ancestor)
       expect(edge.descendant).to eq(descendant)
@@ -266,7 +266,7 @@ RSpec.describe AssetLink, type: :model do
       # Parent
       wait_for_child_processes([pid1, pid2])
 
-      expect(described_class.where(ancestor: ancestor, descendant: descendant).count).to eq(1)
+      expect(described_class.where(ancestor:, descendant:).count).to eq(1)
       @edge = edge = described_class.last
       expect(edge.ancestor).to eq(ancestor)
       expect(edge.descendant).to eq(descendant)
@@ -276,5 +276,5 @@ RSpec.describe AssetLink, type: :model do
       ActiveRecord::Base.connection.close
     end
   end
-  # rubocop:enable RSpec/ExampleLength,RSpec/InstanceVariable
+  # rubocop:enable RSpec/InstanceVariable,Metrics/MethodLength,RSpec/ExampleLength,RSpec/MultipleExpectations
 end
