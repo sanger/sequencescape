@@ -283,7 +283,7 @@ module ApplicationHelper
   end
 
   def fresh_sevice_link
-    link_to 'Fresh Service', configatron.fresh_sevice_new_ticket_url
+    link_to 'FreshService', configatron.fresh_sevice_new_ticket_url
   end
 
   #
