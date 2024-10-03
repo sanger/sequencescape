@@ -64,6 +64,10 @@ module Sequencescape
     # Some lib files we don't want to autoload as they are not required in the rails app
     %w[generators informatics].each { |file| Rails.autoloaders.main.ignore(Rails.root.join("lib/#{file}")) }
 
+    # Eager load when running rake tasks. This ensures our STI classes are loaded, required for record loader
+    # To correctly access all purpose types
+    config.rake_eager_load = true
+
     # Load the custom inflections to help with the AASM module
     Rails.autoloaders.main.inflector.inflect('aasm' => 'AASM')
 

@@ -92,7 +92,3 @@ class Purpose < ApplicationRecord
     self.prefix ||= default_prefix
   end
 end
-
-require_dependency 'tube/purpose'
-require_dependency 'plate_purpose'
-require_dependency 'tube_rack/purpose'

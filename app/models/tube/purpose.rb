@@ -66,10 +66,3 @@ class Tube::Purpose < Purpose
     self.barcode_printer_type ||= BarcodePrinterType1DTube.first
   end
 end
-
-require_dependency 'qcable_tube_purpose'
-require_dependency 'illumina_htp/mx_tube_purpose'
-require_dependency 'illumina_htp/stock_tube_purpose'
-require_dependency 'illumina_htp/initial_stock_tube_purpose'
-require_dependency 'tube/standard_mx'
-require_dependency 'tube/stock_mx'
