@@ -3,6 +3,22 @@
 require 'sanger_barcode_format'
 # A collection of supported formats
 module Barcode::FormatHandlers
+  # Define the AkerBarcode class or module
+  class AkerBarcode
+    # Define necessary methods and attributes
+    def initialize(barcode)
+      @barcode = barcode
+    end
+
+    def human_barcode
+      @barcode
+    end
+
+    def machine_barcode
+      human_barcode
+    end
+  end
+
   # Include in barcode formats which can not be rendered as EAN13s
   module Ean13Incompatible
     def ean13_barcode?
