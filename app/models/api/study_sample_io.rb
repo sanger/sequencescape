@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 # Despite name controls rendering of warehouse messages for {StudySample}
 # Historically used to be v0.5 API
-class Api::StudySampleIO < Api::Base
+class Api::StudySampleIo < Api::Base
   module Extensions
     module ClassMethods
       def render_class
-        Api::StudySampleIO
+        Api::StudySampleIo
       end
     end
 

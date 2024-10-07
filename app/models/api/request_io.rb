@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 # Despite name controls rendering of warehouse messages for {Request}
 # Historically used to be v0.5 API
-class Api::RequestIO < Api::Base
+class Api::RequestIo < Api::Base
   module Extensions
     module ClassMethods
       def render_class
-        Api::RequestIO
+        Api::RequestIo
       end
     end
 

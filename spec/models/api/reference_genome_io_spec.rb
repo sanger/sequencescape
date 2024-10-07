@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Api::ReferenceGenomeIO do
+RSpec.describe Api::ReferenceGenomeIo do
   subject { create(:reference_genome) }
 
   let(:expected_json) { { 'uuid' => subject.uuid, 'internal_id' => subject.id } }

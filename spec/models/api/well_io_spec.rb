@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Api::WellIO do
+RSpec.describe Api::WellIo do
   context 'with one sample' do
     # As of the current records, the 'description' and 'asset_size' attributes can uniquely identify a map.
     subject do

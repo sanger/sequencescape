@@ -8,7 +8,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Include
   include ModelExtensions::Request
   include Aliquot::DeprecatedBehaviours::Request
-  include Api::RequestIO::Extensions
+  include Api::RequestIo::Extensions
   include Uuid::Uuidable
   include AASM
   include AASM::Extensions
@@ -575,5 +575,3 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
     safe_order&.next_request_type_id(request_type_id)
   end
 end
-
-require_dependency 'system_request'

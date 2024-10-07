@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 # Despite name controls rendering of warehouse messages for {Lane}
 # Historically used to be v0.5 API
-class Api::LaneIO < Api::Base
+class Api::LaneIo < Api::Base
   module Extensions
     module ClassMethods
       def render_class
-        Api::LaneIO
+        Api::LaneIo
       end
     end
 

@@ -3,7 +3,7 @@
 # @note This association is probably a little unreliable, and should not be relied upon for
 # critical behaviour.
 class StudySample < ApplicationRecord
-  include Api::StudySampleIO::Extensions
+  include Api::StudySampleIo::Extensions
 
   self.per_page = 500
   include Uuid::Uuidable
