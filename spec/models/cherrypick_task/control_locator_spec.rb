@@ -3,16 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe CherrypickTask::ControlLocator do
-  let(:instance) do
-    described_class.new(
-      batch_id: batch_id,
-      total_wells: total_wells,
-      num_control_wells: num_control_wells,
-      wells_to_leave_free: wells_to_leave_free,
-      control_source_plate: create(:control_plate),
-      template: create(:plate_template_with_well)
-    )
-  end
+  let(:instance) { described_class.new(batch_id:, total_wells:, num_control_wells:, wells_to_leave_free:) }
 
   shared_examples 'an invalid ControlLocator' do |plate_number, error = 'More controls than free wells'|
     it 'throws a "More controls than free wells" exception' do
@@ -58,11 +49,6 @@ RSpec.describe CherrypickTask::ControlLocator do
       generated_positions.each_cons(2) do |previous_plate, this_plate|
         this_plate.each_with_index { |position, index| expect(position).not_to be_within(5).of(previous_plate[index]) }
       end
-    end
-
-    it 'uses a control plate that is valid' do
-      placement_type = instance.send(:control_placement_type)
-      expect(placement_type.nil? || %w[fixed random].exclude?(placement_type)).to be_falsey
     end
   end
 
@@ -140,16 +126,7 @@ RSpec.describe CherrypickTask::ControlLocator do
       let(:range) { (1...1000) }
       let(:control_positions) do
         range.map do |batch_id|
-          described_class
-            .new(
-              batch_id: batch_id,
-              total_wells: 96,
-              num_control_wells: 1,
-              control_source_plate: create(:control_plate),
-              template: create(:plate_template)
-            )
-            .control_positions(0)
-            .first
+          described_class.new(batch_id: batch_id, total_wells: 96, num_control_wells: 1).control_positions(0).first
         end
       end
 
@@ -166,67 +143,6 @@ RSpec.describe CherrypickTask::ControlLocator do
         # 23 would be a more reasonable value. The actual data don't seem to smell
         # to much though... its well 61 that it over-represented, not 0 or 96 for instance.
         expect(tally.values).to all be_between(2, 25)
-      end
-    end
-
-    context 'when the control placement type is not valid' do
-      let(:batch_id) { 1 }
-      let(:total_wells) { 96 }
-      let(:num_control_wells) { 2 }
-      let(:wells_to_leave_free) { [] }
-
-      before { allow(instance).to receive(:control_placement_type).and_return('invalid_type') }
-
-      it 'raises an error about invalid placement type' do
-        expect { instance.control_positions(0) }.to raise_error(
-          StandardError,
-          'Control placement type is not set or is invalid'
-        )
-      end
-    end
-
-    context 'when the control plate and plate template are incompatible' do
-      let(:batch_id) { 1 }
-      let(:total_wells) { 96 }
-      let(:num_control_wells) { 2 }
-      let(:wells_to_leave_free) { [] }
-
-      before do
-        allow(instance).to receive_messages(
-          control_placement_type: 'fixed',
-          convert_assets: [1, 2, 3],
-          control_source_plate: create(:control_plate)
-        )
-      end
-
-      it 'returns and displays an error message' do
-        expect(instance.handle_incompatible_plates).to be_truthy
-      end
-    end
-
-    context 'when assets are converted using the maps' do
-      let(:batch_id) { 1 }
-      let(:total_wells) { 96 }
-      let(:num_control_wells) { 2 }
-      let(:wells_to_leave_free) { [] }
-
-      before { allow(instance).to receive_messages(control_placement_type: 'fixed') }
-
-      it 'they are given the correct position IDs' do
-        expect(instance.send(:convert_assets, [94, 95, 96])).to eq([79, 87, 95])
-      end
-    end
-
-    context 'when the control placement type is fixed' do
-      let(:batch_id) { 1 }
-      let(:total_wells) { 96 }
-      let(:num_control_wells) { 2 }
-      let(:wells_to_leave_free) { [] }
-
-      before { allow(instance).to receive_messages(control_placement_type: 'fixed') }
-
-      it 'passes as intended' do
-        expect(instance.send(:fixed_positions_from_available)).to eq([])
       end
     end
   end

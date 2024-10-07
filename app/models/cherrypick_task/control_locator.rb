@@ -29,34 +29,23 @@ class CherrypickTask::ControlLocator
   # limit ourself to primes to simplify validation.
   BETWEEN_PLATE_OFFSETS = [53, 59].freeze
 
-  attr_reader :batch_id,
-              :total_wells,
-              :wells_to_leave_free,
-              :num_control_wells,
-              :available_positions,
-              :control_source_plate
+  attr_reader :batch_id, :total_wells, :wells_to_leave_free, :num_control_wells, :available_positions
 
   # @note wells_to_leave_free was originally hardcoded for 96 well plates at 24, in order to avoid
   # control wells being missed in cDNA quant QC. This requirement was removed in
   # https://github.com/sanger/sequencescape/issues/2967 however I've avoided stripping out the behaviour
   # completely in case controls are used in other pipelines.
   #
-  # @param params [Hash] A hash containing the following keys:
-  #   - :batch_id [Integer] The id of the batch, used to generate a starting position
-  #   - :total_wells [Integer] The total number of wells on the plate
-  #   - :num_control_wells [Integer] The number of control wells to lay out
-  #   - :wells_to_leave_free [Enumerable] Array or range indicating the wells to leave free from controls
-  #   - :control_source_plate [ControlPlate] The plate to source controls from
-  #   - :template [PlateTemplate] The template of the destination plate
-
-  def initialize(params)
-    @batch_id = params[:batch_id]
-    @total_wells = params[:total_wells]
-    @num_control_wells = params[:num_control_wells]
-    @wells_to_leave_free = params[:wells_to_leave_free].to_a || []
-    @available_positions = (0...@total_wells).to_a - @wells_to_leave_free
-    @control_source_plate = params[:control_source_plate]
-    @plate_template = params[:template]
+  # @param batch_id [Integer] The id of the batch, used to generate a starting position
+  # @param total_wells [Integer] The total number of wells on the plate
+  # @param num_control_wells [Integer] The number of control wells to lay out
+  # @param wells_to_leave_free [Enumerable] Array or range indicating the wells to leave free from controls
+  def initialize(batch_id:, total_wells:, num_control_wells:, wells_to_leave_free: [])
+    @batch_id = batch_id
+    @total_wells = total_wells
+    @num_control_wells = num_control_wells
+    @wells_to_leave_free = wells_to_leave_free.to_a
+    @available_positions = (0...total_wells).to_a - @wells_to_leave_free
   end
 
   #
@@ -66,7 +55,7 @@ class CherrypickTask::ControlLocator
   # @param num_plate [Integer] The plate number within the batch
   #
   # @return [Array<Integer>] The indexes of the control well positions
-
+  #
   def control_positions(num_plate)
     raise StandardError, 'More controls than free wells' if num_control_wells > total_available_positions
 
@@ -76,25 +65,9 @@ class CherrypickTask::ControlLocator
 
     # If num plate is equal to the available positions, the cycle is going to be repeated.
     # To avoid it, every num_plate=available_positions we start a new cycle with a new seed.
-
-    placement_type = control_placement_type
-    if placement_type.nil? || %w[fixed random].exclude?(placement_type)
-      raise StandardError, 'Control placement type is not set or is invalid'
-    end
-
-    handle_control_placement_type(placement_type, num_plate)
-  end
-
-  def handle_incompatible_plates
-    return false if control_placement_type == 'random'
-    return false if @plate_template.wells.empty?
-
-    control_assets = control_source_plate.wells.joins(:samples)
-
-    converted_control_assets = convert_assets(control_assets.map(&:map_id))
-    converted_template_assets = convert_assets(@plate_template.wells.map(&:map_id))
-
-    converted_control_assets.intersect?(converted_template_assets)
+    seed = seed_for(num_plate)
+    initial_positions = random_positions_from_available(seed)
+    control_positions_for_plate(num_plate, initial_positions)
   end
 
   private
@@ -121,49 +94,6 @@ class CherrypickTask::ControlLocator
 
   def random_positions_from_available(seed)
     available_positions.sample(num_control_wells, random: Random.new(seed))
-  end
-
-  def control_placement_type
-    @control_source_plate.custom_metadatum_collection.metadata['control_placement_type']
-  end
-
-  def handle_control_placement_type(placement_type, num_plate)
-    if placement_type == 'random'
-      control_positions_for_plate(num_plate, random_positions_from_available(seed_for(num_plate)))
-    else
-      fixed_positions_from_available
-    end
-  end
-
-  # Because the control source plate wells are ordered inversely to the destination plate wells,
-  # the control asset ids need to be converted to the corresponding destination plate well indexes.
-
-  def convert_assets(control_assets)
-    valid_map, invalid_map = create_plate_maps
-
-    control_assets.map do |id|
-      invalid_location = valid_map[id]
-      invalid_map.key(invalid_location) - 1
-    end
-  end
-
-  def fixed_positions_from_available
-    control_assets = @control_source_plate.wells.joins(:samples)
-    control_wells = control_assets.map(&:map_id)
-    convert_assets(control_wells)
-  end
-
-  # The invalid and valid maps are hash maps to represent a plate that maps A1 -> 1, A2 -> 2, etc,
-  # whereas the other map is the inverse of this, mapping 1 -> A1, 2 -> B1, etc.
-
-  def create_plate_maps
-    rows = ('A'..'H').to_a
-    columns = (1..12).to_a
-
-    valid_map = rows.product(columns).each_with_index.to_h { |(row, col), i| [i + 1, "#{row}#{col}"] }
-    invalid_map = columns.product(rows).each_with_index.to_h { |(col, row), i| [i + 1, "#{row}#{col}"] }
-
-    [valid_map, invalid_map]
   end
 
   # Works out which offset to use based on the number of available wells and ensures we use
