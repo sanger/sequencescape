@@ -5,15 +5,15 @@
 # row and column. Most well locations are identified by a letter-number combination,
 # eg. A1, H12.
 class Well < Receptacle # rubocop:todo Metrics/ClassLength
-  include Api::WellIO::Extensions
+  include Api::WellIo::Extensions
   include ModelExtensions::Well
   include Cherrypick::VolumeByNanoGrams
   include Cherrypick::VolumeByNanoGramsPerMicroLitre
   include Cherrypick::VolumeByMicroLitre
   include StudyReport::WellDetails
   include Tag::Associations
-  include Api::Messages::FluidigmPlateIO::WellExtensions
-  include Api::Messages::QcResultIO::WellExtensions
+  include Api::Messages::FluidigmPlateIo::WellExtensions
+  include Api::Messages::QcResultIo::WellExtensions
 
   class Link < ApplicationRecord
     # Caution! We are using delete_all and import to manage well links.
@@ -27,7 +27,7 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
     scope :stock, -> { where(type: 'stock') }
   end
 
-  self.stock_message_template = 'WellStockResourceIO'
+  self.stock_message_template = 'WellStockResourceIo'
   self.per_page = 500
 
   has_many :stock_well_links, -> { stock }, class_name: 'Well::Link', foreign_key: :target_well_id

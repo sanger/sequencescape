@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 # Despite name controls rendering of warehouse messages for {Batch}
 # Historically used to be v0.5 API
-class Api::BatchIO < Api::Base
+class Api::BatchIo < Api::Base
   module Extensions
     module ClassMethods
       def render_class
-        Api::BatchIO
+        Api::BatchIo
       end
     end
 

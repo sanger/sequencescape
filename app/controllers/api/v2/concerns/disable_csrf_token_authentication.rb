@@ -10,7 +10,7 @@ module Api
       #
       # NB. APi key authentication is still in place, so the API is still secure.
       # Longer term solution is to rework the security of the v2 API.
-      module DisableCSRFTokenAuthentication
+      module DisableCsrfTokenAuthentication
         extend ActiveSupport::Concern
 
         included { skip_before_action :verify_authenticity_token }

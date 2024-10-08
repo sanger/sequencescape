@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 # Despite name controls rendering of warehouse messages for {Tag}
 # Historically used to be v0.5 API
-class Api::TagIO < Api::Base
+class Api::TagIo < Api::Base
   module Extensions
     module ClassMethods
       def render_class
-        Api::TagIO
+        Api::TagIo
       end
     end
 

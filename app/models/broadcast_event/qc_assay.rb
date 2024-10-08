@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_dependency 'qc_assay'
-
 # Serializes lab events for the event warehouse
 class BroadcastEvent::QcAssay < BroadcastEvent
   seed_class ::QcAssay
