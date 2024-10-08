@@ -4,3 +4,7 @@ LCMT Lysate:
   type: PlatePurpose::Input
   stock_plate: true
   cherrypickable_target: false
+LCMT DNA Lib PCR:
+  type: PlatePurpose::Intermediate
+  stock_plate: true
+  cherrypickable_target: false
