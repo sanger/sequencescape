@@ -10,6 +10,7 @@ limber_pcr_bespoke:
   acceptable_purposes:
     - LBB Cherrypick
     - LBC Cherrypick
+    - Stock Plate
   library_types:
     - ChIP-Seq Auto
     - Chromium single cell HTO
