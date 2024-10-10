@@ -4,6 +4,7 @@
 # Tubes are linked via the RackedTubes association
 class TubeRack < Labware
   include Barcode::Barcodeable
+  include Asset::Ownership::Unowned
 
   self.sample_partial = 'assets/samples_partials/tube_rack_samples'
 
