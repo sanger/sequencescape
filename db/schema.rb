@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_09_17_133813) do
+ActiveRecord::Schema.define(version: 2024_10_03_152322) do
 
   create_table "aliquot_indices", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "aliquot_id", null: false
@@ -1446,6 +1446,20 @@ ActiveRecord::Schema.define(version: 2024_09_17_133813) do
     t.integer "tube_purpose_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "specific_tube_rack_creation_children", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
+    t.integer "specific_tube_rack_creation_id", null: false
+    t.integer "tube_rack_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "specific_tube_rack_creation_purposes", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
+    t.integer "specific_tube_rack_creation_id", null: false
+    t.integer "tube_rack_purpose_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "stamp_qcables", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
