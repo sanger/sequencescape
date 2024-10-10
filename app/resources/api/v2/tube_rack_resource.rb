@@ -30,6 +30,7 @@ module Api
       has_many :racked_tubes
       has_many :comments, readonly: true
       has_one :purpose, foreign_key: :plate_purpose_id
+      has_many :parents, class_name: 'Labware'
 
       # Attributes
       attribute :uuid, readonly: true
