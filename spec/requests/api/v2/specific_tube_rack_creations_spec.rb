@@ -4,18 +4,12 @@ require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
 require './spec/requests/api/v2/shared_examples/post_requests'
 
+# rubocop:disable RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups, RSpec/MultipleExpectations
 describe 'Specific Tube Rack Creations API', with: :api_v2 do
   let(:model_class) { SpecificTubeRackCreation }
   let(:resource_type) { model_class.name.demodulize.pluralize.underscore }
   let(:base_endpoint) { "/api/v2/#{resource_type}" }
   let(:user) { create(:user) }
-
-  it_behaves_like 'ApiKeyAuthenticatable'
-
-  let(:parent_plate) { create(:plate, well_count: 1) }
-
-  let(:tube_rack_purpose) { create(:tube_rack_purpose, name: 'example-tube-rack-purpose-uuid') }
-  let(:tube_purpose) { create(:tube_purpose, name: 'example-tube-purpose-uuid') }
 
   let(:basic_tube_rack_attributes) do
     [
@@ -36,6 +30,11 @@ describe 'Specific Tube Rack Creations API', with: :api_v2 do
       }
     ]
   end
+  let(:tube_purpose) { create(:tube_purpose, name: 'example-tube-purpose-uuid') }
+  let(:tube_rack_purpose) { create(:tube_rack_purpose, name: 'example-tube-rack-purpose-uuid') }
+  let(:parent_plate) { create(:plate, well_count: 1) }
+
+  it_behaves_like 'ApiKeyAuthenticatable'
 
   context 'with a list of resources' do
     before { create(:specific_tube_rack_creation, tube_rack_attributes: basic_tube_rack_attributes) }
@@ -53,61 +52,59 @@ describe 'Specific Tube Rack Creations API', with: :api_v2 do
     end
   end
 
-  context 'with a single resource' do
-    describe '#GET resource by ID' do
-      let(:parents) { [create(:plate)] }
-      let(:resource) { create(:specific_tube_rack_creation, tube_rack_attributes: basic_tube_rack_attributes) }
+  describe '#GET with a single resource' do
+    let(:parents) { [create(:plate)] }
+    let(:resource) { create(:specific_tube_rack_creation, tube_rack_attributes: basic_tube_rack_attributes) }
 
-      context 'without included relationships' do
-        before { api_get "#{base_endpoint}/#{resource.id}" }
+    context 'without included relationships' do
+      before { api_get "#{base_endpoint}/#{resource.id}" }
 
-        it 'responds with a success http code' do
-          expect(response).to have_http_status(:success)
-        end
-
-        it 'returns the correct resource' do
-          expect(json.dig('data', 'id')).to eq(resource.id.to_s)
-          expect(json.dig('data', 'type')).to eq(resource_type)
-        end
-
-        it 'returns the correct attributes' do
-          expect(json.dig('data', 'attributes', 'uuid')).to eq(resource.uuid)
-        end
-
-        it 'excludes unfetchable attributes' do
-          expect(json.dig('data', 'attributes', 'parent_uuids')).not_to be_present
-          expect(json.dig('data', 'attributes', 'tube_rack_attributes')).not_to be_present
-        end
-
-        it 'returns references to related resources' do
-          expect(json.dig('data', 'relationships', 'children')).to be_present
-          expect(json.dig('data', 'relationships', 'parents')).to be_present
-          expect(json.dig('data', 'relationships', 'user')).to be_present
-        end
-
-        it 'does not include attributes for related resources' do
-          expect(json['included']).not_to be_present
-        end
+      it 'responds with a success http code' do
+        expect(response).to have_http_status(:success)
       end
 
-      context 'with included relationships' do
-        context 'with children' do
-          let(:related_name) { 'children' }
+      it 'returns the correct resource' do
+        expect(json.dig('data', 'id')).to eq(resource.id.to_s)
+        expect(json.dig('data', 'type')).to eq(resource_type)
+      end
 
-          it_behaves_like 'a POST request including a has_many relationship'
-        end
+      it 'returns the correct attributes' do
+        expect(json.dig('data', 'attributes', 'uuid')).to eq(resource.uuid)
+      end
 
-        context 'with parents' do
-          let(:related_name) { 'parents' }
+      it 'excludes unfetchable attributes' do
+        expect(json.dig('data', 'attributes', 'parent_uuids')).not_to be_present
+        expect(json.dig('data', 'attributes', 'tube_rack_attributes')).not_to be_present
+      end
 
-          it_behaves_like 'a POST request including a has_many relationship'
-        end
+      it 'returns references to related resources' do
+        expect(json.dig('data', 'relationships', 'children')).to be_present
+        expect(json.dig('data', 'relationships', 'parents')).to be_present
+        expect(json.dig('data', 'relationships', 'user')).to be_present
+      end
 
-        context 'with user' do
-          let(:related_name) { 'user' }
+      it 'does not include attributes for related resources' do
+        expect(json['included']).not_to be_present
+      end
+    end
 
-          it_behaves_like 'a POST request including a has_one relationship'
-        end
+    context 'with included relationships' do
+      context 'with children' do
+        let(:related_name) { 'children' }
+
+        it_behaves_like 'a POST request including a has_many relationship'
+      end
+
+      context 'with parents' do
+        let(:related_name) { 'parents' }
+
+        it_behaves_like 'a POST request including a has_many relationship'
+      end
+
+      context 'with user' do
+        let(:related_name) { 'user' }
+
+        it_behaves_like 'a POST request including a has_one relationship'
       end
     end
   end
@@ -170,8 +167,8 @@ describe 'Specific Tube Rack Creations API', with: :api_v2 do
           it 'applies the attributes to the new record' do
             new_record = model_class.last
 
-            # Note that the tube_rack_attributes from the queried record will not match the submitted values, but it will
-            # consist of empty hashes equalling the number of child purposes, as defined in the model.
+            # Note that the tube_rack_attributes from the queried record will not match the submitted values,
+            # but it will consist of empty hashes equalling the number of child purposes, as defined in the model.
             expect(new_record.tube_rack_attributes).to eq(Array.new(expected_child_purposes.length, {}))
           end
 
@@ -307,3 +304,5 @@ describe 'Specific Tube Rack Creations API', with: :api_v2 do
     end
   end
 end
+
+# rubocop:enable RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups, RSpec/MultipleExpectations

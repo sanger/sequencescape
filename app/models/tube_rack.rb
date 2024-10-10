@@ -8,9 +8,11 @@ class TubeRack < Labware
 
   self.sample_partial = 'assets/samples_partials/tube_rack_samples'
 
-  has_many :racked_tubes, dependent: :destroy, inverse_of: :tube_rack
+  has_many :racked_tubes, dependent: :destroy, inverse_of: :tube_racks
   has_many :tubes, through: :racked_tubes
   has_many :contained_samples, through: :tubes, source: :samples
+  # TODO: change to purpose_id
+  belongs_to :purpose, class_name: 'TubeRack::Purpose', inverse_of: :tube_racks, dependent: :restrict_with_exception
 
   # The receptacles within the tubes.
   # While it may be tempting to just name this association :receptacles it interferes

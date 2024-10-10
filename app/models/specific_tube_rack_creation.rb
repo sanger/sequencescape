@@ -15,10 +15,10 @@ class SpecificTubeRackCreation < AssetCreation
     belongs_to :tube_rack_purpose, class_name: 'TubeRack::Purpose'
   end
 
-  has_many :creation_child_purposes, class_name: 'SpecificTubeRackCreation::ChildPurpose'
+  has_many :creation_child_purposes, class_name: 'SpecificTubeRackCreation::ChildPurpose', dependent: :destroy
   has_many :child_purposes, through: :creation_child_purposes, source: :tube_rack_purpose
 
-  has_many :child_tube_racks, class_name: 'SpecificTubeRackCreation::ChildTubeRack'
+  has_many :child_tube_racks, class_name: 'SpecificTubeRackCreation::ChildTubeRack', dependent: :destroy
   has_many :children, through: :child_tube_racks, source: :tube_rack
 
   validates :tube_rack_attributes, presence: true
@@ -26,7 +26,8 @@ class SpecificTubeRackCreation < AssetCreation
   has_many :parent_associations,
            foreign_key: 'asset_creation_id',
            class_name: 'AssetCreation::ParentAssociation',
-           inverse_of: 'asset_creation'
+           inverse_of: 'asset_creation',
+           dependent: :destroy
 
   # TODO: why do we have both of these?
   # NB. assumption that parent is a plate
@@ -102,7 +103,7 @@ class SpecificTubeRackCreation < AssetCreation
   # @return [Array<TubeRack>] An array of the created child tube racks.
   def create_children!
     self.children =
-      @tube_rack_attributes.each_with_index.map { |rack_attributes, index| create_child_tube_rack(rack_attributes) }
+      @tube_rack_attributes.each_with_index.map { |rack_attributes, _index| create_child_tube_rack(rack_attributes) }
   end
 
   # Creates a child tube rack based on the provided rack attributes.
@@ -125,7 +126,7 @@ class SpecificTubeRackCreation < AssetCreation
   # @return [TubeRack] The created tube rack.
   def create_child_tube_rack(rack_attributes)
     child_purpose = find_child_purpose(rack_attributes[:tube_rack_purpose_uuid])
-    self.child_purposes << child_purpose
+    child_purposes << child_purpose
 
     new_tube_rack = child_purpose.create!(name: rack_attributes[:tube_rack_name])
     handle_tube_rack_barcode(rack_attributes[:tube_rack_barcode], new_tube_rack)
@@ -217,7 +218,8 @@ class SpecificTubeRackCreation < AssetCreation
       existing_barcode_record.labware = new_tube_rack
     else
       error_message =
-        "The tube rack barcode '#{tube_rack_barcode}' is already in use by another type of labware, cannot create tube rack."
+        "The tube rack barcode '#{tube_rack_barcode}' is already in use by " \
+          'another type of labware, cannot create tube rack.'
       raise StandardError, error_message
     end
   end

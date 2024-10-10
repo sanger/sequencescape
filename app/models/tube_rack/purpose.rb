@@ -6,7 +6,10 @@ class TubeRack::Purpose < Purpose
   has_many :sample_manifests, inverse_of: :tube_rack_purpose, dependent: :restrict_with_exception
 
   # TODO: change to purpose_id
-  has_many :tube_racks, foreign_key: :plate_purpose_id
+  has_many :tube_racks,
+           foreign_key: :plate_purpose_id,
+           inverse_of: :tube_rack_purpose,
+           dependent: :restrict_with_exception
 
   def self.standard_tube_rack
     TubeRack::Purpose.find_by(name: 'TR Stock 96')
@@ -15,7 +18,7 @@ class TubeRack::Purpose < Purpose
   def create!(*args, &block)
     options = args.extract_options!
     options[:purpose] = self
-    options[:size] = self.size
+    options[:size] = size
     target_class.create!(*args, options, &block).tap { |tr| tube_racks << tr }
   end
 end

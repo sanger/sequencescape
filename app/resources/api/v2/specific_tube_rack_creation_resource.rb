@@ -64,7 +64,6 @@ module Api
         return if value.nil?
 
         # Convert ActionController::Parameters into hashes.
-        puts "DEBUG: resource tube_rack_attributes = #{value.map(&:to_unsafe_h)}"
         @model.tube_rack_attributes = value.map(&:to_unsafe_h)
       end
 

@@ -35,6 +35,7 @@ class AssetLink < ApplicationRecord
   end
 
   module Associations
+    # rubocop:disable Metrics/MethodLength
     def self.included(base)
       base.class_eval do
         extend ClassMethods
@@ -49,6 +50,8 @@ class AssetLink < ApplicationRecord
       end
       base.extend(ClassMethods)
     end
+
+    # rubocop:enable Metrics/MethodLength
 
     module ClassMethods
       def has_one_as_child(name, scope) # rubocop:todo Metrics/MethodLength
