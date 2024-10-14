@@ -7,6 +7,6 @@
 <% else %>
   <%= alert(:danger) do %>
     Task not correctly configured. Please contact support.
-    <%= link_to 'Help', new_user_query_path, class: 'help-button btn-danger' %>
+    <%= link_to 'Help', configatron.fresh_sevice_new_ticket_url, class: 'help-button btn-danger' %>
   <% end %>
 <% end %>
