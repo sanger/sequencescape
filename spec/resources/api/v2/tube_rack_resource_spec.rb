@@ -32,7 +32,7 @@ RSpec.describe Api::V2::TubeRackResource, type: :resource do
   # eg. it { is_expected.to have_many(:samples).with_class_name('Sample') }
   it 'exposes associations', :aggregate_failures do
     expect(tube_rack).to have_many(:racked_tubes).with_class_name('RackedTube')
-    expect(tube_rack).to have_one(:purpose).with_class_name('Purpose')
+    expect(tube_rack).to have_one(:purpose).with_class_name('TubeRackPurpose')
     expect(tube_rack).to have_one(:comments).with_class_name('Comment')
   end
 
