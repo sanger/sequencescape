@@ -80,7 +80,7 @@ class Submission < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   # The class used to render warehouse messages
   def self.render_class
-    Api::SubmissionIO
+    Api::SubmissionIo
   end
 
   # Once submissions progress beyond building, destruction is a risky action and should be prevented.

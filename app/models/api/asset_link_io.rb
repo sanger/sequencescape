@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 # Despite name controls rendering of warehouse messages for {AssetLink}
 # Historically used to be v0.5 API
-class Api::AssetLinkIO < Api::Base
+class Api::AssetLinkIo < Api::Base
   module Extensions
     module ClassMethods
       def render_class
-        Api::AssetLinkIO
+        Api::AssetLinkIo
       end
     end
 

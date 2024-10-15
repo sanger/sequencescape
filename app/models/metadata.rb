@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require_dependency 'attributable'
 
 module Metadata
   # @!macro [attach] has_metadata

@@ -80,7 +80,7 @@ class PlatePurpose < Purpose
       end
   end
 
-  include Api::PlatePurposeIO::Extensions
+  include Api::PlatePurposeIo::Extensions
 
   self.per_page = 500
 
@@ -147,11 +147,3 @@ class PlatePurpose < Purpose
     self.barcode_printer_type ||= BarcodePrinterType96Plate.first
   end
 end
-
-# Ensure rails eager loading behaves as intended
-# We should consider renaming our classes to make this easier to maintain
-require_dependency 'dilution_plate_purpose'
-require_dependency 'plate_purpose/input'
-require_dependency 'qcable_library_plate_purpose'
-require_dependency 'qcable_plate_purpose'
-require_dependency 'plate_purpose/initial_purpose'

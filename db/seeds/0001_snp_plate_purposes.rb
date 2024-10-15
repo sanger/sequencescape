@@ -128,6 +128,6 @@ PlatePurpose.create!(
 MessengerCreator.create!(
   purpose: Purpose.find_by(name: 'Stock Plate'),
   root: 'stock_resource',
-  template: 'WellStockResourceIO',
+  template: 'WellStockResourceIo',
   target_finder_class: 'WellFinder'
 )

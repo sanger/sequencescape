@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_dependency 'robot'
-
 # Handles picking file generation for Beckman robots
 # TODO: Include module of shared behaviour, rather than inheriting
 class Robot::Generator::Beckman < Robot::Generator::Hamilton

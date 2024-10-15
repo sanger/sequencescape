@@ -578,4 +578,11 @@ module Barcode::FormatHandlers
   class Rvi < BaseRegExBarcode
     self.format = /\A(?<prefix>RVI)-(?<number>[0-9]{6,})\z/
   end
+
+  #  add AkerBarcode class here as it could be called in
+  #  Barcode::FormatHandlers.const_get in app/models/barcode.rb to avoid
+  #  uninitialized constant Barcode::FormatHandlers::AkerBarcode (NameError)
+  class AkerBarcode < BaseRegExBarcode
+    self.format = /\A(?<prefix>Aker)-(?<number>[0-9]{2,})\z/
+  end
 end

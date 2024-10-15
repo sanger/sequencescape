@@ -420,5 +420,12 @@ describe Barcode::FormatHandlers do
     it_has_an_invalid_barcode 'IRVI-123456'
   end
 
+  describe Barcode::FormatHandlers::AkerBarcode do
+    it_has_a_valid_barcode 'Aker-11', prefix: 'Aker', number: 11
+    it_has_an_invalid_barcode 'SQPD-12345678-234233890-WD'
+    it_has_an_invalid_barcode 'RVI123456'
+    it_has_an_invalid_barcode 'IRVI-123456'
+  end
+
   # rubocop:enable RSpec/EmptyExampleGroup
 end

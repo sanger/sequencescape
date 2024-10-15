@@ -119,7 +119,7 @@ RSpec.describe 'Following a Sequencing Pipeline', :js do
       create(:batch, pipeline: pipeline, requests: pipeline.requests, state: 'released', updated_at: 1.day.ago)
     end
 
-    let!(:flowcell_message) { Messenger.create!(target: batch, template: 'FlowcellIO', root: 'flowcell') }
+    let!(:flowcell_message) { Messenger.create!(target: batch, template: 'FlowcellIo', root: 'flowcell') }
 
     before do
       batch.requests.each_with_index do |request, i|

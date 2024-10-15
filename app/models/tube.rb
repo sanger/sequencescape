@@ -7,7 +7,7 @@ class Tube < Labware
   include Asset::Ownership::Unowned
   include Transfer::Associations
   include Transfer::State::TubeState
-  include Api::Messages::QcResultIO::TubeExtensions
+  include Api::Messages::QcResultIo::TubeExtensions
   include SingleReceptacleLabware
 
   extend QcFile::Associations
@@ -115,6 +115,7 @@ def validate_barcode(barcode, prefix)
   raise "Barcode: #{barcode} already used!" if Barcode.exists?(barcode: human)
 end
 
+# Required for the descendants method to work when eager loading is off in test
 require_dependency 'sample_tube'
 require_dependency 'library_tube'
 require_dependency 'qc_tube'

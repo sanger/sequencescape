@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 # Generates warehouse messages describing a PacBio run.
 # PacBio runs are approximated by {Batch batches}
-class Api::Messages::PacBioRunWithTag2IO < Api::Base
+class Api::Messages::PacBioRunWithTag2Io < Api::Base
   renders_model(::Batch)
 
   map_attribute_to_json_attribute(:id, 'pac_bio_run_id')

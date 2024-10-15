@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Api::SampleIO do
+RSpec.describe Api::SampleIo do
   subject do
     create(
       :sample,

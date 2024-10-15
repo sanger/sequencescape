@@ -13,7 +13,7 @@ class Tag < ApplicationRecord
     end
   end
 
-  include Api::TagIO::Extensions
+  include Api::TagIo::Extensions
 
   self.per_page = 500
   include Uuid::Uuidable
