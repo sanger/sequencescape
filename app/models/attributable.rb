@@ -1,9 +1,5 @@
 # frozen_string_literal: true
 
-require_dependency 'attributable/custom_validator'
-require_dependency 'attributable/attribute'
-require_dependency 'attributable/association'
-
 # This module can be included into ActiveRecord::Base classes to get the ability to specify the attributes
 # that are present.  You can think of this as metadata being stored about the column in the table: it's
 # default value, whether it's required, if it has a set of values that are acceptable, or if it's numeric.

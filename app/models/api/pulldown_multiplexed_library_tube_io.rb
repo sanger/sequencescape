@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 # Despite name controls rendering of warehouse messages for {PulldownMultiplexedLibraryTube}
 # Historically used to be v0.5 API
-class Api::PulldownMultiplexedLibraryTubeIO < Api::Base
+class Api::PulldownMultiplexedLibraryTubeIo < Api::Base
   module Extensions
     module ClassMethods
       def render_class
-        Api::PulldownMultiplexedLibraryTubeIO
+        Api::PulldownMultiplexedLibraryTubeIo
       end
     end
 

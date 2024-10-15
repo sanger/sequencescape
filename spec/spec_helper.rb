@@ -45,7 +45,7 @@ require 'rspec/support/differ'
 
 require './lib/plate_map_generation'
 require './lib/capybara_failure_logger'
-require './lib/capybara_timeout_patches'
+require './lib/capybara_timeout_patch'
 require 'pry'
 
 Capybara.register_driver :headless_chrome do |app|

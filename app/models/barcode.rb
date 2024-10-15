@@ -223,6 +223,6 @@ class Barcode < ApplicationRecord
   end
 
   def broadcast_barcode
-    Messenger.new(template: 'BarcodeIO', root: 'barcode', target: self).broadcast
+    Messenger.new(template: 'BarcodeIo', root: 'barcode', target: self).broadcast
   end
 end

@@ -5,7 +5,7 @@
 # These messages are not broadcast automatically when database events happen, like some others
 # They are instead broadcast when importing samples, e.g. on sample manifest upload
 # See register_stock! in Asset model, and sample_manifest > core_behaviour class for where it's called
-class Api::Messages::WellStockResourceIO < Api::Base
+class Api::Messages::WellStockResourceIo < Api::Base
   renders_model(::Well)
 
   map_attribute_to_json_attribute(:uuid, 'stock_resource_uuid')

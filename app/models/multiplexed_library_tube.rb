@@ -1,9 +1,8 @@
 # frozen_string_literal: true
-require_dependency 'tube/purpose'
 
 class MultiplexedLibraryTube < Tube
   include ModelExtensions::MultiplexedLibraryTube
-  include Api::MultiplexedLibraryTubeIO::Extensions
+  include Api::MultiplexedLibraryTubeIo::Extensions
   include Asset::SharedLibraryTubeBehaviour
 
   has_many :order_roles, -> { distinct }, through: :requests_as_target

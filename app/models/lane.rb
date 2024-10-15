@@ -5,7 +5,7 @@
 # Currently flowcells can be approximated in Sequencescape by the {Batch} created
 # at the end of the {SequencingPipeline}
 class Lane < Receptacle
-  include Api::LaneIO::Extensions
+  include Api::LaneIo::Extensions
   include AliquotIndexer::Indexable
 
   LIST_REASONS_NEGATIVE = [

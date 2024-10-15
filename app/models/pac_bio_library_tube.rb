@@ -2,7 +2,7 @@
 
 # Library tubes in legacy Sequencescape Pacbio pipelines
 class PacBioLibraryTube < Tube
-  include Api::PacBioLibraryTubeIO::Extensions
+  include Api::PacBioLibraryTubeIo::Extensions
 
   extend Metadata
   has_metadata do
