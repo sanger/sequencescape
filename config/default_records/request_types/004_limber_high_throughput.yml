@@ -199,3 +199,10 @@ limber_targeted_nanoseq:
     - LTN Cherrypick
   library_types:
     - Targeted Nanoseq
+limber_rnaf:
+  <<: *limber_htp_library
+  name: Limber RNAF
+  acceptable_purposes:
+    - RNAF Cherrypick
+  library_types:
+    - RNA FFPE

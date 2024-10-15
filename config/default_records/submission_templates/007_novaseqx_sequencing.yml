@@ -62,6 +62,13 @@ Limber-Htp - RNARG - NovaSeqX paired end sequencing:
     product_line_name: Illumina-HTP
     product_catalogue_name: RNARG
     request_type_keys: ["limber_rnarg", "limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"]
+Limber-Htp - RNAF - NovaSeqX paired end sequencing:
+  name: "Limber-Htp - RNAF - NovaSeqX paired end sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Illumina-HTP
+    product_catalogue_name: RNAF
+    request_type_keys: ["limber_rnaf", "limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"]
 Limber-Htp - PCR Free - NovaSeqX paired end sequencing:
   name: "Limber-Htp - PCR Free - NovaSeqX paired end sequencing"
   submission_class_name: "LinearSubmission"
