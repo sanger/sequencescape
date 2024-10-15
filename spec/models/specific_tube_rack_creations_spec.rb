@@ -71,7 +71,7 @@ RSpec.describe SpecificTubeRackCreation do
   context 'with no tubes' do
     include_context 'with common setup'
 
-    let(:creation_parameters) { { user: user, tube_rack_attributes: tube_rack_attributes, parent: parent } }
+    let(:creation_parameters) { { user:, tube_rack_attributes:, parent: } }
 
     context 'with one rack and zero tubes' do
       let(:tube_rack_attributes) do
@@ -137,7 +137,7 @@ RSpec.describe SpecificTubeRackCreation do
   context 'with tubes' do
     include_context 'with common setup'
 
-    let(:creation_parameters) { { user: user, tube_rack_attributes: tube_rack_attributes, parent: parent } }
+    let(:creation_parameters) { { user:, tube_rack_attributes:, parent: } }
 
     context 'with one rack and one tube' do
       include_context 'with common test setup'

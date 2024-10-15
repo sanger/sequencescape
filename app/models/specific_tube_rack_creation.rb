@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 # Allows for the creation of multiple tube racks and their tubes.
+# rubocop:disable Metrics/ClassLength
 class SpecificTubeRackCreation < AssetCreation
   # Allows a many to many relationship between SpecificTubeRackCreations and child Tube racks.
   class ChildTubeRack < ApplicationRecord
@@ -258,8 +259,10 @@ class SpecificTubeRackCreation < AssetCreation
 
   # Creates racked tubes based on the provided attributes and associates them with a new tube rack.
   #
-  # This method iterates over the array of racked tube attributes provided in the rack_attributes hash.
-  # For each set of tube attributes, it calls the create_racked_tube method to create and associate the tube with the new tube rack.
+  # This method iterates over the array of racked tube attributes provided in the rack_attributes
+  # hash.
+  # For each set of tube attributes, it calls the create_racked_tube method to create and associate
+  # the tube with the new tube rack.
   #
   # @param [Array<Hash>] racked_tubes An array of hashes, each containing attributes for a racked tube.
   # @param [TubeRack] new_tube_rack The new tube rack object to which the tubes will be associated.
@@ -305,7 +308,8 @@ class SpecificTubeRackCreation < AssetCreation
   #
   # @param [String] tube_barcode The barcode of the tube to be checked.
   #
-  # @raise [StandardError] if the barcode format is not recognized or if it is not of the expected 'fluidx_barcode' type.
+  # @raise [StandardError] if the barcode format is not recognized or if it is not of the
+  # expected 'fluidx_barcode' type.
   #
   # @return [void]
   def check_tube_barcode_format(tube_barcode)
@@ -318,10 +322,9 @@ class SpecificTubeRackCreation < AssetCreation
     end
 
     # expecting fluidx format
-    if barcode_format != :fluidx_barcode
-      error_message = "The tube barcode '#{tube_barcode}' is not of the expected fluidx type."
-      raise StandardError, error_message
-    end
+    return unless barcode_format != :fluidx_barcode
+    error_message = "The tube barcode '#{tube_barcode}' is not of the expected fluidx type."
+    raise StandardError, error_message
   end
 
   # Creates a new tube based on the provided attributes.
@@ -380,7 +383,8 @@ class SpecificTubeRackCreation < AssetCreation
     return if racked_tube.save!
 
     error_message =
-      "The tube '#{tube.name}' could not be linked to the tube rack '#{new_tube_rack.name}' at position '#{tube_position}'."
+      "The tube '#{tube.name}' could not be linked to the tube rack '#{new_tube_rack.name}' " \
+        "at position '#{tube_position}'."
     raise ActiveRecord::RecordInvalid, error_message
   end
 
@@ -428,3 +432,5 @@ class SpecificTubeRackCreation < AssetCreation
     # Not generating creation events for this labware
   end
 end
+
+# rubocop:enable Metrics/ClassLength

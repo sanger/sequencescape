@@ -3,6 +3,7 @@
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
 
+# rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
 describe 'Tube Rack Purposes API', with: :api_v2 do
   let(:base_endpoint) { '/api/v2/tube_rack_purposes' }
 
@@ -11,10 +12,15 @@ describe 'Tube Rack Purposes API', with: :api_v2 do
   describe '#get all Tube Rack Purposes' do
     before { create_list(:tube_rack_purpose, 5) }
 
-    it 'returns the list of Tube Rack Purposes' do
+    it 'returns a successful response' do
       api_get base_endpoint
 
       expect(response).to have_http_status(:success)
+    end
+
+    it 'returns the list of Tube Rack Purposes' do
+      api_get base_endpoint
+
       expect(json['data'].length).to eq(5)
     end
   end
@@ -199,3 +205,5 @@ describe 'Tube Rack Purposes API', with: :api_v2 do
     end
   end
 end
+
+# rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations
