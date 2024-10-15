@@ -34,6 +34,7 @@ describe 'Tube Rack Purposes API', with: :api_v2 do
       expect(json.dig('data', 'type')).to eq('tube_rack_purposes')
       expect(json.dig('data', 'attributes', 'name')).to eq(resource_model.name)
       expect(json.dig('data', 'attributes', 'purpose_type')).to eq(resource_model.type)
+      expect(json.dig('data', 'attributes', 'size')).to eq(resource_model.size)
       expect(json.dig('data', 'attributes', 'target_type')).to eq(resource_model.target_type)
       expect(json.dig('data', 'attributes', 'uuid')).to eq(resource_model.uuid)
     end
@@ -61,6 +62,7 @@ describe 'Tube Rack Purposes API', with: :api_v2 do
         expect(response).to have_http_status(:success)
         expect(json.dig('data', 'type')).to eq('tube_rack_purposes')
         expect(json.dig('data', 'attributes', 'name')).to eq(updated_name)
+        expect(json.dig('data', 'attributes', 'size')).to eq(resource_model.size)
         expect(json.dig('data', 'attributes', 'purpose_type')).to eq(resource_model.type)
         expect(json.dig('data', 'attributes', 'target_type')).to eq(resource_model.target_type)
         expect(json.dig('data', 'attributes', 'uuid')).to eq(resource_model.uuid)
@@ -86,15 +88,15 @@ describe 'Tube Rack Purposes API', with: :api_v2 do
         expect(response).to have_http_status(:success)
         expect(json.dig('data', 'type')).to eq('tube_rack_purposes')
         expect(json.dig('data', 'attributes', 'name')).to eq(resource_model.name)
+        expect(json.dig('data', 'attributes', 'size')).to eq(resource_model.size)
         expect(json.dig('data', 'attributes', 'purpose_type')).to eq(updated_purpose_type)
         expect(json.dig('data', 'attributes', 'target_type')).to eq(resource_model.target_type)
         expect(json.dig('data', 'attributes', 'uuid')).to eq(resource_model.uuid)
       end
     end
 
-    # TODO: is there another type of target? e.g. for tube this was a different tube type
     context 'when patching the target_type' do
-      let(:updated_target_type) { 'TubeRack' }
+      let(:updated_target_type) { 'SampleTubeRack' }
       let(:payload) do
         {
           'data' => {
@@ -112,6 +114,7 @@ describe 'Tube Rack Purposes API', with: :api_v2 do
         expect(response).to have_http_status(:success)
         expect(json.dig('data', 'type')).to eq('tube_rack_purposes')
         expect(json.dig('data', 'attributes', 'name')).to eq(resource_model.name)
+        expect(json.dig('data', 'attributes', 'size')).to eq(resource_model.size)
         expect(json.dig('data', 'attributes', 'purpose_type')).to eq(resource_model.type)
         expect(json.dig('data', 'attributes', 'target_type')).to eq(updated_target_type)
         expect(json.dig('data', 'attributes', 'uuid')).to eq(resource_model.uuid)

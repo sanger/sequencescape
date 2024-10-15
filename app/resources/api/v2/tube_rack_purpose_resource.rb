@@ -2,9 +2,8 @@
 
 module Api
   module V2
-    # @todo This documentation does not yet include a detailed description of what this resource represents.
-    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
-    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+    # This resource represents the API structure for the TubeRack::Purpose model.
+    # This purpose is used by Limber for config generation.
     #
     # @note Access this resource via the `/api/v2/tube_rack_purposes/` endpoint.
     #
@@ -23,6 +22,10 @@ module Api
       # @!attribute [rw] name
       #   @return [String] the name of the tube rack purpose.
       attribute :name
+
+      # @!attribute [rw] size
+      #   @return [Integer] the size of the tube rack purpose.
+      attribute :size
 
       # @!attribute [rw] purpose_type
       #   @return [String] the purpose type. This is mapped to the type attribute on the model.
