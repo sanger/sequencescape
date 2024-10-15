@@ -50,7 +50,7 @@ module Sanger
               index_url = "#{parent_resource}_#{resource_name.to_s.pluralize}_path(@#{parent_resource})"
 
               setup do
-                parent = create parent_resource
+                parent = create(parent_resource)
                 @factory_options[parent_resource.to_sym] = parent
                 @input_params["#{parent_resource}_id"] = parent.id
               end
@@ -96,7 +96,7 @@ module Sanger
               if actions.include?('show')
                 context "should show #{resource_name}" do
                   setup do
-                    @object = create resource_name, @factory_options
+                    @object = create(resource_name, @factory_options)
                     @input_params[:id] = @object.id
                     get :show, params: @input_params
                   end
@@ -107,7 +107,7 @@ module Sanger
               if actions.include?('edit')
                 context 'should get edit' do
                   setup do
-                    @object = create resource_name, @factory_options
+                    @object = create(resource_name, @factory_options)
                     @input_params[:id] = @object.id
                     get :edit, params: @input_params
                   end
@@ -118,7 +118,7 @@ module Sanger
               if actions.include?('update')
                 context 'should update' do
                   setup do
-                    @object = create resource_name
+                    @object = create(resource_name)
                     @input_params[resource_name] = @create_options
                     @input_params[:id] = @object.id
                     put :update, params: @input_params
@@ -130,7 +130,7 @@ module Sanger
               if actions.include?('destroy')
                 context 'should destroy' do
                   setup do
-                    @object = create resource_name
+                    @object = create(resource_name)
                     @input_params[:id] = @object.id
                     delete :destroy, params: @input_params
                   end
@@ -141,7 +141,7 @@ module Sanger
               context 'should not have untested action' do
                 untested_actions.each do |action|
                   should action.to_s do
-                    @object = create resource_name
+                    @object = create(resource_name)
                     @input_params[:id] = @object.id
                     assert_raise AbstractController::ActionNotFound do
                       get action, params: @input_params
@@ -154,7 +154,7 @@ module Sanger
                 if other_actions.include?('status')
                   context 'should show status' do
                     setup do
-                      @object = create resource_name
+                      @object = create(resource_name)
                       get :status, params: { id: @object.id }
                     end
                     should respond_with :success
@@ -166,7 +166,7 @@ module Sanger
                   if actions.include?('index')
                     context 'when using XML to access a list ' do
                       setup do
-                        @object = create resource_name, @factory_options
+                        @object = create(resource_name, @factory_options)
                         @request.accept = 'application/xml'
                         get :index, params: @input_params
                       end
@@ -182,7 +182,7 @@ module Sanger
                     context 'when using XML to access a single object' do
                       setup do
                         @request.accept = 'application/xml'
-                        @object = create resource_name, @factory_options
+                        @object = create(resource_name, @factory_options)
                         @input_params[:id] = @object.id
                         get :show, params: @input_params
                       end
@@ -197,7 +197,7 @@ module Sanger
                   if actions.include?('index')
                     context 'when using JSON to access a list ' do
                       setup do
-                        @object = create resource_name, @factory_options
+                        @object = create(resource_name, @factory_options)
                         @request.accept = 'text/x-json'
                         get :index, params: @input_params
                       end
@@ -210,7 +210,7 @@ module Sanger
                   if actions.include?('show')
                     context 'when using JSON to access a single object' do
                       setup do
-                        @object = create resource_name, @factory_options
+                        @object = create(resource_name, @factory_options)
                         @request.accept = 'text/x-json'
                         @input_params[:id] = @object.id
                         get :show, params: @input_params

@@ -85,14 +85,10 @@ class Purpose < ApplicationRecord
   end
 
   def prefix=(prefix)
-    self.barcode_prefix = BarcodePrefix.find_or_create_by(prefix: prefix)
+    self.barcode_prefix = BarcodePrefix.find_or_create_by(prefix:)
   end
 
   def set_default_barcode_prefix
     self.prefix ||= default_prefix
   end
 end
-
-require_dependency 'tube/purpose'
-require_dependency 'plate_purpose'
-require_dependency 'tube_rack/purpose'

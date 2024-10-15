@@ -44,15 +44,15 @@ RSpec.describe LocationReport::LocationReportForm do
     let(:location_report_form) do
       build(
         :location_report_form,
-        report_type: report_type,
-        name: name,
-        location_barcode: location_barcode,
-        faculty_sponsor_ids: faculty_sponsor_ids,
-        study_id: study_id,
-        start_date: start_date,
-        end_date: end_date,
-        plate_purpose_ids: plate_purpose_ids,
-        barcodes_text: barcodes_text
+        report_type:,
+        name:,
+        location_barcode:,
+        faculty_sponsor_ids:,
+        study_id:,
+        start_date:,
+        end_date:,
+        plate_purpose_ids:,
+        barcodes_text:
       )
     end
     let(:report_type) { nil }

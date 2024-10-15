@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require 'exceptions'
 require 'authenticated_system'
 
 # Filters added to this controller apply to all controllers in the application.

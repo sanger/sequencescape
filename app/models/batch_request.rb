@@ -3,7 +3,7 @@
 # Requests can be alocated a specific order by setting 'position'. This is
 # especially useful for determining {Lane} order for {SequencingRequest}.
 class BatchRequest < ApplicationRecord
-  include Api::BatchRequestIO::Extensions
+  include Api::BatchRequestIo::Extensions
   include Uuid::Uuidable
 
   self.per_page = 500
@@ -12,7 +12,7 @@ class BatchRequest < ApplicationRecord
   belongs_to :request, inverse_of: :batch_request
 
   scope :ordered, -> { order(:position) }
-  scope :at_position, ->(position) { where(position: position) }
+  scope :at_position, ->(position) { where(position:) }
 
   # Ensure that any requests that are added have a position that is unique and incremental in the batch,
   # unless we're moving them around in the batch, in which case we assume it'll be valid.

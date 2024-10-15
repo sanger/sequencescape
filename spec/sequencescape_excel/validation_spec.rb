@@ -14,15 +14,15 @@ RSpec.describe SequencescapeExcel::Validation, :sample_manifest, :sample_manifes
   it 'is comparable' do
     # We are explicitly checking that comparable non-identical object show equality
     # rubocop:disable RSpec/IdenticalEqualityAssertion
-    expect(described_class.new(options: options)).to eq(described_class.new(options: options))
+    expect(described_class.new(options:)).to eq(described_class.new(options:))
 
     # rubocop:enable RSpec/IdenticalEqualityAssertion
 
-    expect(described_class.new(options: options.except(:formula1))).not_to eq(described_class.new(options: options))
+    expect(described_class.new(options: options.except(:formula1))).not_to eq(described_class.new(options:))
   end
 
   context 'without range name' do
-    let(:validation) { described_class.new(options: options) }
+    let(:validation) { described_class.new(options:) }
 
     it 'will have some options' do
       expect(validation.options).to eq(options)
@@ -53,7 +53,7 @@ RSpec.describe SequencescapeExcel::Validation, :sample_manifest, :sample_manifes
 
   context 'with a custom formula' do
     let(:options) { { type: :custom, formula1: 'AND(A1>5,A1<10)' } }
-    let(:validation) { described_class.new(options: options) }
+    let(:validation) { described_class.new(options:) }
 
     it 'sends and escaped formula to the worksheet' do
       expect(worksheet).to receive(:add_data_validation).with(
@@ -68,7 +68,7 @@ RSpec.describe SequencescapeExcel::Validation, :sample_manifest, :sample_manifes
   context 'with worksheet' do
     let(:worksheet) { Axlsx::Package.new.workbook.add_worksheet }
     let(:range) { build(:range) }
-    let(:validation) { described_class.new(options: options) }
+    let(:validation) { described_class.new(options:) }
 
     it 'has some options' do
       expect(validation.options).to eq(options)
@@ -84,7 +84,7 @@ RSpec.describe SequencescapeExcel::Validation, :sample_manifest, :sample_manifes
 
     it 'is comparable' do
       validation.update(reference: range.reference, worksheet: worksheet)
-      other_validation = described_class.new(options: options)
+      other_validation = described_class.new(options:)
       other_validation.update(reference: range.reference, worksheet: worksheet)
       expect(other_validation).to eq(validation)
 

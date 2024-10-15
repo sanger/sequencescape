@@ -18,7 +18,6 @@ module LabWhereClient
 
     def parse_json(str)
       return nil if str == 'null'
-
       JSON.parse(str)
     rescue JSON::ParserError => e
       raise LabwhereException.new(e), 'LabWhere is returning unexpected content', e.backtrace
@@ -35,7 +34,7 @@ module LabWhereClient
     rescue Errno::ECONNREFUSED, RestClient::NotFound => e
       raise LabwhereException.new(e), 'LabWhere service is down', e.backtrace
     rescue RestClient::UnprocessableEntity => e
-      return parse_json(e.response)
+      parse_json(e.response)
     end
 
     def put(instance, target, payload)
@@ -114,7 +113,7 @@ module LabWhereClient
     def self.find_locations_by_barcodes(barcodes)
       return nil if barcodes.blank?
 
-      payload = { barcodes: barcodes }
+      payload = { barcodes: }
 
       attrs = LabWhere.new.post(self, '', payload)
       new(attrs) unless attrs.nil?
@@ -149,10 +148,6 @@ module LabWhereClient
 
     def valid?
       @errors.nil?
-    end
-
-    def error
-      @errors.join(';')
     end
   end
 

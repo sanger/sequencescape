@@ -175,7 +175,7 @@ SequencingPipeline
               per_item: false,
               lab_activity: true
             }
-          ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+          ].each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
   end
   .tap do |pipeline|
@@ -235,7 +235,7 @@ SequencingPipeline
               per_item: false,
               lab_activity: true
             }
-          ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+          ].each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
   end
   .tap do |pipeline|
@@ -288,7 +288,7 @@ SequencingPipeline
               per_item: false,
               lab_activity: true
             }
-          ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+          ].each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
   end
   .tap do |pipeline|
@@ -368,7 +368,7 @@ SequencingPipeline
               per_item: false,
               lab_activity: true
             }
-          ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+          ].each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
   end
   .tap do |pipeline|
@@ -424,7 +424,7 @@ SequencingPipeline
               per_item: false,
               lab_activity: true
             }
-          ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+          ].each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
   end
   .tap do |pipeline|
@@ -540,7 +540,7 @@ SequencingPipeline
               per_item: true,
               lab_activity: true
             }
-          ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+          ].each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
   end
   .tap do |pipeline|
@@ -585,7 +585,7 @@ SequencingPipeline
               per_item: true,
               lab_activity: true
             }
-          ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+          ].each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
   end
   .tap { |pipeline| create_request_information_types(pipeline, 'read_length', 'library_type') }
@@ -634,7 +634,7 @@ SequencingPipeline
               per_item: true,
               lab_activity: true
             }
-          ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+          ].each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
   end
   .tap do |pipeline|
@@ -689,7 +689,7 @@ SequencingPipeline
               per_item: true,
               lab_activity: true
             }
-          ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+          ].each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
   end
   .tap do |pipeline|
@@ -741,7 +741,7 @@ SequencingPipeline
               per_item: true,
               lab_activity: true
             }
-          ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+          ].each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
   end
   .tap do |pipeline|
@@ -792,7 +792,7 @@ SequencingPipeline
               per_item: false,
               lab_activity: true
             }
-          ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+          ].each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
   end
   .tap do |pipeline|
@@ -838,7 +838,7 @@ SequencingPipeline
               per_item: true,
               lab_activity: true
             }
-          ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+          ].each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
   end
   .tap do |pipeline|
@@ -911,7 +911,7 @@ SequencingPipeline
               per_item: true,
               lab_activity: true
             }
-          ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+          ].each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
   end
   .tap do |pipeline|
@@ -941,7 +941,7 @@ CherrypickPipeline.create!(name: 'Cherrypick') do |pipeline|
         [
           { class: PlateTemplateTask, name: 'Select Plate Template', sorted: 1, batched: true, lab_activity: true },
           { class: CherrypickTask, name: 'Approve Plate Layout', sorted: 2, batched: true, lab_activity: true }
-        ].each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+        ].each { |details| details.delete(:class).create!(details.merge(workflow:)) }
       end
 end
 
@@ -1232,7 +1232,7 @@ x10_requests_types =
               lab_activity: true
             }
           ].select { |task| type == '(spiked in controls)' || task[:name] != 'Add Spiked in Control' }
-            .each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+            .each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
     pipeline.request_types = v4_requests_types_pe
   end
@@ -1275,7 +1275,7 @@ x10_requests_types =
               lab_activity: true
             }
           ].select { |task| type == '(spiked in controls)' || task[:name] != 'Add Spiked in Control' }
-            .each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+            .each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
     pipeline.request_types = v4_requests_types_se
   end
@@ -1326,7 +1326,7 @@ x10_requests_types =
               lab_activity: true
             }
           ].select { |task| type == '(spiked in controls)' || task[:name] != 'Add Spiked in Control' }
-            .each { |details| details.delete(:class).create!(details.merge(workflow: workflow)) }
+            .each { |details| details.delete(:class).create!(details.merge(workflow:)) }
         end
     pipeline.request_types = x10_requests_types
   end

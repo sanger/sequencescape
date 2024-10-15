@@ -72,7 +72,7 @@ class UatActions::GenerateTagLayoutTemplate < UatActions
   end
 
   def existing_tag_layout_template
-    @existing_tag_layout_template ||= TagLayoutTemplate.find_by(name: name)
+    @existing_tag_layout_template ||= TagLayoutTemplate.find_by(name:)
   end
 
   def tag_group

@@ -6,8 +6,8 @@ require 'aasm'
 # {Pipeline}. All requests in a batch get usually processed together, although it is
 # possible for requests to get removed from a batch in a handful of cases.
 class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
-  include Api::BatchIO::Extensions
-  include Api::Messages::FlowcellIO::Extensions
+  include Api::BatchIo::Extensions
+  include Api::Messages::FlowcellIo::Extensions
   include AASM
   include SequencingQcBatch
   include Commentable
@@ -586,12 +586,12 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
         requests_to_update.concat(downstream_requests.map { |r| [r, target_asset.receptacle] })
       end
 
-      request.update!(target_asset: target_asset)
+      request.update!(target_asset:)
 
       target_asset.parents << request.asset.labware
     end
 
-    requests_to_update.each { |request, asset| request.update!(asset: asset) }
+    requests_to_update.each { |request, asset| request.update!(asset:) }
   end
   # rubocop:enable Metrics/MethodLength
 end

@@ -23,7 +23,7 @@ require 'eventful_record'
 #
 # Some of the above are further subclasses to handle specific behaviours.
 class Asset < ApplicationRecord
-  include Api::Messages::QcResultIO::AssetExtensions
+  include Api::Messages::QcResultIo::AssetExtensions
   include Event::PlateEvents
   extend EventfulRecord
 

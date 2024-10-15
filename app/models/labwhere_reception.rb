@@ -55,7 +55,11 @@ class LabwhereReception
         )
 
       unless scan.valid?
-        errors.add(:scan, scan.error)
+        # Prepend the errors with 'Labwhere' to make it clear where the error came from
+        # This is important as you can get both Sequencescape and Labwhere errors of the same type
+        # e.g. User does not exist
+        labwhere_errors = scan.errors.map { |error| "LabWhere #{error}" }
+        errors.add(:base, labwhere_errors)
         return false
       end
     rescue LabWhereClient::LabwhereException => e
@@ -65,13 +69,7 @@ class LabwhereReception
 
     assets.each do |asset|
       asset.events.create_scanned_into_lab!(location_barcode, user.login)
-      BroadcastEvent::LabwareReceived.create!(
-        seed: asset,
-        user: user,
-        properties: {
-          location_barcode: location_barcode
-        }
-      )
+      BroadcastEvent::LabwareReceived.create!(seed: asset, user: user, properties: { location_barcode: })
     end
 
     valid?

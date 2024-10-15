@@ -130,7 +130,7 @@ module Request::Statemachine
       end
     end
 
-    scope :for_state, ->(state) { where(state: state) }
+    scope :for_state, ->(state) { where(state:) }
 
     scope :completed, -> { where(state: COMPLETED_STATE) }
     scope :pending, -> { where(state: %w[pending blocked]) } # block is a kind of substate of pending }

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 class Metadata::FormBuilder < Metadata::BuilderBase
-  def initialize(*args, &block)
+  def initialize(*args, &)
     super
     view_for(:field, 'shared/metadata/edit_field')
     view_for(:radio_field, 'shared/metadata/radio_field')
@@ -104,14 +104,14 @@ class Metadata::FormBuilder < Metadata::BuilderBase
   # You can use `:to` to give the name of the field, `:when` for the single value when the fields should
   # be shown, and `:in` for a group of values.  You *must* call finalize_related_fields at the end of
   # your view to get the appropriate behaviour
-  def related_fields(options, &block) # rubocop:todo Metrics/AbcSize
+  def related_fields(options, &) # rubocop:todo Metrics/AbcSize
     options.symbolize_keys!
 
     values =
       (options.fetch(:in, Array(options[:when])) - Array(options[:not])).map do |v|
         v.to_s.downcase.gsub(/[^a-z0-9]+/, '_')
       end
-    content = capture(&block)
+    content = capture(&)
     concat(tag.div(content, class: [:related_to, options[:to], values].flatten.join(' ')))
 
     @related_fields.push(options[:to])

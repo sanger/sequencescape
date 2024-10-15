@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_dependency 'work_order'
-
 class WorkOrder
   # Builds work orders for a given submission
   # Currently only supports single request type submissions.
@@ -22,7 +20,7 @@ class WorkOrder
         .group_by(&:asset_id)
         .map do |_asset_id, requests|
           state = requests.first.state
-          WorkOrder.create!(work_order_type: work_order_type, requests: requests, state: state)
+          WorkOrder.create!(work_order_type:, requests:, state:)
         end
     end
 

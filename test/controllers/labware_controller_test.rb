@@ -6,7 +6,7 @@ class LabwareControllerTest < ActionController::TestCase
   setup do
     @controller = LabwareController.new
     @request = ActionController::TestRequest.create(@controller)
-    @user = create :admin, api_key: 'abc'
+    @user = create(:admin, api_key: 'abc')
     session[:user] = @user.id
   end
 
@@ -16,18 +16,18 @@ class LabwareControllerTest < ActionController::TestCase
     attr_reader :barcode_printer
 
     setup do
-      @user = create :user
+      @user = create(:user)
       @controller.stubs(:current_user).returns(@user)
-      @barcode_printer = create :barcode_printer
+      @barcode_printer = create(:barcode_printer)
     end
 
     should '#print_assets should send print request' do
-      asset = create :child_plate
+      asset = create(:child_plate)
       RestClient.expects(:post)
       post :print_assets, params: { printables: asset, printer: barcode_printer.name, id: asset.id.to_s }
     end
     should '#print_labels should send print request' do
-      asset = create :sample_tube
+      asset = create(:sample_tube)
       RestClient.expects(:post)
       post :print_labels,
            params: {
@@ -37,6 +37,22 @@ class LabwareControllerTest < ActionController::TestCase
              printer: barcode_printer.name,
              id: asset.id.to_s
            }
+    end
+  end
+
+  context 'logs events for retention instruction updates' do
+    attr_reader :asset
+
+    setup do
+      @asset = create(:sample_tube)
+      @controller.stubs(:current_user).returns(@user)
+    end
+
+    should '#update should log event for retention instruction updates' do
+      old_retention_instruction = @asset.retention_instruction
+      new_retention_instruction = 'destroy_after_2_years'
+      EventFactory.expects(:record_retention_instruction_updates).with(@asset, @user, old_retention_instruction)
+      put :update, params: { id: asset.id, labware: { retention_instruction: new_retention_instruction } }
     end
   end
 end

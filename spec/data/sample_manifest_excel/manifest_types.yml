@@ -175,7 +175,7 @@ plate_chromium_library:
     - :sample_ebi_accession_number
     - :donor_id
 plate_dual_index_tag_library:
-  heading: "Library plate - dual index tag plate"
+  heading: "Library Plate - dual index tag plate"
   asset_type: "library_plate"
   columns:
     - :sanger_plate_id

@@ -77,7 +77,7 @@ end
 def work_pipeline_for(submissions, name, template = nil) # rubocop:todo Metrics/CyclomaticComplexity
   raise StandardError, 'No submissions to process' if submissions.empty?
 
-  final_plate_type = PlatePurpose.find_by(name: name) or raise StandardError, "Cannot find #{name.inspect} plate type"
+  final_plate_type = PlatePurpose.find_by(name:) or raise StandardError, "Cannot find #{name.inspect} plate type"
   template ||= TransferTemplate.find_by(name: 'Pool wells based on submission') or
     raise StandardError, 'Cannot find pooling transfer template'
 
@@ -123,7 +123,7 @@ Given 'all of the wells on {plate_name} are in an asset group called {string} ow
 end
 
 Then /^all "([^"]+)" requests should have the following details:$/ do |name, table|
-  request_type = RequestType.find_by(name: name) or raise StandardError, "Could not find request type #{name.inspect}"
+  request_type = RequestType.find_by(name:) or raise StandardError, "Could not find request type #{name.inspect}"
   raise StandardError, "No requests of type #{name.inspect}" if request_type.requests.empty?
 
   results =
@@ -156,7 +156,7 @@ end
 
 Given '{plate_name} will pool into 1 tube' do |plate|
   well_count = plate.wells.count
-  stock_plate = FactoryBot.create :full_stock_plate, well_count: well_count
+  stock_plate = FactoryBot.create(:full_stock_plate, well_count:)
   stock_wells = stock_plate.wells
   submission = Submission.create!(user: FactoryBot.create(:user))
 

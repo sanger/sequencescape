@@ -4,10 +4,10 @@ require 'rails_helper'
 
 RSpec.describe SequenomQcPlatesController, :phi_x do
   describe 'GET index' do
-    let(:current_user) { create :user }
+    let(:current_user) { create(:user) }
 
     before do
-      create_list :sequenom_qc_plate, 2
+      create_list(:sequenom_qc_plate, 2)
       get :index, session: { user: current_user.id }
     end
 

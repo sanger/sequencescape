@@ -8,13 +8,13 @@ class PlatesControllerTest < ActionController::TestCase
       @controller = PlatesController.new
       @request = ActionController::TestRequest.create(@controller)
 
-      @pico_purposes = create_list :pico_assay_purpose, 2
-      @working_dilution = create_list :working_dilution_plate_purpose, 1
+      @pico_purposes = create_list(:pico_assay_purpose, 2)
+      @working_dilution = create_list(:working_dilution_plate_purpose, 1)
 
-      @pico_assay_plate_creator = FactoryBot.create :plate_creator, plate_purposes: @pico_purposes
-      @dilution_plates_creator = FactoryBot.create :plate_creator, plate_purposes: @working_dilution
+      @pico_assay_plate_creator = FactoryBot.create(:plate_creator, plate_purposes: @pico_purposes)
+      @dilution_plates_creator = FactoryBot.create(:plate_creator, plate_purposes: @working_dilution)
 
-      @barcode_printer = create :barcode_printer
+      @barcode_printer = create(:barcode_printer)
 
       PlateBarcode.stubs(:create_barcode).returns(
         build(:plate_barcode, barcode: 'SQPD-1234567'),
@@ -31,13 +31,13 @@ class PlatesControllerTest < ActionController::TestCase
 
     context 'with a logged in user' do
       setup do
-        @user = FactoryBot.create :user, barcode: 'ID100I', swipecard_code: '1234567'
+        @user = FactoryBot.create(:user, barcode: 'ID100I', swipecard_code: '1234567')
         @user.grant_administrator
         session[:user] = @user.id
 
-        @parent_plate = FactoryBot.create :plate
-        @parent_plate2 = FactoryBot.create :plate
-        @parent_plate3 = FactoryBot.create :plate
+        @parent_plate = FactoryBot.create(:plate)
+        @parent_plate2 = FactoryBot.create(:plate)
+        @parent_plate3 = FactoryBot.create(:plate)
       end
 
       context '#new' do
@@ -223,7 +223,7 @@ class PlatesControllerTest < ActionController::TestCase
 
               should 'keep the created labware persisted' do
                 barcode = @tube_rack.children.first.barcodes.first.barcode
-                assert_equal(1, Plate.joins(:barcodes).where(barcodes: { barcode: barcode }).count)
+                assert_equal(1, Plate.joins(:barcodes).where(barcodes: { barcode: }).count)
               end
 
               should set_flash[:warning].to(/Barcode labels failed to print/)
@@ -246,7 +246,7 @@ class PlatesControllerTest < ActionController::TestCase
 
           context 'with one source plate' do
             setup do
-              @well = create :well
+              @well = create(:well)
               @parent_plate.wells << [@well]
               @parent_raw_barcode = @parent_plate.machine_barcode
             end
@@ -325,7 +325,7 @@ class PlatesControllerTest < ActionController::TestCase
 
               context 'when we have 2 parents' do
                 setup do
-                  @well2 = create :well
+                  @well2 = create(:well)
                   @parent_plate2.wells << [@well2]
                   @parent2_raw_barcode = @parent_plate2.machine_barcode
                 end

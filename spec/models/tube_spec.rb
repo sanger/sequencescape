@@ -5,10 +5,10 @@ require 'timecop'
 
 describe Tube do
   describe 'scope:: in_column_major_order' do
-    let(:tube_rack) { create :tube_rack }
+    let(:tube_rack) { create(:tube_rack) }
     let(:num_tubes) { locations.length }
     let(:locations) { %w[A01 H12 D04] }
-    let(:barcodes) { Array.new(num_tubes) { create :fluidx } }
+    let(:barcodes) { Array.new(num_tubes) { create(:fluidx) } }
 
     before do
       Array.new(num_tubes) do |i|
@@ -22,7 +22,7 @@ describe Tube do
   end
 
   context 'when a tube is not in a rack' do
-    let!(:tube) { create :tube }
+    let!(:tube) { create(:tube) }
 
     it 'returns nil for the tube_rack relation' do
       expect(tube.tube_rack).to be_nil
@@ -30,8 +30,8 @@ describe Tube do
   end
 
   context 'when a tube is in a rack' do
-    let!(:tube_rack) { create :tube_rack }
-    let!(:tube) { create :tube }
+    let!(:tube_rack) { create(:tube_rack) }
+    let!(:tube) { create(:tube) }
     let!(:racked_tube) { RackedTube.create(tube_rack_id: tube_rack.id, tube_id: tube.id) }
 
     it 'destroying the Tube destroys the RackedTube too, but not the TubeRack' do
@@ -68,9 +68,9 @@ describe Tube do
   end
 
   describe '#comments' do
-    let(:tube) { create :tube }
+    let(:tube) { create(:tube) }
 
-    before { create :comment, commentable: tube, description: 'Comment on tube' }
+    before { create(:comment, commentable: tube, description: 'Comment on tube') }
 
     it 'allows comment addition' do
       tube.comments.create!(description: 'Works')
@@ -86,11 +86,11 @@ describe Tube do
     end
 
     context 'with requests' do
-      let(:submission) { create :submission }
-      let!(:request) { create :well_request, asset: tube, submission: submission }
+      let(:submission) { create(:submission) }
+      let!(:request) { create(:well_request, asset: tube, submission: submission) }
 
       before do
-        create :comment, commentable: request, description: 'Comment on request'
+        create(:comment, commentable: request, description: 'Comment on request')
         tube.reload
       end
 
@@ -110,11 +110,11 @@ describe Tube do
 
     context 'with requests in progress the wells' do
       before do
-        submission = create :submission
-        request = create :well_request, submission: submission
-        tube.receptacle.aliquots << create(:aliquot, request: request)
-        create :transfer_request, target_asset: tube, submission: submission
-        create :comment, commentable: request, description: 'Comment on request'
+        submission = create(:submission)
+        request = create(:well_request, submission:)
+        tube.receptacle.aliquots << create(:aliquot, request:)
+        create(:transfer_request, target_asset: tube, submission: submission)
+        create(:comment, commentable: request, description: 'Comment on request')
         tube.reload
       end
 
@@ -127,12 +127,12 @@ describe Tube do
 
     context 'with multiple identical comments' do
       before do
-        submission = create :submission
-        request = create :well_request, asset: tube, submission: submission
-        request2 = create :well_request, asset: tube, submission: submission
-        create :comment, commentable: request, description: 'Duplicate comment'
-        create :comment, commentable: request2, description: 'Duplicate comment'
-        create :comment, commentable: tube, description: 'Duplicate comment'
+        submission = create(:submission)
+        request = create(:well_request, asset: tube, submission: submission)
+        request2 = create(:well_request, asset: tube, submission: submission)
+        create(:comment, commentable: request, description: 'Duplicate comment')
+        create(:comment, commentable: request2, description: 'Duplicate comment')
+        create(:comment, commentable: tube, description: 'Duplicate comment')
         tube.reload
       end
 

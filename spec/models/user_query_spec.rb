@@ -4,7 +4,7 @@ require 'rails_helper'
 require 'timecop'
 
 describe UserQuery do
-  let!(:user) { create :user, login: 'login', email: 'login@example.com' }
+  let!(:user) { create(:user, login: 'login', email: 'login@example.com') }
   let!(:user_query_attributes) do
     {
       user_email: 'another_email@example.com',

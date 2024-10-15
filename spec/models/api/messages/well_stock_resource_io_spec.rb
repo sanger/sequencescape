@@ -3,23 +3,25 @@
 require 'rails_helper'
 require 'timecop'
 
-RSpec.describe Api::Messages::WellStockResourceIO do
+RSpec.describe Api::Messages::WellStockResourceIo do
   subject { described_class.to_hash(well) }
 
   before { Timecop.freeze(Time.zone.parse('2012-03-11 10:22:42')) } # rubocop:todo RSpec/ScatteredSetup
 
   after { Timecop.return }
 
-  let(:sample) { create :sample }
+  let(:sample) { create(:sample) }
   let(:plate_barcode) { build(:plate_barcode) }
   let(:well) do
-    create :well,
-           map: Map.find_by!(description: 'A1', asset_shape: AssetShape.default, asset_size: 96),
-           plate: create(:plate, barcode: plate_barcode.barcode),
-           well_attribute: create(:complete_well_attribute)
+    create(
+      :well,
+      map: Map.find_by!(description: 'A1', asset_shape: AssetShape.default, asset_size: 96),
+      plate: create(:plate, barcode: plate_barcode.barcode),
+      well_attribute: create(:complete_well_attribute)
+    )
   end
-  let(:study) { create :study }
-  let(:aliquot) { create :aliquot, study: study, sample: sample, receptacle: well }
+  let(:study) { create(:study) }
+  let(:aliquot) { create(:aliquot, study: study, sample: sample, receptacle: well) }
 
   before { aliquot } # rubocop:todo RSpec/ScatteredSetup
 

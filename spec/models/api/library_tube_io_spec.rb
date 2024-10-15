@@ -2,16 +2,16 @@
 
 require 'rails_helper'
 
-RSpec.describe Api::LibraryTubeIO do
+RSpec.describe Api::LibraryTubeIo do
   subject do
-    create :empty_library_tube, public_name: 'ABC', closed: false, aliquots: aliquots, volume: 12.0, concentration: 8.0
+    create(:empty_library_tube, public_name: 'ABC', closed: false, aliquots: aliquots, volume: 12.0, concentration: 8.0)
   end
 
-  let(:sample) { create :sample }
-  let(:tag) { create :tag }
+  let(:sample) { create(:sample) }
+  let(:tag) { create(:tag) }
   let(:aliquots) { [create(:aliquot, sample: sample, tag: tag, library_type: 'Standard')] }
 
-  let!(:library_request) { create :library_creation_request, target_asset: subject }
+  let!(:library_request) { create(:library_creation_request, target_asset: subject) }
 
   let(:expected_json) do
     {

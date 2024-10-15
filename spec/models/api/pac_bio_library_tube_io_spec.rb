@@ -2,19 +2,21 @@
 
 require 'rails_helper'
 
-RSpec.describe Api::PacBioLibraryTubeIO do
+RSpec.describe Api::PacBioLibraryTubeIo do
   subject do
-    create :pac_bio_library_tube,
-           :scanned_into_lab,
-           concentration: 8.0,
-           volume: 12.0,
-           pac_bio_library_tube_metadata_attributes: {
-             prep_kit_barcode: 999,
-             binding_kit_barcode: 233,
-             smrt_cells_available: 5,
-             movie_length: 100,
-             protocol: 'xyzzy'
-           }
+    create(
+      :pac_bio_library_tube,
+      :scanned_into_lab,
+      concentration: 8.0,
+      volume: 12.0,
+      pac_bio_library_tube_metadata_attributes: {
+        prep_kit_barcode: 999,
+        binding_kit_barcode: 233,
+        smrt_cells_available: 5,
+        movie_length: 100,
+        protocol: 'xyzzy'
+      }
+    )
   end
 
   let(:expected_json) do

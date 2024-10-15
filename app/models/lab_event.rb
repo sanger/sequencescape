@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require_dependency 'broadcast_event/lab_event'
 
 # Lab events are created as part of the traditional Sequencescape based pipelines
 # they track the information supplied in each step, mostly in the form of descriptors:
@@ -35,7 +34,7 @@ class LabEvent < ApplicationRecord
   end
 
   def add_new_descriptor(name, value)
-    add_descriptor Descriptor.new(name: name, value: value)
+    add_descriptor Descriptor.new(name:, value:)
   end
 
   def generate_broadcast_event

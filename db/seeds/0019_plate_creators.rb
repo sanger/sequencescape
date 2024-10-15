@@ -42,7 +42,7 @@ ActiveRecord::Base.transaction do
 
   # Additional plate purposes required
   ['Pico dilution', 'Working dilution'].each do |name|
-    plate_purpose = PlatePurpose.find_by!(name: name)
+    plate_purpose = PlatePurpose.find_by!(name:)
     Plate::Creator.create!(name: name, plate_purposes: [plate_purpose])
   end
 
@@ -64,7 +64,7 @@ ActiveRecord::Base.transaction do
 
   # Valid options: Dilution Factors:
   [['Working dilution', [12.5, 20.0, 15.0, 50.0]], ['Pico dilution', [4.0]]].each do |name, values|
-    c = Plate::Creator.find_by!(name: name)
+    c = Plate::Creator.find_by!(name:)
     c.update!(valid_options: { valid_dilution_factors: values })
   end
   Plate::Creator.find_each do |c|

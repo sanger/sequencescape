@@ -7,7 +7,7 @@ RSpec.describe BroadcastEvent::SequencingComplete, :broadcast_event do
   let(:study) { create(:study) }
   let(:project) { create(:project) }
   let(:sample) { create(:sample) }
-  let(:aliquot) { create(:aliquot, study: study, project: project, sample: sample) }
+  let(:aliquot) { create(:aliquot, study:, project:, sample:) }
   let(:pipeline) { create(:pipeline) }
   let(:submission) { create(:submission_without_order, priority: 3) }
   let(:request_type) { create(:sequencing_request_type, product_line: create(:product_line)) }
@@ -17,7 +17,7 @@ RSpec.describe BroadcastEvent::SequencingComplete, :broadcast_event do
       :sequencing_request_with_assets,
       project: nil,
       study: nil,
-      batch: create(:batch, pipeline: pipeline),
+      batch: create(:batch, pipeline:),
       request_type: request_type,
       submission: submission,
       target_asset: lane,

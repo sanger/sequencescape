@@ -184,16 +184,16 @@ plate_library:
     - :sample_ebi_accession_number
     - :donor_id
     - :primer_panel
-plate_chromium_library:
-  heading: "Chromium Library Plate"
+plate_dual_index_tag_library:
+  heading: "Library Plate - dual index tag plate"
   asset_type: "library_plate"
   columns:
     - :sanger_plate_id
     - :well
     - :sanger_sample_id
     - :supplier_name
-    - :chromium_tag_group
-    - :chromium_tag_well
+    - :dual_index_tag_set
+    - :dual_index_tag_well
     - :reference_genome
     - :library_type
     - :insert_size_from
@@ -241,16 +241,16 @@ plate_chromium_library:
     - :disease
     - :sample_ebi_accession_number
     - :donor_id
-plate_dual_index_tag_library:
-  heading: "Library plate - dual index tag plate"
+plate_chromium_library:
+  heading: "Chromium Library Plate"
   asset_type: "library_plate"
   columns:
     - :sanger_plate_id
     - :well
     - :sanger_sample_id
     - :supplier_name
-    - :dual_index_tag_set
-    - :dual_index_tag_well
+    - :chromium_tag_group
+    - :chromium_tag_well
     - :reference_genome
     - :library_type
     - :insert_size_from

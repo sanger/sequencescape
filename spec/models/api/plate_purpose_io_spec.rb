@@ -2,8 +2,8 @@
 
 require 'rails_helper'
 
-RSpec.describe Api::PlatePurposeIO do
-  subject { create :plate_purpose }
+RSpec.describe Api::PlatePurposeIo do
+  subject { create(:plate_purpose) }
 
   let(:expected_json) { { 'uuid' => subject.uuid, 'internal_id' => subject.id, 'name' => subject.name } }
 

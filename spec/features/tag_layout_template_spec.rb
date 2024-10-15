@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe 'Create a new tag layout template' do
-  let(:user) { create :admin }
+  let(:user) { create(:admin) }
   let(:tag_group_1) { create(:tag_group_with_tags, name: 'Test tag group 1') }
   let(:tag_group_2) { create(:tag_group_with_tags, name: 'Test tag group 2') }
   let(:tag_set_1) { create(:tag_set, name: 'Test tag set 1') }

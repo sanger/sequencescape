@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
-require './spec/requests/api/v2/shared_examples/invalid_post_requests'
+require './spec/requests/api/v2/shared_examples/post_requests'
 
 describe 'Transfer API', with: :api_v2 do
   let(:base_endpoint) { '/api/v2/transfers/transfers' }
@@ -11,7 +11,7 @@ describe 'Transfer API', with: :api_v2 do
   it_behaves_like 'ApiKeyAuthenticatable'
 
   context 'with a list of Transfers' do
-    let!(:transfers) { create_list(:transfer_between_plates, 5) }
+    before { create_list(:transfer_between_plates, 5) }
 
     describe '#get all Transfers' do
       before { api_get base_endpoint }
@@ -26,25 +26,58 @@ describe 'Transfer API', with: :api_v2 do
     end
 
     describe '#get Transfer by ID' do
-      let(:transfer) { transfers.first }
+      context 'with all relationships' do
+        let(:transfer) { create(:transfer_between_plates) }
 
-      before { api_get "#{base_endpoint}/#{transfer.id}" }
+        before { api_get "#{base_endpoint}/#{transfer.id}" }
 
-      it 'responds with a success http code' do
-        expect(response).to have_http_status(:success)
+        it 'responds with a success http code' do
+          expect(response).to have_http_status(:success)
+        end
+
+        it 'returns the Transfer' do
+          expect(json.dig('data', 'id')).to eq(transfer.id.to_s)
+          expect(json.dig('data', 'type')).to eq('between_plates')
+          expect(json.dig('data', 'attributes', 'uuid')).to eq(transfer.uuid)
+          expect(json.dig('data', 'attributes', 'user_uuid')).to eq(transfer.user.uuid)
+          expect(json.dig('data', 'attributes', 'source_uuid')).to eq(transfer.source.uuid)
+          expect(json.dig('data', 'attributes', 'destination_uuid')).to eq(transfer.destination.uuid)
+          expect(json.dig('data', 'attributes', 'transfers')).to eq(transfer.transfers)
+
+          # We don't want to see the TransferTemplate UUID as it's not fetchable.
+          expect(json.dig('data', 'attributes', 'transfer_template_uuid')).not_to be_present
+        end
       end
 
-      it 'returns the Transfer' do
-        expect(json.dig('data', 'id')).to eq(transfer.id.to_s)
-        expect(json.dig('data', 'type')).to eq('between_plates')
-        expect(json.dig('data', 'attributes', 'uuid')).to eq(transfer.uuid)
-        expect(json.dig('data', 'attributes', 'user_uuid')).to eq(transfer.user.uuid)
-        expect(json.dig('data', 'attributes', 'source_uuid')).to eq(transfer.source.uuid)
-        expect(json.dig('data', 'attributes', 'destination_uuid')).to eq(transfer.destination.uuid)
-        expect(json.dig('data', 'attributes', 'transfers')).to eq(transfer.transfers)
+      # Some old data may not have a User relationship even though it's required for new records.
+      context 'without a User relationship' do
+        let(:transfer) { create(:transfer_between_plates) }
 
-        # We don't want to see the TransferTemplate UUID as it's not fetchable.
-        expect(json.dig('data', 'attributes', 'transfer_template_uuid')).not_to be_present
+        before do
+          # We need to remove the user relationship without invoking validations.
+          # The validations prevent new records from being created without a User.
+          transfer.user = nil
+          transfer.save(validate: false)
+
+          api_get "#{base_endpoint}/#{transfer.id}"
+        end
+
+        it 'responds with a success http code' do
+          expect(response).to have_http_status(:success)
+        end
+
+        it 'returns the Transfer' do
+          expect(json.dig('data', 'id')).to eq(transfer.id.to_s)
+          expect(json.dig('data', 'type')).to eq('between_plates')
+          expect(json.dig('data', 'attributes', 'uuid')).to eq(transfer.uuid)
+          expect(json.dig('data', 'attributes', 'user_uuid')).not_to be_present
+          expect(json.dig('data', 'attributes', 'source_uuid')).to eq(transfer.source.uuid)
+          expect(json.dig('data', 'attributes', 'destination_uuid')).to eq(transfer.destination.uuid)
+          expect(json.dig('data', 'attributes', 'transfers')).to eq(transfer.transfers)
+
+          # We don't want to see the TransferTemplate UUID as it's not fetchable.
+          expect(json.dig('data', 'attributes', 'transfer_template_uuid')).not_to be_present
+        end
       end
     end
   end
@@ -132,23 +165,23 @@ describe 'Transfer API', with: :api_v2 do
 
       context 'without user_uuid' do
         let(:attribute_to_remove) { 'user_uuid' }
-        let(:missing_attribute) { 'user' }
+        let(:error_detail_message) { "user - can't be blank" }
 
-        it_behaves_like 'a POST request with a missing attribute'
+        it_behaves_like 'an unprocessable POST request with a specific error'
       end
 
       context 'without source_uuid' do
         let(:attribute_to_remove) { 'source_uuid' }
-        let(:missing_attribute) { 'source' }
+        let(:error_detail_message) { "source - can't be blank" }
 
-        it_behaves_like 'a POST request with a missing attribute'
+        it_behaves_like 'an unprocessable POST request with a specific error'
       end
 
       context 'without destination_uuid' do
         let(:attribute_to_remove) { 'destination_uuid' }
-        let(:missing_attribute) { 'destination' }
+        let(:error_detail_message) { "destination - can't be blank" }
 
-        it_behaves_like 'a POST request with a missing attribute'
+        it_behaves_like 'an unprocessable POST request with a specific error'
       end
     end
 

@@ -1,8 +1,7 @@
 # frozen_string_literal: true
-require_dependency 'tube/purpose'
 
 class LibraryTube < Tube
-  include Api::LibraryTubeIO::Extensions
+  include Api::LibraryTubeIo::Extensions
   include ModelExtensions::LibraryTube
   include Asset::SharedLibraryTubeBehaviour
 
@@ -29,5 +28,3 @@ class LibraryTube < Tube
 
   extend Asset::Stock::CanCreateStockAsset
 end
-
-require_dependency 'spiked_buffer'

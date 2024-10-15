@@ -79,7 +79,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton # rubocop:to
   def orders
     return [] if submission.blank?
 
-    submission.try(:orders).map { |o| OrderPresenter.new(o) }
+    submission.try(:orders).map { |o| Submission::OrderPresenter.new(o) }
   end
 
   def project
@@ -243,7 +243,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton # rubocop:to
   # This is a legacy of the old controller...
   def find_samples_from_text(sample_text)
     names = sample_text.split(/\s+/)
-    samples = Sample.includes(:assets).where(['name IN (:names) OR sanger_sample_id IN (:names)', { names: names }])
+    samples = Sample.includes(:assets).where(['name IN (:names) OR sanger_sample_id IN (:names)', { names: }])
 
     name_set = Set.new(names)
     found_set = Set.new(samples.map { |s| [s.name, s.sanger_sample_id] }.flatten)

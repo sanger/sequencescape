@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 class SampleTube < Tube
-  include Api::SampleTubeIO::Extensions
+  include Api::SampleTubeIo::Extensions
   include ModelExtensions::SampleTube
   include StandardNamedScopes
 
-  self.stock_message_template = 'TubeStockResourceIO'
+  self.stock_message_template = 'TubeStockResourceIo'
 
   before_create :generate_barcode, unless: :primary_barcode
   after_create :generate_name_from_aliquots, unless: :name?

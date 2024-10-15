@@ -41,8 +41,8 @@ class SampleManifest::Generator
       LabelPrinter::PrintJob.new(
         params[:barcode_printer],
         LabelPrinter::Label::SampleManifestRedirect,
-        only_first_label: only_first_label,
-        sample_manifest: sample_manifest
+        only_first_label:,
+        sample_manifest:
       )
   end
 
@@ -97,10 +97,10 @@ class SampleManifest::Generator
 
   def attributes
     params.except(:template, :barcode_printer, :only_first_label).merge(
-      user: user,
-      asset_type: asset_type,
-      rows_per_well: rows_per_well,
-      invalid_wells: invalid_wells
+      user:,
+      asset_type:,
+      rows_per_well:,
+      invalid_wells:
     )
   end
 

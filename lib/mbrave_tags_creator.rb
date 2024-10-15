@@ -26,9 +26,9 @@ class MbraveTagsCreator
     @yaml_contents = {}
   end
 
-  def log_line(&block)
+  def log_line(&)
     # We want to enforce that logs go to STDOUT while printing the barcodes
-    self.class.log_line(&block)
+    self.class.log_line(&)
   end
 
   def self.log_line
@@ -176,7 +176,7 @@ class MbraveTagsCreator
     # rubocop:enable Metrics/AbcSize
 
     def process_create_tag_plates(login, version)
-      user = User.find_by!(login: login)
+      user = User.find_by!(login:)
 
       tag_layout_templates =
         TagLayoutTemplate.select do |template|

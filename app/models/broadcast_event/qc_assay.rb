@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_dependency 'qc_assay'
-
 # Serializes lab events for the event warehouse
 class BroadcastEvent::QcAssay < BroadcastEvent
   seed_class ::QcAssay
@@ -13,9 +11,7 @@ class BroadcastEvent::QcAssay < BroadcastEvent
       .qc_results
       .distinct
       .pluck(:assay_type, :assay_version)
-      .map do |assay_type, assay_version|
-        create!(seed: qc_assay, properties: { assay_type: assay_type, assay_version: assay_version })
-      end
+      .map { |assay_type, assay_version| create!(seed: qc_assay, properties: { assay_type:, assay_version: }) }
   end
 
   has_subjects(:sample) { |_qc_assay, event| event.samples }

@@ -4,7 +4,7 @@
 require 'spec_helper'
 
 RSpec.describe AbilityAnalysis do
-  subject(:ability_analysis) { described_class.new(roles: roles, ability: ability, permissions: permissions) }
+  subject(:ability_analysis) { described_class.new(roles:, ability:, permissions:) }
 
   let(:roles) { %w[role_a role_b] }
   let(:permissions) { { 'Study' => %i[edit read], 'Project' => %i[edit read] } }

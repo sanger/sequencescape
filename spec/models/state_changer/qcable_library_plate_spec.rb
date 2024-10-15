@@ -15,7 +15,7 @@ RSpec.describe StateChanger::QcableLibraryPlate do
   end
   let(:labware) { instance_double('Plate', wells: [well]) } # rubocop:todo RSpec/VerifiedDoubleReference
   let(:well) { instance_double('Well', aliquots: [aliquot]) } # rubocop:todo RSpec/VerifiedDoubleReference
-  let(:user) { build_stubbed :user }
+  let(:user) { build_stubbed(:user) }
   let(:contents) { [] }
   let(:customer_accepts_responsibility) { false }
   let(:aliquot) do

@@ -2,11 +2,11 @@
 
 require 'rails_helper'
 
-RSpec.describe Api::StudySampleIO do
-  subject { create :study_sample, study: study, sample: sample }
+RSpec.describe Api::StudySampleIo do
+  subject { create(:study_sample, study:, sample:) }
 
-  let(:study) { create :study }
-  let(:sample) { create :sample }
+  let(:study) { create(:study) }
+  let(:sample) { create(:sample) }
 
   let(:expected_json) do
     {

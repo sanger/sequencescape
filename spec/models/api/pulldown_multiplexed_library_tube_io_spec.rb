@@ -2,8 +2,8 @@
 
 require 'rails_helper'
 
-RSpec.describe Api::PulldownMultiplexedLibraryTubeIO do
-  subject { create :pulldown_multiplexed_library_tube, volume: 12.0, concentration: 8.0 }
+RSpec.describe Api::PulldownMultiplexedLibraryTubeIo do
+  subject { create(:pulldown_multiplexed_library_tube, volume: 12.0, concentration: 8.0) }
 
   let(:expected_json) do
     {

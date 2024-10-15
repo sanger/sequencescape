@@ -7,7 +7,7 @@ class Tube < Labware
   include Asset::Ownership::Unowned
   include Transfer::Associations
   include Transfer::State::TubeState
-  include Api::Messages::QcResultIO::TubeExtensions
+  include Api::Messages::QcResultIo::TubeExtensions
   include SingleReceptacleLabware
 
   extend QcFile::Associations
@@ -83,7 +83,7 @@ class Tube < Labware
     comments.add_comment_to_submissions(comment)
   end
 
-  def self.create_with_barcode!(*args, &block)
+  def self.create_with_barcode!(*args, &)
     attributes = args.extract_options!.symbolize_keys
 
     barcode, prefix = extract_barcode(args, attributes)
@@ -94,7 +94,7 @@ class Tube < Labware
     # this is to control the order of barcode addition so that it gets set as the 'primary' barcode
     foreign_barcode = attributes.delete(:foreign_barcode)
 
-    tube = create!(attributes.merge(sanger_barcode: { prefix: prefix, number: barcode }), &block)
+    tube = create!(attributes.merge(sanger_barcode: { prefix: prefix, number: barcode }), &)
 
     tube.foreign_barcode = foreign_barcode if foreign_barcode
     tube.reload
@@ -115,6 +115,7 @@ def validate_barcode(barcode, prefix)
   raise "Barcode: #{barcode} already used!" if Barcode.exists?(barcode: human)
 end
 
+# Required for the descendants method to work when eager loading is off in test
 require_dependency 'sample_tube'
 require_dependency 'library_tube'
 require_dependency 'qc_tube'

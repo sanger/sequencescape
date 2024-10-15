@@ -4,18 +4,20 @@ require 'rails_helper'
 require './spec/features/shared_examples/sequencing'
 
 RSpec.describe 'Following a Sequencing Pipeline', :js do
-  let(:user) { create :user }
+  let(:user) { create(:user) }
   let(:pipeline) { create(:sequencing_pipeline, :with_workflow) }
 
-  let(:spiked_buffer) { create :spiked_buffer, :tube_barcode }
+  let(:spiked_buffer) { create(:spiked_buffer, :tube_barcode) }
   let(:requests) do
-    asset = create :multiplexed_library_tube, :scanned_into_lab, sample_count: 2
-    create_list :sequencing_request_with_assets,
-                2,
-                request_type: pipeline.request_types.first,
-                asset: asset,
-                target_asset: nil,
-                submission: create(:submission)
+    asset = create(:multiplexed_library_tube, :scanned_into_lab, sample_count: 2)
+    create_list(
+      :sequencing_request_with_assets,
+      2,
+      request_type: pipeline.request_types.first,
+      asset: asset,
+      target_asset: nil,
+      submission: create(:submission)
+    )
   end
 
   before { requests }
@@ -25,14 +27,14 @@ RSpec.describe 'Following a Sequencing Pipeline', :js do
   end
 
   context 'with one lane of pre-added PhiX' do
-    let(:existing_spiked_buffer) { create :spiked_buffer, :tube_barcode }
+    let(:existing_spiked_buffer) { create(:spiked_buffer, :tube_barcode) }
     let(:with_phi_x) do
-      tube = create :multiplexed_library_tube, :scanned_into_lab, sample_count: 2
+      tube = create(:multiplexed_library_tube, :scanned_into_lab, sample_count: 2)
       tube.parents << existing_spiked_buffer
       tube
     end
     let(:requests) do
-      no_phi_x = create :multiplexed_library_tube, :scanned_into_lab, sample_count: 2
+      no_phi_x = create(:multiplexed_library_tube, :scanned_into_lab, sample_count: 2)
       [
         create(
           :sequencing_request_with_assets,
@@ -114,31 +116,35 @@ RSpec.describe 'Following a Sequencing Pipeline', :js do
 
   context 'when a batch has been created' do
     let(:batch) do
-      create :batch, pipeline: pipeline, requests: pipeline.requests, state: 'released', updated_at: 1.day.ago
+      create(:batch, pipeline: pipeline, requests: pipeline.requests, state: 'released', updated_at: 1.day.ago)
     end
 
-    let!(:flowcell_message) { Messenger.create!(target: batch, template: 'FlowcellIO', root: 'flowcell') }
+    let!(:flowcell_message) { Messenger.create!(target: batch, template: 'FlowcellIo', root: 'flowcell') }
 
     before do
       batch.requests.each_with_index do |request, i|
-        create :lab_event,
-               eventful: request,
-               batch: batch,
-               user: user,
-               description: 'Specify Dilution Volume',
-               descriptors: {
-                 'Concentration' => (1.2 + i).to_s
-               }
-        create :lab_event,
-               eventful: request,
-               batch: batch,
-               user: user,
-               description: 'Set descriptors',
-               descriptors: {
-                 'Workflow (Standard or Xp)' => 'XP',
-                 'Lane loading concentration (pM)' => '23',
-                 '+4 field of weirdness' => "Something else #{i}"
-               }
+        create(
+          :lab_event,
+          eventful: request,
+          batch: batch,
+          user: user,
+          description: 'Specify Dilution Volume',
+          descriptors: {
+            'Concentration' => (1.2 + i).to_s
+          }
+        )
+        create(
+          :lab_event,
+          eventful: request,
+          batch: batch,
+          user: user,
+          description: 'Set descriptors',
+          descriptors: {
+            'Workflow (Standard or Xp)' => 'XP',
+            'Lane loading concentration (pM)' => '23',
+            '+4 field of weirdness' => "Something else #{i}"
+          }
+        )
         lane = create(:lane)
         request.update(target_asset: lane)
         lane.labware.parents << spiked_buffer
@@ -248,7 +254,7 @@ RSpec.describe 'Following a Sequencing Pipeline', :js do
       login_user(user)
       visit batch_path(batch)
       expect(page).to have_content('Fail batch or requests')
-      expect(page).not_to have_content('Batches can not be failed when pending')
+      expect(page).to have_no_content('Batches can not be failed when pending')
     end
   end
 end

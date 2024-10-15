@@ -94,7 +94,7 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
     alias create_order! create!
 
     def render_class
-      Api::OrderIO
+      Api::OrderIo
     end
   end
 
@@ -198,9 +198,9 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
     matching_orders =
       Order
         .containing_samples(all_samples)
-        .where(template_name: template_name)
+        .where(template_name:)
         .includes(:submission, assets: :samples)
-        .where.not(orders: { id: id })
+        .where.not(orders: { id: })
         .where('orders.created_at > ?', Time.current - timespan)
     return false if matching_orders.empty?
 

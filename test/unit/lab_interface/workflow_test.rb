@@ -8,13 +8,13 @@ class WorkflowTest < ActiveSupport::TestCase
     should belong_to :pipeline
 
     setup do
-      pipeline = create :pipeline, name: 'Pipeline for WorkflowTest'
+      pipeline = create(:pipeline, name: 'Pipeline for WorkflowTest')
       @workflow = pipeline.workflow
       @workflow.update!(name: 'Workflow for WorkflowTest')
 
-      task = create :task, workflow: @workflow
-      create :descriptor, task: task, name: 'prop', value: 'something', key: 'something'
-      create :descriptor, task: task, name: 'prop_2', value: 'upstairs', key: 'upstairs'
+      task = create(:task, workflow: @workflow)
+      create(:descriptor, task: task, name: 'prop', value: 'something', key: 'something')
+      create(:descriptor, task: task, name: 'prop_2', value: 'upstairs', key: 'upstairs')
     end
 
     subject { @workflow }

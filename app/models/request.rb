@@ -8,7 +8,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Include
   include ModelExtensions::Request
   include Aliquot::DeprecatedBehaviours::Request
-  include Api::RequestIO::Extensions
+  include Api::RequestIo::Extensions
   include Uuid::Uuidable
   include AASM
   include AASM::Extensions
@@ -342,7 +342,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def self.number_expected_for_submission_id_and_request_type_id(submission_id, request_type_id)
-    Request.where(submission_id: submission_id, request_type_id: request_type_id)
+    Request.where(submission_id:, request_type_id:)
   end
 
   def self.accessioning_required?
@@ -366,13 +366,13 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def project_id=(project_id)
-    raise RuntimeError, 'Initial project already set' if initial_project_id
+    raise 'Initial project already set' if initial_project_id
 
     self.initial_project_id = project_id
   end
 
   def submission_plate_count
-    submission.requests.where(request_type_id: request_type_id).joins(:source_labware).distinct.count('labware.id')
+    submission.requests.where(request_type_id:).joins(:source_labware).distinct.count('labware.id')
   end
 
   def update_responsibilities!
@@ -386,7 +386,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def study_id=(study_id)
-    raise RuntimeError, 'Initial study already set' if initial_study_id
+    raise 'Initial study already set' if initial_study_id
 
     self.initial_study_id = study_id
   end
@@ -517,7 +517,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def update_priority
     priority = (self.priority + 1) % 4
-    submission.update!(priority: priority)
+    submission.update!(priority:)
   end
 
   def priority
@@ -575,5 +575,3 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
     safe_order&.next_request_type_id(request_type_id)
   end
 end
-
-require_dependency 'system_request'

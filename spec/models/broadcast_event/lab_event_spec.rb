@@ -11,24 +11,31 @@ RSpec.describe BroadcastEvent::LabEvent, :broadcast_event do
 
   let(:json) { JSON.parse(subject.to_json) }
   let(:eventful) { request }
-  let(:batch) { create :sequencing_batch }
-  let(:study) { create :study }
+  let(:batch) { create(:sequencing_batch) }
+  let(:study) { create(:study) }
   let!(:request) do
-    create :sequencing_request_with_assets, batch: batch, request_type: batch.pipeline.request_types.first, study: study
+    create(
+      :sequencing_request_with_assets,
+      batch: batch,
+      request_type: batch.pipeline.request_types.first,
+      study: study
+    )
   end
   let(:sample) { request.asset.samples.first }
   let(:stock_asset) { request.asset.labware }
 
   let(:lab_event) do
-    create :lab_event,
-           description: 'Read 1 Lin/block/hyb/load',
-           descriptors: {
-             'key_a' => 'value a',
-             'key_b' => 'value b'
-           },
-           eventful: eventful
+    create(
+      :lab_event,
+      description: 'Read 1 Lin/block/hyb/load',
+      descriptors: {
+        'key_a' => 'value a',
+        'key_b' => 'value b'
+      },
+      eventful: eventful
+    )
   end
-  let(:user) { create :user }
+  let(:user) { create(:user) }
 
   it 'generates json' do
     expect(json).not_to be_nil
@@ -103,7 +110,7 @@ RSpec.describe BroadcastEvent::LabEvent, :broadcast_event do
   end
 
   context 'from a non-sequencing batch' do
-    let(:eventful) { create :batch }
+    let(:eventful) { create(:batch) }
 
     it 'includes the expected subjects' do
       expect(json.dig('event', 'subjects')).to match_unordered_json([])

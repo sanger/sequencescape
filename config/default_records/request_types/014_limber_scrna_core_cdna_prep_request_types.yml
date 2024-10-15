@@ -1,0 +1,40 @@
+# Request type for scRNA Core 'Donor Pooling' and 'cDNA Prep' submission.
+# There is only one request type for this submission.
+# - asset_type is the type of asset that is being requested.
+# - acceptable_purposes is where the request type can be used.
+#
+---
+limber_scrna_core_cdna_prep_gem_x_5p:
+  name: scRNA Core cDNA Prep GEM-X 5p
+  asset_type: SampleTube
+  order: 1
+  request_class_name: PbmcPoolingCustomerRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: Short Read
+  acceptable_purposes:
+    - LRC Bank Seq
+    - LRC Bank Spare
+    - LRC Bank Input
+limber_scrna_core_cdna_prep_gem_x_5p_pbmc_pools_input:
+  name: scRNA Core cDNA Prep GEM-X 5p PBMC Pools Input
+  asset_type: Well
+  order: 1
+  request_class_name: CustomerRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: Short Read
+  acceptable_purposes:
+    - LRC PBMC Pools Input
+limber_scrna_core_aggregation:
+  name: scRNA Core Aggregation
+  asset_type: Well
+  order: 1
+  request_class_name: CustomerRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: Short Read
+  # NB. alternate faculty input plate route here as well as standard route
+  acceptable_purposes:
+    - LRC GEM-X 5p cDNA PCR XP
+    - LRC GEM-X 5p cDNA Input

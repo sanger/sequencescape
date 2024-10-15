@@ -22,7 +22,7 @@ describe CompoundSampleHelper do
     end
 
     context 'when a compound sample already exists' do
-      let!(:compound_sample) { create(:sample, component_samples: component_samples) }
+      let!(:compound_sample) { create(:sample, component_samples:) }
 
       it 'does not create a new compound sample' do
         expect { helper.find_or_create_compound_sample(study, component_samples) }.not_to change(Sample, :count)

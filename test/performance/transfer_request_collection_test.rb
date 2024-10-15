@@ -18,7 +18,7 @@ class TransferRequestCollectionTest < ActionDispatch::PerformanceTest
     target_asset = FactoryBot.create_list(:empty_well, SIZE)
     @transfer_requests_attributes =
       Array.new(SIZE) { |i| { source_asset: asset[i].uuid, target_asset: target_asset[i].uuid } }
-    @user = FactoryBot.create :user
+    @user = FactoryBot.create(:user)
     @api_key = FactoryBot.create(:api_application).key
   end
 

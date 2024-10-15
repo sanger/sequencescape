@@ -2,10 +2,10 @@
 
 require 'rails_helper'
 
-RSpec.describe Api::SubmissionIO do
-  subject { create :submission, user: user }
+RSpec.describe Api::SubmissionIo do
+  subject { create(:submission, user:) }
 
-  let(:user) { create :user }
+  let(:user) { create(:user) }
 
   let(:expected_json) do
     {

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Generates messages for the barcode warehouse summarising barcodes
-class Api::Messages::BarcodeIO < Api::Base
+class Api::Messages::BarcodeIo < Api::Base
   renders_model(::Barcode)
 
   with_association(:asset) do

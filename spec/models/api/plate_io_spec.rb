@@ -2,10 +2,10 @@
 
 require 'rails_helper'
 
-RSpec.describe Api::PlateIO do
-  subject { create :plate, plate_purpose: purpose }
+RSpec.describe Api::PlateIo do
+  subject { create(:plate, plate_purpose: purpose) }
 
-  let(:purpose) { create :plate_purpose }
+  let(:purpose) { create(:plate_purpose) }
 
   let(:expected_json) do
     {
@@ -22,7 +22,7 @@ RSpec.describe Api::PlateIO do
   it_behaves_like('an IO object')
 
   context 'with an infinium barcode' do
-    subject { create :plate, plate_purpose: purpose, infinium_barcode: 'WG1234567-DNA' }
+    subject { create(:plate, plate_purpose: purpose, infinium_barcode: 'WG1234567-DNA') }
 
     let(:expected_json) do
       { 'uuid' => subject.uuid, 'id' => subject.id, 'name' => subject.name, 'infinium_barcode' => 'WG1234567-DNA' }
@@ -32,7 +32,7 @@ RSpec.describe Api::PlateIO do
   end
 
   context 'with an fluidigm barcode' do
-    subject { create :plate, plate_purpose: purpose, fluidigm_barcode: '1234567890' }
+    subject { create(:plate, plate_purpose: purpose, fluidigm_barcode: '1234567890') }
 
     let(:expected_json) do
       { 'uuid' => subject.uuid, 'id' => subject.id, 'name' => subject.name, 'fluidigm_barcode' => '1234567890' }

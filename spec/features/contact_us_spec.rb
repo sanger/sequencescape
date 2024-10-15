@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 describe 'Contact us' do
-  let(:user) { create :user, email: 'login@example.com' }
+  let(:user) { create(:user, email: 'login@example.com') }
 
   it 'user can ask for help' do
     number_of_mails = ActionMailer::Base.deliveries.count

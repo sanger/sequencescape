@@ -2,8 +2,8 @@
 
 require 'rails_helper'
 
-RSpec.describe Api::LaneIO do
-  subject { create :lane }
+RSpec.describe Api::LaneIo do
+  subject { create(:lane) }
 
   let(:expected_json) do
     {

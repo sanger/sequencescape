@@ -1,6 +1,4 @@
 # frozen_string_literal: true
-# Enables the bulk creation of the asset links defined by the pairs passed as edges.
-require_dependency 'asset_link'
 
 # An AssetLink::BuilderJob receives an array of [parent_id, child_id] and builds asset links between them
 # @return []

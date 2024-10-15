@@ -2,19 +2,19 @@
 
 require 'rails_helper'
 
-RSpec.describe Api::Messages::PacBioRunIO do
+RSpec.describe Api::Messages::PacBioRunIo do
   subject { described_class.to_hash(pac_bio_batch) }
 
   let(:plate) { create(:plate_with_tagged_wells, sample_count: 2) }
 
-  let(:aliquot_1) { create :tagged_aliquot }
-  let(:aliquot_2) { create :untagged_aliquot }
+  let(:aliquot_1) { create(:tagged_aliquot) }
+  let(:aliquot_2) { create(:untagged_aliquot) }
 
-  let(:library_tube_1) { create :pac_bio_library_tube, aliquot: aliquot_1 }
-  let(:library_tube_2) { create :pac_bio_library_tube, aliquot: aliquot_2 }
+  let(:library_tube_1) { create(:pac_bio_library_tube, aliquot: aliquot_1) }
+  let(:library_tube_2) { create(:pac_bio_library_tube, aliquot: aliquot_2) }
 
   let(:pac_bio_batch) do
-    batch = create :pac_bio_sequencing_batch, assets: [library_tube_1, library_tube_2], target_plate: plate
+    batch = create(:pac_bio_sequencing_batch, assets: [library_tube_1, library_tube_2], target_plate: plate)
 
     # Historically transfer was handled by the pipeline. But now we're keeping
     # this for update of legacy batches only.

@@ -5,15 +5,15 @@
 # row and column. Most well locations are identified by a letter-number combination,
 # eg. A1, H12.
 class Well < Receptacle # rubocop:todo Metrics/ClassLength
-  include Api::WellIO::Extensions
+  include Api::WellIo::Extensions
   include ModelExtensions::Well
   include Cherrypick::VolumeByNanoGrams
   include Cherrypick::VolumeByNanoGramsPerMicroLitre
   include Cherrypick::VolumeByMicroLitre
   include StudyReport::WellDetails
   include Tag::Associations
-  include Api::Messages::FluidigmPlateIO::WellExtensions
-  include Api::Messages::QcResultIO::WellExtensions
+  include Api::Messages::FluidigmPlateIo::WellExtensions
+  include Api::Messages::QcResultIo::WellExtensions
 
   class Link < ApplicationRecord
     # Caution! We are using delete_all and import to manage well links.
@@ -27,7 +27,7 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
     scope :stock, -> { where(type: 'stock') }
   end
 
-  self.stock_message_template = 'WellStockResourceIO'
+  self.stock_message_template = 'WellStockResourceIo'
   self.per_page = 500
 
   has_many :stock_well_links, -> { stock }, class_name: 'Well::Link', foreign_key: :target_well_id
@@ -199,7 +199,7 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
   end
 
   def outer_request(submission_id)
-    outer_requests.order(id: :desc).find_by(submission_id: submission_id)
+    outer_requests.order(id: :desc).find_by(submission_id:)
   end
 
   def qc_results_by_key
@@ -287,14 +287,14 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
       events.update_gender_markers!(resource)
     end
 
-    well_attribute.update!(gender_markers: gender_markers)
+    well_attribute.update!(gender_markers:)
   end
 
   # rubocop:enable Metrics/MethodLength
 
   def update_sequenom_count!(sequenom_count, resource)
     events.update_sequenom_count!(resource) unless well_attribute.sequenom_count == sequenom_count
-    well_attribute.update!(sequenom_count: sequenom_count)
+    well_attribute.update!(sequenom_count:)
   end
 
   # The sequenom pass value is either the string 'Unknown' or it is the combination of gender marker values.

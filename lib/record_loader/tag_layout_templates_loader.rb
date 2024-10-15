@@ -11,7 +11,7 @@ module RecordLoader
     config_folder 'tag_layout_templates'
 
     def create_or_update!(name, options)
-      TagLayoutTemplate.create_with(options).find_or_create_by!(name: name)
+      TagLayoutTemplate.create_with(options).find_or_create_by!(name:)
     end
   end
 end

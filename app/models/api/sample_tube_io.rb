@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 # Despite name controls rendering of warehouse messages for {SampleTube}
 # Historically used to be v0.5 API
-class Api::SampleTubeIO < Api::Base
+class Api::SampleTubeIo < Api::Base
   module Extensions
     module ClassMethods
       def render_class
-        Api::SampleTubeIO
+        Api::SampleTubeIo
       end
     end
 

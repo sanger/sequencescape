@@ -15,5 +15,3 @@ class QcAssay < ApplicationRecord
     BroadcastEvent::QcAssay.generate_events(self)
   end
 end
-
-require_dependency 'broadcast_event/qc_assay'

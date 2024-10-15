@@ -10,11 +10,11 @@ RSpec.describe Robot::PickData, :robot_verification do
 
   describe '#picking_data_hash' do
     let(:time) { Time.zone.local(2010, 7, 12, 10, 25, 0) }
-    let(:source_plate_1) { create :plate, well_count: 2 }
-    let(:source_plate_2) { create :plate, well_count: 2 }
-    let(:source_plate_3) { create :plate, well_count: 2 }
-    let(:destination_plate) { create :plate, well_count: 9 }
-    let(:pipeline) { create :cherrypick_pipeline }
+    let(:source_plate_1) { create(:plate, well_count: 2) }
+    let(:source_plate_2) { create(:plate, well_count: 2) }
+    let(:source_plate_3) { create(:plate, well_count: 2) }
+    let(:destination_plate) { create(:plate, well_count: 9) }
+    let(:pipeline) { create(:cherrypick_pipeline) }
 
     let(:transfers) do
       # We generate the plates before the transfer map, as otherwise
@@ -44,17 +44,19 @@ RSpec.describe Robot::PickData, :robot_verification do
 
     let(:requests) do
       transfers.map do |source, target|
-        create :cherrypick_request,
-               asset: source,
-               target_asset: target,
-               request_type: pipeline.request_types.first,
-               state: 'passed'
+        create(
+          :cherrypick_request,
+          asset: source,
+          target_asset: target,
+          request_type: pipeline.request_types.first,
+          state: 'passed'
+        )
       end
     end
 
-    let(:user) { create :user }
+    let(:user) { create(:user) }
 
-    let(:batch) { create :batch, requests: requests, pipeline: pipeline, user: user }
+    let(:batch) { create(:batch, requests:, pipeline:, user:) }
 
     shared_examples_for 'a picking process' do
       # This is how the output of the process should be displayed:
@@ -145,8 +147,8 @@ RSpec.describe Robot::PickData, :robot_verification do
     end
 
     context 'when we have several plates and needs to use several picks' do
-      let(:destination_plate) { create :plate, well_count: 10 }
-      let(:plates) { create_list :plate, 5, well_count: 2 }
+      let(:destination_plate) { create(:plate, well_count: 10) }
+      let(:plates) { create_list(:plate, 5, well_count: 2) }
       let(:picks) do
         {
           'A1' => [plates[0], 'A1'],
@@ -168,18 +170,20 @@ RSpec.describe Robot::PickData, :robot_verification do
       context 'when we create the requests in different order' do
         let(:requests) do
           transfers.to_a.reverse.map do |source, target|
-            create :cherrypick_request,
-                   asset: source,
-                   target_asset: target,
-                   request_type: pipeline.request_types.first,
-                   state: 'passed'
+            create(
+              :cherrypick_request,
+              asset: source,
+              target_asset: target,
+              request_type: pipeline.request_types.first,
+              state: 'passed'
+            )
           end
         end
 
         it_behaves_like 'a picking process'
 
         context 'when we have a control' do
-          let(:control_plate) { create :control_plate, sample_count: 2 }
+          let(:control_plate) { create(:control_plate, sample_count: 2) }
           let(:expected_pick) { { 1 => %w[A2 B2 A1 B1], 2 => %w[C1 D1 E1 F1], 3 => %w[G1 H1] } }
 
           before { plates[4] = control_plate }

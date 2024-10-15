@@ -82,39 +82,37 @@ class QcReport < ApplicationRecord
     # You can trigger a synchronous report manually by calling #generate!
     # rubocop:todo Metrics/MethodLength
     def generate_report # rubocop:todo Metrics/AbcSize
-      begin
-        study.each_well_for_qc_report_in_batches(
-          exclude_existing,
-          product_criteria,
-          (plate_purposes.empty? ? nil : plate_purposes)
-        ) do |assets|
-          # If there are some wells of interest, we get them in a list
-          connected_wells = Well.hash_stock_with_targets(assets, product_criteria.target_plate_purposes)
+      study.each_well_for_qc_report_in_batches(
+        exclude_existing,
+        product_criteria,
+        (plate_purposes.empty? ? nil : plate_purposes)
+      ) do |assets|
+        # If there are some wells of interest, we get them in a list
+        connected_wells = Well.hash_stock_with_targets(assets, product_criteria.target_plate_purposes)
 
-          # This transaction is inside the block as otherwise large reports experience issues
-          # with high memory usage. In the event that an exception is raised the most
-          # recent set of decisions will be rolled back, and the report will be re-queued.
-          # The rescue event clears out the remaining metrics, this avoids the risk of duplicate
-          # metric on complete reports (Although wont help if, say, the database connection fails)
-          ActiveRecord::Base.transaction do
-            assets.each do |asset|
-              criteria = product_criteria.assess(asset, connected_wells[asset.id])
-              QcMetric.create!(
-                asset: asset,
-                qc_decision: criteria.qc_decision,
-                metrics: criteria.metrics,
-                qc_report: self
-              )
-            end
+        # This transaction is inside the block as otherwise large reports experience issues
+        # with high memory usage. In the event that an exception is raised the most
+        # recent set of decisions will be rolled back, and the report will be re-queued.
+        # The rescue event clears out the remaining metrics, this avoids the risk of duplicate
+        # metric on complete reports (Although wont help if, say, the database connection fails)
+        ActiveRecord::Base.transaction do
+          assets.each do |asset|
+            criteria = product_criteria.assess(asset, connected_wells[asset.id])
+            QcMetric.create!(
+              asset: asset,
+              qc_decision: criteria.qc_decision,
+              metrics: criteria.metrics,
+              qc_report: self
+            )
           end
         end
-        generation_complete!
-      rescue => e
-        # If something goes wrong, requeue the report and re-raise the exception
-        qc_metrics.clear
-        requeue!
-        raise e
       end
+      generation_complete!
+    rescue => e
+      # If something goes wrong, requeue the report and re-raise the exception
+      qc_metrics.clear
+      requeue!
+      raise e
     end
 
     # rubocop:enable Metrics/MethodLength
@@ -177,5 +175,3 @@ class QcReport < ApplicationRecord
     self.report_identifier = rid
   end
 end
-
-require_dependency 'qc_report/file'

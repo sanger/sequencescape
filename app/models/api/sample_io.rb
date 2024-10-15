@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 # Despite name controls rendering of warehouse messages for {Sample}
 # Historically used to be v0.5 API
-class Api::SampleIO < Api::Base
+class Api::SampleIo < Api::Base
   module Extensions
     module ClassMethods
       def render_class
-        Api::SampleIO
+        Api::SampleIo
       end
     end
 
@@ -110,6 +110,6 @@ class Api::SampleIO < Api::Base
   # Whenever we create samples through the API we also need to register a sample tube too.  The user
   # can then retrieve the sample tube information through the API.
   def self.create!(parameters)
-    super.tap { |sample| Tube::Purpose.standard_sample_tube.create!.aliquots.create!(sample: sample) }
+    super.tap { |sample| Tube::Purpose.standard_sample_tube.create!.aliquots.create!(sample:) }
   end
 end

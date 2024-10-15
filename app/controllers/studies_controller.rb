@@ -370,13 +370,11 @@ class StudiesController < ApplicationController
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   def rescue_validation
-    begin
-      yield
-    rescue ActiveRecord::RecordInvalid
-      Rails.logger.warn "Failed to update attributes: #{@study.errors.map { |error| error.to_s }}" # rubocop:disable Style/SymbolProc
-      flash.now[:error] = 'Failed to update attributes for study!'
-      render action: 'edit', id: @study.id
-    end
+    yield
+  rescue ActiveRecord::RecordInvalid
+    Rails.logger.warn "Failed to update attributes: #{@study.errors.map { |error| error.to_s }}" # rubocop:disable Style/SymbolProc
+    flash.now[:error] = 'Failed to update attributes for study!'
+    render action: 'edit', id: @study.id
   end
 end
 # rubocop:enable Metrics/ClassLength
