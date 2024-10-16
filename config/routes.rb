@@ -68,6 +68,7 @@ Rails.application.routes.draw do
       jsonapi_resources :transfer_request_collections, except: %i[update]
       jsonapi_resources :transfer_requests
       jsonapi_resources :transfer_templates
+      jsonapi_resources :tube_from_tube_creations, except: %i[update]
       jsonapi_resources :tube_purposes
       jsonapi_resources :tube_rack_statuses
       jsonapi_resources :tube_racks

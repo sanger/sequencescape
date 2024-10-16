@@ -55,7 +55,7 @@ module Api
       end
 
       # @!attribute [r] uuid
-      #   @return [String] The UUID of the state change.
+      #   @return [String] The UUID of the pooled plate creation.
       attribute :uuid, readonly: true
 
       ###
@@ -84,7 +84,6 @@ module Api
       end
 
       def fetchable_fields
-        # The tube_attributes attribute is only available during resource creation.
         # UUIDs for relationships are not fetchable. They should be accessed via the relationship itself.
         super - %i[child_purpose_uuid parent_uuids user_uuid]
       end
