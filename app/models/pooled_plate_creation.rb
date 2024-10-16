@@ -2,6 +2,8 @@
 # Creating an instance of this class causes a child plate, with the specified plate type, to be created from
 # the parent.
 class PooledPlateCreation < AssetCreation
+  include PlateCreation::Children
+
   attr_accessor :sanger_barcode
 
   has_many :parent_associations, foreign_key: 'asset_creation_id', class_name: 'AssetCreation::ParentAssociation'
@@ -15,15 +17,13 @@ class PooledPlateCreation < AssetCreation
     parents.first
   end
 
+  private
+
   def record_creation_of_children
     parents.each { |parent| parent.events.create_plate!(child_purpose, child, user) }
   end
-  private :record_creation_of_children
 
   def connect_parent_and_children
     parents.each { |parent| AssetLink.create_edge!(parent, child) }
   end
-  private :connect_parent_and_children
-
-  include PlateCreation::Children
 end

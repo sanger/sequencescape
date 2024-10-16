@@ -30,8 +30,4 @@ class TubeCreation < AssetCreation
   def create_children!
     self.children = Array.new(parent.pools.size) { child_purpose.create! }
   end
-
-  def record_creation_of_children
-    # No record is made by this model class.
-  end
 end

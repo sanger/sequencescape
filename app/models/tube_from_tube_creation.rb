@@ -17,8 +17,4 @@ class TubeFromTubeCreation < AssetCreation
   def create_children!
     self.child = child_purpose.create!
   end
-
-  def record_creation_of_children
-    # No record is made by this model class.
-  end
 end
