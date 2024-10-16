@@ -35,7 +35,7 @@ module Api
     #         },
     #         "parent": {
     #           "data": { "type": "tube", "id": "456" }
-    #         }
+    #         },
     #         "user": {
     #           "data": { "type": "user", "id": "789" }
     #         }
