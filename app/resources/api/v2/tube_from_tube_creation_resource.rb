@@ -2,14 +2,52 @@
 
 module Api
   module V2
-    # @todo This documentation does not yet include a detailed description of what this resource represents.
-    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
-    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+    # Provides a JSON:API representation of {TubeFromTubeCreation} for the creation of a single child tube from a single
+    # parent tube.
+    # Creation of this resource via a `POST` request will create the new child tube with the parent tube as an ancestor.
+    # The created child will have the specified purpose and can be accessed via the {#child} relationship.
     #
     # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
     # @note Access this resource via the `/api/v2/tube_from_tube_creation/` endpoint.
     #
-    # Provides a JSON:API representation of {TubeFromTubeCreation}.
+    # @example POST request with child purpose and parent tube specified by UUID (deprecated)
+    #   POST /api/v2/tube_from_tube_creation/
+    #   {
+    #     "data": {
+    #       "type": "tube_from_tube_creation",
+    #       "attributes": {
+    #         "child_purpose_uuid": "11111111-2222-3333-4444-555555666666",
+    #         "parent_uuid": "33333333-4444-5555-6666-777777888888",
+    #         "user_uuid": "99999999-0000-1111-2222-333333444444"
+    #       }
+    #     }
+    #   }
+    #
+    # @example POST request with child purpose and parent tube specified by relationship
+    #   POST /api/v2/tube_from_tube_creation/
+    #   {
+    #     "data": {
+    #       "type": "tube_from_tube_creation",
+    #       "attributes": {},
+    #       "relationships": {
+    #         "child_purpose": {
+    #           "data": { "type": "tube_purpose", "id": "123" }
+    #         },
+    #         "parent": {
+    #           "data": { "type": "tube", "id": "456" }
+    #         }
+    #         "user": {
+    #           "data": { "type": "user", "id": "789" }
+    #         }
+    #       }
+    #     }
+    #   }
+    #
+    # @example GET request for all TubeFromTubeCreation resources
+    #   GET /api/v2/tube_from_tube_creation/
+    #
+    # @example GET request for a TubeFromTubeCreation with ID 123
+    #   GET /api/v2/tube_from_tube_creation/123/
     #
     # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
