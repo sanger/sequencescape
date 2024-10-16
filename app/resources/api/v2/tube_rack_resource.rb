@@ -29,7 +29,9 @@ module Api
       # Associations:
       has_many :racked_tubes
       has_many :comments, readonly: true
-      has_one :purpose, foreign_key: :plate_purpose_id
+      # TODO: change to purpose_id
+      has_one :purpose, foreign_key: :plate_purpose_id, class_name: 'TubeRackPurpose'
+      has_many :parents, class_name: 'Labware'
 
       # Attributes
       attribute :uuid, readonly: true
@@ -49,7 +51,7 @@ module Api
              apply:
                (
                  lambda do |records, value, _options|
-                   purpose = Purpose.find_by(name: value)
+                   purpose = TubeRack::Purpose.find_by(name: value)
                    records.where(plate_purpose_id: purpose)
                  end
                )

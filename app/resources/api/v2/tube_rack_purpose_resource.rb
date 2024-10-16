@@ -54,6 +54,8 @@ module Api
       def self.updatable_fields(_context)
         super - %i[uuid] # Do not allow creating with any readonly fields
       end
+
+      filter :type, default: 'TubeRack::Purpose'
     end
   end
 end
