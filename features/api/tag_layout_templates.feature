@@ -40,7 +40,7 @@ Feature: Access tag layout templates through the API
       And the UUID for the plate "Testing the API" is "11111111-2222-3333-4444-000000000002"
       And all wells on the plate "Testing the API" have unique samples
 
-    Given a "Stock plate" plate called "Testing the tagging" exists
+    Given a "Stock plate" input plate called "Testing the tagging" exists
       And the UUID for the plate "Testing the tagging" is "11111111-2222-3333-4444-000000000001"
       And the wells for the plate "Testing the API" have been pooled in columns to the plate "Testing the tagging"
 
@@ -290,7 +290,7 @@ Feature: Access tag layout templates through the API
       And the UUID for the plate "Testing the API" is "11111111-2222-3333-4444-000000000002"
       And all wells on the plate "Testing the API" have unique samples
 
-    Given a "Stock plate" plate called "Testing the tagging" exists
+    Given a "Stock plate" input plate called "Testing the tagging" exists
       And the UUID for the plate "Testing the tagging" is "11111111-2222-3333-4444-000000000001"
       And the wells for the plate "Testing the API" have been pooled to the plate "Testing the tagging" according to the pooling strategy 96
       And "F11-F12" of the plate "Testing the tagging" have been failed
@@ -460,7 +460,7 @@ Feature: Access tag layout templates through the API
       And the UUID for the plate "Testing the API" is "11111111-2222-3333-4444-000000000002"
       And all wells on the plate "Testing the API" have unique samples
 
-    Given a "Stock plate" plate called "Testing the tagging" exists
+    Given a "Stock plate" input plate called "Testing the tagging" exists
       And the UUID for the plate "Testing the tagging" is "11111111-2222-3333-4444-000000000001"
       And the wells for the plate "Testing the API" have been pooled in columns to the plate "Testing the tagging"
 
@@ -550,7 +550,7 @@ Feature: Access tag layout templates through the API
       And the UUID for the plate "Testing the API" is "11111111-2222-3333-4444-000000000002"
       And all wells on the plate "Testing the API" have unique samples
 
-    Given a "Stock plate" plate called "Testing the tagging" exists
+    Given a "Stock plate" input plate called "Testing the tagging" exists
       And the UUID for the plate "Testing the tagging" is "11111111-2222-3333-4444-000000000001"
       And the wells for the plate "Testing the API" have been pooled to the plate "Testing the tagging" according to the pooling strategy 8, 4, 8, 4, 8, 4, 8, 4, 8, 4, 8, 4, 8, 4, 8, 4
 
@@ -633,7 +633,7 @@ Feature: Access tag layout templates through the API
       And the UUID for the plate "Testing the API" is "11111111-2222-3333-4444-000000000002"
       And all wells on the plate "Testing the API" have unique samples
 
-    Given a "Stock plate" plate called "Testing the tagging" exists
+    Given a "Stock plate" input plate called "Testing the tagging" exists
       And the UUID for the plate "Testing the tagging" is "11111111-2222-3333-4444-000000000001"
       And the wells for the plate "Testing the API" have been pooled to the plate "Testing the tagging" according to the pooling strategy 8, 2, 10, 4, 8, 2, 10, 4, 8, 2, 10, 4, 8, 8, 8
 
@@ -706,7 +706,7 @@ Feature: Access tag layout templates through the API
       And the UUID for the plate "Testing the API" is "11111111-2222-3333-4444-000000000002"
       And all wells on the plate "Testing the API" have unique samples
 
-    Given a "Stock plate" plate called "Testing the tagging" exists
+    Given a "Stock plate" input plate called "Testing the tagging" exists
       And the UUID for the plate "Testing the tagging" is "11111111-2222-3333-4444-000000000001"
       And the wells for the plate "Testing the API" have been pooled to the plate "Testing the tagging" according to the pooling strategy 96
 
@@ -747,7 +747,7 @@ Feature: Access tag layout templates through the API
       And all wells on the plate "Testing the API" have unique samples
       And H12 on the plate "Testing the API" is empty
 
-    Given a "Stock plate" plate called "Testing the tagging" exists
+    Given a "Stock plate" input plate called "Testing the tagging" exists
       And the UUID for the plate "Testing the tagging" is "11111111-2222-3333-4444-000000000001"
       And the wells for the plate "Testing the API" have been pooled to the plate "Testing the tagging" according to the pooling strategy 95
 
