@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_dependency 'app/resources/api/v2/receptacle_resource'
-
 module Api
   module V2
     # @todo This documentation does not yet include a detailed description of what this resource (really) represents.

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 class ReferenceGenome < ApplicationRecord
   extend Attributable::Association::Target
-  include Api::ReferenceGenomeIO::Extensions
+  include Api::ReferenceGenomeIo::Extensions
   include Uuid::Uuidable
   include SharedBehaviour::Named
 

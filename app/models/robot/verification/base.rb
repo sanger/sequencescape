@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_dependency 'robot/verification'
-
 # Base class for handling bed verification for picking robots
 class Robot::Verification::Base # rubocop:todo Metrics/ClassLength
   attr_reader :errors

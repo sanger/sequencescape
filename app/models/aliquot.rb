@@ -17,10 +17,10 @@
 # @see Tag
 class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include Uuid::Uuidable
-  include Api::Messages::FlowcellIO::AliquotExtensions
-  include Api::Messages::QcResultIO::AliquotExtensions
+  include Api::Messages::FlowcellIo::AliquotExtensions
+  include Api::Messages::QcResultIo::AliquotExtensions
   include AliquotIndexer::AliquotScopes
-  include Api::AliquotIO::Extensions
+  include Api::AliquotIo::Extensions
   include DataForSubstitution
 
   self.lazy_uuid_generation = true
