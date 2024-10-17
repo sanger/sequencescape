@@ -8,13 +8,13 @@ module Api
     # The created child will have the specified purpose and can be accessed via the {#child} relationship.
     #
     # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
-    # @note Access this resource via the `/api/v2/tube_from_tube_creation/` endpoint.
+    # @note Access this resource via the `/api/v2/tube_from_tube_creations/` endpoint.
     #
     # @example POST request with child purpose and parent tube specified by UUID (deprecated)
-    #   POST /api/v2/tube_from_tube_creation/
+    #   POST /api/v2/tube_from_tube_creations/
     #   {
     #     "data": {
-    #       "type": "tube_from_tube_creation",
+    #       "type": "tube_from_tube_creations",
     #       "attributes": {
     #         "child_purpose_uuid": "11111111-2222-3333-4444-555555666666",
     #         "parent_uuid": "33333333-4444-5555-6666-777777888888",
@@ -24,10 +24,10 @@ module Api
     #   }
     #
     # @example POST request with child purpose and parent tube specified by relationship
-    #   POST /api/v2/tube_from_tube_creation/
+    #   POST /api/v2/tube_from_tube_creations/
     #   {
     #     "data": {
-    #       "type": "tube_from_tube_creation",
+    #       "type": "tube_from_tube_creations",
     #       "attributes": {},
     #       "relationships": {
     #         "child_purpose": {
@@ -44,10 +44,10 @@ module Api
     #   }
     #
     # @example GET request for all TubeFromTubeCreation resources
-    #   GET /api/v2/tube_from_tube_creation/
+    #   GET /api/v2/tube_from_tube_creations/
     #
     # @example GET request for a TubeFromTubeCreation with ID 123
-    #   GET /api/v2/tube_from_tube_creation/123/
+    #   GET /api/v2/tube_from_tube_creations/123/
     #
     # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
