@@ -33,7 +33,7 @@ describe 'Transfer API', with: :api_v2 do
     end
 
     describe '#GET filtered resources' do
-      before { api_get base_endpoint + "?filter[transfer_type]=#{model_class.to_s}" }
+      before { api_get base_endpoint + "?filter[transfer_type]=#{model_class}" }
 
       it 'responds with a success http code' do
         expect(response).to have_http_status(:success)
