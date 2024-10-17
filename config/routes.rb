@@ -27,6 +27,7 @@ Rails.application.routes.draw do
       end
 
       jsonapi_resources :barcode_printers
+      jsonapi_resources :bulk_transfers, except: %i[update]
       jsonapi_resources :comments
       jsonapi_resources :custom_metadatum_collections
       jsonapi_resources :labware
