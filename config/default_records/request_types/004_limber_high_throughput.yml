@@ -203,6 +203,6 @@ limber_rnaf:
   <<: *limber_htp_library
   name: Limber RNAF
   acceptable_purposes:
-    - RNAF Cherrypick
+    - LRNAF Cherrypick
   library_types:
     - RNA FFPE
