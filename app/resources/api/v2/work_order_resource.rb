@@ -21,13 +21,13 @@ module Api
 
       default_includes [{ example_request: :request_metadata }, :work_order_type]
 
-      has_one :study, readonly: true
-      has_one :project, readonly: true
-      has_one :source_receptacle, readonly: true, polymorphic: true
-      has_many :samples, readonly: true
+      has_one :study, write_once: true
+      has_one :project, write_once: true
+      has_one :source_receptacle, write_once: true, polymorphic: true
+      has_many :samples, write_once: true
 
-      attribute :order_type, readonly: true
-      attribute :quantity, readonly: true
+      attribute :order_type, write_once: true
+      attribute :quantity, write_once: true
       attribute :state
       attribute :options
       attribute :at_risk

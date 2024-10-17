@@ -35,11 +35,11 @@ module Api
 
       # Attributes
       attribute :uuid, readonly: true
-      attribute :role, readonly: true
+      attribute :role, write_once: true
       attribute :state
-      attribute :priority, readonly: true
+      attribute :priority, write_once: true
       attribute :options
-      attribute :library_type, readonly: true
+      attribute :library_type, write_once: true
 
       # Filters
 

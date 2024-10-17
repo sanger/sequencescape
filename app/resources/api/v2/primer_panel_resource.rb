@@ -17,8 +17,8 @@ module Api
       # Constants...
 
       # model_name / model_hint if required
-      attribute :name, readonly: true
-      attribute :programs, readonly: true
+      attribute :name, write_once: true
+      attribute :programs, write_once: true
       # Associations:
 
       # Attributes
