@@ -19,7 +19,7 @@ module Api
       # Constants...
 
       # Associations:
-      has_many :tag_groups, readonly: true, class_name: 'TagGroup'
+      has_many :tag_groups, write_once: true, class_name: 'TagGroup'
 
       # Attributes
       attribute :name, readonly: true

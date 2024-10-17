@@ -37,7 +37,7 @@ module Api
       #   @param value [String] The UUID of the {Plate} this tag layout applies to.
       #   @return [Void]
       #   @see #plate
-      attribute :plate_uuid
+      attribute :plate_uuid, writeonly: true
 
       def plate_uuid=(value)
         @model.plate = Plate.with_uuid(value).first
@@ -64,7 +64,7 @@ module Api
       #   @param value [String] The UUID of the {TagGroup} used in this tag layout.
       #   @return [Void]
       #   @see #tag_group
-      attribute :tag_group_uuid
+      attribute :tag_group_uuid, writeonly: true
 
       def tag_group_uuid=(value)
         @model.tag_group = TagGroup.with_uuid(value).first
@@ -77,7 +77,7 @@ module Api
       #   @param value [String] The UUID of the second {TagGroup} used in this tag layout.
       #   @return [Void]
       #   @see #tag2_group
-      attribute :tag2_group_uuid
+      attribute :tag2_group_uuid, writeonly: true
 
       def tag2_group_uuid=(value)
         @model.tag2_group = TagGroup.with_uuid(value).first
@@ -97,7 +97,7 @@ module Api
       #   @param value [String] The UUID of the {User} who initiated this state change.
       #   @return [Void]
       #   @see #user
-      attribute :user_uuid
+      attribute :user_uuid, writeonly: true
 
       def user_uuid=(value)
         @model.user = User.with_uuid(value).first
@@ -142,16 +142,6 @@ module Api
       #   @return [Api::V2::UserResource] The user who initiated this state change.
       #   @note This relationship is required.
       has_one :user
-
-      def self.creatable_fields(context)
-        # UUID is set by the system.
-        super - %i[uuid]
-      end
-
-      def fetchable_fields
-        # UUIDs for relationships are not fetchable. They should be accessed via the relationship itself.
-        super - %i[plate_uuid tag_group_uuid tag2_group_uuid user_uuid]
-      end
     end
   end
 end

@@ -23,7 +23,7 @@ module Api
       # Associations:
 
       # Attributes
-      attribute :position, readonly: true
+      attribute :position, write_once: true
 
       # Custom methods
 

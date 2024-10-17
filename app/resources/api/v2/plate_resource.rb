@@ -6,6 +6,7 @@ module Api
     # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
     # @todo This documentation does not yet include any example usage of the API via cURL or similar.
     #
+    # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
     # @note Access this resource via the `/api/v2/plates/` endpoint.
     #
     # Provides a JSON:API representation of {Plate}.
@@ -25,12 +26,12 @@ module Api
       default_includes :uuid_object, :barcodes, :plate_purpose, :transfer_requests
 
       # Associations:
-      has_many :wells, readonly: true
+      has_many :wells, write_once: true
 
       # Attributes
-      attribute :number_of_rows, readonly: true, delegate: :height
-      attribute :number_of_columns, readonly: true, delegate: :width
-      attribute :size, readonly: true
+      attribute :number_of_rows, write_once: true, delegate: :height
+      attribute :number_of_columns, write_once: true, delegate: :width
+      attribute :size, write_once: true
 
       # Filters
 

@@ -25,8 +25,8 @@ module Api
       has_one :tag_group
 
       # Attributes
-      attribute :oligo, readonly: true
-      attribute :map_id, readonly: true
+      attribute :oligo, write_once: true
+      attribute :map_id, write_once: true
 
       # Filters
 

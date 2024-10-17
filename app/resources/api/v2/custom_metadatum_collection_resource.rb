@@ -22,7 +22,7 @@ module Api
 
       # @!attribute [r] uuid
       #   @return [String] The UUID of the collection.
-      attribute :uuid
+      attribute :uuid, readonly: true
 
       # @!attribute [rw] user_id
       #   @return [Int] The ID of the user who created this collection. Can only and must be set on creation.
@@ -39,11 +39,6 @@ module Api
       ###
       # Allowable fields (defining read/write permissions for POST and PATCH)
       ###
-
-      # @return [Array<Symbol>] Fields that can be created in a POST request.
-      def self.creatable_fields(context)
-        super - %i[uuid]
-      end
 
       # @return [Array<Symbol>] Fields that can be updated in a PATCH request.
       def self.updatable_fields(context)

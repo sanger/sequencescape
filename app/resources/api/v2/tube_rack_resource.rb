@@ -35,11 +35,11 @@ module Api
       attribute :uuid, readonly: true
       attribute :created_at, readonly: true
       attribute :updated_at, readonly: true
-      attribute :labware_barcode, readonly: true
+      attribute :labware_barcode, write_once: true
       attribute :size
-      attribute :number_of_rows, readonly: true
-      attribute :number_of_columns, readonly: true
-      attribute :name, readonly: true
+      attribute :number_of_rows, write_once: true
+      attribute :number_of_columns, write_once: true
+      attribute :name, write_once: true
       attribute :tube_locations
 
       # Filters
