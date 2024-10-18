@@ -25,7 +25,6 @@ module Sequencescape
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.1
-    config.autoloader = :classic
 
     # Default options which predate the Rails 5 switch
     config.active_record.belongs_to_required_by_default = false
@@ -54,11 +53,23 @@ module Sequencescape
 
     # Add additional load paths for your own custom dirs
     # config.load_paths += %W( #{Rails.root}/extras )
-    config.autoload_paths += %W[#{Rails.root}/app/observers]
-    config.autoload_paths += %W[#{Rails.root}/app/metal]
     config.autoload_paths += %W[#{Rails.root}/app]
     config.autoload_paths += %W[#{Rails.root}/lib]
     config.autoload_paths += %W[#{Rails.root}/lib/accession]
+
+    config.eager_load_paths += %W[#{Rails.root}/app]
+    config.eager_load_paths += %W[#{Rails.root}/lib]
+    config.eager_load_paths += %W[#{Rails.root}/lib/accession]
+
+    # Some lib files we don't want to autoload as they are not required in the rails app
+    %w[generators informatics].each { |file| Rails.autoloaders.main.ignore(Rails.root.join("lib/#{file}")) }
+
+    # Eager load when running rake tasks. This ensures our STI classes are loaded, required for record loader
+    # To correctly access all purpose types
+    config.rake_eager_load = true
+
+    # Load the custom inflections to help with the AASM module
+    Rails.autoloaders.main.inflector.inflect('aasm' => 'AASM')
 
     config.encoding = 'utf-8'
 

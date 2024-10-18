@@ -518,7 +518,7 @@ describe Well do
     it 'allow registration of messengers' do
       expect { subject }.to change(Messenger, :count).by(1)
       expect(subject.root).to eq 'stock_resource'
-      expect(subject.template).to eq 'WellStockResourceIO'
+      expect(subject.template).to eq 'WellStockResourceIo'
       expect(subject.target).to eq well
     end
   end

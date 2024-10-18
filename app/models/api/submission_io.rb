@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 # Despite name controls rendering of warehouse messages for {Submission}
 # Historically used to be v0.5 API
-class Api::SubmissionIO < Api::Base
+class Api::SubmissionIo < Api::Base
   renders_model(::Submission)
 
   map_attribute_to_json_attribute(:uuid)

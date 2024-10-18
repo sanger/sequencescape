@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_dependency 'robot'
-
 # Handles picking file generation for Tecan robots
 class Robot::Generator::TecanV2 < Robot::Generator::Base
   NUM_BUFFER_CHANNELS = 8

@@ -3,19 +3,19 @@
 FactoryBot.define do
   factory :messenger_creator do
     root { 'a_plate' }
-    template { 'FluidigmPlateIO' }
+    template { 'FluidigmPlateIo' }
     purpose { |purpose| purpose.association(:plate_purpose) }
   end
 
   factory :messenger do
     root { 'barcode' }
     target factory: %i[barcode]
-    template { 'BarcodeIO' }
+    template { 'BarcodeIo' }
 
     factory :flowcell_messenger do
       root { 'flowcell' }
       target factory: %i[sequencing_batch]
-      template { 'FlowcellIO' }
+      template { 'FlowcellIo' }
     end
   end
 end
