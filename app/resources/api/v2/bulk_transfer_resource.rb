@@ -68,7 +68,7 @@ module Api
       #   @param value [String] The UUID of the user who initiated the creation of the bulk transfers.
       #   @return [Void]
       #   @see #user
-      attribute :user_uuid
+      attribute :user_uuid, writeonly: true
 
       def user_uuid=(value)
         @model.user = User.with_uuid(value).first
@@ -85,7 +85,7 @@ module Api
       #     - `destination_uuid` [String] The UUID of the destination plate.
       #     - `destination_location` [String] The location on the destination plate.
       #   @return [Void]
-      attribute :well_transfers
+      attribute :well_transfers, writeonly: true
 
       ###
       # Relationships
@@ -94,25 +94,13 @@ module Api
       # @!attribute [r] transfers
       #   The transfers that were created as a result of this bulk transfer.
       #   @return [Array<TransferResource>] An array of created transfers.
-      has_many :transfers
+      has_many :transfers, readonly: true
 
       # @!attribute [rw] user
       #   Setting this relationship alongside the `user_uuid` attribute will override the attribute value.
       #   @return [UserResource] The user who initiated the creation of the bulk transfers.
       #   @note This relationship is required.
       has_one :user
-
-      def self.creatable_fields(context)
-        # The transfers relationship can only be read after the creation has happened.
-        # UUID is set by the system.
-        super - %i[transfers uuid]
-      end
-
-      def fetchable_fields
-        # UUIDs for relationships are not fetchable. They should be accessed via the relationship itself.
-        # Well transfers are transitive and not stored on the model.
-        super - %i[user_uuid well_transfers]
-      end
     end
   end
 end
