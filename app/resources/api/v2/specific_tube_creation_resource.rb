@@ -22,7 +22,7 @@ module Api
       # @!attribute [w] child_purpose_uuids
       #   @param value [Array<String>] Array of UUIDs for child purposes to use in the creation of tubes.
       #   @return [Void]
-      attribute :child_purpose_uuids
+      attribute :child_purpose_uuids, writeonly: true
 
       def child_purpose_uuids=(value)
         @model.child_purposes = value.map { |uuid| Purpose.with_uuid(uuid).first }
@@ -35,7 +35,7 @@ module Api
       #   @param value [Array<String>] The UUIDs of labware that will be the parents for all tubes created.
       #   @return [Void]
       #   @see #parents
-      attribute :parent_uuids
+      attribute :parent_uuids, writeonly: true
 
       def parent_uuids=(value)
         @model.parents = value.map { |uuid| Labware.with_uuid(uuid).first }
@@ -47,7 +47,7 @@ module Api
       #   @example Setting the name of the tubes being created.
       #     [{ name: 'Tube one' }, { name: 'Tube two' }]
       #   @return [Void]
-      attribute :tube_attributes
+      attribute :tube_attributes, writeonly: true
 
       def tube_attributes=(value)
         return if value.nil?
@@ -63,7 +63,7 @@ module Api
       #   @param value [String] The UUID of the user who initiated the creation of tubes.
       #   @return [Void]
       #   @see #user
-      attribute :user_uuid
+      attribute :user_uuid, writeonly: true
 
       def user_uuid=(value)
         @model.user = User.with_uuid(value).first
@@ -79,7 +79,7 @@ module Api
 
       # @!attribute [r] children
       #   @return [Array<TubeResource>] An array of tubes that were created.
-      has_many :children, class_name: 'Tube'
+      has_many :children, class_name: 'Tube', readonly: true
 
       # @!attribute [rw] parents
       #   Setting this relationship alongside the `parent_uuids` attribute will override the attribute value.
@@ -92,17 +92,6 @@ module Api
       #   @return [UserResource] The user who initiated the creation of tubes.
       #   @note This relationship is required.
       has_one :user
-
-      def self.creatable_fields(context)
-        # UUID is set by the system.
-        super - %i[uuid]
-      end
-
-      def fetchable_fields
-        # The tube_attributes attribute is only available during resource creation.
-        # UUIDs for relationships are not fetchable. They should be accessed via the relationship itself.
-        super - %i[child_purpose_uuids parent_uuids tube_attributes user_uuid]
-      end
     end
   end
 end

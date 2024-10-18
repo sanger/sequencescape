@@ -36,7 +36,7 @@ module Api
       #   @param value [Array<Hash>] An array of hashes containing the attributes for transfer request to be created.
       #   @return [Void]
       #   @see #transfer_requests
-      attribute :transfer_requests_attributes
+      attribute :transfer_requests_attributes, writeonly: true
 
       def transfer_requests_attributes=(value)
         return if value.nil?
@@ -52,7 +52,7 @@ module Api
       #   @param value [String] The UUID of the user who initiated the creation of this pooled plate.
       #   @return [Void]
       #   @see #user
-      attribute :user_uuid
+      attribute :user_uuid, writeonly: true
 
       def user_uuid=(value)
         @model.user = User.with_uuid(value).first
@@ -68,28 +68,17 @@ module Api
 
       # @!attribute [r] target_tubes
       #   @return [Array<TubeResource>] An array of tubes targeted by the transfer requests in this collection.
-      has_many :target_tubes, class_name: 'Tube'
+      has_many :target_tubes, class_name: 'Tube', readonly: true
 
       # @!attribute [r] transfer_requests
       #   @return [Array<TransferRequestResource>] An array of transfer requests in this collection.
-      has_many :transfer_requests
+      has_many :transfer_requests, readonly: true
 
       # @!attribute [rw] user
       #   Setting this relationship alongside the `user_uuid` attribute will override the attribute value.
       #   @return [UserResource] The user who initiated the creation of the pooled plate.
       #   @note This relationship is required.
       has_one :user
-
-      def self.creatable_fields(context)
-        # UUID is set by the system.
-        super - %i[target_tubes transfer_requests uuid]
-      end
-
-      def fetchable_fields
-        # The transfer_requests_attributes attribute is only available during resource creation.
-        # UUIDs for relationships are not fetchable. They should be accessed via the relationship itself.
-        super - %i[transfer_requests_attributes user_uuid]
-      end
     end
   end
 end

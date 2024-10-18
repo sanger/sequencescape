@@ -15,12 +15,12 @@ module Api
 
         included do
           # Associations:
-          has_one :purpose, readonly: true, foreign_key: :plate_purpose_id, class_name: 'Purpose'
+          has_one :purpose, write_once: true, foreign_key: :plate_purpose_id, class_name: 'Purpose'
           has_one :custom_metadatum_collection, foreign_key_on: :related
 
-          has_many :samples, readonly: true
-          has_many :studies, readonly: true
-          has_many :projects, readonly: true
+          has_many :samples, write_once: true
+          has_many :studies, write_once: true
+          has_many :projects, write_once: true
           has_many :comments, readonly: true
 
           # If we are using api/v2/labware to pull back a list of labware, we may

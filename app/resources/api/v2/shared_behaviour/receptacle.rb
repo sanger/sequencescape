@@ -17,8 +17,8 @@ module Api
 
           # Associations:
           has_many :samples, readonly: true
-          has_many :studies, readonly: true
-          has_many :projects, readonly: true
+          has_many :studies, write_once: true
+          has_many :projects, write_once: true
 
           has_many :requests_as_source, readonly: true
           has_many :requests_as_target, readonly: true
@@ -38,11 +38,11 @@ module Api
           has_many :transfer_requests_as_source, readonly: true
           has_many :transfer_requests_as_target, readonly: true
 
-          has_one :labware, readonly: true
+          has_one :labware, write_once: true
 
           # Attributes
           attribute :uuid, readonly: true
-          attribute :name, delegate: :display_name, readonly: true
+          attribute :name, delegate: :display_name, write_once: true
           attributes :pcr_cycles, :submit_for_sequencing, :sub_pool, :coverage, :diluent_volume
           attribute :state, readonly: true
 

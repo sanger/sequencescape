@@ -31,7 +31,7 @@ module Api
       # Attributes
       attribute :uuid, readonly: true
       attribute :state, readonly: true
-      attribute :volume, readonly: true
+      attribute :volume, write_once: true
 
       # Filters
 

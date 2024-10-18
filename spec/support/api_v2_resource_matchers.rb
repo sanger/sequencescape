@@ -9,6 +9,7 @@ module ApiV2Matchers
 
     match do |resource|
       expect(resource).to have_attribute attribute
+      expect(resource).not_to have_creatable_field attribute
       expect(resource).not_to have_updatable_field attribute
     end
   end
@@ -21,6 +22,7 @@ module ApiV2Matchers
 
     match do |resource|
       expect(resource).to have_attribute attribute
+      expect(resource).to have_creatable_field attribute
       expect(resource).to have_updatable_field attribute
     end
   end
@@ -33,7 +35,21 @@ module ApiV2Matchers
 
     match do |resource|
       expect(resource).not_to have_attribute attribute
+      expect(resource).to have_creatable_field attribute
       expect(resource).to have_updatable_field attribute
+    end
+  end
+
+  RSpec::Matchers.define :have_write_once_attribute do |attribute|
+    description { "have write-once attribute `#{attribute}`" }
+
+    failure_message { "expected #{resource.class.name.demodulize} to #{description}" }
+    failure_message_when_negated { "expected #{resource.class.name.demodulize} not to #{description}" }
+
+    match do |resource|
+      expect(resource).to have_attribute attribute
+      expect(resource).to have_creatable_field attribute
+      expect(resource).not_to have_updatable_field attribute
     end
   end
 end
