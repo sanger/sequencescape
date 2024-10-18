@@ -8,14 +8,17 @@ RSpec.describe Api::V2::TransferResource, type: :resource do
 
   let(:resource_model) { build_stubbed(:transfer_between_plates) }
 
+  # Model Name
+  it { is_expected.to have_model_name 'Transfer' }
+
   # Attributes
-  it { is_expected.to have_readonly_attribute :uuid }
-  it { is_expected.to have_readwrite_attribute :source_uuid }
   it { is_expected.to have_readwrite_attribute :destination_uuid }
-  it { is_expected.to have_readwrite_attribute :transfers }
+  it { is_expected.to have_readwrite_attribute :source_uuid }
   it { is_expected.to have_writeonly_attribute :transfer_template_uuid }
   it { is_expected.to have_readonly_attribute :transfer_type }
+  it { is_expected.to have_readwrite_attribute :transfers }
   it { is_expected.to have_writeonly_attribute :user_uuid }
+  it { is_expected.to have_readonly_attribute :uuid }
 
   # Relationships
   it { is_expected.to have_one(:user).with_class_name('User') }
