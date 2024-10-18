@@ -8,7 +8,6 @@ LB Cherrypick: &limber_input_96
   type: PlatePurpose::Input
   stock_plate: true
 LBR Cherrypick: *limber_input_96
-LRNAF Cherrypick: *limber_input_96
 scRNA Stock: *limber_input_96
 GnT Stock: *limber_input_96
 GBS-96 Stock: *limber_input_96
