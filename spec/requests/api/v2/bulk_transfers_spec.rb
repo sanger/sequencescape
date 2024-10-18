@@ -103,31 +103,36 @@ describe 'Bulk Transfer API', with: :api_v2 do
   describe '#POST a create request' do
     let(:src_plates) { create_list(:transfer_plate, 2) }
     let(:dest_plates) { create_list(:plate_with_empty_wells, 2) }
+    let(:transfer_ordered_src_plates) { [src_plates[0], src_plates[0], src_plates[1], src_plates[1]] }
+    let(:transfer_ordered_dest_plates) { [dest_plates[0], dest_plates[1], dest_plates[0], dest_plates[1]] }
+    let(:transfer_ordered_locations) do
+      [{ 'A1' => ['A1'] }, { 'B1' => ['A1'] }, { 'A1' => ['B1'] }, { 'B1' => ['B1'] }]
+    end
     let(:well_transfers) do
       [
         {
-          'source_uuid' => src_plates[0].uuid,
-          'source_location' => 'A1',
-          'destination_uuid' => dest_plates[0].uuid,
-          'destination_location' => 'A1'
+          'source_uuid' => transfer_ordered_src_plates[0].uuid,
+          'source_location' => transfer_ordered_locations[0].keys.first,
+          'destination_uuid' => transfer_ordered_dest_plates[0].uuid,
+          'destination_location' => transfer_ordered_locations[0].values.first.first
         },
         {
-          'source_uuid' => src_plates[0].uuid,
-          'source_location' => 'B1',
-          'destination_uuid' => dest_plates[1].uuid,
-          'destination_location' => 'A1'
+          'source_uuid' => transfer_ordered_src_plates[1].uuid,
+          'source_location' => transfer_ordered_locations[1].keys.first,
+          'destination_uuid' => transfer_ordered_dest_plates[1].uuid,
+          'destination_location' => transfer_ordered_locations[1].values.first.first
         },
         {
-          'source_uuid' => src_plates[1].uuid,
-          'source_location' => 'A1',
-          'destination_uuid' => dest_plates[0].uuid,
-          'destination_location' => 'B1'
+          'source_uuid' => transfer_ordered_src_plates[2].uuid,
+          'source_location' => transfer_ordered_locations[2].keys.first,
+          'destination_uuid' => transfer_ordered_dest_plates[2].uuid,
+          'destination_location' => transfer_ordered_locations[2].values.first.first
         },
         {
-          'source_uuid' => src_plates[1].uuid,
-          'source_location' => 'B1',
-          'destination_uuid' => dest_plates[1].uuid,
-          'destination_location' => 'B1'
+          'source_uuid' => transfer_ordered_src_plates[3].uuid,
+          'source_location' => transfer_ordered_locations[3].keys.first,
+          'destination_uuid' => transfer_ordered_dest_plates[3].uuid,
+          'destination_location' => transfer_ordered_locations[3].values.first.first
         }
       ]
     end
@@ -203,23 +208,17 @@ describe 'Bulk Transfer API', with: :api_v2 do
 
         it 'generates transfers with the correct sources' do
           perform_request
-          expect(Transfer::BetweenPlates.all.map(&:source)).to match_array(
-            [src_plates[0], src_plates[0], src_plates[1], src_plates[1]]
-          )
+          expect(Transfer::BetweenPlates.all.map(&:source)).to match_array(transfer_ordered_src_plates)
         end
 
         it 'generates transfers with the correct destinations' do
           perform_request
-          expect(Transfer::BetweenPlates.all.map(&:destination)).to match_array(
-            [dest_plates[0], dest_plates[1], dest_plates[0], dest_plates[1]]
-          )
+          expect(Transfer::BetweenPlates.all.map(&:destination)).to match_array(transfer_ordered_dest_plates)
         end
 
         it 'generates transfers with the correct transfers hashes' do
           perform_request
-          expect(Transfer::BetweenPlates.all.map(&:transfers_hash)).to match_array(
-            [{ 'A1' => ['A1'] }, { 'B1' => ['A1'] }, { 'A1' => ['B1'] }, { 'B1' => ['B1'] }]
-          )
+          expect(Transfer::BetweenPlates.all.map(&:transfers_hash)).to match_array(transfer_ordered_locations)
         end
       end
 
@@ -233,17 +232,7 @@ describe 'Bulk Transfer API', with: :api_v2 do
 
       context 'with user as a relationship' do
         let(:payload) do
-          {
-            data: {
-              type: resource_type,
-              attributes: {
-                well_transfers: well_transfers
-              },
-              relationships: {
-                user: user_relationship
-              }
-            }
-          }
+          { data: { type: resource_type, attributes: { well_transfers: }, relationships: { user: user_relationship } } }
         end
 
         it_behaves_like 'a valid request'
@@ -283,7 +272,7 @@ describe 'Bulk Transfer API', with: :api_v2 do
     context 'without a required relationship' do
       context 'without a user or user_uuid' do
         let(:error_detail_message) { "user - can't be blank" }
-        let(:payload) { { data: { type: resource_type, attributes: { well_transfers: well_transfers } } } }
+        let(:payload) { { data: { type: resource_type, attributes: { well_transfers: } } } }
 
         it_behaves_like 'an unprocessable POST request with a specific error'
       end
