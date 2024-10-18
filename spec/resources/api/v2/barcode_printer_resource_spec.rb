@@ -13,7 +13,7 @@ RSpec.describe Api::V2::BarcodePrinterResource, type: :resource do
 
   # Attributes
   it { is_expected.to have_readonly_attribute :barcode_type }
-  it { is_expected.to have_readwrite_attribute :name }
+  it { is_expected.to have_readonly_attribute :name }
   it { is_expected.to have_readonly_attribute :print_service }
   it { is_expected.to have_readonly_attribute :uuid }
 end
