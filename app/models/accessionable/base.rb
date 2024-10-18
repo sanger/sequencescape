@@ -95,6 +95,8 @@ class Accessionable::Base
       MISSING_DATA_AGGREEMENT_PRE2023 = 'missing: data agreement established pre-2023'
       MISSING_ENDANGERED_SPECIES = 'missing: endangered species'
       MISSING_HUMAN_IDENTIFIABLE = 'missing: human-identifiable'
+      MISSING_CONTROL_SAMPLE = 'missing: control sample'
+      MISSING_SAMPLE_GROUP = 'missing: sample group'
 
       OTHER_DEFAULT_SETTINGS = [
         NOT_COLLECTED,
@@ -107,7 +109,9 @@ class Accessionable::Base
         MISING_THIRD_PARTY_DATA,
         MISSING_DATA_AGGREEMENT_PRE2023,
         MISSING_ENDANGERED_SPECIES,
-        MISSING_HUMAN_IDENTIFIABLE
+        MISSING_HUMAN_IDENTIFIABLE,
+        MISSING_CONTROL_SAMPLE,
+        MISSING_SAMPLE_GROUP
       ].freeze
 
       def value_for(value)
