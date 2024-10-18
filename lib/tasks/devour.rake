@@ -6,11 +6,12 @@ namespace :devour do
     # We prettify our JSON to make it both easier to read and diff
     json_formatting = { indent: '  ', object_nl: "\n", space: ' ', array_nl: "\n" }
 
-    non_resource_symbols = %i[BaseResource Concerns SharedBehaviour Transfers]
-    base_resources = (Api::V2.constants - non_resource_symbols).map { |key| Api::V2.const_get(key) }
-    transfer_resources = Api::V2::Transfers.constants.map { |key| Api::V2::Transfers.const_get(key) }
+    resources =
+      (Api::V2.constants - %i[BaseResource])
+        .map { |key| Api::V2.const_get(key) }
+        .select { |klass| klass < JSONAPI::Resource }
     config =
-      (base_resources + transfer_resources)
+      resources
         .sort_by { |resource| resource._type.to_s }
         .map do |resource|
           attributes = {}
