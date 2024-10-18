@@ -40,7 +40,7 @@ configatron.swipecard_pmb_template = 'swipecard_barcode_template'
 
 configatron.help_link_base_url = 'https://ssg-confluence.internal.sanger.ac.uk/display/PSDPUB'
 
-configatron.fresh_sevice_new_ticket_url = 'https://sanger.freshservice.com/a/tickets/new'
+configatron.fresh_sevice_new_ticket_url = 'https://example.freshservice.com'
 
 configatron.external_applications = [
   ['High Throughput Pipeline', 'http://www.example.com'],
