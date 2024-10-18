@@ -33,11 +33,11 @@ module Api
 
       # @!attribute [r] print_service
       #   @return [String] the service this printer can be instructed to print from.
-      attribute :print_service, write_once: true
+      attribute :print_service, readonly: true
 
       # @!attribute [r] barcode_type
       #   @return [String] the name of the barcode type for this printer.
-      attribute :barcode_type, write_once: true
+      attribute :barcode_type, readonly: true
 
       ###
       # Getters and Setters
