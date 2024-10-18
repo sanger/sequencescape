@@ -1,0 +1,61 @@
+# Create or update merge-to-master pull requests for production releases
+# Note that by design, creating or editing a PR will not trigger a downstream `pull_request` event as this could lead to recursion
+name: Release
+on:
+  push:
+    branches:
+      - develop
+jobs:
+  pull_request:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Create or update PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PR_TITLE="[automated] Merge Develop into Master"
+
+          # Extract numbers from PRs that have been merged into develop
+          PR_NUMBERS=$(gh api repos/:owner/:repo/compare/master...develop --jq '
+          .commits[]
+          | select(.commit.message
+          | startswith("Merge pull request"))
+          | .commit.message
+          | capture("#(?<pr_number>\\d+)")
+          | .pr_number'
+          )
+
+          # Fetch titles for each PR number
+          PR_NUMBERS_AND_TITLES=$(for PR_NUMBER in $PR_NUMBERS; do
+            gh pr view $PR_NUMBER --json number,title --jq '{number: .number, title: .title}'
+          done | jq -s 'sort_by(.title)')
+
+          # Sort extracted PR numbers by title
+          SORTED_PR_NUMBERS=$(jq -r '.[].number' <<< "$PR_NUMBERS_AND_TITLES")
+
+          STORIES=$(xargs -I {} gh pr view {} --json body --jq '.body | if . | test("Closes #\\d+") then capture("Closes #(?<issue_number>\\d+)") | "- #{}
+            - Closes #" + .issue_number else "- #{}" end' <<< "$SORTED_PR_NUMBERS") # Note the line-break on this line is for formatting
+
+          PR_BODY="#### Changes proposed in this pull request
+
+          $(echo "$STORIES")
+
+          #### Instructions for Reviewers
+
+          - _Check stories are ready for release._
+          - _Check for any database migrations._
+          - _Check for debug code._
+          - _Check version is appropriate._
+
+          This description will be overwritten on the next push
+          This PR was auto-generated on $(TZ=Europe/London date --iso-8601=seconds)"
+
+          # Check if a PR already exists
+          EXISTING_PR=$(gh pr list --base master --head develop --json number --jq '.[0].number')
+
+          if [ -z "$EXISTING_PR" ]; then
+            gh pr create --base master --head develop --title "$PR_TITLE" --body "$PR_BODY" --draft
+          else
+            gh pr edit "$EXISTING_PR" --body "$PR_BODY"
+          fi
