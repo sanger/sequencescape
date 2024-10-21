@@ -40,6 +40,14 @@ RSpec/DescribeClass:
     - "spec/features/**/*.rb"
     - "spec/views/**/*.rb"
 
+# Disabled, due to the large amount of setup required in many of our tests
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
+# The default of 3 seems too restrictive, 5 might be more practical for our code-base
+RSpec/NestedGroups:
+  Max: 5
+
 Rails/SkipsModelValidations:
   Exclude:
     - "db/migrate/*.rb"
