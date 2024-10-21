@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-module ApiV2Matchers
-  #####
-  # Attribute matchers
-  #####
-
+module ApiV2AttributeMatchers
   RSpec::Matchers.define :have_readonly_attribute do |attribute|
     description { "have read-only attribute `#{attribute}`" }
 
@@ -52,11 +48,9 @@ module ApiV2Matchers
       expect(resource).to have_a_write_once_field attribute
     end
   end
+end
 
-  #####
-  # Relationship matchers
-  #####
-
+module ApiV2RelationshipMatchers
   RSpec::Matchers.define :have_a_readonly_have_one do |field, class_name|
     description do
       desc_text = "have a read-only have_one field `#{field}`"
@@ -124,9 +118,9 @@ module ApiV2Matchers
       expect(resource).to have_a_writable_field field
     end
   end
+end
 
-  private
-
+module ApiV2PrivateMatchers
   RSpec::Matchers.define :have_a_readonly_field do |field|
     description { "have a read-only field `#{field}`" }
 
