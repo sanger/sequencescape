@@ -57,19 +57,6 @@ module Api
       # Attributes
       ###
 
-      # @!attribute [w] parent_uuid
-      #   This is declared for convenience where the parent {Plate} is not available to set as a relationship.
-      #   Setting this attribute alongside the `parent` relationship will prefer the relationship value.
-      #   @deprecated Use the `parent` relationship instead.
-      #   @param value [String] The UUID of the {Plate} to become the parent of the created child plate.
-      #   @return [Void]
-      #   @see #parent
-      attribute :parent_uuid, writeonly: true
-
-      def parent_uuid=(value)
-        @model.parent = Plate.with_uuid(value).first
-      end
-
       # @!attribute [w] child_purpose_uuid
       #   This is declared for convenience where the {PlatePurpose} is not available to set as a relationship.
       #   Setting this attribute alongside the `child_purpose` relationship will prefer the relationship value.
@@ -81,6 +68,19 @@ module Api
 
       def child_purpose_uuid=(value)
         @model.child_purpose = PlatePurpose.with_uuid(value).first
+      end
+
+      # @!attribute [w] parent_uuid
+      #   This is declared for convenience where the parent {Plate} is not available to set as a relationship.
+      #   Setting this attribute alongside the `parent` relationship will prefer the relationship value.
+      #   @deprecated Use the `parent` relationship instead.
+      #   @param value [String] The UUID of the {Plate} to become the parent of the created child plate.
+      #   @return [Void]
+      #   @see #parent
+      attribute :parent_uuid, writeonly: true
+
+      def parent_uuid=(value)
+        @model.parent = Plate.with_uuid(value).first
       end
 
       # @!attribute [w] user_uuid
