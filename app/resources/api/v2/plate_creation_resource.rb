@@ -104,21 +104,21 @@ module Api
       # Relationships
       ###
 
-      # @!attribute [rw] parent
-      #   Setting this relationship alongside the `parent_uuid` attribute will override the attribute value.
-      #   @return [Api::V2::PlateResource] The plate to become the parent of the created child plate.
-      has_one :parent, class_name: 'Plate'
+      # @!attribute [r] child
+      #   @return [Api::V2::PlateResource] The child plate created by this resource.
+      has_one :child, class_name: 'Plate', readonly: true
 
-      # @!attribute [rw] purpose
+      # @!attribute [rw] child_purpose
       #   Setting this relationship alongside the `child_purpose_uuid` attribute will override the attribute value.
       #   The purpose which the child plate should be created with.
       #   @return [Api::V2::PlatePurposeResource]
       #   @note This relationship is required.
       has_one :child_purpose, class_name: 'PlatePurpose'
 
-      # @!attribute [r] child
-      #   @return [Api::V2::PlateResource] The child plate created by this resource.
-      has_one :child, class_name: 'Plate', readonly: true
+      # @!attribute [rw] parent
+      #   Setting this relationship alongside the `parent_uuid` attribute will override the attribute value.
+      #   @return [Api::V2::PlateResource] The plate to become the parent of the created child plate.
+      has_one :parent, class_name: 'Plate'
 
       # @!attribute [rw] user
       #   Setting this relationship alongside the `user_uuid` attribute will override the attribute value.
