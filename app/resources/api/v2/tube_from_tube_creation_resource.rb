@@ -31,13 +31,13 @@ module Api
     #       "attributes": {},
     #       "relationships": {
     #         "child_purpose": {
-    #           "data": { "type": "tube_purpose", "id": "123" }
+    #           "data": { "type": "tube_purposes", "id": "123" }
     #         },
     #         "parent": {
-    #           "data": { "type": "tube", "id": "456" }
+    #           "data": { "type": "tubes", "id": "456" }
     #         },
     #         "user": {
-    #           "data": { "type": "user", "id": "789" }
+    #           "data": { "type": "users", "id": "789" }
     #         }
     #       }
     #     }
