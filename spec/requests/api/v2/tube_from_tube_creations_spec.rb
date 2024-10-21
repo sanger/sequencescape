@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
-require './spec/requests/api/v2/shared_examples/post_requests'
+require './spec/requests/api/v2/shared_examples/requests'
 
 describe 'Tube from Tube Creations API', with: :api_v2 do
   let(:model_class) { TubeFromTubeCreation }
@@ -85,25 +85,25 @@ describe 'Tube from Tube Creations API', with: :api_v2 do
         context 'with child' do
           let(:related_name) { 'child' }
 
-          it_behaves_like 'a POST request including a has_one relationship'
+          it_behaves_like 'a GET request including a has_one relationship'
         end
 
         context 'with child_purpose' do
           let(:related_name) { 'child_purpose' }
 
-          it_behaves_like 'a POST request including a has_one relationship'
+          it_behaves_like 'a GET request including a has_one relationship'
         end
 
         context 'with parent' do
           let(:related_name) { 'parent' }
 
-          it_behaves_like 'a POST request including a has_one relationship'
+          it_behaves_like 'a GET request including a has_one relationship'
         end
 
         context 'with user' do
           let(:related_name) { 'user' }
 
-          it_behaves_like 'a POST request including a has_one relationship'
+          it_behaves_like 'a GET request including a has_one relationship'
         end
       end
     end

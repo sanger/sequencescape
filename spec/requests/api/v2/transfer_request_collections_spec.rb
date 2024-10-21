@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
-require './spec/requests/api/v2/shared_examples/post_requests'
+require './spec/requests/api/v2/shared_examples/requests'
 
 describe 'Transfer Request Collection API', with: :api_v2 do
   let(:model_class) { TransferRequestCollection }
@@ -69,19 +69,19 @@ describe 'Transfer Request Collection API', with: :api_v2 do
         context 'with target_tubes' do
           let(:related_name) { 'target_tubes' }
 
-          it_behaves_like 'a POST request including a has_many relationship'
+          it_behaves_like 'a GET request including a has_many relationship'
         end
 
         context 'with transfer_requests' do
           let(:related_name) { 'transfer_requests' }
 
-          it_behaves_like 'a POST request including a has_many relationship'
+          it_behaves_like 'a GET request including a has_many relationship'
         end
 
         context 'with user' do
           let(:related_name) { 'user' }
 
-          it_behaves_like 'a POST request including a has_one relationship'
+          it_behaves_like 'a GET request including a has_one relationship'
         end
       end
     end
