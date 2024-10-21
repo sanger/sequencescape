@@ -5,7 +5,6 @@ require 'support/lab_where_client_helper'
 
 RSpec.configure { |c| c.include LabWhereClientHelper }
 
-# rubocop:disable RSpec/MultipleMemoizedHelpers
 RSpec.describe LocationReport do
   # setup studies
   let(:studies) { create_list(:study, 2) }
