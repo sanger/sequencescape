@@ -242,16 +242,6 @@ FactoryBot.define do
     transient { well_factory { :untagged_well } }
 
     after(:create) do |plate, _evaluator|
-      custom_metadatum = CustomMetadatum.new
-      custom_metadatum.key = 'control_placement_type'
-      custom_metadatum.value = 'random'
-      custom_metadatum_collection = CustomMetadatumCollection.new
-      custom_metadatum_collection.custom_metadata = [custom_metadatum]
-      custom_metadatum_collection.asset = plate
-      custom_metadatum_collection.user = User.new(id: 1)
-      custom_metadatum_collection.save!
-      custom_metadatum.save!
-
       plate.wells.each_with_index do |well, index|
         next if well.aliquots.empty?
 
