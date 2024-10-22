@@ -298,6 +298,20 @@ describe 'Plate Creations API', with: :api_v2 do
       end
     end
 
+    context 'with a read-only relationship in the payload' do
+      context 'with child' do
+        let(:child) { create(:plate) }
+        let(:child_relationship) { { data: { id: child.id, type: 'plates' } } }
+
+        let(:disallowed_value) { 'child' }
+        let(:payload) do
+          { data: { type: resource_type, relationships: { child: child_relationship, user: user_relationship } } }
+        end
+
+        it_behaves_like 'a POST request with a disallowed value'
+      end
+    end
+
     context 'without a required relationship' do
       context 'without child_purpose or child_purpose_uuid' do
         let(:error_detail_message) { "child_purpose - can't be blank" }
