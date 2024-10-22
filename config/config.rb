@@ -40,13 +40,13 @@ configatron.swipecard_pmb_template = 'swipecard_barcode_template'
 
 configatron.help_link_base_url = 'https://ssg-confluence.internal.sanger.ac.uk/display/PSDPUB'
 
+configatron.fresh_sevice_new_ticket_url = 'https://example.freshservice.com'
+
 configatron.external_applications = [
   ['High Throughput Pipeline', 'http://www.example.com'],
   ['Generic Lims', 'http://www.example.com'],
   %w[Gatekeeper http://www.example.com]
 ]
-
-configatron.help_link_base_url = 'http://wwww.example.com'
 
 if Rails.env.development? || Rails.env.profile?
   configatron.asset_audits_url = 'http://localhost:3014/process_plates/new'

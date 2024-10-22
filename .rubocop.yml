@@ -230,3 +230,9 @@ RSpec/ExpectInHook:
   Enabled: false
 # New in Ruby 3.2 upgrade
 # Added to Rubocop Todo and handling from there
+
+RSpec/MultipleMemoizedHelpers: # new in 1.43
+  Enabled: false # We don't see a benefit to limiting the number of memoized helpers.
+
+RSpec/NestedGroups: # new in 1.7
+  Max: 6 # Set a more reasonable max. We've been happy with our existing nesting.
