@@ -7,16 +7,24 @@ describe 'Asset submission', :js do
   let(:study) { create(:study) }
   let(:request_factory) { :sequencing_request }
   let(:asset) { create(:library_tube) }
+  let(:flowcell_types) { create_list(:flowcell_type, 2) }
   let(:request_types) { create_list(:sequencing_request_type, 2) }
   let(:original_request_type) { request_types.first }
   let(:selected_request_type) { original_request_type }
   let(:selected_read_length) { '76' }
+  let(:request_flowcell_type_validators) do
+    RequestType::Validator.create(
+      request_type: selected_request_type,
+      request_option: 'requested_flowcell_type',
+      valid_options: flowcell_types.map(&:name)
+    )
+  end
   let!(:original_request) do
-    create(request_factory, study: study, project: project, asset: asset, request_type: original_request_type)
+    create(request_factory, study: study, project: project, asset: asset, request_type: selected_request_type)
   end
 
   describe 'The request form does not set default values' do
-    let(:user) { create :admin }
+    let(:user) { create(:admin) }
 
     before do
       login_user user
@@ -44,20 +52,18 @@ describe 'Asset submission', :js do
   end
 
   describe 'Validation of Flowcell Type field for illumina-HTP NovaSeq requests' do
-    let(:user) { create :admin }
+    let(:user) { create(:admin) }
 
     before do
-      allow(RequestType).to receive(:where).with(
-        key: %w[illumina_htp_novaseq_6000_paired_end_sequencing illumina_htp_novaseqx_paired_end_sequencing]
-      ).and_return(request_types)
-      allow(request_types).to receive(:pluck).with(:id).and_return(request_types.map(&:id))
+      allow(selected_request_type).to receive(:validator_for).with('requested_flowcell_type').and_return(
+        request_flowcell_type_validators
+      )
       login_user user
       visit labware_path(asset)
       click_link 'Request additional sequencing'
     end
 
-    it 'displays an error if Flowcell Type is not set' do
-      current_path = page.current_path
+    it 'displays an error if request type is of type illumina_htp_novaseq and Flowcell Type is not set' do
       select(selected_request_type.name, from: 'Request type')
       select(study.name, from: 'Study')
       select(project.name, from: 'Project')
@@ -67,8 +73,57 @@ describe 'Asset submission', :js do
       click_button 'Create'
 
       # The JS native validation error 'Please select an item in the list' is being displayed but cannot be inspected.
-      expect(page).not_to have_text 'Created request'
-      expect(page).to have_current_path(current_path)
+      expect(page).to have_no_text 'Created request'
+
+      redirect_path =
+        new_request_receptacle_path(
+          asset.receptacle,
+          study_id: study.id,
+          project_id: project.id,
+          request_type_id: selected_request_type.id
+        )
+      expect(page).to have_current_path(redirect_path)
+    end
+
+    it 'creates a new request successfully when Flowcell Type is correctly set' do
+      select(selected_request_type.name, from: 'Request type')
+      select(study.name, from: 'Study')
+      select(project.name, from: 'Project')
+      fill_in 'Fragment size required (from)', with: '100'
+      fill_in 'Fragment size required (to)', with: '200'
+      select(selected_read_length, from: 'Read length')
+      select('Flowcell 1', from: 'Flowcell type')
+      fill_in 'Fragment size required (from)', with: '100'
+      fill_in 'Fragment size required (to)', with: '200'
+      select(selected_read_length, from: 'Read length')
+      click_button 'Create'
+
+      expect(page).to have_text 'Created request'
+    end
+  end
+
+  describe 'Validation of Flowcell Type field for no illumina-HTP NovaSeq request types' do
+    let(:user) { create(:admin) }
+
+    before do
+      login_user user
+      visit labware_path(asset)
+      click_link 'Request additional sequencing'
+    end
+
+    it 'creates a new request successfully even when Flowcell Type is not specified' do
+      select(selected_request_type.name, from: 'Request type')
+      select(study.name, from: 'Study')
+      select(project.name, from: 'Project')
+      fill_in 'Fragment size required (from)', with: '100'
+      fill_in 'Fragment size required (to)', with: '200'
+      select(selected_read_length, from: 'Read length')
+      fill_in 'Fragment size required (from)', with: '100'
+      fill_in 'Fragment size required (to)', with: '200'
+      select(selected_read_length, from: 'Read length')
+      click_button 'Create'
+
+      expect(page).to have_text 'Created request'
     end
   end
 
