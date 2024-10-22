@@ -128,7 +128,7 @@ describe 'Asset submission', :js do
   end
 
   describe 'The request form does not set default values' do
-    let(:user) { create :admin }
+    let(:user) { create(:admin) }
 
     before do
       login_user user
@@ -156,7 +156,7 @@ describe 'Asset submission', :js do
   end
 
   describe 'Validation of Flowcell Type field for illumina-HTP NovaSeq requests' do
-    let(:user) { create :admin }
+    let(:user) { create(:admin) }
 
     before do
       allow(RequestType).to receive(:where).with(
@@ -179,7 +179,7 @@ describe 'Asset submission', :js do
       click_button 'Create'
 
       # The JS native validation error 'Please select an item in the list' is being displayed but cannot be inspected.
-      expect(page).not_to have_text 'Created request'
+      expect(page).to have_no_text 'Created request'
       expect(page).to have_current_path(current_path)
     end
   end
