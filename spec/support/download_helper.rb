@@ -14,7 +14,6 @@ module DownloadHelpers
   end
 
   def self.downloaded_file(file, timeout: TIMEOUT)
-    # binding.pry
     wait_for_download(file, timeout)
     File.read(path_to(file))
   ensure
