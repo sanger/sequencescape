@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
-require './spec/requests/api/v2/shared_examples/post_requests'
+require './spec/requests/api/v2/shared_examples/requests'
 
 describe 'Transfer API', with: :api_v2 do
   let(:model_class) { Transfer::BetweenPlates }
@@ -93,7 +93,7 @@ describe 'Transfer API', with: :api_v2 do
         context 'with user' do
           let(:related_name) { 'user' }
 
-          it_behaves_like 'a POST request including a has_one relationship'
+          it_behaves_like 'a GET request including a has_one relationship'
         end
       end
     end

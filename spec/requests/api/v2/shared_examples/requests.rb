@@ -34,7 +34,7 @@ shared_examples 'an unprocessable POST request with a specific error' do
   end
 end
 
-shared_examples 'a POST request including a has_one relationship' do
+shared_examples 'a GET request including a has_one relationship' do
   before { api_get "#{base_endpoint}/#{resource.id}?include=#{related_name}" }
 
   it 'responds with a success http code' do
@@ -48,7 +48,7 @@ shared_examples 'a POST request including a has_one relationship' do
   end
 end
 
-shared_examples 'a POST request including a has_many relationship' do
+shared_examples 'a GET request including a has_many relationship' do
   before { api_get "#{base_endpoint}/#{resource.id}?include=#{related_name}" }
 
   it 'responds with a success http code' do

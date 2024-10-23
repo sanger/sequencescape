@@ -4,8 +4,8 @@ require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
 require './spec/requests/api/v2/shared_examples/requests'
 
-describe 'Plate Conversions API', with: :api_v2 do
-  let(:model_class) { PlateConversion }
+describe 'Plate Creations API', with: :api_v2 do
+  let(:model_class) { PlateCreation }
   let(:base_endpoint) { "/api/v2/#{resource_type}" }
   let(:resource_type) { model_class.name.demodulize.pluralize.underscore }
 
@@ -14,7 +14,7 @@ describe 'Plate Conversions API', with: :api_v2 do
   context 'with a list of resources' do
     let(:resource_count) { 5 }
 
-    before { create_list(:plate_conversion, resource_count) }
+    before { create_list(:plate_creation, resource_count) }
 
     describe '#GET all resources' do
       before { api_get base_endpoint }
@@ -31,7 +31,7 @@ describe 'Plate Conversions API', with: :api_v2 do
 
   context 'with a single resource' do
     describe '#GET resource by ID' do
-      let(:resource) { create(:plate_conversion) }
+      let(:resource) { create(:plate_creation) }
 
       context 'without included relationships' do
         before { api_get "#{base_endpoint}/#{resource.id}" }
@@ -48,36 +48,32 @@ describe 'Plate Conversions API', with: :api_v2 do
           expect(json.dig('data', 'type')).to eq(resource_type)
         end
 
-        it 'returns the correct attributes' do
+        it 'returns a uuid attribute' do
           expect(json.dig('data', 'attributes', 'uuid')).to eq(resource.uuid)
+        end
+
+        it 'excludes the unfetchable child_purpose_uuid' do
+          expect(json.dig('data', 'attributes', 'child_purpose_uuid')).not_to be_present
         end
 
         it 'excludes the unfetchable parent_uuid' do
           expect(json.dig('data', 'attributes', 'parent_uuid')).not_to be_present
         end
 
-        it 'excludes the unfetchable purpose_uuid' do
-          expect(json.dig('data', 'attributes', 'purpose_uuid')).not_to be_present
-        end
-
-        it 'excludes the unfetchable target_uuid' do
-          expect(json.dig('data', 'attributes', 'target_uuid')).not_to be_present
-        end
-
         it 'excludes the unfetchable user_uuid' do
           expect(json.dig('data', 'attributes', 'user_uuid')).not_to be_present
         end
 
+        it 'returns a reference to the child relationship' do
+          expect(json.dig('data', 'relationships', 'child')).to be_present
+        end
+
+        it 'returns a reference to the child_purpose relationship' do
+          expect(json.dig('data', 'relationships', 'child_purpose')).to be_present
+        end
+
         it 'returns a reference to the parent relationship' do
           expect(json.dig('data', 'relationships', 'parent')).to be_present
-        end
-
-        it 'returns a reference to the purpose relationship' do
-          expect(json.dig('data', 'relationships', 'purpose')).to be_present
-        end
-
-        it 'returns a reference to the target relationship' do
-          expect(json.dig('data', 'relationships', 'target')).to be_present
         end
 
         it 'returns a reference to the user relationship' do
@@ -90,20 +86,20 @@ describe 'Plate Conversions API', with: :api_v2 do
       end
 
       context 'with included relationships' do
+        context 'with child' do
+          let(:related_name) { 'child' }
+
+          it_behaves_like 'a GET request including a has_one relationship'
+        end
+
+        context 'with child_purpose' do
+          let(:related_name) { 'child_purpose' }
+
+          it_behaves_like 'a GET request including a has_one relationship'
+        end
+
         context 'with parent' do
           let(:related_name) { 'parent' }
-
-          it_behaves_like 'a GET request including a has_one relationship'
-        end
-
-        context 'with purpose' do
-          let(:related_name) { 'purpose' }
-
-          it_behaves_like 'a GET request including a has_one relationship'
-        end
-
-        context 'with target' do
-          let(:related_name) { 'target' }
 
           it_behaves_like 'a GET request including a has_one relationship'
         end
@@ -118,7 +114,7 @@ describe 'Plate Conversions API', with: :api_v2 do
   end
 
   describe '#PATCH a resource' do
-    let(:resource_model) { create(:plate_conversion) }
+    let(:resource_model) { create(:plate_creation) }
     let(:payload) { { data: { id: resource_model.id, type: resource_type, attributes: {} } } }
 
     it 'finds no route for the method' do
@@ -129,15 +125,18 @@ describe 'Plate Conversions API', with: :api_v2 do
   end
 
   describe '#POST a create request' do
+    let(:child_purpose) { create(:plate_purpose) }
     let(:parent) { create(:plate) }
-    let(:purpose) { create(:plate_purpose) }
-    let(:target) { create(:plate) }
     let(:user) { create(:user) }
 
+    let(:child_purpose_relationship) { { data: { id: child_purpose.id, type: 'plate_purposes' } } }
     let(:parent_relationship) { { data: { id: parent.id, type: 'plates' } } }
-    let(:purpose_relationship) { { data: { id: purpose.id, type: 'plate_purposes' } } }
-    let(:target_relationship) { { data: { id: target.id, type: 'plates' } } }
     let(:user_relationship) { { data: { id: user.id, type: 'users' } } }
+
+    # Mock the plate barcode service because it is not available in the test environment.
+    # This wasn't needed above because the only records being created were via the factory which supplies a barcode.
+    include BarcodeHelper
+    before { mock_plate_barcode_service }
 
     context 'with a valid payload' do
       shared_examples 'a valid request' do
@@ -160,36 +159,37 @@ describe 'Plate Conversions API', with: :api_v2 do
           expect(json.dig('data', 'attributes', 'uuid')).to eq(new_record.uuid)
         end
 
+        it 'excludes the unfetchable child_purpose_uuid' do
+          expect(json.dig('data', 'attributes', 'child_purpose_uuid')).not_to be_present
+        end
+
         it 'excludes the unfetchable parent_uuid' do
           expect(json.dig('data', 'attributes', 'parent_uuid')).not_to be_present
-        end
-
-        it 'excludes the unfetchable purpose_uuid' do
-          expect(json.dig('data', 'attributes', 'purpose_uuid')).not_to be_present
-        end
-
-        it 'excludes the unfetchable target_uuid' do
-          expect(json.dig('data', 'attributes', 'target_uuid')).not_to be_present
         end
 
         it 'excludes the unfetchable user_uuid' do
           expect(json.dig('data', 'attributes', 'user_uuid')).not_to be_present
         end
 
+        it 'returns a reference to the child relationship' do
+          expect(json.dig('data', 'relationships', 'child')).to be_present
+        end
+
+        it 'returns a reference to the child_purpose relationship' do
+          expect(json.dig('data', 'relationships', 'child_purpose')).to be_present
+        end
+
         it 'returns a reference to the parent relationship' do
           expect(json.dig('data', 'relationships', 'parent')).to be_present
         end
 
-        it 'returns a reference to the purpose relationship' do
-          expect(json.dig('data', 'relationships', 'purpose')).to be_present
-        end
-
-        it 'returns a reference to the target relationship' do
-          expect(json.dig('data', 'relationships', 'target')).to be_present
-        end
-
         it 'returns a reference to the user relationship' do
           expect(json.dig('data', 'relationships', 'user')).to be_present
+        end
+
+        it 'associates the child_purpose with the new record' do
+          new_record = model_class.last
+          expect(new_record.child_purpose).to eq(child_purpose)
         end
 
         it 'associates the parent with the new record' do
@@ -197,34 +197,34 @@ describe 'Plate Conversions API', with: :api_v2 do
           expect(new_record.parent).to eq(parent)
         end
 
-        it 'associates the purpose with the new record' do
-          new_record = model_class.last
-          expect(new_record.purpose).to eq(purpose)
-        end
-
-        it 'associates the target with the new record' do
-          new_record = model_class.last
-          expect(new_record.target).to eq(target)
-        end
-
         it 'associates the user with the new record' do
           new_record = model_class.last
           expect(new_record.user).to eq(user)
         end
 
-        it 'converts the target to the given purpose' do
-          new_record = model_class.last
-          expect(new_record.target.purpose).to eq(purpose)
+        it 'creates a child' do
+          expect { api_post base_endpoint, payload }.to change(Plate, :count).by(1)
         end
 
-        it 'makes the parent plate the parent of the target plate' do
+        it 'assigns the new child to the PlateCreation' do
           new_record = model_class.last
-          expect(new_record.target.parent).to eq(parent) unless parent.nil?
+          new_plate = Plate.last
+          expect(new_record.child).to eq(new_plate)
         end
 
-        it 'makes the target plate a child of the parent plate' do
+        it 'assigns the correct purpose to the child' do
           new_record = model_class.last
-          expect(new_record.parent.children).to include(target) unless parent.nil?
+          expect(new_record.child.purpose).to eq(child_purpose)
+        end
+
+        it 'makes the parent plate the parent of the child plate' do
+          new_record = model_class.last
+          expect(new_record.child.parent).to eq(parent)
+        end
+
+        it 'makes the child plate a child of the parent plate' do
+          new_record = model_class.last
+          expect(new_record.parent.children).to include(new_record.child)
         end
       end
 
@@ -234,27 +234,8 @@ describe 'Plate Conversions API', with: :api_v2 do
             data: {
               type: resource_type,
               attributes: {
+                child_purpose_uuid: child_purpose.uuid,
                 parent_uuid: parent.uuid,
-                purpose_uuid: purpose.uuid,
-                target_uuid: target.uuid,
-                user_uuid: user.uuid
-              }
-            }
-          }
-        end
-
-        it_behaves_like 'a valid request'
-      end
-
-      context 'with mandatory attributes' do
-        let(:parent) { nil }
-        let(:payload) do
-          {
-            data: {
-              type: resource_type,
-              attributes: {
-                purpose_uuid: purpose.uuid,
-                target_uuid: target.uuid,
                 user_uuid: user.uuid
               }
             }
@@ -270,27 +251,8 @@ describe 'Plate Conversions API', with: :api_v2 do
             data: {
               type: resource_type,
               relationships: {
+                child_purpose: child_purpose_relationship,
                 parent: parent_relationship,
-                purpose: purpose_relationship,
-                target: target_relationship,
-                user: user_relationship
-              }
-            }
-          }
-        end
-
-        it_behaves_like 'a valid request'
-      end
-
-      context 'with mandatory relationships' do
-        let(:parent) { nil }
-        let(:payload) do
-          {
-            data: {
-              type: resource_type,
-              relationships: {
-                purpose: purpose_relationship,
-                target: target_relationship,
                 user: user_relationship
               }
             }
@@ -301,24 +263,21 @@ describe 'Plate Conversions API', with: :api_v2 do
       end
 
       context 'with conflicting relationships' do
+        let(:other_child_purpose) { create(:plate_purpose) }
         let(:other_parent) { create(:plate) }
-        let(:other_purpose) { create(:plate_purpose) }
-        let(:other_target) { create(:plate) }
         let(:other_user) { create(:user) }
         let(:payload) do
           {
             data: {
               type: resource_type,
               attributes: {
+                child_purpose_uuid: other_child_purpose.uuid,
                 parent_uuid: other_parent.uuid,
-                purpose_uuid: other_purpose.uuid,
-                target_uuid: other_target.uuid,
                 user_uuid: other_user.uuid
               },
               relationships: {
+                child_purpose: child_purpose_relationship,
                 parent: parent_relationship,
-                purpose: purpose_relationship,
-                target: target_relationship,
                 user: user_relationship
               }
             }
@@ -339,20 +298,42 @@ describe 'Plate Conversions API', with: :api_v2 do
       end
     end
 
-    context 'without a required relationship' do
-      context 'without purpose or purpose_uuid' do
-        let(:error_detail_message) { "purpose - can't be blank" }
+    context 'with a read-only relationship in the payload' do
+      context 'with child' do
+        let(:child) { create(:plate) }
+        let(:child_relationship) { { data: { id: child.id, type: 'plates' } } }
+
+        let(:disallowed_value) { 'child' }
         let(:payload) do
-          { data: { type: resource_type, relationships: { target: target_relationship, user: user_relationship } } }
+          { data: { type: resource_type, relationships: { child: child_relationship, user: user_relationship } } }
+        end
+
+        it_behaves_like 'a POST request with a disallowed value'
+      end
+    end
+
+    context 'without a required relationship' do
+      context 'without child_purpose or child_purpose_uuid' do
+        let(:error_detail_message) { "child_purpose - can't be blank" }
+        let(:payload) do
+          { data: { type: resource_type, relationships: { parent: parent_relationship, user: user_relationship } } }
         end
 
         it_behaves_like 'an unprocessable POST request with a specific error'
       end
 
-      context 'without target or target_uuid' do
-        let(:error_detail_message) { "target - can't be blank" }
+      context 'without parent or parent_uuid' do
+        let(:error_detail_message) { "parent - can't be blank" }
         let(:payload) do
-          { data: { type: resource_type, relationships: { purpose: purpose_relationship, user: user_relationship } } }
+          {
+            data: {
+              type: resource_type,
+              relationships: {
+                child_purpose: child_purpose_relationship,
+                user: user_relationship
+              }
+            }
+          }
         end
 
         it_behaves_like 'an unprocessable POST request with a specific error'
@@ -365,8 +346,8 @@ describe 'Plate Conversions API', with: :api_v2 do
             data: {
               type: resource_type,
               relationships: {
-                purpose: purpose_relationship,
-                target: target_relationship
+                child_purpose: child_purpose_relationship,
+                parent: parent_relationship
               }
             }
           }
