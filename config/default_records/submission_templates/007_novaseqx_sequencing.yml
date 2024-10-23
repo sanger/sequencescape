@@ -118,13 +118,6 @@ Limber-Bespoke - PCR - NovaSeqX paired end sequencing:
     product_line_name: Bespoke
     product_catalogue_name: GenericPCR
     request_type_keys: ["limber_pcr_bespoke", "limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"]
-Limber-Bespoke - PCR - HiC sequencing:
-  name: "Limber-Bespoke - PCR - HiC sequencing"
-  submission_class_name: "LinearSubmission"
-  related_records:
-    product_line_name: Bespoke
-    product_catalogue_name: GenericPCR
-    request_type_keys: ["limber_pcr_hic_bespoke", "limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"]
 Limber-Bespoke - PCR Free - NovaSeqX paired end sequencing:
   name: "Limber-Bespoke - PCR Free - NovaSeqX paired end sequencing"
   submission_class_name: "LinearSubmission"
