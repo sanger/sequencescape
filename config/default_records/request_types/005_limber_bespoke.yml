@@ -27,12 +27,6 @@ limber_pcr_bespoke:
     - Manual Chromium single cell TCR HT
     - emSEQ
     - Haplotagging
-    - Hi-C
-    - Hi-C - Arima v1
-    - Hi-C - Arima v2
-    - Hi-C - Dovetail
-    - Hi-C - OmniC
-    - Hi-C - Qiagen
     - Manual Standard WGS (Plate)
     - Ribozero RNA depletion
     - Ribozero RNA-seq (Bacterial)
@@ -44,6 +38,24 @@ limber_pcr_bespoke:
     - TraDIS
     - TruSeq mRNA (RNA Seq)
     - SGE Library v0.2
+limber_pcr_hic_bespoke:
+  <<: &limber_bespoke_library
+    asset_type: Well
+    order: 1
+    request_class_name: IlluminaHtp::Requests::StdLibraryRequest
+    billable: true
+    product_line_name: Bespoke
+  name: Limber PCR Bespoke
+  acceptable_purposes:
+    - LBB Cherrypick
+    - LBC Cherrypick
+  library_types:
+    - Hi-C
+    - Hi-C - Arima v1
+    - Hi-C - Arima v2
+    - Hi-C - Dovetail
+    - Hi-C - OmniC
+    - Hi-C - Qiagen
 limber_chromium_bespoke:
   <<: *limber_bespoke_library
   name: Limber Chromium Bespoke
