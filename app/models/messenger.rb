@@ -18,6 +18,13 @@ class Messenger < ApplicationRecord
     { root => render_class.to_hash(target), 'lims' => configatron.amqp.lims_id! }
   end
 
+  def template
+    # Replace IO with Io to match the class name
+    # This is a consequence of the zeitwerk renaming for the message modules from IO to Io
+    # This ensures that the correct class is loaded for historical messages
+    read_attribute(:template).gsub(/IO$/, 'Io')
+  end
+
   def resend
     Warren.handler << Warren::Message::Short.new(self)
   end

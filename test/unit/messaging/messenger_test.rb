@@ -18,6 +18,11 @@ class MessengerTest < ActiveSupport::TestCase
       should 'render the json' do
         assert_equal '{"example":{"example":"hash"},"lims":"SQSCP"}', @messenger.to_json
       end
+
+      should 'render the json when template is historical (ends in IO)' do
+        messenger = Messenger.new(target: @target, template: 'FlowcellIO', root: 'example')
+        assert_equal '{"example":{"example":"hash"},"lims":"SQSCP"}', messenger.to_json
+      end
     end
 
     should 'provide a routing key' do
