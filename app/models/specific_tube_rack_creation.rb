@@ -175,7 +175,7 @@ class SpecificTubeRackCreation < AssetCreation
   #
   # @return [void]
   def handle_tube_rack_barcode(tube_rack_barcode, new_tube_rack)
-    existing_barcode_record = Barcode.includes(:asset).find_by(asset_id: tube_rack_barcode)
+    existing_barcode_record = Barcode.includes(:asset).find_by(barcode: tube_rack_barcode)
 
     if existing_barcode_record.nil?
       create_new_barcode(tube_rack_barcode, new_tube_rack)
