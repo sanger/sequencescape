@@ -21,8 +21,16 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
   #
   # @return [CherrypickTask::ControlLocator] A generator of control locations
   #
-  def new_control_locator(batch_id, total_wells, num_control_wells, wells_to_leave_free: DEFAULT_WELLS_TO_LEAVE_FREE)
-    CherrypickTask::ControlLocator.new(batch_id:, total_wells:, num_control_wells:, wells_to_leave_free:)
+
+  def new_control_locator(params)
+    CherrypickTask::ControlLocator.new(
+      batch_id: params[:batch_id],
+      total_wells: params[:total_wells],
+      num_control_wells: params[:num_control_wells],
+      wells_to_leave_free: params[:wells_to_leave_free] || DEFAULT_WELLS_TO_LEAVE_FREE,
+      control_source_plate: params[:control_source_plate],
+      template: params[:template]
+    )
   end
 
   #
@@ -38,7 +46,7 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
   # rubocop:todo Metrics/ParameterLists
   def pick_new_plate(requests, template, robot, plate_purpose, control_source_plate = nil, workflow_controller = nil)
     target_type = PickTarget.for(plate_purpose)
-    perform_pick(requests, robot, control_source_plate, workflow_controller) do
+    perform_pick(requests, robot, control_source_plate, workflow_controller, template) do
       target_type.new(template, plate_purpose.try(:asset_shape))
     end
   end
@@ -54,7 +62,7 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
     purpose = partial_plate.plate_purpose
     target_type = PickTarget.for(purpose)
 
-    perform_pick(requests, robot, control_source_plate, workflow_controller) do
+    perform_pick(requests, robot, control_source_plate, workflow_controller, template) do
       target_type
         .new(template, purpose.try(:asset_shape), partial_plate)
         .tap do
@@ -66,7 +74,7 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
   # rubocop:enable Metrics/ParameterLists
 
   # rubocop:todo Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/MethodLength
-  def perform_pick(requests, robot, control_source_plate, workflow_controller) # rubocop:todo Metrics/AbcSize
+  def perform_pick(requests, robot, control_source_plate, workflow_controller, template) # rubocop:todo Metrics/AbcSize
     max_plates = robot.max_beds
     raise StandardError, 'The chosen robot has no beds!' if max_plates.zero?
 
@@ -80,7 +88,22 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
       num_plate = 0
       batch = requests.first.batch
       control_assets = control_source_plate.wells.joins(:samples)
-      control_locator = new_control_locator(batch.id, current_destination_plate.size, control_assets.count)
+      control_locator =
+        new_control_locator(
+          {
+            batch_id: batch.id,
+            total_wells: current_destination_plate.size,
+            num_control_wells: control_assets.count,
+            template: template,
+            control_source_plate: control_source_plate
+          }
+        )
+
+      if control_locator.handle_incompatible_plates
+        message = 'The control plate and plate template are incompatible'
+        workflow_controller.send(:flash)[:error] = message unless workflow_controller.nil?
+        workflow_controller.redirect_to action: 'stage', batch_id: batch.id, workflow_id: workflow.id
+      end
       control_posns = control_locator.control_positions(num_plate)
 
       # If is an incomplete plate, or a plate with a template applied, copy all the controls missing into the
