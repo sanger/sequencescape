@@ -56,6 +56,8 @@ module Api
       end
 
       filter :type, default: 'TubeRack::Purpose'
+
+      filter :name
     end
   end
 end
