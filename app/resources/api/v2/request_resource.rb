@@ -27,9 +27,9 @@ module Api
       # Associations:
       has_one :submission, always_include_linkage_data: true
       has_one :order, always_include_linkage_data: true
-      # NB. adding always_include_linkage_data: true caused a problem in the JSON Api client in Limber in that it has data
-      # for the request_type but doesn't understand it needs to query the request_type endpoint to get the full information.
-      # Results in a nil object for the request_type.
+      # NB. adding always_include_linkage_data: true caused a problem in the JSON Api client in Limber in that it has
+      # data for the request_type but doesn't understand it needs to query the request_type endpoint to get the full
+      # information. This results in a nil being returned for the request_type.
       has_one :request_type
       has_one :primer_panel
       has_one :pre_capture_pool
