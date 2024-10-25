@@ -24,6 +24,7 @@ module Api
       default_includes :uuid_object
 
       # Associations:
+      has_many :requests
 
       # Attributes
       attribute :uuid, readonly: true
