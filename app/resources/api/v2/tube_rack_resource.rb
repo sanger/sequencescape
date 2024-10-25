@@ -63,9 +63,9 @@ module Api
                )
       filter :purpose_id, apply: ->(records, value, _options) { records.where(plate_purpose_id: value) }
       filter :created_at_gt,
-         apply: lambda { |records, value, _options| records.where('labware.created_at > ?', value[0].to_date) }
+             apply: lambda { |records, value, _options| records.where('labware.created_at > ?', value[0].to_date) }
       filter :updated_at_gt,
-         apply: lambda { |records, value, _options| records.where('labware.updated_at > ?', value[0].to_date) }
+             apply: lambda { |records, value, _options| records.where('labware.updated_at > ?', value[0].to_date) }
       # TODO: do we need scope for include_used? no direct child labwares here so would have to check for racked tubes
 
       # Class method overrides
