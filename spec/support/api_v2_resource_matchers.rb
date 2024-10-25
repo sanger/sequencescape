@@ -51,9 +51,9 @@ module ApiV2AttributeMatchers
 end
 
 module ApiV2RelationshipMatchers
-  RSpec::Matchers.define :have_a_readonly_have_one do |field, class_name|
+  RSpec::Matchers.define :have_a_readonly_has_one do |field, class_name|
     description do
-      desc_text = "have a read-only have_one field `#{field}`"
+      desc_text = "have a read-only has_one field `#{field}`"
       return desc_text unless class_name
 
       desc_text + " with class name `#{class_name}`"
@@ -68,9 +68,9 @@ module ApiV2RelationshipMatchers
     end
   end
 
-  RSpec::Matchers.define :have_a_writable_have_one do |field, class_name|
+  RSpec::Matchers.define :have_a_writable_has_one do |field, class_name|
     description do
-      desc_text = "have a writable have_one field `#{field}`"
+      desc_text = "have a writable has_one field `#{field}`"
       return desc_text unless class_name
 
       desc_text + " with class name `#{class_name}`"
@@ -85,9 +85,9 @@ module ApiV2RelationshipMatchers
     end
   end
 
-  RSpec::Matchers.define :have_a_readonly_have_many do |field, class_name|
+  RSpec::Matchers.define :have_a_readonly_has_many do |field, class_name|
     description do
-      desc_text = "have a read-only have_many field `#{field}`"
+      desc_text = "have a read-only has_many field `#{field}`"
       return desc_text unless class_name
 
       desc_text + " with class name `#{class_name}`"
@@ -102,9 +102,9 @@ module ApiV2RelationshipMatchers
     end
   end
 
-  RSpec::Matchers.define :have_a_writable_have_many do |field, class_name|
+  RSpec::Matchers.define :have_a_writable_has_many do |field, class_name|
     description do
-      desc_text = "have a writable have_many field `#{field}`"
+      desc_text = "have a writable has_many field `#{field}`"
       return desc_text unless class_name
 
       desc_text + " with class name `#{class_name}`"
