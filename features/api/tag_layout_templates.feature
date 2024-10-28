@@ -1,4 +1,4 @@
-@api @json @tag_layout_template @single-sign-on @new-api
+@wip @api @json @tag_layout_template @single-sign-on @new-api
 Feature: Access tag layout templates through the API
   In order to actually be able to do anything useful
   As an authenticated user of the API
