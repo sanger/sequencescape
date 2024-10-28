@@ -10,17 +10,17 @@ RSpec.describe Api::V2::TubeResource, type: :resource do
 
   # Test attributes
   it 'exposes the expected data', :aggregate_failures do
-    expect(subject).to have_attribute :uuid
-    expect(subject).to have_attribute :name
-    expect(subject).not_to have_updatable_field(:id)
-    expect(subject).not_to have_updatable_field(:uuid)
-    expect(subject).not_to have_updatable_field(:name)
-    expect(subject).not_to have_updatable_field(:labware_barcode)
-    expect(subject).to have_many(:samples).with_class_name('Sample')
-    expect(subject).to have_many(:projects).with_class_name('Project')
-    expect(subject).to have_many(:direct_submissions).with_class_name('Submission')
-    expect(subject).to have_many(:studies).with_class_name('Study')
-    expect(subject).to have_one(:purpose).with_class_name('Purpose')
+    expect(resource).to have_attribute :uuid
+    expect(resource).to have_attribute :name
+    expect(resource).not_to have_updatable_field(:id)
+    expect(resource).not_to have_updatable_field(:uuid)
+    expect(resource).not_to have_updatable_field(:name)
+    expect(resource).not_to have_updatable_field(:labware_barcode)
+    expect(resource).to have_many(:samples).with_class_name('Sample')
+    expect(resource).to have_many(:projects).with_class_name('Project')
+    expect(resource).to have_many(:direct_submissions).with_class_name('Submission')
+    expect(resource).to have_many(:studies).with_class_name('Study')
+    expect(resource).to have_one(:purpose).with_class_name('Purpose')
 
     # If we are using api/v2/labware to pull back a list of labware, we may expect
     # a mix of plates and tubes. If we want to eager load their contents we use the
@@ -30,16 +30,14 @@ RSpec.describe Api::V2::TubeResource, type: :resource do
     # as the interface for plates and tubes remains the same. Even though not
     # strictly speaking inheritance, I think the Liskov Substitution Principle
     # applies here
-    expect(subject).to have_many(:receptacles)
+    expect(resource).to have_many(:receptacles)
   end
 
   # Custom method tests
   # Add tests for any custom methods you've added.
   describe '#labware_barcode' do
-    subject { resource.labware_barcode }
-
     it do
-      expect(subject).to eq(
+      expect(resource.labware_barcode).to eq(
         'ean13_barcode' => '3980000001795',
         'human_barcode' => 'NT1O',
         'machine_barcode' => '3980000001795'
