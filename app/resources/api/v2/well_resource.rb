@@ -16,22 +16,14 @@ module Api
     class WellResource < BaseResource
       include Api::V2::SharedBehaviour::Receptacle
 
-      # Constants...
-
       default_includes :uuid_object, :map, :transfer_requests_as_target, plate: :barcodes
 
-      # Associations:
-
       # Attributes
-      attribute :position, write_once: true
-
-      # Custom methods
+      attribute :position, readonly: true
 
       def position
         { 'name' => _model.map_description }
       end
-
-      # Class method overrides
     end
   end
 end

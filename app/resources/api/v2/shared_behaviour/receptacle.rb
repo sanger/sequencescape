@@ -13,8 +13,6 @@ module Api
         extend ActiveSupport::Concern
 
         included do
-          ::Tube.descendants.each { |subclass| model_hint model: subclass, resource: :tube }
-
           # Associations:
           has_many :samples, readonly: true
           has_many :studies, write_once: true
