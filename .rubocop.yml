@@ -236,3 +236,6 @@ RSpec/MultipleMemoizedHelpers: # new in 1.43
 
 RSpec/NestedGroups: # new in 1.7
   Max: 6 # Set a more reasonable max. We've been happy with our existing nesting.
+
+RSpec/ImplicitSubject: # new in 1.29
+  EnforcedStyle: single_statement_only # We want to be able to use `it do ... end` as well as `it { is_expected.to ... }`

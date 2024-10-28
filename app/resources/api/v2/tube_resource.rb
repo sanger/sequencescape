@@ -17,22 +17,14 @@ module Api
     class TubeResource < BaseResource
       include Api::V2::SharedBehaviour::Labware
 
-      # Constants...
-
       immutable
 
       default_includes :uuid_object, :barcodes, :transfer_requests_as_target
 
-      # Associations:
+      # Relationships
       has_many :aliquots, readonly: true
-      has_many :transfer_requests_as_target, readonly: true
       has_one :receptacle, readonly: true, foreign_key_on: :related
-
-      # Attributes
-
-      # Filters
-
-      # Class method overrides
+      has_many :transfer_requests_as_target, readonly: true
     end
   end
 end

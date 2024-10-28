@@ -82,7 +82,7 @@ module Api
       #   @param value [String] The UUID of the user who requested the transfer.
       #   @return [Void]
       #   @see #user
-      attribute :user_uuid, writeonly: true
+      attribute :user_uuid, write_once: true
 
       def user_uuid
         @model.user&.uuid # Some old data may not have a User relationship even though it's required for new records.

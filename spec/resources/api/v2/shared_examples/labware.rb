@@ -12,11 +12,8 @@ shared_examples 'a labware resource' do
   # Relationships
   it { is_expected.to have_a_write_once_has_one(:purpose).with_class_name('Purpose') }
 
-  it 'has a writable CustomMetadatumCollection' do
-    # Prettier and Rubocop fight over how this should be formatted, hence why this doesn't match other tests
-    expect(subject).to have_a_writable_has_one(:custom_metadatum_collection).with_class_name(
-      'CustomMetadatumCollection'
-    )
+  it do
+    is_expected.to have_a_writable_has_one(:custom_metadatum_collection).with_class_name('CustomMetadatumCollection')
   end
 
   it { is_expected.to have_a_write_once_has_many(:samples).with_class_name('Sample') }

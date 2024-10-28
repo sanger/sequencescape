@@ -22,6 +22,6 @@ RSpec.describe Api::V2::StateChangeResource, type: :resource do
   it { is_expected.to have_readonly_attribute :uuid }
 
   # Relationships
-  it { is_expected.to have_one(:target).with_class_name('Labware') }
-  it { is_expected.to have_one(:user).with_class_name('User') }
+  it { is_expected.to have_a_writable_has_one(:target).with_class_name('Labware') }
+  it { is_expected.to have_a_writable_has_one(:user).with_class_name('User') }
 end

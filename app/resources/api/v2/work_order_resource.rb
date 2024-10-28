@@ -21,18 +21,20 @@ module Api
 
       default_includes [{ example_request: :request_metadata }, :work_order_type]
 
+      # Attributes
+      attribute :at_risk
+      attribute :options, readonly: true
+      attribute :order_type, write_once: true
+      attribute :quantity, write_once: true
+      attribute :state, readonly: true
+
+      # Relationships
       has_one :study, write_once: true
       has_one :project, write_once: true
       has_one :source_receptacle, write_once: true, polymorphic: true
       has_many :samples, write_once: true
 
-      attribute :order_type, write_once: true
-      attribute :quantity, write_once: true
-      attribute :state
-      attribute :options
-      attribute :at_risk
-
-      filter :state
+      # Filters
       filter :order_type,
              apply:
                (
@@ -40,7 +42,9 @@ module Api
                    records.joins(:work_order_type).where(work_order_types: { name: value })
                  end
                )
+      filter :state
 
+      # Field Methods
       def quantity
         { number: _model.quantity_value, unit_of_measurement: _model.quantity_units }
       end
