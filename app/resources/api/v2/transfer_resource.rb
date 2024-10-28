@@ -75,7 +75,7 @@ module Api
       #   @return [String] The STI type of the transfer.
       attribute :transfer_type, delegate: :sti_type, readonly: true
 
-      # @!attribute [w] user_uuid
+      # @!attribute [rw] user_uuid
       #   This is declared for convenience where the user is not available to set as a relationship.
       #   Setting this attribute alongside the `user` relationship will prefer the relationship value.
       #   @deprecated Use the `user` relationship instead.
