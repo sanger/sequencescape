@@ -36,8 +36,11 @@ RSpec.describe CherrypickTask do
             batch_id: 1235,
             total_wells: 6,
             num_control_wells: 2,
-            wells_to_leave_free: wells_to_leave_free
+            wells_to_leave_free: wells_to_leave_free,
+            control_source_plate: control_plate,
+            template: template
           ).and_return(locator)
+          allow(locator).to receive(:handle_incompatible_plates)
         end
 
         let(:instance) { described_class.new }
@@ -89,6 +92,7 @@ RSpec.describe CherrypickTask do
           locator = instance_double(CherrypickTask::ControlLocator)
           allow(locator).to receive(:control_positions).and_return([2, 5], [0, 2])
           allow(CherrypickTask::ControlLocator).to receive(:new).and_return(locator)
+          allow(locator).to receive(:handle_incompatible_plates)
         end
 
         it 'places controls in a different position' do
@@ -117,6 +121,7 @@ RSpec.describe CherrypickTask do
         before do
           locator = instance_double(CherrypickTask::ControlLocator, control_positions: [2, 3])
           allow(CherrypickTask::ControlLocator).to receive(:new).and_return(locator)
+          allow(locator).to receive(:handle_incompatible_plates)
         end
 
         let(:instance) { described_class.new }
@@ -145,6 +150,7 @@ RSpec.describe CherrypickTask do
           locator = instance_double(CherrypickTask::ControlLocator)
           allow(locator).to receive(:control_positions).and_return([2, 4], [0, 2])
           allow(CherrypickTask::ControlLocator).to receive(:new).and_return(locator)
+          allow(locator).to receive(:handle_incompatible_plates)
         end
 
         let(:instance) { described_class.new }
