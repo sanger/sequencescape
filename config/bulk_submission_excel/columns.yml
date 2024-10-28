@@ -269,6 +269,26 @@ requested_flowcell_type:
   conditional_formattings:
     empty_cell:
     is_error:
+number_of_pools:
+  heading: scRNA Core Number Pools
+  attribute: :number_of_pools
+  unlocked: true
+  type: :integer
+  validation:
+    options:
+      type: :whole
+      operator: :between
+      formula1: "2"
+      formula2: "8"
+      allowBlank: true
+      showInputMessage: true
+      promptTitle: "Number of pools"
+      prompt: "The requested number pools (between 2 and 8 inclusive)"
+  conditional_formattings:
+    empty_cell:
+    is_text:
+    is_num_of_pools_in_valid_range:
+    is_num_of_pools_outside_valid_range:
 number_of_samples_per_pool:
   heading: scRNA Core Number of Samples per Pool
   attribute: :number_of_samples_per_pool
