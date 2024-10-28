@@ -26,7 +26,7 @@ module Api
       attribute :options, readonly: true
       attribute :order_type, write_once: true
       attribute :quantity, write_once: true
-      attribute :state, readonly: true
+      attribute :state
 
       # Relationships
       has_one :study, write_once: true

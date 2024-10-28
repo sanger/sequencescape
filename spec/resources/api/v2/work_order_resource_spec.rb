@@ -18,7 +18,7 @@ RSpec.describe Api::V2::WorkOrderResource, type: :resource do
   it { is_expected.to have_readonly_attribute :options }
   it { is_expected.to have_write_once_attribute :order_type }
   it { is_expected.to have_write_once_attribute :quantity }
-  it { is_expected.to have_readonly_attribute :state }
+  it { is_expected.to have_readwrite_attribute :state }
 
   # Relationships
   it { is_expected.to have_many(:samples).with_class_name('Sample') }
