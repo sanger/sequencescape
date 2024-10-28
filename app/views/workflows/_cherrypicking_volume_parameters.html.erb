@@ -4,7 +4,7 @@
   <strong>Either</strong>
     <table cellspacing='0' cellpadding='0'>
       <tr>
-        <td><label for="cherrypick_action_nano_grams_per_micro_litre">Pick by ng/&micro;l</label>:</td>
+        <td><label for="cherrypick_action_nano_grams_per_micro_litre">Pick by concentration (ng/&micro;l)</label>:</td>
         <td><%= radio_button("cherrypick", "action", "nano_grams_per_micro_litre", checked: true) %></td>
       </tr>
       <%= fields_for :nano_grams_per_micro_litre do |ff|%>
@@ -30,7 +30,7 @@
   <strong>Or</strong>
     <table cellspacing='0' cellpadding='0'>
       <tr>
-        <td><label for="cherrypick_action_nano_grams">Pick by ng</label>:</td>
+        <td><label for="cherrypick_action_nano_grams">Pick by amount (ng)</label></td>
         <td><%= radio_button("cherrypick", "action", "nano_grams") %></td>
       </tr>
       <%= fields_for :nano_grams do |ff|%>
@@ -60,7 +60,7 @@
   <strong>Or</strong>
     <table cellspacing='0' cellpadding='0'>
       <tr>
-        <td><label for="cherrypick_action_micro_litre">Pick by &micro;l</label>:</td>
+        <td><label for="cherrypick_action_micro_litre">Pick by volume (&micro;l)</label>:</td>
         <td><%= radio_button("cherrypick", "action", "micro_litre") %></td>
       </tr>
       <%= fields_for :micro_litre do |ff|%>
