@@ -12,7 +12,7 @@ describe 'Asset submission', :js do
   let(:original_request_type) { request_types.first }
   let(:selected_request_type) { original_request_type }
   let(:selected_read_length) { '76' }
-  let(:request_flowcell_type_validators) do
+  let(:request_flowcell_type_validator) do
     RequestType::Validator.create(
       request_type: selected_request_type,
       request_option: 'requested_flowcell_type',
@@ -51,19 +51,21 @@ describe 'Asset submission', :js do
     end
   end
 
-  describe 'Validation of Flowcell Type field for illumina-HTP NovaSeq requests' do
+  describe 'Validation of Flowcell Type field for request types that require a Flowcell Type' do
     let(:user) { create(:admin) }
 
+    # Mock the validator for the selected request type to return the predefined flowcell type validator
+    # the predefined flowcell type validator require a specific flowcell type to be selected
     before do
       allow(selected_request_type).to receive(:validator_for).with('requested_flowcell_type').and_return(
-        request_flowcell_type_validators
+        request_flowcell_type_validator
       )
       login_user user
       visit labware_path(asset)
       click_link 'Request additional sequencing'
     end
 
-    it 'displays an error if request type is of type illumina_htp_novaseq and Flowcell Type is not set' do
+    it 'displays an error if Flowcell Type is not set' do
       select(selected_request_type.name, from: 'Request type')
       select(study.name, from: 'Study')
       select(project.name, from: 'Project')
@@ -102,7 +104,7 @@ describe 'Asset submission', :js do
     end
   end
 
-  describe 'Validation of Flowcell Type field for no illumina-HTP NovaSeq request types' do
+  describe 'Validation of Flowcell Type field for request types that do not require a Flowcell Type' do
     let(:user) { create(:admin) }
 
     before do
