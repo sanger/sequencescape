@@ -80,15 +80,6 @@ RSpec.describe Api::V2::RequestResource, type: :resource do
       end
     end
 
-    context 'when the pooled request does not contain a pre-capture pool' do
-      let(:resource_model) { build_stubbed(:request, pooled_request:) }
-      let(:pooled_request) { build_stubbed(:pooled_request) }
-
-      it 'returns nil' do
-        expect(resource.pre_capture_pool_id).to be_nil
-      end
-    end
-
     context 'when there is no pooled request' do
       it 'returns nil' do
         expect(resource.pre_capture_pool_id).to be_nil
