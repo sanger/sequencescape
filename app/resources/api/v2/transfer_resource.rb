@@ -79,8 +79,7 @@ module Api
       #   This is declared for convenience where the user is not available to set as a relationship.
       #   Setting this attribute alongside the `user` relationship will prefer the relationship value.
       #   @deprecated Use the `user` relationship instead.
-      #   @param value [String] The UUID of the user who requested the transfer.
-      #   @return [Void]
+      #   @return [String] The UUID of the user who requested the transfer.
       #   @see #user
       attribute :user_uuid, write_once: true
 
