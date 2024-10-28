@@ -28,10 +28,14 @@ RSpec.describe Api::V2::AliquotResource, type: :resource do
     expect(subject).not_to have_updatable_field(:suboptimal)
     expect(subject).not_to have_updatable_field(:library_type)
     expect(subject).not_to have_updatable_field(:insert_size_to)
-    expect(subject).to have_one(:sample).with_class_name('Sample')
-    expect(subject).to have_one(:tag).with_class_name('Tag')
-    expect(subject).to have_one(:tag2).with_class_name('Tag')
-    expect(subject).to have_one(:library).with_class_name('Receptacle')
+    expect(subject).to have_a_writable_has_one(:library).with_class_name('Receptacle')
+    expect(subject).to have_a_writable_has_one(:project).with_class_name('Project')
+    expect(subject).to have_a_writable_has_one(:receptacle).with_class_name('Receptacle')
+    expect(subject).to have_a_writable_has_one(:request).with_class_name('Request')
+    expect(subject).to have_a_writable_has_one(:sample).with_class_name('Sample')
+    expect(subject).to have_a_writable_has_one(:study).with_class_name('Study')
+    expect(subject).to have_a_writable_has_one(:tag).with_class_name('Tag')
+    expect(subject).to have_a_writable_has_one(:tag2).with_class_name('Tag')
   end
 
   # Custom method tests

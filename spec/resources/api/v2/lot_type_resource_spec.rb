@@ -18,7 +18,7 @@ RSpec.describe Api::V2::LotTypeResource, type: :resource do
     expect(subject).not_to have_updatable_field(:uuid)
     expect(subject).not_to have_updatable_field(:name)
     expect(subject).not_to have_updatable_field(:template_type)
-    expect(subject).to have_one(:target_purpose).with_class_name('Purpose')
+    expect(subject).to have_a_write_once_has_one(:target_purpose).with_class_name('Purpose')
   end
 
   # Custom method tests

@@ -13,6 +13,6 @@ RSpec.describe Api::V2::BaitLibraryLayoutResource, type: :resource do
   it { is_expected.to have_readonly_attribute :layout }
 
   # Relationships
-  it { is_expected.to have_one(:plate).with_class_name('Plate') }
-  it { is_expected.to have_one(:user).with_class_name('User') }
+  it { is_expected.to have_a_writable_has_one(:plate).with_class_name('Plate') }
+  it { is_expected.to have_a_writable_has_one(:user).with_class_name('User') }
 end

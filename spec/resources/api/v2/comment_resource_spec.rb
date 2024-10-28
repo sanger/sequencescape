@@ -13,8 +13,8 @@ RSpec.describe Api::V2::CommentResource, type: :resource do
     expect(subject).to have_attribute :title
     expect(subject).to have_attribute :description
     expect(subject).not_to have_updatable_field(:id)
-    expect(subject).to have_one(:user).with_class_name('User')
-    expect(subject).to have_one(:commentable)
+    expect(subject).to have_a_writable_has_one(:user).with_class_name('User')
+    expect(subject).to have_a_writable_has_one(:commentable)
   end
 
   # Custom method tests

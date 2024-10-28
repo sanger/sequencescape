@@ -17,6 +17,6 @@ RSpec.describe Api::V2::BulkTransferResource, type: :resource do
   it { is_expected.to have_writeonly_attribute :user_uuid }
 
   # Relationships
-  it { is_expected.to have_many(:transfers).with_class_name('Transfer') }
-  it { is_expected.to have_one(:user).with_class_name('User') }
+  it { is_expected.to have_a_readonly_has_many(:transfers).with_class_name('Transfer') }
+  it { is_expected.to have_a_writable_has_one(:user).with_class_name('User') }
 end
