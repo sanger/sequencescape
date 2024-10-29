@@ -24,8 +24,8 @@ RSpec.describe Api::V2::TagLayoutResource, type: :resource do
   it { is_expected.to have_readwrite_attribute :walking_by }
 
   # Relationships
-  it { is_expected.to have_one(:plate).with_class_name('Plate') }
-  it { is_expected.to have_one(:tag_group).with_class_name('TagGroup') }
-  it { is_expected.to have_one(:tag2_group).with_class_name('TagGroup') }
-  it { is_expected.to have_one(:user).with_class_name('User') }
+  it { is_expected.to have_a_writable_has_one(:plate).with_class_name('Plate') }
+  it { is_expected.to have_a_writable_has_one(:tag_group).with_class_name('TagGroup') }
+  it { is_expected.to have_a_writable_has_one(:tag2_group).with_class_name('TagGroup') }
+  it { is_expected.to have_a_writable_has_one(:user).with_class_name('User') }
 end

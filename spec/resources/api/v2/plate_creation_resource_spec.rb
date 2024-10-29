@@ -18,8 +18,8 @@ RSpec.describe Api::V2::PlateCreationResource, type: :resource do
   it { is_expected.to have_readonly_attribute :uuid }
 
   # Relationships
-  it { is_expected.to have_a_readonly_have_one(:child, 'Plate') }
-  it { is_expected.to have_a_writable_have_one(:child_purpose, 'PlatePurpose') }
-  it { is_expected.to have_a_writable_have_one(:parent, 'Plate') }
-  it { is_expected.to have_a_writable_have_one(:user, 'User') }
+  it { is_expected.to have_a_readonly_has_one(:child).with_class_name('Plate') }
+  it { is_expected.to have_a_writable_has_one(:child_purpose).with_class_name('PlatePurpose') }
+  it { is_expected.to have_a_writable_has_one(:parent).with_class_name('Plate') }
+  it { is_expected.to have_a_writable_has_one(:user).with_class_name('User') }
 end

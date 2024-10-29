@@ -124,7 +124,7 @@ module Api
       #   Setting this relationship alongside the `user_uuid` attribute will override the attribute value.
       #   @return [UserResource] The user who initiated the creation of the pooled plate.
       #   @note This relationship is required.
-      has_one :user
+      has_one :user, write_once: true
     end
   end
 end

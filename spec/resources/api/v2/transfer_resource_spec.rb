@@ -17,11 +17,11 @@ RSpec.describe Api::V2::TransferResource, type: :resource do
   it { is_expected.to have_writeonly_attribute :transfer_template_uuid }
   it { is_expected.to have_readonly_attribute :transfer_type }
   it { is_expected.to have_readwrite_attribute :transfers }
-  it { is_expected.to have_writeonly_attribute :user_uuid }
+  it { is_expected.to have_write_once_attribute :user_uuid }
   it { is_expected.to have_readonly_attribute :uuid }
 
   # Relationships
-  it { is_expected.to have_one(:user).with_class_name('User') }
+  it { is_expected.to have_a_writable_has_one(:user).with_class_name('User') }
 
   # Filters
   it { is_expected.to filter(:transfer_type) }

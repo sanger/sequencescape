@@ -69,15 +69,12 @@ describe 'Transfer API', with: :api_v2 do
           expect(json.dig('data', 'attributes', 'source_uuid')).to eq(resource.source.uuid)
           expect(json.dig('data', 'attributes', 'transfer_type')).to eq(model_class.to_s)
           expect(json.dig('data', 'attributes', 'transfers')).to eq(resource.transfers)
+          expect(json.dig('data', 'attributes', 'user_uuid')).to eq(resource.user.uuid)
           expect(json.dig('data', 'attributes', 'uuid')).to eq(resource.uuid)
         end
 
         it 'excludes the unfetchable transfer_template_uuid' do
           expect(json.dig('data', 'attributes', 'transfer_template_uuid')).not_to be_present
-        end
-
-        it 'excludes the unfetchable user_uuid' do
-          expect(json.dig('data', 'attributes', 'user_uuid')).not_to be_present
         end
 
         it 'returns a reference to the user relationship' do
@@ -132,6 +129,7 @@ describe 'Transfer API', with: :api_v2 do
         expect(json.dig('data', 'attributes', 'source_uuid')).to eq(resource.source.uuid)
         expect(json.dig('data', 'attributes', 'transfer_type')).to eq(model_class.to_s)
         expect(json.dig('data', 'attributes', 'transfers')).to eq(resource.transfers)
+        expect(json.dig('data', 'attributes', 'user_uuid')).to be_nil
         expect(json.dig('data', 'attributes', 'uuid')).to eq(resource.uuid)
       end
     end
@@ -188,17 +186,13 @@ describe 'Transfer API', with: :api_v2 do
           expect(json.dig('data', 'attributes', 'source_uuid')).to eq(new_record.source.uuid)
           expect(json.dig('data', 'attributes', 'transfer_type')).to eq(model_class.to_s)
           expect(json.dig('data', 'attributes', 'transfers')).to eq(new_record.transfers)
+          expect(json.dig('data', 'attributes', 'user_uuid')).to eq(new_record.user.uuid)
           expect(json.dig('data', 'attributes', 'uuid')).to eq(new_record.uuid)
         end
 
         it 'excludes the unfetchable transfer_template_uuid' do
           perform_request
           expect(json.dig('data', 'attributes', 'transfer_template_uuid')).not_to be_present
-        end
-
-        it 'excludes the unfetchable user_uuid' do
-          perform_request
-          expect(json.dig('data', 'attributes', 'user_uuid')).not_to be_present
         end
 
         it 'returns a reference to the user relationship' do
