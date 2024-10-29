@@ -289,26 +289,26 @@ number_of_pools:
     is_text:
     is_num_of_pools_in_valid_range:
     is_num_of_pools_outside_valid_range:
-number_of_samples_per_pool:
-  heading: scRNA Core Number of Samples per Pool
-  attribute: :number_of_samples_per_pool
-  unlocked: true
-  type: :integer
-  validation:
-    options:
-      type: :whole
-      operator: :between
-      formula1: "5"
-      formula2: "25"
-      allowBlank: true
-      showInputMessage: true
-      promptTitle: "Samples per Pool"
-      prompt: "The requested number of samples per pool (between 5 and 25 inclusive)"
-  conditional_formattings:
-    empty_cell:
-    is_text:
-    is_num_samples_per_pool_in_valid_range:
-    is_num_samples_per_pool_outside_valid_range:
+#number_of_samples_per_pool:
+#  heading: scRNA Core Number of Samples per Pool
+#  attribute: :number_of_samples_per_pool
+#  unlocked: true
+#  type: :integer
+#  validation:
+#    options:
+#      type: :whole
+#      operator: :between
+#      formula1: "5"
+#      formula2: "25"
+#      allowBlank: true
+#      showInputMessage: true
+#      promptTitle: "Samples per Pool"
+#      prompt: "The requested number of samples per pool (between 5 and 25 inclusive)"
+#  conditional_formattings:
+#    empty_cell:
+#    is_text:
+#    is_num_samples_per_pool_in_valid_range:
+#    is_num_samples_per_pool_outside_valid_range:
 cells_per_chip_well:
   heading: scRNA Core Cells per Chip Well
   attribute: :cells_per_chip_well
