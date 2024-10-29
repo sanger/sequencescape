@@ -59,7 +59,6 @@ def check_tag_layout(name, well_range, expected_wells_to_oligos) # rubocop:todo 
       .wells
       .filter_map do |w|
         next unless well_range.include?(w)
-
         [w.map.description, w.primary_aliquot.try(:tag).try(:oligo) || '']
       end
       .to_h
