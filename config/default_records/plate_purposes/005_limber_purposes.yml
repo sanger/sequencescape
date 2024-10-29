@@ -72,3 +72,8 @@ LTN AL Lib:
 LTN Lib PCR XP:
   type: PlatePurpose
   stock_plate: false
+
+# RVI BCL plate for reISC
+RVI Lib PCR XP:
+  type: PlatePurpose
+  stock_plate: false
