@@ -98,7 +98,7 @@ ExportPoolXpToTractionJob =
 
       begin
         channel = conn.create_channel
-        exchange = channel.headers(configatron.amqp.isg.exchange, passive: true)
+        exchange = channel.headers(configatron.amqp.broker.exchange, passive: true)
         headers = { subject: subject, version: version, encoder_type: 'binary' }
         exchange.publish(message, headers: headers, persistent: true)
       ensure
@@ -107,7 +107,7 @@ ExportPoolXpToTractionJob =
     end
 
     def connection_params
-      rabbit_config = configatron.amqp.isg
+      rabbit_config = configatron.amqp.broker
 
       connection_params = {
         host: rabbit_config.host,
@@ -123,7 +123,7 @@ ExportPoolXpToTractionJob =
       connection_params[:tls] = true
 
       begin
-        connection_params[:tls_ca_certificates] = [configatron.amqp.isg.ca_certificate!]
+        connection_params[:tls_ca_certificates] = [configatron.amqp.broker.ca_certificate!]
       rescue Configatron::UndefinedKeyError
         # Should not be the case in production!
         connection_params[:verify_peer] = false

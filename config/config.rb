@@ -40,13 +40,13 @@ configatron.swipecard_pmb_template = 'swipecard_barcode_template'
 
 configatron.help_link_base_url = 'https://ssg-confluence.internal.sanger.ac.uk/display/PSDPUB'
 
+configatron.fresh_sevice_new_ticket_url = 'https://example.freshservice.com'
+
 configatron.external_applications = [
   ['High Throughput Pipeline', 'http://www.example.com'],
   ['Generic Lims', 'http://www.example.com'],
   %w[Gatekeeper http://www.example.com]
 ]
-
-configatron.help_link_base_url = 'http://wwww.example.com'
 
 if Rails.env.development? || Rails.env.profile?
   configatron.asset_audits_url = 'http://localhost:3014/process_plates/new'
@@ -77,12 +77,12 @@ if Rails.env.development? || Rails.env.profile?
 
   configatron.taxon_lookup_url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/'
 
-  configatron.amqp.isg.host = 'localhost'
-  configatron.amqp.isg.tls = false
-  configatron.amqp.isg.vhost = 'tol'
-  configatron.amqp.isg.username = 'admin'
-  configatron.amqp.isg.password = 'development'
-  configatron.amqp.isg.exchange = 'sequencescape'
+  configatron.amqp.broker.host = 'localhost'
+  configatron.amqp.broker.tls = false
+  configatron.amqp.broker.vhost = 'tol'
+  configatron.amqp.broker.username = 'admin'
+  configatron.amqp.broker.password = 'development'
+  configatron.amqp.broker.exchange = 'sequencescape'
 
   configatron.amqp.schemas.registry_url = 'https://redpanda.uat.psd.sanger.ac.uk/subjects/'
   configatron.amqp.schemas.subjects = {
@@ -135,13 +135,13 @@ if Rails.env.test? || Rails.env.cucumber?
 
   configatron.taxon_lookup_url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/'
 
-  configatron.amqp.isg.host = 'localhost'
-  configatron.amqp.isg.tls = true
-  configatron.amqp.isg.ca_certificate = 'test-ca-cert'
-  configatron.amqp.isg.vhost = 'test-vhost'
-  configatron.amqp.isg.username = 'test-user'
-  configatron.amqp.isg.password = 'test-pass'
-  configatron.amqp.isg.exchange = 'test-exchange'
+  configatron.amqp.broker.host = 'localhost'
+  configatron.amqp.broker.tls = true
+  configatron.amqp.broker.ca_certificate = 'test-ca-cert'
+  configatron.amqp.broker.vhost = 'test-vhost'
+  configatron.amqp.broker.username = 'test-user'
+  configatron.amqp.broker.password = 'test-pass'
+  configatron.amqp.broker.exchange = 'test-exchange'
 
   configatron.amqp.schemas.registry_url = 'http://test-redpanda/subjects/'
   configatron.amqp.schemas.subjects = { export_pool_xp_to_traction: { subject: 'test-subject-name', version: 10 } }

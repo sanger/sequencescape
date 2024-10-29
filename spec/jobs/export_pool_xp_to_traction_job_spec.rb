@@ -216,12 +216,12 @@ RSpec.describe ExportPoolXpToTractionJob, type: :job do
       export_job.send_message(encoded_message, schema_subject, schema_version)
 
       expect(Bunny).to have_received(:new).with(
-        host: configatron.amqp.isg.host,
-        username: configatron.amqp.isg.username,
-        password: configatron.amqp.isg.password,
-        vhost: configatron.amqp.isg.vhost,
+        host: configatron.amqp.broker.host,
+        username: configatron.amqp.broker.username,
+        password: configatron.amqp.broker.password,
+        vhost: configatron.amqp.broker.vhost,
         tls: true,
-        tls_ca_certificates: [configatron.amqp.isg.ca_certificate]
+        tls_ca_certificates: [configatron.amqp.broker.ca_certificate]
       )
     end
 
