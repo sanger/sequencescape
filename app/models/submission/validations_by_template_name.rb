@@ -9,6 +9,7 @@ module Submission::ValidationsByTemplateName
   HEADER_PROJECT_NAME = 'project name'
   HEADER_NUM_SAMPLES = 'scrna core number of samples per pool'
   HEADER_CELLS_PER_CHIP_WELL = 'scrna core cells per chip well'
+  HEADER_NUM_POOLS = "scrna core number of pools"
 
   # Applies additional validations based on the submission template type.
   #
@@ -34,6 +35,7 @@ module Submission::ValidationsByTemplateName
     when SCRNA_CORE_CDNA_PREP_GEM_X_5P
       validate_consistent_column_value(HEADER_NUM_SAMPLES)
       validate_consistent_column_value(HEADER_CELLS_PER_CHIP_WELL)
+      validate_consistent_column_value(HEADER_NUM_POOLS)
     end
   end
 
