@@ -33,9 +33,8 @@ module Submission::ValidationsByTemplateName
     case submission_template_name
     # this validation is for the scRNA pipeline cDNA submission
     when SCRNA_CORE_CDNA_PREP_GEM_X_5P
-      validate_consistent_column_value(HEADER_NUM_SAMPLES)
-      validate_consistent_column_value(HEADER_CELLS_PER_CHIP_WELL)
       validate_consistent_column_value(HEADER_NUM_POOLS)
+      validate_consistent_column_value(HEADER_CELLS_PER_CHIP_WELL)
     end
   end
 

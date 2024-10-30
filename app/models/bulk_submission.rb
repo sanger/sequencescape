@@ -231,7 +231,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     'gigabases expected',
     'priority',
     'flowcell type',
-    'scrna core number of samples per pool',
+    'scrna core number of pools',
     'scrna core cells per chip well',
     'scrna core number of pools'
   ].freeze
