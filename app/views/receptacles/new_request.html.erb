@@ -110,16 +110,16 @@
       <!-- Sets the 'required' attribute for the flowcell type input field based on the selected request type.-->
       setFlowcellTypeRequiredForNovaseq = function() {
         var selected_request_type_id = $('option:selected', request_type_element).attr('value');
-        var flowcell_type_elements = $('[name="request[request_metadata_attributes][requested_flowcell_type]"]');
+        var flowcell_type_element = $('[name="request[request_metadata_attributes][requested_flowcell_type]"]:not(:disabled)');
         console.log('Selected request type: ' + selected_request_type_id );
-        console.log('flowcell_type_elements: ' );
-        console.log(flowcell_type_elements);
-        if(flowcell_type_elements && flowcell_type_elements.length > 0) {
+        console.log('flowcell_type_element: ' );
+        console.log(flowcell_type_element);
+        if(flowcell_type_element && flowcell_type_element.length > 0) {
           console.log('Setting flowcell type required for Novaseq');
           var novaseq_ids = $(request_type_element).data('novaseq-ids').split(',');
           console.log('novaseq_ids', novaseq_ids)
-          flowcell_type_elements.attr('required', novaseq_ids.includes(selected_request_type_id));
-          console.log('Flowcell type required: ' + flowcell_type_elements.attr('required'));
+          flowcell_type_element.attr('required', novaseq_ids.includes(selected_request_type_id));
+          console.log('Flowcell type required: ' + flowcell_type_element.attr('required'));
         }
       }
 
