@@ -110,10 +110,10 @@
       <!-- Sets the 'required' attribute for the flowcell type input field based on the selected request type.-->
       setFlowcellTypeRequiredForNovaseq = function() {
         var selected_request_type_id = $('option:selected', request_type_element).attr('value');
-        var flowcell_type = $('#request_request_metadata_attributes_requested_flowcell_type');
-        if(flowcell_type && flowcell_type.length > 0) {
+        var flowcell_type_element = $('[name="request[request_metadata_attributes][requested_flowcell_type]"]:not(:disabled)');
+        if(flowcell_type_element && flowcell_type_element.length > 0) {
           var novaseq_ids = $(request_type_element).data('novaseq-ids').split(',');
-          flowcell_type.attr('required', novaseq_ids.includes(selected_request_type_id));
+          flowcell_type_element.attr('required', novaseq_ids.includes(selected_request_type_id));
         }
       }
 
