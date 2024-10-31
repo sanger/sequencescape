@@ -13,7 +13,7 @@ RSpec.describe Api::V2::TubeResource, type: :resource do
   it { is_expected.to have_model_name('Tube') }
 
   # Attributes
-  it { is_expected.to have_a_readonly_attribute(:sibling_tubes) }
+  it { is_expected.to have_readonly_attribute(:sibling_tubes) }
 
   # Relationships
   it { is_expected.to have_a_readonly_has_many(:aliquots).with_class_name('Aliquot') }
