@@ -111,9 +111,12 @@
       setFlowcellTypeRequiredForNovaseq = function() {
         var selected_request_type_id = $('option:selected', request_type_element).attr('value');
         var flowcell_type = $('#request_request_metadata_attributes_requested_flowcell_type');
+        console.log('Selected request type: ' + selected_request_type_id + ' Flowcell type: ' + flowcell_type);
         if(flowcell_type && flowcell_type.length > 0) {
+          console.log('Setting flowcell type required for Novaseq');
           var novaseq_ids = $(request_type_element).data('novaseq-ids').split(',');
           flowcell_type.attr('required', novaseq_ids.includes(selected_request_type_id));
+          console.log('Flowcell type required: ' + flowcell_type.attr('required'));
         }
       }
 
