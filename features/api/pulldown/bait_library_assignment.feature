@@ -56,7 +56,7 @@ And I have a "full" authorised user with the key "cucumber"
               "read": "http://www.example.com/api/1/00000000-1111-2222-3333-000000000002"
             }
           },
-          "well_layout": {
+          "layout": {
             "A1":  "Human all exon 50MB",
             "A2":  "Human all exon 50MB",
             "A3":  "Human all exon 50MB",
@@ -186,7 +186,7 @@ And I have a "full" authorised user with the key "cucumber"
               "read": "http://www.example.com/api/1/00000000-1111-2222-3333-000000000002"
             }
           },
-          "well_layout": {
+          "layout": {
             "A1":  "Human all exon 50MB",
             "A2":  "Human all exon 50MB",
             "A3":  "Human all exon 50MB",
