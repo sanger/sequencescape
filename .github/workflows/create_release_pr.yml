@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - develop
-      - sh51/create-automated-release-pr
 jobs:
   pull_request:
     uses: sanger/.github/.github/workflows/create-release-pr.yml@master
