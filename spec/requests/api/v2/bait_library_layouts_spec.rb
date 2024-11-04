@@ -308,8 +308,8 @@ describe 'Bait Library Layouts API', with: :api_v2 do
           expect(json.dig('data', 'type')).to eq(resource_type)
         end
 
-        it 'returns a layout as an attribute' do
-          expect(json.dig('data', 'attributes', 'layout')).not_to be_nil
+        it 'returns a well_layout as an attribute' do
+          expect(json.dig('data', 'attributes', 'well_layout')).not_to be_nil
         end
       end
 
