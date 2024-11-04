@@ -38,6 +38,18 @@ module Submission::ValidationsByTemplateName
     end
   end
 
+  def apply_number_of_samples_per_pool_validation
+    # Creates groups of rows based on the study and project name (i.e., study-project combinations)
+    group_rows_by_study_and_project
+
+  end
+
+  def group_rows_by_study_and_project
+    index_of_study_name = headers.index(HEADER_STUDY_NAME)
+    index_of_project_name = headers.index(HEADER_PROJECT_NAME)
+    csv_data_rows.group_by { |row| [row[index_of_study_name], row[index_of_project_name]] }
+  end
+
   # Validates that the specified column is consistent for all rows with the same study and project name.
   #
   # This method groups the rows in the CSV data by the study name and project name, and checks if the specified column
@@ -46,13 +58,11 @@ module Submission::ValidationsByTemplateName
   #
   # @param column_header [String] The header of the column to validate.
   # @return [void]
-  # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
   def validate_consistent_column_value(column_header)
-    index_of_study_name = headers.index(HEADER_STUDY_NAME)
-    index_of_project_name = headers.index(HEADER_PROJECT_NAME)
     index_of_column = headers.index(column_header)
 
-    grouped_rows = csv_data_rows.group_by { |row| [row[index_of_study_name], row[index_of_project_name]] }
+    grouped_rows = group_rows_by_study_and_project
 
     grouped_rows.each do |study_project, rows|
       unique_values = rows.pluck(index_of_column).uniq
@@ -66,5 +76,5 @@ module Submission::ValidationsByTemplateName
       )
     end
   end
-  # rubocop:enable Metrics/MethodLength,Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
 end

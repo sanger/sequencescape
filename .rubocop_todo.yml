@@ -454,6 +454,7 @@ Naming/VariableNumber:
     - 'spec/models/api/messages/pac_bio_run_io_spec.rb'
     - 'spec/models/api/messages/pac_bio_run_with_tag2_io_spec.rb'
     - 'spec/models/bulk_submission_spec.rb'
+    - 'spec/models/bulk_submission_scrna_spec.rb'
     - 'spec/models/heron/factories/tube_rack_spec.rb'
     - 'spec/models/labware_spec.rb'
     - 'spec/models/labwhere_reception_spec.rb'
