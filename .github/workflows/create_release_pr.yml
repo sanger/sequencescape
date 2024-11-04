@@ -1,0 +1,10 @@
+# Create or update merge-to-master pull requests for production releases
+# Note that by design, creating or editing a PR will not trigger a downstream `pull_request` event as this could lead to recursion
+name: Release
+on:
+  push:
+    branches:
+      - develop
+jobs:
+  pull_request:
+    uses: sanger/.github/.github/workflows/create-release-pr.yml@master
