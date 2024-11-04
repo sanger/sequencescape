@@ -18,7 +18,7 @@ describe BulkSubmission, with: :uploader do
 
   let!(:study) { create(:study, name: 'Test Study') }
   let!(:plate) { create(:plate_with_tagged_wells, sample_count: 96, barcode: 'SQPD-12345') }
-  let(:asset_group) do
+  let!(:asset_group) do
     create(:asset_group, name: 'assetgroup', study: study, assets: plate.wells)
   end
   let!(:library_type) { create(:library_type, name: 'Standard') }
@@ -30,7 +30,7 @@ describe BulkSubmission, with: :uploader do
     create(:project, name: 'Test project')
   end
 
-  context 'when an scRNA Bulk Submission' do
+  context 'when an scRNA Bulk Submission for plate' do
     let(:spreadsheet_filename) { 'scRNA_bulk_submission.csv' }
     let(:submission_template_hash) do
       {

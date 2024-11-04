@@ -154,8 +154,6 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
 
       raise ActiveRecord::RecordInvalid, self if errors.count > 0
 
-      binding.pry
-
       # Within a single transaction process each of the rows of the CSV file as a separate submission.  Any name
       # fields need to be mapped to IDs, and the 'assets' field needs to be split up and processed if present.
       # rubocop:todo Metrics/BlockLength
