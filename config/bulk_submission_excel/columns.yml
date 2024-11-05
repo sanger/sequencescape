@@ -270,7 +270,7 @@ requested_flowcell_type:
     empty_cell:
     is_error:
 number_of_pools:
-  heading: scRNA Core of Number Pools
+  heading: scRNA Core Number of Pools
   attribute: :number_of_pools
   unlocked: true
   type: :integer
