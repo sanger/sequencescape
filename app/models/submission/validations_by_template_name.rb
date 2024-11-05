@@ -38,6 +38,7 @@ module Submission::ValidationsByTemplateName
     when SCRNA_CORE_CDNA_PREP_GEM_X_5P
       validate_consistent_column_value(HEADER_NUM_POOLS)
       validate_consistent_column_value(HEADER_CELLS_PER_CHIP_WELL)
+      validate_samples_per_pool_for_tube_or_plate
     end
   end
 
@@ -52,7 +53,6 @@ module Submission::ValidationsByTemplateName
     csv_data_rows.group_by { |row| [row[index_of_study_name], row[index_of_project_name]] }
   end
 
-
   # Validates that the specified column is consistent for all rows with the same study and project name.
   #
   # This method groups the rows in the CSV data by the study name and project name, and checks if the specified column
@@ -64,8 +64,6 @@ module Submission::ValidationsByTemplateName
   # rubocop:disable Metrics/MethodLength
   def validate_consistent_column_value(column_header)
     index_of_column = headers.index(column_header)
-
-    calculate_samples_per_pool_for_tube_or_plate
 
     grouped_rows = group_rows_by_study_and_project
 
@@ -83,13 +81,11 @@ module Submission::ValidationsByTemplateName
   end
   # rubocop:enable Metrics/MethodLength
 
-  def calculate_samples_per_pool_for_tube_or_plate
+  def validate_samples_per_pool_for_tube_or_plate
     return if headers.index(HEADER_BARCODE).nil? && headers.index(HEADER_PLATE_WELLS).nil?
 
     grouped_rows = group_rows_by_study_and_project
-    grouped_rows.each_value do |rows|
-      process_rows(rows)
-    end
+    grouped_rows.each_value { |rows| process_rows(rows) }
   end
 
   private
