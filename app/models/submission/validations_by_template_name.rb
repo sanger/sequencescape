@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:todo Metrics/ModuleLength
 module Submission::ValidationsByTemplateName
   # Template names
   SCRNA_CORE_CDNA_PREP_GEM_X_5P = 'Limber-Htp - scRNA Core cDNA Prep GEM-X 5p'
@@ -89,11 +90,18 @@ module Submission::ValidationsByTemplateName
   private
 
   # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
   def process_rows(rows)
     barcodes = rows.pluck(headers.index(HEADER_BARCODE))
     well_locations = rows.pluck(headers.index(HEADER_PLATE_WELLS))
 
     return unless valid_asset?(barcodes, well_locations)
+
+    if plate?(barcodes, well_locations)
+      validate_for_plates(barcodes, well_locations, rows)
+    elsif tube?(barcodes, well_locations)
+      validate_for_tubes(barcodes, rows)
+    end
 
     plate = Plate.find_from_any_barcode(barcodes.uniq.first)
     return if plate.nil?
@@ -105,6 +113,50 @@ module Submission::ValidationsByTemplateName
     validate_samples_per_pool(rows, total_number_of_samples_per_study_project, number_of_pools)
   end
   # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+
+  # rubocop:disable Metrics/AbcSize
+  def validate_for_plates(barcodes, well_locations, rows)
+    plate = Plate.find_from_any_barcode(barcodes.uniq.first)
+    return if plate.nil?
+
+    wells = plate.wells.for_bulk_submission.located_at(well_locations)
+    total_number_of_samples_per_study_project = wells.map(&:samples).flatten.count.to_i
+    number_of_pools = rows.pluck(headers.index(HEADER_NUMBER_OF_POOLS)).uniq.first.to_i
+
+    validate_samples_per_pool(rows, total_number_of_samples_per_study_project, number_of_pools)
+  end
+  # rubocop:enable Metrics/AbcSize
+
+  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
+  def validate_for_tubes(barcodes, rows)
+    tubes =
+      Receptacle
+        .on_a(Tube)
+        .for_bulk_submission
+        .with_barcode(barcodes)
+        .tap do |found|
+          missing = details['barcode'].reject { |barcode| found.any? { |tube| tube.any_barcode_matching?(barcode) } }
+          if missing.present?
+            raise ActiveRecord::RecordNotFound, "Could not find Tubes with barcodes #{missing.inspect}"
+          end
+        end
+    total_number_of_samples_per_study_project = tubes.map(&:samples).flatten.count.to_i
+    number_of_pools = rows.pluck(headers.index(HEADER_NUMBER_OF_POOLS)).uniq.first.to_i
+
+    validate_samples_per_pool(rows, total_number_of_samples_per_study_project, number_of_pools)
+  end
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+
+  def plate?(barcodes, well_locations)
+    barcodes.present? && well_locations.present?
+  end
+
+  def tube?(barcodes, well_locations)
+    barcodes.present? && well_locations.blank?
+  end
 
   # Checks if the asset is either a tube or a plate.
   def valid_asset?(barcodes, well_locations)
@@ -131,3 +183,4 @@ module Submission::ValidationsByTemplateName
   end
   # rubocop:enable Metrics/MethodLength
 end
+# rubocop:enable Metrics/ModuleLength
