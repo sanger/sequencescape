@@ -336,7 +336,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
         ['gigabases expected', 'gigabases_expected'],
         ['primer panel', 'primer_panel_name'],
         ['flowcell type', 'requested_flowcell_type'],
-        ['scrna core number of pools', 'number_of_samples_per_pool'],
+        ['scrna core number of samples per pool', 'number_of_samples_per_pool'],
         ['scrna core cells per chip well', 'cells_per_chip_well']
       ].each do |source_key, target_key|
         assign_value_if_source_present(details, source_key, request_options, target_key)
