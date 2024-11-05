@@ -89,31 +89,16 @@ module Submission::ValidationsByTemplateName
 
   private
 
-  # rubocop:disable Metrics/AbcSize
-  # rubocop:disable Metrics/MethodLength
   def process_rows(rows)
     barcodes = rows.pluck(headers.index(HEADER_BARCODE))
     well_locations = rows.pluck(headers.index(HEADER_PLATE_WELLS))
-
-    return unless valid_asset?(barcodes, well_locations)
 
     if plate?(barcodes, well_locations)
       validate_for_plates(barcodes, well_locations, rows)
     elsif tube?(barcodes, well_locations)
       validate_for_tubes(barcodes, rows)
     end
-
-    plate = Plate.find_from_any_barcode(barcodes.uniq.first)
-    return if plate.nil?
-
-    wells = plate.wells.for_bulk_submission.located_at(well_locations)
-    total_number_of_samples_per_study_project = wells.map(&:samples).flatten.count.to_i
-    number_of_pools = rows.pluck(headers.index(HEADER_NUMBER_OF_POOLS)).uniq.first.to_i
-
-    validate_samples_per_pool(rows, total_number_of_samples_per_study_project, number_of_pools)
   end
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
 
   # rubocop:disable Metrics/AbcSize
   def validate_for_plates(barcodes, well_locations, rows)
