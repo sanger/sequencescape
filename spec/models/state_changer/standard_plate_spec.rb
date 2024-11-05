@@ -31,7 +31,7 @@ RSpec.describe StateChanger::StandardPlate do
         end
       end
 
-      # RVI BCL uses the processed_1 state as the first state for the the intial plate
+      # RVI BCL uses the processed_1 state as the first state for the the initial plate
       context 'when the target state is processed_1' do
         let(:target_state) { 'processed_1' }
 
