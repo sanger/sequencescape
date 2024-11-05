@@ -53,33 +53,41 @@ module Submission::ValidationsByTemplateName
   end
 
   def calculate_samples_per_pool_for_tube_or_plate
-    grouped_rows = group_rows_by_study_and_project
-    grouped_rows.each_value do |rows|
-      barcodes = rows.pluck(headers.index(HEADER_BARCODE))
-      well_locations = rows.pluck(headers.index(HEADER_PLATE_WELLS))
-      # Skip if the asset is not a plate or tube
-      next unless (barcodes.present? && well_locations.present?) || (barcodes.present? && well_locations.blank?)
-      plate = Plate.find_from_any_barcode(barcodes.uniq.first)
-      next if plate.nil?
-      wells = plate.wells.for_bulk_submission.located_at(well_locations)
-      total_number_of_samples_per_study_project = wells.map(&:samples).flatten.count.to_i
-      number_of_pools = rows.pluck(headers.index(HEADER_NUMBER_OF_POOLS)).uniq.first.to_i
+    unless headers.index(HEADER_BARCODE).nil? &&
+             headers
+               .index(HEADER_PLATE_WELLS)
+               .nil? { |_|
+                 grouped_rows = group_rows_by_study_and_project
+                 grouped_rows.each_value do |rows|
+                   barcodes = rows.pluck(headers.index(HEADER_BARCODE))
+                   well_locations = rows.pluck(headers.index(HEADER_PLATE_WELLS))
+                   # Skip if the asset is not a plate or tube
+                   unless (barcodes.present? && well_locations.present?) || (barcodes.present? && well_locations.blank?)
+                     next
+                   end
+                   plate = Plate.find_from_any_barcode(barcodes.uniq.first)
+                   next if plate.nil?
+                   wells = plate.wells.for_bulk_submission.located_at(well_locations)
+                   total_number_of_samples_per_study_project = wells.map(&:samples).flatten.count.to_i
+                   number_of_pools = rows.pluck(headers.index(HEADER_NUMBER_OF_POOLS)).uniq.first.to_i
 
-      # Perform the calculation for the number of samples per pool
-      int_division = total_number_of_samples_per_study_project / number_of_pools
-      remainder = total_number_of_samples_per_study_project % number_of_pools
+                   # Perform the calculation for the number of samples per pool
+                   int_division = total_number_of_samples_per_study_project / number_of_pools
+                   remainder = total_number_of_samples_per_study_project % number_of_pools
 
-      number_of_pools.times do |pool_number|
-        samples_per_pool = int_division
-        samples_per_pool += 1 if pool_number < remainder
-        next unless samples_per_pool > 25 || samples_per_pool < 5
-        errors.add(
-          :spreadsheet,
-          "Number of samples per pool for Study name '#{rows.first[headers.index(HEADER_STUDY_NAME)]}' " \
-            "and Project name '#{rows.first[headers.index(HEADER_PROJECT_NAME)]}' " \
-            "is less than 5 or greater than 25 for pool number #{pool_number}"
-        )
-      end
+                   number_of_pools.times do |pool_number|
+                     samples_per_pool = int_division
+                     samples_per_pool += 1 if pool_number < remainder
+                     next unless samples_per_pool > 25 || samples_per_pool < 5
+                     errors.add(
+                       :spreadsheet,
+                       "Number of samples per pool for Study name '#{rows.first[headers.index(HEADER_STUDY_NAME)]}' " \
+                         "and Project name '#{rows.first[headers.index(HEADER_PROJECT_NAME)]}' " \
+                         "is less than 5 or greater than 25 for pool number #{pool_number}"
+                     )
+                   end
+                 end
+               }
     end
   end
 
