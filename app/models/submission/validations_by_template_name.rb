@@ -106,6 +106,7 @@ module Submission::ValidationsByTemplateName
   end
   # rubocop:enable Metrics/AbcSize
 
+  # Checks if the asset is either a tube or a plate.
   def valid_asset?(barcodes, well_locations)
     (barcodes.present? && well_locations.present?) || (barcodes.present? && well_locations.blank?)
   end
