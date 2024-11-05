@@ -52,54 +52,6 @@ module Submission::ValidationsByTemplateName
     csv_data_rows.group_by { |row| [row[index_of_study_name], row[index_of_project_name]] }
   end
 
-  # rubocop:disable Metrics/MethodLength
-  # rubocop:disable Metrics/AbcSize
-  # rubocop:disable Metrics/CyclomaticComplexity
-  # rubocop:disable Metrics/PerceivedComplexity
-  # rubocop:disable Metrics/BlockLength
-  def calculate_samples_per_pool_for_tube_or_plate
-    unless headers.index(HEADER_BARCODE).nil? &&
-             headers
-               .index(HEADER_PLATE_WELLS)
-               .nil? { |_|
-                 grouped_rows = group_rows_by_study_and_project
-                 grouped_rows.each_value do |rows|
-                   barcodes = rows.pluck(headers.index(HEADER_BARCODE))
-                   well_locations = rows.pluck(headers.index(HEADER_PLATE_WELLS))
-                   # Skip if the asset is not a plate or tube
-                   unless (barcodes.present? && well_locations.present?) || (barcodes.present? && well_locations.blank?)
-                     next
-                   end
-                   plate = Plate.find_from_any_barcode(barcodes.uniq.first)
-                   next if plate.nil?
-                   wells = plate.wells.for_bulk_submission.located_at(well_locations)
-                   total_number_of_samples_per_study_project = wells.map(&:samples).flatten.count.to_i
-                   number_of_pools = rows.pluck(headers.index(HEADER_NUMBER_OF_POOLS)).uniq.first.to_i
-
-                   # Perform the calculation for the number of samples per pool
-                   int_division = total_number_of_samples_per_study_project / number_of_pools
-                   remainder = total_number_of_samples_per_study_project % number_of_pools
-
-                   number_of_pools.times do |pool_number|
-                     samples_per_pool = int_division
-                     samples_per_pool += 1 if pool_number < remainder
-                     next unless samples_per_pool > 25 || samples_per_pool < 5
-                     errors.add(
-                       :spreadsheet,
-                       "Number of samples per pool for Study name '#{rows.first[headers.index(HEADER_STUDY_NAME)]}' " \
-                         "and Project name '#{rows.first[headers.index(HEADER_PROJECT_NAME)]}' " \
-                         "is less than 5 or greater than 25 for pool number #{pool_number}"
-                     )
-                   end
-                 end
-               }
-    end
-  end
-  # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/CyclomaticComplexity
-  # rubocop:enable Metrics/PerceivedComplexity
-  # rubocop:enable Metrics/BlockLength
 
   # Validates that the specified column is consistent for all rows with the same study and project name.
   #
@@ -126,6 +78,59 @@ module Submission::ValidationsByTemplateName
         "Inconsistent values for column '#{column_header}' for Study name '#{study_project[0]}' and Project name " \
           "'#{study_project[1]}', " \
           'all rows for a specific study and project must have the same value'
+      )
+    end
+  end
+  # rubocop:enable Metrics/MethodLength
+
+  def calculate_samples_per_pool_for_tube_or_plate
+    return if headers.index(HEADER_BARCODE).nil? && headers.index(HEADER_PLATE_WELLS).nil?
+
+    grouped_rows = group_rows_by_study_and_project
+    grouped_rows.each_value do |rows|
+      process_rows(rows)
+    end
+  end
+
+  private
+
+  # rubocop:disable Metrics/AbcSize
+  def process_rows(rows)
+    barcodes = rows.pluck(headers.index(HEADER_BARCODE))
+    well_locations = rows.pluck(headers.index(HEADER_PLATE_WELLS))
+
+    return unless valid_asset?(barcodes, well_locations)
+
+    plate = Plate.find_from_any_barcode(barcodes.uniq.first)
+    return if plate.nil?
+
+    wells = plate.wells.for_bulk_submission.located_at(well_locations)
+    total_number_of_samples_per_study_project = wells.map(&:samples).flatten.count.to_i
+    number_of_pools = rows.pluck(headers.index(HEADER_NUMBER_OF_POOLS)).uniq.first.to_i
+
+    validate_samples_per_pool(rows, total_number_of_samples_per_study_project, number_of_pools)
+  end
+  # rubocop:enable Metrics/AbcSize
+
+  def valid_asset?(barcodes, well_locations)
+    (barcodes.present? && well_locations.present?) || (barcodes.present? && well_locations.blank?)
+  end
+
+  # rubocop:disable Metrics/MethodLength
+  def validate_samples_per_pool(rows, total_samples, number_of_pools)
+    int_division = total_samples / number_of_pools
+    remainder = total_samples % number_of_pools
+
+    number_of_pools.times do |pool_number|
+      samples_per_pool = int_division
+      samples_per_pool += 1 if pool_number < remainder
+      next unless samples_per_pool > 25 || samples_per_pool < 5
+
+      errors.add(
+        :spreadsheet,
+        "Number of samples per pool for Study name '#{rows.first[headers.index(HEADER_STUDY_NAME)]}' " \
+          "and Project name '#{rows.first[headers.index(HEADER_PROJECT_NAME)]}' " \
+          "is less than 5 or greater than 25 for pool number #{pool_number}"
       )
     end
   end
