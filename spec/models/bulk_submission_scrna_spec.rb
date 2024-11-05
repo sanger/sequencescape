@@ -18,9 +18,7 @@ describe BulkSubmission, with: :uploader do
 
   let!(:study) { create(:study, name: 'Test Study') }
   let!(:plate) { create(:plate_with_tagged_wells, sample_count: 96, barcode: 'SQPD-12345') }
-  let!(:asset_group) do
-    create(:asset_group, name: 'assetgroup', study: study, assets: plate.wells)
-  end
+  let!(:asset_group) { create(:asset_group, name: 'assetgroup', study: study, assets: plate.wells) }
   let!(:library_type) { create(:library_type, name: 'Standard') }
 
   after { submission_file.close }
@@ -38,7 +36,8 @@ describe BulkSubmission, with: :uploader do
         submission_class_name: 'LinearSubmission',
         product_catalogue: 'Generic',
         submission_parameters: {
-          request_options: {},
+          request_options: {
+          },
           request_types: request_types.map(&:key)
         }
       }
@@ -55,5 +54,4 @@ describe BulkSubmission, with: :uploader do
       expect(number_submissions_created).to eq(1)
     end
   end
-
 end

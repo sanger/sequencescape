@@ -44,7 +44,6 @@ module Submission::ValidationsByTemplateName
   def apply_number_of_samples_per_pool_validation
     # Creates groups of rows based on the study and project name (pool_number.e., study-project combinations)
     group_rows_by_study_and_project
-
   end
 
   def group_rows_by_study_and_project
@@ -74,10 +73,12 @@ module Submission::ValidationsByTemplateName
         samples_per_pool = int_division
         samples_per_pool += 1 if pool_number < remainder
         next unless samples_per_pool > 25 || samples_per_pool < 5
-        errors.add(:spreadsheet,
-                   "Number of samples per pool for Study name '#{rows.first[headers.index(HEADER_STUDY_NAME)]}' " \
-                   "and Project name '#{rows.first[headers.index(HEADER_PROJECT_NAME)]}' " \
-                   "is less than 5 or greater than 25 for pool number #{pool_number}")
+        errors.add(
+          :spreadsheet,
+          "Number of samples per pool for Study name '#{rows.first[headers.index(HEADER_STUDY_NAME)]}' " \
+            "and Project name '#{rows.first[headers.index(HEADER_PROJECT_NAME)]}' " \
+            "is less than 5 or greater than 25 for pool number #{pool_number}"
+        )
       end
     end
   end

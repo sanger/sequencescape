@@ -313,7 +313,6 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     assets.map(&:samples).flatten.uniq.each { |sample| sample.studies << study unless sample.studies.include?(study) }
   end
 
-
   # Assigns a value from the source object to the target object if the source value is present.
   #
   # @param [Hash] source_obj The source object containing the value to be assigned.
