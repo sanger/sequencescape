@@ -9,7 +9,9 @@
     <% instance_variable_or_id_param(:request_type) do |field_name, value| %>
       <div class="form-group  col-xs-12">
         <%= label_tag(field_name, 'Request type', class: 'col-md-4') %>
-        <%= select_field_sorted_by_name(field_name, @request_types, value, can_edit) %>
+        <%= select_field_sorted_by_name(field_name, @request_types, value, can_edit, prompt: 'Select a request type', required: true,
+                                        data: { novaseq_ids: RequestType.where(key: %w[illumina_htp_novaseq_6000_paired_end_sequencing illumina_htp_novaseqx_paired_end_sequencing]).pluck(:id).join(',') }
+            ) %>
       </div>
     <% end %>
     <% if @asset.studies.uniq.count > 1 -%>
@@ -104,6 +106,17 @@
       var disable_inputs = function(context) { $('input,select,textarea', context).attr('disabled', true);  }
       var enable_inputs  = function(context) { $('input,select,textarea', context).attr('disabled', false); }
 
+
+      <!-- Sets the 'required' attribute for the flowcell type input field based on the selected request type.-->
+      setFlowcellTypeRequiredForNovaseq = function() {
+        var selected_request_type_id = $('option:selected', request_type_element).attr('value');
+        var flowcell_type_element = $('[name="request[request_metadata_attributes][requested_flowcell_type]"]:not(:disabled)');
+        if(flowcell_type_element && flowcell_type_element.length > 0) {
+          var novaseq_ids = $(request_type_element).data('novaseq-ids').split(',');
+          flowcell_type_element.attr('required', novaseq_ids.includes(selected_request_type_id));
+        }
+      }
+
       handler = function() {
         var selected_request_type_id = $('option:selected', request_type_element).attr('value');
 
@@ -111,6 +124,7 @@
         // the parameters passed to the server are incorrect.
         disable_inputs(request_options.hide());
         enable_inputs($('#request_type_options_for_' + selected_request_type_id).show());
+        setFlowcellTypeRequiredForNovaseq()
       }
 
       request_type_element.change(handler);
