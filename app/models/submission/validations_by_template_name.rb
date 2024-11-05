@@ -52,6 +52,11 @@ module Submission::ValidationsByTemplateName
     csv_data_rows.group_by { |row| [row[index_of_study_name], row[index_of_project_name]] }
   end
 
+  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/PerceivedComplexity
+  # rubocop:disable Metrics/BlockLength
   def calculate_samples_per_pool_for_tube_or_plate
     unless headers.index(HEADER_BARCODE).nil? &&
              headers
@@ -90,6 +95,11 @@ module Submission::ValidationsByTemplateName
                }
     end
   end
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/BlockLength
 
   # Validates that the specified column is consistent for all rows with the same study and project name.
   #
