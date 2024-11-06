@@ -11,6 +11,7 @@ Feature: Check Study accession xml is valid
       | Synthetic Genomics|
       | Forensic or Paleo-genomics|
       | Gene Regulation Study|
+      | Cancer Genomics |
       | Whole Genome Sequencing|
       | Metagenomics|
       | Transcriptome Analysis|
