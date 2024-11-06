@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_10_18_131928) do
+ActiveRecord::Schema.define(version: 2024_11_06_150235) do
 
   create_table "aliquot_indices", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "aliquot_id", null: false
@@ -488,10 +488,10 @@ ActiveRecord::Schema.define(version: 2024_10_18_131928) do
   create_table "flipper_gates", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "feature_key", null: false
     t.string "key", null: false
-    t.string "value"
+    t.text "value"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["feature_key", "key", "value"], name: "index_flipper_gates_on_feature_key_and_key_and_value", unique: true
+    t.index ["feature_key", "key", "value"], name: "index_flipper_gates_on_feature_key_and_key_and_value", unique: true, length: { value: 255 }
   end
 
   create_table "flowcell_types", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
