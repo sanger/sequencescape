@@ -7,7 +7,7 @@ study_types = [
   ['Forensic or Paleo-genomics', 1, 1],
   ['Pooled Clone Sequencing', 0, 1],
   ['Gene Regulation Study', 1, 1],
-  ['Cancer Genomics', 1, 0],
+  ['Cancer Genomics', 1, 1],
   ['Whole Genome Sequencing', 1, 1],
   ['Metagenomics', 1, 1],
   ['Transcriptome Analysis', 1, 1],
