@@ -1,5 +1,5 @@
-Limber-Bespoke - PCR HiC - NovaSeqX paired end sequencing:
-  name: "Limber-Bespoke - PCR HiC - NovaSeqX paired end sequencing"
+Limber-PCR-HiC:
+  name: "Limber-PCR-HiC"
   submission_class_name: "LinearSubmission"
   related_records:
     product_line_name: Bespoke
