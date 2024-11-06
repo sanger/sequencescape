@@ -20,6 +20,7 @@ describe BulkSubmission, with: :uploader do
 
   let!(:study) { create(:study, name: 'abc123_study') }
   let!(:asset_group) { create(:asset_group, name: 'assetgroup123', study: study, asset_count: 2) }
+  let!(:asset_group_2) { create(:asset_group, name: 'assetgroup2', study: study, asset_count: 1) }
   let!(:library_type) { create(:library_type, name: 'Standard') }
 
   before do
@@ -277,7 +278,7 @@ describe BulkSubmission, with: :uploader do
       end
     end
 
-    context 'when invalid for scRNA template' do
+    context 'when invalid for scRNA template on samples per pool' do
       let(:submission_template_hash) do
         {
           name: 'Limber-Htp - scRNA Core cDNA Prep GEM-X 5p',
@@ -290,15 +291,41 @@ describe BulkSubmission, with: :uploader do
           }
         }
       end
-      let(:spreadsheet_filename) { 'scrna_additional_validations_invalid.csv' }
+      let(:spreadsheet_filename) { 'scrna_additional_validations_invalid_samples_per_pool.csv' }
 
       before { SubmissionSerializer.construct!(submission_template_hash) }
 
       it 'raises an error and sets an error message' do
         expect { subject.process }.to raise_error(ActiveRecord::RecordInvalid)
         expect(subject.errors.messages[:spreadsheet][0]).to eq(
-          "Inconsistent values for column 'scRNA Core Number of Samples per Pool' for " \
-            "Study name 'abc123_study', all rows for a specific study must have the same value"
+          "Inconsistent values for column 'scrna core number of samples per pool' for Study name 'abc123_study' " \
+            "and Project name 'Test project', all rows for a specific study and project must have the same value"
+        )
+      end
+    end
+
+    context 'when invalid for scRNA template on cells per chip well' do
+      let(:submission_template_hash) do
+        {
+          name: 'Limber-Htp - scRNA Core cDNA Prep GEM-X 5p',
+          submission_class_name: 'LinearSubmission',
+          product_catalogue: 'Generic',
+          submission_parameters: {
+            request_options: {
+            },
+            request_types: request_types.map(&:key)
+          }
+        }
+      end
+      let(:spreadsheet_filename) { 'scrna_additional_validations_invalid_cells_per_chip_well.csv' }
+
+      before { SubmissionSerializer.construct!(submission_template_hash) }
+
+      it 'raises an error and sets an error message' do
+        expect { subject.process }.to raise_error(ActiveRecord::RecordInvalid)
+        expect(subject.errors.messages[:spreadsheet][0]).to eq(
+          "Inconsistent values for column 'scrna core cells per chip well' for Study name 'abc123_study' " \
+            "and Project name 'Test project', all rows for a specific study and project must have the same value"
         )
       end
     end
