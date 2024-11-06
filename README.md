@@ -493,8 +493,6 @@ This isn't necessary at this stage, but it seems wise to note the intended patte
 
 The GH actions builds use the Knapsack-pro gem to reduce build time by parallelizing the RSpec and Cucumber tests. There is no need to regenerate the knapsack_rspec_report.json file, Knapsack Pro will dynamically allocate tests to ensure tests finish as close together as possible.
 
-Copyright (c) 2007, 2010-2021 Genome Research Ltd.
-
 ### ERD
 
 You can create a database entity relationship diagram, by specifying the title and attributes optionally, and view the output:
@@ -516,3 +514,5 @@ the table of contents, run:
 ```shell
 npx markdown-toc -i README.md --bullets "-"
 ```
+
+Copyright (c) 2007, 2010-2024 Genome Research Ltd.
