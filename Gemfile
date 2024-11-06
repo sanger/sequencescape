@@ -121,9 +121,9 @@ group :default do
   gem 'cancancan'
 
   # Feature flags
-  gem 'flipper', '~> 0.25.0'
-  gem 'flipper-active_record', '~> 0.25.0'
-  gem 'flipper-ui', '~> 0.25.0'
+  gem 'flipper'
+  gem 'flipper-active_record'
+  gem 'flipper-ui'
 end
 
 group :development do
