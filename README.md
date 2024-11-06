@@ -341,6 +341,14 @@ of running standalone scripts multiple times.
 
 A breakdown of the the available tasks and how to run them can be found [here](lib/tasks/README.md)
 
+## Feature flags
+
+The use of feature flags is encouraged for development.
+
+[Flipper](https://github.com/flippercloud/flipper) is used for flag management and flags can be controlled from the `/flipper` route.
+
+To create a new feature flag, update `config/feature_flags.yml`.
+
 ## Supporting applications
 
 There are a number of services that are needed in certain parts of Sequencescape these are listed
