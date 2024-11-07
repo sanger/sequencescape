@@ -13,10 +13,7 @@ module Submission::ValidationsByTemplateName
   HEADER_NUMBER_OF_POOLS = 'scrna core number of pools'
   HEADER_CELLS_PER_CHIP_WELL = 'scrna core cells per chip well'
 
-  SAMPLES_PER_POOL = {
-    max: 25,
-    min: 5
-  }.freeze
+  SAMPLES_PER_POOL = { max: 25, min: 5 }.freeze
 
   # Applies additional validations based on the submission template type.
   #
