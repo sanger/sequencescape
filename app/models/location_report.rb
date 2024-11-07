@@ -160,7 +160,7 @@ class LocationReport < ApplicationRecord
       cur_plate.received_date&.strftime('%Y-%m-%d %H:%M:%S') || 'Unknown',
       cur_plate.storage_location,
       cur_plate.storage_location_service,
-      cur_plate.retention_instructions || 'Unknown'
+      cur_plate.retention_instruction || 'Unknown'
     ]
   end
 
