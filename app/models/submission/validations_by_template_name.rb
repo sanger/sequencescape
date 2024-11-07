@@ -13,6 +13,11 @@ module Submission::ValidationsByTemplateName
   HEADER_NUMBER_OF_POOLS = 'scrna core number of pools'
   HEADER_CELLS_PER_CHIP_WELL = 'scrna core cells per chip well'
 
+  SAMPLES_PER_POOL = {
+    max: 25,
+    min: 5
+  }.freeze
+
   # Applies additional validations based on the submission template type.
   #
   # This method determines the submission template type from the CSV data and calls the appropriate
@@ -37,7 +42,7 @@ module Submission::ValidationsByTemplateName
     when SCRNA_CORE_CDNA_PREP_GEM_X_5P
       validate_consistent_column_value(HEADER_NUMBER_OF_POOLS)
       validate_consistent_column_value(HEADER_CELLS_PER_CHIP_WELL)
-      validate_samples_per_pool_for_tube_or_plate
+      validate_samples_per_pool_for_labware
     end
   end
 
@@ -80,7 +85,7 @@ module Submission::ValidationsByTemplateName
   end
   # rubocop:enable Metrics/MethodLength
 
-  def validate_samples_per_pool_for_tube_or_plate
+  def validate_samples_per_pool_for_labware
     return if headers.index(HEADER_BARCODE).nil? && headers.index(HEADER_PLATE_WELLS).nil?
 
     grouped_rows = group_rows_by_study_and_project
@@ -144,7 +149,7 @@ module Submission::ValidationsByTemplateName
   end
 
   # Checks if the asset is either a tube or a plate.
-  def valid_asset?(barcodes, well_locations)
+  def valid_labware?(barcodes, well_locations)
     (barcodes.present? && well_locations.present?) || (barcodes.present? && well_locations.blank?)
   end
 
@@ -156,7 +161,7 @@ module Submission::ValidationsByTemplateName
     number_of_pools.times do |pool_number|
       samples_per_pool = int_division
       samples_per_pool += 1 if pool_number < remainder
-      next unless samples_per_pool > 25 || samples_per_pool < 5
+      next unless samples_per_pool > SAMPLES_PER_POOL[:max] || samples_per_pool < SAMPLES_PER_POOL[:min]
 
       errors.add(
         :spreadsheet,
