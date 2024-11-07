@@ -232,8 +232,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     'priority',
     'flowcell type',
     'scrna core number of pools',
-    'scrna core cells per chip well',
-    'scrna core number of pools'
+    'scrna core cells per chip well'
   ].freeze
 
   ALIAS_FIELDS = { 'plate barcode' => 'barcode', 'tube barcode' => 'barcode' }.freeze
