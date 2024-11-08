@@ -147,11 +147,11 @@ RSpec.describe Labware do
       end
 
       it 'memoizes the retention instructions' do
-        expect(labware).to receive(:obtain_retention_instructions).once.and_return('Keep for 1 year')
-
         # Call the method twice
         labware.retention_instructions
         labware.retention_instructions
+
+        expect(labware).to have_received(:obtain_retention_instructions).once
       end
     end
 
