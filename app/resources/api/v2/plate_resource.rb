@@ -33,6 +33,11 @@ module Api
       attribute :number_of_rows, write_once: true, delegate: :height
       attribute :number_of_columns, write_once: true, delegate: :width
       attribute :size, write_once: true
+      attribute :pooling_metadata, readonly: true
+
+      def pooling_metadata
+        _model.pools
+      end
 
       # Filters
 

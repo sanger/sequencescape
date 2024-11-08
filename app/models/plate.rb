@@ -20,6 +20,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   include Transfer::State::PlateState
   include Asset::Ownership::Owned
   include Plate::FluidigmBehaviour
+  include Plate::PoolingMetadata
   include SubmissionPool::Association::Plate
   include PlateCreation::CreationChild
   include Barcode::Barcodeable
