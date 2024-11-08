@@ -156,7 +156,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
                   'INNER JOIN uuids ON uuids.resource_id=requests.submission_id AND uuids.resource_type="Submission"'
                 ]
             )
-            .group('uuids.external_id')
+            .group('pool_id')
             .where(pw: { labware_id: plate.id }, requests: { submission_id: submission_ids })
             .where.not(requests: { state: 'cancelled' })
         end
