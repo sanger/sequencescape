@@ -26,6 +26,7 @@ module Api
       default_includes :uuid_object, :barcodes, :plate_purpose, :transfer_requests
 
       # Associations:
+      has_many :submission_pools, readonly: true
       has_many :wells, write_once: true
 
       # Attributes
