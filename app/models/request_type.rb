@@ -82,7 +82,7 @@ class RequestType < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # eg. library_creation has a lower order than sequencing
   validates :order, presence: true
   validates :order, numericality: { integer_only: true }
-  validates :morphology, numericality: { in: MORPHOLOGIES }
+  validates :morphology, numericality: { in: 0..2 } # 0..2 is the range of morphologies as defined in ln36-41
   validates :request_class, presence: true, inclusion: { in: ->(_) { [Request, *Request.descendants] } }
 
   serialize :request_parameters
