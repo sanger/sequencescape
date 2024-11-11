@@ -46,7 +46,7 @@ jobs:
           MYSQL_ROOT_PASSWORD: "" # Set root PW to nothing
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -90,7 +90,7 @@ jobs:
         ci_node_total: [3]
         ci_node_index: [0, 1, 2]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -168,7 +168,7 @@ jobs:
         ci_node_total: [2]
         ci_node_index: [0, 1]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
