@@ -507,9 +507,9 @@ The command uses the [rails-erd](https://github.com/voormedia/rails-erd) gem.
 
 ### Updating the table of contents
 
-To update the table of contents after adding things to this README you can use the [markdown-toc](https://github.com/jonschlinkert/markdown-toc)
-node module. To install it, make sure you have installed the dev dependencies from yarn. To update
-the table of contents, run:
+To update the table of contents after adding things to this README you can use the [markdown-toc](https://github.com/jonschlinkert/markdown-toc) node module.
+To install it, make sure you have installed the dev dependencies from yarn.
+To update the table of contents, run:
 
 ```shell
 npx markdown-toc -i README.md --bullets "-"
