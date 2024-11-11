@@ -86,6 +86,9 @@ module Sequencescape
     config.plate_default_type = 'ABgene_0800'
     config.plate_default_max_volume = 180
 
+    # Preparing for Rails 7.1 using the default Ruby implementation
+    config.active_support.remove_deprecated_time_with_zone_name = true
+
     # See issue #3134 Leave wells D3/H10 free
     config.plate_default_control_wells_to_leave_free = [19, 79].freeze
 
