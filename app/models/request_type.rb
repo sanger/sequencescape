@@ -68,7 +68,7 @@ class RequestType < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # While a request type describes what a request is, a request purpose describes why it is being done.
   # ie. standard, qc, internal
   # The value on request type acts as a default for requests
-  enum request_purpose: { standard: 1, internal: 2, qc: 3, control: 4 }
+  enum :request_purpose, { standard: 1, internal: 2, qc: 3, control: 4 }
 
   belongs_to :product_line
 
