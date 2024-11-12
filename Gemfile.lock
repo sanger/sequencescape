@@ -598,9 +598,9 @@ DEPENDENCIES
   delayed_job_active_record
   exception_notification
   factory_bot_rails
-  flipper
-  flipper-active_record
-  flipper-ui
+  flipper (~> 1.0)
+  flipper-active_record (~> 1.0)
+  flipper-ui (~> 1.0)
   formtastic
   json
   jsonapi-resources!
