@@ -48,6 +48,7 @@ Rails.application.routes.draw do
       jsonapi_resources :projects
       jsonapi_resources :purposes
       jsonapi_resources :qc_assays
+      jsonapi_resources :qc_files, except: %i[update]
       jsonapi_resources :qc_results
       jsonapi_resources :qcables
       jsonapi_resources :racked_tubes
