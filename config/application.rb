@@ -24,7 +24,7 @@ Bundler.require(*Rails.groups)
 module Sequencescape
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 6.1
+    config.load_defaults 7.0
 
     # Default options which predate the Rails 5 switch
     config.active_record.belongs_to_required_by_default = false
@@ -85,9 +85,6 @@ module Sequencescape
     config.cherrypickable_default_type = 'ABgene_0800'
     config.plate_default_type = 'ABgene_0800'
     config.plate_default_max_volume = 180
-
-    # Preparing for Rails 7.1 using the default Ruby implementation
-    config.active_support.remove_deprecated_time_with_zone_name = true
 
     # See issue #3134 Leave wells D3/H10 free
     config.plate_default_control_wells_to_leave_free = [19, 79].freeze
