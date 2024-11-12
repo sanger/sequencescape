@@ -309,6 +309,10 @@ class Labware < Asset
   end
 
   def obtain_retention_instructions
+    # first check the retention_instruction field
+    return retention_instruction if retention_instruction.present?
+
+    # if not found, check the metadata (legacy)
     return if metadata.blank?
 
     metadata.symbolize_keys[:retention_instruction]

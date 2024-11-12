@@ -21,12 +21,25 @@ RSpec.describe StateChanger::StandardPlate do
     context 'when the plate is the initial plate in the pipeline' do
       include_context 'a limber target plate with submissions', 'pending'
 
-      let(:target_state) { 'started' }
+      context 'when the target state is started' do
+        let(:target_state) { 'started' }
 
-      it 'starts the requests', :aggregate_failures do
-        # Requests are started and we create one event per order.
-        expect { state_changer.update_labware_state }.to change(BroadcastEvent::LibraryStart, :count).by(1)
-        expect(library_requests).to all(be_started)
+        it 'starts the requests', :aggregate_failures do
+          # Requests are started and we create one event per order.
+          expect { state_changer.update_labware_state }.to change(BroadcastEvent::LibraryStart, :count).by(1)
+          expect(library_requests).to all(be_started)
+        end
+      end
+
+      # RVI BCL uses the processed_1 state as the first state for the the initial plate
+      context 'when the target state is processed_1' do
+        let(:target_state) { 'processed_1' }
+
+        it 'starts the requests', :aggregate_failures do
+          # Requests are started and we create one event per order.
+          expect { state_changer.update_labware_state }.to change(BroadcastEvent::LibraryStart, :count).by(1)
+          expect(library_requests).to all(be_started)
+        end
       end
     end
 
