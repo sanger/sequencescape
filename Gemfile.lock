@@ -80,19 +80,11 @@ GEM
       globalid (>= 0.3.6)
     activemodel (6.1.7.10)
       activesupport (= 6.1.7.10)
-    activemodel-serializers-xml (1.0.2)
-      activemodel (> 5.x)
-      activesupport (> 5.x)
-      builder (~> 3.1)
     activerecord (6.1.7.10)
       activemodel (= 6.1.7.10)
       activesupport (= 6.1.7.10)
     activerecord-import (1.7.0)
       activerecord (>= 4.2)
-    activeresource (6.1.0)
-      activemodel (>= 6.0)
-      activemodel-serializers-xml (~> 1.0)
-      activesupport (>= 6.0)
     activestorage (6.1.7.10)
       actionpack (= 6.1.7.10)
       activejob (= 6.1.7.10)
@@ -475,7 +467,7 @@ GEM
     sanitize (6.1.3)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
-    selenium-webdriver (4.25.0)
+    selenium-webdriver (4.26.0)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
@@ -578,7 +570,6 @@ DEPENDENCIES
   aasm
   actionpack-xml_parser
   activerecord-import
-  activeresource
   acts-as-dag!
   after_commit_everywhere (~> 1.0)
   avro (~> 1.11.0)
