@@ -3,8 +3,7 @@
 module Api
   module V2
     # Provides a JSON:API representation of {QcFile} which contains the QC data previously added to a piece of
-    # {Labware}. The file contents are stored in the database using the {DbFile} model. This resource only allows the
-    # submission of the file contents at this time and not the retrieval of the file contents.
+    # {Labware}. The file contents are stored in the database using the {DbFile} model.
     #
     # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
     # @note Access this resource via the `/api/v2/qc_files/` endpoint.
@@ -15,6 +14,16 @@ module Api
     #     "data": {
     #       "type": "qc_files",
     #       "attributes": {
+    #         "filename": "qc_file.csv",
+    #         "contents": "A1,A2,A3\n1,2,3\n4,5,6\n"
+    #       },
+    #       "relationships": {
+    #         "asset": {
+    #           "data": {
+    #             "type": "labware",
+    #             "id": "123"
+    #           }
+    #         }
     #       }
     #     }
     #   }
@@ -36,17 +45,56 @@ module Api
       # Attributes
       ###
 
+      # @!attribute [r] content_type
+      #   @return [String] The content type, or MIME type, of the QC file.
+      attribute :content_type, readonly: true
+
+      # @!attribute [rw] contents
+      #   @return [String] The String contents of the QC file.
+      #      This is usually the CSV data for the QC file.
+      #      This can only be written once on creation.
+      attribute :contents, write_once: true
+
+      def contents
+        # The contents comes from the uploaded_data managed by CarrierWave.
+        @model.current_data
+      end
+
+      def contents=(value)
+        # Do not update the model.
+        # File contents is set via the uploaded_data hash supplied during QcFile creation.
+      end
+
+      # @!attribute [rw] filename
+      #   @return [String] The filename of the QC file.
+      #      This can only be written once on creation.
+      attribute :filename, write_once: true
+
+      def filename=(value)
+        # Do not update the model.
+        # Filename is set via the uploaded_data hash supplied during QcFile creation.
+      end
+
       # @!attribute [r] uuid
       #   @return [String] The UUID of the bulk transfers operation.
       attribute :uuid, readonly: true
+
+      # @!attribute [r] size
+      #   @return [Integer] The size of the QC file in bytes.
+      attribute :size, readonly: true
 
       ###
       # Relationships
       ###
 
-      # @!attribute [r] asset
+      # @!attribute [rw] asset
       #   @return [AssetResource] The Labware which this QcFile belongs to.
-      has_one :asset, readonly: true
+      has_one :asset, write_once: true
+
+      def self.create_with_tempfile(context, tempfile, filename)
+        opts = { uploaded_data: { tempfile:, filename: } }
+        new(QcFile.new(opts), context)
+      end
     end
   end
 end
