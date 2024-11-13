@@ -5,7 +5,7 @@ FactoryBot.define do
     transient do
       tube_rack_purpose { create(:tube_rack_purpose) }
       tube_purpose { create(:tube_purpose) }
-      plate { create(:plate) }
+      parent_plate { create(:plate) }
     end
 
     tube_rack_attributes do
@@ -21,7 +21,7 @@ FactoryBot.define do
               tube_name: 'SEQ:NT1A:A1',
               tube_purpose_uuid: tube_purpose.uuid,
               tube_position: 'A1',
-              parent_uuids: [plate.uuid]
+              parent_uuids: [parent_plate.wells.first.uuid]
             }
           ]
         }
@@ -30,6 +30,6 @@ FactoryBot.define do
 
     user { |target| target.association(:user) }
 
-    parents { |target| [target.association(:plate)] }
+    parents { |target| [target.association(:parent_plate)] }
   end
 end

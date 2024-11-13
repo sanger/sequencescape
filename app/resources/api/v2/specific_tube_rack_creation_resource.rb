@@ -2,9 +2,8 @@
 
 module Api
   module V2
-    # @todo This documentation does not yet include a detailed description of what this resource represents.
-    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
-    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+    # This resource represents the api v2 resource for the specific tube rack creations endpoint.
+    # This endpoint is used to create tube rack instances and the racked tubes within them.
     #
     # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
     # @note Access this resource via the `/api/v2/specific_tube_rack_creations/` endpoint.
@@ -80,9 +79,9 @@ module Api
         @model.user = User.with_uuid(value).first
       end
 
-      # TODO: what is this state change uuid?
+
       # @!attribute [r] uuid
-      #   @return [String] The UUID of the state change.
+      #   @return [String] The UUID of the AssetCreation instance.
       attribute :uuid, readonly: true
 
       ###
