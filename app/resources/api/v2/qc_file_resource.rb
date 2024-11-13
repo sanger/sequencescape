@@ -87,9 +87,13 @@ module Api
       # Relationships
       ###
 
-      # @!attribute [rw] asset
-      #   @return [AssetResource] The Labware which this QcFile belongs to.
-      has_one :asset, write_once: true
+      # @!attribute [rw] labware
+      #   @return [LabwareResource] The Labware which this QcFile belongs to.
+      has_one :labware, relation_name: :asset, foreign_key: :asset_id, write_once: true
+
+      ###
+      # Create method
+      ###
 
       def self.create_with_tempfile(context, tempfile, filename)
         opts = { uploaded_data: { tempfile:, filename: } }
