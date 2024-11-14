@@ -124,7 +124,7 @@ class AccessionService # rubocop:todo Metrics/ClassLength
       end
     end
 
-    accessionables.map(&:accession_number) 
+    accessionables.map(&:accession_number)
   end
 
   # rubocop:enable Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/BlockLength, Metrics/AbcSize
