@@ -96,6 +96,16 @@ module Api
       has_one :labware, relation_name: :asset, foreign_key: :asset_id, write_once: true
 
       ###
+      # Filters
+      ###
+
+      # @!method filter_uuid
+      #   Filter the QcFile resources by UUID.
+      #   @example GET request with UUID filter
+      #     GET /api/v2/qc_files?filter[uuid]=12345678-1234-1234-1234-123456789012
+      filter :uuid, apply: ->(records, value, _options) { records.with_uuid(value) }
+
+      ###
       # Create method
       ###
 
