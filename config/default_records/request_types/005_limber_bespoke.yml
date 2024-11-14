@@ -84,4 +84,3 @@ limber_bespoke_aggregation:
   request_class_name: CustomerRequest
   acceptable_purposes:
     - LBC Stock
-
