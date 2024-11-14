@@ -134,4 +134,60 @@ RSpec.describe Labware do
       expect(plate.storage_location).to eq('Not found - There is a problem with Labwhere')
     end
   end
+
+  context 'when retrieving retention instructions' do
+    let(:labware) { described_class.new }
+
+    # tests the higher level method
+    describe '#retention_instructions' do
+      before { allow(labware).to receive(:obtain_retention_instructions).and_return('Keep for 1 year') }
+
+      it 'returns the retention instructions' do
+        expect(labware.retention_instructions).to eq('Keep for 1 year')
+      end
+
+      it 'memoizes the retention instructions' do
+        # Call the method twice
+        labware.retention_instructions
+        labware.retention_instructions
+
+        expect(labware).to have_received(:obtain_retention_instructions).once
+      end
+    end
+
+    # tests the low level private method that retrieves the retention instructions
+    # NB. expecting value to be in the field on labware, checking metadata if not
+    # present there for legacy reasons.
+    describe '#obtain_retention_instructions' do
+      let(:labware) { described_class.new }
+
+      context 'when the retention_instruction field is used on labware' do
+        before { allow(labware).to receive(:retention_instruction).and_return('Keep for 1 year') }
+
+        it 'returns the retention_instruction' do
+          expect(labware.send(:obtain_retention_instructions)).to eq('Keep for 1 year')
+        end
+      end
+
+      context 'when retention_instruction does not have a value on labware' do
+        before { allow(labware).to receive(:retention_instruction).and_return(nil) }
+
+        context 'when metadata is blank' do
+          before { allow(labware).to receive(:metadata).and_return(nil) }
+
+          it 'returns nil' do
+            expect(labware.send(:obtain_retention_instructions)).to be_nil
+          end
+        end
+
+        context 'when metadata is present' do
+          before { allow(labware).to receive(:metadata).and_return({ 'retention_instruction' => 'Keep for 2 years' }) }
+
+          it 'returns the retention_instruction from metadata' do
+            expect(labware.send(:obtain_retention_instructions)).to eq('Keep for 2 years')
+          end
+        end
+      end
+    end
+  end
 end
