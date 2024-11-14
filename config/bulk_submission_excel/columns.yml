@@ -278,12 +278,12 @@ number_of_pools:
     options:
       type: :whole
       operator: :between
-      formula1: "2"
+      formula1: "1"
       formula2: "8"
       allowBlank: true
       showInputMessage: true
       promptTitle: "Number of pools"
-      prompt: "The requested number pools (between 2 and 8 inclusive)"
+      prompt: "The requested number pools (between 1 and 8 inclusive)"
   conditional_formattings:
     empty_cell:
     is_text:
