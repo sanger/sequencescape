@@ -65,6 +65,10 @@ module Api
         # File contents is set via the uploaded_data hash supplied during QcFile creation.
       end
 
+      # @!attribute [r] created_at
+      #   @return [DateTime] The date and time the QC file was created.
+      attribute :created_at, readonly: true
+
       # @!attribute [rw] filename
       #   @return [String] The filename of the QC file.
       #      This can only be written once on creation.
