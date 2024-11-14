@@ -84,21 +84,4 @@ limber_bespoke_aggregation:
   request_class_name: CustomerRequest
   acceptable_purposes:
     - LBC Stock
-limber_hic:
-  asset_type: Well
-  order: 1
-  request_class_name: IlluminaHtp::Requests::StdLibraryRequest
-  billable: true
-  product_line_name: Bespoke
-  name: Limber PCR Bespoke
-  acceptable_purposes:
-    - LBB Cherrypick
-    - LBC Cherrypick
-    - Stock Plate
-  library_types:
-    - Hi-C
-    - Hi-C - Arima v1
-    - Hi-C - Arima v2
-    - Hi-C - Dovetail
-    - Hi-C - OmniC
-    - Hi-C - Qiagen
+
