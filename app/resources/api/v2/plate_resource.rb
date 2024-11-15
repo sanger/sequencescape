@@ -27,8 +27,8 @@ module Api
 
       # Associations:
       has_many :submission_pools, readonly: true
-      has_many :wells, write_once: true
       has_many :transfers_as_destination, readonly: true
+      has_many :wells, write_once: true
 
       # Attributes
       attribute :number_of_rows, write_once: true, delegate: :height

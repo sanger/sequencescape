@@ -4,7 +4,7 @@
   <strong>Either</strong>
     <table cellspacing='0' cellpadding='0'>
       <tr>
-        <td><label for="cherrypick_action_nano_grams_per_micro_litre">Pick by ng/&micro;l</label>:</td>
+        <td><label for="cherrypick_action_nano_grams_per_micro_litre">Pick by concentration (ng/&micro;l)</label>:</td>
         <td><%= radio_button("cherrypick", "action", "nano_grams_per_micro_litre", checked: true) %></td>
       </tr>
       <%= fields_for :nano_grams_per_micro_litre do |ff|%>
@@ -18,7 +18,7 @@
         </tr>
         <tr>
           <td><%= ff.label 'robot_minimum_picking_volume', 'Robot Minimum Picking Volume' %> (&micro;l):</td>
-          <td><%= ff.text_field 'robot_minimum_picking_volume', value: 1.0, size: 5, type: 'number', step: 0.1, min: 1, max: 9 %></td>
+          <td><%= ff.text_field 'robot_minimum_picking_volume', value: 5.0, size: 5, type: 'number', step: 0.1, min: 1, max: 9 %></td>
         </tr>
       <% end %>
     </table>
@@ -30,7 +30,7 @@
   <strong>Or</strong>
     <table cellspacing='0' cellpadding='0'>
       <tr>
-        <td><label for="cherrypick_action_nano_grams">Pick by ng</label>:</td>
+        <td><label for="cherrypick_action_nano_grams">Pick by amount (ng)</label></td>
         <td><%= radio_button("cherrypick", "action", "nano_grams") %></td>
       </tr>
       <%= fields_for :nano_grams do |ff|%>
@@ -48,7 +48,7 @@
         </tr>
         <tr>
           <td><%= ff.label 'robot_minimum_picking_volume', 'Robot Minimum Picking Volume' %> (&micro;l):</td>
-          <td><%= ff.text_field 'robot_minimum_picking_volume', value: 1.0, size: 5, type: 'number', step: 0.1, min: 1, max: 9 %></td>
+          <td><%= ff.text_field 'robot_minimum_picking_volume', value: 5.0, size: 5, type: 'number', step: 0.1, min: 1, max: 9 %></td>
         </tr>
       <% end %>
     </table>
@@ -60,7 +60,7 @@
   <strong>Or</strong>
     <table cellspacing='0' cellpadding='0'>
       <tr>
-        <td><label for="cherrypick_action_micro_litre">Pick by &micro;l</label>:</td>
+        <td><label for="cherrypick_action_micro_litre">Pick by volume (&micro;l)</label>:</td>
         <td><%= radio_button("cherrypick", "action", "micro_litre") %></td>
       </tr>
       <%= fields_for :micro_litre do |ff|%>
