@@ -110,7 +110,7 @@ module Api
       #   @return [LabwareResource] The destination Labware for the transfer.
       has_one :destination
 
-      # @!attribute [r] source
+      # @!attribute [rw] source
       #   Setting this relationship alongside the `source_uuid` attribute will override the attribute value.
       #   @return [LabwareResource] The source labware for the transfer.
       #   @note This relationship is required.

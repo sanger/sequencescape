@@ -22,7 +22,7 @@ module Api
     class SubmissionPoolResource < BaseResource
       immutable
 
-      # @!attribute [w] plates_in_submission
+      # @!attribute [r] plates_in_submission
       #   @return [Integer] The number of plates in the submission pool.
       attribute :plates_in_submission, readonly: true
 
