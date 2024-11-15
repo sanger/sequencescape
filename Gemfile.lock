@@ -80,19 +80,11 @@ GEM
       globalid (>= 0.3.6)
     activemodel (6.1.7.10)
       activesupport (= 6.1.7.10)
-    activemodel-serializers-xml (1.0.2)
-      activemodel (> 5.x)
-      activesupport (> 5.x)
-      builder (~> 3.1)
     activerecord (6.1.7.10)
       activemodel (= 6.1.7.10)
       activesupport (= 6.1.7.10)
     activerecord-import (1.7.0)
       activerecord (>= 4.2)
-    activeresource (6.1.0)
-      activemodel (>= 6.0)
-      activemodel-serializers-xml (~> 1.0)
-      activesupport (>= 6.0)
     activestorage (6.1.7.10)
       actionpack (= 6.1.7.10)
       activejob (= 6.1.7.10)
@@ -574,7 +566,6 @@ DEPENDENCIES
   aasm
   actionpack-xml_parser
   activerecord-import
-  activeresource
   acts-as-dag!
   after_commit_everywhere (~> 1.0)
   avro (~> 1.11.0)

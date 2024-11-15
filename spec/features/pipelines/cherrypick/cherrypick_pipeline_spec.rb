@@ -102,7 +102,7 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
 
   describe 'where picking by ng/µl for a tecan robot' do
     let(:concentrations_required) { true }
-    let(:layout_volume_option) { 'Pick by ng/µl' }
+    let(:layout_volume_option) { 'Pick by concentration (ng/µl)' }
     let(:custom_destination_type) { create(:plate_type, name: 'Custom Type') }
     let(:expected_plates_by_destination_plate) do
       { destination_plate_human_barcode => { 1 => { sources: [plates[0], plates[1], plates[2]] } } }
@@ -276,7 +276,7 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
 
   describe 'where picking by ng for a tecan robot' do
     let(:concentrations_required) { true }
-    let(:layout_volume_option) { 'Pick by ng' }
+    let(:layout_volume_option) { 'Pick by amount (ng)' }
     let(:plate_type) { create(:plate_type, name: 'ABgene_0800', maximum_volume: 800) }
     let(:expected_plates_by_destination_plate) do
       { destination_plate_human_barcode => { 1 => { sources: [plates[0], plates[1], plates[2]] } } }
@@ -321,7 +321,7 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
   end
 
   describe 'where the number of plates does not exceed the max beds for the robot' do
-    let(:layout_volume_option) { 'Pick by µl' }
+    let(:layout_volume_option) { 'Pick by volume (µl)' }
     let(:expected_plates_by_destination_plate) do
       { destination_plate_human_barcode => { 1 => { sources: [plates[0], plates[1], plates[2]] } } }
     end
@@ -330,7 +330,7 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
   end
 
   describe 'where the number of plates exceeds the max beds for the robot' do
-    let(:layout_volume_option) { 'Pick by µl' }
+    let(:layout_volume_option) { 'Pick by volume (µl)' }
     let(:max_plates) { 2 }
     let(:expected_plates_by_destination_plate) do
       { destination_plate_human_barcode => { 1 => { sources: [plates[0], plates[1]] }, 2 => { sources: [plates[2]] } } }
@@ -340,7 +340,7 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
   end
 
   describe 'where there are multiple destination plates and the number of plates exceeds the max beds for the robot' do
-    let(:layout_volume_option) { 'Pick by µl' }
+    let(:layout_volume_option) { 'Pick by volume (µl)' }
     let(:max_plates) { 2 }
     let(:full_plate) { create(:plate_with_untagged_wells_and_custom_name, sample_count: 96) }
     let(:additional_plates) { create_list(:plate_with_untagged_wells_and_custom_name, 3, sample_count: 2) }
@@ -375,7 +375,7 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
     let(:max_plates) { 25 }
     let(:robot) { create(:hamilton, barcode: '444', max_plates_value: max_plates) }
     let(:concentrations_required) { true }
-    let(:layout_volume_option) { 'Pick by ng/µl' }
+    let(:layout_volume_option) { 'Pick by concentration (ng/µl)' }
     let(:custom_destination_type) { create(:plate_type, name: 'Custom Type') }
     let(:expected_plates_by_destination_plate) do
       { destination_plate_human_barcode => { 1 => { sources: [plates[0], plates[1]], control: control_plate } } }
@@ -413,7 +413,7 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
     let(:max_plates) { 25 }
     let(:robot) { create(:hamilton, barcode: '444', max_plates_value: max_plates) }
     let(:concentrations_required) { true }
-    let(:layout_volume_option) { 'Pick by ng/µl' }
+    let(:layout_volume_option) { 'Pick by concentration (ng/µl)' }
     let(:custom_destination_type) { create(:plate_type, name: 'Custom Type') }
     let(:expected_plates_by_destination_plate) do
       {
