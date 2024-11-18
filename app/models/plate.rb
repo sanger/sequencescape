@@ -21,7 +21,6 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   include Asset::Ownership::Owned
   include Plate::FluidigmBehaviour
   include Plate::PoolingMetadata
-  include SubmissionPool::Association::Plate
   include PlateCreation::CreationChild
   include Barcode::Barcodeable
 
@@ -95,6 +94,9 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   has_many :well_requests_as_target, through: :wells, source: :requests_as_target
   has_many :well_requests_as_source, through: :wells, source: :requests_as_source
   has_many :orders_as_target, -> { distinct }, through: :well_requests_as_target, source: :order
+
+  # This association cannot be declared earlier, as it depends on the well_requests_as_target association.
+  include SubmissionPool::Association::Plate
 
   # We use stock well associations here as stock_wells is already used to generate some kind of hash.
   has_many :stock_requests, -> { distinct }, through: :stock_well_associations, source: :requests
