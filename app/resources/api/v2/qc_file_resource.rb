@@ -109,6 +109,14 @@ module Api
       # Create method
       ###
 
+      # @!method create_with_tempfile
+      #   Create a new QcFile resource with the uploaded data from a temporary file. This is called by the controller
+      #   when a create request for a QcFile is made. It ensures the contents of the file have been written to a
+      #   new TempFile instance.
+      #   @param context [Hash] The context for the request.
+      #   @param tempfile [Tempfile] A temporary file containing the uploaded data.
+      #   @param filename [String] The filename for the uploaded data.
+      #   @return [QcFileResource] The new QcFile resource.
       def self.create_with_tempfile(context, tempfile, filename)
         opts = { uploaded_data: { tempfile:, filename: } }
         new(QcFile.new(opts), context)
