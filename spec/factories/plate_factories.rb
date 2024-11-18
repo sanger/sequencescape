@@ -57,6 +57,13 @@ FactoryBot.define do
     end
   end
 
+  trait :with_transfers_as_destination do
+    transient { transfer_count { 1 } }
+    after(:create) do |plate, factory|
+      create_list(:transfer_between_plates, factory.transfer_count, destination: plate)
+    end
+  end
+
   trait :plate_barcode do
     transient { barcode { nil } }
 
