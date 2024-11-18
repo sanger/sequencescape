@@ -34,16 +34,20 @@ RSpec.describe Api::V2::TransferResource, type: :resource do
     let(:transfer) { Transfer::BetweenPlates.new }
 
     it 'creates the new QcFile with uploaded_data' do
-      expect(Transfer::BetweenPlates).to receive(:new).and_call_original
+      allow(Transfer::BetweenPlates).to receive(:new).and_call_original
 
       described_class.create(context)
+
+      expect(Transfer::BetweenPlates).to have_received(:new)
     end
 
     it 'creates the new resource with the new Transfer::BetweenPlates' do
       allow(Transfer::BetweenPlates).to receive(:new).and_return(transfer)
-      expect(described_class).to receive(:new).with(transfer, context)
+      allow(described_class).to receive(:new).and_call_original
 
       described_class.create(context)
+
+      expect(described_class).to have_received(:new).with(transfer, context)
     end
   end
 end

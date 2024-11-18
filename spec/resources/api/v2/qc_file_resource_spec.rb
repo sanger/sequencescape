@@ -30,16 +30,20 @@ RSpec.describe Api::V2::QcFileResource, type: :resource do
     let(:qc_file) { QcFile.new }
 
     it 'creates the new QcFile with uploaded_data' do
-      expect(QcFile).to receive(:new).with({ uploaded_data: { tempfile:, filename: } }).and_call_original
+      allow(QcFile).to receive(:new).and_call_original
 
       described_class.create_with_tempfile(context, tempfile, filename)
+
+      expect(QcFile).to have_received(:new).with({ uploaded_data: { tempfile:, filename: } })
     end
 
     it 'creates the new resource with the new QcFile' do
       allow(QcFile).to receive(:new).and_return(qc_file)
-      expect(described_class).to receive(:new).with(qc_file, context)
+      allow(described_class).to receive(:new).and_call_original
 
       described_class.create_with_tempfile(context, tempfile, filename)
+
+      expect(described_class).to have_received(:new).with(qc_file, context)
     end
   end
 end
