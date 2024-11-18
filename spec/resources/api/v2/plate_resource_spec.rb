@@ -11,11 +11,14 @@ RSpec.describe Api::V2::PlateResource, type: :resource do
 
   shared_examples 'a plate resource' do
     # Attributes
-    it { is_expected.to have_write_once_attribute :number_of_rows }
-    it { is_expected.to have_write_once_attribute :number_of_columns }
+    it { is_expected.to have_readonly_attribute :number_of_rows }
+    it { is_expected.to have_readonly_attribute :number_of_columns }
     it { is_expected.to have_write_once_attribute :size }
+    it { is_expected.to have_readonly_attribute :pooling_metadata }
 
     # Relationships
+    it { is_expected.to have_a_readonly_has_many(:submission_pools).with_class_name('SubmissionPool') }
+    it { is_expected.to have_a_readonly_has_many(:transfers_as_destination).with_class_name('Transfer') }
     it { is_expected.to have_a_write_once_has_many(:wells).with_class_name('Well') }
 
     # Custom method tests

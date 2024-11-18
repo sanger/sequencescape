@@ -104,7 +104,7 @@ module Api
       ###
 
       # @!attribute [r] submission_pools
-      #   @return [Array<SubmissionPoolsResource>] An array of submission pools for this plate.
+      #   @return [Array<SubmissionPoolResource>] An array of submission pools for this plate.
       has_many :submission_pools, readonly: true
 
       # @!attribute [r] transfers_as_destination
