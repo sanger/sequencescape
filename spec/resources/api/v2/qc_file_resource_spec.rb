@@ -22,7 +22,7 @@ RSpec.describe Api::V2::QcFileResource, type: :resource do
   # Filters
   it { is_expected.to filter(:uuid) }
 
-  # Custom method tests
+  # Custom methods
   describe '#self.create_with_tempfile' do
     let(:context) { {} }
     let(:tempfile) { Tempfile.new }
@@ -30,7 +30,7 @@ RSpec.describe Api::V2::QcFileResource, type: :resource do
     let(:qc_file) { QcFile.new }
 
     it 'creates the new QcFile with uploaded_data' do
-      expect(QcFile).to receive(:new).with({ uploaded_data: { tempfile:, filename: } }).and_return(qc_file)
+      expect(QcFile).to receive(:new).with({ uploaded_data: { tempfile:, filename: } }).and_call_original
 
       described_class.create_with_tempfile(context, tempfile, filename)
     end
