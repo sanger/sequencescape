@@ -106,13 +106,15 @@ module Api
       ###
 
       # @!attribute [rw] destination
+      #   The destination Labware for the transfer.
       #   Setting this relationship alongside the `destination_uuid` attribute will override the attribute value.
-      #   @return [LabwareResource] The destination Labware for the transfer.
+      #   @return [LabwareResource, Void]
       has_one :destination
 
       # @!attribute [rw] source
+      #   The source labware for the transfer. The type of the labware varies by the type of transfer.
       #   Setting this relationship alongside the `source_uuid` attribute will override the attribute value.
-      #   @return [LabwareResource] The source labware for the transfer.
+      #   @return [LabwareResource]
       #   @note This relationship is required.
       has_one :source, polymorphic: true
 
