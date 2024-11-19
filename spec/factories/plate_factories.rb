@@ -15,7 +15,7 @@ FactoryBot.define do
     transient do
       sample_count { 0 } # The number of wells to create [LEGACY: use well_count instead]
       well_count { sample_count } # The number of wells to create
-      well_factory { :well } # THe factory to use for wells
+      well_factory { :well } # The factory to use for wells
       studies { build_list(:study, 1) } # A list of studies to apply to wells.
       projects { build_list(:project, 1) } # A list of projects to apply to wells
       well_order { :column_order } # The order of wells on the plate. Almost always column_order
