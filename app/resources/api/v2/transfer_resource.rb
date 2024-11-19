@@ -116,7 +116,7 @@ module Api
       #   Setting this relationship alongside the `source_uuid` attribute will override the attribute value.
       #   @return [LabwareResource]
       #   @note This relationship is required.
-      has_one :source, polymorphic: true
+      has_one :source, class_name: 'Labware'
 
       # @!attribute [rw] user
       #   Setting this relationship alongside the `user_uuid` attribute will override the attribute value.

@@ -77,6 +77,14 @@ describe 'Transfer API', with: :api_v2 do
           expect(json.dig('data', 'attributes', 'transfer_template_uuid')).not_to be_present
         end
 
+        it 'returns a reference to the destination relationship' do
+          expect(json.dig('data', 'relationships', 'destination')).to be_present
+        end
+
+        it 'returns a reference to the source relationship' do
+          expect(json.dig('data', 'relationships', 'source')).to be_present
+        end
+
         it 'returns a reference to the user relationship' do
           expect(json.dig('data', 'relationships', 'user')).to be_present
         end
@@ -151,7 +159,21 @@ describe 'Transfer API', with: :api_v2 do
     let(:transfer_template) { create(:transfer_template) } # BetweenPlates
     let(:user) { create(:user) }
 
+    let(:destination_relationship) { { data: { id: destination.id, type: 'labware' } } }
+    let(:source_relationship) { { data: { id: source.id, type: 'labware' } } }
     let(:user_relationship) { { data: { id: user.id, type: 'users' } } }
+
+    let(:all_attributes) do
+      {
+        destination_uuid: destination.uuid,
+        source_uuid: source.uuid,
+        transfer_template_uuid: transfer_template.uuid,
+        user_uuid: user.uuid
+      }
+    end
+    let(:all_relationships) do
+      { destination: destination_relationship, source: source_relationship, user: user_relationship }
+    end
 
     context 'with a valid payload' do
       shared_examples 'a valid request' do
@@ -191,9 +213,31 @@ describe 'Transfer API', with: :api_v2 do
           expect(json.dig('data', 'attributes', 'transfer_template_uuid')).not_to be_present
         end
 
+        it 'returns a reference to the destination relationship' do
+          perform_request
+          expect(json.dig('data', 'relationships', 'destination')).to be_present
+        end
+
+        it 'returns a reference to the source relationship' do
+          perform_request
+          expect(json.dig('data', 'relationships', 'source')).to be_present
+        end
+
         it 'returns a reference to the user relationship' do
           perform_request
           expect(json.dig('data', 'relationships', 'user')).to be_present
+        end
+
+        it 'associates the destination with the new record' do
+          perform_request
+          new_record = model_class.last
+          expect(new_record.destination).to eq(destination)
+        end
+
+        it 'associates the source with the new record' do
+          perform_request
+          new_record = model_class.last
+          expect(new_record.source).to eq(source)
         end
 
         it 'associates the user with the new record' do
@@ -203,16 +247,36 @@ describe 'Transfer API', with: :api_v2 do
         end
       end
 
-      context 'with complete attributes' do
+      context 'with only attributes' do
+        let(:payload) { { data: { type: resource_type, attributes: all_attributes } } }
+
+        it_behaves_like 'a valid request'
+      end
+
+      context 'with destination as a relationship' do
         let(:payload) do
           {
             data: {
               type: resource_type,
-              attributes: {
-                destination_uuid: destination.uuid,
-                source_uuid: source.uuid,
-                transfer_template_uuid: transfer_template.uuid,
-                user_uuid: user.uuid
+              attributes: all_attributes.merge(destination_uuid: nil),
+              relationships: {
+                destination: destination_relationship
+              }
+            }
+          }
+        end
+
+        it_behaves_like 'a valid request'
+      end
+
+      context 'with source as a relationship' do
+        let(:payload) do
+          {
+            data: {
+              type: resource_type,
+              attributes: all_attributes.merge(source_uuid: nil),
+              relationships: {
+                source: source_relationship
               }
             }
           }
@@ -226,11 +290,7 @@ describe 'Transfer API', with: :api_v2 do
           {
             data: {
               type: resource_type,
-              attributes: {
-                destination_uuid: destination.uuid,
-                source_uuid: source.uuid,
-                transfer_template_uuid: transfer_template.uuid
-              },
+              attributes: all_attributes.merge(user_uuid: nil),
               relationships: {
                 user: user_relationship
               }
@@ -241,21 +301,21 @@ describe 'Transfer API', with: :api_v2 do
         it_behaves_like 'a valid request'
       end
 
-      context 'with conflicting user definitions' do
+      context 'with conflicting attributes and relationships definitions' do
+        let(:other_destination) { create(:plate_with_empty_wells) }
+        let(:other_source) { create(:transfer_plate) }
         let(:other_user) { create(:user) }
         let(:payload) do
           {
             data: {
               type: resource_type,
-              attributes: {
-                destination_uuid: destination.uuid,
-                source_uuid: source.uuid,
-                transfer_template_uuid: transfer_template.uuid,
-                user_uuid: other_user.uuid
-              },
-              relationships: {
-                user: user_relationship
-              }
+              attributes:
+                all_attributes.merge(
+                  destination_uuid: other_destination.uuid,
+                  source_uuid: other_source.uuid,
+                  user_uuid: other_user.uuid
+                ),
+              relationships: all_relationships
             }
           }
         end
@@ -275,17 +335,29 @@ describe 'Transfer API', with: :api_v2 do
     end
 
     context 'without a required relationship' do
+      context 'without a source or source_uuid' do
+        let(:error_detail_message) { "source - can't be blank" }
+        let(:payload) do
+          {
+            data: {
+              type: resource_type,
+              attributes: all_attributes.merge(source_uuid: nil),
+              relationships: all_relationships.merge(source: nil)
+            }
+          }
+        end
+
+        it_behaves_like 'an unprocessable POST request with a specific error'
+      end
+
       context 'without a user or user_uuid' do
         let(:error_detail_message) { "user - can't be blank" }
         let(:payload) do
           {
             data: {
               type: resource_type,
-              attributes: {
-                destination_uuid: destination.uuid,
-                source_uuid: source.uuid,
-                transfer_template_uuid: transfer_template.uuid
-              }
+              attributes: all_attributes.merge(user_uuid: nil),
+              relationships: all_relationships.merge(user: nil)
             }
           }
         end
