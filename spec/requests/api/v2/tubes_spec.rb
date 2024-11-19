@@ -74,17 +74,8 @@ describe 'Tubes API', with: :api_v2 do
       end
 
       context 'with included relationships' do
-        context 'with aliquots' do
-          let(:related_name) { 'aliquots' }
-
-          it_behaves_like 'a GET request including a has_many relationship'
-        end
-
-        context 'with receptacle' do
-          let(:related_name) { 'receptacle' }
-
-          it_behaves_like 'a GET request including a has_one relationship'
-        end
+        it_behaves_like 'a GET request including a has_many relationship', 'aliquots'
+        it_behaves_like 'a GET request including a has_one relationship', 'receptacle'
       end
     end
   end

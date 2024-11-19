@@ -74,17 +74,8 @@ describe 'Tag Layouts API', with: :api_v2 do
       end
 
       context 'with included relationships' do
-        context 'with plate' do
-          let(:related_name) { 'plate' }
-
-          it_behaves_like 'a GET request including a has_one relationship'
-        end
-
-        context 'with user' do
-          let(:related_name) { 'user' }
-
-          it_behaves_like 'a GET request including a has_one relationship'
-        end
+        it_behaves_like 'a GET request including a has_one relationship', 'plate'
+        it_behaves_like 'a GET request including a has_one relationship', 'user'
       end
     end
   end

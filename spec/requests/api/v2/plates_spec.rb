@@ -78,23 +78,9 @@ describe 'Plates API', tags: :lighthouse, with: :api_v2 do
       end
 
       context 'with included relationships' do
-        context 'with submission_pools' do
-          let(:related_name) { 'submission_pools' }
-
-          it_behaves_like 'a GET request including a has_many relationship'
-        end
-
-        context 'with transfers_as_destination' do
-          let(:related_name) { 'transfers_as_destination' }
-
-          it_behaves_like 'a GET request including a has_many relationship'
-        end
-
-        context 'with wells' do
-          let(:related_name) { 'wells' }
-
-          it_behaves_like 'a GET request including a has_many relationship'
-        end
+        it_behaves_like 'a GET request including a has_many relationship', 'submission_pools'
+        it_behaves_like 'a GET request including a has_many relationship', 'transfers_as_destination'
+        it_behaves_like 'a GET request including a has_many relationship', 'wells'
       end
     end
   end

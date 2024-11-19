@@ -74,17 +74,8 @@ describe 'Bulk Transfer API', with: :api_v2 do
       end
 
       context 'with included relationships' do
-        context 'with transfers' do
-          let(:related_name) { 'transfers' }
-
-          it_behaves_like 'a GET request including a has_many relationship'
-        end
-
-        context 'with user' do
-          let(:related_name) { 'user' }
-
-          it_behaves_like 'a GET request including a has_one relationship'
-        end
+        it_behaves_like 'a GET request including a has_many relationship', 'transfers'
+        it_behaves_like 'a GET request including a has_one relationship', 'user'
       end
     end
   end
