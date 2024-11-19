@@ -10,6 +10,6 @@ FactoryBot.define do
     uploaded_data { { tempfile:, filename: } }
 
     # Relationships
-    association :asset, factory: :labware
+    asset factory: %i[labware]
   end
 end

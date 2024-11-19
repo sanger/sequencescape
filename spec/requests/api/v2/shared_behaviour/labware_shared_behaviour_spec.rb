@@ -122,7 +122,7 @@ describe 'Labware Behaviour API', tags: :lighthouse, with: :api_v2 do
         it_behaves_like 'a GET request including a has_many relationship', 'child_tubes'
         it_behaves_like 'a GET request including a has_many relationship', 'state_changes'
 
-        # Note: direct_submissions is not tested as I'm unsure how to associate any with a Plate.
+        # NOTE: direct_submissions is not tested as I'm unsure how to associate any with a Plate.
       end
     end
   end
@@ -148,26 +148,31 @@ describe 'Labware Behaviour API', tags: :lighthouse, with: :api_v2 do
 
     describe '#filter by machine_barcode' do
       before { api_get "#{base_endpoint}?filter[barcode]=#{target_resource.machine_barcode}" }
+
       it_behaves_like 'it filters the resources correctly'
     end
 
     describe '#filter by human_barcode' do
       before { api_get "#{base_endpoint}?filter[barcode]=#{target_resource.human_barcode}" }
+
       it_behaves_like 'it filters the resources correctly'
     end
 
     describe '#filter by uuid' do
       before { api_get "#{base_endpoint}?filter[uuid]=#{target_resource.uuid}" }
+
       it_behaves_like 'it filters the resources correctly'
     end
 
     describe '#filter by purpose_name' do
       before { api_get "#{base_endpoint}?filter[purpose_name]=#{target_resource.purpose.name}" }
+
       it_behaves_like 'it filters the resources correctly'
     end
 
     describe '#filter by purpose_id' do
       before { api_get "#{base_endpoint}?filter[purpose_id]=#{target_resource.purpose.id}" }
+
       it_behaves_like 'it filters the resources correctly'
     end
 

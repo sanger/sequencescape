@@ -4,7 +4,7 @@ describe Parsers do
   describe '#self.parser_for' do
     context 'when the file does not appear to be a CSV' do
       it 'returns nil' do
-        parser = Parsers.parser_for('qc_file.txt', 'text/plain', "A1,A2,A3\n1,2,3\n4,5,6\n")
+        parser = described_class.parser_for('qc_file.txt', 'text/plain', "A1,A2,A3\n1,2,3\n4,5,6\n")
         expect(parser).to be_nil
       end
     end
@@ -15,7 +15,7 @@ describe Parsers do
       before { allow(valid_parser).to receive(:parses?).and_return(true) }
 
       it 'returns a parser for the CSV' do
-        parser = Parsers.parser_for('qc_file.csv', 'text/csv', "A1,A2,A3\n1,2,3\n4,5,6\n")
+        parser = described_class.parser_for('qc_file.csv', 'text/csv', "A1,A2,A3\n1,2,3\n4,5,6\n")
         expect(parser).to be_a(valid_parser)
       end
 
@@ -28,7 +28,7 @@ describe Parsers do
         end
 
         it 'still returns the parser that claims to parse the CSV' do
-          parser = Parsers.parser_for('qc_file.csv', 'text/csv', "A1,A2,A3\n1,2,3\n4,5,6\n")
+          parser = described_class.parser_for('qc_file.csv', 'text/csv', "A1,A2,A3\n1,2,3\n4,5,6\n")
           expect(parser).to be_a(valid_parser)
         end
       end
@@ -38,7 +38,7 @@ describe Parsers do
       before { Parsers::PARSERS.each { |parser| allow(parser).to receive(:parses?).and_return(false) } }
 
       it 'returns nil' do
-        parser = Parsers.parser_for('qc_file.csv', 'text/csv', "A1,A2,A3\n1,2,3\n4,5,6\n")
+        parser = described_class.parser_for('qc_file.csv', 'text/csv', "A1,A2,A3\n1,2,3\n4,5,6\n")
         expect(parser).to be_nil
       end
     end
