@@ -3,7 +3,7 @@
 module Api
   module V2
     # Provides a JSON:API representation of {BulkTransfer} which allows the transfer of multiple wells from source
-    # plates to destination plates. The plates and wells to transfer are specified in the {#well_transfers} attribute.
+    # plates to destination plates. The plates and wells to transfer are specified using {#well_transfers=}.
     # Creation of this resource via a `POST` request will perform the specified transfers.
     # After creation, the transfers can be accessed via the {#transfers} relationship.
     #
@@ -80,10 +80,12 @@ module Api
 
       # @!attribute [w] well_transfers
       #   An array of well transfers to perform. Each transfer is a hash with the following:
-      #     - `source_uuid` [String] The UUID of the source plate.
-      #     - `source_location` [String] The location on the source plate.
-      #     - `destination_uuid` [String] The UUID of the destination plate.
-      #     - `destination_location` [String] The location on the destination plate.
+      #
+      #   - `source_uuid` [String] The UUID of the source plate.
+      #   - `source_location` [String] The location on the source plate.
+      #   - `destination_uuid` [String] The UUID of the destination plate.
+      #   - `destination_location` [String] The location on the destination plate.
+      #
       #   @return [Void]
       attribute :well_transfers, writeonly: true
 
