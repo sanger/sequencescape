@@ -79,13 +79,13 @@ module Api
         # Filename is set via the uploaded_data hash supplied during QcFile creation.
       end
 
-      # @!attribute [r] uuid
-      #   @return [String] The UUID of the bulk transfers operation.
-      attribute :uuid, readonly: true
-
       # @!attribute [r] size
       #   @return [Integer] The size of the QC file in bytes.
       attribute :size, readonly: true
+
+      # @!attribute [r] uuid
+      #   @return [String] The UUID of the bulk transfers operation.
+      attribute :uuid, readonly: true
 
       ###
       # Relationships

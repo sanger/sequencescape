@@ -18,6 +18,22 @@ shared_examples 'a POST request with a disallowed value' do
   end
 end
 
+shared_examples 'a POST request with a missing parameter' do |missing_parameter|
+  before { api_post base_endpoint, payload }
+
+  it 'does not create a new resource' do
+    expect { api_post base_endpoint, payload }.not_to change(model_class, :count)
+  end
+
+  it 'responds with bad_request' do
+    expect(response).to have_http_status(:bad_request)
+  end
+
+  it 'specifies which parameter is missing' do
+    expect(json.dig('errors', 0, 'detail')).to eq("The required parameter, #{missing_parameter}, is missing.")
+  end
+end
+
 shared_examples 'an unprocessable POST request with a specific error' do
   before { api_post base_endpoint, payload }
 
