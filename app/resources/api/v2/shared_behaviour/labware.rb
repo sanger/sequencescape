@@ -22,7 +22,7 @@ module Api
           has_many :studies, write_once: true
           has_many :projects, write_once: true
           has_many :comments, readonly: true
-          has_many :qc_files
+          has_many :qc_files, readonly: true
 
           # If we are using api/v2/labware to pull back a list of labware, we may
           # expect a mix of plates and tubes. If we want to eager load their
