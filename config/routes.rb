@@ -62,6 +62,7 @@ Rails.application.routes.draw do
       jsonapi_resources :specific_tube_creations, except: %i[update]
       jsonapi_resources :state_changes, except: %i[update]
       jsonapi_resources :studies
+      jsonapi_resources :submission_pools
       jsonapi_resources :submission_templates
       jsonapi_resources :submissions
       jsonapi_resources :tag_group_adapter_types
