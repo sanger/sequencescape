@@ -43,7 +43,6 @@ class SpecificTubeRackCreation < AssetCreation
   #     :tube_rack_name=>"Tube Rack",
   #     :tube_rack_barcode=>"TR00000001",
   #     :tube_rack_purpose_uuid=>"0ab4c9cc-4dad-11ef-8ca3-82c61098d1a1",
-  #     :tube_rack_metadata_key=>"tube_rack_barcode",
   #     :racked_tubes=>[
   #       {
   #         :tube_barcode=>"SQ45303801",
@@ -123,7 +122,6 @@ class SpecificTubeRackCreation < AssetCreation
   #   - :tube_rack_purpose_uuid [String] The UUID of the tube rack purpose.
   #   - :tube_rack_name [String] The name of the tube rack.
   #   - :tube_rack_barcode [String] The barcode of the tube rack.
-  #   - :tube_rack_metadata_key [String] The metadata key for the tube rack.
   #   - :racked_tubes [Array<Hash>] An array of hashes defining the tubes to be created within the tube rack.
   #
   # @raise [StandardError] if any of the tube rack creation processes fail.
@@ -135,7 +133,7 @@ class SpecificTubeRackCreation < AssetCreation
 
     new_tube_rack = child_purpose.create!(name: rack_attributes[:tube_rack_name])
     handle_tube_rack_barcode(rack_attributes[:tube_rack_barcode], new_tube_rack)
-    add_tube_rack_metadata(rack_attributes[:tube_rack_metadata_key], rack_attributes[:tube_rack_barcode], new_tube_rack)
+    add_tube_rack_metadata(rack_attributes[:tube_rack_barcode], new_tube_rack)
 
     create_racked_tubes(rack_attributes[:racked_tubes], new_tube_rack)
 
@@ -237,17 +235,16 @@ class SpecificTubeRackCreation < AssetCreation
   # The metadatable_type and metadatable_id are set to the class and ID of the tube rack, respectively.
   # If the metadata record fails to save, an error is raised.
   #
-  # @param [String] metadata_key The key for the metadata.
   # @param [String] tube_rack_barcode The barcode of the tube rack to be used as the metadata value.
   # @param [TubeRack] tube_rack The tube rack object to which the metadata will be added.
   #
   # @raise [StandardError] if the metadata record fails to save.
   #
   # @return [void]
-  def add_tube_rack_metadata(metadata_key, tube_rack_barcode, tube_rack)
+  def add_tube_rack_metadata(tube_rack_barcode, tube_rack)
     pm =
       PolyMetadatum.new(
-        key: metadata_key,
+        key: Rails.application.config.tube_racks_config[:tube_rack_barcode_key],
         value: tube_rack_barcode,
         metadatable_type: tube_rack.class,
         metadatable_id: tube_rack.id

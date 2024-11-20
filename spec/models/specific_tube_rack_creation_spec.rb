@@ -14,7 +14,6 @@ RSpec.describe SpecificTubeRackCreation do
           tube_rack_name: 'Tube Rack',
           tube_rack_barcode: 'TR00000001',
           tube_rack_purpose_uuid: child_tube_rack_purpose.uuid,
-          tube_rack_metadata_key: 'tube_rack_barcode',
           racked_tubes: [
             {
               tube_barcode: 'ST00000001',
@@ -80,7 +79,6 @@ RSpec.describe SpecificTubeRackCreation do
             tube_rack_name: 'Tube Rack',
             tube_rack_barcode: 'TR00000001',
             tube_rack_purpose_uuid: child_tube_rack_purpose.uuid,
-            tube_rack_metadata_key: 'tube_rack_barcode',
             racked_tubes: []
           }
         ]
@@ -96,14 +94,12 @@ RSpec.describe SpecificTubeRackCreation do
             tube_rack_name: 'Tube Rack',
             tube_rack_barcode: 'TR00000001',
             tube_rack_purpose_uuid: child_tube_rack_purpose.uuid,
-            tube_rack_metadata_key: 'tube_rack_barcode',
             racked_tubes: []
           },
           {
             tube_rack_name: 'Tube Rack',
             tube_rack_barcode: 'TR00000002',
             tube_rack_purpose_uuid: child_tube_rack_purpose.uuid,
-            tube_rack_metadata_key: 'tube_rack_barcode',
             racked_tubes: []
           }
         ]
@@ -120,7 +116,6 @@ RSpec.describe SpecificTubeRackCreation do
             tube_rack_name: 'Tube Rack',
             tube_rack_barcode: 'TR00000001',
             tube_rack_purpose_uuid: unknown_tube_rack_purpose_uuid,
-            tube_rack_metadata_key: 'tube_rack_barcode',
             racked_tubes: []
           }
         ]
@@ -148,7 +143,6 @@ RSpec.describe SpecificTubeRackCreation do
             tube_rack_name: 'Tube Rack',
             tube_rack_barcode: 'TR00000001',
             tube_rack_purpose_uuid: child_tube_rack_purpose.uuid,
-            tube_rack_metadata_key: 'tube_rack_barcode',
             racked_tubes: [
               {
                 tube_barcode: 'ST00000001',
@@ -187,12 +181,6 @@ RSpec.describe SpecificTubeRackCreation do
       it 'sets the tube coordinate in the rack' do
         expect(first_child_rack.racked_tubes.first.coordinate).to eq 'A1'
       end
-
-      it 'creates tube rack metadata' do
-        expect(
-          PolyMetadatum.find_by(key: 'tube_rack_barcode', metadatable: first_child_rack.id).value
-        ).to eq 'TR00000001'
-      end
     end
 
     context 'with one rack and multiple tubes' do
@@ -204,7 +192,6 @@ RSpec.describe SpecificTubeRackCreation do
             tube_rack_name: 'Tube Rack',
             tube_rack_barcode: 'TR00000001',
             tube_rack_purpose_uuid: child_tube_rack_purpose.uuid,
-            tube_rack_metadata_key: 'tube_rack_barcode',
             racked_tubes: [
               {
                 tube_barcode: 'ST00000001',
@@ -272,7 +259,6 @@ RSpec.describe SpecificTubeRackCreation do
             tube_rack_name: 'Tube Rack',
             tube_rack_barcode: 'TR00000001',
             tube_rack_purpose_uuid: child_tube_rack_purpose.uuid,
-            tube_rack_metadata_key: 'tube_rack_barcode',
             racked_tubes: [
               {
                 tube_barcode: 'ST00000001',
@@ -287,7 +273,6 @@ RSpec.describe SpecificTubeRackCreation do
             tube_rack_name: 'Tube Rack',
             tube_rack_barcode: 'TR00000002',
             tube_rack_purpose_uuid: child_tube_rack_purpose2.uuid,
-            tube_rack_metadata_key: 'tube_rack_barcode',
             racked_tubes: [
               {
                 tube_barcode: 'ST00000002',
@@ -360,7 +345,6 @@ RSpec.describe SpecificTubeRackCreation do
             tube_rack_name: 'Tube Rack',
             tube_rack_barcode: 'TR00000001',
             tube_rack_purpose_uuid: child_tube_rack_purpose.uuid,
-            tube_rack_metadata_key: 'tube_rack_barcode',
             racked_tubes: [
               {
                 tube_barcode: 'ST00000001',

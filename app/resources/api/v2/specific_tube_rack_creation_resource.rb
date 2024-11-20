@@ -42,7 +42,6 @@ module Api
       #     :tube_rack_name=>"Tube Rack",
       #     :tube_rack_barcode=>"TR00000001",
       #     :tube_rack_purpose_uuid=>"0ab4c9cc-4dad-11ef-8ca3-82c61098d1a1",
-      #     :tube_rack_metadata_key=>"tube_rack_barcode",
       #     :racked_tubes=>[
       #       {
       #         :tube_barcode=>"SQ45303801",

@@ -17,7 +17,6 @@ describe 'Specific Tube Rack Creations API', with: :api_v2 do
         tube_rack_name: 'Tube Rack 1',
         tube_rack_barcode: 'TR00000001',
         tube_rack_purpose_uuid: tube_rack_purpose.uuid,
-        tube_rack_metadata_key: 'tube_rack_barcode',
         racked_tubes: [
           {
             tube_barcode: 'ST00000001',
