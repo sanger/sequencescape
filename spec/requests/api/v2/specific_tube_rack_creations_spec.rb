@@ -4,7 +4,7 @@ require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
 require './spec/requests/api/v2/shared_examples/post_requests'
 
-# rubocop:disable RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups, RSpec/MultipleExpectations
+# rubocop:disable RSpec/MultipleExpectations
 describe 'Specific Tube Rack Creations API', with: :api_v2 do
   let(:model_class) { SpecificTubeRackCreation }
   let(:resource_type) { model_class.name.demodulize.pluralize.underscore }
@@ -304,4 +304,4 @@ describe 'Specific Tube Rack Creations API', with: :api_v2 do
   end
 end
 
-# rubocop:enable RSpec/MultipleMemoizedHelpers, RSpec/NestedGroups, RSpec/MultipleExpectations
+# rubocop:enable RSpec/MultipleExpectations

@@ -78,7 +78,6 @@ module Api
         @model.user = User.with_uuid(value).first
       end
 
-
       # @!attribute [r] uuid
       #   @return [String] The UUID of the AssetCreation instance.
       attribute :uuid, readonly: true
