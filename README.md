@@ -42,6 +42,7 @@ a organisation of 900 people.
       - [Adjusting config](#adjusting-config)
       - [Default setup](#default-setup)
     - [Starting rails](#starting-rails)
+    - [Vite](#vite)
       - [Delayed job](#delayed-job)
     - [Message broker](#message-broker)
   - [Testing](#testing)
@@ -57,6 +58,7 @@ a organisation of 900 people.
     - [NPG - Illumina tracking software](#npg---illumina-tracking-software)
     - [Troubleshooting](#troubleshooting)
       - [MySQL errors when installing](#mysql-errors-when-installing)
+      - [MySQL errors after system updates](#mysql-errors-after-system-updates)
       - [Installing on Apple Silicon (M1)](#installing-on-apple-silicon-m1)
     - [API V2 Authentication](#api-v2-authentication)
     - [Publishing AMQP Messages](#publishing-amqp-messages)
@@ -418,6 +420,14 @@ gem install mysql2 -v '0.5.6' -- \
 --with-mysql-dir=/opt/homebrew/Cellar/mysql/9.0.1_1 \
 --with-mysql-config=/opt/homebrew/Cellar/mysql/9.0.1_1/bin/mysql_config \
 --with-mysql-include=/opt/homebrew/Cellar/mysql/9.0.1_1/include
+```
+
+#### MySQL errors after system updates
+
+If you encounter a LoadError at dlopen call to mysql2 bundle because of a missing dynamic library, try the following command to update the cached gem.
+
+```
+gem pristine mysql2
 ```
 
 #### Installing on Apple Silicon (M1)

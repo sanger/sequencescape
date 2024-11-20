@@ -26,6 +26,7 @@ module Api
 
       # Associations:
       has_many :wells, readonly: true
+      has_many :submission_pools, readonly: true
 
       # Attributes
       attribute :number_of_rows, readonly: true, delegate: :height
