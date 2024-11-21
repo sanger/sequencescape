@@ -18,6 +18,9 @@
       <%= group.radio_select(:study_sra_hold, Study::STUDY_SRA_HOLDS) %>
     <% end %>
 
+    <%# add here for EBI required fields_for %>
+     <%= metadata_fields.select_by_association(:reference_genome, {}, { class: 'select2' }) %>
+
     <%= metadata_fields.radio_select(:contains_human_dna, Study::YES_OR_NO) %>
     <%= metadata_fields.radio_select(:contaminated_human_dna, Study::YES_OR_NO) %>
     <%= metadata_fields.radio_select(:commercially_available, Study::YES_OR_NO) %>

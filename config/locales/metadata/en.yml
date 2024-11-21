@@ -380,7 +380,7 @@ en:
 
         study_type_id:
           label: Study Type
-          edit_info: "ENA requirement"
+          edit_info: "to remove ENA requirement"
 
         study_ebi_accession_number:
           label: ENA Study Accession Number
@@ -517,6 +517,18 @@ en:
         contaminated_human_data_access_group:
           label: Contaminated Human Data Access Group
           help: "Allows specified Unix groups and users access to data segregated from the main data product, which is potentially contaminated with human data. This access is typically rarely used and is primarily for validating the separation process, as we may not have the ethical or legal clearance."
+    
+        EBI:Library Strategy:
+          label: Library Strategy
+          help: ""
+        
+        EBI:Library Source:
+          label: Library Source
+          help: ""
+        
+        EBI:Library Selection:
+          label: Library Selection
+          help: ""
     project:
       metadata:
         project_manager_id:
