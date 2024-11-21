@@ -5,7 +5,7 @@ FactoryBot.define do
     transient do
       tube_rack_purpose { create(:tube_rack_purpose) }
       tube_purpose { create(:tube_purpose) }
-      parent_plate { create(:plate) }
+      parent_plate { create(:plate, :with_wells, sample_count: 1) }
     end
 
     tube_rack_attributes do
@@ -29,6 +29,7 @@ FactoryBot.define do
 
     user { |target| target.association(:user) }
 
-    parents { |target| [target.association(:parent_plate)] }
+    # parent is expected to be a single plate
+    parents { |target| [target.association(:plate)] }
   end
 end
