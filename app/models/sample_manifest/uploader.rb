@@ -14,6 +14,7 @@ class SampleManifest::Uploader
   validates :tag_group, presence: { message: 'is not correctly configured for manifest generation' }
   validates :file, :configuration, :user, presence: true
   validate :check_upload
+  validate :check_sample_manifest_upload
 
   delegate :processed?, :study, to: :upload
 
@@ -27,9 +28,12 @@ class SampleManifest::Uploader
       SampleManifestExcel::Upload::Base.new(file: file, column_list: self.configuration.columns.all, override: override)
   end
 
-  def run!
+  def run! # rubocop:disable Metrics/MethodLength
     # Validation outside the transaction because we want to return the errors
     return false unless valid?
+
+    # Start the upload so that we can prevent concurrent uploads
+    upload.sample_manifest.start!
 
     # Rails 6.1 doesn't allow return value from transaction block
     success =
@@ -67,6 +71,15 @@ class SampleManifest::Uploader
     return true if upload.valid?
 
     extract_errors
+  end
+
+  def check_sample_manifest_upload
+    return true unless upload.sample_manifest&.state == 'processing'
+
+    errors.add(
+      :base,
+      'A version of this sample manifest is already being processed, please wait until it has completed.'
+    )
   end
 
   def extract_errors

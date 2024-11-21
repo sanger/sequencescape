@@ -77,7 +77,6 @@ module SampleManifestExcel
         # saves will result in duplicate accessions
         Sample::Current.processing_manifest = true
         sample_manifest.last_errors = nil
-        sample_manifest.start!
         @cache.populate!
         processor.run(tag_group)
 
