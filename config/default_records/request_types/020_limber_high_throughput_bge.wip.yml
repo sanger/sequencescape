@@ -14,3 +14,16 @@ limber_bge_pcr_free:
     - DAFT-seq
     - PCR Free 384
     - BGE
+limber_bge_isc:
+  asset_type: Well
+  order: 1
+  billable: true
+  product_line_name: Illumina-HTP
+  name: Limber BGE ISC
+  request_class_name: Pulldown::Requests::IscLibraryRequest
+  acceptable_purposes:
+    - LB Cherrypick
+  library_types:
+    - Agilent Pulldown
+    - Twist Pulldown
+    - BGE
