@@ -27,8 +27,8 @@ module Api
       def create_tempfile(filename, contents)
         # The filename for a Tempfile is passed as an array with the basename and extension.
         # e.g. [ 'file', '.csv' ]
-        filename = [File.basename(filename, '.*'), File.extname(filename)]
-        Tempfile.open(filename) do |file|
+        filename_components = [File.basename(filename, '.*'), File.extname(filename)]
+        Tempfile.open(filename_components) do |file|
           file.write(contents)
           return file
         end
