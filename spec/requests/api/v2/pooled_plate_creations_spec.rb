@@ -66,23 +66,9 @@ describe 'Pooled Plate Creations API', with: :api_v2 do
       end
 
       context 'with included relationships' do
-        context 'with child' do
-          let(:related_name) { 'child' }
-
-          it_behaves_like 'a GET request including a has_one relationship'
-        end
-
-        context 'with parents' do
-          let(:related_name) { 'parents' }
-
-          it_behaves_like 'a GET request including a has_many relationship'
-        end
-
-        context 'with user' do
-          let(:related_name) { 'user' }
-
-          it_behaves_like 'a GET request including a has_one relationship'
-        end
+        it_behaves_like 'a GET request including a has_one relationship', 'child'
+        it_behaves_like 'a GET request including a has_many relationship', 'parents'
+        it_behaves_like 'a GET request including a has_one relationship', 'user'
       end
     end
   end

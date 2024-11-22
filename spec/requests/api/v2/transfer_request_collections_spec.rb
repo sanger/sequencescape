@@ -66,23 +66,9 @@ describe 'Transfer Request Collection API', with: :api_v2 do
       end
 
       context 'with included relationships' do
-        context 'with target_tubes' do
-          let(:related_name) { 'target_tubes' }
-
-          it_behaves_like 'a GET request including a has_many relationship'
-        end
-
-        context 'with transfer_requests' do
-          let(:related_name) { 'transfer_requests' }
-
-          it_behaves_like 'a GET request including a has_many relationship'
-        end
-
-        context 'with user' do
-          let(:related_name) { 'user' }
-
-          it_behaves_like 'a GET request including a has_one relationship'
-        end
+        it_behaves_like 'a GET request including a has_many relationship', 'target_tubes'
+        it_behaves_like 'a GET request including a has_many relationship', 'transfer_requests'
+        it_behaves_like 'a GET request including a has_one relationship', 'user'
       end
     end
   end

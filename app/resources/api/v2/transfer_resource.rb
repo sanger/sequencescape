@@ -19,7 +19,10 @@ module Api
       ###
 
       # @!attribute [rw] destination_uuid
-      #   @return [String, void] the UUID of the destination labware.
+      #   @deprecated Use the `destination` relationship instead.
+      #   Setting this attribute alongside the `destination` relationship will prefer the relationship value.
+      #   @return [String, Void] the UUID of the destination labware.
+      #   @see #destination
       attribute :destination_uuid
 
       def destination_uuid
@@ -31,8 +34,11 @@ module Api
       end
 
       # @!attribute [rw] source_uuid
+      #   @deprecated Use the `source` relationship instead.
+      #   Setting this attribute alongside the `source` relationship will prefer the relationship value.
       #   @return [String] the UUID of the source labware.
       #     The type of the labware varies by the type of transfer.
+      #   @see #source
       attribute :source_uuid
 
       def source_uuid
@@ -98,6 +104,19 @@ module Api
       ###
       # Relationships
       ###
+
+      # @!attribute [rw] destination
+      #   The destination Labware for the transfer.
+      #   Setting this relationship alongside the `destination_uuid` attribute will override the attribute value.
+      #   @return [LabwareResource, Void]
+      has_one :destination
+
+      # @!attribute [rw] source
+      #   The source labware for the transfer. The type of the labware varies by the type of transfer.
+      #   Setting this relationship alongside the `source_uuid` attribute will override the attribute value.
+      #   @return [LabwareResource]
+      #   @note This relationship is required.
+      has_one :source, class_name: 'Labware'
 
       # @!attribute [rw] user
       #   Setting this relationship alongside the `user_uuid` attribute will override the attribute value.

@@ -4,19 +4,19 @@ require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
 require './spec/requests/api/v2/shared_examples/requests'
 
-describe 'Tubes API', with: :api_v2 do
-  let(:model_class) { Tube }
+describe 'Submission Pools API', with: :api_v2 do
+  let(:model_class) { SubmissionPool }
   let(:base_endpoint) { "/api/v2/#{resource_type}" }
   let(:resource_type) { model_class.name.demodulize.pluralize.underscore }
 
   it_behaves_like 'ApiKeyAuthenticatable'
 
   context 'with a list of resources' do
+    let(:resource_count) { 5 }
+
     before do
-      create_list(:tube, 1)
-      create_list(:sample_tube, 2)
-      create_list(:library_tube, 1)
-      create_list(:multiplexed_library_tube, 1)
+      # Plates with submissions are associated with a submission pool each
+      create_list(:plate, resource_count, :with_submissions, well_count: 2)
     end
 
     describe '#GET all resources' do
@@ -27,14 +27,15 @@ describe 'Tubes API', with: :api_v2 do
       end
 
       it 'returns all the resources' do
-        expect(json['data'].length).to eq(5)
+        expect(json['data'].length).to eq(resource_count)
       end
     end
   end
 
   context 'with a single resource' do
     describe '#GET resource by ID' do
-      let(:resource) { create(:sample_tube) }
+      let(:plate) { create(:plate, :with_submissions, well_count: 2) }
+      let(:resource) { plate.submission_pools.first }
 
       context 'without included relationships' do
         before { api_get "#{base_endpoint}/#{resource.id}" }
@@ -51,32 +52,32 @@ describe 'Tubes API', with: :api_v2 do
           expect(json.dig('data', 'type')).to eq(resource_type)
         end
 
-        it 'returns a sibling_tubes attribute' do
-          # Mocking sibling tubes is hard, but we can at least check that the attribute is in the response.
-          expect(json.dig('data', 'attributes', 'sibling_tubes')).to be_nil
+        it 'returns the correct value for the plates_in_submission attribute' do
+          expect(json.dig('data', 'attributes', 'plates_in_submission')).to eq(resource.plates_in_submission)
         end
 
-        it 'returns a reference to the aliquots relationship' do
-          expect(json.dig('data', 'relationships', 'aliquots')).to be_present
-        end
-
-        it 'returns a reference to the receptacle relationship' do
-          expect(json.dig('data', 'relationships', 'receptacle')).to be_present
-        end
-
-        it 'returns a reference to the transfer_requests_as_target relationship' do
-          expect(json.dig('data', 'relationships', 'transfer_requests_as_target')).to be_present
+        it 'returns a reference to the tag_layout_templates relationship' do
+          expect(json.dig('data', 'relationships', 'tag_layout_templates')).to be_present
         end
 
         it 'does not include attributes for related resources' do
           expect(json['included']).not_to be_present
         end
       end
+    end
+  end
 
-      context 'with included relationships' do
-        it_behaves_like 'a GET request including a has_many relationship', 'aliquots'
-        it_behaves_like 'a GET request including a has_one relationship', 'receptacle'
-      end
+  describe '#PATCH a resource' do
+    let(:payload) { { data: { id: 1, type: resource_type, attributes: {} } } }
+
+    it 'finds no route for the method' do
+      expect { api_patch "#{base_endpoint}/1", payload }.to raise_error(ActionController::RoutingError)
+    end
+  end
+
+  describe '#POST a create request' do
+    it 'finds no route for the method' do
+      expect { api_post base_endpoint, {} }.to raise_error(ActionController::RoutingError)
     end
   end
 end

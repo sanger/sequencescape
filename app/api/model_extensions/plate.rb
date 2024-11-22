@@ -27,21 +27,6 @@ module ModelExtensions::Plate
     plate_purpose.library_source_plate(self)
   end
 
-  # Returns a hash from the submission for the pools to the wells that form that pool on this plate.  This is
-  # not necessarily efficient but it is correct.  Unpooled wells, those without submissions, are completely
-  # ignored within the returned result.
-  def pools
-    Request
-      .include_request_metadata
-      .for_pooling_of(self)
-      .each_with_object({}) do |request, pools|
-        pools[request.pool_id] = {
-          wells: request.pool_into.split(','),
-          pool_complete: request.pool_complete == 1
-        }.tap { |pool_information| request.update_pool_information(pool_information) } unless request.pool_id.nil?
-      end
-  end
-
   # Adds pre-capture pooling information, we need to delegate this to the stock plate, as we need all the wells
   # Currently used in {Transfer::BetweenPlates} to set submission id, we should switch to doing this
   # directly via Limber with transfer request collections

@@ -21,8 +21,33 @@ RSpec.describe Api::V2::TransferResource, type: :resource do
   it { is_expected.to have_readonly_attribute :uuid }
 
   # Relationships
+  it { is_expected.to have_a_writable_has_one(:destination).with_class_name('Labware') }
+  it { is_expected.to have_a_writable_has_one(:source) }
   it { is_expected.to have_a_writable_has_one(:user).with_class_name('User') }
 
   # Filters
   it { is_expected.to filter(:transfer_type) }
+
+  # Custom methods
+  describe '#self.create' do
+    let(:context) { { polymorphic_type: 'Transfer::BetweenPlates' } }
+    let(:transfer) { Transfer::BetweenPlates.new }
+
+    it 'creates the new QcFile with uploaded_data' do
+      allow(Transfer::BetweenPlates).to receive(:new).and_call_original
+
+      described_class.create(context)
+
+      expect(Transfer::BetweenPlates).to have_received(:new)
+    end
+
+    it 'creates the new resource with the new Transfer::BetweenPlates' do
+      allow(Transfer::BetweenPlates).to receive(:new).and_return(transfer)
+      allow(described_class).to receive(:new).and_call_original
+
+      described_class.create(context)
+
+      expect(described_class).to have_received(:new).with(transfer, context)
+    end
+  end
 end

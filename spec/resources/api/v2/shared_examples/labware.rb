@@ -20,6 +20,7 @@ shared_examples 'a labware resource' do
   it { is_expected.to have_a_write_once_has_many(:studies).with_class_name('Study') }
   it { is_expected.to have_a_write_once_has_many(:projects).with_class_name('Project') }
   it { is_expected.to have_a_readonly_has_many(:comments).with_class_name('Comment') }
+  it { is_expected.to have_a_readonly_has_many(:qc_files).with_class_name('QcFile') }
 
   # If we're using the labware endpoint, we need the generic receptacles
   # association if we are to eager load the contents of returned labware
