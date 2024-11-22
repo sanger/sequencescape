@@ -143,9 +143,19 @@ module Api
       #     - 'Transfer::FromPlateToTube'
       filter :transfer_type, apply: ->(records, value, _options) { records.where(sti_type: value) }
 
-      def self.create(context)
+      ###
+      # Create method
+      ###
+
+      # @!method create_with_model
+      #   Create a new Transfer resource with the polymorphic type extracted from a template. This is called by the
+      #   controller when a create request for a Transfer is made.
+      # @param context [Hash] The context for the request.
+      # @param model_type [Class] The polymorphic type of the Transfer model to create.
+      # @return [TransferResource] The new Transfer resource.
+      def self.create_with_model(context, model_type)
         # Create the polymorphic type, not the base class.
-        new(context[:polymorphic_type].constantize.new, context)
+        new(model_type.new, context)
       end
     end
   end
