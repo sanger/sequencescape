@@ -33,7 +33,6 @@ module SampleManifestExcel
       validate :check_processor, if: :processor?
 
       delegate :processed?, to: :processor
-      delegate :finished!, to: :sample_manifest
       delegate :data_at, to: :rows
       delegate :study, to: :sample_manifest, allow_nil: true
 

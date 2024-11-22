@@ -56,7 +56,7 @@ class SampleManifest::Uploader
   def process_upload_and_callbacks
     return false unless upload.process(tag_group)
 
-    upload.finished!
+    upload.sample_manifest.finished!
     upload.broadcast_sample_manifest_updated_event(user)
     upload.register_stock_resources
     upload.trigger_accessioning
