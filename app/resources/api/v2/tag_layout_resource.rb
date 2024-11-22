@@ -83,6 +83,18 @@ module Api
         @model.tag2_group = TagGroup.with_uuid(value).first
       end
 
+      # @!attribute [w] tag_layout_template_uuid
+      #   @return [String] the UUID of a TagLayoutTemplate to use for attributes of this TagLayout resource.
+      #     Providing this UUID while also providing values for attributes and relationships which can be extracted from
+      #     a {TagLayoutTemplateResource} will generate an error indicating that the UUID should not have been provided.
+      attribute :tag_layout_template_uuid, writeonly: true
+
+      def tag_layout_template_uuid=(uuid)
+        # Do not update the model.
+        # This value is used by the controller to apply request data to the TagLayout from the indicated template.
+        # It is not stored on the Transfer model.
+      end
+
       # @!attribute [rw] tags_per_well
       #   The number of tags in each well.
       #   This is only used and/or returned by specific tag layout {walking_by} algorithms.
