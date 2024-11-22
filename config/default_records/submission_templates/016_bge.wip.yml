@@ -1,14 +1,21 @@
-Limber-Htp - BGE PCR Free - NovaSeqX paired end sequencing:
+Limber-Htp - BGE PCR Free:
   name: "Limber-Htp - GBE PCR Free"
   submission_class_name: "LinearSubmission"
   related_records:
     product_line_name: Illumina-HTP
     product_catalogue_name: PFHSqX
     request_type_keys: ["limber_bge_pcr_free", "limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"]
-Limber-Htp - BGE ISC - NovaSeqX paired end sequencing:
-  name: "Limber-Htp - ISC - NovaSeqX paired end sequencing"
-  submission_class_name: "LinearSubmission"
+Limber-Htp - BGE ISC:
+  name: "Limber-Htp - BGE ISC "
+  submission_class_name: "AutomatedOrder"
   related_records:
     product_line_name: Illumina-HTP
     product_catalogue_name: ISC
     request_type_keys: ["limber_bge_isc", "limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"]
+Limber-Htp - BGE Transition:
+  name: "Limber-Htp - BGE Transition "
+  submission_class_name: "AutomatedOrder"
+  related_records:
+    product_line_name: Illumina-HTP
+    product_catalogue_name: ISC # Different product catalogue?
+    request_type_keys: ["limber_bge_transition"]  # Other request types?
