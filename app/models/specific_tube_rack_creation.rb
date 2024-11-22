@@ -242,11 +242,12 @@ class SpecificTubeRackCreation < AssetCreation
   #
   # @return [void]
   def add_tube_rack_metadata(tube_rack_barcode, tube_rack)
+    metadata_key = Rails.application.config.tube_racks_config[:tube_rack_barcode_key]
     pm =
       PolyMetadatum.new(
-        key: Rails.application.config.tube_racks_config[:tube_rack_barcode_key],
+        key: metadata_key,
         value: tube_rack_barcode,
-        metadatable_type: tube_rack.class,
+        metadatable_type: tube_rack.class.name,
         metadatable_id: tube_rack.id
       )
     return if pm.save
@@ -319,7 +320,8 @@ class SpecificTubeRackCreation < AssetCreation
     end
 
     # expecting fluidx format
-    return unless barcode_format != :fluidx_barcode
+    return if barcode_format == :fluidx_barcode
+
     error_message = "The tube barcode '#{tube_barcode}' is not of the expected fluidx type."
     raise StandardError, error_message
   end
@@ -382,7 +384,7 @@ class SpecificTubeRackCreation < AssetCreation
     error_message =
       "The tube '#{tube.name}' could not be linked to the tube rack '#{new_tube_rack.name}' " \
         "at position '#{tube_position}'."
-    raise ActiveRecord::RecordInvalid, error_message
+    raise StandardError, error_message
   end
 
   # Finds the tube purpose based on the provided UUID, using a cached hash to avoid multiple queries.

@@ -365,4 +365,309 @@ RSpec.describe SpecificTubeRackCreation do
       end
     end
   end
+
+  context 'when testing individual methods' do
+    include_context 'with common setup'
+
+    let(:creation_parameters) { { user:, tube_rack_attributes:, parent: } }
+
+    let(:existing_tube_rack) { create(:tube_rack, name: 'TubeRack2') }
+    let(:new_tube_rack_barcode_string) { 'TR10000001' }
+    let(:new_tube_rack) { create(:tube_rack, name: 'TubeRack1') }
+    let(:tube_rack_barcode_format) { :fluidx_barcode }
+
+    describe '#handle_tube_rack_barcode' do
+      before { allow(Barcode).to receive(:includes).with(:asset).and_return(Barcode) }
+
+      context 'when the existing barcode record is nil' do
+        let(:existing_tube_rack_barcode_record) { nil }
+        let(:new_tube_rack_barcode_record) do
+          create(:barcode, barcode: new_tube_rack_barcode_string, format: tube_rack_barcode_format)
+        end
+
+        before do
+          allow(Barcode).to receive(:find_by).with(barcode: new_tube_rack_barcode_string).and_return(nil)
+          allow(Barcode).to receive(:create!).with(
+            labware: new_tube_rack,
+            barcode: new_tube_rack_barcode_string,
+            format: tube_rack_barcode_format
+          ).and_return(new_tube_rack_barcode_record)
+          # rubocop:disable RSpec/SubjectStub
+          # rubocop doesn't understand we aren't stubbing the method
+          allow(specific_tube_rack_creation).to receive(:create_new_barcode).and_call_original
+          # rubocop:enable RSpec/SubjectStub
+        end
+
+        it 'calls create_new_barcode with the correct arguments' do
+          specific_tube_rack_creation.send(:handle_tube_rack_barcode, new_tube_rack_barcode_string, new_tube_rack)
+
+          # rubocop:disable RSpec/SubjectStub
+          expect(specific_tube_rack_creation).to have_received(:create_new_barcode).with(
+            new_tube_rack_barcode_string,
+            new_tube_rack
+          )
+          # rubocop:enable RSpec/SubjectStub
+        end
+      end
+
+      context 'when the barcode record is already in use' do
+        let(:existing_tube_rack_barcode_string) { 'TR10000001' }
+        let(:existing_tube_rack_barcode_record) do
+          create(:barcode, barcode: existing_tube_rack_barcode_string, labware: existing_tube_rack)
+        end
+
+        before do
+          allow(Barcode).to receive(:find_by).with(barcode: new_tube_rack_barcode_string).and_return(
+            existing_tube_rack_barcode_record
+          )
+          # rubocop:disable RSpec/SubjectStub
+          # rubocop doesn't understand we aren't stubbing the method
+          allow(specific_tube_rack_creation).to receive(:redirect_existing_barcode).and_call_original
+          # rubocop:enable RSpec/SubjectStub
+        end
+
+        # rubocop:disable RSpec/ExampleLength
+        it 'calls redirect_existing_barcode with the correct arguments' do
+          specific_tube_rack_creation.send(:handle_tube_rack_barcode, existing_tube_rack_barcode_string, new_tube_rack)
+
+          # rubocop:disable RSpec/SubjectStub
+          expect(specific_tube_rack_creation).to have_received(:redirect_existing_barcode).with(
+            existing_tube_rack_barcode_record,
+            new_tube_rack,
+            existing_tube_rack_barcode_string
+          )
+          # rubocop:enable RSpec/SubjectStub
+        end
+        # rubocop:enable RSpec/ExampleLength
+      end
+    end
+
+    describe '#create_new_barcode' do
+      let(:tube_rack_barcode_format) { :test_format }
+
+      before do
+        allow(Barcode).to receive(:matching_barcode_format).with(new_tube_rack_barcode_string).and_return(
+          tube_rack_barcode_format
+        )
+        allow(Barcode).to receive(:create!)
+      end
+
+      context 'when the barcode format is recognized' do
+        it 'creates a new barcode with the correct attributes' do
+          specific_tube_rack_creation.send(:create_new_barcode, new_tube_rack_barcode_string, new_tube_rack)
+
+          expect(Barcode).to have_received(:create!).with(
+            labware: new_tube_rack,
+            barcode: new_tube_rack_barcode_string,
+            format: tube_rack_barcode_format
+          )
+        end
+      end
+
+      context 'when the barcode format is not recognized' do
+        let(:tube_rack_barcode_format) { nil }
+
+        # rubocop:disable RSpec/ExampleLength
+        it 'raises a StandardError with the correct message' do
+          expect do
+            specific_tube_rack_creation.send(:create_new_barcode, new_tube_rack_barcode_string, new_tube_rack)
+          end.to raise_error(
+            StandardError,
+            "The tube rack barcode '#{new_tube_rack_barcode_string}' is not a recognised format."
+          )
+        end
+        # rubocop:enable RSpec/ExampleLength
+      end
+    end
+
+    describe '#redirect_existing_barcode' do
+      let(:existing_tube_rack_barcode_record) { create(:barcode, labware: existing_labware) }
+
+      context 'when the existing labware is a TubeRack' do
+        let(:existing_labware) { create(:tube_rack) }
+
+        before { allow(existing_tube_rack_barcode_record).to receive(:labware=).with(new_tube_rack) }
+
+        # rubocop:disable RSpec/ExampleLength
+        it 'redirects the barcode to the new tube rack' do
+          specific_tube_rack_creation.send(
+            :redirect_existing_barcode,
+            existing_tube_rack_barcode_record,
+            new_tube_rack,
+            new_tube_rack_barcode_string
+          )
+
+          expect(existing_tube_rack_barcode_record).to have_received(:labware=).with(new_tube_rack)
+        end
+        # rubocop:enable RSpec/ExampleLength
+      end
+
+      context 'when the existing labware is not a TubeRack' do
+        let(:existing_labware) { create(:plate) }
+
+        # rubocop:disable RSpec/ExampleLength
+        it 'raises a StandardError with the correct message' do
+          expect do
+            specific_tube_rack_creation.send(
+              :redirect_existing_barcode,
+              existing_tube_rack_barcode_record,
+              new_tube_rack,
+              new_tube_rack_barcode_string
+            )
+          end.to raise_error(
+            StandardError,
+            "The tube rack barcode '#{new_tube_rack_barcode_string}' is already in use " \
+              'by another type of labware, cannot create tube rack.'
+          )
+        end
+        # rubocop:enable RSpec/ExampleLength
+      end
+    end
+
+    describe '#add_tube_rack_metadata' do
+      let(:metadata_key) { 'tube_rack_barcode_key' }
+      let(:poly_metadatum) do
+        create(:poly_metadatum, metadatable: new_tube_rack, key: metadata_key, value: new_tube_rack_barcode_string)
+      end
+
+      before do
+        allow(Rails.application.config).to receive(:tube_racks_config).and_return(tube_rack_barcode_key: metadata_key)
+        allow(PolyMetadatum).to receive(:new).and_return(poly_metadatum)
+        allow(poly_metadatum).to receive(:save).and_return(save_result)
+      end
+
+      context 'when the metadata saves successfully' do
+        let(:save_result) { true }
+
+        it 'creates a new PolyMetadatum with the correct attributes' do
+          specific_tube_rack_creation.send(:add_tube_rack_metadata, new_tube_rack_barcode_string, new_tube_rack)
+
+          expect(PolyMetadatum).to have_received(:new).with(
+            key: metadata_key,
+            value: new_tube_rack_barcode_string,
+            metadatable_type: 'TubeRack',
+            metadatable_id: new_tube_rack.id
+          )
+        end
+      end
+
+      context 'when the metadata does not save successfully' do
+        let(:save_result) { false }
+
+        # rubocop:disable RSpec/ExampleLength
+        it 'raises a StandardError with the correct message' do
+          expect do
+            specific_tube_rack_creation.send(:add_tube_rack_metadata, new_tube_rack_barcode_string, new_tube_rack)
+          end.to raise_error(
+            StandardError,
+            "New metadata for tube rack (key: #{metadata_key}, value: #{new_tube_rack_barcode_string}) did not save"
+          )
+        end
+        # rubocop:enable RSpec/ExampleLength
+      end
+    end
+
+    describe '#ensure_unique_tube_barcode' do
+      let(:tube_barcode) { 'TB123456' }
+      let(:existing_tube_barcode_record) { create(:barcode) }
+
+      before do
+        allow(Barcode).to receive(:includes).with(:asset).and_return(Barcode)
+        allow(Barcode).to receive(:find_by).with(asset_id: tube_barcode).and_return(existing_tube_barcode_record)
+      end
+
+      context 'when the tube barcode is not in use' do
+        let(:existing_tube_barcode_record) { nil }
+
+        it 'does not raise an error' do
+          expect { specific_tube_rack_creation.send(:ensure_unique_tube_barcode, tube_barcode) }.not_to raise_error
+        end
+      end
+
+      context 'when the tube barcode is already in use' do
+        it 'raises a StandardError with the correct message' do
+          expect { specific_tube_rack_creation.send(:ensure_unique_tube_barcode, tube_barcode) }.to raise_error(
+            StandardError,
+            "The tube barcode '#{tube_barcode}' is already in use, cannot continue."
+          )
+        end
+      end
+    end
+
+    describe '#check_tube_barcode_format' do
+      let(:tube_barcode) { 'TB123456' }
+
+      before { allow(Barcode).to receive(:matching_barcode_format).with(tube_barcode).and_return(barcode_format) }
+
+      context 'when the barcode format is not recognized' do
+        let(:barcode_format) { nil }
+
+        it 'raises a StandardError with the correct message' do
+          expect { specific_tube_rack_creation.send(:check_tube_barcode_format, tube_barcode) }.to raise_error(
+            StandardError,
+            "The tube barcode '#{tube_barcode}' is not a recognised format."
+          )
+        end
+      end
+
+      context 'when the barcode format is recognized but not fluidx' do
+        let(:barcode_format) { :other_format }
+
+        it 'raises a StandardError with the correct message' do
+          expect { specific_tube_rack_creation.send(:check_tube_barcode_format, tube_barcode) }.to raise_error(
+            StandardError,
+            "The tube barcode '#{tube_barcode}' is not of the expected fluidx type."
+          )
+        end
+      end
+
+      context 'when the barcode format is fluidx' do
+        let(:barcode_format) { :fluidx_barcode }
+
+        it 'does not raise an error' do
+          expect { specific_tube_rack_creation.send(:check_tube_barcode_format, tube_barcode) }.not_to raise_error
+        end
+      end
+    end
+
+    describe '#link_tube_to_rack' do
+      let(:tube) { create(:tube, name: 'Tube1') }
+      let(:tube_position) { 'A1' }
+      let(:racked_tube) { create(:racked_tube, tube: tube, tube_rack: new_tube_rack, coordinate: tube_position) }
+
+      before do
+        allow(RackedTube).to receive(:new).and_return(racked_tube)
+        allow(racked_tube).to receive(:save!).and_return(save_result)
+      end
+
+      context 'when the racked tube saves successfully' do
+        let(:save_result) { true }
+
+        it 'creates a new RackedTube with the correct attributes' do
+          specific_tube_rack_creation.send(:link_tube_to_rack, tube, new_tube_rack, tube_position)
+
+          expect(RackedTube).to have_received(:new).with(
+            tube: tube,
+            tube_rack: new_tube_rack,
+            coordinate: tube_position
+          )
+        end
+      end
+
+      context 'when the racked tube does not save successfully' do
+        let(:save_result) { false }
+
+        # rubocop:disable RSpec/ExampleLength
+        it 'raises an StandardError with the correct message' do
+          expect do
+            specific_tube_rack_creation.send(:link_tube_to_rack, tube, new_tube_rack, tube_position)
+          end.to raise_error(
+            StandardError,
+            "The tube 'Tube1' could not be linked to the tube rack 'TubeRack1' at position 'A1'."
+          )
+        end
+        # rubocop:enable RSpec/ExampleLength
+      end
+    end
+  end
 end
