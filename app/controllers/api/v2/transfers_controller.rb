@@ -10,7 +10,7 @@ module Api
     end
 
     class TransferProcessor < JSONAPI::Processor
-      # Get the transfer type needs to be created from the transfer template in the attributes.
+      # Get the Transfer model type needed to be created from the transfer template in the attributes.
       # Also put the transfers from the template into the attributes if they exist.
       def extract_template_data(attributes)
         errors = []
@@ -24,9 +24,8 @@ module Api
         errors +=
           JSONAPI::Exceptions::InvalidFieldValue.new('transfer_template_uuid', template_uuid).errors if template.nil?
 
-        # Modify attributes according to what we've found in the template, removing the UUID of the template as well.
+        # Modify attributes according to what we've found in the template.
         attributes[:transfers] = template.transfers if template.transfers.present?
-        attributes.delete(:transfer_template_uuid)
 
         [template.transfer_class_name.constantize, errors]
       end

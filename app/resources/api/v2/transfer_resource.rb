@@ -77,6 +77,12 @@ module Api
       #     This must be provided or the Transfer creation will raise an error.
       attribute :transfer_template_uuid, writeonly: true
 
+      def transfer_template_uuid=(uuid)
+        # Do not update the model.
+        # This value is used by the controller to create the correct Transfer type and set the transfers attribute.
+        # It is not stored on the Transfer model.
+      end
+
       # @!attribute [r] transfer_type
       #   @return [String] The STI type of the transfer.
       attribute :transfer_type, delegate: :sti_type, readonly: true
