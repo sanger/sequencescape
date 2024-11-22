@@ -11,19 +11,19 @@ module Api
 
     class TagLayoutProcessor < JSONAPI::Processor
       def find_template
-        errors = []
-
         template_uuid = params[:data][:attributes][:tag_layout_template_uuid]
-        return nil, errors if template_uuid.nil? # No errors -- we just don't have a template.
+        return nil if template_uuid.nil? # No errors -- we just don't have a template.
 
         template = TagLayoutTemplate.with_uuid(template_uuid).first
-        errors +=
-          JSONAPI::Exceptions::InvalidFieldValue.new(:tag_layout_template_uuid, template_uuid).errors if template.nil?
 
-        [template, errors]
+        if template.nil?
+          yield JSONAPI::Exceptions::InvalidFieldValue.new(:tag_layout_template_uuid, template_uuid).errors
+        end
+
+        template
       end
 
-      def error_if_key_present(data, key)
+      def errors_if_key_present(data, key)
         return [] if data[key.to_sym].blank?
 
         JSONAPI::Exceptions::BadRequest.new(
@@ -32,40 +32,33 @@ module Api
       end
 
       def merge_template_attributes(template)
-        errors = []
-
         data = params[:data]
 
         %i[walking_by direction].each do |attr_key|
           next if template.send(attr_key).blank?
 
-          errors += error_if_key_present(data[:attributes], attr_key)
+          yield errors_if_key_present(data[:attributes], attr_key)
 
           data[:attributes][attr_key] = template.send(attr_key)
         end
-
-        errors
       end
 
       def merge_template_to_one_relationships(template)
-        errors = []
-
         data = params[:data]
 
         %i[tag_group tag2_group].each do |rel_key|
           next if template.send(rel_key).blank?
 
-          errors += error_if_key_present(data[:attributes], "#{rel_key}_uuid")
-          errors += error_if_key_present(data[:to_one], rel_key)
+          yield errors_if_key_present(data[:attributes], "#{rel_key}_uuid")
+          yield errors_if_key_present(data[:to_one], rel_key)
 
           data[:to_one][rel_key] = template.send(rel_key).id
         end
-
-        errors
       end
 
-      def merge_template_data(template)
-        merge_template_attributes(template) + merge_template_to_one_relationships(template)
+      def merge_template_data(template, &)
+        merge_template_attributes(template, &)
+        merge_template_to_one_relationships(template, &)
       end
 
       # Override the default behaviour for a JSONAPI::Processor when creating a new resource.
@@ -75,8 +68,9 @@ module Api
       # also specifies a direction or a tag_group. In this case, the error will indicate that the
       # template UUID was not an allowed attribute.
       def create_resource
-        template, errors = find_template
-        errors += merge_template_data(template) unless template.nil?
+        errors = []
+        template = find_template { |new_errors| errors += new_errors }
+        merge_template_data(template) { |new_errors| errors += new_errors } unless template.nil?
 
         return JSONAPI::ErrorsOperationResult.new(400, errors) unless errors.empty?
 
