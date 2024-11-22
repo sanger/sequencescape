@@ -74,6 +74,8 @@ class SampleManifest::Uploader
   end
 
   def check_sample_manifest_upload
+    # Refetch the sample manifest to ensure it is in it's newest state
+    upload.sample_manifest.reload
     return true unless upload.sample_manifest&.state == 'processing'
 
     errors.add(
