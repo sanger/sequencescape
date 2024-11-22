@@ -18,11 +18,11 @@ module Api
         template_uuid = attributes[:transfer_template_uuid]
         errors += JSONAPI::Exceptions::ParameterMissing.new('transfer_template_uuid').errors if template_uuid.nil?
 
-        return nil, nil, errors if errors.present?
-
         template = TransferTemplate.with_uuid(template_uuid).first
         errors +=
           JSONAPI::Exceptions::InvalidFieldValue.new('transfer_template_uuid', template_uuid).errors if template.nil?
+
+        return nil, errors if errors.present?
 
         # Modify attributes according to what we've found in the template.
         attributes[:transfers] = template.transfers if template.transfers.present?
