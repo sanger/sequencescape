@@ -18,4 +18,4 @@ Limber-Htp - BGE Transition:
   related_records:
     product_line_name: Illumina-HTP
     product_catalogue_name: ISC # Different product catalogue?
-    request_type_keys: ["limber_bge_transition"]  # Other request types?
+    request_type_keys: ["limber_bge_transition"] # Other request types?
