@@ -1,3 +1,4 @@
+# Y24-366
 Limber-Htp - BGE PCR Free:
   name: "Limber-Htp - GBE PCR Free"
   submission_class_name: "LinearSubmission"
@@ -11,7 +12,7 @@ Limber-Htp - BGE ISC:
   related_records:
     product_line_name: Illumina-HTP
     product_catalogue_name: ISC
-    request_type_keys: ["limber_bge_isc", "limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"]
+    request_type_keys: ["limber_bge_isc", "limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"] # Other request types?
 Limber-Htp - BGE Transition:
   name: "Limber-Htp - BGE Transition "
   submission_class_name: "AutomatedOrder"
