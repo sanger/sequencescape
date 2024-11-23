@@ -23,7 +23,7 @@
     "sass": "^1.77.6",
     "select2": "^4.1.0-rc.0",
     "sortablejs": "^1.15.2",
-    "terser": "^5.31.1",
+    "terser": "^5.36.0",
     "vue": "^2.7.16",
     "vue-loader": "^15.11.1",
     "vue-template-compiler": "^2.7.16",
