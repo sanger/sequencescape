@@ -80,7 +80,7 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
 
     event :process_1 do
-      transitions to: :processed_1, from: [:pending]
+      transitions to: :processed_1, from: [:pending], after: :on_started
     end
 
     event :process_2 do

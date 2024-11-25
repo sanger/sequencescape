@@ -18,6 +18,8 @@ LTN Cherrypick: *limber_input_96
 LHR RT: *limber_input_96
 LTHR RT: *limber_input_96
 LTHR Cherrypick: *limber_input_96
+Stock Plate: *limber_input_96
+
 PF Cherrypicked:
   <<: *limber_input_96
   default_state: passed
@@ -68,5 +70,10 @@ LTN AL Lib:
 
 # Targeted NanoSeq plate for reISC
 LTN Lib PCR XP:
+  type: PlatePurpose
+  stock_plate: false
+
+# RVI BCL plate for reISC
+RVI Lib PCR XP:
   type: PlatePurpose
   stock_plate: false

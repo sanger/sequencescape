@@ -6,7 +6,9 @@ module Submission::ValidationsByTemplateName
   # Column headers
   HEADER_TEMPLATE_NAME = 'template name'
   HEADER_STUDY_NAME = 'study name'
+  HEADER_PROJECT_NAME = 'project name'
   HEADER_NUM_SAMPLES = 'scrna core number of samples per pool'
+  HEADER_CELLS_PER_CHIP_WELL = 'scrna core cells per chip well'
 
   # Applies additional validations based on the submission template type.
   #
@@ -30,38 +32,38 @@ module Submission::ValidationsByTemplateName
     case submission_template_name
     # this validation is for the scRNA pipeline cDNA submission
     when SCRNA_CORE_CDNA_PREP_GEM_X_5P
-      validate_scrna_core_samples_per_pool
+      validate_consistent_column_value(HEADER_NUM_SAMPLES)
+      validate_consistent_column_value(HEADER_CELLS_PER_CHIP_WELL)
     end
   end
 
-  # Validates that the scrna core number of samples per pool is consistent for all rows with the same study name.
+  # Validates that the specified column is consistent for all rows with the same study and project name.
   #
-  # This method groups the rows in the CSV data by the study name and checks if the scrna core number of samples
-  # per pool is the same for all rows within each study group. If inconsistencies are found, an error is added to
-  # the errors collection.
+  # This method groups the rows in the CSV data by the study name and project name, and checks if the specified column
+  # has the same value for all rows within each group. If inconsistencies are found, an error is
+  # added to the errors collection.
   #
+  # @param column_header [String] The header of the column to validate.
   # @return [void]
-  # rubocop:disable Metrics/MethodLength
-  def validate_scrna_core_samples_per_pool
-    # Group rows by study name
+  # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
+  def validate_consistent_column_value(column_header)
     index_of_study_name = headers.index(HEADER_STUDY_NAME)
-    grouped_rows = csv_data_rows.group_by { |row| row[index_of_study_name] }
+    index_of_project_name = headers.index(HEADER_PROJECT_NAME)
+    index_of_column = headers.index(column_header)
 
-    # Iterate through each study group
-    grouped_rows.each do |study_name, rows|
-      # Get the unique values of scrna core number of samples per pool for the group
-      index_of_num_samples = headers.index(HEADER_NUM_SAMPLES)
-      list_of_uniq_number_of_samples_per_pool = rows.pluck(index_of_num_samples).uniq
+    grouped_rows = csv_data_rows.group_by { |row| [row[index_of_study_name], row[index_of_project_name]] }
 
-      # Check if there is more than one unique value
-      next unless list_of_uniq_number_of_samples_per_pool.size > 1
+    grouped_rows.each do |study_project, rows|
+      unique_values = rows.pluck(index_of_column).uniq
+
+      next unless unique_values.size > 1
       errors.add(
         :spreadsheet,
-        "Inconsistent values for column 'scRNA Core Number of Samples per Pool' for Study name '#{study_name}', " \
-          'all rows for a specific study must have the same value'
+        "Inconsistent values for column '#{column_header}' for Study name '#{study_project[0]}' and Project name " \
+          "'#{study_project[1]}', " \
+          'all rows for a specific study and project must have the same value'
       )
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/MethodLength,Metrics/AbcSize
 end

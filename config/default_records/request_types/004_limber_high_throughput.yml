@@ -37,6 +37,7 @@ limber_reisc:
   acceptable_purposes:
     - LB Lib PCR-XP
     - LTN Lib PCR XP # for Targeted NanoSeq ReISC
+    - RVI Lib PCR XP # for RVI Bait Capture Library
   library_types:
     - Agilent Pulldown
     - Twist Pulldown
@@ -44,6 +45,7 @@ limber_reisc:
     - Targeted NanoSeq Pulldown Twist
     - Targeted NanoSeq Pulldown Agilent
     - BGE
+    - RVI-BCL
 limber_pcr_free:
   <<: *limber_htp_library
   name: Limber PCR Free
@@ -199,3 +201,10 @@ limber_targeted_nanoseq:
     - LTN Cherrypick
   library_types:
     - Targeted Nanoseq
+limber_rnaf:
+  <<: *limber_htp_library
+  name: Limber RNAF
+  acceptable_purposes:
+    - LBR Cherrypick
+  library_types:
+    - RNA FFPE

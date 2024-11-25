@@ -16,7 +16,7 @@ jobs:
     env:
       BUNDLE_WITHOUT: "cucumber deployment profile development default test"
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
