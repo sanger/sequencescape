@@ -1,0 +1,9 @@
+# Plate purposes for BGE
+---
+BGE Cherrypick:
+  type: PlatePurpose::Input
+  target_type: Plate
+  stock_plate: true
+  default_state: passed
+  cherrypickable_target: true
+  size: 96
