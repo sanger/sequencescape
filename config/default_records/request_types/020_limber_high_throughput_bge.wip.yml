@@ -8,7 +8,7 @@ limber_bge_pcr_free:
   product_line_name: Illumina-HTP
   name: Limber BGE PCR Free
   acceptable_purposes:
-    - PF Cherrypicked
+    - BGE Cherrypick
   library_types:
     - BGE
 # For moving PCR Free plates to ISC plates
@@ -21,7 +21,7 @@ limber_bge_transition:
   name: Limber BGE Transition
   request_class_name: IlluminaHtp::Requests::StdLibraryRequest
   acceptable_purposes:
-    - LB Cherrypick
+    - BGE Lib XP2
   library_types:
     - BGE
 limber_bge_isc:
@@ -32,6 +32,6 @@ limber_bge_isc:
   name: Limber BGE ISC
   request_class_name: Pulldown::Requests::IscLibraryRequest
   acceptable_purposes:
-    - LB Cherrypick
+    - BGE Lib PCR XP
   library_types:
     - BGE
