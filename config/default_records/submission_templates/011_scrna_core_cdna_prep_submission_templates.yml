@@ -16,9 +16,9 @@ Limber-Htp - scRNA Core cDNA Prep GEM-X 5p:
     request_type_keys: ["limber_scrna_core_cdna_prep_gem_x_5p"]
     product_line_name: Short Read
     product_catalogue_name: scRNA Core
-Limber-Htp - scRNA Core cDNA Prep GEM-X 5p PBMC Pools Input:
+Limber-Htp - scRNA Core cDNA Prep GEM-X 5p GEMs Input:
   submission_class_name: "LinearSubmission"
   related_records:
-    request_type_keys: ["limber_scrna_core_cdna_prep_gem_x_5p_pbmc_pools_input"]
+    request_type_keys: ["limber_scrna_core_cdna_prep_gem_x_5p_gems_input"]
     product_line_name: Short Read
     product_catalogue_name: scRNA Core
