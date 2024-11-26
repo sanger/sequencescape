@@ -44,7 +44,7 @@ module Submission::ValidationsByTemplateName
   end
 
   def apply_number_of_samples_per_pool_validation
-    # Creates groups of rows based on the study and project name (pool_number.e., study-project combinations)
+    # Creates groups of rows based on the study and project name (pool_number, study-project) combinations
     group_rows_by_study_and_project
   end
 
