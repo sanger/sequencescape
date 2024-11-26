@@ -26,7 +26,8 @@ class Barcode < ApplicationRecord
   after_commit :broadcast_barcode
 
   # Caution! Do not adjust the index of existing formats.
-  enum format: {
+  enum :format,
+       {
          sanger_ean13: 0,
          infinium: 1,
          fluidigm: 2,

@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 group :default do
   gem 'bootsnap'
-  gem 'rails', '~> 6.1.7'
+  gem 'rails', '~> 7.0.8'
 
   # Fix incompatibility with between Ruby 3.1 and Psych 4 (used for yaml)
   # see https://stackoverflow.com/a/71192990
@@ -21,8 +21,6 @@ group :default do
 
   # Legacy support for parsing XML into params
   gem 'actionpack-xml_parser'
-
-  gem 'activeresource'
 
   # Provides bulk insert capabilities
   gem 'activerecord-import'

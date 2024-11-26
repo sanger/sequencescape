@@ -27,42 +27,42 @@ a organisation of 900 people.
 
 <!-- toc -->
 
-- [ Sequencescape](#-sequencescape)
-  - [Contents](#contents)
-  - [Documentation](#documentation)
-    - [Linting](#linting)
-  - [Requirements](#requirements)
-  - [Getting started (using Docker)](#getting-started-using-docker)
-  - [Getting started (using native installation)](#getting-started-using-native-installation)
-    - [Installing ruby](#installing-ruby)
-      - [rbenv](#rbenv)
-    - [Automatic Sequencescape setup](#automatic-sequencescape-setup)
-    - [Manual Sequencescape setup](#manual-sequencescape-setup)
-      - [Installing gems](#installing-gems)
-      - [Adjusting config](#adjusting-config)
-      - [Default setup](#default-setup)
-    - [Starting rails](#starting-rails)
-      - [Delayed job](#delayed-job)
-    - [Message broker](#message-broker)
-  - [Testing](#testing)
-  - [Linting and formatting](#linting-and-formatting)
-  - [Rake tasks](#rake-tasks)
-  - [Supporting applications](#supporting-applications)
-    - [Barcode printing](#barcode-printing)
-    - [Plate barcode service](#plate-barcode-service)
-    - [Data warehousing](#data-warehousing)
-  - [Miscellaneous](#miscellaneous)
-    - [Lefthook](#lefthook)
-    - [Ruby warnings and rake 11](#ruby-warnings-and-rake-11)
-    - [NPG - Illumina tracking software](#npg---illumina-tracking-software)
-    - [Troubleshooting](#troubleshooting)
-      - [MySQL errors when installing](#mysql-errors-when-installing)
-      - [Installing on Apple Silicon (M1)](#installing-on-apple-silicon-m1)
-    - [API V2 Authentication](#api-v2-authentication)
-    - [Publishing AMQP Messages](#publishing-amqp-messages)
-    - [Updating the table of contents](#updating-the-table-of-contents)
-    - [CI](#ci)
-    - [ERD](#erd)
+- [Documentation](#documentation)
+  - [Linting](#linting)
+- [Requirements](#requirements)
+- [Getting started (using Docker)](#getting-started-using-docker)
+- [Getting started (using native installation)](#getting-started-using-native-installation)
+  - [Installing ruby](#installing-ruby)
+    - [rbenv](#rbenv)
+  - [Automatic Sequencescape setup](#automatic-sequencescape-setup)
+  - [Manual Sequencescape setup](#manual-sequencescape-setup)
+    - [Installing gems](#installing-gems)
+    - [Adjusting config](#adjusting-config)
+    - [Default setup](#default-setup)
+  - [Starting rails](#starting-rails)
+  - [Vite](#vite)
+    - [Delayed job](#delayed-job)
+  - [Message broker](#message-broker)
+- [Testing](#testing)
+- [Linting and formatting](#linting-and-formatting)
+- [Rake tasks](#rake-tasks)
+- [Supporting applications](#supporting-applications)
+  - [Barcode printing](#barcode-printing)
+  - [Plate barcode service](#plate-barcode-service)
+  - [Data warehousing](#data-warehousing)
+- [Miscellaneous](#miscellaneous)
+  - [Lefthook](#lefthook)
+  - [Ruby warnings and rake 11](#ruby-warnings-and-rake-11)
+  - [NPG - Illumina tracking software](#npg---illumina-tracking-software)
+  - [Troubleshooting](#troubleshooting)
+    - [MySQL errors when installing](#mysql-errors-when-installing)
+    - [MySQL errors after system updates](#mysql-errors-after-system-updates)
+    - [Installing on Apple Silicon (M1)](#installing-on-apple-silicon-m1)
+  - [API V2 Authentication](#api-v2-authentication)
+  - [Publishing AMQP Messages](#publishing-amqp-messages)
+  - [CI](#ci)
+  - [ERD](#erd)
+  - [Updating the table of contents](#updating-the-table-of-contents)
 
 <!-- tocstop -->
 
@@ -420,6 +420,14 @@ gem install mysql2 -v '0.5.6' -- \
 --with-mysql-include=/opt/homebrew/Cellar/mysql/9.0.1_1/include
 ```
 
+#### MySQL errors after system updates
+
+If you encounter a LoadError at dlopen call to mysql2 bundle because of a missing dynamic library, try the following command to update the cached gem.
+
+```
+gem pristine mysql2
+```
+
 #### Installing on Apple Silicon (M1)
 
 If installation issues are encountered with Docker on M1 processors, try the fixes below:
@@ -481,21 +489,9 @@ After the first use, a cached file will be created in `data/avro_schema_cache` s
 Because this is the first and only job doing this pubishing / RedPanda caching / Avro encoding, etc, there are parts which could be extracted in future if further jobs of this type are created.
 This isn't necessary at this stage, but it seems wise to note the intended pattern of usage here for future work.
 
-### Updating the table of contents
-
-To update the table of contents after adding things to this README you can use the [markdown-toc](https://github.com/jonschlinkert/markdown-toc)
-node module. To install it, make sure you have installed the dev dependencies from yarn. To update
-the table of contents, run:
-
-```shell
-npx markdown-toc -i README.md --bullets "-"
-```
-
 ### CI
 
 The GH actions builds use the Knapsack-pro gem to reduce build time by parallelizing the RSpec and Cucumber tests. There is no need to regenerate the knapsack_rspec_report.json file, Knapsack Pro will dynamically allocate tests to ensure tests finish as close together as possible.
-
-Copyright (c) 2007, 2010-2021 Genome Research Ltd.
 
 ### ERD
 
@@ -508,3 +504,15 @@ open erd.pdf
 ```
 
 The command uses the [rails-erd](https://github.com/voormedia/rails-erd) gem.
+
+### Updating the table of contents
+
+To update the table of contents after adding things to this README you can use the [markdown-toc](https://github.com/jonschlinkert/markdown-toc)
+node module. To install it, make sure you have installed the dev dependencies from yarn. To update
+the table of contents, run:
+
+```shell
+npx markdown-toc -i README.md --bullets "-"
+```
+
+Copyright (c) 2007, 2010-2024 Genome Research Ltd.

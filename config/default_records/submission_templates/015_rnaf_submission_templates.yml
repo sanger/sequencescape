@@ -1,0 +1,33 @@
+Limber-Htp - RNAF:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Illumina-HTP
+    product_catalogue_name: RNAF
+    request_type_keys: ["limber_rnaf"]
+Limber-Htp - RNAF - Pool:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Illumina-HTP
+    product_catalogue_name: RNAF
+    request_type_keys: ["limber_rnaf", "limber_multiplexing"]
+Limber-Htp - RNAF - NovaSeqX paired end sequencing:
+  name: "Limber-Htp - RNAF - NovaSeqX paired end sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Illumina-HTP
+    product_catalogue_name: RNAF
+    request_type_keys: ["limber_rnaf", "limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"]
+Limber-Htp - RNAF - NovaSeq 6000 paired end sequencing:
+  name: "Limber-Htp - RNAF - NovaSeq 6000 paired end sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Illumina-HTP
+    product_catalogue_name: RNAF
+    request_type_keys: ["limber_rnaf", "limber_multiplexing", "illumina_htp_novaseq_6000_paired_end_sequencing"]
+Limber-Htp - RNAF - MiSeq sequencing:
+  name: "Limber-Htp - RNAF - MiSeq sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Illumina-HTP
+    product_catalogue_name: RNAF
+    request_type_keys: ["limber_rnaf", "limber_multiplexing", "illumina_b_miseq_sequencing"]

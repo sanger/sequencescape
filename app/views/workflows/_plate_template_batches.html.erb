@@ -52,10 +52,9 @@
       <%= select_tag "robot_id", options_for_select(@robots.collect {|p| [ p.name, p.id ] }), class: 'select2' %>
     </fieldset>
   <% end %>
-
-  <%= panel(:info,title:"Step 3: Set volumes and concentrations") do %>
-    <%= render partial: 'cherrypicking_volume_parameters' %>
-  <% end %>
+    <%= panel(:info, title: "Step 3: Set volumes and concentrations <a href='https://ssg-confluence.internal.sanger.ac.uk/x/NoHdDQ'><small>Information about cherrypicking options</small></a>".html_safe) do %>
+      <%= render partial: 'cherrypicking_volume_parameters' %>
+    <% end %>
 
   <%= render partial: "next_stage_submit" %>
 <% end %>

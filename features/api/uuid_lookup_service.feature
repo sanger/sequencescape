@@ -75,7 +75,7 @@ And I have a "full" authorised user with the key "cucumber"
     And the JSON should be:
       """
       {
-        "general": [ "Couldn't find Uuid" ]
+        "general": [ "Couldn't find Uuid with [WHERE `uuids`.`resource_type` = ? AND `uuids`.`resource_id` = ?]" ]
       }
       """
 
