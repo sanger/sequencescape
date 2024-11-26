@@ -99,6 +99,11 @@ module Submission::ValidationsByTemplateName
       validate_for_plates(barcodes, well_locations, rows)
     elsif tube?(barcodes, well_locations)
       validate_for_tubes(barcodes, rows)
+    else
+      errors.add(
+        :spreadsheet,
+        'Invalid labware type. Please provide either a plate barcode with well locations or tube barcodes only'
+      )
     end
   end
 
