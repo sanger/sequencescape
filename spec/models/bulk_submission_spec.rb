@@ -336,5 +336,43 @@ describe BulkSubmission, with: :uploader do
         expect(number_submissions_created).to eq(1)
       end
     end
+
+    context 'when an scRNA Bulk Submission for tube' do
+      # Add another similar tube to the asset group
+      let(:request_types) { create_list(:sequencing_request_type, 2) }
+      let!(:tube_barcode) { create(:sanger_ean13_tube, barcode_number: '12') }
+      let!(:study) { create(:study, name: 'Test Study') }
+      let!(:tube) { create(:phi_x_stock_tube, barcodes: [tube_barcode]) }
+      let!(:asset_group) { create(:asset_group, name: 'assetgroup', study: study, assets: [tube.receptacle]) }
+      let!(:tube_barcode_2) { create(:sanger_ean13_tube, barcode_number: '13') }
+      let!(:tube_2) { create(:phi_x_stock_tube, barcodes: [tube_barcode_2]) }
+      let!(:asset_group_2) { create(:asset_group, name: 'assetgroup2', study: study, assets: [tube_2.receptacle]) }
+      let!(:library_type) { create(:library_type, name: 'Standard') }
+
+      let(:spreadsheet_filename) { 'scRNA_bulk_submission_tube.csv' }
+      let(:submission_template_hash) do
+        {
+          name: 'Limber-Htp - scRNA Core cDNA Prep GEM-X 5p',
+          submission_class_name: 'LinearSubmission',
+          product_catalogue: 'Generic',
+          submission_parameters: {
+            request_options: {
+            },
+            request_types: request_types.map(&:key)
+          }
+        }
+      end
+
+      before { SubmissionSerializer.construct!(submission_template_hash) }
+
+      it 'is valid' do
+        expect(subject).to be_valid
+      end
+
+      it 'generates submissions when processed' do
+        subject.process
+        expect(number_submissions_created).to eq(1)
+      end
+    end
   end
 end
