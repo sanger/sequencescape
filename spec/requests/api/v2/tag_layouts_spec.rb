@@ -93,14 +93,12 @@ describe 'Tag Layouts API', with: :api_v2 do
     end
   end
 
-  describe '#POST a create request' do
+  describe '#POST a create request without a template' do
     let(:direction) { 'column' }
     let(:initial_tag) { 0 }
     let(:substitutions) { { 'A1' => 'B2' } }
     let(:tags_per_well) { 1 } # Ignored by the walking_by algorithm below
     let(:walking_by) { 'wells of plate' }
-
-    let(:base_attributes) { { direction:, initial_tag:, substitutions:, tags_per_well:, walking_by: } }
 
     let(:plate) { create(:plate) }
     let(:tag_group) { create(:tag_group_for_layout) }
@@ -112,341 +110,566 @@ describe 'Tag Layouts API', with: :api_v2 do
     let(:tag2_group_relationship) { { data: { id: tag2_group.id, type: 'tag_groups' } } }
     let(:user_relationship) { { data: { id: user.id, type: 'users' } } }
 
-    context 'with a valid payload without a template' do
-      shared_examples 'a valid request without a template' do
-        before { api_post base_endpoint, payload }
+    context 'without a template' do
+      let(:base_attributes) { { direction:, initial_tag:, substitutions:, tags_per_well:, walking_by: } }
 
-        it 'creates a new resource' do
-          expect { api_post base_endpoint, payload }.to change(model_class, :count).by(1)
+      context 'with a valid payload' do
+        shared_examples 'a valid request' do
+          before { api_post base_endpoint, payload }
+
+          it 'creates a new resource' do
+            expect { api_post base_endpoint, payload }.to change(model_class, :count).by(1)
+          end
+
+          it 'responds with a success http code' do
+            expect(response).to have_http_status(:success)
+          end
+
+          it 'returns the resource with the correct type' do
+            expect(json.dig('data', 'type')).to eq(resource_type)
+          end
+
+          it_behaves_like 'a POST request including model attribute', TagLayout, 'direction'
+          it_behaves_like 'a POST request including model attribute', TagLayout, 'initial_tag'
+          it_behaves_like 'a POST request including model attribute', TagLayout, 'substitutions'
+          it_behaves_like 'a POST request including model attribute', TagLayout, 'walking_by'
+          it_behaves_like 'a POST request including model attribute', TagLayout, 'uuid'
+
+          it "responds with the supplied 'tags_per_well' attribute value" do
+            # Note that the tags per well will not be saved with the record as it isn't a stored attribute in the
+            # database. The response is based on the model after being saved, which still holds the value given in the
+            # payload.
+            expect(json.dig('data', 'attributes', 'tags_per_well')).to eq(
+              payload.dig(:data, :attributes, :tags_per_well)
+            )
+          end
+
+          it_behaves_like 'a request excluding unfetchable attribute', 'plate_uuid'
+          it_behaves_like 'a request excluding unfetchable attribute', 'tag_group_uuid'
+          it_behaves_like 'a request excluding unfetchable attribute', 'tag2_group_uuid'
+          it_behaves_like 'a request excluding unfetchable attribute', 'tag_layout_template_uuid'
+          it_behaves_like 'a request excluding unfetchable attribute', 'user_uuid'
+
+          it "updates the model with the new 'direction' attribute value" do
+            expect(model_class.last.direction).to eq(direction)
+          end
+
+          it "updates the model with the new 'initial_tag' attribute value" do
+            expect(model_class.last.initial_tag).to eq(initial_tag)
+          end
+
+          it "updates the model with the new 'substitutions' attribute value" do
+            expect(model_class.last.substitutions).to eq(substitutions)
+          end
+
+          it "updates the model with the new 'walking_by' attribute value" do
+            expect(model_class.last.walking_by).to eq(walking_by)
+          end
+
+          it "responds with nil for the 'tags_per_well' attribute" do
+            # Note that the tags_per_well from the queried record will be nil as it isn't a stored attribute in the
+            # database.
+            expect(model_class.last.tags_per_well).to be_nil
+          end
+
+          it_behaves_like 'a request referencing a related resource', 'plate'
+          it_behaves_like 'a request referencing a related resource', 'tag_group'
+          it_behaves_like 'a request referencing a related resource', 'tag2_group'
+          it_behaves_like 'a request referencing a related resource', 'user'
+
+          it "updates the model with the new 'plate' relationship" do
+            expect(model_class.last.plate).to eq(plate)
+          end
+
+          it "updates the model with the new 'tag_group' relationship" do
+            expect(model_class.last.tag_group).to eq(tag_group)
+          end
+
+          it "updates the model with the new 'tag2_group' relationship" do
+            expect(model_class.last.tag2_group).to eq(tag2_group)
+          end
+
+          it "updates the model with the new 'user' relationship" do
+            expect(model_class.last.user).to eq(user)
+          end
         end
 
-        it 'responds with a success http code' do
-          expect(response).to have_http_status(:success)
+        context 'with complete attributes' do
+          let(:payload) do
+            {
+              data: {
+                type: resource_type,
+                attributes:
+                  base_attributes.merge(
+                    {
+                      plate_uuid: plate.uuid,
+                      tag_group_uuid: tag_group.uuid,
+                      tag2_group_uuid: tag2_group.uuid,
+                      user_uuid: user.uuid
+                    }
+                  )
+              }
+            }
+          end
+
+          it_behaves_like 'a valid request'
         end
 
-        it 'returns the resource with the correct type' do
-          expect(json.dig('data', 'type')).to eq(resource_type)
+        context 'with relationships' do
+          let(:payload) do
+            {
+              data: {
+                type: resource_type,
+                attributes: base_attributes,
+                relationships: {
+                  plate: plate_relationship,
+                  tag_group: tag_group_relationship,
+                  tag2_group: tag2_group_relationship,
+                  user: user_relationship
+                }
+              }
+            }
+          end
+
+          it_behaves_like 'a valid request'
         end
 
-        it_behaves_like 'a POST request including model attribute', TagLayout, 'direction'
-        it_behaves_like 'a POST request including model attribute', TagLayout, 'initial_tag'
-        it_behaves_like 'a POST request including model attribute', TagLayout, 'substitutions'
-        it_behaves_like 'a POST request including model attribute', TagLayout, 'walking_by'
-        it_behaves_like 'a POST request including model attribute', TagLayout, 'uuid'
+        context 'with conflicting relationships' do
+          let(:other_plate) { create(:plate) }
+          let(:other_tag_group) { create(:tag_group) }
+          let(:other_tag2_group) { create(:tag_group) }
+          let(:other_user) { create(:user) }
+          let(:payload) do
+            {
+              data: {
+                type: resource_type,
+                attributes:
+                  base_attributes.merge(
+                    {
+                      plate_uuid: other_plate.uuid,
+                      tag_group_uuid: other_tag_group.uuid,
+                      tag2_group_uuid: other_tag2_group.uuid,
+                      user_uuid: other_user.uuid
+                    }
+                  ),
+                relationships: {
+                  plate: plate_relationship,
+                  tag_group: tag_group_relationship,
+                  tag2_group: tag2_group_relationship,
+                  user: user_relationship
+                }
+              }
+            }
+          end
 
-        it "responds with the supplied 'tags_per_well' attribute value" do
-          # Note that the tags per well will not be saved with the record as it isn't a stored attribute in the
-          # database. The response is based on the model after being saved, which still holds the value given in the
-          # payload.
-          expect(json.dig('data', 'attributes', 'tags_per_well')).to eq(payload.dig(:data, :attributes, :tags_per_well))
-        end
-
-        it_behaves_like 'a request excluding unfetchable attribute', 'plate_uuid'
-        it_behaves_like 'a request excluding unfetchable attribute', 'tag_group_uuid'
-        it_behaves_like 'a request excluding unfetchable attribute', 'tag2_group_uuid'
-        it_behaves_like 'a request excluding unfetchable attribute', 'tag_layout_template_uuid'
-        it_behaves_like 'a request excluding unfetchable attribute', 'user_uuid'
-
-        it "updates the model with the new 'direction' attribute value" do
-          expect(model_class.last.direction).to eq(direction)
-        end
-
-        it "updates the model with the new 'initial_tag' attribute value" do
-          expect(model_class.last.initial_tag).to eq(initial_tag)
-        end
-
-        it "updates the model with the new 'substitutions' attribute value" do
-          expect(model_class.last.substitutions).to eq(substitutions)
-        end
-
-        it "updates the model with the new 'walking_by' attribute value" do
-          expect(model_class.last.walking_by).to eq(walking_by)
-        end
-
-        it "responds with nil for the 'tags_per_well' attribute" do
-          # Note that the tags_per_well from the queried record will be nil as it isn't a stored attribute in the
-          # database.
-          expect(model_class.last.tags_per_well).to be_nil
-        end
-
-        it_behaves_like 'a request referencing a related resource', 'plate'
-        it_behaves_like 'a request referencing a related resource', 'tag_group'
-        it_behaves_like 'a request referencing a related resource', 'tag2_group'
-        it_behaves_like 'a request referencing a related resource', 'user'
-
-        it "updates the model with the new 'plate' relationship" do
-          expect(model_class.last.plate).to eq(plate)
-        end
-
-        it "updates the model with the new 'tag_group' relationship" do
-          expect(model_class.last.tag_group).to eq(tag_group)
-        end
-
-        it "updates the model with the new 'tag2_group' relationship" do
-          expect(model_class.last.tag2_group).to eq(tag2_group)
-        end
-
-        it "updates the model with the new 'user' relationship" do
-          expect(model_class.last.user).to eq(user)
+          # This test should pass because the relationships are preferred over the attributes.
+          it_behaves_like 'a valid request'
         end
       end
 
-      context 'with complete attributes' do
-        let(:payload) do
-          {
-            data: {
-              type: resource_type,
-              attributes:
-                base_attributes.merge(
-                  {
-                    plate_uuid: plate.uuid,
-                    tag_group_uuid: tag_group.uuid,
-                    tag2_group_uuid: tag2_group.uuid,
-                    user_uuid: user.uuid
+      context 'with a read-only attribute in the payload' do
+        context 'with uuid' do
+          let(:disallowed_value) { 'uuid' }
+          let(:payload) do
+            {
+              data: {
+                type: resource_type,
+                attributes: base_attributes.merge({ uuid: '111111-2222-3333-4444-555555666666' })
+              }
+            }
+          end
+
+          it_behaves_like 'a POST request with a disallowed value'
+        end
+      end
+
+      context 'without a required attribute' do
+        context 'without direction' do
+          let(:error_detail_message) { 'direction - must define a valid algorithm' }
+          let(:payload) do
+            {
+              data: {
+                type: resource_type,
+                attributes:
+                  base_attributes.merge(
+                    { direction: nil, plate_uuid: plate.uuid, tag_group_uuid: tag_group.uuid, user_uuid: user.uuid }
+                  )
+              }
+            }
+          end
+
+          it_behaves_like 'an unprocessable POST request with a specific error'
+        end
+
+        context 'without walking_by' do
+          let(:error_detail_message) { 'walking_by - must define a valid algorithm' }
+          let(:payload) do
+            {
+              data: {
+                type: resource_type,
+                attributes:
+                  base_attributes.merge(
+                    { walking_by: nil, plate_uuid: plate.uuid, tag_group_uuid: tag_group.uuid, user_uuid: user.uuid }
+                  )
+              }
+            }
+          end
+
+          it_behaves_like 'an unprocessable POST request with a specific error'
+        end
+      end
+
+      context 'with an invalid attribute value' do
+        context 'with an invalid direction' do
+          let(:error_detail_message) { 'direction - must define a valid algorithm' }
+          let(:payload) do
+            {
+              data: {
+                type: resource_type,
+                attributes:
+                  base_attributes.merge(
+                    { direction: '1', plate_uuid: plate.uuid, tag_group_uuid: tag_group.uuid, user_uuid: user.uuid }
+                  )
+              }
+            }
+          end
+
+          it_behaves_like 'an unprocessable POST request with a specific error'
+        end
+
+        context 'with an invalid walking_by' do
+          let(:error_detail_message) { 'walking_by - must define a valid algorithm' }
+          let(:payload) do
+            {
+              data: {
+                type: resource_type,
+                attributes:
+                  base_attributes.merge(
+                    { walking_by: '1', plate_uuid: plate.uuid, tag_group_uuid: tag_group.uuid, user_uuid: user.uuid }
+                  )
+              }
+            }
+          end
+
+          it_behaves_like 'an unprocessable POST request with a specific error'
+        end
+      end
+
+      context 'without a required relationship' do
+        context 'without plate_uuid' do
+          let(:error_detail_message) { 'plate - must exist' }
+          let(:payload) do
+            {
+              data: {
+                type: resource_type,
+                attributes: base_attributes.merge({ tag_group_uuid: tag_group.uuid, user_uuid: user.uuid })
+              }
+            }
+          end
+
+          it_behaves_like 'an unprocessable POST request with a specific error'
+        end
+
+        context 'without tag_group_uuid' do
+          let(:error_detail_message) { 'tag_group - must exist' }
+          let(:payload) do
+            {
+              data: {
+                type: resource_type,
+                attributes: base_attributes.merge({ plate_uuid: plate.uuid, user_uuid: user.uuid })
+              }
+            }
+          end
+
+          it_behaves_like 'an unprocessable POST request with a specific error'
+        end
+
+        context 'without user_uuid' do
+          let(:error_detail_message) { 'user - must exist' }
+          let(:payload) do
+            {
+              data: {
+                type: resource_type,
+                attributes: base_attributes.merge({ plate_uuid: plate.uuid, tag_group_uuid: tag_group.uuid })
+              }
+            }
+          end
+
+          it_behaves_like 'an unprocessable POST request with a specific error'
+        end
+
+        context 'without plate' do
+          let(:error_detail_message) { 'plate - must exist' }
+          let(:payload) do
+            {
+              data: {
+                type: resource_type,
+                attributes: base_attributes,
+                relationships: {
+                  tag_group: tag_group_relationship,
+                  user: user_relationship
+                }
+              }
+            }
+          end
+
+          it_behaves_like 'an unprocessable POST request with a specific error'
+        end
+
+        context 'without tag_group' do
+          let(:error_detail_message) { 'tag_group - must exist' }
+          let(:payload) do
+            {
+              data: {
+                type: resource_type,
+                attributes: base_attributes,
+                relationships: {
+                  plate: plate_relationship,
+                  user: user_relationship
+                }
+              }
+            }
+          end
+
+          it_behaves_like 'an unprocessable POST request with a specific error'
+        end
+
+        context 'without user' do
+          let(:error_detail_message) { 'user - must exist' }
+          let(:payload) do
+            {
+              data: {
+                type: resource_type,
+                attributes: base_attributes,
+                relationships: {
+                  plate: plate_relationship,
+                  tag_group: tag_group_relationship
+                }
+              }
+            }
+          end
+
+          it_behaves_like 'an unprocessable POST request with a specific error'
+        end
+      end
+    end
+
+    context 'with a template' do
+      let(:tag_layout_template) { create(:tag_layout_template, tag2_group: create(:tag_group_for_layout)) }
+      let(:tag_layout_template_uuid) { tag_layout_template.uuid }
+
+      # direction and walking_by come from the template
+      let(:base_attributes) { { initial_tag:, substitutions:, tag_layout_template_uuid:, tags_per_well: } }
+
+      context 'with a valid payload' do
+        shared_examples 'a valid request' do
+          before { api_post base_endpoint, payload }
+
+          it 'creates a new resource' do
+            expect { api_post base_endpoint, payload }.to change(model_class, :count).by(1)
+          end
+
+          it 'responds with a success http code' do
+            expect(response).to have_http_status(:success)
+          end
+
+          it 'returns the resource with the correct type' do
+            expect(json.dig('data', 'type')).to eq(resource_type)
+          end
+
+          it_behaves_like 'a POST request including model attribute', TagLayout, 'direction'
+          it_behaves_like 'a POST request including model attribute', TagLayout, 'initial_tag'
+          it_behaves_like 'a POST request including model attribute', TagLayout, 'substitutions'
+          it_behaves_like 'a POST request including model attribute', TagLayout, 'walking_by'
+          it_behaves_like 'a POST request including model attribute', TagLayout, 'uuid'
+
+          it "responds with the supplied 'tags_per_well' attribute value" do
+            # Note that the tags per well will not be saved with the record as it isn't a stored attribute in the
+            # database. The response is based on the model after being saved, which still holds the value given in the
+            # payload.
+            expect(json.dig('data', 'attributes', 'tags_per_well')).to eq(
+              payload.dig(:data, :attributes, :tags_per_well)
+            )
+          end
+
+          it_behaves_like 'a request excluding unfetchable attribute', 'plate_uuid'
+          it_behaves_like 'a request excluding unfetchable attribute', 'tag_group_uuid'
+          it_behaves_like 'a request excluding unfetchable attribute', 'tag2_group_uuid'
+          it_behaves_like 'a request excluding unfetchable attribute', 'tag_layout_template_uuid'
+          it_behaves_like 'a request excluding unfetchable attribute', 'user_uuid'
+
+          it "updates the model with the new 'direction' attribute value" do
+            expect(model_class.last.direction).to eq(tag_layout_template.direction)
+          end
+
+          it "updates the model with the new 'initial_tag' attribute value" do
+            expect(model_class.last.initial_tag).to eq(initial_tag)
+          end
+
+          it "updates the model with the new 'substitutions' attribute value" do
+            expect(model_class.last.substitutions).to eq(substitutions)
+          end
+
+          it "updates the model with the new 'walking_by' attribute value" do
+            expect(model_class.last.walking_by).to eq(tag_layout_template.walking_by)
+          end
+
+          it "responds with nil for the 'tags_per_well' attribute" do
+            # Note that the tags_per_well from the queried record will be nil as it isn't a stored attribute in the
+            # database.
+            expect(model_class.last.tags_per_well).to be_nil
+          end
+
+          it_behaves_like 'a request referencing a related resource', 'plate'
+          it_behaves_like 'a request referencing a related resource', 'tag_group'
+          it_behaves_like 'a request referencing a related resource', 'tag2_group'
+          it_behaves_like 'a request referencing a related resource', 'user'
+
+          it "updates the model with the new 'plate' relationship" do
+            expect(model_class.last.plate).to eq(plate)
+          end
+
+          it "updates the model with the new 'tag_group' relationship" do
+            expect(model_class.last.tag_group).to eq(tag_layout_template.tag_group)
+          end
+
+          it "updates the model with the new 'tag2_group' relationship" do
+            expect(model_class.last.tag2_group).to eq(tag_layout_template.tag2_group || tag2_group)
+          end
+
+          it "updates the model with the new 'user' relationship" do
+            expect(model_class.last.user).to eq(user)
+          end
+        end
+
+        context 'without conflicts between tag2_groups' do
+          context 'with tag2_group only in the template' do
+            let(:payload) do
+              {
+                data: {
+                  type: resource_type,
+                  attributes: base_attributes.merge({ plate_uuid: plate.uuid, user_uuid: user.uuid })
+                }
+              }
+            end
+
+            it_behaves_like 'a valid request'
+          end
+
+          context 'with tag2_group_uuid only in the attributes' do
+            let(:tag_layout_template) { create(:tag_layout_template) }
+            let(:payload) do
+              {
+                data: {
+                  type: resource_type,
+                  attributes:
+                    base_attributes.merge(
+                      { plate_uuid: plate.uuid, tag2_group_uuid: tag2_group.uuid, user_uuid: user.uuid }
+                    )
+                }
+              }
+            end
+
+            it_behaves_like 'a valid request'
+          end
+
+          context 'with tag2_group only in the relationships' do
+            let(:tag_layout_template) { create(:tag_layout_template) }
+            let(:payload) do
+              {
+                data: {
+                  type: resource_type,
+                  attributes: base_attributes.merge({ plate_uuid: plate.uuid, user_uuid: user.uuid }),
+                  relationships: {
+                    tag2_group: tag2_group_relationship
                   }
-                )
-            }
-          }
-        end
+                }
+              }
+            end
 
-        it_behaves_like 'a valid request without a template'
+            it_behaves_like 'a valid request'
+          end
+        end
       end
 
-      context 'with relationships' do
-        let(:payload) do
-          {
-            data: {
-              type: resource_type,
-              attributes: base_attributes,
-              relationships: {
-                plate: plate_relationship,
-                tag_group: tag_group_relationship,
-                tag2_group: tag2_group_relationship,
-                user: user_relationship
+      context 'with a templated value in a field' do
+        shared_examples 'a POST request for TagLayout with a field defined twice' do |field_name|
+          before { api_post base_endpoint, payload }
+
+          it 'does not create a new resource' do
+            expect { api_post base_endpoint, payload }.not_to change(model_class, :count)
+          end
+
+          it 'responds with bad_request' do
+            expect(response).to have_http_status(:bad_request)
+          end
+
+          it 'specifies which value was not allowed' do
+            expect(json.dig('errors', 0, 'detail')).to eq(
+              "Cannot provide '#{field_name}' while also providing 'tag_layout_template_uuid'."
+            )
+          end
+        end
+
+        context "with 'direction' in the attributes" do
+          let(:payload) { { data: { type: resource_type, attributes: base_attributes.merge({ direction: }) } } }
+
+          it_behaves_like 'a POST request for TagLayout with a field defined twice', 'direction'
+        end
+
+        context "with 'walking_by' in the attributes" do
+          let(:payload) { { data: { type: resource_type, attributes: base_attributes.merge({ walking_by: }) } } }
+
+          it_behaves_like 'a POST request for TagLayout with a field defined twice', 'walking_by'
+        end
+
+        context "with 'tag_group_uuid' in the attributes" do
+          let(:payload) do
+            { data: { type: resource_type, attributes: base_attributes.merge({ tag_group_uuid: tag_group.uuid }) } }
+          end
+
+          it_behaves_like 'a POST request for TagLayout with a field defined twice', 'tag_group_uuid'
+        end
+
+        context "with 'tag2_group_uuid' in the attributes" do
+          let(:payload) do
+            { data: { type: resource_type, attributes: base_attributes.merge({ tag2_group_uuid: tag2_group.uuid }) } }
+          end
+
+          it_behaves_like 'a POST request for TagLayout with a field defined twice', 'tag2_group_uuid'
+        end
+
+        context "with 'tag_group' in the relationships" do
+          let(:payload) do
+            {
+              data: {
+                type: resource_type,
+                attributes: base_attributes,
+                relationships: {
+                  tag_group: tag_group_relationship
+                }
               }
             }
-          }
+          end
+
+          it_behaves_like 'a POST request for TagLayout with a field defined twice', 'tag_group'
         end
 
-        it_behaves_like 'a valid request without a template'
-      end
-
-      context 'with conflicting relationships' do
-        let(:other_plate) { create(:plate) }
-        let(:other_tag_group) { create(:tag_group) }
-        let(:other_tag2_group) { create(:tag_group) }
-        let(:other_user) { create(:user) }
-        let(:payload) do
-          {
-            data: {
-              type: resource_type,
-              attributes:
-                base_attributes.merge(
-                  {
-                    plate_uuid: other_plate.uuid,
-                    tag_group_uuid: other_tag_group.uuid,
-                    tag2_group_uuid: other_tag2_group.uuid,
-                    user_uuid: other_user.uuid
-                  }
-                ),
-              relationships: {
-                plate: plate_relationship,
-                tag_group: tag_group_relationship,
-                tag2_group: tag2_group_relationship,
-                user: user_relationship
+        context "with 'tag2_group' in the relationships" do
+          let(:payload) do
+            {
+              data: {
+                type: resource_type,
+                attributes: base_attributes,
+                relationships: {
+                  tag2_group: tag2_group_relationship
+                }
               }
             }
-          }
+          end
+
+          it_behaves_like 'a POST request for TagLayout with a field defined twice', 'tag2_group'
         end
-
-        # This test should pass because the relationships are preferred over the attributes.
-        it_behaves_like 'a valid request without a template'
-      end
-    end
-
-    context 'with a read-only attribute in the payload' do
-      context 'with uuid' do
-        let(:disallowed_value) { 'uuid' }
-        let(:payload) do
-          {
-            data: {
-              type: resource_type,
-              attributes: base_attributes.merge({ uuid: '111111-2222-3333-4444-555555666666' })
-            }
-          }
-        end
-
-        it_behaves_like 'a POST request with a disallowed value'
-      end
-    end
-
-    context 'without a required attribute' do
-      context 'without direction' do
-        let(:error_detail_message) { 'direction - must define a valid algorithm' }
-        let(:payload) do
-          {
-            data: {
-              type: resource_type,
-              attributes:
-                base_attributes.merge(
-                  { direction: nil, plate_uuid: plate.uuid, tag_group_uuid: tag_group.uuid, user_uuid: user.uuid }
-                )
-            }
-          }
-        end
-
-        it_behaves_like 'an unprocessable POST request with a specific error'
-      end
-
-      context 'without walking_by' do
-        let(:error_detail_message) { 'walking_by - must define a valid algorithm' }
-        let(:payload) do
-          {
-            data: {
-              type: resource_type,
-              attributes:
-                base_attributes.merge(
-                  { walking_by: nil, plate_uuid: plate.uuid, tag_group_uuid: tag_group.uuid, user_uuid: user.uuid }
-                )
-            }
-          }
-        end
-
-        it_behaves_like 'an unprocessable POST request with a specific error'
-      end
-    end
-
-    context 'with an invalid attribute value' do
-      context 'with an invalid direction' do
-        let(:error_detail_message) { 'direction - must define a valid algorithm' }
-        let(:payload) do
-          {
-            data: {
-              type: resource_type,
-              attributes:
-                base_attributes.merge(
-                  { direction: '1', plate_uuid: plate.uuid, tag_group_uuid: tag_group.uuid, user_uuid: user.uuid }
-                )
-            }
-          }
-        end
-
-        it_behaves_like 'an unprocessable POST request with a specific error'
-      end
-
-      context 'with an invalid walking_by' do
-        let(:error_detail_message) { 'walking_by - must define a valid algorithm' }
-        let(:payload) do
-          {
-            data: {
-              type: resource_type,
-              attributes:
-                base_attributes.merge(
-                  { walking_by: '1', plate_uuid: plate.uuid, tag_group_uuid: tag_group.uuid, user_uuid: user.uuid }
-                )
-            }
-          }
-        end
-
-        it_behaves_like 'an unprocessable POST request with a specific error'
-      end
-    end
-
-    context 'without a required relationship' do
-      context 'without plate_uuid' do
-        let(:error_detail_message) { 'plate - must exist' }
-        let(:payload) do
-          {
-            data: {
-              type: resource_type,
-              attributes: base_attributes.merge({ tag_group_uuid: tag_group.uuid, user_uuid: user.uuid })
-            }
-          }
-        end
-
-        it_behaves_like 'an unprocessable POST request with a specific error'
-      end
-
-      context 'without tag_group_uuid' do
-        let(:error_detail_message) { 'tag_group - must exist' }
-        let(:payload) do
-          {
-            data: {
-              type: resource_type,
-              attributes: base_attributes.merge({ plate_uuid: plate.uuid, user_uuid: user.uuid })
-            }
-          }
-        end
-
-        it_behaves_like 'an unprocessable POST request with a specific error'
-      end
-
-      context 'without user_uuid' do
-        let(:error_detail_message) { 'user - must exist' }
-        let(:payload) do
-          {
-            data: {
-              type: resource_type,
-              attributes: base_attributes.merge({ plate_uuid: plate.uuid, tag_group_uuid: tag_group.uuid })
-            }
-          }
-        end
-
-        it_behaves_like 'an unprocessable POST request with a specific error'
-      end
-
-      context 'without plate' do
-        let(:error_detail_message) { 'plate - must exist' }
-        let(:payload) do
-          {
-            data: {
-              type: resource_type,
-              attributes: base_attributes,
-              relationships: {
-                tag_group: tag_group_relationship,
-                user: user_relationship
-              }
-            }
-          }
-        end
-
-        it_behaves_like 'an unprocessable POST request with a specific error'
-      end
-
-      context 'without tag_group' do
-        let(:error_detail_message) { 'tag_group - must exist' }
-        let(:payload) do
-          {
-            data: {
-              type: resource_type,
-              attributes: base_attributes,
-              relationships: {
-                plate: plate_relationship,
-                user: user_relationship
-              }
-            }
-          }
-        end
-
-        it_behaves_like 'an unprocessable POST request with a specific error'
-      end
-
-      context 'without user' do
-        let(:error_detail_message) { 'user - must exist' }
-        let(:payload) do
-          {
-            data: {
-              type: resource_type,
-              attributes: base_attributes,
-              relationships: {
-                plate: plate_relationship,
-                tag_group: tag_group_relationship
-              }
-            }
-          }
-        end
-
-        it_behaves_like 'an unprocessable POST request with a specific error'
       end
     end
   end
