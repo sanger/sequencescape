@@ -30,9 +30,11 @@ describe 'Tag Layouts API', with: :api_v2 do
   end
 
   context 'with a single resource' do
-    describe '#GET resource by ID' do
-      let(:resource) { create(:tag_layout) }
+    let(:resource) { create(:tag_layout) }
 
+    before { resource.update!(tag2_group: create(:tag_group_for_layout)) }
+
+    describe '#GET resource by ID' do
       context 'without included relationships' do
         before { api_get "#{base_endpoint}/#{resource.id}" }
 
@@ -40,33 +42,31 @@ describe 'Tag Layouts API', with: :api_v2 do
           expect(response).to have_http_status(:success)
         end
 
-        it 'returns the correct resource' do
+        it 'returns the resource with the correct id' do
           expect(json.dig('data', 'id')).to eq(resource.id.to_s)
+        end
+
+        it 'returns the resource with the correct type' do
           expect(json.dig('data', 'type')).to eq(resource_type)
         end
 
-        it 'returns the correct attributes' do
-          expect(json.dig('data', 'attributes', 'direction')).to eq(resource.direction)
-          expect(json.dig('data', 'attributes', 'initial_tag')).to eq(resource.initial_tag)
-          expect(json.dig('data', 'attributes', 'substitutions')).to eq(resource.substitutions)
-          expect(json.dig('data', 'attributes', 'tags_per_well')).to eq(resource.tags_per_well)
-          expect(json.dig('data', 'attributes', 'walking_by')).to eq(resource.walking_by)
-          expect(json.dig('data', 'attributes', 'uuid')).to eq(resource.uuid)
-        end
+        it_behaves_like 'a GET request including fetchable attribute', 'direction'
+        it_behaves_like 'a GET request including fetchable attribute', 'initial_tag'
+        it_behaves_like 'a GET request including fetchable attribute', 'substitutions'
+        it_behaves_like 'a GET request including fetchable attribute', 'tags_per_well'
+        it_behaves_like 'a GET request including fetchable attribute', 'walking_by'
+        it_behaves_like 'a GET request including fetchable attribute', 'uuid'
 
-        it 'excludes unfetchable attributes' do
-          expect(json.dig('data', 'attributes', 'plate_uuid')).not_to be_present
-          expect(json.dig('data', 'attributes', 'tag_group_uuid')).not_to be_present
-          expect(json.dig('data', 'attributes', 'tag2_group_uuid')).not_to be_present
-          expect(json.dig('data', 'attributes', 'user_uuid')).not_to be_present
-        end
+        it_behaves_like 'a request excluding unfetchable attribute', 'plate_uuid'
+        it_behaves_like 'a request excluding unfetchable attribute', 'tag_group_uuid'
+        it_behaves_like 'a request excluding unfetchable attribute', 'tag2_group_uuid'
+        it_behaves_like 'a request excluding unfetchable attribute', 'tag_layout_template_uuid'
+        it_behaves_like 'a request excluding unfetchable attribute', 'user_uuid'
 
-        it 'returns references to related resources' do
-          expect(json.dig('data', 'relationships', 'plate')).to be_present
-          expect(json.dig('data', 'relationships', 'tag_group')).to be_present
-          expect(json.dig('data', 'relationships', 'tag2_group')).to be_present
-          expect(json.dig('data', 'relationships', 'user')).to be_present
-        end
+        it_behaves_like 'a request referencing a related resource', 'plate'
+        it_behaves_like 'a request referencing a related resource', 'tag_group'
+        it_behaves_like 'a request referencing a related resource', 'tag2_group'
+        it_behaves_like 'a request referencing a related resource', 'user'
 
         it 'does not include attributes for related resources' do
           expect(json['included']).not_to be_present
@@ -75,6 +75,8 @@ describe 'Tag Layouts API', with: :api_v2 do
 
       context 'with included relationships' do
         it_behaves_like 'a GET request including a has_one relationship', 'plate'
+        it_behaves_like 'a GET request including a has_one relationship', 'tag_group'
+        it_behaves_like 'a GET request including a has_one relationship', 'tag2_group'
         it_behaves_like 'a GET request including a has_one relationship', 'user'
       end
     end
@@ -92,90 +94,100 @@ describe 'Tag Layouts API', with: :api_v2 do
   end
 
   describe '#POST a create request' do
-    let(:plate) { create(:plate) }
-    let(:tag_group) { create(:tag_group) }
-    let(:tag2_group) { create(:tag_group) }
-    let(:user) { create(:user) }
+    let(:direction) { 'column' }
+    let(:initial_tag) { 0 }
+    let(:substitutions) { { 'A1' => 'B2' } }
+    let(:tags_per_well) { 1 } # Ignored by the walking_by algorithm below
+    let(:walking_by) { 'wells of plate' }
 
-    let(:base_attributes) do
-      {
-        direction: 'column',
-        initial_tag: 0,
-        substitutions: {
-          'A1' => 'B2'
-        },
-        tags_per_well: 1, # Ignored by the walking_by algorithm below
-        walking_by: 'wells of plate'
-      }
-    end
+    let(:base_attributes) { { direction:, initial_tag:, substitutions:, tags_per_well:, walking_by: } }
+
+    let(:plate) { create(:plate) }
+    let(:tag_group) { create(:tag_group_for_layout) }
+    let(:tag2_group) { create(:tag_group_for_layout) }
+    let(:user) { create(:user) }
 
     let(:plate_relationship) { { data: { id: plate.id, type: 'plates' } } }
     let(:tag_group_relationship) { { data: { id: tag_group.id, type: 'tag_groups' } } }
     let(:tag2_group_relationship) { { data: { id: tag2_group.id, type: 'tag_groups' } } }
     let(:user_relationship) { { data: { id: user.id, type: 'users' } } }
 
-    context 'with a valid payload' do
-      shared_examples 'a valid request' do
+    context 'with a valid payload without a template' do
+      shared_examples 'a valid request without a template' do
         before { api_post base_endpoint, payload }
 
         it 'creates a new resource' do
           expect { api_post base_endpoint, payload }.to change(model_class, :count).by(1)
         end
 
-        it 'responds with success' do
+        it 'responds with a success http code' do
           expect(response).to have_http_status(:success)
         end
 
-        it 'responds with the correct attributes' do
-          new_record = model_class.last
-
+        it 'returns the resource with the correct type' do
           expect(json.dig('data', 'type')).to eq(resource_type)
-          expect(json.dig('data', 'attributes', 'direction')).to eq(new_record.direction)
-          expect(json.dig('data', 'attributes', 'initial_tag')).to eq(new_record.initial_tag)
-          expect(json.dig('data', 'attributes', 'substitutions')).to eq(new_record.substitutions)
-          expect(json.dig('data', 'attributes', 'walking_by')).to eq(new_record.walking_by)
-          expect(json.dig('data', 'attributes', 'uuid')).to eq(new_record.uuid)
+        end
 
+        it_behaves_like 'a POST request including model attribute', TagLayout, 'direction'
+        it_behaves_like 'a POST request including model attribute', TagLayout, 'initial_tag'
+        it_behaves_like 'a POST request including model attribute', TagLayout, 'substitutions'
+        it_behaves_like 'a POST request including model attribute', TagLayout, 'walking_by'
+        it_behaves_like 'a POST request including model attribute', TagLayout, 'uuid'
+
+        it "responds with the supplied 'tags_per_well' attribute value" do
           # Note that the tags per well will not be saved with the record as it isn't a stored attribute in the
           # database. The response is based on the model after being saved, which still holds the value given in the
           # payload.
           expect(json.dig('data', 'attributes', 'tags_per_well')).to eq(payload.dig(:data, :attributes, :tags_per_well))
         end
 
-        it 'excludes unfetchable attributes' do
-          expect(json.dig('data', 'attributes', 'plate_uuid')).not_to be_present
-          expect(json.dig('data', 'attributes', 'tag_group_uuid')).not_to be_present
-          expect(json.dig('data', 'attributes', 'tag2_group_uuid')).not_to be_present
-          expect(json.dig('data', 'attributes', 'user_uuid')).not_to be_present
+        it_behaves_like 'a request excluding unfetchable attribute', 'plate_uuid'
+        it_behaves_like 'a request excluding unfetchable attribute', 'tag_group_uuid'
+        it_behaves_like 'a request excluding unfetchable attribute', 'tag2_group_uuid'
+        it_behaves_like 'a request excluding unfetchable attribute', 'tag_layout_template_uuid'
+        it_behaves_like 'a request excluding unfetchable attribute', 'user_uuid'
+
+        it "updates the model with the new 'direction' attribute value" do
+          expect(model_class.last.direction).to eq(direction)
         end
 
-        it 'returns references to related resources' do
-          expect(json.dig('data', 'relationships', 'plate')).to be_present
-          expect(json.dig('data', 'relationships', 'tag_group')).to be_present
-          expect(json.dig('data', 'relationships', 'tag2_group')).to be_present
-          expect(json.dig('data', 'relationships', 'user')).to be_present
+        it "updates the model with the new 'initial_tag' attribute value" do
+          expect(model_class.last.initial_tag).to eq(initial_tag)
         end
 
-        it 'applies the attributes to the new record' do
-          new_record = model_class.last
+        it "updates the model with the new 'substitutions' attribute value" do
+          expect(model_class.last.substitutions).to eq(substitutions)
+        end
 
-          expect(new_record.direction).to eq(payload.dig(:data, :attributes, :direction))
-          expect(new_record.initial_tag).to eq(payload.dig(:data, :attributes, :initial_tag))
-          expect(new_record.substitutions).to eq(payload.dig(:data, :attributes, :substitutions))
-          expect(new_record.walking_by).to eq(payload.dig(:data, :attributes, :walking_by))
+        it "updates the model with the new 'walking_by' attribute value" do
+          expect(model_class.last.walking_by).to eq(walking_by)
+        end
 
+        it "responds with nil for the 'tags_per_well' attribute" do
           # Note that the tags_per_well from the queried record will be nil as it isn't a stored attribute in the
           # database.
-          expect(new_record.tags_per_well).to be_nil
+          expect(model_class.last.tags_per_well).to be_nil
         end
 
-        it 'applies the relationships to the new record' do
-          new_record = model_class.last
+        it_behaves_like 'a request referencing a related resource', 'plate'
+        it_behaves_like 'a request referencing a related resource', 'tag_group'
+        it_behaves_like 'a request referencing a related resource', 'tag2_group'
+        it_behaves_like 'a request referencing a related resource', 'user'
 
-          expect(new_record.plate).to eq(plate)
-          expect(new_record.tag_group).to eq(tag_group)
-          expect(new_record.tag2_group).to eq(tag2_group)
-          expect(new_record.user).to eq(user)
+        it "updates the model with the new 'plate' relationship" do
+          expect(model_class.last.plate).to eq(plate)
+        end
+
+        it "updates the model with the new 'tag_group' relationship" do
+          expect(model_class.last.tag_group).to eq(tag_group)
+        end
+
+        it "updates the model with the new 'tag2_group' relationship" do
+          expect(model_class.last.tag2_group).to eq(tag2_group)
+        end
+
+        it "updates the model with the new 'user' relationship" do
+          expect(model_class.last.user).to eq(user)
         end
       end
 
@@ -197,7 +209,7 @@ describe 'Tag Layouts API', with: :api_v2 do
           }
         end
 
-        it_behaves_like 'a valid request'
+        it_behaves_like 'a valid request without a template'
       end
 
       context 'with relationships' do
@@ -216,7 +228,7 @@ describe 'Tag Layouts API', with: :api_v2 do
           }
         end
 
-        it_behaves_like 'a valid request'
+        it_behaves_like 'a valid request without a template'
       end
 
       context 'with conflicting relationships' do
@@ -248,7 +260,7 @@ describe 'Tag Layouts API', with: :api_v2 do
         end
 
         # This test should pass because the relationships are preferred over the attributes.
-        it_behaves_like 'a valid request'
+        it_behaves_like 'a valid request without a template'
       end
     end
 

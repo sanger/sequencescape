@@ -1080,7 +1080,6 @@ RSpec/MultipleExpectations:
     - 'spec/requests/api/v2/submissions_spec.rb'
     - 'spec/requests/api/v2/tag_groups_spec.rb'
     - 'spec/requests/api/v2/tag_layout_templates_spec.rb'
-    - 'spec/requests/api/v2/tag_layouts_spec.rb'
     - 'spec/requests/api/v2/transfer_request_collections_spec.rb'
     - 'spec/requests/api/v2/transfer_requests_spec.rb'
     - 'spec/requests/api/v2/transfer_templates_spec.rb'
