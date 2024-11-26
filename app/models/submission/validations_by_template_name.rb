@@ -91,6 +91,7 @@ module Submission::ValidationsByTemplateName
 
   private
 
+  # rubocop:disable Metrics/MethodLength
   def process_rows(rows)
     barcodes = rows.pluck(headers.index(HEADER_BARCODE))
     well_locations = rows.pluck(headers.index(HEADER_PLATE_WELLS))
@@ -106,6 +107,7 @@ module Submission::ValidationsByTemplateName
       )
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   # rubocop:disable Metrics/AbcSize
   def validate_for_plates(barcodes, well_locations, rows)
