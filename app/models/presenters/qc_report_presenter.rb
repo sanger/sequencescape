@@ -47,7 +47,7 @@ class Presenters::QcReportPresenter
   end
 
   def created_date
-    qc_report.created_at.to_formatted_s(:rfc822)
+    qc_report.created_at.to_fs(:rfc822)
   end
 
   def state_description
