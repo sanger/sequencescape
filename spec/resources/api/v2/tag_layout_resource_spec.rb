@@ -13,11 +13,13 @@ RSpec.describe Api::V2::TagLayoutResource, type: :resource do
 
   # Attributes
   it { is_expected.to have_readwrite_attribute :direction }
+  it { is_expected.to have_writeonly_attribute :enforce_uniqueness }
   it { is_expected.to have_readwrite_attribute :initial_tag }
   it { is_expected.to have_writeonly_attribute :plate_uuid }
   it { is_expected.to have_readwrite_attribute :substitutions }
   it { is_expected.to have_writeonly_attribute :tag_group_uuid }
   it { is_expected.to have_writeonly_attribute :tag2_group_uuid }
+  it { is_expected.to have_writeonly_attribute :tag_layout_template_uuid }
   it { is_expected.to have_readwrite_attribute :tags_per_well }
   it { is_expected.to have_writeonly_attribute :user_uuid }
   it { is_expected.to have_readonly_attribute :uuid }

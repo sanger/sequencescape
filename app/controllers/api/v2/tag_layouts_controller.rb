@@ -23,6 +23,14 @@ module Api
         template
       end
 
+      def enforce_uniqueness?
+        data = params[:data]
+        attributes = data[:attributes]
+        tag2_group_present = attributes[:tag2_group_uuid].present? || data[:to_one][:tag2_group].present?
+
+        attributes.fetch(:enforce_uniqueness, tag2_group_present)
+      end
+
       def errors_if_key_present(data, key)
         return [] if data[key.to_sym].blank?
 
@@ -77,6 +85,9 @@ module Api
         # Perform the usual create actions.
         resource = TagLayoutResource.create(context)
         result = resource.replace_fields(params[:data])
+
+        tag_layout = TagLayout.find(resource.id)
+        template.record_template_use(tag_layout.plate, enforce_uniqueness?) unless template.nil?
 
         JSONAPI::ResourceOperationResult.new((result == :completed ? :created : :accepted), resource)
       end
