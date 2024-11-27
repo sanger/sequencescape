@@ -122,9 +122,9 @@ class AccessionService # rubocop:todo Metrics/ClassLength
       ensure
         files.each(&:close) # not really necessary but recommended
       end
-
-      return accessionables.map(&:accession_number) # rubocop:todo Rails/TransactionExitStatement
     end
+
+    accessionables.map(&:accession_number)
   end
 
   # rubocop:enable Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/BlockLength, Metrics/AbcSize
