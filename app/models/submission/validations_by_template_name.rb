@@ -82,6 +82,14 @@ module Submission::ValidationsByTemplateName
   end
   # rubocop:enable Metrics/MethodLength
 
+  # Validates the number of samples per pool for labware.
+  #
+  # This method checks if the headers for barcode and plate wells are present.
+  # If they are, it groups the rows by study and project, and processes each group.
+  # The processing involves determining if the labware is a plate or tube and
+  # validating the number of samples per pool accordingly.
+  #
+  # @return [void]
   def validate_samples_per_pool_for_labware
     return if headers.index(HEADER_BARCODE).nil? && headers.index(HEADER_PLATE_WELLS).nil?
 
@@ -91,6 +99,13 @@ module Submission::ValidationsByTemplateName
 
   private
 
+  # Processes the rows to determine the type of labware and validate accordingly.
+  #
+  # This method extracts the barcodes and well locations from the rows and determines if the labware is a plate or tube.
+  # It then calls the appropriate validation method based on the labware type.
+  #
+  # @param rows [Array<Array<String>>] The rows of CSV data to process.
+  # @return [void]
   # rubocop:disable Metrics/MethodLength
   def process_rows(rows)
     barcodes = rows.pluck(headers.index(HEADER_BARCODE))
@@ -109,6 +124,17 @@ module Submission::ValidationsByTemplateName
   end
   # rubocop:enable Metrics/MethodLength
 
+  # Validates the number of samples per pool for plates.
+  #
+  # This method finds the plate using the provided barcodes and retrieves the wells located at the specified well
+  # locations.
+  # It then calculates the total number of samples per study and project and the number of pools.
+  # Finally, it validates the number of samples per pool.
+  #
+  # @param barcodes [Array<String>] The barcodes of the plates.
+  # @param well_locations [Array<String>] The well locations on the plate.
+  # @param rows [Array<Array<String>>] The rows of CSV data to process.
+  # @return [void]
   # rubocop:disable Metrics/AbcSize
   def validate_for_plates(barcodes, well_locations, rows)
     plate = Plate.find_from_any_barcode(barcodes.uniq.first)
@@ -144,9 +170,25 @@ module Submission::ValidationsByTemplateName
   # rubocop:enable Metrics/AbcSize
   # rubocop:enable Metrics/MethodLength
 
+  # Determines if the labware is a plate based on the presence of barcodes and well locations.
+  #
+  # This method checks if both barcodes and well locations are present to determine if the labware is a plate.
+  #
+  # @param barcodes [Array<String>] The barcodes of the labware.
+  # @param well_locations [Array<String>] The well locations on the labware.
+  # @return [Boolean] Returns true if both barcodes and well locations are present, indicating the labware is a plate.
   def plate?(barcodes, well_locations)
     barcodes.present? && well_locations.present?
   end
+
+  # Determines if the labware is a tube based on the presence of barcodes and absence of well locations.
+  #
+  # This method checks if barcodes are present and well locations are absent to determine if the labware is a tube.
+  #
+  # @param barcodes [Array<String>] The barcodes of the labware.
+  # @param well_locations [Array<String>] The well locations on the labware.
+  # @return [Boolean] Returns true if barcodes are present and well locations are absent, indicating the labware is a
+  # tube.
 
   def tube?(barcodes, well_locations)
     barcodes.present? && well_locations.blank?
@@ -157,6 +199,17 @@ module Submission::ValidationsByTemplateName
     (barcodes.present? && well_locations.present?) || (barcodes.present? && well_locations.blank?)
   end
 
+  # Validates the number of samples per pool.
+  #
+  # This method calculates the number of samples per pool by dividing the total number of samples by the number of
+  # pools.
+  # It then iterates through each pool and checks if the number of samples per pool is within the allowed range.
+  # If the number of samples per pool is less than the minimum or greater than the maximum allowed, an error is added.
+  #
+  # @param rows [Array<Array<String>>] The rows of CSV data to process.
+  # @param total_samples [Integer] The total number of samples.
+  # @param number_of_pools [Integer] The number of pools.
+  # @return [void]
   # rubocop:disable Metrics/MethodLength
   def validate_samples_per_pool(rows, total_samples, number_of_pools)
     int_division = total_samples / number_of_pools
