@@ -27,9 +27,13 @@ RSpec.describe RecordLoader::TubeRackPurposeLoader, :loader, type: :model do
     it 'sets attributes on the created records' do
       record_loader.create!
       expect(TubeRack::Purpose.all).to include(
-        have_attributes(name: 'TR Stock 96', target_type: 'TubeRack', size: 96, prefix: 'TR', stock_plate: true),
-        have_attributes(name: 'TR Stock 48', target_type: 'TubeRack', size: 48, prefix: 'TR', stock_plate: true)
+        have_attributes(name: 'TR Stock 96', target_type: 'TubeRack', size: 96, stock_plate: true),
+        have_attributes(name: 'TR Stock 48', target_type: 'TubeRack', size: 48, stock_plate: true)
       )
+    end
+
+    it 'sets the prefix on all records' do
+      expect(TubeRack::Purpose.all.map(&:prefix)).to all(have_attributes(name: 'TR'))
     end
 
     it 'sets barcode printer type on all records' do
