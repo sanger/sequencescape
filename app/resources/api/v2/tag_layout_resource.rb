@@ -28,10 +28,10 @@ module Api
       # @!attribute [w] enforce_uniqueness
       #   A flag indicating whether to set `enforce_uniqueness` on {TagLayout::TemplateSubmission}s when a template is
       #   used to create the TagLayout.
-      #   @param bool [Boolean] Whether to enforce uniqueness within template submissions.
+      #   @param value [Boolean] Whether to enforce uniqueness within template submissions.
       attribute :enforce_uniqueness, writeonly: true
 
-      def enforce_uniqueness=(bool)
+      def enforce_uniqueness=(value)
         # Do not update the model.
         # This value is used by the controller if a template UUID was given and is not used by the TagLayout directly.
       end
@@ -95,12 +95,12 @@ module Api
       end
 
       # @!attribute [w] tag_layout_template_uuid
-      #   @param uuid [String] the UUID of a TagLayoutTemplate to use for attributes of this TagLayout resource.
+      #   @param value [String] the UUID of a TagLayoutTemplate to use for attributes of this TagLayout resource.
       #     Providing this UUID while also providing values for attributes and relationships which can be extracted from
       #     a {TagLayoutTemplateResource} will generate an error indicating that the UUID should not have been provided.
       attribute :tag_layout_template_uuid, writeonly: true
 
-      def tag_layout_template_uuid=(uuid)
+      def tag_layout_template_uuid=(value)
         # Do not update the model.
         # This value is used by the controller to apply request data to the TagLayout from the indicated template.
         # It is not stored on the Transfer model.
