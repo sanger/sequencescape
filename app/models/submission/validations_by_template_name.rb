@@ -221,7 +221,7 @@ module Submission::ValidationsByTemplateName
   # @param well_locations [Array<String>] The well locations on the labware.
   # @return [Boolean] Returns true if both barcodes and well locations are present, indicating the labware is a plate.
   def plate?(barcodes, well_locations)
-    barcodes.present? && well_locations.present?
+    barcodes.present? && well_locations.none?(&:nil?)
   end
 
   # Determines if the labware is a tube based on the presence of barcodes and absence of well locations.
@@ -234,12 +234,7 @@ module Submission::ValidationsByTemplateName
   # tube.
 
   def tube?(barcodes, well_locations)
-    barcodes.present? && well_locations.blank?
-  end
-
-  # Checks if the asset is either a tube or a plate.
-  def valid_labware?(barcodes, well_locations)
-    (barcodes.present? && well_locations.present?) || (barcodes.present? && well_locations.blank?)
+    barcodes.present? && well_locations.all?(&:nil?)
   end
 
   # Validates the number of samples per pool.

@@ -337,16 +337,17 @@ describe BulkSubmission, with: :uploader do
       end
     end
 
-    context 'when an scRNA Bulk Submission for tube' do
+    context 'when an scRNA Bulk Submission for tubes' do
       # Add another similar tube to the asset group
       let(:request_types) { create_list(:sequencing_request_type, 2) }
-      let!(:tube_barcode) { create(:sanger_ean13_tube, barcode_number: '12') }
+      # Create a list of tubes with samples
+
+      let!(:tubes) do
+        create_list(:phi_x_stock_tube, 6) do |tube, i|
+          tube.barcodes << Barcode.new(format: :sanger_ean13, barcode: "NT#{i + 100}")
+        end
+      end
       let!(:study) { create(:study, name: 'Test Study') }
-      let!(:tube) { create(:phi_x_stock_tube, barcodes: [tube_barcode]) }
-      let!(:asset_group) { create(:asset_group, name: 'assetgroup', study: study, assets: [tube.receptacle]) }
-      let!(:tube_barcode_2) { create(:sanger_ean13_tube, barcode_number: '13') }
-      let!(:tube_2) { create(:phi_x_stock_tube, barcodes: [tube_barcode_2]) }
-      let!(:asset_group_2) { create(:asset_group, name: 'assetgroup2', study: study, assets: [tube_2.receptacle]) }
       let!(:library_type) { create(:library_type, name: 'Standard') }
 
       let(:spreadsheet_filename) { 'scRNA_bulk_submission_tube.csv' }
@@ -363,7 +364,12 @@ describe BulkSubmission, with: :uploader do
         }
       end
 
-      before { SubmissionSerializer.construct!(submission_template_hash) }
+      before do
+        SubmissionSerializer.construct!(submission_template_hash)
+        tubes.each_with_index.map do |tube, i|
+          create(:asset_group, name: "ag#{i + 1}", study: study, assets: [tube.receptacle])
+        end
+      end
 
       it 'is valid' do
         expect(subject).to be_valid
