@@ -612,6 +612,34 @@ describe 'Tag Layouts API', with: :api_v2 do
         end
       end
 
+      context 'with an invalid tag_layout_template_uuid' do
+        let(:tag_layout_template_uuid) { '111111-2222-3333-4444-555555666666' }
+        let(:payload) do
+          {
+            data: {
+              type: resource_type,
+              attributes: base_attributes.merge({ plate_uuid: plate.uuid, user_uuid: user.uuid })
+            }
+          }
+        end
+
+        it 'does not create a new resource' do
+          expect { api_post base_endpoint, payload }.not_to change(model_class, :count)
+        end
+
+        it 'responds with bad_request' do
+          api_post base_endpoint, payload
+          expect(response).to have_http_status(:bad_request)
+        end
+
+        it 'specifies the invalid value' do
+          api_post base_endpoint, payload
+          expect(json.dig('errors', 0, 'detail')).to eq(
+            "#{tag_layout_template_uuid} is not a valid value for tag_layout_template_uuid."
+          )
+        end
+      end
+
       context 'with a templated value duplicated in a field' do
         shared_examples 'a POST request for TagLayout with a field defined twice' do |field_name|
           before { api_post base_endpoint, payload }
