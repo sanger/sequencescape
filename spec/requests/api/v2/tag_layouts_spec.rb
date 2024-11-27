@@ -691,6 +691,93 @@ describe 'Tag Layouts API', with: :api_v2 do
           it_behaves_like 'a POST request for TagLayout with a field defined twice', 'tag2_group'
         end
       end
+
+      describe 'enforce_uniqueness' do
+        before { api_post base_endpoint, payload }
+
+        context 'with a single indexed tag layout template' do
+          let(:tag_layout_template) { create(:entire_plate_tag_layout_template) }
+
+          let(:payload) do
+            {
+              data: {
+                type: resource_type,
+                attributes: base_attributes.merge({ plate_uuid: plate.uuid, user_uuid: user.uuid })
+              }
+            }
+          end
+
+          it 'does not enforce uniqueness on the template submission' do
+            expect(TagLayout::TemplateSubmission.last.enforce_uniqueness).to be_nil
+          end
+        end
+
+        context 'with a dual indexed tag layout template' do
+          let(:payload) do
+            {
+              data: {
+                type: resource_type,
+                attributes: base_attributes.merge({ plate_uuid: plate.uuid, user_uuid: user.uuid })
+              }
+            }
+          end
+
+          it 'enforces uniqueness on the template submission' do
+            expect(TagLayout::TemplateSubmission.last.enforce_uniqueness).to be true
+          end
+        end
+
+        context 'with enforce_uniqueness set to true' do
+          # Use a single indexed tag layout template which would normally default to not enforcing uniqueness.
+          let(:tag_layout_template) { create(:entire_plate_tag_layout_template) }
+
+          let(:payload) do
+            {
+              data: {
+                type: resource_type,
+                attributes:
+                  base_attributes.merge({ plate_uuid: plate.uuid, user_uuid: user.uuid, enforce_uniqueness: true })
+              }
+            }
+          end
+
+          it 'enforces uniqueness on the template submission' do
+            expect(TagLayout::TemplateSubmission.last.enforce_uniqueness).to be true
+          end
+        end
+
+        context 'with enforce_uniqueness set to false' do
+          let(:payload) do
+            {
+              data: {
+                type: resource_type,
+                attributes:
+                  base_attributes.merge({ plate_uuid: plate.uuid, user_uuid: user.uuid, enforce_uniqueness: false })
+              }
+            }
+          end
+
+          it 'does not enforce uniqueness on the template submission' do
+            expect(TagLayout::TemplateSubmission.last.enforce_uniqueness).to be_nil
+          end
+        end
+
+        context 'with enforce_uniqueness set to nil' do
+          let(:payload) do
+            {
+              data: {
+                type: resource_type,
+                attributes:
+                  base_attributes.merge({ plate_uuid: plate.uuid, user_uuid: user.uuid, enforce_uniqueness: nil })
+              }
+            }
+          end
+
+          it 'does not enforce uniqueness on the template submission' do
+            expect(TagLayout::TemplateSubmission.last.enforce_uniqueness).to be_nil
+          end
+        end
+      end
     end
   end
 end
