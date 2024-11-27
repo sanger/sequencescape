@@ -148,27 +148,70 @@ module Submission::ValidationsByTemplateName
   end
   # rubocop:enable Metrics/AbcSize
 
-  # rubocop:disable Metrics/AbcSize
-  # rubocop:disable Metrics/MethodLength
+  # Validates the number of samples per pool for tubes.
+  #
+  # This method finds the tubes using the provided barcodes and calculates the total number of samples per study and
+  # project.
+  # It then retrieves the number of pools from the rows and validates the number of samples per pool.
+  #
+  # @param barcodes [Array<String>] The barcodes of the tubes.
+  # @param rows [Array<Array<String>>] The rows of CSV data to process.
+  # @return [void]
   def validate_for_tubes(barcodes, rows)
-    tubes =
-      Receptacle
-        .on_a(Tube)
-        .for_bulk_submission
-        .with_barcode(barcodes)
-        .tap do |found|
-          missing = details['barcode'].reject { |barcode| found.any? { |tube| tube.any_barcode_matching?(barcode) } }
-          if missing.present?
-            raise ActiveRecord::RecordNotFound, "Could not find Tubes with barcodes #{missing.inspect}"
-          end
-        end
-    total_number_of_samples_per_study_project = tubes.map(&:samples).flatten.count.to_i
-    number_of_pools = rows.pluck(headers.index(HEADER_NUMBER_OF_POOLS)).uniq.first.to_i
+    tubes = find_tubes(barcodes)
+    total_number_of_samples_per_study_project = calculate_total_samples(tubes)
+    number_of_pools = extract_number_of_pools(rows)
 
     validate_samples_per_pool(rows, total_number_of_samples_per_study_project, number_of_pools)
   end
-  # rubocop:enable Metrics/AbcSize
-  # rubocop:enable Metrics/MethodLength
+
+  # Finds the tubes using the provided barcodes.
+  #
+  # This method retrieves the tubes that match the provided barcodes and raises an error if any barcodes are missing.
+  #
+  # @param barcodes [Array<String>] The barcodes of the tubes.
+  # @return [Array<Receptacle>] The found tubes.
+  def find_tubes(barcodes)
+    Receptacle
+      .on_a(Tube)
+      .for_bulk_submission
+      .with_barcode(barcodes)
+      .tap do |found|
+        missing = find_missing_barcodes(barcodes, found)
+        raise ActiveRecord::RecordNotFound, "Could not find Tubes with barcodes #{missing.inspect}" if missing.present?
+      end
+  end
+
+  # Finds the missing barcodes from the found tubes.
+  #
+  # This method checks which barcodes are not present in the found tubes.
+  #
+  # @param barcodes [Array<String>] The barcodes of the tubes.
+  # @param found [Array<Receptacle>] The found tubes.
+  # @return [Array<String>] The missing barcodes.
+  def find_missing_barcodes(barcodes, found)
+    barcodes.reject { |barcode| found.any? { |tube| tube.any_barcode_matching?(barcode) } }
+  end
+
+  # Calculates the total number of samples from the tubes.
+  #
+  # This method calculates the total number of samples by flattening the samples from the tubes and counting them.
+  #
+  # @param tubes [Array<Receptacle>] The tubes to calculate samples from.
+  # @return [Integer] The total number of samples.
+  def calculate_total_samples(tubes)
+    tubes.map(&:samples).flatten.count.to_i
+  end
+
+  # Extracts the number of pools from the rows.
+  #
+  # This method retrieves the number of pools from the specified column in the rows.
+  #
+  # @param rows [Array<Array<String>>] The rows of CSV data to process.
+  # @return [Integer] The number of pools.
+  def extract_number_of_pools(rows)
+    rows.pluck(headers.index(HEADER_NUMBER_OF_POOLS)).uniq.first.to_i
+  end
 
   # Determines if the labware is a plate based on the presence of barcodes and well locations.
   #
