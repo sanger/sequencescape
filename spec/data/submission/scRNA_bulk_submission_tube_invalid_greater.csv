@@ -1,0 +1,34 @@
+Bulk Submissions Form,,,,,,,,,,,,,,,,,,,,,,,
+User Login,Template Name,Project Name,Study Name,Submission name,Barcode,Plate Well,Asset Group Name,Fragment Size From,Fragment Size To,PCR Cycles,Library Type,Bait Library Name,Pre-capture Plex Level,Pre-capture Group,Read Length,Number of lanes,Priority,Primer Panel,Comments,Gigabases Expected,Flowcell Type,scRNA Core Number of pools,scRNA Core Cells per Chip Well
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT1,,ag1,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT2,,ag2,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT3,,ag3,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT4,,ag4,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT5,,ag5,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT6,,ag6,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT7,,ag7,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT8,,ag8,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT9,,ag9,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT10,,ag10,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT11,,ag11,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT12,,ag12,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT13,,ag13,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT14,,ag14,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT15,,ag15,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT16,,ag16,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT17,,ag17,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT18,,ag18,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT19,,ag19,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT20,,ag20,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT21,,ag21,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT22,,ag22,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT23,,ag23,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT24,,ag24,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT25,,ag25,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT26,,ag26,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT27,,ag27,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT28,,ag28,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT29,,ag29,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT30,,ag30,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT31,,ag31,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT32,,ag32,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
