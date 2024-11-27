@@ -344,7 +344,7 @@ describe BulkSubmission, with: :uploader do
 
       let!(:tubes) do
         create_list(:phi_x_stock_tube, 6) do |tube, i|
-          tube.barcodes << Barcode.new(format: :sanger_ean13, barcode: "NT#{i + 100}")
+          tube.barcodes << Barcode.new(format: :sanger_ean13, barcode: "NT#{i + 1}")
         end
       end
       let!(:study) { create(:study, name: 'Test Study') }
@@ -378,6 +378,45 @@ describe BulkSubmission, with: :uploader do
       it 'generates submissions when processed' do
         subject.process
         expect(number_submissions_created).to eq(1)
+      end
+    end
+
+    context 'when an scRNA Bulk Submission for tubes with incorrect number of samples per pool' do
+      # Add another similar tube to the asset group
+      let(:request_types) { create_list(:sequencing_request_type, 2) }
+      # Create a list of tubes with samples
+
+      let!(:tubes) do
+        create_list(:phi_x_stock_tube, 6) do |tube, i|
+          tube.barcodes << Barcode.new(format: :sanger_ean13, barcode: "NT#{i + 1}")
+        end
+      end
+      let!(:study) { create(:study, name: 'Test Study') }
+      let!(:library_type) { create(:library_type, name: 'Standard') }
+
+      let(:spreadsheet_filename) { 'scRNA_bulk_submission_tube_invalid.csv' }
+      let(:submission_template_hash) do
+        {
+          name: 'Limber-Htp - scRNA Core cDNA Prep GEM-X 5p',
+          submission_class_name: 'LinearSubmission',
+          product_catalogue: 'Generic',
+          submission_parameters: {
+            request_options: {
+            },
+            request_types: request_types.map(&:key)
+          }
+        }
+      end
+
+      before do
+        SubmissionSerializer.construct!(submission_template_hash)
+        tubes.each_with_index.map do |tube, i|
+          create(:asset_group, name: "ag#{i + 1}", study: study, assets: [tube.receptacle])
+        end
+      end
+
+      it 'is invalid' do
+        expect { subject.process }.to raise_error(ActiveRecord::RecordInvalid)
       end
     end
   end

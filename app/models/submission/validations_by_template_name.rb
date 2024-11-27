@@ -232,7 +232,6 @@ module Submission::ValidationsByTemplateName
   # @param well_locations [Array<String>] The well locations on the labware.
   # @return [Boolean] Returns true if barcodes are present and well locations are absent, indicating the labware is a
   # tube.
-
   def tube?(barcodes, well_locations)
     barcodes.present? && well_locations.all?(&:nil?)
   end
