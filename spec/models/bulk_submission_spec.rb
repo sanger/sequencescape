@@ -338,10 +338,8 @@ describe BulkSubmission, with: :uploader do
     end
 
     context 'when an scRNA Bulk Submission for tubes' do
-      # Add another similar tube to the asset group
       let(:request_types) { create_list(:sequencing_request_type, 2) }
       # Create a list of tubes with samples
-
       let!(:tubes) do
         create_list(:phi_x_stock_tube, 6) do |tube, i|
           tube.barcodes << Barcode.new(format: :sanger_ean13, barcode: "NT#{i + 1}")
@@ -382,10 +380,8 @@ describe BulkSubmission, with: :uploader do
     end
 
     context 'when an scRNA Bulk Submission for tubes with incorrect number of samples per pool' do
-      # Add another similar tube to the asset group
       let(:request_types) { create_list(:sequencing_request_type, 2) }
       # Create a list of tubes with samples
-
       let!(:tubes) do
         create_list(:phi_x_stock_tube, 6) do |tube, i|
           tube.barcodes << Barcode.new(format: :sanger_ean13, barcode: "NT#{i + 1}")
