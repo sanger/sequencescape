@@ -93,14 +93,14 @@ describe 'Tag Layouts API', with: :api_v2 do
     end
   end
 
-  describe '#POST a create request without a template' do
+  describe '#POST a create request' do
     let(:direction) { 'column' }
     let(:initial_tag) { 0 }
     let(:substitutions) { { 'A1' => 'B2' } }
     let(:tags_per_well) { 1 } # Ignored by the walking_by algorithm below
     let(:walking_by) { 'wells of plate' }
 
-    let(:plate) { create(:plate) }
+    let(:plate) { create(:plate, :with_submissions, well_count: 1) }
     let(:tag_group) { create(:tag_group_for_layout) }
     let(:tag2_group) { create(:tag_group_for_layout) }
     let(:user) { create(:user) }
@@ -115,82 +115,94 @@ describe 'Tag Layouts API', with: :api_v2 do
 
       context 'with a valid payload' do
         shared_examples 'a valid request' do
-          before { api_post base_endpoint, payload }
+          describe 'record counts' do
+            it 'creates a new record' do
+              expect { api_post base_endpoint, payload }.to change(model_class, :count).by(1)
+            end
 
-          it 'creates a new resource' do
-            expect { api_post base_endpoint, payload }.to change(model_class, :count).by(1)
+            it 'does not creates any template submission records' do
+              expect { api_post base_endpoint, payload }.not_to change(TagLayout::TemplateSubmission, :count)
+            end
           end
 
-          it 'responds with a success http code' do
-            expect(response).to have_http_status(:success)
-          end
+          describe 'response content' do
+            before { api_post base_endpoint, payload }
 
-          it 'returns the resource with the correct type' do
-            expect(json.dig('data', 'type')).to eq(resource_type)
-          end
+            it 'creates a new resource' do
+              expect { api_post base_endpoint, payload }.to change(model_class, :count).by(1)
+            end
 
-          it_behaves_like 'a POST request including model attribute', TagLayout, 'direction'
-          it_behaves_like 'a POST request including model attribute', TagLayout, 'initial_tag'
-          it_behaves_like 'a POST request including model attribute', TagLayout, 'substitutions'
-          it_behaves_like 'a POST request including model attribute', TagLayout, 'walking_by'
-          it_behaves_like 'a POST request including model attribute', TagLayout, 'uuid'
+            it 'responds with a success http code' do
+              expect(response).to have_http_status(:success)
+            end
 
-          it "responds with the supplied 'tags_per_well' attribute value" do
-            # Note that the tags per well will not be saved with the record as it isn't a stored attribute in the
-            # database. The response is based on the model after being saved, which still holds the value given in the
-            # payload.
-            expect(json.dig('data', 'attributes', 'tags_per_well')).to eq(
-              payload.dig(:data, :attributes, :tags_per_well)
-            )
-          end
+            it 'returns the resource with the correct type' do
+              expect(json.dig('data', 'type')).to eq(resource_type)
+            end
 
-          it_behaves_like 'a request excluding unfetchable attribute', 'plate_uuid'
-          it_behaves_like 'a request excluding unfetchable attribute', 'tag_group_uuid'
-          it_behaves_like 'a request excluding unfetchable attribute', 'tag2_group_uuid'
-          it_behaves_like 'a request excluding unfetchable attribute', 'tag_layout_template_uuid'
-          it_behaves_like 'a request excluding unfetchable attribute', 'user_uuid'
+            it_behaves_like 'a POST request including model attribute', TagLayout, 'direction'
+            it_behaves_like 'a POST request including model attribute', TagLayout, 'initial_tag'
+            it_behaves_like 'a POST request including model attribute', TagLayout, 'substitutions'
+            it_behaves_like 'a POST request including model attribute', TagLayout, 'walking_by'
+            it_behaves_like 'a POST request including model attribute', TagLayout, 'uuid'
 
-          it "updates the model with the new 'direction' attribute value" do
-            expect(model_class.last.direction).to eq(direction)
-          end
+            it "responds with the supplied 'tags_per_well' attribute value" do
+              # Note that the tags per well will not be saved with the record as it isn't a stored attribute in the
+              # database. The response is based on the model after being saved, which still holds the value given in the
+              # payload.
+              expect(json.dig('data', 'attributes', 'tags_per_well')).to eq(
+                payload.dig(:data, :attributes, :tags_per_well)
+              )
+            end
 
-          it "updates the model with the new 'initial_tag' attribute value" do
-            expect(model_class.last.initial_tag).to eq(initial_tag)
-          end
+            it_behaves_like 'a request excluding unfetchable attribute', 'plate_uuid'
+            it_behaves_like 'a request excluding unfetchable attribute', 'tag_group_uuid'
+            it_behaves_like 'a request excluding unfetchable attribute', 'tag2_group_uuid'
+            it_behaves_like 'a request excluding unfetchable attribute', 'tag_layout_template_uuid'
+            it_behaves_like 'a request excluding unfetchable attribute', 'user_uuid'
 
-          it "updates the model with the new 'substitutions' attribute value" do
-            expect(model_class.last.substitutions).to eq(substitutions)
-          end
+            it "updates the model with the new 'direction' attribute value" do
+              expect(model_class.last.direction).to eq(direction)
+            end
 
-          it "updates the model with the new 'walking_by' attribute value" do
-            expect(model_class.last.walking_by).to eq(walking_by)
-          end
+            it "updates the model with the new 'initial_tag' attribute value" do
+              expect(model_class.last.initial_tag).to eq(initial_tag)
+            end
 
-          it "responds with nil for the 'tags_per_well' attribute" do
-            # Note that the tags_per_well from the queried record will be nil as it isn't a stored attribute in the
-            # database.
-            expect(model_class.last.tags_per_well).to be_nil
-          end
+            it "updates the model with the new 'substitutions' attribute value" do
+              expect(model_class.last.substitutions).to eq(substitutions)
+            end
 
-          it_behaves_like 'a request referencing a related resource', 'plate'
-          it_behaves_like 'a request referencing a related resource', 'tag_group'
-          it_behaves_like 'a request referencing a related resource', 'tag2_group'
-          it_behaves_like 'a request referencing a related resource', 'user'
+            it "updates the model with the new 'walking_by' attribute value" do
+              expect(model_class.last.walking_by).to eq(walking_by)
+            end
 
-          it "updates the model with the new 'plate' relationship" do
-            expect(model_class.last.plate).to eq(plate)
-          end
+            it "responds with nil for the 'tags_per_well' attribute" do
+              # Note that the tags_per_well from the queried record will be nil as it isn't a stored attribute in the
+              # database.
+              expect(model_class.last.tags_per_well).to be_nil
+            end
 
-          it "updates the model with the new 'tag_group' relationship" do
-            expect(model_class.last.tag_group).to eq(tag_group)
-          end
+            it_behaves_like 'a request referencing a related resource', 'plate'
+            it_behaves_like 'a request referencing a related resource', 'tag_group'
+            it_behaves_like 'a request referencing a related resource', 'tag2_group'
+            it_behaves_like 'a request referencing a related resource', 'user'
 
-          it "updates the model with the new 'tag2_group' relationship" do
-            expect(model_class.last.tag2_group).to eq(tag2_group)
-          end
+            it "updates the model with the new 'plate' relationship" do
+              expect(model_class.last.plate).to eq(plate)
+            end
 
-          it "updates the model with the new 'user' relationship" do
-            expect(model_class.last.user).to eq(user)
+            it "updates the model with the new 'tag_group' relationship" do
+              expect(model_class.last.tag_group).to eq(tag_group)
+            end
+
+            it "updates the model with the new 'tag2_group' relationship" do
+              expect(model_class.last.tag2_group).to eq(tag2_group)
+            end
+
+            it "updates the model with the new 'user' relationship" do
+              expect(model_class.last.user).to eq(user)
+            end
           end
         end
 
@@ -455,7 +467,7 @@ describe 'Tag Layouts API', with: :api_v2 do
     end
 
     context 'with a template' do
-      let(:tag_layout_template) { create(:tag_layout_template, tag2_group: create(:tag_group_for_layout)) }
+      let(:tag_layout_template) { create(:entire_plate_tag_layout_template, tag2_group: create(:tag_group_for_layout)) }
       let(:tag_layout_template_uuid) { tag_layout_template.uuid }
 
       # direction and walking_by come from the template
@@ -463,82 +475,90 @@ describe 'Tag Layouts API', with: :api_v2 do
 
       context 'with a valid payload' do
         shared_examples 'a valid request' do
-          before { api_post base_endpoint, payload }
+          describe 'record counts' do
+            it 'creates a new record' do
+              expect { api_post base_endpoint, payload }.to change(model_class, :count).by(1)
+            end
 
-          it 'creates a new resource' do
-            expect { api_post base_endpoint, payload }.to change(model_class, :count).by(1)
+            it 'creates a template submission record' do
+              expect { api_post base_endpoint, payload }.to change(TagLayout::TemplateSubmission, :count).by(1)
+            end
           end
 
-          it 'responds with a success http code' do
-            expect(response).to have_http_status(:success)
-          end
+          describe 'response content' do
+            before { api_post base_endpoint, payload }
 
-          it 'returns the resource with the correct type' do
-            expect(json.dig('data', 'type')).to eq(resource_type)
-          end
+            it 'responds with a success http code' do
+              expect(response).to have_http_status(:success)
+            end
 
-          it_behaves_like 'a POST request including model attribute', TagLayout, 'direction'
-          it_behaves_like 'a POST request including model attribute', TagLayout, 'initial_tag'
-          it_behaves_like 'a POST request including model attribute', TagLayout, 'substitutions'
-          it_behaves_like 'a POST request including model attribute', TagLayout, 'walking_by'
-          it_behaves_like 'a POST request including model attribute', TagLayout, 'uuid'
+            it 'returns the resource with the correct type' do
+              expect(json.dig('data', 'type')).to eq(resource_type)
+            end
 
-          it "responds with the supplied 'tags_per_well' attribute value" do
-            # Note that the tags per well will not be saved with the record as it isn't a stored attribute in the
-            # database. The response is based on the model after being saved, which still holds the value given in the
-            # payload.
-            expect(json.dig('data', 'attributes', 'tags_per_well')).to eq(
-              payload.dig(:data, :attributes, :tags_per_well)
-            )
-          end
+            it_behaves_like 'a POST request including model attribute', TagLayout, 'direction'
+            it_behaves_like 'a POST request including model attribute', TagLayout, 'initial_tag'
+            it_behaves_like 'a POST request including model attribute', TagLayout, 'substitutions'
+            it_behaves_like 'a POST request including model attribute', TagLayout, 'walking_by'
+            it_behaves_like 'a POST request including model attribute', TagLayout, 'uuid'
 
-          it_behaves_like 'a request excluding unfetchable attribute', 'plate_uuid'
-          it_behaves_like 'a request excluding unfetchable attribute', 'tag_group_uuid'
-          it_behaves_like 'a request excluding unfetchable attribute', 'tag2_group_uuid'
-          it_behaves_like 'a request excluding unfetchable attribute', 'tag_layout_template_uuid'
-          it_behaves_like 'a request excluding unfetchable attribute', 'user_uuid'
+            it "responds with the supplied 'tags_per_well' attribute value" do
+              # Note that the tags per well will not be saved with the record as it isn't a stored attribute in the
+              # database. The response is based on the model after being saved, which still holds the value given in the
+              # payload.
+              expect(json.dig('data', 'attributes', 'tags_per_well')).to eq(
+                payload.dig(:data, :attributes, :tags_per_well)
+              )
+            end
 
-          it "updates the model with the new 'direction' attribute value" do
-            expect(model_class.last.direction).to eq(tag_layout_template.direction)
-          end
+            it_behaves_like 'a request excluding unfetchable attribute', 'plate_uuid'
+            it_behaves_like 'a request excluding unfetchable attribute', 'tag_group_uuid'
+            it_behaves_like 'a request excluding unfetchable attribute', 'tag2_group_uuid'
+            it_behaves_like 'a request excluding unfetchable attribute', 'tag_layout_template_uuid'
+            it_behaves_like 'a request excluding unfetchable attribute', 'user_uuid'
 
-          it "updates the model with the new 'initial_tag' attribute value" do
-            expect(model_class.last.initial_tag).to eq(initial_tag)
-          end
+            it "updates the model with the new 'direction' attribute value" do
+              expect(model_class.last.direction).to eq(tag_layout_template.direction)
+            end
 
-          it "updates the model with the new 'substitutions' attribute value" do
-            expect(model_class.last.substitutions).to eq(substitutions)
-          end
+            it "updates the model with the new 'initial_tag' attribute value" do
+              expect(model_class.last.initial_tag).to eq(initial_tag)
+            end
 
-          it "updates the model with the new 'walking_by' attribute value" do
-            expect(model_class.last.walking_by).to eq(tag_layout_template.walking_by)
-          end
+            it "updates the model with the new 'substitutions' attribute value" do
+              expect(model_class.last.substitutions).to eq(substitutions)
+            end
 
-          it "responds with nil for the 'tags_per_well' attribute" do
-            # Note that the tags_per_well from the queried record will be nil as it isn't a stored attribute in the
-            # database.
-            expect(model_class.last.tags_per_well).to be_nil
-          end
+            it "updates the model with the new 'walking_by' attribute value" do
+              expect(model_class.last.walking_by).to eq(tag_layout_template.walking_by)
+            end
 
-          it_behaves_like 'a request referencing a related resource', 'plate'
-          it_behaves_like 'a request referencing a related resource', 'tag_group'
-          it_behaves_like 'a request referencing a related resource', 'tag2_group'
-          it_behaves_like 'a request referencing a related resource', 'user'
+            it "responds with nil for the 'tags_per_well' attribute" do
+              # Note that the tags_per_well from the queried record will be nil as it isn't a stored attribute in the
+              # database.
+              expect(model_class.last.tags_per_well).to be_nil
+            end
 
-          it "updates the model with the new 'plate' relationship" do
-            expect(model_class.last.plate).to eq(plate)
-          end
+            it_behaves_like 'a request referencing a related resource', 'plate'
+            it_behaves_like 'a request referencing a related resource', 'tag_group'
+            it_behaves_like 'a request referencing a related resource', 'tag2_group'
+            it_behaves_like 'a request referencing a related resource', 'user'
 
-          it "updates the model with the new 'tag_group' relationship" do
-            expect(model_class.last.tag_group).to eq(tag_layout_template.tag_group)
-          end
+            it "updates the model with the new 'plate' relationship" do
+              expect(model_class.last.plate).to eq(plate)
+            end
 
-          it "updates the model with the new 'tag2_group' relationship" do
-            expect(model_class.last.tag2_group).to eq(tag_layout_template.tag2_group || tag2_group)
-          end
+            it "updates the model with the new 'tag_group' relationship" do
+              expect(model_class.last.tag_group).to eq(tag_layout_template.tag_group)
+            end
 
-          it "updates the model with the new 'user' relationship" do
-            expect(model_class.last.user).to eq(user)
+            it "updates the model with the new 'tag2_group' relationship" do
+              expect(model_class.last.tag2_group).to eq(tag_layout_template.tag2_group || tag2_group)
+            end
+
+            it "updates the model with the new 'user' relationship" do
+              expect(model_class.last.user).to eq(user)
+            end
           end
         end
 
@@ -557,7 +577,7 @@ describe 'Tag Layouts API', with: :api_v2 do
           end
 
           context 'with tag2_group_uuid only in the attributes' do
-            let(:tag_layout_template) { create(:tag_layout_template) }
+            let(:tag_layout_template) { create(:entire_plate_tag_layout_template) }
             let(:payload) do
               {
                 data: {
@@ -574,7 +594,7 @@ describe 'Tag Layouts API', with: :api_v2 do
           end
 
           context 'with tag2_group only in the relationships' do
-            let(:tag_layout_template) { create(:tag_layout_template) }
+            let(:tag_layout_template) { create(:entire_plate_tag_layout_template) }
             let(:payload) do
               {
                 data: {
@@ -592,7 +612,7 @@ describe 'Tag Layouts API', with: :api_v2 do
         end
       end
 
-      context 'with a templated value in a field' do
+      context 'with a templated value duplicated in a field' do
         shared_examples 'a POST request for TagLayout with a field defined twice' do |field_name|
           before { api_post base_endpoint, payload }
 

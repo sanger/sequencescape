@@ -30,7 +30,7 @@ FactoryBot.define do
 
   # Tag layouts and their templates
   factory :tag_layout_template do
-    transient { tags { [] } }
+    transient { tags { %w[ACGT TGCA] } }
 
     sequence(:name) { |n| "Tag Layout Template #{n}" }
     direction_algorithm { 'TagLayout::InColumns' }
