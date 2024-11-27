@@ -15,7 +15,7 @@ class PickList < ApplicationRecord
   belongs_to :submission, optional: false, autosave: true
   has_many :batches, -> { distinct }, through: :submission
 
-  enum state: { pending: 0, built: 1 }
+  enum :state, { pending: 0, built: 1 }
 
   delegate :orders, to: :submission
 

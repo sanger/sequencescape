@@ -65,7 +65,7 @@ class PlateSummariesControllerTest < ActionController::TestCase
             get :search, params: { plate_barcode: 'abcd' }
           end
 
-          should redirect_to 'back'
+          should redirect_to('/')
           should set_flash.to 'No suitable plates found for barcode abcd'
         end
 

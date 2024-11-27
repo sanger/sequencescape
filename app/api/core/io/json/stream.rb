@@ -63,7 +63,7 @@ module Core::Io::Json
       when ActiveSupport::TimeWithZone
         string_encode(object.to_s)
       when Time
-        string_encode(object.to_s(:compatible))
+        string_encode(object.to_fs(:compatible))
       when Hash
         hash_encode(object, options)
       when ZIPPABLE
