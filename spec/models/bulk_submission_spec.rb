@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-shared_examples 'an invalid scRNA Bulk Submission for tubes' do |_, tube_count|
+shared_examples 'an invalid scRNA Bulk Submission' do |_, tube_count|
   let(:request_types) { create_list(:sequencing_request_type, 2) }
   let!(:tubes) do
     create_list(:phi_x_stock_tube, tube_count) do |tube, i|
