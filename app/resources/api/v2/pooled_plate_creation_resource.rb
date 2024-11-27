@@ -55,7 +55,7 @@ module Api
       end
 
       # @!attribute [r] uuid
-      #   @return [String] The UUID of the state change.
+      #   @return [String] The UUID of the plate creation instance.
       attribute :uuid, readonly: true
 
       ###

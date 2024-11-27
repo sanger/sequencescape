@@ -29,17 +29,25 @@ module Api
       # Associations:
       has_many :racked_tubes
       has_many :comments, readonly: true
-      has_one :purpose, foreign_key: :plate_purpose_id
+      # TODO: change to purpose_id
+      has_one :purpose, foreign_key: :plate_purpose_id, class_name: 'TubeRackPurpose'
+      has_many :parents, readonly: true, polymorphic: true
+      has_many :state_changes, readonly: true
+      has_one :custom_metadatum_collection, foreign_key_on: :related
+      has_many :ancestors, readonly: true, polymorphic: true
+      # NB. no child or descendent associations as tube racks can't have children (tubes have children).
+      # NB. no direct_submissions association as tube racks are currently not submitted.
 
       # Attributes
       attribute :uuid, readonly: true
       attribute :created_at, readonly: true
       attribute :updated_at, readonly: true
       attribute :labware_barcode, readonly: true
+      attribute :state, readonly: true
       attribute :size
       attribute :number_of_rows, readonly: true
       attribute :number_of_columns, readonly: true
-      attribute :name, readonly: true
+      attribute :name, delegate: :display_name, readonly: true
       attribute :tube_locations
 
       # Filters
@@ -49,11 +57,16 @@ module Api
              apply:
                (
                  lambda do |records, value, _options|
-                   purpose = Purpose.find_by(name: value)
+                   purpose = TubeRack::Purpose.find_by(name: value)
                    records.where(plate_purpose_id: purpose)
                  end
                )
       filter :purpose_id, apply: ->(records, value, _options) { records.where(plate_purpose_id: value) }
+      filter :created_at_gt,
+             apply: lambda { |records, value, _options| records.where('labware.created_at > ?', value[0].to_date) }
+      filter :updated_at_gt,
+             apply: lambda { |records, value, _options| records.where('labware.updated_at > ?', value[0].to_date) }
+      # TODO: do we need scope for include_used? no direct child labwares here so would have to check for racked tubes
 
       # Class method overrides
       def fetchable_fields
