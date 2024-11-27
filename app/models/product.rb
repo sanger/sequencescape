@@ -23,6 +23,6 @@ class Product < ApplicationRecord
   end
 
   def display_name
-    deprecated? ? "#{name} (Deprecated #{deprecated_at.to_formatted_s(:iso8601)})" : name
+    deprecated? ? "#{name} (Deprecated #{deprecated_at.to_fs(:iso8601)})" : name
   end
 end
