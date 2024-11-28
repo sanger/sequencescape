@@ -8,6 +8,9 @@ RSpec.describe Api::V2::QcFileResource, type: :resource do
 
   let(:resource_model) { build_stubbed(:qc_file) }
 
+  # Model Name
+  it { is_expected.to have_model_name 'QcFile' }
+
   # Attributes
   it { is_expected.to have_readonly_attribute :content_type }
   it { is_expected.to have_write_once_attribute :contents }
