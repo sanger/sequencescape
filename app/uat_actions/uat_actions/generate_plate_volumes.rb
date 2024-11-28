@@ -27,16 +27,14 @@ class UatActions::GeneratePlateVolumes < UatActions
                minimum: 0
              }
 
-
   #
   # Returns a default copy of the UatAction which will be used to fill in the form, with values
   # for the units, and min and max volumes.
   #
   # @return [UatActions::GeneratePlateVolumes] A default object for rendering a form
   def self.default
-    new( minimum_volume: 0, maximum_volume: 100)
+    new(minimum_volume: 0, maximum_volume: 100)
   end
-
 
   validates :plate_barcode, presence: { message: 'could not be found' }
   validates :minimum_volume, numericality: { only_integer: false }

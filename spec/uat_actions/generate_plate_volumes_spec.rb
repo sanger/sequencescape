@@ -13,13 +13,7 @@ describe UatActions::GeneratePlateVolumes do
     end
 
     context 'when ul volumes' do
-      let(:parameters) do
-        {
-          plate_barcode: plate.barcodes.first.barcode,
-          minimum_volume: 0,
-          maximum_volume: 30
-        }
-      end
+      let(:parameters) { { plate_barcode: plate.barcodes.first.barcode, minimum_volume: 0, maximum_volume: 30 } }
 
       it 'can be performed' do
         expect(uat_action.perform).to be true
@@ -28,7 +22,6 @@ describe UatActions::GeneratePlateVolumes do
         expect(plate.wells.first.qc_results.first.assay_type).to eq 'UAT_Testing'
       end
     end
-
   end
 
   it 'returns a default' do
