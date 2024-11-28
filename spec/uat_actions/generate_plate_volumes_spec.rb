@@ -17,8 +17,17 @@ describe UatActions::GeneratePlateVolumes do
 
       it 'can be performed' do
         expect(uat_action.perform).to be true
+      end
+
+      it 'generates the correct report' do
         expect(uat_action.report).to eq report
+      end
+
+      it 'creates the correct number of QC results' do
         expect(plate.wells.map(&:qc_results).size).to eq 3
+      end
+
+      it 'sets the correct assay type for the first QC result' do
         expect(plate.wells.first.qc_results.first.assay_type).to eq 'UAT_Testing'
       end
     end
