@@ -102,18 +102,6 @@ module Submission::ValidationsByTemplateName
     unique_values = rows.pluck(index_of_column).uniq
     return unless unique_values.size > 1
 
-    add_inconsistent_value_error(study_project, column_header)
-  end
-
-  # Adds an error for inconsistent column values.
-  #
-  # This method adds an error to the errors collection for inconsistent column values
-  # for the specified study and project.
-  #
-  # @param study_project [Array<String>] The study and project names.
-  # @param column_header [String] The header of the column with inconsistent values.
-  # @return [void]
-  def add_inconsistent_value_error(study_project, column_header)
     errors.add(
       :spreadsheet,
       "Inconsistent values for column '#{column_header}' for Study name '#{study_project[0]}' and Project name " \
