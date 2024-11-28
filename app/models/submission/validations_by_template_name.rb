@@ -62,25 +62,14 @@ module Submission::ValidationsByTemplateName
   #
   # @param column_header [String] The header of the column to validate.
   # @return [void]
-  # rubocop:disable Metrics/MethodLength
   def validate_consistent_column_value(column_header)
     index_of_column = headers.index(column_header)
-
     grouped_rows = group_rows_by_study_and_project
 
     grouped_rows.each do |study_project, rows|
-      unique_values = rows.pluck(index_of_column).uniq
-
-      next unless unique_values.size > 1
-      errors.add(
-        :spreadsheet,
-        "Inconsistent values for column '#{column_header}' for Study name '#{study_project[0]}' and Project name " \
-          "'#{study_project[1]}', " \
-          'all rows for a specific study and project must have the same value'
-      )
+      validate_unique_values(study_project, rows, index_of_column, column_header)
     end
   end
-  # rubocop:enable Metrics/MethodLength
 
   # Validates the number of samples per pool for labware.
   #
@@ -98,6 +87,39 @@ module Submission::ValidationsByTemplateName
   end
 
   private
+
+  # Validates that the specified column has unique values for each study and project.
+  #
+  # This method checks if the specified column has unique values for each study and project.
+  # If inconsistencies are found, an error is added to the errors collection.
+  #
+  # @param study_project [Array<String>] The study and project names.
+  # @param rows [Array<Array<String>>] The rows of CSV data to process.
+  # @param index_of_column [Integer] The index of the column to validate.
+  # @param column_header [String] The header of the column to validate.
+  # @return [void]
+  def validate_unique_values(study_project, rows, index_of_column, column_header)
+    unique_values = rows.pluck(index_of_column).uniq
+    return unless unique_values.size > 1
+
+    add_inconsistent_value_error(study_project, column_header)
+  end
+
+  # Adds an error for inconsistent column values.
+  #
+  # This method adds an error to the errors collection for inconsistent column values
+  # for the specified study and project.
+  #
+  # @param study_project [Array<String>] The study and project names.
+  # @param column_header [String] The header of the column with inconsistent values.
+  # @return [void]
+  def add_inconsistent_value_error(study_project, column_header)
+    errors.add(
+      :spreadsheet,
+      "Inconsistent values for column '#{column_header}' for Study name '#{study_project[0]}' and Project name " \
+        "'#{study_project[1]}', all rows for a specific study and project must have the same value"
+    )
+  end
 
   # Processes the rows to determine the type of labware and validate accordingly.
   #
