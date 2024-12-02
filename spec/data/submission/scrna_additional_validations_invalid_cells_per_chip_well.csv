@@ -1,3 +1,4 @@
-User Login,template name,study name,project name,submission name,asset names,asset group name,read length,fragment size from,fragment size to,library type,comments,pre-capture plex level,pre-capture group,gigabases expected,scrna core number of samples per pool,scrna core cells per chip well
-user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,abc123_study,Test project,sub1,,assetgroup123,100,,,Standard,hello there,,,1.35,15,10000
-user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,abc123_study,Test project,sub2,,assetgroup123,100,,,Standard,hello there,,,1.35,15,20000
+User Login,template name,study name,project name,submission name,asset names,asset group name,read length,fragment size from,fragment size to,library type,comments,pre-capture plex level,pre-capture group,gigabases expected,scrna core number of pools,scrna core cells per chip well
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,abc123_study,Test project,sub1,,assetgroup123,100,,,Standard,hello there,,,1.35,7,10000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,abc123_study,Test project,sub2,,assetgroup123,100,,,Standard,hello there,,,1.35,7,20000
+,,,,,,,,,,,,,,,
