@@ -84,7 +84,7 @@ module Api
         template = find_template { |new_errors| errors += new_errors }
         merge_template_data(template) { |new_errors| errors += new_errors } unless template.nil?
 
-        return JSONAPI::ErrorsOperationResult.new(400, errors) unless errors.empty?
+        return JSONAPI::ErrorsOperationResult.new(JSONAPI::BAD_REQUEST, errors) unless errors.empty?
 
         # Perform the usual create actions.
         resource = TagLayoutResource.create(context)

@@ -43,7 +43,7 @@ module Api
         attributes = data[:attributes]
         filename, contents, errors = validate_required_attributes(attributes)
 
-        return JSONAPI::ErrorsOperationResult.new(400, errors) unless errors.empty?
+        return JSONAPI::ErrorsOperationResult.new(JSONAPI::BAD_REQUEST, errors) unless errors.empty?
 
         tempfile = create_tempfile(filename, contents)
         resource = QcFileResource.create_with_tempfile(context, tempfile, filename)

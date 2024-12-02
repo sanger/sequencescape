@@ -38,7 +38,7 @@ module Api
         attributes = data[:attributes]
         model_type, errors = extract_template_data(attributes)
 
-        return JSONAPI::ErrorsOperationResult.new(400, errors) unless errors.empty?
+        return JSONAPI::ErrorsOperationResult.new(JSONAPI::BAD_REQUEST, errors) unless errors.empty?
 
         resource = TransferResource.create_with_model(context, model_type)
         result = resource.replace_fields(data)
