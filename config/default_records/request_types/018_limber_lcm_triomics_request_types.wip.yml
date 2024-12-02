@@ -23,4 +23,4 @@ limber_lcm_triomics_wgs:
   acceptable_purposes:
     - LCMT DNA Adp Lig
   library_types:
-    - LCM Triomics WGS
+    - LCMB
