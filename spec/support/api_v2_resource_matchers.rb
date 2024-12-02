@@ -127,7 +127,7 @@ module ApiV2RelationshipMatchers
     match do |resource|
       expect(resource).to have_a_writable_field field
 
-      relationship_matcher = JSONAPI::Resources::Matchers::Relationship.new(:have_one, field)
+      relationship_matcher = JSONAPI::Resources::Matchers::Relationship.new(:have_many, field)
       relationship_matcher.expected_class_name = @class_name
       relationship_matcher.matches?(resource)
     end
@@ -142,7 +142,7 @@ module ApiV2RelationshipMatchers
     match do |resource|
       expect(resource).to have_a_write_once_field field
 
-      relationship_matcher = JSONAPI::Resources::Matchers::Relationship.new(:have_one, field)
+      relationship_matcher = JSONAPI::Resources::Matchers::Relationship.new(:have_many, field)
       relationship_matcher.expected_class_name = @class_name
       relationship_matcher.matches?(resource)
     end

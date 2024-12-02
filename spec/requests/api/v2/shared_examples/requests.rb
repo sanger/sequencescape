@@ -77,3 +77,39 @@ shared_examples 'a GET request including a has_many relationship' do |related_na
     expect(included).to include(*related)
   end
 end
+
+shared_examples 'a GET request including fetchable attribute' do |attribute_name|
+  it "responds with the correct '#{attribute_name}' attribute value" do
+    expect(json.dig('data', 'attributes', attribute_name)).to eq(resource.send(attribute_name))
+  end
+end
+
+shared_examples 'a request excluding unfetchable attribute' do |attribute_name|
+  it "excludes unfetchable attribute '#{attribute_name}'" do
+    expect(json.dig('data', 'attributes', attribute_name)).not_to be_present
+  end
+end
+
+shared_examples 'a request referencing a related resource' do |related_name|
+  it "returns a reference to the '#{related_name}' relationship" do
+    expect(json.dig('data', 'relationships', related_name)).to be_present
+  end
+end
+
+shared_examples 'a POST request including model attribute' do |model_class, attribute_name|
+  it "responds with the new '#{attribute_name}' attribute value" do
+    expect(json.dig('data', 'attributes', attribute_name)).to eq(model_class.last.send(attribute_name))
+  end
+end
+
+shared_examples 'a POST request updating an attribute on the model' do |model_class, attribute_name, value|
+  it "updates the model with the new '#{attribute_name}' attribute value" do
+    expect(model_class.last.send(attribute_name)).to eq(value)
+  end
+end
+
+shared_examples 'a POST request updating a relationship on the model' do |model_class, related_name, value|
+  it "updates the model with the new '#{related_name}' relationship" do
+    expect(model_class.last.send(related_name)).to eq(value)
+  end
+end

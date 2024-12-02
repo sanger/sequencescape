@@ -7,26 +7,43 @@ module Api
     class TransfersController < JSONAPI::ResourceController
       # By default JSONAPI::ResourceController provides most of the standard behaviour.
       # However in this case we want to redirect create and update operations to the correct polymorphic type.
+    end
 
-      def process_operations(operations)
-        # We need to determine the polymorphic type of the transfer to create based on any template provided.
-        operations.each do |operation|
-          # Neither data nor attributes are guaranteed among the operation options.
-          attributes = operation.options.fetch(:data, {}).fetch(:attributes, {})
+    class TransferProcessor < JSONAPI::Processor
+      # Get the Transfer model type needed to be created from the transfer template in the attributes.
+      # Also put the transfers from the template into the attributes if they exist.
+      def extract_template_data(attributes)
+        errors = []
 
-          # Skip the operation if it does not contain a transfer template.
-          next unless attributes.key?(:transfer_template_uuid)
+        template_uuid = attributes[:transfer_template_uuid]
+        errors += JSONAPI::Exceptions::ParameterMissing.new('transfer_template_uuid').errors if template_uuid.nil?
 
-          # Get the transfer template and use it to update the context and attributes.
-          template = TransferTemplate.with_uuid(attributes[:transfer_template_uuid]).first
-          operation.options[:context][:polymorphic_type] = template.transfer_class_name
-          attributes[:transfers] = template.transfers if template.transfers.present?
+        template = TransferTemplate.with_uuid(template_uuid).first
+        errors +=
+          JSONAPI::Exceptions::InvalidFieldValue.new('transfer_template_uuid', template_uuid).errors if template.nil?
 
-          # Remove the UUID of the transfer template from the attributes.
-          attributes.delete(:transfer_template_uuid)
-        end
+        return nil, errors if errors.present?
 
-        super(operations)
+        # Modify attributes according to what we've found in the template.
+        attributes[:transfers] = template.transfers if template.transfers.present?
+
+        [template.transfer_class_name.constantize, errors]
+      end
+
+      # Override the default behaviour for a JSONAPI::Processor when creating a new resource.
+      # We need to parse for a transfer_template_uuid attribute so that it can be used to determine the polymorphic
+      # type of the Transfer represented by a template. The create method is then passed the type to create.
+      def create_resource
+        data = params[:data]
+        attributes = data[:attributes]
+        model_type, errors = extract_template_data(attributes)
+
+        return JSONAPI::ErrorsOperationResult.new(JSONAPI::BAD_REQUEST, errors) unless errors.empty?
+
+        resource = TransferResource.create_with_model(context, model_type)
+        result = resource.replace_fields(data)
+
+        JSONAPI::ResourceOperationResult.new((result == :completed ? :created : :accepted), resource)
       end
     end
   end

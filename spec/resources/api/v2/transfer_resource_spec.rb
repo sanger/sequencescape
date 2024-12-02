@@ -29,23 +29,23 @@ RSpec.describe Api::V2::TransferResource, type: :resource do
   it { is_expected.to filter(:transfer_type) }
 
   # Custom methods
-  describe '#self.create' do
-    let(:context) { { polymorphic_type: 'Transfer::BetweenPlates' } }
-    let(:transfer) { Transfer::BetweenPlates.new }
+  describe '#self.create_with_model' do
+    let(:context) { {} }
+    let(:model_type) { Transfer::BetweenPlates }
+    let(:transfer) { model_type.new }
 
-    it 'creates the new QcFile with uploaded_data' do
-      allow(Transfer::BetweenPlates).to receive(:new).and_call_original
+    before { allow(model_type).to receive(:new).and_return(transfer) }
 
-      described_class.create(context)
+    it 'creates the new Transfer resource with the correct model class' do
+      described_class.create_with_model(context, model_type)
 
-      expect(Transfer::BetweenPlates).to have_received(:new)
+      expect(model_type).to have_received(:new)
     end
 
     it 'creates the new resource with the new Transfer::BetweenPlates' do
-      allow(Transfer::BetweenPlates).to receive(:new).and_return(transfer)
       allow(described_class).to receive(:new).and_call_original
 
-      described_class.create(context)
+      described_class.create_with_model(context, model_type)
 
       expect(described_class).to have_received(:new).with(transfer, context)
     end
