@@ -337,7 +337,7 @@ plate_anospp:
 plate_scrna_core_pools:
   heading: "scRNA Core Pools Plate"
   asset_type: "plate"
-  rows_per_well: 20
+  rows_per_well: 120
   columns:
     - :sanger_plate_id
     - :well
