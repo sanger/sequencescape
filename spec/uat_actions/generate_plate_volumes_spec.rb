@@ -59,7 +59,7 @@ describe UatActions::GeneratePlateVolumes do
   end
 
   context 'with invalid options' do
-    let(:parameters) { {plate_barcode: plate_barcode, minimum_volume: 110, maximum_volume: 10 } }
+    let(:parameters) { { plate_barcode: plate_barcode, minimum_volume: 110, maximum_volume: 10 } }
     let!(:saved_action) { uat_action.save }
 
     it 'has a minimum_volume of 110' do
