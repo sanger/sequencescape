@@ -79,7 +79,9 @@ describe UatActions::GeneratePlateVolumes do
     end
 
     it 'adds an error' do
-      expect(uat_action.errors.full_messages).to include('Maximum volume needs to be greater than or equal to minimum volume')
+      expect(uat_action.errors.full_messages).to include(
+        'Maximum volume needs to be greater than or equal to minimum volume'
+      )
     end
   end
 end
