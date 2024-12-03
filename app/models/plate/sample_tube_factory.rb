@@ -26,10 +26,7 @@ class Plate::SampleTubeFactory < SimpleDelegator
 
     plate_barcodes = plates.map(&:barcode_number)
     asset_group =
-      AssetGroup.find_or_create_asset_group(
-        "#{plate_barcodes.join('-')} #{Time.current.to_formatted_s(:sortable)} ",
-        study
-      )
+      AssetGroup.find_or_create_asset_group("#{plate_barcodes.join('-')} #{Time.current.to_fs(:sortable)} ", study)
     plates.each do |plate|
       factory = Plate::SampleTubeFactory.new(plate)
       next if factory.wells.empty?

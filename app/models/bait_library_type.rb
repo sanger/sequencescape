@@ -7,7 +7,7 @@ class BaitLibraryType < ApplicationRecord
 
   # category is used for billing, to differentiate between products with Custom and Standard bait libraries
   # Automated billing report stuff has been removed, but this is still useful downstream so we'll keep it
-  enum category: { standard: 0, custom: 1 }
+  enum :category, { standard: 0, custom: 1 }
 
   has_many :bait_libraries
 
