@@ -39,7 +39,7 @@ class UatActions::GeneratePlateVolumes < UatActions
   validates :plate_barcode, presence: { message: 'could not be found' }
   validates :minimum_volume, numericality: { only_integer: false }
   validates :maximum_volume, numericality: { greater_than: 0, only_integer: false }
-  validate :maximum_greater_than_minimum
+  validate :maximum_greater_than_or_equal_to_minimum
 
   def perform
     qc_assay_results = construct_qc_assay
@@ -49,10 +49,10 @@ class UatActions::GeneratePlateVolumes < UatActions
 
   private
 
-  def maximum_greater_than_minimum
-    return true if max_vol > min_vol
+  def maximum_greater_than_or_equal_to_minimum
+    return true if max_vol >= min_vol
 
-    errors.add(:maximum_volume, 'needs to be greater than minimum volume')
+    errors.add(:maximum_volume, 'needs to be greater than or equal to minimum volume')
     false
   end
 
