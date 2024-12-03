@@ -1,6 +1,9 @@
 <%# locals: (plate, well_values) %>
 <%# plate: Plate %>
 <%# well_values: Array of [method, value] to call on well %>
+
+<%# Note: very similar to app/views/shared/_show_plate.html.erb %>
+
 <% descriptor = well_values[1] %>
 
 <table class="plate mb-3" id="<%= descriptor %>">
