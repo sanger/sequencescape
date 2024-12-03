@@ -23,10 +23,7 @@ Feature: Update the data release fields for creating a study
     When I choose "<release strategy>" from "What is the data release strategy for this study?"
     When I select "delayed" from "How is the data release to be timed?"
     When I select "other" from "Reason for delaying release"
-    Then the help text for "Reason for delaying release" should contain:
-      """
-      To apply for a delay, please contact datasharing@example.com
-      """
+    Then I should exactly see "Reason for delaying release"
 
     Examples:
       | release strategy |
@@ -34,9 +31,9 @@ Feature: Update the data release fields for creating a study
       | Open (ENA)       |
 
   Scenario: Add help text to has this been approved for never release (4044343)
-    When I choose "Not Applicable (Contact Datasharing)" from "What is the data release strategy for this study?"
+    When I choose "Not Applicable" from "What is the data release strategy for this study?"
     When I select "never" from "How is the data release to be timed?"
-    Then the help text for "Has this been approved?" should contain:
+    Then the help text for "If reason for exemption requires DAC approval, what is the approval number?" should contain:
       """
       If this is for data validity reasons: approval from the sponsor is required
       If this is for legal reasons: approval from the Data Sharing Committee is required (please contact sd4)

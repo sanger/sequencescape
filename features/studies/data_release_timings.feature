@@ -28,7 +28,7 @@ Feature: Studies have timings for release of their data
 
   Scenario: When the data release is delayed for PhD study
     Given I select "delayed" from "How is the data release to be timed?"
-      And I select "phd study" from "Reason for delaying release"
+      And I select "PhD study" from "Reason for delaying release"
     Then the "Comment regarding data release timing and approval" field is hidden
     When I select "6 months" from "Delay for"
       And I press "Create"
@@ -70,19 +70,19 @@ Feature: Studies have timings for release of their data
       | 12 months |
 
   Scenario: When the data release is never but the comment is not supplied
-    When I choose "Not Applicable (Contact Datasharing)" from "What is the data release strategy for this study?"
+    When I choose "Not Applicable" from "What is the data release strategy for this study?"
     And I select "never" from "How is the data release to be timed?"
-    And I choose "Yes" from "Has this been approved?"
+    And I fill in "12345" from "If reason for exemption requires DAC approval, what is the approval number?"
     When I press "Create"
     Then I should be on the studies page
     # Again, ideally without study metadata
     And I should see "Study metadata data release prevention reason comment can't be blank"
 
   Scenario: When the data release is never and the comment is supplied
-    When I choose "Not Applicable (Contact Datasharing)" from "What is the data release strategy for this study?"
+    When I choose "Not Applicable" from "What is the data release strategy for this study?"
     And I select "never" from "How is the data release to be timed?"
     And I fill in "Comment regarding prevention of data release and approval" with "Some reason"
-    And I choose "Yes" from "Has this been approved?"
+    And I fill in "12345" from "If reason for exemption requires DAC approval, what is the approval number?
     When I press "Create"
     Then I should be on the study information page for "Testing data release strategies"
     And I should see "Your study has been created"

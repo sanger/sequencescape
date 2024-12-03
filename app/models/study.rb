@@ -82,11 +82,25 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     DATA_RELEASE_TIMING_IMMEDIATE,
     DATA_RELEASE_TIMING_DELAYED
   ].freeze
-  DATA_RELEASE_PREVENTION_REASONS = ['data validity', 'legal', 'replication of data subset'].freeze
+
+  OLD_DATA_RELEASE_PREVENTION_REASONS = ['data validity', 'legal', 'replication of data subset'].freeze
+  DATA_RELEASE_PREVENTION_REASONS = [
+    'Pilot or validation studies - DAC approval not required',
+    'Collaborators will share data in a research repository - DAC approval not required',
+    'Prevent harm (e.g sensitive studies or biosecurity) - DAC approval required',
+    'Protecting IP - DAC approval required',
+    'Other (please specify)'
+  ].freeze
 
   DATA_RELEASE_DELAY_FOR_OTHER = 'other'
-  DATA_RELEASE_DELAY_REASONS_STANDARD = ['phd study', DATA_RELEASE_DELAY_FOR_OTHER].freeze
   DATA_RELEASE_DELAY_REASONS_ASSAY = ['phd study', 'assay of no other use', DATA_RELEASE_DELAY_FOR_OTHER].freeze
+  DATA_RELEASE_DELAY_REASONS_STANDARD = [
+    'PhD study',
+    'Capacity building',
+    'Intellectual property protection',
+    'Additional time to make data FAIR',
+    DATA_RELEASE_DELAY_FOR_OTHER
+  ].freeze
 
   DATA_RELEASE_DELAY_PERIODS = ['3 months', '6 months', '9 months', '12 months', '18 months'].freeze
 
@@ -217,6 +231,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
       in: DATA_RELEASE_DELAY_REASONS_ASSAY,
       if: :delayed_release?
     )
+
     custom_attribute(:data_release_delay_period, required: true, in: DATA_RELEASE_DELAY_PERIODS, if: :delayed_release?)
     custom_attribute(:bam, default: true)
 
@@ -235,10 +250,14 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
       custom_attribute(:data_release_delay_approval, in: YES_OR_NO, default: NO)
     end
 
-    with_options(if: :never_release?, required: true) do
-      custom_attribute(:data_release_prevention_reason, in: DATA_RELEASE_PREVENTION_REASONS)
-      custom_attribute(:data_release_prevention_approval, in: YES_OR_NO)
-      custom_attribute(:data_release_prevention_reason_comment)
+    with_options(if: :never_release?) do
+      custom_attribute(
+        :data_release_prevention_reason,
+        in: DATA_RELEASE_PREVENTION_REASONS + OLD_DATA_RELEASE_PREVENTION_REASONS,
+        required: true
+      )
+      custom_attribute(:data_release_prevention_reason_comment, required: true)
+      custom_attribute(:data_release_prevention_approval)
     end
 
     # NOTE: Additional validation in Study::Metadata Class to validate_presence_of :data_access_group, if: :managed

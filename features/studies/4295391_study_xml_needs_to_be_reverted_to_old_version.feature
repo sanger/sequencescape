@@ -115,7 +115,7 @@ Feature: The XML for the sequencescape API
             <value>Not specified</value>
           </descriptor>
           <descriptor>
-            <name>Has this been approved?</name>
+            <name>If reason for exemption requires DAC approval, what is the approval number?</name>
             <value></value>
           </descriptor>
           <descriptor>

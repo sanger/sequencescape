@@ -40,7 +40,7 @@ describe 'Create a study' do
     within_fieldset('What is the data release strategy for this study?') do
       expect(page).to have_field('Open (ENA)', type: :radio)
       expect(page).to have_field('Managed (EGA)', type: :radio)
-      expect(page).to have_field('Not Applicable (Contact Datasharing)', type: :radio)
+      expect(page).to have_field('Not Applicable', type: :radio)
     end
 
     within_fieldset('Study Visibility') do
@@ -132,8 +132,8 @@ describe 'Create a study' do
       expect(page).to have_field('HuMFre approval number', type: :text)
     end
 
-    it 'displays HuMFre approval number when Not Applicable (Contact Datasharing) is clicked' do
-      choose('Not Applicable (Contact Datasharing)', allow_label_click: true)
+    it 'displays HuMFre approval number when Not Applicable is clicked' do
+      choose('Not Applicable', allow_label_click: true)
       expect(page).to have_field('HuMFre approval number', type: :text)
     end
   end
