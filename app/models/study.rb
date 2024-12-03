@@ -295,6 +295,10 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
                 allow_blank: true
               }
 
+    validates :ebi_library_strategy, presence: true
+    validates :ebi_library_source, presence: true
+    validates :ebi_library_selection, presence: true
+
     before_validation do |record|
       record.reference_genome_id = 1 if record.reference_genome_id.blank?
 

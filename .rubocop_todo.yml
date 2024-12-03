@@ -1373,6 +1373,7 @@ Rails/FilePath:
     - 'config/initializers/i18n.rb'
     - 'config/initializers/load_config.rb'
     - 'config/initializers/sample_manifest_excel.rb'
+    - 'config/initializers/ena_requirement_fields.rb'
     - 'features/support/step_definitions/49061511_qc_file_steps.rb'
     - 'features/support/step_definitions/bulk_submission_steps.rb'
     - 'lib/tasks/cucumber.rake'

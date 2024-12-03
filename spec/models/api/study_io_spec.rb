@@ -14,12 +14,12 @@ RSpec.describe Api::StudyIo do
         reference_genome: reference_genome,
         array_express_accession_number: 'AE111',
         ega_policy_accession_number: 'EGA222',
-        ega_dac_accession_number: 'DAC333'
-        # program: create(:program, name: 'General'),
-        # contaminated_human_data_access_group: 'contaminated human data access group test',
-        # ebi_library_strategy: 'WGS',
-        # ebi_library_source: 'GENOMIC',
-        # ebi_library_selection: 'PCR'
+        ega_dac_accession_number: 'DAC333',
+        program: create(:program, name: 'General'),
+        contaminated_human_data_access_group: 'contaminated human data access group test',
+        ebi_library_strategy: 'WGS',
+        ebi_library_source: 'GENOMIC',
+        ebi_library_selection: 'PCR'
       }
     )
   end
