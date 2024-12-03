@@ -359,9 +359,9 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
               message: 'should be blank if "control" is set to false'
             }
 
-  enum control_type: { negative: 0, positive: 1, 'pcr negative': 2, 'pcr positive': 3, 'lysate negative': 4 }
+  enum :control_type, { negative: 0, positive: 1, 'pcr negative': 2, 'pcr positive': 3, 'lysate negative': 4 }
 
-  enum priority: { no_priority: 0, backlog: 1, surveillance: 2, priority: 3 }
+  enum :priority, { no_priority: 0, backlog: 1, surveillance: 2, priority: 3 }
 
   # this method has to be before validation_guarded_by
   def rename_to!(new_name)
