@@ -344,6 +344,11 @@ plate_scrna_core_pools:
     - :sanger_sample_id
     - :supplier_name
     - :donor_id_mandatory
+    - :date_of_sample_collection
+    - :country_of_origin
+    - :gender
+    - :phenotype
+    - :sample_ebi_accession_number
 tube_default:
   heading: "Default Tube"
   asset_type: "1dtube"
