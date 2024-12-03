@@ -337,7 +337,7 @@ plate_anospp:
 plate_scrna_core_pools:
   heading: "scRNA Core Pools Plate"
   asset_type: "plate"
-  rows_per_well: 120
+  rows_per_well: 150
   columns:
     - :sanger_plate_id
     - :well
@@ -349,6 +349,8 @@ plate_scrna_core_pools:
     - :gender
     - :phenotype
     - :sample_ebi_accession_number
+    - :sample_taxon_id
+    - :sample_common_name
 tube_default:
   heading: "Default Tube"
   asset_type: "1dtube"
