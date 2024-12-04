@@ -72,7 +72,7 @@ Feature: Studies have timings for release of their data
   Scenario: When the data release is never but the comment is not supplied
     When I choose "Not Applicable" from "What is the data release strategy for this study?"
     And I select "never" from "How is the data release to be timed?"
-    And I fill in "12345" from "If reason for exemption requires DAC approval, what is the approval number?"
+    And I fill in "If reason for exemption requires DAC approval, what is the approval number?" with "12345"
     When I press "Create"
     Then I should be on the studies page
     # Again, ideally without study metadata
@@ -82,7 +82,7 @@ Feature: Studies have timings for release of their data
     When I choose "Not Applicable" from "What is the data release strategy for this study?"
     And I select "never" from "How is the data release to be timed?"
     And I fill in "Comment regarding prevention of data release and approval" with "Some reason"
-    And I fill in "12345" from "If reason for exemption requires DAC approval, what is the approval number?
+    And I fill in "If reason for exemption requires DAC approval, what is the approval number?" with "12345"
     When I press "Create"
     Then I should be on the study information page for "Testing data release strategies"
     And I should see "Your study has been created"

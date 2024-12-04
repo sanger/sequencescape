@@ -228,7 +228,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     custom_attribute(
       :data_release_delay_reason,
       required: true,
-      in: DATA_RELEASE_DELAY_REASONS_ASSAY,
+      in: DATA_RELEASE_DELAY_REASONS_ASSAY + DATA_RELEASE_DELAY_REASONS_STANDARD,
       if: :delayed_release?
     )
 
