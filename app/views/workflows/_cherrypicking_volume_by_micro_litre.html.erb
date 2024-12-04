@@ -1,14 +1,16 @@
+<%# locals: (hide_action_option: false) -%> <%# <-- this is Rails 7.1 magic %>
+<% hide_action_option ||= false %>
 
 <div id='pick_by_micro_litre'>
-<fieldset>
-  <%= hidden_field("cherrypick", "action", value: "micro_litre") %>
-    <table cellspacing='0' cellpadding='0'>
-      <%= fields_for :micro_litre do |ff|%>
-        <tr>
-          <td><label for="volume_required">Volume</label> (&micro;l):</td>
-          <td><%= ff.text_field 'volume_required', value: '13', size: 5 %></td>
-        </tr>
-      <% end %>
-    </table>
-</fieldset>
+
+  <% if hide_action_option %>
+    <%= hidden_field("cherrypick", "action", value: "micro_litre") %>
+  <% else %>
+    <%= render partial: 'form_group_radio', locals: { field_name: 'cherrypick', category: 'action', field_value: 'micro_litre', label_text: 'Pick by volume (µl)' } %>
+  <% end %>
+
+  <%= fields_for :micro_litre do |ff|%>
+    <%= render partial: 'form_group_text', locals: { field_name: 'volume_required', label_text: 'Volume (µl)', field_value: '13' } %>
+  <% end %>
+
 </div>
