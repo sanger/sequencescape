@@ -84,4 +84,24 @@ describe UatActions::GeneratePlateVolumes do
       )
     end
   end
+
+  context 'with equal minimum and maximum volumes' do
+    let(:parameters) { { plate_barcode: plate_barcode, minimum_volume: 10, maximum_volume: 10 } }
+
+    it 'can be performed' do
+      expect(performed_action).to be true
+    end
+
+    it 'generates the correct report' do
+      expect(uat_action.report).to eq('number_well_volumes_written' => 3)
+    end
+
+    it 'creates the correct number of QC results' do
+      expect(plate.wells.map(&:qc_results).size).to eq 3
+    end
+
+    it 'sets the volumes to be within the specified range' do
+      expect(plate.wells.map { |well| well.qc_results.first.value.to_f }).to all(eq 10)
+    end
+  end
 end
