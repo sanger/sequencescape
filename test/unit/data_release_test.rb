@@ -93,7 +93,7 @@ class DataReleaseTest < ActiveSupport::TestCase
               setup do
                 @study.study_metadata.data_release_strategy = 'never'
                 @study.study_metadata.data_release_timing = 'never'
-                @study.study_metadata.data_release_prevention_reason = 'legal'
+                @study.study_metadata.data_release_prevention_reason = 'Protecting IP - DAC approval required'
                 @study.study_metadata.data_release_prevention_approval = 'Yes'
                 @study.study_metadata.data_release_prevention_reason_comment = 'It just is'
               end
@@ -106,7 +106,7 @@ class DataReleaseTest < ActiveSupport::TestCase
             context 'and release timing is delayed' do
               setup do
                 @study.study_metadata.data_release_timing = 'delayed'
-                @study.study_metadata.data_release_delay_reason = 'phd study'
+                @study.study_metadata.data_release_delay_reason = 'PhD study'
               end
 
               data_release_strategies.each do |strategy|

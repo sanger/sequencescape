@@ -54,7 +54,7 @@ FactoryBot.define do
       new_field_values = {
         data_release_strategy: 'not applicable',
         data_release_timing: 'never',
-        data_release_prevention_reason: 'data validity',
+        data_release_prevention_reason: 'Protecting IP - DAC approval required',
         data_release_prevention_approval: 'Yes',
         data_release_prevention_reason_comment: 'This is the reason context'
       }
