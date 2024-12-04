@@ -3,9 +3,36 @@
 require 'rails_helper'
 
 describe UatActions::GeneratePlateConcentrations do
+  let(:plate) { create(:plate_with_untagged_wells, sample_count: 3) }
+  let(:plate_barcode) { plate.barcodes.first.barcode }
+  let(:uat_action) { described_class.new(parameters) }
+  let!(:saved_action) { uat_action.save }
+
+  context 'with default options' do
+    let(:parameters) { {} }
+
+    it 'returns a default' do
+      expect(described_class.default).to be_a described_class
+    end
+
+    it 'has a nil plate_barcode' do
+      expect(described_class.default.plate_barcode).to be_nil
+    end
+
+    it 'has a minimum_concentration of 0' do
+      expect(described_class.default.minimum_concentration).to eq 0
+    end
+
+    it 'has a maximum_concentration of 100' do
+      expect(described_class.default.maximum_concentration).to eq 100
+    end
+
+    it 'has a concentration_units of ng/ul' do
+      expect(described_class.default.concentration_units).to eq 'ng/ul'
+    end
+  end
+
   context 'with valid options' do
-    let(:plate) { create(:plate_with_untagged_wells, sample_count: 3) }
-    let(:uat_action) { described_class.new(parameters) }
     let(:report) do
       # A report is a hash of key value pairs which get returned to the user.
       # It should include information such as barcodes and identifiers
@@ -15,15 +42,15 @@ describe UatActions::GeneratePlateConcentrations do
     context 'when ng per ul concentrations' do
       let(:parameters) do
         {
-          plate_barcode: plate.barcodes.first.barcode,
+          plate_barcode: plate_barcode,
           concentration_units: 'ng/ul',
           minimum_concentration: 0,
           maximum_concentration: 30
         }
       end
 
-      it 'can be performed' do
-        expect(uat_action.perform).to be true
+      it 'can be saved' do
+        expect(saved_action).to be true
         expect(uat_action.report).to eq report
         expect(plate.wells.map(&:qc_results).size).to eq 3
         expect(plate.wells.first.qc_results.first.assay_type).to eq 'UAT_Testing'
@@ -32,16 +59,11 @@ describe UatActions::GeneratePlateConcentrations do
 
     context 'when nM concentrations' do
       let(:parameters) do
-        {
-          plate_barcode: plate.barcodes.first.barcode,
-          concentration_units: 'nM',
-          minimum_concentration: 0,
-          maximum_concentration: 30
-        }
+        { plate_barcode: plate_barcode, concentration_units: 'nM', minimum_concentration: 0, maximum_concentration: 30 }
       end
 
-      it 'can be performed' do
-        expect(uat_action.perform).to be true
+      it 'can be saved' do
+        expect(saved_action).to be true
         expect(uat_action.report).to eq report
         expect(plate.wells.map(&:qc_results).size).to eq 3
         expect(plate.wells.first.qc_results.first.assay_type).to eq 'UAT_Testing'
@@ -58,7 +80,6 @@ describe UatActions::GeneratePlateConcentrations do
         maximum_concentration: 10
       }
     end
-    let!(:saved_action) { uat_action.save }
 
     it 'has a minimum_concentration of 30' do
       expect(uat_action.minimum_concentration).to eq 30
@@ -93,12 +114,12 @@ describe UatActions::GeneratePlateConcentrations do
       }
     end
 
-    it 'can be performed' do
-      expect(performed_action).to be true
+    it 'can be saved' do
+      expect(saved_action).to be true
     end
 
     it 'generates the correct report' do
-      expect(uat_action.report).to eq('number_weil_concentrations_written' => 3)
+      expect(uat_action.report).to eq('number_well_concentrations_written' => 3)
     end
 
     it 'creates the correct number of QC results' do
@@ -108,9 +129,5 @@ describe UatActions::GeneratePlateConcentrations do
     it 'sets the concentrations to be within the specified range' do
       expect(plate.wells.map { |well| well.qc_results.first.value.to_f }).to all(eq 10)
     end
-  end
-
-  it 'returns a default' do
-    expect(described_class.default).to be_a described_class
   end
 end
