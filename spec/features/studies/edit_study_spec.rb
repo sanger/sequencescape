@@ -69,8 +69,8 @@ describe 'Edit a study' do
       expect(page).to have_field('HuMFre approval number', type: :text)
     end
 
-    it 'displays HuMFre approval number when Not Applicable (Contact Datasharing) is clicked' do
-      choose('Not Applicable (Contact Datasharing)', allow_label_click: true)
+    it 'displays HuMFre approval number when Not Applicable is clicked' do
+      choose('Not Applicable', allow_label_click: true)
       expect(page).to have_field('HuMFre approval number', type: :text)
     end
   end
