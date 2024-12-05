@@ -24,7 +24,7 @@ module Api
 
       attribute :name
       attribute :sanger_sample_id
-      attribute :uuid
+      attribute :uuid, readonly: true
       attribute :control
       attribute :control_type
 
