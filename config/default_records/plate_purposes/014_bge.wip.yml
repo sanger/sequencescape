@@ -1,0 +1,17 @@
+# Plate purposes for BGE
+---
+BGE Cherrypick:
+  type: PlatePurpose::Input
+  target_type: Plate
+  default_state: passed
+  stock_plate: false
+  cherrypickable_target: true
+  size: 96
+BGE Lib XP2:
+  target_type: Plate
+  stock_plate: false
+  size: 96
+BGE Lib PCR XP:
+  target_type: Plate
+  stock_plate: false
+  size: 96
