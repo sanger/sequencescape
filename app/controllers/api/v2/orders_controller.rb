@@ -60,13 +60,13 @@ module Api
       end
 
       def make_template_attributes(attributes, &)
-        {}.tap do |result|
-          result[:assets] = extract_assets(attributes, &)
-          result[:autodetect_projects] = attributes[:autodetect_projects] unless attributes[:autodetect_projects].nil?
-          result[:autodetect_studies] = attributes[:autodetect_studies] unless attributes[:autodetect_studies].nil?
-          result[:request_options] = require_attribute(attributes, :request_options)
-          result[:user] = extract_user(attributes, &)
-        end
+        {
+          assets: extract_assets(attributes, &),
+          autodetect_projects: attributes[:autodetect_projects],
+          autodetect_studies: attributes[:autodetect_studies],
+          request_options: require_attribute(attributes, :request_options),
+          user: extract_user(attributes, &)
+        }.compact
       end
 
       def extract_assets(attributes, &)
