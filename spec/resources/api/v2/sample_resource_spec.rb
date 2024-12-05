@@ -8,12 +8,24 @@ RSpec.describe Api::V2::SampleResource, type: :resource do
 
   let(:sample) { create(:sample) }
 
-  it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
-    expect(subject).to have_attribute :sanger_sample_id
-    expect(subject).to have_attribute :uuid
-  end
+  # Model Name
+  it { is_expected.to have_model_name 'Sample' }
 
-  it 'has sample metadata information' do
-    expect(subject).to have_one(:sample_metadata).with_class_name('SampleMetadata')
-  end
+  # Attributes
+  it { is_expected.to have_readwrite_attribute :control }
+  it { is_expected.to have_readwrite_attribute :control_type }
+  it { is_expected.to have_readwrite_attribute :name }
+  it { is_expected.to have_readwrite_attribute :sanger_sample_id }
+  it { is_expected.to have_readonly_attribute :uuid }
+
+  # Relationships
+  it { is_expected.to have_a_writable_has_many(:component_samples).with_class_name('Sample') }
+  it { is_expected.to have_a_writable_has_one(:sample_manifest).with_class_name('SampleManifest') }
+  it { is_expected.to have_a_writable_has_one(:sample_metadata).with_class_name('SampleMetadata') }
+  it { is_expected.to have_a_writable_has_many(:studies).with_class_name('Study') }
+
+  # Filters
+  it { is_expected.to filter :name }
+  it { is_expected.to filter :sanger_sample_id }
+  it { is_expected.to filter :uuid }
 end
