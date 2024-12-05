@@ -2,21 +2,21 @@
 
 <div class="card-columns">
 
-  <div class="card">
+  <div class="card" data-group='cherrypick[action]'>
     <div class="card-body">
       <h5 class="card-title">Concentration</h5>
       <%= render partial: 'cherrypicking_concentration_by_nano_grams_per_micro_litre' %>
     </div>
   </div>
 
-  <div class="card">
+  <div class="card" data-group='cherrypick[action]'>
     <div class="card-body">
       <h5 class="card-title">Amount</h5>
       <%= render partial: 'cherrypicking_quantity_by_nano_grams' %>
     </div>
   </div>
 
-  <div class="card">
+  <div class="card" data-group='cherrypick[action]'>
     <div class="card-body">
       <h5 class="card-title">Volume</h5>
       <%= render partial: 'cherrypicking_volume_by_micro_litre' %>
@@ -24,3 +24,35 @@
   </div>
 
 </div>
+
+<%= legacy_javascript_tag do %>
+  // apply a border highlight to the card, based on the cherrypick action selected
+  // this is admittedly a gratuitous addition to the user experience, but it's a nice touch
+  // should probably be converted to a Vue component (or similar)
+
+  // highlight only the card that corresponds to the provided index
+  function highlightCard(cardIndex) {
+    const borderStyle = 'border-primary';
+
+    const cards = document.querySelectorAll(`.card[data-group='cherrypick[action]']`);
+    cards.forEach(card => card.classList.remove(borderStyle));
+
+    cards[cardIndex].classList.add(borderStyle);
+  }
+
+  const radioButtons = document.querySelectorAll('input[name="cherrypick[action]"]');
+  radioButtons.forEach(radio => {
+    radio.addEventListener('change', function() {
+
+      const action = this.value;
+      const actionToIndexMap = {
+        'nano_grams_per_micro_litre': 0,
+        'nano_grams': 1,
+        'micro_litre': 2
+      };
+      const cardIndex = actionToIndexMap[action];
+
+      highlightCard(cardIndex);
+    });
+  });
+<% end %>
