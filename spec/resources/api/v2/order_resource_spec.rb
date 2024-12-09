@@ -8,22 +8,21 @@ RSpec.describe Api::V2::OrderResource, type: :resource do
 
   let(:resource_model) { build_stubbed(:order) }
 
-  # Test attributes
-  it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
-    expect(resource).to have_attribute :uuid
-    expect(resource).not_to have_updatable_field(:id)
-    expect(resource).not_to have_updatable_field(:uuid)
-  end
+  # Model Name
+  it { is_expected.to have_model_name 'Order' }
 
-  # Updatable fields
-  # eg. it { is_expected.to have_updatable_field(:state) }
+  # Attributes
+  it { is_expected.to have_readonly_attribute :order_type }
+  it { is_expected.to have_readonly_attribute :request_options }
+  it { is_expected.to have_readonly_attribute :request_types }
+  it { is_expected.to have_readonly_attribute :uuid }
 
-  # Filters
-  # eg. it { is_expected.to filter(:order_type) }
+  # Relationships
+  it { is_expected.to have_a_readonly_has_one(:project).with_class_name('Project') }
+  it { is_expected.to have_a_readonly_has_one(:study).with_class_name('Study') }
+  it { is_expected.to have_a_readonly_has_one(:user).with_class_name('User') }
 
-  # Associations
-  # eg. it { is_expected.to have_many(:samples).with_class_name('Sample') }
-
-  # Custom method tests
-  # Add tests for any custom methods you've added.
+  # Template attributes
+  it { is_expected.to have_writeonly_attribute :submission_template_uuid }
+  it { is_expected.to have_writeonly_attribute :submission_template_attributes }
 end
