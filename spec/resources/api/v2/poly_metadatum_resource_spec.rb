@@ -8,14 +8,20 @@ RSpec.describe Api::V2::PolyMetadatumResource, type: :resource do
 
   let(:resource_model) { build_stubbed(:poly_metadatum) }
 
-  # Test attributes
-  it 'works as expected', :aggregate_failures do
-    expect(metadatum_resource).to have_attribute :key
-    expect(metadatum_resource).to have_attribute :value
-    expect(metadatum_resource).not_to have_updatable_field(:id)
-    expect(metadatum_resource).to have_one(:metadatable)
-  end
+  # Model Name
+  it { is_expected.to have_model_name 'PolyMetadatum' }
 
-  # Custom method tests
-  # Add tests for any custom methods you've added.
+  # Attributes
+  it { is_expected.to have_readwrite_attribute :key }
+  it { is_expected.to have_readwrite_attribute :value }
+
+  it { is_expected.to have_readonly_attribute :created_at }
+  it { is_expected.to have_readonly_attribute :updated_at }
+
+  # Relationships
+  it { is_expected.to have_a_writable_has_one(:metadatable) }
+
+  # Filters
+  it { is_expected.to filter :key }
+  it { is_expected.to filter :metadatable_id }
 end

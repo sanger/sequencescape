@@ -14,33 +14,29 @@ module Api
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class TubeRackResource < BaseResource
-      # Constants...
-
       # TODO: Here be dragons! This resource is mutable and can be created via
       #       the JSON API. However the asset_creation record is not generated
       #       as we would be relying on the request to tell us who requested it.
       #       Instead this should be done as part of adding authentication to
       #       the API in the security OKR.
 
-      # model_name / model_hint if required
-
       default_includes :uuid_object, :barcodes
 
-      # Associations:
-      has_many :racked_tubes
+      # Attributes
+      attribute :created_at, readonly: true
+      attribute :labware_barcode, write_once: true
+      attribute :name, write_once: true
+      attribute :number_of_columns, write_once: true
+      attribute :number_of_rows, write_once: true
+      attribute :size
+      attribute :tube_locations, writeonly: true
+      attribute :updated_at, readonly: true
+      attribute :uuid, readonly: true
+
+      # Relationships
       has_many :comments, readonly: true
       has_one :purpose, foreign_key: :plate_purpose_id
-
-      # Attributes
-      attribute :uuid, readonly: true
-      attribute :created_at, readonly: true
-      attribute :updated_at, readonly: true
-      attribute :labware_barcode, readonly: true
-      attribute :size
-      attribute :number_of_rows, readonly: true
-      attribute :number_of_columns, readonly: true
-      attribute :name, readonly: true
-      attribute :tube_locations
+      has_many :racked_tubes
 
       # Filters
       filter :barcode, apply: ->(records, value, _options) { records.with_barcode(value) }
@@ -55,10 +51,7 @@ module Api
                )
       filter :purpose_id, apply: ->(records, value, _options) { records.where(plate_purpose_id: value) }
 
-      # Class method overrides
-      def fetchable_fields
-        super - [:tube_locations]
-      end
+      # Field Methods
 
       # Tube locations should be received as:
       # { A1: { uuid: 'a1_tube_uuid' }, B1: { uuid: 'b1_tube_uuid' }, ... }
@@ -72,9 +65,6 @@ module Api
         end
       end
 
-      # Custom methods
-      # These shouldn't be used for business logic, and are more about
-      # I/O and isolating implementation details.
       def labware_barcode
         {
           'ean13_barcode' => _model.ean13_barcode,

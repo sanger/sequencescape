@@ -15,7 +15,7 @@ FactoryBot.define do
     transient do
       sample_count { 0 } # The number of wells to create [LEGACY: use well_count instead]
       well_count { sample_count } # The number of wells to create
-      well_factory { :well } # THe factory to use for wells
+      well_factory { :well } # The factory to use for wells
       studies { build_list(:study, 1) } # A list of studies to apply to wells.
       projects { build_list(:project, 1) } # A list of projects to apply to wells
       well_order { :column_order } # The order of wells on the plate. Almost always column_order
@@ -54,6 +54,13 @@ FactoryBot.define do
           submission: evaluator.submission_cycle.next
         )
       end
+    end
+  end
+
+  trait :with_transfers_as_destination do
+    transient { transfer_count { 1 } }
+    after(:create) do |plate, factory|
+      create_list(:transfer_between_plates, factory.transfer_count, destination: plate)
     end
   end
 

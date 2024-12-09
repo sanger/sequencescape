@@ -15,26 +15,14 @@ module Api
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class TagResource < BaseResource
-      # Constants...
-
       immutable
 
-      # model_name / model_hint if required
-
-      # Associations:
-      has_one :tag_group
-
       # Attributes
-      attribute :oligo, readonly: true
-      attribute :map_id, readonly: true
+      attribute :map_id, write_once: true
+      attribute :oligo, write_once: true
 
-      # Filters
-
-      # Custom methods
-      # These shouldn't be used for business logic, and a more about
-      # I/O and isolating implementation details.
-
-      # Class method overrides
+      # Relationships
+      has_one :tag_group
     end
   end
 end
