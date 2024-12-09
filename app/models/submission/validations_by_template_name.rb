@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 module Submission::ValidationsByTemplateName
+
+  # scRNA Core cDNA Prep GEM-X 5p Donor pooling validation
+  include Submission::DonorPoolingValidator
+
   # Template names
   SCRNA_CORE_CDNA_PREP_GEM_X_5P = 'Limber-Htp - scRNA Core cDNA Prep GEM-X 5p'
 
