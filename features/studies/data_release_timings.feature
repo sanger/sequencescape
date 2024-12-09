@@ -72,6 +72,7 @@ Feature: Studies have timings for release of their data
   Scenario: When the data release is never but the comment is not supplied
     When I choose "Not Applicable" from "What is the data release strategy for this study?"
     And I select "never" from "How is the data release to be timed?"
+    And I select "Protecting IP - DAC approval required" from "What is the reason for preventing data release?"
     And I fill in "If reason for exemption requires DAC approval, what is the approval number?" with "12345"
     When I press "Create"
     Then I should be on the studies page
@@ -81,6 +82,7 @@ Feature: Studies have timings for release of their data
   Scenario: When the data release is never and the comment is supplied
     When I choose "Not Applicable" from "What is the data release strategy for this study?"
     And I select "never" from "How is the data release to be timed?"
+    And I select "Protecting IP - DAC approval required" from "What is the reason for preventing data release?"
     And I fill in "Comment regarding prevention of data release and approval" with "Some reason"
     And I fill in "If reason for exemption requires DAC approval, what is the approval number?" with "12345"
     When I press "Create"
