@@ -498,6 +498,9 @@ describe 'Orders API', with: :api_v2 do
             }
           }
         end
+        let(:expected_error_details) do
+          ['user - must exist', "study - can't be blank", "project - can't be blank", "request_types - can't be blank"]
+        end
 
         it 'fails to create the resource' do
           # Not providing a submission_template_uuid is a valid use case as we default to the normal JSONAPI::Resources
@@ -505,14 +508,7 @@ describe 'Orders API', with: :api_v2 do
           # they're all read-only on the API.
           api_post base_endpoint, payload
 
-          expect(json['errors'].map { |err| err['detail'] }).to match_array(
-            [
-              'user - must exist',
-              "study - can't be blank",
-              "project - can't be blank",
-              "request_types - can't be blank"
-            ]
-          )
+          expect(json['errors'].pluck('detail')).to contain_exactly(*expected_error_details)
         end
       end
 
