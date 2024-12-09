@@ -59,13 +59,13 @@
       %>
 
       <% metadata_fields.related_fields(to: :data_release_strategy, when: Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE) do %>
-        <%= group.select(:data_release_prevention_reason, Study::DATA_RELEASE_PREVENTION_REASONS) %>
+        <%= group.select(:data_release_prevention_reason, [''] + Study::DATA_RELEASE_PREVENTION_REASONS) %>
         <%= group.text_area(:data_release_prevention_approval) %>
         <%= group.text_area(:data_release_prevention_reason_comment) %>
       <% end %>
       <% metadata_fields.related_fields(to: :data_release_strategy, in: Study::DATA_RELEASE_STRATEGIES, not: Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE) do %>
         <% metadata_fields.related_fields(to: :data_release_timing, when: Study::DATA_RELEASE_TIMING_DELAYED) do %>
-          <%= group.select(:data_release_delay_reason, Study::DATA_RELEASE_DELAY_REASONS_STANDARD) %>
+          <%= group.select(:data_release_delay_reason, [''] + Study::DATA_RELEASE_DELAY_REASONS_STANDARD) %>
           <%
             group.change_select_options_for(:data_release_delay_reason, when: :data_release_study_type_id, values: {
               DataReleaseStudyType.assay_types.map(&:id)     => [ '' ] + Study::DATA_RELEASE_DELAY_REASONS_ASSAY,
