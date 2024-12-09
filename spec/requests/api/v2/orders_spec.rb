@@ -413,5 +413,229 @@ describe 'Orders API', with: :api_v2 do
         end
       end
     end
+
+    context 'with a read-only attribute in the payload' do
+      context 'with order_type' do
+        let(:disallowed_value) { 'order_type' }
+        let(:payload) { { data: { type: resource_type, attributes: { order_type: 'read-only' } } } }
+
+        it_behaves_like 'a POST request with a disallowed value'
+      end
+
+      context 'with request_options' do
+        let(:disallowed_value) { 'request_options' }
+        let(:payload) { { data: { type: resource_type, attributes: { request_options: 'read-only' } } } }
+
+        it_behaves_like 'a POST request with a disallowed value'
+      end
+
+      context 'with request_types' do
+        let(:disallowed_value) { 'request_types' }
+        let(:payload) { { data: { type: resource_type, attributes: { request_types: 'read-only' } } } }
+
+        it_behaves_like 'a POST request with a disallowed value'
+      end
+
+      context 'with uuid' do
+        let(:disallowed_value) { 'uuid' }
+        let(:payload) { { data: { type: resource_type, attributes: { uuid: 'read-only' } } } }
+
+        it_behaves_like 'a POST request with a disallowed value'
+      end
+    end
+
+    context 'with a read-only relationship in the payload' do
+      context 'with project' do
+        let(:disallowed_value) { 'project' }
+        let(:payload) do
+          { data: { type: resource_type, relationships: { project: { data: { id: '1', type: 'projects' } } } } }
+        end
+
+        it_behaves_like 'a POST request with a disallowed value'
+      end
+
+      context 'with study' do
+        let(:disallowed_value) { 'study' }
+        let(:payload) do
+          { data: { type: resource_type, relationships: { study: { data: { id: '1', type: 'studies' } } } } }
+        end
+
+        it_behaves_like 'a POST request with a disallowed value'
+      end
+
+      context 'with user' do
+        let(:disallowed_value) { 'user' }
+        let(:payload) do
+          { data: { type: resource_type, relationships: { user: { data: { id: '1', type: 'users' } } } } }
+        end
+
+        it_behaves_like 'a POST request with a disallowed value'
+      end
+    end
+
+    context 'without a required attribute' do
+      let(:project) { create(:project) }
+      let(:study) { create(:study) }
+      let(:request_types) { create_list(:request_type, 1, asset_type: 'Well') }
+      let(:template) { create(:submission_template, request_types:, project:, study:) }
+      let(:assets) { create(:plate_with_tagged_wells).wells[0..2] }
+      let(:user) { create(:user) }
+
+      context 'without a submission_template_uuid' do
+        let(:payload) do
+          {
+            data: {
+              type: resource_type,
+              attributes: {
+                submission_template_attributes: {
+                  asset_uuids: assets.map(&:uuid),
+                  request_options: {
+                    no_options: true
+                  },
+                  user_uuid: user.uuid
+                }
+              }
+            }
+          }
+        end
+
+        it 'fails to create the resource' do
+          # Not providing a submission_template_uuid is a valid use case as we default to the normal JSONAPI::Resources
+          # behaviour, but it will fail validation on the new Order model as it needs certain attributes set, but
+          # they're all read-only on the API.
+          api_post base_endpoint, payload
+
+          expect(json['errors'].map { |err| err['detail'] }).to match_array(
+            [
+              'user - must exist',
+              "study - can't be blank",
+              "project - can't be blank",
+              "request_types - can't be blank"
+            ]
+          )
+        end
+      end
+
+      context 'without submission_template_attributes' do
+        let(:payload) { { data: { type: resource_type, attributes: { submission_template_uuid: template.uuid } } } }
+        let(:error_detail_message) { 'The required parameter, submission_template_attributes, is missing.' }
+
+        it_behaves_like 'a bad POST request with a specific error'
+      end
+
+      context 'without submission_template_attributes.asset_uuids' do
+        let(:payload) do
+          {
+            data: {
+              type: resource_type,
+              attributes: {
+                submission_template_uuid: template.uuid,
+                submission_template_attributes: {
+                  request_options: {
+                    no_options: true
+                  },
+                  user_uuid: user.uuid
+                }
+              }
+            }
+          }
+        end
+        let(:error_detail_message) { 'The required parameter, submission_template_attributes.asset_uuids, is missing.' }
+
+        it_behaves_like 'a bad POST request with a specific error'
+      end
+
+      context 'without submission_template_attributes.request_options' do
+        let(:payload) do
+          {
+            data: {
+              type: resource_type,
+              attributes: {
+                submission_template_uuid: template.uuid,
+                submission_template_attributes: {
+                  asset_uuids: assets.map(&:uuid),
+                  user_uuid: user.uuid
+                }
+              }
+            }
+          }
+        end
+        let(:error_detail_message) do
+          'The required parameter, submission_template_attributes.request_options, is missing.'
+        end
+
+        it_behaves_like 'a bad POST request with a specific error'
+      end
+
+      context 'without submission_template_attributes.user_uuid' do
+        let(:payload) do
+          {
+            data: {
+              type: resource_type,
+              attributes: {
+                submission_template_uuid: template.uuid,
+                submission_template_attributes: {
+                  asset_uuids: assets.map(&:uuid),
+                  request_options: {
+                    no_options: true
+                  }
+                }
+              }
+            }
+          }
+        end
+        let(:error_detail_message) { 'The required parameter, submission_template_attributes.user_uuid, is missing.' }
+
+        it_behaves_like 'a bad POST request with a specific error'
+      end
+    end
+
+    context 'with an invalid UUID' do
+      context 'with an invalid asset_uuid' do
+        let(:payload) do
+          {
+            data: {
+              type: resource_type,
+              attributes: {
+                submission_template_uuid: template.uuid,
+                submission_template_attributes: {
+                  asset_uuids: ['not-a-valid-uuid'],
+                  request_options: {
+                    no_options: true
+                  },
+                  user_uuid: user.uuid
+                }
+              }
+            }
+          }
+        end
+        let(:error_detail_message) { 'not-a-valid-uuid is not a valid value for asset_uuids.' }
+
+        it_behaves_like 'a bad POST request with a specific error'
+      end
+
+      context 'with an invalid user_uuid' do
+        let(:payload) do
+          {
+            data: {
+              type: resource_type,
+              attributes: {
+                submission_template_uuid: template.uuid,
+                submission_template_attributes: {
+                  asset_uuids: assets.map(&:uuid),
+                  request_options: {
+                    no_options: true
+                  },
+                  user_uuid: 'not-a-valid-uuid'
+                }
+              }
+            }
+          }
+        end
+        let(:error_detail_message) { 'not-a-valid-uuid is not a valid value for user_uuid.' }
+
+        it_behaves_like 'a bad POST request with a specific error'
+      end
+    end
   end
 end

@@ -64,7 +64,7 @@ module Api
           assets: extract_assets(attributes, &),
           autodetect_projects: attributes[:autodetect_projects],
           autodetect_studies: attributes[:autodetect_studies],
-          request_options: require_attribute(attributes, :request_options),
+          request_options: require_attribute(attributes, :request_options, &),
           user: extract_user(attributes, &)
         }.compact
       end
@@ -74,9 +74,9 @@ module Api
         return nil if asset_uuids.nil?
 
         asset_uuids.map do |uuid|
-          uuid = Uuid.find_by(external_id: uuid)
-          yield JSONAPI::Exceptions::InvalidFieldValue.new(:asset_uuids, uuid).errors if uuid.nil?
-          uuid&.resource
+          uuid_obj = Uuid.find_by(external_id: uuid)
+          yield JSONAPI::Exceptions::InvalidFieldValue.new(:asset_uuids, uuid).errors if uuid_obj.nil?
+          uuid_obj&.resource
         end
       end
 

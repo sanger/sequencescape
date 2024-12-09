@@ -50,6 +50,22 @@ shared_examples 'an unprocessable POST request with a specific error' do
   end
 end
 
+shared_examples 'a bad POST request with a specific error' do
+  before { api_post base_endpoint, payload }
+
+  it 'does not create a new resource' do
+    expect { api_post base_endpoint, payload }.not_to change(model_class, :count)
+  end
+
+  it 'responds with unprocessable_entity' do
+    expect(response).to have_http_status(:bad_request)
+  end
+
+  it 'specifies the expected error message' do
+    expect(json.dig('errors', 0, 'detail')).to eq(error_detail_message)
+  end
+end
+
 shared_examples 'a GET request including a has_one relationship' do |related_name|
   before { api_get "#{base_endpoint}/#{resource.id}?include=#{related_name}" }
 
