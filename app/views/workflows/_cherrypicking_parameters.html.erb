@@ -1,0 +1,28 @@
+<p>Choose a strategy below:</p>
+
+<div class="card-columns">
+
+  <div class="card" data-group='cherrypick[action]'>
+    <div class="card-body">
+      <h5 class="card-title">Concentration</h5>
+      <%= render partial: 'cherrypicking_concentration_by_nano_grams_per_micro_litre' %>
+    </div>
+  </div>
+
+  <div class="card" data-group='cherrypick[action]'>
+    <div class="card-body">
+      <h5 class="card-title">Amount</h5>
+      <%= render partial: 'cherrypicking_quantity_by_nano_grams' %>
+    </div>
+  </div>
+
+  <div class="card" data-group='cherrypick[action]'>
+    <div class="card-body">
+      <h5 class="card-title">Volume</h5>
+      <%= render partial: 'cherrypicking_volume_by_micro_litre' %>
+    </div>
+  </div>
+
+</div>
+
+<%= vite_javascript_tag 'cherrypick_parameters' %>
