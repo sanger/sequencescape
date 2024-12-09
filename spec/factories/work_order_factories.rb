@@ -6,7 +6,8 @@ FactoryBot.define do
   end
 
   factory :work_order do
-    work_order_type
+    requests { create_list(:customer_request, 1) }
     state { 'pending' }
+    work_order_type
   end
 end

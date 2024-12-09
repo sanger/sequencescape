@@ -4,15 +4,15 @@ require 'rails_helper'
 require './app/resources/api/v2/lane_resource'
 
 RSpec.describe Api::V2::LaneResource, type: :resource do
-  subject { described_class.new(resource_model, {}) }
+  subject(:resource) { described_class.new(resource_model, {}) }
 
   let(:resource_model) { build_stubbed(:lane) }
 
   # Test attributes
   it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
-    expect(subject).to have_attribute :uuid
-    expect(subject).not_to have_updatable_field(:id)
-    expect(subject).not_to have_updatable_field(:uuid)
+    expect(resource).to have_attribute :uuid
+    expect(resource).not_to have_updatable_field(:id)
+    expect(resource).not_to have_updatable_field(:uuid)
   end
 
   # Updatable fields

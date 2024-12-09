@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
-require './spec/requests/api/v2/shared_examples/post_requests'
+require './spec/requests/api/v2/shared_examples/requests'
 
 describe 'State Changes API', with: :api_v2 do
   let(:model_class) { StateChange }
@@ -70,17 +70,8 @@ describe 'State Changes API', with: :api_v2 do
       end
 
       context 'with included relationships' do
-        context 'with user' do
-          let(:related_name) { 'user' }
-
-          it_behaves_like 'a POST request including a has_one relationship'
-        end
-
-        context 'with target' do
-          let(:related_name) { 'target' }
-
-          it_behaves_like 'a POST request including a has_one relationship'
-        end
+        it_behaves_like 'a GET request including a has_one relationship', 'user'
+        it_behaves_like 'a GET request including a has_one relationship', 'target'
       end
     end
   end
@@ -224,7 +215,7 @@ describe 'State Changes API', with: :api_v2 do
 
     context 'with a read-only attribute in the payload' do
       context 'with previous_state' do
-        let(:disallowed_attribute) { 'previous_state' }
+        let(:disallowed_value) { 'previous_state' }
         let(:payload) do
           {
             'data' => {
@@ -234,11 +225,11 @@ describe 'State Changes API', with: :api_v2 do
           }
         end
 
-        it_behaves_like 'a POST request with a disallowed attribute'
+        it_behaves_like 'a POST request with a disallowed value'
       end
 
       context 'with uuid' do
-        let(:disallowed_attribute) { 'uuid' }
+        let(:disallowed_value) { 'uuid' }
         let(:payload) do
           {
             'data' => {
@@ -248,7 +239,7 @@ describe 'State Changes API', with: :api_v2 do
           }
         end
 
-        it_behaves_like 'a POST request with a disallowed attribute'
+        it_behaves_like 'a POST request with a disallowed value'
       end
     end
 
