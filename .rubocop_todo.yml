@@ -294,7 +294,7 @@ Lint/UselessAssignment:
 # Configuration parameters: AllowedMethods, AllowedPatterns, CountRepeatedAttributes, Max.
 Metrics/AbcSize:
   Exclude:
-    - 'app/controllers/api/v2/transfers/transfers_controller.rb'
+    - 'app/controllers/api/v2/transfers_controller.rb'
     - 'app/jobs/export_pool_xp_to_traction_job.rb'
     - 'app/sample_manifest_excel/sample_manifest_excel/manifest_type_list.rb'
 
@@ -717,7 +717,7 @@ RSpec/ExampleLength:
     - 'spec/requests/api/v2/shared_examples/api_key_authenticatable.rb'
     - 'spec/requests/api/v2/tag_layout_templates_spec.rb'
     - 'spec/requests/api/v2/tag_layouts_spec.rb'
-    - 'spec/requests/api/v2/transfers/transfers_spec.rb'
+    - 'spec/requests/api/v2/transfers_spec.rb'
     - 'spec/requests/api/v2/tube_purposes_spec.rb'
     - 'spec/requests/api/v2/users_spec.rb'
     - 'spec/requests/api/v2/volume_update_spec.rb'
@@ -736,7 +736,6 @@ RSpec/ExampleLength:
     - 'spec/resources/api/v2/sample_metadata_resource_spec.rb'
     - 'spec/resources/api/v2/submission_resource_spec.rb'
     - 'spec/resources/api/v2/tag_group_resource_spec.rb'
-    - 'spec/resources/api/v2/transfers/transfer_resource_spec.rb'
     - 'spec/resources/api/v2/tube_rack_resource_spec.rb'
     - 'spec/resources/api/v2/tube_resource_spec.rb'
     - 'spec/sample_manifest_excel/configuration_spec.rb'
@@ -1081,10 +1080,10 @@ RSpec/MultipleExpectations:
     - 'spec/requests/api/v2/submissions_spec.rb'
     - 'spec/requests/api/v2/tag_groups_spec.rb'
     - 'spec/requests/api/v2/tag_layout_templates_spec.rb'
-    - 'spec/requests/api/v2/tag_layouts_spec.rb'
+    - 'spec/requests/api/v2/transfer_request_collections_spec.rb'
     - 'spec/requests/api/v2/transfer_requests_spec.rb'
     - 'spec/requests/api/v2/transfer_templates_spec.rb'
-    - 'spec/requests/api/v2/transfers/transfers_spec.rb'
+    - 'spec/requests/api/v2/transfers_spec.rb'
     - 'spec/requests/api/v2/tube_purposes_spec.rb'
     - 'spec/requests/api/v2/tube_racks_spec.rb'
     - 'spec/requests/api/v2/tubes_spec.rb'
@@ -1190,25 +1189,6 @@ RSpec/NamedSubject:
     - 'spec/models/transfer_request_spec.rb'
     - 'spec/models/well_spec.rb'
     - 'spec/models/work_order_spec.rb'
-    - 'spec/resources/api/v2/aliquot_resource_spec.rb'
-    - 'spec/resources/api/v2/comment_resource_spec.rb'
-    - 'spec/resources/api/v2/lane_resource_spec.rb'
-    - 'spec/resources/api/v2/lot_resource_spec.rb'
-    - 'spec/resources/api/v2/lot_type_resource_spec.rb'
-    - 'spec/resources/api/v2/order_resource_spec.rb'
-    - 'spec/resources/api/v2/pre_capture_pool_resource_spec.rb'
-    - 'spec/resources/api/v2/primer_panel_resource_spec.rb'
-    - 'spec/resources/api/v2/project_resource_spec.rb'
-    - 'spec/resources/api/v2/purpose_resource_spec.rb'
-    - 'spec/resources/api/v2/qcable_resource_spec.rb'
-    - 'spec/resources/api/v2/receptacle_resource_spec.rb'
-    - 'spec/resources/api/v2/request_resource_spec.rb'
-    - 'spec/resources/api/v2/request_type_resource_spec.rb'
-    - 'spec/resources/api/v2/sample_resource_spec.rb'
-    - 'spec/resources/api/v2/study_resource_spec.rb'
-    - 'spec/resources/api/v2/submission_resource_spec.rb'
-    - 'spec/resources/api/v2/tag_group_resource_spec.rb'
-    - 'spec/resources/api/v2/tube_resource_spec.rb'
 
 # Offense count: 6
 RSpec/RepeatedDescription:
@@ -2187,7 +2167,7 @@ Style/StringConcatenation:
 Style/SuperArguments:
   Exclude:
     - 'app/api/model_extensions/order.rb'
-    - 'app/controllers/api/v2/transfers/transfers_controller.rb'
+    - 'app/controllers/api/v2/transfers_controller.rb'
     - 'app/models/broadcast_event/plate_cherrypicked.rb'
     - 'app/models/pipeline.rb'
     - 'app/models/plate_purpose/additional_input.rb'

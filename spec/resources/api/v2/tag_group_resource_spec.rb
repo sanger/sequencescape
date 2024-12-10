@@ -4,7 +4,7 @@ require 'rails_helper'
 require './app/resources/api/v2/tag_group_resource'
 
 RSpec.describe Api::V2::TagGroupResource, type: :resource do
-  subject { described_class.new(resource_model, {}) }
+  subject(:resource) { described_class.new(resource_model, {}) }
 
   let(:resource_model) { build_stubbed(:tag_group, tags:) }
   let(:tags) do
@@ -18,12 +18,12 @@ RSpec.describe Api::V2::TagGroupResource, type: :resource do
 
   # Test attributes
   it 'exposes attributes', :aggregate_failures do
-    expect(subject).to have_attribute :uuid
-    expect(subject).to have_attribute :name
-    expect(subject).to have_attribute :tags
-    expect(subject).not_to have_updatable_field(:id)
-    expect(subject).not_to have_updatable_field(:uuid)
-    expect(subject).not_to have_updatable_field(:name)
+    expect(resource).to have_attribute :uuid
+    expect(resource).to have_attribute :name
+    expect(resource).to have_attribute :tags
+    expect(resource).not_to have_updatable_field(:id)
+    expect(resource).not_to have_updatable_field(:uuid)
+    expect(resource).not_to have_updatable_field(:name)
   end
 
   # Updatable fields
@@ -43,7 +43,7 @@ RSpec.describe Api::V2::TagGroupResource, type: :resource do
     # aliquots. This will ease the transition to each sequence only being registered
     # once.
     it 'returns a sorted array of tag information' do
-      expect(subject.tags).to eq(
+      expect(resource.tags).to eq(
         [{ index: 1, oligo: 'AAA' }, { index: 2, oligo: 'TTT' }, { index: 3, oligo: 'CCC' }, { index: 4, oligo: 'GGG' }]
       )
     end
