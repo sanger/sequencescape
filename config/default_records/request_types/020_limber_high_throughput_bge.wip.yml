@@ -1,0 +1,37 @@
+---
+# Y24-366
+limber_bge_pcr_free:
+  asset_type: Well
+  order: 1
+  request_class_name: IlluminaHtp::Requests::StdLibraryRequest
+  billable: true
+  product_line_name: Illumina-HTP
+  name: Limber BGE PCR Free
+  acceptable_purposes:
+    - BGE Cherrypick
+  library_types:
+    - BGE
+# For moving PCR Free plates to ISC plates
+# e.g., BGE Lib XP2 -> BGE LIB PCR
+limber_bge_transition:
+  asset_type: Well
+  order: 1
+  billable: true
+  product_line_name: Illumina-HTP
+  name: Limber BGE Transition
+  request_class_name: IlluminaHtp::Requests::StdLibraryRequest
+  acceptable_purposes:
+    - BGE Lib XP2
+  library_types:
+    - BGE
+limber_bge_isc:
+  asset_type: Well
+  order: 1
+  billable: true
+  product_line_name: Illumina-HTP
+  name: Limber BGE ISC
+  request_class_name: Pulldown::Requests::IscLibraryRequest
+  acceptable_purposes:
+    - BGE Lib PCR XP
+  library_types:
+    - BGE
