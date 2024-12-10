@@ -93,12 +93,6 @@ class PlatePurpose < Purpose
       cherrypickable_target: true,
       type: 'PlatePurpose::Input'
     ).find_or_create_by!(name: 'Stock Plate')
-
-    PlatePurpose.create_with(
-      stock_plate: true,
-      cherrypickable_target: true,
-      type: 'PlatePurpose::Input'
-    ).find_or_create_by!(name: 'Library Stock Plate')
   end
 
   def size

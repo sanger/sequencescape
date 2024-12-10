@@ -56,6 +56,10 @@ LBC Cherrypick:
 LB Lib PCR-XP:
   stock_plate: false
 
+# A new plate purpose for multiplexed sequencing submissions,
+# avoiding FC on library quant submission.
+Library Stock Plate: *limber_input_96
+
 # RVI Bait Capture
 RVI Cherrypick:
   cherrypickable_target: true

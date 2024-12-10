@@ -32,4 +32,15 @@ ActiveRecord::Base.transaction do
     stock_plate: true,
     barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate')
   )
+
+  # A new plate purpose for multiplexed sequencing submissions,
+  # avoiding FC on library quant submission.
+  PlatePurpose.create!(
+    name: 'Library Stock Plate',
+    target_type: 'Plate',
+    barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
+    size: 96,
+    stock_plate: true,
+    type: 'PlatePurpose::Input'
+  )
 end
