@@ -508,7 +508,7 @@ describe 'Orders API', with: :api_v2 do
           # they're all read-only on the API.
           api_post base_endpoint, payload
 
-          expect(json['errors'].pluck('detail')).to contain_exactly(*expected_error_details)
+          expect(json['errors'].pluck('detail')).to match_array(expected_error_details)
         end
       end
 
