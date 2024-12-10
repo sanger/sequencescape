@@ -14,7 +14,12 @@ module Parsers
     # This converts everything to \n before processing
     cleaned_content = LinefeedFix.scrub!(content.dup)
     csv = parse_with_fallback_encodings(cleaned_content)
-    parser_class = PARSERS.detect { |parser| parser.parses?(csv) }
+    parser_class =
+      PARSERS.detect do |parser|
+        parser.parses?(csv)
+      rescue StandardError
+        false
+      end
     parser_class&.new(csv)
   end
 
