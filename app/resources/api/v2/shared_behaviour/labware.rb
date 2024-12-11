@@ -15,13 +15,14 @@ module Api
 
         included do
           # Associations:
-          has_one :purpose, readonly: true, foreign_key: :plate_purpose_id, class_name: 'Purpose'
+          has_one :purpose, write_once: true, foreign_key: :plate_purpose_id, class_name: 'Purpose'
           has_one :custom_metadatum_collection, foreign_key_on: :related
 
-          has_many :samples, readonly: true
-          has_many :studies, readonly: true
-          has_many :projects, readonly: true
+          has_many :samples, write_once: true
+          has_many :studies, write_once: true
+          has_many :projects, write_once: true
           has_many :comments, readonly: true
+          has_many :qc_files, readonly: true
 
           # If we are using api/v2/labware to pull back a list of labware, we may
           # expect a mix of plates and tubes. If we want to eager load their
@@ -64,7 +65,7 @@ module Api
         end
 
         # Custom methods
-        # These shouldn't be used for business logic, and a more about
+        # These shouldn't be used for business logic, and are more about
         # I/O and isolating implementation details.
         def labware_barcode
           {

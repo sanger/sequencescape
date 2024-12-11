@@ -25,7 +25,7 @@ module Api
 
       # @!attribute [r] name
       #   @return [String] the name of the barcode printer.
-      attribute :name
+      attribute :name, readonly: true
 
       # @!attribute [r] uuid
       #   @return [String] the UUID of the barcode printer.
