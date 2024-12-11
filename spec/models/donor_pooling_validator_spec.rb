@@ -131,7 +131,7 @@ RSpec.describe BulkSubmission, with: :uploader do
   end
 
   context 'with total number of samples in the submission' do
-    let(:total_number_of_samples) { 5 }
+    let(:total_number_of_samples) { described_class::SCRNA_CORE_MAX_TOTAL_NUMBER_OF_SAMPLES / 2 }
     let(:number_of_study_project_groups) { 2 }
     let(:tubes) { create_list(:sample_tube, total_number_of_samples) }
     let(:csv_data) do
@@ -152,6 +152,10 @@ RSpec.describe BulkSubmission, with: :uploader do
         described_class::SCRNA_CORE_MIN_TOTAL_NUMBER_OF_SAMPLES,
         described_class::SCRNA_CORE_MAX_TOTAL_NUMBER_OF_SAMPLES
       )
+    end
+
+    context 'when the total number of samples is between minimum and maximum allowed' do
+      it { is_expected.to be_valid }
     end
 
     context 'when the total number of samples is minimum allowed' do
