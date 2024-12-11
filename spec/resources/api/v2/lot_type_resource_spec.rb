@@ -11,20 +11,20 @@ RSpec.describe Api::V2::LotTypeResource, type: :resource do
 
   # Test attributes
   it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
-    expect(subject).to have_attribute :uuid
-    expect(subject).to have_attribute :name
-    expect(subject).to have_attribute :template_type
-    expect(subject).not_to have_updatable_field(:id)
-    expect(subject).not_to have_updatable_field(:uuid)
-    expect(subject).not_to have_updatable_field(:name)
-    expect(subject).not_to have_updatable_field(:template_type)
-    expect(subject).to have_one(:target_purpose).with_class_name('Purpose')
+    expect(resource).to have_attribute :uuid
+    expect(resource).to have_attribute :name
+    expect(resource).to have_attribute :template_type
+    expect(resource).not_to have_updatable_field(:id)
+    expect(resource).not_to have_updatable_field(:uuid)
+    expect(resource).not_to have_updatable_field(:name)
+    expect(resource).not_to have_updatable_field(:template_type)
+    expect(resource).to have_a_write_once_has_one(:target_purpose).with_class_name('Purpose')
   end
 
   # Custom method tests
   # Add tests for any custom methods you've added.
   describe '#template_type' do
-    subject { resource.template_type }
+    subject(:template_type) { resource.template_type }
 
     context 'with a TagLayoutTemplate' do
       let(:template_class) { 'TagLayoutTemplate' }

@@ -2,10 +2,6 @@
 
 module Api
   module V2
-    # @todo This documentation does not yet include a detailed description of what this resource represents.
-    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
-    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
-    #
     # @note Access this resource via the `/api/v2/tube_racks/` endpoint.
     #
     # Provides a JSON:API representation of {TubeRack}.
@@ -14,41 +10,32 @@ module Api
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class TubeRackResource < BaseResource
-      # Constants...
-
-      # TODO: Here be dragons! This resource is mutable and can be created via
-      #       the JSON API. However the asset_creation record is not generated
-      #       as we would be relying on the request to tell us who requested it.
-      #       Instead this should be done as part of adding authentication to
-      #       the API in the security OKR.
-
-      # model_name / model_hint if required
-
+      # NB. This resource is mutable and can be created via the JSON API.
       default_includes :uuid_object, :barcodes
 
-      # Associations:
+      # Relationships
+      has_many :comments, readonly: true
       has_many :racked_tubes
       has_many :comments, readonly: true
-      # TODO: change to purpose_id
+      # TODO: refactor plate_purpose_id to purpose_id throughout repo
       has_one :purpose, foreign_key: :plate_purpose_id, class_name: 'TubeRackPurpose'
       has_many :parents, readonly: true, polymorphic: true
       has_many :state_changes, readonly: true
       has_one :custom_metadatum_collection, foreign_key_on: :related
       has_many :ancestors, readonly: true, polymorphic: true
-      # NB. no child or descendent associations as tube racks can't have children (tubes have children).
-      # NB. no direct_submissions association as tube racks are currently not submitted.
+      # TODO: do we need descendants? might have to delegate to racked tubes
 
       # Attributes
-      attribute :uuid, readonly: true
-      attribute :created_at, readonly: true
-      attribute :updated_at, readonly: true
       attribute :labware_barcode, readonly: true
-      attribute :state, readonly: true
-      attribute :size
+      attribute :size, readonly: true
       attribute :number_of_rows, readonly: true
       attribute :number_of_columns, readonly: true
       attribute :name, delegate: :display_name, readonly: true
-      attribute :tube_locations
+      attribute :tube_locations, readonly: true
+      attribute :uuid, readonly: true
+
+      attribute :created_at, readonly: true
+      attribute :updated_at, readonly: true
 
       # Filters
       filter :barcode, apply: ->(records, value, _options) { records.with_barcode(value) }
@@ -66,12 +53,9 @@ module Api
              apply: lambda { |records, value, _options| records.where('labware.created_at > ?', value[0].to_date) }
       filter :updated_at_gt,
              apply: lambda { |records, value, _options| records.where('labware.updated_at > ?', value[0].to_date) }
-      # TODO: do we need scope for include_used? no direct child labwares here so would have to check for racked tubes
+      # TODO: do we need scope for include_used? would have to delegate to racked tubes
 
-      # Class method overrides
-      def fetchable_fields
-        super - [:tube_locations]
-      end
+      # Field Methods
 
       # Tube locations should be received as:
       # { A1: { uuid: 'a1_tube_uuid' }, B1: { uuid: 'b1_tube_uuid' }, ... }
@@ -85,9 +69,6 @@ module Api
         end
       end
 
-      # Custom methods
-      # These shouldn't be used for business logic, and are more about
-      # I/O and isolating implementation details.
       def labware_barcode
         {
           'ean13_barcode' => _model.ean13_barcode,

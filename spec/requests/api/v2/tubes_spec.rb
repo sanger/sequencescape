@@ -2,13 +2,16 @@
 
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
+require './spec/requests/api/v2/shared_examples/requests'
 
 describe 'Tubes API', with: :api_v2 do
-  let(:base_endpoint) { '/api/v2/tubes' }
+  let(:model_class) { Tube }
+  let(:base_endpoint) { "/api/v2/#{resource_type}" }
+  let(:resource_type) { model_class.name.demodulize.pluralize.underscore }
 
   it_behaves_like 'ApiKeyAuthenticatable'
 
-  context 'with multiple tubes' do
+  context 'with a list of resources' do
     before do
       create_list(:tube, 1)
       create_list(:sample_tube, 2)
@@ -16,26 +19,64 @@ describe 'Tubes API', with: :api_v2 do
       create_list(:multiplexed_library_tube, 1)
     end
 
-    it 'sends a list of tubes' do
-      api_get base_endpoint
+    describe '#GET all resources' do
+      before { api_get base_endpoint }
 
-      # test for the 200 status-code
-      expect(response).to have_http_status(:success)
+      it 'responds with a success http code' do
+        expect(response).to have_http_status(:success)
+      end
 
-      # check to make sure the right amount of messages are returned
-      expect(json['data'].length).to eq(5)
+      it 'returns all the resources' do
+        expect(json['data'].length).to eq(5)
+      end
     end
-
-    # Check filters, ESPECIALLY if they aren't simple attribute filters
   end
 
-  context 'with a tube' do
-    let(:resource_model) { create(:tube) }
+  context 'with a single resource' do
+    describe '#GET resource by ID' do
+      let(:resource) { create(:sample_tube) }
 
-    it 'sends an individual tube' do
-      api_get "#{base_endpoint}/#{resource_model.id}"
-      expect(response).to have_http_status(:success)
-      expect(json.dig('data', 'type')).to eq('tubes')
+      context 'without included relationships' do
+        before { api_get "#{base_endpoint}/#{resource.id}" }
+
+        it 'responds with a success http code' do
+          expect(response).to have_http_status(:success)
+        end
+
+        it 'returns the resource with the correct id' do
+          expect(json.dig('data', 'id')).to eq(resource.id.to_s)
+        end
+
+        it 'returns the resource with the correct type' do
+          expect(json.dig('data', 'type')).to eq(resource_type)
+        end
+
+        it 'returns a sibling_tubes attribute' do
+          # Mocking sibling tubes is hard, but we can at least check that the attribute is in the response.
+          expect(json.dig('data', 'attributes', 'sibling_tubes')).to be_nil
+        end
+
+        it 'returns a reference to the aliquots relationship' do
+          expect(json.dig('data', 'relationships', 'aliquots')).to be_present
+        end
+
+        it 'returns a reference to the receptacle relationship' do
+          expect(json.dig('data', 'relationships', 'receptacle')).to be_present
+        end
+
+        it 'returns a reference to the transfer_requests_as_target relationship' do
+          expect(json.dig('data', 'relationships', 'transfer_requests_as_target')).to be_present
+        end
+
+        it 'does not include attributes for related resources' do
+          expect(json['included']).not_to be_present
+        end
+      end
+
+      context 'with included relationships' do
+        it_behaves_like 'a GET request including a has_many relationship', 'aliquots'
+        it_behaves_like 'a GET request including a has_one relationship', 'receptacle'
+      end
     end
   end
 end
