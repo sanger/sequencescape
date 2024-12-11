@@ -38,6 +38,7 @@ module Submission::ValidationsByTemplateName
     when SCRNA_CORE_CDNA_PREP_GEM_X_5P
       validate_consistent_column_value(HEADER_NUM_SAMPLES)
       validate_consistent_column_value(HEADER_CELLS_PER_CHIP_WELL)
+      validate_scrna_core_total_number_of_samples
     end
   end
 
