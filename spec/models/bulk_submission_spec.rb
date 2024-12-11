@@ -269,6 +269,7 @@ describe BulkSubmission, with: :uploader do
 
       it 'generates submissions when processed' do
         subject.process
+        # Two different submission names are specified in the fixture.
         expect(number_submissions_created).to eq(2)
       end
 
@@ -295,8 +296,8 @@ describe BulkSubmission, with: :uploader do
 
       before { SubmissionSerializer.construct!(submission_template_hash) }
 
-      it 'raises an error and sets an error message' do
-        expect { subject.process }.to raise_error(ActiveRecord::RecordInvalid)
+      it 'sets an error message' do
+        expect(subject).not_to be_valid
         expect(subject.errors.messages[:spreadsheet][0]).to eq(
           "Inconsistent values for column 'scrna core number of samples per pool' for Study name 'abc123_study' " \
             "and Project name 'Test project', all rows for a specific study and project must have the same value"
@@ -321,8 +322,8 @@ describe BulkSubmission, with: :uploader do
 
       before { SubmissionSerializer.construct!(submission_template_hash) }
 
-      it 'raises an error and sets an error message' do
-        expect { subject.process }.to raise_error(ActiveRecord::RecordInvalid)
+      it 'sets an error message' do
+        expect(subject).not_to be_valid
         expect(subject.errors.messages[:spreadsheet][0]).to eq(
           "Inconsistent values for column 'scrna core cells per chip well' for Study name 'abc123_study' " \
             "and Project name 'Test project', all rows for a specific study and project must have the same value"
