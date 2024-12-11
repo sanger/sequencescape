@@ -97,10 +97,13 @@ RSpec.describe BulkSubmission, with: :uploader do
   # Helper method to create a new CSV row with the defaults and specified values.
   # The optional row_data hash argument is used to set the values corresponding
   # to the headers. Unspecified fields will be set to nil but they can be set
-  # later directly on the row object. Example:
-  # row = new_csv_row('User Login' => 'user1', 'Barcode' => 'FX12345678')
-  # row['Study Name'] = 'Study 1'
-  # row['Project Name'] = 'Project 1'
+  # later directly on the row object.
+  # @example Create a new row with defaults, specified values, and more later
+  #   row = new_csv_row('User Login' => 'user1', 'Barcode' => 'FX12345678')
+  #   row['Study Name'] = 'Study 1'
+  #   row['Project Name'] = 'Project 1'
+  #   row.to_s
+  #   => "user1,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Project 1,Study 1,,FX12345678,,,,,,,,,,,,,,,,,10,90000\n"
   # @param row_data [Hash] The values to be set in the new row: header => value.
   # @return [CSV::Row] The new CSV row.
   def new_csv_row(**row_data)
@@ -176,7 +179,7 @@ RSpec.describe BulkSubmission, with: :uploader do
       it { is_expected.not_to be_valid }
 
       it 'sets the error message' do
-        bulk_submission.process
+        bulk_submission.process # to run the validations
         expect(bulk_submission.errors[:spreadsheet]).to include(error_message)
       end
     end
@@ -187,7 +190,7 @@ RSpec.describe BulkSubmission, with: :uploader do
       it { is_expected.not_to be_valid }
 
       it 'sets the error message' do
-        bulk_submission.process
+        bulk_submission.process # to run the validations
         expect(bulk_submission.errors[:spreadsheet]).to include(error_message)
       end
     end
