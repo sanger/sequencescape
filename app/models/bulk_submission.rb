@@ -146,60 +146,58 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     csv_content = spreadsheet.read
     @csv_rows = CSV.parse(csv_content.encode!('utf-8', encoding))
 
-    if spreadsheet_valid?
-      submission_details = submission_structure
+    return unless spreadsheet_valid?
+    submission_details = submission_structure
 
-      # Apply any additional validations based on the submission template name
-      apply_additional_validations_by_template_name unless errors.count > 0
+    # Apply any additional validations based on the submission template name
+    apply_additional_validations_by_template_name
+    return if errors.count > 0
 
-      raise ActiveRecord::RecordInvalid, self if errors.count > 0
+    # Within a single transaction process each of the rows of the CSV file as a separate submission.  Any name
+    # fields need to be mapped to IDs, and the 'assets' field needs to be split up and processed if present.
+    # rubocop:todo Metrics/BlockLength
+    ActiveRecord::Base.transaction do
+      submission_details.each do |submissions|
+        submissions.each do |submission_name, orders|
+          user = User.find_by(login: orders.first['user login'])
+          if user.nil?
+            errors.add(
+              :spreadsheet,
+              if orders.first['user login'].nil?
+                "No user specified for #{submission_name}"
+              else
+                "Cannot find user #{orders.first['user login'].inspect}"
+              end
+            )
+            next
+          end
+          begin
+            orders_processed = orders.map(&method(:prepare_order)).compact
 
-      # Within a single transaction process each of the rows of the CSV file as a separate submission.  Any name
-      # fields need to be mapped to IDs, and the 'assets' field needs to be split up and processed if present.
-      # rubocop:todo Metrics/BlockLength
-      ActiveRecord::Base.transaction do
-        submission_details.each do |submissions|
-          submissions.each do |submission_name, orders|
-            user = User.find_by(login: orders.first['user login'])
-            if user.nil?
-              errors.add(
-                :spreadsheet,
-                if orders.first['user login'].nil?
-                  "No user specified for #{submission_name}"
-                else
-                  "Cannot find user #{orders.first['user login'].inspect}"
-                end
+            submission =
+              Submission.create!(
+                name: submission_name,
+                user: user,
+                orders: orders_processed,
+                priority: max_priority(orders)
               )
-              next
-            end
-            begin
-              orders_processed = orders.map(&method(:prepare_order)).compact
+            submission.built!
 
-              submission =
-                Submission.create!(
-                  name: submission_name,
-                  user: user,
-                  orders: orders_processed,
-                  priority: max_priority(orders)
-                )
-              submission.built!
-
-              # Collect successful submissions
-              @submission_ids << submission.id
-              @completed_submissions[
-                submission.id
-              ] = "Submission #{submission.id} built (#{submission.orders.count} orders)"
-            rescue Submission::ProjectValidation::Error => e
-              errors.add :spreadsheet, "There was an issue with a project: #{e.message}"
-            end
+            # Collect successful submissions
+            @submission_ids << submission.id
+            @completed_submissions[
+              submission.id
+            ] = "Submission #{submission.id} built (#{submission.orders.count} orders)"
+          rescue Submission::ProjectValidation::Error => e
+            errors.add :spreadsheet, "There was an issue with a project: #{e.message}"
           end
         end
-
-        # If there are any errors then the transaction needs to be rolled back.
-        raise ActiveRecord::Rollback if errors.present?
       end
-      # rubocop:enable Metrics/BlockLength
+
+      # If there are any errors then the transaction needs to be rolled back.
+      raise ActiveRecord::Rollback if errors.present?
     end
+    # rubocop:enable Metrics/BlockLength
   end
 
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
