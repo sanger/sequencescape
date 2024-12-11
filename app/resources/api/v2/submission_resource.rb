@@ -15,12 +15,6 @@ module Api
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class SubmissionResource < BaseResource
-      # Constants...
-
-      immutable
-
-      # model_name / model_hint if required
-
       default_includes :uuid_object, :sequencing_requests
 
       # Associations:
@@ -38,17 +32,28 @@ module Api
       attribute :used_tags, write_once: true
       attribute :lanes_of_sequencing, write_once: true
 
-      # Filters
-      filter :uuid, apply: ->(records, value, _options) { records.with_uuid(value) }
-
-      # Custom methods
-      # These shouldn't be used for business logic, and a more about
-      # I/O and isolating implementation details.
       def lanes_of_sequencing
         _model.sequencing_requests.size
       end
 
-      # Class method overrides
+      attribute :order_uuids, writeonly: true
+
+      attribute :user_uuid, writeonly: true
+
+      def user_uuid=(value)
+        @model.user = User.find_by(uuid: value)
+      end
+
+      has_one :user, class_name: 'User'
+
+      # Filters
+      filter :uuid, apply: ->(records, value, _options) { records.with_uuid(value) }
+
+      attribute :and_submit, writeonly: true
+
+      def and_submit=(value)
+        # Do nothing -- This attribute is a flag to trigger the submit action.
+      end
     end
   end
 end
