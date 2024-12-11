@@ -11,19 +11,19 @@ RSpec.describe Api::V2::SubmissionResource, type: :resource do
 
   # Test attributes
   it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
-    expect(subject).to have_attribute :uuid
-    expect(subject).to have_attribute :name
-    expect(subject).to have_attribute :used_tags
-    expect(subject).to have_attribute :state
-    expect(subject).to have_attribute :created_at
-    expect(subject).to have_attribute :updated_at
-    expect(subject).to have_attribute :lanes_of_sequencing
-    expect(subject).not_to have_updatable_field(:id)
-    expect(subject).not_to have_updatable_field(:uuid)
-    expect(subject).not_to have_updatable_field(:state)
-    expect(subject).not_to have_updatable_field(:created_at)
-    expect(subject).not_to have_updatable_field(:updated_at)
-    expect(subject).not_to have_updatable_field :used_tags
+    expect(resource).to have_attribute :uuid
+    expect(resource).to have_attribute :name
+    expect(resource).to have_attribute :used_tags
+    expect(resource).to have_attribute :state
+    expect(resource).to have_attribute :created_at
+    expect(resource).to have_attribute :updated_at
+    expect(resource).to have_attribute :lanes_of_sequencing
+    expect(resource).not_to have_updatable_field(:id)
+    expect(resource).not_to have_updatable_field(:uuid)
+    expect(resource).not_to have_updatable_field(:state)
+    expect(resource).not_to have_updatable_field(:created_at)
+    expect(resource).not_to have_updatable_field(:updated_at)
+    expect(resource).not_to have_updatable_field :used_tags
   end
 
   # Updatable fields

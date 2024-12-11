@@ -15,31 +15,19 @@ module Api
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class TransferRequestResource < BaseResource
-      # Constants...
-
       immutable
 
-      # model_name / model_hint if required
-
       default_includes :uuid_object
-
-      # Associations:
-      has_one :target_asset, foreign_key: :target_asset_id, class_name: 'Receptacle'
-      has_one :source_asset, relation_name: 'asset', foreign_key: :asset_id, class_name: 'Receptacle'
-      has_one :submission, foreign_key: :submission_id, class_name: 'Submission'
 
       # Attributes
       attribute :uuid, readonly: true
       attribute :state, readonly: true
       attribute :volume, readonly: true
 
-      # Filters
-
-      # Custom methods
-      # These shouldn't be used for business logic, and a more about
-      # I/O and isolating implementation details.
-
-      # Class method overrides
+      # Relationships
+      has_one :source_asset, relation_name: 'asset', foreign_key: :asset_id, class_name: 'Receptacle', readonly: true
+      has_one :submission, foreign_key: :submission_id, class_name: 'Submission', readonly: true
+      has_one :target_asset, foreign_key: :target_asset_id, class_name: 'Receptacle', readonly: true
     end
   end
 end

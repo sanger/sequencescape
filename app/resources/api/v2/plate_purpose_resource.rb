@@ -6,6 +6,7 @@ module Api
     # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
     # @todo This documentation does not yet include any example usage of the API via cURL or similar.
     #
+    # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
     # @note Access this resource via the `/api/v2/plate_purposes/` endpoint.
     #
     # Provides a JSON:API representation of {PlatePurpose}.
@@ -50,7 +51,7 @@ module Api
 
       # @!attribute [r] uuid
       #   @return [String] the UUID of the plate purpose.
-      attribute :uuid
+      attribute :uuid, readonly: true
 
       # Sets the asset shape of the plate purpose by name if given.
       # 'asset_shape' can be given via the Limber purpose configuration and
@@ -87,22 +88,6 @@ module Api
       # @return [Boolean] whether the plate purpose is an input plate.
       def input_plate
         @model.type == 'PlatePurpose::Input'
-      end
-
-      # Gets the list of fields which are creatable on a PlatePurpose.
-      #
-      # @param _context [JSONAPI::Resource::Context] not used
-      # @return [Array<Symbol>] the list of creatable fields.
-      def self.creatable_fields(_context)
-        super - %i[uuid] # Do not allow creating with any readonly fields
-      end
-
-      # Gets the list of fields which are updatable on an existing PlatePurpose.
-      #
-      # @param _context [JSONAPI::Resource::Context] not used
-      # @return [Array<Symbol>] the list of updatable fields.
-      def self.updatable_fields(_context)
-        [] # Do not allow updating any fields.
       end
     end
   end
