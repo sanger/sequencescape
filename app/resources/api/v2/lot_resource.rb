@@ -28,7 +28,7 @@ module Api
 
       # Attributes
       attribute :uuid, readonly: true
-      attribute :lot_number, readonly: true
+      attribute :lot_number, write_once: true
 
       # Filters
 

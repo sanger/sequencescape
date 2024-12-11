@@ -4,21 +4,21 @@ require 'rails_helper'
 require './app/resources/api/v2/request_type_resource'
 
 RSpec.describe Api::V2::RequestTypeResource, type: :resource do
-  subject { described_class.new(resource_model, {}) }
+  subject(:resource) { described_class.new(resource_model, {}) }
 
   let(:resource_model) { build_stubbed(:request_type) }
 
   # Test attributes
   it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
-    expect(subject).to have_attribute :uuid
-    expect(subject).to have_attribute :name
-    expect(subject).to have_attribute :key
-    expect(subject).to have_attribute :for_multiplexing
-    expect(subject).not_to have_updatable_field(:id)
-    expect(subject).not_to have_updatable_field(:uuid)
-    expect(subject).not_to have_updatable_field(:name)
-    expect(subject).not_to have_updatable_field(:key)
-    expect(subject).not_to have_updatable_field(:for_multiplexing)
+    expect(resource).to have_attribute :uuid
+    expect(resource).to have_attribute :name
+    expect(resource).to have_attribute :key
+    expect(resource).to have_attribute :for_multiplexing
+    expect(resource).not_to have_updatable_field(:id)
+    expect(resource).not_to have_updatable_field(:uuid)
+    expect(resource).not_to have_updatable_field(:name)
+    expect(resource).not_to have_updatable_field(:key)
+    expect(resource).not_to have_updatable_field(:for_multiplexing)
   end
 
   # Updatable fields

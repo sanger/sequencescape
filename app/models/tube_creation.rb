@@ -30,8 +30,4 @@ class TubeCreation < AssetCreation
   def create_children!
     self.children = Array.new(parent.pools.size) { child_purpose.create! }
   end
-
-  def record_creation_of_children
-    #    children.each { |child| parent.events.create_tube!(child_purpose, child, user) }
-  end
 end
