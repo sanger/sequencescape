@@ -146,6 +146,15 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     csv_content = spreadsheet.read
     @csv_rows = CSV.parse(csv_content.encode!('utf-8', encoding))
 
+    # Although this class includes ActiveModel::Validations, it does not have
+    # declarations for all the validations applied. This is because most of the
+    # validations are explicitly called within the process method. Therefore,
+    # calls like valid? or invalid? will not work as expected. Instead, after
+    # calling the process method, if there are any errors, they will be present
+    # in the errors object. Inside the method, error counts are checked to
+    # determine if the process should continue with the transaction to persist
+    # the submissions or not.
+
     return unless spreadsheet_valid? # Header validation failed.
 
     submission_details = submission_structure
