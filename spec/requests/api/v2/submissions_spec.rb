@@ -306,5 +306,81 @@ describe 'Submissions API', with: :api_v2 do
         end
       end
     end
+
+    describe 'using the and_submit attribute' do
+      let(:and_submit) { nil }
+      let(:payload) do
+        {
+          data: {
+            type: resource_type,
+            attributes: {
+              and_submit:
+            },
+            relationships: {
+              user: user_relationship,
+              orders: orders_relationship
+            }
+          }
+        }
+      end
+
+      before { api_post base_endpoint, payload }
+
+      context 'when the and_submit attribute is true' do
+        let(:and_submit) { true }
+
+        it 'submits the submission' do
+          expect(Submission.last.state).to eq('pending')
+        end
+      end
+
+      context 'when the and_submit attribute is false' do
+        let(:and_submit) { false }
+
+        it 'does not submit the submission' do
+          expect(Submission.last.state).to eq('building')
+        end
+      end
+
+      context 'when the and_submit attribute is nil' do
+        let(:and_submit) { nil }
+
+        it 'does not submit the submission' do
+          expect(Submission.last.state).to eq('building')
+        end
+      end
+    end
+
+    context 'with a read-only attribute in the payload' do
+      context 'with created_at' do
+        let(:disallowed_value) { 'created_at' }
+        let(:payload) { { data: { type: resource_type, attributes: { created_at: '2024-11-19' } } } }
+
+        it_behaves_like 'a POST request with a disallowed value'
+      end
+
+      context 'with state' do
+        let(:disallowed_value) { 'state' }
+        let(:payload) { { data: { type: resource_type, attributes: { state: 'pending' } } } }
+
+        it_behaves_like 'a POST request with a disallowed value'
+      end
+
+      context 'with updated_at' do
+        let(:disallowed_value) { 'updated_at' }
+        let(:payload) { { data: { type: resource_type, attributes: { updated_at: '2024-11-19' } } } }
+
+        it_behaves_like 'a POST request with a disallowed value'
+      end
+
+      context 'with uuid' do
+        let(:disallowed_value) { 'uuid' }
+        let(:payload) do
+          { data: { type: resource_type, attributes: { uuid: '11111111-2222-3333-4444-555555666666' } } }
+        end
+
+        it_behaves_like 'a POST request with a disallowed value'
+      end
+    end
   end
 end
