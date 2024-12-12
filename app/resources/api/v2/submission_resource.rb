@@ -17,13 +17,15 @@ module Api
     class SubmissionResource < BaseResource
       default_includes :uuid_object, :sequencing_requests
 
-      # Associations:
-
+      ###
       # Attributes
+      ###
+
       # CAUTION:
       # See app/controllers/api/v2/submissions_controller.rb
       # for field filtering, otherwise newly added attributes
       # will not show by default.
+
       attribute :uuid, readonly: true
       attribute :name, write_once: true
       attribute :state, readonly: true
@@ -38,21 +40,47 @@ module Api
 
       attribute :order_uuids, writeonly: true
 
+      def order_uuids=(value)
+        @model.orders = value.map { |uuid| Order.with_uuid(uuid).first }
+      end
+
       attribute :user_uuid, writeonly: true
 
       def user_uuid=(value)
-        @model.user = User.find_by(uuid: value)
+        @model.user = User.with_uuid(value).first
       end
+
+      ###
+      # Relationships
+      ###
 
       has_one :user, class_name: 'User'
 
+      has_many :orders, class_name: 'Order'
+
+      ###
       # Filters
+      ###
+
       filter :uuid, apply: ->(records, value, _options) { records.with_uuid(value) }
+
+      ###
+      # Post-create state changer
+      ###
+
+      after_replace_fields :submit!
+
+      def submit!
+        return unless @and_submit
+
+        @model.built!
+      end
 
       attribute :and_submit, writeonly: true
 
       def and_submit=(value)
-        # Do nothing -- This attribute is a flag to trigger the submit action.
+        # Store the value to decide whether to call the built! event in the after_replace_fields callback.
+        @and_submit = value
       end
     end
   end
