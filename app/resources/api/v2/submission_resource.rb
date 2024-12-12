@@ -77,11 +77,7 @@ module Api
       end
 
       attribute :and_submit, writeonly: true
-
-      def and_submit=(value)
-        # Store the value to decide whether to call the built! event in the after_replace_fields callback.
-        @and_submit = value
-      end
+      attr_writer :and_submit # Stored so that the after_replace_fields callback knows whether to submit the submission.
     end
   end
 end
