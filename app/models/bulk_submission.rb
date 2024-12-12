@@ -149,11 +149,11 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     return unless spreadsheet_valid? # Header validation failed.
 
     submission_details = submission_structure
-    return if errors.count > 0 # Entry validations failed.
+    return if errors.present? # Entry validations failed.
 
     # Apply any additional validations based on the submission template name
     apply_additional_validations_by_template_name
-    return if errors.count > 0 # Additonal validations failed.
+    return if errors.present? # Additonal validations failed.
 
     # Within a single transaction process each of the rows of the CSV file as a separate submission.  Any name
     # fields need to be mapped to IDs, and the 'assets' field needs to be split up and processed if present.
@@ -201,7 +201,6 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     end
     # rubocop:enable Metrics/BlockLength
   end
-
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   COMMON_FIELDS = [
