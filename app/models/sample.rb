@@ -228,7 +228,6 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Sample::Metadata tracks sample information, either for use in the lab, or passing to
   # the EBI
   class Metadata
-
     validates :huMFre_code,
               format: {
                 with: %r{\A\d{2}/\d{2,}|\d{2}/\d{4}-\d{3}\z},
