@@ -90,7 +90,7 @@ class UatActions::GeneratePlateVolumes < UatActions
         value: create_random_volume,
         units: 'µl',
         assay_type: 'UAT_Testing',
-        assay_version: 'Binning',
+        assay_version: 'UAT_version',
         qc_assay: qc_assay
       )
       num_wells_written += 1
