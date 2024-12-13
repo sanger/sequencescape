@@ -2,14 +2,51 @@
 
 module Api
   module V2
-    # @todo This documentation does not yet include a detailed description of what this resource represents.
     # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
-    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+    # @todo Confirm the API examples work as expected.
     #
-    # @note This resource is immutable: its endpoint will not accept `POST`, `PATCH`, or `DELETE` requests.
+    # Provides a JSON:API representation of {Submission} which represents a collection of {Order}s submitted by a
+    # {User}. Once submitted, the {Submission} is processed by a state machine.
+    #
+    # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
     # @note Access this resource via the `/api/v2/submissions/` endpoint.
     #
-    # Provides a JSON:API representation of {Submission}.
+    # @example POST request
+    #   POST /api/v2/submissions/
+    #   {
+    #     "data": {
+    #       "type": "submissions",
+    #       "relationships": {
+    #         "orders": {
+    #           "data": [
+    #             {
+    #               "type": "orders",
+    #               "id": "123"
+    #             },
+    #             {
+    #               "type": "orders",
+    #               "id": "456"
+    #             }
+    #           ]
+    #         },
+    #         "user": {
+    #           "data": {
+    #             "type": "users",
+    #             "id": "123"
+    #           }
+    #         }
+    #       }
+    #     }
+    #   }
+    #
+    # @example GET request for all Submission resources
+    #   GET /api/v2/submissions/
+    #
+    # @example GET request for a Submission with ID 123
+    #   GET /api/v2/submissions/123/
+    #
+    # @example GET request for all Submission resources associated with a User with ID 123
+    #   GET /api/v2/users/123/submissions/
     #
     # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
@@ -26,17 +63,21 @@ module Api
       # for field filtering, otherwise newly added attributes
       # will not show by default.
 
-      attribute :uuid, readonly: true
-      attribute :name, write_once: true
-      attribute :state, readonly: true
+      # @!attribute [r] created_at
+      #   @return [DateTime] The date and time the Submission was created.
       attribute :created_at, readonly: true
-      attribute :updated_at, readonly: true
-      attribute :used_tags, write_once: true
+
+      # @!attribute [rw] lanes_of_sequencing
+      #   @todo: check types of this attribute
+      #   @return [Integer] The number of lanes of sequencing requested in the Submission.
+      #      This can only be written once on creation.
       attribute :lanes_of_sequencing, write_once: true
 
       def lanes_of_sequencing
         _model.sequencing_requests.size
       end
+
+      attribute :name, write_once: true
 
       attribute :order_uuids, writeonly: true
 
@@ -44,11 +85,17 @@ module Api
         @model.orders = value.map { |uuid| Order.with_uuid(uuid).first }
       end
 
+      attribute :state, readonly: true
+      attribute :updated_at, readonly: true
+      attribute :used_tags, write_once: true
+
       attribute :user_uuid, writeonly: true
 
       def user_uuid=(value)
         @model.user = User.with_uuid(value).first
       end
+
+      attribute :uuid, readonly: true
 
       ###
       # Relationships
