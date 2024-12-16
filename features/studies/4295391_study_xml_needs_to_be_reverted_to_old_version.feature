@@ -151,10 +151,6 @@ Feature: The XML for the sequencescape API
           <value>No</value>
           </descriptor>
           <descriptor>
-            <name>Has the delay period been approved by the data sharing committee for this project?</name>
-            <value></value>
-          </descriptor>
-          <descriptor>
             <name>ENA Project ID</name>
             <value></value>
           </descriptor>

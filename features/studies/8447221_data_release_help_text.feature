@@ -43,7 +43,6 @@ Feature: Update the data release fields for creating a study
     When I select "delayed" from "How is the data release to be timed?"
     And I select "other" from "Reason for delaying release"
     And I select "<delay_period>" from "Delay for"
-    Then I should exactly see "Has the delay period been approved by the data sharing committee for this project?"
     And I should exactly see "Comment regarding data release timing and approval"
 
     When I fill in the following:
