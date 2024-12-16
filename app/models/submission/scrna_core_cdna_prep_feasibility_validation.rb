@@ -37,7 +37,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidation
         min: min,
         max: max,
         count: count,
-        scope: 'submission.scrna_core_cdna_prep_feasibility_validation'
+        scope: 'submissions.scrna_core_cdna_prep_feasibility_validation'
       )
 
     errors.add(:spreadsheet, message)
@@ -57,7 +57,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidation
         min: min,
         max: max,
         count: count,
-        scope: 'submission.scrna_core_cdna_prep_feasibility_validation'
+        scope: 'submissions.scrna_core_cdna_prep_feasibility_validation'
       )
 
     errors.add(:spreadsheet, message)
@@ -85,7 +85,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidation
             max: max,
             count: smallest,
             pool: 'smallest',
-            scope: 'submission.scrna_core_cdna_prep_feasibility_validation'
+            scope: 'submissions.scrna_core_cdna_prep_feasibility_validation'
           )
         errors.add(:spreadsheet, message)
       end
@@ -97,7 +97,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidation
         max: max,
         count: biggest,
         pool: 'biggest',
-        scope: 'submission.scrna_core_cdna_prep_feasibility_validation'
+        scope: 'submissions.scrna_core_cdna_prep_feasibility_validation'
       )
     end
   end
