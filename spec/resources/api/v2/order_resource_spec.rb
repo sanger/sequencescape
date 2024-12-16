@@ -30,10 +30,9 @@ RSpec.describe Api::V2::OrderResource, type: :resource do
   describe '#self.create' do
     context 'without a template in the context' do
       let(:context) { {} }
-      let(:resource) { double('OrderResource') }
 
       it 'returns an OrderResource created by the super class' do
-        expect(described_class.superclass).to receive(:create).with(context).and_return(resource)
+        allow(described_class.superclass).to receive(:create).with(context).and_return(resource)
 
         expect(described_class.create(context)).to eq(resource)
       end
@@ -41,21 +40,25 @@ RSpec.describe Api::V2::OrderResource, type: :resource do
 
     context 'with a template in the context' do
       let(:context) { { template:, template_attributes: } }
-      let(:template) { double('SubmissionTemplate') }
+      let(:template) { instance_double(SubmissionTemplate) }
       let(:template_attributes) { {} }
-      let(:order) { create(:order) }
+
+      before { allow(template).to receive(:create_order!).with(template_attributes).and_return(resource_model) }
 
       it 'does not call create on the super class' do
-        expect(described_class.superclass).not_to receive(:create).with(context)
-      end
-
-      it 'creates a new OrderResource with a new Order created by the SubmissionTemplate' do
-        allow(template).to receive(:create_order!).and_return(order)
-        allow(described_class).to receive(:new).and_call_original
+        allow(described_class.superclass).to receive(:create)
 
         described_class.create(context)
 
-        expect(described_class).to have_received(:new).with(order, context)
+        expect(described_class.superclass).not_to have_received(:create)
+      end
+
+      it 'creates a new OrderResource with a new Order created by the SubmissionTemplate' do
+        allow(described_class).to receive(:new)
+
+        described_class.create(context)
+
+        expect(described_class).to have_received(:new).with(resource_model, context)
       end
     end
   end
