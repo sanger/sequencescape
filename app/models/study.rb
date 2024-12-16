@@ -245,10 +245,6 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     custom_attribute(:ega_policy_accession_number)
     custom_attribute(:array_express_accession_number)
 
-    with_options(if: :delayed_for_long_time?, required: true) do
-      custom_attribute(:data_release_delay_approval, in: YES_OR_NO, default: NO)
-    end
-
     with_options(if: :never_release?) do
       custom_attribute(:data_release_prevention_reason, in: DATA_RELEASE_PREVENTION_REASONS, required: true)
       custom_attribute(:data_release_prevention_reason_comment, required: true)

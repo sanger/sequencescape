@@ -162,7 +162,6 @@ Given /^the study "([^"]+)" is delayed for (3|6|9|12) months because "([^"]+)"$/
       data_release_delay_reason: 'other',
       data_release_delay_other_comment: reason,
       data_release_delay_period: "#{period} months",
-      data_release_delay_approval: 'Yes',
       data_release_delay_reason_comment: reason
     }
   )

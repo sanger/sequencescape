@@ -74,9 +74,6 @@
           %>
 
           <%= group.select(:data_release_delay_period, Study::DATA_RELEASE_DELAY_PERIODS) %>
-          <% metadata_fields.related_fields(to: :data_release_delay_period, in: Study::DATA_RELEASE_DELAY_PERIODS) do %>
-              <%= group.radio_select(:data_release_delay_approval, Study::YES_OR_NO) %>
-            <% end %>
           <% metadata_fields.related_fields(to: :data_release_delay_reason, when: Study::DATA_RELEASE_DELAY_FOR_OTHER) do %>
             <%= group.text_area(:data_release_delay_other_comment) %>
             <% metadata_fields.related_fields(to: :data_release_delay_period, in: Study::DATA_RELEASE_DELAY_PERIODS) do %>

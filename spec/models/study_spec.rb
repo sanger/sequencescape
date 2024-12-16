@@ -739,23 +739,6 @@ RSpec.describe Study do
       end
     end
 
-    context 'delayed for long time' do
-      let(:study) do
-        create(
-          :study,
-          study_metadata:
-            create(
-              :study_metadata,
-              metadata.merge(data_release_timing: 'delayed', data_release_delay_period: '6 months')
-            )
-        )
-      end
-
-      it 'will have a data_release_delay_approval' do
-        expect(study.study_metadata.data_release_delay_approval).to eq(metadata[:data_release_delay_approval])
-      end
-    end
-
     context 'never released' do
       let(:never_release_fields) do
         {
