@@ -169,6 +169,21 @@ en:
 
   submissions:
     no_submissions: "There are no submissions yet. Please create one."
+    scrna_core_cdna_prep_feasibility_validation:
+      errors:
+        total_number_of_samples:
+          zero: "The total number of samples in the submission must be between %{min} and %{max} (inclusive). However, no samples were found."
+          one: "The total number of samples in the submission must be between %{min} and %{max} (inclusive). However, one sample was found."
+          other: "The total number of samples in the submission must be between %{min} and %{max} (inclusive). However, %{count} samples were found."
+        total_number_of_pools:
+          zero: "The total number of pools in the submission must be between %{min} and %{max} (inclusive). However, no pools were found."
+          one: "The total number of pools in the submission must be between %{min} and %{max} (inclusive). However, one pool was found."
+          other: "The total number of pools in the submission must be between %{min} and %{max} (inclusive). However, %{count} pools were found."
+        number_of_samples_in_pool:
+          zero: "The number of samples in the #{pool} pool for a study and project must be between %{min} and %{max} (inclusive). However, no samples were found for the study %{study_name} and the project %{project_name}."
+          one: "The number of samples in the #{pool} pool for a study and project must be between %{min} and %{max} (inclusive). However, one sample was found for the study %{study_name} and the project %{project_name}."
+          other: "The number of samples in the #{pool} pool for a study and project must be between %{min} and %{max} (inclusive). However, %{count} samples were found for the study %{study_name} and the project %{project_name}."
+
 
   cherrypick:
     picking_by_row: "This cherrypick may take longer as it is picking by rows, rather than columns."
