@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 # rubocop:todo Metrics/ModuleLength
 module Submission::ValidationsByTemplateName
+
+  include Submission::ScrnaCoreCdnaPrepFeasibilityValidation
+
   # Template names
   SCRNA_CORE_CDNA_PREP_GEM_X_5P = 'Limber-Htp - scRNA Core cDNA Prep GEM-X 5p'
 
@@ -40,6 +43,7 @@ module Submission::ValidationsByTemplateName
       validate_consistent_column_value(HEADER_NUMBER_OF_POOLS)
       validate_consistent_column_value(HEADER_CELLS_PER_CHIP_WELL)
       validate_samples_per_pool_for_labware
+      validate_scrna_core_cdna_prep_feasibility
     end
   end
 
