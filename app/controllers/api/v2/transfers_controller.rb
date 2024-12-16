@@ -19,7 +19,7 @@ module Api
       def extract_template_data
         attributes = params[:data][:attributes]
         template_uuid = attributes[:transfer_template_uuid]
-        raise JSONAPI::Exceptions::ParameterMissing.new('transfer_template_uuid') if template_uuid.nil?
+        raise JSONAPI::Exceptions::ParameterMissing, 'transfer_template_uuid' if template_uuid.nil?
 
         template = TransferTemplate.with_uuid(template_uuid).first
         raise JSONAPI::Exceptions::InvalidFieldValue.new('transfer_template_uuid', template_uuid) if template.nil?

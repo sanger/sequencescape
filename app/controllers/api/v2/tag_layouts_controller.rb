@@ -37,11 +37,10 @@ module Api
       end
 
       def raise_if_key_present(data, key)
-        unless data[key.to_sym].blank?
-          raise JSONAPI::Exceptions::BadRequest.new(
-                  "Cannot provide '#{key}' while also providing 'tag_layout_template_uuid'."
-                )
-        end
+        return if data[key.to_sym].blank?
+
+        raise JSONAPI::Exceptions::BadRequest,
+              "Cannot provide '#{key}' while also providing 'tag_layout_template_uuid'."
       end
 
       def merge_template_attributes(template)

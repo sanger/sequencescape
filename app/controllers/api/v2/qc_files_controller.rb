@@ -15,21 +15,21 @@ module Api
       private
 
       def prepare_temporary_file
-        filename, contents = get_required_attributes
+        filename, contents = required_attributes
         tempfile = create_temporary_file(filename, contents)
 
         context.merge!(filename:, tempfile:)
       end
 
       # Validate that attributes contains both the filename and the contents of the QcFile.
-      def get_required_attributes
+      def required_attributes
         attributes = params[:data][:attributes]
 
         filename = attributes[:filename]
-        raise JSONAPI::Exceptions::ParameterMissing.new('filename') if filename.nil?
+        raise JSONAPI::Exceptions::ParameterMissing, 'filename' if filename.nil?
 
         contents = attributes[:contents]
-        raise JSONAPI::Exceptions::ParameterMissing.new('contents') if contents.nil?
+        raise JSONAPI::Exceptions::ParameterMissing, 'contents' if contents.nil?
 
         [filename, contents]
       end
