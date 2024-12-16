@@ -95,7 +95,7 @@ module Api
       has_one :user, readonly: true
 
       ###
-      # Template attributes
+      # Templated creation
       ###
 
       # These are defined here to assist with the creation of Orders from SubmissionTemplates.
@@ -105,10 +105,7 @@ module Api
       #   The UUID of the {SubmissionTemplate} to use when creating this {Order}.
       #   @note This is mandatory when creating new {Order}s via the API. It is not stored.
       attribute :submission_template_uuid, writeonly: true
-
-      def submission_template_uuid=(value)
-        # Do nothing with this value as it's consumed by the OrderProcessor.
-      end
+      attr_writer :submission_template_uuid # Do not store this on the model. It's consumed by the OrderProcessor.
 
       # @!attribute [w] submission_template_attributes
       #   A hash of additional attributes to use when creating this {Order} from a given {SubmissionTemplate}.
@@ -126,9 +123,13 @@ module Api
       #
       #   @note This is mandatory when creating new {Order}s via the API. It is not stored.
       attribute :submission_template_attributes, writeonly: true
+      attr_writer :submission_template_attributes # Do not store this on the model. It's consumed by the OrderProcessor.
 
-      def submission_template_attributes=(value)
-        # Do nothing with this value as it's consumed by the OrderProcessor.
+      def self.create(context)
+        return super if context[:template].nil?
+
+        order = context[:template].create_order!(context[:template_attributes])
+        new(order, context)
       end
     end
   end
