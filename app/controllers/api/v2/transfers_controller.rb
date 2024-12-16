@@ -12,6 +12,8 @@ module Api
     class TransferProcessor < JSONAPI::Processor
       before_create_resource :extract_template_data
 
+      private
+
       # Put the Transfer model_type needed to be created from the transfer template in the context.
       # Also put the transfers from the template into the attributes if they exist.
       def extract_template_data
