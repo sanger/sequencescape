@@ -4,7 +4,7 @@
 ![Javascript testing](https://github.com/sanger/sequencescape/workflows/Javascript%20testing/badge.svg)
 ![Linting](https://github.com/sanger/sequencescape/workflows/Linting/badge.svg)
 [![Test Coverage](https://codecov.io/github/sanger/sequencescape/graph/badge.svg?token=Fsd7I0GYQf)](https://codecov.io/github/sanger/sequencescape)
-[![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](https://www.rubydoc.info/github/sanger/sequencescape)
+[![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](https://sanger.github.io/sequencescape/)
 [![Knapsack Pro Parallel CI builds for RSpec Tests](https://img.shields.io/badge/Knapsack%20Pro-Parallel%20%2F%20RSpec%20Tests-%230074ff)](https://knapsackpro.com/dashboard/organizations/1976/projects/1324/test_suites/1880/builds?utm_campaign=organization-id-1976&utm_content=test-suite-id-1880&utm_medium=readme&utm_source=knapsack-pro-badge&utm_term=project-id-1324)
 [![Knapsack Pro Parallel CI builds for Cucumber Tests](https://img.shields.io/badge/Knapsack%20Pro-Parallel%20%2F%20Cucumber%20Tests-%230074ff)](https://knapsackpro.com/dashboard/organizations/1976/projects/1324/test_suites/1881/builds?utm_campaign=organization-id-1976&utm_content=test-suite-id-1881&utm_medium=readme&utm_source=knapsack-pro-badge&utm_term=project-id-1324)
 
