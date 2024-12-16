@@ -29,15 +29,15 @@ RSpec.describe Api::V2::TransferResource, type: :resource do
   it { is_expected.to filter(:transfer_type) }
 
   # Custom methods
-  describe '#self.create_with_model' do
-    let(:context) { {} }
+  describe '#self.create' do
     let(:model_type) { Transfer::BetweenPlates }
+    let(:context) { { model_type: } }
     let(:transfer) { model_type.new }
 
     before { allow(model_type).to receive(:new).and_return(transfer) }
 
     it 'creates the new Transfer resource with the correct model class' do
-      described_class.create_with_model(context, model_type)
+      described_class.create(context)
 
       expect(model_type).to have_received(:new)
     end
@@ -45,7 +45,7 @@ RSpec.describe Api::V2::TransferResource, type: :resource do
     it 'creates the new resource with the new Transfer::BetweenPlates' do
       allow(described_class).to receive(:new).and_call_original
 
-      described_class.create_with_model(context, model_type)
+      described_class.create(context)
 
       expect(described_class).to have_received(:new).with(transfer, context)
     end
