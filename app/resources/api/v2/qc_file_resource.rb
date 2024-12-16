@@ -101,12 +101,6 @@ module Api
       attribute :filename, write_once: true
       attr_writer :filename # Do not store the value on the model. This value is consumed by the QcFileProcessor.
 
-      # @!method self.create
-      #   Create a new QcFile resource with the uploaded data from a temporary file. This is called by the controller
-      #   when a create request for a QcFile is made. It ensures the contents of the file have been written to a
-      #   new TempFile instance.
-      # @param context [Hash] The context for the request.
-      # @return [QcFileResource] The new QcFile resource.
       def self.create(context)
         opts = { uploaded_data: context.slice(:filename, :tempfile) }
         new(QcFile.new(opts), context)
