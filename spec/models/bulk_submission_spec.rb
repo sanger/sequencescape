@@ -30,6 +30,9 @@ shared_examples 'an invalid scRNA Bulk Submission' do |_, tube_count|
     tubes.each_with_index.map do |tube, i|
       create(:asset_group, name: "ag#{i + 1}", study: study, assets: [tube.receptacle])
     end
+    tubes.each_with_index do |tube, i|
+      tube.receptacle.aliquots.first.sample.sample_metadata.update!(donor_id: "donor_#{i + 1}")
+    end
   end
 
   it 'is invalid' do
@@ -345,7 +348,6 @@ describe BulkSubmission, with: :uploader do
       let!(:plate) { create(:plate_with_tagged_wells, sample_count: 96, barcode: 'SQPD-12345') }
       let!(:asset_group) { create(:asset_group, name: 'assetgroup', study: study, assets: plate.wells) }
       let!(:library_type) { create(:library_type, name: 'Standard') }
-
       let(:spreadsheet_filename) { 'scRNA_bulk_submission.csv' }
       let(:submission_template_hash) do
         {
@@ -360,7 +362,13 @@ describe BulkSubmission, with: :uploader do
         }
       end
 
-      before { SubmissionSerializer.construct!(submission_template_hash) }
+      before do
+        SubmissionSerializer.construct!(submission_template_hash)
+        # Assign a donor id to each sample
+        plate.wells.each_with_index do |well, i|
+          well.aliquots.first.sample.sample_metadata.update!(donor_id: "donor_#{i + 1}")
+        end
+      end
 
       it 'is valid' do
         expect(subject).to be_valid
@@ -402,9 +410,14 @@ describe BulkSubmission, with: :uploader do
         tubes.each_with_index.map do |tube, i|
           create(:asset_group, name: "ag#{i + 1}", study: study, assets: [tube.receptacle])
         end
+
+        tubes.each_with_index do |tube, i|
+          tube.receptacle.aliquots.first.sample.sample_metadata.update!(donor_id: "donor_#{i + 1 }")
+        end
       end
 
       it 'is valid' do
+        # binding.pry
         expect(subject).to be_valid
       end
 
