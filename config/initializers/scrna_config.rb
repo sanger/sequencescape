@@ -43,7 +43,7 @@ Rails.application.config.scrna_config = {
   cdna_prep_minimum_total_number_of_samples: 5,
   cdna_prep_maximum_total_number_of_samples: 96,
   cdna_prep_minimum_total_number_of_pools: 1,
-  cdna_prep_maximum_total_number_of_samples: 8,
+  cdna_prep_maximum_total_number_of_pools: 8,
   cdna_prep_minimum_number_of_samples_per_pool: 5,
   cdna_prep_maximum_number_of_samples_per_pool: 25
 }.freeze
