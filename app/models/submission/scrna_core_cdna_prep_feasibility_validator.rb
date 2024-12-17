@@ -53,6 +53,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
     return if count.between?(min, max) # inclusive
 
     add_error_scrna_core_cdna_prep_total_number_of_pools(min, max, count)
+    binding.pry
   end
 
   def add_error_scrna_core_cdna_prep_total_number_of_pools(min, max, count)
@@ -70,7 +71,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
 
   # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def validate_scrna_core_cdna_prep_feasibility_by_samples
-    group_rows_by_study_and_project.each_value do |rows|
+    group_rows_by_study_and_project.each do |(study_name, project_name), rows|
       barcodes, well_locations = extract_barcodes_and_well_locations(rows)
       number_of_samples = calculate_total_number_of_samples(barcodes, well_locations)
       number_of_pools = rows.first[headers.index(HEADER_NUMBER_OF_POOLS)].to_i
@@ -79,7 +80,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
       max = scrna_config[:cdna_prep_maximum_number_of_samples_per_pool]
       pool_sizes.each do |size_type, pool_size|
         next if pool_size.between?(min, max)
-        add_error_scrna_core_cdna_prep_feasibility_by_samples(min, max, pool_size, size_type)
+        add_error_scrna_core_cdna_prep_feasibility_by_samples(study_name, project_name, min, max, pool_size, size_type)
       end
     end
   end
@@ -92,11 +93,13 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
     { 'smallest' => smallest, 'biggest' => biggest }
   end
 
-  def add_error_scrna_core_cdna_prep_feasibility_by_samples(min, max, count, size_type)
+  def add_error_scrna_core_cdna_prep_feasibility_by_samples(study_name, project_name, min, max, count, size_type)
     errors.add(
       :spreadsheet,
       I18n.t(
         'errors.number_of_pools_by_samples',
+        study_name: study_name,
+        project_name: project_name,
         min: min,
         max: max,
         count: count,
