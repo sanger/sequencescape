@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 # rubocop:todo Metrics/ModuleLength
 module Submission::ValidationsByTemplateName
-
   include Submission::ScrnaCoreCdnaPrepFeasibilityValidation
 
   # Template names
