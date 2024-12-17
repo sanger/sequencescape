@@ -22,7 +22,7 @@ Feature: Update the data release fields for creating a study
   Scenario Outline: Add help text opposite delay drop down (4044305)
     When I choose "<release strategy>" from "What is the data release strategy for this study?"
     When I select "delayed" from "How is the data release to be timed?"
-    When I select "other" from "Reason for delaying release"
+    When I select "Other (with free text box)" from "Reason for delaying release"
     Then I should exactly see "Reason for delaying release"
 
     Examples:
@@ -41,7 +41,7 @@ Feature: Update the data release fields for creating a study
 
   Scenario Outline: Delaying for 3 months should have the same questions as all other delays (4044273)
     When I select "delayed" from "How is the data release to be timed?"
-    And I select "other" from "Reason for delaying release"
+    And I select "Other (with free text box)" from "Reason for delaying release"
     And I select "<delay_period>" from "Delay for"
     And I should exactly see "Comment regarding data release timing and approval"
 

@@ -91,7 +91,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     'Other (please specify)'
   ].freeze
 
-  DATA_RELEASE_DELAY_FOR_OTHER = 'other'
+  DATA_RELEASE_DELAY_FOR_OTHER = 'Other (with free text box)'
   DATA_RELEASE_DELAY_REASONS_STANDARD = [
     'PhD study',
     'Capacity building',

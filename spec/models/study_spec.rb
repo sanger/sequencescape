@@ -713,7 +713,10 @@ RSpec.describe Study do
         create(
           :study,
           study_metadata:
-            create(:study_metadata, metadata.merge(data_release_timing: 'delayed', data_release_delay_reason: 'other'))
+            create(
+              :study_metadata,
+              metadata.merge(data_release_timing: 'delayed', data_release_delay_reason: 'Other (with free text box)')
+            )
         )
       end
 
