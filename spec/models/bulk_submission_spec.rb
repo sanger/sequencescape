@@ -412,7 +412,7 @@ describe BulkSubmission, with: :uploader do
         end
 
         tubes.each_with_index do |tube, i|
-          tube.receptacle.aliquots.first.sample.sample_metadata.update!(donor_id: "donor_#{i + 1 }")
+          tube.receptacle.aliquots.first.sample.sample_metadata.update!(donor_id: "donor_#{i + 1}")
         end
       end
 
