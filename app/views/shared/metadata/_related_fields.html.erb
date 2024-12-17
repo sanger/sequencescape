@@ -23,7 +23,7 @@
 
       var valueFrom = function(element) {
         if (element === null) { return null }
-        var value = element.value.toLowerCase().replace(/[^a-z0-9]+/, '_');
+        var value = element.value.toLowerCase().replaceAll(/[^a-z0-9]+/g, '_');
         return (value.length == 0) ? 'blank' : value;
       };
 

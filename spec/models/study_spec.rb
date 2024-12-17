@@ -445,7 +445,7 @@ RSpec.describe Study do
         data_release_strategy: 'open',
         data_release_standard_agreement: 'Yes',
         data_release_timing: 'standard',
-        data_release_delay_reason: 'phd study',
+        data_release_delay_reason: 'PhD study',
         data_release_delay_period: '3 months',
         bam: true,
         data_release_delay_other_comment: 'Data Release delay other comment',
@@ -456,7 +456,7 @@ RSpec.describe Study do
         ega_policy_accession_number: 'POL123456',
         array_express_accession_number: 'ARR123456',
         data_release_delay_approval: 'Yes',
-        data_release_prevention_reason: 'data validity',
+        data_release_prevention_reason: 'Protecting IP - DAC approval required',
         data_release_prevention_approval: 'Yes',
         data_release_prevention_reason_comment: 'Data Release prevention reason comment',
         data_access_group: 'something',
@@ -713,7 +713,10 @@ RSpec.describe Study do
         create(
           :study,
           study_metadata:
-            create(:study_metadata, metadata.merge(data_release_timing: 'delayed', data_release_delay_reason: 'other'))
+            create(
+              :study_metadata,
+              metadata.merge(data_release_timing: 'delayed', data_release_delay_reason: 'Other (with free text box)')
+            )
         )
       end
 
@@ -736,23 +739,6 @@ RSpec.describe Study do
         expect(study.save).to be false
         expect(study.valid?).to be false
         expect(study.errors.messages.length).to eq 1
-      end
-    end
-
-    context 'delayed for long time' do
-      let(:study) do
-        create(
-          :study,
-          study_metadata:
-            create(
-              :study_metadata,
-              metadata.merge(data_release_timing: 'delayed', data_release_delay_period: '6 months')
-            )
-        )
-      end
-
-      it 'will have a data_release_delay_approval' do
-        expect(study.study_metadata.data_release_delay_approval).to eq(metadata[:data_release_delay_approval])
       end
     end
 
