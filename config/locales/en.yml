@@ -176,13 +176,13 @@ en:
         # count is the total number of samples in the submission.
         # zero, one and other are the pluralization keys selected by the count of samples
         total_number_of_samples:
-          zero: |
+          zero: >
             The total number of samples in the submission must be between %{min} and %{max} (inclusive).
             However, no samples were found.
           one: |
             The total number of samples in the submission must be between %{min} and %{max} (inclusive).
             However, one sample was found.
-          other: |
+          other: >
             The total number of samples in the submission must be between %{min} and %{max} (inclusive).
             However, %{count} samples were found.
         # Validation: Total (requested) number of pools must be between 1 and 8 (inclusive).
@@ -190,13 +190,13 @@ en:
         # count is the total number of pools in the submission.
         # zero, one and other are the pluralization keys selected by the count of pools
         total_number_of_pools:
-          zero: |
+          zero: >
             The total number of pools in the submission must be between %{min} and %{max} (inclusive).
             However, no pools were found.
-          one: |
+          one: >
             The total number of pools in the submission must be between %{min} and %{max} (inclusive).
             However, one pool was found.
-          other: |
+          other: >
             The total number of pools in the submission must be between %{min} and %{max} (inclusive).
             However, %{count} pools were found.
         # Validation: The number of pools requested must be feasible given the number of samples.
@@ -204,24 +204,24 @@ en:
         # study_name and project_name are the values of respective fields from the spreadsheet.
         # zero, one and other are the pluralization keys selected by the count of samples in the pools.
         number_of_pools_by_samples:
-          zero: |
+          zero: >
             The number of pools is not feasible for the study %{study_name} and the project %{project_name}.
-            The number of samples in the #{size_type} pool must be between %{min} and %{max} (inclusive).
+            The number of samples in the %{size_type} pool must be between %{min} and %{max} (inclusive).
             However, no samples were found in the pool.
-          one: |
+          one: >
             The number of pools is not feasible for the study %{study_name} and the project %{project_name}.
-            The number of samples in the #{size_type} pool must be between %{min} and %{max} (inclusive).
+            The number of samples in the %{size_type} pool must be between %{min} and %{max} (inclusive).
             However, one sample was found in the pool.
-          other: |
+          other: >
             The number of pools is not feasible for the study %{study_name} and the project %{project_name}.
-            The number of samples in the #{size_type} pool must be between %{min} and %{max} (inclusive).
+            The number of samples in the %{size_type} pool must be between %{min} and %{max} (inclusive).
             However, %{count} samples were found in the pool.
         # Validation: The number of pools requested must be feasible having checked for donor clash.
         # study_name and project_name are the values of respective fields from the spreadsheet.
         # count is the size of the biggest group of samples with the same donor ID.
         # number_of_pools is the number of pools requested for the study and project.
         # barcodes_or_well_locations is the list of barcodes (tubes) or well locations (plates) with the same donor ID.
-        number_of_pools_by_donors: |
+        number_of_pools_by_donors: >
           The number of pools is not feasible for the study %{study_name} and the project %{project_name}.
           The number of samples with the same donor ID must be less than or equal to the requested number of pools.
           However, %{count} samples with the same donor ID were found, while the number of pools requested was %{number_of_pools}.
