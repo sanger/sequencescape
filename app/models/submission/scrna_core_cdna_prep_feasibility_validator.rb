@@ -5,6 +5,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
   HEADER_BARCODE = 'barcode' unless defined?(HEADER_BARCODE)
   HEADER_PLATE_WELL = 'plate well' unless defined?(HEADER_PLATE_WELL)
   HEADER_NUMBER_OF_POOLS = 'scrna core number of pools' unless defined?(HEADER_NUMBER_OF_POOLS)
+  I18N_SCOPE_SCRNA_CORE_CDNA_PREP_FEASIBILITY_VALIDATOR = 'submissions.scrna_core_cdna_prep_feasibility_validator'
 
   def validate_scrna_core_cdna_prep_feasibility
     required = [HEADER_BARCODE, HEADER_PLATE_WELL, HEADER_NUMBER_OF_POOLS]
@@ -38,7 +39,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
         min: min,
         max: max,
         count: count,
-        scope: 'submissions.scrna_core_cdna_prep_feasibility_validator'
+        scope: I18N_SCOPE_SCRNA_CORE_CDNA_PREP_FEASIBILITY_VALIDATOR
       )
     )
   end
@@ -62,7 +63,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
         min: min,
         max: max,
         count: count,
-        scope: 'submissions.scrna_core_cdna_prep_feasibility_validator'
+        scope: I18N_SCOPE_SCRNA_CORE_CDNA_PREP_FEASIBILITY_VALIDATOR
       )
     )
   end
@@ -100,7 +101,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
         max: max,
         count: count,
         size_type: size_type,
-        scope: 'submissions.scrna_core_cdna_prep_feasibility_validator'
+        scope: I18N_SCOPE_SCRNA_CORE_CDNA_PREP_FEASIBILITY_VALIDATOR
       )
     )
   end
@@ -142,7 +143,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
         count: count,
         number_of_pools: number_of_pools,
         barcodes_or_well_locations: barcodes_or_well_locations,
-        scope: 'submissions.scrna_core_cdna_prep_feasibility_validator'
+        scope: I18N_SCOPE_SCRNA_CORE_CDNA_PREP_FEASIBILITY_VALIDATOR
       )
     )
   end
@@ -180,7 +181,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
   def sort_tube_receptacles_by_rows(receptacles, barcodes)
     receptacle_map = {}
     receptacles.each do |receptacle|
-      receptacle.labware.barcodes.each { |barcode| receptacle_map[barcode] = receptacle }
+      receptacle.labware.barcodes.each { |barcode_obj| receptacle_map[barcode_obj.barcode] = receptacle }
     end
     barcodes.map { |barcode| receptacle_map[barcode] }
   end
