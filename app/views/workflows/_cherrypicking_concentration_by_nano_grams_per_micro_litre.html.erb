@@ -1,0 +1,11 @@
+<div id='pick_by_nano_grams_per_micro_litre'>
+
+  <%= render partial: 'form_group_radio', locals: { field_name: 'cherrypick', category: 'action', field_value: 'nano_grams_per_micro_litre', label_text: 'Pick by concentration (ng/µl)' } %>
+
+  <%= fields_for :nano_grams_per_micro_litre do |ff|%>
+    <%= render partial: 'form_group_text', locals: { field_name: 'volume_required', label_text: 'Volume Required (µl)', field_value: '65' } %>
+    <%= render partial: 'form_group_text', locals: { field_name: 'concentration_required', label_text: 'Concentration Required (ng/µl)', field_value: '50' } %>
+    <%= render partial: 'form_group_text', locals: { field_name: 'robot_minimum_picking_volume', label_text: 'Robot Minimum Picking Volume (µl)', field_value: 5.0, options: { type: 'number', step: 0.1, min: 1, max: 9 } } %>
+  <% end %>
+
+</div>
