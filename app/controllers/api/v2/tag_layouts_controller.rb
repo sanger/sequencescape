@@ -10,6 +10,30 @@ module Api
     end
 
     class TagLayoutProcessor < JSONAPI::Processor
+      # Override the default behaviour for a JSONAPI::Processor when creating a new resource.
+      # We need to check whether a template UUID was given, and, if so, copy its data into this
+      # new TagLayoutResource. The creation will be prevented if any data from the template is also
+      # included in the create request as additional values. e.g. a request has a template UUID and
+      # also specifies a direction or a tag_group. In this case, the error will indicate that the
+      # template UUID was not an allowed attribute.
+      def create_resource
+        errors = []
+        template = find_template { |new_errors| errors += new_errors }
+        merge_template_data(template) { |new_errors| errors += new_errors } unless template.nil?
+
+        return JSONAPI::ErrorsOperationResult.new(JSONAPI::BAD_REQUEST, errors) unless errors.empty?
+
+        # Perform the usual create actions.
+        resource = TagLayoutResource.create(context)
+        result = resource.replace_fields(params[:data])
+
+        record_template_use(template, resource)
+
+        JSONAPI::ResourceOperationResult.new((result == :completed ? :created : :accepted), resource)
+      end
+
+      private
+
       def find_template
         template_uuid = params[:data][:attributes][:tag_layout_template_uuid]
         return nil if template_uuid.nil? # No errors -- we just don't have a template.
@@ -71,28 +95,6 @@ module Api
 
       def record_template_use(template, resource)
         template&.record_template_use(TagLayout.find(resource.id).plate, enforce_uniqueness?)
-      end
-
-      # Override the default behaviour for a JSONAPI::Processor when creating a new resource.
-      # We need to check whether a template UUID was given, and, if so, copy its data into this
-      # new TagLayoutResource. The creation will be prevented if any data from the template is also
-      # included in the create request as additional values. e.g. a request has a template UUID and
-      # also specifies a direction or a tag_group. In this case, the error will indicate that the
-      # template UUID was not an allowed attribute.
-      def create_resource
-        errors = []
-        template = find_template { |new_errors| errors += new_errors }
-        merge_template_data(template) { |new_errors| errors += new_errors } unless template.nil?
-
-        return JSONAPI::ErrorsOperationResult.new(JSONAPI::BAD_REQUEST, errors) unless errors.empty?
-
-        # Perform the usual create actions.
-        resource = TagLayoutResource.create(context)
-        result = resource.replace_fields(params[:data])
-
-        record_template_use(template, resource)
-
-        JSONAPI::ResourceOperationResult.new((result == :completed ? :created : :accepted), resource)
       end
     end
   end
