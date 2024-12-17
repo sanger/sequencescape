@@ -33,6 +33,14 @@ RSpec.describe Api::V2::TubeRackResource, type: :resource do
   it { is_expected.to filter(:purpose_name) }
   it { is_expected.to filter(:uuid) }
 
+  # Associations
+  # eg. it { is_expected.to have_many(:samples).with_class_name('Sample') }
+  it 'exposes associations', :aggregate_failures do
+    expect(tube_rack).to have_many(:racked_tubes).with_class_name('RackedTube')
+    expect(tube_rack).to have_one(:purpose).with_class_name('TubeRackPurpose')
+    expect(tube_rack).to have_one(:comments).with_class_name('Comment')
+  end
+
   # Field Methods
   describe '#tube_locations=' do
     let(:a1_tube) { create(:tube) }
@@ -62,6 +70,27 @@ RSpec.describe Api::V2::TubeRackResource, type: :resource do
 
       it 'raises with a descriptive message' do
         expect { resource.tube_locations = new_locations }.to(raise_error("No tube found for UUID 'invalid_uuid'"))
+      end
+    end
+  end
+
+  describe 'filters' do
+    let(:purpose) { create(:tube_rack_purpose, name: 'Test Purpose') }
+    let(:other_purpose) { create(:tube_rack_purpose, name: 'Other Purpose') }
+    let!(:tube_rack_with_purpose) { create(:tube_rack, purpose:) }
+    let!(:tube_rack_with_other_purpose) { create(:tube_rack, purpose: other_purpose) }
+
+    describe 'purpose_name' do
+      it 'filters tube racks by purpose name' do
+        records = described_class.apply_filters(TubeRack.all, { purpose_name: 'Test Purpose' }, {})
+
+        expect(records).to include(tube_rack_with_purpose)
+        expect(records).not_to include(tube_rack_with_other_purpose)
+      end
+
+      it 'returns no records if the purpose name does not match' do
+        records = described_class.apply_filters(TubeRack.all, { purpose_name: 'Nonexistent Purpose' }, {})
+        expect(records).to be_empty
       end
     end
   end
