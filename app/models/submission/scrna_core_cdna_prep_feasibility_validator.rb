@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # rubocop:disable Metrics/ModuleLength
-module Submission::ScrnaCoreCdnaPrepFeasibilityValidation
+module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
   HEADER_BARCODE = 'barcode' unless defined?(HEADER_BARCODE)
   HEADER_PLATE_WELL = 'plate well' unless defined?(HEADER_PLATE_WELL)
   HEADER_NUMBER_OF_POOLS = 'scrna core number of pools' unless defined?(HEADER_NUMBER_OF_POOLS)
@@ -38,7 +38,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidation
         min: min,
         max: max,
         count: count,
-        scope: 'submissions.scrna_core_cdna_prep_feasibility_validation'
+        scope: 'submissions.scrna_core_cdna_prep_feasibility_validator'
       )
     )
   end
@@ -62,7 +62,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidation
         min: min,
         max: max,
         count: count,
-        scope: 'submissions.scrna_core_cdna_prep_feasibility_validation'
+        scope: 'submissions.scrna_core_cdna_prep_feasibility_validator'
       )
     )
   end
@@ -100,7 +100,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidation
         max: max,
         count: count,
         size_type: size_type,
-        scope: 'submissions.scrna_core_cdna_prep_feasibility_validation'
+        scope: 'submissions.scrna_core_cdna_prep_feasibility_validator'
       )
     )
   end
@@ -142,7 +142,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidation
         count: count,
         number_of_pools: number_of_pools,
         barcodes_or_well_locations: barcodes_or_well_locations,
-        scope: 'submissions.scrna_core_cdna_prep_feasibility_validation'
+        scope: 'submissions.scrna_core_cdna_prep_feasibility_validator'
       )
     )
   end

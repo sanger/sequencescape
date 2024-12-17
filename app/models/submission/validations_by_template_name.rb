@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 # rubocop:todo Metrics/ModuleLength
 module Submission::ValidationsByTemplateName
-  include Submission::ScrnaCoreCdnaPrepFeasibilityValidation
+  include Submission::ScrnaCoreCdnaPrepFeasibilityValidator
 
   # Template names
   SCRNA_CORE_CDNA_PREP_GEM_X_5P = 'Limber-Htp - scRNA Core cDNA Prep GEM-X 5p'

@@ -169,7 +169,7 @@ en:
 
   submissions:
     no_submissions: "There are no submissions yet. Please create one."
-    scrna_core_cdna_prep_feasibility_validation:
+    scrna_core_cdna_prep_feasibility_validator:
       errors:
         # Validation: Total number of samples in the submission must be between 5 and 96 (inclusive).
         # min and max are for the acceptable range of the total number of samples in the submission.
