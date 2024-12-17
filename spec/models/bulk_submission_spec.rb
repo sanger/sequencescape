@@ -417,7 +417,6 @@ describe BulkSubmission, with: :uploader do
       end
 
       it 'is valid' do
-        # binding.pry
         expect(subject).to be_valid
       end
 

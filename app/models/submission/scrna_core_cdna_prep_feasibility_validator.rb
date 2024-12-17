@@ -53,7 +53,6 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
     return if count.between?(min, max) # inclusive
 
     add_error_scrna_core_cdna_prep_total_number_of_pools(min, max, count)
-    binding.pry
   end
 
   def add_error_scrna_core_cdna_prep_total_number_of_pools(min, max, count)
@@ -93,6 +92,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
     { 'smallest' => smallest, 'biggest' => biggest }
   end
 
+  # rubocop:disable Metrics/ParameterLists
   def add_error_scrna_core_cdna_prep_feasibility_by_samples(study_name, project_name, min, max, count, size_type)
     errors.add(
       :spreadsheet,
@@ -108,6 +108,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
       )
     )
   end
+  # rubocop:enable Metrics/ParameterLists
 
   # rubocop:disable Metrics/MethodLength
   def validate_scrna_core_cdna_prep_feasibility_by_donors

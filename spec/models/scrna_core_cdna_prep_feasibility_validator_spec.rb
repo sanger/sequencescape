@@ -151,31 +151,30 @@ RSpec.describe BulkSubmission, with: :uploader do
     let(:group_2_number_of_pools) { 1 }
     let(:group_3_number_of_pools) { 1 }
 
-    let(:group_1_donors) { group_1_number_of_samples.times.map { |index| "group_1_donor_#{index + 1}" } }
-
-    let(:group_2_donors) { group_2_number_of_samples.times.map { |index| "group_2_donor_#{index + 1}" } }
-    let(:group_3_donors) { group_3_number_of_samples.times.map { |index| "group_3_donor_#{index + 1}" } }
+    let(:group_1_donors) { Array.new(group_1_number_of_samples) { |index| "group_1_donor_#{index + 1}" } }
+    let(:group_2_donors) { Array.new(group_2_number_of_samples) { |index| "group_2_donor_#{index + 1}" } }
+    let(:group_3_donors) { Array.new(group_3_number_of_samples) { |index| "group_3_donor_#{index + 1}" } }
 
     let(:group_1_tubes) do
-      group_1_number_of_samples.times.map do |index|
+      Array.new(group_1_number_of_samples) do |index|
         create(:sample_tube).tap { |tube| tube.samples.first.sample_metadata.update!(donor_id: group_1_donors[index]) }
       end
     end
 
     let(:group_2_tubes) do
-      group_2_number_of_samples.times.map do |index|
+      Array.new(group_2_number_of_samples) do |index|
         create(:sample_tube).tap { |tube| tube.samples.first.sample_metadata.update!(donor_id: group_2_donors[index]) }
       end
     end
 
     let(:group_3_tubes) do
-      group_3_number_of_samples.times.map do |index|
+      Array.new(group_3_number_of_samples) do |index|
         create(:sample_tube).tap { |tube| tube.samples.first.sample_metadata.update!(donor_id: group_3_donors[index]) }
       end
     end
 
     let(:group_1_rows) do
-      group_1_number_of_samples.times.map do |index|
+      Array.new(group_1_number_of_samples) do |index|
         new_csv_row(
           'Study Name' => 'Study 1',
           'Project Name' => 'Project 1',
@@ -187,7 +186,7 @@ RSpec.describe BulkSubmission, with: :uploader do
     end
 
     let(:group_2_rows) do
-      group_2_number_of_samples.times.map do |index|
+      Array.new(group_2_number_of_samples) do |index|
         new_csv_row(
           'Study Name' => 'Study 2',
           'Project Name' => 'Project 2',
@@ -199,7 +198,7 @@ RSpec.describe BulkSubmission, with: :uploader do
     end
 
     let(:group_3_rows) do
-      group_3_number_of_samples.times.map do |index|
+      Array.new(group_3_number_of_samples) do |index|
         new_csv_row(
           'Study Name' => 'Study 3',
           'Project Name' => 'Project 3',
@@ -211,6 +210,10 @@ RSpec.describe BulkSubmission, with: :uploader do
     end
 
     let(:csv_data) { group_1_rows + group_2_rows + group_3_rows }
+
+    let(:i18n_scope) { described_class::I18N_SCOPE_SCRNA_CORE_CDNA_PREP_FEASIBILITY_VALIDATOR }
+
+    let(:total_number_of_samples) { group_1_number_of_samples + group_2_number_of_samples + group_3_number_of_samples }
 
     context 'when the total number of samples is between minimum and maximum allowed' do
       it { is_expected.to be_valid }
@@ -241,15 +244,20 @@ RSpec.describe BulkSubmission, with: :uploader do
       let(:group_2_number_of_samples) { 0 }
       let(:group_3_number_of_samples) { 0 }
 
+      # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
       it 'sets the error message' do
-        scope = described_class::I18N_SCOPE_SCRNA_CORE_CDNA_PREP_FEASIBILITY_VALIDATOR
-        min = scrna_config[:cdna_prep_minimum_total_number_of_samples]
-        max = scrna_config[:cdna_prep_maximum_total_number_of_samples]
-        count = group_1_number_of_samples + group_2_number_of_samples + group_3_number_of_samples
-        error_message = I18n.t('errors.total_number_of_samples', min: min, max: max, count: 4, scope: scope)
+        error_message =
+          I18n.t(
+            'errors.total_number_of_samples',
+            min: scrna_config[:cdna_prep_minimum_total_number_of_samples],
+            max: scrna_config[:cdna_prep_maximum_total_number_of_samples],
+            count: total_number_of_samples,
+            scope: i18n_scope
+          )
         expect { bulk_submission.process }.to raise_error(ActiveRecord::RecordInvalid)
         expect(bulk_submission.errors[:spreadsheet]).to include(error_message)
       end
+      # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations
     end
 
     context 'when the total number of samples is greater than the maximum allowed' do
@@ -261,15 +269,20 @@ RSpec.describe BulkSubmission, with: :uploader do
       let(:group_2_number_of_pools) { 3 }
       let(:group_3_number_of_pools) { 2 }
 
+      # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
       it 'sets the error message' do
-        scope = described_class::I18N_SCOPE_SCRNA_CORE_CDNA_PREP_FEASIBILITY_VALIDATOR
-        min = scrna_config[:cdna_prep_minimum_total_number_of_samples]
-        max = scrna_config[:cdna_prep_maximum_total_number_of_samples]
-        count = group_1_number_of_samples + group_2_number_of_samples + group_3_number_of_samples
-        error_message = I18n.t('errors.total_number_of_samples', min: min, max: max, count: 4, scope: scope)
+        error_message =
+          I18n.t(
+            'errors.total_number_of_samples',
+            min: scrna_config[:cdna_prep_minimum_total_number_of_samples],
+            max: scrna_config[:cdna_prep_maximum_total_number_of_samples],
+            count: total_number_of_samples,
+            scope: i18n_scope
+          )
         expect { bulk_submission.process }.to raise_error(ActiveRecord::RecordInvalid)
         expect(bulk_submission.errors[:spreadsheet]).to include(error_message)
       end
+      # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations
     end
   end
 end
