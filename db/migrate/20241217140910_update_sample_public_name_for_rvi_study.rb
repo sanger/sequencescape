@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class UpdateSamplePublicNameForRviStudy < ActiveRecord::Migration[7.0]
   def change
     ActiveRecord::Base.connection.execute('SET autocommit = 0')
