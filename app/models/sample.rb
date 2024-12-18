@@ -228,9 +228,13 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Sample::Metadata tracks sample information, either for use in the lab, or passing to
   # the EBI
   class Metadata
+    # HuMFre numbers contain tissue information, which is only relevant for human samples.
     validates :huMFre_code,
+              length: {
+                maximum: 16
+              },
               format: {
-                with: %r{\A\d{2}/\d{2,}|\d{2}/\d{4}-\d{3}\z},
+                with: %r{\A(?:\d{2}/\d{2,}|\d{2}/\d{4}-\d{3})\z},
                 message: 'must match a valid format, e.g. 12/34 or 12/2023-001'
               },
               allow_blank: true
