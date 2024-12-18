@@ -97,6 +97,10 @@ describe 'QcFiles API', tags: :lighthouse, with: :api_v2 do
           expect(json.dig('data', 'relationships', 'asset')).to be_present
         end
 
+        it 'returns a reference to the labware relationship' do
+          expect(json.dig('data', 'relationships', 'labware')).to be_present
+        end
+
         it 'returns a reference to the lot relationship' do
           expect(json.dig('data', 'relationships', 'lot')).to be_present
         end
@@ -108,6 +112,7 @@ describe 'QcFiles API', tags: :lighthouse, with: :api_v2 do
 
       context 'with included relationships' do
         it_behaves_like 'a GET request including a has_one relationship', 'asset'
+        it_behaves_like 'a GET request including a has_one relationship', 'labware'
         it_behaves_like 'a GET request including a has_one relationship', 'lot'
       end
     end

@@ -102,7 +102,7 @@ module Api
 
       # @!attribute [rw] labware
       #   @return [LabwareResource] the {Labware} resource associated with this {Qcable}.
-      has_one :labware, foreign_key: :asset_id
+      has_one :labware, relation_name: 'asset', foreign_key: :asset_id
 
       # @!attribute [rw] lot
       #   @return [LotResource] the {Lot} resource associated with this {Qcable}.
