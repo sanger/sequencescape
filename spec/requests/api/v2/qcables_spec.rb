@@ -13,7 +13,7 @@ describe 'QcFiles API', tags: :lighthouse, with: :api_v2 do
 
   context 'with a list of resources' do
     let(:resource_count) { 5 }
-    let!(:resources) { Array.new(resource_count) { create(:qcable_with_asset, sanger_barcode: create(:sanger_ean13)) } }
+    let!(:resources) { Array.new(resource_count) { create(:qcable_with_asset) } }
 
     describe '#GET all resources' do
       before { api_get base_endpoint }
@@ -59,7 +59,7 @@ describe 'QcFiles API', tags: :lighthouse, with: :api_v2 do
 
   context 'with a single resource' do
     describe '#GET resource by ID' do
-      let(:resource) { create(:qcable_with_asset, sanger_barcode: create(:sanger_ean13)) }
+      let(:resource) { create(:qcable_with_asset) }
 
       context 'without included relationships' do
         before { api_get "#{base_endpoint}/#{resource.id}" }
@@ -119,7 +119,7 @@ describe 'QcFiles API', tags: :lighthouse, with: :api_v2 do
   end
 
   describe '#PATCH a resource' do
-    let(:resource) { create(:qcable_with_asset, sanger_barcode: create(:sanger_ean13)) }
+    let(:resource) { create(:qcable_with_asset) }
 
     context 'with a valid payload' do
       let(:new_labware) { create(:full_plate) }

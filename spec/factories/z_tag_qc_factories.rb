@@ -66,7 +66,7 @@ FactoryBot.define do
     # callbacks.
     lot { create(:lot) }
     qcable_creator { create(:qcable_creator) }
-    transient { sanger_barcode { nil } }
+    transient { sanger_barcode { create(:sanger_ean13) } }
 
     factory :qcable_with_asset do
       state { 'created' }
