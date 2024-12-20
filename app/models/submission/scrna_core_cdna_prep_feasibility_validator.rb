@@ -87,9 +87,9 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
 
   def calculate_pool_size_types(number_of_samples, number_of_pools)
     quotient, remainder = number_of_samples.divmod(number_of_pools)
-    smallest = biggest = quotient
-    biggest += 1 if remainder.positive?
-    { 'smallest' => smallest, 'biggest' => biggest }
+    size_types = { 'smallest' => quotient }
+    size_types['biggest'] = quotient + 1 if remainder.positive?
+    size_types
   end
 
   # rubocop:disable Metrics/ParameterLists
