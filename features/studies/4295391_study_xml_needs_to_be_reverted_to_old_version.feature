@@ -115,7 +115,7 @@ Feature: The XML for the sequencescape API
             <value>Not specified</value>
           </descriptor>
           <descriptor>
-            <name>Has this been approved?</name>
+            <name>If reason for exemption requires DAC approval, what is the approval number?</name>
             <value></value>
           </descriptor>
           <descriptor>
@@ -149,10 +149,6 @@ Feature: The XML for the sequencescape API
           <descriptor>
           <name>Are all the samples to be used in this study commercially available, unlinked anonymised cell-lines?</name>
           <value>No</value>
-          </descriptor>
-          <descriptor>
-            <name>Has the delay period been approved by the data sharing committee for this project?</name>
-            <value></value>
           </descriptor>
           <descriptor>
             <name>ENA Project ID</name>
