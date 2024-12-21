@@ -178,7 +178,8 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
           project_name: project_name,
           number_of_samples_in_smallest_pool: number_of_samples_in_smallest_pool,
           final_resuspension_volume: final_resuspension_volume,
-          full_allowance: full_allowance,
+          full_allowance: full_allowance
+        )
     end
   end
 
