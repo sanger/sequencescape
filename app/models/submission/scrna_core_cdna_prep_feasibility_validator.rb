@@ -180,6 +180,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
           final_resuspension_volume: final_resuspension_volume,
           full_allowance: full_allowance
         )
+      )
     end
   end
 
