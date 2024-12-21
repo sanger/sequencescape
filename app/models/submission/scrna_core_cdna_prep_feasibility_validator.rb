@@ -2,20 +2,24 @@
 
 # rubocop:disable Metrics/ModuleLength
 module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
+
+  include Submission::ScrnaCoreCdnaPrepFeasibilityCalculator
+
   HEADER_BARCODE = 'barcode' unless defined?(HEADER_BARCODE)
   HEADER_PLATE_WELL = 'plate well' unless defined?(HEADER_PLATE_WELL)
   HEADER_NUMBER_OF_POOLS = 'scrna core number of pools' unless defined?(HEADER_NUMBER_OF_POOLS)
+  HEADER_CELLS_PER_CHIP_WELL = 'scrna core cells per chip well' unless defined?(HEADER_CELLS_PER_CHIP_WELL)
   I18N_SCOPE_SCRNA_CORE_CDNA_PREP_FEASIBILITY_VALIDATOR = 'submissions.scrna_core_cdna_prep_feasibility_validator'
 
   def validate_scrna_core_cdna_prep_feasibility
-    required = [HEADER_BARCODE, HEADER_PLATE_WELL, HEADER_NUMBER_OF_POOLS]
+    required = [HEADER_BARCODE, HEADER_PLATE_WELL, HEADER_NUMBER_OF_POOLS, HEADER_CELLS_PER_CHIP_WELL]
     return unless required.all? { |header| headers.include?(header) }
 
     validate_scrna_core_cdna_prep_total_number_of_samples
     validate_scrna_core_cdna_prep_total_number_of_pools
     validate_scrna_core_cdna_prep_feasibility_by_samples
     validate_scrna_core_cdna_prep_feasibility_by_donors
-    validate_scrna_core_cdna_prep_full_allowance
+    validate_scrna_core_cdna_prep_full_allowance if errors.empty?
   end
 
   private
@@ -158,6 +162,32 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
   end
 
   def validate_scrna_core_cdna_prep_full_allowance
+    group_rows_by_study_and_project.each do |(study_name, project_name), rows|
+      number_of_samples_in_smallest_pool = calculate_number_of_samples_in_smallest_pool(rows)
+      number_of_cells_per_chip_well = rows.first[headers.index(HEADER_CELLS_PER_CHIP_WELL)].to_i
+      final_resuspension_volume = calculate_resuspension_volume(number_of_samples_in_smallest_pool)
+      full_allowance = calculate_full_allowance(number_of_cells_per_chip_well)
+
+      return if final_resuspension_volume >= full_allowance
+
+      warnings.add(
+        :spreadsheet,
+        I18n.t(
+          'warnings.full_allowance',
+          study_name: study_name,
+          project_name: project_name,
+          number_of_samples_in_smallest_pool: number_of_samples_in_smallest_pool,
+          final_resuspension_volume: final_resuspension_volume,
+          full_allowance: full_allowance,
+    end
+  end
+
+  def calculate_number_of_samples_in_smallest_pool(rows)
+    barcodes, well_locations = extract_barcodes_and_well_locations(rows)
+    number_of_samples = calculate_total_number_of_samples(barcodes, well_locations)
+    number_of_pools = rows.first[headers.index(HEADER_NUMBER_OF_POOLS)].to_i
+    pool_sizes = calculate_pool_size_types(number_of_samples, number_of_pools)
+    pool_sizes['smallest']
   end
 
   def extract_barcodes_and_well_locations(rows)
