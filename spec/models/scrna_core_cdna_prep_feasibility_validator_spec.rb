@@ -50,6 +50,10 @@ RSpec.describe BulkSubmission, with: :uploader do
   let(:group_1_number_of_pools) { 1 }
   let(:group_2_number_of_pools) { 1 }
   let(:group_3_number_of_pools) { 1 }
+  # The cells per chip well for each study-project group.
+  let(:group_1_cells_per_chip_well) { 90_000 }
+  let(:group_2_cells_per_chip_well) { 90_000 }
+  let(:group_3_cells_per_chip_well) { 90_000 }
   # Donor IDs for each group to set on the samples.
   let(:group_1_donors) { Array.new(group_1_number_of_samples) { |index| "group_1_donor_#{index + 1}" } }
   let(:group_2_donors) { Array.new(group_2_number_of_samples) { |index| "group_2_donor_#{index + 1}" } }
@@ -78,7 +82,8 @@ RSpec.describe BulkSubmission, with: :uploader do
         'Project Name' => 'Project 1',
         'Barcode' => group_1_tubes[index].human_barcode,
         'Asset Group Name' => 'Asset Group 1',
-        'scRNA Core Number of Pools' => group_1_number_of_pools
+        'scRNA Core Number of Pools' => group_1_number_of_pools,
+        'scRNA Core Cells per Chip Well' => group_1_cells_per_chip_well
       )
     end
   end
@@ -89,7 +94,8 @@ RSpec.describe BulkSubmission, with: :uploader do
         'Project Name' => 'Project 2',
         'Barcode' => group_2_tubes[index].human_barcode,
         'Asset Group Name' => 'Asset Group 2',
-        'scRNA Core Number of Pools' => group_2_number_of_pools
+        'scRNA Core Number of Pools' => group_2_number_of_pools,
+        'scRNA Core Cells per Chip Well' => group_2_cells_per_chip_well
       )
     end
   end
@@ -100,7 +106,8 @@ RSpec.describe BulkSubmission, with: :uploader do
         'Project Name' => 'Project 3',
         'Barcode' => group_3_tubes[index].human_barcode,
         'Asset Group Name' => 'Asset Group 3',
-        'scRNA Core Number of Pools' => group_3_number_of_pools
+        'scRNA Core Number of Pools' => group_3_number_of_pools,
+        'scRNA Core Cells per Chip Well' => group_3_cells_per_chip_well
       )
     end
   end
@@ -250,7 +257,7 @@ RSpec.describe BulkSubmission, with: :uploader do
       let(:group_3_number_of_samples) { 0 }
 
       # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
-      it 'sets the error message' do
+      it 'adds the error message' do
         error_message =
           I18n.t(
             'errors.total_number_of_samples',
@@ -275,7 +282,7 @@ RSpec.describe BulkSubmission, with: :uploader do
       let(:group_3_number_of_pools) { 2 }
 
       # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
-      it 'sets the error message' do
+      it 'adds the error message' do
         error_message =
           I18n.t(
             'errors.total_number_of_samples',
@@ -352,7 +359,7 @@ RSpec.describe BulkSubmission, with: :uploader do
       end
 
       # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
-      it 'sets the error message' do
+      it 'adds the error message' do
         error_message =
           I18n.t(
             'errors.total_number_of_pools',
@@ -377,7 +384,7 @@ RSpec.describe BulkSubmission, with: :uploader do
       let(:group_3_number_of_pools) { 3 }
 
       # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
-      it 'sets the error message' do
+      it 'adds the error message' do
         error_message =
           I18n.t(
             'errors.total_number_of_pools',
@@ -449,7 +456,7 @@ RSpec.describe BulkSubmission, with: :uploader do
       let(:group_3_number_of_pools) { 2 }
 
       # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
-      it 'sets the error message' do
+      it 'adds the error message' do
         expect { bulk_submission.process }.to raise_error(ActiveRecord::RecordInvalid)
 
         # Parametrise the assertions for the error messages because multiple
@@ -491,7 +498,7 @@ RSpec.describe BulkSubmission, with: :uploader do
       let(:group_3_number_of_pools) { 1 }
 
       # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
-      it 'sets the error message' do
+      it 'adds the error message' do
         error_message =
           I18n.t(
             'errors.number_of_pools_by_samples',
@@ -579,7 +586,7 @@ RSpec.describe BulkSubmission, with: :uploader do
       # clash, because we have 4 pools.
 
       # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
-      it 'sets the error message' do
+      it 'adds the error message' do
         # Barcodes or well locations of the labware with the same donor ID are
         # listed in the error message. This test uses tubes; hence the barcodes
         # of the tubes will be listed to help the user identify the samples.
@@ -599,6 +606,107 @@ RSpec.describe BulkSubmission, with: :uploader do
         expect(bulk_submission.errors[:spreadsheet]).to include(error_message)
       end
       # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations
+    end
+  end
+
+  describe '#validate_scrna_core_cdna_prep_full_allowance' do
+    # There is not enough material for the "full allowance" (2 full runs on the
+    # chip) for the smallest pool size for a study-project group.
+    context 'when final_resuspension_volume is greater than the full allowance' do
+      let(:group_1_number_of_samples) { 5 }
+      let(:group_2_number_of_samples) { 0 } # not included in the test
+      let(:group_3_number_of_samples) { 0 } # not included in the test
+
+      let(:group_1_number_of_pools) { 1 }
+      let(:group_2_number_of_pools) { 1 }
+      let(:group_3_number_of_pools) { 1 }
+
+      # rubocop:disable RSpec/MultipleExpectations
+      it 'adds the warning message' do
+        warning_message =
+          I18n.t(
+            'warnings.full_allowance',
+            study_name: 'Study 1',
+            project_name: 'Project 1',
+            number_of_samples_in_smallest_pool: 5,
+            final_resuspension_volume: '59.4',
+            full_allowance: '99.0',
+            scope: i18n_scope
+          )
+
+        expect(bulk_submission).to be_valid
+        expect(bulk_submission.warnings[:spreadsheet]).to include(warning_message)
+      end
+      # rubocop:enable RSpec/MultipleExpectations
+    end
+
+    context 'when final_resuspension_volume is equal to the full allowance' do
+      let(:group_1_number_of_samples) { 5 }
+      let(:group_2_number_of_samples) { 0 } # not included in the test
+      let(:group_3_number_of_samples) { 0 } # not included in the test
+
+      let(:group_1_number_of_pools) { 1 }
+      let(:group_2_number_of_pools) { 1 }
+      let(:group_3_number_of_pools) { 1 }
+
+      let(:group_1_cells_per_chip_well) { 41_250 }
+
+      # rubocop:disable RSpec/MultipleExpectations
+      it 'adds the warning message' do
+        expect(bulk_submission).to be_valid
+        expect(bulk_submission.warnings).to be_empty
+      end
+      # rubocop:enable RSpec/MultipleExpectations
+    end
+
+    context 'when final resuspension volume is less than the full allowance' do
+      let(:group_1_number_of_samples) { 5 }
+      let(:group_2_number_of_samples) { 0 } # not included in the test
+      let(:group_3_number_of_samples) { 0 } # not included in the test
+
+      let(:group_1_number_of_pools) { 1 }
+      let(:group_2_number_of_pools) { 1 }
+      let(:group_3_number_of_pools) { 1 }
+
+      let(:group_1_cells_per_chip_well) { 30_000 }
+
+      # rubocop:disable RSpec/MultipleExpectations
+      it 'does not add the warning message' do
+        expect(bulk_submission).to be_valid
+        expect(bulk_submission.warnings).to be_empty
+      end
+      # rubocop:enable RSpec/MultipleExpectations
+    end
+
+    context 'when there are multiple full allowance warnings' do
+      let(:group_1_number_of_samples) { 5 }
+      let(:group_2_number_of_samples) { 5 }
+      let(:group_3_number_of_samples) { 5 }
+
+      let(:group_1_number_of_pools) { 1 }
+      let(:group_2_number_of_pools) { 1 }
+      let(:group_3_number_of_pools) { 1 }
+
+      # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
+      it 'adds the warning message for each study-project' do
+        expect(bulk_submission).to be_valid
+
+        params = [['Study 1', 'Project 1'], ['Study 2', 'Project 2'], ['Study 3', 'Project 3']]
+        params.each do |study_name, project_name|
+          warning_message =
+            I18n.t(
+              'warnings.full_allowance',
+              study_name: study_name,
+              project_name: project_name,
+              number_of_samples_in_smallest_pool: 5,
+              final_resuspension_volume: '59.4',
+              full_allowance: '99.0',
+              scope: i18n_scope
+            )
+          expect(bulk_submission.warnings[:spreadsheet]).to include(warning_message)
+        end
+      end
+      # rubocop:enable RSpec/MultipleExpectations, RSpec/ExampleLength
     end
   end
 end
