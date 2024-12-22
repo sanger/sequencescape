@@ -239,7 +239,6 @@ en:
           However, for the smallest pool of size %{number_of_samples_in_smallest_pool}, the final resuspension volume is %{final_resuspension_volume} and the full allowance is %{full_allowance}.
           The number of cells per chip well will be adjusted according to the number of samples while pooling.
 
-
   cherrypick:
     picking_by_row: "This cherrypick may take longer as it is picking by rows, rather than columns."
 
