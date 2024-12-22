@@ -160,6 +160,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
     tube?(barcodes, well_locations) ? barcodes.join(', ') : well_locations.join(', ')
   end
 
+  # rubocop:disable Metrics/MethodLength
   def validate_scrna_core_cdna_prep_full_allowance
     group_rows_by_study_and_project.each do |(study_name, project_name), rows|
       number_of_samples_in_smallest_pool = calculate_number_of_samples_in_smallest_pool(rows)
@@ -173,11 +174,12 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
         study_name,
         project_name,
         number_of_samples_in_smallest_pool,
-        final_resuspension_volume,
-        full_allowance
+        final_resuspension_volume.round(1), # round to 1 decimal place
+        full_allowance.round(1) # round to 1 decimal place
       )
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   def add_warning_scrna_core_cdna_prep_full_allowance(
     study_name,
@@ -190,11 +192,12 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
       :spreadsheet,
       I18n.t(
         'warnings.full_allowance',
-        study_name:,
-        project_name:,
-        number_of_samples_in_smallest_pool:,
-        final_resuspension_volume:,
-        full_allowance:
+        study_name: study_name,
+        project_name: project_name,
+        number_of_samples_in_smallest_pool: number_of_samples_in_smallest_pool,
+        final_resuspension_volume: final_resuspension_volume,
+        full_allowance: full_allowance,
+        scope: I18N_SCOPE_SCRNA_CORE_CDNA_PREP_FEASIBILITY_VALIDATOR
       )
     )
   end
