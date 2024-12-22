@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module Submission::ScrnaCoreCdnaPrepFeasibilityCalculator
-
   def calculate_full_allowance(number_of_cells_per_chip_well)
     # "Full allowance" = ( "Chip loading volume" * 2) + 25
     # 2 is because this is for 2 runs
@@ -11,7 +10,6 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityCalculator
       (scrna_config[:desired_number_of_runs] * scrna_config[:volume_taken_for_cell_counting]) +
       scrna_config[:wastage_volume]
   end
-
 
   def calculate_chip_loading_volume(number_of_cells_per_chip_well)
     # "Chip loading volume" = "Number of cells per chip well" / "Chip loading concentration"

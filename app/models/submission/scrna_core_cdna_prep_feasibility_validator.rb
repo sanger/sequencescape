@@ -2,7 +2,6 @@
 
 # rubocop:disable Metrics/ModuleLength
 module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
-
   include Submission::ScrnaCoreCdnaPrepFeasibilityCalculator
 
   HEADER_BARCODE = 'barcode' unless defined?(HEADER_BARCODE)
@@ -168,20 +167,36 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
       final_resuspension_volume = calculate_resuspension_volume(number_of_samples_in_smallest_pool)
       full_allowance = calculate_full_allowance(number_of_cells_per_chip_well)
 
-      return if final_resuspension_volume >= full_allowance
+      next if final_resuspension_volume >= full_allowance
 
-      warnings.add(
-        :spreadsheet,
-        I18n.t(
-          'warnings.full_allowance',
-          study_name: study_name,
-          project_name: project_name,
-          number_of_samples_in_smallest_pool: number_of_samples_in_smallest_pool,
-          final_resuspension_volume: final_resuspension_volume,
-          full_allowance: full_allowance
-        )
+      add_warning_scrna_core_cdna_prep_full_allowance(
+        study_name,
+        project_name,
+        number_of_samples_in_smallest_pool,
+        final_resuspension_volume,
+        full_allowance
       )
     end
+  end
+
+  def add_warning_scrna_core_cdna_prep_full_allowance(
+    study_name,
+    project_name,
+    number_of_samples_in_smallest_pool,
+    final_resuspension_volume,
+    full_allowance
+  )
+    warnings.add(
+      :spreadsheet,
+      I18n.t(
+        'warnings.full_allowance',
+        study_name:,
+        project_name:,
+        number_of_samples_in_smallest_pool:,
+        final_resuspension_volume:,
+        full_allowance:
+      )
+    )
   end
 
   def calculate_number_of_samples_in_smallest_pool(rows)
