@@ -55,7 +55,9 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
   end
 
   # Returns the warnings collection for the BulkSubmission object.
-  # Initialises the warnings collectin if it does not exist yet.
+  # Initialises the warnings collection if it does not exist yet. The collection
+  # is used for showing informative warning messages to the user after the bulk
+  # submission has been processed successfully.
   # @return [ActiveModel::Errors] the warnings collection
   def warnings
     @warnings ||= ActiveModel::Errors.new(self)
