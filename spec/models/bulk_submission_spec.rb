@@ -25,15 +25,7 @@ shared_examples 'an invalid scRNA Bulk Submission' do |_, tube_count|
     }
   end
 
-  before do
-    SubmissionSerializer.construct!(submission_template_hash)
-    tubes.each_with_index.map do |tube, i|
-      create(:asset_group, name: "ag#{i + 1}", study: study, assets: [tube.receptacle])
-    end
-    tubes.each_with_index do |tube, i|
-      tube.receptacle.aliquots.first.sample.sample_metadata.update!(donor_id: "donor_#{i + 1}")
-    end
-  end
+  before { SubmissionSerializer.construct!(submission_template_hash) }
 
   it 'is invalid' do
     expect { subject.process }.to raise_error(ActiveRecord::RecordInvalid)
@@ -381,11 +373,14 @@ describe BulkSubmission, with: :uploader do
     end
 
     context 'when an scRNA Bulk Submission for tubes' do
-      let(:request_types) { create_list(:sequencing_request_type, 2) }
+      let!(:request_types) { [create(:pbmc_pooling_customer_request_type)] }
       # Create a list of tubes with samples
       let!(:tubes) do
-        create_list(:phi_x_stock_tube, 6) do |tube, i|
-          tube.barcodes << Barcode.new(format: :sanger_ean13, barcode: "NT#{i + 1}")
+        Array.new(6) do |index|
+          create(:sample_tube).tap do |tube|
+            tube.barcodes << Barcode.new(format: :sanger_ean13, barcode: "NT#{index + 1}")
+            tube.samples.first.sample_metadata.update!(donor_id: "donor_#{index}")
+          end
         end
       end
       let!(:study) { create(:study, name: 'Test Study') }
@@ -405,16 +400,7 @@ describe BulkSubmission, with: :uploader do
         }
       end
 
-      before do
-        SubmissionSerializer.construct!(submission_template_hash)
-        tubes.each_with_index.map do |tube, i|
-          create(:asset_group, name: "ag#{i + 1}", study: study, assets: [tube.receptacle])
-        end
-
-        tubes.each_with_index do |tube, i|
-          tube.receptacle.aliquots.first.sample.sample_metadata.update!(donor_id: "donor_#{i + 1}")
-        end
-      end
+      before { SubmissionSerializer.construct!(submission_template_hash) }
 
       it 'is valid' do
         expect(subject).to be_valid
