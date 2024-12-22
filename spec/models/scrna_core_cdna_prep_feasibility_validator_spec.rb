@@ -7,8 +7,14 @@ require 'rails_helper'
 # module. CSV files are created for bulk submissions and the validations
 # provided by the module are tested.
 RSpec.describe BulkSubmission, with: :uploader do
+  # Enable the feature flag for the feasibility validations.
   # The test subject is initialised with the uploaded file.
   subject(:bulk_submission) { described_class.new(spreadsheet: submission_file) }
+
+  before do
+    Flipper.enable(:y24_429_enable_check_feasibility_of_cdna_prep_submission)
+    SubmissionSerializer.construct!(submission_template_hash) # Create the template.
+  end
 
   # The CSV headers are used to create the CSV content; copied from headings in
   # config/bulk_submission_excel/columns.yml
@@ -209,10 +215,6 @@ RSpec.describe BulkSubmission, with: :uploader do
   # @return [Hash] The scrna_config hash.
   def scrna_config
     Rails.application.config.scrna_config
-  end
-
-  before do
-    SubmissionSerializer.construct!(submission_template_hash) # Create the template.
   end
 
   after do
@@ -621,7 +623,7 @@ RSpec.describe BulkSubmission, with: :uploader do
       let(:group_2_number_of_pools) { 1 }
       let(:group_3_number_of_pools) { 1 }
 
-      # rubocop:disable RSpec/MultipleExpectations
+      # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
       it 'adds the warning message' do
         warning_message =
           I18n.t(
@@ -637,7 +639,7 @@ RSpec.describe BulkSubmission, with: :uploader do
         expect(bulk_submission).to be_valid
         expect(bulk_submission.warnings[:spreadsheet]).to include(warning_message)
       end
-      # rubocop:enable RSpec/MultipleExpectations
+      # rubocop:enable RSpec/MultipleExpectations, RSpec/ExampleLength
     end
 
     context 'when final_resuspension_volume is equal to the full allowance' do
