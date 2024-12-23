@@ -233,7 +233,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
   #
   # @example Checking if the number of pools is feasible, given donor IDs
   #   Study A-Project A has 21 samples and asks for 2 pools.
-  #   Three of the samples are from donor the same donors. Therefore,
+  #   Three of the samples are from the same donor. Therefore,
   #   the largest group of samples from the same donor has 3 samples.
   #   It is not possible to separate 3 samples into different pools to avoid
   #   donor clash, so this is invalid.

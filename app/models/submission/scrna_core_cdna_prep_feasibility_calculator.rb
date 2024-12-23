@@ -27,7 +27,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityCalculator
   # in a bulk submission per study and project. It uses the pooling settings
   # from the scRNA config.
   #
-  # @param num_cells_per_chip_well [Integer] the number of cells per chip well from the bulk submission
+  # @param number_of_cells_per_chip_well [Integer] the number of cells per chip well from the bulk submission
   # @return [Float] the chip loading volume
   def calculate_chip_loading_volume(number_of_cells_per_chip_well)
     # "Chip loading volume" = "Number of cells per chip well" / "Chip loading concentration"
