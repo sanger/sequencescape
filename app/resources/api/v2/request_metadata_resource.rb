@@ -28,9 +28,9 @@ module Api
       # Attributes
       ###
 
-      # @!attribute [r] number_of_samples_per_pool
-      #   @return [Int] the number_of_samples_per_pool.
-      attribute :number_of_samples_per_pool, write_once: true
+      # @!attribute [r] number_of_pools
+      #   @return [Int] the number_of_pools.
+      attribute :number_of_pools, write_once: true
 
       # @!attribute [r] cells_per_chip_well
       #   @return [Int] the cells_per_chip_well.
