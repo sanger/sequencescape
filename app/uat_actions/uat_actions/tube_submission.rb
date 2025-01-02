@@ -103,8 +103,8 @@ class UatActions::TubeSubmission < UatActions
     report['tube_barcodes'] = assets.map(&:human_barcode)
     report['submission_id'] = order.submission.id
     report['library_type'] = order.request_options[:library_type] if order.request_options[:library_type].present?
-    report['number_of_samples_per_pool'] = order.request_options[:number_of_samples_per_pool] if order.request_options[
-      :number_of_samples_per_pool
+    report['number_of_pools'] = order.request_options[:number_of_pools] if order.request_options[
+      :number_of_pools
     ].present?
     report['cells_per_chip_well'] = order.request_options[:cells_per_chip_well] if order.request_options[
       :cells_per_chip_well
@@ -164,7 +164,7 @@ class UatActions::TubeSubmission < UatActions
   def custom_request_options
     options = {}
     options[:library_type] = library_type_name if library_type_name.present?
-    options[:number_of_samples_per_pool] = number_of_samples_per_pool.presence
+    options[:number_of_pools] = number_of_pools.presence
     options[:cells_per_chip_well] = cells_per_chip_well.presence
     options
   end
