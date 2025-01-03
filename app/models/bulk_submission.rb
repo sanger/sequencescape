@@ -54,6 +54,15 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     self.encoding = attrs.fetch(:encoding, DEFAULT_ENCODING)
   end
 
+  # Returns the warnings collection for the BulkSubmission object.
+  # Initialises the warnings collection if it does not exist yet. The collection
+  # is used for showing informative warning messages to the user after the bulk
+  # submission has been processed successfully.
+  # @return [ActiveModel::Errors] the warnings collection
+  def warnings
+    @warnings ||= ActiveModel::Errors.new(self)
+  end
+
   include ManifestUtil
 
   # rubocop:todo Metrics/MethodLength

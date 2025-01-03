@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 # rubocop:todo Metrics/ModuleLength
 module Submission::ValidationsByTemplateName
+  include Submission::ScrnaCoreCdnaPrepFeasibilityValidator
+
   # Template names
   SCRNA_CORE_CDNA_PREP_GEM_X_5P = 'Limber-Htp - scRNA Core cDNA Prep GEM-X 5p'
 
@@ -28,6 +30,7 @@ module Submission::ValidationsByTemplateName
   # errors [ActiveModel::Errors] The errors object to which validation errors are added.
   #
   # @return [void]
+  # rubocop:disable Metrics/MethodLength
   def apply_additional_validations_by_template_name
     # depending on the submission template type, call additional validations
     # NB. assumption that all rows in the csv have the same submission template name
@@ -40,8 +43,12 @@ module Submission::ValidationsByTemplateName
       validate_consistent_column_value(HEADER_NUMBER_OF_POOLS)
       validate_consistent_column_value(HEADER_CELLS_PER_CHIP_WELL)
       validate_samples_per_pool_for_labware
+      if Flipper.enabled?(:y24_429_enable_check_feasibility_of_cdna_prep_submission)
+        validate_scrna_core_cdna_prep_feasibility
+      end
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   def apply_number_of_samples_per_pool_validation
     # Creates groups of rows based on the study and project name (pool_number, study-project) combinations

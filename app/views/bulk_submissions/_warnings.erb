@@ -1,0 +1,7 @@
+<%= alert(:warning) do %>
+    <ul>
+        <% presenter.warnings.full_messages.each do |message| %>
+        <li><%= message %></li>
+        <% end %>
+    </ul>
+<% end %>
