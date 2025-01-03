@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# This configuration was copied from Limber and modified with additional entries
+# for the scRNA Core cDNA Prep submission.
 # Stores constants used in pooling and chip loading calculations for samples in the scRNA Core pipeline.
 Rails.application.config.scrna_config = {
   # Maximum volume to take into the pools plate for each sample (in microlitres)
