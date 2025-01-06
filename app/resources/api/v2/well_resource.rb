@@ -21,6 +21,8 @@ module Api
       # Attributes
       attribute :position, readonly: true
 
+      has_many :poly_metadata, as: :metadatable, class_name: 'PolyMetadatum'
+
       def position
         { 'name' => _model.map_description }
       end
