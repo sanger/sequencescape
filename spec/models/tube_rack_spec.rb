@@ -134,11 +134,7 @@ RSpec.describe TubeRack do
     end
 
     it 'returns a hash of tube locations with coordinates as keys and tube UUIDs as values' do
-      expected_locations = {
-        'A1' => { uuid: tube1.uuid },
-        'B1' => { uuid: tube2.uuid },
-        'C1' => { uuid: tube3.uuid }
-      }
+      expected_locations = { 'A1' => { uuid: tube1.uuid }, 'B1' => { uuid: tube2.uuid }, 'C1' => { uuid: tube3.uuid } }
 
       expect(tube_rack.tube_locations).to eq(expected_locations)
     end
