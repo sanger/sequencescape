@@ -89,12 +89,11 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   DATA_RELEASE_DELAY_REASONS_ASSAY = ['phd study', 'assay of no other use', DATA_RELEASE_DELAY_FOR_OTHER].freeze
 
   DATA_RELEASE_DELAY_PERIODS = ['3 months', '6 months', '9 months', '12 months', '18 months'].freeze
- 
-  EBI_LIBRARY_STRATEGY_OPTIONS = ::EBI_REQUIREMENT_FIELDS['EBI_Library_strategy']
-  EBI_LIBRARY_SOURCE_OPTIONS = ::EBI_REQUIREMENT_FIELDS['EBI_Library_source']
-  EBI_LIBRARY_SELECTION_OPTIONS = ::EBI_REQUIREMENT_FIELDS['EBI_Library_selection']
-  puts ::EBI_REQUIREMENT_FIELDS
-  
+
+  EBI_LIBRARY_STRATEGY_OPTIONS = EBI_REQUIREMENT_FIELDS['EBI_Library_strategy']
+  EBI_LIBRARY_SOURCE_OPTIONS = EBI_REQUIREMENT_FIELDS['EBI_Library_source']
+  EBI_LIBRARY_SELECTION_OPTIONS = EBI_REQUIREMENT_FIELDS['EBI_Library_selection']
+
   # Class variables
   self.per_page = 500
 
