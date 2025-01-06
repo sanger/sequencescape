@@ -120,4 +120,27 @@ RSpec.describe TubeRack do
       end
     end
   end
+
+  describe '#tube_locations' do
+    let(:tube_rack) { create(:tube_rack) }
+    let(:tube1) { create(:tube) }
+    let(:tube2) { create(:tube) }
+    let(:tube3) { create(:tube) }
+
+    before do
+      create(:racked_tube, tube_rack: tube_rack, tube: tube1, coordinate: 'A1')
+      create(:racked_tube, tube_rack: tube_rack, tube: tube2, coordinate: 'B1')
+      create(:racked_tube, tube_rack: tube_rack, tube: tube3, coordinate: 'C1')
+    end
+
+    it 'returns a hash of tube locations with coordinates as keys and tube UUIDs as values' do
+      expected_locations = {
+        'A1' => { uuid: tube1.uuid },
+        'B1' => { uuid: tube2.uuid },
+        'C1' => { uuid: tube3.uuid }
+      }
+
+      expect(tube_rack.tube_locations).to eq(expected_locations)
+    end
+  end
 end
