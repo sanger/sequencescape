@@ -16,7 +16,6 @@ module Api
       # Relationships
       has_many :comments, readonly: true
       has_many :racked_tubes
-      has_many :comments, readonly: true
       # TODO: refactor plate_purpose_id to purpose_id throughout repo
       has_one :purpose, foreign_key: :plate_purpose_id, class_name: 'TubeRackPurpose'
       has_many :parents, readonly: true, polymorphic: true
