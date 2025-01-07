@@ -27,9 +27,6 @@ class Io::Study < Core::Io::Base
     study_metadata.data_release_study_type.name     => data_release_sort_of_study
            study_metadata.data_release_strategy     => data_release_strategy
 study_metadata.contaminated_human_data_access_group => contaminated_human_data_access_group
-study_metadata.ebi_library_strategy                 => ebi_library_strategy
-study_metadata.ebi_library_source                 => ebi_library_source
-study_metadata.ebi_library_selection                 => ebi_library_selection
   '
   )
 end
