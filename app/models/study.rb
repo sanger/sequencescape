@@ -93,7 +93,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   EBI_LIBRARY_STRATEGY_OPTIONS = EBI_REQUIREMENT_FIELDS['EBI_Library_strategy']
   EBI_LIBRARY_SOURCE_OPTIONS = EBI_REQUIREMENT_FIELDS['EBI_Library_source']
   EBI_LIBRARY_SELECTION_OPTIONS = EBI_REQUIREMENT_FIELDS['EBI_Library_selection']
-  puts EBI_REQUIREMENT_FIELDS[:EBI_Library_strategy]
+
   # Class variables
   self.per_page = 500
 
