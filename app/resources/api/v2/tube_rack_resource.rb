@@ -26,12 +26,12 @@ module Api
       # TODO: do we need descendants? might have to delegate to racked tubes
 
       # Attributes
-      attribute :labware_barcode, readonly: true
-      attribute :size, readonly: true
-      attribute :number_of_rows, readonly: true
-      attribute :number_of_columns, readonly: true
-      attribute :name, delegate: :display_name, readonly: true
-      attribute :tube_locations, readonly: true
+      attribute :labware_barcode, write_once: true
+      attribute :size, write_once: true
+      attribute :number_of_rows, write_once: true
+      attribute :number_of_columns, write_once: true
+      attribute :name, delegate: :display_name, write_once: true
+      attribute :tube_locations, writeonly: true
       attribute :uuid, readonly: true
 
       attribute :created_at, readonly: true

@@ -90,14 +90,4 @@ class TubeRack < Labware
     # tubes that don't have submissions. Or even a mixed rack.
     comments.add_comment_to_tubes(comment)
   end
-
-  # Returns a hash of tube locations in the tube rack.
-  # The hash keys are the coordinates of the racked tubes, and the values are hashes containing the UUIDs of the tubes.
-  #
-  # @return [Hash] A hash of tube locations with coordinates as keys and tube UUIDs as values.
-  def tube_locations
-    racked_tubes.each_with_object({}) do |racked_tube, hash|
-      hash[racked_tube.coordinate] = { uuid: racked_tube.tube.uuid }
-    end
-  end
 end

@@ -13,12 +13,12 @@ RSpec.describe Api::V2::TubeRackResource, type: :resource do
 
   # Attributes
   it { is_expected.to have_readonly_attribute(:created_at) }
-  it { is_expected.to have_readonly_attribute(:labware_barcode) }
-  it { is_expected.to have_readonly_attribute(:name) }
-  it { is_expected.to have_readonly_attribute(:number_of_columns) }
-  it { is_expected.to have_readonly_attribute(:number_of_rows) }
-  it { is_expected.to have_readonly_attribute(:size) }
-  it { is_expected.to have_readonly_attribute(:tube_locations) }
+  it { is_expected.to have_write_once_attribute(:labware_barcode) }
+  it { is_expected.to have_write_once_attribute(:name) }
+  it { is_expected.to have_write_once_attribute(:number_of_columns) }
+  it { is_expected.to have_write_once_attribute(:number_of_rows) }
+  it { is_expected.to have_write_once_attribute(:size) }
+  it { is_expected.to have_writeonly_attribute(:tube_locations) }
   it { is_expected.to have_readonly_attribute(:updated_at) }
   it { is_expected.to have_readonly_attribute(:uuid) }
 
