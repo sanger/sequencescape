@@ -17,14 +17,14 @@ RSpec.describe Api::V2::TubeRackResource, type: :resource do
   it { is_expected.to have_write_once_attribute(:name) }
   it { is_expected.to have_write_once_attribute(:number_of_columns) }
   it { is_expected.to have_write_once_attribute(:number_of_rows) }
-  it { is_expected.to have_readwrite_attribute(:size) }
+  it { is_expected.to have_write_once_attribute(:size) }
   it { is_expected.to have_writeonly_attribute(:tube_locations) }
   it { is_expected.to have_readonly_attribute(:updated_at) }
   it { is_expected.to have_readonly_attribute(:uuid) }
 
   # Relationships
   it { is_expected.to have_a_readonly_has_many(:comments).with_class_name('Comment') }
-  it { is_expected.to have_a_writable_has_one(:purpose).with_class_name('Purpose') }
+  it { is_expected.to have_a_writable_has_one(:purpose).with_class_name('TubeRackPurpose') }
   it { is_expected.to have_a_writable_has_many(:racked_tubes).with_class_name('RackedTube') }
 
   # Filters
@@ -34,12 +34,9 @@ RSpec.describe Api::V2::TubeRackResource, type: :resource do
   it { is_expected.to filter(:uuid) }
 
   # Associations
-  # eg. it { is_expected.to have_many(:samples).with_class_name('Sample') }
-  it 'exposes associations', :aggregate_failures do
-    expect(tube_rack).to have_many(:racked_tubes).with_class_name('RackedTube')
-    expect(tube_rack).to have_one(:purpose).with_class_name('TubeRackPurpose')
-    expect(tube_rack).to have_one(:comments).with_class_name('Comment')
-  end
+  it { is_expected.to have_many(:racked_tubes).with_class_name('RackedTube') }
+  it { is_expected.to have_one(:purpose).with_class_name('TubeRackPurpose') }
+  it { is_expected.to have_one(:comments).with_class_name('Comment') }
 
   # Field Methods
   describe '#tube_locations=' do

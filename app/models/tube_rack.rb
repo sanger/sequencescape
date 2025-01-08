@@ -54,21 +54,33 @@ class TubeRack < Labware
   end
 
   # Used to unify interface with TubeRacks. Returns a list of all {Receptacle receptacles}
-  # with position information included for aid performance
+  # with position information included for aid performance.
+  #
+  # @return [ActiveRecord::Relation] A relation of tube receptacles with position information.
   def receptacles_with_position
     tube_receptacles.includes(:racked_tube)
   end
 
+  # Returns the number of rows in the tube rack based on its size.
+  #
+  # @return [Integer] The number of rows in the tube rack.
   def number_of_rows
     LAYOUTS.fetch(size)[:rows]
   end
   alias height number_of_rows
 
+  # Returns the number of columns in the tube rack based on its size.
+  #
+  # @return [Integer] The number of columns in the tube rack.
   def number_of_columns
     LAYOUTS.fetch(size)[:columns]
   end
   alias width number_of_columns
 
+  # Handles the addition of a comment to the tube rack and its associated submissions and tubes.
+  # Adds the comment to the submissions to avoid duplicate comments and also adds the comment to the tubes.
+  #
+  # @param comment [String] The comment to be added.
   def after_comment_addition(comment)
     # We don't let the tubes handle addition to submissions, as if they
     # all belong to the same submission, we'll get duplicate comments

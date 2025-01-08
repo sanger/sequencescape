@@ -16,7 +16,6 @@ module Api
       # Relationships
       has_many :comments, readonly: true
       has_many :racked_tubes
-      has_many :comments, readonly: true
       # TODO: refactor plate_purpose_id to purpose_id throughout repo
       has_one :purpose, foreign_key: :plate_purpose_id, class_name: 'TubeRackPurpose'
       has_many :parents, readonly: true, polymorphic: true
@@ -26,12 +25,12 @@ module Api
       # TODO: do we need descendants? might have to delegate to racked tubes
 
       # Attributes
-      attribute :labware_barcode, readonly: true
-      attribute :size, readonly: true
-      attribute :number_of_rows, readonly: true
-      attribute :number_of_columns, readonly: true
-      attribute :name, delegate: :display_name, readonly: true
-      attribute :tube_locations, readonly: true
+      attribute :labware_barcode, write_once: true
+      attribute :size, write_once: true
+      attribute :number_of_rows, write_once: true
+      attribute :number_of_columns, write_once: true
+      attribute :name, delegate: :display_name, write_once: true
+      attribute :tube_locations, writeonly: true
       attribute :uuid, readonly: true
 
       attribute :created_at, readonly: true
