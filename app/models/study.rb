@@ -92,8 +92,9 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     'Other (please specify)'
   ].freeze
 
-  OLD_DATA_RELEASE_DELAY_REASONS = ['other', 'phd study'].freeze
+  OLD_DATA_RELEASE_DELAY_FOR_OTHER = 'other'
   DATA_RELEASE_DELAY_FOR_OTHER = 'Other (with free text box)'
+  OLD_DATA_RELEASE_DELAY_REASONS = ['other', 'phd study'].freeze
   DATA_RELEASE_DELAY_REASONS_STANDARD = [
     'PhD study',
     'Capacity building',
@@ -644,7 +645,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
 
     def delayed_for_other_reasons?
-      data_release_delay_reason == DATA_RELEASE_DELAY_FOR_OTHER
+      [DATA_RELEASE_DELAY_FOR_OTHER, OLD_DATA_RELEASE_DELAY_FOR_OTHER].include?(data_release_delay_reason)
     end
 
     def delayed_for_long_time?
