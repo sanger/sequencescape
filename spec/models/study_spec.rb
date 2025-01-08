@@ -426,6 +426,58 @@ RSpec.describe Study do
     end
   end
 
+  describe '#data_release_prevention_options' do
+    subject { study.data_release_prevention_options }
+
+    let(:study) { create(:study) }
+
+    context 'when there is no existing data release prevention reason' do
+      it { is_expected.to eq Study::DATA_RELEASE_PREVENTION_REASONS }
+    end
+
+    context 'when there is an existing data release prevention reason' do
+      before { study.study_metadata.data_release_prevention_reason = 'Protecting IP - DAC approval required' }
+
+      it { is_expected.to eq Study::DATA_RELEASE_PREVENTION_REASONS }
+    end
+
+    context 'when there is an existing legacy data release prevention reason' do
+      before { study.study_metadata.data_release_prevention_reason = 'data validity' }
+
+      it { is_expected.to eq [*Study::DATA_RELEASE_PREVENTION_REASONS, 'data validity'] }
+    end
+  end
+
+  describe '#data_release_delay_options' do
+    subject { study.data_release_delay_options }
+
+    let(:study) { create(:study) }
+
+    context 'when there is no existing data release delay reason' do
+      it { is_expected.to eq Study::DATA_RELEASE_DELAY_REASONS_STANDARD }
+    end
+
+    context 'when there is an existing data release delay reason' do
+      before { study.study_metadata.data_release_delay_reason = 'Capacity building' }
+
+      it { is_expected.to eq Study::DATA_RELEASE_DELAY_REASONS_STANDARD }
+    end
+
+    context 'when there is an existing legacy data release delay reason' do
+      before { study.study_metadata.data_release_delay_reason = 'phd study' }
+
+      it { is_expected.to eq [*Study::DATA_RELEASE_DELAY_REASONS_STANDARD, 'phd study'] }
+    end
+
+    context 'when the data release delay options include assays' do
+      it 'includes the assay options' do
+        expect(study.data_release_delay_options(assay_option: true)).to eq(
+          [*Study::DATA_RELEASE_DELAY_REASONS_STANDARD, *Study::DATA_RELEASE_DELAY_REASONS_ASSAY]
+        )
+      end
+    end
+  end
+
   describe 'metadata' do
     let(:metadata) do
       {

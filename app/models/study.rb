@@ -584,7 +584,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   # Helper method for edit dropdowns to support backwards compatibility with old options.
-  # 
+  #
   # @return [Array<String>] the list of options for the data release prevention reason dropdown
   def data_release_prevention_options
     additional_options = []
@@ -592,7 +592,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
       additional_options << study_metadata.data_release_prevention_reason
     end
 
-    additional_options + DATA_RELEASE_PREVENTION_REASONS
+    DATA_RELEASE_PREVENTION_REASONS + additional_options
   end
 
   # Helper method for edit dropdowns to support backwards compatibility with old options.
@@ -605,9 +605,9 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     if OLD_DATA_RELEASE_DELAY_REASONS.include? study_metadata.data_release_delay_reason
       additional_options << study_metadata.data_release_delay_reason
     end
-    
-    additional_options << DATA_RELEASE_DELAY_REASONS_ASSAY if assay_option
-    additional_options + DATA_RELEASE_DELAY_REASONS_STANDARD
+
+    additional_options.concat(DATA_RELEASE_DELAY_REASONS_ASSAY) if assay_option
+    DATA_RELEASE_DELAY_REASONS_STANDARD + additional_options
   end
 
   private
