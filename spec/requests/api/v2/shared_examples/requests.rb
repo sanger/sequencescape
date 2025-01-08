@@ -51,7 +51,7 @@ shared_examples 'an unprocessable POST request with a specific error' do
 end
 
 shared_examples 'a GET request including a has_one relationship' do |related_name|
-  before { api_get "#{base_endpoint}/#{resource.id}?include=#{related_name}" }
+  before { api_get "#{base_endpoint}/#{resource.id}?include=#{related_name}&fields[#{resource_type}]=#{related_name}" }
 
   it 'responds with a success http code' do
     expect(response).to have_http_status(:success)
@@ -65,7 +65,7 @@ shared_examples 'a GET request including a has_one relationship' do |related_nam
 end
 
 shared_examples 'a GET request including a has_many relationship' do |related_name|
-  before { api_get "#{base_endpoint}/#{resource.id}?include=#{related_name}" }
+  before { api_get "#{base_endpoint}/#{resource.id}?include=#{related_name}&fields[#{resource_type}]=#{related_name}" }
 
   it 'responds with a success http code' do
     expect(response).to have_http_status(:success)
@@ -135,7 +135,7 @@ shared_examples 'a PATCH request with a disallowed value' do |disallowed_value|
   end
 end
 
-shared_examples 'has filtered to a resource with target_id correctly' do
+shared_examples 'it has filtered to a resource with target_id correctly' do
   it 'responds with a success http code' do
     expect(response).to have_http_status(:success)
   end
