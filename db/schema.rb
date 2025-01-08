@@ -1396,6 +1396,7 @@ ActiveRecord::Schema.define(version: 2025_01_08_172249) do
     t.integer "user_id_of_consent_withdrawn"
     t.boolean "consent_withdrawn", default: false, null: false
     t.string "collected_by", comment: "Name of persons or institute who collected the specimen"
+    t.string "huMFre_code", limit: 16
     t.index ["sample_ebi_accession_number"], name: "index_sample_metadata_on_sample_ebi_accession_number"
     t.index ["sample_id"], name: "index_sample_metadata_on_sample_id"
     t.index ["supplier_name"], name: "index_sample_metadata_on_supplier_name"
@@ -1548,6 +1549,9 @@ ActiveRecord::Schema.define(version: 2025_01_08_172249) do
     t.string "s3_email_list"
     t.string "data_deletion_period"
     t.string "contaminated_human_data_access_group"
+    t.string "ebi_library_strategy"
+    t.string "ebi_library_source"
+    t.string "ebi_library_selection"
     t.index ["faculty_sponsor_id"], name: "index_study_metadata_on_faculty_sponsor_id"
     t.index ["study_id"], name: "index_study_metadata_on_study_id"
   end
