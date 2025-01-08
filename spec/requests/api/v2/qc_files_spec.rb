@@ -29,25 +29,12 @@ describe 'QcFiles API', tags: :lighthouse, with: :api_v2 do
 
     describe '#filter' do
       let(:target_resource) { resources.sample }
-
-      shared_examples 'it filters the resources correctly' do
-        it 'responds with a success http code' do
-          expect(response).to have_http_status(:success)
-        end
-
-        it 'returns one resource' do
-          expect(json['data'].count).to eq(1)
-        end
-
-        it 'returns the correct resource' do
-          expect(json['data'].first['id']).to eq(target_resource.id.to_s)
-        end
-      end
+      let(:target_id) { target_resource.id }
 
       describe 'by uuid' do
         before { api_get "#{base_endpoint}?filter[uuid]=#{target_resource.uuid}" }
 
-        it_behaves_like 'it filters the resources correctly'
+        it_behaves_like 'it has filtered to a resource with target_id correctly'
       end
     end
   end

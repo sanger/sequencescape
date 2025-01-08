@@ -34,25 +34,25 @@ describe 'QcFiles API', tags: :lighthouse, with: :api_v2 do
       describe 'by ean13 barcode' do
         before { api_get "#{base_endpoint}?filter[barcode]=#{target_resource.ean13_barcode}" }
 
-        it_behaves_like 'has filtered to a resource with target_id correctly'
+        it_behaves_like 'it has filtered to a resource with target_id correctly'
       end
 
       describe 'by human barcode' do
         before { api_get "#{base_endpoint}?filter[barcode]=#{target_resource.human_barcode}" }
 
-        it_behaves_like 'has filtered to a resource with target_id correctly'
+        it_behaves_like 'it has filtered to a resource with target_id correctly'
       end
 
       describe 'by machine barcode' do
         before { api_get "#{base_endpoint}?filter[barcode]=#{target_resource.machine_barcode}" }
 
-        it_behaves_like 'has filtered to a resource with target_id correctly'
+        it_behaves_like 'it has filtered to a resource with target_id correctly'
       end
 
       describe 'by uuid' do
         before { api_get "#{base_endpoint}?filter[uuid]=#{target_resource.uuid}" }
 
-        it_behaves_like 'has filtered to a resource with target_id correctly'
+        it_behaves_like 'it has filtered to a resource with target_id correctly'
       end
     end
   end

@@ -135,7 +135,7 @@ shared_examples 'a PATCH request with a disallowed value' do |disallowed_value|
   end
 end
 
-shared_examples 'has filtered to a resource with target_id correctly' do
+shared_examples 'it has filtered to a resource with target_id correctly' do
   it 'responds with a success http code' do
     expect(response).to have_http_status(:success)
   end
