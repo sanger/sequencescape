@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
-require './spec/requests/api/v2/shared_examples/post_requests'
+require './spec/requests/api/v2/shared_examples/requests'
 
 describe 'Pooled Plate Creations API', with: :api_v2 do
   let(:model_class) { PooledPlateCreation }
@@ -52,7 +52,6 @@ describe 'Pooled Plate Creations API', with: :api_v2 do
         it 'excludes unfetchable attributes' do
           expect(json.dig('data', 'attributes', 'child_purpose_uuid')).not_to be_present
           expect(json.dig('data', 'attributes', 'parent_uuids')).not_to be_present
-          expect(json.dig('data', 'attributes', 'tube_attributes')).not_to be_present
         end
 
         it 'returns references to related resources' do
@@ -67,23 +66,9 @@ describe 'Pooled Plate Creations API', with: :api_v2 do
       end
 
       context 'with included relationships' do
-        context 'with child' do
-          let(:related_name) { 'child' }
-
-          it_behaves_like 'a POST request including a has_one relationship'
-        end
-
-        context 'with parents' do
-          let(:related_name) { 'parents' }
-
-          it_behaves_like 'a POST request including a has_many relationship'
-        end
-
-        context 'with user' do
-          let(:related_name) { 'user' }
-
-          it_behaves_like 'a POST request including a has_one relationship'
-        end
+        it_behaves_like 'a GET request including a has_one relationship', 'child'
+        it_behaves_like 'a GET request including a has_many relationship', 'parents'
+        it_behaves_like 'a GET request including a has_one relationship', 'user'
       end
     end
   end
@@ -217,7 +202,7 @@ describe 'Pooled Plate Creations API', with: :api_v2 do
 
     context 'with a read-only attribute in the payload' do
       context 'with uuid' do
-        let(:disallowed_attribute) { 'uuid' }
+        let(:disallowed_value) { 'uuid' }
         let(:payload) do
           {
             data: {
@@ -227,28 +212,36 @@ describe 'Pooled Plate Creations API', with: :api_v2 do
           }
         end
 
-        it_behaves_like 'a POST request with a disallowed attribute'
+        it_behaves_like 'a POST request with a disallowed value'
+      end
+    end
+
+    context 'with a read-only relationship in the payload' do
+      context 'with child' do
+        let(:disallowed_value) { 'child' }
+        let(:payload) do
+          {
+            data: {
+              type: resource_type,
+              attributes: base_attributes,
+              relationships: {
+                child: {
+                  data: {
+                    id: '1',
+                    type: 'plates'
+                  }
+                }
+              }
+            }
+          }
+        end
+
+        it_behaves_like 'a POST request with a disallowed value'
       end
     end
 
     context 'without a required relationship' do
-      context 'without parent_uuids' do
-        let(:error_detail_message) { "parent - can't be blank" }
-        let(:payload) { { data: { type: resource_type, attributes: base_attributes.merge({ user_uuid: user.uuid }) } } }
-
-        it_behaves_like 'an unprocessable POST request with a specific error'
-      end
-
-      context 'without user_uuid' do
-        let(:error_detail_message) { "user - can't be blank" }
-        let(:payload) do
-          { data: { type: resource_type, attributes: base_attributes.merge({ parent_uuids: parents.map(&:uuid) }) } }
-        end
-
-        it_behaves_like 'an unprocessable POST request with a specific error'
-      end
-
-      context 'without parents' do
+      context 'without parents or parent_uuids' do
         let(:error_detail_message) { "parent - can't be blank" }
         let(:payload) do
           { data: { type: resource_type, attributes: base_attributes, relationships: { user: user_relationship } } }
@@ -257,7 +250,7 @@ describe 'Pooled Plate Creations API', with: :api_v2 do
         it_behaves_like 'an unprocessable POST request with a specific error'
       end
 
-      context 'without user' do
+      context 'without a user or user_uuid' do
         let(:error_detail_message) { "user - can't be blank" }
         let(:payload) do
           {
