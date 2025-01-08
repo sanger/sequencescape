@@ -1,6 +1,5 @@
-# frozen_string_literal: true
 namespace :samples do
-  desc 'Update sample_public_name for RVI Program - Bait Capture study'
+  desc "Update sample_public_name for RVI Program - Bait Capture study"
   task update_public_name: :environment do
     ActiveRecord::Base.connection.execute('SET autocommit = 0')
 
@@ -16,6 +15,6 @@ namespace :samples do
     ActiveRecord::Base.connection.execute('COMMIT')
     ActiveRecord::Base.connection.execute('SET autocommit = 1')
 
-    puts 'Sample public names updated successfully for RVI Program - Bait Capture study.'
+    puts "Sample public names updated successfully for RVI Program - Bait Capture study."
   end
 end
