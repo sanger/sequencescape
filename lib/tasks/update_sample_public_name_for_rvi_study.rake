@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 namespace :samples do
   desc 'Update sample_public_name for RVI Program - Bait Capture study'
   task update_public_name: :environment do
