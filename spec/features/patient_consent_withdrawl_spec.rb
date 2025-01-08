@@ -55,7 +55,7 @@ describe 'Sample#consent_withdrawn', js: false do
     context 'an order' do
       # Lifted straight from the feature test with minimal rspecification
       # and optimization
-      let(:submission_template) { create(:submission_template, request_type_ids_list: [[create(:request_type).id]]) }
+      let(:submission_template) { create(:submission_template, request_types: [create(:request_type)]) }
       let(:sample_tube) { create(:sample_tube, sample:) }
       let(:asset_group) { create(:asset_group, assets: [sample_tube.receptacle]) }
 
