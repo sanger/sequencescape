@@ -325,6 +325,8 @@ en:
           edit_info: "EGA"
         genome_size:
           label: Genome Size
+        huMFre_code:
+          label: HuMFre Code
 
     study:
       metadata:
