@@ -62,6 +62,7 @@ module Api
           filter :updated_at_gt,
                  apply: lambda { |records, value, _options| records.where('labware.updated_at > ?', value[0].to_date) }
           filter :include_used, apply: ->(records, value, _options) { records.include_labware_with_children(value) }
+          filter :state, apply: ->(records, value, _options) { records.in_state(value.flatten) }
         end
 
         # Custom methods
