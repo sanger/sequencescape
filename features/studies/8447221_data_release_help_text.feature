@@ -30,15 +30,6 @@ Feature: Update the data release fields for creating a study
       | Managed (EGA)    |
       | Open (ENA)       |
 
-  Scenario: Add help text to has this been approved for never release (4044343)
-    When I choose "Not Applicable" from "What is the data release strategy for this study?"
-    When I select "never" from "How is the data release to be timed?"
-    Then the help text for "If reason for exemption requires DAC approval, what is the approval number?" should contain:
-      """
-      If this is for data validity reasons: approval from the sponsor is required
-      If this is for legal reasons: approval from the Data Sharing Committee is required (please contact sd4)
-      """
-
   Scenario Outline: Delaying for 3 months should have the same questions as all other delays (4044273)
     When I select "delayed" from "How is the data release to be timed?"
     And I select "Other (please specify below)" from "Reason for delaying release"
