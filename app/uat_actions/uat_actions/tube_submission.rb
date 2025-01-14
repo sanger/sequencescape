@@ -57,6 +57,7 @@ class UatActions::TubeSubmission < UatActions
              }
 
   validates :submission_template, presence: { message: 'could not be found' }
+  validates :tube_barcodes, presence: true
 
   validate :validate_submission_template_exists
   validate :validate_tubes_exist
@@ -116,6 +117,7 @@ class UatActions::TubeSubmission < UatActions
   #
   # @return [void]
   def validate_tubes_exist
+    return if tube_barcodes.blank? # already validated by presence
     barcodes =
       tube_barcodes
         .gsub(/(\\[trfvn])+/, ' ')
