@@ -28,7 +28,8 @@ FactoryBot.define do
         sample_taxon_id: 9606,
         sample_common_name: 'Homo sapiens',
         phenotype: 'Unknown',
-        retention_instruction: 'Long term storage'
+        retention_instruction: 'Long term storage',
+        huMFre_code: '12/1234'
       }.with_indifferent_access
     end
 

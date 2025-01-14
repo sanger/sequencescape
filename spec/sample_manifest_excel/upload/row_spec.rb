@@ -57,7 +57,9 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
       '',
       '',
       11,
-      'Unknown'
+      'Unknown',
+      '',
+      '12/3434'
     ]
   end
   let(:data_with_spaces) do
@@ -204,7 +206,8 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
       sample_taxon_id: 9606,
       sample_common_name: 'Homo sapiens',
       donor_id: '11',
-      phenotype: 'Unknown'
+      phenotype: 'Unknown',
+      huMFre_code: '12/3434'
     )
   end
 
