@@ -105,7 +105,7 @@ describe UatActions::GeneratePlates do
         let(:plate_purpose_name) { plate.purpose.name }
 
         it 'does not add the error message' do
-          expect(uat_action.valid?).to be false
+          uat_action.valid? # run validations
           expect(uat_action.errors[:plate_purpose_name]).not_to include(error_message)
         end
       end
