@@ -89,7 +89,7 @@ describe UatActions::GeneratePlates do
 
     describe '#validate_plate_purpose_exists' do
       let(:parameters) { { plate_purpose_name: } }
-      let(:error_message) { format(described_class::ERROR_PURPOSE_DOES_NOT_EXIST, plate_purpose_name) }
+      let(:error_message) { format(described_class::ERROR_PLATE_PURPOSE_DOES_NOT_EXIST, plate_purpose_name) }
 
       context 'when the plate purpose does not exist' do
         let(:plate_purpose_name) { 'Invalid Plate Purpose' }
