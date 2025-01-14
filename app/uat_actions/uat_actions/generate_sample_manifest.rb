@@ -6,6 +6,8 @@ class UatActions::GenerateSampleManifest < UatActions
   self.description = 'Generate sample manifest with the provided information.'
   self.category = :generating_samples
 
+  ERROR_TUBE_PURPOSE_DOES_NOT_EXIST = "Tube purpose '%s' does not exist."
+
   form_field :study_name,
              :select,
              label: 'Study Name',
@@ -41,6 +43,8 @@ class UatActions::GenerateSampleManifest < UatActions
 
   form_field :with_samples, :check_box, help: 'Create new samples for recipients?', label: 'With Samples?'
 
+  validate :validate_tube_purpose_exists
+
   def self.default
     new(
       study_name: UatActions::StaticRecords.study.name,
@@ -57,6 +61,17 @@ class UatActions::GenerateSampleManifest < UatActions
     print_report(sample_manifest)
 
     true
+  end
+
+  # Validates that the tube purpose exists for the selected tube purpose name.
+  #
+  # @return [void]
+  def validate_tube_purpose_exists
+    return if tube_purpose_name.blank? # Uses the default.
+    return if Tube::Purpose.exists?(name: tube_purpose_name)
+
+    message = format(ERROR_TUBE_PURPOSE_DOES_NOT_EXIST, tube_purpose_name)
+    errors.add(:tube_purpose_name, message)
   end
 
   def create_sample_manifest
