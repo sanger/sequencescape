@@ -508,9 +508,10 @@ RSpec.describe Study do
         ega_policy_accession_number: 'POL123456',
         array_express_accession_number: 'ARR123456',
         data_release_delay_approval: 'Yes',
-        data_release_prevention_reason: 'Protecting IP - DAC approval required',
+        data_release_prevention_reason: 'Other (please specify)',
         data_release_prevention_approval: 'Yes',
         data_release_prevention_reason_comment: 'Data Release prevention reason comment',
+        data_release_prevention_other_comment: 'Data Release prevention other comment',
         data_access_group: 'something',
         snp_study_id: 123_456,
         snp_parent_study_id: 123_456,
@@ -767,7 +768,7 @@ RSpec.describe Study do
           study_metadata:
             create(
               :study_metadata,
-              metadata.merge(data_release_timing: 'delayed', data_release_delay_reason: 'Other (with free text box)')
+              metadata.merge(data_release_timing: 'delayed', data_release_delay_reason: 'Other (please specify below)')
             )
         )
       end
@@ -815,6 +816,12 @@ RSpec.describe Study do
       it 'will have a data_release_prevention_reason_comment' do
         expect(study.study_metadata.data_release_prevention_reason_comment).to eq(
           metadata[:data_release_prevention_reason_comment]
+        )
+      end
+
+      it 'will have a data_release_prevention_other_comment' do
+        expect(study.study_metadata.data_release_prevention_other_comment).to eq(
+          metadata[:data_release_prevention_other_comment]
         )
       end
 

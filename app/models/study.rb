@@ -84,16 +84,17 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   ].freeze
 
   OLD_DATA_RELEASE_PREVENTION_REASONS = ['data validity', 'legal', 'replication of data subset'].freeze
+  DATA_RELEASE_PREVENTION_REASON_OTHER = 'Other (please specify)'
   DATA_RELEASE_PREVENTION_REASONS = [
     'Pilot or validation studies - DAC approval not required',
     'Collaborators will share data in a research repository - DAC approval not required',
     'Prevent harm (e.g sensitive studies or biosecurity) - DAC approval required',
     'Protecting IP - DAC approval required',
-    'Other (please specify)'
+    DATA_RELEASE_PREVENTION_REASON_OTHER
   ].freeze
 
   OLD_DATA_RELEASE_DELAY_FOR_OTHER = 'other'
-  DATA_RELEASE_DELAY_FOR_OTHER = 'Other (with free text box)'
+  DATA_RELEASE_DELAY_FOR_OTHER = 'Other (please specify below)'
   OLD_DATA_RELEASE_DELAY_REASONS = ['other', 'phd study'].freeze
   DATA_RELEASE_DELAY_REASONS_STANDARD = [
     'PhD study',
@@ -237,8 +238,8 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     custom_attribute(:data_release_delay_period, required: true, in: DATA_RELEASE_DELAY_PERIODS, if: :delayed_release?)
     custom_attribute(:bam, default: true)
 
-    with_options(required: true, if: :delayed_for_other_reasons?) do
-      custom_attribute(:data_release_delay_other_comment)
+    with_options(if: :delayed_for_other_reasons?) do
+      custom_attribute(:data_release_delay_other_comment, required: true)
       custom_attribute(:data_release_delay_reason_comment)
     end
 
@@ -253,6 +254,11 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
         :data_release_prevention_reason,
         in: [*DATA_RELEASE_PREVENTION_REASONS, *OLD_DATA_RELEASE_PREVENTION_REASONS],
         required: true
+      )
+      custom_attribute(
+        :data_release_prevention_other_comment,
+        required: true,
+        if: :data_release_prevention_reason_other?
       )
       custom_attribute(:data_release_prevention_reason_comment, required: true)
       custom_attribute(:data_release_prevention_approval)
@@ -646,6 +652,10 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     def delayed_for_other_reasons?
       [DATA_RELEASE_DELAY_FOR_OTHER, OLD_DATA_RELEASE_DELAY_FOR_OTHER].include?(data_release_delay_reason)
+    end
+
+    def data_release_prevention_reason_other?
+      data_release_prevention_reason == DATA_RELEASE_PREVENTION_REASON_OTHER
     end
 
     def delayed_for_long_time?

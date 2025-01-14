@@ -441,7 +441,9 @@ en:
 
         data_release_prevention_approval:
           label: If reason for exemption requires DAC approval, what is the approval number?
-          help: "If this is for data validity reasons: approval from the sponsor is required<br />If this is for legal reasons: approval from the Data Sharing Committee is required (please contact sd4)<br />"
+
+        data_release_prevention_other_comment:
+          label: Please explain the reason for preventing data release
 
         data_release_prevention_reason_comment:
           label: Comment regarding prevention of data release and approval

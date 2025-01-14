@@ -60,6 +60,9 @@
 
       <% metadata_fields.related_fields(to: :data_release_strategy, when: Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE) do %>
         <%= group.select(:data_release_prevention_reason, study.data_release_prevention_options) %>
+        <% metadata_fields.related_fields(to: :data_release_prevention_reason, in: [Study::DATA_RELEASE_PREVENTION_REASON_OTHER]) do %>
+          <%= group.text_area(:data_release_prevention_other_comment) %>
+        <% end %>
         <%= group.text_area(:data_release_prevention_approval) %>
         <%= group.text_area(:data_release_prevention_reason_comment) %>
       <% end %>
@@ -76,9 +79,6 @@
           <%= group.select(:data_release_delay_period, Study::DATA_RELEASE_DELAY_PERIODS) %>
           <% metadata_fields.related_fields(to: :data_release_delay_reason, in: [Study::DATA_RELEASE_DELAY_FOR_OTHER, Study::OLD_DATA_RELEASE_DELAY_FOR_OTHER]) do %>
             <%= group.text_area(:data_release_delay_other_comment) %>
-            <% metadata_fields.related_fields(to: :data_release_delay_period, in: Study::DATA_RELEASE_DELAY_PERIODS) do %>
-              <%= group.text_area(:data_release_delay_reason_comment) %>
-            <% end %>
           <% end %>
         <% end %>
       <% end %>
