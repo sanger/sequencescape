@@ -109,7 +109,7 @@ describe UatActions::TestSubmission do
     describe '#validate_submission_template_exists' do
       let(:parameters) { { submission_template_name: } }
       let(:error_message) do
-        format(described_class::ERROR_SUBMISSION_TEMPLATE_DOES_NOT_EXISTS, submission_template_name)
+        format(described_class::ERROR_SUBMISSION_TEMPLATE_DOES_NOT_EXIST, submission_template_name)
       end
 
       context 'when the submission template does not exist' do

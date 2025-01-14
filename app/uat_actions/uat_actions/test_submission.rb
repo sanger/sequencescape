@@ -11,7 +11,7 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
       'This may produce odd results for some pipelines.'
   self.category = :setup_and_test
 
-  ERROR_SUBMISSION_TEMPLATE_DOES_NOT_EXISTS = "Submission template '%s' does not exist."
+  ERROR_SUBMISSION_TEMPLATE_DOES_NOT_EXIST = "Submission template '%s' does not exist."
   ERROR_PLATE_DOES_NOT_EXIST = 'Plate with barcode %s does not exist.'
   ERROR_PLATE_PURPOSE_DOES_NOT_EXIST = "Plate purpose '%s' does not exist."
   ERROR_LIBRARY_TYPE_DOES_NOT_EXIST = "Library type '%s' does not exist."
@@ -165,7 +165,7 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
     return if submission_template_name.blank? # already validated by presence
     return if SubmissionTemplate.exists?(name: submission_template_name)
 
-    message = format(ERROR_SUBMISSION_TEMPLATE_DOES_NOT_EXISTS, submission_template_name)
+    message = format(ERROR_SUBMISSION_TEMPLATE_DOES_NOT_EXIST, submission_template_name)
     errors.add(:submission_template_name, message)
   end
 
