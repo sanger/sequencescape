@@ -51,13 +51,8 @@ class UatActions::GeneratePlates < UatActions
              select_options: %w[Column Row Random]
 
   validates :plate_purpose_name, presence: true
-  validate :validate_plate_purpose_exists
-
   validates :plate_count, numericality: { greater_than: 0, smaller_than: 20, only_integer: true, allow_blank: false }
-
   validates :well_count, numericality: { greater_than: 0, only_integer: true, allow_blank: false }
-  validate :validate_well_count_is_smaller_than_plate_size
-
   validates :number_of_samples_in_each_well,
             numericality: {
               greater_than: 0,
@@ -65,16 +60,17 @@ class UatActions::GeneratePlates < UatActions
               only_integer: true,
               allow_blank: false
             }
-
   validates :study_name, presence: true
-  validate :validate_study_exists
-
   validates :well_layout,
             presence: true,
             inclusion: {
               in: %w[Column Row Random],
               message: 'must be Column, Row, or Random'
             }
+
+  validate :validate_plate_purpose_exists
+  validate :validate_well_count_is_smaller_than_plate_size
+  validate :validate_study_exists
 
   def self.default
     new(
