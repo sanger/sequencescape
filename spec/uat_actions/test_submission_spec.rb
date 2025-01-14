@@ -106,6 +106,32 @@ describe UatActions::TestSubmission do
   describe '#valid?' do
     let(:uat_action) { described_class.new(parameters) }
 
+    describe '#validate_submission_template_exists' do
+      let(:parameters) { { submission_template_name: } }
+      let(:error_message) do
+        format(described_class::ERROR_SUBMISSION_TEMPLATE_DOES_NOT_EXISTS, submission_template_name)
+      end
+
+      context 'when the submission template does not exist' do
+        let(:submission_template_name) { 'Invalid Submission Template' }
+
+        it 'adds the error message' do
+          expect(uat_action.valid?).to be false
+          expect(uat_action.errors[:submission_template_name]).to include(error_message)
+        end
+      end
+
+      context 'when the submission template exists' do
+        let(:submission_template) { create(:submission_template) }
+        let(:submission_template_name) { submission_template.name }
+
+        it 'does not add the error message' do
+          uat_action.valid? # run validations
+          expect(uat_action.errors[:submission_template_name]).not_to include(error_message)
+        end
+      end
+    end
+
     describe '#validate_plate_exists' do
       let(:parameters) { { plate_barcode: } }
       let(:error_message) { format(described_class::ERROR_PLATE_DOES_NOT_EXIST, plate_barcode) }
@@ -124,7 +150,7 @@ describe UatActions::TestSubmission do
         let(:plate_barcode) { plate.human_barcode }
 
         it 'does not add the error message' do
-          expect(uat_action.valid?).to be false
+          uat_action.valid? # run validations
           expect(uat_action.errors[:plate_barcode]).not_to include(error_message)
         end
       end
@@ -148,7 +174,7 @@ describe UatActions::TestSubmission do
         let(:plate_purpose_name) { plate.purpose.name }
 
         it 'does not add the error message' do
-          expect(uat_action.valid?).to be false
+          uat_action.valid? # run validations
           expect(uat_action.errors[:plate_purpose_name]).not_to include(error_message)
         end
       end
@@ -172,7 +198,7 @@ describe UatActions::TestSubmission do
         let(:library_type_name) { library_type.name }
 
         it 'does not add the error message' do
-          expect(uat_action.valid?).to be false
+          uat_action.valid? # run validations
           expect(uat_action.errors[:library_type_name]).not_to include(error_message)
         end
       end
@@ -196,7 +222,7 @@ describe UatActions::TestSubmission do
         let(:primer_panel_name) { primer_panel.name }
 
         it 'does not add the error message' do
-          expect(uat_action.valid?).to be false
+          uat_action.valid? # run validations
           expect(uat_action.errors[:primer_panel_name]).not_to include(error_message)
         end
       end
