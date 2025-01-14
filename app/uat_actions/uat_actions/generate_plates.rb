@@ -8,8 +8,8 @@ class UatActions::GeneratePlates < UatActions
   self.category = :generating_samples
 
   ERROR_WELL_COUNT_EXCEEDS_PLATE_SIZE = "Well count of %s exceeds the plate size of %s for the plate purpose '%s'."
-  ERROR_PURPOSE_DOES_NOT_EXIST = "Plate purpose '%s' does not exist."
-  ERROR_STUDY_DOES_NOT_EXIST = 'Study %s does not exist'
+  ERROR_PLATE_PURPOSE_DOES_NOT_EXIST = "Plate purpose '%s' does not exist."
+  ERROR_STUDY_DOES_NOT_EXIST = 'Study %s does not exist.'
 
   form_field :plate_purpose_name,
              :select,
@@ -107,7 +107,7 @@ class UatActions::GeneratePlates < UatActions
     return if plate_purpose_name.blank?
     return if PlatePurpose.exists?(name: plate_purpose_name)
 
-    message = format(ERROR_PURPOSE_DOES_NOT_EXIST, plate_purpose_name)
+    message = format(ERROR_PLATE_PURPOSE_DOES_NOT_EXIST, plate_purpose_name)
     errors.add(:plate_purpose_name, message)
   end
 
