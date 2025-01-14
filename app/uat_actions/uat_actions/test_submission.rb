@@ -11,6 +11,11 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
       'This may produce odd results for some pipelines.'
   self.category = :setup_and_test
 
+  ERROR_PLATE_DOES_NOT_EXIST = 'Plate with barcode %s does not exist.'
+  ERROR_PLATE_PURPOSE_DOES_NOT_EXIST = "Plate purpose '%s' does not exist."
+  ERROR_LIBRARY_TYPE_DOES_NOT_EXIST = "Library type '%s' does not exist."
+  ERROR_PRIMER_PANEL_DOES_NOT_EXIST = "Primer panel '%s' does not exist."
+
   # Form fields
   form_field :submission_template_name,
              :select,
@@ -95,6 +100,11 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
   validates :number_of_samples_in_each_well, numericality: { greater_than: 0, only_integer: true, allow_blank: true }
   validates :number_of_wells_to_submit, numericality: { greater_than: 0, only_integer: true, allow_blank: true }
 
+  validate :validate_plate_exists
+  validate :validate_plate_purpose_exists
+  validate :validate_library_type_exists
+  validate :validate_primer_panel_exists
+
   #
   # Returns a default copy of the UatAction which will be used to fill in the form
   #
@@ -144,6 +154,59 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
   # rubocop:enable Metrics/MethodLength
 
   private
+
+  # Validates that the plate exists for the specified plate barcode. It is
+  # is skipped if no barcode is provided, because a new plate is generated.
+  #
+  # @return [void]
+  def validate_plate_exists
+    return if plate_barcode.blank?
+    return if Plate.find_by_barcode(plate_barcode.strip).present?
+
+    message = format(ERROR_PLATE_DOES_NOT_EXIST, plate_barcode)
+    errors.add(:plate_barcode, message)
+  end
+
+  # Validates that the plate purpose exists for the specified plate purpose
+  # name. It will be skipped if a barcode specified. It will be also skipped
+  # when no purpose is provided because an appropriate purpose will be used when
+  # generating a new plate.
+  #
+  # @return [void]
+  def validate_plate_purpose_exists
+    return if plate_barcode.present?
+    return if plate_purpose_name.blank?
+    return if PlatePurpose.exists?(name: plate_purpose_name)
+
+    message = format(ERROR_PLATE_PURPOSE_DOES_NOT_EXIST, plate_purpose_name)
+    errors.add(:plate_purpose_name, message)
+  end
+
+  # Validates that the library type exists for the specified library type name.
+  # It is skipped if no library type name is provided because the first library
+  # type found will be used.
+  #
+  # return [void]
+  def validate_library_type_exists
+    return if library_type_name.blank?
+    return if LibraryType.exists?(name: library_type_name)
+
+    message = format(ERROR_LIBRARY_TYPE_DOES_NOT_EXIST, library_type_name)
+    errors.add(:library_type_name, message)
+  end
+
+  # Validates that the primer panel exists for the specified primer panel name.
+  # It is skipped if no primer panel name is provided because it is not
+  # applicable for the current submission template.
+  #
+  # return [void]
+  def validate_primer_panel_exists
+    return if primer_panel_name.blank?
+    return if PrimerPanel.exists?(name: primer_panel_name)
+
+    message = format(ERROR_PRIMER_PANEL_DOES_NOT_EXIST, primer_panel_name)
+    errors.add(:primer_panel_name, message)
+  end
 
   def submission_template
     @submission_template = SubmissionTemplate.find_by(name: submission_template_name)
