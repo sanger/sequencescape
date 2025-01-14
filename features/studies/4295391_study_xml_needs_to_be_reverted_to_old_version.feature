@@ -175,6 +175,10 @@ Feature: The XML for the sequencescape API
             <value></value>
           </descriptor>
           <descriptor>
+            <name>Please explain the reason for preventing data release</name>
+            <value></value>
+          </descriptor>
+          <descriptor>
             <name>SNP parent study ID</name>
             <value></value>
           </descriptor>
