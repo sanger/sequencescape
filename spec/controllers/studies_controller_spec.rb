@@ -26,7 +26,7 @@ RSpec.describe StudiesController do
           'study_type_id' => StudyType.find_or_create_by(name: 'Not specified').id,
           'ebi_library_strategy' => 'WGS',
           'ebi_library_source' => 'GENOMIC',
-          'ebi_library_selection' => 'PCR',
+          'ebi_library_selection' => 'PCR'
         }
       }
     }
