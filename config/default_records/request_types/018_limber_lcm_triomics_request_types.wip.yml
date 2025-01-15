@@ -11,7 +11,7 @@ limber_lcm_triomics_emseq:
   acceptable_purposes:
     - LCMT Lysate
   library_types:
-    - LCM Triomics EMSeq
+    - emSEQ
 limber_lcm_triomics_wgs:
   name: LCM Triomics WGS
   asset_type: Well
@@ -23,4 +23,4 @@ limber_lcm_triomics_wgs:
   acceptable_purposes:
     - LCMT DNA Adp Lig
   library_types:
-    - LCM Triomics WGS
+    - LCMB

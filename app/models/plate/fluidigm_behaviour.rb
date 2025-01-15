@@ -36,7 +36,6 @@ module Plate::FluidigmBehaviour
       # rubocop:enable Rails/TransactionExitStatement
 
       apply_fluidigm_data(FluidigmFile.new(fluidigm_data.content))
-      return true # rubocop:todo Rails/TransactionExitStatement
     end
   end
 

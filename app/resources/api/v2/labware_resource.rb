@@ -22,7 +22,7 @@ module Api
       default_includes :uuid_object, :barcodes
 
       # Custom methods
-      # These shouldn't be used for business logic, and a more about
+      # These shouldn't be used for business logic, and are more about
       # I/O and isolating implementation details.
       def labware_barcode
         {

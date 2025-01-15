@@ -128,7 +128,7 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def default_filename
-    "#{study_id}stdy_manifest_#{id}_#{created_at.to_formatted_s(:dmy)}"
+    "#{study_id}stdy_manifest_#{id}_#{created_at.to_fs(:dmy)}"
   end
 
   # Number of rows per well in the manifest file, specified in manifest_types.yml.

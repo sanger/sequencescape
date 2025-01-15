@@ -24,12 +24,12 @@ module Api
       default_includes :uuid_object
 
       # Associations:
-      has_one :target_purpose, readonly: true, class_name: 'Purpose'
+      has_one :target_purpose, write_once: true, class_name: 'Purpose'
 
       # Attributes
       attribute :uuid, readonly: true
-      attribute :name, readonly: true
-      attribute :template_type, readonly: true
+      attribute :name, write_once: true
+      attribute :template_type, write_once: true
 
       # Filters
 

@@ -108,7 +108,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # cf. RequestType which defines how it will be fulfilled.
   # Both RequestType and Request have a purpose, with the former acting as the default for
   # the latter.
-  enum request_purpose: { standard: 1, internal: 2, qc: 3, control: 4 }
+  enum :request_purpose, { standard: 1, internal: 2, qc: 3, control: 4 }
 
   # Validations
   # On create we perform a full and complete validation.
@@ -156,7 +156,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
                   'INNER JOIN uuids ON uuids.resource_id=requests.submission_id AND uuids.resource_type="Submission"'
                 ]
             )
-            .group('uuids.external_id')
+            .group('pool_id')
             .where(pw: { labware_id: plate.id }, requests: { submission_id: submission_ids })
             .where.not(requests: { state: 'cancelled' })
         end

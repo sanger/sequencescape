@@ -351,4 +351,41 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
       end
     end
   end
+
+  context 'when checking sample manifest state' do
+    after { Delayed::Worker.delay_jobs = true }
+
+    it 'will not be valid if the sample_manifest is already being processed' do
+      download =
+        build(
+          :test_download_tubes,
+          columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup
+        )
+      download.save(test_file_name)
+      uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
+      # Sets the sample manifest to be processing state
+      uploader.upload.sample_manifest.start!
+      expect(uploader).not_to be_valid
+      expect(uploader.errors.full_messages).to include(
+        'A version of this sample manifest is already being processed, please wait until it has completed.'
+      )
+    end
+
+    it 'will be valid if the sample_manifest is not already being processed' do
+      download =
+        build(
+          :test_download_plates,
+          manifest_type: 'plate_full',
+          columns: SampleManifestExcel.configuration.columns.plate_full.dup
+        )
+      download.save(test_file_name)
+      Delayed::Worker.delay_jobs = false
+      uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
+      # Set it to its initial state
+      uploader.upload.sample_manifest.state = 'pending'
+      expect { uploader.run! }.to change(BroadcastEvent, :count).by(1)
+      expect(uploader).to be_processed
+      expect(uploader.upload.sample_manifest).to be_completed
+    end
+  end
 end

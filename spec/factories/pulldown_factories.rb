@@ -30,7 +30,7 @@ FactoryBot.define do
 
   # Tag layouts and their templates
   factory :tag_layout_template do
-    transient { tags { [] } }
+    transient { tags { %w[ACGT TGCA] } }
 
     sequence(:name) { |n| "Tag Layout Template #{n}" }
     direction_algorithm { 'TagLayout::InColumns' }
@@ -57,18 +57,6 @@ FactoryBot.define do
 
     direction_algorithm { 'TagLayout::InColumns' }
     walking_algorithm { 'TagLayout::WalkWellsOfPlate' }
-  end
-
-  factory(:plate_creation) do
-    user
-    sanger_barcode { create(:sequencescape22) }
-    parent factory: %i[full_plate], well_count: 2
-    child_purpose factory: %i[plate_purpose]
-
-    # PlateCreation inherits from AssetCreation that will try to call
-    # Baracoda to obtain a new barcode. As this is not needed for the
-    # tests we disable it, however is needed for some cucumber tests
-    skip_create if Rails.env.test?
   end
 
   factory(:tube_creation) do

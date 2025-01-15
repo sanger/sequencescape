@@ -27,17 +27,20 @@ Rails.application.routes.draw do
       end
 
       jsonapi_resources :barcode_printers
+      jsonapi_resources :bulk_transfers, except: %i[update]
       jsonapi_resources :comments
       jsonapi_resources :custom_metadatum_collections
       jsonapi_resources :labware
       jsonapi_resources :lanes
       jsonapi_resources :lot_types
       jsonapi_resources :lots
-      jsonapi_resources :orders
+      jsonapi_resources :orders, except: %i[update]
       jsonapi_resources :pick_lists
-      jsonapi_resources :plate_purposes
+      jsonapi_resources :plate_conversions, except: %i[update]
+      jsonapi_resources :plate_creations, except: %i[update]
+      jsonapi_resources :plate_purposes, except: %i[update]
       jsonapi_resources :plate_templates
-      jsonapi_resources :plates
+      jsonapi_resources :plates, except: %i[update]
       jsonapi_resources :poly_metadata
       jsonapi_resources :pooled_plate_creations, except: %i[update]
       jsonapi_resources :pre_capture_pools
@@ -45,6 +48,7 @@ Rails.application.routes.draw do
       jsonapi_resources :projects
       jsonapi_resources :purposes
       jsonapi_resources :qc_assays
+      jsonapi_resources :qc_files, except: %i[update]
       jsonapi_resources :qc_results
       jsonapi_resources :qcables
       jsonapi_resources :racked_tubes
@@ -58,6 +62,7 @@ Rails.application.routes.draw do
       jsonapi_resources :specific_tube_creations, except: %i[update]
       jsonapi_resources :state_changes, except: %i[update]
       jsonapi_resources :studies
+      jsonapi_resources :submission_pools
       jsonapi_resources :submission_templates
       jsonapi_resources :submissions
       jsonapi_resources :tag_group_adapter_types
@@ -65,8 +70,11 @@ Rails.application.routes.draw do
       jsonapi_resources :tag_layout_templates
       jsonapi_resources :tag_layouts, except: %i[update]
       jsonapi_resources :tags
+      jsonapi_resources :transfer_request_collections, except: %i[update]
       jsonapi_resources :transfer_requests
       jsonapi_resources :transfer_templates
+      jsonapi_resources :transfers, except: %i[update]
+      jsonapi_resources :tube_from_tube_creations, except: %i[update]
       jsonapi_resources :tube_purposes
       jsonapi_resources :tube_rack_statuses
       jsonapi_resources :tube_racks
@@ -75,21 +83,6 @@ Rails.application.routes.draw do
       jsonapi_resources :volume_updates
       jsonapi_resources :wells
       jsonapi_resources :work_orders
-
-      namespace :transfers do
-        jsonapi_resources :transfers, except: %i[update]
-
-        jsonapi_resources :between_plate_and_tubes
-        jsonapi_resources :between_plates_by_submissions
-        jsonapi_resources :between_plates
-        jsonapi_resources :between_specific_tubes
-        jsonapi_resources :between_tubes_by_submissions
-        jsonapi_resources :from_plate_to_specific_tubes_by_pools
-        jsonapi_resources :from_plate_to_specific_tubes
-        jsonapi_resources :from_plate_to_tube_by_multiplexes
-        jsonapi_resources :from_plate_to_tube_by_submissions
-        jsonapi_resources :from_plate_to_tubes
-      end
 
       namespace :heron do
         resources :tube_rack_statuses, only: [:create]

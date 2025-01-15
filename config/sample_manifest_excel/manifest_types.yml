@@ -337,13 +337,20 @@ plate_anospp:
 plate_scrna_core_pools:
   heading: "scRNA Core Pools Plate"
   asset_type: "plate"
-  rows_per_well: 20
+  rows_per_well: 150 # this is a guess at the largest number of samples that will be pooled together
   columns:
     - :sanger_plate_id
     - :well
     - :sanger_sample_id
     - :supplier_name
     - :donor_id_mandatory
+    - :date_of_sample_collection
+    - :country_of_origin
+    - :gender
+    - :phenotype
+    - :sample_ebi_accession_number
+    - :sample_taxon_id
+    - :sample_common_name
 tube_default:
   heading: "Default Tube"
   asset_type: "1dtube"

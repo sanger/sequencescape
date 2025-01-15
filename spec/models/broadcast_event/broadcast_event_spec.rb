@@ -29,7 +29,7 @@ class TestSeed
   end
 
   def self.polymorphic_name
-    'test_seed'
+    'TestSeed'
   end
 
   def attributes

@@ -218,7 +218,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
         before do
           upload.process(tag_group) || raise("Process error: #{upload.errors.full_messages}")
-          upload.finished!
+          upload.sample_manifest.state = 'completed'
         end
 
         after { File.delete(new_test_file) if File.exist?(new_test_file_name) }
@@ -374,7 +374,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
         before do
           upload.process(tag_group) || raise("Process error: #{upload.errors.full_messages}")
-          upload.finished!
+          upload.sample_manifest.state = 'completed'
         end
 
         after { File.delete(new_test_file) if File.exist?(new_test_file_name) }
@@ -445,7 +445,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
           before do
             upload.process(tag_group)
-            upload.finished!
+            upload.sample_manifest.state = 'completed'
           end
 
           after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
@@ -517,7 +517,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
           before do
             upload.process(nil)
-            upload.finished!
+            upload.sample_manifest.state = 'completed'
           end
 
           after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
@@ -693,7 +693,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
           before do
             upload.process(nil)
-            upload.finished!
+            upload.sample_manifest.state = 'completed'
           end
 
           after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
@@ -739,7 +739,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
           before do
             upload.process(nil)
-            upload.finished!
+            upload.sample_manifest.state = 'completed'
           end
 
           after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
@@ -775,7 +775,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
           before do
             upload.process(nil)
-            upload.finished!
+            upload.sample_manifest.state = 'completed'
           end
 
           after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }

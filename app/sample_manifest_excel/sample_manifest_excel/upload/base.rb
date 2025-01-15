@@ -33,7 +33,6 @@ module SampleManifestExcel
       validate :check_processor, if: :processor?
 
       delegate :processed?, to: :processor
-      delegate :finished!, to: :sample_manifest
       delegate :data_at, to: :rows
       delegate :study, to: :sample_manifest, allow_nil: true
 
@@ -77,7 +76,6 @@ module SampleManifestExcel
         # saves will result in duplicate accessions
         Sample::Current.processing_manifest = true
         sample_manifest.last_errors = nil
-        sample_manifest.start!
         @cache.populate!
         processor.run(tag_group)
 

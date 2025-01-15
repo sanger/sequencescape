@@ -2,10 +2,10 @@
 # Most are defined in the Limber config, but the below also need to be defined in Sequencescape.
 # They are in a separate file so it can be 'feature flagged off' until needed.
 ---
-# The 'LRC PBMC Pools Input' purpose is included here so that it's available for
+# The 'LRC GEM-X 5p GEMs Input' purpose is included here so that it's available for
 # sample manifests, and also because it is an acceptable purpose for the scRNA Core cDNA Prep Input
 # submission template.
-LRC PBMC Pools Input:
+LRC GEM-X 5p GEMs Input:
   input_plate: true
   stock_plate: true
   cherrypickable_target: false

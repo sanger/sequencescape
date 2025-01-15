@@ -25,8 +25,8 @@ module Api
       # Attributes
       attribute :created_at, readonly: true
       attribute :updated_at, readonly: true
-      attribute :state, readonly: true
-      attribute :links, readonly: true
+      attribute :state, write_once: true
+      attribute :links, write_once: true
 
       attribute :pick_attributes
       attribute :labware_pick_attributes, writeonly: true
