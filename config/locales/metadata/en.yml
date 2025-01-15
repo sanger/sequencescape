@@ -351,7 +351,6 @@ en:
         study_description:
           label: Study description
           edit_info: "ENA requirement"
-          help: Please choose one of the following 2 standard statements to be included with your data submissions (one or the other, depending on the study). <b>If you use the second statement, replace [doi or ref] by a reference or doi for your publication:</b><br /><br />This data is part of a pre-publication release. For information on the proper use of pre-publication data shared by the Wellcome Trust Sanger Institute (including details of any publication moratoria), please see http://www.sanger.ac.uk/datasharing/<br /><br />OR<br /><br />This data has been described in the following article [doi or ref] and its further analysis can be freely submitted for publication. For information on the proper use of data shared by the Wellcome Trust Sanger Institute (including information on acknowledgement), please see http://www.sanger.ac.uk/datasharing/<br/><p>If applicable, include a brief description of any restrictions on data usage, e.g. 'For AIDS-related research only'</p>
 
         contaminated_human_dna:
           label: Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?
