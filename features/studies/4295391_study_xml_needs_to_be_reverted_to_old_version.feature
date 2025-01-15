@@ -207,7 +207,7 @@ Feature: The XML for the sequencescape API
           <descriptor><name>ArrayExpress Accession Number</name></descriptor>
           <descriptor>
             <name>EBI Library Strategy</name>
-            <value>RNA-Seq</value>
+            <value>WGS</value>
           </descriptor>
           <descriptor>
             <name>EBI Library Source</name>
@@ -215,7 +215,7 @@ Feature: The XML for the sequencescape API
           </descriptor>
           <descriptor>
             <name>EBI Library Selection</name>
-            <value>RANDOM</value>
+            <value>PCR</value>
           </descriptor>
         </descriptors>
       </study>
