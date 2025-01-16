@@ -354,7 +354,6 @@ en:
         study_description:
           label: Study description
           edit_info: "ENA requirement"
-          help: Please choose one of the following 2 standard statements to be included with your data submissions (one or the other, depending on the study). <b>If you use the second statement, replace [doi or ref] by a reference or doi for your publication:</b><br /><br />This data is part of a pre-publication release. For information on the proper use of pre-publication data shared by the Wellcome Trust Sanger Institute (including details of any publication moratoria), please see http://www.sanger.ac.uk/datasharing/<br /><br />OR<br /><br />This data has been described in the following article [doi or ref] and its further analysis can be freely submitted for publication. For information on the proper use of data shared by the Wellcome Trust Sanger Institute (including information on acknowledgement), please see http://www.sanger.ac.uk/datasharing/<br/><p>If applicable, include a brief description of any restrictions on data usage, e.g. 'For AIDS-related research only'</p>
 
         contaminated_human_dna:
           label: Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?
@@ -427,7 +426,7 @@ en:
           values:
             open: "Open (ENA)"
             managed: "Managed (EGA)"
-            not_applicable: "Not Applicable (Contact Datasharing)"
+            not_applicable: "Not Applicable"
 
         data_release_standard_agreement:
           label: "Will you be using WTSI's standard access agreement?"
@@ -437,21 +436,22 @@ en:
 
         data_release_timing:
           label: How is the data release to be timed?
-          help: "Choose from:<p><strong>Immediate:</strong> To be released as soon as possible.</p><p><strong>Standard:</strong> To be released:<ul><li>For managed (EGA) studies: 6 months</li><li>For open (ENA) studies: 12 months</li><li>Transcriptomics studies: on request only</li></ul></p><p><strong>Delayed:</strong><ul><li>For managed (EGA) studies: 6 months plus delay for period</li><li>For open (ENA) studies: 12 months plus delay for period.</li></ul></p><p><strong>Never:</strong> This option is only available if the data release strategy is set to 'Not applicable.'</p>"
+          help: "Choose from:<p><strong>Immediate:</strong> To be released as soon as possible.</p><p><strong>Standard:</strong> To be released:<ul><li>For managed (EGA) studies: 12 months</li><li>For open (ENA) studies: 12 months</li><li>Transcriptomics studies: 12 months</li></ul></p><p><strong>Delayed:</strong><ul><li>For managed (EGA) studies: 12 months plus delay for period</li><li>For open (ENA) studies: 12 months plus delay for period.</li></ul></p><p><strong>Never:</strong> This option is only available if the data release strategy is set to 'Not applicable.'</p>"
 
         data_release_prevention_reason:
           label: What is the reason for preventing data release?
 
         data_release_prevention_approval:
-          label: Has this been approved?
-          help: "If this is for data validity reasons: approval from the sponsor is required<br />If this is for legal reasons: approval from the Data Sharing Committee is required (please contact sd4)<br />"
+          label: If reason for exemption requires DAC approval, what is the approval number?
+
+        data_release_prevention_other_comment:
+          label: Please explain the reason for preventing data release
 
         data_release_prevention_reason_comment:
           label: Comment regarding prevention of data release and approval
 
         data_release_delay_reason:
           label: Reason for delaying release
-          help: 'To apply for a delay, please contact <a title="<%= configatron.data_sharing_contact.name %>" href="mailto:<%= configatron.data_sharing_contact.email %>"><%= configatron.data_sharing_contact.email %></a>'
 
         data_release_delay_other_comment:
           label: Please explain the reason for delaying release
