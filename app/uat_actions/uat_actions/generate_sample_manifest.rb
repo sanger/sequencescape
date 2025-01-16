@@ -43,6 +43,7 @@ class UatActions::GenerateSampleManifest < UatActions
 
   form_field :with_samples, :check_box, help: 'Create new samples for recipients?', label: 'With Samples?'
 
+  validates :tube_purpose_name, presence: true
   validate :validate_tube_purpose_exists
 
   def self.default
@@ -67,7 +68,7 @@ class UatActions::GenerateSampleManifest < UatActions
   #
   # @return [void]
   def validate_tube_purpose_exists
-    return if tube_purpose_name.blank? # Uses the default.
+    return if tube_purpose_name.blank? # Already validated by presence
     return if Tube::Purpose.exists?(name: tube_purpose_name)
 
     message = format(ERROR_TUBE_PURPOSE_DOES_NOT_EXIST, tube_purpose_name)
