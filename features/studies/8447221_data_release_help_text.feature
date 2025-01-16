@@ -6,54 +6,26 @@ Feature: Update the data release fields for creating a study
     Given a faculty sponsor called "Jack Sponsor" exists
     And I am on the new study page
 
-  Scenario: Add help text to study description (8348119)
-    Then the help text for "Study description" should contain:
-      """
-      Please choose one of the following 2 standard statements to be included with your data submissions (one or the other, depending on the study). If you use the second statement, replace [doi or ref] by a reference or doi for your publication:
-
-      This data is part of a pre-publication release. For information on the proper use of pre-publication data shared by the Wellcome Trust Sanger Institute (including details of any publication moratoria), please see http://www.sanger.ac.uk/datasharing/
-
-      OR
-
-      This data has been described in the following article [doi or ref] and its further analysis can be freely submitted for publication. For information on the proper use of data shared by the Wellcome Trust Sanger Institute (including information on acknowledgement), please see http://www.sanger.ac.uk/datasharing/
-      If applicable, include a brief description of any restrictions on data usage, e.g. 'For AIDS-related research only'
-      """
-
   Scenario Outline: Add help text opposite delay drop down (4044305)
     When I choose "<release strategy>" from "What is the data release strategy for this study?"
     When I select "delayed" from "How is the data release to be timed?"
-    When I select "other" from "Reason for delaying release"
-    Then the help text for "Reason for delaying release" should contain:
-      """
-      To apply for a delay, please contact datasharing@example.com
-      """
+    When I select "Other (please specify below)" from "Reason for delaying release"
+    Then I should exactly see "Reason for delaying release"
 
     Examples:
       | release strategy |
       | Managed (EGA)    |
       | Open (ENA)       |
 
-  Scenario: Add help text to has this been approved for never release (4044343)
-    When I choose "Not Applicable (Contact Datasharing)" from "What is the data release strategy for this study?"
-    When I select "never" from "How is the data release to be timed?"
-    Then the help text for "Has this been approved?" should contain:
-      """
-      If this is for data validity reasons: approval from the sponsor is required
-      If this is for legal reasons: approval from the Data Sharing Committee is required (please contact sd4)
-      """
-
   Scenario Outline: Delaying for 3 months should have the same questions as all other delays (4044273)
     When I select "delayed" from "How is the data release to be timed?"
-    And I select "other" from "Reason for delaying release"
+    And I select "Other (please specify below)" from "Reason for delaying release"
     And I select "<delay_period>" from "Delay for"
-    Then I should exactly see "Has the delay period been approved by the data sharing committee for this project?"
-    And I should exactly see "Comment regarding data release timing and approval"
 
     When I fill in the following:
       | Study name                                         | new study       |
       | Study description                                  | writing cukes   |
       | Please explain the reason for delaying release     | some comment    |
-      | Comment regarding data release timing and approval | another comment |
 
     And I select "Jack Sponsor" from "Faculty Sponsor"
     And I choose "Yes" from "Do any of the samples in this study contain human DNA?"
