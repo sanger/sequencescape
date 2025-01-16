@@ -15,12 +15,6 @@
 #
 # The messages are generated using the strings in the locale file.
 #
-# This module is feature-flagged with the key
-# y24_429_enable_check_feasibility_of_cdna_prep_submission . If enabled, the
-# validate_scrna_core_cdna_prep_feasibility method is called by the
-# apply_additional_validations_by_template_name method of the
-# Submission::ValidationsByTemplateName module.
-#
 # rubocop:disable Metrics/ModuleLength
 module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
   # Add the methods from the calculator module for volume calculations.

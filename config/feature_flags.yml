@@ -4,4 +4,3 @@
 dpl_395_2_enable_advanced_search_tab: Shows the Search tab in the top navigation bar
 # Below is flagged off until some existing data that would violate the rule is fixed. Should be re-enabled in Y24-058.
 y24_052_enable_data_release_timing_validation: Enables server-side validation that enforces a relationship between the values of two study metadata fields
-y24_429_enable_check_feasibility_of_cdna_prep_submission: Enables the feasibility validations for cDNA Prep Bulk Submission
