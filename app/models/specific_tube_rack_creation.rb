@@ -221,6 +221,7 @@ class SpecificTubeRackCreation < AssetCreation
 
     if existing_labware.is_a?(TubeRack)
       existing_barcode_record.labware = new_tube_rack
+      existing_barcode_record.save!
     else
       error_message =
         "The tube rack barcode '#{tube_rack_barcode}' is already in use by " \
