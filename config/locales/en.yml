@@ -228,16 +228,15 @@ en:
           However, %{count} samples with the same donor ID were found, while the number of pools requested was %{number_of_pools}.
           The samples with the same donor ID follow: %{barcodes_or_well_locations}.
       warnings:
-        # Validation: There is not enough material for the "full allowance" (2 full runs on the chip)
+        # Validation: There is not enough material for two repeat pooling attempts
         # study_name and project_name are the values of respective fields from the spreadsheet.
         # number_of_samples_in_smallest_pool is the number of samples in the smallest pool.
         # final_resuspension_volume is the final resuspension volume given the number of samples in the smallest pool for the smallest pool.
         # full_allowance is the full allowance given the number of cells per chip well for the study and project.
         full_allowance: >
-          There is not enough material for the "full allowance" (2 full runs on the chip) for the study %{study_name} and the project %{project_name}.
+          There is not enough material for two repeat pooling attempts for the study %{study_name} and the project %{project_name}.
           The final resuspension volume for the smallest pool should be greater than or equal to the full allowance.
           However, for the smallest pool of size %{number_of_samples_in_smallest_pool}, the final resuspension volume is %{final_resuspension_volume} and the full allowance is %{full_allowance}.
-          The number of cells per chip well will be adjusted according to the number of samples while pooling.
 
   cherrypick:
     picking_by_row: "This cherrypick may take longer as it is picking by rows, rather than columns."
