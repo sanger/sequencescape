@@ -53,25 +53,25 @@ number_greater_than_one:
     operator: :lessThan
     formula: "1"
     priority: 2
-is_num_samples_per_pool_in_valid_range:
+is_num_of_pools_in_valid_range:
   style:
     bg_color: "00FF00"
     type: :dxf
   options:
     type: :cellIs
     operator: :between
-    formula1: "5"
-    formula2: "25"
+    formula1: "1"
+    formula2: "8"
     priority: 2
-is_num_samples_per_pool_outside_valid_range:
+is_num_of_pools_outside_valid_range:
   style:
     bg_color: "FF0000"
     type: :dxf
   options:
     type: :cellIs
     operator: :notBetween
-    formula1: "5"
-    formula2: "25"
+    formula1: "1"
+    formula2: "8"
     priority: 2
 is_num_cells_per_chip_well_in_valid_range:
   style:

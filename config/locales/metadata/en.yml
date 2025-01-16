@@ -61,6 +61,9 @@ en:
         number_of_samples_per_pool:
           label: Number of samples per pool
 
+        number_of_pools:
+          label: Number of pools
+
         cells_per_chip_well:
           label: Cells per chip well
 
