@@ -3,10 +3,15 @@
 # This UAT Action will generates a basic submission for tubes. Initially, it
 # has been designed for generating scRNA Core Donor Pooling and cDNA Prep
 # submissions on LRC Bank Seq/Spare tubes.
+# rubocop:disable Metrics/ClassLength
 class UatActions::TubeSubmission < UatActions
   self.title = 'Tube submission'
   self.description = 'Generates a basic submission for tubes.'
   self.category = :setup_and_test
+
+  ERROR_SUBMISSION_TEMPLATE_DOES_NOT_EXIST = "Submission template '%s' does not exist."
+  ERROR_TUBES_DO_NOT_EXIST = 'Tubes with barcodes do not exist: %s'
+  ERROR_LIBRARY_TYPE_DOES_NOT_EXIST = "Library type '%s' does not exist."
 
   form_field :submission_template_name,
              :select,
@@ -56,6 +61,11 @@ class UatActions::TubeSubmission < UatActions
              }
 
   validates :submission_template, presence: { message: 'could not be found' }
+  validates :tube_barcodes, presence: true
+
+  validate :validate_submission_template_exists
+  validate :validate_tubes_exist
+  validate :validate_library_type_exists
 
   # Returns a default copy of the UatAction which will be used to fill in the form
   #
@@ -93,6 +103,46 @@ class UatActions::TubeSubmission < UatActions
     fill_report(order)
     order.submission.built!
     true
+  end
+
+  # Validates that the submission template exists for the specified submission
+  # template name.
+  #
+  # @return [void]
+  def validate_submission_template_exists
+    return if submission_template_name.blank? # already validated by presence
+    return if SubmissionTemplate.exists?(name: submission_template_name)
+
+    message = format(ERROR_SUBMISSION_TEMPLATE_DOES_NOT_EXIST, submission_template_name)
+    errors.add(:submission_template_name, message)
+  end
+
+  # Validates that the tubes exist for the specified barcodes.
+  #
+  # @return [void]
+  def validate_tubes_exist
+    return if tube_barcodes.blank? # already validated by presence
+    barcodes =
+      tube_barcodes
+        .gsub(/(\\[trfvn])+/, ' ')
+        .split
+        .select do |barcode|
+          Tube.find_by_barcode(barcode).blank? # not found
+        end
+
+    message = format(ERROR_TUBES_DO_NOT_EXIST, barcodes.join(', '))
+    errors.add(:tube_barcodes, message)
+  end
+
+  # Validates that the library type exists for the specified library type name.
+  #
+  # return [void]
+  def validate_library_type_exists
+    return if library_type_name.blank? # optional
+    return if LibraryType.exists?(name: library_type_name)
+
+    message = format(ERROR_LIBRARY_TYPE_DOES_NOT_EXIST, library_type_name)
+    errors.add(:library_type_name, message)
   end
 
   # Fills the report with the information from the submission
@@ -191,3 +241,4 @@ class UatActions::TubeSubmission < UatActions
     UatActions::StaticRecords.user
   end
 end
+# rubocop:enable Metrics/ClassLength
