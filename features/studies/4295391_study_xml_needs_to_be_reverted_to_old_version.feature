@@ -115,7 +115,7 @@ Feature: The XML for the sequencescape API
             <value>Not specified</value>
           </descriptor>
           <descriptor>
-            <name>Has this been approved?</name>
+            <name>If reason for exemption requires DAC approval, what is the approval number?</name>
             <value></value>
           </descriptor>
           <descriptor>
@@ -151,10 +151,6 @@ Feature: The XML for the sequencescape API
           <value>No</value>
           </descriptor>
           <descriptor>
-            <name>Has the delay period been approved by the data sharing committee for this project?</name>
-            <value></value>
-          </descriptor>
-          <descriptor>
             <name>ENA Project ID</name>
             <value></value>
           </descriptor>
@@ -176,6 +172,10 @@ Feature: The XML for the sequencescape API
           </descriptor>
           <descriptor>
             <name>Please explain the reason for delaying release</name>
+            <value></value>
+          </descriptor>
+          <descriptor>
+            <name>Please explain the reason for preventing data release</name>
             <value></value>
           </descriptor>
           <descriptor>

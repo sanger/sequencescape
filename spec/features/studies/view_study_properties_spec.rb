@@ -52,7 +52,7 @@ describe 'View study properties' do
       expect(page).to have_content('HuMFre approval number: 12345')
     end
 
-    it 'displays HuMFre approval number for Not Applicable (Contact Datasharing) data release strategy' do
+    it 'displays HuMFre approval number for Not Applicable data release strategy' do
       study.study_metadata.data_release_strategy = Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE
       study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_NEVER
       study.study_metadata.data_release_prevention_reason = Study::DATA_RELEASE_PREVENTION_REASONS[0]
