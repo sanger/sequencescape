@@ -1,10 +1,21 @@
 # Plate purposes for LCM Triomics WGS and EMSeq
 ---
+# The starting point for the 'LCM Triomics' pipeline is the LCMT Lysate plate.
+# It is defined here so it can be added to the acceptable purposes for the
+# 'LCM Triomics' manual submission. It is an input plate and so it is 'passed'
+# when all non-empty wells have requests out of them, i.e., when the submission
+# is built.
 LCMT Lysate:
   type: PlatePurpose::Input
   stock_plate: true
   cherrypickable_target: false
+# Five plates of the LCM Triomics pipeline all go from 'pending' to 'started'
+# at 'Bravo LCMT EMSeq Verify Initial Setup' and then to 'passed' one by one in
+# either single bed verification or manual transfer. None of them can be input
+# plates. The LCMT DNA Adp Lig purpose is defined here so it can be added to the
+# acceptable purposes for the 'LCM Triomics WGS' automated submission, which
+# is enabled when LCMT DNA Adp Lig is 'passed'.
 LCMT DNA Adp Lig:
-  type: PlatePurpose::Input
+  type: PlatePurpose
   stock_plate: false
   cherrypickable_target: false
