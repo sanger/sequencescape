@@ -24,9 +24,18 @@ class TubeRack < Labware
 
   # Requests comming out out the tubes contained in the rack
   has_many :requests_as_source, through: :tubes
+  has_many :requests_as_target, through: :tubes
+  has_many :transfer_requests_as_source, through: :tube_receptacles
+  has_many :transfer_requests_as_target, through: :tube_receptacles
   has_many :aliquots, through: :tubes
 
   LAYOUTS = { 48 => { rows: 6, columns: 8 }, 96 => { rows: 8, columns: 12 } }.freeze
+
+  TUBE_RACK_STATES = %w[started qc_complete pending passed failed cancelled mixed empty].freeze
+
+  STATES_TO_FILTER_OUT = %w[cancelled failed].freeze
+  STATE_EMPTY = 'empty'
+  STATE_MIXED = 'mixed'
 
   validates :size, inclusion: { in: LAYOUTS.keys }
 
@@ -89,5 +98,23 @@ class TubeRack < Labware
     # But we still want to add to the tube anyway, as we may have some
     # tubes that don't have submissions. Or even a mixed rack.
     comments.add_comment_to_tubes(comment)
+  end
+
+  # The state of a tube rack is based on the transfer requests in the tubes.
+  # If they are all in the same state then it takes that state.
+  def state
+    # fetch states from ther transfer requests in all racked tubes in the rack.
+    unique_states = transfer_requests_as_target.map(&:state).uniq
+
+    return STATE_EMPTY if unique_states.empty?
+    return unique_states.first if unique_states.size == 1
+
+    STATES_TO_FILTER_OUT.each do |filter|
+      unique_states.delete(filter)
+      return unique_states.first if unique_states.one?
+    end
+
+    # we still have tubes with a mixed state
+    STATE_MIXED
   end
 end
