@@ -36,11 +36,15 @@ class UatActions::TubeSubmission < UatActions
                include_blank: 'Using default library type...'
              }
 
-  form_field :number_of_samples_per_pool,
+  # The number_of_pools and cells_per_chip_well options are applied to a single
+  # study-project and set in request metadata. For multiple study and projects,
+  # a bulk submission is required.
+
+  form_field :number_of_pools,
              :number_field,
-             label: 'Number of samples per pool',
+             label: 'Number of pools',
              help:
-               'Optional field to set the number_of_samples_per_pool field on the ' \
+               'Optional field to set the number_of_pools field on the ' \
                  'submission request. Leave blank if not required.',
              options: {
                minimum: 0
@@ -149,8 +153,8 @@ class UatActions::TubeSubmission < UatActions
     report['tube_barcodes'] = assets.map(&:human_barcode)
     report['submission_id'] = order.submission.id
     report['library_type'] = order.request_options[:library_type] if order.request_options[:library_type].present?
-    report['number_of_samples_per_pool'] = order.request_options[:number_of_samples_per_pool] if order.request_options[
-      :number_of_samples_per_pool
+    report['number_of_pools'] = order.request_options[:number_of_pools] if order.request_options[
+      :number_of_pools
     ].present?
     report['cells_per_chip_well'] = order.request_options[:cells_per_chip_well] if order.request_options[
       :cells_per_chip_well
@@ -210,7 +214,7 @@ class UatActions::TubeSubmission < UatActions
   def custom_request_options
     options = {}
     options[:library_type] = library_type_name if library_type_name.present?
-    options[:number_of_samples_per_pool] = number_of_samples_per_pool.presence
+    options[:number_of_pools] = number_of_pools.presence
     options[:cells_per_chip_well] = cells_per_chip_well.presence
     options
   end

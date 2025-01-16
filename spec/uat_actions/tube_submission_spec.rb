@@ -38,13 +38,13 @@ describe UatActions::TubeSubmission do
       end
     end
 
-    context 'with optional number of samples per pool supplied' do
-      let(:num_samples) { 15 }
+    context 'with optional number of pools supplied' do
+      let(:number_of_pools) { 2 }
       let(:parameters) do
         {
           submission_template_name: submission_template.name,
           tube_barcodes: tube_barcode,
-          number_of_samples_per_pool: num_samples
+          number_of_pools: number_of_pools
         }
       end
 
@@ -52,7 +52,7 @@ describe UatActions::TubeSubmission do
         expect(uat_action.perform).to be true
         expect(uat_action.report['tube_barcodes']).to eq report['tube_barcodes']
         expect(uat_action.report['submission_id']).to be_a Integer
-        expect(uat_action.report['number_of_samples_per_pool']).to eq num_samples
+        expect(uat_action.report['number_of_pools']).to eq number_of_pools
       end
     end
 

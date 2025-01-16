@@ -456,7 +456,7 @@ GEM
       rexml
     ruby-prof (1.7.1)
     ruby-progressbar (1.13.0)
-    ruby-units (4.0.3)
+    ruby-units (4.1.0)
     ruby-vips (2.2.1)
       ffi (~> 1.12)
     ruby2_keywords (0.0.5)
