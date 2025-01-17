@@ -3,6 +3,10 @@
 
 <p class="lead">Your bulk submission has been processed.</p>
 
+<% if @bulk_submission.warnings.present? %>
+  <%= render partial: 'bulk_submissions/warnings', locals: {presenter: @bulk_submission} %>
+<% end %>
+
 <% @these_subs.each do |submission| %>
   <%= render partial: 'submissions/warnings', locals: { presenter: submission } %>
 <% end %>
