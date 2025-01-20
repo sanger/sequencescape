@@ -64,7 +64,6 @@
           <%= group.text_area(:data_release_prevention_other_comment) %>
         <% end %>
         <%= group.text_area(:data_release_prevention_approval) %>
-        <%= group.text_area(:data_release_prevention_reason_comment) %>
       <% end %>
       <% metadata_fields.related_fields(to: :data_release_strategy, in: Study::DATA_RELEASE_STRATEGIES, not: Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE) do %>
         <% metadata_fields.related_fields(to: :data_release_timing, when: Study::DATA_RELEASE_TIMING_DELAYED) do %>
