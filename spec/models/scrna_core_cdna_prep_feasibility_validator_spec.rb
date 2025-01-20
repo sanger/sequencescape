@@ -12,7 +12,6 @@ RSpec.describe BulkSubmission, with: :uploader do
   subject(:bulk_submission) { described_class.new(spreadsheet: submission_file) }
 
   before do
-    Flipper.enable(:y24_429_enable_check_feasibility_of_cdna_prep_submission)
     SubmissionSerializer.construct!(submission_template_hash) # Create the template.
   end
 
