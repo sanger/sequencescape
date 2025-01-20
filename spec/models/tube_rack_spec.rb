@@ -55,6 +55,46 @@ RSpec.describe TubeRack do
     end
   end
 
+  describe '#state' do
+    let(:tube_rack) { create(:tube_rack) }
+
+    context 'when there are no transfer requests' do
+      it 'returns STATE_EMPTY' do
+        allow(tube_rack).to receive(:transfer_requests_as_target).and_return([])
+        expect(tube_rack.state).to eq(TubeRack::STATE_EMPTY)
+      end
+    end
+
+    context 'when all transfer requests have the same state' do
+      it 'returns the single state' do
+        allow(tube_rack).to receive(:transfer_requests_as_target).and_return([double(state: 'pending')])
+        expect(tube_rack.state).to eq('pending')
+      end
+    end
+
+    context 'when there are multiple states including states to filter out' do
+      it 'returns the remaining state after filtering' do
+        allow(tube_rack).to receive(:transfer_requests_as_target).and_return([
+          double(state: 'pending'),
+          double(state: 'cancelled'),
+          double(state: 'failed')
+        ])
+        expect(tube_rack.state).to eq('pending')
+      end
+    end
+
+    context 'when there are multiple states and filtering still results in multiple states' do
+      it 'returns STATE_MIXED' do
+        allow(tube_rack).to receive(:transfer_requests_as_target).and_return([
+          double(state: 'pending'),
+          double(state: 'started'),
+          double(state: 'failed')
+        ])
+        expect(tube_rack.state).to eq(TubeRack::STATE_MIXED)
+      end
+    end
+  end
+
   describe 'scope #contained_samples' do
     let(:num_tubes) { locations.length }
     let(:tube_rack) { create(:tube_rack) }
