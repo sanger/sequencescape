@@ -260,7 +260,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
         required: true,
         if: :data_release_prevention_reason_other?
       )
-      custom_attribute(:data_release_prevention_reason_comment, required: true)
+      custom_attribute(:data_release_prevention_reason_comment)
       custom_attribute(:data_release_prevention_approval)
     end
 
