@@ -114,10 +114,6 @@ class StudiesController < ApplicationController
         end
       end
 
-      # Process Study PolyMetadata options within the same transaction.
-      poly_metadata_params = params[:poly_metadata]
-      Study::PolyMetadataHandler.new(@study).process(poly_metadata_params) if poly_metadata_params
-
       flash[:notice] = 'Your study has been updated'
 
       redirect_to study_path(@study)
