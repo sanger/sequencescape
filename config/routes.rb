@@ -336,7 +336,6 @@ Rails.application.routes.draw do
     resources :primer_panels, except: :destroy
 
     resources :studies, except: [:destroy] do
-      resources :poly_metadata, controller: 'studies/poly_metadata'
       collection do
         get :index
         post :filter

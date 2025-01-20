@@ -577,19 +577,6 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     broadcast
   end
 
-  # Returns the PolyMetadatum object associated with the given key.
-  #
-  # @param key [String] The key of the PolyMetadatum to find.
-  #
-  # @return [PolyMetadatum, nil] The PolyMetadatum object with the given key,
-  #   or nil if no such PolyMetadatum exists.
-  #
-  # @example
-  #   study.poly_metadatum_by_key("sample_key")
-  def poly_metadatum_by_key(key)
-    poly_metadata.find { |pm| pm.key == key.to_s }
-  end
-
   # Helper method for edit dropdowns to support backwards compatibility with old options.
   #
   # @return [Array<String>] the list of options for the data release prevention reason dropdown
