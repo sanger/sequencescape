@@ -52,7 +52,8 @@ class UatActions::GeneratePlates < UatActions
 
   validates :plate_purpose_name, presence: true
   validates :plate_count, numericality: { greater_than: 0, smaller_than: 20, only_integer: true, allow_blank: false }
-  validates :well_count, numericality: { greater_than: 0, only_integer: true, allow_blank: false }
+  # well_count is zero for the reracking test.
+  validates :well_count, numericality: { greater_than_or_equal_to: 0, only_integer: true, allow_blank: false }
   validates :number_of_samples_in_each_well,
             numericality: {
               greater_than: 0,
