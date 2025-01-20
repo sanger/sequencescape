@@ -1174,7 +1174,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_14_135342) do
     t.string "data_type"
     t.integer "primer_panel_id"
     t.string "requested_flowcell_type"
-    t.integer "number_of_samples_per_pool"
+    t.integer "number_of_pools"
     t.integer "cells_per_chip_well"
     t.index ["request_id"], name: "index_request_metadata_on_request_id"
   end
