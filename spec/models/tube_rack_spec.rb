@@ -56,6 +56,16 @@ RSpec.describe TubeRack do
   end
 
   describe '#state' do
+    let(:class_with_state) do
+      Class.new do
+        attr_accessor :state
+
+        def initialize(state)
+          @state = state
+        end
+      end
+    end
+
     let(:tube_rack) { create(:tube_rack) }
 
     context 'when there are no transfer requests' do
@@ -66,30 +76,42 @@ RSpec.describe TubeRack do
     end
 
     context 'when all transfer requests have the same state' do
+      let(:tube_state) { 'pending' }
+      let(:transfer_requests) do
+        [class_with_state.new(tube_state), class_with_state.new(tube_state), class_with_state.new(tube_state)]
+      end
+
       it 'returns the single state' do
-        allow(tube_rack).to receive(:transfer_requests_as_target).and_return([double(state: 'pending')])
+        allow(tube_rack).to receive(:transfer_requests_as_target).and_return(transfer_requests)
         expect(tube_rack.state).to eq('pending')
       end
     end
 
     context 'when there are multiple states including states to filter out' do
+      let(:tube1_state) { 'pending' }
+      let(:tube2_state) { 'cancelled' }
+      let(:tube3_state) { 'failed' }
+      let(:transfer_requests) do
+        [class_with_state.new(tube1_state), class_with_state.new(tube2_state), class_with_state.new(tube3_state)]
+      end
+
       it 'returns the remaining state after filtering' do
-        allow(tube_rack).to receive(:transfer_requests_as_target).and_return([
-          double(state: 'pending'),
-          double(state: 'cancelled'),
-          double(state: 'failed')
-        ])
+        allow(tube_rack).to receive(:transfer_requests_as_target).and_return(transfer_requests)
+
         expect(tube_rack.state).to eq('pending')
       end
     end
 
     context 'when there are multiple states and filtering still results in multiple states' do
+      let(:tube1_state) { 'pending' }
+      let(:tube2_state) { 'started' }
+      let(:tube3_state) { 'failed' }
+      let(:transfer_requests) do
+        [class_with_state.new(tube1_state), class_with_state.new(tube2_state), class_with_state.new(tube3_state)]
+      end
+
       it 'returns STATE_MIXED' do
-        allow(tube_rack).to receive(:transfer_requests_as_target).and_return([
-          double(state: 'pending'),
-          double(state: 'started'),
-          double(state: 'failed')
-        ])
+        allow(tube_rack).to receive(:transfer_requests_as_target).and_return(transfer_requests)
         expect(tube_rack.state).to eq(TubeRack::STATE_MIXED)
       end
     end
