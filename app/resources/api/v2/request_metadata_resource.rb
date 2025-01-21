@@ -28,12 +28,19 @@ module Api
       # Attributes
       ###
 
-      # @!attribute [r] number_of_samples_per_pool
-      #   @return [Int] the number_of_samples_per_pool.
-      attribute :number_of_samples_per_pool, write_once: true
+      # @!attribute [r] number_of_pools
+      #   @return [Int] the number_of_pools requested in the Submission. As used
+      #     in the scRNA Core pipeline, it is specified at the Study-Project
+      #     level: it will have the same value for all Requests that share the
+      #     same Study and Project. It is used in the pooling algorithm.
+      attribute :number_of_pools, write_once: true
 
       # @!attribute [r] cells_per_chip_well
-      #   @return [Int] the cells_per_chip_well.
+      #   @return [Int] the cells_per_chip_well requested in the Submission. As
+      #     used in the scRNA Core pipeline, it is specified at the Study-Project
+      #     level: it will have the same value for all Requests that share the
+      #     same Study and Project. It is used for volume calculations for
+      #     pooling.
       attribute :cells_per_chip_well, write_once: true
 
       # Filters

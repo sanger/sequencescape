@@ -17,6 +17,7 @@ module Api
       abstract
 
       # Loaded on the base class so that they can be loaded globally.
+      Order.descendants.each { |subclass| model_hint model: subclass, resource: :order }
       Purpose.descendants.each { |subclass| model_hint model: subclass, resource: :purpose }
       Plate.descendants.each { |subclass| model_hint model: subclass, resource: :plate }
       Tube.descendants.each { |subclass| model_hint model: subclass, resource: :tube }

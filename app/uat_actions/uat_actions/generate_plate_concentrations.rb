@@ -48,7 +48,7 @@ class UatActions::GeneratePlateConcentrations < UatActions
   validates :concentration_units, presence: { message: 'needs a choice' }
   validates :minimum_concentration, numericality: { only_integer: false }
   validates :maximum_concentration, numericality: { greater_than: 0, only_integer: false }
-  validate :maximum_greater_than_minimum
+  validate :maximum_greater_than_or_equal_to_minimum
 
   def perform
     qc_assay_results = construct_qc_assay
@@ -58,10 +58,10 @@ class UatActions::GeneratePlateConcentrations < UatActions
 
   private
 
-  def maximum_greater_than_minimum
-    return true if max_conc > min_conc
+  def maximum_greater_than_or_equal_to_minimum
+    return true if max_conc >= min_conc
 
-    errors.add(:maximum_concentration, 'needs to be greater than minimum concentration')
+    errors.add(:maximum_concentration, 'needs to be greater than or equal to minimum concentration')
     false
   end
 
