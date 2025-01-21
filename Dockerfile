@@ -2,7 +2,7 @@ ARG CHIPSET=default
 
 # Use the correct base image depending on the architecture
 # For Apple M1 Chip, run: docker build --build-arg CHIPSET=m1 .
-FROM ruby:3.2.5-slim AS base_default
+FROM ruby:3.3.6-slim AS base_default
 FROM --platform=linux/amd64 ruby:3.2.5-slim AS base_m1
 FROM base_${CHIPSET} AS base
 

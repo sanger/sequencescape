@@ -28,61 +28,37 @@ Feature: Studies have timings for release of their data
 
   Scenario: When the data release is delayed for PhD study
     Given I select "delayed" from "How is the data release to be timed?"
-      And I select "phd study" from "Reason for delaying release"
-    Then the "Comment regarding data release timing and approval" field is hidden
+      And I select "PhD study" from "Reason for delaying release"
     When I select "6 months" from "Delay for"
       And I press "Create"
     Then I should be on the study information page for "Testing data release strategies"
       And I should see "Your study has been created"
 
-  Scenario Outline: When the data release is delayed but no reasons are provided
-    Given I select "delayed" from "How is the data release to be timed?"
-    And I select "other" from "Reason for delaying release"
-    And I fill in "Please explain the reason for delaying release" with "Some reason"
-    And I select "<period>" from "Delay for"
+  Scenario: When the data release is never but the prevention other comment is not supplied
+    When I choose "Not Applicable" from "What is the data release strategy for this study?"
+    And I select "never" from "How is the data release to be timed?"
+    And I select "Other (please specify)" from "What is the reason for preventing data release?"
+    And I fill in "If reason for exemption requires DAC approval, what is the approval number?" with "12345"
     When I press "Create"
     Then I should be on the studies page
-    # Ideally this should be without the study metadata qualification
-    And I should see "Study metadata data release delay reason comment can't be blank"
+    # Again, ideally without study metadata
+    And I should see "Study metadata data release prevention other comment can't be blank"
 
-    Examples:
-      | period    |
-      | 3 months  |
-      | 6 months  |
-      | 9 months  |
-      | 12 months |
-
-  Scenario Outline: When the data release is delayed and the reasons are provided
-    Given I select "delayed" from "How is the data release to be timed?"
-    And I select "other" from "Reason for delaying release"
-    And I fill in "Please explain the reason for delaying release" with "Some reason"
-    And I select "<period>" from "Delay for"
-    And I fill in "Comment regarding data release timing and approval" with "Because it is ok?"
+  Scenario: When the data release is never and the prevention other comment is supplied
+    When I choose "Not Applicable" from "What is the data release strategy for this study?"
+    And I select "never" from "How is the data release to be timed?"
+    And I select "Other (please specify)" from "What is the reason for preventing data release?"
+    And I fill in "Please explain the reason for preventing data release" with "Some reason"
+    And I fill in "If reason for exemption requires DAC approval, what is the approval number?" with "12345"
     When I press "Create"
     Then I should be on the study information page for "Testing data release strategies"
     And I should see "Your study has been created"
 
-    Examples:
-      | period    |
-      | 3 months  |
-      | 6 months  |
-      | 9 months  |
-      | 12 months |
-
-  Scenario: When the data release is never but the comment is not supplied
-    When I choose "Not Applicable (Contact Datasharing)" from "What is the data release strategy for this study?"
+  Scenario: When the data release is never and the prevention comment is supplied
+    When I choose "Not Applicable" from "What is the data release strategy for this study?"
     And I select "never" from "How is the data release to be timed?"
-    And I choose "Yes" from "Has this been approved?"
-    When I press "Create"
-    Then I should be on the studies page
-    # Again, ideally without study metadata
-    And I should see "Study metadata data release prevention reason comment can't be blank"
-
-  Scenario: When the data release is never and the comment is supplied
-    When I choose "Not Applicable (Contact Datasharing)" from "What is the data release strategy for this study?"
-    And I select "never" from "How is the data release to be timed?"
-    And I fill in "Comment regarding prevention of data release and approval" with "Some reason"
-    And I choose "Yes" from "Has this been approved?"
+    And I select "Protecting IP - DAC approval required" from "What is the reason for preventing data release?"
+    And I fill in "If reason for exemption requires DAC approval, what is the approval number?" with "12345"
     When I press "Create"
     Then I should be on the study information page for "Testing data release strategies"
     And I should see "Your study has been created"

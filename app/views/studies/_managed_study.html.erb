@@ -13,10 +13,6 @@
      <%= render partial: "shared/data_release_enforce",     locals: { study: study, form: form } -%>
   <% end %>
 <% end %>
-<%= panel(:info,title:'Additional Properties') do %>
-  <small>Following fields are optional and specific to certain studies.</small>
-  <%= render partial: 'shared/poly_metadata/edit/study', locals: { study: study } %>
-<% end %>
 
 <table width="100%" cellspacing="0" cellpadding="0">
     <tr>
