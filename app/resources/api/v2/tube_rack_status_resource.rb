@@ -16,8 +16,6 @@ module Api
     class TubeRackStatusResource < BaseResource
       # model_name / model_hint if required
 
-      default_includes :uuid_object
-
       # Associations:
 
       # Attributes

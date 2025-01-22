@@ -16,8 +16,6 @@ module Api
     class WellResource < BaseResource
       include Api::V2::SharedBehaviour::Receptacle
 
-      default_includes :uuid_object, :map, :transfer_requests_as_target, plate: :barcodes
-
       # Attributes
       attribute :position, readonly: true
 
