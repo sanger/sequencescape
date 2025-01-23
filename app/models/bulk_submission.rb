@@ -54,6 +54,15 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     self.encoding = attrs.fetch(:encoding, DEFAULT_ENCODING)
   end
 
+  # Returns the warnings collection for the BulkSubmission object.
+  # Initialises the warnings collection if it does not exist yet. The collection
+  # is used for showing informative warning messages to the user after the bulk
+  # submission has been processed successfully.
+  # @return [ActiveModel::Errors] the warnings collection
+  def warnings
+    @warnings ||= ActiveModel::Errors.new(self)
+  end
+
   include ManifestUtil
 
   # rubocop:todo Metrics/MethodLength
@@ -231,7 +240,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     'gigabases expected',
     'priority',
     'flowcell type',
-    'scrna core number of samples per pool',
+    'scrna core number of pools',
     'scrna core cells per chip well'
   ].freeze
 
@@ -312,6 +321,12 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     assets.map(&:samples).flatten.uniq.each { |sample| sample.studies << study unless sample.studies.include?(study) }
   end
 
+  # Assigns a value from the source object to the target object if the source value is present.
+  #
+  # @param [Hash] source_obj The source object containing the value to be assigned.
+  # @param [String, Symbol] source_key The key to look up the value in the source object.
+  # @param [Hash] target_obj The target object where the value will be assigned.
+  # @param [String, Symbol] target_key The key to assign the value in the target object.
   def assign_value_if_source_present(source_obj, source_key, target_obj, target_key)
     target_obj[target_key] = source_obj[source_key] if source_obj[source_key].present?
   end
@@ -329,7 +344,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
         ['gigabases expected', 'gigabases_expected'],
         ['primer panel', 'primer_panel_name'],
         ['flowcell type', 'requested_flowcell_type'],
-        ['scrna core number of samples per pool', 'number_of_samples_per_pool'],
+        ['scrna core number of pools', 'number_of_pools'],
         ['scrna core cells per chip well', 'cells_per_chip_well']
       ].each do |source_key, target_key|
         assign_value_if_source_present(details, source_key, request_options, target_key)

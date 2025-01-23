@@ -297,6 +297,7 @@ Metrics/AbcSize:
     - 'app/controllers/api/v2/transfers_controller.rb'
     - 'app/jobs/export_pool_xp_to_traction_job.rb'
     - 'app/sample_manifest_excel/sample_manifest_excel/manifest_type_list.rb'
+    - 'spec/models/bulk_submission_scrna_spec.rb'
 
 # Offense count: 1
 # Configuration parameters: CountComments, Max, CountAsOne.
@@ -856,6 +857,7 @@ RSpec/LetSetup:
     - 'spec/models/transfer_request_collection_spec.rb'
     - 'spec/requests/api/v2/comments_spec.rb'
     - 'spec/requests/api/v2/plates_spec.rb'
+    - 'spec/models/bulk_submission_scrna_spec.rb'
 
 # Offense count: 40
 # Configuration parameters: EnforcedStyle.
