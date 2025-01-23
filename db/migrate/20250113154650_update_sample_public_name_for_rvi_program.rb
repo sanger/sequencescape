@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 class UpdateSamplePublicNameForRviProgram < ActiveRecord::Migration[7.0]
- def up
+  def up
     execute(<<~SQLQUERY)
       UPDATE sample_metadata
       JOIN samples ON sample_metadata.sample_id = samples.id
