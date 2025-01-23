@@ -273,7 +273,7 @@ module Submission::ValidationsByTemplateName
         :spreadsheet,
         "Number of samples per pool for Study name '#{rows.first[headers.index(HEADER_STUDY_NAME)]}' " \
           "and Project name '#{rows.first[headers.index(HEADER_PROJECT_NAME)]}' " \
-          "is less than 5 or greater than 25 for pool number #{pool_number}"
+          "is less than 5 or greater than 25 for pool number #{pool_number + 1}"
       )
     end
   end
