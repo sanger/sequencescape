@@ -332,7 +332,10 @@ When /^I have an? (managed|open) study without a data release group called "(.*?
       data_release_study_type: DataReleaseStudyType.first,
       contaminated_human_dna: 'No',
       contains_human_dna: 'Yes',
-      commercially_available: 'No'
+      commercially_available: 'No',
+      ebi_library_strategy: 'WGS',
+      ebi_library_source: 'GENOMIC',
+      ebi_library_selection: 'PCR'
     }
   )
 end
