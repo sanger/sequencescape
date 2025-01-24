@@ -26,7 +26,7 @@ class Io::Study < Core::Io::Base
           study_metadata.commercially_available     => commercially_available
     study_metadata.data_release_study_type.name     => data_release_sort_of_study
            study_metadata.data_release_strategy     => data_release_strategy
-study_metadata.contaminated_human_data_access_group     => contaminated_human_data_access_group
+study_metadata.contaminated_human_data_access_group => contaminated_human_data_access_group
   '
   )
 end
