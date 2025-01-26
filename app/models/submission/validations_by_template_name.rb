@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# rubocop:todo Metrics/ModuleLength
 module Submission::ValidationsByTemplateName
   include Submission::ScrnaCoreCdnaPrepFeasibilityValidator
 
@@ -124,9 +123,9 @@ module Submission::ValidationsByTemplateName
     well_locations = rows.pluck(headers.index(HEADER_PLATE_WELLS))
 
     if plate?(barcodes, well_locations)
-      validate_for_plates(barcodes, well_locations, rows)
+      validate_for_plates(barcodes)
     elsif tube?(barcodes, well_locations)
-      validate_for_tubes(barcodes, rows)
+      validate_for_tubes(barcodes)
     else
       errors.add(
         :spreadsheet,
@@ -147,19 +146,10 @@ module Submission::ValidationsByTemplateName
   # @param well_locations [Array<String>] The well locations on the plate.
   # @param rows [Array<Array<String>>] The rows of CSV data to process.
   # @return [void]
-  # rubocop:disable Metrics/AbcSize
-  def validate_for_plates(barcodes, well_locations, rows)
+  def validate_for_plates(barcodes)
     plate = Plate.find_from_any_barcode(barcodes.uniq.first)
-    return if plate.nil?
-
-    wells = plate.wells.for_bulk_submission.located_at(well_locations)
-    total_number_of_samples_per_study_project = wells.map(&:samples).flatten.count.to_i
-    number_of_pools = rows.pluck(headers.index(HEADER_NUMBER_OF_POOLS)).uniq.first.to_i
-
-    validate_samples_per_pool(rows, total_number_of_samples_per_study_project, number_of_pools)
+    nil if plate.nil?
   end
-  # rubocop:enable Metrics/AbcSize
-
   # Validates the number of samples per pool for tubes.
   #
   # This method finds the tubes using the provided barcodes and calculates the total number of samples per study and
@@ -169,12 +159,8 @@ module Submission::ValidationsByTemplateName
   # @param barcodes [Array<String>] The barcodes of the tubes.
   # @param rows [Array<Array<String>>] The rows of CSV data to process.
   # @return [void]
-  def validate_for_tubes(barcodes, rows)
-    tubes = find_tubes(barcodes)
-    total_number_of_samples_per_study_project = calculate_total_samples(tubes)
-    number_of_pools = extract_number_of_pools(rows)
-
-    validate_samples_per_pool(rows, total_number_of_samples_per_study_project, number_of_pools)
+  def validate_for_tubes(barcodes)
+    find_tubes(barcodes)
   end
 
   # Finds the tubes using the provided barcodes.
@@ -247,36 +233,4 @@ module Submission::ValidationsByTemplateName
   def tube?(barcodes, well_locations)
     barcodes.present? && well_locations.all?(&:nil?)
   end
-
-  # Validates the number of samples per pool.
-  #
-  # This method calculates the number of samples per pool by dividing the total number of samples by the number of
-  # pools.
-  # It then iterates through each pool and checks if the number of samples per pool is within the allowed range.
-  # If the number of samples per pool is less than the minimum or greater than the maximum allowed, an error is added.
-  #
-  # @param rows [Array<Array<String>>] The rows of CSV data to process.
-  # @param total_samples [Integer] The total number of samples.
-  # @param number_of_pools [Integer] The number of pools.
-  # @return [void]
-  # rubocop:disable Metrics/MethodLength
-  def validate_samples_per_pool(rows, total_samples, number_of_pools)
-    int_division = total_samples / number_of_pools
-    remainder = total_samples % number_of_pools
-
-    number_of_pools.times do |pool_number|
-      samples_per_pool = int_division
-      samples_per_pool += 1 if pool_number < remainder
-      next unless samples_per_pool > SAMPLES_PER_POOL[:max] || samples_per_pool < SAMPLES_PER_POOL[:min]
-
-      errors.add(
-        :spreadsheet,
-        "Number of samples per pool for Study name '#{rows.first[headers.index(HEADER_STUDY_NAME)]}' " \
-          "and Project name '#{rows.first[headers.index(HEADER_PROJECT_NAME)]}' " \
-          "is less than 5 or greater than 25 for pool number #{pool_number + 1}"
-      )
-    end
-  end
-  # rubocop:enable Metrics/MethodLength
 end
-# rubocop:enable Metrics/ModuleLength
