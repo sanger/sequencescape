@@ -261,31 +261,46 @@ describe Well do
     end
   end
 
+  # TODO: Y24-383 - add assertions for final source and destination volumes
+
+  # rubocop:todo Layout/LineLength
+
+  # stree-ignore
   [
-    [1000, 10, 50, 50, 0, nil],
-    [1000, 10, 10, 10, 0, nil],
-    [1000, 10, 20, 10, 0, 10],
-    [100, 100, 50, 1, 9, nil],
-    [1000, 1000, 50, 1, 9, nil],
-    [5000, 1000, 50, 5, 5, nil],
-    [10, 100, 50, 1, 9, nil],
-    [1000, 250, 50, 4, 6, nil],
-    [10_000, 250, 50, 40, 0, nil],
-    [10_000, 250, 30, 30, 0, nil]
-    # rubocop:todo Metrics/ParameterLists
-  ].each do |target_ng, measured_concentration, measured_volume, stock_to_pick, buffer_added, current_volume|
-    # rubocop:enable Metrics/ParameterLists
+    { target_ng: 1000, measured_conc: 10, measured_vol: 50, min_vol:10, min_pick_vol: 1, source_pick_vol: 50, buffer_vol: 0, current_vol: nil },
+    { target_ng: 1000, measured_conc: 10, measured_vol: 10, min_vol:10, min_pick_vol: 1, source_pick_vol: 10, buffer_vol: 0, current_vol: nil },
+    { target_ng: 1000, measured_conc: 10, measured_vol: 20, min_vol:10, min_pick_vol: 1, source_pick_vol: 10, buffer_vol: 0, current_vol: 10 },
+    { target_ng: 100, measured_conc: 100, measured_vol: 50, min_vol:10, min_pick_vol: 1, source_pick_vol: 1, buffer_vol: 9, current_vol: nil },
+    { target_ng: 1000, measured_conc: 1000, measured_vol: 50, min_vol:10, min_pick_vol: 1, source_pick_vol: 1, buffer_vol: 9, current_vol: nil },
+    { target_ng: 5000, measured_conc: 1000, measured_vol: 50, min_vol:10, min_pick_vol: 1, source_pick_vol: 5, buffer_vol: 5, current_vol: nil },
+    { target_ng: 10, measured_conc: 100, measured_vol: 50, min_vol:10, min_pick_vol: 1, source_pick_vol: 1, buffer_vol: 9, current_vol: nil },
+    { target_ng: 1000, measured_conc: 250, measured_vol: 50, min_vol:10, min_pick_vol: 1, source_pick_vol: 4, buffer_vol: 6, current_vol: nil },
+    { target_ng: 10_000, measured_conc: 250, measured_vol: 50, min_vol:10, min_pick_vol: 1, source_pick_vol: 40, buffer_vol: 0, current_vol: nil },
+    { target_ng: 10_000, measured_conc: 250, measured_vol: 30, min_vol:10, min_pick_vol: 1, source_pick_vol: 30, buffer_vol: 0, current_vol: nil },
+    { target_ng: 1000, measured_conc: 70, measured_vol: 50, min_vol:10, min_pick_vol: 5, source_pick_vol: 14.29, buffer_vol: 0, current_vol: nil },# Y24-382: SQPD-10861 v14.29, b0.00
+    { target_ng: 200, measured_conc: 200, measured_vol: 1, min_vol:50, min_pick_vol: 5, source_pick_vol: 1, buffer_vol: 49, current_vol: nil }, # Y24-382: SQPD-10864 v1.00, b49.00
+    { target_ng: 9800, measured_conc: 98, measured_vol: 100, min_vol:50, min_pick_vol: 5, source_pick_vol: 50, buffer_vol: 0, current_vol: nil }, # Y24-382: SQPD-10866 v50.00, b0.00
+    { target_ng: 9800, measured_conc: 100, measured_vol: 100, min_vol:50, min_pick_vol: 5, source_pick_vol: 50, buffer_vol: 0, current_vol: nil } # Y24-382: SQPD-10868 v50.00, b0.00
+  ].each do |cherrypick|
+    # rubocop:enable Layout/LineLength
+    target_ng = cherrypick[:target_ng]
+    concentration = cherrypick[:measured_conc]
+    measured_volume = cherrypick[:measured_vol]
+    stock_to_pick = cherrypick[:source_pick_vol]
+    buffer_added = cherrypick[:buffer_vol]
+    current_volume = cherrypick[:current_vol]
+    minimum_volume = cherrypick[:min_vol]
+    robot_minimum_picking_volume = cherrypick[:min_pick_vol]
+
     context 'cherrypick by nano grams' do
       before do
         @source_well = create(:well)
         @target_well = create(:well)
-        minimum_volume = 10
         maximum_volume = 50
-        robot_minimum_picking_volume = 1.0
         @source_well.well_attribute.update!(
-          concentration: measured_concentration,
-          measured_volume: measured_volume,
-          current_volume: current_volume
+          concentration:,
+          measured_volume:,
+          current_volume:
         )
         @target_well.volume_to_cherrypick_by_nano_grams(
           minimum_volume,
@@ -296,15 +311,14 @@ describe Well do
         )
       end
 
-      # rubocop:disable Layout/LineLength
-      it "output stock_to_pick #{stock_to_pick} for a target of #{target_ng} with vol #{measured_volume} and conc #{measured_concentration}" do
-        expect(@target_well.well_attribute.picked_volume).to eq(stock_to_pick)
+      # rubocop:todo Layout/LineLength
+      it "output stock_to_pick #{stock_to_pick} for a target of #{target_ng} with vol #{measured_volume} and conc #{concentration}" do
+        expect(@target_well.well_attribute.picked_volume.round(2)).to eq(stock_to_pick)
       end
-
       # rubocop:enable Layout/LineLength
 
-      # rubocop:disable Layout/LineLength
-      it "output buffer #{buffer_added} for a target of #{target_ng} with vol #{measured_volume} and conc #{measured_concentration}" do
+      # rubocop:todo Layout/LineLength
+      it "output buffer #{buffer_added} for a target of #{target_ng} with vol #{measured_volume} and conc #{concentration}" do
         expect(@target_well.well_attribute.buffer_volume).to eq(buffer_added)
       end
       # rubocop:enable Layout/LineLength
@@ -419,6 +433,7 @@ describe Well do
       expect(well.get_buffer_volume + vol_to_pick).to eq(5.0)
     end
 
+    # TODO: Y24-383 - add assertions for final source and destination volumes
     [
       [100.0, 50.0, 100.0, 200.0, nil, 50.0, 50.0, 'Standard scenario, sufficient material, buffer and dna both added'],
       [
@@ -437,7 +452,8 @@ describe Well do
       [100.0, 5.0, 100.0, 2.0, 5.0, 5.0, 98.0, 'Less DNA than robot minimum pick'],
       [100.0, 50.0, 1.0, 200.0, 5.0, 100.0, 0.0, 'Low concentration, maximum DNA, no buffer'],
       [120.0, 50.0, 0, 60.0, 5.0, 60.0, 60.0, 'Zero concentration, with less volume than required'],
-      [120.0, 50.0, 0, 3.0, 5.0, 5.0, 117.0, 'Zero concentration, with less volume than even the minimum robot pick']
+      [120.0, 50.0, 0, 3.0, 5.0, 5.0, 117.0, 'Zero concentration, with less volume than even the minimum robot pick'],
+      [15.0, 50.0, 70.0, 50, 5.0, 10.7, 5.0, 'Y24-382: SQPD-10859 v10.71 b5.00']
       # rubocop:todo Metrics/ParameterLists,Layout/LineLength
     ].each do |final_volume_desired, final_conc_desired, source_concentration, source_volume, robot_minimum_pick_volume, source_volume_obtained, buffer_volume_obtained, scenario|
       # rubocop:enable Metrics/ParameterLists,Layout/LineLength
