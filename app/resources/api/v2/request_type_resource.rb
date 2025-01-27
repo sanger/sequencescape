@@ -27,9 +27,9 @@ module Api
 
       # Attributes
       attribute :uuid, readonly: true
-      attribute :name, readonly: true
-      attribute :key, readonly: true
-      attribute :for_multiplexing, readonly: true
+      attribute :name, write_once: true
+      attribute :key, write_once: true
+      attribute :for_multiplexing, write_once: true
 
       # Filters
 

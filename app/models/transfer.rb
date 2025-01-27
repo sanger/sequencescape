@@ -65,3 +65,15 @@ class Transfer < ApplicationRecord
     well.nil? or well.aliquots.empty? or well.failed? or well.cancelled?
   end
 end
+
+# Required for the descendants method to work when eager loading is off in test
+require_dependency 'transfer/between_plate_and_tubes'
+require_dependency 'transfer/between_plates_by_submission'
+require_dependency 'transfer/between_plates'
+require_dependency 'transfer/between_specific_tubes'
+require_dependency 'transfer/between_tubes_by_submission'
+require_dependency 'transfer/from_plate_to_specific_tubes_by_pool'
+require_dependency 'transfer/from_plate_to_specific_tubes'
+require_dependency 'transfer/from_plate_to_tube_by_multiplex'
+require_dependency 'transfer/from_plate_to_tube_by_submission'
+require_dependency 'transfer/from_plate_to_tube'

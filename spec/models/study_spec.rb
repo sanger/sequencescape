@@ -426,6 +426,58 @@ RSpec.describe Study do
     end
   end
 
+  describe '#data_release_prevention_options' do
+    subject { study.data_release_prevention_options }
+
+    let(:study) { create(:study) }
+
+    context 'when there is no existing data release prevention reason' do
+      it { is_expected.to eq Study::DATA_RELEASE_PREVENTION_REASONS }
+    end
+
+    context 'when there is an existing data release prevention reason' do
+      before { study.study_metadata.data_release_prevention_reason = 'Protecting IP - DAC approval required' }
+
+      it { is_expected.to eq Study::DATA_RELEASE_PREVENTION_REASONS }
+    end
+
+    context 'when there is an existing legacy data release prevention reason' do
+      before { study.study_metadata.data_release_prevention_reason = 'data validity' }
+
+      it { is_expected.to eq [*Study::DATA_RELEASE_PREVENTION_REASONS, 'data validity'] }
+    end
+  end
+
+  describe '#data_release_delay_options' do
+    subject { study.data_release_delay_options }
+
+    let(:study) { create(:study) }
+
+    context 'when there is no existing data release delay reason' do
+      it { is_expected.to eq Study::DATA_RELEASE_DELAY_REASONS_STANDARD }
+    end
+
+    context 'when there is an existing data release delay reason' do
+      before { study.study_metadata.data_release_delay_reason = 'Capacity building' }
+
+      it { is_expected.to eq Study::DATA_RELEASE_DELAY_REASONS_STANDARD }
+    end
+
+    context 'when there is an existing legacy data release delay reason' do
+      before { study.study_metadata.data_release_delay_reason = 'phd study' }
+
+      it { is_expected.to eq [*Study::DATA_RELEASE_DELAY_REASONS_STANDARD, 'phd study'] }
+    end
+
+    context 'when the data release delay options include assays' do
+      it 'includes the assay options' do
+        expect(study.data_release_delay_options(assay_option: true)).to eq(
+          [*Study::DATA_RELEASE_DELAY_REASONS_STANDARD, *Study::DATA_RELEASE_DELAY_REASONS_ASSAY]
+        )
+      end
+    end
+  end
+
   describe 'metadata' do
     let(:metadata) do
       {
@@ -445,7 +497,7 @@ RSpec.describe Study do
         data_release_strategy: 'open',
         data_release_standard_agreement: 'Yes',
         data_release_timing: 'standard',
-        data_release_delay_reason: 'phd study',
+        data_release_delay_reason: 'PhD study',
         data_release_delay_period: '3 months',
         bam: true,
         data_release_delay_other_comment: 'Data Release delay other comment',
@@ -456,9 +508,10 @@ RSpec.describe Study do
         ega_policy_accession_number: 'POL123456',
         array_express_accession_number: 'ARR123456',
         data_release_delay_approval: 'Yes',
-        data_release_prevention_reason: 'data validity',
+        data_release_prevention_reason: 'Other (please specify)',
         data_release_prevention_approval: 'Yes',
         data_release_prevention_reason_comment: 'Data Release prevention reason comment',
+        data_release_prevention_other_comment: 'Data Release prevention other comment',
         data_access_group: 'something',
         snp_study_id: 123_456,
         snp_parent_study_id: 123_456,
@@ -713,7 +766,10 @@ RSpec.describe Study do
         create(
           :study,
           study_metadata:
-            create(:study_metadata, metadata.merge(data_release_timing: 'delayed', data_release_delay_reason: 'other'))
+            create(
+              :study_metadata,
+              metadata.merge(data_release_timing: 'delayed', data_release_delay_reason: 'Other (please specify below)')
+            )
         )
       end
 
@@ -739,23 +795,6 @@ RSpec.describe Study do
       end
     end
 
-    context 'delayed for long time' do
-      let(:study) do
-        create(
-          :study,
-          study_metadata:
-            create(
-              :study_metadata,
-              metadata.merge(data_release_timing: 'delayed', data_release_delay_period: '6 months')
-            )
-        )
-      end
-
-      it 'will have a data_release_delay_approval' do
-        expect(study.study_metadata.data_release_delay_approval).to eq(metadata[:data_release_delay_approval])
-      end
-    end
-
     context 'never released' do
       let(:never_release_fields) do
         {
@@ -777,6 +816,12 @@ RSpec.describe Study do
       it 'will have a data_release_prevention_reason_comment' do
         expect(study.study_metadata.data_release_prevention_reason_comment).to eq(
           metadata[:data_release_prevention_reason_comment]
+        )
+      end
+
+      it 'will have a data_release_prevention_other_comment' do
+        expect(study.study_metadata.data_release_prevention_other_comment).to eq(
+          metadata[:data_release_prevention_other_comment]
         )
       end
 

@@ -4,64 +4,104 @@ require 'rails_helper'
 require './app/resources/api/v2/work_order_resource'
 
 RSpec.describe Api::V2::WorkOrderResource, type: :resource do
-  shared_examples_for 'a work order resource' do
-    subject { described_class.new(work_order, {}) }
+  subject(:resource) { described_class.new(work_order, {}) }
 
-    let(:work_order) { create(:work_order, requests:).reload }
+  let(:work_order) { create(:work_order, example_request:, requests:) }
+  let(:example_request) { requests.first }
+  let(:requests) { create_list(:customer_request, 1) }
 
-    it { is_expected.to have_attribute :order_type }
-    it { is_expected.to have_attribute :state }
-    it { is_expected.to have_attribute :at_risk }
-    it { is_expected.to have_attribute :options }
-    it { is_expected.to have_attribute :quantity }
+  # Model Name
+  it { is_expected.to have_model_name('WorkOrder') }
 
-    it { is_expected.not_to have_updatable_field(:uuid) }
-    it { is_expected.not_to have_updatable_field(:order_type) }
+  # Attributes
+  it { is_expected.to have_readwrite_attribute :at_risk }
+  it { is_expected.to have_readonly_attribute :options }
+  it { is_expected.to have_write_once_attribute :order_type }
+  it { is_expected.to have_write_once_attribute :quantity }
+  it { is_expected.to have_readwrite_attribute :state }
 
-    it { is_expected.to have_updatable_field(:state) }
-    it { is_expected.to have_updatable_field(:at_risk) }
-    it { is_expected.to have_updatable_field(:options) }
+  # Relationships
+  it { is_expected.to have_many(:samples).with_class_name('Sample') }
+  it { is_expected.to have_one(:source_receptacle) }
+  it { is_expected.to have_one(:study).with_class_name('Study') }
+  it { is_expected.to have_one(:project).with_class_name('Project') }
 
-    it { is_expected.to filter(:order_type) }
-    it { is_expected.to filter(:state) }
+  # Filters
+  it { is_expected.to filter(:order_type) }
+  it { is_expected.to filter(:state) }
 
-    it { is_expected.to have_many(:samples).with_class_name('Sample') }
-    it { is_expected.to have_one(:source_receptacle) }
-    it { is_expected.to have_one(:study).with_class_name('Study') }
-    it { is_expected.to have_one(:project).with_class_name('Project') }
+  # Field Methods
+  describe '#quantity' do
+    subject(:quantity) { resource.quantity }
 
-    it 'renders relevant metadata' do
-      expect(subject.options).to eq(expected_metadata)
+    context 'with a single request' do
+      it { is_expected.to eq(number: 1, unit_of_measurement: 'flowcells') }
     end
 
-    it 'renders the expected quantity' do
-      expect(subject.quantity).to eq(number: number_of_requests, unit_of_measurement: 'flowcells')
+    context 'with multiple requests' do
+      let(:requests) { create_list(:customer_request, 3) }
+
+      it { is_expected.to eq(number: 3, unit_of_measurement: 'flowcells') }
     end
   end
 
-  context 'a basic work_order' do
-    let(:number_of_requests) { 1 }
-    let(:requests) { create_list(:customer_request, number_of_requests) }
-    let(:expected_metadata) { { 'read_length' => 76 } }
+  describe '#study_id' do
+    subject(:study_id) { resource.study_id }
 
-    it_behaves_like 'a work order resource'
+    context 'with an example request with study ID 42' do
+      let(:example_request) { create(:customer_request, initial_study_id: 42) }
+
+      it { is_expected.to eq(42) }
+    end
   end
 
-  context 'a work_order with multiple requests' do
-    let(:number_of_requests) { 3 }
-    let(:requests) { create_list(:customer_request, number_of_requests) }
-    let(:expected_metadata) { { 'read_length' => 76 } }
+  describe '#project_id' do
+    subject(:project_id) { resource.project_id }
 
-    it_behaves_like 'a work order resource'
+    context 'with an example request with project ID 42' do
+      let(:example_request) { create(:customer_request, initial_project_id: 42) }
+
+      it { is_expected.to eq(42) }
+    end
   end
 
-  context 'a sequencing work_order' do
-    let(:number_of_requests) { 1 }
-    let(:requests) { [create(:sequencing_request)] }
-    let(:expected_metadata) do
-      { 'fragment_size_required_to' => '21', 'fragment_size_required_from' => '1', 'read_length' => 76 }
+  describe '#source_receptacle_id' do
+    subject(:source_receptacle_id) { resource.source_receptacle_id }
+
+    context 'with an example request with asset ID 42' do
+      let(:example_request) { create(:customer_request, asset_id: 42) }
+
+      it { is_expected.to eq(42) }
+    end
+  end
+
+  describe '#order_type' do
+    subject(:order_type) { resource.order_type }
+
+    context 'with a work order type named "example"' do
+      let(:work_order) { create(:work_order, work_order_type: create(:work_order_type, name: 'example')) }
+
+      it { is_expected.to eq('example') }
+    end
+  end
+
+  describe '#options' do
+    subject(:options) { resource.options }
+
+    context 'with a customer request' do
+      it { is_expected.to eq('read_length' => 76) }
     end
 
-    it_behaves_like 'a work order resource'
+    context 'with a sequencing request' do
+      let(:requests) { create_list(:sequencing_request, 1) }
+
+      it do
+        is_expected.to eq(
+          'fragment_size_required_from' => '1',
+          'fragment_size_required_to' => '21',
+          'read_length' => 76
+        )
+      end
+    end
   end
 end

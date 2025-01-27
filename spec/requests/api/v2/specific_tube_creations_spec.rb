@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
-require './spec/requests/api/v2/shared_examples/post_requests'
+require './spec/requests/api/v2/shared_examples/requests'
 
 describe 'Specific Tube Creations API', with: :api_v2 do
   let(:model_class) { SpecificTubeCreation }
@@ -67,23 +67,9 @@ describe 'Specific Tube Creations API', with: :api_v2 do
       end
 
       context 'with included relationships' do
-        context 'with children' do
-          let(:related_name) { 'children' }
-
-          it_behaves_like 'a POST request including a has_many relationship'
-        end
-
-        context 'with parents' do
-          let(:related_name) { 'parents' }
-
-          it_behaves_like 'a POST request including a has_many relationship'
-        end
-
-        context 'with user' do
-          let(:related_name) { 'user' }
-
-          it_behaves_like 'a POST request including a has_one relationship'
-        end
+        it_behaves_like 'a GET request including a has_many relationship', 'children'
+        it_behaves_like 'a GET request including a has_many relationship', 'parents'
+        it_behaves_like 'a GET request including a has_one relationship', 'user'
       end
     end
   end
@@ -231,7 +217,7 @@ describe 'Specific Tube Creations API', with: :api_v2 do
 
     context 'with a read-only attribute in the payload' do
       context 'with uuid' do
-        let(:disallowed_attribute) { 'uuid' }
+        let(:disallowed_value) { 'uuid' }
         let(:payload) do
           {
             data: {
@@ -241,7 +227,7 @@ describe 'Specific Tube Creations API', with: :api_v2 do
           }
         end
 
-        it_behaves_like 'a POST request with a disallowed attribute'
+        it_behaves_like 'a POST request with a disallowed value'
       end
     end
 

@@ -25,6 +25,17 @@ module Api
       #   @note This attribute is required.
       attribute :direction
 
+      # @!attribute [w] enforce_uniqueness
+      #   A flag indicating whether to set `enforce_uniqueness` on {TagLayout::TemplateSubmission}s when a template is
+      #   used to create the TagLayout.
+      #   @param value [Boolean] Whether to enforce uniqueness within template submissions.
+      attribute :enforce_uniqueness, writeonly: true
+
+      def enforce_uniqueness=(value)
+        # Do not update the model.
+        # This value is used by the controller if a template UUID was given and is not used by the TagLayout directly.
+      end
+
       # @!attribute [rw] initial_tag
       #   An offset for the tag set indicating which tag to start with in the layout.
       #   @return [Integer]
@@ -37,7 +48,7 @@ module Api
       #   @param value [String] The UUID of the {Plate} this tag layout applies to.
       #   @return [Void]
       #   @see #plate
-      attribute :plate_uuid
+      attribute :plate_uuid, writeonly: true
 
       def plate_uuid=(value)
         @model.plate = Plate.with_uuid(value).first
@@ -64,7 +75,7 @@ module Api
       #   @param value [String] The UUID of the {TagGroup} used in this tag layout.
       #   @return [Void]
       #   @see #tag_group
-      attribute :tag_group_uuid
+      attribute :tag_group_uuid, writeonly: true
 
       def tag_group_uuid=(value)
         @model.tag_group = TagGroup.with_uuid(value).first
@@ -77,10 +88,22 @@ module Api
       #   @param value [String] The UUID of the second {TagGroup} used in this tag layout.
       #   @return [Void]
       #   @see #tag2_group
-      attribute :tag2_group_uuid
+      attribute :tag2_group_uuid, writeonly: true
 
       def tag2_group_uuid=(value)
         @model.tag2_group = TagGroup.with_uuid(value).first
+      end
+
+      # @!attribute [w] tag_layout_template_uuid
+      #   @param value [String] the UUID of a TagLayoutTemplate to use for attributes of this TagLayout resource.
+      #     Providing this UUID while also providing values for attributes and relationships which can be extracted from
+      #     a {TagLayoutTemplateResource} will generate an error indicating that the UUID should not have been provided.
+      attribute :tag_layout_template_uuid, writeonly: true
+
+      def tag_layout_template_uuid=(value)
+        # Do not update the model.
+        # This value is used by the controller to apply request data to the TagLayout from the indicated template.
+        # It is not stored on the Transfer model.
       end
 
       # @!attribute [rw] tags_per_well
@@ -97,7 +120,7 @@ module Api
       #   @param value [String] The UUID of the {User} who initiated this state change.
       #   @return [Void]
       #   @see #user
-      attribute :user_uuid
+      attribute :user_uuid, writeonly: true
 
       def user_uuid=(value)
         @model.user = User.with_uuid(value).first
@@ -142,16 +165,6 @@ module Api
       #   @return [Api::V2::UserResource] The user who initiated this state change.
       #   @note This relationship is required.
       has_one :user
-
-      def self.creatable_fields(context)
-        # UUID is set by the system.
-        super - %i[uuid]
-      end
-
-      def fetchable_fields
-        # UUIDs for relationships are not fetchable. They should be accessed via the relationship itself.
-        super - %i[plate_uuid tag_group_uuid tag2_group_uuid user_uuid]
-      end
     end
   end
 end

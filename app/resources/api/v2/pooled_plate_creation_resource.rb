@@ -22,7 +22,7 @@ module Api
       # @!attribute [w] child_purpose_uuid
       #   @param value [String] The UUID of a child purpose to use in the creation of the child plate.
       #   @return [Void]
-      attribute :child_purpose_uuid
+      attribute :child_purpose_uuid, writeonly: true
 
       def child_purpose_uuid=(value)
         @model.child_purpose = Purpose.with_uuid(value).first
@@ -35,7 +35,7 @@ module Api
       #   @param value [Array<String>] The UUIDs of labware that will be the parents for the created plate.
       #   @return [Void]
       #   @see #parents
-      attribute :parent_uuids
+      attribute :parent_uuids, writeonly: true
 
       def parent_uuids=(value)
         @model.parents = value.map { |uuid| Labware.with_uuid(uuid).first }
@@ -48,14 +48,14 @@ module Api
       #   @param value [String] The UUID of the user who initiated the creation of this pooled plate.
       #   @return [Void]
       #   @see #user
-      attribute :user_uuid
+      attribute :user_uuid, writeonly: true
 
       def user_uuid=(value)
         @model.user = User.with_uuid(value).first
       end
 
       # @!attribute [r] uuid
-      #   @return [String] The UUID of the state change.
+      #   @return [String] The UUID of the pooled plate creation.
       attribute :uuid, readonly: true
 
       ###
@@ -64,7 +64,7 @@ module Api
 
       # @!attribute [r] child
       #   @return [PlateResource] The child plate which was created.
-      has_one :child, class_name: 'Plate'
+      has_one :child, class_name: 'Plate', readonly: true
 
       # @!attribute [rw] parents
       #   Setting this relationship alongside the `parent_uuids` attribute will override the attribute value.
@@ -77,17 +77,6 @@ module Api
       #   @return [UserResource] The user who initiated the creation of the pooled plate.
       #   @note This relationship is required.
       has_one :user
-
-      def self.creatable_fields(context)
-        # UUID is set by the system.
-        super - %i[uuid]
-      end
-
-      def fetchable_fields
-        # The tube_attributes attribute is only available during resource creation.
-        # UUIDs for relationships are not fetchable. They should be accessed via the relationship itself.
-        super - %i[child_purpose_uuid parent_uuids user_uuid]
-      end
     end
   end
 end

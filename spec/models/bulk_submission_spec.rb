@@ -2,6 +2,36 @@
 
 require 'rails_helper'
 
+shared_examples 'an invalid scRNA Bulk Submission' do |_, tube_count|
+  let(:request_types) { create_list(:sequencing_request_type, 2) }
+  let!(:tubes) do
+    create_list(:phi_x_stock_tube, tube_count) do |tube, i|
+      tube.barcodes << Barcode.new(format: :sanger_ean13, barcode: "NT#{i + 1}")
+    end
+  end
+  let!(:study) { create(:study, name: 'Test Study') }
+  let!(:library_type) { create(:library_type, name: 'Standard') }
+
+  let(:submission_template_hash) do
+    {
+      name: 'Limber-Htp - scRNA Core cDNA Prep GEM-X 5p',
+      submission_class_name: 'LinearSubmission',
+      product_catalogue: 'Generic',
+      submission_parameters: {
+        request_options: {
+        },
+        request_types: request_types.map(&:key)
+      }
+    }
+  end
+
+  before { SubmissionSerializer.construct!(submission_template_hash) }
+
+  it 'is invalid' do
+    expect { subject.process }.to raise_error(ActiveRecord::RecordInvalid)
+  end
+end
+
 describe BulkSubmission, with: :uploader do
   subject { described_class.new(spreadsheet: submission_file, encoding: encoding) }
 
@@ -259,6 +289,7 @@ describe BulkSubmission, with: :uploader do
           }
         }
       end
+
       let(:spreadsheet_filename) { 'scrna_additional_validations_valid.csv' }
 
       before { SubmissionSerializer.construct!(submission_template_hash) }
@@ -275,32 +306,6 @@ describe BulkSubmission, with: :uploader do
       it 'generates submissions with one order' do
         subject.process
         expect(generated_submission.orders.count).to eq(1)
-      end
-    end
-
-    context 'when invalid for scRNA template on samples per pool' do
-      let(:submission_template_hash) do
-        {
-          name: 'Limber-Htp - scRNA Core cDNA Prep GEM-X 5p',
-          submission_class_name: 'LinearSubmission',
-          product_catalogue: 'Generic',
-          submission_parameters: {
-            request_options: {
-            },
-            request_types: request_types.map(&:key)
-          }
-        }
-      end
-      let(:spreadsheet_filename) { 'scrna_additional_validations_invalid_samples_per_pool.csv' }
-
-      before { SubmissionSerializer.construct!(submission_template_hash) }
-
-      it 'raises an error and sets an error message' do
-        expect { subject.process }.to raise_error(ActiveRecord::RecordInvalid)
-        expect(subject.errors.messages[:spreadsheet][0]).to eq(
-          "Inconsistent values for column 'scrna core number of samples per pool' for Study name 'abc123_study' " \
-            "and Project name 'Test project', all rows for a specific study and project must have the same value"
-        )
       end
     end
 
@@ -327,6 +332,97 @@ describe BulkSubmission, with: :uploader do
           "Inconsistent values for column 'scrna core cells per chip well' for Study name 'abc123_study' " \
             "and Project name 'Test project', all rows for a specific study and project must have the same value"
         )
+      end
+    end
+
+    context 'when an scRNA Bulk Submission for plate' do
+      let!(:study) { create(:study, name: 'Test Study') }
+      let!(:plate) { create(:plate_with_tagged_wells, sample_count: 96, barcode: 'SQPD-12345') }
+      let!(:asset_group) { create(:asset_group, name: 'assetgroup', study: study, assets: plate.wells) }
+      let!(:library_type) { create(:library_type, name: 'Standard') }
+      let(:spreadsheet_filename) { 'scRNA_bulk_submission.csv' }
+      let(:submission_template_hash) do
+        {
+          name: 'Limber-Htp - scRNA Core cDNA Prep GEM-X 5p',
+          submission_class_name: 'LinearSubmission',
+          product_catalogue: 'Generic',
+          submission_parameters: {
+            request_options: {
+            },
+            request_types: request_types.map(&:key)
+          }
+        }
+      end
+
+      before do
+        SubmissionSerializer.construct!(submission_template_hash)
+        # Assign a donor id to each sample
+        plate.wells.each_with_index do |well, i|
+          well.aliquots.first.sample.sample_metadata.update!(donor_id: "donor_#{i + 1}")
+        end
+      end
+
+      it 'is valid' do
+        expect(subject).to be_valid
+      end
+
+      it 'generates submissions when processed' do
+        subject.process
+        expect(number_submissions_created).to eq(1)
+      end
+    end
+
+    context 'when an scRNA Bulk Submission for tubes' do
+      let!(:request_types) { [create(:pbmc_pooling_customer_request_type)] }
+      # Create a list of tubes with samples
+      let!(:tubes) do
+        Array.new(6) do |index|
+          create(:sample_tube).tap do |tube|
+            tube.barcodes << Barcode.new(format: :sanger_ean13, barcode: "NT#{index + 1}")
+            tube.samples.first.sample_metadata.update!(donor_id: "donor_#{index}")
+          end
+        end
+      end
+      let!(:study) { create(:study, name: 'Test Study') }
+      let!(:library_type) { create(:library_type, name: 'Standard') }
+
+      let(:spreadsheet_filename) { 'scRNA_bulk_submission_tube.csv' }
+      let(:submission_template_hash) do
+        {
+          name: 'Limber-Htp - scRNA Core cDNA Prep GEM-X 5p',
+          submission_class_name: 'LinearSubmission',
+          product_catalogue: 'Generic',
+          submission_parameters: {
+            request_options: {
+            },
+            request_types: request_types.map(&:key)
+          }
+        }
+      end
+
+      before { SubmissionSerializer.construct!(submission_template_hash) }
+
+      it 'is valid' do
+        expect(subject).to be_valid
+      end
+
+      it 'generates submissions when processed' do
+        subject.process
+        expect(number_submissions_created).to eq(1)
+      end
+    end
+
+    context 'when an scRNA Bulk Submission given with invalid number of samples per pool' do
+      context 'number of samples per pool < 5' do
+        let(:spreadsheet_filename) { 'scRNA_bulk_submission_tube_invalid.csv' }
+
+        include_examples 'an invalid scRNA Bulk Submission', 'scRNA_bulk_submission_tube_invalid', 4
+      end
+
+      context 'number of samples per pool > 25' do
+        let(:spreadsheet_filename) { 'scRNA_bulk_submission_tube_invalid_greater.csv' }
+
+        include_examples 'an invalid scRNA Bulk Submission', 'scRNA_bulk_submission_tube_invalid_greater', 32
       end
     end
   end
