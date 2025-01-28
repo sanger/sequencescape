@@ -78,6 +78,12 @@ module Cherrypick::VolumeByNanoGrams
   private
 
   def calculate_buffer_volume(final_volume_desired, volume_so_far, robot_minimum_picking_volume)
+    puts("=====  TEST Volumes =====")
+    
+    puts("final_volume_desired: #{final_volume_desired}")
+    puts("volume_so_far: #{volume_so_far}")
+    puts("robot_minimum_picking_volume: #{robot_minimum_picking_volume}")
+
     buffer_to_add = final_volume_desired - volume_so_far
     return 0 if buffer_to_add <= 0
 
