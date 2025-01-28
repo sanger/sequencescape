@@ -1,6 +1,6 @@
 <div id='pick_by_nano_grams'>
 
-  <%= render partial: 'form_group_radio', locals: { field_name: 'cherrypick', category: 'action', field_value: 'nano_grams', label_text: 'Pick by amount (ng)' } %>
+  <%= render partial: 'form_group_radio', locals: { field_name: 'cherrypick', category: 'strategy', field_value: 'nano_grams', label_text: 'Pick by amount (ng)' } %>
 
   <%= fields_for :nano_grams do |ff| %>
     <%= render partial: 'form_group_text', locals: { field_name: 'total_nano_grams', label_text: 'Quantity to pick (ng)', field_value: '1000' } %>

@@ -88,7 +88,7 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
       @nano_grams_robot_minimum_picking_volume = params[:nano_grams][:robot_minimum_picking_volume]
     end
     @micro_litre_volume_required = params[:micro_litre][:volume_required] if params[:micro_litre]
-    @cherrypick_action = params[:cherrypick][:action]
+    @cherrypick_strategy = params[:cherrypick][:strategy]
     @plate_purpose_id = params[:plate_purpose_id]
     @fluidigm_barcode = params[:fluidigm_plate]
   end
@@ -114,9 +114,9 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
       plate_purpose = PlatePurpose.find(params[:plate_purpose_id])
       asset_shape_id = plate_purpose.asset_shape_id
 
-      # Configure the cherrypicking action based on the parameters
+      # Configure the cherrypicking strategy based on the parameters
       cherrypicker =
-        case params[:cherrypick_action]
+        case params[:cherrypick_strategy]
         when 'nano_grams_per_micro_litre'
           create_nano_grams_per_micro_litre_picker(params[:nano_grams_per_micro_litre])
         when 'nano_grams'
@@ -124,7 +124,7 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
         when 'micro_litre'
           create_micro_litre_picker(params[:micro_litre])
         else
-          raise StandardError, "Invalid cherrypicking type #{params[:cherrypick_action]}"
+          raise StandardError, "Invalid cherrypicking type #{params[:cherrypick_strategy]}"
         end
 
       # We can preload the well locations so that we can do efficient lookup later.

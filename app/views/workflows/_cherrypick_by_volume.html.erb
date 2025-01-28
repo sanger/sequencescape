@@ -1,12 +1,12 @@
-<%# locals: (hide_action_option: false) -%> <%# <-- this is Rails 7.1 magic %>
-<% hide_action_option ||= false %>
+<%# locals: (hide_strategy_option: false) -%> <%# <-- this is Rails 7.1 magic %>
+<% hide_strategy_option ||= false %>
 
 <div id='pick_by_micro_litre'>
 
-  <% if hide_action_option %>
-    <%= hidden_field("cherrypick", "action", value: "micro_litre") %>
+  <% if hide_strategy_option %>
+    <%= hidden_field("cherrypick", "strategy", value: "micro_litre") %>
   <% else %>
-    <%= render partial: 'form_group_radio', locals: { field_name: 'cherrypick', category: 'action', field_value: 'micro_litre', label_text: 'Pick by volume (µl)' } %>
+    <%= render partial: 'form_group_radio', locals: { field_name: 'cherrypick', category: 'strategy', field_value: 'micro_litre', label_text: 'Pick by volume (µl)' } %>
   <% end %>
 
   <%= fields_for :micro_litre do |ff|%>
