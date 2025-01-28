@@ -37,7 +37,7 @@ module Api
       attribute :updated_at, readonly: true
       attribute :used_tags, write_once: true
       attribute :lanes_of_sequencing, write_once: true
-      attribute :is_multiplexed, readonly: true
+      attribute :multiplexed?, readonly: true
 
       # Filters
       filter :uuid, apply: ->(records, value, _options) { records.with_uuid(value) }
@@ -50,9 +50,7 @@ module Api
       end
 
       # Added for use in Limber Presenters to decide whether to show the pooling tab
-      def is_multiplexed
-        _model.multiplexed?
-      end
+      delegate :multiplexed?, to: :_model
 
       # Class method overrides
     end

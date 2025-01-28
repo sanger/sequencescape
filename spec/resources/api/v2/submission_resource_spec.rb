@@ -18,7 +18,7 @@ RSpec.describe Api::V2::SubmissionResource, type: :resource do
     expect(resource).to have_attribute :created_at
     expect(resource).to have_attribute :updated_at
     expect(resource).to have_attribute :lanes_of_sequencing
-    expect(resource).to have_attribute :is_multiplexed
+    expect(resource).to have_attribute :multiplexed?
     expect(resource).not_to have_updatable_field(:id)
     expect(resource).not_to have_updatable_field(:uuid)
     expect(resource).not_to have_updatable_field(:state)
@@ -44,12 +44,12 @@ RSpec.describe Api::V2::SubmissionResource, type: :resource do
     end
   end
 
-  describe '#is_multiplexed' do
+  describe '#multiplexed?' do
     context 'when the submission is multiplexed' do
       before { allow(resource_model).to receive(:multiplexed?).and_return(true) }
 
       it 'returns whether the submission is multiplexed' do
-        expect(resource.is_multiplexed).to eq true
+        expect(resource.multiplexed?).to be true
       end
     end
 
@@ -57,7 +57,7 @@ RSpec.describe Api::V2::SubmissionResource, type: :resource do
       before { allow(resource_model).to receive(:multiplexed?).and_return(false) }
 
       it 'returns whether the submission is multiplexed' do
-        expect(resource.is_multiplexed).to eq false
+        expect(resource.multiplexed?).to be false
       end
     end
   end
