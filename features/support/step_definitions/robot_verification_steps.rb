@@ -109,6 +109,8 @@ Then /^the downloaded robot file for batch "([^"]*)" and plate "([^"]*)" is$/ do
   generated_lines.each_with_index do |line, index|
     assert_equal tecan_file_lines[index], line, "Mismatch on line #{index + 2} in #{generated_file}"
   end
+
+  DownloadHelpers.remove_downloads
 end
 
 Then /^the source plates should be sorted by bed:$/ do |expected_results_table|
