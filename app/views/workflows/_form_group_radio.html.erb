@@ -1,8 +1,7 @@
 <% options ||= {} %>
-<% field_id = [field_name, category, field_value].join('_') %>
 
 <div class="form-group form-row">
-  <%= label_tag(field_id, label_text, class: 'col-12 col-lg-8 col-form-label') %>
+  <%= label(field_name, category, label_text, value: field_value, class: 'col-12 col-lg-8 col-form-label') %>
   <div class="col-12 col-lg-4">
     <%= radio_button(field_name, category, field_value, class: 'form-control text-right', **options) %>
   </div>
