@@ -46,9 +46,7 @@ RSpec.describe Api::V2::SubmissionResource, type: :resource do
 
   describe '#is_multiplexed' do
     context 'when the submission is multiplexed' do
-      before do
-        allow(resource_model).to receive(:multiplexed?).and_return(true)
-      end
+      before { allow(resource_model).to receive(:multiplexed?).and_return(true) }
 
       it 'returns whether the submission is multiplexed' do
         expect(resource.is_multiplexed).to eq true
@@ -56,9 +54,7 @@ RSpec.describe Api::V2::SubmissionResource, type: :resource do
     end
 
     context 'when the submission is not multiplexed' do
-      before do
-        allow(resource_model).to receive(:multiplexed?).and_return(false)
-      end
+      before { allow(resource_model).to receive(:multiplexed?).and_return(false) }
 
       it 'returns whether the submission is multiplexed' do
         expect(resource.is_multiplexed).to eq false
