@@ -13,7 +13,7 @@ Given(
   step('I follow "Select Plate Template"')
   step('I select "testtemplate" from "Plate Template"')
   step('I select "Infinium 670k" from "Output plate purpose"')
-  step('I fill in "nano_grams_per_micro_litre_volume_required" with "13"')
+  fill_in('nano_grams_per_micro_litre_volume_required', with: "13", fill_options: { clear: :backspace })
   step('I fill in "nano_grams_per_micro_litre_concentration_required" with "50"')
   fill_in('nano_grams_per_micro_litre_robot_minimum_picking_volume', with: minimum_robot_pick)
   step('I press "Next step"')
