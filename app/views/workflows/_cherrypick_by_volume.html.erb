@@ -1,5 +1,8 @@
-<%# locals: (hide_strategy_option: false) -%> <%# <-- this is Rails 7.1 magic %>
-<% hide_strategy_option ||= false %>
+<%# locals: (default_volume_value: '', hide_strategy_option: false) -%> <%# <-- this is Rails 7.1 magic %>
+<%
+  hide_strategy_option ||= false
+  default_volume_value ||= ''
+%>
 
 <div id='pick_by_micro_litre'>
 
@@ -10,7 +13,7 @@
   <% end %>
 
   <%= fields_for :micro_litre do |ff|%>
-    <%= render partial: 'form_group_text', locals: { field_name: 'volume_required', label_text: 'Volume (µl)', field_value: '13' } %>
+    <%= render partial: 'form_group_text', locals: { field_name: 'volume_required', label_text: 'Volume (µl)', field_value: default_volume_value } %>
   <% end %>
 
 </div>
