@@ -45,10 +45,14 @@ shared_examples 'a cherrypicking procedure' do
 
         case layout_volume_option
         when 'Pick by  volume (µl)'
-          fill_in('micro_litre_volume_required', with: '13')
+          within('#pick_by_micro_litre') do
+            fill_in('volume_required', with: '13')
+          end
         when 'Pick by concentration (ng/µl)'
-          fill_in('Volume Required', with: '65')
-          within('#pick_by_nano_grams_per_micro_litre') { fill_in('Robot Minimum Picking Volume', with: '1.0') }
+          within('#pick_by_nano_grams_per_micro_litre') do
+            fill_in('Volume Required', with: '65')
+            fill_in('Robot Minimum Picking Volume', with: '1.0')
+          end
         when 'Pick by amount (ng)'
           within('#pick_by_nano_grams') do
             fill_in('Robot Minimum Picking Volume', with: '2.0')
