@@ -159,6 +159,7 @@ GEM
       bigdecimal
       rexml
     crass (1.0.6)
+    csv (3.3.2)
     cucumber (9.1.2)
       builder (~> 3.2, >= 3.2.4)
       cucumber-ci-environment (~> 9.2, >= 9.2.0)
@@ -205,6 +206,7 @@ GEM
     diff-lcs (1.5.1)
     docile (1.4.0)
     domain_name (0.6.20240107)
+    drb (2.2.1)
     dry-cli (1.0.0)
     erubi (1.13.1)
     exception_notification (4.5.0)
@@ -284,6 +286,7 @@ GEM
     multi_test (1.1.0)
     mustermann (3.0.0)
       ruby2_keywords (~> 0.0.1)
+    mutex_m (0.3.0)
     mysql2 (0.5.6)
     net-imap (0.5.5)
       date
@@ -578,11 +581,13 @@ DEPENDENCIES
   carrierwave
   caxlsx
   configatron
+  csv (~> 3.3)
   cucumber-rails
   cucumber_github_formatter
   daemons
   database_cleaner
   delayed_job_active_record
+  drb (~> 2.2)
   exception_notification
   factory_bot_rails
   flipper (~> 0.25.0)
@@ -599,6 +604,7 @@ DEPENDENCIES
   minitest-profiler
   mocha
   multi_json
+  mutex_m (~> 0.3.0)
   mysql2
   net-ldap
   nokogiri
