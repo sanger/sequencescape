@@ -143,8 +143,6 @@ module Submission::ValidationsByTemplateName
   # Finally, it validates the number of samples per pool.
   #
   # @param barcodes [Array<String>] The barcodes of the plates.
-  # @param well_locations [Array<String>] The well locations on the plate.
-  # @param rows [Array<Array<String>>] The rows of CSV data to process.
   # @return [void]
   def validate_for_plates(barcodes)
     plate = Plate.find_from_any_barcode(barcodes.uniq.first)
@@ -157,7 +155,6 @@ module Submission::ValidationsByTemplateName
   # It then retrieves the number of pools from the rows and validates the number of samples per pool.
   #
   # @param barcodes [Array<String>] The barcodes of the tubes.
-  # @param rows [Array<Array<String>>] The rows of CSV data to process.
   # @return [void]
   def validate_for_tubes(barcodes)
     find_tubes(barcodes)
