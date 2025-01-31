@@ -163,10 +163,16 @@ Docker images are dependent on application dependencies which can change between
 Two scripts are provided to help with this process:
 
 - `./docker_build_and_tag_branch.sh` builds a Docker image from the current branch and tags it with the branch name.
+
   Accepts environment variables:
+
   - `CHIPSET` - the chipset to build the image for
+  - `RESET_DATABASE` - whether to reset the database on startup
+
 - `./docker_switch_branch.sh` runs a Docker container using the image tagged with the branch name.
+
   Accepts environment variables:
+
   - `RESET_DATABASE` - whether to reset the database on startup
   - `PRECOMPILE_ASSETS` - whether to precompile assets on startup
   - `USE_POLLING_FILE_WATCHER` - whether to use polling (or event) file watcher on startup

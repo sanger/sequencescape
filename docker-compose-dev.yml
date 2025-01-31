@@ -11,7 +11,7 @@ services:
       - DBHOST=host.docker.internal
       - DBPORT=3306
       - RESET_DATABASE=${RESET_DATABASE:-false}
-      - USE_POLLING_FILE_WATCHER=${$USE_POLLING_FILE_WATCHER:- false}
+      - USE_POLLING_FILE_WATCHER=${USE_POLLING_FILE_WATCHER:-false}
       - PRECOMPILE_ASSETS=${PRECOMPILE_ASSETS:-true}
     entrypoint: "bash -c ./entrypoint.sh"
     ports:
@@ -31,7 +31,7 @@ services:
     environment:
       - DBHOST=host.docker.internal
       - DBPORT=3306
-      - USE_POLLING_FILE_WATCHER=$USE_POLLING_FILE_WATCHER
+      - USE_POLLING_FILE_WATCHER=${USE_POLLING_FILE_WATCHER:-false}
     entrypoint: "bash -c 'bundle exec rake jobs:work'"
     healthcheck:
       test: "ps -ef | grep -q jobs"
