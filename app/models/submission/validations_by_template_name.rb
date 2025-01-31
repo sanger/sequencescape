@@ -40,7 +40,6 @@ module Submission::ValidationsByTemplateName
     when SCRNA_CORE_CDNA_PREP_GEM_X_5P
       validate_consistent_column_value(HEADER_NUMBER_OF_POOLS)
       validate_consistent_column_value(HEADER_CELLS_PER_CHIP_WELL)
-      validate_samples_per_pool_for_labware
       validate_scrna_core_cdna_prep_feasibility
     end
   end
@@ -72,21 +71,6 @@ module Submission::ValidationsByTemplateName
     end
   end
 
-  # Validates the number of samples per pool for labware.
-  #
-  # This method checks if the headers for barcode and plate wells are present.
-  # If they are, it groups the rows by study and project, and processes each group.
-  # The processing involves determining if the labware is a plate or tube and
-  # validating the number of samples per pool accordingly.
-  #
-  # @return [void]
-  def validate_samples_per_pool_for_labware
-    return if headers.index(HEADER_BARCODE).nil? && headers.index(HEADER_PLATE_WELLS).nil?
-
-    grouped_rows = group_rows_by_study_and_project
-    grouped_rows.each_value { |rows| process_rows(rows) }
-  end
-
   private
 
   # Validates that the specified column has unique values for each study and project.
@@ -108,56 +92,6 @@ module Submission::ValidationsByTemplateName
       "Inconsistent values for column '#{column_header}' for Study name '#{study_project[0]}' and Project name " \
         "'#{study_project[1]}', all rows for a specific study and project must have the same value"
     )
-  end
-
-  # Processes the rows to determine the type of labware and validate accordingly.
-  #
-  # This method extracts the barcodes and well locations from the rows and determines if the labware is a plate or tube.
-  # It then calls the appropriate validation method based on the labware type.
-  #
-  # @param rows [Array<Array<String>>] The rows of CSV data to process.
-  # @return [void]
-  # rubocop:disable Metrics/MethodLength
-  def process_rows(rows)
-    barcodes = rows.pluck(headers.index(HEADER_BARCODE))
-    well_locations = rows.pluck(headers.index(HEADER_PLATE_WELLS))
-
-    if plate?(barcodes, well_locations)
-      validate_for_plates(barcodes)
-    elsif tube?(barcodes, well_locations)
-      validate_for_tubes(barcodes)
-    else
-      errors.add(
-        :spreadsheet,
-        'Invalid labware type. Please provide either a plate barcode with well locations or tube barcodes only'
-      )
-    end
-  end
-  # rubocop:enable Metrics/MethodLength
-
-  # Validates the number of samples per pool for plates.
-  #
-  # This method finds the plate using the provided barcodes and retrieves the wells located at the specified well
-  # locations.
-  # It then calculates the total number of samples per study and project and the number of pools.
-  # Finally, it validates the number of samples per pool.
-  #
-  # @param barcodes [Array<String>] The barcodes of the plates.
-  # @return [void]
-  def validate_for_plates(barcodes)
-    plate = Plate.find_from_any_barcode(barcodes.uniq.first)
-    nil if plate.nil?
-  end
-  # Validates the number of samples per pool for tubes.
-  #
-  # This method finds the tubes using the provided barcodes and calculates the total number of samples per study and
-  # project.
-  # It then retrieves the number of pools from the rows and validates the number of samples per pool.
-  #
-  # @param barcodes [Array<String>] The barcodes of the tubes.
-  # @return [void]
-  def validate_for_tubes(barcodes)
-    find_tubes(barcodes)
   end
 
   # Finds the tubes using the provided barcodes.
