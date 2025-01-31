@@ -6,7 +6,7 @@
 services:
   sequencescape_server:
     build: .
-    image: sequencescape_local_image
+    image: sequencescape_local_image:${BRANCH_IMAGE_TAG:-latest}
     environment:
       - DBHOST=host.docker.internal
       - DBPORT=3306
@@ -25,7 +25,7 @@ services:
       - ".:/code"
 
   sequencescape_worker:
-    image: sequencescape_local_image
+    image: sequencescape_local_image:${BRANCH_IMAGE_TAG:-latest}
     depends_on:
       - sequencescape_server
     environment:
