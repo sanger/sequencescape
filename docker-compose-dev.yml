@@ -10,7 +10,7 @@ services:
     environment:
       - DBHOST=host.docker.internal
       - DBPORT=3306
-      - RESET_DATABASE=$RESET_DATABASE
+      - RESET_DATABASE=${RESET_DATABASE:-false}
       - USE_POLLING_FILE_WATCHER=$USE_POLLING_FILE_WATCHER
       - PRECOMPILE_ASSETS=${PRECOMPILE_ASSETS:-true}
     entrypoint: "bash -c ./entrypoint.sh"
