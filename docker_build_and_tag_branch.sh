@@ -15,6 +15,9 @@ if [ -z ${RESET_DATABASE+x} ]; then RESET_DATABASE="false"; fi
 RESET_DATABASE=$RESET_DATABASE docker compose build --build-arg CHIPSET=$CHIPSET --no-cache
 # Get the current Git branch name, replacing invalid characters with underscores, and converting to lowercase
 BRANCH_NAME=$(git rev-parse --abbrev-ref HEAD | tr -cd '[:alnum:]_-' | tr '[:upper:]' '[:lower:]')
+
+echo "Tagging image with branch name '$BRANCH_NAME'"
+
 # Tag the Docker image with the current Git branch name
 docker tag sequencescape_local_image:latest sequencescape_local_image:$BRANCH_NAME
 # Spin up the Docker containers
