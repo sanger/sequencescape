@@ -107,6 +107,10 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   DATA_RELEASE_DELAY_PERIODS = ['3 months', '6 months', '9 months', '12 months', '18 months'].freeze
 
+  EBI_LIBRARY_STRATEGY_OPTIONS = Rails.configuration.ena_requirement_fields['EBI_Library_strategy']
+  EBI_LIBRARY_SOURCE_OPTIONS = Rails.configuration.ena_requirement_fields['EBI_Library_source']
+  EBI_LIBRARY_SELECTION_OPTIONS = Rails.configuration.ena_requirement_fields['EBI_Library_selection']
+
   # Class variables
   self.per_page = 500
 
@@ -214,6 +218,11 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     custom_attribute(:commercially_available, required: true, in: YES_OR_NO)
     custom_attribute(:study_name_abbreviation)
 
+    # add ebi library strategy
+    custom_attribute(:ebi_library_strategy, required: true, in: EBI_LIBRARY_STRATEGY_OPTIONS)
+    custom_attribute(:ebi_library_source, required: true, in: EBI_LIBRARY_SOURCE_OPTIONS)
+    custom_attribute(:ebi_library_selection, required: true, in: EBI_LIBRARY_SELECTION_OPTIONS)
+
     custom_attribute(
       :data_release_strategy,
       required: true,
@@ -308,6 +317,10 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
                 message: 'only allows ASCII',
                 allow_blank: true
               }
+
+    validates :ebi_library_strategy, inclusion: { in: EBI_LIBRARY_STRATEGY_OPTIONS }
+    validates :ebi_library_source, inclusion: { in: EBI_LIBRARY_SOURCE_OPTIONS }
+    validates :ebi_library_selection, inclusion: { in: EBI_LIBRARY_SELECTION_OPTIONS }
 
     before_validation do |record|
       record.reference_genome_id = 1 if record.reference_genome_id.blank?

@@ -6,6 +6,10 @@ group :default do
   gem 'bootsnap'
   gem 'rails', '~> 7.0.8'
 
+  # Previously part of ruby or rails, now separate gems
+  gem 'drb', '~> 2.2'
+  gem 'mutex_m', '~> 0.3.0'
+
   # Fix incompatibility with between Ruby 3.1 and Psych 4 (used for yaml)
   # see https://stackoverflow.com/a/71192990
   gem 'psych', '< 4'
@@ -78,6 +82,8 @@ group :default do
   # - Remove the ActionController::ForceSSL module
   # - Load the gem from the branch
   gem 'jsonapi-resources', github: 'sanger/jsonapi-resources', branch: 'develop'
+
+  gem 'csv', '~> 3.3' # Required by jsonapi-resources, previously part of ruby
 
   # Wraps bunny with connection pooling and consumer process handling
   gem 'sanger_warren'
