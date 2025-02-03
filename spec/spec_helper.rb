@@ -52,7 +52,7 @@ Capybara.register_driver :headless_chrome do |app|
   options = Selenium::WebDriver::Chrome::Options.new
 
   options.add_preference('download.default_directory', DownloadHelpers::PATH.to_s)
-  options.add_argument('--headless')
+  options.add_argument('--headless=old')
   options.add_argument('--disable-gpu')
   options.add_argument('--disable-search-engine-choice-screen')
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)

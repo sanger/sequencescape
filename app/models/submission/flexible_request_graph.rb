@@ -110,8 +110,6 @@ module Submission::FlexibleRequestGraph
             .order
             .create_request_of_type!(request_type, asset: source_asset, target_asset: target_asset)
             .tap do |request|
-              # Removed from linear_request_graph module as it caused unnecessary links in pipelines where
-              # a limber_multiplexing request is the first step.
               if source_asset&.labware.present? && target_asset&.labware.present?
                 AssetLink.create_edge(source_asset.labware, target_asset.labware)
               end

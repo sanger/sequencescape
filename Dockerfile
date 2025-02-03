@@ -1,11 +1,9 @@
 ARG CHIPSET=default
-ARG RUBY_VERSION=3.3.6
-ARG APPLE_PLATFORM=linux/amd64
 
 # Use the correct base image depending on the architecture
 # For Apple M1 Chip, run: docker build --build-arg CHIPSET=m1 .
-FROM ruby:${RUBY_VERSION}-slim AS base_default
-FROM --platform=${APPLE_PLATFORM} ruby:${RUBY_VERSION}-slim AS base_m1
+FROM ruby:3.3.6-slim AS base_default
+FROM --platform=linux/amd64 ruby:3.2.5-slim AS base_m1
 FROM base_${CHIPSET} AS base
 
 COPY .nvmrc /.nvmrc

@@ -88,6 +88,14 @@ module Submission::LinearRequestGraph
         target_asset = target_assets[index]
 
         create_request_of_type!(request_type, asset: source_asset, target_asset: target_asset).tap do |request|
+          # TODO: AssetLink is supposed to disappear at some point in the future because it makes no real sense
+          # given that the request graph describes this relationship.
+          # JG: Its removal only really makes sense if we can walk the request graph in a timely manner.
+          # We use save not save! as AssetLink throws validation errors when the link already exists
+          if source_asset&.labware.present? && target_asset&.labware.present?
+            AssetLink.create_edge(source_asset.labware, target_asset.labware)
+          end
+
           request.qc_metrics = qc_metrics.compact.uniq
           request.update_responsibilities!
 
