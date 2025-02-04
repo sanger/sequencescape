@@ -26,6 +26,7 @@ Feature: Show/update samples
     Then I should see "Sequencescape Sample ID"
      And I should see "Public Name"
      And I should see "TAXON ID"
+     And I should see "Sample Collection Date"
 
   Scenario: All sample metadata should show in genotyping workflow
     Given I have a sample called "sample_test" with metadata
@@ -37,6 +38,7 @@ Feature: Show/update samples
     Then I should see "Sequencescape Sample ID"
      And I should see "Public Name"
      And I should see "TAXON ID"
+     And I should see "Sample Collection Date"
 
   Scenario: User is an administrator
 
