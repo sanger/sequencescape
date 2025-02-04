@@ -24,4 +24,22 @@ describe WellAttribute do
     )
     expect(Warren.handler.messages_matching("queue_broadcast.messenger.#{warehouse_message.id}")).to be 2
   end
+
+  describe '#estimated_volume' do
+    it 'returns the estimated volume as a float' do
+      well_attribute.current_volume = 10
+      expect(well_attribute.estimated_volume).to eq 10.0
+    end
+
+    it 'returns the current volume if it is set' do
+      well_attribute.current_volume = 10
+      well_attribute.measured_volume = 20
+      expect(well_attribute.estimated_volume).to eq 10.0
+    end
+
+    it 'returns the measured volume if the current volume is not set' do
+      well_attribute.measured_volume = 20
+      expect(well_attribute.estimated_volume).to eq 20.0
+    end
+  end
 end
