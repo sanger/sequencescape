@@ -261,25 +261,23 @@ describe Well do
     end
   end
 
-  # TODO: Y24-383 - add assertions for final source and destination volumes
-
   # rubocop:todo Layout/LineLength
 
   # stree-ignore
   [
-    { target_ng: 1000, measured_conc: 10, measured_vol: 50, min_vol:10, max_vol:50, min_pick_vol: 1, source_pick_vol: 50, buffer_vol: 0 },
-    { target_ng: 1000, measured_conc: 10, measured_vol: 10, min_vol:10, max_vol:50, min_pick_vol: 1, source_pick_vol: 10, buffer_vol: 0 },
-    { target_ng: 100, measured_conc: 100, measured_vol: 50, min_vol:10, max_vol:50, min_pick_vol: 1, source_pick_vol: 1, buffer_vol: 9 },
-    { target_ng: 1000, measured_conc: 1000, measured_vol: 50, min_vol:10, max_vol:50, min_pick_vol: 1, source_pick_vol: 1, buffer_vol: 9 },
-    { target_ng: 5000, measured_conc: 1000, measured_vol: 50, min_vol:10, max_vol:50, min_pick_vol: 1, source_pick_vol: 5, buffer_vol: 5 },
-    { target_ng: 10, measured_conc: 100, measured_vol: 50, min_vol:10, max_vol:50, min_pick_vol: 1, source_pick_vol: 1, buffer_vol: 9 },
-    { target_ng: 1000, measured_conc: 250, measured_vol: 50, min_vol:10, max_vol:50, min_pick_vol: 1, source_pick_vol: 4, buffer_vol: 6 },
-    { target_ng: 10_000, measured_conc: 250, measured_vol: 50, min_vol:10, max_vol:50, min_pick_vol: 1, source_pick_vol: 40, buffer_vol: 0 },
-    { target_ng: 10_000, measured_conc: 250, measured_vol: 30, min_vol:10, max_vol:50, min_pick_vol: 1, source_pick_vol: 30, buffer_vol: 0 },
-    { target_ng: 1000, measured_conc: 70, measured_vol: 50, min_vol:10, max_vol:50, min_pick_vol: 5, source_pick_vol: 14.29, buffer_vol: 0 },# Y24-382: SQPD-10861 v14.29, b0.00
-    { target_ng: 200, measured_conc: 200, measured_vol: 1, min_vol:50, max_vol:50, min_pick_vol: 5, source_pick_vol: 1, buffer_vol: 49 }, # Y24-382: SQPD-10864 v1.00, b49.00
-    { target_ng: 9800, measured_conc: 98, measured_vol: 100, min_vol:50, max_vol:50, min_pick_vol: 5, source_pick_vol: 50, buffer_vol: 0 }, # Y24-382: SQPD-10866 v50.00, b0.00
-    { target_ng: 9800, measured_conc: 100, measured_vol: 100, min_vol:50, max_vol:50, min_pick_vol: 5, source_pick_vol: 50, buffer_vol: 0 } # Y24-382: SQPD-10868 v50.00, b0.00
+    { target_ng: 1000, measured_conc: 10, measured_vol: 50, min_vol:10, max_vol:50, min_pick_vol: 1, source_pick_vol: 50, buffer_vol: 0, final_src_vol: 0, final_dest_vol: 10 },
+    { target_ng: 1000, measured_conc: 10, measured_vol: 10, min_vol:10, max_vol:50, min_pick_vol: 1, source_pick_vol: 10, buffer_vol: 0, final_src_vol: 0, final_dest_vol: 10 },
+    { target_ng: 100, measured_conc: 100, measured_vol: 50, min_vol:10, max_vol:50, min_pick_vol: 1, source_pick_vol: 1, buffer_vol: 9, final_src_vol: 49, final_dest_vol: 10 },
+    { target_ng: 1000, measured_conc: 1000, measured_vol: 50, min_vol:10, max_vol:50, min_pick_vol: 1, source_pick_vol: 1, buffer_vol: 9, final_src_vol: 49, final_dest_vol: 10 },
+    { target_ng: 5000, measured_conc: 1000, measured_vol: 50, min_vol:10, max_vol:50, min_pick_vol: 1, source_pick_vol: 5, buffer_vol: 5, final_src_vol: 45, final_dest_vol: 10 },
+    { target_ng: 10, measured_conc: 100, measured_vol: 50, min_vol:10, max_vol:50, min_pick_vol: 1, source_pick_vol: 1, buffer_vol: 9, final_src_vol: 49, final_dest_vol: 10 },
+    { target_ng: 1000, measured_conc: 250, measured_vol: 50, min_vol:10, max_vol:50, min_pick_vol: 1, source_pick_vol: 4, buffer_vol: 6, final_src_vol: 46, final_dest_vol: 10 },
+    { target_ng: 10_000, measured_conc: 250, measured_vol: 50, min_vol:10, max_vol:50, min_pick_vol: 1, source_pick_vol: 40, buffer_vol: 0, final_src_vol: 10, final_dest_vol: 10 },
+    { target_ng: 10_000, measured_conc: 250, measured_vol: 30, min_vol:10, max_vol:50, min_pick_vol: 1, source_pick_vol: 30, buffer_vol: 0, final_src_vol: 0, final_dest_vol: 10 },
+    { target_ng: 1000, measured_conc: 70, measured_vol: 50, min_vol:10, max_vol:50, min_pick_vol: 5, source_pick_vol: 14.29, buffer_vol: 0, final_src_vol: 35.7143, final_dest_vol: 10 }, # Y24-382: SQPD-10861 v14.29, b0.00
+    { target_ng: 200, measured_conc: 200, measured_vol: 1, min_vol:50, max_vol:50, min_pick_vol: 5, source_pick_vol: 1, buffer_vol: 49, final_src_vol: 0, final_dest_vol: 50 }, # Y24-382: SQPD-10864 v1.00, b49.00
+    { target_ng: 9800, measured_conc: 98, measured_vol: 100, min_vol:50, max_vol:50, min_pick_vol: 5, source_pick_vol: 50, buffer_vol: 0, final_src_vol: 50, final_dest_vol: 50 }, # Y24-382: SQPD-10866 v50.00, b0.00
+    { target_ng: 9800, measured_conc: 100, measured_vol: 100, min_vol:50, max_vol:50, min_pick_vol: 5, source_pick_vol: 50, buffer_vol: 0, final_src_vol: 50, final_dest_vol: 50 }, # Y24-382: SQPD-10868 v50.00, b0.00
   ].each do |cherrypick|
     # rubocop:enable Layout/LineLength
     target_ng = cherrypick[:target_ng]
@@ -290,15 +288,14 @@ describe Well do
     minimum_volume = cherrypick[:min_vol]
     maximum_volume = cherrypick[:max_vol]
     robot_minimum_picking_volume = cherrypick[:min_pick_vol]
+    final_source_volume = cherrypick[:final_src_vol]
+    final_destination_volume = cherrypick[:final_dest_vol]
 
     context 'cherrypick by nano grams' do
       before do
         @source_well = create(:well)
         @target_well = create(:well)
-        @source_well.well_attribute.update!(
-          concentration:,
-          measured_volume:,
-        )
+        @source_well.well_attribute.update!(concentration:, measured_volume:)
         @target_well.volume_to_cherrypick_by_nano_grams(
           minimum_volume,
           maximum_volume,
@@ -308,17 +305,28 @@ describe Well do
         )
       end
 
-      # rubocop:todo Layout/LineLength
-      it "output stock_to_pick #{stock_to_pick} for a target of #{target_ng} with vol #{measured_volume} and conc #{concentration}" do
-        expect(@target_well.well_attribute.picked_volume.round(2)).to eq(stock_to_pick)
-      end
-      # rubocop:enable Layout/LineLength
+      context "for a target of #{target_ng} with conc #{concentration} and vol #{measured_volume}" do
+        it "output stock_to_pick #{stock_to_pick}" do
+          expect(@target_well.well_attribute.picked_volume.round(2)).to eq(stock_to_pick)
+        end
 
-      # rubocop:todo Layout/LineLength
-      it "output buffer #{buffer_added} for a target of #{target_ng} with vol #{measured_volume} and conc #{concentration}" do
-        expect(@target_well.well_attribute.buffer_volume).to eq(buffer_added)
+        it "output buffer #{buffer_added}" do
+          expect(@target_well.well_attribute.buffer_volume).to eq(buffer_added)
+        end
+
+        it "leaves a final source volume of #{final_source_volume}" do
+          # mirrored from CherrypickRequest.reduce_source_volume
+          # asset.get_current_volume - target_asset.get_picked_volume
+          current_volume = @source_well.get_current_volume
+          picked_volume = @target_well.get_picked_volume
+          calculated_volume = current_volume - picked_volume
+          expect(calculated_volume.round(2)).to eq(final_source_volume.round(2))
+        end
+
+        it "provides a final destination volume of #{final_destination_volume}" do
+          expect(@target_well.well_attribute.current_volume).to eq(final_destination_volume)
+        end
       end
-      # rubocop:enable Layout/LineLength
     end
   end
 
