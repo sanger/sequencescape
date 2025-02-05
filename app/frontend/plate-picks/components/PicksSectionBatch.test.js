@@ -1,5 +1,4 @@
 import { shallowMount } from "@vue/test-utils";
-import "@testing-library/jest-dom";
 import PicksSectionBatch from "./PicksSectionBatch.vue";
 import PicksSectionBatchPick from "./PicksSectionBatchPick.vue";
 
