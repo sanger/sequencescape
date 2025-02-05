@@ -443,20 +443,20 @@ describe Well do
 
     # stree-ignore
     [
-      { final_volume_desired: 100.0, final_conc_desired: 50.0, source_concentration: 100.0, source_volume: 200.0, robot_minimum_pick_volume: nil, source_volume_obtained: 50.0, buffer_volume_obtained: 50.0, scenario: 'Standard scenario, sufficient material, buffer and dna both added' },
-      { final_volume_desired: 100.0, final_conc_desired: 50.0, source_concentration: 100.0, source_volume: 20.0, robot_minimum_pick_volume:nil, source_volume_obtained: 20.0, buffer_volume_obtained: 80.0, scenario: 'Insufficient source material for concentration or volume. Make up with buffer' },
-      { final_volume_desired: 100.0, final_conc_desired: 5.0, source_concentration: 100.0, source_volume: 2.0, robot_minimum_pick_volume: nil, source_volume_obtained: 2.0, buffer_volume_obtained: 98.0, scenario: 'As above, just more extreme' },
-      { final_volume_desired: 100.0, final_conc_desired: 5.0, source_concentration: 100.0, source_volume: 5.0, robot_minimum_pick_volume: 5.0, source_volume_obtained: 5.0, buffer_volume_obtained: 95.0, scenario: 'High concentration, minimum robot volume increases source pick' },
-      { final_volume_desired: 100.0, final_conc_desired: 50.0, source_concentration: 52.0, source_volume: 200.0, robot_minimum_pick_volume: 5.0, source_volume_obtained: 96.2, buffer_volume_obtained: 5.0, scenario: 'Lowish concentration, non zero, but less than robot buffer required' },
-      { final_volume_desired: 100.0, final_conc_desired: 5.0, source_concentration: 100.0, source_volume: 2.0, robot_minimum_pick_volume:5.0, source_volume_obtained: 5.0, buffer_volume_obtained: 98.0, scenario: 'Less DNA than robot minimum pick' },
-      { final_volume_desired: 100.0, final_conc_desired: 50.0, source_concentration: 1.0, source_volume: 200.0, robot_minimum_pick_volume: 5.0, source_volume_obtained: 100.0, buffer_volume_obtained: 0.0, scenario: 'Low concentration, maximum DNA, no buffer' },
-      { final_volume_desired: 120.0, final_conc_desired: 50.0, source_concentration: 0, source_volume: 60.0, robot_minimum_pick_volume: 5.0, source_volume_obtained: 60.0, buffer_volume_obtained: 60.0, scenario: 'Zero concentration, with less volume than required' },
-      { final_volume_desired: 120.0, final_conc_desired: 50.0, source_concentration: 0, source_volume: 3.0, robot_minimum_pick_volume:5.0, source_volume_obtained: 5.0, buffer_volume_obtained: 117.0, scenario: 'Zero concentration, with less volume than even the minimum robot pick' },
-      { final_volume_desired: 15.0, final_conc_desired: 50.0, source_concentration: 70.0, source_volume: 50, robot_minimum_pick_volume:5.0, source_volume_obtained: 10.7, buffer_volume_obtained: 5.0, scenario: 'Y24-382: SQPD-10859 v10.71 b5.00' },
+      { target_volume: 100.0, target_concentration: 50.0, source_concentration: 100.0, source_volume: 200.0, robot_minimum_pick_volume: nil, source_volume_obtained: 50.0, buffer_volume_obtained: 50.0, scenario: 'Standard scenario, sufficient material, buffer and dna both added' },
+      { target_volume: 100.0, target_concentration: 50.0, source_concentration: 100.0, source_volume: 20.0, robot_minimum_pick_volume:nil, source_volume_obtained: 20.0, buffer_volume_obtained: 80.0, scenario: 'Insufficient source material for concentration or volume. Make up with buffer' },
+      { target_volume: 100.0, target_concentration: 5.0, source_concentration: 100.0, source_volume: 2.0, robot_minimum_pick_volume: nil, source_volume_obtained: 2.0, buffer_volume_obtained: 98.0, scenario: 'As above, just more extreme' },
+      { target_volume: 100.0, target_concentration: 5.0, source_concentration: 100.0, source_volume: 5.0, robot_minimum_pick_volume: 5.0, source_volume_obtained: 5.0, buffer_volume_obtained: 95.0, scenario: 'High concentration, minimum robot volume increases source pick' },
+      { target_volume: 100.0, target_concentration: 50.0, source_concentration: 52.0, source_volume: 200.0, robot_minimum_pick_volume: 5.0, source_volume_obtained: 96.2, buffer_volume_obtained: 5.0, scenario: 'Lowish concentration, non zero, but less than robot buffer required' },
+      { target_volume: 100.0, target_concentration: 5.0, source_concentration: 100.0, source_volume: 2.0, robot_minimum_pick_volume:5.0, source_volume_obtained: 5.0, buffer_volume_obtained: 98.0, scenario: 'Less DNA than robot minimum pick' },
+      { target_volume: 100.0, target_concentration: 50.0, source_concentration: 1.0, source_volume: 200.0, robot_minimum_pick_volume: 5.0, source_volume_obtained: 100.0, buffer_volume_obtained: 0.0, scenario: 'Low concentration, maximum DNA, no buffer' },
+      { target_volume: 120.0, target_concentration: 50.0, source_concentration: 0, source_volume: 60.0, robot_minimum_pick_volume: 5.0, source_volume_obtained: 60.0, buffer_volume_obtained: 60.0, scenario: 'Zero concentration, with less volume than required' },
+      { target_volume: 120.0, target_concentration: 50.0, source_concentration: 0, source_volume: 3.0, robot_minimum_pick_volume:5.0, source_volume_obtained: 5.0, buffer_volume_obtained: 117.0, scenario: 'Zero concentration, with less volume than even the minimum robot pick' },
+      { target_volume: 15.0, target_concentration: 50.0, source_concentration: 70.0, source_volume: 50, robot_minimum_pick_volume:5.0, source_volume_obtained: 10.7, buffer_volume_obtained: 5.0, scenario: 'Y24-382: SQPD-10859 v10.71 b5.00' },
     ].each do |cherrypick|
     # rubocop:enable Layout/LineLength
-    final_volume_desired = cherrypick[:final_volume_desired]
-    final_conc_desired = cherrypick[:final_conc_desired]
+    target_volume = cherrypick[:target_volume]
+    target_concentration = cherrypick[:target_concentration]
     source_concentration = cherrypick[:source_concentration]
     source_volume = cherrypick[:source_volume]
     robot_minimum_pick_volume = cherrypick[:robot_minimum_pick_volume]
@@ -470,8 +470,8 @@ describe Well do
             format(
               '%.1f',
               well.volume_to_cherrypick_by_nano_grams_per_micro_litre(
-                final_volume_desired,
-                final_conc_desired,
+                target_volume,
+                target_concentration,
                 source_concentration,
                 source_volume,
                 robot_minimum_pick_volume
