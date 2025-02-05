@@ -439,29 +439,31 @@ describe Well do
     end
 
     # TODO: Y24-383 - add assertions for final source and destination volumes
+    # rubocop:todo Layout/LineLength
+
+    # stree-ignore
     [
-      [100.0, 50.0, 100.0, 200.0, nil, 50.0, 50.0, 'Standard scenario, sufficient material, buffer and dna both added'],
-      [
-        100.0,
-        50.0,
-        100.0,
-        20.0,
-        nil,
-        20.0,
-        80.0,
-        'Insufficient source material for concentration or volume. Make up with buffer'
-      ],
-      [100.0, 5.0, 100.0, 2.0, nil, 2.0, 98.0, 'As above, just more extreme'],
-      [100.0, 5.0, 100.0, 5.0, 5.0, 5.0, 95.0, 'High concentration, minimum robot volume increases source pick'],
-      [100.0, 50.0, 52.0, 200.0, 5.0, 96.2, 5.0, 'Lowish concentration, non zero, but less than robot buffer required'],
-      [100.0, 5.0, 100.0, 2.0, 5.0, 5.0, 98.0, 'Less DNA than robot minimum pick'],
-      [100.0, 50.0, 1.0, 200.0, 5.0, 100.0, 0.0, 'Low concentration, maximum DNA, no buffer'],
-      [120.0, 50.0, 0, 60.0, 5.0, 60.0, 60.0, 'Zero concentration, with less volume than required'],
-      [120.0, 50.0, 0, 3.0, 5.0, 5.0, 117.0, 'Zero concentration, with less volume than even the minimum robot pick'],
-      [15.0, 50.0, 70.0, 50, 5.0, 10.7, 5.0, 'Y24-382: SQPD-10859 v10.71 b5.00']
-      # rubocop:todo Metrics/ParameterLists,Layout/LineLength
-    ].each do |final_volume_desired, final_conc_desired, source_concentration, source_volume, robot_minimum_pick_volume, source_volume_obtained, buffer_volume_obtained, scenario|
-      # rubocop:enable Metrics/ParameterLists,Layout/LineLength
+      { final_volume_desired: 100.0, final_conc_desired: 50.0, source_concentration: 100.0, source_volume: 200.0, robot_minimum_pick_volume: nil, source_volume_obtained: 50.0, buffer_volume_obtained: 50.0, scenario: 'Standard scenario, sufficient material, buffer and dna both added' },
+      { final_volume_desired: 100.0, final_conc_desired: 50.0, source_concentration: 100.0, source_volume: 20.0, robot_minimum_pick_volume:nil, source_volume_obtained: 20.0, buffer_volume_obtained: 80.0, scenario: 'Insufficient source material for concentration or volume. Make up with buffer' },
+      { final_volume_desired: 100.0, final_conc_desired: 5.0, source_concentration: 100.0, source_volume: 2.0, robot_minimum_pick_volume: nil, source_volume_obtained: 2.0, buffer_volume_obtained: 98.0, scenario: 'As above, just more extreme' },
+      { final_volume_desired: 100.0, final_conc_desired: 5.0, source_concentration: 100.0, source_volume: 5.0, robot_minimum_pick_volume: 5.0, source_volume_obtained: 5.0, buffer_volume_obtained: 95.0, scenario: 'High concentration, minimum robot volume increases source pick' },
+      { final_volume_desired: 100.0, final_conc_desired: 50.0, source_concentration: 52.0, source_volume: 200.0, robot_minimum_pick_volume: 5.0, source_volume_obtained: 96.2, buffer_volume_obtained: 5.0, scenario: 'Lowish concentration, non zero, but less than robot buffer required' },
+      { final_volume_desired: 100.0, final_conc_desired: 5.0, source_concentration: 100.0, source_volume: 2.0, robot_minimum_pick_volume:5.0, source_volume_obtained: 5.0, buffer_volume_obtained: 98.0, scenario: 'Less DNA than robot minimum pick' },
+      { final_volume_desired: 100.0, final_conc_desired: 50.0, source_concentration: 1.0, source_volume: 200.0, robot_minimum_pick_volume: 5.0, source_volume_obtained: 100.0, buffer_volume_obtained: 0.0, scenario: 'Low concentration, maximum DNA, no buffer' },
+      { final_volume_desired: 120.0, final_conc_desired: 50.0, source_concentration: 0, source_volume: 60.0, robot_minimum_pick_volume: 5.0, source_volume_obtained: 60.0, buffer_volume_obtained: 60.0, scenario: 'Zero concentration, with less volume than required' },
+      { final_volume_desired: 120.0, final_conc_desired: 50.0, source_concentration: 0, source_volume: 3.0, robot_minimum_pick_volume:5.0, source_volume_obtained: 5.0, buffer_volume_obtained: 117.0, scenario: 'Zero concentration, with less volume than even the minimum robot pick' },
+      { final_volume_desired: 15.0, final_conc_desired: 50.0, source_concentration: 70.0, source_volume: 50, robot_minimum_pick_volume:5.0, source_volume_obtained: 10.7, buffer_volume_obtained: 5.0, scenario: 'Y24-382: SQPD-10859 v10.71 b5.00' },
+    ].each do |cherrypick|
+    # rubocop:enable Layout/LineLength
+    final_volume_desired = cherrypick[:final_volume_desired]
+    final_conc_desired = cherrypick[:final_conc_desired]
+    source_concentration = cherrypick[:source_concentration]
+    source_volume = cherrypick[:source_volume]
+    robot_minimum_pick_volume = cherrypick[:robot_minimum_pick_volume]
+    source_volume_obtained = cherrypick[:source_volume_obtained]
+    buffer_volume_obtained = cherrypick[:buffer_volume_obtained]
+    scenario = cherrypick[:scenario]
+
       context "when testing #{scenario}" do
         before do
           @result_volume =
