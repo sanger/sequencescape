@@ -446,8 +446,8 @@ describe Well do
         source_concentration: 100.0,
         source_volume: 200.0,
         robot_minimum_pick_volume: nil,
-        source_volume_obtained: 50.0,
-        buffer_volume_obtained: 50.0,
+        source_volume_picked: 50.0,
+        buffer_volume_picked: 50.0,
         destination_volume: 100.0,
         source_volume_remaining: 150.0
       },
@@ -458,8 +458,8 @@ describe Well do
         source_concentration: 100.0,
         source_volume: 20.0,
         robot_minimum_pick_volume: nil,
-        source_volume_obtained: 20.0,
-        buffer_volume_obtained: 80.0,
+        source_volume_picked: 20.0,
+        buffer_volume_picked: 80.0,
         destination_volume: 100.0,
         source_volume_remaining: 0.0
       },
@@ -470,8 +470,8 @@ describe Well do
         source_concentration: 100.0,
         source_volume: 2.0,
         robot_minimum_pick_volume: nil,
-        source_volume_obtained: 2.0,
-        buffer_volume_obtained: 98.0,
+        source_volume_picked: 2.0,
+        buffer_volume_picked: 98.0,
         destination_volume: 100.0,
         source_volume_remaining: 0.0
       },
@@ -482,8 +482,8 @@ describe Well do
         source_concentration: 100.0,
         source_volume: 5.0,
         robot_minimum_pick_volume: 5.0,
-        source_volume_obtained: 5.0,
-        buffer_volume_obtained: 95.0,
+        source_volume_picked: 5.0,
+        buffer_volume_picked: 95.0,
         destination_volume: 100.0,
         source_volume_remaining: 0.0
       },
@@ -494,8 +494,8 @@ describe Well do
         source_concentration: 52.0,
         source_volume: 200.0,
         robot_minimum_pick_volume: 5.0,
-        source_volume_obtained: 96.2,
-        buffer_volume_obtained: 5.0,
+        source_volume_picked: 96.2,
+        buffer_volume_picked: 5.0,
         destination_volume: 100.0,
         source_volume_remaining: 103.8
       },
@@ -506,8 +506,8 @@ describe Well do
         source_concentration: 100.0,
         source_volume: 2.0,
         robot_minimum_pick_volume: 5.0,
-        source_volume_obtained: 5.0,
-        buffer_volume_obtained: 98.0,
+        source_volume_picked: 5.0,
+        buffer_volume_picked: 98.0,
         destination_volume: 100.0,
         source_volume_remaining: 0.0
       },
@@ -518,8 +518,8 @@ describe Well do
         source_concentration: 1.0,
         source_volume: 200.0,
         robot_minimum_pick_volume: 5.0,
-        source_volume_obtained: 100.0,
-        buffer_volume_obtained: 0.0,
+        source_volume_picked: 100.0,
+        buffer_volume_picked: 0.0,
         destination_volume: 100.0,
         source_volume_remaining: 100.0
       },
@@ -530,8 +530,8 @@ describe Well do
         source_concentration: 0,
         source_volume: 60.0,
         robot_minimum_pick_volume: 5.0,
-        source_volume_obtained: 60.0,
-        buffer_volume_obtained: 60.0,
+        source_volume_picked: 60.0,
+        buffer_volume_picked: 60.0,
         destination_volume: 120.0,
         source_volume_remaining: 0.0
       },
@@ -542,8 +542,8 @@ describe Well do
         source_concentration: 0,
         source_volume: 3.0,
         robot_minimum_pick_volume: 5.0,
-        source_volume_obtained: 5.0,
-        buffer_volume_obtained: 117.0,
+        source_volume_picked: 5.0,
+        buffer_volume_picked: 117.0,
         destination_volume: 120.0,
         source_volume_remaining: 0.0
       },
@@ -554,8 +554,8 @@ describe Well do
         source_concentration: 70.0,
         source_volume: 50,
         robot_minimum_pick_volume: 5.0,
-        source_volume_obtained: 10.7,
-        buffer_volume_obtained: 5.0,
+        source_volume_picked: 10.7,
+        buffer_volume_picked: 5.0,
         destination_volume: 15.0,
         source_volume_remaining: 39.3
       }
@@ -566,8 +566,8 @@ describe Well do
       source_concentration = cherrypick[:source_concentration]
       source_volume = cherrypick[:source_volume]
       robot_minimum_pick_volume = cherrypick[:robot_minimum_pick_volume]
-      source_volume_obtained = cherrypick[:source_volume_obtained]
-      buffer_volume_obtained = cherrypick[:buffer_volume_obtained]
+      source_volume_picked = cherrypick[:source_volume_picked]
+      buffer_volume_picked = cherrypick[:buffer_volume_picked]
       destination_volume = cherrypick[:destination_volume]
       source_volume_remaining = cherrypick[:source_volume_remaining]
 
@@ -595,11 +595,11 @@ describe Well do
         end
 
         it 'gets correct volume quantity' do
-          expect(@target_well.get_picked_volume.round(1)).to eq(source_volume_obtained)
+          expect(@target_well.get_picked_volume.round(1)).to eq(source_volume_picked)
         end
 
         it 'gets correct buffer volume measures' do
-          expect(@target_well.get_buffer_volume.round(1)).to eq(buffer_volume_obtained)
+          expect(@target_well.get_buffer_volume.round(1)).to eq(buffer_volume_picked)
         end
 
         it 'gets correct source volume remaining' do
