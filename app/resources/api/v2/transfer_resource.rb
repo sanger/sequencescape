@@ -72,17 +72,6 @@ module Api
           end
       end
 
-      # @!attribute [w] transfer_template_uuid
-      #   @return [String] the UUID of a TransferTemplate to create a transfer from.
-      #     This must be provided or the Transfer creation will raise an error.
-      attribute :transfer_template_uuid, writeonly: true
-
-      def transfer_template_uuid=(uuid)
-        # Do not update the model.
-        # This value is used by the controller to create the correct Transfer type and set the transfers attribute.
-        # It is not stored on the Transfer model.
-      end
-
       # @!attribute [r] transfer_type
       #   @return [String] The STI type of the transfer.
       attribute :transfer_type, delegate: :sti_type, readonly: true
@@ -150,18 +139,18 @@ module Api
       filter :transfer_type, apply: ->(records, value, _options) { records.where(sti_type: value) }
 
       ###
-      # Create method
+      # Custom Methods for Creation
       ###
 
-      # @!method create_with_model
-      #   Create a new Transfer resource with the polymorphic type extracted from a template. This is called by the
-      #   controller when a create request for a Transfer is made.
-      # @param context [Hash] The context for the request.
-      # @param model_type [Class] The polymorphic type of the Transfer model to create.
-      # @return [TransferResource] The new Transfer resource.
-      def self.create_with_model(context, model_type)
-        # Create the polymorphic type, not the base class.
-        new(model_type.new, context)
+      # @!attribute [w] transfer_template_uuid
+      #   @note This is a required field.
+      #   @param value [String] the UUID of a TransferTemplate to create a transfer from.
+      #   @return [Void]
+      attribute :transfer_template_uuid, writeonly: true
+      attr_writer :transfer_template_uuid # This isn't stored, it is consumed by the transfers_controller.
+
+      def self.create(context)
+        new(context[:model_type].new, context)
       end
     end
   end

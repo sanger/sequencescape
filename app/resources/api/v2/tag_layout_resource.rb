@@ -25,17 +25,6 @@ module Api
       #   @note This attribute is required.
       attribute :direction
 
-      # @!attribute [w] enforce_uniqueness
-      #   A flag indicating whether to set `enforce_uniqueness` on {TagLayout::TemplateSubmission}s when a template is
-      #   used to create the TagLayout.
-      #   @param value [Boolean] Whether to enforce uniqueness within template submissions.
-      attribute :enforce_uniqueness, writeonly: true
-
-      def enforce_uniqueness=(value)
-        # Do not update the model.
-        # This value is used by the controller if a template UUID was given and is not used by the TagLayout directly.
-      end
-
       # @!attribute [rw] initial_tag
       #   An offset for the tag set indicating which tag to start with in the layout.
       #   @return [Integer]
@@ -92,18 +81,6 @@ module Api
 
       def tag2_group_uuid=(value)
         @model.tag2_group = TagGroup.with_uuid(value).first
-      end
-
-      # @!attribute [w] tag_layout_template_uuid
-      #   @param value [String] the UUID of a TagLayoutTemplate to use for attributes of this TagLayout resource.
-      #     Providing this UUID while also providing values for attributes and relationships which can be extracted from
-      #     a {TagLayoutTemplateResource} will generate an error indicating that the UUID should not have been provided.
-      attribute :tag_layout_template_uuid, writeonly: true
-
-      def tag_layout_template_uuid=(value)
-        # Do not update the model.
-        # This value is used by the controller to apply request data to the TagLayout from the indicated template.
-        # It is not stored on the Transfer model.
       end
 
       # @!attribute [rw] tags_per_well
@@ -165,6 +142,27 @@ module Api
       #   @return [Api::V2::UserResource] The user who initiated this state change.
       #   @note This relationship is required.
       has_one :user
+
+      ###
+      # Template attributes
+      ###
+
+      # These are consumed by the TagLayoutProcessor and not a concern of the resource.
+      # They are included here to allow their presence in the JSON:API request body and to document their use cases.
+
+      # @!attribute [w] tag_layout_template_uuid
+      #   @param value [String] the UUID of a TagLayoutTemplate to use for attributes of this TagLayout resource.
+      #     Providing this UUID while also providing values for attributes and relationships which can be extracted from
+      #     a {TagLayoutTemplateResource} will generate an error indicating that the UUID should not have been provided.
+      attribute :tag_layout_template_uuid, writeonly: true
+      attr_writer :tag_layout_template_uuid # Not stored on the model
+
+      # @!attribute [w] enforce_uniqueness
+      #   A flag indicating whether to set `enforce_uniqueness` on {TagLayout::TemplateSubmission}s when a template is
+      #   used to create the TagLayout.
+      #   @param value [Boolean] Whether to enforce uniqueness within template submissions.
+      attribute :enforce_uniqueness, writeonly: true
+      attr_writer :enforce_uniqueness # Not stored on the model
     end
   end
 end
