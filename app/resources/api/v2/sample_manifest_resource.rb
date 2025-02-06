@@ -17,8 +17,6 @@ module Api
     class SampleManifestResource < BaseResource
       immutable
 
-      default_includes :uuid_object
-
       # Name of the supplier of the sample manifest
       attribute :supplier_name
     end

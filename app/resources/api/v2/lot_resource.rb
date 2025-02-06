@@ -18,8 +18,6 @@ module Api
 
       # model_name / model_hint if required
 
-      default_includes :uuid_object
-
       # Associations:
       has_one :lot_type
       has_one :user

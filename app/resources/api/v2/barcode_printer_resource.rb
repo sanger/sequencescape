@@ -17,8 +17,6 @@ module Api
     class BarcodePrinterResource < BaseResource
       immutable
 
-      default_includes :uuid_object
-
       ###
       # Attributes
       ###
