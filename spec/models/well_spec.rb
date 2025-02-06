@@ -448,8 +448,8 @@ describe Well do
         robot_minimum_pick_volume: nil,
         source_volume_obtained: 50.0,
         buffer_volume_obtained: 50.0,
-        source_volume_remaining: 150.0,
-        destination_volume: 100.0
+        destination_volume: 100.0,
+        source_volume_remaining: 150.0
       },
       {
         scenario: 'Insufficient source material for concentration or volume. Make up with buffer',
@@ -460,8 +460,8 @@ describe Well do
         robot_minimum_pick_volume: nil,
         source_volume_obtained: 20.0,
         buffer_volume_obtained: 80.0,
-        source_volume_remaining: 0.0,
-        destination_volume: 100.0
+        destination_volume: 100.0,
+        source_volume_remaining: 0.0
       },
       {
         scenario: 'As above, just more extreme',
@@ -472,8 +472,8 @@ describe Well do
         robot_minimum_pick_volume: nil,
         source_volume_obtained: 2.0,
         buffer_volume_obtained: 98.0,
-        source_volume_remaining: 0.0,
-        destination_volume: 100.0
+        destination_volume: 100.0,
+        source_volume_remaining: 0.0
       },
       {
         scenario: 'High concentration, minimum robot volume increases source pick',
@@ -484,8 +484,8 @@ describe Well do
         robot_minimum_pick_volume: 5.0,
         source_volume_obtained: 5.0,
         buffer_volume_obtained: 95.0,
-        source_volume_remaining: 0.0,
-        destination_volume: 100.0
+        destination_volume: 100.0,
+        source_volume_remaining: 0.0
       },
       {
         scenario: 'Lowish concentration, non zero, but less than robot buffer required',
@@ -496,8 +496,8 @@ describe Well do
         robot_minimum_pick_volume: 5.0,
         source_volume_obtained: 96.2,
         buffer_volume_obtained: 5.0,
-        source_volume_remaining: 103.8,
-        destination_volume: 100.0
+        destination_volume: 100.0,
+        source_volume_remaining: 103.8
       },
       {
         scenario: 'Less DNA than robot minimum pick',
@@ -508,8 +508,8 @@ describe Well do
         robot_minimum_pick_volume: 5.0,
         source_volume_obtained: 5.0,
         buffer_volume_obtained: 98.0,
-        source_volume_remaining: 0.0,
-        destination_volume: 100.0
+        destination_volume: 100.0,
+        source_volume_remaining: 0.0
       },
       {
         scenario: 'Low concentration, maximum DNA, no buffer',
@@ -520,8 +520,8 @@ describe Well do
         robot_minimum_pick_volume: 5.0,
         source_volume_obtained: 100.0,
         buffer_volume_obtained: 0.0,
-        source_volume_remaining: 100.0,
-        destination_volume: 100.0
+        destination_volume: 100.0,
+        source_volume_remaining: 100.0
       },
       {
         scenario: 'Zero concentration, with less volume than required',
@@ -532,8 +532,8 @@ describe Well do
         robot_minimum_pick_volume: 5.0,
         source_volume_obtained: 60.0,
         buffer_volume_obtained: 60.0,
-        source_volume_remaining: 0.0,
-        destination_volume: 120.0
+        destination_volume: 120.0,
+        source_volume_remaining: 0.0
       },
       {
         scenario: 'Zero concentration, with less volume than even the minimum robot pick',
@@ -544,8 +544,8 @@ describe Well do
         robot_minimum_pick_volume: 5.0,
         source_volume_obtained: 5.0,
         buffer_volume_obtained: 117.0,
-        source_volume_remaining: 0.0,
-        destination_volume: 120.0
+        destination_volume: 120.0,
+        source_volume_remaining: 0.0
       },
       {
         scenario: 'Y24-382: SQPD-10859 v10.71 b5.00',
@@ -556,8 +556,8 @@ describe Well do
         robot_minimum_pick_volume: 5.0,
         source_volume_obtained: 10.7,
         buffer_volume_obtained: 5.0,
-        source_volume_remaining: 39.3,
-        destination_volume: 15.0
+        destination_volume: 15.0,
+        source_volume_remaining: 39.3
       }
     ].each do |cherrypick|
       scenario = cherrypick[:scenario]
@@ -568,8 +568,8 @@ describe Well do
       robot_minimum_pick_volume = cherrypick[:robot_minimum_pick_volume]
       source_volume_obtained = cherrypick[:source_volume_obtained]
       buffer_volume_obtained = cherrypick[:buffer_volume_obtained]
-      source_volume_remaining = cherrypick[:source_volume_remaining]
       destination_volume = cherrypick[:destination_volume]
+      source_volume_remaining = cherrypick[:source_volume_remaining]
 
       context "when testing #{scenario}" do
         before do
