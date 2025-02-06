@@ -448,8 +448,8 @@ describe Well do
         robot_minimum_pick_volume: nil,
         source_volume_obtained: 50.0,
         buffer_volume_obtained: 50.0,
-        source_volume_remaining: 100.0,
-        destination_volume: 15.0
+        source_volume_remaining: 150.0,
+        destination_volume: 100.0
       },
       {
         scenario: 'Insufficient source material for concentration or volume. Make up with buffer',
@@ -460,8 +460,8 @@ describe Well do
         robot_minimum_pick_volume: nil,
         source_volume_obtained: 20.0,
         buffer_volume_obtained: 80.0,
-        source_volume_remaining: 100.0,
-        destination_volume: 15.0
+        source_volume_remaining: 0.0,
+        destination_volume: 100.0
       },
       {
         scenario: 'As above, just more extreme',
@@ -472,8 +472,8 @@ describe Well do
         robot_minimum_pick_volume: nil,
         source_volume_obtained: 2.0,
         buffer_volume_obtained: 98.0,
-        source_volume_remaining: 100.0,
-        destination_volume: 15.0
+        source_volume_remaining: 0.0,
+        destination_volume: 100.0
       },
       {
         scenario: 'High concentration, minimum robot volume increases source pick',
@@ -484,8 +484,8 @@ describe Well do
         robot_minimum_pick_volume: 5.0,
         source_volume_obtained: 5.0,
         buffer_volume_obtained: 95.0,
-        source_volume_remaining: 100.0,
-        destination_volume: 15.0
+        source_volume_remaining: 0.0,
+        destination_volume: 100.0
       },
       {
         scenario: 'Lowish concentration, non zero, but less than robot buffer required',
@@ -496,8 +496,8 @@ describe Well do
         robot_minimum_pick_volume: 5.0,
         source_volume_obtained: 96.2,
         buffer_volume_obtained: 5.0,
-        source_volume_remaining: 100.0,
-        destination_volume: 15.0
+        source_volume_remaining: 103.8,
+        destination_volume: 100.0
       },
       {
         scenario: 'Less DNA than robot minimum pick',
@@ -508,8 +508,8 @@ describe Well do
         robot_minimum_pick_volume: 5.0,
         source_volume_obtained: 5.0,
         buffer_volume_obtained: 98.0,
-        source_volume_remaining: 100.0,
-        destination_volume: 15.0
+        source_volume_remaining: 0.0,
+        destination_volume: 100.0
       },
       {
         scenario: 'Low concentration, maximum DNA, no buffer',
@@ -521,7 +521,7 @@ describe Well do
         source_volume_obtained: 100.0,
         buffer_volume_obtained: 0.0,
         source_volume_remaining: 100.0,
-        destination_volume: 15.0
+        destination_volume: 100.0
       },
       {
         scenario: 'Zero concentration, with less volume than required',
@@ -532,8 +532,8 @@ describe Well do
         robot_minimum_pick_volume: 5.0,
         source_volume_obtained: 60.0,
         buffer_volume_obtained: 60.0,
-        source_volume_remaining: 120.0,
-        destination_volume: 15.0
+        source_volume_remaining: 0.0,
+        destination_volume: 120.0
       },
       {
         scenario: 'Zero concentration, with less volume than even the minimum robot pick',
@@ -544,8 +544,8 @@ describe Well do
         robot_minimum_pick_volume: 5.0,
         source_volume_obtained: 5.0,
         buffer_volume_obtained: 117.0,
-        source_volume_remaining: 120.0,
-        destination_volume: 15.0
+        source_volume_remaining: 0.0,
+        destination_volume: 120.0
       },
       {
         scenario: 'Y24-382: SQPD-10859 v10.71 b5.00',
@@ -556,7 +556,7 @@ describe Well do
         robot_minimum_pick_volume: 5.0,
         source_volume_obtained: 10.7,
         buffer_volume_obtained: 5.0,
-        source_volume_remaining: 15.0,
+        source_volume_remaining: 39.3,
         destination_volume: 15.0
       }
     ].each do |cherrypick|
@@ -573,36 +573,41 @@ describe Well do
 
       context "when testing #{scenario}" do
         before do
+          # Create source and target wells
           @source_well = create(:well)
           @target_well = create(:well)
           @source_well.well_attribute.update!(concentration: source_concentration, measured_volume: source_volume)
-          @result_volume =
-            @source_well.volume_to_cherrypick_by_nano_grams_per_micro_litre(
-              target_volume,
-              target_concentration,
-              source_concentration,
-              source_volume,
-              robot_minimum_pick_volume
-            ).round(1)
-          @result_buffer_volume = @source_well.get_buffer_volume.round(1)
-          @source_volume_remaining = @source_well.get_current_volume.round(1)
-          @destination_volume = @target_well.well_attribute.current_volume.round(1)
+
+          # Perform cherrypick
+          @target_well.volume_to_cherrypick_by_nano_grams_per_micro_litre(
+            target_volume,
+            target_concentration,
+            source_concentration,
+            source_volume,
+            robot_minimum_pick_volume
+          )
+
+          # Perform bed verification
+          # mirrored from CherrypickRequest.reduce_source_volume
+          subtracted_volume = @target_well.get_picked_volume
+          new_volume = @source_well.get_current_volume - subtracted_volume
+          @source_well.set_current_volume(new_volume)
         end
 
         it 'gets correct volume quantity' do
-          expect(@result_volume).to eq(source_volume_obtained)
+          expect(@target_well.get_picked_volume.round(1)).to eq(source_volume_obtained)
         end
 
         it 'gets correct buffer volume measures' do
-          expect(@result_buffer_volume).to eq(buffer_volume_obtained)
+          expect(@target_well.get_buffer_volume.round(1)).to eq(buffer_volume_obtained)
         end
 
         it 'gets correct source volume remaining' do
-          expect(@source_volume_remaining).to eq(source_volume_remaining)
+          expect(@source_well.get_current_volume.round(1)).to eq(source_volume_remaining)
         end
 
         it 'gets correct destination volume' do
-          expect(@destination_volume).to eq(destination_volume)
+          expect(@target_well.get_current_volume.round(1)).to eq(destination_volume)
         end
       end
     end
