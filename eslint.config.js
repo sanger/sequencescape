@@ -39,13 +39,10 @@ export default [
       ecmaVersion: "latest",
       sourceType: "module",
       globals: {
+        // Globals to ensure we don't violate no-undef
         ...vitest.environments.env.globals,
         ...globals.browser,
         ...globals.node,
-        // Global vitest and Cypress variables so they don't violate no-undef
-        vi: "readonly",
-        cy: "readonly",
-        Cypress: "readonly",
       },
     },
   },
