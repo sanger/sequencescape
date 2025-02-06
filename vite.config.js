@@ -22,14 +22,14 @@ export default defineConfig({
   },
   test: {
     globals: true,
-    environment: 'jsdom',
+    environment: "jsdom",
     coverage: {
-      provider: 'v8',
-      reporter: ['lcov', 'text'],
+      provider: "v8",
+      reporter: ["lcov", "text"],
     },
     // This hides the "Download the Vue Devtools extension" message from the console
     onConsoleLog(log) {
-      if (log.includes('Download the Vue Devtools extension')) return false
+      if (log.includes("Download the Vue Devtools extension")) return false;
     },
   },
 });
