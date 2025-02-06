@@ -261,25 +261,169 @@ describe Well do
     end
   end
 
-  # rubocop:todo Layout/LineLength
-
-  # stree-ignore
   [
-    { target_ng: 1000, measured_conc: 10, measured_vol: 50, min_vol:10, max_vol:50, min_pick_vol: 1, source_pick_vol: 50, buffer_vol: 0, final_src_vol: 0, final_dest_vol: 10 },
-    { target_ng: 1000, measured_conc: 10, measured_vol: 10, min_vol:10, max_vol:50, min_pick_vol: 1, source_pick_vol: 10, buffer_vol: 0, final_src_vol: 0, final_dest_vol: 10 },
-    { target_ng: 100, measured_conc: 100, measured_vol: 50, min_vol:10, max_vol:50, min_pick_vol: 1, source_pick_vol: 1, buffer_vol: 9, final_src_vol: 49, final_dest_vol: 10 },
-    { target_ng: 1000, measured_conc: 1000, measured_vol: 50, min_vol:10, max_vol:50, min_pick_vol: 1, source_pick_vol: 1, buffer_vol: 9, final_src_vol: 49, final_dest_vol: 10 },
-    { target_ng: 5000, measured_conc: 1000, measured_vol: 50, min_vol:10, max_vol:50, min_pick_vol: 1, source_pick_vol: 5, buffer_vol: 5, final_src_vol: 45, final_dest_vol: 10 },
-    { target_ng: 10, measured_conc: 100, measured_vol: 50, min_vol:10, max_vol:50, min_pick_vol: 1, source_pick_vol: 1, buffer_vol: 9, final_src_vol: 49, final_dest_vol: 10 },
-    { target_ng: 1000, measured_conc: 250, measured_vol: 50, min_vol:10, max_vol:50, min_pick_vol: 1, source_pick_vol: 4, buffer_vol: 6, final_src_vol: 46, final_dest_vol: 10 },
-    { target_ng: 10_000, measured_conc: 250, measured_vol: 50, min_vol:10, max_vol:50, min_pick_vol: 1, source_pick_vol: 40, buffer_vol: 0, final_src_vol: 10, final_dest_vol: 10 },
-    { target_ng: 10_000, measured_conc: 250, measured_vol: 30, min_vol:10, max_vol:50, min_pick_vol: 1, source_pick_vol: 30, buffer_vol: 0, final_src_vol: 0, final_dest_vol: 10 },
-    { target_ng: 1000, measured_conc: 70, measured_vol: 50, min_vol:10, max_vol:50, min_pick_vol: 5, source_pick_vol: 14.29, buffer_vol: 0, final_src_vol: 35.7143, final_dest_vol: 10 }, # Y24-382: SQPD-10861 v14.29, b0.00
-    { target_ng: 200, measured_conc: 200, measured_vol: 1, min_vol:50, max_vol:50, min_pick_vol: 5, source_pick_vol: 1, buffer_vol: 49, final_src_vol: 0, final_dest_vol: 50 }, # Y24-382: SQPD-10864 v1.00, b49.00
-    { target_ng: 9800, measured_conc: 98, measured_vol: 100, min_vol:50, max_vol:50, min_pick_vol: 5, source_pick_vol: 50, buffer_vol: 0, final_src_vol: 50, final_dest_vol: 50 }, # Y24-382: SQPD-10866 v50.00, b0.00
-    { target_ng: 9800, measured_conc: 100, measured_vol: 100, min_vol:50, max_vol:50, min_pick_vol: 5, source_pick_vol: 50, buffer_vol: 0, final_src_vol: 50, final_dest_vol: 50 }, # Y24-382: SQPD-10868 v50.00, b0.00
+    {
+      target_ng: 1000,
+      measured_conc: 10,
+      measured_vol: 50,
+      min_vol: 10,
+      max_vol: 50,
+      min_pick_vol: 1,
+      source_pick_vol: 50,
+      buffer_vol: 0,
+      final_src_vol: 0,
+      final_dest_vol: 10
+    },
+    {
+      target_ng: 1000,
+      measured_conc: 10,
+      measured_vol: 10,
+      min_vol: 10,
+      max_vol: 50,
+      min_pick_vol: 1,
+      source_pick_vol: 10,
+      buffer_vol: 0,
+      final_src_vol: 0,
+      final_dest_vol: 10
+    },
+    {
+      target_ng: 100,
+      measured_conc: 100,
+      measured_vol: 50,
+      min_vol: 10,
+      max_vol: 50,
+      min_pick_vol: 1,
+      source_pick_vol: 1,
+      buffer_vol: 9,
+      final_src_vol: 49,
+      final_dest_vol: 10
+    },
+    {
+      target_ng: 1000,
+      measured_conc: 1000,
+      measured_vol: 50,
+      min_vol: 10,
+      max_vol: 50,
+      min_pick_vol: 1,
+      source_pick_vol: 1,
+      buffer_vol: 9,
+      final_src_vol: 49,
+      final_dest_vol: 10
+    },
+    {
+      target_ng: 5000,
+      measured_conc: 1000,
+      measured_vol: 50,
+      min_vol: 10,
+      max_vol: 50,
+      min_pick_vol: 1,
+      source_pick_vol: 5,
+      buffer_vol: 5,
+      final_src_vol: 45,
+      final_dest_vol: 10
+    },
+    {
+      target_ng: 10,
+      measured_conc: 100,
+      measured_vol: 50,
+      min_vol: 10,
+      max_vol: 50,
+      min_pick_vol: 1,
+      source_pick_vol: 1,
+      buffer_vol: 9,
+      final_src_vol: 49,
+      final_dest_vol: 10
+    },
+    {
+      target_ng: 1000,
+      measured_conc: 250,
+      measured_vol: 50,
+      min_vol: 10,
+      max_vol: 50,
+      min_pick_vol: 1,
+      source_pick_vol: 4,
+      buffer_vol: 6,
+      final_src_vol: 46,
+      final_dest_vol: 10
+    },
+    {
+      target_ng: 10_000,
+      measured_conc: 250,
+      measured_vol: 50,
+      min_vol: 10,
+      max_vol: 50,
+      min_pick_vol: 1,
+      source_pick_vol: 40,
+      buffer_vol: 0,
+      final_src_vol: 10,
+      final_dest_vol: 10
+    },
+    {
+      target_ng: 10_000,
+      measured_conc: 250,
+      measured_vol: 30,
+      min_vol: 10,
+      max_vol: 50,
+      min_pick_vol: 1,
+      source_pick_vol: 30,
+      buffer_vol: 0,
+      final_src_vol: 0,
+      final_dest_vol: 10
+    },
+    {
+      scenario: 'Y24-382: SQPD-10861 v14.29, b0.00',
+      target_ng: 1000,
+      measured_conc: 70,
+      measured_vol: 50,
+      min_vol: 10,
+      max_vol: 50,
+      min_pick_vol: 5,
+      source_pick_vol: 14.29,
+      buffer_vol: 0,
+      final_src_vol: 35.7143,
+      final_dest_vol: 10
+    },
+    {
+      scenario: 'Y24-382: SQPD-10864 v1.00, b49.00',
+      target_ng: 200,
+      measured_conc: 200,
+      measured_vol: 1,
+      min_vol: 50,
+      max_vol: 50,
+      min_pick_vol: 5,
+      source_pick_vol: 1,
+      buffer_vol: 49,
+      final_src_vol: 0,
+      final_dest_vol: 50
+    },
+    {
+      scenario: 'Y24-382: SQPD-10866 v50.00, b0.00',
+      target_ng: 9800,
+      measured_conc: 98,
+      measured_vol: 100,
+      min_vol: 50,
+      max_vol: 50,
+      min_pick_vol: 5,
+      source_pick_vol: 50,
+      buffer_vol: 0,
+      final_src_vol: 50,
+      final_dest_vol: 50
+    },
+    {
+      scenario: 'Y24-382: SQPD-10868 v50.00, b0.00',
+      target_ng: 9800,
+      measured_conc: 100,
+      measured_vol: 100,
+      min_vol: 50,
+      max_vol: 50,
+      min_pick_vol: 5,
+      source_pick_vol: 50,
+      buffer_vol: 0,
+      final_src_vol: 50,
+      final_dest_vol: 50
+    }
   ].each do |cherrypick|
-    # rubocop:enable Layout/LineLength
+    scenario = cherrypick.fetch(:scenario, nil)
     target_ng = cherrypick[:target_ng]
     concentration = cherrypick[:measured_conc]
     measured_volume = cherrypick[:measured_vol]
@@ -305,7 +449,10 @@ describe Well do
         )
       end
 
-      context "for a target of #{target_ng} with conc #{concentration} and vol #{measured_volume}" do
+      context(
+        "when testing #{scenario}" \
+          " for a target of #{target_ng} with conc #{concentration} and vol #{measured_volume}"
+      ) do
         it "output stock_to_pick #{stock_to_pick}" do
           expect(@target_well.well_attribute.picked_volume.round(2)).to eq(stock_to_pick)
         end
