@@ -28,12 +28,17 @@ describe WellAttribute do
   describe '#estimated_volume' do
     it 'returns the estimated volume as a float' do
       well_attribute.current_volume = 10
-      expect(well_attribute.estimated_volume).to eq 10.0
+      expect(well_attribute.estimated_volume).to be_a(Float)
     end
 
-    it 'returns the current volume if it is set' do
+    it 'returns the estimated volume as the measured volume if both are set' do
       well_attribute.current_volume = 10
       well_attribute.measured_volume = 20
+      expect(well_attribute.estimated_volume).to eq 20.0
+    end
+
+    it 'returns the current volume if the measured volume is not set' do
+      well_attribute.current_volume = 10
       expect(well_attribute.estimated_volume).to eq 10.0
     end
 
