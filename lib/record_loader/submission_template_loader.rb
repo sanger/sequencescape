@@ -24,21 +24,33 @@ module RecordLoader
       }
     end
 
+    # rubocop:disable Metrics/AbcSize
     def submission_parameters(related_records)
       params = {}
       params[:request_type_ids_list] = sort_request_type_ids(related_records['request_type_keys']) if related_records[
         'request_type_keys'
       ]
-
+      params[:order_role_id] = find_order_role(related_records['order_role']).id if related_records['order_role']
       params[:project_id] = find_project(related_records['project_name']).id if related_records['project_name']
       params[:study_id] = find_study(related_records['study_name']).id if related_records['study_name']
       params
     end
 
+    # rubocop:enable Metrics/AbcSize
+
     def sort_request_type_ids(request_type_keys)
       request_types = RequestType.where(key: request_type_keys).sort_by { |record| request_type_keys.index(record.key) }
 
       request_types.map(&:id)
+    end
+
+    def find_order_role(role)
+      if Rails.env.production?
+        OrderRole.find_by!(role:)
+      else
+        # In development mode or UAT we don't care so much
+        OrderRole.find_by(role:) || UatActions::StaticRecords.order_role
+      end
     end
 
     def find_project(name)

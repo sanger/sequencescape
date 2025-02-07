@@ -81,4 +81,8 @@ module UatActions::StaticRecords
   def self.faculty_sponsor
     FacultySponsor.find_or_create_by!(name: 'UAT Faculty Sponsor')
   end
+
+  def self.order_role
+    OrderRole.find_or_create_by!(role: 'UAT Order Role')
+  end
 end

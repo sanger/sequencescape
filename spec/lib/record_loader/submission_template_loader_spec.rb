@@ -17,6 +17,7 @@ RSpec.describe RecordLoader::SubmissionTemplateLoader, :loader, type: :model do
     let!(:product_cat) { ProductCatalogue.create!(name: 'my_product_cat') }
     let!(:request_type) { create(:request_type, key: 'my_request_type') }
     let!(:request_type2) { create(:request_type, key: 'my_request_type2') }
+    let!(:order_role) { OrderRole.create!(role: 'my_order_role') }
 
     it 'creates two records' do
       expect { record_loader.create! }.to change(SubmissionTemplate, :count).by(2)
@@ -39,6 +40,7 @@ RSpec.describe RecordLoader::SubmissionTemplateLoader, :loader, type: :model do
         submission_class_name: 'LinearSubmission',
         submission_parameters: {
           request_type_ids_list: [request_type.id, request_type2.id],
+          order_role_id: order_role.id,
           project_id: project.id
         },
         product_line_id: product_line.id,
