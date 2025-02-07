@@ -205,6 +205,18 @@ Feature: The XML for the sequencescape API
           <descriptor><name>Policy Url</name></descriptor>
           <descriptor><name>Policy title</name></descriptor>
           <descriptor><name>ArrayExpress Accession Number</name></descriptor>
+          <descriptor>
+            <name>EBI Library Strategy</name>
+            <value>WGS</value>
+          </descriptor>
+          <descriptor>
+            <name>EBI Library Source</name>
+            <value>GENOMIC</value>
+          </descriptor>
+          <descriptor>
+            <name>EBI Library Selection</name>
+            <value>PCR</value>
+          </descriptor>
         </descriptors>
       </study>
       """

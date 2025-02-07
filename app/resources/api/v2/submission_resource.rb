@@ -21,8 +21,6 @@ module Api
 
       # model_name / model_hint if required
 
-      default_includes :uuid_object, :sequencing_requests
-
       # Associations:
 
       # Attributes
