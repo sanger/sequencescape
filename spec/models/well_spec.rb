@@ -427,7 +427,7 @@ describe Well do
     target_ng = cherrypick[:target_ng]
     concentration = cherrypick[:measured_conc]
     measured_volume = cherrypick[:measured_vol]
-    stock_to_pick = cherrypick[:source_pick_vol]
+    source_pick_vol = cherrypick[:source_pick_vol]
     buffer_added = cherrypick[:buffer_vol]
     minimum_volume = cherrypick[:min_vol]
     maximum_volume = cherrypick[:max_vol]
@@ -451,13 +451,13 @@ describe Well do
 
       context(
         "when testing #{scenario}" \
-          " for a target of #{target_ng} with conc #{concentration} and vol #{measured_volume}"
+          "for a target of #{target_ng} with conc #{concentration} and vol #{measured_volume}"
       ) do
-        it "output stock_to_pick #{stock_to_pick}" do
-          expect(@target_well.well_attribute.picked_volume.round(2)).to eq(stock_to_pick)
+        it "output source pick volume of #{source_pick_vol}" do
+          expect(@target_well.well_attribute.picked_volume.round(2)).to eq(source_pick_vol)
         end
 
-        it "output buffer #{buffer_added}" do
+        it "output buffer of #{buffer_added}" do
           expect(@target_well.well_attribute.buffer_volume).to eq(buffer_added)
         end
 
