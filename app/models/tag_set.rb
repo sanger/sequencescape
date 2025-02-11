@@ -25,6 +25,25 @@ class TagSet < ApplicationRecord
   # The scoping retrieves the visible tag sets and makes sure they are dual index.
   scope :visible_dual_index, -> { dual_index.visible }
 
+  scope :single_index, -> { where(tag2_group: nil) }
+
+
+  # The scoping retrieves the visible tag sets and makes sure they are single index.
+  # Define the visible_single_index scope
+  # Define the visible_single_index scope
+  scope :visible_single_index, -> {
+    single_index
+      .joins(:tag_group)
+      .where(tag_groups: { visible: true })
+  }
+
+  # Define the scope that combines visible_single_index and chromium tag_group
+  scope :visible_single_index_chromium, -> {
+    visible_single_index
+      .joins(:tag_group)
+      .merge(TagGroup.chromium)
+  }
+
   # Dynamic method to determine the visibility of a tag_set based on the visibility of its tag_groups
   # TagSet has a method to check if itself is visible by checking
   # the visibility of both tag_group and (if not null) tag2_group.
