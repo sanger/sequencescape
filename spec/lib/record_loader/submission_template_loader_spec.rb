@@ -15,7 +15,7 @@ RSpec.describe RecordLoader::SubmissionTemplateLoader, :loader, type: :model do
   let!(:project) { UatActions::StaticRecords.project }
 
   let(:role) { 'my_order_role' }
-  let!(:order_role) { OrderRole.create!(role: role) }
+  let!(:order_role) { OrderRole.create!(role:) }
 
   context 'with two_submission_templates selected' do
     let!(:product_line) { ProductLine.create!(name: 'my_product_line') }
@@ -70,14 +70,14 @@ RSpec.describe RecordLoader::SubmissionTemplateLoader, :loader, type: :model do
 
       context 'when the role already exists' do
         it 'finds the order role by role' do
-          allow(OrderRole).to receive(:find_or_create_by!).with(role: role).and_return(order_role)
+          allow(OrderRole).to receive(:find_or_create_by!).with(role:).and_return(order_role)
           expect(record_loader.find_order_role(role)).to eq(order_role)
         end
       end
 
       context 'when the role does not exist' do
         it 'creates the order role' do
-          allow(OrderRole).to receive(:find_or_create_by!).with(role: role).and_return(order_role)
+          allow(OrderRole).to receive(:find_or_create_by!).with(role:).and_return(order_role)
           expect(record_loader.find_order_role(role)).to eq(order_role)
         end
       end
@@ -88,14 +88,14 @@ RSpec.describe RecordLoader::SubmissionTemplateLoader, :loader, type: :model do
 
       context 'when the role already exists' do
         it 'finds the order role by role' do
-          allow(OrderRole).to receive(:find_or_create_by).with(role: role).and_return(order_role)
+          allow(OrderRole).to receive(:find_or_create_by).with(role:).and_return(order_role)
           expect(record_loader.find_order_role(role)).to eq(order_role)
         end
       end
 
       context 'when the role does not exist' do
         it 'returns the UAT order role' do
-          allow(OrderRole).to receive(:find_or_create_by).with(role: role).and_return(nil)
+          allow(OrderRole).to receive(:find_or_create_by).with(role:).and_return(nil)
           allow(UatActions::StaticRecords).to receive(:order_role).and_return(order_role)
           expect(record_loader.find_order_role(role)).to eq(order_role)
         end
