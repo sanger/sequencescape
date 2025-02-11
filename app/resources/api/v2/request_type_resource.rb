@@ -22,6 +22,7 @@ module Api
       # model_name / model_hint if required
 
       # Associations:
+      has_many :requests
 
       # Attributes
       attribute :uuid, readonly: true

@@ -2,10 +2,6 @@
 
 module Api
   module V2
-    # @todo This documentation does not yet include a detailed description of what this resource represents.
-    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
-    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
-    #
     # @note Access this resource via the `/api/v2/tube_racks/` endpoint.
     #
     # Provides a JSON:API representation of {TubeRack}.
@@ -14,27 +10,30 @@ module Api
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class TubeRackResource < BaseResource
-      # TODO: Here be dragons! This resource is mutable and can be created via
-      #       the JSON API. However the asset_creation record is not generated
-      #       as we would be relying on the request to tell us who requested it.
-      #       Instead this should be done as part of adding authentication to
-      #       the API in the security OKR.
-
-      # Attributes
-      attribute :created_at, readonly: true
-      attribute :labware_barcode, write_once: true
-      attribute :name, write_once: true
-      attribute :number_of_columns, write_once: true
-      attribute :number_of_rows, write_once: true
-      attribute :size
-      attribute :tube_locations, writeonly: true
-      attribute :updated_at, readonly: true
-      attribute :uuid, readonly: true
-
+      # NB. This resource is mutable and can be created via the JSON API.
       # Relationships
       has_many :comments, readonly: true
-      has_one :purpose, foreign_key: :plate_purpose_id
       has_many :racked_tubes
+      # TODO: refactor plate_purpose_id to purpose_id throughout repo
+      has_one :purpose, foreign_key: :plate_purpose_id, class_name: 'TubeRackPurpose'
+      has_many :parents, readonly: true, polymorphic: true
+      has_many :state_changes, readonly: true
+      has_one :custom_metadatum_collection, foreign_key_on: :related
+      has_many :ancestors, readonly: true, polymorphic: true
+      # TODO: do we need descendants? might have to delegate to racked tubes
+
+      # Attributes
+      attribute :labware_barcode, write_once: true
+      attribute :size, write_once: true
+      attribute :number_of_rows, write_once: true
+      attribute :number_of_columns, write_once: true
+      attribute :name, delegate: :display_name, write_once: true
+      attribute :tube_locations, writeonly: true
+      attribute :uuid, readonly: true
+      attribute :state, readonly: true
+
+      attribute :created_at, readonly: true
+      attribute :updated_at, readonly: true
 
       # Filters
       filter :barcode, apply: ->(records, value, _options) { records.with_barcode(value) }
@@ -43,11 +42,16 @@ module Api
              apply:
                (
                  lambda do |records, value, _options|
-                   purpose = Purpose.find_by(name: value)
+                   purpose = TubeRack::Purpose.find_by(name: value)
                    records.where(plate_purpose_id: purpose)
                  end
                )
       filter :purpose_id, apply: ->(records, value, _options) { records.where(plate_purpose_id: value) }
+      filter :created_at_gt,
+             apply: lambda { |records, value, _options| records.where('labware.created_at > ?', value[0].to_date) }
+      filter :updated_at_gt,
+             apply: lambda { |records, value, _options| records.where('labware.updated_at > ?', value[0].to_date) }
+      # TODO: do we need scope for include_used? would have to delegate to racked tubes
 
       # Field Methods
 
