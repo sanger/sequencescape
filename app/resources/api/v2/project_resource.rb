@@ -17,8 +17,6 @@ module Api
     class ProjectResource < BaseResource
       immutable
 
-      default_includes :uuid_object
-
       attribute :name
       attribute :cost_code, delegate: :project_cost_code
       attribute :uuid, readonly: true

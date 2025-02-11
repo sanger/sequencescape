@@ -20,8 +20,8 @@ describe("actions.js", () => {
       // mock commit
       const plates = { 1: plateWithPicks() };
       const state = { ...defaultState(), plates };
-      const dispatch = jest.fn();
-      const commit = jest.fn((_) => (state.scanStore[`_${exampleBarcode}`] = { barcode: exampleBarcode, id: 1 }));
+      const dispatch = vi.fn();
+      const commit = vi.fn((_) => (state.scanStore[`_${exampleBarcode}`] = { barcode: exampleBarcode, id: 1 }));
       // apply action
       await plateBarcodeScan({ commit, state, dispatch }, exampleBarcode);
       // assert result
@@ -36,8 +36,8 @@ describe("actions.js", () => {
       mirageServer.create("plate", plateWithoutPicks({ id: "1" }));
       // mock commit
       const state = defaultState();
-      const commit = jest.fn((_) => (state.scanStore[`_${exampleBarcode}`] = { barcode: exampleBarcode }));
-      const dispatch = jest.fn();
+      const commit = vi.fn((_) => (state.scanStore[`_${exampleBarcode}`] = { barcode: exampleBarcode }));
+      const dispatch = vi.fn();
       // apply action
       await plateBarcodeScan({ commit, state, dispatch }, exampleBarcode);
       // assert result
@@ -53,8 +53,8 @@ describe("actions.js", () => {
       mirageServer.create("plate", plateWithoutPicks({ id: "1", control: true }));
       // mock commit
       const state = defaultState();
-      const commit = jest.fn((_) => (state.scanStore[`_${exampleBarcode}`] = { barcode: exampleBarcode }));
-      const dispatch = jest.fn();
+      const commit = vi.fn((_) => (state.scanStore[`_${exampleBarcode}`] = { barcode: exampleBarcode }));
+      const dispatch = vi.fn();
       // apply action
       await plateBarcodeScan({ commit, state, dispatch }, exampleBarcode);
       // assert result
@@ -73,10 +73,10 @@ describe("actions.js", () => {
       // mock the console
       // We don't *need* to do this, but it clutters the output and confuses
       // actual failing tests
-      console.error = jest.fn();
+      console.error = vi.fn();
       // mock commit
       const state = defaultState();
-      const commit = jest.fn((_) => (state.scanStore["_BadPlate"] = { barcode: "BadPlate" }));
+      const commit = vi.fn((_) => (state.scanStore["_BadPlate"] = { barcode: "BadPlate" }));
       // mock dependencies
       // apply action
       await plateBarcodeScan({ commit, state }, "BadPlate");
@@ -93,8 +93,8 @@ describe("actions.js", () => {
   describe("fetchBatches", () => {
     it("fetches each batch`", () => {
       // mock commit
-      const commit = jest.fn();
-      const dispatch = jest.fn();
+      const commit = vi.fn();
+      const dispatch = vi.fn();
       const state = defaultState();
       // apply action
       fetchBatches({ commit, dispatch, state }, { ids: [1, 2] });
@@ -132,8 +132,8 @@ describe("actions.js", () => {
 
       // mock commit
       const state = defaultState();
-      const commit = jest.fn().mockImplementationOnce((_) => (state.batches["b1"] = { id: "1" }));
-      const dispatch = jest.fn((_) => (state.pickCount += 1));
+      const commit = vi.fn().mockImplementationOnce((_) => (state.batches["b1"] = { id: "1" }));
+      const dispatch = vi.fn((_) => (state.pickCount += 1));
 
       // apply action
       await fetchBatch({ commit, dispatch, state }, { id: "1" });
@@ -170,7 +170,7 @@ describe("actions.js", () => {
       // Set up initial state
       const state = defaultState();
       // apply action
-      const commit = jest.fn((_) => (state.pickCount += 1));
+      const commit = vi.fn((_) => (state.pickCount += 1));
       const returned = nextPickId({ commit, state });
       expect(commit).toHaveBeenCalledWith("incrementPick");
       expect(returned).toBe(1);

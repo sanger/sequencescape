@@ -14,8 +14,6 @@ module Api
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class AliquotResource < BaseResource
-      default_includes :tag, :tag2
-
       # Associations
       has_one :study
       has_one :project

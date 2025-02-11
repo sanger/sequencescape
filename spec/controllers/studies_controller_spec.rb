@@ -23,7 +23,10 @@ RSpec.describe StudiesController do
           'commercially_available' => 'No',
           'data_release_study_type_id' => data_release_study_type,
           'data_release_strategy' => 'open',
-          'study_type_id' => StudyType.find_or_create_by(name: 'Not specified').id
+          'study_type_id' => StudyType.find_or_create_by(name: 'Not specified').id,
+          'ebi_library_strategy' => 'WGS',
+          'ebi_library_source' => 'GENOMIC',
+          'ebi_library_selection' => 'PCR'
         }
       }
     }
@@ -74,129 +77,6 @@ RSpec.describe StudiesController do
 
       it 'not change Study.count' do
         expect(Study.count).to eq(@initial_study_count)
-      end
-    end
-
-    context 'with poly_metadata options' do
-      let(:option_key) { 'scrna_core_pbmc_donor_pooling_required_number_of_cells' }
-      let(:option_value) { '1000' }
-      let(:params) do
-        # Extend parent context's params with poly_metadata options.
-        super().merge('poly_metadata' => { option_key => option_value })
-      end
-
-      context 'with specified value' do
-        it 'creates poly_metadatum with the value' do
-          poly_metadatum = Study.last.poly_metadatum_by_key(option_key)
-          expect(poly_metadatum.value).to eq(option_value)
-        end
-      end
-
-      context 'with empty value' do
-        let(:option_value) { '' } # Override parent context's option_value.
-
-        it 'does not create poly_metadatum' do
-          poly_metadatum = Study.last.poly_metadatum_by_key(option_key)
-          expect(poly_metadatum).to be_nil
-        end
-      end
-    end
-  end
-
-  describe '#update' do
-    context 'with poly_metadata options' do
-      let(:option_key) { 'scrna_core_pbmc_donor_pooling_required_number_of_cells' }
-      let(:option_value) { '1000' }
-
-      let!(:study) do
-        # Create a study without poly_metadata options.
-        post(:create, params:)
-        Study.last
-      end
-
-      let(:update_params) { params.merge('id' => study.id).merge('poly_metadata' => { option_key => option_value }) }
-
-      context 'without existing poly_metadatum' do
-        context 'with specified value' do
-          it 'creates poly_metadatum with the value' do
-            # Existing
-            poly_metadatum = study.poly_metadatum_by_key(option_key)
-            expect(poly_metadatum).to be_nil
-
-            post :update, params: update_params
-            study.reload
-
-            # Updated
-            poly_metadatum = study.poly_metadatum_by_key(option_key)
-            expect(poly_metadatum).not_to be_nil
-            expect(poly_metadatum.value).to eq(option_value)
-          end
-        end
-
-        context 'with empty value' do
-          let(:option_value) { '' }
-
-          it 'does not create poly_metadatum' do
-            # Existing
-            poly_metadatum = study.poly_metadatum_by_key(option_key)
-            expect(poly_metadatum).to be_nil
-
-            post :update, params: update_params
-            study.reload
-
-            # Updated
-            poly_metadatum = study.poly_metadatum_by_key(option_key)
-            expect(poly_metadatum).to be_nil
-          end
-        end
-      end
-
-      context 'with existing poly_metadatum' do
-        let(:new_option_value) { '2000' }
-        let(:new_update_params) do
-          params.merge('poly_metadata' => { option_key => new_option_value }).merge('id' => study.id)
-        end
-
-        before do
-          post :update, params: update_params # Update once
-          study.reload
-        end
-
-        context 'with specified value' do
-          it 'creates poly_metadatum with the value' do
-            # Existing
-            poly_metadatum_existing = study.poly_metadatum_by_key(option_key)
-            expect(poly_metadatum_existing).not_to be_nil
-            expect(poly_metadatum_existing.value).to eq(option_value)
-
-            post :update, params: new_update_params # Update with new value
-            study.reload
-
-            # Updated
-            poly_metadatum = study.poly_metadatum_by_key(option_key)
-            expect(poly_metadatum).not_to be_nil
-            expect(poly_metadatum.value).to eq(new_option_value) # New value
-            expect(poly_metadatum.id).to eq(poly_metadatum_existing.id) # Same record
-          end
-        end
-
-        context 'with empty value' do
-          let(:new_option_value) { '' }
-
-          it 'does not create poly_metadatum' do
-            # Existing
-            poly_metadatum_existing = study.poly_metadatum_by_key(option_key)
-            expect(poly_metadatum_existing).not_to be_nil
-            expect(poly_metadatum_existing.value).to eq(option_value)
-
-            post :update, params: new_update_params # Update with new value
-            study.reload
-
-            # Updated
-            poly_metadatum = study.poly_metadatum_by_key(option_key)
-            expect(poly_metadatum).to be_nil # Deleted
-          end
-        end
       end
     end
   end

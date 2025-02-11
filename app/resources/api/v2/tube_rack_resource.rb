@@ -11,8 +11,6 @@ module Api
     # of the JSON:API standard.
     class TubeRackResource < BaseResource
       # NB. This resource is mutable and can be created via the JSON API.
-      default_includes :uuid_object, :barcodes
-
       # Relationships
       has_many :comments, readonly: true
       has_many :racked_tubes

@@ -18,8 +18,6 @@ module Api
 
       # model_name / model_hint if required
 
-      default_includes :uuid_object, :barcodes
-
       # Associations:
       has_one :lot
       has_one :asset, polymorphic: true

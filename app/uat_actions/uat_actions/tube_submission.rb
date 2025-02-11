@@ -126,10 +126,12 @@ class UatActions::TubeSubmission < UatActions
     barcodes =
       tube_barcodes
         .gsub(/(\\[trfvn])+/, ' ')
+        .strip
         .split
         .select do |barcode|
           Tube.find_by_barcode(barcode).blank? # not found
         end
+    return if barcodes.empty?
 
     # return if all tubes exist
     return if barcodes.blank?

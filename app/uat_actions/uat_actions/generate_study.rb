@@ -31,7 +31,10 @@ class UatActions::GenerateStudy < UatActions
         contaminated_human_dna: 'No',
         contains_human_dna: 'No',
         commercially_available: 'No',
-        program: UatActions::StaticRecords.program
+        program: UatActions::StaticRecords.program,
+        ebi_library_strategy: 'WGS',
+        ebi_library_source: 'GENOMIC',
+        ebi_library_selection: 'PCR'
       }
     ).find_or_create_by!(name: study_name)
   end
