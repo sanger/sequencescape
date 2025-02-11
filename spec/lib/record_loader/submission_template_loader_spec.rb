@@ -13,7 +13,9 @@ RSpec.describe RecordLoader::SubmissionTemplateLoader, :loader, type: :model do
 
   let!(:study) { UatActions::StaticRecords.study }
   let!(:project) { UatActions::StaticRecords.project }
-  let!(:order_role) { UatActions::StaticRecords.order_role }
+
+  let(:role) { 'my_order_role' }
+  let!(:order_role) { OrderRole.create!(role: role) }
 
   context 'with two_submission_templates selected' do
     let!(:product_line) { ProductLine.create!(name: 'my_product_line') }
@@ -38,6 +40,7 @@ RSpec.describe RecordLoader::SubmissionTemplateLoader, :loader, type: :model do
       rec1 = SubmissionTemplate.find_by(name: 'test_submission_template_1')
       rec2 = SubmissionTemplate.find_by(name: 'test_submission_template_2')
 
+      # NB. the project name in the test file is 'my_project', which does not exist, so it defaults to the UAT project
       expect(rec1).to have_attributes(
         submission_class_name: 'LinearSubmission',
         submission_parameters: {
@@ -65,19 +68,37 @@ RSpec.describe RecordLoader::SubmissionTemplateLoader, :loader, type: :model do
     context 'when in production environment' do
       before { allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('production')) }
 
-      it 'finds the order role by role' do
-        allow(OrderRole).to receive(:find_by!).with(role: 'Test Role').and_return(order_role)
-        expect(record_loader.find_order_role('Test Role')).to eq(order_role)
+      context 'when the role already exists' do
+        it 'finds the order role by role' do
+          allow(OrderRole).to receive(:find_or_create_by!).with(role: role).and_return(order_role)
+          expect(record_loader.find_order_role(role)).to eq(order_role)
+        end
+      end
+
+      context 'when the role does not exist' do
+        it 'creates the order role' do
+          allow(OrderRole).to receive(:find_or_create_by!).with(role: role).and_return(order_role)
+          expect(record_loader.find_order_role(role)).to eq(order_role)
+        end
       end
     end
 
     context 'when not in production environment' do
       before { allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('development')) }
 
-      it 'finds the order role by role or returns the UAT order role' do
-        allow(OrderRole).to receive(:find_by).with(role: 'Test Role').and_return(nil)
-        allow(UatActions::StaticRecords).to receive(:order_role).and_return(order_role)
-        expect(record_loader.find_order_role('Test Role')).to eq(order_role)
+      context 'when the role already exists' do
+        it 'finds the order role by role' do
+          allow(OrderRole).to receive(:find_or_create_by).with(role: role).and_return(order_role)
+          expect(record_loader.find_order_role(role)).to eq(order_role)
+        end
+      end
+
+      context 'when the role does not exist' do
+        it 'returns the UAT order role' do
+          allow(OrderRole).to receive(:find_or_create_by).with(role: role).and_return(nil)
+          allow(UatActions::StaticRecords).to receive(:order_role).and_return(order_role)
+          expect(record_loader.find_order_role(role)).to eq(order_role)
+        end
       end
     end
   end

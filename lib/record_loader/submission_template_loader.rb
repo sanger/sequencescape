@@ -46,10 +46,10 @@ module RecordLoader
 
     def find_order_role(role)
       if Rails.env.production?
-        OrderRole.find_by!(role:)
+        OrderRole.find_or_create_by!(role:)
       else
-        # In development mode or UAT we don't care so much
-        OrderRole.find_by(role:) || UatActions::StaticRecords.order_role
+        # In development mode or UAT we use a static record as backup
+        OrderRole.find_or_create_by(role:) || UatActions::StaticRecords.order_role
       end
     end
 
@@ -57,7 +57,7 @@ module RecordLoader
       if Rails.env.production?
         Project.find_by!(name:)
       else
-        # In development mode or UAT we don't care so much
+        # In development mode or UAT we use a static record as backup
         Project.find_by(name:) || UatActions::StaticRecords.project
       end
     end
@@ -66,7 +66,7 @@ module RecordLoader
       if Rails.env.production?
         Study.find_by!(name:)
       else
-        # In development mode or UAT we don't care so much
+        # In development mode or UAT we use a static record as backup
         Study.find_by(name:) || UatActions::StaticRecords.study
       end
     end
