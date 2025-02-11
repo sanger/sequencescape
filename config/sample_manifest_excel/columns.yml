@@ -124,10 +124,9 @@ tag2_index:
     empty_cell:
     number_greater_than_one:
     is_text:
-chromium_tag_group:
-  heading: CHROMIUM TAG GROUP
+common_chromium_tag_group: &common_chromium_tag_group
   unlocked: true
-  validation:
+  validation: &common_chromium_tag_group_validation
     options:
       type: :list
       formula1: "$A$1:$A$2"
@@ -135,9 +134,21 @@ chromium_tag_group:
       showInputMessage: true
       promptTitle: "Tag set name"
       prompt: "Input the name of a valid tag set. All samples in a library need to be tagged with the same tag set."
-    range_name: :chromium_tag_groups
   conditional_formattings:
-    empty_cell:
+    empty_cell:    
+chromium_tag_group:
+  heading: CHROMIUM TAG GROUP
+  <<: *common_chromium_tag_group
+  validation:
+    <<: *common_chromium_tag_group_validation
+    range_name: :chromium_tag_groups
+
+chromium_single_index_tag_group:
+  heading: CHROMIUM TAG GROUP
+  <<: *common_chromium_tag_group
+  validation:
+    <<: *common_chromium_tag_group_validation
+    range_name: :chromium_single_index_tag_groups
 chromium_tag_well:
   heading: CHROMIUM TAG WELL
   unlocked: true
