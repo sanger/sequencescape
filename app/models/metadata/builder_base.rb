@@ -24,7 +24,10 @@ class Metadata::BuilderBase < ActionView::Helpers::FormBuilder
 
   def localised_sections(field)
     sections = @object.class.localised_sections(field).dup
-    sections.label_options = { class: 'required' } if @object.required?(field)
+    required_fields = [:ebi_library_strategy, :ebi_library_source, :ebi_library_selection]
+    if @object.required?(field) || (@object.new_record? && required_fields.include?(field))
+      sections.label_options = { class: 'required' }
+    end
     sections
   end
 
