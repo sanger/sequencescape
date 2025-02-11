@@ -32,6 +32,7 @@ module Api
       attribute :name, delegate: :display_name, write_once: true
       attribute :tube_locations, writeonly: true
       attribute :uuid, readonly: true
+      attribute :state, readonly: true
 
       attribute :created_at, readonly: true
       attribute :updated_at, readonly: true

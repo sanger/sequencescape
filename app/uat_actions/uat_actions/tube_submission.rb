@@ -122,6 +122,7 @@ class UatActions::TubeSubmission < UatActions
   # @return [void]
   def validate_tubes_exist
     return if tube_barcodes.blank? # already validated by presence
+
     barcodes =
       tube_barcodes
         .gsub(/(\\[trfvn])+/, ' ')
@@ -130,6 +131,10 @@ class UatActions::TubeSubmission < UatActions
           Tube.find_by_barcode(barcode).blank? # not found
         end
 
+    # return if all tubes exist
+    return if barcodes.blank?
+
+    # add error message listing tubes that do not exist
     message = format(ERROR_TUBES_DO_NOT_EXIST, barcodes.join(', '))
     errors.add(:tube_barcodes, message)
   end
