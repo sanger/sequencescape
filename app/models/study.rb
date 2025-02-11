@@ -218,17 +218,10 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     custom_attribute(:commercially_available, required: true, in: YES_OR_NO)
     custom_attribute(:study_name_abbreviation)
 
-    # add ebi library strategy
-    # custom_attribute :ebi_library_strategy, 
-    #     required: ->(record) { record.new_record? }, 
-    #     in: ->(record) { record.new_record? ? EBI_LIBRARY_STRATEGY_OPTIONS : nil }
-    # custom_attribute(:ebi_library_strategy, required: self.new_record?, in: self.new_record? ? EBI_LIBRARY_STRATEGY_OPTIONS : nil)
-    # custom_attribute(:ebi_library_source, required: true, in: EBI_LIBRARY_SOURCE_OPTIONS)
-    # custom_attribute(:ebi_library_selection, required: true, in: EBI_LIBRARY_SELECTION_OPTIONS)
-
-    # custom_attribute(:ebi_library_strategy, in: EBI_LIBRARY_STRATEGY_OPTIONS)
-    # custom_attribute(:ebi_library_source,  in: EBI_LIBRARY_SOURCE_OPTIONS)
-    # custom_attribute(:ebi_library_selection, in: EBI_LIBRARY_SELECTION_OPTIONS)
+    # add ebi library strategy, ebi library source, ebi library selection
+    custom_attribute(:ebi_library_strategy, in: EBI_LIBRARY_STRATEGY_OPTIONS)
+    custom_attribute(:ebi_library_source, in: EBI_LIBRARY_SOURCE_OPTIONS)
+    custom_attribute(:ebi_library_selection, in: EBI_LIBRARY_SELECTION_OPTIONS)
 
     custom_attribute(
       :data_release_strategy,
@@ -324,7 +317,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
                 message: 'only allows ASCII',
                 allow_blank: true
               }
-    
+
     validates :ebi_library_strategy, presence: true, on: :create
     validates :ebi_library_source, presence: true, on: :create
     validates :ebi_library_selection, presence: true, on: :create
