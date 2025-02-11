@@ -31,7 +31,8 @@ FactoryBot.define do
         sample_taxon_id: 9606,
         sample_common_name: 'Homo sapiens',
         donor_id: 'id',
-        phenotype: 'Unknown'
+        phenotype: 'Unknown',
+        huMFre_code: '12/1234'
       }.with_indifferent_access
     end
 

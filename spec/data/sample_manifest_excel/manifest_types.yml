@@ -36,6 +36,7 @@ plate_default:
     - :donor_id
     - :phenotype
     - :control_type
+    - :huMFre_code
 plate_full:
   heading: "Full Plate"
   asset_type: "plate"
@@ -89,6 +90,7 @@ plate_full:
     - :sample_ebi_accession_number
     - :donor_id
     - :control_type
+    - :huMFre_code
 plate_rnachip:
   heading: "RNA/ChIP Plate"
   asset_type: "plate"
@@ -117,6 +119,7 @@ plate_rnachip:
     - :organism_part
     - :sample_ebi_accession_number
     - :donor_id
+    - :huMFre_code
 plate_chromium_library:
   heading: "Chromium Library Plate"
   asset_type: "library_plate"
@@ -174,6 +177,7 @@ plate_chromium_library:
     - :disease
     - :sample_ebi_accession_number
     - :donor_id
+    - :huMFre_code
 plate_dual_index_tag_library:
   heading: "Library Plate - dual index tag plate"
   asset_type: "library_plate"
@@ -231,6 +235,7 @@ plate_dual_index_tag_library:
     - :disease
     - :sample_ebi_accession_number
     - :donor_id
+    - :huMFre_code
 plate_bioscan:
   heading: "Bioscan Plate"
   asset_type: "plate"
@@ -249,6 +254,7 @@ plate_bioscan:
     - :sample_type
     - :donor_id
     - :bioscan_control_type
+    - :huMFre_code
 plate_anospp:
   heading: "ANOSPP Plate"
   asset_type: "plate"
@@ -267,6 +273,7 @@ plate_anospp:
     - :sample_type
     - :donor_id
     - :control_type
+    - :huMFre_code
 tube_default:
   heading: "Default Tube"
   asset_type: "1dtube"
@@ -302,6 +309,7 @@ tube_default:
     - :sample_ebi_accession_number
     - :donor_id
     - :phenotype
+    - :huMFre_code
 tube_full:
   heading: "Full Tube"
   asset_type: "1dtube"
@@ -352,6 +360,7 @@ tube_full:
     - :disease
     - :sample_ebi_accession_number
     - :donor_id
+    - :huMFre_code
 tube_rnachip:
   heading: "RNA/ChIP Tube"
   asset_type: "1dtube"
@@ -378,6 +387,7 @@ tube_rnachip:
     - :organism_part
     - :sample_ebi_accession_number
     - :donor_id
+    - :huMFre_code
 tube_multiplexed_library:
   heading: "Multiplexed Library Tube"
   asset_type: "multiplexed_library"
@@ -422,6 +432,7 @@ tube_multiplexed_library:
     - :phenotype
     - :primer_panel
     - :control_type
+    - :huMFre_code
 tube_library_with_tag_sequences:
   heading: "Library Tube with Tag Sequences"
   asset_type: "library"
@@ -464,6 +475,7 @@ tube_library_with_tag_sequences:
     - :donor_id
     - :phenotype
     - :primer_panel
+    - :huMFre_code
 tube_chromium_library:
   heading: "Chromium Library Tube"
   asset_type: "library"
@@ -505,6 +517,7 @@ tube_chromium_library:
     - :sample_ebi_accession_number
     - :donor_id
     - :phenotype
+    - :huMFre_code
 tube_multiplexed_library_with_tag_sequences:
   heading: "Multiplexed Library Tube with Tag Sequences"
   asset_type: "multiplexed_library"
@@ -548,6 +561,7 @@ tube_multiplexed_library_with_tag_sequences:
     - :phenotype
     - :primer_panel
     - :control_type
+    - :huMFre_code
 tube_multiplexed_chromium_library:
   heading: "Multiplexed Chromium Library Tube"
   asset_type: "multiplexed_library"
@@ -589,6 +603,7 @@ tube_multiplexed_chromium_library:
     - :sample_ebi_accession_number
     - :donor_id
     - :phenotype
+    - :huMFre_code
 test:
   heading: "Test"
   asset_type: "plate"
@@ -605,6 +620,7 @@ test:
     - :sample_taxon_id
     - :sibling
     - :donor_id
+    - :huMFre_code
 tube_rack_default:
   heading: "Default Tube Rack"
   asset_type: "tube_rack"
@@ -641,6 +657,7 @@ tube_rack_default:
     - :sample_ebi_accession_number
     - :donor_id
     - :phenotype
+    - :huMFre_code
 long_read:
   heading: "Long Read"
   asset_type: "1dtube"
@@ -657,6 +674,7 @@ long_read:
     - :donor_id
     - :genome_size
     - :library_type
+    - :huMFre_code
 heron:
   heading: "Heron"
   asset_type: "plate"
@@ -710,6 +728,7 @@ heron:
     - :sample_ebi_accession_number
     - :control_type
     - :priority
+    - :huMFre_code
 cardinal:
   heading: "Cardinal"
   asset_type: "1dtube"
@@ -719,6 +738,7 @@ cardinal:
     - :supplier_name
     - :volume
     - :collected_by_for_cardinal
+    - :huMFre_code
 scrna_core:
   heading: "scRNA Core"
   asset_type: "1dtube"
@@ -730,6 +750,7 @@ scrna_core:
     - :supplier_name
     - :volume
     - :retention_instruction
+    - :huMFre_code
 tube_controls:
   heading: "Control tubes"
   asset_type: "1dtube"
@@ -739,6 +760,7 @@ tube_controls:
     - :supplier_name
     - :control_type
     - :collected_by_for_controls
+    - :huMFre_code
 tube_extraction:
   heading: "Extraction Tube"
   asset_type: "1dtube"
@@ -776,6 +798,7 @@ tube_extraction:
     - :sample_ebi_accession_number
     - :donor_id
     - :phenotype
+    - :huMFre_code
 pools_plate:
   heading: "Pools Plate"
   asset_type: "plate"
@@ -785,3 +808,4 @@ pools_plate:
     - :well
     - :sanger_sample_id
     - :supplier_name
+    - :huMFre_code

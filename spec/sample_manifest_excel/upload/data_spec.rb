@@ -40,9 +40,11 @@ RSpec.describe SampleManifestExcel::Upload::Data, :sample_manifest, :sample_mani
   it '#cell returns a cell of data' do
     data = described_class.new(test_file)
     spreadsheet = Roo::Spreadsheet.open(test_file).sheet(0)
-    expect(data.cell(spreadsheet.last_row - 10, spreadsheet.last_column - 1)).not_to be_nil
-    expect(data.cell(spreadsheet.last_row - 10, spreadsheet.last_column - 1)).to eq(
-      spreadsheet.cell(spreadsheet.last_row, spreadsheet.last_column - 1)
+    #Validate that the value of the cell at the last row and last column is not nil and matches the expected value
+    # huMFRe_code is the last column in the test file
+    expect(data.cell(spreadsheet.last_row - 10, spreadsheet.last_column)).not_to be_nil
+    expect(data.cell(spreadsheet.last_row - 10, spreadsheet.last_column)).to eq(
+      spreadsheet.cell(spreadsheet.last_row, spreadsheet.last_column)
     )
   end
 

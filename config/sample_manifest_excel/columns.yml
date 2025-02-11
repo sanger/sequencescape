@@ -1080,3 +1080,19 @@ legacy_donor_id:
 legacy_date_of_sample_collection:
   heading: DATE OF SAMPLE COLLECTION (MM/YY or YYYY only)
   updates: date_of_sample_collection
+huMFre_code:
+  heading: HuMFre Code
+  updates: huMFre_code
+  unlocked: true
+  validation:
+    options:
+      type: :custom
+      formula1: '=OR(
+        AND(LEN(A1)<=16, ISNUMBER(FIND("/", A1)), ISNUMBER(VALUE(LEFT(A1, 2))), ISNUMBER(VALUE(MID(A1, 4, LEN(A1)-3)))),
+        AND(LEN(A1)<=16, ISNUMBER(FIND("/", A1)), ISNUMBER(FIND("-", A1)), ISNUMBER(VALUE(LEFT(A1, 2))), ISNUMBER(VALUE(MID(A1, 4, 4))), ISNUMBER(VALUE(RIGHT(A1, 3))))
+        )'
+      allowBlank: true
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "HuMFre Code"
+      error: "HuMFre code must match a valid format, e.g. 12/34 or 12/2023-001"
