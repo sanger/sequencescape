@@ -23,10 +23,6 @@
 <h3>Properties</h3>
 <%= render partial: 'shared/metadata/edit/study', locals: { study: study } %>
 
-<h3>Additional Properties</h3>
-<small>Following fields are optional and specific to certain studies.</small>
-<%= render partial: 'shared/poly_metadata/edit/study', locals: { study: study } %>
-
 <div class="offset-md-2">
   <%= form.submit class: 'btn btn-success' %>
   <%= link_to "cancel", :back, class: 'btn btn-danger' %>

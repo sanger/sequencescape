@@ -159,11 +159,9 @@ Given /^the study "([^"]+)" is delayed for (3|6|9|12) months because "([^"]+)"$/
   study.update!(
     study_metadata_attributes: {
       data_release_timing: 'delayed',
-      data_release_delay_reason: 'other',
+      data_release_delay_reason: 'Other (please specify below)',
       data_release_delay_other_comment: reason,
-      data_release_delay_period: "#{period} months",
-      data_release_delay_approval: 'Yes',
-      data_release_delay_reason_comment: reason
+      data_release_delay_period: "#{period} months"
     }
   )
 end
@@ -334,7 +332,10 @@ When /^I have an? (managed|open) study without a data release group called "(.*?
       data_release_study_type: DataReleaseStudyType.first,
       contaminated_human_dna: 'No',
       contains_human_dna: 'Yes',
-      commercially_available: 'No'
+      commercially_available: 'No',
+      ebi_library_strategy: 'WGS',
+      ebi_library_source: 'GENOMIC',
+      ebi_library_selection: 'PCR'
     }
   )
 end

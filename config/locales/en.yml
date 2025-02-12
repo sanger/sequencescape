@@ -1,3 +1,4 @@
+---
 en:
   date:
     formats:
@@ -169,6 +170,73 @@ en:
 
   submissions:
     no_submissions: "There are no submissions yet. Please create one."
+    scrna_core_cdna_prep_feasibility_validator:
+      errors:
+        # Validation: Total number of samples in the submission must be between 5 and 96 (inclusive).
+        # min and max are for the acceptable range of the total number of samples in the submission.
+        # count is the total number of samples in the submission.
+        # zero, one and other are the pluralization keys selected by the count of samples
+        total_number_of_samples:
+          zero: >
+            The total number of samples in the submission must be between %{min} and %{max} (inclusive).
+            However, no samples were found.
+          one: |
+            The total number of samples in the submission must be between %{min} and %{max} (inclusive).
+            However, one sample was found.
+          other: >
+            The total number of samples in the submission must be between %{min} and %{max} (inclusive).
+            However, %{count} samples were found.
+        # Validation: Total (requested) number of pools must be between 1 and 8 (inclusive).
+        # min and max are for the acceptable range of the total number of pools in the submission.
+        # count is the total number of pools in the submission.
+        # zero, one and other are the pluralization keys selected by the count of pools
+        total_number_of_pools:
+          zero: >
+            The total number of pools in the submission must be between %{min} and %{max} (inclusive).
+            However, no pools were found.
+          one: >
+            The total number of pools in the submission must be between %{min} and %{max} (inclusive).
+            However, one pool was found.
+          other: >
+            The total number of pools in the submission must be between %{min} and %{max} (inclusive).
+            However, %{count} pools were found.
+        # Validation: The number of pools requested must be feasible given the number of samples.
+        # size_type is either 'smallest' and 'biggest'.
+        # study_name and project_name are the values of respective fields from the spreadsheet.
+        # zero, one and other are the pluralization keys selected by the count of samples in the pools.
+        number_of_pools_by_samples:
+          zero: >
+            The number of pools is not feasible for the study %{study_name} and the project %{project_name}.
+            The number of samples in the %{size_type} pool must be between %{min} and %{max} (inclusive).
+            However, no samples were found in the pool.
+          one: >
+            The number of pools is not feasible for the study %{study_name} and the project %{project_name}.
+            The number of samples in the %{size_type} pool must be between %{min} and %{max} (inclusive).
+            However, one sample was found in the pool.
+          other: >
+            The number of pools is not feasible for the study %{study_name} and the project %{project_name}.
+            The number of samples in the %{size_type} pool must be between %{min} and %{max} (inclusive).
+            However, %{count} samples were found in the pool.
+        # Validation: The number of pools requested must be feasible having checked for donor clash.
+        # study_name and project_name are the values of respective fields from the spreadsheet.
+        # count is the size of the biggest group of samples with the same donor ID.
+        # number_of_pools is the number of pools requested for the study and project.
+        # barcodes_or_well_locations is the list of barcodes (tubes) or well locations (plates) with the same donor ID.
+        number_of_pools_by_donors: >
+          The number of pools is not feasible for the study %{study_name} and the project %{project_name}.
+          The number of samples with the same donor ID must be less than or equal to the requested number of pools.
+          However, %{count} samples with the same donor ID were found, while the number of pools requested was %{number_of_pools}.
+          The samples with the same donor ID follow: %{barcodes_or_well_locations}.
+      warnings:
+        # Validation: There is not enough material for two repeat pooling attempts
+        # study_name and project_name are the values of respective fields from the spreadsheet.
+        # number_of_samples_in_smallest_pool is the number of samples in the smallest pool.
+        # final_resuspension_volume is the final resuspension volume given the number of samples in the smallest pool for the smallest pool.
+        # full_allowance is the full allowance given the number of cells per chip well for the study and project.
+        full_allowance: >
+          There is not enough material for two repeat pooling attempts for the study %{study_name} and the project %{project_name}.
+          The final resuspension volume for the smallest pool should be greater than or equal to the full allowance.
+          However, for the smallest pool of size %{number_of_samples_in_smallest_pool}, the final resuspension volume is %{final_resuspension_volume} and the full allowance is %{full_allowance}.
 
   cherrypick:
     picking_by_row: "This cherrypick may take longer as it is picking by rows, rather than columns."

@@ -21,8 +21,6 @@ module Api
 
       # model_name / model_hint if required
 
-      default_includes :uuid_object
-
       # Associations:
       has_one :target_purpose, write_once: true, class_name: 'Purpose'
 

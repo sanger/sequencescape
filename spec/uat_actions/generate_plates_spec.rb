@@ -83,4 +83,83 @@ describe UatActions::GeneratePlates do
   it 'returns a default' do
     expect(described_class.default).to be_a described_class
   end
+
+  describe '#valid?' do
+    let(:uat_action) { described_class.new(parameters) }
+
+    describe '#validate_plate_purpose_exists' do
+      let(:parameters) { { plate_purpose_name: } }
+      let(:error_message) { format(described_class::ERROR_PLATE_PURPOSE_DOES_NOT_EXIST, plate_purpose_name) }
+
+      context 'when the plate purpose does not exist' do
+        let(:plate_purpose_name) { 'Invalid Plate Purpose' }
+
+        it 'adds the error message' do
+          expect(uat_action.valid?).to be false
+          expect(uat_action.errors[:plate_purpose_name]).to include(error_message)
+        end
+      end
+
+      context 'when the plate purpose exists' do
+        let(:plate) { create(:plate) }
+        let(:plate_purpose_name) { plate.purpose.name }
+
+        it 'does not add the error message' do
+          uat_action.valid? # run validations
+          expect(uat_action.errors[:plate_purpose_name]).not_to include(error_message)
+        end
+      end
+    end
+
+    describe '#validate_well_count_is_smaller_than_plate_size' do
+      let(:parameters) { { plate_purpose_name:, well_count: } }
+      let(:plate) { create(:plate, size: 96) }
+      let(:plate_purpose_name) { plate.purpose.name }
+      let(:error_message) do
+        format(described_class::ERROR_WELL_COUNT_EXCEEDS_PLATE_SIZE, well_count, plate.size, plate_purpose_name)
+      end
+
+      context 'when the well count exceeds the plate size' do
+        let(:well_count) { plate.size + 1 }
+
+        it 'adds the error message' do
+          expect(uat_action.valid?).to be false
+          expect(uat_action.errors[:well_count]).to include(error_message)
+        end
+      end
+
+      context 'when the well count is equal to the plate size' do
+        let(:well_count) { plate.size }
+
+        it 'does not add the error message' do
+          uat_action.valid? # run validations
+          expect(uat_action.errors[:well_count]).not_to include(error_message)
+        end
+      end
+    end
+
+    describe '#validate_study_exists' do
+      let(:parameters) { { study_name: } }
+      let(:error_message) { format(described_class::ERROR_STUDY_DOES_NOT_EXIST, study_name) }
+
+      context 'when the study exists' do
+        let(:study) { create(:study) }
+        let(:study_name) { study.name }
+
+        it 'does not add the error message' do
+          uat_action.valid? # run validations
+          expect(uat_action.errors[:study_name]).not_to include(error_message)
+        end
+      end
+
+      context 'when the study does not exist' do
+        let(:study_name) { 'Invalid Study' }
+
+        it 'adds the error message' do
+          expect(uat_action.valid?).to be false
+          expect(uat_action.errors[:study_name]).to include(error_message)
+        end
+      end
+    end
+  end
 end
