@@ -40,7 +40,7 @@ default: &DEFAULT
     - "ChM-Seq"
     - "GBS"
     - "Ribo-seq"
-    - "OTHER"  
+    - "OTHER"
 
   EBI_Library_source:
     - "GENOMIC"
@@ -52,6 +52,7 @@ default: &DEFAULT
     - "SYNTHETIC"
     - "VIRAL RNA"
     - "OTHER"
+
   EBI_Library_selection:
     - "RANDOM"
     - "PCR"
