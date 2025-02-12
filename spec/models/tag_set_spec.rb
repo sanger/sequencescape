@@ -237,7 +237,7 @@ RSpec.describe TagSet do
         tag_set3
         tag_set4
       end
-      
+
       def expect_not_to_include_non_visible_tag_sets
         expect(described_class.visible_single_index_chromium).not_to include(tag_set2, tag_set3, tag_set4)
       end
