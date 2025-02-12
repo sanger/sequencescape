@@ -168,7 +168,7 @@ RSpec.describe TagSet do
     let!(:tag_set4) { create(:tag_set, tag_group: tag_group4, tag2_group: tag_group5) }
 
     it 'excludes non-chromium or non-visible tag groups and dual index tag sets' do
-      expect(described_class.visible_single_index_chromium).not_to include(tagset2, tag_set3, tag_set4)
+      expect(described_class.visible_single_index_chromium).not_to include(tag_set2, tag_set3, tag_set4)
     end
 
     it 'returns single index tag sets with chromium tag groups' do
@@ -226,6 +226,18 @@ RSpec.describe TagSet do
       let(:tag_set3) { create(:tag_set, tag_group: tag_group3, tag2_group: nil) }
       let(:tag_set4) { create(:tag_set, tag_group: tag_group4, tag2_group: tag_group5) }
 
+      before do
+        tag_group1
+        tag_group2
+        tag_group3
+        tag_group4
+        tag_group5
+        tag_set1
+        tag_set2
+        tag_set3
+        tag_set4
+      end
+      
       def expect_not_to_include_non_visible_tag_sets
         expect(described_class.visible_single_index_chromium).not_to include(tag_set2, tag_set3, tag_set4)
       end
