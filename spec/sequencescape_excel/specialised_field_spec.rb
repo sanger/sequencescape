@@ -662,6 +662,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
         tag_group1
         tag_set1
       end
+
       it_behaves_like 'a chromium tag group', :tag_group_name
     end
 
@@ -670,6 +671,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
         tag_group1
         tag_set1
       end
+
       it_behaves_like 'a chromium tag well'
     end
   end
