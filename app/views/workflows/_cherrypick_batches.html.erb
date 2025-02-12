@@ -26,6 +26,7 @@
   <%= vite_javascript_tag 'cherrypick' %>
 <% end -%>
 
+  <%# These hidden fields carry over the parameters from form on the previous page %>
   <%= hidden_field_tag 'nano_grams[total_nano_grams]', @nano_grams_total_nano_grams  %>
   <%= hidden_field_tag 'nano_grams[minimum_volume]', @nano_grams_minimum_volume    %>
   <%= hidden_field_tag 'nano_grams[maximum_volume]', @nano_grams_maximum_volume    %>

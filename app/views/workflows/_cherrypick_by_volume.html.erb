@@ -1,4 +1,4 @@
-<%# locals: (default_volume_value: '', hide_strategy_option: false) -%> <%# <-- this is Rails 7.1 magic %>
+<%# locals: (form, default_volume_value: '', hide_strategy_option: false) -%> <%# <-- this is Rails 7.1 magic %>
 <%
   hide_strategy_option ||= false
   default_volume_value ||= ''
@@ -9,11 +9,21 @@
   <% if hide_strategy_option %>
     <%= hidden_field("cherrypick", "strategy", value: "micro_litre") %>
   <% else %>
-    <%= render partial: 'form_group_radio', locals: { field_name: 'cherrypick', category: 'strategy', field_value: 'micro_litre', label_text: 'Pick by volume (µl)' } %>
+    <div class="form-group form-row">
+      <%= label_tag('cherrypick[strategy]_micro_litre', 'Pick by volume (µl)', class: 'col-12 col-lg-8 col-form-label') %>
+      <div class="col-12 col-lg-4">
+        <%= radio_button('cherrypick', 'strategy', 'micro_litre', { class: 'form-control text-right' }) %>
+      </div>
+    </div>
   <% end %>
 
-  <%= fields_for :micro_litre do |ff|%>
-    <%= render partial: 'form_group_text', locals: { field_name: 'volume_required', label_text: 'Volume (µl)', field_value: default_volume_value } %>
+  <%= fields_for :micro_litre do | micro_litre_fields |%>
+    <div class="form-group form-row">
+      <%= micro_litre_fields.label('volume_volume_required', 'Volume (µl)', class: 'col-12 col-lg-8 col-form-label') %>
+      <div class="col-12 col-lg-4">
+        <%= micro_litre_fields.text_field('volume_volume_required', value: default_volume_value, class: 'form-control text-right') %>
+      </div>
+    </div>
   <% end %>
 
 </div>

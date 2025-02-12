@@ -5,7 +5,7 @@
 function highlightCard(cardIndex) {
   const borderStyle = "border-primary";
 
-  const cards = document.querySelectorAll(`.card[data-group='cherrypick[strategy]']`);
+  const cards = document.querySelectorAll(`.card[data-group='cherrypick_strategy']`);
   cards.forEach((card) => card.classList.remove(borderStyle));
 
   cards[cardIndex].classList.add(borderStyle);

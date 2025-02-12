@@ -1,11 +1,35 @@
+<%# locals: (form) -%> <%# <-- this is Rails 7.1 magic %>
+
 <div id='pick_by_nano_grams_per_micro_litre'>
 
-  <%= render partial: 'form_group_radio', locals: { field_name: 'cherrypick', category: 'strategy', field_value: 'nano_grams_per_micro_litre', label_text: 'Pick by concentration (ng/µl)' } %>
+  <div class="form-group form-row">
+    <%= label_tag('cherrypick[strategy]_nano_grams_per_micro_litre', 'Pick by concentration (ng/µl)', class: 'col-12 col-lg-8 col-form-label') %>
+    <div class="col-12 col-lg-4">
+      <%= radio_button( 'cherrypick', 'strategy', 'nano_grams_per_micro_litre', { checked: true, class: 'form-control text-right' }) %>
+    </div>
+  </div>
 
-  <%= fields_for :nano_grams_per_micro_litre do |ff|%>
-    <%= render partial: 'form_group_text', locals: { field_name: 'volume_required', label_text: 'Volume Required (µl)', field_value: '65' } %>
-    <%= render partial: 'form_group_text', locals: { field_name: 'concentration_required', label_text: 'Concentration Required (ng/µl)', field_value: '50' } %>
-    <%= render partial: 'form_group_text', locals: { field_name: 'robot_minimum_picking_volume', label_text: 'Robot Minimum Picking Volume (µl)', field_value: 5.0, options: { type: 'number', step: 0.1, min: 1, max: 9 } } %>
+  <%= fields_for :nano_grams_per_micro_litre do |nano_grams_per_micro_litre_fields|%>
+     <div class="form-group form-row">
+      <%= nano_grams_per_micro_litre_fields.label('concentration_volume_required', 'Volume Required (µl)', class: 'col-12 col-lg-8 col-form-label') %>
+      <div class="col-12 col-lg-4">
+        <%= nano_grams_per_micro_litre_fields.text_field('concentration_volume_required', value: '65', class: 'form-control text-right') %>
+      </div>
+    </div>
+
+    <div class="form-group form-row">
+      <%= nano_grams_per_micro_litre_fields.label('concentration_required', 'Concentration Required (ng/µl)', class: 'col-12 col-lg-8 col-form-label') %>
+      <div class="col-12 col-lg-4">
+        <%= nano_grams_per_micro_litre_fields.text_field('concentration_required', value: '50', class: 'form-control text-right') %>
+      </div>
+    </div>
+
+    <div class="form-group form-row">
+      <%= nano_grams_per_micro_litre_fields.label('robot_minimum_picking_volume', 'Robot Minimum Picking Volume (µl)', class: 'col-12 col-lg-8 col-form-label') %>
+      <div class="col-12 col-lg-4">
+        <%= nano_grams_per_micro_litre_fields.text_field('robot_minimum_picking_volume', value: 5.0, class: 'form-control text-right', options: { type: 'number', step: 0.1, min: 1, max: 9 }) %>
+      </div>
+    </div>
   <% end %>
 
 </div>

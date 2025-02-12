@@ -1,12 +1,44 @@
+<%# locals: (form) -%> <%# <-- this is Rails 7.1 magic %>
+
 <div id='pick_by_nano_grams'>
 
-  <%= render partial: 'form_group_radio', locals: { field_name: 'cherrypick', category: 'strategy', field_value: 'nano_grams', label_text: 'Pick by amount (ng)' } %>
+  <div class="form-group form-row">
+    <%= label_tag('cherrypick[strategy]_nano_grams' , 'Pick by amount (ng)', class: 'col-12 col-lg-8 col-form-label') %>
+    <div class="col-12 col-lg-4">
+      <%= radio_button( 'cherrypick', 'strategy', 'nano_grams', { class: 'form-control text-right' }) %>
+    </div>
+  </div>
 
-  <%= fields_for :nano_grams do |ff| %>
-    <%= render partial: 'form_group_text', locals: { field_name: 'total_nano_grams', label_text: 'Quantity to pick (ng)', field_value: '1000' } %>
-    <%= render partial: 'form_group_text', locals: { field_name: 'minimum_volume', label_text: 'Minimum Volume (µl)', field_value: '10' } %>
-    <%= render partial: 'form_group_text', locals: { field_name: 'maximum_volume', label_text: 'Maximum Volume (µl)', field_value: '50' } %>
-    <%= render partial: 'form_group_text', locals: { field_name: 'robot_minimum_picking_volume', label_text: 'Robot Minimum Picking Volume (µl)', field_value: 5.0, options: { type: 'number', step: 0.1, min: 1, max: 9 } } %>
+  <%= fields_for :nano_grams do |nano_grams_fields| %>
+
+    <div class="form-group form-row">
+      <%= nano_grams_fields.label('total_nano_grams', 'Quantity to pick (ng)', class: 'col-12 col-lg-8 col-form-label') %>
+      <div class="col-12 col-lg-4">
+        <%= nano_grams_fields.text_field('total_nano_grams', value: '1000', class: 'form-control text-right') %>
+      </div>
+    </div>
+
+    <div class="form-group form-row">
+      <%= nano_grams_fields.label('minimum_volume', 'Minimum Volume (µl)', class: 'col-12 col-lg-8 col-form-label') %>
+      <div class="col-12 col-lg-4">
+        <%= nano_grams_fields.text_field('minimum_volume', value: '10', class: 'form-control text-right') %>
+      </div>
+    </div>
+
+    <div class="form-group form-row">
+      <%= nano_grams_fields.label('maximum_volume', 'Maximum Volume (µl)', class: 'col-12 col-lg-8 col-form-label') %>
+      <div class="col-12 col-lg-4">
+        <%= nano_grams_fields.text_field('maximum_volume', value: '50', class: 'form-control text-right') %>
+      </div>
+    </div>
+
+    <div class="form-group form-row">
+      <%= nano_grams_fields.label('robot_minimum_picking_volume', 'Robot Minimum Picking Volume (µl)', class: 'col-12 col-lg-8 col-form-label') %>
+      <div class="col-12 col-lg-4">
+        <%= nano_grams_fields.text_field('robot_minimum_picking_volume', value: 5.0, class: 'form-control text-right', options: { type: 'number', step: 0.1, min: 1, max: 9 }) %>
+      </div>
+    </div>
+
   <% end %>
 
 </div>

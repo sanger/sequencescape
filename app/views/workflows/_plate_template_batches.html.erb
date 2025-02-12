@@ -20,13 +20,13 @@
             <p class='help-block'>Templates define which wells to leave empty on a plate when you cherrypick samples. You can add to an existing partial plate by scanning the barcode, or entering the plate ID.  The plate must have been previously picked in Sequencescape.  Wells can be rearranged in the next step.</p>
 
             <label for="Control_plate_id">Control plate & placement type</label>
-            <%= select("Control", "plate_id", 
-              ControlPlate.all.collect do |p| 
+            <%= select("Control", "plate_id",
+              ControlPlate.all.collect do |p|
                 placement_type = p.custom_metadatum_collection&.metadata&.[]('control_placement_type')
                 if placement_type.present?
                   [ "#{p.human_barcode} - #{p.name} (#{placement_type.capitalize})", p.id ]
                 end
-              end.compact, 
+              end.compact,
               { include_blank: true }, class: 'form-control select2') %>
           </fieldset>
         </div>
@@ -53,7 +53,7 @@
     </fieldset>
   <% end %>
     <%= panel(:info, title: "Step 3: Set volumes and concentrations <a href='https://ssg-confluence.internal.sanger.ac.uk/x/NoHdDQ'><small>Information about cherrypicking options</small></a>".html_safe) do %>
-      <%= render partial: 'cherrypick_strategies' %>
+      <%= render partial: 'cherrypick_strategies', locals: { form: form } %>
     <% end %>
 
   <%= render partial: "next_stage_submit" %>
