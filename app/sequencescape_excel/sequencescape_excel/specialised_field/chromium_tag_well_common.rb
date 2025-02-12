@@ -26,9 +26,7 @@ module SequencescapeExcel
         # This method links the tag well to other fields, such as the tag group.
         #
         # @param other_fields [Hash] The other fields to link to.
-        define_method(:link) do |other_fields|
-          self.sf_tag_group = other_fields[self.class.tag_group_class]
-        end
+        define_method(:link) { |other_fields| self.sf_tag_group = other_fields[self.class.tag_group_class] }
 
         ##
         # Updates the tag well.
@@ -47,12 +45,11 @@ module SequencescapeExcel
             raise StandardError, 'Tag aliquot mismatch'
           end
         end
-
       end
 
       private
 
-       ##
+      ##
       # Returns the number of aliquots.
       #
       # This method returns the number of aliquots associated with the asset.

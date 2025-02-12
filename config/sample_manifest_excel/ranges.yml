@@ -64,7 +64,7 @@ chromium_tag_groups:
 chromium_single_index_tag_groups:
   identifier: :name
   scope: :tag_groups_within_visible_single_index_chromium
-  scope_on: TagSet 
+  scope_on: TagSet
 dual_index_tag_sets:
   identifier: :name
   scope: :visible_dual_index

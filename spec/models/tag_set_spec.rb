@@ -91,8 +91,8 @@ RSpec.describe TagSet do
 
     describe '.single_index' do
       context 'when there are dual index tag sets' do
-        let!(:tag_set1) { create(:tag_set,tag2_group: nil) }
-        let!(:tag_set2) { create(:tag_set,tag2_group: nil) }
+        let!(:tag_set1) { create(:tag_set, tag2_group: nil) }
+        let!(:tag_set2) { create(:tag_set, tag2_group: nil) }
         let!(:tag_set3) { create(:tag_set) }
 
         it 'does not return single index tag sets' do
@@ -127,7 +127,6 @@ RSpec.describe TagSet do
     end
   end
 
-
   describe '#visible' do
     it 'returns true if it only has one tag_group and it is set to visible' do
       tag_group = create(:tag_group, visible: true)
@@ -158,11 +157,11 @@ RSpec.describe TagSet do
   describe('visible_single_index_chromium') do
     let!(:non_chromium_adapter_type) { create(:adapter_type, name: 'test_adapter') }
     let!(:chromium_adapter_type) { create(:adapter_type, name: 'Chromium') }
-    let!(:tag_group1) { create(:tag_group, adapter_type:chromium_adapter_type) }
-    let!(:tag_group2) { create(:tag_group, adapter_type:chromium_adapter_type, visible:false) }
-    let!(:tag_group3) { create(:tag_group, adapter_type:non_chromium_adapter_type) }
-    let!(:tag_group4) { create(:tag_group, adapter_type:non_chromium_adapter_type) }
-    let!(:tag_group5) { create(:tag_group, adapter_type:non_chromium_adapter_type) }
+    let!(:tag_group1) { create(:tag_group, adapter_type: chromium_adapter_type) }
+    let!(:tag_group2) { create(:tag_group, adapter_type: chromium_adapter_type, visible: false) }
+    let!(:tag_group3) { create(:tag_group, adapter_type: non_chromium_adapter_type) }
+    let!(:tag_group4) { create(:tag_group, adapter_type: non_chromium_adapter_type) }
+    let!(:tag_group5) { create(:tag_group, adapter_type: non_chromium_adapter_type) }
     let!(:tag_set1) { create(:tag_set, tag_group: tag_group1, tag2_group: nil) }
     let!(:tag_set2) { create(:tag_set, tag_group: tag_group2, tag2_group: nil) }
     let!(:tag_set3) { create(:tag_set, tag_group: tag_group3, tag2_group: nil) }
@@ -175,7 +174,6 @@ RSpec.describe TagSet do
     it 'returns single index tag sets with chromium tag groups' do
       expect(described_class.visible_single_index_chromium).to include(tag_set1)
     end
-
   end
 
   describe '#adapter_type' do
@@ -218,24 +216,28 @@ RSpec.describe TagSet do
     context 'when there are single and dual index tag sets, where not all tag groups are visible' do
       let!(:non_chromium_adapter_type) { create(:adapter_type, name: 'test_adapter') }
       let!(:chromium_adapter_type) { create(:adapter_type, name: 'Chromium') }
-      let!(:tag_group1) { create(:tag_group, adapter_type:chromium_adapter_type) }
-      let!(:tag_group2) { create(:tag_group, adapter_type:chromium_adapter_type, visible:false) }
-      let!(:tag_group3) { create(:tag_group, adapter_type:non_chromium_adapter_type) }
-      let!(:tag_group4) { create(:tag_group, adapter_type:non_chromium_adapter_type) }
-      let!(:tag_group5) { create(:tag_group, adapter_type:non_chromium_adapter_type) }
+      let!(:tag_group1) { create(:tag_group, adapter_type: chromium_adapter_type) }
+      let!(:tag_group2) { create(:tag_group, adapter_type: chromium_adapter_type, visible: false) }
+      let!(:tag_group3) { create(:tag_group, adapter_type: non_chromium_adapter_type) }
+      let!(:tag_group4) { create(:tag_group, adapter_type: non_chromium_adapter_type) }
+      let!(:tag_group5) { create(:tag_group, adapter_type: non_chromium_adapter_type) }
       let!(:tag_set1) { create(:tag_set, tag_group: tag_group1, tag2_group: nil) }
       let!(:tag_set2) { create(:tag_set, tag_group: tag_group2, tag2_group: nil) }
       let!(:tag_set3) { create(:tag_set, tag_group: tag_group3, tag2_group: nil) }
       let!(:tag_set4) { create(:tag_set, tag_group: tag_group4, tag2_group: tag_group5) }
 
       it 'does not return tag groups belong to single or dual index tag sets with non visible' do
-        expect(described_class.tag_groups_within_visible_single_index_chromium).not_to include(tag_group2, tag_group3, tag_group4,tag_group5)
+        expect(described_class.tag_groups_within_visible_single_index_chromium).not_to include(
+          tag_group2,
+          tag_group3,
+          tag_group4,
+          tag_group5
+        )
       end
 
       it 'returns all tag groups with visible tag groups only' do
         expect(described_class.tag_groups_within_visible_single_index_chromium).to include(tag_group1)
       end
-
     end
   end
 end

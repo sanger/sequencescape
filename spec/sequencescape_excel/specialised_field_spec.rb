@@ -17,9 +17,7 @@ RSpec.shared_examples 'a chromium tag group' do
     let(:adapter_type) { create(:adapter_type, name: 'Other') }
 
     it 'will not be valid' do
-      expect(
-        described_class.new(value: tag_group_name, sample_manifest_asset: sample_manifest_asset)
-      ).not_to be_valid
+      expect(described_class.new(value: tag_group_name, sample_manifest_asset: sample_manifest_asset)).not_to be_valid
     end
   end
 
@@ -655,7 +653,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
   describe SequencescapeExcel::SpecialisedField::ChromiumSingleIndexTagGroup do
     let(:adapter_type) { create(:adapter_type, name: 'Chromium') }
     let(:tag_group1) { create(:tag_group_with_tags, adapter_type:) }
-    let(:tag_set1) { create(:tag_set, tag_group:tag_group1,tag2_group: nil) }
+    let(:tag_set1) { create(:tag_set, tag_group: tag_group1, tag2_group: nil) }
     let(:tag_group_name) { tag_group1.name }
     let(:tag_well) { 'A1' }
 
@@ -672,7 +670,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
         tag_group1
         tag_set1
       end
-       it_behaves_like 'a chromium tag well'
+      it_behaves_like 'a chromium tag well'
     end
   end
 

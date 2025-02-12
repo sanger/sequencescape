@@ -293,8 +293,10 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
 
     it 'links up specialised fields' do
       row = described_class.new(number: 1, data: data, columns: columns)
-      tag_well = row.specialised_fields.detect { |f| f.is_a?(SequencescapeExcel::SpecialisedField::ChromiumSingleIndexTagWell) }
-      tag_group = row.specialised_fields.detect { |f| f.is_a?(SequencescapeExcel::SpecialisedField::ChromiumSingleIndexTagGroup) }
+      tag_well =
+        row.specialised_fields.detect { |f| f.is_a?(SequencescapeExcel::SpecialisedField::ChromiumSingleIndexTagWell) }
+      tag_group =
+        row.specialised_fields.detect { |f| f.is_a?(SequencescapeExcel::SpecialisedField::ChromiumSingleIndexTagGroup) }
       expect(tag_well.sf_tag_group).to eq tag_group
     end
   end

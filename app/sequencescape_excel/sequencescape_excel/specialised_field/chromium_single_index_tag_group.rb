@@ -21,7 +21,7 @@ module SequencescapeExcel
         tag_groups = ::TagSet.tag_groups_within_visible_single_index_chromium
         @tag_group_id ||= tag_groups.find_by(name: value)&.id
       end
-      
+
       # Additional functionality specific to ChromiumSingleIndexTagGroup can be added here
     end
   end
