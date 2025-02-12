@@ -1,13 +1,11 @@
 sanger_plate_id:
   heading: SANGER PLATE ID
-  unlocked: true
   attribute: :barcode
 well:
   heading: WELL
   attribute: :position
 sanger_tube_id:
   heading: SANGER TUBE ID
-  unlocked: true
   attribute: :barcode
 tube_barcode:
   heading: TUBE BARCODE
@@ -51,17 +49,13 @@ i5:
       allowBlank: false
       showInputMessage: true
       promptTitle: "i5"
-      prompt: "Input i5."
-  conditional_formattings:
-    empty_cell:
+      prompt: "i7."
 tag_group:
   heading: TAG GROUP
   unlocked: true
   validation:
     options:
-      type: :textLength
-      operator: :lessThanOrEqual
-      formula1: "255"
+      type: :whole
       allowBlank: false
       showInputMessage: true
       promptTitle: "Tag set name"
@@ -71,7 +65,6 @@ tag_group:
 tag_index:
   heading: TAG INDEX
   unlocked: true
-  type: :integer
   validation:
     options:
       type: :whole
@@ -94,9 +87,7 @@ tag2_group:
   unlocked: true
   validation:
     options:
-      type: :textLength
-      operator: :lessThanOrEqual
-      formula1: "255"
+      type: :whole
       allowBlank: false
       showInputMessage: true
       promptTitle: "Tag set name"
@@ -106,7 +97,6 @@ tag2_group:
 tag2_index:
   heading: TAG2 INDEX (Fill in for dual Index Only)
   unlocked: true
-  type: :integer
   validation:
     options:
       type: :whole
@@ -218,27 +208,6 @@ library_type:
   conditional_formattings:
     empty_cell:
     is_error:
-library_type_long_read:
-  heading: LIBRARY TYPE
-  updates: library_type
-  unlocked: true
-  validation:
-    options:
-      type: :list
-      formula1: "$A$1:$A$2"
-      allowBlank: false
-      hideDropDown: false
-      showInputMessage: true
-      showErrorMessage: true
-      errorStyle: :stop
-      errorTitle: "Library type"
-      error: "You must enter a Library type from the list provided."
-      promptTitle: "Library type"
-      prompt: "Provide a library type from the approved list"
-    range_name: :library_type_long_read
-  conditional_formattings:
-    empty_cell:
-    is_error:
 dual_index_tag_set:
   heading: TAG PLATE NAME
   unlocked: true
@@ -264,7 +233,7 @@ dual_index_tag_well:
       allowBlank: false
       showInputMessage: true
       promptTitle: "Dual Index Tag well"
-      prompt: "The name of the well, eg. A1 which supplied the dual index tag"
+      prompt: "The name of the well, eg. A1, which is supplied in the dual index tag plate"
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Dual index tag well"
@@ -299,7 +268,6 @@ reference_genome:
 insert_size_from:
   heading: INSERT SIZE FROM
   unlocked: true
-  type: :integer
   validation:
     options:
       type: :whole
@@ -316,7 +284,6 @@ insert_size_from:
 insert_size_to:
   heading: INSERT SIZE TO
   unlocked: true
-  type: :integer
   validation:
     options:
       type: :whole
@@ -351,7 +318,7 @@ supplier_name:
       errorTitle: "Supplier Sample Name"
       error: "Name must be a maximum of 40 characters in length."
   conditional_formattings:
-    empty_mandatory_cell:
+    empty_cell:
     len:
       formula:
         operator: ">"
@@ -373,7 +340,7 @@ bioscan_supplier_name:
       errorTitle: "Supplier Sample Name"
       error: "Name must be a maximum of 40 characters in length."
   conditional_formattings:
-    empty_mandatory_cell:
+    empty_cell:
     len:
       formula:
         operator: ">"
@@ -381,13 +348,29 @@ bioscan_supplier_name:
 cohort:
   heading: COHORT
   unlocked: true
+  validation:
+    options:
+      type: :textLength
+      operator: :lessThanOrEqual
+      formula1: "7"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Cohort"
+      prompt: "Please refer to the list of current cohorts to enter, or add a new abbreviation up to a maximum of 7 uppercase letters."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Cohort"
+      error: "7 uppercase characters, maximum"
   conditional_formattings:
     empty_cell:
+    len:
+      formula:
+        operator: ">"
+        operand: 7
     is_number:
 volume:
   heading: VOLUME (ul)
   unlocked: true
-  type: :float
   validation:
     options:
       type: :decimal
@@ -408,7 +391,6 @@ volume:
 concentration:
   heading: CONC. (ng/ul)
   unlocked: true
-  type: :float
   validation:
     options:
       type: :decimal
@@ -456,14 +438,14 @@ country_of_origin:
       allowBlank: false
       showInputMessage: true
       promptTitle: "Country Of Origin"
-      prompt: "The geographic origin of the sample, defined by Country or Sea. Country names are provided by the INSDC country list. See https://ena-docs.readthedocs.io/en/latest/submit/samples/missing-values.html if you can't provide a value."
+      prompt: "The geographic origin of the sample, defined by Country or Sea. Country names are provided by the INSDC country list. https://www.insdc.org/country.html Please see https://ena-docs.readthedocs.io/en/latest/submit/samples/missing-values.html#insdc-missing-value-reporting-terms for information about missing values"
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Country Of Origin"
-      error: "Is a controlled vocabulary, and must be on the list."
+      error: "Is a controlled vocabulary, and must be on the list"
     range_name: :insdc_country
   conditional_formattings:
-    empty_mandatory_cell:
+    empty_cell:
     len:
       formula:
         operator: ">"
@@ -479,7 +461,7 @@ geographical_region:
       allowBlank: false
       showInputMessage: true
       promptTitle: "Region"
-      prompt: "Please add a description up to a maximum of 30 uppercase letters."
+      prompt: "Please refer to the list of current regions to enter, or add a new description up to a maximum of 30 uppercase letters."
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Region"
@@ -502,7 +484,7 @@ ethnicity:
       allowBlank: false
       showInputMessage: true
       promptTitle: "Ethnicity"
-      prompt: "Please add a description up to a maximum of 30 uppercase letters."
+      prompt: "Please refer to the list of current ethnicities to enter, or add a new description up to a maximum of 30 uppercase letters."
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Ethnicity"
@@ -535,22 +517,27 @@ dna_source:
     empty_cell:
     is_error:
 date_of_sample_collection:
-  heading: DATE OF SAMPLE COLLECTION (YYY-MM-DD) # Correcting this typo to YYYY-MM-DD prevents manifests to be re-uploaded
+  heading: DATE OF SAMPLE COLLECTION (MM/YY or YYYY only)
   unlocked: true
   validation:
     options:
-      type: :custom
-      formula1: 'IF(OR(EXACT(A1,"not collected"),EXACT(A1,"not provided"),EXACT(A1,"restricted access")), TRUE, AND((_xlfn.NUMBERVALUE(LEFT(A1,4))>0),OR(LEN(A1)=4,EXACT(MID(A1,5,1),"-")),OR(LEN(A1)<=7,EXACT(MID(A1,8,1),"-")),AND((_xlfn.NUMBERVALUE(MID(A1,6,2))>=0),(_xlfn.NUMBERVALUE(MID(A1,6,2))<=12)),AND((_xlfn.NUMBERVALUE(MID(A1,9,2))>=0),(_xlfn.NUMBERVALUE(MID(A1,9,2))<=31))))'
+      type: :textLength
+      operator: :lessThanOrEqual
+      formula1: "5"
       allowBlank: false
       showInputMessage: true
       promptTitle: "Sample Collection Date"
-      prompt: "Date should be in the format YYYY-MM-DD, Partial dates are supported. eg. YYYY or YYY-MM. See https://ena-docs.readthedocs.io/en/latest/submit/samples/missing-values.html if you can't provide a value."
+      prompt: "Please Enter either a Month and Year or a complete Year e.g. 04/05 or 2004."
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Sample Collection Date"
-      error: "Date should be in the format YYYY-MM-DD, Partial dates are supported. eg. YYYY or YYY-MM. See https://ena-docs.readthedocs.io/en/latest/submit/samples/missing-values.html if you can't provide a value."
+      error: "This must be either a combination of month and year, or a whole year, with no spaces."
   conditional_formattings:
-    empty_mandatory_cell:
+    empty_cell:
+    len:
+      formula:
+        operator: ">"
+        operand: 5
 date_of_sample_extraction:
   heading: DATE OF DNA EXTRACTION (MM/YY or YYYY only)
   unlocked: true
@@ -730,23 +717,8 @@ sibling:
 gc_content:
   heading: GC CONTENT
   unlocked: true
-  validation:
-    options:
-      type: :list
-      formula1: "$A$1:$A$2"
-      allowBlank: false
-      hideDropDown: false
-      showInputMessage: true
-      promptTitle: "GC Content"
-      prompt: "Please enter either Neutral, High AT or High GC"
-      showErrorMessage: true
-      errorStyle: :stop
-      errorTitle: "GC Content"
-      error: "You must enter either Neutral, High AT or High GC"
-    :range_name: :gc_content
   conditional_formattings:
     empty_cell:
-    is_error:
 sample_public_name:
   heading: PUBLIC NAME
   unlocked: true
@@ -755,27 +727,13 @@ sample_public_name:
 sample_taxon_id:
   heading: TAXON ID
   unlocked: true
-  type: :integer
-  validation:
-    options:
-      type: :whole
-      operator: :greaterThanOrEqual
-      formula1: "1"
-      allowBlank: false
-      showInputMessage: true
-      showErrorMessage: true
-      errorStyle: :stop
-      promptTitle: "Taxon ID"
-      prompt: "The identifier for a Taxon."
-      errorTitle: "Taxon ID"
-      error: "Taxon ID must a number."
   conditional_formattings:
-    empty_mandatory_cell:
+    empty_cell:
 sample_common_name:
   heading: COMMON NAME
   unlocked: true
   conditional_formattings:
-    empty_mandatory_cell:
+    empty_cell:
 sample_description:
   heading: SAMPLE DESCRIPTION
   unlocked: true
@@ -852,6 +810,7 @@ donor_id_mandatory:
   unlocked: true
   conditional_formattings:
     empty_mandatory_cell:
+  attribute: :sample_id
 phenotype:
   heading: PHENOTYPE (required for EGA)
   unlocked: true
@@ -932,10 +891,16 @@ disease:
   unlocked: true
   conditional_formattings:
     empty_cell:
+legacy_donor_id:
+  updates: :donor_id
+  heading: DONOR ID (required for cancer samples)
+  unlocked: true
+  conditional_formattings:
+    empty_cell:
+  attribute: :sample_id
 genome_size:
   heading: GENOME SIZE
   unlocked: true
-  type: :float
   validation:
     options:
       type: :decimal
@@ -1018,7 +983,7 @@ priority:
   unlocked: true
   conditional_formattings:
     empty_cell:
-    is_number:
+    number_greater_than_zero:
 collected_by_for_cardinal:
   heading: COLLECTED BY
   updates: :collected_by
@@ -1037,6 +1002,26 @@ collected_by_for_cardinal:
       errorTitle: "Collected By"
       error: "You must enter a collection site from the list provided."
     range_name: :collected_by_for_cardinal
+  conditional_formattings:
+    empty_cell:
+collected_by_for_scrna_core:
+  heading: COLLECTED BY FOR SCRNA CORE
+  updates: :collected_by
+  unlocked: true
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: false
+      hideDropDown: false
+      showInputMessage: true
+      promptTitle: "Collected By"
+      prompt: "Please enter a collection site from the provided list."
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Collected By"
+      error: "You must enter a collection site from the list provided."
+    range_name: :collected_by_for_scrna_core
   conditional_formattings:
     empty_cell:
     is_error:
@@ -1060,28 +1045,6 @@ collected_by_for_controls:
     range_name: :collected_by_for_controls
   conditional_formattings:
     empty_cell:
-    is_error:
-collected_by_for_scrna_core:
-  heading: COLLECTED BY FOR SCRNA CORE
-  updates: :collected_by
-  unlocked: true
-  validation:
-    options:
-      type: :list
-      formula1: "$A$1:$A$2"
-      allowBlank: false
-      hideDropDown: false
-      showInputMessage: true
-      promptTitle: "Collected By"
-      prompt: "Please enter a collection site from the provided list."
-      showErrorMessage: true
-      errorStyle: :stop
-      errorTitle: "Collected By"
-      error: "You must enter a collection site from the list provided."
-    range_name: :collected_by_for_scrna_core
-  conditional_formattings:
-    empty_cell:
-    is_error:
 retention_instruction:
   heading: RETENTION INSTRUCTION
   updates: retention_instruction
@@ -1094,26 +1057,12 @@ retention_instruction:
       hideDropDown: false
       showInputMessage: true
       promptTitle: "Retention Instruction"
-      prompt: "Please select a retention instruction for the plate from the provided list."
+      prompt: "Please select a retention instruction for the labware from the provided list."
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Retention Instruction"
       error: "You must enter a retention instruction from the list provided."
     range_name: :retention_instructions
   conditional_formattings:
-    empty_mandatory_cell:
-    is_error:
-# LEGACY COLUMNS
-# If a column heading changes, we still need to map historical manifests back
-# to the correct entry, as manifests may be uploaded, or re-uploaded a long time
-# after originally generated.
-legacy_donor_id:
-  updates: :donor_id
-  heading: DONOR ID (required for cancer samples)
-  unlocked: true
-  conditional_formattings:
     empty_cell:
-  attribute: :sample_id
-legacy_date_of_sample_collection:
-  heading: DATE OF SAMPLE COLLECTION (MM/YY or YYYY only)
-  updates: date_of_sample_collection
+    is_error:
