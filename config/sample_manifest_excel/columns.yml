@@ -124,80 +124,56 @@ tag2_index:
     empty_cell:
     number_greater_than_one:
     is_text:
+common_chromium_tag_group: &common_chromium_tag_group
+  heading: CHROMIUM TAG GROUP
+  unlocked: true
+  validation: &common_chromium_tag_group_validation
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Tag set name"
+      prompt: "Input the name of a valid tag set. All samples in a library need to be tagged with the same tag set."
+  conditional_formattings:
+    empty_cell:
 chromium_tag_group:
-  heading: CHROMIUM TAG GROUP
-  unlocked: true
-  validation: &common_chromium_tag_group_validation
-    options:
-      type: :list
-      formula1: "$A$1:$A$2"
-      allowBlank: false
-      showInputMessage: true
-      promptTitle: "Tag set name"
-      prompt: "Input the name of a valid tag set. All samples in a library need to be tagged with the same tag set."
+  <<: *common_chromium_tag_group
+  validation:
+    <<: *common_chromium_tag_group_validation
     range_name: :chromium_tag_groups
-  conditional_formattings:
-    empty_cell:
 chromium_single_index_tag_group:
-  heading: CHROMIUM TAG GROUP
-  unlocked: true
-  validation: &common_chromium_tag_group_validation
-    options:
-      type: :list
-      formula1: "$A$1:$A$2"
-      allowBlank: false
-      showInputMessage: true
-      promptTitle: "Tag set name"
-      prompt: "Input the name of a valid tag set. All samples in a library need to be tagged with the same tag set."
+  <<: *common_chromium_tag_group
+  validation:
+    <<: *common_chromium_tag_group_validation
     range_name: :chromium_single_index_tag_groups
+common_chromium_tag_well: &common_chromium_tag_well
+  heading: CHROMIUM TAG WELL
+  unlocked: true
+  validation:
+    options:
+      type: :textLength
+      operator: :lessThanOrEqual
+      formula1: "3"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Tag well"
+      prompt: "The name of the well, eg. A1 which supplied the tag"
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Tag well"
+      error: "Tag Index must be a well."
   conditional_formattings:
     empty_cell:
+    is_number:
+    len:
+      formula:
+        operator: ">"
+        operand: 3
 chromium_tag_well:
-  heading: CHROMIUM TAG WELL
-  unlocked: true
-  validation:
-    options:
-      type: :textLength
-      operator: :lessThanOrEqual
-      formula1: "3"
-      allowBlank: false
-      showInputMessage: true
-      promptTitle: "Tag well"
-      prompt: "The name of the well, eg. A1 which supplied the tag"
-      showErrorMessage: true
-      errorStyle: :stop
-      errorTitle: "Tag well"
-      error: "Tag Index must be a well."
-  conditional_formattings:
-    empty_cell:
-    is_number:
-    len:
-      formula:
-        operator: ">"
-        operand: 3
+  <<: *common_chromium_tag_well
 chromium_single_index_tag_well:
-  heading: CHROMIUM TAG WELL
-  unlocked: true
-  validation:
-    options:
-      type: :textLength
-      operator: :lessThanOrEqual
-      formula1: "3"
-      allowBlank: false
-      showInputMessage: true
-      promptTitle: "Tag well"
-      prompt: "The name of the well, eg. A1 which supplied the tag"
-      showErrorMessage: true
-      errorStyle: :stop
-      errorTitle: "Tag well"
-      error: "Tag Index must be a well."
-  conditional_formattings:
-    empty_cell:
-    is_number:
-    len:
-      formula:
-        operator: ">"
-        operand: 3
+  <<: *common_chromium_tag_well
 library_type:
   heading: LIBRARY TYPE
   unlocked: true
