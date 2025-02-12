@@ -515,5 +515,4 @@ the table of contents, run:
 npx markdown-toc -i README.md --bullets "-"
 ```
 
-
 Copyright (c) 2007, 2010-2024 Genome Research Ltd.
