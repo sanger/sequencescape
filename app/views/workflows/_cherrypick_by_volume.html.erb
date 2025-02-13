@@ -7,23 +7,12 @@
 <div id='pick_by_micro_litre'>
 
   <% if hide_strategy_option %>
-    <%= hidden_field("cherrypick", "strategy", value: "micro_litre") %>
+    <%= hidden_field(:cherrypick, :strategy, value: "micro_litre") %>
   <% else %>
-    <div class="form-group form-row">
-      <%= label_tag('cherrypick[strategy]_micro_litre', 'Pick by volume (µl)', class: 'col-12 col-lg-8 col-form-label') %>
-      <div class="col-12 col-lg-4">
-        <%= radio_button('cherrypick', 'strategy', 'micro_litre', { class: 'form-control text-right' }) %>
-      </div>
-    </div>
+    <%= cherrypick_strategy_radio_button :cherrypick, :strategy, :micro_litre, 'Pick by volume (µl)' %>
   <% end %>
-
-  <%= fields_for :micro_litre do | micro_litre_fields |%>
-    <div class="form-group form-row">
-      <%= micro_litre_fields.label('volume_volume_required', 'Volume (µl)', class: 'col-12 col-lg-8 col-form-label') %>
-      <div class="col-12 col-lg-4">
-        <%= micro_litre_fields.text_field('volume_volume_required', value: default_volume_value, class: 'form-control text-right') %>
-      </div>
-    </div>
+  <%= form.fields_for :micro_litre do | micro_litre_fields |%>
+    <%= cherrypick_form_group_text micro_litre_fields, :volume_required, 'Volume (µl)', default_volume_value %>
   <% end %>
 
 </div>
