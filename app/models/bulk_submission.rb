@@ -161,8 +161,11 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
       # Apply any additional validations based on the submission template name
       apply_additional_validations_by_template_name unless errors.count > 0
 
-      # Calculate the allowance band for each study-project combination
-      @alllowance_band = calculate_allowance_band
+      # Calculates the allowance band based on the submission template name.
+      # If the submission template name matches `SCRNA_CORE_CDNA_PREP_GEM_X_5P` and all required headers are present,
+      # the allowance band is calculated for each study and project combination.
+      # Otherwise, an empty hash is assigned.
+      @allowance_band = calculate_allowance_band
 
       raise ActiveRecord::RecordInvalid, self if errors.count > 0
 
@@ -362,15 +365,10 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
   # `allowance_band` value.
   # The allowance_band values are grouped by study and project name.
   def calculated_request_options_by_template_name(details)
-    case details['template name']
-    when SCRNA_CORE_CDNA_PREP_GEM_X_5P
-      {'allowance_band' => @alllowance_band[{ study: details['study name'], project: details['project name']}]}
-    else
-      {}
-    end
+    return {} unless details['template name'] == SCRNA_CORE_CDNA_PREP_GEM_X_5P && @allowance_band.size.positive?
+
+    { 'allowance_band' => @allowance_band[{ study: details['study name'], project: details['project name'] }] }
   end
-
-
 
   # Returns an order for the given details
   # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize

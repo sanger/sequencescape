@@ -176,12 +176,10 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # This is to cover calculated metadata that does not require user input
   def calculated_request_metadata_by_request_key(request_type_key)
     case request_type_key
-      # Checking for the presence of allowance_band, as it is calculated for
-      # the bulk submission only
-    when "limber_scrna_core_cdna_prep_gem_x_5p" && request_options["allowance_band"].present?
-      {
-        'allowance_band' => request_options["allowance_band"]
-      }
+    # Checking for the presence of allowance_band, as it is calculated for
+    # the bulk submission only
+    when 'limber_scrna_core_cdna_prep_gem_x_5p' && request_options['allowance_band'].present?
+      { 'allowance_band' => request_options['allowance_band'] }
     else
       {}
     end
@@ -190,7 +188,7 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # rubocop:todo Metrics/MethodLength
   def create_request_of_type!(request_type, attributes = {}) # rubocop:todo Metrics/AbcSize
     request_metadata = request_type.extract_metadata_from_hash(request_options)
-    request_metadata  = request_metadata.merge(calculated_request_metadata_by_request_key(request_type.key))
+    request_metadata = request_metadata.merge(calculated_request_metadata_by_request_key(request_type.key))
     request_type.create!(attributes) do |request|
       request.submission_id = submission_id
       request.study = study

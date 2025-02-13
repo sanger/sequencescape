@@ -3,6 +3,7 @@
 # This module provides methods for calculating the full allowance volume and the
 # final resuspension volume for scRNA core cDNA prep feasibility validations.
 module Submission::ScrnaCoreCdnaPrepFeasibilityCalculator
+  SCRNA_CORE_CDNA_PREP_GEM_X_5P = 'Limber-Htp - scRNA Core cDNA Prep GEM-X 5p'
   # Constants for the headers in the bulk submission for scRNA core cDNA prep.
   HEADER_BARCODE = 'barcode' unless defined?(HEADER_BARCODE)
   HEADER_PLATE_WELL = 'plate well' unless defined?(HEADER_PLATE_WELL)
@@ -40,27 +41,15 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityCalculator
   # }
   #
   def calculate_allowance_band
+    # Only calculate if the submission template name is SCRNA_CORE_CDNA_PREP_GEM_X_5P
+    # and all required headers are present
+    return {} unless submission_template_name == SCRNA_CORE_CDNA_PREP_GEM_X_5P && validate_required_headers
     allowance_map = {}
     group_rows_by_study_and_project.each do |(study_name, project_name), rows|
-      number_of_samples_in_smallest_pool = calculate_number_of_samples_in_smallest_pool(rows)
-      number_of_cells_per_chip_well = rows.first[headers.index(HEADER_CELLS_PER_CHIP_WELL)].to_i
-      final_resuspension_volume = calculate_resuspension_volume(number_of_samples_in_smallest_pool)
-      allowance_map[{ study: study_name, project: project_name }] =
-        if final_resuspension_volume >= calculate_full_allowance(number_of_cells_per_chip_well)
-          "Full allowance"
-        elsif final_resuspension_volume >= calculate_two_attempts_one_count(number_of_cells_per_chip_well)
-          "2 pool attempts, 1 count"
-        elsif final_resuspension_volume >= calculate_one_attempt_two_counts(number_of_cells_per_chip_well)
-          "1 pool attempt, 2 counts"
-        elsif final_resuspension_volume >= calculate_one_attempt_one_count(number_of_cells_per_chip_well)
-          "1 pool attempt, 1 count"
-        else
-          "no allowance"
-        end
+      allowance_map[{ study: study_name, project: project_name }] = determine_allowance(rows)
     end
     allowance_map
   end
-
 
   # This method calculates the chip loading volume (in microlitres) for the
   # specified number of cells per chip well, which is typically specified in
@@ -108,6 +97,30 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityCalculator
     Rails.application.config.scrna_config
   end
 
+  def calculate_final_volume(rows)
+    number_of_samples = calculate_number_of_samples_in_smallest_pool(rows)
+    calculate_resuspension_volume(number_of_samples)
+  end
+
+  # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+  def determine_allowance(rows)
+    number_of_cells_per_chip_well = rows.first[headers.index(HEADER_CELLS_PER_CHIP_WELL)].to_i
+    final_volume = calculate_final_volume(rows)
+    case final_volume
+    when ->(v) { v >= calculate_full_allowance(number_of_cells_per_chip_well) }
+      'Full allowance'
+    when ->(v) { v >= calculate_two_attempts_one_count(number_of_cells_per_chip_well) }
+      '2 pool attempts, 1 count'
+    when ->(v) { v >= calculate_one_attempt_two_counts(number_of_cells_per_chip_well) }
+      '1 pool attempt, 2 counts'
+    when ->(v) { v >= calculate_one_attempt_one_count(number_of_cells_per_chip_well) }
+      '1 pool attempt, 1 count'
+    else
+      'no allowance'
+    end
+  end
+  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
+
   # @param number_of_cells_per_chip_well [Integer] the number of cells per chip well from the bulk submission
   # @return [Float] the "2 pool attempts, 1 count" volume
   def calculate_two_attempts_one_count(number_of_cells_per_chip_well)
@@ -123,8 +136,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityCalculator
     # "1 pool attempts, 2 count" =  "Chip loading volume" +
     # ( "Number of lots of 10ul for cell counting" * "Volume taken for cell counting") + "Wastage volume"
     chip_loading_volume = calculate_chip_loading_volume(number_of_cells_per_chip_well)
-    chip_loading_volume + (2 * scrna_config[:volume_taken_for_cell_counting]) +
-      scrna_config[:wastage_volume]
+    chip_loading_volume + (2 * scrna_config[:volume_taken_for_cell_counting]) + scrna_config[:wastage_volume]
   end
 
   # @param number_of_cells_per_chip_well [Integer] the number of cells per chip well from the bulk submission
@@ -134,5 +146,4 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityCalculator
     chip_loading_volume = calculate_chip_loading_volume(number_of_cells_per_chip_well)
     chip_loading_volume + scrna_config[:volume_taken_for_cell_counting] + scrna_config[:wastage_volume]
   end
-
 end

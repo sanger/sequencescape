@@ -23,6 +23,12 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
   # I18n scope for the error messages in this module; where to find the translations in the locale file.
   I18N_SCOPE_SCRNA_CORE_CDNA_PREP_FEASIBILITY_VALIDATOR = 'submissions.scrna_core_cdna_prep_feasibility_validator'
 
+  # Validate the presence of all required headers
+  def validate_required_headers
+    required = [HEADER_BARCODE, HEADER_PLATE_WELL, HEADER_NUMBER_OF_POOLS, HEADER_CELLS_PER_CHIP_WELL]
+    required.all? { |header| headers.include?(header) }
+  end
+
   # This method checks the feasibility of scRNA Core cDNA Prep bulk submission.
   # If the submission spreadsheet does not contain the necessary headers, the
   # method returns early. Otherwise, it performs a series of validations and
@@ -30,9 +36,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
   #
   # @return [void]
   def validate_scrna_core_cdna_prep_feasibility
-    required = [HEADER_BARCODE, HEADER_PLATE_WELL, HEADER_NUMBER_OF_POOLS, HEADER_CELLS_PER_CHIP_WELL]
-    return unless required.all? { |header| headers.include?(header) }
-
+    return unless validate_required_headers
     validate_scrna_core_cdna_prep_total_number_of_samples
     validate_scrna_core_cdna_prep_total_number_of_pools
     validate_scrna_core_cdna_prep_feasibility_by_samples
