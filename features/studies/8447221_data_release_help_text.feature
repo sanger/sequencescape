@@ -29,7 +29,6 @@ Feature: Update the data release fields for creating a study
 
     And I select "Jack Sponsor" from "Faculty Sponsor"
     And I select "General" from "Program"
-    And I select "Clone Sequencing" from "Study Type"
     And I select "WGS" from "EBI Library Strategy"
     And I select "GENOMIC" from "EBI Library Source"
     And I select "PCR" from "EBI Library Selection"

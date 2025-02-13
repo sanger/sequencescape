@@ -66,7 +66,6 @@ Feature: Manage a list of faculty sponsors
       And I select "Not suitable for alignment" from "Reference genome"
       And I fill in "Study description" with "some description"
       And I select "General" from "Program"
-      And I select "Clone Sequencing" from "Study Type"
       And I select "WGS" from "EBI Library Strategy"
       And I select "GENOMIC" from "EBI Library Source"
       And I select "PCR" from "EBI Library Selection"
