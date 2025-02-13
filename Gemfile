@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 group :default do
   gem 'bootsnap'
-  gem 'rails', '~> 7.0.8'
+  gem 'rails', '~> 7.1.5.1'
 
   # Previously part of ruby or rails, now separate gems
   gem 'drb', '~> 2.2'
