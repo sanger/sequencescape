@@ -6,6 +6,11 @@ Feature: Studies have timings for release of their data
     Given I am on the study creation page
     And I fill in "Study name" with "Testing data release strategies"
     And I select "Jack Sponsor" from "Faculty Sponsor"
+    And I select "General" from "Program"
+    And I select "Clone Sequencing" from "Study Type"
+    And I select "WGS" from "EBI Library Strategy"
+    And I select "GENOMIC" from "EBI Library Source"
+    And I select "PCR" from "EBI Library Selection"
     And I fill in "Study description" with "Checking that the data release strategies behave appropriately"
     And I choose "No" from "Do any of the samples in this study contain human DNA?"
     And I choose "No" from "Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?"
