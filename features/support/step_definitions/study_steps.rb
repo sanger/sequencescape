@@ -291,6 +291,11 @@ Given /^I create study "([^"]*)" with faculty sponsor "([^"]*)"$/ do |study_name
   step('I fill in "Data access group" with "some nonsense"')
   step('I fill in "Study description" with "some description"')
   step("I select \"#{faculty_sponsor}\" from \"Faculty Sponsor\"")
+  step('I select "General" from "Program"')
+  step('I select "Whole Genome Sequencing" from "Study type"')
+  step('I select "WGS" from "EBI Library Strategy"')
+  step('I select "GENOMIC" from "EBI Library Source"')
+  step('I select "PCR" from "EBI Library Selection"')
   step('I choose "Yes" from "Do any of the samples in this study contain human DNA?"')
   step(
     # rubocop:todo Layout/LineLength

@@ -28,6 +28,11 @@ Feature: Update the data release fields for creating a study
       | Please explain the reason for delaying release     | some comment    |
 
     And I select "Jack Sponsor" from "Faculty Sponsor"
+    And I select "General" from "Program"
+    And I select "Clone Sequencing" from "Study Type"
+    And I select "WGS" from "EBI Library Strategy"
+    And I select "GENOMIC" from "EBI Library Source"
+    And I select "PCR" from "EBI Library Selection"
     And I choose "Yes" from "Do any of the samples in this study contain human DNA?"
     And I choose "No" from "Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?"
     And I choose "Yes" from "Are all the samples to be used in this study commercially available, unlinked anonymised cell-lines?"
