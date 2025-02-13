@@ -20,11 +20,6 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
   # Add the methods from the calculator module for volume calculations.
   include Submission::ScrnaCoreCdnaPrepFeasibilityCalculator
 
-  # Constants for the headers in the bulk submission for scRNA core cDNA prep.
-  HEADER_BARCODE = 'barcode' unless defined?(HEADER_BARCODE)
-  HEADER_PLATE_WELL = 'plate well' unless defined?(HEADER_PLATE_WELL)
-  HEADER_NUMBER_OF_POOLS = 'scrna core number of pools' unless defined?(HEADER_NUMBER_OF_POOLS)
-  HEADER_CELLS_PER_CHIP_WELL = 'scrna core cells per chip well' unless defined?(HEADER_CELLS_PER_CHIP_WELL)
   # I18n scope for the error messages in this module; where to find the translations in the locale file.
   I18N_SCOPE_SCRNA_CORE_CDNA_PREP_FEASIBILITY_VALIDATOR = 'submissions.scrna_core_cdna_prep_feasibility_validator'
 
