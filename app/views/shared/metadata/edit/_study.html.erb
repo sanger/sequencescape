@@ -9,17 +9,14 @@
     <%= metadata_fields.text_field(:prelim_id) %>
 
     <%= metadata_fields.select_by_association(:reference_genome, {}, { class: 'select2' }) %>
-    <%= metadata_fields.select_by_association(:study_type)%>
 
     <% metadata_fields.with_options(grouping: 'ENA requirement') do |group| %>
       <%= group.text_field(:study_study_title) %>
+      <%= group.select_by_association(:study_type)%>
       <%= group.text_area(:study_description) %>
       <%= group.text_area(:study_abstract) %>
       <%= group.radio_select(:study_sra_hold, Study::STUDY_SRA_HOLDS) %>
-      <%= metadata_fields.select(:ebi_library_strategy, Study::EBI_LIBRARY_STRATEGY_OPTIONS) %> 
-      <%= metadata_fields.select(:ebi_library_source, Study::EBI_LIBRARY_SOURCE_OPTIONS) %> 
-      <%= metadata_fields.select(:ebi_library_selection, Study::EBI_LIBRARY_SELECTION_OPTIONS) %> 
-    <% end %>    
+    <% end %>
 
     <%= metadata_fields.radio_select(:contains_human_dna, Study::YES_OR_NO) %>
     <%= metadata_fields.radio_select(:contaminated_human_dna, Study::YES_OR_NO) %>
