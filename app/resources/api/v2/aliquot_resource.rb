@@ -43,6 +43,7 @@ module Api
     # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or the [JSONAPI::Resources](http://jsonapi-resources.com/) package, which implements JSON:API for Sequencescape.
     class AliquotResource < BaseResource
+      ###
       # Attributes
       ###
 
@@ -128,7 +129,7 @@ module Api
       filter :project
 
       ###
-      # Custom Methods
+      # Getters and Setters
       ###
 
       # Retrieves the oligo sequence of the primary tag.

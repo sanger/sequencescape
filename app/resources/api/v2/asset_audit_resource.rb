@@ -15,18 +15,18 @@ module Api
     #
     # @example POST request to create a new AssetAudit
     #   POST /api/v2/asset_audits/
-    #   {
-    #     "data": {
-    #       "type": "asset_audits",
-    #       "attributes": {
-    #         "key": "asset_audit_key",
-    #         "message": "Asset audit message",
-    #         "created_by": "user_uuid",
-    #         "witnessed_by": "witness_user_uuid",
-    #         "metadata": null
-    #       },
-    #      }
-    #   }
+    # {
+    #   "data": {
+    #     "type": "asset_audits",
+    #     "attributes": {
+    #       "key": "asset_audit_key",
+    #       "message": "Asset audit message",
+    #       "created_by": "user_uuid",
+    #       "witnessed_by": "witness_user_uuid",
+    #       "metadata": null
+    #     },
+    #    }
+    # }
     #
 
     # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
@@ -62,14 +62,6 @@ module Api
       #   @todo deprecate; use the `asset` relationship instead
       attribute :asset_uuid
 
-      def asset_uuid=(uuid)
-        @model.asset = Uuid.with_external_id(uuid).include_resource.map(&:resource).first
-      end
-
-      def asset_uuid
-        @model.asset.uuid
-      end
-
       # @!attribute [w] witnessed_by
       #   @param value [String]  The user who witnessed the asset audit.
       #   @return [String] The user who witnessed the asset audit.
@@ -80,6 +72,22 @@ module Api
       #   @return [Hash] Additional metadata associated with the asset audit.
       #   @note Currently known clients (Asset Audits App) are sending null; unsure of the expected format.
       attribute :metadata
+
+      ###
+      # Getters and Setters
+      ###
+
+      def asset_uuid=(uuid)
+        @model.asset = Uuid.with_external_id(uuid).include_resource.map(&:resource).first
+      end
+
+      def asset_uuid
+        @model.asset.uuid
+      end
+
+      ###
+      # Class Methods
+      ###
 
       # Gets the list of fields that are updatable on an existing AssetAudit.
       # AssetAudits cannot be modified after creation.

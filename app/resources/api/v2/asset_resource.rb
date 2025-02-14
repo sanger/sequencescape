@@ -2,9 +2,8 @@
 
 module Api
   module V2
-    # @todo This documentation does not yet include a detailed description of what this resource represents.
-    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
-    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+    # This resource is deprecated and should be replaced with a subclass of {AssetResource}
+    # The {Asset} is an abstract class and cannot be instantiated.
     #
     # @note Access this resource via the `/api/v2/assets/` endpoint.
     #
