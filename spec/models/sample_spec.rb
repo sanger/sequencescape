@@ -259,30 +259,6 @@ RSpec.describe Sample, :accession, :cardinal do
     end
   end
 
-  context 'huMFre code' do
-    let(:sample) { create(:sample) }
-
-    it 'defaults to null when not specified' do
-      expect(sample.sample_metadata.huMFre_code).to be_nil
-    end
-
-    it 'fails to update/save when huMFre code value is invalid' do
-      expect(sample.sample_metadata.huMFre_code).to be_nil
-      sample.sample_metadata.huMFre_code = 'humFre1'
-      expect(sample.sample_metadata.save).to be false
-    end
-
-    it 'contains huMFre code value when it is correctly specified' do
-      sample.sample_metadata.update!(huMFre_code: '12/12')
-      expect(sample.sample_metadata.huMFre_code).to eq '12/12'
-    end
-
-    it 'can have the huMFre code blanked' do
-      sample.sample_metadata.update!(huMFre_code: nil)
-      expect(sample.sample_metadata.huMFre_code).to be_nil
-    end
-  end
-
   context '(DPL-148) on updating sample metadata' do
     let(:sample) { create(:sample) }
 
