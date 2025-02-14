@@ -178,8 +178,8 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
     case request_type_key
     # Checking for the presence of allowance_band, as it is calculated for
     # the bulk submission only
-    when 'limber_scrna_core_cdna_prep_gem_x_5p' && request_options['allowance_band'].present?
-      { 'allowance_band' => request_options['allowance_band'] }
+    when 'limber_scrna_core_cdna_prep_gem_x_5p'
+      request_options['allowance_band'].present? ? { 'allowance_band' => request_options['allowance_band'] } : {}
     else
       {}
     end
