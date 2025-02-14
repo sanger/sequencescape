@@ -11,6 +11,19 @@ module RecordLoader
     config_folder 'tag_sets'
 
     def create_or_update!(name, options)
+      # It first creates or updates the
+      # associated TagGroup records for `tag_group_id` and `tag2_group_id` if they
+      # are not present. The TagGroup names are extracted from the options hash.
+
+      tag_group_name = options.delete('tag_group_name')
+      tag2_group_name = options.delete('tag2_group_name')
+
+      tag_group = TagGroupLoader.new.create_or_update!(tag_group_name, options) if tag_group_name
+      tag2_group = TagGroupLoader.new.create_or_update!(tag2_group_name, options) if tag2_group_name
+
+      options[:tag_group_id] = tag_group.id if tag_group
+      options[:tag2_group_id] = tag2_group.id if tag2_group
+
       TagSet.create_with(options).find_or_create_by!(name:)
     end
   end

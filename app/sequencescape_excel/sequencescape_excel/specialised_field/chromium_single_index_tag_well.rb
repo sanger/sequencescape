@@ -2,11 +2,12 @@
 module SequencescapeExcel
   module SpecialisedField
     ##
-    # ChromiumTagWell
+    # ChromiumSingleIndexTagWell
     #
-    # This class represents a tag well for Chromium.
+    # This class represents a single index tag well for Chromium.
     # It includes common functionality from ChromiumTagWellCommon.
-    class ChromiumTagWell
+
+    class ChromiumSingleIndexTagWell
       include ChromiumTagWellCommon
 
       ##
@@ -17,7 +18,7 @@ module SequencescapeExcel
       #
       # @return [Class] The class of the associated tag group.
       def self.tag_group_class
-        SequencescapeExcel::SpecialisedField::ChromiumTagGroup
+        SequencescapeExcel::SpecialisedField::ChromiumSingleIndexTagGroup
       end
     end
   end
