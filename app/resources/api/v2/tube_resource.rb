@@ -48,8 +48,8 @@ module Api
       has_many :transfer_requests_as_target, readonly: true
 
       # @!attribute [r] racked_tube
-      #   @return [Api::V2::RackedTubeResource] The racked tube association.
-      has_one :racked_tube, readonly: true, foreign_key_on: :related
+      #   @return [Api::V2::RackedTubeResource] An array of racked tubes associated with this tube.
+      has_many :racked_tube, readonly: true, foreign_key_on: :related
     end
   end
 end
