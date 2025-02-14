@@ -262,31 +262,184 @@ describe Well do
   end
 
   [
-    [1000, 10, 50, 50, 0, nil],
-    [1000, 10, 10, 10, 0, nil],
-    [1000, 10, 20, 10, 0, 10],
-    [100, 100, 50, 1, 9, nil],
-    [1000, 1000, 50, 1, 9, nil],
-    [5000, 1000, 50, 5, 5, nil],
-    [10, 100, 50, 1, 9, nil],
-    [1000, 250, 50, 4, 6, nil],
-    [10_000, 250, 50, 40, 0, nil],
-    [10_000, 250, 30, 30, 0, nil]
-    # rubocop:todo Metrics/ParameterLists
-  ].each do |target_ng, measured_concentration, measured_volume, stock_to_pick, buffer_added, current_volume|
-    # rubocop:enable Metrics/ParameterLists
+    {
+      target_ng: 1000,
+      measured_conc: 10,
+      measured_vol: 50,
+      min_vol: 10,
+      max_vol: 50,
+      min_pick_vol: 1,
+      source_pick_vol: 50,
+      buffer_vol: 0,
+      final_src_vol: 0,
+      final_dest_vol: 10
+    },
+    {
+      target_ng: 1000,
+      measured_conc: 10,
+      measured_vol: 10,
+      min_vol: 10,
+      max_vol: 50,
+      min_pick_vol: 1,
+      source_pick_vol: 10,
+      buffer_vol: 0,
+      final_src_vol: 0,
+      final_dest_vol: 10
+    },
+    {
+      target_ng: 100,
+      measured_conc: 100,
+      measured_vol: 50,
+      min_vol: 10,
+      max_vol: 50,
+      min_pick_vol: 1,
+      source_pick_vol: 1,
+      buffer_vol: 9,
+      final_src_vol: 49,
+      final_dest_vol: 10
+    },
+    {
+      target_ng: 1000,
+      measured_conc: 1000,
+      measured_vol: 50,
+      min_vol: 10,
+      max_vol: 50,
+      min_pick_vol: 1,
+      source_pick_vol: 1,
+      buffer_vol: 9,
+      final_src_vol: 49,
+      final_dest_vol: 10
+    },
+    {
+      target_ng: 5000,
+      measured_conc: 1000,
+      measured_vol: 50,
+      min_vol: 10,
+      max_vol: 50,
+      min_pick_vol: 1,
+      source_pick_vol: 5,
+      buffer_vol: 5,
+      final_src_vol: 45,
+      final_dest_vol: 10
+    },
+    {
+      target_ng: 10,
+      measured_conc: 100,
+      measured_vol: 50,
+      min_vol: 10,
+      max_vol: 50,
+      min_pick_vol: 1,
+      source_pick_vol: 1,
+      buffer_vol: 9,
+      final_src_vol: 49,
+      final_dest_vol: 10
+    },
+    {
+      target_ng: 1000,
+      measured_conc: 250,
+      measured_vol: 50,
+      min_vol: 10,
+      max_vol: 50,
+      min_pick_vol: 1,
+      source_pick_vol: 4,
+      buffer_vol: 6,
+      final_src_vol: 46,
+      final_dest_vol: 10
+    },
+    {
+      target_ng: 10_000,
+      measured_conc: 250,
+      measured_vol: 50,
+      min_vol: 10,
+      max_vol: 50,
+      min_pick_vol: 1,
+      source_pick_vol: 40,
+      buffer_vol: 0,
+      final_src_vol: 10,
+      final_dest_vol: 10
+    },
+    {
+      target_ng: 10_000,
+      measured_conc: 250,
+      measured_vol: 30,
+      min_vol: 10,
+      max_vol: 50,
+      min_pick_vol: 1,
+      source_pick_vol: 30,
+      buffer_vol: 0,
+      final_src_vol: 0,
+      final_dest_vol: 10
+    },
+    {
+      scenario: 'Y24-382: SQPD-10861 v14.29, b0.00',
+      target_ng: 1000,
+      measured_conc: 70,
+      measured_vol: 50,
+      min_vol: 10,
+      max_vol: 50,
+      min_pick_vol: 5,
+      source_pick_vol: 14.29,
+      buffer_vol: 0,
+      final_src_vol: 35.7143,
+      final_dest_vol: 10
+    },
+    {
+      scenario: 'Y24-382: SQPD-10864 v1.00, b49.00',
+      target_ng: 200,
+      measured_conc: 200,
+      measured_vol: 1,
+      min_vol: 50,
+      max_vol: 50,
+      min_pick_vol: 5,
+      source_pick_vol: 1,
+      buffer_vol: 49,
+      final_src_vol: 0,
+      final_dest_vol: 50
+    },
+    {
+      scenario: 'Y24-382: SQPD-10866 v50.00, b0.00',
+      target_ng: 9800,
+      measured_conc: 98,
+      measured_vol: 100,
+      min_vol: 50,
+      max_vol: 50,
+      min_pick_vol: 5,
+      source_pick_vol: 50,
+      buffer_vol: 0,
+      final_src_vol: 50,
+      final_dest_vol: 50
+    },
+    {
+      scenario: 'Y24-382: SQPD-10868 v50.00, b0.00',
+      target_ng: 9800,
+      measured_conc: 100,
+      measured_vol: 100,
+      min_vol: 50,
+      max_vol: 50,
+      min_pick_vol: 5,
+      source_pick_vol: 50,
+      buffer_vol: 0,
+      final_src_vol: 50,
+      final_dest_vol: 50
+    }
+  ].each do |cherrypick|
+    scenario = cherrypick.fetch(:scenario, nil)
+    target_ng = cherrypick[:target_ng]
+    concentration = cherrypick[:measured_conc]
+    measured_volume = cherrypick[:measured_vol]
+    source_pick_vol = cherrypick[:source_pick_vol]
+    buffer_added = cherrypick[:buffer_vol]
+    minimum_volume = cherrypick[:min_vol]
+    maximum_volume = cherrypick[:max_vol]
+    robot_minimum_picking_volume = cherrypick[:min_pick_vol]
+    final_source_volume = cherrypick[:final_src_vol]
+    final_destination_volume = cherrypick[:final_dest_vol]
+
     context 'cherrypick by nano grams' do
       before do
         @source_well = create(:well)
         @target_well = create(:well)
-        minimum_volume = 10
-        maximum_volume = 50
-        robot_minimum_picking_volume = 1.0
-        @source_well.well_attribute.update!(
-          concentration: measured_concentration,
-          measured_volume: measured_volume,
-          current_volume: current_volume
-        )
+        @source_well.well_attribute.update!(concentration:, measured_volume:)
         @target_well.volume_to_cherrypick_by_nano_grams(
           minimum_volume,
           maximum_volume,
@@ -296,18 +449,31 @@ describe Well do
         )
       end
 
-      # rubocop:disable Layout/LineLength
-      it "output stock_to_pick #{stock_to_pick} for a target of #{target_ng} with vol #{measured_volume} and conc #{measured_concentration}" do
-        expect(@target_well.well_attribute.picked_volume).to eq(stock_to_pick)
-      end
+      context(
+        "when testing #{scenario}" \
+          "for a target of #{target_ng} with conc #{concentration} and vol #{measured_volume}"
+      ) do
+        it "output source pick volume of #{source_pick_vol}" do
+          expect(@target_well.well_attribute.picked_volume.round(2)).to eq(source_pick_vol)
+        end
 
-      # rubocop:enable Layout/LineLength
+        it "output buffer of #{buffer_added}" do
+          expect(@target_well.well_attribute.buffer_volume).to eq(buffer_added)
+        end
 
-      # rubocop:disable Layout/LineLength
-      it "output buffer #{buffer_added} for a target of #{target_ng} with vol #{measured_volume} and conc #{measured_concentration}" do
-        expect(@target_well.well_attribute.buffer_volume).to eq(buffer_added)
+        it "leaves a final source volume of #{final_source_volume}" do
+          # mirrored from CherrypickRequest.reduce_source_volume
+          # asset.get_current_volume - target_asset.get_picked_volume
+          current_volume = @source_well.get_current_volume
+          picked_volume = @target_well.get_picked_volume
+          calculated_volume = current_volume - picked_volume
+          expect(calculated_volume.round(2)).to eq(final_source_volume.round(2))
+        end
+
+        it "provides a final destination volume of #{final_destination_volume}" do
+          expect(@target_well.well_attribute.current_volume).to eq(final_destination_volume)
+        end
       end
-      # rubocop:enable Layout/LineLength
     end
   end
 
@@ -420,49 +586,175 @@ describe Well do
     end
 
     [
-      [100.0, 50.0, 100.0, 200.0, nil, 50.0, 50.0, 'Standard scenario, sufficient material, buffer and dna both added'],
-      [
-        100.0,
-        50.0,
-        100.0,
-        20.0,
-        nil,
-        20.0,
-        80.0,
-        'Insufficient source material for concentration or volume. Make up with buffer'
-      ],
-      [100.0, 5.0, 100.0, 2.0, nil, 2.0, 98.0, 'As above, just more extreme'],
-      [100.0, 5.0, 100.0, 5.0, 5.0, 5.0, 95.0, 'High concentration, minimum robot volume increases source pick'],
-      [100.0, 50.0, 52.0, 200.0, 5.0, 96.2, 5.0, 'Lowish concentration, non zero, but less than robot buffer required'],
-      [100.0, 5.0, 100.0, 2.0, 5.0, 5.0, 98.0, 'Less DNA than robot minimum pick'],
-      [100.0, 50.0, 1.0, 200.0, 5.0, 100.0, 0.0, 'Low concentration, maximum DNA, no buffer'],
-      [120.0, 50.0, 0, 60.0, 5.0, 60.0, 60.0, 'Zero concentration, with less volume than required'],
-      [120.0, 50.0, 0, 3.0, 5.0, 5.0, 117.0, 'Zero concentration, with less volume than even the minimum robot pick']
-      # rubocop:todo Metrics/ParameterLists,Layout/LineLength
-    ].each do |final_volume_desired, final_conc_desired, source_concentration, source_volume, robot_minimum_pick_volume, source_volume_obtained, buffer_volume_obtained, scenario|
-      # rubocop:enable Metrics/ParameterLists,Layout/LineLength
+      {
+        scenario: 'Standard scenario, sufficient material, buffer and dna both added',
+        target_volume: 100.0,
+        target_concentration: 50.0,
+        source_concentration: 100.0,
+        source_volume: 200.0,
+        robot_minimum_pick_volume: nil,
+        source_volume_picked: 50.0,
+        buffer_volume_picked: 50.0,
+        destination_volume: 100.0,
+        source_volume_remaining: 150.0
+      },
+      {
+        scenario: 'Insufficient source material for concentration or volume. Make up with buffer',
+        target_volume: 100.0,
+        target_concentration: 50.0,
+        source_concentration: 100.0,
+        source_volume: 20.0,
+        robot_minimum_pick_volume: nil,
+        source_volume_picked: 20.0,
+        buffer_volume_picked: 80.0,
+        destination_volume: 100.0,
+        source_volume_remaining: 0.0
+      },
+      {
+        scenario: 'As above, just more extreme',
+        target_volume: 100.0,
+        target_concentration: 5.0,
+        source_concentration: 100.0,
+        source_volume: 2.0,
+        robot_minimum_pick_volume: nil,
+        source_volume_picked: 2.0,
+        buffer_volume_picked: 98.0,
+        destination_volume: 100.0,
+        source_volume_remaining: 0.0
+      },
+      {
+        scenario: 'High concentration, minimum robot volume increases source pick',
+        target_volume: 100.0,
+        target_concentration: 5.0,
+        source_concentration: 100.0,
+        source_volume: 5.0,
+        robot_minimum_pick_volume: 5.0,
+        source_volume_picked: 5.0,
+        buffer_volume_picked: 95.0,
+        destination_volume: 100.0,
+        source_volume_remaining: 0.0
+      },
+      {
+        scenario: 'Lowish concentration, non zero, but less than robot buffer required',
+        target_volume: 100.0,
+        target_concentration: 50.0,
+        source_concentration: 52.0,
+        source_volume: 200.0,
+        robot_minimum_pick_volume: 5.0,
+        source_volume_picked: 96.2,
+        buffer_volume_picked: 5.0,
+        destination_volume: 100.0,
+        source_volume_remaining: 103.8
+      },
+      {
+        scenario: 'Less DNA than robot minimum pick',
+        target_volume: 100.0,
+        target_concentration: 5.0,
+        source_concentration: 100.0,
+        source_volume: 2.0,
+        robot_minimum_pick_volume: 5.0,
+        source_volume_picked: 5.0,
+        buffer_volume_picked: 98.0,
+        destination_volume: 100.0,
+        source_volume_remaining: 0.0
+      },
+      {
+        scenario: 'Low concentration, maximum DNA, no buffer',
+        target_volume: 100.0,
+        target_concentration: 50.0,
+        source_concentration: 1.0,
+        source_volume: 200.0,
+        robot_minimum_pick_volume: 5.0,
+        source_volume_picked: 100.0,
+        buffer_volume_picked: 0.0,
+        destination_volume: 100.0,
+        source_volume_remaining: 100.0
+      },
+      {
+        scenario: 'Zero concentration, with less volume than required',
+        target_volume: 120.0,
+        target_concentration: 50.0,
+        source_concentration: 0,
+        source_volume: 60.0,
+        robot_minimum_pick_volume: 5.0,
+        source_volume_picked: 60.0,
+        buffer_volume_picked: 60.0,
+        destination_volume: 120.0,
+        source_volume_remaining: 0.0
+      },
+      {
+        scenario: 'Zero concentration, with less volume than even the minimum robot pick',
+        target_volume: 120.0,
+        target_concentration: 50.0,
+        source_concentration: 0,
+        source_volume: 3.0,
+        robot_minimum_pick_volume: 5.0,
+        source_volume_picked: 5.0,
+        buffer_volume_picked: 117.0,
+        destination_volume: 120.0,
+        source_volume_remaining: 0.0
+      },
+      {
+        scenario: 'Y24-382: SQPD-10859 v10.71 b5.00',
+        target_volume: 15.0,
+        target_concentration: 50.0,
+        source_concentration: 70.0,
+        source_volume: 50,
+        robot_minimum_pick_volume: 5.0,
+        source_volume_picked: 10.7,
+        buffer_volume_picked: 5.0,
+        destination_volume: 15.0,
+        source_volume_remaining: 39.3
+      }
+    ].each do |cherrypick|
+      scenario = cherrypick[:scenario]
+      target_volume = cherrypick[:target_volume]
+      target_concentration = cherrypick[:target_concentration]
+      source_concentration = cherrypick[:source_concentration]
+      source_volume = cherrypick[:source_volume]
+      robot_minimum_pick_volume = cherrypick[:robot_minimum_pick_volume]
+      source_volume_picked = cherrypick[:source_volume_picked]
+      buffer_volume_picked = cherrypick[:buffer_volume_picked]
+      destination_volume = cherrypick[:destination_volume]
+      source_volume_remaining = cherrypick[:source_volume_remaining]
+
       context "when testing #{scenario}" do
         before do
-          @result_volume =
-            format(
-              '%.1f',
-              well.volume_to_cherrypick_by_nano_grams_per_micro_litre(
-                final_volume_desired,
-                final_conc_desired,
-                source_concentration,
-                source_volume,
-                robot_minimum_pick_volume
-              )
-            ).to_f
-          @result_buffer_volume = format('%.1f', well.get_buffer_volume).to_f
+          # Create source and target wells
+          @source_well = create(:well)
+          @target_well = create(:well)
+          @source_well.well_attribute.update!(concentration: source_concentration, measured_volume: source_volume)
+
+          # Perform cherrypick
+          @target_well.volume_to_cherrypick_by_nano_grams_per_micro_litre(
+            target_volume,
+            target_concentration,
+            source_concentration,
+            source_volume,
+            robot_minimum_pick_volume
+          )
+
+          # Perform bed verification
+          # mirrored from CherrypickRequest.reduce_source_volume
+          subtracted_volume = @target_well.get_picked_volume
+          new_volume = @source_well.get_current_volume - subtracted_volume
+          @source_well.set_current_volume(new_volume)
         end
 
         it 'gets correct volume quantity' do
-          expect(@result_volume).to eq(source_volume_obtained)
+          expect(@target_well.get_picked_volume.round(1)).to eq(source_volume_picked)
         end
 
         it 'gets correct buffer volume measures' do
-          expect(@result_buffer_volume).to eq(buffer_volume_obtained)
+          expect(@target_well.get_buffer_volume.round(1)).to eq(buffer_volume_picked)
+        end
+
+        it 'gets correct source volume remaining' do
+          expect(@source_well.get_current_volume.round(1)).to eq(source_volume_remaining)
+        end
+
+        it 'gets correct destination volume' do
+          expect(@target_well.get_current_volume.round(1)).to eq(destination_volume)
         end
       end
     end

@@ -62,8 +62,7 @@ RSpec.describe Api::SampleIo do
         sample_strain_att: 'stuff about strain',
         consent_withdrawn: false,
         donor_id: 2,
-        developmental_stage: 'thing',
-        huMFre_code: '23/21'
+        developmental_stage: 'thing'
       }
     )
   end
@@ -134,8 +133,7 @@ RSpec.describe Api::SampleIo do
       'developmental_stage' => 'thing',
       'donor_id' => '2',
       'reference_genome' => 'ReferenceGenome1',
-      'component_sample_uuids' => [{ uuid: comp_sample1.uuid }, { uuid: comp_sample2.uuid }],
-      'huMFre_code' => '23/21'
+      'component_sample_uuids' => [{ uuid: comp_sample1.uuid }, { uuid: comp_sample2.uuid }]
     }
   end
 

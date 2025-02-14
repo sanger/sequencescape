@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-# rubocop:todo Metrics/ModuleLength
+
 module Submission::ValidationsByTemplateName
   include Submission::ScrnaCoreCdnaPrepFeasibilityValidator
 
@@ -41,7 +41,6 @@ module Submission::ValidationsByTemplateName
     when SCRNA_CORE_CDNA_PREP_GEM_X_5P
       validate_consistent_column_value(HEADER_NUMBER_OF_POOLS)
       validate_consistent_column_value(HEADER_CELLS_PER_CHIP_WELL)
-      validate_samples_per_pool_for_labware
       validate_scrna_core_cdna_prep_feasibility
     end
   end
@@ -73,21 +72,6 @@ module Submission::ValidationsByTemplateName
     end
   end
 
-  # Validates the number of samples per pool for labware.
-  #
-  # This method checks if the headers for barcode and plate wells are present.
-  # If they are, it groups the rows by study and project, and processes each group.
-  # The processing involves determining if the labware is a plate or tube and
-  # validating the number of samples per pool accordingly.
-  #
-  # @return [void]
-  def validate_samples_per_pool_for_labware
-    return if headers.index(HEADER_BARCODE).nil? && headers.index(HEADER_PLATE_WELLS).nil?
-
-    grouped_rows = group_rows_by_study_and_project
-    grouped_rows.each_value { |rows| process_rows(rows) }
-  end
-
   private
 
   # Validates that the specified column has unique values for each study and project.
@@ -109,72 +93,6 @@ module Submission::ValidationsByTemplateName
       "Inconsistent values for column '#{column_header}' for Study name '#{study_project[0]}' and Project name " \
         "'#{study_project[1]}', all rows for a specific study and project must have the same value"
     )
-  end
-
-  # Processes the rows to determine the type of labware and validate accordingly.
-  #
-  # This method extracts the barcodes and well locations from the rows and determines if the labware is a plate or tube.
-  # It then calls the appropriate validation method based on the labware type.
-  #
-  # @param rows [Array<Array<String>>] The rows of CSV data to process.
-  # @return [void]
-  # rubocop:disable Metrics/MethodLength
-  def process_rows(rows)
-    barcodes = rows.pluck(headers.index(HEADER_BARCODE))
-    well_locations = rows.pluck(headers.index(HEADER_PLATE_WELLS))
-
-    if plate?(barcodes, well_locations)
-      validate_for_plates(barcodes, well_locations, rows)
-    elsif tube?(barcodes, well_locations)
-      validate_for_tubes(barcodes, rows)
-    else
-      errors.add(
-        :spreadsheet,
-        'Invalid labware type. Please provide either a plate barcode with well locations or tube barcodes only'
-      )
-    end
-  end
-  # rubocop:enable Metrics/MethodLength
-
-  # Validates the number of samples per pool for plates.
-  #
-  # This method finds the plate using the provided barcodes and retrieves the wells located at the specified well
-  # locations.
-  # It then calculates the total number of samples per study and project and the number of pools.
-  # Finally, it validates the number of samples per pool.
-  #
-  # @param barcodes [Array<String>] The barcodes of the plates.
-  # @param well_locations [Array<String>] The well locations on the plate.
-  # @param rows [Array<Array<String>>] The rows of CSV data to process.
-  # @return [void]
-  # rubocop:disable Metrics/AbcSize
-  def validate_for_plates(barcodes, well_locations, rows)
-    plate = Plate.find_from_any_barcode(barcodes.uniq.first)
-    return if plate.nil?
-
-    wells = plate.wells.for_bulk_submission.located_at(well_locations)
-    total_number_of_samples_per_study_project = wells.map(&:samples).flatten.count.to_i
-    number_of_pools = rows.pluck(headers.index(HEADER_NUMBER_OF_POOLS)).uniq.first.to_i
-
-    validate_samples_per_pool(rows, total_number_of_samples_per_study_project, number_of_pools)
-  end
-  # rubocop:enable Metrics/AbcSize
-
-  # Validates the number of samples per pool for tubes.
-  #
-  # This method finds the tubes using the provided barcodes and calculates the total number of samples per study and
-  # project.
-  # It then retrieves the number of pools from the rows and validates the number of samples per pool.
-  #
-  # @param barcodes [Array<String>] The barcodes of the tubes.
-  # @param rows [Array<Array<String>>] The rows of CSV data to process.
-  # @return [void]
-  def validate_for_tubes(barcodes, rows)
-    tubes = find_tubes(barcodes)
-    total_number_of_samples_per_study_project = calculate_total_samples(tubes)
-    number_of_pools = extract_number_of_pools(rows)
-
-    validate_samples_per_pool(rows, total_number_of_samples_per_study_project, number_of_pools)
   end
 
   # Finds the tubes using the provided barcodes.
@@ -247,36 +165,4 @@ module Submission::ValidationsByTemplateName
   def tube?(barcodes, well_locations)
     barcodes.present? && well_locations.all?(&:nil?)
   end
-
-  # Validates the number of samples per pool.
-  #
-  # This method calculates the number of samples per pool by dividing the total number of samples by the number of
-  # pools.
-  # It then iterates through each pool and checks if the number of samples per pool is within the allowed range.
-  # If the number of samples per pool is less than the minimum or greater than the maximum allowed, an error is added.
-  #
-  # @param rows [Array<Array<String>>] The rows of CSV data to process.
-  # @param total_samples [Integer] The total number of samples.
-  # @param number_of_pools [Integer] The number of pools.
-  # @return [void]
-  # rubocop:disable Metrics/MethodLength
-  def validate_samples_per_pool(rows, total_samples, number_of_pools)
-    int_division = total_samples / number_of_pools
-    remainder = total_samples % number_of_pools
-
-    number_of_pools.times do |pool_number|
-      samples_per_pool = int_division
-      samples_per_pool += 1 if pool_number < remainder
-      next unless samples_per_pool > SAMPLES_PER_POOL[:max] || samples_per_pool < SAMPLES_PER_POOL[:min]
-
-      errors.add(
-        :spreadsheet,
-        "Number of samples per pool for Study name '#{rows.first[headers.index(HEADER_STUDY_NAME)]}' " \
-          "and Project name '#{rows.first[headers.index(HEADER_PROJECT_NAME)]}' " \
-          "is less than 5 or greater than 25 for pool number #{pool_number}"
-      )
-    end
-  end
-  # rubocop:enable Metrics/MethodLength
 end
-# rubocop:enable Metrics/ModuleLength

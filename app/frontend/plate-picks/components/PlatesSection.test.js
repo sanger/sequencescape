@@ -1,5 +1,4 @@
 import { shallowMount } from "@vue/test-utils";
-import "@testing-library/jest-dom";
 import PlatesSection from "./PlatesSection.vue";
 import PlatesSectionPlate from "./PlatesSectionPlate.vue";
 import defaultState from "../store/state";
@@ -33,7 +32,7 @@ describe("PlatesSection.vue", () => {
   it("triggers plate lookup", async () => {
     const mockStore = {
       state: defaultState(),
-      dispatch: jest.fn(),
+      dispatch: vi.fn(),
       getters: { sortedScannedPlates: [] },
     };
     const wrapper = shallowMount(PlatesSection, {
@@ -52,7 +51,7 @@ describe("PlatesSection.vue", () => {
   it("ignores empty input", async () => {
     const mockStore = {
       state: defaultState(),
-      dispatch: jest.fn(),
+      dispatch: vi.fn(),
       getters: { sortedScannedPlates: [] },
     };
     const wrapper = shallowMount(PlatesSection, {
