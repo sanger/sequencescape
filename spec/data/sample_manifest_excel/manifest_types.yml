@@ -730,6 +730,7 @@ scrna_core:
     - :supplier_name
     - :volume
     - :retention_instruction
+    - :sample_description
 tube_controls:
   heading: "Control tubes"
   asset_type: "1dtube"
