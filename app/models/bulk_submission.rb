@@ -161,6 +161,12 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
       # Apply any additional validations based on the submission template name
       apply_additional_validations_by_template_name unless errors.count > 0
 
+      # Calculates the allowance band based on the submission template name.
+      # If the submission template name matches `SCRNA_CORE_CDNA_PREP_GEM_X_5P` and all required headers are present,
+      # the allowance band is calculated for each study and project combination.
+      # Otherwise, an empty hash is assigned.
+      @allowance_band = calculate_allowance_band
+
       raise ActiveRecord::RecordInvalid, self if errors.count > 0
 
       # Within a single transaction process each of the rows of the CSV file as a separate submission.  Any name
@@ -352,6 +358,18 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     end
   end
 
+  # Adds extra request options based on the submission template name.
+  # This method checks the 'template name' from the provided details and
+  # adds additional request options accordingly. Currently, it supports
+  # the `SCRNA_CORE_CDNA_PREP_GEM_X_5P` template by including an
+  # `allowance_band` value.
+  # The allowance_band values are grouped by study and project name.
+  def calculated_request_options_by_template_name(details)
+    return {} unless details['template name'] == SCRNA_CORE_CDNA_PREP_GEM_X_5P && @allowance_band.size.positive?
+
+    { 'allowance_band' => @allowance_band[{ study: details['study name'], project: details['project name'] }] }
+  end
+
   # Returns an order for the given details
   # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def prepare_order(details) # rubocop:todo Metrics/CyclomaticComplexity
@@ -362,8 +380,11 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
       raise StandardError, "Cannot find user #{details['user login'].inspect}"
 
     # Extract the request options from the row details
-    request_options = extract_request_options(details)
+    extracted_request_options = extract_request_options(details)
 
+    # add calculated request metadata
+    # This is to cover calculated metadata that is not directly in the csv, does not require user input
+    request_options = extracted_request_options.merge(calculated_request_options_by_template_name(details))
     # Check the library type matches a value from the table
     if request_options['library_type'].present?
       # find is case insensitive but we want the correct case sensitive name for requests or we get issues downstream in
