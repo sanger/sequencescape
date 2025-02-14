@@ -17,8 +17,6 @@ module Api
     class SubmissionTemplateResource < BaseResource
       immutable
 
-      default_includes :uuid_object
-
       ###
       # Attributes
       ###

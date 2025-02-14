@@ -27,6 +27,10 @@
       <td><strong><%=h @sample.created_at.to_formatted_s(:day_full_with_time) %></strong></td>
     </tr>
     <tr>
+      <td class="item">Sample Collection Date</td>
+      <td><%=h @sample.sample_metadata.date_of_sample_collection %></td>
+    </tr>
+    <tr>
       <td class="item">Control:</td>
       <td><%=h @sample.control_formatted %></td>
     </tr>
