@@ -2,7 +2,7 @@
 
 <div id='pick_by_nano_grams'>
 
-  <%= cherrypick_strategy_radio_button :cherrypick, :strategy, :nano_grams, 'Pick by concentration (ng/µl)' %>
+  <%= cherrypick_strategy_radio_button :cherrypick, :strategy, :nano_grams, 'Pick by amount (ng)' %>
 
   <%= form.fields_for :nano_grams do |nano_grams_fields| %>
     <%= cherrypick_form_group_text nano_grams_fields, :total_nano_grams, 'Quantity to pick (ng)', '1000' %>
