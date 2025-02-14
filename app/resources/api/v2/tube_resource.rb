@@ -49,7 +49,7 @@ module Api
 
       # @!attribute [r] racked_tube
       #   @return [Api::V2::RackedTubeResource] An array of racked tubes associated with this tube.
-      has_many :racked_tube, readonly: true, foreign_key_on: :related
+      has_many :racked_tubes, readonly: true, foreign_key_on: :related
     end
   end
 end

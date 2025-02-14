@@ -69,7 +69,7 @@ describe 'Tubes API', with: :api_v2 do
         end
 
         it 'returns a reference to the racked_tube relationship' do
-          expect(json.dig('data', 'relationships', 'racked_tube')).to be_present
+          expect(json.dig('data', 'relationships', 'racked_tubes')).to be_present
         end
 
         it 'does not include attributes for related resources' do
