@@ -78,7 +78,7 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
     @cherrypick_strategy = params[:cherrypick][:strategy]
     case @cherrypick_strategy&.to_sym
     when :nano_grams_per_micro_litre
-      @nano_grams_per_micro_litre_volume_required = params[:nano_grams_per_micro_litre][:concentration_volume_required]
+      @nano_grams_per_micro_litre_volume_required = params[:nano_grams_per_micro_litre][:volume_required]
       @nano_grams_per_micro_litre_concentration_required = params[:nano_grams_per_micro_litre][:concentration_required]
       @nano_grams_per_micro_litre_robot_minimum_picking_volume =
         params[:nano_grams_per_micro_litre][:robot_minimum_picking_volume]
@@ -88,7 +88,7 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
       @nano_grams_total_nano_grams = params[:nano_grams][:total_nano_grams]
       @nano_grams_robot_minimum_picking_volume = params[:nano_grams][:robot_minimum_picking_volume]
     when :micro_litre
-      @micro_litre_volume_required = params[:micro_litre][:volume_volume_required]
+      @micro_litre_volume_required = params[:micro_litre][:volume_required]
     else
       raise StandardError, "Invalid cherrypicking strategy '#{params[:cherrypick][:strategy]}'"
     end
