@@ -418,7 +418,8 @@ describe BulkSubmission, with: :uploader do
 
       it 'calculates the allowance band correctly' do
         subject.process
-        expect(generated_submission.orders[0].request_options['allowance_band']).to eq('Full allowance')
+        expect(generated_submission.orders[0].request_options['allowance_band']).to
+        eq(ALLOWANCE_BANDS[:two_pools_two_counts])
       end
     end
 

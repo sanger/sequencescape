@@ -10,6 +10,13 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityCalculator
   HEADER_NUMBER_OF_POOLS = 'scrna core number of pools' unless defined?(HEADER_NUMBER_OF_POOLS)
   HEADER_CELLS_PER_CHIP_WELL = 'scrna core cells per chip well' unless defined?(HEADER_CELLS_PER_CHIP_WELL)
 
+  ALLOWANCE_BANDS = {
+    two_pools_two_counts: '2 pool attempts, 2 counts',
+    two_pools_one_count: '2 pool attempts, 1 count',
+    one_pool_two_counts: '1 pool attempt, 2 counts',
+    one_pool_one_count: '1 pool attempt, 1 count'
+  }.freeze
+
   # This method calculates the full allowance volume (in microlitres) for the
   # specified number of cells per chip well, which is typically specified in
   # in a bulk submission per study and project. It uses the pooling settings
@@ -36,7 +43,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityCalculator
   #   and the values are the corresponding allowance bands as strings.
   # Example output:
   # {
-  #   { study: "Study A", project: "Project X" } => "Full allowance",
+  #   { study: "Study A", project: "Project X" } => "2 pool attempts, 2 counts",
   #   { study: "Study B", project: "Project Y" } => "1 pool attempt, 2 counts"
   # }
   #
@@ -108,15 +115,13 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityCalculator
     final_volume = calculate_final_volume(rows)
     case final_volume
     when ->(v) { v >= calculate_full_allowance(number_of_cells_per_chip_well) }
-      'Full allowance'
+      ALLOWANCE_BANDS[:two_pools_two_counts]
     when ->(v) { v >= calculate_two_attempts_one_count(number_of_cells_per_chip_well) }
-      '2 pool attempts, 1 count'
+      ALLOWANCE_BANDS[:two_pools_one_count]
     when ->(v) { v >= calculate_one_attempt_two_counts(number_of_cells_per_chip_well) }
-      '1 pool attempt, 2 counts'
+      ALLOWANCE_BANDS[:one_pool_two_counts]
     when ->(v) { v >= calculate_one_attempt_one_count(number_of_cells_per_chip_well) }
-      '1 pool attempt, 1 count'
-    else
-      'no allowance'
+      ALLOWANCE_BANDS[:one_pool_one_count]
     end
   end
   # rubocop:enable Metrics/MethodLength, Metrics/AbcSize

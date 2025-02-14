@@ -66,6 +66,8 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
     }
   end
 
+  allowance_bands = Submission::ScrnaCoreCdnaPrepFeasibilityCalculator::ALLOWANCE_BANDS
+
   before { allow(calculator).to receive(:scrna_config).and_return(scrna_config) }
 
   describe '#calculate_allowance_band' do
@@ -84,7 +86,7 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
     context 'when validation to run calculate_allowance_band passes' do
       before { allow(calculator).to receive(:validate_required_headers).and_return(true) }
 
-      it 'returns full allowance' do
+      it 'returns `2 pool attempts, 2 counts` when the finale volume is bigger than `2 pool attempts, 2 counts` band' do
         rows = [
           [
             'user',
@@ -119,11 +121,12 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
           },
           calculate_number_of_samples_in_smallest_pool: 6
         )
-        expected_result = { { study: 'Test Study', project: 'Test Project' } => 'Full allowance' }
+        expected_result = { { study: 'Test Study', project: 'Test Project' } => allowance_bands[:two_pools_two_counts] }
         expect(calculator.calculate_allowance_band).to eq(expected_result)
       end
 
-      it 'returns `2 pool attempts, 1 count`' do
+      it 'returns `2 pool attempts, 1 count` when the finale volume is bigger or eq to `2 pool attempts, 1 count`
+ allowance and less than `2 pool attempts, 2 counts` allowance' do
         rows = [
           [
             'user',
@@ -149,20 +152,21 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
             '1.35',
             nil,
             '1',
-            '5000'
+            '53428'
           ]
         ]
         allow(calculator).to receive_messages(
-          calculate_number_of_samples_in_smallest_pool: 2,
+          calculate_number_of_samples_in_smallest_pool: 5,
           group_rows_by_study_and_project: {
             ['Test Study', 'Test Project'] => rows
           }
         )
-        expected_result = { { study: 'Test Study', project: 'Test Project' } => '2 pool attempts, 1 count' }
+        expected_result = { { study: 'Test Study', project: 'Test Project' } => allowance_bands[:two_pools_one_count] }
         expect(calculator.calculate_allowance_band).to eq(expected_result)
       end
 
-      it 'returns `1 pool attempt, 1 count`' do
+      it 'returns `1 pool attempt, 1 count` when the finale volume is bigger or eq to `1 pool attempt, 1 count`
+          allowance and less than `1 pool attempt, 2 counts` allowance' do
         rows = [
           [
             'user',
@@ -197,11 +201,51 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
             ['Test Study', 'Test Project'] => rows
           }
         )
-        expected_result = { { study: 'Test Study', project: 'Test Project' } => '1 pool attempt, 1 count' }
+        expected_result = { { study: 'Test Study', project: 'Test Project' } => allowance_bands[:one_pool_one_count] }
         expect(calculator.calculate_allowance_band).to eq(expected_result)
       end
 
-      it 'returns no allowance' do
+      it 'returns `1 pool attempt, 2 counts` when the final_volume is bigger or eq to `1 pool attempt, 2 counts`
+          band allowance and less than `1 pool attempt, 1 count ` band' do
+        rows = [
+          [
+            'user',
+            'Limber-Htp - scRNA Core cDNA Prep GEM-X 5p',
+            'Test Project',
+            'Test Study',
+            'sub1',
+            'NT1',
+            nil,
+            'ag1',
+            nil,
+            nil,
+            nil,
+            'Standard',
+            nil,
+            nil,
+            nil,
+            '108',
+            '1',
+            nil,
+            nil,
+            'Sample Comment',
+            '1.35',
+            nil,
+            '1',
+            '82857'
+          ]
+        ]
+        allow(calculator).to receive_messages(
+          calculate_number_of_samples_in_smallest_pool: 5,
+          group_rows_by_study_and_project: {
+            ['Test Study', 'Test Project'] => rows
+          }
+        )
+        expected_result = { { study: 'Test Study', project: 'Test Project' } => allowance_bands[:one_pool_two_counts] }
+        expect(calculator.calculate_allowance_band).to eq(expected_result)
+      end
+
+      it 'returns nil when the final_volume is less than `1 pool attempt, 1 count` band allowance' do
         rows = [
           [
             'user',
@@ -236,7 +280,7 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
             ['Test Study', 'Test Project'] => rows
           }
         )
-        expected_result = { { study: 'Test Study', project: 'Test Project' } => 'no allowance' }
+        expected_result = { { study: 'Test Study', project: 'Test Project' } => nil }
         expect(calculator.calculate_allowance_band).to eq(expected_result)
       end
     end
