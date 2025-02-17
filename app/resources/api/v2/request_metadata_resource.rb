@@ -43,7 +43,6 @@ module Api
       #     pooling.
       attribute :cells_per_chip_well, write_once: true
 
-
       # @!attribute [r] cells_per_chip_well
       #   @return [String] the allowance_band requested in the Submission. As
       #     used in the scRNA Core pipeline, it is specified at the Study-Project
