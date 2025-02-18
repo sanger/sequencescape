@@ -41,7 +41,6 @@ module RecordLoader
 
       TagSet.create_with(options).find_or_create_by!(name:)
     end
-    # rubocop:enable Metrics/MethodLength
 
     private
 
@@ -69,5 +68,6 @@ module RecordLoader
           end
         end
     end
+    # rubocop:enable Metrics/MethodLength
   end
 end
