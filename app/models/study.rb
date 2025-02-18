@@ -322,6 +322,18 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     validates :ebi_library_source, presence: true, on: :create
     validates :ebi_library_selection, presence: true, on: :create
 
+    validates :ebi_library_strategy,
+              inclusion: {
+                in: EBI_LIBRARY_STRATEGY_OPTIONS
+              },
+              if: -> { ebi_library_strategy.present? }
+    validates :ebi_library_source, inclusion: { in: EBI_LIBRARY_SOURCE_OPTIONS }, if: -> { ebi_library_source.present? }
+    validates :ebi_library_selection,
+              inclusion: {
+                in: EBI_LIBRARY_SELECTION_OPTIONS
+              },
+              if: -> { ebi_library_selection.present? }
+
     before_validation do |record|
       record.reference_genome_id = 1 if record.reference_genome_id.blank?
 
