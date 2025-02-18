@@ -76,6 +76,7 @@ module Api
 
       # @!attribute [r] uuid
       #   @return [String] The UUID of the bulk transfers operation.
+      #   @note This identifier is automatically assigned upon creation and cannot be modified.
       attribute :uuid, readonly: true
 
       # @!attribute [w] well_transfers
