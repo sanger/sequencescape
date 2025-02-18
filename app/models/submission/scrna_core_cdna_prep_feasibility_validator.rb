@@ -311,7 +311,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
       number_of_samples_in_smallest_pool = calculate_number_of_samples_in_smallest_pool(rows)
       number_of_cells_per_chip_well = rows.first[headers.index(HEADER_CELLS_PER_CHIP_WELL)].to_i
       final_resuspension_volume = calculate_resuspension_volume(number_of_samples_in_smallest_pool)
-      full_allowance = calculate_full_allowance(number_of_cells_per_chip_well)
+      full_allowance = calculate_volume_needed(number_of_cells_per_chip_well, 2, 2)
 
       next if final_resuspension_volume >= full_allowance
 
