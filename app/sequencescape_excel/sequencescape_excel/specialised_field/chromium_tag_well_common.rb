@@ -42,6 +42,9 @@ module SequencescapeExcel
           elsif aliquot_count == TAGS_PER_WELL
             tags.zip(aliquots).each { |tag, aliquot| aliquot.assign_attributes(tag:) }
           else
+            # We should never end up here, as our validation should handle this
+            # However if that fails, something has gone wrong, and we shouldn't proceed
+            # Fail noisily
             raise StandardError, 'Tag aliquot mismatch'
           end
         end
@@ -62,7 +65,11 @@ module SequencescapeExcel
       ##
       # Returns the well index.
       #
-      # This method calculates and returns the well index based on the value.
+      # Translates values on the left (well positions) to 'well index' integer on the right (column order).
+      # A1 --> 1
+      # B1 --> 2
+      # ...
+      # H12 --> 96
       #
       # @return [Integer] The well index.
       def well_index
@@ -72,8 +79,16 @@ module SequencescapeExcel
       ##
       # Returns the map IDs.
       #
-      # This method calculates and returns an array of map IDs based on the well index.
-      #
+      # This method translates well index (on the left) to the arrays on the right.
+      # These 'map_id' integers refer simply to the position in the list of tags in the tag group
+      # (note: it's not related to the `maps` table).
+      # Viewed together with the `well_index` method, this will translate, for example,'A1' entered
+      # in the tag well column of the manifest, to [1, 2, 3, 4], meaning the first 4 tags in the tag group.
+
+      # 1 --> [1, 2, 3, 4]
+      # 2 --> [5, 6, 7, 8]
+      # ...
+      # 96 --> [381, 382, 383, 384]
       # @return [Array<Integer>] The array of map IDs.
       def map_ids
         Array.new(TAGS_PER_WELL) { |i| ((well_index - 1) * TAGS_PER_WELL) + i + 1 }
