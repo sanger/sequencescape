@@ -38,9 +38,6 @@ class TagSet < ApplicationRecord
 
   scope :single_index, -> { where(tag2_group: nil) }
 
-  # The scoping retrieves the visible tag sets and makes sure they are single index.
-  # Define the visible_single_index scope
-  # Define the visible_single_index scope
   scope :visible_single_index, -> { single_index.visible }
 
   # Define the scope that combines visible_single_index and chromium tag_group
