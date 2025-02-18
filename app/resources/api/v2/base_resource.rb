@@ -57,7 +57,7 @@ module Api
       # @return [Set<Symbol>] A set of attributes and relationships that can be written when creating a resource.
       def self.creatable_fields(context)
         super - _attributes.select { |_attr, options| options[:readonly] }.keys -
-               _relationships.select { |_rel_key, rel| rel.options[:readonly] }.keys
+          _relationships.select { |_rel_key, rel| rel.options[:readonly] }.keys
       end
 
       # Determines which fields can be updated after a resource has been created.
@@ -66,7 +66,7 @@ module Api
       # @return [Set<Symbol>] A set of attributes and relationships that can be modified after creation.
       def self.updatable_fields(context)
         super - _attributes.select { |_attr, options| options[:readonly] || options[:write_once] }.keys -
-               _relationships.select { |_rel_key, rel| rel.options[:readonly] || rel.options[:write_once] }.keys
+          _relationships.select { |_rel_key, rel| rel.options[:readonly] || rel.options[:write_once] }.keys
       end
 
       ###
@@ -78,7 +78,7 @@ module Api
       # @return [Set<Symbol>] A set of attributes and relationships that can be retrieved.
       def fetchable_fields
         super - self.class._attributes.select { |_attr, options| options[:writeonly] }.keys -
-               self.class._relationships.select { |_rel_key, rel| rel.options[:writeonly] }.keys
+          self.class._relationships.select { |_rel_key, rel| rel.options[:writeonly] }.keys
       end
     end
   end

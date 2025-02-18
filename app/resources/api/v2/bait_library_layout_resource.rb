@@ -72,6 +72,7 @@ module Api
       attribute :layout, readonly: true
 
       # @!attribute [r] uuid
+      #   @note This identifier is automatically assigned upon creation and cannot be modified.
       #   @return [String] The UUID of the bait library layout.
       attribute :uuid, readonly: true
 

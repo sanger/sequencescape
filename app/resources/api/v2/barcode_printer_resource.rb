@@ -5,7 +5,8 @@ module Api
     # Provides a JSON:API representation of {BarcodePrinter}.
     #
     # This resource represents a barcode printer and its capabilities.
-    # It allows retrieving information about registered barcode printers, including their names, types, and supported services.
+    # It allows retrieving information about registered barcode printers, including their names, types,
+    #   and supported services.
     #
     # @note This resource is immutable: its endpoint will not accept `POST`, `PATCH`, or `DELETE` requests.
     # @note Access this resource via the `/api/v2/barcode_printers/` endpoint.
@@ -32,6 +33,7 @@ module Api
       attribute :name, readonly: true
 
       # @!attribute [r] uuid
+      #   @note This identifier is automatically assigned upon creation and cannot be modified.
       #   @return [String] The UUID of the barcode printer.
       attribute :uuid, readonly: true
 

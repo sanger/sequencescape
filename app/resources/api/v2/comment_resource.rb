@@ -77,7 +77,6 @@ module Api
       #   @note This attribute is read-only.
       #   @return [DateTime] The timestamp when the comment was last updated.
       attribute :updated_at, readonly: true
-
     end
   end
 end
