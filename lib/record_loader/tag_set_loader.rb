@@ -58,14 +58,16 @@ module RecordLoader
     def find_tag_group(tag_group_name, tag_set_name)
       return unless tag_group_name
 
-      TagGroup.find_by(name: tag_group_name).tap do |tag_group|
-        unless tag_group
-          Rails.logger.debug do
-            "TagSet '#{tag_set_name}' creation or update failed because " \
-            "TagGroup with name '#{tag_group_name}' was not found"
+      TagGroup
+        .find_by(name: tag_group_name)
+        .tap do |tag_group|
+          unless tag_group
+            Rails.logger.debug do
+              "TagSet '#{tag_set_name}' creation or update failed because " \
+                "TagGroup with name '#{tag_group_name}' was not found"
+            end
           end
         end
-      end
     end
   end
 end
