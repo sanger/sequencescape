@@ -119,20 +119,18 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityCalculator
     calculate_resuspension_volume(number_of_samples)
   end
 
-  # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
   def determine_allowance(rows)
     number_of_cells_per_chip_well = rows.first[headers.index(HEADER_CELLS_PER_CHIP_WELL)].to_i
     final_volume = calculate_final_volume(rows)
-    case final_volume
-    when ->(v) { v >= calculate_volume_needed(number_of_cells_per_chip_well, 2, 2) }
-      ALLOWANCE_BANDS[:two_pools_two_counts]
-    when ->(v) { v >= calculate_volume_needed(number_of_cells_per_chip_well, 2, 1) }
-      ALLOWANCE_BANDS[:two_pools_one_count]
-    when ->(v) { v >= calculate_volume_needed(number_of_cells_per_chip_well, 1, 2) }
-      ALLOWANCE_BANDS[:one_pool_two_counts]
-    when ->(v) { v >= calculate_volume_needed(number_of_cells_per_chip_well, 1, 1) }
-      ALLOWANCE_BANDS[:one_pool_one_count]
+    [
+      [:two_pools_two_counts, 2, 2],
+      [:two_pools_one_count, 2, 1],
+      [:one_pool_two_counts, 1, 2],
+      [:one_pool_one_count, 1, 1]
+    ].each do |band, pools, counts|
+      if final_volume >= calculate_volume_needed(number_of_cells_per_chip_well, pools, counts)
+        return ALLOWANCE_BANDS[band]
+      end
     end
   end
-  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 end
