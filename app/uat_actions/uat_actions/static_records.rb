@@ -33,10 +33,7 @@ module UatActions::StaticRecords
         contaminated_human_dna: 'No',
         contains_human_dna: 'No',
         commercially_available: 'No',
-        program: program,
-        ebi_library_strategy: 'WGS',
-        ebi_library_source: 'GENOMIC',
-        ebi_library_selection: 'PCR'
+        program: program
       }
     ).find_or_create_by!(name: 'UAT Study')
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_01_23_105050) do
+ActiveRecord::Schema[7.0].define(version: 2025_02_07_151422) do
   create_table "aliquot_indices", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "aliquot_id", null: false
     t.integer "lane_id", null: false
@@ -1395,7 +1395,6 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_23_105050) do
     t.integer "user_id_of_consent_withdrawn"
     t.boolean "consent_withdrawn", default: false, null: false
     t.string "collected_by", comment: "Name of persons or institute who collected the specimen"
-    t.string "huMFre_code", limit: 16
     t.index ["sample_ebi_accession_number"], name: "index_sample_metadata_on_sample_ebi_accession_number"
     t.index ["sample_id"], name: "index_sample_metadata_on_sample_id"
     t.index ["supplier_name"], name: "index_sample_metadata_on_supplier_name"
@@ -1548,9 +1547,6 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_23_105050) do
     t.string "s3_email_list"
     t.string "data_deletion_period"
     t.string "contaminated_human_data_access_group"
-    t.string "ebi_library_strategy"
-    t.string "ebi_library_source"
-    t.string "ebi_library_selection"
     t.string "data_release_prevention_other_comment"
     t.index ["faculty_sponsor_id"], name: "index_study_metadata_on_faculty_sponsor_id"
     t.index ["study_id"], name: "index_study_metadata_on_study_id"
