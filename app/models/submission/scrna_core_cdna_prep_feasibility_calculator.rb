@@ -132,5 +132,6 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityCalculator
         return ALLOWANCE_BANDS[band]
       end
     end
+    nil
   end
 end
