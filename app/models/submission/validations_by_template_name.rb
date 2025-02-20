@@ -17,6 +17,16 @@ module Submission::ValidationsByTemplateName
 
   SAMPLES_PER_POOL = { max: 25, min: 5 }.freeze
 
+  # Looks for the index of the 'template name' header in the CSV headers
+  # and returns the value from the first row in the corresponding column.
+  # Assumptions:
+  # - The CSV data has already been parsed into an array of rows.
+  # - The template name exists in the headers and is present in the first row.
+  def submission_template_name
+    index_of_template_name = headers.index(HEADER_TEMPLATE_NAME)
+    csv_data_rows.first[index_of_template_name]
+  end
+
   # Applies additional validations based on the submission template type.
   #
   # This method determines the submission template type from the CSV data and calls the appropriate
@@ -33,9 +43,6 @@ module Submission::ValidationsByTemplateName
   def apply_additional_validations_by_template_name
     # depending on the submission template type, call additional validations
     # NB. assumption that all rows in the csv have the same submission template name
-    index_of_template_name = headers.index(HEADER_TEMPLATE_NAME)
-    submission_template_name = csv_data_rows.first[index_of_template_name]
-
     case submission_template_name
     # this validation is for the scRNA pipeline cDNA submission
     when SCRNA_CORE_CDNA_PREP_GEM_X_5P

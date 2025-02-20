@@ -20,13 +20,14 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
   # Add the methods from the calculator module for volume calculations.
   include Submission::ScrnaCoreCdnaPrepFeasibilityCalculator
 
-  # Constants for the headers in the bulk submission for scRNA core cDNA prep.
-  HEADER_BARCODE = 'barcode' unless defined?(HEADER_BARCODE)
-  HEADER_PLATE_WELL = 'plate well' unless defined?(HEADER_PLATE_WELL)
-  HEADER_NUMBER_OF_POOLS = 'scrna core number of pools' unless defined?(HEADER_NUMBER_OF_POOLS)
-  HEADER_CELLS_PER_CHIP_WELL = 'scrna core cells per chip well' unless defined?(HEADER_CELLS_PER_CHIP_WELL)
   # I18n scope for the error messages in this module; where to find the translations in the locale file.
   I18N_SCOPE_SCRNA_CORE_CDNA_PREP_FEASIBILITY_VALIDATOR = 'submissions.scrna_core_cdna_prep_feasibility_validator'
+
+  # Validate the presence of all required headers
+  def validate_required_headers
+    required = [HEADER_BARCODE, HEADER_PLATE_WELL, HEADER_NUMBER_OF_POOLS, HEADER_CELLS_PER_CHIP_WELL]
+    required.all? { |header| headers.include?(header) }
+  end
 
   # This method checks the feasibility of scRNA Core cDNA Prep bulk submission.
   # If the submission spreadsheet does not contain the necessary headers, the
@@ -35,9 +36,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
   #
   # @return [void]
   def validate_scrna_core_cdna_prep_feasibility
-    required = [HEADER_BARCODE, HEADER_PLATE_WELL, HEADER_NUMBER_OF_POOLS, HEADER_CELLS_PER_CHIP_WELL]
-    return unless required.all? { |header| headers.include?(header) }
-
+    return unless validate_required_headers
     validate_scrna_core_cdna_prep_total_number_of_samples
     validate_scrna_core_cdna_prep_total_number_of_pools
     validate_scrna_core_cdna_prep_feasibility_by_samples
@@ -312,7 +311,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
       number_of_samples_in_smallest_pool = calculate_number_of_samples_in_smallest_pool(rows)
       number_of_cells_per_chip_well = rows.first[headers.index(HEADER_CELLS_PER_CHIP_WELL)].to_i
       final_resuspension_volume = calculate_resuspension_volume(number_of_samples_in_smallest_pool)
-      full_allowance = calculate_full_allowance(number_of_cells_per_chip_well)
+      full_allowance = calculate_volume_needed(number_of_cells_per_chip_well, 2, 2)
 
       next if final_resuspension_volume >= full_allowance
 
