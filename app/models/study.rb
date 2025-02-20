@@ -107,10 +107,6 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   DATA_RELEASE_DELAY_PERIODS = ['3 months', '6 months', '9 months', '12 months', '18 months'].freeze
 
-  EBI_LIBRARY_STRATEGY_OPTIONS = Rails.configuration.ena_requirement_fields['EBI_Library_strategy']
-  EBI_LIBRARY_SOURCE_OPTIONS = Rails.configuration.ena_requirement_fields['EBI_Library_source']
-  EBI_LIBRARY_SELECTION_OPTIONS = Rails.configuration.ena_requirement_fields['EBI_Library_selection']
-
   # Class variables
   self.per_page = 500
 

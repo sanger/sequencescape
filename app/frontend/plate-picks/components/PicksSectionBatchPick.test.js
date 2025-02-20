@@ -1,5 +1,4 @@
 import { shallowMount } from "@vue/test-utils";
-import "@testing-library/jest-dom";
 import PicksSectionBatchPick from "./PicksSectionBatchPick.vue";
 import defaultState from "../store/state";
 import { storePlateWithPicks } from "../_test_examples_";
@@ -81,7 +80,7 @@ describe("PicksSectionBatchPick.vue", () => {
   });
 
   it("includes an editable short name", async () => {
-    const commit = jest.fn();
+    const commit = vi.fn();
     const wrapper = shallowMount(PicksSectionBatchPick, {
       propsData: {
         name,

@@ -9,10 +9,10 @@
     <%= metadata_fields.text_field(:prelim_id) %>
 
     <%= metadata_fields.select_by_association(:reference_genome, {}, { class: 'select2' }) %>
-    <%= metadata_fields.select_by_association(:study_type)%>
 
     <% metadata_fields.with_options(grouping: 'ENA requirement') do |group| %>
       <%= group.text_field(:study_study_title) %>
+      <%= group.select_by_association(:study_type)%>
       <%= group.text_area(:study_description) %>
       <%= group.text_area(:study_abstract) %>
       <%= group.radio_select(:study_sra_hold, Study::STUDY_SRA_HOLDS) %>
