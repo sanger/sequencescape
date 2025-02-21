@@ -22,6 +22,8 @@ module Api
       has_many :ancestors, readonly: true, polymorphic: true
       # TODO: do we need descendants? might have to delegate to racked tubes
 
+      default_includes :uuid_object, :barcodes
+
       # Attributes
       attribute :labware_barcode, write_once: true
       attribute :size, write_once: true
