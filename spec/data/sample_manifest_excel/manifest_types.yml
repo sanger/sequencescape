@@ -125,8 +125,8 @@ plate_chromium_library:
     - :well
     - :sanger_sample_id
     - :supplier_name
-    - :chromium_single_index_tag_group
-    - :chromium_single_index_tag_well
+    - :chromium_tag_group
+    - :chromium_tag_well
     - :reference_genome
     - :library_type
     - :insert_size_from
