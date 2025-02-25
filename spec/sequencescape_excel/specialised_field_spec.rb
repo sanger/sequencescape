@@ -639,19 +639,6 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
 
   describe SequencescapeExcel::SpecialisedField::ChromiumTagGroup do
     let(:adapter_type) { create(:adapter_type, name: 'Chromium') }
-    let(:tag_group) { create(:tag_group_with_tags, adapter_type:) }
-    let(:tag_group_name) { tag_group.name }
-    let(:tag_well) { 'A1' }
-
-    it_behaves_like 'a chromium tag group', :tag_group_name
-
-    describe SequencescapeExcel::SpecialisedField::ChromiumTagWell do
-      it_behaves_like 'a chromium tag well'
-    end
-  end
-
-  describe SequencescapeExcel::SpecialisedField::ChromiumSingleIndexTagGroup do
-    let(:adapter_type) { create(:adapter_type, name: 'Chromium') }
     let(:tag_group1) { create(:tag_group_with_tags, adapter_type:) }
     let(:tag_set1) { create(:tag_set, tag_group: tag_group1, tag2_group: nil) }
     let(:tag_group_name) { tag_group1.name }
@@ -666,7 +653,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
       it_behaves_like 'a chromium tag group', :tag_group_name
     end
 
-    describe SequencescapeExcel::SpecialisedField::ChromiumSingleIndexTagWell do
+    describe SequencescapeExcel::SpecialisedField::ChromiumTagWell do
       before do
         tag_group1
         tag_set1

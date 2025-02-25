@@ -277,17 +277,6 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
     end
   end
 
-  context 'when there are chromium columns to link' do
-    let(:columns) { configuration.columns.tube_chromium_library.dup }
-
-    it 'links up specialised fields' do
-      row = described_class.new(number: 1, data: data, columns: columns)
-      tag_well = row.specialised_fields.detect { |f| f.is_a?(SequencescapeExcel::SpecialisedField::ChromiumTagWell) }
-      tag_group = row.specialised_fields.detect { |f| f.is_a?(SequencescapeExcel::SpecialisedField::ChromiumTagGroup) }
-      expect(tag_well.sf_tag_group).to eq tag_group
-    end
-  end
-
   context 'when there are chromium single index columns to link' do
     let(:columns) { configuration.columns.plate_chromium_library.dup }
 
