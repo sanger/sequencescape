@@ -48,6 +48,10 @@ module Api
       # @!attribute [r] transfer_requests_as_target
       #   @return [Array<Api::V2::TransferRequestResource>] An array of transfer requests into this tube.
       has_many :transfer_requests_as_target, readonly: true
+
+      # @!attribute [r] racked_tube
+      #   @return [Api::V2::RackedTubeResource] The racked tube association.
+      has_one :racked_tube, readonly: true, foreign_key_on: :related
     end
   end
 end
