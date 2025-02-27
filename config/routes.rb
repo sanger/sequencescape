@@ -557,6 +557,8 @@ Rails.application.routes.draw do
       post :create
       get :to_sample_tubes
       post :create_sample_tubes
+      post :create_from_tubes
+      get :create_from_tubes
     end
 
     member { get :fluidigm_file }

@@ -16,6 +16,8 @@
       <p>Create plates and print barcodes.</p>
     <h3><%= link_to "Create quad-stamped plates and print barcodes", new_quad_stamp_path  %></h3>
       <p>Create quad-stamped 384-well plates from 96-well plates or from tube racks and print barcodes.</p>
+    <h3><%= link_to "Create Stock Plates from Tubes", create_from_tubes_plates_path  %></h3>
+      <p>Create DNA or RNA Stock Plates form a list of individual tubes.</p>
   <% end %>
 
   <%= panel :info, title: 'Tracking' do %>

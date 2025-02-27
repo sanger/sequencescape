@@ -53,6 +53,10 @@ class PlatesController < ApplicationController
     end
   end
 
+  def create_from_tubes
+    render 'create_from_tubes'
+  end
+
   # rubocop:enable Metrics/MethodLength
 
   def set_plate_creators

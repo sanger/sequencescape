@@ -1,0 +1,25 @@
+<% add :menu, "Sample Management homepage" => lab_sample_logistics_path %>
+<%= page_title 'Create Plates from Tubes', '' %>
+<%= vite_javascript_tag 'plates_new' %>
+
+<%= render(partial: 'plates/creator/printed_barcodes') %>
+
+<%= semantic_form_for(:plates, url: plates_path) do |form| %>
+  <div class="columnize">
+    <%= panel do %>
+      <%= form.inputs name: "Create Plates" do %>
+        <%= form.input :user_barcode, input_html: {class: 'form-control', :'data-tab-target' => '#plates_source_plates'} %>
+        <%= form.input :source_plates,   as: :text,   required: false, input_html: { class: 'form-control'} %>
+      <% end %>
+    <% end %>
+    <%= panel do %>
+      <%= form.inputs name: "With Options" do %>
+        <%#= form.input :creator_id, as: :select, collection: plate_creator_options(@plate_creators), label: 'Plate purpose', input_html: { class: 'form-control select2'} %>
+        <%= form.input :dilution_factor, as: :select, label: 'Dilution factor', input_html: { class: 'form-control select2'} %>
+        <%= form.input :barcode_printer, as: :select, collection: @barcode_printers, input_html: { class: 'form-control select2'} %>
+        <%= form.input :create_asset_group, as: :select, collection: ['Yes', 'No'], label: 'Group results for reprinting barcodes?', input_html: { class: 'form-control select2'} %>
+        <%= form.action(:submit, disable_with: 'Please wait...') %>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>
