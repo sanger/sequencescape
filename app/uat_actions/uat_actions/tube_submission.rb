@@ -238,7 +238,7 @@ class UatActions::TubeSubmission < UatActions
   #
   # @return [Hash] Request options including allowance_band if applicable.
   def calculated_request_options_by_template_name
-    if submission_template_name === SCRNA_CORE_CDNA_PREP_GEM_X_5P
+    if submission_template_name == SCRNA_CORE_CDNA_PREP_GEM_X_5P
       { 'allowance_band' => '2 pool attempts, 2 counts' }
     else
       {}
