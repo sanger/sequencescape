@@ -233,7 +233,7 @@ class UatActions::TubeSubmission < UatActions
   #
   # The allowance_band is not included in the form, as it is a calculated value (does not require user input).
   #
-  # @todo: Implement allowance_band support for standard tube submissions.
+  # @todo: Implement allowance_band support for standard tube submissions (Y25-153)
   # @todo: Remove this method once allowance_band is properly handled for tube submissions.
   #
   # @return [Hash] Request options including allowance_band if applicable.
