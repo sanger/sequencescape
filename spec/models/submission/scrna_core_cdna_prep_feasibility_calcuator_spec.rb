@@ -74,12 +74,12 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
     context 'when validation to run calculate_allowance_band fails' do
       it 'returns empty hash if the template name does not match' do
         allow(calculator).to receive(:submission_template_name).and_return('Different Template')
-        expect(calculator.calculate_allowance_band).to eq({})
+        expect(calculator.calculate_allowance_bands).to eq({})
       end
 
       it 'returns empty hash if required headers are missing' do
         allow(calculator).to receive(:validate_required_headers).and_return(false)
-        expect(calculator.calculate_allowance_band).to eq({})
+        expect(calculator.calculate_allowance_bands).to eq({})
       end
     end
 
@@ -122,7 +122,7 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
           calculate_number_of_samples_in_smallest_pool: 6
         )
         expected_result = { { study: 'Test Study', project: 'Test Project' } => allowance_bands[:two_pools_two_counts] }
-        expect(calculator.calculate_allowance_band).to eq(expected_result)
+        expect(calculator.calculate_allowance_bands).to eq(expected_result)
       end
 
       it 'returns `2 pool attempts, 1 count` when the finale volume is bigger or eq to `2 pool attempts, 1 count`
@@ -162,7 +162,7 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
           }
         )
         expected_result = { { study: 'Test Study', project: 'Test Project' } => allowance_bands[:two_pools_one_count] }
-        expect(calculator.calculate_allowance_band).to eq(expected_result)
+        expect(calculator.calculate_allowance_bands).to eq(expected_result)
       end
 
       it 'returns `1 pool attempt, 1 count` when the finale volume is bigger or eq to `1 pool attempt, 1 count`
@@ -202,7 +202,7 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
           }
         )
         expected_result = { { study: 'Test Study', project: 'Test Project' } => allowance_bands[:one_pool_one_count] }
-        expect(calculator.calculate_allowance_band).to eq(expected_result)
+        expect(calculator.calculate_allowance_bands).to eq(expected_result)
       end
 
       it 'returns `1 pool attempt, 2 counts` when the final_volume is bigger or eq to `1 pool attempt, 2 counts`
@@ -242,7 +242,7 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
           }
         )
         expected_result = { { study: 'Test Study', project: 'Test Project' } => allowance_bands[:one_pool_two_counts] }
-        expect(calculator.calculate_allowance_band).to eq(expected_result)
+        expect(calculator.calculate_allowance_bands).to eq(expected_result)
       end
 
       it 'returns nil when the final_volume is less than `1 pool attempt, 1 count` band allowance' do
@@ -281,7 +281,7 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
           }
         )
         expected_result = { { study: 'Test Study', project: 'Test Project' } => nil }
-        expect(calculator.calculate_allowance_band).to eq(expected_result)
+        expect(calculator.calculate_allowance_bands).to eq(expected_result)
       end
     end
   end

@@ -165,7 +165,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
       # If the submission template name matches `SCRNA_CORE_CDNA_PREP_GEM_X_5P` and all required headers are present,
       # the allowance band is calculated for each study and project combination.
       # Otherwise, an empty hash is assigned.
-      @allowance_band = calculate_allowance_band
+      @allowance_bands = calculate_allowance_bands
 
       raise ActiveRecord::RecordInvalid, self if errors.count > 0
 
@@ -358,16 +358,21 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     end
   end
 
-  # Adds extra request options based on the submission template name.
-  # This method checks the 'template name' from the provided details and
-  # adds additional request options accordingly. Currently, it supports
+  # This method checks the 'template name' from the provided details and,
+  # if applicable, adds additional request options. Currently, it supports
   # the `SCRNA_CORE_CDNA_PREP_GEM_X_5P` template by including an
   # `allowance_band` value.
-  # The allowance_band values are grouped by study and project name.
+  #
+  # The `allowance_band` values are determined based on the study and project name.
+  #
+  # @param [Hash] details The submission details, which should include:
+  #   - 'template name' (String) for validation.
+  #   - 'study name' (String) and 'project name' (String) for extracting the corresponding `allowance_band` value.
+  # @return [Hash] The request options to be added, e.g., { 'allowance_band' => '2 pool attempts, 2 counts' }.
   def calculated_request_options_by_template_name(details)
-    return {} unless details['template name'] == SCRNA_CORE_CDNA_PREP_GEM_X_5P && @allowance_band.size.positive?
+    return {} unless details['template name'] == SCRNA_CORE_CDNA_PREP_GEM_X_5P && @allowance_bands.size.positive?
 
-    { 'allowance_band' => @allowance_band[{ study: details['study name'], project: details['project name'] }] }
+    { 'allowance_band' => @allowance_bands[{ study: details['study name'], project: details['project name'] }] }
   end
 
   # Returns an order for the given details

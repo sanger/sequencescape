@@ -12,6 +12,7 @@ class UatActions::TubeSubmission < UatActions
   ERROR_SUBMISSION_TEMPLATE_DOES_NOT_EXIST = "Submission template '%s' does not exist."
   ERROR_TUBES_DO_NOT_EXIST = 'Tubes with barcodes do not exist: %s'
   ERROR_LIBRARY_TYPE_DOES_NOT_EXIST = "Library type '%s' does not exist."
+  SCRNA_CORE_CDNA_PREP_GEM_X_5P = 'Limber-Htp - scRNA Core cDNA Prep GEM-X 5p'
 
   form_field :submission_template_name,
              :select,
@@ -161,6 +162,7 @@ class UatActions::TubeSubmission < UatActions
     report['cells_per_chip_well'] = order.request_options[:cells_per_chip_well] if order.request_options[
       :cells_per_chip_well
     ].present?
+    report['allowance_band'] = order.request_options[:allowance_band] if order.request_options[:allowance_band].present?
   end
 
   # rubocop:enable Metrics/AbcSize
@@ -190,7 +192,7 @@ class UatActions::TubeSubmission < UatActions
   #
   # @return [Hash] The request options to use for the submission
   def order_request_options
-    default_request_options.merge(custom_request_options)
+    default_request_options.merge(custom_request_options).merge(calculated_request_options_by_template_name)
   end
 
   # Returns the default request options to use for the submission
@@ -219,6 +221,28 @@ class UatActions::TubeSubmission < UatActions
     options[:number_of_pools] = number_of_pools.presence
     options[:cells_per_chip_well] = cells_per_chip_well.presence
     options
+  end
+
+  # Returns the allowance_band to prevent integration suite breakage
+  # for the scRNA Core testing suite.
+  #
+  # Allowance bands are only supported for bulk submissions using the
+  # Limber-HTP scRNA Core cDNA Prep GEM-X 5p template.
+  # In bulk submissions, allowance_band is determined by the
+  # `calculate_allowance_bands` method.
+  #
+  # The allowance_band is not included in the form, as it is a calculated value (does not require user input).
+  #
+  # @todo: Implement allowance_band support for standard tube submissions.
+  # @todo: Remove this method once allowance_band is properly handled for tube submissions.
+  #
+  # @return [Hash] Request options including allowance_band if applicable.
+  def calculated_request_options_by_template_name
+    if submission_template_name === SCRNA_CORE_CDNA_PREP_GEM_X_5P
+      { 'allowance_band' => '2 pool attempts, 2 counts' }
+    else
+      {}
+    end
   end
 
   # Returns the study to use for UAT

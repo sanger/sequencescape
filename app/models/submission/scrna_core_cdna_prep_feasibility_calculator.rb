@@ -57,7 +57,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityCalculator
   #   { study: "Study B", project: "Project Y" } => "1 pool attempt, 2 counts"
   # }
   #
-  def calculate_allowance_band
+  def calculate_allowance_bands
     # Only calculate if the submission template name is SCRNA_CORE_CDNA_PREP_GEM_X_5P
     # and all required headers are present
     return {} unless submission_template_name == SCRNA_CORE_CDNA_PREP_GEM_X_5P && validate_required_headers
