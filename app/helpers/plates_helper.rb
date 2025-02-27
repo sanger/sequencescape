@@ -12,6 +12,10 @@ module PlatesHelper
     plate_creators.pluck(:name, :id, :valid_options).map { |name, id, options| [name, id, { data: options }] }
   end
 
+  def plate_options_for_creating_from_tubes
+    ['Stock Plate', 'RNA Stock Plate', 'All of the above']
+  end
+
   private
 
   def well_properties(well)
