@@ -17,7 +17,6 @@ module Api
     # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or check out [JSONAPI::Resources](http://jsonapi-resources.com/) for Sequencescape's implementation.
     class LaneResource < BaseResource
-      # This resource is immutable, meaning it cannot be modified after creation.
       immutable
 
       ###

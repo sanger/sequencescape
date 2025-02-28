@@ -5,8 +5,8 @@ module Api
     # Provides a JSON:API representation of {QcFile} which contains the QC data previously added to a piece of
     # {Labware}. The file contents are stored in the database using the {DbFile} model.
     #
-    # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
     # @note Access this resource via the `/api/v2/qc_files/` endpoint.
+    # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
     #
     # @example POST request
     #   POST /api/v2/qc_files/

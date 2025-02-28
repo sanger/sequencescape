@@ -2,90 +2,126 @@
 
 module Api
   module V2
-    # @todo This documentation does not yet include a detailed description of what this resource represents.
-    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
-    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
-    #
-    # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
-    # @note Access this resource via the `/api/v2/plate_purposes/` endpoint.
-    #
     # Provides a JSON:API representation of {PlatePurpose}.
+
+    # The standard {Purpose} class for plates. Plate purposes categorize plates based
+    # on their intended function within the pipeline.
     #
-    # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
-    # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
-    # of the JSON:API standard.
+    # This resource is primarily used by Limber, which registers plate purposes via the API.
+    #
+    # @note Access this resource via the `/api/v2/plate_purposes/` endpoint.
+    # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
+    #
+    # @example GET request for all plate purposes
+    #   GET /api/v2/plate_purposes/
+    #
+    # @example GET request for a specific plate purpose by ID
+    #   GET /api/v2/plate_purposes/123/
+    #
+    # @example POST request to create a new plate purpose
+    #   POST /api/v2/plate_purposes/
+    #   {
+    #     "data": {
+    #       "type": "plate_purposes",
+    #       "attributes": {
+    #         "name": "Custom Purpose",
+    #         "stock_plate": true,
+    #         "cherrypickable_target": false,
+    #         "input_plate": true,
+    #         "size": 96,
+    #         "asset_shape": "Standard"
+    #       }
+    #     }
+    #   }
+    #
+    #
+    # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
+    # or the [JSONAPI::Resources](http://jsonapi-resources.com/) package, which powers Sequencescape's JSON:API implementation.
     class PlatePurposeResource < BaseResource
       model_name 'PlatePurpose'
 
-      # This resource is similar to PurposeResource but it was created to
-      # migrate the registration of plate purposes done by the Limber rake
-      # task config:generate from API version 1 to API version 2.
-
-      # The following attributes are sent by Limber for a new plate purpose.
+      ###
+      # Attributes
+      ###
 
       # @!attribute [rw] name
-      #   @return [String] the name of the plate purpose.
+      #   The name of the plate purpose.
+      #   @note This attribute is required and must be unique.
+      #   @return [String]
       attribute :name
 
       # @!attribute [rw] stock_plate
-      #   @return [Boolean] whether the plates of this purpose are stock plates.
+      #   Indicates whether plates of this purpose are stock plates.
+      #   Stock plates serve as source plates for further processing.
+      #   @return [Boolean]
       attribute :stock_plate
 
       # @!attribute [rw] cherrypickable_target
-      #   @return [Boolean] whether the plates of this purpose are cherrypickable.
+      #   Inurpose are dicates whether plates of this peligible for cherry-picking.
+      #   Cherry-picking involves selecting specific wells or samples from a plate for further analysis.
+      #   @return [Boolean]
       attribute :cherrypickable_target
 
       # @!attribute [rw] input_plate
-      #   @return [Boolean] whether the plates of this purpose are input plates.
+      #   Indicates whether plates of this purpose serve as input plates.
+      #   Input plates are used as starting points in pipelines.
+      #   @return [Boolean]
       attribute :input_plate
 
       # @!attribute [rw] size
-      #   @return [Integer] the size of the plates of this purpose.
+      #   The number of wells in plates of this purpose.
+      #   Common sizes include 96 and 384 wells.
+      #   @return [Integer]
       attribute :size
 
       # @!attribute [rw] asset_shape
-      #   @return [String] the name of the shape of the plates of this purpose.
+      #   The shape of plates of this purpose.
+      #   This value determines the physical layout and well arrangement of the plates.
+      #   If not provided, it defaults to "Standard".
+      #   @return [String]
       attribute :asset_shape
 
-      # The following attribute is required by Limber to store purposes.
-
       # @!attribute [r] uuid
-      #   @return [String] the UUID of the plate purpose.
+      #   A unique identifier for the plate purpose.
+      #   This is automatically assigned upon creation and cannot be modified.
+      #   @return [String]
       attribute :uuid, readonly: true
 
-      # Sets the asset shape of the plate purpose by name if given.
-      # 'asset_shape' can be given via the Limber purpose configuration and
-      # defaults to 'Standard' if not provided. If the name is given and not
-      # found, an error is raised. Note that the name is case-sensitive.
+      ###
+      # Getters and Setters
+      ###
+
+      # Sets the asset shape of the plate purpose by name.
+      # If the provided name does not exist, an error is raised.
+      # This method allows assigning a named asset shape while ensuring it exists in the system.
       #
-      # @param name [String] the name of the asset shape
+      # @param name [String] The name of the asset shape.
+      # @raise [ActiveRecord::RecordNotFound] if the asset shape is not found.
       # @return [void]
       def asset_shape=(name)
         @model.asset_shape = (AssetShape.find_by!(name:) if name.present?) || AssetShape.default
       end
 
-      # Returns the name of the asset shape of the plate purpose.
-      # The asset_shape association is not utilized in Limber. This method
-      # returns the name of the asset shape associated with the plate purpose.
+      # Retrieves the name of the asset shape associated with the plate purpose.
       #
-      # @return [String] the name of the asset shape
+      # @return [String] The name of the asset shape.
       def asset_shape
         @model.asset_shape.name
       end
 
-      # Set the class to PlatePurpose::Input if set to true.
-      # Pass through to the setter in the model.
-      # While not strictly necessary as the model would respond implicitly, this method is provided for clarity.
+      # Sets the input plate type.
+      # If set to `true`, the plate purpose will be categorized as `PlatePurpose::Input`.
+      # This method ensures proper classification of input plates.
       #
-      # @param is_input [Bool] whether to set the sti type to PlatePurpose::Input.
+      # @param is_input [Boolean] Whether to set the plate purpose as an input plate.
       # @return [void]
       def input_plate=(is_input)
         @model.input_plate = is_input
       end
 
-      # Returns the input_plate attribute from the type of the plate purpose.
+      # Determines whether the plate purpose is categorized as an input plate.
       #
-      # @return [Boolean] whether the plate purpose is an input plate.
+      # @return [Boolean] `true` if the plate purpose is an input plate, otherwise `false`.
       def input_plate
         @model.type == 'PlatePurpose::Input'
       end

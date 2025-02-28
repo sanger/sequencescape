@@ -8,7 +8,6 @@ module Api
     # This resource allows clients to store, retrieve, and manage metadata associated with a specific asset.
     #
     # @note Access this resource via the `/api/v2/custom_metadatum_collections/` endpoint.
-    # @note This resource is immutable after creation. `PATCH` requests to modify attributes are not allowed.
     #
     # @example Creating a CustomMetadatumCollection via a POST request
     #   POST /api/v2/custom_metadatum_collections/
@@ -37,8 +36,8 @@ module Api
     #   }
     # }
     #
-    # @example Retrieving a specific CustomMetadatumCollection by UUID
-    #   GET /api/v2/custom_metadatum_collections/123e4567-e89b-12d3-a456-426614174000
+    # @example Retrieving a specific CustomMetadatumCollection by ID
+    #   GET /api/v2/custom_metadatum_collections/123
     #
     # @example Retrieving all CustomMetadatumCollections
     #   GET /api/v2/custom_metadatum_collections/
