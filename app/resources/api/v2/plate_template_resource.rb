@@ -2,34 +2,34 @@
 
 module Api
   module V2
-    # @todo This documentation does not yet include a detailed description of what this resource represents.
-    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
-    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
-    #
-    # @note Access this resource via the `/api/v2/plate_templates/` endpoint.
-    #
+    # @todo Is this resource required? It fails when fetching any plate templates.
     # Provides a JSON:API representation of {PlateTemplate}.
     #
-    # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
-    # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
+    # A `PlateTemplate` represents a virtual plate used in Cherrypicking and GateKeeper to block out empty wells
+    # or layout pre-assigned samples.
+
+    # @note This resource is accessed via the `/api/v2/plate_templates/` endpoint.
+    #
+    # @note The below GET examples are current throwing an exception, but are included here for reference.
+    #
+    # @example GET request to retrieve all plate templates
+    #   GET /api/v2/plate_templates/
+    #
+    # @example GET request to retrieve a specific plate template by ID
+    #   GET /api/v2/plate_templates/123/
+    #
+    # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
+    # or the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class PlateTemplateResource < BaseResource
-      # Constants...
-
-      # model_name / model_hint if required
-
-      # Associations:
-
+      ###
       # Attributes
+      ###
+
+      # @!attribute [r] uuid
+      #   @note This identifier is automatically assigned upon creation and cannot be modified.
+      #   @return [String] The UUID of the plate template.
       attribute :uuid, readonly: true
-
-      # Filters
-
-      # Custom methods
-      # These shouldn't be used for business logic, and a more about
-      # I/O and isolating implementation details.
-
-      # Class method overrides
     end
   end
 end

@@ -2,34 +2,52 @@
 
 module Api
   module V2
-    # @todo This documentation does not yet include a detailed description of what this resource represents.
-    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
-    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
-    #
-    # @note Access this resource via the `/api/v2/primer_panels/` endpoint.
-    #
     # Provides a JSON:API representation of {PrimerPanel}.
     #
-    # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
-    # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
-    # of the JSON:API standard.
+    # A primer panel is a set of primers used in a genotyping by sequencing assay.
+    # These primers bind to known regions of DNA, localised near SNPs (Single Nucleotide polymorphisms)
+    # to allow them to be targeted by short read Sequencing.
+    #
+    # @note Access this resource via the `/api/v2/primer_panels/` endpoint.
+    # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
+    #
+    # @example Fetching all primer panels
+    #   GET /api/v2/primer_panels
+    #
+    # @example Fetching a primer panel by ID
+    #   GET /api/v2/primer_panels/{id}
+    #
+    # @note the below example is currently broken, as `snp_count`` is a required attribute in the model
+    # @example Creating a primer panel
+    #   POST /api/v2/primer_panels
+    # {
+    #   "data": {
+    #     "type": "primer_panels",
+    #     "attributes": {
+    #       "name": "My Primer Panel",
+    #       "programs": ["Program 1", "Program 2"]
+    #     }
+    #   }
+    # }
+    #
+    # For more details on JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
+    # or check out the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation.
     class PrimerPanelResource < BaseResource
-      # Constants...
-
-      # model_name / model_hint if required
-      attribute :name, write_once: true
-      attribute :programs, write_once: true
-      # Associations:
-
+      ###
       # Attributes
+      ###
 
-      # Filters
+      # @todo Add a `snp_count` attribute to the resource
 
-      # Custom methods
-      # These shouldn't be used for business logic, and a more about
-      # I/O and isolating implementation details.
+      # @!attribute [rw] name
+      #   The name of the primer panel.
+      #   @return [String]
+      attribute :name, write_once: true
 
-      # Class method overrides
+      # @!attribute [rw] programs
+      #   A list of programs associated with this primer panel.
+      #   @return [Array<String>]
+      attribute :programs, write_once: true
     end
   end
 end

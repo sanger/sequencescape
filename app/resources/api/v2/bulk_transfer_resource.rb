@@ -7,10 +7,10 @@ module Api
     # Creation of this resource via a `POST` request will perform the specified transfers.
     # After creation, the transfers can be accessed via the {#transfers} relationship.
     #
-    # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
     # @note Access this resource via the `/api/v2/bulk_transfers/` endpoint.
+    # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
     #
-    # @example POST request
+    # @example POST request with user specified by UUID (deprecated)
     #   POST /api/v2/bulk_transfers/
     #   {
     #     "data": {
@@ -76,6 +76,7 @@ module Api
 
       # @!attribute [r] uuid
       #   @return [String] The UUID of the bulk transfers operation.
+      #   @note This identifier is automatically assigned upon creation and cannot be modified.
       attribute :uuid, readonly: true
 
       # @!attribute [w] well_transfers
