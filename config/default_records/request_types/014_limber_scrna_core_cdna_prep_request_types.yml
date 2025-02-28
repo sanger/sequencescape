@@ -26,6 +26,16 @@ limber_scrna_core_cdna_prep_gem_x_5p_gems_input:
   product_line_name: Short Read
   acceptable_purposes:
     - LRC GEM-X 5p GEMs Input
+limber_scrna_core_cdna_prep_gem_x_5p_gems_input_cite:
+  name: scRNA Core cDNA Prep GEM-X 5p GEMs Input CITE
+  asset_type: Well
+  order: 1
+  request_class_name: CustomerRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: Short Read
+  acceptable_purposes:
+    - LRC GEM-X 5p GEMs Input CITE
 limber_scrna_core_aggregation:
   name: scRNA Core Aggregation
   asset_type: Well
