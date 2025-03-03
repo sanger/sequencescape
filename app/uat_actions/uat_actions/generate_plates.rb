@@ -61,7 +61,6 @@ class UatActions::GeneratePlates < UatActions
               only_integer: true,
               allow_blank: false
             }
-  validates :study_name, presence: true
   validates :well_layout,
             presence: true,
             inclusion: {
