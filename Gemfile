@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 
 group :default do
   gem 'bootsnap'
+  gem 'concurrent-ruby', '1.3.4'
   gem 'rails', '~> 7.1.5.1'
 
   # Previously part of ruby or rails, now separate gems

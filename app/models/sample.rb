@@ -147,8 +147,6 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     custom_attribute(:date_of_consent_withdrawn)
     custom_attribute(:user_id_of_consent_withdrawn)
 
-    custom_attribute(:huMFre_code)
-
     # These fields are warehoused, so need to match the encoding restrictions there
     # This excludes supplementary characters, which include emoji and rare kanji
     # @note phenotype isn't currently broadcast but has a field waiting in the warehouse
@@ -228,17 +226,6 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Sample::Metadata tracks sample information, either for use in the lab, or passing to
   # the EBI
   class Metadata
-    # HuMFre numbers contain tissue information, which is only relevant for human samples.
-    validates :huMFre_code,
-              length: {
-                maximum: 16
-              },
-              format: {
-                with: %r{\A(?:\d{2}/\d{2,}|\d{2}/\d{4}-\d{3})\z},
-                message: 'must match a valid format, e.g. 12/34 or 12/2023-001'
-              },
-              allow_blank: true
-
     # This constraint doesn't match that described in the manifest, and is more permissive
     # It was added on conversion of out database to utf8 to address concerns that this would
     # lead to an increase in characters that their pipeline cannot process. Only a handful

@@ -518,10 +518,7 @@ RSpec.describe Study do
         number_of_gigabases_per_sample: 6,
         hmdmc_approval_number: 'HDMC123456',
         s3_email_list: 'aa1@sanger.ac.uk;aa2@sanger.ac.uk',
-        data_deletion_period: '3 months',
-        ebi_library_strategy: 'WGS',
-        ebi_library_source: 'GENOMIC',
-        ebi_library_selection: 'PCR'
+        data_deletion_period: '3 months'
       }
     end
 
@@ -646,18 +643,6 @@ RSpec.describe Study do
 
       it 'must have a faculty sponsor' do
         expect(study.study_metadata.faculty_sponsor).not_to be_nil
-      end
-
-      it 'must have a ebi library strategy' do
-        expect(study.study_metadata.ebi_library_strategy).not_to be_nil
-      end
-
-      it 'must have a ebi library source' do
-        expect(study.study_metadata.ebi_library_source).not_to be_nil
-      end
-
-      it 'must have a ebi library selection' do
-        expect(study.study_metadata.ebi_library_selection).not_to be_nil
       end
 
       context 'contaminated human data access group' do
