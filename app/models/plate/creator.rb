@@ -158,7 +158,6 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
       tube = tubes.shift
       break if tube.nil?
       well.aliquots << tube.aliquots.map(&:dup)
-      # AssetLink.create_edge!(tube, well)
     end
     created_plates << { source: tubes_dup, destinations: [plate] }
   end
