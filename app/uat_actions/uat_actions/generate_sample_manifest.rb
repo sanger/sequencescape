@@ -115,10 +115,6 @@ class UatActions::GenerateSampleManifest < UatActions
     Purpose.find_by!(name: tube_purpose_name)
   end
 
-  def supplier
-    @supplier ||= Supplier.find_or_create_by!(name: supplier_name)
-  end
-
   def create_sample(sample_name, sample_manifest)
     Sample.create!(
       name: sample_name,
