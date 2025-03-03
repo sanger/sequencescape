@@ -8,8 +8,6 @@ class UatActions::GenerateTubes < UatActions
 
   include UatActions::StudyHelper
 
-  ERROR_STUDY_DOES_NOT_EXIST = 'Study %s does not exist.'
-
   form_field :tube_purpose_name,
              :select,
              label: 'Tube Purpose',
