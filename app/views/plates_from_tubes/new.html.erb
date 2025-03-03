@@ -2,14 +2,14 @@
 <%= page_title 'Create Plates from Tubes', '' %>
 <%= vite_javascript_tag 'plates_new' %>
 
-<%= render(partial: 'plates/creator/printed_barcodes') %>
+<%= render(partial: 'plates_from_tubes/created_plates') %>
 
-<%= semantic_form_for(:plates, url: plates_path) do |form| %>
+<%= semantic_form_for(:plates_from_tubes, url: plates_from_tubes_path) do |form| %>
   <div class="columnize">
     <%= panel do %>
       <%= form.inputs name: "Create Plates" do %>
         <%= form.input :user_barcode, input_html: {class: 'form-control', :'data-tab-target' => '#plates_source_plates'} %>
-        <%= form.input :source_tubes,   as: :text,   required: false, input_html: { class: 'form-control'} %>
+        <%= form.input :source_tubes,   as: :text, required: true, input_html: { class: 'form-control'} %>
       <% end %>
     <% end %>
     <%= panel do %>

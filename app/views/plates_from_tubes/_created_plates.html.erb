@@ -1,0 +1,23 @@
+<% if @created_plates && @created_plates.size > 0 %>
+  <table class="table table-sm table-success table-bordered">
+    <caption>Created labware</caption>
+    <thead>
+    <tr>
+      <th scope="col">Source Tube Barcode</th>
+      <th scope="col">Destination Plate Barcode</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @created_plates.each do |entry| %>
+      <% entry[:source].each do |tube| %>
+        <tr>
+          <td scope="row"><%= tube.barcodes.first.barcode unless tube.nil? %></td>
+          <% entry[:destinations].each do |destination| %>
+            <td><%= destination.barcodes.first.barcode %></td>
+          <% end %>
+        </tr>
+    <% end %>
+    <% end %>
+    </tbody>
+  </table>
+<% end %>

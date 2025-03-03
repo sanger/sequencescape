@@ -138,7 +138,28 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
     warnings_list << 'Barcode labels failed to print.' unless print_job.execute
     true
   end
+  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
+  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
+  # TODO: Complete this
+  def create_plates_from_tubes(tubes, created_plates)
+    plate_purpose = plate_purposes.first
+    plate_barcode = PlateBarcode.create_barcode
+    tubes_dup = tubes.dup
+    # Size dependent on the number of tubes?
+    plate =
+      plate_purpose.create!(:without_wells, sanger_barcode: plate_barcode, size: 96) do |p|
+        p.name = "#{plate_purpose.name} #{p.human_barcode}"
+      end
+    # Fill the plate with the aliquots from the tubes
+    # Create the asset link between the tubes and the plate?
+    plate.wells_in_column_order.each do |well|
+      tube = tubes.shift
+      well.aliquots << tube.aliquots
+      # AssetLink.create_edge!(tube, well)
+    end
+    created_plates << { source: tubes_dup, destinations: [plate] }
+  end
   # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   private
@@ -236,13 +257,10 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
-
   def add_created_plates(source, destinations)
     created_plates.push(source:, destinations:)
   end
 
-  # rubocop:todo Metrics/MethodLength
   def create_child_plates_from(plate, current_user, creator_parameters) # rubocop:todo Metrics/AbcSize
     stock_well_picker = plate.plate_purpose.stock_plate? ? ->(w) { [w] } : ->(w) { w.stock_wells }
     parent_wells = plate.wells
