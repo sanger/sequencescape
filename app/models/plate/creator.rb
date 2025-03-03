@@ -145,9 +145,10 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def create_plates_from_tubes(tubes, created_plates)
     plate_purpose = plate_purposes.first
     plate_barcode = PlateBarcode.create_barcode
+    tubes_dup = tubes.dup # Need a duplicate because we are shifting through the tubes list.
     # Size dependent on the number of tubes?
     plate =
-      plate_purpose.create!(sanger_barcode: plate_barcode, size: 96) do |p|
+      plate_purpose.create!(sanger_barcode: plate_barcode, size: plate_purpose.size) do |p|
         p.name = "#{plate_purpose.name} #{p.human_barcode}"
       end
     # Fill the plate with the aliquots from the tubes
