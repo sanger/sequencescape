@@ -7,9 +7,10 @@ class UatActions::GeneratePlates < UatActions
   self.description = 'Generate plates in the selected study.'
   self.category = :generating_samples
 
+  include UatActions::StudyHelper
+
   ERROR_WELL_COUNT_EXCEEDS_PLATE_SIZE = "Well count of %s exceeds the plate size of %s for the plate purpose '%s'."
   ERROR_PLATE_PURPOSE_DOES_NOT_EXIST = "Plate purpose '%s' does not exist."
-  ERROR_STUDY_DOES_NOT_EXIST = 'Study %s does not exist.'
 
   form_field :plate_purpose_name,
              :select,
@@ -119,17 +120,6 @@ class UatActions::GeneratePlates < UatActions
     errors.add(:well_count, message)
   end
 
-  # Validates that the study exists for the selected study name.
-  #
-  # @return [void]
-  def validate_study_exists
-    return if study_name.blank?
-    return if Study.exists?(name: study_name)
-
-    message = format(ERROR_STUDY_DOES_NOT_EXIST, study_name)
-    errors.add(:study_name, message)
-  end
-
   # Ensures number of samples per occupied well is at least 1
   def num_samples_per_well
     @num_samples_per_well ||=
@@ -211,14 +201,6 @@ class UatActions::GeneratePlates < UatActions
       plate.wells.includes(:map).all.sample(well_count.to_i)
     else
       raise StandardError, "Unknown layout: #{well_layout}"
-    end
-  end
-
-  def study
-    @study ||= if study_name.present?
-      Study.find_by!(name: study_name)  # already validated
-    else
-      UatActions::StaticRecords.study # default study
     end
   end
 
