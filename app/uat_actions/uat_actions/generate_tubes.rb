@@ -6,6 +6,8 @@ class UatActions::GenerateTubes < UatActions
   self.description = 'Generate sample tubes in the selected study.'
   self.category = :generating_samples
 
+  ERROR_STUDY_DOES_NOT_EXIST = 'Study %s does not exist.'
+
   form_field :tube_purpose_name,
              :select,
              label: 'Tube Purpose',
