@@ -145,7 +145,6 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def create_plates_from_tubes(tubes, created_plates)
     plate_purpose = plate_purposes.first
     plate_barcode = PlateBarcode.create_barcode
-    tubes_dup = tubes.dup
     # Size dependent on the number of tubes?
     plate =
       plate_purpose.create!(sanger_barcode: plate_barcode, size: 96) do |p|
