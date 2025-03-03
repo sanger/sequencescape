@@ -6,6 +6,8 @@ class UatActions::GenerateTubeRacks < UatActions
   self.description = 'Generate tube racks in the selected study.'
   self.category = :generating_samples
 
+  ERROR_STUDY_DOES_NOT_EXIST = 'Study %s does not exist.'
+
   form_field :rack_count,
              :number_field,
              label: 'Rack Count',
@@ -19,6 +21,8 @@ class UatActions::GenerateTubeRacks < UatActions
              label: 'Study',
              help: 'The study under which samples begin. List includes all active studies.',
              select_options: -> { Study.active.alphabetical.pluck(:name) }
+
+  validate :validate_study_exists
 
   def self.default
     new(rack_count: 1, study_name: UatActions::StaticRecords.study.name)
@@ -43,6 +47,17 @@ class UatActions::GenerateTubeRacks < UatActions
   end
 
   private
+
+  # Validates that the study exists for the selected study name.
+  #
+  # @return [void]
+  def validate_study_exists
+    return if study_name.blank?
+    return if Study.exists?(name: study_name)
+
+    message = format(ERROR_STUDY_DOES_NOT_EXIST, study_name)
+    errors.add(:study_name, message)
+  end
 
   def construct_tubes(rack)
     rack_map.each do |i|
