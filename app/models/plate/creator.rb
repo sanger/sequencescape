@@ -148,14 +148,16 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
     tubes_dup = tubes.dup
     # Size dependent on the number of tubes?
     plate =
-      plate_purpose.create!(:without_wells, sanger_barcode: plate_barcode, size: 96) do |p|
+      plate_purpose.create!(sanger_barcode: plate_barcode, size: 96) do |p|
         p.name = "#{plate_purpose.name} #{p.human_barcode}"
       end
     # Fill the plate with the aliquots from the tubes
     # Create the asset link between the tubes and the plate?
+
     plate.wells_in_column_order.each do |well|
       tube = tubes.shift
-      well.aliquots << tube.aliquots
+      break if tube.nil?
+      well.aliquots << tube.aliquots.map(&:dup)
       # AssetLink.create_edge!(tube, well)
     end
     created_plates << { source: tubes_dup, destinations: [plate] }
