@@ -7,6 +7,7 @@ class UatActions::GenerateSampleManifest < UatActions
   self.category = :generating_samples
 
   include UatActions::Shared::StudyHelper
+  include UatActions::Shared::SupplierHelper
 
   ERROR_TUBE_PURPOSE_DOES_NOT_EXIST = "Tube purpose '%s' does not exist."
 
