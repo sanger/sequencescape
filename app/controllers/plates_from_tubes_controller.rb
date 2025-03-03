@@ -36,9 +36,9 @@ class PlatesFromTubesController < ApplicationController
   # rubocop:todo Metrics/AbcSize
   def find_plate_creator
     @plate_creator =
-      if params[:plates_from_tubes][:plate_creator] == 'Stock Plate'
+      if params[:plates_from_tubes][:plate_type].to_s == 'Stock Plate'
         [@plate_creators.find { |plate_creator| plate_creator.name == 'Stock Plate' }]
-      elsif params[:plates_from_tubes][:plate_creator] == 'RNA Stock Plate'
+      elsif params[:plates_from_tubes][:plate_type].to_s == 'RNA Stock Plate'
         [@plate_creators.find { |plate_creator| plate_creator.name == 'scRNA Stock Plate' }]
       else
         @plate_creators
