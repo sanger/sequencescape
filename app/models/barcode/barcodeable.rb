@@ -103,18 +103,21 @@ module Barcode::Barcodeable
 
   # ***** Deprecated methods *****
   deprecate def barcode!
-    barcode
-  end
+              barcode
+            end,
+            deprecator: ActiveSupport::Deprecation.new('14.53.0', 'Sequencescape')
 
   deprecate def barcode=(barcode)
-    @barcode_number ||= barcode
-    build_barcode_when_complete
-  end
+              @barcode_number ||= barcode
+              build_barcode_when_complete
+            end,
+            deprecator: ActiveSupport::Deprecation.new('14.53.0', 'Sequencescape')
 
   deprecate def barcode_prefix=(barcode_prefix)
-    @barcode_prefix ||= barcode_prefix.prefix
-    build_barcode_when_complete
-  end
+              @barcode_prefix ||= barcode_prefix.prefix
+              build_barcode_when_complete
+            end,
+            deprecator: ActiveSupport::Deprecation.new('14.53.0', 'Sequencescape')
 
   # ***** End deprecated methods *****
 

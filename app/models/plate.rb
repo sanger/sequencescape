@@ -337,7 +337,8 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   def stock_plate
     @stock_plate ||= stock_plate? ? self : lookup_stock_plate
   end
-  deprecate stock_plate: 'Stock plate is nebulous and can easily lead to unexpected behaviour'
+  deprecate stock_plate: 'Stock plate is nebulous and can easily lead to unexpected behaviour',
+            deprecator: ActiveSupport::Deprecation.new('14.53.0', 'Sequencescape')
 
   def self.create_with_barcode!(*args, &)
     attributes = args.extract_options!

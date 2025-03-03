@@ -25,7 +25,8 @@ class SampleManifestAsset < ApplicationRecord
   def aliquot
     asset.aliquots.detect { |a| a.sample_id == sample.id }
   end
-  deprecate aliquot: 'Chromium manifests may have multiple aliquots. Please use aliquots instead.'
+  deprecate aliquot: 'Chromium manifests may have multiple aliquots. Please use aliquots instead.',
+            deprecator: ActiveSupport::Deprecation.new('14.53.0', 'Sequencescape')
 
   def aliquots
     # JG: I'm afraid I'm not entirely sure why we're expecting aliquots of multiple samples in here

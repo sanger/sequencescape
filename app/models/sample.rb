@@ -309,7 +309,8 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_many :component_samples, through: :joins_as_compound_sample, dependent: :destroy
 
   has_many :assets, -> { distinct }, through: :aliquots, source: :receptacle
-  deprecate assets: 'use receptacles instead, or labware if needed'
+  deprecate assets: 'use receptacles instead, or labware if needed',
+            deprecator: ActiveSupport::Deprecation.new('14.53.0', 'Sequencescape')
 
   has_many :receptacles, -> { distinct }, through: :aliquots
   has_many :wells, -> { distinct }, through: :aliquots, source: :receptacle, class_name: 'Well'

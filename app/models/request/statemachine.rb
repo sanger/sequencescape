@@ -175,7 +175,8 @@ module Request::Statemachine
     raise StandardError, 'Can only use change decision on passed or failed requests'
   end
   deprecate change_decision!:
-              'Change decision is being deprecated in favour of retrospective_pass and retrospective_fail!'
+              'Change decision is being deprecated in favour of retrospective_pass and retrospective_fail!',
+            deprecator: ActiveSupport::Deprecation.new('14.53.0', 'Sequencescape')
 
   def on_failed
   end

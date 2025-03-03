@@ -156,7 +156,8 @@ class Submission < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     orders.first.request_types.map(&:to_i)
   end
-  deprecate request_type_ids: 'Orders may now have different request_types'
+  deprecate request_type_ids: 'Orders may now have different request_types',
+            deprecator: ActiveSupport::Deprecation.new('14.53.0', 'Sequencescape')
 
   # Logged calls from: app/models/pre_capture_pool.rb:74
 
