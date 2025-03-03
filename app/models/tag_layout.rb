@@ -48,7 +48,7 @@ class TagLayout < ApplicationRecord
 
   self.inheritance_column = 'sti_type'
 
-  serialize :substitutions, Hash
+  serialize :substitutions, type: Hash
 
   # The user performing the layout
   belongs_to :user, optional: false

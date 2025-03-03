@@ -14,7 +14,7 @@ class BaitLibraryLayout < ApplicationRecord
 
   # The layout of the bait libraries is recorded so that we can see what happened. It is serialized in a compact
   # form that maps the bait library to the wells it was put into, but can be accessed in the reverse.
-  serialize :layout, Hash
+  serialize :layout, type: Hash
   validates_unassigned :layout
 
   # Before creation the layout of the bait libraries on the plate must be performed, based on the information
