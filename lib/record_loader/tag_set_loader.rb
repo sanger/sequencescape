@@ -23,7 +23,7 @@ module RecordLoader
     # @option options [String] :tag2_group_name The name of the secondary TagGroup.
     #
     # @return [TagSet, nil] The created or updated TagSet, or nil if the TagGroup records are not found.
-     # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/MethodLength
     def create_or_update!(name, options)
       tag_group_name = options.delete('tag_group_name')
       tag2_group_name = options.delete('tag2_group_name')
