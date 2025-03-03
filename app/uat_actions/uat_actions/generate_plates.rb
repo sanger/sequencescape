@@ -215,7 +215,11 @@ class UatActions::GeneratePlates < UatActions
   end
 
   def study
-    @study ||= Study.find_by!(name: study_name)
+    @study ||= if study_name.present?
+      Study.find_by!(name: study_name)  # already validated
+    else
+      UatActions::StaticRecords.study # default study
+    end
   end
 
   def plate_purpose
