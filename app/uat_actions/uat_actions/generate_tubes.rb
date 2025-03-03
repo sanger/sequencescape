@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'shared/study_helper'
-
 # Will construct sample tubes filled with samples
 class UatActions::GenerateTubes < UatActions
   self.title = 'Generate tubes'
