@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'shared/study_helper'
+
 # Will construct plates with well_count wells filled with samples
 # rubocop:disable Metrics/ClassLength
 class UatActions::GeneratePlates < UatActions
