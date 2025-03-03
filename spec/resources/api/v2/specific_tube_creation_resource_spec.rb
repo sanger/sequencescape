@@ -8,6 +8,9 @@ RSpec.describe Api::V2::SpecificTubeCreationResource, type: :resource do
 
   let(:resource_model) { build_stubbed(:specific_tube_creation) }
 
+  # Model Name
+  it { is_expected.to have_model_name('SpecificTubeCreation') }
+
   # Attributes
   it { is_expected.to have_readonly_attribute :uuid }
 
@@ -17,7 +20,7 @@ RSpec.describe Api::V2::SpecificTubeCreationResource, type: :resource do
   it { is_expected.to have_writeonly_attribute :user_uuid }
 
   # Relationships
-  it { is_expected.to have_many(:children).with_class_name('Tube') }
-  it { is_expected.to have_many(:parents).with_class_name('Labware') }
-  it { is_expected.to have_one(:user).with_class_name('User') }
+  it { is_expected.to have_a_readonly_has_many(:children).with_class_name('Tube') }
+  it { is_expected.to have_a_writable_has_many(:parents).with_class_name('Labware') }
+  it { is_expected.to have_a_writable_has_one(:user).with_class_name('User') }
 end

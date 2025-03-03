@@ -1,5 +1,4 @@
 import { shallowMount } from "@vue/test-utils";
-import "@testing-library/jest-dom";
 import PicksSection from "./PicksSection.vue";
 import PicksSectionBatch from "./PicksSectionBatch.vue";
 import defaultState from "../store/state";

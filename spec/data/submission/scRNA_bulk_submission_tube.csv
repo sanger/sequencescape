@@ -1,0 +1,8 @@
+Bulk Submissions Form,,,,,,,,,,,,,,,,,,,,,,,
+User Login,Template Name,Project Name,Study Name,Submission name,Barcode,Plate Well,Asset Group Name,Fragment Size From,Fragment Size To,PCR Cycles,Library Type,Bait Library Name,Pre-capture Plex Level,Pre-capture Group,Read Length,Number of lanes,Priority,Primer Panel,Comments,Gigabases Expected,Flowcell Type,scRNA Core Number of pools,scRNA Core Cells per Chip Well
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT1,,ag1,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT2,,ag2,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT3,,ag3,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT4,,ag4,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT5,,ag5,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000
+user,Limber-Htp - scRNA Core cDNA Prep GEM-X 5p,Test Project,Test Study,sub1,NT6,,ag6,,,,Standard,,,,108,1,,,Sample Comment,1.35,,1,13000

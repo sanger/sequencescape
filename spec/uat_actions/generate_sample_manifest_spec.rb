@@ -110,4 +110,32 @@ describe UatActions::GenerateSampleManifest do
       expect(described_class.default).to be_a described_class
     end
   end
+
+  describe '#valid?' do
+    let(:uat_action) { described_class.new(parameters) }
+
+    describe '#validate_tube_purpose_exists' do
+      let(:parameters) { { tube_purpose_name: } }
+      let(:error_message) { format(described_class::ERROR_TUBE_PURPOSE_DOES_NOT_EXIST, tube_purpose_name) }
+
+      context 'when the tube purpose does not exist' do
+        let(:tube_purpose_name) { 'Invalid Tube Purpose' }
+
+        it 'adds the error message' do
+          expect(uat_action.valid?).to be false
+          expect(uat_action.errors[:tube_purpose_name]).to include(error_message)
+        end
+      end
+
+      context 'when the tube purpose exists' do
+        let(:tube) { create(:tube) } # Tube to get the purpose from
+        let(:tube_purpose_name) { tube.purpose.name }
+
+        it 'does not add the error message' do
+          uat_action.valid? # run validations
+          expect(uat_action.errors[:tube_purpose_name]).not_to include(error_message)
+        end
+      end
+    end
+  end
 end

@@ -25,23 +25,33 @@ class AssetCreation < ApplicationRecord
   validates :child_purpose, presence: true, unless: :multiple_purposes
 
   before_create :process_children
-  def process_children
-    create_children!
-    connect_parent_and_children
-    record_creation_of_children
-  end
-  private :process_children
 
   def create_ancestor_asset!(asset, child)
     AssetLink.create_edge!(asset, child)
   end
 
+  def multiple_purposes
+    false
+  end
+
+  private
+
+  def process_children
+    create_children!
+    connect_parent_and_children
+    record_creation_of_children
+  end
+
+  # Must be overridden by subclasses to create the child labware.
+  def create_children!
+    raise NotImplementedError
+  end
+
   def connect_parent_and_children
     children.each { |child| create_ancestor_asset!(parent, child) }
   end
-  private :connect_parent_and_children
 
-  def multiple_purposes
-    false
+  # Can optionally be overridden by subclasses to record the creation of the child labware.
+  def record_creation_of_children
   end
 end

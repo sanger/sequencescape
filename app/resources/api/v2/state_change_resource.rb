@@ -27,7 +27,7 @@ module Api
       #   @param value [Boolean] Sets whether the customer proceeded against advice and will still be charged in the
       #     event of a failure.
       #   @return [Void]
-      attribute :customer_accepts_responsibility
+      attribute :customer_accepts_responsibility, writeonly: true
 
       # @!attribute [r] previous_state
       #   @return [String] The previous state of the target before this state change.
@@ -49,7 +49,7 @@ module Api
       #   @param value [String] The UUID of the target labware this state change applies to.
       #   @return [Void]
       #   @see #target
-      attribute :target_uuid
+      attribute :target_uuid, writeonly: true
 
       def target_uuid=(value)
         @model.target = Labware.with_uuid(value).first
@@ -62,7 +62,7 @@ module Api
       #   @param value [String] The UUID of the user who initiated this state change.
       #   @return [Void]
       #   @see #user
-      attribute :user_uuid
+      attribute :user_uuid, writeonly: true
 
       def user_uuid=(value)
         @model.user = User.with_uuid(value).first
@@ -87,17 +87,6 @@ module Api
       #   @return [LabwareResource] The target labware this state change applies to.
       #   @note This relationship is required.
       has_one :target, class_name: 'Labware'
-
-      def self.creatable_fields(context)
-        # Previous state and UUID are set by the system.
-        super - %i[previous_state uuid]
-      end
-
-      def fetchable_fields
-        # The customer_accepts_responsibility attribute is only available during resource creation.
-        # UUIDs for relationships are not fetchable. They should be accessed via the relationship itself.
-        super - %i[customer_accepts_responsibility target_uuid user_uuid]
-      end
     end
   end
 end

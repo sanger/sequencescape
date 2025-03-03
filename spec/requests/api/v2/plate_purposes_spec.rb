@@ -44,9 +44,9 @@ describe 'PlatePurposes API', with: :api_v2 do
     end
 
     it 'does not allow update of a PlatePurpose' do
-      api_patch "#{base_endpoint}/#{resource_model.id}", payload
-      expect(response).to have_http_status(:bad_request)
-      expect(json.dig('errors', 0, 'detail')).to eq('size is not allowed.')
+      expect { api_patch "#{base_endpoint}/#{resource_model.id}", payload }.to raise_error(
+        ActionController::RoutingError
+      )
     end
   end
 

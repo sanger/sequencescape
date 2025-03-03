@@ -23,7 +23,7 @@ module Api
       has_one :tube_rack
 
       # Attributes
-      attribute :coordinate, readonly: true
+      attribute :coordinate, write_once: true
 
       # Filters
 

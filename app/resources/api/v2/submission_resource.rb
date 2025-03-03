@@ -21,8 +21,6 @@ module Api
 
       # model_name / model_hint if required
 
-      default_includes :uuid_object, :sequencing_requests
-
       # Associations:
 
       # Attributes
@@ -31,12 +29,12 @@ module Api
       # for field filtering, otherwise newly added attributes
       # will not show by default.
       attribute :uuid, readonly: true
-      attribute :name, readonly: true
+      attribute :name, write_once: true
       attribute :state, readonly: true
       attribute :created_at, readonly: true
       attribute :updated_at, readonly: true
-      attribute :used_tags, readonly: true
-      attribute :lanes_of_sequencing, readonly: true
+      attribute :used_tags, write_once: true
+      attribute :lanes_of_sequencing, write_once: true
 
       # Filters
       filter :uuid, apply: ->(records, value, _options) { records.with_uuid(value) }

@@ -14,8 +14,6 @@ module Api
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class SampleResource < BaseResource
-      default_includes :uuid_object
-
       has_one :sample_metadata, class_name: 'SampleMetadata', foreign_key_on: :related
       has_one :sample_manifest
 
@@ -24,7 +22,7 @@ module Api
 
       attribute :name
       attribute :sanger_sample_id
-      attribute :uuid
+      attribute :uuid, readonly: true
       attribute :control
       attribute :control_type
 

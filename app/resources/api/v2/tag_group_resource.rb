@@ -18,15 +18,16 @@ module Api
 
       # model_name / model_hint if required
 
-      default_includes :uuid_object, :tags
-
       # Associations:
-      has_one :tag_group_adapter_type, foreign_key: :adapter_type_id, readonly: true, class_name: 'TagGroupAdapterType'
+      has_one :tag_group_adapter_type,
+              foreign_key: :adapter_type_id,
+              write_once: true,
+              class_name: 'TagGroupAdapterType'
 
       # Attributes
       attribute :uuid, readonly: true
-      attribute :name, readonly: true
-      attribute :tags, readonly: true
+      attribute :name, write_once: true
+      attribute :tags, write_once: true
 
       # Filters
       filter :visible, default: true

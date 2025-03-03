@@ -19,20 +19,20 @@ module Api
     class WorkOrderResource < BaseResource
       IGNORED_METADATA_FIELDS = %w[id request_id created_at updated_at].freeze
 
-      default_includes [{ example_request: :request_metadata }, :work_order_type]
-
-      has_one :study, readonly: true
-      has_one :project, readonly: true
-      has_one :source_receptacle, readonly: true, polymorphic: true
-      has_many :samples, readonly: true
-
-      attribute :order_type, readonly: true
-      attribute :quantity, readonly: true
-      attribute :state
-      attribute :options
+      # Attributes
       attribute :at_risk
+      attribute :options, readonly: true
+      attribute :order_type, write_once: true
+      attribute :quantity, write_once: true
+      attribute :state
 
-      filter :state
+      # Relationships
+      has_one :study, write_once: true
+      has_one :project, write_once: true
+      has_one :source_receptacle, write_once: true, polymorphic: true
+      has_many :samples, write_once: true
+
+      # Filters
       filter :order_type,
              apply:
                (
@@ -40,7 +40,9 @@ module Api
                    records.joins(:work_order_type).where(work_order_types: { name: value })
                  end
                )
+      filter :state
 
+      # Field Methods
       def quantity
         { number: _model.quantity_value, unit_of_measurement: _model.quantity_units }
       end

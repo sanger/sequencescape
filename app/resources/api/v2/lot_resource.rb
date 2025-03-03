@@ -18,8 +18,6 @@ module Api
 
       # model_name / model_hint if required
 
-      default_includes :uuid_object
-
       # Associations:
       has_one :lot_type
       has_one :user
@@ -28,7 +26,7 @@ module Api
 
       # Attributes
       attribute :uuid, readonly: true
-      attribute :lot_number, readonly: true
+      attribute :lot_number, write_once: true
 
       # Filters
 

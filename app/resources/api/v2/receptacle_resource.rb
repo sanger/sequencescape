@@ -18,20 +18,6 @@ module Api
       # attributes and filters. By adding behaviour here we ensure that it
       # is automatically available on well.
       include Api::V2::SharedBehaviour::Receptacle
-
-      default_includes :uuid_object
-
-      # Associations:
-
-      # Attributes
-
-      # Filters
-
-      # Custom methods
-      # These shouldn't be used for business logic, and a more about
-      # I/O and isolating implementation details.
-
-      # Class method overrides
     end
   end
 end

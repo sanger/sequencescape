@@ -14,8 +14,6 @@ module Api
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class AliquotResource < BaseResource
-      default_includes :tag, :tag2
-
       # Associations
       has_one :study
       has_one :project
@@ -27,13 +25,13 @@ module Api
       has_one :library
 
       # Attributes
-      attribute :tag_oligo, readonly: true
-      attribute :tag_index, readonly: true
-      attribute :tag2_oligo, readonly: true
-      attribute :tag2_index, readonly: true
-      attribute :suboptimal, readonly: true
-      attribute :library_type, readonly: true
-      attribute :insert_size_to, readonly: true
+      attribute :tag_oligo, write_once: true
+      attribute :tag_index, write_once: true
+      attribute :tag2_oligo, write_once: true
+      attribute :tag2_index, write_once: true
+      attribute :suboptimal, write_once: true
+      attribute :library_type, write_once: true
+      attribute :insert_size_to, write_once: true
 
       # Filters
 

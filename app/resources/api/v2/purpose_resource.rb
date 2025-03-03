@@ -18,15 +18,13 @@ module Api
 
       # model_name / model_hint if required
 
-      default_includes :uuid_object
-
       # Associations:
 
       # Attributes
       attribute :uuid, readonly: true
-      attribute :name, readonly: true
-      attribute :size, readonly: true
-      attribute :lifespan, readonly: true
+      attribute :name, write_once: true
+      attribute :size, write_once: true
+      attribute :lifespan, write_once: true
 
       # Filters
       filter :name

@@ -3,7 +3,7 @@
 # of individual transfers. Designed for use via the API
 #
 # @example Example usage
-# BultTransfer.create!({
+# BulkTransfer.create!({
 #   well_transfers: [
 #     {
 #       source_uuid: source_plate1.uuid, source_location: 'A1',
@@ -39,6 +39,8 @@ class BulkTransfer < ApplicationRecord
 
   attr_accessor :well_transfers
 
+  private
+
   def build_transfers!
     ActiveRecord::Base.transaction do
       each_transfer do |source, destination, transfers|
@@ -52,7 +54,6 @@ class BulkTransfer < ApplicationRecord
       end
     end
   end
-  private :build_transfers!
 
   def each_transfer # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     well_transfers
@@ -70,5 +71,4 @@ class BulkTransfer < ApplicationRecord
         yield(source, destination, transfers)
       end
   end
-  private :each_transfer
 end

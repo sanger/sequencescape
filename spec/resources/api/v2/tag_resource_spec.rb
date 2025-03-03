@@ -4,18 +4,17 @@ require 'rails_helper'
 require './app/resources/api/v2/tag_resource'
 
 RSpec.describe Api::V2::TagResource, type: :resource do
-  subject(:tag_resource) { described_class.new(resource_model, {}) }
+  subject(:resource) { described_class.new(resource_model, {}) }
 
   let(:resource_model) { build_stubbed(:tag) }
 
-  # Test attributes
-  it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
-    expect(tag_resource).to have_attribute :oligo
-    expect(tag_resource).to have_attribute :map_id
+  # Model Name
+  it { is_expected.to have_model_name('Tag') }
 
-    expect(tag_resource).to have_one(:tag_group).with_class_name('TagGroup')
-  end
+  # Attributes
+  it { is_expected.to have_write_once_attribute :map_id }
+  it { is_expected.to have_write_once_attribute :oligo }
 
-  # Custom method tests
-  # Add tests for any custom methods you've added.
+  # Relationships
+  it { is_expected.to have_a_writable_has_one(:tag_group).with_class_name('TagGroup') }
 end

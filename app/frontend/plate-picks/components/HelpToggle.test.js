@@ -1,5 +1,4 @@
 import { shallowMount } from "@vue/test-utils";
-import "@testing-library/jest-dom";
 import HelpToggle from "./HelpToggle.vue";
 
 describe("HelpToggle.vue", () => {
