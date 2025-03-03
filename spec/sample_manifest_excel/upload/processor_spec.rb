@@ -367,7 +367,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
     describe SampleManifestExcel::Upload::Processor::LibraryTube do
       let(:download) { build(:test_download_tubes, columns: column_list, manifest_type: manifest_type) }
-      let(:tag_set1) { create(:tag_set, tag_group: TagGroup.first, tag2_group: nil) }
+      let(:tag_set1) { create(:tag_set, tag_group: TagGroup.first, tag2_group: nil, name: TagGroup.first.name) }
 
       before { tag_set1 }
 

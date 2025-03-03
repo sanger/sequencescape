@@ -63,13 +63,4 @@ class TagSet < ApplicationRecord
   def tag2_group_name=(name)
     self.tag2_group = TagGroup.find_by!(name:)
   end
-
-  # Returns all TagGroup records within the visible_single_index_chromium scope
-  #
-  # This method retrieves all TagGroup records that are associated with visible single index tag sets
-  # and have the adapter type 'Chromium'.
-  # @return [ActiveRecord::Relation] A relation containing the TagGroup records
-  def self.tag_groups_within_visible_single_index_chromium
-    TagGroup.where(id: visible_single_index_chromium.select(:tag_group_id))
-  end
 end

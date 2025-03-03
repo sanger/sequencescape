@@ -4,12 +4,12 @@ require 'rails_helper'
 
 RSpec.shared_examples 'a chromium tag group' do
   it 'will add the value' do
-    sf_tag_group = described_class.new(value: tag_group_name, sample_manifest_asset: sample_manifest_asset)
-    expect(sf_tag_group.value).to eq(tag_group_name)
+    sf_tag_group = described_class.new(value: tag_set_name, sample_manifest_asset: sample_manifest_asset)
+    expect(sf_tag_group.value).to eq(tag_set_name)
   end
 
   it 'will be valid with an existing tag group name' do
-    sf_tag_group = described_class.new(value: tag_group_name, sample_manifest_asset: sample_manifest_asset)
+    sf_tag_group = described_class.new(value: tag_set_name, sample_manifest_asset: sample_manifest_asset)
     expect(sf_tag_group).to be_valid
   end
 
@@ -17,12 +17,12 @@ RSpec.shared_examples 'a chromium tag group' do
     let(:adapter_type) { create(:adapter_type, name: 'Other') }
 
     it 'will not be valid' do
-      expect(described_class.new(value: tag_group_name, sample_manifest_asset: sample_manifest_asset)).not_to be_valid
+      expect(described_class.new(value: tag_set_name, sample_manifest_asset: sample_manifest_asset)).not_to be_valid
     end
   end
 
   it 'responds to update method but does nothing to tag on aliquot' do
-    sf_tag_group = described_class.new(value: tag_group_name, sample_manifest_asset: sample_manifest_asset)
+    sf_tag_group = described_class.new(value: tag_set_name, sample_manifest_asset: sample_manifest_asset)
     expect(sf_tag_group.update(aliquot: aliquot, tag_group: nil)).to be_nil
     aliquot.save
     expect(aliquot.tag).to be_nil
@@ -42,7 +42,7 @@ RSpec.shared_examples 'a chromium tag well' do
   describe 'linking' do
     let(:sf_tag_group) do
       SequencescapeExcel::SpecialisedField::ChromiumTagGroup.new(
-        value: tag_group_name,
+        value: tag_set_name,
         sample_manifest_asset: sample_manifest_asset
       )
     end
@@ -640,23 +640,23 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
   describe SequencescapeExcel::SpecialisedField::ChromiumTagGroup do
     let(:adapter_type) { create(:adapter_type, name: 'Chromium') }
     let(:tag_group1) { create(:tag_group_with_tags, adapter_type:) }
-    let(:tag_set1) { create(:tag_set, tag_group: tag_group1, tag2_group: nil) }
-    let(:tag_group_name) { tag_group1.name }
+    let(:tag_set) { create(:tag_set, tag_group: tag_group1, tag2_group: nil) }
+    let(:tag_set_name) { tag_set.name }
     let(:tag_well) { 'A1' }
 
     describe 'tag group' do
       before do
         tag_group1
-        tag_set1
+        tag_set
       end
 
-      it_behaves_like 'a chromium tag group', :tag_group_name
+      it_behaves_like 'a chromium tag group', :tag_set_name
     end
 
     describe SequencescapeExcel::SpecialisedField::ChromiumTagWell do
       before do
         tag_group1
-        tag_set1
+        tag_set
       end
 
       it_behaves_like 'a chromium tag well'

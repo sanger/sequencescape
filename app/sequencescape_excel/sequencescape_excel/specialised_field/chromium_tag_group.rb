@@ -4,9 +4,7 @@ module SequencescapeExcel
   module SpecialisedField
     ##
     # ChromiumTagGroup
-    #
-    # This class represents a single index tag group for Chromium.
-    # It includes common functionality from ChromiumTagGroupCommon.
+    #This class represents a single index tag group for Chromium.
     class ChromiumTagGroup
       include Base
 
@@ -20,8 +18,8 @@ module SequencescapeExcel
       #
       # @return [Integer, nil] The ID of the tag group, or nil if not found.
       def tag_group_id
-        tag_groups = ::TagSet.tag_groups_within_visible_single_index_chromium
-        @tag_group_id ||= tag_groups.find_by(name: value)&.id
+        tag_set = ::TagSet.visible_single_index_chromium.find_by(name: value)
+        @tag_group_id ||= tag_set&.tag_group_id
       end
 
       private
