@@ -12,9 +12,7 @@ module UatActions::StudyHelper
   ERROR_STUDY_DOES_NOT_EXIST = 'Study %s does not exist.'
 
   def self.included(base)
-    base.class_eval do
-      validate :validate_study_exists
-    end
+    base.class_eval { validate :validate_study_exists }
   end
 
   private
@@ -23,13 +21,14 @@ module UatActions::StudyHelper
   # study. It assumes that if the study_name is specified, the study is already
   # validated.
   #
-  # @return [Study] the study object
+  # @return [Study] the Study object
   def study
-    @study ||= if study_name.present?
-      Study.find_by!(name: study_name)  # already validated
-    else
-      UatActions::StaticRecords.study # default study
-    end
+    @study ||=
+      if study_name.present?
+        Study.find_by!(name: study_name) # already validated
+      else
+        UatActions::StaticRecords.study # default study
+      end
   end
 
   # Validates that the study exists for the specified study_name. Empty

@@ -32,8 +32,6 @@ class UatActions::GenerateTubes < UatActions
              help: 'The foreign barcode type to apply (optional).',
              select_options: %w[None FluidX]
 
-  validate :validate_study_exists
-
   def self.default
     new(tube_count: 1, study_name: UatActions::StaticRecords.study.name)
   end
@@ -66,17 +64,6 @@ class UatActions::GenerateTubes < UatActions
 
   private
 
-  # Validates that the study exists for the selected study name.
-  #
-  # @return [void]
-  def validate_study_exists
-    return if study_name.blank?
-    return if Study.exists?(name: study_name)
-
-    message = format(ERROR_STUDY_DOES_NOT_EXIST, study_name)
-    errors.add(:study_name, message)
-  end
-
   def add_foreign_barcode_if_selected(tube)
     return unless foreign_barcode_type == 'FluidX'
 
@@ -89,14 +76,6 @@ class UatActions::GenerateTubes < UatActions
     foreign_barcode = prefix + suffix
 
     tube.barcodes << Barcode.new(format: foreign_barcode_format, barcode: foreign_barcode)
-  end
-
-  def study
-    @study ||= if study_name.present?
-      Study.find_by!(name: study_name)  # already validated
-    else
-      UatActions::StaticRecords.study # default study
-    end
   end
 
   def tube_purpose

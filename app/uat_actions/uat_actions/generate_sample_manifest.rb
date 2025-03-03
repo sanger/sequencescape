@@ -6,6 +6,8 @@ class UatActions::GenerateSampleManifest < UatActions
   self.description = 'Generate sample manifest with the provided information.'
   self.category = :generating_samples
 
+  include UatActions::StudyHelper
+
   ERROR_TUBE_PURPOSE_DOES_NOT_EXIST = "Tube purpose '%s' does not exist."
 
   form_field :study_name,
@@ -97,26 +99,19 @@ class UatActions::GenerateSampleManifest < UatActions
 
   private
 
-  def purpose
-    Purpose.find_by!(name: tube_purpose_name)
+  # Validates that the plate purpose exists for the selected plate purpose name.
+  #
+  # @return [void]
+  def validate_plate_purpose_exists
+    return if plate_purpose_name.blank?
+    return if PlatePurpose.exists?(name: plate_purpose_name)
+
+    message = format(ERROR_PLATE_PURPOSE_DOES_NOT_EXIST, plate_purpose_name)
+    errors.add(:plate_purpose_name, message)
   end
 
-  def study
-    @study ||=
-      Study.create_with(
-        state: 'active',
-        study_metadata_attributes: {
-          data_access_group: 'dag',
-          study_type: UatActions::StaticRecords.study_type,
-          faculty_sponsor: UatActions::StaticRecords.faculty_sponsor,
-          data_release_study_type: UatActions::StaticRecords.data_release_study_type,
-          study_description: 'A study generated for UAT',
-          contaminated_human_dna: 'No',
-          contains_human_dna: 'No',
-          commercially_available: 'No',
-          program: UatActions::StaticRecords.program
-        }
-      ).find_or_create_by!(name: study_name)
+  def purpose
+    Purpose.find_by!(name: tube_purpose_name)
   end
 
   def supplier
