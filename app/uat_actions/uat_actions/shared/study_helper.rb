@@ -8,7 +8,7 @@
 #   class SomeUatActionClass
 #     include UatActions::StudyHelper
 #   end
-module UatActions::StudyHelper
+module UatActions::Shared::StudyHelper
   ERROR_STUDY_DOES_NOT_EXIST = 'Study %s does not exist.'
 
   def self.included(base)

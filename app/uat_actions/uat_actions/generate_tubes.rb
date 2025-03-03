@@ -8,7 +8,7 @@ class UatActions::GenerateTubes < UatActions
   self.description = 'Generate sample tubes in the selected study.'
   self.category = :generating_samples
 
-  include UatActions::StudyHelper
+  include UatActions::Shared::StudyHelper
 
   form_field :tube_purpose_name,
              :select,

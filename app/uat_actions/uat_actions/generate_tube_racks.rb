@@ -8,7 +8,7 @@ class UatActions::GenerateTubeRacks < UatActions
   self.description = 'Generate tube racks in the selected study.'
   self.category = :generating_samples
 
-  include UatActions::StudyHelper
+  include UatActions::Shared::StudyHelper
 
   form_field :rack_count,
              :number_field,

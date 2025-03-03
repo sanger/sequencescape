@@ -6,7 +6,7 @@ class UatActions::GenerateSampleManifest < UatActions
   self.description = 'Generate sample manifest with the provided information.'
   self.category = :generating_samples
 
-  include UatActions::StudyHelper
+  include UatActions::Shared::StudyHelper
 
   ERROR_TUBE_PURPOSE_DOES_NOT_EXIST = "Tube purpose '%s' does not exist."
 

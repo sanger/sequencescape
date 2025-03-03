@@ -9,7 +9,7 @@ class UatActions::GeneratePlates < UatActions
   self.description = 'Generate plates in the selected study.'
   self.category = :generating_samples
 
-  include UatActions::StudyHelper
+  include UatActions::Shared::StudyHelper
 
   ERROR_WELL_COUNT_EXCEEDS_PLATE_SIZE = "Well count of %s exceeds the plate size of %s for the plate purpose '%s'."
   ERROR_PLATE_PURPOSE_DOES_NOT_EXIST = "Plate purpose '%s' does not exist."
