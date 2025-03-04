@@ -553,7 +553,8 @@ GEM
     xpath (3.2.0)
       nokogiri (~> 1.8)
     yard (0.9.37)
-    yard-activerecord (0.0.16)
+    yard-activerecord (0.0.17)
+      activesupport
       yard (>= 0.8.3)
     yard-junk (0.0.10)
       backports (>= 3.18)
