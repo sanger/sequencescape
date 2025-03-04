@@ -9,11 +9,11 @@
 #     include UatActions::StudyHelper
 #   end
 module UatActions::Shared::StudyHelper
+  extend ActiveSupport::Concern
+
   ERROR_STUDY_DOES_NOT_EXIST = 'Study %s does not exist.'
 
-  def self.included(base)
-    base.class_eval { validate :validate_study_exists }
-  end
+  included { validate :validate_study_exists }
 
   private
 

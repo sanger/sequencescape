@@ -9,11 +9,11 @@
 #    include UatActions::SupplierHelper
 #  end
 module UatActions::Shared::SupplierHelper
+  extend ActiveSupport::Concern
+
   ERROR_SUPPLIER_DOES_NOT_EXIST = 'Supplier %s does not exist.'
 
-  def self.included(base)
-    base.class_eval { validate :validate_supplier_exists }
-  end
+  included { validate :validate_supplier_exists }
 
   private
 
