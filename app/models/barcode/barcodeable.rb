@@ -105,19 +105,19 @@ module Barcode::Barcodeable
   deprecate def barcode!
               barcode
             end,
-            deprecator: ActiveSupport::Deprecation.new('14.53.0', 'Sequencescape')
+            deprecator: Rails.application.deprecators[:sequencescape]
 
   deprecate def barcode=(barcode)
               @barcode_number ||= barcode
               build_barcode_when_complete
             end,
-            deprecator: ActiveSupport::Deprecation.new('14.53.0', 'Sequencescape')
+            deprecator: Rails.application.deprecators[:sequencescape]
 
   deprecate def barcode_prefix=(barcode_prefix)
               @barcode_prefix ||= barcode_prefix.prefix
               build_barcode_when_complete
             end,
-            deprecator: ActiveSupport::Deprecation.new('14.53.0', 'Sequencescape')
+            deprecator: Rails.application.deprecators[:sequencescape]
 
   # ***** End deprecated methods *****
 

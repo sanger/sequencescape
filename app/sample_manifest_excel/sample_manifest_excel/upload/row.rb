@@ -64,7 +64,7 @@ module SampleManifestExcel
         @aliquot ||= manifest_asset.aliquot
       end
       deprecate aliquot: 'Chromium manifests may have multiple aliquots. Please use aliquots instead.',
-                deprecator: ActiveSupport::Deprecation.new('14.53.0', 'Sequencescape')
+                deprecator: Rails.application.deprecators[:sequencescape]
 
       def metadata
         @metadata ||= sample.sample_metadata

@@ -38,7 +38,7 @@ class IlluminaHtp::StockTubePurpose < Tube::Purpose
     tube.ancestors.stock_plates.order(id: :desc).first
   end
   deprecate stock_plate: 'Stock plate is nebulous and can easily lead to unexpected behaviour',
-            deprecator: ActiveSupport::Deprecation.new('14.53.0', 'Sequencescape')
+            deprecator: Rails.application.deprecators[:sequencescape]
 
   def stock_wells(tube)
     tube.requests_as_target.map { |request| request.asset.stock_wells }.flatten

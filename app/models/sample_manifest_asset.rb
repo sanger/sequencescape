@@ -26,8 +26,7 @@ class SampleManifestAsset < ApplicationRecord
     asset.aliquots.detect { |a| a.sample_id == sample.id }
   end
   deprecate aliquot: 'Chromium manifests may have multiple aliquots. Please use aliquots instead.',
-            deprecator: ActiveSupport::Deprecation.new('14.53.0', 'Sequencescape')
-
+            deprecator: Rails.application.deprecators[:sequencescape]
   def aliquots
     # JG: I'm afraid I'm not entirely sure why we're expecting aliquots of multiple samples in here
     # as multiplexed libraries still link to the 'library tube'. However I've decided to preserve

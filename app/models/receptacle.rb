@@ -279,7 +279,7 @@ class Receptacle < Asset # rubocop:todo Metrics/ClassLength
   alias attach_tags attach_tag
 
   # Contained samples also works on eg. plate
-  alias_method :contained_samples, :samples
+  alias contained_samples samples
 
   # We only support wells for the time being
   def latest_stock_metrics(_product, *_args)

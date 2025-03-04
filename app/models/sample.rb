@@ -297,7 +297,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   has_many :assets, -> { distinct }, through: :aliquots, source: :receptacle
   deprecate assets: 'use receptacles instead, or labware if needed',
-            deprecator: ActiveSupport::Deprecation.new('14.53.0', 'Sequencescape')
+            deprecator: Rails.application.deprecators[:sequencescape]
 
   has_many :receptacles, -> { distinct }, through: :aliquots
   has_many :wells, -> { distinct }, through: :aliquots, source: :receptacle, class_name: 'Well'

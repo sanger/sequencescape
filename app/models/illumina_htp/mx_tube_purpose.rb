@@ -29,7 +29,7 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
     tube.requests_as_target.where.not(requests: { asset_id: nil }).first&.asset&.plate
   end
   deprecate stock_plate: 'Stock plate is nebulous and can easily lead to unexpected behaviour',
-            deprecator: ActiveSupport::Deprecation.new('14.53.0', 'Sequencescape')
+            deprecator: Rails.application.deprecators[:sequencescape]
 
   def source_plate(tube)
     super || source_plate_scope(tube).first

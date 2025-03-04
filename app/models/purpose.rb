@@ -56,7 +56,7 @@ class Purpose < ApplicationRecord
     # Stock_plate is deprecated, but we still have some tubes with special behaviour
     # We'll allow its usage here to support existing code.
     Rails.application.deprecators.silence do
-      Rails.application.deprecators[:active_support].warn
+      Rails.application.deprecators[:sequencescape].warn
 
       source_purpose_id.present? ? labware.ancestor_of_purpose(source_purpose_id) : labware.try(:stock_plate)
     end
@@ -66,7 +66,7 @@ class Purpose < ApplicationRecord
     # Stock_plate is deprecated, but we still have some tubes with special behaviour
     # We'll allow its usage here
     Rails.application.deprecators.silence do
-      Rails.application.deprecators[:active_support].warn
+      Rails.application.deprecators[:sequencescape].warn
 
       source_purpose_id.present? ? labware.ancestors_of_purpose(source_purpose_id) : [labware.try(:stock_plate)].compact
     end
