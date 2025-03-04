@@ -53,6 +53,9 @@ class PlatesFromTubesController < ApplicationController
     @barcode_printers = BarcodePrinter.order('name asc') if @barcode_printers.blank?
   end
 
+  # Transfers tubes to a plate and creates plates from the given tubes.
+  #
+  # @return [void]
   # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
   def transfer_tubes_to_plate
     @found_tubes ||= []

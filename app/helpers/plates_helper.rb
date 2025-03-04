@@ -13,7 +13,7 @@ module PlatesHelper
   end
 
   def plate_options_for_creating_from_tubes
-    ['Stock Plate', 'RNA Stock Plate', 'All of the above']
+    configatron.fetch(:plates_to_create_from_tubes, ['Stock Plate', 'RNA Stock Plate', 'All of the above'])
   end
 
   private
