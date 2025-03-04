@@ -55,9 +55,9 @@ class Purpose < ApplicationRecord
   def source_plate(labware)
     # Stock_plate is deprecated, but we still have some tubes with special behaviour
     # We'll allow its usage here to support existing code.
-    ActiveSupport::Deprecation.silence do
-      # Rails 6 lets us do this:
-      # ActiveSupport::Deprecation.allow(:stock_plate) do
+    Rails.application.deprecators.silence do
+      Rails.application.deprecators[:active_support].warn
+
       source_purpose_id.present? ? labware.ancestor_of_purpose(source_purpose_id) : labware.try(:stock_plate)
     end
   end
@@ -65,9 +65,9 @@ class Purpose < ApplicationRecord
   def source_plates(labware)
     # Stock_plate is deprecated, but we still have some tubes with special behaviour
     # We'll allow its usage here
-    ActiveSupport::Deprecation.silence do
-      # Rails 6 lets us do this:
-      # ActiveSupport::Deprecation.allow(:stock_plate) do
+    Rails.application.deprecators.silence do
+      Rails.application.deprecators[:active_support].warn
+
       source_purpose_id.present? ? labware.ancestors_of_purpose(source_purpose_id) : [labware.try(:stock_plate)].compact
     end
   end

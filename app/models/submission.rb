@@ -116,7 +116,10 @@ class Submission < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def subject_type
     'submission'
   end
-  alias_attribute :friendly_name, :name
+
+  def friendly_name
+    name
+  end
 
   def multiplexed?
     orders.any?(&:multiplexed?)

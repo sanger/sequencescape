@@ -17,7 +17,7 @@ module Submission::RequestOptionsBehaviour
 
   def self.included(base)
     base.class_eval do
-      serialize :request_options, type: HashWrapper
+      serialize :request_options
       validate :check_request_options, if: :request_options_changed?
     end
   end
