@@ -15,7 +15,9 @@ class PlatesFromTubesController < ApplicationController
   end
 
   def create
-    transfer_tubes_to_plate
+    scanned_user = User.find_with_barcode_or_swipecard_code(params[:plates_from_tubes][:user_barcode])
+    barcode_printer = BarcodePrinter.find(params[:plates_from_tubes][:barcode_printer])
+    transfer_tubes_to_plate(scanned_user, barcode_printer)
   end
 
   private
@@ -56,15 +58,21 @@ class PlatesFromTubesController < ApplicationController
   # Transfers tubes to a plate and creates plates from the given tubes.
   #
   # @return [void]
-  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
-  def transfer_tubes_to_plate
+  def transfer_tubes_to_plate(scanned_user, barcode_printer)
     @found_tubes ||= []
-    source_tube_barcodes = params[:plates_from_tubes][:source_tubes].split(/[\s,]+/)
-    unless valid_number_of_plates(source_tube_barcodes)
-      flash.now[:error] = 'Number of tubes must be less than or equal to the number of wells in the plate(s)'
-      return
-    end
-    # TODO: Optimise this to use a single query
+    source_tube_barcodes = extract_source_tube_barcodes
+    return unless valid_number_of_plates(source_tube_barcodes)
+
+    find_tubes(source_tube_barcodes)
+    create_plates(scanned_user, barcode_printer)
+    respond_with_success
+  end
+
+  def extract_source_tube_barcodes
+    params[:plates_from_tubes][:source_tubes].split(/[\s,]+/)
+  end
+
+  def find_tubes(source_tube_barcodes)
     source_tube_barcodes.each do |tube_barcode|
       tube = Tube.find_by_barcode(tube_barcode)
       if tube.nil?
@@ -73,13 +81,20 @@ class PlatesFromTubesController < ApplicationController
       end
       @found_tubes << tube
     end
-    @created_plates = []
-    @plate_creator.each { |creator| creator.create_plates_from_tubes(@found_tubes.dup, @created_plates) }
+  end
 
+  def create_plates(scanned_user, barcode_printer)
+    @created_plates = []
+    @plate_creator.each do |creator|
+      creator.create_plates_from_tubes(@found_tubes.dup, @created_plates, scanned_user, barcode_printer)
+    end
+  end
+
+  def respond_with_success
     respond_to do |format|
       flash.now[:notice] = 'Created plates successfully'
+      @plate_creator.each { |creator| flash[:warning] = creator.warnings if creator.warnings.present? }
       format.html { render(new_plates_from_tube_path) }
     end
   end
-  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 end

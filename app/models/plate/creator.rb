@@ -146,7 +146,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # @param [Array<Hash>] created_plates The array to store the created plates information.
   # @return [void]
   # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
-  def create_plates_from_tubes(tubes, created_plates)
+  def create_plates_from_tubes(tubes, created_plates, scanned_user, barcode_printer)
     plate_purpose = plate_purposes.first
     plate_barcode = PlateBarcode.create_barcode
     tubes_dup = tubes.dup # Need a duplicate because we are shifting through the tubes list.
@@ -159,6 +159,18 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
       tube = tubes.shift
       break if tube.nil?
       well.aliquots << tube.aliquots.map(&:dup)
+    end
+    #  Create and the print job to the printer
+    print_job =
+      LabelPrinter::PrintJob.new(
+        barcode_printer.name,
+        LabelPrinter::Label::PlateCreator,
+        plates: [plate],
+        plate_purpose: plate_purpose,
+        user_login: scanned_user.login
+      )
+    unless print_job.execute
+      warnings_list << "Barcode labels failed to print for following plate type: #{plate_purpose.name}"
     end
     created_plates << { source: tubes_dup, destinations: [plate] }
   end
