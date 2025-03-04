@@ -121,6 +121,8 @@ module Sequencescape
         %w[
           Symbol
           ActiveSupport::HashWithIndifferentAccess
+          ActiveSupport::TimeWithZone
+          ActiveSupport::TimeZone
           HashWithIndifferentAccess
           RequestType::Validator::ArrayWithDefault
           RequestType::Validator::LibraryTypeValidator
