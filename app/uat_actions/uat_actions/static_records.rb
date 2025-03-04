@@ -11,6 +11,13 @@ module UatActions::StaticRecords
     'Sanger'
   end
 
+  # Returns the default study_name
+  #
+  # @return [String] the default study_name
+  def self.study_name
+    'UAT Study'
+  end
+
   def self.supplier
     Supplier.find_or_create_by!(name: 'UAT Supplier')
   end
