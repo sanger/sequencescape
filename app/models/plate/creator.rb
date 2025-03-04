@@ -140,20 +140,21 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
   # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
+  # Creates plates from the given tubes and appends them to the created_plates array.
+  #
+  # @param [Array<Tube>] tubes The array of tubes to be transferred to the plate.
+  # @param [Array<Hash>] created_plates The array to store the created plates information.
+  # @return [void]
   # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
-  # TODO: Complete this
   def create_plates_from_tubes(tubes, created_plates)
     plate_purpose = plate_purposes.first
     plate_barcode = PlateBarcode.create_barcode
     tubes_dup = tubes.dup # Need a duplicate because we are shifting through the tubes list.
-    # Size dependent on the number of tubes?
     plate =
       plate_purpose.create!(sanger_barcode: plate_barcode, size: plate_purpose.size) do |p|
         p.name = "#{plate_purpose.name} #{p.human_barcode}"
       end
-    # Fill the plate with the aliquots from the tubes
     # Create the asset link between the tubes and the plate?
-
     plate.wells_in_column_order.each do |well|
       tube = tubes.shift
       break if tube.nil?
