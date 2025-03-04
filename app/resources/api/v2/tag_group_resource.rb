@@ -18,6 +18,8 @@ module Api
 
       # model_name / model_hint if required
 
+      default_includes :uuid_object, :tags
+
       # Associations:
       has_one :tag_group_adapter_type,
               foreign_key: :adapter_type_id,
