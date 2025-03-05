@@ -92,6 +92,7 @@ class PlatesFromTubesController < ApplicationController
   end
 
   # Creates plates from the found tubes and stores them in @created_plates.
+  # Creates an asset group if the user selects 'Yes' for creating an asset group.
   #
   # @param [User] scanned_user The user who scanned the tubes.
   # @param [BarcodePrinter] barcode_printer The barcode printer to use.
