@@ -27,6 +27,10 @@ class PlatesFromTubesController < ApplicationController
     tube_barcodes.size <= @max_wells
   end
 
+  def find_duplicate_tubes(tube_barcodes)
+    tube_barcodes.group_by { |e| e }.select { |_, v| v.size > 1 }.keys
+  end
+
   def set_plate_creators
     @plate_creators = Plate::Creator.where(name: PLATE_PURPOSES)
   end
@@ -59,18 +63,26 @@ class PlatesFromTubesController < ApplicationController
   # Transfers tubes to a plate and creates plates from the given tubes.
   #
   # @return [void]
+  # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
   def transfer_tubes_to_plate(scanned_user, barcode_printer)
     @found_tubes ||= []
     source_tube_barcodes = extract_source_tube_barcodes
     unless valid_number_of_tubes(source_tube_barcodes)
-      flash[:error] = 'Number of tubes exceeds the maximum number of wells'
+      flash.now[:error] = 'Number of tubes exceeds the maximum number of wells'
+      respond_to { |format| format.html { render(new_plates_from_tube_path) } }
       return
     end
-
+    duplicate_tubes = find_duplicate_tubes(source_tube_barcodes)
+    if duplicate_tubes.present?
+      flash[:error] = "Duplicate tubes found: #{duplicate_tubes.join(', ')}"
+      respond_to { |format| format.html { render(new_plates_from_tube_path) } }
+      return
+    end
     find_tubes(source_tube_barcodes)
     create_plates(scanned_user, barcode_printer)
     respond_with_success
   end
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   # Extracts source tube barcodes from the parameters.
   #

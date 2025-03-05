@@ -157,10 +157,37 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
         end
       end
 
-      # Sad path
+      context 'on POST with duplicate barcodes' do
+        setup do
+          @tube1 = FactoryBot.create(:tube)
+          @tube2 = FactoryBot.create(:tube)
+
+          @plate_count = Plate.count
+
+          post :create,
+               params: {
+                 plates_from_tubes: {
+                   user_barcode: '1234567',
+                   barcode_printer: @barcode_printer.id,
+                   plate_type: 'Stock Plate',
+                   source_tubes:
+                     "#{@tube1.barcodes.first.barcode}
+                        \r\n#{@tube1.barcodes.first.barcode}
+                        \r\n#{@tube2.barcodes.first.barcode}"
+                 }
+               }
+        end
+
+        should 'not create a plate' do
+          assert_equal @plate_count, Plate.count
+        end
+
+        should set_flash[:error].to(/Duplicate tubes found/)
+      end
+
       context 'on POST to create a stock plate with too many tubes' do
         setup do
-          source_tubes = (1..97).map { |_| FactoryBot.create(:tube).barcodes.first }.join("\r\n")
+          source_tubes = (1..100).map { |_| FactoryBot.create(:tube).barcodes.first.barcode }.join("\r\n")
           post :create,
                params: {
                  plates_from_tubes: {
@@ -174,7 +201,7 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
         should 'not create a plate' do
           assert_equal 0, Plate.count
         end
-        should set_flash[:error].to(/Number of tubes/)
+        should set_flash[:error].to(/Number of tubes exceeds the maximum number of wells/)
       end
 
       context 'without a user barcode' do
