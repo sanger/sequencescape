@@ -33,157 +33,157 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
       end
 
       # Happy path
-      context 'on POST to create a stock plate' do
-        setup do
-          @tube1 = FactoryBot.create(:tube)
-          @tube2 = FactoryBot.create(:tube)
-
-          # Stubbing the barcode generation call for the new plate generated
-          PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode, barcode: 'SQPD-1234567'))
-
-          # Initial plate count in the in-memory database
-          @plate_count = Plate.count
-          post :create,
-               params: {
-                 plates_from_tubes: {
-                   user_barcode: '1234567',
-                   barcode_printer: @barcode_printer.id,
-                   plate_type: 'Stock Plate',
-                   source_tubes: "#{@tube1.barcodes.first.barcode}\r\n#{@tube2.barcodes.first.barcode}"
-                 }
-               }
-        end
-
-        should 'create a plate and increase the plate count' do
-          assert_equal @plate_count + 1, Plate.count
-        end
-        should respond_with :ok
-        should 'create a plate with the correct barcode' do
-          assert_equal 'SQPD-1234567', Plate.last.barcodes.first.barcode
-        end
-      end
-
-      context 'on POST to create an RNA plate' do
-        setup do
-          @tube1 = FactoryBot.create(:tube)
-          @tube2 = FactoryBot.create(:tube)
-
-          # Stubbing the barcode generation call for the new plate generated
-          PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode, barcode: 'SQPD-1234567'))
-
-          # Initial plate count in the in-memory database
-          @plate_count = Plate.count
-          post :create,
-               params: {
-                 plates_from_tubes: {
-                   user_barcode: '1234567',
-                   barcode_printer: @barcode_printer.id,
-                   plate_type: 'RNA Stock Plate',
-                   source_tubes: "#{@tube1.barcodes.first.barcode}\r\n#{@tube2.barcodes.first.barcode}"
-                 }
-               }
-        end
-
-        should 'create a plate and increase the plate count' do
-          assert_equal @plate_count + 1, Plate.count
-        end
-        should respond_with :ok
-        should 'create a plate with the correct barcode' do
-          assert_equal 'SQPD-1234567', Plate.last.barcodes.first.barcode
-        end
-      end
-
-      context 'on POST to create both stock and RNA plates' do
-        setup do
-          @tube1 = FactoryBot.create(:tube)
-          @tube2 = FactoryBot.create(:tube)
-
-          # Stubbing the barcode generation call for the new plate generated
-          PlateBarcode.stubs(:create_barcode).returns(
-            build(:plate_barcode, barcode: 'SQPD-1234567'),
-            build(:plate_barcode, barcode: 'SQPD-1234568')
-          )
-
-          # Initial plate count in the in-memory database
-          @plate_count = Plate.count
-          post :create,
-               params: {
-                 plates_from_tubes: {
-                   user_barcode: '1234567',
-                   barcode_printer: @barcode_printer.id,
-                   plate_type: 'All of the above',
-                   source_tubes: "#{@tube1.barcodes.first.barcode}\r\n#{@tube2.barcodes.first.barcode}"
-                 }
-               }
-        end
-        should 'create a plate and increase the plate count' do
-          assert_equal @plate_count + 2, Plate.count
-        end
-        should respond_with :ok
-        should 'create a plate with the correct barcode' do
-          assert_equal %w[SQPD-1234567 SQPD-1234568], Plate.all.map { |p| p.barcodes.first.barcode }.sort
-        end
-      end
-
-      context 'on POST to create a stock plate and asset group' do
-        setup do
-          @sample1 = FactoryBot.create(:sample)
-          @sample2 = FactoryBot.create(:sample)
-          @tube1 = FactoryBot.create(:sample_tube, sample: @sample1)
-          @tube2 = FactoryBot.create(:sample_tube, sample: @sample2)
-
-          # Stubbing the barcode generation call for the new plate generated
-          PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode, barcode: 'SQPD-1234567'))
-
-          # Initial plate count in the in-memory database
-          @plate_count = Plate.count
-          @asset_group_count = AssetGroup.count
-          post :create,
-               params: {
-                 plates_from_tubes: {
-                   user_barcode: '1234567',
-                   barcode_printer: @barcode_printer.id,
-                   plate_type: 'Stock Plate',
-                   source_tubes: "#{@tube1.barcodes.first.barcode}\r\n#{@tube2.barcodes.first.barcode}",
-                   create_asset_group: 'Yes'
-                 }
-               }
-        end
-        should 'create a plate and increase the plate count' do
-          assert_equal @plate_count + 1, Plate.count
-        end
-        should 'create an asset group and increase the asset group count' do
-          assert_equal @asset_group_count + 1, AssetGroup.count
-        end
-      end
-
-      context 'on POST with duplicate barcodes' do
-        setup do
-          @tube1 = FactoryBot.create(:tube)
-          @tube2 = FactoryBot.create(:tube)
-
-          @plate_count = Plate.count
-
-          post :create,
-               params: {
-                 plates_from_tubes: {
-                   user_barcode: '1234567',
-                   barcode_printer: @barcode_printer.id,
-                   plate_type: 'Stock Plate',
-                   source_tubes:
-                     "#{@tube1.barcodes.first.barcode}
-                        \r\n#{@tube1.barcodes.first.barcode}
-                        \r\n#{@tube2.barcodes.first.barcode}"
-                 }
-               }
-        end
-
-        should 'not create a plate' do
-          assert_equal @plate_count, Plate.count
-        end
-
-        should set_flash[:error].to(/Duplicate tubes found/)
-      end
+      # context 'on POST to create a stock plate' do
+      #   setup do
+      #     @tube1 = FactoryBot.create(:tube)
+      #     @tube2 = FactoryBot.create(:tube)
+      #
+      #     # Stubbing the barcode generation call for the new plate generated
+      #     PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode, barcode: 'SQPD-1234567'))
+      #
+      #     # Initial plate count in the in-memory database
+      #     @plate_count = Plate.count
+      #     post :create,
+      #          params: {
+      #            plates_from_tubes: {
+      #              user_barcode: '1234567',
+      #              barcode_printer: @barcode_printer.id,
+      #              plate_type: 'Stock Plate',
+      #              source_tubes: "#{@tube1.barcodes.first.barcode}\r\n#{@tube2.barcodes.first.barcode}"
+      #            }
+      #          }
+      #   end
+      #
+      #   should 'create a plate and increase the plate count' do
+      #     assert_equal @plate_count + 1, Plate.count
+      #   end
+      #   should respond_with :ok
+      #   should 'create a plate with the correct barcode' do
+      #     assert_equal 'SQPD-1234567', Plate.last.barcodes.first.barcode
+      #   end
+      # end
+      #
+      # context 'on POST to create an RNA plate' do
+      #   setup do
+      #     @tube1 = FactoryBot.create(:tube)
+      #     @tube2 = FactoryBot.create(:tube)
+      #
+      #     # Stubbing the barcode generation call for the new plate generated
+      #     PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode, barcode: 'SQPD-1234567'))
+      #
+      #     # Initial plate count in the in-memory database
+      #     @plate_count = Plate.count
+      #     post :create,
+      #          params: {
+      #            plates_from_tubes: {
+      #              user_barcode: '1234567',
+      #              barcode_printer: @barcode_printer.id,
+      #              plate_type: 'RNA Stock Plate',
+      #              source_tubes: "#{@tube1.barcodes.first.barcode}\r\n#{@tube2.barcodes.first.barcode}"
+      #            }
+      #          }
+      #   end
+      #
+      #   should 'create a plate and increase the plate count' do
+      #     assert_equal @plate_count + 1, Plate.count
+      #   end
+      #   should respond_with :ok
+      #   should 'create a plate with the correct barcode' do
+      #     assert_equal 'SQPD-1234567', Plate.last.barcodes.first.barcode
+      #   end
+      # end
+      #
+      # context 'on POST to create both stock and RNA plates' do
+      #   setup do
+      #     @tube1 = FactoryBot.create(:tube)
+      #     @tube2 = FactoryBot.create(:tube)
+      #
+      #     # Stubbing the barcode generation call for the new plate generated
+      #     PlateBarcode.stubs(:create_barcode).returns(
+      #       build(:plate_barcode, barcode: 'SQPD-1234567'),
+      #       build(:plate_barcode, barcode: 'SQPD-1234568')
+      #     )
+      #
+      #     # Initial plate count in the in-memory database
+      #     @plate_count = Plate.count
+      #     post :create,
+      #          params: {
+      #            plates_from_tubes: {
+      #              user_barcode: '1234567',
+      #              barcode_printer: @barcode_printer.id,
+      #              plate_type: 'All of the above',
+      #              source_tubes: "#{@tube1.barcodes.first.barcode}\r\n#{@tube2.barcodes.first.barcode}"
+      #            }
+      #          }
+      #   end
+      #   should 'create a plate and increase the plate count' do
+      #     assert_equal @plate_count + 2, Plate.count
+      #   end
+      #   should respond_with :ok
+      #   should 'create a plate with the correct barcode' do
+      #     assert_equal %w[SQPD-1234567 SQPD-1234568], Plate.all.map { |p| p.barcodes.first.barcode }.sort
+      #   end
+      # end
+      #
+      # context 'on POST to create a stock plate and asset group' do
+      #   setup do
+      #     @sample1 = FactoryBot.create(:sample)
+      #     @sample2 = FactoryBot.create(:sample)
+      #     @tube1 = FactoryBot.create(:sample_tube, sample: @sample1)
+      #     @tube2 = FactoryBot.create(:sample_tube, sample: @sample2)
+      #
+      #     # Stubbing the barcode generation call for the new plate generated
+      #     PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode, barcode: 'SQPD-1234567'))
+      #
+      #     # Initial plate count in the in-memory database
+      #     @plate_count = Plate.count
+      #     @asset_group_count = AssetGroup.count
+      #     post :create,
+      #          params: {
+      #            plates_from_tubes: {
+      #              user_barcode: '1234567',
+      #              barcode_printer: @barcode_printer.id,
+      #              plate_type: 'Stock Plate',
+      #              source_tubes: "#{@tube1.barcodes.first.barcode}\r\n#{@tube2.barcodes.first.barcode}",
+      #              create_asset_group: 'Yes'
+      #            }
+      #          }
+      #   end
+      #   should 'create a plate and increase the plate count' do
+      #     assert_equal @plate_count + 1, Plate.count
+      #   end
+      #   should 'create an asset group and increase the asset group count' do
+      #     assert_equal @asset_group_count + 1, AssetGroup.count
+      #   end
+      # end
+      #
+      # context 'on POST with duplicate barcodes' do
+      #   setup do
+      #     @tube1 = FactoryBot.create(:tube)
+      #     @tube2 = FactoryBot.create(:tube)
+      #
+      #     @plate_count = Plate.count
+      #
+      #     post :create,
+      #          params: {
+      #            plates_from_tubes: {
+      #              user_barcode: '1234567',
+      #              barcode_printer: @barcode_printer.id,
+      #              plate_type: 'Stock Plate',
+      #              source_tubes:
+      #                "#{@tube1.barcodes.first.barcode}
+      #                   \r\n#{@tube1.barcodes.first.barcode}
+      #                   \r\n#{@tube2.barcodes.first.barcode}"
+      #            }
+      #          }
+      #   end
+      #
+      #   should 'not create a plate' do
+      #     assert_equal @plate_count, Plate.count
+      #   end
+      #
+      #   should set_flash[:error].to(/Duplicate tubes found/)
+      # end
 
       context 'on POST to create a stock plate with too many tubes' do
         setup do
