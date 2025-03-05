@@ -1,9 +1,20 @@
 # These submission templates are associated with the ANOSPP pipeline.
 ---
 # Lysate plate preparation from the stock insects plate
+# (possibly no longer needed)
 Limber-Htp - ANOSPP Lysate Prep:
   submission_class_name: "LinearSubmission"
   related_records:
     request_type_keys: ["limber_anospp_lysate_prep"]
+    product_line_name: ANOSPP
+    product_catalogue_name: ANOSPP
+# Lysate plate preparation plus GBS
+# This version automatically switches to the GBS request once the lysate
+# prep requests are closed, to save the SSR a manual submission step.
+Limber-Htp - ANOSPP Lysate Prep and GBS:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_anospp_lysate_prep", "limber_gbs"]
+    order_role: "GBS"
     product_line_name: ANOSPP
     product_catalogue_name: ANOSPP
