@@ -20,9 +20,6 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
       # Populating barcode printers
       @barcode_printer = create(:barcode_printer)
 
-      # Stubbing the barcode generation call for the new plate generated
-      PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode, barcode: 'SQPD-1234567'))
-
       # Stubbing the PmbClient
       LabelPrinter::PmbClient.stubs(:get_label_template_by_name).returns('data' => [{ 'id' => 15 }])
       LabelPrinter::PmbClient.stubs(:print).returns(200)
@@ -33,14 +30,17 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
         @user = FactoryBot.create(:user, swipecard_code: '1234567')
         @user.grant_administrator
         session[:user] = @user.id
-
-        @tube1 = FactoryBot.create(:tube)
-        @tube2 = FactoryBot.create(:tube)
       end
 
       # Happy path
-      context 'on POST to create' do
+      context 'on POST to create a stock plate' do
         setup do
+          @tube1 = FactoryBot.create(:tube)
+          @tube2 = FactoryBot.create(:tube)
+
+          # Stubbing the barcode generation call for the new plate generated
+          PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode, barcode: 'SQPD-1234567'))
+
           # Initial plate count in the in-memory database
           @plate_count = Plate.count
           post :create,
@@ -49,6 +49,36 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
                    user_barcode: '1234567',
                    barcode_printer: @barcode_printer.id,
                    plate_type: 'Stock Plate',
+                   source_tubes: "#{@tube1.barcodes.first}\r\n#{@tube2.barcodes.first}"
+                 }
+               }
+        end
+
+        should 'create a plate and increase the plate count' do
+          assert_equal @plate_count + 1, Plate.count
+        end
+        should respond_with :ok
+        should 'create a plate with the correct barcode' do
+          assert_equal 'SQPD-1234567', Plate.last.barcodes.first.barcode
+        end
+      end
+
+      context 'on POST to create an scRNA plate' do
+        setup do
+          @tube1 = FactoryBot.create(:tube)
+          @tube2 = FactoryBot.create(:tube)
+
+          # Stubbing the barcode generation call for the new plate generated
+          PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode, barcode: 'SQPD-1234567'))
+
+          # Initial plate count in the in-memory database
+          @plate_count = Plate.count
+          post :create,
+               params: {
+                 plates_from_tubes: {
+                   user_barcode: '1234567',
+                   barcode_printer: @barcode_printer.id,
+                   plate_type: 'RNA Stock Plate',
                    source_tubes: "#{@tube1.barcodes.first}\r\n#{@tube2.barcodes.first}"
                  }
                }
