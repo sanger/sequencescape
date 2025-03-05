@@ -63,7 +63,7 @@ class PlatesFromTubesController < ApplicationController
   # Transfers tubes to a plate and creates plates from the given tubes.
   #
   # @return [void]
-  # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  # rubocop:todo Metrics/AbcSize, Metrics/MethodLength, Rails/ActionControllerFlashBeforeRender
   def transfer_tubes_to_plate(scanned_user, barcode_printer)
     @found_tubes ||= []
     source_tube_barcodes = extract_source_tube_barcodes
@@ -82,7 +82,7 @@ class PlatesFromTubesController < ApplicationController
     create_plates(scanned_user, barcode_printer)
     respond_with_success
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Rails/ActionControllerFlashBeforeRender
 
   # Extracts source tube barcodes from the parameters.
   #
