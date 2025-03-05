@@ -72,7 +72,7 @@ describe PlateVolume do
 
     # The transaction in the process_all_volume_check_files method messes with the database_cleaner
     # strategy, so we need to wrap the test in a transaction correctly handle the data
-    around(:each) do |example|
+    around do |example|
       ActiveRecord::Base.transaction do
         example.run
         raise ActiveRecord::Rollback
