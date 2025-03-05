@@ -12,6 +12,11 @@ class PlatesFromTubesController < ApplicationController
 
   def create
     scanned_user = User.find_with_barcode_or_swipecard_code(params[:plates_from_tubes][:user_barcode])
+    if scanned_user.nil?
+      flash[:error] = 'Please enter a valid user barcode'
+      respond_to { |format| format.html { render(new_plates_from_tube_path) } }
+      return
+    end
     barcode_printer = BarcodePrinter.find(params[:plates_from_tubes][:barcode_printer])
     transfer_tubes_to_plate(scanned_user, barcode_printer)
   end

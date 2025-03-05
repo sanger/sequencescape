@@ -176,6 +176,38 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
         end
         should set_flash[:error].to(/Number of tubes/)
       end
+
+      context 'without a user barcode' do
+        setup do
+          @user = FactoryBot.create(:user, swipecard_code: '1234567')
+          @user.grant_administrator
+          session[:user] = @user.id
+        end
+
+        context 'on POST to create a plate' do
+          setup do
+            @tube1 = FactoryBot.create(:tube)
+            @tube2 = FactoryBot.create(:tube)
+
+            # Initial plate count in the in-memory database
+            @plate_count = Plate.count
+            post :create,
+                 params: {
+                   plates_from_tubes: {
+                     user_barcode: nil,
+                     barcode_printer: @barcode_printer.id,
+                     plate_type: 'Stock Plate',
+                     source_tubes: "#{@tube1.barcodes.first.barcode}\r\n#{@tube2.barcodes.first.barcode}"
+                   }
+                 }
+          end
+
+          should 'not create a plate and increase the plate count' do
+            assert_equal @plate_count, Plate.count
+          end
+          should set_flash[:error].to(/Please enter a valid user barcode/)
+        end
+      end
     end
   end
 end
