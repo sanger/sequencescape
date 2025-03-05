@@ -11,6 +11,13 @@ module UatActions::StaticRecords
     'Sanger'
   end
 
+  # Returns the default study_name
+  #
+  # @return [String] the default study_name
+  def self.study_name
+    'UAT Study'
+  end
+
   def self.supplier
     Supplier.find_or_create_by!(name: 'UAT Supplier')
   end
@@ -33,10 +40,7 @@ module UatActions::StaticRecords
         contaminated_human_dna: 'No',
         contains_human_dna: 'No',
         commercially_available: 'No',
-        program: program,
-        ebi_library_strategy: 'WGS',
-        ebi_library_source: 'GENOMIC',
-        ebi_library_selection: 'PCR'
+        program: program
       }
     ).find_or_create_by!(name: 'UAT Study')
   end
@@ -80,5 +84,9 @@ module UatActions::StaticRecords
 
   def self.faculty_sponsor
     FacultySponsor.find_or_create_by!(name: 'UAT Faculty Sponsor')
+  end
+
+  def self.order_role
+    OrderRole.find_or_create_by!(role: 'UAT Order Role')
   end
 end
