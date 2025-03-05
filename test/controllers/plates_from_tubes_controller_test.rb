@@ -49,7 +49,7 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
                    user_barcode: '1234567',
                    barcode_printer: @barcode_printer.id,
                    plate_type: 'Stock Plate',
-                   source_tubes: "#{@tube1.barcodes.first}\r\n#{@tube2.barcodes.first}"
+                   source_tubes: "#{@tube1.barcodes.first.barcode}\r\n#{@tube2.barcodes.first.barcode}"
                  }
                }
         end
@@ -79,7 +79,7 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
                    user_barcode: '1234567',
                    barcode_printer: @barcode_printer.id,
                    plate_type: 'RNA Stock Plate',
-                   source_tubes: "#{@tube1.barcodes.first}\r\n#{@tube2.barcodes.first}"
+                   source_tubes: "#{@tube1.barcodes.first.barcode}\r\n#{@tube2.barcodes.first.barcode}"
                  }
                }
         end
@@ -112,7 +112,7 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
                    user_barcode: '1234567',
                    barcode_printer: @barcode_printer.id,
                    plate_type: 'All of the above',
-                   source_tubes: "#{@tube1.barcodes.first}\r\n#{@tube2.barcodes.first}"
+                   source_tubes: "#{@tube1.barcodes.first.barcode}\r\n#{@tube2.barcodes.first.barcode}"
                  }
                }
         end
@@ -127,14 +127,13 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
 
       context 'on POST to create a stock plate and asset group' do
         setup do
-          skip 'Skipping this test for now'
-          @tube1 = FactoryBot.create(:sample_tube)
-          @tube2 = FactoryBot.create(:sample_tube)
+          @sample1 = FactoryBot.create(:sample)
+          @sample2 = FactoryBot.create(:sample)
+          @tube1 = FactoryBot.create(:sample_tube, sample: @sample1)
+          @tube2 = FactoryBot.create(:sample_tube, sample: @sample2)
 
           # Stubbing the barcode generation call for the new plate generated
           PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode, barcode: 'SQPD-1234567'))
-
-          Well.stubs(:studies).returns(@tube1.studies)
 
           # Initial plate count in the in-memory database
           @plate_count = Plate.count
@@ -145,10 +144,10 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
                    user_barcode: '1234567',
                    barcode_printer: @barcode_printer.id,
                    plate_type: 'Stock Plate',
-                   source_tubes: "#{@tube1.barcodes.first}\r\n#{@tube2.barcodes.first}",
+                   source_tubes: "#{@tube1.barcodes.first.barcode}\r\n#{@tube2.barcodes.first.barcode}",
                    create_asset_group: 'Yes'
-                  }
-                }
+                 }
+               }
         end
         should 'create a plate and increase the plate count' do
           assert_equal @plate_count + 1, Plate.count

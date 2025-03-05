@@ -96,7 +96,6 @@ class PlatesFromTubesController < ApplicationController
   # @param [User] scanned_user The user who scanned the tubes.
   # @param [BarcodePrinter] barcode_printer The barcode printer to use.
   # @return [void]
-  # rubocop:todo Metrics/MethodLength
   def create_plates(scanned_user, barcode_printer)
     @created_plates = []
     @asset_groups = []
@@ -107,8 +106,6 @@ class PlatesFromTubesController < ApplicationController
     # The logic is the same for all plate creators, so we can just use the first one
     @asset_groups << @plate_creator.first.create_asset_group(@created_plates)
   end
-  # rubocop:enable Metrics/MethodLength
-
   # Responds with a success message and renders the new plates from tube path.
   #
   # @return [void]
