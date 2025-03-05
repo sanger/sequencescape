@@ -70,6 +70,15 @@ describe PlateVolume do
       }
     end
 
+    # The transaction in the process_all_volume_check_files method messes with the database_cleaner
+    # strategy, so we need to wrap the test in a transaction correctly handle the data
+    around(:each) do |example|
+      ActiveRecord::Base.transaction do
+        example.run
+        raise ActiveRecord::Rollback
+      end
+    end
+
     before do
       plate_with_barcodes_in_csv
       plate_without_barcodes_in_csv
