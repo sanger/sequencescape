@@ -18,7 +18,7 @@ class PlatesFromTubesController < ApplicationController
 
   private
 
-  def valid_number_of_plates(tube_barcodes)
+  def valid_number_of_tubes(tube_barcodes)
     tube_barcodes.size <= @max_wells
   end
 
@@ -57,7 +57,7 @@ class PlatesFromTubesController < ApplicationController
   def transfer_tubes_to_plate(scanned_user, barcode_printer)
     @found_tubes ||= []
     source_tube_barcodes = extract_source_tube_barcodes
-    unless valid_number_of_plates(source_tube_barcodes)
+    unless valid_number_of_tubes(source_tube_barcodes)
       flash[:error] = 'Number of tubes exceeds the maximum number of wells'
       return
     end

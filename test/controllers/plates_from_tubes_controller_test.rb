@@ -124,6 +124,26 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
           assert_equal %w[SQPD-1234567 SQPD-1234568], Plate.all.map { |p| p.barcodes.first.barcode }.sort
         end
       end
+
+      # Sad path
+      context 'on POST to create a stock plate with too many tubes' do
+        setup do
+          source_tubes = (1..97).map { |_| FactoryBot.create(:tube).barcodes.first }.join("\r\n")
+          post :create,
+               params: {
+                 plates_from_tubes: {
+                   user_barcode: '1234567',
+                   barcode_printer: @barcode_printer.id,
+                   plate_type: 'Stock Plate',
+                   source_tubes: source_tubes
+                 }
+               }
+        end
+        should 'not create a plate' do
+          assert_equal 0, Plate.count
+        end
+        should set_flash[:error].to(/Number of tubes/)
+      end
     end
   end
 end
