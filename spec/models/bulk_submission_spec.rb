@@ -410,6 +410,18 @@ describe BulkSubmission, with: :uploader do
         subject.process
         expect(number_submissions_created).to eq(1)
       end
+
+      it 'adds the calculated allowance_band to the order request_options' do
+        subject.process
+        expect(generated_submission.orders[0].request_options).to have_key('allowance_band')
+      end
+
+      it 'calculates the allowance band correctly' do
+        subject.process
+        expect(generated_submission.orders[0].request_options['allowance_band']).to eq(
+          Submission::ScrnaCoreCdnaPrepFeasibilityCalculator::ALLOWANCE_BANDS[:two_pools_two_counts]
+        )
+      end
     end
 
     context 'when an scRNA Bulk Submission given with invalid number of samples per pool' do
