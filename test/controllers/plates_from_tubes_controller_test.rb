@@ -63,7 +63,7 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
         end
       end
 
-      context 'on POST to create an scRNA plate' do
+      context 'on POST to create an RNA plate' do
         setup do
           @tube1 = FactoryBot.create(:tube)
           @tube2 = FactoryBot.create(:tube)
@@ -90,6 +90,38 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
         should respond_with :ok
         should 'create a plate with the correct barcode' do
           assert_equal 'SQPD-1234567', Plate.last.barcodes.first.barcode
+        end
+      end
+
+      context 'on POST to create both stock and RNA plates' do
+        setup do
+          @tube1 = FactoryBot.create(:tube)
+          @tube2 = FactoryBot.create(:tube)
+
+          # Stubbing the barcode generation call for the new plate generated
+          PlateBarcode.stubs(:create_barcode).returns(
+            build(:plate_barcode, barcode: 'SQPD-1234567'),
+            build(:plate_barcode, barcode: 'SQPD-1234568')
+          )
+
+          # Initial plate count in the in-memory database
+          @plate_count = Plate.count
+          post :create,
+               params: {
+                 plates_from_tubes: {
+                   user_barcode: '1234567',
+                   barcode_printer: @barcode_printer.id,
+                   plate_type: 'All of the above',
+                   source_tubes: "#{@tube1.barcodes.first}\r\n#{@tube2.barcodes.first}"
+                 }
+               }
+        end
+        should 'create a plate and increase the plate count' do
+          assert_equal @plate_count + 2, Plate.count
+        end
+        should respond_with :ok
+        should 'create a plate with the correct barcode' do
+          assert_equal %w[SQPD-1234567 SQPD-1234568], Plate.all.map { |p| p.barcodes.first.barcode }.sort
         end
       end
     end
