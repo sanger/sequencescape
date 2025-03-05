@@ -107,6 +107,7 @@ class PlatesFromTubesController < ApplicationController
     # The logic is the same for all plate creators, so we can just use the first one
     @asset_groups << @plate_creator.first.create_asset_group(@created_plates)
   end
+
   # Responds with a success message and renders the new plates from tube path.
   #
   # @return [void]
