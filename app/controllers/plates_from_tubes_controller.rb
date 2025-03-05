@@ -13,8 +13,10 @@ class PlatesFromTubesController < ApplicationController
   def create
     scanned_user = User.find_with_barcode_or_swipecard_code(params[:plates_from_tubes][:user_barcode])
     if scanned_user.nil?
-      flash[:error] = 'Please enter a valid user barcode'
-      respond_to { |format| format.html { render(new_plates_from_tube_path) } }
+      respond_to do |format|
+        flash[:error] = 'Please enter a valid user barcode'
+        format.html { render(new_plates_from_tube_path) }
+      end
       return
     end
     barcode_printer = BarcodePrinter.find(params[:plates_from_tubes][:barcode_printer])
@@ -68,14 +70,19 @@ class PlatesFromTubesController < ApplicationController
     @found_tubes ||= []
     source_tube_barcodes = extract_source_tube_barcodes
     unless valid_number_of_tubes(source_tube_barcodes)
-      flash[:error] = 'Number of tubes exceeds the maximum number of wells'
-      respond_to { |format| format.html { render(new_plates_from_tube_path) } }
+      respond_to do |format|
+        # Why is Rubocop being weird ONLY here and asking to invoke .now on flash?
+        flash[:error] = 'Number of tubes exceeds the maximum number of wells'
+        format.html { render(new_plates_from_tube_path) }
+      end
       return
     end
     duplicate_tubes = find_duplicate_tubes(source_tube_barcodes)
     if duplicate_tubes.present?
-      flash[:error] = "Duplicate tubes found: #{duplicate_tubes.join(', ')}"
-      respond_to { |format| format.html { render(new_plates_from_tube_path) } }
+      respond_to do |format|
+        flash[:error] = "Duplicate tubes found: #{duplicate_tubes.join(', ')}"
+        format.html { render(new_plates_from_tube_path) }
+      end
       return
     end
     find_tubes(source_tube_barcodes)
