@@ -6,9 +6,9 @@ class LocationReport < ApplicationRecord
   extend DbFile::Uploader
 
   # attributes / variables
-  serialize :faculty_sponsor_ids, type: Array
-  serialize :plate_purpose_ids, type: Array
-  serialize :barcodes, type: Array
+  serialize :faculty_sponsor_ids, type: Array, coder: YAML
+  serialize :plate_purpose_ids, type: Array, coder: YAML
+  serialize :barcodes, type: Array, coder: YAML
   self.per_page = 20
   enum :report_type, { type_selection: 0, type_labwhere: 1 }
 

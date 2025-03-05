@@ -11,5 +11,5 @@ class Search < ApplicationRecord
   include Uuid::Uuidable
 
   validates :name, presence: true, uniqueness: { case_sensitive: false }
-  serialize :default_parameters, type: Hash
+  serialize :default_parameters, type: Hash, coder: YAML
 end

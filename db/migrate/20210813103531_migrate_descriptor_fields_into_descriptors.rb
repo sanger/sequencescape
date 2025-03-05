@@ -11,7 +11,7 @@ class MigrateDescriptorFieldsIntoDescriptors < ActiveRecord::Migration[5.2]
   class LabEvent < ApplicationRecord
     self.table_name = 'lab_events'
     serialize :descriptor_fields, type: Array
-    serialize :descriptors
+    serialize :descriptors, coder: YAML
 
     def descriptor_hash
       read_attribute(:descriptors) || {}
