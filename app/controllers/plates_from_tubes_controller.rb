@@ -7,11 +7,7 @@ class PlatesFromTubesController < ApplicationController
   PLATE_PURPOSES = ['Stock Plate', 'scRNA Stock Plate'].freeze
 
   def new
-    respond_to do |format|
-      format.html
-      format.xml { render xml: @plate }
-      format.json { render json: @plate }
-    end
+    respond_to { |format| format.html }
   end
 
   def create
@@ -71,10 +67,17 @@ class PlatesFromTubesController < ApplicationController
     respond_with_success
   end
 
+  # Extracts source tube barcodes from the parameters.
+  #
+  # @return [Array<String>] An array of source tube barcodes.
   def extract_source_tube_barcodes
     params[:plates_from_tubes][:source_tubes].split(/[\s,]+/)
   end
 
+  # Finds tubes based on the provided barcodes and stores them in @found_tubes.
+  #
+  # @param [Array<String>] source_tube_barcodes An array of source tube barcodes.
+  # @return [void]
   def find_tubes(source_tube_barcodes)
     source_tube_barcodes.each do |tube_barcode|
       tube = Tube.find_by_barcode(tube_barcode)
@@ -84,8 +87,15 @@ class PlatesFromTubesController < ApplicationController
       end
       @found_tubes << tube
     end
+    return unless @found_tubes.size != source_tube_barcodes.size
+    flash.now[:warning] = 'Some tubes were not found. Please double-check the tube barcodes.'
   end
 
+  # Creates plates from the found tubes and stores them in @created_plates.
+  #
+  # @param [User] scanned_user The user who scanned the tubes.
+  # @param [BarcodePrinter] barcode_printer The barcode printer to use.
+  # @return [void]
   def create_plates(scanned_user, barcode_printer)
     @created_plates = []
     @plate_creator.each do |creator|
@@ -93,6 +103,9 @@ class PlatesFromTubesController < ApplicationController
     end
   end
 
+  # Responds with a success message and renders the new plates from tube path.
+  #
+  # @return [void]
   def respond_with_success
     respond_to do |format|
       flash.now[:notice] = 'Created plates successfully'
