@@ -1,4 +1,21 @@
 <% if @plate_creator && @created_plates && @created_plates.size > 0 %>
+  <% if @asset_groups && @asset_groups.size > 0 %>
+    <% @asset_groups.each do |asset_group| %>
+      <div class="alert alert-success">
+        <p>
+          Created the following Asset Group:
+          <%= link_to asset_group.name,
+                      print_study_asset_group_path(
+                        id: asset_group.id,
+                        study_id: asset_group.study_id) %>
+          (in Study '<%= asset_group.study.name %>')
+        </p>
+        <p>
+          Go to the Asset Group in future to reprint the barcode labels.
+        </p>
+      </div>
+    <% end %>
+  <% end %>
   <table class="table table-sm table-success table-bordered">
     <caption>Created labware</caption>
     <thead>

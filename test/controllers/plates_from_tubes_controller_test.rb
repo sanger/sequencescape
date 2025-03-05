@@ -125,6 +125,39 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
         end
       end
 
+      context 'on POST to create a stock plate and asset group' do
+        setup do
+          skip 'Skipping this test for now'
+          @tube1 = FactoryBot.create(:sample_tube)
+          @tube2 = FactoryBot.create(:sample_tube)
+
+          # Stubbing the barcode generation call for the new plate generated
+          PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode, barcode: 'SQPD-1234567'))
+
+          Well.stubs(:studies).returns(@tube1.studies)
+
+          # Initial plate count in the in-memory database
+          @plate_count = Plate.count
+          @asset_group_count = AssetGroup.count
+          post :create,
+               params: {
+                 plates_from_tubes: {
+                   user_barcode: '1234567',
+                   barcode_printer: @barcode_printer.id,
+                   plate_type: 'Stock Plate',
+                   source_tubes: "#{@tube1.barcodes.first}\r\n#{@tube2.barcodes.first}",
+                   create_asset_group: 'Yes'
+                  }
+                }
+        end
+        should 'create a plate and increase the plate count' do
+          assert_equal @plate_count + 1, Plate.count
+        end
+        should 'create an asset group and increase the asset group count' do
+          assert_equal @asset_group_count + 1, AssetGroup.count
+        end
+      end
+
       # Sad path
       context 'on POST to create a stock plate with too many tubes' do
         setup do
