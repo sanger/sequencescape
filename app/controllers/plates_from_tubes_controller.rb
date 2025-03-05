@@ -68,7 +68,7 @@ class PlatesFromTubesController < ApplicationController
     @found_tubes ||= []
     source_tube_barcodes = extract_source_tube_barcodes
     unless valid_number_of_tubes(source_tube_barcodes)
-      flash.now[:error] = 'Number of tubes exceeds the maximum number of wells'
+      flash[:error] = 'Number of tubes exceeds the maximum number of wells'
       respond_to { |format| format.html { render(new_plates_from_tube_path) } }
       return
     end
