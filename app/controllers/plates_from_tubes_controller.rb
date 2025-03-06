@@ -11,16 +11,8 @@ class PlatesFromTubesController < ApplicationController
   end
 
   def create
-    scanned_user = User.find_with_barcode_or_swipecard_code(params[:plates_from_tubes][:user_barcode])
-    if scanned_user.nil?
-      respond_to do |format|
-        flash[:error] = 'Please enter a valid user barcode'
-        format.html { render(new_plates_from_tube_path) }
-      end
-      return
-    end
     barcode_printer = BarcodePrinter.find(params[:plates_from_tubes][:barcode_printer])
-    transfer_tubes_to_plate(scanned_user, barcode_printer)
+    transfer_tubes_to_plate(params[:plates_from_tubes][:user_barcode], barcode_printer)
   end
 
   private
@@ -65,31 +57,40 @@ class PlatesFromTubesController < ApplicationController
   # Transfers tubes to a plate and creates plates from the given tubes.
   #
   # @return [void]
-  # rubocop:todo Metrics/AbcSize, Metrics/MethodLength, Rails/ActionControllerFlashBeforeRender
-  def transfer_tubes_to_plate(scanned_user, barcode_printer)
-    @found_tubes ||= []
-    source_tube_barcodes = extract_source_tube_barcodes
-    unless valid_number_of_tubes(source_tube_barcodes)
-      respond_to do |format|
-        # Why is Rubocop being weird ONLY here and asking to invoke .now on flash?
+  # rubocop:todo Metrics/AbcSize, Metrics/MethodLength, Rails/ActionControllerFlashBeforeRender, Metrics/BlockLength
+  def transfer_tubes_to_plate(user_barcode, barcode_printer)
+    scanned_user = User.find_with_barcode_or_swipecard_code(user_barcode)
+    respond_to do |format|
+      if scanned_user.nil?
+        flash[:error] = 'Please enter a valid user barcode'
+        format.html { render(new_plates_from_tube_path) }
+        return
+      end
+      source_tube_barcodes = extract_source_tube_barcodes
+      unless valid_number_of_tubes(source_tube_barcodes)
         flash[:error] = 'Number of tubes exceeds the maximum number of wells'
         format.html { render(new_plates_from_tube_path) }
+        return
       end
-      return
-    end
-    duplicate_tubes = find_duplicate_tubes(source_tube_barcodes)
-    if duplicate_tubes.present?
-      respond_to do |format|
+      duplicate_tubes = find_duplicate_tubes(source_tube_barcodes)
+      if duplicate_tubes.present?
         flash[:error] = "Duplicate tubes found: #{duplicate_tubes.join(', ')}"
         format.html { render(new_plates_from_tube_path) }
+        return
       end
-      return
+      found_tubes = find_tubes(source_tube_barcodes)
+      unless found_tubes.size == source_tube_barcodes.size
+        flash[:error] = 'Some tubes were not found'
+        format.html { render(new_plates_from_tube_path) }
+        return
+      end
+      create_plates(scanned_user, barcode_printer, found_tubes)
+      flash[:notice] = 'Created plates successfully'
+      @plate_creator.each { |creator| flash[:warning] = creator.warnings if creator.warnings.present? }
+      format.html { render(new_plates_from_tube_path) }
     end
-    find_tubes(source_tube_barcodes)
-    create_plates(scanned_user, barcode_printer)
-    respond_with_success
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Rails/ActionControllerFlashBeforeRender
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Rails/ActionControllerFlashBeforeRender, Metrics/BlockLength
 
   # Extracts source tube barcodes from the parameters.
   #
@@ -98,21 +99,21 @@ class PlatesFromTubesController < ApplicationController
     params[:plates_from_tubes][:source_tubes].split(/[\s,]+/)
   end
 
-  # Finds tubes based on the provided barcodes and stores them in @found_tubes.
+  # Finds tubes based on the provided barcodes and stores them in found_tubes.
   #
   # @param [Array<String>] source_tube_barcodes An array of source tube barcodes.
   # @return [void]
   def find_tubes(source_tube_barcodes)
+    found_tubes = []
     source_tube_barcodes.each do |tube_barcode|
       tube = Tube.find_by_barcode(tube_barcode)
       if tube.nil?
         flash[:error] = "Tube with barcode #{tube_barcode} not found"
         break
       end
-      @found_tubes << tube
+      found_tubes << tube
     end
-    return unless @found_tubes.size != source_tube_barcodes.size
-    flash.now[:warning] = 'Some tubes were not found. Please double-check the tube barcodes.'
+    found_tubes
   end
 
   # Creates plates from the found tubes and stores them in @created_plates.
@@ -121,11 +122,11 @@ class PlatesFromTubesController < ApplicationController
   # @param [User] scanned_user The user who scanned the tubes.
   # @param [BarcodePrinter] barcode_printer The barcode printer to use.
   # @return [void]
-  def create_plates(scanned_user, barcode_printer)
+  def create_plates(scanned_user, barcode_printer, found_tubes)
     @created_plates = []
     @asset_groups = []
     @plate_creator.each do |creator|
-      creator.create_plates_from_tubes(@found_tubes.dup, @created_plates, scanned_user, barcode_printer)
+      creator.create_plates_from_tubes(found_tubes.dup, @created_plates, scanned_user, barcode_printer)
     end
     return unless params[:plates_from_tubes][:create_asset_group] == 'Yes'
     # The logic is the same for all plate creators, so we can just use the first one
