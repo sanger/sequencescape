@@ -156,16 +156,5 @@ class PlatesFromTubesController < ApplicationController
     # The logic is the same for all plate creators, so we can just use the first one
     @asset_groups << @plate_creator.first.create_asset_group(@created_plates)
   end
-
-  # Responds with a success message and renders the new plates from tube path.
-  #
-  # @return [void]
-  def respond_with_success
-    respond_to do |format|
-      flash.now[:notice] = 'Created plates successfully'
-      @plate_creator.each { |creator| flash[:warning] = creator.warnings if creator.warnings.present? }
-      format.html { render(new_plates_from_tube_path) }
-    end
-  end
 end
 # rubocop:enable Metrics/ClassLength
