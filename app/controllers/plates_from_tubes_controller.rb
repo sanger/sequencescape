@@ -88,6 +88,10 @@ class PlatesFromTubesController < ApplicationController
   end
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
+  # Validates the number of tubes against the maximum allowed wells.
+  #
+  # @param [Array<String>] source_tube_barcodes An array of source tube barcodes.
+  # @return [Boolean] Returns true if the number of tubes is valid, false otherwise.
   def validate_tube_count(source_tube_barcodes)
     unless valid_number_of_tubes(source_tube_barcodes)
       respond_to do |format|
@@ -99,6 +103,10 @@ class PlatesFromTubesController < ApplicationController
     true
   end
 
+  # Validates if there are any duplicate tubes in the provided barcodes.
+  #
+  # @param [Array<String>] source_tube_barcodes An array of source tube barcodes.
+  # @return [Boolean] Returns true if there are no duplicate tubes, false otherwise.
   def validate_duplicate_tubes(source_tube_barcodes)
     duplicate_tubes = find_duplicate_tubes(source_tube_barcodes)
     if duplicate_tubes.present?
@@ -111,6 +119,11 @@ class PlatesFromTubesController < ApplicationController
     true
   end
 
+  # Validates if all the found tubes match the provided barcodes.
+  #
+  # @param [Array<Tube>] found_tubes An array of found tubes.
+  # @param [Array<String>] source_tube_barcodes An array of source tube barcodes.
+  # @return [Boolean] Returns true if all tubes are found, false otherwise.
   def validate_missing_tubes(found_tubes, source_tube_barcodes)
     if found_tubes.size != source_tube_barcodes.size
       respond_to do |format|
