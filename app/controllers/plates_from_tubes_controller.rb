@@ -5,6 +5,7 @@ class PlatesFromTubesController < ApplicationController
   before_action :set_barcode_printers, only: %i[new create]
   before_action :set_plate_creators, only: %i[new create]
   before_action :find_plate_creator, only: %i[create]
+  before_action :clear_flashes
 
   PLATE_PURPOSES = ['Stock Plate', 'scRNA Stock Plate'].freeze
 
@@ -18,6 +19,10 @@ class PlatesFromTubesController < ApplicationController
   end
 
   private
+
+  def clear_flashes
+    flash.clear
+  end
 
   def valid_number_of_tubes(tube_barcodes)
     tube_barcodes.size <= @max_wells
@@ -62,51 +67,61 @@ class PlatesFromTubesController < ApplicationController
   # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
   def transfer_tubes_to_plate(user_barcode, barcode_printer)
     scanned_user = User.find_with_barcode_or_swipecard_code(user_barcode)
+    if scanned_user.nil?
+      respond_to do |format|
+        handle_invalid_user
+        format.html { render(new_plates_from_tube_path) }
+      end
+      return
+    end
+    source_tube_barcodes = extract_source_tube_barcodes
+    unless valid_number_of_tubes(source_tube_barcodes)
+      respond_to do |format|
+        handle_invalid_tube_count
+        format.html { render(new_plates_from_tube_path) }
+      end
+      return
+    end
+    duplicate_tubes = find_duplicate_tubes(source_tube_barcodes)
+    if duplicate_tubes.present?
+      respond_to do |format|
+        handle_duplicate_tubes(duplicate_tubes)
+        format.html { render(new_plates_from_tube_path) }
+      end
+      return
+    end
+    found_tubes = find_tubes(source_tube_barcodes)
+    unless found_tubes.size == source_tube_barcodes.size
+      respond_to do |format|
+        handle_missing_tubes
+        format.html { render(new_plates_from_tube_path) }
+      end
+      return
+    end
+    create_plates(scanned_user, barcode_printer, found_tubes)
     respond_to do |format|
-      if scanned_user.nil?
-        handle_invalid_user(format)
-        return
-      end
-      source_tube_barcodes = extract_source_tube_barcodes
-      unless valid_number_of_tubes(source_tube_barcodes)
-        handle_invalid_tube_count(format)
-        return
-      end
-      duplicate_tubes = find_duplicate_tubes(source_tube_barcodes)
-      if duplicate_tubes.present?
-        handle_duplicate_tubes(format, duplicate_tubes)
-        return
-      end
-      found_tubes = find_tubes(source_tube_barcodes)
-      unless found_tubes.size == source_tube_barcodes.size
-        handle_missing_tubes(format)
-        return
-      end
-      create_plates(scanned_user, barcode_printer, found_tubes)
-      handle_successful_creation(format)
+      flash.now[:notice] = 'Created plates successfully'
+      @plate_creator.each { |creator| flash[:warning] = creator.warnings if creator.warnings.present? }
+      format.html { render(new_plates_from_tube_path) }
     end
   end
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   # rubocop: todo Rails/ActionControllerFlashBeforeRender
-  def handle_invalid_user(format)
+  def handle_invalid_user
     flash[:error] = 'Please enter a valid user barcode'
-    format.html { render(new_plates_from_tube_path) }
   end
 
-  def handle_invalid_tube_count(format)
+  def handle_invalid_tube_count
     flash[:error] = 'Number of tubes exceeds the maximum number of wells'
-    format.html { render(new_plates_from_tube_path) }
   end
 
-  def handle_duplicate_tubes(format, duplicate_tubes)
+  def handle_duplicate_tubes(duplicate_tubes)
     flash[:error] = "Duplicate tubes found: #{duplicate_tubes.join(', ')}"
-    format.html { render(new_plates_from_tube_path) }
   end
 
-  def handle_missing_tubes(format)
+  def handle_missing_tubes
     flash[:error] = 'Some tubes were not found'
-    format.html { render(new_plates_from_tube_path) }
   end
 
   def handle_successful_creation(format)
