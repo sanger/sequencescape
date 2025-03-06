@@ -7,8 +7,6 @@ class PlatesFromTubesController < ApplicationController
   before_action :find_plate_creator, only: %i[create]
   before_action :clear_flashes
 
-  ACCEPTABLE_PLATE_PURPOSES = ['Stock Plate', 'scRNA Stock Plate'].freeze
-
   def new
     respond_to { |format| format.html }
   end
@@ -33,7 +31,10 @@ class PlatesFromTubesController < ApplicationController
   end
 
   def set_plate_creators
-    @plate_creators = Plate::Creator.where(name: ACCEPTABLE_PLATE_PURPOSES)
+    @plate_creators =
+      Plate::Creator.where(
+        name: configatron.fetch(:plate_purposes_to_create_from_tubes, ['Stock Plate', 'scRNA Stock Plate'])
+      )
   end
 
   # This is using the plate_type parameter coming out of the form. The HTML component behind this is ab
