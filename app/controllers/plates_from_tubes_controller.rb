@@ -75,29 +75,10 @@ class PlatesFromTubesController < ApplicationController
       return
     end
     source_tube_barcodes = extract_source_tube_barcodes
-    unless valid_number_of_tubes(source_tube_barcodes)
-      respond_to do |format|
-        handle_invalid_tube_count
-        format.html { render(new_plates_from_tube_path) }
-      end
-      return
-    end
-    duplicate_tubes = find_duplicate_tubes(source_tube_barcodes)
-    if duplicate_tubes.present?
-      respond_to do |format|
-        handle_duplicate_tubes(duplicate_tubes)
-        format.html { render(new_plates_from_tube_path) }
-      end
-      return
-    end
+    return unless validate_tube_count(source_tube_barcodes)
+    return unless validate_duplicate_tubes(source_tube_barcodes)
     found_tubes = find_tubes(source_tube_barcodes)
-    unless found_tubes.size == source_tube_barcodes.size
-      respond_to do |format|
-        handle_missing_tubes
-        format.html { render(new_plates_from_tube_path) }
-      end
-      return
-    end
+    return unless validate_missing_tubes(found_tubes, source_tube_barcodes)
     create_plates(scanned_user, barcode_printer, found_tubes)
     respond_to do |format|
       flash.now[:notice] = 'Created plates successfully'
@@ -106,6 +87,40 @@ class PlatesFromTubesController < ApplicationController
     end
   end
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+
+  def validate_tube_count(source_tube_barcodes)
+    unless valid_number_of_tubes(source_tube_barcodes)
+      respond_to do |format|
+        handle_invalid_tube_count
+        format.html { render(new_plates_from_tube_path) }
+        return false
+      end
+    end
+    true
+  end
+
+  def validate_duplicate_tubes(source_tube_barcodes)
+    duplicate_tubes = find_duplicate_tubes(source_tube_barcodes)
+    if duplicate_tubes.present?
+      respond_to do |format|
+        handle_duplicate_tubes(duplicate_tubes)
+        format.html { render(new_plates_from_tube_path) }
+      end
+      return false
+    end
+    true
+  end
+
+  def validate_missing_tubes(found_tubes, source_tube_barcodes)
+    if found_tubes.size != source_tube_barcodes.size
+      respond_to do |format|
+        handle_missing_tubes
+        format.html { render(new_plates_from_tube_path) }
+      end
+      return false
+    end
+    true
+  end
 
   # rubocop: todo Rails/ActionControllerFlashBeforeRender
   def handle_invalid_user
@@ -122,12 +137,6 @@ class PlatesFromTubesController < ApplicationController
 
   def handle_missing_tubes
     flash[:error] = 'Some tubes were not found'
-  end
-
-  def handle_successful_creation(format)
-    flash[:notice] = 'Created plates successfully'
-    @plate_creator.each { |creator| flash[:warning] = creator.warnings if creator.warnings.present? }
-    format.html { render(new_plates_from_tube_path) }
   end
   # rubocop: enable Rails/ActionControllerFlashBeforeRender
 
