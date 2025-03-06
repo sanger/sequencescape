@@ -204,6 +204,26 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
         should set_flash[:error].to(/Number of tubes exceeds the maximum number of wells/)
       end
 
+      context 'on POST to create a stock plate with missing tubes' do
+        setup do
+          @plate_count = Plate.count
+          post :create,
+               params: {
+                 plates_from_tubes: {
+                   user_barcode: '1234567',
+                   barcode_printer: @barcode_printer.id,
+                   plate_type: 'Stock Plate',
+                   source_tubes: 'SHRODINGERS_TUBE_BARCODE'
+                 }
+               }
+        end
+
+        should 'not create a plate' do
+          assert_equal @plate_count, Plate.count
+        end
+        should set_flash[:error].to(/Some tubes were not found/)
+      end
+
       context 'without a user barcode' do
         setup do
           @user = FactoryBot.create(:user, swipecard_code: '1234567')

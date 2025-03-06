@@ -30,7 +30,7 @@
         <tr>
           <td scope="row"><%= tube.barcodes.first.barcode unless tube.nil? %></td>
           <% entry[:destinations].each do |destination| %>
-            <td><%= destination.barcodes.first.barcode %></td>
+            <td><%= destination.barcodes.first.barcode %> (<%= destination.plate_purpose.name %>)</td>
           <% end %>
         </tr>
     <% end %>

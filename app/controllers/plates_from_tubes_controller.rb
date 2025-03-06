@@ -7,7 +7,7 @@ class PlatesFromTubesController < ApplicationController
   before_action :find_plate_creator, only: %i[create]
   before_action :clear_flashes
 
-  PLATE_PURPOSES = ['Stock Plate', 'scRNA Stock Plate'].freeze
+  ACCEPTABLE_PLATE_PURPOSES = ['Stock Plate', 'scRNA Stock Plate'].freeze
 
   def new
     respond_to { |format| format.html }
@@ -33,12 +33,16 @@ class PlatesFromTubesController < ApplicationController
   end
 
   def set_plate_creators
-    @plate_creators = Plate::Creator.where(name: PLATE_PURPOSES)
+    @plate_creators = Plate::Creator.where(name: ACCEPTABLE_PLATE_PURPOSES)
   end
 
-  # Set the plate creator based on the user's selection on the radio buttons
-  # If the user selects 'Stock Plate', then the plate creator is set to StockPlateCreator
-  # If the user selects 'RNA Stock Plate', then the plate creator is set to RnaStockPlateCreator
+  # This is using the plate_type parameter coming out of the form. The HTML component behind this is ab
+  # input radio button.
+  #
+  # This function sets the plate creator based on the user's selection on the radio buttons.
+  #
+  # If the user selects 'Stock Plate', then the plate creator is set to StockPlateCreator.
+  # If the user selects 'RNA Stock Plate', then the plate creator is set to RnaStockPlateCreator.
   # If the user selects 'All of the above', then the plate creators are both StockPlateCreator and RnaStockPlateCreator
   #
   # rubocop:todo Metrics/AbcSize
