@@ -85,7 +85,7 @@ class RequestType < ApplicationRecord # rubocop:todo Metrics/ClassLength
   validates :morphology, numericality: { in: 0...MORPHOLOGIES.length }
   validates :request_class, presence: true, inclusion: { in: ->(_) { [Request, *Request.descendants] } }
 
-  serialize :request_parameters
+  serialize :request_parameters, coder: YAML
 
   delegate :accessioning_required?, :sequencing?, to: :request_class
 

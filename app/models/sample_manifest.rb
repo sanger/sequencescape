@@ -75,8 +75,8 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_many :sample_manifest_assets
   has_many :assets, through: :sample_manifest_assets
 
-  serialize :last_errors
-  serialize :barcodes
+  serialize :last_errors, coder: YAML
+  serialize :barcodes, coder: YAML
 
   validates :count, numericality: { only_integer: true, greater_than: 0, allow_blank: false }
   validates :asset_type, presence: true, inclusion: { in: SampleManifest::CoreBehaviour::BEHAVIOURS }

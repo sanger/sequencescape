@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'test_helper'
-require 'users_controller'
 
 class UsersControllerTest < ActionController::TestCase
   context 'Users controller' do

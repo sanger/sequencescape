@@ -47,6 +47,6 @@ class FixDevelopmentEncodingIssues < ActiveRecord::Migration[6.0]
   end
 
   def migrate?
-    Rails.env.development? || Rails.env.test?
+    Rails.env.local?
   end
 end

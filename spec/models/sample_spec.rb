@@ -2,7 +2,6 @@
 
 require 'rails_helper'
 require 'support/barcode_helper'
-require 'sample_accessioning_job'
 
 RSpec.describe Sample, :accession, :cardinal do
   include MockAccession

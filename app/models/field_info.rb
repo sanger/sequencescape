@@ -39,7 +39,7 @@ class FieldInfo
   def parameters=(parameters)
     self.selection = parameters&.fetch(:selection, [])
   end
-  deprecate :parameters= => 'set selection directly'
+  deprecate :parameters= => 'set selection directly', :deprecator => Rails.application.deprecators[:sequencescape]
 
   def parameters
     { min:, max:, step: }
