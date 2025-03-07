@@ -33,7 +33,7 @@
     <% metadata_fields.with_options(grouping: 'Data Release') do |group| %>
       <%= metadata_fields.text_field(:data_access_group) %>
       <%= group.select_by_association(:data_release_study_type)%>
-      <%= help_link 'Introduction to Accessioning', 'Accessioing', class: 'offset-md-2' %>
+      <%= help_link 'Introduction to Accessioning', 'Accessioning overview in Sequencescape', class: 'offset-md-2' %>
       <% strategies = Study::DATA_RELEASE_STRATEGIES.map { |s| [t(s.downcase.gsub(' ','_'),scope:'metadata.study.metadata.data_release_strategy.values'),s ] } %>
       <%= group.radio_select(:data_release_strategy, strategies) %>
       <% metadata_fields.related_fields(to: :data_release_strategy, when: Study::DATA_RELEASE_STRATEGY_MANAGED) do %>
