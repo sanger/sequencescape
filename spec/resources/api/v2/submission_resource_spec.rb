@@ -18,6 +18,7 @@ RSpec.describe Api::V2::SubmissionResource, type: :resource do
     expect(resource).to have_attribute :created_at
     expect(resource).to have_attribute :updated_at
     expect(resource).to have_attribute :lanes_of_sequencing
+    expect(resource).to have_attribute :multiplexed?
     expect(resource).not_to have_updatable_field(:id)
     expect(resource).not_to have_updatable_field(:uuid)
     expect(resource).not_to have_updatable_field(:state)
@@ -40,6 +41,24 @@ RSpec.describe Api::V2::SubmissionResource, type: :resource do
   describe '#lanes_of_sequencing' do
     it 'returns the number of sequencing requests in the submission' do
       expect(resource.lanes_of_sequencing).to eq 3
+    end
+  end
+
+  describe '#multiplexed?' do
+    context 'when the submission is multiplexed' do
+      before { allow(resource_model).to receive(:multiplexed?).and_return(true) }
+
+      it 'returns whether the submission is multiplexed' do
+        expect(resource.multiplexed?).to be true
+      end
+    end
+
+    context 'when the submission is not multiplexed' do
+      before { allow(resource_model).to receive(:multiplexed?).and_return(false) }
+
+      it 'returns whether the submission is multiplexed' do
+        expect(resource.multiplexed?).to be false
+      end
     end
   end
 end
