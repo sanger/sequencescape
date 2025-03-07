@@ -19,7 +19,7 @@ Rails.application.config.scrna_config = {
   # Fixed wastage volume in microlitres
   wastage_volume: 5.0,
   # Desired concentration of cells per microlitre for chip loading
-  desired_chip_loading_concentration: 2400,
+  desired_chip_loading_concentration: 2400.0,
   # Desired volume in the chip well (in microlitres)
   desired_chip_loading_volume: 37.5,
   # Desired number of runs for full allowance calculations
