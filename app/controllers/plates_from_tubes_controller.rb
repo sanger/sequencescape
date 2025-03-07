@@ -7,8 +7,10 @@ class PlatesFromTubesController < ApplicationController
   before_action :find_plate_creator, only: %i[create]
   before_action :clear_flashes
 
+  VIEW_PATH = 'plates_from_tubes/new'
+
   def new
-    respond_to { |format| format.html }
+    respond_to { |format| format.html { render VIEW_PATH } }
   end
 
   def create
@@ -75,7 +77,7 @@ class PlatesFromTubesController < ApplicationController
     if scanned_user.nil?
       respond_to do |format|
         handle_invalid_user
-        format.html { render(new_plates_from_tube_path) }
+        format.html { render(VIEW_PATH) }
       end
       return
     end
@@ -88,7 +90,7 @@ class PlatesFromTubesController < ApplicationController
     respond_to do |format|
       flash.now[:notice] = 'Created plates successfully'
       @plate_creator.each { |creator| flash[:warning] = creator.warnings if creator.warnings.present? }
-      format.html { render(new_plates_from_tube_path) }
+      format.html { render(VIEW_PATH) }
     end
   end
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
@@ -101,7 +103,7 @@ class PlatesFromTubesController < ApplicationController
     unless valid_number_of_tubes(source_tube_barcodes)
       respond_to do |format|
         handle_invalid_tube_count
-        format.html { render(new_plates_from_tube_path) }
+        format.html { render(VIEW_PATH) }
         return false
       end
     end
@@ -117,7 +119,7 @@ class PlatesFromTubesController < ApplicationController
     if duplicate_tubes.present?
       respond_to do |format|
         handle_duplicate_tubes(duplicate_tubes)
-        format.html { render(new_plates_from_tube_path) }
+        format.html { render(VIEW_PATH) }
       end
       return false
     end
@@ -133,7 +135,7 @@ class PlatesFromTubesController < ApplicationController
     if found_tubes.size != source_tube_barcodes.size
       respond_to do |format|
         handle_missing_tubes
-        format.html { render(new_plates_from_tube_path) }
+        format.html { render(VIEW_PATH) }
       end
       return false
     end

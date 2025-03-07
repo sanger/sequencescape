@@ -564,8 +564,6 @@ Rails.application.routes.draw do
     member { get :fluidigm_file }
   end
 
-  resources :plates_from_tubes, only: %i[new]
-
   resources :sequenom_qc_plates, only: :index
   resources :study_reports
 
