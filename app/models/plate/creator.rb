@@ -141,6 +141,8 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   # Creates plates from the given tubes and appends them to the created_plates array.
+  # If successfully created, sends a label printing job with plate parameters to the
+  # corresponding printing service.
   #
   # @param [Array<Tube>] tubes The array of tubes to be transferred to the plate.
   # @param [Array<Hash>] created_plates The array to store the created plates information.
