@@ -1,5 +1,24 @@
 # frozen_string_literal: true
 
+# The PlatesFromTubesController handles the creation of plates from tubes.
+# It provides actions to display the form for creating plates and to process
+# the form submission.
+#
+# The interface for this controller is through the endpoint /plates/from_tubes.
+#
+# Actions:
+# - new: Renders the form for creating plates from tubes.
+# - create: Processes the form submission and creates plates from the provided tubes.
+#
+# Before Actions:
+# - set_barcode_printers: Sets the available barcode printers.
+# - set_plate_creators: Sets the available plate creators.
+# - find_plate_creator: Finds the plate creator based on the user's selection.
+# - clear_flashes: Clears any flash messages.
+#
+# Constants:
+# - VIEW_PATH: The path to the view template for rendering the form.
+#
 # rubocop:todo Metrics/ClassLength
 class PlatesFromTubesController < ApplicationController
   before_action :set_barcode_printers, only: %i[new create]
