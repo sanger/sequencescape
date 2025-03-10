@@ -1449,6 +1449,20 @@ ActiveRecord::Schema[7.0].define(version: 2025_02_20_100453) do
     t.datetime "updated_at", precision: nil
   end
 
+  create_table "specific_tube_rack_creation_children", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
+    t.integer "specific_tube_rack_creation_id", null: false
+    t.integer "tube_rack_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "specific_tube_rack_creation_purposes", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
+    t.integer "specific_tube_rack_creation_id", null: false
+    t.integer "tube_rack_purpose_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "stamp_qcables", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "stamp_id", null: false
     t.integer "qcable_id", null: false
