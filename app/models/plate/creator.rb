@@ -147,7 +147,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # This was declared a bang method as it mutates the receiver (i.e. the `tubes` list).
   #
   # @param [Array<Tube>] tubes The array of tubes to be transferred to the plate.
-  # @param [Array<Hash>] created_plates The array to store the created plates information.
+  # @param [Array<Plate>] created_plates The array to store the created plates information.
   # @return [void]
   # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
   def create_plates_from_tubes!(tubes, created_plates, scanned_user, barcode_printer)
