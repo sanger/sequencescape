@@ -34,7 +34,15 @@ class PlatesFromTubesController < ApplicationController
 
   def create
     barcode_printer = BarcodePrinter.find(params[:plates_from_tubes][:barcode_printer])
-    transfer_tubes_to_plate(params[:plates_from_tubes][:user_barcode], barcode_printer)
+    scanned_user = User.find_with_barcode_or_swipecard_code(params[:plates_from_tubes][:user_barcode])
+    if scanned_user.nil?
+      respond_to do |format|
+        handle_invalid_user
+        format.html { render(VIEW_PATH) }
+      end
+      return
+    end
+    transfer_tubes_to_plate(scanned_user, barcode_printer)
   end
 
   private
@@ -91,15 +99,7 @@ class PlatesFromTubesController < ApplicationController
   #
   # @return [void]
   # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
-  def transfer_tubes_to_plate(user_barcode, barcode_printer)
-    scanned_user = User.find_with_barcode_or_swipecard_code(user_barcode)
-    if scanned_user.nil?
-      respond_to do |format|
-        handle_invalid_user
-        format.html { render(VIEW_PATH) }
-      end
-      return
-    end
+  def transfer_tubes_to_plate(scanned_user, barcode_printer)
     source_tube_barcodes = extract_source_tube_barcodes
     return unless validate_tube_count?(source_tube_barcodes)
     return unless validate_duplicate_tubes?(source_tube_barcodes)
