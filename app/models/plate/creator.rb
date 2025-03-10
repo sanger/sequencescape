@@ -166,7 +166,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
       break if tube.nil?
       well.aliquots << tube.aliquots.map(&:dup)
     end
-    #  Create and the print job to the printer
+    #  Create and send the print job to the printer
     print_job =
       LabelPrinter::PrintJob.new(
         barcode_printer.name,
