@@ -43,7 +43,7 @@ class PlatesFromTubesController < ApplicationController
     flash.clear
   end
 
-  def valid_number_of_tubes(tube_barcodes)
+  def valid_number_of_tubes?(tube_barcodes)
     tube_barcodes.size <= @max_wells
   end
 
@@ -101,10 +101,10 @@ class PlatesFromTubesController < ApplicationController
       return
     end
     source_tube_barcodes = extract_source_tube_barcodes
-    return unless validate_tube_count(source_tube_barcodes)
-    return unless validate_duplicate_tubes(source_tube_barcodes)
+    return unless validate_tube_count?(source_tube_barcodes)
+    return unless validate_duplicate_tubes?(source_tube_barcodes)
     found_tubes = find_tubes(source_tube_barcodes)
-    return unless validate_missing_tubes(found_tubes, source_tube_barcodes)
+    return unless validate_missing_tubes?(found_tubes, source_tube_barcodes)
     create_plates(scanned_user, barcode_printer, found_tubes)
     respond_to do |format|
       flash.now[:notice] = 'Created plates successfully'
@@ -118,8 +118,8 @@ class PlatesFromTubesController < ApplicationController
   #
   # @param [Array<String>] source_tube_barcodes An array of source tube barcodes.
   # @return [Boolean] Returns true if the number of tubes is valid, false otherwise.
-  def validate_tube_count(source_tube_barcodes)
-    unless valid_number_of_tubes(source_tube_barcodes)
+  def validate_tube_count?(source_tube_barcodes)
+    unless valid_number_of_tubes?(source_tube_barcodes)
       respond_to do |format|
         handle_invalid_tube_count
         format.html { render(VIEW_PATH) }
@@ -133,7 +133,7 @@ class PlatesFromTubesController < ApplicationController
   #
   # @param [Array<String>] source_tube_barcodes An array of source tube barcodes.
   # @return [Boolean] Returns true if there are no duplicate tubes, false otherwise.
-  def validate_duplicate_tubes(source_tube_barcodes)
+  def validate_duplicate_tubes?(source_tube_barcodes)
     duplicate_tubes = find_duplicate_tubes(source_tube_barcodes)
     if duplicate_tubes.present?
       respond_to do |format|
@@ -150,7 +150,7 @@ class PlatesFromTubesController < ApplicationController
   # @param [Array<Tube>] found_tubes An array of found tubes.
   # @param [Array<String>] source_tube_barcodes An array of source tube barcodes.
   # @return [Boolean] Returns true if all tubes are found, false otherwise.
-  def validate_missing_tubes(found_tubes, source_tube_barcodes)
+  def validate_missing_tubes?(found_tubes, source_tube_barcodes)
     if found_tubes.size != source_tube_barcodes.size
       respond_to do |format|
         handle_missing_tubes
