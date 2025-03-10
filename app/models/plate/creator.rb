@@ -144,6 +144,8 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # If successfully created, sends a label printing job with plate parameters to the
   # corresponding printing service.
   #
+  # This was declared a bang method as it mutates the recevier (i.e. the `tubes` list).
+  #
   # @param [Array<Tube>] tubes The array of tubes to be transferred to the plate.
   # @param [Array<Hash>] created_plates The array to store the created plates information.
   # @return [void]
