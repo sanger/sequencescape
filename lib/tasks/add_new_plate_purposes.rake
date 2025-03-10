@@ -24,20 +24,18 @@ namespace :plate_creators do
     rna_plate_purpose = PlatePurpose.find_by!(name: 'scRNA Stock')
 
     # Creating the plate creators
-    Plate::Creator.create!(
+    Plate::Creator.find_or_create_by(
       name: 'Stock Plate',
-      plate_purposes: [stock_plate_purpose],
-      valid_options: {
-        valid_dilution_factors: [1.0]
-      }
-    )
-    Plate::Creator.create!(
+      plate_purposes: [stock_plate_purpose]
+    ) do |creator|
+      creator.valid_options = { valid_dilution_factors: [1.0] }
+    end
+    Plate::Creator.find_or_create_by!(
       name: 'scRNA Stock Plate',
-      plate_purposes: [rna_plate_purpose],
-      valid_options: {
-        valid_dilution_factors: [1.0]
-      }
-    )
+      plate_purposes: [rna_plate_purpose]
+    ) do |creator|
+      creator.valid_options = { valid_dilution_factors: [1.0] }
+    end
     puts 'New plate purposes have been added to the plate_creators table.'
   end
 end
