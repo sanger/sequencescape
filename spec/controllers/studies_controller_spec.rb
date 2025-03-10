@@ -17,6 +17,9 @@ RSpec.describe StudiesController do
         'study_metadata_attributes' => {
           'faculty_sponsor_id' => create(:faculty_sponsor, name: 'Me'),
           'study_description' => 'some new study',
+          'ebi_library_strategy' => 'WGS',
+          'ebi_library_source' => 'GENOMIC',
+          'ebi_library_selection' => 'PCR',
           'program_id' => program.id,
           'contains_human_dna' => 'No',
           'contaminated_human_dna' => 'No',

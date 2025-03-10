@@ -291,6 +291,10 @@ Given /^I create study "([^"]*)" with faculty sponsor "([^"]*)"$/ do |study_name
   step('I fill in "Data access group" with "some nonsense"')
   step('I fill in "Study description" with "some description"')
   step("I select \"#{faculty_sponsor}\" from \"Faculty Sponsor\"")
+  step('I select "General" from "Program"')
+  step('I select "WGS" from "EBI Library Strategy"')
+  step('I select "GENOMIC" from "EBI Library Source"')
+  step('I select "PCR" from "EBI Library Selection"')
   step('I choose "Yes" from "Do any of the samples in this study contain human DNA?"')
   step(
     # rubocop:todo Layout/LineLength
@@ -332,7 +336,10 @@ When /^I have an? (managed|open) study without a data release group called "(.*?
       data_release_study_type: DataReleaseStudyType.first,
       contaminated_human_dna: 'No',
       contains_human_dna: 'Yes',
-      commercially_available: 'No'
+      commercially_available: 'No',
+      ebi_library_strategy: 'WGS',
+      ebi_library_source: 'GENOMIC',
+      ebi_library_selection: 'PCR'
     }
   )
 end

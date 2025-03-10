@@ -48,6 +48,10 @@ describe 'Create a study' do
       expect(page).to have_field('Public', type: :radio)
     end
 
+    expect(page).to have_field('EBI Library Strategy', type: :select)
+    expect(page).to have_field('EBI Library Source', type: :select)
+    expect(page).to have_field('EBI Library Selection', type: :select)
+
     expect(page).to have_field('What sort of study is this?', type: :select)
     expect(page).to have_field('How is the data release to be timed?', type: :select)
     expect(page).to have_field('Prelim ID', type: :text)
@@ -56,6 +60,9 @@ describe 'Create a study' do
 
     expect(page).to have_content "Name can't be blank"
     expect(page).to have_content "Study description can't be blank"
+    expect(page).to have_content "Study metadata ebi library strategy can't be blank"
+    expect(page).to have_content "Study metadata ebi library source can't be blank"
+    expect(page).to have_content "Study metadata ebi library selection can't be blank"
   end
 
   it 'create managed study', :js do
@@ -83,6 +90,9 @@ describe 'Create a study' do
     fill_in 'ENA Study Accession Number', with: '12345'
     fill_in 'Study name abbreviation', with: 'CCC3'
     select('Jack Sponsor', from: 'Faculty Sponsor')
+    select('RNA-Seq', from: 'EBI Library Strategy')
+    select('GENOMIC', from: 'EBI Library Source')
+    select('PCR', from: 'EBI Library Selection')
 
     within_fieldset 'Do any of the samples in this study contain human DNA?' do
       choose('Yes', allow_label_click: true)
