@@ -17,7 +17,7 @@
 # The task will output a message indicating that the new plate purposes
 # have been added to the plate_creators table.
 namespace :plate_creators do
-  desc 'Add new plate purposes to the plate_creators table'
+  desc 'Add new plate creators to the plate_creators table'
   task add_new_plate_purposes: :environment do
     # Finding plate purposes
     stock_plate_purpose = PlatePurpose.find_by!(name: 'Stock Plate')
