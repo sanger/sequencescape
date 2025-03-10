@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# This Rake task adds new plate purposes to the plate_creators table.
+# This Rake task adds new plate creators to the plate_creators table.
 # It finds the existing plate purposes by their names and creates new
 # plate creators with the specified purposes and valid options.
 #
