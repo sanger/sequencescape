@@ -214,7 +214,7 @@ class PlatesFromTubesController < ApplicationController
     @asset_groups = []
     ActiveRecord::Base.transaction do
       @plate_creator.each do |creator|
-        creator.create_plates_from_tubes(found_tubes.dup, @created_plates, scanned_user, barcode_printer)
+        creator.create_plates_from_tubes!(found_tubes.dup, @created_plates, scanned_user, barcode_printer)
       end
     end
     return unless params[:plates_from_tubes][:create_asset_group] == 'Yes'

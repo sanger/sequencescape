@@ -148,7 +148,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # @param [Array<Hash>] created_plates The array to store the created plates information.
   # @return [void]
   # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
-  def create_plates_from_tubes(tubes, created_plates, scanned_user, barcode_printer)
+  def create_plates_from_tubes!(tubes, created_plates, scanned_user, barcode_printer)
     plate_purpose = plate_purposes.first # The Stock and scRNA plate creators have only one purpose.
     plate_barcode = PlateBarcode.create_barcode
     # Need a duplicate because we are shifting through the tubes list.
