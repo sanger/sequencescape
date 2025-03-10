@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'test_helper'
-require 'users_controller'
 
 class OwnerTest < ActionController::TestCase
   context 'Plates' do

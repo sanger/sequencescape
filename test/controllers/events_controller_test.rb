@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'test_helper'
-require 'events_controller'
 
 class EventsControllerTest < ActionController::TestCase
   context 'EventsController' do

@@ -17,7 +17,7 @@ class ProductCriteria < ApplicationRecord
   validates :stage, uniqueness: { scope: %i[product_id deprecated_at], case_sensitive: false }
   validates :behaviour, inclusion: { in: registered_behaviours }
 
-  serialize :configuration
+  serialize :configuration, coder: YAML
 
   scope :for_stage, ->(stage) { where(stage:) }
   scope :stock, -> { where(stage: STAGE_STOCK) }

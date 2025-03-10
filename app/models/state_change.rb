@@ -22,7 +22,7 @@ class StateChange < ApplicationRecord
 
   # Some targets can have "contents" updated (notably plates).  The meaning of this is is dealt with by the
   # target being updated.
-  serialize :contents
+  serialize :contents, coder: YAML
 
   # If the state change is a known failure state then a reason must be included
   validates :reason, presence: true, if: :targetted_for_failure?

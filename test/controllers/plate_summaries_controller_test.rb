@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'test_helper'
-require 'projects_controller'
 
 class PlateSummariesControllerTest < ActionController::TestCase
   context 'PlateSummariesController' do

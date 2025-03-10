@@ -8,7 +8,7 @@ class MigrateHistoricDescriptorsToCustomMetadata < ActiveRecord::Migration[5.1]
   # Protects the migration against future changes in code
   class MigratingAsset < ApplicationRecord
     self.table_name = 'assets'
-    serialize :descriptors
+    serialize :descriptors, coder: YAML
 
     scope :fragments_with_descriptors,
           lambda { where.not(descriptors: nil).where('descriptors != "---\n"').where(sti_type: 'Fragment') }

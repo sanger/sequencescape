@@ -38,7 +38,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
            inverse_of: :plate_creator
   has_many :parent_plate_purposes, through: :parent_purpose_relationships, source: :plate_purpose
 
-  serialize :valid_options
+  serialize :valid_options, coder: YAML
 
   attr_reader :created_asset_group
 
