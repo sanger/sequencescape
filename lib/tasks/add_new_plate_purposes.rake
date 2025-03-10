@@ -1,5 +1,21 @@
 # frozen_string_literal: true
 
+# This Rake task adds new plate purposes to the plate_creators table.
+# It finds the existing plate purposes by their names and creates new
+# plate creators with the specified purposes and valid options.
+#
+# Usage:
+#   rake plate_creators:add_new_plate_purposes
+#
+# This task depends on the Rails environment being loaded, so it can
+# access the models and database.
+#
+# Example:
+#   To run this task, use the following command in your terminal:
+#     [bundle exec] rake plate_creators:add_new_plate_purposes
+#
+# The task will output a message indicating that the new plate purposes
+# have been added to the plate_creators table.
 namespace :plate_creators do
   desc 'Add new plate purposes to the plate_creators table'
   task add_new_plate_purposes: :environment do
