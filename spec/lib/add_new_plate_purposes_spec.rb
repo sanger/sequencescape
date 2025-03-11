@@ -1,12 +1,11 @@
 #frozen_string_literal: true
 
-# rubocop:disable RSpec/DescribeClass
 # rubocop:disable RSpec/ExampleLength
 # rubocop:disable Rspec/MultipleExpectations
 require 'rails_helper'
 require 'rake'
 
-RSpec.describe 'plate_creators:add_new_plate_purposes' do
+RSpec.describe 'plate_creators:add_new_plate_purposes', type: :task do
   before do
     Rake.application.rake_require 'tasks/add_new_plate_purposes'
     Rake::Task.define_task(:environment)
@@ -46,6 +45,5 @@ RSpec.describe 'plate_creators:add_new_plate_purposes' do
     ).not_to be_nil
   end
 end
-# rubocop:enable RSpec/DescribeClass
 # rubocop:enable RSpec/ExampleLength
 # rubocop:enable Rspec/MultipleExpectations
