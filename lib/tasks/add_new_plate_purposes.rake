@@ -5,7 +5,7 @@
 # plate creators with the specified purposes and valid options.
 #
 # Usage:
-#   rake plate_creators:add_new_plate_purposes
+#   [bundle exec] rake plate_creators:add_new_plate_purposes
 #
 # This task depends on the Rails environment being loaded, so it can
 # access the models and database.
@@ -33,6 +33,7 @@ namespace :plate_creators do
         creator.valid_options = { valid_dilution_factors: [1.0] }
       end
 
+    # Create the relationships.
     Plate::Creator::PurposeRelationship.find_or_create_by!(
       plate_purpose_id: stock_plate_purpose.id,
       plate_creator_id: stock_plate_creator.id
