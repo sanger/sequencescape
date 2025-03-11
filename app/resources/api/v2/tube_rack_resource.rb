@@ -4,7 +4,8 @@ module Api
   module V2
     # Provides a JSON:API representation of {TubeRack}.
     #
-    # This resource represents a tube rack, which can contain a collection of tubes, with locations specified for each tube in the rack.
+    # This resource represents a tube rack, which can contain a collection of tubes, with locations specified
+    #   for each tube in the rack.
     # Tubes are linked via the RackedTubes association
     #
     # @note Access this resource via the `/api/v2/tube_racks/` endpoint.
@@ -155,7 +156,8 @@ module Api
 
       # @note Tube locations are expected in the following format:
       #   { A1: { uuid: 'a1_tube_uuid' }, B1: { uuid: 'b1_tube_uuid' }, ... }
-      # @param tube_locations [Hash] The locations of the tubes, with coordinates as keys (e.g., "A1") and tube UUIDs as values.
+      # @param tube_locations [Hash] The locations of the tubes, with coordinates as keys (e.g., "A1")
+      #   and tube UUIDs as values.
       # @raise [RuntimeError] If any tube UUID does not correspond to an existing tube.
       # @return [Void]
       #   This method assigns the tube locations for the rack, creating new RackedTube records as necessary.

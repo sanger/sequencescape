@@ -91,7 +91,8 @@ module Api
 
       # @!attribute [w] labware_pick_attributes
       #   A list of attributes defining the picks based on Labware
-      #   This provides an alternative way to create picks by proving a Labware ID or barcode, instead of receptacle IDs.
+      #   This provides an alternative way to create picks by proving a Labware ID or barcode,
+      #     instead of receptacle IDs.
       #   @note `source_labware_id` or `source_labware_barcode` must be provided
       #   @note `study_id`, and `project_id` are required attributes
       #   @see #labware_pick_attributes=
@@ -120,7 +121,8 @@ module Api
 
       # Converts and sets pick attributes, ensuring the correct records are retrieved.
       #
-      # @param picks [Array<Hash>] A list of pick attributes containing `source_receptacle_id`, `study_id`, and `project_id`.
+      # @param picks [Array<Hash>] A list of pick attributes containing `source_receptacle_id`, `study_id`,
+      #   and `project_id`.
       # @raise [JSONAPI::Exceptions::BadRequest] If a provided attribute does not match an actual record.
       def pick_attributes=(picks)
         # Extract and look up records here before passing through
@@ -137,7 +139,8 @@ module Api
       # ids. We keep this as a separate accessor to avoid the confusion of passing in a list
       # of 12 picks, and receiving more back.
       #
-      # @param labware_picks [Array<Hash>] A list of pick attributes containing `source_labware_barcode`, `study_id`, and `project_id`.
+      # @param labware_picks [Array<Hash>] A list of pick attributes containing `source_labware_barcode`,
+      #   `study_id`, and `project_id`.
       # @raise [JSONAPI::Exceptions::BadRequest] If a provided attribute does not match an actual record.
       def labware_pick_attributes=(labware_picks)
         # Extract and look up records here before passing through

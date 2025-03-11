@@ -142,8 +142,9 @@ module Api
       #   @see #user
       attribute :user_uuid, write_once: true
 
+      # @note Some old records may not have a User relationship, even though it's required for new records.
       def user_uuid
-        @model.user&.uuid # Some old records may not have a User relationship, even though it's required for new records.
+        @model.user&.uuid
       end
 
       def user_uuid=(uuid)

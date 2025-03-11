@@ -32,7 +32,8 @@ module Api
       #   An array of hashes containing metadata for sibling tubes.
       #   Sibling tubes are tubes that share a common ancestor, often used in a grouping of tubes.
       #   @return [Array<Hash>] The metadata of sibling tubes.
-      #   @note This attribute is read-only and may not be present for all tubes, as it depends on the context (e.g., tubes that are part of a group or series).
+      #   @note This attribute is read-only and may not be present for all tubes, as it depends on
+      #     the context (e.g., tubes that are part of a group or series).
       #   @see #sibling_tubes
       attribute :sibling_tubes, readonly: true
 

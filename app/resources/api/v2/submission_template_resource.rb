@@ -5,7 +5,8 @@ module Api
     # Provides a JSON:API representation of {SubmissionTemplate}.
     #
     # A {SubmissionTemplate} associates a name to a pre-filled submission (subclass) and a serialized set of attributes
-    # A `SubmissionTemplate` is typically used to standardize submission parameters, making it easier to create new submissions
+    # A `SubmissionTemplate` is typically used to standardize submission parameters, making it easier to
+    #   create new submissions
     # with predefined settings. Users can retrieve submission templates to understand their configurations.
     #
     # @note This resource is immutable: its endpoint will not accept `POST`, `PATCH`, or `DELETE` requests.

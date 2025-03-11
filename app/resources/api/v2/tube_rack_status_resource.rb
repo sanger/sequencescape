@@ -18,7 +18,8 @@ module Api
     # @example GET request for a TubeRackStatus with ID 123
     #   GET /api/v2/tube_rack_statuses/123/
     #
-    # @note This resource is read-only; it can be accessed via GET requests, but creation or modification is not allowed.
+    # @note This resource is read-only; it can be accessed via GET requests, but creation or
+    #   modification is not allowed.
     class TubeRackStatusResource < BaseResource
       ###
       # Attributes

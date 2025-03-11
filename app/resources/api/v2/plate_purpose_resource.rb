@@ -36,7 +36,8 @@ module Api
     #
     #
     # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
-    # or the [JSONAPI::Resources](http://jsonapi-resources.com/) package, which powers Sequencescape's JSON:API implementation.
+    # or the [JSONAPI::Resources](http://jsonapi-resources.com/) package, which powers Sequencescape's
+    #   JSON:API implementation.
     class PlatePurposeResource < BaseResource
       model_name 'PlatePurpose'
 

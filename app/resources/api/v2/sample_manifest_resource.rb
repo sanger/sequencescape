@@ -4,7 +4,8 @@ module Api
   module V2
     # Provides a JSON:API representation of {SampleManifest} for managing sample manifests.
     #
-    # A sample manifest resource represents a collection of samples, typically associated with a specific experiment or project.
+    # A sample manifest resource represents a collection of samples, typically associated with
+    #   a specific experiment or project.
     # This resource allows clients to retrieve information about the sample manifest and its attributes.
     #
 

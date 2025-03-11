@@ -2,8 +2,10 @@
 
 module Api
   module V2
-    # Provides a JSON:API representation of {Sample}, which represents a biological or synthetic sample used in laboratory processes.
-    # This resource allows users to retrieve and filter samples based on various attributes such as UUID, name, or Sanger Sample ID.
+    # Provides a JSON:API representation of {Sample}, which represents a biological or synthetic
+    #   sample used in laboratory processes.
+    # This resource allows users to retrieve and filter samples based on various attributes such
+    #   as UUID, name, or Sanger Sample ID.
     #
     # @note Access this resource via the `/api/v2/samples/` endpoint.
     #
@@ -89,12 +91,14 @@ module Api
       ###
 
       # @!attribute [rw] sample_metadata
-      #   @return [SampleMetadataResource] The metadata associated with this sample, containing additional details like collection method and donor information.
+      #   @return [SampleMetadataResource] The metadata associated with this sample, containing additional
+      #     details like collection method and donor information.
       #   @note Optional relationship.
       has_one :sample_metadata, class_name: 'SampleMetadata', foreign_key_on: :related
 
       # @!attribute [rw] sample_manifest
-      #   @return [SampleManifestResource] The manifest to which this sample belongs, often linking it to a larger set of processed samples.
+      #   @return [SampleManifestResource] The manifest to which this sample belongs, often linking it
+      #     to a larger set of processed samples.
       #   @note Optional relationship.
       has_one :sample_manifest
 

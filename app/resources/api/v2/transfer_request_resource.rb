@@ -4,7 +4,8 @@ module Api
   module V2
     # Provides a JSON:API representation of {TransferRequest}.
     #
-    # A `TransferRequest` represents a request for transferring ("moving") a resource (asset) from one location to another
+    # A `TransferRequest` represents a request for transferring ("moving") a resource (asset) from one
+    #   location to another
     # without really transforming it (chemically) as, cherrypicking, pooling, spreading on the floor etc
     #
     # @note This resource is immutable: its endpoint will not accept `POST`, `PATCH`, or `DELETE` requests.
@@ -38,7 +39,8 @@ module Api
       attribute :state, readonly: true
 
       # @!attribute [r] volume
-      #   The volume associated with the transfer request. This could represent the quantity of material to be transferred.
+      #   The volume associated with the transfer request. This could represent the quantity of material
+      #     to be transferred.
       #   @return [Integer] The volume of the transfer request.
       attribute :volume, readonly: true
 

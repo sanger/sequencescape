@@ -4,7 +4,8 @@ module Api
   module V2
     # Provides a JSON:API representation of {TagLayoutTemplate}
     #
-    # This resource represents a {TagLayoutTemplate} which defines the layout and walking algorithm used during the indexing
+    # This resource represents a {TagLayoutTemplate} which defines the layout and walking algorithm used
+    #    during the indexing
     # of tags for labware or objects.
     # Think of it as a partially created TagLayout, defining only the tag
     # group that will be used and the actual TagLayout implementation that will do the work.

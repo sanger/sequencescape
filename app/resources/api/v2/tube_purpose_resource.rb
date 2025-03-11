@@ -64,7 +64,8 @@ module Api
       attribute :purpose_type, delegate: :type
 
       # @!attribute [rw] target_type
-      #   @return [String] The target type, indicating what type of tube the purpose is associated with (e.g., 'StockLibraryTube').
+      #   @return [String] The target type, indicating what type of tube the purpose is associated
+      #     with (e.g., 'StockLibraryTube').
       #   @note This attribute is required.
       attribute :target_type
 

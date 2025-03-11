@@ -105,7 +105,8 @@ module Api
       attr_writer :submission_template_uuid # Not stored, consumed by OrderProcessor.
 
       # @!attribute [w] submission_template_attributes
-      #   @return [Hash] A hash of additional attributes used when creating this {Order} from a given {SubmissionTemplate}.
+      #   @return [Hash] A hash of additional attributes used when creating this {Order} from a
+      #     given {SubmissionTemplate}.
       #
       #   The structure is as follows:
       #

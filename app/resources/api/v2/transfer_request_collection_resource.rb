@@ -110,7 +110,8 @@ module Api
       ###
 
       # @!attribute [r] target_tubes
-      #   @return [Array<TubeResource>] An array of tubes that are the targets for the transfer requests in this collection.
+      #   @return [Array<TubeResource>] An array of tubes that are the targets for the transfer requests
+      #   in this collection.
       has_many :target_tubes, class_name: 'Tube', readonly: true
 
       # @!attribute [r] transfer_requests

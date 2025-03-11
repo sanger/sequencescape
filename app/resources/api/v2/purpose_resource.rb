@@ -15,7 +15,8 @@ module Api
     # @example Fetching a purpose by ID
     #   GET /api/v2/purposes/{id}
     #
-    # @note the below example is currently broken, as `target_type` is a required attribute in the model and `lifestan` is not.
+    # @note the below example is currently broken, as `target_type` is a required attribute in the
+    #   model and `lifestan` is not.
     # @example Creating a new purpose
     #   POST /api/v2/purposes
     #   {

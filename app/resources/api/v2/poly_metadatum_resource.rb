@@ -86,7 +86,8 @@ module Api
 
       # @!attribute [rw] metadatable
       #   The resource that this metadata belongs to.
-      #   This is a polymorphic association, it can be associated with multiple different models (e.g., {Well}, {Sample}).
+      #   This is a polymorphic association, it can be associated with multiple different models
+      #     (e.g., {Well}, {Sample}).
       #   @note This is a required relationship.
       #   @note The given metadata must exist
       #   @return [ApplicationRecord] The associated record.
