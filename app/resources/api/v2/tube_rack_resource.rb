@@ -23,6 +23,7 @@ module Api
       has_many :state_changes, readonly: true
       has_one :custom_metadatum_collection, foreign_key_on: :related
       has_many :ancestors, readonly: true, polymorphic: true
+      has_many :tube_receptacles, through: :tubes, source: :receptacle
       # TODO: do we need descendants? might have to delegate to racked tubes
 
       # Attributes
