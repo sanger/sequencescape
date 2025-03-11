@@ -57,7 +57,6 @@ module Api
 
       # @!attribute [rw] lot_number
       #   The lot number associated with the QC assay.
-      #   @param value String A list of `QcResultResource` objects.
       #   @return String
       attribute :lot_number
 
@@ -66,7 +65,6 @@ module Api
       #   It also includes attributes to associated the QcResult with the Asset.
       #   This is provided by either a `uuid` or `barcode` attribute.
       #   When both are provided, the `uuid` attribute will be used to associate the {QcResult} with the asset.
-      #   @param value [Array<QcResultResource>] A list of `QcResultResource` objects.
       #   @return [Array<QcResultResource>]
       attribute :qc_results
 

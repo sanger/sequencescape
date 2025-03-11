@@ -107,9 +107,8 @@ module Api
       # Filters
       ###
 
-      # @!filter :order_type
+      # @!method :order_type
       #   Filters work orders by their type.
-      #   @param value [String] The order type (e.g., "standard").
       #   @example Use this filter to find work orders of type "standard":
       #     GET /api/v2/work_orders?filter[order_type]=standard
       filter :order_type,
@@ -120,9 +119,8 @@ module Api
                  end
                )
 
-      # @!filter :state
+      # @!method :state
       #   Filters work orders by their state.
-      #   @param value [String] The state of the work order (e.g., "open").
       #   @example Use this filter to find work orders in "open" state:
       #     GET /api/v2/work_orders?filter[state]=open
       filter :state

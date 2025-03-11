@@ -64,7 +64,6 @@ module Api
       #   Allows filtering projects by name.
       #   @example Fetching a purpose by name
       #     GET /api/v2/purposes?filter[name]=ExamplePurpose
-      #   @param key [String] The name to filter by.
       filter :name
     end
   end

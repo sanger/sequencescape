@@ -188,7 +188,6 @@ module Api
       #   @param value [String] the UUID of a TagLayoutTemplate to use for attributes of this TagLayout resource.
       #     Providing this UUID while also providing values for attributes and relationships which can be extracted from
       #     a {TagLayoutTemplateResource} will generate an error indicating that the UUID should not have been provided.
-      #   @param value [String] The UUID of the template to apply to the tag layout.
       #   @note This attribute should not be provided if other attributes or relationships are set directly.
       attribute :tag_layout_template_uuid, writeonly: true
       attr_writer :tag_layout_template_uuid # Not stored on the model

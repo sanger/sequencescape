@@ -98,14 +98,12 @@ module Api
 
       # @!method filter_by_key
       #   Filters metadata records based on their key.
-      #   @param key [String] The key to filter by.
       #   @example GET request to retrieve metadata with a specific key
       #     GET /api/v2/poly_metadata?filter[key]=sample_type
       filter :key
 
       # @!method filter_by_metadatable_id
       #   Filters metadata records based on the associated resource's ID.
-      #   @param metadatable_id [Integer] The ID of the associated resource.
       #   @example GET request to retrieve metadata associated with a specific resource
       #     GET /api/v2/poly_metadata?filter[metadatable_id]=123
       filter :metadatable_id

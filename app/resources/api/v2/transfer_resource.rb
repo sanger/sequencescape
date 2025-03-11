@@ -106,7 +106,6 @@ module Api
       #   This attribute allows the user to specify the destination labware by UUID.
       #   @deprecated Use the `destination` relationship instead.
       #   Setting this attribute alongside the `destination` relationship will prefer the relationship value.
-      #   @param value [String] The UUID of the destination labware.
       #   @return [String, Void] the UUID of the destination labware.
       #   @see #destination
       attribute :destination_uuid
@@ -123,7 +122,6 @@ module Api
       #   This attribute allows the user to specify the source labware by UUID.
       #   @deprecated Use the `source` relationship instead.
       #   Setting this attribute alongside the `source` relationship will prefer the relationship value.
-      #   @param value [String] The UUID of the source labware. The type of the labware varies by the type of transfer.
       #   @return [Void]
       #   @see #source
       attribute :source_uuid
@@ -140,7 +138,6 @@ module Api
       #   This attribute is declared for convenience where the user is not available to set as a relationship.
       #   @deprecated Use the `user` relationship instead.
       #   Setting this attribute alongside the `user` relationship will prefer the relationship value.
-      #   @param value [String] The UUID of the user who requested the transfer.
       #   @return [Void]
       #   @see #user
       attribute :user_uuid, write_once: true

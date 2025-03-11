@@ -55,14 +55,12 @@ module Api
       #   The user code will be compared with swipecodes and barcodes for users until matches are found.
       #   @example Filtering users by user code
       #     GET /api/v2/users?filter[user_code]=12345
-      #   @param value [Array<String>] the list of user codes to filter by.
       filter :user_code, apply: lambda { |records, value, _options| records.with_user_code(*value) }
 
       # @!method uuid
       #   A filter to return only users with the given UUID.
       #   @example Filtering users by UUID
       #     GET /api/v2/users?filter[uuid]=11111111-2222-3333-4444-555555666666
-      #   @param value [Array<String>] the list of UUIDs to filter by.
       filter :uuid, apply: lambda { |records, value, _options| records.with_uuid(*value) }
     end
   end

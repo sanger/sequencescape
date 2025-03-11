@@ -82,7 +82,6 @@ module Api
       #   Filter to return only enabled tag layout templates.
       #   This filter allows users to specify if only active tag layouts should be returned.
       #   @example Using the filter: `GET /api/v2/tag_layout_templates?enabled=true`
-      #   @param value [Boolean] The status of the tag layout template (default is `true`).
       #   @return [Boolean] Whether the tag layout template is enabled or not.
       filter :enabled, default: true
     end

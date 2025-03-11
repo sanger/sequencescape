@@ -86,7 +86,6 @@ module Api
       attribute :size
 
       # @!attribute [rw] tube_locations
-      #   @param tube_locations [Hash] A hash of tube locations, where keys are coordinates (e.g., "A1", "B2"), and values are UUIDs of the tubes at those locations.
       #   @note This is a write-only attribute used to map tubes to specific coordinates in the rack.
       #   @return [Void]
       #   @raise [RuntimeError] If any of the provided UUIDs do not correspond to a valid tube.
@@ -123,20 +122,17 @@ module Api
       # Filters
       ###
 
-      # @!filter :barcode
-      #   @param value [String] A barcode to filter tube racks by. This filter will apply to the barcode attribute.
+      # @!method :barcode
       #   @example GET /api/v2/tube_racks?filter[barcode]=1234567890123
       #   @return [ActiveRecord::Relation] Filtered tube racks that match the provided barcode.
       filter :barcode, apply: ->(records, value, _options) { records.with_barcode(value) }
 
-      # @!filter :uuid
-      #   @param value [String] A UUID to filter tube racks by.
+      # @!method :uuid
       #   @example GET /api/v2/tube_racks?filter[uuid]=some-uuid-value
       #   @return [ActiveRecord::Relation] Filtered tube racks that match the provided UUID.
       filter :uuid, apply: ->(records, value, _options) { records.with_uuid(value) }
 
-      # @!filter :purpose_name
-      #   @param value [String] The name of the purpose associated with the tube rack.
+      # @!method :purpose_name
       #   @example GET /api/v2/tube_racks?filter[purpose_name]=Storage
       #   @return [ActiveRecord::Relation] Filtered tube racks that have the specified purpose name.
       filter :purpose_name,
@@ -148,8 +144,7 @@ module Api
                  end
                )
 
-      # @!filter :purpose_id
-      #   @param value [String] The ID of the purpose associated with the tube rack.
+      # @!method :purpose_id
       #   @example GET /api/v2/tube_racks?filter[purpose_id]=12345
       #   @return [ActiveRecord::Relation] Filtered tube racks that have the specified purpose ID.
       filter :purpose_id, apply: ->(records, value, _options) { records.where(plate_purpose_id: value) }

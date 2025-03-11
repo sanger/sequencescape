@@ -47,7 +47,6 @@ module Api
       #   Filter the transfer templates by UUID.
       #   @example GET request with UUID filter
       #     GET /api/v2/transfer_templates?filter[uuid]=12345678-1234-1234-1234-123456789012
-      #   @param value [String] The UUID value to filter by.
       #   @return [ActiveRecord::Relation] The filtered transfer templates.
       filter :uuid, apply: ->(records, value, _options) { records.with_uuid(value) }
     end

@@ -77,7 +77,6 @@ module Api
 
       # @!attribute [rw] role
       #   The role of the request, such as "analysis" or "testing."
-      #   @param value [String] The role assigned to the request.
       #   @return [String] The role of the request.
       #   @note This attribute can only be set once.
       attribute :role, write_once: true
@@ -90,7 +89,6 @@ module Api
 
       # @!attribute [rw] priority
       #   The priority of the request, such as "high," "medium," or "low."
-      #   @param value [String] The priority level of the request.
       #   @return [String] The priority of the request.
       #   @note This attribute can only be set once.
       attribute :priority, write_once: true

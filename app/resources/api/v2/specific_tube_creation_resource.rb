@@ -75,7 +75,7 @@ module Api
 
       # @!attribute [w] child_purpose_uuids
       #   This is currently declared for convenience as child purposes do not appear to be set as a relationship.
-      #   @deprecate Create the `child_purposes` (or `children`) relationship instead.
+      #   @todo Deprecate - Create the `child_purposes` (or `children`) relationship instead.
       #   Setting this attribute alongside the relevant relationship shold prefer the relationship value.
       #   @param value [Array<String>] Array of UUIDs for child purposes to use in the creation of tubes.
       #   @return [Void]

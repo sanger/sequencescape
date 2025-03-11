@@ -48,7 +48,6 @@ module Api
       #   Allows filtering projects by name.
       #   @example Fetching projects by name
       #     GET /api/v2/projects?filter[name]=Example
-      #   @param key [String] The name to filter by.
       filter :name
     end
   end
