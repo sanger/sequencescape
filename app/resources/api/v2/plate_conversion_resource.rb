@@ -26,26 +26,26 @@ module Api
     #
     # @example POST request with arguments specified by relationship
     #   POST /api/v2/plate_conversions/
-    #   {
-    #     "data": {
-    #       "type": "plate_conversions",
-    #       "attributes": {},
-    #       "relationships": {
-    #         "parent": {
-    #           "data": { "type": "plates", "id": "123" }
-    #         },
-    #         "purpose": {
-    #           "data": { "type": "plate_purposes", "id": "234" }
-    #         },
-    #         "target": {
-    #           "data": { "type": "plates", "id": "345" }
-    #         },
-    #         "user": {
-    #           "data": { "type": "users", "id": "456" }
-    #         }
+    # {
+    #   "data": {
+    #     "type": "plate_conversions",
+    #     "attributes": {},
+    #     "relationships": {
+    #       "parent": {
+    #         "data": { "type": "plates", "id": "123" }
+    #       },
+    #       "purpose": {
+    #         "data": { "type": "plate_purposes", "id": 1 }
+    #       },
+    #       "target": {
+    #         "data": { "type": "plates", "id": 1 }
+    #       },
+    #       "user": {
+    #         "data": { "type": "users", "id": 4 }
     #       }
     #     }
     #   }
+    # }
     #
     # @example GET request for all PlateConversion resources
     #   GET /api/v2/plate_conversions/

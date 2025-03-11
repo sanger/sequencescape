@@ -13,12 +13,15 @@ module Api
     #   POST /api/v2/custom_metadatum_collections/
     #   {
     #     "data": {
-    #       "type": "custom_metadatum_collections",
-    #       "attributes": {
-    #         "user_id": 123,
-    #         "asset_id": 456,
-    #         "metadata": { "key1": "value1", "key2": "value2" }
-    #       }
+    #         "type": "custom_metadatum_collections",
+    #         "attributes": {
+    #             "user_id": 1,
+    #             "asset_id": 1,
+    #             "metadata": {
+    #                 "key": "a value againnnn"
+    #             }
+    #         },
+    #         "relationships": {}
     #     }
     #   }
     #

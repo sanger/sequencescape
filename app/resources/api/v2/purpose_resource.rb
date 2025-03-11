@@ -22,9 +22,9 @@ module Api
     #     "data": {
     #         "type": "purposes",
     #         "attributes": {
-    #           "name": "ExamplePurpose",
-    #           "size": 96,
-    #           "lifespan": 1,
+    #            "name": "ExamplePurpose",
+    #            "size": 96,
+    #            "lifespan": 1
     #         }
     #     }
     # }

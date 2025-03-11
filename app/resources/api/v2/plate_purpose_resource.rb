@@ -22,17 +22,17 @@ module Api
     #   POST /api/v2/plate_purposes/
     #   {
     #     "data": {
-    #       "type": "plate_purposes",
-    #       "attributes": {
-    #         "name": "Custom Purpose",
-    #         "stock_plate": true,
-    #         "cherrypickable_target": false,
-    #         "input_plate": true,
-    #         "size": 96,
-    #         "asset_shape": "Standard"
-    #       }
+    #         "type": "plate_purposes",
+    #         "attributes": {
+    #               "name": "API v2 Generated Plate Purpose6",
+    #               "stock_plate": true,
+    #               "cherrypickable_target": false,
+    #               "size": 384,
+    #               "asset_shape": "Standard",
+    #               "input_plate": false
+    #         }
     #     }
-    #   }
+    # }
     #
     #
     # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)

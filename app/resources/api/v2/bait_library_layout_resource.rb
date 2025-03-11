@@ -20,18 +20,15 @@ module Api
     #   POST /api/v2/bait_library_layouts/
     #   {
     #     "data": {
-    #       "type": "bait_library_layouts",
-    #       "attributes": {},
-    #       "relationships": {
-    #         "plate": {
-    #           "data": { "type": "plates", "id": "123" }
+    #         "type": "bait_library_layouts",
+    #         "attributes": {
     #         },
-    #         "user": {
-    #           "data": { "type": "users", "id": "456" }
+    #         "relationships": {
+    #             "plate": { "data": { "type": "plates", "id": 1 } },
+    #             "user": { "data": { "type": "users", "id": 4 } }
     #         }
-    #       }
     #     }
-    #   }
+    # }
     #
     # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or refer to the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation

@@ -23,10 +23,10 @@ module Api
     #     },
     #     "relationships": {
     #       "user": {
-    #         "data": { "type": "users", "id": "123" }
-    #       },k
+    #         "data": { "type": "users", "id": 4 }
+    #       },
     #       "commentable": {
-    #         "data": { "type": "wells", "id": "456" }
+    #         "data": { "type": "wells", "id": "1" }
     #       }
     #     }
     #   }

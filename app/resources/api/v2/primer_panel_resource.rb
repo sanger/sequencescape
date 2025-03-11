@@ -25,7 +25,7 @@ module Api
     #     "type": "primer_panels",
     #     "attributes": {
     #       "name": "My Primer Panel",
-    #       "programs": ["Program 1", "Program 2"]
+    #       "programs": ["UAT"]
     #     }
     #   }
     # }

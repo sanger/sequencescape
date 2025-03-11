@@ -16,17 +16,22 @@ module Api
     #   POST /api/v2/poly_metadata/
     # {
     #   "data": {
-    #     "type": "poly_metadata",
-    #     "attributes": {
-    #       "key": "sample_type",
-    #       "value": "DNA"
-    #     },
+    #     "type": "pooled_plate_creations",
+    #       "attributes": {
+    #           "child_purpose_uuid": ["f64dec80-f51c-11ef-8842-000000000000"]
+    #       },
     #     "relationships": {
-    #       "metadatable": {
-    #         "data": {
-    #           "type": "sample",
-    #           "id": "123"
-    #         }
+    #       // "child_purpose": {
+    #       //   "data": { "type": "purposes", "id": "uuid-of-child-purpose" }
+    #       // },
+    #       "parents": {
+    #         "data": [
+    #           { "type": "labware", "id": 1 },
+    #           { "type": "labware", "id": 4 }
+    #         ]
+    #       },
+    #       "user": {
+    #         "data": { "type": "users", "id": 1 }
     #       }
     #     }
     #   }
@@ -81,7 +86,7 @@ module Api
 
       # @!attribute [rw] metadatable
       #   The resource that this metadata belongs to.
-      #   This is a polymorphic association, it can be associated with multiple different models.
+      #   This is a polymorphic association, it can be associated with multiple different models (e.g., {Well}, {Sample}).
       #   @note This is a required relationship.
       #   @note The given metadata must exist
       #   @return [ApplicationRecord] The associated record.

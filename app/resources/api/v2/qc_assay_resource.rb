@@ -28,15 +28,23 @@ module Api
     #     "attributes": {
     #       "lot_number": "67890",
     #       "qc_results": [
-    #         { "barcode": "NT3Q", "key": "akey", "value": "avalue", "units": "xyz" }
+    #         {
+    #           // "id": 45
+    #           "uuid": "9dd79a6c-f524-11ef-8842-000000000000",
+    #           "key": "x",
+    #           "value": "x",
+    #           "units": "s"
+    #       }
     #       ]
     #     },
-    #     "relationships": {
+    #   "relationships": {
     #       "qc_results": {
-    #         "data": [
-    #           { "type": "qc_result", "id": "1" }
-    #         ]
+    #         "data": {
+    #           "type": "qc_results",
+    #           "id": 45
+    #         }
     #       }
+    #     }
     #   }
     # }
     #

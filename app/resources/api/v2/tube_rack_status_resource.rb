@@ -2,32 +2,33 @@
 
 module Api
   module V2
-    # @todo This documentation does not yet include a detailed description of what this resource represents.
-    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
-    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+    # Provides a JSON:API representation of {TubeRackStatus}.
+    #
+    # A TubeRackStatus stores the status of the creation process of tube racks
     #
     # @note Access this resource via the `/api/v2/tube_rack_statuses/` endpoint.
-    #
-    # Provides a JSON:API representation of {TubeRackStatus}.
     #
     # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
+    #
+    # @example GET request for all TubeRackStatus resources
+    #   GET /api/v2/tube_rack_statuses/
+    #
+    # @example GET request for a TubeRackStatus with ID 123
+    #   GET /api/v2/tube_rack_statuses/123/
+    #
+    # @note This resource is read-only; it can be accessed via GET requests, but creation or modification is not allowed.
     class TubeRackStatusResource < BaseResource
-      # model_name / model_hint if required
-
-      # Associations:
-
+      ###
       # Attributes
+      ###
+
+      # @!attribute [r] uuid
+      #   @note This identifier is automatically assigned upon creation and cannot be modified.
+      #   @return [String] The UUID of the tube rack status resource.
+      #   @note This attribute is required for identifying the tube rack status.
       attribute :uuid, readonly: true
-
-      # Filters
-
-      # Custom methods
-      # These shouldn't be used for business logic, and a more about
-      # I/O and isolating implementation details.
-
-      # Class method overrides
     end
   end
 end

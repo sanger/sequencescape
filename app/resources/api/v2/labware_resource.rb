@@ -14,6 +14,18 @@ module Api
     # @example GET request for a single Labware resource with ID 123
     #   GET /api/v2/labware/123/
     #
+    # @example POST request to create a new Labware resource
+    #   POST /api/v2/labware/
+    # {
+    #   "data": {
+    #     "type": "labware",
+    #     "attributes": {
+    #     },
+    #     "relationships": {
+    #     }
+    #   }
+    # }
+    #
     #
     # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or check out [JSONAPI::Resources](http://jsonapi-resources.com/) for Sequencescape's implementation.

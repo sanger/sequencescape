@@ -2,24 +2,49 @@
 
 module Api
   module V2
-    # @todo This documentation does not yet include a detailed description of what this resource represents.
-    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
-    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+    # Provides a JSON:API representation of {Sample::Metadata} which contains additional
+    # metadata related to a {Sample}.
     #
-    # @note This resource is immutable: its endpoint will not accept `POST`, `PATCH`, or `DELETE` requests.
+    # A {Sample} represents the life of a DNA/RNA sample as it moves through processes.
+    # It may exist in multiple {Receptacle receptacles} as {Aliquot aliquots}.
+    # {Sample} tracks aspects that are always true, like its origin.
+    #
     # @note Access this resource via the `/api/v2/sample_metadata/` endpoint.
     #
-    # Provides a JSON:API representation of {Sample::Metadata}.
+    # @example GET request for all sample metadata
+    #   GET /api/v2/sample_metadata/
+    #
+    # @example GET request for a specific sample metadata record by ID
+    #   GET /api/v2/sample_metadata/123/
+    #
+    # @example POST request to create a new sample metadata record
+    #   POST /api/v2/sample_metadata/
+    # {
+    #   "data": {
+    #     "type": "sample_metadata",
+    #     "attributes": {
+    #       "cohort": "Cohort A",
+    #       "collected_by": "Research Lab X",
+    #       "concentration": "50",
+    #       "donor_id": "D123456",
+    #       "gender": "Female",
+    #       "sample_common_name": "Homo sapiens",
+    #       "sample_description": "Blood sample taken on 2024-01-15",
+    #       "supplier_name": "Sample Supplier Y",
+    #       "volume": "200"
+    #     }
+    #   }
+    # }
     #
     # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class SampleMetadataResource < BaseResource
-      # NB. sample_metadata has been added to config/initializers/inflections.rb to make this class name
-      # work otherwise it expects SampleMetadatumResource
-
-      # Set add_model_hint true to allow updates from Limber, otherwise get a
-      # 500 error as it looks for resource Api::V2::MetadatumResource
+      # NB: `sample_metadata` has been added to `config/initializers/inflections.rb` to correctly
+      # pluralize this class name. Without this, Rails would expect `SampleMetadatumResource`.
+      #
+      # `add_model_hint: true` is set to prevent 500 errors when updating from Limber, as it would
+      # otherwise look for `Api::V2::MetadatumResource`.
       model_name 'Sample::Metadata', add_model_hint: true
 
       ###
@@ -27,45 +52,53 @@ module Api
       ###
 
       # @!attribute [rw] cohort
-      #   @return [String] the sample cohort.
+      #   @return [String] The cohort to which the sample belongs.
       attribute :cohort
 
       # @!attribute [rw] collected_by
-      #   @return [String] the name of the body collecting the sample.
+      #   @return [String] The name of the organization or person that collected the sample.
       attribute :collected_by
 
       # @!attribute [rw] concentration
-      #   @return [String] the sample concentration.
+      #   @return [String] The concentration of the sample, typically measured in ng/µL.
       attribute :concentration
 
       # @!attribute [rw] donor_id
-      #   @return [String] the ID of the sample donor.
+      #   @return [String] The unique identifier assigned to the sample donor.
       attribute :donor_id
 
       # @!attribute [rw] gender
-      #   @return [String] the gender of the organism providing the sample.
+      #   @return [String] The gender of the organism providing the sample (e.g., Male, Female, Unknown).
       attribute :gender
 
       # @!attribute [rw] sample_common_name
-      #   @return [String] the common name for the sample.
+      #   @return [String] The common name of the organism from which the sample was derived (e.g., Homo sapiens).
       attribute :sample_common_name
 
       # @!attribute [rw] sample_description
-      #   @return [String] a description of the sample.
+      #   @return [String] A textual description of the sample.
       attribute :sample_description
 
       # @!attribute [rw] supplier_name
-      #   @return [String] the supplier name for the sample.
+      #   @return [String] The name of the supplier that provided the sample.
       attribute :supplier_name
 
       # @!attribute [rw] volume
-      #   @return [String] the volume of the sample.
+      #   @return [String] The volume of the sample, typically measured in µL.
       attribute :volume
 
       ###
       # Filters
       ###
 
+      # @!method filter_sample_id(value)
+      #   Filters sample metadata by `sample_id`, allowing users to retrieve metadata for a specific sample.
+      #
+      #   @example Filtering by sample_id
+      #     GET /api/v2/sample_metadata?filter[sample_id]=456
+      #
+      #   @param value [String] The sample ID to filter by.
+      #   @return [SampleMetadataResource] The metadata records matching the given sample ID.
       filter :sample_id
     end
   end

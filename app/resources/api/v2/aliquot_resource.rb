@@ -26,10 +26,10 @@ module Api
     #         "receptacle": { "data": { "type": "receptacles", "id": "654" } },
     #         "tag": { "data": { "type": "tags", "id": "987" } },
     #         "tag2": { "data": { "type": "tags", "id": "876" } },
-    #         "library": { "data": { "type": "libraries", "id": "555" } }
+    #         "library": { "data": { "type": "receptacles", "id": "555" } }
     #       }
     #     }
-    #   }
+    #  }
     #
     # @example GET request for all Aliquot resources
     #   GET /api/v2/aliquots/

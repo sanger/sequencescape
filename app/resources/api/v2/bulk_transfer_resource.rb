@@ -10,42 +10,31 @@ module Api
     # @note Access this resource via the `/api/v2/bulk_transfers/` endpoint.
     # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
     #
-    # @example POST request with user specified by UUID (deprecated)
+    # @example POST request with user specified by relationship
     #   POST /api/v2/bulk_transfers/
-    #   {
-    #     "data": {
-    #       "type": "bulk_transfers",
-    #       "attributes": {
-    #         "well_transfers": [
-    #           {
-    #             "source_uuid": "src_plate1_uuid",
-    #             "source_location": "A1",
-    #             "destination_uuid": "dest_plate1_uuid",
-    #             "destination_location": "A1"
-    #           },
-    #           {
-    #             "source_uuid": "src_plate1_uuid",
-    #             "source_location": "B1",
-    #             "destination_uuid": "dest_plate2_uuid",
-    #             "destination_location": "A1"
-    #           },
-    #           {
-    #             "source_uuid": "src_plate2_uuid",
-    #             "source_location": "A1",
-    #             "destination_uuid": "dest_plate1_uuid",
-    #             "destination_location": "B1"
-    #           },
-    #           {
-    #             "source_uuid": "src_plate2_uuid",
-    #             "source_location": "B1",
-    #             "destination_uuid": "dest_plate2_uuid",
-    #             "destination_location": "B1"
-    #           }
-    #         ],
-    #         "user_uuid": "user_uuid"
+    # {
+    #   "data": {
+    #     "type": "bulk_transfers",
+    #     "attributes": {
+    #       "well_transfers": [
+    #         {
+    #           "source_uuid": "7b4c094a-fe6d-11ef-ba74-000000000000",
+    #           "source_location": "A2",
+    #           "destination_uuid": "7b4c094a-fe6d-11ef-ba74-000000000000",
+    #           "destination_location": "A2"
+    #         }
+    #       ]
+    #     },
+    #     "relationships": {
+    #       "user": {
+    #         "data": {
+    #           "type": "users",
+    #           "id": 4
+    #         }
     #       }
     #     }
     #   }
+    # }
     #
     # @example GET request for all BulkTransfer resources
     #   GET /api/v2/bulk_transfers/
@@ -75,8 +64,8 @@ module Api
       end
 
       # @!attribute [r] uuid
-      #   @return [String] The UUID of the bulk transfers operation.
       #   @note This identifier is automatically assigned upon creation and cannot be modified.
+      #   @return [String] The UUID of the bulk transfers operation.
       attribute :uuid, readonly: true
 
       # @!attribute [w] well_transfers

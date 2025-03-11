@@ -12,21 +12,21 @@ module Api
     #   POST /api/v2/qc_files/
     #   {
     #     "data": {
-    #       "type": "qc_files",
-    #       "attributes": {
-    #         "filename": "qc_file.csv",
-    #         "contents": "A1,A2,A3\n1,2,3\n4,5,6\n"
-    #       },
-    #       "relationships": {
-    #         "asset": {
-    #           "data": {
-    #             "type": "labware",
-    #             "id": "123"
-    #           }
+    #         "type": "qc_files",
+    #         "attributes": {
+    #             "filename": "a_test_file.csv",
+    #             "contents": "Hello"
+    #         },
+    #         "relationships": {
+    #             // "asset": {
+    #             //     "data": {
+    #             //         "type": "labware",
+    #             //         "id": 26
+    #             //     }
+    #             // }
     #         }
-    #       }
     #     }
-    #   }
+    # }
     #
     # @example GET request for all QcFile resources
     #   GET /api/v2/qc_files/

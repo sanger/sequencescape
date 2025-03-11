@@ -26,8 +26,8 @@ module Api
     #   "data": {
     #     "type": "lots",
     #     "attributes": {
-    #       "lot_number": "lot1"
-    #       // "received_at": "2014-02-01"
+    #       "lot_number": "ABC123"
+    #       // "received_at": "11"
     #     },
     #     "relationships": {
     #       "lot_type": {
@@ -37,8 +37,11 @@ module Api
     #         "data": { "type": "users", "id": "1" }
     #       },
     #       "template": {
-    #         "data": { "type": "TagLayoutTemplate", "id": "3" }
+    #         "data": { "type": "tag_layout_templates", "id": "3" }
     #       }
+    #       // "tag_layout_template": {
+    #       //     "data": { "type": "tag_layout_templates", "id": "1"}
+    #       // }
     #     }
     #   }
     # }

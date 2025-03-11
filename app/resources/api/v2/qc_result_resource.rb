@@ -25,29 +25,28 @@ module Api
     # @example POST request to create a new QC result, with Asset `uuid`
     #   POST /api/v2/qc_results/
     # {
-    #   "data": {
-    #     "type": "qc_result",
-    #     "attributes": [
-    #       {
-    #         "uuid": "9c4c2fe0-7cdf-11ef-b4cc-000000000000",
+    #     "data": {
+    #       "type": "qc_result",
+    #       "attributes": [{
+    #         "uuid":"9c4c2fe0-7cdf-11ef-b4cc-000000000000",
+    #         // "barcode": "NT3Q",
     #         "key": "measurement_key",
-    #         "value": "12.1",
+    #         "value": "12.5555",
     #         "units": "ng/µL",
     #         "cv": "5.5",
     #         "assay_type": "PCR",
     #         "assay_version": "v1.0"
-    #       }
-    #     ],
-    #     "relationships": {
+    #       }],
+    #       "relationships": {
     #       "asset": {
     #         "data": {
     #           "type": "asset",
     #           "id": "3000"
     #         }
     #       }
+    #       }
     #     }
     #   }
-    # }
 
     # @example POST request to create a new QC result, with Asset `barcode`
     #   POST /api/v2/qc_results/

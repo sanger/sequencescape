@@ -9,23 +9,21 @@ module Api
     #
     # @example POST request to create a {Qcable}.
     #   POST /api/v2/qcables/
-    #   {
-    #     "data": {
-    #       "type": "qc_files",
-    #       "attributes": {
-    #         "filename": "qc_file.csv",
-    #         "contents": "A1,A2,A3\n1,2,3\n4,5,6\n"
+    # {
+    #   "data": {
+    #     "type": "qcables",
+    #     "attributes": {
+    #     },
+    #     "relationships": {
+    #       "labware": {
+    #         "data": { "type": "labware", "id": 57 }
     #       },
-    #       "relationships": {
-    #         "asset": {
-    #           "data": {
-    #             "type": "labware",
-    #             "id": 456
-    #           }
-    #         }
+    #       "lot": {
+    #         "data": { "type": "lots", "id": 1 }
     #       }
     #     }
     #   }
+    # }
     #
     # @example PATCH request to change the {Asset} of a {Qcable}.
     #   PATCH /api/v2/qcables/
