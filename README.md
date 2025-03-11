@@ -460,7 +460,9 @@ If installation issues are encountered with Docker on M1 processors, try the fix
 
   [[GitHub issue](https://github.com/evilmartians/terraforming-rails/issues/34#issuecomment-872021786)]
 
-### API V2 Authentication
+### API V2
+
+#### Authentication
 
 The V2 API has had authentication checks added to it so that other applications calling the API should provide a valid key.
 The key is passed by the client application via the `X-Sequencescape-Client-Id` header.
@@ -476,6 +478,12 @@ As of the time of writing, there are three outcomes to a request made, with resp
   - The response is given as if a valid API key was provided.
   - The request is logged with the prefix "Request made without an API key" including information about the client.
   - The client application should be updated to use a valid API key in future.
+
+#### Documentation
+
+Example POST requests for all the Sequencscape API v2 resources are available to import into Postman REST Client.
+
+The file `Sequencescape API v2.postman_collection.json` is stored in the Pipeline Solutions Shared Network Drive (Finder > Go > Connect to Server > `smb://files-smb/pipeline_solutions`)
 
 ### Publishing AMQP Messages
 
