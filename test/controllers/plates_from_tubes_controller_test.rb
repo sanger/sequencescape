@@ -9,7 +9,7 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
 
       # Populating plate purposes
       @stock_plate_purpose = create(:plate_purpose, name: 'Stock Plate')
-      @rna_stock_plate_purpose = create(:plate_purpose, name: 'scRNA Stock Plate')
+      @rna_stock_plate_purpose = create(:plate_purpose, name: 'Stock RNA Plate')
 
       # Populating plate creators
       @stock_plate_creator = create(:plate_creator, name: 'Stock Plate', plate_purposes: [@stock_plate_purpose])

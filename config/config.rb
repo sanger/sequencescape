@@ -48,7 +48,7 @@ configatron.external_applications = [
   %w[Gatekeeper http://www.example.com]
 ]
 
-configatron.plate_purposes_to_create_from_tubes = ['Stock Plate', 'scRNA Stock Plate']
+configatron.plate_creators_to_create_from_tubes = ['Stock Plate', 'scRNA Stock Plate']
 
 if Rails.env.development? || Rails.env.profile?
   configatron.asset_audits_url = 'http://localhost:3014/process_plates/new'

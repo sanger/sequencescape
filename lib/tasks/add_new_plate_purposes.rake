@@ -21,7 +21,7 @@ namespace :plate_creators do
   task add_new_plate_purposes: :environment do
     # Finding plate purposes
     stock_plate_purpose = PlatePurpose.find_by!(name: 'Stock Plate')
-    rna_plate_purpose = PlatePurpose.find_by!(name: 'scRNA Stock')
+    rna_plate_purpose = PlatePurpose.find_by!(name: 'Stock RNA Plate')
 
     # Creating the plate creators
     stock_plate_creator =
