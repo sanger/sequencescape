@@ -2,8 +2,8 @@
 
 ## Further Research Needed
 
-- [ ] `app/resources/api/v2/request_resource.rb`/ `app/resources/api/v2/request_metadata.rb` - Figure out how to send a POST request.
-- [ ] `app/resources/api/v2/sample_resource.rb`/ `app/resources/api/v2/sample_metadata.rb` - Figure out how to send a POST request.
+- [ ] `app/resources/api/v2/sample_resource.rb`/ `app/resources/api/v2/sample_metadata.rb` - Figure out how to send a POST for a sample with sample metadata association. Currently it is possible to create a sample and sample metadata seperately, but they are not associated with each other. How do you create the association, either in one request or after the individual requests?
+- [ ] `app/resources/api/v2/request_resource.rb`/ `app/resources/api/v2/request_metadata.rb` - Figure out how to send a POST request. Same as above, I believe. 
 - [ ] `app/resources/api/v2/work_order_resource.rb` - How to create POST request, order_type vs work_order_type resource and model mismatch on presence and requirement.
 
 ## Possible Bugs
@@ -12,6 +12,7 @@
 - [ ] `app/resources/api/v2/purpose_resource.rb` - POST is broken as `target_type` is a required attribute in the model but not included in the resource. `lifespan` is also not an allowed attribute.
 - [ ] `app/resources/api/v2/tag_group_adapter_type_resource.rb` states the `name` attribute is read-only, but the model requires its presence.
 - [ ] `app/resources/api/v2/receptacle_resource.rb` - POST is broken as `display_name` is a required attribute in the model but not included in the resource.
+- [ ] `app/resources/api/v2/primer_panel_resource.rb` - POST is broken as `snp_count` is a required attribute in the model but not included in the resource.
 - [ ] `app/resources/api/v2/primer_panel_resource.rb` - POST is broken as `snp_count` is a required attribute in the model but not included in the resource.
 - [ ] `app/resources/api/v2/lot_resource.rb` - POST is broken as `received_at` is a required attribute in the model but not included in the resource.
 - [ ] `app/resources/api/v2/qcable_resource.rb` - POST is broken as it requires a `qcable_creator` which is not defined in the resource.
