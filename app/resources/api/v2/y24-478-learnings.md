@@ -3,7 +3,7 @@
 ## Further Research Needed
 
 - [ ] `app/resources/api/v2/sample_resource.rb`/ `app/resources/api/v2/sample_metadata.rb` - Figure out how to send a POST for a sample with sample metadata association. Currently it is possible to create a sample and sample metadata seperately, but they are not associated with each other. How do you create the association, either in one request or after the individual requests?
-- [ ] `app/resources/api/v2/request_resource.rb`/ `app/resources/api/v2/request_metadata.rb` - Figure out how to send a POST request. Same as above, I believe. 
+- [ ] `app/resources/api/v2/request_resource.rb`/ `app/resources/api/v2/request_metadata.rb` - Figure out how to send a POST request. Same as above, I believe.
 - [ ] `app/resources/api/v2/work_order_resource.rb` - How to create POST request, order_type vs work_order_type resource and model mismatch on presence and requirement.
 
 ## Possible Bugs
