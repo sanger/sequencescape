@@ -1,10 +1,19 @@
 # Y24-478 Learnings and Possible Future To-Dos
 
 ## Further Research Needed
+
 - [ ] `app/resources/api/v2/request_resource.rb`/ `app/resources/api/v2/request_metadata.rb` - Figure out how to send a POST request.
 - [ ] `app/resources/api/v2/sample_resource.rb`/ `app/resources/api/v2/sample_metadata.rb` - Figure out how to send a POST request.
 
+## Possible Bugs
+
+- [ ] `app/resources/api/v2/plate_template_resource.rb` - GET requests are throwing an exception.
+- [ ] `app/resources/api/v2/purpose_resource.rb` - POST is broken as `target_type` is a required attribute in the model but not included in the resource. `lifespan` is also not an allowed attribute.
+- [ ] `app/resources/api/v2/tag_group_adapter_type_resource.rb` states the `name` attribute is read-only, but the model requires its presence.
+- [ ] `app/resources/api/v2/receptacle_resource.rb` - POST is broken as `display_name` is a required attribute in the model but not included in the resource.
+
 ## Test Coverage Improvements
+
 - [ ] Finish tests for all v2 API `spec/requests/api/v2/`.
 - [ ] Add POST request tests to all `spec/resources/api/v2/..` files.
 - [ ] Add tests to check `tag_index` and `tag2_index` are not updatable in `spec/resources/api/v2/aliquot_resource_spec.rb`.
@@ -13,15 +22,8 @@
 - [ ] Add relationships for `user` to `app/resources/api/v2/custom_metadatum_collection_resource.rb` (see `app/resources/api/v2/tube_from_tube_creation_resource.rb`).
 - [ ] Add more tests to `spec/requests/api/v2/asset_audits_spec.rb`, specifically testing the new relationships alongside the use of their respective attributes (see `spec/requests/api/v2/tube_from_tube_creations_spec.rb`), and that PATCH requests are denied.
 
-
-## Possible Bugs
-- [ ] `app/resources/api/v2/plate_template_resource.rb` - GET requests are throwing an exception.
-- [ ] `app/resources/api/v2/purpose_resource.rb` - POST is broken as `target_type` is a required attribute in the model but not included in the resource. `lifespan` is also not an allowed attribute.
-- [ ] `app/resources/api/v2/tag_group_adapter_type_resource.rb` states the `name` attribute is read-only, but the model requires its presence.
-- [ ] `app/resources/api/v2/receptacle_resource.rb` - POST is broken as `display_name` is a required attribute in the model but not included in the resource.
-
-
 ## API Improvements
+
 - [ ] `app/resources/api/v2/qc_assay_resource.rb` - Check if the `qc_results` relationship is necessary. Currently `qc_results` are created as an attribute
 - [ ] Can `app/resources/api/v2/asset_resource.rb` be removed? It seems the `Asset` model (`app/models/asset.rb`) has been deprecated.
 - [ ] `app/resources/api/v2/qc_assay_resource.rb` - POST request breaks if Asset `barcode` or `uuid` is not provided in the `qc_results`, but neither are specified as an attribute in the resource.
