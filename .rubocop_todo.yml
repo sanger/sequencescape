@@ -102,6 +102,7 @@ Lint/EmptyBlock:
     - 'app/api/endpoints/suppliers.rb'
     - 'app/api/endpoints/tag2_layout_templates.rb'
     - 'app/api/endpoints/tag_groups.rb'
+    - 'app/api/endpoints/tag_sets.rb'
     - 'app/api/endpoints/tag_layout_templates.rb'
     - 'app/api/endpoints/transfer_requests.rb'
     - 'app/api/endpoints/transfer_templates.rb'
