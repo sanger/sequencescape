@@ -62,7 +62,7 @@ class PlatesFromTubesController < ApplicationController
   def set_plate_creators
     @plate_creators =
       Plate::Creator.where(
-        name: configatron.fetch(:plate_creators_to_create_from_tubes, ['Stock Plate', 'scRNA Stock Plate'])
+        name: Rails.application.config.plates_from_tubes_config[:plate_creator_names_for_creating_from_tubes]
       )
   end
 
