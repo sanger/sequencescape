@@ -7,12 +7,8 @@ RSpec.describe Api::V2::TagSetResource, type: :resource do
   subject(:resource) { described_class.new(resource_model, {}) }
 
   let(:resource_model) { build_stubbed(:tag_set, tag_group:, tag2_group:) }
-  let(:tag_group) do
-    create(:tag_group)
-  end
-  let(:tag2_group) do
-    create(:tag_group)
-  end
+  let(:tag_group) { create(:tag_group) }
+  let(:tag2_group) { create(:tag_group) }
 
   it { is_expected.to have_model_name 'TagSet' }
 
@@ -30,8 +26,11 @@ RSpec.describe Api::V2::TagSetResource, type: :resource do
   it { is_expected.to have_a_readonly_has_one(:tag2_group).with_class_name('TagGroup') }
 
   describe '#tag group' do
-    it 'returns a tag group information' do
+    it 'returns the correct tag group information' do
       expect(resource.tag_group._model).to eq(tag_group)
+    end
+
+    it 'returns the correct tag2 group information' do
       expect(resource.tag2_group._model).to eq(tag2_group)
     end
   end

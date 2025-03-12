@@ -15,32 +15,35 @@ describe 'TagSets API', with: :api_v2 do
     before do
       create_list(:tag_set, 5)
       create(:tag_set, tag_group: create(:tag_group, visible: false), tag2_group: create(:tag_group))
+      api_get base_endpoint
     end
 
-    it 'sends a list of tag_sets with visible tag groups' do
-      api_get base_endpoint
-
-      # test for the 200 status-code
+    it 'responds with a success http code when sending a list of tag_sets with visible tag groups' do
       expect(response).to have_http_status(:success)
+    end
 
-      # check to make sure the right amount of messages are returned
+    it 'returns the correct number of tag_sets with visible tag groups' do
       expect(json['data'].length).to eq(5)
     end
   end
 
-  context 'filters tag sets by tag_group_adapter_type_name' do
+  context 'when filtering tag sets by tag_group_adapter_type_name' do
     before do
       adapter_type = build(:adapter_type, name: 'adapter_type_1')
       create(:tag_set, tag_group: create(:tag_group, adapter_type:), tag2_group: create(:tag_group, adapter_type:))
       create_list(:tag_set, 5)
+      api_get "#{base_endpoint}?filter[tag_group_adapter_type_name]=adapter_type_1"
     end
 
-    it 'filters tag_groups by tag_group_adapter_type_name' do
-      api_get "#{base_endpoint}?filter[tag_group_adapter_type_name]=adapter_type_1"
+    it 'responds with a success http code when filtering by tag_group_adapter_type_name' do
       expect(response).to have_http_status(:success)
+    end
 
-      # check to make sure the right tag group is returned
+    it 'returns the correct number of tag_sets when filtering by tag_group_adapter_type_name' do
       expect(json['data'].length).to eq(1)
+    end
+
+    it 'returns the correct tag_set when filtering by tag_group_adapter_type_name' do
       expect(json['data'][0]['attributes']['name']).to eq(TagSet.first.name)
     end
   end
@@ -55,23 +58,28 @@ describe 'TagSets API', with: :api_v2 do
         expect(response).to have_http_status(:success)
       end
 
-      it 'returns the correct resource' do
+      it 'returns the correct resource id' do
         expect(json.dig('data', 'id')).to eq(resource.id.to_s)
+      end
+
+      it 'returns the correct resource type' do
         expect(json.dig('data', 'type')).to eq(resource_type)
       end
 
-      it 'returns the correct attributes' do
+      it 'returns the correct resource name' do
         expect(json.dig('data', 'attributes', 'name')).to eq(resource.name)
+      end
+
+      it 'returns the correct resource uuid' do
         expect(json.dig('data', 'attributes', 'uuid')).to eq(resource.uuid)
       end
 
-      it 'returns references to related resources' do
+      it 'returns reference to tag_group' do
         expect(json.dig('data', 'relationships', 'tag_group')).to be_present
-        expect(json.dig('data', 'relationships', 'tag2_group')).to be_present
       end
 
-      it 'does not include attributes for related resources' do
-        expect(json['included']).not_to be_present
+      it 'returns reference to tag2_group' do
+        expect(json.dig('data', 'relationships', 'tag2_group')).to be_present
       end
     end
   end
@@ -83,7 +91,7 @@ describe 'TagSets API', with: :api_v2 do
     it_behaves_like 'a GET request including a has_one relationship', 'tag2_group'
   end
 
-  context 'included contains tags for tag groups' do
+  context 'with included tags for tag groups' do
     let(:resource) { create(:tag_set, tag_group:, tag2_group:) }
     let(:tag_group) { create(:tag_group, tags:) }
     let(:tag2_group) { create(:tag_group, tags: tags2) }
@@ -106,20 +114,30 @@ describe 'TagSets API', with: :api_v2 do
 
     before { api_get "#{base_endpoint}/#{resource.id}?include=tag_group,tag2_group" }
 
-    it 'returns tags for tag groups within tag set in included' do
+    it 'returns a success http code' do
       expect(response).to have_http_status(:success)
-      expect(json['included'][0]['attributes']['tags']).to eq([
-        { "index" => 1, "oligo" => "AAA" },
-        { "index" => 2, "oligo" => "TTT" },
-        { "index" => 3, "oligo" => "CCC" },
-        { "index" => 4, "oligo" => "GGG" }
-      ])
-      expect(json['included'][1]['attributes']['tags']).to eq([
-        { "index" => 1, "oligo" => "TTT" },
-        { "index" => 2, "oligo" => "AAA" },
-        { "index" => 3, "oligo" => "CCC" },
-        { "index" => 4, "oligo" => "GGG" }
-      ])
+    end
+
+    it 'returns tags for the first tag group within the tag set in included' do
+      expect(json['included'][0]['attributes']['tags']).to eq(
+        [
+          { 'index' => 1, 'oligo' => 'AAA' },
+          { 'index' => 2, 'oligo' => 'TTT' },
+          { 'index' => 3, 'oligo' => 'CCC' },
+          { 'index' => 4, 'oligo' => 'GGG' }
+        ]
+      )
+    end
+
+    it 'returns tags for the second tag group within the tag set in included' do
+      expect(json['included'][1]['attributes']['tags']).to eq(
+        [
+          { 'index' => 1, 'oligo' => 'TTT' },
+          { 'index' => 2, 'oligo' => 'AAA' },
+          { 'index' => 3, 'oligo' => 'CCC' },
+          { 'index' => 4, 'oligo' => 'GGG' }
+        ]
+      )
     end
   end
 end

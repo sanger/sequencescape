@@ -54,7 +54,6 @@ module Api
 
       # Filters
       filter :tag_group_adapter_type_name, apply: ->(records, value, _options) { records.by_adapter_type(value) }
-      
 
       filter :visible, default: true, apply: ->(records, _value, _options) { records.visible }
     end
