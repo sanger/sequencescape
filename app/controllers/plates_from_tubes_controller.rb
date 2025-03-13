@@ -98,7 +98,6 @@ class PlatesFromTubesController < ApplicationController
   # Transfers tubes to a plate and creates plates from the given tubes.
   #
   # @return [void]
-  # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
   def transfer_tubes_to_plate(scanned_user, barcode_printer)
     source_tube_barcodes = extract_source_tube_barcodes
     return unless validate_tube_count?(source_tube_barcodes)
@@ -106,13 +105,16 @@ class PlatesFromTubesController < ApplicationController
     found_tubes = find_tubes(source_tube_barcodes)
     return unless validate_missing_tubes?(found_tubes, source_tube_barcodes)
     create_plates(scanned_user, barcode_printer, found_tubes)
+    handle_successful_creation
+  end
+
+  def handle_successful_creation
     respond_to do |format|
       flash.now[:notice] = 'Created plates successfully'
       @plate_creator.each { |creator| flash[:warning] = creator.warnings if creator.warnings.present? }
       format.html { render(VIEW_PATH) }
     end
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   # Validates the number of tubes against the maximum allowed wells.
   #
@@ -152,10 +154,7 @@ class PlatesFromTubesController < ApplicationController
   # @return [Boolean] Returns true if all tubes are found, false otherwise.
   def validate_missing_tubes?(found_tubes, source_tube_barcodes)
     if found_tubes.size != source_tube_barcodes.size
-      respond_to do |format|
-        handle_missing_tubes
-        format.html { render(VIEW_PATH) }
-      end
+      respond_to { |format| format.html { render(VIEW_PATH) } }
       return false
     end
     true
@@ -173,17 +172,13 @@ class PlatesFromTubesController < ApplicationController
   def handle_duplicate_tubes(duplicate_tubes)
     flash[:error] = "Duplicate tubes found: #{duplicate_tubes.join(', ')}"
   end
-
-  def handle_missing_tubes
-    flash[:error] = 'Some tubes were not found'
-  end
   # rubocop: enable Rails/ActionControllerFlashBeforeRender
 
   # Extracts source tube barcodes from the parameters.
   #
   # @return [Array<String>] An array of source tube barcodes.
   def extract_source_tube_barcodes
-    params[:plates_from_tubes][:source_tubes].split(/[\s,]+/)
+    params[:plates_from_tubes][:source_tubes]&.split(/[\s,]+/) || []
   end
 
   # Finds tubes based on the provided barcodes and stores them in found_tubes.
