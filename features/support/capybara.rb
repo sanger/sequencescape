@@ -16,14 +16,15 @@ Capybara.register_driver :headless_chrome do |app|
   options.add_argument('--disable-gpu')
   options.add_argument('--disable-search-engine-choice-screen')
   options.browser_version = '133'
+  options.skip_driver_in_path = true
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 end
 
 Capybara.register_driver :chrome do |app|
   options = Selenium::WebDriver::Chrome::Options.new
   options.add_preference('download.default_directory', DownloadHelpers::PATH.to_s)
-
   options.browser_version = '133'
+  options.skip_driver_in_path = true
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 end
 
