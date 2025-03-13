@@ -47,6 +47,7 @@
 - [ ] `app/resources/api/v2/volume_update_resource.rb` - Update routes file to disallow updates.
 - [ ] `app/resources/api/v2/volume_update_resource.rb` - `created_by` can be any string, update to user relationship.
 - [ ] Use `except: %i[update]` in `routes.rb` or the access restrictions in `app/resources/api/v2/base_resource.rb` for `app/resources/api/v2/asset_audit_resource.rb`, instead of declaring `self.updatable_fields(_context)`.
+- [ ] `app/resources/api/v2/asset_audit_resource.rb` - replace `asset_uuid` with asset relationship
 - [ ] Same as above for `app/resources/api/v2/comment_resource.rb`
 - [ ] Remove `write_once: true` from any attributes and relationships where the resource is immutable (e.g., `app/resources/api/v2/tag_resource.rb`, `app/resources/api/v2/lot_type_resource.rb` and more)
 - [ ] Where resources are immutable, add `readonly` to attributes.
