@@ -45,10 +45,15 @@ module Api
     # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation.
     class SubmissionResource < BaseResource
+      default_includes :uuid_object, :sequencing_requests
+
       ###
       # Attributes
       ###
       attr_writer :and_submit # Stored so that the after_replace_fields callback knows whether to submit the submission.
+
+      # Added for use in Limber Presenters to decide whether to show the pooling tab
+      delegate :multiplexed?, to: :_model
 
       # CAUTION:
       # See app/controllers/api/v2/submissions_controller.rb
@@ -68,6 +73,7 @@ module Api
       #   @return [Integer]
       #   @note This value can only be set once at creation.
       attribute :lanes_of_sequencing, write_once: true
+      attribute :multiplexed?, readonly: true
 
       def lanes_of_sequencing
         _model.sequencing_requests.size

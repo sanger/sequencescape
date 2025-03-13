@@ -67,6 +67,8 @@ module Api
       # The Receptacle resource includes shared behaviors such as attributes, relationships, and filters
       # from the `Api::V2::SharedBehaviour::Receptacle` module.
       include Api::V2::SharedBehaviour::Receptacle
+
+      default_includes :uuid_object
     end
   end
 end

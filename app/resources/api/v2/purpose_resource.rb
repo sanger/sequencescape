@@ -33,6 +33,8 @@ module Api
     # For more details on JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or check out the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation.
     class PurposeResource < BaseResource
+      default_includes :uuid_object
+
       ###
       # Attributes
       ###

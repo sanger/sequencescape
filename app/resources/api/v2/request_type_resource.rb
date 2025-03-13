@@ -23,6 +23,8 @@ module Api
     class RequestTypeResource < BaseResource
       immutable
 
+      default_includes :uuid_object
+
       # @!attribute [r] uuid
       #   @return [String] The unique identifier of the request type.
       #   @note This field is readonly as this resource is immutable.

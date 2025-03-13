@@ -24,6 +24,8 @@ module Api
 
       immutable
 
+      default_includes :uuid_object, :barcodes, :transfer_requests_as_target
+
       ###
       # Attributes
       ###

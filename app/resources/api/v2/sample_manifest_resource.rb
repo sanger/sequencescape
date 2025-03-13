@@ -37,6 +37,8 @@ module Api
     class SampleManifestResource < BaseResource
       immutable
 
+      default_includes :uuid_object
+
       ###
       # Attributes
       ###

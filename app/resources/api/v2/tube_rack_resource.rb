@@ -51,6 +51,9 @@ module Api
       #       as we would be relying on the request to tell us who requested it.
       #       Instead this should be done as part of adding authentication to
       #       the API in the security OKR.
+
+      default_includes :uuid_object, :barcodes
+
       # Attributes
       # @!attribute [r] created_at
       #   @return [String] The timestamp when the tube rack was created. Readonly.

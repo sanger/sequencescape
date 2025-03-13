@@ -21,6 +21,8 @@ module Api
     # @note This resource is read-only; it can be accessed via GET requests, but creation or
     #   modification is not allowed.
     class TubeRackStatusResource < BaseResource
+      default_includes :uuid_object
+
       ###
       # Attributes
       ###

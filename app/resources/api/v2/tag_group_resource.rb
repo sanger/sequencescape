@@ -45,6 +45,8 @@ module Api
     # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or refer to [JSONAPI::Resources](http://jsonapi-resources.com/) for Sequencescape's implementation.
     class TagGroupResource < BaseResource
+      default_includes :uuid_object, :tags
+
       ###
       # Attributes
       ###

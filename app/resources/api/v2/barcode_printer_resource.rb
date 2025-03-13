@@ -24,6 +24,8 @@ module Api
       # This resource is immutable, meaning it cannot be created, updated, or deleted.
       immutable
 
+      default_includes :uuid_object
+
       ###
       # Attributes
       ###

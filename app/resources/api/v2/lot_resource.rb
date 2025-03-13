@@ -50,6 +50,8 @@ module Api
     # or the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class LotResource < BaseResource
+      default_includes :uuid_object
+
       ###
       # Attributes
       ###

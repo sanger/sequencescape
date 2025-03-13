@@ -35,6 +35,8 @@ module Api
       # is automatically available on plates and tubes.
       include Api::V2::SharedBehaviour::Labware
 
+      default_includes :uuid_object, :barcodes
+
       ###
       # Custom Methods
       ###

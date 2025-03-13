@@ -60,6 +60,8 @@ module Api
       # Api::V2::SharedBehaviour::Receptacle provides common functionality, methods and relationships
       include Api::V2::SharedBehaviour::Receptacle
 
+      default_includes :uuid_object, :map, :transfer_requests_as_target, plate: :barcodes
+
       ###
       # Attributes
       ###

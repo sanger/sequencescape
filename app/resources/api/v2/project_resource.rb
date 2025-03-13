@@ -20,6 +20,8 @@ module Api
     class ProjectResource < BaseResource
       immutable
 
+      default_includes :uuid_object
+
       ###
       # Attributes
       ###

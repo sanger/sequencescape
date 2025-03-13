@@ -22,6 +22,8 @@ module Api
     class LotTypeResource < BaseResource
       immutable
 
+      default_includes :uuid_object
+
       ###
       # Attributes
       ###

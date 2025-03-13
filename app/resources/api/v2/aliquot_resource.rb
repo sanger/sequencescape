@@ -43,6 +43,8 @@ module Api
     # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or the [JSONAPI::Resources](http://jsonapi-resources.com/) package, which implements JSON:API for Sequencescape.
     class AliquotResource < BaseResource
+      default_includes :tag, :tag2
+
       ###
       # Attributes
       ###
