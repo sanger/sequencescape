@@ -183,6 +183,7 @@ jobs:
         uses: browser-actions/setup-chrome@v1
         with:
           chrome-version: 133
+          install-chromedriver: true 
       - name: Update PATH
         run: |
           sudo ln -sf /opt/hostedtoolcache/setup-chrome/chromium/133.0.6943.141/x64/chrome /usr/bin/google-chrome
