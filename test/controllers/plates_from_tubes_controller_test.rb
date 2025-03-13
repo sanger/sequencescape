@@ -14,7 +14,7 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
       # Populating plate creators
       @stock_plate_creator = create(:plate_creator, name: 'Stock Plate', plate_purposes: [@stock_plate_purpose])
       @rna_stock_plate_creator =
-        create(:plate_creator, name: 'scRNA Stock Plate', plate_purposes: [@rna_stock_plate_purpose])
+        create(:plate_creator, name: 'Stock RNA Plate', plate_purposes: [@rna_stock_plate_purpose])
 
       # Populating barcode printers
       @barcode_printer = create(:barcode_printer)
@@ -77,7 +77,7 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
                  plates_from_tubes: {
                    user_barcode: '1234567',
                    barcode_printer: @barcode_printer.id,
-                   plate_type: 'RNA Stock Plate',
+                   plate_type: 'Stock RNA Plate',
                    source_tubes: "#{@tube1.barcodes.first.barcode}\r\n#{@tube2.barcodes.first.barcode}"
                  }
                }

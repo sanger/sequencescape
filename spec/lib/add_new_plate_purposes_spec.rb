@@ -20,7 +20,7 @@ RSpec.describe 'plate_creators:add_new_plate_purposes', type: :task do
     expect { task.invoke }.to change(Plate::Creator, :count).to(2)
 
     stock_plate_creator = Plate::Creator.find_by(name: 'Stock Plate')
-    rna_plate_creator = Plate::Creator.find_by(name: 'scRNA Stock Plate')
+    rna_plate_creator = Plate::Creator.find_by(name: 'Stock RNA Plate')
 
     expect(stock_plate_creator).not_to be_nil
     expect(stock_plate_creator.valid_options).to eq({ valid_dilution_factors: [1.0] })

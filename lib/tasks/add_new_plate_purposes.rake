@@ -30,7 +30,7 @@ namespace :plate_creators do
           creator.valid_options = { valid_dilution_factors: [1.0] }
         end
       rna_plate_creator =
-        Plate::Creator.find_or_create_by!(name: 'scRNA Stock Plate') do |creator|
+        Plate::Creator.find_or_create_by!(name: 'Stock RNA Plate') do |creator|
           creator.valid_options = { valid_dilution_factors: [1.0] }
         end
 

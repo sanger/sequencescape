@@ -80,8 +80,8 @@ class PlatesFromTubesController < ApplicationController
     @plate_creator =
       if params[:plates_from_tubes][:plate_type].to_s == 'Stock Plate'
         [@plate_creators.find { |plate_creator| plate_creator.name == 'Stock Plate' }]
-      elsif params[:plates_from_tubes][:plate_type].to_s == 'RNA Stock Plate'
-        [@plate_creators.find { |plate_creator| plate_creator.name == 'scRNA Stock Plate' }]
+      elsif params[:plates_from_tubes][:plate_type].to_s == 'Stock RNA Plate'
+        [@plate_creators.find { |plate_creator| plate_creator.name == 'Stock RNA Plate' }]
       else
         @plate_creators
       end
