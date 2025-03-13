@@ -51,7 +51,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-      - name: Print Chrome version
+      - name: Confirm Chrome version
         run: google-chrome --version
       - name: Setup environment
         env:
@@ -97,7 +97,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-      - name: Print Chrome version
+      - name: Confirm Chrome version
         run: google-chrome --version
       - name: Setup node
         uses: actions/setup-node@v4
@@ -177,7 +177,7 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-      - name: Print Chrome version
+      - name: Confirm Chrome version
         run: google-chrome --version
       # Establish a cache of js modules to improve performance
       - name: Setup node
