@@ -54,6 +54,8 @@ module Api
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class QcableResource < BaseResource
+      default_includes :uuid_object, :barcodes
+
       ###
       # Attributes
       ###
