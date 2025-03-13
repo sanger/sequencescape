@@ -183,12 +183,14 @@ jobs:
         uses: browser-actions/setup-chrome@v1
         with:
           chrome-version: 133
-          install-chromedriver: true 
-      - name: Update PATH
+          install-chromedriver: true
+      - name: Update Chrome Path
         run: |
           sudo ln -sf /opt/hostedtoolcache/setup-chrome/chromium/133.0.6943.141/x64/chrome /usr/bin/google-chrome
       - name: Confirm Chrome version
-        run: google-chrome --version
+        run: |
+          google-chrome --version
+          chromedriver --version
       # Install only the gems needed for testing
       # Keep an eye on https://github.com/rubygems/bundler-features/issues/59
       # in case bundler add an only flag
