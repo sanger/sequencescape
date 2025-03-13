@@ -52,7 +52,9 @@ jobs:
         with:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
       - name: Confirm Chrome version
-        run: google-chrome --version
+        run: |
+          google-chrome --version
+          chromedriver --version
       - name: Setup environment
         env:
           DBPORT: ${{ job.services.mysql.ports[3306] }}
@@ -98,7 +100,9 @@ jobs:
         with:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
       - name: Confirm Chrome version
-        run: google-chrome --version
+        run: |
+          google-chrome --version
+          chromedriver --version
       - name: Setup node
         uses: actions/setup-node@v4
         with:
@@ -178,7 +182,9 @@ jobs:
         with:
           bundler-cache: true # runs 'bundle install' and caches installed gems automatically
       - name: Confirm Chrome version
-        run: google-chrome --version
+        run: |
+          google-chrome --version
+          chromedriver --version
       # Establish a cache of js modules to improve performance
       - name: Setup node
         uses: actions/setup-node@v3
