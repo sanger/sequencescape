@@ -15,6 +15,7 @@ Capybara.register_driver :headless_chrome do |app|
   options.add_argument('--headless')
   options.add_argument('--disable-gpu')
   options.add_argument('--disable-search-engine-choice-screen')
+  options.add_argument("--user-data-dir=/tmp/chrome-profile-#{Time.now.to_i}")
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 end
 
