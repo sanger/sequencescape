@@ -17,7 +17,6 @@ Capybara.register_driver :headless_chrome do |app|
   options.add_argument('--disable-search-engine-choice-screen')
   options.add_argument('--no-sandbox')
   options.add_argument('--disable-dev-shm-usage')
-  options.add_argument("--user-data-dir=/tmp/chrome-profile-#{SecureRandom.hex}")
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 end
 

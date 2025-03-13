@@ -169,6 +169,8 @@ jobs:
         ci_node_index: [0, 1]
     steps:
       - uses: actions/checkout@v4
+      - name: Kill Chrome processes
+        run: pkill -9 -f chrome || true
       - name: Cleanup tmp Chrome profiles
         run: rm -rf /tmp/chrome-profile-*
       - name: Set up Ruby
