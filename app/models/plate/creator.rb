@@ -167,6 +167,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
       tube = tubes.shift
       break if tube.nil?
       well.aliquots << tube.aliquots.map(&:dup)
+      AssetLink.create_edge!(tube, plate)
     end
     #  Create and send the print job to the printer
     print_job =
