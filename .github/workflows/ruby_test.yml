@@ -204,6 +204,9 @@ jobs:
           google-chrome --version
           which chromedriver
           chromedriver --version
+      - name: Locate ChromeDriver
+        run: |
+          find / -name chromedriver 2>/dev/null
       # Install only the gems needed for testing
       # Keep an eye on https://github.com/rubygems/bundler-features/issues/59
       # in case bundler add an only flag

@@ -29,4 +29,4 @@ end
 
 Capybara.default_max_wait_time = 10
 Capybara.javascript_driver = ENV.fetch('JS_DRIVER', 'headless_chrome').to_sym
-Selenium::WebDriver::Chrome::Service.driver_path = "/usr/bin/chromedriver"
+# Selenium::WebDriver::Chrome::Service.driver_path = "/usr/bin/chromedriver"
