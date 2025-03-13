@@ -191,9 +191,18 @@ jobs:
       - name: Update Chrome Path
         run: |
           sudo ln -sf /opt/hostedtoolcache/setup-chrome/chromium/133.0.6943.141/x64/chrome /usr/bin/google-chrome
+      - name: Update ChromeDriver Path
+        run: |
+          sudo ln -sf /opt/hostedtoolcache/setup-chrome/chromium/133.0.6943.141/x64/chromedriver /usr/bin/chromedriver
       - name: Confirm Chrome version
         run: |
           google-chrome --version
+          chromedriver --version
+      - name: Check for other Chrome versions
+        run: |
+          which google-chrome
+          google-chrome --version
+          which chromedriver
           chromedriver --version
       # Install only the gems needed for testing
       # Keep an eye on https://github.com/rubygems/bundler-features/issues/59
