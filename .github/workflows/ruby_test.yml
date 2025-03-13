@@ -183,6 +183,8 @@ jobs:
         uses: browser-actions/setup-chrome@v1
         with:
           chrome-version: 133
+      - name: Confirm Chrome version
+        run: google-chrome --version
       # Install only the gems needed for testing
       # Keep an eye on https://github.com/rubygems/bundler-features/issues/59
       # in case bundler add an only flag
