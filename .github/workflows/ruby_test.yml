@@ -183,6 +183,9 @@ jobs:
         uses: browser-actions/setup-chrome@v1
         with:
           chrome-version: 133
+      - name: Update PATH
+        run: |
+          sudo ln -sf /opt/hostedtoolcache/setup-chrome/chromium/stable/x64/chrome /usr/bin/google-chrome
       - name: Confirm Chrome version
         run: google-chrome --version
       # Install only the gems needed for testing
