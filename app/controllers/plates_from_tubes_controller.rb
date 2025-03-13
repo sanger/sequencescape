@@ -178,7 +178,7 @@ class PlatesFromTubesController < ApplicationController
   #
   # @return [Array<String>] An array of source tube barcodes.
   def extract_source_tube_barcodes
-    params[:plates_from_tubes][:source_tubes]&.split(/[\s,]+/) || []
+    params[:plates_from_tubes][:source_tubes]&.split(/[\s,]+/)&.map(&:strip) || []
   end
 
   # Finds tubes based on the provided barcodes and stores them in found_tubes.
