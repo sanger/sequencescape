@@ -185,7 +185,7 @@ jobs:
           chrome-version: 133
       - name: Update PATH
         run: |
-          sudo ln -sf /opt/hostedtoolcache/setup-chrome/chromium/stable/x64/chrome /usr/bin/google-chrome
+          sudo ln -sf /opt/hostedtoolcache/setup-chrome/chromium/133.0.6943.141/x64/chrome /usr/bin/google-chrome
       - name: Confirm Chrome version
         run: google-chrome --version
       # Install only the gems needed for testing
