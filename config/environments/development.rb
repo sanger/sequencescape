@@ -45,8 +45,8 @@ Rails.application.configure do
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
   config.logger = ActiveSupport::Logger.new($stdout) if ENV['RAILS_LOG_TO_FILE'].blank?
-  config.log_level = ENV.fetch('LOG_LEVEL', :debug).to_sym
-
+  # config.log_level = ENV.fetch('LOG_LEVEL', :debug).to_sym
+  config.log_level = :error
   # Raise an error on page load if there are pending migrations.
   # Disable this if we're pointing at a custom database url
   custom_db = ENV.fetch('DATABASE_URL', nil).present?
