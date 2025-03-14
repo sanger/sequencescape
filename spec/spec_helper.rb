@@ -150,6 +150,7 @@ RSpec.configure do |config|
   config.order = :random
 
   config.include UserLogin
+  config.include SelectHelper
 
   config.around(:each, :warren) do |ex|
     Warren.handler.enable!

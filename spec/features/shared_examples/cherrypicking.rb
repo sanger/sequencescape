@@ -26,18 +26,19 @@ shared_examples 'a cherrypicking procedure' do
       end
 
       step 'Task 1, Step 1 - Select layout options' do
-        select(target_purpose.name, from: 'Output plate purpose')
-        select(plate_template.name, from: 'Plate Template')
+        select_js(target_purpose.name, from: 'Output plate purpose')
+        select_js(plate_template.name, from: 'Plate Template')
 
         # optionally select a control plate
         if control_plate
-          control_plate_text = "#{control_plate.human_barcode} - #{control_plate.name}"
-          select(control_plate_text, from: 'Control plate')
+          placement_type = control_plate.custom_metadatum_collection&.metadata&.[]('control_placement_type')
+          control_plate_text = "#{control_plate.human_barcode} - #{control_plate.name} (#{placement_type.capitalize})"
+          select_js(control_plate_text, from: 'Control plate & placement type')
         end
       end
 
       step 'Task 1, Step 2 - Select Robot' do
-        select(robot.name, from: 'Picking Robot')
+        select_js(robot.name, from: 'Picking Robot')
       end
 
       step 'Task 1, Step 3 - Specify volume to pick' do
@@ -223,7 +224,7 @@ shared_examples 'a cherrypicking procedure' do
             step 'optionally set custom destination plate type' do
               # optionally fill in custom plate type for the destination
               if custom_destination_type
-                select(custom_destination_type_name, from: "plate_types[#{destination_barcode}]")
+                select_js(custom_destination_type_name, from: "plate_types[#{destination_barcode}]")
               end
             end
 
