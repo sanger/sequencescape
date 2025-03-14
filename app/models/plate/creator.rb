@@ -161,8 +161,6 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
         p.name = "#{plate_purpose.name} #{p.human_barcode}"
       end
     return if plate.blank?
-    # Do we create the asset link between the tubes and the plate?
-    # This is probably required if we want to maintain a parent-child relationship.
     plate.wells_in_column_order.each do |well|
       tube = tubes.shift
       break if tube.nil?
