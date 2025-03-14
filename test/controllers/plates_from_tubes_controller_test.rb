@@ -69,7 +69,7 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
           # Stubbing the barcode generation call for the new plate generated
           PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode, barcode: 'SQPD-1234567'))
 
-          # Initial plate count in the in-memory database
+          # Initial asset link count in the in-memory database
           @asset_links = AssetLink.count
           post :create,
                params: {
