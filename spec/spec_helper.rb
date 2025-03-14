@@ -67,6 +67,8 @@ Capybara.register_driver :selenium_firefox do |app|
   Capybara::Selenium::Driver.new(app, browser: :firefox, options: options)
 end
 
+Selenium::WebDriver.logger.ignore(:clear_local_storage, :clear_session_storage)
+
 Capybara.javascript_driver = ENV.fetch('JS_DRIVER', 'headless_firefox').to_sym
 Capybara.default_max_wait_time = 10
 
