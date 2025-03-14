@@ -48,26 +48,26 @@ require './lib/capybara_failure_logger'
 require './lib/capybara_timeout_patch'
 require 'pry'
 
-Capybara.register_driver :headless_chrome do |app|
-  options = Selenium::WebDriver::Chrome::Options.new
+Capybara.register_driver :headless_firefox do |app|
+  options = Selenium::WebDriver::Firefox::Options.new
 
   options.add_preference('download.default_directory', DownloadHelpers::PATH.to_s)
   options.add_argument('--headless')
   options.add_argument('--disable-gpu')
   options.add_argument('--disable-search-engine-choice-screen')
-  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+  Capybara::Selenium::Driver.new(app, browser: :firefox, options: options)
 end
 
-Capybara.register_driver :selenium_chrome do |app|
-  options = Selenium::WebDriver::Chrome::Options.new
+Capybara.register_driver :selenium_firefox do |app|
+  options = Selenium::WebDriver::Firefox::Options.new
 
   options.add_preference('download.default_directory', DownloadHelpers::PATH.to_s)
   options.add_argument('--disable-gpu')
   options.add_argument('--disable-search-engine-choice-screen')
-  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+  Capybara::Selenium::Driver.new(app, browser: :firefox, options: options)
 end
 
-Capybara.javascript_driver = ENV.fetch('JS_DRIVER', 'headless_chrome').to_sym
+Capybara.javascript_driver = ENV.fetch('JS_DRIVER', 'headless_firefox').to_sym
 Capybara.default_max_wait_time = 10
 
 WebMock.disable_net_connect!(allow_localhost: true, allow: ['api.knapsackpro.com'])
