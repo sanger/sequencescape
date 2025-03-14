@@ -62,6 +62,39 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
         end
       end
 
+      context 'on POST to create a stock plate and asset links' do
+        setup do
+          @tube1 = FactoryBot.create(:tube)
+
+          # Stubbing the barcode generation call for the new plate generated
+          PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode, barcode: 'SQPD-1234567'))
+
+          # Initial plate count in the in-memory database
+          @asset_links = AssetLink.count
+          post :create,
+               params: {
+                 plates_from_tubes: {
+                   user_barcode: '1234567',
+                   barcode_printer: @barcode_printer.id,
+                   plate_type: 'Stock Plate',
+                   source_tubes: @tube1.barcodes.first.barcode.to_s
+                 }
+               }
+        end
+
+        should 'increase the asset link count by 1' do
+          assert_equal @asset_links + 1, AssetLink.count
+        end
+
+        should 'create the correct asset_link ancestor' do
+          assert_equal AssetLink.last.ancestor_id, Tube.last.id
+        end
+
+        should 'create the correct asset_link descendant' do
+          assert_equal AssetLink.last.descendant_id, Plate.last.id
+        end
+      end
+
       context 'on POST to create an RNA plate' do
         setup do
           @tube1 = FactoryBot.create(:tube)
