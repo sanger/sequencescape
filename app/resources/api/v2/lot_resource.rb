@@ -22,29 +22,31 @@ module Api
     #
     # @example POST request to create a new lot
     #   POST /api/v2/lots/
-    # {
-    #   "data": {
-    #     "type": "lots",
-    #     "attributes": {
-    #       "lot_number": "ABC123"
-    #       // "received_at": "11"
-    #     },
-    #     "relationships": {
-    #       "lot_type": {
-    #         "data": { "type": "lot_types", "id": "1" }
+    # @example POST request to create a new lot
+    #   POST /api/v2/lots/
+    #   {
+    #     "data": {
+    #       "type": "lots",
+    #       "attributes": {
+    #         "lot_number": "ABC123"
+    #         // "received_at": "11"
     #       },
-    #       "user": {
-    #         "data": { "type": "users", "id": "1" }
-    #       },
-    #       "template": {
-    #         "data": { "type": "tag_layout_templates", "id": "3" }
+    #       "relationships": {
+    #         "lot_type": {
+    #           "data": { "type": "lot_types", "id": "1" }
+    #         },
+    #         "user": {
+    #           "data": { "type": "users", "id": "1" }
+    #         },
+    #         "template": {
+    #           "data": { "type": "tag_layout_templates", "id": "3" }
+    #         }
+    #         // "tag_layout_template": {
+    #         //     "data": { "type": "tag_layout_templates", "id": "1"}
+    #         // }
     #       }
-    #       // "tag_layout_template": {
-    #       //     "data": { "type": "tag_layout_templates", "id": "1"}
-    #       // }
     #     }
     #   }
-    # }
     #
     # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation

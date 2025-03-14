@@ -20,29 +20,31 @@ module Api
     #
     # @example POST request to create a new pick list (receptacle-based picks)
     #   POST /api/v2/pick_lists/
-    # {
-    #   "data": {
-    #     "type": "pick_lists",
-    #     "attributes": {
-    #       "asynchronous": true,
-    #       "pick_attributes": [{ "source_receptacle_id": 96, "study_id": 1, "project_id": 1 }]
+    #   {
+    #     "data": {
+    #       "type": "pick_lists",
+    #       "attributes": {
+    #         "asynchronous": true,
+    #         "pick_attributes": [{ "source_receptacle_id": 96, "study_id": 1, "project_id": 1 }]
+    #       }
     #     }
     #   }
-    # }
 
     # @example POST request to create a new pick list (labware-based picks)
     #   POST /api/v2/pick_lists/
-    # {
-    #   "data": {
-    #     "type": "pick_lists",
-    #     "attributes": {
-    #       asynchronous: true,
-    #       "labware_pick_attributes": [
-    #         { "source_labware_id": 1, "source_labware_barcode": "SQPD-9001", "study_id": 1, "project_id": 1 }
-    #       ]
+    #   @example POST request to create a new pick list (labware-based picks)
+    #     POST /api/v2/pick_lists/
+    #     {
+    #       "data": {
+    #         "type": "pick_lists",
+    #         "attributes": {
+    #           asynchronous: true,
+    #           "labware_pick_attributes": [
+    #             { "source_labware_id": 1, "source_labware_barcode": "SQPD-9001", "study_id": 1, "project_id": 1 }
+    #           ]
+    #         }
+    #       }
     #     }
-    #   }
-    # }
     #
     # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation

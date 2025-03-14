@@ -148,8 +148,7 @@ command:
 docker compose -f docker compose-dev.yml up
 ```
 
-**ABOUT RECREATE DOCKER IMAGE** If you ever need to recreate the image built on first start (because you made modifications
-to the Dockerfile file) you can run the building process again with:
+**ABOUT RECREATE DOCKER IMAGE** If you ever need to recreate the image built on first start (because you made modifications to the Dockerfile file or there have been dependency updates) you can re build the image again with (or see above for M1 Apple chip):
 
 ```shell
 docker compose build

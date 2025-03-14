@@ -15,18 +15,18 @@ module Api
     #
     # @example POST request to create a new AssetAudit
     #   POST /api/v2/asset_audits/
-    # {
-    #   "data": {
-    #     "type": "asset_audits",
-    #     "attributes": {
-    #       "key": "asset_audit_key",
-    #       "message": "Asset audit message",
-    #       "created_by": "user_uuid",
-    #       "witnessed_by": "witness_user_uuid",
-    #       "metadata": null
-    #     },
-    #    }
-    # }
+    #   {
+    #     "data": {
+    #       "type": "asset_audits",
+    #       "attributes": {
+    #         "key": "asset_audit_key",
+    #         "message": "Asset audit message",
+    #         "created_by": "user_uuid",
+    #         "witnessed_by": "witness_user_uuid",
+    #         "metadata": null
+    #       }
+    #     }
+    #   }
     #
     # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation

@@ -27,17 +27,17 @@ module Api
     #
     # @example Updating a specific CustomMetadatumCollection via a PATCH request
     #   PATCH /api/v2/custom_metadatum_collections/123
-    # {
-    #   "data": {
-    #       "id": 6,
-    #       "type": "custom_metadatum_collections",
-    #       "attributes": {
-    #           "metadata": {
-    #               "key1": "value3"
-    #           }
-    #       }
+    #   {
+    #     "data": {
+    #         "id": 6,
+    #         "type": "custom_metadatum_collections",
+    #         "attributes": {
+    #             "metadata": {
+    #                 "key1": "value3"
+    #             }
+    #         }
+    #     }
     #   }
-    # }
     #
     # @example Retrieving a specific CustomMetadatumCollection by ID
     #   GET /api/v2/custom_metadatum_collections/123

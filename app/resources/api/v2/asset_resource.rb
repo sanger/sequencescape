@@ -2,7 +2,7 @@
 
 module Api
   module V2
-    # This resource is deprecated and should be replaced with a subclass of {AssetResource}
+    # @deprecated This resource is deprecated and should be replaced with a subclass of {AssetResource}
     # The {Asset} is an abstract class and cannot be instantiated.
     #
     # @note Access this resource via the `/api/v2/assets/` endpoint.

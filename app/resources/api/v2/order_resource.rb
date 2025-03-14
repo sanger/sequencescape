@@ -24,25 +24,25 @@ module Api
     #
     # @example POST request to create an order
     #   POST /api/v2/orders/
-    # {
-    #   "data": {
-    #     "type": "orders",
-    #     "attributes": {
-    #       "submission_template_uuid": "9daf8d28-7cdf-11ef-b4cc-000000000000",
-    #       "submission_template_attributes": {
-    #         "asset_uuids": [ "e9580eea-fe6b-11ef-ba74-000000000000"],
-    #         "autodetect_projects": true,
-    #         "autodetect_studies": false,
-    #       "request_options": {
-    #           "library_type": "Chromium single cell 3 prime v3",
-    #           "fragment_size_required_from": "200",
-    #           "fragment_size_required_to": "800"
-    #       },
-    #         "user_uuid": "d8c22e20-f45d-11ef-8842-000000000000"
+    #   {
+    #     "data": {
+    #       "type": "orders",
+    #       "attributes": {
+    #         "submission_template_uuid": "9daf8d28-7cdf-11ef-b4cc-000000000000",
+    #         "submission_template_attributes": {
+    #           "asset_uuids": ["e9580eea-fe6b-11ef-ba74-000000000000"],
+    #           "autodetect_projects": true,
+    #           "autodetect_studies": false,
+    #           "request_options": {
+    #             "library_type": "Chromium single cell 3 prime v3",
+    #             "fragment_size_required_from": "200",
+    #             "fragment_size_required_to": "800"
+    #           },
+    #           "user_uuid": "d8c22e20-f45d-11ef-8842-000000000000"
+    #         }
     #       }
     #     }
     #   }
-    # }
     #
     # @example GET request for all Order resources
     #   GET /api/v2/orders/

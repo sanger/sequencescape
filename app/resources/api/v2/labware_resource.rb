@@ -16,15 +16,15 @@ module Api
     #
     # @example POST request to create a new Labware resource
     #   POST /api/v2/labware/
-    # {
-    #   "data": {
-    #     "type": "labware",
-    #     "attributes": {
-    #     },
-    #     "relationships": {
+    #   {
+    #     "data": {
+    #       "type": "labware",
+    #       "attributes": {
+    #       },
+    #       "relationships": {
+    #       }
     #     }
     #   }
-    # }
     #
     #
     # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)

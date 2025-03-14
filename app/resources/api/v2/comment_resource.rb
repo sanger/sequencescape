@@ -14,23 +14,25 @@ module Api
     #
     # @example POST request to create a new Comment
     #   POST /api/v2/comments/
-    # {
-    #   "data": {
-    #     "type": "comments",
-    #     "attributes": {
-    #       "title": "Feedback",
-    #       "description": "This is a great feature!"
-    #     },
-    #     "relationships": {
-    #       "user": {
-    #         "data": { "type": "users", "id": 4 }
+    #
+    # @example POST request body to create a new Comment
+    #   {
+    #     "data": {
+    #       "type": "comments",
+    #       "attributes": {
+    #         "title": "Feedback",
+    #         "description": "This is a great feature!"
     #       },
-    #       "commentable": {
-    #         "data": { "type": "wells", "id": "1" }
+    #       "relationships": {
+    #         "user": {
+    #           "data": { "type": "users", "id": 4 }
+    #         },
+    #         "commentable": {
+    #           "data": { "type": "wells", "id": "1" }
+    #         }
     #       }
     #     }
     #   }
-    # }
     #
     # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation

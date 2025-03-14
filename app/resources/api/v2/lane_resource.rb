@@ -4,7 +4,6 @@ module Api
   module V2
     # Provides a JSON:API representation of {Lane}, representing sequencing lanes within a flowcell.
     #
-    #
     # @note This resource is immutable: its endpoint will not accept `POST`, `PATCH`, or `DELETE` requests.
     # @note Access this resource via the `/api/v2/lanes/` endpoint.
     #

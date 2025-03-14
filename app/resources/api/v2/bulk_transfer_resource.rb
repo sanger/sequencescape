@@ -12,29 +12,29 @@ module Api
     #
     # @example POST request with user specified by relationship
     #   POST /api/v2/bulk_transfers/
-    # {
-    #   "data": {
-    #     "type": "bulk_transfers",
-    #     "attributes": {
-    #       "well_transfers": [
-    #         {
-    #           "source_uuid": "7b4c094a-fe6d-11ef-ba74-000000000000",
-    #           "source_location": "A2",
-    #           "destination_uuid": "7b4c094a-fe6d-11ef-ba74-000000000000",
-    #           "destination_location": "A2"
-    #         }
-    #       ]
-    #     },
-    #     "relationships": {
-    #       "user": {
-    #         "data": {
-    #           "type": "users",
-    #           "id": 4
+    #   {
+    #     "data": {
+    #       "type": "bulk_transfers",
+    #       "attributes": {
+    #         "well_transfers": [
+    #           {
+    #             "source_uuid": "7b4c094a-fe6d-11ef-ba74-000000000000",
+    #             "source_location": "A2",
+    #             "destination_uuid": "7b4c094a-fe6d-11ef-ba74-000000000000",
+    #             "destination_location": "A2"
+    #           }
+    #         ]
+    #       },
+    #       "relationships": {
+    #         "user": {
+    #           "data": {
+    #             "type": "users",
+    #             "id": 4
+    #           }
     #         }
     #       }
     #     }
     #   }
-    # }
     #
     # @example GET request for all BulkTransfer resources
     #   GET /api/v2/bulk_transfers/

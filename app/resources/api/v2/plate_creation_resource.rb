@@ -25,23 +25,23 @@ module Api
     #
     # @example POST request with arguments specified by relationship
     #   POST /api/v2/plate_creations/
-    # {
-    #   "data": {
-    #     "type": "plate_creations",
-    #     "attributes": {},
-    #     "relationships": {
-    #       "parent": {
-    #         "data": { "type": "plates", "id": 1 }
-    #       },
-    #       "child_purpose": {
-    #         "data": { "type": "plate_purposes", "id": 1 }
-    #       },
-    #       "user": {
-    #         "data": { "type": "users", "id": 4 }
+    #   {
+    #     "data": {
+    #       "type": "plate_creations",
+    #       "attributes": {},
+    #       "relationships": {
+    #         "parent": {
+    #           "data": { "type": "plates", "id": 1 }
+    #         },
+    #         "child_purpose": {
+    #           "data": { "type": "plate_purposes", "id": 1 }
+    #         },
+    #         "user": {
+    #           "data": { "type": "users", "id": 4 }
+    #         }
     #       }
     #     }
     #   }
-    # }
     #
     # @example GET request for all PlateCreation resources
     #   GET /api/v2/plate_creations/
