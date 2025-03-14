@@ -43,34 +43,11 @@ require 'database_cleaner/active_record'
 # uninitialized constant RSpec::Support::Differ
 require 'rspec/support/differ'
 
+require './features/support/capybara'
 require './lib/plate_map_generation'
 require './lib/capybara_failure_logger'
 require './lib/capybara_timeout_patch'
 require 'pry'
-
-Capybara.register_driver :headless_firefox do |app|
-  options = Selenium::WebDriver::Firefox::Options.new
-
-  options.add_preference('download.default_directory', DownloadHelpers::PATH.to_s)
-  options.add_argument('--headless')
-  options.add_argument('--disable-gpu')
-  options.add_argument('--disable-search-engine-choice-screen')
-  Capybara::Selenium::Driver.new(app, browser: :firefox, options: options)
-end
-
-Capybara.register_driver :selenium_firefox do |app|
-  options = Selenium::WebDriver::Firefox::Options.new
-
-  options.add_preference('download.default_directory', DownloadHelpers::PATH.to_s)
-  options.add_argument('--disable-gpu')
-  options.add_argument('--disable-search-engine-choice-screen')
-  Capybara::Selenium::Driver.new(app, browser: :firefox, options: options)
-end
-
-Selenium::WebDriver.logger.ignore(:clear_local_storage, :clear_session_storage)
-
-Capybara.javascript_driver = ENV.fetch('JS_DRIVER', 'headless_firefox').to_sym
-Capybara.default_max_wait_time = 10
 
 WebMock.disable_net_connect!(allow_localhost: true, allow: ['api.knapsackpro.com'])
 
@@ -209,8 +186,6 @@ RSpec.configure do |config|
     # test to reduce the impact test order has on test execution
     FactoryBot.rewind_sequences
   end
-
-  config.before(:each, :js) { page.driver.browser.manage.window.resize_to(1024, 1024) }
 
   config.after(:each, :js) do |example|
     if example.exception
