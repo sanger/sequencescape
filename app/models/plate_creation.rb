@@ -39,10 +39,24 @@ class PlateCreation < AssetCreation
   # This is the child that is created from the parent.  It cannot be assigned before validation.
   belongs_to :parent, class_name: 'Plate'
   attr_accessor :sanger_barcode
+  attr_accessor :register_stock
 
   private
 
   def record_creation_of_children
     parent.events.create_plate!(child_purpose, child, user)
+    register_stock! if register_stock
   end
+
+  def register_stock!
+    return unless child.present? # Ensure the child plate exists
+
+    child.wells.each do |well|
+      sample = well.sample
+      next unless sample.present? 
+
+      sample.register_stock!
+    end
+  end
+
 end
