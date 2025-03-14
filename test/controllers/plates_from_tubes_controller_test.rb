@@ -62,7 +62,7 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
         end
       end
 
-      context 'on POST to create a stock plate and asset links' do
+      context 'on POST to create the asset links (as well as the plate)' do
         setup do
           @tube1 = FactoryBot.create(:tube)
 
