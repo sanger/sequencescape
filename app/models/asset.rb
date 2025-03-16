@@ -155,6 +155,8 @@ class Asset < ApplicationRecord
   # Called when importing samples, e.g. in sample_manifest > core_behaviour, on manifest upload
   def register_stock!
     class_name = self.class.name
+    puts "calling register stock "
+    puts class_name
     if stock_message_template.nil?
       # rubocop:todo Layout/LineLength
       raise StandardError,
