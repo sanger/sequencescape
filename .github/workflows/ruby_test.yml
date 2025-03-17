@@ -87,8 +87,8 @@ jobs:
     # Sets up the matrix for knapsack builds
     strategy:
       matrix:
-        ci_node_total: [3]
-        ci_node_index: [0, 1, 2]
+        ci_node_total: [2]
+        ci_node_index: [0, 1]
     steps:
       - uses: actions/checkout@v4
       - name: Set up Ruby

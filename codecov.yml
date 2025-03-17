@@ -3,10 +3,10 @@ codecov:
     # do not notify until at least n builds have been uploaded from the CI pipeline
     # rake_tests (push)
     # rake_tests (pull_request)
-    # ruby_test_without_features x3 (push)
-    # ruby_test_without_features x3 (pull_request)
+    # ruby_test_without_features x2 (push)
+    # ruby_test_without_features x2 (pull_request)
     # ruby_test_only_features (push)
     # ruby_test_only_features (pull_request)
     # cucumber_tests x2 (push)
     # cucumber_tests x2 (pull_request)
-    after_n_builds: 14
+    after_n_builds: 12
