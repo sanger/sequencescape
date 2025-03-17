@@ -155,17 +155,15 @@ class Asset < ApplicationRecord
   # Called when importing samples, e.g. in sample_manifest > core_behaviour, on manifest upload
   def register_stock!
     class_name = self.class.name
-    puts "calling register stock "
-    puts class_name
     if stock_message_template.nil?
       # rubocop:todo Layout/LineLength
       raise StandardError,
             "No stock template configured for #{class_name}. If #{class_name} is a stock, set stock_template on the class."
       # rubocop:enable Layout/LineLength
     end
-    puts stock_message_template
-    msg = Messenger.create!(target: self, template: stock_message_template, root: 'stock_resource')
-    puts msg.inspect
+
+    Messenger.create!(target: self, template: stock_message_template, root: 'stock_resource')
+
   end
 
   def update_from_qc(qc_result)

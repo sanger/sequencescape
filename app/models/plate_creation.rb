@@ -49,16 +49,8 @@ class PlateCreation < AssetCreation
   end
 
   def register_stock!
-    return unless child.present? # Ensure the child plate exists
+    return unless child.present? 
     child.wells.each(&:register_stock!)
-    
-    # child.wells.each do |well|
-    #   puts
-    #   puts well
-    #   puts well.aliquots.exists?
-    #   # next unless well.aliquots.exists? 
-    #   well.register_stock!
-    # end
   end
 
 end
