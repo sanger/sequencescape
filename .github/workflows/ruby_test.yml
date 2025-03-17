@@ -66,7 +66,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
-  rspec_tests_without_features:
+  rspec_unit_tests:
     runs-on: ubuntu-latest
     env:
       RAILS_ENV: test
@@ -145,7 +145,7 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
-  rspec_tests_only_features:
+  rspec_feature_tests:
     runs-on: ubuntu-latest
     env:
       RAILS_ENV: test
