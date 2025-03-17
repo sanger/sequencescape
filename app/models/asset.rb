@@ -163,8 +163,9 @@ class Asset < ApplicationRecord
             "No stock template configured for #{class_name}. If #{class_name} is a stock, set stock_template on the class."
       # rubocop:enable Layout/LineLength
     end
-
-    Messenger.create!(target: self, template: stock_message_template, root: 'stock_resource')
+    puts stock_message_template
+    msg = Messenger.create!(target: self, template: stock_message_template, root: 'stock_resource')
+    puts msg.inspect
   end
 
   def update_from_qc(qc_result)
