@@ -49,8 +49,7 @@ class PlateCreation < AssetCreation
   end
 
   def register_stock!
-    return unless child.present? 
+    return unless child.present?
     child.wells.each(&:register_stock!)
   end
-
 end

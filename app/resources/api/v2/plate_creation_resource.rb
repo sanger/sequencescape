@@ -98,7 +98,7 @@ module Api
       end
 
       attribute :register_stock, writeonly: true
-      
+
       def register_stock=(value)
         @model.register_stock = value
       end

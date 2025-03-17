@@ -163,7 +163,6 @@ class Asset < ApplicationRecord
     end
 
     Messenger.create!(target: self, template: stock_message_template, root: 'stock_resource')
-
   end
 
   def update_from_qc(qc_result)
