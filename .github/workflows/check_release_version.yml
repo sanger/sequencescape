@@ -1,0 +1,39 @@
+# Checks that the .release-version file has been updated
+name: Check release version
+
+on:
+  pull_request:
+    branches:
+      - master
+    types:
+      # defaults
+      - opened
+      - synchronize
+      - reopened
+      # custom
+      - ready_for_review # required for Github-created PRs
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    # only run when PR is not draft
+    if: ${{ !github.event.pull_request.draft }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check echo
+        run: |
+          echo "Test Echo"
+
+      # - name: Get specific changed files
+      #   id: changed-files-specific
+      #   uses: tj-actions/changed-files@v41
+      #   with:
+      #     files: |
+      #       .release-version
+
+      # - name: Run step looking for change in the release version
+      #   run: >-
+      #     if ! "${{ steps.changed-files-specific.outputs.any_changed }}"; then
+      #       echo "Please change the release version number"
+      #       exit 1;
+      #     fi
