@@ -163,6 +163,11 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: "" # Set root PW to nothing
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
+    # Sets up the matrix for knapsack builds
+    strategy:
+      matrix:
+        ci_node_total: [1]
+        ci_node_index: [0]
     steps:
       - uses: actions/checkout@v4
       - name: Set up Ruby
@@ -202,13 +207,16 @@ jobs:
       # Actually run our tests
       - name: Run rspec tests
         env:
+          KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
+          KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
+          KNAPSACK_PRO_TEST_FILE_PATTERN: "spec/features/**{,/*/**}/*_spec.rb"
           DBPORT: ${{ job.services.mysql.ports[3306] }}
-        run: bundle exec rspec ./spec/features/
+        run: bin/knapsack_pro_rspec
       - name: Upload capybara artifacts
         uses: actions/upload-artifact@v4.4.0
         if: ${{ failure() }}
         with:
-          name: capybara-${{ github.job }}
+          name: capybara-${{ github.job }}-${{ matrix.ci_node_index }}
           path: tmp/capybara/
           retention-days: 5
       - name: Upload coverage reports to Codecov
