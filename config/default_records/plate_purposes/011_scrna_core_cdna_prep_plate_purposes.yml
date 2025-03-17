@@ -9,6 +9,10 @@ LRC GEM-X 5p GEMs Input:
   input_plate: true
   stock_plate: true
   cherrypickable_target: false
+LRC GEM-X 5p GEMs Input CITE:
+  input_plate: true
+  stock_plate: true
+  cherrypickable_target: false
 # The 'LRC GEM-X 5p cDNA PCR XP' and 'LRC GEM-X 5p cDNA Input' purposes are included here so they are
 # available for aggregation submissions.
 LRC GEM-X 5p cDNA PCR XP:
