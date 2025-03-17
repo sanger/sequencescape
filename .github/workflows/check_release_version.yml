@@ -23,7 +23,7 @@ jobs:
 
       - name: Check if .release-version file has changed
         run: |
-          if git diff --name-only ${{ github.base_ref }}...${{ github.head_ref }} | grep -q '^\.release-version$'; then
+          if ! git diff --name-only ${{ github.base_ref }}...${{ github.head_ref }} | grep -q '^\.release-version$'; then
             echo "Please change the release version number"
             exit 1
           fi
