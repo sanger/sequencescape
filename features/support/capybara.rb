@@ -2,7 +2,9 @@
 
 require 'selenium/webdriver'
 require 'capybara'
-require './spec/support/select_helper'
+require './lib/capybara_failure_logger'
+require './lib/capybara_timeout_patch'
+require './lib/capybara_select2_patch'
 
 # Capybara.configure do |config|
 #   config.server = :puma

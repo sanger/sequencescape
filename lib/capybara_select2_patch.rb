@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-module SelectHelper
-  # A helper to select option boxes using Javascript to get around Select2
-  # incompatibilities with Capybara and Selenium.
+# Select2 breaks Capybara since select dropdowns are changed to span dropdowns.
+# This patch identifies when Select2 is being used and changes the dropdown using Javascript instead.
+module CapybaraSelect2Patch
   def select_js(option_text, from: nil)
     begin
       command = <<-JS
@@ -16,3 +16,5 @@ module SelectHelper
     end
   end
 end
+
+Capybara::Node::Base.prepend(CapybaraSelect2Patch)

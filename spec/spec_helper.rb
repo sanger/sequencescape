@@ -45,8 +45,6 @@ require 'rspec/support/differ'
 
 require './features/support/capybara'
 require './lib/plate_map_generation'
-require './lib/capybara_failure_logger'
-require './lib/capybara_timeout_patch'
 require 'pry'
 
 WebMock.disable_net_connect!(allow_localhost: true, allow: ['api.knapsackpro.com'])
@@ -150,7 +148,6 @@ RSpec.configure do |config|
   config.order = :random
 
   config.include UserLogin
-  config.include SelectHelper
 
   config.around(:each, :warren) do |ex|
     Warren.handler.enable!
