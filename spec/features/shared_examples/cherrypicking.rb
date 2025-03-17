@@ -224,7 +224,7 @@ shared_examples 'a cherrypicking procedure' do
             step 'optionally set custom destination plate type' do
               # optionally fill in custom plate type for the destination
               if custom_destination_type
-                select_js(custom_destination_type_name, from: "plate_types[#{destination_barcode}]")
+                select(custom_destination_type_name, from: "plate_types[#{destination_barcode}]")
               end
             end
 
