@@ -15,12 +15,14 @@ Capybara.register_driver :headless_firefox do |app|
 
   options.add_preference('browser.download.folderList', 2) # Use custom download path (set via browser.download.dir)
   options.add_preference('browser.download.dir', DownloadHelpers::PATH.to_s) # Sets the custom directory for downloads.
-  options.add_preference('browser.helperApps.neverAsk.saveToDisk', 'application/pdf,text/csv,application/octet-stream') # Add relevant MIME types
-    # that Firefox will automatically download without showing a prompt
+
+  # Add relevant MIME types that Firefox will automatically download without showing a prompt
+  options.add_preference('browser.helperApps.neverAsk.saveToDisk', 'application/pdf,text/csv,application/octet-stream')
+
   options.add_preference('pdfjs.disabled', true) # Disable Firefox’s built-in PDF viewer
 
   options.add_argument('--window-size=1600,3200')
-  options.add_preference('download.default_directory', DownloadHelpers::PATH.to_s) # Chrome understands this, Firefox does not
+  options.add_preference('download.default_directory', DownloadHelpers::PATH.to_s)
   # options.add_argument('--headless')
   options.add_argument('--disable-gpu')
   options.add_argument('--disable-search-engine-choice-screen')
@@ -32,8 +34,10 @@ Capybara.register_driver :firefox do |app|
 
   options.add_preference('browser.download.folderList', 2) # Use custom download path (set via browser.download.dir)
   options.add_preference('browser.download.dir', DownloadHelpers::PATH.to_s) # Sets the custom directory for downloads.
-  options.add_preference('browser.helperApps.neverAsk.saveToDisk', 'application/pdf,text/csv,application/octet-stream') # Add relevant MIME types
-    # that Firefox will automatically download without showing a prompt
+
+  # Add relevant MIME types that Firefox will automatically download without showing a prompt
+  options.add_preference('browser.helperApps.neverAsk.saveToDisk', 'application/pdf,text/csv,application/octet-stream')
+
   options.add_preference('pdfjs.disabled', true) # Disable Firefox’s built-in PDF viewer
 
   options.add_preference('download.default_directory', DownloadHelpers::PATH.to_s)
