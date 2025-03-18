@@ -18,36 +18,36 @@ module Api
     #
     # @example POST request to create a new request
     #   POST /api/v2/requests/
-    # {
-    #   "data": {
-    #     "type": "requests",
-    #     "attributes": {
-    #       "role": "analysis",
-    #       "state": "pending",
-    #       "priority": "high"
-    #     },
-    #     "relationships": {
-    #       "submission": {
-    #         "data": {
-    #           "type": "submissions",
-    #           "id": "123"
-    #         }
+    #   {
+    #     "data": {
+    #       "type": "requests",
+    #       "attributes": {
+    #         "role": "analysis",
+    #         "state": "pending",
+    #         "priority": "high"
     #       },
-    #       "order": {
-    #         "data": {
-    #           "type": "orders",
-    #           "id": "456"
-    #         }
-    #       },
-    #       "request_type": {
-    #         "data": {
-    #           "type": "request_types",
-    #           "id": "789"
+    #       "relationships": {
+    #         "submission": {
+    #           "data": {
+    #             "type": "submissions",
+    #             "id": "123"
+    #           }
+    #         },
+    #         "order": {
+    #           "data": {
+    #             "type": "orders",
+    #             "id": "456"
+    #           }
+    #         },
+    #         "request_type": {
+    #           "data": {
+    #             "type": "request_types",
+    #             "id": "789"
+    #           }
     #         }
     #       }
     #     }
     #   }
-    # }
     #
     # @example PATCH request to update an existing request
     #   PATCH /api/v2/requests/1

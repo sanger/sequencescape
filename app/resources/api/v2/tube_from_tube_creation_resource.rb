@@ -25,23 +25,23 @@ module Api
     #
     # @example POST request with child purpose and parent tube specified by relationship
     #   POST /api/v2/tube_from_tube_creations/
-    # {
-    #   "data": {
-    #     "type": "tube_from_tube_creations",
-    #     "attributes": {},
-    #     "relationships": {
-    #       "child_purpose": {
-    #         "data": { "type": "tube_purposes", "id": "256" }
-    #       },
-    #       "parent": {
-    #         "data": { "type": "tubes", "id": "456" }
-    #       },
-    #       "user": {
-    #         "data": { "type": "users", "id": "2" }
+    #   {
+    #     "data": {
+    #       "type": "tube_from_tube_creations",
+    #       "attributes": {},
+    #       "relationships": {
+    #         "child_purpose": {
+    #           "data": { "type": "tube_purposes", "id": "256" }
+    #         },
+    #         "parent": {
+    #           "data": { "type": "tubes", "id": "456" }
+    #         },
+    #         "user": {
+    #           "data": { "type": "users", "id": "2" }
+    #         }
     #       }
     #     }
     #   }
-    # }
     #
     # @example GET request for all TubeFromTubeCreation resources
     #   GET /api/v2/tube_from_tube_creations/

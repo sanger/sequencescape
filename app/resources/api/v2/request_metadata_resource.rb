@@ -16,24 +16,24 @@ module Api
     #
     # @example POST request to create new request metadata
     #   POST /api/v2/request_metadata/
-    # {
-    #   "data": {
-    #       "id": 1,
-    #     "type": "request_metadata",
-    #     "attributes": {
-    #       // "number_of_pools": 5,
-    #       // "cells_per_chip_well": 200
-    #     },
-    #     "relationships": {
-    #       "request": {
-    #         "data": {
-    #           "type": "requests",
-    #           "id": 1265
+    #   {
+    #     "data": {
+    #         "id": 1,
+    #       "type": "request_metadata",
+    #       "attributes": {
+    #         // "number_of_pools": 5,
+    #         // "cells_per_chip_well": 200
+    #       },
+    #       "relationships": {
+    #         "request": {
+    #           "data": {
+    #             "type": "requests",
+    #             "id": 1265
+    #           }
     #         }
     #       }
     #     }
     #   }
-    # }
     #
     # @example PATCH request to update existing request metadata
     #   PATCH /api/v2/request_metadata/1

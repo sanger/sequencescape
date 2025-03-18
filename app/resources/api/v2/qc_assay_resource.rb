@@ -22,31 +22,31 @@ module Api
     #  redundant. See `qc_results` relationship comment.
     # @example POST request to create a new QC assay, with a an Asset `barcode` provded in the `qc_results` attribute
     #   POST /api/v2/qc_assays/
-    # {
-    #   "data": {
-    #     "type": "qc_assay",
-    #     "attributes": {
-    #       "lot_number": "67890",
-    #       "qc_results": [
-    #         {
-    #           // "id": 45
-    #           "uuid": "9dd79a6c-f524-11ef-8842-000000000000",
-    #           "key": "x",
-    #           "value": "x",
-    #           "units": "s"
-    #       }
-    #       ]
-    #     },
-    #   "relationships": {
-    #       "qc_results": {
-    #         "data": {
-    #           "type": "qc_results",
-    #           "id": 45
+    #   {
+    #     "data": {
+    #       "type": "qc_assay",
+    #       "attributes": {
+    #         "lot_number": "67890",
+    #         "qc_results": [
+    #           {
+    #             // "id": 45
+    #             "uuid": "9dd79a6c-f524-11ef-8842-000000000000",
+    #             "key": "x",
+    #             "value": "x",
+    #             "units": "s"
+    #           }
+    #         ]
+    #       },
+    #       "relationships": {
+    #         "qc_results": {
+    #           "data": {
+    #             "type": "qc_results",
+    #             "id": 45
+    #           }
     #         }
     #       }
     #     }
     #   }
-    # }
     #
     # For more details on JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or check out the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation.

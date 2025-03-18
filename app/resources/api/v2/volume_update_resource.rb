@@ -16,14 +16,14 @@ module Api
     #   POST /api/v2/volume_updates/
     #   {
     #     "data": {
-    #         "type": "volume_updates",
-    #         "attributes": {
-    #             "created_by": "me",
-    #             "target_uuid": "9dc5f262-f524-11ef-8842-000000000000",
-    #             "volume_change": -2.345
-    #         }
+    #       "type": "volume_updates",
+    #       "attributes": {
+    #         "created_by": "me",
+    #         "target_uuid": "9dc5f262-f524-11ef-8842-000000000000",
+    #         "volume_change": -2.345
+    #       }
     #     }
-    # }
+    #   }
     #
     # @example GET request for all VolumeUpdate resources
     #   GET /api/v2/volume_updates/

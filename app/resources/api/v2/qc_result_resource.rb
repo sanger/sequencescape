@@ -24,7 +24,7 @@ module Api
     #  See `asset` relationship comment.
     # @example POST request to create a new QC result, with Asset `uuid`
     #   POST /api/v2/qc_results/
-    # {
+    #   {
     #     "data": {
     #       "type": "qc_result",
     #       "attributes": [{
@@ -50,37 +50,37 @@ module Api
 
     # @example POST request to create a new QC result, with Asset `barcode`
     #   POST /api/v2/qc_results/
-    # {
-    #   "data": {
-    #     "type": "qc_result",
-    #     "attributes": [{
-    #       "barcode": "NT3Q",
-    #       "key": "measurement_key",
-    #       "value": "12.5",
-    #       "units": "ng/µL",
-    #       "cv": "5.5",
-    #       "assay_type": "PCR",
-    #       "assay_version": "v1.0"
-    #     }]
+    #   {
+    #     "data": {
+    #       "type": "qc_result",
+    #       "attributes": [{
+    #         "barcode": "NT3Q",
+    #         "key": "measurement_key",
+    #         "value": "12.5",
+    #         "units": "ng/µL",
+    #         "cv": "5.5",
+    #         "assay_type": "PCR",
+    #         "assay_version": "v1.0"
+    #       }]
+    #     }
     #   }
-    # }
 
     # @example PATCH request to update an existing QC result
     #   PATCH /api/v2/qc_results/20
-    # {
-    #   "data": {
-    #     "id": 20,
-    #     "type": "qc_results",
-    #     "attributes": {
-    #       "key": "measurement_key",
-    #       "value": "12.3",
-    #       "units": "ng/µL",
-    #       "cv": "5.5",
-    #       "assay_type": "PCR",
-    #       "assay_version": "v1.0"
+    #   {
+    #     "data": {
+    #       "id": 20,
+    #       "type": "qc_results",
+    #       "attributes": {
+    #         "key": "measurement_key",
+    #         "value": "12.3",
+    #         "units": "ng/µL",
+    #         "cv": "5.5",
+    #         "assay_type": "PCR",
+    #         "assay_version": "v1.0"
+    #       }
     #     }
     #   }
-    # }
     #
     # For more details on JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or check out the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation.

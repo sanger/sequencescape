@@ -14,28 +14,28 @@ module Api
     #
     # @example POST request to create a new metadata entry
     #   POST /api/v2/poly_metadata/
-    # {
-    #   "data": {
-    #     "type": "pooled_plate_creations",
+    #   {
+    #     "data": {
+    #       "type": "pooled_plate_creations",
     #       "attributes": {
-    #           "child_purpose_uuid": ["f64dec80-f51c-11ef-8842-000000000000"]
+    #         "child_purpose_uuid": ["f64dec80-f51c-11ef-8842-000000000000"]
     #       },
-    #     "relationships": {
-    #       // "child_purpose": {
-    #       //   "data": { "type": "purposes", "id": "uuid-of-child-purpose" }
-    #       // },
-    #       "parents": {
-    #         "data": [
-    #           { "type": "labware", "id": 1 },
-    #           { "type": "labware", "id": 4 }
-    #         ]
-    #       },
-    #       "user": {
-    #         "data": { "type": "users", "id": 1 }
+    #       "relationships": {
+    #         // "child_purpose": {
+    #         //   "data": { "type": "purposes", "id": "uuid-of-child-purpose" }
+    #         // },
+    #         "parents": {
+    #           "data": [
+    #             { "type": "labware", "id": 1 },
+    #             { "type": "labware", "id": 4 }
+    #           ]
+    #         },
+    #         "user": {
+    #           "data": { "type": "users", "id": 1 }
+    #         }
     #       }
     #     }
     #   }
-    # }
     #
     # @example PATCH request to update an existing metadata entry
     #   PATCH /api/v2/poly_metadata/123

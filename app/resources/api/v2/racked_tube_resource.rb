@@ -16,28 +16,28 @@ module Api
     #
     # @example POST request to create a new racked tube
     #   POST /api/v2/racked_tubes/
-    # {
-    #   "data": {
-    #     "type": "racked_tubes",
-    #     "attributes": {
-    #       "coordinate": "A2"
-    #     },
-    #     "relationships": {
-    #       "tube": {
-    #         "data": {
-    #           "type": "tubes",
-    #           "id": 14
-    #         }
+    #   {
+    #     "data": {
+    #       "type": "racked_tubes",
+    #       "attributes": {
+    #         "coordinate": "A2"
     #       },
-    #       "tube_rack": {
-    #         "data": {
-    #           "type": "tube_racks",
-    #           "id": 19
+    #       "relationships": {
+    #         "tube": {
+    #           "data": {
+    #             "type": "tubes",
+    #             "id": 14
+    #           }
+    #         },
+    #         "tube_rack": {
+    #           "data": {
+    #             "type": "tube_racks",
+    #             "id": 19
+    #           }
     #         }
     #       }
     #     }
     #   }
-    # }
     #
     #
     # For more details on JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)

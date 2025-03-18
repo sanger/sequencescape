@@ -27,19 +27,19 @@ module Api
     #
     # @example POST request for creating a transfer with source and destination specified by relationships
     #   POST /api/v2/transfers/
-    # {
-    #   "data": {
-    #     "type": "transfers",
-    #     "attributes": {
-    #       "transfer_template_uuid": "9ab465da-7cdf-11ef-b4cc-000000000000"
-    #     },
-    #     "relationships": {
-    #       "source": { "data": { "type": "labware", "id": 1 } },
-    #       "destination": { "data": { "type": "labware", "id": 2 } },
-    #       "user": { "data": { "type": "users", "id": "789" } }
+    #   {
+    #     "data": {
+    #       "type": "transfers",
+    #       "attributes": {
+    #         "transfer_template_uuid": "9ab465da-7cdf-11ef-b4cc-000000000000"
+    #       },
+    #       "relationships": {
+    #         "source": { "data": { "type": "labware", "id": 1 } },
+    #         "destination": { "data": { "type": "labware", "id": 2 } },
+    #         "user": { "data": { "type": "users", "id": "789" } }
+    #       }
     #     }
     #   }
-    # }
     #
     # @example GET request for retrieving all transfers
     #   GET /api/v2/transfers/

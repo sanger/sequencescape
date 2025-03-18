@@ -22,22 +22,22 @@ module Api
     #
     # @example POST request to create a new tag group adapter type
     #   POST /api/v2/tag_group_adapter_types/
-    # {
-    #   "data": {
-    #     "type": "tag_group_adapter_types",
-    #     "attributes": {
-    #    //    "name": "Adapter Type Name"
-    #     },
-    #     "relationships": {
-    #       "tag_groups": {
-    #         "data": [
-    #           { "type": "tag_groups", "id": "1" },
-    #           { "type": "tag_groups", "id": "72" }
-    #         ]
+    #   {
+    #     "data": {
+    #       "type": "tag_group_adapter_types",
+    #       "attributes": {
+    #      //    "name": "Adapter Type Name"
+    #       },
+    #       "relationships": {
+    #         "tag_groups": {
+    #           "data": [
+    #             { "type": "tag_groups", "id": "1" },
+    #             { "type": "tag_groups", "id": "72" }
+    #           ]
+    #         }
     #       }
     #     }
     #   }
-    # }
     #
     # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or the [JSONAPI::Resources](http://jsonapi-resources.com/) package used in Sequencescape.

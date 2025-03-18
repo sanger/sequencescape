@@ -12,18 +12,18 @@ module Api
     # @note the below example is currently broken, as `work_order_type` is a required attribute in the model
     # @example POST request to create a new {WorkOrder}
     #   POST /api/v2/work_orders/
-    # {
-    #   "data": {
-    #     "type": "work_orders",
-    #     "attributes": {
-    #       "state": "pending",
-    #       "work_order_type": "standard"
-    #       // "order_type": "standard"
-    #     },
-    #     "relationships": {
+    #   {
+    #     "data": {
+    #       "type": "work_orders",
+    #       "attributes": {
+    #         "state": "pending",
+    #         "work_order_type": "standard"
+    #         // "order_type": "standard"
+    #       },
+    #       "relationships": {
+    #       }
     #     }
     #   }
-    # }
     #
     # @example GET request to retrieve all work orders
     #   GET /api/v2/work_orders/

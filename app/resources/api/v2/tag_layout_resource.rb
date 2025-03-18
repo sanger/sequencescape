@@ -19,29 +19,29 @@ module Api
     #
     # @example POST request to create a new tag layout
     #   POST /api/v2/tag_layouts/
-    # {
-    #   "data": {
-    #     "type": "tag_layouts",
-    #     "attributes": {
-    #         "direction": "column",
-    #         "initial_tag": 100,
-    #         "substitutions": {"key": "value"},
-    #         "tags_per_well": 5,
-    #         "walking_by": "wells in pools"
-    #     },
-    #     "relationships": {
-    #         "tag_group": {
-    #             "data": { "type": "tag_groups", "id": 1 }
-    #         },
-    #         "plate": {
-    #             "data": { "type": "plates", "id": 1 }
-    #         },
-    #         "user": {
-    #             "data": { "type": "users", "id": 4 }
-    #         }
+    #   {
+    #     "data": {
+    #       "type": "tag_layouts",
+    #       "attributes": {
+    #           "direction": "column",
+    #           "initial_tag": 100,
+    #           "substitutions": {"key": "value"},
+    #           "tags_per_well": 5,
+    #           "walking_by": "wells in pools"
+    #       },
+    #       "relationships": {
+    #           "tag_group": {
+    #               "data": { "type": "tag_groups", "id": 1 }
+    #           },
+    #           "plate": {
+    #               "data": { "type": "plates", "id": 1 }
+    #           },
+    #           "user": {
+    #               "data": { "type": "users", "id": 4 }
+    #           }
+    #       }
     #     }
     #   }
-    # }
     #
     # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation

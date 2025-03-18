@@ -17,41 +17,41 @@ module Api
     #
     # @example POST request to create a new sample
     #   POST /api/v2/samples/
-    # {
-    #   "data": {
-    #     "type": "samples",
-    #     "attributes": {
-    #       "name": "Sample_A",
-    #       "sanger_sample_id": "S12345",
-    #       "control": false,
-    #       "control_type": "positive"
-    #     },
-    #     "relationships": {
-    #       "sample_metadata": {
-    #         "data": {
-    #           "type": "sample_metadata",
-    #           "id": "1"
+    #   {
+    #     "data": {
+    #       "type": "samples",
+    #       "attributes": {
+    #         "name": "Sample_A",
+    #         "sanger_sample_id": "S12345",
+    #         "control": false,
+    #         "control_type": "positive"
+    #       },
+    #       "relationships": {
+    #         "sample_metadata": {
+    #           "data": {
+    #             "type": "sample_metadata",
+    #             "id": "1"
+    #           }
+    #         },
+    #         "studies": {
+    #           "data": [
+    #             {
+    #               "type": "studies",
+    #               "id": "1"
+    #             },
+    #           ]
+    #         },
+    #         "component_samples": {
+    #           "data": [
+    #             {
+    #               "type": "component_samples",
+    #               "id": "1"
+    #             },
+    #           ]
     #         }
-    #       },
-    #       "studies": {
-    #         "data": [
-    #           {
-    #             "type": "studies",
-    #             "id": "1"
-    #           },
-    #         ]
-    #       },
-    #       "component_samples": {
-    #         "data": [
-    #           {
-    #             "type": "component_samples",
-    #             "id": "1"
-    #           },
-    #         ]
     #       }
     #     }
     #   }
-    # }
     #
     # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation

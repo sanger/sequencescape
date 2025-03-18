@@ -29,37 +29,37 @@ module Api
     #
     # @example POST request to create a new receptacle
     #   POST /api/v2/receptacles/
-    # {
-    #   "data": {
-    #     "type": "receptacles",
-    #     "attributes": {
-    #       "name": "Tube Rack 1",
-    #       "pcr_cycles": 25,
-    #       "submit_for_sequencing": true
-    #       // "display_name": "2"
-    #     },
-    #     "relationships": {
-    #       "labware": {
-    #         "data": {
-    #           "type": "labware",
-    #           "id": 1
+    #   {
+    #     "data": {
+    #       "type": "receptacles",
+    #       "attributes": {
+    #         "name": "Tube Rack 1",
+    #         "pcr_cycles": 25,
+    #         "submit_for_sequencing": true
+    #         // "display_name": "2"
+    #       },
+    #       "relationships": {
+    #         "labware": {
+    #           "data": {
+    #             "type": "labware",
+    #             "id": 1
+    #           }
     #         }
     #       }
     #     }
     #   }
-    # }
     #
     # @example PATCH request to update an existing receptacle
     #   PATCH /api/v2/receptacles/1
-    # {
-    #   "data": {
-    #     "id": 1,
-    #     "type": "receptacles",
-    #     "attributes": {
-    #       "pcr_cycles": 26,
-    #     },
+    #   {
+    #     "data": {
+    #       "id": 1,
+    #       "type": "receptacles",
+    #       "attributes": {
+    #         "pcr_cycles": 26,
+    #       },
+    #     }
     #   }
-    # }
     #
     # For more details on JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or check out the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation.

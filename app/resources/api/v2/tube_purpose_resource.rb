@@ -19,29 +19,30 @@ module Api
     #
     # @example POST request to create a new TubePurpose
     #   POST /api/v2/tube_purposes/
-    # {
-    #   "data": {
-    #     "type": "tube_purposes",
-    #     "attributes": {
-    #       "name": "9DNA Extraction",
-    #       "purpose_type": "Tube::Purpose",
-    #       "target_type": "StockLibraryTube"
+    #   {
+    #     "data": {
+    #       "type": "tube_purposes",
+    #       "attributes": {
+    #         "name": "9DNA Extraction",
+    #         "purpose_type": "Tube::Purpose",
+    #         "target_type": "StockLibraryTube"
+    #       }
     #     }
     #   }
-    # }
+    #
     # @example PATCH request to update a TubePurpose with ID 123
     #   PATCH /api/v2/tube_purposes/123/
-    # {
-    #   "data": {
-    #     "id": 123,
-    #     "type": "tube_purposes",
-    #     "attributes": {
-    #       "name": "DNA Extraction 123",
-    #       "purpose_type": "Tube::Purpose",
-    #       "target_type": "StockLibraryTube"
+    #   {
+    #     "data": {
+    #       "id": 123,
+    #       "type": "tube_purposes",
+    #       "attributes": {
+    #         "name": "DNA Extraction 123",
+    #         "purpose_type": "Tube::Purpose",
+    #         "target_type": "StockLibraryTube"
+    #       }
     #     }
     #   }
-    # }
     #
     # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation

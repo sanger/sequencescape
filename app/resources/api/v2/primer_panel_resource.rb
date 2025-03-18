@@ -20,15 +20,15 @@ module Api
     # @note the below example is currently broken, as `snp_count`` is a required attribute in the model
     # @example Creating a primer panel
     #   POST /api/v2/primer_panels
-    # {
-    #   "data": {
-    #     "type": "primer_panels",
-    #     "attributes": {
-    #       "name": "My Primer Panel",
-    #       "programs": ["UAT"]
+    #   {
+    #     "data": {
+    #       "type": "primer_panels",
+    #       "attributes": {
+    #         "name": "My Primer Panel",
+    #         "programs": ["UAT"]
+    #       }
     #     }
     #   }
-    # }
     #
     # For more details on JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or check out the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation.

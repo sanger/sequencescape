@@ -15,17 +15,17 @@ module Api
     #
     # @example POST request with child purposes and parents specified by UUIDs (deprecated)
     #   POST /api/v2/specific_tube_creations/
-    # {
-    #   "data": {
-    #     "type": "specific_tube_creations",
-    #     "attributes": {
-    #       "child_purpose_uuids": ["40c0d714-fb53-11ef-bc6c-000000000000"],
-    #       "parent_uuids": ["ac517f04-f461-11ef-8842-000000000000"],
-    #       "tube_attributes": [{ "name": "Tube 1" }],
-    #       "user_uuid": "d8c22e20-f45d-11ef-8842-000000000000"
+    #   {
+    #     "data": {
+    #       "type": "specific_tube_creations",
+    #       "attributes": {
+    #         "child_purpose_uuids": ["40c0d714-fb53-11ef-bc6c-000000000000"],
+    #         "parent_uuids": ["ac517f04-f461-11ef-8842-000000000000"],
+    #         "tube_attributes": [{ "name": "Tube 1" }],
+    #         "user_uuid": "d8c22e20-f45d-11ef-8842-000000000000"
+    #       }
     #     }
     #   }
-    # }
     #
 
     # @note the below example does not include the children as relationships, but via the
@@ -34,25 +34,25 @@ module Api
     #
     # @example POST request with child purposes and parents specified by relationships
     #   POST /api/v2/specific_tube_creations/
-    # {
-    #   "data": {
-    #     "type": "specific_tube_creations",
-    #     "attributes": {
-    #       "child_purpose_uuids": [
-    #           "40c0d714-fb53-11ef-bc6c-000000000000", "40c0d714-fb53-11ef-bc6c-000000000000"
-    #       ],
-    #       "tube_attributes": [{ "name": "Tube 1" }, { "name": "Tube 2" }]
-    #     },
-    #     "relationships": {
-    #       "parents": {
-    #         "data": [{ "type": "labware", "id": 3 }]
+    #   {
+    #     "data": {
+    #       "type": "specific_tube_creations",
+    #       "attributes": {
+    #         "child_purpose_uuids": [
+    #             "40c0d714-fb53-11ef-bc6c-000000000000", "40c0d714-fb53-11ef-bc6c-000000000000"
+    #         ],
+    #         "tube_attributes": [{ "name": "Tube 1" }, { "name": "Tube 2" }]
     #       },
-    #       "user": {
-    #         "data": { "type": "users", "id": 4 }
+    #       "relationships": {
+    #         "parents": {
+    #           "data": [{ "type": "labware", "id": 3 }]
+    #         },
+    #         "user": {
+    #           "data": { "type": "users", "id": 4 }
+    #         }
     #       }
     #     }
     #   }
-    # }
     #
     # @example GET request for all SpecificTubeCreation resources
     #   GET /api/v2/specific_tube_creations/

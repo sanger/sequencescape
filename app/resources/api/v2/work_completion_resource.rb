@@ -13,37 +13,37 @@ module Api
     #
     # @example POST request to create a WorkCompletion (by uuids - deprecated)
     #   POST /api/v2/work_completions/
-    # {
-    #   "data": {
-    #     "type": "work_completions",
-    #     "attributes": {
-    #       "submission_uuids": ["11111111-2222-3333-4444-555555666666"],
-    #       "target_uuid": "33333333-4444-5555-6666-777777888888",
-    #       "user_uuid": "99999999-0000-1111-2222-333333444444"
-    #     }
-    #   }
-    # }
-    #
-    # @example POST request to create a WorkCompletion using relationships
-    #   POST /api/v2/work_completions/
-    # {
-    #   "data": {
-    #     "type": "work_completions",
-    #     "relationships": {
-    #       "submissions": {
-    #           "data": [
-    #             { "type": "submissions", "id": 1 }
-    #           ]
-    #       },
-    #       "target": {
-    #           "data": { "type": "labware", "id": 1 }
-    #       },
-    #       "user": {
-    #           "data": { "type": "users", "id": 4 }
+    #   {
+    #     "data": {
+    #       "type": "work_completions",
+    #       "attributes": {
+    #         "submission_uuids": ["11111111-2222-3333-4444-555555666666"],
+    #         "target_uuid": "33333333-4444-5555-6666-777777888888",
+    #         "user_uuid": "99999999-0000-1111-2222-333333444444"
     #       }
     #     }
     #   }
-    # }
+    #
+    # @example POST request to create a WorkCompletion using relationships
+    #   POST /api/v2/work_completions/
+    #   {
+    #     "data": {
+    #       "type": "work_completions",
+    #       "relationships": {
+    #         "submissions": {
+    #             "data": [
+    #               { "type": "submissions", "id": 1 }
+    #             ]
+    #         },
+    #         "target": {
+    #             "data": { "type": "labware", "id": 1 }
+    #         },
+    #         "user": {
+    #             "data": { "type": "users", "id": 4 }
+    #         }
+    #       }
+    #     }
+    #   }
     #
     # @example GET request for all WorkCompletion resources
     #   GET /api/v2/work_completions/

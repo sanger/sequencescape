@@ -14,37 +14,37 @@ module Api
     #
     # @example POST request to create a TransferRequestCollection with multiple transfer requests
     #   POST /api/v2/transfer_request_collections/
-    # {
-    #   "data": {
-    #     "type": "transfer_request_collections",
-    #     "attributes": {
-    #       "transfer_requests_attributes": [
-    #         {
-    #           "source_asset": "dc33e42e-f5e1-11ef-98fe-000000000000",
-    #           "target_asset": "de19e8e2-f5e1-11ef-98fe-000000000000",
-    #           "aliquot_attributes": {
-    #             "tag_depth": "2"
+    #   {
+    #     "data": {
+    #       "type": "transfer_request_collections",
+    #       "attributes": {
+    #         "transfer_requests_attributes": [
+    #           {
+    #             "source_asset": "dc33e42e-f5e1-11ef-98fe-000000000000",
+    #             "target_asset": "de19e8e2-f5e1-11ef-98fe-000000000000",
+    #             "aliquot_attributes": {
+    #               "tag_depth": "2"
+    #             }
+    #           },
+    #           {
+    #             "source_asset": "44444444-5555-6666-7777-888888999999",
+    #             "target_asset": "55555555-6666-7777-8888-999999000000",
+    #             "aliquot_attributes": {
+    #               "tag_depth": "3"
+    #             }
     #           }
-    #         },
-    #         {
-    #           "source_asset": "44444444-5555-6666-7777-888888999999",
-    #           "target_asset": "55555555-6666-7777-8888-999999000000",
-    #           "aliquot_attributes": {
-    #             "tag_depth": "3"
+    #         ]
+    #       },
+    #       "relationships": {
+    #         "user": {
+    #           "data": {
+    #             "type": "users",
+    #             "id": 4
     #           }
-    #         }
-    #       ]
-    #     },
-    #     "relationships": {
-    #       "user": {
-    #         "data": {
-    #           "type": "users",
-    #           "id": 4
     #         }
     #       }
     #     }
     #   }
-    # }
     #
     # @example GET request for all TransferRequestCollection resources
     #   GET /api/v2/transfer_request_collections/

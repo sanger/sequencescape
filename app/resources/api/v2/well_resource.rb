@@ -21,23 +21,23 @@ module Api
     # @note Well attributes here are defined in {Api::V2::SharedBehaviour::Receptacle}
     # @example POST request to create a new Well
     #   POST /api/v2/wells/
-    # {
-    #   "data": {
-    #     "type": "wells",
-    #     "attributes": {
-    #           "pcr_cycles": 12,
-    #         "submit_for_sequencing": false,
-    #         "sub_pool": 2,
-    #         "coverage": 50,
-    #         "diluent_volume": 34.0
-    #     },
-    #     "relationships": {
-    #       "poly_metadata": {
-    #         "data": [{ "type": "poly_metadata", "id": 10 }]
+    #   {
+    #     "data": {
+    #       "type": "wells",
+    #       "attributes": {
+    #             "pcr_cycles": 12,
+    #           "submit_for_sequencing": false,
+    #           "sub_pool": 2,
+    #           "coverage": 50,
+    #           "diluent_volume": 34.0
+    #       },
+    #       "relationships": {
+    #         "poly_metadata": {
+    #           "data": [{ "type": "poly_metadata", "id": 10 }]
+    #         }
     #       }
     #     }
     #   }
-    # }
     #
     # @example PATCH request to update metadata for a Well
     #   PATCH /api/v2/wells/123/

@@ -23,24 +23,24 @@ module Api
     # POST /api/v2/submissions/
     #   {
     #     "data": {
-    #         "type": "submissions",
-    #         "attributes": {
-    #             "name": "name",
-    #             "and_submit": true
+    #       "type": "submissions",
+    #       "attributes": {
+    #         "name": "name",
+    #         "and_submit": true
+    #       },
+    #       "relationships": {
+    #         "orders": {
+    #           "data": [
+    #             { "type": "orders", "id": "1" },
+    #             { "type": "orders", "id": "2" }
+    #           ]
     #         },
-    #         "relationships": {
-    #             "orders": {
-    #               "data": [
-    #                 { "type": "orders", "id": "1" },
-    #                 { "type": "orders", "id": "2" }
-    #               ]
-    #             },
-    #             "user": {
-    #               "data": { "type": "users", "id": "1" }
-    #             }
-    #           }
+    #         "user": {
+    #           "data": { "type": "users", "id": "1" }
+    #         }
+    #       }
     #     }
-    # }
+    #   }
     #
     # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation.

@@ -19,22 +19,22 @@ module Api
     #
     # @example POST request to create a new sample metadata record
     #   POST /api/v2/sample_metadata/
-    # {
-    #   "data": {
-    #     "type": "sample_metadata",
-    #     "attributes": {
-    #       "cohort": "Cohort A",
-    #       "collected_by": "Research Lab X",
-    #       "concentration": "50",
-    #       "donor_id": "D123456",
-    #       "gender": "Female",
-    #       "sample_common_name": "Homo sapiens",
-    #       "sample_description": "Blood sample taken on 2024-01-15",
-    #       "supplier_name": "Sample Supplier Y",
-    #       "volume": "200"
+    #   {
+    #     "data": {
+    #       "type": "sample_metadata",
+    #       "attributes": {
+    #         "cohort": "Cohort A",
+    #         "collected_by": "Research Lab X",
+    #         "concentration": "50",
+    #         "donor_id": "D123456",
+    #         "gender": "Female",
+    #         "sample_common_name": "Homo sapiens",
+    #         "sample_description": "Blood sample taken on 2024-01-15",
+    #         "supplier_name": "Sample Supplier Y",
+    #         "volume": "200"
+    #       }
     #     }
     #   }
-    # }
     #
     # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation

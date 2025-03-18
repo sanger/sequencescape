@@ -15,32 +15,32 @@ module Api
     #
     # @example POST request to create a new Tube Rack with a name and barcode:
     #   POST /api/v2/tube_racks/
-    # {
-    #   "data": {
-    #     "type": "tube_racks",
-    #     "attributes": {
-    #         "size": 48,
-    #         "name": "Rack A1",
-    #         "tube_locations": {
-    #             "A1": { "uuid": "558b931c-fb5f-11ef-86cc-000000000000" },
-    #             "B1": { "uuid": "2abc4186-3718-11ec-9c4c-acde48001122" },
-    #             "C1": { "uuid": "2ace27fc-3718-11ec-9c4c-acde48001122" }
-    #         }
+    #   {
+    #     "data": {
+    #       "type": "tube_racks",
+    #       "attributes": {
+    #           "size": 48,
+    #           "name": "Rack A1",
+    #           "tube_locations": {
+    #               "A1": { "uuid": "558b931c-fb5f-11ef-86cc-000000000000" },
+    #               "B1": { "uuid": "2abc4186-3718-11ec-9c4c-acde48001122" },
+    #               "C1": { "uuid": "2ace27fc-3718-11ec-9c4c-acde48001122" }
+    #           }
+    #       }
     #     }
     #   }
-    # }
     #
     # @example PATCH request to update the Tube Rack's size:
     #   PATCH /api/v2/tube_racks/123
-    # {
-    #   "data": {
-    #     "id": 123,
-    #     "type": "tube_racks",
-    #     "attributes": {
-    #         "size": 96
+    #   {
+    #     "data": {
+    #       "id": 123,
+    #       "type": "tube_racks",
+    #       "attributes": {
+    #           "size": 96
+    #       }
     #     }
     #   }
-    # }
     #
     # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation

@@ -23,23 +23,23 @@ module Api
     #
     # @example POST request to create a new tag group
     #   POST /api/v2/tag_groups/
-    # {
-    #   "data": {
-    #     "type": "tag_groups",
-    #     "attributes": {
-    #       "name": "My Tag Group",
-    #       "tags": [
-    #         { "map_id": 1,"oligo": "AAACGGCG"},
-    #         { "map_id": 2,"oligo": "CAACGGCG"}
-    #       ]
-    #     },
-    #     "relationships": {
-    #       "tag_group_adapter_type": {
-    #         "data": { "type": "tag_group_adapter_types", "id": 5 }
+    #   {
+    #     "data": {
+    #       "type": "tag_groups",
+    #       "attributes": {
+    #         "name": "My Tag Group",
+    #         "tags": [
+    #           { "map_id": 1,"oligo": "AAACGGCG"},
+    #           { "map_id": 2,"oligo": "CAACGGCG"}
+    #         ]
+    #       },
+    #       "relationships": {
+    #         "tag_group_adapter_type": {
+    #           "data": { "type": "tag_group_adapter_types", "id": 5 }
+    #         }
     #       }
     #     }
     #   }
-    # }
     #
     #
     # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
