@@ -178,6 +178,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
+      - name: Remove image-bundled Chrome
+        run: sudo apt-get purge google-chrome-stable
+      - name: Setup stable Chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: 128
+          install-chromedriver: true
+          install-dependencies: true
       # Establish a cache of js modules to improve performance
       - name: Cache js
         uses: actions/cache@v4
@@ -259,6 +267,14 @@ jobs:
         with:
           node-version-file: ".nvmrc"
           cache: "yarn"
+      - name: Remove image-bundled Chrome
+        run: sudo apt-get purge google-chrome-stable
+      - name: Setup stable Chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: 128
+          install-chromedriver: true
+          install-dependencies: true
       # Install only the gems needed for testing
       # Keep an eye on https://github.com/rubygems/bundler-features/issues/59
       # in case bundler add an only flag
