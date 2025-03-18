@@ -1549,9 +1549,6 @@ ActiveRecord::Schema[7.0].define(version: 2025_02_20_100453) do
     t.string "data_deletion_period"
     t.string "contaminated_human_data_access_group"
     t.string "data_release_prevention_other_comment"
-    t.string "ebi_library_strategy"
-    t.string "ebi_library_source"
-    t.string "ebi_library_selection"
     t.index ["faculty_sponsor_id"], name: "index_study_metadata_on_faculty_sponsor_id"
     t.index ["study_id"], name: "index_study_metadata_on_study_id"
   end
