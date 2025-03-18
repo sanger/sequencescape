@@ -36,7 +36,7 @@ RSpec.describe SampleManifest::ColumnConditionalFormatUpdater do
       let(:required_column) { columns.find_by(:name, 'library_type') }
       let(:non_required_column) { columns.find_by(:name, 'reference_genome') }
 
-      # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
+      # rubocop:disable RSpec/MultipleExpectations
       it 'updates the conditional format for the required columns' do
         init_required_column_format = required_column.conditional_formattings.find_by(:name, 'empty_cell')
         expect(init_required_column_format).not_to be_nil
@@ -44,7 +44,7 @@ RSpec.describe SampleManifest::ColumnConditionalFormatUpdater do
         expect(required_column.conditional_formattings.find_by(:name, 'empty_cell')).to be_nil
         expect(required_column.conditional_formattings.find_by(:name, 'empty_mandatory_cell')).not_to be_nil
       end
-      # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations
+      # rubocop:enable RSpec/MultipleExpectations
 
       it 'does not change the format for non-required columns' do
         initial_format = non_required_column.conditional_formattings.dup
