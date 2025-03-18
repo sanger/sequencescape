@@ -28,8 +28,22 @@ class SampleManifest::Generator
     @params = params
   end
 
+  # Retrieves and caches the columns for the current template configuration.
+  # This method first fetches the columns based on the provided template parameter.
+  # Then, it applies conditional formatting updates based on the asset type
+  # using the `SampleManifest::ColumnConditionalFormatUpdater` class.
+  #
+  # The conditional formatting is adjusted dynamically depending on whether
+  # the asset type requires specific formatting rules (e.g., for library assets).
+  #
+  # @return [Array<Column>] The columns associated with the specified template, with conditional formatting
+  #         updated if any.
+
   def columns
     @columns ||= configuration.columns.find(params[:template])
+    return unless asset_type
+    conditional_updater = SampleManifest::ColumnConditionalFormatUpdater.new(columns: @columns, asset_type: asset_type)
+    conditional_updater.update_column_formatting_by_asset_type
   end
 
   def print_job_required?
@@ -105,6 +119,7 @@ class SampleManifest::Generator
   end
 
   def asset_type
+    return unless configuration.manifest_types.find_by(params[:template])
     configuration.manifest_types.find_by(params[:template]).asset_type
   end
 
