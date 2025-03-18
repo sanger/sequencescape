@@ -463,7 +463,6 @@ If installation issues are encountered with Docker on M1 processors, try the fix
 
 If you encounter Selenium/Chromedriver issues locally it may be because the latest version of Chrome is yet to be supported by our testing libraries (Capybara). This may require a fix to the `Capybara.rb` file, e.g. new driver arguments. In the case the fix is not identifiable you made need to rely on a pinned version of Chrome in the CI to run these tests, see [Chromedriver issues](#chromedriver-issues) below for further instructions.
 
-
 ### API V2 Authentication
 
 The V2 API has had authentication checks added to it so that other applications calling the API should provide a valid key.
