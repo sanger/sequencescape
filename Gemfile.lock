@@ -605,6 +605,7 @@ DEPENDENCIES
   knapsack_pro
   launchy
   listen
+  logger
   minitest
   minitest-profiler
   mocha
