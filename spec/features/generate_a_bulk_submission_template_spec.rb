@@ -48,7 +48,6 @@ describe 'Generate a bulk submission spreadsheet', :bulk_submission_excel, :js d
       visit bulk_submissions_path
       fill_in 'Labware barcodes (and wells)', with: "#{plate.human_barcode} #{partial_plate.human_barcode}:A1,A2"
       select(submission_template.name, from: 'Submission Template')
-      select(primer_panel.name, from: 'Primer panel')
       fill_in('Fragment size required (from)', with: 300)
       click_on 'Generate Template'
       DownloadHelpers.wait_for_download(filename)
@@ -69,7 +68,6 @@ describe 'Generate a bulk submission spreadsheet', :bulk_submission_excel, :js d
       visit bulk_submissions_path
       fill_in 'Labware barcodes (and wells)', with: "#{plate.human_barcode} #{partial_plate.human_barcode}:A1,A2"
       select(submission_template.name, from: 'Submission Template')
-      select(bait_library.name, from: 'Bait library')
       fill_in('Fragment size required (from)', with: 300)
       click_on 'Generate Template'
       DownloadHelpers.wait_for_download(filename)
