@@ -152,7 +152,7 @@ GEM
     choice (0.2.0)
     chronic (0.10.2)
     coderay (1.1.3)
-    concurrent-ruby (1.3.4)
+    concurrent-ruby (1.3.5)
     configatron (4.5.1)
     connection_pool (2.4.1)
     crack (1.0.0)
@@ -584,7 +584,7 @@ DEPENDENCIES
   capybara
   carrierwave
   caxlsx
-  concurrent-ruby (= 1.3.4)
+  concurrent-ruby (= 1.3.5)
   configatron
   csv (~> 3.3)
   cucumber-rails
