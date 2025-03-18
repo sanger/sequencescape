@@ -2,7 +2,10 @@
 
 # Select2 breaks Capybara since select dropdowns are changed to span dropdowns.
 # This patch identifies when Select2 is being used and changes the dropdown using Javascript instead.
+
+require 'capybara'
 require 'English'
+
 module CapybaraSelect2Patch
   # Intercept the standard Capybara select method
   def select(*args, wait: 3, **kwargs)
