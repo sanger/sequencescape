@@ -65,7 +65,7 @@ RSpec.configure do |config|
     DatabaseCleaner.clean_with(:truncation)
   end
 
-  # config.around { |example| DatabaseCleaner.cleaning { example.run } }
+  config.around { |example| DatabaseCleaner.cleaning { example.run } }
 
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
