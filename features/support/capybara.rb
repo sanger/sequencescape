@@ -2,6 +2,8 @@
 
 require 'selenium/webdriver'
 require 'capybara'
+require_relative 'capybara_failure_logger'
+require_relative 'capybara_timeout_patch'
 
 # Capybara.configure do |config|
 #   config.server = :puma
