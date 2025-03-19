@@ -1,0 +1,11 @@
+---
+# Element Aviti flowcell kit types
+
+LO:
+  name: Low Output
+
+MO:
+  name: Medium Output
+
+HO:
+  name: High Output
