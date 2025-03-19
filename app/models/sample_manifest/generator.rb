@@ -119,8 +119,7 @@ class SampleManifest::Generator
   end
 
   def asset_type
-    return unless configuration.manifest_types.find_by(params[:template])
-    configuration.manifest_types.find_by(params[:template]).asset_type
+    configuration.manifest_types.find_by(params[:template])&.asset_type
   end
 
   # Retrieves the value of the rows_per_well attribute from the manifest_types.yml config.
