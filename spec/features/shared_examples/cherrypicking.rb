@@ -31,8 +31,9 @@ shared_examples 'a cherrypicking procedure' do
 
         # optionally select a control plate
         if control_plate
-          control_plate_text = "#{control_plate.human_barcode} - #{control_plate.name}"
-          select(control_plate_text, from: 'Control plate')
+          placement_type = control_plate.custom_metadatum_collection&.metadata&.[]('control_placement_type')
+          control_plate_text = "#{control_plate.human_barcode} - #{control_plate.name} (#{placement_type.capitalize})"
+          select(control_plate_text, from: 'Control plate & placement type')
         end
       end
 
