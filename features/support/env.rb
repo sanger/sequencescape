@@ -20,8 +20,6 @@ require 'factory_bot_rails'
 
 require_relative 'capybara'
 require_relative 'parameter_types'
-require './lib/capybara_failure_logger'
-require './lib/capybara_timeout_patch'
 # Capybara defaults to CSS3 selectors rather than XPath.
 # If you'd prefer to use XPath, just uncomment this line and adjust any
 # selectors in your step definitions to use the XPath syntax.

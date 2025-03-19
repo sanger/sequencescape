@@ -1,0 +1,18 @@
+# Checks that the .release-version file has been updated
+name: Check release version
+
+on:
+  pull_request:
+    branches:
+      - master
+    types:
+      # defaults
+      - opened
+      - synchronize
+      - reopened
+      # custom
+      - ready_for_review # required for Github-created PRs
+
+jobs:
+  check-release-version:
+    uses: sanger/.github/.github/workflows/check-release-version.yml@master
