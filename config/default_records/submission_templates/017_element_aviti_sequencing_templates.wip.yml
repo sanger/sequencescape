@@ -15,7 +15,7 @@ Limber-Bespoke - PCR - Element Aviti sequencing:
     order_role: PCR Bespoke
     product_line_name: Short Read
     product_catalogue_name: GenericPCR
-    request_type_keys: ["limber_pcr_bespoke", "limber_multiplexing"]
+    request_type_keys: ["limber_pcr_bespoke", "limber_multiplexing", "element_aviti_sequencing"]
 
 Limber-Bespoke - PCR Free - Element Aviti sequencing:
   name: "Limber-Bespoke - PCR Free - Element Aviti sequencing"
@@ -24,7 +24,7 @@ Limber-Bespoke - PCR Free - Element Aviti sequencing:
     order_role: PCR Free Bespoke
     product_line_name: Short Read
     product_catalogue_name: GenericNoPCR
-    request_type_keys: ["limber_pcr_free_bespoke", "limber_multiplexing"]
+    request_type_keys: ["limber_pcr_free_bespoke", "limber_multiplexing", "element_aviti_sequencing"]
 
 Limber-Htp - GnT Picoplex - Element Aviti sequencing:
   name: "Limber-Htp - GnT Picoplex - Element Aviti sequencing"
@@ -33,7 +33,7 @@ Limber-Htp - GnT Picoplex - Element Aviti sequencing:
     order_role: 25
     product_line_name: Short Read
     product_catalogue_name: GnT Picoplex
-    request_type_keys: ["limber_gnt_picoplex", "limber_multiplexing"]
+    request_type_keys: ["limber_gnt_picoplex", "limber_multiplexing", "element_aviti_sequencing"]
 
 Limber-Htp - Heron LTHR V2 - Element Aviti sequencing:
   name: "Limber-Htp - Heron LTHR V2 - Element Aviti sequencing"
