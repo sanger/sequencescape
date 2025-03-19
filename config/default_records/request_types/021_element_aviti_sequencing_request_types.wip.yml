@@ -1,0 +1,8 @@
+---
+element_aviti_sequencing:
+  name: Element Aviti sequencing
+  order: 2
+  initial_state: pending
+  billable: true
+  product_line_name: Element-Aviti
+  request_purpose: standard
