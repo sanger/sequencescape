@@ -33,6 +33,9 @@ FileUtils.chdir APP_ROOT do
   # Install JavaScript dependencies if using Yarn
   system('bin/yarn')
 
+  puts "\n== Setting credentials =="
+  system 'bin/rails credentials:edit'
+
   puts "\n== Preparing database =="
   system 'bin/rails db:setup'
 

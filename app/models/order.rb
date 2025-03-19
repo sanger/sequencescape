@@ -58,8 +58,8 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_many :source_asset_projects, -> { distinct }, through: :assets, source: :projects
   has_many :requests, inverse_of: :order, dependent: :restrict_with_exception
 
-  serialize :request_types
-  serialize :item_options
+  serialize :request_types, coder: YAML
+  serialize :item_options, coder: YAML
 
   before_validation :set_study_from_aliquots, unless: :cross_study_allowed, if: :autodetect_studies
   before_validation :set_project_from_aliquots, unless: :cross_project_allowed, if: :autodetect_projects

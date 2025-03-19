@@ -6,7 +6,7 @@ class MigratePlateTypeToNewColumn < ActiveRecord::Migration[5.1]
   # Migration specific version of Asset
   class MigratingAsset < ApplicationRecord
     self.table_name = 'assets'
-    serialize :descriptors
+    serialize :descriptors, coder: YAML
 
     def labware_type
       descriptors['Plate Type']

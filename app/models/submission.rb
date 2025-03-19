@@ -116,7 +116,10 @@ class Submission < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def subject_type
     'submission'
   end
-  alias_attribute :friendly_name, :name
+
+  def friendly_name
+    name
+  end
 
   def multiplexed?
     orders.any?(&:multiplexed?)
@@ -156,7 +159,8 @@ class Submission < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     orders.first.request_types.map(&:to_i)
   end
-  deprecate request_type_ids: 'Orders may now have different request_types'
+  deprecate request_type_ids: 'Orders may now have different request_types',
+            deprecator: Rails.application.deprecators[:sequencescape]
 
   # Logged calls from: app/models/pre_capture_pool.rb:74
 

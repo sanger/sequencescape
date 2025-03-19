@@ -4,10 +4,10 @@ Rake::Task['test'].clear
 task test: :environment do
   $LOAD_PATH << 'test'
   if ENV.key?('TEST')
-    Rails::TestUnit::Runner.rake_run([ENV['TEST']])
+    Rails::TestUnit::Runner.run([ENV['TEST']])
   else
     test_folders = FileList['test/*'].exclude('test/performance', 'test/*.*')
-    Rails::TestUnit::Runner.rake_run(test_folders)
+    Rails::TestUnit::Runner.run(test_folders)
   end
 end
 

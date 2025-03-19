@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'test_helper'
-require 'admin/studies_controller'
+
 module Admin
   class StudiesControllerTest < ActionController::TestCase
     context 'Studies controller' do

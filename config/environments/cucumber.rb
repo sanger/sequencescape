@@ -3,10 +3,9 @@ Rails.application.configure do
   # Edit at your own peril - it's recommended to regenerate this file
   # in the future when you upgrade to a newer version of Cucumber.
 
-  # IMPORTANT: Setting config.cache_classes to false is known to
-  # break Cucumber's use_transactional_fixtures method.
-  # For more information see https://rspec.lighthouseapp.com/projects/16211/tickets/165
-  config.cache_classes = true
+  # cache_classes = false is required for ajax requests to be handled correctly
+  # See https://chrisortman.com/2015/03/27/ajax-race-condition-in-cucumber/
+  config.cache_classes = false
   config.active_support.deprecation = :log
 
   config.public_file_server.enabled = true
