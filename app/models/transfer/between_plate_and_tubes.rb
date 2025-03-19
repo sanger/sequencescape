@@ -121,6 +121,6 @@ class Transfer::BetweenPlateAndTubes < Transfer
   end
 
   def build_asset_links
-    AssetLink::Job.create(source, destinations)
+    AssetLink::Job.create_now(source, destinations)
   end
 end
