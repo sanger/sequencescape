@@ -1,0 +1,186 @@
+---
+Limber-Bespoke - Chromium - Element Aviti sequencing:
+  name: "Limber-Bespoke - Chromium - Element Aviti sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    order_role: Chromium
+    product_line_name: Short Read
+    product_catalogue_name: Chromium
+    request_type_keys: ["limber_chromium_bespoke", "limber_multiplexing", "element_aviti_sequencing"]
+
+Limber-Bespoke - PCR - Element Aviti sequencing:
+  name: "Limber-Bespoke - PCR - Element Aviti sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    order_role: PCR Bespoke
+    product_line_name: Short Read
+    product_catalogue_name: GenericPCR
+    request_type_keys: ["limber_pcr_bespoke", "limber_multiplexing"]
+
+Limber-Bespoke - PCR Free - Element Aviti sequencing:
+  name: "Limber-Bespoke - PCR Free - Element Aviti sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    order_role: PCR Free Bespoke
+    product_line_name: Short Read
+    product_catalogue_name: GenericNoPCR
+    request_type_keys: ["limber_pcr_free_bespoke", "limber_multiplexing"]
+
+Limber-Htp - GnT Picoplex - Element Aviti sequencing:
+  name: "Limber-Htp - GnT Picoplex - Element Aviti sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    order_role: 25
+    product_line_name: Short Read
+    product_catalogue_name: GnT Picoplex
+    request_type_keys: ["limber_gnt_picoplex", "limber_multiplexing"]
+
+Limber-Htp - Heron LTHR V2 - Element Aviti sequencing:
+  name: "Limber-Htp - Heron LTHR V2 - Element Aviti sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    order_role: 31
+    product_line_name: Short Read
+    product_catalogue_name: Heron LTHR
+    request_type_keys: ["limber_heron_lthr_v2", "element_aviti_sequencing"]
+
+Limber-Htp - HiC - Element Aviti sequencing:
+  name: "Limber-Htp - HiC - Element Aviti sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Short Read
+    product_catalogue_name: HiC
+    request_type_keys: ["limber_hic", "limber_multiplexing_hic", "element_aviti_sequencing"]
+
+Limber-Htp - ISC - Element Aviti sequencing:
+  name: "Limber-Htp - ISC - Element Aviti sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    order_role: 11
+    product_line_name: Short Read
+    product_catalogue_name: ISC
+    request_type_keys: ["limber_isc", "limber_multiplexing", "element_aviti_sequencing"]
+
+Limber-Htp - Multiplexing - Element Aviti sequencing:
+  name: "Limber-Htp - Multiplexing - Element Aviti sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    order_role: 17
+    product_line_name: Short Read
+    product_catalogue_name: Generic
+    request_type_keys: ["limber_multiplexing", "element_aviti_sequencing"]
+
+Limber-Htp - PCR Free - Element Aviti sequencing:
+  name: "Limber-Htp - PCR Free - Element Aviti sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    order_role: 15
+    product_line_name: Short Read
+    product_catalogue_name: PFHSqX
+    request_type_keys: ["limber_pcr_free", "limber_multiplexing", "element_aviti_sequencing"]
+
+Limber-Htp - pWGS-384 - Element Aviti sequencing:
+  name: "Limber-Htp - pWGS-384 - Element Aviti sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    order_role: 32
+    product_line_name: Short Read
+    product_catalogue_name: pWGS-384
+    request_type_keys: ["limber_pwgs-384", "limber_multiplexing", "element_aviti_sequencing"]
+
+Limber-Htp - ReISC - Element Aviti sequencing:
+  name: "Limber-Htp - ReISC - Element Aviti sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    order_role: 8
+    product_line_name: Short Read
+    product_catalogue_name: ReISC
+    request_type_keys: ["limber_reisc", "limber_multiplexing", "element_aviti_sequencing"]
+
+Limber-Htp - RNAA - Element Aviti sequencing:
+  name: "Limber-Htp - RNAA - Element Aviti sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    order_role: 19
+    product_line_name: Short Read
+    product_catalogue_name: RNAA
+    request_type_keys: ["limber_rnaa", "limber_multiplexing", "element_aviti_sequencing"]
+
+Limber-Htp - RNAAG - Element Aviti sequencing:
+  name: "Limber-Htp - RNAAG - Element Aviti sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    order_role: 20
+    product_line_name: Short Read
+    product_catalogue_name: RNAAG
+    request_type_keys: ["limber_rnaag", "limber_multiplexing", "element_aviti_sequencing"]
+
+Limber-Htp - RNAF - Element Aviti sequencing:
+  name: "Limber-Htp - RNAF - Element Aviti sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Short Read
+    product_catalogue_name: RNAF
+    request_type_keys: ["limber_rnaf", "limber_multiplexing", "element_aviti_sequencing"]
+
+Limber-Htp - RNAR - Element Aviti sequencing:
+  name: "Limber-Htp - RNAR - Element Aviti sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    order_role: 23
+    product_line_name: Short Read
+    product_catalogue_name: RNAR
+    request_type_keys: ["limber_rnar", "limber_multiplexing", "element_aviti_sequencing"]
+
+Limber-Htp - RNARG - Element Aviti sequencing:
+  name: "Limber-Htp - RNARG - Element Aviti sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    order_role: 24
+    product_line_name: Short Read
+    product_catalogue_name: RNARG
+    request_type_keys: ["limber_rnarg", "limber_multiplexing", "element_aviti_sequencing"]
+
+Limber-Htp - RVI Bait Capture Library - Element Aviti sequencing:
+  name: "Limber-Htp - RVI Bait Capture Library - Element Aviti sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    project_id: 3662
+    product_line_name: Short Read
+    product_catalogue_name: Bait Capture Library
+    request_type_keys: ["limber_bait_capture_library_prep", "limber_multiplexing", "element_aviti_sequencing"]
+
+Limber-Htp - scRNA - Element Aviti sequencing:
+  name: "Limber-Htp - scRNA - Element Aviti sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    order_role: 18
+    product_line_name: Short Read
+    product_catalogue_name: scRNA
+    request_type_keys: ["limber_scrna", "limber_multiplexing", "element_aviti_sequencing"]
+
+Limber-Htp - scRNA Core Library Prep - Element Aviti sequencing:
+  name: "Limber-Htp - scRNA Core Library Prep - Element Aviti sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Short Read
+    product_catalogue_name: scRNA Core
+    request_type_keys: ["limber_scrna_core_library_prep", "limber_multiplexing", "element_aviti_sequencing"]
+
+Limber-Htp - scRNA-384 - Element Aviti sequencing:
+  name: "Limber-Htp - scRNA-384 - Element Aviti sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    order_role: 22
+    product_line_name: Short Read
+    product_catalogue_name: scRNA-384
+    request_type_keys: ["limber_scrna-384", "limber_multiplexing", "element_aviti_sequencing"]
+
+Limber-Htp - WGS - Element Aviti sequencing:
+  name: "Limber-Htp - WGS - Element Aviti sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    order_role: 14
+    product_line_name: Short Read
+    product_catalogue_name: WGS
+    request_type_keys: ["limber_wgs", "limber_multiplexing", "element_aviti_sequencing"]
