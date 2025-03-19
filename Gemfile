@@ -4,13 +4,14 @@ source 'https://rubygems.org'
 
 group :default do
   gem 'bootsnap'
-  gem 'concurrent-ruby', '1.3.4'
+  gem 'concurrent-ruby', '!= 1.3.5' # due to rails/rails#54264, remove restriction after upgrade to rails 7.1
   gem 'rails', '~> 7.0.8'
 
   # Previously part of ruby or rails, now separate gems
-  gem 'drb', '~> 2.2'
-  gem 'mutex_m', '~> 0.3.0'
-  gem 'syslog', '~> 0.3.0'
+  gem 'drb'
+  gem 'logger'
+  gem 'mutex_m'
+  gem 'syslog'
 
   # Fix incompatibility with between Ruby 3.1 and Psych 4 (used for yaml)
   # see https://stackoverflow.com/a/71192990
