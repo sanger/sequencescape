@@ -30,6 +30,8 @@ RSpec.describe SampleManifest::Generator, :sample_manifest, :sample_manifest_exc
     { template: template, study_id: study.id, supplier_id: supplier.id, count: '4' }.with_indifferent_access
   end
 
+  let(:column_updater_spy) { instance_double(SampleManifest::ColumnConditionalFormatUpdater) }
+
   after(:all) { SampleManifestExcel.reset! }
 
   it 'model name is sample manifest' do
@@ -89,6 +91,15 @@ RSpec.describe SampleManifest::Generator, :sample_manifest, :sample_manifest_exc
     generator = described_class.new(attributes.merge(template: 'tube_full'), user, configuration)
     generator.execute
     expect(generator.sample_manifest.asset_type).to eq(configuration.manifest_types.find_by('tube_full').asset_type)
+  end
+
+  it 'calls ColumnConditionalFormatUpdater during sample manifest generation' do
+    generator = described_class.new(attributes.merge(template: 'tube_full'), user, configuration)
+    allow(column_updater_spy).to receive(:update_column_formatting_by_asset_type)
+    allow(SampleManifest::ColumnConditionalFormatUpdater).to receive(:new).and_return(column_updater_spy)
+    generator.execute
+
+    expect(column_updater_spy).to have_received(:update_column_formatting_by_asset_type)
   end
 
   it 'prints labels if barcode printer is present' do
