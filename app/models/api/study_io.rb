@@ -74,10 +74,6 @@ class Api::StudyIo < Api::Base
     map_attribute_to_json_attribute(:study_study_title, 'study_title')
     map_attribute_to_json_attribute(:study_sra_hold, 'study_visibility')
 
-    map_attribute_to_json_attribute(:study_project_id, 'ena_project_id')
-    map_attribute_to_json_attribute(:study_study_title, 'study_title')
-    map_attribute_to_json_attribute(:study_sra_hold, 'study_visibility')
-
     map_attribute_to_json_attribute(:contaminated_human_dna)
     map_attribute_to_json_attribute(:contains_human_dna)
     map_attribute_to_json_attribute(:commercially_available)
