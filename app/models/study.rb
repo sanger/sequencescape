@@ -204,6 +204,8 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     association(:faculty_sponsor, :name, required: true)
     association(:program, :name, required: true)
 
+    # These attributes are warehoused
+    # we have invoked map_attribute_to_json_attribute for them in app/models/api/study_io.rb
     custom_attribute(:prelim_id, with: /\A[a-zA-Z]\d{4}\z/, required: false)
     custom_attribute(:study_description, required: true)
     custom_attribute(:contaminated_human_dna, required: true, in: YES_OR_NO)
