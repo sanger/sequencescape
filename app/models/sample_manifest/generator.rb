@@ -42,8 +42,10 @@ class SampleManifest::Generator
   def columns
     @columns ||= configuration.columns.find(params[:template])
     return unless asset_type
-    conditional_updater = SampleManifest::ColumnConditionalFormatUpdater.new(columns: @columns, asset_type: asset_type)
-    conditional_updater.update_column_formatting_by_asset_type
+    SampleManifest::ColumnConditionalFormatUpdater.new(
+      columns: @columns,
+      asset_type: asset_type
+    ).update_column_formatting_by_asset_type
   end
 
   def print_job_required?
