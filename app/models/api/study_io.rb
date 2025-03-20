@@ -74,6 +74,10 @@ class Api::StudyIo < Api::Base
     map_attribute_to_json_attribute(:study_study_title, 'study_title')
     map_attribute_to_json_attribute(:study_sra_hold, 'study_visibility')
 
+    map_attribute_to_json_attribute(:study_project_id, 'ena_project_id')
+    map_attribute_to_json_attribute(:study_study_title, 'study_title')
+    map_attribute_to_json_attribute(:study_sra_hold, 'study_visibility')
+
     map_attribute_to_json_attribute(:contaminated_human_dna)
     map_attribute_to_json_attribute(:contains_human_dna)
     map_attribute_to_json_attribute(:commercially_available)
@@ -101,5 +105,9 @@ class Api::StudyIo < Api::Base
     map_attribute_to_json_attribute(:data_deletion_period)
     map_attribute_to_json_attribute(:contaminated_human_data_access_group)
     with_association(:program, lookup_by: :id) { map_attribute_to_json_attribute(:name, 'programme') }
+
+    map_attribute_to_json_attribute(:ebi_library_strategy)
+    map_attribute_to_json_attribute(:ebi_library_source)
+    map_attribute_to_json_attribute(:ebi_library_selection)
   end
 end
