@@ -1,7 +1,7 @@
 default: &DEFAULT
   EBI_Library_strategy:
     - "WGS"
-    - "WGA"
+    - "WGA Whole Genome Amplification"
     - "WXS"
     - "RNA-Seq"
     - "ssRNA-seq"
@@ -36,10 +36,10 @@ default: &DEFAULT
     - "Synthetic-Long-Read"
     - "Targeted-Capture"
     - "Tethered Chromatin Conformation Capture"
-    - "NOMe-seq"
+    - "NOMe-Seq"
     - "ChM-Seq"
     - "GBS"
-    - "Ribo-seq"
+    - "Ribo-Seq"
     - "OTHER"
 
   EBI_Library_source:
