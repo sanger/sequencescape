@@ -11,17 +11,15 @@ module Api
     #   POST /api/v2/qcables/
     #   {
     #     "data": {
-    #       "type": "qc_files",
+    #       "type": "qcables",
     #       "attributes": {
-    #         "filename": "qc_file.csv",
-    #         "contents": "A1,A2,A3\n1,2,3\n4,5,6\n"
     #       },
     #       "relationships": {
-    #         "asset": {
-    #           "data": {
-    #             "type": "labware",
-    #             "id": 456
-    #           }
+    #         "labware": {
+    #           "data": { "type": "labware", "id": 57 }
+    #         },
+    #         "lot": {
+    #           "data": { "type": "lots", "id": 1 }
     #         }
     #       }
     #     }

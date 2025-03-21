@@ -7,8 +7,8 @@ module Api
     # Creation of this resource via a `POST` request will initiate the child plate creation.
     # The child plate is returned by this endpoint under the {#child} relationship.
     #
-    # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
     # @note Access this resource via the `/api/v2/plate_creations/` endpoint.
+    # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
     #
     # @example POST request with arguments specified by UUID (deprecated)
     #   POST /api/v2/plate_creations/
@@ -31,13 +31,13 @@ module Api
     #       "attributes": {},
     #       "relationships": {
     #         "parent": {
-    #           "data": { "type": "plates", "id": "123" }
+    #           "data": { "type": "plates", "id": 1 }
     #         },
     #         "child_purpose": {
-    #           "data": { "type": "plate_purposes", "id": "234" }
+    #           "data": { "type": "plate_purposes", "id": 1 }
     #         },
     #         "user": {
-    #           "data": { "type": "users", "id": "345" }
+    #           "data": { "type": "users", "id": 4 }
     #         }
     #       }
     #     }

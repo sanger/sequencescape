@@ -2,25 +2,48 @@
 
 module Api
   module V2
-    # @todo This documentation does not yet include a detailed description of what this resource represents.
-    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
-    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
-    #
-    # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
-    # @note Access this resource via the `/api/v2/bait_library_layouts/` endpoint.
-    #
     # Provides a JSON:API representation of {BaitLibraryLayout}.
     #
-    # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
-    # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
+    # This resource represents the layout of bait libraries on a specific plate.
+    # It is primarily used to retrieve information about the arrangement of bait libraries.
+    #
+    # @note This resource cannot be modified after creation; its endpoint will not accept `PATCH` requests.
+    # @note Access this resource via the `/api/v2/bait_library_layouts/` endpoint.
+    #
+    # @example GET request for all BaitLibraryLayout resources
+    #   GET /api/v2/bait_library_layouts/
+    #
+    # @example GET request for a BaitLibraryLayout with ID 123
+    #   GET /api/v2/bait_library_layouts/123/
+    #
+    # @example POST request to create a BaitLibraryLayout
+    #   POST /api/v2/bait_library_layouts/
+    #   {
+    #     "data": {
+    #         "type": "bait_library_layouts",
+    #         "attributes": {
+    #         },
+    #         "relationships": {
+    #             "plate": { "data": { "type": "plates", "id": 1 } },
+    #             "user": { "data": { "type": "users", "id": 4 } }
+    #         }
+    #     }
+    # }
+    #
+    # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
+    # or refer to the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class BaitLibraryLayoutResource < BaseResource
+      ###
+      # Attributes
+      ###
+
       # @!attribute [w] plate_uuid
-      #   This is declared for convenience where the plate is not available to set as a relationship.
+      #   This attribute is declared for convenience when the plate is not available to set as a relationship.
       #   Setting this attribute alongside the `plate` relationship will prefer the relationship value.
       #   @deprecated Use the `plate` relationship instead.
       #   @param value [String] The UUID of the plate for this bait library layout.
-      #   @return [Void]
+      #   @return [void]
       #   @see #plate
       attribute :plate_uuid, writeonly: true
 
@@ -29,11 +52,11 @@ module Api
       end
 
       # @!attribute [w] user_uuid
-      #   This is declared for convenience where the user is not available to set as a relationship.
+      #   This attribute is declared for convenience when the user is not available to set as a relationship.
       #   Setting this attribute alongside the `user` relationship will prefer the relationship value.
       #   @deprecated Use the `user` relationship instead.
       #   @param value [String] The UUID of the user who created this bait library layout.
-      #   @return [Void]
+      #   @return [void]
       #   @see #user
       attribute :user_uuid, writeonly: true
 
@@ -45,8 +68,9 @@ module Api
       #   @return [Hash] The layout of the bait libraries on the plate.
       attribute :layout, readonly: true
 
-      # # @!attribute [r] uuid
-      # #   @return [String] The UUID of the state change.
+      # @!attribute [r] uuid
+      #   @note This identifier is automatically assigned upon creation and cannot be modified.
+      #   @return [String] The UUID of the bait library layout.
       attribute :uuid, readonly: true
 
       ###

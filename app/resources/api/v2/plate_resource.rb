@@ -15,21 +15,20 @@ module Api
     #   POST /api/v2/plates/
     #   {
     #     "data": {
-    #       "type": "plates",
-    #       "attributes": {
-    #         "size": 96
-    #       },
-    #       "relationships": {
-    #         "purpose": {
-    #           "data": { "type": "purposes", "id": "123" }
+    #         "type": "plates",
+    #         "attributes": {
+    #             "size": 96
     #         },
-    #         "wells": [
-    #           { "data": { "type": "wells", "id": "456" } },
-    #           { "data": { "type": "wells", "id": "789" } }
-    #         ],
-    #       }
+    #         "relationships": {
+    #             "purpose": {
+    #                 "data": { "type": "purposes", "id": 1 }
+    #             },
+    #             "wells": {
+    #                 "data": [{ "type": "wells", "id": 4481 }]
+    #             }
+    #         }
     #     }
-    #   }
+    # }
     #
     # @example GET request for all Plate resources
     #   GET /api/v2/plates/
