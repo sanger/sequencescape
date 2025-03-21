@@ -145,7 +145,7 @@ instead of the Docker version, in that case you can start this setup with the
 command:
 
 ```shell
-docker compose -f docker compose-dev.yml up
+docker compose -f docker-compose-dev.yml up
 ```
 
 **ABOUT RECREATE DOCKER IMAGE** If you ever need to recreate the image built on first start (because you made modifications to the Dockerfile file or there have been dependency updates) you can re build the image again with (or see above for M1 Apple chip):

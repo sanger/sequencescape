@@ -2,6 +2,82 @@
 
 require 'rails_helper'
 
+RSpec.shared_examples 'a chromium tag group' do
+  it 'will add the value' do
+    sf_tag_group = described_class.new(value: tag_set_name, sample_manifest_asset: sample_manifest_asset)
+    expect(sf_tag_group.value).to eq(tag_set_name)
+  end
+
+  it 'will be valid with an existing tag group name' do
+    sf_tag_group = described_class.new(value: tag_set_name, sample_manifest_asset: sample_manifest_asset)
+    expect(sf_tag_group).to be_valid
+  end
+
+  context 'when the tag group is not Chromium' do
+    let(:adapter_type) { create(:adapter_type, name: 'Other') }
+
+    it 'will not be valid' do
+      expect(described_class.new(value: tag_set_name, sample_manifest_asset: sample_manifest_asset)).not_to be_valid
+    end
+  end
+
+  it 'responds to update method but does nothing to tag on aliquot' do
+    sf_tag_group = described_class.new(value: tag_set_name, sample_manifest_asset: sample_manifest_asset)
+    expect(sf_tag_group.update(aliquot: aliquot, tag_group: nil)).to be_nil
+    aliquot.save
+    expect(aliquot.tag).to be_nil
+  end
+end
+
+RSpec.shared_examples 'a chromium tag well' do
+  it 'will add the value' do
+    sf_tag_well = described_class.new(value: tag_well, sample_manifest_asset: sample_manifest_asset)
+    expect(sf_tag_well.value).to eq(tag_well)
+  end
+
+  it 'will not have a valid tag index when unlinked from a tag group' do
+    expect(described_class.new(value: tag_well, sample_manifest_asset: sample_manifest_asset)).not_to be_valid
+  end
+
+  describe 'linking' do
+    let(:sf_tag_group) do
+      SequencescapeExcel::SpecialisedField::ChromiumTagGroup.new(
+        value: tag_set_name,
+        sample_manifest_asset: sample_manifest_asset
+      )
+    end
+    let(:sf_tag_well) { described_class.new(value: tag_well, sample_manifest_asset: sample_manifest_asset) }
+
+    before { sf_tag_well.sf_tag_group = sf_tag_group }
+
+    it 'will have a valid tag index when linked to a tag group' do
+      expect(sf_tag_well).to be_valid
+    end
+
+    context 'when well name is invalid' do
+      let(:tag_well) { 'sausage' }
+
+      it 'will not have a valid tag index when index does not match to a map_id in the tag group' do
+        expect(sf_tag_well).not_to be_valid
+      end
+    end
+
+    it 'will apply the four tags associated with the map_id' do
+      sf_tag_well.update(aliquot: aliquot, tag_group: nil)
+      expect(asset.reload.aliquots.map { |a| a.tag.map_id }).to contain_exactly(1, 2, 3, 4)
+    end
+
+    context 'when applied to a re-upload' do
+      let(:asset) { create(:tagged_well, map: map, aliquot_count: 4) }
+
+      it 'will apply the four tags associated with the map_id' do
+        sf_tag_well.update(aliquot: aliquot, tag_group: nil)
+        expect(asset.aliquots.map { |a| a.tag.map_id }).to contain_exactly(1, 2, 3, 4)
+      end
+    end
+  end
+end
+
 RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_manifest_excel, type: :model do
   let(:map) { create(:map) }
   let(:asset) { create(:untagged_well, map:) }
@@ -563,85 +639,27 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
 
   describe SequencescapeExcel::SpecialisedField::ChromiumTagGroup do
     let(:adapter_type) { create(:adapter_type, name: 'Chromium') }
-    let(:tag_group) { create(:tag_group_with_tags, adapter_type:) }
-    let(:tag_group_name) { tag_group.name }
+    let(:tag_group1) { create(:tag_group_with_tags, adapter_type:) }
+    let(:tag_set) { create(:tag_set, tag_group: tag_group1, tag2_group: nil) }
+    let(:tag_set_name) { tag_set.name }
     let(:tag_well) { 'A1' }
 
     describe 'tag group' do
-      it 'will add the value' do
-        sf_tag_group = described_class.new(value: tag_group_name, sample_manifest_asset: sample_manifest_asset)
-        expect(sf_tag_group.value).to eq(tag_group_name)
+      before do
+        tag_group1
+        tag_set
       end
 
-      it 'will be valid with an existing tag group name' do
-        expect(described_class.new(value: tag_group_name, sample_manifest_asset: sample_manifest_asset)).to be_valid
-      end
-
-      context 'when the tag group is not Chromium' do
-        let(:adapter_type) { create(:adapter_type, name: 'Other') }
-
-        it 'will not be valid' do
-          expect(
-            described_class.new(value: tag_group_name, sample_manifest_asset: sample_manifest_asset)
-          ).not_to be_valid
-        end
-      end
-
-      it 'responds to update method but does nothing to tag on aliquot' do
-        sf_tag_group = described_class.new(value: tag_group_name, sample_manifest_asset: sample_manifest_asset)
-        expect(sf_tag_group.update(aliquot: aliquot, tag_group: nil)).to be_nil
-        aliquot.save
-        expect(aliquot.tag).to be_nil
-      end
+      it_behaves_like 'a chromium tag group', :tag_set_name
     end
 
     describe SequencescapeExcel::SpecialisedField::ChromiumTagWell do
-      it 'will add the value' do
-        sf_tag_well = described_class.new(value: tag_well, sample_manifest_asset: sample_manifest_asset)
-        expect(sf_tag_well.value).to eq(tag_well)
+      before do
+        tag_group1
+        tag_set
       end
 
-      it 'will not have a valid tag index when unlinked from a tag group' do
-        expect(described_class.new(value: tag_well, sample_manifest_asset: sample_manifest_asset)).not_to be_valid
-      end
-
-      describe 'linking' do
-        let(:sf_tag_group) do
-          SequencescapeExcel::SpecialisedField::ChromiumTagGroup.new(
-            value: tag_group_name,
-            sample_manifest_asset: sample_manifest_asset
-          )
-        end
-        let(:sf_tag_well) { described_class.new(value: tag_well, sample_manifest_asset: sample_manifest_asset) }
-
-        before { sf_tag_well.sf_tag_group = sf_tag_group }
-
-        it 'will have a valid tag index when linked to a tag group' do
-          expect(sf_tag_well).to be_valid
-        end
-
-        context 'when well name is invalid' do
-          let(:tag_well) { 'sausage' }
-
-          it 'will not have a valid tag index when index does not match to a map_id in the tag group' do
-            expect(sf_tag_well).not_to be_valid
-          end
-        end
-
-        it 'will apply the four tags associated with the map_id' do
-          sf_tag_well.update(aliquot: aliquot, tag_group: nil)
-          expect(asset.reload.aliquots.map { |a| a.tag.map_id }).to contain_exactly(1, 2, 3, 4)
-        end
-
-        context 'when applied to a re-upload' do
-          let(:asset) { create(:tagged_well, map: map, aliquot_count: 4) }
-
-          it 'will apply the four tags associated with the map_id' do
-            sf_tag_well.update(aliquot: aliquot, tag_group: nil)
-            expect(asset.aliquots.map { |a| a.tag.map_id }).to contain_exactly(1, 2, 3, 4)
-          end
-        end
-      end
+      it_behaves_like 'a chromium tag well'
     end
   end
 
