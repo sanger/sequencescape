@@ -63,6 +63,9 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def template
   end
 
+  def barcode_type
+  end
+
   belongs_to :supplier, optional: false
   belongs_to :study, optional: false
   belongs_to :project
