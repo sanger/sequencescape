@@ -4,6 +4,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   before_action :validate_type, only: %i[new create]
 
   LIMIT_ERROR_LENGTH = 10_000
+  BARCODE_TYPES = ['1D Barcode', '2D Barcode'].freeze
 
   def export
     @manifest = SampleManifest.find(params[:id])
@@ -48,6 +49,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
     @rack_purposes = @sample_manifest.acceptable_rack_purposes.pluck(:name, :id) if params[:asset_type] == 'tube_rack'
     @barcode_printers = @sample_manifest.applicable_barcode_printers.pluck(:name)
     @templates = SampleManifestExcel.configuration.manifest_types.by_asset_type(params[:asset_type]).to_a
+    @barcode_types = BARCODE_TYPES
   end
 
   def create # rubocop:todo Metrics/AbcSize
