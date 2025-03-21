@@ -9,6 +9,10 @@
     <link rel="shortcut icon" href="/<%= favicon %>" type="image/x-icon" />
     <link rel="icon" href="/<%= favicon %>" type="image/x-icon" />
     <link rel="apple-touch-icon-precomposed" href="/<%= apple_icon %>" type="image/png" />
+
+    <% if Rails.application.config.disable_animations %>
+      <%= vite_stylesheet_tag 'disable_animations' %>
+    <% end %>
   </head>
 
   <body>
