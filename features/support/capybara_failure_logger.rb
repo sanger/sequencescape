@@ -19,9 +19,15 @@ module CapybaraFailureLogger
   def self.log_failure(name, page, &block)
     block ||= method(:puts)
 
+    log_text("\n== Failure ==============", &block)
     log_screenshot(name, page, &block)
     log_html(name, page, &block)
     log_js(name, page, &block)
+    log_text('=========================', &block)
+  end
+
+  def self.log_text(text, &)
+    yield text.to_s
   end
 
   def self.log_screenshot(name, page, &)
@@ -46,9 +52,11 @@ module CapybaraFailureLogger
     return unless page.driver.browser.respond_to?(:logs)
 
     errors = page.driver.browser.logs.get(:browser)
-    yield '== JS errors ============'
-    errors.each { |jserror| yield jserror.message }
-    yield '========================='
+    return if errors.empty?
+
+    yield '--- JS errors -----------'
+    errors.each { |error| yield error.message }
+    yield '-------------------------'
   end
 
   def self.output_image(filename)
