@@ -143,11 +143,14 @@ chromium_tag_well:
       showErrorMessage: true
       errorStyle: :stop
       errorTitle: "Tag well"
-      error: "Tag Index must a well."
+      error: "Tag Index must be a well."
   conditional_formattings:
     empty_cell:
-    number_greater_than_one:
-    is_text:
+    is_number:
+    len:
+      formula:
+        operator: ">"
+        operand: 3
 library_type:
   heading: LIBRARY TYPE
   unlocked: true
