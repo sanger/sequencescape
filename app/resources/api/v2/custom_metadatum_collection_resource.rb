@@ -14,6 +14,8 @@ module Api
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class CustomMetadatumCollectionResource < BaseResource
+      default_includes :uuid_object, :custom_metadata
+
       ###
       # Attributes
       ###

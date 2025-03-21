@@ -17,6 +17,8 @@ module Api
     class TransferRequestResource < BaseResource
       immutable
 
+      default_includes :uuid_object
+
       # Attributes
       attribute :uuid, readonly: true
       attribute :state, readonly: true

@@ -47,6 +47,9 @@ module Api
       # labware
       include Api::V2::SharedBehaviour::Labware
 
+      # TODO: {Y24-213} Possibly this line doesn't actually do anything and could be removed.
+      default_includes :uuid_object, :barcodes, :plate_purpose, :transfer_requests
+
       ###
       # Attributes
       ###

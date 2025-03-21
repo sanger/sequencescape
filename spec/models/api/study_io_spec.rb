@@ -16,10 +16,7 @@ RSpec.describe Api::StudyIo do
         ega_policy_accession_number: 'EGA222',
         ega_dac_accession_number: 'DAC333',
         program: create(:program, name: 'General'),
-        contaminated_human_data_access_group: 'contaminated human data access group test',
-        ebi_library_strategy: 'WGS',
-        ebi_library_source: 'GENOMIC',
-        ebi_library_selection: 'PCR'
+        contaminated_human_data_access_group: 'contaminated human data access group test'
       }
     )
   end
@@ -60,9 +57,6 @@ RSpec.describe Api::StudyIo do
       'data_deletion_period' => '3 months',
       'contaminated_human_data_access_group' => 'contaminated human data access group test',
       'programme' => 'General',
-      'ebi_library_strategy' => 'WGS',
-      'ebi_library_source' => 'GENOMIC',
-      'ebi_library_selection' => 'PCR',
       'manager' => [
         { login: manager.login, email: manager.email, name: manager.name },
         { login: manager2.login, email: manager2.email, name: manager2.name }

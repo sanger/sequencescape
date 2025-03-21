@@ -98,7 +98,6 @@ class Api::SampleIo < Api::Base
     map_attribute_to_json_attribute(:treatment)
     map_attribute_to_json_attribute(:date_of_consent_withdrawn)
     map_attribute_to_json_attribute(:user_id_of_consent_withdrawn, 'marked_as_consent_withdrawn_by')
-    map_attribute_to_json_attribute(:huMFre_code)
   end
 
   extra_json_attributes do |_object, json_attributes|

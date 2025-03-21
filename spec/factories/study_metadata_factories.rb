@@ -22,10 +22,6 @@ FactoryBot.define do
     s3_email_list { 'aa1@sanger.ac.uk;aa2@sanger.ac.uk' }
     data_deletion_period { '3 months' }
 
-    ebi_library_strategy { 'WGS' }
-    ebi_library_source { 'GENOMIC' }
-    ebi_library_selection { 'PCR' }
-
     transient { contaminated_human_data_access_group { nil } }
 
     after(:build) do |study_metadata, evaluator|

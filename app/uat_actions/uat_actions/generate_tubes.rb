@@ -6,6 +6,8 @@ class UatActions::GenerateTubes < UatActions
   self.description = 'Generate sample tubes in the selected study.'
   self.category = :generating_samples
 
+  include UatActions::Shared::StudyHelper
+
   form_field :tube_purpose_name,
              :select,
              label: 'Tube Purpose',
@@ -74,10 +76,6 @@ class UatActions::GenerateTubes < UatActions
     foreign_barcode = prefix + suffix
 
     tube.barcodes << Barcode.new(format: foreign_barcode_format, barcode: foreign_barcode)
-  end
-
-  def study
-    @study ||= Study.find_by!(name: study_name)
   end
 
   def tube_purpose

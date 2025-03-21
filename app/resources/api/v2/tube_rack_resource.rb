@@ -20,6 +20,8 @@ module Api
       #       Instead this should be done as part of adding authentication to
       #       the API in the security OKR.
 
+      default_includes :uuid_object, :barcodes
+
       # Attributes
       attribute :created_at, readonly: true
       attribute :labware_barcode, write_once: true

@@ -18,6 +18,8 @@ module Api
       # attributes and filters. By adding behaviour here we ensure that it
       # is automatically available on well.
       include Api::V2::SharedBehaviour::Receptacle
+
+      default_includes :uuid_object
     end
   end
 end

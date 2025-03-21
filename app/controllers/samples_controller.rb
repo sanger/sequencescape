@@ -248,7 +248,6 @@ class SamplesController < ApplicationController
         subject
         treatment
         donor_id
-        huMFre_code
       ]
     }
   end

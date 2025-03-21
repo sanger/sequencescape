@@ -59,8 +59,8 @@ reference_genome:
   scope: :alphabetical
 chromium_tag_groups:
   identifier: :name
-  scope: :chromium
-  scope_on: TagGroup
+  scope: :visible_single_index_chromium
+  scope_on: TagSet
 dual_index_tag_sets:
   identifier: :name
   scope: :visible_dual_index
