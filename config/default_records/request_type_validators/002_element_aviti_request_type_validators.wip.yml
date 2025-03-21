@@ -1,0 +1,14 @@
+---
+FlowcellRequestedElementAviti:
+  request_type_key: element_aviti_sequencing
+  request_option: requested_flowcell_type
+  valid_options: !ruby/object:RequestType::Validator::FlowcellTypeValidator
+    request_type_key: element_aviti_sequencing
+ReadLengthRequestedElementAviti:
+  request_type_key: element_aviti_sequencing
+  request_option: read_length
+  valid_options:
+    - 75
+    - 150
+    - 300
+  
