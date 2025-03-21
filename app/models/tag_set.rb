@@ -20,6 +20,12 @@ class TagSet < ApplicationRecord
   validate :tag_group_adapter_types_must_match
 
   scope :dual_index, -> { where.not(tag2_group: nil) }
+
+  # This scope retrieves tag sets that are visible.
+  # - If `tag_group` is present and visible, the tag set is included.
+  # - If `tag2_group` is present and visible, the tag set is included.
+  # - If `tag2_group` is not present, the tag set is included.
+  # - If `tag2_group` is present but not visible, the tag set is excluded.
   scope :visible,
         -> do
           joins(:tag_group)
@@ -32,6 +38,12 @@ class TagSet < ApplicationRecord
   scope :visible_dual_index, -> { dual_index.visible }
 
   scope :by_adapter_type, ->(adapter_type_name) { joins(:tag_group).merge(TagGroup.by_adapter_type(adapter_type_name)) }
+  scope :single_index, -> { where(tag2_group: nil) }
+
+  scope :visible_single_index, -> { single_index.visible }
+
+  # Define the scope that combines visible_single_index and chromium tag_group
+  scope :visible_single_index_chromium, -> { visible_single_index.joins(:tag_group).merge(TagGroup.chromium) }
 
   # Dynamic method to determine the visibility of a tag_set based on the visibility of its tag_groups
   # TagSet has a method to check if itself is visible by checking
