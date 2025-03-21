@@ -1,15 +1,14 @@
-
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <%= vite_stylesheet_tag "application.scss", media: "all" %>
   <title>Sequencescape : <%= I18n.t('global_links.login') %></title>
   <link rel="shortcut icon" href="/<%= favicon %>" type="image/x-icon" />
   <link rel="icon" href="/<%= favicon %>" type="image/x-icon" />
   <link rel="apple-touch-icon-precomposed" href="/<%= apple_icon %>" type="image/png" />
+
   <% if Rails.application.config.disable_animations %>
     <%= vite_stylesheet_tag 'disable_animations' %>
 
@@ -23,10 +22,12 @@
 <body>
   <div class="container d-flex justify-content-center">
     <div id="login-panel">
-      <%= vite_image_tag "images/scape-large-dark.jpg", size: "600x229", class: "card-img-top",  alt: "Two white lines twirl round each other, separating blue and green fields." %>
+      <%= vite_image_tag "images/scape-large-dark.jpg", size: "600x229", class: "card-img-top", alt: "Two white lines twirl round each other, separating blue and green fields." %>
       <%= yield %>
     </div>
   </div>
-  <footer id="main-footer"><%= render partial: 'shared/footer' %></footer>
+  <footer id="main-footer">
+    <%= render partial: 'shared/footer' %>
+  </footer>
 </body>
 </html>
