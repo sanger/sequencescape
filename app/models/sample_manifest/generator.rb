@@ -96,7 +96,7 @@ class SampleManifest::Generator
   end
 
   def attributes
-    params.except(:template, :barcode_printer, :only_first_label).merge(
+    params.except(:template, :barcode_printer, :only_first_label, :barcode_type).merge(
       user:,
       asset_type:,
       rows_per_well:,
