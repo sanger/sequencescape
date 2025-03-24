@@ -15,12 +15,12 @@ describe 'Labware API', with: :api_v2 do
       api_get base_endpoint
     end
 
-    it 'responds with a success http code when sending a list of tag_sets with visible tag groups' do
+    it 'responds with a success http code when retrieving a list of receptacles.' do
       expect(response).to have_http_status(:success)
     end
 
-    it 'returns the correct number of tag_sets with visible tag groups' do
-      expect(json['data'].length).to eq(5)
+    it 'returns the correct number of receptacles' do
+      expect(json['data'].length).to eq(2)
     end
 
     # Check filters, ESPECIALLY if they aren't simple attribute filters
