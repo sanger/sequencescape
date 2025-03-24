@@ -72,7 +72,3 @@ production:
 ### Next release
 ### Training
 ### Production
-
-
-cucumber:
-  <<: *test
