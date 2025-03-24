@@ -234,10 +234,9 @@ class Labware < Asset
   end
 
   def received_date
-    self
-      &.asset_audits
-      &.where(key: 'slf_receive_plates')
-      &.where('message LIKE ?', '%Reception fridge%')
+    asset_audits # rubocop:disable Style/SafeNavigationChainLength
+      &.where('key = ? AND message LIKE ?', 'slf_receive_plates', '%Reception fridge%')
+      &.order(:created_at)
       &.last
       &.created_at
   end
