@@ -30,11 +30,7 @@ class UatActions::GenerateTagSet < UatActions
     report[:name] = name
     return true if existing_tag_set
 
-    ts_parameters = {
-      name: name,
-      tag_group_id: tag_group.id,
-      tag2_group_id: tag2_group&.id,
-    }
+    ts_parameters = { name: name, tag_group_id: tag_group.id, tag2_group_id: tag2_group&.id }
 
     tlt = TagSet.create!(ts_parameters)
     tlt.save
