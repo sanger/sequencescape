@@ -15,3 +15,7 @@ BGE Lib PCR XP:
   target_type: Plate
   stock_plate: false
   size: 96
+BGE Cap Lib Pool Norm:
+  type: IlluminaHtp::MxTubePurpose
+  target_type: MultiplexedLibraryTube
+  stock_plate: false

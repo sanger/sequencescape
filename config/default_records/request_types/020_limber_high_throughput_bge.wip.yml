@@ -35,3 +35,11 @@ limber_bge_isc:
     - BGE Lib PCR XP
   library_types:
     - BGE
+limber_multiplexing_bge:
+  name: Limber Multiplexing BGE
+  asset_type: Well
+  order: 2
+  request_class_name: Request::Multiplexing
+  for_multiplexing: true
+  product_line_name: Illumina-HTP
+  target_purpose_name: BGE Cap Lib Pool Norm

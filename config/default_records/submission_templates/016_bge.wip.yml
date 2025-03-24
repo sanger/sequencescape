@@ -12,7 +12,7 @@ Limber-Htp - BGE ISC:
   related_records:
     product_line_name: Illumina-HTP
     product_catalogue_name: BGE
-    request_type_keys: ["limber_bge_isc", "limber_multiplexing", "illumina_htp_novaseqx_paired_end_sequencing"] # Other request types?
+    request_type_keys: ["limber_bge_isc", "limber_multiplexing_bge", "illumina_htp_novaseqx_paired_end_sequencing"] # Other request types?
 Limber-Htp - BGE Transition - Automated:
   name: "Limber-Htp - BGE Transition - Automated"
   submission_class_name: "AutomatedOrder"
