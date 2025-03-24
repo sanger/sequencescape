@@ -8,8 +8,8 @@ require:
   - rubocop-capybara
   - rubocop-factory_bot
 plugins:
- - rubocop-rspec
- - rubocop-rspec_rails
+  - rubocop-rspec
+  - rubocop-rspec_rails
 
 inherit_mode:
   merge:
