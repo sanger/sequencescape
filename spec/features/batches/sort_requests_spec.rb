@@ -30,7 +30,7 @@ describe 'Batches controller', :js, :warren do
     click_button('Save')
     request_list
       .all('tr')
-      .each_with_index { |request, index| expect(request.text).to include((index + 1).to_s, (post_drag[index]).to_s) }
+      .each_with_index { |request, index| expect(request.text).to include((index + 1).to_s, post_drag[index].to_s) }
 
     expect(Warren.handler.messages_matching("queue_broadcast.messenger.#{flowcell_message.id}")).to be 1
     expect(flowcell_message.as_json.dig('flowcell', 'updated_at')).to be > 5.minutes.ago

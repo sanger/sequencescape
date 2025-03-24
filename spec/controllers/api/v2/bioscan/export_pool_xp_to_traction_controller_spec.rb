@@ -18,7 +18,7 @@ RSpec.describe Api::V2::Bioscan::ExportPoolXpToTractionController, :bioscan, typ
           barcode: requested_barcode
         }
       }
-    }.to_h.with_indifferent_access
+    }.with_indifferent_access
   end
 
   before do

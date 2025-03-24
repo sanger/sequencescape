@@ -33,7 +33,7 @@ class LibPoolNormTubeGenerator
       plate
         .children
         .select { |c| c.is_a?(StockMultiplexedLibraryTube) }
-        .reject { |tube| tube.state == 'failed' || tube.state == 'qc_complete' || tube.state == 'cancelled' }
+        .reject { |tube| ['failed', 'qc_complete', 'cancelled'].include?(tube.state) }
   end
 
   def destination_tubes
