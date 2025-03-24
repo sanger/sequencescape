@@ -23,6 +23,7 @@ RSpec.describe Sdb::SampleManifestsController do
           config.tag_group = 'My Magic Tag Group'
           config.load!
         end
+        allow(LabelPrinter::PrintJob).to receive(:new).and_call_original
         post :create,
              params: {
                sample_manifest: {
@@ -46,6 +47,10 @@ RSpec.describe Sdb::SampleManifestsController do
       it 'generates a new sample manifest with the correct attributes' do
         sample_manifest = SampleManifest.last
         expect_correct_attributes(sample_manifest, study, supplier, purpose)
+      end
+
+      it 'invokes LabelPrinter::PrintJob.new' do
+        expect(LabelPrinter::PrintJob).to have_received(:new).once
       end
     end
   end
