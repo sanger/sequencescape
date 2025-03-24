@@ -97,6 +97,9 @@ module Api
         @model.user = User.with_uuid(value).first
       end
 
+      # @!attribute [w] register_stock
+      #   @param value [Boolean] Whether to register the child plate in the stock resource in MLWH.
+      #   @return [Void]
       attribute :register_stock, writeonly: true
 
       def register_stock=(value)
