@@ -43,7 +43,7 @@ class SampleManifest::Generator
         LabelPrinter::Label::SampleManifestRedirect,
         only_first_label: only_first_label,
         sample_manifest: sample_manifest,
-        label_template_name: check_label_template
+        label_template_name: label_template_for_2d_barcodes
       )
   end
 
@@ -67,7 +67,7 @@ class SampleManifest::Generator
 
   private
 
-  def check_label_template
+  def label_template_for_2d_barcodes
     if params[:barcode_type] == '2D Barcode' &&
          (sample_manifest.asset_type == '1dtube' || sample_manifest.asset_type == 'library')
       'traction_tube_label_template'

@@ -48,7 +48,7 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_uploaded_document :uploaded, differentiator: 'uploaded'
   has_uploaded_document :generated, differentiator: 'generated'
 
-  attr_accessor :override, :only_first_label
+  attr_accessor :override, :only_first_label, :barcode_type
   attr_writer :rows_per_well, :invalid_wells
 
   class_attribute :spreadsheet_offset
@@ -61,9 +61,6 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def template
-  end
-
-  def barcode_type
   end
 
   belongs_to :supplier, optional: false
