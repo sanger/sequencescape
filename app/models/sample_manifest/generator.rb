@@ -37,17 +37,13 @@ class SampleManifest::Generator
   end
 
   def print_job
-    label_template_name =
-      if params[:barcode_type] == '2D Barcode' && sample_manifest.asset_type == '1dtube'
-        'traction_tube_label_template'
-      end
     @print_job ||=
       LabelPrinter::PrintJob.new(
         params[:barcode_printer],
         LabelPrinter::Label::SampleManifestRedirect,
-        only_first_label:,
-        sample_manifest:,
-        label_template_name:
+        only_first_label: only_first_label,
+        sample_manifest: sample_manifest,
+        label_template_name: check_label_template
       )
   end
 
@@ -70,6 +66,13 @@ class SampleManifest::Generator
   end
 
   private
+
+  def check_label_template
+    if params[:barcode_type] == '2D Barcode' &&
+         (sample_manifest.asset_type == '1dtube' || sample_manifest.asset_type == 'library')
+      'traction_tube_label_template'
+    end
+  end
 
   def check_required_attributes
     REQUIRED_ATTRIBUTES.each do |attribute|

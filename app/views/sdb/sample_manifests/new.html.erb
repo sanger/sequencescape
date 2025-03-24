@@ -2,37 +2,34 @@
 <%= render partial: "side_links" %>
 <%= page_title 'Sample Manifest', 'Create' %>
 
-<%= semantic_form_for(@sample_manifest, html: { novalidate: false }) do |form| %>
-  <%= form.inputs name: "Manifest Type" do %>
-    <%= form.input :template, required: true, as: :select, prompt: 'Select a template', collection: @templates, input_html: { class: 'form-control'} %>
-    <%= form.input :purpose,  as: :select, collection: @purposes, required: true, input_html: { class: 'form-control select2'}, label: purpose_label_for(params[:asset_type]) unless @purposes.empty? %>
-    <%= form.input :tube_rack_purpose,  as: :select, collection: @rack_purposes, required: true, input_html: { class: 'form-control select2'}, label: 'Tube rack purpose' if params[:asset_type] == 'tube_rack' %>
-    <% if params[:asset_type].blank? %>
-      <p class="help-block">Used for plate manifests only.</p>
-    <% end %>
-  <% end %>
+<div class="card shadow-sm">
+  <div class="card-body">
+    <%= semantic_form_for(@sample_manifest, html: { novalidate: false }) do |form| %>
+      <%= form.inputs name: "Manifest Type" do %>
+        <%= form.input :template, required: true, as: :select, prompt: 'Select a template', collection: @templates, input_html: { class: 'form-control'} %>
+        <%= form.input :purpose,  as: :select, collection: @purposes, required: true, input_html: { class: 'form-control select2'}, label: purpose_label_for(params[:asset_type]) unless @purposes.empty? %>
+        <%= form.input :tube_rack_purpose,  as: :select, collection: @rack_purposes, required: true, input_html: { class: 'form-control select2'}, label: 'Tube rack purpose' if params[:asset_type] == 'tube_rack' %>
+        <% if params[:asset_type].blank? %>
+          <p class="help-block">Used for plate manifests only.</p>
+        <% end %>
+      <% end %>
 
-  <%= form.inputs name: "Manifest For" do %>
-    <%= form.input :study,  as: :select, prompt: 'Select a study', collection: @studies, required: true, input_html: { class: 'form-control select2'} %>
-    <%= form.input :supplier,  as: :select, prompt: 'Select a supplier', collection: @suppliers, required: true, input_html: { class: 'form-control select2'} %>
-  <% end %>
+      <%= form.inputs name: "Manifest For" do %>
+        <%= form.input :study,  as: :select, prompt: 'Select a study', collection: @studies, required: true, input_html: { class: 'form-control select2'} %>
+        <%= form.input :supplier,  as: :select, prompt: 'Select a supplier', collection: @suppliers, required: true, input_html: { class: 'form-control select2'} %>
+      <% end %>
 
-  <%= form.inputs name: count_barcode_heading_for(params[:asset_type]) do %>
-    <%= form.input :count, input_html: { size: 3, value: '1',  class: 'form-control' }, label: count_label_for(params[:asset_type]) %>
-    <% unless params[:asset_type] == "tube_rack" %>
-      <%= form.input :barcode_printer,  as: :select, collection: @barcode_printers, input_html: { class: 'form-control select2'} %>
-      <div class="form-row">
-        <div class="form-group col-md-6">
+      <%= form.inputs name: count_barcode_heading_for(params[:asset_type]) do %>
+        <%= form.input :count, input_html: { size: 3, value: '1',  class: 'form-control' }, label: count_label_for(params[:asset_type]) %>
+        <% unless params[:asset_type] == "tube_rack" %>
+          <%= form.input :barcode_printer,  as: :select, collection: @barcode_printers, input_html: { class: 'form-control select2'} %>
+          <%= form.input :barcode_type, required: true, as: :select, prompt: 'Select barcode type', collection: @barcode_types, input_html: { class: 'form-control select2' } %>
           <%= form.input :only_first_label, as: :boolean, label: 'Print only the first label'%>
-        </div>
-        <div class="form-group col-md-6">
-          <%= form.input :barcode_type, required: true, as: :select, prompt: 'Select barcode type', collection: @barcode_types, input_html: { class: 'form-control select2'} %>
-        </div>
-      </div>
+        <% end %>
+      <% end %>
+      <%= form.actions do %>
+        <%= form.action(:submit, as: :button, label: submit_label_for(params[:asset_type]), button_html: {  class: 'btn btn-success' }) %>
+      <% end %>
     <% end %>
-  <% end %>
-
-  <%= form.actions do %>
-    <%= form.action(:submit, as: :button, label: submit_label_for(params[:asset_type]), button_html: {  class: 'btn btn-success' }) %>
-  <% end %>
-<% end %>
+  </div>
+</div>
