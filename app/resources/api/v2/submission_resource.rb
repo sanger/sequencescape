@@ -56,6 +56,9 @@ module Api
       # Attributes
       ###
 
+      # Added for use in Limber Presenters to decide whether to show the pooling tab
+      delegate :multiplexed?, to: :_model
+
       # CAUTION:
       # See app/controllers/api/v2/submissions_controller.rb
       # for field filtering, otherwise newly added attributes
@@ -73,6 +76,7 @@ module Api
       #   @return [Integer] the number of lanes of sequencing requested in the Submission.
       #      This can only be written once on creation.
       attribute :lanes_of_sequencing, write_once: true
+      attribute :multiplexed?, readonly: true
 
       def lanes_of_sequencing
         _model.sequencing_requests.size
