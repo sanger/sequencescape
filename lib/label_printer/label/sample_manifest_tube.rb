@@ -19,7 +19,9 @@ module LabelPrinter
       # @return [String] The human-readable barcode if the barcode type is '2D Barcode',
       #   otherwise the machine-readable barcode.
       def barcode(tube)
-        return tube.human_barcode if @barcode_type == '2D Barcode'
+        if @barcode_type == Rails.application.config.tube_manifest_barcode_config[:barcode_type_labels]['2d']
+          return tube.human_barcode
+        end
         tube.machine_barcode
       end
 
