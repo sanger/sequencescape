@@ -4,5 +4,5 @@ BGE Cap Lib Pool Norm:
   stock_plate: false
 BGE Lib Pool:
   type: IlluminaHtp::InitialStockTubePurpose
-  target_type: MultiplexedLibraryTube
+  target_type: StockMultiplexedLibraryTube
   stock_plate: false
