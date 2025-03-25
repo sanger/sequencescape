@@ -48,7 +48,7 @@ Feature: Sample manifest
     And I select "xyz1d" from "Barcode printer"
     And I fill in the field labeled "Tubes required" with "1"
     And I check "Print only the first label"
-    And I select "2D Barcode" from "Barcode type"
+    And I select "2D Barcode (with human readable barcode encoded)" from "Barcode type"
     And Pmb has the required label templates
     And Pmb is up and running
     When I press "Create manifest and print labels"
