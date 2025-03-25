@@ -12,6 +12,12 @@ module LabelPrinter
         @barcode_type = options[:barcode_type]
       end
 
+      # Returns the appropriate barcode for the given tube based on the barcode type.
+      #
+      # @param tube [Tube] The tube object for which the barcode is being retrieved.
+      #   It is expected to respond to `human_barcode` and `machine_barcode`.
+      # @return [String] The human-readable barcode if the barcode type is '2D Barcode',
+      #   otherwise the machine-readable barcode.
       def barcode(tube)
         return tube.human_barcode if @barcode_type == '2D Barcode'
         tube.machine_barcode
