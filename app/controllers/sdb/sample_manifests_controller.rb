@@ -89,7 +89,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
     @barcode_printers = @sample_manifest.applicable_barcode_printers.pluck(:name)
     @templates = SampleManifestExcel.configuration.manifest_types.by_asset_type(params[:asset_type]).to_a
     return unless params[:asset_type] == '1dtube' || params[:asset_type] == 'library'
-    @barcode_types = Rails.application.config.tube_manifest_barcode_config[:barcode_type_labels].values
+    @barcode_types = Rails.application.config.tube_manifest_barcode_config[:barcode_type_labels].values.sort
   end
 
   def new_manifest_params
