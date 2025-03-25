@@ -43,7 +43,8 @@ class SampleManifest::Generator
         LabelPrinter::Label::SampleManifestRedirect,
         only_first_label: only_first_label,
         sample_manifest: sample_manifest,
-        label_template_name: label_template_for_2d_barcodes
+        label_template_name: label_template_for_2d_barcodes,
+        barcode_type: params[:barcode_type]
       )
   end
 

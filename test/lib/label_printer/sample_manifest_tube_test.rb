@@ -27,7 +27,7 @@ class SampleManifestTubeTest < ActiveSupport::TestCase
       third_line: Date.today.strftime('%e-%^b-%Y').to_s,
       round_label_top_line: prefix,
       round_label_bottom_line: barcode1,
-      barcode: tube1.human_barcode,
+      barcode: tube1.machine_barcode,
       label_name: 'main_label'
     }
   end
@@ -47,5 +47,12 @@ class SampleManifestTubeTest < ActiveSupport::TestCase
 
   test 'should return correct top line' do
     assert_equal manifest.study.abbreviation, tube_label.first_line
+  end
+
+  test 'should return the human barcode for 2D' do
+    options = { sample_manifest: manifest, only_first_label: true, barcode_type: '2D Barcode' }
+    @tube_label = LabelPrinter::Label::SampleManifestTube.new(options)
+
+    assert_equal tube1.human_barcode, tube_label.barcode(tube1)
   end
 end
