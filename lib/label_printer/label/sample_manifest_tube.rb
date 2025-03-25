@@ -12,12 +12,8 @@ module LabelPrinter
       end
 
       def barcode(tube)
-        barcode_type = @barcode_type
-        if barcode_type.nil? || barcode_type == '1D Barcode'
-          tube.machine_barcode
-        else
-          tube.human_barcode
-        end
+        return tube.human_barcode if @barcode_type == '2D Barcode'
+        tube.machine_barcode
       end
 
       def first_line(_tube = nil)
