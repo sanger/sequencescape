@@ -1,0 +1,13 @@
+# This submission template is associated with the Limber RVIG Bait Capture Library preparation pipeline.
+---
+Limber-Htp - RVIG Bait Capture Library - NovaSeq 6000 Paired end sequencing:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys:
+      [
+        "limber_rvig_bait_capture_library_prep",
+        "limber_multiplexing",
+        "illumina_htp_novaseq_6000_paired_end_sequencing",
+      ]
+    product_line_name: Illumina-HTP
+    product_catalogue_name: Bait Capture Library
