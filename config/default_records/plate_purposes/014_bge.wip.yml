@@ -19,3 +19,7 @@ BGE Cap Lib Pool Norm:
   type: IlluminaHtp::MxTubePurpose
   target_type: MultiplexedLibraryTube
   stock_plate: false
+BGE Lib Pool:
+  type: IlluminaHtp::MxTubePurpose
+  target_type: MultiplexedLibraryTube
+  stock_plate: false

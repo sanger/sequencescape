@@ -5,18 +5,18 @@ Limber-Htp - BGE PCR Free:
   related_records:
     product_line_name: Illumina-HTP
     product_catalogue_name: BGE
-    request_type_keys: ["limber_bge_pcr_free", "limber_multiplexing"]
+    request_type_keys: ["limber_bge_pcr_free", "limber_multiplexing_bge_pcr_free"] # Other request types? e.g. blending
 Limber-Htp - BGE ISC:
   name: "Limber-Htp - BGE ISC"
   submission_class_name: "LinearSubmission"
   related_records:
     product_line_name: Illumina-HTP
     product_catalogue_name: BGE
-    request_type_keys: ["limber_bge_isc", "limber_multiplexing_bge", "illumina_htp_novaseqx_paired_end_sequencing"] # Other request types?
+    request_type_keys: ["limber_bge_isc", "limber_multiplexing_bge_isc"] # Other request types? e.g. blending
 Limber-Htp - BGE Transition - Automated:
   name: "Limber-Htp - BGE Transition - Automated"
   submission_class_name: "AutomatedOrder"
   related_records:
     product_line_name: Illumina-HTP
     product_catalogue_name: BGE
-    request_type_keys: ["limber_bge_transition"] # Other request types?
+    request_type_keys: ["limber_bge_transition"]
