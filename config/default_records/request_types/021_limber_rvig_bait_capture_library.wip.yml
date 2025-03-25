@@ -1,4 +1,4 @@
-# Request types for Bait Capture Library
+# Request types for RVIG Bait Capture Library
 ---
 limber_rvig_bait_capture_library_prep:
   name: Limber RVIG Bait Capture Library Preparation
