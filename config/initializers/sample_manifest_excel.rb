@@ -9,3 +9,5 @@ Rails.application.config.to_prepare do
     end
   end
 end
+
+Rails.application.config.tube_manifest_barcode_config = { barcode_types: ['1D Barcode', '2D Barcode'] }
