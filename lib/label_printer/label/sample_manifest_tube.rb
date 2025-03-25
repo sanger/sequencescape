@@ -4,6 +4,7 @@ module LabelPrinter
     class SampleManifestTube < BaseTube
       attr_reader :sample_manifest, :only_first_label
 
+      # Initialised only for 1dtube and library
       def initialize(options)
         super()
         @sample_manifest = options[:sample_manifest]
