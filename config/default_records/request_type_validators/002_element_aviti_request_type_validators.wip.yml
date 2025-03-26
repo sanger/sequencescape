@@ -13,7 +13,4 @@ ReadLengthRequestedElementAviti:
     - 150
     - 300
 
-PercentElementPhixNeeded:
-  request_type_key: element_aviti_sequencing
-  request_option: percent_element_phix_needed
   

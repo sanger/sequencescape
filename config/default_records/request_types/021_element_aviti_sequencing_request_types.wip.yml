@@ -1,6 +1,7 @@
 ---
 element_aviti_sequencing:
   name: Element Aviti sequencing
+  asset_type: LibraryTube
   order: 2
   initial_state: pending
   billable: true
