@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 class Descriptor < ApplicationRecord
   belongs_to :task
-  serialize :selection
+  serialize :selection, coder: YAML
 
   def is_required?
     required
