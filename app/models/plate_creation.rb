@@ -50,6 +50,6 @@ class PlateCreation < AssetCreation
 
   def register_stock_for_plate
     return if child.blank?
-      child.wells.with_contents.each(&:register_stock!)
+    child.wells.with_contents.each(&:register_stock!)
   end
 end
