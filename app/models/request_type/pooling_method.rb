@@ -2,7 +2,7 @@
 class RequestType::PoolingMethod < ApplicationRecord
   has_many :request_types
   validates :pooling_behaviour, presence: true
-  serialize :pooling_options
+  serialize :pooling_options, coder: YAML
 
   self.table_name = ('pooling_methods')
 
