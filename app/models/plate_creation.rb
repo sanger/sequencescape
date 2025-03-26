@@ -45,11 +45,11 @@ class PlateCreation < AssetCreation
 
   def record_creation_of_children
     parent.events.create_plate!(child_purpose, child, user)
-    register_stock! if register_stock
+    register_stock_for_plate if register_stock
   end
 
-  def register_stock!
+  def register_stock_for_plate
     return if child.blank?
-    child.wells.each(&:register_stock!)
+      child.wells.with_contents.each(&:register_stock!)
   end
 end
