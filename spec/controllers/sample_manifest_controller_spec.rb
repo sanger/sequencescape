@@ -33,7 +33,7 @@ RSpec.describe Sdb::SampleManifestsController do
                  supplier_id: supplier.id,
                  count: 1,
                  barcode_printer: 'xyz',
-                 barcode_type: '2D Barcode',
+                 barcode_type: '2D Barcode (with human readable barcode encoded)',
                  only_first_label: '0'
                },
                asset_type: '1dtube'
