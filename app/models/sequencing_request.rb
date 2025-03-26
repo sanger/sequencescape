@@ -47,17 +47,16 @@ class SequencingRequest < CustomerRequest
 
   # Returns true if a request is ready for batching
   def ready? # rubocop:todo Metrics/CyclomaticComplexity
-    true
     # Reject any requests with missing or empty assets.
     # We use most tagged aliquot here, as its already loaded.
-    # return false if asset.nil? || asset.most_tagged_aliquot.nil?
-    #
-    # # Rejects any assets which haven't been scanned in
-    # return false if asset.scanned_in_date.blank?
-    #
-    # # It's ready if I don't have any lib creation requests or if all my lib creation requests are closed and
-    # # at least one of them is in 'passed' status
-    # upstream_requests.empty? || (upstream_requests.all?(&:closed?) && upstream_requests.any?(&:passed?))
+    return false if asset.nil? || asset.most_tagged_aliquot.nil?
+
+    # Rejects any assets which haven't been scanned in
+    return false if asset.scanned_in_date.blank?
+
+    # It's ready if I don't have any lib creation requests or if all my lib creation requests are closed and
+    # at least one of them is in 'passed' status
+    upstream_requests.empty? || (upstream_requests.all?(&:closed?) && upstream_requests.any?(&:passed?))
   end
 
   def self.delegate_validator
