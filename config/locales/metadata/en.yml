@@ -70,6 +70,12 @@ en:
         allowance_band:
           label: Allowance band
 
+        low_diversity:
+          label: Low diversity
+
+        percent_element_phix_needed:
+          label: '% Element phiX needed'
+
     library_creation_request:
       <<: *REQUEST
     sequencing_request:
