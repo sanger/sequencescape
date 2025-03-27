@@ -71,7 +71,7 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton # rubocop:to
   end
 
   def order_fields
-    order.request_type_ids_list = order.request_types.map { |rt| [rt] } if order.input_field_infos.flatten.empty?
+    order.request_type_ids_list = order.request_types.zip if order.input_field_infos.flatten.empty?
     order.input_field_infos.reject { |info| per_order_settings.include?(info.key) }
   end
 
