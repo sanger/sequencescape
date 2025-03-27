@@ -78,10 +78,7 @@ class RequestType::Validator < ApplicationRecord
       @array.send(method, ...)
     end
 
-    def include?(option)
-      # We have to define include specifically
-      @array.include?(option)
-    end
+    delegate :include?, to: :@array
 
     def to_a
       @array
