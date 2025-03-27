@@ -125,10 +125,6 @@ module Api
       # Filters
       ###
 
-      # Allows filtering by project ID.
-      # @example
-      #   GET /api/v2/aliquots/?filter[project]=456
-      filter :project
 
       ###
       # Getters and Setters
