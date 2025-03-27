@@ -11,6 +11,9 @@
       <%= form.inputs name: "Create Plates" do %>
         <%= form.input :user_barcode, input_html: {class: 'form-control', :'data-tab-target' => '#plates_source_plates'} %>
         <%= form.input :source_tubes,   as: :text, required: true, input_html: { class: 'form-control'} %>
+        <div class="alert alert-primary" role="alert" style="width: 72%">
+          <p><b>Number of source tubes:</b> <span id="source_tubes_count">0</span></p>
+        </div>
       <% end %>
     <% end %>
     <%= panel do %>
@@ -25,3 +28,15 @@
     <% end %>
   </div>
 <% end %>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const sourceTubesInput = document.getElementById('plates_from_tubes_source_tubes');
+    const sourceTubesCount = document.getElementById('source_tubes_count');
+
+    sourceTubesInput.addEventListener('input', () => {
+      const lines = sourceTubesInput.value.split('\n').filter(line => line.trim() !== '');
+      sourceTubesCount.textContent = lines.length;
+    })
+  });
+</script>
