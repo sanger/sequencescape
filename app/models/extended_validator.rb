@@ -32,7 +32,7 @@ class ExtendedValidator < ApplicationRecord
   has_many :request_types, through: :request_type_extened_validators
 
   validates :behaviour, presence: true
-  serialize :options
+  serialize :options, coder: YAML
 
   scope :for_submission,
         ->(submission) do
