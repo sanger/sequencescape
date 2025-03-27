@@ -223,9 +223,9 @@ GEM
     drb (2.2.1)
     dry-cli (1.2.0)
     erubi (1.13.1)
-    exception_notification (4.5.0)
-      actionmailer (>= 5.2, < 8)
-      activesupport (>= 5.2, < 8)
+    exception_notification (5.0.0)
+      actionmailer (>= 7.1, < 9)
+      activesupport (>= 7.1, < 9)
     factory_bot (6.5.0)
       activesupport (>= 5.0.0)
     factory_bot_rails (6.4.4)
@@ -321,7 +321,7 @@ GEM
       net-protocol
     net-protocol (0.2.2)
       timeout
-    net-smtp (0.5.0)
+    net-smtp (0.5.1)
       net-protocol
     netrc (0.11.0)
     nio4r (2.7.4)
