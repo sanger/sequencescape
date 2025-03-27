@@ -54,9 +54,7 @@ class BroadcastEvent < ApplicationRecord
 
   # Override in subclasses if you want dynamic event types
   # @return [String] The value of the event_type key in the generated message
-  def event_type
-    self.class.event_type
-  end
+  delegate :event_type, to: :class
 
   #
   # Use in subclasses to specify a fixed event type
