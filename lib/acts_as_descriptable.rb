@@ -33,7 +33,7 @@ module ActsAsDescriptable # :nodoc:
   require 'active_support/hash_with_indifferent_access'
 
   def self.included(base)
-    base.class_eval { serialize :descriptors }
+    base.class_eval { serialize :descriptors, coder: YAML }
   end
 
   def descriptors

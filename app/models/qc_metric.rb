@@ -25,7 +25,7 @@ class QcMetric < ApplicationRecord
   validates :asset, :qc_report, presence: true
   validates :qc_decision, inclusion: { in: QcMetric.valid_states }
 
-  serialize :metrics
+  serialize :metrics, coder: YAML
 
   scope :with_asset_ids, ->(ids) { where(asset_id: ids) }
 

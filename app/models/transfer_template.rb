@@ -15,7 +15,7 @@ class TransferTemplate < ApplicationRecord
   validates :transfer_class_name, presence: true
 
   # A set of transfers that should be made.
-  serialize :transfers
+  serialize :transfers, coder: YAML
 
   def transfer_class
     @transfer_class ||= transfer_class_name.constantize
