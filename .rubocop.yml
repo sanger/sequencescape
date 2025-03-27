@@ -5,10 +5,11 @@ require:
   - test_prof/rubocop
   - rubocop-performance
   - rubocop-rails
-  - rubocop-rspec
-  - rubocop-rspec_rails
   - rubocop-capybara
   - rubocop-factory_bot
+plugins:
+  - rubocop-rspec
+  - rubocop-rspec_rails
 
 inherit_mode:
   merge:

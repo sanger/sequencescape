@@ -45,7 +45,9 @@ module Receptacle::DownstreamAliquotsRemoval
     def self.creation_batches_for_requests(instance)
       PrivateMethods
         .submissions_for_requests(instance)
-        .map { |submission| submission&.multiplexed_labware&.children&.map(&:creation_batches) }
+        .map do |submission|
+          submission&.multiplexed_labware&.children&.map(&:creation_batches) # rubocop:disable Style/SafeNavigationChainLength
+        end
         .flatten
         .compact
     end
