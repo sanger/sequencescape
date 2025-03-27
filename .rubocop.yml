@@ -3,12 +3,13 @@ inherit_from:
   - .rubocop_todo.yml
 require:
   - test_prof/rubocop
+plugins:
+  - rubocop-capybara
+  - rubocop-factory_bot
   - rubocop-performance
   - rubocop-rails
   - rubocop-rspec
   - rubocop-rspec_rails
-  - rubocop-capybara
-  - rubocop-factory_bot
 
 inherit_mode:
   merge:

@@ -191,6 +191,7 @@ describe 'Asset submission', :js do
     it 'the link is not visible' do
       login_user user
       visit labware_path(asset)
+      expect(page).to have_text("Labware #{asset.name}") # confirm page has loaded
       expect(page).to have_no_text('Request additional sequencing')
     end
   end

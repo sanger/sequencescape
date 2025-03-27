@@ -29,11 +29,12 @@ class LibPoolNormTubeGenerator
   end
 
   def lib_pool_tubes
+    ignore_states = %w[failed qc_complete cancelled]
     @lib_pool_tubes ||=
       plate
         .children
         .select { |c| c.is_a?(StockMultiplexedLibraryTube) }
-        .reject { |tube| tube.state == 'failed' || tube.state == 'qc_complete' || tube.state == 'cancelled' }
+        .reject { |tube| ignore_states.include?(tube.state) }
   end
 
   def destination_tubes

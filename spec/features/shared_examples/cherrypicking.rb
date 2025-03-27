@@ -114,7 +114,7 @@ shared_examples 'a cherrypicking procedure' do
 
             step 'get the file' do
               within('#output_assets table tbody') do
-                row = page.all('tr', text: /#{destination_barcode}/).first
+                row = page.first('tr', text: /#{destination_barcode}/)
                 within(row) { click_link 'Print worksheet' }
               end
 

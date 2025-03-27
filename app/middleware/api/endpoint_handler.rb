@@ -154,9 +154,7 @@ module Api
       end
     end
 
-    def registered_mimetypes
-      self.class.registered_mimetypes
-    end
+    delegate :registered_mimetypes, to: :class
 
     def lookup_for_class(model)
       ::Core::Io::Registry.instance.lookup_for_class(model)

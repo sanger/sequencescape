@@ -41,10 +41,10 @@ module SampleManifestExcel
           i7s = []
           i5s = []
           tag_groups.each_with_index do |grp, index|
-            i7s << TagGroup.find_by(name: grp)&.tags&.find_by(map_id: tag_indexes[index])&.oligo
+            i7s << TagGroup.find_by(name: grp)&.tags&.find_by(map_id: tag_indexes[index])&.oligo # rubocop:disable Style/SafeNavigationChainLength
           end
           tag2_groups.each_with_index do |grp, index|
-            i5s << TagGroup.find_by(name: grp)&.tags&.find_by(map_id: tag2_indexes[index])&.oligo
+            i5s << TagGroup.find_by(name: grp)&.tags&.find_by(map_id: tag2_indexes[index])&.oligo # rubocop:disable Style/SafeNavigationChainLength
           end
           find_tags_clash(i7s.zip(i5s))
         end

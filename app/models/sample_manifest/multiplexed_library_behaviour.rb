@@ -52,7 +52,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
     end
 
     def mx_tube_from_manifest_asset
-      @manifest.assets.first&.external_library_creation_requests&.first&.target_asset
+      @manifest.assets.first&.external_library_creation_requests&.first&.target_asset # rubocop:disable Style/SafeNavigationChainLength
     end
 
     def pending_external_library_creation_requests

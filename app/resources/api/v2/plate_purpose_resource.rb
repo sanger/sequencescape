@@ -79,7 +79,7 @@ module Api
       #
       # @param is_input [Bool] whether to set the sti type to PlatePurpose::Input.
       # @return [void]
-      def input_plate=(is_input)
+      def input_plate=(is_input) # rubocop:disable Rails/Delegate
         @model.input_plate = is_input
       end
 

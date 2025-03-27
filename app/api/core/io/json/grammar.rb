@@ -130,7 +130,7 @@ module Core::Io::Json::Grammar
     end
 
     def merge(node)
-      super(node) do |children|
+      super do |children|
         self.class.new(@name, children) # prettier-ignore
       end
     end

@@ -11,14 +11,7 @@ RSpec.describe Api::V2::Bioscan::ExportPoolXpToTractionController, :bioscan, typ
   let(:tube) { create(:multiplexed_library_tube, purpose: tube_purpose) }
 
   let(:params) do
-    {
-      data: {
-        type: 'export_pool_xp_to_traction',
-        attributes: {
-          barcode: requested_barcode
-        }
-      }
-    }.to_h.with_indifferent_access
+    { data: { type: 'export_pool_xp_to_traction', attributes: { barcode: requested_barcode } } }.with_indifferent_access
   end
 
   before do

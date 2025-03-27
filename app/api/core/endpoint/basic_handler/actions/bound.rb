@@ -17,5 +17,5 @@ module Core::Endpoint::BasicHandler::Actions::Bound
   end
 
   delegate_to_bound_handler :action_guard
-  delegate_to_bound_handler :action_does_not_require_an_io_class, :does_not_require_an_io_class
+  delegate_to_bound_handler :action_not_require_an_io_class?, :not_require_an_io_class?
 end

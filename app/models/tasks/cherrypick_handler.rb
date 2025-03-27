@@ -107,7 +107,6 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
     # rubocop:todo Metrics/BlockLength
     ActiveRecord::Base.transaction do
       # Determine if there is a standard plate to use.
-      partial_plate = nil
       plate_barcode = params[:plate_barcode]
       fluidigm_plate = params[:fluidigm_plate]
       partial_plate = Plate.find_from_barcode(fluidigm_plate.presence || plate_barcode)

@@ -59,7 +59,7 @@ module Core::Endpoint::BasicHandler::Actions
     raise StandardError, 'Need an I/O class for this request' if request.io.nil?
   end
 
-  def does_not_require_an_io_class
+  def not_require_an_io_class?
     singleton_class.class_eval('def check_request_io_class!(_) ; end', __FILE__, __LINE__)
   end
 

@@ -13,9 +13,7 @@ class Submission::OrderPresenter
 
   # id needs to be defined to stop Object#id being called on the OrderPresenter
   # instance.
-  def id
-    @target_order.id
-  end
+  delegate :id, to: :@target_order
 
   def method_missing(method, ...)
     @target_order.send(method, ...)
