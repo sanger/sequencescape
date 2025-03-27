@@ -100,6 +100,12 @@ class Api::StudyIo < Api::Base
     map_attribute_to_json_attribute(:s3_email_list)
     map_attribute_to_json_attribute(:data_deletion_period)
     map_attribute_to_json_attribute(:contaminated_human_data_access_group)
+
+    # Add ebi fields here to be included to send to warehouse
+    map_attribute_to_json_attribute(:ebi_library_strategy)
+    map_attribute_to_json_attribute(:ebi_library_source)
+    map_attribute_to_json_attribute(:ebi_library_selection)
+
     with_association(:program, lookup_by: :id) { map_attribute_to_json_attribute(:name, 'programme') }
   end
 end
