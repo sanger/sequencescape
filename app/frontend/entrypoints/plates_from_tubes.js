@@ -7,7 +7,7 @@ CodeMirror.defineMode("barcode_reader", function (_) {
   function tokenBase(stream, state) {
     let ch = stream.next();
     if (/\w/.test(ch)) {
-      stream.eatWhile(/[\w\.]/);
+      stream.eatWhile(/[\w.]/);
       let readBarcode = stream.current();
       if (state.barcodes.indexOf(readBarcode) >= 0) {
         return "strong error";
