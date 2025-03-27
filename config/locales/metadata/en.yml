@@ -73,8 +73,8 @@ en:
         low_diversity:
           label: Low Diversity
 
-        percent_element_phix_needed:
-          label: "% Element PhiX needed"
+        percent_element_phix_requested:
+          label: "% Element PhiX requested"
 
     library_creation_request:
       <<: *REQUEST
