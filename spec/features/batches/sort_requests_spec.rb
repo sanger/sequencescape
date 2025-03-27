@@ -23,7 +23,7 @@ describe 'Batches controller', :js, :warren do
     # Suspect this is due to the quite specific locations at which the rows can be dropped.
     third_request.drag_to first_request
 
-    expect(request_list.all('tr').first).to eq(third_request)
+    expect(request_list.first('tr')).to eq(third_request)
 
     post_drag = [requests_ids[2], requests_ids[0], requests_ids[1]]
     Warren.handler.clear_messages

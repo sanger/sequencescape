@@ -5,9 +5,9 @@ require:
   - test_prof/rubocop
   - rubocop-performance
   - rubocop-rails
-  - rubocop-capybara
   - rubocop-factory_bot
 plugins:
+  - rubocop-capybara
   - rubocop-rspec
   - rubocop-rspec_rails
 
