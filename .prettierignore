@@ -26,6 +26,7 @@ capybara*.html
 config/cucumber.yml
 config/database.yml
 coverage
+data/avro_schema_cache/*
 database_suffix
 db/*.sql
 db/*test.sqlite3
