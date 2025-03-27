@@ -76,10 +76,17 @@ module Api
       # Getters and Setters
       ###
 
+      # Sets the Asset on the model using the UUID provided in the API create/update request.
+      #
+      # @param uuid [String] the uuid of the associated asset.
+      # @return [void]
       def asset_uuid=(uuid)
         @model.asset = Uuid.with_external_id(uuid).include_resource.map(&:resource).first
       end
 
+      # Transforms the Asset into its UUID when generating an API query response.
+      #
+      # @return [String] the uuid of the associated asset
       def asset_uuid
         @model.asset.uuid
       end

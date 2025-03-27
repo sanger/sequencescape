@@ -5,8 +5,8 @@ module Api
     # Provides a JSON:API representation of {PrimerPanel}.
     #
     # A primer panel is a set of primers used in a genotyping by sequencing assay.
-    # These primers bind to known regions of DNA, localised near SNPs (Single Nucleotide polymorphisms)
-    # to allow them to be targeted by short read Sequencing.
+    # These primers bind to known regions of DNA, localised near SNPs (Single Nucleotide Polymorphisms)
+    # to allow them to be targeted by short read sequencing.
     #
     # @note Access this resource via the `/api/v2/primer_panels/` endpoint.
     # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.

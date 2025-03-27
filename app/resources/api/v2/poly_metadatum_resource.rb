@@ -16,22 +16,17 @@ module Api
     #   POST /api/v2/poly_metadata/
     #   {
     #     "data": {
-    #       "type": "pooled_plate_creations",
+    #       "type": "poly_metadata",
     #       "attributes": {
-    #         "child_purpose_uuid": ["f64dec80-f51c-11ef-8842-000000000000"]
+    #         "key": "sample_type",
+    #         "value": "DNAa"
     #       },
     #       "relationships": {
-    #         // "child_purpose": {
-    #         //   "data": { "type": "purposes", "id": "uuid-of-child-purpose" }
-    #         // },
-    #         "parents": {
-    #           "data": [
-    #             { "type": "labware", "id": 1 },
-    #             { "type": "labware", "id": 4 }
-    #           ]
-    #         },
-    #         "user": {
-    #           "data": { "type": "users", "id": 1 }
+    #         "metadatable": {
+    #           "data": {
+    #             "type": "sample",
+    #             "id": "1"
+    #           }
     #         }
     #       }
     #     }

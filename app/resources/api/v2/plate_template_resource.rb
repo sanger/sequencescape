@@ -2,7 +2,9 @@
 
 module Api
   module V2
-    # @todo Is this resource required? It fails when fetching any plate templates.
+    # @todo Is this resource required? It fails when fetching any plate templates. Gatekeeper may need this
+    # resource in the future when switched to SS API v2, but it is not currently used in the API.
+    #
     # Provides a JSON:API representation of {PlateTemplate}.
     #
     # A `PlateTemplate` represents a virtual plate used in Cherrypicking and GateKeeper to block out empty wells

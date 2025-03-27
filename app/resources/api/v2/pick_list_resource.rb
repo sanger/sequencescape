@@ -29,22 +29,20 @@ module Api
     #       }
     #     }
     #   }
-
+    #
     # @example POST request to create a new pick list (labware-based picks)
     #   POST /api/v2/pick_lists/
-    #   @example POST request to create a new pick list (labware-based picks)
-    #     POST /api/v2/pick_lists/
-    #     {
-    #       "data": {
-    #         "type": "pick_lists",
-    #         "attributes": {
-    #           asynchronous: true,
-    #           "labware_pick_attributes": [
-    #             { "source_labware_id": 1, "source_labware_barcode": "SQPD-9001", "study_id": 1, "project_id": 1 }
-    #           ]
-    #         }
+    #   {
+    #     "data": {
+    #       "type": "pick_lists",
+    #       "attributes": {
+    #         "asynchronous": true,
+    #         "labware_pick_attributes": [
+    #           { "source_labware_id": 1, "source_labware_barcode": "SQPD-9001", "study_id": 1, "project_id": 1 }
+    #         ]
     #       }
     #     }
+    #   }
     #
     # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
@@ -94,7 +92,7 @@ module Api
       # @!attribute [w] labware_pick_attributes
       #   A list of attributes defining the picks based on Labware
       #   This provides an alternative way to create picks by proving a Labware ID or barcode,
-      #     instead of receptacle IDs.
+      #     instead of receptacle IDs (via `pick_attributes`).
       #   @note `source_labware_id` or `source_labware_barcode` must be provided
       #   @note `study_id`, and `project_id` are required attributes
       #   @see #labware_pick_attributes=
@@ -102,6 +100,7 @@ module Api
 
       # @!attribute [rw] asynchronous
       #   Indicates whether the pick list should be processed asynchronously.
+      #   @default true
       #   @return [Boolean] Whether the operation should be handled asynchronously.
       attribute :asynchronous
 

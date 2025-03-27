@@ -31,14 +31,14 @@ module Api
       # Attributes
       ###
 
-      # @!attribute [r] map_id
+      # @!attribute [rw] map_id
       #   The ID of the map associated with the tag. This attribute is write-once, meaning it cannot be updated after
       #   creation.
       #   @return [String] The ID of the associated map.
       #   @note This attribute is required when creating a tag.
       attribute :map_id, write_once: true
 
-      # @!attribute [r] oligo
+      # @!attribute [rw] oligo
       #   The oligo sequence associated with the tag. This attribute is write-once, meaning it cannot be updated after
       #   creation.
       #   @return [String] The oligo sequence associated with the tag.

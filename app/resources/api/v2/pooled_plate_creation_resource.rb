@@ -5,7 +5,6 @@ module Api
     # Provides a JSON:API representation of {PooledPlateCreation}.
     #
     # This resource represents the creation of a pooled plate from one or more parent plates.
-    # The new plate is generated based on a specified `child_purpose_uuid` and associated with its parents and user.
     #
     # @note Access this resource via the `/api/v2/pooled_plate_creation/` endpoint.
     # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
@@ -88,7 +87,7 @@ module Api
 
       # @!attribute [r] uuid
       #   @note This identifier is automatically assigned upon creation and cannot be modified.
-      #   @return [String] The UUID of the collection. This uniquely identifies the pooled plate creation event.
+      #   @return [String] This uniquely identifies the pooled plate creation event.
       attribute :uuid, readonly: true
 
       ###

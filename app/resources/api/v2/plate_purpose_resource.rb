@@ -54,18 +54,20 @@ module Api
       # @!attribute [rw] stock_plate
       #   Indicates whether plates of this purpose are stock plates.
       #   Stock plates serve as source plates for further processing.
+      #   They can be imported via manifest, and are registered in the multi-LIMS warehouse.
       #   @return [Boolean]
       attribute :stock_plate
 
       # @!attribute [rw] cherrypickable_target
-      #   Inurpose are dicates whether plates of this peligible for cherry-picking.
-      #   Cherry-picking involves selecting specific wells or samples from a plate for further analysis.
+      #   Dictates whether plates of this purpose can be a destination plate, in Sequencescape's cherrypicking pipeline.
+      #   Cherry-picking involves transferring specific wells or samples from a plate onto a new plate.
       #   @return [Boolean]
       attribute :cherrypickable_target
 
       # @!attribute [rw] input_plate
       #   Indicates whether plates of this purpose serve as input plates.
       #   Input plates are used as starting points in pipelines.
+      #   Used in Limber to enable different on the first plate in the pipeline.
       #   @return [Boolean]
       attribute :input_plate
 
@@ -111,7 +113,7 @@ module Api
       end
 
       # Sets the input plate type.
-      # If set to `true`, the plate purpose will be categorized as `PlatePurpose::Input`.
+      # If set to `true`, the plate purpose will be categorized as `PlatePurpose::Input` (`type` column).
       # This method ensures proper classification of input plates.
       #
       # @param is_input [Boolean] Whether to set the plate purpose as an input plate.

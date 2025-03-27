@@ -4,7 +4,8 @@ module Api
   module V2
     # Provides a JSON:API representation of {Project}.
     #
-    # A Project represents a defined research or sequencing initiative within the system.
+    # A Project represents a defined research or sequencing initiative within the system. It holds the cost
+    #   code, for billing.
     #
     # @note This resource is **immutable**: it does not accept `POST`, `PATCH`, or `DELETE` requests.
     # @note Access this resource via the `/api/v2/projects/` endpoint.

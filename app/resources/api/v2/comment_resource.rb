@@ -42,11 +42,11 @@ module Api
       # Associations
       ###
 
-      # @!attribute [r] user
+      # @!attribute [rw] user
       #   @return [UserResource] The user who created the comment.
       has_one :user
 
-      # @!attribute [r] commentable
+      # @!attribute [rw] commentable
       #   @note This relationship is required.
       #   @return [ApplicationResource] The entity (e.g., article, post) to which this comment belongs.
       #   This is a polymorphic association, meaning it can be linked to multiple different models.
@@ -56,14 +56,14 @@ module Api
       # Attributes
       ###
 
-      # @!attribute [w] title
+      # @!attribute [rw] title
       #   @note This attribute is required.
       #   @note This attribute is write_once; this attribute cannot be updated.
       #   @param value [String] The title of the comment.
       #   @return [String] The title of the comment.
       attribute :title, write_once: true
 
-      # @!attribute [w] description
+      # @!attribute [rw] description
       #   @note This attribute is required.
       #   @note This attribute is write_once; this attribute cannot be updated.
       #   @param value [String] The main content of the comment.

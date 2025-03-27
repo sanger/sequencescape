@@ -5,7 +5,7 @@ module Api
     # Provides a JSON:API representation of {Purpose}.
     #
     # A Purpose defines the intended function of a labware or sample within the system.
-    # While it was historically tied to PlatePurpose, it now applies to other labware like Tubes.
+    # While it was historically limited to PlatePurpose, it now applies to other labware like Tubes.
     #
     # @note Access this resource via the `/api/v2/purposes/` endpoint.
     #
@@ -16,7 +16,7 @@ module Api
     #   GET /api/v2/purposes/{id}
     #
     # @note the below example is currently broken, as `target_type` is a required attribute in the
-    #   model and `lifestan` is not.
+    #   model and `lifespan` is not.
     #
     # @example Creating a new purpose
     #   POST /api/v2/purposes

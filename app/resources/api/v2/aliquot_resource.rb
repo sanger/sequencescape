@@ -125,7 +125,6 @@ module Api
       # Filters
       ###
 
-
       ###
       # Getters and Setters
       ###

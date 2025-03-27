@@ -4,8 +4,12 @@ module Api
   module V2
     # Provides a JSON:API representation of {PreCapturePool}.
     #
-    # This resource represents a pre-capture pooling process, typically used in sequencing workflows
-    # where samples are combined before the capture step. It provides a unique identifier (`uuid`) for tracking.
+    # A pre-capture pool is a group of requests which will be pooled together midway
+    # through library preparation, particularly prior to capture in the indexed-sequence
+    # capture (ISC) pipelines
+    # We build pre capture groups at submission so that they are not affected by failing of wells or
+    # re-arraying.
+    # See [Submissions in Sequencescape](https://ssg-confluence.internal.sanger.ac.uk/display/PSDPUB/Submissions+in+Sequencescape)
     #
     # @note Access this resource via the `/api/v2/pre_capture_pools/` endpoint.
     #
