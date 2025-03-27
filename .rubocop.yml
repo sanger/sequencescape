@@ -4,10 +4,10 @@ inherit_from:
 require:
   - test_prof/rubocop
   - rubocop-performance
-  - rubocop-rails
 plugins:
   - rubocop-capybara
   - rubocop-factory_bot
+  - rubocop-rails
   - rubocop-rspec
   - rubocop-rspec_rails
 

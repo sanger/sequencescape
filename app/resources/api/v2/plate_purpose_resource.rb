@@ -79,9 +79,7 @@ module Api
       #
       # @param is_input [Bool] whether to set the sti type to PlatePurpose::Input.
       # @return [void]
-      def input_plate=(is_input)
-        @model.input_plate = is_input
-      end
+      delegate :input_plate=, to: :@model
 
       # Returns the input_plate attribute from the type of the plate purpose.
       #
