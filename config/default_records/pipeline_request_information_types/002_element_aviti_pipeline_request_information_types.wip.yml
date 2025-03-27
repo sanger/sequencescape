@@ -1,4 +1,11 @@
----
+LowDiversityInformationTypeForElementAviti:
+  pipeline_name: Element Aviti
+  request_information_type_key: low_diversity
+
+PercentPhixNeededInformationTypeForElementAviti:
+  pipeline_name: Element Aviti
+  request_information_type_key: percent_phix_requested
+
 FlowcellKitTypeRequestedInformationTypeForElementAviti:
   pipeline_name: Element Aviti
   request_information_type_key: requested_flowcell_type

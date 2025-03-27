@@ -1178,7 +1178,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_03_26_144346) do
     t.integer "cells_per_chip_well"
     t.string "allowance_band"
     t.boolean "low_diversity"
-    t.integer "percent_element_phix_needed"
+    t.integer "percent_phix_requested"
     t.index ["request_id"], name: "index_request_metadata_on_request_id"
   end
 
