@@ -36,5 +36,6 @@ $(() => {
   CodeMirror.fromTextArea(sourceTubesInput[0], {
     lineNumbers: true,
     mode: "barcode_reader",
+    theme: "eclipse",
   });
 });
