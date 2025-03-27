@@ -41,8 +41,10 @@ class SampleManifest::Generator
       LabelPrinter::PrintJob.new(
         params[:barcode_printer],
         LabelPrinter::Label::SampleManifestRedirect,
-        only_first_label:,
-        sample_manifest:
+        only_first_label: only_first_label,
+        sample_manifest: sample_manifest,
+        label_template_name: label_template_for_2d_barcodes,
+        barcode_type: params[:barcode_type]
       )
   end
 
@@ -65,6 +67,13 @@ class SampleManifest::Generator
   end
 
   private
+
+  def label_template_for_2d_barcodes
+    if params[:barcode_type] == Rails.application.config.tube_manifest_barcode_config[:barcode_type_labels]['2d'] &&
+         (sample_manifest.asset_type == '1dtube' || sample_manifest.asset_type == 'library')
+      Rails.application.config.tube_manifest_barcode_config[:two_dimensional_label_template]
+    end
+  end
 
   def check_required_attributes
     REQUIRED_ATTRIBUTES.each do |attribute|
@@ -96,7 +105,7 @@ class SampleManifest::Generator
   end
 
   def attributes
-    params.except(:template, :barcode_printer, :only_first_label).merge(
+    params.except(:template, :barcode_printer, :only_first_label, :barcode_type).merge(
       user:,
       asset_type:,
       rows_per_well:,
