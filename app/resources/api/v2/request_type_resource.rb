@@ -30,7 +30,7 @@ module Api
       #   @note This field is readonly as this resource is immutable.
       attribute :uuid, readonly: true
 
-      # @!attribute [r] name
+      # @!attribute [rw] name
       #   @return [String] The name of the request type.
       #   @note This field is readonly as this resource is immutable.
       attribute :name, write_once: true

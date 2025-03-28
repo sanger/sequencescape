@@ -49,25 +49,25 @@ module Api
       # Attributes
       ###
 
-      # @!attribute [r] tag_oligo
+      # @!attribute [rw] tag_oligo
       #   @deprecated Use {#tag} instead. The tag should already exist.
       #   @return [String, nil] The oligo sequence of the primary tag.
       #   @note This attribute is read-only; the `write_once` functionality is unimplemented.
       attribute :tag_oligo, write_once: true
 
-      # @!attribute [r] tag_index
+      # @!attribute [rw] tag_index
       #   @deprecated Use {#tag} instead. The tag should already exist.
       #   @return [Integer, nil] The index position of the primary tag.
       #   @note This attribute is read-only; the `write_once` functionality is unimplemented.
       attribute :tag_index, write_once: true
 
-      # @!attribute [r] tag2_oligo
+      # @!attribute [rw] tag2_oligo
       #   @deprecated Use {#tag2} instead. The tag should already exist.
       #   @return [String, nil] The oligo sequence of the secondary tag.
       #   @note This attribute is read-only; the `write_once` functionality is unimplemented.
       attribute :tag2_oligo, write_once: true
 
-      # @!attribute [r] tag2_index
+      # @!attribute [rw] tag2_index
       #   @deprecated Use {#tag2} instead. The tag should already exist.
       #   @return [Integer, nil] The index position of the secondary tag.
       #   @note This attribute is read-only; the `write_once` functionality is unimplemented.
@@ -81,7 +81,7 @@ module Api
       #   @return [String] The type of library associated with this aliquot.
       attribute :library_type, write_once: true
 
-      # @!attribute [w] insert_size_to
+      # @!attribute [rw] insert_size_to
       #   @return [Integer, nil] The upper bound of the insert size range for sequencing.
       attribute :insert_size_to, write_once: true
 
@@ -120,10 +120,6 @@ module Api
       # @!attribute [rw] library
       #   @return [LibraryResource] The library associated with this aliquot.
       has_one :library
-
-      ###
-      # Filters
-      ###
 
       ###
       # Getters and Setters

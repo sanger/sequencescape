@@ -33,14 +33,14 @@ module Api
       #   @return [String] The universally unique identifier (UUID) of the lot type.
       attribute :uuid, readonly: true
 
-      # @!attribute [r] name
+      # @!attribute [rw] name
       #   The name of this lot type
       #   @note This attribute must be unique.
       #   @todo This resource is immutable; Update attribute to be read-only.
       #   @return [String] The lot type name.
       attribute :name, write_once: true
 
-      # @!attribute [r] template_type
+      # @!attribute [rw] template_type
       #   The type of template associated with this lot type. This is derived dynamically based on the internal
       #   class name of the template.
       #   @todo This resource is immutable; Update attribute to be read-only.
@@ -51,7 +51,7 @@ module Api
       # Relationships
       ###
 
-      # @!attribute [r] target_purpose
+      # @!attribute [rw] target_purpose
       #   The {Purpose} that this lot type is associated with
       #   @todo This resource is immutable; Update relationship to be read-only.
       #   @return [PurposeResource] The associated purpose of this lot type.

@@ -63,14 +63,14 @@ module Api
       # Attributes
       ###
 
-      # @!attribute [r] number_of_pools
+      # @!attribute [rw] number_of_pools
       #   @return [Int] the number_of_pools requested in the Submission. As used
       #     in the scRNA Core pipeline, it is specified at the Study-Project
       #     level: it will have the same value for all Requests that share the
       #     same Study and Project. It is used in the pooling algorithm.
       attribute :number_of_pools, write_once: true
 
-      # @!attribute [r] cells_per_chip_well
+      # @!attribute [rw] cells_per_chip_well
       #   @return [Int] the cells_per_chip_well requested in the Submission. As
       #     used in the scRNA Core pipeline, it is specified at the Study-Project
       #     level: it will have the same value for all Requests that share the

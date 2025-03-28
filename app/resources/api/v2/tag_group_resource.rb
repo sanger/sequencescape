@@ -56,13 +56,13 @@ module Api
       #   @return [String] The UUID of the tag group.
       attribute :uuid, readonly: true
 
-      # @!attribute [w] name
+      # @!attribute [rw] name
       #   The name of the tag group.
       #   This attribute is required when creating a new tag group.
       #   @return [String] The name of the tag group.
       attribute :name, write_once: true
 
-      # @!attribute [w] tags
+      # @!attribute [rw] tags
       #   A list of tags within the tag group.
       #   @return [Array<Hash>] The list of tag mappings within this tag group.
       attribute :tags, write_once: true

@@ -100,7 +100,7 @@ module Api
 
       # @!attribute [rw] asynchronous
       #   Indicates whether the pick list should be processed asynchronously.
-      #   @default true
+      #   @note this attribute defaults to `true` if not provided.
       #   @return [Boolean] Whether the operation should be handled asynchronously.
       attribute :asynchronous
 

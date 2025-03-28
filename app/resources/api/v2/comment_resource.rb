@@ -59,14 +59,12 @@ module Api
       # @!attribute [rw] title
       #   @note This attribute is required.
       #   @note This attribute is write_once; this attribute cannot be updated.
-      #   @param value [String] The title of the comment.
       #   @return [String] The title of the comment.
       attribute :title, write_once: true
 
       # @!attribute [rw] description
       #   @note This attribute is required.
       #   @note This attribute is write_once; this attribute cannot be updated.
-      #   @param value [String] The main content of the comment.
       #   @return [String] The main content of the comment.
       attribute :description, write_once: true
 

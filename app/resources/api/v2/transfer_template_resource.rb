@@ -32,7 +32,6 @@ module Api
       # @!attribute [r] name
       #   The name of the transfer template.
       #   @return [String] the name of the transfer template.
-      #   @note This attribute is read-only and cannot be modified.
       attribute :name
 
       # @!attribute [r] uuid
