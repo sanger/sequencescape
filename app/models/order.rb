@@ -58,8 +58,8 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_many :source_asset_projects, -> { distinct }, through: :assets, source: :projects
   has_many :requests, inverse_of: :order, dependent: :restrict_with_exception
 
-  serialize :request_types
-  serialize :item_options
+  serialize :request_types, coder: YAML
+  serialize :item_options, coder: YAML
 
   before_validation :set_study_from_aliquots, unless: :cross_study_allowed, if: :autodetect_studies
   before_validation :set_project_from_aliquots, unless: :cross_project_allowed, if: :autodetect_projects
@@ -172,15 +172,29 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
     (request_options.dig(:multiplier, request_type_id.to_s) || 1).to_i
   end
 
+  # Determines and returns calculated request metadata based on the request type key.
+  # This is to cover calculated metadata that does not require user input
+  def calculated_request_metadata_by_request_key(request_type_key)
+    case request_type_key
+    # Checking for the presence of allowance_band, as it is calculated for
+    # the bulk submission only
+    when 'limber_scrna_core_cdna_prep_gem_x_5p'
+      request_options['allowance_band'].present? ? { 'allowance_band' => request_options['allowance_band'] } : {}
+    else
+      {}
+    end
+  end
+
   # rubocop:todo Metrics/MethodLength
   def create_request_of_type!(request_type, attributes = {}) # rubocop:todo Metrics/AbcSize
-    em = request_type.extract_metadata_from_hash(request_options)
+    request_metadata = request_type.extract_metadata_from_hash(request_options)
+    request_metadata = request_metadata.merge(calculated_request_metadata_by_request_key(request_type.key))
     request_type.create!(attributes) do |request|
       request.submission_id = submission_id
       request.study = study
       request.initial_project = project
       request.user = user
-      request.request_metadata_attributes = em
+      request.request_metadata_attributes = request_metadata
       request.state = request_type.initial_state
       request.order = self
 

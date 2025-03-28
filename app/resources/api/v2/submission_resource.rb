@@ -21,6 +21,8 @@ module Api
 
       # model_name / model_hint if required
 
+      default_includes :uuid_object, :sequencing_requests
+
       # Associations:
 
       # Attributes
@@ -35,6 +37,7 @@ module Api
       attribute :updated_at, readonly: true
       attribute :used_tags, write_once: true
       attribute :lanes_of_sequencing, write_once: true
+      attribute :multiplexed?, readonly: true
 
       # Filters
       filter :uuid, apply: ->(records, value, _options) { records.with_uuid(value) }
@@ -45,6 +48,9 @@ module Api
       def lanes_of_sequencing
         _model.sequencing_requests.size
       end
+
+      # Added for use in Limber Presenters to decide whether to show the pooling tab
+      delegate :multiplexed?, to: :_model
 
       # Class method overrides
     end

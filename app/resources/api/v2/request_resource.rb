@@ -14,6 +14,12 @@ module Api
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class RequestResource < BaseResource
+      default_includes :uuid_object,
+                       { request_metadata: %i[bait_library primer_panel] },
+                       :pooled_request,
+                       :order_role,
+                       :submission
+
       # Attributes
       attribute :uuid, readonly: true
       attribute :role, write_once: true

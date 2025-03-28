@@ -63,11 +63,11 @@ module StateChanger
       end
     end
 
-    # Check the request is not in other wells (excuding any in contents or that already have the target state)
+    # Check the request is not in other wells (excluding any in contents or that already have the target state)
     def request_in_other_wells(request)
       _receptacles.any? do |well|
         well.aliquot_requests.try(:map, &:id).to_a.any?(request.id) &&
-          (contents.present? && contents.exclude?(well.absolute_position_name)) &&
+          (contents.present? && contents.exclude?(well.absolute_position_name)) && # rubocop:disable Style/RedundantParentheses
           well.state != associated_request_target_state
       end
     end

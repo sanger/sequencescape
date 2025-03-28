@@ -6,7 +6,7 @@ module Transfer::ControlledDestinations
   def self.included(base)
     base.class_eval do
       # Ensure that the transfers are recorded so we can see what happened.
-      serialize :transfers_hash
+      serialize :transfers_hash, coder: YAML
       alias_attribute :transfers, :transfers_hash
       validates_unassigned :transfers_hash
     end
