@@ -1,0 +1,15 @@
+---
+# Element Aviti flowcell kit and request type associations
+
+# LO (Low Output) flowcell kit type
+LO:
+  flowcell_type_name: LO
+  request_type_key: element_aviti_sequencing
+# MO (Medium Output) flowcell kit type
+MO:
+  flowcell_type_name: MO
+  request_type_key: element_aviti_sequencing
+# HO (High Output) flowcell kit type
+HO:
+  flowcell_type_name: HO
+  request_type_key: element_aviti_sequencing
