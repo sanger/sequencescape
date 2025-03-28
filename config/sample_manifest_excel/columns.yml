@@ -181,6 +181,26 @@ library_type:
   conditional_formattings:
     empty_cell:
     is_error:
+library_type_required:
+  heading: LIBRARY TYPE
+  unlocked: true
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: false
+      hideDropDown: false
+      showInputMessage: true
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Library type"
+      error: "You must enter a Library type from the list provided."
+      promptTitle: "Library type"
+      prompt: "Provide a library type from the approved list"
+    range_name: :library_type
+  conditional_formattings:
+    empty_mandatory_cell:
+    is_error:
 library_type_long_read:
   heading: LIBRARY TYPE
   updates: library_type
@@ -276,6 +296,23 @@ insert_size_from:
     empty_cell:
     number_greater_than_one:
     is_text:
+insert_size_from_required:
+  heading: INSERT SIZE FROM
+  unlocked: true
+  type: :integer
+  validation:
+    options:
+      type: :whole
+      operator: :greaterThanOrEqual
+      formula1: "1"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Insert size from"
+      prompt: "The minimum insert size in the library"
+  conditional_formattings:
+    empty_mandatory_cell:
+    number_greater_than_one:
+    is_text:
 insert_size_to:
   heading: INSERT SIZE TO
   unlocked: true
@@ -295,6 +332,27 @@ insert_size_to:
       error: "Insert size to must be a whole number, greater or equal to the insert size from"
   conditional_formattings:
     empty_cell:
+    number_greater_than_one:
+    is_text:
+insert_size_to_required:
+  heading: INSERT SIZE TO
+  unlocked: true
+  type: :integer
+  validation:
+    options:
+      type: :whole
+      operator: :greaterThanOrEqual
+      formula1: "1"
+      allowBlank: false
+      showInputMessage: true
+      promptTitle: "Insert size to"
+      prompt: "Maximum insert size in the library"
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Insert size to"
+      error: "Insert size to must be a whole number, greater or equal to the insert size from"
+  conditional_formattings:
+    empty_mandatory_cell:
     number_greater_than_one:
     is_text:
 supplier_name:
