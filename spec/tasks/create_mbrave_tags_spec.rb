@@ -4,30 +4,31 @@ require 'rake'
 
 # rubocop:todo RSpec/DescribeClass
 describe 'mbrave tasks' do
-  after { Rake.application.clear }
-
-  before { Rails.application.load_tasks }
+  # rubocop:disable RSpec/BeforeAfterAll
+  before(:all) do
+    # Ensure Rake is properly initialised before all tests
+    Rake.application = Rake::Application.new
+    Rails.application.load_tasks
+  end
+  # rubocop:enable RSpec/BeforeAfterAll
 
   describe 'mbrave:create_tag_plates' do
     before { Rake::Task['mbrave:create_tag_plates'].reenable }
 
-    context 'with mbrave:create_tag_plates' do
-      context 'when the create_tag_plates task is invoked' do
-        context 'when there are no arguments' do
-          it 'does not do anything' do
-            expect(MbraveTagsCreator).not_to receive(:process_create_tag_plates)
-            Rake::Task['mbrave:create_tag_plates'].execute
-          end
-        end
+    describe 'when invoked without arguments' do
+      it 'does not do anything' do
+        expect(MbraveTagsCreator).not_to receive(:process_create_tag_plates)
+        Rake::Task['mbrave:create_tag_plates'].execute
+      end
+    end
 
-        context 'when receiving the right arguments' do
-          let(:run_action) { Rake::Task['mbrave:create_tag_plates'].execute(login: 'test', version: 'v1') }
+    describe 'when invoked with arguments' do
+      let(:login) { 'test' }
+      let(:version) { 'v1' }
 
-          it 'creates tag plates' do
-            expect(MbraveTagsCreator).to receive(:process_create_tag_plates).with('test', 'v1').at_least(:once)
-            run_action
-          end
-        end
+      it 'creates tag plates' do
+        expect(MbraveTagsCreator).to receive(:process_create_tag_plates).with(login, version).at_least(:once)
+        Rake::Task['mbrave:create_tag_plates'].execute(login:, version:)
       end
     end
   end
@@ -35,30 +36,28 @@ describe 'mbrave tasks' do
   describe 'mbrave:create_tag_groups' do
     before { Rake::Task['mbrave:create_tag_groups'].reenable }
 
-    context 'when the create_mbrave_tags task is invoked' do
-      context 'when there are no arguments' do
-        it 'does not write the file' do
-          expect(MbraveTagsCreator).not_to receive(:process_create_tag_groups)
-          Rake.application.invoke_task 'mbrave:create_tag_groups'
-        end
+    describe 'when invoked without arguments' do
+      it 'does not write the file' do
+        expect(MbraveTagsCreator).not_to receive(:process_create_tag_groups)
+        Rake.application.invoke_task 'mbrave:create_tag_groups'
       end
+    end
 
-      context 'when there is valid arguments' do
-        let(:run_task) do
-          Rake::Task['mbrave:create_tag_groups'].execute(
-            forward_file: 'forward',
-            reverse_file: 'reverse',
-            version: 'v1'
-          )
-        end
+    describe 'when invoked with arguments' do
+      let(:forward_file) { 'forward' }
+      let(:reverse_file) { 'reverse' }
+      let(:version) { 'v1' }
 
-        it 'creates the tag group with the right indexing' do
-          expect(MbraveTagsCreator).to receive(:process_create_tag_groups).with('forward', 'reverse', 'v1').at_least(
-            :once
-          )
-          run_task
-        end
+      # rubocop:disable RSpec/ExampleLength
+      it 'creates the tag group with the right indexing' do
+        expect(MbraveTagsCreator).to receive(:process_create_tag_groups).with(
+          forward_file,
+          reverse_file,
+          version
+        ).at_least(:once)
+        Rake::Task['mbrave:create_tag_groups'].execute(forward_file:, reverse_file:, version:)
       end
+      # rubocop:enable RSpec/ExampleLength
     end
   end
 end
