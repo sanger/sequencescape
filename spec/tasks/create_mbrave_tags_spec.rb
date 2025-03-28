@@ -48,12 +48,16 @@ describe 'mbrave tasks' do
       let(:reverse_file) { 'reverse' }
       let(:version) { 'v1' }
 
+      # rubocop:disable RSpec/ExampleLength
       it 'creates the tag group with the right indexing' do
-        expect(MbraveTagsCreator).to receive(:process_create_tag_groups).with(forward_file, reverse_file, 
-version).at_least(:once)
-        Rake::Task['mbrave:create_tag_groups'].execute(forward_file:, reverse_file:, 
-version:)
+        expect(MbraveTagsCreator).to receive(:process_create_tag_groups).with(
+          forward_file,
+          reverse_file,
+          version
+        ).at_least(:once)
+        Rake::Task['mbrave:create_tag_groups'].execute(forward_file:, reverse_file:, version:)
       end
+      # rubocop:enable RSpec/ExampleLength
     end
   end
 end
