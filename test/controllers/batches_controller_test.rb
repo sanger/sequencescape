@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'test_helper'
-require 'batches_controller'
 
 class BatchesControllerTest < ActionController::TestCase
   context 'BatchesController' do
