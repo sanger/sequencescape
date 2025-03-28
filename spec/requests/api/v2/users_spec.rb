@@ -2,6 +2,7 @@
 
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
+require './spec/requests/api/v2/shared_examples/requests'
 
 describe 'Users API', with: :api_v2 do
   let(:base_endpoint) { '/api/v2/users' }
@@ -21,56 +22,36 @@ describe 'Users API', with: :api_v2 do
       expect(json['data'].length).to eq User.count
     end
 
-    describe 'filtering' do
-      let(:user) { users[2] }
+    describe '#filter' do
+      let(:target_resource) { users[2] }
+      let(:target_id) { target_resource.id }
 
-      context 'with a User with a swipecard code' do
+      describe 'by swipecard code' do
         let(:swipecard_code) { '1234567' }
 
         before do
-          user.update(swipecard_code:)
+          target_resource.update(swipecard_code:)
           api_get "#{base_endpoint}?filter[user_code]=#{swipecard_code}"
         end
 
-        it 'responds with a success HTTP status code' do
-          expect(response).to have_http_status(:success)
-        end
-
-        it 'responds with only the User with the swipecard code' do
-          expect(json['data'].length).to eq(1)
-          expect(json.dig('data', 0, 'id')).to eq user.id.to_s
-        end
+        it_behaves_like 'it has filtered to a resource with target_id correctly'
       end
 
-      context 'with a User with a barcode' do
+      describe 'by barcode' do
         let(:barcode) { '2470041440697' }
 
         before do
-          user.update(barcode: Barcode.barcode_to_human(barcode))
+          target_resource.update(barcode: Barcode.barcode_to_human(barcode))
           api_get "#{base_endpoint}?filter[user_code]=#{barcode}"
         end
 
-        it 'responds with a success HTTP status code' do
-          expect(response).to have_http_status(:success)
-        end
-
-        it 'responds with only the User with the barcode' do
-          expect(json['data'].length).to eq(1)
-          expect(json.dig('data', 0, 'id')).to eq user.id.to_s
-        end
+        it_behaves_like 'it has filtered to a resource with target_id correctly'
       end
 
-      context 'with a User with a UUID' do
-        before { api_get "#{base_endpoint}?filter[uuid]=#{user.uuid}" }
+      describe 'by uuid' do
+        before { api_get "#{base_endpoint}?filter[uuid]=#{target_resource.uuid}" }
 
-        it 'responds with a success HTTP status code' do
-          expect(response).to have_http_status(:success)
-        end
-
-        it 'responds with only the User with the UUID' do
-          expect(json['data'].length).to eq(1)
-          expect(json.dig('data', 0, 'id')).to eq user.id.to_s
-        end
+        it_behaves_like 'it has filtered to a resource with target_id correctly'
       end
     end
   end

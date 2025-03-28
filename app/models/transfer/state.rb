@@ -67,7 +67,7 @@ module Transfer::State
                 states = Array(states).map(&:to_s)
 
                 # If all of the states are present there is no point in actually adding this set of conditions because
-                # we're basically looking for all of the plates.
+                # we're basically looking for all of the tubes.
                 if states.sort != ALL_STATES.sort
                   join_options = [
                     # rubocop:todo Layout/LineLength

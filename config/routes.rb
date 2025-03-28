@@ -64,7 +64,7 @@ Rails.application.routes.draw do
       jsonapi_resources :studies
       jsonapi_resources :submission_pools
       jsonapi_resources :submission_templates
-      jsonapi_resources :submissions
+      jsonapi_resources :submissions, except: %i[update]
       jsonapi_resources :tag_group_adapter_types
       jsonapi_resources :tag_groups
       jsonapi_resources :tag_layout_templates
@@ -82,6 +82,7 @@ Rails.application.routes.draw do
       jsonapi_resources :users
       jsonapi_resources :volume_updates
       jsonapi_resources :wells
+      jsonapi_resources :work_completions, except: %i[update]
       jsonapi_resources :work_orders
 
       namespace :heron do
