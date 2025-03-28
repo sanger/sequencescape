@@ -113,7 +113,7 @@ class Endpoints::Uuids < Core::Endpoint::Base
         'url' => request.service.api_path(uuid.external_id)
       }
     end
-    bound_action_does_not_require_an_io_class(:lookup)
+    bound_action_not_require_an_io_class?(:lookup)
 
     # Handles trying to find multiple resources
     bind_action(:create, to: 'bulk', as: :bulk) do |_, request, response|
@@ -135,6 +135,6 @@ class Endpoints::Uuids < Core::Endpoint::Base
         }
       end
     end
-    bound_action_does_not_require_an_io_class(:bulk)
+    bound_action_not_require_an_io_class?(:bulk)
   end
 end

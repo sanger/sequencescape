@@ -81,3 +81,7 @@ lib/tasks/*.local.rake
 
 # Generated files
 mbrave.yml
+
+# Ignore master key for decrypting credentials and more.
+/config/credentials.yml.enc
+/config/master.key
