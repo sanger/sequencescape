@@ -5,28 +5,28 @@ module Api
     # Provides a JSON:API representation of {QcFile} which contains the QC data previously added to a piece of
     # {Labware}. The file contents are stored in the database using the {DbFile} model.
     #
-    # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
     # @note Access this resource via the `/api/v2/qc_files/` endpoint.
+    # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
     #
     # @example POST request
     #   POST /api/v2/qc_files/
     #   {
     #     "data": {
-    #       "type": "qc_files",
-    #       "attributes": {
-    #         "filename": "qc_file.csv",
-    #         "contents": "A1,A2,A3\n1,2,3\n4,5,6\n"
-    #       },
-    #       "relationships": {
-    #         "asset": {
-    #           "data": {
-    #             "type": "labware",
-    #             "id": "123"
-    #           }
+    #         "type": "qc_files",
+    #         "attributes": {
+    #             "filename": "a_test_file.csv",
+    #             "contents": "Hello"
+    #         },
+    #         "relationships": {
+    #             // "asset": {
+    #             //     "data": {
+    #             //         "type": "labware",
+    #             //         "id": 26
+    #             //     }
+    #             // }
     #         }
-    #       }
     #     }
-    #   }
+    # }
     #
     # @example GET request for all QcFile resources
     #   GET /api/v2/qc_files/

@@ -7,10 +7,10 @@ module Api
     # Creation of this resource via a `POST` request will perform the specified transfers.
     # After creation, the transfers can be accessed via the {#transfers} relationship.
     #
-    # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
     # @note Access this resource via the `/api/v2/bulk_transfers/` endpoint.
+    # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
     #
-    # @example POST request
+    # @example POST request with user specified by relationship
     #   POST /api/v2/bulk_transfers/
     #   {
     #     "data": {
@@ -18,31 +18,20 @@ module Api
     #       "attributes": {
     #         "well_transfers": [
     #           {
-    #             "source_uuid": "src_plate1_uuid",
-    #             "source_location": "A1",
-    #             "destination_uuid": "dest_plate1_uuid",
-    #             "destination_location": "A1"
-    #           },
-    #           {
-    #             "source_uuid": "src_plate1_uuid",
-    #             "source_location": "B1",
-    #             "destination_uuid": "dest_plate2_uuid",
-    #             "destination_location": "A1"
-    #           },
-    #           {
-    #             "source_uuid": "src_plate2_uuid",
-    #             "source_location": "A1",
-    #             "destination_uuid": "dest_plate1_uuid",
-    #             "destination_location": "B1"
-    #           },
-    #           {
-    #             "source_uuid": "src_plate2_uuid",
-    #             "source_location": "B1",
-    #             "destination_uuid": "dest_plate2_uuid",
-    #             "destination_location": "B1"
+    #             "source_uuid": "7b4c094a-fe6d-11ef-ba74-000000000000",
+    #             "source_location": "A2",
+    #             "destination_uuid": "7b4c094a-fe6d-11ef-ba74-000000000000",
+    #             "destination_location": "A2"
     #           }
-    #         ],
-    #         "user_uuid": "user_uuid"
+    #         ]
+    #       },
+    #       "relationships": {
+    #         "user": {
+    #           "data": {
+    #             "type": "users",
+    #             "id": 4
+    #           }
+    #         }
     #       }
     #     }
     #   }
@@ -75,6 +64,7 @@ module Api
       end
 
       # @!attribute [r] uuid
+      #   @note This identifier is automatically assigned upon creation and cannot be modified.
       #   @return [String] The UUID of the bulk transfers operation.
       attribute :uuid, readonly: true
 

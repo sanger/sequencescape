@@ -2,13 +2,48 @@
 
 module Api
   module V2
-    # @todo This documentation does not yet include a detailed description of what this resource represents.
-    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
-    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+    # Provides a JSON:API representation of {CustomMetadatumCollection}, which represents a collection
+    # of metadata associated with a specific asset (such as Labware).
+    #
+    # This resource allows clients to store, retrieve, and manage metadata associated with a specific asset.
     #
     # @note Access this resource via the `/api/v2/custom_metadatum_collections/` endpoint.
     #
-    # Provides a JSON:API representation of {CustomMetadatumCollection}.
+    # @example Creating a CustomMetadatumCollection via a POST request
+    #   POST /api/v2/custom_metadatum_collections/
+    #   {
+    #     "data": {
+    #         "type": "custom_metadatum_collections",
+    #         "attributes": {
+    #             "user_id": 1,
+    #             "asset_id": 1,
+    #             "metadata": {
+    #                 "key": "a value againnnn"
+    #             }
+    #         },
+    #         "relationships": {}
+    #     }
+    #   }
+    #
+    # @example Updating a specific CustomMetadatumCollection via a PATCH request
+    #   PATCH /api/v2/custom_metadatum_collections/123
+    #   {
+    #     "data": {
+    #         "id": 6,
+    #         "type": "custom_metadatum_collections",
+    #         "attributes": {
+    #             "metadata": {
+    #                 "key1": "value3"
+    #             }
+    #         }
+    #     }
+    #   }
+    #
+    # @example Retrieving a specific CustomMetadatumCollection by ID
+    #   GET /api/v2/custom_metadatum_collections/123
+    #
+    # @example Retrieving all CustomMetadatumCollections
+    #   GET /api/v2/custom_metadatum_collections/
     #
     # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
@@ -21,19 +56,26 @@ module Api
       ###
 
       # @!attribute [r] uuid
-      #   @return [String] The UUID of the collection.
+      #   @note This identifier is automatically assigned upon creation and cannot be modified.
+      #   @return [String] The UUID of the collection. This uniquely identifies the metadata collection.
       attribute :uuid, readonly: true
 
       # @!attribute [rw] user_id
-      #   @return [Int] The ID of the user who created this collection. Can only and must be set on creation.
+      #   @note This field is required.
+      #   @note This attribute is write_once; this attribute cannot be updated.
+      #   @todo deprecate; use the `user` relationship instead
+      #   @return [Integer] The ID of the user who created this collection.
       attribute :user_id, write_once: true
 
       # @!attribute [rw] asset_id
-      #   @return [Int] The ID of the labware the metadata corresponds to. Can only and must be set on creation.
+      #   @note This field is required.
+      #   @note This attribute is write_once; this attribute cannot be updated.
+      #   @todo deprecate; use the `user` relationship instead
+      #   @return [Integer] The ID of the labware asset that this metadata collection corresponds to.
       attribute :asset_id, write_once: true
 
       # @!attribute [rw] metadata
-      #   @return [Hash] All metadata in this collection.
+      #   @return [Hash] A key-value store of metadata entries associated with this collection.
       attribute :metadata
     end
   end

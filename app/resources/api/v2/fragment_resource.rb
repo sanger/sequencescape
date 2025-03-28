@@ -2,19 +2,21 @@
 
 module Api
   module V2
-    # @todo This documentation does not yet include a detailed description of what this resource represents.
-    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
-    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+    # This resource does not appear to be used; can it be deprecated?
     #
-    # @note Access this resource via the `/api/v2/fragments/` endpoint.
+    # @note There is no access to this resource.
     #
-    # Provides a JSON:API representation of {Fragment}.
-    #
-    # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
-    # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
-    # of the JSON:API standard.
+    # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
+    # or refer to the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation.
     class FragmentResource < JSONAPI::Resource
-      attributes :uuid
+      ###
+      # Attributes
+      ###
+
+      # @!attribute [r] uuid
+      #   @return [String] The universally unique identifier (UUID) for this fragment.
+      #   This identifier is automatically assigned upon creation and cannot be modified.
+      attribute :uuid, readonly: true
     end
   end
 end

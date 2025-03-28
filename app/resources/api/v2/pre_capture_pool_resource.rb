@@ -2,36 +2,38 @@
 
 module Api
   module V2
-    # @todo This documentation does not yet include a detailed description of what this resource represents.
-    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
-    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+    # Provides a JSON:API representation of {PreCapturePool}.
+    #
+    # A pre-capture pool is a group of requests which will be pooled together midway
+    # through library preparation, particularly prior to capture in the indexed-sequence
+    # capture (ISC) pipelines
+    # We build pre capture groups at submission so that they are not affected by failing of wells or
+    # re-arraying.
+    # See [Submissions in Sequencescape](https://ssg-confluence.internal.sanger.ac.uk/display/PSDPUB/Submissions+in+Sequencescape)
     #
     # @note Access this resource via the `/api/v2/pre_capture_pools/` endpoint.
     #
-    # Provides a JSON:API representation of {PreCapturePool}.
+    # @example GET request to fetch all pre-capture pools
+    #   GET /api/v2/pre_capture_pools/
     #
-    # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
-    # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
+    # @example GET request to fetch a pre-capture pool
+    #   GET /api/v2/pre_capture_pools/{id}
+    #
+    # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
+    # or the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class PreCapturePoolResource < BaseResource
-      # Constants...
-
-      # model_name / model_hint if required
-
       default_includes :uuid_object
 
-      # Associations:
-
+      ###
       # Attributes
+      ###
+
+      # @!attribute [r] uuid
+      #   The UUID of the pre-capture pool.
+      #   @note This identifier is automatically assigned upon creation and cannot be modified.
+      #   @return [String]
       attribute :uuid, readonly: true
-
-      # Filters
-
-      # Custom methods
-      # These shouldn't be used for business logic, and a more about
-      # I/O and isolating implementation details.
-
-      # Class method overrides
     end
   end
 end
