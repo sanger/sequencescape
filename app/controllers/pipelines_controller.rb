@@ -69,6 +69,8 @@ class PipelinesController < ApplicationController
       # well fetch the result now anyway.
       @requests_comment_count = Comment.counts_for_requests(@requests)
       @requests_samples_count = Request.where(id: @requests).joins(:samples).group(:id).count
+
+      @element_aviti_pipeline = @pipeline.name == 'Element Aviti'
     end
   end
 
