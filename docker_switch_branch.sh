@@ -25,8 +25,8 @@ fi
 
 echo "Using image for branch: $BRANCH_NAME"
 # Start the container using the image tagged with the current branch name
-BRANCH_IMAGE_TAG=$BRANCH_NAME \
 RESET_DATABASE=$RESET_DATABASE \
 USE_POLLING_FILE_WATCHER=$USE_POLLING_FILE_WATCHER \
 PRECOMPILE_ASSETS=$PRECOMPILE_ASSETS \
+BRANCH_IMAGE_TAG=$BRANCH_NAME \
 docker compose -f docker-compose-dev.yml up -d
