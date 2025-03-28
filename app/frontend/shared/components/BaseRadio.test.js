@@ -1,5 +1,4 @@
 import { shallowMount } from "@vue/test-utils";
-import "@testing-library/jest-dom";
 import BaseRadio from "./BaseRadio.vue";
 
 describe("BaseRadio.vue", () => {

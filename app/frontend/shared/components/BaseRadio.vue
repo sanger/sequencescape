@@ -56,6 +56,7 @@ export default {
     name: { type: String, required: true },
     id: { type: String, required: true }, // Unique id essential for generating labels
   },
+  emits: ["change"],
   data: function () {
     return {
       value: this.selected,

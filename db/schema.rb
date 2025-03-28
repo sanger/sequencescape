@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_01_23_105050) do
+ActiveRecord::Schema[7.0].define(version: 2025_02_20_100453) do
   create_table "aliquot_indices", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "aliquot_id", null: false
     t.integer "lane_id", null: false
@@ -1176,6 +1176,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_23_105050) do
     t.string "requested_flowcell_type"
     t.integer "number_of_pools"
     t.integer "cells_per_chip_well"
+    t.string "allowance_band"
     t.index ["request_id"], name: "index_request_metadata_on_request_id"
   end
 
@@ -1395,7 +1396,6 @@ ActiveRecord::Schema[7.0].define(version: 2025_01_23_105050) do
     t.integer "user_id_of_consent_withdrawn"
     t.boolean "consent_withdrawn", default: false, null: false
     t.string "collected_by", comment: "Name of persons or institute who collected the specimen"
-    t.string "huMFre_code", limit: 16
     t.index ["sample_ebi_accession_number"], name: "index_sample_metadata_on_sample_ebi_accession_number"
     t.index ["sample_id"], name: "index_sample_metadata_on_sample_id"
     t.index ["supplier_name"], name: "index_sample_metadata_on_supplier_name"

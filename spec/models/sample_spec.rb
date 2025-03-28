@@ -2,7 +2,6 @@
 
 require 'rails_helper'
 require 'support/barcode_helper'
-require 'sample_accessioning_job'
 
 RSpec.describe Sample, :accession, :cardinal do
   include MockAccession
@@ -44,7 +43,7 @@ RSpec.describe Sample, :accession, :cardinal do
       allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(failed_accession_response)
       sample =
         build(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning))
-      expect { sample.save! }.to raise_error(JobFailed)
+      expect { sample.save! }.to raise_error(StandardError)
       expect(sample.sample_metadata.sample_ebi_accession_number).to be_nil
     end
   end
@@ -256,30 +255,6 @@ RSpec.describe Sample, :accession, :cardinal do
         # Component sample 1 wasn't modified by the change
         expect(component_sample1.updated_at).to eq initial_updated_at
       end
-    end
-  end
-
-  context 'huMFre code' do
-    let(:sample) { create(:sample) }
-
-    it 'defaults to null when not specified' do
-      expect(sample.sample_metadata.huMFre_code).to be_nil
-    end
-
-    it 'fails to update/save when huMFre code value is invalid' do
-      expect(sample.sample_metadata.huMFre_code).to be_nil
-      sample.sample_metadata.huMFre_code = 'humFre1'
-      expect(sample.sample_metadata.save).to be false
-    end
-
-    it 'contains huMFre code value when it is correctly specified' do
-      sample.sample_metadata.update!(huMFre_code: '12/12')
-      expect(sample.sample_metadata.huMFre_code).to eq '12/12'
-    end
-
-    it 'can have the huMFre code blanked' do
-      sample.sample_metadata.update!(huMFre_code: nil)
-      expect(sample.sample_metadata.huMFre_code).to be_nil
     end
   end
 

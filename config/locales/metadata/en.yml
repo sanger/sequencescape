@@ -67,6 +67,9 @@ en:
         cells_per_chip_well:
           label: Cells per chip well
 
+        allowance_band:
+          label: Allowance band
+
     library_creation_request:
       <<: *REQUEST
     sequencing_request:
@@ -85,6 +88,8 @@ en:
     pac_bio_sequencing_request:
       <<: *REQUEST
     pac_bio_sample_prep_request:
+      <<: *REQUEST
+    pbmc_pooling_customer_request:
       <<: *REQUEST
 
     pulldown:
@@ -328,8 +333,6 @@ en:
           edit_info: "EGA"
         genome_size:
           label: Genome Size
-        huMFre_code:
-          label: HuMFre Code
 
     study:
       metadata:
