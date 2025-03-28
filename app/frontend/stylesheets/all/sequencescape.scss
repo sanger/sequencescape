@@ -840,6 +840,9 @@ td {
   color: #000;
   width: 2%;
 }
+.plate td:first-of-type, .plate td:last-of-type {
+  width: 2rem;
+}
 .plate th,
 td.border {
   text-align: center;
