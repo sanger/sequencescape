@@ -29,6 +29,7 @@ module RecordLoader
       tag2_group_name = options.delete('tag2_group_name')
 
       tag_group = find_tag_group!(tag_group_name, name)
+      return nil if tag_group.nil?
       tag2_group = find_tag_group!(tag2_group_name, name) if tag2_group_name
 
       options[:tag_group_id] = tag_group.id
