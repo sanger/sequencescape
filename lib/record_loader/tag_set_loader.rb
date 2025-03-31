@@ -51,17 +51,22 @@ module RecordLoader
     #
     # @return [TagGroup] The found TagGroup.
     # @raise [ActiveRecord::RecordNotFound] If the TagGroup is not found.
+    # rubocop:disable Rails/Output, Metrics/MethodLength
     def find_tag_group!(tag_group_name, tag_set_name)
       return unless tag_group_name
       TagGroup.find_by!(name: tag_group_name)
     rescue ActiveRecord::RecordNotFound
+      puts "tag_group_name is #{tag_group_name}"
+      puts "CAUTION! You are running this task in the #{Rails.env} environment."
       message =
         "TagSet '#{tag_set_name}' creation or update failed " \
           "because TagGroup with name '#{tag_group_name}' was not found"
       raise ActiveRecord::RecordNotFound, message unless Rails.env.development?
+      puts "Logging message for #{tag_group_name}"
       # In development, log the error and return nil
       Rails.logger.warn(message) # Log a warning in development
       nil
     end
+    # rubocop:enable Rails/Output, Metrics/MethodLength
   end
 end
