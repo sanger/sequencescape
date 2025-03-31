@@ -53,7 +53,6 @@ module RecordLoader
     # @raise [ActiveRecord::RecordNotFound] If the TagGroup is not found.
     def find_tag_group!(tag_group_name, tag_set_name)
       return unless tag_group_name
-
       TagGroup.find_by!(name: tag_group_name)
     rescue ActiveRecord::RecordNotFound
       message =
@@ -62,6 +61,7 @@ module RecordLoader
       raise ActiveRecord::RecordNotFound, message unless Rails.env.development?
       # In development, log the error and return nil
       Rails.logger.warn(message) # Log a warning in development
+      nil
     end
   end
 end
