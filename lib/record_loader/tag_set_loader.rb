@@ -55,14 +55,12 @@ module RecordLoader
 
       TagGroup.find_by!(name: tag_group_name)
     rescue ActiveRecord::RecordNotFound
-      message = "TagSet '#{tag_set_name}' creation or update failed " \
-                "because TagGroup with name '#{tag_group_name}' was not found"
-      if Rails.env.development?
-        Rails.logger.warn(message) # Log a warning in development
-        nil # Fail quietly by returning nil
-      else
-        raise ActiveRecord::RecordNotFound, message # Raise the error noisily in other environments
-      end
+      message =
+        "TagSet '#{tag_set_name}' creation or update failed " \
+          "because TagGroup with name '#{tag_group_name}' was not found"
+      raise ActiveRecord::RecordNotFound, message unless Rails.env.development?
+      # In development, log the error and return nil
+      Rails.logger.warn(message) # Log a warning in development
     end
   end
 end
