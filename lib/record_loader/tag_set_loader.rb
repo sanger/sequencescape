@@ -58,7 +58,7 @@ module RecordLoader
       message =
         "TagSet '#{tag_set_name}' creation or update failed " \
           "because TagGroup with name '#{tag_group_name}' was not found"
-      raise ActiveRecord::RecordNotFound, message unless Rails.env.development || Rails.env.cucumber?
+      raise ActiveRecord::RecordNotFound, message unless Rails.env.development? || Rails.env.cucumber?
       Rails.logger.warn(message) # Log a warning in development
       nil
     end
