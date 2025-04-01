@@ -328,4 +328,39 @@ RSpec.describe LinearSubmission do
       end
     end
   end
+
+  # This covers the case of bulk submission for the template `pbmc_pooling_customer_request_type`.
+  # The allowance band is calculated within the bulk submission, added to the `request_options`,
+  # and transferred to the linear submission to create the corresponding requests.
+  # The allowance band is defined directly into the request class `pbmc_pooling_customer_request_type` as
+  # it does not require a user input.
+  context 'when the submission template computes extra metadata' do
+    let(:assets) { (1..sx_asset_count).map { |i| create(:sample_tube, name: "Asset#{i}") } }
+    let!(:request_type) { create(:pbmc_pooling_customer_request_type) }
+    let(:submission) do
+      create(
+        :linear_submission,
+        study: study,
+        project: project,
+        user: user,
+        assets: assets,
+        request_types: [request_type.id],
+        request_options: {
+          'allowance_band' => 'Full allowance',
+          'cells_per_chip_well' => '90000',
+          'number_of_pools' => '1'
+        },
+        comments: 'This is a comment'
+      ).submission
+    end
+
+    before do
+      submission.built!
+      submission.process!
+    end
+
+    it 'adds the calculated metadata to the order request_options' do
+      expect(submission.requests.first.order.request_options).to have_key('allowance_band')
+    end
+  end
 end
