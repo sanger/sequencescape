@@ -12,7 +12,7 @@ class WellAttribute < ApplicationRecord
 
   after_update :broadcast_warehouse_message
 
-  serialize :gender_markers
+  serialize :gender_markers, coder: YAML
   def gender_markers_string
     gender_markers.try(:to_s)
   end

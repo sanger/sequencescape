@@ -3,7 +3,6 @@ set -e # Exit immediately if something fails
 export NODE_ENV=production
 export RAILS_ENV=production
 export BUILDING_APP=true
-export SECRET_KEY_BASE=to_be_replaced
 echo 'Compiling assets'
 bundle exec rake vite:build
 echo 'Generating sha'

@@ -9,7 +9,7 @@ class SubmissionTemplate < ApplicationRecord
   validates :name, presence: true
   validates :submission_class_name, presence: true
 
-  serialize :submission_parameters
+  serialize :submission_parameters, coder: YAML
 
   has_many :orders
   belongs_to :product_line

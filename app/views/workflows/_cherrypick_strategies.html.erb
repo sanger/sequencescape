@@ -1,0 +1,30 @@
+<%# locals: { form: } -%>
+
+<p>Choose a strategy below:</p>
+
+<div class="card-columns">
+
+  <div class="card border-primary" data-group='cherrypick_strategy'>
+    <div class="card-body">
+      <h5 class="card-title">Concentration</h5>
+      <%= render partial: 'cherrypick_by_concentration', locals: { form: form } %>
+    </div>
+  </div>
+
+  <div class="card" data-group='cherrypick_strategy'>
+    <div class="card-body">
+      <h5 class="card-title">Amount</h5>
+      <%= render partial: 'cherrypick_by_amount', locals: { form: form }  %>
+    </div>
+  </div>
+
+  <div class="card" data-group='cherrypick_strategy'>
+    <div class="card-body">
+      <h5 class="card-title">Volume</h5>
+      <%= render partial: 'cherrypick_by_volume', locals: { form: form } %>
+    </div>
+  </div>
+
+</div>
+
+<%= vite_javascript_tag 'cherrypick_strategies' %>

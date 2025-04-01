@@ -253,23 +253,17 @@ class UatActions::TubeSubmission < UatActions
   # Returns the study to use for UAT
   #
   # @return [Study] The study to use for UAT
-  def study
-    UatActions::StaticRecords.study
-  end
+  delegate :study, to: :'UatActions::StaticRecords'
 
   # Returns the project to use for UAT
   #
   # @return [Project] The project to use for UAT
-  def project
-    UatActions::StaticRecords.project
-  end
+  delegate :project, to: :'UatActions::StaticRecords'
 
   #
   # Returns the uat user
   #
   # @return [User] The UAT user can be used in any places where a user is expected.
-  def user
-    UatActions::StaticRecords.user
-  end
+  delegate :user, to: :'UatActions::StaticRecords'
 end
 # rubocop:enable Metrics/ClassLength

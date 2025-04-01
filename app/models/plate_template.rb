@@ -10,7 +10,7 @@ class PlateTemplate < Plate
   def update_params!(details = {}) # rubocop:todo Metrics/AbcSize
     self.name = details[:name]
     wells.delete_all
-    self.size = (details[:rows]).to_i * (details[:cols]).to_i
+    self.size = details[:rows].to_i * details[:cols].to_i
     save!
 
     unless details[:wells].nil?

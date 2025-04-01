@@ -21,7 +21,7 @@ module Validateable
       [self]
     end
 
-    def human_attribute_name(attribute_key_name, options = {}) # rubocop:todo Metrics/AbcSize
+    def human_attribute_name(attribute_key_name, options = {})
       defaults =
         self_and_descendants_from_active_record.map do |klass|
           "#{klass.name.underscore}.#{attribute_key_name}" \
@@ -31,7 +31,7 @@ module Validateable
       defaults.flatten!
       defaults << attribute_key_name.to_s.humanize
       options[:count] ||= 1
-      I18n.t(defaults.shift, **options.merge(default: defaults, scope: %i[activerecord attributes]))
+      I18n.t(defaults.shift, **options, default: defaults, scope: %i[activerecord attributes])
     end
 
     def human_name(options = {})
