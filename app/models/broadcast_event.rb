@@ -19,7 +19,7 @@ class BroadcastEvent < ApplicationRecord
   # https://api.rubyonrails.org/classes/ActiveRecord/Inheritance/ClassMethods.html
   validates :sti_type, presence: true
 
-  serialize :properties
+  serialize :properties, coder: YAML
   self.inheritance_column = 'sti_type'
 
   broadcast_with_warren
@@ -54,9 +54,7 @@ class BroadcastEvent < ApplicationRecord
 
   # Override in subclasses if you want dynamic event types
   # @return [String] The value of the event_type key in the generated message
-  def event_type
-    self.class.event_type
-  end
+  delegate :event_type, to: :class
 
   #
   # Use in subclasses to specify a fixed event type

@@ -109,9 +109,7 @@ module Accessionable
       service.sample_visibility(@sample) == AccessionService::Protect
     end
 
-    def released?
-      @sample.released?
-    end
+    delegate :released?, to: :@sample
   end
 
   private

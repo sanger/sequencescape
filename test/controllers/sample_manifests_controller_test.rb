@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'test_helper'
-require 'sdb/sample_manifests_controller'
 
 class SampleManifestsControllerTest < ActionController::TestCase
   context 'SampleManifestsController' do

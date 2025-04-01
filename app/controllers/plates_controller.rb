@@ -65,7 +65,7 @@ class PlatesController < ApplicationController
   end
 
   def tube_rack_barcodes
-    return [] unless params.dig(:plates).dig(:source_plates)
+    return [] unless params.dig(:plates, :source_plates)
 
     params[:plates][:source_plates].split(/[\s,]+/)
   end
