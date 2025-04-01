@@ -70,7 +70,7 @@ class SampleManifest::Generator
 
   def label_template_for_2d_barcodes
     if params[:barcode_type] == Rails.application.config.tube_manifest_barcode_config[:barcode_type_labels]['2d'] &&
-         (sample_manifest.asset_type == '1dtube' || sample_manifest.asset_type == 'library')
+         %w[1dtube library].include?(sample_manifest.asset_type)
       Rails.application.config.tube_manifest_barcode_config[:two_dimensional_label_template]
     end
   end
