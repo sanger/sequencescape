@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'test_helper'
-require 'admin/projects_controller'
 
 module Admin
   class ProjectsControllerTest < ActionController::TestCase

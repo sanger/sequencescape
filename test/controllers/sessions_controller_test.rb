@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'test_helper'
-require 'sessions_controller'
 
 class SessionsControllerTest < ActionController::TestCase
   # Be sure to include AuthenticatedTestHelper in test/test_helper.rb instead

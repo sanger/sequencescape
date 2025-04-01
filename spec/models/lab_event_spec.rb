@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'broadcast_event/lab_event'
 
 RSpec.describe LabEvent do
   subject { build(:lab_event, user: build(:user)) }
