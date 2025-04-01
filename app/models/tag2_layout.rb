@@ -4,7 +4,7 @@
 # Applies a single tag 2 to the entire plate
 class Tag2Layout < ApplicationRecord
   include Uuid::Uuidable
-  serialize :target_well_locations
+  serialize :target_well_locations, coder: YAML
 
   ##
   # This class provides two benefits
@@ -27,7 +27,7 @@ class Tag2Layout < ApplicationRecord
   belongs_to :tag
   validates :tag, presence: true
 
-  serialize :substitutions
+  serialize :substitutions, coder: YAML
 
   belongs_to :plate
   validates :plate, presence: true

@@ -86,15 +86,11 @@ class Api::Messages::FlowcellIo < Api::Base
           value = detect_descriptor(name)
           return nil if value.nil?
 
-          begin
-            # If someone has added the units to the input, strip them off then convert to a float
-            # We also strip whitespace.
-            # However if float conversion fails, then the input is unsuitable.
-            # Note: .to_f is too permissive here
-            Float(value.gsub(ignored_unit, '').strip)
-          rescue ArgumentError
-            nil
-          end
+          # If someone has added the units to the input, strip them off then convert to a float
+          # We also strip whitespace.
+          # However if float conversion fails, then the input is unsuitable.
+          # Note: .to_f is too permissive here
+          Float(value.gsub(ignored_unit, '').strip, exception: false)
         end
       end
     end

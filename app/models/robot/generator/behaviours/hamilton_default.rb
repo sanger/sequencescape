@@ -60,9 +60,9 @@ module Robot::Generator::Behaviours::HamiltonDefault
   def source_mappings(data_object) # rubocop:todo Metrics/AbcSize
     source_mappings = ''
     each_mapping(data_object) do |mapping, destination_plate_barcode, plate_details|
-      source_plate_barcode = (mapping['src_well'][0]).to_s
+      source_plate_barcode = mapping['src_well'][0].to_s
       source_well_position = mapping['src_well'][1]
-      source_plate_type = data_object['source'][(mapping['src_well'][0]).to_s]['name']
+      source_plate_type = data_object['source'][mapping['src_well'][0].to_s]['name']
       destination_well_position = mapping['dst_well']
       destination_plate_type = plate_details['name']
       current_row = [

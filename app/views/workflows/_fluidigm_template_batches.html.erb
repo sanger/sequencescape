@@ -65,7 +65,7 @@
   </div>
   <div class="col-md-6">
     <%= panel(:info,title:"Step 3: Layout wells on plates") do %>
-      <%= render partial: 'cherrypicking_volume_by_micro_litre' %>
+      <%= render partial: 'cherrypick_by_volume', locals: { form: form, hide_strategy_option: true } %>
     <% end %>
   </div>
 

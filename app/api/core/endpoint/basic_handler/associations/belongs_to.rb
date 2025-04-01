@@ -33,7 +33,7 @@ module Core::Endpoint::BasicHandler::Associations::BelongsTo
       delegate :endpoint_details, to: :@endpoint
 
       def merge(node)
-        super(node) do |children|
+        super do |children|
           self.class.new(@endpoint_helper, children) # prettier-ignore
         end
       end

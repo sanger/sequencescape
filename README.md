@@ -145,7 +145,7 @@ instead of the Docker version, in that case you can start this setup with the
 command:
 
 ```shell
-docker compose -f docker compose-dev.yml up
+docker compose -f docker-compose-dev.yml up
 ```
 
 **ABOUT RECREATE DOCKER IMAGE** If you ever need to recreate the image built on first start (because you made modifications
@@ -263,6 +263,17 @@ For more warren actions, either use `bundle exec warren help` or see the
 
 You will also have to change the config in config/warren.yml from `type: log` to `type: broadcast` to get
 it to actually send messages in development mode.
+
+### Credentials
+
+Secrets are managed differently after the Rails 7.2 update. The setup can be done by running the command `bundle exec rails credentials:edit` locally
+
+This will create a `credentials.yml.enc` and `master.key` in the config directory
+
+You can then edit the credentials file with the following command:
+`VISUAL="nano --wait" bin/rails credentials:edit`
+
+These should not be committed to the github repo.
 
 ## Testing
 
@@ -460,6 +471,10 @@ If installation issues are encountered with Docker on M1 processors, try the fix
 
   [[GitHub issue](https://github.com/evilmartians/terraforming-rails/issues/34#issuecomment-872021786)]
 
+#### Cucumber / RSpec feature chromedriver issues
+
+If you encounter Selenium/Chromedriver issues locally it may be because the latest version of Chrome is yet to be supported by our testing libraries (Capybara). This may require a fix to the `Capybara.rb` file, e.g. new driver arguments. In the case the fix is not identifiable you made need to rely on a pinned version of Chrome in the CI to run these tests, see [Chromedriver issues](#chromedriver-issues) below for further instructions.
+
 ### API V2 Authentication
 
 The V2 API has had authentication checks added to it so that other applications calling the API should provide a valid key.
@@ -492,6 +507,10 @@ This isn't necessary at this stage, but it seems wise to note the intended patte
 ### CI
 
 The GH actions builds use the Knapsack-pro gem to reduce build time by parallelizing the RSpec and Cucumber tests. There is no need to regenerate the knapsack_rspec_report.json file, Knapsack Pro will dynamically allocate tests to ensure tests finish as close together as possible.
+
+#### Chromedriver issues
+
+If you encounter CI failures for cucumber and rspec feature tests it may be caused by our CI GitHub runner being on the latest version of Chrome while our testing libraries are yet to support it. To fix this, you can pin the version of Chrome in the CI to an older, known working version. This can be done in the `.github/workflows/ruby_test.yml` workflow under `Setup stable Chrome`. If this is required ensure you revert the change once the testing libraries are updated.
 
 ### ERD
 
