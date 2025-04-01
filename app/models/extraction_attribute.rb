@@ -10,7 +10,7 @@ class ExtractionAttribute < ApplicationRecord
 
   validates :attributes_update, presence: true
 
-  serialize :attributes_update
+  serialize :attributes_update, coder: YAML
 
   before_save :update_performed
 

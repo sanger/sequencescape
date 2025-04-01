@@ -36,7 +36,7 @@ class Admin::StudiesController < ApplicationController
   def filter # rubocop:todo Metrics/CyclomaticComplexity
     filter_conditions = { approved: false } if params[:filter][:by] == 'not approved' unless params[:filter].nil?
 
-    if params[:filter][:by] == 'not approved' || params[:filter][:by] == 'all'
+    if ['not approved', 'all'].include?(params[:filter][:by])
       @studies = Study.where(filter_conditions).alphabetical.select { |p| p.name.include? params[:q] }
     end
 

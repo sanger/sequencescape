@@ -118,7 +118,7 @@ module Api
       #
       # @param is_input [Boolean] Whether to set the plate purpose as an input plate.
       # @return [void]
-      def input_plate=(is_input)
+      def input_plate=(is_input) # rubocop:disable Rails/Delegate
         @model.input_plate = is_input
       end
 

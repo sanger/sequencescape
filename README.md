@@ -263,6 +263,17 @@ For more warren actions, either use `bundle exec warren help` or see the
 You will also have to change the config in config/warren.yml from `type: log` to `type: broadcast` to get
 it to actually send messages in development mode.
 
+### Credentials
+
+Secrets are managed differently after the Rails 7.2 update. The setup can be done by running the command `bundle exec rails credentials:edit` locally
+
+This will create a `credentials.yml.enc` and `master.key` in the config directory
+
+You can then edit the credentials file with the following command:
+`VISUAL="nano --wait" bin/rails credentials:edit`
+
+These should not be committed to the github repo.
+
 ## Testing
 
 Testing is done in one of three ways; using rspec, via rails tests or with cucumber.
