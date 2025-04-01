@@ -35,13 +35,13 @@ module Api
     #           "data": { "type": "plates", "id": "123" }
     #         },
     #         "purpose": {
-    #           "data": { "type": "plate_purposes", "id": "234" }
+    #           "data": { "type": "plate_purposes", "id": 1 }
     #         },
     #         "target": {
-    #           "data": { "type": "plates", "id": "345" }
+    #           "data": { "type": "plates", "id": 1 }
     #         },
     #         "user": {
-    #           "data": { "type": "users", "id": "456" }
+    #           "data": { "type": "users", "id": 4 }
     #         }
     #       }
     #     }

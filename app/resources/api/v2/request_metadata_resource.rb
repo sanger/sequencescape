@@ -2,17 +2,52 @@
 
 module Api
   module V2
-    # @todo This documentation does not yet include a detailed description of what this resource represents.
-    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
-    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
-    #
-    # @note Access this resource via the `/api/v2/requests_metadata/` endpoint.
-    #
     # Provides a JSON:API representation of {Request::Metadata}.
+    # which is a class derived from `app/models/metadata.rb`
     #
-    # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
-    # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
-    # of the JSON:API standard.
+    # The RequestMetadataResource provides metadata information for requests,
+    # specifically including details like `number_of_pools` and `cells_per_chip_well`,
+    # which are critical for the scRNA Core pipeline. It is associated with a `request`.
+    #
+    # @note Access this resource via the `/api/v2/request_metadata/` endpoint.
+    #
+    # @example GET request to retrieve all request metadata
+    #   GET /api/v2/request_metadata/
+    #
+    # @example POST request to create new request metadata
+    #   POST /api/v2/request_metadata/
+    #   {
+    #     "data": {
+    #         "id": 1,
+    #       "type": "request_metadata",
+    #       "attributes": {
+    #         // "number_of_pools": 5,
+    #         // "cells_per_chip_well": 200
+    #       },
+    #       "relationships": {
+    #         "request": {
+    #           "data": {
+    #             "type": "requests",
+    #             "id": 1265
+    #           }
+    #         }
+    #       }
+    #     }
+    #   }
+    #
+    # @example PATCH request to update existing request metadata
+    #   PATCH /api/v2/request_metadata/1
+    #   {
+    #     "data": {
+    #       "id": "1",
+    #       "type": "request_metadata",
+    #       "attributes": {
+    #       }
+    #     }
+    #   }
+    #
+    # For more details on JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
+    # or check out the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation.
     class RequestMetadataResource < BaseResource
       # NB. request_metadata has been added to config/initializers/inflections.rb to make this class name
       # work otherwise it expects RequestMetadatumResource
@@ -28,14 +63,14 @@ module Api
       # Attributes
       ###
 
-      # @!attribute [r] number_of_pools
+      # @!attribute [rw] number_of_pools
       #   @return [Int] the number_of_pools requested in the Submission. As used
       #     in the scRNA Core pipeline, it is specified at the Study-Project
       #     level: it will have the same value for all Requests that share the
       #     same Study and Project. It is used in the pooling algorithm.
       attribute :number_of_pools, write_once: true
 
-      # @!attribute [r] cells_per_chip_well
+      # @!attribute [rw] cells_per_chip_well
       #   @return [Int] the cells_per_chip_well requested in the Submission. As
       #     used in the scRNA Core pipeline, it is specified at the Study-Project
       #     level: it will have the same value for all Requests that share the
@@ -49,14 +84,6 @@ module Api
       #     level: it will have the same value for all Requests that share the
       #     same Study and Project.
       attribute :allowance_band, read_only: true
-
-      # Filters
-
-      # Custom methods
-      # These shouldn't be used for business logic, and a more about
-      # I/O and isolating implementation details.
-
-      # Class method overrides
     end
   end
 end

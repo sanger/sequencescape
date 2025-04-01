@@ -148,8 +148,7 @@ command:
 docker compose -f docker-compose-dev.yml up
 ```
 
-**ABOUT RECREATE DOCKER IMAGE** If you ever need to recreate the image built on first start (because you made modifications
-to the Dockerfile file) you can run the building process again with:
+**ABOUT RECREATE DOCKER IMAGE** If you ever need to recreate the image built on first start (because you made modifications to the Dockerfile file or there have been dependency updates) you can re build the image again with (or see above for M1 Apple chip):
 
 ```shell
 docker compose build
@@ -480,6 +479,12 @@ As of the time of writing, there are three outcomes to a request made, with resp
   - The response is given as if a valid API key was provided.
   - The request is logged with the prefix "Request made without an API key" including information about the client.
   - The client application should be updated to use a valid API key in future.
+
+#### Documentation
+
+Example POST requests for all the Sequencscape API v2 resources are available to import into Postman REST Client.
+
+The file `Sequencescape API v2.postman_collection.json` is stored in the Pipeline Solutions Shared Network Drive (Finder > Go > Connect to Server > `smb://files-smb/pipeline_solutions`)
 
 ### Publishing AMQP Messages
 

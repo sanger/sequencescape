@@ -7,8 +7,8 @@ module Api
     # Creation of this resource via a `POST` request will create the new child tube with the parent tube as an ancestor.
     # The created child will have the specified purpose and can be accessed via the {#child} relationship.
     #
-    # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
     # @note Access this resource via the `/api/v2/tube_from_tube_creations/` endpoint.
+    # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
     #
     # @example POST request with child purpose and parent tube specified by UUID (deprecated)
     #   POST /api/v2/tube_from_tube_creations/
@@ -31,13 +31,13 @@ module Api
     #       "attributes": {},
     #       "relationships": {
     #         "child_purpose": {
-    #           "data": { "type": "tube_purposes", "id": "123" }
+    #           "data": { "type": "tube_purposes", "id": "256" }
     #         },
     #         "parent": {
     #           "data": { "type": "tubes", "id": "456" }
     #         },
     #         "user": {
-    #           "data": { "type": "users", "id": "789" }
+    #           "data": { "type": "users", "id": "2" }
     #         }
     #       }
     #     }

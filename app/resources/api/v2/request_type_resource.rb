@@ -2,42 +2,48 @@
 
 module Api
   module V2
-    # @todo This documentation does not yet include a detailed description of what this resource represents.
-    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
-    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+    # Provides a JSON:API representation of {RequestType}.
+    #
+    # RequestTypes are used by {Order orders} to construct {Request requests}.
+    # The request type identifies the type of Request and associates it with a particular {Pipeline}.
+    # Request types have associated {RequestType::Validator validators} to ensure compatible {Request::Metadata}.
+    # Request types also associate the request with a particular {ProductLine} team.
     #
     # @note This resource is immutable: its endpoint will not accept `POST`, `PATCH`, or `DELETE` requests.
     # @note Access this resource via the `/api/v2/request_types/` endpoint.
     #
-    # Provides a JSON:API representation of {RequestType}.
+    # @example GET request to retrieve all request types
+    #   GET /api/v2/request_types/
     #
-    # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
-    # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
-    # of the JSON:API standard.
+    # @example GET request to retrieve a specific request type by ID
+    #   GET /api/v2/request_types/{id}/
+    #
+    # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
+    # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation.
     class RequestTypeResource < BaseResource
-      # Constants...
-
       immutable
-
-      # model_name / model_hint if required
 
       default_includes :uuid_object
 
-      # Associations:
-
-      # Attributes
+      # @!attribute [r] uuid
+      #   @return [String] The unique identifier of the request type.
+      #   @note This field is readonly as this resource is immutable.
       attribute :uuid, readonly: true
+
+      # @!attribute [rw] name
+      #   @return [String] The name of the request type.
+      #   @note This field is readonly as this resource is immutable.
       attribute :name, write_once: true
+
+      # @!attribute [rw] key
+      #   @return [String] A unique key for the request type.
+      #   @note This field is readonly as this resource is immutable.
       attribute :key, write_once: true
+
+      # @!attribute [rw] for_multiplexing
+      #   @return [Boolean] Whether the request type supports multiplexing.
+      #   @note This field is readonly as this resource is immutable.
       attribute :for_multiplexing, write_once: true
-
-      # Filters
-
-      # Custom methods
-      # These shouldn't be used for business logic, and a more about
-      # I/O and isolating implementation details.
-
-      # Class method overrides
     end
   end
 end
