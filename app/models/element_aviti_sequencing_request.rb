@@ -12,7 +12,7 @@ class ElementAvitiSequencingRequest < SequencingRequest
       :low_diversity,
       boolean_select: true,
       required: true,
-      default: 0,
+      default: '0',
       select_options: {
         Yes: 1,
         No: 0
@@ -20,7 +20,13 @@ class ElementAvitiSequencingRequest < SequencingRequest
     )
   end
 
+  # TODO: Check if we need to include CustomerResponsibility again here after has_metadata.
+
   class ElementAvitiRequestOptionsValidator < SequencingRequest::RequestOptionsValidator
+    delegate :percent_phix_requested, to: :target
+    delegate :requested_flowcell_type, to: :target
+    delegate :read_length, to: :target
+
     validates :percent_phix_requested,
               numericality: {
                 integer_only: true,
@@ -28,9 +34,19 @@ class ElementAvitiSequencingRequest < SequencingRequest
                 less_than_or_equal_to: 100,
                 allow_nil: false
               }
+
+    validate :requested_flowcell_type_read_length_compatibility
+
+    def requested_flowcell_type_read_length_compatibility
+      return unless requested_flowcell_type.name == 'LO' && read_length.to_i != 150
+      errors.add(
+        :requested_flowcell_type,
+        'For the LO (Low Output) flowcell kit the user can select a Read Length of 150'
+      )
+    end
   end
 
-  def self.deletage_validator
+  def self.delegate_validator
     ElementAvitiSequencingRequest::ElementAvitiRequestOptionsValidator
   end
 end
