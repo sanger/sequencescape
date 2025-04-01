@@ -15,7 +15,7 @@ module SubmissionsHelper # rubocop:todo Metrics/ModuleLength
     field_input_tag(field_info, values: request_options, name_format: 'submission[order_params][%s]')
   end
 
-  def field_input_tag(field_info, values: {}, name_format: '%s', enforce_required: true)
+  def field_input_tag(field_info, values: {}, name_format: '%s', enforce_required: true) # rubocop:disable Metrics/MethodLength
     case field_info.kind
     when 'Selection'
       field_selection_tag(values, field_info, name_format, enforce_required)
@@ -23,6 +23,8 @@ module SubmissionsHelper # rubocop:todo Metrics/ModuleLength
       field_text_tag(values, field_info, name_format, enforce_required)
     when 'Numeric'
       field_number_tag(values, field_info, name_format, enforce_required)
+    when 'BooleanSelect'
+      boolean_select_tag(values, field_info, name_format, enforce_required)
       # Fall back to a text field
     else
       field_text_tag(values, field_info, name_format, enforce_required)
@@ -143,6 +145,41 @@ module SubmissionsHelper # rubocop:todo Metrics/ModuleLength
       class: 'custom-select',
       required: enforce_required && field_info.required,
       read_only: field_info.selection.size == 1
+    )
+  end
+
+  # Generates a dropdown for boolean fields with custom option texts such as
+  # Yes/No.
+  #
+  # @param request_options [Hash] The current request options, containing field
+  #   values to set the selected option.
+  # @param field_info [Object] Field info for a request attribute
+  # @param name_format [String] A format string for the field's name attribute
+  # @param enforce_required [Boolean] Whether to enforce the `required`
+  #   attribute on the field.
+  #
+  # @return [String] An HTML `<select>` tag for the boolean field.
+  #
+  # @example Usage
+  #   If a custom attribute is defined in request class as follows
+  #   custom_attribute(:low_diversity, required: true, boolean_select: true,
+  #      select_options: {Yes: true, No: false})
+  #
+  #   Then the generated HTML will look like:
+  #   <select name="submission[order_params][low_diversity]" class="custom-select" required="required">
+  #      <option value="true">Yes</option>
+  #      <option value="false">No</option>
+  #    </select>
+  def boolean_select_tag(request_options, field_info, name_format, enforce_required)
+    # If the field_info has select_options, use them, otherwise default to Yes/No
+    select_options = field_info.select_options.presence || { Yes: 1, No: 0 }
+    default_value = request_options[field_info.key] || field_info.default_value
+    select_tag(
+      name_format % field_info.key,
+      options_for_select(select_options, default_value),
+      class: 'custom-select',
+      required: enforce_required && field_info.required,
+      read_only: field_info.select_options.size == 1
     )
   end
 
