@@ -98,6 +98,9 @@ en:
     pbmc_pooling_customer_request:
       <<: *REQUEST
 
+    element_aviti_sequencing_request:
+      <<: *REQUEST
+
     pulldown:
       requests:
         wgs_library_request:
