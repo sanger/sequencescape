@@ -10,6 +10,8 @@
         <%= metadata_fields.check_box(field_info.key) %>
       <%- elsif field_info.kind == FieldInfo::NUMERIC %>
         <%= metadata_fields.number_field(field_info.key,field_info.parameters) %>
+      <%- elsif field_info.kind == FieldInfo::BOOLEAN_SELECT %>
+        <%= metadata_fields.select(field_info.key, field_info.select_options, { selected:  request.request_metadata[field_info.key] || field_info.default_value, prompt: "Select a #{field_info.key.to_s.gsub( '_', ' ')}"  }) %>
       <%- else %>
         <%= metadata_fields.text_field(field_info.key) %>
       <%- end %>
