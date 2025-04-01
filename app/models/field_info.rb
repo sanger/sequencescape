@@ -17,11 +17,12 @@ class FieldInfo
   TEXT = 'Text'
   BOOLEAN = 'Boolean'
   NUMERIC = 'Numeric'
+  BOOLEAN_SELECT = 'BooleanSelect'
 
   # Sorted in order of least restrictiveness
-  KIND = [TEXT, NUMERIC, SELECTION, BOOLEAN].freeze
+  KIND = [TEXT, NUMERIC, SELECTION, BOOLEAN, BOOLEAN_SELECT].freeze
 
-  attr_accessor :display_name, :key, :kind, :default_value, :required, :step, :min, :max, :selection
+  attr_accessor :display_name, :key, :kind, :default_value, :required, :step, :min, :max, :selection, :select_options
 
   def self.for_request_types(request_types)
     attributes = Hash.new(NullFieldInfo)
