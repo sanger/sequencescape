@@ -17,7 +17,9 @@ module Api
     # @example Fetching a primer panel by ID
     #   GET /api/v2/primer_panels/{id}
     #
-    # @note the below example is currently broken, as `snp_count`` is a required attribute in the model
+    # @todo the below example is currently broken, as `snp_count`` is a required attribute in the model
+    #   but it is not included in the resource.
+    #
     # @example Creating a primer panel
     #   POST /api/v2/primer_panels
     #   {

@@ -78,6 +78,8 @@ module Api
 
       # Sets the Asset on the model using the UUID provided in the API create/update request.
       #
+      # @todo Deprecate. Replace with `asset` relationship
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
       # @param uuid [String] the uuid of the associated asset.
       # @return [void]
       def asset_uuid=(uuid)
@@ -97,8 +99,10 @@ module Api
 
       # Gets the list of fields that are updatable on an existing AssetAudit.
       # AssetAudits cannot be modified after creation.
-      #   @param _context [JSONAPI::Resource::Context] Not used.
-      #   @return [Array<Symbol>] The list of updatable fields.
+      # @todo Use `except: %i[update]` in `routes.rb` or the access restrictions instead of this approach
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
+      # @param _context [JSONAPI::Resource::Context] Not used.
+      # @return [Array<Symbol>] The list of updatable fields.
       def self.updatable_fields(_context)
         [] # Do not allow updating any fields.
       end

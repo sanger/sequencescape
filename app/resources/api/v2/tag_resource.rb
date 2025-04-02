@@ -34,6 +34,8 @@ module Api
       # @!attribute [rw] map_id
       #   The ID of the map associated with the tag. This attribute is write-once, meaning it cannot be updated after
       #   creation.
+      #   @todo Remove write_once as resource is immutable
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
       #   @return [String] The ID of the associated map.
       #   @note This attribute is required when creating a tag.
       attribute :map_id, write_once: true
@@ -41,6 +43,8 @@ module Api
       # @!attribute [rw] oligo
       #   The oligo sequence associated with the tag. This attribute is write-once, meaning it cannot be updated after
       #   creation.
+      #   @todo Remove write_once as resource is immutable
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
       #   @return [String] The oligo sequence associated with the tag.
       #   @note This attribute is required when creating a tag.
       attribute :oligo, write_once: true

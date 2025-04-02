@@ -55,6 +55,7 @@ module Api
       #   This attribute is declared for convenience when the user is not available to set as a relationship.
       #   Setting this attribute alongside the `user` relationship will prefer the relationship value.
       #   @deprecated Use the `user` relationship instead.
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
       #   @param value [String] The UUID of the user who created this bait library layout.
       #   @return [void]
       #   @see #user

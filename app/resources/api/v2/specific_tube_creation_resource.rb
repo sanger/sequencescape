@@ -74,8 +74,10 @@ module Api
       attribute :uuid, readonly: true
 
       # @!attribute [w] child_purpose_uuids
+      #   @todo Update `writeone` to be write_once as resource is not updatable
       #   This is currently declared for convenience as child purposes do not appear to be set as a relationship.
       #   @todo Deprecate - Create the `child_purposes` (or `children`) relationship instead.
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
       #   Setting this attribute alongside the relevant relationship shold prefer the relationship value.
       #   @param value [Array<String>] Array of UUIDs for child purposes to use in the creation of tubes.
       #   @return [Void]
@@ -86,7 +88,9 @@ module Api
       end
 
       # @!attribute [w] parent_uuids
+      #   @todo Update `writeone` to be write_once as resource is not updatable
       #   @deprecated Use the `parents` relationship instead.
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
       #   This is declared for convenience where the parent tubes are not available to set as a relationship.
       #   Setting this attribute alongside the `parents` relationship will prefer the relationship value.
       #   @param value [Array<String>] The UUIDs of labware that will be the parents for all tubes created.
@@ -99,6 +103,8 @@ module Api
       end
 
       # @!attribute [w] tube_attributes
+      #   @todo Update `writeone` to be write_once as resource is not updatable
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
       #   @param value [Array<Hash>] Array of attribute hashes to apply to each tube being created.
       #     This can be used to set custom properties, such as tube names.
       #   @return [Void]
@@ -113,6 +119,7 @@ module Api
 
       # @!attribute [w] user_uuid
       #   @deprecated Use the `user` relationship instead.
+      #   See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
       #   This is declared for convenience where the user is not available to set as a relationship.
       #   Setting this attribute alongside the `user` relationship will prefer the relationship value.
       #   @param value [String] The UUID of the user who initiated the creation of tubes.
@@ -130,6 +137,7 @@ module Api
 
       # @!attribute [r] children
       #   @todo fix this relationship as it currently appears to be broken
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
       #   @return [Array<TubeResource>] An array of tubes that were created.
       has_many :children, class_name: 'Tube', readonly: true
 

@@ -24,8 +24,8 @@ module Api
     # @example GET request to retrieve samples associated with a specific receptacle
     #   GET /api/v2/receptacles/1/samples
     #
-    # @note The below POST errors due to `display_name` missing. However, when `display_name`
-    # is included, the response says "display_name is not allowed".
+    # @todo The below POST is currently broken, as `display_name` is a required attribute in the
+    #   model but it is not included in the resource.
     #
     # @example POST request to create a new receptacle
     #   POST /api/v2/receptacles/

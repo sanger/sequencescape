@@ -74,6 +74,7 @@ module Api
       #   This is provided as a shortcut for setting the `target` relationship.
       #   If both this attribute and the `target` relationship are provided, the relationship takes precedence.
       #   @deprecated Use the `target` relationship instead.
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
       #   @param value [String] The UUID of the labware affected by this state change.
       #   @return [Void]
       #   @see #target

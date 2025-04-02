@@ -43,6 +43,8 @@ module Api
 
       # @!attribute [rw] created_by
       #   The user who created the volume update.
+      #   @todo This can be any string, update to use a `user` relationship
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
       #   @return [String] the UUID of the user who created the volume update.
       #   @note This attribute is required.
       attribute :created_by
@@ -64,7 +66,8 @@ module Api
       ###
 
       # Sets the target Labware on the model using the UUID provided in the API create/update request.
-      #
+      # @todo Deprecate this method in favour of using the `target` relationship.
+      #   See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
       # @param uuid [String] the UUID of the associated target labware.
       # @return [void]
       def target_uuid=(uuid)
@@ -83,7 +86,8 @@ module Api
       ###
 
       # Gets the list of fields which are updatable on an existing VolumeUpdate.
-      #
+      # @todo Use `except: %i[update]` in `routes.rb` or the access restrictions instead of this approach
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
       # @param _context [JSONAPI::Resource::Context] not used.
       # @return [Array<Symbol>] the list of updatable fields (empty in this case as updates are not allowed).
       def self.updatable_fields(_context)

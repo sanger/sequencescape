@@ -16,6 +16,11 @@ module Api
     # @example GET request to retrieve all requests
     #   GET /api/v2/requests/
     #
+    # @todo Figure out how to send a POST for a request with request metadata association. Currently,
+    #   it is possible to create a request and request metadata seperately, but they are not associated
+    #   with each other. How do you create the association, either in one request or after the
+    #   individual requests?
+    #
     # @example POST request to create a new request
     #   POST /api/v2/requests/
     #   {

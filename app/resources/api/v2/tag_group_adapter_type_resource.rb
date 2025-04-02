@@ -17,8 +17,8 @@ module Api
     # @example GET request for a specific tag group adapter type by ID
     #   GET /api/v2/tag_group_adapter_types/123/
     #
-    # @note The below POST example is provided for reference, however it currently throws an error.
-    # This is because the `name` attribute is read-only in the resource, but a required field in the model.
+    # @todo The below POST example is provided for reference, however it currently throws an error.
+    #   This is because the `name` attribute is read-only in the resource, but a required field in the model.
     #
     # @example POST request to create a new tag group adapter type
     #   POST /api/v2/tag_group_adapter_types/

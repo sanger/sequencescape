@@ -125,6 +125,7 @@ module Api
       # @!attribute [w] user_uuid
       #   This is a convenience attribute for when the {User} is not available to set as a relationship.
       #   @deprecated Use the `user` relationship instead.
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
       #   Setting this alongside the `user` relationship will prefer the relationship value.
       #   @param value [String] The UUID of the {User} who initiated the creation of the tag layout.
       #   @return [Void]

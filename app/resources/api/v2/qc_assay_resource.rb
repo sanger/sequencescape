@@ -14,12 +14,14 @@ module Api
     # @example GET request to retrieve all QC assays
     #   GET /api/v2/qc_assays/
     #
-    # @note the below `qc_results` attribute is an array of `QcResultResource` objects
-    # @example POST request to create a new QC assay, with a an Asset `uuid` provded in the `qc_results` attribute
-    #   POST /api/v2/qc_assays/
-
-    # @note the below `qc_results` relationship is include for reference only. It appears to be
-    #  redundant. See `qc_results` relationship comment.
+    # @todo the below `qc_results` attribute is an array of `QcResultResource` objects.
+    #   It returns a `201 Created` even when no record is created (when no `qc_result` objects are passed).
+    #   See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
+    #
+    # @todo the below `qc_results` relationship is include for reference only. It appears to be
+    #   redundant. See `qc_results` relationship comment.
+    #   See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
+    #
     # @example POST request to create a new QC assay, with a an Asset `barcode` provded in the `qc_results` attribute
     #   POST /api/v2/qc_assays/
     #   {

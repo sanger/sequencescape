@@ -63,6 +63,7 @@ module Api
       #   This is declared for convenience where the submissions are not available to set as a relationship.
       #   Setting this attribute alongside the `submissions` relationships will prefer the relationship value.
       #   @deprecated Use the `submissions` relationship instead.
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
       #   @param value [Array<String>] The UUIDs of the {Submission}s related to this WorkCompletion.
       #   @return [Void]
       #   @see #submissions
@@ -89,6 +90,7 @@ module Api
       #   This is declared for convenience where the {User} is not available to set as a relationship.
       #   Setting this attribute alongside the `user` relationship will prefer the relationship value.
       #   @deprecated Use the `user` relationship instead.
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
       #   @param value [String] The UUID of the {User} who initiated this work completion.
       #   @return [Void]
       #   @see #user

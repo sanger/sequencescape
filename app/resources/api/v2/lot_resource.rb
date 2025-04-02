@@ -17,11 +17,10 @@ module Api
     # @example GET request to fetch a specific lot by ID
     #   GET /api/v2/lots/123/
     #
-    # @note The below POST example is not currently supported by the API, but is included here for reference.
-    # This is because `received_at` is a required field in the model, but is not included in the JSON:API request.
+    # @todo The below POST example is not currently supported by the API, but is included here for reference.
+    #   This is because `received_at` is a required field in the model, but is not included in the resource.
+    #   See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
     #
-    # @example POST request to create a new lot
-    #   POST /api/v2/lots/
     # @example POST request to create a new lot
     #   POST /api/v2/lots/
     #   {

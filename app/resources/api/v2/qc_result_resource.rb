@@ -19,9 +19,12 @@ module Api
     # @example GET request to retrieve all QC results
     #   GET /api/v2/qc_results/
     #
-    # @note the below `asset` relationship is include for reference only. It appears to be
+    # @todo the below `asset` relationship is include for reference only. It appears to be
     #  redundant. Instead, an Asset `barcode` or `uuid` attribute must be provided in the request.
     #  See `asset` relationship comment.
+    #  Additionally, other attributes are allowed in the request both, and it does not throw and error
+    #   See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
+    #
     # @example POST request to create a new QC result, with Asset `uuid`
     #   POST /api/v2/qc_results/
     #   {

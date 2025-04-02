@@ -87,6 +87,7 @@ module Api
       #   This is declared for convenience where the {User} is not available to set as a relationship.
       #   Setting this attribute alongside the `user` relationship will prefer the relationship value.
       #   @deprecated Use the `user` relationship instead.
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
       #   @param value [String] The UUID of the {User} who initiated this plate creation.
       #   @return [Void]
       #   @see #user

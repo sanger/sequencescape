@@ -7,6 +7,9 @@ module Api
     #
     # @note Access this resource via the `/api/v2/qcables/` endpoint.
     #
+    # @todo The below POST example is currently broken, as `qcable_creator` is required in the model
+    #   but it is not included in the resource.
+    #
     # @example POST request to create a {Qcable}.
     #   POST /api/v2/qcables/
     #   {
