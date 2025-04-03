@@ -19,6 +19,8 @@ module SubmissionsHelper # rubocop:todo Metrics/ModuleLength
     case field_info.kind
     when 'Selection'
       field_selection_tag(values, field_info, name_format, enforce_required)
+    when 'Text'
+      field_text_tag(values, field_info, name_format, enforce_required)
     when 'Numeric'
       field_number_tag(values, field_info, name_format, enforce_required)
       # Fall back to a text field
@@ -135,10 +137,9 @@ module SubmissionsHelper # rubocop:todo Metrics/ModuleLength
   private
 
   def field_selection_tag(request_options, field_info, name_format, enforce_required)
-    selected_value = request_options[field_info.key] || field_info.default_value
     select_tag(
       name_format % field_info.key,
-      options_for_select(field_info.selection.map(&:to_s), selected_value),
+      options_for_select(field_info.selection.map(&:to_s), request_options[field_info.key]),
       class: 'custom-select',
       required: enforce_required && field_info.required,
       read_only: field_info.selection.size == 1
