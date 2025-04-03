@@ -62,11 +62,11 @@ jobs:
           DBPORT: ${{ job.services.mysql.ports[3306] }}
         run: bundle exec rake test
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4.5.0
+        uses: codecov/codecov-action@v5.4.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
-  rspec_tests:
+  rspec_unit_tests:
     runs-on: ubuntu-latest
     env:
       RAILS_ENV: test
@@ -87,8 +87,8 @@ jobs:
     # Sets up the matrix for knapsack builds
     strategy:
       matrix:
-        ci_node_total: [3]
-        ci_node_index: [0, 1, 2]
+        ci_node_total: [2]
+        ci_node_index: [0, 1]
     steps:
       - uses: actions/checkout@v4
       - name: Set up Ruby
@@ -130,6 +130,7 @@ jobs:
         env:
           KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
           KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
+          KNAPSACK_PRO_TEST_FILE_EXCLUDE_PATTERN: "spec/features/**{,/*/**}/*_spec.rb"
           DBPORT: ${{ job.services.mysql.ports[3306] }}
         run: bin/knapsack_pro_rspec
       - name: Upload capybara artifacts
@@ -140,7 +141,94 @@ jobs:
           path: tmp/capybara/
           retention-days: 5
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4.5.0
+        uses: codecov/codecov-action@v5.4.0
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
+  rspec_feature_tests:
+    runs-on: ubuntu-latest
+    env:
+      RAILS_ENV: test
+      BUNDLE_WITHOUT: "cucumber deployment profile development"
+    # Services
+    # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idservices
+    services:
+      mysql:
+        # Use the Mysql docker image https://hub.docker.com/_/mysql
+        image: mysql:8.0
+        ports:
+          - 3306 # Default port mappings
+          # Monitor the health of the container to mesaure when it is ready
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        env:
+          MYSQL_ROOT_PASSWORD: "" # Set root PW to nothing
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+    # Sets up the matrix for knapsack builds
+    strategy:
+      matrix:
+        ci_node_total: [1]
+        ci_node_index: [0]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+      - name: Remove image-bundled Chrome
+        run: sudo apt-get purge google-chrome-stable
+      - name: Setup stable Chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: 128
+          install-chromedriver: true
+          install-dependencies: true
+      # Establish a cache of js modules to improve performance
+      - name: Cache js
+        uses: actions/cache@v4
+        with:
+          path: |
+            public/assets
+            node_modules
+          key: ${{ runner.os }}-tests-${{ hashFiles('yarn.lock') }}
+          # If we don't find the specific cache we want, fallback to the last raketests
+          # cache, then finally any cache for this repo.
+          # Github looks for the newest cache beginning with the first entry, before
+          # falling back the the second if none is present.
+          restore-keys: |
+            ${{ runner.os }}-tests-
+            ${{ runner.os }}-
+      # Install only the gems needed for testing
+      # Keep an eye on https://github.com/rubygems/bundler-features/issues/59
+      # in case bundler add an only flag
+      # We also set the install path to vendor/bundle to assist with out caching
+      # bin/setup handles the rest of the configuration for us.
+      - name: Setup environment
+        env:
+          DBPORT: ${{ job.services.mysql.ports[3306] }}
+        run: |
+          bin/setup
+          bundle exec rake assets:precompile
+      # Actually run our tests
+      - name: Run rspec tests
+        env:
+          KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
+          KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
+          KNAPSACK_PRO_TEST_FILE_PATTERN: "spec/features/**{,/*/**}/*_spec.rb"
+          DBPORT: ${{ job.services.mysql.ports[3306] }}
+        run: bin/knapsack_pro_rspec
+      - name: Upload capybara artifacts
+        uses: actions/upload-artifact@v4.4.0
+        if: ${{ failure() }}
+        with:
+          name: capybara-${{ github.job }}-${{ matrix.ci_node_index }}
+          path: tmp/capybara/
+          retention-days: 5
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5.4.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
@@ -179,6 +267,14 @@ jobs:
         with:
           node-version-file: ".nvmrc"
           cache: "yarn"
+      - name: Remove image-bundled Chrome
+        run: sudo apt-get purge google-chrome-stable
+      - name: Setup stable Chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: 128
+          install-chromedriver: true
+          install-dependencies: true
       # Install only the gems needed for testing
       # Keep an eye on https://github.com/rubygems/bundler-features/issues/59
       # in case bundler add an only flag
@@ -205,7 +301,7 @@ jobs:
           path: tmp/capybara/
           retention-days: 5
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4.5.0
+        uses: codecov/codecov-action@v5.4.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true

@@ -29,7 +29,7 @@ module Metadata
       inverse_of: :owner,
       foreign_key: "#{as_name}_id"
     }
-    has_one association_name, **default_options.merge(options) # rubocop:todo Rails/HasManyOrHasOneDependent
+    has_one association_name, **default_options, **options # rubocop:todo Rails/HasManyOrHasOneDependent
     accepts_nested_attributes_for(association_name, update_only: true)
 
     unless respond_to?(:"include_#{association_name}")

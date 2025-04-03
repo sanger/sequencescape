@@ -23,14 +23,14 @@ describe 'Batches controller', :js, :warren do
     # Suspect this is due to the quite specific locations at which the rows can be dropped.
     third_request.drag_to first_request
 
-    expect(request_list.all('tr').first).to eq(third_request)
+    expect(request_list.first('tr')).to eq(third_request)
 
     post_drag = [requests_ids[2], requests_ids[0], requests_ids[1]]
     Warren.handler.clear_messages
     click_button('Save')
     request_list
       .all('tr')
-      .each_with_index { |request, index| expect(request.text).to include((index + 1).to_s, (post_drag[index]).to_s) }
+      .each_with_index { |request, index| expect(request.text).to include((index + 1).to_s, post_drag[index].to_s) }
 
     expect(Warren.handler.messages_matching("queue_broadcast.messenger.#{flowcell_message.id}")).to be 1
     expect(flowcell_message.as_json.dig('flowcell', 'updated_at')).to be > 5.minutes.ago

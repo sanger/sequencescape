@@ -44,11 +44,13 @@ shared_examples 'a cherrypicking procedure' do
         choose(layout_volume_option)
 
         case layout_volume_option
-        when 'Pick by  volume (µl)'
-          fill_in('micro_litre_volume_required', with: '13')
+        when 'Pick by volume (µl)'
+          within('#pick_by_micro_litre') { fill_in('Volume (µl)', with: 13) }
         when 'Pick by concentration (ng/µl)'
-          fill_in('Volume Required', with: '65')
-          within('#pick_by_nano_grams_per_micro_litre') { fill_in('Robot Minimum Picking Volume', with: '1.0') }
+          within('#pick_by_nano_grams_per_micro_litre') do
+            fill_in('Volume Required (µl)', with: 65)
+            fill_in('Robot Minimum Picking Volume', with: '1.0')
+          end
         when 'Pick by amount (ng)'
           within('#pick_by_nano_grams') do
             fill_in('Robot Minimum Picking Volume', with: '2.0')
@@ -112,7 +114,7 @@ shared_examples 'a cherrypicking procedure' do
 
             step 'get the file' do
               within('#output_assets table tbody') do
-                row = page.all('tr', text: /#{destination_barcode}/).first
+                row = page.first('tr', text: /#{destination_barcode}/)
                 within(row) { click_link 'Print worksheet' }
               end
 
