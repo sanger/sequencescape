@@ -12,7 +12,7 @@
 mysql: &MYSQL
   adapter: mysql2
   username: <%= ENV.fetch('DBUSERNAME','root') %>
-  password: <%= ENV.fetch('DBPASSWORD','root2020?!') %>
+  password: <%= ENV['DBPASSWORD'] %>
   encoding: utf8mb4
   collation: utf8mb4_unicode_ci
   properties:
