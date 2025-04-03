@@ -3,7 +3,7 @@
 class ElementAvitiSequencingRequest < SequencingRequest
   YES = 'Yes'
   NO = 'No'
-  YES_OR_NO = [YES, NO].freeze
+  YES_OR_NO = [NO, YES].freeze
 
   has_metadata as: Request do
     # Defining the sequencing request metadata here again, as 'has_metadata' does not

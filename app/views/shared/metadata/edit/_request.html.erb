@@ -5,7 +5,7 @@
     <%- request.request_metadata.field_infos.each do |field_info| %>
       <!-- todo unify with how submission use field info-->
       <%- if field_info.selection %>
-        <%= metadata_fields.select(field_info.key, field_info.selection, {selected: request.request_metadata[field_info.key] || field_info.default_value, prompt: "Select a #{field_info.key.to_s.gsub( '_', ' ')}"  }) %>
+        <%= metadata_fields.select(field_info.key, field_info.selection, { prompt: "Select a #{field_info.key.to_s.gsub( '_', ' ')}"  }) %>
       <%- elsif field_info.kind == FieldInfo::BOOLEAN %>
         <%= metadata_fields.check_box(field_info.key) %>
       <%- elsif field_info.kind == FieldInfo::NUMERIC %>

@@ -16,22 +16,27 @@ RSpec.describe ElementAvitiSequencingRequest, type: :model do
     context 'when fragment_size_required_from is less than 1' do
       it 'is invalid and displays fragment size from error message' do
         request.request_metadata.fragment_size_required_from = 0
-        expect(request.errors[:'request_metadata.fragment_size_required_from']).to
-        include('must be greater than or equal to 1')
+        request.validate
+        expect(request.errors[:'request_metadata.fragment_size_required_from']).to include(
+          'must be greater than or equal to 1'
+        )
       end
     end
 
     context 'when fragment_size_required_to is less than 1' do
       it 'is invalid and displays fragment size to error message' do
         request.request_metadata.fragment_size_required_to = 0
-        expect(request.errors[:'request_metadata.fragment_size_required_to']).to
-        include('must be greater than or equal to 1')
+        request.validate
+        expect(request.errors[:'request_metadata.fragment_size_required_to']).to include(
+          'must be greater than or equal to 1'
+        )
       end
     end
 
     context 'when percent_phix_requested value is not assigned' do
       it 'is invalid and displays required percent phix requested error message' do
         request.request_metadata.percent_phix_requested = nil
+        request.validate
         expect(request.errors[:'request_metadata.percent_phix_requested']).to include("can't be blank")
       end
     end
@@ -47,6 +52,7 @@ RSpec.describe ElementAvitiSequencingRequest, type: :model do
     context 'when low_diversity value is not assigned' do
       it 'is invalid and displays required low diversity error message' do
         request.request_metadata.low_diversity = nil
+        request.validate
         expect(request.errors[:'request_metadata.low_diversity']).to include("can't be blank")
       end
     end
@@ -58,8 +64,7 @@ RSpec.describe ElementAvitiSequencingRequest, type: :model do
         request.request_metadata.read_length = 300
         validator.validate
         expect(validator.errors[:read_length]).to include(
-          'For the LO (Low Output)
-            flowcell kit the user can select a Read Length of 150'
+          'For the LO (Low Output) flowcell kit the user can select a Read Length of 150'
         )
       end
       # rubocop:enable RSpec/ExampleLength
