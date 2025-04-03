@@ -78,22 +78,6 @@ module Attributable
       valid_format
     end
 
-    # Returns true if the attribute is a boolean select, i.e. a select with
-    # true/false values with custom option texts)
-    #
-    # @return [Boolean] True if the attribute is a boolean select
-    def boolean_select?
-      @options.key?(:boolean_select)
-    end
-
-    # Returns the select options for the boolean select, i.e. mapping of hash
-    # or array option texts to true/false values.
-    #
-    # @return [Hash] The select options for the boolean select
-    def select_options
-      @options[:select_options]
-    end
-
     # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
     def configure(model) # rubocop:todo Metrics/CyclomaticComplexity
       conditions = @options.slice(:if, :on)
@@ -174,7 +158,6 @@ module Attributable
       return FieldInfo::SELECTION if selection?
       return FieldInfo::BOOLEAN if boolean?
       return FieldInfo::NUMERIC if integer? || float?
-      return FieldInfo::BOOLEAN_SELECT if boolean_select?
 
       FieldInfo::TEXT
     end
@@ -195,8 +178,7 @@ module Attributable
         key: assignable_attribute_name,
         default_value: find_default(validator_source),
         kind: kind,
-        required: required?,
-        select_options: select_options
+        required: required?
       }
       options.update(selection: selection_options(validator_source)) if selection?
       options.update(step: 1, min: minimum) if integer?
