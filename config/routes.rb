@@ -40,7 +40,12 @@ Rails.application.routes.draw do
       jsonapi_resources :plate_creations, except: %i[update]
       jsonapi_resources :plate_purposes, except: %i[update]
       jsonapi_resources :plate_templates
-      jsonapi_resources :plates, except: %i[update]
+      # jsonapi_resources :plates, except: %i[update]
+      jsonapi_resources :plates, except: %i[update] do
+        member do
+          post :register_stock_for_plate
+        end
+      end
       jsonapi_resources :poly_metadata
       jsonapi_resources :pooled_plate_creations, except: %i[update]
       jsonapi_resources :pre_capture_pools
