@@ -16,6 +16,11 @@ module Api
     # @example GET request to retrieve all requests
     #   GET /api/v2/requests/
     #
+    # @todo Figure out how to send a POST for a request with request metadata association. Currently,
+    #   it is possible to create a request and request metadata seperately, but they are not associated
+    #   with each other. How do you create the association, either in one request or after the
+    #   individual requests?
+    #
     # @example POST request to create a new request
     #   POST /api/v2/requests/
     #   {
@@ -114,19 +119,31 @@ module Api
       # Relationships
       ###
 
+      # @note `always_include_linkage_data` is currently broken. It is supposed to ensure that
+      #   linkage data is always included in the response. However, it is not working as expected.
+      #   To ensure linkage data is always included, explicitly include the relationship in the request.
+      #   For example, use `?include=submission` in the request URL to include the `submission` relationship.
+      #   See Y25-164 for more details and a possible fix.
       # @!attribute [r] submission
       #   The submission associated with this request.
-
       has_one :submission, always_include_linkage_data: true
 
+      # @note `always_include_linkage_data` is currently broken. It is supposed to ensure that
+      #   linkage data is always included in the response. However, it is not working as expected.
+      #   To ensure linkage data is always included, explicitly include the relationship in the request.
+      #   For example, use `?include=order` in the request URL to include the `submission` relationship.
+      #   See Y25-164 for more details and a possible fix.
       # @!attribute [r] order
       #   The order associated with this request.
-
       has_one :order, always_include_linkage_data: true
 
+      # @note `always_include_linkage_data` is currently broken. It is supposed to ensure that
+      #   linkage data is always included in the response. However, it is not working as expected.
+      #   To ensure linkage data is always included, explicitly include the relationship in the request.
+      #   For example, use `?include=request_type` in the request URL to include the `submission` relationship.
+      #   See Y25-164 for more details and a possible fix.
       # @!attribute [r] request_type
       #   The type of the request, such as "analysis" or "testing."
-
       has_one :request_type, always_include_linkage_data: true
 
       # @!attribute [r] primer_panel

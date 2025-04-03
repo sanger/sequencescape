@@ -9,7 +9,9 @@ module Api
     #
     # This resource can be accessed via the `/api/v2/work_orders/` endpoint.
     #
-    # @note the below example is currently broken, as `work_order_type` is a required attribute in the model
+    # @todo the below example is currently broken, as `work_order_type` is a required attribute in the model
+    #   but `order_type` is specified in the example. There is a mismatch on presence and requirement.
+    #
     # @example POST request to create a new {WorkOrder}
     #   POST /api/v2/work_orders/
     #   {

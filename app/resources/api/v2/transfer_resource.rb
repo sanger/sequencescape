@@ -137,6 +137,7 @@ module Api
       # @!attribute [rw] user_uuid
       #   This attribute is declared for convenience where the user is not available to set as a relationship.
       #   @deprecated Use the `user` relationship instead.
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
       #   Setting this attribute alongside the `user` relationship will prefer the relationship value.
       #   @return [Void]
       #   @see #user

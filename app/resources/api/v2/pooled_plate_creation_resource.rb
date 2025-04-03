@@ -61,6 +61,7 @@ module Api
       # @!attribute [w] child_purpose_uuid
       #   The UUID of the child purpose, which determines the type of plate being created.
       #   @todo deprecate this attribute in favour of the `child_purpose` relationship.
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
       #   @param value [String] or String - The UUID of a child purpose.
       #   @return [Void]
       attribute :child_purpose_uuid, writeonly: true
@@ -80,6 +81,7 @@ module Api
       #   This attribute is optional if the `user` relationship is explicitly set.
       #   If both `user_uuid` and `user` are provided, `user` takes precedence.
       #   @deprecated Use the `user` relationship instead.
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
       #   @param value [String] UUID of the user.
       #   @return [Void]
       #   @see #user

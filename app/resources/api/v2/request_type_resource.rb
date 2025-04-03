@@ -33,16 +33,22 @@ module Api
       # @!attribute [rw] name
       #   @return [String] The name of the request type.
       #   @note This field is readonly as this resource is immutable.
+      #   @todo Update `write_once` to `readonly`, as resource is immutable
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
       attribute :name, write_once: true
 
       # @!attribute [rw] key
       #   @return [String] A unique key for the request type.
       #   @note This field is readonly as this resource is immutable.
+      #   @todo Update `write_once` to `readonly`, as resource is immutable
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
       attribute :key, write_once: true
 
       # @!attribute [rw] for_multiplexing
       #   @return [Boolean] Whether the request type supports multiplexing.
       #   @note This field is readonly as this resource is immutable.
+      #   @todo Update `write_once` to `readonly`, as resource is immutable
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
       attribute :for_multiplexing, write_once: true
     end
   end

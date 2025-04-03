@@ -91,6 +91,7 @@ module Api
       #   This is declared for convenience where the target {Plate} is not available to set as a relationship.
       #   Setting this attribute alongside the `target` relationship will prefer the relationship value.
       #   @deprecated Use the `target` relationship instead.
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
       #   @param value [String] The UUID of the {Plate} to be converted to the specified `purpose` and linked as a
       #     child of the `parent` plate, if specified.
       #   @return [Void]
@@ -105,6 +106,7 @@ module Api
       #   This is declared for convenience where the {User} is not available to set as a relationship.
       #   Setting this attribute alongside the `user` relationship will prefer the relationship value.
       #   @deprecated Use the `user` relationship instead.
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
       #   @param value [String] The UUID of the {User} who initiated this plate conversion.
       #   @return [Void]
       #   @see #user

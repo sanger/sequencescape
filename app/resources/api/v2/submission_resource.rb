@@ -118,6 +118,7 @@ module Api
       # @!attribute [w] user_uuid
       #   Convenience attribute to associate the submitting user via UUID instead of relationships.
       #   @deprecated Use the `user` relationship instead.
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
       #   If both `user_uuid` and `user` are set, the `user` relationship takes precedence.
       #   @param value [String] The UUID of the {User} who created the {Submission}.
       #   @return [Void]

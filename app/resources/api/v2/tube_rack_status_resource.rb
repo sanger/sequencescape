@@ -18,8 +18,9 @@ module Api
     # @example GET request for a TubeRackStatus with ID 123
     #   GET /api/v2/tube_rack_statuses/123/
     #
-    # @note This resource is read-only; it can be accessed via GET requests, but creation or
-    #   modification is not allowed.
+    # @todo This resource is read-only; it can be accessed via GET requests, but creation or
+    #   modification is not allowed. Should this resource be made immutable?
+    #   See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
     class TubeRackStatusResource < BaseResource
       default_includes :uuid_object
 

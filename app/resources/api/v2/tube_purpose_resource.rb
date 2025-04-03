@@ -17,6 +17,10 @@ module Api
     # @example GET request for a TubePurpose with ID 123
     #   GET /api/v2/tube_purposes/123/
     #
+    # @todo The below POST request does not error if `purpose_type` is anything other than `Tube::Purpose`,
+    #   but the object isn't created.
+    #   See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
+    #
     # @example POST request to create a new TubePurpose
     #   POST /api/v2/tube_purposes/
     #   {

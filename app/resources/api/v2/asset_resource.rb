@@ -3,6 +3,8 @@
 module Api
   module V2
     # @deprecated This resource is deprecated and should be replaced with a subclass of {AssetResource}
+    #   See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
+    #
     # The {Asset} is an abstract class and cannot be instantiated.
     #
     # @note Access this resource via the `/api/v2/assets/` endpoint.

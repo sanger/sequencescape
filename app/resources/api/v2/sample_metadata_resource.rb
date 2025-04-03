@@ -17,6 +17,11 @@ module Api
     # @example GET request for a specific sample metadata record by ID
     #   GET /api/v2/sample_metadata/123/
     #
+    # @todo Figure out how to send a POST for a sample with sample metadata association. Currently,
+    #   it is possible to create a sample and sample metadata seperately, but they are not associated
+    #   with each other. How do you create the association, either in one request or after the
+    #   individual requests?
+    #
     # @example POST request to create a new sample metadata record
     #   POST /api/v2/sample_metadata/
     #   {

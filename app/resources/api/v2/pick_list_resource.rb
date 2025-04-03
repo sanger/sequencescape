@@ -80,6 +80,7 @@ module Api
       # @!attribute [rw] links
       #   A collection of related links for navigation or reference.
       #   @todo this attribute should be read-only.
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
       #   @return [Hash] The related pick list links.
       attribute :links, write_once: true
 
