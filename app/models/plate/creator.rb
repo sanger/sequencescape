@@ -190,21 +190,22 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def print_labels(plate, plate_purpose, barcode_printer, scanned_user)
-    print_job = LabelPrinter::PrintJob.new(
-      barcode_printer.name,
-      LabelPrinter::Label::PlateCreator,
-      plates: [plate],
-      plate_purpose: plate_purpose,
-      user_login: scanned_user.login
-    )
-    warnings_list << "Barcode labels failed to print for following plate type: #{plate_purpose.name}" unless print_job.execute
+    print_job =
+      LabelPrinter::PrintJob.new(
+        barcode_printer.name,
+        LabelPrinter::Label::PlateCreator,
+        plates: [plate],
+        plate_purpose: plate_purpose,
+        user_login: scanned_user.login
+      )
+    return if print_job.execute
+    warnings_list << "Barcode labels failed to print for following plate type: #{plate_purpose.name}"
   end
 
   def handle_duplicates(duplicate_barcodes)
-    warnings_list << 'Duplicate barcodes found in tubes. Please check the tubes and try again.' unless duplicate_barcodes.empty?
+    return if duplicate_barcodes.empty?
+    warnings_list << "Duplicate barcodes found in tubes: #{duplicate_barcodes.join(', ')}"
   end
-  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
-
   def create_asset_group(created_plates) # rubocop:todo Metrics/MethodLength
     group = nil
     all_wells = created_plates.map { |hash| hash[:destinations].map(&:wells) }.flatten
@@ -223,8 +224,6 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     group
   end
-
-  private
 
   def find_relevant_study(created_plates)
     # find a relevant study to put the Asset group under
