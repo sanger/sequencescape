@@ -21,7 +21,7 @@ CodeMirror.defineMode("barcode_reader", function (_) {
       // Check if the character is alphanumeric or a hyphen
       stream.eatWhile(/[\w.-]/); // Continue reading alphanumeric characters or hyphens
       let readBarcode = stream.current(); // Get the current token
-      let baseBarcode = readBarcode.replace(/[^\d]+$/, ''); // Remove trailing non-digit characters
+      let baseBarcode = readBarcode.replace(/[^\d]+$/, ""); // Remove trailing non-digit characters
       if (state.barcodes.indexOf(baseBarcode) >= 0) {
         // If the base barcode is a duplicate, return an error style
         return "strong error";
@@ -83,7 +83,7 @@ $(() => {
         .filter((line) => line !== "");
 
       // Normalize lines by removing trailing non-digit characters
-      let normalizedLines = lines.map((line) => line.replace(/[^\d]+$/, ''));
+      let normalizedLines = lines.map((line) => line.replace(/[^\d]+$/, ""));
 
       // Find duplicate lines
       let duplicates = normalizedLines.filter((line, index) => normalizedLines.indexOf(line) !== index);
