@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'test_helper'
-require 'pipelines_controller'
 
 class PipelinesControllerTest < ActionController::TestCase
   context 'Pipelines controller' do

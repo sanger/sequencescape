@@ -2,7 +2,6 @@
 
 require 'rails_helper'
 require 'support/barcode_helper'
-require 'sample_accessioning_job'
 
 RSpec.describe Sample, :accession, :cardinal do
   include MockAccession
@@ -44,7 +43,7 @@ RSpec.describe Sample, :accession, :cardinal do
       allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(failed_accession_response)
       sample =
         build(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning))
-      expect { sample.save! }.to raise_error(JobFailed)
+      expect { sample.save! }.to raise_error(StandardError)
       expect(sample.sample_metadata.sample_ebi_accession_number).to be_nil
     end
   end

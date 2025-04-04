@@ -5,7 +5,7 @@ module SequencescapeExcel
     ##
     # NullProcessor
     class NullProcessor
-      def initialize(_upload) # rubocop:todo Style/RedundantInitialize
+      def initialize(_upload)
       end
 
       def run(tag_group)
