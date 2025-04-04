@@ -149,37 +149,59 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # @param [Array<Tube>] tubes The array of tubes to be transferred to the plate.
   # @param [Array<Plate>] created_plates The array to store the created plates information.
   # @return [void]
-  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
   def create_plates_from_tubes!(tubes, created_plates, scanned_user, barcode_printer)
-    plate_purpose = plate_purposes.first # The Stock and scRNA plate creators have only one purpose.
+    plate_purpose = plate_purposes.first
     plate_barcode = PlateBarcode.create_barcode
-    # Need a duplicate because we are shifting through the tubes list.
-    # We are expecting a maximum of 96 tubes so duplicating would not likely be exhausting memory.
     tubes_dup = tubes.dup
-    plate =
-      plate_purpose.create!(sanger_barcode: plate_barcode, size: plate_purpose.size) do |p|
-        p.name = "#{plate_purpose.name} #{p.human_barcode}"
-      end
+    plate = create_plate(plate_purpose, plate_barcode)
     return if plate.blank?
+
+    duplicate_barcodes = process_tubes(tubes, plate)
+    print_labels(plate, plate_purpose, barcode_printer, scanned_user)
+    handle_duplicates(duplicate_barcodes)
+
+    created_plates << { source: tubes_dup, destinations: [plate] }
+  end
+
+  private
+
+  def create_plate(plate_purpose, plate_barcode)
+    plate_purpose.create!(sanger_barcode: plate_barcode, size: plate_purpose.size) do |p|
+      p.name = "#{plate_purpose.name} #{p.human_barcode}"
+    end
+  end
+
+  def process_tubes(tubes, plate)
+    duplicate_barcodes = []
     plate.wells_in_column_order.each do |well|
       tube = tubes.shift
       break if tube.nil?
       well.aliquots << tube.aliquots.map(&:dup)
-      AssetLink.create_edge!(tube, plate)
+      create_asset_link(tube, plate, duplicate_barcodes)
     end
-    #  Create and send the print job to the printer
-    print_job =
-      LabelPrinter::PrintJob.new(
-        barcode_printer.name,
-        LabelPrinter::Label::PlateCreator,
-        plates: [plate],
-        plate_purpose: plate_purpose,
-        user_login: scanned_user.login
-      )
-    unless print_job.execute
-      warnings_list << "Barcode labels failed to print for following plate type: #{plate_purpose.name}"
-    end
-    created_plates << { source: tubes_dup, destinations: [plate] }
+    duplicate_barcodes
+  end
+
+  def create_asset_link(tube, plate, duplicate_barcodes)
+    AssetLink.create_edge!(tube, plate)
+  rescue ActiveRecord::ActiveRecordError => e
+    raise e unless e.message.include?('No change')
+    duplicate_barcodes << tube.human_barcode
+  end
+
+  def print_labels(plate, plate_purpose, barcode_printer, scanned_user)
+    print_job = LabelPrinter::PrintJob.new(
+      barcode_printer.name,
+      LabelPrinter::Label::PlateCreator,
+      plates: [plate],
+      plate_purpose: plate_purpose,
+      user_login: scanned_user.login
+    )
+    warnings_list << "Barcode labels failed to print for following plate type: #{plate_purpose.name}" unless print_job.execute
+  end
+
+  def handle_duplicates(duplicate_barcodes)
+    warnings_list << 'Duplicate barcodes found in tubes. Please check the tubes and try again.' unless duplicate_barcodes.empty?
   end
   # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 

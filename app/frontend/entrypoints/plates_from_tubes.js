@@ -18,15 +18,16 @@ CodeMirror.defineMode("barcode_reader", function (_) {
   function tokenBase(stream, state) {
     let ch = stream.next(); // Read the next character
     if (/[\w-]/.test(ch)) {
-      // Check if the character is alphanumeric
-      stream.eatWhile(/[\w.-]/); // Continue reading alphanumeric characters
+      // Check if the character is alphanumeric or a hyphen
+      stream.eatWhile(/[\w.-]/); // Continue reading alphanumeric characters or hyphens
       let readBarcode = stream.current(); // Get the current token
-      if (state.barcodes.indexOf(readBarcode) >= 0) {
-        // If the barcode is a duplicate, return an error style
+      let baseBarcode = readBarcode.replace(/[^\d]+$/, ''); // Remove trailing non-digit characters
+      if (state.barcodes.indexOf(baseBarcode) >= 0) {
+        // If the base barcode is a duplicate, return an error style
         return "strong error";
       } else {
-        // Otherwise, add the barcode to the state and return a tag style
-        state.barcodes.push(readBarcode);
+        // Otherwise, add the base barcode to the state and return a tag style
+        state.barcodes.push(baseBarcode);
         return "tag";
       }
     }
@@ -80,8 +81,12 @@ $(() => {
         .split("\n")
         .map((line) => line.trim())
         .filter((line) => line !== "");
+
+      // Normalize lines by removing trailing non-digit characters
+      let normalizedLines = lines.map((line) => line.replace(/[^\d]+$/, ''));
+
       // Find duplicate lines
-      let duplicates = lines.filter((line, index) => lines.indexOf(line) !== index);
+      let duplicates = normalizedLines.filter((line, index) => normalizedLines.indexOf(line) !== index);
 
       // Show or hide the duplicate warning based on the presence of duplicates
       if (duplicates.length > 0) {
