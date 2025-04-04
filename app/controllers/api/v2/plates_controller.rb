@@ -8,7 +8,7 @@ module Api
       # By default JSONAPI::ResourceController provides most the standard
       # behaviour, and in many cases this file may be left empty.
       def register_stock_for_plate
-        plate = Plate.find_by(uuid: params[:id])
+        plate = Plate.find_by_barcode(params[:id])
 
         if plate.blank?
           return render json: { error: 'Plate not found' }, status: :not_found
