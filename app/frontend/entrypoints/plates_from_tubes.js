@@ -91,8 +91,10 @@ $(() => {
       // Show or hide the duplicate warning based on the presence of duplicates
       if (duplicates.length > 0) {
         $("#duplicate_warning").show();
+        $("#submit_button").prop("disabled", true);
       } else {
         $("#duplicate_warning").hide();
+        $("#submit_button").prop("disabled", false);
       }
     }
   });
