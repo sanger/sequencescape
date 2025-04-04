@@ -29,6 +29,7 @@ module RecordLoader
       tag2_group_name = options.delete('tag2_group_name')
 
       tag_group = find_tag_group!(tag_group_name, name)
+      return nil if tag_group.nil?
       tag2_group = find_tag_group!(tag2_group_name, name) if tag2_group_name
 
       options[:tag_group_id] = tag_group.id
@@ -52,12 +53,14 @@ module RecordLoader
     # @raise [ActiveRecord::RecordNotFound] If the TagGroup is not found.
     def find_tag_group!(tag_group_name, tag_set_name)
       return unless tag_group_name
-
       TagGroup.find_by!(name: tag_group_name)
     rescue ActiveRecord::RecordNotFound
-      raise ActiveRecord::RecordNotFound,
-            "TagSet '#{tag_set_name}' creation or update failed " \
-              "because TagGroup with name '#{tag_group_name}' was not found"
+      message =
+        "TagSet '#{tag_set_name}' creation or update failed " \
+          "because TagGroup with name '#{tag_group_name}' was not found"
+      raise ActiveRecord::RecordNotFound, message unless Rails.env.development? || Rails.env.cucumber?
+      Rails.logger.warn(message) # Log a warning in development
+      nil
     end
   end
 end
