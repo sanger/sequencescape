@@ -95,7 +95,7 @@ group :default do
   gem 'bunny', '>= 2.22.0'
 
   # Provides message schema encoding and decoding for messages to RabbitMQ
-  gem 'avro', '~> 1.12.0'
+  gem 'avro', '~> 1.12'
 
   # Excel file generation
   # Note: We're temporarily using out own for of the project to make use of a few changes
