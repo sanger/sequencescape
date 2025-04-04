@@ -627,7 +627,7 @@ DEPENDENCIES
   activerecord-import
   acts-as-dag!
   after_commit_everywhere (~> 1.0)
-  avro (~> 1.12.0)
+  avro (~> 1.12)
   bootsnap
   builder
   bullet
