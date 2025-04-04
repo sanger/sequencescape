@@ -125,8 +125,8 @@ class PlatesFromTubesController < ApplicationController
       respond_to do |format|
         handle_invalid_tube_count
         format.html { render(VIEW_PATH) }
-        return false
       end
+      return false
     end
     true
   end

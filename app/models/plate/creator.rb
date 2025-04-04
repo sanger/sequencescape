@@ -163,6 +163,25 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
     created_plates << { source: tubes_dup, destinations: [plate] }
   end
 
+  def create_asset_group(created_plates) # rubocop:todo Metrics/MethodLength
+    group = nil
+    all_wells = created_plates.map { |hash| hash[:destinations].map(&:wells) }.flatten
+
+    study = find_relevant_study(created_plates)
+    unless study
+      warnings_list << 'Failed to create Asset Group: could not find an appropriate Study to group the plates under.'
+      return group
+    end
+
+    ActiveRecord::Base.transaction do
+      # TO DO: handle exceptions from this?
+      group = AssetGroup.create!(study: study, name: asset_group_name)
+      group.assets.concat(all_wells)
+    end
+
+    group
+  end
+
   private
 
   def create_plate(plate_purpose, plate_barcode)
@@ -205,24 +224,6 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def handle_duplicates(duplicate_barcodes)
     return if duplicate_barcodes.empty?
     warnings_list << "Duplicate barcodes found in tubes: #{duplicate_barcodes.join(', ')}"
-  end
-  def create_asset_group(created_plates) # rubocop:todo Metrics/MethodLength
-    group = nil
-    all_wells = created_plates.map { |hash| hash[:destinations].map(&:wells) }.flatten
-
-    study = find_relevant_study(created_plates)
-    unless study
-      warnings_list << 'Failed to create Asset Group: could not find an appropriate Study to group the plates under.'
-      return group
-    end
-
-    ActiveRecord::Base.transaction do
-      # TO DO: handle exceptions from this?
-      group = AssetGroup.create!(study: study, name: asset_group_name)
-      group.assets.concat(all_wells)
-    end
-
-    group
   end
 
   def find_relevant_study(created_plates)
