@@ -17,9 +17,9 @@ CodeMirror.defineMode("barcode_reader", function (_) {
    */
   function tokenBase(stream, state) {
     let ch = stream.next(); // Read the next character
-    if (/\w/.test(ch)) {
+    if (/[\w-]/.test(ch)) {
       // Check if the character is alphanumeric
-      stream.eatWhile(/[\w.]/); // Continue reading alphanumeric characters
+      stream.eatWhile(/[\w.-]/); // Continue reading alphanumeric characters
       let readBarcode = stream.current(); // Get the current token
       if (state.barcodes.indexOf(readBarcode) >= 0) {
         // If the barcode is a duplicate, return an error style
