@@ -98,20 +98,37 @@ class PlatesFromTubesController < ApplicationController
   # Transfers tubes to a plate and creates plates from the given tubes.
   #
   # @return [void]
+  # rubocop:todo Metrics/MethodLength
   def transfer_tubes_to_plate(scanned_user, barcode_printer)
     source_tube_barcodes = extract_source_tube_barcodes
     return unless validate_tube_count?(source_tube_barcodes)
     return unless validate_duplicate_tubes?(source_tube_barcodes)
     found_tubes = find_tubes(source_tube_barcodes)
     return unless validate_missing_tubes?(found_tubes, source_tube_barcodes)
-    create_plates(scanned_user, barcode_printer, found_tubes)
-    handle_successful_creation
+    begin
+      create_plates(scanned_user, barcode_printer, found_tubes)
+      handle_successful_creation
+    rescue ActiveRecord::ActiveRecordError => e
+      if e.message.include?('No change')
+        handle_error('Error creating plates because the server detected duplicate barcodes.')
+      else
+        handle_error('Error creating plates')
+      end
+    end
   end
+  # rubocop:enable Metrics/MethodLength
 
   def handle_successful_creation
     respond_to do |format|
       flash.now[:notice] = 'Created plates successfully'
       @plate_creator.each { |creator| flash[:warning] = creator.warnings if creator.warnings.present? }
+      format.html { render(VIEW_PATH) }
+    end
+  end
+
+  def handle_error(message)
+    respond_to do |format|
+      flash.now[:error] = message
       format.html { render(VIEW_PATH) }
     end
   end

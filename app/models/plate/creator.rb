@@ -206,6 +206,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
   rescue ActiveRecord::ActiveRecordError => e
     raise e unless e.message.include?('No change')
     duplicate_barcodes << tube.human_barcode
+    raise e
   end
 
   def print_labels(plate, plate_purpose, barcode_printer, scanned_user)

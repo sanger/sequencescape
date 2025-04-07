@@ -14,7 +14,7 @@
         <%# When the "display" is set to none, client-side validation fails as Rails fails to set the textarea focusable. %>
         <%= form.input :source_tubes, as: :text, input_html: { class: 'form-control'}, required: false %>
         <div class="alert alert-danger" id="duplicate_warning" style="display: none; width: 72%">
-          <p>Duplicate tube barcodes are highlighted in red.</p>
+          <p>Possible duplicate tube barcodes detected.</p>
         </div>
       <% end %>
     <% end %>
