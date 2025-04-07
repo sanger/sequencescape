@@ -97,7 +97,32 @@ class PlatesFromTubesController < ApplicationController
 
   # Transfers tubes to a plate and creates plates from the given tubes.
   #
+  # This method orchestrates the process of transferring tubes to a plate and creating plates
+  # based on the provided source tube barcodes. It performs several validation steps to ensure
+  # the integrity of the data and handles errors gracefully. If all validations pass, it creates
+  # plates and handles the success or failure of the operation.
+  #
+  # @param [User] scanned_user The user who scanned the tubes.
+  # @param [BarcodePrinter] barcode_printer The barcode printer to use for printing plate barcodes.
   # @return [void]
+  #
+  # Steps:
+  # 1. Extracts source tube barcodes from the request parameters.
+  # 2. Validates the number of tubes against the maximum allowed wells.
+  # 3. Checks for duplicate tube barcodes.
+  # 4. Finds the tubes in the database based on the provided barcodes.
+  # 5. Validates that all provided barcodes correspond to existing tubes.
+  # 6. Attempts to create plates using the found tubes. If successful, it handles the success case.
+  #    If an error occurs during plate creation, it handles the error appropriately.
+  #
+  # Error Handling:
+  # - If the number of tubes exceeds the maximum allowed, it renders an error message.
+  # - If duplicate tube barcodes are found, it renders an error message.
+  # - If any tube barcodes are missing in the database, it renders an error message.
+  # - If an ActiveRecord error occurs during plate creation, it renders an appropriate error message.
+  #
+  # Example:
+  #   transfer_tubes_to_plate(scanned_user, barcode_printer)
   # rubocop:todo Metrics/MethodLength
   def transfer_tubes_to_plate(scanned_user, barcode_printer)
     source_tube_barcodes = extract_source_tube_barcodes
