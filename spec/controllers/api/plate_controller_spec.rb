@@ -6,8 +6,8 @@ RSpec.describe Api::V2::PlatesController, type: :request do
   describe 'POST /api/v2/plates/:id/register_stock_for_plate' do
     let(:plate) { instance_double(Plate, id: '123', wells: wells) }
     let(:wells) { double('wells', with_contents: [well1, well2]) }
-    let(:well1) { instance_double('Well') }
-    let(:well2) { instance_double('Well') }
+    let(:well1) { instance_double(Well) }
+    let(:well2) { instance_double(Well) }
 
     before do
       allow(well1).to receive(:register_stock!)
@@ -21,7 +21,7 @@ RSpec.describe Api::V2::PlatesController, type: :request do
         post '/api/v2/plates/123/register_stock_for_plate'
 
         expect(response).to have_http_status(:ok)
-        expect(JSON.parse(response.body)['message']).to eq('Stock successfully registered for plate wells')
+        expect(response.parsed_body['message']).to eq('Stock successfully registered for plate wells')
       end
     end
 
@@ -32,7 +32,7 @@ RSpec.describe Api::V2::PlatesController, type: :request do
         post '/api/v2/plates/123/register_stock_for_plate'
 
         expect(response).to have_http_status(:not_found)
-        expect(JSON.parse(response.body)['error']).to eq('Plate not found')
+        expect(response.parsed_body['error']).to eq('Plate not found')
       end
     end
 
@@ -46,7 +46,7 @@ RSpec.describe Api::V2::PlatesController, type: :request do
         post '/api/v2/plates/123/register_stock_for_plate'
 
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(JSON.parse(response.body)['error']).to match(/Stock registration failed: Some error/)
+        expect(response.parsed_body['error']).to match(/Stock registration failed: Some error/)
       end
     end
   end
