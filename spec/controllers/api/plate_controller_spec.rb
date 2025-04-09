@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe Api::V2::PlatesController, type: :request do
   describe 'POST /api/v2/plates/:id/register_stock_for_plate' do
     let(:plate) { instance_double(Plate, id: '123', wells: wells) }
-    let(:wells) { instance_double(wells, with_contents: [well1, well2]) }
+    let(:wells) { double('wells', with_contents: [well1, well2]) }
     let(:well1) { instance_double(Well) }
     let(:well2) { instance_double(Well) }
 
