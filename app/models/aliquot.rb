@@ -213,10 +213,14 @@ class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
-  # Unlike the above methods, which allow untagged to match with tagged, this looks for exact matches only
-  # only id, timestamps and receptacles are excluded
-  def equivalent?(other)
-    Aliquot.equivalent_attributes.all? { |attrib| send(attrib) == other.send(attrib) }
+  # Unlike the above methods, which allow untagged to match with tagged, this looks for exact matches only.
+  # By default only id, timestamps and receptacles are excluded, but this can be overridden by passing in a specific
+  # list of attributes to check against.
+  def equivalent?(other, list_of_aliquot_attributes_to_consider_a_duplicate = nil)
+    attributes_to_check = list_of_aliquot_attributes_to_consider_a_duplicate || Aliquot.equivalent_attributes
+    attributes_to_check.all? do |attrib|
+      send(attrib) == other.send(attrib)
+    end
   end
 
   private
