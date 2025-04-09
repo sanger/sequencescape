@@ -218,9 +218,7 @@ class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # list of attributes to check against.
   def equivalent?(other, list_of_aliquot_attributes_to_consider_a_duplicate = nil)
     attributes_to_check = list_of_aliquot_attributes_to_consider_a_duplicate || Aliquot.equivalent_attributes
-    attributes_to_check.all? do |attrib|
-      send(attrib) == other.send(attrib)
-    end
+    attributes_to_check.all? { |attrib| send(attrib) == other.send(attrib) }
   end
 
   private
