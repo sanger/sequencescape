@@ -19,7 +19,6 @@ module Api
     #         "parent_uuid": "11111111-2222-3333-4444-555555666666",
     #         "child_purpose_uuid": "22222222-3333-4444-5555-666666777777",
     #         "user_uuid": "33333333-4444-5555-6666-777777888888",
-    #         "register_stock": true
     #       }
     #     }
     #   }
@@ -95,15 +94,6 @@ module Api
 
       def user_uuid=(value)
         @model.user = User.with_uuid(value).first
-      end
-
-      # @!attribute [w] register_stock
-      #   @param value [Boolean] Whether to register the child plate in the stock resource in MLWH.
-      #   @return [Void]
-      attribute :register_stock, writeonly: true
-
-      def register_stock=(value)
-        @model.register_stock = value
       end
 
       # @!attribute [r] uuid

@@ -39,7 +39,6 @@ class PlateCreation < AssetCreation
   # This is the child that is created from the parent.  It cannot be assigned before validation.
   belongs_to :parent, class_name: 'Plate'
   attr_accessor :sanger_barcode
-  attr_accessor :register_stock
 
   private
 
