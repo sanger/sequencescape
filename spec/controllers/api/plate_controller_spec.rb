@@ -27,7 +27,7 @@ RSpec.describe Api::V2::PlatesController, type: :request do
         expect(response).to have_http_status(:ok)
       end
 
-      it 'return success message' do
+      it 'returns success message' do
         expect(response.parsed_body['message']).to eq('Stock successfully registered for plate wells')
       end
     end
