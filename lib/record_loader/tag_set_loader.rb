@@ -60,7 +60,7 @@ module RecordLoader
       message =
         "TagSet '#{tag_set_name}' creation or update failed " \
           "because TagGroup with name '#{tag_group_name}' was not found"
-      if Rails.env.development? || Rails.env.staging? || Rails.env.cucumber
+      if Rails.env.development? || Rails.env.staging? || Rails.env.cucumber # rubocop:disable Rails/UnknownEnv
         Rails.logger.warn(message) # Log a warning in development, stahing, or cucumber
         return nil
       end

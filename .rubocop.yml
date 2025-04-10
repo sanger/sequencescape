@@ -143,7 +143,6 @@ Rails/UnknownEnv:
     - test
     - cucumber
     - profile
-    - staging
 
 RSpec/ExampleLength:
   inherit_mode:
