@@ -36,6 +36,30 @@ class SampleManifest::Generator
     params[:barcode_printer].present?
   end
 
+  # Creates and returns a print job for the sample manifest.
+  #
+  # This method initializes a new `LabelPrinter::PrintJob` object with the provided parameters.
+  # The print job is responsible for printing labels for the sample manifest, using the specified
+  # barcode printer and label template.
+  #
+  # @return [LabelPrinter::PrintJob] The print job object configured with the provided parameters.
+  #
+  # Parameters used:
+  # - `params[:barcode_printer]`: The barcode printer to use for printing.
+  # - `LabelPrinter::Label::SampleManifestRedirect`: The label type for the sample manifest.
+  # - `only_first_label`: A boolean indicating whether only the first label should be printed.
+  # - `sample_manifest`: The sample manifest object for which labels are being printed.
+  # - `label_template_name`: The label template to use, determined by `label_template_for_2d_barcodes`.
+  #    If not given, the template given in the database is used.
+  # - `params[:barcode_type]`: The type of barcode being used.
+  #
+  # Example:
+  #   print_job
+  #   # => #<LabelPrinter::PrintJob:0x00007f8c8c1b2e10>
+  #
+  # Caching:
+  # - The method memoizes the print job object in the `@print_job` instance variable to avoid
+  #   creating multiple instances for the same parameters.
   def print_job
     @print_job ||=
       LabelPrinter::PrintJob.new(
@@ -68,6 +92,23 @@ class SampleManifest::Generator
 
   private
 
+  # Determines the label template to use for 2D barcodes.
+  #
+  # This method checks if the provided barcode type matches the configured 2D barcode type
+  # and if the asset type of the sample manifest is one of the allowed types (`1dtube` or `library`).
+  # If both conditions are met, it returns the configured label template for 2D barcodes.
+  # Otherwise, it returns `nil`.
+  #
+  # @return [String, nil] The label template for 2D barcodes if conditions are met, otherwise `nil`.
+  #
+  # Conditions:
+  # - The `params[:barcode_type]` must match the configured 2D barcode type.
+  # - The `sample_manifest.asset_type` must be either `1dtube` or `library`.
+  #
+  # Example:
+  #   label_template_for_2d_barcodes
+  #   # => "2D_Label_Template" (if conditions are met)
+  #   # => nil (if conditions are not met)
   def label_template_for_2d_barcodes
     if params[:barcode_type] == Rails.application.config.tube_manifest_barcode_config[:barcode_type_labels]['2d'] &&
          %w[1dtube library].include?(sample_manifest.asset_type)
