@@ -76,7 +76,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
 
   def set_default_params
     params[:only_first_label] ||= false
-    return unless %w[1dtube library].include?(params[:asset_type])
+    return unless SampleManifest.tube_asset_types.include?(params[:asset_type])
     params[:barcode_type] ||= '1D Barcode' # default to 1D barcode
   end
 

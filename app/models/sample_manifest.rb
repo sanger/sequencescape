@@ -39,6 +39,9 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # This limit sets a very comfortable safety margin.
   SAMPLES_PER_EVENT = 3000
 
+  # Tube asset types
+  TUBE_ASSET_TYPES = ['1dtube', 'library', 'multiplexed library'].freeze
+
   module Associations
     def self.included(base)
       base.has_many(:sample_manifests)
@@ -97,6 +100,10 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
            :default_tube_rack_purpose,
            to: :core_behaviour
   delegate :name, to: :supplier, prefix: true
+
+  def self.tube_asset_types
+    TUBE_ASSET_TYPES
+  end
 
   def truncate_errors # rubocop:todo Metrics/MethodLength
     if last_errors && last_errors.join.length > LIMIT_ERROR_LENGTH

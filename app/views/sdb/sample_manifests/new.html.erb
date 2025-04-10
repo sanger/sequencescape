@@ -23,7 +23,7 @@
         <%= form.input :count, input_html: { size: 3, value: '1',  class: 'form-control' }, label: count_label_for(params[:asset_type]) %>
         <% unless params[:asset_type] == "tube_rack" %>
           <%= form.input :barcode_printer,  as: :select, collection: @barcode_printers, input_html: { class: 'form-control select2'} %>
-          <% if params[:asset_type] == "1dtube" || params[:asset_type] == 'library' %>
+          <% if SampleManifest.tube_asset_types.include?(params[:asset_type]) %>
             <%= form.input :barcode_type, required: true, as: :select, prompt: 'Select barcode type', collection: @barcode_types, input_html: { class: 'form-control select2' } %>
           <% end %>
           <%= form.input :only_first_label, as: :boolean, label: 'Print only the first label'%>
