@@ -40,7 +40,7 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   SAMPLES_PER_EVENT = 3000
 
   # Tube asset types
-  TUBE_ASSET_TYPES = ['1dtube', 'library', 'multiplexed library'].freeze
+  TUBE_ASSET_TYPES = %w[1dtube library multiplexed_library].freeze
 
   module Associations
     def self.included(base)

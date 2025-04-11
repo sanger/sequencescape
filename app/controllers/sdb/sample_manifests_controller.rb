@@ -88,7 +88,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
     @rack_purposes = @sample_manifest.acceptable_rack_purposes.pluck(:name, :id) if params[:asset_type] == 'tube_rack'
     @barcode_printers = @sample_manifest.applicable_barcode_printers.pluck(:name)
     @templates = SampleManifestExcel.configuration.manifest_types.by_asset_type(params[:asset_type]).to_a
-    return unless %w[1dtube library].include?(params[:asset_type])
+    return unless SampleManifest.tube_asset_types.include?(params[:asset_type])
     @barcode_types = Rails.application.config.tube_manifest_barcode_config[:barcode_type_labels].values.sort
   end
 
