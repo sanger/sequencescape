@@ -279,9 +279,7 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def duplicates_of_distinct_source_aliquots_only
-    duplicates_of_all_source_aliquots.reject do |candidate_aliquot|
-      equivalent_aliquot_in_target?(candidate_aliquot)
-    end
+    duplicates_of_all_source_aliquots.reject { |candidate_aliquot| equivalent_aliquot_in_target?(candidate_aliquot) }
   end
 
   # Compare the candidate_aliquot against the target asset aliquots
@@ -291,9 +289,7 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # @return [Boolean] true if the candidate_aliquot is equivalent to an existing aliquot in the target asset
   # and should be rejected, false otherwise
   def equivalent_aliquot_in_target?(candidate_aliquot)
-    target_asset.aliquots.any? do |existing_aliquot|
-      handle_equivalent_aliquot(existing_aliquot, candidate_aliquot)
-    end
+    target_asset.aliquots.any? { |existing_aliquot| handle_equivalent_aliquot(existing_aliquot, candidate_aliquot) }
   end
 
   # Determine if the existing_aliquot is equivalent to the candidate_aliquot
