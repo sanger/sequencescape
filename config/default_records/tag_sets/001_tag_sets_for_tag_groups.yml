@@ -1,0 +1,61 @@
+10X_Plate TT Set A:
+  name: 10X_Plate TT Set A
+  tag_group_name: 10X_Plate TT Set A i7
+  tag2_group_name: 10X_Plate TT Set A i5
+384plex_11mers:
+  name: 384plex_11mers
+  tag_group_name: 384plex_11mers
+Dual Index Kit TN Set A 10Xgenomics - ColumnWise:
+  name: Dual Index Kit TN Set A 10Xgenomics - ColumnWise
+  tag_group_name: Dual Index Kit TN Set A 10Xgenomics i7 - ColumnWise
+  tag2_group_name: Dual Index Kit TN Set A 10Xgenomics i5 - ColumnWise
+Haplotag 96:
+  name: Haplotag 96
+  tag_group_name: Haplotag 96 i7
+  tag2_group_name: Haplotag 96 i5
+IDT for Illumina UDI v1:
+  name: IDT for Illumina UDI v1
+  tag_group_name: IDT for Illumina i7 UDI v1
+  tag2_group_name: IDT for Illumina i5 UDI v1
+NEXTFLEX_48 - 6 mer tags:
+  name: NEXTFLEX_48 - 6 mer tags
+  tag_group_name: NEXTFLEX_48 - 6 mer tags
+pWGSA_UDI_temp:
+  name: pWGSA_UDI_temp
+  tag_group_name: pWGSA_UDI_tempi7s
+  tag2_group_name: pWGSA_UDI_tempi5s
+Sanger_168tags - 10 mer tags:
+  name: Sanger_168tags - 10 mer tags
+  tag_group_name: Sanger_168tags - 10 mer tags
+TS_ISC_UDI96:
+  name: TS_ISC_UDI96
+  tag_group_name: TS_ISC_UDI96_i7
+  tag2_group_name: TS_ISC_UDI96_i5
+TS_pWGSA_UDI96:
+  name: TS_pWGSA_UDI96
+  tag_group_name: TS_pWGSA_UDI96_i7
+  tag2_group_name: TS_pWGSA_UDI96_i5
+TS_pWGSB_UDI96:
+  name: TS_pWGSB_UDI96
+  tag_group_name: TS_pWGSB_UDI96_i7
+  tag2_group_name: TS_pWGSB_UDI96_i5
+TS_pWGSC_UDI96:
+  name: TS_pWGSC_UDI96
+  tag_group_name: TS_pWGSC_UDI96_i7
+  tag2_group_name: TS_pWGSC_UDI96_i5
+TS_pWGSC_UDI96_tag60_61_swap:
+  name: TS_pWGSC_UDI96_tag60_61_swap
+  tag_group_name: TS_pWGSC_UDI96_i7_tag60_61_swap
+  tag2_group_name: TS_pWGSC_UDI96_i5_tag60_61_swap
+TS_pWGSD_UDI96:
+  name: TS_pWGSD_UDI96
+  tag_group_name: TS_pWGSD_UDI96_i7
+  tag2_group_name: TS_pWGSD_UDI96_i5
+TS_RNAhWGS_UDI96:
+  name: TS_RNAhWGS_UDI96
+  tag_group_name: TS_RNAhWGS_UDI96_i7
+  tag2_group_name: TS_RNAhWGS_UDI96_i5
+VisiumUDI:
+  name: VisiumUDI
+  tag_group_name: VisiumUDI_i7
+  tag2_group_name: VisiumUDI_i5
