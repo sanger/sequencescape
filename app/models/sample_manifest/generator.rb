@@ -103,7 +103,7 @@ class SampleManifest::Generator
   #
   # Conditions:
   # - The `params[:barcode_type]` must match the configured 2D barcode type.
-  # - The `sample_manifest.asset_type` must be either `1dtube` or `library`.
+  # - The `sample_manifest.asset_type` must be a tube type.
   #
   # Example:
   #   label_template_for_2d_barcodes
