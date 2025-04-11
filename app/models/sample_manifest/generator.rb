@@ -95,7 +95,7 @@ class SampleManifest::Generator
   # Determines the label template to use for 2D barcodes.
   #
   # This method checks if the provided barcode type matches the configured 2D barcode type
-  # and if the asset type of the sample manifest is one of the allowed types (`1dtube` or `library`).
+  # and if the asset type of the sample manifest is one of the 'tube' types.
   # If both conditions are met, it returns the configured label template for 2D barcodes.
   # Otherwise, it returns `nil`.
   #
