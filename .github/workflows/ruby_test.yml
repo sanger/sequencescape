@@ -183,7 +183,7 @@ jobs:
       - name: Setup stable Chrome
         uses: browser-actions/setup-chrome@v1
         with:
-          chrome-version: 128
+          chrome-version: latest
           install-chromedriver: true
           install-dependencies: true
       # Establish a cache of js modules to improve performance
@@ -272,7 +272,7 @@ jobs:
       - name: Setup stable Chrome
         uses: browser-actions/setup-chrome@v1
         with:
-          chrome-version: 128
+          chrome-version: latest
           install-chromedriver: true
           install-dependencies: true
       # Install only the gems needed for testing
