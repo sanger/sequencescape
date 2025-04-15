@@ -325,8 +325,8 @@ percent_phix_requested:
       promptTitle: "Element PhiX needed"
       prompt: "Element PhiX needed (between 0 and 100 inclusive)"
   conditional_formattings:
-      empty_cell:
-      is_text:
+    empty_cell:
+    is_text:
 low_diversity:
   heading: "Low Diversity"
   unlocked: true
