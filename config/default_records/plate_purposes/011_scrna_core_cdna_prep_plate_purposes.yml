@@ -28,3 +28,7 @@ LRC GEM-X 5p Cherrypick:
   input_plate: false
   stock_plate: false
   cherrypickable_target: true
+LRC GEM-X 5p cDNA PCR CITE:
+  input_plate: false
+  stock_plate: false
+  cherrypickable_target: false

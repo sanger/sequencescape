@@ -39,3 +39,13 @@ limber_scrna_core_aggregation:
   acceptable_purposes:
     - LRC GEM-X 5p cDNA PCR XP
     - LRC GEM-X 5p cDNA Input
+limber_scrna_core_cdna_pcr_cite:
+  name: scRNA Core cDNA PCR CITE
+  asset_type: Well
+  order: 1
+  request_class_name: CustomerRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: Short Read
+  acceptable_purposes:
+    - LRC GEM-X 5p cDNA PCR CITE
