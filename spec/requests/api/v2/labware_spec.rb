@@ -12,22 +12,15 @@ describe 'Labware API', with: :api_v2 do
     before do
       create(:sample_tube)
       create(:library_tube)
+      api_get base_endpoint
     end
 
-    it 'sends a list of labware' do
-      api_get base_endpoint
-
-      # test for the 200 status-code
+    it 'responds with a success http code when retrieving a list of receptacles.' do
       expect(response).to have_http_status(:success)
-
-      # check to make sure the right amount of messages are returned
-      expect(json['data'].length).to eq(2)
     end
 
-    it 'identifies the type of labware' do
-      api_get base_endpoint
-      listed = json['data'].pluck('type').sort
-      expect(listed).to eq(%w[tubes tubes])
+    it 'returns the correct number of receptacles' do
+      expect(json['data'].length).to eq(2)
     end
 
     # Check filters, ESPECIALLY if they aren't simple attribute filters

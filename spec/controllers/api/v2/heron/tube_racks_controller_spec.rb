@@ -38,7 +38,7 @@ RSpec.describe Api::V2::Heron::TubeRacksController, :heron, type: :request do
             study_uuid: study_uuid
           }
         }
-      }.to_h.with_indifferent_access
+      }.with_indifferent_access
     end
     let!(:before_tube_rack_count) { TubeRack.count }
     let!(:before_tube_count) { Tube.count }

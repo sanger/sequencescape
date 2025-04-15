@@ -4,8 +4,8 @@ source 'https://rubygems.org'
 
 group :default do
   gem 'bootsnap'
-  gem 'concurrent-ruby', '!= 1.3.5' # due to rails/rails#54264, remove restriction after upgrade to rails 7.1
-  gem 'rails', '~> 7.0.8'
+  gem 'concurrent-ruby', '1.3.5'
+  gem 'rails', '~> 7.1.5.1'
 
   # Previously part of ruby or rails, now separate gems
   gem 'drb'

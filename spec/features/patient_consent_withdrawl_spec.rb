@@ -135,6 +135,7 @@ describe 'Sample#consent_withdrawn', js: false do
     it 'and a user visit the sample show page' do
       login_user user
       visit sample_path(sample)
+      expect(page).to have_content sample.name # confirm page has loaded
       expect(page).to have_no_content 'Patient consent has been withdrawn for this sample'
     end
 
