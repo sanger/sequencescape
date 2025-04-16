@@ -355,7 +355,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
         ['scrna core number of pools', 'number_of_pools'],
         ['scrna core cells per chip well', 'cells_per_chip_well'],
         ['% element phix needed', 'percent_phix_requested'],
-        ['low diversity','low_diversity']
+        ['low diversity', 'low_diversity']
       ].each do |source_key, target_key|
         assign_value_if_source_present(details, source_key, request_options, target_key)
       end
@@ -390,8 +390,6 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
 
     # Extract the request options from the row details
     extracted_request_options = extract_request_options(details)
-
-    binding.pry
 
     # add calculated request metadata
     # This is to cover calculated metadata that is not directly in the csv, does not require user input
