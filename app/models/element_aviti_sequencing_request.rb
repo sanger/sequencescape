@@ -6,8 +6,18 @@ class ElementAvitiSequencingRequest < SequencingRequest
   YES_OR_NO = [NO, YES].freeze
 
   has_metadata as: Request do
-    # Defining the sequencing request metadata here again, as 'has_metadata' does not
-    # automatically append these custom attributes to the request.
+    # Defining the sequencing request metadata here again, as 'has_metadata'
+    # does not automatically append these custom attributes to the request.
+    #
+    # The has_metadata call dynamically defines an inner Metadata class and
+    # takes the attributes from the block and adds them to the Metadata class.
+    # There is an assumption that the inner Metadata class is available in a
+    # sequencing request class defintion. Calling has_metadata again does not
+    # inherit the attributes given in the block supplied in the superclass.
+    # They need to be supplied again for this class for a proper inner Metadata
+    # class definition. In a future refactoring these attributes can be moved a
+    # class attribute and subclasses can merge its own attibutes to that. A
+    # common method can set up the inner Metadata class in the subclasses.
     custom_attribute(:fragment_size_required_from, integer: true, minimum: 1)
     custom_attribute(:fragment_size_required_to, integer: true, minimum: 1)
     custom_attribute(:read_length, integer: true, validator: true, required: true, selection: true)
