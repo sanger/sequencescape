@@ -38,16 +38,10 @@ class Sdb::SampleManifestsController < Sdb::BaseController
     @samples = @sample_manifest.samples.paginate(page: params[:page])
   end
 
-  def new # rubocop:todo Metrics/AbcSize
-    params[:only_first_label] ||= false
+  def new
+    set_default_params
     @sample_manifest = SampleManifest.new(new_manifest_params)
-    @study_id = params[:study_id] || ''
-    @studies = Study.alphabetical.pluck(:name, :id)
-    @suppliers = Supplier.alphabetical.pluck(:name, :id)
-    @purposes = @sample_manifest.acceptable_purposes.pluck(:name, :id)
-    @rack_purposes = @sample_manifest.acceptable_rack_purposes.pluck(:name, :id) if params[:asset_type] == 'tube_rack'
-    @barcode_printers = @sample_manifest.applicable_barcode_printers.pluck(:name)
-    @templates = SampleManifestExcel.configuration.manifest_types.by_asset_type(params[:asset_type]).to_a
+    set_instance_variables
   end
 
   def create # rubocop:todo Metrics/AbcSize
@@ -80,8 +74,26 @@ class Sdb::SampleManifestsController < Sdb::BaseController
 
   private
 
+  def set_default_params
+    params[:only_first_label] ||= false
+    return unless SampleManifest.tube_asset_types.include?(params[:asset_type])
+    params[:barcode_type] ||= '1D Barcode' # default to 1D barcode
+  end
+
+  def set_instance_variables # rubocop:todo Metrics/AbcSize
+    @study_id = params[:study_id] || ''
+    @studies = Study.alphabetical.pluck(:name, :id)
+    @suppliers = Supplier.alphabetical.pluck(:name, :id)
+    @purposes = @sample_manifest.acceptable_purposes.pluck(:name, :id)
+    @rack_purposes = @sample_manifest.acceptable_rack_purposes.pluck(:name, :id) if params[:asset_type] == 'tube_rack'
+    @barcode_printers = @sample_manifest.applicable_barcode_printers.pluck(:name)
+    @templates = SampleManifestExcel.configuration.manifest_types.by_asset_type(params[:asset_type]).to_a
+    return unless SampleManifest.tube_asset_types.include?(params[:asset_type])
+    @barcode_types = Rails.application.config.tube_manifest_barcode_config[:barcode_type_labels].values.sort
+  end
+
   def new_manifest_params
-    params.permit(:study_id, :asset_type, :supplier_id, :project_id)
+    params.permit(:study_id, :asset_type, :supplier_id, :project_id, :barcode_type)
   end
 
   def set_sample_manifest_id

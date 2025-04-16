@@ -39,6 +39,9 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # This limit sets a very comfortable safety margin.
   SAMPLES_PER_EVENT = 3000
 
+  # Tube asset types
+  TUBE_ASSET_TYPES = %w[1dtube library multiplexed_library].freeze
+
   module Associations
     def self.included(base)
       base.has_many(:sample_manifests)
@@ -48,7 +51,7 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_uploaded_document :uploaded, differentiator: 'uploaded'
   has_uploaded_document :generated, differentiator: 'generated'
 
-  attr_accessor :override, :only_first_label
+  attr_accessor :override, :only_first_label, :barcode_type
   attr_writer :rows_per_well, :invalid_wells
 
   class_attribute :spreadsheet_offset
@@ -97,6 +100,10 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
            :default_tube_rack_purpose,
            to: :core_behaviour
   delegate :name, to: :supplier, prefix: true
+
+  def self.tube_asset_types
+    TUBE_ASSET_TYPES
+  end
 
   def truncate_errors # rubocop:todo Metrics/MethodLength
     if last_errors && last_errors.join.length > LIMIT_ERROR_LENGTH

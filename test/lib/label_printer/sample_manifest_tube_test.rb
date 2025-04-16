@@ -48,4 +48,36 @@ class SampleManifestTubeTest < ActiveSupport::TestCase
   test 'should return correct top line' do
     assert_equal manifest.study.abbreviation, tube_label.first_line
   end
+
+  test 'should return the human barcode for 2D' do
+    options = {
+      sample_manifest: manifest,
+      only_first_label: true,
+      barcode_type: '2D Barcode (with human readable barcode encoded)'
+    }
+    @tube_label = LabelPrinter::Label::SampleManifestTube.new(options)
+
+    assert_equal tube1.human_barcode, tube_label.barcode(tube1)
+  end
+
+  test 'should return the human barcode for 2D for library tubes' do
+    @manifest = create(:sample_manifest, asset_type: 'library', purpose: Tube::Purpose.standard_sample_tube, count: 3)
+    @manifest.generate
+    @tube1 = manifest.printables[0]
+    @tube2 = manifest.printables[1]
+    @tube3 = manifest.printables[2]
+    @tubes = [tube1, tube2, tube3]
+
+    @prefix = 'NT'
+    @barcode1 = tube1.barcode_number
+
+    options = {
+      sample_manifest: manifest,
+      only_first_label: true,
+      barcode_type: '2D Barcode (with human readable barcode encoded)'
+    }
+    @tube_label = LabelPrinter::Label::SampleManifestTube.new(options)
+
+    assert_equal tube1.human_barcode, tube_label.barcode(tube1)
+  end
 end
