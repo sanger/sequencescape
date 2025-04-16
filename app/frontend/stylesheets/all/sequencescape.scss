@@ -62,11 +62,6 @@ h3.card-header-custom {
     @extend .mr-2;
   }
 }
-.plate td.well {
-  padding: 0;
-  min-width: 5em;
-  margin: 0;
-}
 
 #error_messages {
   background-color: #ff7070;
@@ -838,7 +833,7 @@ td {
   border-width: 1px 1px 0 0;
   background-color: #f0f0f0;
   color: #000;
-  width: 2%;
+  width: 5em;
 }
 .plate td:first-of-type,
 .plate td:last-of-type {
@@ -850,6 +845,7 @@ td.border {
   background-color: #17a2b8; // Bootstrap info
   font-weight: bold;
   color: #fff;
+  min-width: 2em;
 }
 .plate td.normal {
   text-align: center;
