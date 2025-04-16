@@ -113,8 +113,8 @@ class Studies::AssetGroupsController < ApplicationController
     @study = Study.find(params[:study_id])
     if params[:asset]
       ids = params[:asset].select { |_asset_id, checked| checked == '1' }.keys
-      @assets = Labware.find(ids)
-      @assets.each { |asset| @asset_group.assets << asset.receptacles }
+      @assets = Asset.find(ids)
+      @asset_group.assets << @assets
     end
 
     respond_to do |format|
