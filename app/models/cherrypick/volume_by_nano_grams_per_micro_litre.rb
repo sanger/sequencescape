@@ -42,18 +42,18 @@ module Cherrypick::VolumeByNanoGramsPerMicroLitre
     # @note Here we appear to set the concentration based on the required concentration, regardless of whether we hit it
     # it or not. Checking if this behaviour is desired RT#719205
     well_attribute.concentration = final_conc_desired
-    
 
     # Similarly we set current volume based on required. This is only untrue in rare edge cases though
     # (When you have almost all your required volume from your source, then add more buffer than intended
     #  due to minimum robot picks)
-    
+
     if well_attribute.current_volume < robot_minimum_picking_vol
-      well_attribute.current_volume  = robot_minimum_picking_vol
+      well_attribute.current_volume = robot_minimum_picking_vol
     end
 
     if source_volume < robot_minimum_pick_vol
-      warn "Warning: Source volume (#{source_volume}) is less than the robot minimum picking volume (#{robot_minimum_pick_vol})."
+      warn "Warning: Source volume (#{source_volume}) is less than the robot 
+      minimum picking volume (#{robot_minimum_pick_vol})."
     end
 
     # The maximum picking volume is limited by the available source volume, and the final volume desired
@@ -85,10 +85,12 @@ module Cherrypick::VolumeByNanoGramsPerMicroLitre
     well_attribute.picked_volume = source_volume_to_tell_robot_to_pick
     well_attribute.buffer_volume =
       calculate_buffer_volume(final_volume_desired, source_volume_it_will_actually_pick, 0.0) # No minimum for buffer
-    well_attribute.robot_minimum_picking_volume = robot_minimum_pick_vol if source_volume_to_tell_robot_to_pick >= robot_minimum_pick_vol
+    if source_volume_to_tell_robot_to_pick >= robot_minimum_pick_vol
+      well_attribute.robot_minimum_picking_volume = robot_minimum_pick_vol
+    end
 
     well_attribute.requested_volume = source_volume_it_will_actually_pick + buffer_volume
-    
+
     source_volume_to_tell_robot_to_pick
   end
 
