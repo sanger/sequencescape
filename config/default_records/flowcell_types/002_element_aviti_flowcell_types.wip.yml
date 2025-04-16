@@ -1,7 +1,7 @@
 ---
 # Element Aviti flowcell kit types
 
- # LO (Low Output) flowcell kit type
+# LO (Low Output) flowcell kit type
 LO:
   name: LO
 
