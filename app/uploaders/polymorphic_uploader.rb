@@ -93,9 +93,7 @@ class PolymorphicUploader < CarrierWave::Uploader::Base
     "#{Rails.root}/tmp/uploads"
   end
 
-  def cache_dir
-    self.class.cache_dir
-  end
+  delegate :cache_dir, to: :class
 
   before :store, :remember_cache_id
   after :store, :delete_tmp_dir

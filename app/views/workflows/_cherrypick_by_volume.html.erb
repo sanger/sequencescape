@@ -1,7 +1,6 @@
 <%# locals: { form:, default_volume_value: '', hide_strategy_option: false } -%>
 <%
   hide_strategy_option ||= false
-  default_volume_value ||= ''
 %>
 
 <div id='pick_by_micro_litre'>
@@ -12,7 +11,7 @@
     <%= cherrypick_strategy_radio_button :cherrypick, :strategy, :micro_litre, 'Pick by volume (µl)' %>
   <% end %>
   <%= fields_for :micro_litre do | micro_litre_fields |%>
-    <%= cherrypick_form_group_text micro_litre_fields, :volume_required, 'Volume (µl)', default_volume_value %>
+    <%= cherrypick_form_group_text micro_litre_fields, :volume_required, 'Volume (µl)', '13' %>
   <% end %>
 
 </div>

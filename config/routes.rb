@@ -67,6 +67,7 @@ Rails.application.routes.draw do
       jsonapi_resources :submissions
       jsonapi_resources :tag_group_adapter_types
       jsonapi_resources :tag_groups
+      jsonapi_resources :tag_sets, only: %i[index show]
       jsonapi_resources :tag_layout_templates
       jsonapi_resources :tag_layouts, except: %i[update]
       jsonapi_resources :tags
@@ -557,6 +558,8 @@ Rails.application.routes.draw do
       post :create
       get :to_sample_tubes
       post :create_sample_tubes
+      get :from_tubes, controller: 'plates_from_tubes', action: 'new'
+      post :from_tubes, controller: 'plates_from_tubes', action: 'create'
     end
 
     member { get :fluidigm_file }
