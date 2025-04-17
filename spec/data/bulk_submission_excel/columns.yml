@@ -260,3 +260,40 @@ requested_flowcell_type:
   conditional_formattings:
     empty_cell:
     is_error:
+percent_phix_requested:
+  heading: "% Element PhiX needed"
+  attribute: :percent_phix_requested
+  unlocked: true
+  type: :integer
+  validation:
+    options:
+      type: :whole
+      operator: :between
+      formula1: "0"
+      formula2: "100"
+      allowBlank: true
+      showInputMessage: true
+      promptTitle: "Element PhiX needed"
+      prompt: "Element PhiX needed (between 0 and 100 inclusive)"
+  conditional_formattings:
+    empty_cell:
+    is_text:
+low_diversity:
+  heading: "Low Diversity"
+  unlocked: true
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: true
+      showInputMessage: true
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Priority"
+      error: "You must enter a value from the list provided."
+      promptTitle: "Low Diversity"
+      prompt: "Select a value type from the approved list"
+    range_name: :low_diversity
+  conditional_formattings:
+    empty_cell:
+    is_error:
