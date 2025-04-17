@@ -123,7 +123,7 @@ GEM
       activesupport
     amq-protocol (2.3.3)
     ast (2.4.3)
-    avro (1.11.3)
+    avro (1.12.0)
       multi_json (~> 1.0)
     backports (3.25.0)
     base64 (0.2.0)
@@ -627,7 +627,7 @@ DEPENDENCIES
   activerecord-import
   acts-as-dag!
   after_commit_everywhere (~> 1.0)
-  avro (~> 1.11.0)
+  avro
   bootsnap
   builder
   bullet
