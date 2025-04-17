@@ -129,6 +129,11 @@ FactoryBot.define do
       end
     end
 
+    factory :element_aviti_sequencing do
+      asset_type { 'LibraryTube' }
+      request_class { ElementAvitiSequencingRequest }
+    end
+
     factory :miseq_sequencing_request_type do
       request_class { MiSeqSequencingRequest }
       asset_type { 'LibraryTube' }
