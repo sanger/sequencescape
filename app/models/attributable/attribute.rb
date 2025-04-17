@@ -177,7 +177,7 @@ module Attributable
       selection_values || selection_from_metadata(validator_source) || []
     end
 
-    def to_field_info(validator_source = nil)
+    def to_field_info(validator_source = nil) # rubocop:disable Metrics/AbcSize
       options = {
         # TODO[xxx]: currently only working for metadata, the only place attributes are used
         display_name: display_name,
@@ -186,9 +186,9 @@ module Attributable
         kind: kind,
         required: required?
       }
-    
+
       options.update(selection: selection_options(validator_source)) if selection?
-      options_hash = { min: minimum}
+      options_hash = { min: minimum }
 
       options_hash.update(max: maximum) if maximum.present?
       options_hash.update(step: 1) if integer?
