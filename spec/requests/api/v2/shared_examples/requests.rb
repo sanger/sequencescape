@@ -67,7 +67,7 @@ shared_examples 'a bad POST request with a specific error' do
 end
 
 shared_examples 'a GET request including a has_one relationship' do |related_name|
-  before { api_get "#{base_endpoint}/#{resource.id}?include=#{related_name}" }
+  before { api_get "#{base_endpoint}/#{resource.id}?include=#{related_name}&fields[#{resource_type}]=#{related_name}" }
 
   it 'responds with a success http code' do
     expect(response).to have_http_status(:success)
@@ -81,7 +81,7 @@ shared_examples 'a GET request including a has_one relationship' do |related_nam
 end
 
 shared_examples 'a GET request including a has_many relationship' do |related_name|
-  before { api_get "#{base_endpoint}/#{resource.id}?include=#{related_name}" }
+  before { api_get "#{base_endpoint}/#{resource.id}?include=#{related_name}&fields[#{resource_type}]=#{related_name}" }
 
   it 'responds with a success http code' do
     expect(response).to have_http_status(:success)
@@ -127,5 +127,40 @@ end
 shared_examples 'a POST request updating a relationship on the model' do |model_class, related_name, value|
   it "updates the model with the new '#{related_name}' relationship" do
     expect(model_class.last.send(related_name)).to eq(value)
+  end
+end
+
+shared_examples 'a PATCH request with a disallowed value' do |disallowed_value|
+  def do_patch
+    api_patch "#{base_endpoint}/#{resource.id}", payload
+  end
+
+  it 'does not modify the resource attributes' do
+    # Note that attributes also includes IDs for relationships.
+    expect { do_patch }.not_to(change { resource.reload.attributes })
+  end
+
+  it 'responds with bad_request' do
+    do_patch
+    expect(response).to have_http_status(:bad_request)
+  end
+
+  it 'specifies which value was not allowed' do
+    do_patch
+    expect(json.dig('errors', 0, 'detail')).to eq("#{disallowed_value} is not allowed.")
+  end
+end
+
+shared_examples 'it has filtered to a resource with target_id correctly' do
+  it 'responds with a success http code' do
+    expect(response).to have_http_status(:success)
+  end
+
+  it 'returns one resource' do
+    expect(json['data'].count).to eq(1)
+  end
+
+  it 'returns the correct resource' do
+    expect(json['data'].first['id']).to eq(target_id.to_s)
   end
 end

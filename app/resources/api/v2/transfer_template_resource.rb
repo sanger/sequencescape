@@ -2,14 +2,20 @@
 
 module Api
   module V2
-    # @todo This documentation does not yet include a detailed description of what this resource represents.
-    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
-    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+    # Provides a JSON:API representation of {TransferTemplate}.
+    #
+    # A template is effectively a partially constructed Transfer instance, containing only the
+    # transfers that should be made and the final Transfer class that should be constructed.
+    #
     #
     # @note This resource is immutable: its endpoint will not accept `POST`, `PATCH`, or `DELETE` requests.
     # @note Access this resource via the `/api/v2/transfer_templates/` endpoint.
     #
-    # Provides a JSON:API representation of {TransferTemplate}.
+    # @example GET request for all TransferTemplate resources
+    #   GET /api/v2/transfer_templates/
+    #
+    # @example GET request for a TransferTemplate with ID 123
+    #   GET /api/v2/transfer_templates/123/
     #
     # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
@@ -24,17 +30,25 @@ module Api
       ###
 
       # @!attribute [r] name
+      #   The name of the transfer template.
       #   @return [String] the name of the transfer template.
       attribute :name
 
       # @!attribute [r] uuid
+      #   The UUID of the transfer template.
       #   @return [String] the UUID of the transfer template.
+      #   @note This attribute is read-only and cannot be modified.
       attribute :uuid, readonly: true
+
+      ###
+      # Filters
+      ###
 
       # @!method filter_uuid
       #   Filter the transfer templates by UUID.
       #   @example GET request with UUID filter
       #     GET /api/v2/transfer_templates?filter[uuid]=12345678-1234-1234-1234-123456789012
+      #   @return [ActiveRecord::Relation] The filtered transfer templates.
       filter :uuid, apply: ->(records, value, _options) { records.with_uuid(value) }
     end
   end

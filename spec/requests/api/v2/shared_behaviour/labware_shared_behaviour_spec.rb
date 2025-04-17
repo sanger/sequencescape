@@ -131,49 +131,36 @@ describe 'Labware Behaviour API', tags: :lighthouse, with: :api_v2 do
     let(:resource_count) { 5 }
     let(:resources) { create_list(:plate, resource_count, well_factory: :untagged_well, well_count: 2) }
     let(:target_resource) { resources[2] }
-
-    shared_examples 'it filters the resources correctly' do
-      it 'responds with a success http code' do
-        expect(response).to have_http_status(:success)
-      end
-
-      it 'returns one resource' do
-        expect(json['data'].count).to eq(1)
-      end
-
-      it 'returns the correct resource' do
-        expect(json['data'].first['id']).to eq(target_resource.id.to_s)
-      end
-    end
+    let(:target_id) { target_resource.id }
 
     describe '#filter by machine_barcode' do
       before { api_get "#{base_endpoint}?filter[barcode]=#{target_resource.machine_barcode}" }
 
-      it_behaves_like 'it filters the resources correctly'
+      it_behaves_like 'it has filtered to a resource with target_id correctly'
     end
 
     describe '#filter by human_barcode' do
       before { api_get "#{base_endpoint}?filter[barcode]=#{target_resource.human_barcode}" }
 
-      it_behaves_like 'it filters the resources correctly'
+      it_behaves_like 'it has filtered to a resource with target_id correctly'
     end
 
     describe '#filter by uuid' do
       before { api_get "#{base_endpoint}?filter[uuid]=#{target_resource.uuid}" }
 
-      it_behaves_like 'it filters the resources correctly'
+      it_behaves_like 'it has filtered to a resource with target_id correctly'
     end
 
     describe '#filter by purpose_name' do
       before { api_get "#{base_endpoint}?filter[purpose_name]=#{target_resource.purpose.name}" }
 
-      it_behaves_like 'it filters the resources correctly'
+      it_behaves_like 'it has filtered to a resource with target_id correctly'
     end
 
     describe '#filter by purpose_id' do
       before { api_get "#{base_endpoint}?filter[purpose_id]=#{target_resource.purpose.id}" }
 
-      it_behaves_like 'it filters the resources correctly'
+      it_behaves_like 'it has filtered to a resource with target_id correctly'
     end
 
     describe '#filter by without_children' do
@@ -187,7 +174,7 @@ describe 'Labware Behaviour API', tags: :lighthouse, with: :api_v2 do
         api_get "#{base_endpoint}?filter[without_children]"
       end
 
-      it_behaves_like 'it filters the resources correctly'
+      it_behaves_like 'it has filtered to a resource with target_id correctly'
     end
 
     describe '#filter by created_at_gt' do
@@ -201,7 +188,7 @@ describe 'Labware Behaviour API', tags: :lighthouse, with: :api_v2 do
         api_get "#{base_endpoint}?filter[created_at_gt]=#{1.day.ago.iso8601}"
       end
 
-      it_behaves_like 'it filters the resources correctly'
+      it_behaves_like 'it has filtered to a resource with target_id correctly'
     end
 
     describe '#filter by updated_at_gt' do
@@ -215,7 +202,7 @@ describe 'Labware Behaviour API', tags: :lighthouse, with: :api_v2 do
         api_get "#{base_endpoint}?filter[updated_at_gt]=#{1.day.ago.iso8601}"
       end
 
-      it_behaves_like 'it filters the resources correctly'
+      it_behaves_like 'it has filtered to a resource with target_id correctly'
     end
 
     describe '#filter by include_used' do

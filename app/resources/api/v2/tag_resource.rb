@@ -2,14 +2,24 @@
 
 module Api
   module V2
-    # @todo This documentation does not yet include a detailed description of what this resource represents.
-    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
-    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+    # Provides a JSON:API representation of {Tag}.
+    #
+    # A {Tag} is a short, know sequence of DNA which gets applied to a sample.
+    # The tag remains attached through subsequent processing, and means that it is
+    # possible to identify the origin of a sample if multiple samples are subsequently
+    # pooled together.
+    # Tags are sometimes referred to as barcodes by our users.
+    # Tag is stored on aliquot, and an individual aliquot can have two tags
+    # identified as tag and tag2, these may also be known as i7 and i5 respectively.
     #
     # @note This resource is immutable: its endpoint will not accept `POST`, `PATCH`, or `DELETE` requests.
     # @note Access this resource via the `/api/v2/tags/` endpoint.
     #
-    # Provides a JSON:API representation of {Tag}.
+    # @example GET request for all tags
+    #   GET /api/v2/tags/
+    #
+    # @example GET request for a tag with ID 123
+    #   GET /api/v2/tags/123/
     #
     # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
@@ -17,11 +27,35 @@ module Api
     class TagResource < BaseResource
       immutable
 
+      ###
       # Attributes
+      ###
+
+      # @!attribute [rw] map_id
+      #   The ID of the map associated with the tag. This attribute is write-once, meaning it cannot be updated after
+      #   creation.
+      #   @todo Remove write_once as resource is immutable
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
+      #   @return [String] The ID of the associated map.
+      #   @note This attribute is required when creating a tag.
       attribute :map_id, write_once: true
+
+      # @!attribute [rw] oligo
+      #   The oligo sequence associated with the tag. This attribute is write-once, meaning it cannot be updated after
+      #   creation.
+      #   @todo Remove write_once as resource is immutable
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
+      #   @return [String] The oligo sequence associated with the tag.
+      #   @note This attribute is required when creating a tag.
       attribute :oligo, write_once: true
 
+      ###
       # Relationships
+      ###
+
+      # @!attribute [r] tag_group
+      #   The relationship to the tag group associated with this tag. A tag belongs to one specific tag group.
+      #   @return [Api::V2::TagGroupResource] The tag group associated with this tag.
       has_one :tag_group
     end
   end
