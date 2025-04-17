@@ -15,6 +15,14 @@ FactoryBot.define do
     enforce_accessioning { false }
     study_metadata
 
+    after(:build) do |study|
+      study.study_metadata.update!(
+        ebi_library_strategy: 'WGS',
+        ebi_library_source: 'GENOMIC',
+        ebi_library_selection: 'PCR'
+      )
+    end
+
     # These have to build a user list
     factory(:study_with_manager) { after(:build) { |study| create(:manager, authorizable: study) } }
   end
