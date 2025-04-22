@@ -6,28 +6,28 @@
 Concentration (ng/µl)
 <small class="text-muted">Measured from QC file upload</small>
 </h3>
-<%= render partial: "plate_schematic", locals: { plate: @plate, well_values: ['qc_result_for', "concentration"] } %>
+<%= render partial: "plate_schematic", locals: { plate: @plate, well_values: [:qc_result_for, :concentration] } %>
 
 <h3>
 Measured Volume (µl)
 <small class="text-muted">Measured from QC file upload</small>
 </h3>
-<%= render partial: "plate_schematic", locals: { plate: @plate, well_values: ['qc_result_for', "volume"] } %>
+<%= render partial: "plate_schematic", locals: { plate: @plate, well_values: [:qc_result_for, :volume] } %>
 
 <h3>
 Current Volume (µl)
 <small class="text-muted">Calculated after bed verification</small>
 </h3>
-<%= render partial: "plate_schematic", locals: { plate: @plate, well_values: ['well_attribute', "current_volume"] } %>
+<%= render partial: "plate_schematic", locals: { plate: @plate, well_values: [:well_attribute, :current_volume] } %>
 
 <h3>
 Quantity (ng)
 <small class="text-muted">Calculated after bed verification</small>
 </h3>
-<%= render partial: "plate_schematic", locals: { plate: @plate, well_values: ['well_attribute', "quantity_in_nano_grams"] } %>
+<%= render partial: "plate_schematic", locals: { plate: @plate, well_values: [:well_attribute, :quantity_in_nano_grams] } %>
 
 <h3>SNP Count</h3>
-<%= render partial: "plate_schematic", locals: { plate: @plate, well_values: ['qc_result_for', "loci_passed"] } %>
+<%= render partial: "plate_schematic", locals: { plate: @plate, well_values: [:qc_result_for, :loci_passed] } %>
 
 <h3>RIN</h3>
-<%= render partial: "plate_schematic", locals: { plate: @plate, well_values: ['qc_result_for', "rin"] } %>
+<%= render partial: "plate_schematic", locals: { plate: @plate, well_values: [:qc_result_for, :rin] } %>
