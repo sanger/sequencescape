@@ -41,6 +41,8 @@ Rails.application.routes.draw do
       jsonapi_resources :plate_purposes, except: %i[update]
       jsonapi_resources :plate_templates
       jsonapi_resources :plates, except: %i[update]
+      post 'plates/:id/register_stock_for_plate', to: 'plates#register_stock_for_plate'
+
       jsonapi_resources :poly_metadata
       jsonapi_resources :pooled_plate_creations, except: %i[update]
       jsonapi_resources :pre_capture_pools
@@ -67,6 +69,7 @@ Rails.application.routes.draw do
       jsonapi_resources :submissions
       jsonapi_resources :tag_group_adapter_types
       jsonapi_resources :tag_groups
+      jsonapi_resources :tag_sets, only: %i[index show]
       jsonapi_resources :tag_layout_templates
       jsonapi_resources :tag_layouts, except: %i[update]
       jsonapi_resources :tags
