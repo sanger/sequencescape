@@ -71,6 +71,22 @@ FactoryBot.define do
     end
   end
 
+  factory :element_aviti_sequencing_request, class: 'ElementAvitiSequencingRequest' do
+    request_type factory: %i[element_aviti_sequencing]
+    request_purpose { :standard }
+    sti_type { 'SequencingPipeline' }
+    request_metadata_attributes do
+      {
+        fragment_size_required_from: 150,
+        fragment_size_required_to: 400,
+        percent_phix_requested: 50,
+        requested_flowcell_type: 'HO',
+        read_length: 150,
+        low_diversity: 'Yes'
+      }
+    end
+  end
+
   factory(:library_creation_request, parent: :request, class: 'LibraryCreationRequest') do
     asset factory: %i[sample_tube]
     request_type factory: %i[library_creation_request_type]
