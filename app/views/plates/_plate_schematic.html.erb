@@ -32,7 +32,7 @@
             rescue NoMethodError, ArgumentError => e
               well.send(well_values[0]).send(well_values[1])
             end %>
-            <%= render partial: descriptor, locals: { value: value } %>
+            <%= render partial: descriptor, locals: { value: } %>
           <% else %>
             <td></td>
           <% end %>

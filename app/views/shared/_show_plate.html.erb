@@ -16,10 +16,10 @@
           <td class="<%= well ? 'normal' : 'empty' %>">
             <% if well %>
               <% well.samples.each do |sample| %>
-                <%= link_to sample.name, sample_path(sample) %><br/>
+                <%= link_to sample.name, sample_path(sample) %><br />
               <% end %>
-              <%= link_to "#{row}#{column}", receptacle_path(well) %><br/>
-              Parent: <%= well.upstream_wells.map(&:map_description).join(',').presence || 'None' %><br/>
+              <%= link_to "#{row}#{column}", receptacle_path(well) %><br />
+              Parent: <%= well.upstream_wells.map(&:map_description).join(',').presence || 'None' %><br />
               <%= pluralize well.requests.size, 'request' %>
             <% else %>
               [ Empty ]
