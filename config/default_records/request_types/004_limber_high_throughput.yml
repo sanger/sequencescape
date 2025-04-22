@@ -38,6 +38,7 @@ limber_reisc:
     - LB Lib PCR-XP
     - LTN Lib PCR XP # for Targeted NanoSeq ReISC
     - RVI Lib PCR XP # for RVI Bait Capture Library
+    - RVIG Lib PCR XP # for RVIG Bait Capture Library
   library_types:
     - Agilent Pulldown
     - Twist Pulldown
@@ -46,6 +47,7 @@ limber_reisc:
     - Targeted NanoSeq Pulldown Agilent
     - BGE
     - RVI-BCL
+    - RVIG-BCL
 limber_pcr_free:
   <<: *limber_htp_library
   name: Limber PCR Free
