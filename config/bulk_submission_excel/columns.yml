@@ -310,7 +310,7 @@ cells_per_chip_well:
     is_num_cells_per_chip_well_in_valid_range:
     is_num_cells_per_chip_well_outside_valid_range:
 percent_phix_requested:
-  heading: "% Element PhiX needed"
+  heading: "% PhiX requested"
   attribute: :percent_phix_requested
   unlocked: true
   type: :integer
@@ -322,8 +322,8 @@ percent_phix_requested:
       formula2: "100"
       allowBlank: true
       showInputMessage: true
-      promptTitle: "Element PhiX needed"
-      prompt: "Element PhiX needed (between 0 and 100 inclusive)"
+      promptTitle: "PhiX requested"
+      prompt: "PhiX requested (between 0 and 100 inclusive)"
   conditional_formattings:
     empty_cell:
     is_text:

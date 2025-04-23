@@ -250,7 +250,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     'flowcell type',
     'scrna core number of pools',
     'scrna core cells per chip well',
-    '% element phix needed',
+    '% phix requested',
     'low diversity'
   ].freeze
 
@@ -356,7 +356,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
         ['flowcell type', 'requested_flowcell_type'],
         ['scrna core number of pools', 'number_of_pools'],
         ['scrna core cells per chip well', 'cells_per_chip_well'],
-        ['% element phix needed', 'percent_phix_requested'],
+        ['% phix requested', 'percent_phix_requested'],
         ['low diversity', 'low_diversity']
       ].each do |source_key, target_key|
         assign_value_if_source_present(details, source_key, request_options, target_key)

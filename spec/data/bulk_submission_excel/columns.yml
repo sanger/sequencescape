@@ -261,7 +261,7 @@ requested_flowcell_type:
     empty_cell:
     is_error:
 percent_phix_requested:
-  heading: "% Element PhiX needed"
+  heading: "% PhiX needed"
   attribute: :percent_phix_requested
   unlocked: true
   type: :integer
@@ -273,8 +273,8 @@ percent_phix_requested:
       formula2: "100"
       allowBlank: true
       showInputMessage: true
-      promptTitle: "Element PhiX needed"
-      prompt: "Element PhiX needed (between 0 and 100 inclusive)"
+      promptTitle: "PhiX needed"
+      prompt: "PhiX needed (between 0 and 100 inclusive)"
   conditional_formattings:
     empty_cell:
     is_text:
