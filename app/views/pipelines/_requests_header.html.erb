@@ -6,19 +6,12 @@
   <th>Name</th>
   <th>All comments</th>
   <th>Asset</th>
-  <% if @element_aviti_pipeline %>
-    <% @information_types.each do |information_type| %>
-      <th><%= information_type.label %></th>
-    <% end %>
+  <% @information_types.each do |information_type| %>
+    <th><%= information_type.label %></th>
   <% end %>
   <th>Num. Samples</th>
   <th>Conc</th>
   <th>Scanned in (Y-M-D)</th>
   <th>Dual Index?</th>
-  <% if !@element_aviti_pipeline %>
-    <% @information_types.each do |information_type| %>
-      <th><%= information_type.label %></th>
-    <% end %>
-  <% end %>
   <th>Study</th>
 </tr>

@@ -21,12 +21,10 @@
   <% if request.asset %>
     <td><%=  link_to "#{request.asset.human_barcode}", receptacle_path(request.asset) %></td>
   <% end %>
-  <% if @element_aviti_pipeline %>
-    <% @information_types.each do |information_type| %>
-      <td  title='<%="#{information_type.key}"%>'>
-        <%= h(request.request_metadata[information_type.key]) %>
-      </td>
-    <% end %>
+  <% @information_types.each do |information_type| %>
+    <td  title='<%="#{information_type.key}"%>'>
+      <%= h(request.request_metadata[information_type.key]) %>
+    </td>
   <% end %>
   <% if request.asset %>
     <td><%= request_samples_count %></td>
@@ -37,13 +35,6 @@
     <td></td>
     <td></td>
     <td></td>
-  <% end %>
-  <% if !@element_aviti_pipeline %>
-    <% @information_types.each do |information_type| %>
-      <td  title='<%="#{information_type.key}"%>'>
-        <%= h(request.request_metadata[information_type.key]) %>
-      </td>
-    <% end %>
   <% end %>
   <td><%= truncate(request.try(:submission).try(:study_names), separator: ' ') %></td>
 </tr>
