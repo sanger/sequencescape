@@ -206,6 +206,8 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
               ] = "Submission #{submission.id} built (#{submission.orders.count} orders)"
             rescue Submission::ProjectValidation::Error => e
               errors.add :spreadsheet, "There was an issue with a project: #{e.message}"
+            rescue ActiveRecord::RecordInvalid => e
+              errors.add :base, e.message
             end
           end
         end
