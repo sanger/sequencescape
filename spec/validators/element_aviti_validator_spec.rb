@@ -14,7 +14,7 @@ describe ElementAvitiValidator do
         let(:read_length) { 150 }
 
         it 'is valid' do
-          expect(validator.validate(record)).to be true
+          expect(validator.validate(record)).to be_nil
         end
       end
 
@@ -22,7 +22,8 @@ describe ElementAvitiValidator do
         let(:read_length) { 300 }
 
         it 'is invalid' do
-          expect(validator.validate(record)).to be false
+          validator.validate(record)
+          expect(record.errors[:base]).to include('Batches can contain only one request when the read length is 300')
         end
       end
     end
@@ -33,7 +34,7 @@ describe ElementAvitiValidator do
       before { record.requests = [request] }
 
       it 'is valid' do
-        expect(validator.validate(record)).to be true
+        expect(validator.validate(record)).to be_nil
       end
     end
   end
