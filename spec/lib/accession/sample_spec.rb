@@ -128,17 +128,15 @@ RSpec.describe Accession::Sample, :accession, type: :model do
     sample = described_class.new(tag_list, create(:sample_for_accessioning_with_open_study))
     xml = sample.to_xml
 
-    expect(xml).to match(/<SAMPLE_SET.*<SAMPLE.*<\/SAMPLE>.*<\/SAMPLE_SET>/m)
-    expect(xml).to include(/<SAMPLE_SET.*<SAMPLE_ATTRIBUTES>.*<\/SAMPLE_ATTRIBUTES>.*<\/SAMPLE_SET>/m)
+    expect(xml).to match(%r{<SAMPLE_SET.*<SAMPLE.*</SAMPLE>.*</SAMPLE_SET>}m)
+    expect(xml).to include(%r{<SAMPLE_SET.*<SAMPLE_ATTRIBUTES>.*</SAMPLE_ATTRIBUTES>.*</SAMPLE_SET>}m)
 
     expect(xml).to include("alias=\"#{sample.ebi_alias}\"")
     expect(xml).to include("<TITLE>#{sample.title}</TITLE>")
 
     tags = sample.tags.by_group[:sample_name]
     sample_name_tags = xml
-    tags.each do |_label, tag|
-      expect(sample_name_tags).to include("<#{tag.label}>#{tag.value}</#{tag.label}>")
-    end
+    tags.each { |_label, tag| expect(sample_name_tags).to include("<#{tag.label}>#{tag.value}</#{tag.label}>") }
     sample_attributes_tags = xml
 
     tags = sample.tags.by_group[:sample_attributes]
