@@ -2,7 +2,7 @@ LowDiversityInformationTypeForElementAviti:
   pipeline_name: Element Aviti
   request_information_type_key: low_diversity
 
-PercentPhixRequestedInformationTypeForElementAviti:
+PercentPhixNeededInformationTypeForElementAviti:
   pipeline_name: Element Aviti
   request_information_type_key: percent_phix_requested
 

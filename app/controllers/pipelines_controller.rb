@@ -70,6 +70,8 @@ class PipelinesController < ApplicationController
       @requests_comment_count = Comment.counts_for_requests(@requests)
       @requests_samples_count = Request.where(id: @requests).joins(:samples).group(:id).count
     end
+
+    @element_aviti_pipeline = @pipeline.name == 'Element Aviti'
   end
 
   # rubocop:enable Metrics/MethodLength
