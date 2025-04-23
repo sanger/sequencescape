@@ -39,8 +39,8 @@ RSpec.describe Accession::Tag, :accession, type: :model do
   end
 
   it 'can have an array express label' do
-    expect(described_class.new(name: :tag_1).array_express_label).to eq('ArrayExpress-tag 1')
-    expect(described_class.new(name: :tag_1, ebi_name: :ebi_tag).array_express_label).to eq('ArrayExpress-ebi tag')
+    expect(described_class.new(name: :tag_1).array_express_label).to eq('ArrayExpress-TAG_1')
+    expect(described_class.new(name: :tag_1, ebi_name: :ebi_tag).array_express_label).to eq('ArrayExpress-EBI_TAG')
   end
 
   it 'is comparable' do
