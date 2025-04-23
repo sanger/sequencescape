@@ -1,8 +1,3 @@
----
-FlowcellRequestedInformationTypeForElementAviti:
-  pipeline_name: Element Aviti
-  request_information_type_key: requested_flowcell_type
-
 LowDiversityInformationTypeForElementAviti:
   pipeline_name: Element Aviti
   request_information_type_key: low_diversity
