@@ -78,13 +78,15 @@ module Cherrypick::VolumeByNanoGramsPerMicroLitre
     # we note two things - the amount we tell the robot to pick (robot_minimum_pick_vol),
     # and the amount it will actually pick (source_volume)
     # We use the latter for the buffer calculation, to make sure we make the desired final volume.
-    # See comments on RT https://rt.sanger.ac.uk/Ticket/Display.html?id=735176
     source_volume_it_will_actually_pick =
       source_volume < robot_minimum_pick_vol ? source_volume : source_volume_to_tell_robot_to_pick
 
     well_attribute.picked_volume = source_volume_to_tell_robot_to_pick
+
+    # Exclude robot minimum picking volume when calculating buffer volume
     well_attribute.buffer_volume =
-      calculate_buffer_volume(final_volume_desired, source_volume_it_will_actually_pick, robot_minimum_pick_vol)
+      calculate_buffer_volume(final_volume_desired, source_volume_it_will_actually_pick, 0.0)
+
     well_attribute.robot_minimum_picking_volume = robot_minimum_pick_vol
 
     source_volume_to_tell_robot_to_pick
