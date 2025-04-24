@@ -49,5 +49,6 @@ limber_scrna_core_cdna_pcr_cite:
   product_line_name: Short Read
   acceptable_purposes:
     - LRC GEM-X 5p cDNA PCR CITE
+    - LRC GEM-X 5p CITE SUP Input
   library_types:
     - Chromium single cell GEM-X 5p v3 cell surface protein
