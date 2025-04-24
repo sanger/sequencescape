@@ -8,6 +8,6 @@ low_diversity:
 percent_phix_requested:
   name: Percent Phix requested
   key: percent_phix_requested
-  label: "% Phix requested"
+  label: "% PhiX requested"
   width: 5
   hide_in_inbox: 0
