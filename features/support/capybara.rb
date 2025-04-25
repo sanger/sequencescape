@@ -30,7 +30,10 @@ Capybara.register_driver :chrome do |app|
 end
 
 Capybara.register_driver(:cuprite) do |app|
-  Capybara::Cuprite::Driver.new(app, window_size: [1200, 800])
+  Capybara::Cuprite::Driver.new(
+    app, window_size: [1200, 800],
+    process_timeout: 30
+  )
 end
 
 Capybara.default_max_wait_time = 10
