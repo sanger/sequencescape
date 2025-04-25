@@ -57,7 +57,11 @@ module Accession
             tag_groups[:sample_attributes].each do |_k, tag|
               xml.SAMPLE_ATTRIBUTE do
                 xml.TAG tag.label
-                xml.VALUE tag.value
+                if tag.label == 'gender'
+                  xml.VALUE tag.value.downcase
+                else
+                  xml.VALUE tag.value
+                end
               end
             end
             if service.ena?
