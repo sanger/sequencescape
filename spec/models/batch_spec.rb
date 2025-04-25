@@ -64,7 +64,6 @@ RSpec.describe Batch do
     end
 
     let!(:batch) { create(:batch, state: 'started', qc_state: 'qc_manual', pipeline: pipeline, requests: [request]) }
-    let(:batch_request) { create(:batch_request, request: request, batch: batch, position: 1) }
 
     before { allow(request).to receive(:position).and_return(1) }
 
