@@ -45,6 +45,7 @@ module Accession
       xml = Builder::XmlMarkup.new
       xml.instruct!
 
+      # rubocop:disable Metrics/BlockLength
       xml.SAMPLE_SET(XML_NAMESPACE) do
         xml.SAMPLE(alias: ebi_alias) do
           xml.TITLE title if title.present?
@@ -73,6 +74,7 @@ module Accession
           end
         end
       end
+      # rubocop:enable Metrics/BlockLength
       xml.target!
     end
 
