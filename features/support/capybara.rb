@@ -2,7 +2,7 @@
 
 require 'selenium/webdriver'
 require 'capybara'
-require "capybara/cuprite"
+require 'capybara/cuprite'
 require_relative 'capybara_failure_logger'
 require_relative 'capybara_timeout_patch'
 
@@ -31,8 +31,12 @@ end
 
 Capybara.register_driver(:cuprite) do |app|
   Capybara::Cuprite::Driver.new(
-    app, window_size: [1200, 800],
-    process_timeout: 30
+    app,
+    window_size: [1200, 800],
+    process_timeout: 30,
+    broswer_options: {
+      'no-sandbox': nil
+    }
   )
 end
 
