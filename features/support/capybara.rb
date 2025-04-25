@@ -2,6 +2,7 @@
 
 require 'selenium/webdriver'
 require 'capybara'
+require "capybara/cuprite"
 require_relative 'capybara_failure_logger'
 require_relative 'capybara_timeout_patch'
 
@@ -28,5 +29,9 @@ Capybara.register_driver :chrome do |app|
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 end
 
+Capybara.register_driver(:cuprite) do |app|
+  Capybara::Cuprite::Driver.new(app, window_size: [1200, 800])
+end
+
 Capybara.default_max_wait_time = 10
-Capybara.javascript_driver = ENV.fetch('JS_DRIVER', 'headless_chrome').to_sym
+Capybara.javascript_driver = ENV.fetch('JS_DRIVER', 'cuprite').to_sym

@@ -204,6 +204,9 @@ GEM
       railties (>= 5.2, < 9)
     cucumber-tag-expressions (6.1.2)
     cucumber_github_formatter (0.1.0)
+    cuprite (0.15.1)
+      capybara (~> 3.0)
+      ferrum (~> 0.15.0)
     daemons (1.4.1)
     database_cleaner (2.1.0)
       database_cleaner-active_record (>= 2, < 3)
@@ -231,6 +234,11 @@ GEM
     factory_bot_rails (6.4.4)
       factory_bot (~> 6.5)
       railties (>= 5.0.0)
+    ferrum (0.15)
+      addressable (~> 2.5)
+      concurrent-ruby (~> 1.1)
+      webrick (~> 1.7)
+      websocket-driver (~> 0.7)
     ffi (1.17.2-arm64-darwin)
     ffi (1.17.2-x86_64-darwin)
     ffi (1.17.2-x86_64-linux-gnu)
@@ -641,6 +649,7 @@ DEPENDENCIES
   csv (~> 3.3)
   cucumber-rails
   cucumber_github_formatter
+  cuprite
   daemons
   database_cleaner
   delayed_job_active_record
