@@ -136,7 +136,11 @@ RSpec.describe Accession::Sample, :accession, type: :model do
 
     tags = sample.tags.by_group[:sample_name]
     sample_name_tags = xml
-    tags.each { |_label, tag| expect(sample_name_tags).to include("<#{tag.label}>#{tag.value}</#{tag.label}>") }
+    tags.each do |_label, tag|
+      expected_tag = tag.label.tr(' ', '_').upcase
+      expect(sample_name_tags).to include("<#{expected_tag}>#{tag.value}</#{expected_tag}>")
+    end
+
     sample_attributes_tags = xml
 
     tags = sample.tags.by_group[:sample_attributes]
