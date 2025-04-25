@@ -1,0 +1,13 @@
+---
+Confirm Element PhiX used:
+  name: Confirm Element PhiX used
+  workflow: Element Aviti
+  sorted: 0
+  lab_activity: true
+  sti_type: SetDescriptorsTask
+Loading:
+  name: Loading
+  workflow: Element Aviti
+  sorted: 1
+  lab_activity: true
+  sti_type: SetDescriptorsTask
