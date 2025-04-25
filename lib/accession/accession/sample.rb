@@ -44,10 +44,15 @@ module Accession
       tag_groups = tags.by_group
       xml = Builder::XmlMarkup.new
       xml.instruct!
+    
       xml.SAMPLE_SET(XML_NAMESPACE) do
         xml.SAMPLE(alias: ebi_alias) do
           xml.TITLE title if title.present?
-          xml.SAMPLE_NAME { tag_groups[:sample_name].each { |_k, tag| xml.tag!(tag.label, tag.value) } }
+          xml.SAMPLE_NAME do 
+            tag_groups[:sample_name].each do |_k, tag| 
+              xml.tag!(tag.label.tr(' ','_').upcase, tag.value)  
+            end
+          end
           xml.SAMPLE_ATTRIBUTES do
             tag_groups[:sample_attributes].each do |_k, tag|
               xml.SAMPLE_ATTRIBUTE do
