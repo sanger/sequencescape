@@ -320,10 +320,10 @@ percent_phix_requested:
       operator: :between
       formula1: "0"
       formula2: "100"
-      allowBlank: true
+      allowBlank: false
       showInputMessage: true
-      promptTitle: "PhiX requested"
-      prompt: "PhiX requested (between 0 and 100 inclusive)"
+      promptTitle: "% PhiX requested"
+      prompt: "% PhiX requested (between 0 and 100 inclusive)"
   conditional_formattings:
     empty_cell:
     is_text:
@@ -334,7 +334,7 @@ low_diversity:
     options:
       type: :list
       formula1: "$A$1:$A$2"
-      allowBlank: true
+      allowBlank: false
       showInputMessage: true
       showErrorMessage: true
       errorStyle: :stop
