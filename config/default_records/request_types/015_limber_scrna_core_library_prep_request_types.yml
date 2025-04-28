@@ -14,3 +14,4 @@ limber_scrna_core_library_prep:
     - LRC GEM-X 5p CITE SUP Input
   library_types:
     - Chromium single cell GEM-X 5p v3 GE
+    - Chromium single cell GEM-X 5p v3 cell surface protein
