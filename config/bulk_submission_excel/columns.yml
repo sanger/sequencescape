@@ -330,6 +330,7 @@ percent_phix_requested:
 low_diversity:
   heading: "Low Diversity"
   unlocked: true
+  attribute: :low_diversity
   validation:
     options:
       type: :list
