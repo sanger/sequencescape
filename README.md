@@ -148,8 +148,7 @@ command:
 docker compose -f docker-compose-dev.yml up
 ```
 
-**ABOUT RECREATE DOCKER IMAGE** If you ever need to recreate the image built on first start (because you made modifications
-to the Dockerfile file) you can run the building process again with:
+**ABOUT RECREATE DOCKER IMAGE** If you ever need to recreate the image built on first start (because you made modifications to the Dockerfile file or there have been dependency updates) you can re build the image again with (or see above for M1 Apple chip):
 
 ```shell
 docker compose build
@@ -263,6 +262,17 @@ For more warren actions, either use `bundle exec warren help` or see the
 
 You will also have to change the config in config/warren.yml from `type: log` to `type: broadcast` to get
 it to actually send messages in development mode.
+
+### Credentials
+
+Secrets are managed differently after the Rails 7.2 update. The setup can be done by running the command `bundle exec rails credentials:edit` locally
+
+This will create a `credentials.yml.enc` and `master.key` in the config directory
+
+You can then edit the credentials file with the following command:
+`VISUAL="nano --wait" bin/rails credentials:edit`
+
+These should not be committed to the github repo.
 
 ## Testing
 
@@ -480,6 +490,12 @@ As of the time of writing, there are three outcomes to a request made, with resp
   - The response is given as if a valid API key was provided.
   - The request is logged with the prefix "Request made without an API key" including information about the client.
   - The client application should be updated to use a valid API key in future.
+
+#### Documentation
+
+Example POST requests for all the Sequencscape API v2 resources are available to import into Postman REST Client.
+
+The file `Sequencescape API v2.postman_collection.json` is stored in the Pipeline Solutions Shared Network Drive (Finder > Go > Connect to Server > `smb://files-smb/pipeline_solutions`)
 
 ### Publishing AMQP Messages
 

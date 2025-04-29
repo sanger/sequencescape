@@ -153,7 +153,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
   def self.newer_than(object, timestamp) # rubocop:todo Metrics/CyclomaticComplexity
     return if object.nil? || timestamp.nil?
 
-    modified, object_timestamp = false, (object.respond_to?(:updated_at) ? object.updated_at : timestamp) || timestamp
+    _modified, object_timestamp = false, (object.respond_to?(:updated_at) ? object.updated_at : timestamp) || timestamp
     timestamp, modified = object_timestamp, true if object_timestamp > timestamp
     associations.each_value do |helper|
       helper.newer_than(helper.target(object), timestamp) { |t| timestamp, modified = t, true }

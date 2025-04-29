@@ -2,49 +2,72 @@
 
 module Api
   module V2
-    # @todo This documentation does not yet include a detailed description of what this resource represents.
-    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
-    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+    # Provides a JSON:API representation of {LotType}.
+    #
+    # A {LotType} governs the behaviour of a {Lot}
     #
     # @note This resource is immutable: its endpoint will not accept `POST`, `PATCH`, or `DELETE` requests.
     # @note Access this resource via the `/api/v2/lot_types/` endpoint.
     #
-    # Provides a JSON:API representation of {LotType}.
+    # @example GET request to fetch all lot types
+    #   GET /api/v2/lot_types/
     #
-    # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
-    # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
+    # @example GET request to fetch a specific lot type by ID
+    #   GET /api/v2/lot_types/123/
+    #
+    #
+    # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
+    # or the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class LotTypeResource < BaseResource
-      # Constants...
-
       immutable
-
-      # model_name / model_hint if required
 
       default_includes :uuid_object
 
-      # Associations:
-      has_one :target_purpose, write_once: true, class_name: 'Purpose'
-
+      ###
       # Attributes
+      ###
+
+      # @!attribute [r] uuid
+      #   @note This identifier is automatically assigned upon creation and cannot be modified.
+      #   @return [String] The universally unique identifier (UUID) of the lot type.
       attribute :uuid, readonly: true
+
+      # @!attribute [rw] name
+      #   The name of this lot type
+      #   @note This attribute must be unique.
+      #   @todo This resource is immutable; Update attribute to be read-only.
+      #   @return [String] The lot type name.
       attribute :name, write_once: true
+
+      # @!attribute [rw] template_type
+      #   The type of template associated with this lot type. This is derived dynamically based on the internal
+      #   class name of the template.
+      #   @todo This resource is immutable; Update attribute to be read-only.
+      #   @return [String] The template type.
       attribute :template_type, write_once: true
 
-      # Filters
+      ###
+      # Relationships
+      ###
 
-      # Custom methods
-      # These shouldn't be used for business logic, and a more about
-      # I/O and isolating implementation details.
+      # @!attribute [rw] target_purpose
+      #   The {Purpose} that this lot type is associated with
+      #   @todo This resource is immutable; Update relationship to be read-only.
+      #   @return [PurposeResource] The associated purpose of this lot type.
+      has_one :target_purpose, write_once: true, class_name: 'Purpose'
 
-      # Our internal class names don't make much sense via the API, so we expose
-      # the corresponding resource type instead.
+      ###
+      # Custom Methods
+      ###
+
+      # Retrieves the template type based on the internal class name.
+      #
+      # @return [String] The template type e.g 'tag_layout_template'
       def template_type
         template_type = _model.template_class.underscore
         self.class._model_hints[template_type] || template_type
       end
-
-      # Class method overrides
     end
   end
 end

@@ -10,7 +10,7 @@ class CherrypickTask::PickTarget
   end
 
   # Base class for different pick target beha
-  class Base # rubocop:todo Metrics/ClassLength
+  class Base
     def initialize(template, asset_shape = nil, partial = nil)
       @wells = []
       @size = template.size
@@ -19,9 +19,7 @@ class CherrypickTask::PickTarget
       add_any_wells_from_template_or_partial(@wells)
     end
 
-    def empty?
-      @wells.empty?
-    end
+    delegate :empty?, to: :@wells
 
     def content
       @wells
