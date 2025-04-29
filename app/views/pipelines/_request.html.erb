@@ -21,11 +21,7 @@
   <% if request.asset %>
     <td><%=  link_to "#{request.asset.human_barcode}", receptacle_path(request.asset) %></td>
     <td><%= request_samples_count %></td>
-    <td><%= request.asset.concentration %></td>
-    <td><%= request.asset.scanned_in_date %></td>
-    <td><%= request.asset.tag_count_name %></td>
   <% else %>
-    <td></td>
     <td></td>
     <td></td>
   <% end %>
@@ -33,6 +29,15 @@
     <td  title='<%="#{information_type.key}"%>'>
       <%= h(request.request_metadata[information_type.key]) %>
     </td>
+  <% end %>
+  <% if request.asset %>
+    <td><%= request.asset.concentration %></td>
+    <td><%= request.asset.scanned_in_date %></td>
+    <td><%= request.asset.tag_count_name %></td>
+  <% else %>
+    <td></td>
+    <td></td>
+    <td></td>
   <% end %>
   <td><%= truncate(request.try(:submission).try(:study_names), separator: ' ') %></td>
 </tr>
