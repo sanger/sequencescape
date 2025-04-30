@@ -34,8 +34,8 @@ RSpec.describe Accession::Tag, :accession, type: :model do
   end
 
   it 'has a label' do
-    expect(described_class.new(name: :tag_1).label).to eq('TAG_1')
-    expect(described_class.new(name: :tag_1, ebi_name: :ebi_tag).label).to eq('EBI_TAG')
+    expect(described_class.new(name: :tag_1).label).to eq('tag 1')
+    expect(described_class.new(name: :tag_1, ebi_name: :ebi_tag).label).to eq('ebi tag')
   end
 
   it 'can have an array express label' do
