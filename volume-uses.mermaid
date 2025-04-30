@@ -7,7 +7,8 @@ flowchart LR
         %% Users
         User_BioRes(fa:fa-user BioResource)
         User_SeqOps(fa:fa-user SeqOps)
-        User_SamplePrep(fa:fa-user Sample Prep & Volume Track Instr)
+        User_SamplePrep(fa:fa-user Sample Prep)
+        User_VolTrackInstr(fa:fa-robot Volume Track Instr)
         User_CherryPick(fa:fa-user Cherry Pick)
         User_SSR(fa:fa-user SSRs)
         %% Interface
@@ -27,12 +28,11 @@ flowchart LR
         DB_MLWH_SampleCustMeasVol(fa:fa-table sample.customer_measured_volume)
 
     %% Groupings of nodes
-        subgraph Users
+        subgraph Providers
             User_BioRes
             User_SeqOps
-            User_SamplePrep
-            User_CherryPick
             User_SSR
+            User_VolTrackInstr
         end
         subgraph Limber
             Pg_LB_Tube
@@ -58,14 +58,17 @@ flowchart LR
         subgraph MLWH
             DB_MLWH_SampleCustMeasVol
         end
+        subgraph Consumers
+            User_SamplePrep
+            User_CherryPick
+        end
 
 
     %% Edge connections between nodes
         PL_Car07c --> User_BioRes --> Mn_SampleVolCol -- upload --> DB_SS_SampleMetDatVol
         Mn_SampleVolCol --> DB_SS_QcResultCusSup
-        User_SamplePrep --> DB_SS_QcResultVolChk
+        User_VolTrackInstr --> DB_SS_QcResultVolChk --> User_SamplePrep
         User_SeqOps -- pre-seq vol check --> Pg_LB_Tube
-        User_CherryPick --> Pg_SS_QcResults
 
         Pg_LB_Tube --> DB_SS_ReceptacleVol
         Pg_LB_Tube --> DB_SS_QcResultEstVol
@@ -73,6 +76,7 @@ flowchart LR
         DB_SS_QcResultEstVol --> Pg_SS_QcResults
         DB_SS_QcResultVolChk --> Pg_SS_QcResults
         DB_SS_QcResultCusSup --> Pg_SS_QcResults
+        Pg_SS_QcResults --> User_CherryPick
 
         DB_SS_SampleMetDatVol --> Pg_SS_Sample
         Pg_SS_LabView --> DB_SS_ReceptacleVol --> Pg_SS_Receptacle
@@ -88,7 +92,7 @@ flowchart LR
         classDef SequencescapeSub fill:#226;
         classDef MLWH fill:#444;
 
-        class Users Users;
+        class Providers,Consumers Users;
         class Limber Limber;
         class Sequencescape Sequencescape;
         class Graph_SS_SMV,Graph_SS_RV,Graph_SS_QC SequencescapeSub;
