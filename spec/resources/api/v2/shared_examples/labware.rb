@@ -8,6 +8,7 @@ shared_examples 'a labware resource' do
   it { is_expected.to have_readonly_attribute :state }
   it { is_expected.to have_readonly_attribute :created_at }
   it { is_expected.to have_readonly_attribute :updated_at }
+  it { is_expected.to have_readonly_attribute :retention_instruction }
 
   # Relationships
   it { is_expected.to have_a_write_once_has_one(:purpose).with_class_name('Purpose') }
