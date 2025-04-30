@@ -10,6 +10,12 @@ set -o nounset
 
 TIMEOUT=120
 
+# Remove a potentially pre-existing server.pid for Rails.
+rm -f /code/tmp/pids/server.pid
+
+# Install any missing packages - very useful for development without rebuilding the image
+bundle install
+
 ./wait_for_connection.sh "${DBHOST}" "${DBPORT}" "${TIMEOUT}"
 
 if [ "${RESET_DATABASE:-}" = "true" ]; then
