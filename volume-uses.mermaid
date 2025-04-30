@@ -1,0 +1,95 @@
+---
+title: Use Cases of Volumes in Sequencescape
+---
+flowchart LR
+    %% Nodes
+        PL_Car07c(fa:fa-stairs Cardinal & 007c)
+        %% Users
+        User_BioRes(fa:fa-user BioResource)
+        User_SeqOps(fa:fa-user SeqOps)
+        User_SamplePrep(fa:fa-user Sample Prep & Volume Track Instr)
+        User_CherryPick(fa:fa-user Cherry Pick)
+        User_SSR(fa:fa-user SSRs)
+        %% Interface
+        Pg_LB_Tube(fa:fa-table-list Limber Tube Page)
+        Pg_SS_Sample(fa:fa-table-list Sequencescape Sample Page)
+        Pg_SS_LabView(fa:fa-table-list Sequencescape Lab View Page)
+        Pg_SS_Receptacle(fa:fa-table-list Sequencescape Receptacle Page)
+        Pg_SS_QcResults(fa:fa-table-list Sequencescape QC Results Page)
+        Pg_SS_QcFileLabware(fa:fa-table-list Sequencescape QC Files on Labware Page)
+        %% Data
+        Mn_SampleVolCol(fa:fa-table Sample Manifest 'volume' column)
+        DB_SS_ReceptacleVol(fa:fa-database receptacle.volume)
+        DB_SS_SampleMetDatVol(fa:fa-database sample_metadata.volume)
+        DB_SS_QcResultVolChk(fa:fa-database qc_result.value: volume-check)
+        DB_SS_QcResultCusSup(fa:fa-database qc_result.value: customer-supplied)
+        DB_SS_QcResultEstVol(fa:fa-database qc_result.value: estimated)
+        DB_MLWH_SampleCustMeasVol(fa:fa-table sample.customer_measured_volume)
+
+    %% Groupings of nodes
+        subgraph Users
+            User_BioRes
+            User_SeqOps
+            User_SamplePrep
+            User_CherryPick
+            User_SSR
+        end
+        subgraph Limber
+            Pg_LB_Tube
+        end
+        subgraph Sequencescape
+            Pg_SS_QcFileLabware
+            subgraph Graph_SS_SMV["Sample Metadata Volume"]
+                DB_SS_SampleMetDatVol
+                Pg_SS_Sample
+            end
+            subgraph Graph_SS_RV["Receptacle Volume"]
+                Pg_SS_LabView
+                DB_SS_ReceptacleVol
+                Pg_SS_Receptacle
+            end
+            subgraph Graph_SS_QC["QC Results"]
+                DB_SS_QcResultEstVol
+                DB_SS_QcResultVolChk
+                DB_SS_QcResultCusSup
+                Pg_SS_QcResults
+            end
+        end
+        subgraph MLWH
+            DB_MLWH_SampleCustMeasVol
+        end
+
+
+    %% Edge connections between nodes
+        PL_Car07c --> User_BioRes --> Mn_SampleVolCol -- upload --> DB_SS_SampleMetDatVol
+        Mn_SampleVolCol --> DB_SS_QcResultCusSup
+        User_SamplePrep --> DB_SS_QcResultVolChk
+        User_SeqOps -- pre-seq vol check --> Pg_LB_Tube
+        User_CherryPick --> Pg_SS_QcResults
+
+        Pg_LB_Tube --> DB_SS_ReceptacleVol
+        Pg_LB_Tube --> DB_SS_QcResultEstVol
+
+        DB_SS_QcResultEstVol --> Pg_SS_QcResults
+        DB_SS_QcResultVolChk --> Pg_SS_QcResults
+        DB_SS_QcResultCusSup --> Pg_SS_QcResults
+
+        DB_SS_SampleMetDatVol --> Pg_SS_Sample
+        Pg_SS_LabView --> DB_SS_ReceptacleVol --> Pg_SS_Receptacle
+
+        DB_SS_SampleMetDatVol --> DB_MLWH_SampleCustMeasVol
+
+        User_SSR --> Pg_SS_QcFileLabware
+
+    %% Subgraph styling
+        classDef Users fill:#839;
+        classDef Limber fill:#66f;
+        classDef Sequencescape fill:#339;
+        classDef SequencescapeSub fill:#226;
+        classDef MLWH fill:#444;
+
+        class Users Users;
+        class Limber Limber;
+        class Sequencescape Sequencescape;
+        class Graph_SS_SMV,Graph_SS_RV,Graph_SS_QC SequencescapeSub;
+        class MLWH MLWH;
