@@ -61,7 +61,7 @@ module Cherrypick::VolumeByNanoGrams
       desired_volume = [(target_ng.to_f / source_concentration), robot_minimum_picking_volume].max
     end
     requested_volume = [source_volume, desired_volume].min
-    buffer_volume = calculate_buffer_volume(minimum_volume, requested_volume, robot_minimum_picking_volume)
+    buffer_volume = calculate_buffer_volume(minimum_volume, requested_volume)
     requested_volume = maximum_volume if requested_volume > maximum_volume
 
     well_attribute.current_volume = minimum_volume
@@ -77,11 +77,10 @@ module Cherrypick::VolumeByNanoGrams
 
   private
 
-  def calculate_buffer_volume(final_volume_desired, volume_so_far, robot_minimum_picking_volume)
+  def calculate_buffer_volume(final_volume_desired, volume_so_far)
     buffer_to_add = final_volume_desired - volume_so_far
     return 0 if buffer_to_add <= 0
 
-    # If we're adding buffer, it needs to be at least the robot_minimum_picking_volume
-    buffer_to_add.clamp(robot_minimum_picking_volume..)
+    buffer_to_add
   end
 end
