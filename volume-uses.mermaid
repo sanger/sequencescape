@@ -7,7 +7,8 @@ flowchart LR
         %% Users
         User_BioRes(fa:fa-user BioResource)
         User_SeqOps(fa:fa-user SeqOps)
-        User_SamplePrep(fa:fa-user Sample Prep)
+        Provider_SamplePrep(fa:fa-user Sample Prep)
+        Consumer_SamplePrep(fa:fa-user Sample Prep)
         User_VolTrackInstr(fa:fa-robot Volume Track Instr)
         User_CherryPick(fa:fa-user Cherry Pick)
         User_SSR(fa:fa-user SSRs)
@@ -49,9 +50,10 @@ flowchart LR
     %% Groupings of nodes
         subgraph Providers
             User_BioRes
-            User_VolTrackInstr
+            Provider_SamplePrep
             User_SeqOps
             User_SSR
+            %% User_VolTrackInstr
             Who_Provides?
         end
         subgraph Limber
@@ -107,8 +109,8 @@ flowchart LR
             DB_MLWH_SampleCustMeasVol
         end
         subgraph Consumers
-            User_SamplePrep
             User_CherryPick
+            Consumer_SamplePrep
             Who_Consumes?
         end
 
@@ -116,7 +118,7 @@ flowchart LR
     %% Edge connections between nodes
         PL_Car07c --> User_BioRes --> Mn_SampleVolCol --> Pg_SS_SampleManifestUpload --> DB_SS_SampleMetDatVol & DB_SS_QcResultVolCusSup
 
-        User_VolTrackInstr --> CP_SS_CronVolumeCheck --> DB_SS_QcResultVolChk --> User_SamplePrep
+        Provider_SamplePrep --> User_VolTrackInstr --> CP_SS_CronVolumeCheck --> DB_SS_QcResultVolChk
         User_SeqOps -- pre-seq vol check --> Pg_LB_Tube
 
         Pg_LB_Tube --> API_SS_QcAssayResource
@@ -135,7 +137,7 @@ flowchart LR
         Pg_SS_QcStudyReports --> Who_Consumes?
 
         %% Cherry Pick
-        Who_Provides? --> CP_SS_DesiredVolume --> Pg_SS_CherryPickWorksheet --> User_CherryPick --> Who_Consumes?
+        Provider_SamplePrep--> CP_SS_DesiredVolume --> Pg_SS_CherryPickWorksheet --> User_CherryPick --> Consumer_SamplePrep
         CP_SS_WellAttrEstVol -- Amount only --> Pg_SS_CherryPickWorksheet
 
         Pg_SS_CherryPickWorksheet --> CP_SS_RobotVerfication
