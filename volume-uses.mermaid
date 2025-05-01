@@ -2,7 +2,7 @@
 title: Use Cases of Volumes in Sequencescape
 ---
 %%{ init: { 
-    'flowchart': { 'curve': 'bumpX' },  
+    'flowchart': { 'curve': 'curvy' },
     'theme': 'default'
   }
 }%%
@@ -22,7 +22,7 @@ flowchart LR
         Pg_SS_QcFileLabware(fa:fa-table-list Sequencescape QC Files on Labware Page)
         Pg_SS_QcResults(fa:fa-table-list Sequencescape QC Results Page)
         Pg_SS_QcStudyReports(fa:fa-table-list Sequencescape QC Study Reports Download)
-        Pg_SS_Receptacle(fa:fa-table-list Sequencescape Receptacle Page)
+        Pg_SS_Receptacle(fa:fa-table-list Sequencescape Labware Receptacle Page)
         Pg_SS_Sample(fa:fa-table-list Sequencescape Sample Page)
         Pg_SS_SampleManifestUpload(fa:fa-table-list Sequencescape Sample Manifest Upload)
         %% Components
@@ -39,6 +39,7 @@ flowchart LR
         API_SS_VolumeUpdateResource(fa:fa-arrow-right-arrow-left API Volume Update Resource)
         %% Data
         Mn_SampleVolCol(fa:fa-table Sample Manifest 'volume' column)
+        DB_SS_TriggerIniVol(fa:fa-trigger Triggers: insert_initial_volume / update_initial_volume)
         DB_SS_ReceptaclesVol(fa:fa-database receptacles.volume)
         DB_SS_SampleMetDatVol(fa:fa-database sample_metadata.volume)
         DB_SS_QcResultVol(fa:fa-database qc_result - key:volume)
@@ -57,7 +58,6 @@ flowchart LR
             User_SeqOps
             User_SSR
             %% User_VolCheckInstr
-            Who_Provides?
         end
         subgraph Limber
             Pg_LB_Tube
@@ -101,6 +101,8 @@ flowchart LR
                 DB_SS_WellAttrMeasVol
                 DB_SS_WellAttrMeasVol --> DB_SS_WellAttrIniVol
                 DB_SS_WellAttrMeasVol --> DB_SS_WellAttrCurrVol
+                DB_SS_TriggerIniVol
+                DB_SS_WellAttrMeasVol --> DB_SS_TriggerIniVol -- "If initial_volume is Null" --> DB_SS_WellAttrIniVol
                 DB_SS_ReceptaclesVol
             end
             subgraph Graph_SS_API["SS API"]
@@ -113,7 +115,6 @@ flowchart LR
         end
         subgraph Consumers
             Consumer_SamplePrep
-            Who_Consumes?
         end
 
     %% Edge connections between nodes
@@ -124,34 +125,37 @@ flowchart LR
 
         Pg_LB_Tube --> API_SS_QcAssayResource
         API_SS_QcAssayResource --> DB_SS_QcResultVolEst
-        API_SS_QcAssayResource -- TBC --> DB_SS_ReceptaclesVol
+        API_SS_QcAssayResource -. TBC .-> DB_SS_ReceptaclesVol
 
-        Who_Provides? --> AssetAudits --> API_SS_VolumeUpdateResource --> DB_SS_WellAttrCurrVol
+        Providers -.-> AssetAudits --> API_SS_VolumeUpdateResource --> DB_SS_WellAttrCurrVol
 
-        DB_SS_QcResultVol -- Most recent --> CP_SS_QcResults_MeasVol --> Pg_SS_QcResults  --> Who_Consumes?
-        DB_SS_WellAttrCurrVol -- Priority --> CP_SS_WellAttrEstVol
-        DB_SS_WellAttrMeasVol --> CP_SS_WellAttrEstVol
+        DB_SS_QcResultVol -- Most recent --> CP_SS_QcResults_MeasVol --> Pg_SS_QcResults  -.-> Consumers
+        DB_SS_WellAttrCurrVol -- Preferred --> CP_SS_WellAttrEstVol
+        DB_SS_WellAttrMeasVol -- Fallback --> CP_SS_WellAttrEstVol
 
         DB_SS_WellAttrMeasVol --> CP_SS_StudyReports_MeasVol --> Pg_SS_QcStudyReports
         DB_SS_WellAttrCurrVol --> CP_SS_StudyReports_CurrentVol --> Pg_SS_QcStudyReports
         DB_SS_WellAttrIniVol --> CP_SS_StudyReports_InitialVol --> Pg_SS_QcStudyReports
-        Pg_SS_QcStudyReports --> Who_Consumes?
+        Pg_SS_QcStudyReports -.-> Consumers
 
         %% Cherry Pick
         User_SSR --> CP_SS_DesiredVolume --> Pg_SS_CherryPickWorksheet --> Consumer_SamplePrep
-        CP_SS_WellAttrEstVol -- Amount only --> Pg_SS_CherryPickWorksheet
+        CP_SS_WellAttrEstVol -- Amount pick only --> Pg_SS_CherryPickWorksheet
 
         Pg_SS_CherryPickWorksheet --> CP_SS_RobotVerfication
         %% Bed Verification
-        DB_SS_WellAttrCurrVol --> CP_SS_RobotVerfication --> DB_SS_WellAttrCurrVol
+        DB_SS_WellAttrCurrVol --> CP_SS_RobotVerfication -- <<< --> DB_SS_WellAttrCurrVol
         Provider_SamplePrep --> CP_SS_RobotVerfication
 
-        DB_SS_SampleMetDatVol --> Pg_SS_Sample --> Who_Consumes?
-        Who_Provides? --> Pg_SS_LabView --> DB_SS_ReceptaclesVol --> Pg_SS_Receptacle --> Who_Consumes?
+        DB_SS_SampleMetDatVol --> Pg_SS_Sample -.-> Consumers
+        Providers -.-> Pg_SS_LabView --> DB_SS_ReceptaclesVol --> Pg_SS_Receptacle -.-> Consumers
 
-        DB_SS_SampleMetDatVol --> DB_MLWH_SampleCustMeasVol --> Who_Consumes?
+        DB_SS_SampleMetDatVol --> DB_MLWH_SampleCustMeasVol -.-> Consumers
 
-        User_SSR --> Pg_SS_QcFileLabware
+        User_SSR --> Pg_SS_QcFileLabware --> DB_SS_QcResultVol
+
+    %% Fake links for styling
+        Graph_SS_API ~~~~ Graph_SS_DB
 
     %% Subgraph styling
         classDef Users fill:#FFD6F1;
