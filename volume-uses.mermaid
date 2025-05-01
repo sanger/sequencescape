@@ -8,14 +8,12 @@ title: Use Cases of Volumes in Sequencescape
 }%%
 flowchart LR
     %% Nodes
-        PL_Car07c(fa:fa-stairs Cardinal & 007c)
         %% Users
-        User_BioRes(fa:fa-user BioResource)
+        User_ServiceUsers(fa:fa-user Service Users)
         User_SeqOps(fa:fa-user SeqOps)
         Provider_SamplePrep(fa:fa-user Sample Prep)
         Consumer_SamplePrep(fa:fa-user Sample Prep)
-        User_VolTrackInstr(fa:fa-robot Volume Track Instr)
-        User_CherryPick(fa:fa-user Cherry Pick)
+        User_VolCheckInstr(fa:fa-robot Volume Check Instr)
         User_SSR(fa:fa-user SSRs)
         %% Interface
         Pg_LB_Tube(fa:fa-table-list Limber Tube Page)
@@ -54,11 +52,11 @@ flowchart LR
 
     %% Groupings of nodes
         subgraph Providers
-            User_BioRes
+            User_ServiceUsers
             Provider_SamplePrep
             User_SeqOps
             User_SSR
-            %% User_VolTrackInstr
+            %% User_VolCheckInstr
             Who_Provides?
         end
         subgraph Limber
@@ -114,15 +112,14 @@ flowchart LR
             DB_MLWH_SampleCustMeasVol
         end
         subgraph Consumers
-            User_CherryPick
             Consumer_SamplePrep
             Who_Consumes?
         end
 
     %% Edge connections between nodes
-        PL_Car07c --> User_BioRes --> Mn_SampleVolCol --> Pg_SS_SampleManifestUpload --> DB_SS_SampleMetDatVol & DB_SS_QcResultVolCusSup
+        User_ServiceUsers --> Mn_SampleVolCol --> Pg_SS_SampleManifestUpload --> DB_SS_SampleMetDatVol & DB_SS_QcResultVolCusSup
 
-        Provider_SamplePrep --> User_VolTrackInstr --> CP_SS_CronVolumeCheck --> DB_SS_QcResultVolChk
+        Provider_SamplePrep --> User_VolCheckInstr --> CP_SS_CronVolumeCheck --> DB_SS_QcResultVolChk
         User_SeqOps -- pre-seq vol check --> Pg_LB_Tube
 
         Pg_LB_Tube --> API_SS_QcAssayResource
@@ -131,7 +128,7 @@ flowchart LR
 
         Who_Provides? --> AssetAudits --> API_SS_VolumeUpdateResource --> DB_SS_WellAttrCurrVol
 
-        DB_SS_QcResultVol -- most recent --> CP_SS_QcResults_MeasVol --> Pg_SS_QcResults  --> User_CherryPick
+        DB_SS_QcResultVol -- most recent --> CP_SS_QcResults_MeasVol --> Pg_SS_QcResults  --> Who_Consumes?
         DB_SS_WellAttrCurrVol -- priority --> CP_SS_WellAttrEstVol
         DB_SS_WellAttrMeasVol --> CP_SS_WellAttrEstVol
 
@@ -141,13 +138,13 @@ flowchart LR
         Pg_SS_QcStudyReports --> Who_Consumes?
 
         %% Cherry Pick
-        Provider_SamplePrep--> CP_SS_DesiredVolume --> Pg_SS_CherryPickWorksheet --> User_CherryPick --> Consumer_SamplePrep
+        User_SSR --> CP_SS_DesiredVolume --> Pg_SS_CherryPickWorksheet --> Consumer_SamplePrep
         CP_SS_WellAttrEstVol -- Amount only --> Pg_SS_CherryPickWorksheet
 
         Pg_SS_CherryPickWorksheet --> CP_SS_RobotVerfication
         %% Bed Verification
         DB_SS_WellAttrCurrVol --> CP_SS_RobotVerfication --> DB_SS_WellAttrCurrVol
-        Who_Provides? --> CP_SS_RobotVerfication
+        Provider_SamplePrep --> CP_SS_RobotVerfication
 
         DB_SS_SampleMetDatVol --> Pg_SS_Sample --> Who_Consumes?
         Who_Provides? --> Pg_SS_LabView --> DB_SS_ReceptaclesVol --> Pg_SS_Receptacle --> Who_Consumes?
