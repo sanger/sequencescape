@@ -13,7 +13,7 @@ flowchart LR
         User_SeqOps(fa:fa-user SeqOps)
         Provider_SamplePrep(fa:fa-user Sample Prep)
         Consumer_SamplePrep(fa:fa-user Sample Prep)
-        User_VolCheckInstr(fa:fa-robot Volume Check Instr)
+        User_VolCheckInstr(fa:fa-robot Volume Check Instrument)
         User_SSR(fa:fa-user SSRs)
         %% Interface
         Pg_LB_Tube(fa:fa-table-list Limber Tube Page)
@@ -89,9 +89,9 @@ flowchart LR
             subgraph Graph_SS_CP["Cherry Pick"]
                 CP_SS_DesiredVolume
                 Pg_SS_CherryPickWorksheet
-            end
-            subgraph Graph_SS_BedVeri["Bed Verification"]
-                CP_SS_RobotVerfication
+                subgraph Graph_SS_BedVeri["Bed Verification"]
+                    CP_SS_RobotVerfication
+                end
             end
             subgraph Graph_SS_DB["SS Database"]
                 DB_SS_QcResultVol
