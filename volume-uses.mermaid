@@ -1,6 +1,11 @@
 ---
 title: Use Cases of Volumes in Sequencescape
 ---
+%%{ init: { 
+    'flowchart': { 'curve': 'bumpX' },  
+    'theme': 'default'
+  }
+}%%
 flowchart LR
     %% Nodes
         PL_Car07c(fa:fa-stairs Cardinal & 007c)
@@ -114,7 +119,6 @@ flowchart LR
             Who_Consumes?
         end
 
-
     %% Edge connections between nodes
         PL_Car07c --> User_BioRes --> Mn_SampleVolCol --> Pg_SS_SampleManifestUpload --> DB_SS_SampleMetDatVol & DB_SS_QcResultVolCusSup
 
@@ -153,16 +157,16 @@ flowchart LR
         User_SSR --> Pg_SS_QcFileLabware
 
     %% Subgraph styling
-        classDef Users fill:#839;
-        classDef Limber fill:#66f;
-        classDef AssetAudits fill:#33b;
-        classDef Sequencescape fill:#339;
-        classDef SequencescapeSub fill:#226;
-        classDef MLWH fill:#444;
+        classDef Users fill:#FFD6F1;
+        classDef Application fill:#adecff;
+        classDef Sequencescape fill:#adccf6;
+        classDef SequencescapeSub fill:#ADDCFB;
+        classDef SequencescapeOrig fill:#ADACEC;
+        classDef MLWH fill:#f0f0f0;
 
-        %% class Providers,Consumers Users;
-        %% class Limber Limber;
-        %% class AssetAudits AssetAudits;
-        %% class Sequencescape Sequencescape;
-        %% class Graph_SS_SMV,Graph_SS_RV,Graph_SS_QC SequencescapeSub;
-        %% class MLWH MLWH;
+        class Providers,Consumers Users;
+        class AssetAudits,Limber,MLWH Application;
+        class Sequencescape Sequencescape;
+        class Graph_SS_API,Graph_SS_DB SequencescapeSub;
+        class Graph_SS_SMV,Graph_SS_RV,Graph_SS_QC SequencescapeOrig;
+        class MLWH MLWH;
