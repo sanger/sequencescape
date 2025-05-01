@@ -13,14 +13,18 @@ flowchart LR
         User_SSR(fa:fa-user SSRs)
         %% Interface
         Pg_LB_Tube(fa:fa-table-list Limber Tube Page)
-        PG_SS_SampleManifestUpload(fa:fa-table-list Sequencescape Sample Manifest Upload)
-        Pg_SS_Sample(fa:fa-table-list Sequencescape Sample Page)
+        Pg_SS_CherryPickWorksheet(fa:fa-table-list Sequencescape Cherry Pick Worksheet)
         Pg_SS_LabView(fa:fa-table-list Sequencescape Lab View Page)
-        Pg_SS_Receptacle(fa:fa-table-list Sequencescape Receptacle Page)
-        Pg_SS_QcResults(fa:fa-table-list Sequencescape QC Results Page)
         Pg_SS_QcFileLabware(fa:fa-table-list Sequencescape QC Files on Labware Page)
+        Pg_SS_QcResults(fa:fa-table-list Sequencescape QC Results Page)
         Pg_SS_QcStudyReports(fa:fa-table-list Sequencescape QC Study Reports Download)
+        Pg_SS_Receptacle(fa:fa-table-list Sequencescape Receptacle Page)
+        Pg_SS_Sample(fa:fa-table-list Sequencescape Sample Page)
+        Pg_SS_SampleManifestUpload(fa:fa-table-list Sequencescape Sample Manifest Upload)
         %% Components
+        CP_SS_DesiredVolume(fa:fa-table-list User Desired Volume)
+        CP_SS_CronVolumeCheck(fa:fa-clock Volume Check)
+        CP_SS_RobotVerfication(Robot Verification: reduce_source_volume)
         CP_SS_WellAttrEstVol(fa:fa-table-list Well Attribute: Estimated Volume)
         CP_SS_QcResults_MeasVol(Results: Measured Volume)
         CP_SS_StudyReports_MeasVol(Study QC Report: measured_volume)
@@ -28,6 +32,7 @@ flowchart LR
         CP_SS_StudyReports_InitialVol(Study QC Report: initial_volume)
         %% API
         API_SS_QcAssayResource(fa:fa-arrow-right-arrow-left API QcAssay Resource)
+        API_SS_VolumeUpdateResource(fa:fa-arrow-right-arrow-left API Volume Update Resource)
         %% Data
         Mn_SampleVolCol(fa:fa-table Sample Manifest 'volume' column)
         DB_SS_ReceptaclesVol(fa:fa-database receptacles.volume)
@@ -44,20 +49,19 @@ flowchart LR
     %% Groupings of nodes
         subgraph Providers
             User_BioRes
+            User_VolTrackInstr
             User_SeqOps
             User_SSR
-            User_VolTrackInstr
+            Who_Provides?
         end
         subgraph Limber
             Pg_LB_Tube
         end
         subgraph Sequencescape
-            CP_SS_StudyReports_CurrentVol
-            CP_SS_StudyReports_InitialVol
-            CP_SS_StudyReports_MeasVol
+            CP_SS_CronVolumeCheck
+            CP_SS_WellAttrEstVol
             Pg_SS_QcFileLabware
-            Pg_SS_QcStudyReports
-            PG_SS_SampleManifestUpload
+            Pg_SS_SampleManifestUpload
 
             subgraph Graph_SS_SMV["Sample Metadata Volume"]
                 DB_SS_SampleMetDatVol
@@ -65,33 +69,38 @@ flowchart LR
             end
             subgraph Graph_SS_RV["Receptacle Volume"]
                 Pg_SS_LabView
-                DB_SS_ReceptaclesVol
                 Pg_SS_Receptacle
             end
             subgraph Graph_SS_QC["QC Results"]
                 CP_SS_QcResults_MeasVol
                 Pg_SS_QcResults
             end
+            subgraph Graph_SS_SR["Study QC Report"]
+                CP_SS_StudyReports_MeasVol
+                CP_SS_StudyReports_CurrentVol
+                CP_SS_StudyReports_InitialVol
+                Pg_SS_QcStudyReports
+            end
             subgraph Graph_SS_CP["Cherry Pick"]
-
+                CP_SS_DesiredVolume
+                Pg_SS_CherryPickWorksheet
             end
             subgraph Graph_SS_BedVeri["Bed Verification"]
-
+                CP_SS_RobotVerfication
             end
-            subgraph Graph_SS_WellAttr["Well Attribute"]
-                CP_SS_WellAttrEstVol
-            end
-            subgraph Graph_SS_DB
+            subgraph Graph_SS_DB["SS Database"]
                 DB_SS_QcResultVol
                 DB_SS_QcResultVolChk --> DB_SS_QcResultVol
                 DB_SS_QcResultVolEst --> DB_SS_QcResultVol
                 DB_SS_QcResultVolCusSup --> DB_SS_QcResultVol
-                DB_SS_WellAttrIniVol
-                DB_SS_WellAttrCurrVol
                 DB_SS_WellAttrMeasVol
+                DB_SS_WellAttrMeasVol --> DB_SS_WellAttrIniVol
+                DB_SS_WellAttrMeasVol --> DB_SS_WellAttrCurrVol
+                DB_SS_ReceptaclesVol
             end
-            subgraph Graph_SS_API
+            subgraph Graph_SS_API["SS API"]
                 API_SS_QcAssayResource
+                API_SS_VolumeUpdateResource
             end
         end
         subgraph MLWH
@@ -100,45 +109,58 @@ flowchart LR
         subgraph Consumers
             User_SamplePrep
             User_CherryPick
-            Who?
+            Who_Consumes?
         end
 
 
     %% Edge connections between nodes
-        PL_Car07c --> User_BioRes --> Mn_SampleVolCol --> PG_SS_SampleManifestUpload --> DB_SS_SampleMetDatVol & DB_SS_QcResultVolCusSup
+        PL_Car07c --> User_BioRes --> Mn_SampleVolCol --> Pg_SS_SampleManifestUpload --> DB_SS_SampleMetDatVol & DB_SS_QcResultVolCusSup
 
-        User_VolTrackInstr --> DB_SS_QcResultVolChk --> User_SamplePrep
+        User_VolTrackInstr --> CP_SS_CronVolumeCheck --> DB_SS_QcResultVolChk --> User_SamplePrep
         User_SeqOps -- pre-seq vol check --> Pg_LB_Tube
 
-        Pg_LB_Tube --> API_SS_QcAssayResource --> DB_SS_ReceptaclesVol & DB_SS_QcResultVolEst
+        Pg_LB_Tube --> API_SS_QcAssayResource
+        API_SS_QcAssayResource --> DB_SS_QcResultVolEst
+        API_SS_QcAssayResource -- TBC --> DB_SS_ReceptaclesVol
 
-        DB_SS_QcResultVol -- most recent --> CP_SS_QcResults_MeasVol --> Pg_SS_QcResults
-        CP_SS_WellAttrEstVol --> Pg_SS_QcResults
-        DB_SS_QcResultVolChk --> Pg_SS_QcResults
-        DB_SS_QcResultVolCusSup --> Pg_SS_QcResults
-        Pg_SS_QcResults --> User_CherryPick
+        Who_Provides? --> AssetAudits --> API_SS_VolumeUpdateResource --> DB_SS_WellAttrCurrVol
+
+        DB_SS_QcResultVol -- most recent --> CP_SS_QcResults_MeasVol --> Pg_SS_QcResults  --> User_CherryPick
+        DB_SS_WellAttrCurrVol -- priority --> CP_SS_WellAttrEstVol
+        DB_SS_WellAttrMeasVol --> CP_SS_WellAttrEstVol
 
         DB_SS_WellAttrMeasVol --> CP_SS_StudyReports_MeasVol --> Pg_SS_QcStudyReports
         DB_SS_WellAttrCurrVol --> CP_SS_StudyReports_CurrentVol --> Pg_SS_QcStudyReports
         DB_SS_WellAttrIniVol --> CP_SS_StudyReports_InitialVol --> Pg_SS_QcStudyReports
-        Pg_SS_QcStudyReports --> Who?
+        Pg_SS_QcStudyReports --> Who_Consumes?
 
-        DB_SS_SampleMetDatVol --> Pg_SS_Sample --> Who?
-        Pg_SS_LabView --> DB_SS_ReceptaclesVol --> Pg_SS_Receptacle --> Who?
+        %% Cherry Pick
+        Who_Provides? --> CP_SS_DesiredVolume --> Pg_SS_CherryPickWorksheet --> User_CherryPick --> Who_Consumes?
+        CP_SS_WellAttrEstVol -- Amount only --> Pg_SS_CherryPickWorksheet
 
-        DB_SS_SampleMetDatVol --> DB_MLWH_SampleCustMeasVol --> Who?
+        Pg_SS_CherryPickWorksheet --> CP_SS_RobotVerfication
+        %% Bed Verification
+        DB_SS_WellAttrCurrVol --> CP_SS_RobotVerfication --> DB_SS_WellAttrCurrVol
+        Who_Provides? --> CP_SS_RobotVerfication
+
+        DB_SS_SampleMetDatVol --> Pg_SS_Sample --> Who_Consumes?
+        Who_Provides? --> Pg_SS_LabView --> DB_SS_ReceptaclesVol --> Pg_SS_Receptacle --> Who_Consumes?
+
+        DB_SS_SampleMetDatVol --> DB_MLWH_SampleCustMeasVol --> Who_Consumes?
 
         User_SSR --> Pg_SS_QcFileLabware
 
     %% Subgraph styling
         classDef Users fill:#839;
         classDef Limber fill:#66f;
+        classDef AssetAudits fill:#33b;
         classDef Sequencescape fill:#339;
         classDef SequencescapeSub fill:#226;
         classDef MLWH fill:#444;
 
         class Providers,Consumers Users;
         class Limber Limber;
+        class AssetAudits AssetAudits;
         class Sequencescape Sequencescape;
         class Graph_SS_SMV,Graph_SS_RV,Graph_SS_QC SequencescapeSub;
         class MLWH MLWH;
