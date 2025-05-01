@@ -66,6 +66,10 @@ module Attributable
       @options.fetch(:minimum, 0)
     end
 
+    def maximum
+      @options.fetch(:maximum, nil)
+    end
+
     def selection_values
       @options[:in]
     end
@@ -89,7 +93,9 @@ module Attributable
         object.with_options(allow_nil: optional?, allow_blank: allow_blank) do |required|
           required.validates_inclusion_of(name, in: [true, false]) if boolean?
           if integer? || float?
-            required.validates name, numericality: { only_integer: integer?, greater_than_or_equal_to: minimum }
+            numericality_options = { only_integer: integer?, greater_than_or_equal_to: minimum }
+            numericality_options[:less_than_or_equal_to] = maximum if maximum.present?
+            required.validates name, numericality: numericality_options
           end
           required.validates_inclusion_of(name, in: selection_values, allow_false: true) if fixed_selection?
           required.validates_format_of(name, with: valid_format) if valid_format?
@@ -171,7 +177,7 @@ module Attributable
       selection_values || selection_from_metadata(validator_source) || []
     end
 
-    def to_field_info(validator_source = nil)
+    def to_field_info(validator_source = nil) # rubocop:disable Metrics/AbcSize
       options = {
         # TODO[xxx]: currently only working for metadata, the only place attributes are used
         display_name: display_name,
@@ -180,9 +186,15 @@ module Attributable
         kind: kind,
         required: required?
       }
+
       options.update(selection: selection_options(validator_source)) if selection?
-      options.update(step: 1, min: minimum) if integer?
-      options.update(step: 0.1, min: 0) if float?
+      options_hash = { min: minimum }
+
+      options_hash.update(max: maximum) if maximum.present?
+      options_hash.update(step: 1) if integer?
+      options_hash.update(step: 0.1) if float?
+
+      options.update(**options_hash) if options_hash.present?
       FieldInfo.new(options)
     end
   end
