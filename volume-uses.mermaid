@@ -94,16 +94,20 @@ flowchart LR
                 end
             end
             subgraph Graph_SS_DB["SS Database"]
-                DB_SS_QcResultVol
-                DB_SS_QcResultVolChk --> DB_SS_QcResultVol
-                DB_SS_QcResultVolEst --> DB_SS_QcResultVol
-                DB_SS_QcResultVolCusSup --> DB_SS_QcResultVol
-                DB_SS_WellAttrMeasVol
-                DB_SS_WellAttrMeasVol --> DB_SS_WellAttrIniVol
-                DB_SS_WellAttrMeasVol --> DB_SS_WellAttrCurrVol
-                DB_SS_TriggerIniVol
-                DB_SS_WellAttrMeasVol --> DB_SS_TriggerIniVol -- "If initial_volume is Null" --> DB_SS_WellAttrIniVol
                 DB_SS_ReceptaclesVol
+                subgraph Graph_SS_DB_QcResults["QC Results"]
+                    DB_SS_QcResultVol
+                    DB_SS_QcResultVolChk --> DB_SS_QcResultVol
+                    DB_SS_QcResultVolEst --> DB_SS_QcResultVol
+                    DB_SS_QcResultVolCusSup --> DB_SS_QcResultVol
+                end
+                subgraph Graph_SS_DB_WellAttrs["Well Attributes"]
+                    DB_SS_WellAttrMeasVol
+                    DB_SS_WellAttrMeasVol --> DB_SS_WellAttrIniVol
+                    DB_SS_WellAttrMeasVol --> DB_SS_WellAttrCurrVol
+                    DB_SS_TriggerIniVol
+                    DB_SS_WellAttrMeasVol --> DB_SS_TriggerIniVol -- "If initial_volume is Null" --> DB_SS_WellAttrIniVol
+                end
             end
             subgraph Graph_SS_API["SS API"]
                 API_SS_QcAssayResource
@@ -120,7 +124,7 @@ flowchart LR
     %% Edge connections between nodes
         User_ServiceUsers --> Mn_SampleVolCol --> Pg_SS_SampleManifestUpload --> DB_SS_SampleMetDatVol & DB_SS_QcResultVolCusSup
 
-        Provider_SamplePrep --> User_VolCheckInstr --> CP_SS_CronVolumeCheck --> DB_SS_QcResultVolChk
+        Provider_SamplePrep --> User_VolCheckInstr --> CP_SS_CronVolumeCheck ---> DB_SS_QcResultVolChk
         User_SeqOps -- "Pre-seq vol check" --> Pg_LB_Tube
 
         Pg_LB_Tube --> API_SS_QcAssayResource
@@ -144,11 +148,11 @@ flowchart LR
 
         Pg_SS_CherryPickWorksheet --> CP_SS_RobotVerfication
         %% Bed Verification
-        DB_SS_WellAttrCurrVol --> CP_SS_RobotVerfication -- <<< --> DB_SS_WellAttrCurrVol
+        DB_SS_WellAttrCurrVol --> CP_SS_RobotVerfication --> DB_SS_WellAttrCurrVol
         Provider_SamplePrep --> CP_SS_RobotVerfication
 
         DB_SS_SampleMetDatVol --> Pg_SS_Sample -.-> Consumers
-        Providers -.-> Pg_SS_LabView --> DB_SS_ReceptaclesVol --> Pg_SS_Receptacle -.-> Consumers
+        Providers -....-> Pg_SS_LabView --> DB_SS_ReceptaclesVol --> Pg_SS_Receptacle -.-> Consumers
 
         DB_SS_SampleMetDatVol --> DB_MLWH_SampleCustMeasVol -.-> Consumers
 
@@ -156,6 +160,7 @@ flowchart LR
 
     %% Fake links for styling
         Graph_SS_API ~~~~ Graph_SS_DB
+        Graph_SS_DB_QcResults ~~~~ Graph_SS_DB_WellAttrs 
 
     %% Subgraph styling
         classDef Users fill:#FFD6F1;
@@ -168,6 +173,6 @@ flowchart LR
         class Providers,Consumers Users;
         class AssetAudits,Limber,MLWH Application;
         class Sequencescape Sequencescape;
-        class Graph_SS_API,Graph_SS_DB SequencescapeSub;
+        class Graph_SS_API,Graph_SS_DB,Graph_SS_DB_WellAttrs,Graph_SS_DB_QcResults SequencescapeSub;
         class Graph_SS_SMV,Graph_SS_RV,Graph_SS_QC SequencescapeOrig;
         class MLWH MLWH;
