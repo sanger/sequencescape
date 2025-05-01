@@ -120,7 +120,7 @@ flowchart LR
         User_ServiceUsers --> Mn_SampleVolCol --> Pg_SS_SampleManifestUpload --> DB_SS_SampleMetDatVol & DB_SS_QcResultVolCusSup
 
         Provider_SamplePrep --> User_VolCheckInstr --> CP_SS_CronVolumeCheck --> DB_SS_QcResultVolChk
-        User_SeqOps -- pre-seq vol check --> Pg_LB_Tube
+        User_SeqOps -- "Pre-seq vol check" --> Pg_LB_Tube
 
         Pg_LB_Tube --> API_SS_QcAssayResource
         API_SS_QcAssayResource --> DB_SS_QcResultVolEst
@@ -128,8 +128,8 @@ flowchart LR
 
         Who_Provides? --> AssetAudits --> API_SS_VolumeUpdateResource --> DB_SS_WellAttrCurrVol
 
-        DB_SS_QcResultVol -- most recent --> CP_SS_QcResults_MeasVol --> Pg_SS_QcResults  --> Who_Consumes?
-        DB_SS_WellAttrCurrVol -- priority --> CP_SS_WellAttrEstVol
+        DB_SS_QcResultVol -- Most recent --> CP_SS_QcResults_MeasVol --> Pg_SS_QcResults  --> Who_Consumes?
+        DB_SS_WellAttrCurrVol -- Priority --> CP_SS_WellAttrEstVol
         DB_SS_WellAttrMeasVol --> CP_SS_WellAttrEstVol
 
         DB_SS_WellAttrMeasVol --> CP_SS_StudyReports_MeasVol --> Pg_SS_QcStudyReports
