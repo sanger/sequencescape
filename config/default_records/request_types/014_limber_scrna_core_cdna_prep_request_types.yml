@@ -43,7 +43,7 @@ limber_scrna_core_cdna_pcr_cite:
   name: scRNA Core cDNA PCR CITE
   asset_type: Well
   order: 1
-  request_class_name: CustomerRequest
+  request_class_name: IlluminaHtp::Requests::StdLibraryRequest
   for_multiplexing: false
   billable: true
   product_line_name: Short Read

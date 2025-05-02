@@ -26,6 +26,5 @@ Limber-Htp - scRNA Core cDNA PCR CITE:
   submission_class_name: "LinearSubmission"
   related_records:
     request_type_keys: ["limber_scrna_core_cdna_pcr_cite", "limber_multiplexing"]
-    project_name: "S0842"
     product_line_name: Short Read
     product_catalogue_name: scRNA Core
