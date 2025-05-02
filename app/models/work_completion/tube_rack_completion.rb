@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-# Class WorkCompletion::TubeCompletion provides the business logic
-# for passing tubes, especially in the Limber pipelines. This has
+# Class WorkCompletion::TubeRackCompletion provides the business logic
+# for passing tubes within a tube rack, especially in the Limber pipelines. This has
 # been pulled out of WorkCompletion itself to allow for separate behaviour
-# for plates and tubes.
+# for tube racks.
 #
 # @author Genome Research Ltd.
 #
