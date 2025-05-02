@@ -223,7 +223,7 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
         }
       )
 
-      AssetLink::BuilderJob.create(links)
+      AssetLink::BuilderJob.create_now(links)
 
       # Now pass each of the requests we used and ditch any there weren't back into the inbox.
       used_requests.map(&:pass!)
