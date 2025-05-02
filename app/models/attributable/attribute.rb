@@ -190,7 +190,7 @@ module Attributable
       options.update(selection: selection_options(validator_source)) if selection?
       options_hash = { min: minimum }
 
-      options_hash.update(max: maximum) if maximum.present?
+      options_hash.update(max: maximum)
       options_hash.update(step: 1) if integer?
       options_hash.update(step: 0.1) if float?
 
