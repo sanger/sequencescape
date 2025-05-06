@@ -3,6 +3,9 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+  /* lighten the background image */
+  background-color: rgba(255, 255, 255, .3);
+  background-blend-mode: lighten;
 }
 
 #login-panel {
@@ -25,8 +28,6 @@ body {
     @extend .text-muted;
   }
 
-  form {
-  }
   input {
     @extend .form-control;
     @extend .form-control-lg;

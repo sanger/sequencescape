@@ -1,4 +1,5 @@
 footer#main-footer {
+  @extend .bg-white;
   @extend .text-muted;
   @extend .border-top;
   @extend .font-weight-light;
@@ -9,6 +10,7 @@ footer#main-footer {
 
   ul {
     @extend .col-sm-4;
+    @extend .mb-0;
     @extend .list-unstyled;
   }
 }
