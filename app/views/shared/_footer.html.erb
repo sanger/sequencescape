@@ -1,6 +1,6 @@
 <ul class="contact">
   <li id="institute"><%= link_to I18n.t('application.institute'), I18n.t('application.institute_link') %></li>
-  <li>A tool from <%= link_to configatron.fetch(:team_name,'LIMS and Informatics'), configatron.fetch(:team_url,'http://www.sanger.ac.uk/science/groups/production-software-development') %></li>
+  <li>A tool from <%= link_to configatron.fetch(:team_name, 'Production Software Development'), configatron.fetch(:team_url,'http://www.sanger.ac.uk/science/groups/production-software-development') %></li>
 </ul>
 <ul class="deployment-info">
   <li><%= icon('fas', 'code-branch', Deployed::VERSION_STRING) %> <%= link_to Deployed::VERSION_COMMIT, Deployed::REPO_URL%></li>
