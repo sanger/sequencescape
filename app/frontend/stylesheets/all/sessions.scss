@@ -22,6 +22,7 @@ body {
 
 #account_form {
   @extend .card-body;
+  @extend .pt-0;
 
   .form-help {
     @extend .form-text;
@@ -36,5 +37,9 @@ body {
     @extend .btn;
     @extend .btn-lg;
     @extend .btn-success;
+  }
+
+  .form-group:last-child {
+    @extend .mb-0;
   }
 }
