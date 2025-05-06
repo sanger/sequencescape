@@ -44,6 +44,8 @@ module Api
           attribute :state, readonly: true
           attribute :created_at, readonly: true
           attribute :updated_at, readonly: true
+          # Add retention_instruction as a readable attribute
+          attribute :retention_instruction, delegate: :retention_instructions, readonly: true
 
           # Scopes
           filter :barcode, apply: ->(records, value, _options) { records.with_barcode(value) }

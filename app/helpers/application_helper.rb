@@ -178,7 +178,7 @@ module ApplicationHelper
   # rubocop:todo Metrics/ParameterLists
   def request_link(object, count, request_type, status = nil, options = {}, link_options = {})
     # rubocop:enable Metrics/ParameterLists
-    link_to_if((count != 0), count, request_list_path(object, request_type, status, options), link_options)
+    link_to_if(count != 0, count, request_list_path(object, request_type, status, options), link_options)
   end
 
   def request_list_path(object, request_type = nil, status = nil, options = {})
