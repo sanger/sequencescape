@@ -16,6 +16,14 @@ body {
 
   width: 600px;
 
+  .alert {
+    @extend .mb-0;
+  }
+  .alert-notice {
+    @extend .mx-0;
+    @extend .border-0;
+  }
+
   .title-section {
     @extend .card-body;
   }
