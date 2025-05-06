@@ -1,3 +1,10 @@
+body {
+  // background-image: see inline url for path resolution
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 #login-panel {
   @extend .card;
   @extend .mt-4;
