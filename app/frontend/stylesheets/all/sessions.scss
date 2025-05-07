@@ -1,13 +1,6 @@
 body {
-  // background-image: see inline url for path resolution
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  // lighten the background image
-  background-color: rgba(255, 255, 255, 0.5);
-  background-blend-mode: lighten;
-  // desaturate the background image
-  backdrop-filter: saturate(50%);
+  background: #039BE5;
+  background: linear-gradient(45deg, rgba(3, 155, 229, 1) 0%, rgba(139, 195, 74, 1) 100%);
 }
 
 #login-panel {
@@ -17,7 +10,6 @@ body {
   @extend .border-0;
 
   width: 600px;
-  background-color: rgba(255, 255, 255, 0.85);
 
   .alert {
     @extend .mb-0;
