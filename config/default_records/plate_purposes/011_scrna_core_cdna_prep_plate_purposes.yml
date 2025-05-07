@@ -36,3 +36,7 @@ LRC GEM-X 5p CITE SUP Input:
   input_plate: true # Passed when submission is built.
   stock_plate: true # Uploaded via sample manifest.
   cherrypickable_target: false # Not destination in cherrypicking.
+LRC GEM-X 5p CITE SUP XP:
+  input_plate: true # Passed when submission is built.
+  stock_plate: true # Uploaded via sample manifest.
+  cherrypickable_target: false # Not destination in cherrypicking.
