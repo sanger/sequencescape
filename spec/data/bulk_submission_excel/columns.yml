@@ -296,4 +296,3 @@ low_diversity:
     range_name: :low_diversity
   conditional_formattings:
     empty_cell:
-    is_error:
