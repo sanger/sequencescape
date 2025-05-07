@@ -29,6 +29,7 @@ module RecordLoader
       tag2_group_name = options.delete('tag2_group_name')
 
       tag_group = find_tag_group!(tag_group_name, name)
+      return nil if tag_group.nil?
       tag2_group = find_tag_group!(tag2_group_name, name) if tag2_group_name
 
       options[:tag_group_id] = tag_group.id
@@ -40,24 +41,30 @@ module RecordLoader
     private
 
     ##
-    # Finds a TagGroup by name and raises an error if not found.
+    # Finds a TagGroup by name and handles missing records based on the environment.
     #
     # This method attempts to find a TagGroup by its name. If the TagGroup is not found,
-    # it raises an error indicating that the TagGroup was not found.
+    # it logs a warning and returns `nil` in `development`, `staging`, or `cucumber` environments.
+    # In all other environments, it raises an `ActiveRecord::RecordNotFound` exception.
     #
     # @param tag_group_name [String] The name of the TagGroup to find.
     # @param tag_set_name [String] The name of the TagSet being created or updated.
     #
-    # @return [TagGroup] The found TagGroup.
-    # @raise [ActiveRecord::RecordNotFound] If the TagGroup is not found.
-    def find_tag_group!(tag_group_name, tag_set_name)
+    # @return [TagGroup, nil] The found TagGroup, or `nil` if not found in specific environments.
+    # @raise [ActiveRecord::RecordNotFound] If the TagGroup is not found in environments other than
+    #   `development`, `staging`, or `cucumber`.
+    def find_tag_group!(tag_group_name, tag_set_name) # rubocop:disable Metrics/MethodLength
       return unless tag_group_name
-
       TagGroup.find_by!(name: tag_group_name)
     rescue ActiveRecord::RecordNotFound
-      raise ActiveRecord::RecordNotFound,
-            "TagSet '#{tag_set_name}' creation or update failed " \
-              "because TagGroup with name '#{tag_group_name}' was not found"
+      message =
+        "TagSet '#{tag_set_name}' creation or update failed " \
+          "because TagGroup with name '#{tag_group_name}' was not found"
+      if Rails.env.development? || Rails.env.staging? || Rails.env.cucumber?
+        Rails.logger.warn(message) # Log a warning in development, stahing, or cucumber
+        return nil
+      end
+      raise ActiveRecord::RecordNotFound, message
     end
   end
 end
