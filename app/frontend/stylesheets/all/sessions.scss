@@ -22,6 +22,7 @@ body.sessions {
 
   .title-section {
     @extend .card-body;
+    @extend .text-center;
   }
 }
 
