@@ -289,7 +289,7 @@ low_diversity:
       showInputMessage: true
       showErrorMessage: true
       errorStyle: :stop
-      errorTitle: "Priority"
+      errorTitle: "Low Diversity"
       error: "You must enter a value from the list provided."
       promptTitle: "Low Diversity"
       prompt: "Select a value type from the approved list"
