@@ -6,6 +6,8 @@ body {
   // lighten the background image
   background-color: rgba(255, 255, 255, 0.5);
   background-blend-mode: lighten;
+  // desaturate the background image
+  backdrop-filter: saturate(50%);
 }
 
 #login-panel {
