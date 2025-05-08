@@ -16,6 +16,8 @@ module StateChanger
       end
     end
 
+    private
+
     # Updates the state of associated requests for a given racked tube.
     #
     # Finds all in-progress requests for the tube that are not in the 'passed' state
