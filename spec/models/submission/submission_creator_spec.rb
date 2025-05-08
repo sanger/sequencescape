@@ -50,7 +50,7 @@ describe Submission::SubmissionCreator do
       end
     end
 
-    context '#NovaSeqX read length options' do
+    describe '#NovaSeqX read length options' do
       let(:library_type) { create(:library_type) }
       let(:library_creation_request_type) { create(:library_request_type, :with_library_types, library_type:) }
       let(:template) do
@@ -65,7 +65,7 @@ describe Submission::SubmissionCreator do
 
         expect(read_length_field).to be_present
         expect(read_length_field.kind).to eq 'Selection'
-        expect(read_length_field.selection).to match_array([50, 100, 150])
+        expect(read_length_field.selection).to contain_exactly(50, 100, 150)
         expect(read_length_field.default_value).to eq 50
       end
     end

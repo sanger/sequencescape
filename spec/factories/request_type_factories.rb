@@ -150,7 +150,7 @@ FactoryBot.define do
         read_lengths { [50, 100, 150] }
         default { 50 }
       end
-      asset_type { 'LibraryTube' }
+      asset_type { 'Well' }
 
       after(:build) do |request_type, ev|
         srv =
