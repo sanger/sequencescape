@@ -10,6 +10,13 @@
     <link rel="icon" href="/<%= favicon %>" type="image/x-icon" />
     <link rel="apple-touch-icon-precomposed" href="/<%= apple_icon %>" type="image/png" />
 
+    <style>
+      .sessions {
+        background-image:
+          url('<%= vite_asset_url "images/sanger-pattern-corner.svg" %>'),
+          linear-gradient(45deg, rgba(3, 155, 229, 1) 0%, rgba(139, 195, 74, 1) 100%);
+      }
+    </style>
     <% if Rails.application.config.disable_animations %>
       <%= vite_stylesheet_tag 'disable_animations' %>
     <% end %>

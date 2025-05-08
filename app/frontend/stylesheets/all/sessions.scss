@@ -1,6 +1,9 @@
 body.sessions {
-  background: #039BE5;
-  background: linear-gradient(45deg, rgba(3, 155, 229, 1) 0%, rgba(139, 195, 74, 1) 100%);
+  background-color: #039be5; // fallback for gradient
+  // Sanger patterns
+  background-position: center right;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 #login-panel {
