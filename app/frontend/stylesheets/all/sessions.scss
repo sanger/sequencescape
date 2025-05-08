@@ -10,7 +10,8 @@ body.sessions {
   @extend .border-0;
   @extend .rounded-lg;
 
-  width: 600px;
+  @extend .w-100;
+  max-width: 32em; // fits subtitle on a single line
 
   .alert {
     @extend .mb-0;
