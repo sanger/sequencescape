@@ -64,7 +64,7 @@ module Cherrypick::VolumeByNanoGrams
     buffer_volume = calculate_buffer_volume(minimum_volume, requested_volume)
     requested_volume = maximum_volume if requested_volume > maximum_volume
 
-    well_attribute.current_volume = minimum_volume
+    well_attribute.current_volume = requested_volume + buffer_volume
     well_attribute.requested_volume = minimum_volume
     well_attribute.picked_volume = requested_volume
     well_attribute.buffer_volume = buffer_volume
