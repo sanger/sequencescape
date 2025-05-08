@@ -528,4 +528,109 @@ RSpec.describe TransferRequest do
       )
     end
   end
+
+  describe '#aliquots_for_transfer (indirectly via save)' do
+    let(:source) { create(:tagged_well) }
+    let(:destination) { create(:tube) }
+    let(:transfer_request) do
+      described_class.new(
+        asset: source,
+        target_asset: destination,
+        merge_equivalent_aliquots: merge_flag,
+        keep_this_aliquot_when_deduplicating: keep_flag,
+        list_of_aliquot_attributes_to_consider_a_duplicate: aliquot_attributes
+      )
+    end
+
+    let(:source_aliquot) { source.aliquots.first }
+    let(:destination_aliquot) do
+      create(
+        :aliquot,
+        sample: source_aliquot.sample,
+        study: source_aliquot.study,
+        project: source_aliquot.project,
+        tag: source_aliquot.tag,
+        tag2: source_aliquot.tag2
+      )
+    end
+
+    let(:aliquot_attributes) { nil }
+    # let(:aliquot_attributes) { %w[sample_id tag_id tag2_id] }
+    let(:merge_flag) { nil }
+    let(:keep_flag) { nil }
+
+    before { destination.aliquots << destination_aliquot }
+
+    context 'when merge_equivalent_aliquots is true' do
+      let(:merge_flag) { true }
+
+      it 'does not add the equivalent aliquot to the target' do
+        expect { transfer_request.save! }.not_to(change { destination.aliquots.reload.count })
+        expect(destination.aliquots.reload).to include(destination_aliquot)
+        expect(destination.aliquots.reload).not_to include(source_aliquot)
+      end
+    end
+
+    context 'when merge_equivalent_aliquots is false' do
+      let(:merge_flag) { false }
+
+      it 'raises a TagClash exception' do
+        expect { transfer_request.save! }.to raise_error(
+          Aliquot::TagClash,
+          /contains aliquots which can't be transferred due to tag clash/
+        )
+      end
+    end
+
+    context 'when keep_this_aliquot_when_deduplicating is true' do
+      let(:merge_flag) { true }
+      let(:keep_flag) { true }
+
+      it 'removes the existing aliquot and dups the candidate aliquot' do
+        # Save the transfer request to trigger the logic
+        expect_no_change_in_aliquot_count
+
+        # Ensure the destination no longer includes the original destination aliquot
+        expect_destination_does_not_include_original_aliquot
+
+        # Ensure the destination includes a new aliquot
+        expect_new_aliquot_in_destination
+      end
+
+      # Helper methods
+      def expect_no_change_in_aliquot_count
+        expect { transfer_request.save! }.not_to(change { destination.aliquots.reload.count })
+      end
+
+      def expect_destination_does_not_include_original_aliquot
+        expect(destination.aliquots).not_to include(destination_aliquot)
+      end
+
+      def expect_new_aliquot_in_destination
+        new_aliquot = find_new_aliquot
+        validate_new_aliquot(new_aliquot)
+      end
+
+      def find_new_aliquot
+        destination.aliquots.find { |aliquot| aliquot != destination_aliquot }
+      end
+
+      def validate_new_aliquot(new_aliquot)
+        expect(new_aliquot).not_to eq(destination_aliquot)
+        expect(new_aliquot).not_to eq(source_aliquot)
+        expect(new_aliquot.equivalent?(source_aliquot)).to be true
+      end
+    end
+
+    context 'when keep_this_aliquot_when_deduplicating is false' do
+      let(:merge_flag) { true }
+      let(:keep_flag) { false }
+
+      it 'rejects the candidate aliquot' do
+        expect { transfer_request.save! }.not_to(change { destination.aliquots.reload.map(&:id) })
+        expect(destination.aliquots.reload).to include(destination_aliquot)
+        expect(destination.aliquots.reload).not_to include(source_aliquot)
+      end
+    end
+  end
 end
