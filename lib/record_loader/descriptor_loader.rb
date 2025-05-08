@@ -8,7 +8,8 @@
 module RecordLoader
   # Creates the specified Descriptor if they are not present
   # Links the created task to the appropriate task and workflow if they exist.
-  # If the workflow or task is not found, it logs a warning and returns `nil` in `development`, `staging`, or `cucumber` environments.
+  # If the workflow or task is not found, it logs a warning and returns `nil` in `development`,
+  # `staging`, or `cucumber` environments.
   class DescriptorLoader < ApplicationRecordLoader
     config_folder 'descriptors'
 
