@@ -1,0 +1,84 @@
+Pipette Carousel:
+  name: Pipette Carousel
+  task: Loading
+  workflow: Element Aviti
+  kind: Text
+  required: false
+  sorter: 0
+200mM Tris PH7 lot#:
+  name: 200mM Tris PH7 lot#
+  task: Loading
+  workflow: Element Aviti
+  kind: Text
+  required: false
+  sorter: 1
+200 mM Tris Expiry:
+  name: 200 mM Tris Expiry
+  task: Loading
+  workflow: Element Aviti
+  kind: Date
+  required: false
+  sorter: 2
+PhiX lot_#:
+  name: "PhiX lot #"
+  task: Loading
+  workflow: Element Aviti
+  kind: Text
+  required: false
+  sorter: 3
+PhiX Expiry:
+  name: PhiX Expiry
+  task: Loading
+  workflow: Element Aviti
+  kind: Date
+  required: false
+  sorter: 4
+PhiX %:
+  name: PhiX %
+  task: Loading
+  workflow: Element Aviti
+  kind: Text
+  required: false
+  sorter: 5
+Library loading buffer lot#:
+  name: Library loading buffer lot#
+  task: Loading
+  workflow: Element Aviti
+  kind: Text
+  required: false
+  sorter: 6
+Library loading buffer expiry:
+  name: Library loading buffer expiry
+  task: Loading
+  workflow: Element Aviti
+  kind: Date
+  required: false
+  sorter: 7
+0.2N lot#:
+  name: 0.2N lot#
+  task: Loading
+  workflow: Element Aviti
+  kind: Text
+  required: false
+  sorter: 8
+0.2N lot expiry:
+  name: 0.2N lot expiry
+  task: Loading
+  workflow: Element Aviti
+  kind: Date
+  required: false
+  sorter: 9
+iPCR batch#:
+  name: iPCR batch#
+  task: Loading
+  workflow: Element Aviti
+  kind: Text
+  required: false
+  sorter: 10
+Comment:
+  name: Comment
+  task: Loading
+  workflow: Element Aviti
+  kind: Text
+  required: false
+  sorter: 11
