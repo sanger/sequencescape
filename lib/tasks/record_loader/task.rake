@@ -4,10 +4,7 @@
 # The task creation should follow the workflow creation — workflows are created within the Pipeline loader
 namespace :record_loader do
   desc 'Automatically generate Task through TaskLoader'
-  task task: [
-    :environment,
-    'record_loader:pipeline',
-  ] do
+  task task: [:environment, 'record_loader:pipeline'] do
     RecordLoader::TaskLoader.new.create!
   end
 end
