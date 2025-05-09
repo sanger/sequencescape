@@ -69,7 +69,7 @@ module Core::Io::Base::JsonFormattingBehaviour
     StringIO
       .new(mapping)
       .each_line do |line|
-        next if line.blank? || line =~ (/^\s*#/)
+        next if line.blank? || line =~ /^\s*#/
 
         match = VALID_LINE_REGEXP.match(line) or raise StandardError, "Invalid line: #{line.inspect}"
         attribute_to_json.push([match[1], match[3]]) if (match[2] =~ /<?=>/)

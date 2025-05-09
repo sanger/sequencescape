@@ -27,8 +27,4 @@ AssetLink::BuilderJob =
     def self.create(*args)
       Delayed::Job.enqueue(new(*args))
     end
-
-    def self.create_now(*args)
-      new(*args).perform
-    end
   end
