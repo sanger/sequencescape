@@ -33,18 +33,14 @@ RSpec.describe StateChanger::TubeRack do
     context 'when transitioning to "passed" state for a rack with multiple tubes' do
       let(:labware) { create(:tube_rack_with_tubes, locations: %w[A1 A2 A3]) }
       let!(:requests) do
-        [
-          create(:request, target_asset: labware.tube_receptacles.first, state: request_state),
-          create(:request, target_asset: labware.tube_receptacles[1], state: request_state),
-          create(:request, target_asset: labware.tube_receptacles.last, state: request_state)
-        ]
+        labware.tube_receptacles.map do |tube_receptacle|
+          create(:request, target_asset: tube_receptacle, state: request_state)
+        end
       end
       let!(:transfer_requests) do
-        [
-          create(:transfer_request, target_asset: labware.tube_receptacles.first, state: transfer_request_state),
-          create(:transfer_request, target_asset: labware.tube_receptacles[1], state: transfer_request_state),
-          create(:transfer_request, target_asset: labware.tube_receptacles.last, state: transfer_request_state)
-        ]
+        labware.tube_receptacles.map do |tube_receptacle|
+          create(:transfer_request, target_asset: tube_receptacle, state: transfer_request_state)
+        end
       end
 
       before do
