@@ -56,6 +56,8 @@ class StateChange < ApplicationRecord
     self.previous_state = target.state
   end
 
+  # state_changer is set as a class-level variable in each purpose.
+  # For an example, see, app/models/tube_rack/purpose.rb.
   def state_changer
     target.state_changer
   end
