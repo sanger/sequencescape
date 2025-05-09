@@ -22,6 +22,7 @@
 /vendor
 /yarn-error.log
 app/sample_manifest_excel/doc/
+bin/cucumber
 capybara*.html
 config/cucumber.yml
 config/database.yml
@@ -34,7 +35,12 @@ db/schema.rb
 db/views_schema.old
 db/views_schema.rb
 doc/*
+features/step_definitions
+features/support
+features/support/env.rb
+lib/tasks
 lib/tasks/*.local.rake
+lib/tasks/cucumber.rake
 log/ruby_prof_profile
 metrics_directory/*
 new_test_file.xlsx
