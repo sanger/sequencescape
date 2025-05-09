@@ -1,13 +1,11 @@
-
 <%= render_flashes %>
+
 <div class="title-section">
-  <%= page_title 'Sequencescape', Deployed::VERSION_ID %>
-  <div class='card-subtitle'>Sample and study management for sequencing and genotyping at the Wellcome Sanger Institute.</div>
+  <%= page_title 'Sequencescape' %>
+  <div class='card-subtitle'>Sample and study management for sequencing and genotyping</div>
 </div>
 <div id="account_form">
   <%= form_tag do %>
-    <div class="form-help">Please use your Sanger username and password to login</div>
-
     <div class='form-group'>
       <%= label_tag 'login', 'Username' %>
       <%= text_field_tag "login", "", required: true %>
@@ -17,6 +15,8 @@
       <%= label_tag 'password', 'Password' %>
       <%= password_field_tag "password", "", required: true %>
     </div>
+
+    <div class="form-help">Please use your Sanger username and password to log in</div>
 
     <div class="form-group">
       <%= submit_tag I18n.t('global_links.login') %>
