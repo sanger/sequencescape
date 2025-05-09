@@ -128,7 +128,7 @@ RSpec.describe StateChanger::TubeRack do
         state_changer.update_labware_state
       end
 
-      it 'updates the tube to "passed" for receptacles with "started" requests', :aggregate_failures do
+      it 'updates transfer requests for receptacles with "failed" requests', :aggregate_failures do
         expect(transfer_requests[0].reload.state).to eq('failed')
         expect(transfer_requests[1].reload.state).to eq('failed')
         expect(transfer_requests[2].reload.state).to eq('failed')
