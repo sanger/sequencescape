@@ -12,12 +12,12 @@ RSpec.describe StateChanger::TubeRack do
   let!(:transfer_request) do
     create(:transfer_request, target_asset: labware.tube_receptacles.first, state: transfer_request_state)
   end
-  let!(:request) { create(:request, target_asset: labware.tube_receptacles.first, state: request_state) }
 
   context 'when the target state is "passed"' do
     let(:target_state) { 'passed' }
     let(:request_state) { 'started' }
     let(:transfer_request_state) { 'started' }
+    let!(:request) { create(:request, target_asset: labware.tube_receptacles.first, state: request_state) }
 
     context 'when transitioning to "passed" state for a rack with a single tube' do
       before do
@@ -30,17 +30,24 @@ RSpec.describe StateChanger::TubeRack do
       end
     end
 
-    context 'when transitioning to "passed" state for a rack with multiple tubes' do
+    context 'when transitioning to "passed" state for a rack with multiple tubes with mixed states' do
+      let(:target_state) { 'passed' }
+      let(:transfer_request_state) { 'started' }
+
       let(:labware) { create(:tube_rack_with_tubes, locations: %w[A1 A2 A3]) }
       let!(:requests) do
-        labware.tube_receptacles.map do |tube_receptacle|
-          create(:request, target_asset: tube_receptacle, state: request_state)
-        end
+        [
+          create(:request, target_asset: labware.tube_receptacles.first, state: 'started'),
+          create(:request, target_asset: labware.tube_receptacles[1], state: 'failed'),
+          create(:request, target_asset: labware.tube_receptacles.last, state: 'started')
+        ]
       end
       let!(:transfer_requests) do
-        labware.tube_receptacles.map do |tube_receptacle|
-          create(:transfer_request, target_asset: tube_receptacle, state: transfer_request_state)
-        end
+        [
+          create(:transfer_request, target_asset: labware.tube_receptacles.first, state: 'pending'),
+          create(:transfer_request, target_asset: labware.tube_receptacles[1], state: 'failed'),
+          create(:transfer_request, target_asset: labware.tube_receptacles.last, state: 'started')
+        ]
       end
 
       before do
@@ -51,7 +58,13 @@ RSpec.describe StateChanger::TubeRack do
       end
 
       it 'updates the tube to "passed" for receptacles with "started" requests', :aggregate_failures do
-        transfer_requests.each { |transfer_request| expect(transfer_request.reload.state).to eq(target_state) }
+        expect(transfer_requests[0].reload.state).to eq(target_state)
+        expect(transfer_requests[1].reload.state).to eq('failed')
+        expect(transfer_requests[2].reload.state).to eq(target_state)
+      end
+
+      it 'updates the tube rack to "mixed" state', :aggregate_failures do
+        expect(labware.reload.state).to eq(target_state)
       end
     end
   end
