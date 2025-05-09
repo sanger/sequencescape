@@ -44,7 +44,7 @@ RSpec.describe StateChanger::TubeRack do
       end
       let!(:transfer_requests) do
         [
-          create(:transfer_request, target_asset: labware.tube_receptacles.first, state: 'pending'),
+          create(:transfer_request, target_asset: labware.tube_receptacles.first, state: 'started'),
           create(:transfer_request, target_asset: labware.tube_receptacles[1], state: 'failed'),
           create(:transfer_request, target_asset: labware.tube_receptacles.last, state: 'started')
         ]
