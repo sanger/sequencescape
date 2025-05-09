@@ -533,4 +533,37 @@ describe BulkSubmission, with: :uploader do
       end
     end
   end
+
+  context 'a submission with a NovaSeqX sequencing request type' do
+    let(:spreadsheet_filename) { 'novaseqx_bulk_submission.csv' }
+    let(:study) { create(:study, name: 'Test Study') }
+    let!(:plate) { create(:plate_with_tagged_wells, sample_count: 96, barcode: 'SQPD-12345') }
+
+    let!(:submission_template) do
+      create(
+        :submission_template,
+        name: 'Limber-Htp - ISC - NovaSeqX paired end sequencing',
+        request_types: [create(:nova_seq_x_sequencing_request_type)]
+      )
+    end
+
+    it 'is valid' do
+      expect(subject).to be_valid
+    end
+
+    it 'generates submissions when processed' do
+      subject.process
+      expect(number_submissions_created).to eq(1)
+    end
+
+    it 'generates submissions with one order' do
+      subject.process
+      expect(generated_submission.orders.count).to eq(1)
+    end
+
+    it 'set the expected read length options' do
+      subject.process
+      expect(generated_submission.orders.first.request_options['read_length']).to eq('50')
+    end
+  end
 end

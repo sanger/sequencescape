@@ -23,5 +23,6 @@ ReadLengthRequestedNovaseqX:
   request_type_key: illumina_htp_novaseqx_paired_end_sequencing
   request_option: read_length
   valid_options:
+    - 50
     - 100
     - 150
