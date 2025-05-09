@@ -47,4 +47,34 @@ describe WellAttribute do
       expect(well_attribute.estimated_volume).to eq 20.0
     end
   end
+
+  describe '#quantity_in_nano_grams' do
+    it 'returns nil if estimated volume or concentration is nil' do
+      well_attribute.current_volume = nil
+      well_attribute.concentration = nil
+
+      expect(well_attribute.quantity_in_nano_grams).to be_nil
+    end
+
+    it 'returns 0 if estimated volume or concentration is negative' do
+      well_attribute.current_volume = -1
+      well_attribute.concentration = -1
+
+      expect(well_attribute.quantity_in_nano_grams).to eq 0
+    end
+
+    it 'calculates the quantity in nano grams correctly' do
+      well_attribute.current_volume = 10
+      well_attribute.concentration = 5
+
+      expect(well_attribute.quantity_in_nano_grams).to eq 50
+    end
+
+    it 'returns the quantity in nano grams as an integer' do
+      well_attribute.current_volume = 10.5
+      well_attribute.concentration = 5.2
+
+      expect(well_attribute.quantity_in_nano_grams).to be_a(Integer)
+    end
+  end
 end
