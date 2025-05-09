@@ -19,7 +19,7 @@ RSpec.describe StateChanger::TubeRack do
     state_changer.update_labware_state
   end
 
-  context 'when the target state is "pending"' do
+  context 'when the target state is "passed"' do
     let(:target_state) { 'passed' }
     let(:request_state) { 'started' }
     let(:transfer_request_state) { 'started' }
