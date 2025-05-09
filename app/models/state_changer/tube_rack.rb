@@ -30,7 +30,7 @@ module StateChanger
       racked_tube
         .tube
         .in_progress_requests
-        .where.not(state: ['passed'])
+        .where.not(state: %w[passed pending])
         .find_each do |request|
           request.customer_accepts_responsibility! if customer_accepts_responsibility
           request.transition_to(target_state)
@@ -48,7 +48,7 @@ module StateChanger
       racked_tube
         .tube
         .transfer_requests_as_target
-        .where.not(state: ['failed'])
+        .where.not(state: %w[failed pending])
         .find_each { |request| request.transition_to(target_state) }
     end
   end
