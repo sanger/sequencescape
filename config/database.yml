@@ -57,7 +57,7 @@ cucumber: &cucumber
   pool: 1
   timeout: 5000
 
-test:
+test: &test
   <<: *cucumber
 
 # We need to have some dummy configuration here when the app is being packaged up (vite:build),
@@ -72,4 +72,3 @@ production:
 ### Next release
 ### Training
 ### Production
-
