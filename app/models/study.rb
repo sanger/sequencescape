@@ -77,6 +77,8 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   DATA_RELEASE_TIMING_NEVER = 'never'
   DATA_RELEASE_TIMING_DELAYED = 'delayed'
   DATA_RELEASE_TIMING_IMMEDIATE = 'immediate'
+  DATA_RELEASE_TIMING_PUBLICATION = 'delay until publication'
+
   DATA_RELEASE_TIMINGS = [
     DATA_RELEASE_TIMING_STANDARD,
     DATA_RELEASE_TIMING_IMMEDIATE,
@@ -235,6 +237,11 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
       if: :delayed_release?
     )
 
+    with_options(if: :delay_until_publication?) do
+      custom_attribute(
+        :data_release_timing_publication_comment, required: true
+      )
+    end
     custom_attribute(:data_release_delay_period, required: true, in: DATA_RELEASE_DELAY_PERIODS, if: :delayed_release?)
     custom_attribute(:bam, default: true)
 
@@ -647,6 +654,10 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     def delayed_for_long_time?
       DATA_RELEASE_DELAY_PERIODS.include?(data_release_delay_period)
+    end
+
+    def delay_until_publication?
+      data_release_timing == DATA_RELEASE_TIMING_PUBLICATION
     end
 
     validates :number_of_gigabases_per_sample, numericality: { greater_than_or_equal_to: 0.15, allow_blank: true }

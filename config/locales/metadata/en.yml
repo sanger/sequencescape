@@ -477,6 +477,9 @@ en:
         data_release_delay_reason_comment:
           label: Comment regarding data release timing and approval
 
+        data_release_timing_publication_comment:
+          lable: When do you anticipate sharing the data? 
+        
         data_access_group:
           label: Data access group
           help: "This field helps control access to product data in the iRODs seq zone.<ul></li>Leave the field empty to allow public access within the Sanger.</li><li>Supply one or more Sanger UNIX groups to restrict access to members of that group. Multiple access groups can be specified and should be separated with spaces.</li><li>You can also add individual users by their sanger user name.</li><li>All access will be prevented if all provided groups and usernames are invalid.</li></ul>"

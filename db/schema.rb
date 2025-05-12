@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_26_144346) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_12_103557) do
   create_table "aliquot_indices", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "aliquot_id", null: false
     t.integer "lane_id", null: false
@@ -1551,6 +1551,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_26_144346) do
     t.string "data_deletion_period"
     t.string "contaminated_human_data_access_group"
     t.string "data_release_prevention_other_comment"
+    t.string "data_release_timing_publication_comment"
     t.index ["faculty_sponsor_id"], name: "index_study_metadata_on_faculty_sponsor_id"
     t.index ["study_id"], name: "index_study_metadata_on_study_id"
   end
