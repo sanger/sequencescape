@@ -109,15 +109,17 @@ flowchart LR
                 DB_SS_ReceptaclesVol
                 subgraph Graph_SS_DB_QcResults["QC Results"]
                     DB_SS_QcResultVol
+                    %% [source] same table
                     DB_SS_QcResultVolChk --> DB_SS_QcResultVol
                     DB_SS_QcResultVolEst --> DB_SS_QcResultVol
                     DB_SS_QcResultVolCusSup --> DB_SS_QcResultVol
                 end
                 subgraph Graph_SS_DB_WellAttrs["Well Attributes"]
                     DB_SS_WellAttrMeasVol
+                    %% [source] app/models/well_attribute.rb
                     DB_SS_WellAttrMeasVol --> DB_SS_WellAttrIniVol
                     DB_SS_WellAttrMeasVol --> DB_SS_WellAttrCurrVol
-                    DB_SS_TriggerIniVol
+                    %% [source] SQL: show triggers;
                     DB_SS_WellAttrMeasVol --> DB_SS_TriggerIniVol -- "If initial_volume is Null" --> DB_SS_WellAttrIniVol
                 end
             end
@@ -135,30 +137,40 @@ flowchart LR
 
     %% Edge connections between nodes
         User_ServiceUsers --> Mn_SampleVolCol --> Pg_SS_SampleManifestUpload --> DB_SS_SampleMetDatVol & DB_SS_QcResultVolCusSup
+        %% [source] Katy test: 2025-05-08 14:39
         Pg_SS_SampleManifestUpload -. "TBC" .-> DB_SS_WellAttrMeasVol
 
-        Provider_SamplePrep --> User_VolCheckInstr --> CP_SS_CronVolumeCheck ---> DB_SS_QcResultVolChk
-        User_SeqOps -- "Pre-seq vol check" --> Pg_LB_Tube
+        Provider_SamplePrep --> User_VolCheckInstr --> CP_SS_CronVolumeCheck 
+        %% [source] config/schedule.rb, app/models/plate_volume.rb
+        CP_SS_CronVolumeCheck ---> DB_SS_QcResultVolChk
 
+        User_SeqOps -- "Pre-seq vol check" --> Pg_LB_Tube
+        %% [source] Limber: app/frontend/javascript/qc-information/components/QcField.vue
         Pg_LB_Tube --> API_SS_QcAssayResource
+        %% [source] app/resources/api/v2/qc_assay_resource.rb
         API_SS_QcAssayResource --> DB_SS_QcResultVolEst
+        %% [source] Lucidchart: Volume in Sequencescape and Limber
         API_SS_QcAssayResource -. TBC .-> DB_SS_ReceptaclesVol
 
-        Providers -. "TBC" .-> AssetAudits --> API_SS_VolumeUpdateResource --> DB_SS_WellAttrCurrVol
+        Providers -. "TBC" .-> AssetAudits --> API_SS_VolumeUpdateResource 
+        API_SS_VolumeUpdateResource --> DB_SS_WellAttrCurrVol
 
         DB_SS_QcResultVol -- Most recent --> CP_SS_QcResults_MeasVol --> Pg_SS_QcResults  -. "TBC" .-> Consumers
         DB_SS_WellAttrCurrVol --> CP_SS_QcResults_CurrentVol --> Pg_SS_QcResults
 
+        %% [source] app/models/well_attribute.rb
         DB_SS_WellAttrCurrVol -- Preferred --> CP_SS_WellAttrEstVol
         DB_SS_WellAttrMeasVol -- Fallback --> CP_SS_WellAttrEstVol
 
         %% QC Study Report
+        %% [source] app/models/study_report/well_details.rb
         DB_SS_WellAttrMeasVol --> CP_SS_QC_StudyReports_MeasVol --> Pg_SS_QcStudyReports
         DB_SS_WellAttrCurrVol --> CP_SS_QC_StudyReports_CurrentVol --> Pg_SS_QcStudyReports
         DB_SS_WellAttrIniVol --> CP_SS_QC_StudyReports_InitialVol --> Pg_SS_QcStudyReports
         Pg_SS_QcStudyReports -. "TBC" .-> Consumers
 
         %% Study Report
+        %% [source] app/models/study_report/study_details.rb
         CP_SS_StudyReports_SupplierVol --> Pg_SS_StudyReports
         DB_SS_WellAttrIniVol --> CP_SS_StudyReports_InitialVol --> Pg_SS_StudyReports
         DB_SS_WellAttrCurrVol --> CP_SS_StudyReports_CurrentVol --> 
