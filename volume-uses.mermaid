@@ -31,6 +31,8 @@ flowchart LR
         CP_SS_CronVolumeCheck("fa:fa-clock Volume Check<br>[hourly cron job]")
         CP_SS_RobotVerfication(Robot Verification: reduce_source_volume)
         CP_SS_WellAttrEstVol(fa:fa-table-list Well Attribute: Estimated Volume)
+        CP_SS_WellAttrUpdater(Well::AttributeUpdater)
+        CP_SS_TubeAttrUpdater(Tube::AttributeUpdater)
         CP_SS_QcResults_MeasVol(Results: Measured Volume)
         CP_SS_QcResults_CurrentVol(Results: Current Volume)
         CP_SS_QC_StudyReports_MeasVol(Study QC Report: measured_volume)
@@ -39,6 +41,7 @@ flowchart LR
         CP_SS_StudyReports_InitialVol(Study Report: initial_volume)
         CP_SS_StudyReports_CurrentVol(Study Report: current_volume)
         CP_SS_StudyReports_SupplierVol(Study Report: supplier_volume)
+        CP_SS_Constant_0(Constant 0)
         %% API
         API_SS_QcAssayResource(fa:fa-arrow-right-arrow-left API QcAssay Resource)
         API_SS_VolumeUpdateResource(fa:fa-arrow-right-arrow-left API Volume Update Resource)
@@ -69,6 +72,8 @@ flowchart LR
         end
         subgraph Sequencescape
             CP_SS_CronVolumeCheck
+            CP_SS_WellAttrUpdater
+            CP_SS_TubeAttrUpdater
             CP_SS_WellAttrEstVol
             Pg_SS_QcFileLabware
             Pg_SS_SampleManifestUpload
@@ -93,9 +98,10 @@ flowchart LR
                 Pg_SS_QcStudyReports
             end
             subgraph Graph_SS_SR["Study Report StudyReport::StudyDetails"]
+                CP_SS_StudyReports_SupplierVol
+                CP_SS_Constant_0
                 CP_SS_StudyReports_InitialVol
                 CP_SS_StudyReports_CurrentVol
-                CP_SS_StudyReports_SupplierVol
                 Pg_SS_StudyReports
             end
             subgraph Graph_SS_CP["Cherry Pick"]
@@ -136,9 +142,8 @@ flowchart LR
         end
 
     %% Edge connections between nodes
+        %% [source] app/sequencescape_excel/sequencescape_excel/specialised_field/volume.rb
         User_ServiceUsers --> Mn_SampleVolCol --> Pg_SS_SampleManifestUpload --> DB_SS_SampleMetDatVol & DB_SS_QcResultVolCusSup
-        %% [source] Katy test: 2025-05-08 14:39
-        Pg_SS_SampleManifestUpload -. "TBC" .-> DB_SS_WellAttrMeasVol
 
         Provider_SamplePrep --> User_VolCheckInstr --> CP_SS_CronVolumeCheck 
         %% [source] config/schedule.rb, app/models/plate_volume.rb
@@ -152,11 +157,19 @@ flowchart LR
         %% [source] Lucidchart: Volume in Sequencescape and Limber
         API_SS_QcAssayResource -. TBC .-> DB_SS_ReceptaclesVol
 
-        Providers -. "TBC" .-> AssetAudits --> API_SS_VolumeUpdateResource 
-        API_SS_VolumeUpdateResource --> DB_SS_WellAttrCurrVol
+        %% [source] app/models/volume_update.rb
+        Providers -. "TBC" .-> AssetAudits  -. "Not used" .-> API_SS_VolumeUpdateResource 
+        %% [source] app/models/volume_update.rb, app/models/well.rb
+        API_SS_VolumeUpdateResource -. "Not used" .-> DB_SS_WellAttrCurrVol
 
-        DB_SS_QcResultVol -- Most recent --> CP_SS_QcResults_MeasVol --> Pg_SS_QcResults  -. "TBC" .-> Consumers
+        %% [source] app/models/well.rb
+        DB_SS_QcResultVol -- Most recent --> CP_SS_QcResults_MeasVol
+        %% [source] app/views/plates/show.html.erb, app/views/plates/_qc_table.html.erb
+        CP_SS_QcResults_MeasVol --> Pg_SS_QcResults  -. "TBC" .-> Consumers
         DB_SS_WellAttrCurrVol --> CP_SS_QcResults_CurrentVol --> Pg_SS_QcResults
+
+        %% [source] app/models/well/attribute_updater.rb, app/models/qc_result.rb
+        DB_SS_QcResultVol -- after_create :update_asset --> CP_SS_WellAttrUpdater --> DB_SS_WellAttrMeasVol
 
         %% [source] app/models/well_attribute.rb
         DB_SS_WellAttrCurrVol -- Preferred --> CP_SS_WellAttrEstVol
@@ -170,6 +183,8 @@ flowchart LR
         Pg_SS_QcStudyReports -. "TBC" .-> Consumers
 
         %% Study Report
+        %% [source] app/models/study_report/asset_details.rb
+        CP_SS_Constant_0 --> CP_SS_StudyReports_SupplierVol
         %% [source] app/models/study_report/study_details.rb
         CP_SS_StudyReports_SupplierVol --> Pg_SS_StudyReports
         DB_SS_WellAttrIniVol --> CP_SS_StudyReports_InitialVol --> Pg_SS_StudyReports
@@ -178,7 +193,12 @@ flowchart LR
 
         %% Cherry Pick
         User_SSR --> CP_SS_DesiredVolume --> Pg_SS_CherryPickWorksheet --> Consumer_SamplePrep
+        %% [source] app/models/cherrypick/volume_by_nano_grams.rb
         CP_SS_WellAttrEstVol -- Amount pick only --> Pg_SS_CherryPickWorksheet
+        %% [source] app/models/cherrypick/task/pick_by_nano_grams_per_micro_litre.rb
+        DB_SS_WellAttrCurrVol -- Concentration pick only --> Pg_SS_CherryPickWorksheet
+        %% [source] app/models/cherrypick/volume_by_micro_litre.rb
+        Pg_SS_CherryPickWorksheet --> DB_SS_WellAttrCurrVol
 
         Pg_SS_CherryPickWorksheet --> CP_SS_RobotVerfication
         %% Bed Verification
@@ -186,15 +206,15 @@ flowchart LR
         Provider_SamplePrep --> CP_SS_RobotVerfication
 
         DB_SS_SampleMetDatVol --> Pg_SS_Sample -. "TBC" .-> Consumers
-        Providers -. "TBC" .......-> Pg_SS_LabView --> DB_SS_ReceptaclesVol --> Pg_SS_Receptacle -. "TBC" .-> Consumers
+        Providers -. "TBC" ......-> Pg_SS_LabView --> DB_SS_ReceptaclesVol --> Pg_SS_Receptacle -. "TBC" .-> Consumers
 
         DB_SS_SampleMetDatVol --> DB_MLWH_SampleCustMeasVol -. "TBC" .-> Consumers
 
-        User_SSR --> Pg_SS_QcFileLabware --> DB_SS_QcResultVol
-
-    %% Fake links for styling
-        Graph_SS_API ~~~~ Graph_SS_DB
-        Graph_SS_DB_QcResults ~~~~ Graph_SS_DB_WellAttrs 
+        %% [source] app/views/labware/lab_view.html.erb, app/controllers/labware_controller.rb
+        User_SSR --> Pg_SS_QcFileLabware
+        %% [source] app/controllers/labware_controller.rb, app/models/well.rb, app/models/tube/attribute_updater.rb, app/models/well/attribute_updater.rb
+        Pg_SS_QcFileLabware -- Tube --> CP_SS_TubeAttrUpdater -- "self.update" --> DB_SS_QcResultVol
+        Pg_SS_QcFileLabware -- Well --> CP_SS_WellAttrUpdater -- "self.update" --> DB_SS_QcResultVol
 
     %% Subgraph styling
         classDef Users fill:#FFD6F1;
