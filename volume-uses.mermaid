@@ -78,6 +78,7 @@ flowchart LR
             end
             subgraph Graph_SS_QC["QC Results"]
                 CP_SS_QcResults_MeasVol
+                CP_SS_QcResults_CurrentVol
                 Pg_SS_QcResults
             end
             subgraph Graph_SS_SR["Study QC Report"]
@@ -123,6 +124,7 @@ flowchart LR
 
     %% Edge connections between nodes
         User_ServiceUsers --> Mn_SampleVolCol --> Pg_SS_SampleManifestUpload --> DB_SS_SampleMetDatVol & DB_SS_QcResultVolCusSup
+        Pg_SS_SampleManifestUpload -. "TBC" .-> DB_SS_WellAttrMeasVol
 
         Provider_SamplePrep --> User_VolCheckInstr --> CP_SS_CronVolumeCheck ---> DB_SS_QcResultVolChk
         User_SeqOps -- "Pre-seq vol check" --> Pg_LB_Tube
@@ -134,6 +136,8 @@ flowchart LR
         Providers -. "TBC" .-> AssetAudits --> API_SS_VolumeUpdateResource --> DB_SS_WellAttrCurrVol
 
         DB_SS_QcResultVol -- Most recent --> CP_SS_QcResults_MeasVol --> Pg_SS_QcResults  -. "TBC" .-> Consumers
+        DB_SS_WellAttrCurrVol --> CP_SS_QcResults_CurrentVol --> Pg_SS_QcResults
+
         DB_SS_WellAttrCurrVol -- Preferred --> CP_SS_WellAttrEstVol
         DB_SS_WellAttrMeasVol -- Fallback --> CP_SS_WellAttrEstVol
 
