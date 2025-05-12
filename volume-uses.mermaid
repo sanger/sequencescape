@@ -21,7 +21,8 @@ flowchart LR
         Pg_SS_LabView(fa:fa-table-list Sequencescape Lab View Page)
         Pg_SS_QcFileLabware(fa:fa-table-list Sequencescape QC Files on Labware Page)
         Pg_SS_QcResults(fa:fa-table-list Sequencescape QC Results Page)
-        Pg_SS_QcStudyReports(fa:fa-table-list Sequencescape QC Study Reports Download)
+        Pg_SS_QcStudyReports(fa:fa-table-list Sequencescape QC Study Reports Download?)
+        Pg_SS_StudyReports(fa:fa-table-list Sequencescape Study Reports Page)
         Pg_SS_Receptacle(fa:fa-table-list Sequencescape Labware Receptacle Page)
         Pg_SS_Sample(fa:fa-table-list Sequencescape Sample Page)
         Pg_SS_SampleManifestUpload(fa:fa-table-list Sequencescape Sample Manifest Upload)
@@ -31,9 +32,13 @@ flowchart LR
         CP_SS_RobotVerfication(Robot Verification: reduce_source_volume)
         CP_SS_WellAttrEstVol(fa:fa-table-list Well Attribute: Estimated Volume)
         CP_SS_QcResults_MeasVol(Results: Measured Volume)
-        CP_SS_StudyReports_MeasVol(Study QC Report: measured_volume)
-        CP_SS_StudyReports_CurrentVol(Study QC Report: current_volume)
-        CP_SS_StudyReports_InitialVol(Study QC Report: initial_volume)
+        CP_SS_QcResults_CurrentVol(Results: Current Volume)
+        CP_SS_QC_StudyReports_MeasVol(Study QC Report: measured_volume)
+        CP_SS_QC_StudyReports_CurrentVol(Study QC Report: current_volume)
+        CP_SS_QC_StudyReports_InitialVol(Study QC Report: initial_volume)
+        CP_SS_StudyReports_InitialVol(Study Report: initial_volume)
+        CP_SS_StudyReports_CurrentVol(Study Report: current_volume)
+        CP_SS_StudyReports_SupplierVol(Study Report: supplier_volume)
         %% API
         API_SS_QcAssayResource(fa:fa-arrow-right-arrow-left API QcAssay Resource)
         API_SS_VolumeUpdateResource(fa:fa-arrow-right-arrow-left API Volume Update Resource)
@@ -81,11 +86,17 @@ flowchart LR
                 CP_SS_QcResults_CurrentVol
                 Pg_SS_QcResults
             end
-            subgraph Graph_SS_SR["Study QC Report"]
-                CP_SS_StudyReports_MeasVol
-                CP_SS_StudyReports_CurrentVol
-                CP_SS_StudyReports_InitialVol
+            subgraph Graph_SS_QC_SR["Study QC Report StudyReport::WellDetails"]
+                CP_SS_QC_StudyReports_MeasVol
+                CP_SS_QC_StudyReports_CurrentVol
+                CP_SS_QC_StudyReports_InitialVol
                 Pg_SS_QcStudyReports
+            end
+            subgraph Graph_SS_SR["Study Report StudyReport::StudyDetails"]
+                CP_SS_StudyReports_InitialVol
+                CP_SS_StudyReports_CurrentVol
+                CP_SS_StudyReports_SupplierVol
+                Pg_SS_StudyReports
             end
             subgraph Graph_SS_CP["Cherry Pick"]
                 CP_SS_DesiredVolume
@@ -141,10 +152,17 @@ flowchart LR
         DB_SS_WellAttrCurrVol -- Preferred --> CP_SS_WellAttrEstVol
         DB_SS_WellAttrMeasVol -- Fallback --> CP_SS_WellAttrEstVol
 
-        DB_SS_WellAttrMeasVol --> CP_SS_StudyReports_MeasVol --> Pg_SS_QcStudyReports
-        DB_SS_WellAttrCurrVol --> CP_SS_StudyReports_CurrentVol --> Pg_SS_QcStudyReports
-        DB_SS_WellAttrIniVol --> CP_SS_StudyReports_InitialVol --> Pg_SS_QcStudyReports
+        %% QC Study Report
+        DB_SS_WellAttrMeasVol --> CP_SS_QC_StudyReports_MeasVol --> Pg_SS_QcStudyReports
+        DB_SS_WellAttrCurrVol --> CP_SS_QC_StudyReports_CurrentVol --> Pg_SS_QcStudyReports
+        DB_SS_WellAttrIniVol --> CP_SS_QC_StudyReports_InitialVol --> Pg_SS_QcStudyReports
         Pg_SS_QcStudyReports -. "TBC" .-> Consumers
+
+        %% Study Report
+        CP_SS_StudyReports_SupplierVol --> Pg_SS_StudyReports
+        DB_SS_WellAttrIniVol --> CP_SS_StudyReports_InitialVol --> Pg_SS_StudyReports
+        DB_SS_WellAttrCurrVol --> CP_SS_StudyReports_CurrentVol --> 
+        Pg_SS_StudyReports -. "TBC" .-> Consumers
 
         %% Cherry Pick
         User_SSR --> CP_SS_DesiredVolume --> Pg_SS_CherryPickWorksheet --> Consumer_SamplePrep
@@ -178,5 +196,5 @@ flowchart LR
         class AssetAudits,Limber,MLWH Application;
         class Sequencescape Sequencescape;
         class Graph_SS_API,Graph_SS_DB,Graph_SS_DB_WellAttrs,Graph_SS_DB_QcResults SequencescapeSub;
-        class Graph_SS_SMV,Graph_SS_RV,Graph_SS_QC SequencescapeOrig;
+        class Graph_SS_SMV,Graph_SS_RV,Graph_SS_QC,Graph_SS_SR, SequencescapeOrig;
         class MLWH MLWH;
