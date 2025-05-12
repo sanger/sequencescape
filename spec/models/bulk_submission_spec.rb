@@ -537,8 +537,8 @@ describe BulkSubmission, with: :uploader do
   context 'a submission with a NovaSeqX sequencing request type' do
     let(:spreadsheet_filename) { 'novaseqx_bulk_submission.csv' }
     let(:study) { create(:study, name: 'Test Study') }
-    let!(:plate) { create(:plate_with_tagged_wells, sample_count: 96, barcode: 'SQPD-12345') }
-
+    # let!(:plate) { create(:plate_with_tagged_wells, sample_count: 96, barcode: 'SQPD-12345') }
+    let(:tube) { create(:tube) }
     let!(:submission_template) do
       create(
         :submission_template,

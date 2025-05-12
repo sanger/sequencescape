@@ -145,12 +145,12 @@ FactoryBot.define do
     end
 
     factory :nova_seq_x_sequencing_request_type do
-      request_class { NovaSeqXSequencingRequest }
+      request_class { HiSeqSequencingRequest }
       transient do
         read_lengths { [50, 100, 150] }
         default { 50 }
       end
-      asset_type { 'Well' }
+      asset_type { 'LibraryTube' }
 
       after(:build) do |request_type, ev|
         srv =
