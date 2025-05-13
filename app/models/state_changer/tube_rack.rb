@@ -2,7 +2,7 @@
 module StateChanger
   # Handles the basic transitions of a tube rack
   class TubeRack < StateChanger::Base
-    ASSOCIATED_REQUEST_TARGET_STATES = %w[passed failed].freeze
+    ASSOCIATED_REQUEST_TARGET_STATES = %w[passed pending].freeze
     TRANSFER_REQUEST_FILTER_STATES = %w[failed pending cancelled].freeze
 
     # Follows app/models/state_changer/tube_base.rb.
