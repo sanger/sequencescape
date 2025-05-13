@@ -510,8 +510,26 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     accessionable = Accession::Sample.new(Accession.configuration.tags, self)
 
-    # Accessioning jobs are lower priority (higher number) than submissions and reports
-    Delayed::Job.enqueue(SampleAccessioningJob.new(accessionable), priority: 200) if accessionable.valid?
+    # TODO: add some kind of check for validity of object?
+    unless accessionable.valid?
+      error_message = "Accessionable is invalid: #{accessionable.errors.full_messages.join(', ')}"
+      Rails.logger.error(error_message)
+      raise StandardError, error_message
+    end
+
+    # TODO: add some checks when enqueuing the delayed job
+    begin
+      # Accessioning jobs are lower priority (higher number) than submissions and reports
+      job = Delayed::Job.enqueue(SampleAccessioningJob.new(accessionable), priority: 200)
+      if job
+        Rails.logger.info("Accessioning job enqueued successfully: #{job.inspect}")
+      else
+        Rails.logger.warn('Accessioning job enqueue returned nil.')
+      end
+    rescue StandardError => e
+      Rails.logger.error("Failed to enqueue accessioning job: #{e.message}")
+      raise
+    end
   end
 
   def handle_update_event(user)
