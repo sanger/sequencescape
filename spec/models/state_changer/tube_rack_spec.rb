@@ -7,6 +7,7 @@ RSpec.describe StateChanger::TubeRack do
   let(:user) { build_stubbed(:user) }
   let(:customer_accepts_responsibility) { false }
   let(:state_changer) { described_class.new(labware:, target_state:, user:, customer_accepts_responsibility:) }
+
   let!(:failed_state) { 'failed' }
   let!(:started_state) { 'started' }
   let!(:pending_state) { 'pending' }
@@ -37,7 +38,7 @@ RSpec.describe StateChanger::TubeRack do
       end
     end
 
-    context 'when given a rack with multiple tubes' do
+    context 'when given a rack with multiple tubes with a tube in "failed" state' do
       let(:labware) { create(:tube_rack_with_tubes, locations: %w[A1 A2 A3]) }
       let!(:requests) do
         [
@@ -63,8 +64,11 @@ RSpec.describe StateChanger::TubeRack do
 
       it 'updates the tube to "passed" for receptacles with "started" requests', :aggregate_failures do
         expect(transfer_requests[0].reload.state).to eq(target_state)
-        expect(transfer_requests[1].reload.state).to eq(failed_state)
         expect(transfer_requests[2].reload.state).to eq(target_state)
+      end
+
+      it 'does not update the tube with the "failed" state', :aggregate_failures do
+        expect(transfer_requests[1].reload.state).to eq(failed_state)
       end
 
       it 'updates the tube rack to "passed" state', :aggregate_failures do
@@ -102,7 +106,7 @@ RSpec.describe StateChanger::TubeRack do
       end
 
       it 'does not update the tube with the "pending" state', :aggregate_failures do
-        expect(transfer_requests[1].reload.state).to eq('pending')
+        expect(transfer_requests[1].reload.state).to eq(pending_state)
       end
 
       it 'updates the tube rack to "mixed" state', :aggregate_failures do
