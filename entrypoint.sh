@@ -25,6 +25,9 @@ fi
 
 # Build the static web assets
 if [ "${PRECOMPILE_ASSETS:-}" = "true" ]; then
+  echo "Precompiling assets"
+  echo "Vite info"
+  bin/vite info
   bundle exec rails assets:precompile
 fi
 
