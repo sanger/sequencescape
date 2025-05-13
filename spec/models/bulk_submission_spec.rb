@@ -536,16 +536,30 @@ describe BulkSubmission, with: :uploader do
 
   context 'a submission with a NovaSeqX sequencing request type' do
     let(:spreadsheet_filename) { 'novaseqx_bulk_submission.csv' }
-    let(:study) { create(:study, name: 'Test Study') }
-    # let!(:plate) { create(:plate_with_tagged_wells, sample_count: 96, barcode: 'SQPD-12345') }
-    let(:tube) { create(:tube) }
-    let!(:submission_template) do
-      create(
-        :submission_template,
-        name: 'Limber-Htp - ISC - NovaSeqX paired end sequencing',
-        request_types: [create(:nova_seq_x_sequencing_request_type)]
-      )
+    let!(:request_types) { [create(:nova_seq_x_sequencing_request_type)] }
+    let(:study) { create(:study, name: 'UAT Study') }
+    let!(:tubes) do
+      Array.new(6) do |index|
+        create(:library_tube).tap do |tube|
+          tube.barcodes << Barcode.new(format: :sanger_ean13, barcode: "NT#{index + 1}")
+        end
+      end
     end
+
+    let(:submission_template_hash) do
+      {
+        name: 'Limber-Htp - PCR Free - NovaSeqX paired end sequencing',
+        submission_class_name: 'LinearSubmission',
+        product_catalogue: 'Generic',
+        submission_parameters: {
+          request_options: {
+          },
+          request_types: request_types.map(&:key)
+        }
+      }
+    end
+
+    before { SubmissionSerializer.construct!(submission_template_hash) }
 
     it 'is valid' do
       expect(subject).to be_valid
@@ -556,9 +570,9 @@ describe BulkSubmission, with: :uploader do
       expect(number_submissions_created).to eq(1)
     end
 
-    it 'generates submissions with one order' do
+    it 'generates submissions with 5 orders' do
       subject.process
-      expect(generated_submission.orders.count).to eq(1)
+      expect(generated_submission.orders.count).to eq(5)
     end
 
     it 'set the expected read length options' do
