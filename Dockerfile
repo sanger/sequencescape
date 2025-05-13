@@ -31,6 +31,12 @@ RUN apt-get update && apt-get install -y \
     wget \
     yarn
 
+# Install Chrome for being able to run tests
+RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+RUN apt update
+RUN apt install -y ./google-chrome-stable_current_amd64.deb
+RUN rm ./google-chrome-stable_current_amd64.deb
+
 # switch shell to bash, to use source command
 SHELL ["/bin/bash", "--login", "-i", "-c"]
 # install nvm, in order to install the correct version of nodejs, rather than the image default
@@ -45,12 +51,6 @@ COPY Gemfile /code
 COPY Gemfile.lock /code
 
 ADD . /code/
-
-# Install Chrome for being able to run tests
-RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-RUN apt update
-RUN apt install -y ./google-chrome-stable_current_amd64.deb
-RUN rm ./google-chrome-stable_current_amd64.deb
 
 # Rails installation
 RUN npm install --global yarn
