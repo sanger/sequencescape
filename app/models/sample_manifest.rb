@@ -39,6 +39,9 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # This limit sets a very comfortable safety margin.
   SAMPLES_PER_EVENT = 3000
 
+  # Tube asset types
+  TUBE_ASSET_TYPES = %w[1dtube library multiplexed_library].freeze
+
   module Associations
     def self.included(base)
       base.has_many(:sample_manifests)
@@ -48,7 +51,7 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_uploaded_document :uploaded, differentiator: 'uploaded'
   has_uploaded_document :generated, differentiator: 'generated'
 
-  attr_accessor :override, :only_first_label
+  attr_accessor :override, :only_first_label, :barcode_type
   attr_writer :rows_per_well, :invalid_wells
 
   class_attribute :spreadsheet_offset
@@ -75,8 +78,8 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_many :sample_manifest_assets
   has_many :assets, through: :sample_manifest_assets
 
-  serialize :last_errors
-  serialize :barcodes
+  serialize :last_errors, coder: YAML
+  serialize :barcodes, coder: YAML
 
   validates :count, numericality: { only_integer: true, greater_than: 0, allow_blank: false }
   validates :asset_type, presence: true, inclusion: { in: SampleManifest::CoreBehaviour::BEHAVIOURS }
@@ -97,6 +100,10 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
            :default_tube_rack_purpose,
            to: :core_behaviour
   delegate :name, to: :supplier, prefix: true
+
+  def self.tube_asset_types
+    TUBE_ASSET_TYPES
+  end
 
   def truncate_errors # rubocop:todo Metrics/MethodLength
     if last_errors && last_errors.join.length > LIMIT_ERROR_LENGTH
@@ -128,7 +135,7 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def default_filename
-    "#{study_id}stdy_manifest_#{id}_#{created_at.to_formatted_s(:dmy)}"
+    "#{study_id}stdy_manifest_#{id}_#{created_at.to_fs(:dmy)}"
   end
 
   # Number of rows per well in the manifest file, specified in manifest_types.yml.

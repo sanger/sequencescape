@@ -33,7 +33,7 @@
     <% metadata_fields.with_options(grouping: 'Data Release') do |group| %>
       <%= metadata_fields.text_field(:data_access_group) %>
       <%= group.select_by_association(:data_release_study_type)%>
-      <%= help_link 'Introduction to Accessioning', 'Accessioing', class: 'offset-md-2' %>
+      <%= help_link 'Introduction to Accessioning', 'Accessioning overview in Sequencescape', class: 'offset-md-2' %>
       <% strategies = Study::DATA_RELEASE_STRATEGIES.map { |s| [t(s.downcase.gsub(' ','_'),scope:'metadata.study.metadata.data_release_strategy.values'),s ] } %>
       <%= group.radio_select(:data_release_strategy, strategies) %>
       <% metadata_fields.related_fields(to: :data_release_strategy, when: Study::DATA_RELEASE_STRATEGY_MANAGED) do %>
@@ -59,29 +59,25 @@
       %>
 
       <% metadata_fields.related_fields(to: :data_release_strategy, when: Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE) do %>
-        <%= group.select(:data_release_prevention_reason, Study::DATA_RELEASE_PREVENTION_REASONS) %>
-        <%= group.radio_select(:data_release_prevention_approval, Study::YES_OR_NO) %>
-        <%= group.text_area(:data_release_prevention_reason_comment) %>
+        <%= group.select(:data_release_prevention_reason, study.data_release_prevention_options) %>
+        <% metadata_fields.related_fields(to: :data_release_prevention_reason, in: [Study::DATA_RELEASE_PREVENTION_REASON_OTHER]) do %>
+          <%= group.text_area(:data_release_prevention_other_comment) %>
+        <% end %>
+        <%= group.text_area(:data_release_prevention_approval) %>
       <% end %>
       <% metadata_fields.related_fields(to: :data_release_strategy, in: Study::DATA_RELEASE_STRATEGIES, not: Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE) do %>
         <% metadata_fields.related_fields(to: :data_release_timing, when: Study::DATA_RELEASE_TIMING_DELAYED) do %>
-          <%= group.select(:data_release_delay_reason, Study::DATA_RELEASE_DELAY_REASONS_STANDARD) %>
+          <%= group.select(:data_release_delay_reason, study.data_release_delay_options) %>
           <%
             group.change_select_options_for(:data_release_delay_reason, when: :data_release_study_type_id, values: {
-              DataReleaseStudyType.assay_types.map(&:id)     => [ '' ] + Study::DATA_RELEASE_DELAY_REASONS_ASSAY,
-              DataReleaseStudyType.non_assay_types.map(&:id) => [ '' ] + Study::DATA_RELEASE_DELAY_REASONS_STANDARD
+              DataReleaseStudyType.assay_types.map(&:id)     => [ '' ] + study.data_release_delay_options(assay_option: true),
+              DataReleaseStudyType.non_assay_types.map(&:id) => [ '' ] + study.data_release_delay_options
             })
           %>
 
           <%= group.select(:data_release_delay_period, Study::DATA_RELEASE_DELAY_PERIODS) %>
-          <% metadata_fields.related_fields(to: :data_release_delay_period, in: Study::DATA_RELEASE_DELAY_PERIODS) do %>
-              <%= group.radio_select(:data_release_delay_approval, Study::YES_OR_NO) %>
-            <% end %>
-          <% metadata_fields.related_fields(to: :data_release_delay_reason, when: Study::DATA_RELEASE_DELAY_FOR_OTHER) do %>
+          <% metadata_fields.related_fields(to: :data_release_delay_reason, in: [Study::DATA_RELEASE_DELAY_FOR_OTHER, Study::OLD_DATA_RELEASE_DELAY_FOR_OTHER]) do %>
             <%= group.text_area(:data_release_delay_other_comment) %>
-            <% metadata_fields.related_fields(to: :data_release_delay_period, in: Study::DATA_RELEASE_DELAY_PERIODS) do %>
-              <%= group.text_area(:data_release_delay_reason_comment) %>
-            <% end %>
           <% end %>
         <% end %>
       <% end %>

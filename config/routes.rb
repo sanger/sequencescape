@@ -16,6 +16,9 @@ Rails.application.routes.draw do
 
   mount Api::RootService.new => '/api/1' unless ENV['DISABLE_V1_API']
 
+  # @todo Update v2 resources exceptions to reflect resources (e.g., `, except: %i[update]` for `lot`),
+  #   and more. Include all actions in the except block for immutable resources.
+  #   See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
   namespace :api do
     namespace :v2 do
       jsonapi_resources :aliquots
@@ -27,17 +30,22 @@ Rails.application.routes.draw do
       end
 
       jsonapi_resources :barcode_printers
+      jsonapi_resources :bulk_transfers, except: %i[update]
       jsonapi_resources :comments
       jsonapi_resources :custom_metadatum_collections
       jsonapi_resources :labware
       jsonapi_resources :lanes
       jsonapi_resources :lot_types
       jsonapi_resources :lots
-      jsonapi_resources :orders
+      jsonapi_resources :orders, except: %i[update]
       jsonapi_resources :pick_lists
-      jsonapi_resources :plate_purposes
+      jsonapi_resources :plate_conversions, except: %i[update]
+      jsonapi_resources :plate_creations, except: %i[update]
+      jsonapi_resources :plate_purposes, except: %i[update]
       jsonapi_resources :plate_templates
-      jsonapi_resources :plates
+      jsonapi_resources :plates, except: %i[update]
+      post 'plates/:id/register_stock_for_plate', to: 'plates#register_stock_for_plate'
+
       jsonapi_resources :poly_metadata
       jsonapi_resources :pooled_plate_creations, except: %i[update]
       jsonapi_resources :pre_capture_pools
@@ -45,6 +53,7 @@ Rails.application.routes.draw do
       jsonapi_resources :projects
       jsonapi_resources :purposes
       jsonapi_resources :qc_assays
+      jsonapi_resources :qc_files, except: %i[update]
       jsonapi_resources :qc_results
       jsonapi_resources :qcables
       jsonapi_resources :racked_tubes
@@ -58,15 +67,20 @@ Rails.application.routes.draw do
       jsonapi_resources :specific_tube_creations, except: %i[update]
       jsonapi_resources :state_changes, except: %i[update]
       jsonapi_resources :studies
+      jsonapi_resources :submission_pools
       jsonapi_resources :submission_templates
-      jsonapi_resources :submissions
+      jsonapi_resources :submissions, except: %i[update]
       jsonapi_resources :tag_group_adapter_types
       jsonapi_resources :tag_groups
+      jsonapi_resources :tag_sets, only: %i[index show]
       jsonapi_resources :tag_layout_templates
       jsonapi_resources :tag_layouts, except: %i[update]
       jsonapi_resources :tags
+      jsonapi_resources :transfer_request_collections, except: %i[update]
       jsonapi_resources :transfer_requests
       jsonapi_resources :transfer_templates
+      jsonapi_resources :transfers, except: %i[update]
+      jsonapi_resources :tube_from_tube_creations, except: %i[update]
       jsonapi_resources :tube_purposes
       jsonapi_resources :tube_rack_statuses
       jsonapi_resources :tube_racks
@@ -74,22 +88,8 @@ Rails.application.routes.draw do
       jsonapi_resources :users
       jsonapi_resources :volume_updates
       jsonapi_resources :wells
+      jsonapi_resources :work_completions, except: %i[update]
       jsonapi_resources :work_orders
-
-      namespace :transfers do
-        jsonapi_resources :transfers, except: %i[update]
-
-        jsonapi_resources :between_plate_and_tubes
-        jsonapi_resources :between_plates_by_submissions
-        jsonapi_resources :between_plates
-        jsonapi_resources :between_specific_tubes
-        jsonapi_resources :between_tubes_by_submissions
-        jsonapi_resources :from_plate_to_specific_tubes_by_pools
-        jsonapi_resources :from_plate_to_specific_tubes
-        jsonapi_resources :from_plate_to_tube_by_multiplexes
-        jsonapi_resources :from_plate_to_tube_by_submissions
-        jsonapi_resources :from_plate_to_tubes
-      end
 
       namespace :heron do
         resources :tube_rack_statuses, only: [:create]
@@ -343,7 +343,6 @@ Rails.application.routes.draw do
     resources :primer_panels, except: :destroy
 
     resources :studies, except: [:destroy] do
-      resources :poly_metadata, controller: 'studies/poly_metadata'
       collection do
         get :index
         post :filter
@@ -565,6 +564,8 @@ Rails.application.routes.draw do
       post :create
       get :to_sample_tubes
       post :create_sample_tubes
+      get :from_tubes, controller: 'plates_from_tubes', action: 'new'
+      post :from_tubes, controller: 'plates_from_tubes', action: 'create'
     end
 
     member { get :fluidigm_file }

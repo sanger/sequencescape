@@ -127,7 +127,7 @@ class QcReport < ApplicationRecord
   belongs_to :study
   has_many :qc_metrics
 
-  serialize :plate_purposes, Array
+  serialize :plate_purposes, type: Array, coder: YAML
 
   before_validation :generate_report_identifier, if: :identifier_required?
 
@@ -168,7 +168,7 @@ class QcReport < ApplicationRecord
   def generate_report_identifier
     return true if study.nil? || product_criteria.nil?
 
-    rid = [study.abbreviation, product_criteria.product.name, DateTime.now.to_formatted_s(:number)].compact
+    rid = [study.abbreviation, product_criteria.product.name, DateTime.now.to_fs(:number)].compact
       .join('_')
       .downcase
       .gsub(/[^\w]/, '_')

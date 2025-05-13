@@ -77,3 +77,13 @@ LTN Lib PCR XP:
 RVI Lib PCR XP:
   type: PlatePurpose
   stock_plate: false
+
+# RVIG BCL plate for reISC
+RVIG Lib PCR XP:
+  type: PlatePurpose
+  stock_plate: false
+
+# A plate provided as ready-made libraries.
+# These used to be imported as Stock Plates and then 'fake cherrypicked' onto 'LB Lib PCR XP', which were allowed down the multiplexing pipelines.
+# Now, they can be imported and submitted as this more accurate plate purpose.
+Library Stock Plate: *limber_input_96

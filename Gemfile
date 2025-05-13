@@ -4,7 +4,14 @@ source 'https://rubygems.org'
 
 group :default do
   gem 'bootsnap'
-  gem 'rails', '~> 6.1.7'
+  gem 'concurrent-ruby', '1.3.5'
+  gem 'rails', '~> 7.1.5.1'
+
+  # Previously part of ruby or rails, now separate gems
+  gem 'drb'
+  gem 'logger'
+  gem 'mutex_m'
+  gem 'syslog'
 
   # Fix incompatibility with between Ruby 3.1 and Psych 4 (used for yaml)
   # see https://stackoverflow.com/a/71192990
@@ -79,6 +86,8 @@ group :default do
   # - Load the gem from the branch
   gem 'jsonapi-resources', github: 'sanger/jsonapi-resources', branch: 'develop'
 
+  gem 'csv', '~> 3.3' # Required by jsonapi-resources, previously part of ruby
+
   # Wraps bunny with connection pooling and consumer process handling
   gem 'sanger_warren'
 
@@ -86,7 +95,7 @@ group :default do
   gem 'bunny', '>= 2.22.0'
 
   # Provides message schema encoding and decoding for messages to RabbitMQ
-  gem 'avro', '~> 1.11.0'
+  gem 'avro'
 
   # Excel file generation
   # Note: We're temporarily using out own for of the project to make use of a few changes

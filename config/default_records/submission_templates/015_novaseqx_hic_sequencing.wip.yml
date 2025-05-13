@@ -1,7 +1,0 @@
-Limber-PCR-HiC:
-  name: "Limber-PCR-HiC"
-  submission_class_name: "LinearSubmission"
-  related_records:
-    product_line_name: Bespoke
-    product_catalogue_name: GenericPCR
-    request_type_keys: ["limber_pcr_bespoke", "limber_multiplexing_hic", "illumina_htp_novaseqx_paired_end_sequencing"]

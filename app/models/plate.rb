@@ -20,7 +20,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   include Transfer::State::PlateState
   include Asset::Ownership::Owned
   include Plate::FluidigmBehaviour
-  include SubmissionPool::Association::Plate
+  include Plate::PoolingMetadata
   include PlateCreation::CreationChild
   include Barcode::Barcodeable
 
@@ -94,6 +94,9 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   has_many :well_requests_as_target, through: :wells, source: :requests_as_target
   has_many :well_requests_as_source, through: :wells, source: :requests_as_source
   has_many :orders_as_target, -> { distinct }, through: :well_requests_as_target, source: :order
+
+  # This association cannot be declared earlier, as it depends on the well_requests_as_target association.
+  include SubmissionPool::Association::Plate
 
   # We use stock well associations here as stock_wells is already used to generate some kind of hash.
   has_many :stock_requests, -> { distinct }, through: :stock_well_associations, source: :requests
@@ -334,7 +337,8 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   def stock_plate
     @stock_plate ||= stock_plate? ? self : lookup_stock_plate
   end
-  deprecate stock_plate: 'Stock plate is nebulous and can easily lead to unexpected behaviour'
+  deprecate stock_plate: 'Stock plate is nebulous and can easily lead to unexpected behaviour',
+            deprecator: Rails.application.deprecators[:sequencescape]
 
   def self.create_with_barcode!(*args, &)
     attributes = args.extract_options!

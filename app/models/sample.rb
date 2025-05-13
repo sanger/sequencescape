@@ -234,12 +234,13 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     # 1) Understand what the actual constraints are for supplier_name
     # 2) Apply appropriate constraints
     # 3) Ensure the help text in sample manifest matches
+    # Note, *_changed? is rails magic, and not a string literal as rubocop might suggest
     validates :supplier_name,
               format: {
                 with: /\A[[:ascii:]]+\z/,
                 message: 'only allows ASCII'
               },
-              if: :supplier_name_changed? && :supplier_name?
+              if: :supplier_name_changed? && :supplier_name? # rubocop:disable Lint/LiteralAsCondition
 
     # here we are aliasing ArrayExpress attribute from normal one
     # This is easier that way so the name is exactly the name of the array-express field
@@ -296,7 +297,8 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_many :component_samples, through: :joins_as_compound_sample, dependent: :destroy
 
   has_many :assets, -> { distinct }, through: :aliquots, source: :receptacle
-  deprecate assets: 'use receptacles instead, or labware if needed'
+  deprecate assets: 'use receptacles instead, or labware if needed',
+            deprecator: Rails.application.deprecators[:sequencescape]
 
   has_many :receptacles, -> { distinct }, through: :aliquots
   has_many :wells, -> { distinct }, through: :aliquots, source: :receptacle, class_name: 'Well'
@@ -359,9 +361,9 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
               message: 'should be blank if "control" is set to false'
             }
 
-  enum control_type: { negative: 0, positive: 1, 'pcr negative': 2, 'pcr positive': 3, 'lysate negative': 4 }
+  enum :control_type, { negative: 0, positive: 1, 'pcr negative': 2, 'pcr positive': 3, 'lysate negative': 4 }
 
-  enum priority: { no_priority: 0, backlog: 1, surveillance: 2, priority: 3 }
+  enum :priority, { no_priority: 0, backlog: 1, surveillance: 2, priority: 3 }
 
   # this method has to be before validation_guarded_by
   def rename_to!(new_name)

@@ -5,12 +5,17 @@ require 'pry'
 
 describe 'Batches controller', :js do
   let(:request_count) { 3 }
+  let(:plate) { create(:plate, well_count: 3) }
+  let(:destination_plate) { create(:plate, well_count: 3) }
   let(:batch) do
     create(
       :cherrypick_batch,
-      request_count: request_count,
       state: 'released',
-      request_factory: :passed_cherrypick_request
+      request_attributes: [
+        { asset: plate.wells[0], target_asset: destination_plate.wells[0], state: 'passed' },
+        { asset: plate.wells[1], target_asset: destination_plate.wells[1], state: 'passed' },
+        { asset: plate.wells[2], target_asset: destination_plate.wells[2], state: 'passed' }
+      ]
     )
   end
   let(:user) { create(:admin) }

@@ -68,7 +68,7 @@ class RequestType < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # While a request type describes what a request is, a request purpose describes why it is being done.
   # ie. standard, qc, internal
   # The value on request type acts as a default for requests
-  enum request_purpose: { standard: 1, internal: 2, qc: 3, control: 4 }
+  enum :request_purpose, { standard: 1, internal: 2, qc: 3, control: 4 }
 
   belongs_to :product_line
 
@@ -82,10 +82,10 @@ class RequestType < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # eg. library_creation has a lower order than sequencing
   validates :order, presence: true
   validates :order, numericality: { integer_only: true }
-  validates :morphology, numericality: { in: MORPHOLOGIES }
+  validates :morphology, numericality: { in: 0...MORPHOLOGIES.length }
   validates :request_class, presence: true, inclusion: { in: ->(_) { [Request, *Request.descendants] } }
 
-  serialize :request_parameters
+  serialize :request_parameters, coder: YAML
 
   delegate :accessioning_required?, :sequencing?, to: :request_class
 

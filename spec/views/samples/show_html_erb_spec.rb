@@ -25,7 +25,7 @@ RSpec.describe 'samples/show.html.erb' do
         regexp =
           Regexp.new(
             # rubocop:todo Layout/LineLength
-            "Patient consent has been withdrawn for this sample.*by user.*#{current_user.login}.*at .*#{time.to_formatted_s(:db)}.*",
+            "Patient consent has been withdrawn for this sample.*by user.*#{current_user.login}.*at .*#{time.to_fs(:db)}.*",
             # rubocop:enable Layout/LineLength
             Regexp::MULTILINE
           )
@@ -48,7 +48,7 @@ RSpec.describe 'samples/show.html.erb' do
         regexp =
           Regexp.new(
             # rubocop:todo Layout/LineLength
-            "Patient consent has been withdrawn for this sample.*by user.*#{current_user.login}.*at .*#{time.to_formatted_s(:db)}.*",
+            "Patient consent has been withdrawn for this sample.*by user.*#{current_user.login}.*at .*#{time.to_fs(:db)}.*",
             # rubocop:enable Layout/LineLength
             Regexp::MULTILINE
           )

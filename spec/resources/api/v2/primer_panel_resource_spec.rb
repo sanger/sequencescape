@@ -4,17 +4,17 @@ require 'rails_helper'
 require './app/resources/api/v2/primer_panel_resource'
 
 RSpec.describe Api::V2::PrimerPanelResource, type: :resource do
-  subject { described_class.new(resource_model, {}) }
+  subject(:resource) { described_class.new(resource_model, {}) }
 
   let(:resource_model) { build_stubbed(:primer_panel) }
 
   # Test attributes
   it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
-    expect(subject).to have_attribute :name
-    expect(subject).to have_attribute :programs
-    expect(subject).not_to have_updatable_field(:id)
-    expect(subject).not_to have_updatable_field(:name)
-    expect(subject).not_to have_updatable_field(:programs)
+    expect(resource).to have_attribute :name
+    expect(resource).to have_attribute :programs
+    expect(resource).not_to have_updatable_field(:id)
+    expect(resource).not_to have_updatable_field(:name)
+    expect(resource).not_to have_updatable_field(:programs)
   end
 
   # Updatable fields

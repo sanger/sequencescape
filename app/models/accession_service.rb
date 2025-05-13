@@ -122,15 +122,16 @@ class AccessionService # rubocop:todo Metrics/ClassLength
       ensure
         files.each(&:close) # not really necessary but recommended
       end
-
-      return accessionables.map(&:accession_number) # rubocop:todo Rails/TransactionExitStatement
     end
+
+    accessionables.map(&:accession_number)
   end
 
   # rubocop:enable Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/BlockLength, Metrics/AbcSize
 
   def submit_sample_for_user(sample, user)
-    ebi_accession_number = sample.sample_metadata.sample_ebi_accession_number
+    # TODO: commented out line as not used without error handling
+    # ebi_accession_number = sample.sample_metadata.sample_ebi_accession_number
 
     submit(user, Accessionable::Sample.new(sample))
   end
@@ -141,7 +142,8 @@ class AccessionService # rubocop:todo Metrics/ClassLength
     # TODO: check error
     # raise AccessionServiceError, "Cannot generate accession number: #{ sampledata[:error] }" if sampledata[:error]
 
-    ebi_accession_number = study.study_metadata.study_ebi_accession_number
+    # TODO: commented as not used without error handling
+    # ebi_accession_number = study.study_metadata.study_ebi_accession_number
 
     # raise NumberNotGenerated, 'No need to' if not ebi_accession_number.blank? and not /ER/.match(ebi_accession_number)
 

@@ -2,17 +2,56 @@
 
 module Api
   module V2
-    # @todo This documentation does not yet include a detailed description of what this resource represents.
-    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
-    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
-    #
-    # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
-    # @note Access this resource via the `/api/v2/pooled_plate_creation/` endpoint.
-    #
     # Provides a JSON:API representation of {PooledPlateCreation}.
     #
-    # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
-    # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
+    # This resource represents the creation of a pooled plate from one or more parent plates.
+    #
+    # @note Access this resource via the `/api/v2/pooled_plate_creation/` endpoint.
+    # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
+    #
+    # @example GET request to retrieve all pooled plate creations
+    #   GET /api/v2/pooled_plate_creation/
+    #
+    # @example GET request to retrieve a specific pooled plate creation
+    #   GET /api/v2/pooled_plate_creation/123
+    #
+    # @example POST request with attributes specified by UUID (deprecated)
+    #   POST /api/v2/pooled_plate_creation/
+    #   {
+    #     "data": {
+    #       "type": "pooled_plate_creation",
+    #       "attributes": {
+    #         "child_purpose_uuid": "uuid-of-child-purpose",
+    #         "parent_uuids": ["uuid-of-parent-1", "uuid-of-parent-2"],
+    #         "user_uuid": "uuid-of-user"
+    #       }
+    #     }
+    #   }
+    #
+    # @example POST request to create a pooled plate using relationships
+    #   POST /api/v2/pooled_plate_creation/
+    #   {
+    #     "data": {
+    #       "type": "pooled_plate_creations",
+    #       "attributes": {
+    #         "child_purpose_uuid": ["f64dec80-f51c-11ef-8842-000000000000"]
+    #       },
+    #       "relationships": {
+    #         "parents": {
+    #           "data": [
+    #             { "type": "labware", "id": 1 },
+    #             { "type": "labware", "id": 4 }
+    #           ]
+    #         },
+    #         "user": {
+    #           "data": { "type": "users", "id": 1 }
+    #         }
+    #       }
+    #     }
+    #   }
+    #
+    # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
+    # or the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class PooledPlateCreationResource < BaseResource
       ###
@@ -20,74 +59,75 @@ module Api
       ###
 
       # @!attribute [w] child_purpose_uuid
-      #   @param value [String] The UUID of a child purpose to use in the creation of the child plate.
+      #   The UUID of the child purpose, which determines the type of plate being created.
+      #   @todo deprecate this attribute in favour of the `child_purpose` relationship.
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
+      #   @param value [String] or String - The UUID of a child purpose.
       #   @return [Void]
-      attribute :child_purpose_uuid
-
-      def child_purpose_uuid=(value)
-        @model.child_purpose = Purpose.with_uuid(value).first
-      end
+      attribute :child_purpose_uuid, writeonly: true
 
       # @!attribute [w] parent_uuids
       #   This is declared for convenience where parents are not available to set as a relationship.
-      #   Setting this attribute alongside the `parents` relationship will prefer the relationship value.
+      #   This attribute is optional if the `parents` relationship is explicitly set.
+      #   If both `parent_uuids` and `parents` are provided, `parents` takes precedence.
       #   @deprecated Use the `parents` relationship instead.
-      #   @param value [Array<String>] The UUIDs of labware that will be the parents for the created plate.
+      #   @param value [Array<String>] UUIDs of the parent labware.
       #   @return [Void]
       #   @see #parents
-      attribute :parent_uuids
-
-      def parent_uuids=(value)
-        @model.parents = value.map { |uuid| Labware.with_uuid(uuid).first }
-      end
+      attribute :parent_uuids, writeonly: true
 
       # @!attribute [w] user_uuid
       #   This is declared for convenience where the user is not available to set as a relationship.
-      #   Setting this attribute alongside the `user` relationship will prefer the relationship value.
+      #   This attribute is optional if the `user` relationship is explicitly set.
+      #   If both `user_uuid` and `user` are provided, `user` takes precedence.
       #   @deprecated Use the `user` relationship instead.
-      #   @param value [String] The UUID of the user who initiated the creation of this pooled plate.
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
+      #   @param value [String] UUID of the user.
       #   @return [Void]
       #   @see #user
-      attribute :user_uuid
+      attribute :user_uuid, writeonly: true
+
+      # @!attribute [r] uuid
+      #   @note This identifier is automatically assigned upon creation and cannot be modified.
+      #   @return [String] This uniquely identifies the pooled plate creation event.
+      attribute :uuid, readonly: true
+
+      ###
+      # Getters and Setters
+      ###
 
       def user_uuid=(value)
         @model.user = User.with_uuid(value).first
       end
 
-      # @!attribute [r] uuid
-      #   @return [String] The UUID of the state change.
-      attribute :uuid, readonly: true
+      def parent_uuids=(value)
+        @model.parents = value.map { |uuid| Labware.with_uuid(uuid).first }
+      end
+
+      def child_purpose_uuid=(value)
+        @model.child_purpose = Purpose.with_uuid(value).first
+      end
 
       ###
       # Relationships
       ###
 
       # @!attribute [r] child
-      #   @return [PlateResource] The child plate which was created.
-      has_one :child, class_name: 'Plate'
+      #   The plate that was created from the pooling process.
+      #   @return [PlateResource] The newly created child plate.
+      has_one :child, class_name: 'Plate', readonly: true
 
       # @!attribute [rw] parents
-      #   Setting this relationship alongside the `parent_uuids` attribute will override the attribute value.
-      #   @return [Array<LabwareResource>] An array of the parents of the plate being created.
-      #   @note This relationship is required.
+      #   The labware used as the source for the pooled plate.
+      #   If both `parent_uuids` and `parents` are provided, `parents` takes precedence.
+      #   @return [Array<LabwareResource>] An array of parent labware resources.
       has_many :parents, class_name: 'Labware'
 
       # @!attribute [rw] user
-      #   Setting this relationship alongside the `user_uuid` attribute will override the attribute value.
-      #   @return [UserResource] The user who initiated the creation of the pooled plate.
-      #   @note This relationship is required.
+      #   The user who initiated the pooled plate creation.
+      #   If both `user_uuid` and `user` are provided, `user` takes precedence.
+      #   @return [UserResource] The user resource.
       has_one :user
-
-      def self.creatable_fields(context)
-        # UUID is set by the system.
-        super - %i[uuid]
-      end
-
-      def fetchable_fields
-        # The tube_attributes attribute is only available during resource creation.
-        # UUIDs for relationships are not fetchable. They should be accessed via the relationship itself.
-        super - %i[child_purpose_uuid parent_uuids user_uuid]
-      end
     end
   end
 end

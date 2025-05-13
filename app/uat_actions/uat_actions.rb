@@ -117,9 +117,7 @@ class UatActions
     @report ||= {}
   end
 
-  def form_fields
-    self.class.form_fields
-  end
+  delegate :form_fields, to: :class
 
   def save
     valid? && ActiveRecord::Base.transaction { perform }

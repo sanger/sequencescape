@@ -6,6 +6,11 @@ class UatActions::GenerateSampleManifest < UatActions
   self.description = 'Generate sample manifest with the provided information.'
   self.category = :generating_samples
 
+  include UatActions::Shared::StudyHelper
+  include UatActions::Shared::SupplierHelper
+
+  ERROR_TUBE_PURPOSE_DOES_NOT_EXIST = "Tube purpose '%s' does not exist."
+
   form_field :study_name,
              :select,
              label: 'Study Name',
@@ -41,6 +46,9 @@ class UatActions::GenerateSampleManifest < UatActions
 
   form_field :with_samples, :check_box, help: 'Create new samples for recipients?', label: 'With Samples?'
 
+  validates :tube_purpose_name, presence: true
+  validate :validate_tube_purpose_exists
+
   def self.default
     new(
       study_name: UatActions::StaticRecords.study.name,
@@ -57,6 +65,17 @@ class UatActions::GenerateSampleManifest < UatActions
     print_report(sample_manifest)
 
     true
+  end
+
+  # Validates that the tube purpose exists for the selected tube purpose name.
+  #
+  # @return [void]
+  def validate_tube_purpose_exists
+    return if tube_purpose_name.blank? # Already validated by presence
+    return if Tube::Purpose.exists?(name: tube_purpose_name)
+
+    message = format(ERROR_TUBE_PURPOSE_DOES_NOT_EXIST, tube_purpose_name)
+    errors.add(:tube_purpose_name, message)
   end
 
   def create_sample_manifest
@@ -81,30 +100,19 @@ class UatActions::GenerateSampleManifest < UatActions
 
   private
 
+  # Validates that the plate purpose exists for the selected plate purpose name.
+  #
+  # @return [void]
+  def validate_plate_purpose_exists
+    return if plate_purpose_name.blank?
+    return if PlatePurpose.exists?(name: plate_purpose_name)
+
+    message = format(ERROR_PLATE_PURPOSE_DOES_NOT_EXIST, plate_purpose_name)
+    errors.add(:plate_purpose_name, message)
+  end
+
   def purpose
     Purpose.find_by!(name: tube_purpose_name)
-  end
-
-  def study
-    @study ||=
-      Study.create_with(
-        state: 'active',
-        study_metadata_attributes: {
-          data_access_group: 'dag',
-          study_type: UatActions::StaticRecords.study_type,
-          faculty_sponsor: UatActions::StaticRecords.faculty_sponsor,
-          data_release_study_type: UatActions::StaticRecords.data_release_study_type,
-          study_description: 'A study generated for UAT',
-          contaminated_human_dna: 'No',
-          contains_human_dna: 'No',
-          commercially_available: 'No',
-          program: UatActions::StaticRecords.program
-        }
-      ).find_or_create_by!(name: study_name)
-  end
-
-  def supplier
-    @supplier ||= Supplier.find_or_create_by!(name: supplier_name)
   end
 
   def create_sample(sample_name, sample_manifest)

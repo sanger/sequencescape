@@ -1,0 +1,21 @@
+Limber-Htp - HiC - NovaSeqX paired end sequencing:
+  name: "Limber-Htp - HiC - NovaSeqX paired end sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Illumina-HTP
+    product_catalogue_name: HiC
+    request_type_keys: ["limber_hic", "limber_multiplexing_hic", "illumina_htp_novaseqx_paired_end_sequencing"]
+Limber-Htp - HiC - NovaSeq 6000 paired end sequencing:
+  name: "Limber-Htp - HiC - NovaSeq 6000 paired end sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Illumina-HTP
+    product_catalogue_name: HiC
+    request_type_keys: ["limber_hic", "limber_multiplexing_hic", "illumina_htp_novaseq_6000_paired_end_sequencing"]
+Limber-Htp - HiC - MiSeq sequencing:
+  name: "Limber-Htp - HiC - MiSeq sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Illumina-HTP
+    product_catalogue_name: HiC
+    request_type_keys: ["limber_hic", "limber_multiplexing_hic", "illumina_b_miseq_sequencing"]

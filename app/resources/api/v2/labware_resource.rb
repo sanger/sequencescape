@@ -2,28 +2,47 @@
 
 module Api
   module V2
-    # @todo This documentation does not yet include a detailed description of what this resource represents.
-    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
-    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+    # Provides a JSON:API representation of {Labware} to access all labware objects,
+    # which includes plates and tubes. When creating Labware, do so via the {PlateResource}
+    # or {TubeResource} instead.
     #
     # @note Access this resource via the `/api/v2/labware/` endpoint.
     #
-    # Provides a JSON:API representation of {Labware}.
+    # @example GET request for all Labware resources
+    #   GET /api/v2/labware/
     #
-    # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
-    # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
-    # of the JSON:API standard.
+    # @example GET request for a single Labware resource with ID 123
+    #   GET /api/v2/labware/123/
+    #
+    # @example POST request to create a new Labware resource
+    #   POST /api/v2/labware/
+    #   {
+    #     "data": {
+    #       "type": "labware",
+    #       "attributes": {
+    #       },
+    #       "relationships": {
+    #       }
+    #     }
+    #   }
+    #
+    #
+    # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
+    # or check out [JSONAPI::Resources](http://jsonapi-resources.com/) for Sequencescape's implementation.
     class LabwareResource < BaseResource
-      # We import most labware shared behaviour, this includes associations,
-      # attributes and filters. By adding behaviour here we ensure that it
-      # is automatically available on plate and tube.
+      # We import most labware shared behaviour, including associations,
+      # attributes, and filters. This ensures that labware-specific behaviour
+      # is automatically available on plates and tubes.
       include Api::V2::SharedBehaviour::Labware
 
       default_includes :uuid_object, :barcodes
 
-      # Custom methods
-      # These shouldn't be used for business logic, and a more about
-      # I/O and isolating implementation details.
+      ###
+      # Custom Methods
+      ###
+
+      # Returns a hash containing different barcode types associated with the labware.
+      #   @return [Hash] A hash with keys for each barcode type and their corresponding values.
       def labware_barcode
         {
           'ean13_barcode' => _model.try(:ean13_barcode),

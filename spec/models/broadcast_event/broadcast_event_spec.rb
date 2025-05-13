@@ -28,8 +28,16 @@ class TestSeed
     :id
   end
 
+  def self.has_query_constraints?
+    false
+  end
+
+  def self.composite_primary_key?
+    false
+  end
+
   def self.polymorphic_name
-    'test_seed'
+    'TestSeed'
   end
 
   def attributes

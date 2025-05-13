@@ -10,14 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_11_06_150235) do
-
+ActiveRecord::Schema[7.1].define(version: 2025_03_26_144346) do
   create_table "aliquot_indices", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "aliquot_id", null: false
     t.integer "lane_id", null: false
     t.integer "aliquot_index", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["aliquot_id"], name: "index_aliquot_indices_on_aliquot_id", unique: true
     t.index ["lane_id", "aliquot_index"], name: "index_aliquot_indices_on_lane_id_and_aliquot_index", unique: true
   end
@@ -32,8 +31,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "library_type"
     t.integer "insert_size_from"
     t.integer "insert_size_to"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "bait_library_id"
     t.integer "tag2_id", default: -1
     t.boolean "suboptimal", default: false, null: false
@@ -64,8 +63,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "key"
     t.string "created_by"
     t.integer "asset_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "witnessed_by"
     t.json "metadata"
     t.index ["asset_id"], name: "index_asset_audits_on_asset_id"
@@ -77,8 +76,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
   create_table "asset_creation_parents", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "asset_creation_id"
     t.integer "parent_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "asset_creations", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -86,16 +85,16 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.integer "parent_id"
     t.integer "child_purpose_id"
     t.integer "child_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "type", null: false
   end
 
   create_table "asset_group_assets", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "asset_id"
     t.integer "asset_group_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["asset_group_id"], name: "index_asset_group_assets_on_asset_group_id"
     t.index ["asset_id"], name: "index_asset_group_assets_on_asset_id"
   end
@@ -104,8 +103,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "name"
     t.integer "user_id"
     t.integer "study_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "asset_links", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -113,8 +112,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.integer "descendant_id"
     t.boolean "direct"
     t.integer "count"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["ancestor_id", "descendant_id"], name: "index_asset_links_on_ancestor_id_and_descendant_id", unique: true
     t.index ["ancestor_id", "direct"], name: "index_asset_links_on_ancestor_id_and_direct"
     t.index ["descendant_id", "direct"], name: "index_asset_links_on_descendant_id_and_direct"
@@ -125,8 +124,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.integer "horizontal_ratio", null: false
     t.integer "vertical_ratio", null: false
     t.string "description_strategy", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "assets_deprecated", id: :integer, charset: "latin1", force: :cascade do |t|
@@ -136,8 +135,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "barcode_bkp"
     t.string "qc_state", limit: 20
     t.boolean "resource"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "map_id"
     t.integer "size"
     t.boolean "closed", default: false
@@ -166,8 +165,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "name", null: false
     t.string "supplier_identifier"
     t.string "target_species", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "bait_library_type_id", null: false
     t.boolean "visible", default: true, null: false
     t.index ["bait_library_supplier_id", "name"], name: "bait_library_names_are_unique_within_a_supplier", unique: true
@@ -177,22 +176,22 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.integer "user_id"
     t.integer "plate_id", null: false
     t.string "layout", limit: 1024
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["plate_id"], name: "bait_libraries_are_laid_out_on_a_plate_once", unique: true
   end
 
   create_table "bait_library_suppliers", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.boolean "visible", default: true, null: false
   end
 
   create_table "bait_library_types", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.boolean "visible", default: true, null: false
     t.integer "category"
     t.index ["name"], name: "index_bait_library_types_on_name", unique: true
@@ -207,8 +206,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "name"
     t.integer "printer_type_id"
     t.string "type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "label_template_name"
     t.index ["name"], name: "index_barcode_printer_types_on_name"
     t.index ["type"], name: "index_barcode_printer_types_on_type"
@@ -217,8 +216,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
   create_table "barcode_printers", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name"
     t.boolean "active"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "barcode_printer_type_id"
     t.integer "print_service", default: 0
     t.integer "printer_type", default: 1
@@ -228,8 +227,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.integer "asset_id", null: false
     t.string "barcode", null: false
     t.integer "format", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["asset_id"], name: "index_barcodes_on_asset_id"
     t.index ["barcode"], name: "index_barcodes_on_barcode"
   end
@@ -238,17 +237,17 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.integer "batch_id", null: false
     t.integer "request_id", null: false
     t.integer "position"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["batch_id"], name: "index_batch_requests_on_batch_id"
     t.index ["request_id"], name: "request_id", unique: true
   end
 
   create_table "batches", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "item_limit"
-    t.datetime "created_at"
+    t.datetime "created_at", precision: nil
     t.integer "user_id"
-    t.datetime "updated_at"
+    t.datetime "updated_at", precision: nil
     t.integer "pipeline_id"
     t.string "state", limit: 20
     t.integer "assignee_id"
@@ -267,8 +266,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.text "descriptor_fields", size: :medium
     t.integer "eventful_id"
     t.string "eventful_type", limit: 50
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "filename"
     t.binary "data"
     t.text "message", size: :medium
@@ -282,19 +281,19 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.integer "seed_id"
     t.integer "user_id"
     t.text "properties", size: :medium
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "budget_divisions", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "bulk_transfers", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "user_id"
   end
 
@@ -303,8 +302,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "commentable_type", limit: 50
     t.integer "user_id"
     t.text "description", size: :medium
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "commentable_id", null: false
     t.index ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type"
   end
@@ -320,16 +319,16 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "name"
     t.integer "item_id"
     t.integer "pipeline_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "custom_metadata", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "key"
     t.string "value"
     t.integer "custom_metadatum_collection_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["custom_metadatum_collection_id"], name: "index_custom_metadata_on_custom_metadatum_collection_id"
     t.index ["key", "value"], name: "index_custom_metadata_on_key_and_value"
   end
@@ -337,8 +336,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
   create_table "custom_metadatum_collections", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "user_id"
     t.integer "asset_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["asset_id"], name: "index_custom_metadatum_collections_on_asset_id"
   end
 
@@ -347,14 +346,14 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.integer "differential"
     t.string "content_type"
     t.text "content", size: :medium
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "data_release_study_types", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.boolean "for_array_express", default: false
     t.boolean "is_default", default: false
     t.boolean "is_assay_type", default: false
@@ -373,12 +372,12 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.integer "attempts", default: 0
     t.text "handler", size: :medium
     t.text "last_error", size: :medium
-    t.datetime "run_at"
-    t.datetime "locked_at"
-    t.datetime "failed_at"
+    t.datetime "run_at", precision: nil
+    t.datetime "locked_at", precision: nil
+    t.datetime "failed_at", precision: nil
     t.string "locked_by"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "queue"
   end
 
@@ -422,8 +421,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "eventful_type", limit: 50
     t.string "message"
     t.string "family"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "identifier"
     t.string "location"
     t.boolean "actioned"
@@ -439,8 +438,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
   create_table "extended_validators", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "behaviour", null: false
     t.text "options", size: :medium
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "external_properties", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -448,8 +447,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "propertied_type", limit: 50
     t.string "key", limit: 50
     t.string "value"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["propertied_id", "propertied_type", "key"], name: "ep_pi_pt_key"
   end
 
@@ -457,14 +456,14 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.integer "target_id"
     t.string "created_by"
     t.text "attributes_update", size: :long
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "faculty_sponsors", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "failures", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -472,16 +471,16 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "failable_type", limit: 50
     t.text "reason", size: :medium
     t.boolean "notify_remote"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.text "comment", size: :medium
     t.index ["failable_id"], name: "index_failures_on_failable_id"
   end
 
   create_table "flipper_features", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "key", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["key"], name: "index_flipper_features_on_key", unique: true
   end
 
@@ -496,16 +495,16 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
 
   create_table "flowcell_types", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["name"], name: "index_flowcell_types_on_name", unique: true
   end
 
   create_table "flowcell_types_request_types", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.bigint "flowcell_type_id", null: false
     t.integer "request_type_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["flowcell_type_id"], name: "index_flowcell_types_request_types_on_flowcell_type_id"
     t.index ["request_type_id"], name: "index_flowcell_types_request_types_on_request_type_id"
   end
@@ -533,16 +532,16 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "name", null: false
     t.integer "sort_priority", default: 0, null: false
     t.integer "validation_state", default: 0, null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["name"], name: "index_isndc_countries_on_name", unique: true
     t.index ["sort_priority"], name: "index_isndc_countries_on_sort_priority"
     t.index ["validation_state"], name: "index_isndc_countries_on_validation_state"
   end
 
   create_table "items", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "name"
     t.integer "study_id"
     t.integer "user_id"
@@ -561,8 +560,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.text "descriptors", size: :medium
     t.integer "eventful_id"
     t.string "eventful_type", limit: 50
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.text "message", size: :medium
     t.integer "user_id"
     t.integer "batch_id"
@@ -580,8 +579,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "two_dimensional_barcode"
     t.integer "plate_purpose_id"
     t.integer "labware_type_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.integer "retention_instruction"
     t.index ["labware_type_id"], name: "fk_rails_32b35f8bf9"
     t.index ["plate_purpose_id"], name: "fk_rails_745455e964"
@@ -593,14 +592,14 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
   create_table "lane_metadata", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "lane_id"
     t.string "release_reason"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "library_types", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["name"], name: "index_library_types_on_name", unique: true
   end
 
@@ -608,8 +607,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.integer "request_type_id", null: false
     t.integer "library_type_id", null: false
     t.boolean "is_default", default: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["library_type_id"], name: "fk_library_types_request_types_to_library_types"
     t.index ["request_type_id"], name: "fk_library_types_request_types_to_request_types"
   end
@@ -623,11 +622,11 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "faculty_sponsor_ids"
     t.bigint "study_id"
     t.string "plate_purpose_ids"
-    t.datetime "start_date"
-    t.datetime "end_date"
+    t.datetime "start_date", precision: nil
+    t.datetime "end_date", precision: nil
     t.string "report_filename"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["study_id"], name: "index_location_reports_on_study_id"
     t.index ["user_id"], name: "index_location_reports_on_user_id"
   end
@@ -636,8 +635,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "name", null: false
     t.string "template_class", null: false
     t.integer "target_purpose_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["target_purpose_id"], name: "fk_lot_types_to_plate_purposes"
   end
 
@@ -648,8 +647,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "template_type", null: false
     t.integer "user_id", null: false
     t.date "received_at", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["lot_number", "lot_type_id"], name: "index_lot_number_lot_type_id", unique: true
     t.index ["lot_type_id"], name: "fk_lots_to_lot_types"
   end
@@ -669,8 +668,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "template", null: false
     t.string "root", null: false
     t.integer "purpose_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "target_finder_class", default: "SelfFinder", null: false
     t.index ["purpose_id"], name: "fk_messenger_creators_to_plate_purposes"
   end
@@ -680,21 +679,21 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "target_type"
     t.string "root", null: false
     t.string "template", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["target_id", "target_type"], name: "index_messengers_on_target_id_and_target_type"
   end
 
   create_table "order_roles", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "role"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "orders", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "study_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "state_to_delete", limit: 20
     t.string "message_to_delete"
     t.integer "user_id"
@@ -722,8 +721,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "movie_length"
     t.integer "pac_bio_library_tube_id"
     t.string "protocol"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["pac_bio_library_tube_id"], name: "index_pac_bio_library_tube_metadata_on_pac_bio_library_tube_id"
   end
 
@@ -732,30 +731,30 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "name"
     t.string "permissable_type", limit: 50
     t.integer "permissable_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "pick_lists", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "state", default: 0, null: false
     t.integer "submission_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["submission_id"], name: "index_pick_lists_on_submission_id"
   end
 
   create_table "pipeline_request_information_types", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "pipeline_id"
     t.integer "request_information_type_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "pipelines", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name"
     t.boolean "active", default: true
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.boolean "multiplexed"
     t.string "sti_type", limit: 50
     t.integer "sorter"
@@ -779,29 +778,29 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.integer "target_id", null: false
     t.integer "purpose_id", null: false
     t.integer "user_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "parent_id"
   end
 
   create_table "plate_creator_parent_purposes", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "plate_creator_id", null: false
     t.integer "plate_purpose_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "plate_creator_purposes", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "plate_creator_id", null: false
     t.integer "plate_purpose_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "plate_creators", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.text "valid_options", size: :medium
     t.index ["name"], name: "index_plate_creators_on_name", unique: true
   end
@@ -809,8 +808,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
   create_table "plate_metadata", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "plate_id"
     t.string "infinium_barcode_bkp"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "fluidigm_barcode_bkp", limit: 10
     t.decimal "dilution_factor", precision: 5, scale: 2, default: "1.0"
     t.index ["fluidigm_barcode_bkp"], name: "index_on_fluidigm_barcode", unique: true
@@ -820,8 +819,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
   create_table "plate_owners", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "plate_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "eventable_id", null: false
     t.string "eventable_type", null: false
   end
@@ -833,8 +832,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
 
   create_table "plate_purposes", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "type"
     t.string "target_type", limit: 30
     t.boolean "stock_plate", default: false, null: false
@@ -855,16 +854,16 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
   create_table "plate_types", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name"
     t.integer "maximum_volume"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "plate_volumes", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "barcode"
     t.string "uploaded_file_name"
     t.string "state"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["uploaded_file_name"], name: "index_plate_volumes_on_uploaded_file_name"
   end
 
@@ -873,8 +872,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "value", null: false
     t.string "metadatable_type", null: false
     t.bigint "metadatable_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["metadatable_type", "metadatable_id"], name: "index_poly_metadata_on_metadatable_type_and_metadatable_id"
   end
 
@@ -890,23 +889,23 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
   end
 
   create_table "pre_capture_pools", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "primer_panels", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name", null: false
     t.integer "snp_count", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.text "programs", size: :medium
   end
 
   create_table "product_catalogues", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name", null: false
     t.string "selection_behaviour", default: "SingleProduct", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "product_criteria", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -914,9 +913,9 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "stage", null: false
     t.string "behaviour", default: "Basic", null: false
     t.text "configuration", size: :medium
-    t.datetime "deprecated_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "deprecated_at", precision: nil
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.integer "version"
     t.index ["product_id", "stage", "version"], name: "index_product_criteria_on_product_id_and_stage_and_version", unique: true
   end
@@ -929,29 +928,29 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.integer "product_id", null: false
     t.integer "product_catalogue_id", null: false
     t.string "selection_criterion"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["product_catalogue_id"], name: "fk_product_product_catalogues_to_product_catalogues"
     t.index ["product_id"], name: "fk_product_product_catalogues_to_products"
   end
 
   create_table "products", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.datetime "deprecated_at"
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
+    t.datetime "deprecated_at", precision: nil
   end
 
   create_table "programs", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "project_managers", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "project_metadata", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -965,8 +964,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "gt_committee_tracking_id"
     t.integer "project_manager_id", default: 1
     t.integer "budget_division_id", default: 1
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["project_id"], name: "index_project_metadata_on_project_id"
   end
 
@@ -975,16 +974,16 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.boolean "enforce_quotas", default: true
     t.boolean "approved", default: false
     t.string "state", limit: 20, default: "pending"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["approved"], name: "index_projects_on_approved"
     t.index ["enforce_quotas"], name: "index_projects_on_enforce_quotas"
     t.index ["state"], name: "index_projects_on_state"
   end
 
   create_table "qc_assays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "lot_number"
   end
 
@@ -992,15 +991,15 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.integer "qc_decision_id", null: false
     t.integer "qcable_id", null: false
     t.string "decision", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "qc_decisions", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "lot_id", null: false
     t.integer "user_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "qc_files", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1008,16 +1007,16 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.integer "size"
     t.string "content_type"
     t.string "filename"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["asset_id"], name: "fk_rails_31d6eeacb9"
   end
 
   create_table "qc_metric_requests", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "qc_metric_id", null: false
     t.integer "request_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["qc_metric_id"], name: "fk_qc_metric_requests_to_qc_metrics"
     t.index ["request_id"], name: "fk_qc_metric_requests_to_requests"
   end
@@ -1028,8 +1027,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.text "metrics", size: :medium
     t.string "qc_decision", null: false
     t.boolean "proceed"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["asset_id"], name: "fk_qc_metrics_to_assets"
     t.index ["qc_report_id"], name: "fk_qc_metrics_to_qc_reports"
   end
@@ -1040,8 +1039,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.integer "product_criteria_id", null: false
     t.boolean "exclude_existing", null: false
     t.string "state"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.text "plate_purposes", size: :medium
     t.index ["product_criteria_id"], name: "fk_qc_reports_to_product_criteria"
     t.index ["report_identifier"], name: "index_qc_reports_on_report_identifier", unique: true
@@ -1056,8 +1055,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.float "cv"
     t.string "assay_type"
     t.string "assay_version"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.bigint "qc_assay_id"
     t.index ["asset_id"], name: "index_qc_results_on_asset_id"
     t.index ["qc_assay_id"], name: "index_qc_results_on_qc_assay_id"
@@ -1066,8 +1065,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
   create_table "qcable_creators", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "lot_id", null: false
     t.integer "user_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["user_id"], name: "fk_qcable_creators_to_users"
   end
 
@@ -1075,8 +1074,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.integer "lot_id", null: false
     t.integer "asset_id", null: false
     t.string "state", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "qcable_creator_id", null: false
     t.index ["asset_id"], name: "index_asset_id"
     t.index ["lot_id"], name: "index_lot_id"
@@ -1086,8 +1085,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.bigint "tube_rack_id"
     t.bigint "tube_id"
     t.string "coordinate"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["tube_id"], name: "index_racked_tubes_on_tube_id"
     t.index ["tube_rack_id"], name: "index_racked_tubes_on_tube_rack_id"
   end
@@ -1102,8 +1101,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.decimal "volume", precision: 10, scale: 2
     t.decimal "concentration", precision: 18, scale: 8
     t.integer "labware_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.integer "pcr_cycles"
     t.boolean "submit_for_sequencing"
     t.integer "sub_pool"
@@ -1116,8 +1115,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
 
   create_table "reference_genomes", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "request_events", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1125,8 +1124,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "event_name", null: false
     t.string "from_state"
     t.string "to_state"
-    t.datetime "current_from", null: false
-    t.datetime "current_to"
+    t.datetime "current_from", precision: nil, null: false
+    t.datetime "current_to", precision: nil
     t.index ["request_id", "current_to"], name: "index_request_events_on_request_id_and_current_to"
   end
 
@@ -1136,8 +1135,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "label"
     t.integer "width"
     t.string "data_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.boolean "hide_in_inbox"
   end
 
@@ -1145,8 +1144,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.integer "request_id"
     t.integer "request_information_type_id"
     t.string "value"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "request_metadata", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1165,8 +1164,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "sequencing_type"
     t.integer "insert_size"
     t.integer "bait_library_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "pre_capture_plex_level"
     t.float "gigabases_expected"
     t.integer "target_purpose_id"
@@ -1175,8 +1174,11 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "data_type"
     t.integer "primer_panel_id"
     t.string "requested_flowcell_type"
-    t.integer "number_of_samples_per_pool"
+    t.integer "number_of_pools"
     t.integer "cells_per_chip_well"
+    t.string "allowance_band"
+    t.boolean "low_diversity"
+    t.integer "percent_phix_requested"
     t.index ["request_id"], name: "index_request_metadata_on_request_id"
   end
 
@@ -1190,8 +1192,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.integer "request_type_id", null: false
     t.string "request_option", null: false
     t.text "valid_options", size: :medium, null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "key"
     t.index ["key"], name: "index_request_type_validators_on_key", unique: true
   end
@@ -1199,8 +1201,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
   create_table "request_types", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "key", limit: 100
     t.string "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "asset_type"
     t.integer "order"
     t.string "initial_state", limit: 20
@@ -1224,16 +1226,16 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
   create_table "request_types_extended_validators", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "request_type_id", null: false
     t.integer "extended_validator_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["extended_validator_id"], name: "fk_request_types_extended_validators_to_extended_validators"
     t.index ["request_type_id"], name: "fk_request_types_extended_validators_to_request_types"
   end
 
   create_table "requests", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "initial_study_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "user_id"
     t.string "state", limit: 20, default: "pending"
     t.integer "sample_pool_id"
@@ -1267,15 +1269,15 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "value"
     t.string "key", limit: 50
     t.integer "robot_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "robots", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name"
     t.string "location"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "barcode"
   end
 
@@ -1283,8 +1285,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "name"
     t.string "authorizable_type", limit: 50
     t.integer "authorizable_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["authorizable_id", "authorizable_type"], name: "index_roles_on_authorizable_id_and_authorizable_type"
     t.index ["authorizable_id"], name: "index_roles_on_authorizable_id"
     t.index ["name"], name: "index_roles_on_name"
@@ -1293,8 +1295,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
   create_table "roles_users", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "role_id"
     t.integer "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["role_id"], name: "index_roles_users_on_role_id"
     t.index ["user_id"], name: "index_roles_users_on_user_id"
   end
@@ -1302,24 +1304,24 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
   create_table "sample_compounds_components", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "compound_sample_id", null: false
     t.integer "component_sample_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "sample_manifest_assets", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "sample_manifest_id"
     t.bigint "asset_id"
     t.string "sanger_sample_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["asset_id"], name: "index_sample_manifest_assets_on_asset_id"
     t.index ["sample_manifest_id"], name: "index_sample_manifest_assets_on_sample_manifest_id"
     t.index ["sanger_sample_id"], name: "index_sample_manifest_assets_on_sanger_sample_id"
   end
 
   create_table "sample_manifests", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "study_id"
     t.integer "project_id"
     t.integer "supplier_id"
@@ -1388,11 +1390,11 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "disease"
     t.string "subject"
     t.string "treatment"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "donor_id"
     t.integer "genome_size"
-    t.datetime "date_of_consent_withdrawn"
+    t.datetime "date_of_consent_withdrawn", precision: nil
     t.integer "user_id_of_consent_withdrawn"
     t.boolean "consent_withdrawn", default: false, null: false
     t.string "collected_by", comment: "Name of persons or institute who collected the specimen"
@@ -1412,8 +1414,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
   create_table "samples", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name"
     t.boolean "new_name_format", default: true
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "sanger_sample_id"
     t.integer "sample_manifest_id"
     t.boolean "control"
@@ -1436,8 +1438,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
   create_table "searches", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name"
     t.string "type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "target_model_name"
     t.text "default_parameters", size: :medium
   end
@@ -1445,8 +1447,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
   create_table "specific_tube_creation_purposes", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "specific_tube_creation_id"
     t.integer "tube_purpose_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "stamp_qcables", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1454,8 +1456,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.integer "qcable_id", null: false
     t.string "bed", null: false
     t.integer "order", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["qcable_id"], name: "fk_stamp_qcables_to_qcables"
     t.index ["stamp_id"], name: "fk_stamp_qcables_to_stamps"
   end
@@ -1465,8 +1467,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.integer "user_id", null: false
     t.integer "robot_id", null: false
     t.string "tip_lot", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["lot_id"], name: "fk_stamps_to_lots"
     t.index ["robot_id"], name: "fk_stamps_to_robots"
     t.index ["user_id"], name: "fk_stamps_to_users"
@@ -1478,15 +1480,15 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "contents", limit: 4096
     t.string "previous_state"
     t.string "target_state"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "reason"
   end
 
   create_table "studies", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "user_id"
     t.boolean "blocked", default: false
     t.string "state", limit: 20
@@ -1537,8 +1539,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.integer "faculty_sponsor_id"
     t.float "number_of_gigabases_per_sample"
     t.string "hmdmc_approval_number"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "remove_x_and_autosomes", default: "No", null: false
     t.string "dac_policy_title"
     t.boolean "separate_y_chromosome_data", default: false, null: false
@@ -1548,14 +1550,15 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "s3_email_list"
     t.string "data_deletion_period"
     t.string "contaminated_human_data_access_group"
+    t.string "data_release_prevention_other_comment"
     t.index ["faculty_sponsor_id"], name: "index_study_metadata_on_faculty_sponsor_id"
     t.index ["study_id"], name: "index_study_metadata_on_study_id"
   end
 
   create_table "study_reports", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "study_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "user_id"
     t.string "report_filename"
     t.string "content_type", default: "text/csv"
@@ -1566,8 +1569,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
   create_table "study_samples", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "study_id", null: false
     t.integer "sample_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["sample_id", "study_id"], name: "unique_samples_in_studies_idx", unique: true
     t.index ["sample_id"], name: "index_project_samples_on_sample_id"
     t.index ["study_id"], name: "index_project_samples_on_project_id"
@@ -1576,8 +1579,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
   create_table "study_types", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name"
     t.boolean "valid_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.boolean "valid_for_creation", default: true, null: false
   end
 
@@ -1586,8 +1589,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "value"
     t.integer "attributable_id"
     t.string "attributable_type", limit: 50
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["attributable_id", "name"], name: "index_subclass_attributes_on_attributable_id_and_name"
   end
 
@@ -1595,19 +1598,19 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "name"
     t.string "submission_class_name"
     t.text "submission_parameters", size: :medium
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "product_line_id"
     t.integer "superceded_by_id", default: -1, null: false
-    t.datetime "superceded_at"
+    t.datetime "superceded_at", precision: nil
     t.integer "product_catalogue_id"
     t.index ["name", "superceded_by_id"], name: "name_and_superceded_by_unique_idx", unique: true
     t.index ["product_catalogue_id"], name: "fk_submission_templates_to_product_catalogues"
   end
 
   create_table "submissions", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "state", limit: 20
     t.string "message"
     t.integer "user_id"
@@ -1622,15 +1625,15 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
   create_table "submitted_assets", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "order_id"
     t.integer "asset_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["asset_id"], name: "index_submitted_assets_on_asset_id"
   end
 
   create_table "suppliers", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "email"
     t.string "address"
     t.string "contact_name"
@@ -1644,8 +1647,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
   create_table "tag2_layout_template_submissions", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "submission_id", null: false
     t.integer "tag2_layout_template_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["submission_id", "tag2_layout_template_id"], name: "tag2_layouts_used_once_per_submission", unique: true
     t.index ["tag2_layout_template_id"], name: "fk_tag2_layout_template_submissions_to_tag2_layout_templates"
   end
@@ -1653,30 +1656,30 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
   create_table "tag2_layout_templates", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name", null: false
     t.integer "tag_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "tag2_layouts", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "tag_id"
     t.integer "plate_id"
     t.integer "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "source_id"
     t.text "target_well_locations", size: :medium
   end
 
   create_table "tag_group_adapter_types", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "tag_groups", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.boolean "visible", default: true
     t.bigint "adapter_type_id"
     t.index ["adapter_type_id"], name: "index_tag_groups_on_adapter_type_id"
@@ -1687,8 +1690,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.integer "submission_id", null: false
     t.integer "tag_layout_template_id", null: false
     t.boolean "enforce_uniqueness"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["submission_id", "tag_layout_template_id", "enforce_uniqueness"], name: "tag_layout_uniqueness", unique: true
     t.index ["submission_id"], name: "index_tag_layout_template_submissions_on_submission_id"
     t.index ["tag_layout_template_id"], name: "index_tag_layout_template_submissions_on_tag_layout_template_id"
@@ -1698,8 +1701,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "direction_algorithm"
     t.integer "tag_group_id"
     t.string "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "walking_algorithm", default: "TagLayout::WalkWellsByPools"
     t.integer "tag2_group_id"
     t.boolean "enabled", default: true, null: false
@@ -1711,8 +1714,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.integer "tag_group_id"
     t.integer "plate_id"
     t.integer "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "substitutions", limit: 1525
     t.string "walking_algorithm", default: "TagLayout::WalkWellsByPools"
     t.integer "initial_tag", default: 0, null: false
@@ -1724,8 +1727,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "name", null: false
     t.integer "tag_group_id", null: false
     t.integer "tag2_group_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["tag2_group_id"], name: "index_tag_sets_on_tag2_group_id"
     t.index ["tag_group_id"], name: "index_tag_sets_on_tag_group_id"
   end
@@ -1734,8 +1737,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "oligo"
     t.integer "map_id"
     t.integer "tag_group_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["map_id"], name: "index_tags_on_map_id"
     t.index ["tag_group_id"], name: "index_tags_on_tag_group_id"
   end
@@ -1760,22 +1763,22 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
   create_table "transfer_request_collection_transfer_requests", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "transfer_request_collection_id"
     t.integer "transfer_request_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["transfer_request_collection_id"], name: "fk_rails_6b9c820b32"
     t.index ["transfer_request_id"], name: "fk_rails_67a3295574"
   end
 
   create_table "transfer_request_collections", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["user_id"], name: "fk_rails_e542f48171"
   end
 
   create_table "transfer_requests", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "state", limit: 20, default: "pending"
     t.integer "asset_id"
     t.integer "target_asset_id"
@@ -1788,16 +1791,16 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
   end
 
   create_table "transfer_templates", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "name"
     t.string "transfer_class_name"
     t.string "transfers", limit: 10240
   end
 
   create_table "transfers", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "sti_type"
     t.integer "source_id"
     t.integer "destination_id"
@@ -1808,8 +1811,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
   end
 
   create_table "tube_creation_children", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "tube_creation_id", null: false
     t.integer "tube_id", null: false
   end
@@ -1819,8 +1822,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.integer "status", null: false
     t.text "messages", size: :medium
     t.integer "labware_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "users", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1828,17 +1831,17 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.string "email"
     t.string "crypted_password", limit: 40
     t.string "salt", limit: 40
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "remember_token"
-    t.datetime "remember_token_expires_at"
+    t.datetime "remember_token_expires_at", precision: nil
     t.string "api_key"
     t.string "first_name"
     t.string "last_name"
     t.boolean "pipeline_administrator"
     t.string "barcode"
     t.string "cookie"
-    t.datetime "cookie_validated_at"
+    t.datetime "cookie_validated_at", precision: nil
     t.string "encrypted_swipecard_code", limit: 40
     t.index ["barcode"], name: "index_users_on_barcode"
     t.index ["encrypted_swipecard_code"], name: "index_users_on_encrypted_swipecard_code"
@@ -1858,8 +1861,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.integer "target_id"
     t.string "created_by"
     t.float "volume_change"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
   end
 
   create_table "well_attributes", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1870,8 +1873,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
     t.float "buffer_volume"
     t.float "requested_volume"
     t.float "picked_volume"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "pico_pass", default: "ungraded", null: false
     t.integer "sequenom_count"
     t.string "study_id"
@@ -1901,8 +1904,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
   create_table "work_completions", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "target_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.index ["target_id"], name: "fk_rails_f8fb9e95de"
     t.index ["user_id"], name: "fk_rails_204fc81a92"
   end
@@ -1916,15 +1919,15 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
 
   create_table "work_order_types", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["name"], name: "index_work_order_types_on_name", unique: true
   end
 
   create_table "work_orders", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "work_order_type_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "state", null: false
     t.index ["work_order_type_id", "state"], name: "index_work_orders_on_work_order_type_id_and_state"
   end
@@ -1932,8 +1935,8 @@ ActiveRecord::Schema.define(version: 2024_11_06_150235) do
   create_table "workflow_samples", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.text "name", size: :medium
     t.integer "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.boolean "control", default: false
     t.integer "workflow_id"
     t.integer "submission_id"

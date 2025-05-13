@@ -269,26 +269,26 @@ requested_flowcell_type:
   conditional_formattings:
     empty_cell:
     is_error:
-number_of_samples_per_pool:
-  heading: scRNA Core Number of Samples per Pool
-  attribute: :number_of_samples_per_pool
+number_of_pools:
+  heading: scRNA Core Number of Pools
+  attribute: :number_of_pools
   unlocked: true
   type: :integer
   validation:
     options:
       type: :whole
       operator: :between
-      formula1: "5"
-      formula2: "25"
+      formula1: "1"
+      formula2: "8"
       allowBlank: true
       showInputMessage: true
-      promptTitle: "Samples per Pool"
-      prompt: "The requested number of samples per pool (between 5 and 25 inclusive)"
+      promptTitle: "Number of pools"
+      prompt: "The requested number pools (between 1 and 8 inclusive)"
   conditional_formattings:
     empty_cell:
     is_text:
-    is_num_samples_per_pool_in_valid_range:
-    is_num_samples_per_pool_outside_valid_range:
+    is_num_of_pools_in_valid_range:
+    is_num_of_pools_outside_valid_range:
 cells_per_chip_well:
   heading: scRNA Core Cells per Chip Well
   attribute: :cells_per_chip_well
@@ -309,3 +309,42 @@ cells_per_chip_well:
     is_text:
     is_num_cells_per_chip_well_in_valid_range:
     is_num_cells_per_chip_well_outside_valid_range:
+percent_phix_requested:
+  heading: "% PhiX requested"
+  attribute: :percent_phix_requested
+  unlocked: true
+  type: :integer
+  validation:
+    options:
+      type: :whole
+      operator: :between
+      formula1: "0"
+      formula2: "100"
+      allowBlank: false
+      showInputMessage: true
+      errorTitle: "% PhiX requested"
+      error: "% PhiX requested (between 0 and 100 inclusive)"
+      promptTitle: "% PhiX requested"
+      prompt: "% PhiX requested (between 0 and 100 inclusive)"
+  conditional_formattings:
+    empty_cell:
+    is_text:
+low_diversity:
+  heading: "Low Diversity"
+  unlocked: true
+  attribute: :low_diversity
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: false
+      showInputMessage: true
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Low Diversity"
+      error: "You must enter a value from the list provided."
+      promptTitle: "Low Diversity"
+      prompt: "Select a value type from the approved list"
+    range_name: :low_diversity
+  conditional_formattings:
+    empty_cell:

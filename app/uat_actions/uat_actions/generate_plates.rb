@@ -1,10 +1,16 @@
 # frozen_string_literal: true
 
 # Will construct plates with well_count wells filled with samples
+# rubocop:disable Metrics/ClassLength
 class UatActions::GeneratePlates < UatActions
   self.title = 'Generate plate'
   self.description = 'Generate plates in the selected study.'
   self.category = :generating_samples
+
+  include UatActions::Shared::StudyHelper
+
+  ERROR_WELL_COUNT_EXCEEDS_PLATE_SIZE = "Well count of %s exceeds the plate size of %s for the plate purpose '%s'."
+  ERROR_PLATE_PURPOSE_DOES_NOT_EXIST = "Plate purpose '%s' does not exist."
 
   form_field :plate_purpose_name,
              :select,
@@ -45,8 +51,27 @@ class UatActions::GeneratePlates < UatActions
              help: 'The order in which wells are laid out. Affects where empty wells are located.',
              select_options: %w[Column Row Random]
 
-  validate :well_count_smaller_than_plate_size
-  validates :number_of_samples_in_each_well, numericality: { greater_than: 0, only_integer: true, allow_blank: false }
+  validates :plate_purpose_name, presence: true
+  validates :plate_count, numericality: { greater_than: 0, smaller_than: 20, only_integer: true, allow_blank: false }
+  # well_count is zero for the reracking test.
+  validates :well_count, numericality: { greater_than_or_equal_to: 0, only_integer: true, allow_blank: false }
+  validates :number_of_samples_in_each_well,
+            numericality: {
+              greater_than: 0,
+              smaller_than: 20,
+              only_integer: true,
+              allow_blank: false
+            }
+  validates :well_layout,
+            presence: true,
+            inclusion: {
+              in: %w[Column Row Random],
+              message: 'must be Column, Row, or Random'
+            }
+
+  validate :validate_plate_purpose_exists
+  validate :validate_well_count_is_smaller_than_plate_size
+  validate :validate_study_exists
 
   def self.default
     new(
@@ -72,11 +97,27 @@ class UatActions::GeneratePlates < UatActions
 
   private
 
-  def well_count_smaller_than_plate_size
-    return true if well_count.to_i <= plate_purpose.size
+  # Validates that the plate purpose exists for the selected plate purpose name.
+  #
+  # @return [void]
+  def validate_plate_purpose_exists
+    return if plate_purpose_name.blank?
+    return if PlatePurpose.exists?(name: plate_purpose_name)
 
-    errors.add(:well_count, "is larger than the size of a #{plate_purpose.name} (plate_purpose.size)")
-    false
+    message = format(ERROR_PLATE_PURPOSE_DOES_NOT_EXIST, plate_purpose_name)
+    errors.add(:plate_purpose_name, message)
+  end
+
+  # Validates that the well count is smaller than the plate size for the
+  # selected plate purpose.
+  #
+  # @return [void]
+  def validate_well_count_is_smaller_than_plate_size
+    return unless PlatePurpose.exists?(name: plate_purpose_name)
+    return if well_count.to_i <= plate_purpose.size
+
+    message = format(ERROR_WELL_COUNT_EXCEEDS_PLATE_SIZE, well_count, plate_purpose.size, plate_purpose.name)
+    errors.add(:well_count, message)
   end
 
   # Ensures number of samples per occupied well is at least 1
@@ -163,11 +204,8 @@ class UatActions::GeneratePlates < UatActions
     end
   end
 
-  def study
-    @study ||= Study.find_by!(name: study_name)
-  end
-
   def plate_purpose
     Purpose.find_by!(name: plate_purpose_name)
   end
 end
+# rubocop:enable Metrics/ClassLength

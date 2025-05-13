@@ -30,7 +30,7 @@ module Insdc
     #   Indicates if a region is valid for selection or not
     #   @note This has been implemented as an enum for flexible extension at a later date.
     #   @return [Symbol] :valid or :invalid
-    enum validation_state: { valid: 0, invalid: 1 }, _suffix: :state
+    enum :validation_state, { valid: 0, invalid: 1 }, suffix: :state
 
     validates :name, presence: true, uniqueness: { case_sensitive: false }
     validates :sort_priority, presence: true

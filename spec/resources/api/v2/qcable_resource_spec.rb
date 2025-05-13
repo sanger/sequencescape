@@ -8,18 +8,20 @@ RSpec.describe Api::V2::QcableResource, type: :resource do
 
   let(:resource_model) { build_stubbed(:qcable) }
 
-  # Test attributes
-  it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
-    expect(subject).to have_attribute :uuid
-    expect(subject).to have_attribute :state
-    expect(subject).not_to have_updatable_field(:id)
-    expect(subject).not_to have_updatable_field(:uuid)
-    expect(subject).not_to have_updatable_field(:state)
-    expect(subject).to filter(:barcode)
-    expect(subject).to have_one(:lot).with_class_name('Lot')
-    expect(subject).to have_one(:asset).with_class_name('Labware')
-  end
+  # Model Name
+  it { is_expected.to have_model_name 'Qcable' }
 
-  # Custom method tests
-  # Add tests for any custom methods you've added.
+  # Attributes
+  it { is_expected.to have_readonly_attribute :labware_barcode }
+  it { is_expected.to have_readonly_attribute :state }
+  it { is_expected.to have_readonly_attribute :uuid }
+
+  # Relationships
+  it { is_expected.to have_a_writable_has_one(:asset).with_class_name('Labware') }
+  it { is_expected.to have_a_writable_has_one(:labware).with_class_name('Labware') }
+  it { is_expected.to have_a_writable_has_one(:lot).with_class_name('Lot') }
+
+  # Filters
+  it { is_expected.to filter(:barcode) }
+  it { is_expected.to filter(:uuid) }
 end

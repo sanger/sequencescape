@@ -1,9 +1,0 @@
----
-limber_multiplexing_hic:
-  name: Limber Multiplexing
-  asset_type: Well
-  order: 2
-  request_class_name: Request::Multiplexing
-  for_multiplexing: true
-  product_line_name: Illumina-HTP
-  target_purpose_name: LB Lib Pool Norm

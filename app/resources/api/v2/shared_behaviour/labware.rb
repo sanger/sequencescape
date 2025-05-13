@@ -15,13 +15,14 @@ module Api
 
         included do
           # Associations:
-          has_one :purpose, readonly: true, foreign_key: :plate_purpose_id, class_name: 'Purpose'
+          has_one :purpose, write_once: true, foreign_key: :plate_purpose_id, class_name: 'Purpose'
           has_one :custom_metadatum_collection, foreign_key_on: :related
 
-          has_many :samples, readonly: true
-          has_many :studies, readonly: true
-          has_many :projects, readonly: true
+          has_many :samples, write_once: true
+          has_many :studies, write_once: true
+          has_many :projects, write_once: true
           has_many :comments, readonly: true
+          has_many :qc_files, readonly: true
 
           # If we are using api/v2/labware to pull back a list of labware, we may
           # expect a mix of plates and tubes. If we want to eager load their
@@ -43,6 +44,8 @@ module Api
           attribute :state, readonly: true
           attribute :created_at, readonly: true
           attribute :updated_at, readonly: true
+          # Add retention_instruction as a readable attribute
+          attribute :retention_instruction, delegate: :retention_instructions, readonly: true
 
           # Scopes
           filter :barcode, apply: ->(records, value, _options) { records.with_barcode(value) }
@@ -61,10 +64,11 @@ module Api
           filter :updated_at_gt,
                  apply: lambda { |records, value, _options| records.where('labware.updated_at > ?', value[0].to_date) }
           filter :include_used, apply: ->(records, value, _options) { records.include_labware_with_children(value) }
+          filter :state, apply: ->(records, value, _options) { records.in_state(value.flatten) }
         end
 
         # Custom methods
-        # These shouldn't be used for business logic, and a more about
+        # These shouldn't be used for business logic, and are more about
         # I/O and isolating implementation details.
         def labware_barcode
           {

@@ -24,7 +24,7 @@ class LocationReport::LocationReportForm
 
   def name=(input_name)
     @name = input_name.gsub(/[^A-Za-z0-9_\-.\s]/, '').squish.gsub(/\s/, '_') if input_name.present?
-    @name = Time.current.to_formatted_s(:number) if input_name.blank?
+    @name = Time.current.to_fs(:number) if input_name.blank?
   end
 
   def location_barcode=(location_barcode)

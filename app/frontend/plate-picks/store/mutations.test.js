@@ -38,7 +38,7 @@ describe("mutations.js", () => {
     it("updates plates when they exist already", () => {
       // Provided by the browser. We mock it. Currently just mock a string as we're not doing anything fancy
       global.SpeechSynthesisUtterance = class extends String {};
-      global.speechSynthesis = { speak: jest.fn() };
+      global.speechSynthesis = { speak: vi.fn() };
       // mock state
       const state = defaultState();
       state.plates = { 1: plateWithoutPicks({ id: 1 }) };
@@ -64,7 +64,7 @@ describe("mutations.js", () => {
     it("updates picks when they exist already", () => {
       // Provided by the browser. We mock it. Currently just mock a string as we're not doing anything fancy
       global.SpeechSynthesisUtterance = class extends String {};
-      global.speechSynthesis = { speak: jest.fn() };
+      global.speechSynthesis = { speak: vi.fn() };
       // mock state
       const state = {
         ...defaultState(),

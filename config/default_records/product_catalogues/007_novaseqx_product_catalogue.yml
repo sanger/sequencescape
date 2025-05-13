@@ -20,6 +20,8 @@ RNARG:
   selection_behaviour: SingleProduct
 RNAF:
   selection_behaviour: SingleProduct
+HiC:
+  selection_behaviour: SingleProduct
 PFHSqX:
   selection_behaviour: SingleProduct
 GnT Picoplex:

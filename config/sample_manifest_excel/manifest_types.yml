@@ -137,9 +137,9 @@ plate_library:
     - :i7
     - :i5
     - :reference_genome
-    - :library_type
-    - :insert_size_from
-    - :insert_size_to
+    - :library_type_required
+    - :insert_size_from_required
+    - :insert_size_to_required
     - :cohort
     - :volume
     - :concentration
@@ -195,9 +195,9 @@ plate_dual_index_tag_library:
     - :dual_index_tag_set
     - :dual_index_tag_well
     - :reference_genome
-    - :library_type
-    - :insert_size_from
-    - :insert_size_to
+    - :library_type_required
+    - :insert_size_from_required
+    - :insert_size_to_required
     - :cohort
     - :volume
     - :concentration
@@ -252,9 +252,9 @@ plate_chromium_library:
     - :chromium_tag_group
     - :chromium_tag_well
     - :reference_genome
-    - :library_type
-    - :insert_size_from
-    - :insert_size_to
+    - :library_type_required
+    - :insert_size_from_required
+    - :insert_size_to_required
     - :cohort
     - :volume
     - :concentration
@@ -337,13 +337,21 @@ plate_anospp:
 plate_scrna_core_pools:
   heading: "scRNA Core Pools Plate"
   asset_type: "plate"
-  rows_per_well: 20
+  rows_per_well: 150 # this is a guess at the largest number of samples that will be pooled together
   columns:
     - :sanger_plate_id
     - :well
     - :sanger_sample_id
     - :supplier_name
     - :donor_id_mandatory
+    - :date_of_sample_collection
+    - :country_of_origin
+    - :gender
+    - :phenotype
+    - :sample_ebi_accession_number
+    - :sample_taxon_id
+    - :sample_common_name
+    - :sample_description
 tube_default:
   heading: "Default Tube"
   asset_type: "1dtube"
@@ -515,9 +523,9 @@ tube_library_with_tag_sequences:
     - :i7
     - :i5
     - :reference_genome
-    - :library_type
-    - :insert_size_from
-    - :insert_size_to
+    - :library_type_required
+    - :insert_size_from_required
+    - :insert_size_to_required
     - :cohort
     - :volume
     - :concentration
@@ -557,9 +565,9 @@ tube_chromium_library:
     - :chromium_tag_group
     - :chromium_tag_well
     - :reference_genome
-    - :library_type
-    - :insert_size_from
-    - :insert_size_to
+    - :library_type_required
+    - :insert_size_from_required
+    - :insert_size_to_required
     - :cohort
     - :volume
     - :concentration
@@ -821,6 +829,7 @@ scrna_core:
     - :supplier_name
     - :volume
     - :retention_instruction
+    - :sample_description
 tube_controls:
   heading: "Control tubes"
   asset_type: "1dtube"

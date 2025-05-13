@@ -54,6 +54,15 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     self.encoding = attrs.fetch(:encoding, DEFAULT_ENCODING)
   end
 
+  # Returns the warnings collection for the BulkSubmission object.
+  # Initialises the warnings collection if it does not exist yet. The collection
+  # is used for showing informative warning messages to the user after the bulk
+  # submission has been processed successfully.
+  # @return [ActiveModel::Errors] the warnings collection
+  def warnings
+    @warnings ||= ActiveModel::Errors.new(self)
+  end
+
   include ManifestUtil
 
   # rubocop:todo Metrics/MethodLength
@@ -152,6 +161,12 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
       # Apply any additional validations based on the submission template name
       apply_additional_validations_by_template_name unless errors.count > 0
 
+      # Calculates the allowance band based on the submission template name.
+      # If the submission template name matches `SCRNA_CORE_CDNA_PREP_GEM_X_5P` and all required headers are present,
+      # the allowance band is calculated for each study and project combination.
+      # Otherwise, an empty hash is assigned.
+      @allowance_bands = calculate_allowance_bands
+
       raise ActiveRecord::RecordInvalid, self if errors.count > 0
 
       # Within a single transaction process each of the rows of the CSV file as a separate submission.  Any name
@@ -191,6 +206,8 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
               ] = "Submission #{submission.id} built (#{submission.orders.count} orders)"
             rescue Submission::ProjectValidation::Error => e
               errors.add :spreadsheet, "There was an issue with a project: #{e.message}"
+            rescue ActiveRecord::RecordInvalid => e
+              errors.add :base, e.message
             end
           end
         end
@@ -231,8 +248,10 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     'gigabases expected',
     'priority',
     'flowcell type',
-    'scrna core number of samples per pool',
-    'scrna core cells per chip well'
+    'scrna core number of pools',
+    'scrna core cells per chip well',
+    '% phix requested',
+    'low diversity'
   ].freeze
 
   ALIAS_FIELDS = { 'plate barcode' => 'barcode', 'tube barcode' => 'barcode' }.freeze
@@ -312,6 +331,12 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     assets.map(&:samples).flatten.uniq.each { |sample| sample.studies << study unless sample.studies.include?(study) }
   end
 
+  # Assigns a value from the source object to the target object if the source value is present.
+  #
+  # @param [Hash] source_obj The source object containing the value to be assigned.
+  # @param [String, Symbol] source_key The key to look up the value in the source object.
+  # @param [Hash] target_obj The target object where the value will be assigned.
+  # @param [String, Symbol] target_key The key to assign the value in the target object.
   def assign_value_if_source_present(source_obj, source_key, target_obj, target_key)
     target_obj[target_key] = source_obj[source_key] if source_obj[source_key].present?
   end
@@ -329,12 +354,31 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
         ['gigabases expected', 'gigabases_expected'],
         ['primer panel', 'primer_panel_name'],
         ['flowcell type', 'requested_flowcell_type'],
-        ['scrna core number of samples per pool', 'number_of_samples_per_pool'],
-        ['scrna core cells per chip well', 'cells_per_chip_well']
+        ['scrna core number of pools', 'number_of_pools'],
+        ['scrna core cells per chip well', 'cells_per_chip_well'],
+        ['% phix requested', 'percent_phix_requested'],
+        ['low diversity', 'low_diversity']
       ].each do |source_key, target_key|
         assign_value_if_source_present(details, source_key, request_options, target_key)
       end
     end
+  end
+
+  # This method checks the 'template name' from the provided details and,
+  # if applicable, adds additional request options. Currently, it supports
+  # the `SCRNA_CORE_CDNA_PREP_GEM_X_5P` template by including an
+  # `allowance_band` value.
+  #
+  # The `allowance_band` values are determined based on the study and project name.
+  #
+  # @param [Hash] details The submission details, which should include:
+  #   - 'template name' (String) for validation.
+  #   - 'study name' (String) and 'project name' (String) for extracting the corresponding `allowance_band` value.
+  # @return [Hash] The request options to be added, e.g., { 'allowance_band' => '2 pool attempts, 2 counts' }.
+  def calculated_request_options_by_template_name(details)
+    return {} unless details['template name'] == SCRNA_CORE_CDNA_PREP_GEM_X_5P && @allowance_bands.size.positive?
+
+    { 'allowance_band' => @allowance_bands[{ study: details['study name'], project: details['project name'] }] }
   end
 
   # Returns an order for the given details
@@ -347,8 +391,11 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
       raise StandardError, "Cannot find user #{details['user login'].inspect}"
 
     # Extract the request options from the row details
-    request_options = extract_request_options(details)
+    extracted_request_options = extract_request_options(details)
 
+    # add calculated request metadata
+    # This is to cover calculated metadata that is not directly in the csv, does not require user input
+    request_options = extracted_request_options.merge(calculated_request_options_by_template_name(details))
     # Check the library type matches a value from the table
     if request_options['library_type'].present?
       # find is case insensitive but we want the correct case sensitive name for requests or we get issues downstream in

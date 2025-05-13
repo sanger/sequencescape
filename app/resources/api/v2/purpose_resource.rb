@@ -2,40 +2,73 @@
 
 module Api
   module V2
-    # @todo This documentation does not yet include a detailed description of what this resource represents.
-    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
-    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+    # Provides a JSON:API representation of {Purpose}.
+    #
+    # A Purpose defines the intended function of a labware or sample within the system.
+    # While it was historically limited to PlatePurpose, it now applies to other labware like Tubes.
     #
     # @note Access this resource via the `/api/v2/purposes/` endpoint.
     #
-    # Provides a JSON:API representation of {Purpose}.
+    # @example Fetching all purposes
+    #   GET /api/v2/purposes
     #
-    # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
-    # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
-    # of the JSON:API standard.
+    # @example Fetching a purpose by ID
+    #   GET /api/v2/purposes/{id}
+    #
+    # @todo the below example is currently broken, as `target_type` is a required attribute in the model
+    #   but it is not included in the resource, and `lifespan` is also not defined in the model.
+    #
+    # @example Creating a new purpose
+    #   POST /api/v2/purposes
+    #   {
+    #     "data": {
+    #         "type": "purposes",
+    #         "attributes": {
+    #            "name": "ExamplePurpose",
+    #            "size": 96,
+    #            "lifespan": 1
+    #         }
+    #     }
+    # }
+    #
+    # For more details on JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
+    # or check out the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation.
     class PurposeResource < BaseResource
-      # Constants...
-
-      # model_name / model_hint if required
-
       default_includes :uuid_object
 
-      # Associations:
-
+      ###
       # Attributes
+      ###
+
+      # @!attribute [r] uuid
+      #   @note This identifier is automatically assigned upon creation and cannot be modified.
+      #   @return [String] The universally unique identifier (UUID) of purpose.
       attribute :uuid, readonly: true
-      attribute :name, readonly: true
-      attribute :size, readonly: true
-      attribute :lifespan, readonly: true
 
+      # @!attribute [rw] name
+      #   The name of the purpose.
+      #   @return [String]
+      attribute :name, write_once: true
+
+      # @!attribute [rw] size
+      #   The expected size of the purpose.
+      #   @return [Integer]
+      attribute :size, write_once: true
+
+      # @!attribute [rw] lifespan
+      #   The expected lifespan of the purpose.
+      #   @return [Integer]
+      attribute :lifespan, write_once: true
+
+      ###
       # Filters
+      ###
+
+      # @!method filter_by_name
+      #   Allows filtering projects by name.
+      #   @example Fetching a purpose by name
+      #     GET /api/v2/purposes?filter[name]=ExamplePurpose
       filter :name
-
-      # Custom methods
-      # These shouldn't be used for business logic, and a more about
-      # I/O and isolating implementation details.
-
-      # Class method overrides
     end
   end
 end

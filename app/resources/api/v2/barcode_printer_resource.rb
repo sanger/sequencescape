@@ -2,19 +2,26 @@
 
 module Api
   module V2
-    # @todo This documentation does not yet include a detailed description of what this resource represents.
-    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
-    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+    # Provides a JSON:API representation of {BarcodePrinter}.
+    #
+    # This resource represents a barcode printer and its capabilities.
+    # It allows retrieving information about registered barcode printers, including their names, types,
+    #   and supported services.
     #
     # @note This resource is immutable: its endpoint will not accept `POST`, `PATCH`, or `DELETE` requests.
     # @note Access this resource via the `/api/v2/barcode_printers/` endpoint.
     #
-    # Provides a JSON:API representation of {BarcodePrinter}.
+    # @example GET request for all BarcodePrinter resources
+    #   GET /api/v2/barcode_printers/
     #
-    # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
-    # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
+    # @example GET request for a specific BarcodePrinter by ID
+    #   GET /api/v2/barcode_printers/1
+    #
+    # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
+    # or refer to the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class BarcodePrinterResource < BaseResource
+      # This resource is immutable, meaning it cannot be created, updated, or deleted.
       immutable
 
       default_includes :uuid_object
@@ -24,25 +31,29 @@ module Api
       ###
 
       # @!attribute [r] name
-      #   @return [String] the name of the barcode printer.
-      attribute :name
+      #   @return [String] The name of the barcode printer.
+      attribute :name, readonly: true
 
       # @!attribute [r] uuid
-      #   @return [String] the UUID of the barcode printer.
+      #   @note This identifier is automatically assigned upon creation and cannot be modified.
+      #   @return [String] The UUID of the barcode printer.
       attribute :uuid, readonly: true
 
       # @!attribute [r] print_service
-      #   @return [String] the service this printer can be instructed to print from.
+      #   @return [String] The service this printer can be instructed to print from. e.g "PMB"
       attribute :print_service, readonly: true
 
       # @!attribute [r] barcode_type
-      #   @return [String] the name of the barcode type for this printer.
+      #   @return [String] The name of the barcode type for this printer. e.g "96 Well Plate"
       attribute :barcode_type, readonly: true
 
       ###
       # Getters and Setters
       ###
 
+      # Retrieves the barcode type from the associated barcode printer type.
+      # @return [String] The name of the barcode type.
+      # @note This attribute is read-only;
       def barcode_type
         @model.barcode_printer_type.name
       end

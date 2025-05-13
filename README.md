@@ -4,7 +4,7 @@
 ![Javascript testing](https://github.com/sanger/sequencescape/workflows/Javascript%20testing/badge.svg)
 ![Linting](https://github.com/sanger/sequencescape/workflows/Linting/badge.svg)
 [![Test Coverage](https://codecov.io/github/sanger/sequencescape/graph/badge.svg?token=Fsd7I0GYQf)](https://codecov.io/github/sanger/sequencescape)
-[![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](https://www.rubydoc.info/github/sanger/sequencescape)
+[![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](https://sanger.github.io/sequencescape/)
 [![Knapsack Pro Parallel CI builds for RSpec Tests](https://img.shields.io/badge/Knapsack%20Pro-Parallel%20%2F%20RSpec%20Tests-%230074ff)](https://knapsackpro.com/dashboard/organizations/1976/projects/1324/test_suites/1880/builds?utm_campaign=organization-id-1976&utm_content=test-suite-id-1880&utm_medium=readme&utm_source=knapsack-pro-badge&utm_term=project-id-1324)
 [![Knapsack Pro Parallel CI builds for Cucumber Tests](https://img.shields.io/badge/Knapsack%20Pro-Parallel%20%2F%20Cucumber%20Tests-%230074ff)](https://knapsackpro.com/dashboard/organizations/1976/projects/1324/test_suites/1881/builds?utm_campaign=organization-id-1976&utm_content=test-suite-id-1881&utm_medium=readme&utm_source=knapsack-pro-badge&utm_term=project-id-1324)
 
@@ -146,11 +146,10 @@ instead of the Docker version, in that case you can start this setup with the
 command:
 
 ```shell
-docker compose -f docker compose-dev.yml up
+docker compose -f docker-compose-dev.yml up
 ```
 
-**ABOUT RECREATE DOCKER IMAGE** If you ever need to recreate the image built on first start (because you made modifications
-to the Dockerfile file) you can run the building process again with:
+**ABOUT RECREATE DOCKER IMAGE** If you ever need to recreate the image built on first start (because you made modifications to the Dockerfile file or there have been dependency updates) you can re build the image again with (or see above for M1 Apple chip):
 
 ```shell
 docker compose build
@@ -264,6 +263,17 @@ For more warren actions, either use `bundle exec warren help` or see the
 
 You will also have to change the config in config/warren.yml from `type: log` to `type: broadcast` to get
 it to actually send messages in development mode.
+
+### Credentials
+
+Secrets are managed differently after the Rails 7.2 update. The setup can be done by running the command `bundle exec rails credentials:edit` locally
+
+This will create a `credentials.yml.enc` and `master.key` in the config directory
+
+You can then edit the credentials file with the following command:
+`VISUAL="nano --wait" bin/rails credentials:edit`
+
+These should not be committed to the github repo.
 
 ## Testing
 
@@ -469,6 +479,10 @@ If installation issues are encountered with Docker on M1 processors, try the fix
 
   [[GitHub issue](https://github.com/evilmartians/terraforming-rails/issues/34#issuecomment-872021786)]
 
+#### Cucumber / RSpec feature chromedriver issues
+
+If you encounter Selenium/Chromedriver issues locally it may be because the latest version of Chrome is yet to be supported by our testing libraries (Capybara). This may require a fix to the `Capybara.rb` file, e.g. new driver arguments. In the case the fix is not identifiable you made need to rely on a pinned version of Chrome in the CI to run these tests, see [Chromedriver issues](#chromedriver-issues) below for further instructions.
+
 ### API V2 Authentication
 
 The V2 API has had authentication checks added to it so that other applications calling the API should provide a valid key.
@@ -486,6 +500,12 @@ As of the time of writing, there are three outcomes to a request made, with resp
   - The request is logged with the prefix "Request made without an API key" including information about the client.
   - The client application should be updated to use a valid API key in future.
 
+#### Documentation
+
+Example POST requests for all the Sequencscape API v2 resources are available to import into Postman REST Client.
+
+The file `Sequencescape API v2.postman_collection.json` is stored in the Pipeline Solutions Shared Network Drive (Finder > Go > Connect to Server > `smb://files-smb/pipeline_solutions`)
+
 ### Publishing AMQP Messages
 
 Some API endpoints (such as `/api/v2/bioscan/export_pool_xp_to_traction`) trigger background jobs which are responsible for publishing data to another instance of RabbitMQ.
@@ -501,6 +521,10 @@ This isn't necessary at this stage, but it seems wise to note the intended patte
 ### CI
 
 The GH actions builds use the Knapsack-pro gem to reduce build time by parallelizing the RSpec and Cucumber tests. There is no need to regenerate the knapsack_rspec_report.json file, Knapsack Pro will dynamically allocate tests to ensure tests finish as close together as possible.
+
+#### Chromedriver issues
+
+If you encounter CI failures for cucumber and rspec feature tests it may be caused by our CI GitHub runner being on the latest version of Chrome while our testing libraries are yet to support it. To fix this, you can pin the version of Chrome in the CI to an older, known working version. This can be done in the `.github/workflows/ruby_test.yml` workflow under `Setup stable Chrome`. If this is required ensure you revert the change once the testing libraries are updated.
 
 ### ERD
 

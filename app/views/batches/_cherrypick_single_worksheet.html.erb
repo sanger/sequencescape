@@ -92,6 +92,7 @@
 </div>
 
 <div id="footer">
-  Created: <%= batch.updated_at.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= batch.user.login %> -
+  v = picking volume µl; b = buffer volume µl<br>
+  Created: <%= batch.updated_at.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= batch.user.login %><br>
   Printed: <%= Time.now.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= current_user.login %>
 </div>

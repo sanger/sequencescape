@@ -119,6 +119,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
       it 'will update the aliquots downstream if aliquots data has changed and override is set to true' do
         cell(rows.first, columns[:insert_size_from]).value = '100'
         cell(rows.last, columns[:insert_size_to]).value = '1000'
+
         download.save(new_test_file_name)
         reupload2 =
           SampleManifestExcel::Upload::Base.new(
@@ -218,7 +219,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
         before do
           upload.process(tag_group) || raise("Process error: #{upload.errors.full_messages}")
-          upload.finished!
+          upload.sample_manifest.state = 'completed'
         end
 
         after { File.delete(new_test_file) if File.exist?(new_test_file_name) }
@@ -366,6 +367,9 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
     describe SampleManifestExcel::Upload::Processor::LibraryTube do
       let(:download) { build(:test_download_tubes, columns: column_list, manifest_type: manifest_type) }
+      let(:tag_set1) { create(:tag_set, tag_group: TagGroup.first, tag2_group: nil, name: TagGroup.first.name) }
+
+      before { tag_set1 }
 
       context 'with chromium tag-columns' do
         let(:manifest_type) { 'tube_chromium_library' }
@@ -374,7 +378,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
         before do
           upload.process(tag_group) || raise("Process error: #{upload.errors.full_messages}")
-          upload.finished!
+          upload.sample_manifest.state = 'completed'
         end
 
         after { File.delete(new_test_file) if File.exist?(new_test_file_name) }
@@ -445,7 +449,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
           before do
             upload.process(tag_group)
-            upload.finished!
+            upload.sample_manifest.state = 'completed'
           end
 
           after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
@@ -517,7 +521,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
           before do
             upload.process(nil)
-            upload.finished!
+            upload.sample_manifest.state = 'completed'
           end
 
           after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
@@ -693,7 +697,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
           before do
             upload.process(nil)
-            upload.finished!
+            upload.sample_manifest.state = 'completed'
           end
 
           after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
@@ -739,7 +743,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
           before do
             upload.process(nil)
-            upload.finished!
+            upload.sample_manifest.state = 'completed'
           end
 
           after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
@@ -775,7 +779,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
           before do
             upload.process(nil)
-            upload.finished!
+            upload.sample_manifest.state = 'completed'
           end
 
           after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }

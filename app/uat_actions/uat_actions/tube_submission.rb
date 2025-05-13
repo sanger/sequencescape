@@ -3,10 +3,16 @@
 # This UAT Action will generates a basic submission for tubes. Initially, it
 # has been designed for generating scRNA Core Donor Pooling and cDNA Prep
 # submissions on LRC Bank Seq/Spare tubes.
+# rubocop:disable Metrics/ClassLength
 class UatActions::TubeSubmission < UatActions
   self.title = 'Tube submission'
   self.description = 'Generates a basic submission for tubes.'
   self.category = :setup_and_test
+
+  ERROR_SUBMISSION_TEMPLATE_DOES_NOT_EXIST = "Submission template '%s' does not exist."
+  ERROR_TUBES_DO_NOT_EXIST = 'Tubes with barcodes do not exist: %s'
+  ERROR_LIBRARY_TYPE_DOES_NOT_EXIST = "Library type '%s' does not exist."
+  SCRNA_CORE_CDNA_PREP_GEM_X_5P = 'Limber-Htp - scRNA Core cDNA Prep GEM-X 5p'
 
   form_field :submission_template_name,
              :select,
@@ -31,11 +37,15 @@ class UatActions::TubeSubmission < UatActions
                include_blank: 'Using default library type...'
              }
 
-  form_field :number_of_samples_per_pool,
+  # The number_of_pools and cells_per_chip_well options are applied to a single
+  # study-project and set in request metadata. For multiple study and projects,
+  # a bulk submission is required.
+
+  form_field :number_of_pools,
              :number_field,
-             label: 'Number of samples per pool',
+             label: 'Number of pools',
              help:
-               'Optional field to set the number_of_samples_per_pool field on the ' \
+               'Optional field to set the number_of_pools field on the ' \
                  'submission request. Leave blank if not required.',
              options: {
                minimum: 0
@@ -52,6 +62,11 @@ class UatActions::TubeSubmission < UatActions
              }
 
   validates :submission_template, presence: { message: 'could not be found' }
+  validates :tube_barcodes, presence: true
+
+  validate :validate_submission_template_exists
+  validate :validate_tubes_exist
+  validate :validate_library_type_exists
 
   # Returns a default copy of the UatAction which will be used to fill in the form
   #
@@ -91,6 +106,48 @@ class UatActions::TubeSubmission < UatActions
     true
   end
 
+  # Validates that the submission template exists for the specified submission
+  # template name.
+  #
+  # @return [void]
+  def validate_submission_template_exists
+    return if submission_template_name.blank? # already validated by presence
+    return if SubmissionTemplate.exists?(name: submission_template_name)
+
+    message = format(ERROR_SUBMISSION_TEMPLATE_DOES_NOT_EXIST, submission_template_name)
+    errors.add(:submission_template_name, message)
+  end
+
+  # Validates that the tubes exist for the specified barcodes.
+  #
+  # @return [void]
+  def validate_tubes_exist
+    return if tube_barcodes.blank? # already validated by presence
+    barcodes =
+      tube_barcodes
+        .gsub(/(\\[trfvn])+/, ' ')
+        .strip
+        .split
+        .select do |barcode|
+          Tube.find_by_barcode(barcode).blank? # not found
+        end
+    return if barcodes.empty?
+
+    message = format(ERROR_TUBES_DO_NOT_EXIST, barcodes.join(', '))
+    errors.add(:tube_barcodes, message)
+  end
+
+  # Validates that the library type exists for the specified library type name.
+  #
+  # return [void]
+  def validate_library_type_exists
+    return if library_type_name.blank? # optional
+    return if LibraryType.exists?(name: library_type_name)
+
+    message = format(ERROR_LIBRARY_TYPE_DOES_NOT_EXIST, library_type_name)
+    errors.add(:library_type_name, message)
+  end
+
   # Fills the report with the information from the submission
   #
   # @return [Void]
@@ -99,12 +156,13 @@ class UatActions::TubeSubmission < UatActions
     report['tube_barcodes'] = assets.map(&:human_barcode)
     report['submission_id'] = order.submission.id
     report['library_type'] = order.request_options[:library_type] if order.request_options[:library_type].present?
-    report['number_of_samples_per_pool'] = order.request_options[:number_of_samples_per_pool] if order.request_options[
-      :number_of_samples_per_pool
+    report['number_of_pools'] = order.request_options[:number_of_pools] if order.request_options[
+      :number_of_pools
     ].present?
     report['cells_per_chip_well'] = order.request_options[:cells_per_chip_well] if order.request_options[
       :cells_per_chip_well
     ].present?
+    report['allowance_band'] = order.request_options[:allowance_band] if order.request_options[:allowance_band].present?
   end
 
   # rubocop:enable Metrics/AbcSize
@@ -134,7 +192,7 @@ class UatActions::TubeSubmission < UatActions
   #
   # @return [Hash] The request options to use for the submission
   def order_request_options
-    default_request_options.merge(custom_request_options)
+    default_request_options.merge(custom_request_options).merge(calculated_request_options_by_template_name)
   end
 
   # Returns the default request options to use for the submission
@@ -160,30 +218,47 @@ class UatActions::TubeSubmission < UatActions
   def custom_request_options
     options = {}
     options[:library_type] = library_type_name if library_type_name.present?
-    options[:number_of_samples_per_pool] = number_of_samples_per_pool.presence
+    options[:number_of_pools] = number_of_pools.presence
     options[:cells_per_chip_well] = cells_per_chip_well.presence
     options
+  end
+
+  # Returns the allowance_band to prevent integration suite breakage
+  # for the scRNA Core testing suite.
+  #
+  # Allowance bands are only supported for bulk submissions using the
+  # Limber-HTP scRNA Core cDNA Prep GEM-X 5p template.
+  # In bulk submissions, allowance_band is determined by the
+  # `calculate_allowance_bands` method.
+  #
+  # The allowance_band is not included in the form, as it is a calculated value (does not require user input).
+  #
+  # @todo: Implement allowance_band support for standard tube submissions (Y25-153)
+  # @todo: Remove this method once allowance_band is properly handled for tube submissions.
+  #
+  # @return [Hash] Request options including allowance_band if applicable.
+  def calculated_request_options_by_template_name
+    if submission_template_name == SCRNA_CORE_CDNA_PREP_GEM_X_5P
+      { 'allowance_band' => '2 pool attempts, 2 counts' }
+    else
+      {}
+    end
   end
 
   # Returns the study to use for UAT
   #
   # @return [Study] The study to use for UAT
-  def study
-    UatActions::StaticRecords.study
-  end
+  delegate :study, to: :'UatActions::StaticRecords'
 
   # Returns the project to use for UAT
   #
   # @return [Project] The project to use for UAT
-  def project
-    UatActions::StaticRecords.project
-  end
+  delegate :project, to: :'UatActions::StaticRecords'
 
   #
   # Returns the uat user
   #
   # @return [User] The UAT user can be used in any places where a user is expected.
-  def user
-    UatActions::StaticRecords.user
-  end
+  delegate :user, to: :'UatActions::StaticRecords'
 end
+# rubocop:enable Metrics/ClassLength
