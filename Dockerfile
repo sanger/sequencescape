@@ -1,5 +1,5 @@
 ARG CHIPSET=default
-ARG RUBY_VERSION=3.3.6
+ARG RUBY_VERSION=3.3.8
 ARG APPLE_PLATFORM=linux/amd64
 
 # Use the correct base image depending on the architecture
