@@ -19,7 +19,9 @@ class WorkCompletion::TubeRackCompletion < WorkCompletion::LabwareCompletion
   #   connect_requests
   def connect_requests
     detect_upstream_requests.each do |upstream|
-      target_labware.racked_tubes.each { |tube| pass_and_link_up_requests(tube.tube.receptacle, upstream) }
+      target_labware.racked_tubes.each do |racked_tube|
+        pass_and_link_up_requests(racked_tube.tube.receptacle, upstream)
+      end
     end
     @order_ids.uniq!
   end

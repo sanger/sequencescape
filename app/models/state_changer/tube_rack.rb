@@ -2,6 +2,9 @@
 module StateChanger
   # Handles the basic transitions of a tube rack
   class TubeRack < StateChanger::Base
+    ASSOCIATED_REQUEST_TARGET_STATES = %w[passed failed].freeze
+    TRANSFER_REQUEST_FILTER_STATES = %w[failed pending cancelled].freeze
+
     # Follows app/models/state_changer/tube_base.rb.
     # Updates the state of all labware associated with the tube rack.
     #
@@ -30,7 +33,7 @@ module StateChanger
       racked_tube
         .tube
         .in_progress_requests
-        .where.not(state: %w[passed pending])
+        .where.not(state: ASSOCIATED_REQUEST_TARGET_STATES)
         .find_each do |request|
           request.customer_accepts_responsibility! if customer_accepts_responsibility
           request.transition_to(target_state)
@@ -48,7 +51,7 @@ module StateChanger
       racked_tube
         .tube
         .transfer_requests_as_target
-        .where.not(state: %w[failed pending])
+        .where.not(state: TRANSFER_REQUEST_FILTER_STATES)
         .find_each { |request| request.transition_to(target_state) }
     end
   end

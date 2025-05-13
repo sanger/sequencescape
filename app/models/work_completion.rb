@@ -57,10 +57,10 @@ class WorkCompletion < ApplicationRecord
   #   - Otherwise, it defaults to `TubeCompletion`.
   def pass_and_attach_requests
     processing_class =
-      if target.respond_to?(:racked_tubes)
-        TubeRackCompletion
-      elsif target.respond_to?(:wells)
+      if target.respond_to?(:wells)
         PlateCompletion
+      elsif target.respond_to?(:racked_tubes)
+        TubeRackCompletion
       else
         TubeCompletion
       end
