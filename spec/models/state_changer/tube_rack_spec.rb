@@ -81,7 +81,7 @@ RSpec.describe StateChanger::TubeRack do
       let!(:requests) do
         [
           create(:request, target_asset: labware.tube_receptacles.first, state: request_state),
-          create(:request, target_asset: labware.tube_receptacles[1], state: pending_state),
+          create(:request, target_asset: labware.tube_receptacles[1], state: request_state),
           create(:request, target_asset: labware.tube_receptacles.last, state: request_state)
         ]
       end
@@ -102,15 +102,12 @@ RSpec.describe StateChanger::TubeRack do
 
       it 'updates the tube to "passed" for receptacles with "started" requests', :aggregate_failures do
         expect(transfer_requests[0].reload.state).to eq(target_state)
+        expect(transfer_requests[1].reload.state).to eq(target_state)
         expect(transfer_requests[2].reload.state).to eq(target_state)
       end
 
-      it 'does not update the tube with the "pending" state', :aggregate_failures do
-        expect(transfer_requests[1].reload.state).to eq(pending_state)
-      end
-
-      it 'updates the tube rack to "mixed" state', :aggregate_failures do
-        expect(labware.reload.state).to eq('mixed')
+      it 'updates the tube rack to "passed" state', :aggregate_failures do
+        expect(labware.reload.state).to eq(target_state)
       end
     end
 
