@@ -8,8 +8,6 @@ FROM ruby:${RUBY_VERSION}-slim AS base_default
 FROM --platform=${APPLE_PLATFORM} ruby:${RUBY_VERSION}-slim AS base_m1
 FROM base_${CHIPSET} AS base
 
-COPY .nvmrc /.nvmrc
-
 # Install required software:
 #  - net-tools: to run ping and other networking tools
 #  - build-essential: to have a compiling environment for building gems
@@ -36,6 +34,8 @@ RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.d
 RUN apt update
 RUN apt install -y ./google-chrome-stable_current_amd64.deb
 RUN rm ./google-chrome-stable_current_amd64.deb
+
+COPY .nvmrc /.nvmrc
 
 # switch shell to bash, to use source command
 SHELL ["/bin/bash", "--login", "-i", "-c"]
