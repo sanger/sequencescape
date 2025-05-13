@@ -10,6 +10,9 @@ set -o nounset
 
 TIMEOUT=120
 
+# Source bashrc to config correct node and yarn versions
+source ~/.bashrc
+
 # Remove a potentially pre-existing server.pid for Rails.
 rm -f /code/tmp/pids/server.pid
 
