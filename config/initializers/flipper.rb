@@ -1,5 +1,7 @@
 require 'yaml'
 
+require 'flipper/adapters/active_record'
+
 FLIPPER_FEATURES = YAML.load_file('./config/feature_flags.yml')
 
 Rails.application.configure do
@@ -36,6 +38,7 @@ Flipper.configure do |config|
   ## Configure other adapters that you want to use here:
   ## See http://flippercloud.io/docs/adapters
   # config.use Flipper::Adapters::ActiveSupportCacheStore, Rails.cache, expires_in: 5.minutes
+  config.adapter { Flipper::Adapters::ActiveRecord.new }
 end
 
 ## Register a group that can be used for enabling features.
