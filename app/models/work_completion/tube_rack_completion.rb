@@ -18,12 +18,11 @@ class WorkCompletion::TubeRackCompletion < WorkCompletion::LabwareCompletion
   # @example
   #   connect_requests
   def connect_requests
-    detect_upstream_requests.each do |upstream|
+    detect_upstream_customer_requests.each do |upstream|
       target_labware.racked_tubes.each do |racked_tube|
         pass_and_link_up_requests(racked_tube.tube.receptacle, upstream)
       end
     end
-    @order_ids.uniq!
   end
 
   # Detects upstream customer requests associated with the target labware.
@@ -36,7 +35,7 @@ class WorkCompletion::TubeRackCompletion < WorkCompletion::LabwareCompletion
   # @example
   #   detect_upstream_requests
   #   # => [#<CustomerRequest id: 1>, #<CustomerRequest id: 2>]
-  def detect_upstream_requests
+  def detect_upstream_customer_requests
     CustomerRequest.includes(WorkCompletion::REQUEST_INCLUDES).where(id: target_labware.aliquots.pluck(:request_id))
   end
 end
