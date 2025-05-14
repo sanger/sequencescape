@@ -4,8 +4,8 @@ source 'https://rubygems.org'
 
 group :default do
   gem 'bootsnap'
-  gem 'concurrent-ruby', '!= 1.3.5' # due to rails/rails#54264, remove restriction after upgrade to rails 7.1
-  gem 'rails', '~> 7.0.8'
+  gem 'concurrent-ruby', '1.3.5'
+  gem 'rails', '~> 7.1.5.1'
 
   # Previously part of ruby or rails, now separate gems
   gem 'drb'
@@ -95,7 +95,7 @@ group :default do
   gem 'bunny', '>= 2.22.0'
 
   # Provides message schema encoding and decoding for messages to RabbitMQ
-  gem 'avro', '~> 1.11.0'
+  gem 'avro'
 
   # Excel file generation
   # Note: We're temporarily using out own for of the project to make use of a few changes

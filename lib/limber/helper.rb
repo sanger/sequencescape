@@ -168,7 +168,7 @@ module Limber::Helper
 
           # Hiseq templates are hidden as of Y24-181 so we set them as superceeded by unknown
           # This allows us to keep the template in case it needs to be restored but not make it visible
-          superceded_by_id = sequencing_request_type&.name&.downcase&.include?('hiseq') ? -2 : -1
+          superceded_by_id = sequencing_request_type&.name&.downcase&.include?('hiseq') ? -2 : -1 # rubocop:disable Style/SafeNavigationChainLength
 
           yield(
             {

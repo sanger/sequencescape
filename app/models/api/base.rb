@@ -153,7 +153,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
   def self.newer_than(object, timestamp) # rubocop:todo Metrics/CyclomaticComplexity
     return if object.nil? || timestamp.nil?
 
-    modified, object_timestamp = false, (object.respond_to?(:updated_at) ? object.updated_at : timestamp) || timestamp
+    _modified, object_timestamp = false, (object.respond_to?(:updated_at) ? object.updated_at : timestamp) || timestamp
     timestamp, modified = object_timestamp, true if object_timestamp > timestamp
     associations.each_value do |helper|
       helper.newer_than(helper.target(object), timestamp) { |t| timestamp, modified = t, true }
@@ -275,7 +275,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
       if json_attribute.blank?
         # If we have reached the end of the line, and the attribute_or_association is for what looks like
         # an association, then we'll look it up without the '_id' and return that value.
-        if attribute_or_association.to_s =~ (/_id$/) && rest.empty?
+        if attribute_or_association.to_s =~ /_id$/ && rest.empty?
           association = associations[attribute_or_association.to_s.sub(/_id$/, '').to_sym]
           raise StandardError, "Unexpected association #{attribute_or_association.inspect}" if association.nil?
 

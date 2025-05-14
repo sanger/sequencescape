@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'broadcast_event/lab_event'
 
 RSpec.describe Robot::Verification::SourceDestBeds, :robot_verification do
   subject(:verifier) { described_class.new }

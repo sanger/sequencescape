@@ -90,18 +90,15 @@ module LabelPrinter
       [].tap do |error_list|
           errors.each do |error|
             attribute = error['source']['pointer'].split('/').last.humanize
-            error_list << (format('%<attribute>s %<message>s', attribute: attribute, message: error['detail']))
+            error_list << format('%<attribute>s %<message>s', attribute: attribute, message: error['detail'])
           end
         end
         .join('; ')
     end
 
     def self.prettify_old_errors(errors)
-      [].tap do |error_list|
-          errors.each do |k, v|
-            error_list << (format('%<attribute>s %<message>s', attribute: "#{k.capitalize}:", message: v.join(', ')))
-          end
-        end
+      errors
+        .map { |k, v| format('%<attribute>s %<message>s', attribute: "#{k.capitalize}:", message: v.join(', ')) }
         .join('; ')
     end
   end
