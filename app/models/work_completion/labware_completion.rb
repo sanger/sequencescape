@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Shared behaviour of WorkCompletion::PlateCompletion and WorkCompletion::TubeCompletion
+# and WorkCompletion::TubeRackCompletion
 #
 # @author Genome Research Ltd.
 #
@@ -14,6 +15,8 @@ class WorkCompletion::LabwareCompletion
     @work_completion = work_completion
   end
 
+  # This function is called by the state machine.
+  # See app/models/submission/state_machine.rb.
   def process
     connect_requests
     fire_events
