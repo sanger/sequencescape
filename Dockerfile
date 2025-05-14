@@ -1,5 +1,5 @@
 ARG CHIPSET=default
-ARG RUBY_VERSION=3.3.6
+ARG RUBY_VERSION=3.3.8
 ARG APPLE_PLATFORM=linux/amd64
 
 # Use the correct base image depending on the architecture
@@ -7,8 +7,6 @@ ARG APPLE_PLATFORM=linux/amd64
 FROM ruby:${RUBY_VERSION}-slim AS base_default
 FROM --platform=${APPLE_PLATFORM} ruby:${RUBY_VERSION}-slim AS base_m1
 FROM base_${CHIPSET} AS base
-
-COPY .nvmrc /.nvmrc
 
 # Install required software:
 #  - net-tools: to run ping and other networking tools
@@ -31,6 +29,14 @@ RUN apt-get update && apt-get install -y \
     wget \
     yarn
 
+# Install Chrome for being able to run tests
+RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+RUN apt update
+RUN apt install -y ./google-chrome-stable_current_amd64.deb
+RUN rm ./google-chrome-stable_current_amd64.deb
+
+COPY .nvmrc /.nvmrc
+
 # switch shell to bash, to use source command
 SHELL ["/bin/bash", "--login", "-i", "-c"]
 # install nvm, in order to install the correct version of nodejs, rather than the image default
@@ -45,12 +51,6 @@ COPY Gemfile /code
 COPY Gemfile.lock /code
 
 ADD . /code/
-
-# Install Chrome for being able to run tests
-RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-RUN apt update
-RUN apt install -y ./google-chrome-stable_current_amd64.deb
-RUN rm ./google-chrome-stable_current_amd64.deb
 
 # Rails installation
 RUN npm install --global yarn

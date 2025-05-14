@@ -36,6 +36,9 @@ const saveButton = {
       .done(() => {
         this.processing(false);
         dt.buttons.info("Updated", "Batch updated", 1000);
+        setTimeout(() => {
+          window.location.href = `/batches/${batch_id}`;
+        }, 1100); // Wait for pop-up to disappear
       });
   },
   text: "Save",

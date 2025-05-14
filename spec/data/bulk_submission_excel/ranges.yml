@@ -16,3 +16,10 @@ priority:
     - 1
     - 2
     - 3
+flowcell_type:
+  identifier: :name
+  scope: :alphabetical
+low_diversity:
+  options:
+    - "No"
+    - "Yes"
