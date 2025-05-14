@@ -1,7 +1,10 @@
 # frozen_string_literal: true
+
 # The EBI operates two key AccessionServices
+#
 # {EnaAccessionService ENA}: Mostly non-human data, provides open access to uploaded data
 # {EgaAccessionService EGA}: Mostly for human data, provides managed access to uploaded data
+#
 # We also submit information to ArrayExpress, but this happens indirectly via the accession services above.
 # @see https://www.ebi.ac.uk/ega/submission#which_archive
 #
