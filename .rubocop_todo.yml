@@ -297,33 +297,50 @@ Metrics/AbcSize:
   Exclude:
     - 'app/controllers/api/v2/transfers_controller.rb'
     - 'app/jobs/export_pool_xp_to_traction_job.rb'
+    - 'app/models/accession_service.rb'
     - 'app/sample_manifest_excel/sample_manifest_excel/manifest_type_list.rb'
     - 'spec/models/bulk_submission_scrna_spec.rb'
 
 # Offense count: 1
+# Configuration parameters: CountComments, Max, CountAsOne, AllowedMethods, AllowedPatterns, inherit_mode.
+# AllowedMethods: refine
+Metrics/BlockLength:
+  Exclude:
+    - 'app/models/accession_service.rb'
+
+# Offense count: 2
 # Configuration parameters: CountComments, Max, CountAsOne.
 Metrics/ClassLength:
   Exclude:
     - 'app/middleware/api/endpoint_handler.rb'
+    - 'app/models/accession_service.rb'
 
-# Offense count: 1
+# Offense count: 3
 # Configuration parameters: AllowedMethods, AllowedPatterns, Max.
 Metrics/CyclomaticComplexity:
   Exclude:
+    - 'app/models/accession_service.rb'
     - 'lib/limber/helper.rb'
 
-# Offense count: 9
+# Offense count: 13
 # Configuration parameters: CountComments, Max, CountAsOne, AllowedMethods, AllowedPatterns.
 Metrics/MethodLength:
   Exclude:
     - 'app/controllers/api/v2/bait_library_layouts_controller.rb'
     - 'app/controllers/tag_layout_templates_controller.rb'
     - 'app/jobs/export_pool_xp_to_traction_job.rb'
+    - 'app/models/accession_service.rb'
     - 'app/models/plate/quad_creator.rb'
     - 'app/uat_actions/uat_actions/tube_submission.rb'
     - 'app/validators/novaseqx_pe_validator.rb'
     - 'lib/record_loader/application_record_loader.rb'
     - 'test/unit/import_fluidigm_data_test.rb'
+
+# Offense count: 1
+# Configuration parameters: AllowedMethods, AllowedPatterns, Max.
+Metrics/PerceivedComplexity:
+  Exclude:
+    - 'app/models/accession_service.rb'
 
 # Offense count: 13
 Naming/AccessorMethodName:
