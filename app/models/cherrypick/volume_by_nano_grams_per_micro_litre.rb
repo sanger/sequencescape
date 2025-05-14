@@ -42,12 +42,15 @@ module Cherrypick::VolumeByNanoGramsPerMicroLitre
     # @note Here we appear to set the concentration based on the required concentration, regardless of whether we hit it
     # it or not. Checking if this behaviour is desired RT#719205
     well_attribute.concentration = final_conc_desired
-    well_attribute.requested_volume = final_volume_desired
 
     # Similarly we set current volume based on required. This is only untrue in rare edge cases though
     # (When you have almost all your required volume from your source, then add more buffer than intended
     #  due to minimum robot picks)
-    well_attribute.current_volume = final_volume_desired
+
+    if source_volume < robot_minimum_pick_vol
+      warn "Warning: Source volume (#{source_volume}) is less 
+      than the robot minimum picking volume (#{robot_minimum_pick_vol})."
+    end
 
     # The maximum picking volume is limited by the available source volume, and the final volume desired
     # in the source well.
@@ -71,14 +74,17 @@ module Cherrypick::VolumeByNanoGramsPerMicroLitre
     # we note two things - the amount we tell the robot to pick (robot_minimum_pick_vol),
     # and the amount it will actually pick (source_volume)
     # We use the latter for the buffer calculation, to make sure we make the desired final volume.
-    # See comments on RT https://rt.sanger.ac.uk/Ticket/Display.html?id=735176
     source_volume_it_will_actually_pick =
       source_volume < robot_minimum_pick_vol ? source_volume : source_volume_to_tell_robot_to_pick
 
     well_attribute.picked_volume = source_volume_to_tell_robot_to_pick
-    well_attribute.buffer_volume =
-      calculate_buffer_volume(final_volume_desired, source_volume_it_will_actually_pick, robot_minimum_pick_vol)
+
+    # Exclude robot minimum picking volume when calculating buffer volume
+    well_attribute.buffer_volume = calculate_buffer_volume(final_volume_desired, source_volume_it_will_actually_pick)
+
     well_attribute.robot_minimum_picking_volume = robot_minimum_pick_vol
+    well_attribute.current_volume = well_attribute.picked_volume + well_attribute.buffer_volume
+    well_attribute.current_volume = robot_minimum_pick_vol if well_attribute.current_volume < robot_minimum_pick_vol
 
     source_volume_to_tell_robot_to_pick
   end
