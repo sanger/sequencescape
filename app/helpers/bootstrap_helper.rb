@@ -92,7 +92,7 @@ module BootstrapHelper
   end
 
   # <div class="col-md-size form-group sqs-form"></div>
-  def form_group(classes='', &)
+  def form_group(classes = '', &)
     tag.div(class: "form-group row sqs-form #{classes}".strip, &)
   end
 
