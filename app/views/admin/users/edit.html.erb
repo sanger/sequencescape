@@ -48,8 +48,8 @@
       <% end %>
       <%= form_group(classes='form-check') do %>
         <%= check_box_tag "role[slf_gel]", "checked", @user.slf_gel?, class:'form-check-input' %>
-        <label class="form-check-label" for="role_slf_gel">SLF Gels</label>?</td>
-       <% end %>
+        <label class="form-check-label" for="role_slf_gel">SLF Gels</label>?
+      <% end %>
     <% end %>
   </div>
   <%= submit_tag "Update", class: 'btn btn-success' %> or <%= link_to 'cancel', "javascript:history.back();" %>
