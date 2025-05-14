@@ -1,4 +1,7 @@
 # frozen_string_literal: true
+
+require 'rexml/document'
+
 # The EBI operates two key AccessionServices
 # {EnaAccessionService ENA}: Mostly non-human data, provides open access to uploaded data
 # {EgaAccessionService EGA}: Mostly for human data, provides managed access to uploaded data
@@ -22,6 +25,8 @@
 #
 # Accessioning of samples has been partially migrated to {Accession 'a separate accession library'}
 class AccessionService # rubocop:todo Metrics/ClassLength
+  include REXML
+
   # We overide this in testing to do a bit of evesdropping
   class_attribute :rest_client_class
   self.rest_client_class = RestClient::Resource
@@ -227,10 +232,7 @@ class AccessionService # rubocop:todo Metrics/ClassLength
 
   # rubocop:enable Metrics/MethodLength
 
-  require 'rexml/document'
-
   # require 'curb'
-  include REXML
 
   def accession_options
     raise NotImplemented, 'abstract method'
