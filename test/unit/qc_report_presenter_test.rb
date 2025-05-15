@@ -18,7 +18,6 @@ class QcReportPresenterTest < ActiveSupport::TestCase
   Asset ID,Total micrograms,Sanger sample,Comment,Qc Decision,Proceed
   %s,10,EG,X,passed,
   %s,10,EG,X,failed,
-
   EXPECTED_CSV
   STATE_ARRAY = %w[passed failed].freeze
 
