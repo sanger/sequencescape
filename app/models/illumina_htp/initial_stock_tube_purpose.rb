@@ -21,7 +21,6 @@ class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
     # Find all requests that are being pooled together
     sibling_requests = tube.submission.requests.multiplexed.opened.ids
 
-    # rubocop:todo Layout/LineLength
     sibling_tubes =
       Tube
         .joins(:transfer_requests_as_target)
@@ -34,8 +33,6 @@ class IlluminaHtp::InitialStockTubePurpose < IlluminaHtp::StockTubePurpose
         ) # Make sure we have no transfers out of the tube
         .where.not(transfer_requests: { state: 'cancelled' }) # Filter out any cancelled tubes
         .includes(:uuid_object, :barcodes, :aliquots) # Load the stuff we need for the hash
-
-    # rubocop:enable Layout/LineLength
 
     # Find all requests in the tubes we've found
     found_requests = sibling_tubes.flat_map { |sibling| sibling.aliquots.map(&:request_id) }

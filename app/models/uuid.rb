@@ -60,8 +60,8 @@ class Uuid < ApplicationRecord
     end
   end
 
-  ValidRegexp = /\A[\da-f]{8}(-[\da-f]{4}){3}-[\da-f]{12}\z/
-  validates :external_id, format: { with: ValidRegexp }
+  VALID_REGEXP = /\A[\da-f]{8}(-[\da-f]{4}){3}-[\da-f]{12}\z/
+  validates :external_id, format: { with: VALID_REGEXP }
 
   # It is more efficient to check the individual parts of the resource association than it is to check the
   # association itself as the latter causes the record to be reloaded
@@ -98,7 +98,7 @@ class Uuid < ApplicationRecord
   end
 
   def self.uuid?(value)
-    value.is_a?(String) && value.match?(ValidRegexp)
+    value.is_a?(String) && value.match?(VALID_REGEXP)
   end
 
   def self.find_uuid_instance!(resource_type, resource_id)

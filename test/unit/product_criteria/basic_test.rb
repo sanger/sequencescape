@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require File.dirname(__FILE__) + '/../../test_helper'
+require "#{File.dirname(__FILE__)}/../../test_helper"
 
 class ProductCriteriaBasicTest < ActiveSupport::TestCase
   context 'a configured criteria' do

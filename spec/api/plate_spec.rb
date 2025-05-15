@@ -4,7 +4,7 @@ require 'rails_helper'
 require 'support/barcode_helper'
 
 describe '/api/1/plate-uuid' do
-  subject { '/api/1/' + uuid }
+  subject { "/api/1/#{uuid}" }
 
   let(:authorised_app) { create(:api_application) }
   let(:uuid) { plate.uuid }

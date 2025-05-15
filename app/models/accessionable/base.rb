@@ -22,7 +22,7 @@ class Accessionable::Base
   end
 
   def center_name
-    AccessionService::CenterName
+    AccessionService::CENTER_NAME
   end
 
   def schema_type

@@ -29,7 +29,7 @@ module SubmissionsHelper # rubocop:todo Metrics/ModuleLength
     end
   end
 
-  def studies_select(form, studies) # rubocop:todo Metrics/MethodLength
+  def studies_select(form, studies)
     prompt =
       case studies.count
       when 0
@@ -126,7 +126,7 @@ module SubmissionsHelper # rubocop:todo Metrics/ModuleLength
 
     return request_type_name unless request_type.request_class_name.match?(/SequencingRequest$/)
 
-    tag.em(pluralize(presenter.lanes_of_sequencing, 'Lane') + ' of ') + request_type_name
+    tag.em("#{pluralize(presenter.lanes_of_sequencing, 'Lane')} of ") + request_type_name
   end
 
   def submission_link(submission, options)

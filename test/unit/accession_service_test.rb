@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require File.dirname(__FILE__) + '/../test_helper'
+require "#{File.dirname(__FILE__)}/../test_helper"
 
 class AccessionServiceTest < ActiveSupport::TestCase
   def assert_tag(tag_label, value)

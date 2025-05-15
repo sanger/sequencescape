@@ -50,7 +50,7 @@ FactoryBot.define do
     end
 
     factory :fluidigm do
-      transient { sequence(:number) { |i| '1' + i.to_s.rjust(9, '0') } }
+      transient { sequence(:number) { |i| "1#{i.to_s.rjust(9, '0')}" } }
       format { 'fluidigm' }
       barcode { number }
     end

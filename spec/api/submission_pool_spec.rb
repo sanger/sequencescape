@@ -15,7 +15,7 @@ describe '/api/1/plate-uuid/submission_pools' do
   let(:request_type) { create(:library_creation_request_type) }
 
   describe '#get' do
-    subject { '/api/1/' + uuid + '/submission_pools' }
+    subject { "/api/1/#{uuid}/submission_pools" }
 
     let(:response_code) { 200 }
 

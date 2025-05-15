@@ -52,7 +52,7 @@ describe '/api/1/plate-purpose-uuid' do
   before { create(:plate_purpose, :uuidable, uuid: uuid, name: 'Example purpose') }
 
   describe '#get' do
-    subject { '/api/1/' + uuid }
+    subject { "/api/1/#{uuid}" }
 
     let(:response_body) do
       '{
@@ -82,7 +82,7 @@ describe '/api/1/plate-purpose-uuid' do
   end
 
   context 'plates/#post' do
-    subject { '/api/1/' + uuid + '/plates' }
+    subject { "/api/1/#{uuid}/plates" }
 
     let(:payload) { '{"plate":{}}' }
 

@@ -13,7 +13,7 @@ class QuantParserTest < ActiveSupport::TestCase
   context 'Parser' do
     context 'With a valid csv file' do
       setup do
-        @filename = Rails.root.to_s + '/test/data/quant_test.csv'
+        @filename = Rails.root.join('test/data/quant_test.csv').to_s
         @content = read_file @filename
 
         # We WANT to be using this encoding here. So if this line starts failing, fix the encoding in
@@ -91,7 +91,7 @@ class QuantParserTest < ActiveSupport::TestCase
 
     context 'With an actual example csv file' do
       setup do
-        @filename = Rails.root.to_s + '/test/data/quant_test_example.csv'
+        @filename = Rails.root.join('test/data/quant_test_example.csv').to_s
         @content = read_file @filename
 
         # We WANT to be using this encoding here. So if this line starts failing, fix the encoding in
@@ -122,7 +122,7 @@ class QuantParserTest < ActiveSupport::TestCase
 
     context 'with an invalid csv file' do
       setup do
-        @filename = Rails.root.to_s + '/test/data/invalid_quant_test.csv'
+        @filename = Rails.root.join('test/data/invalid_quant_test.csv').to_s
         @content = read_file @filename
         @csv = CSV.parse(@content)
       end

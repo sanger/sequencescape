@@ -195,7 +195,7 @@ module ApplicationHelper
   end
 
   def display_follow(item, user, msg)
-    user.follower_of?(item) ? 'Unfollow ' + msg : 'Follow ' + msg
+    user.follower_of?(item) ? "Unfollow #{msg}" : "Follow #{msg}"
   end
 
   ## From Pipelines

@@ -19,7 +19,7 @@ describe '/api/1/multiplexed-library-tube-uuid' do
   end
 
   describe '#get' do
-    subject { '/api/1/' + uuid }
+    subject { "/api/1/#{uuid}" }
 
     let(:response_body) do
       "{

@@ -9,7 +9,7 @@ module ControlRequestTypeCreation
   end
 
   def key_name
-    (last_request_type.key || last_request_type.name.gsub(/\s/, '_').downcase) + '_control'
+    "#{last_request_type.key || last_request_type.name.gsub(/\s/, '_').downcase}_control"
   end
 
   def last_request_type

@@ -13,7 +13,7 @@ class PlateReaderParserTest < ActiveSupport::TestCase
   context 'Parser' do
     context 'With a valid csv file' do
       setup do
-        @filename = Rails.root.to_s + '/test/data/plate_reader_parsing_Zebrafish_example.csv'
+        @filename = Rails.root.join('test/data/plate_reader_parsing_Zebrafish_example.csv').to_s
         @content = read_file @filename
         @csv = CSV.parse(@content)
       end
@@ -25,7 +25,7 @@ class PlateReaderParserTest < ActiveSupport::TestCase
 
     context 'With an unreleated csv file' do
       setup do
-        @filename = Rails.root.to_s + '/test/data/fluidigm.csv'
+        @filename = Rails.root.join('test/data/fluidigm.csv').to_s
         @content = read_file @filename
       end
 
@@ -36,7 +36,7 @@ class PlateReaderParserTest < ActiveSupport::TestCase
 
     context 'with a non csv file' do
       setup do
-        @filename = Rails.root.to_s + '/test/data/example_file.txt'
+        @filename = Rails.root.join('test/data/example_file.txt').to_s
         @content = read_file @filename
       end
 
@@ -49,7 +49,7 @@ class PlateReaderParserTest < ActiveSupport::TestCase
   context 'A Parsers::PlateReaderParser parser of CSV' do
     context 'with a valid CSV Parsers::PlateReaderParser file' do
       setup do
-        filename = Rails.root.to_s + '/test/data/plate_reader_parsing_Zebrafish_example.csv'
+        filename = Rails.root.join('test/data/plate_reader_parsing_Zebrafish_example.csv').to_s
         content = read_file filename
 
         @parser = Parsers::PlateReaderParser.new(CSV.parse(content))
@@ -88,7 +88,7 @@ class PlateReaderParserTest < ActiveSupport::TestCase
     end
     context 'with an invalid CSV ISC file' do
       setup do
-        filename = Rails.root.to_s + '/test/data/bioanalysis_qc_results-with-error.csv'
+        filename = Rails.root.join('test/data/bioanalysis_qc_results-with-error.csv').to_s
         content = read_file filename
 
         @parser = Parsers::PlateReaderParser.new(CSV.parse(content))

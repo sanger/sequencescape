@@ -12,7 +12,7 @@ describe '/api/1/labware-uuid' do
   let!(:labware) { create(:labware) }
 
   describe '#get' do
-    subject(:url) { '/api/1/' + uuid }
+    subject(:url) { "/api/1/#{uuid}" }
 
     # We use asset for compatibility reasons.
     let(:response_body) do

@@ -11,7 +11,7 @@ class TransferRequestCollection < ApplicationRecord
   # Greatly improves performance.
   class UuidCache
     def initialize(parameters)
-      uuids = parameters.flat_map(&:values).select { |v| v.is_a?(String) && Uuid::ValidRegexp.match?(v) }
+      uuids = parameters.flat_map(&:values).select { |v| v.is_a?(String) && Uuid::VALID_REGEXP.match?(v) }
       @cache =
         Uuid
           .where(external_id: uuids)

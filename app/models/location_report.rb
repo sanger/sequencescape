@@ -97,7 +97,7 @@ class LocationReport < ApplicationRecord
 
   def generate!
     csv_options = { row_sep: "\r\n", force_quotes: true }
-    filename = ['locn_rpt', name].join('_') + '.csv'
+    filename = "#{['locn_rpt', name].join('_')}.csv"
 
     ActiveRecord::Base.transaction do
       Tempfile.open(filename) do |tempfile|

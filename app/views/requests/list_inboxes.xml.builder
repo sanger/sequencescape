@@ -7,8 +7,8 @@ xml.families(api_data) do |families|
     @tasks.each do |task|
       families.family do |family|
         family.id task.id
-        family.name task.workflow.name + ': ' + task.name
-        family.description task.workflow.name + ': ' + task.name
+        family.name "#{task.workflow.name}: #{task.name}"
+        family.description "#{task.workflow.name}: #{task.name}"
         family << '<relates-to></relates-to>'
       end
     end

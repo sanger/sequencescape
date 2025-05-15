@@ -10,7 +10,7 @@ describe '/api/1/plate-purpose-uuid' do
   before { create(:dilution_plate_purpose, :uuidable, uuid: uuid, name: 'Example purpose') }
 
   describe '#get' do
-    subject(:url) { '/api/1/' + uuid }
+    subject(:url) { "/api/1/#{uuid}" }
 
     let(:response_body) do
       '{
@@ -40,7 +40,7 @@ describe '/api/1/plate-purpose-uuid' do
   end
 
   describe 'plates/#post' do
-    subject(:url) { '/api/1/' + uuid + '/plates' }
+    subject(:url) { "/api/1/#{uuid}/plates" }
 
     let(:payload) { '{"plate":{}}' }
 

@@ -32,7 +32,6 @@ namespace :retention_instructions do
     end
   end
 
-  # rubocop:todo Metrics/AbcSize
   # rubocop:todo Metrics/MethodLength
   def process_labware(labware, saved_count)
     retention_instruction =
@@ -55,5 +54,4 @@ namespace :retention_instructions do
     saved_count
   end
   # rubocop:enable Metrics/MethodLength
-  # rubocop:enable Metrics/AbcSize
 end
