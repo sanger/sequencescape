@@ -5,63 +5,74 @@ require 'rails_helper'
 RSpec.describe Study, :accession, type: :model do
   include MockAccession
 
-  context 'accession all samples in study' do
-    before do
-      Delayed::Worker.delay_jobs = false
-      configatron.accession_samples = true
-      Accession.configure do |config|
-        config.folder = File.join('spec', 'data', 'accession')
-        config.load!
+  before do
+    Delayed::Worker.delay_jobs = false
+    configatron.accession_samples = true
+    Accession.configure do |config|
+      config.folder = File.join('spec', 'data', 'accession')
+      config.load!
+    end
+    allow(Accession::Request).to receive(:post).and_return(build(:successful_accession_response))
+  end
+
+  let!(:user) { create(:user, api_key: configatron.accession_local_key) }
+
+  after do
+    Delayed::Worker.delay_jobs = true
+    configatron.accession_samples = true
+    SampleManifestExcel.reset!
+  end
+
+  context 'when all samples in a study are accesionable' do
+    study_types = %i[open_study managed_study]
+
+    study_types.each do |study_type|
+      context "with #{study_type}" do
+
+        let(:accessionable_samples) { create_list(:sample_for_accessioning, 5) }
+        let(:non_accessionable_samples) { create_list(:sample, 3) }
+        let(:study) do
+          create(study_type, accession_number: 'ENA123', samples: accessionable_samples + non_accessionable_samples)
+        end
+
+        before do
+          study.accession_all_samples
+          study.reload
+        end
+
+        it 'accessions only the samples with accession numbers' do
+          expect(study.samples.count { |sample| sample.sample_metadata.sample_ebi_accession_number.present? }).to eq(
+            accessionable_samples.count
+          )
+        end
+
+        it 'does not accession samples without accession numbers' do
+          expect(study.samples.count { |sample| sample.sample_metadata.sample_ebi_accession_number.nil? }).to eq(
+            non_accessionable_samples.count
+          )
+        end
       end
-      allow(Accession::Request).to receive(:post).and_return(build(:successful_accession_response))
     end
 
-    let!(:user) { create(:user, api_key: configatron.accession_local_key) }
+    context 'with studies missing accession numbers' do
+      study_types = %i[open_study managed_study]
 
-    after do
-      Delayed::Worker.delay_jobs = true
-      configatron.accession_samples = true
-      SampleManifestExcel.reset!
-    end
+      study_types.each do |study_type|
+        context "with #{study_type}" do
+          let(:study) { create(study_type, samples: create_list(:sample_for_accessioning, 5)) }
 
-    it 'accessions all of the samples that are accessionable' do
-      open_study =
-        create(
-          :open_study,
-          accession_number: 'ENA123',
-          samples: create_list(:sample_for_accessioning, 5) + create_list(:sample, 3)
-        )
-      open_study.accession_all_samples
-      open_study.reload
-      expect(open_study.samples.count { |sample| sample.sample_metadata.sample_ebi_accession_number.present? }).to eq(5)
-      expect(open_study.samples.count { |sample| sample.sample_metadata.sample_ebi_accession_number.nil? }).to eq(3)
+          before do
+            # Verify expectation before running the method
+            expect(study.samples.first).not_to receive(:accession)
+            study.accession_all_samples
+            study.reload
+          end
 
-      managed_study =
-        create(
-          :managed_study,
-          accession_number: 'ENA123',
-          samples: create_list(:sample_for_accessioning, 5) + create_list(:sample, 3)
-        )
-      managed_study.accession_all_samples
-      managed_study.reload
-      expect(
-        managed_study.samples.count { |sample| sample.sample_metadata.sample_ebi_accession_number.present? }
-      ).to eq(5)
-      expect(managed_study.samples.count { |sample| sample.sample_metadata.sample_ebi_accession_number.nil? }).to eq(3)
-    end
-
-    it 'will not attempt to accession any samples belonging to a study that does not have an accession number' do
-      open_study = create(:open_study, samples: create_list(:sample_for_accessioning, 5))
-      expect(open_study.samples.first).not_to receive(:accession)
-      open_study.accession_all_samples
-      open_study.reload
-      expect(open_study.samples).to be_all { |sample| sample.sample_metadata.sample_ebi_accession_number.nil? }
-
-      managed_study = create(:managed_study, samples: create_list(:sample_for_accessioning, 5))
-      expect(managed_study.samples.first).not_to receive(:accession)
-      managed_study.accession_all_samples
-      managed_study.reload
-      expect(managed_study.samples).to be_all { |sample| sample.sample_metadata.sample_ebi_accession_number.nil? }
+          it 'does not accession any samples' do
+            expect(study.samples).to be_all { |sample| sample.sample_metadata.sample_ebi_accession_number.nil? }
+          end
+        end
+      end
     end
   end
 end
