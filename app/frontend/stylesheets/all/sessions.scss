@@ -34,11 +34,6 @@ body.sessions {
   @extend .card-body;
   @extend .pt-0;
 
-  .form-help {
-    @extend .form-text;
-    @extend .text-muted;
-  }
-
   input {
     @extend .form-control;
     @extend .form-control-lg;
