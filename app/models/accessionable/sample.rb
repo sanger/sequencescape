@@ -112,7 +112,6 @@ module Accessionable
     delegate :released?, to: :@sample
   end
 
-  private
 
   class ArrayExpressTag < Base::Tag
     def label

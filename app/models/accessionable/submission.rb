@@ -76,7 +76,6 @@ class Accessionable::Submission < Accessionable::Base
     @accession_number = accession_number
   end
 
-  private
 
   class Contact
     attr_reader :inform_on_error, :inform_on_status, :name

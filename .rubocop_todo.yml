@@ -191,17 +191,6 @@ Lint/StructNewOverride:
     - 'app/models/product_criteria/basic.rb'
 
 
-# Offense count: 5
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AutoCorrect, ContextCreatingMethods, MethodCreatingMethods.
-Lint/UselessAccessModifier:
-  Exclude:
-    - 'app/api/model_extensions/robot.rb'
-    - 'app/models/accessionable/sample.rb'
-    - 'app/models/accessionable/submission.rb'
-    - 'app/models/event_sender.rb'
-    - 'app/models/product_criteria/basic.rb'
-
 # Offense count: 66
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: AutoCorrect.
