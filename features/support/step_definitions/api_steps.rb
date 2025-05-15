@@ -36,9 +36,7 @@ end
 def walk_hash_structure(hash_data, &)
   case hash_data
   when Hash
-    hash_data.each_with_object({}) do |(key, value), hash|
-      hash[key] = walk_hash_structure(value, &) unless yield(key)
-    end
+    hash_data.each_with_object({}) { |(key, value), hash| hash[key] = walk_hash_structure(value, &) unless yield(key) }
   when Array
     hash_data.map { |entry| walk_hash_structure(entry, &) }
   else

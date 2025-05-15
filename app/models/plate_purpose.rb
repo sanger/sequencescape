@@ -112,9 +112,7 @@ class PlatePurpose < Purpose
     # barcode (and we dont want to access Baracoda in that case)
     attributes.delete(:barcode)
     attributes.delete(:barcode_prefix)
-    target_class
-      .create_with_barcode!(attributes, &)
-      .tap { |plate| plate.wells.construct! unless do_not_create_wells }
+    target_class.create_with_barcode!(attributes, &).tap { |plate| plate.wells.construct! unless do_not_create_wells }
   end
 
   def cherrypick_in_rows?
