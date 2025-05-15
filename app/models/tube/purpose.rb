@@ -26,11 +26,11 @@ class Tube::Purpose < Purpose
     []
   end
 
-  def create!(*args, &block)
+  def create!(*args, &)
     options = args.extract_options!
     options[:purpose] = self
     options[:barcode_prefix] ||= barcode_prefix
-    target_class.create_with_barcode!(*args, options, &block).tap { |t| tubes << t }
+    target_class.create_with_barcode!(*args, options, &).tap { |t| tubes << t }
   end
 
   def sibling_tubes(_tube)

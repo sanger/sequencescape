@@ -26,8 +26,8 @@ class BaitLibraryLayout < ApplicationRecord
   end
 
   # This method can be used to get a preview of what will happen when the bait libraries are laid out on a plate.
-  def self.preview!(attributes = {}, &block)
-    new(attributes, &block).tap do |layout|
+  def self.preview!(attributes = {}, &)
+    new(attributes, &).tap do |layout|
       raise ActiveRecord::RecordInvalid, layout unless layout.valid?
 
       layout.unsaved_uuid!

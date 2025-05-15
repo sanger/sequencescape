@@ -37,8 +37,8 @@ module Core::Io::Json
       named(attribute) { encode(value, options) }
     end
 
-    def block(attribute, &block)
-      named(attribute) { open(&block) }
+    def block(attribute, &)
+      named(attribute) { open(&) }
     end
 
     # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
