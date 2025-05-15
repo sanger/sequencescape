@@ -11,9 +11,9 @@ class Tag2LayoutTemplate < ApplicationRecord
   scope :include_tag, -> { includes(:tag) }
 
   # Create a TagLayout instance that does the actual work of laying out the tags.
-  def create!(attributes = {}, &block)
+  def create!(attributes = {}, &)
     Tag2Layout
-      .create!(attributes.merge(default_attributes), &block)
+      .create!(attributes.merge(default_attributes), &)
       .tap { |t2layout| record_template_use(t2layout.plate) }
   end
 

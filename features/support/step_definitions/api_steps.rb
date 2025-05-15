@@ -33,14 +33,14 @@ def assert_hash_equal(h1, h2, *)
   assert_equal(d1, d2, *)
 end
 
-def walk_hash_structure(hash_data, &block)
+def walk_hash_structure(hash_data, &)
   case hash_data
   when Hash
     hash_data.each_with_object({}) do |(key, value), hash|
-      hash[key] = walk_hash_structure(value, &block) unless yield(key)
+      hash[key] = walk_hash_structure(value, &) unless yield(key)
     end
   when Array
-    hash_data.map { |entry| walk_hash_structure(entry, &block) }
+    hash_data.map { |entry| walk_hash_structure(entry, &) }
   else
     hash_data
   end
