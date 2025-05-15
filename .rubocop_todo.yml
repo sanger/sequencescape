@@ -1819,12 +1819,6 @@ Style/InverseMethods:
     - 'app/models/batch.rb'
     - 'app/models/extended_validator/species_validator.rb'
 
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Style/LineEndConcatenation:
-  Exclude:
-    - 'features/support/paths.rb'
-
 # Offense count: 2
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Style/MapIntoArray:
@@ -2111,59 +2105,6 @@ Style/StderrPuts:
     - 'lib/cron_scripts/import_fluidigm_data.rb'
     - 'lib/volume_check.rb'
     - 'script/autospec'
-
-# Offense count: 74
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: Mode.
-Style/StringConcatenation:
-  Exclude:
-    - 'app/helpers/application_helper.rb'
-    - 'app/helpers/submissions_helper.rb'
-    - 'app/models/accessionable/submission.rb'
-    - 'app/models/concerns/squishify.rb'
-    - 'app/models/location_report.rb'
-    - 'app/models/robot_property.rb'
-    - 'app/sample_manifest_excel/sample_manifest_excel/worksheet/test_worksheet.rb'
-    - 'app/views/requests/list_inboxes.xml.builder'
-    - 'config/application.rb'
-    - 'config/initializers/informatics.rb'
-    - 'features/support/paths.rb'
-    - 'features/support/step_definitions/study_steps.rb'
-    - 'lib/control_request_type_creation.rb'
-    - 'lib/informatics/lib/informatics/application.rb'
-    - 'lib/tasks/cucumber.rake'
-    - 'script/dbconsole'
-    - 'script/performance/benchmarker'
-    - 'script/performance/profiler'
-    - 'script/performance/request'
-    - 'script/plugin'
-    - 'script/process/inspector'
-    - 'script/process/reaper'
-    - 'script/process/spawner'
-    - 'script/spec'
-    - 'spec/api/dilution_plate_purpose_spec.rb'
-    - 'spec/api/labware_spec.rb'
-    - 'spec/api/multiplexed_library_tube_spec.rb'
-    - 'spec/api/plate_purpose_spec.rb'
-    - 'spec/api/plate_spec.rb'
-    - 'spec/api/receptacle_spec.rb'
-    - 'spec/api/request_types_spec.rb'
-    - 'spec/api/submission_pool_spec.rb'
-    - 'spec/api/well_spec.rb'
-    - 'spec/factories/barcode_factories.rb'
-    - 'spec/models/location_report_spec.rb'
-    - 'spec/models/stock_stamper_spec.rb'
-    - 'spec/requests/api/v2/purposes_spec.rb'
-    - 'spec/requests/api/v2/studies_spec.rb'
-    - 'test/controllers/plates_controller_test.rb'
-    - 'test/lib/linefeed_fix_test.rb'
-    - 'test/test_helper.rb'
-    - 'test/unit/accession_service_test.rb'
-    - 'test/unit/parsers/bioanalysis_csv_parser_test.rb'
-    - 'test/unit/parsers/plate_reader_parser_test.rb'
-    - 'test/unit/parsers/quant_parser_test.rb'
-    - 'test/unit/product_criteria/basic_test.rb'
-    - 'test/unit/qc_file_test.rb'
 
 # Offense count: 8
 # This cop supports safe autocorrection (--autocorrect).

@@ -5,7 +5,7 @@ require './lib/linefeed_fix'
 
 class LinefeedFixTest < ActiveSupport::TestCase
   context 'LinefeedFix' do
-    setup { File.open(Rails.root + 'test/data/bad.csv') { |f| @string = f.read } }
+    setup { File.open("#{Rails.root}test/data/bad.csv") { |f| @string = f.read } }
 
     should 'raise if we don\'t do anything' do
       # Makes sure sublime hasn't 'fixed' the file for us
