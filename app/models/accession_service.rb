@@ -229,7 +229,6 @@ class AccessionService # rubocop:todo Metrics/ClassLength
 
   require 'rexml/document'
 
-  # require 'curb'
   include REXML
 
   def accession_options

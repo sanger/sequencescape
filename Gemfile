@@ -24,7 +24,7 @@ group :default do
   gem 'after_commit_everywhere', '~> 1.0'
   gem 'configatron'
   gem 'formtastic'
-  gem 'rest-client' # curb substitute.
+  gem 'rest-client'
 
   # Legacy support for parsing XML into params
   gem 'actionpack-xml_parser'

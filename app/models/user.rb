@@ -2,7 +2,6 @@
 require 'net/ldap'
 require 'openssl'
 require 'digest/sha1'
-# require 'curb'
 
 # Represents Sequencescape users, used to regulate login as well as provide tracking of who did what.
 # While most users are internal, some are external.
