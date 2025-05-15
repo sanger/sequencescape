@@ -31,23 +31,6 @@ Lint/BooleanSymbol:
     - 'lib/authenticated_system.rb'
     - 'test/controllers/batches_controller_test.rb'
 
-# Offense count: 15
-# Configuration parameters: AllowedMethods.
-# AllowedMethods: enums
-Lint/ConstantDefinitionInBlock:
-  Exclude:
-    - 'app/jobs/asset_link/builder_job.rb'
-    - 'app/jobs/sample_accessioning_job.rb'
-    - 'app/models/sample.rb'
-    - 'app/models/study.rb'
-    - 'features/support/timecop.rb'
-    - 'lib/tasks/add_heron_product.rake'
-    - 'lib/tasks/add_templates_and_printers_to_pmb.rake'
-    - 'spec/lib/accession/accessionable_spec.rb'
-    - 'spec/sample_manifest_excel/tags_spec.rb'
-    - 'spec/sequencescape_excel/list_spec.rb'
-    - 'test/unit/qc_report_presenter_test.rb'
-
 # Offense count: 17
 # Configuration parameters: IgnoreLiteralBranches, IgnoreConstantBranches.
 Lint/DuplicateBranch:

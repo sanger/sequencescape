@@ -107,6 +107,15 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   DATA_RELEASE_DELAY_PERIODS = ['3 months', '6 months', '9 months', '12 months', '18 months'].freeze
 
+  REMAPPED_ATTRIBUTES =
+    {
+      contaminated_human_dna: YES_OR_NO,
+      remove_x_and_autosomes: YES_OR_NO,
+      study_sra_hold: STUDY_SRA_HOLDS,
+      contains_human_dna: YES_OR_NO,
+      commercially_available: YES_OR_NO
+    }.transform_values { |v| v.index_by { |b| b.downcase } }
+
   # Class variables
   self.per_page = 500
 
@@ -280,15 +289,6 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     custom_attribute(:s3_email_list)
     custom_attribute(:data_deletion_period)
     custom_attribute(:contaminated_human_data_access_group)
-
-    REMAPPED_ATTRIBUTES =
-      {
-        contaminated_human_dna: YES_OR_NO,
-        remove_x_and_autosomes: YES_OR_NO,
-        study_sra_hold: STUDY_SRA_HOLDS,
-        contains_human_dna: YES_OR_NO,
-        commercially_available: YES_OR_NO
-      }.transform_values { |v| v.index_by { |b| b.downcase } }
 
     # These fields are warehoused, so need to match the encoding restrictions there
     # This excludes supplementary characters, which include emoji and rare kanji
