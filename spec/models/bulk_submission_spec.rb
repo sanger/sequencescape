@@ -275,6 +275,101 @@ describe BulkSubmission, with: :uploader do
     end
   end
 
+  context 'with accessioning enabled' do
+    before do
+      # Ensure accessioning check is enabled
+      configatron.disable_accession_check = false
+    end
+
+    context 'is invalid if the samples dont have accession numbers and the study requies accessioning' do
+      # Setup the conditions for accessioning validation
+      # Create a request type where accessioning is required
+      let(:request_types) { [create(:well_request_type), create(:sequencing_request_type, read_lengths: [54, 100])] }
+      # Create a study that enforces accessioning
+      let(:study) { create(:study, name: 'abc123_study', enforce_accessioning: true) }
+      let(:submission_template_hash) do
+        {
+          name: 'Illumina-A - Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing',
+          submission_class_name: 'LinearSubmission',
+          product_catalogue: 'Generic',
+          superceeded_by_id: -2,
+          submission_parameters: {
+            info_differential: 5,
+            request_options: {
+              'fragment_size_required_to' => '400',
+              'fragment_size_required_from' => '100'
+            },
+            request_types: request_types.map(&:key)
+          }
+        }
+      end
+      let(:spreadsheet_filename) { '1_valid_rows.csv' }
+
+      before { SubmissionSerializer.construct!(submission_template_hash) }
+
+      it 'is not valid' do
+        expect(subject).not_to be_valid
+      end
+
+      it 'sets an error message' do
+        subject.process
+        expect(subject.errors.messages[:base][0]).to eq(
+          'Validation failed: Orders study abc123_study and all samples must have accession numbers'
+        )
+      end
+    end
+
+    context 'is valid if the samples have accession numbers and the study requies accessioning' do
+      # Setup the conditions for accessioning validation
+      # Create a request type where accessioning is required
+      let(:request_types) { [create(:well_request_type), create(:sequencing_request_type, read_lengths: [54, 100])] }
+      # Create a study that enforces accessioning
+      let(:study) { create(:study, name: 'abc123_study', enforce_accessioning: true) }
+      let(:submission_template_hash) do
+        {
+          name: 'Illumina-A - Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing',
+          submission_class_name: 'LinearSubmission',
+          product_catalogue: 'Generic',
+          superceeded_by_id: -2,
+          submission_parameters: {
+            info_differential: 5,
+            request_options: {
+              'fragment_size_required_to' => '400',
+              'fragment_size_required_from' => '100'
+            },
+            request_types: request_types.map(&:key)
+          }
+        }
+      end
+      let(:spreadsheet_filename) { '1_valid_rows.csv' }
+
+      before do
+        # Add accession numbers to study and samples
+        study.study_metadata.update!(study_ebi_accession_number: 'ABC123')
+        asset_group.assets.each do |asset|
+          asset.contained_samples.each do |sample|
+            sample.sample_metadata.update!(sample_ebi_accession_number: 'ABC123')
+          end
+        end
+        SubmissionSerializer.construct!(submission_template_hash)
+      end
+
+      it 'is valid' do
+        expect(subject).to be_valid
+      end
+
+      it 'generates submissions when processed' do
+        subject.process
+        expect(number_submissions_created).to eq(1)
+      end
+
+      it 'generates submissions with one order' do
+        subject.process
+        expect(generated_submission.orders.count).to eq(1)
+      end
+    end
+  end
+
   context 'a submission with additional template name validations' do
     context 'when valid for scRNA template' do
       let(:submission_template_hash) do
@@ -428,13 +523,13 @@ describe BulkSubmission, with: :uploader do
       context 'number of samples per pool < 5' do
         let(:spreadsheet_filename) { 'scRNA_bulk_submission_tube_invalid.csv' }
 
-        include_examples 'an invalid scRNA Bulk Submission', 'scRNA_bulk_submission_tube_invalid', 4
+        it_behaves_like 'an invalid scRNA Bulk Submission', 'scRNA_bulk_submission_tube_invalid', 4
       end
 
       context 'number of samples per pool > 25' do
         let(:spreadsheet_filename) { 'scRNA_bulk_submission_tube_invalid_greater.csv' }
 
-        include_examples 'an invalid scRNA Bulk Submission', 'scRNA_bulk_submission_tube_invalid_greater', 32
+        it_behaves_like 'an invalid scRNA Bulk Submission', 'scRNA_bulk_submission_tube_invalid_greater', 32
       end
     end
   end
