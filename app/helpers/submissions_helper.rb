@@ -29,7 +29,7 @@ module SubmissionsHelper # rubocop:todo Metrics/ModuleLength
     end
   end
 
-  def studies_select(form, studies) # rubocop:todo Metrics/MethodLength
+  def studies_select(form, studies)
     prompt =
       case studies.count
       when 0

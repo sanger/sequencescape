@@ -176,17 +176,6 @@ Lint/NonLocalExitFromIterator:
     - 'app/api/core/io/json/grammar.rb'
     - 'app/models/create_asset_request.rb'
 
-# Offense count: 6
-# This cop supports safe autocorrection (--autocorrect).
-Lint/RedundantCopDisableDirective:
-  Exclude:
-    - 'app/controllers/npg_actions/assets_controller.rb'
-    - 'app/helpers/submissions_helper.rb'
-    - 'app/models/barcode/format_handlers.rb'
-    - 'app/models/illumina_htp/initial_stock_tube_purpose.rb'
-    - 'app/models/metadata/form_builder.rb'
-    - 'lib/tasks/retention_instructions.rake'
-
 # Offense count: 4
 Lint/ReturnInVoidContext:
   Exclude:
