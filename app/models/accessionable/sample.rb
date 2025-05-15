@@ -112,7 +112,6 @@ module Accessionable
     delegate :released?, to: :@sample
   end
 
-
   class ArrayExpressTag < Base::Tag
     def label
       default_tag = "ArrayExpress-#{I18n.t("#{@scope}.#{@name}.label").tr(' ', '_').camelize}"
