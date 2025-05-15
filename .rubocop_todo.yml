@@ -311,14 +311,6 @@ Naming/AccessorMethodName:
     - 'lib/authenticated_system.rb'
     - 'lib/tasks/add_templates_and_printers_to_pmb.rake'
 
-# Offense count: 6
-Naming/ConstantName:
-  Exclude:
-    - 'app/models/accession_service.rb'
-    - 'app/models/study.rb'
-    - 'app/models/submission/state_machine.rb'
-    - 'app/models/uuid.rb'
-
 # Offense count: 2
 # Configuration parameters: ExpectMatchingDefinition, CheckDefinitionPathHierarchy, CheckDefinitionPathHierarchyRoots, Regex, IgnoreExecutableScripts, AllowedAcronyms.
 # CheckDefinitionPathHierarchyRoots: lib, spec, test, src

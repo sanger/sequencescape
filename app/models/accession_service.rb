@@ -30,9 +30,9 @@ class AccessionService # rubocop:todo Metrics/ClassLength
   NumberNotRequired = Class.new(AccessionServiceError)
   NumberNotGenerated = Class.new(AccessionServiceError)
 
-  CenterName = 'SC' # TODO: [xxx] use confing file
-  Protect = 'protect'
-  Hold = 'hold'
+  CENTER_NAME = 'SC' # TODO: [xxx] use confing file
+  PROTECT = 'protect'
+  HOLD = 'hold'
 
   def provider
   end
@@ -172,19 +172,19 @@ class AccessionService # rubocop:todo Metrics/ClassLength
   end
 
   def sample_visibility(_sample)
-    Protect
+    PROTECT
   end
 
   def study_visibility(_study)
-    Protect
+    PROTECT
   end
 
   def policy_visibility(_study)
-    Protect
+    PROTECT
   end
 
   def dac_visibility(_study)
-    Protect
+    PROTECT
   end
 
   def private?
@@ -219,7 +219,7 @@ class AccessionService # rubocop:todo Metrics/ClassLength
             xml.MODIFY(source: submission[:source], target: '')
           end
         end
-        xml.ACTION { submission[:hold] == AccessionService::Protect ? xml.PROTECT : xml.HOLD }
+        xml.ACTION { submission[:hold] == AccessionService::PROTECT ? xml.PROTECT : xml.HOLD }
       end
     end
     xml.target!

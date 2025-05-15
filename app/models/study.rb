@@ -60,7 +60,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   YES = 'Yes'
   NO = 'No'
   YES_OR_NO = [YES, NO].freeze
-  Other_type = 'Other'
+  OTHER_TYPE = 'Other'
 
   STUDY_SRA_HOLDS = %w[Hold Public].freeze
 

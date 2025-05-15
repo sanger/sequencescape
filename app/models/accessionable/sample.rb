@@ -106,7 +106,7 @@ module Accessionable
     end
 
     def protect?(service)
-      service.sample_visibility(@sample) == AccessionService::Protect
+      service.sample_visibility(@sample) == AccessionService::PROTECT
     end
 
     delegate :released?, to: :@sample
