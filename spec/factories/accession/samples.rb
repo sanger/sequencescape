@@ -26,6 +26,11 @@ FactoryBot.define do
   factory :sample_for_accessioning, parent: :sample do
     sample_metadata { create(:sample_metadata_for_accessioning) }
 
+    trait :skip_accessioning do
+      # Accessioning is triggered on sample saving, unless processing_manifest is true
+      before(:create) { Sample::Current.processing_manifest = true }
+    end
+
     factory :sample_for_accessioning_with_open_study do
       studies { [create(:open_study, accession_number: 'ENA123')] }
     end

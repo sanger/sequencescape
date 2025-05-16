@@ -28,8 +28,7 @@ RSpec.describe Study, :accession, type: :model do
 
     study_types.each do |study_type|
       context "with #{study_type}" do
-
-        let(:accessionable_samples) { create_list(:sample_for_accessioning, 5) }
+        let(:accessionable_samples) { create_list(:sample_for_accessioning, 5, :skip_accessioning) }
         let(:non_accessionable_samples) { create_list(:sample, 3) }
         let(:study) do
           create(study_type, accession_number: 'ENA123', samples: accessionable_samples + non_accessionable_samples)
@@ -59,7 +58,7 @@ RSpec.describe Study, :accession, type: :model do
 
       study_types.each do |study_type|
         context "with #{study_type}" do
-          let(:study) { create(study_type, samples: create_list(:sample_for_accessioning, 5)) }
+          let(:study) { create(study_type, samples: create_list(:sample_for_accessioning, 5, :skip_accessioning)) }
 
           before do
             # Verify expectation before running the method
