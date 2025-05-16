@@ -23,11 +23,11 @@ RSpec.describe Study, :accession, type: :model do
     SampleManifestExcel.reset!
   end
 
-  context 'when all samples in a study are accesionable' do
-    study_types = %i[open_study managed_study]
+  study_types = %i[open_study managed_study]
 
-    study_types.each do |study_type|
-      context "with #{study_type}" do
+  study_types.each do |study_type|
+    context "in a #{study_type}" do
+      context 'when all samples in a study are accesionable' do
         let(:accessionable_samples) { create_list(:sample_for_accessioning, 5, :skip_accessioning) }
         let(:non_accessionable_samples) { create_list(:sample, 3) }
         let(:study) do
@@ -51,25 +51,19 @@ RSpec.describe Study, :accession, type: :model do
           )
         end
       end
-    end
 
-    context 'with studies missing accession numbers' do
-      study_types = %i[open_study managed_study]
+      context 'with studies missing accession numbers' do
+        let(:study) { create(study_type, samples: create_list(:sample_for_accessioning, 5, :skip_accessioning)) }
 
-      study_types.each do |study_type|
-        context "with #{study_type}" do
-          let(:study) { create(study_type, samples: create_list(:sample_for_accessioning, 5, :skip_accessioning)) }
+        before do
+          # Verify expectation before running the method
+          expect(study.samples.first).not_to receive(:accession)
+          study.accession_all_samples
+          study.reload
+        end
 
-          before do
-            # Verify expectation before running the method
-            expect(study.samples.first).not_to receive(:accession)
-            study.accession_all_samples
-            study.reload
-          end
-
-          it 'does not accession any samples' do
-            expect(study.samples).to be_all { |sample| sample.sample_metadata.sample_ebi_accession_number.nil? }
-          end
+        it 'does not accession any samples' do
+          expect(study.samples).to be_all { |sample| sample.sample_metadata.sample_ebi_accession_number.nil? }
         end
       end
     end
