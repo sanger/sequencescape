@@ -47,7 +47,13 @@ module Accession
     end
 
     def post
-      @response = Accession::Request.post(self) if valid?
+      unless valid?
+        error_message = 'Accessionable is invalid'
+        Rails.logger.error(error_message)
+        raise StandardError, error_message
+      end
+
+      @response = Accession::Request.post(self)
     end
 
     def update_accession_number

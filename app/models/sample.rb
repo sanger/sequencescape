@@ -508,10 +508,9 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def accession
     return unless configatron.accession_samples
 
-    accessionable = Accession::Sample.new(Accession.configuration.tags, self)
-
-    # Accessioning jobs are lower priority (higher number) than submissions and reports
-    Delayed::Job.enqueue(SampleAccessioningJob.new(accessionable), priority: 200) if accessionable.valid?
+    accessionable = build_accessionable
+    validate_accessionable!(accessionable)
+    enqueue_accessioning_job!(accessionable)
   end
 
   def handle_update_event(user)
@@ -583,5 +582,33 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def safe_to_destroy
     errors.add(:base, 'samples cannot be destroyed.')
     throw(:abort)
+  end
+
+  def build_accessionable
+    Accession::Sample.new(Accession.configuration.tags, self)
+  end
+
+  def validate_accessionable!(accessionable)
+    return if accessionable.valid?
+
+    error_message = "Accessionable is invalid: #{accessionable.errors.full_messages.join(', ')}"
+    Rails.logger.error(error_message)
+    raise StandardError, error_message
+  end
+
+  def enqueue_accessioning_job!(accessionable)
+    job = Delayed::Job.enqueue(SampleAccessioningJob.new(accessionable), priority: 200)
+    log_job_status(job)
+  rescue StandardError => e
+    Rails.logger.error("Failed to enqueue accessioning job: #{e.message}")
+    raise
+  end
+
+  def log_job_status(job)
+    if job
+      Rails.logger.info("Accessioning job enqueued successfully: #{job.inspect}")
+    else
+      Rails.logger.warn('Accessioning job enqueue returned nil.')
+    end
   end
 end
