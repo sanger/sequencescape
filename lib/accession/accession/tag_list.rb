@@ -49,7 +49,7 @@ module Accession
       tags.values.collect(&:label)
     end
 
-    def values
+    def values # rubocop:todo Lint/DuplicateMethods
       tags.values.collect(&:value)
     end
 
