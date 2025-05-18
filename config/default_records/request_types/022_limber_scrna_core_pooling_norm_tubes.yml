@@ -12,8 +12,8 @@
 # which will cause creation of the tube upfront without a name. However, we
 # already create Norm tubes in Limber by adding a new child on the parent.
 #
-limber_multiplexing_norm:
-  name: Limber Multiplexing Norm
+scrna_core_pool_norm:
+  name: scRNA Core Pool Norm
   asset_type: Well
   order: 2
   request_class_name: Request::Multiplexing
