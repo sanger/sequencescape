@@ -33,16 +33,9 @@ module RecordLoader
     private
 
     def find_workflow!(workflow_name, task_name)
-      return unless workflow_name
       Workflow.find_by!(name: workflow_name)
     rescue ActiveRecord::RecordNotFound
-      message = "Task '#{task_name}' creation or update failed because there was no workflow named '#{workflow_name}'"
-
-      if Rails.env.development? || Rails.env.staging? || Rails.env.cucumber?
-        Rails.logger.warn(message)
-        return nil
-      end
-      raise ActiveRecord::RecordNotFound, message
+      raise ActiveRecord::RecordNotFound, "Task '#{task_name}' creation or update failed because there was no workflow named '#{workflow_name}'"
     end
   end
 end
