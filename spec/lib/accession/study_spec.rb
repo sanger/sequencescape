@@ -29,7 +29,7 @@ RSpec.describe Study, :accession, type: :model do
 
   let!(:user) { create(:user, api_key: configatron.accession_local_key) }
   let(:accessionable_samples) { create_list(:sample_for_accessioning, 5, :skip_accessioning) }
-  let(:non_accessionable_samples) { create_list(:sample, 3) }
+  let(:non_accessionable_samples) { create_list(:sample, 3, :skip_accessioning) }
 
   STUDY_TYPES.each do |study_type|
     context "in a #{study_type}" do
@@ -77,20 +77,57 @@ RSpec.describe Study, :accession, type: :model do
             )
           end
         end
+
+        context 'when raised errors are handled' do
+          before do
+            begin
+              study.accession_all_samples
+            rescue StandardError
+              # assume error is appropriately handled
+            end
+            study.reload
+          end
+
+          it 'accessions only the samples with accession numbers' do
+            expect(study.samples.count { |sample| sample.sample_metadata.sample_ebi_accession_number.present? }).to eq(
+              accessionable_samples.count
+            )
+          end
+
+          it 'does not accession samples without accession numbers' do
+            expect(study.samples.count { |sample| sample.sample_metadata.sample_ebi_accession_number.nil? }).to eq(
+              non_accessionable_samples.count
+            )
+          end
+        end
       end
 
       context 'when none of the samples in a study are accessionable' do
         let(:study) { create(study_type, accession_number: 'ENA123', samples: non_accessionable_samples) }
 
-        before do
-          study.accession_all_samples
-          study.reload
+        it 'raises an error due to missing metadata' do
+          expect { study.accession_all_samples }.to raise_error(StandardError) do |error|
+            expect(error.message).to include(
+              "Accessionable is invalid: Sample does not have the required metadata: #{missing_metadata_for_study}"
+            )
+          end
         end
 
-        it 'does not accession samples without accession numbers' do
-          expect(study.samples.count { |sample| sample.sample_metadata.sample_ebi_accession_number.nil? }).to eq(
-            non_accessionable_samples.count
-          )
+        context 'when raised errors are handled' do
+          before do
+            begin
+              study.accession_all_samples
+            rescue StandardError
+              # assume error is appropriately handled
+            end
+            study.reload
+          end
+
+          it 'does not accession samples without accession numbers' do
+            expect(study.samples.count { |sample| sample.sample_metadata.sample_ebi_accession_number.nil? }).to eq(
+              non_accessionable_samples.count
+            )
+          end
         end
       end
     end
