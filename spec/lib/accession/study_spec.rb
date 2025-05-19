@@ -72,8 +72,10 @@ RSpec.describe Study, :accession, type: :model do
 
         it 'raises an error due to missing metadata' do
           expect { study.accession_all_samples }.to raise_error(StandardError) do |error|
+            first_failed_sample_name = 'Sample6'
             expect(error.message).to include(
-              "Accessionable is invalid: Sample does not have the required metadata: #{missing_metadata_for_study}"
+              "Accessionable is invalid for sample '#{first_failed_sample_name}': Sample does not have" \
+                " the required metadata: #{missing_metadata_for_study}"
             )
           end
         end
@@ -107,8 +109,10 @@ RSpec.describe Study, :accession, type: :model do
 
         it 'raises an error due to missing metadata' do
           expect { study.accession_all_samples }.to raise_error(StandardError) do |error|
+            first_failed_sample_name = 'Sample1'
             expect(error.message).to include(
-              "Accessionable is invalid: Sample does not have the required metadata: #{missing_metadata_for_study}"
+              "Accessionable is invalid for sample '#{first_failed_sample_name}': Sample does not have" \
+                " the required metadata: #{missing_metadata_for_study}"
             )
           end
         end

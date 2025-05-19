@@ -591,7 +591,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def validate_accessionable!(accessionable)
     return if accessionable.valid?
 
-    error_message = "Accessionable is invalid: #{accessionable.errors.full_messages.join(', ')}"
+    error_message = "Accessionable is invalid for sample '#{name}': #{accessionable.errors.full_messages.join(', ')}"
     Rails.logger.error(error_message)
     raise StandardError, error_message
   end
