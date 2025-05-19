@@ -35,7 +35,8 @@ module RecordLoader
     def find_workflow!(workflow_name, task_name)
       Workflow.find_by!(name: workflow_name)
     rescue ActiveRecord::RecordNotFound
-      raise ActiveRecord::RecordNotFound, "Task '#{task_name}' creation or update failed because there was no workflow named '#{workflow_name}'"
+      raise ActiveRecord::RecordNotFound,
+            "Task '#{task_name}' creation or update failed because there was no workflow named '#{workflow_name}'"
     end
   end
 end
