@@ -15,12 +15,11 @@ module RecordLoader
 
     def create_or_update!(name, options)
       workflow_name = options.delete('workflow')
-      workflow =  Workflow.find_by!(name: workflow_name)
+      workflow = Workflow.find_by!(name: workflow_name)
       task_name = options.delete('task')
       task = Task.find_by!(name: task_name, pipeline_workflow_id: workflow.id)
       options[:task_id] = task.id
-      Descriptor.create_with(options).find_or_create_by!(name:name, task_id: task.id)
+      Descriptor.create_with(options).find_or_create_by!(name: name, task_id: task.id)
     end
-
   end
 end
