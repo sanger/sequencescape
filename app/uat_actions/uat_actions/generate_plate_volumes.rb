@@ -14,14 +14,14 @@ class UatActions::GeneratePlateVolumes < UatActions
                  'NB. only well containing aliquots will have volumes set.'
   form_field :minimum_volume,
              :number_field,
-             label: 'Minimum volume (µl)',
+             label: 'Minimum Target Volume (µl)',
              help: 'The minimum volume the wells should have.',
              options: {
                minimum: 0
              }
   form_field :maximum_volume,
              :number_field,
-             label: 'Maximum volume (µl)',
+             label: 'Maximum Target Volume (µl)',
              help: 'The maximum volume the wells should have.',
              options: {
                minimum: 0
