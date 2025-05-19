@@ -455,7 +455,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # @note This appears to be set up to handle legacy data. All currently generated
   #       Sanger sample ids will be meet criteria 1 or 2.
   # Earlier implementations were supposed to fall back to the name in the absence
-  # of a sanger_smaple_id, but the feature was incorrectly implemented, and would
+  # of a sanger_sample_id, but the feature was incorrectly implemented, and would
   # have thrown an exception.
   def shorten_sanger_sample_id
     case sanger_sample_id

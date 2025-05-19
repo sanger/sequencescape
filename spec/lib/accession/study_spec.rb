@@ -35,7 +35,7 @@ RSpec.describe Study, :accession, type: :model do
     context "in a #{study_type}" do
       let(:missing_metadata_for_study) { MISSING_METADATA[study_type] }
 
-      context 'when all samples in a study are accesionable' do
+      context 'when all samples in a study are accessionable' do
         let(:study) { create(study_type, accession_number: 'ENA123', samples: accessionable_samples) }
 
         before do
@@ -79,7 +79,7 @@ RSpec.describe Study, :accession, type: :model do
         end
       end
 
-      context 'when no samples in a study are not accessionable' do
+      context 'when none of the samples in a study are accessionable' do
         let(:study) { create(study_type, accession_number: 'ENA123', samples: non_accessionable_samples) }
 
         before do
