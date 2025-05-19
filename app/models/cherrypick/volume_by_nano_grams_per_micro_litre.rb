@@ -84,7 +84,7 @@ module Cherrypick::VolumeByNanoGramsPerMicroLitre
 
     well_attribute.robot_minimum_picking_volume = robot_minimum_pick_vol
     well_attribute.current_volume = well_attribute.picked_volume + well_attribute.buffer_volume
-    well_attribute.current_volume = robot_minimum_pick_vol if well_attribute.current_volume < robot_minimum_pick_vol
+    # well_attribute.current_volume = robot_minimum_pick_vol if well_attribute.current_volume < robot_minimum_pick_vol
 
     source_volume_to_tell_robot_to_pick
   end
