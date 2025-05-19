@@ -46,6 +46,7 @@ module Cherrypick::VolumeByNanoGramsPerMicroLitre
     # Similarly we set current volume based on required. This is only untrue in rare edge cases though
     # (When you have almost all your required volume from your source, then add more buffer than intended
     #  due to minimum robot picks)
+    well_attribute.current_volume = final_volume_desired
 
     if source_volume < robot_minimum_pick_vol
       warn "Warning: Source volume (#{source_volume}) is less 
