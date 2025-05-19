@@ -28,8 +28,8 @@ RSpec.describe Study, :accession, type: :model do
   end
 
   let!(:user) { create(:user, api_key: configatron.accession_local_key) }
-  let(:accessionable_samples) { create_list(:sample_for_accessioning, 5, :skip_accessioning) }
-  let(:non_accessionable_samples) { create_list(:sample, 3, :skip_accessioning) }
+  let(:accessionable_samples) { create_list(:sample_for_accessioning, 5) }
+  let(:non_accessionable_samples) { create_list(:sample, 3) }
 
   STUDY_TYPES.each do |study_type|
     context "in a #{study_type}" do
@@ -51,7 +51,7 @@ RSpec.describe Study, :accession, type: :model do
       end
 
       context 'with studies missing accession numbers' do
-        let(:study) { create(study_type, samples: create_list(:sample_for_accessioning, 5, :skip_accessioning)) }
+        let(:study) { create(study_type, samples: create_list(:sample_for_accessioning, 5)) }
 
         before do
           # Verify expectation before running the method
