@@ -228,7 +228,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
       :data_release_timing,
       required: true,
       default: DATA_RELEASE_TIMING_STANDARD,
-      in: DATA_RELEASE_TIMINGS + [DATA_RELEASE_TIMING_NEVER]
+      in: DATA_RELEASE_TIMINGS + [DATA_RELEASE_TIMING_NEVER] + [DATA_RELEASE_TIMING_PUBLICATION]
     )
     custom_attribute(
       :data_release_delay_reason,
@@ -238,9 +238,8 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     )
 
     with_options(if: :delay_until_publication?) do
-      custom_attribute(
-        :data_release_timing_publication_comment, required: true
-      )
+      custom_attribute(:data_release_timing_publication_comment, required: true)
+      custom_attribute(:data_share_in_preprint, required: true, in: YES_OR_NO)
     end
     custom_attribute(:data_release_delay_period, required: true, in: DATA_RELEASE_DELAY_PERIODS, if: :delayed_release?)
     custom_attribute(:bam, default: true)
@@ -621,11 +620,16 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     self.ethically_approved ||= ethical_approval_required? ? false : nil
   end
 
+  # rubocop:disable Metrics/ClassLength
   class Metadata
     delegate :enforce_data_release, to: :study
 
     def remove_x_and_autosomes?
       remove_x_and_autosomes == YES
+    end
+
+    def open?
+      data_release_strategy == DATA_RELEASE_STRATEGY_OPEN
     end
 
     def managed?
@@ -674,12 +678,18 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     validate :sanity_check_y_separation, if: :separate_y_chromosome_data?
 
-    validates :data_release_timing, inclusion: { in: DATA_RELEASE_TIMINGS }, if: :data_release_timing_must_not_be_never?
+    validates :data_release_timing, inclusion: { in: DATA_RELEASE_TIMINGS }, if: :managed?
     validates :data_release_timing,
               inclusion: {
                 in: [DATA_RELEASE_TIMING_NEVER]
               },
               if: :data_release_timing_must_be_never?
+
+    validates :data_release_timing,
+              inclusion: {
+                in: DATA_RELEASE_TIMINGS + [DATA_RELEASE_TIMING_PUBLICATION]
+              },
+              if: :open?
 
     def data_release_timing_must_be_never?
       Flipper.enabled?(:y24_052_enable_data_release_timing_validation) && data_release_strategy.present? &&
@@ -757,4 +767,5 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
       self.class.where(snp_parent_study_id: snp_study_id).includes(:study).map(&:study)
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end

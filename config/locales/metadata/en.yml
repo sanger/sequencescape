@@ -448,7 +448,7 @@ en:
 
         data_release_timing:
           label: How is the data release to be timed?
-          help: "Choose from:<p><strong>Immediate:</strong> To be released as soon as possible.</p><p><strong>Standard:</strong> To be released:<ul><li>For managed (EGA) studies: 12 months</li><li>For open (ENA) studies: 12 months</li><li>Transcriptomics studies: 12 months</li></ul></p><p><strong>Delayed:</strong><ul><li>For managed (EGA) studies: 12 months plus delay for period</li><li>For open (ENA) studies: 12 months plus delay for period.</li></ul></p><p><strong>Never:</strong> This option is only available if the data release strategy is set to 'Not applicable.'</p>"
+          help: "Choose from:<p><strong>Immediate:</strong> To be released as soon as possible.</p><p><strong>Standard:</strong> To be released:<ul><li>For managed (EGA) studies: 12 months</li><li>For open (ENA) studies: 12 months</li><li>Transcriptomics studies: 12 months</li></ul></p><p><strong>Delayed:</strong><ul><li>For managed (EGA) studies: 12 months plus delay for period</li><li>For open (ENA) studies: 12 months plus delay for period.</li></ul></p><p><strong>Delay until publication:</strong> This option is only available if the data release strategy is set to 'Open (ENA)'.</p><p><strong>Never:</strong> This option is only available if the data release strategy is set to 'Not applicable.'</p>"
 
         data_release_prevention_reason:
           label: What is the reason for preventing data release?
@@ -478,8 +478,11 @@ en:
           label: Comment regarding data release timing and approval
 
         data_release_timing_publication_comment:
-          lable: When do you anticipate sharing the data? 
-        
+          label: When do you anticipate sharing the data?
+
+        data_share_in_preprint:
+          label: Are you planning to share the data as part of a preprint?
+
         data_access_group:
           label: Data access group
           help: "This field helps control access to product data in the iRODs seq zone.<ul></li>Leave the field empty to allow public access within the Sanger.</li><li>Supply one or more Sanger UNIX groups to restrict access to members of that group. Multiple access groups can be specified and should be separated with spaces.</li><li>You can also add individual users by their sanger user name.</li><li>All access will be prevented if all provided groups and usernames are invalid.</li></ul>"

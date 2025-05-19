@@ -50,12 +50,12 @@
 
       <%= metadata_fields.text_field :hmdmc_approval_number %>
 
-      <%= metadata_fields.select(:data_release_timing, Study::DATA_RELEASE_TIMINGS + [ Study::DATA_RELEASE_TIMING_NEVER ]) %>
+      <%= metadata_fields.select(:data_release_timing, Study::DATA_RELEASE_TIMINGS + [ Study::DATA_RELEASE_TIMING_NEVER ] + [Study::DATA_RELEASE_TIMING_PUBLICATION]) %>
       <%
         metadata_fields.change_select_options_for(:data_release_timing, when: :data_release_strategy, values: {
-          Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE                                    => Study::DATA_RELEASE_TIMING_NEVER,
-          Study::DATA_RELEASE_STRATEGY_OPEN                                    => [Study::DATA_RELEASE_TIMING_PUBLICATION] + Study::DATA_RELEASE_TIMINGS,
-          (Study::DATA_RELEASE_STRATEGIES-[Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE, Study::DATA_RELEASE_STRATEGY_OPEN]) => Study::DATA_RELEASE_TIMINGS
+          Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE    => Study::DATA_RELEASE_TIMING_NEVER,
+          Study::DATA_RELEASE_STRATEGY_OPEN              => Study::DATA_RELEASE_TIMINGS + [Study::DATA_RELEASE_TIMING_PUBLICATION],
+          Study::DATA_RELEASE_STRATEGY_MANAGED           => Study::DATA_RELEASE_TIMINGS
         })
       %>
 
@@ -67,9 +67,10 @@
         <%= group.text_area(:data_release_prevention_approval) %>
       <% end %>
 
-      <% metadata_fields.related_fields(to: :data_release_timing, when: Study::DATA_RELEASE_TIMING_PUBLICATION) do %>
-        <%= metadata_fields.text_area(:data_release_timing_publication_comment) %>
-      <% end %>
+     <% metadata_fields.related_fields(to: :data_release_timing, when: Study::DATA_RELEASE_TIMING_PUBLICATION) do %>
+        <%= group.text_area(:data_release_timing_publication_comment) %>
+        <%= group.radio_select(:data_share_in_preprint, Study::YES_OR_NO) %>
+     <% end %> 
 
       <% metadata_fields.related_fields(to: :data_release_strategy, in: Study::DATA_RELEASE_STRATEGIES, not: Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE) do %>
         <% metadata_fields.related_fields(to: :data_release_timing, when: Study::DATA_RELEASE_TIMING_DELAYED) do %>
