@@ -2,8 +2,6 @@
 
 module Api
   module V2
-    # @note Access this resource via the `/api/v2/tube_racks/` endpoint.
-    #
     # Provides a JSON:API representation of {TubeRack}.
     #
     # This resource represents a tube rack, which can contain a collection of tubes, with locations specified
@@ -48,20 +46,13 @@ module Api
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class TubeRackResource < BaseResource
-      # NB. This resource is mutable and can be created via the JSON API.
+      # TODO: Here be dragons! This resource is mutable and can be created via
+      #       the JSON API. However the asset_creation record is not generated
+      #       as we would be relying on the request to tell us who requested it.
+      #       Instead this should be done as part of adding authentication to
+      #       the API in the security OKR.
 
       default_includes :uuid_object, :barcodes
-
-      # Relationships
-      has_many :comments, readonly: true
-      has_many :racked_tubes
-      # TODO: refactor plate_purpose_id to purpose_id throughout repo
-      has_one :purpose, foreign_key: :plate_purpose_id, class_name: 'TubeRackPurpose'
-      has_many :parents, readonly: true, polymorphic: true
-      has_many :state_changes, readonly: true
-      has_one :custom_metadatum_collection, foreign_key_on: :related
-      has_many :ancestors, readonly: true, polymorphic: true
-      # TODO: do we need descendants? might have to delegate to racked tubes
 
       # Attributes
       # @!attribute [r] created_at
@@ -77,7 +68,7 @@ module Api
       # @!attribute [rw] name
       #   @return [String] The name of the tube rack.
       #   @note This is a write-once attribute, meaning it cannot be modified once it has been set.
-      attribute :name, delegate: :display_name, write_once: true
+      attribute :name, write_once: true
 
       # @!attribute [rw] number_of_columns
       #   @note A POST request errors when this attribute is provided. I believe these are automatically
@@ -96,7 +87,7 @@ module Api
       # @!attribute [rw] size
       #   @note This attribute is required.
       #   @return [String] The size of the tube rack (e.g., 48, 96).
-      attribute :size, write_once: true
+      attribute :size
 
       # @!attribute [rw] tube_locations
       #   @note This is a write-only attribute used to map tubes to specific coordinates in the rack.
@@ -112,7 +103,6 @@ module Api
       # @!attribute [r] uuid
       #   @return [String] The unique identifier (UUID) of the tube rack.
       attribute :uuid, readonly: true
-      attribute :state, readonly: true
 
       ###
       # Relationships
@@ -125,7 +115,7 @@ module Api
 
       # @!attribute [rw] purpose
       #   @return [PurposeResource] The purpose associated with the tube rack.
-      has_one :purpose, foreign_key: :plate_purpose_id
+      has_one :purpose, foreign_key: :plate_purpose_id, class_name: 'TubeRackPurpose'
 
       # @!attribute [rw] racked_tubes
       #   @return [RackedTubeResource] The tubes that have been placed in the tube rack.
@@ -153,7 +143,7 @@ module Api
              apply:
                (
                  lambda do |records, value, _options|
-                   purpose = TubeRack::Purpose.find_by(name: value)
+                   purpose = Purpose.find_by(name: value)
                    records.where(plate_purpose_id: purpose)
                  end
                )
