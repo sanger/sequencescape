@@ -36,6 +36,6 @@ class WorkCompletion::TubeRackCompletion < WorkCompletion::LabwareCompletion
   #   detect_upstream_requests
   #   # => [#<CustomerRequest id: 1>, #<CustomerRequest id: 2>]
   def detect_upstream_customer_requests
-    CustomerRequest.includes(WorkCompletion::REQUEST_INCLUDES).where(id: target_labware.aliquots.pluck(:request_id))
+    target_labware.in_progress_requests.includes(WorkCompletion::REQUEST_INCLUDES)
   end
 end
