@@ -1,0 +1,11 @@
+---
+PlateIdentifierCherrypick:
+  request_type_key: cherrypick
+  request_option: plate_identifier
+  valid_options:
+    - ILC
+    - HSqX
+    - ReISC
+    - PWGS
+    - MWGS
+    - ISC
