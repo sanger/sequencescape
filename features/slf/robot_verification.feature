@@ -189,7 +189,7 @@ D;SQPD-99999;;ABgene 0800;2;;8.0
 W;
 C;
 A;SQPD-1234567;;ABgene 0765;1;;5.0
-D;SQPD-99999;;ABgene 0800;1;;5.0
+D;SQPD-99999;;ABgene 0800;1;;3.0
 W;
 A;SQPD-1234567;;ABgene 0765;9;;5.0
 D;SQPD-99999;;ABgene 0800;2;;5.0
@@ -363,8 +363,8 @@ Scenario: Source volumes should be updated once
     Then the downloaded robot file for batch "550000555760" and plate "SQPD-99999" is
     """
 C;
-A;BUFF;;96-TROUGH;1;;5.0
-D;SQPD-99999;;ABgene 0800;1;;5.0
+A;BUFF;;96-TROUGH;1;;3.0
+D;SQPD-99999;;ABgene 0800;1;;3.0
 W;
 A;BUFF;;96-TROUGH;2;;5.0
 D;SQPD-99999;;ABgene 0800;2;;5.0
