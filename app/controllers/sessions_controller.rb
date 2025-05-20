@@ -24,7 +24,7 @@ class SessionsController < ApplicationController
       flash[:notice] = 'Logged in successfully'
       redirect_back_or_default(controller: :studies)
     else
-      flash.now[:error] = "No record found for log in details. Please try again." if params
+      flash.now[:error] = "Please try again using your Sanger login details." if params
     end
   end
 
