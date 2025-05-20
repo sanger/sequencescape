@@ -22,6 +22,9 @@ module StateChanger
     private
 
     # Updates the state of associated requests for a given racked tube.
+    # @todo: Do we need to do this for associated requests when the tube rack is in the 'passed' state?
+    #   This should be invoked only when the tube rack is in the 'passed' state, and is on the final step
+    #   of the pipeline.
     #
     # Finds all in-progress requests for the tube that are not in the 'passed' state
     # and transitions them to the target state. If `customer_accepts_responsibility`

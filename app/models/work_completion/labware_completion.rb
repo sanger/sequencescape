@@ -34,6 +34,8 @@ class WorkCompletion::LabwareCompletion
   # Passes the requests coming into this labware's receptacles (library requests).
   # Collects order_ids, as these are needed to fire events.
   #
+  # This is called when "charge and pass" is performed on the target labware.
+  #
   def pass_and_link_up_requests(target_receptacle, upstream_request)
     @order_ids << upstream_request.order_id
 
