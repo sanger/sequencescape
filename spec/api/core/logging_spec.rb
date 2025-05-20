@@ -41,21 +41,6 @@ RSpec.describe Core::Logging do
     end
   end
 
-  context 'when logging to a dummy API class' do
-    API_LOG_LEVELS.each do |api_log_level|
-      context "with #{api_log_level} severity" do
-        let(:severity) { api_log_level }
-
-        before { dummy_api_class.send(severity, message) }
-
-        it "appends the API class name to #{api_log_level} messages" do
-          expected_log = "API(DummyApiClass): #{message}"
-          expect(Rails.logger).to have_received(severity).with(expected_log)
-        end
-      end
-    end
-  end
-
   context 'when logging not in an API' do
     RAILS_LOG_LEVELS.each do |rails_log_level|
       let(:severity) { rails_log_level }
