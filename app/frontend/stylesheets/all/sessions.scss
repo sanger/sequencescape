@@ -19,7 +19,8 @@ body.sessions {
   .alert {
     @extend .mb-0;
   }
-  .alert-notice {
+  .alert-notice,
+  .alert-error {
     @extend .mx-0;
     @extend .border-0;
   }
