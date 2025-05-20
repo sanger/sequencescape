@@ -23,6 +23,11 @@ body.sessions {
   .alert-error {
     @extend .mx-0;
     @extend .border-0;
+
+    &:before {
+      font-size: unset;
+      line-height: unset;
+    }
   }
 
   .title-section {
