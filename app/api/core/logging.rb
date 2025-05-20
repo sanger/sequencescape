@@ -1,10 +1,14 @@
 # frozen_string_literal: true
 
 module Core::Logging
+  # @deprecated This method does not appear to be used and will be removed in a future version.
+  #   Use Rails.logger.debug directly instead.
   def debug(message)
     Rails.logger.debug(add_api_context(message))
   end
 
+  # @deprecated This method does not appear to be used and will be removed in a future version.
+  #   Use Rails.logger.debug directly instead.
   def info(message)
     Rails.logger.info(add_api_context(message))
   end
