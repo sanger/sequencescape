@@ -1,0 +1,10 @@
+---
+element_aviti_sequencing:
+  name: Element Aviti sequencing
+  asset_type: LibraryTube
+  order: 2
+  initial_state: pending
+  billable: true
+  product_line_name: Element Aviti
+  request_class_name: ElementAvitiSequencingRequest
+  request_purpose: standard

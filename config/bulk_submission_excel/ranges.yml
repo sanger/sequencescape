@@ -19,3 +19,7 @@ priority:
 flowcell_type:
   identifier: :name
   scope: :alphabetical
+low_diversity:
+  options:
+    - "No"
+    - "Yes"
