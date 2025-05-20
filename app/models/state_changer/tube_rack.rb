@@ -14,7 +14,7 @@ module StateChanger
     # @return [void]
     def update_labware_state
       labware.racked_tubes.each do |racked_tube|
-        update_associated_requests(racked_tube)
+        # Do we need to invoke update_associated_requests for state transfers?
         update_transfer_requests(racked_tube)
       end
     end
@@ -22,8 +22,10 @@ module StateChanger
     private
 
     # Updates the state of associated requests for a given racked tube.
-    # @todo: Do we need to do this for associated requests when the tube rack is in the 'passed' state?
-    #   This should be invoked only when the tube rack is in the 'passed' state, and is on the final step
+    # @todo: Do we need to do invoke this for state transfers?
+    #   - For work completion, we have a separate model.
+    #   - This is mere state changing from one arbitrary state to another.
+    #   - In general, this should be invoked only when the tube rack is in the 'passed' state, and is on the final step
     #   of the pipeline.
     #
     # Finds all in-progress requests for the tube that are not in the 'passed' state
