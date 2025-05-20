@@ -46,11 +46,6 @@ module Api
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class TubeRackResource < BaseResource
-      # TODO: Here be dragons! This resource is mutable and can be created via
-      #       the JSON API. However the asset_creation record is not generated
-      #       as we would be relying on the request to tell us who requested it.
-      #       Instead this should be done as part of adding authentication to
-      #       the API in the security OKR.
 
       default_includes :uuid_object, :barcodes
 
