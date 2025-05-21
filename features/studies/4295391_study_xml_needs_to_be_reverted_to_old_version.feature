@@ -205,6 +205,8 @@ Feature: The XML for the sequencescape API
           <descriptor><name>Policy Url</name></descriptor>
           <descriptor><name>Policy title</name></descriptor>
           <descriptor><name>ArrayExpress Accession Number</name></descriptor>
+          <descriptor><name>When do you anticipate sharing the data?</name><value></value></descriptor>
+          <descriptor><name>Are you planning to share the data as part of a preprint?</name></descriptor>
         </descriptors>
       </study>
       """
