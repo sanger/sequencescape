@@ -25,7 +25,7 @@ AssetLink::BuilderJob =
         end
     end
 
-    def self.create(*args)
-      Delayed::Job.enqueue(new(*args))
+    def self.create(*)
+      Delayed::Job.enqueue(new(*))
     end
   end

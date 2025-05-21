@@ -1,0 +1,21 @@
+# This file was automatically generated via `rails g record_loader`
+# You should modify it to match your particular model.
+---
+name 1:
+  name: name 1
+  workflow: workflow 1
+  sorted: 1
+  batched: false
+  location: location 1
+  interactive: false
+  per_item: false
+  lab_activity: false
+name 2:
+  name: name 2
+  workflow: workflow 1
+  sorted: 2
+  batched: false
+  location: location 2
+  interactive: false
+  per_item: false
+  lab_activity: false
