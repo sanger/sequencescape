@@ -46,10 +46,10 @@ class Metadata::FormBuilder < Metadata::BuilderBase
     alias_method(field, :"#{field}_with_bootstrap")
   end
 
-  def select(method, choices, options = {}, html_options = {}, &block)
+  def select(method, choices, options = {}, html_options = {}, &)
     group = html_options.delete(:grouping) || options.delete(:grouping)
     append_class!(html_options, 'custom-select select2')
-    property_field(:field, method, grouping: group) { super(method, choices, options, html_options, &block) }
+    property_field(:field, method, grouping: group) { super(method, choices, options, html_options, &) }
   end
 
   def radio_select(method, choices, options = {}, html_options = {}) # rubocop:todo Metrics/MethodLength
