@@ -97,6 +97,34 @@ describe UatActions::TestSubmission do
         expect(uat_action.report['number_of_samples_in_each_well']).to be_a Integer
       end
     end
+
+    context 'with optional study name supplied' do
+      let(:study_name) { 'Test Study' }
+      let(:study) { create(:study, name: study_name) }
+      let(:parameters) { { submission_template_name: submission_template.name, study_name: study_name } }
+
+      before { allow(Study).to receive(:find_by!).with(name: study_name).and_return(study) }
+
+      it 'can be performed' do
+        expect(uat_action.perform).to be true
+        expect(uat_action.report['plate_barcode_0']).to eq report['plate_barcode_0']
+        expect(uat_action.report['study_name']).to eq study_name
+      end
+    end
+
+    context 'with optional project name supplied' do
+      let(:project_name) { 'Test Project' }
+      let(:project) { create(:project, name: project_name) }
+      let(:parameters) { { submission_template_name: submission_template.name, project_name: project_name } }
+
+      before { allow(Project).to receive(:find_by).with(name: project_name).and_return(project) }
+
+      it 'can be performed' do
+        expect(uat_action.perform).to be true
+        expect(uat_action.report['plate_barcode_0']).to eq report['plate_barcode_0']
+        expect(uat_action.report['project_name']).to eq project_name
+      end
+    end
   end
 
   it 'returns a default' do
