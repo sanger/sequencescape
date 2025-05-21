@@ -25,6 +25,9 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     attribute :processing_manifest
   end
 
+  class AccessionValidationFailed < StandardError
+  end
+
   GC_CONTENTS = ['Neutral', 'High AT', 'High GC'].freeze
   GENDERS = ['Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable'].freeze
   DNA_SOURCES = [
@@ -381,10 +384,10 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   before_destroy :safe_to_destroy
 
-  # processing_manifest is true if we're currently processing a manifest. We
+  # Processing_manifest is true if we're currently processing a manifest. We
   # disable accessioning, as we'll perform it explicitly later. This avoids
-  # accidental calls to save triggering duplicate accessions
-  after_save :accession, unless: -> { Sample::Current.processing_manifest }
+  # accidental calls to save triggering duplicate accessions.
+  after_save :accession_and_handle_validation_errors, unless: -> { Sample::Current.processing_manifest }
 
   # NOTE: Samples don't tend to get released through Sequencescape
   # so in reality these methods are usually misleading.
@@ -513,6 +516,16 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     enqueue_accessioning_job!(accessionable)
   end
 
+  def accession_and_handle_validation_errors
+    accession
+    Rails.logger.info("Accessioning passed for sample '#{name}'")
+  rescue AccessionValidationFailed => e
+    # Error has already been logged in validate_accessionable!
+    Rails.logger.warn("Accessioning validation failed: #{e.message}")
+    # but provide feedback to the user by displaying it in a flash message
+    errors.add(:base, e.message)
+  end
+
   def handle_update_event(user)
     events.updated_using_sample_manifest!(user)
   end
@@ -593,7 +606,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     error_message = "Accessionable is invalid for sample '#{name}': #{accessionable.errors.full_messages.join(', ')}"
     Rails.logger.error(error_message)
-    raise StandardError, error_message
+    raise AccessionValidationFailed, error_message
   end
 
   def enqueue_accessioning_job!(accessionable)
