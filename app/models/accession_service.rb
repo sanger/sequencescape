@@ -232,8 +232,6 @@ class AccessionService # rubocop:todo Metrics/ClassLength
 
   # rubocop:enable Metrics/MethodLength
 
-  # require 'curb'
-
   def accession_options
     raise NotImplemented, 'abstract method'
   end
