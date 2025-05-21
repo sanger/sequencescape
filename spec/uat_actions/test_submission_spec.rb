@@ -21,6 +21,8 @@ describe UatActions::TestSubmission do
       expect(uat_action.perform).to be true
       expect(uat_action.report['plate_barcode_0']).to eq report['plate_barcode_0']
       expect(uat_action.report['submission_id']).to be_a Integer
+      expect(uat_action.report['study_name']).to be_present
+      expect(uat_action.report['project_name']).to be_present
     end
 
     context 'with optional plate purpose supplied' do
@@ -253,6 +255,33 @@ describe UatActions::TestSubmission do
           uat_action.valid? # run validations
           expect(uat_action.errors[:primer_panel_name]).not_to include(error_message)
         end
+      end
+    end
+  end
+
+  describe '#project' do
+    subject(:test_submission) { described_class.new(parameters) }
+
+    context 'when project_name is provided' do
+      let(:project_name) { 'Custom Project' }
+      let(:project) { create(:project, name: project_name) }
+      let(:parameters) { { project_name: project_name } }
+
+      before { allow(Project).to receive(:find_by).with(name: project_name).and_return(project) }
+
+      it 'returns the project with the matching name' do
+        expect(test_submission.send(:project)).to eq(project)
+      end
+    end
+
+    context 'when project_name is not provided' do
+      let(:parameters) { {} }
+      let(:static_project) { create(:project, name: 'UAT Project') }
+
+      before { allow(UatActions::StaticRecords).to receive(:project).and_return(static_project) }
+
+      it 'returns the default static project' do
+        expect(test_submission.send(:project)).to eq(static_project)
       end
     end
   end
