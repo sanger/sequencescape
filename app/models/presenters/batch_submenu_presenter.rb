@@ -56,6 +56,13 @@ module Presenters
       add_submenu_option pluralize(@batch.comments.size, 'comment'), batch_comments_path(@batch)
       load_pipeline_options
       add_submenu_option 'NPG run data', "#{configatron.run_data_by_batch_id_url}#{@batch.id}"
+      return unless aviti_requests?
+      add_submenu_option 'Download Sample Sheet', id: @batch.id, controller: :batches, action: :generate_sample_sheet
+    end
+
+    # This is used to determine if the batch is related to Element Aviti pipeline.
+    def aviti_requests?
+      @batch.requests.any? { ElementAvitiSequencingRequest }
     end
 
     def cherrypicking?
