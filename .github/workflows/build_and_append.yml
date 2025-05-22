@@ -12,4 +12,4 @@ jobs:
   trigger_build_and_append:
     uses: sanger/.github/.github/workflows/build-and-append.yml@y25-099-migrate-actions
     with:
-      upload_url: ${{ github.event.release.upload_url }}
+      upload_url: ${{ inputs.upload_url }}
