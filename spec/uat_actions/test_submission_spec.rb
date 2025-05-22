@@ -265,7 +265,7 @@ describe UatActions::TestSubmission do
     context 'when project_name is provided' do
       let(:project_name) { 'Custom Project' }
       let(:project) { create(:project, name: project_name) }
-      let(:parameters) { { project_name: project_name } }
+      let(:parameters) { { project_name: } }
 
       before { allow(Project).to receive(:find_by).with(name: project_name).and_return(project) }
 
