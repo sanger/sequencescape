@@ -30,12 +30,11 @@ module StateChanger
     # @param target_state [String] The target state for a transfer request
     # @return [void]
     def update_transfer_requests(racked_tube, target_state)
-      return unless PASSED_TARGET_STATE.include?(target_state)
-      racked_tube
-        .tube
-        .transfer_requests_as_target
-        .where.not(state: TRANSFER_REQUEST_FILTER_STATES)
-        .find_each { |request| request.transition_to(target_state) }
+      transfer_requests = racked_tube.tube.transfer_requests_as_target
+      if PASSED_TARGET_STATE.include?(target_state)
+        transfer_requests = transfer_requests.where.not(state: TRANSFER_REQUEST_FILTER_STATES)
+      end
+      transfer_requests.find_each { |request| request.transition_to(target_state) }
     end
   end
 end

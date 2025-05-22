@@ -14,10 +14,10 @@ class TubeRack::Purpose < Purpose
     TubeRack::Purpose.find_by(name: 'TR Stock 96')
   end
 
-  def create!(*args, &block)
+  def create!(*args, &)
     options = args.extract_options!
     options[:purpose] = self
     options[:size] = size
-    target_class.create!(*args, options, &block).tap { |tr| tube_racks << tr }
+    target_class.create!(*args, options, &).tap { |tr| tube_racks << tr }
   end
 end
