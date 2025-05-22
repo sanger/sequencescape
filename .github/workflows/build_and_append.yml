@@ -1,15 +1,11 @@
 name: Trigger build and append on release
 
 on:
-  workflow_dispatch: # temporary to test
-    inputs:
-      upload_url:
-        description: "Release upload URL"
-        required: true
-        type: string
+  release:
+    types: [published]
 
 jobs:
   trigger_build_and_append:
     uses: sanger/.github/.github/workflows/build-and-append.yml@y25-099-migrate-actions
     with:
-      upload_url: ${{ inputs.upload_url }}
+      upload_url: ${{ github.event.release.upload_url }}
