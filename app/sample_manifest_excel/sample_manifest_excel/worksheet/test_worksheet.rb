@@ -183,7 +183,7 @@ module SampleManifestExcel
               asset.human_barcode
             end
           end
-          row[:tube_barcode] = 'TB1111111' + tube_counter.to_s
+          row[:tube_barcode] = "TB1111111#{tube_counter}"
           tube_counter += 1
         end
       end

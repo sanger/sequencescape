@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
+# For memory reasons we need to limit transaction size to 10 links at a time
+TRANSACTION_COUNT = 10
+
 # An AssetLink::BuilderJob receives an array of [parent_id, child_id] and builds asset links between them
 # @return []
 AssetLink::BuilderJob =
   Struct.new(:links) do
-    # For memory reasons we need to limit transaction size to 10 links at a time
-    TRANSACTION_COUNT = 10
     def perform # rubocop:todo Metrics/MethodLength
       links
         .uniq
@@ -24,7 +25,7 @@ AssetLink::BuilderJob =
         end
     end
 
-    def self.create(*args)
-      Delayed::Job.enqueue(new(*args))
+    def self.create(*)
+      Delayed::Job.enqueue(new(*))
     end
   end

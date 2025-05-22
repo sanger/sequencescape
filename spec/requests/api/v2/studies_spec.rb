@@ -28,7 +28,7 @@ describe 'Studies API', with: :api_v2 do
 
     # Check filters, ESPECIALLY if they aren't simple attribute filters
     it 'filters studies by name' do
-      api_get "#{base_endpoint}?filter[name]=\"" + study.name + '"'
+      api_get "#{base_endpoint}?filter[name]=\"#{study.name}\""
       expect(response).to have_http_status(:success)
       expect(json['data'].length).to eq(1)
       expect(json['data'][0]['attributes']['uuid']).to eq(study.uuid)

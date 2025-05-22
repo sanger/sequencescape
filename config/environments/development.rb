@@ -12,7 +12,7 @@ Rails.application.configure do
   # In the development environment your application's code is reloaded on
   # every request. This slows down response time but is perfect for development
   # since you don't have to restart the web server when you make code changes.
-  config.cache_classes = ENV.fetch('CACHE_CLASSES', 'true') == 'true'
+  config.cache_classes = ENV.fetch('CACHE_CLASSES', 'false') == 'true'
 
   # Do not eager load code on boot.
   config.eager_load = true
@@ -46,6 +46,10 @@ Rails.application.configure do
   config.active_support.deprecation = :log
   config.logger = ActiveSupport::Logger.new($stdout) if ENV['RAILS_LOG_TO_FILE'].blank?
   config.log_level = ENV.fetch('LOG_LEVEL', :debug).to_sym
+  config.logger.formatter =
+    proc do |severity, _time, _progname, msg|
+      "[#{severity}] #{msg}\n" # includes non-breaking space to prevent whitespace collapse
+    end
 
   # Raise an error on page load if there are pending migrations.
   # Disable this if we're pointing at a custom database url

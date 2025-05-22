@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'rexml/document'
+
 # The EBI operates two key AccessionServices
 #
 # {EnaAccessionService ENA}: Mostly non-human data, provides open access to uploaded data
@@ -25,6 +27,8 @@
 #
 # Accessioning of samples has been partially migrated to {Accession 'a separate accession library'}
 class AccessionService
+  include REXML
+
   # We overide this in testing to do a bit of evesdropping
   class_attribute :rest_client_class
   self.rest_client_class = RestClient::Resource
@@ -33,9 +37,9 @@ class AccessionService
   NumberNotRequired = Class.new(AccessionServiceError)
   NumberNotGenerated = Class.new(AccessionServiceError)
 
-  CenterName = 'SC' # TODO: [xxx] use confing file
-  Protect = 'protect'
-  Hold = 'hold'
+  CENTER_NAME = 'SC' # TODO: [xxx] use confing file
+  PROTECT = 'protect'
+  HOLD = 'hold'
 
   def provider
   end
@@ -172,19 +176,19 @@ class AccessionService
   end
 
   def sample_visibility(_sample)
-    Protect
+    PROTECT
   end
 
   def study_visibility(_study)
-    Protect
+    PROTECT
   end
 
   def policy_visibility(_study)
-    Protect
+    PROTECT
   end
 
   def dac_visibility(_study)
-    Protect
+    PROTECT
   end
 
   def private?
@@ -218,16 +222,11 @@ class AccessionService
             xml.MODIFY(source: submission[:source], target: '')
           end
         end
-        xml.ACTION { submission[:hold] == AccessionService::Protect ? xml.PROTECT : xml.HOLD }
+        xml.ACTION { submission[:hold] == AccessionService::PROTECT ? xml.PROTECT : xml.HOLD }
       end
     end
     xml.target!
   end
-
-  require 'rexml/document'
-
-  # require 'curb'
-  include REXML
 
   def accession_options
     raise NotImplemented, 'abstract method'

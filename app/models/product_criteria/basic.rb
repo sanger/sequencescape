@@ -187,8 +187,6 @@ class ProductCriteria::Basic
     comparison_for(comparison).message
   end
 
-  private
-
   def comparison_for(comparison)
     METHOD_ALIAS.fetch(comparison) ||
       raise(UnknownSpecification, "#{comparison} isn't a recognised means of comparison.")
