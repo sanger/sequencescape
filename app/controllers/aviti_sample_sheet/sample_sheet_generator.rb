@@ -60,10 +60,10 @@ module AvitiSampleSheet::SampleSheetGenerator
 
     # Appends batch-specific sample rows to the manifest.
     # Each line represents a sample, including its tags, lane and the study associated with.
+    # requests are filtered to exclude failed ones.
     def append_samples_section(csv)
       csv << [
-        '# Fill in the correct sample schema associated with the Adept Preparation Workflow for all sequenced
-      samples.',
+        '# Fill in the correct sample schema associated with the Adept Preparation Workflow for all sequenced samples.',
         '',
         '',
         'Lane',
@@ -71,7 +71,7 @@ module AvitiSampleSheet::SampleSheetGenerator
       ]
       @batch.requests.each do |request|
         request.target_asset.aliquots.each do |aliquot|
-          csv << [aliquot.sample.name, aliquot.tag.oligo, aliquot.tag2.oligo, request.position, aliquot.study.id]
+          csv << [aliquot.sample.name, aliquot.tag&.oligo, aliquot.tag2&.oligo, request.position, aliquot.study.id]
         end
       end
     end

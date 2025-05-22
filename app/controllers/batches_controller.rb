@@ -353,7 +353,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   def generate_sample_sheet
     csv_string = AvitiSampleSheet::SampleSheetGenerator.generate(@batch)
-    send_data csv_string, type: 'text/plain', filename: "#{@batch.id}_run_manifest.csv", disposition: 'attachment'
+    send_data csv_string, type: 'text/plain', filename: "batch_#{@batch.id}_run_manifest.csv", disposition: 'attachment'
   end
 
   private

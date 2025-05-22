@@ -1,16 +1,15 @@
 # frozen_string_literal: true
-# spec/lib/aviti_sample_sheet/sample_sheet_generator_spec.rb
+
 require 'rails_helper'
 
 RSpec.describe AvitiSampleSheet::SampleSheetGenerator do
   let(:sample) { instance_double(Sample, name: 'Sample_001') }
-  let(:tag) { instance_double(Tag, oligo: 'AAAAAAA') }
-  let(:tag2) { instance_double(Tag2, oligo: 'TTTTTTT') }
+  let(:tag) { instance_double(Tag, oligo: 'GTGCTGTC') }
+  let(:tag2) { instance_double(Tag, oligo: 'CGTCGTCC') }
   let(:study) { instance_double(Study, id: 42) }
-
   let(:aliquot) { instance_double(Aliquot, sample:, tag:, tag2:, study:) }
 
-  let(:target_asset) { instance_double(TargetAsset, aliquots: [aliquot]) }
+  let(:target_asset) { instance_double(Receptacle, aliquots: [aliquot]) }
 
   let(:request) { instance_double(Request, target_asset: target_asset, position: 1) }
 
@@ -36,8 +35,8 @@ RSpec.describe AvitiSampleSheet::SampleSheetGenerator do
 
     it 'includes sample information from the batch' do
       expect(output).to include('Sample_001') # sample name
-      expect(output).to include('AAAAAAA') # tag1
-      expect(output).to include('TTTTTTT') # tag2
+      expect(output).to include('GTGCTGTC') # tag1
+      expect(output).to include('CGTCGTCC') # tag2
       expect(output).to include('1') # lane number
       expect(output).to include('42') # study id
     end
