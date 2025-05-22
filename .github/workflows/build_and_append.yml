@@ -1,0 +1,12 @@
+name: Trigger build and append on release
+
+on:
+  release:
+    types: [published]
+  pull_request: # temporary
+
+jobs:
+  trigger_build_and_append:
+    uses: sanger/.github/.github/workflows/build-and-append.yml@y25-099-migrate-actions
+    with:
+      upload_url: ${{ github.event.release.upload_url }}
