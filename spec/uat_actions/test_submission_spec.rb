@@ -288,6 +288,7 @@ describe UatActions::TestSubmission do
 
   describe '#setup_generator' do
     subject(:test_submission) { described_class.new(parameters) }
+
     let(:generator) { instance_double(UatActions::GeneratePlates) }
     let(:default_purpose_name) { 'Default Purpose' }
 
@@ -298,12 +299,15 @@ describe UatActions::TestSubmission do
       allow(generator).to receive(:well_layout=)
       allow(generator).to receive(:number_of_samples_in_each_well=)
       allow(generator).to receive(:study_name=)
+      # rubocop:disable RSpec/SubjectStub
       allow(test_submission).to receive(:default_purpose_name).and_return(default_purpose_name)
+      # rubocop:enable RSpec/SubjectStub
     end
 
     context 'with default parameters' do
       let(:parameters) { {} }
 
+      # rubocop:disable RSpec/ExampleLength
       it 'configures the generator with default values' do
         test_submission.send(:setup_generator)
 
@@ -313,6 +317,7 @@ describe UatActions::TestSubmission do
         expect(generator).to have_received(:number_of_samples_in_each_well=).with(1)
         expect(generator).not_to have_received(:study_name=)
       end
+      # rubocop:enable RSpec/ExampleLength
     end
 
     context 'with custom parameters' do
@@ -325,6 +330,7 @@ describe UatActions::TestSubmission do
         }
       end
 
+      # rubocop:disable RSpec/ExampleLength
       it 'configures the generator with the provided values' do
         test_submission.send(:setup_generator)
 
@@ -334,22 +340,33 @@ describe UatActions::TestSubmission do
         expect(generator).to have_received(:number_of_samples_in_each_well=).with(3)
         expect(generator).to have_received(:study_name=).with('Test Study')
       end
+      # rubocop:enable RSpec/ExampleLength
     end
   end
 
   describe '#default_request_options' do
     subject(:test_submission) { described_class.new(parameters) }
+
     let(:parameters) { { submission_template_name: 'Template' } }
-    let(:input_field_info1) { double('InputFieldInfo', key: :key1, default_value: nil, selection: selection1, max: 100, min: 1) }
-    let(:input_field_info2) { double('InputFieldInfo', key: :key2, default_value: 'default2', selection: nil, max: nil, min: nil) }
-    let(:input_field_info3) { double('InputFieldInfo', key: :key3, default_value: nil, selection: selection3, max: nil, min: 5) }
-    let(:selection1) { ['option1', 'option2'] }
+    let(:input_field_info1) do
+      instance_double(InputFieldInfo, key: :key1, default_value: nil, selection: selection1, max: 100, min: 1)
+    end
+    let(:input_field_info2) do
+      instance_double(InputFieldInfo, key: :key2, default_value: 'default2', selection: nil, max: nil, min: nil)
+    end
+    let(:input_field_info3) do
+      instance_double(InputFieldInfo, key: :key3, default_value: nil, selection: selection3, max: nil, min: 5)
+    end
+    let(:selection1) { %w[option1 option2] }
     let(:selection3) { [] }
 
     before do
+      # rubocop:disable RSpec/SubjectStub
       allow(test_submission).to receive(:submission_template).and_return(
-        double('SubmissionTemplate', input_field_infos: [input_field_info1, input_field_info2, input_field_info3])
+        instance_double(SubmissionTemplate,
+input_field_infos: [input_field_info1, input_field_info2, input_field_info3])
       )
+      # rubocop:enable RSpec/SubjectStub
     end
 
     it 'uses the first selection when default is nil and selection is present' do
