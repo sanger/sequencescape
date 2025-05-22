@@ -58,7 +58,7 @@ module AuthenticatedTestHelper
 
   def reset!(*instance_vars)
     instance_vars = %i[controller request response] unless instance_vars.any?
-    instance_vars.collect! { |v| "@#{v}".to_sym }
+    instance_vars.collect! { |v| :"@#{v}" }
     instance_vars.each { |var| instance_variable_set(var, instance_variable_get(var).class.new) }
   end
 end

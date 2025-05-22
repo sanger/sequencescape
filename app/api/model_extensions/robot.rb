@@ -5,6 +5,4 @@ module ModelExtensions::Robot
   def json_for_properties
     robot_properties.to_h { |prop| [prop.key, prop.value] }
   end
-
-  private
 end

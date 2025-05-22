@@ -12,7 +12,7 @@ describe '/api/1/receptacle-uuid' do
   let(:receptacle) { create(:receptacle) }
 
   describe '#get' do
-    subject(:url) { '/api/1/' + uuid }
+    subject(:url) { "/api/1/#{uuid}" }
 
     # Asset for legacy reasons
     let(:response_body) do

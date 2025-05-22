@@ -12,11 +12,11 @@ class EgaAccessionService < AccessionService
   end
 
   def sample_visibility(_sample)
-    Protect
+    PROTECT
   end
 
   def study_visibility(_study)
-    Protect
+    PROTECT
   end
 
   def broker

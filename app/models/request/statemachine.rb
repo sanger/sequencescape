@@ -13,9 +13,9 @@ module Request::Statemachine
   SORT_ORDER = %w[pending blocked hold started passed failed cancelled].freeze
 
   class_methods do
-    def redefine_aasm(options = {}, &block)
+    def redefine_aasm(options = {}, &)
       destroy_aasm
-      aasm(options, &block)
+      aasm(options, &)
     end
 
     def destroy_aasm # rubocop:todo Metrics/MethodLength
