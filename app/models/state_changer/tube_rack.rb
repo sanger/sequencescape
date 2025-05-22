@@ -40,9 +40,9 @@ module StateChanger
         .in_progress_requests
         .where.not(state: ASSOCIATED_REQUEST_TARGET_STATES)
         .find_each do |request|
-        request.customer_accepts_responsibility! if customer_accepts_responsibility
-        request.transition_to(target_state)
-      end
+          request.customer_accepts_responsibility! if customer_accepts_responsibility
+          request.transition_to(target_state)
+        end
     end
 
     # Updates the state of transfer requests for a given racked tube.

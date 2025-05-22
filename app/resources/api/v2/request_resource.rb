@@ -136,7 +136,7 @@ module Api
       # @!attribute [r] order
       #   The order associated with this request.
       has_one :order, always_include_linkage_data: true
-      has_one :request_type, always_include_linkage_data: true
+      has_one :request_type
       has_one :primer_panel, readonly: true
 
       # @!attribute [r] pre_capture_pool
