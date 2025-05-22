@@ -343,4 +343,85 @@ describe UatActions::TestSubmission do
       # rubocop:enable RSpec/ExampleLength
     end
   end
+
+  describe 'form field select_options' do
+    describe '.compatible_submission_templates' do
+      let(:well_request_type) { create(:request_type, asset_type: 'Well') }
+      let(:tube_request_type) { create(:request_type, asset_type: 'Tube') }
+
+      before do
+        # Create submission templates with the request type properly associated
+        # For well template (visible)
+        create(
+          :submission_template,
+          name: 'Template A',
+          submission_parameters: {
+            request_type_ids_list: [[well_request_type.id]]
+          },
+          # visible is a scope, not an attribute - use superceded_by_id instead
+          superceded_by_id: SubmissionTemplate::LATEST_VERSION
+        )
+
+        # For tube template (visible)
+        create(
+          :submission_template,
+          name: 'Template B',
+          submission_parameters: {
+            request_type_ids_list: [[tube_request_type.id]]
+          },
+          superceded_by_id: SubmissionTemplate::LATEST_VERSION
+        )
+
+        # For hidden well template
+        create(
+          :submission_template,
+          name: 'Template C',
+          submission_parameters: {
+            request_type_ids_list: [[well_request_type.id]]
+          },
+          # Any value other than LATEST_VERSION will make it hidden
+          superceded_by_id: 123
+        )
+      end
+
+      it 'returns templates with Well input asset type' do
+        templates = described_class.compatible_submission_templates
+
+        expect(templates).to include('Template A')
+        expect(templates).not_to include('Template B') # Wrong asset type
+        expect(templates).not_to include('Template C') # Not visible
+      end
+    end
+
+    describe 'primer panel, study, and project options' do
+      before do
+        # Create primer panels in non-alphabetical order
+        create(:primer_panel, name: 'C Primer Panel')
+        create(:primer_panel, name: 'A Primer Panel')
+        create(:primer_panel, name: 'B Primer Panel')
+
+        # Create studies in non-alphabetical order with different states
+        create(:study, name: 'Z Inactive Study', state: 'inactive')
+        create(:study, name: 'C Active Study', state: 'active')
+        create(:study, name: 'A Active Study', state: 'active')
+        create(:study, name: 'B Active Study', state: 'active')
+
+        # Create projects in non-alphabetical order with different statuses
+        create(:project, name: 'Z Archived Project', state: 'inactive')
+        create(:project, name: 'C Active Project', state: 'active')
+        create(:project, name: 'A Active Project', state: 'active')
+        create(:project, name: 'B Active Project', state: 'active')
+      end
+
+      it 'returns records alphabetically' do
+        # We can't access form_fields directly, so we're just testing
+        # the underlying methods that would be used by the select_options Procs
+        expect(PrimerPanel.alphabetical.pluck(:name)).to eq(['A Primer Panel', 'B Primer Panel', 'C Primer Panel'])
+        expect(Study.active.alphabetical.pluck(:name)).to eq(['A Active Study', 'B Active Study', 'C Active Study'])
+        expect(Project.active.alphabetical.pluck(:name)).to eq(
+          ['A Active Project', 'B Active Project', 'C Active Project']
+        )
+      end
+    end
+  end
 end
