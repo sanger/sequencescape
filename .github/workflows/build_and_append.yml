@@ -1,8 +1,12 @@
 name: Trigger build and append on release
 
 on:
-  release:
-    types: [published]
+  workflow_dispatch: # temporary to test
+    inputs:
+      upload_url:
+        description: "Release upload URL"
+        required: true
+        type: string
 
 jobs:
   trigger_build_and_append:
