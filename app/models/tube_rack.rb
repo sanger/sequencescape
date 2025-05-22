@@ -11,6 +11,10 @@ class TubeRack < Labware
   has_many :racked_tubes, dependent: :destroy, inverse_of: :tube_rack
   has_many :tubes, through: :racked_tubes
   has_many :contained_samples, through: :tubes, source: :samples
+  has_many :contained_aliquots, through: :tube_receptacles, source: :aliquots
+
+  has_many :in_progress_requests, through: :contained_aliquots, source: :request
+
   # TODO: change to purpose_id
   belongs_to :purpose, class_name: 'TubeRack::Purpose', foreign_key: :plate_purpose_id, inverse_of: :tube_racks
 
