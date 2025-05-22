@@ -3,7 +3,6 @@ name: Trigger build and append on release
 on:
   release:
     types: [published]
-  pull_request: # temporary
 
 jobs:
   trigger_build_and_append:
