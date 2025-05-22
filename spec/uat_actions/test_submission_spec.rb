@@ -285,4 +285,96 @@ describe UatActions::TestSubmission do
       end
     end
   end
+
+  describe '#setup_generator' do
+    subject(:test_submission) { described_class.new(parameters) }
+    let(:generator) { instance_double(UatActions::GeneratePlates) }
+    let(:default_purpose_name) { 'Default Purpose' }
+
+    before do
+      allow(UatActions::GeneratePlates).to receive(:default).and_return(generator)
+      allow(generator).to receive(:plate_purpose_name=)
+      allow(generator).to receive(:well_count=)
+      allow(generator).to receive(:well_layout=)
+      allow(generator).to receive(:number_of_samples_in_each_well=)
+      allow(generator).to receive(:study_name=)
+      allow(test_submission).to receive(:default_purpose_name).and_return(default_purpose_name)
+    end
+
+    context 'with default parameters' do
+      let(:parameters) { {} }
+
+      it 'configures the generator with default values' do
+        test_submission.send(:setup_generator)
+
+        expect(generator).to have_received(:plate_purpose_name=).with(default_purpose_name)
+        expect(generator).to have_received(:well_count=).with(96)
+        expect(generator).to have_received(:well_layout=).with('Random')
+        expect(generator).to have_received(:number_of_samples_in_each_well=).with(1)
+        expect(generator).not_to have_received(:study_name=)
+      end
+    end
+
+    context 'with custom parameters' do
+      let(:parameters) do
+        {
+          plate_purpose_name: 'Custom Purpose',
+          number_of_wells_with_samples: '48',
+          number_of_samples_in_each_well: '3',
+          study_name: 'Test Study'
+        }
+      end
+
+      it 'configures the generator with the provided values' do
+        test_submission.send(:setup_generator)
+
+        expect(generator).to have_received(:plate_purpose_name=).with('Custom Purpose')
+        expect(generator).to have_received(:well_count=).with(48)
+        expect(generator).to have_received(:well_layout=).with('Random')
+        expect(generator).to have_received(:number_of_samples_in_each_well=).with(3)
+        expect(generator).to have_received(:study_name=).with('Test Study')
+      end
+    end
+  end
+
+  describe '#default_request_options' do
+    subject(:test_submission) { described_class.new(parameters) }
+    let(:parameters) { { submission_template_name: 'Template' } }
+    let(:input_field_info1) { double('InputFieldInfo', key: :key1, default_value: nil, selection: selection1, max: 100, min: 1) }
+    let(:input_field_info2) { double('InputFieldInfo', key: :key2, default_value: 'default2', selection: nil, max: nil, min: nil) }
+    let(:input_field_info3) { double('InputFieldInfo', key: :key3, default_value: nil, selection: selection3, max: nil, min: 5) }
+    let(:selection1) { ['option1', 'option2'] }
+    let(:selection3) { [] }
+
+    before do
+      allow(test_submission).to receive(:submission_template).and_return(
+        double('SubmissionTemplate', input_field_infos: [input_field_info1, input_field_info2, input_field_info3])
+      )
+    end
+
+    it 'uses the first selection when default is nil and selection is present' do
+      expect(test_submission.send(:default_request_options)).to include(key1: 'option1')
+    end
+
+    it 'uses the provided default value when present' do
+      expect(test_submission.send(:default_request_options)).to include(key2: 'default2')
+    end
+
+    it 'falls back to max when no default, selection is empty, and max exists' do
+      allow(input_field_info3).to receive(:max).and_return(10)
+      expect(test_submission.send(:default_request_options)).to include(key3: 10)
+    end
+
+    it 'falls back to min when no default, selection is empty, and no max exists' do
+      expect(test_submission.send(:default_request_options)).to include(key3: 5)
+    end
+
+    context 'when selection is empty and has no presence' do
+      let(:selection1) { [] }
+
+      it 'falls back to max when selection is empty' do
+        expect(test_submission.send(:default_request_options)).to include(key1: 100)
+      end
+    end
+  end
 end
