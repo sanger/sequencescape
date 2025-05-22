@@ -52,7 +52,7 @@ class Metadata::FormBuilder < Metadata::BuilderBase
     property_field(:field, method, grouping: group) { super(method, choices, options, html_options, &) }
   end
 
-  def radio_select(method, choices, options = {}, html_options = {}) # rubocop:todo Metrics/MethodLength
+  def radio_select(method, choices, options = {}, html_options = {})
     group = html_options.delete(:grouping) || options.delete(:grouping)
     property_field(:radio_field, method, grouping: group) do
       choices.each_with_object(+''.html_safe) do |(label_text, option_value), output|

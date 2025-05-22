@@ -92,8 +92,8 @@ module BootstrapHelper
   end
 
   # <div class="col-md-size form-group sqs-form"></div>
-  def form_group(&)
-    tag.div(class: 'form-group row sqs-form', &)
+  def form_group(classes = '', &)
+    tag.div(class: "form-group row sqs-form #{classes}".strip, &)
   end
 
   def bs_column(size = 6, screen = 'md', &)

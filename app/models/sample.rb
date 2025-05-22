@@ -53,6 +53,16 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # rubocop:enable Layout/LineLength
   DOSE_REGEXP = '\d+(?:\.\d+)?\s+\w+(?:\/\w+)?|Not Applicable|N/A|To be provided'
 
+  # The spreadsheets that people upload contain various fields that could be mistyped.  Here we ensure that the
+  # capitalisation of these is correct.
+  REMAPPED_ATTRIBUTES =
+    {
+      gc_content: GC_CONTENTS,
+      gender: GENDERS,
+      dna_source: DNA_SOURCES,
+      sample_sra_hold: SRA_HOLD_VALUES
+    }.transform_values { |v| v.index_by { |b| b.downcase } }
+
   self.per_page = 500
 
   include ModelExtensions::Sample
@@ -188,16 +198,6 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
       validates :phenotype, presence: { message: 'is required' }
       validates :donor_id, presence: { message: 'is required' }
     end
-
-    # The spreadsheets that people upload contain various fields that could be mistyped.  Here we ensure that the
-    # capitalisation of these is correct.
-    REMAPPED_ATTRIBUTES =
-      {
-        gc_content: GC_CONTENTS,
-        gender: GENDERS,
-        dna_source: DNA_SOURCES,
-        sample_sra_hold: SRA_HOLD_VALUES
-      }.transform_values { |v| v.index_by { |b| b.downcase } }
 
     after_initialize { |record| record.consent_withdrawn = false if record.consent_withdrawn.nil? }
 
