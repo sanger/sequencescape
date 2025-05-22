@@ -7,7 +7,6 @@ on:
         description: "Release upload URL"
         required: true
         type: string
-  push:
 
 jobs:
   trigger_build_and_append:
