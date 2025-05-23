@@ -51,7 +51,7 @@ module AvitiSampleSheet::SampleSheetGenerator
     # Users may manually update this section if necessary.
     def append_phix_controllers(csv)
       csv << ['[SAMPLES]']
-      csv << %w[SampleName Index1 Index2]
+      csv << %w[SampleName Index1 Index2, Lane, Project]
       csv << %w[Adept_CB1 ATGTCGCTAG CTAGCTCGTA]
       csv << %w[Adept_CB2 CACAGATCGT CACAGATCGT]
       csv << %w[Adept_CB3 GCACATAGTC GACTACTAGC]
@@ -62,13 +62,6 @@ module AvitiSampleSheet::SampleSheetGenerator
     # Each line represents a sample, including its tags, lane and the study associated with.
     # requests are filtered to exclude failed ones.
     def append_samples_section(csv)
-      csv << [
-        '# Fill in the correct sample schema associated with the Adept Preparation Workflow for all sequenced samples.',
-        '',
-        '',
-        'Lane',
-        'Project'
-      ]
       @batch.requests.each do |request|
         request.target_asset.aliquots.each do |aliquot|
           csv << [aliquot.sample.name, aliquot.tag&.oligo, aliquot.tag2&.oligo, request.position, aliquot.study.id]

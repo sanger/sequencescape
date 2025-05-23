@@ -48,7 +48,7 @@ RSpec.describe AvitiSampleSheet::SampleSheetGenerator do
     it 'produces the correct number of lines' do
       expected_settings_lines = 7 # [SETTINGS], header, comment, 4 adapter rows
       expected_phix_lines = 6 # [SAMPLES], header, 4 phiX samples
-      expected_sample_lines = 1 + 1 # comment + 1 sample row from mocked batch
+      expected_sample_lines = 1 # comment + 1 sample row from mocked batch
       expect(output.split("\r\n").size).to eq(expected_settings_lines + expected_phix_lines + expected_sample_lines)
     end
     # rubocop:enable RSpec/MultipleExpectations
