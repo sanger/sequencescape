@@ -75,6 +75,7 @@ Rails.application.configure do
   evented_file_watcher = ActiveSupport::EventedFileUpdateChecker
   config.file_watcher = use_polling_file_watcher ? polling_file_watcher : evented_file_watcher
 
+  # Run on boot, but do not run again on reload
   config.after_initialize do
     Bullet.enable = ENV['WITH_BULLET'] == 'true'
     Bullet.alert = ENV['NOISY_BULLET'] == 'true'

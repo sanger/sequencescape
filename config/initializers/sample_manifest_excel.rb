@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Run on boot, but do not run again on reload
 Rails.application.config.after_initialize do
   unless Rails.env.test?
     SampleManifestExcel.configure do |config|
