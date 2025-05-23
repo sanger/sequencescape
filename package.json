@@ -33,7 +33,7 @@
     "whatwg-fetch": "^3.6.20"
   },
   "devDependencies": {
-    "@prettier/plugin-ruby": "^4.0.0",
+    "@prettier/plugin-ruby": "^4.0",
     "@vitejs/plugin-legacy": "^1.8.2",
     "@vue/test-utils": "^1.3.6",
     "eslint": "^9.19.0",
@@ -43,7 +43,7 @@
     "globals": "^15.14.0",
     "jsdom": "^26.0.0",
     "miragejs": "^0.1.48",
-    "prettier": "^3.3.2",
+    "prettier": "^3.3",
     "vite": "^5.4.19",
     "vite-plugin-ruby": "^5.1.0",
     "vite-plugin-vue2": "^1.9.3",
