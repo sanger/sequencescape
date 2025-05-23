@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 Rails.application.configure do
   # Configure 'rails notes' to inspect Cucumber files
   config.annotations.register_directories('features')
