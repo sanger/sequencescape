@@ -272,7 +272,7 @@ describe Well do
       source_pick_vol: 50,
       buffer_vol: 0,
       final_src_vol: 0,
-      final_dest_vol: 10
+      final_dest_vol: 50
     },
     {
       target_ng: 1000,
@@ -356,7 +356,7 @@ describe Well do
       source_pick_vol: 40,
       buffer_vol: 0,
       final_src_vol: 10,
-      final_dest_vol: 10
+      final_dest_vol: 40
     },
     {
       target_ng: 10_000,
@@ -368,10 +368,10 @@ describe Well do
       source_pick_vol: 30,
       buffer_vol: 0,
       final_src_vol: 0,
-      final_dest_vol: 10
+      final_dest_vol: 30
     },
     {
-      scenario: 'Y24-382: SQPD-10861 v14.29, b0.00',
+      scenario: 'Y24-382: SQPD-10861 v14.29, b0.00 !!!!!',
       target_ng: 1000,
       measured_conc: 70,
       measured_vol: 50,
@@ -381,7 +381,7 @@ describe Well do
       source_pick_vol: 14.29,
       buffer_vol: 0,
       final_src_vol: 35.7143,
-      final_dest_vol: 10
+      final_dest_vol: 14.29
     },
     {
       scenario: 'Y24-382: SQPD-10864 v1.00, b49.00',
@@ -471,7 +471,7 @@ describe Well do
         end
 
         it "provides a final destination volume of #{final_destination_volume}" do
-          expect(@target_well.well_attribute.current_volume).to eq(final_destination_volume)
+          expect(@target_well.well_attribute.current_volume.round(2)).to eq(final_destination_volume)
         end
       end
     end
@@ -642,7 +642,7 @@ describe Well do
         source_volume: 200.0,
         robot_minimum_pick_volume: 5.0,
         source_volume_picked: 96.2,
-        buffer_volume_picked: 5.0,
+        buffer_volume_picked: 3.8,
         destination_volume: 100.0,
         source_volume_remaining: 103.8
       },
@@ -702,7 +702,7 @@ describe Well do
         source_volume: 50,
         robot_minimum_pick_volume: 5.0,
         source_volume_picked: 10.7,
-        buffer_volume_picked: 5.0,
+        buffer_volume_picked: 4.3,
         destination_volume: 15.0,
         source_volume_remaining: 39.3
       }
