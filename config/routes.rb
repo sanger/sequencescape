@@ -84,6 +84,7 @@ Rails.application.routes.draw do
       jsonapi_resources :users
       jsonapi_resources :volume_updates
       jsonapi_resources :wells
+      jsonapi_resources :work_completions, except: %i[update]
       jsonapi_resources :work_orders
 
       namespace :heron do
