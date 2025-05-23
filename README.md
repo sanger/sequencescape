@@ -46,6 +46,7 @@ a organisation of 900 people.
 - [Testing](#testing)
 - [Linting and formatting](#linting-and-formatting)
 - [Rake tasks](#rake-tasks)
+- [Feature flags](#feature-flags)
 - [Supporting applications](#supporting-applications)
   - [Barcode printing](#barcode-printing)
   - [Plate barcode service](#plate-barcode-service)
@@ -351,6 +352,14 @@ of running standalone scripts multiple times.
 
 A breakdown of the the available tasks and how to run them can be found [here](lib/tasks/README.md)
 
+## Feature flags
+
+The use of feature flags is encouraged for development.
+
+[Flipper](https://github.com/flippercloud/flipper) is used for flag management and flags can be controlled from the `/flipper` route.
+
+To create a new feature flag, update `config/feature_flags.yml`.
+
 ## Supporting applications
 
 There are a number of services that are needed in certain parts of Sequencescape these are listed
@@ -531,9 +540,9 @@ The command uses the [rails-erd](https://github.com/voormedia/rails-erd) gem.
 
 ### Updating the table of contents
 
-To update the table of contents after adding things to this README you can use the [markdown-toc](https://github.com/jonschlinkert/markdown-toc)
-node module. To install it, make sure you have installed the dev dependencies from yarn. To update
-the table of contents, run:
+To update the table of contents after adding things to this README you can use the [markdown-toc](https://github.com/jonschlinkert/markdown-toc) node module.
+To install it, make sure you have installed the dev dependencies from yarn.
+To update the table of contents, run:
 
 ```shell
 npx markdown-toc -i README.md --bullets "-"
