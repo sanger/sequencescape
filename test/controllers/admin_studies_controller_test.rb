@@ -51,7 +51,7 @@ module Admin
         end
 
         context 'with a data_access_coordinator role' do
-          setup { @user.roles << (create(:data_access_coordinator_role)) }
+          setup { @user.roles << create(:data_access_coordinator_role) }
 
           should "change 'ethically_approved'" do
             Rails.logger.info '******** First Request'

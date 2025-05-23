@@ -129,12 +129,37 @@ FactoryBot.define do
       end
     end
 
+    factory :element_aviti_sequencing do
+      asset_type { 'LibraryTube' }
+      request_class { ElementAvitiSequencingRequest }
+    end
+
     factory :miseq_sequencing_request_type do
       request_class { MiSeqSequencingRequest }
       asset_type { 'LibraryTube' }
 
       after(:build) do |request_type|
         srv = create(:sequencing_request_type_validator, request_type: request_type, options: [54, 150, 250])
+        request_type.request_type_validators << srv
+      end
+    end
+
+    factory :nova_seq_x_sequencing_request_type do
+      request_class { HiSeqSequencingRequest }
+      transient do
+        read_lengths { [50, 100, 150] }
+        default { 50 }
+      end
+      asset_type { 'LibraryTube' }
+
+      after(:build) do |request_type, ev|
+        srv =
+          create(
+            :sequencing_request_type_validator,
+            request_type: request_type,
+            options: ev.read_lengths,
+            default: ev.default
+          )
         request_type.request_type_validators << srv
       end
     end

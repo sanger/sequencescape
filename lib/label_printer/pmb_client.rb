@@ -90,7 +90,7 @@ module LabelPrinter
       [].tap do |error_list|
           errors.each do |error|
             attribute = error['source']['pointer'].split('/').last.humanize
-            error_list << (format('%<attribute>s %<message>s', attribute: attribute, message: error['detail']))
+            error_list << format('%<attribute>s %<message>s', attribute: attribute, message: error['detail'])
           end
         end
         .join('; ')

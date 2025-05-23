@@ -2,30 +2,69 @@
 
 module Api
   module V2
-    # @todo This documentation does not yet include a detailed description of what this resource represents.
-    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
-    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+    # Provides a JSON:API representation of {Study}
+
+    # A Study is a collection of various {Sample samples} and the work done on them.
     #
     # @note This resource is immutable: its endpoint will not accept `POST`, `PATCH`, or `DELETE` requests.
     # @note Access this resource via the `/api/v2/studies/` endpoint.
     #
-    # Provides a JSON:API representation of {Study}.
+    # @example GET request for all studies
+    #   GET /api/v2/studies/
+    #
+    # @example GET request for a study with ID 123
+    #   GET /api/v2/studies/123/
+    #
     #
     # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class StudyResource < BaseResource
+      # This resource is immutable, meaning that no changes can be made via the API.
       immutable
 
+      ###
+      # Attributes
+      ###
+
+      # @!attribute [r] name
+      #   @return [String] The name of the study.
       attribute :name
+
+      # @!attribute [r] uuid
+      #   @note This identifier is automatically assigned upon creation and cannot be modified.
+      #   @return [String] The UUID of the study.
       attribute :uuid
 
+      ###
+      # Relationships
+      ###
+
+      # @!attribute [r] poly_metadata
+      #   @return [Array<PolyMetadatumResource>] The polymorphic metadata associated with this study.
+      #   This metadata allows for the flexible extension of study attributes.
       has_many :poly_metadata, as: :metadatable, class_name: 'PolyMetadatum'
 
+      ###
+      # Filters
+      ###
+
+      # @!method filter_by_name(name)
+      #   Allows filtering studies by their name.
+      #   @example GET /api/v2/studies?filter[name]=Genomics Study
+      #   @param name [String] The name of the study to filter by.
       filter :name
 
+      # @!method filter_by_state(state)
+      #   Allows filtering studies by their state (e.g., active, archived).
+      #   @example GET /api/v2/studies?filter[state]=active
+      #   @param state [String] The state of the study to filter by.
       filter :state, apply: lambda { |records, value, _options| records.by_state(value) }
 
+      # @!method filter_by_user(user_id)
+      #   Allows filtering studies by the user who owns or manages them.
+      #   @example GET /api/v2/studies?filter[user]=456
+      #   @param user_id [String] The ID of the user to filter by.
       filter :user, apply: lambda { |records, value, _options| records.by_user(value) }
     end
   end

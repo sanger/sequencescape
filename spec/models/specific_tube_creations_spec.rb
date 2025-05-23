@@ -47,7 +47,7 @@ RSpec.describe SpecificTubeCreation do
 
     describe '#save' do
       include_context 'with common test setup'
-      include_examples 'with common tests'
+      it_behaves_like 'with common tests'
     end
   end
 
@@ -94,7 +94,7 @@ RSpec.describe SpecificTubeCreation do
       include_context 'with common test setup'
       let(:expected_barcode_format) { 'fluidx_barcode' }
 
-      include_examples 'with common tests'
+      it_behaves_like 'with common tests'
 
       it 'sets the foreign barcode as the primary barcode' do
         expect(first_child.primary_barcode.barcode).to eq foreign_barcode

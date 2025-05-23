@@ -4,6 +4,7 @@
 # It can also be used to represent single index tag sets
 # Background explained in Y24-170 (https://github.com/sanger/sequencescape/issues/4160)
 class TagSet < ApplicationRecord
+  include Uuid::Uuidable
   # For dual index tags, tag_group is i7 oligos and tag2_group is i5 oligos
   belongs_to :tag_group, class_name: 'TagGroup', optional: false
 
@@ -36,6 +37,7 @@ class TagSet < ApplicationRecord
   # The scoping retrieves the visible tag sets and makes sure they are dual index.
   scope :visible_dual_index, -> { dual_index.visible }
 
+  scope :by_adapter_type, ->(adapter_type_name) { joins(:tag_group).merge(TagGroup.by_adapter_type(adapter_type_name)) }
   scope :single_index, -> { where(tag2_group: nil) }
 
   scope :visible_single_index, -> { single_index.visible }

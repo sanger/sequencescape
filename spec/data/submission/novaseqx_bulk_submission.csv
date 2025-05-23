@@ -1,0 +1,7 @@
+﻿Bulk Submissions Form,,,,,,,,,,,,,,,,,,,,,,,,,
+User Login,Template Name,Project Name,Study Name,Submission name,Barcode,Plate Well,Asset Group Name,Fragment Size From,Fragment Size To,PCR Cycles,Library Type,Bait Library Name,Pre-capture Plex Level,Pre-capture Group,Read Length,Number of lanes,Priority,Primer Panel,Comments,Gigabases Expected,Flowcell Type,scRNA Core Number of Pools,scRNA Core Cells per Chip Well,% PhiX requested,Low Diversity
+user,Limber-Htp - PCR Free - NovaSeqX paired end sequencing,Test project,UAT Study,sub,NT1,,ag1,1,3,1,Standard,,,,50,1,,,,2,1.5B,,,,
+user,Limber-Htp - PCR Free - NovaSeqX paired end sequencing,Test project,UAT Study,sub,NT2,,ag2,1,3,1,Standard,,,,50,1,,,,2,1.5B,,,,
+user,Limber-Htp - PCR Free - NovaSeqX paired end sequencing,Test project,UAT Study,sub,NT3,,ag3,1,3,1,Standard,,,,50,1,,,,2,1.5B,,,,
+user,Limber-Htp - PCR Free - NovaSeqX paired end sequencing,Test project,UAT Study,sub,NT4,,ag4,1,3,1,Standard,,,,50,1,,,,2,1.5B,,,,
+user,Limber-Htp - PCR Free - NovaSeqX paired end sequencing,Test project,UAT Study,sub,NT5,,ag6,1,3,1,Standard,,,,50,1,,,,2,1.5B,,,,

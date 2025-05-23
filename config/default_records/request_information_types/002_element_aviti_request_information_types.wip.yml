@@ -1,0 +1,13 @@
+---
+low_diversity:
+  name: Low diversity
+  key: low_diversity
+  label: Low diversity
+  width: 5
+  hide_in_inbox: 0
+percent_phix_requested:
+  name: Percent Phix requested
+  key: percent_phix_requested
+  label: "% PhiX requested"
+  width: 5
+  hide_in_inbox: 0

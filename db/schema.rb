@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_02_20_100453) do
+ActiveRecord::Schema[7.1].define(version: 2025_03_26_144346) do
   create_table "aliquot_indices", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "aliquot_id", null: false
     t.integer "lane_id", null: false
@@ -1177,6 +1177,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_20_100453) do
     t.integer "number_of_pools"
     t.integer "cells_per_chip_well"
     t.string "allowance_band"
+    t.boolean "low_diversity"
+    t.integer "percent_phix_requested"
     t.index ["request_id"], name: "index_request_metadata_on_request_id"
   end
 

@@ -1,0 +1,23 @@
+# This file was automatically generated via `rails g record_loader`
+# You should modify it to match your particular model.
+---
+name 1:
+  name: name 1
+  task: task 1
+  workflow: workflow 1
+  value: value 1
+  selection: selection 1
+  kind: kind 1
+  required: false
+  sorter: 1
+  key: key 1
+name 2:
+  name: name 2
+  task: task 1
+  workflow: workflow 1
+  value: value 2
+  selection: selection 2
+  kind: kind 2
+  required: false
+  sorter: 2
+  key: key 2

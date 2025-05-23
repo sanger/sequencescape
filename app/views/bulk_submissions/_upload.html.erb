@@ -3,7 +3,7 @@
   <strong>none</strong> of them will be processed. You will get feedback about any problems.</p>
 <% end %>
 <%= semantic_form_for @bulk_submission, html: { multipart: true } do |form|  %>
-
+  <%= form.semantic_errors :base %>
   <%= form.inputs do %>
     <%= form.input :spreadsheet, as: :file, required: true %>
     <%= form.input :encoding, as: :select, collection: Encoding.list.map(&:to_s) %>

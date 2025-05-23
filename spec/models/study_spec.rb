@@ -12,21 +12,21 @@ RSpec.describe Study do
     requests =
       [].tap do |r|
         # Cancelled
-        3.times { r << (create(:cancelled_request, study:, request_type:)) }
+        3.times { r << create(:cancelled_request, study:, request_type:) }
 
         # Failed
-        r << (create(:failed_request, study:, request_type:))
+        r << create(:failed_request, study:, request_type:)
 
         # Passed
-        3.times { r << (create(:passed_request, study:, request_type:)) }
+        3.times { r << create(:passed_request, study:, request_type:) }
 
-        r << (create(:passed_request, study: study, request_type: request_type_2))
-        r << (create(:passed_request, study: study, request_type: request_type_3))
-        r << (create(:passed_request, study: study, request_type: request_type_3))
+        r << create(:passed_request, study: study, request_type: request_type_2)
+        r << create(:passed_request, study: study, request_type: request_type_3)
+        r << create(:passed_request, study: study, request_type: request_type_3)
 
         # Pending
-        r << (create(:pending_request, study:, request_type:))
-        r << (create(:pending_request, study: study, request_type: request_type_3))
+        r << create(:pending_request, study:, request_type:)
+        r << create(:pending_request, study: study, request_type: request_type_3)
       end
 
     # we have to hack t

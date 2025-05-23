@@ -275,7 +275,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
       if json_attribute.blank?
         # If we have reached the end of the line, and the attribute_or_association is for what looks like
         # an association, then we'll look it up without the '_id' and return that value.
-        if attribute_or_association.to_s =~ (/_id$/) && rest.empty?
+        if attribute_or_association.to_s =~ /_id$/ && rest.empty?
           association = associations[attribute_or_association.to_s.sub(/_id$/, '').to_sym]
           raise StandardError, "Unexpected association #{attribute_or_association.inspect}" if association.nil?
 

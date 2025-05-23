@@ -63,7 +63,7 @@ RSpec.describe SpecificTubeRackCreation do
 
     describe '#save' do
       include_context 'with common test setup'
-      include_examples 'with common tests'
+      it_behaves_like 'with common tests'
     end
   end
 

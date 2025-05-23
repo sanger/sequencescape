@@ -1,0 +1,7 @@
+---
+Loading:
+  name: Loading
+  workflow: Element Aviti
+  sorted: 0
+  lab_activity: true
+  sti_type: SetDescriptorsTask

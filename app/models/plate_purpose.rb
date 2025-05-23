@@ -5,7 +5,7 @@
 # @note JG: Generally I have been trying to eliminate as much of the purpose specific
 #       behaviour as possible, and have pushed the business logic outwards towards the
 #       pipeline applications themselves. This is to try and reduce the overall complexity
-#       or Sequencescape models, reduce coupling between Sequencescape and its clients, and
+#       of Sequencescape models, reduce coupling between Sequencescape and its clients, and
 #       to make behaviour of individual plates more predictable. This is intended to
 #       increase the flexibility and adaptability of the pipelines.
 #

@@ -2,40 +2,107 @@
 
 module Api
   module V2
-    # @todo This documentation does not yet include a detailed description of what this resource represents.
-    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
-    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
-    #
-    # @note Access this resource via the `/api/v2/poly_metadata/` endpoint.
-    #
     # Provides a JSON:API representation of {PolyMetadatum}.
     #
-    # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
-    # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
+    # A `PolyMetadatum`  is a key value pair store. It is set up such that it can be
+    # associated with multiple different models (ie. a polymorphic relationship).
+    #
+    # @note This resource is accessed via the `/api/v2/poly_metadata/` endpoint.
+    #
+    # @example GET request to retrieve all poly metadata
+    #   GET /api/v2/poly_metadata/
+    #
+    # @example POST request to create a new metadata entry
+    #   POST /api/v2/poly_metadata/
+    #   {
+    #     "data": {
+    #       "type": "poly_metadata",
+    #       "attributes": {
+    #         "key": "sample_type",
+    #         "value": "DNAa"
+    #       },
+    #       "relationships": {
+    #         "metadatable": {
+    #           "data": {
+    #             "type": "sample",
+    #             "id": "1"
+    #           }
+    #         }
+    #       }
+    #     }
+    #   }
+    #
+    # @example PATCH request to update an existing metadata entry
+    #   PATCH /api/v2/poly_metadata/123
+    #   {
+    #     "data": {
+    #       "id": "123",
+    #       "type": "poly_metadata",
+    #       "attributes": {
+    #         "value": "RNA"
+    #       }
+    #     }
+    #   }
+    #
+
+    # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
+    # or the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class PolyMetadatumResource < BaseResource
-      # Constants...
-
-      # model_name / model_hint if required
-
-      # Associations:
-      has_one :metadatable, polymorphic: true
-
+      ###
       # Attributes
+      ###
+
+      # @!attribute [rw] key
+      #   The key or name of the metadata.
+      #   @note This is a required attribute and must be unqiue for each metadatable object.
+      #   @return [String] The metadata key.
       attribute :key
+
+      # @!attribute [rw] value
+      #   The value stored under the metadata key.
+      #   @note This is a required attribute
+      #   @return [String] The metadata value.
       attribute :value
+
+      # @!attribute [r] created_at
+      #   The timestamp indicating when this metadata entry was created.
+      #   @return [DateTime] The creation time of the metadata record.
       attribute :created_at, readonly: true
+
+      # @!attribute [r] updated_at
+      #   The timestamp indicating when this metadata entry was last updated.
+      #   @return [DateTime] The last modification time of the metadata record.
       attribute :updated_at, readonly: true
 
+      ###
+      # Relationships
+      ###
+
+      # @!attribute [rw] metadatable
+      #   The resource that this metadata belongs to.
+      #   This is a polymorphic association, it can be associated with multiple different models
+      #     (e.g., {Well}, {Sample}).
+      #   @note This is a required relationship.
+      #   @note The given metadata must exist
+      #   @return [ApplicationRecord] The associated record.
+      has_one :metadatable, polymorphic: true
+
+      ###
       # Filters
+      ###
+
+      # @!method filter_by_key
+      #   Filters metadata records based on their key.
+      #   @example GET request to retrieve metadata with a specific key
+      #     GET /api/v2/poly_metadata?filter[key]=sample_type
       filter :key
+
+      # @!method filter_by_metadatable_id
+      #   Filters metadata records based on the associated resource's ID.
+      #   @example GET request to retrieve metadata associated with a specific resource
+      #     GET /api/v2/poly_metadata?filter[metadatable_id]=123
       filter :metadatable_id
-
-      # Custom methods
-      # These shouldn't be used for business logic, and a more about
-      # I/O and isolating implementation details.
-
-      # Class method overrides
     end
   end
 end

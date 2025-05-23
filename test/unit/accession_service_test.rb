@@ -43,12 +43,12 @@ class AccessionServiceTest < ActiveSupport::TestCase
       @sample.sample_metadata.donor_id = '123456789'
     end
 
-    should 'expose donor_id as subject_id in EGA xml' do
-      assert_tag('subject_id', '123456789')
+    should 'expose donor_id as subject id in EGA xml' do
+      assert_tag('subject id', '123456789')
     end
 
     should 'dupe test' do
-      assert_tag('subject_id', '123456789')
+      assert_tag('subject id', '123456789')
     end
   end
 
@@ -62,34 +62,34 @@ class AccessionServiceTest < ActiveSupport::TestCase
     context 'with unexistent country' do
       setup { @sample.sample_metadata.country_of_origin = 'Pepe' }
       should 'send the default error value' do
-        assert_tag('geographic_location_(country_and/or_sea)', 'not provided')
+        assert_tag('geographic location (country and/or sea)', 'not provided')
       end
     end
 
     context 'with no country' do
       should 'send the default error value' do
-        assert_tag('geographic_location_(country_and/or_sea)', 'not provided')
+        assert_tag('geographic location (country and/or sea)', 'not provided')
       end
     end
 
     context 'with right country' do
       setup { @sample.sample_metadata.country_of_origin = 'Freedonia' }
       should 'send the country name' do
-        assert_tag('geographic_location_(country_and/or_sea)', 'Freedonia')
+        assert_tag('geographic location (country and/or sea)', 'Freedonia')
       end
     end
 
     context 'with other defined values for country_of_origin' do
       setup { @sample.sample_metadata.country_of_origin = 'not provided' }
       should 'send the collection date' do
-        assert_tag('geographic_location_(country_and/or_sea)', 'not provided')
+        assert_tag('geographic location (country and/or sea)', 'not provided')
       end
     end
 
     context 'with missing for country_of_origin' do
       setup { @sample.sample_metadata.country_of_origin = 'missing: endangered species' }
       should 'send the collection date' do
-        assert_tag('geographic_location_(country_and/or_sea)', 'missing: endangered species')
+        assert_tag('geographic location (country and/or sea)', 'missing: endangered species')
       end
     end
   end
@@ -103,34 +103,34 @@ class AccessionServiceTest < ActiveSupport::TestCase
     context 'with unexistent date_of_sample_collection' do
       setup { @sample.sample_metadata.date_of_sample_collection = 'Pepe' }
       should 'send the default error value' do
-        assert_tag('collection_date', 'not provided')
+        assert_tag('collection date', 'not provided')
       end
     end
 
     context 'with no date_of_sample_collection' do
       should 'send the default error value' do
-        assert_tag('collection_date', 'not provided')
+        assert_tag('collection date', 'not provided')
       end
     end
 
     context 'with right date_of_sample_collection' do
       setup { @sample.sample_metadata.date_of_sample_collection = '2023-04-25T00:00:00Z' }
       should 'send the collection date' do
-        assert_tag('collection_date', '2023-04-25T00:00:00Z')
+        assert_tag('collection date', '2023-04-25T00:00:00Z')
       end
     end
 
     context 'with other defined values for date_of_sample_collection' do
       setup { @sample.sample_metadata.date_of_sample_collection = 'not provided' }
       should 'send the collection date' do
-        assert_tag('collection_date', 'not provided')
+        assert_tag('collection date', 'not provided')
       end
     end
 
     context 'with missing for date_of_sample_collection' do
       setup { @sample.sample_metadata.date_of_sample_collection = 'missing: endangered species' }
       should 'send the collection date' do
-        assert_tag('collection_date', 'missing: endangered species')
+        assert_tag('collection date', 'missing: endangered species')
       end
     end
   end

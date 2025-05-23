@@ -70,6 +70,12 @@ en:
         allowance_band:
           label: Allowance band
 
+        low_diversity:
+          label: Low Diversity
+
+        percent_phix_requested:
+          label: "% PhiX requested"
+
     library_creation_request:
       <<: *REQUEST
     sequencing_request:
@@ -90,6 +96,9 @@ en:
     pac_bio_sample_prep_request:
       <<: *REQUEST
     pbmc_pooling_customer_request:
+      <<: *REQUEST
+
+    element_aviti_sequencing_request:
       <<: *REQUEST
 
     pulldown:

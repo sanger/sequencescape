@@ -206,6 +206,8 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
               ] = "Submission #{submission.id} built (#{submission.orders.count} orders)"
             rescue Submission::ProjectValidation::Error => e
               errors.add :spreadsheet, "There was an issue with a project: #{e.message}"
+            rescue ActiveRecord::RecordInvalid => e
+              errors.add :base, e.message
             end
           end
         end
@@ -247,7 +249,9 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     'priority',
     'flowcell type',
     'scrna core number of pools',
-    'scrna core cells per chip well'
+    'scrna core cells per chip well',
+    '% phix requested',
+    'low diversity'
   ].freeze
 
   ALIAS_FIELDS = { 'plate barcode' => 'barcode', 'tube barcode' => 'barcode' }.freeze
@@ -351,7 +355,9 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
         ['primer panel', 'primer_panel_name'],
         ['flowcell type', 'requested_flowcell_type'],
         ['scrna core number of pools', 'number_of_pools'],
-        ['scrna core cells per chip well', 'cells_per_chip_well']
+        ['scrna core cells per chip well', 'cells_per_chip_well'],
+        ['% phix requested', 'percent_phix_requested'],
+        ['low diversity', 'low_diversity']
       ].each do |source_key, target_key|
         assign_value_if_source_present(details, source_key, request_options, target_key)
       end

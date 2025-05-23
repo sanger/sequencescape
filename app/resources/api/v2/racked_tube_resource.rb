@@ -2,36 +2,70 @@
 
 module Api
   module V2
-    # @todo This documentation does not yet include a detailed description of what this resource represents.
-    # @todo This documentation does not yet include detailed descriptions for relationships, attributes and filters.
-    # @todo This documentation does not yet include any example usage of the API via cURL or similar.
+    # Provides a JSON:API representation of {RackedTube}.
+    #
+    # A Racked Tube represents a tube placed within a specific coordinate of a tube rack.
+    # A RackedTube links a tube to a tube rack.
+    # It includes associations to the related tube and tube rack as well as the coordinate
+    # where the tube is placed.
     #
     # @note Access this resource via the `/api/v2/racked_tubes/` endpoint.
     #
-    # Provides a JSON:API representation of {RackedTube}.
+    # @example GET request to retrieve all racked tubes
+    #   GET /api/v2/racked_tubes/
     #
-    # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
-    # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
-    # of the JSON:API standard.
+    # @example POST request to create a new racked tube
+    #   POST /api/v2/racked_tubes/
+    #   {
+    #     "data": {
+    #       "type": "racked_tubes",
+    #       "attributes": {
+    #         "coordinate": "A2"
+    #       },
+    #       "relationships": {
+    #         "tube": {
+    #           "data": {
+    #             "type": "tubes",
+    #             "id": 14
+    #           }
+    #         },
+    #         "tube_rack": {
+    #           "data": {
+    #             "type": "tube_racks",
+    #             "id": 19
+    #           }
+    #         }
+    #       }
+    #     }
+    #   }
+    #
+    #
+    # For more details on JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
+    # or check out the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation.
     class RackedTubeResource < BaseResource
-      # Constants...
-
-      # model_name / model_hint if required
-
-      # Associations:
-      has_one :tube
-      has_one :tube_rack
-
+      ###
       # Attributes
+      ###
+
+      # @!attribute [rw] coordinate
+      #   The coordinate within the tube rack where the tube is located (e.g., "A1").
+      #   @note This attribute is write-once, it cannot be updated after creation.
+      #   @return [String]
       attribute :coordinate, write_once: true
 
-      # Filters
+      ###
+      # Relationships
+      ###
 
-      # Class method overrides
+      # @!attribute [rw] tube
+      #   The tube associated with the racked tube.
+      #   @return [TubeResource]
+      has_one :tube
 
-      # Custom methods
-      # These shouldn't be used for business logic, and are more about
-      # I/O and isolating implementation details.
+      # @!attribute [rw] tube_rack
+      #   The rack that holds the tube.
+      #   @return [TubeRackResource]
+      has_one :tube_rack
     end
   end
 end
