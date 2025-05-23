@@ -3,11 +3,11 @@
 <h3><%= role_class_name %></h3>
 <div class='text-center'>
   <%= form_tag [:grant_user_role_admin,@user], remote: true, data: {success: "#role_list"}, class: 'form-inline remote-form' do -%>
-  <label for="role_authorizable_name"><%= role_class_name %> role</label>
-    <%= select "role", "authorizable_name", @all_roles, { prompt: true }, {class: 'form-control-sm mx-2'} %>
+    <label for="role_authorizable_name"><%= role_class_name %> role</label>
+    <%= select "role", "authorizable_name", @all_roles, { prompt: true }, {class: 'form-control-sm mx-2 mw-12em'} %>
 
     <label for="role_authorizable_id">for <%= role_class_name %></label>
-    <%= select "role", "authorizable_id", authorizable_type.pluck(:name,:id).sort, { prompt: true }, {class: 'form-control-sm mx-2'} %>
+    <%= select "role", "authorizable_id", authorizable_type.pluck(:name,:id).sort, { prompt: true }, {class: 'form-control-sm mx-2 mw-15em'} %>
 
     <div class="flex-grow-1"></div>
 
