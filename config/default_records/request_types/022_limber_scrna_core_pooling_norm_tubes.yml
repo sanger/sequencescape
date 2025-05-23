@@ -1,0 +1,21 @@
+---
+# This request type is similar to limber_multiplexing, except it does not set
+# target_purpose_name. It does not set target_asset_type either, so it does not
+# create the tube upfront. It is created to allow the MX sections of the scRNA
+# Core pipeline branches, GE, BCR, TCR, and CITE-seq, to end with the Norm tubes
+# of different purposes.
+#
+# If we were to set target_purpose_name, we would not be able to use it in
+# multiple MX branches because they end with different purposes.
+#
+# If we were to set target_asset_type, it would be StockMultiplexedLibraryTube,
+# which will cause creation of the tube upfront without a name. However, we
+# already create Norm tubes in Limber by adding a new child on the parent.
+#
+scrna_core_pool_norm:
+  name: scRNA Core Pool Norm
+  asset_type: Well
+  order: 2
+  request_class_name: Request::Multiplexing
+  for_multiplexing: true
+  product_line_name: Illumina-HTP
