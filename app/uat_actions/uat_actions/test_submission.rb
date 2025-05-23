@@ -11,6 +11,8 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
       'This may produce odd results for some pipelines.'
   self.category = :setup_and_test
 
+  include UatActions::Shared::StudyHelper
+
   ERROR_SUBMISSION_TEMPLATE_DOES_NOT_EXIST = "Submission template '%s' does not exist."
   ERROR_PLATE_DOES_NOT_EXIST = 'Plate with barcode %s does not exist.'
   ERROR_PLATE_PURPOSE_DOES_NOT_EXIST = "Plate purpose '%s' does not exist."
@@ -62,6 +64,26 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
              select_options: -> { PrimerPanel.alphabetical.pluck(:name) },
              options: {
                include_blank: 'Primer panel selection...'
+             }
+  form_field :study_name,
+             :select,
+             label: 'Study',
+             help:
+               'The study under which samples will be created. List includes all active studies. ' \
+                 'Leave blank to use the default study.',
+             select_options: -> { Study.active.alphabetical.pluck(:name) },
+             options: {
+               include_blank: 'Sample Study selection...'
+             }
+  form_field :project_name,
+             :select,
+             label: 'Project',
+             help:
+               'The project under which orders will be created. List includes all active projects. ' \
+                 'Leave blank to use the default project.',
+             select_options: -> { Project.active.alphabetical.pluck(:name) },
+             options: {
+               include_blank: 'Order Project selection...'
              }
   form_field :number_of_wells_with_samples,
              :number_field,
@@ -146,6 +168,8 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
     report['primer_panel'] = order.request_options[:primer_panel_name] if order.request_options[
       :primer_panel_name
     ].present?
+    report['study_name'] = order.study.name
+    report['project_name'] = order.project.name
     report['number_of_wells_with_samples'] = labware.wells.with_aliquots.size
     report['number_of_samples_in_each_well'] = labware.wells.with_aliquots.first.aliquots.size
     report['number_of_wells_to_submit'] = assets.size
@@ -284,6 +308,7 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
     generator.well_count = determine_well_count
     generator.well_layout = 'Random'
     generator.number_of_samples_in_each_well = num_samples_per_well
+    generator.study_name = study_name if study_name.present?
     generator
   end
 
@@ -323,12 +348,8 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
 
   # Any helper methods
 
-  def study
-    UatActions::StaticRecords.study
-  end
-
   def project
-    UatActions::StaticRecords.project
+    Project.find_by(name: project_name) || UatActions::StaticRecords.project
   end
 
   #
