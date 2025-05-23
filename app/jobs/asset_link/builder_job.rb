@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 # An AssetLink::BuilderJob receives an array of [parent_id, child_id] and builds asset links between them
 # @return []
 AssetLink::BuilderJob =
