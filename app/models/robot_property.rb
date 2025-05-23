@@ -7,14 +7,14 @@ class RobotProperty < ApplicationRecord
   def ean13_barcode
     if name.nil?
       str = Barcode.calculate_barcode('BD', value.to_i).to_s
-      str.length == 12 ? '0' + str : str
+      str.length == 12 ? "0#{str}" : str
     end
   end
 
   def human_barcode
     return nil unless name.nil?
 
-    'BD' + value.to_s + Barcode.calculate_checksum('BD', value.to_i)
+    "BD#{value}#{Barcode.calculate_checksum('BD', value.to_i)}"
   end
 
   def barcode

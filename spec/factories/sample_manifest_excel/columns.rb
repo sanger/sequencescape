@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :column, class: 'SequencescapeExcel::Column' do
     sequence(:number) { |n| n }
-    name { "column_#{number}".to_sym }
+    name { :"column_#{number}" }
     heading { "Column #{number}" }
     value { "Value #{number}" }
 
