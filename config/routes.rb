@@ -192,6 +192,7 @@ Rails.application.routes.draw do
       get :released
       get :sample_prep_worksheet
       get :new_stock_assets
+      get :generate_sample_sheet
     end
 
     collection do
