@@ -759,6 +759,37 @@ RSpec.describe Study do
           expect(study.errors.full_messages).not_to include(/data release timing/)
         end
       end
+
+      context 'when delay until publication is selected' do
+        let(:study) do
+          create(
+            :study,
+            study_metadata:
+              create(:study_metadata, metadata.merge(data_release_strategy: Study::DATA_RELEASE_STRATEGY_OPEN))
+          )
+        end
+
+        it 'will have When do you anticipate sharing the data?' do
+          expect(study.study_metadata.data_release_timing_publication_comment).to eq(
+            metadata[:data_release_timing_publication_comment]
+          )
+        end
+
+        it 'will have are you planning to share the data as part of a preprint' do
+          expect(study.study_metadata.data_share_in_preprint).to eq(metadata[:data_share_in_preprint])
+        end
+
+        it 'study not be valid if data_release_timing_publication_comment & data_share_in_preprint are blank' do
+          study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_PUBLICATION
+          study.study_metadata.data_release_timing_publication_comment = nil
+          study.study_metadata.data_share_in_preprint = nil
+          expect(study.save).to be false
+          expect(study.valid?).to be false
+          expect(study.errors.full_messages).to include(
+            /Study metadata data release timing publication comment can't be blank/
+          )
+        end
+      end
     end
 
     context 'delayed for other reasons' do
