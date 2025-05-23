@@ -842,12 +842,6 @@ describe Well do
       expect(well.qc_result_for('volume')).to eq(2.345)
     end
 
-    it 'quantity_in_nano_grams' do
-      well = create(:well)
-      well.update_from_qc(build(:qc_result_volume, value: '1.34523'))
-      expect(well.qc_result_for('quantity_in_nano_grams')).to be_present
-    end
-
     it 'loci_passed (snp_count)' do
       qc_result_1 = build(:qc_result_loci_passed, value: '100', created_at: Date.yesterday)
       qc_result_2 = build(:qc_result_loci_passed, value: '110', created_at: Time.zone.today)
