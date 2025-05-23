@@ -25,6 +25,9 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     attribute :processing_manifest
   end
 
+  class AccessionValidationFailed < StandardError
+  end
+
   GC_CONTENTS = ['Neutral', 'High AT', 'High GC'].freeze
   GENDERS = ['Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable'].freeze
   DNA_SOURCES = [
@@ -381,10 +384,10 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   before_destroy :safe_to_destroy
 
-  # processing_manifest is true if we're currently processing a manifest. We
+  # Processing_manifest is true if we're currently processing a manifest. We
   # disable accessioning, as we'll perform it explicitly later. This avoids
-  # accidental calls to save triggering duplicate accessions
-  after_save :accession, unless: -> { Sample::Current.processing_manifest }
+  # accidental calls to save triggering duplicate accessions.
+  after_save :accession_and_handle_validation_errors, unless: -> { Sample::Current.processing_manifest }
 
   # NOTE: Samples don't tend to get released through Sequencescape
   # so in reality these methods are usually misleading.
@@ -455,7 +458,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # @note This appears to be set up to handle legacy data. All currently generated
   #       Sanger sample ids will be meet criteria 1 or 2.
   # Earlier implementations were supposed to fall back to the name in the absence
-  # of a sanger_smaple_id, but the feature was incorrectly implemented, and would
+  # of a sanger_sample_id, but the feature was incorrectly implemented, and would
   # have thrown an exception.
   def shorten_sanger_sample_id
     case sanger_sample_id
@@ -508,10 +511,19 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def accession
     return unless configatron.accession_samples
 
-    accessionable = Accession::Sample.new(Accession.configuration.tags, self)
+    accessionable = build_accessionable
+    validate_accessionable!(accessionable)
+    enqueue_accessioning_job!(accessionable)
+  end
 
-    # Accessioning jobs are lower priority (higher number) than submissions and reports
-    Delayed::Job.enqueue(SampleAccessioningJob.new(accessionable), priority: 200) if accessionable.valid?
+  def accession_and_handle_validation_errors
+    accession
+    Rails.logger.info("Accessioning passed for sample '#{name}'")
+  rescue AccessionValidationFailed => e
+    # Error has already been logged in validate_accessionable!
+    Rails.logger.warn("Accessioning validation failed: #{e.message}")
+    # but provide feedback to the user by displaying it in a flash message
+    errors.add(:base, e.message)
   end
 
   def handle_update_event(user)
@@ -583,5 +595,33 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def safe_to_destroy
     errors.add(:base, 'samples cannot be destroyed.')
     throw(:abort)
+  end
+
+  def build_accessionable
+    Accession::Sample.new(Accession.configuration.tags, self)
+  end
+
+  def validate_accessionable!(accessionable)
+    return if accessionable.valid?
+
+    error_message = "Accessionable is invalid for sample '#{name}': #{accessionable.errors.full_messages.join(', ')}"
+    Rails.logger.error(error_message)
+    raise AccessionValidationFailed, error_message
+  end
+
+  def enqueue_accessioning_job!(accessionable)
+    job = Delayed::Job.enqueue(SampleAccessioningJob.new(accessionable), priority: 200)
+    log_job_status(job)
+  rescue StandardError => e
+    Rails.logger.error("Failed to enqueue accessioning job: #{e.message}")
+    raise
+  end
+
+  def log_job_status(job)
+    if job
+      Rails.logger.info("Accessioning job enqueued successfully: #{job.inspect}")
+    else
+      Rails.logger.warn('Accessioning job enqueue returned nil.')
+    end
   end
 end

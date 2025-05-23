@@ -36,6 +36,8 @@ RSpec.describe Sample, :accession, :cardinal do
       allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(successful_accession_response)
       sample =
         create(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning))
+      sample.accession
+
       expect(sample.sample_metadata.sample_ebi_accession_number).to be_present
     end
 
@@ -43,6 +45,7 @@ RSpec.describe Sample, :accession, :cardinal do
       allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(failed_accession_response)
       sample =
         build(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning))
+
       expect { sample.save! }.to raise_error(StandardError)
       expect(sample.sample_metadata.sample_ebi_accession_number).to be_nil
     end
