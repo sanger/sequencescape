@@ -15,4 +15,5 @@ Rails.application.config.to_prepare do
   # Monkey patch the ApiKeyAuthenticatable concern into all JSONAPI::ResourceControllers
   JSONAPI::ResourceController.include(Api::V2::Concerns::ApiKeyAuthenticatable)
   JSONAPI::ResourceController.include(Api::V2::Concerns::DisableCsrfTokenAuthentication)
+  JSONAPI::ResourceController.include(Api::V2::DisableDestroyAction)
 end

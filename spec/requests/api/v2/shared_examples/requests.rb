@@ -2,6 +2,17 @@
 
 require 'rails_helper'
 
+shared_examples 'a DESTROY request for a v2 resource' do
+  # This shared example tests that the DELETE method is not available for a resource in API v2,
+  # when `except: :destroy` is specified in the routes.rb file.
+  it 'responds with a routing error' do
+    expect { delete "/api/v2/#{resource.model_name.route_key}/#{resource.id}" }.to raise_error(
+      ActionController::RoutingError,
+      %r{No route matches \[DELETE\] "/api/v2/#{resource.model_name.route_key}/#{resource.id}"}
+    )
+  end
+end
+
 shared_examples 'a POST request with a disallowed value' do
   before { api_post base_endpoint, payload }
 

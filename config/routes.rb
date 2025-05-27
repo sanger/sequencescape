@@ -21,75 +21,75 @@ Rails.application.routes.draw do
   #   See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
   namespace :api do
     namespace :v2 do
-      jsonapi_resources :aliquots
-      jsonapi_resources :assets
-      jsonapi_resources :asset_audits
+      jsonapi_resources :aliquots, except: %i[destroy]
+      jsonapi_resources :assets, except: %i[destroy]
+      jsonapi_resources :asset_audits, except: %i[destroy]
 
-      jsonapi_resources :bait_library_layouts, except: %i[update] do
+      jsonapi_resources :bait_library_layouts, except: %i[update destroy] do
         collection { post :preview }
       end
 
-      jsonapi_resources :barcode_printers
-      jsonapi_resources :bulk_transfers, except: %i[update]
-      jsonapi_resources :comments
-      jsonapi_resources :custom_metadatum_collections
-      jsonapi_resources :labware
-      jsonapi_resources :lanes
-      jsonapi_resources :lot_types
-      jsonapi_resources :lots
-      jsonapi_resources :orders, except: %i[update]
-      jsonapi_resources :pick_lists
-      jsonapi_resources :plate_conversions, except: %i[update]
-      jsonapi_resources :plate_creations, except: %i[update]
-      jsonapi_resources :plate_purposes, except: %i[update]
-      jsonapi_resources :plate_templates
-      jsonapi_resources :plates, except: %i[update]
+      jsonapi_resources :barcode_printers, except: %i[destroy]
+      jsonapi_resources :bulk_transfers, except: %i[update destroy]
+      jsonapi_resources :comments, except: %i[destroy]
+      jsonapi_resources :custom_metadatum_collections, except: %i[destroy]
+      jsonapi_resources :labware, except: %i[destroy]
+      jsonapi_resources :lanes, except: %i[destroy]
+      jsonapi_resources :lot_types, except: %i[destroy]
+      jsonapi_resources :lots, except: %i[destroy]
+      jsonapi_resources :orders, except: %i[update destroy]
+      jsonapi_resources :pick_lists, except: %i[destroy]
+      jsonapi_resources :plate_conversions, except: %i[update destroy]
+      jsonapi_resources :plate_creations, except: %i[update destroy]
+      jsonapi_resources :plate_purposes, except: %i[update destroy]
+      jsonapi_resources :plate_templates, except: %i[destroy]
+      jsonapi_resources :plates, except: %i[update destroy]
       post 'plates/:id/register_stock_for_plate', to: 'plates#register_stock_for_plate'
 
-      jsonapi_resources :poly_metadata
-      jsonapi_resources :pooled_plate_creations, except: %i[update]
-      jsonapi_resources :pre_capture_pools
-      jsonapi_resources :primer_panels
-      jsonapi_resources :projects
-      jsonapi_resources :purposes
-      jsonapi_resources :qc_assays
-      jsonapi_resources :qc_files, except: %i[update]
-      jsonapi_resources :qc_results
-      jsonapi_resources :qcables
-      jsonapi_resources :racked_tubes
-      jsonapi_resources :receptacles
-      jsonapi_resources :request_metadata
-      jsonapi_resources :request_types
-      jsonapi_resources :requests
-      jsonapi_resources :samples
-      jsonapi_resources :sample_manifests
-      jsonapi_resources :sample_metadata
-      jsonapi_resources :specific_tube_creations, except: %i[update]
-      jsonapi_resources :state_changes, except: %i[update]
-      jsonapi_resources :studies
-      jsonapi_resources :submission_pools
-      jsonapi_resources :submission_templates
-      jsonapi_resources :submissions, except: %i[update]
-      jsonapi_resources :tag_group_adapter_types
-      jsonapi_resources :tag_groups
+      jsonapi_resources :poly_metadata, except: %i[destroy]
+      jsonapi_resources :pooled_plate_creations, except: %i[update destroy]
+      jsonapi_resources :pre_capture_pools, except: %i[destroy]
+      jsonapi_resources :primer_panels, except: %i[destroy]
+      jsonapi_resources :projects, except: %i[destroy]
+      jsonapi_resources :purposes, except: %i[destroy]
+      jsonapi_resources :qc_assays, except: %i[destroy]
+      jsonapi_resources :qc_files, except: %i[update destroy]
+      jsonapi_resources :qc_results, except: %i[destroy]
+      jsonapi_resources :qcables, except: %i[destroy]
+      jsonapi_resources :racked_tubes, except: %i[destroy]
+      jsonapi_resources :receptacles, except: %i[destroy]
+      jsonapi_resources :request_metadata, except: %i[destroy]
+      jsonapi_resources :request_types, except: %i[destroy]
+      jsonapi_resources :requests, except: %i[destroy]
+      jsonapi_resources :samples, except: %i[destroy]
+      jsonapi_resources :sample_manifests, except: %i[destroy]
+      jsonapi_resources :sample_metadata, except: %i[destroy]
+      jsonapi_resources :specific_tube_creations, except: %i[update destroy]
+      jsonapi_resources :state_changes, except: %i[update destroy]
+      jsonapi_resources :studies, except: %i[destroy]
+      jsonapi_resources :submission_pools, except: %i[destroy]
+      jsonapi_resources :submission_templates, except: %i[destroy]
+      jsonapi_resources :submissions, except: %i[update destroy]
+      jsonapi_resources :tag_group_adapter_types, except: %i[destroy]
+      jsonapi_resources :tag_groups, except: %i[destroy]
       jsonapi_resources :tag_sets, only: %i[index show]
-      jsonapi_resources :tag_layout_templates
-      jsonapi_resources :tag_layouts, except: %i[update]
-      jsonapi_resources :tags
-      jsonapi_resources :transfer_request_collections, except: %i[update]
-      jsonapi_resources :transfer_requests
-      jsonapi_resources :transfer_templates
-      jsonapi_resources :transfers, except: %i[update]
-      jsonapi_resources :tube_from_tube_creations, except: %i[update]
-      jsonapi_resources :tube_purposes
-      jsonapi_resources :tube_rack_statuses
-      jsonapi_resources :tube_racks
-      jsonapi_resources :tubes
-      jsonapi_resources :users
-      jsonapi_resources :volume_updates
-      jsonapi_resources :wells
-      jsonapi_resources :work_completions, except: %i[update]
-      jsonapi_resources :work_orders
+      jsonapi_resources :tag_layout_templates, except: %i[destroy]
+      jsonapi_resources :tag_layouts, except: %i[update destroy]
+      jsonapi_resources :tags, except: %i[destroy]
+      jsonapi_resources :transfer_request_collections, except: %i[update destroy]
+      jsonapi_resources :transfer_requests, except: %i[destroy]
+      jsonapi_resources :transfer_templates, except: %i[destroy]
+      jsonapi_resources :transfers, except: %i[update destroy]
+      jsonapi_resources :tube_from_tube_creations, except: %i[update destroy]
+      jsonapi_resources :tube_purposes, except: %i[destroy]
+      jsonapi_resources :tube_rack_statuses, except: %i[destroy]
+      jsonapi_resources :tube_racks, except: %i[destroy]
+      jsonapi_resources :tubes, except: %i[destroy]
+      jsonapi_resources :users, except: %i[destroy]
+      jsonapi_resources :volume_updates, except: %i[destroy]
+      jsonapi_resources :wells, except: %i[destroy]
+      jsonapi_resources :work_completions, except: %i[update destroy]
+      jsonapi_resources :work_orders, except: %i[destroy]
 
       namespace :heron do
         resources :tube_rack_statuses, only: [:create]
