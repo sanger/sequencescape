@@ -84,7 +84,7 @@ group :default do
   # - Create a branch off version 0.9.0
   # - Remove the ActionController::ForceSSL module
   # - Load the gem from the branch
-  gem 'jsonapi-resources', github: 'sanger/jsonapi-resources', branch: 'develop'
+  gem 'jsonapi-resources', github: 'sanger/jsonapi-resources', branch: 'y24-447'
 
   gem 'csv', '~> 3.3' # Required by jsonapi-resources, previously part of ruby
 
