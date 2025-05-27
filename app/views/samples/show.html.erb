@@ -3,7 +3,7 @@
 <% add :menu, (pluralize @sample.comments.size, "comment") => sample_comments_path(@sample) -%>
 <% add :menu, 'Event history' => history_sample_path(@sample) -%>
 
-<% add :back_menu, "Back to STUDIES" => studies_path -%>
+<% add :back_menu, "Back to Studies" => studies_path -%>
 
 <% if can? :edit, @sample -%>
   <% add :menu, "Edit" => edit_sample_path(@sample) -%>
