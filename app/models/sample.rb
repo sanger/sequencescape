@@ -613,6 +613,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     job = Delayed::Job.enqueue(SampleAccessioningJob.new(accessionable), priority: 200)
     log_job_status(job)
   rescue StandardError => e
+    ExceptionNotifier.notify_exception(e, data: { message: 'Failed to enqueue accessioning job' })
     Rails.logger.error("Failed to enqueue accessioning job: #{e.message}")
     raise
   end

@@ -1,4 +1,7 @@
 # frozen_string_literal: true
+
+require 'exception_notification'
+
 # rubocop:todo Metrics/ClassLength
 class SamplesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
@@ -157,6 +160,8 @@ class SamplesController < ApplicationController
   rescue AccessionService::AccessionServiceError => e
     flash[:error] = e.message
     redirect_to(sample_path(@sample))
+    ExceptionNotifier.notify_exception(e, data: { message: 'Accessioning Service Failed' })
+    Rails.logger.error("Accessioning Service Failed: #{e.message}")
   end
 
   # rubocop:enable Metrics/MethodLength
