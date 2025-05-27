@@ -48,7 +48,7 @@ module Accession
 
     def post
       unless valid?
-        error_message = 'Accessionable is invalid'
+        error_message = "Accessionable submission is invalid: #{errors.full_messages.join(', ')}"
         Rails.logger.error(error_message)
         raise StandardError, error_message
       end
