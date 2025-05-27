@@ -84,7 +84,7 @@ module SampleManifestExcel
         Sample::Current.processing_manifest = false
       end
 
-      def data_at(column_name)
+      def data_at(column_name) # rubocop:todo Lint/DuplicateMethods
         required_column = columns.find_by(:name, column_name)
         rows.data_at(required_column.number) if required_column.present?
       end

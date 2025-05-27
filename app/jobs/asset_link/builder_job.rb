@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
-# For memory reasons we need to limit transaction size to 10 links at a time
-TRANSACTION_COUNT = 10
-
 # An AssetLink::BuilderJob receives an array of [parent_id, child_id] and builds asset links between them
 # @return []
 AssetLink::BuilderJob =
   Struct.new(:links) do
     def perform # rubocop:todo Metrics/MethodLength
+      # For memory reasons we need to limit transaction size to 10 links at a time
+      transaction_count = 10
+
       links
         .uniq
-        .each_slice(TRANSACTION_COUNT) do |link_group|
+        .each_slice(transaction_count) do |link_group|
           ActiveRecord::Base.transaction do
             link_group.each do |parent, child|
               # Create edge can accept either a model (which it converts to an endpoint) or
