@@ -20,52 +20,107 @@ module AvitiSampleSheet::SampleSheetGenerator
     Generator.new(batch).generate
   end
   class Generator
+    # These settings are defined in the Aviti sample sheet template used in our lab - check Confluence for details.
+    # They specify parameters for Bases2Fastq execution and are fixed for lab usage.
+    # The 'Lane' value of '1+2' indicates that the settings apply to both lanes.
+    # Users may manually update this section if necessary.
+    SETTINGS_SECTION = [
+      ['[SETTINGS]'],
+      %w[SettingName Value Lane],
+      ['# Replace the example adapters below with the adapter used in the kit.'],
+      %w[R1Adapter AAAAAAAAAAAAAAAAAAA 1+2],
+      %w[R1AdapterTrim FALSE 1+2],
+      %w[R2Adapter TTTTTTTTTTTTTTTTTTT 1+2],
+      %w[R2AdapterTrim FALSE 1+2]
+    ].freeze
+
+    # These controllers are defined in the Aviti sample sheet template used in our lab - check Confluence for details.
+    # This section is not dynamically generated because control metadata is not stored for the Aviti pipeline.
+    # Users can manually update this section if needed.
+    PHIX_SECTION = [
+      ['[SAMPLES]'],
+      %w[SampleName Index1 Index2 Lane Project],
+      %w[Adept_CB1 ATGTCGCTAG CTAGCTCGTA],
+      %w[Adept_CB2 CACAGATCGT CACAGATCGT],
+      %w[Adept_CB3 GCACATAGTC GACTACTAGC],
+      %w[Adept_CB4 TGTGTCGACA TGTCTGACAG]
+    ].freeze
+
     def initialize(batch)
       @batch = batch
     end
 
+    # Generates the full sample sheet CSV string for the given batch.
+    # It includes static [SETTINGS] and PhiX control sample sections,
+    # followed by a dynamically built sample section based on the batch requests.
+    #
+    # @return [String] the CSV content as a string with CRLF line endings.
     def generate
       CSV.generate(row_sep: "\r\n") do |csv|
-        append_settings_section(csv)
-        append_phix_controllers(csv)
+        SETTINGS_SECTION.each { |row| csv << row }
+        PHIX_SECTION.each { |row| csv << row }
         append_samples_section(csv)
       end
     end
 
-    # Appends the [SETTINGS] section to the manifest.
-    # These settings define parameters for Bases2Fastq execution and are fixed for lab usage.
-    # The 'Lane' value of '1+2' indicates that the setting applies to both lanes.
-    # Users may manually update this section if necessary
-    def append_settings_section(csv)
-      csv << ['[SETTINGS]']
-      csv << %w[SettingName Value Lane]
-      csv << ['# Replace the example adapters below with the adapter used in the kit.']
-      csv << %w[R1Adapter AAAAAAAAAAAAAAAAAAA 1+2]
-      csv << %w[R1AdapterTrim FALSE 1+2]
-      csv << %w[R2Adapter TTTTTTTTTTTTTTTTTTT 1+2]
-      csv << %w[R2AdapterTrim FALSE 1+2]
-    end
+    private
 
-    # Appends static PhiX control sample rows to the manifest.
-    # This section is not dynamically generated, as control metadata is not stored.
-    # Users may manually update this section if necessary.
-    def append_phix_controllers(csv)
-      csv << ['[SAMPLES]']
-      csv << %w[SampleName Index1 Index2, Lane, Project]
-      csv << %w[Adept_CB1 ATGTCGCTAG CTAGCTCGTA]
-      csv << %w[Adept_CB2 CACAGATCGT CACAGATCGT]
-      csv << %w[Adept_CB3 GCACATAGTC GACTACTAGC]
-      csv << %w[Adept_CB4 TGTGTCGACA TGTCTGACAG]
-    end
-
-    # Appends batch-specific sample rows to the manifest.
-    # Each line represents a sample, including its tags, lane and the study associated with.
-    # requests are filtered to exclude failed ones.
+    # Appends the dynamically generated sample section to the CSV.
+    # This section includes sample name, tags, combined lane positions, and study ID.
+    #
+    # @param csv [CSV] the CSV object to append rows to.
     def append_samples_section(csv)
-      @batch.requests.each do |request|
-        request.target_asset.aliquots.each do |aliquot|
-          csv << [aliquot.sample.name, aliquot.tag&.oligo, aliquot.tag2&.oligo, request.position, aliquot.study.id]
-        end
+      group_samples_by_identity.each_value do |row|
+        # joining the positions array with '+' to indicate multiple lanes
+        # e.g. "1+2" for samples present in both lanes - specific to Aviti's sample sheet format.
+        position_str = row[:positions].sort.uniq.join('+')
+        csv << [row[:sample_name], row[:tag1], row[:tag2], position_str, row[:study_id]]
+      end
+    end
+
+    # Groups samples from the batch by identity (sample name, tag1, tag2, study).
+    # Excluding failed requests from the grouping.
+    # This ensures that aliquots from the same logical sample group are combined,
+    # and their positions aggregated.
+    #
+    # @return [Hash] grouped samples keyed by [sample_name, tag1, tag2, study_id]
+    #
+    # @example
+    #   group_samples_by_identity
+    #    => {
+    #         ["SampleX", "ACTG", "GATC", 123] => {
+    #           sample_name: "SampleX",
+    #           tag1: "ACTG",
+    #           tag2: "GATC",
+    #           positions: [1, 2],
+    #           study_id: 123
+    #         }
+    #      }
+    def group_samples_by_identity
+      grouped_samples = Hash.new { |hash, key| hash[key] = new_group_entry(key) }
+      @batch.requests.reject(&:failed?).each { |request| add_request_to_grouped_samples(grouped_samples, request) }
+      grouped_samples
+    end
+
+    # Initializes a new group entry hash for the given identity key.
+    #
+    # @param key [Array] a 4-element array: [sample_name, tag1, tag2, study_id]
+    # @return [Hash] a new group entry with metadata and an empty positions list.
+    # @example
+    #   new_group_entry(["SampleX", "ACTG", "GATC", 123])
+    #    => { sample_name: "SampleX", tag1: "ACTG", tag2: "GATC", positions: [], study_id: 123 }
+    def new_group_entry(key)
+      { sample_name: key[0], tag1: key[1], tag2: key[2], positions: [], study_id: key[3] }
+    end
+
+    # Adds a request's aliquots to the appropriate group in the grouped_samples hash.
+    #
+    # @param grouped_samples [Hash] the map of sample groups
+    # @param request [Request] the sequencing request to process
+    def add_request_to_grouped_samples(grouped_samples, request)
+      request.target_asset.aliquots.each do |aliquot|
+        key = [aliquot.sample.name, aliquot.tag&.oligo, aliquot.tag2&.oligo, aliquot.study.id]
+        grouped_samples[key][:positions] << request.position
       end
     end
   end
