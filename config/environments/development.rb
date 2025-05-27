@@ -9,10 +9,10 @@ Rails.application.configure do
   # Support requests coming from other Docker containers on localhost.
   config.hosts << 'host.docker.internal'
 
-  # In the development environment your application's code is reloaded on
-  # every request. This slows down response time but is perfect for development
+  # In the development environment your application's code is reloaded any time
+  # it changes. This slows down response time but is perfect for development
   # since you don't have to restart the web server when you make code changes.
-  config.cache_classes = ENV.fetch('CACHE_CLASSES', 'false') == 'true'
+  config.enable_reloading = ENV.fetch('ENABLE_RELOADING', 'true') == 'true'
 
   # Do not eager load code on boot.
   config.eager_load = true
@@ -51,6 +51,12 @@ Rails.application.configure do
       "[#{severity}] #{msg}\n" # includes non-breaking space to prevent whitespace collapse
     end
 
+  # Raise exceptions for disallowed deprecations.
+  config.active_support.disallowed_deprecation = :raise
+
+  # Tell Active Support which deprecation messages to disallow.
+  config.active_support.disallowed_deprecation_warnings = []
+
   # Raise an error on page load if there are pending migrations.
   # Disable this if we're pointing at a custom database url
   custom_db = ENV.fetch('DATABASE_URL', nil).present?
@@ -59,8 +65,8 @@ Rails.application.configure do
   # Highlight code that triggered database queries in logs.
   config.active_record.verbose_query_logs = true
 
-  # Raises error for missing translations
-  # config.action_view.raise_on_missing_translations = true
+  # Highlight code that enqueued background job in logs.
+  config.active_job.verbose_enqueue_logs = true
 
   # Use an evented file watcher to asynchronously detect changes in source code,
   # routes, locales, etc. This feature depends on the listen gem.
@@ -69,12 +75,16 @@ Rails.application.configure do
   evented_file_watcher = ActiveSupport::EventedFileUpdateChecker
   config.file_watcher = use_polling_file_watcher ? polling_file_watcher : evented_file_watcher
 
+  # Run on boot, but do not run again on reload
   config.after_initialize do
     Bullet.enable = ENV['WITH_BULLET'] == 'true'
     Bullet.alert = ENV['NOISY_BULLET'] == 'true'
     Bullet.bullet_logger = true
     Bullet.rails_logger = true
   end
+
+  # Raises error for missing translations.
+  # config.i18n.raise_on_missing_translations = true
 
   # load WIP features flag
   config.deploy_wip_pipelines = true
