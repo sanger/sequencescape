@@ -2,6 +2,7 @@
 
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
+require './spec/requests/api/v2/shared_examples/requests'
 
 describe 'Comments API', with: :api_v2 do
   let(:base_endpoint) { '/api/v2/comments' }
@@ -86,5 +87,11 @@ describe 'Comments API', with: :api_v2 do
       expect(json.dig('data', 'type')).to eq('comments')
       expect(json.dig('data', 'attributes', 'description')).to eq('This plate is pretty')
     end
+  end
+
+  context 'when DELETE request is unsuccessful' do
+    let(:resource) { create(:comment) }
+
+    it_behaves_like 'a DESTROY request for a v2 resource'
   end
 end

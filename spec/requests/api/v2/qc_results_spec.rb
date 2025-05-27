@@ -2,6 +2,7 @@
 
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
+require './spec/requests/api/v2/shared_examples/requests'
 
 RSpec.describe Api::V2::QcResultsController, :qc_result, with: :api_v2 do
   let(:asset_invalid) { attributes_for(:qc_result) }
@@ -69,5 +70,11 @@ RSpec.describe Api::V2::QcResultsController, :qc_result, with: :api_v2 do
       json = ActiveSupport::JSON.decode(response.body)
       expect(json.keys.length).to eq(1)
     end
+  end
+
+  context 'when DELETE request is unsuccessful' do
+    let(:resource) { create(:qc_result) }
+
+    it_behaves_like 'a DESTROY request for a v2 resource'
   end
 end

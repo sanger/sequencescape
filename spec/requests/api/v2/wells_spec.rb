@@ -2,6 +2,7 @@
 
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
+require './spec/requests/api/v2/shared_examples/requests'
 
 describe 'Wells API', with: :api_v2 do
   let(:base_endpoint) { '/api/v2/wells' }
@@ -90,5 +91,11 @@ describe 'Wells API', with: :api_v2 do
         expect(updated_model.diluent_volume).to eq 34.0
       end
     end
+  end
+
+  context 'when DELETE request is unsuccessful' do
+    let(:resource) { create(:well) }
+
+    it_behaves_like 'a DESTROY request for a v2 resource'
   end
 end

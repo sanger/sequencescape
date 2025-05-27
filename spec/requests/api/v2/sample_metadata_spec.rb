@@ -2,6 +2,7 @@
 
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
+require './spec/requests/api/v2/shared_examples/requests'
 
 describe 'SampleMetadata API', with: :api_v2 do
   let(:base_endpoint) { '/api/v2/sample_metadata' }
@@ -195,5 +196,11 @@ describe 'SampleMetadata API', with: :api_v2 do
         end
       end
     end
+  end
+
+  context 'when DELETE request is unsuccessful' do
+    let(:resource) { create(:sample_metadata) }
+
+    it_behaves_like 'a DESTROY request for a v2 resource'
   end
 end

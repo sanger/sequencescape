@@ -244,4 +244,10 @@ describe 'QcFiles API', tags: :lighthouse, with: :api_v2 do
       end
     end
   end
+
+  context 'when DELETE request is unsuccessful' do
+    let(:resource) { create(:qcable_with_asset) }
+
+    it_behaves_like 'a DESTROY request for a v2 resource'
+  end
 end

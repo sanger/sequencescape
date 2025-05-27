@@ -2,6 +2,7 @@
 
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
+require './spec/requests/api/v2/shared_examples/requests'
 
 describe 'TagLayoutTemplates API', with: :api_v2 do
   let(:base_endpoint) { '/api/v2/tag_layout_templates' }
@@ -88,5 +89,11 @@ describe 'TagLayoutTemplates API', with: :api_v2 do
     it 'cannot find a route to the endpoint' do
       expect { api_post base_endpoint, payload }.to raise_error(ActionController::RoutingError)
     end
+  end
+
+  context 'when DELETE request is unsuccessful' do
+    let(:resource) { create(:tag_layout_template) }
+
+    it_behaves_like 'a DESTROY request for a v2 resource'
   end
 end

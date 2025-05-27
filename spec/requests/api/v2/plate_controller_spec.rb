@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require './spec/requests/api/v2/shared_examples/requests'
 
 RSpec.describe Api::V2::PlatesController, type: :request do
   describe 'POST /api/v2/plates/:id/register_stock_for_plate' do
@@ -64,5 +65,11 @@ RSpec.describe Api::V2::PlatesController, type: :request do
         expect(response.parsed_body['error']).to match(/Stock registration failed/)
       end
     end
+  end
+
+  context 'when DELETE request is unsuccessful' do
+    let(:resource) { create(:plate) }
+
+    it_behaves_like 'a DESTROY request for a v2 resource'
   end
 end

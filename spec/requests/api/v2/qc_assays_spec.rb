@@ -2,6 +2,7 @@
 
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
+require './spec/requests/api/v2/shared_examples/requests'
 
 RSpec.describe Api::V2::QcAssaysController, :qc_result, with: :api_v2 do
   let(:asset_1) { attributes_for(:qc_result).merge(uuid: create(:receptacle).uuid) }
@@ -42,5 +43,11 @@ RSpec.describe Api::V2::QcAssaysController, :qc_result, with: :api_v2 do
     expect(response).to have_http_status(:unprocessable_entity)
     json = ActiveSupport::JSON.decode(response.body)
     expect(json['errors'].length).to eq(1)
+  end
+
+  context 'when DELETE request is unsuccessful' do
+    let(:resource) { create(:qc_assay) }
+
+    it_behaves_like 'a DESTROY request for a v2 resource'
   end
 end

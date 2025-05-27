@@ -2,6 +2,7 @@
 
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
+require './spec/requests/api/v2/shared_examples/requests'
 
 describe 'Purposes API', with: :api_v2 do
   let(:base_endpoint) { '/api/v2/purposes' }
@@ -43,5 +44,11 @@ describe 'Purposes API', with: :api_v2 do
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('purposes')
     end
+  end
+
+  context 'when DELETE request is unsuccessful' do
+    let(:resource) { create(:plate_purpose) }
+
+    it_behaves_like 'a DESTROY request for a v2 resource'
   end
 end

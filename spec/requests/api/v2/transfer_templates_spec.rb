@@ -2,6 +2,7 @@
 
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
+require './spec/requests/api/v2/shared_examples/requests'
 
 describe 'Transfer Templates API', with: :api_v2 do
   let(:base_endpoint) { '/api/v2/transfer_templates' }
@@ -82,5 +83,11 @@ describe 'Transfer Templates API', with: :api_v2 do
     it 'finds no routes for the method' do
       expect { api_post base_endpoint, payload }.to raise_error(ActionController::RoutingError)
     end
+  end
+
+  context 'when DELETE request is unsuccessful' do
+    let(:resource) { create(:transfer_template) }
+
+    it_behaves_like 'a DESTROY request for a v2 resource'
   end
 end

@@ -2,6 +2,7 @@
 
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
+require './spec/requests/api/v2/shared_examples/requests'
 
 describe 'Receptacles API', with: :api_v2 do
   let(:base_endpoint) { '/api/v2/receptacles' }
@@ -89,5 +90,11 @@ describe 'Receptacles API', with: :api_v2 do
         expect(updated_model.submit_for_sequencing).to eq updated_submit_for_sequencing
       end
     end
+  end
+
+  context 'when DELETE request is unsuccessful' do
+    let(:resource) { create(:receptacle) }
+
+    it_behaves_like 'a DESTROY request for a v2 resource'
   end
 end

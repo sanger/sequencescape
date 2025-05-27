@@ -2,6 +2,7 @@
 
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
+require './spec/requests/api/v2/shared_examples/requests'
 
 describe 'Requests API', with: :api_v2 do
   let(:base_endpoint) { '/api/v2/requests' }
@@ -38,5 +39,11 @@ describe 'Requests API', with: :api_v2 do
       expect(response).to have_http_status(:success), response.body
       expect(json.dig('data', 'type')).to eq('requests')
     end
+  end
+
+  context 'when DELETE request is unsuccessful' do
+    let(:resource) { create(:request) }
+
+    it_behaves_like 'a DESTROY request for a v2 resource'
   end
 end

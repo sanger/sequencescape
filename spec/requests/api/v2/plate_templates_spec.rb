@@ -2,6 +2,7 @@
 
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
+require './spec/requests/api/v2/shared_examples/requests'
 
 describe 'PlateTemplates API', with: :api_v2 do
   let(:base_endpoint) { '/api/v2/plate_templates' }
@@ -53,5 +54,11 @@ describe 'PlateTemplates API', with: :api_v2 do
       # Double check at least one of the attributes
       # eg. expect(json.dig('data', 'attributes', 'state')).to eq('started')
     end
+  end
+
+  context 'when DELETE request is unsuccessful' do
+    let(:resource) { create(:plate_template) }
+
+    it_behaves_like 'a DESTROY request for a v2 resource'
   end
 end

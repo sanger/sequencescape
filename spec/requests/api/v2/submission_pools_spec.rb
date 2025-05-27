@@ -80,4 +80,11 @@ describe 'Submission Pools API', with: :api_v2 do
       expect { api_post base_endpoint, {} }.to raise_error(ActionController::RoutingError)
     end
   end
+
+  context 'when DELETE request is unsuccessful' do
+    let(:plate) { create(:plate, :with_submissions, well_count: 2) }
+    let(:resource) { plate.submission_pools.first }
+
+    it_behaves_like 'a DESTROY request for a v2 resource'
+  end
 end

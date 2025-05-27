@@ -2,6 +2,7 @@
 
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
+require './spec/requests/api/v2/shared_examples/requests'
 
 describe 'Labware API', with: :api_v2 do
   let(:base_endpoint) { '/api/v2/labware' }
@@ -49,5 +50,11 @@ describe 'Labware API', with: :api_v2 do
       expect(json['included'][0]['attributes']['user_id']).to eq(custom_metadatum_collection.user_id)
       expect(json['included'][0]['attributes']['asset_id']).to eq(custom_metadatum_collection.asset_id)
     end
+  end
+
+  context 'when DELETE request is unsuccessful' do
+    let(:resource) { create(:sample_tube) }
+
+    it_behaves_like 'a DESTROY request for a v2 resource'
   end
 end
