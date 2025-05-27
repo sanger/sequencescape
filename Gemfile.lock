@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: https://github.com/sanger/jsonapi-resources.git
-  revision: a762949d09eb741cce001aa6cd1853ec4defd837
+  revision: 03886f255364c9e4e6031317816ac8325d3f1a47
   branch: y24-447
   specs:
     jsonapi-resources (0.9.0)
@@ -95,7 +95,7 @@ GEM
       activemodel (= 7.1.5.1)
       activesupport (= 7.1.5.1)
       timeout (>= 0.4.0)
-    activerecord-import (2.1.0)
+    activerecord-import (2.2.0)
       activerecord (>= 4.2)
     activestorage (7.1.5.1)
       actionpack (= 7.1.5.1)
