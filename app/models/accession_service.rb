@@ -89,7 +89,7 @@ class AccessionService
           )
         Rails.logger.debug { xml_result }
         if xml_result.match?(/(Server error|Auth required|Login failed)/)
-          raise AccessionServiceError, "EBI Server Error. Couldnt get accession number: #{xml_result}"
+          raise AccessionServiceError, "EBI Server Error. Couldn't get accession number: #{xml_result}"
         end
 
         xmldoc = Document.new(xml_result)
