@@ -144,8 +144,7 @@ RSpec.describe BulkSubmission, with: :uploader do
       submission_class_name: 'LinearSubmission',
       product_catalogue: 'scRNA Core',
       submission_parameters: {
-        request_options: {
-        },
+        request_options: {},
         request_types: request_types.map(&:key)
       }
     }

@@ -18,6 +18,7 @@ module LabWhereClient
 
     def parse_json(str)
       return nil if str == 'null'
+
       JSON.parse(str)
     rescue JSON::ParserError => e
       raise LabwhereException.new(e), 'LabWhere is returning unexpected content', e.backtrace

@@ -18,8 +18,7 @@ shared_examples 'an invalid scRNA Bulk Submission' do |_, tube_count|
       submission_class_name: 'LinearSubmission',
       product_catalogue: 'Generic',
       submission_parameters: {
-        request_options: {
-        },
+        request_options: {},
         request_types: request_types.map(&:key)
       }
     }
@@ -378,8 +377,7 @@ describe BulkSubmission, with: :uploader do
           submission_class_name: 'LinearSubmission',
           product_catalogue: 'Generic',
           submission_parameters: {
-            request_options: {
-            },
+            request_options: {},
             request_types: request_types.map(&:key)
           }
         }
@@ -411,8 +409,7 @@ describe BulkSubmission, with: :uploader do
           submission_class_name: 'LinearSubmission',
           product_catalogue: 'Generic',
           submission_parameters: {
-            request_options: {
-            },
+            request_options: {},
             request_types: request_types.map(&:key)
           }
         }
@@ -442,8 +439,7 @@ describe BulkSubmission, with: :uploader do
           submission_class_name: 'LinearSubmission',
           product_catalogue: 'Generic',
           submission_parameters: {
-            request_options: {
-            },
+            request_options: {},
             request_types: request_types.map(&:key)
           }
         }
@@ -488,8 +484,7 @@ describe BulkSubmission, with: :uploader do
           submission_class_name: 'LinearSubmission',
           product_catalogue: 'Generic',
           submission_parameters: {
-            request_options: {
-            },
+            request_options: {},
             request_types: request_types.map(&:key)
           }
         }
@@ -552,8 +547,7 @@ describe BulkSubmission, with: :uploader do
         submission_class_name: 'LinearSubmission',
         product_catalogue: 'Generic',
         submission_parameters: {
-          request_options: {
-          },
+          request_options: {},
           request_types: request_types.map(&:key)
         }
       }

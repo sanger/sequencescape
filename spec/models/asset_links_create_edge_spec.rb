@@ -68,6 +68,7 @@ RSpec.describe AssetLink, type: :model do
               first_socket.send(message, 0) # Notify the second child
               message = 'child1: Timeout waiting for resume message'
               raise StandardError, message unless first_socket.wait_readable(10)
+
               message = 'resume' # Wait for the second child to create the edge
               first_socket.recv(message.size)
             elsif find_link_call_count == 2
@@ -86,6 +87,7 @@ RSpec.describe AssetLink, type: :model do
           ActiveRecord::Base.connection.reconnect!
           message = 'child2: Timeout waiting for paused message'
           raise StandardError, message unless second_socket.wait_readable(10)
+
           message = 'paused' # Wait for the first child to call find_link
           second_socket.recv(message.size)
           described_class.create_edge(ancestor, descendant)
@@ -137,6 +139,7 @@ RSpec.describe AssetLink, type: :model do
               first_socket.send(message, 0)
               message = 'child1: Timeout waiting for resume message'
               raise StandardError, message unless first_socket.wait_readable(10)
+
               message = 'resume' # Wait for the second child to create the edge
               first_socket.recv(message.size)
             end
@@ -163,6 +166,7 @@ RSpec.describe AssetLink, type: :model do
           ActiveRecord::Base.connection.reconnect!
           message = 'child2: Timeout waiting for paused message'
           raise StandardError, message unless second_socket.wait_readable(10)
+
           message = 'paused' # Wait for the first child to call find_link
           second_socket.recv(message.size)
           described_class.create_edge(ancestor, descendant)
@@ -212,6 +216,7 @@ RSpec.describe AssetLink, type: :model do
               first_socket.send(message, 0)
               message = 'child1: Timeout waiting for resume message'
               raise StandardError, message unless first_socket.wait_readable(10)
+
               message = 'resume' # Wait for the second child to create the edge
               first_socket.recv(message.size)
             end
@@ -255,6 +260,7 @@ RSpec.describe AssetLink, type: :model do
           ActiveRecord::Base.connection.reconnect!
           message = 'child2: Timeout waiting for paused message'
           raise StandardError, message unless second_socket.wait_readable(10)
+
           message = 'paused' # Wait for the first child to call find_link
           second_socket.recv(message.size)
           described_class.create_edge(ancestor, descendant)

@@ -30,6 +30,7 @@ class Admin::ProjectsController < ApplicationController
       render partial: 'edit', locals: { project: @project }
     end
   end
+
   def update
     @project = Project.find(params[:id])
     flash.now[:notice] = 'Your project has been updated'

@@ -153,6 +153,7 @@ module Core::Io::Json::Grammar
       value =
         @attribute_path.inject(object) do |o, k|
           return if o.nil?
+
           o.send(k)
         end or return
 

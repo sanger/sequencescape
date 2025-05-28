@@ -61,6 +61,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityCalculator
     # Only calculate if the submission template name is SCRNA_CORE_CDNA_PREP_GEM_X_5P
     # and all required headers are present
     return {} unless submission_template_name == SCRNA_CORE_CDNA_PREP_GEM_X_5P && validate_required_headers
+
     allowance_map = {}
     group_rows_by_study_and_project.each do |(study_name, project_name), rows|
       allowance_map[{ study: study_name, project: project_name }] = determine_allowance(rows)

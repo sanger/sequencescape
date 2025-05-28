@@ -63,6 +63,7 @@ module LabelPrinter
 
     def self.register_printer(name, printer_type)
       return if printer_exists?(name)
+
       RestClient.post(
         printers_url,
         { 'data' => { 'attributes' => { 'name' => name, 'printer_type' => printer_type } } }.to_json,
@@ -77,6 +78,7 @@ module LabelPrinter
 
     def self.pretty_errors(errors)
       return if errors.blank?
+
       parsed_errors = JSON.parse(errors)['errors']
       case parsed_errors
       when Array

@@ -51,6 +51,7 @@ module Submission::ValidationsByTemplateName
       validate_scrna_core_cdna_prep_feasibility
     end
   end
+
   def apply_number_of_samples_per_pool_validation
     # Creates groups of rows based on the study and project name (pool_number, study-project) combinations
     group_rows_by_study_and_project

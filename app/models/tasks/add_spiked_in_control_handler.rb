@@ -20,6 +20,7 @@ module Tasks::AddSpikedInControlHandler
       @phi_x_per_request ||=
         params[:barcode].transform_values do |barcode|
           next if barcode.blank?
+
           phi_x_buffers.detect { |tube| tube.any_barcode_matching?(barcode) }
         end
     end
@@ -38,6 +39,7 @@ module Tasks::AddSpikedInControlHandler
     def add_control
       requests.each do |request|
         next unless selected_requests.include?(request.id) && request.lane
+
         process_request(request)
       end
 

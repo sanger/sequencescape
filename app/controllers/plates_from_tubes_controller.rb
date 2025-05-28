@@ -102,8 +102,10 @@ class PlatesFromTubesController < ApplicationController
     source_tube_barcodes = extract_source_tube_barcodes
     return unless validate_tube_count?(source_tube_barcodes)
     return unless validate_duplicate_tubes?(source_tube_barcodes)
+
     found_tubes = find_tubes(source_tube_barcodes)
     return unless validate_missing_tubes?(found_tubes, source_tube_barcodes)
+
     create_plates(scanned_user, barcode_printer, found_tubes)
     handle_successful_creation
   end
@@ -213,6 +215,7 @@ class PlatesFromTubesController < ApplicationController
       end
     end
     return unless params[:plates_from_tubes][:create_asset_group] == 'Yes'
+
     # The logic is the same for all plate creators, so we can just use the first one
     @asset_groups << @plate_creator.first.create_asset_group(@created_plates)
   end

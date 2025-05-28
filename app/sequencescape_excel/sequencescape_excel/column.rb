@@ -48,6 +48,7 @@ module SequencescapeExcel
     # create a new validation object
     def validation=(validation)
       return if validation.nil?
+
       @validation = validation.is_a?(Hash) ? Validation.new(validation) : validation.dup
     end
 

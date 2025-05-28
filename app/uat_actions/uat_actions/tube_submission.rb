@@ -123,6 +123,7 @@ class UatActions::TubeSubmission < UatActions
   # @return [void]
   def validate_tubes_exist
     return if tube_barcodes.blank? # already validated by presence
+
     barcodes =
       tube_barcodes
         .gsub(/(\\[trfvn])+/, ' ')

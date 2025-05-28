@@ -47,6 +47,7 @@ module SampleManifestExcel
 
         # column_number is -1 if no column found by this name (returns NullColumn object from find)
         return nil if column_number.negative?
+
         at(column_number)
       end
 
@@ -164,6 +165,7 @@ module SampleManifestExcel
 
         # it is mandatory to have a value in the primary column
         return true if primary_column_names.all? { |column_name| value(column_name).blank? }
+
         false
       end
 

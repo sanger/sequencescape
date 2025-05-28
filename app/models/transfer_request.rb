@@ -306,6 +306,7 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def on_failed
     return unless target_asset
     return unless target_asset.allow_to_remove_downstream_aliquots?
+
     ActiveRecord::Base.transaction { target_asset.delay.remove_downstream_aliquots }
   end
   alias on_cancelled on_failed

@@ -30,6 +30,7 @@ module RecordLoader
 
       tag_group = find_tag_group!(tag_group_name, name)
       return nil if tag_group.nil?
+
       tag2_group = find_tag_group!(tag2_group_name, name) if tag2_group_name
 
       options[:tag_group_id] = tag_group.id
@@ -55,6 +56,7 @@ module RecordLoader
     #   `development`, `staging`, or `cucumber`.
     def find_tag_group!(tag_group_name, tag_set_name) # rubocop:disable Metrics/MethodLength
       return unless tag_group_name
+
       TagGroup.find_by!(name: tag_group_name)
     rescue ActiveRecord::RecordNotFound
       message =
