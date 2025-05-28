@@ -1,5 +1,5 @@
+# frozen_string_literal: true
 require 'yaml'
-
 require 'flipper/adapters/active_record'
 
 FLIPPER_FEATURES = YAML.load_file('./config/feature_flags.yml')
