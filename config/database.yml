@@ -54,7 +54,7 @@ test2: &test
 cucumber: &cucumber
   <<: *MYSQL
   database: sequencescape_test<%= ENV['TEST_ENV_NUMBER'] %><%= suffix %>_cuke
-  pool: 5
+  pool: 1
   timeout: 25000
 
 test:
