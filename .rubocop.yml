@@ -1,5 +1,4 @@
 inherit_from:
-  - node_modules/@prettier/plugin-ruby/rubocop.yml
   - .rubocop_todo.yml
 require:
   - test_prof/rubocop
