@@ -40,9 +40,6 @@ Layout/ClosingHeredocIndentation:
     - 'db/migrate/20190829125358_update_view_sample_tubes.rb'
     - 'db/migrate/20190829125359_update_view_wells.rb'
     - 'db/seeds.rb'
-    - 'spec/features/pipelines/cherrypick/cherrypick_pipeline_spec.rb'
-    - 'spec/insdc/import_countries_spec.rb'
-    - 'spec/models/tag_substitutions_spec.rb'
 
 # Offense count: 3
 # This cop supports safe autocorrection (--autocorrect).
@@ -232,21 +229,6 @@ Layout/MultilineOperationIndentation:
     - 'config/application.rb'
     - 'spec/factories/sample_manifest_excel/sample_manifest_assets.rb'
     - 'spec/models/linear_submission_spec.rb'
-
-# Offense count: 27
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyleForEmptyBraces.
-# SupportedStyles: space, no_space, compact
-# SupportedStylesForEmptyBraces: space, no_space
-Layout/SpaceInsideHashLiteralBraces:
-  EnforcedStyle: space
-
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowInHeredoc.
-Layout/TrailingWhitespace:
-  Exclude:
-    - 'spec/validators/novaseqx_pe_validator_spec.rb'
 
 # Offense count: 21
 # This cop supports safe autocorrection (--autocorrect).

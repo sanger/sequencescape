@@ -160,7 +160,7 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
           C; SCRC3 = #{plates[2].human_barcode}
           C;
           C; DEST1 = #{destination_plate_human_barcode}
-        TECAN
+      TECAN
 
       it_behaves_like 'a cherrypicking procedure'
     end
@@ -268,7 +268,7 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
           C; SCRC3 = #{source_plates_ordered_in_row_order_by_destination[2].human_barcode}
           C;
           C; DEST1 = #{destination_plate_human_barcode}
-        TECAN
+      TECAN
 
       it_behaves_like 'a cherrypicking procedure'
     end
@@ -311,7 +311,7 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
         C; SCRC3 = #{plates[2].human_barcode}
         C;
         C; DEST1 = #{destination_plate_human_barcode}
-      TECAN
+    TECAN
 
     let(:expected_pick_files_by_destination_plate) do
       { destination_plate_human_barcode => { 1 => expected_tecan_file } }
