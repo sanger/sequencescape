@@ -7,22 +7,20 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
   end
 
   def create
-    if params[:upload].present?
-      @uploader = create_uploader
+    return error('No file attached') unless params[:upload].present?
 
-      begin
-        upload_succeeded = @uploader.run!
-      rescue Sample::AccessionValidationFailed => e
-        error("Your sample manifest contained invalid data and couldn't be uploaded: #{e.message}")
-      end
+    @uploader = create_uploader
 
-      if upload_succeeded
-        success('Sample manifest successfully uploaded.')
-      else
-        error('Your sample manifest couldn\'t be uploaded.')
-      end
+    begin
+      upload_succeeded = @uploader.run!
+    rescue Sample::AccessionValidationFailed => e
+      return error("Your sample manifest contained invalid data and could not be uploaded: #{e.message}")
+    end
+
+    if upload_succeeded
+      success('Sample manifest successfully uploaded.')
     else
-      error('No file attached')
+      error('Your sample manifest couldn\'t be uploaded.')
     end
   end
 
