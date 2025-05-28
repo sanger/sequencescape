@@ -18,7 +18,7 @@ mysql: &MYSQL
   properties:
     characterSetResults: utf8mb4
   pool: 5
-  timeout: 5000
+  timeout: 25000
   reaping_frequency: 600
   host: <%= ENV.fetch('DBHOST', '127.0.0.1') %>
   port: <%= ENV.fetch('DBPORT','3306') %>
@@ -33,13 +33,13 @@ mysql: &MYSQL
 development:
   <<: *MYSQL
   database: sequencescape_development<%= suffix %>
-  pool: 1
+  pool: 5
 
   # indentation is deliberate!
   development_warehouse: &warehouse
     <<: *MYSQL
     database: warehouse_development<%= suffix %>
-    pool: 1
+    pool: 5
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -48,14 +48,14 @@ development:
 test2: &test
   <<: *MYSQL
   database: sequencescape_test<%= ENV['TEST_ENV_NUMBER'] %><%= suffix %>
-  pool: 1
-  timeout: 5000
+  pool: 5
+  timeout: 25000
 
 cucumber: &cucumber
   <<: *MYSQL
   database: sequencescape_test<%= ENV['TEST_ENV_NUMBER'] %><%= suffix %>_cuke
-  pool: 1
-  timeout: 5000
+  pool: 5
+  timeout: 25000
 
 test:
   <<: *cucumber
@@ -72,4 +72,3 @@ production:
 ### Next release
 ### Training
 ### Production
-
