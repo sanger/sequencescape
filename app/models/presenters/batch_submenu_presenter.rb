@@ -70,7 +70,7 @@ module Presenters
     # rubocop is suggesting changes that returns false positive
     # rubocop: disable Performance/RedundantEqualityComparisonBlock
     def aviti_requests?
-      @batch.requests.any? {|request| request.is_a?(ElementAvitiSequencingRequest)}
+      @batch.requests.any? { |request| request.is_a?(ElementAvitiSequencingRequest) }
     end
     # rubocop: enable Performance/RedundantEqualityComparisonBlock
 
