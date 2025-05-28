@@ -34,15 +34,24 @@ RSpec.describe Accession::Request, :accession, type: :model do
   end
 
   describe '#post' do
+    before { allow(Rails).to receive(:logger).and_return(instance_double(Logger, error: nil)) }
+
     it 'returns nothing if the submission is not valid' do
       expect(described_class.new(nil).post).to be_nil
     end
 
-    it 'returns nothing if an error is raised' do
+    it 'returns nothing and logs error if an error is raised' do
       request = described_class.new(submission)
-      allow(request.resource).to receive(:post).with(submission.payload.files).and_raise(StandardError)
+      allow(request.resource).to receive(:post).with(submission.payload.files).and_raise(
+        StandardError.new('Something went wrong')
+      )
+      allow(ExceptionNotifier).to receive(:notify_exception).with(
+        StandardError,
+        hash_including(message: { message: 'Posting of accession submission failed' }, submission: submission.to_xml)
+      )
 
       expect(request.post).not_to be_accessioned
+      expect(Rails.logger).to have_received(:error).with('Something went wrong')
     end
 
     it 'returns a successful response if accessioning is successful' do

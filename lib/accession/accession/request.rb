@@ -43,7 +43,7 @@ module Accession
       handle_exception(e, message: 'Posting of accession submission failed')
       Accession::NullResponse.new
     ensure
-      submission.payload.close!
+      submission&.payload&.close!
     end
 
     private
@@ -63,7 +63,7 @@ module Accession
 
     def handle_exception(error, message)
       Rails.logger.error(error.message)
-      ExceptionNotifier.notify_exception(e, { message: message, submission: submission.to_xml })
+      ExceptionNotifier.notify_exception(error, { message: message, submission: submission.to_xml })
     end
   end
 end
