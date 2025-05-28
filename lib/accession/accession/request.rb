@@ -1,4 +1,7 @@
 # frozen_string_literal: true
+
+require 'exception_notification'
+
 module Accession
   ##
   # Does what is says on the tin.
@@ -38,6 +41,13 @@ module Accession
           Accession::Response.new(resource.post(submission.payload.open))
         rescue StandardError => e
           Rails.logger.error(e.message)
+          ExceptionNotifier.notify_exception(
+            e,
+            data: {
+              message: 'Posting of accession submission failed',
+              submission: submission.to_xml
+            }
+          )
           Accession::NullResponse.new
         ensure
           submission.payload.close!
