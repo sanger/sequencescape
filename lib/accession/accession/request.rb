@@ -36,23 +36,14 @@ module Accession
     # If the service errors it will return a NullResponse
     # Makes sure that the payload is closed.
     def post
-      if valid?
-        begin
-          Accession::Response.new(resource.post(submission.payload.open))
-        rescue StandardError => e
-          Rails.logger.error(e.message)
-          ExceptionNotifier.notify_exception(
-            e,
-            data: {
-              message: 'Posting of accession submission failed',
-              submission: submission.to_xml
-            }
-          )
-          Accession::NullResponse.new
-        ensure
-          submission.payload.close!
-        end
-      end
+      return unless valid?
+
+      Accession::Response.new(resource.post(submission.payload.open))
+    rescue StandardError => e
+      handle_exception(e, message: 'Posting of accession submission failed')
+      Accession::NullResponse.new
+    ensure
+      submission.payload.close!
     end
 
     private
@@ -68,6 +59,11 @@ module Accession
       elsif ENV['http_proxy'].present?
         RestClient.proxy = ENV['http_proxy']
       end
+    end
+
+    def handle_exception(error, message)
+      Rails.logger.error(error.message)
+      ExceptionNotifier.notify_exception(e, { message: message, submission: submission.to_xml })
     end
   end
 end
