@@ -15,6 +15,7 @@ Rails.application.configure do
   ##   * you have limited gate data combined across all features (< 1k enabled gates, like individual actors, across all features)
   ##
   ## For more info, see https://www.flippercloud.io/docs/optimization#preloading
+  # We only have a handful of features, so no need to preload them.
   config.flipper.preload = false
 
   ## Warn or raise an error if an unknown feature is checked
