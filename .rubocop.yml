@@ -28,20 +28,6 @@ AllCops:
     - node_modules/**/*
     - tmp/**/*
 
-# Style/MultilineIfModifier:
-#   Enabled: false
-
-# Disable the single- vs double-quotes rules as these depend on whether the user
-# has added or not `plugin/single_quotes` for `syntax_tree`
-Style/StringLiterals:
-  Enabled: false
-
-Style/StringLiteralsInInterpolation:
-  Enabled: false
-
-Style/QuotedSymbols:
-  Enabled: false
-
 Style/EmptyMethod:
   EnforcedStyle: expanded
 
