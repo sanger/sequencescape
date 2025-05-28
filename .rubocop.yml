@@ -28,14 +28,8 @@ AllCops:
     - node_modules/**/*
     - tmp/**/*
 
-
 # Style/MultilineIfModifier:
 #   Enabled: false
-
-# # Syntax Tree will expand empty methods to put the end keyword on the subsequent
-# # line to reduce git diff noise.
-# Style/EmptyMethod:
-#   EnforcedStyle: expanded
 
 # Disable the single- vs double-quotes rules as these depend on whether the user
 # has added or not `plugin/single_quotes` for `syntax_tree`
@@ -48,19 +42,14 @@ Style/StringLiteralsInInterpolation:
 Style/QuotedSymbols:
   Enabled: false
 
-# # Disable the trailing-comma rules as these depend on whether the user has added
-# # or not `plugin/trailing_comma` for `syntax_tree`
-# Style/TrailingCommaInArguments:
-#   Enabled: false
-
-# Style/TrailingCommaInArrayLiteral:
-#   Enabled: false
-
-# Style/TrailingCommaInHashLiteral:
-#   Enabled: false
+Style/EmptyMethod:
+  EnforcedStyle: expanded
 
 Layout/EmptyLineAfterMagicComment:
   Enabled: false
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
 
 RSpec/AggregateExamples:
   # Aggregate examples can be useful, but the cop gets into nasty battles with
