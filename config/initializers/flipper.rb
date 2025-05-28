@@ -12,7 +12,8 @@ Rails.application.configure do
   ## Flipper preloads all features before each request, which is recommended if:
   ##   * you have a limited number of features (< 100?)
   ##   * most of your requests depend on most of your features
-  ##   * you have limited gate data combined across all features (< 1k enabled gates, like individual actors, across all features)
+  ##   * you have limited gate data combined across all features (< 1k enabled gates,
+  ##     like individual actors, across all features)
   ##
   ## For more info, see https://www.flippercloud.io/docs/optimization#preloading
   # We only have a handful of features, so no need to preload them for all requests.
