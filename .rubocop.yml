@@ -59,6 +59,9 @@ Style/QuotedSymbols:
 # Style/TrailingCommaInHashLiteral:
 #   Enabled: false
 
+Layout/EmptyLineAfterMagicComment:
+  Enabled: false
+
 RSpec/AggregateExamples:
   # Aggregate examples can be useful, but the cop gets into nasty battles with
   # other Spec cops, and is only really of value in expensive tests.
