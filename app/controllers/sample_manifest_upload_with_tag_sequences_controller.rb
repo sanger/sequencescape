@@ -7,25 +7,24 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
   end
 
   def create
-    return error('No file attached') unless params[:upload].present?
+    return error('No file attached') if params[:upload].blank?
 
-    @uploader = create_uploader
-
-    begin
-      upload_succeeded = @uploader.run!
-    rescue Sample::AccessionValidationFailed => e
-      return error("Your sample manifest contained invalid data and could not be uploaded: #{e.message}")
-    end
-
-    if upload_succeeded
+    if upload_manifest
       success('Sample manifest successfully uploaded.')
     else
       error('Your sample manifest couldn\'t be uploaded.')
     end
+  rescue Sample::AccessionValidationFailed => e
+    error("Your sample manifest contained invalid data and could not be uploaded: #{e.message}")
   end
 
   def create_uploader
     SampleManifest::Uploader.new(params[:upload], SampleManifestExcel.configuration, current_user, params[:override])
+  end
+
+  def upload_manifest
+    @uploader = create_uploader
+    @uploader.run!
   end
 
   def success(message)
