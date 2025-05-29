@@ -128,6 +128,8 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
   validate :validate_plate_purpose_exists
   validate :validate_library_type_exists
   validate :validate_primer_panel_exists
+  validate :validate_study_exists
+  validate :validate_project_exists
 
   #
   # Returns a default copy of the UatAction which will be used to fill in the form
@@ -246,6 +248,30 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
     errors.add(:primer_panel_name, message)
   end
 
+  # Validates that the study exists for the specified study name.
+  # It is skipped if no study name is provided and the default will be used.
+  #
+  # return [void]
+  def validate_study_exists
+    return if study_name.blank? # default set from StaticRecords will be used
+    return if Study.exists?(name: study_name)
+
+    message = format(ERROR_STUDY_DOES_NOT_EXIST, study_name)
+    errors.add(:study_name, message)
+  end
+
+  # Validates that the project exists for the specified project name.
+  # It is skipped if no project name is provided and the default will be used.
+  #
+  # return [void]
+  def validate_project_exists
+    return if project_name.blank? # default set from StaticRecords will be used
+    return if Project.exists?(name: project_name)
+
+    message = format(ERROR_PROJECT_DOES_NOT_EXIST, project_name)
+    errors.add(:project_name, message)
+  end
+
   def submission_template
     @submission_template = SubmissionTemplate.find_by(name: submission_template_name)
   end
@@ -349,7 +375,7 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
   # Any helper methods
 
   def project
-    return UatActions::StaticRecords.project unless project_name.present?
+    return UatActions::StaticRecords.project if project_name.blank?
     Project.find_by(name: project_name) || UatActions::StaticRecords.project
   end
 

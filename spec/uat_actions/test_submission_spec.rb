@@ -307,17 +307,30 @@ describe UatActions::TestSubmission do
     context 'with default parameters' do
       let(:parameters) { {} }
 
-      # rubocop:disable RSpec/ExampleLength
-      it 'configures the generator with default values' do
+      it 'configures the generator with the default purpose name' do
         test_submission.send(:setup_generator)
-
         expect(generator).to have_received(:plate_purpose_name=).with(default_purpose_name)
+      end
+
+      it 'configures the generator with the default well count' do
+        test_submission.send(:setup_generator)
         expect(generator).to have_received(:well_count=).with(96)
+      end
+
+      it 'configures the generator with Random layout' do
+        test_submission.send(:setup_generator)
         expect(generator).to have_received(:well_layout=).with('Random')
+      end
+
+      it 'configures the generator with one sample per well' do
+        test_submission.send(:setup_generator)
         expect(generator).to have_received(:number_of_samples_in_each_well=).with(1)
+      end
+
+      it 'does not set a study name' do
+        test_submission.send(:setup_generator)
         expect(generator).not_to have_received(:study_name=)
       end
-      # rubocop:enable RSpec/ExampleLength
     end
 
     context 'with custom parameters' do
@@ -330,17 +343,30 @@ describe UatActions::TestSubmission do
         }
       end
 
-      # rubocop:disable RSpec/ExampleLength
-      it 'configures the generator with the provided values' do
+      it 'configures the generator with the custom purpose name' do
         test_submission.send(:setup_generator)
-
         expect(generator).to have_received(:plate_purpose_name=).with('Custom Purpose')
+      end
+
+      it 'configures the generator with the custom well count' do
+        test_submission.send(:setup_generator)
         expect(generator).to have_received(:well_count=).with(48)
+      end
+
+      it 'configures the generator with Random layout' do
+        test_submission.send(:setup_generator)
         expect(generator).to have_received(:well_layout=).with('Random')
+      end
+
+      it 'configures the generator with multiple samples per well' do
+        test_submission.send(:setup_generator)
         expect(generator).to have_received(:number_of_samples_in_each_well=).with(3)
+      end
+
+      it 'configures the generator with the specified study name' do
+        test_submission.send(:setup_generator)
         expect(generator).to have_received(:study_name=).with('Test Study')
       end
-      # rubocop:enable RSpec/ExampleLength
     end
   end
 
