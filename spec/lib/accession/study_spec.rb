@@ -70,68 +70,62 @@ RSpec.describe Study, :accession, type: :model do
           create(study_type, accession_number: 'ENA123', samples: accessionable_samples + non_accessionable_samples)
         end
 
-        it 'raises an error due to missing metadata' do
-          expect { study.accession_all_samples }.to raise_error(StandardError) do |error|
-            first_failed_sample_name = 'Sample6'
-            expect(error.message).to include(
-              "Accessionable is invalid for sample '#{first_failed_sample_name}': Sample does not have" \
-                " the required metadata: #{missing_metadata_for_study}"
-            )
-          end
+        before do
+          study.accession_all_samples
+          study.reload
         end
 
-        context 'when raised errors are handled' do
-          before do
-            begin
-              study.accession_all_samples
-            rescue StandardError
-              # assume error is appropriately handled
-            end
-            study.reload
-          end
+        it 'adds errors to the sample model' do
+          expect(study.errors.full_messages).to eq(
+            [
+              "Accessionable is invalid for sample 'Sample6':" \
+                " Sample does not have the required metadata: #{missing_metadata_for_study}.",
+              "Accessionable is invalid for sample 'Sample7':" \
+                " Sample does not have the required metadata: #{missing_metadata_for_study}.",
+              "Accessionable is invalid for sample 'Sample8':" \
+                " Sample does not have the required metadata: #{missing_metadata_for_study}."
+            ]
+          )
+        end
 
-          it 'accessions only the samples with accession numbers' do
-            expect(study.samples.count { |sample| sample.sample_metadata.sample_ebi_accession_number.present? }).to eq(
-              accessionable_samples.count
-            )
-          end
+        it 'accessions only the samples with accession numbers' do
+          expect(study.samples.count { |sample| sample.sample_metadata.sample_ebi_accession_number.present? }).to eq(
+            accessionable_samples.count
+          )
+        end
 
-          it 'does not accession samples without accession numbers' do
-            expect(study.samples.count { |sample| sample.sample_metadata.sample_ebi_accession_number.nil? }).to eq(
-              non_accessionable_samples.count
-            )
-          end
+        it 'does not accession samples without accession numbers' do
+          expect(study.samples.count { |sample| sample.sample_metadata.sample_ebi_accession_number.nil? }).to eq(
+            non_accessionable_samples.count
+          )
         end
       end
 
       context 'when none of the samples in a study are accessionable' do
         let(:study) { create(study_type, accession_number: 'ENA123', samples: non_accessionable_samples) }
 
-        it 'raises an error due to missing metadata' do
-          expect { study.accession_all_samples }.to raise_error(StandardError) do |error|
-            first_failed_sample_name = 'Sample1'
-            expect(error.message).to include(
-              "Accessionable is invalid for sample '#{first_failed_sample_name}': Sample does not have" \
-                " the required metadata: #{missing_metadata_for_study}"
-            )
-          end
+        before do
+          study.accession_all_samples
+          study.reload
         end
 
-        context 'when raised errors are handled' do
-          before do
-            begin
-              study.accession_all_samples
-            rescue StandardError
-              # assume error is appropriately handled
-            end
-            study.reload
-          end
+        it 'adds errors to the sample model' do
+          expect(study.errors.full_messages).to eq(
+            [
+              "Accessionable is invalid for sample 'Sample1':" \
+                " Sample does not have the required metadata: #{missing_metadata_for_study}.",
+              "Accessionable is invalid for sample 'Sample2':" \
+                " Sample does not have the required metadata: #{missing_metadata_for_study}.",
+              "Accessionable is invalid for sample 'Sample3':" \
+                " Sample does not have the required metadata: #{missing_metadata_for_study}."
+            ]
+          )
+        end
 
-          it 'does not accession samples without accession numbers' do
-            expect(study.samples.count { |sample| sample.sample_metadata.sample_ebi_accession_number.nil? }).to eq(
-              non_accessionable_samples.count
-            )
-          end
+        it 'does not accession samples without accession numbers' do
+          expect(study.samples.count { |sample| sample.sample_metadata.sample_ebi_accession_number.nil? }).to eq(
+            non_accessionable_samples.count
+          )
         end
       end
     end
