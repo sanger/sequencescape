@@ -349,6 +349,7 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
   # Any helper methods
 
   def project
+    return UatActions::StaticRecords.project unless project_name.present?
     Project.find_by(name: project_name) || UatActions::StaticRecords.project
   end
 
