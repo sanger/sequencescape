@@ -48,7 +48,7 @@ class Accessionable::Policy < Accessionable::Base
   end
 
   def protect?(service)
-    service.policy_visibility(@study) == AccessionService::Protect
+    service.policy_visibility(@study) == AccessionService::PROTECT
   end
 
   def accessionable_id

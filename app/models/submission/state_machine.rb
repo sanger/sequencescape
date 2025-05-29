@@ -56,7 +56,7 @@ module Submission::StateMachine
     end
 
     def unprocessed?
-      UnprocessedStates.include?(state)
+      UNPROCESSED_STATES.include?(state)
     end
 
     def cancellable?
@@ -118,9 +118,9 @@ module Submission::StateMachine
 
   private :configure_state_machine
 
-  UnprocessedStates = %w[building pending processing].freeze
+  UNPROCESSED_STATES = %w[building pending processing].freeze
   def configure_named_scopes
-    scope :unprocessed, -> { where(state: UnprocessedStates) }
+    scope :unprocessed, -> { where(state: UNPROCESSED_STATES) }
     scope :processed, -> { where(state: %w[ready failed]) }
   end
 
