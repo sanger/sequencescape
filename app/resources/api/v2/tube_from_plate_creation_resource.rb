@@ -118,13 +118,13 @@ module Api
 
       # @!attribute [rw] parent
       #   Setting this relationship alongside the `parent_uuid` attribute will override the attribute value.
-      #   @return [TubeResource] The parent tube of the tube being created.
+      #   @return [PateResource] The parent plate of the tube being created.
       #   @note This relationship is required.
       has_one :parent, class_name: 'Plate'
 
       # @!attribute [rw] user
       #   Setting this relationship alongside the `user_uuid` attribute will override the attribute value.
-      #   @return [UserResource] The user who initiated the creation of the pooled plate.
+      #   @return [UserResource] The user who initiated the creation of the tube.
       #   @note This relationship is required.
       has_one :user, write_once: true
     end
