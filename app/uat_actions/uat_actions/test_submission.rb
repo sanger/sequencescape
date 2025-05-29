@@ -73,7 +73,7 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
                  'Leave blank to use the default study.',
              select_options: -> { Study.active.alphabetical.pluck(:name) },
              options: {
-               include_blank: 'Sample Study selection...'
+               include_blank: 'Study selection...'
              }
   form_field :project_name,
              :select,
@@ -349,6 +349,7 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
   # Any helper methods
 
   def project
+    return UatActions::StaticRecords.project unless project_name.present?
     Project.find_by(name: project_name) || UatActions::StaticRecords.project
   end
 
