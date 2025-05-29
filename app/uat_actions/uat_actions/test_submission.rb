@@ -73,7 +73,7 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
                  'Leave blank to use the default study.',
              select_options: -> { Study.active.alphabetical.pluck(:name) },
              options: {
-               include_blank: 'Sample Study selection...'
+               include_blank: 'Study selection...'
              }
   form_field :project_name,
              :select,
