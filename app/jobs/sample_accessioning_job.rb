@@ -13,10 +13,10 @@ SampleAccessioningJob =
 
       # update_accession_number returns true if an accession has been supplied, and the sample has been saved.
       # If this returns false, then we fail the job. This should catch any failure situations
-      submission.update_accession_number || raise(StandardError)
+      submission.update_accession_number || raise(StandardError, 'Failed to update accession number')
     rescue StandardError => e
       Rails.logger.error("Error performing SampleAccessioningJob: #{e.message}")
-      ExceptionNotifier.notify_exception(e, data: { message: 'Error performing SampleAccessioningJob' })
+      ExceptionNotifier.notify_exception(e, data: { message: "Error performing SampleAccessioningJob: #{e.message}" })
     end
 
     def reschedule_at(current_time, _attempts)
