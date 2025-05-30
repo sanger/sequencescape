@@ -8,8 +8,8 @@ GIT
 
 GIT
   remote: https://github.com/sanger/jsonapi-resources.git
-  revision: 03886f255364c9e4e6031317816ac8325d3f1a47
-  branch: y24-447
+  revision: be2fb43f5f8da2e632fb5f48200928b2dd3d8bf9
+  branch: develop
   specs:
     jsonapi-resources (0.9.0)
       activerecord (>= 4.1)
