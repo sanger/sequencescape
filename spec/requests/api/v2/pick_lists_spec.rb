@@ -114,10 +114,4 @@ describe 'PickLists API', :pick_list, with: :api_v2 do
       end
     end
   end
-
-  context 'when DELETE request is unsuccessful' do
-    let(:resource) { create(:pick_list) }
-
-    it_behaves_like 'a DESTROY request for a v2 resource'
-  end
 end

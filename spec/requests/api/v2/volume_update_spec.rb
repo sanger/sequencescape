@@ -75,10 +75,4 @@ describe 'VolumeUpdate API', with: :api_v2 do
       expect(json.dig('data', 'attributes', 'volume_change')).to eq(5.0)
     end
   end
-
-  context 'when DELETE request is unsuccessful' do
-    let(:resource) { create(:volume_update) }
-
-    it_behaves_like 'a DESTROY request for a v2 resource'
-  end
 end

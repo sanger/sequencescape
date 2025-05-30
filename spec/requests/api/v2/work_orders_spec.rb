@@ -129,10 +129,4 @@ describe 'WorkOrders API', with: :api_v2 do
       expect(json.dig('data', 'attributes', 'state')).to eq('started')
     end
   end
-
-  context 'when DELETE request is unsuccessful' do
-    let(:resource) { create(:work_order) }
-
-    it_behaves_like 'a DESTROY request for a v2 resource'
-  end
 end

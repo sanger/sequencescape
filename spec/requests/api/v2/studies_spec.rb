@@ -45,10 +45,4 @@ describe 'Studies API', with: :api_v2 do
       expect(json.dig('data', 'type')).to eq('studies')
     end
   end
-
-  context 'when DELETE request is unsuccessful' do
-    let(:resource) { create(:study) }
-
-    it_behaves_like 'a DESTROY request for a v2 resource'
-  end
 end

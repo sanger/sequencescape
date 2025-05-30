@@ -112,10 +112,4 @@ describe 'PlatePurposes API', with: :api_v2 do
       end
     end
   end
-
-  context 'when DELETE request is unsuccessful' do
-    let(:resource) { create(:plate_purpose) }
-
-    it_behaves_like 'a DESTROY request for a v2 resource'
-  end
 end

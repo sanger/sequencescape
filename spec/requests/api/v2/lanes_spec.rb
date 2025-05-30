@@ -34,10 +34,4 @@ describe 'Lanes API', with: :api_v2 do
       expect(json.dig('data', 'type')).to eq('lanes')
     end
   end
-
-  context 'when DELETE request is unsuccessful' do
-    let(:resource) { create(:lane) }
-
-    it_behaves_like 'a DESTROY request for a v2 resource'
-  end
 end

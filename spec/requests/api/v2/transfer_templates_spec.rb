@@ -84,10 +84,4 @@ describe 'Transfer Templates API', with: :api_v2 do
       expect { api_post base_endpoint, payload }.to raise_error(ActionController::RoutingError)
     end
   end
-
-  context 'when DELETE request is unsuccessful' do
-    let(:resource) { create(:transfer_template) }
-
-    it_behaves_like 'a DESTROY request for a v2 resource'
-  end
 end

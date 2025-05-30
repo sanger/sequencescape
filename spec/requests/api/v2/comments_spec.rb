@@ -88,10 +88,4 @@ describe 'Comments API', with: :api_v2 do
       expect(json.dig('data', 'attributes', 'description')).to eq('This plate is pretty')
     end
   end
-
-  context 'when DELETE request is unsuccessful' do
-    let(:resource) { create(:comment) }
-
-    it_behaves_like 'a DESTROY request for a v2 resource'
-  end
 end

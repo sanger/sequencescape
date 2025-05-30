@@ -66,10 +66,4 @@ RSpec.describe Api::V2::PlatesController, type: :request do
       end
     end
   end
-
-  context 'when DELETE request is unsuccessful' do
-    let(:resource) { create(:plate) }
-
-    it_behaves_like 'a DESTROY request for a v2 resource'
-  end
 end

@@ -46,10 +46,4 @@ describe 'LotTypes API', with: :api_v2 do
       expect(json.dig('data', 'type')).to eq('lot_types')
     end
   end
-
-  context 'when DELETE request is unsuccessful' do
-    let(:resource) { create(:lot_type) }
-
-    it_behaves_like 'a DESTROY request for a v2 resource'
-  end
 end

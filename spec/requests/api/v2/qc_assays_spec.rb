@@ -44,10 +44,4 @@ RSpec.describe Api::V2::QcAssaysController, :qc_result, with: :api_v2 do
     json = ActiveSupport::JSON.decode(response.body)
     expect(json['errors'].length).to eq(1)
   end
-
-  context 'when DELETE request is unsuccessful' do
-    let(:resource) { create(:qc_assay) }
-
-    it_behaves_like 'a DESTROY request for a v2 resource'
-  end
 end

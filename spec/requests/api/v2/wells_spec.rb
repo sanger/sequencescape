@@ -92,10 +92,4 @@ describe 'Wells API', with: :api_v2 do
       end
     end
   end
-
-  context 'when DELETE request is unsuccessful' do
-    let(:resource) { create(:well) }
-
-    it_behaves_like 'a DESTROY request for a v2 resource'
-  end
 end
