@@ -523,14 +523,61 @@ describe BulkSubmission, with: :uploader do
       context 'number of samples per pool < 5' do
         let(:spreadsheet_filename) { 'scRNA_bulk_submission_tube_invalid.csv' }
 
-        include_examples 'an invalid scRNA Bulk Submission', 'scRNA_bulk_submission_tube_invalid', 4
+        it_behaves_like 'an invalid scRNA Bulk Submission', 'scRNA_bulk_submission_tube_invalid', 4
       end
 
       context 'number of samples per pool > 25' do
         let(:spreadsheet_filename) { 'scRNA_bulk_submission_tube_invalid_greater.csv' }
 
-        include_examples 'an invalid scRNA Bulk Submission', 'scRNA_bulk_submission_tube_invalid_greater', 32
+        it_behaves_like 'an invalid scRNA Bulk Submission', 'scRNA_bulk_submission_tube_invalid_greater', 32
       end
+    end
+  end
+
+  context 'a submission with a NovaSeqX sequencing request type' do
+    let(:spreadsheet_filename) { 'novaseqx_bulk_submission.csv' }
+    let!(:request_types) { [create(:nova_seq_x_sequencing_request_type)] }
+    let(:study) { create(:study, name: 'UAT Study') }
+    let!(:tubes) do
+      Array.new(6) do |index|
+        create(:library_tube).tap do |tube|
+          tube.barcodes << Barcode.new(format: :sanger_ean13, barcode: "NT#{index + 1}")
+        end
+      end
+    end
+
+    let(:submission_template_hash) do
+      {
+        name: 'Limber-Htp - PCR Free - NovaSeqX paired end sequencing',
+        submission_class_name: 'LinearSubmission',
+        product_catalogue: 'Generic',
+        submission_parameters: {
+          request_options: {
+          },
+          request_types: request_types.map(&:key)
+        }
+      }
+    end
+
+    before { SubmissionSerializer.construct!(submission_template_hash) }
+
+    it 'is valid' do
+      expect(subject).to be_valid
+    end
+
+    it 'generates submissions when processed' do
+      subject.process
+      expect(number_submissions_created).to eq(1)
+    end
+
+    it 'generates submissions with 5 orders' do
+      subject.process
+      expect(generated_submission.orders.count).to eq(5)
+    end
+
+    it 'set the expected read length options' do
+      subject.process
+      expect(generated_submission.orders.first.request_options['read_length']).to eq('50')
     end
   end
 end

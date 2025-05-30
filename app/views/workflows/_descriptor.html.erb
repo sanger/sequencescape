@@ -9,6 +9,8 @@
   <div class="field">
     <% if descriptor.kind == 'Selection' %>
       <%= select_tag "#{base_field_name}[#{descriptor.name}]", options_for_select(descriptor.selection.values, descriptor.value), id: field_id %>
+    <% elsif descriptor.kind == 'Date' %>
+      <%= date_field "#{base_field_name}", descriptor.name, value: descriptor.value, id: field_id %>
     <% else %>
       <%= text_field "#{base_field_name}", descriptor.name, value: descriptor.value, id: field_id %>
     <% end %>

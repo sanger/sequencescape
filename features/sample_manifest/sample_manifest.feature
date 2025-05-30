@@ -38,6 +38,22 @@ Feature: Sample manifest
     When I press "Create manifest and print labels"
     And I should see "Your 1 label(s) have been sent to printer xyz1d"
 
+  Scenario: Create a tube manifest and print a 2D barcode
+    When I follow "Create manifest for tubes"
+    Then I should see "Barcode printer"
+    When I select "Test study" from "Study"
+    And I select "Default Tube" from "Template"
+    And I select "Standard sample" from "Purpose"
+    And I select "Test supplier name" from "Supplier"
+    And I select "xyz1d" from "Barcode printer"
+    And I fill in the field labeled "Tubes required" with "1"
+    And I check "Print only the first label"
+    And I select "2D Barcode (with human readable barcode encoded)" from "Barcode type"
+    And Pmb has the required label templates
+    And Pmb is up and running
+    When I press "Create manifest and print labels"
+    And I should see "Your 1 label(s) have been sent to printer xyz1d"
+
   Scenario: Create a tube manifest and print all the barcodes
     When I follow "Create manifest for tubes"
     Then I should see "Barcode printer"

@@ -48,6 +48,38 @@ RSpec.describe Batch do
     end
   end
 
+  describe '::verify_tube_layout' do
+    let(:user) { create(:user) }
+    let!(:tube) { create(:full_library_tube) }
+    let!(:target) { create(:full_library_tube) }
+    let!(:pipeline) { create(:cherrypick_pipeline) }
+    let!(:request) do
+      create(
+        :request_with_sequencing_request_type,
+        asset: tube,
+        target_asset: target,
+        request_type: pipeline.request_types.last,
+        state: 'started'
+      )
+    end
+
+    let!(:batch) { create(:batch, state: 'started', qc_state: 'qc_manual', pipeline: pipeline, requests: [request]) }
+
+    before { allow(request).to receive(:position).and_return(1) }
+
+    context 'with machine readable barcodes' do
+      it 'returns true' do
+        expect(batch.verify_tube_layout([tube.machine_barcode])).to be true
+      end
+    end
+
+    context 'with human readable barcodes' do
+      it 'returns true' do
+        expect(batch.verify_tube_layout([tube.human_barcode])).to be true
+      end
+    end
+  end
+
   describe '::for_user' do
     subject(:batch_for_user) { described_class.for_user(query) }
 
