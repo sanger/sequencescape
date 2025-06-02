@@ -421,20 +421,20 @@ describe Well do
       buffer_vol: 0,
       final_src_vol: 50,
       final_dest_vol: 50
+    },
+    {
+      scenario: 'Y24-382: total pick of 100µl, comprising of 1µl vol and 99µl buffer',
+      target_ng: 100,
+      measured_conc: 1,
+      measured_vol: 1,
+      min_vol: 100,
+      max_vol: 100,
+      min_pick_vol: 0,
+      source_pick_vol: 1,
+      buffer_vol: 99,
+      final_src_vol: 0,
+      final_dest_vol: 100
     }
-    # {
-    #   scenario: 'Y24-382: Test 2',
-    #   target_ng: 100,
-    #   measured_conc: 1,
-    #   measured_vol: 1,
-    #   min_vol: 100,
-    #   max_vol: 100,
-    #   min_pick_vol: 0,
-    #   source_pick_vol: 1,
-    #   buffer_vol: 99,
-    #   final_src_vol: 0,
-    #   final_dest_vol: 100
-    # }
   ].each do |cherrypick|
     scenario = cherrypick.fetch(:scenario, nil)
     target_ng = cherrypick[:target_ng]
@@ -721,7 +721,7 @@ describe Well do
         source_volume_remaining: 39.3
       },
       {
-        scenario: 'Y24-382: Test 2',
+        scenario: 'Y24-382: total pick of 100µl, comprising of 0 vol and 100 buffer',
         target_volume: 100,
         target_concentration: 2,
         source_concentration: 10,
