@@ -24,7 +24,7 @@ group :default do
   gem 'after_commit_everywhere', '~> 1.0'
   gem 'configatron'
   gem 'formtastic'
-  gem 'rest-client' # curb substitute.
+  gem 'rest-client'
 
   # Legacy support for parsing XML into params
   gem 'actionpack-xml_parser'
@@ -128,9 +128,9 @@ group :default do
   gem 'cancancan'
 
   # Feature flags
-  gem 'flipper', '~> 0.25.0'
-  gem 'flipper-active_record', '~> 0.25.0'
-  gem 'flipper-ui', '~> 0.25.0'
+  gem 'flipper', '~> 1.0'
+  gem 'flipper-active_record', '~> 1.0'
+  gem 'flipper-ui', '~> 1.0'
 end
 
 group :development do
