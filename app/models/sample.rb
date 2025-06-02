@@ -28,6 +28,9 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   class AccessionValidationFailed < StandardError
   end
 
+  class AccessioningDisabledError < StandardError
+  end
+
   GC_CONTENTS = ['Neutral', 'High AT', 'High GC'].freeze
   GENDERS = ['Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable'].freeze
   DNA_SOURCES = [
@@ -509,8 +512,9 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def accession
-    return unless configatron.accession_samples
-
+    unless configatron.accession_samples
+      raise AccessioningDisabledError, 'Accessioning is not enabled in this environment.'
+    end
     accessionable = build_accessionable
     validate_accessionable!(accessionable)
     enqueue_accessioning_job!(accessionable)
