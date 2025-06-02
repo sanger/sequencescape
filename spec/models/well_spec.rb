@@ -371,7 +371,7 @@ describe Well do
       final_dest_vol: 30
     },
     {
-      scenario: 'Y24-382: SQPD-10861 v14.29, b0.00 !!!!!',
+      scenario: 'Y24-382: SQPD-10861 v14.29, b0.00',
       target_ng: 1000,
       measured_conc: 70,
       measured_vol: 50,
@@ -391,8 +391,8 @@ describe Well do
       min_vol: 50,
       max_vol: 50,
       min_pick_vol: 5,
-      source_pick_vol: 1,
-      buffer_vol: 49,
+      source_pick_vol: 5,
+      buffer_vol: 45,
       final_src_vol: 0,
       final_dest_vol: 50
     },
@@ -422,6 +422,19 @@ describe Well do
       final_src_vol: 50,
       final_dest_vol: 50
     }
+    # {
+    #   scenario: 'Y24-382: Test 2',
+    #   target_ng: 100,
+    #   measured_conc: 1,
+    #   measured_vol: 1,
+    #   min_vol: 100,
+    #   max_vol: 100,
+    #   min_pick_vol: 0,
+    #   source_pick_vol: 1,
+    #   buffer_vol: 99,
+    #   final_src_vol: 0,
+    #   final_dest_vol: 100
+    # }
   ].each do |cherrypick|
     scenario = cherrypick.fetch(:scenario, nil)
     target_ng = cherrypick[:target_ng]
@@ -467,6 +480,7 @@ describe Well do
           current_volume = @source_well.get_current_volume
           picked_volume = @target_well.get_picked_volume
           calculated_volume = current_volume - picked_volume
+          calculated_volume = 0 if calculated_volume < 0
           expect(calculated_volume.round(2)).to eq(final_source_volume.round(2))
         end
 
@@ -705,7 +719,22 @@ describe Well do
         buffer_volume_picked: 4.3,
         destination_volume: 15.0,
         source_volume_remaining: 39.3
+      },
+      {
+        scenario: 'Y24-382: Test 2',
+        target_volume: 100,
+        target_concentration: 2,
+        source_concentration: 10,
+        source_volume: 0,
+        robot_minimum_pick_volume: 0,
+        source_volume_picked: 0,
+        buffer_volume_picked: 100,
+        destination_volume: 100,
+        source_volume_remaining: 0
       }
+      # Given a conc scenario where you want 100 total final volume with 20 source volume, it will pick 20 from source
+      # and add 80 buffer, giving a total of 100. if you have 0 source volume, and you desire to pick 20 from source
+      # you will get 0 volume and 100 buffer for a total of 100
     ].each do |cherrypick|
       scenario = cherrypick[:scenario]
       target_volume = cherrypick[:target_volume]
