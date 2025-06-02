@@ -18,11 +18,17 @@ class WorkCompletion::TubeRackCompletion < WorkCompletion::LabwareCompletion
   # @example
   #   connect_requests
   def connect_requests
-    detect_upstream_requests.each do |upstream|
-      target_labware.racked_tubes.each do |racked_tube|
-        pass_and_link_up_requests(racked_tube.tube.receptacle, upstream)
-      end
+    target_tubes.each do |target_tube|
+      detect_upstream_requests.each { |upstream| pass_and_link_up_requests(target_tube.tube.receptacle, upstream) }
     end
+  end
+
+  def target_tubes
+    @target_tubes ||=
+      target_labware
+        .racked_tubes
+        .includes(tube: { aliquots: { request: WorkCompletion::REQUEST_INCLUDES } })
+        .where(requests: { submission_id: submission_ids })
   end
 
   # Detects upstream customer requests associated with the target labware.
