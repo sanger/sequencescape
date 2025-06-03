@@ -7,7 +7,7 @@ configatron.team_name = 'LIMS and Informatics'
 configatron.team_url = 'http://www.sanger.ac.uk/science/groups/production-software-development'
 
 # This is set in the deployment project to allow per-environment enabling of accessioning
-configatron.accession_samples = true
+configatron.accession_samples = false
 
 configatron.accession do |accession|
   accession.url = 'http://localhost:9999/accession_service/'
