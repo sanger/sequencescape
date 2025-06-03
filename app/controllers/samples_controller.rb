@@ -154,9 +154,7 @@ class SamplesController < ApplicationController
   rescue AccessionService::NumberNotGenerated => e
     flash[:warning] = "No accession number was generated: #{e.message}"
   rescue AccessionService::AccessionServiceError => e
-    flash[:error] = e.message
-    ExceptionNotifier.notify_exception(e, data: { message: 'Accessioning Service Failed' })
-    Rails.logger.error("Accessioning Service Failed: #{e.message}")
+    flash[:error] = "Accessioning Service Failed: #{e.message}"
   ensure
     redirect_to(sample_path(@sample))
   end
