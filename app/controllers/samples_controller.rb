@@ -147,21 +147,18 @@ class SamplesController < ApplicationController
     @sample.accession_service.submit_sample_for_user(@sample, current_user)
 
     flash[:notice] = "Accession number generated: #{@sample.sample_metadata.sample_ebi_accession_number}"
-    redirect_to(sample_path(@sample))
   rescue ActiveRecord::RecordInvalid => e
     flash[:error] = "Please fill in the required fields: #{@sample.errors.full_messages.join(', ')}"
-    redirect_to(edit_sample_path(@sample))
   rescue AccessionService::NumberNotRequired => e
     flash[:warning] = e.message || 'An accession number is not required for this study'
-    redirect_to(sample_path(@sample))
   rescue AccessionService::NumberNotGenerated => e
     flash[:warning] = "No accession number was generated: #{e.message}"
-    redirect_to(sample_path(@sample))
   rescue AccessionService::AccessionServiceError => e
     flash[:error] = e.message
-    redirect_to(sample_path(@sample))
     ExceptionNotifier.notify_exception(e, data: { message: 'Accessioning Service Failed' })
     Rails.logger.error("Accessioning Service Failed: #{e.message}")
+  ensure
+    redirect_to(sample_path(@sample))
   end
 
   # rubocop:enable Metrics/MethodLength
