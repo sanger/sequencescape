@@ -379,9 +379,9 @@ class StudiesController < ApplicationController
     error_messages = ['The samples in this study could not be accessioned, please check the following errors:']
     error_messages.concat(errors.full_messages.first(max_messages))
 
-    return unless errors.size > max_messages
+    return error_messages unless errors.size > max_messages
     error_messages << '...'
-    error_messages << "Only the first #{max_messages} of #{errors.size} errors are shown. "
+    error_messages << "Only the first #{max_messages} of #{errors.size} errors are shown."
   end
 end
 # rubocop:enable Metrics/ClassLength

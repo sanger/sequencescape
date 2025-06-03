@@ -91,4 +91,87 @@ RSpec.describe StudiesController do
       expect(subject).to set_flash.now.to('Role added')
     end
   end
+
+  describe '#accession_all_samples' do
+    let(:samples) { create_list(:sample_for_accessioning_with_open_study, 5) }
+    let(:study) { create(:open_study, accession_number: 'ENA123', samples: samples) }
+
+    before { post :accession_all_samples, params: { id: study.id } }
+
+    around do |example|
+      Accession.configure do |config|
+        config.folder = File.join('spec', 'data', 'accession')
+        config.load!
+      end
+
+      configatron.accession_samples = true
+      example.run
+      configatron.accession_samples = false
+    end
+
+    context 'when the accessioning succeeds' do
+      it 'redirects to the study page' do
+        expect(subject).to redirect_to(study_path(study))
+      end
+
+      it 'does not set a flash error message' do
+        expect(flash[:error]).to be_nil
+      end
+
+      it 'sets a flash notice message' do
+        expect(flash[:notice]).to eq('All of the samples in this study have been sent for accessioning.')
+      end
+    end
+
+    context 'when the accessioning of samples fails' do
+      let(:number_of_samples) { 5 }
+      # tags provided for managed study, when open study is expected
+      let(:samples) { create_list(:sample_for_accessioning_with_managed_study, number_of_samples) }
+
+      it 'redirects to the study page' do
+        expect(subject).to redirect_to(study_path(study))
+      end
+
+      it 'does not set a flash notice message' do
+        expect(flash[:notice]).to be_nil
+      end
+
+      it 'sets a flash error message' do
+        expect(flash[:error]).to eq(
+          [
+            'The samples in this study could not be accessioned, please check the following errors:',
+            "Accessionable is invalid for sample 'Sample1': Sample has no appropriate studies.",
+            "Accessionable is invalid for sample 'Sample2': Sample has no appropriate studies.",
+            "Accessionable is invalid for sample 'Sample3': Sample has no appropriate studies.",
+            "Accessionable is invalid for sample 'Sample4': Sample has no appropriate studies.",
+            "Accessionable is invalid for sample 'Sample5': Sample has no appropriate studies."
+          ]
+        )
+      end
+
+      context 'when the study has many samples' do
+        let(:number_of_samples) { 10 }
+
+        it 'does not set a flash notice message' do
+          expect(flash[:notice]).to be_nil
+        end
+
+        it 'sets a flash error message' do
+          expect(flash[:error]).to eq(
+            [
+              'The samples in this study could not be accessioned, please check the following errors:',
+              "Accessionable is invalid for sample 'Sample1': Sample has no appropriate studies.",
+              "Accessionable is invalid for sample 'Sample2': Sample has no appropriate studies.",
+              "Accessionable is invalid for sample 'Sample3': Sample has no appropriate studies.",
+              "Accessionable is invalid for sample 'Sample4': Sample has no appropriate studies.",
+              "Accessionable is invalid for sample 'Sample5': Sample has no appropriate studies.",
+              "Accessionable is invalid for sample 'Sample6': Sample has no appropriate studies.",
+              '...',
+              'Only the first 6 of 10 errors are shown.'
+            ]
+          )
+        end
+      end
+    end
+  end
 end
