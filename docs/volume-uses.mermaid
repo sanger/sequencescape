@@ -1,0 +1,235 @@
+---
+title: Use Cases of Volumes in Sequencescape
+---
+%%{ init: { 
+    'flowchart': { 'curve': 'curvy' },
+    'theme': 'default'
+  }
+}%%
+flowchart LR
+    %% Compiled from Katy's Lucidchart diagram at https://lucid.app/lucidchart/ef7cb0c3-cba7-42e6-8c4a-79aa8bbff9fb/edit?invitationId=inv_c5f9b452-b992-4758-97ed-3f4dcf49f524&page=0_0#
+    %% code inspection, and in-situ testing
+    
+    %% Nodes
+        %% Users
+        User_ServiceUsers(fa:fa-user Service Users)
+        User_SeqOps(fa:fa-user SeqOps)
+        Provider_SamplePrep(fa:fa-user Sample Prep)
+        Consumer_SamplePrep(fa:fa-user Sample Prep)
+        User_VolCheckInstr(fa:fa-robot Volume Check Instrument)
+        User_SSR(fa:fa-user SSRs)
+        %% Interface
+        Pg_LB_Tube(fa:fa-table-list Limber Tube Page)
+        Pg_SS_CherryPickWorksheet(fa:fa-table-list Sequencescape Cherry Pick Worksheet)
+        Pg_SS_LabView(fa:fa-table-list Sequencescape Lab View Page)
+        Pg_SS_QcFileLabware(fa:fa-table-list Sequencescape QC Files on Labware Page)
+        Pg_SS_QcResults(fa:fa-table-list Sequencescape QC Results Page)
+        Pg_SS_QcStudyReports(fa:fa-table-list Sequencescape QC Study Reports Download?)
+        Pg_SS_StudyReports(fa:fa-table-list Sequencescape Study Reports Page)
+        Pg_SS_Receptacle(fa:fa-table-list Sequencescape Labware Receptacle Page)
+        Pg_SS_Sample(fa:fa-table-list Sequencescape Sample Page)
+        Pg_SS_SampleManifestUpload(fa:fa-table-list Sequencescape Sample Manifest Upload)
+        %% Components
+        CP_SS_DesiredVolume(fa:fa-table-list User Desired Volume)
+        CP_SS_CronVolumeCheck("fa:fa-clock Volume Check<br>[hourly cron job]")
+        CP_SS_RobotVerfication(Robot Verification: reduce_source_volume)
+        CP_SS_WellAttrEstVol(fa:fa-table-list Well Attribute: Estimated Volume)
+        CP_SS_WellAttrUpdater(Well::AttributeUpdater)
+        CP_SS_TubeAttrUpdater(Tube::AttributeUpdater)
+        CP_SS_QcResults_MeasVol(Results: Measured Volume)
+        CP_SS_QcResults_CurrentVol(Results: Current Volume)
+        CP_SS_QC_StudyReports_MeasVol(Study QC Report: measured_volume)
+        CP_SS_QC_StudyReports_CurrentVol(Study QC Report: current_volume)
+        CP_SS_QC_StudyReports_InitialVol(Study QC Report: initial_volume)
+        CP_SS_StudyReports_InitialVol(Study Report: initial_volume)
+        CP_SS_StudyReports_CurrentVol(Study Report: current_volume)
+        CP_SS_StudyReports_SupplierVol(Study Report: supplier_volume)
+        CP_SS_Constant_0(Constant 0)
+        %% API
+        API_SS_QcAssayResource(fa:fa-arrow-right-arrow-left API QcAssay Resource)
+        API_SS_VolumeUpdateResource(fa:fa-arrow-right-arrow-left API Volume Update Resource)
+        %% Data
+        Mn_SampleVolCol(fa:fa-table Sample Manifest 'volume' column)
+        DB_SS_TriggerIniVol(fa:fa-trigger Triggers: insert_initial_volume / update_initial_volume)
+        DB_SS_ReceptaclesVol(fa:fa-database receptacles.volume)
+        DB_SS_SampleMetDatVol(fa:fa-database sample_metadata.volume)
+        DB_SS_QcResultVol(fa:fa-database qc_result - key:volume)
+        DB_SS_QcResultVolEst(fa:fa-database qc_result - key:volume assay_type:estimated)
+        DB_SS_QcResultVolChk(fa:fa-database qc_result - key:volume assay_type:volume-check)
+        DB_SS_QcResultVolCusSup(fa:fa-database qc_result - key:volume assay_type:customer-supplied)
+        DB_SS_WellAttrIniVol(fa:fa-database well_attribute.initial_volume)
+        DB_SS_WellAttrCurrVol(fa:fa-database well_attribute.current_volume)
+        DB_SS_WellAttrMeasVol(fa:fa-database well_attribute.measured_volume)
+        DB_MLWH_SampleCustMeasVol(fa:fa-table sample.customer_measured_volume)
+
+    %% Groupings of nodes
+        subgraph Providers
+            User_ServiceUsers
+            Provider_SamplePrep
+            User_SeqOps
+            User_SSR
+            %% User_VolCheckInstr
+        end
+        subgraph Limber
+            Pg_LB_Tube
+        end
+        subgraph Sequencescape
+            CP_SS_CronVolumeCheck
+            CP_SS_WellAttrUpdater
+            CP_SS_TubeAttrUpdater
+            CP_SS_WellAttrEstVol
+            Pg_SS_QcFileLabware
+            Pg_SS_SampleManifestUpload
+
+            subgraph Graph_SS_SMV["Sample Metadata Volume"]
+                DB_SS_SampleMetDatVol
+                Pg_SS_Sample
+            end
+            subgraph Graph_SS_RV["Receptacle Volume"]
+                Pg_SS_LabView
+                Pg_SS_Receptacle
+            end
+            subgraph Graph_SS_QC["QC Results"]
+                CP_SS_QcResults_MeasVol
+                CP_SS_QcResults_CurrentVol
+                Pg_SS_QcResults
+            end
+            subgraph Graph_SS_QC_SR["Study QC Report StudyReport::WellDetails"]
+                CP_SS_QC_StudyReports_MeasVol
+                CP_SS_QC_StudyReports_CurrentVol
+                CP_SS_QC_StudyReports_InitialVol
+                Pg_SS_QcStudyReports
+            end
+            subgraph Graph_SS_SR["Study Report StudyReport::StudyDetails"]
+                CP_SS_StudyReports_SupplierVol
+                CP_SS_Constant_0
+                CP_SS_StudyReports_InitialVol
+                CP_SS_StudyReports_CurrentVol
+                Pg_SS_StudyReports
+            end
+            subgraph Graph_SS_CP["Cherry Pick"]
+                CP_SS_DesiredVolume
+                Pg_SS_CherryPickWorksheet
+                subgraph Graph_SS_BedVeri["Bed Verification"]
+                    CP_SS_RobotVerfication
+                end
+            end
+            subgraph Graph_SS_DB["SS Database"]
+                DB_SS_ReceptaclesVol
+                subgraph Graph_SS_DB_QcResults["QC Results"]
+                    DB_SS_QcResultVol
+                    %% [source] same table
+                    DB_SS_QcResultVolChk --> DB_SS_QcResultVol
+                    DB_SS_QcResultVolEst --> DB_SS_QcResultVol
+                    DB_SS_QcResultVolCusSup --> DB_SS_QcResultVol
+                end
+                subgraph Graph_SS_DB_WellAttrs["Well Attributes"]
+                    DB_SS_WellAttrMeasVol
+                    %% [source] app/models/well_attribute.rb
+                    DB_SS_WellAttrMeasVol --> DB_SS_WellAttrIniVol
+                    DB_SS_WellAttrMeasVol --> DB_SS_WellAttrCurrVol
+                    %% [source] SQL: show triggers;
+                    DB_SS_WellAttrMeasVol --> DB_SS_TriggerIniVol -- "If initial_volume is Null" --> DB_SS_WellAttrIniVol
+                end
+            end
+            subgraph Graph_SS_API["SS API"]
+                API_SS_QcAssayResource
+                API_SS_VolumeUpdateResource
+            end
+        end
+        subgraph MLWH
+            DB_MLWH_SampleCustMeasVol
+        end
+        subgraph Consumers
+            Consumer_SamplePrep
+        end
+
+    %% Edge connections between nodes
+        %% [source] app/sequencescape_excel/sequencescape_excel/specialised_field/volume.rb
+        User_ServiceUsers --> Mn_SampleVolCol --> Pg_SS_SampleManifestUpload --> DB_SS_SampleMetDatVol & DB_SS_QcResultVolCusSup
+
+        Provider_SamplePrep --> User_VolCheckInstr --> CP_SS_CronVolumeCheck 
+        %% [source] config/schedule.rb, app/models/plate_volume.rb
+        CP_SS_CronVolumeCheck ---> DB_SS_QcResultVolChk
+
+        User_SeqOps -- "Pre-seq vol check" --> Pg_LB_Tube
+        %% [source] Limber: app/frontend/javascript/qc-information/components/QcField.vue
+        Pg_LB_Tube --> API_SS_QcAssayResource
+        %% [source] app/resources/api/v2/qc_assay_resource.rb
+        API_SS_QcAssayResource --> DB_SS_QcResultVolEst
+        %% [source] Lucidchart: Volume in Sequencescape and Limber
+        API_SS_QcAssayResource -. TBC .-> DB_SS_ReceptaclesVol
+
+        %% [source] app/models/volume_update.rb
+        Providers -. "TBC" .-> AssetAudits  -. "Not used" .-> API_SS_VolumeUpdateResource 
+        %% [source] app/models/volume_update.rb, app/models/well.rb
+        API_SS_VolumeUpdateResource -. "Not used" .-> DB_SS_WellAttrCurrVol
+
+        %% [source] app/models/well.rb
+        DB_SS_QcResultVol -- Most recent --> CP_SS_QcResults_MeasVol
+        %% [source] app/views/plates/show.html.erb, app/views/plates/_qc_table.html.erb
+        CP_SS_QcResults_MeasVol --> Pg_SS_QcResults  -. "TBC" .-> Consumers
+        DB_SS_WellAttrCurrVol --> CP_SS_QcResults_CurrentVol --> Pg_SS_QcResults
+
+        %% [source] app/models/well/attribute_updater.rb, app/models/qc_result.rb
+        DB_SS_QcResultVol -- after_create :update_asset --> CP_SS_WellAttrUpdater --> DB_SS_WellAttrMeasVol
+
+        %% [source] app/models/well_attribute.rb
+        DB_SS_WellAttrCurrVol -- Preferred --> CP_SS_WellAttrEstVol
+        DB_SS_WellAttrMeasVol -- Fallback --> CP_SS_WellAttrEstVol
+
+        %% QC Study Report
+        %% [source] app/models/study_report/well_details.rb
+        DB_SS_WellAttrMeasVol --> CP_SS_QC_StudyReports_MeasVol --> Pg_SS_QcStudyReports
+        DB_SS_WellAttrCurrVol --> CP_SS_QC_StudyReports_CurrentVol --> Pg_SS_QcStudyReports
+        DB_SS_WellAttrIniVol --> CP_SS_QC_StudyReports_InitialVol --> Pg_SS_QcStudyReports
+        Pg_SS_QcStudyReports -. "TBC" .-> Consumers
+
+        %% Study Report
+        %% [source] app/models/study_report/asset_details.rb
+        CP_SS_Constant_0 --> CP_SS_StudyReports_SupplierVol
+        %% [source] app/models/study_report/study_details.rb
+        CP_SS_StudyReports_SupplierVol --> Pg_SS_StudyReports
+        DB_SS_WellAttrIniVol --> CP_SS_StudyReports_InitialVol --> Pg_SS_StudyReports
+        DB_SS_WellAttrCurrVol --> CP_SS_StudyReports_CurrentVol --> 
+        Pg_SS_StudyReports -. "TBC" .-> Consumers
+
+        %% Cherry Pick
+        User_SSR --> CP_SS_DesiredVolume --> Pg_SS_CherryPickWorksheet --> Consumer_SamplePrep
+        %% [source] app/models/cherrypick/volume_by_nano_grams.rb
+        CP_SS_WellAttrEstVol -- Amount pick only --> Pg_SS_CherryPickWorksheet
+        %% [source] app/models/cherrypick/task/pick_by_nano_grams_per_micro_litre.rb
+        DB_SS_WellAttrCurrVol -- Concentration pick only --> Pg_SS_CherryPickWorksheet
+        %% [source] app/models/cherrypick/volume_by_micro_litre.rb
+        Pg_SS_CherryPickWorksheet --> DB_SS_WellAttrCurrVol
+
+        Pg_SS_CherryPickWorksheet --> CP_SS_RobotVerfication
+        %% Bed Verification
+        DB_SS_WellAttrCurrVol --> CP_SS_RobotVerfication --> DB_SS_WellAttrCurrVol
+        Provider_SamplePrep --> CP_SS_RobotVerfication
+
+        DB_SS_SampleMetDatVol --> Pg_SS_Sample -. "TBC" .-> Consumers
+        Providers -. "TBC" ......-> Pg_SS_LabView --> DB_SS_ReceptaclesVol --> Pg_SS_Receptacle -. "TBC" .-> Consumers
+
+        DB_SS_SampleMetDatVol --> DB_MLWH_SampleCustMeasVol -. "TBC" .-> Consumers
+
+        %% [source] app/views/labware/lab_view.html.erb, app/controllers/labware_controller.rb
+        User_SSR --> Pg_SS_QcFileLabware
+        %% [source] app/controllers/labware_controller.rb, app/models/well.rb, app/models/tube/attribute_updater.rb, app/models/well/attribute_updater.rb
+        Pg_SS_QcFileLabware -- Tube --> CP_SS_TubeAttrUpdater -- "self.update" --> DB_SS_QcResultVol
+        Pg_SS_QcFileLabware -- Well --> CP_SS_WellAttrUpdater -- "self.update" --> DB_SS_QcResultVol
+
+    %% Subgraph styling
+        classDef Users fill:#FFD6F1;
+        classDef Application fill:#adecff;
+        classDef Sequencescape fill:#adccf6;
+        classDef SequencescapeSub fill:#ADDCFB;
+        classDef SequencescapeOrig fill:#ADACEC;
+        classDef MLWH fill:#f0f0f0;
+
+        class Providers,Consumers Users;
+        class AssetAudits,Limber,MLWH Application;
+        class Sequencescape Sequencescape;
+        class Graph_SS_API,Graph_SS_DB,Graph_SS_DB_WellAttrs,Graph_SS_DB_QcResults SequencescapeSub;
+        class Graph_SS_SMV,Graph_SS_RV,Graph_SS_QC,Graph_SS_SR, SequencescapeOrig;
+        class MLWH MLWH;
