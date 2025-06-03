@@ -528,6 +528,8 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     Rails.logger.warn("Accessioning validation failed: #{e.message}")
     # but provide feedback to the user by displaying it in a flash message
     errors.add(:base, e.message)
+  rescue AccessioningDisabledError => e
+    errors.add(:base, e.message)
   end
 
   def handle_update_event(user)
