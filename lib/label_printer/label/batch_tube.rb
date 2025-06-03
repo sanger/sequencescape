@@ -13,7 +13,11 @@ module LabelPrinter
       end
 
       def first_line(tube)
-        stock.present? ? tube.name : tube.name_for_label
+        if stock.present?
+          tube.name
+        else
+          tube.respond_to?(:name_for_label) ? tube.name_for_label : tube.name
+        end
       end
 
       def tubes
