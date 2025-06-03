@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require './spec/requests/api/v2/shared_examples/requests'
 
 RSpec.describe Api::V2::PlatesController, type: :request do
   describe 'POST /api/v2/plates/:id/register_stock_for_plate' do
