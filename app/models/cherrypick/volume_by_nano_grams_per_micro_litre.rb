@@ -75,9 +75,6 @@ module Cherrypick::VolumeByNanoGramsPerMicroLitre
 
     well_attribute.robot_minimum_picking_volume = robot_minimum_pick_vol
 
-    # Set current volume to the sum of the actual picked source volume and buffer volume.
-    # In most cases, this matches the requested final volume, except in rare cases where
-    # the robot's minimum pick causes more buffer to be added than intended.
     well_attribute.current_volume = source_volume_it_will_actually_pick + well_attribute.buffer_volume
 
     source_volume_to_tell_robot_to_pick
