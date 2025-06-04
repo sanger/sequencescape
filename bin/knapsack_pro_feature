@@ -12,7 +12,7 @@ if [ "$KNAPSACK_PRO_TEST_SUITE_TOKEN_FEATURE" = "" ]; then
     bundle exec rake "knapsack_pro:rspec[--format RSpec::Github::Formatter --format progress]" # use Regular Mode here always
 else
     export KNAPSACK_PRO_RSPEC_SPLIT_BY_TEST_EXAMPLES=true
-    export KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC=KNAPSACK_PRO_TEST_SUITE_TOKEN_FEATURE
+    export KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC=$KNAPSACK_PRO_TEST_SUITE_TOKEN_FEATURE
     # https://docs.knapsackpro.com/ruby/reference/#knapsack_pro_test_suite_token_
     bundle exec rake "knapsack_pro:rspec[--format RSpec::Github::Formatter --format progress]"
 fi
