@@ -9,7 +9,10 @@ if [ "$KNAPSACK_PRO_TEST_SUITE_TOKEN_FEATURE" = "" ]; then
   KNAPSACK_PRO_ENDPOINT=https://localhost \
     KNAPSACK_PRO_TEST_SUITE_TOKEN_FEATURE=disabled-for-fork \
     KNAPSACK_PRO_MAX_REQUEST_RETRIES=0 \
-    bundle exec rake "knapsack_pro:feature[--format RSpec::Github::Formatter --format progress]" # use Regular Mode here always
+    bundle exec rake "knapsack_pro:rspec[--format RSpec::Github::Formatter --format progress]" # use Regular Mode here always
 else
-    bundle exec rake "knapsack_pro:feature[--format RSpec::Github::Formatter --format progress]"
+    export KNAPSACK_PRO_RSPEC_SPLIT_BY_TEST_EXAMPLES=true
+    export KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC=KNAPSACK_PRO_TEST_SUITE_TOKEN_FEATURE
+    # https://docs.knapsackpro.com/ruby/reference/#knapsack_pro_test_suite_token_
+    bundle exec rake "knapsack_pro:rspec[--format RSpec::Github::Formatter --format progress]"
 fi
