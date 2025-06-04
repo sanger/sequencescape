@@ -637,5 +637,5 @@ Rails.application.routes.draw do
     end
   end
 
-  mount Flipper::UI.app(Flipper) => '/flipper', :constraints => user_is_admin
+  mount Flipper::UI.app => '/flipper', :constraints => user_is_admin
 end
