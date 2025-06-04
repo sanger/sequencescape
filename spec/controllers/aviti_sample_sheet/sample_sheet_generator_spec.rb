@@ -126,12 +126,10 @@ RSpec.describe AvitiSampleSheet::SampleSheetGenerator do
     end
 
     context 'when sample indexes are 8 bp long' do
-
       it 'truncates PhiX control indexes to match the sample index length (8 bp)' do
-        phix1_row = output.split("\r\n")[expected_settings_lines + 2] # 1 comment + 1 Phix header
+        phix1_row = output.split("\r\n")[expected_settings_lines + 2]
         expect(phix1_row).to include('PhiX_Third,ATGTCGCT,CTAGCTCG')
-        index1 = phix1_row.split(',')[1]
-        index2 = phix1_row.split(',')[2]
+        index1, index2 = phix1_row.split(',')[1..2]
         expect(index1.length).to eq(8)
         expect(index2.length).to eq(8)
       end

@@ -34,8 +34,6 @@ module AvitiSampleSheet::SampleSheetGenerator
       %w[R2AdapterTrim FALSE 1+2]
     ].freeze
 
-
-    # These control entries are defined in the Aviti sample sheet template used in our lab — refer to Confluence for details.
     # The values are set according to the official documentation from Element Biosciences.
     # This section is static because metadata for control samples is not tracked in the Aviti pipeline.
     # Users can manually modify this section if necessary.
