@@ -5,8 +5,8 @@ codecov:
     # rake_tests (pull_request)
     # rspec_unit_tests x6 (push)
     # rspec_unit_tests x6 (pull_request)
-    # rspec_feature_tests (push)
-    # rspec_feature_tests (pull_request)
+    # rspec_feature_tests x2 (push)
+    # rspec_feature_tests x2 (pull_request)
     # cucumber_tests x3 (push)
     # cucumber_tests x3 (pull_request)
-    after_n_builds: 22
+    after_n_builds: 24
