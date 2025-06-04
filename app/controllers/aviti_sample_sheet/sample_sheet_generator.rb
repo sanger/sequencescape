@@ -34,16 +34,18 @@ module AvitiSampleSheet::SampleSheetGenerator
       %w[R2AdapterTrim FALSE 1+2]
     ].freeze
 
-    # These controllers are defined in the Aviti sample sheet template used in our lab - check Confluence for details.
-    # This section is not dynamically generated because control metadata is not stored for the Aviti pipeline.
-    # Users can manually update this section if needed.
+
+    # These control entries are defined in the Aviti sample sheet template used in our lab — refer to Confluence for details.
+    # The values are set according to the official documentation from Element Biosciences.
+    # This section is static because metadata for control samples is not tracked in the Aviti pipeline.
+    # Users can manually modify this section if necessary.
     PHIX_SECTION = [
       ['[SAMPLES]'],
       %w[SampleName Index1 Index2 Lane Project],
-      %w[Adept_CB1 ATGTCGCTAG CTAGCTCGTA],
-      %w[Adept_CB2 CACAGATCGT CACAGATCGT],
-      %w[Adept_CB3 GCACATAGTC GACTACTAGC],
-      %w[Adept_CB4 TGTGTCGACA TGTCTGACAG]
+      %w[PhiX_Third ATGTCGCTAG CTAGCTCGTA],
+      %w[PhiX_Third CACAGATCGT ACGAGAGTCT],
+      %w[PhiX_Third GCACATAGTC GACTACTAGC],
+      %w[PhiX_Third TGTGTCGACA TGTCTGACAG]
     ].freeze
 
     def initialize(batch)
@@ -58,7 +60,7 @@ module AvitiSampleSheet::SampleSheetGenerator
     def generate
       CSV.generate(row_sep: "\r\n") do |csv|
         SETTINGS_SECTION.each { |row| csv << row }
-        PHIX_SECTION.each { |row| csv << row }
+        adjusted_phix_indexes.each { |row| csv << row }
         append_samples_section(csv)
       end
     end
@@ -100,6 +102,35 @@ module AvitiSampleSheet::SampleSheetGenerator
       grouped_samples = Hash.new { |hash, key| hash[key] = new_group_entry(key) }
       @batch.requests.reject(&:failed?).each { |request| add_request_to_grouped_samples(grouped_samples, request) }
       grouped_samples
+    end
+
+    # Determines the length of sample indexes used in the batch.
+    # This method iterates through grouped samples and retrieves the length of the first non-nil index (tag1 or tag2).
+    # It assumes all sample in the batch contains indexes and are of uniform length.
+    def sample_index_length
+      group_samples_by_identity.each_value do |group|
+        length = group[:tag1]&.length || group[:tag2]&.length
+        return length if length
+      end
+    end
+
+    #
+    # In Aviti runs, all sample indexes are expected to be of the same length.
+    # Adjusts the PhiX control indexes to match the sample index length used in the batch.
+    # The PSD-assisted software supports sample index lengths of either 8 bp or 10 bp.
+    # The default PhiX control indexes are 10 bp long.
+    #
+    # This method ensures that PhiX control sample indexes are truncated to match the actual
+    # sample index length in the current batch to maintain compatibility and prevent sequencing issues.
+    def adjusted_phix_indexes
+      PHIX_SECTION.map do |row|
+        if row.length > 2
+          row = row.dup
+          row[1] = row[1][0, sample_index_length] if row[1]
+          row[2] = row[2][0, sample_index_length] if row[2]
+        end
+        row
+      end
     end
 
     # Initializes a new group entry hash for the given identity key.

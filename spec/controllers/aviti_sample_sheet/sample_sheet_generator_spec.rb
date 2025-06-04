@@ -50,10 +50,10 @@ RSpec.describe AvitiSampleSheet::SampleSheetGenerator do
       end
 
       it 'includes the PhiX control samples' do
-        expect(output).to include('Adept_CB1')
-        expect(output).to include('Adept_CB2')
-        expect(output).to include('Adept_CB3')
-        expect(output).to include('Adept_CB4')
+        expect(output).to include('PhiX_Third')
+        expect(output).to include('PhiX_Third')
+        expect(output).to include('PhiX_Third')
+        expect(output).to include('PhiX_Third')
       end
 
       it 'includes sample 1 information from the batch' do
@@ -122,6 +122,18 @@ RSpec.describe AvitiSampleSheet::SampleSheetGenerator do
       it 'produces the correct number of lines' do
         expected_sample_lines = 2 # comment + 1 sample row from mocked batch
         expect(output.split("\r\n").size).to eq(expected_settings_lines + expected_phix_lines + expected_sample_lines)
+      end
+    end
+
+    context 'when sample indexes are 8 bp long' do
+
+      it 'truncates PhiX control indexes to match the sample index length (8 bp)' do
+        phix1_row = output.split("\r\n")[expected_settings_lines + 2] # 1 comment + 1 Phix header
+        expect(phix1_row).to include('PhiX_Third,ATGTCGCT,CTAGCTCG')
+        index1 = phix1_row.split(',')[1]
+        index2 = phix1_row.split(',')[2]
+        expect(index1.length).to eq(8)
+        expect(index2.length).to eq(8)
       end
     end
     # rubocop:enable RSpec/MultipleExpectations
