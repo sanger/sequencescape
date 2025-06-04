@@ -11,5 +11,5 @@ if [ "$KNAPSACK_PRO_TEST_SUITE_TOKEN_FEATURE" = "" ]; then
     KNAPSACK_PRO_MAX_REQUEST_RETRIES=0 \
     bundle exec rake "knapsack_pro:rspec[--format RSpec::Github::Formatter --format progress]" # use Regular Mode here always
 else
-    bundle exec rake "knapsack_pro:queue:rspec[--format RSpec::Github::Formatter --format progress]"
+    bundle exec rake "knapsack_pro:rspec[--format RSpec::Github::Formatter --format progress]"
 fi

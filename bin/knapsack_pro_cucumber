@@ -12,5 +12,5 @@ if [ "$KNAPSACK_PRO_TEST_SUITE_TOKEN_CUCUMBER" = "" ]; then
     bundle exec rake "knapsack_pro:cucumber[--format CucumberGithubFormatter --out /dev/null --format progress]"
      # use Regular Mode here always
 else
-    bundle exec rake "knapsack_pro:queue:cucumber_go[--format CucumberGithubFormatter --out /dev/null --format progress]"
+    bundle exec rake "knapsack_pro:cucumber_go[--format CucumberGithubFormatter --out /dev/null --format progress]"
 fi
