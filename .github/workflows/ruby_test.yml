@@ -3,6 +3,7 @@ env:
   TZ: Europe/London
   CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID || '9c624e5d90c5b319d678e06d66c7671f1661fda826436d475f9679b54be63e26' }}
   KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC }}
+  KNAPSACK_PRO_TEST_SUITE_TOKEN_FEATURE: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_FEATURE }}
   KNAPSACK_PRO_TEST_SUITE_TOKEN_CUCUMBER: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_CUCUMBER }}
   KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
   KNAPSACK_PRO_LOG_LEVEL: info
@@ -219,7 +220,7 @@ jobs:
           KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
           KNAPSACK_PRO_TEST_FILE_PATTERN: "spec/features/**{,/*/**}/*_spec.rb"
           DBPORT: ${{ job.services.mysql.ports[3306] }}
-        run: bin/knapsack_pro_rspec
+        run: bin/knapsack_pro_feature
       - name: Upload capybara artifacts
         uses: actions/upload-artifact@v4.4.0
         if: ${{ failure() }}
