@@ -8,7 +8,7 @@ on:
         required: true
         type: string
 
-  push:
+   pull_request:
 
 jobs:
   trigger_build_and_append:
