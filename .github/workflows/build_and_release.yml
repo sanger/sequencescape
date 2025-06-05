@@ -31,4 +31,4 @@ jobs:
       - name: Release Build
         uses: sanger/.github/.github/workflows/reusables/release-build.yml@y25-099-migrate-actions
         with:
-          upload_url: ${{ github.event.release.upload_url }}
+          upload_url: ${{ inputs.upload_url }}
