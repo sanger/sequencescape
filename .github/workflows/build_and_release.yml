@@ -10,6 +10,7 @@ on:
   pull_request:
 
 jobs:
+
   checkout_repo:
     steps:
       - name: Checkout Repo
@@ -21,9 +22,11 @@ jobs:
     uses: sanger/.github/.github/workflows/setup-ruby.yml@y25-099-migrate-actions
 
   setup_node:
+    needs: [checkout_repo]
     uses: sanger/.github/.github/workflows/setup-node.yml@y25-099-migrate-actions
 
   setup_env:
+    needs: [checkout_repo]
     uses: sanger/.github/.github/workflows/setup-env.yml@y25-099-migrate-actions
 
   compile_build:
