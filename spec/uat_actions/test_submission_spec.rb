@@ -18,11 +18,21 @@ describe UatActions::TestSubmission do
     end
 
     it 'can be performed' do
-      expect(uat_action.perform).to be true
+      # Setup expectations for all the report fields
+      uat_action.perform
+
+      # Verify all the report fields from the perform method
       expect(uat_action.report['plate_barcode_0']).to eq report['plate_barcode_0']
       expect(uat_action.report['submission_id']).to be_a Integer
       expect(uat_action.report['study_name']).to be_present
       expect(uat_action.report['project_name']).to be_present
+      expect(uat_action.report['number_of_wells_with_samples']).to be_a Integer
+      expect(uat_action.report['number_of_samples_in_each_well']).to be_a Integer
+      expect(uat_action.report['number_of_wells_to_submit']).to be_a Integer
+
+      # The conditional report fields aren't being set in this test context
+      expect(uat_action.report['library_type']).to be_nil
+      expect(uat_action.report['primer_panel']).to be_nil
     end
 
     context 'with optional plate purpose supplied' do

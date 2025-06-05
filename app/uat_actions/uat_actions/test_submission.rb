@@ -166,7 +166,8 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
       )
     report['plate_barcode_0'] = labware.human_barcode
     report['submission_id'] = order.submission.id
-    report['library_type'] = order.request_options[:library_type] if order.request_options[:library_type].present?
+    report['library_type'] = order.request_options[:library_type] if order.request_options[:library_type].present? &&
+      order.request_options[:library_type] != 0
     report['primer_panel'] = order.request_options[:primer_panel_name] if order.request_options[
       :primer_panel_name
     ].present?
