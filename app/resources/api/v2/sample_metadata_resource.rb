@@ -64,6 +64,10 @@ module Api
       #   @return [String] The name of the organization or person that collected the sample.
       attribute :collected_by
 
+      # @!attribute [rw] date_of_sample_collection
+      #   @return [DateTime] The date and time when the sample was collected.
+      attribute :date_of_sample_collection
+
       # @!attribute [rw] concentration
       #   @return [String] The concentration of the sample, typically measured in ng/µL.
       attribute :concentration
