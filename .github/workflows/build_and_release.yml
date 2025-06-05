@@ -1,0 +1,28 @@
+name: Build and release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  trigger_build_and_append:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@${{ vars.CHECKOUT_VERSION }}
+
+      - name: Setup Ruby
+        uses: sanger/.github/.github/workflows/reusables/setup-ruby.yml@y25-099-migrate-actions
+
+      - name: Setup Node
+        uses: sanger/.github/.github/workflows/reusables/setup-node.yml@y25-099-migrate-actions
+
+      - name: Setup Environment
+        uses: sanger/.github/.github/workflows/reusables/setup-env.yml@y25-099-migrate-actions
+
+      - name: Compile Build
+        run: ./compile-build
+
+      - name: Release Build
+        uses: sanger/.github/.github/workflows/reusables/release-build.yml@y25-099-migrate-actions
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
