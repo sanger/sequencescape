@@ -24,9 +24,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CHECKOUT_VERSION: ${{ vars.CHECKOUT_VERSION }}
-      
+
     steps:
-      - uses: actions/checkout@${{ vars.CHECKOUT_VERSION }}
+      - uses: actions/checkout@${{ CHECKOUT_VERSION }}
       - name: Compile Build
         run: ./compile-build
 
