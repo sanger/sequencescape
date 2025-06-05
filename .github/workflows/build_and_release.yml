@@ -13,8 +13,24 @@ jobs:
   build_and_release:
     runs-on: ubuntu-latest
     steps:
-        - name: Checkout repo
+        - name: Checkout Repository
           uses: sanger/.github/.github/actions/checkout@y25-099-migrate-actions
 
-        - name: Setup ruby
+        - name: Setup Ruby
           uses: sanger/.github/.github/actions/setup-ruby@y25-099-migrate-actions
+
+        - name: Setup Node
+          uses: sanger/.github/.github/actions/setup-node@y25-099-migrate-actions
+
+        - name: Setup Environment
+        - uses: sanger/.github/.github/actions/setup-env@y25-099-migrate-actions
+          with:
+            dbport: ${{ job.services.mysql.ports[3306] }}
+
+        - name: Compile Build
+          run: ./compile-build
+
+        - name: Release Build
+        - uses: sanger/.github/.github/actions/release-build@y25-099-migrate-actions
+          with:
+            upload_url: ${{ inputs.upload_url }}
