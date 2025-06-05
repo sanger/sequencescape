@@ -7,37 +7,14 @@ on:
         description: 'test'
         required: true
         type: string
-  pull_request:
 
 jobs:
 
-  checkout_repo:
+  build_and_release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v4
+        - name: Checkout repo
+          uses: sanger/.github/.github/actions/checkout@y25-099-migrate-actions
 
-  setup_ruby:
-    needs: [checkout_repo]
-    uses: sanger/.github/.github/workflows/setup-ruby.yml@y25-099-migrate-actions
-
-  setup_node:
-    needs: [checkout_repo]
-    uses: sanger/.github/.github/workflows/setup-node.yml@y25-099-migrate-actions
-
-  setup_env:
-    needs: [checkout_repo]
-    uses: sanger/.github/.github/workflows/setup-env.yml@y25-099-migrate-actions
-
-  compile_build:
-    needs: [setup_ruby, setup_node, setup_env]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Compile Build
-        run: ./compile-build
-
-  release_build:
-    needs: compile_build
-    uses: sanger/.github/.github/workflows/release-build.yml@y25-099-migrate-actions
-    with:
-      upload_url: ${{ inputs.upload_url }}
+        - name: Setup ruby
+          uses: sanger/.github/.github/actions/setup_ruby@y25-099-migrate-actions
