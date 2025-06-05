@@ -22,3 +22,16 @@ jobs:
 
       - name: Setup Node
         uses: sanger/.github/.github/actions/setup-node@y25-099-migrate-actions
+
+      - name: Setup Environment
+        uses: sanger/.github/.github/actions/setup-env@y25-099-migrate-actions
+        with:
+          dbport: ${{ job.services.mysql.ports[3306] }}
+
+      - name: Compile Build
+        run: ./compile-build
+
+      - name: Release Build
+        uses: sanger/.github/.github/actions/release-build@y25-099-migrate-actions
+        with:
+          upload_url: ${{ inputs.upload_url }}
