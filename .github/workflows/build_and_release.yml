@@ -16,7 +16,6 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-
   setup_ruby:
     needs: [checkout_repo]
     uses: sanger/.github/.github/workflows/setup-ruby.yml@y25-099-migrate-actions
@@ -37,6 +36,7 @@ jobs:
         run: ./compile-build
 
   release_build:
+    runs-on: ubuntu-latest
     needs: compile_build
     uses: sanger/.github/.github/workflows/release-build.yml@y25-099-migrate-actions
     with:
