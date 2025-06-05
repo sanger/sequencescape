@@ -11,7 +11,7 @@ on:
 
 jobs:
   checkout_repo:
-    uses: sanger/.github/.github/workflows/checkout.yml@y25-099-migrate-actions
+    uses: actions/checkout@v4
 
   setup_ruby:
     needs: [checkout_repo]
