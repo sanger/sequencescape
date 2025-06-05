@@ -1,10 +1,10 @@
 name: Build and release (2)
 
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
     inputs:
       upload_url:
-        description: 'test'
+        description: "test"
         required: true
         type: string
 
