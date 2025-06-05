@@ -1,4 +1,4 @@
-name: Build and release (2)
+name: Build and release
 
 on:
   release:
