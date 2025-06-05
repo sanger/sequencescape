@@ -17,20 +17,47 @@ describe UatActions::TestSubmission do
       { 'plate_barcode_0' => first_plate_barcode[:barcode] }
     end
 
-    it 'can be performed' do
-      # Setup expectations for all the report fields
+    it 'can be performed successfully' do
+      expect(uat_action.perform).to be true
+    end
+
+    it 'reports the plate barcode' do
       uat_action.perform
-
-      # Verify all the report fields from the perform method
       expect(uat_action.report['plate_barcode_0']).to eq report['plate_barcode_0']
-      expect(uat_action.report['submission_id']).to be_a Integer
-      expect(uat_action.report['study_name']).to be_present
-      expect(uat_action.report['project_name']).to be_present
-      expect(uat_action.report['number_of_wells_with_samples']).to be_a Integer
-      expect(uat_action.report['number_of_samples_in_each_well']).to be_a Integer
-      expect(uat_action.report['number_of_wells_to_submit']).to be_a Integer
+    end
 
-      # The conditional report fields aren't being set in this test context
+    it 'reports the submission ID' do
+      uat_action.perform
+      expect(uat_action.report['submission_id']).to be_a Integer
+    end
+
+    it 'reports the study name' do
+      uat_action.perform
+      expect(uat_action.report['study_name']).to be_present
+    end
+
+    it 'reports the project name' do
+      uat_action.perform
+      expect(uat_action.report['project_name']).to be_present
+    end
+
+    it 'reports the number of wells with samples' do
+      uat_action.perform
+      expect(uat_action.report['number_of_wells_with_samples']).to be_a Integer
+    end
+
+    it 'reports the number of samples in each well' do
+      uat_action.perform
+      expect(uat_action.report['number_of_samples_in_each_well']).to be_a Integer
+    end
+
+    it 'reports the number of wells to submit' do
+      uat_action.perform
+      expect(uat_action.report['number_of_wells_to_submit']).to be_a Integer
+    end
+
+    it 'does not report library type or primer panel when not specified' do
+      uat_action.perform
       expect(uat_action.report['library_type']).to be_nil
       expect(uat_action.report['primer_panel']).to be_nil
     end
