@@ -267,6 +267,72 @@ describe UatActions::TestSubmission do
         end
       end
     end
+
+    describe '#validate_study_exists' do
+      let(:parameters) { { study_name: } }
+      let(:error_message) { format(described_class::ERROR_STUDY_DOES_NOT_EXIST, study_name) }
+
+      context 'when the study does not exist' do
+        let(:study_name) { 'Invalid Study' }
+
+        it 'adds the error message' do
+          expect(uat_action.valid?).to be false
+          expect(uat_action.errors[:study_name]).to include(error_message)
+        end
+      end
+
+      context 'when the study exists' do
+        let(:study) { create(:study) }
+        let(:study_name) { study.name }
+
+        it 'does not add the error message' do
+          uat_action.valid? # run validations
+          expect(uat_action.errors[:study_name]).not_to include(error_message)
+        end
+      end
+
+      context 'when study_name is blank' do
+        let(:study_name) { '' }
+
+        it 'does not add the error message' do
+          uat_action.valid? # run validations
+          expect(uat_action.errors[:study_name]).not_to include(error_message)
+        end
+      end
+    end
+
+    describe '#validate_project_exists' do
+      let(:parameters) { { project_name: } }
+      let(:error_message) { format(described_class::ERROR_PROJECT_DOES_NOT_EXIST, project_name) }
+
+      context 'when the project does not exist' do
+        let(:project_name) { 'Invalid Project' }
+
+        it 'adds the error message' do
+          expect(uat_action.valid?).to be false
+          expect(uat_action.errors[:project_name]).to include(error_message)
+        end
+      end
+
+      context 'when the project exists' do
+        let(:project) { create(:project) }
+        let(:project_name) { project.name }
+
+        it 'does not add the error message' do
+          uat_action.valid? # run validations
+          expect(uat_action.errors[:project_name]).not_to include(error_message)
+        end
+      end
+
+      context 'when project_name is blank' do
+        let(:project_name) { '' }
+
+        it 'does not add the error message' do
+          uat_action.valid? # run validations
+          expect(uat_action.errors[:project_name]).not_to include(error_message)
+        end
+      end
+    end
   end
 
   describe '#project' do

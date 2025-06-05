@@ -18,6 +18,8 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
   ERROR_PLATE_PURPOSE_DOES_NOT_EXIST = "Plate purpose '%s' does not exist."
   ERROR_LIBRARY_TYPE_DOES_NOT_EXIST = "Library type '%s' does not exist."
   ERROR_PRIMER_PANEL_DOES_NOT_EXIST = "Primer panel '%s' does not exist."
+  ERROR_STUDY_DOES_NOT_EXIST = "Study '%s' does not exist."
+  ERROR_PROJECT_DOES_NOT_EXIST = "Project '%s' does not exist."
 
   # Form fields
   form_field :submission_template_name,
