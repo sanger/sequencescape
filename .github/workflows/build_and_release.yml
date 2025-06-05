@@ -2,6 +2,7 @@ name: Build and release
 
 on:
   workflow_dispatch: {}
+  pull_request: # temporary
 
 jobs:
   trigger_build_and_append:
