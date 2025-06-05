@@ -125,9 +125,6 @@ module Api
       has_many :ancestors, readonly: true, polymorphic: true
       # TODO: do we need descendants? might have to delegate to racked tubes
 
-      attribute :created_at, readonly: true
-      attribute :updated_at, readonly: true
-
       ###
       # Filters
       ###
