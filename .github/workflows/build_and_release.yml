@@ -11,13 +11,13 @@ on:
 
 jobs:
   setup_ruby:
-    uses: sanger/.github/.github/workflows/reusables/setup-ruby.yml@y25-099-migrate-actions
+    uses: sanger/.github/.github/workflows/setup-ruby.yml@y25-099-migrate-actions
 
   setup_node:
-    uses: sanger/.github/.github/workflows/reusables/setup-node.yml@y25-099-migrate-actions
+    uses: sanger/.github/.github/workflows/setup-node.yml@y25-099-migrate-actions
 
   setup_env:
-    uses: sanger/.github/.github/workflows/reusables/setup-env.yml@y25-099-migrate-actions
+    uses: sanger/.github/.github/workflows/setup-env.yml@y25-099-migrate-actions
 
   compile_build:
     needs: [setup_ruby, setup_node, setup_env]
@@ -29,6 +29,6 @@ jobs:
 
   release_build:
     needs: compile_build
-    uses: sanger/.github/.github/workflows/reusables/release-build.yml@y25-099-migrate-actions
+    uses: sanger/.github/.github/workflows/release-build.yml@y25-099-migrate-actions
     with:
       upload_url: ${{ github.event.inputs.upload_url }}
