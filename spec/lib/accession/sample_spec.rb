@@ -2,8 +2,8 @@
 
 require 'rails_helper'
 
-COUNTRY_TAG = 'GEOGRAPHIC_LOCATION_(COUNTRY_AND/OR_SEA)'
-COLLECTION_DATE_TAG = 'COLLECTION_DATE'
+COUNTRY_TAG = 'geographic location (country and/or sea)'
+COLLECTION_DATE_TAG = 'collection date'
 
 def find_value_at_tag(xml_received, tag_name)
   xml = Nokogiri::XML::Document.parse(xml_received)
@@ -126,33 +126,35 @@ RSpec.describe Accession::Sample, :accession, type: :model do
 
   it 'creates some xml with valid attributes' do
     sample = described_class.new(tag_list, create(:sample_for_accessioning_with_open_study))
-    xml = Nokogiri::XML::Document.parse(sample.to_xml)
+    xml = sample.to_xml
 
-    expect(xml.at('SAMPLE_SET').at('SAMPLE').at('SAMPLE_ATTRIBUTES')).not_to be_nil
+    expect(xml).to match(%r{<SAMPLE_SET.*<SAMPLE.*</SAMPLE>.*</SAMPLE_SET>}m)
+    expect(xml).to include(%r{<SAMPLE_SET.*<SAMPLE_ATTRIBUTES>.*</SAMPLE_ATTRIBUTES>.*</SAMPLE_SET>}m)
 
-    expect(xml.at('SAMPLE').attribute('alias').value).to eq(sample.ebi_alias)
-    expect(xml.at('TITLE').text).to eq(sample.title)
+    expect(xml).to include("alias=\"#{sample.ebi_alias}\"")
+    expect(xml).to include("<TITLE>#{sample.title}</TITLE>")
 
     tags = sample.tags.by_group[:sample_name]
-    sample_name_tags = xml.at('SAMPLE_NAME')
-    tags.each { |_label, tag| expect(sample_name_tags.search(tag.label).children.first.text).to eq(tag.value) }
+    sample_name_tags = xml
+    tags.each do |_label, tag|
+      expected_tag = tag.label.tr(' ', '_').upcase
+      expect(sample_name_tags).to include("<#{expected_tag}>#{tag.value}</#{expected_tag}>")
+    end
 
-    sample_attributes_tags = xml.at('SAMPLE_ATTRIBUTES')
+    sample_attributes_tags = xml
 
     tags = sample.tags.by_group[:sample_attributes]
-    expect(sample_attributes_tags.search('TAG').collect(&:text) & tags.labels).to eq(tags.labels)
-    expect(sample_attributes_tags.search('VALUE').collect(&:text) & tags.values).to eq(tags.values)
+    expect(sample_attributes_tags).to include(*tags.labels.map { |label| "<TAG>#{label}</TAG>" })
+    expect(sample_attributes_tags).to include(*tags.values.map { |value| "<VALUE>#{value}</VALUE>" })
 
     tags = sample.tags.by_group[:array_express]
-    expect(sample_attributes_tags.search('TAG').collect(&:text) & tags.array_express_labels).to eq(
-      tags.array_express_labels
-    )
-    expect(sample_attributes_tags.search('VALUE').collect(&:text) & tags.values).to eq(tags.values)
+    expect(sample_attributes_tags).to include(*tags.array_express_labels.map { |label| "<TAG>#{label}</TAG>" })
+    expect(sample_attributes_tags).to include(*tags.values.map { |value| "<VALUE>#{value}</VALUE>" })
 
     sample = described_class.new(tag_list, create(:sample_for_accessioning_with_managed_study))
-    xml = Nokogiri::XML::Document.parse(sample.to_xml)
-    sample_attributes_tags = xml.at('SAMPLE_ATTRIBUTES')
-    expect(sample_attributes_tags.search('TAG').collect(&:text) & tags.array_express_labels).to be_empty
+    xml = sample.to_xml
+    sample_attributes_tags = xml
+    expect(sample_attributes_tags).not_to include(*tags.array_express_labels.map { |label| "<TAG>#{label}</TAG>" })
   end
 
   it 'can update accession number for sample' do

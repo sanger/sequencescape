@@ -64,7 +64,10 @@ jobs:
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5.4.0
         with:
+          name: ${{ github.run_id }}_${{ github.job }}_${{ github.event_name }}
           token: ${{ secrets.CODECOV_TOKEN }}
+          disable_search: true
+          files: ${{ github.workspace }}/lcov.info
           fail_ci_if_error: true
   rspec_unit_tests:
     runs-on: ubuntu-latest
@@ -143,7 +146,10 @@ jobs:
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5.4.0
         with:
+          name: ${{ github.run_id }}_${{ github.job }}_${{ matrix.ci_node_index }}_${{ github.event_name }}
           token: ${{ secrets.CODECOV_TOKEN }}
+          disable_search: true
+          files: ${{ github.workspace }}/lcov.info
           fail_ci_if_error: true
   rspec_feature_tests:
     runs-on: ubuntu-latest
@@ -230,7 +236,10 @@ jobs:
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5.4.0
         with:
+          name: ${{ github.run_id }}_${{ github.job }}_${{ matrix.ci_node_index }}_${{ github.event_name }}
           token: ${{ secrets.CODECOV_TOKEN }}
+          disable_search: true
+          files: ${{ github.workspace }}/lcov.info
           fail_ci_if_error: true
   cucumber_tests:
     runs-on: ubuntu-latest
@@ -303,5 +312,8 @@ jobs:
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5.4.0
         with:
+          name: ${{ github.run_id }}_${{ github.job }}_${{ matrix.ci_node_index }}_${{ github.event_name }}
           token: ${{ secrets.CODECOV_TOKEN }}
+          disable_search: true
+          files: ${{ github.workspace }}/lcov.info
           fail_ci_if_error: true

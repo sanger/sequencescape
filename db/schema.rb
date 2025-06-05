@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_02_20_100453) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_13_112148) do
   create_table "aliquot_indices", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "aliquot_id", null: false
     t.integer "lane_id", null: false
@@ -487,10 +487,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_20_100453) do
   create_table "flipper_gates", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "feature_key", null: false
     t.string "key", null: false
-    t.string "value"
+    t.text "value"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["feature_key", "key", "value"], name: "index_flipper_gates_on_feature_key_and_key_and_value", unique: true
+    t.index ["feature_key", "key", "value"], name: "index_flipper_gates_on_feature_key_and_key_and_value", unique: true, length: { value: 255 }
   end
 
   create_table "flowcell_types", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
@@ -1177,6 +1177,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_20_100453) do
     t.integer "number_of_pools"
     t.integer "cells_per_chip_well"
     t.string "allowance_band"
+    t.boolean "low_diversity"
+    t.integer "percent_phix_requested"
     t.index ["request_id"], name: "index_request_metadata_on_request_id"
   end
 

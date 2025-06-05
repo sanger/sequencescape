@@ -143,6 +143,7 @@ Rails/UnknownEnv:
     - test
     - cucumber
     - profile
+    - staging
 
 RSpec/ExampleLength:
   inherit_mode:
@@ -175,6 +176,7 @@ RSpecRails/AvoidSetupHook:
 RSpec/MultipleExpectations:
   Exclude:
     - "spec/features/**/*"
+
 Lint/UnusedMethodArgument:
   # Unused keyword arguments are good for maintaining API compatibility, and
   # applying an underscore before the keyword name breaks that API.

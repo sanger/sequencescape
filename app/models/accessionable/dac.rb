@@ -10,7 +10,7 @@ class Accessionable::Dac < Accessionable::Base
     @name = study.dac_refname
     @contacts =
       study.data_access_contacts.map do |contact|
-        { email: contact.email, name: contact.name, organisation: AccessionService::CenterName }
+        { email: contact.email, name: contact.name, organisation: AccessionService::CENTER_NAME }
       end
 
     super(study.dac_accession_number)
@@ -43,7 +43,7 @@ class Accessionable::Dac < Accessionable::Base
   end
 
   def protect?(service)
-    service.dac_visibility(@study) == AccessionService::Protect
+    service.dac_visibility(@study) == AccessionService::PROTECT
   end
 
   def accessionable_id

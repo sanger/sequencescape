@@ -35,8 +35,6 @@ class EventSender
     create!(hash.merge(options || {}))
   end
 
-  private
-
   def self.create!(hash = {})
     hash.delete(:key)
     Event.create!(hash)

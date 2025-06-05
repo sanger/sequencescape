@@ -504,7 +504,7 @@ RSpec.describe LocationReport do
             )
             stub_lwclient_locn_children(
               location_barcode,
-              [{ locn_barcode: 'locn-1-at-lvl-2', locn_name: 'Box 1', locn_parentage: locn_prefix + ' - Shelf 1' }]
+              [{ locn_barcode: 'locn-1-at-lvl-2', locn_name: 'Box 1', locn_parentage: "#{locn_prefix} - Shelf 1" }]
             )
             stub_lwclient_locn_labwares(location_barcode, [])
 
@@ -512,17 +512,17 @@ RSpec.describe LocationReport do
             p1 = {
               lw_barcode: plate_1.machine_barcode,
               lw_locn_name: 'Box 1',
-              lw_locn_parentage: locn_prefix + ' - Shelf 1'
+              lw_locn_parentage: "#{locn_prefix} - Shelf 1"
             }
             p2 = {
               lw_barcode: plate_2.machine_barcode,
               lw_locn_name: 'Box 1',
-              lw_locn_parentage: locn_prefix + ' - Shelf 1'
+              lw_locn_parentage: "#{locn_prefix} - Shelf 1"
             }
             stub_lwclient_locn_find_by_bc(
               locn_barcode: 'locn-1-at-lvl-2',
               locn_name: 'Box 1',
-              locn_parentage: locn_prefix + ' - Shelf 1'
+              locn_parentage: "#{locn_prefix} - Shelf 1"
             )
             stub_lwclient_locn_children(location_barcode, [])
             stub_lwclient_locn_labwares(location_barcode, [p1, p2])
@@ -559,12 +559,12 @@ RSpec.describe LocationReport do
             locn_lvl2_b1 = {
               locn_barcode: 'locn-1a-at-lvl-2',
               locn_name: 'Box 1',
-              locn_parentage: locn_prefix + ' - Shelf 1'
+              locn_parentage: "#{locn_prefix} - Shelf 1"
             }
             locn_lvl2_b2 = {
               locn_barcode: 'locn-1b-at-lvl-2',
               locn_name: 'Box 2',
-              locn_parentage: locn_prefix + ' - Shelf 1'
+              locn_parentage: "#{locn_prefix} - Shelf 1"
             }
             stub_lwclient_locn_find_by_bc(
               locn_barcode: location_barcode,
@@ -578,7 +578,7 @@ RSpec.describe LocationReport do
             p1 = {
               lw_barcode: plate_1.machine_barcode,
               lw_locn_name: 'Box 1',
-              lw_locn_parentage: locn_prefix + ' - Shelf 1'
+              lw_locn_parentage: "#{locn_prefix} - Shelf 1"
             }
             stub_lwclient_locn_find_by_bc(locn_lvl2_b1)
             stub_lwclient_locn_children(locn_lvl2_b1[:locn_barcode], [])
@@ -589,7 +589,7 @@ RSpec.describe LocationReport do
             p2 = {
               lw_barcode: plate_2.machine_barcode,
               lw_locn_name: 'Box 2',
-              lw_locn_parentage: locn_prefix + ' - Shelf 1'
+              lw_locn_parentage: "#{locn_prefix} - Shelf 1"
             }
             stub_lwclient_locn_find_by_bc(locn_lvl2_b2)
             stub_lwclient_locn_children(locn_lvl2_b2[:locn_barcode], [])
@@ -629,7 +629,7 @@ RSpec.describe LocationReport do
             locn_lvl2_t1 = {
               locn_barcode: 'locn-1-at-lvl-2',
               locn_name: 'Tray 1',
-              locn_parentage: locn_prefix + ' - Shelf 1'
+              locn_parentage: "#{locn_prefix} - Shelf 1"
             }
             p1 = { lw_barcode: plate_1.machine_barcode, lw_locn_name: 'Shelf 1', lw_locn_parentage: locn_prefix }
             stub_lwclient_locn_find_by_bc(
@@ -645,12 +645,12 @@ RSpec.describe LocationReport do
             locn_lvl3_b1 = {
               locn_barcode: 'locn-1-at-lvl-3',
               locn_name: 'Box 1',
-              locn_parentage: locn_prefix + ' - Shelf 1 - Tray 1'
+              locn_parentage: "#{locn_prefix} - Shelf 1 - Tray 1"
             }
             p2 = {
               lw_barcode: plate_2.machine_barcode,
               lw_locn_name: 'Tray 1',
-              lw_locn_parentage: locn_prefix + ' - Shelf 1'
+              lw_locn_parentage: "#{locn_prefix} - Shelf 1"
             }
             stub_lwclient_locn_find_by_bc(locn_lvl2_t1)
             stub_lwclient_locn_children(locn_lvl2_t1[:locn_barcode], [locn_lvl3_b1])
@@ -661,7 +661,7 @@ RSpec.describe LocationReport do
             p3 = {
               lw_barcode: plate_3.machine_barcode,
               lw_locn_name: 'Box 1',
-              lw_locn_parentage: locn_prefix + ' - Shelf 1 - Tray 1'
+              lw_locn_parentage: "#{locn_prefix} - Shelf 1 - Tray 1"
             }
             stub_lwclient_locn_find_by_bc(locn_lvl3_b1)
             stub_lwclient_locn_children(locn_lvl3_b1[:locn_barcode], [])

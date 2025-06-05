@@ -167,7 +167,7 @@ Given /^the study "([^"]+)" is delayed for (3|6|9|12) months because "([^"]+)"$/
 end
 
 Given /^the study "([^"]*)" has the following contacts$/ do |study, table|
-  table.hashes.each { |hash| step 'user "' + hash['login'] + '" is a "' + hash['role'] + '" of study "' + study + '"' }
+  table.hashes.each { |hash| step "user \"#{hash['login']}\" is a \"#{hash['role']}\" of study \"#{study}\"" }
 end
 
 Given /^study "([^"]*)" has asset and assetgroup$/ do |study|

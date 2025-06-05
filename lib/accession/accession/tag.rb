@@ -47,12 +47,19 @@ module Accession
       self
     end
 
+    def label_string
+      (ebi_name || name).to_s
+    end
+
     def label
-      (ebi_name || name).to_s.upcase
+      # ebi_name is used if present in the tag config, otherwise name is used
+      # NB. ebi XML schema needs lowercase tag labels and spaces instead of underscores
+      # i.e. 'sample name' instead of 'SAMPLE_NAME'
+      label_string.tr('_', ' ').downcase
     end
 
     def array_express_label
-      "ArrayExpress-#{label}"
+      "ArrayExpress-#{label_string.upcase}"
     end
 
     def attributes
