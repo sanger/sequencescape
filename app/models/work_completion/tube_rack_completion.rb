@@ -23,6 +23,20 @@ class WorkCompletion::TubeRackCompletion < WorkCompletion::LabwareCompletion
     end
   end
 
+  # Retrieves the target tubes associated with the target labware.
+  #
+  # This method fetches the tubes that are racked within the target labware (i.e., tube rack),
+  # including their associated aliquots and requests. It filters the tubes
+  # based on the submission IDs of the requests.
+  #
+  # @note This method is similar to the `target_wells` method in
+  #   `WorkCompletion::PlateCompletion`,
+  #
+  # @return [ActiveRecord::Relation] A collection of target tubes.
+  #
+  # @example
+  #   target_tubes
+  #   # => [#<Tube id: 1>, #<Tube id: 2>]
   def target_tubes
     @target_tubes ||=
       target_labware
