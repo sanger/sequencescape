@@ -1,7 +1,13 @@
 name: Build and release
 
 on:
-  workflow_dispatch: {}
+  workflow_dispatch: 
+    inputs:
+      upload_url:
+        description: 'test'
+        required: true
+        type: string
+
   pull_request: # temporary
 
 jobs:
