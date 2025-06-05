@@ -30,6 +30,7 @@ module Api
     #       "attributes": {
     #         "cohort": "Cohort A",
     #         "collected_by": "Research Lab X",
+    #         "date_of_sample_collection": "2024-01-15T12:00:00Z",
     #         "concentration": "50",
     #         "donor_id": "D123456",
     #         "gender": "Female",
