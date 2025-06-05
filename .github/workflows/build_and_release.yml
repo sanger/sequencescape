@@ -28,10 +28,10 @@ jobs:
         with:
           dbport: ${{ job.services.mysql.ports[3306] }}
 
-      - name: Compile Build
-        run: ./compile-build
+      # - name: Compile Build
+      #   run: ./compile-build
 
-      - name: Release Build
-      - uses: sanger/.github/.github/actions/release-build@y25-099-migrate-actions
-        with:
-          upload_url: ${{ inputs.upload_url }}
+      # - name: Release Build
+      # - uses: sanger/.github/.github/actions/release-build@y25-099-migrate-actions
+      #   with:
+      #     upload_url: ${{ inputs.upload_url }}
