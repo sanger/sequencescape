@@ -17,4 +17,4 @@ jobs:
           uses: sanger/.github/.github/actions/checkout@y25-099-migrate-actions
 
         - name: Setup ruby
-          uses: sanger/.github/.github/actions/setup_ruby@y25-099-migrate-actions
+          uses: sanger/.github/.github/actions/setup-ruby@y25-099-migrate-actions
