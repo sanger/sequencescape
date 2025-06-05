@@ -10,6 +10,9 @@ on:
   pull_request:
 
 jobs:
+  checkout_repo:
+    uses: sanger/.github/.github/workflows/checkout.yml@y25-099-migrate-actions
+
   setup_ruby:
     uses: sanger/.github/.github/workflows/setup-ruby.yml@y25-099-migrate-actions
 
@@ -24,11 +27,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ vars.CHECKOUT_VERSION }}
-
       - name: Compile Build
         run: ./compile-build
 
