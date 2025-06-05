@@ -8,8 +8,9 @@ on:
         required: true
         type: string
 
-jobs:
+  pull_request:
 
+jobs:
   build_and_release:
     runs-on: ubuntu-latest
     steps:
