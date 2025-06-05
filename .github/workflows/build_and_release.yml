@@ -1,8 +1,7 @@
 name: Build and release
 
 on:
-  release:
-    types: [published]
+  workflow_dispatch: {}
 
 jobs:
   trigger_build_and_append:
