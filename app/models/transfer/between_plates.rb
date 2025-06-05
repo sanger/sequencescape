@@ -83,7 +83,12 @@ class Transfer::BetweenPlates < Transfer
     destination_sources.each_with_object({}) do |dest_source, store|
       dest_loc, sources = *dest_source
 
-      found_pre_cap_groups = pre_cap_groups.select { |_uuid, group_details| group_details[:wells].sort == sources.sort }
+      # Instead of requiring an exact match between the sources from transfers
+      # and the pre-cap group wells, we check if the sources are a subset of
+      # the pre-cap group. This allows for failed wells that are not part of
+      # the transfers to be ignored.
+      found_pre_cap_groups =
+        pre_cap_groups.select { |_uuid, group_details| (sources.sort - group_details[:wells].sort).empty? }
 
       if found_pre_cap_groups.length > 1
         errors.add(
