@@ -10,8 +10,6 @@ on:
   pull_request:
 
 jobs:
-  runs-on: ubuntu-latest
-
   checkout_repo:
     uses: sanger/.github/.github/workflows/checkout.yml@y25-099-migrate-actions
 
