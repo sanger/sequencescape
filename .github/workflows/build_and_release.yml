@@ -22,11 +22,13 @@ jobs:
   compile_build:
     needs: [setup_ruby, setup_node, setup_env]
     runs-on: ubuntu-latest
-    env:
-      CHECKOUT_VERSION: ${{ vars.CHECKOUT_VERSION }}
 
     steps:
-      - uses: actions/checkout@${{ env.CHECKOUT_VERSION }}
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ vars.CHECKOUT_VERSION }}
+
       - name: Compile Build
         run: ./compile-build
 
@@ -34,4 +36,4 @@ jobs:
     needs: compile_build
     uses: sanger/.github/.github/workflows/release-build.yml@y25-099-migrate-actions
     with:
-      upload_url: ${{ github.event.inputs.upload_url }}
+      upload_url: ${{ inputs.upload_url }}
