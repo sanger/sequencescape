@@ -1,14 +1,8 @@
 name: Build and release (2)
 
 on:
-  workflow_dispatch:
-    inputs:
-      upload_url:
-        description: "test"
-        required: true
-        type: string
-
-  pull_request:
+  release:
+    types: published
 
 jobs:
   build_and_release:
@@ -34,4 +28,4 @@ jobs:
       - name: Release Build
         uses: sanger/.github/.github/actions/release-build@y25-099-migrate-actions
         with:
-          upload_url: ${{ inputs.upload_url }}
+          upload_url: ${{ github.event.release.upload_url }}
