@@ -49,7 +49,7 @@ jobs:
           release_version_tag: ${{ steps.set_tag.outputs.release_version_tag }}
 
       - name: Push tagged docker release to registry
-        uses: sanger/.github/.github/actions/docker/push-release@y25-099-2-migrate-actionss
+        uses: sanger/.github/.github/actions/docker/push-release@y25-099-2-migrate-actions
         with:
           image_name: ${IMAGE_NAME}
           release_version_tag: ${{ steps.set_tag.outputs.release_version_tag }}
